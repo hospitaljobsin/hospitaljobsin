@@ -1,11 +1,10 @@
+import { Amplify } from "aws-amplify";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./app.css";
-import { Amplify } from "aws-amplify";
 
 import outputs from "@/amplify_outputs.json";
 import Providers from "./providers";
-
 
 Amplify.configure(outputs);
 
@@ -22,12 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    
     <html lang="en">
-      <body className={inter.className}>      
-      <Providers>
-        {children}
-      </Providers>
+      <body className={inter.className}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
