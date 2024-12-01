@@ -1,0 +1,17 @@
+[project]
+name = "server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aioinject>=0.35.3",
+    "asgi-correlation-id>=4.3.4",
+    "beanie>=1.27.0",
+    "fastapi>=0.115.5",
+    "pydantic>=2.10.2",
+    "pydantic-settings>=2.6.1",
+    "strawberry-graphql>=0.253.0",
+    "structlog>=24.4.0",
+    "motor>=3.6.0",
+]
