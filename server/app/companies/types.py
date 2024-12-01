@@ -18,7 +18,7 @@ class CompanyType(BaseNodeType[Company]):
     city: str
     postcode: int
     country: str
-    phone: int
+    phone: str
     website: str
     email: str
 
