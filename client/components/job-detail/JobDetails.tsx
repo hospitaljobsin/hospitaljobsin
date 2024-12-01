@@ -8,12 +8,8 @@ const JobDetailsFragment = graphql`
   }
 `;
 
-export default function JobDetails({
-  question,
-}: {
-  question: JobDetailsFragment$key;
-}) {
-  const data = useFragment(JobDetailsFragment, question);
+export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
+  const data = useFragment(JobDetailsFragment, job);
 
   return (
     <div className="w-full flex flex-col gap-4">

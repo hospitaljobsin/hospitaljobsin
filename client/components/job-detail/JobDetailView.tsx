@@ -1,4 +1,4 @@
-import QuestionDetails from "@/components/job-detail/JobDetails";
+import JobDetails from "@/components/job-detail/JobDetails";
 import { Suspense } from "react";
 import { graphql, PreloadedQuery, usePreloadedQuery } from "react-relay";
 import { JobDetailViewQuery as JobDetailViewQueryType } from "./__generated__/JobDetailViewQuery.graphql";
@@ -19,18 +19,14 @@ export default function JobDetailView(props: {
 }) {
   const data = usePreloadedQuery(JobDetailViewQuery, props.queryRef);
 
-  console.log("data NODE", data.node);
+  if (!data.node || data.node.__typename !== "Job") {
+    return null;
+  }
 
   return (
     <Suspense fallback="Loading (client side)...">
       <div className="flex flex-col w-full h-full items-center gap-6 py-8">
-        {data.node && data.node.__typename === "Job" ? (
-          <>
-            <QuestionDetails question={data.node} />
-          </>
-        ) : (
-          <p>Question not found</p>
-        )}
+        <JobDetails job={data.node} />
       </div>
     </Suspense>
   );

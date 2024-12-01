@@ -18,7 +18,7 @@ export default function LandingView(props: {
 
   return (
     <Suspense fallback="Loading (client side)...">
-      <div className="w-full h-full max-w-7xl mx-auto flex flex-col gap-8">
+      <div className="py-8 w-full h-full max-w-7xl mx-auto flex flex-col gap-8">
         <JobListController
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}

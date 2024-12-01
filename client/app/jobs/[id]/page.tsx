@@ -2,6 +2,7 @@ import JobDetailViewQueryNode, {
   JobDetailViewQuery,
 } from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import { notFound } from "next/navigation";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 
 export default async function JobDetailPage({
@@ -16,6 +17,13 @@ export default async function JobDetailPage({
   >(JobDetailViewQueryNode.params, {
     jobId: decodeURIComponent(jobId),
   });
+
+  if (
+    !preloadedQuery.response.data.node ||
+    preloadedQuery.response.data.node.__typename !== "Job"
+  ) {
+    notFound();
+  }
 
   return <JobDetailViewClientComponent preloadedQuery={preloadedQuery} />;
 }

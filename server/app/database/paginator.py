@@ -10,7 +10,7 @@ from app.lib.constants import MAX_PAGINATION_LIMIT
 
 ModelType = TypeVar("ModelType", bound=Document)
 
-CursorType = TypeVar("CursorType", int, ObjectId)
+CursorType = TypeVar("CursorType", str, ObjectId)
 
 
 @dataclass
