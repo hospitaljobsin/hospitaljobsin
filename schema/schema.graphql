@@ -1,0 +1,75 @@
+type Company implements Node {
+  """The Globally Unique ID of this object"""
+  id: ID!
+  name: String!
+  description: String!
+  address: String!
+  city: String!
+  postcode: Int!
+  country: String!
+  phone: Int!
+  website: String!
+  email: String!
+}
+
+"""Date (isoformat)"""
+scalar Date
+
+type Job implements Node {
+  """The Globally Unique ID of this object"""
+  id: ID!
+  title: String!
+  description: String!
+  location: String!
+  salary: String!
+  closingDate: Date!
+  company: Company
+}
+
+type JobConnection {
+  """Pagination data for this connection"""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection"""
+  edges: [JobEdge!]!
+}
+
+"""An edge in a connection."""
+type JobEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+
+  """The item at the end of the edge"""
+  node: Job!
+}
+
+"""An object with a Globally Unique ID"""
+interface Node {
+  """The Globally Unique ID of this object"""
+  id: ID!
+}
+
+"""Information to aid in pagination."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+type Query {
+  node(
+    """The ID of the object."""
+    id: ID!
+  ): Node
+
+  """Get all jobs available."""
+  jobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
+}
