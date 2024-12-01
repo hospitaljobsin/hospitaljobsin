@@ -4,12 +4,13 @@ from typing import Generic, TypeVar
 
 from beanie import Document
 from beanie.odm.queries.find import FindMany
+from bson import ObjectId
 
 from app.lib.constants import MAX_PAGINATION_LIMIT
 
 ModelType = TypeVar("ModelType", bound=Document)
 
-CursorType = TypeVar("CursorType", int, str)
+CursorType = TypeVar("CursorType", int, ObjectId)
 
 
 @dataclass
@@ -141,6 +142,7 @@ class Paginator(Generic[ModelType, CursorType]):
         search_criteria = self.__apply_filters(
             search_criteria=search_criteria, before=before, after=after
         )
+
         search_criteria = search_criteria.limit(pagination_limit + 1)
 
         results = await search_criteria.to_list()

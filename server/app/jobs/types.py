@@ -5,6 +5,7 @@ from typing import Annotated, Self
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
+from bson import ObjectId
 from strawberry import relay
 
 from app.base.types import BaseNodeType
@@ -69,7 +70,9 @@ class JobType(BaseNodeType[Job]):
 @strawberry.type(name="JobConnection")
 class JobConnectionType(relay.Connection[JobType]):
     @classmethod
-    def from_paginated_result(cls, paginated_result: PaginatedResult[Job, str]) -> Self:
+    def from_paginated_result(
+        cls, paginated_result: PaginatedResult[Job, ObjectId]
+    ) -> Self:
         return cls(
             page_info=relay.PageInfo(
                 has_next_page=paginated_result.page_info.has_next_page,

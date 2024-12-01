@@ -3,6 +3,7 @@ from re import search
 
 from beanie import PydanticObjectId, WriteRules
 from beanie.operators import In
+from bson import ObjectId
 
 from app.companies.documents import Company
 from app.database.paginator import PaginatedResult, Paginator
@@ -70,10 +71,10 @@ class JobRepo:
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
-    ) -> PaginatedResult[Job, str]:
+    ) -> PaginatedResult[Job, ObjectId]:
         """Get a paginated result of jobs."""
 
-        paginator: Paginator[Job, str] = Paginator(
+        paginator: Paginator[Job, ObjectId] = Paginator(
             reverse=True,
             document_cls=Job,
             paginate_by="id",
@@ -88,8 +89,8 @@ class JobRepo:
             search_criteria=search_criteria,
             first=first,
             last=last,
-            before=before,
-            after=after,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
         )
 
     async def delete(self, job: Job) -> None:
