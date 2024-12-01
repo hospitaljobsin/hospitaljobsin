@@ -1,5 +1,6 @@
 import dataclasses
 
+from bson import ObjectId
 from strawberry.dataloader import DataLoader
 
 from app.companies.dataloaders import load_company_by_id
@@ -10,8 +11,8 @@ from app.jobs.documents import Job
 
 @dataclasses.dataclass(slots=True, kw_only=True)
 class Dataloaders:
-    job_by_id: DataLoader[str, Job | None]
-    company_by_id: DataLoader[str, Company | None]
+    job_by_id: DataLoader[ObjectId, Job | None]
+    company_by_id: DataLoader[ObjectId, Company | None]
 
 
 def create_dataloaders() -> Dataloaders:

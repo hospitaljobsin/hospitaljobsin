@@ -33,11 +33,13 @@ export default function Job({ job }: Props) {
   const data = useFragment(JobFragment, job);
 
   return (
-    <Link href={`/jobs/${data.id}`} className="group">
+    <Link href={`/jobs/${encodeURIComponent(data.id)}`} className="group">
       <Card>
         <CardHeader>
-          <p className="break-words">{data.title}</p>
-          <p>{data.description}</p>
+          <div className="flex flex-col gap-4">
+            <p className="break-words">{data.title}</p>
+            <p>{data.description}</p>
+          </div>
         </CardHeader>
         <CardFooter className="flex justify-between">
           <div className="flex items-center gap-2">

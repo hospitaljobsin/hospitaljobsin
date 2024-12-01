@@ -2,6 +2,7 @@ from typing import Annotated
 
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
+from bson import ObjectId
 
 from app.companies.repositories import CompanyRepo
 
@@ -18,5 +19,5 @@ async def load_company_by_id(
 ) -> list[Company | None]:
     """Load multiple companies by their IDs."""
     return await company_repo.get_many_by_ids(
-        company_ids=company_ids,
+        company_ids=list(map(ObjectId, company_ids)),
     )

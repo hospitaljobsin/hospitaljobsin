@@ -1,26 +1,25 @@
 "use client";
 
+import JobDetailView from "@/components/job-detail/JobDetailView";
 import { SerializablePreloadedQuery } from "@/lib/relay/loadSerializableQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 import { useRelayEnvironment } from "react-relay";
-import LandingView from "./LandingView";
-import LandingViewQueryNode, {
-  LandingViewQuery,
-} from "./__generated__/LandingViewQuery.graphql";
 
-const MainViewClientComponent = (props: {
+import JobDetailViewQueryNode, {
+  JobDetailViewQuery,
+} from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
+
+export default function JobDetailViewClientComponent(props: {
   preloadedQuery: SerializablePreloadedQuery<
-    typeof LandingViewQueryNode,
-    LandingViewQuery
+    typeof JobDetailViewQueryNode,
+    JobDetailViewQuery
   >;
-}) => {
+}) {
   const environment = useRelayEnvironment();
   const queryRef = useSerializablePreloadedQuery(
     environment,
     props.preloadedQuery
   );
 
-  return <LandingView queryRef={queryRef} />;
-};
-
-export default MainViewClientComponent;
+  return <JobDetailView queryRef={queryRef} />;
+}

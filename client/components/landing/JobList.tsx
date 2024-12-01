@@ -1,10 +1,10 @@
 import { usePaginationFragment } from "react-relay";
 import Job from "./Job";
 
-import { Button, ScrollShadow } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { useTransition } from "react";
 import { graphql } from "relay-runtime";
-import { LandingViewQuery$data } from "./__generated__/LandingViewQuery.graphql";
+import { JobListFragment$key } from "./__generated__/JobListFragment.graphql";
 
 const JobListFragment = graphql`
   fragment JobListFragment on Query
@@ -29,7 +29,7 @@ const JobListFragment = graphql`
 `;
 
 type Props = {
-  rootQuery: LandingViewQuery$data;
+  rootQuery: JobListFragment$key;
 };
 
 export default function JobList({ rootQuery }: Props) {
@@ -38,7 +38,7 @@ export default function JobList({ rootQuery }: Props) {
 
   function loadMore() {
     startTransition(() => {
-      loadNext(3);
+      loadNext(5);
     });
   }
 
@@ -53,29 +53,27 @@ export default function JobList({ rootQuery }: Props) {
   }
 
   return (
-    <ScrollShadow className="w-full h-full">
-      <div className="w-full flex flex-col gap-4 absolute pb-6">
-        {data.jobs.edges.map((jobEdge) => {
-          return (
-            <Job
-              job={jobEdge.node}
-              connectionId={data.jobs.__id}
-              key={jobEdge.node.id}
-            />
-          );
-        })}
-        {data.jobs.pageInfo.hasNextPage && (
-          <Button
-            fullWidth
-            variant={"bordered"}
-            onClick={loadMore}
-            disabled={isPending}
-          >
-            load more
-          </Button>
-        )}
-        {isPending && <p>loading</p>}
-      </div>
-    </ScrollShadow>
+    <div className="w-full flex flex-col gap-4 pb-6">
+      {data.jobs.edges.map((jobEdge) => {
+        return (
+          <Job
+            job={jobEdge.node}
+            connectionId={data.jobs.__id}
+            key={jobEdge.node.id}
+          />
+        );
+      })}
+      {data.jobs.pageInfo.hasNextPage && (
+        <Button
+          fullWidth
+          variant={"bordered"}
+          onClick={loadMore}
+          disabled={isPending}
+        >
+          load more
+        </Button>
+      )}
+      {isPending && <p>loading</p>}
+    </div>
   );
 }

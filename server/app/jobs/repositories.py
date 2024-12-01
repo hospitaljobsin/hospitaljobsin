@@ -57,7 +57,7 @@ class JobRepo:
         job.closing_date = closing_date
         return await job.save()
 
-    async def get_many_by_ids(self, job_ids: list[str]) -> list[Job | None]:
+    async def get_many_by_ids(self, job_ids: list[ObjectId]) -> list[Job | None]:
         """Get multiple jobs by IDs."""
         jobs = await Job.find(In(Job.id, job_ids)).to_list()
         job_by_id = {job.id: job for job in jobs}

@@ -1,5 +1,6 @@
 from beanie import PydanticObjectId
 from beanie.operators import In
+from bson import ObjectId
 
 from app.database.paginator import PaginatedResult, Paginator
 
@@ -48,7 +49,7 @@ class CompanyRepo:
         city: str,
         postcode: int,
         country: str,
-        phone: int,
+        phone: str,
         website: str,
         email: str,
     ) -> Company:
@@ -64,7 +65,9 @@ class CompanyRepo:
         company.email = email
         return await company.save()
 
-    async def get_many_by_ids(self, company_ids: list[str]) -> list[Company | None]:
+    async def get_many_by_ids(
+        self, company_ids: list[ObjectId]
+    ) -> list[Company | None]:
         """Get multiple companies by IDs."""
         companies = await Company.find(In(Company.id, company_ids)).to_list()
         company_by_id = {company.id: company for company in companies}
@@ -80,10 +83,10 @@ class CompanyRepo:
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
-    ) -> PaginatedResult[Company, str]:
+    ) -> PaginatedResult[Company, ObjectId]:
         """Get a paginated result of companies."""
 
-        paginator: Paginator[Company, str] = Paginator(
+        paginator: Paginator[Company, ObjectId] = Paginator(
             reverse=True,
             document_cls=Company,
             paginate_by="id",
@@ -93,8 +96,8 @@ class CompanyRepo:
             search_criteria=Company.find(),
             first=first,
             last=last,
-            before=before,
-            after=after,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
         )
 
     async def delete(self, company: Company) -> None:
