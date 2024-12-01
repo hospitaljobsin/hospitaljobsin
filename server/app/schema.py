@@ -1,7 +1,6 @@
 from aioinject.ext.strawberry import AioInjectExtension
 from strawberry import Schema
 from strawberry.extensions import ParserCache, ValidationCache
-from strawberry.extensions.tracing import OpenTelemetryExtension
 from strawberry.relay import GlobalID
 from strawberry.tools import merge_types
 
@@ -30,7 +29,6 @@ schema = Schema(
     query=query,
     # mutation=mutation,
     extensions=[
-        OpenTelemetryExtension,
         AioInjectExtension(
             container=create_container(),
         ),

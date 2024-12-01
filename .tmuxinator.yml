@@ -1,0 +1,16 @@
+name: medical_jobs
+root: ./
+
+windows:
+  - server:
+      layout: even-horizontal
+      panes:
+        - cd server && uv run scripts/run_server.py
+  - client:
+      layout: even-horizontal
+      panes:
+        - cd client && pnpm run dev
+        - cd client && pnpm run relay
+  - docker:
+      panes:
+        - docker compose up

@@ -7,6 +7,7 @@ services:
       - MONGODB_USERNAME=user
       - MONGODB_PASSWORD=pass
       - MONGODB_DATABASE=medical_jobs
+      - MONGODB_ROOT_PASSWORD=rootpass
     volumes:
       - "mongodb_data:/bitnami/mongodb"
 
