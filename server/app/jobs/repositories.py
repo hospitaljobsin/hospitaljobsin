@@ -74,6 +74,7 @@ class JobRepo:
         paginator: Paginator[Job, str] = Paginator(
             reverse=True,
             document_cls=Job,
+            paginate_by="id",
         )
 
         return await paginator.paginate(
