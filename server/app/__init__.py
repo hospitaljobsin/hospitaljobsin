@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.container import create_container
+from app.database import initialize_database
 from app.graphql_app import create_graphql_router
 
 
@@ -37,12 +38,20 @@ def add_middleware(app: FastAPI) -> None:
     )
 
 
+async def app_lifespan(app: FastAPI):
+    async with initialize_database(
+        database_url=str(settings.database_url),
+    ):
+        yield
+
+
 def create_app() -> FastAPI:
     app = FastAPI(
         version="0.0.1",
         debug=settings.debug,
         openapi_url=settings.openapi_url,
         root_path=settings.root_path,
+        lifespan=app_lifespan,
     )
     add_routes(app)
     add_middleware(app)
