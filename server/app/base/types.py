@@ -9,7 +9,7 @@ ModelType = TypeVar("ModelType", bound=Document)
 
 @strawberry.type
 class BaseNodeType(Generic[ModelType], relay.Node):
-    id: relay.NodeID[int]
+    id: relay.NodeID[str]
 
     @classmethod
     def from_orm(cls, model: ModelType) -> Self:
