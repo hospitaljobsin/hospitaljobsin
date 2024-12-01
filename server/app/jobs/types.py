@@ -35,7 +35,7 @@ class JobType(BaseNodeType[Job]):
             location=job.location,
             salary=job.salary,
             closing_date=job.closing_date,
-            company_id=job.company_id,
+            company_id=job.company.ref.id,
         )
 
     @strawberry.field
