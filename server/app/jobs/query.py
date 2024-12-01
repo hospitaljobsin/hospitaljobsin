@@ -1,3 +1,4 @@
+from email.policy import default
 from typing import Annotated
 
 import strawberry
@@ -19,12 +20,19 @@ class JobQuery:
     async def jobs(
         self,
         job_repo: Annotated[JobRepo, Inject],
+        search_term: Annotated[
+            str | None,
+            strawberry.argument(
+                description="Search term",
+            ),
+        ] = None,
         before: relay.GlobalID | None = None,
         after: relay.GlobalID | None = None,
         first: int | None = None,
         last: int | None = None,
     ) -> JobConnectionType:
         paginated_result = await job_repo.get_all(
+            search_term=search_term,
             first=first,
             last=last,
             after=(after.node_id if after else None),

@@ -7,7 +7,7 @@ type Company implements Node {
   city: String!
   postcode: Int!
   country: String!
-  phone: Int!
+  phone: String!
   website: String!
   email: String!
 }
@@ -71,5 +71,12 @@ type Query {
   ): Node
 
   """Get all jobs available."""
-  jobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
+  jobs(
+    """Search term"""
+    searchTerm: String! = ""
+    before: ID = null
+    after: ID = null
+    first: Int = null
+    last: Int = null
+  ): JobConnection!
 }

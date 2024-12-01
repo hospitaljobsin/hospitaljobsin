@@ -1,4 +1,5 @@
 from datetime import date
+from re import search
 
 from beanie import PydanticObjectId, WriteRules
 from beanie.operators import In
@@ -64,6 +65,7 @@ class JobRepo:
 
     async def get_all(
         self,
+        search_term: str | None = None,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
@@ -77,8 +79,13 @@ class JobRepo:
             paginate_by="id",
         )
 
+        search_criteria = Job.find()
+
+        if search_term:
+            search_criteria = Job.find({"$text": {"$search": search_term}})
+
         return await paginator.paginate(
-            search_criteria=Job.find(),
+            search_criteria=search_criteria,
             first=first,
             last=last,
             before=before,
