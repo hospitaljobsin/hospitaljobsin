@@ -1,0 +1,14 @@
+services:
+  mongodb:
+    image: docker.io/bitnami/mongodb:8.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGODB_USERNAME=user
+      - MONGODB_PASSWORD=pass
+      - MONGODB_DATABASE=medical_jobs
+    volumes:
+      - "mongodb_data:/bitnami/mongodb"
+
+volumes:
+  mongodb_data:
