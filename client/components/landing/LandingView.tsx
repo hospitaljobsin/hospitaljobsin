@@ -1,5 +1,6 @@
 import { Suspense, useState } from "react";
 import { graphql, PreloadedQuery, usePreloadedQuery } from "react-relay";
+import { useDebounce } from "use-debounce";
 import { LandingViewQuery as LandingViewQueryType } from "./__generated__/LandingViewQuery.graphql";
 import JobList from "./JobList";
 import JobListController from "./JobListController";
@@ -16,6 +17,8 @@ export default function LandingView(props: {
   const data = usePreloadedQuery(LandingViewQuery, props.queryRef);
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
 
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 1000);
+
   return (
     <Suspense fallback="Loading (client side)...">
       <div className="py-8 w-full h-full max-w-7xl mx-auto flex flex-col gap-8">
@@ -23,7 +26,7 @@ export default function LandingView(props: {
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
         />
-        <JobList rootQuery={data} />
+        <JobList searchTerm={debouncedSearchTerm} rootQuery={data} />
       </div>
     </Suspense>
   );

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8a86d2432b649e7c488029785006cc4c>>
+ * @generated SignedSource<<6718451a0063ffd0d4d1c0d355d4a26a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -221,9 +221,11 @@ return {
       {
         "alias": null,
         "args": (v0/*: any*/),
-        "filters": null,
+        "filters": [
+          "searchTerm"
+        ],
         "handle": "connection",
-        "key": "JobFragment_jobs",
+        "key": "JobListFragment_jobs",
         "kind": "LinkedHandle",
         "name": "jobs"
       }

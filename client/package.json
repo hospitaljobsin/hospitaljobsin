@@ -30,7 +30,8 @@
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-relay": "^18.2.0",
-    "relay-runtime": "^18.2.0"
+    "relay-runtime": "^18.2.0",
+    "use-debounce": "^10.0.4"
   },
   "devDependencies": {
     "@types/node": "^20",

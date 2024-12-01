@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f7f11bbac2e4a952bc3e6d20c2040364>>
+ * @generated SignedSource<<cb80f6322c248d3f091793929167bb42>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -30,7 +30,7 @@ export type JobListFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"JobListFragment">;
 };
 
-import JobPaginationQuery_graphql from './JobPaginationQuery.graphql';
+import JobListPaginationQuery_graphql from './JobListPaginationQuery.graphql';
 
 const node: ReaderFragment = (function(){
 var v0 = [
@@ -47,6 +47,11 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "cursor"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "searchTerm"
     }
   ],
   "kind": "Fragment",
@@ -69,17 +74,23 @@ return {
         "path": (v0/*: any*/)
       },
       "fragmentPathInResult": [],
-      "operation": JobPaginationQuery_graphql
+      "operation": JobListPaginationQuery_graphql
     }
   },
   "name": "JobListFragment",
   "selections": [
     {
       "alias": "jobs",
-      "args": null,
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "searchTerm",
+          "variableName": "searchTerm"
+        }
+      ],
       "concreteType": "JobConnection",
       "kind": "LinkedField",
-      "name": "__JobFragment_jobs_connection",
+      "name": "__JobListFragment_jobs_connection",
       "plural": false,
       "selections": [
         {
@@ -176,6 +187,6 @@ return {
 };
 })();
 
-(node as any).hash = "41ecb23c598d0d292d5eb58967a28ce9";
+(node as any).hash = "873c8d2bbb315dfa8eff90c4ee07ed2f";
 
 export default node;

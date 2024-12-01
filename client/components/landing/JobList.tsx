@@ -2,18 +2,20 @@ import { usePaginationFragment } from "react-relay";
 import Job from "./Job";
 
 import { Button } from "@nextui-org/react";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { graphql } from "relay-runtime";
 import { JobListFragment$key } from "./__generated__/JobListFragment.graphql";
 
 const JobListFragment = graphql`
   fragment JobListFragment on Query
-  @refetchable(queryName: "JobPaginationQuery")
+  @refetchable(queryName: "JobListPaginationQuery")
   @argumentDefinitions(
     cursor: { type: "ID" }
+    searchTerm: { type: "String", defaultValue: null }
     count: { type: "Int", defaultValue: 5 }
   ) {
-    jobs(after: $cursor, first: $count) @connection(key: "JobFragment_jobs") {
+    jobs(after: $cursor, first: $count, searchTerm: $searchTerm)
+      @connection(key: "JobListFragment_jobs", filters: ["searchTerm"]) {
       __id
       edges {
         node {
@@ -30,16 +32,29 @@ const JobListFragment = graphql`
 
 type Props = {
   rootQuery: JobListFragment$key;
+  searchTerm: string | null;
 };
 
-export default function JobList({ rootQuery }: Props) {
+export default function JobList({ rootQuery, searchTerm }: Props) {
   const [isPending, startTransition] = useTransition();
-  const { data, loadNext } = usePaginationFragment(JobListFragment, rootQuery);
+  const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment(
+    JobListFragment,
+    rootQuery
+  );
+
+  useEffect(() => {
+    startTransition(() => {
+      refetch(
+        { first: 5, searchTerm: searchTerm },
+        {
+          fetchPolicy: "store-or-network",
+        }
+      );
+    });
+  }, [searchTerm]);
 
   function loadMore() {
-    startTransition(() => {
-      loadNext(5);
-    });
+    loadNext(5);
   }
 
   if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
@@ -68,12 +83,12 @@ export default function JobList({ rootQuery }: Props) {
           fullWidth
           variant={"bordered"}
           onClick={loadMore}
-          disabled={isPending}
+          disabled={isLoadingNext || isPending}
         >
           load more
         </Button>
       )}
-      {isPending && <p>loading</p>}
+      {isLoadingNext && <p>loading</p>}
     </div>
   );
 }

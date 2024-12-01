@@ -73,7 +73,7 @@ type Query {
   """Get all jobs available."""
   jobs(
     """Search term"""
-    searchTerm: String! = ""
+    searchTerm: String = null
     before: ID = null
     after: ID = null
     first: Int = null
