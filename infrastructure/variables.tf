@@ -7,7 +7,7 @@ variable "app_name" {
 variable "resource_prefix" {
   type        = string
   description = "The prefix to use for all resources."
-  default     = "medicaljobs"
+  default     = "mj"
 }
 
 
