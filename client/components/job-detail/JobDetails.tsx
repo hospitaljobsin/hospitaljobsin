@@ -1,5 +1,6 @@
 import { dateFormat } from "@/lib/intl";
 import {
+  Avatar,
   Button,
   Card,
   CardBody,
@@ -91,25 +92,34 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
           </CardHeader>
           <Divider />
           <CardBody>
-            <p className="text-default-500">{data.company?.description}</p>
-            <ul className="text-default-500 space-y-2 mt-2">
-              <li>
-                <strong>Website:</strong>{" "}
-                <Link
-                  isExternal
-                  href={data.company?.website || "#"}
-                  className="text-primary"
-                >
-                  {data.company?.website || "N/A"}
-                </Link>
-              </li>
-              <li>
-                <strong>Email:</strong> {data.company?.email}
-              </li>
-              <li>
-                <strong>Phone:</strong> {data.company?.phone}
-              </li>
-            </ul>
+            <div className="flex gap-6 items-center">
+              <Avatar
+                name={data.company?.name}
+                size="lg"
+                className="h-24 w-24"
+              />
+              <div>
+                <p className="text-default-500">{data.company?.description}</p>
+                <ul className="text-default-500 space-y-2 mt-2">
+                  <li>
+                    <strong>Website:</strong>{" "}
+                    <Link
+                      isExternal
+                      href={data.company?.website || "#"}
+                      className="text-primary"
+                    >
+                      {data.company?.website || "N/A"}
+                    </Link>
+                  </li>
+                  <li>
+                    <strong>Email:</strong> {data.company?.email}
+                  </li>
+                  <li>
+                    <strong>Phone:</strong> {data.company?.phone}
+                  </li>
+                </ul>
+              </div>
+            </div>
           </CardBody>
         </Card>
       </div>

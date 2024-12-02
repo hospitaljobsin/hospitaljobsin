@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { APP_NAME } from "@/lib/relay/constants";
+import { APP_NAME } from "@/lib/constants";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";

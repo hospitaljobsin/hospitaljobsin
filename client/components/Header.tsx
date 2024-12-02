@@ -1,4 +1,4 @@
-import { APP_NAME } from "@/lib/relay/constants";
+import { APP_NAME } from "@/lib/constants";
 import {
   Button,
   Link,
@@ -30,11 +30,11 @@ export default function Header() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
+          <Button color="primary">Sign in</Button>
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
+          <Button color="primary" variant="flat">
+            For recruiters
           </Button>
         </NavbarItem>
       </NavbarContent>

@@ -31,12 +31,20 @@ resource "aws_cognito_user_pool" "this" {
     required            = true
   }
 
-  # schema {
-  #   attribute_data_type = "String"
-  #   mutable             = true
-  #   name                = "email"
-  #   required            = true
-  # }
+  schema {
+    attribute_data_type = "Boolean"
+    mutable             = true
+    name                = "hasCompletedOnboarding"
+    required            = false
+  }
+
+  schema {
+    attribute_data_type = "String"
+    mutable             = true
+    name                = "email"
+    required            = true
+  }
+
   # schema {
   #   attribute_data_type = "Number"
   #   mutable             = true

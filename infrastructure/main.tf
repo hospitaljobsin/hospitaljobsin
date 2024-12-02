@@ -13,13 +13,13 @@ terraform {
     }
   }
 
-#   backend "remote" {
-#     organization = "aryaniyaps"
+  backend "remote" {
+    organization = "HospitalJobsIN"
 
-#     workspaces {
-#       name = "medical-jobs"
-#     }
-#   }
+    workspaces {
+      name = "medical-job-board"
+    }
+  }
 }
 
 

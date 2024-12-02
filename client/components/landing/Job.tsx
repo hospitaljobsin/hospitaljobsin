@@ -44,7 +44,7 @@ export default function Job({ job }: Props) {
         <CardHeader>
           <div className="flex w-full justify-between gap-4 items-center">
             <div className="flex items-center gap-4">
-              <Avatar name={data.company?.name} />
+              <Avatar name={data.company?.name} size="lg" />
               <div className="flex flex-col gap-2 items-start">
                 <h4 className="text-xl font-bold">{data.title}</h4>
                 <Tooltip content={data.company?.description} placement="bottom">
