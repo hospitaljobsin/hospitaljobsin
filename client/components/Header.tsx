@@ -12,16 +12,11 @@ export default function Header() {
   return (
     <Navbar maxWidth="xl" isBordered>
       <NavbarBrand>
-        <Link href="/">
+        <Link href="/" color="foreground">
           <p className="font-bold text-inherit">{APP_NAME}</p>
         </Link>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Find A Job
-          </Link>
-        </NavbarItem>
         <NavbarItem>
           <Link href="#" color="foreground">
             Job Alerts

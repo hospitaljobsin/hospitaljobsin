@@ -1,7 +1,6 @@
-import JobDetails from "@/components/job-detail/JobDetails";
-import { Suspense } from "react";
 import { graphql, PreloadedQuery, usePreloadedQuery } from "react-relay";
 import { JobDetailViewQuery as JobDetailViewQueryType } from "./__generated__/JobDetailViewQuery.graphql";
+import JobDetails from "./JobDetails";
 
 const JobDetailViewQuery = graphql`
   query JobDetailViewQuery($jobId: ID!) {
@@ -24,10 +23,8 @@ export default function JobDetailView(props: {
   }
 
   return (
-    <Suspense fallback="Loading (client side)...">
-      <div className="flex flex-col w-full h-full items-center gap-6 py-8">
-        <JobDetails job={data.node} />
-      </div>
-    </Suspense>
+    <div className="py-8 w-full h-full max-w-7xl mx-auto flex flex-col items-center gap-6">
+      <JobDetails job={data.node} />
+    </div>
   );
 }

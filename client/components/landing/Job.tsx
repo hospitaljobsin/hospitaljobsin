@@ -1,5 +1,12 @@
-import { dtf } from "@/lib/intl";
-import { Card, CardFooter, CardHeader } from "@nextui-org/react";
+import { dateFormat } from "@/lib/intl";
+import {
+  Avatar,
+  Card,
+  CardFooter,
+  CardHeader,
+  Tooltip,
+} from "@nextui-org/react";
+import { Calendar, MapPin } from "lucide-react";
 import Link from "next/link";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -9,17 +16,14 @@ export const JobFragment = graphql`
   fragment JobFragment on Job {
     id
     title
-    description
     location
     salary
     closingDate
+    createdAt
     company {
       id
       name
       description
-      address
-      city
-      postcode
     }
   }
 `;
@@ -32,23 +36,38 @@ type Props = {
 export default function Job({ job }: Props) {
   const data = useFragment(JobFragment, job);
 
+  const formattedDate = dateFormat.format(new Date(data.createdAt));
+
   return (
     <Link href={`/jobs/${encodeURIComponent(data.id)}`} className="group">
-      <Card>
+      <Card isHoverable>
         <CardHeader>
-          <div className="flex flex-col gap-4">
-            <p className="break-words">{data.title}</p>
-            <p>{data.description}</p>
+          <div className="flex w-full justify-between gap-4 items-center">
+            <div className="flex items-center gap-4">
+              <Avatar name={data.company?.name} />
+              <div className="flex flex-col gap-2 items-start">
+                <h4 className="text-xl font-bold">{data.title}</h4>
+                <Tooltip content={data.company?.description} placement="bottom">
+                  <p className="text-md font-normal">{data.company?.name}</p>
+                </Tooltip>
+              </div>
+            </div>
+            <p className="text-xl font-medium">
+              {data.salary ? `${data.salary}` : "Not disclosed"}
+            </p>
           </div>
         </CardHeader>
-        <CardFooter className="flex justify-between">
-          <div className="flex items-center gap-2">
-            <p className="text-xs text-muted-foreground">{data.location}</p>
-            <p className="text-xs text-muted-foreground">{data.salary}</p>
+        <CardFooter className="flex justify-between items-center gap-4">
+          <p className="text-foreground-500">{formattedDate}</p>
+          <div className="flex gap-4 items-center text-foreground-600">
+            <div className="flex items-center gap-2">
+              <MapPin size={16} /> {data.location}
+            </div>
+            <div className="flex items-center gap-2">
+              <Calendar size={16} /> Closing on{" "}
+              {dateFormat.format(new Date(data.closingDate))}
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground">
-            closes at {dtf.format(new Date(data.closingDate))}
-          </p>
         </CardFooter>
       </Card>
     </Link>

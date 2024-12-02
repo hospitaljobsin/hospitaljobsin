@@ -7,7 +7,7 @@ interface JobListControllerProps {
 
 export default function JobListController(props: JobListControllerProps) {
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full">
+    <div className="flex items-center justify-center w-full h-full gap-4">
       <Input
         isClearable
         variant="bordered"
@@ -15,6 +15,18 @@ export default function JobListController(props: JobListControllerProps) {
         value={props.searchTerm || ""}
         onValueChange={(value) => props.setSearchTerm(value)}
         onClear={() => props.setSearchTerm(null)}
+        fullWidth
+      />
+      <Input
+        isClearable
+        variant="bordered"
+        placeholder="Enter your location"
+        fullWidth
+      />
+      <Input
+        isClearable
+        variant="bordered"
+        placeholder="Within 5km"
         fullWidth
       />
     </div>

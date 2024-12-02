@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7a05b6c1702e5f2eaed41628d92fd6a8>>
+ * @generated SignedSource<<003a64c61d112dc42a102ee92f8e89bc>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -64,13 +64,6 @@ v3 = {
   "args": null,
   "kind": "ScalarField",
   "name": "id",
-  "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "description",
   "storageKey": null
 };
 return {
@@ -139,7 +132,6 @@ return {
                     "name": "title",
                     "storageKey": null
                   },
-                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -164,6 +156,13 @@ return {
                   {
                     "alias": null,
                     "args": null,
+                    "kind": "ScalarField",
+                    "name": "createdAt",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
                     "concreteType": "Company",
                     "kind": "LinkedField",
                     "name": "company",
@@ -177,26 +176,11 @@ return {
                         "name": "name",
                         "storageKey": null
                       },
-                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "address",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "city",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "postcode",
+                        "name": "description",
                         "storageKey": null
                       }
                     ],
@@ -276,12 +260,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2f60e7e69e0b7cb6d3811fe8504c6ab3",
+    "cacheID": "8d77667c9baa3ea28f2b69e4b1ab5cb3",
     "id": null,
     "metadata": {},
     "name": "JobListPaginationQuery",
     "operationKind": "query",
-    "text": "query JobListPaginationQuery(\n  $count: Int = 5\n  $cursor: ID\n  $searchTerm: String = null\n) {\n  ...JobListFragment_1YZSDV\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  description\n  location\n  salary\n  closingDate\n  company {\n    id\n    name\n    description\n    address\n    city\n    postcode\n  }\n}\n\nfragment JobListFragment_1YZSDV on Query {\n  jobs(after: $cursor, first: $count, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query JobListPaginationQuery(\n  $count: Int = 5\n  $cursor: ID\n  $searchTerm: String = null\n) {\n  ...JobListFragment_1YZSDV\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  location\n  salary\n  closingDate\n  createdAt\n  company {\n    id\n    name\n    description\n  }\n}\n\nfragment JobListFragment_1YZSDV on Query {\n  jobs(after: $cursor, first: $count, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();

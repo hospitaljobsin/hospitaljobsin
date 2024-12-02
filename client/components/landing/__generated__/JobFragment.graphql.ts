@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fde02c070342ebf583a79425ea1df095>>
+ * @generated SignedSource<<8d28ace5a8ef68976a97b54e41ba4006>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,14 +13,11 @@ import { FragmentRefs } from "relay-runtime";
 export type JobFragment$data = {
   readonly closingDate: any;
   readonly company: {
-    readonly address: string;
-    readonly city: string;
     readonly description: string;
     readonly id: string;
     readonly name: string;
-    readonly postcode: number;
   } | null | undefined;
-  readonly description: string;
+  readonly createdAt: any;
   readonly id: string;
   readonly location: string;
   readonly salary: string;
@@ -39,13 +36,6 @@ var v0 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-},
-v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "description",
-  "storageKey": null
 };
 return {
   "argumentDefinitions": [],
@@ -61,7 +51,6 @@ return {
       "name": "title",
       "storageKey": null
     },
-    (v1/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -86,6 +75,13 @@ return {
     {
       "alias": null,
       "args": null,
+      "kind": "ScalarField",
+      "name": "createdAt",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
       "concreteType": "Company",
       "kind": "LinkedField",
       "name": "company",
@@ -99,26 +95,11 @@ return {
           "name": "name",
           "storageKey": null
         },
-        (v1/*: any*/),
         {
           "alias": null,
           "args": null,
           "kind": "ScalarField",
-          "name": "address",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "city",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "postcode",
+          "name": "description",
           "storageKey": null
         }
       ],
@@ -130,6 +111,6 @@ return {
 };
 })();
 
-(node as any).hash = "ba9dacb9574918d0b17af0642a8d8ccd";
+(node as any).hash = "15acccadd121a4930d45955cfb1ce0a0";
 
 export default node;

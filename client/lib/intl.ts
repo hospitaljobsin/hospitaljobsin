@@ -1,3 +1,3 @@
-export const dtf = new Intl.DateTimeFormat("en-US", {
-  timeStyle: "medium",
+export const dateFormat = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "long",
 });

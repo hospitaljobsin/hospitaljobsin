@@ -15,6 +15,9 @@ type Company implements Node {
 """Date (isoformat)"""
 scalar Date
 
+"""Date with time (isoformat)"""
+scalar DateTime
+
 type Job implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -23,6 +26,7 @@ type Job implements Node {
   location: String!
   salary: String!
   closingDate: Date!
+  createdAt: DateTime!
   company: Company
 }
 

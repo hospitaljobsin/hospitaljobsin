@@ -5,6 +5,7 @@ import { Button } from "@nextui-org/react";
 import { useEffect, useTransition } from "react";
 import { graphql } from "relay-runtime";
 import { JobListFragment$key } from "./__generated__/JobListFragment.graphql";
+import JobListSkeleton from "./JobListSkeleton";
 
 const JobListFragment = graphql`
   fragment JobListFragment on Query
@@ -88,7 +89,7 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
           load more
         </Button>
       )}
-      {isLoadingNext && <p>loading</p>}
+      {isLoadingNext && <JobListSkeleton />}
     </div>
   );
 }
