@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from datetime import date
+from datetime import date, datetime
 from typing import Annotated, Self
 
 import strawberry
@@ -24,6 +24,8 @@ class JobType(BaseNodeType[Job]):
     salary: str
     closing_date: date
 
+    created_at: datetime
+
     company_id: strawberry.Private[str]
 
     @classmethod
@@ -31,6 +33,7 @@ class JobType(BaseNodeType[Job]):
         """Construct a node from an ORM instance."""
         return cls(
             id=str(job.id),
+            created_at=job.id.generation_time,
             title=job.title,
             description=job.description,
             location=job.location,
