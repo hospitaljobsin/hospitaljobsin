@@ -34,7 +34,7 @@ resource "aws_cognito_user_pool" "this" {
   schema {
     attribute_data_type = "Boolean"
     mutable             = true
-    name                = "hasCompletedOnboarding"
+    name                = "hasOnboarded"
     required            = false
   }
 
