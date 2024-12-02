@@ -23,8 +23,10 @@
     ]
   },
   "dependencies": {
+    "@aws-amplify/adapter-nextjs": "^1.2.30",
     "@nextui-org/react": "^2.4.8",
     "@tailwindcss/typography": "^0.5.15",
+    "aws-amplify": "^6.10.0",
     "framer-motion": "^11.12.0",
     "lucide-react": "^0.462.0",
     "next": "15.0.3",
