@@ -4,7 +4,7 @@ import { getCurrentEnvironment } from "@/lib/relay/environment";
 import { NextUIProvider } from "@nextui-org/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { RelayEnvironmentProvider } from "react-relay";
-import ConfigureAmplifyClientSide from "./amplify-cognito-config";
+import ConfigureAmplifyClientSide from "./config-amplify-client-side";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const environment = getCurrentEnvironment();
