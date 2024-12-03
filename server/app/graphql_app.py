@@ -25,8 +25,6 @@ async def get_context(
         ),
     ],
 ) -> Context:
-    if current_user_id is not None:
-        print(f"Current user ID: {current_user_id}")
     return Context(
         request=request,
         loaders=create_dataloaders(),

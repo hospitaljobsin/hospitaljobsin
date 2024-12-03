@@ -13,7 +13,9 @@ from app.config import settings
 # Retrieve JWKS keys
 @lru_cache
 def jwks_client() -> PyJWKClient:
-    return PyJWKClient(f"{settings.cognito_issuer_url}/.well-known/jwks.json")
+    return PyJWKClient(
+        uri=f"{settings.cognito_issuer_url}/.well-known/jwks.json",
+    )
 
 
 # Decode and validate a JWT token
@@ -94,6 +96,5 @@ def current_user_id(
     if decoded_token is None:
         return None
 
-    print("decoded token", decoded_token)
     # Assume "sub" contains the user ID. This may vary based on your Cognito setup.
     return decoded_token.get("sub")
