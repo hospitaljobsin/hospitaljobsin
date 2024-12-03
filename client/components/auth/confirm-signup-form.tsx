@@ -3,9 +3,15 @@
 import { handleSignUpStep } from "@/lib/cognitoActions";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Input,
+} from "@nextui-org/react";
 import { confirmSignUp, resendSignUpCode } from "aws-amplify/auth";
-import { ArrowRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -28,7 +34,7 @@ export default function ConfirmSignUpForm() {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<z.infer<typeof confirmSignUpSchema>>({
     resolver: zodResolver(confirmSignUpSchema),
     mode: "onChange",
@@ -66,60 +72,67 @@ export default function ConfirmSignUpForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-      <div className="flex-1 rounded-lg bg-gray-800 px-6 pb-4 pt-8">
-        <div className="w-full flex flex-col gap-6">
-          <h1 className={`text-center text-2xl`}>
-            Please confirm your account.
-          </h1>
-          <Input
-            id="email"
-            label="Email"
-            placeholder="Enter your email address"
-            type="email"
-            {...register("email")}
-            errorMessage={errors.email?.message}
-            isInvalid={!!errors.email}
-          />
-          <Input
-            id="code"
-            label="Code"
-            placeholder="Enter code"
-            type="text"
-            {...register("code")}
-            errorMessage={errors.code?.message}
-            isInvalid={!!errors.code}
-          />
-          <Button
-            fullWidth
-            disabled={!email || !code || !isValid}
-            type="submit"
-          >
-            Confirm
-          </Button>
+    <Card>
+      <CardHeader>
+        <h1 className={`text-center text-2xl w-full`}>
+          Please confirm your account.
+        </h1>
+      </CardHeader>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+        <div className="flex-1 rounded-lg px-6 pb-4 pt-8">
+          <div className="w-full flex flex-col gap-6">
+            <Input
+              id="email"
+              label="Email"
+              placeholder="Enter your email address"
+              type="email"
+              {...register("email")}
+              errorMessage={errors.email?.message}
+              isInvalid={!!errors.email}
+            />
+            <Input
+              id="code"
+              label="Code"
+              placeholder="Enter code"
+              type="text"
+              {...register("code")}
+              errorMessage={errors.code?.message}
+              isInvalid={!!errors.code}
+            />
+            <Button
+              fullWidth
+              disabled={!isValid}
+              isLoading={isSubmitting}
+              type="submit"
+            >
+              Confirm
+            </Button>
+          </div>
+
+          {errorMessage && (
+            <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
+          )}
         </div>
-
-        {errorMessage && (
-          <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
-        )}
-
+      </form>
+      <Divider />
+      <CardFooter>
         <Button
-          className="mt-4 w-full"
+          fullWidth
           disabled={!email || !!errors.email}
+          isLoading={false} // TODO: add loading state here as well
           onClick={() => handleSendEmailVerificationCode({ email })}
           type="button"
+          variant="light"
         >
-          Resend Verification Code{" "}
-          <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-800" />
+          Resend Verification Code
         </Button>
-
         {resendErrorMessage && (
           <p className="mt-2 text-sm text-red-500">{resendErrorMessage}</p>
         )}
         {resendMessage && (
           <p className="mt-2 text-sm text-green-500">{resendMessage}</p>
         )}
-      </div>
-    </form>
+      </CardFooter>
+    </Card>
   );
 }

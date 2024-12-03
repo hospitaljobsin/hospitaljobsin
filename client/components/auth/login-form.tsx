@@ -2,12 +2,18 @@
 
 import { getErrorMessage } from "@/utils/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Input,
+} from "@nextui-org/react";
 import { resendSignUpCode, signIn } from "aws-amplify/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useFormStatus } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -22,7 +28,7 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
   });
@@ -51,41 +57,65 @@ export default function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-      <div className="flex-1 rounded-lg bg-gray-800 px-6 pb-4 pt-8">
-        <div className="w-full flex flex-col gap-6">
-          <h1 className={`text-2xl text-center`}>Log in to continue.</h1>
-          <Input
-            id="email"
-            label="Email"
-            placeholder="Enter your email address"
-            type="email"
-            {...register("email")}
-            errorMessage={errors.email?.message}
-            isInvalid={!!errors.email}
-          />
-          <Input
-            id="password"
-            label="Password"
-            placeholder="Enter password"
-            type="password"
-            {...register("password")}
-            errorMessage={errors.password?.message}
-            isInvalid={!!errors.password}
-          />
+    <Card>
+      <CardHeader>
+        <h1 className={`text-2xl text-center w-full`}>Log in to continue.</h1>
+      </CardHeader>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+        <div className="flex-1 rounded-lg px-6 pb-4 pt-8">
+          <div className="w-full flex flex-col gap-6">
+            <Input
+              id="email"
+              label="Email"
+              placeholder="Enter your email address"
+              type="email"
+              {...register("email")}
+              errorMessage={errors.email?.message}
+              isInvalid={!!errors.email}
+            />
+            <Input
+              id="password"
+              label="Password"
+              placeholder="Enter password"
+              type="password"
+              {...register("password")}
+              errorMessage={errors.password?.message}
+              isInvalid={!!errors.password}
+              description={
+                <div className="w-full flex justify-start">
+                  <Link
+                    href="/auth/reset-password/submit"
+                    className="mt-2 cursor-pointer text-blue-500"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+              }
+            />
 
-          <LoginButton />
-        </div>
+            <Button fullWidth isLoading={isSubmitting} type="submit">
+              Log in
+            </Button>
+          </div>
 
-        <div className="flex justify-center">
-          <Link
-            href="/auth/reset-password/submit"
-            className="mt-2 cursor-pointer text-blue-500"
-          >
-            Forgot password? Click here.
-          </Link>
+          <div className="flex h-8 items-end space-x-1">
+            <div
+              className="flex h-8 items-end space-x-1"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {errorMessage && (
+                <>
+                  <p className="text-sm text-red-500">{errorMessage}</p>
+                </>
+              )}
+            </div>
+          </div>
         </div>
-        <div className="flex justify-center">
+      </form>
+      <Divider />
+      <CardFooter>
+        <div className="flex justify-center w-full">
           <Link
             href="/auth/signup"
             className="mt-2 cursor-pointer text-blue-500"
@@ -93,30 +123,7 @@ export default function LoginForm() {
             {"Don't have an account? "} Sign up.
           </Link>
         </div>
-        <div className="flex h-8 items-end space-x-1">
-          <div
-            className="flex h-8 items-end space-x-1"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {errorMessage && (
-              <>
-                <p className="text-sm text-red-500">{errorMessage}</p>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </form>
-  );
-}
-
-function LoginButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button fullWidth disabled={pending} type="submit">
-      Log in
-    </Button>
+      </CardFooter>
+    </Card>
   );
 }
