@@ -29,6 +29,7 @@ export default function ConfirmSignUpForm() {
   });
 
   async function onSubmit(values: z.infer<typeof confirmSignUpSchema>) {
+    console.log("SIGNING UP...");
     let nextStep;
     try {
       const { isSignUpComplete, nextStep: step } = await confirmSignUp({

@@ -2,7 +2,6 @@ import { getErrorMessage } from "@/utils/get-error-message";
 import {
   autoSignIn,
   confirmUserAttribute,
-  resendSignUpCode,
   signOut,
   SignUpOutput,
   updatePassword,
@@ -10,59 +9,35 @@ import {
   type UpdateUserAttributeOutput,
 } from "aws-amplify/auth";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { redirect } from "next/navigation";
 
 export async function handleSignUpStep(
   step: SignUpOutput["nextStep"],
   router: AppRouterInstance
 ) {
-  console.log("Handling sign-up step", step);
   switch (step.signUpStep) {
     case "CONFIRM_SIGN_UP":
       // Redirect end-user to confirm-sign up screen.
       router.replace("/auth/confirm-signup");
+      break;
     case "COMPLETE_AUTO_SIGN_IN":
       const codeDeliveryDetails = step.codeDeliveryDetails;
       if (codeDeliveryDetails) {
         console.log("code delivery details", codeDeliveryDetails);
         // Redirect user to confirm-sign-up with link screen.
       }
-      const signInOutput = await autoSignIn();
-      console.log("User signed in", signInOutput);
-    // handle sign-in steps
+      await autoSignIn();
+      router.replace("/");
+      break;
   }
 }
 
-export async function handleSendEmailVerificationCode(
-  prevState: { message: string; errorMessage: string },
-  formData: FormData
-) {
-  let currentState;
-  try {
-    await resendSignUpCode({
-      username: String(formData.get("email")),
-    });
-    currentState = {
-      ...prevState,
-      message: "Code sent successfully",
-    };
-  } catch (error) {
-    currentState = {
-      ...prevState,
-      errorMessage: getErrorMessage(error),
-    };
-  }
-
-  return currentState;
-}
-
-export async function handleSignOut() {
+export async function handleSignOut(router: AppRouterInstance) {
   try {
     await signOut();
   } catch (error) {
     console.error(getErrorMessage(error));
   }
-  redirect("/auth/login");
+  router.replace("/auth/login");
 }
 
 export async function handleUpdateUserAttribute(

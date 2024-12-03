@@ -10,7 +10,7 @@ import { useFormStatus } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const confirmReserPasswordSchema = z.object({
+const confirmResetPasswordSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   code: z.string().min(6),
@@ -23,11 +23,11 @@ export default function ConfirmResetPasswordForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<z.infer<typeof confirmReserPasswordSchema>>({
-    resolver: zodResolver(confirmReserPasswordSchema),
+  } = useForm<z.infer<typeof confirmResetPasswordSchema>>({
+    resolver: zodResolver(confirmResetPasswordSchema),
   });
 
-  async function onSubmit(values: z.infer<typeof confirmReserPasswordSchema>) {
+  async function onSubmit(values: z.infer<typeof confirmResetPasswordSchema>) {
     try {
       await confirmResetPassword({
         username: values.email,

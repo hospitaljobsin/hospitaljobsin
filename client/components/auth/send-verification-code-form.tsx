@@ -1,16 +1,43 @@
 "use client";
 
-import { handleSendEmailVerificationCode } from "@/lib/cognitoActions";
+import { getErrorMessage } from "@/utils/get-error-message";
 import { Button } from "@nextui-org/react";
+import { resendSignUpCode } from "aws-amplify/auth";
 import { ArrowRightIcon } from "lucide-react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
+import { z } from "zod";
+
+const sendVerificationCodeSchema = z.object({
+  email: z.string().email(),
+});
 
 export default function SendVerificationCode() {
   const [response, dispatch] = useActionState(handleSendEmailVerificationCode, {
     message: "",
     errorMessage: "",
   });
+  async function handleSendEmailVerificationCode(
+    values: z.infer<typeof sendVerificationCodeSchema>
+  ) {
+    let currentState;
+    try {
+      await resendSignUpCode({
+        username: values.email,
+      });
+      currentState = {
+        ...prevState,
+        message: "Code sent successfully",
+      };
+    } catch (error) {
+      currentState = {
+        ...prevState,
+        errorMessage: getErrorMessage(error),
+      };
+    }
+
+    return currentState;
+  }
   const { pending } = useFormStatus();
   return (
     <>
