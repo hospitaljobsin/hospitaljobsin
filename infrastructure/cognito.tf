@@ -68,7 +68,7 @@ resource "aws_cognito_user_pool_client" "client" {
   generate_secret         = false
   enable_token_revocation = true
 
-  explicit_auth_flows = ["ALLOW_USER_SRP_AUTH"]
+  explicit_auth_flows = ["ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
 
   callback_urls                        = ["http://localhost:3000"]
   logout_urls                          = ["http://localhost:3000"]
