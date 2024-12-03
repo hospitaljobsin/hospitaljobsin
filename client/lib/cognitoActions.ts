@@ -1,41 +1,36 @@
 import { getErrorMessage } from "@/utils/get-error-message";
 import {
   autoSignIn,
-  confirmResetPassword,
-  confirmSignUp,
   confirmUserAttribute,
   resendSignUpCode,
-  resetPassword,
-  signIn,
   signOut,
-  signUp,
+  SignUpOutput,
   updatePassword,
   updateUserAttribute,
   type UpdateUserAttributeOutput,
 } from "aws-amplify/auth";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { redirect } from "next/navigation";
 
-export async function handleSignUp(
-  prevState: string | undefined,
-  formData: FormData
+export async function handleSignUpStep(
+  step: SignUpOutput["nextStep"],
+  router: AppRouterInstance
 ) {
-  try {
-    const { isSignUpComplete, userId, nextStep } = await signUp({
-      username: String(formData.get("email")),
-      password: String(formData.get("password")),
-      options: {
-        userAttributes: {
-          email: String(formData.get("email")),
-          name: String(formData.get("name")),
-        },
-        // optional
-        autoSignIn: true,
-      },
-    });
-  } catch (error) {
-    return getErrorMessage(error);
+  console.log("Handling sign-up step", step);
+  switch (step.signUpStep) {
+    case "CONFIRM_SIGN_UP":
+      // Redirect end-user to confirm-sign up screen.
+      router.replace("/auth/confirm-signup");
+    case "COMPLETE_AUTO_SIGN_IN":
+      const codeDeliveryDetails = step.codeDeliveryDetails;
+      if (codeDeliveryDetails) {
+        console.log("code delivery details", codeDeliveryDetails);
+        // Redirect user to confirm-sign-up with link screen.
+      }
+      const signInOutput = await autoSignIn();
+      console.log("User signed in", signInOutput);
+    // handle sign-in steps
   }
-  redirect("/auth/confirm-signup");
 }
 
 export async function handleSendEmailVerificationCode(
@@ -61,50 +56,11 @@ export async function handleSendEmailVerificationCode(
   return currentState;
 }
 
-export async function handleConfirmSignUp(
-  prevState: string | undefined,
-  formData: FormData
-) {
-  try {
-    const { isSignUpComplete, nextStep } = await confirmSignUp({
-      username: String(formData.get("email")),
-      confirmationCode: String(formData.get("code")),
-    });
-    await autoSignIn();
-  } catch (error) {
-    return getErrorMessage(error);
-  }
-  redirect("/auth/login");
-}
-
-export async function handleSignIn(
-  prevState: string | undefined,
-  formData: FormData
-) {
-  let redirectLink = "/dashboard";
-  try {
-    const { isSignedIn, nextStep } = await signIn({
-      username: String(formData.get("email")),
-      password: String(formData.get("password")),
-    });
-    if (nextStep.signInStep === "CONFIRM_SIGN_UP") {
-      await resendSignUpCode({
-        username: String(formData.get("email")),
-      });
-      redirectLink = "/auth/confirm-signup";
-    }
-  } catch (error) {
-    return getErrorMessage(error);
-  }
-
-  redirect(redirectLink);
-}
-
 export async function handleSignOut() {
   try {
     await signOut();
   } catch (error) {
-    console.log(getErrorMessage(error));
+    console.error(getErrorMessage(error));
   }
   redirect("/auth/login");
 }
@@ -201,32 +157,4 @@ export async function handleConfirmUserAttribute(
   }
 
   return "success";
-}
-
-export async function handleResetPassword(
-  prevState: string | undefined,
-  formData: FormData
-) {
-  try {
-    await resetPassword({ username: String(formData.get("email")) });
-  } catch (error) {
-    return getErrorMessage(error);
-  }
-  redirect("/auth/reset-password/confirm");
-}
-
-export async function handleConfirmResetPassword(
-  prevState: string | undefined,
-  formData: FormData
-) {
-  try {
-    await confirmResetPassword({
-      username: String(formData.get("email")),
-      confirmationCode: String(formData.get("code")),
-      newPassword: String(formData.get("password")),
-    });
-  } catch (error) {
-    return getErrorMessage(error);
-  }
-  redirect("/auth/login");
 }

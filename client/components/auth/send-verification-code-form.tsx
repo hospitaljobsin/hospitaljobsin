@@ -14,7 +14,12 @@ export default function SendVerificationCode() {
   const { pending } = useFormStatus();
   return (
     <>
-      <Button className="mt-4 w-full" disabled={pending} formAction={dispatch}>
+      <Button
+        className="mt-4 w-full"
+        disabled={pending}
+        formAction={dispatch}
+        type="submit"
+      >
         Resend Verification Code{" "}
         <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-800" />
       </Button>

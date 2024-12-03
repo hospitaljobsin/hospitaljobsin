@@ -23,20 +23,23 @@
     ]
   },
   "dependencies": {
-    "@aws-amplify/adapter-nextjs": "^1.2.30",
+    "@aws-amplify/adapter-nextjs": "1.2.29-next-15.716cf28.0",
+    "@hookform/resolvers": "^3.9.1",
     "@nextui-org/react": "^2.4.8",
     "@tailwindcss/typography": "^0.5.15",
-    "aws-amplify": "^6.10.0",
+    "aws-amplify": "6.8.3-next-15.716cf28.0",
     "framer-motion": "^11.12.0",
     "lucide-react": "^0.462.0",
     "next": "15.0.3",
     "next-themes": "^0.4.3",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
+    "react-hook-form": "^7.53.2",
     "react-markdown": "^9.0.1",
     "react-relay": "^18.2.0",
     "relay-runtime": "^18.2.0",
-    "use-debounce": "^10.0.4"
+    "use-debounce": "^10.0.4",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",

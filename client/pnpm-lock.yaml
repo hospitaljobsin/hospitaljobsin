@@ -9,8 +9,11 @@ importers:
   .:
     dependencies:
       '@aws-amplify/adapter-nextjs':
-        specifier: ^1.2.30
-        version: 1.2.30(aws-amplify@6.10.0)(next@15.0.3(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106))
+        specifier: 1.2.29-next-15.716cf28.0
+        version: 1.2.29-next-15.716cf28.0(aws-amplify@6.8.3-next-15.716cf28.0)(next@15.0.3(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106))
+      '@hookform/resolvers':
+        specifier: ^3.9.1
+        version: 3.9.1(react-hook-form@7.53.2(react@19.0.0-rc-66855b96-20241106))
       '@nextui-org/react':
         specifier: ^2.4.8
         version: 2.4.8(@types/react@18.3.12)(framer-motion@11.12.0(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106))(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106)(tailwindcss@3.4.15)
@@ -18,8 +21,8 @@ importers:
         specifier: ^0.5.15
         version: 0.5.15(tailwindcss@3.4.15)
       aws-amplify:
-        specifier: ^6.10.0
-        version: 6.10.0
+        specifier: 6.8.3-next-15.716cf28.0
+        version: 6.8.3-next-15.716cf28.0
       framer-motion:
         specifier: ^11.12.0
         version: 11.12.0(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106)
@@ -38,6 +41,9 @@ importers:
       react-dom:
         specifier: 19.0.0-rc-66855b96-20241106
         version: 19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106)
+      react-hook-form:
+        specifier: ^7.53.2
+        version: 7.53.2(react@19.0.0-rc-66855b96-20241106)
       react-markdown:
         specifier: ^9.0.1
         version: 9.0.1(@types/react@18.3.12)(react@19.0.0-rc-66855b96-20241106)
@@ -50,6 +56,9 @@ importers:
       use-debounce:
         specifier: ^10.0.4
         version: 10.0.4(react@19.0.0-rc-66855b96-20241106)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       '@types/node':
         specifier: ^20
@@ -94,35 +103,35 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@aws-amplify/adapter-nextjs@1.2.30':
-    resolution: {integrity: sha512-sVZivyt1/WrfCzKz47ZkysYoenWP9r4EAdYbIwYwaraP0kPBTLYOiGk0GqJKtSIa5x4r8sO6H5QOp52dB9wy4w==}
+  '@aws-amplify/adapter-nextjs@1.2.29-next-15.716cf28.0':
+    resolution: {integrity: sha512-15Cez5R3MCk072wQgr83dXcx1iKCq2ML8+lpcJVnFS1qw+xAgN9gED30qZ+7uStMbpu34hfgTV4bjSL39rAqDA==}
     peerDependencies:
-      aws-amplify: ^6.0.7
-      next: '>=13.5.0 <15.0.0'
+      aws-amplify: 6.8.3-next-15.716cf28.0+716cf28
+      next: '>=13.5.0 <16.0.0'
 
-  '@aws-amplify/analytics@7.0.60':
-    resolution: {integrity: sha512-7gCUlKcm7YxUYiT5twGbzsMN6pX82thS0yLf2jdZjuUIX5t5nBrRbqiSWhzGLu7VajRB4H//icf+s6b4Udhzsw==}
+  '@aws-amplify/analytics@7.0.59-next-15.716cf28.0':
+    resolution: {integrity: sha512-K+5OTIreavAK1SElNNbixS1RasL12WOTlFkExKaMqDqrWXet4UpvIit5OAC1X+/qyB6bAi/Me1MwIbFKu8AyYA==}
     peerDependencies:
-      '@aws-amplify/core': ^6.1.0
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0+716cf28
 
-  '@aws-amplify/api-graphql@4.6.3':
-    resolution: {integrity: sha512-9OWHNH21Mks3H5oUKXUtApkRM2+qa6a2Ht2uj5zpqbaalrUjlNHM4mm/3S37fEqAaKfQTtnie6uz3xdl6VTy0Q==}
+  '@aws-amplify/api-graphql@4.6.2-next-15.716cf28.0':
+    resolution: {integrity: sha512-e7hdJocbzq+wL5+0VpQ3CdvrefA2D+/bPJgc+EkR6hix1sy8Z3mhtbflgan8yQqx9BTOerF4SK5bQsKn+b7E0A==}
 
-  '@aws-amplify/api-rest@4.0.60':
-    resolution: {integrity: sha512-wCjfgjzxbBGbnQI+D+KuHV6cuKFuxksULg/qjX0sXGeHJeyfu1L4s52pz6+11sEl01gvHBf/KzWyEu1irzaJEQ==}
+  '@aws-amplify/api-rest@4.0.59-next-15.716cf28.0':
+    resolution: {integrity: sha512-Xj+GCZ7kqfagxS2odRBWOrAUogEh1+Pl6d9s9cZPUGKw11j65HPNKs2NxDkC3LkIh3yR8R8v5MZrHMkto7ghXQ==}
     peerDependencies:
-      '@aws-amplify/core': ^6.1.0
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0+716cf28
 
-  '@aws-amplify/api@6.1.5':
-    resolution: {integrity: sha512-RDCbWCoyyCBF3lY0o1PKzKx2qqNJKdQf6PQEnFdKUtszY6iWGuX1RpDVTAZQHeKTjLlxQUrd/FYzIyBipyLU6A==}
+  '@aws-amplify/api@6.1.4-next-15.716cf28.0':
+    resolution: {integrity: sha512-eR4eh+slH6Nj8VcLqsxP2hpEtB0TpPUWnaqdVkaSCDafvhX+huKjkXADvQshEiHWYrGJ4zds5ZgHA1unn0OesA==}
 
-  '@aws-amplify/auth@6.8.0':
-    resolution: {integrity: sha512-QWGNVr3mOWmCnYbqvJkdv/eZyRNuultv7u9I6OTGVSD3jIEBEXDryaxZFROUpTi5Voto7yamTPLI+m0MUH+23Q==}
+  '@aws-amplify/auth@6.6.3-next-15.716cf28.0':
+    resolution: {integrity: sha512-Ps4ismpVPBvDYkiY1GGu19y07ydznP6xiZpbX9yl+B7jjXcxOiLPTpW9MGp62HZFOO/37r2Igvg7mseIVLjNpw==}
     peerDependencies:
-      '@aws-amplify/core': ^6.1.0
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0+716cf28
 
-  '@aws-amplify/core@6.7.0':
-    resolution: {integrity: sha512-JRzkRU6RNRjGuUj3LhWFr6gGYNTZ0SHLXrVzpiFOJmKL09AJBLsi+t+J+70MhYfqlReVKZRUJ1HkxRN0bmQvOg==}
+  '@aws-amplify/core@6.5.4-next-15.716cf28.0':
+    resolution: {integrity: sha512-pRsSllXES5BXc9gtH/PQW8Pjiimuh2DkHhi+YwSWJd+S8Z39kNLfZLJqQd+0gg0jAV5cBZmMX3IMQPCE0TJDLw==}
 
   '@aws-amplify/data-schema-types@1.2.0':
     resolution: {integrity: sha512-1hy2r7jl3hQ5J/CGjhmPhFPcdGSakfme1ZLjlTMJZILfYifZLSlGRKNCelMb3J5N9203hyeT5XDi5yR47JL1TQ==}
@@ -130,20 +139,20 @@ packages:
   '@aws-amplify/data-schema@1.16.1':
     resolution: {integrity: sha512-ThEiEoDbGfU03a2wVpdW4VORLrUkrlWMb9Xc6kI6I296+Gk0DHKNmQUFov4nlqxUIBe3lntJUcZSCMWJZTq4ZQ==}
 
-  '@aws-amplify/datastore@5.0.62':
-    resolution: {integrity: sha512-scccoXKo1GB/mkpM5CYO9sIc0P42q9nkQvSe8hXpnM3Muqf6y0bFPqrYPROtJDCiRUcob3Z3gncFKOb6AIfGVA==}
+  '@aws-amplify/datastore@5.0.61-next-15.716cf28.0':
+    resolution: {integrity: sha512-QTUjNVBYdFv/pJnMyNK4ArOUOty6H4HFPb+ebcmYTc+DAiGn9/cr94gOXtt7LCkOJKZQuZ6aTiKVL5auJg7bQA==}
     peerDependencies:
-      '@aws-amplify/core': ^6.1.0
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0+716cf28
 
-  '@aws-amplify/notifications@2.0.60':
-    resolution: {integrity: sha512-zhcEAEzhelT+ssK3/SpYVAxcqgkKa+YZM+MTvXgCfj4gZahWaN/yD6+wSfueol4nvF3ro8da7EgBdeOr2UWfCw==}
+  '@aws-amplify/notifications@2.0.59-next-15.716cf28.0':
+    resolution: {integrity: sha512-8z47qm842GcfDP2MZlRJJmN4cSIMpnf9hPDCZ783dqlsL57S5Fl/rW1IuDm/YiQW3lBvrIYh5zMpzhZiPRNVvA==}
     peerDependencies:
-      '@aws-amplify/core': ^6.1.0
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0+716cf28
 
-  '@aws-amplify/storage@6.7.1':
-    resolution: {integrity: sha512-pl8B7M+H1Hg0ALcYLmB0nM/WNBdT0INc+ljPKfIUoxgnzF3jn+uI6xVw6VNN5mmQ6QuDGBOE7wOzWNjyFlfo1Q==}
+  '@aws-amplify/storage@6.6.17-next-15.716cf28.0':
+    resolution: {integrity: sha512-VvD/Bgx0Z2/NHpV/yViOXhM1qx08417Sv4X8zyTKaAGaIThZLcSpvh6J3GuMllMVtjp28CcRPm6ptsYoi6UOCA==}
     peerDependencies:
-      '@aws-amplify/core': ^6.1.0
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0+716cf28
 
   '@aws-crypto/crc32@5.2.0':
     resolution: {integrity: sha512-nLbCWqQNgUiwwtFsen1AdzAtvuLRsQS8rYgMuxCrdKf9kOssamGLuPwyTY9wyYblNr9+1XM8v6zoDTPPSIeANg==}
@@ -321,6 +330,11 @@ packages:
 
   '@formatjs/intl-localematcher@0.5.8':
     resolution: {integrity: sha512-I+WDNWWJFZie+jkfkiK5Mp4hEDyRSEvmyfYadflOno/mmKJKcB17fEpEH0oJu/OWhhCJ8kJBDz2YMd/6cDl7Mg==}
+
+  '@hookform/resolvers@3.9.1':
+    resolution: {integrity: sha512-ud2HqmGBM0P0IABqoskKWI6PEf6ZDDBZkFqe2Vnl+mTHCEHzr3ISjjZyCwTjC/qpL25JC9aIDkloQejvMeq0ug==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
 
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
@@ -2024,8 +2038,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  aws-amplify@6.10.0:
-    resolution: {integrity: sha512-QtkGvdxlqjO1LQXrxCq1N9AQ6RVKtcb2PkNXmQbkbpjEyQzLv5snq/oakwIwcy3MaltjTjZf7VfFP5cB4N+y8w==}
+  aws-amplify@6.8.3-next-15.716cf28.0:
+    resolution: {integrity: sha512-sin3nsXS0KroOz+7UcU7ljQVhJFzdab75WjmGoXu/Gk4XeDyvfOINU6sWUdWPfWo7k0E6Ro3ujEuocX3F4i7Gw==}
 
   aws-jwt-verify@4.0.1:
     resolution: {integrity: sha512-kzvi71eD3w/mCpYRUY7cz6DX4bfYihGdI2yV3FYQ2JuZZenqAqDPz0gWj0ew6vlAtdEVBNb7p+Dm2TAIxpVYMA==}
@@ -2154,11 +2168,6 @@ packages:
   cookie@0.7.2:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
-
-  crc-32@1.2.2:
-    resolution: {integrity: sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==}
-    engines: {node: '>=0.8'}
-    hasBin: true
 
   cross-fetch@3.1.8:
     resolution: {integrity: sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==}
@@ -3244,6 +3253,12 @@ packages:
     peerDependencies:
       react: 19.0.0-rc-66855b96-20241106
 
+  react-hook-form@7.53.2:
+    resolution: {integrity: sha512-YVel6fW5sOeedd1524pltpHX+jgU2u3DSDtXEaBORNdqiNrsX/nUI/iGXONegttg0mJVnfrIkiV0cmTU6Oo2xw==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -3740,6 +3755,9 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
@@ -3747,16 +3765,16 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@aws-amplify/adapter-nextjs@1.2.30(aws-amplify@6.10.0)(next@15.0.3(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106))':
+  '@aws-amplify/adapter-nextjs@1.2.29-next-15.716cf28.0(aws-amplify@6.8.3-next-15.716cf28.0)(next@15.0.3(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106))':
     dependencies:
-      aws-amplify: 6.10.0
+      aws-amplify: 6.8.3-next-15.716cf28.0
       aws-jwt-verify: 4.0.1
       cookie: 0.7.2
       next: 15.0.3(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106)
 
-  '@aws-amplify/analytics@7.0.60(@aws-amplify/core@6.7.0)':
+  '@aws-amplify/analytics@7.0.59-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)':
     dependencies:
-      '@aws-amplify/core': 6.7.0
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0
       '@aws-sdk/client-firehose': 3.621.0
       '@aws-sdk/client-kinesis': 3.621.0
       '@aws-sdk/client-personalize-events': 3.621.0
@@ -3765,10 +3783,10 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-amplify/api-graphql@4.6.3':
+  '@aws-amplify/api-graphql@4.6.2-next-15.716cf28.0':
     dependencies:
-      '@aws-amplify/api-rest': 4.0.60(@aws-amplify/core@6.7.0)
-      '@aws-amplify/core': 6.7.0
+      '@aws-amplify/api-rest': 4.0.59-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0
       '@aws-amplify/data-schema': 1.16.1
       '@aws-sdk/types': 3.387.0
       graphql: 15.8.0
@@ -3776,25 +3794,25 @@ snapshots:
       tslib: 2.8.1
       uuid: 9.0.1
 
-  '@aws-amplify/api-rest@4.0.60(@aws-amplify/core@6.7.0)':
+  '@aws-amplify/api-rest@4.0.59-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)':
     dependencies:
-      '@aws-amplify/core': 6.7.0
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0
       tslib: 2.8.1
 
-  '@aws-amplify/api@6.1.5(@aws-amplify/core@6.7.0)':
+  '@aws-amplify/api@6.1.4-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)':
     dependencies:
-      '@aws-amplify/api-graphql': 4.6.3
-      '@aws-amplify/api-rest': 4.0.60(@aws-amplify/core@6.7.0)
+      '@aws-amplify/api-graphql': 4.6.2-next-15.716cf28.0
+      '@aws-amplify/api-rest': 4.0.59-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@aws-amplify/core'
 
-  '@aws-amplify/auth@6.8.0(@aws-amplify/core@6.7.0)':
+  '@aws-amplify/auth@6.6.3-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)':
     dependencies:
-      '@aws-amplify/core': 6.7.0
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0
       tslib: 2.8.1
 
-  '@aws-amplify/core@6.7.0':
+  '@aws-amplify/core@6.5.4-next-15.716cf28.0':
     dependencies:
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/types': 3.398.0
@@ -3818,29 +3836,28 @@ snapshots:
       '@types/json-schema': 7.0.15
       rxjs: 7.8.1
 
-  '@aws-amplify/datastore@5.0.62(@aws-amplify/core@6.7.0)':
+  '@aws-amplify/datastore@5.0.61-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)':
     dependencies:
-      '@aws-amplify/api': 6.1.5(@aws-amplify/core@6.7.0)
-      '@aws-amplify/core': 6.7.0
+      '@aws-amplify/api': 6.1.4-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0
       buffer: 4.9.2
       idb: 5.0.6
       immer: 9.0.6
       rxjs: 7.8.1
       ulid: 2.3.0
 
-  '@aws-amplify/notifications@2.0.60(@aws-amplify/core@6.7.0)':
+  '@aws-amplify/notifications@2.0.59-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)':
     dependencies:
-      '@aws-amplify/core': 6.7.0
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0
       lodash: 4.17.21
       tslib: 2.8.1
 
-  '@aws-amplify/storage@6.7.1(@aws-amplify/core@6.7.0)':
+  '@aws-amplify/storage@6.6.17-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)':
     dependencies:
-      '@aws-amplify/core': 6.7.0
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0
       '@aws-sdk/types': 3.398.0
       '@smithy/md5-js': 2.0.7
       buffer: 4.9.2
-      crc-32: 1.2.2
       fast-xml-parser: 4.5.0
       tslib: 2.8.1
 
@@ -3857,13 +3874,13 @@ snapshots:
       '@aws-crypto/util': 5.2.0
       '@aws-sdk/types': 3.609.0
       '@aws-sdk/util-locate-window': 3.693.0
-      '@smithy/util-utf8': 2.0.0
+      '@smithy/util-utf8': 2.3.0
       tslib: 2.8.1
 
   '@aws-crypto/sha256-js@5.2.0':
     dependencies:
       '@aws-crypto/util': 5.2.0
-      '@aws-sdk/types': 3.398.0
+      '@aws-sdk/types': 3.609.0
       tslib: 2.8.1
 
   '@aws-crypto/supports-web-crypto@5.2.0':
@@ -3872,7 +3889,7 @@ snapshots:
 
   '@aws-crypto/util@5.2.0':
     dependencies:
-      '@aws-sdk/types': 3.398.0
+      '@aws-sdk/types': 3.609.0
       '@smithy/util-utf8': 2.3.0
       tslib: 2.8.1
 
@@ -4390,6 +4407,10 @@ snapshots:
   '@formatjs/intl-localematcher@0.5.8':
     dependencies:
       tslib: 2.8.1
+
+  '@hookform/resolvers@3.9.1(react-hook-form@7.53.2(react@19.0.0-rc-66855b96-20241106))':
+    dependencies:
+      react-hook-form: 7.53.2(react@19.0.0-rc-66855b96-20241106)
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
@@ -7087,15 +7108,15 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.0.0
 
-  aws-amplify@6.10.0:
+  aws-amplify@6.8.3-next-15.716cf28.0:
     dependencies:
-      '@aws-amplify/analytics': 7.0.60(@aws-amplify/core@6.7.0)
-      '@aws-amplify/api': 6.1.5(@aws-amplify/core@6.7.0)
-      '@aws-amplify/auth': 6.8.0(@aws-amplify/core@6.7.0)
-      '@aws-amplify/core': 6.7.0
-      '@aws-amplify/datastore': 5.0.62(@aws-amplify/core@6.7.0)
-      '@aws-amplify/notifications': 2.0.60(@aws-amplify/core@6.7.0)
-      '@aws-amplify/storage': 6.7.1(@aws-amplify/core@6.7.0)
+      '@aws-amplify/analytics': 7.0.59-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)
+      '@aws-amplify/api': 6.1.4-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)
+      '@aws-amplify/auth': 6.6.3-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)
+      '@aws-amplify/core': 6.5.4-next-15.716cf28.0
+      '@aws-amplify/datastore': 5.0.61-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)
+      '@aws-amplify/notifications': 2.0.59-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)
+      '@aws-amplify/storage': 6.6.17-next-15.716cf28.0(@aws-amplify/core@6.5.4-next-15.716cf28.0)
       tslib: 2.8.1
     transitivePeerDependencies:
       - aws-crt
@@ -7213,8 +7234,6 @@ snapshots:
   concat-map@0.0.1: {}
 
   cookie@0.7.2: {}
-
-  crc-32@1.2.2: {}
 
   cross-fetch@3.1.8:
     dependencies:
@@ -7417,8 +7436,8 @@ snapshots:
       '@typescript-eslint/parser': 8.16.0(eslint@8.57.1)(typescript@5.7.2)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.2(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.0.0(eslint@8.57.1)
@@ -7437,37 +7456,37 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.3.7
       enhanced-resolve: 5.17.1
       eslint: 8.57.1
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.8.1
       is-bun-module: 1.3.0
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.16.0(eslint@8.57.1)(typescript@5.7.2)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -7478,7 +7497,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.16.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -8562,6 +8581,10 @@ snapshots:
       react: 19.0.0-rc-66855b96-20241106
       scheduler: 0.25.0-rc-66855b96-20241106
 
+  react-hook-form@7.53.2(react@19.0.0-rc-66855b96-20241106):
+    dependencies:
+      react: 19.0.0-rc-66855b96-20241106
+
   react-is@16.13.1: {}
 
   react-markdown@9.0.1(@types/react@18.3.12)(react@19.0.0-rc-66855b96-20241106):
@@ -9190,5 +9213,7 @@ snapshots:
   yaml@2.6.1: {}
 
   yocto-queue@0.1.0: {}
+
+  zod@3.23.8: {}
 
   zwitch@2.0.4: {}

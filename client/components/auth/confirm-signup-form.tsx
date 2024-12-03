@@ -1,18 +1,51 @@
 "use client";
 
-import { handleConfirmSignUp } from "@/lib/cognitoActions";
+import { handleSignUpStep } from "@/lib/cognitoActions";
+import { getErrorMessage } from "@/utils/get-error-message";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@nextui-org/react";
-import { useActionState } from "react";
+import { confirmSignUp } from "aws-amplify/auth";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import SendVerificationCode from "./send-verification-code-form";
 
+const confirmSignUpSchema = z.object({
+  email: z.string().email(),
+  code: z.string().min(6),
+});
+
 export default function ConfirmSignUpForm() {
-  const [errorMessage, dispatch] = useActionState(
-    handleConfirmSignUp,
-    undefined
-  );
+  const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof confirmSignUpSchema>>({
+    resolver: zodResolver(confirmSignUpSchema),
+  });
+
+  async function onSubmit(values: z.infer<typeof confirmSignUpSchema>) {
+    let nextStep;
+    try {
+      const { isSignUpComplete, nextStep: step } = await confirmSignUp({
+        username: values.email,
+        confirmationCode: values.code,
+      });
+      nextStep = step;
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error));
+      return;
+    }
+
+    await handleSignUpStep(nextStep, router);
+  }
+
   return (
-    <form action={dispatch} className="space-y-3">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-800 px-6 pb-4 pt-8">
         <div className="w-full flex flex-col gap-6">
           <h1 className={`text-center text-2xl`}>
@@ -24,6 +57,8 @@ export default function ConfirmSignUpForm() {
             placeholder="Enter your email address"
             type="email"
             isRequired
+            {...register("email")}
+            errorMessage={errors.email?.message}
           />
           <Input
             id="code"
@@ -32,6 +67,8 @@ export default function ConfirmSignUpForm() {
             type="text"
             isRequired
             minLength={6}
+            {...register("code")}
+            errorMessage={errors.code?.message}
           />
           <ConfirmButton />
         </div>
@@ -59,7 +96,7 @@ function ConfirmButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button fullWidth disabled={pending}>
+    <Button fullWidth disabled={pending} type="submit">
       Confirm
     </Button>
   );

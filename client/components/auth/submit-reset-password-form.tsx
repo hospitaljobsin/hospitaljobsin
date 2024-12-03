@@ -1,17 +1,42 @@
 "use client";
 
-import { handleResetPassword } from "@/lib/cognitoActions";
+import { getErrorMessage } from "@/utils/get-error-message";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@nextui-org/react";
-import { useActionState } from "react";
+import { resetPassword } from "aws-amplify/auth";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const submitResetPasswordSchema = z.object({
+  email: z.string().email(),
+});
 
 export default function SubmitResetPasswordFrom() {
-  const [errorMessage, dispatch] = useActionState(
-    handleResetPassword,
-    undefined
-  );
+  const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof submitResetPasswordSchema>>({
+    resolver: zodResolver(submitResetPasswordSchema),
+  });
+
+  async function onSubmit(values: z.infer<typeof submitResetPasswordSchema>) {
+    try {
+      await resetPassword({ username: values.email });
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error));
+      return;
+    }
+
+    router.replace("/auth/reset-password/confirm");
+  }
   return (
-    <form action={dispatch} className="space-y-3">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-800 px-6 pb-4 pt-8">
         <div className="w-full flex flex-col gap-6">
           <h1 className={`text-center text-2xl`}>
@@ -23,6 +48,8 @@ export default function SubmitResetPasswordFrom() {
             placeholder="Enter your email address"
             type="email"
             isRequired
+            {...register("email")}
+            errorMessage={errors.email?.message}
           />
           <SendConfirmationCodeButton />
         </div>
@@ -49,7 +76,7 @@ function SendConfirmationCodeButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button fullWidth disabled={pending}>
+    <Button fullWidth disabled={pending} type="submit">
       Send Code
     </Button>
   );

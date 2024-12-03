@@ -1,17 +1,48 @@
 "use client";
 
-import { handleConfirmResetPassword } from "@/lib/cognitoActions";
+import { getErrorMessage } from "@/utils/get-error-message";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@nextui-org/react";
-import { useActionState } from "react";
+import { confirmResetPassword } from "aws-amplify/auth";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const confirmReserPasswordSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  code: z.string().min(6),
+});
 
 export default function ConfirmResetPasswordForm() {
-  const [errorMessage, dispatch] = useActionState(
-    handleConfirmResetPassword,
-    undefined
-  );
+  const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof confirmReserPasswordSchema>>({
+    resolver: zodResolver(confirmReserPasswordSchema),
+  });
+
+  async function onSubmit(values: z.infer<typeof confirmReserPasswordSchema>) {
+    try {
+      await confirmResetPassword({
+        username: values.email,
+        confirmationCode: values.code,
+        newPassword: values.password,
+      });
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error));
+      return;
+    }
+
+    router.replace("/auth/login");
+  }
   return (
-    <form action={dispatch} className="space-y-3">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-800 px-6 pb-4 pt-8">
         <div className="w-full flex flex-col gap-6">
           <h1 className={`text-center text-2xl`}>Reset password.</h1>
@@ -21,6 +52,8 @@ export default function ConfirmResetPasswordForm() {
             placeholder="Enter your email address"
             type="email"
             isRequired
+            {...register("email")}
+            errorMessage={errors.email?.message}
           />
           <Input
             id="password"
@@ -29,6 +62,8 @@ export default function ConfirmResetPasswordForm() {
             type="password"
             isRequired
             minLength={6}
+            {...register("password")}
+            errorMessage={errors.password?.message}
           />
           <Input
             id="code"
@@ -37,6 +72,8 @@ export default function ConfirmResetPasswordForm() {
             type="text"
             isRequired
             minLength={6}
+            {...register("code")}
+            errorMessage={errors.code?.message}
           />
           <ResetPasswordButton />
         </div>
@@ -63,7 +100,7 @@ function ResetPasswordButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button fullWidth disabled={pending}>
+    <Button fullWidth disabled={pending} type="submit">
       Reset Password
     </Button>
   );
