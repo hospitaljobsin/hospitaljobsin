@@ -6,20 +6,21 @@ export async function middleware(request: NextRequest) {
   // TODO: cache this user for other components to access
   const user = await authenticatedUser({ request, response });
 
-  //   const isOnDashboard = request.nextUrl.pathname.startsWith("/");
-
-  //   if (isOnDashboard) {
-  //     if (!user)
-  //       return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
-  //     return response;
-  //   } else if (user) {
-  //     return NextResponse.redirect(new URL("/", request.nextUrl));
-  //   }
+  if (user) return NextResponse.redirect(new URL("/", request.nextUrl));
+  return response;
 }
 
 export const config = {
   /*
    * Match all request paths except for the ones starting with
    */
-  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
+  matcher: [
+    // "/((?!api|_next/static|_next/image|.*\\.png$).*)",
+    "/auth/login",
+    "/auth/signup",
+    "/auth/confirm-signup",
+    // TODO: maybe reset password can be done by authenticated users too?
+    "/auth/reset-password/submit",
+    "/auth/reset-password/confirm",
+  ],
 };
