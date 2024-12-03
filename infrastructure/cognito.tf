@@ -65,9 +65,8 @@ resource "aws_cognito_user_pool" "this" {
 resource "aws_cognito_user_pool_client" "client" {
   name = "${var.resource_prefix}webclient"
 
-  generate_secret               = false
-  enable_token_revocation       = true
-  prevent_user_existence_errors = true
+  generate_secret         = false
+  enable_token_revocation = true
 
   explicit_auth_flows = ["ALLOW_USER_SRP_AUTH"]
 
