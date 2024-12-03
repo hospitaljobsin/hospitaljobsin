@@ -8,8 +8,4 @@
     @apply h-full;
     @apply w-full;
   }
-
-  body > [data-overlay-container] {
-    @apply h-full;
-  }
 }
