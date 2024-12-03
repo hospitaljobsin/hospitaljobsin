@@ -10,6 +10,7 @@ class Context(TypedDict):
     request: Request
     loaders: Dataloaders
     current_user_id: str | None
+    access_token: str | None
 
 
 Info = StrawberryInfo[Context, None]

@@ -41,14 +41,27 @@ def validate_jwt(token: str, jwk_client: PyJWKClient) -> dict[str, Any]:
         )
 
 
-# Extract and validate token from Authorization header
-def validate_auth_header(
+def get_access_token(
     credentials: Annotated[
         HTTPAuthorizationCredentials | None,
         Depends(
             HTTPBearer(
                 auto_error=False,
             ),
+        ),
+    ],
+) -> str | None:
+    if credentials is None:
+        return None
+    return credentials.credentials
+
+
+# Extract and validate token from Authorization header
+def validate_auth_header(
+    access_token: Annotated[
+        str | None,
+        Depends(
+            dependency=get_access_token,
         ),
     ],
     jwk_client: Annotated[
@@ -58,12 +71,13 @@ def validate_auth_header(
         ),
     ],
 ) -> dict[str, Any] | None:
-    if credentials is None:
+    if access_token is None:
         return None
-    token = credentials.credentials
-
     # Validate the token
-    return validate_jwt(token, jwk_client=jwk_client)
+    return validate_jwt(
+        access_token,
+        jwk_client=jwk_client,
+    )
 
 
 def current_user_id(
@@ -80,5 +94,6 @@ def current_user_id(
     if decoded_token is None:
         return None
 
+    print("decoded token", decoded_token)
     # Assume "sub" contains the user ID. This may vary based on your Cognito setup.
     return decoded_token.get("sub")
