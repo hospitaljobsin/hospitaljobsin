@@ -1,6 +1,4 @@
-"use server";
 import { APP_NAME } from "@/lib/constants";
-import { runWithAmplifyServerContext } from "@/utils/amplify-server-utils";
 import {
   Button,
   Link,
@@ -9,19 +7,8 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@nextui-org/react";
-import { fetchAuthSession } from "aws-amplify/auth/server";
-import { cookies } from "next/headers";
 
-export default async function Header() {
-  try {
-    const authSession = await runWithAmplifyServerContext({
-      nextServerContext: { cookies },
-      operation: (contextSpec) => fetchAuthSession(contextSpec),
-    });
-    console.log("authSession", authSession);
-  } catch (error) {
-    console.error("Error getting current user", error);
-  }
+export default function Header() {
   return (
     <Navbar maxWidth="xl" isBordered>
       <NavbarBrand>
