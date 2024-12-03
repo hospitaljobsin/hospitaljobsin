@@ -15,4 +15,7 @@ dependencies = [
     "beanie>=1.27.0",
     "motor>=3.6.0",
     "uvicorn[standard]>=0.32.1",
+    "requests>=2.32.3",
+    "pyjwt>=2.10.1",
+    "cryptography>=44.0.0",
 ]

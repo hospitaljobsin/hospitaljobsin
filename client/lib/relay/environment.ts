@@ -1,3 +1,6 @@
+import { runWithAmplifyServerContext } from "@/utils/amplify-server-utils";
+import { fetchAuthSession } from "aws-amplify/auth";
+import { fetchAuthSession as fetchAuthSessionServer } from "aws-amplify/auth/server";
 import {
   CacheConfig,
   Environment,
@@ -14,22 +17,47 @@ const HTTP_ENDPOINT = process.env.NEXT_PUBLIC_API_URL;
 const IS_SERVER = typeof window === typeof undefined;
 const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 
+export async function fetchAuthSessionServerSide() {
+  const { cookies } = await import("next/headers");
+  return await runWithAmplifyServerContext({
+    nextServerContext: { cookies },
+    operation: async (contextSpec) => {
+      try {
+        return await fetchAuthSessionServer(contextSpec);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
+}
+
 export async function networkFetch(
   request: RequestParameters,
   variables: Variables
 ): Promise<GraphQLResponse> {
-  //   const token = process.env.NEXT_PUBLIC_REACT_APP_GITHUB_AUTH_TOKEN;
-  //   if (token == null || token === "") {
-  //     throw new Error(
-  //       "This app requires a GitHub authentication token to be configured. See readme.md for setup details."
-  //     );
-  //   }
+  let session;
+  try {
+    if (IS_SERVER) {
+      session = await fetchAuthSessionServerSide();
+    } else {
+      session = await fetchAuthSession();
+    }
+    console.log("session: ", session);
+  } catch (err) {
+    console.log(err);
+  }
+
+  let token;
+
+  if (session?.tokens) {
+    token = session.tokens.accessToken.toString();
+  }
 
   const resp = await fetch(HTTP_ENDPOINT, {
     method: "POST",
     headers: {
       Accept: "application/json",
-      //   Authorization: `bearer ${token}`,
+      Authorization: token ? `Bearer ${token}` : undefined,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({

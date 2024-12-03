@@ -1,5 +1,3 @@
-"use server";
-
 import { authConfig } from "@/lib/auth-config";
 import { createServerRunner, NextServer } from "@aws-amplify/adapter-nextjs";
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth/server";

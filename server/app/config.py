@@ -67,6 +67,9 @@ class Settings(BaseSettings):
         ),
     ]
 
+    # Coginto auth config
+    cognito_issuer_url: str
+
     openapi_url: str | None = None
 
     root_path: str = ""
