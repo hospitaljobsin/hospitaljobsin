@@ -1,4 +1,4 @@
-import MainViewClientComponent from "@/app/LandingViewClientComponent";
+import MainViewClientComponent from "@/app/(dashboard)/LandingViewClientComponent";
 import LandingViewQueryNode, {
   LandingViewQuery,
 } from "@/components/landing/__generated__/LandingViewQuery.graphql";

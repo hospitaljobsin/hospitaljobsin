@@ -3,10 +3,10 @@
 import { SerializablePreloadedQuery } from "@/lib/relay/loadSerializableQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 import { useRelayEnvironment } from "react-relay";
-import LandingView from "../components/landing/LandingView";
+import LandingView from "../../components/landing/LandingView";
 import LandingViewQueryNode, {
   LandingViewQuery,
-} from "../components/landing/__generated__/LandingViewQuery.graphql";
+} from "../../components/landing/__generated__/LandingViewQuery.graphql";
 
 const MainViewClientComponent = (props: {
   preloadedQuery: SerializablePreloadedQuery<

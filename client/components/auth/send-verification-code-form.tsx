@@ -16,7 +16,7 @@ export default function SendVerificationCode() {
     <>
       <Button className="mt-4 w-full" disabled={pending} formAction={dispatch}>
         Resend Verification Code{" "}
-        <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-800" />
       </Button>
       <div className="flex h-8 items-end space-x-1">
         <div

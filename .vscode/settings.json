@@ -2,6 +2,9 @@
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform"
+  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "ruff.nativeServer": true,
   "python.languageServer": "Pylance",
