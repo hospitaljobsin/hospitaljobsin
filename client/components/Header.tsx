@@ -1,6 +1,4 @@
-"use server";
 import { APP_NAME } from "@/lib/constants";
-import { authenticatedUser } from "@/utils/amplify-server-utils";
 import {
   Button,
   Link,
@@ -9,10 +7,8 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@nextui-org/react";
-import { cookies } from "next/headers";
 
-export default async function Header() {
-  const user = await authenticatedUser({ cookies });
+export default function Header() {
   return (
     <Navbar maxWidth="xl" isBordered>
       <NavbarBrand>
@@ -34,16 +30,19 @@ export default async function Header() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          {user ? (
-            <p>Hi, {user.userId}</p>
+          {/* {user ? (
+            <p>Hi, {user.username}</p>
           ) : (
             <Link color="foreground" href="/auth/login">
               <Button color="primary">Sign in</Button>
             </Link>
-          )}
+          )} */}
+          <Link color="foreground" href="/auth/login">
+            <Button color="primary">Sign in</Button>
+          </Link>
         </NavbarItem>
         <NavbarItem>
-          <Button color="primary" variant="flat">
+          <Button color="primary" variant="flat" disabled>
             For recruiters
           </Button>
         </NavbarItem>
