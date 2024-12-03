@@ -1,4 +1,4 @@
-from typing import Annotated, Any
+from typing import Annotated
 
 from fastapi import Depends, Request
 from strawberry.fastapi import GraphQLRouter

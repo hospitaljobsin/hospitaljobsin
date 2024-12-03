@@ -1,14 +1,34 @@
+"use client";
 import { APP_NAME } from "@/lib/constants";
 import {
   Button,
-  Link,
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
 } from "@nextui-org/react";
+import {
+  FetchUserAttributesOutput,
+  fetchUserAttributes,
+} from "aws-amplify/auth";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Header() {
+  const [user, setUser] = useState<FetchUserAttributesOutput | null>(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const user = await fetchUserAttributes();
+        setUser(user);
+      } catch {
+        setUser(null);
+      }
+    }
+    if (!user) fetchUser();
+  }, [user]);
+
   return (
     <Navbar maxWidth="xl" isBordered>
       <NavbarBrand>
@@ -30,16 +50,13 @@ export default function Header() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          {/* {user ? (
-            <p>Hi, {user.username}</p>
+          {user ? (
+            <p>Hi, {user.name}</p>
           ) : (
             <Link color="foreground" href="/auth/login">
               <Button color="primary">Sign in</Button>
             </Link>
-          )} */}
-          <Link color="foreground" href="/auth/login">
-            <Button color="primary">Sign in</Button>
-          </Link>
+          )}
         </NavbarItem>
         <NavbarItem>
           <Button color="primary" variant="flat" disabled>
