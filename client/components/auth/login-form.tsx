@@ -29,7 +29,7 @@ export default function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     try {
-      let redirectLink = "/dashboard";
+      let redirectLink = "/";
       try {
         const { isSignedIn, nextStep } = await signIn({
           username: values.email,

@@ -4,32 +4,51 @@ import { handleSignUpStep } from "@/lib/cognitoActions";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input } from "@nextui-org/react";
-import { confirmSignUp } from "aws-amplify/auth";
+import { confirmSignUp, resendSignUpCode } from "aws-amplify/auth";
+import { ArrowRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useFormStatus } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import SendVerificationCode from "./send-verification-code-form";
 
 const confirmSignUpSchema = z.object({
-  email: z.string().email(),
-  code: z.string().min(6),
+  email: z.string().email({ message: "Invalid email address" }),
+  code: z.string().min(6, { message: "Code must be at least 6 characters" }),
 });
 
 export default function ConfirmSignUpForm() {
   const router = useRouter();
+  const [resendMessage, setResendMessage] = useState<string | null>(null);
+  const [resendErrorMessage, setResendErrorMessage] = useState<string | null>(
+    null
+  );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    watch,
+    formState: { errors, isValid },
   } = useForm<z.infer<typeof confirmSignUpSchema>>({
     resolver: zodResolver(confirmSignUpSchema),
+    mode: "onChange",
   });
 
+  const email = watch("email");
+  const code = watch("code");
+
+  async function handleSendEmailVerificationCode({ email }: { email: string }) {
+    try {
+      await resendSignUpCode({ username: email });
+      setResendMessage("Verification code sent successfully");
+      setResendErrorMessage(null);
+    } catch (error) {
+      setResendErrorMessage(getErrorMessage(error));
+      setResendMessage(null);
+    }
+  }
+
   async function onSubmit(values: z.infer<typeof confirmSignUpSchema>) {
-    console.log("SIGNING UP...");
     let nextStep;
     try {
       const { isSignUpComplete, nextStep: step } = await confirmSignUp({
@@ -37,6 +56,7 @@ export default function ConfirmSignUpForm() {
         confirmationCode: values.code,
       });
       nextStep = step;
+      setErrorMessage(null);
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
       return;
@@ -70,34 +90,36 @@ export default function ConfirmSignUpForm() {
             errorMessage={errors.code?.message}
             isInvalid={!!errors.code}
           />
-          <ConfirmButton />
+          <Button
+            fullWidth
+            disabled={!email || !code || !isValid}
+            type="submit"
+          >
+            Confirm
+          </Button>
         </div>
 
-        <div className="flex h-8 items-end space-x-1">
-          <div
-            className="flex h-8 items-end space-x-1"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {errorMessage && (
-              <>
-                <p className="text-sm text-red-500">{errorMessage}</p>
-              </>
-            )}
-          </div>
-        </div>
-        <SendVerificationCode />
+        {errorMessage && (
+          <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
+        )}
+
+        <Button
+          className="mt-4 w-full"
+          disabled={!email || !!errors.email}
+          onClick={() => handleSendEmailVerificationCode({ email })}
+          type="button"
+        >
+          Resend Verification Code{" "}
+          <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-800" />
+        </Button>
+
+        {resendErrorMessage && (
+          <p className="mt-2 text-sm text-red-500">{resendErrorMessage}</p>
+        )}
+        {resendMessage && (
+          <p className="mt-2 text-sm text-green-500">{resendMessage}</p>
+        )}
       </div>
     </form>
-  );
-}
-
-function ConfirmButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button fullWidth disabled={pending} type="submit">
-      Confirm
-    </Button>
   );
 }
