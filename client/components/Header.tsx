@@ -1,7 +1,12 @@
 "use client";
+import { handleSignOut } from "@/lib/cognitoActions";
 import { APP_NAME } from "@/lib/constants";
 import {
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Navbar,
   NavbarBrand,
   NavbarContent,
@@ -11,11 +16,14 @@ import {
   FetchUserAttributesOutput,
   fetchUserAttributes,
 } from "aws-amplify/auth";
+import { ChevronDown, LogOutIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Header() {
   const [user, setUser] = useState<FetchUserAttributesOutput | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchUser() {
@@ -28,6 +36,10 @@ export default function Header() {
     }
     if (!user) fetchUser();
   }, [user]);
+
+  async function handleLogout() {
+    await handleSignOut(router);
+  }
 
   return (
     <Navbar maxWidth="xl" isBordered>
@@ -49,15 +61,44 @@ export default function Header() {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          {user ? (
-            <p>Hi, {user.name}</p>
-          ) : (
+        {user ? (
+          <Dropdown>
+            <NavbarItem>
+              <DropdownTrigger>
+                <Button
+                  disableRipple
+                  className="p-0 bg-transparent data-[hover=true]:bg-transparent"
+                  endContent={<ChevronDown className="h-4 w-4" />}
+                  radius="sm"
+                  variant="light"
+                >
+                  Hi, {user.name}
+                </Button>
+              </DropdownTrigger>
+            </NavbarItem>
+            <DropdownMenu
+              aria-label="ACME features"
+              itemClasses={{
+                base: "gap-4",
+              }}
+            >
+              <DropdownItem
+                key="logout"
+                startContent={<LogOutIcon className="h-4 w-4" />}
+                onClick={handleLogout}
+              >
+                Log Out
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        ) : (
+          <NavbarItem>
             <Link color="foreground" href="/auth/login">
-              <Button color="primary">Sign in</Button>
+              <Button color="primary">Log In</Button>
             </Link>
-          )}
-        </NavbarItem>
+          </NavbarItem>
+        )}
+
         <NavbarItem>
           <Button color="primary" variant="flat" disabled>
             For recruiters
