@@ -56,19 +56,18 @@ export default function ConfirmSignUpForm() {
             label="Email"
             placeholder="Enter your email address"
             type="email"
-            isRequired
             {...register("email")}
             errorMessage={errors.email?.message}
+            isInvalid={!!errors.email}
           />
           <Input
             id="code"
             label="Code"
             placeholder="Enter code"
             type="text"
-            isRequired
-            minLength={6}
             {...register("code")}
             errorMessage={errors.code?.message}
+            isInvalid={!!errors.code}
           />
           <ConfirmButton />
         </div>

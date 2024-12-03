@@ -29,6 +29,8 @@ export default function SignUpForm() {
     resolver: zodResolver(signUpSchema),
   });
 
+  console.log(errors);
+
   async function onSubmit(values: z.infer<typeof signUpSchema>) {
     let nextStep;
     try {
@@ -63,18 +65,16 @@ export default function SignUpForm() {
         <div className="w-full flex flex-col gap-6">
           <h1 className="text-2xl text-center">Create an account.</h1>
           <Input
-            isRequired
             label="Name"
             labelPlacement="outside"
             placeholder="Enter your name"
             type="text"
             id="name"
-            minLength={4}
             {...register("name")}
             errorMessage={errors.name?.message}
+            isInvalid={!!errors.name}
           />
           <Input
-            isRequired
             label="Email"
             labelPlacement="outside"
             placeholder="Enter your email address"
@@ -82,18 +82,18 @@ export default function SignUpForm() {
             id="email"
             {...register("email")}
             errorMessage={errors.email?.message}
+            isInvalid={!!errors.email}
           />
 
           <Input
-            isRequired
             label="Password"
             labelPlacement="outside"
             placeholder="Enter password"
             type="password"
             id="password"
-            minLength={6}
             {...register("password")}
             errorMessage={errors.password?.message}
+            isInvalid={!!errors.password}
           />
           <SignUpButton />
         </div>

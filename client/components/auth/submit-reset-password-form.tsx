@@ -47,9 +47,9 @@ export default function SubmitResetPasswordFrom() {
             label="Email"
             placeholder="Enter your email address"
             type="email"
-            isRequired
             {...register("email")}
             errorMessage={errors.email?.message}
+            isInvalid={!!errors.email}
           />
           <SendConfirmationCodeButton />
         </div>

@@ -60,18 +60,18 @@ export default function LoginForm() {
             label="Email"
             placeholder="Enter your email address"
             type="email"
-            isRequired
             {...register("email")}
             errorMessage={errors.email?.message}
+            isInvalid={!!errors.email}
           />
           <Input
             id="password"
             label="Password"
             placeholder="Enter password"
             type="password"
-            isRequired
             {...register("password")}
             errorMessage={errors.password?.message}
+            isInvalid={!!errors.password}
           />
 
           <LoginButton />
