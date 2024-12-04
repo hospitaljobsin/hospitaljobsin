@@ -53,7 +53,7 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
               href="https://github.com/nextui-org/nextui"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90"
+              color="primary"
             >
               Apply for this Job
             </Button>
