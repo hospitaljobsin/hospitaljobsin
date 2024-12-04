@@ -2,7 +2,7 @@
 
 import { getErrorMessage } from "@/utils/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Card, CardHeader, Input } from "@nextui-org/react";
+import { Button, Card, CardBody, CardHeader, Input } from "@nextui-org/react";
 import { resetPassword } from "aws-amplify/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -41,38 +41,40 @@ export default function SubmitResetPasswordFrom() {
           Request a Password Reset
         </h1>
       </CardHeader>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <div className="flex-1 rounded-lg px-6 pb-4 pt-8">
-          <div className="w-full flex flex-col gap-6">
-            <Input
-              id="email"
-              label="Email"
-              placeholder="Enter your email address"
-              type="email"
-              {...register("email")}
-              errorMessage={errors.email?.message}
-              isInvalid={!!errors.email}
-            />
-            <Button fullWidth isLoading={isSubmitting} type="submit">
-              Send Code
-            </Button>
-          </div>
+      <CardBody>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+          <div className="flex-1 rounded-lg px-6 pb-4 pt-8">
+            <div className="w-full flex flex-col gap-6">
+              <Input
+                id="email"
+                label="Email"
+                placeholder="Enter your email address"
+                type="email"
+                {...register("email")}
+                errorMessage={errors.email?.message}
+                isInvalid={!!errors.email}
+              />
+              <Button fullWidth isLoading={isSubmitting} type="submit">
+                Send Code
+              </Button>
+            </div>
 
-          <div className="flex h-8 items-end space-x-1">
-            <div
-              className="flex h-8 items-end space-x-1"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {errorMessage && (
-                <>
-                  <p className="text-sm text-red-500">{errorMessage}</p>
-                </>
-              )}
+            <div className="flex h-8 items-end space-x-1">
+              <div
+                className="flex h-8 items-end space-x-1"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {errorMessage && (
+                  <>
+                    <p className="text-sm text-red-500">{errorMessage}</p>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </CardBody>
     </Card>
   );
 }

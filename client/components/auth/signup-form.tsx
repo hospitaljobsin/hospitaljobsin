@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
   Card,
+  CardBody,
   CardFooter,
   CardHeader,
   Divider,
@@ -68,60 +69,62 @@ export default function SignUpForm() {
       <CardHeader>
         <h1 className="text-2xl text-center w-full">Create an account</h1>
       </CardHeader>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <div className="flex-1 rounded-lg px-6 pb-4 pt-8">
-          <div className="w-full flex flex-col gap-6">
-            <Input
-              label="Name"
-              labelPlacement="outside"
-              placeholder="Enter your name"
-              type="text"
-              id="name"
-              {...register("name")}
-              errorMessage={errors.name?.message}
-              isInvalid={!!errors.name}
-            />
-            <Input
-              label="Email"
-              labelPlacement="outside"
-              placeholder="Enter your email address"
-              type="email"
-              id="email"
-              {...register("email")}
-              errorMessage={errors.email?.message}
-              isInvalid={!!errors.email}
-            />
+      <CardBody>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+          <div className="flex-1 rounded-lg px-6 pb-4 pt-8">
+            <div className="w-full flex flex-col gap-6">
+              <Input
+                label="Name"
+                labelPlacement="outside"
+                placeholder="Enter your name"
+                type="text"
+                id="name"
+                {...register("name")}
+                errorMessage={errors.name?.message}
+                isInvalid={!!errors.name}
+              />
+              <Input
+                label="Email"
+                labelPlacement="outside"
+                placeholder="Enter your email address"
+                type="email"
+                id="email"
+                {...register("email")}
+                errorMessage={errors.email?.message}
+                isInvalid={!!errors.email}
+              />
 
-            <Input
-              label="Password"
-              labelPlacement="outside"
-              placeholder="Enter password"
-              type="password"
-              id="password"
-              {...register("password")}
-              errorMessage={errors.password?.message}
-              isInvalid={!!errors.password}
-            />
-            <Button fullWidth type="submit" isLoading={isSubmitting}>
-              Create account
-            </Button>
-          </div>
+              <Input
+                label="Password"
+                labelPlacement="outside"
+                placeholder="Enter password"
+                type="password"
+                id="password"
+                {...register("password")}
+                errorMessage={errors.password?.message}
+                isInvalid={!!errors.password}
+              />
+              <Button fullWidth type="submit" isLoading={isSubmitting}>
+                Create account
+              </Button>
+            </div>
 
-          <div className="flex h-8 items-end space-x-1">
-            <div
-              className="flex h-8 items-end space-x-1"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {errorMessage && (
-                <>
-                  <p className="text-sm text-red-500">{errorMessage}</p>
-                </>
-              )}
+            <div className="flex h-8 items-end space-x-1">
+              <div
+                className="flex h-8 items-end space-x-1"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {errorMessage && (
+                  <>
+                    <p className="text-sm text-red-500">{errorMessage}</p>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </CardBody>
       <Divider />
       <CardFooter>
         <div className="flex justify-center w-full">

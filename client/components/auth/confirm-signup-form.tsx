@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
   Card,
+  CardBody,
   CardFooter,
   CardHeader,
   Divider,
@@ -78,42 +79,44 @@ export default function ConfirmSignUpForm() {
           Confirm your account email
         </h1>
       </CardHeader>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <div className="flex-1 rounded-lg px-6 pb-4 pt-8">
-          <div className="w-full flex flex-col gap-6">
-            <Input
-              id="email"
-              label="Email"
-              placeholder="Enter your email address"
-              type="email"
-              {...register("email")}
-              errorMessage={errors.email?.message}
-              isInvalid={!!errors.email}
-            />
-            <Input
-              id="code"
-              label="Code"
-              placeholder="Enter code"
-              type="text"
-              {...register("code")}
-              errorMessage={errors.code?.message}
-              isInvalid={!!errors.code}
-            />
-            <Button
-              fullWidth
-              disabled={!isValid}
-              isLoading={isSubmitting}
-              type="submit"
-            >
-              Confirm
-            </Button>
-          </div>
+      <CardBody>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+          <div className="flex-1 rounded-lg px-6 pb-4 pt-8">
+            <div className="w-full flex flex-col gap-6">
+              <Input
+                id="email"
+                label="Email"
+                placeholder="Enter your email address"
+                type="email"
+                {...register("email")}
+                errorMessage={errors.email?.message}
+                isInvalid={!!errors.email}
+              />
+              <Input
+                id="code"
+                label="Code"
+                placeholder="Enter code"
+                type="text"
+                {...register("code")}
+                errorMessage={errors.code?.message}
+                isInvalid={!!errors.code}
+              />
+              <Button
+                fullWidth
+                disabled={!isValid}
+                isLoading={isSubmitting}
+                type="submit"
+              >
+                Confirm
+              </Button>
+            </div>
 
-          {errorMessage && (
-            <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
-          )}
-        </div>
-      </form>
+            {errorMessage && (
+              <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
+            )}
+          </div>
+        </form>
+      </CardBody>
       <Divider />
       <CardFooter>
         <Button
