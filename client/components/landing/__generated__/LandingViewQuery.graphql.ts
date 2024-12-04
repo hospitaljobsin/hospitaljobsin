@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8e56a69819a702dc2446aa06973ce995>>
+ * @generated SignedSource<<4db18da3bffd475090325a7fb8172efb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,7 +24,7 @@ var v0 = [
   {
     "kind": "Literal",
     "name": "first",
-    "value": 5
+    "value": 10
   }
 ],
 v1 = {
@@ -200,7 +200,7 @@ return {
             ]
           }
         ],
-        "storageKey": "jobs(first:5)"
+        "storageKey": "jobs(first:10)"
       },
       {
         "alias": null,
@@ -216,12 +216,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "31a157d461987aede19b00ca1f02a7c4",
+    "cacheID": "adb78b66d077543ba8e8f03bac1b5bc5",
     "id": null,
     "metadata": {},
     "name": "LandingViewQuery",
     "operationKind": "query",
-    "text": "query LandingViewQuery {\n  ...JobListFragment\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  location\n  salary\n  closingDate\n  createdAt\n  company {\n    id\n    name\n    description\n  }\n}\n\nfragment JobListFragment on Query {\n  jobs(first: 5) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query LandingViewQuery {\n  ...JobListFragment\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  location\n  salary\n  closingDate\n  createdAt\n  company {\n    id\n    name\n    description\n  }\n}\n\nfragment JobListFragment on Query {\n  jobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();

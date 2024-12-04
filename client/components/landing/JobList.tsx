@@ -1,10 +1,10 @@
 import { usePaginationFragment } from "react-relay";
 import Job from "./Job";
 
-import { Button } from "@nextui-org/react";
-import { useEffect, useTransition } from "react";
+import { useEffect, useRef, useTransition } from "react";
 import { graphql } from "relay-runtime";
 import { JobListFragment$key } from "./__generated__/JobListFragment.graphql";
+import JobListSkeleton from "./JobListSkeleton";
 
 const JobListFragment = graphql`
   fragment JobListFragment on Query
@@ -12,7 +12,7 @@ const JobListFragment = graphql`
   @argumentDefinitions(
     cursor: { type: "ID" }
     searchTerm: { type: "String", defaultValue: null }
-    count: { type: "Int", defaultValue: 5 }
+    count: { type: "Int", defaultValue: 10 }
   ) {
     jobs(after: $cursor, first: $count, searchTerm: $searchTerm)
       @connection(key: "JobListFragment_jobs", filters: ["searchTerm"]) {
@@ -42,20 +42,40 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
     rootQuery
   );
 
-  useEffect(() => {
-    startTransition(() => {
-      refetch(
-        { first: 5, searchTerm: searchTerm },
-        {
-          fetchPolicy: "store-or-network",
-        }
-      );
-    });
-  }, [searchTerm]);
+  const observerRef = useRef<HTMLDivElement | null>(null);
 
-  function loadMore() {
-    loadNext(5);
-  }
+  useEffect(() => {
+    if (!observerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (
+          entry.isIntersecting &&
+          data.jobs.pageInfo.hasNextPage &&
+          !isLoadingNext
+        ) {
+          loadNext(5);
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    observer.observe(observerRef.current);
+
+    return () => observer.disconnect();
+  }, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
+
+  // Debounced search term refetch
+  useEffect(() => {
+    const debounceTimeout = setTimeout(() => {
+      startTransition(() => {
+        refetch({ first: 10, searchTerm }, { fetchPolicy: "store-or-network" });
+      });
+    }, 300); // Adjust debounce delay as needed
+
+    return () => clearTimeout(debounceTimeout);
+  }, [searchTerm, refetch]);
 
   if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
     return (
@@ -69,25 +89,15 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
 
   return (
     <div className="w-full flex flex-col gap-4 pb-6">
-      {data.jobs.edges.map((jobEdge) => {
-        return (
-          <Job
-            job={jobEdge.node}
-            connectionId={data.jobs.__id}
-            key={jobEdge.node.id}
-          />
-        );
-      })}
-      {data.jobs.pageInfo.hasNextPage && (
-        <Button
-          fullWidth
-          variant={"bordered"}
-          onClick={loadMore}
-          disabled={isLoadingNext || isPending}
-        >
-          load more
-        </Button>
-      )}
+      {data.jobs.edges.map((jobEdge) => (
+        <Job
+          job={jobEdge.node}
+          connectionId={data.jobs.__id}
+          key={jobEdge.node.id}
+        />
+      ))}
+      <div ref={observerRef} className="h-10"></div>
+      {isLoadingNext && <JobListSkeleton />}
     </div>
   );
 }
