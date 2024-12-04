@@ -44,9 +44,9 @@ export default function Header() {
   return (
     <Navbar maxWidth="xl" isBordered>
       <NavbarBrand>
-        <Link href="/" color="foreground">
-          <p className="font-medium text-inherit">{APP_NAME}</p>
-        </Link>
+        <a href="/" className="font-medium text-inherit">
+          {APP_NAME}
+        </a>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>

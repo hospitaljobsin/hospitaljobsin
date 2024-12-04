@@ -8,12 +8,12 @@ import JobListSkeleton from "./JobListSkeleton";
 
 const JobListFragment = graphql`
   fragment JobListFragment on Query
-  @refetchable(queryName: "JobListPaginationQuery")
   @argumentDefinitions(
     cursor: { type: "ID" }
     searchTerm: { type: "String", defaultValue: null }
     count: { type: "Int", defaultValue: 10 }
-  ) {
+  )
+  @refetchable(queryName: "JobListPaginationQuery") {
     jobs(after: $cursor, first: $count, searchTerm: $searchTerm)
       @connection(key: "JobListFragment_jobs", filters: ["searchTerm"]) {
       __id

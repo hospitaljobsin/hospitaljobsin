@@ -9,6 +9,5 @@ export default async function Home() {
     typeof LandingViewQueryNode,
     LandingViewQuery
   >(LandingViewQueryNode.params, {});
-
   return <MainViewClientComponent preloadedQuery={preloadedQuery} />;
 }

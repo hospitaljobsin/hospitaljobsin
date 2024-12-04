@@ -11,6 +11,7 @@ export default async function JobDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const jobId = (await params).id;
+
   const preloadedQuery = await loadSerializableQuery<
     typeof JobDetailViewQueryNode,
     JobDetailViewQuery

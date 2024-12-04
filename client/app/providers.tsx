@@ -3,11 +3,14 @@
 import { getCurrentEnvironment } from "@/lib/relay/environment";
 import { NextUIProvider } from "@nextui-org/react";
 import { ThemeProvider } from "next-themes";
+import { useState } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
 import ConfigureAmplifyClientSide from "./config-amplify-client-side";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const environment = getCurrentEnvironment();
+  const [environment] = useState(() => {
+    return getCurrentEnvironment();
+  });
 
   return (
     <NextUIProvider>
