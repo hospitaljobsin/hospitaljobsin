@@ -46,7 +46,7 @@ export default function Job({ job }: Props) {
             <div className="flex items-center gap-4">
               <Avatar name={data.company?.name} size="lg" />
               <div className="flex flex-col gap-2 items-start">
-                <h4 className="text-xl font-bold">{data.title}</h4>
+                <h4 className="text-xl font-medium">{data.title}</h4>
                 <Tooltip content={data.company?.description} placement="bottom">
                   <p className="text-md font-normal">{data.company?.name}</p>
                 </Tooltip>

@@ -21,6 +21,9 @@ export default function LandingView(props: {
 
   return (
     <div className="py-8 w-full h-full max-w-7xl mx-auto flex flex-col gap-8">
+      <h1 className="text-5xl text-center w-full max-w-4xl text-balance mx-auto py-12">
+        Find Your Perfect Fit in Medicine: Explore Top Healthcare Careers
+      </h1>
       <JobListController
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
