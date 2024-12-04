@@ -11,7 +11,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <NextUIProvider>
-      <NextThemesProvider attribute="class" defaultTheme="dark">
+      <NextThemesProvider attribute="class" defaultTheme="light">
         <ConfigureAmplifyClientSide />
         <RelayEnvironmentProvider environment={environment}>
           {children}

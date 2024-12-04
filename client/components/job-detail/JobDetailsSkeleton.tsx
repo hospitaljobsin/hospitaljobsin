@@ -107,7 +107,7 @@ export default function JobDetailsSkeleton() {
         </CardHeader>
         <Divider />
         <CardBody>
-          <Skeleton className="rounded-lg w-full h-48">
+          <Skeleton className="rounded-lg w-full h-[800px]">
             <div>Job details</div>
           </Skeleton>
         </CardBody>

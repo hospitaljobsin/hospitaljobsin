@@ -42,9 +42,8 @@ export async function networkFetch(
     } else {
       session = await fetchAuthSession();
     }
-    console.log("session: ", session);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 
   let token;

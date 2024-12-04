@@ -1,4 +1,8 @@
-import { Input } from "@nextui-org/react";
+"use client";
+// mark component as client until the select component is marked as client only
+// https://github.com/nextui-org/nextui/issues/1403
+import { Input, Select, SelectItem } from "@nextui-org/react";
+import { distances } from "./JobListController";
 
 export default function JobListControllerSkeleton() {
   return (
@@ -17,13 +21,11 @@ export default function JobListControllerSkeleton() {
         fullWidth
         disabled
       />
-      <Input
-        isClearable
-        variant="bordered"
-        placeholder="Within 5km"
-        fullWidth
-        disabled
-      />
+      <Select placeholder="Distance" variant="bordered">
+        {distances.map((distance) => (
+          <SelectItem key={distance}>{distance}</SelectItem>
+        ))}
+      </Select>
     </div>
   );
 }
