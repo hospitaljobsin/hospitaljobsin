@@ -5,6 +5,8 @@
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform"
   },
+  "relay.autoStartCompiler": true,
+  "relay.rootDirectory": "client/",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "ruff.nativeServer": true,
   "python.languageServer": "Pylance",

@@ -10,7 +10,6 @@ windows:
       layout: even-horizontal
       panes:
         - cd client && pnpm run dev
-        - cd client && pnpm run relay
   - docker:
       panes:
         - docker compose up
