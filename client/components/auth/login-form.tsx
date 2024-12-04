@@ -59,7 +59,7 @@ export default function LoginForm() {
   return (
     <Card>
       <CardHeader>
-        <h1 className={`text-2xl text-center w-full`}>Log in to continue.</h1>
+        <h1 className={`text-2xl text-center w-full`}>Log in to continue</h1>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         <div className="flex-1 rounded-lg px-6 pb-4 pt-8">

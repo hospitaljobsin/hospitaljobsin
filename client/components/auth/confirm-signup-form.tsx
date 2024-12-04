@@ -75,7 +75,7 @@ export default function ConfirmSignUpForm() {
     <Card>
       <CardHeader>
         <h1 className={`text-center text-2xl w-full`}>
-          Please confirm your account.
+          Confirm your account email
         </h1>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">

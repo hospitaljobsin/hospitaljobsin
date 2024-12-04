@@ -38,7 +38,7 @@ export default function SubmitResetPasswordFrom() {
     <Card>
       <CardHeader>
         <h1 className={`text-center text-2xl w-full`}>
-          Please enter your email to get confirmation code.
+          Request a Password Reset
         </h1>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
