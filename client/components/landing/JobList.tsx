@@ -81,7 +81,7 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
     return (
       <div className="flex grow flex-col gap-4 px-4 items-center h-full">
         <p className="font-medium text-muted-foreground">
-          Hmm, there are no jobs yet
+          Hmm, no jobs could be found
         </p>
       </div>
     );

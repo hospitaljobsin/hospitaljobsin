@@ -1,7 +1,7 @@
 "use client";
-
 import { getCurrentEnvironment } from "@/lib/relay/environment";
 import { NextUIProvider } from "@nextui-org/react";
+import { AppProgressBar } from "next-nprogress-bar";
 import { ThemeProvider } from "next-themes";
 import { useState } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
@@ -18,6 +18,12 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <ConfigureAmplifyClientSide />
         <RelayEnvironmentProvider environment={environment}>
           {children}
+          <AppProgressBar
+            height="4px"
+            color="#8EB486"
+            options={{ showSpinner: false }}
+            shallowRouting
+          />
         </RelayEnvironmentProvider>
       </ThemeProvider>
     </NextUIProvider>
