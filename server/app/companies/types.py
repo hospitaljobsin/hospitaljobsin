@@ -23,8 +23,8 @@ class CompanyType(BaseNodeType[Company]):
     email: str
 
     @classmethod
-    def from_orm(cls, company: Company) -> Self:
-        """Construct a node from an ORM instance."""
+    def marshal(cls, company: Company) -> Self:
+        """Marshal into a node instance."""
         return cls(
             id=str(company.id),
             name=company.name,
@@ -48,7 +48,7 @@ class CompanyType(BaseNodeType[Company]):
     ):
         companies = await info.context["loaders"].company_by_id.load_many(node_ids)
         return [
-            cls.from_orm(company) if company is not None else company
+            cls.marshal(company) if company is not None else company
             for company in companies
         ]
 
@@ -78,7 +78,7 @@ class CompanyConnectionType(relay.Connection[CompanyType]):
             ),
             edges=[
                 relay.Edge(
-                    node=CompanyType.from_orm(company),
+                    node=CompanyType.marshal(company),
                     cursor=relay.to_base64(CompanyType, company.id),
                 )
                 for company in paginated_result.entities

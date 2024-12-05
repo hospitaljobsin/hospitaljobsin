@@ -4,7 +4,7 @@ import strawberry
 from beanie import Document
 from strawberry import relay
 
-ModelType = TypeVar("ModelType", bound=Document)
+ModelType = TypeVar("ModelType")
 
 
 @strawberry.type
@@ -12,8 +12,8 @@ class BaseNodeType(Generic[ModelType], relay.Node):
     id: relay.NodeID[str]
 
     @classmethod
-    def from_orm(cls, model: ModelType) -> Self:
-        """Construct a node from an ORM instance."""
+    def marshal(cls, model: ModelType) -> Self:
+        """Marshal into a node instance."""
         raise NotImplementedError
 
 

@@ -29,8 +29,8 @@ class JobType(BaseNodeType[Job]):
     company_id: strawberry.Private[str]
 
     @classmethod
-    def from_orm(cls, job: Job) -> Self:
-        """Construct a node from an ORM instance."""
+    def marshal(cls, job: Job) -> Self:
+        """Marshal into a node instance."""
         return cls(
             id=str(job.id),
             created_at=job.id.generation_time,
@@ -56,7 +56,7 @@ class JobType(BaseNodeType[Job]):
 
         if company is None:
             return None
-        return CompanyType.from_orm(company)
+        return CompanyType.marshal(company)
 
     @classmethod
     async def resolve_nodes(  # type: ignore[no-untyped-def] # noqa: ANN206
@@ -67,7 +67,7 @@ class JobType(BaseNodeType[Job]):
         required: bool = False,  # noqa: ARG003
     ):
         jobs = await info.context["loaders"].job_by_id.load_many(node_ids)
-        return [cls.from_orm(job) if job is not None else job for job in jobs]
+        return [cls.marshal(job) if job is not None else job for job in jobs]
 
 
 @strawberry.type(name="JobConnection")
@@ -95,7 +95,7 @@ class JobConnectionType(relay.Connection[JobType]):
             ),
             edges=[
                 relay.Edge(
-                    node=JobType.from_orm(job),
+                    node=JobType.marshal(job),
                     cursor=relay.to_base64(JobType, job.id),
                 )
                 for job in paginated_result.entities

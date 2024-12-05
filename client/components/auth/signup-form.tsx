@@ -50,6 +50,7 @@ export default function SignUpForm() {
           userAttributes: {
             email: values.email,
             name: values.name,
+            hasOnboarded: "false",
           },
           // optional
           autoSignIn: true,

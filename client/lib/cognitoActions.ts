@@ -26,7 +26,7 @@ export async function handleSignUpStep(
         // Redirect user to confirm-sign-up with link screen.
       }
       await autoSignIn();
-      router.replace("/");
+      router.replace("/setup-profile");
       break;
   }
 }
