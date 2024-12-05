@@ -8,20 +8,20 @@ export default function JobListControllerSkeleton() {
   return (
     <div className="flex items-center justify-center w-full h-full gap-4">
       <Input
+        label="Search Term"
         isClearable
         variant="bordered"
-        placeholder="Search for jobs..."
-        disabled
+        isDisabled
         fullWidth
       />
       <Input
+        label="Location"
         isClearable
         variant="bordered"
-        placeholder="Enter your location"
         fullWidth
-        disabled
+        isDisabled
       />
-      <Select placeholder="Distance" variant="bordered">
+      <Select variant="bordered" label="Distance" isDisabled>
         {distances.map((distance) => (
           <SelectItem key={distance}>{distance}</SelectItem>
         ))}

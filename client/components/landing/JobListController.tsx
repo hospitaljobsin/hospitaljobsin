@@ -18,21 +18,16 @@ export default function JobListController(props: JobListControllerProps) {
   return (
     <div className="flex items-center justify-center w-full h-full gap-4">
       <Input
+        label="Search Term"
         isClearable
         variant="bordered"
-        placeholder="Search for jobs..."
         value={props.searchTerm || ""}
         onValueChange={(value) => props.setSearchTerm(value)}
         onClear={() => props.setSearchTerm(null)}
         fullWidth
       />
-      <Input
-        isClearable
-        variant="bordered"
-        placeholder="Enter your location"
-        fullWidth
-      />
-      <Select placeholder="Distance" variant="bordered">
+      <Input label="Location" isClearable variant="bordered" fullWidth />
+      <Select variant="bordered" label="Distance">
         {distances.map((distance) => (
           <SelectItem key={distance}>{distance}</SelectItem>
         ))}
