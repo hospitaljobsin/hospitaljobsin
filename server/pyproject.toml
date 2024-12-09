@@ -21,4 +21,5 @@ dependencies = [
     "types-aioboto3[cognito-idp]>=13.2.0.post2",
     "boto3>=1.35.36",
     "aioboto3>=13.2.0",
+    "passlib>=1.7.4",
 ]

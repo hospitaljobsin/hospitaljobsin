@@ -16,6 +16,8 @@ class NotAuthenticatedError(BaseErrorType):
 class ViewerType(BaseNodeType[User]):
     username: str
 
+    has_onboarded: bool
+
     @classmethod
     def marshal(cls, user: User) -> Self:
         """Marshal into a node instance."""
@@ -23,6 +25,7 @@ class ViewerType(BaseNodeType[User]):
             # we can get users by their username only, from the admin API
             id=user.username,
             username=user.username,
+            has_onboarded=user.has_onboarded,
         )
 
     @classmethod

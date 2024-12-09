@@ -15,3 +15,6 @@ class AuthService:
         )
 
         return User(username=response["Username"])
+
+    async def create(self, username: str, email: str, password: str) -> User:
+        pass

@@ -1,8 +1,11 @@
 import JobDetailViewQueryNode, {
   JobDetailViewQuery,
 } from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
-import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import loadSerializableQuery, {
+  SerializablePreloadedQuery,
+} from "@/lib/relay/loadSerializableQuery";
 import { notFound } from "next/navigation";
+import { ConcreteRequest } from "relay-runtime";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 
 export default async function JobDetailPage({
@@ -12,12 +15,22 @@ export default async function JobDetailPage({
 }) {
   const jobId = (await params).id;
 
-  const preloadedQuery = await loadSerializableQuery<
-    typeof JobDetailViewQueryNode,
+  let preloadedQuery: SerializablePreloadedQuery<
+    ConcreteRequest,
     JobDetailViewQuery
-  >(JobDetailViewQueryNode.params, {
-    jobId: decodeURIComponent(jobId),
-  });
+  >;
+
+  try {
+    preloadedQuery = await loadSerializableQuery<
+      typeof JobDetailViewQueryNode,
+      JobDetailViewQuery
+    >(JobDetailViewQueryNode.params, {
+      jobId: decodeURIComponent(jobId),
+    });
+  } catch {
+    // gracefully handle errors
+    notFound();
+  }
 
   if (
     !preloadedQuery.response.data.node ||

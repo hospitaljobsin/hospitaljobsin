@@ -35,7 +35,7 @@ class JobRepo:
             link_rule=WriteRules.DO_NOTHING,
         )
 
-    async def get(self, job_id: str) -> Job | None:
+    async def get(self, job_id: ObjectId) -> Job | None:
         """Get job by ID."""
         return await Job.get(job_id)
 

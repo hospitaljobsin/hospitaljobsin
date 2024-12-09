@@ -35,7 +35,7 @@ class CompanyRepo:
 
         return await company.insert()
 
-    async def get(self, company_id: str) -> Company | None:
+    async def get(self, company_id: ObjectId) -> Company | None:
         """Get company by ID."""
         return await Company.get(company_id)
 
