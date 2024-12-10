@@ -7,7 +7,7 @@ from aioinject.ext.strawberry import inject
 from app.auth.services import AuthService
 from app.context import Info
 
-from .types import NotAuthenticatedError, ViewerResult, ViewerType
+from .types import NotAuthenticatedError, ViewerPayload, ViewerType
 
 
 @strawberry.type
@@ -24,7 +24,7 @@ class JobQuery:
             AuthService,
             Inject,
         ],
-    ) -> ViewerResult:
+    ) -> ViewerPayload:
         access_token = info.context["access_token"]
         if access_token is None:
             return NotAuthenticatedError()

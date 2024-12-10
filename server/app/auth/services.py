@@ -1,20 +1,36 @@
-from types_aiobotocore_cognito_idp import CognitoIdentityProviderClient
+from result import Err, Ok, Result
 
-from app.auth.models import User
+from app.accounts.documents import Account
+from app.accounts.repositories import AccountRepo
+from app.auth.exceptions import EmailInUseError, InvalidCredentialsError
 
 
 class AuthService:
-    def __init__(self, cognito_idp_client: CognitoIdentityProviderClient) -> None:
-        self._cognito_idp_client = cognito_idp_client
+    def __init__(self, account_repo: AccountRepo) -> None:
+        self._account_repo = account_repo
 
-    # TODO: get user by username here instead
-    # If possible, by user ID instead of username
-    async def get_user(self, access_token: str) -> User:
-        response = await self._cognito_idp_client.get_user(
-            AccessToken=access_token,
+    async def register(
+        self, email: str, password: str
+    ) -> Result[Account, EmailInUseError]:
+        if await self._account_repo.get_by_email(email=email):
+            return Err(EmailInUseError())
+        account = await self._account_repo.create(
+            email=email,
+            password=password,
         )
 
-        return User(username=response["Username"])
+        return Ok(account)
 
-    async def create(self, username: str, email: str, password: str) -> User:
-        pass
+    async def login(
+        self, email: str, password: str
+    ) -> Result[Account, InvalidCredentialsError]:
+        account = await self._account_repo.get_by_email(email=email)
+        if not account:
+            return Err(InvalidCredentialsError())
+
+        if not self._account_repo.verify_password(
+            password=password,
+            password_hash=account.password_hash,
+        ):
+            return Err(InvalidCredentialsError())
+        return Ok(account)

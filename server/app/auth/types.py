@@ -1,31 +1,27 @@
+import datetime
 from collections.abc import Iterable
 from typing import Annotated, Self
 
 import strawberry
 
-from app.auth.models import User
+from app.accounts.documents import Account
 from app.base.types import BaseErrorType, BaseNodeType
 
 
-@strawberry.type
-class NotAuthenticatedError(BaseErrorType):
-    message: str = "Not authenticated."
-
-
 @strawberry.type(name="Viewer")
-class ViewerType(BaseNodeType[User]):
-    username: str
-
+class ViewerType(BaseNodeType[Account]):
+    email: str
     has_onboarded: bool
+    updated_at: datetime | None
 
     @classmethod
-    def marshal(cls, user: User) -> Self:
+    def marshal(cls, account: Account) -> Self:
         """Marshal into a node instance."""
         return cls(
-            # we can get users by their username only, from the admin API
-            id=user.username,
-            username=user.username,
-            has_onboarded=user.has_onboarded,
+            id=str(account.id),
+            email=account.email,
+            updated_at=account.updated_at,
+            has_onboarded=account.has_onboarded,
         )
 
     @classmethod
@@ -40,9 +36,34 @@ class ViewerType(BaseNodeType[User]):
         pass
 
 
-ViewerResult = Annotated[
+@strawberry.type
+class NotAuthenticatedError(BaseErrorType):
+    message: str = "Not authenticated."
+
+
+@strawberry.type(name="EmailInUseError")
+class EmailInUseErrorType(BaseErrorType):
+    message: str = "Email address is already in use."
+
+
+@strawberry.type(name="InvalidCredentialsError")
+class InvalidCredentialsErrorType(BaseErrorType):
+    message: str = "Invalid credentials provided."
+
+
+RegisterPayload = Annotated[
+    ViewerType | EmailInUseErrorType,
+    strawberry.union(name="RegisterPayload"),
+]
+
+LoginPayload = Annotated[
+    ViewerType | InvalidCredentialsErrorType,
+    strawberry.union(name="LoginPayload"),
+]
+
+ViewerPayload = Annotated[
     ViewerType | NotAuthenticatedError,
     strawberry.union(
-        name="ViewerResult",
+        name="ViewerPayload",
     ),
 ]
