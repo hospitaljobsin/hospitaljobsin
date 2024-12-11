@@ -1,3 +1,12 @@
+type Address {
+  line1: String!
+  line2: String
+  city: String!
+  state: String!
+  country: String!
+  pincode: String!
+}
+
 type Company implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -12,8 +21,9 @@ type Company implements Node {
   email: String!
 }
 
-"""Date (isoformat)"""
-scalar Date
+enum CurrencyEnum {
+  INR
+}
 
 """Date with time (isoformat)"""
 scalar DateTime
@@ -22,10 +32,22 @@ type Job implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
   title: String!
-  description: String!
-  location: String!
-  salary: String!
-  closingDate: Date!
+  description: String
+  category: String!
+  type: JobTypeEnum!
+  workMode: WorkModeEnum!
+  address: Address!
+  application: String!
+  skills: [String!]!
+  currency: CurrencyEnum!
+  hasSalaryRange: Boolean!
+  minSalary: Int
+  maxSalary: Int
+  hasExperienceRange: Boolean!
+  minExperience: Int
+  maxExperience: Int
+  updatedAt: DateTime!
+  expiresAt: DateTime
   createdAt: DateTime!
   company: Company
 }
@@ -45,6 +67,13 @@ type JobEdge {
 
   """The item at the end of the edge"""
   node: Job!
+}
+
+enum JobTypeEnum {
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
+  CONTRACT
 }
 
 """An object with a Globally Unique ID"""
@@ -83,4 +112,10 @@ type Query {
     first: Int = null
     last: Int = null
   ): JobConnection!
+}
+
+enum WorkModeEnum {
+  REMOTE
+  HYBRID
+  OFFICE
 }

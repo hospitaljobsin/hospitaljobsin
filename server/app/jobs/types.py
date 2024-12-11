@@ -1,6 +1,7 @@
 from collections.abc import Iterable
-from datetime import date, datetime
-from typing import Annotated, Self
+from datetime import datetime
+from enum import Enum
+from typing import Annotated, Literal, Self
 
 import strawberry
 from aioinject import Inject
@@ -8,7 +9,7 @@ from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from strawberry import relay
 
-from app.base.types import BaseNodeType
+from app.base.types import AddressType, BaseNodeType
 from app.companies.repositories import CompanyRepo
 from app.companies.types import CompanyType
 from app.context import Info
@@ -16,13 +17,50 @@ from app.database.paginator import PaginatedResult
 from app.jobs.documents import Job
 
 
+@strawberry.enum
+class JobTypeEnum(Enum):
+    FULL_TIME = "full_time"
+    PART_TIME = "part_time"
+    INTERNSHIP = "internship"
+    CONTRACT = "contract"
+
+
+@strawberry.enum
+class WorkModeEnum(Enum):
+    REMOTE = "remote"
+    HYBRID = "hybrid"
+    OFFICE = "office"
+
+
+@strawberry.enum
+class CurrencyEnum(Enum):
+    INR = "INR"
+
+
 @strawberry.type(name="Job")
 class JobType(BaseNodeType[Job]):
     title: str
-    description: str
-    location: str
-    salary: str
-    closing_date: date
+    description: str | None
+    category: str
+    type: JobTypeEnum
+    work_mode: WorkModeEnum
+
+    address: AddressType
+    application: str
+    skills: list[str]
+
+    currency: CurrencyEnum
+
+    has_salary_range: bool
+    min_salary: int | None
+    max_salary: int | None
+
+    has_experience_range: bool
+    min_experience: int | None
+    max_experience: int | None
+
+    updated_at: datetime
+    expires_at: datetime | None
 
     created_at: datetime
 
@@ -36,9 +74,21 @@ class JobType(BaseNodeType[Job]):
             created_at=job.id.generation_time,
             title=job.title,
             description=job.description,
-            location=job.location,
-            salary=job.salary,
-            closing_date=job.closing_date,
+            category=job.category,
+            type=JobTypeEnum[job.type.upper()],
+            work_mode=WorkModeEnum[job.work_mode.upper()],
+            address=AddressType.marshal(job.address),
+            application=job.application,
+            skills=job.skills,
+            currency=CurrencyEnum[job.currency.upper()],
+            has_salary_range=job.has_salary_range,
+            min_salary=job.min_salary,
+            max_salary=job.max_salary,
+            has_experience_range=job.has_experience_range,
+            min_experience=job.min_experience,
+            max_experience=job.max_experience,
+            updated_at=job.updated_at,
+            expires_at=job.expires_at,
             company_id=job.company.ref.id,
         )
 

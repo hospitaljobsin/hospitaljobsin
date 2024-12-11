@@ -5,7 +5,6 @@ import pymongo
 from beanie import Document, Link
 from pymongo import IndexModel
 
-from app.accounts.documents import Account
 from app.base.models import Address
 from app.companies.documents import Company
 
@@ -14,7 +13,7 @@ class Job(Document):
     title: str
     description: str | None = None
     category: str
-    type: Literal["Full_time", "Part_time", "Internship", "Contract"]
+    type: Literal["full_time", "part_time", "internship", "contract"]
     work_mode: Literal["remote", "hybrid", "office"]
 
     address: Address
@@ -34,7 +33,6 @@ class Job(Document):
     updated_at: datetime
     expires_at: datetime | None = None
 
-    owner_account: Link[Account]
     company: Link[Company]
 
     class Settings:
