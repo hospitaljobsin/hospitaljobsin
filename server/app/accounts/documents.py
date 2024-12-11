@@ -17,6 +17,15 @@ class Account(Document):
         name = "accounts"
 
 
+class EmailVerification(Document):
+    account: Link[Account]
+    verification_token_hash: str
+    expires_at: datetime
+
+    class Settings:
+        name = "email_verifications"
+
+
 # Address Schema
 class Address(BaseModel):
     line1: str

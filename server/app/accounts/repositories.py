@@ -25,6 +25,7 @@ class AccountRepo:
         """Create a new account."""
         account = Account(
             email=email,
+            email_verified=False,
             password_hash=self.hash_password(
                 password=password,
             ),
