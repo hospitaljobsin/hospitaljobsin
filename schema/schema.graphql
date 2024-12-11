@@ -21,7 +21,7 @@ type Company implements Node {
   email: String!
 }
 
-enum CurrencyEnum {
+enum Currency {
   INR
 }
 
@@ -34,12 +34,12 @@ type Job implements Node {
   title: String!
   description: String
   category: String!
-  type: JobTypeEnum!
-  workMode: WorkModeEnum!
+  type: JobType!
+  workMode: WorkMode!
   address: Address!
   application: String!
   skills: [String!]!
-  currency: CurrencyEnum!
+  currency: Currency!
   hasSalaryRange: Boolean!
   minSalary: Int
   maxSalary: Int
@@ -69,7 +69,7 @@ type JobEdge {
   node: Job!
 }
 
-enum JobTypeEnum {
+enum JobType {
   FULL_TIME
   PART_TIME
   INTERNSHIP
@@ -114,7 +114,7 @@ type Query {
   ): JobConnection!
 }
 
-enum WorkModeEnum {
+enum WorkMode {
   REMOTE
   HYBRID
   OFFICE

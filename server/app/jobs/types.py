@@ -17,7 +17,7 @@ from app.database.paginator import PaginatedResult
 from app.jobs.documents import Job
 
 
-@strawberry.enum
+@strawberry.enum(name="JobType")
 class JobTypeEnum(Enum):
     FULL_TIME = "full_time"
     PART_TIME = "part_time"
@@ -25,14 +25,14 @@ class JobTypeEnum(Enum):
     CONTRACT = "contract"
 
 
-@strawberry.enum
+@strawberry.enum(name="WorkMode")
 class WorkModeEnum(Enum):
     REMOTE = "remote"
     HYBRID = "hybrid"
     OFFICE = "office"
 
 
-@strawberry.enum
+@strawberry.enum(name="Currency")
 class CurrencyEnum(Enum):
     INR = "INR"
 
