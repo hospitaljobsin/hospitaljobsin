@@ -1,23 +1,21 @@
 from datetime import date, datetime
-from typing import Annotated
+from typing import Annotated, Literal
 
 from beanie import BackLink, Document, Indexed, Link
 from pydantic import BaseModel, Field, HttpUrl
 
 from app.base.models import Address
 
-# Address Schema
-
 
 # Education Schema
 class Education(BaseModel):
-    type: str = Field(
-        ..., pattern="^(Doctorate|Master's|Bachelor's|Associate's|High School|Other)$"
-    )
+    type: Literal[
+        "Doctorate", "Master's", "Bachelor's", "Associate's", "High School", "Other"
+    ]
     institution_name: str
     course_name: str
     specialization: str | None = None
-    course_type: str = Field(..., pattern="^(Full Time|Part Time|Correspondence)$")
+    course_type: Literal["Full Time", "Part Time", "Correspondence"]
     course_start_date: date
     course_end_date: date
 
@@ -30,7 +28,7 @@ class CurrentJob(BaseModel):
 
 # Preferences Schema
 class Preferences(BaseModel):
-    work_location: str = Field(..., pattern="^(Office|Remote|Hybrid)$")
+    work_location: Literal["Office", "Remote", "Hybrid"]
     salary_expectations: float | None = None  # Expected salary in numeric format
 
 
@@ -42,11 +40,11 @@ class Links(BaseModel):
 
 # Main Job Seeker Profile Document
 class Profile(Document):
-    gender: str = Field(..., pattern="^(Male|Female|Other)$")
+    gender: Literal["Male", "Female", "Other"]
     date_of_birth: date
     address: Address
     is_differently_abled: bool
-    category: str = Field(..., pattern="^(SC|ST|OBC|General|Other)$")
+    category: Literal["SC", "ST", "OBC", "General", "Other"]
     education: list[Education]
     current_job: CurrentJob | None = None
     total_job_experience: float  # Total experience in years
