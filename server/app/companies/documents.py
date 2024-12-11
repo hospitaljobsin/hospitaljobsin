@@ -1,13 +1,12 @@
 from beanie import Document
 
+from app.base.models import Address
+
 
 class Company(Document):
     name: str
     description: str
-    address: str
-    city: str
-    postcode: int
-    country: str
+    address: Address
     phone: str
     website: str
     email: str

@@ -4,7 +4,7 @@ from typing import Self
 import strawberry
 from strawberry import relay
 
-from app.base.types import BaseNodeType
+from app.base.types import AddressType, BaseNodeType
 from app.companies.documents import Company
 from app.context import Info
 from app.database.paginator import PaginatedResult
@@ -14,10 +14,7 @@ from app.database.paginator import PaginatedResult
 class CompanyType(BaseNodeType[Company]):
     name: str
     description: str
-    address: str
-    city: str
-    postcode: int
-    country: str
+    address: AddressType
     phone: str
     website: str
     email: str
@@ -29,10 +26,7 @@ class CompanyType(BaseNodeType[Company]):
             id=str(company.id),
             name=company.name,
             description=company.description,
-            address=company.address,
-            city=company.city,
-            postcode=company.postcode,
-            country=company.country,
+            address=AddressType.marshal(company.address),
             phone=company.phone,
             website=company.website,
             email=company.email,
