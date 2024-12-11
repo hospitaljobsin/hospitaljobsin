@@ -67,8 +67,10 @@ class Settings(BaseSettings):
         ),
     ]
 
-    # Coginto auth config
-    cognito_issuer_url: str
+    # session cookies config
+    session_cookie_name: str = "session"
+
+    session_cookie_domain: str = "localhost"
 
     openapi_url: str | None = None
 

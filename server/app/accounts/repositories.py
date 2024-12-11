@@ -1,9 +1,19 @@
+from datetime import date
+
 from beanie import PydanticObjectId
 from beanie.operators import In
 from bson import ObjectId
 from passlib.hash import argon2
 
-from .documents import Account
+from .documents import (
+    Account,
+    Address,
+    CurrentJob,
+    Education,
+    Links,
+    Preferences,
+    Profile,
+)
 
 
 class AccountRepo:
@@ -15,7 +25,9 @@ class AccountRepo:
         """Create a new account."""
         account = Account(
             email=email,
-            password_hash=self.hash_password(password),
+            password_hash=self.hash_password(
+                password=password,
+            ),
         )
 
         return await account.insert()
@@ -49,3 +61,48 @@ class AccountRepo:
             account_by_id.get(PydanticObjectId(account_id))
             for account_id in account_ids
         ]
+
+
+class ProfileRepo:
+    async def create(
+        self,
+        user_id: str,
+        gender: str,
+        date_of_birth: date,
+        address: Address | None,
+        is_differently_abled: bool,
+        category: str | None,
+        education: list[Education] | None,
+        current_job: CurrentJob | None,
+        total_job_experience: float | None,
+        preferences: Preferences | None,
+        links: Links | None,
+    ) -> Profile:
+        """Create a new profile."""
+        profile = Profile(
+            user_id=user_id,
+            gender=gender,
+            date_of_birth=date_of_birth,
+            address=address,
+            is_differently_abled=is_differently_abled,
+            category=category,
+            education=education,
+            current_job=current_job,
+            total_job_experience=total_job_experience,
+            preferences=preferences,
+            links=links,
+        )
+
+        return await profile.insert()
+
+    async def get(self, profile_id: str) -> Profile | None:
+        """Get profile by ID."""
+        return await Profile.get(profile_id)
+
+    async def get_by_user_id(self, user_id: str) -> Profile | None:
+        """Get profile by user ID."""
+        return await Profile.find_one(Profile.user_id == user_id)
+
+    async def delete(self, profile: Profile) -> None:
+        """Delete a profile by ID."""
+        await profile.delete()

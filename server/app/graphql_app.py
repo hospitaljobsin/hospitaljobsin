@@ -1,35 +1,40 @@
 from typing import Annotated
 
+from aioinject import Injected
+from aioinject.ext.fastapi import inject
 from fastapi import Depends, Request
 from strawberry.fastapi import GraphQLRouter
 
-from app.auth.dependencies import current_user_id, get_access_token
+from app.auth.dependencies import get_session_token
+from app.auth.repositories import SessionRepo
 
 from .context import Context
 from .dataloaders import create_dataloaders
 from .schema import schema
 
 
+@inject
 async def get_context(
     request: Request,
-    access_token: Annotated[
+    session_token: Annotated[
         str | None,
         Depends(
-            dependency=get_access_token,
+            dependency=get_session_token,
         ),
     ],
-    current_user_id: Annotated[
-        str | None,
-        Depends(
-            dependency=current_user_id,
-        ),
-    ],
+    session_repo: Injected[SessionRepo],
 ) -> Context:
+    if session_token:
+        if session := await session_repo.get(token=session_token):
+            return Context(
+                request=request,
+                loaders=create_dataloaders(),
+                current_user_id=session.account.ref.id,
+            )
     return Context(
         request=request,
         loaders=create_dataloaders(),
-        current_user_id=current_user_id,
-        access_token=access_token,
+        current_user_id=None,
     )
 
 
