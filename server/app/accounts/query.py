@@ -4,16 +4,16 @@ import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
 
+from app.accounts.types import AccountType
 from app.auth.services import AuthService
+from app.base.types import NotAuthenticatedErrorType
 from app.context import Info
-
-from .types import NotAuthenticatedError, ViewerPayload, ViewerType
 
 
 @strawberry.type
-class JobQuery:
+class AccountQuery:
     @strawberry.field(  # type: ignore[misc]
-        graphql_type=ViewerType,
+        graphql_type=AccountType,
         description="Get the current user.",
     )
     @inject
@@ -27,6 +27,6 @@ class JobQuery:
     ) -> ViewerPayload:
         access_token = info.context["access_token"]
         if access_token is None:
-            return NotAuthenticatedError()
+            return NotAuthenticatedErrorType()
         result = await auth_service.get_user(access_token=access_token)
         return ViewerType.marshal(result)

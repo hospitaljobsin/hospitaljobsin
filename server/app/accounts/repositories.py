@@ -1,15 +1,19 @@
-from datetime import date
+import secrets
+from datetime import date, datetime, timedelta
 
 from beanie import PydanticObjectId
 from beanie.operators import In
 from bson import ObjectId
-from passlib.hash import argon2
+from passlib.hash import argon2, sha256_crypt
+
+from app.lib.constants import EMAIL_VERIFICATION_EXPIRES_IN
 
 from .documents import (
     Account,
     Address,
     CurrentJob,
     Education,
+    EmailVerification,
     Links,
     Preferences,
     Profile,
@@ -62,6 +66,42 @@ class AccountRepo:
             account_by_id.get(PydanticObjectId(account_id))
             for account_id in account_ids
         ]
+
+
+class EmailVerificationRepo:
+    async def create(self, account_id: ObjectId) -> str:
+        """Create a new email verification."""
+        verification_token = self.generate_verification_token()
+        email_verification = EmailVerification(
+            account=account_id,
+            verification_token_hash=self.hash_verification_token(
+                token=verification_token,
+            ),
+            expires_at=datetime.now()
+            + timedelta(
+                seconds=EMAIL_VERIFICATION_EXPIRES_IN,
+            ),
+        )
+
+        await email_verification.insert()
+        return verification_token
+
+    async def get(self, verification_token: str) -> EmailVerification | None:
+        """Get an email verification by token."""
+        return await EmailVerification.find_one(
+            EmailVerification.verification_token_hash
+            == self.hash_verification_token(verification_token)
+        )
+
+    @staticmethod
+    def generate_verification_token() -> str:
+        """Generate a new verification token."""
+        return secrets.token_hex(8)
+
+    @staticmethod
+    def hash_verification_token(token: str) -> str:
+        """Hash verification token."""
+        return sha256_crypt.hash(token)
 
 
 class ProfileRepo:

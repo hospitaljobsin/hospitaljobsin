@@ -1,9 +1,11 @@
 import secrets
+from datetime import datetime, timedelta
 
 from bson import ObjectId
 from passlib.hash import sha256_crypt
 
 from app.auth.documents import Session
+from app.lib.constants import USER_SESSION_EXPIRES_IN
 
 
 class SessionRepo:
@@ -14,6 +16,10 @@ class SessionRepo:
             account_id=account_id,
             token_hash=self.hash_session_token(
                 token=session_token,
+            ),
+            expires_at=datetime.now()
+            + timedelta(
+                seconds=USER_SESSION_EXPIRES_IN,
             ),
         )
 

@@ -22,4 +22,9 @@ class BaseErrorType:
     message: str
 
 
+@strawberry.type(name="NotAuthenticatedError")
+class NotAuthenticatedErrorType(BaseErrorType):
+    message: str = "Not authenticated."
+
+
 NodeType = TypeVar("NodeType", bound=BaseNodeType[Document])

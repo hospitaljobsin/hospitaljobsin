@@ -1,39 +1,12 @@
 from datetime import date, datetime
 from typing import Annotated
 
-from beanie import Document, Indexed, Link
+from beanie import BackLink, Document, Indexed, Link
 from pydantic import BaseModel, Field, HttpUrl
 
-
-class Account(Document):
-    email: Annotated[str, Indexed(unique=True)]
-    email_verified: bool = False
-    password_hash: str
-    has_onboarded: str
-    updated_at: datetime | None
-    profile: Link["Profile"] | None = None
-
-    class Settings:
-        name = "accounts"
-
-
-class EmailVerification(Document):
-    account: Link[Account]
-    verification_token_hash: str
-    expires_at: datetime
-
-    class Settings:
-        name = "email_verifications"
-
+from app.base.models import Address
 
 # Address Schema
-class Address(BaseModel):
-    line1: str
-    line2: str | None = None
-    city: str
-    state: str
-    country: str
-    pincode: str
 
 
 # Education Schema
@@ -81,7 +54,30 @@ class Profile(Document):
     links: Links | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-    account: Link[Account]
+    account: Link["Account"]
 
     class Settings:
         name = "profiles"  # MongoDB collection name
+
+
+class Account(Document):
+    email: Annotated[str, Indexed(unique=True)]
+    email_verified: bool = False
+    password_hash: str
+    has_onboarded: bool
+    updated_at: datetime | None
+    profile: BackLink["Profile"] | None = Field(
+        original_field="account",
+    )
+
+    class Settings:
+        name = "accounts"
+
+
+class EmailVerification(Document):
+    account: Link[Account]
+    verification_token_hash: Annotated[str, Indexed(unique=True)]
+    expires_at: datetime
+
+    class Settings:
+        name = "email_verifications"
