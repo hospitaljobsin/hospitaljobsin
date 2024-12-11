@@ -16,13 +16,36 @@ const JobDetailsFragment = graphql`
   fragment JobDetailsFragment on Job {
     title
     description
-    location
-    salary
-    closingDate
+    category
+    type
+    workMode
+    address {
+      line1
+      line2
+      city
+      state
+      country
+      pincode
+    }
+    skills
+    currency
+    hasSalaryRange
+    minSalary
+    maxSalary
+    hasExperienceRange
+    minExperience
+    maxExperience
     createdAt
+    expiresAt
     company {
       name
       description
+      address {
+        line1
+        city
+        state
+        country
+      }
       phone
       website
       email
@@ -33,7 +56,18 @@ const JobDetailsFragment = graphql`
 export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
   const data = useFragment(JobDetailsFragment, job);
 
-  const formattedDate = dateFormat.format(new Date(data.createdAt));
+  const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
+  const formattedExpiresAt = data.expiresAt
+    ? dateFormat.format(new Date(data.expiresAt))
+    : "No expiration";
+
+  const salaryRange = data.hasSalaryRange
+    ? `${data.currency} ${data.minSalary} - ${data.maxSalary}`
+    : "Not disclosed";
+
+  const experienceRange = data.hasExperienceRange
+    ? `${data.minExperience} - ${data.maxExperience} years`
+    : "Not specified";
 
   return (
     <div className="w-full flex flex-col gap-6">
@@ -45,12 +79,12 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
               <h1 className="text-3xl font-medium">{data.title}</h1>
               <h3 className="text-md">{data.company?.name}</h3>
               <span className="text-sm text-default-500">
-                Posted on: {formattedDate}
+                Posted on: {formattedCreatedAt}
               </span>
             </div>
             <Button
               as="a"
-              href="https://github.com/nextui-org/nextui"
+              href={data.application}
               target="_blank"
               rel="noopener noreferrer"
               color="primary"
@@ -73,13 +107,17 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
           <CardBody>
             <ul className="text-default-500 space-y-2">
               <li>
-                <strong>Location:</strong> {data.location}
+                <strong>Location:</strong>{" "}
+                {`${data.address.city}, ${data.address.state}`}
               </li>
               <li>
-                <strong>Salary:</strong> {data.salary}
+                <strong>Salary:</strong> {salaryRange}
               </li>
               <li>
-                <strong>Closing Date:</strong> {data.closingDate}
+                <strong>Closing Date:</strong> {formattedExpiresAt}
+              </li>
+              <li>
+                <strong>Experience:</strong> {experienceRange}
               </li>
             </ul>
           </CardBody>
@@ -101,6 +139,10 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
               <div>
                 <p className="text-default-500">{data.company?.description}</p>
                 <ul className="text-default-500 space-y-2 mt-2">
+                  <li>
+                    <strong>Address:</strong>{" "}
+                    {`${data.company?.address?.line1}, ${data.company?.address?.city}, ${data.company?.address?.state}, ${data.company?.address?.country}`}
+                  </li>
                   <li>
                     <strong>Website:</strong>{" "}
                     <Link
@@ -136,6 +178,28 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
           <ReactMarkdown className="prose dark:prose-invert prose-h2:text-sm">
             {data.description}
           </ReactMarkdown>
+        </CardBody>
+      </Card>
+
+      {/* Skills */}
+      <Card>
+        <CardHeader>
+          <h3 className="text-lg font-semibold text-secondary">
+            Required Skills
+          </h3>
+        </CardHeader>
+        <Divider />
+        <CardBody>
+          <div className="flex flex-wrap gap-2">
+            {data.skills.map((skill, index) => (
+              <span
+                key={index}
+                className="bg-gray-200 text-sm px-2 py-1 rounded-md"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
         </CardBody>
       </Card>
     </div>

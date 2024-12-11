@@ -34,12 +34,12 @@ class NotAuthenticatedErrorType(BaseErrorType):
 
 @strawberry.type(name="Address")
 class AddressType:
-    line1: str
+    line1: str | None
     line2: str | None
     city: str
     state: str
     country: str
-    pincode: str
+    pincode: str | None
 
     @classmethod
     def marshal(cls, address: Address) -> Self:

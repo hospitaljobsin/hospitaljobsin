@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<405684b58ed161d69cb2eb4fa5e5b7d0>>
+ * @generated SignedSource<<e64853000270bab597c9072b1e0c9a2e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -58,6 +58,34 @@ v3 = {
   "storageKey": null
 },
 v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "line1",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "city",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "state",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "country",
+  "storageKey": null
+},
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -129,21 +157,106 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "location",
+                "name": "category",
                 "storageKey": null
               },
               {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "salary",
+                "name": "type",
                 "storageKey": null
               },
               {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "closingDate",
+                "name": "workMode",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Address",
+                "kind": "LinkedField",
+                "name": "address",
+                "plural": false,
+                "selections": [
+                  (v4/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "line2",
+                    "storageKey": null
+                  },
+                  (v5/*: any*/),
+                  (v6/*: any*/),
+                  (v7/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "pincode",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "skills",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "currency",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "hasSalaryRange",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "minSalary",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "maxSalary",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "hasExperienceRange",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "minExperience",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "maxExperience",
                 "storageKey": null
               },
               {
@@ -151,6 +264,13 @@ return {
                 "args": null,
                 "kind": "ScalarField",
                 "name": "createdAt",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "expiresAt",
                 "storageKey": null
               },
               {
@@ -172,6 +292,21 @@ return {
                   {
                     "alias": null,
                     "args": null,
+                    "concreteType": "Address",
+                    "kind": "LinkedField",
+                    "name": "address",
+                    "plural": false,
+                    "selections": [
+                      (v4/*: any*/),
+                      (v5/*: any*/),
+                      (v6/*: any*/),
+                      (v7/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
                     "kind": "ScalarField",
                     "name": "phone",
                     "storageKey": null
@@ -190,7 +325,7 @@ return {
                     "name": "email",
                     "storageKey": null
                   },
-                  (v4/*: any*/)
+                  (v8/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -198,19 +333,19 @@ return {
             "type": "Job",
             "abstractKey": null
           },
-          (v4/*: any*/)
+          (v8/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "a9e2faea2fa1f46b57f4533ad052a7af",
+    "cacheID": "52dc096f10ab6947c54fdfc48f41acc0",
     "id": null,
     "metadata": {},
     "name": "JobDetailViewQuery",
     "operationKind": "query",
-    "text": "query JobDetailViewQuery(\n  $jobId: ID!\n) {\n  node(id: $jobId) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n    }\n    id\n  }\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  location\n  salary\n  closingDate\n  createdAt\n  company {\n    name\n    description\n    phone\n    website\n    email\n    id\n  }\n}\n"
+    "text": "query JobDetailViewQuery(\n  $jobId: ID!\n) {\n  node(id: $jobId) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n    }\n    id\n  }\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  category\n  type\n  workMode\n  address {\n    line1\n    line2\n    city\n    state\n    country\n    pincode\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  expiresAt\n  company {\n    name\n    description\n    address {\n      line1\n      city\n      state\n      country\n    }\n    phone\n    website\n    email\n    id\n  }\n}\n"
   }
 };
 })();

@@ -6,7 +6,7 @@ import {
   CardHeader,
   Tooltip,
 } from "@nextui-org/react";
-import { Calendar, MapPin } from "lucide-react";
+import { Briefcase, Globe, MapPin } from "lucide-react";
 import Link from "next/link";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -16,14 +16,32 @@ export const JobFragment = graphql`
   fragment JobFragment on Job {
     id
     title
-    location
-    salary
-    closingDate
+    description
+    category
+    type
+    workMode
+    address {
+      city
+      state
+    }
+    skills
+    currency
+    hasSalaryRange
+    minSalary
+    maxSalary
+    hasExperienceRange
+    minExperience
+    maxExperience
     createdAt
+    expiresAt
     company {
       id
       name
       description
+      address {
+        city
+        state
+      }
     }
   }
 `;
@@ -36,7 +54,18 @@ type Props = {
 export default function Job({ job }: Props) {
   const data = useFragment(JobFragment, job);
 
-  const formattedDate = dateFormat.format(new Date(data.createdAt));
+  const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
+  const formattedExpiresAt = data.expiresAt
+    ? dateFormat.format(new Date(data.expiresAt))
+    : "No expiration";
+
+  const salaryRange = data.hasSalaryRange
+    ? `${data.currency} ${data.minSalary} - ${data.maxSalary}`
+    : "Not disclosed";
+
+  const experienceRange = data.hasExperienceRange
+    ? `${data.minExperience} - ${data.maxExperience} years`
+    : "Not specified";
 
   return (
     <Link href={`/jobs/${encodeURIComponent(data.id)}`} className="group">
@@ -50,24 +79,42 @@ export default function Job({ job }: Props) {
                 <Tooltip content={data.company?.description} placement="bottom">
                   <p className="text-md font-normal">{data.company?.name}</p>
                 </Tooltip>
+                <p className="text-sm text-foreground-500">{data.category}</p>
               </div>
             </div>
-            <p className="text-xl font-medium">
-              {data.salary ? `${data.salary}` : "Not disclosed"}
-            </p>
+            <p className="text-xl font-medium">{salaryRange}</p>
           </div>
         </CardHeader>
-        <CardFooter className="flex justify-between items-center gap-4">
-          <p className="text-foreground-500">{formattedDate}</p>
-          <div className="flex gap-4 items-center text-foreground-600">
+        <CardFooter className="flex flex-col gap-4">
+          <div className="flex justify-between items-center gap-4">
+            <p className="text-foreground-500">Posted: {formattedCreatedAt}</p>
+            <p className="text-foreground-500">Expires: {formattedExpiresAt}</p>
+          </div>
+          <div className="flex flex-wrap gap-4 items-center text-foreground-600">
             <div className="flex items-center gap-2">
-              <MapPin size={16} /> {data.location}
+              <MapPin size={16} />{" "}
+              {`${data.address.city}, ${data.address.state}`}
             </div>
             <div className="flex items-center gap-2">
-              <Calendar size={16} /> Closing on{" "}
-              {dateFormat.format(new Date(data.closingDate))}
+              <Briefcase size={16} /> {data.type}
+            </div>
+            <div className="flex items-center gap-2">
+              <Globe size={16} /> {data.workMode}
             </div>
           </div>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {data.skills.map((skill, index) => (
+              <span
+                key={index}
+                className="bg-gray-200 text-sm px-2 py-1 rounded-md"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+          <p className="text-sm text-foreground-500">
+            Experience: {experienceRange}
+          </p>
         </CardFooter>
       </Card>
     </Link>

@@ -1,10 +1,10 @@
 type Address {
-  line1: String!
+  line1: String
   line2: String
   city: String!
   state: String!
   country: String!
-  pincode: String!
+  pincode: String
 }
 
 type Company implements Node {
@@ -12,10 +12,7 @@ type Company implements Node {
   id: ID!
   name: String!
   description: String!
-  address: String!
-  city: String!
-  postcode: Int!
-  country: String!
+  address: Address!
   phone: String!
   website: String!
   email: String!

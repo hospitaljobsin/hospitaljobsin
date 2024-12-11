@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, Literal, Self
+from typing import Annotated, Self
 
 import strawberry
 from aioinject import Inject

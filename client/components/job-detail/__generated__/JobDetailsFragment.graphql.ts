@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1f127f84f56051beeb322db915c7016f>>
+ * @generated SignedSource<<97240113867e9aee49be8be71516710b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,10 +9,27 @@
 // @ts-nocheck
 
 import { ReaderFragment } from 'relay-runtime';
+export type Currency = "INR" | "%future added value";
+export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "%future added value";
+export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type JobDetailsFragment$data = {
-  readonly closingDate: any;
+  readonly address: {
+    readonly city: string;
+    readonly country: string;
+    readonly line1: string | null | undefined;
+    readonly line2: string | null | undefined;
+    readonly pincode: string | null | undefined;
+    readonly state: string;
+  };
+  readonly category: string;
   readonly company: {
+    readonly address: {
+      readonly city: string;
+      readonly country: string;
+      readonly line1: string | null | undefined;
+      readonly state: string;
+    };
     readonly description: string;
     readonly email: string;
     readonly name: string;
@@ -20,10 +37,19 @@ export type JobDetailsFragment$data = {
     readonly website: string;
   } | null | undefined;
   readonly createdAt: any;
-  readonly description: string;
-  readonly location: string;
-  readonly salary: string;
+  readonly currency: Currency;
+  readonly description: string | null | undefined;
+  readonly expiresAt: any | null | undefined;
+  readonly hasExperienceRange: boolean;
+  readonly hasSalaryRange: boolean;
+  readonly maxExperience: number | null | undefined;
+  readonly maxSalary: number | null | undefined;
+  readonly minExperience: number | null | undefined;
+  readonly minSalary: number | null | undefined;
+  readonly skills: ReadonlyArray<string>;
   readonly title: string;
+  readonly type: JobType;
+  readonly workMode: WorkMode;
   readonly " $fragmentType": "JobDetailsFragment";
 };
 export type JobDetailsFragment$key = {
@@ -37,6 +63,34 @@ var v0 = {
   "args": null,
   "kind": "ScalarField",
   "name": "description",
+  "storageKey": null
+},
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "line1",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "city",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "state",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "country",
   "storageKey": null
 };
 return {
@@ -57,21 +111,106 @@ return {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "location",
+      "name": "category",
       "storageKey": null
     },
     {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "salary",
+      "name": "type",
       "storageKey": null
     },
     {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "closingDate",
+      "name": "workMode",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "Address",
+      "kind": "LinkedField",
+      "name": "address",
+      "plural": false,
+      "selections": [
+        (v1/*: any*/),
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "line2",
+          "storageKey": null
+        },
+        (v2/*: any*/),
+        (v3/*: any*/),
+        (v4/*: any*/),
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "pincode",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "skills",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "currency",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasSalaryRange",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "minSalary",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "maxSalary",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasExperienceRange",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "minExperience",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "maxExperience",
       "storageKey": null
     },
     {
@@ -79,6 +218,13 @@ return {
       "args": null,
       "kind": "ScalarField",
       "name": "createdAt",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "expiresAt",
       "storageKey": null
     },
     {
@@ -97,6 +243,21 @@ return {
           "storageKey": null
         },
         (v0/*: any*/),
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "Address",
+          "kind": "LinkedField",
+          "name": "address",
+          "plural": false,
+          "selections": [
+            (v1/*: any*/),
+            (v2/*: any*/),
+            (v3/*: any*/),
+            (v4/*: any*/)
+          ],
+          "storageKey": null
+        },
         {
           "alias": null,
           "args": null,
@@ -127,6 +288,6 @@ return {
 };
 })();
 
-(node as any).hash = "a5311db8932ef1b55566483add30beda";
+(node as any).hash = "6a814aa7cbcefdf74d40887eb76bfee6";
 
 export default node;
