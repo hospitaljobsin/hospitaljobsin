@@ -1,18 +1,9 @@
-import { Input, Select, SelectItem } from "@nextui-org/react";
+import { Input, Slider } from "@nextui-org/react";
 
 interface JobListControllerProps {
   searchTerm: string | null;
   setSearchTerm: (searchTerm: string | null) => void;
 }
-
-export const distances = [
-  "5 Kilometres",
-  "10 Kilometres",
-  "25 Kilometres",
-  "50 Kilometres",
-  "100 Kilometres",
-  "Any",
-];
 
 export default function JobListController(props: JobListControllerProps) {
   return (
@@ -27,11 +18,16 @@ export default function JobListController(props: JobListControllerProps) {
         fullWidth
       />
       <Input label="Location" isClearable variant="bordered" fullWidth />
-      <Select variant="bordered" label="Distance">
-        {distances.map((distance) => (
-          <SelectItem key={distance}>{distance}</SelectItem>
-        ))}
-      </Select>
+      <Slider
+        color="foreground"
+        size="md"
+        defaultValue={0.0}
+        formatOptions={{ style: "unit", unit: "kilometer" }}
+        label="Distance"
+        maxValue={100}
+        minValue={0}
+        step={10}
+      />
     </div>
   );
 }

@@ -1,8 +1,7 @@
 "use client";
 // mark component as client until the select component is marked as client only
 // https://github.com/nextui-org/nextui/issues/1403
-import { Input, Select, SelectItem } from "@nextui-org/react";
-import { distances } from "./JobListController";
+import { Input, Slider } from "@nextui-org/react";
 
 export default function JobListControllerSkeleton() {
   return (
@@ -21,11 +20,17 @@ export default function JobListControllerSkeleton() {
         fullWidth
         isDisabled
       />
-      <Select variant="bordered" label="Distance" isDisabled>
-        {distances.map((distance) => (
-          <SelectItem key={distance}>{distance}</SelectItem>
-        ))}
-      </Select>
+      <Slider
+        color="foreground"
+        isDisabled
+        size="md"
+        defaultValue={0.0}
+        formatOptions={{ style: "unit", unit: "kilometer" }}
+        label="Distance"
+        maxValue={100}
+        minValue={0}
+        step={10}
+      />
     </div>
   );
 }
