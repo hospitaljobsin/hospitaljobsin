@@ -94,13 +94,13 @@ export default function Header() {
         ) : (
           <NavbarItem>
             <Link color="foreground" href="/auth/login">
-              <Button color="primary">Log In</Button>
+              <Button color="default">Log In</Button>
             </Link>
           </NavbarItem>
         )}
 
         <NavbarItem>
-          <Button color="primary" variant="flat" disabled>
+          <Button color="default" variant="flat" disabled>
             For recruiters
           </Button>
         </NavbarItem>
