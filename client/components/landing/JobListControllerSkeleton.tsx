@@ -25,6 +25,7 @@ export default function JobListControllerSkeleton() {
         isDisabled
         size="md"
         defaultValue={0.0}
+        renderValue={({ children }) => (children === "0 km" ? "Any" : children)}
         formatOptions={{ style: "unit", unit: "kilometer" }}
         label="Distance"
         maxValue={100}

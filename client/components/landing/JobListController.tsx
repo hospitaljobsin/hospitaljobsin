@@ -20,6 +20,7 @@ export default function JobListController(props: JobListControllerProps) {
       <Input label="Location" isClearable variant="bordered" fullWidth />
       <Slider
         color="foreground"
+        renderValue={({ children }) => (children === "0 km" ? "Any" : children)}
         size="md"
         defaultValue={0.0}
         formatOptions={{ style: "unit", unit: "kilometer" }}
