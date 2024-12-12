@@ -124,7 +124,7 @@ export default function Job({ job }: Props) {
           </div>
         </CardBody>
         <CardFooter className="flex flex-col gap-6 w-full">
-          <div className="flex flex-wrap gap-2 mt-2 w-full">
+          <div className="flex flex-wrap gap-4 mt-2 w-full">
             {data.skills.map((skill, index) => (
               <Chip variant="flat" key={index}>
                 {skill}
