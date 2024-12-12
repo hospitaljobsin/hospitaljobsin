@@ -65,12 +65,15 @@ export default function Job({ job }: Props) {
   };
 
   const salaryRange = data.hasSalaryRange ? (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 text-xl font-medium">
       {currencyIcon(data.currency)}
       {`${data.minSalary} - ${data.maxSalary}`}
     </div>
   ) : (
-    "Not disclosed"
+    <div className="flex items-center gap-2 text-xl font-medium">
+      {currencyIcon(data.currency)}
+      {"Not disclosed"}
+    </div>
   );
 
   const experienceRange = data.hasExperienceRange
@@ -79,7 +82,7 @@ export default function Job({ job }: Props) {
 
   return (
     <Link href={`/jobs/${encodeURIComponent(data.id)}`} className="group">
-      <Card isHoverable fullWidth>
+      <Card isHoverable fullWidth className="p-6">
         <CardHeader>
           <div className="flex w-full justify-between gap-4 items-center">
             <div className="flex items-center gap-4">
@@ -95,7 +98,7 @@ export default function Job({ job }: Props) {
                 </p>
               </div>
             </div>
-            <div className="text-xl font-medium">{salaryRange}</div>
+            {salaryRange}
           </div>
         </CardHeader>
         <CardBody className="flex flex-col gap-6 w-full">
@@ -105,7 +108,7 @@ export default function Job({ job }: Props) {
             </p>
           </div>
           <div className="flex flex-wrap gap-8 items-center text-foreground-600 w-full">
-            <Chip>{data.type}</Chip>
+            <p>{data.type}</p>
             <div className="flex items-center gap-2">
               <MapPin size={16} />{" "}
               {`${data.address.city}, ${data.address.state}`}
