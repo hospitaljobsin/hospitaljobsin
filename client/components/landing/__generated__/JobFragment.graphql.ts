@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<34266b1e4306070177e4dc0150026fe4>>
+ * @generated SignedSource<<fd11cbbe4a48d94a672a98228b73c1b3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,20 +18,17 @@ export type JobFragment$data = {
     readonly city: string;
     readonly state: string;
   };
-  readonly category: string;
   readonly company: {
     readonly address: {
       readonly city: string;
       readonly state: string;
     };
-    readonly description: string;
     readonly id: string;
+    readonly logoUrl: string | null | undefined;
     readonly name: string;
   } | null | undefined;
   readonly createdAt: any;
   readonly currency: Currency;
-  readonly description: string | null | undefined;
-  readonly expiresAt: any | null | undefined;
   readonly hasExperienceRange: boolean;
   readonly hasSalaryRange: boolean;
   readonly id: string;
@@ -59,13 +56,6 @@ var v0 = {
   "storageKey": null
 },
 v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "description",
-  "storageKey": null
-},
-v2 = {
   "alias": null,
   "args": null,
   "concreteType": "Address",
@@ -104,14 +94,6 @@ return {
       "name": "title",
       "storageKey": null
     },
-    (v1/*: any*/),
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "category",
-      "storageKey": null
-    },
     {
       "alias": null,
       "args": null,
@@ -126,7 +108,7 @@ return {
       "name": "workMode",
       "storageKey": null
     },
-    (v2/*: any*/),
+    (v1/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -193,13 +175,6 @@ return {
     {
       "alias": null,
       "args": null,
-      "kind": "ScalarField",
-      "name": "expiresAt",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
       "concreteType": "Company",
       "kind": "LinkedField",
       "name": "company",
@@ -213,8 +188,14 @@ return {
           "name": "name",
           "storageKey": null
         },
-        (v1/*: any*/),
-        (v2/*: any*/)
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "logoUrl",
+          "storageKey": null
+        },
+        (v1/*: any*/)
       ],
       "storageKey": null
     }
@@ -224,6 +205,6 @@ return {
 };
 })();
 
-(node as any).hash = "f4c8353c4306043d2f56963807985531";
+(node as any).hash = "3551a4b7724a04ee70a38c685d7e0720";
 
 export default node;

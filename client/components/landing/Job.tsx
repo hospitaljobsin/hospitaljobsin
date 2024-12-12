@@ -2,11 +2,12 @@ import { dateFormat } from "@/lib/intl";
 import {
   Avatar,
   Card,
+  CardBody,
   CardFooter,
   CardHeader,
-  Tooltip,
+  Chip,
 } from "@nextui-org/react";
-import { Briefcase, Globe, MapPin } from "lucide-react";
+import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import Link from "next/link";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -16,8 +17,6 @@ export const JobFragment = graphql`
   fragment JobFragment on Job {
     id
     title
-    description
-    category
     type
     workMode
     address {
@@ -33,11 +32,10 @@ export const JobFragment = graphql`
     minExperience
     maxExperience
     createdAt
-    expiresAt
     company {
       id
       name
-      description
+      logoUrl
       address {
         city
         state
@@ -55,13 +53,25 @@ export default function Job({ job }: Props) {
   const data = useFragment(JobFragment, job);
 
   const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
-  const formattedExpiresAt = data.expiresAt
-    ? dateFormat.format(new Date(data.expiresAt))
-    : "No expiration";
 
-  const salaryRange = data.hasSalaryRange
-    ? `${data.currency} ${data.minSalary} - ${data.maxSalary}`
-    : "Not disclosed";
+  // Map currency to icons
+  const currencyIcon = (currency: string) => {
+    switch (currency) {
+      case "INR":
+        return <IndianRupee size={16} />;
+      default:
+        return null; // Handle other currencies or add more cases
+    }
+  };
+
+  const salaryRange = data.hasSalaryRange ? (
+    <div className="flex items-center gap-2">
+      {currencyIcon(data.currency)}
+      {`${data.minSalary} - ${data.maxSalary}`}
+    </div>
+  ) : (
+    "Not disclosed"
+  );
 
   const experienceRange = data.hasExperienceRange
     ? `${data.minExperience} - ${data.maxExperience} years`
@@ -69,52 +79,54 @@ export default function Job({ job }: Props) {
 
   return (
     <Link href={`/jobs/${encodeURIComponent(data.id)}`} className="group">
-      <Card isHoverable>
+      <Card isHoverable fullWidth>
         <CardHeader>
           <div className="flex w-full justify-between gap-4 items-center">
             <div className="flex items-center gap-4">
-              <Avatar name={data.company?.name} size="lg" />
+              <Avatar
+                name={data.company?.name}
+                src={data.company?.logoUrl || undefined}
+                size="lg"
+              />
               <div className="flex flex-col gap-2 items-start">
                 <h4 className="text-xl font-medium">{data.title}</h4>
-                <Tooltip content={data.company?.description} placement="bottom">
-                  <p className="text-md font-normal">{data.company?.name}</p>
-                </Tooltip>
-                <p className="text-sm text-foreground-500">{data.category}</p>
+                <p className="text-md font-normal text-foreground-500">
+                  {data.company?.name}
+                </p>
               </div>
             </div>
-            <p className="text-xl font-medium">{salaryRange}</p>
+            <div className="text-xl font-medium">{salaryRange}</div>
           </div>
         </CardHeader>
-        <CardFooter className="flex flex-col gap-4">
-          <div className="flex justify-between items-center gap-4">
-            <p className="text-foreground-500">Posted: {formattedCreatedAt}</p>
-            <p className="text-foreground-500">Expires: {formattedExpiresAt}</p>
+        <CardBody className="flex flex-col gap-6 w-full">
+          <div className="flex justify-between items-center gap-4 w-full">
+            <p className="text-foreground-500 text-md font-normal">
+              Posted on {formattedCreatedAt}
+            </p>
           </div>
-          <div className="flex flex-wrap gap-4 items-center text-foreground-600">
+          <div className="flex flex-wrap gap-8 items-center text-foreground-600 w-full">
+            <Chip>{data.type}</Chip>
             <div className="flex items-center gap-2">
               <MapPin size={16} />{" "}
               {`${data.address.city}, ${data.address.state}`}
             </div>
             <div className="flex items-center gap-2">
-              <Briefcase size={16} /> {data.type}
+              <Briefcase size={16} /> {experienceRange}
             </div>
+
             <div className="flex items-center gap-2">
               <Globe size={16} /> {data.workMode}
             </div>
           </div>
-          <div className="flex flex-wrap gap-2 mt-2">
+        </CardBody>
+        <CardFooter className="flex flex-col gap-6 w-full">
+          <div className="flex flex-wrap gap-2 mt-2 w-full">
             {data.skills.map((skill, index) => (
-              <span
-                key={index}
-                className="bg-gray-200 text-sm px-2 py-1 rounded-md"
-              >
+              <Chip variant="flat" key={index}>
                 {skill}
-              </span>
+              </Chip>
             ))}
           </div>
-          <p className="text-sm text-foreground-500">
-            Experience: {experienceRange}
-          </p>
         </CardFooter>
       </Card>
     </Link>

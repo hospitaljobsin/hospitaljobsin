@@ -79,7 +79,7 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
 
   if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
     return (
-      <div className="flex grow flex-col gap-4 px-4 items-center h-full">
+      <div className="flex grow flex-col gap-8 px-4 items-center h-full">
         <p className="font-medium text-muted-foreground">
           Hmm, no jobs could be found
         </p>
@@ -88,7 +88,7 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
   }
 
   return (
-    <div className="w-full flex flex-col gap-4 pb-6">
+    <div className="w-full flex flex-col gap-8 pb-6">
       {data.jobs.edges.map((jobEdge) => (
         <Job
           job={jobEdge.node}

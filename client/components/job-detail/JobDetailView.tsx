@@ -23,7 +23,7 @@ export default function JobDetailView(props: {
   }
 
   return (
-    <div className="py-8 w-full h-full max-w-7xl mx-auto flex flex-col items-center gap-6">
+    <div className="py-8 w-full h-full max-w-5xl mx-auto flex flex-col items-center gap-6">
       <JobDetails job={data.node} />
     </div>
   );

@@ -16,6 +16,7 @@ type Company implements Node {
   phone: String!
   website: String!
   email: String!
+  logoUrl: String
 }
 
 enum Currency {

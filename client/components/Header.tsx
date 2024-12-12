@@ -42,7 +42,7 @@ export default function Header() {
   }
 
   return (
-    <Navbar maxWidth="xl" isBordered>
+    <Navbar maxWidth="lg" isBordered>
       <NavbarBrand>
         <Link href="/" className="font-medium text-inherit">
           {APP_NAME}

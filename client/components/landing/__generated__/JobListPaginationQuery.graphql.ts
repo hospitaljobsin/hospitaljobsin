@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<83e181b918fd484a4ff5702f92865bf9>>
+ * @generated SignedSource<<aabda3c54cd8be6de5c3749275aff869>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -67,13 +67,6 @@ v3 = {
   "storageKey": null
 },
 v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "description",
-  "storageKey": null
-},
-v5 = {
   "alias": null,
   "args": null,
   "concreteType": "Address",
@@ -164,14 +157,6 @@ return {
                     "name": "title",
                     "storageKey": null
                   },
-                  (v4/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "category",
-                    "storageKey": null
-                  },
                   {
                     "alias": null,
                     "args": null,
@@ -186,7 +171,7 @@ return {
                     "name": "workMode",
                     "storageKey": null
                   },
-                  (v5/*: any*/),
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -253,13 +238,6 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "kind": "ScalarField",
-                    "name": "expiresAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
                     "concreteType": "Company",
                     "kind": "LinkedField",
                     "name": "company",
@@ -273,8 +251,14 @@ return {
                         "name": "name",
                         "storageKey": null
                       },
-                      (v4/*: any*/),
-                      (v5/*: any*/)
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "logoUrl",
+                        "storageKey": null
+                      },
+                      (v4/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -352,12 +336,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b2ef9cad9413ffa64242bfc20c131863",
+    "cacheID": "51955c867980f646b9a3568e62e93133",
     "id": null,
     "metadata": {},
     "name": "JobListPaginationQuery",
     "operationKind": "query",
-    "text": "query JobListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $searchTerm: String = null\n) {\n  ...JobListFragment_1YZSDV\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  description\n  category\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  expiresAt\n  company {\n    id\n    name\n    description\n    address {\n      city\n      state\n    }\n  }\n}\n\nfragment JobListFragment_1YZSDV on Query {\n  jobs(after: $cursor, first: $count, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query JobListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $searchTerm: String = null\n) {\n  ...JobListFragment_1YZSDV\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n\nfragment JobListFragment_1YZSDV on Query {\n  jobs(after: $cursor, first: $count, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();

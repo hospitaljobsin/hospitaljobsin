@@ -10,6 +10,7 @@ class Company(Document):
     phone: str
     website: str
     email: str
+    logo_url: str | None = None
 
     class Settings:
         name = "companies"

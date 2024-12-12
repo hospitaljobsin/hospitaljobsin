@@ -18,6 +18,7 @@ class CompanyType(BaseNodeType[Company]):
     phone: str
     website: str
     email: str
+    logo_url: str | None
 
     @classmethod
     def marshal(cls, company: Company) -> Self:
@@ -30,6 +31,7 @@ class CompanyType(BaseNodeType[Company]):
             phone=company.phone,
             website=company.website,
             email=company.email,
+            logo_url=company.logo_url,
         )
 
     @classmethod
