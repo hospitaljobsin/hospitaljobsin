@@ -67,7 +67,8 @@ export default function Job({ job }: Props) {
   const salaryRange = data.hasSalaryRange ? (
     <div className="flex items-center gap-2 text-xl font-medium">
       {currencyIcon(data.currency)}
-      {`${data.minSalary} - ${data.maxSalary}`}
+      {`${data.minSalary} - ${data.maxSalary}`}{" "}
+      <p className="text-foreground-500 text-sm">/ month</p>
     </div>
   ) : (
     <div className="flex items-center gap-2 text-xl font-medium">
