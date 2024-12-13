@@ -46,6 +46,7 @@ class AuthMutation:
         result = await auth_service.register(
             email=email,
             password=password,
+            user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
         )
@@ -83,6 +84,7 @@ class AuthMutation:
         result = await auth_service.login(
             email=email,
             password=password,
+            user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
         )

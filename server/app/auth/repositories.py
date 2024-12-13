@@ -1,19 +1,24 @@
+import hashlib
 import secrets
 from datetime import datetime, timedelta
 
-from bson import ObjectId
-from passlib.hash import sha256_crypt
+from beanie import WriteRules
 
+from app.accounts.documents import Account
 from app.auth.documents import Session
 from app.lib.constants import USER_SESSION_EXPIRES_IN
 
 
 class SessionRepo:
-    async def create(self, account_id: ObjectId) -> str:
+    async def create(
+        self,
+        account: Account,
+        user_agent: str,
+    ) -> str:
         """Create a new session."""
         session_token = self.generate_session_token()
         session = Session(
-            account_id=account_id,
+            account=account,
             token_hash=self.hash_session_token(
                 token=session_token,
             ),
@@ -21,9 +26,10 @@ class SessionRepo:
             + timedelta(
                 seconds=USER_SESSION_EXPIRES_IN,
             ),
+            user_agent=user_agent,
         )
 
-        await session.insert()
+        await session.save(link_rule=WriteRules.WRITE)
         return session_token
 
     @staticmethod
@@ -34,10 +40,11 @@ class SessionRepo:
     @staticmethod
     def hash_session_token(token: str) -> str:
         """Hash session token."""
-        return sha256_crypt.hash(token)
+        return hashlib.md5(token.encode("utf-8")).hexdigest()
 
     async def get(self, token: str) -> Session | None:
         """Get session by token."""
+        print("Token hash: ", self.hash_session_token(token))
         return await Session.find_one(
             Session.token_hash == self.hash_session_token(token),
         )

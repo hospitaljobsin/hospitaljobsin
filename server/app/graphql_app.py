@@ -2,7 +2,7 @@ from typing import Annotated
 
 from aioinject import Injected
 from aioinject.ext.fastapi import inject
-from fastapi import Depends, Request, Response
+from fastapi import Depends, Header, Request, Response
 from strawberry.fastapi import GraphQLRouter
 
 from app.auth.dependencies import get_session_token
@@ -24,20 +24,24 @@ async def get_context(
         ),
     ],
     session_repo: Injected[SessionRepo],
+    user_agent: Annotated[str | None, Header()] = "unknown",
 ) -> Context:
     if session_token:
-        if session := await session_repo.get(token=session_token):
+        session = await session_repo.get(token=session_token)
+        if session is not None:
             return Context(
                 request=request,
                 response=response,
                 loaders=create_dataloaders(),
                 current_user_id=session.account.ref.id,
+                user_agent=user_agent,
             )
     return Context(
         request=request,
         response=response,
         loaders=create_dataloaders(),
         current_user_id=None,
+        user_agent=user_agent,
     )
 
 

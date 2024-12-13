@@ -5,7 +5,6 @@ import { AppProgressBar } from "next-nprogress-bar";
 import { ThemeProvider } from "next-themes";
 import { useState } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
-import ConfigureAmplifyClientSide from "./config-amplify-client-side";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [environment] = useState(() => {
@@ -15,7 +14,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <NextUIProvider>
       <ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
-        <ConfigureAmplifyClientSide />
         <RelayEnvironmentProvider environment={environment}>
           {children}
           <AppProgressBar

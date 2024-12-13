@@ -12,30 +12,30 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@nextui-org/react";
-import {
-  FetchUserAttributesOutput,
-  fetchUserAttributes,
-} from "aws-amplify/auth";
 import { ChevronDown, LogOutIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useLazyLoadQuery } from "react-relay";
+import { graphql } from "relay-runtime";
+import { HeaderQuery as HeaderQueryType } from "./__generated__/HeaderQuery.graphql";
 
-export default function Header() {
-  const [user, setUser] = useState<FetchUserAttributesOutput | null>(null);
-  const router = useRouter();
-
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const user = await fetchUserAttributes();
-        setUser(user);
-      } catch {
-        setUser(null);
+const HeaderQuery = graphql`
+  query HeaderQuery {
+    viewer {
+      __typename
+      ... on Account {
+        email
+      }
+      ... on NotAuthenticatedError {
+        message
       }
     }
-    if (!user) fetchUser();
-  }, [user]);
+  }
+`;
+
+export default function Header() {
+  const data = useLazyLoadQuery<HeaderQueryType>(HeaderQuery, {});
+  const router = useRouter();
 
   async function handleLogout() {
     await handleSignOut(router);
@@ -61,7 +61,7 @@ export default function Header() {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        {user ? (
+        {data.viewer.__typename === "Account" ? (
           <Dropdown>
             <NavbarItem>
               <DropdownTrigger>
@@ -72,7 +72,7 @@ export default function Header() {
                   radius="sm"
                   variant="light"
                 >
-                  Hi, {user.name}
+                  Hi, {data.viewer.email}
                 </Button>
               </DropdownTrigger>
             </NavbarItem>

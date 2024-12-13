@@ -12,6 +12,7 @@ class Context(TypedDict):
     response: Response
     loaders: Dataloaders
     current_user_id: ObjectId | None
+    user_agent: str
 
 
 Info = StrawberryInfo[Context, None]

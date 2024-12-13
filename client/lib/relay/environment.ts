@@ -1,6 +1,3 @@
-import { runWithAmplifyServerContext } from "@/utils/amplify-server-utils";
-import { fetchAuthSession } from "aws-amplify/auth";
-import { fetchAuthSession as fetchAuthSessionServer } from "aws-amplify/auth/server";
 import {
   CacheConfig,
   Environment,
@@ -17,48 +14,33 @@ const HTTP_ENDPOINT = process.env.NEXT_PUBLIC_API_URL;
 const IS_SERVER = typeof window === typeof undefined;
 const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 
-export async function fetchAuthSessionServerSide() {
+export async function getCookies() {
   const { cookies } = await import("next/headers");
-  return await runWithAmplifyServerContext({
-    nextServerContext: { cookies },
-    operation: async (contextSpec) => {
-      try {
-        return await fetchAuthSessionServer(contextSpec);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  });
+  return cookies
 }
 
 export async function networkFetch(
   request: RequestParameters,
   variables: Variables
 ): Promise<GraphQLResponse> {
-  let session;
+  let cookies;
   try {
     if (IS_SERVER) {
-      session = await fetchAuthSessionServerSide();
-    } else {
-      session = await fetchAuthSession();
+      cookies = await getCookies();
+      console.log("cookies: ", cookies)
     }
   } catch (err) {
     console.error(err);
-  }
-
-  let token;
-
-  if (session?.tokens) {
-    token = session.tokens.accessToken.toString();
   }
 
   const resp = await fetch(HTTP_ENDPOINT, {
     method: "POST",
     headers: {
       Accept: "application/json",
-      Authorization: token ? `Bearer ${token}` : undefined,
       "Content-Type": "application/json",
+      "Cookie": cookies !== undefined ? cookies.toString() : undefined
     },
+    credentials: 'include',
     body: JSON.stringify({
       query: request.text,
       variables,

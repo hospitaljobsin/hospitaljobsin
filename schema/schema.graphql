@@ -122,6 +122,10 @@ interface Node {
   id: ID!
 }
 
+type NotAuthenticatedError implements Error {
+  message: String!
+}
+
 """Information to aid in pagination."""
 type PageInfo {
   """When paginating forwards, are there more items?"""
@@ -138,6 +142,8 @@ type PageInfo {
 }
 
 type Query {
+  """Get the current user."""
+  viewer: ViewerPayload!
   node(
     """The ID of the object."""
     id: ID!
@@ -155,6 +161,8 @@ type Query {
 }
 
 union RegisterPayload = Account | EmailInUseError
+
+union ViewerPayload = Account | NotAuthenticatedError
 
 enum WorkMode {
   REMOTE

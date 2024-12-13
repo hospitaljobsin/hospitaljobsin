@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from fastapi import Request, Response
 from result import Err, Ok, Result
@@ -23,7 +23,12 @@ class AuthService:
         self._email_verification_repo = email_verification_repo
 
     async def register(
-        self, email: str, password: str, request: Request, response: Response
+        self,
+        email: str,
+        password: str,
+        user_agent: str,
+        request: Request,
+        response: Response,
     ) -> Result[Account, EmailInUseError]:
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
@@ -37,7 +42,10 @@ class AuthService:
             account_id=account.id
         )
 
-        session_token = await self._session_repo.create(account_id=account.id)
+        session_token = await self._session_repo.create(
+            user_agent=user_agent,
+            account=account,
+        )
 
         self._set_user_session_cookie(
             request=request,
@@ -48,7 +56,12 @@ class AuthService:
         return Ok(account)
 
     async def login(
-        self, email: str, password: str, request: Request, response: Response
+        self,
+        email: str,
+        password: str,
+        user_agent: str,
+        request: Request,
+        response: Response,
     ) -> Result[Account, InvalidCredentialsError]:
         account = await self._account_repo.get_by_email(email=email)
         if not account:
@@ -60,7 +73,10 @@ class AuthService:
         ):
             return Err(InvalidCredentialsError())
 
-        session_token = await self._session_repo.create(account_id=account.id)
+        session_token = await self._session_repo.create(
+            user_agent=user_agent,
+            account=account,
+        )
 
         self._set_user_session_cookie(
             request=request,
@@ -76,10 +92,10 @@ class AuthService:
         is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
         secure = False if is_localhost else True
         response.set_cookie(
-            settings.session_cookie_name,
+            key=settings.session_cookie_name,
             value=value,
-            expires=datetime.now() + timedelta(seconds=USER_SESSION_EXPIRES_IN),
-            path="/",
+            expires=datetime.now(UTC) + timedelta(seconds=USER_SESSION_EXPIRES_IN),
+            # path="/",
             domain=settings.session_cookie_domain,
             secure=secure,
             httponly=True,

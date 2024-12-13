@@ -4,6 +4,7 @@ from strawberry.extensions import ParserCache, ValidationCache
 from strawberry.relay import GlobalID
 from strawberry.tools import merge_types
 
+from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
 from app.jobs.query import JobQuery
 from app.scalars import ID
@@ -14,6 +15,7 @@ from .container import create_container
 query = merge_types(
     name="Query",
     types=(
+        AccountQuery,
         BaseQuery,
         JobQuery,
     ),

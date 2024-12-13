@@ -70,7 +70,7 @@ class Settings(BaseSettings):
     # session cookies config
     session_cookie_name: str = "session"
 
-    session_cookie_domain: str = "localhost"
+    session_cookie_domain: str | None = None
 
     openapi_url: str | None = None
 
