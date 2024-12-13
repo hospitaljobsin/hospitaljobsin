@@ -1,0 +1,25 @@
+"use client";
+
+import CompanyDetailView from "@/components/company-detail/CompanyDetailView";
+import { SerializablePreloadedQuery } from "@/lib/relay/loadSerializableQuery";
+import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
+import { useRelayEnvironment } from "react-relay";
+
+import CompanyDetailViewQueryNode, {
+    CompanyDetailViewQuery,
+} from "@/components/company-detail/__generated__/CompanyDetailViewQuery.graphql";
+
+export default function CompanyDetailViewClientComponent(props: {
+  preloadedQuery: SerializablePreloadedQuery<
+    typeof CompanyDetailViewQueryNode,
+    CompanyDetailViewQuery
+  >;
+}) {
+  const environment = useRelayEnvironment();
+  const queryRef = useSerializablePreloadedQuery(
+    environment,
+    props.preloadedQuery
+  );
+
+  return <CompanyDetailView queryRef={queryRef} />;
+}
