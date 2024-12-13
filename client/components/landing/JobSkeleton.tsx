@@ -27,10 +27,10 @@ export default function JobSkeleton() {
           <Skeleton className="flex rounded-lg w-1/5 h-4" />
           </div>
           <div className="flex flex-wrap gap-8 items-center text-foreground-600 w-full">
-          <Skeleton className="flex rounded-lg w-1/6 h-6" />
-          <Skeleton className="flex rounded-lg w-1/6 h-6" />
-          <Skeleton className="flex rounded-lg w-1/6 h-6" />
-          <Skeleton className="flex rounded-lg w-1/6 h-6" />
+          <Skeleton className="flex rounded-lg w-28  h-6" />
+          <Skeleton className="flex rounded-lg w-28  h-6" />
+          <Skeleton className="flex rounded-lg w-28  h-6" />
+          <Skeleton className="flex rounded-lg w-28  h-6" />
           </div>
         </CardBody>
         <CardFooter className="flex flex-col gap-6 w-full">

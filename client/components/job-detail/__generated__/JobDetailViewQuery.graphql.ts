@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cf01bb844180876cb5d5c90846186d41>>
+ * @generated SignedSource<<da8b55102ae62b4073772b934b9d73e0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -288,6 +288,7 @@ return {
                 "name": "company",
                 "plural": false,
                 "selections": [
+                  (v8/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -338,8 +339,7 @@ return {
                     "kind": "ScalarField",
                     "name": "email",
                     "storageKey": null
-                  },
-                  (v8/*: any*/)
+                  }
                 ],
                 "storageKey": null
               }
@@ -354,12 +354,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e9c530a4756b64f1ccdd08771ee164ef",
+    "cacheID": "213186c96e2b256fab7f165bcfc18935",
     "id": null,
     "metadata": {},
     "name": "JobDetailViewQuery",
     "operationKind": "query",
-    "text": "query JobDetailViewQuery(\n  $jobId: ID!\n) {\n  node(id: $jobId) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n    }\n    id\n  }\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  application\n  category\n  type\n  workMode\n  address {\n    line1\n    line2\n    city\n    state\n    country\n    pincode\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  expiresAt\n  company {\n    name\n    description\n    logoUrl\n    address {\n      line1\n      city\n      state\n      country\n    }\n    phone\n    website\n    email\n    id\n  }\n}\n"
+    "text": "query JobDetailViewQuery(\n  $jobId: ID!\n) {\n  node(id: $jobId) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n    }\n    id\n  }\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  application\n  category\n  type\n  workMode\n  address {\n    line1\n    line2\n    city\n    state\n    country\n    pincode\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  expiresAt\n  company {\n    id\n    name\n    description\n    logoUrl\n    address {\n      line1\n      city\n      state\n      country\n    }\n    phone\n    website\n    email\n  }\n}\n"
   }
 };
 })();

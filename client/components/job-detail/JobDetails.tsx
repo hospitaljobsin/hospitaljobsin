@@ -7,10 +7,10 @@ import {
   CardFooter,
   CardHeader,
   Chip,
-  Divider,
-  Link
+  Divider
 } from "@nextui-org/react";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
+import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
 import { JobDetailsFragment$key } from "./__generated__/JobDetailsFragment.graphql";
@@ -42,6 +42,7 @@ const JobDetailsFragment = graphql`
     createdAt
     expiresAt
     company {
+      id
       name
       description
       logoUrl
@@ -147,39 +148,12 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
                 src={data.company?.logoUrl || undefined}
                 size="lg"
               />
-            <h3 className="text-md font-medium text-secondary">
+            <Link className="hover:underline" href={`/companies/${encodeURIComponent(data.company?.id || "")}`}>
              {data.company?.name}
-            </h3>
+            </Link>
           </CardHeader>
-          <Divider />
           <CardBody>
           <p className="text-default-500">{data.company?.description}</p>
-
-              <div>
-                
-                <ul className="text-default-500 space-y-2 mt-2">
-                  <li>
-                    <strong>Address:</strong>{" "}
-                    {`${data.company?.address?.line1}, ${data.company?.address?.city}, ${data.company?.address?.state}, ${data.company?.address?.country}`}
-                  </li>
-                  <li>
-                    <strong>Website:</strong>{" "}
-                    <Link
-                      isExternal
-                      href={data.company?.website || "#"}
-                      className="text-primary"
-                    >
-                      {data.company?.website || "N/A"}
-                    </Link>
-                  </li>
-                  <li>
-                    <strong>Email:</strong> {data.company?.email}
-                  </li>
-                  <li>
-                    <strong>Phone:</strong> {data.company?.phone}
-                  </li>
-                </ul>
-            </div>
           </CardBody>
         </Card>
 
