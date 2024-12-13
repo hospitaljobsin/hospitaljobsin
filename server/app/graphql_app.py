@@ -2,7 +2,7 @@ from typing import Annotated
 
 from aioinject import Injected
 from aioinject.ext.fastapi import inject
-from fastapi import Depends, Request
+from fastapi import Depends, Request, Response
 from strawberry.fastapi import GraphQLRouter
 
 from app.auth.dependencies import get_session_token
@@ -16,6 +16,7 @@ from .schema import schema
 @inject
 async def get_context(
     request: Request,
+    response: Response,
     session_token: Annotated[
         str | None,
         Depends(
@@ -28,11 +29,13 @@ async def get_context(
         if session := await session_repo.get(token=session_token):
             return Context(
                 request=request,
+                response=response,
                 loaders=create_dataloaders(),
                 current_user_id=session.account.ref.id,
             )
     return Context(
         request=request,
+        response=response,
         loaders=create_dataloaders(),
         current_user_id=None,
     )

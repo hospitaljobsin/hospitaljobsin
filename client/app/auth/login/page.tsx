@@ -1,4 +1,4 @@
-import LoginForm from "@/components/auth/login-form";
+import LoginForm from "@/components/auth/LoginForm";
 
 import { APP_NAME } from "@/lib/constants";
 import { Metadata } from "next";

@@ -4,6 +4,7 @@ from strawberry.extensions import ParserCache, ValidationCache
 from strawberry.relay import GlobalID
 from strawberry.tools import merge_types
 
+from app.auth.mutation import AuthMutation
 from app.jobs.query import JobQuery
 from app.scalars import ID
 
@@ -19,15 +20,15 @@ query = merge_types(
 )
 
 
-# mutation = merge_types(
-#     name="Mutation",
-#     types=(QuestionMutation,),
-# )
+mutation = merge_types(
+    name="Mutation",
+    types=(AuthMutation,),
+)
 
 
 schema = Schema(
     query=query,
-    # mutation=mutation,
+    mutation=mutation,
     extensions=[
         AioInjectExtension(
             container=create_container(),

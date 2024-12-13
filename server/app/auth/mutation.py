@@ -5,6 +5,7 @@ from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from result import Err
 
+from app.accounts.types import AccountType
 from app.auth.exceptions import EmailInUseError, InvalidCredentialsError
 from app.context import Info
 
@@ -14,7 +15,6 @@ from .types import (
     InvalidCredentialsErrorType,
     LoginPayload,
     RegisterPayload,
-    ViewerType,
 )
 
 
@@ -46,6 +46,8 @@ class AuthMutation:
         result = await auth_service.register(
             email=email,
             password=password,
+            request=info.context["request"],
+            response=info.context["response"],
         )
 
         if isinstance(result, Err):
@@ -53,7 +55,7 @@ class AuthMutation:
                 case EmailInUseError():
                     return EmailInUseErrorType()
 
-        return ViewerType.marshal(result.ok_value)
+        return AccountType.marshal(result.ok_value)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LoginPayload,
@@ -81,6 +83,8 @@ class AuthMutation:
         result = await auth_service.login(
             email=email,
             password=password,
+            request=info.context["request"],
+            response=info.context["response"],
         )
 
         if isinstance(result, Err):
@@ -88,4 +92,4 @@ class AuthMutation:
                 case InvalidCredentialsError():
                     return InvalidCredentialsErrorType()
 
-        return ViewerType.marshal(result.ok_value)
+        return AccountType.marshal(result.ok_value)

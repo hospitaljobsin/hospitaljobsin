@@ -1,3 +1,11 @@
+type Account implements Node {
+  """The Globally Unique ID of this object"""
+  id: ID!
+  email: String!
+  hasOnboarded: Boolean!
+  updatedAt: DateTime
+}
+
 type Address {
   line1: String
   line2: String
@@ -25,6 +33,18 @@ enum Currency {
 
 """Date with time (isoformat)"""
 scalar DateTime
+
+type EmailInUseError implements Error {
+  message: String!
+}
+
+interface Error {
+  message: String!
+}
+
+type InvalidCredentialsError implements Error {
+  message: String!
+}
 
 type Job implements Node {
   """The Globally Unique ID of this object"""
@@ -74,6 +94,28 @@ enum JobType {
   CONTRACT
 }
 
+union LoginPayload = Account | InvalidCredentialsError
+
+type Mutation {
+  """Register a new user."""
+  register(
+    """The email of the new user."""
+    email: String!
+
+    """The password of the new user."""
+    password: String!
+  ): RegisterPayload!
+
+  """Log in a user."""
+  login(
+    """The email of the user."""
+    email: String!
+
+    """The password of the user."""
+    password: String!
+  ): LoginPayload!
+}
+
 """An object with a Globally Unique ID"""
 interface Node {
   """The Globally Unique ID of this object"""
@@ -111,6 +153,8 @@ type Query {
     last: Int = null
   ): JobConnection!
 }
+
+union RegisterPayload = Account | EmailInUseError
 
 enum WorkMode {
   REMOTE

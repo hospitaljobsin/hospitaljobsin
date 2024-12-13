@@ -33,6 +33,8 @@ class AccountRepo:
             password_hash=self.hash_password(
                 password=password,
             ),
+            has_onboarded=False,
+            updated_at=None,
         )
 
         return await account.insert()

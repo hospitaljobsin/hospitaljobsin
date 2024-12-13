@@ -1,4 +1,4 @@
-import SignUpForm from "@/components/auth/signup-form";
+import SignUpForm from "@/components/auth/SignupForm";
 import { APP_NAME } from "@/lib/constants";
 import { Metadata } from "next";
 

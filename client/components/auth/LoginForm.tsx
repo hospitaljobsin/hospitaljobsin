@@ -1,6 +1,5 @@
 "use client";
 
-import { getErrorMessage } from "@/utils/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
@@ -11,12 +10,22 @@ import {
   Divider,
   Input,
 } from "@nextui-org/react";
-import { resendSignUpCode, signIn } from "aws-amplify/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
+
+const LoginFormMutation = graphql`
+  mutation LoginFormMutation($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      __typename
+      ... on InvalidCredentialsError {
+        message
+      }
+    }
+  }
+`;
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -25,36 +34,31 @@ const loginSchema = z.object({
 
 export default function LoginForm() {
   const router = useRouter();
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [commitMutation, isMutationInFlight] = useMutation(LoginFormMutation);
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
   });
 
-  async function onSubmit(values: z.infer<typeof loginSchema>) {
-    try {
-      let redirectLink = "/";
-      try {
-        const { isSignedIn, nextStep } = await signIn({
-          username: values.email,
-          password: values.password,
-        });
-        if (nextStep.signInStep === "CONFIRM_SIGN_UP") {
-          await resendSignUpCode({
-            username: values.email,
-          });
-          redirectLink = "/auth/confirm-signup";
+  function onSubmit(values: z.infer<typeof loginSchema>) {
+    commitMutation({
+      variables: {
+        email: values.email,
+        password: values.password,
+      },
+      onCompleted(response) {
+        if (response.login?.__typename === "InvalidCredentialsError") {
+          setError("email", { message: response.login.message });
+          setError("password", { message: response.login.message });
+        } else {
+          router.replace("/");
         }
-      } catch (error) {
-        return getErrorMessage(error);
-      }
-      router.replace(redirectLink);
-    } catch (error) {
-      setErrorMessage(getErrorMessage(error));
-    }
+      },
+    });
   }
 
   return (
@@ -95,23 +99,13 @@ export default function LoginForm() {
                 }
               />
 
-              <Button fullWidth isLoading={isSubmitting} type="submit">
+              <Button
+                fullWidth
+                isLoading={isSubmitting || isMutationInFlight}
+                type="submit"
+              >
                 Log in
               </Button>
-            </div>
-
-            <div className="flex h-8 items-end space-x-1">
-              <div
-                className="flex h-8 items-end space-x-1"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {errorMessage && (
-                  <>
-                    <p className="text-sm text-red-500">{errorMessage}</p>
-                  </>
-                )}
-              </div>
             </div>
           </div>
         </form>
