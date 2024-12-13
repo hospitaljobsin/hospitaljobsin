@@ -8,6 +8,8 @@ import { notFound } from "next/navigation";
 import { ConcreteRequest } from "relay-runtime";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 
+export const dynamic = "force-dynamic"
+
 export default async function JobDetailPage({
   params,
 }: {
@@ -27,7 +29,8 @@ export default async function JobDetailPage({
     >(JobDetailViewQueryNode.params, {
       jobId: decodeURIComponent(jobId),
     });
-  } catch {
+  } catch(error) {
+    console.log("error: ", error)
     // gracefully handle errors
     notFound();
   }

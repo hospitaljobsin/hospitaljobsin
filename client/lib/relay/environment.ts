@@ -16,29 +16,27 @@ const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 
 export async function getCookies() {
   const { cookies } = await import("next/headers");
-  return cookies
+  return await cookies();
 }
 
 export async function networkFetch(
   request: RequestParameters,
   variables: Variables
 ): Promise<GraphQLResponse> {
-  let cookies;
+  let serverCookie;
   try {
     if (IS_SERVER) {
-      cookies = await getCookies();
-      console.log("cookies: ", cookies)
+      serverCookie = await getCookies();
     }
   } catch (err) {
     console.error(err);
   }
-
   const resp = await fetch(HTTP_ENDPOINT, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      "Cookie": cookies !== undefined ? cookies.toString() : undefined
+      "Cookie": serverCookie !== undefined ? serverCookie.toString() : undefined
     },
     credentials: 'include',
     body: JSON.stringify({
@@ -47,7 +45,7 @@ export async function networkFetch(
     }),
   });
   const json = await resp.json();
-
+  
   // GraphQL returns exceptions (for example, a missing required variable) in the "errors"
   // property of the response. If any exceptions occurred when processing the request,
   // throw an error to indicate to the developer what went wrong.

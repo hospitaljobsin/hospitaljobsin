@@ -62,7 +62,6 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
     );
 
     observer.observe(observerRef.current);
-
     return () => observer.disconnect();
   }, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 

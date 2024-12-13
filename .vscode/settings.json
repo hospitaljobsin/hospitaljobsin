@@ -17,6 +17,10 @@
   "python.terminal.activateEnvironment": false,
   "python.analysis.ignore": ["*"],
   "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.formatOnType": false,
+  "editor.formatOnPaste": false,
+  "files.autoSave": "off",
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
   },
