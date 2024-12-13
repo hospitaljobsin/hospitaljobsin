@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<61976ac01b27030d9bf0db4870cf14d3>>
+ * @generated SignedSource<<6cb3bf9177340ee78e7c0b33063f86f0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,33 +16,21 @@ import { FragmentRefs } from "relay-runtime";
 export type JobDetailsFragment$data = {
   readonly address: {
     readonly city: string;
-    readonly country: string;
-    readonly line1: string | null | undefined;
-    readonly line2: string | null | undefined;
-    readonly pincode: string | null | undefined;
     readonly state: string;
   };
-  readonly application: string;
-  readonly category: string;
   readonly company: {
     readonly address: {
       readonly city: string;
-      readonly country: string;
-      readonly line1: string | null | undefined;
       readonly state: string;
     };
     readonly description: string;
-    readonly email: string;
     readonly id: string;
     readonly logoUrl: string | null | undefined;
     readonly name: string;
-    readonly phone: string;
-    readonly website: string;
   } | null | undefined;
   readonly createdAt: any;
   readonly currency: Currency;
   readonly description: string | null | undefined;
-  readonly expiresAt: any | null | undefined;
   readonly hasExperienceRange: boolean;
   readonly hasSalaryRange: boolean;
   readonly maxExperience: number | null | undefined;
@@ -71,29 +59,26 @@ var v0 = {
 v1 = {
   "alias": null,
   "args": null,
-  "kind": "ScalarField",
-  "name": "line1",
-  "storageKey": null
-},
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "city",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "state",
-  "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "country",
+  "concreteType": "Address",
+  "kind": "LinkedField",
+  "name": "address",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "city",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "state",
+      "storageKey": null
+    }
+  ],
   "storageKey": null
 };
 return {
@@ -114,20 +99,6 @@ return {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "application",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "category",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
       "name": "type",
       "storageKey": null
     },
@@ -138,35 +109,7 @@ return {
       "name": "workMode",
       "storageKey": null
     },
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": "Address",
-      "kind": "LinkedField",
-      "name": "address",
-      "plural": false,
-      "selections": [
-        (v1/*: any*/),
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "line2",
-          "storageKey": null
-        },
-        (v2/*: any*/),
-        (v3/*: any*/),
-        (v4/*: any*/),
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "pincode",
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
-    },
+    (v1/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -233,13 +176,6 @@ return {
     {
       "alias": null,
       "args": null,
-      "kind": "ScalarField",
-      "name": "expiresAt",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
       "concreteType": "Company",
       "kind": "LinkedField",
       "name": "company",
@@ -267,42 +203,7 @@ return {
           "name": "logoUrl",
           "storageKey": null
         },
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "Address",
-          "kind": "LinkedField",
-          "name": "address",
-          "plural": false,
-          "selections": [
-            (v1/*: any*/),
-            (v2/*: any*/),
-            (v3/*: any*/),
-            (v4/*: any*/)
-          ],
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "phone",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "website",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "email",
-          "storageKey": null
-        }
+        (v1/*: any*/)
       ],
       "storageKey": null
     }
@@ -312,6 +213,6 @@ return {
 };
 })();
 
-(node as any).hash = "6cfe26c6f3bbbc458782740a8ea42e1c";
+(node as any).hash = "4adf8c65a031a1fbbb08a6b82ec859ad";
 
 export default node;

@@ -7,10 +7,11 @@ import {
   CardFooter,
   CardHeader,
   Chip,
-  Divider
+  Divider,
+  Link,
 } from "@nextui-org/react";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
-import Link from "next/link";
+import NextLink from "next/link";
 import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
 import { JobDetailsFragment$key } from "./__generated__/JobDetailsFragment.graphql";
@@ -19,17 +20,11 @@ const JobDetailsFragment = graphql`
   fragment JobDetailsFragment on Job {
     title
     description
-    application
-    category
     type
     workMode
     address {
-      line1
-      line2
       city
       state
-      country
-      pincode
     }
     skills
     currency
@@ -40,21 +35,15 @@ const JobDetailsFragment = graphql`
     minExperience
     maxExperience
     createdAt
-    expiresAt
     company {
       id
       name
       description
       logoUrl
       address {
-        line1
         city
         state
-        country
       }
-      phone
-      website
-      email
     }
   }
 `;
@@ -63,9 +52,6 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
   const data = useFragment(JobDetailsFragment, job);
 
   const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
-  const formattedExpiresAt = data.expiresAt
-    ? dateFormat.format(new Date(data.expiresAt))
-    : "No expiration";
 
 
   // Map currency to icons
@@ -142,18 +128,16 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
       {/* Job and Company Details */}
        
         <Card fullWidth className="p-6" shadow="sm">
-          <CardHeader className="flex gap-4 items-center">
-          <Avatar
+          <CardBody className="flex items-center gap-6 flex-row w-full"> <Avatar
                 name={data.company?.name}
                 src={data.company?.logoUrl || undefined}
                 size="lg"
               />
-            <Link className="hover:underline" href={`/companies/${encodeURIComponent(data.company?.id || "")}`}>
+              <div className="w-full flex flex-col gap-2">
+            <Link as={NextLink} color="foreground" showAnchorIcon href={`/companies/${encodeURIComponent(data.company?.id || "")}`}>
              {data.company?.name}
             </Link>
-          </CardHeader>
-          <CardBody>
-          <p className="text-default-500">{data.company?.description}</p>
+          <p className="text-default-500">{data.company?.description}</p></div>
           </CardBody>
         </Card>
 

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<da8b55102ae62b4073772b934b9d73e0>>
+ * @generated SignedSource<<a3b581b6f8301a3f678ba781f6fdd42a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -60,32 +60,29 @@ v3 = {
 v4 = {
   "alias": null,
   "args": null,
-  "kind": "ScalarField",
-  "name": "line1",
+  "concreteType": "Address",
+  "kind": "LinkedField",
+  "name": "address",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "city",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "state",
+      "storageKey": null
+    }
+  ],
   "storageKey": null
 },
 v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "city",
-  "storageKey": null
-},
-v6 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "state",
-  "storageKey": null
-},
-v7 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "country",
-  "storageKey": null
-},
-v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -157,20 +154,6 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "application",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "category",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
                 "name": "type",
                 "storageKey": null
               },
@@ -181,35 +164,7 @@ return {
                 "name": "workMode",
                 "storageKey": null
               },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Address",
-                "kind": "LinkedField",
-                "name": "address",
-                "plural": false,
-                "selections": [
-                  (v4/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "line2",
-                    "storageKey": null
-                  },
-                  (v5/*: any*/),
-                  (v6/*: any*/),
-                  (v7/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "pincode",
-                    "storageKey": null
-                  }
-                ],
-                "storageKey": null
-              },
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -276,19 +231,12 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "expiresAt",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
                 "concreteType": "Company",
                 "kind": "LinkedField",
                 "name": "company",
                 "plural": false,
                 "selections": [
-                  (v8/*: any*/),
+                  (v5/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -304,42 +252,7 @@ return {
                     "name": "logoUrl",
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Address",
-                    "kind": "LinkedField",
-                    "name": "address",
-                    "plural": false,
-                    "selections": [
-                      (v4/*: any*/),
-                      (v5/*: any*/),
-                      (v6/*: any*/),
-                      (v7/*: any*/)
-                    ],
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "phone",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "website",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "email",
-                    "storageKey": null
-                  }
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -347,19 +260,19 @@ return {
             "type": "Job",
             "abstractKey": null
           },
-          (v8/*: any*/)
+          (v5/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "213186c96e2b256fab7f165bcfc18935",
+    "cacheID": "c3cb289bc59979ea22f2df59bb76a55c",
     "id": null,
     "metadata": {},
     "name": "JobDetailViewQuery",
     "operationKind": "query",
-    "text": "query JobDetailViewQuery(\n  $jobId: ID!\n) {\n  node(id: $jobId) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n    }\n    id\n  }\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  application\n  category\n  type\n  workMode\n  address {\n    line1\n    line2\n    city\n    state\n    country\n    pincode\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  expiresAt\n  company {\n    id\n    name\n    description\n    logoUrl\n    address {\n      line1\n      city\n      state\n      country\n    }\n    phone\n    website\n    email\n  }\n}\n"
+    "text": "query JobDetailViewQuery(\n  $jobId: ID!\n) {\n  node(id: $jobId) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n    }\n    id\n  }\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
   }
 };
 })();
