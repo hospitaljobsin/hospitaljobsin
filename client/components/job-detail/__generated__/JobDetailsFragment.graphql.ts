@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<97240113867e9aee49be8be71516710b>>
+ * @generated SignedSource<<edb37650c637f14944a1d8aa92fb8fc0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,6 +22,7 @@ export type JobDetailsFragment$data = {
     readonly pincode: string | null | undefined;
     readonly state: string;
   };
+  readonly application: string;
   readonly category: string;
   readonly company: {
     readonly address: {
@@ -32,6 +33,7 @@ export type JobDetailsFragment$data = {
     };
     readonly description: string;
     readonly email: string;
+    readonly logoUrl: string | null | undefined;
     readonly name: string;
     readonly phone: string;
     readonly website: string;
@@ -107,6 +109,13 @@ return {
       "storageKey": null
     },
     (v0/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "application",
+      "storageKey": null
+    },
     {
       "alias": null,
       "args": null,
@@ -246,6 +255,13 @@ return {
         {
           "alias": null,
           "args": null,
+          "kind": "ScalarField",
+          "name": "logoUrl",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
           "concreteType": "Address",
           "kind": "LinkedField",
           "name": "address",
@@ -288,6 +304,6 @@ return {
 };
 })();
 
-(node as any).hash = "6a814aa7cbcefdf74d40887eb76bfee6";
+(node as any).hash = "f4c09209df91ba14aad4f271c36b3c94";
 
 export default node;

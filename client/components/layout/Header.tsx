@@ -96,18 +96,19 @@ export default function Header() {
             </DropdownMenu>
           </Dropdown>
         ) : (
+          <>
           <NavbarItem>
             <Link color="foreground" href="/auth/login">
               <Button color="default">Log In</Button>
             </Link>
-          </NavbarItem>
-        )}
-
-        <NavbarItem>
+          </NavbarItem> <NavbarItem>
           <Button color="default" variant="flat" disabled>
             For recruiters
           </Button>
-        </NavbarItem>
+        </NavbarItem></>
+        )}
+
+       
       </NavbarContent>
     </Navbar>
   );

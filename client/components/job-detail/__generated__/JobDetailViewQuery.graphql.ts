@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e64853000270bab597c9072b1e0c9a2e>>
+ * @generated SignedSource<<cf01bb844180876cb5d5c90846186d41>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -157,6 +157,13 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "application",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "category",
                 "storageKey": null
               },
@@ -292,6 +299,13 @@ return {
                   {
                     "alias": null,
                     "args": null,
+                    "kind": "ScalarField",
+                    "name": "logoUrl",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
                     "concreteType": "Address",
                     "kind": "LinkedField",
                     "name": "address",
@@ -340,12 +354,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "52dc096f10ab6947c54fdfc48f41acc0",
+    "cacheID": "e9c530a4756b64f1ccdd08771ee164ef",
     "id": null,
     "metadata": {},
     "name": "JobDetailViewQuery",
     "operationKind": "query",
-    "text": "query JobDetailViewQuery(\n  $jobId: ID!\n) {\n  node(id: $jobId) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n    }\n    id\n  }\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  category\n  type\n  workMode\n  address {\n    line1\n    line2\n    city\n    state\n    country\n    pincode\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  expiresAt\n  company {\n    name\n    description\n    address {\n      line1\n      city\n      state\n      country\n    }\n    phone\n    website\n    email\n    id\n  }\n}\n"
+    "text": "query JobDetailViewQuery(\n  $jobId: ID!\n) {\n  node(id: $jobId) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n    }\n    id\n  }\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  application\n  category\n  type\n  workMode\n  address {\n    line1\n    line2\n    city\n    state\n    country\n    pincode\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  expiresAt\n  company {\n    name\n    description\n    logoUrl\n    address {\n      line1\n      city\n      state\n      country\n    }\n    phone\n    website\n    email\n    id\n  }\n}\n"
   }
 };
 })();
