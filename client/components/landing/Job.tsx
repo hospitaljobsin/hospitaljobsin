@@ -83,7 +83,7 @@ export default function Job({ job }: Props) {
 
   return (
     <Link href={`/jobs/${encodeURIComponent(data.id)}`} className="group">
-      <Card isHoverable fullWidth className="p-6">
+      <Card isHoverable fullWidth className="p-6" shadow="sm">
         <CardHeader>
           <div className="flex w-full justify-between gap-4 items-center">
             <div className="flex items-center gap-4">

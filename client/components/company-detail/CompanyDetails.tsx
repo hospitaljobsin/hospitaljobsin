@@ -31,7 +31,7 @@ export default function CompanyDetails({ company }: { company: CompanyDetailsFra
 
   return (
     <div className="w-full flex flex-col gap-6">
-      <Card fullWidth className="p-6">
+      <Card fullWidth className="p-6" shadow="sm">
         <CardHeader>
           <div className="flex w-full justify-between gap-4 items-center">
               

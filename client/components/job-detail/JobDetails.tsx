@@ -98,7 +98,7 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
   return (
     <div className="w-full flex flex-col gap-6">
       {/* Job Title and Company */}
-      <Card fullWidth className="p-6">
+      <Card fullWidth className="p-6" shadow="sm">
         <CardHeader>
           <div className="flex w-full justify-between gap-4 items-center">
               
@@ -141,7 +141,7 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
 
       {/* Job and Company Details */}
        
-        <Card fullWidth className="p-6">
+        <Card fullWidth className="p-6" shadow="sm">
           <CardHeader className="flex gap-4 items-center">
           <Avatar
                 name={data.company?.name}
@@ -158,7 +158,7 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
         </Card>
 
       {/* Job Description */}
-      <Card className="p-6" fullWidth>
+      <Card className="p-6" fullWidth shadow="sm">
         <CardHeader>
           <h3 className="text-lg font-semibold text-secondary">
             About the Job
