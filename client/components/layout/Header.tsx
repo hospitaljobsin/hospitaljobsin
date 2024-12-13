@@ -1,5 +1,4 @@
 "use client";
-import { handleSignOut } from "@/lib/cognitoActions";
 import { APP_NAME } from "@/lib/constants";
 import {
   Button,
@@ -15,19 +14,29 @@ import {
 import { ChevronDown, LogOutIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useLazyLoadQuery } from "react-relay";
+import { useLazyLoadQuery, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { HeaderQuery as HeaderQueryType } from "./__generated__/HeaderQuery.graphql";
 
 const HeaderQuery = graphql`
   query HeaderQuery {
     viewer {
-      __typename
       ... on Account {
+        __typename
         email
       }
       ... on NotAuthenticatedError {
-        message
+        __typename
+      }
+    }
+  }
+`;
+
+const HeaderLogoutMutation = graphql`
+  mutation HeaderLogoutMutation {
+    logout {
+      ...on Account {
+        id @deleteRecord
       }
     }
   }
@@ -35,10 +44,15 @@ const HeaderQuery = graphql`
 
 export default function Header() {
   const data = useLazyLoadQuery<HeaderQueryType>(HeaderQuery, {});
+    const [commitMutation, isMutationInFlight] = useMutation(HeaderLogoutMutation);
   const router = useRouter();
 
   async function handleLogout() {
-    await handleSignOut(router);
+    commitMutation({variables: {}, onCompleted(response, errors) {
+        if (!errors) {
+          router.replace("/auth/login");
+        }
+    },})
   }
 
   return (
@@ -48,20 +62,9 @@ export default function Header() {
           {APP_NAME}
         </Link>
       </NavbarBrand>
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link href="#" color="foreground">
-            Job Alerts
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Search Recruiters
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
+      
       <NavbarContent justify="end">
-        {data.viewer.__typename === "Account" ? (
+        {data.viewer?.__typename === "Account" ? (
           <Dropdown>
             <NavbarItem>
               <DropdownTrigger>
@@ -86,6 +89,7 @@ export default function Header() {
                 key="logout"
                 startContent={<LogOutIcon className="h-4 w-4" />}
                 onClick={handleLogout}
+                isDisabled={isMutationInFlight}
               >
                 Log Out
               </DropdownItem>

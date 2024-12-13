@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7958c0f9084bdc317596effd51cf71e8>>
+ * @generated SignedSource<<2c73384b0ad0c9066fe6e2313d3fefc4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,6 @@ export type HeaderQuery$data = {
     readonly email: string;
   } | {
     readonly __typename: "NotAuthenticatedError";
-    readonly message: string;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -37,32 +36,11 @@ var v0 = {
   "storageKey": null
 },
 v1 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "email",
-      "storageKey": null
-    }
-  ],
-  "type": "Account",
-  "abstractKey": null
-},
-v2 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "message",
-      "storageKey": null
-    }
-  ],
-  "type": "NotAuthenticatedError",
-  "abstractKey": null
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "email",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -79,9 +57,23 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
-          (v1/*: any*/),
-          (v2/*: any*/)
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v0/*: any*/),
+              (v1/*: any*/)
+            ],
+            "type": "Account",
+            "abstractKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v0/*: any*/)
+            ],
+            "type": "NotAuthenticatedError",
+            "abstractKey": null
+          }
         ],
         "storageKey": null
       }
@@ -104,8 +96,14 @@ return {
         "plural": false,
         "selections": [
           (v0/*: any*/),
-          (v1/*: any*/),
-          (v2/*: any*/),
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v1/*: any*/)
+            ],
+            "type": "Account",
+            "abstractKey": null
+          },
           {
             "kind": "InlineFragment",
             "selections": [
@@ -126,16 +124,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a38ec435f71bd335bab099c78529be56",
+    "cacheID": "8ae66e53f8a72e6bcfec8eb776dff7f4",
     "id": null,
     "metadata": {},
     "name": "HeaderQuery",
     "operationKind": "query",
-    "text": "query HeaderQuery {\n  viewer {\n    __typename\n    ... on Account {\n      email\n    }\n    ... on NotAuthenticatedError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query HeaderQuery {\n  viewer {\n    __typename\n    ... on Account {\n      __typename\n      email\n    }\n    ... on NotAuthenticatedError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "4b971e2b2146fe67748786f680d3420a";
+(node as any).hash = "31776ea4dfffcca24f20df69667dfceb";
 
 export default node;

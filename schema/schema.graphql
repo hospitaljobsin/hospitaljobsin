@@ -96,6 +96,8 @@ enum JobType {
 
 union LoginPayload = Account | InvalidCredentialsError
 
+union LogoutPayload = Account | NotAuthenticatedError
+
 type Mutation {
   """Register a new user."""
   register(
@@ -114,6 +116,9 @@ type Mutation {
     """The password of the user."""
     password: String!
   ): LoginPayload!
+
+  """Log out the current user."""
+  logout: LogoutPayload!
 }
 
 """An object with a Globally Unique ID"""

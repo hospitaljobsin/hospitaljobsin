@@ -3,7 +3,7 @@ from typing import Annotated
 import strawberry
 
 from app.accounts.types import AccountType
-from app.base.types import BaseErrorType
+from app.base.types import BaseErrorType, NotAuthenticatedErrorType
 
 
 @strawberry.type(name="EmailInUseError")
@@ -24,4 +24,9 @@ RegisterPayload = Annotated[
 LoginPayload = Annotated[
     AccountType | InvalidCredentialsErrorType,
     strawberry.union(name="LoginPayload"),
+]
+
+LogoutPayload = Annotated[
+    AccountType | NotAuthenticatedErrorType,
+    strawberry.union(name="LogoutPayload"),
 ]

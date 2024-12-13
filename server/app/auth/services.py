@@ -95,7 +95,19 @@ class AuthService:
             key=settings.session_cookie_name,
             value=value,
             expires=datetime.now(UTC) + timedelta(seconds=USER_SESSION_EXPIRES_IN),
-            # path="/",
+            path="/",
+            domain=settings.session_cookie_domain,
+            secure=secure,
+            httponly=True,
+            samesite="lax",
+        )
+
+    async def logout(self, request: Request, response: Response) -> None:
+        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
+        secure = False if is_localhost else True
+        response.delete_cookie(
+            key=settings.session_cookie_name,
+            path="/",
             domain=settings.session_cookie_domain,
             secure=secure,
             httponly=True,
