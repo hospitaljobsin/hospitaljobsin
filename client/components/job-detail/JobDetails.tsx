@@ -134,7 +134,7 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
                 size="lg"
               />
               <div className="w-full flex flex-col gap-2">
-            <Link as={NextLink} color="foreground" showAnchorIcon href={`/companies/${encodeURIComponent(data.company?.id || "")}`}>
+            <Link as={NextLink} color="foreground" isExternal showAnchorIcon href={`/companies/${encodeURIComponent(data.company?.id || "")}`}>
              {data.company?.name}
             </Link>
           <p className="text-default-500">{data.company?.description}</p></div>
