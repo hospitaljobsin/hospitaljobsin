@@ -111,6 +111,7 @@ class ProfileRepo:
     async def create(
         self,
         account: Account,
+        name: str,
         gender: str,
         date_of_birth: date,
         address: Address | None,
@@ -125,6 +126,7 @@ class ProfileRepo:
         """Create a new profile."""
         profile = Profile(
             account=account,
+            name=name,
             gender=gender,
             date_of_birth=date_of_birth,
             address=address,

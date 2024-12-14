@@ -144,7 +144,7 @@ export default function JobDetails({ job }: { job: JobDetailsFragment$key }) {
       {/* Job Description */}
       <Card className="p-6" fullWidth shadow="sm">
         <CardHeader>
-          <h3 className="text-lg font-semibold text-secondary">
+          <h3 className="font-medium text-foreground-500">
             About the Job
           </h3>
         </CardHeader>
