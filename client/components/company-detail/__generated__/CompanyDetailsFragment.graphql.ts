@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<074ee90b7cf1cdeee1b9ffc681b063c0>>
+ * @generated SignedSource<<26211cfbf6ebf127210db69b1002b943>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,10 +13,6 @@ import { FragmentRefs } from "relay-runtime";
 export type CompanyDetailsFragment$data = {
   readonly address: {
     readonly city: string;
-    readonly country: string;
-    readonly line1: string | null | undefined;
-    readonly line2: string | null | undefined;
-    readonly pincode: string | null | undefined;
     readonly state: string;
   };
   readonly description: string;
@@ -84,20 +80,6 @@ const node: ReaderFragment = {
           "alias": null,
           "args": null,
           "kind": "ScalarField",
-          "name": "line1",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "line2",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
           "name": "city",
           "storageKey": null
         },
@@ -106,20 +88,6 @@ const node: ReaderFragment = {
           "args": null,
           "kind": "ScalarField",
           "name": "state",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "country",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "pincode",
           "storageKey": null
         }
       ],
@@ -130,6 +98,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "cb22a6b4299c6515c9e891a13ad3349c";
+(node as any).hash = "418225392b95916c6839b4f6f1d68b9f";
 
 export default node;

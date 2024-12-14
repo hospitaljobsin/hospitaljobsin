@@ -5,8 +5,7 @@ import aioinject
 from app.accounts.repositories import AccountRepo, EmailVerificationRepo, ProfileRepo
 from app.auth.repositories import SessionRepo
 from app.auth.services import AuthService
-from app.companies.repositories import CompanyRepo
-from app.jobs.repositories import JobRepo
+from app.companies.repositories import CompanyRepo, JobRepo
 
 
 @lru_cache

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bb3cce82517d690a092515361c85e89a>>
+ * @generated SignedSource<<9da69780d7c8435902fc46fbcbaeca17>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,37 +10,44 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type CompanyDetailViewQuery$variables = {
-  companyId: string;
+export type CompanyJobsListPaginationQuery$variables = {
+  count?: number | null | undefined;
+  cursor?: string | null | undefined;
+  id: string;
 };
-export type CompanyDetailViewQuery$data = {
+export type CompanyJobsListPaginationQuery$data = {
   readonly node: {
-    readonly __typename: "Company";
-    readonly " $fragmentSpreads": FragmentRefs<"CompanyDetailsFragment" | "CompanyJobsListFragment">;
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
+    readonly " $fragmentSpreads": FragmentRefs<"CompanyJobsListFragment">;
   } | null | undefined;
 };
-export type CompanyDetailViewQuery = {
-  response: CompanyDetailViewQuery$data;
-  variables: CompanyDetailViewQuery$variables;
+export type CompanyJobsListPaginationQuery = {
+  response: CompanyJobsListPaginationQuery$data;
+  variables: CompanyJobsListPaginationQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
+    "defaultValue": 10,
+    "kind": "LocalArgument",
+    "name": "count"
+  },
+  {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "companyId"
+    "name": "cursor"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "id"
   }
 ],
 v1 = [
   {
     "kind": "Variable",
     "name": "id",
-    "variableName": "companyId"
+    "variableName": "id"
   }
 ],
 v2 = {
@@ -59,9 +66,14 @@ v3 = {
 },
 v4 = [
   {
-    "kind": "Literal",
+    "kind": "Variable",
+    "name": "after",
+    "variableName": "cursor"
+  },
+  {
+    "kind": "Variable",
     "name": "first",
-    "value": 10
+    "variableName": "count"
   }
 ],
 v5 = {
@@ -88,20 +100,13 @@ v5 = {
     }
   ],
   "storageKey": null
-},
-v6 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "name",
-  "storageKey": null
 };
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "CompanyDetailViewQuery",
+    "name": "CompanyJobsListPaginationQuery",
     "selections": [
       {
         "alias": null,
@@ -111,23 +116,21 @@ return {
         "name": "node",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
           {
-            "kind": "InlineFragment",
-            "selections": [
+            "args": [
               {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "CompanyJobsListFragment"
+                "kind": "Variable",
+                "name": "count",
+                "variableName": "count"
               },
               {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "CompanyDetailsFragment"
+                "kind": "Variable",
+                "name": "cursor",
+                "variableName": "cursor"
               }
             ],
-            "type": "Company",
-            "abstractKey": null
+            "kind": "FragmentSpread",
+            "name": "CompanyJobsListFragment"
           }
         ],
         "storageKey": null
@@ -140,7 +143,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "CompanyDetailViewQuery",
+    "name": "CompanyJobsListPaginationQuery",
     "selections": [
       {
         "alias": null,
@@ -274,7 +277,13 @@ return {
                             "plural": false,
                             "selections": [
                               (v3/*: any*/),
-                              (v6/*: any*/),
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "name",
+                                "storageKey": null
+                              },
                               {
                                 "alias": null,
                                 "args": null,
@@ -338,7 +347,7 @@ return {
                     ]
                   }
                 ],
-                "storageKey": "jobs(first:10)"
+                "storageKey": null
               },
               {
                 "alias": null,
@@ -348,37 +357,7 @@ return {
                 "key": "CompanyJobsListFragment_jobs",
                 "kind": "LinkedHandle",
                 "name": "jobs"
-              },
-              (v6/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "description",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "website",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "phone",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "email",
-                "storageKey": null
-              },
-              (v5/*: any*/)
+              }
             ],
             "type": "Company",
             "abstractKey": null
@@ -389,16 +368,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "802767d1949f8a27899c46b018cb0173",
+    "cacheID": "9fdcac4899d3174b8f2b677930979488",
     "id": null,
     "metadata": {},
-    "name": "CompanyDetailViewQuery",
+    "name": "CompanyJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query CompanyDetailViewQuery(\n  $companyId: ID!\n) {\n  node(id: $companyId) {\n    __typename\n    ... on Company {\n      ...CompanyJobsListFragment\n      ...CompanyDetailsFragment\n    }\n    id\n  }\n}\n\nfragment CompanyDetailsFragment on Company {\n  name\n  description\n  website\n  phone\n  email\n  address {\n    city\n    state\n  }\n}\n\nfragment CompanyJobsListFragment on Company {\n  jobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
+    "text": "query CompanyJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...CompanyJobsListFragment_1G22uz\n    id\n  }\n}\n\nfragment CompanyJobsListFragment_1G22uz on Company {\n  jobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d55af20e695f2697c4b6de84c8a4a886";
+(node as any).hash = "9ee000fdad7029599fed2f2465106b5d";
 
 export default node;

@@ -1,4 +1,3 @@
-from email.policy import default
 from typing import Annotated
 
 import strawberry
@@ -11,7 +10,7 @@ from .types import JobConnectionType
 
 
 @strawberry.type
-class JobQuery:
+class CompanyQuery:
     @strawberry.field(  # type: ignore[misc]
         graphql_type=JobConnectionType,
         description="Get all jobs available.",

@@ -44,7 +44,6 @@ class SessionRepo:
 
     async def get(self, token: str) -> Session | None:
         """Get session by token."""
-        print("Token hash: ", self.hash_session_token(token))
         return await Session.find_one(
             Session.token_hash == self.hash_session_token(token),
         )

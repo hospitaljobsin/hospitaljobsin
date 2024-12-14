@@ -1,8 +1,8 @@
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader
+  Button,
+  Card,
+  CardBody,
+  CardHeader
 } from "@nextui-org/react";
 import { Globe, MailIcon, MapPin, Phone } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
@@ -16,12 +16,8 @@ const CompanyDetailsFragment = graphql`
     phone
     email
     address {
-      line1
-      line2
       city
       state
-      country
-      pincode
     }
   }
 `;

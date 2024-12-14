@@ -5,10 +5,8 @@ from strawberry.dataloader import DataLoader
 
 from app.accounts.dataloaders import load_account_by_id
 from app.accounts.documents import Account
-from app.companies.dataloaders import load_company_by_id
-from app.companies.documents import Company
-from app.jobs.dataloaders import load_job_by_id
-from app.jobs.documents import Job
+from app.companies.dataloaders import load_company_by_id, load_job_by_id
+from app.companies.documents import Company, Job
 
 
 @dataclasses.dataclass(slots=True, kw_only=True)

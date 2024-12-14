@@ -6,7 +6,7 @@ from strawberry.tools import merge_types
 
 from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
-from app.jobs.query import JobQuery
+from app.companies.query import CompanyQuery
 from app.scalars import ID
 
 from .base.query import BaseQuery
@@ -17,7 +17,7 @@ query = merge_types(
     types=(
         AccountQuery,
         BaseQuery,
-        JobQuery,
+        CompanyQuery,
     ),
 )
 

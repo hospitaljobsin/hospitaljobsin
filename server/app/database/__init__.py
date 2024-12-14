@@ -5,8 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.accounts.documents import Account, EmailVerification
 from app.auth.documents import Session
-from app.companies.documents import Company
-from app.jobs.documents import Job
+from app.companies.documents import Company, Job
 
 
 @asynccontextmanager

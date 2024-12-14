@@ -25,6 +25,7 @@ type Company implements Node {
   website: String!
   email: String!
   logoUrl: String
+  jobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
 }
 
 enum Currency {
