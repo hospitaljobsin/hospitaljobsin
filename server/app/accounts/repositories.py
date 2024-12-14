@@ -1,7 +1,7 @@
 import secrets
 from datetime import date, datetime, timedelta
 
-from beanie import PydanticObjectId
+from beanie import PydanticObjectId, WriteRules
 from beanie.operators import In
 from bson import ObjectId
 from passlib.hash import argon2, sha256_crypt
@@ -35,6 +35,7 @@ class AccountRepo:
             ),
             has_onboarded=False,
             updated_at=None,
+            profile=None,
         )
 
         return await account.insert()
@@ -60,9 +61,9 @@ class AccountRepo:
     async def get_many_by_ids(
         self, account_ids: list[ObjectId]
     ) -> list[Account | None]:
-        """Get multiple accounts by IDs."""
-        accounts = await Account.find(In(Account.id, account_ids)).to_list()
-        account_by_id = {account.id: account for account in accounts}
+        """Get multiple profiles by IDs."""
+        profiles = await Account.find(In(Account.id, account_ids)).to_list()
+        account_by_id = {account.id: account for account in profiles}
 
         return [
             account_by_id.get(PydanticObjectId(account_id))
@@ -109,7 +110,7 @@ class EmailVerificationRepo:
 class ProfileRepo:
     async def create(
         self,
-        user_id: str,
+        account: Account,
         gender: str,
         date_of_birth: date,
         address: Address | None,
@@ -123,7 +124,7 @@ class ProfileRepo:
     ) -> Profile:
         """Create a new profile."""
         profile = Profile(
-            user_id=user_id,
+            account=account,
             gender=gender,
             date_of_birth=date_of_birth,
             address=address,
@@ -136,11 +137,25 @@ class ProfileRepo:
             links=links,
         )
 
-        return await profile.insert()
+        return await profile.insert(
+            link_rule=WriteRules.WRITE,
+        )
 
     async def get(self, profile_id: str) -> Profile | None:
         """Get profile by ID."""
         return await Profile.get(profile_id)
+
+    async def get_many_by_ids(
+        self, profile_ids: list[ObjectId]
+    ) -> list[Profile | None]:
+        """Get multiple profiles by IDs."""
+        profiles = await Profile.find(In(Profile.id, profile_ids)).to_list()
+        profile_by_id = {profile.id: profile for profile in profiles}
+
+        return [
+            profile_by_id.get(PydanticObjectId(profile_id))
+            for profile_id in profile_ids
+        ]
 
     async def get_by_user_id(self, user_id: str) -> Profile | None:
         """Get profile by user ID."""

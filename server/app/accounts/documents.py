@@ -40,6 +40,7 @@ class Links(BaseModel):
 
 # Main Job Seeker Profile Document
 class Profile(Document):
+    name: str
     gender: Literal["Male", "Female", "Other"]
     date_of_birth: date
     address: Address
@@ -52,7 +53,9 @@ class Profile(Document):
     links: Links | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-    account: Link["Account"]
+    account: BackLink["Account"] = Field(
+        original_field="profile",
+    )
 
     class Settings:
         name = "profiles"  # MongoDB collection name
@@ -63,10 +66,8 @@ class Account(Document):
     email_verified: bool = False
     password_hash: str
     has_onboarded: bool
-    updated_at: datetime | None
-    profile: BackLink["Profile"] | None = Field(
-        original_field="account",
-    )
+    updated_at: datetime | None = None
+    profile: Link["Profile"] | None = None
 
     class Settings:
         name = "accounts"
