@@ -1,6 +1,8 @@
 "use client";
+import { getGravatarURL } from "@/lib/avatars";
 import { APP_NAME } from "@/lib/constants";
 import {
+  Avatar,
   Button,
   Dropdown,
   DropdownItem,
@@ -70,12 +72,12 @@ export default function Header() {
               <DropdownTrigger>
                 <Button
                   disableRipple
-                  className="p-0 bg-transparent data-[hover=true]:bg-transparent"
+                  className="p-0 bg-transparent data-[hover=true]:bg-transparent flex items-center gap-4"
                   endContent={<ChevronDown className="h-4 w-4" />}
                   radius="sm"
                   variant="light"
                 >
-                  Hi, {data.viewer.email}
+                  <Avatar name={data.viewer.email} size="sm" src={getGravatarURL(data.viewer.email)} /> {data.viewer.email}
                 </Button>
               </DropdownTrigger>
             </NavbarItem>
@@ -87,6 +89,7 @@ export default function Header() {
             >
               <DropdownItem
                 key="logout"
+                className="min-w-72"
                 startContent={<LogOutIcon className="h-4 w-4" />}
                 onClick={handleLogout}
                 isDisabled={isMutationInFlight}
