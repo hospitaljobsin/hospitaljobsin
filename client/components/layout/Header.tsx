@@ -13,7 +13,7 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@nextui-org/react";
-import { ChevronDown, LogOutIcon } from "lucide-react";
+import { ChevronDown, LogOutIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLazyLoadQuery, useMutation } from "react-relay";
@@ -82,11 +82,20 @@ export default function Header() {
               </DropdownTrigger>
             </NavbarItem>
             <DropdownMenu
+            variant="light"
               aria-label="ACME features"
               itemClasses={{
                 base: "gap-4",
               }}
             >
+               <DropdownItem
+                key="profile"
+                className="min-w-72"
+                startContent={<UserIcon className="h-4 w-4" />}
+                href="/profile"
+              >
+                My Profile
+              </DropdownItem>
               <DropdownItem
                 key="logout"
                 className="min-w-72"
