@@ -18,10 +18,13 @@ async def load_company_by_id(
     ],
 ) -> list[Company | None]:
     """Load multiple companies by their IDs."""
-    return await company_repo.get_many_by_ids(
-        company_ids=list(map(ObjectId, company_ids)),
-    )
-
+    valid_ids = [ObjectId(company_id) for company_id in company_ids if ObjectId.is_valid(company_id)]
+    # Map invalid IDs to `None` for a consistent response structure
+    id_to_company_map = {
+        str(company_id): company
+        for company_id, company in zip(valid_ids, await company_repo.get_many_by_ids(valid_ids))
+    }
+    return [id_to_company_map.get(company_id, None) for company_id in company_ids]
 
 @inject
 async def load_job_by_id(
