@@ -5,6 +5,7 @@ from beanie import BackLink, Document, Indexed, Link
 from pydantic import BaseModel, Field, HttpUrl
 
 from app.base.models import Address
+from app.companies.documents import Job
 
 
 # Education Schema
@@ -68,6 +69,7 @@ class Account(Document):
     has_onboarded: bool
     updated_at: datetime | None = None
     profile: Link["Profile"] | None = None
+    saved_jobs: list[Link["Job"]] = []
 
     class Settings:
         name = "accounts"

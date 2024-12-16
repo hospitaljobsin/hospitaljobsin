@@ -6,6 +6,7 @@ from beanie import PydanticObjectId, WriteRules
 from beanie.operators import In
 from bson import ObjectId
 
+from app.accounts.documents import Account
 from app.database.paginator import PaginatedResult, Paginator
 
 from .documents import Company, Job
@@ -182,6 +183,34 @@ class JobRepo:
 
         if search_term:
             search_criteria = Job.find({"$text": {"$search": search_term}})
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
+    async def get_all_saved(
+        self,
+        account: Account,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[Job, ObjectId]:
+        """Get a paginated result of saved jobs for the given account."""
+
+        paginator: Paginator[Job, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=Job,
+            paginate_by="id",
+        )
+
+        print("SAVED JOBS IDS: ", account.saved_jobs)
+
+        search_criteria = Job.find(In(Job.id, account.saved_jobs))
 
         return await paginator.paginate(
             search_criteria=search_criteria,

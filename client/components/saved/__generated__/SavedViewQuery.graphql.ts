@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e8846713895da171aaef92ec2bebf40d>>
+ * @generated SignedSource<<daa529d6e0d624e63a866dd8d3cdbb5b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,22 +10,20 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type HeaderQuery$variables = Record<PropertyKey, never>;
-export type HeaderQuery$data = {
+export type SavedViewQuery$variables = Record<PropertyKey, never>;
+export type SavedViewQuery$data = {
   readonly viewer: {
     readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AuthDropdownFragment">;
-  } | {
-    readonly __typename: "NotAuthenticatedError";
+    readonly " $fragmentSpreads": FragmentRefs<"ProfileHeaderFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
 };
-export type HeaderQuery = {
-  response: HeaderQuery$data;
-  variables: HeaderQuery$variables;
+export type SavedViewQuery = {
+  response: SavedViewQuery$data;
+  variables: SavedViewQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -41,7 +39,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "HeaderQuery",
+    "name": "SavedViewQuery",
     "selections": [
       {
         "alias": null,
@@ -51,25 +49,17 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
+          (v0/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v0/*: any*/),
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "AuthDropdownFragment"
+                "name": "ProfileHeaderFragment"
               }
             ],
             "type": "Account",
-            "abstractKey": null
-          },
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v0/*: any*/)
-            ],
-            "type": "NotAuthenticatedError",
             "abstractKey": null
           }
         ],
@@ -83,7 +73,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "HeaderQuery",
+    "name": "SavedViewQuery",
     "selections": [
       {
         "alias": null,
@@ -135,16 +125,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e1554276be2534d620ef5c84cc0133b4",
+    "cacheID": "b8b48317fbf78aa3ff7337c4cfabf665",
     "id": null,
     "metadata": {},
-    "name": "HeaderQuery",
+    "name": "SavedViewQuery",
     "operationKind": "query",
-    "text": "query HeaderQuery {\n  viewer {\n    __typename\n    ... on Account {\n      __typename\n      ...AuthDropdownFragment\n    }\n    ... on NotAuthenticatedError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment AuthDropdownFragment on Account {\n  __typename\n  fullName\n  email\n}\n"
+    "text": "query SavedViewQuery {\n  viewer {\n    __typename\n    ... on Account {\n      ...ProfileHeaderFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment ProfileHeaderFragment on Account {\n  fullName\n  email\n}\n"
   }
 };
 })();
 
-(node as any).hash = "e463dff0382d0317aec07b9142c2910e";
+(node as any).hash = "25a66849a0baeaec2b2a62b4dc1730ef";
 
 export default node;

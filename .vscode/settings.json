@@ -5,7 +5,7 @@
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform"
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "biomejs.biome",
   "relay.autoStartCompiler": true,
   "relay.rootDirectory": "client/",
   "ruff.nativeServer": true,

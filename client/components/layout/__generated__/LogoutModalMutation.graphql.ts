@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<96e65cb515d7caa994cab9c849d8fdd0>>
+ * @generated SignedSource<<e491cfc50e9ce8604be35670d21fbbb2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,15 +9,15 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
-export type HeaderLogoutMutation$variables = Record<PropertyKey, never>;
-export type HeaderLogoutMutation$data = {
+export type LogoutModalMutation$variables = Record<PropertyKey, never>;
+export type LogoutModalMutation$data = {
   readonly logout: {
     readonly id?: string;
   };
 };
-export type HeaderLogoutMutation = {
-  response: HeaderLogoutMutation$data;
-  variables: HeaderLogoutMutation$variables;
+export type LogoutModalMutation = {
+  response: LogoutModalMutation$data;
+  variables: LogoutModalMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -36,7 +36,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "HeaderLogoutMutation",
+    "name": "LogoutModalMutation",
     "selections": [
       {
         "alias": null,
@@ -63,7 +63,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "HeaderLogoutMutation",
+    "name": "LogoutModalMutation",
     "selections": [
       {
         "alias": null,
@@ -109,16 +109,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "83c5b4662689b143281def36e55a88fa",
+    "cacheID": "2f28bdaa284c924963d4baf10d7188ff",
     "id": null,
     "metadata": {},
-    "name": "HeaderLogoutMutation",
+    "name": "LogoutModalMutation",
     "operationKind": "mutation",
-    "text": "mutation HeaderLogoutMutation {\n  logout {\n    __typename\n    ... on Account {\n      id\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation LogoutModalMutation {\n  logout {\n    __typename\n    ... on Account {\n      id\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "c1a781801c6d459682865ba8e35fe4fa";
+(node as any).hash = "7df039e2c13cdccb01c5d76bbff947a8";
 
 export default node;

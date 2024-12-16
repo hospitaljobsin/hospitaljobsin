@@ -12,8 +12,6 @@ from strawberry import relay
 from app.base.types import AddressType, BaseNodeType
 from app.companies.documents import Company, Job
 from app.companies.repositories import CompanyRepo, JobRepo
-
-# from app.companies.types import CompanyType
 from app.context import Info
 from app.database.paginator import PaginatedResult
 
@@ -162,6 +160,8 @@ class JobType(BaseNodeType[Job]):
 
     created_at: datetime
 
+    is_saved: bool
+
     company_id: strawberry.Private[str]
 
     @classmethod
@@ -189,6 +189,10 @@ class JobType(BaseNodeType[Job]):
             expires_at=job.expires_at,
             company_id=job.company.ref.id,
         )
+
+    @strawberry.field
+    async def is_saved(self, info: Info) -> bool:
+        return False
 
     @strawberry.field
     @inject
