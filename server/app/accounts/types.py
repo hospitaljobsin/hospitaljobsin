@@ -87,7 +87,8 @@ class AccountType(BaseNodeType[Account]):
     async def profile(self, info: Info) -> ProfilePayload:
         if self.profile_id is None:
             return ProfileNotFoundErrorType()
-        return await info.context["loaders"].profile_by_id.load(self.profile_id)
+        result = await info.context["loaders"].profile_by_id.load(self.profile_id)
+        return ProfileType.marshal(result)
 
 
 ViewerPayload = Annotated[
