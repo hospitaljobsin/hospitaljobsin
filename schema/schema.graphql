@@ -1,9 +1,11 @@
 type Account implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
+  fullName: String!
   email: String!
   hasOnboarded: Boolean!
   updatedAt: DateTime
+  profile: ProfilePayload!
 }
 
 type Address {
@@ -107,6 +109,9 @@ type Mutation {
 
     """The password of the new user."""
     password: String!
+
+    """The full name of the new user."""
+    fullName: String!
   ): RegisterPayload!
 
   """Log in a user."""
@@ -146,6 +151,18 @@ type PageInfo {
   """When paginating forwards, the cursor to continue."""
   endCursor: String
 }
+
+type Profile implements Node {
+  """The Globally Unique ID of this object"""
+  id: ID!
+  name: String!
+}
+
+type ProfileNotFoundError implements Error {
+  message: String!
+}
+
+union ProfilePayload = Profile | ProfileNotFoundError
 
 type Query {
   """Get the current user."""

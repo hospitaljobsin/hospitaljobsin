@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2c73384b0ad0c9066fe6e2313d3fefc4>>
+ * @generated SignedSource<<767a2f8a6cbef9eb4bb684404f560e8d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,6 +14,7 @@ export type HeaderQuery$data = {
   readonly viewer: {
     readonly __typename: "Account";
     readonly email: string;
+    readonly fullName: string;
   } | {
     readonly __typename: "NotAuthenticatedError";
   } | {
@@ -39,6 +40,13 @@ v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "fullName",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "email",
   "storageKey": null
 };
@@ -61,7 +69,8 @@ return {
             "kind": "InlineFragment",
             "selections": [
               (v0/*: any*/),
-              (v1/*: any*/)
+              (v1/*: any*/),
+              (v2/*: any*/)
             ],
             "type": "Account",
             "abstractKey": null
@@ -99,7 +108,8 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v1/*: any*/)
+              (v1/*: any*/),
+              (v2/*: any*/)
             ],
             "type": "Account",
             "abstractKey": null
@@ -124,16 +134,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8ae66e53f8a72e6bcfec8eb776dff7f4",
+    "cacheID": "e48785af7bfb0b7082513075b7c2434d",
     "id": null,
     "metadata": {},
     "name": "HeaderQuery",
     "operationKind": "query",
-    "text": "query HeaderQuery {\n  viewer {\n    __typename\n    ... on Account {\n      __typename\n      email\n    }\n    ... on NotAuthenticatedError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query HeaderQuery {\n  viewer {\n    __typename\n    ... on Account {\n      __typename\n      fullName\n      email\n    }\n    ... on NotAuthenticatedError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "31776ea4dfffcca24f20df69667dfceb";
+(node as any).hash = "df3693fe2a3bf03cc308e0c04e16f14d";
 
 export default node;

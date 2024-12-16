@@ -43,12 +43,19 @@ class AuthMutation:
                 description="The password of the new user.",
             ),
         ],
+        full_name: Annotated[
+            str,
+            strawberry.argument(
+                description="The full name of the new user.",
+            ),
+        ],
         auth_service: Annotated[AuthService, Inject],
     ) -> RegisterPayload:
         """Register a new user."""
         result = await auth_service.register(
             email=email,
             password=password,
+            full_name=full_name,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],

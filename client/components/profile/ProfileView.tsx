@@ -1,0 +1,35 @@
+"use client";
+import { graphql, useLazyLoadQuery } from "react-relay";
+import { ProfileViewQuery as ProfileViewQueryType } from "./__generated__/ProfileViewQuery.graphql";
+import EmploymentDetails from "./EmploymentDetails";
+import PersonalDetails from "./PersonalDetails";
+import ProfileHeader from "./ProfileHeader";
+
+const ProfileViewQuery = graphql`
+  query ProfileViewQuery {
+    viewer {
+      __typename
+      ... on Account {
+        ...ProfileHeaderFragment
+        ...PersonalDetailsFragment
+        ...EmploymentDetailsFragment
+      }
+    }
+  }
+`;
+
+export default function ProfileView() {
+  const data = useLazyLoadQuery<ProfileViewQueryType>(ProfileViewQuery, {});
+
+  if (data.viewer.__typename === "%other") {
+    return null;
+  }
+
+  return (
+    <>
+      <ProfileHeader rootQuery={data.viewer} />
+      <PersonalDetails rootQuery={data.viewer} />
+      <EmploymentDetails rootQuery={data.viewer} />
+    </>
+  );
+}

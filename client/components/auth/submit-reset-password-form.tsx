@@ -35,7 +35,7 @@ export default function SubmitResetPasswordFrom() {
     router.replace("/auth/reset-password/confirm");
   }
   return (
-    <Card>
+    <Card className="p-6 space-y-6">
       <CardHeader>
         <h1 className={`text-center text-2xl w-full`}>
           Request a Password Reset
@@ -43,34 +43,32 @@ export default function SubmitResetPasswordFrom() {
       </CardHeader>
       <CardBody>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-          <div className="flex-1 rounded-lg px-6 pb-4 pt-8">
-            <div className="w-full flex flex-col gap-6">
-              <Input
-                id="email"
-                label="Email"
-                placeholder="Enter your email address"
-                type="email"
-                {...register("email")}
-                errorMessage={errors.email?.message}
-                isInvalid={!!errors.email}
-              />
-              <Button fullWidth isLoading={isSubmitting} type="submit">
-                Send Code
-              </Button>
-            </div>
+          <div className="w-full flex flex-col gap-6">
+            <Input
+              id="email"
+              label="Email"
+              placeholder="Enter your email address"
+              type="email"
+              {...register("email")}
+              errorMessage={errors.email?.message}
+              isInvalid={!!errors.email}
+            />
+            <Button fullWidth isLoading={isSubmitting} type="submit">
+              Send Code
+            </Button>
+          </div>
 
-            <div className="flex h-8 items-end space-x-1">
-              <div
-                className="flex h-8 items-end space-x-1"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {errorMessage && (
-                  <>
-                    <p className="text-sm text-red-500">{errorMessage}</p>
-                  </>
-                )}
-              </div>
+          <div className="flex h-8 items-end space-x-1">
+            <div
+              className="flex h-8 items-end space-x-1"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {errorMessage && (
+                <>
+                  <p className="text-sm text-red-500">{errorMessage}</p>
+                </>
+              )}
             </div>
           </div>
         </form>

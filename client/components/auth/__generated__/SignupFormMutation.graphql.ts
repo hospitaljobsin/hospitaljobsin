@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<be958b491a96b65c81528c893175d01f>>
+ * @generated SignedSource<<b31cad4515f1620904c677c227b4ea41>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,6 +11,7 @@
 import { ConcreteRequest } from 'relay-runtime';
 export type SignupFormMutation$variables = {
   email: string;
+  fullName: string;
   password: string;
 };
 export type SignupFormMutation$data = {
@@ -29,19 +30,22 @@ export type SignupFormMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "email"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "password"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "email"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "fullName"
+},
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "password"
+},
+v3 = [
   {
     "kind": "Variable",
     "name": "email",
@@ -49,18 +53,23 @@ v1 = [
   },
   {
     "kind": "Variable",
+    "name": "fullName",
+    "variableName": "fullName"
+  },
+  {
+    "kind": "Variable",
     "name": "password",
     "variableName": "password"
   }
 ],
-v2 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v3 = {
+v5 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -76,21 +85,25 @@ v3 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v2/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "SignupFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "register",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v3/*: any*/)
+          (v4/*: any*/),
+          (v5/*: any*/)
         ],
         "storageKey": null
       }
@@ -100,20 +113,24 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v2/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Operation",
     "name": "SignupFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "register",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v3/*: any*/),
+          (v4/*: any*/),
+          (v5/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -134,16 +151,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e6a1925995c2d3593cf845023f26ea35",
+    "cacheID": "899090bbeb9c9d7d04bfc13bc96410e4",
     "id": null,
     "metadata": {},
     "name": "SignupFormMutation",
     "operationKind": "mutation",
-    "text": "mutation SignupFormMutation(\n  $email: String!\n  $password: String!\n) {\n  register(email: $email, password: $password) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation SignupFormMutation(\n  $email: String!\n  $password: String!\n  $fullName: String!\n) {\n  register(email: $email, password: $password, fullName: $fullName) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "95e8ceea952efd62a3f3e86e2e1e0159";
+(node as any).hash = "24d1b6b4bc1bf906d8a07bc8355ac08a";
 
 export default node;

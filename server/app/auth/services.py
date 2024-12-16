@@ -26,6 +26,7 @@ class AuthService:
         self,
         email: str,
         password: str,
+        full_name: str,
         user_agent: str,
         request: Request,
         response: Response,
@@ -36,11 +37,14 @@ class AuthService:
         account = await self._account_repo.create(
             email=email,
             password=password,
+            full_name=full_name,
         )
 
         verification_token = await self._email_verification_repo.create(
             account_id=account.id
         )
+
+        # TODO: send verification email here
 
         session_token = await self._session_repo.create(
             user_agent=user_agent,

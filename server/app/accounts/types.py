@@ -10,9 +10,9 @@ from app.base.types import BaseErrorType, BaseNodeType, NotAuthenticatedErrorTyp
 from app.context import Info
 
 
-@strawberry.type
+@strawberry.type(name="ProfileNotFoundError")
 class ProfileNotFoundErrorType(BaseErrorType):
-    message = "Profile not found!"
+    message: str = "Profile not found!"
 
 
 @strawberry.type(name="Profile")
@@ -52,6 +52,7 @@ ProfilePayload = Annotated[
 
 @strawberry.type(name="Account")
 class AccountType(BaseNodeType[Account]):
+    full_name: str
     email: str
     has_onboarded: bool
     updated_at: datetime | None
@@ -62,6 +63,7 @@ class AccountType(BaseNodeType[Account]):
         """Marshal into a node instance."""
         return cls(
             id=str(account.id),
+            full_name=account.full_name,
             email=account.email,
             updated_at=account.updated_at,
             has_onboarded=account.has_onboarded,

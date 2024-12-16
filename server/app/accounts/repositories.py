@@ -21,13 +21,10 @@ from .documents import (
 
 
 class AccountRepo:
-    async def create(
-        self,
-        email: str,
-        password: str,
-    ) -> Account:
+    async def create(self, email: str, password: str, full_name: str) -> Account:
         """Create a new account."""
         account = Account(
+            full_name=full_name,
             email=email,
             email_verified=False,
             password_hash=self.hash_password(
@@ -111,7 +108,6 @@ class ProfileRepo:
     async def create(
         self,
         account: Account,
-        name: str,
         gender: str,
         date_of_birth: date,
         address: Address | None,
@@ -126,7 +122,6 @@ class ProfileRepo:
         """Create a new profile."""
         profile = Profile(
             account=account,
-            name=name,
             gender=gender,
             date_of_birth=date_of_birth,
             address=address,

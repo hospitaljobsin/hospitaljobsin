@@ -62,51 +62,49 @@ export default function LoginForm() {
   }
 
   return (
-    <Card>
+    <Card className="p-6 space-y-6">
       <CardHeader>
         <h1 className={`text-2xl text-center w-full`}>Log in to continue</h1>
       </CardHeader>
       <CardBody>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-          <div className="flex-1 rounded-lg px-6 pb-4 pt-8">
-            <div className="w-full flex flex-col gap-6">
-              <Input
-                id="email"
-                label="Email"
-                placeholder="Enter your email address"
-                type="email"
-                {...register("email")}
-                errorMessage={errors.email?.message}
-                isInvalid={!!errors.email}
-              />
-              <Input
-                id="password"
-                label="Password"
-                placeholder="Enter password"
-                type="password"
-                {...register("password")}
-                errorMessage={errors.password?.message}
-                isInvalid={!!errors.password}
-                description={
-                  <div className="w-full flex justify-start">
-                    <Link
-                      href="/auth/reset-password/submit"
-                      className="mt-2 cursor-pointer text-blue-500"
-                    >
-                      Forgot password?
-                    </Link>
-                  </div>
-                }
-              />
+          <div className="w-full flex flex-col gap-6">
+            <Input
+              id="email"
+              label="Email"
+              placeholder="Enter your email address"
+              type="email"
+              {...register("email")}
+              errorMessage={errors.email?.message}
+              isInvalid={!!errors.email}
+            />
+            <Input
+              id="password"
+              label="Password"
+              placeholder="Enter password"
+              type="password"
+              {...register("password")}
+              errorMessage={errors.password?.message}
+              isInvalid={!!errors.password}
+              description={
+                <div className="w-full flex justify-start">
+                  <Link
+                    href="/auth/reset-password/submit"
+                    className="mt-2 cursor-pointer text-blue-500"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+              }
+            />
 
-              <Button
-                fullWidth
-                isLoading={isSubmitting || isMutationInFlight}
-                type="submit"
-              >
-                Log in
-              </Button>
-            </div>
+            <Button
+              fullWidth
+              isLoading={isSubmitting || isMutationInFlight}
+              type="submit"
+            >
+              Log in
+            </Button>
           </div>
         </form>
       </CardBody>{" "}

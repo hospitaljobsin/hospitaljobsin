@@ -40,7 +40,6 @@ class Links(BaseModel):
 
 # Main Job Seeker Profile Document
 class Profile(Document):
-    name: str
     gender: Literal["Male", "Female", "Other"]
     date_of_birth: date
     address: Address
@@ -62,6 +61,7 @@ class Profile(Document):
 
 
 class Account(Document):
+    full_name: str
     email: Annotated[str, Indexed(unique=True)]
     email_verified: bool = False
     password_hash: str

@@ -25,6 +25,7 @@ const HeaderQuery = graphql`
     viewer {
       ... on Account {
         __typename
+        fullName
         email
       }
       ... on NotAuthenticatedError {
@@ -37,7 +38,7 @@ const HeaderQuery = graphql`
 const HeaderLogoutMutation = graphql`
   mutation HeaderLogoutMutation {
     logout {
-      ...on Account {
+      ... on Account {
         id @deleteRecord
       }
     }
@@ -46,15 +47,19 @@ const HeaderLogoutMutation = graphql`
 
 export default function Header() {
   const data = useLazyLoadQuery<HeaderQueryType>(HeaderQuery, {});
-    const [commitMutation, isMutationInFlight] = useMutation(HeaderLogoutMutation);
+  const [commitMutation, isMutationInFlight] =
+    useMutation(HeaderLogoutMutation);
   const router = useRouter();
 
   async function handleLogout() {
-    commitMutation({variables: {}, onCompleted(response, errors) {
+    commitMutation({
+      variables: {},
+      onCompleted(response, errors) {
         if (!errors) {
           router.replace("/auth/login");
         }
-    },})
+      },
+    });
   }
 
   return (
@@ -64,7 +69,7 @@ export default function Header() {
           {APP_NAME}
         </Link>
       </NavbarBrand>
-      
+
       <NavbarContent justify="end">
         {data.viewer?.__typename === "Account" ? (
           <Dropdown>
@@ -77,20 +82,24 @@ export default function Header() {
                   radius="sm"
                   variant="light"
                 >
-                  <Avatar name={data.viewer.email} size="sm" src={getGravatarURL(data.viewer.email)} /> {data.viewer.email}
+                  <Avatar
+                    name={data.viewer.fullName}
+                    size="sm"
+                    src={getGravatarURL(data.viewer.email)}
+                  />
+                  {data.viewer.fullName}
                 </Button>
               </DropdownTrigger>
             </NavbarItem>
             <DropdownMenu
-            variant="light"
+              variant="light"
               aria-label="ACME features"
               itemClasses={{
                 base: "gap-4",
               }}
             >
-               <DropdownItem
+              <DropdownItem
                 key="profile"
-                className="min-w-72"
                 startContent={<UserIcon className="h-4 w-4" />}
                 href="/profile"
               >
@@ -98,7 +107,6 @@ export default function Header() {
               </DropdownItem>
               <DropdownItem
                 key="logout"
-                className="min-w-72"
                 startContent={<LogOutIcon className="h-4 w-4" />}
                 onClick={handleLogout}
                 isDisabled={isMutationInFlight}
@@ -109,18 +117,18 @@ export default function Header() {
           </Dropdown>
         ) : (
           <>
-          <NavbarItem>
-            <Link color="foreground" href="/auth/login">
-              <Button color="default">Log In</Button>
-            </Link>
-          </NavbarItem> <NavbarItem>
-          <Button color="default" variant="flat" disabled>
-            For recruiters
-          </Button>
-        </NavbarItem></>
+            <NavbarItem>
+              <Link color="foreground" href="/auth/login">
+                <Button color="default">Log In</Button>
+              </Link>
+            </NavbarItem>{" "}
+            <NavbarItem>
+              <Button color="default" variant="flat" disabled>
+                For recruiters
+              </Button>
+            </NavbarItem>
+          </>
         )}
-
-       
       </NavbarContent>
     </Navbar>
   );
