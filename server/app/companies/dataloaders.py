@@ -25,7 +25,7 @@ async def load_company_by_id(
     ]
     # Map invalid IDs to `None` for a consistent response structure
     id_to_company_map = {
-        company_id: company
+        str(company_id): company
         for company_id, company in zip(
             valid_ids, await company_repo.get_many_by_ids(valid_ids)
         )
@@ -43,7 +43,8 @@ async def load_job_by_id(
     valid_ids = [ObjectId(job_id) for job_id in job_ids if ObjectId.is_valid(job_id)]
     # Map invalid IDs to `None` for a consistent response structure
     id_to_job_map = {
-        job_id: job
+        str(job_id): job
         for job_id, job in zip(valid_ids, await job_repo.get_many_by_ids(valid_ids))
     }
+
     return [id_to_job_map.get(job_id, None) for job_id in job_ids]

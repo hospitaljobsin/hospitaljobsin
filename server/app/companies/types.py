@@ -200,9 +200,8 @@ class JobType(BaseNodeType[Job]):
             Inject,
         ],
     ) -> CompanyType | None:
-        company = await info.context["loaders"].company_by_id.load(self.company_id)
+        company = await info.context["loaders"].company_by_id.load(str(self.company_id))
 
-        print("company: ", company)
         if company is None:
             return None
         return CompanyType.marshal(company)
