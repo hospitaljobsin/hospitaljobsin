@@ -5,22 +5,26 @@
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform"
   },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
   "relay.autoStartCompiler": true,
   "relay.rootDirectory": "client/",
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "ruff.nativeServer": true,
   "python.languageServer": "Pylance",
   "python.analysis.typeCheckingMode": "basic",
   "python.defaultInterpreterPath": "${workspaceFolder}/server/.venv",
   "python.testing.pytestEnabled": true,
-  "python.testing.pytestArgs": [""],
+  "python.testing.pytestArgs": [
+    ""
+  ],
   "python.terminal.activateEnvironment": false,
-  "python.analysis.ignore": ["*"],
+  "python.analysis.ignore": [
+    "*"
+  ],
   "editor.formatOnSave": true,
-  "editor.formatOnSaveMode": "file",
   "editor.formatOnType": false,
   "editor.formatOnPaste": false,
-  "files.autoSave": "off",
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
   },

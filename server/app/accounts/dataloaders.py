@@ -22,7 +22,7 @@ async def load_account_by_id(
     ]
     # Map invalid IDs to `None` for a consistent response structure
     id_to_account_map = {
-        str(account_id): account
+        account_id: account
         for account_id, account in zip(
             valid_ids, await account_repo.get_many_by_ids(valid_ids)
         )
@@ -43,7 +43,7 @@ async def load_profile_by_id(
     ]
     # Map invalid IDs to `None` for a consistent response structure
     id_to_profile_map = {
-        str(profile_id): profile
+        profile_id: profile
         for profile_id, profile in zip(
             valid_ids, await profile_repo.get_many_by_ids(valid_ids)
         )

@@ -202,6 +202,7 @@ class JobType(BaseNodeType[Job]):
     ) -> CompanyType | None:
         company = await info.context["loaders"].company_by_id.load(self.company_id)
 
+        print("company: ", company)
         if company is None:
             return None
         return CompanyType.marshal(company)
