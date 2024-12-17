@@ -298,6 +298,6 @@ class JobNotFoundErrorType(BaseErrorType):
 
 
 SaveJobPayload = Annotated[
-    relay.Edge[JobType] | JobNotFoundErrorType,
+    SavedJobEdgeType | JobNotFoundErrorType,
     strawberry.union(name="SaveJobPayload"),
 ]

@@ -14,7 +14,7 @@ from app.context import AuthInfo
 
 from .types import (
     JobNotFoundErrorType,
-    JobType,
+    SavedJobEdgeType,
     SaveJobPayload,
 )
 
@@ -56,10 +56,6 @@ class CompanyMutation:
                 case JobNotFoundError():
                     return JobNotFoundErrorType()
 
-        return relay.Edge(
-            node=JobType.from_orm(result.ok_value),
-            cursor=relay.to_base64(
-                JobType,
-                result.ok_value.id,
-            ),
+        return SavedJobEdgeType.marshal(
+            result.ok_value,
         )
