@@ -2,9 +2,10 @@ import asyncio
 from datetime import date
 from re import search
 
-from beanie import PydanticObjectId, WriteRules
+from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.operators import In
 from bson import ObjectId
+from markdown_it.rules_inline import link_pairs
 
 from app.accounts.documents import Account
 from app.database.paginator import PaginatedResult, Paginator
@@ -211,6 +212,7 @@ class JobRepo:
         search_criteria = SavedJob.find(
             SavedJob.account.id == account_id,
             fetch_links=True,
+            nesting_depth=1,
         )
 
         return await paginator.paginate(
@@ -223,15 +225,31 @@ class JobRepo:
 
     async def save_job(self, account_id: ObjectId, job: Job) -> SavedJob:
         """Save the given job under the given account."""
-        # return await SavedJob.find_one(
-        #     SavedJob.account.id == account.id, SavedJob.job.id == job.id
-        # ).upsert(
-        #     Set({Product.price: 3.33}),
-        #     on_insert=SavedJob(
-        #         account=account,
-        #         job=job,
-        #     ),
-        # )
+        saved_job = await SavedJob.find_one(
+            SavedJob.account.id == account_id,
+            SavedJob.job.id == job.id,
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
+        if saved_job is None:
+            saved_job = await SavedJob(account=account_id, job=job).save()
+        return saved_job
+
+    async def unsave_job(self, account_id: ObjectId, job: Job) -> SavedJob:
+        """Unsave the given job under the given account."""
+        saved_job = await SavedJob.find_one(
+            SavedJob.account.id == account_id,
+            SavedJob.job.id == job.id,
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
+        if saved_job is not None:
+            await saved_job.delete(
+                link_rule=DeleteRules.DO_NOTHING,
+            )
+        return saved_job
 
     async def get_all_by_company_id(
         self,

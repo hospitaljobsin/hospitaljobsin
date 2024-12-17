@@ -138,6 +138,12 @@ type Mutation {
     """The ID of the job to save."""
     jobId: ID!
   ): SaveJobPayload! @isAuthenticated
+
+  """Save a job."""
+  unsaveJob(
+    """The ID of the job to unsave."""
+    jobId: ID!
+  ): UnsaveJobPayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""
@@ -199,7 +205,11 @@ type Query {
 
 union RegisterPayload = Account | EmailInUseError
 
-union SaveJobPayload = SavedJobEdge | JobNotFoundError
+union SaveJobPayload = SaveJobResult | JobNotFoundError
+
+type SaveJobResult {
+  savedJobEdge: SavedJobEdge!
+}
 
 type SavedJobConnection {
   pageInfo: PageInfo!
@@ -213,6 +223,12 @@ type SavedJobEdge {
   """The item at the end of the edge"""
   node: Job!
   savedAt: DateTime!
+}
+
+union UnsaveJobPayload = UnsaveJobResult | JobNotFoundError
+
+type UnsaveJobResult {
+  savedJobEdge: SavedJobEdge!
 }
 
 union ViewerPayload = Account | NotAuthenticatedError

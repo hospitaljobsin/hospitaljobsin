@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6cb3bf9177340ee78e7c0b33063f86f0>>
+ * @generated SignedSource<<11796f5ccde72f5a5fddbad454763702>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -33,6 +33,8 @@ export type JobDetailsFragment$data = {
   readonly description: string | null | undefined;
   readonly hasExperienceRange: boolean;
   readonly hasSalaryRange: boolean;
+  readonly id: string;
+  readonly isSaved: boolean;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
   readonly minExperience: number | null | undefined;
@@ -53,10 +55,17 @@ var v0 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "description",
+  "name": "id",
   "storageKey": null
 },
 v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "description",
+  "storageKey": null
+},
+v2 = {
   "alias": null,
   "args": null,
   "concreteType": "Address",
@@ -87,6 +96,7 @@ return {
   "metadata": null,
   "name": "JobDetailsFragment",
   "selections": [
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -94,7 +104,7 @@ return {
       "name": "title",
       "storageKey": null
     },
-    (v0/*: any*/),
+    (v1/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -109,7 +119,7 @@ return {
       "name": "workMode",
       "storageKey": null
     },
-    (v1/*: any*/),
+    (v2/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -176,18 +186,19 @@ return {
     {
       "alias": null,
       "args": null,
+      "kind": "ScalarField",
+      "name": "isSaved",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
       "concreteType": "Company",
       "kind": "LinkedField",
       "name": "company",
       "plural": false,
       "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "id",
-          "storageKey": null
-        },
+        (v0/*: any*/),
         {
           "alias": null,
           "args": null,
@@ -195,7 +206,7 @@ return {
           "name": "name",
           "storageKey": null
         },
-        (v0/*: any*/),
+        (v1/*: any*/),
         {
           "alias": null,
           "args": null,
@@ -203,7 +214,7 @@ return {
           "name": "logoUrl",
           "storageKey": null
         },
-        (v1/*: any*/)
+        (v2/*: any*/)
       ],
       "storageKey": null
     }
@@ -213,6 +224,6 @@ return {
 };
 })();
 
-(node as any).hash = "4adf8c65a031a1fbbb08a6b82ec859ad";
+(node as any).hash = "7ec1f2055c67967191a47264ff874ce9";
 
 export default node;

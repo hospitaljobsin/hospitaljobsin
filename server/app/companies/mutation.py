@@ -16,6 +16,9 @@ from .types import (
     JobNotFoundErrorType,
     SavedJobEdgeType,
     SaveJobPayload,
+    SaveJobResult,
+    UnsaveJobPayload,
+    UnsaveJobResult,
 )
 
 
@@ -55,6 +58,48 @@ class CompanyMutation:
                 case JobNotFoundError():
                     return JobNotFoundErrorType()
 
-        return SavedJobEdgeType.marshal(
-            result.ok_value,
+        return SaveJobResult(
+            saved_job_edge=SavedJobEdgeType.marshal(
+                result.ok_value,
+            ),
+        )
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UnsaveJobPayload,
+        description="Save a job.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def unsave_job(
+        self,
+        info: AuthInfo,
+        job_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the job to unsave.",
+            ),
+        ],
+        job_service: Annotated[JobService, Inject],
+    ) -> UnsaveJobPayload:
+        """Save a job."""
+        result = await job_service.unsave_job(
+            account_id=info.context["current_user_id"],
+            job_id=job_id.node_id,
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case JobNotFoundError():
+                    return JobNotFoundErrorType()
+
+        return UnsaveJobResult(
+            saved_job_edge=SavedJobEdgeType.marshal(
+                result.ok_value,
+            ),
         )

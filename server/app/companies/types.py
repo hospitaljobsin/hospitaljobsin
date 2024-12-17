@@ -256,8 +256,8 @@ class SavedJobEdgeType(relay.Edge[JobType]):
     def marshal(cls, saved_job: SavedJob) -> Self:
         """Marshal into a edge instance."""
         return cls(
-            job_id=JobType.marshal(saved_job.job),
-            cursor=relay.to_base64(JobType, saved_job.id),
+            node=JobType.marshal(saved_job.job),
+            cursor=relay.to_base64(JobType, saved_job.job.id),
             saved_at=saved_job.id.generation_time,
         )
 
@@ -306,12 +306,27 @@ class SavedJobConnectionType:
         )
 
 
+@strawberry.type
+class SaveJobResult:
+    saved_job_edge: SavedJobEdgeType
+
+
+@strawberry.type
+class UnsaveJobResult:
+    saved_job_edge: SavedJobEdgeType
+
+
 @strawberry.type(name="JobNotFoundError")
 class JobNotFoundErrorType(BaseErrorType):
     message: str = "Job not found!"
 
 
 SaveJobPayload = Annotated[
-    SavedJobEdgeType | JobNotFoundErrorType,
+    SaveJobResult | JobNotFoundErrorType,
     strawberry.union(name="SaveJobPayload"),
+]
+
+UnsaveJobPayload = Annotated[
+    UnsaveJobResult | JobNotFoundErrorType,
+    strawberry.union(name="UnsaveJobPayload"),
 ]
