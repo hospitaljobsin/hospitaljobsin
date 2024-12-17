@@ -8,7 +8,7 @@ from strawberry.fastapi import GraphQLRouter
 from app.auth.dependencies import get_session_token
 from app.auth.repositories import SessionRepo
 
-from .context import Context
+from .context import AuthContext, BaseContext, Context
 from .dataloaders import create_dataloaders
 from .schema import schema
 
@@ -25,11 +25,11 @@ async def get_context(
     ],
     session_repo: Injected[SessionRepo],
     user_agent: Annotated[str | None, Header()] = "unknown",
-) -> Context:
+) -> BaseContext:
     if session_token:
         session = await session_repo.get(token=session_token)
         if session is not None:
-            return Context(
+            return AuthContext(
                 request=request,
                 response=response,
                 loaders=create_dataloaders(),

@@ -70,6 +70,7 @@ type Job implements Node {
   updatedAt: DateTime!
   expiresAt: DateTime
   createdAt: DateTime!
+  isSaved: Boolean!
   company: Company
 }
 
@@ -181,6 +182,7 @@ type Query {
     first: Int = null
     last: Int = null
   ): JobConnection!
+  savedJobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
 }
 
 union RegisterPayload = Account | EmailInUseError

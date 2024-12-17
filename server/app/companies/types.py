@@ -9,9 +9,9 @@ from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from strawberry import relay
 
-from app.base.types import AddressType, BaseNodeType
-from app.companies.documents import Company, Job
-from app.companies.repositories import CompanyRepo, JobRepo
+from app.base.types import AddressType, BaseErrorType, BaseNodeType
+from app.companies.documents import Company, Job, SavedJob
+from app.companies.repositories import JobRepo
 from app.context import Info
 from app.database.paginator import PaginatedResult
 
@@ -196,14 +196,7 @@ class JobType(BaseNodeType[Job]):
 
     @strawberry.field
     @inject
-    async def company(
-        self,
-        info: Info,
-        company_repo: Annotated[
-            CompanyRepo,
-            Inject,
-        ],
-    ) -> CompanyType | None:
+    async def company(self, info: Info) -> CompanyType | None:
         company = await info.context["loaders"].company_by_id.load(str(self.company_id))
 
         if company is None:
@@ -253,3 +246,58 @@ class JobConnectionType(relay.Connection[JobType]):
                 for job in paginated_result.entities
             ],
         )
+
+
+@strawberry.type(name="SavedJobEdge")
+class SavedJobEdgeType(relay.Edge[JobType]):
+    saved_at: datetime
+
+    @classmethod
+    def marshal(cls, saved_job: SavedJob) -> Self:
+        """Marshal into a edge instance."""
+        return cls(
+            job_id=JobType.marshal(saved_job.job),
+            cursor=relay.to_base64(JobType, saved_job.id),
+            saved_at=saved_job.id.generation_time,
+        )
+
+
+@strawberry.type(name="SavedJobConnection")
+class SavedJobConnectionType(relay.Connection[SavedJobEdgeType]):
+    @classmethod
+    def from_paginated_result(
+        cls, paginated_result: PaginatedResult[SavedJob, ObjectId]
+    ) -> Self:
+        return cls(
+            page_info=relay.PageInfo(
+                has_next_page=paginated_result.page_info.has_next_page,
+                has_previous_page=paginated_result.page_info.has_previous_page,
+                start_cursor=relay.to_base64(
+                    JobType,
+                    paginated_result.page_info.start_cursor,
+                )
+                if paginated_result.page_info.start_cursor
+                else None,
+                end_cursor=relay.to_base64(
+                    JobType,
+                    paginated_result.page_info.end_cursor,
+                )
+                if paginated_result.page_info.end_cursor
+                else None,
+            ),
+            edges=[
+                SavedJobEdgeType.marshal(saved_job)
+                for saved_job in paginated_result.entities
+            ],
+        )
+
+
+@strawberry.type(name="JobNotFoundError")
+class JobNotFoundErrorType(BaseErrorType):
+    message: str = "Job not found!"
+
+
+SaveJobPayload = Annotated[
+    relay.Edge[JobType] | JobNotFoundErrorType,
+    strawberry.union(name="SaveJobPayload"),
+]

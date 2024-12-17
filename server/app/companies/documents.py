@@ -5,6 +5,7 @@ import pymongo
 from beanie import Document, Link
 from pymongo import IndexModel
 
+from app.accounts.documents import Account
 from app.base.models import Address
 
 
@@ -71,3 +72,11 @@ class Job(Document):
                 name="expired_deleted_index",
             ),
         ]
+
+
+class SavedJob(Document):
+    account: Link[Account]
+    job: Link[Job]
+
+    class Settings:
+        name = "saved_jobs"

@@ -6,7 +6,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 } from "@nextui-org/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { graphql, useMutation } from "react-relay";
 
 type Props = {

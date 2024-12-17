@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.accounts.documents import Account, EmailVerification
 from app.auth.documents import Session
-from app.companies.documents import Company, Job
+from app.companies.documents import Company, Job, SavedJob
 
 
 @asynccontextmanager
@@ -22,6 +22,7 @@ async def initialize_database(database_url: str):
             document_models=[
                 Company,
                 Job,
+                SavedJob,
                 Account,
                 Session,
                 EmailVerification,

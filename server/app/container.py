@@ -6,6 +6,7 @@ from app.accounts.repositories import AccountRepo, EmailVerificationRepo, Profil
 from app.auth.repositories import SessionRepo
 from app.auth.services import AuthService
 from app.companies.repositories import CompanyRepo, JobRepo
+from app.companies.services import JobService
 
 
 @lru_cache
@@ -18,4 +19,5 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(AccountRepo))
     container.register(aioinject.Singleton(SessionRepo))
     container.register(aioinject.Singleton(EmailVerificationRepo))
+    container.register(aioinject.Scoped(JobService))
     return container

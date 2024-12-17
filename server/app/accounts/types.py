@@ -3,14 +3,10 @@ from datetime import datetime
 from typing import Annotated, Self
 
 import strawberry
-from aioinject import Inject
 from aioinject.ext.strawberry import inject
-from strawberry import relay
 
 from app.accounts.documents import Account, Profile
 from app.base.types import BaseErrorType, BaseNodeType, NotAuthenticatedErrorType
-from app.companies.repositories import JobRepo
-from app.companies.types import JobConnectionType
 from app.context import Info
 
 
@@ -95,26 +91,6 @@ class AccountType(BaseNodeType[Account]):
             return ProfileNotFoundErrorType()
         result = await info.context["loaders"].profile_by_id.load(self.profile_id)
         return ProfileType.marshal(result)
-
-    @strawberry.field(graphql_type=JobConnectionType)
-    @inject
-    async def saved_jobs(
-        self,
-        info: Info,
-        job_repo: Annotated[JobRepo, Inject],
-        before: relay.GlobalID | None = None,
-        after: relay.GlobalID | None = None,
-        first: int | None = None,
-        last: int | None = None,
-    ) -> JobConnectionType:
-        result = await job_repo.get_all_saved(
-            account=None,
-            after=(after.node_id if after else None),
-            before=(before.node_id if before else None),
-            first=first,
-            last=last,
-        )
-        return JobConnectionType.from_paginated_result(result)
 
 
 ViewerPayload = Annotated[

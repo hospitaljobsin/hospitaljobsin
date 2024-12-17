@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d507285c8034a1032506440481e3e2a9>>
+ * @generated SignedSource<<491360415ce0a659e2f7d02212e2ea76>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,31 +10,51 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type SavedViewQuery$variables = Record<PropertyKey, never>;
-export type SavedViewQuery$data = {
+export type SavedJobsListPaginationQuery$variables = {
+  count?: number | null | undefined;
+  cursor?: string | null | undefined;
+};
+export type SavedJobsListPaginationQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"SavedJobsListFragment">;
 };
-export type SavedViewQuery = {
-  response: SavedViewQuery$data;
-  variables: SavedViewQuery$variables;
+export type SavedJobsListPaginationQuery = {
+  response: SavedJobsListPaginationQuery$data;
+  variables: SavedJobsListPaginationQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
-    "kind": "Literal",
-    "name": "first",
-    "value": 10
+    "defaultValue": 10,
+    "kind": "LocalArgument",
+    "name": "count"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "cursor"
   }
 ],
-v1 = {
+v1 = [
+  {
+    "kind": "Variable",
+    "name": "after",
+    "variableName": "cursor"
+  },
+  {
+    "kind": "Variable",
+    "name": "first",
+    "variableName": "count"
+  }
+],
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "concreteType": "Address",
@@ -61,13 +81,24 @@ v2 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "SavedViewQuery",
+    "name": "SavedJobsListPaginationQuery",
     "selections": [
       {
-        "args": null,
+        "args": [
+          {
+            "kind": "Variable",
+            "name": "count",
+            "variableName": "count"
+          },
+          {
+            "kind": "Variable",
+            "name": "cursor",
+            "variableName": "cursor"
+          }
+        ],
         "kind": "FragmentSpread",
         "name": "SavedJobsListFragment"
       }
@@ -77,13 +108,13 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "SavedViewQuery",
+    "name": "SavedJobsListPaginationQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": (v1/*: any*/),
         "concreteType": "JobConnection",
         "kind": "LinkedField",
         "name": "savedJobs",
@@ -105,7 +136,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
+                  (v2/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -127,7 +158,7 @@ return {
                     "name": "workMode",
                     "storageKey": null
                   },
-                  (v2/*: any*/),
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -199,7 +230,7 @@ return {
                     "name": "company",
                     "plural": false,
                     "selections": [
-                      (v1/*: any*/),
+                      (v2/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -214,7 +245,7 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
-                      (v2/*: any*/)
+                      (v3/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -276,11 +307,11 @@ return {
             ]
           }
         ],
-        "storageKey": "savedJobs(first:10)"
+        "storageKey": null
       },
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": (v1/*: any*/),
         "filters": null,
         "handle": "connection",
         "key": "SavedJobsListFragment_savedJobs",
@@ -290,16 +321,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "dac78d3188fd93ebd8b20ad50247f0d6",
+    "cacheID": "47efd9210d64c0809fda973463939057",
     "id": null,
     "metadata": {},
-    "name": "SavedViewQuery",
+    "name": "SavedJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query SavedViewQuery {\n  ...SavedJobsListFragment\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n\nfragment SavedJobsListFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query SavedJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n) {\n  ...SavedJobsListFragment_1G22uz\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n\nfragment SavedJobsListFragment_1G22uz on Query {\n  savedJobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "438da80bad9b8df0149bfcd75d021807";
+(node as any).hash = "5d493ae7c86d5fe3ec3986ca173002f7";
 
 export default node;

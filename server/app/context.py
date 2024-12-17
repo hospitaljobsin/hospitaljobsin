@@ -7,12 +7,22 @@ from strawberry.types import Info as StrawberryInfo
 from app.dataloaders import Dataloaders
 
 
-class Context(TypedDict):
+class BaseContext(TypedDict):
     request: Request
     response: Response
     loaders: Dataloaders
-    current_user_id: ObjectId | None
     user_agent: str
 
 
+class Context(BaseContext):
+    current_user_id: ObjectId | None
+
+
 Info = StrawberryInfo[Context, None]
+
+
+class AuthContext(BaseContext):
+    current_user_id: ObjectId
+
+
+AuthInfo = StrawberryInfo[AuthContext, None]

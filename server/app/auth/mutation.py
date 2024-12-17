@@ -4,12 +4,13 @@ import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from result import Err
+from strawberry.permission import PermissionExtension
 
 from app.accounts.repositories import AccountRepo
 from app.accounts.types import AccountType
 from app.auth.exceptions import EmailInUseError, InvalidCredentialsError
-from app.base.types import NotAuthenticatedErrorType
-from app.context import Info
+from app.auth.permissions import IsAuthenticated
+from app.context import AuthInfo, Info
 
 from .services import AuthService
 from .types import (
@@ -109,21 +110,23 @@ class AuthMutation:
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LogoutPayload,
         description="Log out the current user.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
     )
     @inject
     async def logout(
         self,
-        info: Info,
+        info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
         account_repo: Annotated[AccountRepo, Inject],
     ) -> LogoutPayload:
         """Log out the current user."""
-        current_user_id = info.context["current_user_id"]
-        if current_user_id is None:
-            return NotAuthenticatedErrorType()
-        result = await account_repo.get(account_id=current_user_id)
-        if result is None:
-            return NotAuthenticatedErrorType()
+        result = await account_repo.get(account_id=info.context["current_user_id"])
         await auth_service.logout(
             request=info.context["request"],
             response=info.context["response"],

@@ -6,6 +6,7 @@ from strawberry.tools import merge_types
 
 from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
+from app.companies.mutation import CompanyMutation
 from app.companies.query import CompanyQuery
 from app.scalars import ID
 
@@ -24,7 +25,10 @@ query = merge_types(
 
 mutation = merge_types(
     name="Mutation",
-    types=(AuthMutation,),
+    types=(
+        AuthMutation,
+        CompanyMutation,
+    ),
 )
 
 

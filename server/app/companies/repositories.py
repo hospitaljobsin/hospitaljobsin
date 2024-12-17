@@ -9,7 +9,7 @@ from bson import ObjectId
 from app.accounts.documents import Account
 from app.database.paginator import PaginatedResult, Paginator
 
-from .documents import Company, Job
+from .documents import Company, Job, SavedJob
 
 
 class CompanyRepo:
@@ -194,23 +194,24 @@ class JobRepo:
 
     async def get_all_saved(
         self,
-        account: Account,
+        account_id: ObjectId,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
-    ) -> PaginatedResult[Job, ObjectId]:
+    ) -> PaginatedResult[SavedJob, ObjectId]:
         """Get a paginated result of saved jobs for the given account."""
 
-        paginator: Paginator[Job, ObjectId] = Paginator(
+        paginator: Paginator[SavedJob, ObjectId] = Paginator(
             reverse=True,
             document_cls=Job,
             paginate_by="id",
         )
 
-        print("SAVED JOBS IDS: ", account.saved_jobs)
-
-        search_criteria = Job.find(In(Job.id, account.saved_jobs))
+        search_criteria = SavedJob.find(
+            SavedJob.account.id == account_id,
+            fetch_links=True,
+        )
 
         return await paginator.paginate(
             search_criteria=search_criteria,
@@ -219,6 +220,18 @@ class JobRepo:
             before=ObjectId(before) if before else None,
             after=ObjectId(after) if after else None,
         )
+
+    async def save_job(self, account: Account, job: Job) -> SavedJob:
+        """Save the given job under the given account."""
+        # return await SavedJob.find_one(
+        #     SavedJob.account.id == account.id, SavedJob.job.id == job.id
+        # ).upsert(
+        #     Set({Product.price: 3.33}),
+        #     on_insert=SavedJob(
+        #         account=account,
+        #         job=job,
+        #     ),
+        # )
 
     async def get_all_by_company_id(
         self,
