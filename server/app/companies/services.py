@@ -2,7 +2,6 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from result import Err, Result
 
-from app.accounts.documents import Account
 from app.companies.documents import Job
 from app.companies.exceptions import JobNotFoundError
 from app.companies.repositories import JobRepo
@@ -13,7 +12,7 @@ class JobService:
         self._job_repo = job_repo
 
     async def save_job(
-        self, account: Account, job_id: str
+        self, account_id: ObjectId, job_id: str
     ) -> Result[Job, JobNotFoundError]:
         try:
             job_id = ObjectId(job_id)
@@ -23,7 +22,7 @@ class JobService:
         if job is None:
             return Err(JobNotFoundError())
         await self._job_repo.save_job(
-            account=account,
+            account_id=account_id,
             job=job,
         )
 

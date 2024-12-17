@@ -221,7 +221,7 @@ class JobRepo:
             after=ObjectId(after) if after else None,
         )
 
-    async def save_job(self, account: Account, job: Job) -> SavedJob:
+    async def save_job(self, account_id: ObjectId, job: Job) -> SavedJob:
         """Save the given job under the given account."""
         # return await SavedJob.find_one(
         #     SavedJob.account.id == account.id, SavedJob.job.id == job.id

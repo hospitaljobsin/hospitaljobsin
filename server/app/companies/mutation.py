@@ -45,9 +45,8 @@ class CompanyMutation:
         job_service: Annotated[JobService, Inject],
     ) -> SaveJobPayload:
         """Save a job."""
-        current_user = await info.context.current_user()
         result = await job_service.save_job(
-            account=current_user,
+            account_id=info.context["current_user_id"],
             job_id=job_id.node_id,
         )
 
