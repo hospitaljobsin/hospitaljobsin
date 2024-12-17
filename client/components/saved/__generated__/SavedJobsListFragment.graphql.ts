@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d2df9d5222f85d382b45fe2e9768ca08>>
+ * @generated SignedSource<<6480d70e60e92f3cef806de6b2845744>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -77,7 +77,7 @@ return {
     {
       "alias": "savedJobs",
       "args": null,
-      "concreteType": "JobConnection",
+      "concreteType": "SavedJobConnection",
       "kind": "LinkedField",
       "name": "__SavedJobsListFragment_savedJobs_connection",
       "plural": false,
@@ -85,7 +85,7 @@ return {
         {
           "alias": null,
           "args": null,
-          "concreteType": "JobEdge",
+          "concreteType": "SavedJobEdge",
           "kind": "LinkedField",
           "name": "edges",
           "plural": true,

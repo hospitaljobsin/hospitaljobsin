@@ -263,7 +263,21 @@ class SavedJobEdgeType(relay.Edge[JobType]):
 
 
 @strawberry.type(name="SavedJobConnection")
-class SavedJobConnectionType(relay.Connection[SavedJobEdgeType]):
+class SavedJobConnectionType:
+    page_info: Annotated[
+        relay.PageInfo,
+        strawberry.field(
+            description="Pagination data for this connection",
+        ),
+    ]
+
+    edges: Annotated[
+        list[SavedJobEdgeType],
+        strawberry.field(
+            description="Contains the nodes in this connection",
+        ),
+    ]
+
     @classmethod
     def from_paginated_result(
         cls, paginated_result: PaginatedResult[SavedJob, ObjectId]

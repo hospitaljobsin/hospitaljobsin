@@ -204,8 +204,8 @@ class JobRepo:
 
         paginator: Paginator[SavedJob, ObjectId] = Paginator(
             reverse=True,
-            document_cls=Job,
-            paginate_by="id",
+            document_cls=SavedJob,
+            paginate_by="job.id",
         )
 
         search_criteria = SavedJob.find(

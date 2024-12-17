@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d507285c8034a1032506440481e3e2a9>>
+ * @generated SignedSource<<09807d9e346166d65a0dea7f5437c40d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -84,7 +84,7 @@ return {
       {
         "alias": null,
         "args": (v0/*: any*/),
-        "concreteType": "JobConnection",
+        "concreteType": "SavedJobConnection",
         "kind": "LinkedField",
         "name": "savedJobs",
         "plural": false,
@@ -92,7 +92,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "JobEdge",
+            "concreteType": "SavedJobEdge",
             "kind": "LinkedField",
             "name": "edges",
             "plural": true,

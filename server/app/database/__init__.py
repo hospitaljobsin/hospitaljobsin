@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from app.accounts.documents import Account, EmailVerification
+from app.accounts.documents import Account, EmailVerification, Profile
 from app.auth.documents import Session
 from app.companies.documents import Company, Job, SavedJob
 
@@ -22,8 +22,9 @@ async def initialize_database(database_url: str):
             document_models=[
                 Company,
                 Job,
-                SavedJob,
                 Account,
+                Profile,
+                SavedJob,
                 Session,
                 EmailVerification,
             ],

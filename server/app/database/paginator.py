@@ -1,3 +1,4 @@
+import operator
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Generic, TypeVar
@@ -92,8 +93,12 @@ class Paginator(Generic[ModelType, CursorType]):
     ) -> FindMany[ModelType]:
         """Apply ordering on the search criteria."""
         if (self._reverse and last is None) or (last is not None and not self._reverse):
-            return search_criteria.sort(-getattr(self._document_cls, self._paginate_by))
-        return search_criteria.sort(+getattr(self._document_cls, self._paginate_by))
+            return search_criteria.sort(
+                -operator.attrgetter(self._paginate_by)(self._document_cls)
+            )
+        return search_criteria.sort(
+            +operator.attrgetter(self._paginate_by)(self._document_cls)
+        )
 
     def __apply_filters(
         self,
@@ -105,16 +110,16 @@ class Paginator(Generic[ModelType, CursorType]):
         """Apply pagination filters on the search criteria."""
         if after is not None:
             direction = (
-                getattr(self._document_cls, self._paginate_by) < after
+                operator.attrgetter(self._paginate_by)(self._document_cls) < after
                 if self._reverse
-                else getattr(self._document_cls, self._paginate_by) > after
+                else operator.attrgetter(self._paginate_by)(self._document_cls) > after
             )
             return search_criteria.find(direction)
         if before is not None:
             direction = (
-                getattr(self._document_cls, self._paginate_by) > before
+                operator.attrgetter(self._paginate_by)(self._document_cls) > before
                 if self._reverse
-                else getattr(self._document_cls, self._paginate_by) < before
+                else operator.attrgetter(self._paginate_by)(self._document_cls) < before
             )
             return search_criteria.find(direction)
         return search_criteria
@@ -157,8 +162,12 @@ class Paginator(Generic[ModelType, CursorType]):
             has_next_page = len(results) > pagination_limit
             has_previous_page = after is not None
 
-        start_cursor = getattr(entities[0], self._paginate_by) if entities else None
-        end_cursor = getattr(entities[-1], self._paginate_by) if entities else None
+        start_cursor = (
+            operator.attrgetter(self._paginate_by)(entities[0]) if entities else None
+        )
+        end_cursor = (
+            operator.attrgetter(self._paginate_by)(entities[-1]) if entities else None
+        )
 
         return PaginatedResult(
             entities=entities,

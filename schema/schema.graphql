@@ -1,3 +1,5 @@
+directive @isAuthenticated on FIELD_DEFINITION
+
 type Account implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -91,6 +93,10 @@ type JobEdge {
   node: Job!
 }
 
+type JobNotFoundError implements Error {
+  message: String!
+}
+
 enum JobType {
   FULL_TIME
   PART_TIME
@@ -125,7 +131,13 @@ type Mutation {
   ): LoginPayload!
 
   """Log out the current user."""
-  logout: LogoutPayload!
+  logout: LogoutPayload! @isAuthenticated
+
+  """Save a job."""
+  saveJob(
+    """The ID of the job to save."""
+    jobId: ID!
+  ): SaveJobPayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""
@@ -182,10 +194,26 @@ type Query {
     first: Int = null
     last: Int = null
   ): JobConnection!
-  savedJobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
+  savedJobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): SavedJobConnection! @isAuthenticated
 }
 
 union RegisterPayload = Account | EmailInUseError
+
+union SaveJobPayload = SavedJobEdge | JobNotFoundError
+
+type SavedJobConnection {
+  pageInfo: PageInfo!
+  edges: [SavedJobEdge!]!
+}
+
+type SavedJobEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+
+  """The item at the end of the edge"""
+  node: Job!
+  savedAt: DateTime!
+}
 
 union ViewerPayload = Account | NotAuthenticatedError
 
