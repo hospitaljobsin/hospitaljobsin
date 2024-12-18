@@ -4,7 +4,7 @@ import Job from "../landing/Job";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import SavedJobsListSkeleton from "../landing/JobListSkeleton";
-import { SavedJobsListFragment$key } from "./__generated__/SavedJobsListFragment.graphql";
+import type { SavedJobsListFragment$key } from "./__generated__/SavedJobsListFragment.graphql";
 
 const SavedJobsListFragment = graphql`
   fragment SavedJobsListFragment on Query

@@ -1,7 +1,8 @@
-import { graphql, PreloadedQuery, usePreloadedQuery } from "react-relay";
-import { CompanyDetailViewQuery as CompanyDetailViewQueryType } from "./__generated__/CompanyDetailViewQuery.graphql";
+import type { PreloadedQuery } from "react-relay";
+import { graphql, usePreloadedQuery } from "react-relay";
 import CompanyDetails from "./CompanyDetails";
 import CompanyJobsList from "./CompanyJobsList";
+import type { CompanyDetailViewQuery as CompanyDetailViewQueryType } from "./__generated__/CompanyDetailViewQuery.graphql";
 
 const CompanyDetailViewQuery = graphql`
   query CompanyDetailViewQuery($companyId: ID!) {
@@ -16,18 +17,18 @@ const CompanyDetailViewQuery = graphql`
 `;
 
 export default function CompanyDetailView(props: {
-  queryRef: PreloadedQuery<CompanyDetailViewQueryType>;
+	queryRef: PreloadedQuery<CompanyDetailViewQueryType>;
 }) {
-  const data = usePreloadedQuery(CompanyDetailViewQuery, props.queryRef);
+	const data = usePreloadedQuery(CompanyDetailViewQuery, props.queryRef);
 
-  if (!data.node || data.node.__typename !== "Company") {
-    return null;
-  }
+	if (!data.node || data.node.__typename !== "Company") {
+		return null;
+	}
 
-  return (
-    <div className="py-8 w-full h-full max-w-5xl mx-auto flex flex-col items-center gap-12">
-      <CompanyDetails company={data.node} />
-      <CompanyJobsList rootQuery={data.node} />
-    </div>
-  );
+	return (
+		<div className="py-8 w-full h-full max-w-5xl mx-auto flex flex-col items-center gap-12">
+			<CompanyDetails company={data.node} />
+			<CompanyJobsList rootQuery={data.node} />
+		</div>
+	);
 }

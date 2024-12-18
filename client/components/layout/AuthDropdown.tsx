@@ -14,7 +14,7 @@ import { BookmarkIcon, ChevronDown, LogOutIcon, UserIcon } from "lucide-react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import LogoutModal from "./LogoutModal";
-import { AuthDropdownFragment$key } from "./__generated__/AuthDropdownFragment.graphql";
+import type { AuthDropdownFragment$key } from "./__generated__/AuthDropdownFragment.graphql";
 
 const AuthDropdownFragment = graphql`
   fragment AuthDropdownFragment on Account {

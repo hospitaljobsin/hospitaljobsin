@@ -2,13 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Divider,
-  Input,
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	CardHeader,
+	Divider,
+	Input,
 } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -28,97 +28,97 @@ const LoginFormMutation = graphql`
 `;
 
 const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+	email: z.string().email(),
+	password: z.string().min(1),
 });
 
 export default function LoginForm() {
-  const router = useRouter();
-  const [commitMutation, isMutationInFlight] = useMutation(LoginFormMutation);
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
-  });
+	const router = useRouter();
+	const [commitMutation, isMutationInFlight] = useMutation(LoginFormMutation);
+	const {
+		register,
+		handleSubmit,
+		setError,
+		formState: { errors, isSubmitting },
+	} = useForm<z.infer<typeof loginSchema>>({
+		resolver: zodResolver(loginSchema),
+	});
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    commitMutation({
-      variables: {
-        email: values.email,
-        password: values.password,
-      },
-      onCompleted(response) {
-        if (response.login?.__typename === "InvalidCredentialsError") {
-          setError("email", { message: response.login.message });
-          setError("password", { message: response.login.message });
-        } else {
-          router.replace("/");
-        }
-      },
-    });
-  }
+	function onSubmit(values: z.infer<typeof loginSchema>) {
+		commitMutation({
+			variables: {
+				email: values.email,
+				password: values.password,
+			},
+			onCompleted(response) {
+				if (response.login?.__typename === "InvalidCredentialsError") {
+					setError("email", { message: response.login.message });
+					setError("password", { message: response.login.message });
+				} else {
+					router.replace("/");
+				}
+			},
+		});
+	}
 
-  return (
-    <Card className="p-6 space-y-6">
-      <CardHeader>
-        <h1 className={`text-2xl text-center w-full`}>Log in to continue</h1>
-      </CardHeader>
-      <CardBody>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-          <div className="w-full flex flex-col gap-6">
-            <Input
-              id="email"
-              label="Email"
-              placeholder="Enter your email address"
-              type="email"
-              {...register("email")}
-              errorMessage={errors.email?.message}
-              isInvalid={!!errors.email}
-            />
-            <Input
-              id="password"
-              label="Password"
-              placeholder="Enter password"
-              type="password"
-              {...register("password")}
-              errorMessage={errors.password?.message}
-              isInvalid={!!errors.password}
-              description={
-                <div className="w-full flex justify-start">
-                  <Link
-                    href="/auth/reset-password/submit"
-                    className="mt-2 cursor-pointer text-blue-500"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-              }
-            />
+	return (
+		<Card className="p-6 space-y-6">
+			<CardHeader>
+				<h1 className="text-2xl text-center w-full">Log in to continue</h1>
+			</CardHeader>
+			<CardBody>
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+					<div className="w-full flex flex-col gap-6">
+						<Input
+							id="email"
+							label="Email"
+							placeholder="Enter your email address"
+							type="email"
+							{...register("email")}
+							errorMessage={errors.email?.message}
+							isInvalid={!!errors.email}
+						/>
+						<Input
+							id="password"
+							label="Password"
+							placeholder="Enter password"
+							type="password"
+							{...register("password")}
+							errorMessage={errors.password?.message}
+							isInvalid={!!errors.password}
+							description={
+								<div className="w-full flex justify-start">
+									<Link
+										href="/auth/reset-password/submit"
+										className="mt-2 cursor-pointer text-blue-500"
+									>
+										Forgot password?
+									</Link>
+								</div>
+							}
+						/>
 
-            <Button
-              fullWidth
-              isLoading={isSubmitting || isMutationInFlight}
-              type="submit"
-            >
-              Log in
-            </Button>
-          </div>
-        </form>
-      </CardBody>{" "}
-      <Divider />
-      <CardFooter>
-        <div className="flex justify-center w-full">
-          <Link
-            href="/auth/signup"
-            className="mt-2 cursor-pointer text-blue-500"
-          >
-            {"Don't have an account? "} Sign up.
-          </Link>
-        </div>
-      </CardFooter>
-    </Card>
-  );
+						<Button
+							fullWidth
+							isLoading={isSubmitting || isMutationInFlight}
+							type="submit"
+						>
+							Log in
+						</Button>
+					</div>
+				</form>
+			</CardBody>{" "}
+			<Divider />
+			<CardFooter>
+				<div className="flex justify-center w-full">
+					<Link
+						href="/auth/signup"
+						className="mt-2 cursor-pointer text-blue-500"
+					>
+						{"Don't have an account? "} Sign up.
+					</Link>
+				</div>
+			</CardFooter>
+		</Card>
+	);
 }

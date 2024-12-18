@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e2034a7225c137dd4e16171642344c1f>>
+ * @generated SignedSource<<8a96d3f7535736daacfe9342710d4ef6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -296,13 +296,6 @@ return {
                       {
                         "alias": null,
                         "args": null,
-                        "kind": "ScalarField",
-                        "name": "isSaved",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
                         "concreteType": "Company",
                         "kind": "LinkedField",
                         "name": "company",
@@ -344,12 +337,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c0e1d4f9c2dbbccca38a15ef83615cda",
+    "cacheID": "f48be8c05a74628d16cc22b234cb14d0",
     "id": null,
     "metadata": {},
     "name": "JobControlsUnsaveMutation",
     "operationKind": "mutation",
-    "text": "mutation JobControlsUnsaveMutation(\n  $jobId: ID!\n) {\n  unsaveJob(jobId: $jobId) {\n    __typename\n    ... on UnsaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobDetailsFragment on Job {\n  id\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  isSaved\n  company {\n    id\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
+    "text": "mutation JobControlsUnsaveMutation(\n  $jobId: ID!\n) {\n  unsaveJob(jobId: $jobId) {\n    __typename\n    ... on UnsaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobDetailsFragment on Job {\n  id\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
   }
 };
 })();

@@ -11,10 +11,10 @@ import {
 } from "@nextui-org/react";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import NextLink from "next/link";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
-import { JobDetailsFragment$key } from "./__generated__/JobDetailsFragment.graphql";
+import type { JobDetailsFragment$key } from "./__generated__/JobDetailsFragment.graphql";
 
 const JobDetailsFragment = graphql`
   fragment JobDetailsFragment on Job {
@@ -36,7 +36,6 @@ const JobDetailsFragment = graphql`
     minExperience
     maxExperience
     createdAt
-    isSaved
     company {
       id
       name
@@ -164,7 +163,7 @@ export default function JobDetails({
 				<CardFooter>
 					<div className="flex flex-wrap gap-4 mt-2 w-full">
 						{data.skills.map((skill, index) => (
-							<Chip variant="flat" key={index}>
+							<Chip variant="flat" key={`skill-${index}`}>
 								{skill}
 							</Chip>
 						))}

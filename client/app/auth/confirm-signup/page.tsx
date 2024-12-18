@@ -1,12 +1,11 @@
 import ConfirmSignUpForm from "@/components/auth/confirm-signup-form";
 
-import { APP_NAME } from "@/lib/constants";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: `Confirm Sign up | ${APP_NAME}`,
+	title: "Confirm Sign up",
 };
 
 export default function LoginPage() {
-  return <ConfirmSignUpForm />;
+	return <ConfirmSignUpForm />;
 }

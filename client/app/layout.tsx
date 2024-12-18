@@ -5,24 +5,27 @@ import "./globals.css";
 import Providers from "./providers";
 
 const workSans = Work_Sans({
-  variable: "--font-work-sans",
-  subsets: ["latin"],
+	variable: "--font-work-sans",
+	subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: APP_NAME,
+	title: {
+		template: `%s | ${APP_NAME}`,
+		default: APP_NAME,
+	},
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${workSans.variable} antialiased h-full`}>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en" suppressHydrationWarning>
+			<body className={`${workSans.variable} antialiased h-full`}>
+				<Providers>{children}</Providers>
+			</body>
+		</html>
+	);
 }

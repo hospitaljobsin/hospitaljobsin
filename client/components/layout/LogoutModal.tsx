@@ -12,7 +12,6 @@ import { graphql, useMutation } from "react-relay";
 type Props = {
 	isOpen: boolean;
 	onOpenChange: (arg: boolean) => void;
-	onClose: () => void;
 };
 
 const LogoutModalMutation = graphql`

@@ -1,8 +1,8 @@
 import { Button } from "@nextui-org/react";
 import { BookmarkIcon } from "lucide-react";
 import { graphql, useFragment, useMutation } from "react-relay";
-import { JobControlsConnectionFragment$key } from "./__generated__/JobControlsConnectionFragment.graphql";
-import { JobControlsFragment$key } from "./__generated__/JobControlsFragment.graphql";
+import type { JobControlsConnectionFragment$key } from "./__generated__/JobControlsConnectionFragment.graphql";
+import type { JobControlsFragment$key } from "./__generated__/JobControlsFragment.graphql";
 
 const JobControlsConnectionFragment = graphql`
   fragment JobControlsConnectionFragment on Query

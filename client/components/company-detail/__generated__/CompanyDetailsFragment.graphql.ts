@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<26211cfbf6ebf127210db69b1002b943>>
+ * @generated SignedSource<<86a6f152e59271d5e9c38ddc97af9b1d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,6 +17,7 @@ export type CompanyDetailsFragment$data = {
   };
   readonly description: string;
   readonly email: string;
+  readonly logoUrl: string | null | undefined;
   readonly name: string;
   readonly phone: string;
   readonly website: string;
@@ -38,6 +39,13 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "ScalarField",
       "name": "name",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "logoUrl",
       "storageKey": null
     },
     {
@@ -98,6 +106,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "418225392b95916c6839b4f6f1d68b9f";
+(node as any).hash = "0c84a7ad568f6cb2ca98408a3fcb3e76";
 
 export default node;

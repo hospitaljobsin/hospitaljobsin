@@ -1,7 +1,8 @@
-import { PreloadedQuery, graphql, usePreloadedQuery } from "react-relay";
+import type { PreloadedQuery } from "react-relay";
+import { graphql, usePreloadedQuery } from "react-relay";
 import JobControls from "./JobControls";
 import JobDetails from "./JobDetails";
-import { JobDetailViewQuery as JobDetailViewQueryType } from "./__generated__/JobDetailViewQuery.graphql";
+import type { JobDetailViewQuery as JobDetailViewQueryType } from "./__generated__/JobDetailViewQuery.graphql";
 
 const JobDetailViewQuery = graphql`
   query JobDetailViewQuery($jobId: ID!) {
