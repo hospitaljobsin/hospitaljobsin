@@ -44,14 +44,14 @@ async def load_company_by_slug(
 ) -> list[Company | None]:
     """Load multiple companies by their slugs."""
     # Map invalid IDs to `None` for a consistent response structure
-    id_to_company_map = {
+    slug_to_company_map = {
         slug: company
         for slug, company in zip(
             company_slugs, await company_repo.get_many_by_slugs(company_slugs)
         )
     }
 
-    return [id_to_company_map.get(slug, None) for slug in company_slugs]
+    return [slug_to_company_map.get(slug, None) for slug in company_slugs]
 
 
 @inject

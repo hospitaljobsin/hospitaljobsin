@@ -82,7 +82,7 @@ class CompanyRepo:
     async def get_many_by_slugs(self, slugs: list[str]) -> list[Company | None]:
         """Get multiple companies by slugs."""
         companies = await Company.find(In(Company.slug, slugs)).to_list()
-        company_by_slug = {company.id: company for company in companies}
+        company_by_slug = {company.slug: company for company in companies}
 
         return [company_by_slug.get(slug) for slug in slugs]
 
