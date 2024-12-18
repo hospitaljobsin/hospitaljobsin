@@ -7,9 +7,9 @@ from strawberry import relay
 from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated
-from app.context import AuthInfo
+from app.context import AuthInfo, Info
 
-from .repositories import CompanyRepo, JobRepo, SavedJobRepo
+from .repositories import JobRepo, SavedJobRepo
 from .types import (
     CompanyNotFoundErrorType,
     CompanyPayload,
@@ -59,7 +59,7 @@ class CompanyQuery:
     @inject
     async def company(
         self,
-        company_repo: Annotated[CompanyRepo, Inject],
+        info: Info,
         slug: Annotated[
             str,
             strawberry.argument(
@@ -67,8 +67,7 @@ class CompanyQuery:
             ),
         ],
     ) -> CompanyPayload:
-        # TODO: load this via a dataloader
-        result = await company_repo.get_by_slug(slug=slug)
+        result = await info.context["loaders"].company_by_slug.load(slug)
 
         if result is None:
             return CompanyNotFoundErrorType()

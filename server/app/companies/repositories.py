@@ -79,6 +79,13 @@ class CompanyRepo:
             for company_id in company_ids
         ]
 
+    async def get_many_by_slugs(self, slugs: list[str]) -> list[Company | None]:
+        """Get multiple companies by slugs."""
+        companies = await Company.find(In(Company.slug, slugs)).to_list()
+        company_by_slug = {company.id: company for company in companies}
+
+        return [company_by_slug.get(slug) for slug in slugs]
+
     async def get_all(
         self,
         first: int | None = None,
