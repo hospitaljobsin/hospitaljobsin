@@ -6,6 +6,10 @@ import CompanyDetailViewClientComponent from "./CompanyDetailViewClientComponent
 
 export const revalidate = 0;
 
+// TODO: WHAT IF?
+// we just use SSR for generating the metadata, and everything else is client side?
+// need to see how and where generateMetadata is used/ invoked by Next.js
+
 // Function to load and cache the query result
 async function fetchAndCacheQuery(slug: string) {
 	return await loadSerializableQuery<
