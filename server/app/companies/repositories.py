@@ -3,7 +3,7 @@ from datetime import date
 from re import search
 
 from beanie import DeleteRules, PydanticObjectId, WriteRules
-from beanie.operators import In
+from beanie.operators import And, In, Or
 from bson import ObjectId
 from markdown_it.rules_inline import link_pairs
 
@@ -225,12 +225,24 @@ class JobRepo:
 
 
 class SavedJobRepo:
-    async def get_many_by_ids(self, job_ids: list[ObjectId]) -> list[SavedJob | None]:
-        """Get multiple saved jobs by IDs."""
-        jobs = await SavedJob.find(In(SavedJob.job.id, job_ids)).to_list()
-        job_by_id = {job.id: job for job in jobs}
+    async def get_many_by_ids(
+        self, job_ids: list[tuple[ObjectId, ObjectId]]
+    ) -> list[SavedJob | None]:
+        """Get multiple saved jobs by account_id and job_id pairs."""
+        # Construct filters based on actual schema paths
+        filters = [
+            And({"account.$id": account_id}, {"job.$id": job_id})
+            for account_id, job_id in job_ids
+        ]
 
-        return [job_by_id.get(PydanticObjectId(job_id)) for job_id in job_ids]
+        # Use the Or operator to combine all conditions
+        jobs = await SavedJob.find({"$or": filters}).to_list()
+
+        # Map jobs by (account_id, job_id) for easy lookup
+        job_by_id = {(job.account.ref.id, job.job.ref.id): job for job in jobs}
+
+        # Return jobs in the same order as job_ids
+        return [job_by_id.get((account_id, job_id)) for account_id, job_id in job_ids]
 
     async def get_all_saved(
         self,

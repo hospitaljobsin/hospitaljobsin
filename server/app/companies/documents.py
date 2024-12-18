@@ -80,3 +80,11 @@ class SavedJob(Document):
 
     class Settings:
         name = "saved_jobs"
+        indexes = [{"fields": ["account", "job"], "unique": True}]
+        indexes = [
+            IndexModel(
+                ["account", "job"],
+                name="account_job_unique_secondary_index",
+                unique=True,
+            ),
+        ]

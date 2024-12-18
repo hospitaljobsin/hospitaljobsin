@@ -16,7 +16,7 @@ from app.companies.documents import Company, Job
 @dataclasses.dataclass(slots=True, kw_only=True)
 class Dataloaders:
     job_by_id: DataLoader[ObjectId, Job | None]
-    saved_job_by_id: DataLoader[ObjectId, Job | None]
+    saved_job_by_id: DataLoader[tuple[ObjectId, ObjectId], Job | None]
     company_by_id: DataLoader[ObjectId, Company | None]
     account_by_id: DataLoader[ObjectId, Account | None]
     profile_by_id: DataLoader[ObjectId, Profile | None]

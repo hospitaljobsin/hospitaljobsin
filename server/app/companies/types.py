@@ -192,11 +192,14 @@ class JobType(BaseNodeType[Job]):
 
     @strawberry.field
     async def is_saved(self, info: Info) -> bool:
-        if info.context["current_user_id"] is None:
+        current_user_id = info.context["current_user_id"]
+        if current_user_id is None:
             return False
 
         # TODO: pass the current user ID while loading saved jobs here
-        saved_job = await info.context["loaders"].saved_job_by_id.load(self.id)
+        saved_job = await info.context["loaders"].saved_job_by_id.load(
+            (str(current_user_id), str(self.id))
+        )
         return saved_job is not None
 
     @strawberry.field

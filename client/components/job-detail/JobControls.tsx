@@ -30,23 +30,22 @@ const JobControlsFragment = graphql`
 `;
 
 const JobControlsSaveMutation = graphql`
-  mutation JobControlsSaveMutation($jobId: ID!,     $connections: [ID!]!) {
+  mutation JobControlsSaveMutation($jobId: ID!, $connections: [ID!]!) {
     saveJob(jobId: $jobId) {
     ... on SaveJobResult  {
         savedJobEdge @prependEdge(connections: $connections) {
             node {
-            id
-            ...JobDetailsFragment
+                id
+                ...JobDetailsFragment
+                }
+            }       
         }
-        }
-       
-    }
     }
   }
 `;
 
 const JobControlsUnsaveMutation = graphql`
-  mutation JobControlsUnsaveMutation($jobId: ID!,     $connections: [ID!]!) {
+  mutation JobControlsUnsaveMutation($jobId: ID!, $connections: [ID!]!) {
     unsaveJob(jobId: $jobId) {
     ... on UnsaveJobResult {
         savedJobEdge @deleteEdge(connections: $connections) {
