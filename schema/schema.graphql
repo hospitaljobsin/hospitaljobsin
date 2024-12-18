@@ -225,7 +225,11 @@ type SavedJobEdge {
   savedAt: DateTime!
 }
 
-union UnsaveJobPayload = UnsaveJobResult | JobNotFoundError
+type SavedJobNotFoundError implements Error {
+  message: String!
+}
+
+union UnsaveJobPayload = UnsaveJobResult | SavedJobNotFoundError
 
 type UnsaveJobResult {
   savedJobEdge: SavedJobEdge!

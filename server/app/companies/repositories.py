@@ -225,6 +225,15 @@ class JobRepo:
 
 
 class SavedJobRepo:
+    async def get(self, account_id: ObjectId, job_id: ObjectId) -> SavedJob | None:
+        """Get saved job by account ID and job ID."""
+        return await SavedJob.find_one(
+            SavedJob.account.id == account_id,
+            SavedJob.job.id == job_id,
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
     async def get_many_by_ids(
         self, job_ids: list[tuple[ObjectId, ObjectId]]
     ) -> list[SavedJob | None]:
@@ -274,7 +283,7 @@ class SavedJobRepo:
             after=ObjectId(after) if after else None,
         )
 
-    async def save_job(self, account_id: ObjectId, job: Job) -> SavedJob:
+    async def create(self, account_id: ObjectId, job: Job) -> SavedJob:
         """Save the given job under the given account."""
         saved_job = await SavedJob.find_one(
             SavedJob.account.id == account_id,
@@ -287,17 +296,6 @@ class SavedJobRepo:
             saved_job = await SavedJob(account=account_id, job=job).save()
         return saved_job
 
-    async def unsave_job(self, account_id: ObjectId, job: Job) -> SavedJob:
+    async def delete(self, saved_job: SavedJob) -> None:
         """Unsave the given job under the given account."""
-        saved_job = await SavedJob.find_one(
-            SavedJob.account.id == account_id,
-            SavedJob.job.id == job.id,
-            fetch_links=True,
-            nesting_depth=1,
-        )
-
-        if saved_job is not None:
-            await saved_job.delete(
-                link_rule=DeleteRules.DO_NOTHING,
-            )
-        return saved_job
+        await saved_job.delete(link_rule=DeleteRules.DO_NOTHING)

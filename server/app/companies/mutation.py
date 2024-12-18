@@ -8,13 +8,14 @@ from strawberry import relay
 from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated
-from app.companies.exceptions import JobNotFoundError
+from app.companies.exceptions import JobNotFoundError, SavedJobNotFoundError
 from app.companies.services import SavedJobService
 from app.context import AuthInfo
 
 from .types import (
     JobNotFoundErrorType,
     SavedJobEdgeType,
+    SavedJobNotFoundErrorType,
     SaveJobPayload,
     SaveJobResult,
     UnsaveJobPayload,
@@ -95,8 +96,8 @@ class CompanyMutation:
 
         if isinstance(result, Err):
             match result.err_value:
-                case JobNotFoundError():
-                    return JobNotFoundErrorType()
+                case SavedJobNotFoundError():
+                    return SavedJobNotFoundErrorType()
 
         return UnsaveJobResult(
             saved_job_edge=SavedJobEdgeType.marshal(

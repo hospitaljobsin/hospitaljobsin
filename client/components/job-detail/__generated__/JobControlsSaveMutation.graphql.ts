@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0311cf86522e9229f8cb4ae6562ca561>>
+ * @generated SignedSource<<5ff940a408dc8dd05def093a8b49d552>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,7 +19,7 @@ export type JobControlsSaveMutation$data = {
     readonly savedJobEdge?: {
       readonly node: {
         readonly id: string;
-        readonly " $fragmentSpreads": FragmentRefs<"JobDetailsFragment">;
+        readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobDetailsFragment">;
       };
     };
   };
@@ -128,6 +128,11 @@ return {
                         "args": null,
                         "kind": "FragmentSpread",
                         "name": "JobDetailsFragment"
+                      },
+                      {
+                        "args": null,
+                        "kind": "FragmentSpread",
+                        "name": "JobControlsFragment"
                       }
                     ],
                     "storageKey": null
@@ -303,6 +308,13 @@ return {
                           (v5/*: any*/)
                         ],
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "isSaved",
+                        "storageKey": null
                       }
                     ],
                     "storageKey": null
@@ -336,16 +348,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d7fe63bc1962d8a8933a13a877ee09c9",
+    "cacheID": "c07e0eae6ecdb24cfff20d42f7cb7ff7",
     "id": null,
     "metadata": {},
     "name": "JobControlsSaveMutation",
     "operationKind": "mutation",
-    "text": "mutation JobControlsSaveMutation(\n  $jobId: ID!\n) {\n  saveJob(jobId: $jobId) {\n    __typename\n    ... on SaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobDetailsFragment on Job {\n  id\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
+    "text": "mutation JobControlsSaveMutation(\n  $jobId: ID!\n) {\n  saveJob(jobId: $jobId) {\n    __typename\n    ... on SaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsFragment\n          ...JobControlsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  id\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "2fe30fd9186787f5183c0f2da63da6b6";
+(node as any).hash = "2a534d058573692087cbe96b3f86938f";
 
 export default node;

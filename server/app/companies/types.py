@@ -196,7 +196,6 @@ class JobType(BaseNodeType[Job]):
         if current_user_id is None:
             return False
 
-        # TODO: pass the current user ID while loading saved jobs here
         saved_job = await info.context["loaders"].saved_job_by_id.load(
             (str(current_user_id), str(self.id))
         )
@@ -329,12 +328,17 @@ class JobNotFoundErrorType(BaseErrorType):
     message: str = "Job not found!"
 
 
+@strawberry.type(name="SavedJobNotFoundError")
+class SavedJobNotFoundErrorType(BaseErrorType):
+    message: str = "Saved job not found!"
+
+
 SaveJobPayload = Annotated[
     SaveJobResult | JobNotFoundErrorType,
     strawberry.union(name="SaveJobPayload"),
 ]
 
 UnsaveJobPayload = Annotated[
-    UnsaveJobResult | JobNotFoundErrorType,
+    UnsaveJobResult | SavedJobNotFoundErrorType,
     strawberry.union(name="UnsaveJobPayload"),
 ]

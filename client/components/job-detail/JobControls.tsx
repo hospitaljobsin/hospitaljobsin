@@ -37,6 +37,7 @@ const JobControlsSaveMutation = graphql`
             node {
                 id
                 ...JobDetailsFragment
+                ...JobControlsFragment
                 }
             }       
         }
@@ -52,6 +53,7 @@ const JobControlsUnsaveMutation = graphql`
             node {
             id @deleteEdge(connections: $connections)
             ...JobDetailsFragment
+            ...JobControlsFragment
         }
         }
     }

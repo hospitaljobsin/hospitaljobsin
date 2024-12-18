@@ -3,7 +3,7 @@ from bson.errors import InvalidId
 from result import Err, Ok, Result
 
 from app.companies.documents import Job
-from app.companies.exceptions import JobNotFoundError
+from app.companies.exceptions import JobNotFoundError, SavedJobNotFoundError
 from app.companies.repositories import JobRepo, SavedJobRepo
 
 
@@ -22,7 +22,7 @@ class SavedJobService:
         job = await self._job_repo.get(job_id=job_id)
         if job is None:
             return Err(JobNotFoundError())
-        result = await self._saved_job_repo.save_job(
+        result = await self._saved_job_repo.create(
             account_id=account_id,
             job=job,
         )
@@ -31,17 +31,14 @@ class SavedJobService:
 
     async def unsave_job(
         self, account_id: ObjectId, job_id: str
-    ) -> Result[Job, JobNotFoundError]:
+    ) -> Result[Job, SavedJobNotFoundError]:
         try:
             job_id = ObjectId(job_id)
         except InvalidId:
-            return Err(JobNotFoundError())
-        job = await self._job_repo.get(job_id=job_id)
-        if job is None:
-            return Err(JobNotFoundError())
-        result = await self._saved_job_repo.unsave_job(
-            account_id=account_id,
-            job=job,
-        )
+            return Err(SavedJobNotFoundError())
+        saved_job = await self._saved_job_repo.get(account_id=account_id, job_id=job_id)
+        if saved_job is None:
+            return Err(SavedJobNotFoundError())
+        await self._saved_job_repo.delete(saved_job)
 
-        return Ok(result)
+        return Ok(saved_job)
