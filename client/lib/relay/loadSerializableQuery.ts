@@ -13,12 +13,12 @@ export interface SerializablePreloadedQuery<
 > {
 	params: TRequest["params"];
 	variables: VariablesOf<TQuery>;
-	response: GraphQLResponse;
+	/** Narrowed type for response using TQuery */
+	response: Omit<GraphQLResponse, "data"> & {
+		data: TQuery["response"]; // Use TQuery's response type
+	};
 }
 
-// Call into raw network fetch to get serializable GraphQL query response
-// This response will be sent to the client to "warm" the QueryResponseCache
-// to avoid the client fetches.
 export default async function loadSerializableQuery<
 	TRequest extends ConcreteRequest,
 	TQuery extends OperationType,
@@ -27,9 +27,13 @@ export default async function loadSerializableQuery<
 	variables: VariablesOf<TQuery>,
 ): Promise<SerializablePreloadedQuery<TRequest, TQuery>> {
 	const response = await networkFetch(params, variables);
+
 	return {
 		params,
 		variables,
-		response,
+		// Use the GraphQLResponse structure with strong typing
+		response: response as Omit<GraphQLResponse, "data"> & {
+			data: TQuery["response"];
+		},
 	};
 }
