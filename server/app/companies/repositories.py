@@ -264,7 +264,7 @@ class SavedJobRepo:
             SavedJob.account.id == account_id,
             fetch_links=True,
             nesting_depth=1,
-        )
+        ).sort(-SavedJob.id)
 
         return await paginator.paginate(
             search_criteria=search_criteria,
