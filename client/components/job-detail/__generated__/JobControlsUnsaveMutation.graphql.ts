@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c4d7605f9bfcdcf5b793d04d60ebd19f>>
+ * @generated SignedSource<<e2034a7225c137dd4e16171642344c1f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -193,6 +193,23 @@ return {
                       {
                         "alias": null,
                         "args": null,
+                        "filters": null,
+                        "handle": "deleteEdge",
+                        "key": "",
+                        "kind": "ScalarHandle",
+                        "name": "id",
+                        "handleArgs": [
+                          {
+                            "kind": "Variable",
+                            "name": "connections",
+                            "variableName": "connections"
+                          }
+                        ]
+                      },
+                      (v3/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
                         "kind": "ScalarField",
                         "name": "title",
                         "storageKey": null
@@ -337,6 +354,6 @@ return {
 };
 })();
 
-(node as any).hash = "90841f1d5a95fe12e321db266c96f2a1";
+(node as any).hash = "d5b7b02173084c6c9da9649743ea5d51";
 
 export default node;
