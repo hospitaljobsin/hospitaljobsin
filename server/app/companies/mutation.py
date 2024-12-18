@@ -9,7 +9,7 @@ from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated
 from app.companies.exceptions import JobNotFoundError
-from app.companies.services import JobService
+from app.companies.services import SavedJobService
 from app.context import AuthInfo
 
 from .types import (
@@ -45,10 +45,10 @@ class CompanyMutation:
                 description="The ID of the job to save.",
             ),
         ],
-        job_service: Annotated[JobService, Inject],
+        saved_job_service: Annotated[SavedJobService, Inject],
     ) -> SaveJobPayload:
         """Save a job."""
-        result = await job_service.save_job(
+        result = await saved_job_service.save_job(
             account_id=info.context["current_user_id"],
             job_id=job_id.node_id,
         )
@@ -85,10 +85,10 @@ class CompanyMutation:
                 description="The ID of the job to unsave.",
             ),
         ],
-        job_service: Annotated[JobService, Inject],
+        saved_job_service: Annotated[SavedJobService, Inject],
     ) -> UnsaveJobPayload:
         """Save a job."""
-        result = await job_service.unsave_job(
+        result = await saved_job_service.unsave_job(
             account_id=info.context["current_user_id"],
             job_id=job_id.node_id,
         )

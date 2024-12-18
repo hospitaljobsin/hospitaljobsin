@@ -4,7 +4,7 @@ from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
 
-from app.companies.repositories import CompanyRepo, JobRepo
+from app.companies.repositories import CompanyRepo, JobRepo, SavedJobRepo
 
 from .documents import Company, Job
 
@@ -45,6 +45,24 @@ async def load_job_by_id(
     id_to_job_map = {
         str(job_id): job
         for job_id, job in zip(valid_ids, await job_repo.get_many_by_ids(valid_ids))
+    }
+
+    return [id_to_job_map.get(job_id, None) for job_id in job_ids]
+
+
+@inject
+async def load_saved_job_by_id(
+    job_ids: list[str],
+    saved_job_repo: Annotated[SavedJobRepo, Inject],
+) -> list[Job | None]:
+    """Load multiple jobs by their IDs."""
+    valid_ids = [ObjectId(job_id) for job_id in job_ids if ObjectId.is_valid(job_id)]
+    # Map invalid IDs to `None` for a consistent response structure
+    id_to_job_map = {
+        str(job_id): job
+        for job_id, job in zip(
+            valid_ids, await saved_job_repo.get_many_by_ids(valid_ids)
+        )
     }
 
     return [id_to_job_map.get(job_id, None) for job_id in job_ids]

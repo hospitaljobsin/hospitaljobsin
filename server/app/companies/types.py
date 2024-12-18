@@ -187,17 +187,22 @@ class JobType(BaseNodeType[Job]):
             max_experience=job.max_experience,
             updated_at=job.updated_at,
             expires_at=job.expires_at,
-            company_id=job.company.ref.id,
+            company_id=str(job.company.ref.id),
         )
 
     @strawberry.field
     async def is_saved(self, info: Info) -> bool:
-        return False
+        if info.context["current_user_id"] is None:
+            return False
+
+        # TODO: pass the current user ID while loading saved jobs here
+        saved_job = await info.context["loaders"].saved_job_by_id.load(self.id)
+        return saved_job is not None
 
     @strawberry.field
     @inject
     async def company(self, info: Info) -> CompanyType | None:
-        company = await info.context["loaders"].company_by_id.load(str(self.company_id))
+        company = await info.context["loaders"].company_by_id.load(self.company_id)
 
         if company is None:
             return None

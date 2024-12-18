@@ -49,7 +49,7 @@ const JobControlsUnsaveMutation = graphql`
   mutation JobControlsUnsaveMutation($jobId: ID!,     $connections: [ID!]!) {
     unsaveJob(jobId: $jobId) {
     ... on UnsaveJobResult {
-        savedJobEdge @prependEdge(connections: $connections) {
+        savedJobEdge @deleteEdge(connections: $connections) {
             node {
             id
             ...JobDetailsFragment

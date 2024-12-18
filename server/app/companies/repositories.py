@@ -193,6 +193,45 @@ class JobRepo:
             after=ObjectId(after) if after else None,
         )
 
+    async def get_all_by_company_id(
+        self,
+        company_id: ObjectId,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[Job, ObjectId]:
+        """Get a paginated result of jobs."""
+
+        paginator: Paginator[Job, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=Job,
+            paginate_by="id",
+        )
+
+        search_criteria = Job.find(Job.company.id == company_id)
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
+    async def delete(self, job: Job) -> None:
+        """Delete a job by ID."""
+        await job.delete()
+
+
+class SavedJobRepo:
+    async def get_many_by_ids(self, job_ids: list[ObjectId]) -> list[SavedJob | None]:
+        """Get multiple saved jobs by IDs."""
+        jobs = await SavedJob.find(In(SavedJob.job.id, job_ids)).to_list()
+        job_by_id = {job.id: job for job in jobs}
+
+        return [job_by_id.get(PydanticObjectId(job_id)) for job_id in job_ids]
+
     async def get_all_saved(
         self,
         account_id: ObjectId,
@@ -250,33 +289,3 @@ class JobRepo:
                 link_rule=DeleteRules.DO_NOTHING,
             )
         return saved_job
-
-    async def get_all_by_company_id(
-        self,
-        company_id: ObjectId,
-        first: int | None = None,
-        last: int | None = None,
-        before: str | None = None,
-        after: str | None = None,
-    ) -> PaginatedResult[Job, ObjectId]:
-        """Get a paginated result of jobs."""
-
-        paginator: Paginator[Job, ObjectId] = Paginator(
-            reverse=True,
-            document_cls=Job,
-            paginate_by="id",
-        )
-
-        search_criteria = Job.find(Job.company.id == company_id)
-
-        return await paginator.paginate(
-            search_criteria=search_criteria,
-            first=first,
-            last=last,
-            before=ObjectId(before) if before else None,
-            after=ObjectId(after) if after else None,
-        )
-
-    async def delete(self, job: Job) -> None:
-        """Delete a job by ID."""
-        await job.delete()

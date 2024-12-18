@@ -4,12 +4,12 @@ from result import Err, Ok, Result
 
 from app.companies.documents import Job
 from app.companies.exceptions import JobNotFoundError
-from app.companies.repositories import JobRepo
+from app.companies.repositories import SavedJobRepo
 
 
-class JobService:
-    def __init__(self, job_repo: JobRepo) -> None:
-        self._job_repo = job_repo
+class SavedJobService:
+    def __init__(self, saved_job_repo: SavedJobRepo) -> None:
+        self._saved_job_repo = saved_job_repo
 
     async def save_job(
         self, account_id: ObjectId, job_id: str
@@ -18,10 +18,10 @@ class JobService:
             job_id = ObjectId(job_id)
         except InvalidId:
             return Err(JobNotFoundError())
-        job = await self._job_repo.get(job_id=job_id)
+        job = await self._saved_job_repo.get(job_id=job_id)
         if job is None:
             return Err(JobNotFoundError())
-        result = await self._job_repo.save_job(
+        result = await self._saved_job_repo.save_job(
             account_id=account_id,
             job=job,
         )
@@ -35,10 +35,10 @@ class JobService:
             job_id = ObjectId(job_id)
         except InvalidId:
             return Err(JobNotFoundError())
-        job = await self._job_repo.get(job_id=job_id)
+        job = await self._saved_job_repo.get(job_id=job_id)
         if job is None:
             return Err(JobNotFoundError())
-        result = await self._job_repo.unsave_job(
+        result = await self._saved_job_repo.unsave_job(
             account_id=account_id,
             job=job,
         )

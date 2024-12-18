@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4e1d16be9b61fe8ce16aff5a283a402b>>
+ * @generated SignedSource<<c4d7605f9bfcdcf5b793d04d60ebd19f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -316,22 +316,6 @@ return {
                   }
                 ],
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "filters": null,
-                "handle": "prependEdge",
-                "key": "",
-                "kind": "LinkedHandle",
-                "name": "savedJobEdge",
-                "handleArgs": [
-                  {
-                    "kind": "Variable",
-                    "name": "connections",
-                    "variableName": "connections"
-                  }
-                ]
               }
             ],
             "type": "UnsaveJobResult",
@@ -353,6 +337,6 @@ return {
 };
 })();
 
-(node as any).hash = "f90e090d85629728cee2dff87ea1c4af";
+(node as any).hash = "90841f1d5a95fe12e321db266c96f2a1";
 
 export default node;
