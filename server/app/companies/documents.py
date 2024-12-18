@@ -1,8 +1,8 @@
 from datetime import datetime
-from typing import Literal
+from typing import Annotated, Literal
 
 import pymongo
-from beanie import Document, Link
+from beanie import Document, Indexed, Link
 from pymongo import IndexModel
 
 from app.accounts.documents import Account
@@ -11,6 +11,7 @@ from app.base.models import Address
 
 class Company(Document):
     name: str
+    slug: Annotated[str, Indexed(unique=True)]
     description: str
     address: Address
     phone: str

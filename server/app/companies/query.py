@@ -9,8 +9,14 @@ from strawberry.permission import PermissionExtension
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo
 
-from .repositories import JobRepo, SavedJobRepo
-from .types import JobConnectionType, SavedJobConnectionType
+from .repositories import CompanyRepo, JobRepo, SavedJobRepo
+from .types import (
+    CompanyNotFoundErrorType,
+    CompanyPayload,
+    CompanyType,
+    JobConnectionType,
+    SavedJobConnectionType,
+)
 
 
 @strawberry.type
@@ -45,6 +51,29 @@ class CompanyQuery:
         return JobConnectionType.from_paginated_result(
             paginated_result=paginated_result,
         )
+
+    @strawberry.field(  # type: ignore[misc]
+        graphql_type=CompanyPayload,
+        description="Get company by ID.",
+    )
+    @inject
+    async def company(
+        self,
+        company_repo: Annotated[CompanyRepo, Inject],
+        slug: Annotated[
+            str,
+            strawberry.argument(
+                description="Slug of the company",
+            ),
+        ],
+    ) -> CompanyPayload:
+        # TODO: load this via a dataloader
+        result = await company_repo.get_by_slug(slug=slug)
+
+        if result is None:
+            return CompanyNotFoundErrorType()
+
+        return CompanyType.marshal(result)
 
     @strawberry.field(
         graphql_type=SavedJobConnectionType,

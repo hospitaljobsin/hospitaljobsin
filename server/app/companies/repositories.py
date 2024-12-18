@@ -1,13 +1,9 @@
-import asyncio
 from datetime import date
-from re import search
 
 from beanie import DeleteRules, PydanticObjectId, WriteRules
-from beanie.operators import And, In, Or
+from beanie.operators import And, In
 from bson import ObjectId
-from markdown_it.rules_inline import link_pairs
 
-from app.accounts.documents import Account
 from app.database.paginator import PaginatedResult, Paginator
 
 from .documents import Company, Job, SavedJob
@@ -105,6 +101,10 @@ class CompanyRepo:
             before=ObjectId(before) if before else None,
             after=ObjectId(after) if after else None,
         )
+
+    async def get_by_slug(self, slug: str) -> Company | None:
+        """Get job by ID."""
+        return await Company.find_one(Company.slug == slug)
 
     async def delete(self, company: Company) -> None:
         """Delete a company by ID."""

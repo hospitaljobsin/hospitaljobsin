@@ -23,6 +23,7 @@ type Company implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
   name: String!
+  slug: String!
   description: String!
   address: Address!
   phone: String!
@@ -31,6 +32,12 @@ type Company implements Node {
   logoUrl: String
   jobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
 }
+
+type CompanyNotFoundError implements Error {
+  message: String!
+}
+
+union CompanyPayload = Company | CompanyNotFoundError
 
 enum Currency {
   INR
@@ -200,6 +207,12 @@ type Query {
     first: Int = null
     last: Int = null
   ): JobConnection!
+
+  """Get company by ID."""
+  company(
+    """Slug of the company"""
+    slug: String!
+  ): CompanyPayload!
   savedJobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): SavedJobConnection! @isAuthenticated
 }
 

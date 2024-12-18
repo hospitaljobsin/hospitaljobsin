@@ -5,8 +5,8 @@ import CompanyJobsList from "./CompanyJobsList";
 import type { CompanyDetailViewQuery as CompanyDetailViewQueryType } from "./__generated__/CompanyDetailViewQuery.graphql";
 
 const CompanyDetailViewQuery = graphql`
-  query CompanyDetailViewQuery($companyId: ID!) {
-    node(id: $companyId) {
+  query CompanyDetailViewQuery($slug: String!) {
+    company(slug: $slug) {
       __typename
       ... on Company {
         ...CompanyJobsListFragment
@@ -21,14 +21,14 @@ export default function CompanyDetailView(props: {
 }) {
 	const data = usePreloadedQuery(CompanyDetailViewQuery, props.queryRef);
 
-	if (!data.node || data.node.__typename !== "Company") {
+	if (data.company.__typename !== "Company") {
 		return null;
 	}
 
 	return (
 		<div className="py-8 w-full h-full max-w-5xl mx-auto flex flex-col items-center gap-12">
-			<CompanyDetails company={data.node} />
-			<CompanyJobsList rootQuery={data.node} />
+			<CompanyDetails company={data.company} />
+			<CompanyJobsList rootQuery={data.company} />
 		</div>
 	);
 }

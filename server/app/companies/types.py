@@ -19,6 +19,7 @@ from app.database.paginator import PaginatedResult
 @strawberry.type(name="Company")
 class CompanyType(BaseNodeType[Company]):
     name: str
+    slug: str
     description: str
     address: AddressType
     phone: str
@@ -32,6 +33,7 @@ class CompanyType(BaseNodeType[Company]):
         return cls(
             id=str(company.id),
             name=company.name,
+            slug=company.slug,
             description=company.description,
             address=AddressType.marshal(company.address),
             phone=company.phone,
@@ -333,6 +335,11 @@ class SavedJobNotFoundErrorType(BaseErrorType):
     message: str = "Saved job not found!"
 
 
+@strawberry.type(name="CompanyNotFoundError")
+class CompanyNotFoundErrorType(BaseErrorType):
+    message: str = "Company not found!"
+
+
 SaveJobPayload = Annotated[
     SaveJobResult | JobNotFoundErrorType,
     strawberry.union(name="SaveJobPayload"),
@@ -341,4 +348,10 @@ SaveJobPayload = Annotated[
 UnsaveJobPayload = Annotated[
     UnsaveJobResult | SavedJobNotFoundErrorType,
     strawberry.union(name="UnsaveJobPayload"),
+]
+
+
+CompanyPayload = Annotated[
+    CompanyType | CompanyNotFoundErrorType,
+    strawberry.union(name="CompanyPayload"),
 ]

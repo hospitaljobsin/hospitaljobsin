@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<07831daf56938328fc9093d7089599bd>>
+ * @generated SignedSource<<d64d00da3e619a1854394483701ffa0d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,9 +24,9 @@ export type JobDetailsFragment$data = {
       readonly state: string;
     };
     readonly description: string;
-    readonly id: string;
     readonly logoUrl: string | null | undefined;
     readonly name: string;
+    readonly slug: string;
   } | null | undefined;
   readonly createdAt: any;
   readonly currency: Currency;
@@ -54,17 +54,10 @@ var v0 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "description",
   "storageKey": null
 },
-v2 = {
+v1 = {
   "alias": null,
   "args": null,
   "concreteType": "Address",
@@ -95,7 +88,13 @@ return {
   "metadata": null,
   "name": "JobDetailsFragment",
   "selections": [
-    (v0/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    },
     {
       "alias": null,
       "args": null,
@@ -103,7 +102,7 @@ return {
       "name": "title",
       "storageKey": null
     },
-    (v1/*: any*/),
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -118,7 +117,7 @@ return {
       "name": "workMode",
       "storageKey": null
     },
-    (v2/*: any*/),
+    (v1/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -190,7 +189,13 @@ return {
       "name": "company",
       "plural": false,
       "selections": [
-        (v0/*: any*/),
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "slug",
+          "storageKey": null
+        },
         {
           "alias": null,
           "args": null,
@@ -198,7 +203,7 @@ return {
           "name": "name",
           "storageKey": null
         },
-        (v1/*: any*/),
+        (v0/*: any*/),
         {
           "alias": null,
           "args": null,
@@ -206,7 +211,7 @@ return {
           "name": "logoUrl",
           "storageKey": null
         },
-        (v2/*: any*/)
+        (v1/*: any*/)
       ],
       "storageKey": null
     }
@@ -216,6 +221,6 @@ return {
 };
 })();
 
-(node as any).hash = "827687ece72d5f19d04c08e2a579ba05";
+(node as any).hash = "20ceff42de43d609858577d0707f6b22";
 
 export default node;

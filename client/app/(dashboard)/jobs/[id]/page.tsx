@@ -8,20 +8,6 @@ import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
-	return {
-		title: "Job Name",
-		description: "Job description",
-		openGraph: {
-			images: ["/some-specific-page-image.jpg"],
-		},
-	};
-}
-
 export default async function JobDetailPage({
 	params,
 }: {

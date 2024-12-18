@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c03305e2a0bc5c9e1d1a8a105c4f2b93>>
+ * @generated SignedSource<<3c24c3372811837d46fd369092601788>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,17 +11,17 @@
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type CompanyDetailViewQuery$variables = {
-  companyId: string;
+  slug: string;
 };
 export type CompanyDetailViewQuery$data = {
-  readonly node: {
+  readonly company: {
     readonly __typename: "Company";
     readonly " $fragmentSpreads": FragmentRefs<"CompanyDetailsFragment" | "CompanyJobsListFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
     readonly __typename: "%other";
-  } | null | undefined;
+  };
 };
 export type CompanyDetailViewQuery = {
   response: CompanyDetailViewQuery$data;
@@ -33,14 +33,14 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "companyId"
+    "name": "slug"
   }
 ],
 v1 = [
   {
     "kind": "Variable",
-    "name": "id",
-    "variableName": "companyId"
+    "name": "slug",
+    "variableName": "slug"
   }
 ],
 v2 = {
@@ -50,20 +50,20 @@ v2 = {
   "name": "__typename",
   "storageKey": null
 },
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v4 = [
+v3 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 10
   }
 ],
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
 v5 = {
   "alias": null,
   "args": null,
@@ -115,7 +115,7 @@ return {
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "node",
+        "name": "company",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -154,17 +154,16 @@ return {
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "node",
+        "name": "company",
         "plural": false,
         "selections": [
           (v2/*: any*/),
-          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
-                "args": (v4/*: any*/),
+                "args": (v3/*: any*/),
                 "concreteType": "JobConnection",
                 "kind": "LinkedField",
                 "name": "jobs",
@@ -186,7 +185,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v3/*: any*/),
+                          (v4/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -280,7 +279,7 @@ return {
                             "name": "company",
                             "plural": false,
                             "selections": [
-                              (v3/*: any*/),
+                              (v4/*: any*/),
                               (v6/*: any*/),
                               (v7/*: any*/),
                               (v5/*: any*/)
@@ -343,13 +342,14 @@ return {
               },
               {
                 "alias": null,
-                "args": (v4/*: any*/),
+                "args": (v3/*: any*/),
                 "filters": null,
                 "handle": "connection",
                 "key": "CompanyJobsListFragment_jobs",
                 "kind": "LinkedHandle",
                 "name": "jobs"
               },
+              (v4/*: any*/),
               (v6/*: any*/),
               (v7/*: any*/),
               {
@@ -384,6 +384,14 @@ return {
             ],
             "type": "Company",
             "abstractKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v4/*: any*/)
+            ],
+            "type": "Node",
+            "abstractKey": "__isNode"
           }
         ],
         "storageKey": null
@@ -391,16 +399,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4a850616b16298ab017acfad44602ec6",
+    "cacheID": "12f2a155d4645a4528d3f4ba7ab91b46",
     "id": null,
     "metadata": {},
     "name": "CompanyDetailViewQuery",
     "operationKind": "query",
-    "text": "query CompanyDetailViewQuery(\n  $companyId: ID!\n) {\n  node(id: $companyId) {\n    __typename\n    ... on Company {\n      ...CompanyJobsListFragment\n      ...CompanyDetailsFragment\n    }\n    id\n  }\n}\n\nfragment CompanyDetailsFragment on Company {\n  name\n  logoUrl\n  description\n  website\n  phone\n  email\n  address {\n    city\n    state\n  }\n}\n\nfragment CompanyJobsListFragment on Company {\n  jobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
+    "text": "query CompanyDetailViewQuery(\n  $slug: String!\n) {\n  company(slug: $slug) {\n    __typename\n    ... on Company {\n      ...CompanyJobsListFragment\n      ...CompanyDetailsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment CompanyDetailsFragment on Company {\n  name\n  logoUrl\n  description\n  website\n  phone\n  email\n  address {\n    city\n    state\n  }\n}\n\nfragment CompanyJobsListFragment on Company {\n  jobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d55af20e695f2697c4b6de84c8a4a886";
+(node as any).hash = "4af98af85d0c73930213249c699e9766";
 
 export default node;

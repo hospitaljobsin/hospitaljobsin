@@ -37,7 +37,7 @@ const JobDetailsFragment = graphql`
     maxExperience
     createdAt
     company {
-      id
+      slug
       name
       description
       logoUrl
@@ -140,7 +140,7 @@ export default function JobDetails({
 							color="foreground"
 							isExternal
 							showAnchorIcon
-							href={`/companies/${encodeURIComponent(data.company?.id || "")}`}
+							href={`/companies/${data.company?.slug || ""}`}
 						>
 							{data.company?.name}
 						</Link>

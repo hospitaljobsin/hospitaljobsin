@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2729703c4f9a8abca50ccf1d97c457aa>>
+ * @generated SignedSource<<0ad4671e0acc3b8dda6096f47f4ef775>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -344,7 +344,13 @@ return {
                 "name": "company",
                 "plural": false,
                 "selections": [
-                  (v4/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "slug",
+                    "storageKey": null
+                  },
                   {
                     "alias": null,
                     "args": null,
@@ -360,7 +366,8 @@ return {
                     "name": "logoUrl",
                     "storageKey": null
                   },
-                  (v6/*: any*/)
+                  (v6/*: any*/),
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -381,12 +388,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9e1bed51b4b8d4044a30efcce26e9abe",
+    "cacheID": "40d2ab1a1caf92574fcd4629847ef621",
     "id": null,
     "metadata": {},
     "name": "JobDetailViewQuery",
     "operationKind": "query",
-    "text": "query JobDetailViewQuery(\n  $jobId: ID!\n) {\n  ...JobControlsConnectionFragment\n  node(id: $jobId) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n      ...JobControlsFragment\n    }\n    id\n  }\n}\n\nfragment JobControlsConnectionFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      __typename\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  id\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
+    "text": "query JobDetailViewQuery(\n  $jobId: ID!\n) {\n  ...JobControlsConnectionFragment\n  node(id: $jobId) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n      ...JobControlsFragment\n    }\n    id\n  }\n}\n\nfragment JobControlsConnectionFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      __typename\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  id\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
   }
 };
 })();
