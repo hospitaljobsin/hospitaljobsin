@@ -6,6 +6,9 @@ import type { JobDetailViewQuery as JobDetailViewQueryType } from "./__generated
 
 const JobDetailViewQuery = graphql`
   query JobDetailViewQuery($slug: String!) {
+	viewer {
+		__typename
+	}
     job(slug: $slug) {
       __typename
       ... on Job {
@@ -28,7 +31,10 @@ export default function JobDetailView(props: {
 	return (
 		<div className="py-8 w-full h-full max-w-5xl mx-auto flex flex-col items-center gap-6">
 			<JobDetails job={data.job}>
-				<JobControls job={data.job} />
+				<JobControls
+					job={data.job}
+					isAuthenticated={data.viewer.__typename === "Account"}
+				/>
 			</JobDetails>
 		</div>
 	);

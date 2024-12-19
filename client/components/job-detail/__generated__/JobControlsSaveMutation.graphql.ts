@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<45824dfdd5b7422fe6e2022509cb0b1b>>
+ * @generated SignedSource<<e3ad8c153ea9aa64804b0d8c00d0bba7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,6 @@
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type JobControlsSaveMutation$variables = {
-  connections: ReadonlyArray<string>;
   jobId: string;
 };
 export type JobControlsSaveMutation$data = {
@@ -30,38 +29,35 @@ export type JobControlsSaveMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "connections"
-},
-v1 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "jobId"
-},
-v2 = [
+var v0 = [
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "jobId"
+  }
+],
+v1 = [
   {
     "kind": "Variable",
     "name": "jobId",
     "variableName": "jobId"
   }
 ],
-v3 = {
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v4 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "description",
   "storageKey": null
 },
-v5 = {
+v4 = {
   "alias": null,
   "args": null,
   "concreteType": "Address",
@@ -88,17 +84,14 @@ v5 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": [
-      (v0/*: any*/),
-      (v1/*: any*/)
-    ],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "JobControlsSaveMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "saveJob",
@@ -123,7 +116,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v3/*: any*/),
+                      (v2/*: any*/),
                       {
                         "args": null,
                         "kind": "FragmentSpread",
@@ -153,16 +146,13 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [
-      (v1/*: any*/),
-      (v0/*: any*/)
-    ],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "JobControlsSaveMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "saveJob",
@@ -194,7 +184,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v3/*: any*/),
+                      (v2/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -202,7 +192,7 @@ return {
                         "name": "title",
                         "storageKey": null
                       },
-                      (v4/*: any*/),
+                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -217,7 +207,7 @@ return {
                         "name": "workMode",
                         "storageKey": null
                       },
-                      (v5/*: any*/),
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -303,7 +293,7 @@ return {
                             "name": "name",
                             "storageKey": null
                           },
-                          (v4/*: any*/),
+                          (v3/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -311,8 +301,8 @@ return {
                             "name": "logoUrl",
                             "storageKey": null
                           },
-                          (v5/*: any*/),
-                          (v3/*: any*/)
+                          (v4/*: any*/),
+                          (v2/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -328,22 +318,6 @@ return {
                   }
                 ],
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "filters": null,
-                "handle": "prependEdge",
-                "key": "",
-                "kind": "LinkedHandle",
-                "name": "savedJobEdge",
-                "handleArgs": [
-                  {
-                    "kind": "Variable",
-                    "name": "connections",
-                    "variableName": "connections"
-                  }
-                ]
               }
             ],
             "type": "SaveJobResult",
@@ -365,6 +339,6 @@ return {
 };
 })();
 
-(node as any).hash = "2a534d058573692087cbe96b3f86938f";
+(node as any).hash = "ab2668531d52a5fea3466ee2e67dbc9e";
 
 export default node;

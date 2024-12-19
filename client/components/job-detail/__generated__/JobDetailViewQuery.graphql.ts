@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<83df56fa8132e428e1c10934be6f66e1>>
+ * @generated SignedSource<<f5a5e5024e7813424d4194d310ef53e7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,6 +22,9 @@ export type JobDetailViewQuery$data = {
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
+  readonly viewer: {
+    readonly __typename: string;
+  };
 };
 export type JobDetailViewQuery = {
   response: JobDetailViewQuery$data;
@@ -36,28 +39,43 @@ var v0 = [
     "name": "slug"
   }
 ],
-v1 = [
-  {
-    "kind": "Variable",
-    "name": "slug",
-    "variableName": "slug"
-  }
-],
-v2 = {
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
+v2 = [
+  {
+    "kind": "Variable",
+    "name": "slug",
+    "variableName": "slug"
+  }
+],
 v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v4 = {
+  "kind": "InlineFragment",
+  "selections": [
+    (v3/*: any*/)
+  ],
+  "type": "Node",
+  "abstractKey": "__isNode"
+},
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "description",
   "storageKey": null
 },
-v4 = {
+v6 = {
   "alias": null,
   "args": null,
   "concreteType": "Address",
@@ -81,13 +99,6 @@ v4 = {
     }
   ],
   "storageKey": null
-},
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
 };
 return {
   "fragment": {
@@ -98,13 +109,25 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": null,
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "viewer",
+        "plural": false,
+        "selections": [
+          (v1/*: any*/)
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "job",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v1/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -137,13 +160,26 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": null,
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "viewer",
+        "plural": false,
+        "selections": [
+          (v1/*: any*/),
+          (v4/*: any*/)
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "job",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v1/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -154,7 +190,7 @@ return {
                 "name": "title",
                 "storageKey": null
               },
-              (v3/*: any*/),
+              (v5/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -169,7 +205,7 @@ return {
                 "name": "workMode",
                 "storageKey": null
               },
-              (v4/*: any*/),
+              (v6/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -255,7 +291,7 @@ return {
                     "name": "name",
                     "storageKey": null
                   },
-                  (v3/*: any*/),
+                  (v5/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -263,12 +299,12 @@ return {
                     "name": "logoUrl",
                     "storageKey": null
                   },
-                  (v4/*: any*/),
-                  (v5/*: any*/)
+                  (v6/*: any*/),
+                  (v3/*: any*/)
                 ],
                 "storageKey": null
               },
-              (v5/*: any*/),
+              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -280,30 +316,23 @@ return {
             "type": "Job",
             "abstractKey": null
           },
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v5/*: any*/)
-            ],
-            "type": "Node",
-            "abstractKey": "__isNode"
-          }
+          (v4/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "0b499bab63e07eb0255109d81837bb55",
+    "cacheID": "d8e01ff17fabb81c7c148988dd5d698b",
     "id": null,
     "metadata": {},
     "name": "JobDetailViewQuery",
     "operationKind": "query",
-    "text": "query JobDetailViewQuery(\n  $slug: String!\n) {\n  job(slug: $slug) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n      ...JobControlsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
+    "text": "query JobDetailViewQuery(\n  $slug: String!\n) {\n  viewer {\n    __typename\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  job(slug: $slug) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n      ...JobControlsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "1b18cd1e268a9563b07e144403df208b";
+(node as any).hash = "e25aa4ef8575ce9e3271eb63fa908fb2";
 
 export default node;
