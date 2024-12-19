@@ -1,10 +1,9 @@
-import { usePaginationFragment } from "react-relay";
-import Job from "./Job";
-
 import { Card, CardBody } from "@nextui-org/react";
 import Image from "next/image";
 import { useEffect, useRef, useTransition } from "react";
+import { usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
 import type { JobListFragment$key } from "./__generated__/JobListFragment.graphql";
 
@@ -38,7 +37,7 @@ type Props = {
 };
 
 export default function JobList({ rootQuery, searchTerm }: Props) {
-	const [isPending, startTransition] = useTransition();
+	const [_isPending, startTransition] = useTransition();
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment(
 		JobListFragment,
 		rootQuery,

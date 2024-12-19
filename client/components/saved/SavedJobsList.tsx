@@ -1,6 +1,8 @@
 import { usePaginationFragment } from "react-relay";
 import Job from "../landing/Job";
 
+import { Card, CardBody } from "@nextui-org/react";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import SavedJobsListSkeleton from "../landing/JobListSkeleton";
@@ -67,11 +69,24 @@ export default function SavedJobsList({ rootQuery }: Props) {
 		!data.savedJobs.pageInfo.hasNextPage
 	) {
 		return (
-			<div className="flex grow flex-col gap-8 px-4 items-center h-full">
-				<p className="font-medium text-muted-foreground">
-					Hmm, no jobs could be found
-				</p>
-			</div>
+			<Card className="p-6 space-y-6" fullWidth shadow="sm">
+				<CardBody className="flex flex-col gap-8 w-full items-center">
+					<Image
+						src="/images/bookmark.svg" // Add an illustration asset here
+						alt="Not Found Illustration"
+						width={350}
+						height={350}
+					/>
+					<div className="w-full flex flex-col gap-4 items-center">
+						<h2 className="font-medium text-muted-foreground text-lg">
+							No saved jobs found
+						</h2>
+						<p className="text-muted-foreground text-md">
+							Your saved jobs will appear here
+						</p>
+					</div>
+				</CardBody>
+			</Card>
 		);
 	}
 
