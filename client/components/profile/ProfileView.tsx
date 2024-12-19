@@ -21,7 +21,7 @@ const ProfileViewQuery = graphql`
 export default function ProfileView() {
 	const data = useLazyLoadQuery<ProfileViewQueryType>(ProfileViewQuery, {});
 
-	if (data.viewer.__typename === "%other") {
+	if (data.viewer.__typename !== "Account") {
 		return null;
 	}
 

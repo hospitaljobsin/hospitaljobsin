@@ -11,7 +11,7 @@ import {
 	Input,
 } from "@nextui-org/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
@@ -34,6 +34,9 @@ const loginSchema = z.object({
 
 export default function LoginForm() {
 	const router = useRouter();
+	const params = useSearchParams();
+
+	const redirectTo = params.get("return_to") || "/";
 	const [commitMutation, isMutationInFlight] = useMutation(LoginFormMutation);
 	const {
 		register,
@@ -55,7 +58,7 @@ export default function LoginForm() {
 					setError("email", { message: response.login.message });
 					setError("password", { message: response.login.message });
 				} else {
-					router.replace("/");
+					router.replace(redirectTo);
 				}
 			},
 		});

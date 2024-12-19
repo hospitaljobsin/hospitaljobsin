@@ -154,8 +154,8 @@ export default function JobDetails({
 					<h3 className="font-medium text-foreground-500">About the Job</h3>
 				</CardHeader>
 				<Divider />
-				<CardBody>
-					<ReactMarkdown className="prose dark:prose-invert prose-h2:text-sm">
+				<CardBody className="w-full">
+					<ReactMarkdown className="prose dark:prose-invert prose-h2:text-sm w-full">
 						{data.description}
 					</ReactMarkdown>
 				</CardBody>
