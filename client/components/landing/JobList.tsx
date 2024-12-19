@@ -1,10 +1,12 @@
 import { usePaginationFragment } from "react-relay";
 import Job from "./Job";
 
+import { Card, CardBody } from "@nextui-org/react";
+import Image from "next/image";
 import { useEffect, useRef, useTransition } from "react";
 import { graphql } from "relay-runtime";
-import { JobListFragment$key } from "./__generated__/JobListFragment.graphql";
 import JobListSkeleton from "./JobListSkeleton";
+import type { JobListFragment$key } from "./__generated__/JobListFragment.graphql";
 
 const JobListFragment = graphql`
   fragment JobListFragment on Query
@@ -31,72 +33,85 @@ const JobListFragment = graphql`
 `;
 
 type Props = {
-  rootQuery: JobListFragment$key;
-  searchTerm: string | null;
+	rootQuery: JobListFragment$key;
+	searchTerm: string | null;
 };
 
 export default function JobList({ rootQuery, searchTerm }: Props) {
-  const [isPending, startTransition] = useTransition();
-  const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment(
-    JobListFragment,
-    rootQuery
-  );
+	const [isPending, startTransition] = useTransition();
+	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment(
+		JobListFragment,
+		rootQuery,
+	);
 
-  const observerRef = useRef<HTMLDivElement | null>(null);
+	const observerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (!observerRef.current) return;
+	useEffect(() => {
+		if (!observerRef.current) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (
-          entry.isIntersecting &&
-          data.jobs.pageInfo.hasNextPage &&
-          !isLoadingNext
-        ) {
-          loadNext(5);
-        }
-      },
-      { threshold: 1.0 }
-    );
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const entry = entries[0];
+				if (
+					entry.isIntersecting &&
+					data.jobs.pageInfo.hasNextPage &&
+					!isLoadingNext
+				) {
+					loadNext(5);
+				}
+			},
+			{ threshold: 1.0 },
+		);
 
-    observer.observe(observerRef.current);
-    return () => observer.disconnect();
-  }, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
+		observer.observe(observerRef.current);
+		return () => observer.disconnect();
+	}, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
-  // Debounced search term refetch
-  useEffect(() => {
-    const debounceTimeout = setTimeout(() => {
-      startTransition(() => {
-        refetch({ first: 10, searchTerm }, { fetchPolicy: "store-or-network" });
-      });
-    }, 300); // Adjust debounce delay as needed
+	// Debounced search term refetch
+	useEffect(() => {
+		const debounceTimeout = setTimeout(() => {
+			startTransition(() => {
+				refetch({ first: 10, searchTerm }, { fetchPolicy: "store-or-network" });
+			});
+		}, 300); // Adjust debounce delay as needed
 
-    return () => clearTimeout(debounceTimeout);
-  }, [searchTerm, refetch]);
+		return () => clearTimeout(debounceTimeout);
+	}, [searchTerm, refetch]);
 
-  if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
-    return (
-      <div className="flex grow flex-col gap-8 px-4 items-center h-full">
-        <p className="font-medium text-muted-foreground">
-          Hmm, no jobs could be found
-        </p>
-      </div>
-    );
-  }
+	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
+		return (
+			<Card className="p-6 space-y-6" fullWidth shadow="sm">
+				<CardBody className="flex flex-col gap-8 w-full items-center">
+					<Image
+						src="/images/not-found.svg" // Add an illustration asset here
+						alt="Not Found Illustration"
+						width={350}
+						height={350}
+					/>
+					<div className="w-full flex flex-col gap-4 items-center">
+						<h2 className="font-medium text-muted-foreground text-lg">
+							Oops! No results found
+						</h2>
+						<p className="text-muted-foreground text-md">
+							Modify search criteria and try again
+						</p>
+					</div>
+				</CardBody>
+			</Card>
+		);
+	}
 
-  return (
-    <div className="w-full flex flex-col gap-8 pb-6">
-      {data.jobs.edges.map((jobEdge) => (
-        <Job
-          job={jobEdge.node}
-          connectionId={data.jobs.__id}
-          key={jobEdge.node.id}
-        />
-      ))}
-      <div ref={observerRef} className="h-10"></div>
-      {isLoadingNext && <JobListSkeleton />}
-    </div>
-  );
+	return (
+		<div className="w-full flex flex-col gap-8 pb-6">
+			{data.jobs.edges.map((jobEdge) => (
+				<Job
+					job={jobEdge.node}
+					connectionId={data.jobs.__id}
+					key={jobEdge.node.id}
+				/>
+			))}
+			<div ref={observerRef} className="h-10" />
+			{isLoadingNext && <JobListSkeleton />}
+		</div>
+	);
 }

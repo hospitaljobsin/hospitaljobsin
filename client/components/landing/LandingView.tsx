@@ -4,7 +4,7 @@ import { graphql, useLazyLoadQuery } from "react-relay";
 import { useDebounce } from "use-debounce";
 import JobList from "./JobList";
 import JobListController from "./JobListController";
-import { LandingViewQuery as LandingViewQueryType } from "./__generated__/LandingViewQuery.graphql";
+import type { LandingViewQuery as LandingViewQueryType } from "./__generated__/LandingViewQuery.graphql";
 
 const LandingViewQuery = graphql`
   query LandingViewQuery {
@@ -13,18 +13,18 @@ const LandingViewQuery = graphql`
 `;
 
 export default function LandingView() {
-  const data = useLazyLoadQuery<LandingViewQueryType>(LandingViewQuery, {});
-  const [searchTerm, setSearchTerm] = useState<string | null>(null);
+	const data = useLazyLoadQuery<LandingViewQueryType>(LandingViewQuery, {});
+	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 
-  const [debouncedSearchTerm] = useDebounce(searchTerm, 1000);
+	const [debouncedSearchTerm] = useDebounce(searchTerm, 1000);
 
-  return (
-    <>
-      <JobListController
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-      />
-      <JobList searchTerm={debouncedSearchTerm} rootQuery={data} />
-    </>
-  );
+	return (
+		<>
+			<JobListController
+				searchTerm={searchTerm}
+				setSearchTerm={setSearchTerm}
+			/>
+			<JobList searchTerm={debouncedSearchTerm} rootQuery={data} />
+		</>
+	);
 }
