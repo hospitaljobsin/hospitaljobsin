@@ -35,7 +35,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 				const root = store.getRoot();
 				const newViewer = store.create(
 					"client:root:viewer",
-					"AuthenticatedError",
+					"NotAuthenticatedError",
 				);
 				root.setLinkedRecord(newViewer, "viewer");
 			},
