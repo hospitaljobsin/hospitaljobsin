@@ -2,37 +2,34 @@ import { type NextRequest, NextResponse } from "next/server";
 
 const AUTH_COOKIE_KEY = process.env.AUTH_COOKIE_KEY || "session";
 
-const AUTHENTICATED_ROUTES = [
-	new RegExp("/saved(/.*)?"),
-	new RegExp("/profile"),
-];
+const AUTHENTICATED_ROUTES = [/\/saved(\/.*)?/, /\/profile/];
 
-const ANONYMOUS_ROUTES = [new RegExp("/auth(/.*)?")];
+const ANONYMOUS_ROUTES = [/\/auth(\/.*)?/];
 
-const requiresAuthenticated = (request: NextRequest): boolean => {
+function requiresAuthenticated(request: NextRequest): boolean {
 	return AUTHENTICATED_ROUTES.some((route) =>
 		route.test(request.nextUrl.pathname),
 	);
-};
+}
 
-const requiresAnonymous = (request: NextRequest): boolean => {
+function requiresAnonymous(request: NextRequest): boolean {
 	return ANONYMOUS_ROUTES.some((route) => route.test(request.nextUrl.pathname));
-};
+}
 
-const getAuthenticationResponse = (request: NextRequest): NextResponse => {
+function getAuthenticationResponse(request: NextRequest): NextResponse {
 	const redirectURL = request.nextUrl.clone();
 	redirectURL.pathname = "/auth/login";
 	redirectURL.search = "";
 	const returnTo = `${request.nextUrl.pathname}${request.nextUrl.search}`;
 	redirectURL.searchParams.set("return_to", returnTo);
 	return NextResponse.redirect(redirectURL);
-};
+}
 
-const getAnonymousResponse = (request: NextRequest): NextResponse => {
+function getAnonymousResponse(request: NextRequest): NextResponse {
 	const redirectURL = request.nextUrl.clone();
 	redirectURL.pathname = "/";
 	return NextResponse.redirect(redirectURL);
-};
+}
 
 export async function middleware(request: NextRequest) {
 	let user: null | string = null;
