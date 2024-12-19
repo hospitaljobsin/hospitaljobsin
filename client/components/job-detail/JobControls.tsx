@@ -54,13 +54,6 @@ export default function JobControls({
 	isAuthenticated: boolean;
 	job: JobControlsFragment$key;
 }) {
-	const connectionId = ConnectionHandler.getConnectionID(
-		"client:root",
-		"SavedJobsListFragment_savedJobs",
-		[],
-	);
-
-	console.log("connection ID: ", connectionId);
 	const data = useFragment(JobControlsFragment, job);
 	const [commitSaveMutation, isSaveMutationInFlight] = useMutation(
 		JobControlsSaveMutation,
@@ -77,7 +70,7 @@ export default function JobControls({
 			updater: (store) => {
 				// Retrieve the connection from the store
 				const rootRecord = store.getRoot();
-				const connection = ConnectionHandler.getConnection(
+				const connectionRecord = ConnectionHandler.getConnection(
 					rootRecord,
 					"SavedJobsListFragment_savedJobs",
 				);
@@ -85,14 +78,14 @@ export default function JobControls({
 				const jobRecord = store.get(data.id);
 
 				// Only update if the connection exists
-				if (connection && jobRecord) {
+				if (connectionRecord && jobRecord) {
 					const newEdge = ConnectionHandler.createEdge(
 						store,
-						connection,
+						connectionRecord,
 						jobRecord,
 						"SavedJobsListEdge",
 					);
-					ConnectionHandler.insertEdgeBefore(connection, newEdge);
+					ConnectionHandler.insertEdgeBefore(connectionRecord, newEdge);
 				}
 			},
 		});
@@ -106,7 +99,7 @@ export default function JobControls({
 			updater: (store) => {
 				// Retrieve the connection from the store
 				const rootRecord = store.getRoot();
-				const connection = ConnectionHandler.getConnection(
+				const connectionRecord = ConnectionHandler.getConnection(
 					rootRecord,
 					"SavedJobsListFragment_savedJobs",
 				);
@@ -114,8 +107,8 @@ export default function JobControls({
 				const jobRecord = store.get(data.id);
 
 				// Only update if the connection exists
-				if (connection && jobRecord) {
-					ConnectionHandler.deleteNode(connection, jobRecord.getDataID());
+				if (connectionRecord && jobRecord) {
+					ConnectionHandler.deleteNode(connectionRecord, jobRecord.getDataID());
 				}
 			},
 		});
