@@ -41,7 +41,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			},
 			onCompleted(response, errors) {
 				if (!errors) {
-					router.refresh();
+					router.replace("/auth/login");
 				}
 			},
 		});
