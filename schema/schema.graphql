@@ -62,6 +62,7 @@ type Job implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
   title: String!
+  slug: String!
   description: String
   category: String!
   type: JobType!
@@ -103,6 +104,8 @@ type JobEdge {
 type JobNotFoundError implements Error {
   message: String!
 }
+
+union JobPayload = Job | JobNotFoundError
 
 enum JobType {
   FULL_TIME
@@ -213,6 +216,12 @@ type Query {
     """Slug of the company"""
     slug: String!
   ): CompanyPayload!
+
+  """Get job by ID."""
+  job(
+    """Slug of the job"""
+    slug: String!
+  ): JobPayload!
   savedJobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): SavedJobConnection! @isAuthenticated
 }
 

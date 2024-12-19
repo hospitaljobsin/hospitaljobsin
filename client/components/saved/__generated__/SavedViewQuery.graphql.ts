@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<09807d9e346166d65a0dea7f5437c40d>>
+ * @generated SignedSource<<9d524e8d1fb89e95c66e68129493aedb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -106,6 +106,13 @@ return {
                 "plural": false,
                 "selections": [
                   (v1/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "slug",
+                    "storageKey": null
+                  },
                   {
                     "alias": null,
                     "args": null,
@@ -290,12 +297,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "dac78d3188fd93ebd8b20ad50247f0d6",
+    "cacheID": "030248832c48f008c7e259f43efba907",
     "id": null,
     "metadata": {},
     "name": "SavedViewQuery",
     "operationKind": "query",
-    "text": "query SavedViewQuery {\n  ...SavedJobsListFragment\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n\nfragment SavedJobsListFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query SavedViewQuery {\n  ...SavedJobsListFragment\n}\n\nfragment JobFragment on Job {\n  id\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n\nfragment SavedJobsListFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();

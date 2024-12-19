@@ -138,6 +138,7 @@ class CurrencyEnum(Enum):
 @strawberry.type(name="Job")
 class JobType(BaseNodeType[Job]):
     title: str
+    slug: str
     description: str | None
     category: str
     type: JobTypeEnum
@@ -171,6 +172,7 @@ class JobType(BaseNodeType[Job]):
         """Marshal into a node instance."""
         return cls(
             id=str(job.id),
+            slug=job.slug,
             created_at=job.id.generation_time,
             title=job.title,
             description=job.description,
@@ -354,4 +356,9 @@ UnsaveJobPayload = Annotated[
 CompanyPayload = Annotated[
     CompanyType | CompanyNotFoundErrorType,
     strawberry.union(name="CompanyPayload"),
+]
+
+JobPayload = Annotated[
+    JobType | JobNotFoundErrorType,
+    strawberry.union("JobPayload"),
 ]

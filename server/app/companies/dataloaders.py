@@ -71,6 +71,23 @@ async def load_job_by_id(
 
 
 @inject
+async def load_job_by_slug(
+    job_slugs: list[str],
+    job_repo: Annotated[JobRepo, Inject],
+) -> list[Job | None]:
+    """Load multiple jobs by their slugs."""
+    slug_to_company_map = {
+        slug: company
+        for slug, company in zip(
+            job_slugs,
+            await job_repo.get_many_by_slugs(job_slugs),
+        )
+    }
+
+    return [slug_to_company_map.get(slug, None) for slug in job_slugs]
+
+
+@inject
 async def load_saved_job_by_id(
     job_ids: list[tuple[str, str]],
     saved_job_repo: Annotated[SavedJobRepo, Inject],

@@ -9,6 +9,7 @@ from app.companies.dataloaders import (
     load_company_by_id,
     load_company_by_slug,
     load_job_by_id,
+    load_job_by_slug,
     load_saved_job_by_id,
 )
 from app.companies.documents import Company, Job
@@ -17,6 +18,7 @@ from app.companies.documents import Company, Job
 @dataclasses.dataclass(slots=True, kw_only=True)
 class Dataloaders:
     job_by_id: DataLoader[ObjectId, Job | None]
+    job_by_slug: DataLoader[str, Job | None]
     saved_job_by_id: DataLoader[tuple[ObjectId, ObjectId], Job | None]
     company_by_id: DataLoader[ObjectId, Company | None]
     company_by_slug: DataLoader[str, Company | None]
@@ -28,6 +30,9 @@ def create_dataloaders() -> Dataloaders:
     return Dataloaders(
         job_by_id=DataLoader(
             load_fn=load_job_by_id,  # type: ignore[arg-type]
+        ),
+        job_by_slug=DataLoader(
+            load_fn=load_job_by_slug,  # type: ignore[arg-type]
         ),
         saved_job_by_id=DataLoader(
             load_fn=load_saved_job_by_id,  # type: ignore[arg-type]

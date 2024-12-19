@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0ad4671e0acc3b8dda6096f47f4ef775>>
+ * @generated SignedSource<<2a5f99a43e6cb9ad096fe44c306e1652>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,17 +11,17 @@
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type JobDetailViewQuery$variables = {
-  jobId: string;
+  slug: string;
 };
 export type JobDetailViewQuery$data = {
-  readonly node: {
+  readonly job: {
     readonly __typename: "Job";
     readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobDetailsFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
     readonly __typename: "%other";
-  } | null | undefined;
+  };
   readonly " $fragmentSpreads": FragmentRefs<"JobControlsConnectionFragment">;
 };
 export type JobDetailViewQuery = {
@@ -34,14 +34,14 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "jobId"
+    "name": "slug"
   }
 ],
 v1 = [
   {
     "kind": "Variable",
-    "name": "id",
-    "variableName": "jobId"
+    "name": "slug",
+    "variableName": "slug"
   }
 ],
 v2 = {
@@ -114,7 +114,7 @@ return {
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "node",
+        "name": "job",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -242,14 +242,14 @@ return {
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "node",
+        "name": "job",
         "plural": false,
         "selections": [
           (v2/*: any*/),
-          (v4/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -381,6 +381,14 @@ return {
             ],
             "type": "Job",
             "abstractKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v4/*: any*/)
+            ],
+            "type": "Node",
+            "abstractKey": "__isNode"
           }
         ],
         "storageKey": null
@@ -388,16 +396,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "40d2ab1a1caf92574fcd4629847ef621",
+    "cacheID": "1526b4c360d93acd4e1025c1fad5adfd",
     "id": null,
     "metadata": {},
     "name": "JobDetailViewQuery",
     "operationKind": "query",
-    "text": "query JobDetailViewQuery(\n  $jobId: ID!\n) {\n  ...JobControlsConnectionFragment\n  node(id: $jobId) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n      ...JobControlsFragment\n    }\n    id\n  }\n}\n\nfragment JobControlsConnectionFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      __typename\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  id\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
+    "text": "query JobDetailViewQuery(\n  $slug: String!\n) {\n  ...JobControlsConnectionFragment\n  job(slug: $slug) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n      ...JobControlsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobControlsConnectionFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      __typename\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  id\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "44acffe0fb1fbc8a842c3feb32683352";
+(node as any).hash = "f18389da7b80668640b1d2c61d1377c8";
 
 export default node;

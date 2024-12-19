@@ -25,6 +25,7 @@ class Company(Document):
 
 class Job(Document):
     title: str
+    slug: Annotated[str, Indexed(unique=True)]
     description: str | None = None
     category: str
     type: Literal["full_time", "part_time", "internship", "contract"]

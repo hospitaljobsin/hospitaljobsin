@@ -15,6 +15,9 @@ from .types import (
     CompanyPayload,
     CompanyType,
     JobConnectionType,
+    JobNotFoundErrorType,
+    JobPayload,
+    JobType,
     SavedJobConnectionType,
 )
 
@@ -73,6 +76,28 @@ class CompanyQuery:
             return CompanyNotFoundErrorType()
 
         return CompanyType.marshal(result)
+
+    @strawberry.field(  # type: ignore[misc]
+        graphql_type=JobPayload,
+        description="Get job by ID.",
+    )
+    @inject
+    async def job(
+        self,
+        info: Info,
+        slug: Annotated[
+            str,
+            strawberry.argument(
+                description="Slug of the job",
+            ),
+        ],
+    ) -> JobPayload:
+        result = await info.context["loaders"].job_by_slug.load(slug)
+
+        if result is None:
+            return JobNotFoundErrorType()
+
+        return JobType.marshal(result)
 
     @strawberry.field(
         graphql_type=SavedJobConnectionType,

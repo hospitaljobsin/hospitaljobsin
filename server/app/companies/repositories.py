@@ -171,6 +171,13 @@ class JobRepo:
 
         return [job_by_id.get(PydanticObjectId(job_id)) for job_id in job_ids]
 
+    async def get_many_by_slugs(self, slugs: list[str]) -> list[Job | None]:
+        """Get multiple jobs by IDs."""
+        jobs = await Job.find(In(Job.slug, slugs)).to_list()
+        job_by_slug = {job.slug: job for job in jobs}
+
+        return [job_by_slug.get(slug) for slug in slugs]
+
     async def get_all(
         self,
         search_term: str | None = None,

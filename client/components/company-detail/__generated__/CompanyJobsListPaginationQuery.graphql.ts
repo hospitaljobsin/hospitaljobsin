@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9da69780d7c8435902fc46fbcbaeca17>>
+ * @generated SignedSource<<89669bf529b8b2513c182311ee8f4773>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -187,6 +187,13 @@ return {
                             "alias": null,
                             "args": null,
                             "kind": "ScalarField",
+                            "name": "slug",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
                             "name": "title",
                             "storageKey": null
                           },
@@ -368,12 +375,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9fdcac4899d3174b8f2b677930979488",
+    "cacheID": "5e798fecd68c7dbb512b11f70bdbe57d",
     "id": null,
     "metadata": {},
     "name": "CompanyJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query CompanyJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...CompanyJobsListFragment_1G22uz\n    id\n  }\n}\n\nfragment CompanyJobsListFragment_1G22uz on Company {\n  jobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobFragment on Job {\n  id\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
+    "text": "query CompanyJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...CompanyJobsListFragment_1G22uz\n    id\n  }\n}\n\nfragment CompanyJobsListFragment_1G22uz on Company {\n  jobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobFragment on Job {\n  id\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
   }
 };
 })();

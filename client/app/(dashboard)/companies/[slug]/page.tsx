@@ -56,16 +56,7 @@ export default async function CompanyDetailPage({
 }) {
 	const slug = (await params).slug;
 
-	try {
-		const preloadedQuery = await fetchAndCacheQuery(slug);
+	const preloadedQuery = await fetchAndCacheQuery(slug);
 
-		if (preloadedQuery.response.data.company.__typename !== "Company") {
-			notFound();
-		}
-
-		return <CompanyDetailViewClientComponent preloadedQuery={preloadedQuery} />;
-	} catch (error) {
-		console.log("Error in CompanyDetailPage: ", error);
-		notFound();
-	}
+	return <CompanyDetailViewClientComponent preloadedQuery={preloadedQuery} />;
 }
