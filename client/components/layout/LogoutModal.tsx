@@ -31,6 +31,14 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 	async function handleLogout() {
 		commitMutation({
 			variables: {},
+			updater: (store) => {
+				const root = store.getRoot();
+				const newViewer = store.create(
+					"client:root:viewer",
+					"AuthenticatedError",
+				);
+				root.setLinkedRecord(newViewer, "viewer");
+			},
 			onCompleted(response, errors) {
 				if (!errors) {
 					router.replace("/auth/login");
@@ -38,6 +46,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			},
 		});
 	}
+
 	return (
 		<Modal
 			isDismissable={false}
