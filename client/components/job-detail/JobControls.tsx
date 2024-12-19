@@ -1,26 +1,12 @@
 import { Button } from "@nextui-org/react";
 import { BookmarkIcon } from "lucide-react";
-import { graphql, useFragment, useMutation } from "react-relay";
-import type { JobControlsConnectionFragment$key } from "./__generated__/JobControlsConnectionFragment.graphql";
+import {
+	ConnectionHandler,
+	graphql,
+	useFragment,
+	useMutation,
+} from "react-relay";
 import type { JobControlsFragment$key } from "./__generated__/JobControlsFragment.graphql";
-
-const JobControlsConnectionFragment = graphql`
-  fragment JobControlsConnectionFragment on Query
-  @argumentDefinitions(
-    cursor: { type: "ID" }
-    count: { type: "Int", defaultValue: 10 }
-  ) {
-    savedJobs(after: $cursor, first: $count)
-      @connection(key: "SavedJobsListFragment_savedJobs") {
-      __id
-      edges {
-        # we have to select the edges field while
-        # using the @connection directive
-        __typename
-      }
-    }
-  }
-`;
 
 const JobControlsFragment = graphql`
   fragment JobControlsFragment on Job {
@@ -62,13 +48,14 @@ const JobControlsUnsaveMutation = graphql`
 `;
 
 export default function JobControls({
-	rootQuery,
 	job,
 }: {
-	rootQuery: JobControlsConnectionFragment$key;
 	job: JobControlsFragment$key;
 }) {
-	const connectionData = useFragment(JobControlsConnectionFragment, rootQuery);
+	const connectionId = ConnectionHandler.getConnectionID(
+		"client:root",
+		"SavedJobsListFragment_savedJobs",
+	);
 	const data = useFragment(JobControlsFragment, job);
 	const [commitSaveMutation, isSaveMutationInFlight] = useMutation(
 		JobControlsSaveMutation,
@@ -81,7 +68,7 @@ export default function JobControls({
 		commitSaveMutation({
 			variables: {
 				jobId: data.id,
-				connections: [connectionData.savedJobs.__id],
+				connections: [connectionId],
 			},
 		});
 	}
@@ -90,7 +77,7 @@ export default function JobControls({
 		commitUnsaveMutation({
 			variables: {
 				jobId: data.id,
-				connections: [connectionData.savedJobs.__id],
+				connections: [connectionId],
 			},
 		});
 	}

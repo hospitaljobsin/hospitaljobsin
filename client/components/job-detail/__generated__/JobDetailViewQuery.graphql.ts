@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2a5f99a43e6cb9ad096fe44c306e1652>>
+ * @generated SignedSource<<83df56fa8132e428e1c10934be6f66e1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,7 +22,6 @@ export type JobDetailViewQuery$data = {
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
-  readonly " $fragmentSpreads": FragmentRefs<"JobControlsConnectionFragment">;
 };
 export type JobDetailViewQuery = {
   response: JobDetailViewQuery$data;
@@ -51,28 +50,14 @@ v2 = {
   "name": "__typename",
   "storageKey": null
 },
-v3 = [
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 10
-  }
-],
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v5 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "description",
   "storageKey": null
 },
-v6 = {
+v4 = {
   "alias": null,
   "args": null,
   "concreteType": "Address",
@@ -96,6 +81,13 @@ v6 = {
     }
   ],
   "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -104,11 +96,6 @@ return {
     "metadata": null,
     "name": "JobDetailViewQuery",
     "selections": [
-      {
-        "args": null,
-        "kind": "FragmentSpread",
-        "name": "JobControlsConnectionFragment"
-      },
       {
         "alias": null,
         "args": (v1/*: any*/),
@@ -150,95 +137,6 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
-        "concreteType": "SavedJobConnection",
-        "kind": "LinkedField",
-        "name": "savedJobs",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "SavedJobEdge",
-            "kind": "LinkedField",
-            "name": "edges",
-            "plural": true,
-            "selections": [
-              (v2/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "cursor",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Job",
-                "kind": "LinkedField",
-                "name": "node",
-                "plural": false,
-                "selections": [
-                  (v2/*: any*/),
-                  (v4/*: any*/)
-                ],
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "PageInfo",
-            "kind": "LinkedField",
-            "name": "pageInfo",
-            "plural": false,
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "endCursor",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "hasNextPage",
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          },
-          {
-            "kind": "ClientExtension",
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__id",
-                "storageKey": null
-              }
-            ]
-          }
-        ],
-        "storageKey": "savedJobs(first:10)"
-      },
-      {
-        "alias": null,
-        "args": (v3/*: any*/),
-        "filters": null,
-        "handle": "connection",
-        "key": "SavedJobsListFragment_savedJobs",
-        "kind": "LinkedHandle",
-        "name": "savedJobs"
-      },
-      {
-        "alias": null,
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
@@ -249,7 +147,6 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -257,7 +154,7 @@ return {
                 "name": "title",
                 "storageKey": null
               },
-              (v5/*: any*/),
+              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -272,7 +169,7 @@ return {
                 "name": "workMode",
                 "storageKey": null
               },
-              (v6/*: any*/),
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -358,7 +255,7 @@ return {
                     "name": "name",
                     "storageKey": null
                   },
-                  (v5/*: any*/),
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -366,11 +263,12 @@ return {
                     "name": "logoUrl",
                     "storageKey": null
                   },
-                  (v6/*: any*/),
-                  (v4/*: any*/)
+                  (v4/*: any*/),
+                  (v5/*: any*/)
                 ],
                 "storageKey": null
               },
+              (v5/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -385,7 +283,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/)
+              (v5/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -396,16 +294,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1526b4c360d93acd4e1025c1fad5adfd",
+    "cacheID": "0b499bab63e07eb0255109d81837bb55",
     "id": null,
     "metadata": {},
     "name": "JobDetailViewQuery",
     "operationKind": "query",
-    "text": "query JobDetailViewQuery(\n  $slug: String!\n) {\n  ...JobControlsConnectionFragment\n  job(slug: $slug) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n      ...JobControlsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobControlsConnectionFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      __typename\n      cursor\n      node {\n        __typename\n        id\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  id\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
+    "text": "query JobDetailViewQuery(\n  $slug: String!\n) {\n  job(slug: $slug) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n      ...JobControlsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "f18389da7b80668640b1d2c61d1377c8";
+(node as any).hash = "1b18cd1e268a9563b07e144403df208b";
 
 export default node;

@@ -18,7 +18,6 @@ import type { JobDetailsFragment$key } from "./__generated__/JobDetailsFragment.
 
 const JobDetailsFragment = graphql`
   fragment JobDetailsFragment on Job {
-    id
     title
     description
     type

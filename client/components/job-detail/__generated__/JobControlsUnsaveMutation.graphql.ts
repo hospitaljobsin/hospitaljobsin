@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<690c58dd8d62db5bb64e3d2a61d5695f>>
+ * @generated SignedSource<<56a0a2bb1f67e02d6d0c28ac9a674ce6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -211,7 +211,6 @@ return {
                           }
                         ]
                       },
-                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -333,6 +332,7 @@ return {
                         ],
                         "storageKey": null
                       },
+                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -356,12 +356,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4e133d4d3f0f84d4c61edf3753f1dfdf",
+    "cacheID": "70e79c9e4e0810bfa19a3d9da7e1c26e",
     "id": null,
     "metadata": {},
     "name": "JobControlsUnsaveMutation",
     "operationKind": "mutation",
-    "text": "mutation JobControlsUnsaveMutation(\n  $jobId: ID!\n) {\n  unsaveJob(jobId: $jobId) {\n    __typename\n    ... on UnsaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsFragment\n          ...JobControlsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  id\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
+    "text": "mutation JobControlsUnsaveMutation(\n  $jobId: ID!\n) {\n  unsaveJob(jobId: $jobId) {\n    __typename\n    ... on UnsaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsFragment\n          ...JobControlsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
   }
 };
 })();

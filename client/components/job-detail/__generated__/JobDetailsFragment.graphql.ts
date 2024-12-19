@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d64d00da3e619a1854394483701ffa0d>>
+ * @generated SignedSource<<c10dc302c0d4a4195bda45d3fc31926a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -33,7 +33,6 @@ export type JobDetailsFragment$data = {
   readonly description: string | null | undefined;
   readonly hasExperienceRange: boolean;
   readonly hasSalaryRange: boolean;
-  readonly id: string;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
   readonly minExperience: number | null | undefined;
@@ -88,13 +87,6 @@ return {
   "metadata": null,
   "name": "JobDetailsFragment",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    },
     {
       "alias": null,
       "args": null,
@@ -221,6 +213,6 @@ return {
 };
 })();
 
-(node as any).hash = "20ceff42de43d609858577d0707f6b22";
+(node as any).hash = "d64bcf84e8215ecd69866400c5547139";
 
 export default node;

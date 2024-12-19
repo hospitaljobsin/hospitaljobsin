@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ef8c9183262ff9b8b363b6b15da37895>>
+ * @generated SignedSource<<45824dfdd5b7422fe6e2022509cb0b1b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -355,12 +355,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e8786a0c1c503c1f3bba0fbe8102045e",
+    "cacheID": "4ccbe37592cc0c9b35175e80cd9e9138",
     "id": null,
     "metadata": {},
     "name": "JobControlsSaveMutation",
     "operationKind": "mutation",
-    "text": "mutation JobControlsSaveMutation(\n  $jobId: ID!\n) {\n  saveJob(jobId: $jobId) {\n    __typename\n    ... on SaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsFragment\n          ...JobControlsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  id\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
+    "text": "mutation JobControlsSaveMutation(\n  $jobId: ID!\n) {\n  saveJob(jobId: $jobId) {\n    __typename\n    ... on SaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsFragment\n          ...JobControlsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
   }
 };
 })();
