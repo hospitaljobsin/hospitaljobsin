@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Saved() {
 	return (
-		<div className="py-8 w-full h-full max-w-5xl mx-auto flex flex-col gap-8">
+		<div className="py-8 w-full h-full flex flex-col gap-8">
 			<SavedView />
 		</div>
 	);

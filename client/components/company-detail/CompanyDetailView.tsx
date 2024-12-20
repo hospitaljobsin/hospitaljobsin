@@ -26,7 +26,7 @@ export default function CompanyDetailView(props: {
 	}
 
 	return (
-		<div className="py-8 w-full h-full max-w-5xl mx-auto flex flex-col items-center gap-12">
+		<div className="py-8 w-full h-full flex flex-col items-center gap-12">
 			<CompanyDetails company={data.company} />
 			<CompanyJobsList rootQuery={data.company} />
 		</div>

@@ -1,14 +1,14 @@
 import Header from "@/components/layout/Header";
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <>
-      <Header />
-      {children}
-    </>
-  );
+	return (
+		<>
+			<Header />
+			<div className="w-full px-5 max-w-5xl mx-auto">{children}</div>
+		</>
+	);
 }
