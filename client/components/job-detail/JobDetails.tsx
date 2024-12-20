@@ -1,6 +1,7 @@
 import { dateFormat } from "@/lib/intl";
 import {
 	Avatar,
+	Button,
 	Card,
 	CardBody,
 	CardFooter,
@@ -14,10 +15,12 @@ import NextLink from "next/link";
 import type { ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
+import JobControls from "./JobControls";
 import type { JobDetailsFragment$key } from "./__generated__/JobDetailsFragment.graphql";
 
 const JobDetailsFragment = graphql`
   fragment JobDetailsFragment on Job {
+	...JobControlsFragment
     title
     description
     type
@@ -50,8 +53,12 @@ const JobDetailsFragment = graphql`
 
 export default function JobDetails({
 	job,
-	children,
-}: { job: JobDetailsFragment$key; children: ReactNode }) {
+	isAuthenticated,
+}: {
+	job: JobDetailsFragment$key;
+	children: ReactNode;
+	isAuthenticated: boolean;
+}) {
 	const data = useFragment(JobDetailsFragment, job);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
@@ -96,16 +103,19 @@ export default function JobDetails({
 								{data.company?.name}
 							</p>
 						</div>
-						{children}
+
+						<Button size="lg">Apply now</Button>
 					</div>
 				</CardHeader>
-				<CardBody className="flex flex-col gap-6 w-full">
+				<CardBody className="flex items-center justify-between gap-6 w-full">
 					<div className="flex justify-start items-center gap-8 w-full">
 						<p className="text-foreground-500 text-md font-normal">
 							Posted on {formattedCreatedAt}
 						</p>
 						{salaryRange}
 					</div>
+				</CardBody>
+				<CardFooter className="flex justify-between w-full">
 					<div className="flex flex-wrap gap-8 items-center text-foreground-600 w-full">
 						<p>{data.type}</p>
 						<div className="flex items-center gap-2">
@@ -120,7 +130,8 @@ export default function JobDetails({
 							<Globe size={16} /> {data.workMode}
 						</div>
 					</div>
-				</CardBody>
+					<JobControls job={data} isAuthenticated={isAuthenticated} />
+				</CardFooter>
 			</Card>
 
 			{/* Job and Company Details */}

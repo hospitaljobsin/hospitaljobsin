@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c10dc302c0d4a4195bda45d3fc31926a>>
+ * @generated SignedSource<<304e0df9b17c9344b157025dcdff05db>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -41,6 +41,7 @@ export type JobDetailsFragment$data = {
   readonly title: string;
   readonly type: JobType;
   readonly workMode: WorkMode;
+  readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment">;
   readonly " $fragmentType": "JobDetailsFragment";
 };
 export type JobDetailsFragment$key = {
@@ -87,6 +88,11 @@ return {
   "metadata": null,
   "name": "JobDetailsFragment",
   "selections": [
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "JobControlsFragment"
+    },
     {
       "alias": null,
       "args": null,
@@ -213,6 +219,6 @@ return {
 };
 })();
 
-(node as any).hash = "d64bcf84e8215ecd69866400c5547139";
+(node as any).hash = "41ebbefa9d589c4aa64e762b480dc477";
 
 export default node;

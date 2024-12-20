@@ -1,5 +1,5 @@
 import { Button } from "@nextui-org/react";
-import { BookmarkIcon } from "lucide-react";
+import { BookmarkCheckIcon, BookmarkIcon } from "lucide-react";
 import {
 	ConnectionHandler,
 	graphql,
@@ -115,11 +115,15 @@ export default function JobControls({
 	}
 
 	return (
-		<div className="flex items-center gap-8">
+		<>
 			{!isAuthenticated ? (
 				<span>
-					<Button size="lg" variant="bordered" isDisabled>
-						Login to Save
+					<Button size="lg" isIconOnly variant="light" isDisabled>
+						<BookmarkIcon
+							size={32}
+							strokeWidth={1.5}
+							className="text-foreground-500"
+						/>
 					</Button>
 				</span>
 			) : (
@@ -127,27 +131,34 @@ export default function JobControls({
 					{data.isSaved ? (
 						<Button
 							size="lg"
-							variant="bordered"
-							startContent={<BookmarkIcon size={18} />}
+							variant="light"
+							isIconOnly
 							onPress={handleUnsave}
 							isDisabled={isSaveMutationInFlight || isUnsaveMutationInFlight}
 						>
-							Saved
+							<BookmarkCheckIcon
+								size={32}
+								strokeWidth={1.5}
+								className="text-foreground-500"
+							/>
 						</Button>
 					) : (
 						<Button
 							size="lg"
-							variant="bordered"
+							variant="light"
+							isIconOnly
 							onPress={handleSave}
 							isDisabled={isSaveMutationInFlight || isUnsaveMutationInFlight}
 						>
-							Save
+							<BookmarkIcon
+								size={32}
+								strokeWidth={1.5}
+								className="text-foreground-500"
+							/>
 						</Button>
 					)}
 				</>
 			)}
-
-			<Button size="lg">Apply now</Button>
-		</div>
+		</>
 	);
 }

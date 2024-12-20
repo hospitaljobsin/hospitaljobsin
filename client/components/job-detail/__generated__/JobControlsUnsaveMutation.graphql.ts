@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e376803665aa1f194aa4a785d6340219>>
+ * @generated SignedSource<<0b3793c2bab8306e564f6ba82e516d57>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -189,6 +189,13 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
+                        "name": "isSaved",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
                         "name": "title",
                         "storageKey": null
                       },
@@ -305,13 +312,6 @@ return {
                           (v2/*: any*/)
                         ],
                         "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "isSaved",
-                        "storageKey": null
                       }
                     ],
                     "storageKey": null
@@ -329,12 +329,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "70e79c9e4e0810bfa19a3d9da7e1c26e",
+    "cacheID": "5230ca54d8f29b2b4d94c8fea17d40f8",
     "id": null,
     "metadata": {},
     "name": "JobControlsUnsaveMutation",
     "operationKind": "mutation",
-    "text": "mutation JobControlsUnsaveMutation(\n  $jobId: ID!\n) {\n  unsaveJob(jobId: $jobId) {\n    __typename\n    ... on UnsaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsFragment\n          ...JobControlsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
+    "text": "mutation JobControlsUnsaveMutation(\n  $jobId: ID!\n) {\n  unsaveJob(jobId: $jobId) {\n    __typename\n    ... on UnsaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsFragment\n          ...JobControlsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  ...JobControlsFragment\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
   }
 };
 })();

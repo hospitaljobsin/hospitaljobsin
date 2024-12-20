@@ -145,8 +145,13 @@ export default function Job({ job }: Props) {
 						</Chip>
 					))}
 				</div>
-				<Button isIconOnly variant="light">
-					<BookmarkIcon size={32} />
+				<Button
+					isIconOnly
+					variant="light"
+					className="text-foreground-500"
+					disableRipple
+				>
+					<BookmarkIcon size={32} strokeWidth={1.5} />
 				</Button>
 			</CardFooter>
 		</Card>

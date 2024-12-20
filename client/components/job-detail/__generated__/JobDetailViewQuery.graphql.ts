@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f5a5e5024e7813424d4194d310ef53e7>>
+ * @generated SignedSource<<f4a67438956306e22aa801b934264a5a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,7 @@ export type JobDetailViewQuery$variables = {
 export type JobDetailViewQuery$data = {
   readonly job: {
     readonly __typename: "Job";
-    readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobDetailsFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"JobDetailsFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -135,11 +135,6 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "JobDetailsFragment"
-              },
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "JobControlsFragment"
               }
             ],
             "type": "Job",
@@ -183,6 +178,14 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              (v3/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "isSaved",
+                "storageKey": null
+              },
               {
                 "alias": null,
                 "args": null,
@@ -303,14 +306,6 @@ return {
                   (v3/*: any*/)
                 ],
                 "storageKey": null
-              },
-              (v3/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "isSaved",
-                "storageKey": null
               }
             ],
             "type": "Job",
@@ -323,16 +318,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d8e01ff17fabb81c7c148988dd5d698b",
+    "cacheID": "dcb11edd324c4f06db3bef43ddd641dc",
     "id": null,
     "metadata": {},
     "name": "JobDetailViewQuery",
     "operationKind": "query",
-    "text": "query JobDetailViewQuery(\n  $slug: String!\n) {\n  viewer {\n    __typename\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  job(slug: $slug) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n      ...JobControlsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
+    "text": "query JobDetailViewQuery(\n  $slug: String!\n) {\n  viewer {\n    __typename\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  job(slug: $slug) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  ...JobControlsFragment\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "e25aa4ef8575ce9e3271eb63fa908fb2";
+(node as any).hash = "8ad187866ce41cf8e0d41332e60572e3";
 
 export default node;
