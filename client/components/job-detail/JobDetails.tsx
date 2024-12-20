@@ -12,9 +12,9 @@ import {
 } from "@nextui-org/react";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import NextLink from "next/link";
-import type { ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
+import { useAuth } from "../AuthProvider";
 import JobControls from "./JobControls";
 import type { JobDetailsFragment$key } from "./__generated__/JobDetailsFragment.graphql";
 
@@ -53,12 +53,10 @@ const JobDetailsFragment = graphql`
 
 export default function JobDetails({
 	job,
-	isAuthenticated,
 }: {
 	job: JobDetailsFragment$key;
-	children: ReactNode;
-	isAuthenticated: boolean;
 }) {
+	const { isAuthenticated } = useAuth();
 	const data = useFragment(JobDetailsFragment, job);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));

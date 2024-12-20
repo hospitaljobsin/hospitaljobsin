@@ -1,27 +1,23 @@
 import { dateFormat } from "@/lib/intl";
 import {
 	Avatar,
-	Button,
 	Card,
 	CardBody,
 	CardFooter,
 	CardHeader,
 	Chip,
 } from "@nextui-org/react";
-import {
-	BookmarkIcon,
-	Briefcase,
-	Globe,
-	IndianRupee,
-	MapPin,
-} from "lucide-react";
+import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import { useAuth } from "../AuthProvider";
+import JobControls from "../job-detail/JobControls";
 import type { JobFragment$key } from "./__generated__/JobFragment.graphql";
 
 export const JobFragment = graphql`
   fragment JobFragment on Job {
+	...JobControlsFragment
     slug
     title
     type
@@ -56,6 +52,7 @@ type Props = {
 
 export default function Job({ job }: Props) {
 	const router = useRouter();
+	const { isAuthenticated } = useAuth();
 	const data = useFragment(JobFragment, job);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
@@ -145,14 +142,7 @@ export default function Job({ job }: Props) {
 						</Chip>
 					))}
 				</div>
-				<Button
-					isIconOnly
-					variant="light"
-					className="text-foreground-500"
-					disableRipple
-				>
-					<BookmarkIcon size={32} strokeWidth={1.5} />
-				</Button>
+				<JobControls job={data} isAuthenticated={isAuthenticated} />
 			</CardFooter>
 		</Card>
 	);

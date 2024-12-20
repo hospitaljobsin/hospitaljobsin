@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<abcfef4be5343df023ef15aab87ee544>>
+ * @generated SignedSource<<25389b3b70cc50ac74b49f326ee5517f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -106,6 +106,13 @@ return {
                 "plural": false,
                 "selections": [
                   (v1/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isSaved",
+                    "storageKey": null
+                  },
                   {
                     "alias": null,
                     "args": null,
@@ -297,12 +304,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4e5f083bab8ac0d1a85aa7c6f54f92a3",
+    "cacheID": "b764f6a156fa186c9e968e47b1ccc439",
     "id": null,
     "metadata": {},
     "name": "SavedViewQuery",
     "operationKind": "query",
-    "text": "query SavedViewQuery {\n  ...SavedJobsListFragment\n}\n\nfragment JobFragment on Job {\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment SavedJobsListFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query SavedViewQuery {\n  ...SavedJobsListFragment\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment SavedJobsListFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
