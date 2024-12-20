@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<89669bf529b8b2513c182311ee8f4773>>
+ * @generated SignedSource<<4ffa914291d4ff5726377ced70eb5e37>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -283,7 +283,6 @@ return {
                             "name": "company",
                             "plural": false,
                             "selections": [
-                              (v3/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -298,7 +297,8 @@ return {
                                 "name": "logoUrl",
                                 "storageKey": null
                               },
-                              (v5/*: any*/)
+                              (v5/*: any*/),
+                              (v3/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -375,12 +375,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5e798fecd68c7dbb512b11f70bdbe57d",
+    "cacheID": "d072390df1d2423508f0b8ee0dffbf44",
     "id": null,
     "metadata": {},
     "name": "CompanyJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query CompanyJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...CompanyJobsListFragment_1G22uz\n    id\n  }\n}\n\nfragment CompanyJobsListFragment_1G22uz on Company {\n  jobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobFragment on Job {\n  id\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
+    "text": "query CompanyJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...CompanyJobsListFragment_1G22uz\n    id\n  }\n}\n\nfragment CompanyJobsListFragment_1G22uz on Company {\n  jobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobFragment on Job {\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
   }
 };
 })();

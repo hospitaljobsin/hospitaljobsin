@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<859c6296373f28eb8c73121b9284e6a8>>
+ * @generated SignedSource<<11fb30d81534adf06fc802344f1d9a73>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -206,7 +206,6 @@ return {
                     "name": "company",
                     "plural": false,
                     "selections": [
-                      (v1/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -221,8 +220,16 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
-                      (v2/*: any*/)
+                      (v2/*: any*/),
+                      (v1/*: any*/)
                     ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isSaved",
                     "storageKey": null
                   },
                   {
@@ -269,18 +276,6 @@ return {
               }
             ],
             "storageKey": null
-          },
-          {
-            "kind": "ClientExtension",
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__id",
-                "storageKey": null
-              }
-            ]
           }
         ],
         "storageKey": "jobs(first:10)"
@@ -299,12 +294,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "cedfd705f26156d919fce3b07871cd45",
+    "cacheID": "96a68d53e3c1a9d7855fc24083da22dd",
     "id": null,
     "metadata": {},
     "name": "LandingViewQuery",
     "operationKind": "query",
-    "text": "query LandingViewQuery {\n  ...JobListFragment\n}\n\nfragment JobFragment on Job {\n  id\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n\nfragment JobListFragment on Query {\n  jobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query LandingViewQuery {\n  ...JobListFragment\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobFragment on Job {\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment JobListFragment on Query {\n  jobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        ...JobControlsFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();

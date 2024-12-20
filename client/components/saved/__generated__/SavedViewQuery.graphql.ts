@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9d524e8d1fb89e95c66e68129493aedb>>
+ * @generated SignedSource<<abcfef4be5343df023ef15aab87ee544>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -206,7 +206,6 @@ return {
                     "name": "company",
                     "plural": false,
                     "selections": [
-                      (v1/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -221,7 +220,8 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
-                      (v2/*: any*/)
+                      (v2/*: any*/),
+                      (v1/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -297,12 +297,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "030248832c48f008c7e259f43efba907",
+    "cacheID": "4e5f083bab8ac0d1a85aa7c6f54f92a3",
     "id": null,
     "metadata": {},
     "name": "SavedViewQuery",
     "operationKind": "query",
-    "text": "query SavedViewQuery {\n  ...SavedJobsListFragment\n}\n\nfragment JobFragment on Job {\n  id\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n\nfragment SavedJobsListFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query SavedViewQuery {\n  ...SavedJobsListFragment\n}\n\nfragment JobFragment on Job {\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment SavedJobsListFragment on Query {\n  savedJobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();

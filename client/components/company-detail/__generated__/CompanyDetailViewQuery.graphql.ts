@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<04902424cfdcacd168e76b352b84cbe7>>
+ * @generated SignedSource<<980a859150a7457508b4b9b890c608d8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -286,10 +286,10 @@ return {
                             "name": "company",
                             "plural": false,
                             "selections": [
-                              (v4/*: any*/),
                               (v6/*: any*/),
                               (v7/*: any*/),
-                              (v5/*: any*/)
+                              (v5/*: any*/),
+                              (v4/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -406,12 +406,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d26ddd72312d7214478b8c5de1060792",
+    "cacheID": "d5c6ac38518aa915c4433f5170b0596f",
     "id": null,
     "metadata": {},
     "name": "CompanyDetailViewQuery",
     "operationKind": "query",
-    "text": "query CompanyDetailViewQuery(\n  $slug: String!\n) {\n  company(slug: $slug) {\n    __typename\n    ... on Company {\n      ...CompanyJobsListFragment\n      ...CompanyDetailsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment CompanyDetailsFragment on Company {\n  name\n  logoUrl\n  description\n  website\n  phone\n  email\n  address {\n    city\n    state\n  }\n}\n\nfragment CompanyJobsListFragment on Company {\n  jobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobFragment on Job {\n  id\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n"
+    "text": "query CompanyDetailViewQuery(\n  $slug: String!\n) {\n  company(slug: $slug) {\n    __typename\n    ... on Company {\n      ...CompanyJobsListFragment\n      ...CompanyDetailsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment CompanyDetailsFragment on Company {\n  name\n  logoUrl\n  description\n  website\n  phone\n  email\n  address {\n    city\n    state\n  }\n}\n\nfragment CompanyJobsListFragment on Company {\n  jobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobFragment on Job {\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
   }
 };
 })();

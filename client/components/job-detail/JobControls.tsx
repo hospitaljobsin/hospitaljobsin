@@ -8,7 +8,7 @@ import {
 } from "react-relay";
 import type { JobControlsFragment$key } from "./__generated__/JobControlsFragment.graphql";
 
-const JobControlsFragment = graphql`
+export const JobControlsFragment = graphql`
   fragment JobControlsFragment on Job {
     id
     isSaved

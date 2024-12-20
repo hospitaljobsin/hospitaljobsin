@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7e3f976b041fd716b8ab55d4ec57df7c>>
+ * @generated SignedSource<<c6e2f67520f078db04891c9f828ee553>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -23,7 +23,6 @@ export type JobFragment$data = {
       readonly city: string;
       readonly state: string;
     };
-    readonly id: string;
     readonly logoUrl: string | null | undefined;
     readonly name: string;
   } | null | undefined;
@@ -31,7 +30,6 @@ export type JobFragment$data = {
   readonly currency: Currency;
   readonly hasExperienceRange: boolean;
   readonly hasSalaryRange: boolean;
-  readonly id: string;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
   readonly minExperience: number | null | undefined;
@@ -50,13 +48,6 @@ export type JobFragment$key = {
 
 const node: ReaderFragment = (function(){
 var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v1 = {
   "alias": null,
   "args": null,
   "concreteType": "Address",
@@ -87,7 +78,6 @@ return {
   "metadata": null,
   "name": "JobFragment",
   "selections": [
-    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -116,7 +106,7 @@ return {
       "name": "workMode",
       "storageKey": null
     },
-    (v1/*: any*/),
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -188,7 +178,6 @@ return {
       "name": "company",
       "plural": false,
       "selections": [
-        (v0/*: any*/),
         {
           "alias": null,
           "args": null,
@@ -203,7 +192,7 @@ return {
           "name": "logoUrl",
           "storageKey": null
         },
-        (v1/*: any*/)
+        (v0/*: any*/)
       ],
       "storageKey": null
     }
@@ -213,6 +202,6 @@ return {
 };
 })();
 
-(node as any).hash = "38b9863c086981174bd1a816ceb3bbf5";
+(node as any).hash = "fadf49cb3af3ac85fb7111186836dd01";
 
 export default node;

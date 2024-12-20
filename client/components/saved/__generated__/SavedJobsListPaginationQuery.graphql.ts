@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a8a30649df978241c67e03f7031fc2cd>>
+ * @generated SignedSource<<4f1a9f6eb6d99c0b14003374374fd97c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -237,7 +237,6 @@ return {
                     "name": "company",
                     "plural": false,
                     "selections": [
-                      (v2/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -252,7 +251,8 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
-                      (v3/*: any*/)
+                      (v3/*: any*/),
+                      (v2/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -328,12 +328,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "bd93c90f977f8d17f1fd3f03c75fbd41",
+    "cacheID": "a3e6eeac4e406d7f6de9051215f38e07",
     "id": null,
     "metadata": {},
     "name": "SavedJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query SavedJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n) {\n  ...SavedJobsListFragment_1G22uz\n}\n\nfragment JobFragment on Job {\n  id\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n\nfragment SavedJobsListFragment_1G22uz on Query {\n  savedJobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query SavedJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n) {\n  ...SavedJobsListFragment_1G22uz\n}\n\nfragment JobFragment on Job {\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment SavedJobsListFragment_1G22uz on Query {\n  savedJobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();

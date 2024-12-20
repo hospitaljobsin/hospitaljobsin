@@ -1,21 +1,27 @@
 import { dateFormat } from "@/lib/intl";
 import {
 	Avatar,
+	Button,
 	Card,
 	CardBody,
 	CardFooter,
 	CardHeader,
 	Chip,
 } from "@nextui-org/react";
-import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
-import Link from "next/link";
+import {
+	BookmarkIcon,
+	Briefcase,
+	Globe,
+	IndianRupee,
+	MapPin,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import type { JobFragment$key } from "./__generated__/JobFragment.graphql";
 
 export const JobFragment = graphql`
   fragment JobFragment on Job {
-    id
     slug
     title
     type
@@ -34,7 +40,6 @@ export const JobFragment = graphql`
     maxExperience
     createdAt
     company {
-      id
       name
       logoUrl
       address {
@@ -47,10 +52,10 @@ export const JobFragment = graphql`
 
 type Props = {
 	job: JobFragment$key;
-	connectionId: string;
 };
 
 export default function Job({ job }: Props) {
+	const router = useRouter();
 	const data = useFragment(JobFragment, job);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
@@ -83,57 +88,67 @@ export default function Job({ job }: Props) {
 		: "Not specified";
 
 	return (
-		<Link href={`/jobs/${data.slug}`} className="group">
-			<Card isHoverable fullWidth className="p-6" shadow="sm">
-				<CardHeader>
-					<div className="flex w-full justify-between gap-4 items-center">
-						<div className="flex items-center gap-4">
-							<Avatar
-								name={data.company?.name}
-								src={data.company?.logoUrl || undefined}
-								size="lg"
-							/>
-							<div className="flex flex-col gap-2 items-start">
-								<h4 className="text-xl font-medium">{data.title}</h4>
-								<p className="text-md font-normal text-foreground-500">
-									{data.company?.name}
-								</p>
-							</div>
+		<Card
+			fullWidth
+			className="p-6 cursor-pointer"
+			shadow="sm"
+			isPressable
+			as="div"
+			disableRipple
+			onPress={() => {
+				router.push(`/jobs/${data.slug}`);
+			}}
+		>
+			<CardHeader>
+				<div className="flex w-full justify-between gap-4 items-center">
+					<div className="flex items-center gap-4">
+						<Avatar
+							name={data.company?.name}
+							src={data.company?.logoUrl || undefined}
+							size="lg"
+						/>
+						<div className="flex flex-col gap-2 items-start">
+							<h4 className="text-xl font-medium">{data.title}</h4>
+							<p className="text-md font-normal text-foreground-500">
+								{data.company?.name}
+							</p>
 						</div>
-						{salaryRange}
 					</div>
-				</CardHeader>
-				<CardBody className="flex flex-col gap-6 w-full">
-					<div className="flex justify-between items-center gap-4 w-full">
-						<p className="text-foreground-500 text-md font-normal">
-							Posted on {formattedCreatedAt}
-						</p>
+					{salaryRange}
+				</div>
+			</CardHeader>
+			<CardBody className="flex flex-col gap-6 w-full">
+				<div className="flex justify-between items-center gap-4 w-full">
+					<p className="text-foreground-500 text-md font-normal">
+						Posted on {formattedCreatedAt}
+					</p>
+				</div>
+				<div className="flex flex-wrap gap-8 items-center text-foreground-600 w-full">
+					<p>{data.type}</p>
+					<div className="flex items-center gap-2">
+						<MapPin size={16} /> {`${data.address.city}, ${data.address.state}`}
 					</div>
-					<div className="flex flex-wrap gap-8 items-center text-foreground-600 w-full">
-						<p>{data.type}</p>
-						<div className="flex items-center gap-2">
-							<MapPin size={16} />{" "}
-							{`${data.address.city}, ${data.address.state}`}
-						</div>
-						<div className="flex items-center gap-2">
-							<Briefcase size={16} /> {experienceRange}
-						</div>
+					<div className="flex items-center gap-2">
+						<Briefcase size={16} /> {experienceRange}
+					</div>
 
-						<div className="flex items-center gap-2">
-							<Globe size={16} /> {data.workMode}
-						</div>
+					<div className="flex items-center gap-2">
+						<Globe size={16} /> {data.workMode}
 					</div>
-				</CardBody>
-				<CardFooter className="flex flex-col gap-6 w-full">
-					<div className="flex flex-wrap gap-4 mt-2 w-full">
-						{data.skills.map((skill, index) => (
-							<Chip variant="flat" key={index}>
-								{skill}
-							</Chip>
-						))}
-					</div>
-				</CardFooter>
-			</Card>
-		</Link>
+				</div>
+			</CardBody>
+			<CardFooter className="flex items-center justify-between gap-6 w-full">
+				<div className="flex flex-wrap gap-4 mt-2 w-full">
+					{data.skills.map((skill, index) => (
+						<Chip variant="flat" key={index}>
+							{skill}
+						</Chip>
+					))}
+				</div>
+				<Button isIconOnly variant="light">
+					<BookmarkIcon size={32} />
+				</Button>
+			</CardFooter>
+		</Card>
 	);
 }

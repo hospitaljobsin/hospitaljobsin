@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dda173b612ae80895079dc463a571549>>
+ * @generated SignedSource<<d560bd70c9e8851ea9146cf7d90f450c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -250,7 +250,6 @@ return {
                     "name": "company",
                     "plural": false,
                     "selections": [
-                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -265,8 +264,16 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
-                      (v4/*: any*/)
+                      (v4/*: any*/),
+                      (v3/*: any*/)
                     ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isSaved",
                     "storageKey": null
                   },
                   {
@@ -313,18 +320,6 @@ return {
               }
             ],
             "storageKey": null
-          },
-          {
-            "kind": "ClientExtension",
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__id",
-                "storageKey": null
-              }
-            ]
           }
         ],
         "storageKey": null
@@ -343,16 +338,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "eb42363e309eb194cd672edb4e39e51b",
+    "cacheID": "a0969a6ddb8d0fc8ee8fdb18298aae18",
     "id": null,
     "metadata": {},
     "name": "JobListPaginationQuery",
     "operationKind": "query",
-    "text": "query JobListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $searchTerm: String = null\n) {\n  ...JobListFragment_1YZSDV\n}\n\nfragment JobFragment on Job {\n  id\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    id\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n  }\n}\n\nfragment JobListFragment_1YZSDV on Query {\n  jobs(after: $cursor, first: $count, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query JobListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $searchTerm: String = null\n) {\n  ...JobListFragment_1YZSDV\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobFragment on Job {\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment JobListFragment_1YZSDV on Query {\n  jobs(after: $cursor, first: $count, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        ...JobControlsFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "94edc086fdef96e8efd69821e932926f";
+(node as any).hash = "75856a7b41aaa62779693797640d5ed9";
 
 export default node;

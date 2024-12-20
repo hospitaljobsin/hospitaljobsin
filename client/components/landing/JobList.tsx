@@ -17,11 +17,11 @@ const JobListFragment = graphql`
   @refetchable(queryName: "JobListPaginationQuery") {
     jobs(after: $cursor, first: $count, searchTerm: $searchTerm)
       @connection(key: "JobListFragment_jobs", filters: ["searchTerm"]) {
-      __id
       edges {
         node {
           id
           ...JobFragment
+		  ...JobControlsFragment
         }
       }
       pageInfo {
@@ -103,11 +103,7 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
 	return (
 		<div className="w-full flex flex-col gap-8 pb-6">
 			{data.jobs.edges.map((jobEdge) => (
-				<Job
-					job={jobEdge.node}
-					connectionId={data.jobs.__id}
-					key={jobEdge.node.id}
-				/>
+				<Job job={jobEdge.node} key={jobEdge.node.id} />
 			))}
 			<div ref={observerRef} className="h-10" />
 			{isLoadingNext && <JobListSkeleton />}

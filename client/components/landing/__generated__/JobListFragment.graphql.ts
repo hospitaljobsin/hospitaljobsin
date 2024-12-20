@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<da100c44e662bd053a107330e74b3c71>>
+ * @generated SignedSource<<ea9ccc42c5dd1449c994265a65dc0a09>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,11 +12,10 @@ import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type JobListFragment$data = {
   readonly jobs: {
-    readonly __id: string;
     readonly edges: ReadonlyArray<{
       readonly node: {
         readonly id: string;
-        readonly " $fragmentSpreads": FragmentRefs<"JobFragment">;
+        readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobFragment">;
       };
     }>;
     readonly pageInfo: {
@@ -122,6 +121,11 @@ return {
                   "name": "JobFragment"
                 },
                 {
+                  "args": null,
+                  "kind": "FragmentSpread",
+                  "name": "JobControlsFragment"
+                },
+                {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
@@ -165,18 +169,6 @@ return {
             }
           ],
           "storageKey": null
-        },
-        {
-          "kind": "ClientExtension",
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "__id",
-              "storageKey": null
-            }
-          ]
         }
       ],
       "storageKey": null
@@ -187,6 +179,6 @@ return {
 };
 })();
 
-(node as any).hash = "94edc086fdef96e8efd69821e932926f";
+(node as any).hash = "75856a7b41aaa62779693797640d5ed9";
 
 export default node;
