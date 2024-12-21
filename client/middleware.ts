@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { loadViewer } from "./lib/auth";
 
 const AUTH_COOKIE_KEY = process.env.AUTH_COOKIE_KEY || "session";
 
@@ -32,28 +33,29 @@ function getAnonymousResponse(request: NextRequest): NextResponse {
 }
 
 export async function middleware(request: NextRequest) {
-	let user: null | string = null;
 	const response = NextResponse.next();
 
 	if (request.cookies.has(AUTH_COOKIE_KEY)) {
-		user = "user";
-		// const api = buildServerSideAPI(request.headers, request.cookies)
-		// try {
-		//   user = await api.users.getAuthenticated({ cache: 'no-cache' })
-		// } catch (e) {
-		//   if (e instanceof ResponseError === false || e.response.status !== 401) {
-		//     throw e
-		//   }
-		// }
+		const data = await loadViewer();
+		const isValidUser = data.response.data.viewer.__typename === "Account";
+
+		if (!isValidUser) {
+			request.cookies.delete(AUTH_COOKIE_KEY);
+		}
+
+		if (requiresAuthenticated(request) && !isValidUser) {
+			return getAuthenticationResponse(request);
+		}
+
+		if (requiresAnonymous(request) && isValidUser) {
+			return getAnonymousResponse(request);
+		}
+	} else {
+		if (requiresAuthenticated(request)) {
+			return getAuthenticationResponse(request);
+		}
 	}
 
-	if (requiresAuthenticated(request) && !user) {
-		return getAuthenticationResponse(request);
-	}
-
-	if (requiresAnonymous(request) && user) {
-		return getAnonymousResponse(request);
-	}
 	return response;
 }
 

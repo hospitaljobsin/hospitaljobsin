@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<de4fd2769de02f94fe44f2c6702d4be6>>
+ * @generated SignedSource<<e57714768a2be7b152c681f096b0b875>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,16 @@ import { ConcreteRequest } from 'relay-runtime';
 export type AuthProviderQuery$variables = Record<PropertyKey, never>;
 export type AuthProviderQuery$data = {
   readonly viewer: {
-    readonly __typename: string;
+    readonly __typename: "Account";
+    readonly email: string;
+    readonly fullName: string;
+  } | {
+    readonly __typename: "NotAuthenticatedError";
+    readonly __typename: "NotAuthenticatedError";
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
   };
 };
 export type AuthProviderQuery = {
@@ -27,6 +36,27 @@ var v0 = {
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
+},
+v1 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "email",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "fullName",
+      "storageKey": null
+    }
+  ],
+  "type": "Account",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -43,7 +73,8 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          (v0/*: any*/)
+          (v0/*: any*/),
+          (v1/*: any*/)
         ],
         "storageKey": null
       }
@@ -66,6 +97,7 @@ return {
         "plural": false,
         "selections": [
           (v0/*: any*/),
+          (v1/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -86,16 +118,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f881013019876fc35990d27557b4b786",
+    "cacheID": "8128520ff0a937cd5768b87a2ef95e0d",
     "id": null,
     "metadata": {},
     "name": "AuthProviderQuery",
     "operationKind": "query",
-    "text": "query AuthProviderQuery {\n  viewer {\n    __typename\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query AuthProviderQuery {\n  viewer {\n    __typename\n    ... on Account {\n      email\n      fullName\n    }\n    ... on NotAuthenticatedError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "e35779ea90cc753fb8130a5baf5af54e";
+(node as any).hash = "2a94f4f0291175d73562ddf66636433c";
 
 export default node;

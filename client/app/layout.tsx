@@ -1,7 +1,5 @@
-import type { AuthProviderQuery } from "@/components/__generated__/AuthProviderQuery.graphql";
-import AuthProviderQueryNode from "@/components/__generated__/AuthProviderQuery.graphql";
+import { loadViewer } from "@/lib/auth";
 import { APP_NAME } from "@/lib/constants";
-import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
 import "./globals.css";
@@ -24,10 +22,7 @@ export default async function RootLayout({
 	children: React.ReactNode;
 }>) {
 	// root auth query
-	const preloadedQuery = await loadSerializableQuery<
-		typeof AuthProviderQueryNode,
-		AuthProviderQuery
-	>(AuthProviderQueryNode.params, {});
+	const preloadedQuery = await loadViewer();
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={`${workSans.variable} antialiased h-full`}>

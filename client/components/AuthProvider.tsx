@@ -11,6 +11,13 @@ const AuthProviderQuery = graphql`
     query AuthProviderQuery {
         viewer {
             __typename
+			... on Account {
+				email
+				fullName
+			}
+			... on NotAuthenticatedError {
+				__typename
+			}
         }
     }
 `;
@@ -18,6 +25,10 @@ const AuthProviderQuery = graphql`
 // Define the type for your authentication state
 interface AuthContextType {
 	isAuthenticated: boolean;
+	user: {
+		email: string;
+		fullName: string;
+	} | null;
 }
 
 // Create the context
@@ -45,7 +56,13 @@ export const AuthProvider = ({
 	);
 	return (
 		<AuthContext.Provider
-			value={{ isAuthenticated: data.viewer.__typename === "Account" }}
+			value={{
+				isAuthenticated: data.viewer.__typename === "Account",
+				user:
+					data.viewer.__typename === "Account"
+						? { fullName: data.viewer.fullName, email: data.viewer.email }
+						: null,
+			}}
 		>
 			{children}
 		</AuthContext.Provider>

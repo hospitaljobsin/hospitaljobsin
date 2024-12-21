@@ -11,25 +11,13 @@ import {
 	useDisclosure,
 } from "@nextui-org/react";
 import { BookmarkIcon, ChevronDown, LogOutIcon, UserIcon } from "lucide-react";
-import { useFragment } from "react-relay";
-import { graphql } from "relay-runtime";
 import LogoutModal from "./LogoutModal";
-import type { AuthDropdownFragment$key } from "./__generated__/AuthDropdownFragment.graphql";
-
-const AuthDropdownFragment = graphql`
-  fragment AuthDropdownFragment on Account {
-        __typename
-        fullName
-        email
-  }
-`;
 
 type Props = {
-	rootQuery: AuthDropdownFragment$key;
+	user: { fullName: string; email: string };
 };
 
-export default function AuthDropdown({ rootQuery }: Props) {
-	const data = useFragment(AuthDropdownFragment, rootQuery);
+export default function AuthDropdown({ user }: Props) {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	return (
@@ -45,11 +33,11 @@ export default function AuthDropdown({ rootQuery }: Props) {
 							variant="light"
 						>
 							<Avatar
-								name={data.fullName}
+								name={user.fullName}
 								size="sm"
-								src={getGravatarURL(data.email)}
+								src={getGravatarURL(user.email)}
 							/>
-							{data.fullName}
+							{user.fullName}
 						</Button>
 					</DropdownTrigger>
 				</NavbarItem>

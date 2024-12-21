@@ -1,5 +1,5 @@
+import { useAuth } from "@/lib/hooks/use-auth";
 import { dateFormat } from "@/lib/intl";
-import { useAuth } from "@/lib/use-auth";
 import {
 	Avatar,
 	Card,
