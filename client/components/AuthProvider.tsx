@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 import { useClientQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import type { AuthProviderQuery as AuthProviderQueryType } from "./__generated__/AuthProviderQuery.graphql";
@@ -38,7 +38,7 @@ export const AuthProvider = ({
 
 // Create a custom hook for consuming the context
 export const useAuth = () => {
-	const context = useContext(AuthContext);
+	const context = use(AuthContext);
 	if (!context) {
 		throw new Error("useAuth must be used within an AuthProvider");
 	}

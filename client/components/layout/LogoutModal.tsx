@@ -38,6 +38,9 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 					"NotAuthenticatedError",
 				);
 				root.setLinkedRecord(newViewer, "viewer");
+
+				// invalidate cache
+				store.invalidateStore();
 			},
 			onCompleted(response, errors) {
 				if (!errors) {

@@ -61,6 +61,9 @@ export default function LoginForm() {
 					router.replace(redirectTo);
 				}
 			},
+			updater(store) {
+				store.invalidateStore();
+			},
 		});
 	}
 

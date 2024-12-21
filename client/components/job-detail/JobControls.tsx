@@ -1,4 +1,4 @@
-import { Button } from "@nextui-org/react";
+import { Button, Link, Tooltip } from "@nextui-org/react";
 import { BookmarkCheckIcon, BookmarkIcon } from "lucide-react";
 import {
 	ConnectionHandler,
@@ -117,15 +117,29 @@ export default function JobControls({
 	return (
 		<>
 			{!isAuthenticated ? (
-				<span>
-					<Button size="lg" isIconOnly variant="light" isDisabled>
-						<BookmarkIcon
-							size={32}
-							strokeWidth={1.5}
-							className="text-foreground-500"
-						/>
-					</Button>
-				</span>
+				<Tooltip
+					showArrow
+					content={
+						<div className="px-1 py-2">
+							<div className="text-sm">
+								<Link href="/auth/login" size="sm">
+									Sign in
+								</Link>{" "}
+								to save this job
+							</div>
+						</div>
+					}
+				>
+					<span>
+						<Button size="lg" isIconOnly variant="light" isDisabled>
+							<BookmarkIcon
+								size={32}
+								strokeWidth={1.5}
+								className="text-foreground-500"
+							/>
+						</Button>
+					</span>
+				</Tooltip>
 			) : (
 				<>
 					{data.isSaved ? (
