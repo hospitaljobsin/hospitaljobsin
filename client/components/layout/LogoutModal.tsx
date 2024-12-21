@@ -17,9 +17,7 @@ type Props = {
 const LogoutModalMutation = graphql`
   mutation LogoutModalMutation {
     logout {
-      ... on Account {
-        id @deleteRecord
-      }
+		__typename
     }
   }
 `;
@@ -32,6 +30,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 		commitMutation({
 			variables: {},
 			updater: (store) => {
+				// update viewer
 				const root = store.getRoot();
 				const newViewer = store.create(
 					"client:root:viewer",

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e491cfc50e9ce8604be35670d21fbbb2>>
+ * @generated SignedSource<<94df317f72109f56e2836372555b130b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,7 @@ import { ConcreteRequest } from 'relay-runtime';
 export type LogoutModalMutation$variables = Record<PropertyKey, never>;
 export type LogoutModalMutation$data = {
   readonly logout: {
-    readonly id?: string;
+    readonly __typename: "LogoutPayload";
   };
 };
 export type LogoutModalMutation = {
@@ -21,15 +21,25 @@ export type LogoutModalMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v1 = [
-  (v0/*: any*/)
+var v0 = [
+  {
+    "alias": null,
+    "args": null,
+    "concreteType": "LogoutPayload",
+    "kind": "LinkedField",
+    "name": "logout",
+    "plural": false,
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "__typename",
+        "storageKey": null
+      }
+    ],
+    "storageKey": null
+  }
 ];
 return {
   "fragment": {
@@ -37,25 +47,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "LogoutModalMutation",
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "logout",
-        "plural": false,
-        "selections": [
-          {
-            "kind": "InlineFragment",
-            "selections": (v1/*: any*/),
-            "type": "Account",
-            "abstractKey": null
-          }
-        ],
-        "storageKey": null
-      }
-    ],
+    "selections": (v0/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
@@ -64,61 +56,19 @@ return {
     "argumentDefinitions": [],
     "kind": "Operation",
     "name": "LogoutModalMutation",
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "logout",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v0/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "filters": null,
-                "handle": "deleteRecord",
-                "key": "",
-                "kind": "ScalarHandle",
-                "name": "id"
-              }
-            ],
-            "type": "Account",
-            "abstractKey": null
-          },
-          {
-            "kind": "InlineFragment",
-            "selections": (v1/*: any*/),
-            "type": "Node",
-            "abstractKey": "__isNode"
-          }
-        ],
-        "storageKey": null
-      }
-    ]
+    "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "2f28bdaa284c924963d4baf10d7188ff",
+    "cacheID": "eaaf821115b0b4d95a61f415a5c1d27d",
     "id": null,
     "metadata": {},
     "name": "LogoutModalMutation",
     "operationKind": "mutation",
-    "text": "mutation LogoutModalMutation {\n  logout {\n    __typename\n    ... on Account {\n      id\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation LogoutModalMutation {\n  logout {\n    __typename\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "7df039e2c13cdccb01c5d76bbff947a8";
+(node as any).hash = "91fa2680a8488a9c50ddb25c2e04c5e6";
 
 export default node;

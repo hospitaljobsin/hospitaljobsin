@@ -17,7 +17,7 @@ from .types import (
     EmailInUseErrorType,
     InvalidCredentialsErrorType,
     LoginPayload,
-    LogoutPayload,
+    LogoutPayloadType,
     RegisterPayload,
 )
 
@@ -108,7 +108,7 @@ class AuthMutation:
         return AccountType.marshal(result.ok_value)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=LogoutPayload,
+        graphql_type=LogoutPayloadType,
         description="Log out the current user.",
         extensions=[
             PermissionExtension(
@@ -124,12 +124,11 @@ class AuthMutation:
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
         account_repo: Annotated[AccountRepo, Inject],
-    ) -> LogoutPayload:
+    ) -> LogoutPayloadType:
         """Log out the current user."""
-        result = await account_repo.get(account_id=info.context["current_user_id"])
         await auth_service.logout(
             request=info.context["request"],
             response=info.context["response"],
         )
 
-        return AccountType.marshal(result)
+        return LogoutPayloadType()

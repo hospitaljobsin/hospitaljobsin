@@ -26,7 +26,7 @@ LoginPayload = Annotated[
     strawberry.union(name="LoginPayload"),
 ]
 
-LogoutPayload = Annotated[
-    AccountType | NotAuthenticatedErrorType,
-    strawberry.union(name="LogoutPayload"),
-]
+
+@strawberry.type(name="LogoutPayload")
+class LogoutPayloadType:
+    message: str = "Successfully logged out."
