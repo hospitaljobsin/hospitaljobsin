@@ -40,7 +40,6 @@ export async function networkFetch(
 			switch (err.extensions.code) {
 				// when an AuthenticationError is thrown in a resolver
 				case "UNAUTHENTICATED":
-					console.log("unauthenticated error");
 					redirect("/auth/login");
 			}
 		}

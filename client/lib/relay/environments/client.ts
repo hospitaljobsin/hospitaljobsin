@@ -43,9 +43,7 @@ export async function networkFetch(
 				// Apollo Server sets code to UNAUTHENTICATED
 				// when an AuthenticationError is thrown in a resolver
 				case "UNAUTHENTICATED":
-					//TODO: do routing here conditionally
-					console.log("unauthenticated error client");
-					window.history.replaceState(null, "", "/auth/login");
+					window.location.href = "/auth/login";
 			}
 		}
 		console.error(json.errors);
