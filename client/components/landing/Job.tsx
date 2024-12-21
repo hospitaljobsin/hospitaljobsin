@@ -9,7 +9,7 @@ import {
 	Chip,
 } from "@nextui-org/react";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import JobControls from "../job-detail/JobControls";
