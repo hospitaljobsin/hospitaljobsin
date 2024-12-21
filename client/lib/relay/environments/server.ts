@@ -1,45 +1,28 @@
-import type { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
+import { redirect } from "next/navigation";
 import type {
 	CacheConfig,
 	GraphQLResponse,
+	QueryResponseCache,
 	RequestParameters,
 	Variables,
 } from "relay-runtime";
-import {
-	Environment,
-	Network,
-	QueryResponseCache,
-	RecordSource,
-	Store,
-} from "relay-runtime";
+import { Environment, Network, RecordSource, Store } from "relay-runtime";
 
 const HTTP_ENDPOINT = process.env.NEXT_PUBLIC_API_URL;
-const IS_SERVER = typeof window === typeof undefined;
-const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
-
-export async function getCookies() {
-	const { cookies } = await import("next/headers");
-	return await cookies();
-}
 
 export async function networkFetch(
 	request: RequestParameters,
 	variables: Variables,
 ): Promise<GraphQLResponse> {
-	let serverCookie: ReadonlyRequestCookies | undefined;
-	try {
-		if (IS_SERVER) {
-			serverCookie = await getCookies();
-		}
-	} catch (err) {
-		console.error(err);
-	}
+	const { cookies } = await import("next/headers");
+	const serverCookie = await cookies();
+
 	const resp = await fetch(HTTP_ENDPOINT, {
 		method: "POST",
 		headers: {
 			Accept: "application/json",
 			"Content-Type": "application/json",
-			Cookie: serverCookie !== undefined ? serverCookie.toString() : undefined,
+			Cookie: serverCookie.toString(),
 		},
 		credentials: "include",
 		body: JSON.stringify({
@@ -53,6 +36,14 @@ export async function networkFetch(
 	// property of the response. If any exceptions occurred when processing the request,
 	// throw an error to indicate to the developer what went wrong.
 	if (Array.isArray(json.errors)) {
+		for (const err of json.errors) {
+			switch (err.extensions.code) {
+				// when an AuthenticationError is thrown in a resolver
+				case "UNAUTHENTICATED":
+					console.log("unauthenticated error");
+					redirect("/auth/login");
+			}
+		}
 		console.error(json.errors);
 		throw new Error(
 			`Error fetching GraphQL query '${
@@ -66,12 +57,7 @@ export async function networkFetch(
 	return json;
 }
 
-export const responseCache: QueryResponseCache | null = IS_SERVER
-	? null
-	: new QueryResponseCache({
-			size: 100,
-			ttl: CACHE_TTL,
-		});
+export const responseCache: QueryResponseCache | null = null;
 
 function createNetwork() {
 	async function fetchResponse(
@@ -96,20 +82,10 @@ function createNetwork() {
 	return network;
 }
 
-function createEnvironment() {
+export function createServerEnvironment() {
 	return new Environment({
 		network: createNetwork(),
 		store: new Store(RecordSource.create()),
-		isServer: IS_SERVER,
+		isServer: true,
 	});
-}
-
-export const environment = createEnvironment();
-
-export function getCurrentEnvironment() {
-	if (IS_SERVER) {
-		return createEnvironment();
-	}
-
-	return environment;
 }

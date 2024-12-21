@@ -5,7 +5,7 @@ import type {
 	VariablesOf,
 } from "relay-runtime";
 import type { ConcreteRequest } from "relay-runtime/lib/util/RelayConcreteNode";
-import { networkFetch } from "./environment";
+import { networkFetch } from "./environments/server";
 
 export interface SerializablePreloadedQuery<
 	TRequest extends ConcreteRequest,

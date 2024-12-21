@@ -109,6 +109,7 @@ class AuthService:
     async def logout(self, request: Request, response: Response) -> None:
         is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
         secure = False if is_localhost else True
+        # TODO: delete session here
         response.delete_cookie(
             key=settings.session_cookie_name,
             path="/",

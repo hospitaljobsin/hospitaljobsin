@@ -8,7 +8,7 @@ import type {
 	IEnvironment,
 	OperationType,
 } from "relay-runtime";
-import { responseCache } from "./environment";
+import { responseCache } from "./environments/server";
 import type { SerializablePreloadedQuery } from "./loadSerializableQuery";
 
 // This hook convert serializable preloaded query

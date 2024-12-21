@@ -1,5 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { loadViewer } from "./lib/auth";
 
 const AUTH_COOKIE_KEY = process.env.AUTH_COOKIE_KEY || "session";
 
@@ -34,26 +33,14 @@ function getAnonymousResponse(request: NextRequest): NextResponse {
 
 export async function middleware(request: NextRequest) {
 	const response = NextResponse.next();
+	const hasAuthCookie = request.cookies.has(AUTH_COOKIE_KEY);
 
-	if (request.cookies.has(AUTH_COOKIE_KEY)) {
-		const data = await loadViewer();
-		const isValidUser = data.response.data.viewer.__typename === "Account";
+	if (requiresAuthenticated(request)) {
+		return hasAuthCookie ? response : getAuthenticationResponse(request);
+	}
 
-		if (!isValidUser) {
-			request.cookies.delete(AUTH_COOKIE_KEY);
-		}
-
-		if (requiresAuthenticated(request) && !isValidUser) {
-			return getAuthenticationResponse(request);
-		}
-
-		if (requiresAnonymous(request) && isValidUser) {
-			return getAnonymousResponse(request);
-		}
-	} else {
-		if (requiresAuthenticated(request)) {
-			return getAuthenticationResponse(request);
-		}
+	if (requiresAnonymous(request)) {
+		return hasAuthCookie ? getAnonymousResponse(request) : response;
 	}
 
 	return response;

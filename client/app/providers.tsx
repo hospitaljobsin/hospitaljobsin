@@ -1,6 +1,6 @@
 "use client";
 import { AuthProvider } from "@/components/AuthProvider";
-import { getCurrentEnvironment } from "@/lib/relay/environment";
+import { getCurrentEnvironment } from "@/lib/relay/environments";
 import type { SerializablePreloadedQuery } from "@/lib/relay/loadSerializableQuery";
 import { NextUIProvider } from "@nextui-org/react";
 import { AppProgressBar } from "next-nprogress-bar";
