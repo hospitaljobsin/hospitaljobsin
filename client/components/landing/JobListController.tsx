@@ -1,34 +1,31 @@
-import { Input, Slider } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
+import { Search } from "lucide-react";
 
 interface JobListControllerProps {
-  searchTerm: string | null;
-  setSearchTerm: (searchTerm: string | null) => void;
+	searchTerm: string | null;
+	setSearchTerm: (searchTerm: string | null) => void;
 }
 
 export default function JobListController(props: JobListControllerProps) {
-  return (
-    <div className="flex items-center justify-center w-full h-full gap-4">
-      <Input
-        label="Search Term"
-        isClearable
-        variant="bordered"
-        value={props.searchTerm || ""}
-        onValueChange={(value) => props.setSearchTerm(value)}
-        onClear={() => props.setSearchTerm(null)}
-        fullWidth
-      />
-      <Input label="Location" isClearable variant="bordered" fullWidth />
-      <Slider
-        color="foreground"
-        renderValue={({ children }) => (children === "0 km" ? "Any" : children)}
-        size="md"
-        defaultValue={0.0}
-        formatOptions={{ style: "unit", unit: "kilometer" }}
-        label="Distance"
-        maxValue={100}
-        minValue={0}
-        step={10}
-      />
-    </div>
-  );
+	return (
+		<Input
+			size="lg"
+			classNames={{
+				inputWrapper: "p-8",
+			}}
+			startContent={
+				<Search
+					size={24}
+					className="text-2xl text-default-400 pointer-events-none flex-shrink-0 mr-4"
+				/>
+			}
+			isClearable
+			placeholder="Search for jobs, in plain English"
+			variant="bordered"
+			value={props.searchTerm || ""}
+			onValueChange={(value) => props.setSearchTerm(value)}
+			onClear={() => props.setSearchTerm(null)}
+			fullWidth
+		/>
+	);
 }

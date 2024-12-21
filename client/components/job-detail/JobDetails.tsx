@@ -1,4 +1,5 @@
 import { dateFormat } from "@/lib/intl";
+import { useAuth } from "@/lib/use-auth";
 import {
 	Avatar,
 	Button,
@@ -14,7 +15,6 @@ import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import NextLink from "next/link";
 import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
-import { useAuth } from "../AuthProvider";
 import JobControls from "./JobControls";
 import type { JobDetailsFragment$key } from "./__generated__/JobDetailsFragment.graphql";
 

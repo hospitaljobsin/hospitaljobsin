@@ -1,3 +1,4 @@
+"use client";
 import type { PreloadedQuery } from "react-relay";
 import { graphql, usePreloadedQuery } from "react-relay";
 import CompanyDetails from "./CompanyDetails";

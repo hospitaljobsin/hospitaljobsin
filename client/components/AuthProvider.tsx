@@ -1,7 +1,10 @@
+import type { SerializablePreloadedQuery } from "@/lib/relay/loadSerializableQuery";
+import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 import type { ReactNode } from "react";
-import { createContext, use } from "react";
-import { useClientQuery } from "react-relay";
+import { createContext } from "react";
+import { usePreloadedQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type AuthProviderQueryNode from "./__generated__/AuthProviderQuery.graphql";
 import type { AuthProviderQuery as AuthProviderQueryType } from "./__generated__/AuthProviderQuery.graphql";
 
 const AuthProviderQuery = graphql`
@@ -18,29 +21,33 @@ interface AuthContextType {
 }
 
 // Create the context
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+	undefined,
+);
 
 // Create a provider component
 export const AuthProvider = ({
 	children,
+	preloadedQuery,
 }: {
 	children: ReactNode;
+	preloadedQuery: SerializablePreloadedQuery<
+		typeof AuthProviderQueryNode,
+		AuthProviderQueryType
+	>;
 }) => {
-	const data = useClientQuery<AuthProviderQueryType>(AuthProviderQuery, {});
+	const environment = useRelayEnvironment();
+	const queryRef = useSerializablePreloadedQuery(environment, preloadedQuery);
+	// we need to make this a preloaded query, server needs to send this data on all requests
+	const data = usePreloadedQuery<AuthProviderQueryType>(
+		AuthProviderQuery,
+		queryRef,
+	);
 	return (
 		<AuthContext.Provider
-			value={{ isAuthenticated: data.viewer?.__typename === "Account" }}
+			value={{ isAuthenticated: data.viewer.__typename === "Account" }}
 		>
 			{children}
 		</AuthContext.Provider>
 	);
-};
-
-// Create a custom hook for consuming the context
-export const useAuth = () => {
-	const context = use(AuthContext);
-	if (!context) {
-		throw new Error("useAuth must be used within an AuthProvider");
-	}
-	return context;
 };
