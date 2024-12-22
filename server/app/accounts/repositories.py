@@ -12,10 +12,8 @@ from .documents import (
     Account,
     Address,
     CurrentJob,
-    Education,
     EmailVerification,
-    Links,
-    Preferences,
+    Language,
     Profile,
 )
 
@@ -111,13 +109,11 @@ class ProfileRepo:
         gender: str,
         date_of_birth: date,
         address: Address | None,
-        is_differently_abled: bool,
+        marital_status: str,
+        languages: list[Language],
         category: str | None,
-        education: list[Education] | None,
         current_job: CurrentJob | None,
         total_job_experience: float | None,
-        preferences: Preferences | None,
-        links: Links | None,
     ) -> Profile:
         """Create a new profile."""
         profile = Profile(
@@ -125,13 +121,11 @@ class ProfileRepo:
             gender=gender,
             date_of_birth=date_of_birth,
             address=address,
-            is_differently_abled=is_differently_abled,
+            marital_status=marital_status,
             category=category,
-            education=education,
+            languages=languages,
             current_job=current_job,
             total_job_experience=total_job_experience,
-            preferences=preferences,
-            links=links,
         )
 
         return await profile.insert(

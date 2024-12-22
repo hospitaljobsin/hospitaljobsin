@@ -1,7 +1,7 @@
 "use client";
 import { graphql, useLazyLoadQuery } from "react-relay";
-import EmploymentDetails from "./EmploymentDetails";
-import PersonalDetails from "./PersonalDetails";
+import invariant from "tiny-invariant";
+import ProfileDetails from "./ProfileDetails";
 import ProfileHeader from "./ProfileHeader";
 import type { ProfileViewQuery as ProfileViewQueryType } from "./__generated__/ProfileViewQuery.graphql";
 
@@ -11,8 +11,7 @@ const ProfileViewQuery = graphql`
       __typename
       ... on Account {
         ...ProfileHeaderFragment
-        ...PersonalDetailsFragment
-        ...EmploymentDetailsFragment
+        ...ProfileDetailsFragment
       }
     }
   }
@@ -20,16 +19,15 @@ const ProfileViewQuery = graphql`
 
 export default function ProfileView() {
 	const data = useLazyLoadQuery<ProfileViewQueryType>(ProfileViewQuery, {});
-
-	if (data.viewer.__typename !== "Account") {
-		return null;
-	}
+	invariant(
+		data.viewer.__typename === "Account",
+		"Expected 'Account' node type",
+	);
 
 	return (
 		<>
 			<ProfileHeader rootQuery={data.viewer} />
-			<PersonalDetails rootQuery={data.viewer} />
-			<EmploymentDetails rootQuery={data.viewer} />
+			<ProfileDetails rootQuery={data.viewer} />
 		</>
 	);
 }

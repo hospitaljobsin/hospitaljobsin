@@ -1,12 +1,18 @@
 from collections.abc import Iterable
-from datetime import datetime
+from datetime import date, datetime
+from enum import Enum
 from typing import Annotated, Self
 
 import strawberry
 from aioinject.ext.strawberry import inject
 
 from app.accounts.documents import Account, Profile
-from app.base.types import BaseErrorType, BaseNodeType, NotAuthenticatedErrorType
+from app.base.types import (
+    AddressType,
+    BaseErrorType,
+    BaseNodeType,
+    NotAuthenticatedErrorType,
+)
 from app.context import Info
 
 
@@ -15,9 +21,57 @@ class ProfileNotFoundErrorType(BaseErrorType):
     message: str = "Profile not found!"
 
 
+@strawberry.enum(name="GenderType")
+class GenderTypeEnum(Enum):
+    MALE = "male"
+    FEMALE = "female"
+    OTHER = "other"
+
+
+@strawberry.enum(name="CategoryType")
+class CategoryTypeEnum(Enum):
+    SC = "SC"
+    ST = "ST"
+    OBC = "OBC"
+    GENERAL = "general"
+    OTHER = "other"
+
+
+@strawberry.enum(name="MaritalStatusType")
+class MaritalStatusTypeEnum(Enum):
+    MARRIED = "married"
+    SINGLE = "single"
+
+
+@strawberry.type(name="Language")
+class LanguageType:
+    name: str
+    proficiency: str
+
+
+@strawberry.type(name="CurrentJob")
+class CurrentJobType:
+    current_title: str
+    current_organization: str | None = None
+    current_salary: float | None = None
+
+
 @strawberry.type(name="Profile")
 class ProfileType(BaseNodeType[Profile]):
-    name: str
+    # personal details
+    gender: GenderTypeEnum
+    date_of_birth: date
+    address: AddressType
+    marital_status: MaritalStatusTypeEnum
+    category: CategoryTypeEnum
+    languages: list[LanguageType]
+
+    # employment details
+    total_job_experience: float
+    current_job: CurrentJobType | None = None
+
+    created_at: datetime
+    updated_at: datetime
 
     @classmethod
     def marshal(cls, profile: Profile) -> Self:

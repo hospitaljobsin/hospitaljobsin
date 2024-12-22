@@ -2,7 +2,6 @@ import { useFragment } from "react-relay";
 
 import { getGravatarURL } from "@/lib/avatars";
 import { Avatar, Card, CardHeader } from "@nextui-org/react";
-import { EditIcon } from "lucide-react";
 import { graphql } from "relay-runtime";
 import type { ProfileHeaderFragment$key } from "./__generated__/ProfileHeaderFragment.graphql";
 
@@ -29,9 +28,7 @@ export default function ProfileHeader({ rootQuery }: Props) {
 					src={getGravatarURL(data.email)}
 				/>
 				<div className="flex flex-col gap-2 w-full items-center justify-start">
-					<h1 className="w-full text-lg font-medium flex items-center gap-4">
-						{data.fullName} <EditIcon size={20} />
-					</h1>
+					<h1 className="w-full text-lg font-medium">{data.fullName}</h1>
 					<h1 className="w-full">{data.email}</h1>
 				</div>
 			</CardHeader>
