@@ -52,7 +52,7 @@ export default function UpdateProfileDetailsForm({ rootQuery }: Props) {
 					<h1 className="text-lg font-medium">Personal Details</h1>
 				</CardHeader>
 				<CardBody>
-					<div className="mb-8">
+					<div className="mb-10">
 						<Controller
 							name="gender"
 							control={control}
@@ -69,7 +69,7 @@ export default function UpdateProfileDetailsForm({ rootQuery }: Props) {
 							<p className="text-red-500">This field is required</p>
 						)}
 					</div>
-					<div className="mb-8">
+					<div className="mb-10">
 						<Controller
 							name="dateOfBirth"
 							control={control}
@@ -86,7 +86,7 @@ export default function UpdateProfileDetailsForm({ rootQuery }: Props) {
 							<p className="text-red-500">This field is required</p>
 						)}
 					</div>
-					<div className="mb-8">
+					<div className="mb-10">
 						<Controller
 							name="address"
 							control={control}
@@ -103,7 +103,7 @@ export default function UpdateProfileDetailsForm({ rootQuery }: Props) {
 							<p className="text-red-500">This field is required</p>
 						)}
 					</div>
-					<div className="mb-8">
+					<div className="mb-10">
 						<Controller
 							name="maritalStatus"
 							control={control}
@@ -120,7 +120,7 @@ export default function UpdateProfileDetailsForm({ rootQuery }: Props) {
 							<p className="text-red-500">This field is required</p>
 						)}
 					</div>
-					<div className="mb-8">
+					<div className="mb-10">
 						<Controller
 							name="category"
 							control={control}
@@ -137,7 +137,7 @@ export default function UpdateProfileDetailsForm({ rootQuery }: Props) {
 							<p className="text-red-500">This field is required</p>
 						)}
 					</div>
-					<div className="mb-8">
+					<div className="mb-10">
 						<Controller
 							name="languages"
 							control={control}
@@ -163,7 +163,7 @@ export default function UpdateProfileDetailsForm({ rootQuery }: Props) {
 					<h1 className="text-lg font-medium">Employment Details</h1>
 				</CardHeader>
 				<CardBody>
-					<div className="mb-8">
+					<div className="mb-10">
 						<Controller
 							name="totalExperience"
 							control={control}
@@ -180,7 +180,7 @@ export default function UpdateProfileDetailsForm({ rootQuery }: Props) {
 							<p className="text-red-500">This field is required</p>
 						)}
 					</div>
-					<div className="mb-8">
+					<div className="mb-10">
 						<Controller
 							name="currentCompanyName"
 							control={control}
@@ -197,7 +197,7 @@ export default function UpdateProfileDetailsForm({ rootQuery }: Props) {
 							<p className="text-red-500">This field is required</p>
 						)}
 					</div>
-					<div className="mb-8">
+					<div className="mb-10">
 						<Controller
 							name="currentJobTitle"
 							control={control}
