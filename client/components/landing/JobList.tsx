@@ -6,6 +6,7 @@ import { graphql } from "relay-runtime";
 import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
 import type { JobListFragment$key } from "./__generated__/JobListFragment.graphql";
+import type { JobListInternalFragment$key, JobListInternalFragment as JobListInternalFragmentType } from './__generated__/JobListInternalFragment.graphql';
 
 const JobListFragment = graphql`
 fragment JobListFragment on Query {
@@ -48,7 +49,7 @@ type Props = {
 export default function JobList({ rootQuery, searchTerm }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(JobListFragment, rootQuery);
-	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment(
+	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<JobListInternalFragmentType, JobListInternalFragment$key>(
 		JobListInternalFragment,
 		root,
 	);

@@ -2,6 +2,7 @@ import { Avatar, Button, Card, CardBody, CardHeader } from "@nextui-org/react";
 import { Globe, MailIcon, MapPin, Phone } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 import { CompanyDetailsFragment$key } from "./__generated__/CompanyDetailsFragment.graphql";
+import type { CompanyDetailsInternalFragment as CompanyDetailsInternalFragmentType } from "./__generated__/CompanyDetailsInternalFragment.graphql";
 
 
 const CompanyDetailsFragment = graphql`
@@ -38,7 +39,7 @@ export default function CompanyDetails({
 	rootQuery,
 }: { rootQuery: CompanyDetailsFragment$key }) {
 	const root = useFragment(CompanyDetailsFragment, rootQuery);
-	const data = useFragment(CompanyDetailsInternalFragment, root.company);
+	const data = useFragment<CompanyDetailsInternalFragmentType>(CompanyDetailsInternalFragment, root.company);
 
 	return (
 		<div className="w-full flex flex-col gap-6">

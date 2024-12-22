@@ -4,7 +4,8 @@ import Job from "../landing/Job";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import JobListSkeleton from "../landing/JobListSkeleton";
-import { CompanyJobsListFragment$key } from "./__generated__/CompanyJobsListFragment.graphql";
+import type { CompanyJobsListFragment$key } from "./__generated__/CompanyJobsListFragment.graphql";
+import type { CompanyJobsListInternalFragment$key, CompanyJobsListInternalFragment as CompanyJobsListInternalFragmentType } from './__generated__/CompanyJobsListInternalFragment.graphql';
 
 
 const CompanyJobsListFragment = graphql`
@@ -53,7 +54,7 @@ type Props = {
 
 export default function CompanyJobsList({ rootQuery }: Props) {
 	const root = useFragment(CompanyJobsListFragment, rootQuery);
-	const { data, loadNext, isLoadingNext } = usePaginationFragment(
+	const { data, loadNext, isLoadingNext } = usePaginationFragment<CompanyJobsListInternalFragmentType, CompanyJobsListInternalFragment$key>(
 		CompanyJobsListInternalFragment,
 		root.company,
 	);
