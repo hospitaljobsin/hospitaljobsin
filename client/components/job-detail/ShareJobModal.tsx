@@ -26,7 +26,7 @@ export default function ShareJobModal({
 	onClose,
 }: { job: ShareJobModalFragment$key; isOpen: boolean; onClose: () => void }) {
 	const data = useFragment(ShareJobModalFragment, job);
-	const shareUrl = `${env.NEXT_PUBLIC_URL}jobs/${data.slug}`;
+	const shareUrl = `${env.NEXT_PUBLIC_URL}/jobs/${data.slug}`;
 	const title = `Job Position: ${data.title} - Apply Now!`;
 
 	return (
