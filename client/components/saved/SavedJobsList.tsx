@@ -6,9 +6,11 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import SavedJobsListSkeleton from "../landing/JobListSkeleton";
-import { SavedJobsListFragment$key } from "./__generated__/SavedJobsListFragment.graphql";
-import type { SavedJobsListInternalFragment$key, SavedJobsListInternalFragment as SavedJobsListInternalFragmentType } from "./__generated__/SavedJobsListInternalFragment.graphql";
-
+import type { SavedJobsListFragment$key } from "./__generated__/SavedJobsListFragment.graphql";
+import type {
+	SavedJobsListInternalFragment$key,
+	SavedJobsListInternalFragment as SavedJobsListInternalFragmentType,
+} from "./__generated__/SavedJobsListInternalFragment.graphql";
 
 const SavedJobsListFragment = graphql`
 fragment SavedJobsListFragment on Query {
@@ -47,10 +49,10 @@ type Props = {
 
 export default function SavedJobsList({ rootQuery }: Props) {
 	const root = useFragment(SavedJobsListFragment, rootQuery);
-	const { data, loadNext, isLoadingNext } = usePaginationFragment<SavedJobsListInternalFragmentType, SavedJobsListInternalFragment$key>(
-		SavedJobsListInternalFragment,
-		root,
-	);
+	const { data, loadNext, isLoadingNext } = usePaginationFragment<
+		SavedJobsListInternalFragmentType,
+		SavedJobsListInternalFragment$key
+	>(SavedJobsListInternalFragment, root);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 

@@ -2,9 +2,8 @@ import { Avatar, Button, Card, CardBody, CardHeader } from "@nextui-org/react";
 import { Globe, MailIcon, MapPin, Phone } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
-import { CompanyDetailsFragment$key } from "./__generated__/CompanyDetailsFragment.graphql";
+import type { CompanyDetailsFragment$key } from "./__generated__/CompanyDetailsFragment.graphql";
 import type { CompanyDetailsInternalFragment$key as CompanyDetailsInternalFragmentType } from "./__generated__/CompanyDetailsInternalFragment.graphql";
-
 
 const CompanyDetailsFragment = graphql`
   fragment CompanyDetailsFragment on Query @argumentDefinitions(
@@ -40,8 +39,14 @@ export default function CompanyDetails({
 	rootQuery,
 }: { rootQuery: CompanyDetailsFragment$key }) {
 	const root = useFragment(CompanyDetailsFragment, rootQuery);
-	invariant(root.company.__typename === "Company", "Expected 'Company' node type");
-	const data = useFragment<CompanyDetailsInternalFragmentType>(CompanyDetailsInternalFragment, root.company);
+	invariant(
+		root.company.__typename === "Company",
+		"Expected 'Company' node type",
+	);
+	const data = useFragment<CompanyDetailsInternalFragmentType>(
+		CompanyDetailsInternalFragment,
+		root.company,
+	);
 
 	return (
 		<div className="w-full flex flex-col gap-6">

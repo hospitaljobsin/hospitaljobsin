@@ -1,3 +1,4 @@
+import links from "@/lib/links";
 import {
 	Button,
 	Modal,
@@ -31,7 +32,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			variables: {},
 			onCompleted(response, errors) {
 				if (!errors) {
-					router.replace("/auth/login");
+					router.replace(links.login);
 				}
 			},
 		});

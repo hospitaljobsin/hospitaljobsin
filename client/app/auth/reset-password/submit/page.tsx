@@ -1,4 +1,4 @@
-import SubmitResetPasswordFrom from "@/components/auth/submit-reset-password-form";
+import SubmitResetPasswordFrom from "@/components/auth/SubmitResetPasswordForm";
 
 import type { Metadata } from "next";
 

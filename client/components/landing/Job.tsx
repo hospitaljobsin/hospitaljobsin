@@ -1,4 +1,5 @@
 import { dateFormat } from "@/lib/intl";
+import links from "@/lib/links";
 import {
 	Avatar,
 	Card,
@@ -11,8 +12,8 @@ import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import { JobControlsAuthFragment$key } from "../job-detail/__generated__/JobControlsAuthFragment.graphql";
 import JobControls from "../job-detail/JobControls";
+import { JobControlsAuthFragment$key } from "../job-detail/__generated__/JobControlsAuthFragment.graphql";
 import type { JobFragment$key } from "./__generated__/JobFragment.graphql";
 
 export const JobFragment = graphql`
@@ -99,7 +100,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			as="div"
 			disableRipple
 			onPress={() => {
-				router.push(`/jobs/${data.slug}`);
+				router.push(links.jobDetail(data.slug));
 			}}
 		>
 			<CardHeader>
@@ -148,7 +149,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 						</Chip>
 					))}
 				</div>
-				<JobControls job={data} rootQuery={rootQuery}  />
+				<JobControls job={data} rootQuery={rootQuery} />
 			</CardFooter>
 		</Card>
 	);

@@ -1,4 +1,4 @@
-import ConfirmResetPasswordForm from "@/components/auth/confirm-reset-password-form";
+import ConfirmResetPasswordForm from "@/components/auth/ConfirmResetPasswordForm";
 
 import type { Metadata } from "next";
 

@@ -1,5 +1,6 @@
 "use client";
 import { getGravatarURL } from "@/lib/avatars";
+import links from "@/lib/links";
 import {
 	Avatar,
 	Button,
@@ -63,14 +64,14 @@ export default function AuthDropdown({ rootQuery }: Props) {
 					<DropdownItem
 						key="profile"
 						startContent={<UserIcon className="h-4 w-4" />}
-						href="/profile"
+						href={links.profile}
 					>
 						My Profile
 					</DropdownItem>
 					<DropdownItem
 						key="saved"
 						startContent={<BookmarkIcon className="h-4 w-4" />}
-						href="/saved"
+						href={links.savedJobs}
 					>
 						Saved Jobs
 					</DropdownItem>

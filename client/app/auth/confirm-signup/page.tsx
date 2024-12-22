@@ -1,4 +1,4 @@
-import ConfirmSignUpForm from "@/components/auth/confirm-signup-form";
+import ConfirmSignUpForm from "@/components/auth/ConfirmSignupForm";
 
 import type { Metadata } from "next";
 

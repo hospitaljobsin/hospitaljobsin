@@ -1,3 +1,4 @@
+import links from "@/lib/links";
 import { Button, Link, Tooltip } from "@nextui-org/react";
 import { BookmarkCheckIcon, BookmarkIcon, Share2Icon } from "lucide-react";
 import { useState } from "react";
@@ -154,7 +155,7 @@ export default function JobControls({
 					content={
 						<div className="px-1 py-2">
 							<div className="text-sm">
-								<Link href="/auth/login" size="sm">
+								<Link href={links.login} size="sm">
 									Sign in
 								</Link>{" "}
 								to save this job

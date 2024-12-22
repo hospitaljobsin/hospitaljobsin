@@ -1,5 +1,6 @@
 "use client";
 
+import links from "@/lib/links";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	Button,
@@ -96,7 +97,7 @@ export default function LoginForm() {
 							description={
 								<div className="w-full flex justify-start">
 									<Link
-										href="/auth/reset-password/submit"
+										href={links.resetPasswordSubmit}
 										className="mt-2 cursor-pointer text-blue-500"
 									>
 										Forgot password?
@@ -119,7 +120,7 @@ export default function LoginForm() {
 			<CardFooter>
 				<div className="flex justify-center w-full">
 					<Link
-						href="/auth/signup"
+						href={links.signup}
 						className="mt-2 cursor-pointer text-blue-500"
 					>
 						{"Don't have an account? "} Sign up.

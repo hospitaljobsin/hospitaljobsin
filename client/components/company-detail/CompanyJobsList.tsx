@@ -6,8 +6,10 @@ import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import JobListSkeleton from "../landing/JobListSkeleton";
 import type { CompanyJobsListFragment$key } from "./__generated__/CompanyJobsListFragment.graphql";
-import type { CompanyJobsListInternalFragment$key, CompanyJobsListInternalFragment as CompanyJobsListInternalFragmentType } from './__generated__/CompanyJobsListInternalFragment.graphql';
-
+import type {
+	CompanyJobsListInternalFragment$key,
+	CompanyJobsListInternalFragment as CompanyJobsListInternalFragmentType,
+} from "./__generated__/CompanyJobsListInternalFragment.graphql";
 
 const CompanyJobsListFragment = graphql`
 fragment CompanyJobsListFragment on Query @argumentDefinitions(
@@ -56,11 +58,14 @@ type Props = {
 
 export default function CompanyJobsList({ rootQuery }: Props) {
 	const root = useFragment(CompanyJobsListFragment, rootQuery);
-	invariant(root.company.__typename === "Company", "Expected 'Company' node type");
-	const { data, loadNext, isLoadingNext } = usePaginationFragment<CompanyJobsListInternalFragmentType, CompanyJobsListInternalFragment$key>(
-		CompanyJobsListInternalFragment,
-		root.company,
+	invariant(
+		root.company.__typename === "Company",
+		"Expected 'Company' node type",
 	);
+	const { data, loadNext, isLoadingNext } = usePaginationFragment<
+		CompanyJobsListInternalFragmentType,
+		CompanyJobsListInternalFragment$key
+	>(CompanyJobsListInternalFragment, root.company);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -104,7 +109,7 @@ export default function CompanyJobsList({ rootQuery }: Props) {
 					authQueryRef={root.viewer}
 				/>
 			))}
-			<div ref={observerRef} className="h-10"></div>
+			<div ref={observerRef} className="h-10" />
 			{isLoadingNext && <JobListSkeleton />}
 		</div>
 	);
