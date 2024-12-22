@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cbe8d857d2af849bf8226de1510b7d79>>
+ * @generated SignedSource<<2db12f2a48bcf8cf64b8c27cd89567d8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,20 +10,23 @@
 
 import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type CompanyDetailsFragment$data = {
-  readonly company: {
-    readonly __typename: "Company";
-    readonly " $fragmentSpreads": FragmentRefs<"CompanyDetailsInternalFragment">;
+export type JobDetailsQuery$data = {
+  readonly job: {
+    readonly __typename: "Job";
+    readonly " $fragmentSpreads": FragmentRefs<"JobDetailsInternalFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
-  readonly " $fragmentType": "CompanyDetailsFragment";
+  readonly viewer: {
+    readonly " $fragmentSpreads": FragmentRefs<"JobControlsAuthFragment">;
+  };
+  readonly " $fragmentType": "JobDetailsQuery";
 };
-export type CompanyDetailsFragment$key = {
-  readonly " $data"?: CompanyDetailsFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"CompanyDetailsFragment">;
+export type JobDetailsQuery$key = {
+  readonly " $data"?: JobDetailsQuery$data;
+  readonly " $fragmentSpreads": FragmentRefs<"JobDetailsQuery">;
 };
 
 const node: ReaderFragment = {
@@ -36,7 +39,7 @@ const node: ReaderFragment = {
   ],
   "kind": "Fragment",
   "metadata": null,
-  "name": "CompanyDetailsFragment",
+  "name": "JobDetailsQuery",
   "selections": [
     {
       "alias": null,
@@ -49,7 +52,7 @@ const node: ReaderFragment = {
       ],
       "concreteType": null,
       "kind": "LinkedField",
-      "name": "company",
+      "name": "job",
       "plural": false,
       "selections": [
         {
@@ -65,11 +68,27 @@ const node: ReaderFragment = {
             {
               "args": null,
               "kind": "FragmentSpread",
-              "name": "CompanyDetailsInternalFragment"
+              "name": "JobDetailsInternalFragment"
             }
           ],
-          "type": "Company",
+          "type": "Job",
           "abstractKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "viewer",
+      "plural": false,
+      "selections": [
+        {
+          "args": null,
+          "kind": "FragmentSpread",
+          "name": "JobControlsAuthFragment"
         }
       ],
       "storageKey": null
@@ -79,6 +98,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "0f40c84322dc64dea0411ef25faf3c76";
+(node as any).hash = "08b6a71bb427ae25008c5139c6ca7ca6";
 
 export default node;

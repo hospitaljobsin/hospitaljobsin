@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<06ca035cc30c05b44181070ee0f64cf8>>
+ * @generated SignedSource<<bc190f91e838e86911f2842c41414305>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,7 @@ export type JobListPaginationQuery$variables = {
   searchTerm?: string | null | undefined;
 };
 export type JobListPaginationQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"JobListFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"JobListInternalFragment">;
 };
 export type JobListPaginationQuery = {
   response: JobListPaginationQuery$data;
@@ -113,7 +113,7 @@ return {
           (v1/*: any*/)
         ],
         "kind": "FragmentSpread",
-        "name": "JobListFragment"
+        "name": "JobListInternalFragment"
       }
     ],
     "type": "Query",
@@ -338,16 +338,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9979dae9de5d6052b97a55c655c9d086",
+    "cacheID": "b67d92f5b7abaa1955fb3d92f392c29b",
     "id": null,
     "metadata": {},
     "name": "JobListPaginationQuery",
     "operationKind": "query",
-    "text": "query JobListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $searchTerm: String = null\n) {\n  ...JobListFragment_1YZSDV\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment JobListFragment_1YZSDV on Query {\n  jobs(after: $cursor, first: $count, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        ...JobControlsFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query JobListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $searchTerm: String = null\n) {\n  ...JobListInternalFragment_1YZSDV\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment JobListInternalFragment_1YZSDV on Query {\n  jobs(after: $cursor, first: $count, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        ...JobControlsFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "75856a7b41aaa62779693797640d5ed9";
+(node as any).hash = "bb896485cc0b6f79ce94b63cb9c7095f";
 
 export default node;

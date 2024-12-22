@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f3cd162dc721085cdc754a0c97cbc2f5>>
+ * @generated SignedSource<<ea5048d128618165f970ad719e1f685f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,19 +11,13 @@
 import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type CompanyJobsListFragment$data = {
-  readonly id: string;
-  readonly jobs: {
-    readonly __id: string;
-    readonly edges: ReadonlyArray<{
-      readonly node: {
-        readonly id: string;
-        readonly " $fragmentSpreads": FragmentRefs<"JobFragment">;
-      };
-    }>;
-    readonly pageInfo: {
-      readonly hasNextPage: boolean;
-    };
+  readonly company: {
+    readonly " $fragmentSpreads": FragmentRefs<"CompanyJobsListInternalFragment">;
   };
+  readonly viewer: {
+    readonly " $fragmentSpreads": FragmentRefs<"JobControlsAuthFragment">;
+  };
+  readonly " $fragmentSpreads": FragmentRefs<"JobListInternalFragment">;
   readonly " $fragmentType": "CompanyJobsListFragment";
 };
 export type CompanyJobsListFragment$key = {
@@ -31,160 +25,73 @@ export type CompanyJobsListFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"CompanyJobsListFragment">;
 };
 
-import CompanyJobsListPaginationQuery_graphql from './CompanyJobsListPaginationQuery.graphql';
-
-const node: ReaderFragment = (function(){
-var v0 = [
-  "jobs"
-],
-v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-};
-return {
+const node: ReaderFragment = {
   "argumentDefinitions": [
-    {
-      "defaultValue": 10,
-      "kind": "LocalArgument",
-      "name": "count"
-    },
     {
       "defaultValue": null,
       "kind": "LocalArgument",
-      "name": "cursor"
+      "name": "slug"
     }
   ],
   "kind": "Fragment",
-  "metadata": {
-    "connection": [
-      {
-        "count": "count",
-        "cursor": "cursor",
-        "direction": "forward",
-        "path": (v0/*: any*/)
-      }
-    ],
-    "refetch": {
-      "connection": {
-        "forward": {
-          "count": "count",
-          "cursor": "cursor"
-        },
-        "backward": null,
-        "path": (v0/*: any*/)
-      },
-      "fragmentPathInResult": [
-        "node"
-      ],
-      "operation": CompanyJobsListPaginationQuery_graphql,
-      "identifierInfo": {
-        "identifierField": "id",
-        "identifierQueryVariableName": "id"
-      }
-    }
-  },
+  "metadata": null,
   "name": "CompanyJobsListFragment",
   "selections": [
     {
-      "alias": "jobs",
-      "args": null,
-      "concreteType": "JobConnection",
+      "alias": null,
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "slug",
+          "variableName": "slug"
+        }
+      ],
+      "concreteType": null,
       "kind": "LinkedField",
-      "name": "__CompanyJobsListFragment_jobs_connection",
+      "name": "company",
       "plural": false,
       "selections": [
         {
-          "alias": null,
-          "args": null,
-          "concreteType": "JobEdge",
-          "kind": "LinkedField",
-          "name": "edges",
-          "plural": true,
+          "kind": "InlineFragment",
           "selections": [
             {
-              "alias": null,
               "args": null,
-              "concreteType": "Job",
-              "kind": "LinkedField",
-              "name": "node",
-              "plural": false,
-              "selections": [
-                (v1/*: any*/),
-                {
-                  "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "JobFragment"
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "__typename",
-                  "storageKey": null
-                }
-              ],
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "cursor",
-              "storageKey": null
+              "kind": "FragmentSpread",
+              "name": "CompanyJobsListInternalFragment"
             }
           ],
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "PageInfo",
-          "kind": "LinkedField",
-          "name": "pageInfo",
-          "plural": false,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "hasNextPage",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "endCursor",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        },
-        {
-          "kind": "ClientExtension",
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "__id",
-              "storageKey": null
-            }
-          ]
+          "type": "Company",
+          "abstractKey": null
         }
       ],
       "storageKey": null
     },
-    (v1/*: any*/)
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "JobListInternalFragment"
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "viewer",
+      "plural": false,
+      "selections": [
+        {
+          "args": null,
+          "kind": "FragmentSpread",
+          "name": "JobControlsAuthFragment"
+        }
+      ],
+      "storageKey": null
+    }
   ],
-  "type": "Company",
+  "type": "Query",
   "abstractKey": null
 };
-})();
 
-(node as any).hash = "9ee000fdad7029599fed2f2465106b5d";
+(node as any).hash = "da5bb851f147c54d0e9925f572b6b0ae";
 
 export default node;

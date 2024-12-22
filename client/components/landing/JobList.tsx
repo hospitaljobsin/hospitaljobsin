@@ -1,14 +1,23 @@
 import { Card, CardBody } from "@nextui-org/react";
 import Image from "next/image";
 import { useEffect, useRef, useTransition } from "react";
-import { usePaginationFragment } from "react-relay";
+import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
 import type { JobListFragment$key } from "./__generated__/JobListFragment.graphql";
 
 const JobListFragment = graphql`
-  fragment JobListFragment on Query
+fragment JobListFragment on Query {
+	...JobListInternalFragment
+	viewer {
+		...JobControlsAuthFragment
+	}
+}
+`;
+
+const JobListInternalFragment = graphql`
+  fragment JobListInternalFragment on Query
   @argumentDefinitions(
     cursor: { type: "ID" }
     searchTerm: { type: "String", defaultValue: null }
@@ -38,9 +47,10 @@ type Props = {
 
 export default function JobList({ rootQuery, searchTerm }: Props) {
 	const [_isPending, startTransition] = useTransition();
+	const root = useFragment(JobListFragment, rootQuery);
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment(
-		JobListFragment,
-		rootQuery,
+		JobListInternalFragment,
+		root,
 	);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
@@ -103,7 +113,7 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
 	return (
 		<div className="w-full flex flex-col gap-8 pb-6">
 			{data.jobs.edges.map((jobEdge) => (
-				<Job job={jobEdge.node} key={jobEdge.node.id} />
+				<Job job={jobEdge.node} key={jobEdge.node.id} authQueryRef={root.viewer} />
 			))}
 			<div ref={observerRef} className="h-10" />
 			{isLoadingNext && <JobListSkeleton />}

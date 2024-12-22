@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f5160994ec342067afffb569570e4cd4>>
+ * @generated SignedSource<<e390134bb7695faa26c1262ecd3a8544>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,10 +15,6 @@ export type LoginFormMutation$variables = {
 };
 export type LoginFormMutation$data = {
   readonly login: {
-    readonly __typename: "Account";
-    readonly email: string;
-    readonly fullName: string;
-  } | {
     readonly __typename: "InvalidCredentialsError";
     readonly message: string;
   } | {
@@ -77,27 +73,6 @@ v3 = {
   ],
   "type": "InvalidCredentialsError",
   "abstractKey": null
-},
-v4 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "email",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "fullName",
-      "storageKey": null
-    }
-  ],
-  "type": "Account",
-  "abstractKey": null
 };
 return {
   "fragment": {
@@ -115,8 +90,7 @@ return {
         "plural": false,
         "selections": [
           (v2/*: any*/),
-          (v3/*: any*/),
-          (v4/*: any*/)
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
@@ -140,7 +114,6 @@ return {
         "selections": [
           (v2/*: any*/),
           (v3/*: any*/),
-          (v4/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -161,16 +134,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f625ef216b0da134f95306eb57e8dd9e",
+    "cacheID": "2d9002b6b166b2bdd862f618edeee9b5",
     "id": null,
     "metadata": {},
     "name": "LoginFormMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormMutation(\n  $email: String!\n  $password: String!\n) {\n  login(email: $email, password: $password) {\n    __typename\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on Account {\n      email\n      fullName\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation LoginFormMutation(\n  $email: String!\n  $password: String!\n) {\n  login(email: $email, password: $password) {\n    __typename\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "0a4e0197df6bedb360ec51f9e7f5aff4";
+(node as any).hash = "b0664d5dda9cd15e2ece0675aa60effc";
 
 export default node;

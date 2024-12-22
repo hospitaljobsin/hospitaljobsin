@@ -1,6 +1,5 @@
 "use client";
 import { APP_NAME } from "@/lib/constants";
-import { useAuth } from "@/lib/hooks/use-auth";
 import {
 	Button,
 	Navbar,
@@ -9,10 +8,27 @@ import {
 	NavbarItem,
 } from "@nextui-org/react";
 import Link from "next/link";
+import { useLazyLoadQuery } from "react-relay";
+import { graphql } from "relay-runtime";
 import AuthDropdown from "./AuthDropdown";
+import type { HeaderQuery as HeaderQueryType } from "./__generated__/HeaderQuery.graphql";
+
+const HeaderQuery = graphql`
+  query HeaderQuery {
+    viewer {
+      ... on Account {
+        __typename
+        ...AuthDropdownFragment
+      }
+      ... on NotAuthenticatedError {
+        __typename
+      }
+    }
+  }
+`;
 
 export default function Header() {
-	const { user } = useAuth();
+	const data = useLazyLoadQuery<HeaderQueryType>(HeaderQuery, {});
 	return (
 		<Navbar maxWidth="lg" isBordered>
 			<NavbarBrand>
@@ -22,8 +38,8 @@ export default function Header() {
 			</NavbarBrand>
 
 			<NavbarContent justify="end">
-				{user !== null ? (
-					<AuthDropdown user={user} />
+				{data.viewer.__typename === "Account" ? (
+					<AuthDropdown rootQuery={data.viewer} />
 				) : (
 					<>
 						<NavbarItem>

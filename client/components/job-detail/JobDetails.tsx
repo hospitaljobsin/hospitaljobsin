@@ -1,4 +1,3 @@
-import { useAuth } from "@/lib/hooks/use-auth";
 import { dateFormat } from "@/lib/intl";
 import {
 	Avatar,
@@ -16,10 +15,29 @@ import NextLink from "next/link";
 import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
 import JobControls from "./JobControls";
-import type { JobDetailsFragment$key } from "./__generated__/JobDetailsFragment.graphql";
+import { JobDetailsQuery$key } from "./__generated__/JobDetailsQuery.graphql";
 
-const JobDetailsFragment = graphql`
-  fragment JobDetailsFragment on Job {
+const JobDetailsQuery = graphql`
+  fragment JobDetailsQuery on Query @argumentDefinitions(
+      slug: {
+        type: "String!",
+      }
+    ) {
+    job(slug: $slug) {
+      __typename
+      ... on Job {
+        ...JobDetailsInternalFragment
+      }
+	 
+    }
+	viewer {
+		...JobControlsAuthFragment
+	  }
+  }
+`;
+
+const JobDetailsInternalFragment = graphql`
+  fragment JobDetailsInternalFragment on Job {
 	...JobControlsFragment
     title
     description
@@ -52,12 +70,13 @@ const JobDetailsFragment = graphql`
 `;
 
 export default function JobDetails({
-	job,
+	rootQuery,
 }: {
-	job: JobDetailsFragment$key;
+	rootQuery: JobDetailsQuery$key;
 }) {
-	const { user } = useAuth();
-	const data = useFragment(JobDetailsFragment, job);
+	const root = useFragment(JobDetailsQuery, rootQuery);
+
+	const data = useFragment(JobDetailsInternalFragment, root.job);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
 
@@ -128,7 +147,7 @@ export default function JobDetails({
 							<Globe size={16} /> {data.workMode}
 						</div>
 					</div>
-					<JobControls job={data} isAuthenticated={user !== null} />
+					<JobControls job={data} rootQuery={root.viewer} />
 				</CardFooter>
 			</Card>
 

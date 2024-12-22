@@ -1,10 +1,26 @@
 import { Avatar, Button, Card, CardBody, CardHeader } from "@nextui-org/react";
 import { Globe, MailIcon, MapPin, Phone } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
-import type { CompanyDetailsFragment$key } from "./__generated__/CompanyDetailsFragment.graphql";
+import { CompanyDetailsFragment$key } from "./__generated__/CompanyDetailsFragment.graphql";
+
 
 const CompanyDetailsFragment = graphql`
-  fragment CompanyDetailsFragment on Company {
+  fragment CompanyDetailsFragment on Query @argumentDefinitions(
+      slug: {
+        type: "String!",
+      }
+    ) {
+    company(slug: $slug) {
+      __typename
+      ... on Company {
+        ...CompanyDetailsInternalFragment
+      }
+	 
+    }
+  }
+`;
+const CompanyDetailsInternalFragment = graphql`
+  fragment CompanyDetailsInternalFragment on Company {
     name
     logoUrl
     description
@@ -19,9 +35,10 @@ const CompanyDetailsFragment = graphql`
 `;
 
 export default function CompanyDetails({
-	company,
-}: { company: CompanyDetailsFragment$key }) {
-	const data = useFragment(CompanyDetailsFragment, company);
+	rootQuery,
+}: { rootQuery: CompanyDetailsFragment$key }) {
+	const root = useFragment(CompanyDetailsFragment, rootQuery);
+	const data = useFragment(CompanyDetailsInternalFragment, root.company);
 
 	return (
 		<div className="w-full flex flex-col gap-6">

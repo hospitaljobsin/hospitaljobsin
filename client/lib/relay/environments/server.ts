@@ -1,10 +1,8 @@
 import { redirect } from "next/navigation";
 import type {
-	CacheConfig,
 	GraphQLResponse,
-	QueryResponseCache,
 	RequestParameters,
-	Variables,
+	Variables
 } from "relay-runtime";
 import { Environment, Network, RecordSource, Store } from "relay-runtime";
 
@@ -56,23 +54,21 @@ export async function networkFetch(
 	return json;
 }
 
-export const responseCache: QueryResponseCache | null = null;
-
 function createNetwork() {
 	async function fetchResponse(
 		params: RequestParameters,
 		variables: Variables,
-		cacheConfig: CacheConfig,
+		// cacheConfig: CacheConfig,
 	) {
-		const isQuery = params.operationKind === "query";
-		const cacheKey = params.id ?? params.cacheID;
-		const forceFetch = cacheConfig?.force;
-		if (responseCache != null && isQuery && !forceFetch) {
-			const fromCache = responseCache.get(cacheKey, variables);
-			if (fromCache != null) {
-				return Promise.resolve(fromCache);
-			}
-		}
+		// const isQuery = params.operationKind === "query";
+		// const cacheKey = params.id ?? params.cacheID;
+		// const forceFetch = cacheConfig?.force;
+		// if (responseCache != null && isQuery && !forceFetch) {
+		// 	const fromCache = responseCache.get(cacheKey, variables);
+		// 	if (fromCache != null) {
+		// 		return Promise.resolve(fromCache);
+		// 	}
+		// }
 
 		return networkFetch(params, variables);
 	}

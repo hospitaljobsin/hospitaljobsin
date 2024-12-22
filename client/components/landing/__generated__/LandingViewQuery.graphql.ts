@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e45a33cf489f894b017ea2c522da84a4>>
+ * @generated SignedSource<<93f08fd38033c3888cba96d7dcd5837b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -57,6 +57,13 @@ v2 = {
       "storageKey": null
     }
   ],
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
   "storageKey": null
 };
 return {
@@ -232,13 +239,7 @@ return {
                     ],
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "__typename",
-                    "storageKey": null
-                  }
+                  (v3/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -290,16 +291,40 @@ return {
         "key": "JobListFragment_jobs",
         "kind": "LinkedHandle",
         "name": "jobs"
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "viewer",
+        "plural": false,
+        "selections": [
+          (v3/*: any*/),
+          {
+            "kind": "TypeDiscriminator",
+            "abstractKey": "__isViewerPayload"
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v1/*: any*/)
+            ],
+            "type": "Node",
+            "abstractKey": "__isNode"
+          }
+        ],
+        "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "6638f9b5b860e893bb0a03cfe41dc93c",
+    "cacheID": "d576263b946ff5ab85d24ce768d6d958",
     "id": null,
     "metadata": {},
     "name": "LandingViewQuery",
     "operationKind": "query",
-    "text": "query LandingViewQuery {\n  ...JobListFragment\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment JobListFragment on Query {\n  jobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        ...JobControlsFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query LandingViewQuery {\n  ...JobListFragment\n}\n\nfragment JobControlsAuthFragment on ViewerPayload {\n  __isViewerPayload: __typename\n  __typename\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment JobListFragment on Query {\n  ...JobListInternalFragment\n  viewer {\n    __typename\n    ...JobControlsAuthFragment\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobListInternalFragment on Query {\n  jobs(first: 10) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        ...JobControlsFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();

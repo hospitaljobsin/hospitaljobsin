@@ -1,4 +1,3 @@
-import { useAuth } from "@/lib/hooks/use-auth";
 import {
 	Button,
 	Modal,
@@ -18,7 +17,7 @@ type Props = {
 const LogoutModalMutation = graphql`
   mutation LogoutModalMutation {
     logout {
-		__typename
+      __typename
     }
   }
 `;
@@ -27,26 +26,19 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 	const [commitMutation, isMutationInFlight] = useMutation(LogoutModalMutation);
 	const router = useRouter();
 
-	const {removeUser} = useAuth();
-
 	async function handleLogout() {
 		commitMutation({
 			variables: {},
 			updater: (store) => {
-				// update viewer
 				const root = store.getRoot();
 				const newViewer = store.create(
 					"client:root:viewer",
 					"NotAuthenticatedError",
 				);
 				root.setLinkedRecord(newViewer, "viewer");
-
-				// invalidate cache
-				store.invalidateStore();
 			},
 			onCompleted(response, errors) {
 				if (!errors) {
-					removeUser();
 					router.replace("/auth/login");
 				}
 			},

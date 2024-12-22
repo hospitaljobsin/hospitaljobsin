@@ -6,7 +6,14 @@ import {
 	useFragment,
 	useMutation,
 } from "react-relay";
+import { JobControlsAuthFragment$key } from "./__generated__/JobControlsAuthFragment.graphql";
 import type { JobControlsFragment$key } from "./__generated__/JobControlsFragment.graphql";
+
+export const JobControlsAuthFragment = graphql`
+  fragment JobControlsAuthFragment on ViewerPayload {
+		__typename
+  }
+`;
 
 export const JobControlsFragment = graphql`
   fragment JobControlsFragment on Job {
@@ -22,7 +29,7 @@ const JobControlsSaveMutation = graphql`
         savedJobEdge {
             node {
                 id
-                ...JobDetailsFragment
+                ...JobDetailsInternalFragment
                 ...JobControlsFragment
                 }
             }       
@@ -38,7 +45,7 @@ const JobControlsUnsaveMutation = graphql`
         savedJobEdge {
             node {
             id
-            ...JobDetailsFragment
+            ...JobDetailsInternalFragment
             ...JobControlsFragment
         }
         }
@@ -49,12 +56,15 @@ const JobControlsUnsaveMutation = graphql`
 
 export default function JobControls({
 	job,
-	isAuthenticated,
+	rootQuery
 }: {
-	isAuthenticated: boolean;
 	job: JobControlsFragment$key;
+	rootQuery: JobControlsAuthFragment$key;
 }) {
 	const data = useFragment(JobControlsFragment, job);
+	const authData = useFragment(JobControlsAuthFragment, rootQuery);
+
+	const isAuthenticated = authData.__typename === "Account";
 	const [commitSaveMutation, isSaveMutationInFlight] = useMutation(
 		JobControlsSaveMutation,
 	);

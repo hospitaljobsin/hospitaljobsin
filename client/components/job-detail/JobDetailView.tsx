@@ -5,12 +5,7 @@ import type { JobDetailViewQuery as JobDetailViewQueryType } from "./__generated
 
 const JobDetailViewQuery = graphql`
   query JobDetailViewQuery($slug: String!) {
-    job(slug: $slug) {
-      __typename
-      ... on Job {
-        ...JobDetailsFragment
-      }
-    }
+    ...JobDetailsQuery @arguments(slug: $slug)
   }
 `;
 
@@ -19,13 +14,9 @@ export default function JobDetailView(props: {
 }) {
 	const data = usePreloadedQuery(JobDetailViewQuery, props.queryRef);
 
-	if (data.job.__typename !== "Job") {
-		return null;
-	}
-
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-6">
-			<JobDetails job={data.job} />
+			<JobDetails rootQuery={data} />
 		</div>
 	);
 }

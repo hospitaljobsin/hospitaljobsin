@@ -1,5 +1,5 @@
 "use client";
-import { AuthContext } from "@/components/AuthProvider";
+import { AuthContext } from "@/components/context/AuthProvider";
 import { use } from "react";
 
 // Create a custom hook for consuming the context

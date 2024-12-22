@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<304e0df9b17c9344b157025dcdff05db>>
+ * @generated SignedSource<<f234f0365b0309024fe817e19ecb6d26>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,7 @@ export type Currency = "INR" | "%future added value";
 export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "%future added value";
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
-export type JobDetailsFragment$data = {
+export type JobDetailsInternalFragment$data = {
   readonly address: {
     readonly city: string;
     readonly state: string;
@@ -42,11 +42,11 @@ export type JobDetailsFragment$data = {
   readonly type: JobType;
   readonly workMode: WorkMode;
   readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment">;
-  readonly " $fragmentType": "JobDetailsFragment";
+  readonly " $fragmentType": "JobDetailsInternalFragment";
 };
-export type JobDetailsFragment$key = {
-  readonly " $data"?: JobDetailsFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"JobDetailsFragment">;
+export type JobDetailsInternalFragment$key = {
+  readonly " $data"?: JobDetailsInternalFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"JobDetailsInternalFragment">;
 };
 
 const node: ReaderFragment = (function(){
@@ -86,7 +86,7 @@ return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "JobDetailsFragment",
+  "name": "JobDetailsInternalFragment",
   "selections": [
     {
       "args": null,
@@ -219,6 +219,6 @@ return {
 };
 })();
 
-(node as any).hash = "41ebbefa9d589c4aa64e762b480dc477";
+(node as any).hash = "858d18d7385909a788f1fe7eed243af2";
 
 export default node;

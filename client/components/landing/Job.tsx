@@ -1,4 +1,3 @@
-import { useAuth } from "@/lib/hooks/use-auth";
 import { dateFormat } from "@/lib/intl";
 import {
 	Avatar,
@@ -12,6 +11,7 @@ import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import { JobControlsAuthFragment$key } from "../job-detail/__generated__/JobControlsAuthFragment.graphql";
 import JobControls from "../job-detail/JobControls";
 import type { JobFragment$key } from "./__generated__/JobFragment.graphql";
 
@@ -46,13 +46,19 @@ export const JobFragment = graphql`
   }
 `;
 
+export const JobAuthFragment = graphql`
+  fragment JobAuthFragment on ViewerPayload {
+	__typename
+  }
+`;
+
 type Props = {
 	job: JobFragment$key;
+	authQueryRef: JobControlsAuthFragment$key;
 };
 
-export default function Job({ job }: Props) {
+export default function Job({ job, authQueryRef: rootQuery }: Props) {
 	const router = useRouter();
-	const { user } = useAuth();
 	const data = useFragment(JobFragment, job);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
@@ -142,7 +148,7 @@ export default function Job({ job }: Props) {
 						</Chip>
 					))}
 				</div>
-				<JobControls job={data} isAuthenticated={user !== null} />
+				<JobControls job={data} rootQuery={rootQuery}  />
 			</CardFooter>
 		</Card>
 	);

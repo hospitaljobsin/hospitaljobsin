@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<be17b9be46060ba1c9df95700a8508c3>>
+ * @generated SignedSource<<34bfc1014bb9e7468031f65c5ec435eb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,14 +14,7 @@ export type JobDetailViewQuery$variables = {
   slug: string;
 };
 export type JobDetailViewQuery$data = {
-  readonly job: {
-    readonly __typename: "Job";
-    readonly " $fragmentSpreads": FragmentRefs<"JobDetailsFragment">;
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
+  readonly " $fragmentSpreads": FragmentRefs<"JobDetailsQuery">;
 };
 export type JobDetailViewQuery = {
   response: JobDetailViewQuery$data;
@@ -88,6 +81,14 @@ v5 = {
     }
   ],
   "storageKey": null
+},
+v6 = {
+  "kind": "InlineFragment",
+  "selections": [
+    (v3/*: any*/)
+  ],
+  "type": "Node",
+  "abstractKey": "__isNode"
 };
 return {
   "fragment": {
@@ -97,28 +98,9 @@ return {
     "name": "JobDetailViewQuery",
     "selections": [
       {
-        "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "job",
-        "plural": false,
-        "selections": [
-          (v2/*: any*/),
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "JobDetailsFragment"
-              }
-            ],
-            "type": "Job",
-            "abstractKey": null
-          }
-        ],
-        "storageKey": null
+        "kind": "FragmentSpread",
+        "name": "JobDetailsQuery"
       }
     ],
     "type": "Query",
@@ -275,30 +257,40 @@ return {
             "type": "Job",
             "abstractKey": null
           },
+          (v6/*: any*/)
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "viewer",
+        "plural": false,
+        "selections": [
+          (v2/*: any*/),
           {
-            "kind": "InlineFragment",
-            "selections": [
-              (v3/*: any*/)
-            ],
-            "type": "Node",
-            "abstractKey": "__isNode"
-          }
+            "kind": "TypeDiscriminator",
+            "abstractKey": "__isViewerPayload"
+          },
+          (v6/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "1108db89c32b6cfe4b2ed8c75b15fb08",
+    "cacheID": "49816498f353230e80c02f4b716682ee",
     "id": null,
     "metadata": {},
     "name": "JobDetailViewQuery",
     "operationKind": "query",
-    "text": "query JobDetailViewQuery(\n  $slug: String!\n) {\n  job(slug: $slug) {\n    __typename\n    ... on Job {\n      ...JobDetailsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  ...JobControlsFragment\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
+    "text": "query JobDetailViewQuery(\n  $slug: String!\n) {\n  ...JobDetailsQuery_20J5Pl\n}\n\nfragment JobControlsAuthFragment on ViewerPayload {\n  __isViewerPayload: __typename\n  __typename\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsInternalFragment on Job {\n  ...JobControlsFragment\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment JobDetailsQuery_20J5Pl on Query {\n  job(slug: $slug) {\n    __typename\n    ... on Job {\n      ...JobDetailsInternalFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  viewer {\n    __typename\n    ...JobControlsAuthFragment\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "bb007b7f1acb62d8db8024a3ba5504f4";
+(node as any).hash = "d40cf3569bd639e142fc9d891fc05be9";
 
 export default node;

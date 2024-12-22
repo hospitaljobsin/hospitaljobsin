@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/lib/hooks/use-auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	Button,
@@ -24,10 +23,6 @@ const LoginFormMutation = graphql`
       ... on InvalidCredentialsError {
         message
       }
-	  ... on Account {
-		email
-		fullName
-	  }
     }
   }
 `;
@@ -40,7 +35,6 @@ const loginSchema = z.object({
 export default function LoginForm() {
 	const router = useRouter();
 	const params = useSearchParams();
-	const {setUser} = useAuth();
 
 	const redirectTo = params.get("return_to") || "/";
 	const [commitMutation, isMutationInFlight] = useMutation(LoginFormMutation);
@@ -65,9 +59,6 @@ export default function LoginForm() {
 					setError("email", { message: response.login.message });
 					setError("password", { message: response.login.message });
 				} else {
-					if (response.login?.__typename === "Account") {
-						setUser({email: response.login.email, fullName: response.login.fullName});
-					}
 					router.replace(redirectTo);
 				}
 			},

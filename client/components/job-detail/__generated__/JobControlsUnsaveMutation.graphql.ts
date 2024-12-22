@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0b3793c2bab8306e564f6ba82e516d57>>
+ * @generated SignedSource<<78ee2af07b39f71284582f205695bf17>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,7 +18,7 @@ export type JobControlsUnsaveMutation$data = {
     readonly savedJobEdge?: {
       readonly node: {
         readonly id: string;
-        readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobDetailsFragment">;
+        readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobDetailsInternalFragment">;
       };
     };
   };
@@ -120,7 +120,7 @@ return {
                       {
                         "args": null,
                         "kind": "FragmentSpread",
-                        "name": "JobDetailsFragment"
+                        "name": "JobDetailsInternalFragment"
                       },
                       {
                         "args": null,
@@ -329,16 +329,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5230ca54d8f29b2b4d94c8fea17d40f8",
+    "cacheID": "a65022fd652ecabd72b5abad600f3440",
     "id": null,
     "metadata": {},
     "name": "JobControlsUnsaveMutation",
     "operationKind": "mutation",
-    "text": "mutation JobControlsUnsaveMutation(\n  $jobId: ID!\n) {\n  unsaveJob(jobId: $jobId) {\n    __typename\n    ... on UnsaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsFragment\n          ...JobControlsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsFragment on Job {\n  ...JobControlsFragment\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
+    "text": "mutation JobControlsUnsaveMutation(\n  $jobId: ID!\n) {\n  unsaveJob(jobId: $jobId) {\n    __typename\n    ... on UnsaveJobResult {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsInternalFragment\n          ...JobControlsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsInternalFragment on Job {\n  ...JobControlsFragment\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "782ddfb5b1437d77d50b17117774ef69";
+(node as any).hash = "528a4914f9208001f6f1e6d7ad7b70f4";
 
 export default node;

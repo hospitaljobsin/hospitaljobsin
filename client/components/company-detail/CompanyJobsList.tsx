@@ -1,21 +1,39 @@
-import { usePaginationFragment } from "react-relay";
+import { useFragment, usePaginationFragment } from "react-relay";
 import Job from "../landing/Job";
 
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import JobListSkeleton from "../landing/JobListSkeleton";
-import type { CompanyJobsListFragment$key } from "./__generated__/CompanyJobsListFragment.graphql";
+import { CompanyJobsListFragment$key } from "./__generated__/CompanyJobsListFragment.graphql";
+
 
 const CompanyJobsListFragment = graphql`
-  fragment CompanyJobsListFragment on Company
+fragment CompanyJobsListFragment on Query @argumentDefinitions(
+      slug: {
+        type: "String!",
+      }
+    )  {
+		company(slug: $slug) {
+			... on Company {
+				...CompanyJobsListInternalFragment
+			}
+		}
+	...JobListInternalFragment
+	viewer {
+		...JobControlsAuthFragment
+	}
+}
+`;
+
+const CompanyJobsListInternalFragment = graphql`
+  fragment CompanyJobsListInternalFragment on Company
   @argumentDefinitions(
     cursor: { type: "ID" }
     count: { type: "Int", defaultValue: 10 }
   )
   @refetchable(queryName: "CompanyJobsListPaginationQuery") {
     jobs(after: $cursor, first: $count)
-      @connection(key: "CompanyJobsListFragment_jobs") {
-      __id
+      @connection(key: "CompanyJobsListInternalFragment_jobs") {
       edges {
         node {
           id
@@ -34,9 +52,10 @@ type Props = {
 };
 
 export default function CompanyJobsList({ rootQuery }: Props) {
+	const root = useFragment(CompanyJobsListFragment, rootQuery);
 	const { data, loadNext, isLoadingNext } = usePaginationFragment(
-		CompanyJobsListFragment,
-		rootQuery,
+		CompanyJobsListInternalFragment,
+		root.company,
 	);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
@@ -77,8 +96,8 @@ export default function CompanyJobsList({ rootQuery }: Props) {
 			{data.jobs.edges.map((jobEdge) => (
 				<Job
 					job={jobEdge.node}
-					connectionId={data.jobs.__id}
 					key={jobEdge.node.id}
+					authQueryRef={root.viewer}
 				/>
 			))}
 			<div ref={observerRef} className="h-10"></div>
