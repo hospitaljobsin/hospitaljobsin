@@ -41,7 +41,7 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 	const [showShareModal, setShowShareModal] = useState(false);
 	const data = useFragment(ShareJobFragment, job);
 	const shareUrl = `${env.NEXT_PUBLIC_URL}${links.jobDetail(data.slug)}`;
-	const title = `Job Position: ${data.title} - Apply Now!`;
+	const title = `Job Position: ${data.title} at ${data.company?.name} - Apply Now!`;
 	const description = data.description
 		? `${data.description.slice(0, 100)}...`
 		: undefined;
