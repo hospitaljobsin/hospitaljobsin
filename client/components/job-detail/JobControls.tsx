@@ -82,7 +82,7 @@ export default function JobControls({
 				const rootRecord = store.getRoot();
 				const connectionRecord = ConnectionHandler.getConnection(
 					rootRecord,
-					"SavedJobsListFragment_savedJobs",
+					"SavedJobListFragment_savedJobs",
 				);
 
 				const jobRecord = store.get(data.id);
@@ -111,7 +111,7 @@ export default function JobControls({
 				const rootRecord = store.getRoot();
 				const connectionRecord = ConnectionHandler.getConnection(
 					rootRecord,
-					"SavedJobsListFragment_savedJobs",
+					"SavedJobListFragment_savedJobs",
 				);
 
 				const jobRecord = store.get(data.id);

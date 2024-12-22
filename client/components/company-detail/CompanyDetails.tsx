@@ -2,7 +2,7 @@ import { Avatar, Button, Card, CardBody, CardHeader } from "@nextui-org/react";
 import { Globe, MailIcon, MapPin, Phone } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 import { CompanyDetailsFragment$key } from "./__generated__/CompanyDetailsFragment.graphql";
-import type { CompanyDetailsInternalFragment as CompanyDetailsInternalFragmentType } from "./__generated__/CompanyDetailsInternalFragment.graphql";
+import type { CompanyDetailsInternalFragment$key as CompanyDetailsInternalFragmentType } from "./__generated__/CompanyDetailsInternalFragment.graphql";
 
 
 const CompanyDetailsFragment = graphql`

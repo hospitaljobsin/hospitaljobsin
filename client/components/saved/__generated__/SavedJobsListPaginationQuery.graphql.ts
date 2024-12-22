@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d94239d31338f86c65940476225abd11>>
+ * @generated SignedSource<<549d8001ea469a44d8ef332765c0bf89>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type SavedJobsListPaginationQuery$variables = {
   cursor?: string | null | undefined;
 };
 export type SavedJobsListPaginationQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"SavedJobsListFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"SavedJobsListInternalFragment">;
 };
 export type SavedJobsListPaginationQuery = {
   response: SavedJobsListPaginationQuery$data;
@@ -100,7 +100,7 @@ return {
           }
         ],
         "kind": "FragmentSpread",
-        "name": "SavedJobsListFragment"
+        "name": "SavedJobsListInternalFragment"
       }
     ],
     "type": "Query",
@@ -307,18 +307,6 @@ return {
               }
             ],
             "storageKey": null
-          },
-          {
-            "kind": "ClientExtension",
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__id",
-                "storageKey": null
-              }
-            ]
           }
         ],
         "storageKey": null
@@ -328,23 +316,23 @@ return {
         "args": (v1/*: any*/),
         "filters": null,
         "handle": "connection",
-        "key": "SavedJobsListFragment_savedJobs",
+        "key": "SavedJobListFragment_savedJobs",
         "kind": "LinkedHandle",
         "name": "savedJobs"
       }
     ]
   },
   "params": {
-    "cacheID": "8b9f89a2d9f964ca63ef4e4e6dc22ca1",
+    "cacheID": "3eb016d8cc75afb9130a816cc6417370",
     "id": null,
     "metadata": {},
     "name": "SavedJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query SavedJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n) {\n  ...SavedJobsListFragment_1G22uz\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment SavedJobsListFragment_1G22uz on Query {\n  savedJobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query SavedJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n) {\n  ...SavedJobsListInternalFragment_1G22uz\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment SavedJobsListInternalFragment_1G22uz on Query {\n  savedJobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "5d493ae7c86d5fe3ec3986ca173002f7";
+(node as any).hash = "d3d14d34a2ee914f2b9ab51460c5bb61";
 
 export default node;

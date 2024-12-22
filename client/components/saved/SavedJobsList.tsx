@@ -1,4 +1,4 @@
-import { usePaginationFragment } from "react-relay";
+import { useFragment, usePaginationFragment } from "react-relay";
 import Job from "../landing/Job";
 
 import { Card, CardBody } from "@nextui-org/react";
@@ -6,18 +6,28 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import SavedJobsListSkeleton from "../landing/JobListSkeleton";
-import type { SavedJobsListFragment$key } from "./__generated__/SavedJobsListFragment.graphql";
+import { SavedJobsListFragment$key } from "./__generated__/SavedJobsListFragment.graphql";
+import type { SavedJobsListInternalFragment$key, SavedJobsListInternalFragment as SavedJobsListInternalFragmentType } from "./__generated__/SavedJobsListInternalFragment.graphql";
+
 
 const SavedJobsListFragment = graphql`
-  fragment SavedJobsListFragment on Query
+fragment SavedJobsListFragment on Query {
+		...SavedJobsListInternalFragment
+	viewer {
+		...JobControlsAuthFragment
+	}
+}
+`;
+
+const SavedJobsListInternalFragment = graphql`
+  fragment SavedJobsListInternalFragment on Query
   @argumentDefinitions(
     cursor: { type: "ID" }
     count: { type: "Int", defaultValue: 10 }
   )
   @refetchable(queryName: "SavedJobsListPaginationQuery") {
     savedJobs(after: $cursor, first: $count)
-      @connection(key: "SavedJobsListFragment_savedJobs") {
-      __id
+      @connection(key: "SavedJobListFragment_savedJobs") {
       edges {
         node {
           id
@@ -36,9 +46,10 @@ type Props = {
 };
 
 export default function SavedJobsList({ rootQuery }: Props) {
-	const { data, loadNext, isLoadingNext } = usePaginationFragment(
-		SavedJobsListFragment,
-		rootQuery,
+	const root = useFragment(SavedJobsListFragment, rootQuery);
+	const { data, loadNext, isLoadingNext } = usePaginationFragment<SavedJobsListInternalFragmentType, SavedJobsListInternalFragment$key>(
+		SavedJobsListInternalFragment,
+		root,
 	);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
@@ -95,8 +106,8 @@ export default function SavedJobsList({ rootQuery }: Props) {
 			{data.savedJobs.edges.map((jobEdge) => (
 				<Job
 					job={jobEdge.node}
-					connectionId={data.savedJobs.__id}
 					key={jobEdge.node.id}
+					authQueryRef={root.viewer}
 				/>
 			))}
 			<div ref={observerRef} className="h-10" />

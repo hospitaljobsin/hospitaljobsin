@@ -15,7 +15,7 @@ import NextLink from "next/link";
 import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
 import JobControls from "./JobControls";
-import type { JobDetailsInternalFragment as JobDetailsInternalFragmentType } from "./__generated__/JobDetailsInternalFragment.graphql";
+import type { JobDetailsInternalFragment$key as JobDetailsInternalFragmentType } from "./__generated__/JobDetailsInternalFragment.graphql";
 import { JobDetailsQuery$key } from "./__generated__/JobDetailsQuery.graphql";
 
 const JobDetailsQuery = graphql`
