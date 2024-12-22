@@ -8,6 +8,7 @@ jiti.esmResolve("./lib/env");
 
 const nextConfig: NextConfig = {
 	/* config options here */
+	reactStrictMode: true,
 	compiler: {
 		relay: {
 			src: "./",
