@@ -2,23 +2,22 @@ import type { CompanyDetailViewQuery } from "@/components/company-detail/__gener
 import CompanyDetailViewQueryNode from "@/components/company-detail/__generated__/CompanyDetailViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import CompanyDetailViewClientComponent from "./CompanyDetailViewClientComponent";
-
-export const revalidate = 0;
 
 // TODO: WHAT IF?
 // we just use SSR for generating the metadata, and everything else is client side?
 // need to see how and where generateMetadata is used/ invoked by Next.js
 
 // Function to load and cache the query result
-async function fetchAndCacheQuery(slug: string) {
+const fetchAndCacheQuery = cache(async (slug: string) => {
 	return await loadSerializableQuery<
 		typeof CompanyDetailViewQueryNode,
 		CompanyDetailViewQuery
 	>(CompanyDetailViewQueryNode.params, {
 		slug: slug,
 	});
-}
+});
 
 export async function generateMetadata({
 	params,

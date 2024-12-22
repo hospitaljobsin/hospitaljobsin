@@ -188,9 +188,9 @@ export default function JobControls({
 							</Button>
 						</Tooltip>
 					)}
-					<ShareJob job={data} />
 				</>
 			)}
+			<ShareJob job={data} />
 		</div>
 	);
 }

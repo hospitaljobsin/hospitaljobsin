@@ -2,18 +2,18 @@ import type { JobDetailViewQuery } from "@/components/job-detail/__generated__/J
 import JobDetailViewQueryNode from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 
-export const dynamic = "force-dynamic";
-
-async function fetchAndCacheQuery(slug: string) {
+const fetchAndCacheQuery = cache(async (slug: string) => {
+	console.log("fetching job...");
 	return await loadSerializableQuery<
 		typeof JobDetailViewQueryNode,
 		JobDetailViewQuery
 	>(JobDetailViewQueryNode.params, {
 		slug: slug,
 	});
-}
+});
 
 export async function generateMetadata({
 	params,
