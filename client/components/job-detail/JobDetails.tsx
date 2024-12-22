@@ -14,6 +14,7 @@ import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import NextLink from "next/link";
 import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
+import invariant from 'tiny-invariant';
 import JobControls from "./JobControls";
 import type { JobDetailsInternalFragment$key as JobDetailsInternalFragmentType } from "./__generated__/JobDetailsInternalFragment.graphql";
 import { JobDetailsQuery$key } from "./__generated__/JobDetailsQuery.graphql";
@@ -76,6 +77,8 @@ export default function JobDetails({
 	rootQuery: JobDetailsQuery$key;
 }) {
 	const root = useFragment(JobDetailsQuery, rootQuery);
+
+	invariant(root.job.__typename === "Job", "Expected 'Job' node type");
 
 	const data = useFragment<JobDetailsInternalFragmentType>(JobDetailsInternalFragment, root.job);
 
