@@ -1,14 +1,13 @@
 import links from "@/lib/links";
 import { Button, Link, Tooltip } from "@nextui-org/react";
-import { BookmarkCheckIcon, BookmarkIcon, Share2Icon } from "lucide-react";
-import { useState } from "react";
+import { BookmarkCheckIcon, BookmarkIcon } from "lucide-react";
 import {
 	ConnectionHandler,
 	graphql,
 	useFragment,
 	useMutation,
 } from "react-relay";
-import ShareJobModal from "./ShareJobModal";
+import ShareJob from "./ShareJob";
 import type { JobControlsAuthFragment$key } from "./__generated__/JobControlsAuthFragment.graphql";
 import type { JobControlsFragment$key } from "./__generated__/JobControlsFragment.graphql";
 
@@ -22,8 +21,7 @@ export const JobControlsFragment = graphql`
   fragment JobControlsFragment on Job {
     id
     isSaved
-	slug
-	...ShareJobModalFragment
+	...ShareJobFragment
   }
 `;
 
@@ -66,7 +64,6 @@ export default function JobControls({
 	job: JobControlsFragment$key;
 	rootQuery: JobControlsAuthFragment$key;
 }) {
-	const [showShareModal, setShowShareModal] = useState(false);
 	const data = useFragment(JobControlsFragment, job);
 	const authData = useFragment(JobControlsAuthFragment, rootQuery);
 
@@ -130,23 +127,6 @@ export default function JobControls({
 		});
 	}
 
-	async function handleShare() {
-		try {
-			if (navigator.canShare()) {
-				await navigator.share({
-					title: "Check out this job",
-					text: "I found this job on JobBoard and thought you might be interested",
-					url: `/jobs/${data.slug}`,
-				});
-			} else {
-				setShowShareModal(true);
-			}
-		} catch (error) {
-			console.error("Error sharing URL: ", error);
-			setShowShareModal(true);
-		}
-	}
-
 	return (
 		<div className="flex items-center gap-4">
 			{!isAuthenticated ? (
@@ -204,22 +184,9 @@ export default function JobControls({
 							/>
 						</Button>
 					)}
+					<ShareJob job={data} />
 				</>
 			)}
-			<Button size="lg" variant="light" isIconOnly onPress={handleShare}>
-				<Share2Icon
-					size={24}
-					strokeWidth={1.5}
-					className="text-foreground-500"
-				/>
-			</Button>
-			<ShareJobModal
-				job={data}
-				isOpen={showShareModal}
-				onClose={() => {
-					setShowShareModal(false);
-				}}
-			/>
 		</div>
 	);
 }

@@ -14,10 +14,10 @@ import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import NextLink from "next/link";
 import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
-import invariant from 'tiny-invariant';
+import invariant from "tiny-invariant";
 import JobControls from "./JobControls";
 import type { JobDetailsInternalFragment$key as JobDetailsInternalFragmentType } from "./__generated__/JobDetailsInternalFragment.graphql";
-import { JobDetailsQuery$key } from "./__generated__/JobDetailsQuery.graphql";
+import type { JobDetailsQuery$key } from "./__generated__/JobDetailsQuery.graphql";
 
 const JobDetailsQuery = graphql`
   fragment JobDetailsQuery on Query @argumentDefinitions(
@@ -80,7 +80,10 @@ export default function JobDetails({
 
 	invariant(root.job.__typename === "Job", "Expected 'Job' node type");
 
-	const data = useFragment<JobDetailsInternalFragmentType>(JobDetailsInternalFragment, root.job);
+	const data = useFragment<JobDetailsInternalFragmentType>(
+		JobDetailsInternalFragment,
+		root.job,
+	);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
 
