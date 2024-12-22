@@ -33,7 +33,7 @@ mutation = merge_types(
 
 
 class MyExtension(SchemaExtension):
-    def on_operation(self):
+    def on_validate(self):
         print("GraphQL operation start")
         print("Query:", self.execution_context.query)
         yield

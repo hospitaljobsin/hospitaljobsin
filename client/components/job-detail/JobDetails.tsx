@@ -154,7 +154,7 @@ export default function JobDetails({
 							<Globe size={16} /> {data.workMode}
 						</div>
 					</div>
-					<JobControls job={data} rootQuery={root.viewer} />
+					<JobControls job={data} authQueryRef={root.viewer} />
 				</CardFooter>
 			</Card>
 

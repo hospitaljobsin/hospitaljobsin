@@ -103,6 +103,13 @@ ProfilePayload = Annotated[
     ),
 ]
 
+UpdateProfilePayload = Annotated[
+    ProfileType | ProfileNotFoundErrorType,
+    strawberry.union(
+        name="UpdateProfilePayload",
+    ),
+]
+
 
 @strawberry.type(name="Account")
 class AccountType(BaseNodeType[Account]):

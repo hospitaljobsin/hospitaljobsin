@@ -59,10 +59,10 @@ const JobControlsUnsaveMutation = graphql`
 
 export default function JobControls({
 	job,
-	rootQuery,
+	authQueryRef: rootQuery,
 }: {
 	job: JobControlsFragment$key;
-	rootQuery: JobControlsAuthFragment$key;
+	authQueryRef: JobControlsAuthFragment$key;
 }) {
 	const data = useFragment(JobControlsFragment, job);
 	const authData = useFragment(JobControlsAuthFragment, rootQuery);

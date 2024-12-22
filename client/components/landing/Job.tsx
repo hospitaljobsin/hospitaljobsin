@@ -149,7 +149,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 						</Chip>
 					))}
 				</div>
-				<JobControls job={data} rootQuery={rootQuery} />
+				<JobControls job={data} authQueryRef={rootQuery} />
 			</CardFooter>
 		</Card>
 	);
