@@ -9,6 +9,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 	Snippet,
+	Tooltip,
 } from "@nextui-org/react";
 import { GlobeIcon, Share2Icon } from "lucide-react";
 import { useState } from "react";
@@ -65,13 +66,15 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 
 	return (
 		<>
-			<Button size="lg" variant="light" isIconOnly onPress={handleShare}>
-				<Share2Icon
-					size={24}
-					strokeWidth={1.5}
-					className="text-foreground-500"
-				/>
-			</Button>
+			<Tooltip content="Share this job">
+				<Button size="lg" variant="light" isIconOnly onPress={handleShare}>
+					<Share2Icon
+						size={24}
+						strokeWidth={1.5}
+						className="text-foreground-500"
+					/>
+				</Button>
+			</Tooltip>
 			<Modal
 				isOpen={showShareModal}
 				onClose={() => {

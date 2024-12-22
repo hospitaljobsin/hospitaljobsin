@@ -156,33 +156,37 @@ export default function JobControls({
 			) : (
 				<>
 					{data.isSaved ? (
-						<Button
-							size="lg"
-							variant="light"
-							isIconOnly
-							onPress={handleUnsave}
-							isDisabled={isSaveMutationInFlight || isUnsaveMutationInFlight}
-						>
-							<BookmarkCheckIcon
-								size={24}
-								strokeWidth={1.5}
-								className="text-foreground-500"
-							/>
-						</Button>
+						<Tooltip content="Unsave job">
+							<Button
+								size="lg"
+								variant="light"
+								isIconOnly
+								onPress={handleUnsave}
+								isDisabled={isSaveMutationInFlight || isUnsaveMutationInFlight}
+							>
+								<BookmarkCheckIcon
+									size={24}
+									strokeWidth={1.5}
+									className="text-foreground-500"
+								/>
+							</Button>
+						</Tooltip>
 					) : (
-						<Button
-							size="lg"
-							variant="light"
-							isIconOnly
-							onPress={handleSave}
-							isDisabled={isSaveMutationInFlight || isUnsaveMutationInFlight}
-						>
-							<BookmarkIcon
-								size={24}
-								strokeWidth={1.5}
-								className="text-foreground-500"
-							/>
-						</Button>
+						<Tooltip content="Save job">
+							<Button
+								size="lg"
+								variant="light"
+								isIconOnly
+								onPress={handleSave}
+								isDisabled={isSaveMutationInFlight || isUnsaveMutationInFlight}
+							>
+								<BookmarkIcon
+									size={24}
+									strokeWidth={1.5}
+									className="text-foreground-500"
+								/>
+							</Button>
+						</Tooltip>
 					)}
 					<ShareJob job={data} />
 				</>
