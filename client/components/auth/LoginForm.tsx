@@ -16,6 +16,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
+import type { LoginFormMutation as LoginFormMutationType } from "./__generated__/LoginFormMutation.graphql";
 
 const LoginFormMutation = graphql`
   mutation LoginFormMutation($email: String!, $password: String!) {
@@ -55,7 +56,7 @@ export default function LoginForm() {
 				email: values.email,
 				password: values.password,
 			},
-			onCompleted(response) {
+			onCompleted(response: LoginFormMutationType["response"]) {
 				if (response.login?.__typename === "InvalidCredentialsError") {
 					setError("email", { message: response.login.message });
 					setError("password", { message: response.login.message });

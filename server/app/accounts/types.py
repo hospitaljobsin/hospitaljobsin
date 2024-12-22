@@ -6,7 +6,7 @@ from typing import Annotated, Self
 import strawberry
 from aioinject.ext.strawberry import inject
 
-from app.accounts.documents import Account, Profile
+from app.accounts.documents import Account, Language, Profile
 from app.base.types import (
     AddressType,
     BaseErrorType,
@@ -48,6 +48,13 @@ class LanguageType:
     name: str
     proficiency: str
 
+    @classmethod
+    def marshal(cls, language: Language) -> Self:
+        return cls(
+            name=language.name,
+            proficiency=language.proficiency,
+        )
+
 
 @strawberry.type(name="CurrentJob")
 class CurrentJobType:
@@ -71,14 +78,24 @@ class ProfileType(BaseNodeType[Profile]):
     current_job: CurrentJobType | None = None
 
     created_at: datetime
-    updated_at: datetime
 
     @classmethod
     def marshal(cls, profile: Profile) -> Self:
         """Marshal into a node instance."""
         return cls(
             id=str(profile.id),
-            name=profile.name,
+            gender=profile.gender,
+            date_of_birth=profile.date_of_birth,
+            address=AddressType.marshal(profile.address)
+            if profile.address is not None
+            else None,
+            marital_status=profile.marital_status,
+            category=CategoryTypeEnum[profile.category.upper()],
+            languages=[
+                LanguageType.marshal(language) for language in profile.languages
+            ],
+            total_job_experience=profile.total_job_experience,
+            created_at=profile.id.generation_time,
         )
 
     @classmethod

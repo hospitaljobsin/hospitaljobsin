@@ -16,7 +16,11 @@ import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
 import JobControls from "./JobControls";
-import type { JobDetailsInternalFragment$key as JobDetailsInternalFragmentType } from "./__generated__/JobDetailsInternalFragment.graphql";
+import type {
+	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
+	JobType,
+	WorkMode,
+} from "./__generated__/JobDetailsInternalFragment.graphql";
 import type { JobDetailsQuery$key } from "./__generated__/JobDetailsQuery.graphql";
 
 const JobDetailsQuery = graphql`
@@ -97,6 +101,34 @@ export default function JobDetails({
 		}
 	};
 
+	const jobType = (type: JobType) => {
+		switch (type) {
+			case "CONTRACT":
+				return "Contract";
+			case "FULL_TIME":
+				return "Full Time";
+			case "INTERNSHIP":
+				return "Internship";
+			case "PART_TIME":
+				return "Part Time";
+			default:
+				return null;
+		}
+	};
+
+	const workMode = (mode: WorkMode) => {
+		switch (mode) {
+			case "HYBRID":
+				return "Hybrid";
+			case "OFFICE":
+				return "Office";
+			case "REMOTE":
+				return "Remote";
+			default:
+				return null;
+		}
+	};
+
 	const salaryRange = data.hasSalaryRange ? (
 		<div className="flex items-center gap-2 text-xl text-foreground-500">
 			{currencyIcon(data.currency)}
@@ -141,7 +173,7 @@ export default function JobDetails({
 				</CardBody>
 				<CardFooter className="flex justify-between w-full">
 					<div className="flex flex-wrap gap-8 items-center text-foreground-600 w-full">
-						<p>{data.type}</p>
+						<p>{jobType(data.type)}</p>
 						<div className="flex items-center gap-2">
 							<MapPin size={16} />{" "}
 							{`${data.address.city}, ${data.address.state}`}
@@ -151,7 +183,7 @@ export default function JobDetails({
 						</div>
 
 						<div className="flex items-center gap-2">
-							<Globe size={16} /> {data.workMode}
+							<Globe size={16} /> {workMode(data.workMode)}
 						</div>
 					</div>
 					<JobControls job={data} authQueryRef={root.viewer} />
@@ -196,8 +228,8 @@ export default function JobDetails({
 				</CardBody>
 				<CardFooter>
 					<div className="flex flex-wrap gap-4 mt-2 w-full">
-						{data.skills.map((skill, index) => (
-							<Chip variant="flat" key={`skill-${index}`}>
+						{data.skills.map((skill) => (
+							<Chip variant="flat" key={skill}>
 								{skill}
 							</Chip>
 						))}

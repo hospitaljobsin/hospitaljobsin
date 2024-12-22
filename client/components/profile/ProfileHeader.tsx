@@ -25,6 +25,7 @@ export default function ProfileHeader({ rootQuery }: Props) {
 		<Card className="p-6 space-y-6" shadow="sm">
 			<CardHeader className="flex gap-6 w-full items-center justify-start">
 				<Badge
+					placement="bottom-right"
 					variant="solid"
 					content={
 						<Tooltip

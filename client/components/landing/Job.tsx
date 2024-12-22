@@ -13,8 +13,12 @@ import { useRouter } from "next-nprogress-bar";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import JobControls from "../job-detail/JobControls";
-import { JobControlsAuthFragment$key } from "../job-detail/__generated__/JobControlsAuthFragment.graphql";
-import type { JobFragment$key } from "./__generated__/JobFragment.graphql";
+import type { JobControlsAuthFragment$key } from "../job-detail/__generated__/JobControlsAuthFragment.graphql";
+import type { JobType } from "../job-detail/__generated__/JobDetailsInternalFragment.graphql";
+import type {
+	JobFragment$key,
+	WorkMode,
+} from "./__generated__/JobFragment.graphql";
 
 export const JobFragment = graphql`
   fragment JobFragment on Job {
@@ -74,6 +78,34 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 		}
 	};
 
+	const jobType = (type: JobType) => {
+		switch (type) {
+			case "CONTRACT":
+				return "Contract";
+			case "FULL_TIME":
+				return "Full Time";
+			case "INTERNSHIP":
+				return "Internship";
+			case "PART_TIME":
+				return "Part Time";
+			default:
+				return null;
+		}
+	};
+
+	const workMode = (mode: WorkMode) => {
+		switch (mode) {
+			case "HYBRID":
+				return "Hybrid";
+			case "OFFICE":
+				return "Office";
+			case "REMOTE":
+				return "Remote";
+			default:
+				return null;
+		}
+	};
+
 	const salaryRange = data.hasSalaryRange ? (
 		<div className="flex items-center gap-2 text-xl font-medium">
 			{currencyIcon(data.currency)}
@@ -128,7 +160,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 					</p>
 				</div>
 				<div className="flex flex-wrap gap-8 items-center text-foreground-600 w-full">
-					<p>{data.type}</p>
+					<p>{jobType(data.type)}</p>
 					<div className="flex items-center gap-2">
 						<MapPin size={16} /> {`${data.address.city}, ${data.address.state}`}
 					</div>
@@ -137,14 +169,14 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 					</div>
 
 					<div className="flex items-center gap-2">
-						<Globe size={16} /> {data.workMode}
+						<Globe size={16} /> {workMode(data.workMode)}
 					</div>
 				</div>
 			</CardBody>
 			<CardFooter className="flex items-center justify-between gap-6 w-full">
 				<div className="flex flex-wrap gap-4 mt-2 w-full">
-					{data.skills.map((skill, index) => (
-						<Chip variant="flat" key={index}>
+					{data.skills.map((skill) => (
+						<Chip variant="flat" key={skill}>
 							{skill}
 						</Chip>
 					))}
