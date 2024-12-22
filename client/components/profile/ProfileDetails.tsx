@@ -23,12 +23,12 @@ export default function ProfileDetails({ rootQuery }: Props) {
 	const data = useFragment(ProfileDetailsFragment, rootQuery);
 
 	return (
-		<>
+		<div className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="sm">
 				<CardHeader className="flex gap-6 w-full items-center justify-start">
 					<h1 className="w-full text-lg font-medium">Personal Details</h1>
 				</CardHeader>
-				<CardBody className="flex flex-col gap-6">
+				<CardBody className="flex flex-col gap-10">
 					<div className="flex flex-col gap-2 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Gender</h1>
 						<h2 className="w-full text-foreground-500">Add your gender</h2>
@@ -63,7 +63,7 @@ export default function ProfileDetails({ rootQuery }: Props) {
 				<CardHeader className="flex gap-6 w-full items-center justify-start">
 					<h1 className="w-full text-lg font-medium">Employment Details</h1>
 				</CardHeader>
-				<CardBody className="flex flex-col gap-6">
+				<CardBody className="flex flex-col gap-10">
 					<div className="flex flex-col gap-2 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Total Experience</h1>
 						<h2 className="w-full text-foreground-500">
@@ -82,6 +82,6 @@ export default function ProfileDetails({ rootQuery }: Props) {
 					</div>
 				</CardBody>
 			</Card>
-		</>
+		</div>
 	);
 }
