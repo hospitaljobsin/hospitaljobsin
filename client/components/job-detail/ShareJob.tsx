@@ -1,13 +1,16 @@
 import { env } from "@/lib/env";
 import links from "@/lib/links";
 import {
+	Avatar,
 	Button,
 	Modal,
 	ModalBody,
 	ModalContent,
+	ModalFooter,
 	ModalHeader,
+	Snippet,
 } from "@nextui-org/react";
-import { Share2Icon } from "lucide-react";
+import { GlobeIcon, Share2Icon } from "lucide-react";
 import { useState } from "react";
 import { useFragment } from "react-relay";
 import {
@@ -26,6 +29,10 @@ export const ShareJobFragment = graphql`
     slug
     title
     description
+    company {
+        name
+        logoUrl
+    }
   }
 
 `;
@@ -70,13 +77,40 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 				onClose={() => {
 					setShowShareModal(false);
 				}}
-				className="p-6"
+				className="p-6 w-full"
+				size="3xl"
 			>
 				<ModalContent>
-					<ModalHeader className="flex flex-col gap-1">
-						Share this Job
+					<ModalHeader className="flex w-full justify-between items-center gap-4 py-6 px-8">
+						<div className="flex items-center gap-4">
+							<Avatar
+								name={data.company?.name}
+								src={data.company?.logoUrl || undefined}
+								size="lg"
+							/>
+							<div className="flex flex-col gap-2 items-start">
+								<h4 className="text-xl font-medium">{data.title}</h4>
+								<p className="text-md font-normal text-foreground-500">
+									{data.company?.name}
+								</p>
+							</div>
+						</div>
 					</ModalHeader>
-					<ModalBody className="flex gap-4 items-center w-full flex-row">
+					<ModalBody>
+						<Snippet
+							tooltipProps={{ content: "Copy link" }}
+							symbol={<GlobeIcon size={20} className="text-foreground-500" />}
+							variant="bordered"
+							classNames={{
+								pre: "flex gap-4 items-center",
+							}}
+							fullWidth
+						>
+							{shareUrl}
+						</Snippet>
+					</ModalBody>
+					<ModalFooter className="flex gap-4 items-center w-full flex-row">
+						<p className="text-sm">Share it on</p>
 						<TwitterShareButton url={shareUrl} title={title}>
 							<TwitterIcon size={32} borderRadius={12} />
 						</TwitterShareButton>
@@ -86,7 +120,7 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 						<WhatsappShareButton url={shareUrl} title={title}>
 							<WhatsappIcon size={32} borderRadius={12} />
 						</WhatsappShareButton>
-					</ModalBody>
+					</ModalFooter>
 				</ModalContent>
 			</Modal>
 		</>
