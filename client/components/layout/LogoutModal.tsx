@@ -1,3 +1,4 @@
+import { useAuth } from "@/lib/hooks/use-auth";
 import {
 	Button,
 	Modal,
@@ -26,6 +27,8 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 	const [commitMutation, isMutationInFlight] = useMutation(LogoutModalMutation);
 	const router = useRouter();
 
+	const {removeUser} = useAuth();
+
 	async function handleLogout() {
 		commitMutation({
 			variables: {},
@@ -43,6 +46,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			},
 			onCompleted(response, errors) {
 				if (!errors) {
+					removeUser();
 					router.replace("/auth/login");
 				}
 			},

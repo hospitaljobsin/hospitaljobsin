@@ -12,7 +12,7 @@ import Link from "next/link";
 import AuthDropdown from "./AuthDropdown";
 
 export default function Header() {
-	const { isAuthenticated, user } = useAuth();
+	const { user } = useAuth();
 	return (
 		<Navbar maxWidth="lg" isBordered>
 			<NavbarBrand>
@@ -22,8 +22,8 @@ export default function Header() {
 			</NavbarBrand>
 
 			<NavbarContent justify="end">
-				{isAuthenticated ? (
-					<AuthDropdown user={user!} />
+				{user !== null ? (
+					<AuthDropdown user={user} />
 				) : (
 					<>
 						<NavbarItem>

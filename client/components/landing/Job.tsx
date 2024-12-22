@@ -52,7 +52,7 @@ type Props = {
 
 export default function Job({ job }: Props) {
 	const router = useRouter();
-	const { isAuthenticated } = useAuth();
+	const { user } = useAuth();
 	const data = useFragment(JobFragment, job);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
@@ -142,7 +142,7 @@ export default function Job({ job }: Props) {
 						</Chip>
 					))}
 				</div>
-				<JobControls job={data} isAuthenticated={isAuthenticated} />
+				<JobControls job={data} isAuthenticated={user !== null} />
 			</CardFooter>
 		</Card>
 	);

@@ -56,7 +56,7 @@ export default function JobDetails({
 }: {
 	job: JobDetailsFragment$key;
 }) {
-	const { isAuthenticated } = useAuth();
+	const { user } = useAuth();
 	const data = useFragment(JobDetailsFragment, job);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
@@ -128,7 +128,7 @@ export default function JobDetails({
 							<Globe size={16} /> {data.workMode}
 						</div>
 					</div>
-					<JobControls job={data} isAuthenticated={isAuthenticated} />
+					<JobControls job={data} isAuthenticated={user !== null} />
 				</CardFooter>
 			</Card>
 
