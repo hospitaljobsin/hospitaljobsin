@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<549d8001ea469a44d8ef332765c0bf89>>
+ * @generated SignedSource<<c6b9e8fb3d7b6fdecb5aafe8e8746a8d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -323,12 +323,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3eb016d8cc75afb9130a816cc6417370",
+    "cacheID": "89f1bf1e6af8d591ec9099aaee1fd486",
     "id": null,
     "metadata": {},
     "name": "SavedJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query SavedJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n) {\n  ...SavedJobsListInternalFragment_1G22uz\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment SavedJobsListInternalFragment_1G22uz on Query {\n  savedJobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
+    "text": "query SavedJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n) {\n  ...SavedJobsListInternalFragment_1G22uz\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  slug\n  ...ShareJobModalFragment\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment SavedJobsListInternalFragment_1G22uz on Query {\n  savedJobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment ShareJobModalFragment on Job {\n  slug\n  title\n}\n"
   }
 };
 })();

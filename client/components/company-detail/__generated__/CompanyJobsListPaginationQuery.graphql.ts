@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f19ffb295375348afc93e53c971685e4>>
+ * @generated SignedSource<<fd25a7f3c4aa53bd56bd5d5b5af38e59>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -370,12 +370,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b13462055fdf58c2a94f44eb1faaa1ea",
+    "cacheID": "b3e1c75d876513af94cc4457d009efa2",
     "id": null,
     "metadata": {},
     "name": "CompanyJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query CompanyJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...CompanyJobsListInternalFragment_1G22uz\n    id\n  }\n}\n\nfragment CompanyJobsListInternalFragment_1G22uz on Company {\n  jobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n"
+    "text": "query CompanyJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...CompanyJobsListInternalFragment_1G22uz\n    id\n  }\n}\n\nfragment CompanyJobsListInternalFragment_1G22uz on Company {\n  jobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  slug\n  ...ShareJobModalFragment\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    name\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment ShareJobModalFragment on Job {\n  slug\n  title\n}\n"
   }
 };
 })();

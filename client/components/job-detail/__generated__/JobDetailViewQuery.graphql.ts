@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<34bfc1014bb9e7468031f65c5ec435eb>>
+ * @generated SignedSource<<83cd6493ff671ee4b6a4b907966e3149>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -54,10 +54,17 @@ v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "description",
+  "name": "slug",
   "storageKey": null
 },
 v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "description",
+  "storageKey": null
+},
+v6 = {
   "alias": null,
   "args": null,
   "concreteType": "Address",
@@ -82,7 +89,7 @@ v5 = {
   ],
   "storageKey": null
 },
-v6 = {
+v7 = {
   "kind": "InlineFragment",
   "selections": [
     (v3/*: any*/)
@@ -132,6 +139,7 @@ return {
                 "name": "isSaved",
                 "storageKey": null
               },
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -139,7 +147,7 @@ return {
                 "name": "title",
                 "storageKey": null
               },
-              (v4/*: any*/),
+              (v5/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -154,7 +162,7 @@ return {
                 "name": "workMode",
                 "storageKey": null
               },
-              (v5/*: any*/),
+              (v6/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -226,13 +234,7 @@ return {
                 "name": "company",
                 "plural": false,
                 "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "slug",
-                    "storageKey": null
-                  },
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -240,7 +242,7 @@ return {
                     "name": "name",
                     "storageKey": null
                   },
-                  (v4/*: any*/),
+                  (v5/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -248,7 +250,7 @@ return {
                     "name": "logoUrl",
                     "storageKey": null
                   },
-                  (v5/*: any*/),
+                  (v6/*: any*/),
                   (v3/*: any*/)
                 ],
                 "storageKey": null
@@ -257,7 +259,7 @@ return {
             "type": "Job",
             "abstractKey": null
           },
-          (v6/*: any*/)
+          (v7/*: any*/)
         ],
         "storageKey": null
       },
@@ -274,19 +276,19 @@ return {
             "kind": "TypeDiscriminator",
             "abstractKey": "__isViewerPayload"
           },
-          (v6/*: any*/)
+          (v7/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "49816498f353230e80c02f4b716682ee",
+    "cacheID": "680bac979e42472bce4437bc9000d363",
     "id": null,
     "metadata": {},
     "name": "JobDetailViewQuery",
     "operationKind": "query",
-    "text": "query JobDetailViewQuery(\n  $slug: String!\n) {\n  ...JobDetailsQuery_20J5Pl\n}\n\nfragment JobControlsAuthFragment on ViewerPayload {\n  __isViewerPayload: __typename\n  __typename\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n}\n\nfragment JobDetailsInternalFragment on Job {\n  ...JobControlsFragment\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment JobDetailsQuery_20J5Pl on Query {\n  job(slug: $slug) {\n    __typename\n    ... on Job {\n      ...JobDetailsInternalFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  viewer {\n    __typename\n    ...JobControlsAuthFragment\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query JobDetailViewQuery(\n  $slug: String!\n) {\n  ...JobDetailsQuery_20J5Pl\n}\n\nfragment JobControlsAuthFragment on ViewerPayload {\n  __isViewerPayload: __typename\n  __typename\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  slug\n  ...ShareJobModalFragment\n}\n\nfragment JobDetailsInternalFragment on Job {\n  ...JobControlsFragment\n  title\n  description\n  type\n  workMode\n  address {\n    city\n    state\n  }\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  company {\n    slug\n    name\n    description\n    logoUrl\n    address {\n      city\n      state\n    }\n    id\n  }\n}\n\nfragment JobDetailsQuery_20J5Pl on Query {\n  job(slug: $slug) {\n    __typename\n    ... on Job {\n      ...JobDetailsInternalFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  viewer {\n    __typename\n    ...JobControlsAuthFragment\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment ShareJobModalFragment on Job {\n  slug\n  title\n}\n"
   }
 };
 })();

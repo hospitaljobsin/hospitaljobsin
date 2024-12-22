@@ -1,4 +1,5 @@
 "use client";
+import { env } from "@/lib/env";
 import type {
 	CacheConfig,
 	GraphQLResponse,
@@ -13,14 +14,13 @@ import {
 	Store,
 } from "relay-runtime";
 
-const HTTP_ENDPOINT = process.env.NEXT_PUBLIC_API_URL;
 const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 
 export async function networkFetch(
 	request: RequestParameters,
 	variables: Variables,
 ): Promise<GraphQLResponse> {
-	const resp = await fetch(HTTP_ENDPOINT, {
+	const resp = await fetch(env.NEXT_PUBLIC_API_URL, {
 		method: "POST",
 		headers: {
 			Accept: "application/json",

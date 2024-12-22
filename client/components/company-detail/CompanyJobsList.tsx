@@ -3,6 +3,7 @@ import Job from "../landing/Job";
 
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
+import invariant from "tiny-invariant";
 import JobListSkeleton from "../landing/JobListSkeleton";
 import type { CompanyJobsListFragment$key } from "./__generated__/CompanyJobsListFragment.graphql";
 import type { CompanyJobsListInternalFragment$key, CompanyJobsListInternalFragment as CompanyJobsListInternalFragmentType } from './__generated__/CompanyJobsListInternalFragment.graphql';
@@ -15,6 +16,7 @@ fragment CompanyJobsListFragment on Query @argumentDefinitions(
       }
     )  {
 		company(slug: $slug) {
+			__typename
 			... on Company {
 				...CompanyJobsListInternalFragment
 			}
@@ -54,6 +56,7 @@ type Props = {
 
 export default function CompanyJobsList({ rootQuery }: Props) {
 	const root = useFragment(CompanyJobsListFragment, rootQuery);
+	invariant(root.company.__typename === "Company", "Expected 'Company' node type");
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<CompanyJobsListInternalFragmentType, CompanyJobsListInternalFragment$key>(
 		CompanyJobsListInternalFragment,
 		root.company,

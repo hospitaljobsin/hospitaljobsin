@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ea5048d128618165f970ad719e1f685f>>
+ * @generated SignedSource<<e53526d27d524b4b015a5a0d61168420>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,12 @@ import { ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type CompanyJobsListFragment$data = {
   readonly company: {
+    readonly __typename: "Company";
     readonly " $fragmentSpreads": FragmentRefs<"CompanyJobsListInternalFragment">;
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
   };
   readonly viewer: {
     readonly " $fragmentSpreads": FragmentRefs<"JobControlsAuthFragment">;
@@ -51,6 +56,13 @@ const node: ReaderFragment = {
       "name": "company",
       "plural": false,
       "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "__typename",
+          "storageKey": null
+        },
         {
           "kind": "InlineFragment",
           "selections": [
@@ -92,6 +104,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "da5bb851f147c54d0e9925f572b6b0ae";
+(node as any).hash = "25141c97aab38510ba9660b058d88b2c";
 
 export default node;

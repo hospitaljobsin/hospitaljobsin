@@ -1,12 +1,11 @@
+import { env } from "@/lib/env";
 import { redirect } from "next/navigation";
 import type {
 	GraphQLResponse,
 	RequestParameters,
-	Variables
+	Variables,
 } from "relay-runtime";
 import { Environment, Network, RecordSource, Store } from "relay-runtime";
-
-const HTTP_ENDPOINT = process.env.NEXT_PUBLIC_API_URL;
 
 export async function networkFetch(
 	request: RequestParameters,
@@ -15,7 +14,7 @@ export async function networkFetch(
 	const { cookies } = await import("next/headers");
 	const serverCookie = await cookies();
 
-	const resp = await fetch(HTTP_ENDPOINT, {
+	const resp = await fetch(env.NEXT_PUBLIC_API_URL, {
 		method: "POST",
 		headers: {
 			Accept: "application/json",
