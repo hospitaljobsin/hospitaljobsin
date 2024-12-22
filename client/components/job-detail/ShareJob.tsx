@@ -16,10 +16,10 @@ import { useFragment } from "react-relay";
 import {
 	LinkedinIcon,
 	LinkedinShareButton,
-	TwitterIcon,
 	TwitterShareButton,
 	WhatsappIcon,
 	WhatsappShareButton,
+	XIcon,
 } from "react-share";
 import { graphql } from "relay-runtime";
 import type { ShareJobFragment$key } from "./__generated__/ShareJobFragment.graphql";
@@ -112,7 +112,7 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 					<ModalFooter className="flex gap-4 items-center w-full flex-row">
 						<p className="text-sm">Share it on</p>
 						<TwitterShareButton url={shareUrl} title={title}>
-							<TwitterIcon size={32} borderRadius={12} />
+							<XIcon size={32} borderRadius={12} />
 						</TwitterShareButton>
 						<LinkedinShareButton url={shareUrl} title={title}>
 							<LinkedinIcon size={32} borderRadius={12} />
