@@ -33,7 +33,11 @@ export default function ProfileHeader({ rootQuery }: Props) {
 								<div className="px-1 py-2 max-w-52 flex flex-col gap-2">
 									<div className="text-small">
 										Managed by{" "}
-										<Link href="https://gravatar.com" className="text-primary">
+										<Link
+											href="https://gravatar.com"
+											className="text-primary"
+											target="_blank"
+										>
 											Gravatar
 										</Link>
 									</div>
