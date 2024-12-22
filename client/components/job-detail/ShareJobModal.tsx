@@ -32,22 +32,20 @@ export default function ShareJobModal({
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} className="p-6">
 			<ModalContent>
-				<>
-					<ModalHeader className="flex flex-col gap-1">
-						Share this Job
-					</ModalHeader>
-					<ModalBody className="flex gap-4 items-center w-full flex-row">
-						<TwitterShareButton url={shareUrl} title={title}>
-							<TwitterIcon size={32} borderRadius={12} />
-						</TwitterShareButton>
-						<LinkedinShareButton url={shareUrl} title={title}>
-							<LinkedinIcon size={32} borderRadius={12} />
-						</LinkedinShareButton>
-						<WhatsappShareButton url={shareUrl} title={title}>
-							<WhatsappIcon size={32} borderRadius={12} />
-						</WhatsappShareButton>
-					</ModalBody>
-				</>
+				<ModalHeader className="flex flex-col gap-1">
+					Share this Job
+				</ModalHeader>
+				<ModalBody className="flex gap-4 items-center w-full flex-row">
+					<TwitterShareButton url={shareUrl} title={title}>
+						<TwitterIcon size={32} borderRadius={12} />
+					</TwitterShareButton>
+					<LinkedinShareButton url={shareUrl} title={title}>
+						<LinkedinIcon size={32} borderRadius={12} />
+					</LinkedinShareButton>
+					<WhatsappShareButton url={shareUrl} title={title}>
+						<WhatsappIcon size={32} borderRadius={12} />
+					</WhatsappShareButton>
+				</ModalBody>
 			</ModalContent>
 		</Modal>
 	);
