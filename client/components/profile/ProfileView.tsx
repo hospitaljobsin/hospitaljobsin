@@ -32,9 +32,19 @@ export default function ProfileView() {
 		<div className="w-full h-full space-y-12">
 			<ProfileHeader rootQuery={data.viewer} />
 			{isEditingProfile ? (
-				<UpdateProfileDetailsForm rootQuery={data.viewer} />
+				<UpdateProfileDetailsForm
+					rootQuery={data.viewer}
+					onSaveChanges={() => {
+						setIsEditingProfile(false);
+					}}
+				/>
 			) : (
-				<ProfileDetails rootQuery={data.viewer} />
+				<ProfileDetails
+					rootQuery={data.viewer}
+					onEditProfile={() => {
+						setIsEditingProfile(true);
+					}}
+				/>
 			)}
 		</div>
 	);

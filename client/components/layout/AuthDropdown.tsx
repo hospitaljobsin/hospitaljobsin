@@ -2,13 +2,13 @@
 import { getGravatarURL } from "@/lib/avatars";
 import links from "@/lib/links";
 import {
-	Avatar,
 	Button,
 	Dropdown,
 	DropdownItem,
 	DropdownMenu,
 	DropdownTrigger,
 	NavbarItem,
+	User,
 	useDisclosure,
 } from "@nextui-org/react";
 import { BookmarkIcon, ChevronDown, LogOutIcon, UserIcon } from "lucide-react";
@@ -45,12 +45,13 @@ export default function AuthDropdown({ rootQuery }: Props) {
 							radius="sm"
 							variant="light"
 						>
-							<Avatar
+							<User
+								avatarProps={{
+									src: getGravatarURL(data.email),
+									size: "sm",
+								}}
 								name={data.fullName}
-								size="sm"
-								src={getGravatarURL(data.email)}
 							/>
-							{data.fullName}
 						</Button>
 					</DropdownTrigger>
 				</NavbarItem>

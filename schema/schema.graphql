@@ -19,6 +19,14 @@ type Address {
   pincode: String
 }
 
+enum CategoryType {
+  SC
+  ST
+  OBC
+  GENERAL
+  OTHER
+}
+
 type Company implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -43,6 +51,15 @@ enum Currency {
   INR
 }
 
+type CurrentJob {
+  currentTitle: String!
+  currentOrganization: String
+  currentSalary: Float
+}
+
+"""Date (isoformat)"""
+scalar Date
+
 """Date with time (isoformat)"""
 scalar DateTime
 
@@ -52,6 +69,12 @@ type EmailInUseError implements Error {
 
 interface Error {
   message: String!
+}
+
+enum GenderType {
+  MALE
+  FEMALE
+  OTHER
 }
 
 type InvalidCredentialsError implements Error {
@@ -114,10 +137,20 @@ enum JobType {
   CONTRACT
 }
 
+type Language {
+  name: String!
+  proficiency: String!
+}
+
 union LoginPayload = Account | InvalidCredentialsError
 
 type LogoutPayload {
   message: String!
+}
+
+enum MaritalStatusType {
+  MARRIED
+  SINGLE
 }
 
 type Mutation {
@@ -186,7 +219,15 @@ type PageInfo {
 type Profile implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
-  name: String!
+  gender: GenderType
+  dateOfBirth: Date
+  address: Address
+  maritalStatus: MaritalStatusType
+  category: CategoryType
+  languages: [Language!]!
+  totalJobExperience: Float
+  currentJob: CurrentJob
+  createdAt: DateTime!
 }
 
 type ProfileNotFoundError implements Error {

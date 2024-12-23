@@ -66,16 +66,16 @@ class CurrentJobType:
 @strawberry.type(name="Profile")
 class ProfileType(BaseNodeType[Profile]):
     # personal details
-    gender: GenderTypeEnum
-    date_of_birth: date
-    address: AddressType
-    marital_status: MaritalStatusTypeEnum
-    category: CategoryTypeEnum
+    gender: GenderTypeEnum | None
+    date_of_birth: date | None
+    address: AddressType | None
+    marital_status: MaritalStatusTypeEnum | None
+    category: CategoryTypeEnum | None
     languages: list[LanguageType]
 
     # employment details
-    total_job_experience: float
-    current_job: CurrentJobType | None = None
+    total_job_experience: float | None
+    current_job: CurrentJobType | None
 
     created_at: datetime
 

@@ -1,4 +1,5 @@
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Button, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { EditIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 import type { ProfileDetailsFragment$key } from "./__generated__/ProfileDetailsFragment.graphql";
 
@@ -7,6 +8,28 @@ const ProfileDetailsFragment = graphql`
     profile {
       ... on Profile {
         __typename
+        gender
+        dateOfBirth
+        address {
+            city
+            country
+            line1
+            line2
+            pincode
+            state
+        }
+        maritalStatus
+        category
+        languages {
+            name
+            proficiency
+        }
+        totalJobExperience
+        currentJob {
+            currentOrganization
+            currentSalary
+            currentTitle
+        }
       }
       ... on ProfileNotFoundError {
         __typename
@@ -17,16 +40,24 @@ const ProfileDetailsFragment = graphql`
 
 type Props = {
 	rootQuery: ProfileDetailsFragment$key;
+	onEditProfile: () => void;
 };
 
-export default function ProfileDetails({ rootQuery }: Props) {
+export default function ProfileDetails({ rootQuery, onEditProfile }: Props) {
 	const data = useFragment(ProfileDetailsFragment, rootQuery);
 
 	return (
 		<div className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="sm">
-				<CardHeader className="flex gap-6 w-full items-center justify-start">
+				<CardHeader className="flex gap-6 w-full items-center justify-between">
 					<h1 className="w-full text-lg font-medium">Personal Details</h1>
+					<Button
+						startContent={<EditIcon size={24} />}
+						onPress={onEditProfile}
+						variant="light"
+					>
+						Edit
+					</Button>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
 					<div className="flex flex-col gap-2 w-full items-center justify-start">
@@ -60,8 +91,15 @@ export default function ProfileDetails({ rootQuery }: Props) {
 				</CardBody>
 			</Card>
 			<Card className="p-6 space-y-6" shadow="sm">
-				<CardHeader className="flex gap-6 w-full items-center justify-start">
+				<CardHeader className="flex gap-6 w-full items-center justify-between">
 					<h1 className="w-full text-lg font-medium">Employment Details</h1>
+					<Button
+						startContent={<EditIcon size={24} />}
+						onPress={onEditProfile}
+						variant="light"
+					>
+						Edit
+					</Button>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
 					<div className="flex flex-col gap-2 w-full items-center justify-start">
