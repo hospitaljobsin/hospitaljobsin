@@ -7,6 +7,16 @@ import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 
 const fetchAndCacheQuery = cache(async (slug: string) => {
 	console.log("fetching job...");
+
+	// TODO: use fetchQuery, @inline and readInlineData here
+
+	// const result = await fetchQuery<JobDetailViewQuery>(
+	// 	getCurrentEnvironment(),
+	// 	JobDetailViewQueryNode,
+	// 	{ slug: slug },
+	// ).toPromise();
+	// if (result) {
+	// }
 	return await loadSerializableQuery<
 		typeof JobDetailViewQueryNode,
 		JobDetailViewQuery
