@@ -100,10 +100,7 @@ export default function UpdateProfileDetailsForm({
 							name="dateOfBirth"
 							control={control}
 							render={({ field }) => (
-								// TODO: we can remove disableAnimation on the next NextUI release
-								// https://github.com/nextui-org/nextui/pull/4428
 								<DatePicker
-									disableAnimation
 									fullWidth
 									className="max-w-[284px]"
 									label="Date of Birth"
