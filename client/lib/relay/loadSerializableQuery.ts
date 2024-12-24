@@ -26,6 +26,9 @@ export default async function loadSerializableQuery<
 	params: RequestParameters,
 	variables: VariablesOf<TQuery>,
 ): Promise<SerializablePreloadedQuery<TRequest, TQuery>> {
+	// TODO: probably call loadQuery here with the getCurrentEnvironment() function (which should be react cached)??
+	// this would ensure requests are deduped automatically!
+	// https://relay.dev/docs/getting-started/step-by-step-guide/#step-5-fetching-a-query-with-relay
 	const response = await networkFetch(params, variables);
 
 	return {
