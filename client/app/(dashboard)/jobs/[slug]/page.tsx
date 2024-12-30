@@ -1,10 +1,9 @@
 import type { JobDetailViewQuery } from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
 import JobDetailViewQueryNode from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { fetchQuery, graphql, readInlineData } from "relay-runtime";
+import { graphql, readInlineData } from "relay-runtime";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 import type { pageJobDetailFragment$key } from "./__generated__/pageJobDetailFragment.graphql";
 
@@ -28,22 +27,6 @@ const PageJobDetailFragment = graphql`
   }
 `;
 
-const fetchAndCacheQueryServer = cache(async (slug: string) => {
-	const environment = getCurrentEnvironment();
-
-	const result = await fetchQuery<JobDetailViewQuery>(
-		environment,
-		JobDetailViewQueryNode,
-		{ slug },
-	).toPromise();
-
-	if (!result) {
-		throw new Error("Failed to fetch data");
-	}
-
-	return result;
-});
-
 const fetchAndCacheQuery = cache(async (slug: string) => {
 	console.log("fetching job...");
 
@@ -60,7 +43,7 @@ const fetchAndCacheQuery = cache(async (slug: string) => {
 	return await loadSerializableQuery<
 		typeof JobDetailViewQueryNode,
 		JobDetailViewQuery
-	>(JobDetailViewQueryNode.params, {
+	>(JobDetailViewQueryNode, {
 		slug: slug,
 	});
 });
@@ -73,7 +56,7 @@ export async function generateMetadata({
 	const slug = (await params).slug;
 
 	try {
-		const preloadedQuery = await fetchAndCacheQueryServer(slug);
+		const preloadedQuery = await fetchAndCacheQuery(slug);
 
 		console.log("preloadedQuery: ", preloadedQuery);
 
@@ -81,7 +64,7 @@ export async function generateMetadata({
 
 		const data = readInlineData<pageJobDetailFragment$key>(
 			PageJobDetailFragment,
-			preloadedQuery,
+			preloadedQuery.response,
 		);
 
 		if (data.job.__typename !== "Job") {

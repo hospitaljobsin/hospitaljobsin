@@ -1,10 +1,11 @@
 import type {
-	GraphQLResponse,
+	ConcreteRequest,
+	GraphQLTaggedNode,
 	OperationType,
-	RequestParameters,
 	VariablesOf,
 } from "relay-runtime";
-import type { ConcreteRequest } from "relay-runtime/lib/util/RelayConcreteNode";
+import { fetchQuery, getRequest } from "relay-runtime";
+import { getCurrentEnvironment } from "./environments";
 import { networkFetch } from "./environments/server";
 
 export interface SerializablePreloadedQuery<
@@ -13,31 +14,55 @@ export interface SerializablePreloadedQuery<
 > {
 	params: TRequest["params"];
 	variables: VariablesOf<TQuery>;
-	/** Narrowed type for response using TQuery */
-	response: Omit<GraphQLResponse, "data"> & {
-		data: TQuery["response"]; // Use TQuery's response type
-	};
+	response: TQuery["response"];
+	raw: any;
 }
 
 export default async function loadSerializableQuery<
 	TRequest extends ConcreteRequest,
 	TQuery extends OperationType,
 >(
-	params: RequestParameters,
+	taggedNode: GraphQLTaggedNode,
 	variables: VariablesOf<TQuery>,
 ): Promise<SerializablePreloadedQuery<TRequest, TQuery>> {
-	// TODO: probably call loadQuery here with the getCurrentEnvironment() function (which should be react cached)??
-	// here the environment would be a server side created one which is unique to every request
-	// this would ensure requests are deduped automatically!
-	// https://relay.dev/docs/getting-started/step-by-step-guide/#step-5-fetching-a-query-with-relay
-	const response = await networkFetch(params, variables);
+	const environment = getCurrentEnvironment();
+
+	// Convert params into a valid ConcreteRequest
+	const request = getRequest(taggedNode) as TRequest | null;
+
+	if (!request) {
+		throw new Error(
+			"Invalid request: could not resolve query to ConcreteRequest.",
+		);
+	}
+
+	const response = await fetchQuery<TQuery>(
+		environment,
+		taggedNode,
+		variables,
+	).toPromise();
+
+	if (!response) {
+		throw new Error("Failed to fetch query data");
+	}
+
+	console.log("response: ", response);
+
+	// const operationDescriptor = createOperationDescriptor(request, variables);
+
+	// // Lookup the data for this operation in the environment
+	// const snapshot = environment.lookup(operationDescriptor.fragment);
+	// console.log("snapshot: ", snapshot.data);
+
+	const original = await networkFetch(request.params, variables);
+	console.log("original: ", original);
+
+	// TODO: convert the relay response to a serializable format
 
 	return {
-		params,
+		params: request.params, // Use the resolved ConcreteRequest params
 		variables,
-		// Use the GraphQLResponse structure with strong typing
-		response: response as Omit<GraphQLResponse, "data"> & {
-			data: TQuery["response"];
-		},
+		response,
+		raw: original,
 	};
 }

@@ -1,6 +1,3 @@
-// Convert preloaded query object (with raw GraphQL Response) into
-// Relay's PreloadedQuery.
-
 import { useMemo } from "react";
 import type { PreloadFetchPolicy, PreloadedQuery } from "react-relay";
 import type {
@@ -11,12 +8,6 @@ import type {
 import { responseCache } from "./environments/client";
 import type { SerializablePreloadedQuery } from "./loadSerializableQuery";
 
-// This hook convert serializable preloaded query
-// into Relay's PreloadedQuery object.
-// It is also writes this serializable preloaded query
-// into QueryResponseCache, so we the network layer
-// can use these cache results when fetching data
-// in `usePreloadedQuery`.
 export default function useSerializablePreloadedQuery<
 	TRequest extends ConcreteRequest,
 	TQuery extends OperationType,
@@ -25,6 +16,7 @@ export default function useSerializablePreloadedQuery<
 	preloadQuery: SerializablePreloadedQuery<TRequest, TQuery>,
 	fetchPolicy: PreloadFetchPolicy = "store-or-network",
 ): PreloadedQuery<TQuery> {
+	console.log("useSerializablePreloadedQuery", preloadQuery);
 	useMemo(() => {
 		writePreloadedQueryToCache(preloadQuery);
 	}, [preloadQuery]);
@@ -47,11 +39,12 @@ function writePreloadedQueryToCache<
 	TRequest extends ConcreteRequest,
 	TQuery extends OperationType,
 >(preloadedQueryObject: SerializablePreloadedQuery<TRequest, TQuery>) {
+	// TODO: write the normalized data to cache here
 	const cacheKey =
 		preloadedQueryObject.params.id ?? preloadedQueryObject.params.cacheID;
 	responseCache?.set(
 		cacheKey,
 		preloadedQueryObject.variables,
-		preloadedQueryObject.response,
+		preloadedQueryObject.raw,
 	);
 }
