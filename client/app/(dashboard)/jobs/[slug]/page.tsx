@@ -27,7 +27,7 @@ const PageJobDetailFragment = graphql`
   }
 `;
 
-const fetchAndCacheQuery = cache(async (slug: string) => {
+const loadJob = cache(async (slug: string) => {
 	return await loadSerializableQuery<
 		typeof JobDetailViewQueryNode,
 		JobDetailViewQuery
@@ -43,7 +43,7 @@ export async function generateMetadata({
 }) {
 	const slug = (await params).slug;
 
-	const preloadedQuery = await fetchAndCacheQuery(slug);
+	const preloadedQuery = await loadJob(slug);
 
 	const data = readInlineData<pageJobDetailFragment$key>(
 		PageJobDetailFragment,
@@ -76,7 +76,7 @@ export default async function JobDetailPage({
 }) {
 	const slug = (await params).slug;
 
-	const preloadedQuery = await fetchAndCacheQuery(slug);
+	const preloadedQuery = await loadJob(slug);
 
 	const data = readInlineData<pageJobDetailFragment$key>(
 		PageJobDetailFragment,

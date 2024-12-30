@@ -7,10 +7,6 @@ import { graphql, readInlineData } from "relay-runtime";
 import CompanyDetailViewClientComponent from "./CompanyDetailViewClientComponent";
 import type { pageCompanyDetailFragment$key } from "./__generated__/pageCompanyDetailFragment.graphql";
 
-// TODO: WHAT IF?
-// we just use SSR for generating the metadata, and everything else is client side?
-// need to see how and where generateMetadata is used/ invoked by Next.js
-
 const PageCompanyDetailFragment = graphql`
  fragment pageCompanyDetailFragment on Query @inline @argumentDefinitions(
 	  slug: {
@@ -30,7 +26,7 @@ const PageCompanyDetailFragment = graphql`
 `;
 
 // Function to load and cache the query result
-const fetchAndCacheQuery = cache(async (slug: string) => {
+const loadCompany = cache(async (slug: string) => {
 	return await loadSerializableQuery<
 		typeof CompanyDetailViewQueryNode,
 		CompanyDetailViewQuery
@@ -45,7 +41,7 @@ export async function generateMetadata({
 	params: Promise<{ slug: string }>;
 }) {
 	const slug = (await params).slug;
-	const preloadedQuery = await fetchAndCacheQuery(slug);
+	const preloadedQuery = await loadCompany(slug);
 
 	const data = readInlineData<pageCompanyDetailFragment$key>(
 		PageCompanyDetailFragment,
@@ -78,7 +74,7 @@ export default async function CompanyDetailPage({
 }) {
 	const slug = (await params).slug;
 
-	const preloadedQuery = await fetchAndCacheQuery(slug);
+	const preloadedQuery = await loadCompany(slug);
 
 	const data = readInlineData<pageCompanyDetailFragment$key>(
 		PageCompanyDetailFragment,
