@@ -2,8 +2,10 @@
 import { useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
+import Languages from "./Languages";
 import ProfileDetails from "./PersonalDetails";
 import ProfileHeader from "./ProfileHeader";
+import UpdateLanguagesForm from "./UpdateLanguagesForm";
 import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
 import type { ProfileViewQuery as ProfileViewQueryType } from "./__generated__/ProfileViewQuery.graphql";
 
@@ -15,6 +17,8 @@ const ProfileViewQuery = graphql`
         ...ProfileHeaderFragment
 		...UpdatePersonalDetailsFormFragment
         ...PersonalDetailsFragment
+		...LanguagesFragment
+		...UpdateLanguagesFormFragment
       }
     }
   }
@@ -22,6 +26,7 @@ const ProfileViewQuery = graphql`
 
 export default function ProfileView() {
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
+	const [isEditingLanguages, setIsEditingLanguages] = useState(false);
 	const data = useLazyLoadQuery<ProfileViewQueryType>(ProfileViewQuery, {});
 	invariant(
 		data.viewer.__typename === "Account",
@@ -43,6 +48,21 @@ export default function ProfileView() {
 					rootQuery={data.viewer}
 					onEditProfile={() => {
 						setIsEditingProfile(true);
+					}}
+				/>
+			)}
+			{isEditingLanguages ? (
+				<UpdateLanguagesForm
+					rootQuery={data.viewer}
+					onSaveChanges={() => {
+						setIsEditingLanguages(false);
+					}}
+				/>
+			) : (
+				<Languages
+					rootQuery={data.viewer}
+					onEditProfile={() => {
+						setIsEditingLanguages(true);
 					}}
 				/>
 			)}

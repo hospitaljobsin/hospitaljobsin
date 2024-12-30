@@ -9,8 +9,7 @@ import {
 	Select,
 	SelectItem,
 } from "@nextui-org/react";
-import { Plus, Trash } from "lucide-react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment } from "react-relay";
 import type { UpdatePersonalDetailsFormFragment$key } from "./__generated__/UpdatePersonalDetailsFormFragment.graphql";
 
@@ -45,7 +44,6 @@ type FormData = {
 	};
 	maritalStatus: string;
 	category: string;
-	languages: { name: string; proficiency: string }[];
 };
 
 // TODO: use react-hook-form here
@@ -71,14 +69,8 @@ export default function UpdatePersonalDetailsForm({
 			},
 			category: "",
 			gender: "",
-			languages: [{ name: "", proficiency: "" }],
 			maritalStatus: "",
 		},
-	});
-
-	const { fields, append, remove } = useFieldArray({
-		control: control,
-		name: "languages",
 	});
 
 	async function onSubmit(formData: FormData) {
@@ -287,76 +279,6 @@ export default function UpdatePersonalDetailsForm({
 								<p className="text-red-500">This field is required</p>
 							)}
 						</div>
-					</div>
-					{/* Dynamic Array of languages */}
-					<div className="w-full space-y-12 items-center">
-						<p className="text-xs text-foreground-500 -mb-8 px-2">Languages</p>
-						{fields.map((item, index) => (
-							<div
-								key={`field-${item.name}-${index}`}
-								className="flex gap-8 items-center w-full"
-							>
-								<div className="w-full">
-									<Controller
-										name={`languages.${index}.name`}
-										control={control}
-										defaultValue=""
-										render={({ field }) => (
-											<Input
-												{...field}
-												fullWidth
-												label="Name"
-												placeholder="Add language name"
-											/>
-										)}
-									/>
-									{errors.address?.state && (
-										<p className="text-red-500">This field is required</p>
-									)}
-								</div>
-								<div className="w-full">
-									<Controller
-										name={`languages.${index}.proficiency`}
-										control={control}
-										defaultValue=""
-										render={({ field }) => (
-											<Input
-												{...field}
-												fullWidth
-												label="Proficiency"
-												placeholder="Add language proficiency"
-											/>
-										)}
-									/>
-									{errors.address?.state && (
-										<p className="text-red-500">This field is required</p>
-									)}
-								</div>
-
-								<Button
-									type="button"
-									isIconOnly
-									variant="bordered"
-									onPress={() => remove(index)}
-									disabled={fields.length <= 1} // Disable delete if only one field left
-								>
-									<Trash size={18} />
-								</Button>
-							</div>
-						))}
-						<Button
-							type="button"
-							variant="bordered"
-							startContent={<Plus size={18} />}
-							onPress={() =>
-								append({
-									name: "",
-									proficiency: "",
-								})
-							}
-						>
-							Language
-						</Button>
 					</div>
 				</CardBody>
 			</Card>

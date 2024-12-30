@@ -20,10 +20,6 @@ const PersonalDetailsFragment = graphql`
         }
         maritalStatus
         category
-        languages {
-            name
-            proficiency
-        }
       }
       ... on ProfileNotFoundError {
         __typename
@@ -77,10 +73,6 @@ export default function PersonalDetails({ rootQuery, onEditProfile }: Props) {
 					<div className="flex flex-col gap-2 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Category</h1>
 						<h2 className="w-full text-foreground-500">Add your category</h2>
-					</div>
-					<div className="flex flex-col gap-2 w-full items-center justify-start">
-						<h1 className="w-full text-lg font-medium">Languages</h1>
-						<h2 className="w-full text-foreground-500">Add your languages</h2>
 					</div>
 				</CardBody>
 			</Card>
