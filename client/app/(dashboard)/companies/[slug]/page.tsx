@@ -46,30 +46,30 @@ export async function generateMetadata({
 	params: Promise<{ slug: string }>;
 }) {
 	const slug = (await params).slug;
+	const preloadedQuery = await fetchAndCacheQuery(slug);
 
-	try {
-		const preloadedQuery = await fetchAndCacheQuery(slug);
+	const data = readInlineData<pageCompanyDetailFragment$key>(
+		PageCompanyDetailFragment,
+		preloadedQuery.data,
+	);
 
-		const data = readInlineData<pageCompanyDetailFragment$key>(
-			PageCompanyDetailFragment,
-			preloadedQuery.data,
-		);
-
-		if (data.company.__typename !== "Company") {
-			notFound();
-		}
-
+	if (data.company.__typename !== "Company") {
 		return {
-			title: data.company.name,
-			description: data.company.description,
+			title: "Company Not found",
+			description: "The company you are looking for does not exist",
 			openGraph: {
-				images: [data.company.logoUrl || "/default-image.img"],
+				images: ["/default-image.img"],
 			},
 		};
-	} catch (error) {
-		console.log("Error in generateMetadata: ", error);
-		notFound();
 	}
+
+	return {
+		title: data.company.name,
+		description: data.company.description,
+		openGraph: {
+			images: [data.company.logoUrl || "/default-image.img"],
+		},
+	};
 }
 
 export default async function CompanyDetailPage({
@@ -80,6 +80,15 @@ export default async function CompanyDetailPage({
 	const slug = (await params).slug;
 
 	const preloadedQuery = await fetchAndCacheQuery(slug);
+
+	const data = readInlineData<pageCompanyDetailFragment$key>(
+		PageCompanyDetailFragment,
+		preloadedQuery.data,
+	);
+
+	if (data.company.__typename !== "Company") {
+		notFound();
+	}
 
 	return <CompanyDetailViewClientComponent preloadedQuery={preloadedQuery} />;
 }

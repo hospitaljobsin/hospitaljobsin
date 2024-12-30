@@ -45,29 +45,30 @@ export async function generateMetadata({
 }) {
 	const slug = (await params).slug;
 
-	try {
-		const preloadedQuery = await fetchAndCacheQuery(slug);
+	const preloadedQuery = await fetchAndCacheQuery(slug);
 
-		const data = readInlineData<pageJobDetailFragment$key>(
-			PageJobDetailFragment,
-			preloadedQuery.data,
-		);
+	const data = readInlineData<pageJobDetailFragment$key>(
+		PageJobDetailFragment,
+		preloadedQuery.data,
+	);
 
-		if (data.job.__typename !== "Job") {
-			notFound();
-		}
-
+	if (data.job.__typename !== "Job") {
 		return {
-			title: data.job.title,
-			description: data.job.description,
+			title: "Job Not found",
+			description: "The job you are looking for does not exist",
 			openGraph: {
-				images: [data.job.company?.logoUrl || "/default-image.img"],
+				images: ["/default-image.img"],
 			},
 		};
-	} catch (error) {
-		console.log("Error in generateMetadata: ", error);
-		notFound();
 	}
+
+	return {
+		title: data.job.title,
+		description: data.job.description,
+		openGraph: {
+			images: [data.job.company?.logoUrl || "/default-image.img"],
+		},
+	};
 }
 
 export default async function JobDetailPage({
@@ -78,6 +79,15 @@ export default async function JobDetailPage({
 	const slug = (await params).slug;
 
 	const preloadedQuery = await fetchAndCacheQuery(slug);
+
+	const data = readInlineData<pageJobDetailFragment$key>(
+		PageJobDetailFragment,
+		preloadedQuery.data,
+	);
+
+	if (data.job.__typename !== "Job") {
+		notFound();
+	}
 
 	return <JobDetailViewClientComponent preloadedQuery={preloadedQuery} />;
 }
