@@ -65,7 +65,7 @@ export default function SignUpForm() {
 	}
 
 	return (
-		<Card className="p-6 space-y-6">
+		<Card className="p-6 space-y-6" shadow="sm">
 			<CardHeader>
 				<h1 className="text-2xl text-center w-full">Create an account</h1>
 			</CardHeader>

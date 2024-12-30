@@ -71,7 +71,7 @@ export default function LoginForm() {
 	}
 
 	return (
-		<Card className="p-6 space-y-6">
+		<Card className="p-6 space-y-6" shadow="sm">
 			<CardHeader>
 				<h1 className="text-2xl text-center w-full">Log in to continue</h1>
 			</CardHeader>

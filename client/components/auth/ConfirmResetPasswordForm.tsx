@@ -42,7 +42,7 @@ export default function ConfirmResetPasswordForm() {
 		router.replace(links.login);
 	}
 	return (
-		<Card>
+		<Card shadow="sm">
 			<CardHeader>
 				<h1 className={"w-full text-center text-2xl"}>Reset your password</h1>
 			</CardHeader>

@@ -73,7 +73,7 @@ export default function ConfirmSignUpForm() {
 	}
 
 	return (
-		<Card>
+		<Card shadow="sm">
 			<CardHeader>
 				<h1 className="text-center text-2xl w-full">
 					Confirm your account email

@@ -1,5 +1,6 @@
 import { env } from "@/lib/env";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 import type {
 	GraphQLResponse,
 	RequestParameters,
@@ -76,10 +77,10 @@ function createNetwork() {
 	return network;
 }
 
-export function createServerEnvironment() {
+export const createServerEnvironment = cache(() => {
 	return new Environment({
 		network: createNetwork(),
 		store: new Store(RecordSource.create()),
 		isServer: true,
 	});
-}
+});

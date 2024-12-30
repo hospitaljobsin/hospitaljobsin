@@ -1,9 +1,48 @@
 import type { JobDetailViewQuery } from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
 import JobDetailViewQueryNode from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
+import { getCurrentEnvironment } from "@/lib/relay/environments";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { fetchQuery, graphql, readInlineData } from "relay-runtime";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
+import type { pageJobDetailFragment$key } from "./__generated__/pageJobDetailFragment.graphql";
+
+const PageJobDetailFragment = graphql`
+ fragment pageJobDetailFragment on Query @inline @argumentDefinitions(
+      slug: {
+        type: "String!",
+      }
+    ) {
+    job(slug: $slug) {
+      __typename
+      ... on Job {
+        title
+		description
+		company {
+			logoUrl
+		}
+      }
+	 
+    }
+  }
+`;
+
+const fetchAndCacheQueryServer = cache(async (slug: string) => {
+	const environment = getCurrentEnvironment();
+
+	const result = await fetchQuery<JobDetailViewQuery>(
+		environment,
+		JobDetailViewQueryNode,
+		{ slug },
+	).toPromise();
+
+	if (!result) {
+		throw new Error("Failed to fetch data");
+	}
+
+	return result;
+});
 
 const fetchAndCacheQuery = cache(async (slug: string) => {
 	console.log("fetching job...");
@@ -17,6 +56,7 @@ const fetchAndCacheQuery = cache(async (slug: string) => {
 	// ).toPromise();
 	// if (result) {
 	// }
+
 	return await loadSerializableQuery<
 		typeof JobDetailViewQueryNode,
 		JobDetailViewQuery
@@ -33,24 +73,31 @@ export async function generateMetadata({
 	const slug = (await params).slug;
 
 	try {
-		const preloadedQuery = await fetchAndCacheQuery(slug);
+		const preloadedQuery = await fetchAndCacheQueryServer(slug);
 
-		const response = preloadedQuery.response;
+		console.log("preloadedQuery: ", preloadedQuery);
 
-		if (!response || response.data.job.__typename !== "Job") {
+		// console.log(JSON.stringify(preloadedQuery.response.data, null, 2));
+
+		const data = readInlineData<pageJobDetailFragment$key>(
+			PageJobDetailFragment,
+			preloadedQuery,
+		);
+
+		if (data.job.__typename !== "Job") {
 			notFound();
 		}
 
 		return {
-			title: response.data.job.title,
-			description: response.data.job.description,
+			title: data.job.title,
+			description: data.job.description,
 			openGraph: {
-				images: [response.data.job.company?.logoUrl || "/default-image.img"],
+				images: [data.job.company?.logoUrl || "/default-image.img"],
 			},
 		};
 	} catch (error) {
 		console.log("Error in generateMetadata: ", error);
-		notFound();
+		// notFound();
 	}
 }
 
@@ -65,5 +112,3 @@ export default async function JobDetailPage({
 
 	return <JobDetailViewClientComponent preloadedQuery={preloadedQuery} />;
 }
-
-export const revalidate = 0;

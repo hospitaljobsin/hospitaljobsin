@@ -1,10 +1,12 @@
+/* eslint-disable relay/must-colocate-fragment-spreads */
 import type { PreloadedQuery } from "react-relay";
 import { graphql, usePreloadedQuery } from "react-relay";
 import JobDetails from "./JobDetails";
 import type { JobDetailViewQuery as JobDetailViewQueryType } from "./__generated__/JobDetailViewQuery.graphql";
 
 const JobDetailViewQuery = graphql`
-  query JobDetailViewQuery($slug: String!) {
+  query JobDetailViewQuery($slug: String!) {	
+	...pageJobDetailFragment @arguments(slug: $slug)
     ...JobDetailsQuery @arguments(slug: $slug)
   }
 `;

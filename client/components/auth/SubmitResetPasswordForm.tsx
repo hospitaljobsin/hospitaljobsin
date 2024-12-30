@@ -36,7 +36,7 @@ export default function SubmitResetPasswordFrom() {
 		router.replace(links.resetPasswordConfirm);
 	}
 	return (
-		<Card className="p-6 space-y-6">
+		<Card shadow="sm" className="p-6 space-y-6">
 			<CardHeader>
 				<h1 className="text-center text-2xl w-full">
 					Request a Password Reset
