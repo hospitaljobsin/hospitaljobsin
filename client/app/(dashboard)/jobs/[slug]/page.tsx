@@ -28,8 +28,6 @@ const PageJobDetailFragment = graphql`
 `;
 
 const fetchAndCacheQuery = cache(async (slug: string) => {
-	console.log("fetching job...");
-
 	return await loadSerializableQuery<
 		typeof JobDetailViewQueryNode,
 		JobDetailViewQuery

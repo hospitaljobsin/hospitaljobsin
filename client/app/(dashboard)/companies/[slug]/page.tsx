@@ -31,7 +31,6 @@ const PageCompanyDetailFragment = graphql`
 
 // Function to load and cache the query result
 const fetchAndCacheQuery = cache(async (slug: string) => {
-	console.log("fetching company...");
 	return await loadSerializableQuery<
 		typeof CompanyDetailViewQueryNode,
 		CompanyDetailViewQuery
