@@ -16,7 +16,6 @@ export default function useSerializablePreloadedQuery<
 	preloadQuery: SerializablePreloadedQuery<TRequest, TQuery>,
 	fetchPolicy: PreloadFetchPolicy = "store-or-network",
 ): PreloadedQuery<TQuery> {
-	console.log("useSerializablePreloadedQuery", preloadQuery);
 	useMemo(() => {
 		writePreloadedQueryToCache(preloadQuery);
 	}, [preloadQuery]);
@@ -45,6 +44,6 @@ function writePreloadedQueryToCache<
 	responseCache?.set(
 		cacheKey,
 		preloadedQueryObject.variables,
-		preloadedQueryObject.raw,
+		preloadedQueryObject.graphQLResponse,
 	);
 }

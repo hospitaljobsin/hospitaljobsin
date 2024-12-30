@@ -30,16 +30,6 @@ const PageJobDetailFragment = graphql`
 const fetchAndCacheQuery = cache(async (slug: string) => {
 	console.log("fetching job...");
 
-	// TODO: use fetchQuery, @inline and readInlineData here
-
-	// const result = await fetchQuery<JobDetailViewQuery>(
-	// 	getCurrentEnvironment(),
-	// 	JobDetailViewQueryNode,
-	// 	{ slug: slug },
-	// ).toPromise();
-	// if (result) {
-	// }
-
 	return await loadSerializableQuery<
 		typeof JobDetailViewQueryNode,
 		JobDetailViewQuery
@@ -58,13 +48,9 @@ export async function generateMetadata({
 	try {
 		const preloadedQuery = await fetchAndCacheQuery(slug);
 
-		console.log("preloadedQuery: ", preloadedQuery);
-
-		// console.log(JSON.stringify(preloadedQuery.response.data, null, 2));
-
 		const data = readInlineData<pageJobDetailFragment$key>(
 			PageJobDetailFragment,
-			preloadedQuery.response,
+			preloadedQuery.data,
 		);
 
 		if (data.job.__typename !== "Job") {

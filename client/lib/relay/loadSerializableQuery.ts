@@ -1,10 +1,15 @@
 import type {
 	ConcreteRequest,
+	GraphQLResponse,
 	GraphQLTaggedNode,
 	OperationType,
 	VariablesOf,
 } from "relay-runtime";
-import { fetchQuery, getRequest } from "relay-runtime";
+import {
+	createOperationDescriptor,
+	fetchQuery,
+	getRequest,
+} from "relay-runtime";
 import { getCurrentEnvironment } from "./environments";
 import { networkFetch } from "./environments/server";
 
@@ -14,8 +19,8 @@ export interface SerializablePreloadedQuery<
 > {
 	params: TRequest["params"];
 	variables: VariablesOf<TQuery>;
-	response: TQuery["response"];
-	raw: any;
+	data: TQuery["response"];
+	graphQLResponse: GraphQLResponse;
 }
 
 export default async function loadSerializableQuery<
@@ -36,33 +41,32 @@ export default async function loadSerializableQuery<
 		);
 	}
 
-	const response = await fetchQuery<TQuery>(
-		environment,
-		taggedNode,
-		variables,
-	).toPromise();
+	const graphQLResponse = await networkFetch(request.params, variables);
 
-	if (!response) {
-		throw new Error("Failed to fetch query data");
+	// hydrate relay store with the response
+	if ("data" in graphQLResponse && graphQLResponse.data) {
+		environment.commitPayload(
+			createOperationDescriptor(request, variables),
+			graphQLResponse.data,
+		);
 	}
 
-	console.log("response: ", response);
+	// load snapshot from relay store (will fetch from cache)
+	// this is necessary to fetch data on the server using (inline) fragments
+	// for metadata generation
+	const data = await fetchQuery<TQuery>(environment, taggedNode, variables, {
+		networkCacheConfig: { force: false },
+		fetchPolicy: "store-or-network",
+	}).toPromise();
 
-	// const operationDescriptor = createOperationDescriptor(request, variables);
-
-	// // Lookup the data for this operation in the environment
-	// const snapshot = environment.lookup(operationDescriptor.fragment);
-	// console.log("snapshot: ", snapshot.data);
-
-	const original = await networkFetch(request.params, variables);
-	console.log("original: ", original);
-
-	// TODO: convert the relay response to a serializable format
+	if (!data) {
+		throw new Error("Failed to fetch query data");
+	}
 
 	return {
 		params: request.params, // Use the resolved ConcreteRequest params
 		variables,
-		response,
-		raw: original,
+		data,
+		graphQLResponse,
 	};
 }

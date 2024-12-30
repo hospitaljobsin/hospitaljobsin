@@ -29,7 +29,7 @@ export async function generateMetadata({
 	try {
 		const preloadedQuery = await fetchAndCacheQuery(slug);
 
-		const response = preloadedQuery.response;
+		const response = preloadedQuery.data;
 
 		if (!response || response.data.company.__typename !== "Company") {
 			notFound();

@@ -80,7 +80,7 @@ function createNetwork() {
 			}
 		}
 
-		return networkFetch(params, variables);
+		return await networkFetch(params, variables);
 	}
 
 	const network = Network.create(fetchResponse);
