@@ -1,10 +1,10 @@
 import { Button, Card, CardBody, CardHeader } from "@nextui-org/react";
 import { EditIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
-import type { ProfileDetailsFragment$key } from "./__generated__/ProfileDetailsFragment.graphql";
+import type { PersonalDetailsFragment$key } from "./__generated__/PersonalDetailsFragment.graphql";
 
-const ProfileDetailsFragment = graphql`
-  fragment ProfileDetailsFragment on Account {
+const PersonalDetailsFragment = graphql`
+  fragment PersonalDetailsFragment on Account {
     profile {
       ... on Profile {
         __typename
@@ -24,12 +24,6 @@ const ProfileDetailsFragment = graphql`
             name
             proficiency
         }
-        totalJobExperience
-        currentJob {
-            currentOrganization
-            currentSalary
-            currentTitle
-        }
       }
       ... on ProfileNotFoundError {
         __typename
@@ -39,12 +33,12 @@ const ProfileDetailsFragment = graphql`
 `;
 
 type Props = {
-	rootQuery: ProfileDetailsFragment$key;
+	rootQuery: PersonalDetailsFragment$key;
 	onEditProfile: () => void;
 };
 
-export default function ProfileDetails({ rootQuery, onEditProfile }: Props) {
-	const data = useFragment(ProfileDetailsFragment, rootQuery);
+export default function PersonalDetails({ rootQuery, onEditProfile }: Props) {
+	const data = useFragment(PersonalDetailsFragment, rootQuery);
 
 	return (
 		<div className="space-y-12">
@@ -87,36 +81,6 @@ export default function ProfileDetails({ rootQuery, onEditProfile }: Props) {
 					<div className="flex flex-col gap-2 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Languages</h1>
 						<h2 className="w-full text-foreground-500">Add your languages</h2>
-					</div>
-				</CardBody>
-			</Card>
-			<Card className="p-6 space-y-6" shadow="sm">
-				<CardHeader className="flex gap-6 w-full items-center justify-between">
-					<h1 className="w-full text-lg font-medium">Employment Details</h1>
-					<Button
-						startContent={<EditIcon size={24} />}
-						onPress={onEditProfile}
-						variant="light"
-					>
-						Edit
-					</Button>
-				</CardHeader>
-				<CardBody className="flex flex-col gap-10">
-					<div className="flex flex-col gap-2 w-full items-center justify-start">
-						<h1 className="w-full text-lg font-medium">Total Experience</h1>
-						<h2 className="w-full text-foreground-500">
-							Add your total experience
-						</h2>
-					</div>
-					<div className="flex flex-col gap-2 w-full items-center justify-start">
-						<h1 className="w-full text-lg font-medium">Current Company Name</h1>
-						<h2 className="w-full text-foreground-500">
-							Add your company name
-						</h2>
-					</div>
-					<div className="flex flex-col gap-2 w-full items-center justify-start">
-						<h1 className="w-full text-lg font-medium">Current Job Title</h1>
-						<h2 className="w-full text-foreground-500">Add your job title</h2>
 					</div>
 				</CardBody>
 			</Card>

@@ -7,6 +7,7 @@ import { graphql, readInlineData } from "relay-runtime";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 import type { pageJobDetailFragment$key } from "./__generated__/pageJobDetailFragment.graphql";
 
+
 const PageJobDetailFragment = graphql`
  fragment pageJobDetailFragment on Query @inline @argumentDefinitions(
       slug: {

@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
-import ProfileDetails from "./ProfileDetails";
+import ProfileDetails from "./PersonalDetails";
 import ProfileHeader from "./ProfileHeader";
-import UpdateProfileDetailsForm from "./UpdateProfileDetailsForm";
+import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
 import type { ProfileViewQuery as ProfileViewQueryType } from "./__generated__/ProfileViewQuery.graphql";
 
 const ProfileViewQuery = graphql`
@@ -13,8 +13,8 @@ const ProfileViewQuery = graphql`
       __typename
       ... on Account {
         ...ProfileHeaderFragment
-		...UpdateProfileDetailsFormFragment
-        ...ProfileDetailsFragment
+		...UpdatePersonalDetailsFormFragment
+        ...PersonalDetailsFragment
       }
     }
   }
