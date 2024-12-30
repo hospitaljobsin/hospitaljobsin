@@ -1,3 +1,4 @@
+/* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
 import type { PreloadedQuery } from "react-relay";
 import { graphql, usePreloadedQuery } from "react-relay";
@@ -5,9 +6,9 @@ import CompanyDetails from "./CompanyDetails";
 import CompanyJobsList from "./CompanyJobsList";
 import type { CompanyDetailViewQuery as CompanyDetailViewQueryType } from "./__generated__/CompanyDetailViewQuery.graphql";
 
-
 const CompanyDetailViewQuery = graphql`
   query CompanyDetailViewQuery($slug: String!) {
+	...pageCompanyDetailFragment @arguments(slug: $slug)
     ...CompanyDetailsFragment @arguments(slug: $slug)
 	...CompanyJobsListFragment @arguments(slug: $slug)
   }

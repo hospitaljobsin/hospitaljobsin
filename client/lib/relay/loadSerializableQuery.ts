@@ -51,7 +51,7 @@ export default async function loadSerializableQuery<
 		);
 	}
 
-	// load snapshot from relay store (will fetch from cache)
+	// load fragment data (snapshot) from relay store (will fetch from cache)
 	// this is necessary to fetch data on the server using (inline) fragments
 	// for metadata generation
 	const data = await fetchQuery<TQuery>(environment, taggedNode, variables, {

@@ -66,7 +66,7 @@ export async function generateMetadata({
 		};
 	} catch (error) {
 		console.log("Error in generateMetadata: ", error);
-		// notFound();
+		notFound();
 	}
 }
 

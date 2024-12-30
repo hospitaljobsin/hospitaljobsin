@@ -3,18 +3,39 @@ import CompanyDetailViewQueryNode from "@/components/company-detail/__generated_
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import CompanyDetailViewClientComponent from "./CompanyDetailViewClientComponent";
+import type { pageCompanyDetailFragment$key } from "./__generated__/pageCompanyDetailFragment.graphql";
 
 // TODO: WHAT IF?
 // we just use SSR for generating the metadata, and everything else is client side?
 // need to see how and where generateMetadata is used/ invoked by Next.js
 
+const PageCompanyDetailFragment = graphql`
+ fragment pageCompanyDetailFragment on Query @inline @argumentDefinitions(
+	  slug: {
+		type: "String!",
+	  }
+	) {
+	company(slug: $slug) {
+	  __typename
+	  ... on Company {
+		name
+		description
+		logoUrl
+	  }
+	 
+	}
+  }
+`;
+
 // Function to load and cache the query result
 const fetchAndCacheQuery = cache(async (slug: string) => {
+	console.log("fetching company...");
 	return await loadSerializableQuery<
 		typeof CompanyDetailViewQueryNode,
 		CompanyDetailViewQuery
-	>(CompanyDetailViewQueryNode.params, {
+	>(CompanyDetailViewQueryNode, {
 		slug: slug,
 	});
 });
@@ -29,17 +50,20 @@ export async function generateMetadata({
 	try {
 		const preloadedQuery = await fetchAndCacheQuery(slug);
 
-		const response = preloadedQuery.data;
+		const data = readInlineData<pageCompanyDetailFragment$key>(
+			PageCompanyDetailFragment,
+			preloadedQuery.data,
+		);
 
-		if (!response || response.data.company.__typename !== "Company") {
+		if (data.company.__typename !== "Company") {
 			notFound();
 		}
 
 		return {
-			title: response.data.company.name,
-			description: response.data.company.description,
+			title: data.company.name,
+			description: data.company.description,
 			openGraph: {
-				images: [response.data.company.logoUrl || "/default-image.img"],
+				images: [data.company.logoUrl || "/default-image.img"],
 			},
 		};
 	} catch (error) {
