@@ -5,6 +5,7 @@ from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from strawberry.permission import PermissionExtension
 
+from app.accounts.services import ProfileService
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo
 

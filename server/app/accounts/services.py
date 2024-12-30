@@ -9,7 +9,7 @@ class ProfileService:
     def __init__(self, profile_repo: ProfileRepo):
         self._profile_repo = profile_repo
 
-    async def update_profile(
+    async def update(
         self,
         account_id: ObjectId,
         gender: str | None,

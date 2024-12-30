@@ -4,7 +4,7 @@ from fastapi import Request, Response
 from result import Err, Ok, Result
 
 from app.accounts.documents import Account
-from app.accounts.repositories import AccountRepo, EmailVerificationRepo
+from app.accounts.repositories import AccountRepo, EmailVerificationRepo, ProfileRepo
 from app.auth.exceptions import EmailInUseError, InvalidCredentialsError
 from app.auth.repositories import SessionRepo
 from app.config import settings
@@ -17,10 +17,12 @@ class AuthService:
         account_repo: AccountRepo,
         session_repo: SessionRepo,
         email_verification_repo: EmailVerificationRepo,
+        profile_repo: ProfileRepo,
     ) -> None:
         self._account_repo = account_repo
         self._session_repo = session_repo
         self._email_verification_repo = email_verification_repo
+        self._profile_repo = profile_repo
 
     async def register(
         self,
@@ -39,6 +41,8 @@ class AuthService:
             password=password,
             full_name=full_name,
         )
+
+        await self._profile_repo.create(account=account)
 
         verification_token = await self._email_verification_repo.create(
             account_id=account.id

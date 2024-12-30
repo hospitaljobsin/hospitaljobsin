@@ -103,19 +103,37 @@ class EmailVerificationRepo:
 
 
 class ProfileRepo:
-    async def create(
+    async def create(self, account: Account) -> Profile:
+        """Create a new profile."""
+        profile = Profile(
+            account=account,
+            gender=None,
+            date_of_birth=None,
+            address=None,
+            marital_status=None,
+            category=None,
+            languages=[],
+            current_job=None,
+            total_job_experience=None,
+        )
+
+        return await profile.insert(
+            link_rule=WriteRules.WRITE,
+        )
+
+    async def update(
         self,
         account: Account,
-        gender: str,
-        date_of_birth: date,
-        address: Address | None,
-        marital_status: str,
-        languages: list[Language],
-        category: str | None,
-        current_job: CurrentJob | None,
-        total_job_experience: float | None,
+        gender: str | None = None,
+        date_of_birth: date | None = None,
+        address: Address | None = None,
+        marital_status: str | None = None,
+        languages: list[Language] = [],
+        category: str | None = None,
+        current_job: CurrentJob | None = None,
+        total_job_experience: float | None = None,
     ) -> Profile:
-        """Create a new profile."""
+        """update a profile."""
         profile = Profile(
             account=account,
             gender=gender,
@@ -128,7 +146,7 @@ class ProfileRepo:
             total_job_experience=total_job_experience,
         )
 
-        return await profile.insert(
+        return await profile.save(
             link_rule=WriteRules.WRITE,
         )
 

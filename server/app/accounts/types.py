@@ -28,15 +28,6 @@ class GenderTypeEnum(Enum):
     OTHER = "other"
 
 
-@strawberry.enum(name="CategoryType")
-class CategoryTypeEnum(Enum):
-    SC = "SC"
-    ST = "ST"
-    OBC = "OBC"
-    GENERAL = "general"
-    OTHER = "other"
-
-
 @strawberry.enum(name="MaritalStatusType")
 class MaritalStatusTypeEnum(Enum):
     MARRIED = "married"
@@ -70,7 +61,7 @@ class ProfileType(BaseNodeType[Profile]):
     date_of_birth: date | None
     address: AddressType | None
     marital_status: MaritalStatusTypeEnum | None
-    category: CategoryTypeEnum | None
+    category: str | None
     languages: list[LanguageType]
 
     # employment details
@@ -90,7 +81,7 @@ class ProfileType(BaseNodeType[Profile]):
             if profile.address is not None
             else None,
             marital_status=profile.marital_status,
-            category=CategoryTypeEnum[profile.category.upper()],
+            category=profile.category,
             languages=[
                 LanguageType.marshal(language) for language in profile.languages
             ],

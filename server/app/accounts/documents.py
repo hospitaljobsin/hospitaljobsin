@@ -23,16 +23,16 @@ class Language(BaseModel):
 # Main Job Seeker Profile Document
 class Profile(Document):
     # personal edetails
-    gender: Literal["male", "female", "other"]
-    date_of_birth: date
-    address: Address
-    marital_status: Literal["married", "single"]
-    category: Literal["SC", "ST", "OBC", "general", "other"]
+    gender: Literal["male", "female", "other"] | None
+    date_of_birth: date | None
+    address: Address | None
+    marital_status: Literal["married", "single"] | None
+    category: str | None
     languages: list[Language]
 
     # employment details
-    total_job_experience: float  # Total experience in years
-    current_job: CurrentJob | None = None
+    total_job_experience: float | None  # Total experience in years
+    current_job: CurrentJob | None
 
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     account: BackLink["Account"] = Field(

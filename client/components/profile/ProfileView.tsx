@@ -34,7 +34,7 @@ export default function ProfileView() {
 	);
 
 	return (
-		<div className="w-full h-full space-y-12">
+		<div className="w-full h-full space-y-16">
 			<ProfileHeader rootQuery={data.viewer} />
 			{isEditingProfile ? (
 				<UpdateProfileDetailsForm
