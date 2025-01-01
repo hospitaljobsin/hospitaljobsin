@@ -113,7 +113,7 @@ export default function UpdateLanguagesForm({
 									isIconOnly
 									variant="bordered"
 									onPress={() => remove(index)}
-									disabled={fields.length <= 1} // Disable delete if only one field left
+									isDisabled={fields.length <= 1} // Disable delete if only one field left
 								>
 									<Trash size={18} />
 								</Button>
