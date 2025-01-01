@@ -1,28 +1,30 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
-import type { PreloadedQuery } from "react-relay";
-import { graphql, usePreloadedQuery } from "react-relay";
+import { graphql, useFragment } from "react-relay";
 import CompanyDetails from "./CompanyDetails";
 import CompanyJobsList from "./CompanyJobsList";
-import type { CompanyDetailViewQuery as CompanyDetailViewQueryType } from "./__generated__/CompanyDetailViewQuery.graphql";
+import type { CompanyDetailViewFragment$key } from "./__generated__/CompanyDetailViewFragment.graphql";
 
-const CompanyDetailViewQuery = graphql`
-  query CompanyDetailViewQuery($slug: String!) {
-	...pageCompanyDetailFragment @arguments(slug: $slug)
-    ...CompanyDetailsFragment @arguments(slug: $slug)
-	...CompanyJobsListFragment @arguments(slug: $slug)
+const CompanyDetailViewFragment = graphql`
+ fragment CompanyDetailViewFragment on Query @argumentDefinitions(
+      slug: {
+        type: "String!",
+      }
+    ) {
+		...CompanyDetailsFragment @arguments(slug: $slug)
+		...CompanyJobsListFragment @arguments(slug: $slug)
   }
 `;
 
 export default function CompanyDetailView(props: {
-	queryRef: PreloadedQuery<CompanyDetailViewQueryType>;
+	rootQuery: CompanyDetailViewFragment$key;
 }) {
-	const data = usePreloadedQuery(CompanyDetailViewQuery, props.queryRef);
+	const query = useFragment(CompanyDetailViewFragment, props.rootQuery);
 
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-12">
-			<CompanyDetails rootQuery={data} />
-			<CompanyJobsList rootQuery={data} />
+			<CompanyDetails rootQuery={query} />
+			<CompanyJobsList rootQuery={query} />
 		</div>
 	);
 }

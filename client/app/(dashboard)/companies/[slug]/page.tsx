@@ -1,14 +1,21 @@
-import type { CompanyDetailViewQuery } from "@/components/company-detail/__generated__/CompanyDetailViewQuery.graphql";
-import CompanyDetailViewQueryNode from "@/components/company-detail/__generated__/CompanyDetailViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
 import CompanyDetailViewClientComponent from "./CompanyDetailViewClientComponent";
-import type { pageCompanyDetailFragment$key } from "./__generated__/pageCompanyDetailFragment.graphql";
+import type { pageCompanyDetailMetadataFragment$key } from "./__generated__/pageCompanyDetailMetadataFragment.graphql";
+import type CompanyDetailViewQueryNode from "./__generated__/pageCompanyDetailViewQuery.graphql";
+import type { pageCompanyDetailViewQuery } from "./__generated__/pageCompanyDetailViewQuery.graphql";
 
-const PageCompanyDetailFragment = graphql`
- fragment pageCompanyDetailFragment on Query @inline @argumentDefinitions(
+export const PageCompanyDetailViewQuery = graphql`
+  query pageCompanyDetailViewQuery($slug: String!) {	
+	...pageCompanyDetailMetadataFragment @arguments(slug: $slug)
+    ...CompanyDetailViewClientComponentFragment @arguments(slug: $slug)
+  }
+`;
+
+const PageCompanyDetailMetadataFragment = graphql`
+ fragment pageCompanyDetailMetadataFragment on Query @inline @argumentDefinitions(
 	  slug: {
 		type: "String!",
 	  }
@@ -29,8 +36,8 @@ const PageCompanyDetailFragment = graphql`
 const loadCompany = cache(async (slug: string) => {
 	return await loadSerializableQuery<
 		typeof CompanyDetailViewQueryNode,
-		CompanyDetailViewQuery
-	>(CompanyDetailViewQueryNode, {
+		pageCompanyDetailViewQuery
+	>(PageCompanyDetailViewQuery, {
 		slug: slug,
 	});
 });
@@ -43,8 +50,8 @@ export async function generateMetadata({
 	const slug = (await params).slug;
 	const preloadedQuery = await loadCompany(slug);
 
-	const data = readInlineData<pageCompanyDetailFragment$key>(
-		PageCompanyDetailFragment,
+	const data = readInlineData<pageCompanyDetailMetadataFragment$key>(
+		PageCompanyDetailMetadataFragment,
 		preloadedQuery.data,
 	);
 
@@ -76,8 +83,8 @@ export default async function CompanyDetailPage({
 
 	const preloadedQuery = await loadCompany(slug);
 
-	const data = readInlineData<pageCompanyDetailFragment$key>(
-		PageCompanyDetailFragment,
+	const data = readInlineData<pageCompanyDetailMetadataFragment$key>(
+		PageCompanyDetailMetadataFragment,
 		preloadedQuery.data,
 	);
 

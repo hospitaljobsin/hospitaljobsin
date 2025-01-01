@@ -1,24 +1,47 @@
 "use client";
 
 import CompanyDetailView from "@/components/company-detail/CompanyDetailView";
-import type { SerializablePreloadedQuery } from "@/lib/relay/loadSerializableQuery";
+import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
-import { useRelayEnvironment } from "react-relay";
+import {
+	graphql,
+	useFragment,
+	usePreloadedQuery,
+	useRelayEnvironment,
+} from "react-relay";
+import type { CompanyDetailViewClientComponentFragment$key } from "./__generated__/CompanyDetailViewClientComponentFragment.graphql";
+import type CompanyDetailViewQueryNode from "./__generated__/pageCompanyDetailViewQuery.graphql";
+import type { pageCompanyDetailViewQuery } from "./__generated__/pageCompanyDetailViewQuery.graphql";
+import PageCompanyDetailViewQuery from "./__generated__/pageCompanyDetailViewQuery.graphql";
 
-import type CompanyDetailViewQueryNode from "@/components/company-detail/__generated__/CompanyDetailViewQuery.graphql";
-import type { CompanyDetailViewQuery } from "@/components/company-detail/__generated__/CompanyDetailViewQuery.graphql";
+const CompanyDetailViewClientComponentFragment = graphql`
+ fragment CompanyDetailViewClientComponentFragment on Query @argumentDefinitions(
+	  slug: {
+		type: "String!",
+	  }
+	) {
+		...CompanyDetailViewFragment @arguments(slug: $slug)
+  }
+`;
 
 export default function CompanyDetailViewClientComponent(props: {
 	preloadedQuery: SerializablePreloadedQuery<
 		typeof CompanyDetailViewQueryNode,
-		CompanyDetailViewQuery
+		pageCompanyDetailViewQuery
 	>;
 }) {
 	const environment = useRelayEnvironment();
-	const queryRef = useSerializablePreloadedQuery(
-		environment,
-		props.preloadedQuery,
+	const queryRef = useSerializablePreloadedQuery<
+		typeof CompanyDetailViewQueryNode,
+		pageCompanyDetailViewQuery
+	>(environment, props.preloadedQuery);
+
+	const data = usePreloadedQuery(PageCompanyDetailViewQuery, queryRef);
+
+	const rootQuery = useFragment<CompanyDetailViewClientComponentFragment$key>(
+		CompanyDetailViewClientComponentFragment,
+		data,
 	);
 
-	return <CompanyDetailView queryRef={queryRef} />;
+	return <CompanyDetailView rootQuery={rootQuery} />;
 }

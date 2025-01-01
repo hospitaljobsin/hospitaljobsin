@@ -95,7 +95,5 @@ export default async function JobDetailPage({
 		notFound();
 	}
 
-	// return <div>hi</div>;
-
 	return <JobDetailViewClientComponent preloadedQuery={preloadedQuery} />;
 }
