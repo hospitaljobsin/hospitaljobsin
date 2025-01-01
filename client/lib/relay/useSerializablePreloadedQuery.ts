@@ -6,7 +6,7 @@ import type {
 	OperationType,
 } from "relay-runtime";
 import { responseCache } from "./environments/client";
-import type { SerializablePreloadedQuery } from "./loadSerializableQuery";
+import type { SerializablePreloadedQuery } from "./serializablePreloadedQuery";
 
 export default function useSerializablePreloadedQuery<
 	TRequest extends ConcreteRequest,

@@ -1,15 +1,22 @@
-import type { JobDetailViewQuery } from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
-import JobDetailViewQueryNode from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
-import type { pageJobDetailFragment$key } from "./__generated__/pageJobDetailFragment.graphql";
+import type { pageJobDetailMetadataFragment$key } from "./__generated__/pageJobDetailMetadataFragment.graphql";
+import type JobDetailViewQueryNode from "./__generated__/pageJobDetailViewQuery.graphql";
+import type { pageJobDetailViewQuery } from "./__generated__/pageJobDetailViewQuery.graphql";
 
+export const PageJobDetailViewQuery = graphql`
+  query pageJobDetailViewQuery($slug: String!) {	
+	...pageJobDetailMetadataFragment @arguments(slug: $slug)
+    ...JobDetailViewClientComponentFragment @arguments(slug: $slug)
+  }
+`;
 
-const PageJobDetailFragment = graphql`
- fragment pageJobDetailFragment on Query @inline @argumentDefinitions(
+const PageJobDetailMetadataFragment = graphql`
+ fragment pageJobDetailMetadataFragment on Query @inline @argumentDefinitions(
       slug: {
         type: "String!",
       }
@@ -31,8 +38,8 @@ const PageJobDetailFragment = graphql`
 const loadJob = cache(async (slug: string) => {
 	return await loadSerializableQuery<
 		typeof JobDetailViewQueryNode,
-		JobDetailViewQuery
-	>(JobDetailViewQueryNode, {
+		pageJobDetailViewQuery
+	>(PageJobDetailViewQuery, {
 		slug: slug,
 	});
 });
@@ -41,13 +48,13 @@ export async function generateMetadata({
 	params,
 }: {
 	params: Promise<{ slug: string }>;
-}) {
+}): Promise<Metadata> {
 	const slug = (await params).slug;
 
 	const preloadedQuery = await loadJob(slug);
 
-	const data = readInlineData<pageJobDetailFragment$key>(
-		PageJobDetailFragment,
+	const data = readInlineData<pageJobDetailMetadataFragment$key>(
+		PageJobDetailMetadataFragment,
 		preloadedQuery.data,
 	);
 
@@ -79,14 +86,16 @@ export default async function JobDetailPage({
 
 	const preloadedQuery = await loadJob(slug);
 
-	const data = readInlineData<pageJobDetailFragment$key>(
-		PageJobDetailFragment,
+	const data = readInlineData<pageJobDetailMetadataFragment$key>(
+		PageJobDetailMetadataFragment,
 		preloadedQuery.data,
 	);
 
 	if (data.job.__typename !== "Job") {
 		notFound();
 	}
+
+	// return <div>hi</div>;
 
 	return <JobDetailViewClientComponent preloadedQuery={preloadedQuery} />;
 }

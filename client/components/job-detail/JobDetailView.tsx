@@ -1,24 +1,26 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
-import type { PreloadedQuery } from "react-relay";
-import { graphql, usePreloadedQuery } from "react-relay";
+import { graphql, useFragment } from "react-relay";
 import JobDetails from "./JobDetails";
-import type { JobDetailViewQuery as JobDetailViewQueryType } from "./__generated__/JobDetailViewQuery.graphql";
+import type { JobDetailViewFragment$key } from "./__generated__/JobDetailViewFragment.graphql";
 
-const JobDetailViewQuery = graphql`
-  query JobDetailViewQuery($slug: String!) {	
-	...pageJobDetailFragment @arguments(slug: $slug)
-    ...JobDetailsQuery @arguments(slug: $slug)
+const JobDetailViewFragment = graphql`
+ fragment JobDetailViewFragment on Query @argumentDefinitions(
+      slug: {
+        type: "String!",
+      }
+    ) {
+		...JobDetailsQuery @arguments(slug: $slug)
   }
 `;
 
 export default function JobDetailView(props: {
-	queryRef: PreloadedQuery<JobDetailViewQueryType>;
+	rootQuery: JobDetailViewFragment$key;
 }) {
-	const data = usePreloadedQuery(JobDetailViewQuery, props.queryRef);
+	const query = useFragment(JobDetailViewFragment, props.rootQuery);
 
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-6">
-			<JobDetails rootQuery={data} />
+			<JobDetails rootQuery={query} />
 		</div>
 	);
 }

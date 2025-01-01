@@ -1,6 +1,5 @@
 import type {
 	ConcreteRequest,
-	GraphQLResponse,
 	GraphQLTaggedNode,
 	OperationType,
 	VariablesOf,
@@ -12,16 +11,7 @@ import {
 } from "relay-runtime";
 import { getCurrentEnvironment } from "./environments";
 import { networkFetch } from "./environments/server";
-
-export interface SerializablePreloadedQuery<
-	TRequest extends ConcreteRequest,
-	TQuery extends OperationType,
-> {
-	params: TRequest["params"];
-	variables: VariablesOf<TQuery>;
-	data: TQuery["response"];
-	graphQLResponse: GraphQLResponse;
-}
+import type { SerializablePreloadedQuery } from "./serializablePreloadedQuery";
 
 export default async function loadSerializableQuery<
 	TRequest extends ConcreteRequest,

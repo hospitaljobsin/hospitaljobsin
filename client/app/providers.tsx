@@ -21,13 +21,13 @@ export default function Providers({
 		<NextUIProvider navigate={router.push}>
 			<ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
 				<RelayEnvironmentProvider environment={environment}>
-						{children}
-						<AppProgressBar
-							height="4px"
-							color="#00a925"
-							options={{ showSpinner: false }}
-							shallowRouting
-						/>
+					{children}
+					<AppProgressBar
+						height="4px"
+						color="#00a925"
+						options={{ showSpinner: false }}
+						shallowRouting
+					/>
 				</RelayEnvironmentProvider>
 			</ThemeProvider>
 		</NextUIProvider>

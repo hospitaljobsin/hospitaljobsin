@@ -1,24 +1,48 @@
 "use client";
 
-import JobDetailView from "@/components/job-detail/JobDetailView";
-import type { SerializablePreloadedQuery } from "@/lib/relay/loadSerializableQuery";
+import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
-import { useRelayEnvironment } from "react-relay";
+import {
+	graphql,
+	useFragment,
+	usePreloadedQuery,
+	useRelayEnvironment,
+} from "react-relay";
 
-import type JobDetailViewQueryNode from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
-import type { JobDetailViewQuery } from "@/components/job-detail/__generated__/JobDetailViewQuery.graphql";
+import JobDetailView from "@/components/job-detail/JobDetailView";
+import type { JobDetailViewClientComponentFragment$key } from "./__generated__/JobDetailViewClientComponentFragment.graphql";
+import type JobDetailViewQueryNode from "./__generated__/pageJobDetailViewQuery.graphql";
+import type { pageJobDetailViewQuery } from "./__generated__/pageJobDetailViewQuery.graphql";
+import PageJobDetailViewQuery from "./__generated__/pageJobDetailViewQuery.graphql";
+
+const JobDetailViewClientComponentFragment = graphql`
+ fragment JobDetailViewClientComponentFragment on Query @argumentDefinitions(
+	  slug: {
+		type: "String!",
+	  }
+	) {
+		...JobDetailViewFragment @arguments(slug: $slug)
+  }
+`;
 
 export default function JobDetailViewClientComponent(props: {
 	preloadedQuery: SerializablePreloadedQuery<
 		typeof JobDetailViewQueryNode,
-		JobDetailViewQuery
+		pageJobDetailViewQuery
 	>;
 }) {
 	const environment = useRelayEnvironment();
-	const queryRef = useSerializablePreloadedQuery(
-		environment,
-		props.preloadedQuery,
+	const queryRef = useSerializablePreloadedQuery<
+		typeof JobDetailViewQueryNode,
+		pageJobDetailViewQuery
+	>(environment, props.preloadedQuery);
+
+	const data = usePreloadedQuery(PageJobDetailViewQuery, queryRef);
+
+	const rootQuery = useFragment<JobDetailViewClientComponentFragment$key>(
+		JobDetailViewClientComponentFragment,
+		data,
 	);
 
-	return <JobDetailView queryRef={queryRef} />;
+	return <JobDetailView rootQuery={rootQuery} />;
 }
