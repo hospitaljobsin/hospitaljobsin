@@ -1,4 +1,4 @@
-import { parseDate } from "@internationalized/date";
+import { CalendarDate } from "@internationalized/date";
 import {
 	Button,
 	Card,
@@ -97,7 +97,9 @@ export default function UpdatePersonalDetailsForm({
 						category: data.profile.category ?? null,
 						gender: data.profile.gender ?? null,
 						maritalStatus: data.profile.maritalStatus ?? null,
-						dateOfBirth: data.profile.dateOfBirth ?? null,
+						...(data.profile.dateOfBirth && {
+							dateOfBirth: new Date(data.profile.dateOfBirth),
+						}),
 					}
 				: {
 						// address: {
@@ -117,6 +119,8 @@ export default function UpdatePersonalDetailsForm({
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		console.log("Form Data Submitted:", formData);
+
+		// TODO: we need to implement custom GraphQL date scalars or convert into ISO 8601 string
 		commitMutation({
 			variables: {
 				gender: formData.gender,
@@ -178,19 +182,38 @@ export default function UpdatePersonalDetailsForm({
 						<Controller
 							name="dateOfBirth"
 							control={control}
-							render={({ field }) => (
-								<DatePicker
-									fullWidth
-									className="max-w-[284px]"
-									label="Date of Birth"
-									value={
-										field.value instanceof Date
-											? parseDate(String(field.value))
-											: null
-									}
-									onChange={field.onChange}
-								/>
-							)}
+							render={({ field }) => {
+								console.log("value:", field.value);
+								return (
+									<DatePicker
+										fullWidth
+										label="Date of Birth"
+										value={
+											field.value
+												? new CalendarDate(
+														field.value.getFullYear(),
+														field.value.getMonth() + 1, // Months are zero-indexed in Date
+														field.value.getDate(),
+													)
+												: null
+										}
+										onChange={(calendarDate) => {
+											console.log("Selected CalendarDate:", calendarDate);
+
+											// Convert CalendarDate to JavaScript Date when changing the value
+											field.onChange(
+												calendarDate
+													? new Date(
+															calendarDate.year,
+															calendarDate.month - 1, // Convert 1-based month to 0-based
+															calendarDate.day,
+														)
+													: undefined,
+											);
+										}}
+									/>
+								);
+							}}
 						/>
 						{errors.dateOfBirth && (
 							<p className="text-red-500">This field is required</p>
