@@ -160,6 +160,9 @@ export default function UpdatePersonalDetailsForm({
 									placeholder="Add your gender"
 									selectionMode="single"
 									value={field.value ?? ""}
+									selectedKeys={[field.value ?? ""]}
+									defaultSelectedKeys={[field.value ?? ""]}
+									onSelectionChange={field.onChange}
 								>
 									<SelectItem key={"MALE"}>Male</SelectItem>
 									<SelectItem key={"FEMALE"}>Female</SelectItem>
@@ -321,6 +324,9 @@ export default function UpdatePersonalDetailsForm({
 										placeholder="Add your marital status"
 										selectionMode="single"
 										value={field.value ?? ""}
+										selectedKeys={[field.value ?? ""]}
+										defaultSelectedKeys={[field.value ?? ""]}
+										onSelectionChange={field.onChange}
 									>
 										<SelectItem key={"SINGLE"}>Single</SelectItem>
 										<SelectItem key={"MARRIED"}>Married</SelectItem>
