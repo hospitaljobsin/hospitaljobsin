@@ -43,8 +43,18 @@ class AccountRepo:
     def verify_password(password: str, password_hash: str) -> bool:
         return argon2.verify(password, password_hash)
 
-    async def get(self, account_id: ObjectId) -> Account | None:
+    async def get(
+        self,
+        account_id: ObjectId,
+        *,
+        fetch_profile: bool = False,
+    ) -> Account | None:
         """Get account by ID."""
+        if fetch_profile:
+            return await Account.get(
+                account_id,
+                fetch_links=True,
+            )
         return await Account.get(account_id)
 
     async def get_by_email(self, email: str) -> Account | None:

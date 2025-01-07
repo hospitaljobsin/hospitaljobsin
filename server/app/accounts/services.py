@@ -2,7 +2,7 @@ from datetime import date
 
 from bson import ObjectId
 
-from app.accounts.documents import Profile
+from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo, ProfileRepo
 
 
@@ -20,15 +20,11 @@ class ProfileService:
         marital_status: str | None,
         category: str | None,
         languages: list[str] | None,
-    ) -> Profile:
-        account = await self._account_repo.get(account_id)
-        if account.profile is None:
-            print("creating profile")
+    ) -> Account:
+        account = await self._account_repo.get(account_id, fetch_profile=True)
+        existing_profile = account.profile
+        if existing_profile is None:
             existing_profile = await self._profile_repo.create(account)
-        else:
-            # TODO: this doesn't work, we need account.fetch_links
-            print("getting existing profile")
-            existing_profile = await self._profile_repo.get_by_account(account)
 
         await self._profile_repo.update(
             profile=existing_profile,
@@ -39,4 +35,4 @@ class ProfileService:
             languages=languages,
         )
 
-        return existing_profile
+        return account

@@ -17,7 +17,9 @@ import type { UpdatePersonalDetailsFormFragment$key } from "./__generated__/Upda
 const UpdatePersonalDetailsFormMutation = graphql`
 mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $address: AddressInput, $maritalStatus: MaritalStatusType, $category: String) {
 	updateProfile(address: $address, gender: $gender, dateOfBirth: $dateOfBirth, maritalStatus: $maritalStatus, category: $category) {
-		__typename
+		...on Account {
+			...UpdatePersonalDetailsFormFragment
+		}
 	}
 }
 `;

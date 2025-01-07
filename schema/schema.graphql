@@ -309,7 +309,7 @@ type UnsaveJobResult {
   savedJobEdge: SavedJobEdge!
 }
 
-union UpdateProfilePayload = Profile | ProfileNotFoundError
+union UpdateProfilePayload = Account | ProfileNotFoundError
 
 union ViewerPayload = Account | NotAuthenticatedError
 

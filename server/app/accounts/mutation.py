@@ -12,10 +12,10 @@ from app.base.types import AddressInputType
 from app.context import AuthInfo
 
 from .types import (
+    AccountType,
     GenderTypeEnum,
     LanguageInputType,
     MaritalStatusTypeEnum,
-    ProfileType,
     UpdateProfilePayload,
 )
 
@@ -46,7 +46,7 @@ class AccountMutation:
         languages: list[LanguageInputType] | None = None,
     ) -> UpdateProfilePayload:
         """Update the current user's profile."""
-        profile = await profile_service.update(
+        account = await profile_service.update(
             account_id=info.context["current_user_id"],
             gender=gender,
             date_of_birth=date_of_birth,
@@ -55,4 +55,7 @@ class AccountMutation:
             languages=languages if languages is not None else [],
             address=address,
         )
-        return ProfileType.marshal(profile)
+
+        # TODO: fix profile loading here: profile is already loaded
+        # (maybe pass as an additional param to marshal?)
+        return AccountType.marshal_with_profile(account)

@@ -138,13 +138,6 @@ ProfilePayload = Annotated[
     ),
 ]
 
-UpdateProfilePayload = Annotated[
-    ProfileType | ProfileNotFoundErrorType,
-    strawberry.union(
-        name="UpdateProfilePayload",
-    ),
-]
-
 
 @strawberry.type(name="Account")
 class AccountType(BaseNodeType[Account]):
@@ -153,6 +146,7 @@ class AccountType(BaseNodeType[Account]):
     has_onboarded: bool
     updated_at: datetime | None
     profile_id: strawberry.Private[ObjectId | None] = None
+    profile_loaded: strawberry.Private[ProfileType | None] = None
 
     @classmethod
     def marshal(cls, account: Account) -> Self:
@@ -164,6 +158,18 @@ class AccountType(BaseNodeType[Account]):
             updated_at=account.updated_at,
             has_onboarded=account.has_onboarded,
             profile_id=account.profile.ref.id if account.profile is not None else None,
+        )
+
+    @classmethod
+    def marshal_with_profile(cls, account: Account) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            id=str(account.id),
+            full_name=account.full_name,
+            email=account.email,
+            updated_at=account.updated_at,
+            has_onboarded=account.has_onboarded,
+            profile_loaded=account.profile,
         )
 
     @classmethod
@@ -183,8 +189,10 @@ class AccountType(BaseNodeType[Account]):
     @strawberry.field(graphql_type=ProfilePayload)
     @inject
     async def profile(self, info: Info) -> ProfilePayload:
-        if self.profile_id is None:
+        if self.profile_id is None and self.profile_loaded is None:
             return ProfileNotFoundErrorType()
+        if self.profile_loaded is not None:
+            return ProfileType.marshal(self.profile_loaded)
         result = await info.context["loaders"].profile_by_id.load(str(self.profile_id))
         return ProfileType.marshal(result)
 
@@ -193,6 +201,13 @@ ViewerPayload = Annotated[
     AccountType | NotAuthenticatedErrorType,
     strawberry.union(
         name="ViewerPayload",
+    ),
+]
+
+UpdateProfilePayload = Annotated[
+    AccountType | ProfileNotFoundErrorType,
+    strawberry.union(
+        name="UpdateProfilePayload",
     ),
 ]
 
