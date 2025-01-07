@@ -13,18 +13,19 @@ type Account implements Node {
 type Address {
   line1: String
   line2: String
-  city: String!
-  state: String!
-  country: String!
+  city: String
+  state: String
+  country: String
   pincode: String
 }
 
-enum CategoryType {
-  SC
-  ST
-  OBC
-  GENERAL
-  OTHER
+input AddressInput {
+  line1: String
+  line2: String
+  city: String
+  state: String
+  country: String
+  pincode: String
 }
 
 type Company implements Node {
@@ -142,6 +143,11 @@ type Language {
   proficiency: String!
 }
 
+input LanguageInput {
+  name: String!
+  proficiency: String!
+}
+
 union LoginPayload = Account | InvalidCredentialsError
 
 type LogoutPayload {
@@ -189,6 +195,9 @@ type Mutation {
     """The ID of the job to unsave."""
     jobId: ID!
   ): UnsaveJobPayload! @isAuthenticated
+
+  """Update the current user's profile."""
+  updateProfile(gender: GenderType = null, dateOfBirth: Date = null, address: AddressInput = null, maritalStatus: MaritalStatusType = null, category: String = null, languages: [LanguageInput!] = null): UpdateProfilePayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""
@@ -223,7 +232,7 @@ type Profile implements Node {
   dateOfBirth: Date
   address: Address
   maritalStatus: MaritalStatusType
-  category: CategoryType
+  category: String
   languages: [Language!]!
   totalJobExperience: Float
   currentJob: CurrentJob
@@ -299,6 +308,8 @@ union UnsaveJobPayload = UnsaveJobResult | SavedJobNotFoundError
 type UnsaveJobResult {
   savedJobEdge: SavedJobEdge!
 }
+
+union UpdateProfilePayload = Profile | ProfileNotFoundError
 
 union ViewerPayload = Account | NotAuthenticatedError
 

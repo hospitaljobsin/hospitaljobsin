@@ -36,9 +36,31 @@ class NotAuthenticatedErrorType(BaseErrorType):
 class AddressType:
     line1: str | None
     line2: str | None
-    city: str
-    state: str
-    country: str
+    city: str | None
+    state: str | None
+    country: str | None
+    pincode: str | None
+
+    @classmethod
+    def marshal(cls, address: Address) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            line1=address.line1,
+            line2=address.line2,
+            city=address.city,
+            state=address.state,
+            country=address.country,
+            pincode=address.pincode,
+        )
+
+
+@strawberry.input(name="AddressInput")
+class AddressInputType:
+    line1: str | None
+    line2: str | None
+    city: str | None
+    state: str | None
+    country: str | None
     pincode: str | None
 
     @classmethod

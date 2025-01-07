@@ -1,4 +1,4 @@
-import type { DateValue } from "@nextui-org/react";
+import { parseDate } from "@internationalized/date";
 import {
 	Button,
 	Card,
@@ -10,14 +10,34 @@ import {
 	SelectItem,
 } from "@nextui-org/react";
 import { Controller, useForm } from "react-hook-form";
-import { graphql, useFragment } from "react-relay";
+import { graphql, useFragment, useMutation } from "react-relay";
+import { z } from "zod";
 import type { UpdatePersonalDetailsFormFragment$key } from "./__generated__/UpdatePersonalDetailsFormFragment.graphql";
 
+const UpdatePersonalDetailsFormMutation = graphql`
+mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $address: AddressInput, $maritalStatus: MaritalStatusType, $category: String) {
+	updateProfile(address: $address, gender: $gender, dateOfBirth: $dateOfBirth, maritalStatus: $maritalStatus, category: $category) {
+		__typename
+	}
+}
+`;
 const UpdatePersonalDetailsFormFragment = graphql`
   fragment UpdatePersonalDetailsFormFragment on Account {
     profile {
       ... on Profile {
         __typename
+		address {
+			city
+			country
+			line1
+			line2
+			pincode
+			state
+		}
+		gender
+		dateOfBirth
+		maritalStatus
+		category
       }
       ... on ProfileNotFoundError {
         __typename
@@ -31,50 +51,86 @@ type Props = {
 	onSaveChanges: () => void;
 };
 
-type FormData = {
-	gender: string;
-	dateOfBirth: DateValue;
-	address: {
-		city: string;
-		country: string;
-		line1: string | null;
-		line2: string | null;
-		pincode: string | null;
-		state: string;
-	};
-	maritalStatus: string;
-	category: string;
-};
-
-// TODO: use react-hook-form here
+const formSchema = z.object({
+	gender: z.enum(["MALE", "FEMALE", "OTHER"]).nullable(),
+	dateOfBirth: z.date().nullable(),
+	address: z.object({
+		city: z.string().min(1, "City is required").nullable(),
+		country: z.string().min(1, "Country is required").nullable(),
+		line1: z.string().nullable(),
+		line2: z.string().nullable(),
+		pincode: z.string().nullable(),
+		state: z.string().min(1, "State is required"),
+	}),
+	maritalStatus: z.string().nullable(),
+	category: z.string().nullable(),
+});
 
 export default function UpdatePersonalDetailsForm({
 	rootQuery,
 	onSaveChanges,
 }: Props) {
+	const [commitMutation, isMutationInFlight] = useMutation(
+		UpdatePersonalDetailsFormMutation,
+	);
 	const data = useFragment(UpdatePersonalDetailsFormFragment, rootQuery);
+	console.log("Data:", data);
+	console.log(data.profile?.__typename === "Profile");
 	const {
 		handleSubmit,
 		control,
-		formState: { errors },
-	} = useForm<FormData>({
-		defaultValues: {
-			address: {
-				city: "",
-				country: "",
-				line1: "",
-				line2: "",
-				pincode: "",
-				state: "",
-			},
-			category: "",
-			gender: "",
-			maritalStatus: "",
-		},
+		formState: { errors, isSubmitting },
+	} = useForm<z.infer<typeof formSchema>>({
+		defaultValues:
+			data.profile.__typename === "Profile"
+				? {
+						address: {
+							city: data.profile.address?.city ?? null,
+							country: data.profile.address?.country ?? null,
+							line1: data.profile.address?.line1 ?? null,
+							line2: data.profile.address?.line2 ?? null,
+							pincode: data.profile.address?.pincode ?? null,
+							state: data.profile.address?.state ?? null,
+						},
+						category: data.profile.category ?? null,
+						gender: data.profile.gender ?? null,
+						maritalStatus: data.profile.maritalStatus ?? null,
+						dateOfBirth: data.profile.dateOfBirth ?? null,
+					}
+				: {
+						// address: {
+						// 	city: null,
+						// 	country: null,
+						// 	line1: null,
+						// 	line2: null,
+						// 	pincode: null,
+						// 	state: null,
+						// },
+						address: null,
+						category: null,
+						gender: "MALE",
+						maritalStatus: null,
+					},
 	});
 
-	async function onSubmit(formData: FormData) {
+	function onSubmit(formData: z.infer<typeof formSchema>) {
 		console.log("Form Data Submitted:", formData);
+		commitMutation({
+			variables: {
+				gender: formData.gender,
+				dateOfBirth: formData.dateOfBirth,
+				category: formData.category,
+				maritalStatus: formData.maritalStatus,
+				address: formData.address && {
+					city: formData.address.city,
+					country: formData.address.country,
+					line1: formData.address.line1,
+					line2: formData.address.line2,
+					pincode: formData.address.pincode,
+					state: formData.address.state,
+				},
+			},
+		});
 		onSaveChanges();
 	}
 
@@ -96,15 +152,16 @@ export default function UpdatePersonalDetailsForm({
 							control={control}
 							render={({ field }) => (
 								<Select
+									{...field}
 									fullWidth
 									label="Gender"
 									placeholder="Add your gender"
 									selectionMode="single"
-									{...field}
+									value={field.value ?? ""}
 								>
-									<SelectItem key={"male"}>Male</SelectItem>
-									<SelectItem key={"female"}>Female</SelectItem>
-									<SelectItem key={"other"}>Other</SelectItem>
+									<SelectItem key={"MALE"}>Male</SelectItem>
+									<SelectItem key={"FEMALE"}>Female</SelectItem>
+									<SelectItem key={"OTHER"}>Other</SelectItem>
 								</Select>
 							)}
 						/>
@@ -121,7 +178,11 @@ export default function UpdatePersonalDetailsForm({
 									fullWidth
 									className="max-w-[284px]"
 									label="Date of Birth"
-									value={field.value}
+									value={
+										field.value instanceof Date
+											? parseDate(String(field.value))
+											: null
+									}
 									onChange={field.onChange}
 								/>
 							)}
@@ -145,6 +206,7 @@ export default function UpdatePersonalDetailsForm({
 												{...field}
 												label="City"
 												placeholder="Add your city"
+												value={field.value ?? ""}
 											/>
 										)}
 									/>
@@ -162,6 +224,7 @@ export default function UpdatePersonalDetailsForm({
 												{...field}
 												label="Country"
 												placeholder="Add your country"
+												value={field.value ?? ""}
 											/>
 										)}
 									/>
@@ -179,6 +242,7 @@ export default function UpdatePersonalDetailsForm({
 												{...field}
 												label="Pincode"
 												placeholder="Add your pincode"
+												value={field.value ?? ""}
 											/>
 										)}
 									/>
@@ -198,6 +262,7 @@ export default function UpdatePersonalDetailsForm({
 												{...field}
 												label="Line 1"
 												placeholder="Add line 1"
+												value={field.value ?? ""}
 											/>
 										)}
 									/>
@@ -215,6 +280,7 @@ export default function UpdatePersonalDetailsForm({
 												{...field}
 												label="Line 2"
 												placeholder="Add line 2"
+												value={field.value ?? ""}
 											/>
 										)}
 									/>
@@ -247,14 +313,15 @@ export default function UpdatePersonalDetailsForm({
 								control={control}
 								render={({ field }) => (
 									<Select
+										{...field}
 										fullWidth
 										label="Marital Status"
 										placeholder="Add your marital status"
 										selectionMode="single"
-										{...field}
+										value={field.value ?? ""}
 									>
-										<SelectItem key={"single"}>Single</SelectItem>
-										<SelectItem key={"married"}>Married</SelectItem>
+										<SelectItem key={"SINGLE"}>Single</SelectItem>
+										<SelectItem key={"MARRIED"}>Married</SelectItem>
 									</Select>
 								)}
 							/>
@@ -272,6 +339,7 @@ export default function UpdatePersonalDetailsForm({
 										{...field}
 										label="Category"
 										placeholder="Add your category"
+										value={field.value ?? ""}
 									/>
 								)}
 							/>
@@ -287,7 +355,9 @@ export default function UpdatePersonalDetailsForm({
 				<Button type="button" variant="light" onPress={handleCancel}>
 					Cancel
 				</Button>
-				<Button type="submit">Save Changes</Button>
+				<Button type="submit" isDisabled={isSubmitting || isMutationInFlight}>
+					Save Changes
+				</Button>
 			</div>
 		</form>
 	);

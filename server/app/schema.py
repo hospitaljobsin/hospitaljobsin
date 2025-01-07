@@ -4,6 +4,7 @@ from strawberry.extensions import ParserCache, SchemaExtension, ValidationCache
 from strawberry.relay import GlobalID
 from strawberry.tools import merge_types
 
+from app.accounts.mutation import AccountMutation
 from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
 from app.companies.mutation import CompanyMutation
@@ -28,6 +29,7 @@ mutation = merge_types(
     types=(
         AuthMutation,
         CompanyMutation,
+        AccountMutation,
     ),
 )
 

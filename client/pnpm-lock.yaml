@@ -14,6 +14,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.9.1
         version: 3.9.1(react-hook-form@7.53.2(react@19.0.0))
+      '@internationalized/date':
+        specifier: ^3.6.0
+        version: 3.6.0
       '@nextui-org/react':
         specifier: ^2.6.10
         version: 2.6.10(@types/react@19.0.1)(framer-motion@11.15.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(tailwindcss@3.4.15)

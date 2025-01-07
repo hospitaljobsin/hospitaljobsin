@@ -26,8 +26,6 @@ type FormData = {
 	languages: { name: string; proficiency: string }[];
 };
 
-// TODO: use react-hook-form here
-
 export default function UpdateLanguagesForm({
 	rootQuery,
 	onSaveChanges,

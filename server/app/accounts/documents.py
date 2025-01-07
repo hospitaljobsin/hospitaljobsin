@@ -23,10 +23,10 @@ class Language(BaseModel):
 # Main Job Seeker Profile Document
 class Profile(Document):
     # personal edetails
-    gender: Literal["male", "female", "other"] | None
+    gender: Literal["MALE", "FEMALE", "OTHER"] | None
     date_of_birth: date | None
     address: Address | None
-    marital_status: Literal["married", "single"] | None
+    marital_status: Literal["MARRIED", "SINGLE"] | None
     category: str | None
     languages: list[Language]
 

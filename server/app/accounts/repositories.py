@@ -106,7 +106,6 @@ class ProfileRepo:
     async def create(self, account: Account) -> Profile:
         """Create a new profile."""
         profile = Profile(
-            account=account,
             gender=None,
             date_of_birth=None,
             address=None,
@@ -117,13 +116,17 @@ class ProfileRepo:
             total_job_experience=None,
         )
 
-        return await profile.insert(
+        account.profile = profile
+
+        await account.save(
             link_rule=WriteRules.WRITE,
         )
 
+        return profile
+
     async def update(
         self,
-        account: Account,
+        profile: Profile,
         gender: str | None = None,
         date_of_birth: date | None = None,
         address: Address | None = None,
@@ -134,17 +137,14 @@ class ProfileRepo:
         total_job_experience: float | None = None,
     ) -> Profile:
         """update a profile."""
-        profile = Profile(
-            account=account,
-            gender=gender,
-            date_of_birth=date_of_birth,
-            address=address,
-            marital_status=marital_status,
-            category=category,
-            languages=languages,
-            current_job=current_job,
-            total_job_experience=total_job_experience,
-        )
+        profile.gender = gender
+        profile.date_of_birth = date_of_birth
+        profile.address = address
+        profile.marital_status = marital_status
+        profile.languages = languages
+        profile.category = category
+        profile.current_job = current_job
+        profile.total_job_experience = total_job_experience
 
         return await profile.save(
             link_rule=WriteRules.WRITE,
@@ -166,9 +166,10 @@ class ProfileRepo:
             for profile_id in profile_ids
         ]
 
-    async def get_by_user_id(self, user_id: str) -> Profile | None:
-        """Get profile by user ID."""
-        return await Profile.find_one(Profile.user_id == user_id)
+    async def get_by_account(self, account: Account) -> Profile | None:
+        """Get profile by account ID."""
+        await account.fetch_link(Account.profile)
+        return account.profile
 
     async def delete(self, profile: Profile) -> None:
         """Delete a profile by ID."""

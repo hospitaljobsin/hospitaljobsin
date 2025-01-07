@@ -8,18 +8,18 @@ const PersonalDetailsFragment = graphql`
     profile {
       ... on Profile {
         __typename
-        gender
-        dateOfBirth
-        address {
-            city
-            country
-            line1
-            line2
-            pincode
-            state
-        }
-        maritalStatus
-        category
+		address {
+			city
+			country
+			line1
+			line2
+			pincode
+			state
+		}
+		gender
+		dateOfBirth
+		maritalStatus
+		category
       }
       ... on ProfileNotFoundError {
         __typename
@@ -35,6 +35,8 @@ type Props = {
 
 export default function PersonalDetails({ rootQuery, onEditProfile }: Props) {
 	const data = useFragment(PersonalDetailsFragment, rootQuery);
+
+	const profileNotFound = data.profile.__typename !== "Profile";
 
 	return (
 		<div className="space-y-12">
@@ -52,27 +54,57 @@ export default function PersonalDetails({ rootQuery, onEditProfile }: Props) {
 				<CardBody className="flex flex-col gap-10">
 					<div className="flex flex-col gap-2 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Gender</h1>
-						<h2 className="w-full text-foreground-500">Add your gender</h2>
+						{profileNotFound || !data.profile.gender ? (
+							<h2 className="w-full text-foreground-500">Add your gender</h2>
+						) : (
+							<h2 className="w-full text-foreground-500">
+								{data.profile.gender}
+							</h2>
+						)}
 					</div>
 					<div className="flex flex-col gap-2 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Date of Birth</h1>
-						<h2 className="w-full text-foreground-500">
-							Add your date of birth
-						</h2>
+						{profileNotFound || !data.profile.dateOfBirth ? (
+							<h2 className="w-full text-foreground-500">
+								Add your date of birth
+							</h2>
+						) : (
+							<h2 className="w-full text-foreground-500">
+								{String(data.profile.dateOfBirth)}
+							</h2>
+						)}
 					</div>
 					<div className="flex flex-col gap-2 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Address</h1>
-						<h2 className="w-full text-foreground-500">Add your address</h2>
+						{profileNotFound || !data.profile.address ? (
+							<h2 className="w-full text-foreground-500">Add your address</h2>
+						) : (
+							<h2 className="w-full text-foreground-500">
+								{JSON.stringify(data.profile.address)}
+							</h2>
+						)}
 					</div>
 					<div className="flex flex-col gap-2 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Marital Status</h1>
-						<h2 className="w-full text-foreground-500">
-							Add your marital status
-						</h2>
+						{profileNotFound || !data.profile.maritalStatus ? (
+							<h2 className="w-full text-foreground-500">
+								Add your marital status
+							</h2>
+						) : (
+							<h2 className="w-full text-foreground-500">
+								{data.profile.maritalStatus}
+							</h2>
+						)}
 					</div>
 					<div className="flex flex-col gap-2 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Category</h1>
-						<h2 className="w-full text-foreground-500">Add your category</h2>
+						{profileNotFound || !data.profile.category ? (
+							<h2 className="w-full text-foreground-500">Add your category</h2>
+						) : (
+							<h2 className="w-full text-foreground-500">
+								{data.profile.category}
+							</h2>
+						)}
 					</div>
 				</CardBody>
 			</Card>
