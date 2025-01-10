@@ -56,7 +56,7 @@ type Props = {
 
 const formSchema = z.object({
 	gender: z.enum(["MALE", "FEMALE", "OTHER"]).nullable(),
-	dateOfBirth: z.instanceof(CalendarDate).optional(),
+	dateOfBirth: z.instanceof(CalendarDate).nullable(),
 	address: z.object({
 		city: z.string().nullable(),
 		country: z.string().nullable(),
