@@ -146,7 +146,7 @@ class AccountType(BaseNodeType[Account]):
     email: str
     has_onboarded: bool
     updated_at: datetime | None
-    profile_ref: strawberry.Private[ObjectId | ProfileType | None] = None
+    profile_ref: strawberry.Private[ObjectId | Profile | None] = None
 
     @classmethod
     def marshal(cls, account: Account) -> Self:
@@ -191,7 +191,7 @@ class AccountType(BaseNodeType[Account]):
     async def profile(self, info: Info) -> ProfilePayload:
         if self.profile_ref is None:
             return ProfileNotFoundErrorType()
-        if isinstance(self.profile_ref, ProfileType):
+        if isinstance(self.profile_ref, Profile):
             return ProfileType.marshal(self.profile_ref)
         result = await info.context["loaders"].profile_by_id.load(str(self.profile_ref))
         return ProfileType.marshal(result)
