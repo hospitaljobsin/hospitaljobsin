@@ -38,7 +38,7 @@ async def get_context(
                 current_user_id=session.account.ref.id,
                 user_agent=user_agent,
             )
-        auth_service.logout(request=request, response=response)
+        await auth_service.logout(request=request, response=response)
     return Context(
         request=request,
         response=response,

@@ -47,3 +47,9 @@ class SessionRepo:
         return await Session.find_one(
             Session.token_hash == self.hash_session_token(token),
         )
+
+    async def delete(self, token: str) -> None:
+        """Delete session by token."""
+        await Session.find_one(
+            Session.token_hash == self.hash_session_token(token),
+        ).delete()
