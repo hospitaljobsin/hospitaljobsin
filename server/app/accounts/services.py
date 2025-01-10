@@ -2,7 +2,7 @@ from datetime import date
 
 from bson import ObjectId
 
-from app.accounts.documents import Account
+from app.accounts.documents import Account, Language
 from app.accounts.repositories import AccountRepo, ProfileRepo
 from app.base.models import Address
 
@@ -20,7 +20,7 @@ class ProfileService:
         address: Address,
         marital_status: str | None,
         category: str | None,
-        languages: list[str] | None,
+        languages: list[Language] | None,
     ) -> Account:
         account = await self._account_repo.get(account_id, fetch_profile=True)
         existing_profile = account.profile
