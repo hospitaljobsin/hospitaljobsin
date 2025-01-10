@@ -1,4 +1,4 @@
-import { APP_NAME } from "@/lib/constants";
+import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
 import "./globals.css";
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 		template: `%s | ${APP_NAME}`,
 		default: APP_NAME,
 	},
+	description: APP_TAGLINE,
 };
 
 export default async function RootLayout({
