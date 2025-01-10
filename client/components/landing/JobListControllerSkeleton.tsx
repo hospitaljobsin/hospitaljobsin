@@ -7,6 +7,7 @@ export default function JobListControllerSkeleton() {
 			size="lg"
 			classNames={{
 				inputWrapper: "p-8",
+				mainWrapper: "-mt-20 bg-background",
 			}}
 			startContent={
 				<Search
@@ -18,7 +19,6 @@ export default function JobListControllerSkeleton() {
 			placeholder="Search for jobs, in plain English"
 			variant="bordered"
 			fullWidth
-			isDisabled
 		/>
 	);
 }

@@ -12,6 +12,7 @@ export default function JobListController(props: JobListControllerProps) {
 			size="lg"
 			classNames={{
 				inputWrapper: "p-8",
+				mainWrapper: "-mt-20 bg-background",
 			}}
 			startContent={
 				<Search
