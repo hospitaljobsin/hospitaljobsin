@@ -54,8 +54,6 @@ class AccountMutation:
             address=address.to_document(),
         )
 
-        # TODO: fix profile loading here: profile is already loaded
-        # (maybe pass as an additional param to marshal?)
         return AccountType.marshal_with_profile(account)
 
     @strawberry.mutation(  # type: ignore[misc]
@@ -82,6 +80,4 @@ class AccountMutation:
             languages=[language.to_document() for language in languages],
         )
 
-        # TODO: fix profile loading here: profile is already loaded
-        # (maybe pass as an additional param to marshal?)
         return AccountType.marshal_with_profile(account)

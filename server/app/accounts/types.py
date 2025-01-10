@@ -146,8 +146,7 @@ class AccountType(BaseNodeType[Account]):
     email: str
     has_onboarded: bool
     updated_at: datetime | None
-    profile_id: strawberry.Private[ObjectId | None] = None
-    profile_instance: strawberry.Private[ProfileType | None] = None
+    profile_ref: strawberry.Private[ObjectId | ProfileType | None] = None
 
     @classmethod
     def marshal(cls, account: Account) -> Self:
@@ -158,7 +157,7 @@ class AccountType(BaseNodeType[Account]):
             email=account.email,
             updated_at=account.updated_at,
             has_onboarded=account.has_onboarded,
-            profile_id=account.profile.ref.id if account.profile is not None else None,
+            profile_ref=account.profile.ref.id if account.profile is not None else None,
         )
 
     @classmethod
@@ -170,7 +169,7 @@ class AccountType(BaseNodeType[Account]):
             email=account.email,
             updated_at=account.updated_at,
             has_onboarded=account.has_onboarded,
-            profile_instance=account.profile,
+            profile_ref=account.profile,
         )
 
     @classmethod
@@ -190,11 +189,11 @@ class AccountType(BaseNodeType[Account]):
     @strawberry.field(graphql_type=ProfilePayload)
     @inject
     async def profile(self, info: Info) -> ProfilePayload:
-        if self.profile_id is None and self.profile_instance is None:
+        if self.profile_ref is None:
             return ProfileNotFoundErrorType()
-        if self.profile_instance is not None:
-            return ProfileType.marshal(self.profile_instance)
-        result = await info.context["loaders"].profile_by_id.load(str(self.profile_id))
+        if isinstance(self.profile_ref, ProfileType):
+            return ProfileType.marshal(self.profile_ref)
+        result = await info.context["loaders"].profile_by_id.load(str(self.profile_ref))
         return ProfileType.marshal(result)
 
 
