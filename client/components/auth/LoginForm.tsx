@@ -58,7 +58,7 @@ export default function LoginForm() {
 				password: values.password,
 			},
 			onCompleted(response) {
-				if (response.login?.__typename === "InvalidCredentialsError") {
+				if (response.login.__typename === "InvalidCredentialsError") {
 					setError("email", { message: response.login.message });
 					setError("password", { message: response.login.message });
 				} else {
