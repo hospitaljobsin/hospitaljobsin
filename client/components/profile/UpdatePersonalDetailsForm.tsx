@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, parseDate } from "@internationalized/date";
 import {
 	Button,
 	Card,
@@ -56,7 +56,7 @@ type Props = {
 
 const formSchema = z.object({
 	gender: z.enum(["MALE", "FEMALE", "OTHER"]).nullable(),
-	dateOfBirth: z.date().optional(),
+	dateOfBirth: z.instanceof(CalendarDate).optional(),
 	address: z.object({
 		city: z.string().nullable(),
 		country: z.string().nullable(),
@@ -98,9 +98,9 @@ export default function UpdatePersonalDetailsForm({
 						category: data.profile.category ?? null,
 						gender: data.profile.gender ?? null,
 						maritalStatus: data.profile.maritalStatus ?? null,
-						...(data.profile.dateOfBirth && {
-							dateOfBirth: new Date(data.profile.dateOfBirth),
-						}),
+						dateOfBirth: data.profile.dateOfBirth
+							? parseDate(data.profile.dateOfBirth)
+							: null,
 					}
 				: {
 						address: {
@@ -114,6 +114,7 @@ export default function UpdatePersonalDetailsForm({
 						category: null,
 						gender: "MALE",
 						maritalStatus: null,
+						dateOfBirth: null,
 					},
 	});
 
@@ -121,7 +122,9 @@ export default function UpdatePersonalDetailsForm({
 		commitMutation({
 			variables: {
 				gender: formData.gender || null,
-				dateOfBirth: formData.dateOfBirth || null,
+				dateOfBirth: formData.dateOfBirth
+					? formData.dateOfBirth.toString()
+					: null,
 				category: formData.category || null,
 				maritalStatus: formData.maritalStatus || null,
 				address: {
@@ -185,29 +188,8 @@ export default function UpdatePersonalDetailsForm({
 										fullWidth
 										label="Date of Birth"
 										{...field}
-										value={
-											field.value instanceof Date
-												? new CalendarDate(
-														field.value.getFullYear(),
-														field.value.getMonth() + 1, // Months are zero-indexed in Date
-														field.value.getDate(),
-													)
-												: undefined
-										}
-										onChange={(calendarDate) => {
-											console.log("Selected CalendarDate:", calendarDate);
-
-											// Convert CalendarDate to JavaScript Date when changing the value
-											field.onChange(
-												calendarDate
-													? new Date(
-															calendarDate.year,
-															calendarDate.month - 1, // Convert 1-based month to 0-based
-															calendarDate.day,
-														)
-													: undefined,
-											);
-										}}
+										value={field.value ?? undefined}
+										onChange={field.onChange}
 									/>
 								);
 							}}
