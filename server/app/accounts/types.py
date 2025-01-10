@@ -53,7 +53,6 @@ class LanguageInputType:
     name: str
     proficiency: str
 
-    @classmethod
     def to_document(self) -> Language:
         return Language(
             name=self.name,
