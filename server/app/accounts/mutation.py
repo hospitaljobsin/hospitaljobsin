@@ -38,9 +38,9 @@ class AccountMutation:
         self,
         info: AuthInfo,
         profile_service: Annotated[ProfileService, Inject],
+        address: AddressInputType,
         gender: GenderTypeEnum | None = None,
         date_of_birth: date | None = None,
-        address: AddressInputType | None = None,
         marital_status: MaritalStatusTypeEnum | None = None,
         category: str | None = None,
         languages: list[LanguageInputType] | None = None,
@@ -52,8 +52,10 @@ class AccountMutation:
             date_of_birth=date_of_birth,
             marital_status=marital_status,
             category=category,
-            languages=languages if languages is not None else [],
-            address=address,
+            languages=[language.to_document() for language in languages]
+            if languages is not None
+            else [],
+            address=address.to_document(),
         )
 
         # TODO: fix profile loading here: profile is already loaded

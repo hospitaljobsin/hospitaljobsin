@@ -54,10 +54,10 @@ class LanguageInputType:
     proficiency: str
 
     @classmethod
-    def marshal(cls, language: Language) -> Self:
-        return cls(
-            name=language.name,
-            proficiency=language.proficiency,
+    def to_document(self) -> Language:
+        return Language(
+            name=self.name,
+            proficiency=self.proficiency,
         )
 
 
@@ -81,7 +81,7 @@ class ProfileType(BaseNodeType[Profile]):
     # personal details
     gender: GenderTypeEnum | None
     date_of_birth: date | None
-    address: AddressType | None
+    address: AddressType
     marital_status: MaritalStatusTypeEnum | None
     category: str | None
     languages: list[LanguageType]

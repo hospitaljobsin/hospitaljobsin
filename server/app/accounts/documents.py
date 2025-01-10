@@ -25,7 +25,7 @@ class Profile(Document):
     # personal edetails
     gender: Literal["MALE", "FEMALE", "OTHER"] | None
     date_of_birth: date | None
-    address: Address | None
+    address: Address
     marital_status: Literal["MARRIED", "SINGLE"] | None
     category: str | None
     languages: list[Language]

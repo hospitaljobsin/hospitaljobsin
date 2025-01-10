@@ -4,6 +4,7 @@ from bson import ObjectId
 
 from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo, ProfileRepo
+from app.base.models import Address
 
 
 class ProfileService:
@@ -16,7 +17,7 @@ class ProfileService:
         account_id: ObjectId,
         gender: str | None,
         date_of_birth: date | None,
-        address: None,
+        address: Address,
         marital_status: str | None,
         category: str | None,
         languages: list[str] | None,
@@ -33,6 +34,7 @@ class ProfileService:
             marital_status=marital_status,
             category=category,
             languages=languages,
+            address=address,
         )
 
         return account

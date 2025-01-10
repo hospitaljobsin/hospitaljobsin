@@ -63,14 +63,13 @@ class AddressInputType:
     country: str | None
     pincode: str | None
 
-    @classmethod
-    def marshal(cls, address: Address) -> Self:
-        """Marshal into a node instance."""
-        return cls(
-            line1=address.line1,
-            line2=address.line2,
-            city=address.city,
-            state=address.state,
-            country=address.country,
-            pincode=address.pincode,
+    def to_document(self) -> Address:
+        """Marshal into a document instance."""
+        return Address(
+            line1=self.line1,
+            line2=self.line2,
+            city=self.city,
+            state=self.state,
+            country=self.country,
+            pincode=self.pincode,
         )

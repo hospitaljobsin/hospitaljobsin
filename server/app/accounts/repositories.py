@@ -6,11 +6,11 @@ from beanie.operators import In
 from bson import ObjectId
 from passlib.hash import argon2, sha256_crypt
 
+from app.base.models import Address
 from app.lib.constants import EMAIL_VERIFICATION_EXPIRES_IN
 
 from .documents import (
     Account,
-    Address,
     CurrentJob,
     EmailVerification,
     Language,
@@ -115,10 +115,18 @@ class EmailVerificationRepo:
 class ProfileRepo:
     async def create(self, account: Account) -> Profile:
         """Create a new profile."""
+        print("creating profile")
         profile = Profile(
             gender=None,
             date_of_birth=None,
-            address=None,
+            address=Address(
+                city=None,
+                state=None,
+                country=None,
+                pincode=None,
+                line1=None,
+                line2=None,
+            ),
             marital_status=None,
             category=None,
             languages=[],
@@ -137,9 +145,9 @@ class ProfileRepo:
     async def update(
         self,
         profile: Profile,
+        address: Address,
         gender: str | None = None,
         date_of_birth: date | None = None,
-        address: Address | None = None,
         marital_status: str | None = None,
         languages: list[Language] = [],
         category: str | None = None,
