@@ -7,7 +7,7 @@ from strawberry.fastapi import GraphQLRouter
 
 from app.auth.dependencies import get_session_token
 from app.auth.repositories import SessionRepo
-from app.config import settings
+from app.auth.services import AuthService
 
 from .context import AuthContext, BaseContext, Context
 from .dataloaders import create_dataloaders
@@ -25,6 +25,7 @@ async def get_context(
         ),
     ],
     session_repo: Injected[SessionRepo],
+    auth_service: Injected[AuthService],
     user_agent: Annotated[str | None, Header()] = "unknown",
 ) -> BaseContext:
     if session_token:
@@ -37,16 +38,7 @@ async def get_context(
                 current_user_id=session.account.ref.id,
                 user_agent=user_agent,
             )
-        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
-        secure = False if is_localhost else True
-        response.delete_cookie(
-            key=settings.session_cookie_name,
-            path="/",
-            domain=settings.session_cookie_domain,
-            secure=secure,
-            httponly=True,
-            samesite="lax",
-        )
+        auth_service.logout(request=request, response=response)
     return Context(
         request=request,
         response=response,
