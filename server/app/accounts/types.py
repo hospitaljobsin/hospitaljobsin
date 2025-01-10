@@ -96,7 +96,9 @@ class ProfileType(BaseNodeType[Profile]):
         """Marshal into a node instance."""
         return cls(
             id=str(profile.id),
-            gender=GenderTypeEnum[profile.gender],
+            gender=GenderTypeEnum[profile.gender]
+            if profile.gender is not None
+            else None,
             date_of_birth=profile.date_of_birth,
             address=AddressType.marshal(profile.address)
             if profile.address is not None
