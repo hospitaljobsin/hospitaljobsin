@@ -206,7 +206,7 @@ ViewerPayload = Annotated[
 ]
 
 UpdateProfilePayload = Annotated[
-    AccountType | ProfileNotFoundErrorType,
+    AccountType,
     strawberry.union(
         name="UpdateProfilePayload",
     ),

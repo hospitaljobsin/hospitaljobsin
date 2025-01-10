@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import z from "zod";
+import type { SignupFormMutation as SignupFormMutationType } from "./__generated__/SignupFormMutation.graphql";
 
 const SignupFormMutation = graphql`
   mutation SignupFormMutation($email: String!, $password: String!, $fullName: String!) {
@@ -37,7 +38,8 @@ const signUpSchema = z.object({
 
 export default function SignUpForm() {
 	const router = useRouter();
-	const [commitMutation, isMutationInFlight] = useMutation(SignupFormMutation);
+	const [commitMutation, isMutationInFlight] =
+		useMutation<SignupFormMutationType>(SignupFormMutation);
 	const {
 		register,
 		handleSubmit,
@@ -55,7 +57,7 @@ export default function SignUpForm() {
 				fullName: values.fullName,
 			},
 			onCompleted(response) {
-				if (response.register?.__typename === "EmailInUseError") {
+				if (response.register.__typename === "EmailInUseError") {
 					setError("email", { message: response.register.message });
 				} else {
 					router.replace(links.confirmSignup);

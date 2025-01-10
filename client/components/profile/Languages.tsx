@@ -48,23 +48,18 @@ export default function Languages({ rootQuery, onEditProfile }: Props) {
 						<h2 className="w-full text-foreground-500">Add your languages</h2>
 					) : (
 						<div className="flex flex-col gap-8 w-full">
-							<div className="flex gap-8 items-center w-full">
-								<h3 className="w-full text-foreground-500 font-medium">Name</h3>
-								<h4 className="w-full text-foreground-500 font-medium">
-									Proficiency
-								</h4>
-							</div>
 							{data.profile.languages.map((language) => (
 								<div
-									className="flex gap-8 items-center w-full"
+									className="flex gap-4 flex-col items-center w-full"
 									key={`${language.name}-${language.proficiency}`}
 								>
-									<h3 className="w-full text-foreground-500">
+									<h3 className="w-full text-foreground-500 text-lg font-medium">
 										{language.name}
 									</h3>
-									<h4 className="w-full text-foreground-500">
-										{language.proficiency}
-									</h4>
+									<div className="w-full flex gap-2 text-foreground-500">
+										<p>Proficiency:</p>
+										<p className="italic">{language.proficiency}</p>
+									</div>
 								</div>
 							))}
 						</div>

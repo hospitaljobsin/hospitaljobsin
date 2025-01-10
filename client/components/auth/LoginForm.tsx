@@ -39,7 +39,8 @@ export default function LoginForm() {
 	const params = useSearchParams();
 
 	const redirectTo = params.get("return_to") || "/";
-	const [commitMutation, isMutationInFlight] = useMutation(LoginFormMutation);
+	const [commitMutation, isMutationInFlight] =
+		useMutation<LoginFormMutationType>(LoginFormMutation);
 	const {
 		register,
 		handleSubmit,
@@ -56,7 +57,7 @@ export default function LoginForm() {
 				email: values.email,
 				password: values.password,
 			},
-			onCompleted(response: LoginFormMutationType["response"]) {
+			onCompleted(response) {
 				if (response.login?.__typename === "InvalidCredentialsError") {
 					setError("email", { message: response.login.message });
 					setError("password", { message: response.login.message });

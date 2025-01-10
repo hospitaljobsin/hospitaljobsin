@@ -105,9 +105,9 @@ export default function UpdateLanguagesForm({
 						{fields.map((item, index) => (
 							<div
 								key={`field-${item.name}-${index}`}
-								className="flex gap-8 items-center w-full"
+								className="flex gap-8 items-start w-full"
 							>
-								<div className="w-full">
+								<div className="w-full space-y-4">
 									<Controller
 										name={`languages.${index}.name`}
 										control={control}
@@ -125,7 +125,7 @@ export default function UpdateLanguagesForm({
 										<p className="text-red-500">This field is required</p>
 									)}
 								</div>
-								<div className="w-full">
+								<div className="w-full space-y-4">
 									<Controller
 										name={`languages.${index}.proficiency`}
 										control={control}
