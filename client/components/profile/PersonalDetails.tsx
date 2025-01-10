@@ -52,7 +52,7 @@ export default function PersonalDetails({ rootQuery, onEditProfile }: Props) {
 					</Button>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
-					<div className="flex flex-col gap-2 w-full items-center justify-start">
+					<div className="flex flex-col gap-6 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Gender</h1>
 						{profileNotFound || !data.profile.gender ? (
 							<h2 className="w-full text-foreground-500">Add your gender</h2>
@@ -62,7 +62,7 @@ export default function PersonalDetails({ rootQuery, onEditProfile }: Props) {
 							</h2>
 						)}
 					</div>
-					<div className="flex flex-col gap-2 w-full items-center justify-start">
+					<div className="flex flex-col gap-6 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Date of Birth</h1>
 						{profileNotFound || !data.profile.dateOfBirth ? (
 							<h2 className="w-full text-foreground-500">
@@ -74,17 +74,97 @@ export default function PersonalDetails({ rootQuery, onEditProfile }: Props) {
 							</h2>
 						)}
 					</div>
-					<div className="flex flex-col gap-2 w-full items-center justify-start">
+					<div className="flex flex-col gap-6 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Address</h1>
-						{profileNotFound || !data.profile.address ? (
-							<h2 className="w-full text-foreground-500">Add your address</h2>
-						) : (
-							<h2 className="w-full text-foreground-500">
-								{JSON.stringify(data.profile.address)}
-							</h2>
-						)}
+						<div className="flex w-full justify-between gap-2">
+							<div className="flex flex-col gap-8 w-full items-center justify-start">
+								<div className="flex flex-col gap-2 w-full items-center justify-start">
+									<h1 className="w-full text-md font-medium text-foreground-500">
+										City
+									</h1>
+									{profileNotFound || !data.profile.address?.city ? (
+										<h2 className="w-full text-foreground-500">
+											Add your city
+										</h2>
+									) : (
+										<h2 className="w-full text-foreground-500">
+											{data.profile.address?.city}
+										</h2>
+									)}
+								</div>
+								<div className="flex flex-col gap-2 w-full items-center justify-start">
+									<h1 className="w-full text-md font-medium text-foreground-500">
+										Country
+									</h1>
+									{profileNotFound || !data.profile.address?.country ? (
+										<h2 className="w-full text-foreground-500">
+											Add your country
+										</h2>
+									) : (
+										<h2 className="w-full text-foreground-500">
+											{data.profile.address?.country}
+										</h2>
+									)}
+								</div>
+								<div className="flex flex-col gap-2 w-full items-center justify-start">
+									<h1 className="w-full text-md font-medium text-foreground-500">
+										Pincode
+									</h1>
+									{profileNotFound || !data.profile.address?.pincode ? (
+										<h2 className="w-full text-foreground-500">
+											Add your pincode
+										</h2>
+									) : (
+										<h2 className="w-full text-foreground-500">
+											{data.profile.address?.pincode}
+										</h2>
+									)}
+								</div>
+							</div>
+
+							<div className="flex flex-col gap-8 w-full items-center justify-start">
+								<div className="flex flex-col gap-2 w-full items-center justify-start">
+									<h1 className="w-full text-md font-medium text-foreground-500">
+										Line 1
+									</h1>
+									{profileNotFound || !data.profile.address?.line1 ? (
+										<h2 className="w-full text-foreground-500">Add line 1</h2>
+									) : (
+										<h2 className="w-full text-foreground-500">
+											{data.profile.address?.line1}
+										</h2>
+									)}
+								</div>
+								<div className="flex flex-col gap-2 w-full items-center justify-start">
+									<h1 className="w-full text-md font-medium text-foreground-500">
+										Line 2
+									</h1>
+									{profileNotFound || !data.profile.address?.line2 ? (
+										<h2 className="w-full text-foreground-500">Add line 2</h2>
+									) : (
+										<h2 className="w-full text-foreground-500">
+											{data.profile.address?.line2}
+										</h2>
+									)}
+								</div>
+								<div className="flex flex-col gap-2 w-full items-center justify-start">
+									<h1 className="w-full text-md font-medium text-foreground-500">
+										State
+									</h1>
+									{profileNotFound || !data.profile.address?.state ? (
+										<h2 className="w-full text-foreground-500">
+											Add your state
+										</h2>
+									) : (
+										<h2 className="w-full text-foreground-500">
+											{data.profile.address?.state}
+										</h2>
+									)}
+								</div>
+							</div>
+						</div>
 					</div>
-					<div className="flex flex-col gap-2 w-full items-center justify-start">
+					<div className="flex flex-col gap-6 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Marital Status</h1>
 						{profileNotFound || !data.profile.maritalStatus ? (
 							<h2 className="w-full text-foreground-500">
@@ -96,7 +176,7 @@ export default function PersonalDetails({ rootQuery, onEditProfile }: Props) {
 							</h2>
 						)}
 					</div>
-					<div className="flex flex-col gap-2 w-full items-center justify-start">
+					<div className="flex flex-col gap-6 w-full items-center justify-start">
 						<h1 className="w-full text-lg font-medium">Category</h1>
 						{profileNotFound || !data.profile.category ? (
 							<h2 className="w-full text-foreground-500">Add your category</h2>

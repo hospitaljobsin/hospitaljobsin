@@ -24,7 +24,7 @@ from .types import (
 class AccountMutation:
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateProfilePayload,
-        description="Update the current user's profile.",
+        description="Update the current user's profile personal details.",
         extensions=[
             PermissionExtension(
                 permissions=[
@@ -34,7 +34,7 @@ class AccountMutation:
         ],
     )
     @inject
-    async def update_profile(
+    async def update_profile_personal_details(
         self,
         info: AuthInfo,
         profile_service: Annotated[ProfileService, Inject],
@@ -43,19 +43,43 @@ class AccountMutation:
         date_of_birth: date | None = None,
         marital_status: MaritalStatusTypeEnum | None = None,
         category: str | None = None,
-        languages: list[LanguageInputType] | None = None,
     ) -> UpdateProfilePayload:
         """Update the current user's profile."""
-        account = await profile_service.update(
+        account = await profile_service.update_personal_details(
             account_id=info.context["current_user_id"],
             gender=gender,
             date_of_birth=date_of_birth,
             marital_status=marital_status,
             category=category,
-            languages=[language.to_document() for language in languages]
-            if languages is not None
-            else [],
             address=address.to_document(),
+        )
+
+        # TODO: fix profile loading here: profile is already loaded
+        # (maybe pass as an additional param to marshal?)
+        return AccountType.marshal_with_profile(account)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Update the current user's profile languages.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_profile_languages(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+        languages: list[LanguageInputType],
+    ) -> UpdateProfilePayload:
+        """Update the current user's profile."""
+        account = await profile_service.update_languages(
+            account_id=info.context["current_user_id"],
+            languages=[language.to_document() for language in languages],
         )
 
         # TODO: fix profile loading here: profile is already loaded

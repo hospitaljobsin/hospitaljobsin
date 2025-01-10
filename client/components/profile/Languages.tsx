@@ -8,18 +8,6 @@ const LanguagesFragment = graphql`
     profile {
       ... on Profile {
         __typename
-        gender
-        dateOfBirth
-        address {
-            city
-            country
-            line1
-            line2
-            pincode
-            state
-        }
-        maritalStatus
-        category
         languages {
             name
             proficiency
@@ -40,6 +28,8 @@ type Props = {
 export default function Languages({ rootQuery, onEditProfile }: Props) {
 	const data = useFragment(LanguagesFragment, rootQuery);
 
+	const profileNotFound = data.profile.__typename !== "Profile";
+
 	return (
 		<div className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="sm">
@@ -54,7 +44,31 @@ export default function Languages({ rootQuery, onEditProfile }: Props) {
 					</Button>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
-					<h2 className="w-full text-foreground-500">Add your languages</h2>
+					{profileNotFound || data.profile.languages.length < 1 ? (
+						<h2 className="w-full text-foreground-500">Add your languages</h2>
+					) : (
+						<div className="flex flex-col gap-8 w-full">
+							<div className="flex gap-8 items-center w-full">
+								<h3 className="w-full text-foreground-500 font-medium">Name</h3>
+								<h4 className="w-full text-foreground-500 font-medium">
+									Proficiency
+								</h4>
+							</div>
+							{data.profile.languages.map((language) => (
+								<div
+									className="flex gap-8 items-center w-full"
+									key={`${language.name}-${language.proficiency}`}
+								>
+									<h3 className="w-full text-foreground-500">
+										{language.name}
+									</h3>
+									<h4 className="w-full text-foreground-500">
+										{language.proficiency}
+									</h4>
+								</div>
+							))}
+						</div>
+					)}
 				</CardBody>
 			</Card>
 		</div>

@@ -12,7 +12,7 @@ class ProfileService:
         self._profile_repo = profile_repo
         self._account_repo = account_repo
 
-    async def update(
+    async def update_personal_details(
         self,
         account_id: ObjectId,
         gender: str | None,
@@ -20,7 +20,6 @@ class ProfileService:
         address: Address,
         marital_status: str | None,
         category: str | None,
-        languages: list[Language] | None,
     ) -> Account:
         account = await self._account_repo.get(account_id, fetch_profile=True)
         existing_profile = account.profile
@@ -33,8 +32,30 @@ class ProfileService:
             date_of_birth=date_of_birth,
             marital_status=marital_status,
             category=category,
-            languages=languages,
+            languages=existing_profile.languages,
             address=address,
+        )
+
+        return account
+
+    async def update_languages(
+        self,
+        account_id: ObjectId,
+        languages: list[Language],
+    ) -> Account:
+        account = await self._account_repo.get(account_id, fetch_profile=True)
+        existing_profile = account.profile
+        if existing_profile is None:
+            existing_profile = await self._profile_repo.create(account)
+
+        await self._profile_repo.update(
+            profile=existing_profile,
+            gender=existing_profile.gender,
+            date_of_birth=existing_profile.date_of_birth,
+            marital_status=existing_profile.marital_status,
+            category=existing_profile.category,
+            languages=languages,
+            address=existing_profile.address,
         )
 
         return account

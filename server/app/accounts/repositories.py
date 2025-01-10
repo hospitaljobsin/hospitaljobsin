@@ -115,7 +115,6 @@ class EmailVerificationRepo:
 class ProfileRepo:
     async def create(self, account: Account) -> Profile:
         """Create a new profile."""
-        print("creating profile")
         profile = Profile(
             gender=None,
             date_of_birth=None,

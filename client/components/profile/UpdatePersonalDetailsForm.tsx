@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarDate } from "@internationalized/date";
 import {
 	Button,
@@ -15,8 +16,8 @@ import { z } from "zod";
 import type { UpdatePersonalDetailsFormFragment$key } from "./__generated__/UpdatePersonalDetailsFormFragment.graphql";
 
 const UpdatePersonalDetailsFormMutation = graphql`
-mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $address: AddressInput, $maritalStatus: MaritalStatusType, $category: String) {
-	updateProfile(address: $address, gender: $gender, dateOfBirth: $dateOfBirth, maritalStatus: $maritalStatus, category: $category) {
+mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $address: AddressInput!, $maritalStatus: MaritalStatusType, $category: String) {
+	updateProfilePersonalDetails(address: $address, gender: $gender, dateOfBirth: $dateOfBirth, maritalStatus: $maritalStatus, category: $category) {
 		...on Account {
 			...UpdatePersonalDetailsFormFragment
 		}
@@ -55,16 +56,16 @@ type Props = {
 
 const formSchema = z.object({
 	gender: z.enum(["MALE", "FEMALE", "OTHER"]).nullable(),
-	dateOfBirth: z.date().nullable(),
+	dateOfBirth: z.date().optional(),
 	address: z.object({
-		city: z.string().min(1, "City is required").nullable(),
-		country: z.string().min(1, "Country is required").nullable(),
+		city: z.string().nullable(),
+		country: z.string().nullable(),
 		line1: z.string().nullable(),
 		line2: z.string().nullable(),
 		pincode: z.string().nullable(),
-		state: z.string().min(1, "State is required"),
+		state: z.string().nullable(),
 	}),
-	maritalStatus: z.string().nullable(),
+	maritalStatus: z.enum(["MARRIED", "SINGLE"]).nullable(),
 	category: z.string().nullable(),
 });
 
@@ -76,13 +77,13 @@ export default function UpdatePersonalDetailsForm({
 		UpdatePersonalDetailsFormMutation,
 	);
 	const data = useFragment(UpdatePersonalDetailsFormFragment, rootQuery);
-	console.log("Data:", data);
-	console.log(data.profile?.__typename === "Profile");
+
 	const {
 		handleSubmit,
 		control,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
 		defaultValues:
 			data.profile.__typename === "Profile"
 				? {
@@ -102,15 +103,14 @@ export default function UpdatePersonalDetailsForm({
 						}),
 					}
 				: {
-						// address: {
-						// 	city: null,
-						// 	country: null,
-						// 	line1: null,
-						// 	line2: null,
-						// 	pincode: null,
-						// 	state: null,
-						// },
-						address: null,
+						address: {
+							city: null,
+							country: null,
+							line1: null,
+							line2: null,
+							pincode: null,
+							state: null,
+						},
 						category: null,
 						gender: "MALE",
 						maritalStatus: null,
@@ -118,22 +118,19 @@ export default function UpdatePersonalDetailsForm({
 	});
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
-		console.log("Form Data Submitted:", formData);
-
-		// TODO: we need to implement custom GraphQL date scalars or convert into ISO 8601 string
 		commitMutation({
 			variables: {
-				gender: formData.gender,
-				dateOfBirth: formData.dateOfBirth,
-				category: formData.category,
-				maritalStatus: formData.maritalStatus,
-				address: formData.address && {
-					city: formData.address.city,
-					country: formData.address.country,
-					line1: formData.address.line1,
-					line2: formData.address.line2,
-					pincode: formData.address.pincode,
-					state: formData.address.state,
+				gender: formData.gender || null,
+				dateOfBirth: formData.dateOfBirth || null,
+				category: formData.category || null,
+				maritalStatus: formData.maritalStatus || null,
+				address: {
+					city: formData.address.city || null,
+					country: formData.address.country || null,
+					line1: formData.address.line1 || null,
+					line2: formData.address.line2 || null,
+					pincode: formData.address.pincode || null,
+					state: formData.address.state || null,
 				},
 			},
 		});
@@ -183,19 +180,19 @@ export default function UpdatePersonalDetailsForm({
 							name="dateOfBirth"
 							control={control}
 							render={({ field }) => {
-								console.log("value:", field.value);
 								return (
 									<DatePicker
 										fullWidth
 										label="Date of Birth"
+										{...field}
 										value={
-											field.value
+											field.value instanceof Date
 												? new CalendarDate(
 														field.value.getFullYear(),
 														field.value.getMonth() + 1, // Months are zero-indexed in Date
 														field.value.getDate(),
 													)
-												: null
+												: undefined
 										}
 										onChange={(calendarDate) => {
 											console.log("Selected CalendarDate:", calendarDate);
@@ -228,7 +225,6 @@ export default function UpdatePersonalDetailsForm({
 									<Controller
 										name="address.city"
 										control={control}
-										defaultValue=""
 										render={({ field }) => (
 											<Input
 												{...field}
@@ -246,7 +242,6 @@ export default function UpdatePersonalDetailsForm({
 									<Controller
 										name="address.country"
 										control={control}
-										defaultValue=""
 										render={({ field }) => (
 											<Input
 												{...field}
@@ -264,7 +259,6 @@ export default function UpdatePersonalDetailsForm({
 									<Controller
 										name="address.pincode"
 										control={control}
-										defaultValue=""
 										render={({ field }) => (
 											<Input
 												{...field}
@@ -284,7 +278,6 @@ export default function UpdatePersonalDetailsForm({
 									<Controller
 										name="address.line1"
 										control={control}
-										defaultValue=""
 										render={({ field }) => (
 											<Input
 												{...field}
@@ -302,7 +295,6 @@ export default function UpdatePersonalDetailsForm({
 									<Controller
 										name="address.line2"
 										control={control}
-										defaultValue=""
 										render={({ field }) => (
 											<Input
 												{...field}
@@ -320,12 +312,12 @@ export default function UpdatePersonalDetailsForm({
 									<Controller
 										name="address.state"
 										control={control}
-										defaultValue=""
 										render={({ field }) => (
 											<Input
 												{...field}
 												label="State"
 												placeholder="Add your state"
+												value={field.value ?? ""}
 											/>
 										)}
 									/>
@@ -383,10 +375,15 @@ export default function UpdatePersonalDetailsForm({
 			</Card>
 
 			<div className="mt-4 flex justify-end gap-6">
-				<Button type="button" variant="light" onPress={handleCancel}>
+				<Button
+					type="button"
+					variant="light"
+					onPress={handleCancel}
+					isLoading={isSubmitting || isMutationInFlight}
+				>
 					Cancel
 				</Button>
-				<Button type="submit" isDisabled={isSubmitting || isMutationInFlight}>
+				<Button type="submit" isLoading={isSubmitting || isMutationInFlight}>
 					Save Changes
 				</Button>
 			</div>

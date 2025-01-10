@@ -196,8 +196,11 @@ type Mutation {
     jobId: ID!
   ): UnsaveJobPayload! @isAuthenticated
 
-  """Update the current user's profile."""
-  updateProfile(gender: GenderType = null, dateOfBirth: Date = null, address: AddressInput = null, maritalStatus: MaritalStatusType = null, category: String = null, languages: [LanguageInput!] = null): UpdateProfilePayload! @isAuthenticated
+  """Update the current user's profile personal details."""
+  updateProfilePersonalDetails(address: AddressInput!, gender: GenderType = null, dateOfBirth: Date = null, maritalStatus: MaritalStatusType = null, category: String = null): UpdateProfilePayload! @isAuthenticated
+
+  """Update the current user's profile languages."""
+  updateProfileLanguages(languages: [LanguageInput!]!): UpdateProfilePayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""
@@ -230,7 +233,7 @@ type Profile implements Node {
   id: ID!
   gender: GenderType
   dateOfBirth: Date
-  address: Address
+  address: Address!
   maritalStatus: MaritalStatusType
   category: String
   languages: [Language!]!

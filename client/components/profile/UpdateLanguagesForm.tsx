@@ -1,14 +1,30 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Card, CardBody, CardHeader, Input } from "@nextui-org/react";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { graphql, useFragment } from "react-relay";
+import { graphql, useFragment, useMutation } from "react-relay";
+import { z } from "zod";
 import type { UpdateLanguagesFormFragment$key } from "./__generated__/UpdateLanguagesFormFragment.graphql";
+
+const UpdateLanguagesFormMutation = graphql`
+mutation UpdateLanguagesFormMutation($languages: [LanguageInput!]!) {
+	updateProfileLanguages(languages: $languages) {
+		...on Account {
+			...UpdateLanguagesFormFragment
+		}
+	}
+}
+`;
 
 const UpdateLanguagesFormFragment = graphql`
   fragment UpdateLanguagesFormFragment on Account {
     profile {
       ... on Profile {
         __typename
+		languages {
+			name
+			proficiency
+		}
       }
       ... on ProfileNotFoundError {
         __typename
@@ -22,23 +38,40 @@ type Props = {
 	onSaveChanges: () => void;
 };
 
-type FormData = {
-	languages: { name: string; proficiency: string }[];
-};
+const formSchema = z.object({
+	languages: z.array(
+		z.object({
+			name: z.string().min(1, "This field is required"),
+			proficiency: z.string().min(1, "This field is required"),
+		}),
+	),
+});
 
 export default function UpdateLanguagesForm({
 	rootQuery,
 	onSaveChanges,
 }: Props) {
+	const [commitMutation, isMutationInFlight] = useMutation(
+		UpdateLanguagesFormMutation,
+	);
 	const data = useFragment(UpdateLanguagesFormFragment, rootQuery);
 	const {
 		handleSubmit,
 		control,
-		formState: { errors },
-	} = useForm<FormData>({
-		defaultValues: {
-			languages: [{ name: "", proficiency: "" }],
-		},
+		formState: { errors, isSubmitting },
+	} = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues:
+			data.profile.__typename === "Profile" && data.profile.languages.length > 0
+				? {
+						languages: data.profile.languages.map((language) => ({
+							name: language.name,
+							proficiency: language.proficiency,
+						})),
+					}
+				: {
+						languages: [{ name: "", proficiency: "" }],
+					},
 	});
 
 	const { fields, append, remove } = useFieldArray({
@@ -46,8 +79,13 @@ export default function UpdateLanguagesForm({
 		name: "languages",
 	});
 
-	async function onSubmit(formData: FormData) {
+	function onSubmit(formData: z.infer<typeof formSchema>) {
 		console.log("Form Data Submitted:", formData);
+		commitMutation({
+			variables: {
+				languages: formData.languages,
+			},
+		});
 		onSaveChanges();
 	}
 
@@ -83,7 +121,7 @@ export default function UpdateLanguagesForm({
 											/>
 										)}
 									/>
-									{errors.address?.state && (
+									{errors.languages?.[index]?.name && (
 										<p className="text-red-500">This field is required</p>
 									)}
 								</div>
@@ -101,7 +139,7 @@ export default function UpdateLanguagesForm({
 											/>
 										)}
 									/>
-									{errors.address?.state && (
+									{errors.languages?.[index]?.proficiency && (
 										<p className="text-red-500">This field is required</p>
 									)}
 								</div>
@@ -135,10 +173,17 @@ export default function UpdateLanguagesForm({
 			</Card>
 
 			<div className="mt-4 flex justify-end gap-6">
-				<Button type="button" variant="light" onPress={handleCancel}>
+				<Button
+					type="button"
+					variant="light"
+					onPress={handleCancel}
+					isLoading={isMutationInFlight || isSubmitting}
+				>
 					Cancel
 				</Button>
-				<Button type="submit">Save Changes</Button>
+				<Button type="submit" isLoading={isMutationInFlight || isSubmitting}>
+					Save Changes
+				</Button>
 			</div>
 		</form>
 	);
