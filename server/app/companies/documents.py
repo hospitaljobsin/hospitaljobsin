@@ -4,6 +4,7 @@ from typing import Annotated, Literal
 import pymongo
 from beanie import Document, Indexed, Link
 from pymongo import IndexModel
+from pymongo.operations import SearchIndexModel
 
 from app.accounts.documents import Account
 from app.base.models import Address
@@ -45,6 +46,8 @@ class Job(Document):
     min_experience: int | None = None
     max_experience: int | None = None
 
+    job_embedding: list[float] | None = None
+
     updated_at: datetime
     expires_at: datetime | None = None
 
@@ -73,6 +76,32 @@ class Job(Document):
                 [("expired", pymongo.ASCENDING), ("deleted", pymongo.ASCENDING)],
                 name="expired_deleted_index",
             ),
+            SearchIndexModel(
+                definition={
+                    "fields": [
+                        {
+                            "type": "vector",
+                            "numDimensions": 1536,  # depends on embedding model
+                            "path": "job_embedding",
+                            "similarity": "dotProduct",  # depends on embedding model
+                        },
+                        {
+                            "type": "filter",
+                            "path": "min_salary",
+                        },
+                        {
+                            "type": "filter",
+                            "path": "type",
+                        },
+                        {
+                            "type": "filter",
+                            "path": "work_mode",
+                        },
+                    ]
+                },
+                name="job_embedding_index",
+                type="vectorSearch",
+            ),
         ]
 
 
@@ -82,7 +111,6 @@ class SavedJob(Document):
 
     class Settings:
         name = "saved_jobs"
-        indexes = [{"fields": ["account", "job"], "unique": True}]
         indexes = [
             IndexModel(
                 ["account", "job"],
