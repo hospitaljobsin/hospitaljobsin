@@ -22,6 +22,11 @@ class ProfileNotFoundErrorType(BaseErrorType):
     message: str = "Profile not found!"
 
 
+@strawberry.type(name="AccountNotFoundError")
+class AccountNotFoundErrorType(BaseErrorType):
+    message: str = "Account not found!"
+
+
 @strawberry.enum(name="GenderType")
 class GenderTypeEnum(Enum):
     MALE = "MALE"
@@ -208,6 +213,13 @@ UpdateProfilePayload = Annotated[
     AccountType,
     strawberry.union(
         name="UpdateProfilePayload",
+    ),
+]
+
+UpdateAccountPayload = Annotated[
+    AccountType | AccountNotFoundErrorType,
+    strawberry.union(
+        name="UpdateAccountPayload",
     ),
 ]
 

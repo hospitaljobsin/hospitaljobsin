@@ -80,7 +80,6 @@ export default function UpdateLanguagesForm({
 	});
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
-		console.log("Form Data Submitted:", formData);
 		commitMutation({
 			variables: {
 				languages: formData.languages,

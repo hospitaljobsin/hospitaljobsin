@@ -75,6 +75,11 @@ class AccountRepo:
             for account_id in account_ids
         ]
 
+    async def update(self, account: Account, full_name: str) -> Account:
+        """Update the given account."""
+        account.full_name = full_name
+        return await account.save()
+
 
 class EmailVerificationRepo:
     async def create(self, account_id: ObjectId) -> str:

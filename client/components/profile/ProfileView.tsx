@@ -2,9 +2,10 @@
 import { useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
+import AccountDetails from "./AccountDetails";
 import Languages from "./Languages";
 import ProfileDetails from "./PersonalDetails";
-import ProfileHeader from "./ProfileHeader";
+import UpdateAccountDetailsForm from "./UpdateAccountDetailsForm";
 import UpdateLanguagesForm from "./UpdateLanguagesForm";
 import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
 import type { ProfileViewQuery as ProfileViewQueryType } from "./__generated__/ProfileViewQuery.graphql";
@@ -14,7 +15,8 @@ const ProfileViewQuery = graphql`
     viewer {
       __typename
       ... on Account {
-        ...ProfileHeaderFragment
+        ...AccountDetailsFragment
+		...UpdateAccountDetailsFormFragment
 		...UpdatePersonalDetailsFormFragment
         ...PersonalDetailsFragment
 		...LanguagesFragment
@@ -25,6 +27,7 @@ const ProfileViewQuery = graphql`
 `;
 
 export default function ProfileView() {
+	const [isEditingAccount, setIsEditingAccount] = useState(false);
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
 	const [isEditingLanguages, setIsEditingLanguages] = useState(false);
 	const data = useLazyLoadQuery<ProfileViewQueryType>(ProfileViewQuery, {});
@@ -35,7 +38,22 @@ export default function ProfileView() {
 
 	return (
 		<div className="w-full h-full space-y-16">
-			<ProfileHeader rootQuery={data.viewer} />
+			{isEditingAccount ? (
+				<UpdateAccountDetailsForm
+					rootQuery={data.viewer}
+					onSaveChanges={() => {
+						setIsEditingAccount(false);
+					}}
+				/>
+			) : (
+				<AccountDetails
+					rootQuery={data.viewer}
+					onEditAccount={() => {
+						setIsEditingAccount(true);
+					}}
+				/>
+			)}
+
 			{isEditingProfile ? (
 				<UpdateProfileDetailsForm
 					rootQuery={data.viewer}

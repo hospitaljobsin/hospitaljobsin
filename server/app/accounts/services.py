@@ -1,10 +1,26 @@
 from datetime import date
 
 from bson import ObjectId
+from result import Err, Ok, Result
 
 from app.accounts.documents import Account, Language
+from app.accounts.exceptions import AccountNotFoundError
 from app.accounts.repositories import AccountRepo, ProfileRepo
 from app.base.models import Address
+
+
+class AccountService:
+    def __init__(self, account_repo: AccountRepo):
+        self._account_repo = account_repo
+
+    async def update(
+        self, account_id: ObjectId, full_name: str
+    ) -> Result[Account, AccountNotFoundError]:
+        account = await self._account_repo.get(account_id)
+        if account is None:
+            return Err(AccountNotFoundError())
+        await self._account_repo.update(account=account, full_name=full_name)
+        return Ok(account)
 
 
 class ProfileService:

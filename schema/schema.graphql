@@ -201,6 +201,9 @@ type Mutation {
 
   """Update the current user's profile languages."""
   updateProfileLanguages(languages: [LanguageInput!]!): UpdateProfilePayload! @isAuthenticated
+
+  """Update the current user's account."""
+  updateAccount(fullName: String!): UpdateProfilePayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""
