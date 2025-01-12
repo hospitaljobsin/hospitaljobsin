@@ -184,6 +184,12 @@ type Mutation {
   """Log out the current user."""
   logout: LogoutPayload! @isAuthenticated
 
+  """Request a password reset."""
+  requestPasswordReset(
+    """The email of the existing user."""
+    email: String!
+  ): RequestPasswordResetPayload!
+
   """Save a job."""
   saveJob(
     """The ID of the job to save."""
@@ -284,6 +290,10 @@ type Query {
 }
 
 union RegisterPayload = Account | EmailInUseError
+
+type RequestPasswordResetPayload {
+  message: String!
+}
 
 union SaveJobPayload = SaveJobResult | JobNotFoundError
 

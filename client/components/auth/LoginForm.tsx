@@ -38,7 +38,7 @@ export default function LoginForm() {
 	const router = useRouter();
 	const params = useSearchParams();
 
-	const redirectTo = params.get("return_to") || "/";
+	const redirectTo = params.get("return_to") || links.landing;
 	const [commitMutation, isMutationInFlight] =
 		useMutation<LoginFormMutationType>(LoginFormMutation);
 	const {

@@ -23,6 +23,7 @@ Info = StrawberryInfo[Context, None]
 
 class AuthContext(BaseContext):
     current_user_id: ObjectId
+    session_token: str
 
 
 AuthInfo = StrawberryInfo[AuthContext, None]

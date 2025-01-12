@@ -37,8 +37,13 @@ async def get_context(
                 loaders=create_dataloaders(),
                 current_user_id=session.account.ref.id,
                 user_agent=user_agent,
+                session_token=session_token,
             )
-        await auth_service.logout(request=request, response=response)
+        await auth_service.logout(
+            request=request,
+            response=response,
+            session_token=session_token,
+        )
     return Context(
         request=request,
         response=response,

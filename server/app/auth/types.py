@@ -30,3 +30,8 @@ LoginPayload = Annotated[
 @strawberry.type(name="LogoutPayload")
 class LogoutPayloadType:
     message: str = "Successfully logged out."
+
+
+@strawberry.type(name="RequestPasswordResetPayload")
+class RequestPasswordResetPayloadType:
+    message: str = "Password reset requested."

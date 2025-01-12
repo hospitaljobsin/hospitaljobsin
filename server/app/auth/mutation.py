@@ -19,6 +19,7 @@ from .types import (
     LoginPayload,
     LogoutPayloadType,
     RegisterPayload,
+    RequestPasswordResetPayloadType,
 )
 
 
@@ -129,6 +130,31 @@ class AuthMutation:
         await auth_service.logout(
             request=info.context["request"],
             response=info.context["response"],
+            session_token=info.context["session_token"],
         )
 
         return LogoutPayloadType()
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RequestPasswordResetPayloadType,
+        description="Request a password reset.",
+    )
+    @inject
+    async def request_password_reset(
+        self,
+        info: Info,
+        email: Annotated[
+            str,
+            strawberry.argument(
+                description="The email of the existing user.",
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> RequestPasswordResetPayloadType:
+        """Request a password reset."""
+        await auth_service.request_password_reset(
+            email=email,
+            user_agent=info.context["user_agent"],
+        )
+
+        return RequestPasswordResetPayloadType()

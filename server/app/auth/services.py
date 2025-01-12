@@ -71,6 +71,7 @@ class AuthService:
         request: Request,
         response: Response,
     ) -> Result[Account, InvalidCredentialsError]:
+        """Login a user."""
         account = await self._account_repo.get_by_email(email=email)
         if not account:
             return Err(InvalidCredentialsError())
@@ -110,11 +111,15 @@ class AuthService:
             samesite="lax",
         )
 
-    async def logout(self, request: Request, response: Response) -> None:
+    async def logout(
+        self,
+        request: Request,
+        response: Response,
+        session_token: str,
+    ) -> None:
+        """Log out the current user."""
         is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
         secure = False if is_localhost else True
-
-        session_token = request.cookies.get(settings.session_cookie_name)
 
         await self._session_repo.delete(token=session_token)
 
@@ -126,3 +131,11 @@ class AuthService:
             httponly=True,
             samesite="lax",
         )
+
+    async def request_password_reset(self, email: str, user_agent: str) -> None:
+        """Request a password reset."""
+        existing_user = await self._account_repo.get_by_email(email=email)
+        if not existing_user:
+            return
+
+        # TODO: send password reset email here

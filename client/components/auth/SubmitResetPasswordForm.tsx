@@ -1,14 +1,22 @@
 "use client";
 
 import links from "@/lib/links";
-import { getErrorMessage } from "@/utils/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Card, CardBody, CardHeader, Input } from "@nextui-org/react";
-import { resetPassword } from "aws-amplify/auth";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useMutation } from "react-relay";
+import { graphql } from "relay-runtime";
 import { z } from "zod";
+import type { SubmitResetPasswordFormMutation as SubmitResetPasswordFormMutationType } from "./__generated__/SubmitResetPasswordFormMutation.graphql";
+
+const SubmitResetPasswordFormMutation = graphql`
+  mutation SubmitResetPasswordFormMutation($email: String!) {
+	requestPasswordReset(email: $email) {
+	  __typename
+	}
+  }
+`;
 
 const submitResetPasswordSchema = z.object({
 	email: z.string().email(),
@@ -16,7 +24,8 @@ const submitResetPasswordSchema = z.object({
 
 export default function SubmitResetPasswordFrom() {
 	const router = useRouter();
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [commitMutation, isMutationInFlight] =
+		useMutation<SubmitResetPasswordFormMutationType>(SubmitResetPasswordFormMutation);
 	const {
 		register,
 		handleSubmit,
@@ -25,15 +34,15 @@ export default function SubmitResetPasswordFrom() {
 		resolver: zodResolver(submitResetPasswordSchema),
 	});
 
-	async function onSubmit(values: z.infer<typeof submitResetPasswordSchema>) {
-		try {
-			await resetPassword({ username: values.email });
-		} catch (error) {
-			setErrorMessage(getErrorMessage(error));
-			return;
-		}
-
-		router.replace(links.resetPasswordConfirm);
+	function onSubmit(values: z.infer<typeof submitResetPasswordSchema>) {
+		commitMutation({
+			variables: {
+				email: values.email,
+			},
+			onCompleted() {
+				router.replace(links.resetPasswordConfirm);
+			},
+		});
 	}
 	return (
 		<Card shadow="sm" className="p-6 space-y-6">
@@ -54,22 +63,10 @@ export default function SubmitResetPasswordFrom() {
 							errorMessage={errors.email?.message}
 							isInvalid={!!errors.email}
 						/>
-						<Button fullWidth isLoading={isSubmitting} type="submit">
+						<Button fullWidth isLoading={isSubmitting || isMutationInFlight} type="submit">
 							Send Code
 						</Button>
-					</div>
-
-					<div className="flex h-8 items-end space-x-1">
-						<div
-							className="flex h-8 items-end space-x-1"
-							aria-live="polite"
-							aria-atomic="true"
-						>
-							{errorMessage && (
-								<p className="text-sm text-red-500">{errorMessage}</p>
-							)}
-						</div>
-					</div>
+					</div>					
 				</form>
 			</CardBody>
 		</Card>
