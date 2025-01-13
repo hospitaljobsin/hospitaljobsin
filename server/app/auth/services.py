@@ -139,3 +139,8 @@ class AuthService:
             return
 
         # TODO: send password reset email here
+
+    async def reset_password(
+        self, password_reset_token: str, email: str, new_password: str
+    ) -> None:
+        """Reset a user's password."""

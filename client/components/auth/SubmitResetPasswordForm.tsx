@@ -1,13 +1,16 @@
 "use client";
 
+import links from "@/lib/links";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	Alert,
 	Button,
 	Card,
 	CardBody,
+	CardFooter,
 	CardHeader,
 	Input,
+	Link,
 } from "@nextui-org/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -80,6 +83,11 @@ export default function SubmitResetPasswordFrom() {
 						</div>
 					</form>
 				</CardBody>
+				<CardFooter className="w-full flex items-center justify-center">
+					<Link href={links.login} className="cursor-pointer text-blue-500">
+						Back to login
+					</Link>
+				</CardFooter>
 			</Card>
 
 			{showSuccessMessage && (

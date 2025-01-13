@@ -35,3 +35,8 @@ class LogoutPayloadType:
 @strawberry.type(name="RequestPasswordResetPayload")
 class RequestPasswordResetPayloadType:
     message: str = "Password reset requested."
+
+
+@strawberry.type(name="ResetPasswordPayload")
+class ResetPasswordPayloadType:
+    message: str = "Password reset successfully."
