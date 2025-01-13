@@ -41,8 +41,8 @@ type Props = {
 const formSchema = z.object({
 	languages: z.array(
 		z.object({
-			name: z.string().min(1, "This field is required"),
-			proficiency: z.string().min(1, "This field is required"),
+			name: z.string().min(1, "This field is required").max(75),
+			proficiency: z.string().min(1, "This field is required").max(75),
 		}),
 	),
 });
@@ -117,12 +117,11 @@ export default function UpdateLanguagesForm({
 												fullWidth
 												label="Name"
 												placeholder="Add language name"
+												errorMessage={errors.languages?.[index]?.name?.message}
+												isInvalid={!!errors.languages?.[index]?.name}
 											/>
 										)}
 									/>
-									{errors.languages?.[index]?.name && (
-										<p className="text-red-500">This field is required</p>
-									)}
 								</div>
 								<div className="w-full space-y-4">
 									<Controller
@@ -135,12 +134,13 @@ export default function UpdateLanguagesForm({
 												fullWidth
 												label="Proficiency"
 												placeholder="Add language proficiency"
+												errorMessage={
+													errors.languages?.[index]?.proficiency?.message
+												}
+												isInvalid={!!errors.languages?.[index]?.proficiency}
 											/>
 										)}
 									/>
-									{errors.languages?.[index]?.proficiency && (
-										<p className="text-red-500">This field is required</p>
-									)}
 								</div>
 
 								<Button

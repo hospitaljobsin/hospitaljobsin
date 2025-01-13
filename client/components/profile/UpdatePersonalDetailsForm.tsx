@@ -66,7 +66,7 @@ const formSchema = z.object({
 		state: z.string().nullable(),
 	}),
 	maritalStatus: z.enum(["MARRIED", "SINGLE"]).nullable(),
-	category: z.string().nullable(),
+	category: z.string().max(25).nullable(),
 });
 
 export default function UpdatePersonalDetailsForm({
@@ -167,6 +167,8 @@ export default function UpdatePersonalDetailsForm({
 									selectedKeys={[field.value ?? ""]}
 									defaultSelectedKeys={[field.value ?? ""]}
 									onSelectionChange={field.onChange}
+									errorMessage={errors.gender?.message}
+									isInvalid={!!errors.gender}
 								>
 									<SelectItem key={"MALE"}>Male</SelectItem>
 									<SelectItem key={"FEMALE"}>Female</SelectItem>
@@ -174,9 +176,6 @@ export default function UpdatePersonalDetailsForm({
 								</Select>
 							)}
 						/>
-						{errors.gender && (
-							<p className="text-red-500">This field is required</p>
-						)}
 					</div>
 					<div className="mb-12">
 						<Controller
@@ -190,123 +189,104 @@ export default function UpdatePersonalDetailsForm({
 										{...field}
 										value={field.value ?? undefined}
 										onChange={field.onChange}
+										errorMessage={errors.dateOfBirth?.message}
+										isInvalid={!!errors.dateOfBirth}
 									/>
 								);
 							}}
 						/>
-						{errors.dateOfBirth && (
-							<p className="text-red-500">This field is required</p>
-						)}
 					</div>
 					<div className="flex flex-col gap-4">
 						<p className="text-xs text-foreground-500 px-2">Address</p>
 
 						<div className="flex gap-8 mb-12">
 							<div className="flex flex-col w-full gap-8">
-								<div>
-									<Controller
-										name="address.city"
-										control={control}
-										render={({ field }) => (
-											<Input
-												{...field}
-												label="City"
-												placeholder="Add your city"
-												value={field.value ?? ""}
-											/>
-										)}
-									/>
-									{errors.address?.city && (
-										<p className="text-red-500">This field is required</p>
+								<Controller
+									name="address.city"
+									control={control}
+									render={({ field }) => (
+										<Input
+											{...field}
+											label="City"
+											placeholder="Add your city"
+											value={field.value ?? ""}
+											errorMessage={errors.address?.city?.message}
+											isInvalid={!!errors.address?.city}
+										/>
 									)}
-								</div>
-								<div>
-									<Controller
-										name="address.country"
-										control={control}
-										render={({ field }) => (
-											<Input
-												{...field}
-												label="Country"
-												placeholder="Add your country"
-												value={field.value ?? ""}
-											/>
-										)}
-									/>
-									{errors.address?.country && (
-										<p className="text-red-500">This field is required</p>
+								/>
+								<Controller
+									name="address.country"
+									control={control}
+									render={({ field }) => (
+										<Input
+											{...field}
+											label="Country"
+											placeholder="Add your country"
+											value={field.value ?? ""}
+											errorMessage={errors.address?.country?.message}
+											isInvalid={!!errors.address?.country}
+										/>
 									)}
-								</div>
-								<div>
-									<Controller
-										name="address.pincode"
-										control={control}
-										render={({ field }) => (
-											<Input
-												{...field}
-												label="Pincode"
-												placeholder="Add your pincode"
-												value={field.value ?? ""}
-											/>
-										)}
-									/>
-									{errors.address?.pincode && (
-										<p className="text-red-500">This field is required</p>
+								/>
+								<Controller
+									name="address.pincode"
+									control={control}
+									render={({ field }) => (
+										<Input
+											{...field}
+											label="Pincode"
+											placeholder="Add your pincode"
+											value={field.value ?? ""}
+											errorMessage={errors.address?.pincode?.message}
+											isInvalid={!!errors.address?.pincode}
+										/>
 									)}
-								</div>
+								/>
 							</div>
 							<div className="flex flex-col w-full gap-8">
-								<div>
-									<Controller
-										name="address.line1"
-										control={control}
-										render={({ field }) => (
-											<Input
-												{...field}
-												label="Line 1"
-												placeholder="Add line 1"
-												value={field.value ?? ""}
-											/>
-										)}
-									/>
-									{errors.address?.line1 && (
-										<p className="text-red-500">This field is required</p>
+								<Controller
+									name="address.line1"
+									control={control}
+									render={({ field }) => (
+										<Input
+											{...field}
+											label="Line 1"
+											placeholder="Add line 1"
+											value={field.value ?? ""}
+											errorMessage={errors.address?.line1?.message}
+											isInvalid={!!errors.address?.line1}
+										/>
 									)}
-								</div>
-								<div>
-									<Controller
-										name="address.line2"
-										control={control}
-										render={({ field }) => (
-											<Input
-												{...field}
-												label="Line 2"
-												placeholder="Add line 2"
-												value={field.value ?? ""}
-											/>
-										)}
-									/>
-									{errors.address?.line2 && (
-										<p className="text-red-500">This field is required</p>
+								/>
+								<Controller
+									name="address.line2"
+									control={control}
+									render={({ field }) => (
+										<Input
+											{...field}
+											label="Line 2"
+											placeholder="Add line 2"
+											value={field.value ?? ""}
+											errorMessage={errors.address?.line2?.message}
+											isInvalid={!!errors.address?.line2}
+										/>
 									)}
-								</div>
-								<div>
-									<Controller
-										name="address.state"
-										control={control}
-										render={({ field }) => (
-											<Input
-												{...field}
-												label="State"
-												placeholder="Add your state"
-												value={field.value ?? ""}
-											/>
-										)}
-									/>
-									{errors.address?.state && (
-										<p className="text-red-500">This field is required</p>
+								/>
+								<Controller
+									name="address.state"
+									control={control}
+									render={({ field }) => (
+										<Input
+											{...field}
+											label="State"
+											placeholder="Add your state"
+											value={field.value ?? ""}
+											errorMessage={errors.address?.state?.message}
+											isInvalid={!!errors.address?.state}
+										/>
 									)}
-								</div>
+								/>
 							</div>
 						</div>
 						<div className="mb-12">
@@ -324,15 +304,14 @@ export default function UpdatePersonalDetailsForm({
 										selectedKeys={[field.value ?? ""]}
 										defaultSelectedKeys={[field.value ?? ""]}
 										onSelectionChange={field.onChange}
+										errorMessage={errors.maritalStatus?.message}
+										isInvalid={!!errors.maritalStatus}
 									>
 										<SelectItem key={"SINGLE"}>Single</SelectItem>
 										<SelectItem key={"MARRIED"}>Married</SelectItem>
 									</Select>
 								)}
 							/>
-							{errors.maritalStatus && (
-								<p className="text-red-500">This field is required</p>
-							)}
 						</div>
 						<div className="mb-12">
 							<Controller
@@ -345,12 +324,11 @@ export default function UpdatePersonalDetailsForm({
 										label="Category"
 										placeholder="Add your category"
 										value={field.value ?? ""}
+										errorMessage={errors.category?.message}
+										isInvalid={!!errors.category}
 									/>
 								)}
 							/>
-							{errors.category && (
-								<p className="text-red-500">This field is required</p>
-							)}
 						</div>
 					</div>
 				</CardBody>

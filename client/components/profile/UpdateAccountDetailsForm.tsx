@@ -42,7 +42,7 @@ type Props = {
 };
 
 const formSchema = z.object({
-	fullName: z.string().min(1, "This field is required"),
+	fullName: z.string().min(1, "This field is required").max(75),
 });
 
 export default function UpdateAccountDetailsForm({
@@ -132,12 +132,11 @@ export default function UpdateAccountDetailsForm({
 											label="Full Name"
 											placeholder="Add your full name"
 											value={field.value ?? ""}
+											errorMessage={errors.fullName?.message}
+											isInvalid={!!errors.fullName}
 										/>
 									)}
 								/>
-								{errors.fullName && (
-									<p className="text-red-500">This field is required</p>
-								)}
 							</div>
 							<Input
 								label="Email Address"
