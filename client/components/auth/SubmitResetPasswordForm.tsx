@@ -56,9 +56,7 @@ export default function SubmitResetPasswordFrom() {
 		<>
 			<Card shadow="sm" className="p-6 space-y-6">
 				<CardHeader>
-					<h1 className="text-center text-2xl w-full">
-						Request a Password Reset
-					</h1>
+					<h1 className="text-center text-2xl w-full">Reset Your Password</h1>
 				</CardHeader>
 				<CardBody>
 					<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
@@ -90,7 +88,7 @@ export default function SubmitResetPasswordFrom() {
 						isVisible={showSuccessMessage}
 						onClose={() => setShowSuccessMessage(false)}
 						hideIcon
-						color="success"
+						color="secondary"
 						description={
 							"If an account with that email exists, we will send you a password reset link. Please check your email inbox."
 						}
