@@ -69,8 +69,10 @@ export default function AccountDetails({ rootQuery, onEditAccount }: Props) {
 							src={getGravatarURL(data.email)}
 						/>
 					</Badge>
-					<div className="flex flex-col gap-2 w-full items-center justify-start">
-						<h1 className="w-full text-lg font-medium">{data.fullName}</h1>
+					<div className="flex flex-col gap-2 w-full items-start justify-center">
+						<h1 className="w-full text-lg font-medium truncate max-w-64">
+							{data.fullName}
+						</h1>
 						<h1 className="w-full">{data.email}</h1>
 					</div>
 				</div>

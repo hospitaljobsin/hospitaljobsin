@@ -51,6 +51,9 @@ export default function AuthDropdown({ rootQuery }: Props) {
 									size: "sm",
 								}}
 								name={data.fullName}
+								classNames={{
+									name: "truncate max-w-48",
+								}}
 							/>
 						</Button>
 					</DropdownTrigger>
