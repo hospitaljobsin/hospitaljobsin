@@ -2,6 +2,7 @@
 
 import links from "@/lib/links";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Google } from "@lobehub/icons";
 import {
 	Button,
 	Card,
@@ -135,13 +136,20 @@ export default function LoginForm() {
 						</Button>
 					</div>
 				</form>
-			</CardBody>{" "}
-			<Divider />
-			<Button fullWidth variant="bordered">
-				Log in with Google
-			</Button>
-			<Divider />
-			<CardFooter>
+			</CardBody>
+			<CardFooter className="flex flex-col w-full gap-8">
+				<div className="w-full flex items-center justify-center gap-6">
+					<Divider className="flex-1" />
+					<p>or</p>
+					<Divider className="flex-1" />
+				</div>
+				<Button
+					fullWidth
+					variant="bordered"
+					startContent={<Google.Color size={20} />}
+				>
+					Log in with Google
+				</Button>
 				<div className="flex justify-center w-full">
 					<Link
 						href={links.signup}

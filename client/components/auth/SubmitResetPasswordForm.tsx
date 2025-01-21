@@ -9,6 +9,7 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
+	Divider,
 	Input,
 	Link,
 } from "@nextui-org/react";
@@ -83,6 +84,7 @@ export default function SubmitResetPasswordFrom() {
 						</div>
 					</form>
 				</CardBody>
+				<Divider />
 				<CardFooter className="w-full flex items-center justify-center">
 					<Link href={links.login} className="cursor-pointer text-blue-500">
 						Back to login
