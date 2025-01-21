@@ -11,8 +11,10 @@ import {
 	Divider,
 	Input,
 } from "@nextui-org/react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -38,6 +40,8 @@ const signUpSchema = z.object({
 
 export default function SignUpForm() {
 	const router = useRouter();
+
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<SignupFormMutationType>(SignupFormMutation);
 	const {
@@ -99,8 +103,22 @@ export default function SignUpForm() {
 							label="Password"
 							labelPlacement="outside"
 							placeholder="Enter password"
-							type="password"
+							type={isPasswordVisible ? "text" : "password"}
 							id="password"
+							endContent={
+								<button
+									aria-label="toggle password visibility"
+									className="focus:outline-none"
+									type="button"
+									onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+								>
+									{isPasswordVisible ? (
+										<EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+									) : (
+										<EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
+									)}
+								</button>
+							}
 							{...register("password")}
 							errorMessage={errors.password?.message}
 							isInvalid={!!errors.password}

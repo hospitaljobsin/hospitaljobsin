@@ -11,8 +11,10 @@ import {
 	Divider,
 	Input,
 } from "@nextui-org/react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
@@ -37,6 +39,8 @@ const loginSchema = z.object({
 export default function LoginForm() {
 	const router = useRouter();
 	const params = useSearchParams();
+
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
 	const redirectTo = params.get("return_to") || links.landing;
 	const [commitMutation, isMutationInFlight] =
@@ -92,7 +96,21 @@ export default function LoginForm() {
 							id="password"
 							label="Password"
 							placeholder="Enter password"
-							type="password"
+							type={isPasswordVisible ? "text" : "password"}
+							endContent={
+								<button
+									aria-label="toggle password visibility"
+									className="focus:outline-none"
+									type="button"
+									onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+								>
+									{isPasswordVisible ? (
+										<EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+									) : (
+										<EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
+									)}
+								</button>
+							}
 							{...register("password")}
 							errorMessage={errors.password?.message}
 							isInvalid={!!errors.password}
@@ -118,6 +136,10 @@ export default function LoginForm() {
 					</div>
 				</form>
 			</CardBody>{" "}
+			<Divider />
+			<Button fullWidth variant="bordered">
+				Log in with Google
+			</Button>
 			<Divider />
 			<CardFooter>
 				<div className="flex justify-center w-full">
