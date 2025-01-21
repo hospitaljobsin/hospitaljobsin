@@ -2,6 +2,7 @@ from aioinject.ext.fastapi import AioInjectMiddleware
 from asgi_correlation_id import CorrelationIdMiddleware
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import settings
 from app.container import create_container
@@ -31,6 +32,10 @@ def add_middleware(app: FastAPI) -> None:
         CorrelationIdMiddleware,
         header_name="X-Request-ID",
     )
+
+    # sessions are needed to store temporary code & state
+    # needed for OAuth2 authorization code flows
+    app.add_middleware(SessionMiddleware, secret_key=settings.secret_key)
 
     app.add_middleware(
         AioInjectMiddleware,

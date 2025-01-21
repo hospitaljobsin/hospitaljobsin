@@ -20,4 +20,7 @@ dependencies = [
     "passlib[argon2]>=1.7.4",
     "result>=0.17.0",
     "types-passlib>=1.7.7.20241221",
+    "authlib>=1.4.0",
+    "httpx>=0.28.1",
+    "types-authlib>=1.4.0.20241230",
 ]

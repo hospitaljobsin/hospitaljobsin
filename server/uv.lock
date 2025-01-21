@@ -82,6 +82,18 @@ wheels = [
 ]
 
 [[package]]
+name = "authlib"
+version = "1.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cryptography" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/33/7d/67f064784776afc59d6deda9f4b8e117843d7cda8ddf34bbdbbae39641ca/authlib-1.4.0.tar.gz", hash = "sha256:1c1e6608b5ed3624aeeee136ca7f8c120d6f51f731aa152b153d54741840e1f2", size = 147327 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/63/c6/6a14bb00f963597d675fa63f060eb6db3fdb54bbf01d94768f51d067f578/Authlib-1.4.0-py2.py3-none-any.whl", hash = "sha256:4bb20b978c8b636222b549317c1815e1fe62234fc1c5efe8855d84aebf3a74e3", size = 225531 },
+]
+
+[[package]]
 name = "beanie"
 version = "1.27.0"
 source = { registry = "https://pypi.org/simple" }
@@ -273,6 +285,19 @@ wheels = [
 ]
 
 [[package]]
+name = "httpcore"
+version = "1.0.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "certifi" },
+    { name = "h11" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6a/41/d7d0a89eb493922c37d343b607bc1b5da7f5be7e383740b4753ad8943e90/httpcore-1.0.7.tar.gz", hash = "sha256:8551cb62a169ec7162ac7be8d4817d561f60e08eaa485234898414bb5a8a0b4c", size = 85196 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/87/f5/72347bc88306acb359581ac4d52f23c0ef445b57157adedb9aee0cd689d2/httpcore-1.0.7-py3-none-any.whl", hash = "sha256:a3fff8f43dc260d5bd363d9f9cf1830fa3a458b332856f34282de498ed420edd", size = 78551 },
+]
+
+[[package]]
 name = "httptools"
 version = "0.6.4"
 source = { registry = "https://pypi.org/simple" }
@@ -292,6 +317,21 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/8a/0a/0d4df132bfca1507114198b766f1737d57580c9ad1cf93c1ff673e3387be/httptools-0.6.4-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:342dd6946aa6bda4b8f18c734576106b8a31f2fe31492881a9a160ec84ff4bd5", size = 448858 },
     { url = "https://files.pythonhosted.org/packages/1e/6a/787004fdef2cabea27bad1073bf6a33f2437b4dbd3b6fb4a9d71172b1c7c/httptools-0.6.4-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:4b36913ba52008249223042dca46e69967985fb4051951f94357ea681e1f5dc0", size = 452042 },
     { url = "https://files.pythonhosted.org/packages/4d/dc/7decab5c404d1d2cdc1bb330b1bf70e83d6af0396fd4fc76fc60c0d522bf/httptools-0.6.4-cp313-cp313-win_amd64.whl", hash = "sha256:28908df1b9bb8187393d5b5db91435ccc9c8e891657f9cbb42a2541b44c82fc8", size = 87682 },
+]
+
+[[package]]
+name = "httpx"
+version = "0.28.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "certifi" },
+    { name = "httpcore" },
+    { name = "idna" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b1/df/48c586a5fe32a0f01324ee087459e112ebb7224f646c0b5023f5e79e9956/httpx-0.28.1.tar.gz", hash = "sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc", size = 141406 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl", hash = "sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad", size = 73517 },
 ]
 
 [[package]]
@@ -602,9 +642,11 @@ source = { virtual = "." }
 dependencies = [
     { name = "aioinject" },
     { name = "asgi-correlation-id" },
+    { name = "authlib" },
     { name = "beanie" },
     { name = "cryptography" },
     { name = "fastapi" },
+    { name = "httpx" },
     { name = "motor" },
     { name = "passlib", extra = ["argon2"] },
     { name = "pydantic" },
@@ -613,6 +655,7 @@ dependencies = [
     { name = "result" },
     { name = "strawberry-graphql", extra = ["cli"] },
     { name = "structlog" },
+    { name = "types-authlib" },
     { name = "types-passlib" },
     { name = "uvicorn", extra = ["standard"] },
 ]
@@ -621,9 +664,11 @@ dependencies = [
 requires-dist = [
     { name = "aioinject", specifier = ">=0.35.3" },
     { name = "asgi-correlation-id", specifier = ">=4.3.4" },
+    { name = "authlib", specifier = ">=1.4.0" },
     { name = "beanie", specifier = ">=1.27.0" },
     { name = "cryptography", specifier = ">=44.0.0" },
     { name = "fastapi", specifier = ">=0.115.5" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "motor", specifier = ">=3.6.0" },
     { name = "passlib", extras = ["argon2"], specifier = ">=1.7.4" },
     { name = "pydantic", specifier = ">=2.10.2" },
@@ -632,6 +677,7 @@ requires-dist = [
     { name = "result", specifier = ">=0.17.0" },
     { name = "strawberry-graphql", extras = ["cli"], specifier = ">=0.253.0" },
     { name = "structlog", specifier = ">=24.4.0" },
+    { name = "types-authlib", specifier = ">=1.4.0.20241230" },
     { name = "types-passlib", specifier = ">=1.7.7.20241221" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.32.1" },
 ]
@@ -728,6 +774,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/0d/7e/24af5b9aaa0872f9f6dc5dcf789dc3e57ceb23b4c570b852cd4db0d98f14/typer-0.14.0.tar.gz", hash = "sha256:af58f737f8d0c0c37b9f955a6d39000b9ff97813afcbeef56af5e37cf743b45a", size = 98836 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bb/d8/a3ab71d5587b42b832a7ef2e65b3e51a18f8da32b6ce169637d4d21995ed/typer-0.14.0-py3-none-any.whl", hash = "sha256:f476233a25770ab3e7b2eebf7c68f3bc702031681a008b20167573a4b7018f09", size = 44707 },
+]
+
+[[package]]
+name = "types-authlib"
+version = "1.4.0.20241230"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cryptography" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/bd/c9/6d9ec803cad45b95aa795d34ac5b5ade28da46c1ae1dfdd5e9c0a4ef26aa/types_authlib-1.4.0.20241230.tar.gz", hash = "sha256:b37f9192ddeac19d83855ccf8ecab04a4e6a039612289a4d9ac710600f5242f6", size = 33328 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ed/e5/9c808763c06bcffb707236b08aaf858d33e60d7e32719e78550224867b23/types_Authlib-1.4.0.20241230-py3-none-any.whl", hash = "sha256:e7944767b3f308a77eb10fb98fbed43b27e31e9b9a791561f92578d8f8c5ea16", size = 73389 },
 ]
 
 [[package]]

@@ -16,6 +16,8 @@ class Settings(BaseSettings):
 
     environment: Environment = Environment.development
 
+    secret_key: str
+
     host: Annotated[
         str,
         Field(
@@ -71,6 +73,11 @@ class Settings(BaseSettings):
     session_cookie_name: str = "session"
 
     session_cookie_domain: str | None = None
+
+    # Oauth2 config
+    google_client_id: str
+
+    google_client_secret: str
 
     openapi_url: str | None = None
 
