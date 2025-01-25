@@ -1,7 +1,7 @@
 import secrets
 from datetime import UTC, datetime, timedelta
 
-from fastapi import Request, Response
+from fastapi import BackgroundTasks, Request, Response
 from humanize import naturaldelta
 from result import Err, Ok, Result
 
@@ -171,7 +171,9 @@ class AuthService:
             samesite="lax",
         )
 
-    async def request_password_reset(self, email: str, user_agent: str) -> None:
+    async def request_password_reset(
+        self, email: str, user_agent: str, background_tasks: BackgroundTasks
+    ) -> None:
         """Request a password reset."""
         existing_user = await self._account_repo.get_by_email(email=email)
         if not existing_user:
@@ -181,15 +183,14 @@ class AuthService:
             account=existing_user
         )
 
-        await send_template_email(
-            receiver=existing_user.email,
+        background_tasks.add_task(
+            send_template_email,
             template="password-reset",
+            receiver=existing_user.email,
             context={
                 "reset_link": f"{settings.app_url}/auth/reset-password/{password_reset_token}",
                 "link_expires_in": naturaldelta(
-                    timedelta(
-                        seconds=PASSWORD_RESET_EXPIRES_IN,
-                    ),
+                    timedelta(seconds=PASSWORD_RESET_EXPIRES_IN)
                 ),
                 "user_agent": user_agent,
             },

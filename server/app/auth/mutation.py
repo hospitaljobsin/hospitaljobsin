@@ -156,6 +156,7 @@ class AuthMutation:
         await auth_service.request_password_reset(
             email=email,
             user_agent=info.context["user_agent"],
+            background_tasks=info.context["background_tasks"],
         )
 
         return RequestPasswordResetPayloadType()
