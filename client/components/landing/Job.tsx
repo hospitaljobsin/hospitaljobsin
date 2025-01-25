@@ -7,7 +7,7 @@ import {
 	CardFooter,
 	CardHeader,
 	Chip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import { useFragment } from "react-relay";

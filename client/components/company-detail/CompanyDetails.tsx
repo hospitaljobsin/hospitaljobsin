@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Avatar, Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { Globe, MailIcon, MapPin, Phone } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";

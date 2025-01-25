@@ -11,7 +11,7 @@ import {
 	CardHeader,
 	Divider,
 	Input,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { confirmSignUp, resendSignUpCode } from "aws-amplify/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

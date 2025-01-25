@@ -1,7 +1,7 @@
 import { useFragment, usePaginationFragment } from "react-relay";
 import Job from "../landing/Job";
 
-import { Card, CardBody } from "@nextui-org/react";
+import { Card, CardBody } from "@heroui/react";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";

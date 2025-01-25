@@ -8,7 +8,7 @@ import {
 	Card,
 	CardHeader,
 	Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { EditIcon, InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { graphql } from "relay-runtime";

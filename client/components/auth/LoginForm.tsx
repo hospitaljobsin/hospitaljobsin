@@ -12,7 +12,7 @@ import {
 	CardHeader,
 	Divider,
 	Input,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";

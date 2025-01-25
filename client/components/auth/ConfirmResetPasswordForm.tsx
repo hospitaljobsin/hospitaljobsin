@@ -3,7 +3,7 @@
 import links from "@/lib/links";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Card, CardBody, CardHeader, Input } from "@nextui-org/react";
+import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { confirmResetPassword } from "aws-amplify/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

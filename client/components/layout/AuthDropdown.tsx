@@ -10,7 +10,7 @@ import {
 	NavbarItem,
 	User,
 	useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { BookmarkIcon, ChevronDown, LogOutIcon, UserIcon } from "lucide-react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";

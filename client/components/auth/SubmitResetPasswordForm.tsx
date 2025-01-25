@@ -12,7 +12,7 @@ import {
 	Divider,
 	Input,
 	Link,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";

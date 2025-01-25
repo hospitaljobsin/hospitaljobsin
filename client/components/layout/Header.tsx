@@ -6,7 +6,7 @@ import {
 	NavbarBrand,
 	NavbarContent,
 	NavbarItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import Link from "next/link";
 import { useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";

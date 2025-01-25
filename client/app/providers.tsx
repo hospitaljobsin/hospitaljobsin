@@ -1,6 +1,6 @@
 "use client";
 import { getCurrentEnvironment } from "@/lib/relay/environments";
-import { NextUIProvider } from "@nextui-org/react";
+import { HeroUIProvider } from "@heroui/react";
 import { AppProgressBar } from "next-nprogress-bar";
 import { ThemeProvider } from "next-themes";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,7 @@ export default function Providers({
 	});
 
 	return (
-		<NextUIProvider navigate={router.push}>
+		<HeroUIProvider navigate={router.push}>
 			<ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
 				<RelayEnvironmentProvider environment={environment}>
 					{children}
@@ -30,6 +30,6 @@ export default function Providers({
 					/>
 				</RelayEnvironmentProvider>
 			</ThemeProvider>
-		</NextUIProvider>
+		</HeroUIProvider>
 	);
 }

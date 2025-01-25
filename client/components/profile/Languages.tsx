@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { EditIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 import type { LanguagesFragment$key } from "./__generated__/LanguagesFragment.graphql";

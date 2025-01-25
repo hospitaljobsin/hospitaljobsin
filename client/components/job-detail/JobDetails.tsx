@@ -9,7 +9,7 @@ import {
 	Chip,
 	Divider,
 	Link,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import NextLink from "next/link";
 import ReactMarkdown from "react-markdown";

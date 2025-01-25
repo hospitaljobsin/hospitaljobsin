@@ -10,7 +10,7 @@ import {
 	ModalHeader,
 	Snippet,
 	Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { GlobeIcon, Share2Icon } from "lucide-react";
 import { useState } from "react";
 import { useFragment } from "react-relay";

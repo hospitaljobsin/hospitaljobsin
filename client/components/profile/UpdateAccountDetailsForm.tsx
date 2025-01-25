@@ -10,7 +10,7 @@ import {
 	CardHeader,
 	Input,
 	Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";

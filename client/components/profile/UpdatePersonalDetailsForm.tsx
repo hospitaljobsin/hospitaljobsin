@@ -9,7 +9,7 @@ import {
 	Input,
 	Select,
 	SelectItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";

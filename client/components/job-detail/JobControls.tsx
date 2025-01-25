@@ -1,5 +1,5 @@
 import links from "@/lib/links";
-import { Button, Link, Tooltip } from "@nextui-org/react";
+import { Button, Link, Tooltip } from "@heroui/react";
 import { BookmarkCheckIcon, BookmarkIcon } from "lucide-react";
 import {
 	ConnectionHandler,
