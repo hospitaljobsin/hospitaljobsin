@@ -1,0 +1,11 @@
+{% block title %}{% endblock %}
+
+{{ app_name }} ( {{ app_url }} )
+
+{% block content %}{% endblock %}
+
+[Company Name, LLC]
+
+1234 Street Rd.
+
+Suite 1234

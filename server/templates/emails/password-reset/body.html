@@ -1,0 +1,46 @@
+{% extends "emails/base/body.html" %}
+
+{% block title %}
+Verify your email
+{% endblock%}
+
+{% block content %}
+<p>Hi there</p>
+<p>Hey there, We received a request to reset your {{ app_name }} account password.
+  <strong
+    >This reset link is only valid for the next {{ link_expires_in }}.</strong
+  ></p>
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+  <tbody>
+    <tr>
+      <td align="left">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td> <a href="{{ reset_link }}" target="_blank">Reset Password</a> </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Where this happened:</h3>
+<p>
+  <b>Device:</b> {{ device }}<br/>
+
+  <b>Browser:</b> {{ browser_name }}<br/>
+
+  <b>IP Address:</b> {{ ip_address }}<br/>
+
+  <b>Location:</b> {{ location }}
+</p>
+
+{% endblock %}
+{% block footer %}
+<p>
+  If you did not request a password reset, please ignore this email or
+<a href="{{ support_email }}">contact support</a> if you have questions.
+</p>
+{% endblock %}
