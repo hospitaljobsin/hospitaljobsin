@@ -145,7 +145,7 @@ export default function SignUpForm() {
 					variant="bordered"
 					startContent={<Google.Color size={20} />}
 				>
-					Sign up with Google
+					Sign in with Google
 				</Button>
 				<div className="flex justify-center w-full">
 					<Link href={links.login} className="cursor-pointer text-blue-500">
