@@ -95,13 +95,37 @@ class AuthService:
 
         return Ok(account)
 
+    async def signin_with_google(
+        self, user_info: dict, request: Request, response: Response
+    ) -> None:
+        """Sign in with Google."""
+        account = await self._account_repo.get_by_email(email=user_info["email"])
+        if account is None:
+            account = await self._account_repo.create(
+                email=user_info["email"],
+                full_name=user_info["name"],
+                password="",
+            )
+
+        session_token = await self._session_repo.create(
+            user_agent="",
+            account=account,
+        )
+
+        self._set_user_session_cookie(
+            request=request,
+            response=response,
+            value=session_token,
+        )
+        return account
+
     def _set_user_session_cookie(
         self, request: Request, response: Response, value: str
     ) -> None:
         is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
         secure = False if is_localhost else True
         response.set_cookie(
-            key=settings.session_cookie_name,
+            key=settings.user_session_cookie_name,
             value=value,
             expires=datetime.now(UTC) + timedelta(seconds=USER_SESSION_EXPIRES_IN),
             path="/",
@@ -124,7 +148,7 @@ class AuthService:
         await self._session_repo.delete(token=session_token)
 
         response.delete_cookie(
-            key=settings.session_cookie_name,
+            key=settings.user_session_cookie_name,
             path="/",
             domain=settings.session_cookie_domain,
             secure=secure,

@@ -1,5 +1,6 @@
 "use client";
 
+import { env } from "@/lib/env";
 import links from "@/lib/links";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Google } from "@lobehub/icons";
@@ -147,8 +148,11 @@ export default function LoginForm() {
 					fullWidth
 					variant="bordered"
 					startContent={<Google.Color size={20} />}
+					onPress={() => {
+						window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google`;
+					}}
 				>
-					Log in with Google
+					Sign in with Google
 				</Button>
 				<div className="flex justify-center w-full">
 					<Link

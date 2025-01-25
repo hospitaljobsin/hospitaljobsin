@@ -20,7 +20,7 @@ export async function networkFetch(
 	request: RequestParameters,
 	variables: Variables,
 ): Promise<GraphQLResponse> {
-	const resp = await fetch(env.NEXT_PUBLIC_API_URL, {
+	const resp = await fetch(`${env.NEXT_PUBLIC_API_URL}/graphql`, {
 		method: "POST",
 		headers: {
 			Accept: "application/json",

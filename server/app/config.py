@@ -70,7 +70,7 @@ class Settings(BaseSettings):
     ]
 
     # session cookies config
-    session_cookie_name: str = "session"
+    user_session_cookie_name: str = "user_session"
 
     session_cookie_domain: str | None = None
 

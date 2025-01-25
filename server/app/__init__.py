@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
+from app.auth.routes import auth_router
 from app.config import settings
 from app.container import create_container
 from app.database import initialize_database
@@ -16,6 +17,7 @@ def add_routes(app: FastAPI) -> None:
         create_graphql_router(),
         prefix="/graphql",
     )
+    app.include_router(auth_router)
 
 
 def add_middleware(app: FastAPI) -> None:
@@ -35,7 +37,11 @@ def add_middleware(app: FastAPI) -> None:
 
     # sessions are needed to store temporary code & state
     # needed for OAuth2 authorization code flows
-    app.add_middleware(SessionMiddleware, secret_key=settings.secret_key)
+    app.add_middleware(
+        SessionMiddleware,
+        secret_key=settings.secret_key,
+        session_cookie="session",
+    )
 
     app.add_middleware(
         AioInjectMiddleware,
