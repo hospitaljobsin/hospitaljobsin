@@ -1,5 +1,6 @@
 "use client";
 
+import { env } from "@/lib/env";
 import links from "@/lib/links";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Google } from "@lobehub/icons";
@@ -144,6 +145,9 @@ export default function SignUpForm() {
 					fullWidth
 					variant="bordered"
 					startContent={<Google.Color size={20} />}
+					onPress={() => {
+						window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(window.location.origin)}`;
+					}}
 				>
 					Sign in with Google
 				</Button>
