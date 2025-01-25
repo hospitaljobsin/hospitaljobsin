@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 from beanie import WriteRules
 
 from app.accounts.documents import Account
-from app.auth.documents import Session
-from app.lib.constants import USER_SESSION_EXPIRES_IN
+from app.auth.documents import PasswordResetToken, Session
+from app.lib.constants import PASSWORD_RESET_EXPIRES_IN, USER_SESSION_EXPIRES_IN
 
 
 class SessionRepo:
@@ -52,4 +52,46 @@ class SessionRepo:
         """Delete session by token."""
         await Session.find_one(
             Session.token_hash == self.hash_session_token(token),
+        ).delete()
+
+
+class PasswordResetTokenRepo:
+    async def create(
+        self,
+        account: Account,
+    ) -> str:
+        """Create a new password reset token."""
+        token = self.generate_password_reset_token()
+        token_hash = self.hash_password_reset_token(token)
+        expires_at = datetime.now() + timedelta(seconds=PASSWORD_RESET_EXPIRES_IN)
+
+        password_reset_token = PasswordResetToken(
+            account=account,
+            token_hash=token_hash,
+            expires_at=expires_at,
+        )
+
+        await password_reset_token.save(link_rule=WriteRules.WRITE)
+        return token
+
+    @staticmethod
+    def generate_password_reset_token() -> str:
+        """Generate a new password reset token."""
+        return secrets.token_hex(32)
+
+    @staticmethod
+    def hash_password_reset_token(token: str) -> str:
+        """Hash password reset token."""
+        return hashlib.md5(token.encode("utf-8")).hexdigest()
+
+    async def get(self, token: str) -> PasswordResetToken | None:
+        """Get password reset token by token."""
+        return await PasswordResetToken.find_one(
+            PasswordResetToken.token_hash == self.hash_password_reset_token(token),
+        )
+
+    async def delete(self, token: str) -> None:
+        """Delete password reset token by token."""
+        await PasswordResetToken.find_one(
+            PasswordResetToken.token_hash == self.hash_password_reset_token(token),
         ).delete()

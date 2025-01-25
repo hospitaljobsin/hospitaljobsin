@@ -2,14 +2,16 @@ import secrets
 from datetime import UTC, datetime, timedelta
 
 from fastapi import Request, Response
+from humanize import naturaldelta
 from result import Err, Ok, Result
 
 from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo, EmailVerificationRepo, ProfileRepo
 from app.auth.exceptions import EmailInUseError, InvalidCredentialsError
-from app.auth.repositories import SessionRepo
+from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
 from app.config import settings
-from app.lib.constants import USER_SESSION_EXPIRES_IN
+from app.lib.constants import PASSWORD_RESET_EXPIRES_IN, USER_SESSION_EXPIRES_IN
+from app.lib.emails import send_template_email
 
 
 class AuthService:
@@ -19,11 +21,13 @@ class AuthService:
         session_repo: SessionRepo,
         email_verification_repo: EmailVerificationRepo,
         profile_repo: ProfileRepo,
+        password_reset_token_repo: PasswordResetTokenRepo,
     ) -> None:
         self._account_repo = account_repo
         self._session_repo = session_repo
         self._email_verification_repo = email_verification_repo
         self._profile_repo = profile_repo
+        self._password_reset_token_repo = password_reset_token_repo
 
     async def register(
         self,
@@ -135,7 +139,6 @@ class AuthService:
     ) -> None:
         is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
         secure = False if is_localhost else True
-        print("setting cookie...")
         response.set_cookie(
             key=settings.user_session_cookie_name,
             value=value,
@@ -174,9 +177,28 @@ class AuthService:
         if not existing_user:
             return
 
-        # TODO: send password reset email here
+        password_reset_token = await self._password_reset_token_repo.create(
+            account=existing_user
+        )
+
+        await send_template_email(
+            receiver=existing_user.email,
+            template="password-reset",
+            context={
+                "reset_link": f"{settings.app_url}/auth/reset-password/{password_reset_token}",
+                "link_expires_in": naturaldelta(
+                    timedelta(
+                        seconds=PASSWORD_RESET_EXPIRES_IN,
+                    ),
+                ),
+                "user_agent": user_agent,
+            },
+        )
 
     async def reset_password(
         self, password_reset_token: str, email: str, new_password: str
     ) -> None:
         """Reset a user's password."""
+
+        # TODO: reset password
+        # TODO: delete all existing user sessions

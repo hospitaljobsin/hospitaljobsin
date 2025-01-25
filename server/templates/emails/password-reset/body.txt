@@ -16,15 +16,7 @@ Click on the following link to proceed:
 
 {{ reset_link }}
 
-Where this happened:
-
-Device: {{ device }}
-
-Browser: {{ browser_name }}
-
-IP Address: {{ ip_address }}
-
-Location: {{ location }}
+Requester User Agent: {{ user_agent }}
 
 If you did not request a password reset, please ignore this email or contact support ( {{ support_email }} ) if you have questions.
 
