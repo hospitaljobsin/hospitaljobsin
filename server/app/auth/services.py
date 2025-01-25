@@ -1,3 +1,4 @@
+import secrets
 from datetime import UTC, datetime, timedelta
 
 from fastapi import Request, Response
@@ -95,20 +96,30 @@ class AuthService:
 
         return Ok(account)
 
+    def generate_random_password(self) -> str:
+        """Generate a random password."""
+        return secrets.token_urlsafe(16)
+
     async def signin_with_google(
-        self, user_info: dict, request: Request, response: Response
-    ) -> None:
+        self, user_info: dict, request: Request, response: Response, user_agent: str
+    ) -> Account:
         """Sign in with Google."""
         account = await self._account_repo.get_by_email(email=user_info["email"])
         if account is None:
             account = await self._account_repo.create(
                 email=user_info["email"],
                 full_name=user_info["name"],
-                password="",
+                # generate initial password for the user
+                password=self.generate_random_password(),
+                email_verified=user_info["email_verified"],
             )
 
+        if not account.email_verified:
+            # TODO: handle user not verified
+            pass
+
         session_token = await self._session_repo.create(
-            user_agent="",
+            user_agent=user_agent,
             account=account,
         )
 
@@ -124,6 +135,7 @@ class AuthService:
     ) -> None:
         is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
         secure = False if is_localhost else True
+        print("setting cookie...")
         response.set_cookie(
             key=settings.user_session_cookie_name,
             value=value,

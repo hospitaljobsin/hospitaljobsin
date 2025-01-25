@@ -19,12 +19,18 @@ from .documents import (
 
 
 class AccountRepo:
-    async def create(self, email: str, password: str, full_name: str) -> Account:
+    async def create(
+        self,
+        email: str,
+        password: str,
+        full_name: str,
+        email_verified: bool = False,
+    ) -> Account:
         """Create a new account."""
         account = Account(
             full_name=full_name,
             email=email,
-            email_verified=False,
+            email_verified=email_verified,
             password_hash=self.hash_password(
                 password=password,
             ),

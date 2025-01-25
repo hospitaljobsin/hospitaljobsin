@@ -149,7 +149,7 @@ export default function LoginForm() {
 					variant="bordered"
 					startContent={<Google.Color size={20} />}
 					onPress={() => {
-						window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google`;
+						window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(window.location.origin)}`;
 					}}
 				>
 					Sign in with Google
