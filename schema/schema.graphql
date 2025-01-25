@@ -109,15 +109,11 @@ type Job implements Node {
 }
 
 type JobConnection {
-  """Pagination data for this connection"""
   pageInfo: PageInfo!
-
-  """Contains the nodes in this connection"""
-  edges: [JobJobEdgeEdge!]!
+  edges: [JobEdge!]!
 }
 
-"""An edge in a connection."""
-type JobJobEdgeEdge {
+type JobEdge {
   """A cursor for use in pagination"""
   cursor: String!
 
@@ -130,15 +126,6 @@ type JobNotFoundError implements Error {
 }
 
 union JobPayload = Job | JobNotFoundError
-
-"""An edge in a connection."""
-type JobSavedJobEdgeEdge {
-  """A cursor for use in pagination"""
-  cursor: String!
-
-  """The item at the end of the edge"""
-  node: Job!
-}
 
 enum JobType {
   FULL_TIME
@@ -327,11 +314,8 @@ type SaveJobResult {
 }
 
 type SavedJobConnection {
-  """Pagination data for this connection"""
   pageInfo: PageInfo!
-
-  """Contains the nodes in this connection"""
-  edges: [JobSavedJobEdgeEdge!]!
+  edges: [SavedJobEdge!]!
 }
 
 type SavedJobEdge {

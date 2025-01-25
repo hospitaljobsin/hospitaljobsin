@@ -1,8 +1,8 @@
-from typing import ClassVar, Generic, Self, TypeVar
+from typing import Annotated, ClassVar, Generic, Self, TypeVar
 
 import strawberry
 from beanie import Document
-from strawberry import relay
+from strawberry import field, relay
 
 from app.base.models import Address
 from app.database.paginator import PaginatedResult
@@ -34,10 +34,19 @@ class BaseEdgeType(Generic[NodeType, ModelType], relay.Edge[NodeType]):
 EdgeType = TypeVar("EdgeType", bound=BaseEdgeType[NodeType, ModelType])
 
 
-class BaseConnectionType(Generic[NodeType, EdgeType], relay.Connection[NodeType]):
+@strawberry.type(name="Connection")
+class BaseConnectionType(Generic[NodeType, EdgeType]):
     node_type: ClassVar[NodeType]
 
     edge_type: ClassVar[EdgeType]
+
+    page_info: Annotated[
+        relay.PageInfo, field(description="Pagination data for this connection")
+    ]
+
+    edges: Annotated[
+        list[EdgeType], field(description="Contains the nodes in this connection")
+    ]
 
     @classmethod
     def from_paginated_result(
