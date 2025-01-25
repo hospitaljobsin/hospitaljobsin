@@ -1,23 +1,46 @@
 "use client";
 
 import links from "@/lib/links";
-import { getErrorMessage } from "@/utils/get-error-message";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
-import { confirmResetPassword } from "aws-amplify/auth";
-import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useRouter } from "next-nprogress-bar";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useMutation } from "react-relay";
+import { graphql } from "relay-runtime";
 import { z } from "zod";
+import type { ConfirmResetPasswordFormMutation as ConfirmResetPasswordFormMutationType } from "./__generated__/ConfirmResetPasswordFormMutation.graphql";
+
+const ConfirmResetPasswordFormMutation = graphql`
+  mutation ConfirmResetPasswordFormMutation($email: String!, $passwordResetToken: String!, $newPassword: String!) {
+	resetPassword(email: $email, passwordResetToken: $passwordResetToken, newPassword: $newPassword) {
+	  __typename
+	  ... on Account {
+		...AuthDropdownFragment
+	  }
+	  ... on InvalidPasswordResetTokenError {
+		message
+	  }
+	}
+  }
+`;
 
 const confirmResetPasswordSchema = z.object({
 	email: z.string().email(),
 	password: z.string().min(6),
-	code: z.string().min(6),
 });
 
 export default function ConfirmResetPasswordForm() {
 	const router = useRouter();
+	const params = useParams<{ token: string }>();
+
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const [commitMutation, isMutationInFlight] =
+		useMutation<ConfirmResetPasswordFormMutationType>(
+			ConfirmResetPasswordFormMutation,
+		);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const {
 		register,
@@ -27,19 +50,23 @@ export default function ConfirmResetPasswordForm() {
 		resolver: zodResolver(confirmResetPasswordSchema),
 	});
 
-	async function onSubmit(values: z.infer<typeof confirmResetPasswordSchema>) {
-		try {
-			await confirmResetPassword({
-				username: values.email,
-				confirmationCode: values.code,
+	function onSubmit(values: z.infer<typeof confirmResetPasswordSchema>) {
+		commitMutation({
+			variables: {
+				email: values.email,
+				passwordResetToken: params.token,
 				newPassword: values.password,
-			});
-		} catch (error) {
-			setErrorMessage(getErrorMessage(error));
-			return;
-		}
-
-		router.replace(links.login);
+			},
+			onCompleted(data) {
+				if (
+					data.resetPassword.__typename === "InvalidPasswordResetTokenError"
+				) {
+					setErrorMessage(data.resetPassword.message);
+				} else {
+					router.replace(links.landing);
+				}
+			},
+		});
 	}
 	return (
 		<Card shadow="sm">
@@ -63,21 +90,30 @@ export default function ConfirmResetPasswordForm() {
 								id="password"
 								label="New Password"
 								placeholder="Enter password"
-								type="password"
+								type={isPasswordVisible ? "text" : "password"}
+								endContent={
+									<button
+										aria-label="toggle password visibility"
+										className="focus:outline-none"
+										type="button"
+										onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+									>
+										{isPasswordVisible ? (
+											<EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+										) : (
+											<EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
+										)}
+									</button>
+								}
 								{...register("password")}
 								errorMessage={errors.password?.message}
 								isInvalid={!!errors.password}
 							/>
-							<Input
-								id="code"
-								label="Confirmation Code"
-								placeholder="Enter code"
-								type="text"
-								{...register("code")}
-								errorMessage={errors.code?.message}
-								isInvalid={!!errors.code}
-							/>
-							<Button fullWidth isLoading={isSubmitting} type="submit">
+							<Button
+								fullWidth
+								isLoading={isSubmitting || isMutationInFlight}
+								type="submit"
+							>
 								Reset Password
 							</Button>
 						</div>

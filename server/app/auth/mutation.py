@@ -8,7 +8,11 @@ from strawberry.permission import PermissionExtension
 
 from app.accounts.repositories import AccountRepo
 from app.accounts.types import AccountType
-from app.auth.exceptions import EmailInUseError, InvalidCredentialsError
+from app.auth.exceptions import (
+    EmailInUseError,
+    InvalidCredentialsError,
+    InvalidPasswordResetTokenError,
+)
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo, Info
 
@@ -16,11 +20,12 @@ from .services import AuthService
 from .types import (
     EmailInUseErrorType,
     InvalidCredentialsErrorType,
+    InvalidPasswordResetTokenErrorType,
     LoginPayload,
     LogoutPayloadType,
     RegisterPayload,
     RequestPasswordResetPayloadType,
-    ResetPasswordPayloadType,
+    ResetPasswordPayload,
 )
 
 
@@ -162,7 +167,7 @@ class AuthMutation:
         return RequestPasswordResetPayloadType()
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=ResetPasswordPayloadType,
+        graphql_type=ResetPasswordPayload,
         description="Reset a user's password.",
     )
     @inject
@@ -188,12 +193,20 @@ class AuthMutation:
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
-    ) -> ResetPasswordPayloadType:
+    ) -> ResetPasswordPayload:
         """Reset a user's password."""
-        await auth_service.reset_password(
+        result = await auth_service.reset_password(
             email=email,
             password_reset_token=password_reset_token,
             new_password=new_password,
+            user_agent=info.context["user_agent"],
+            request=info.context["request"],
+            response=info.context["response"],
         )
 
-        return ResetPasswordPayloadType()
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidPasswordResetTokenError():
+                    return InvalidPasswordResetTokenErrorType()
+
+        return AccountType.marshal(result.ok_value)

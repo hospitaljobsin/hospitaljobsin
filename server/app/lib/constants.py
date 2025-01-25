@@ -2,7 +2,7 @@
 
 SUPPORT_EMAIL = "support@example.com"
 
-APP_NAME = "QA Forum"
+APP_NAME = "PulseWork"
 
 # pagination
 

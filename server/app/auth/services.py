@@ -7,7 +7,11 @@ from result import Err, Ok, Result
 
 from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo, EmailVerificationRepo, ProfileRepo
-from app.auth.exceptions import EmailInUseError, InvalidCredentialsError
+from app.auth.exceptions import (
+    EmailInUseError,
+    InvalidCredentialsError,
+    InvalidPasswordResetTokenError,
+)
 from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
 from app.config import settings
 from app.lib.constants import PASSWORD_RESET_EXPIRES_IN, USER_SESSION_EXPIRES_IN
@@ -197,9 +201,39 @@ class AuthService:
         )
 
     async def reset_password(
-        self, password_reset_token: str, email: str, new_password: str
-    ) -> None:
+        self,
+        password_reset_token: str,
+        email: str,
+        new_password: str,
+        user_agent: str,
+        request: Request,
+        response: Response,
+    ) -> Result[Account, InvalidPasswordResetTokenError]:
         """Reset a user's password."""
 
-        # TODO: reset password
-        # TODO: delete all existing user sessions
+        existing_reset_token = await self._password_reset_token_repo.get(
+            token=password_reset_token
+        )
+
+        if not existing_reset_token:
+            return Err(InvalidPasswordResetTokenError())
+
+        await self._account_repo.update_password(
+            account=existing_reset_token.account, password=new_password
+        )
+
+        # delete all existing user sessions
+        await self._session_repo.delete_all(account=existing_reset_token.account)
+
+        session_token = await self._session_repo.create(
+            user_agent=user_agent,
+            account=existing_reset_token.account,
+        )
+
+        self._set_user_session_cookie(
+            request=request,
+            response=response,
+            value=session_token,
+        )
+
+        return Ok(existing_reset_token.account)

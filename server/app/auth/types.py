@@ -16,6 +16,11 @@ class InvalidCredentialsErrorType(BaseErrorType):
     message: str = "Invalid credentials provided."
 
 
+@strawberry.type(name="InvalidPasswordResetTokenError")
+class InvalidPasswordResetTokenErrorType(BaseErrorType):
+    message: str = "Invalid password reset token provided."
+
+
 RegisterPayload = Annotated[
     AccountType | EmailInUseErrorType,
     strawberry.union(name="RegisterPayload"),
@@ -37,6 +42,7 @@ class RequestPasswordResetPayloadType:
     message: str = "Password reset requested."
 
 
-@strawberry.type(name="ResetPasswordPayload")
-class ResetPasswordPayloadType:
-    message: str = "Password reset successfully."
+ResetPasswordPayload = Annotated[
+    AccountType | InvalidPasswordResetTokenErrorType,
+    strawberry.union(name="ResetPasswordPayload"),
+]

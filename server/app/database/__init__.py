@@ -4,7 +4,7 @@ from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.accounts.documents import Account, EmailVerification, Profile
-from app.auth.documents import Session
+from app.auth.documents import PasswordResetToken, Session
 from app.companies.documents import Company, Job, SavedJob
 
 
@@ -27,6 +27,7 @@ async def initialize_database(database_url: str):
                 SavedJob,
                 Session,
                 EmailVerification,
+                PasswordResetToken,
             ],
         )
         yield

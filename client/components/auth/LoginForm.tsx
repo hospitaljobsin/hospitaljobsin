@@ -2,8 +2,6 @@
 
 import { env } from "@/lib/env";
 import links from "@/lib/links";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Google } from "@lobehub/icons";
 import {
 	Button,
 	Card,
@@ -13,9 +11,12 @@ import {
 	Divider,
 	Input,
 } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Google } from "@lobehub/icons";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useRouter } from "next-nprogress-bar";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
@@ -26,6 +27,9 @@ const LoginFormMutation = graphql`
   mutation LoginFormMutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       __typename
+	  ... on Account {
+		...AuthDropdownFragment
+	  }
       ... on InvalidCredentialsError {
         message
       }

@@ -86,6 +86,11 @@ class AccountRepo:
         account.full_name = full_name
         return await account.save()
 
+    async def update_password(self, account: Account, password: str) -> Account:
+        """Update the given account's password."""
+        account.password_hash = self.hash_password(password)
+        return await account.save()
+
 
 class EmailVerificationRepo:
     async def create(self, account_id: ObjectId) -> str:

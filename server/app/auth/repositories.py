@@ -54,6 +54,10 @@ class SessionRepo:
             Session.token_hash == self.hash_session_token(token),
         ).delete()
 
+    async def delete_all(self, account: Account) -> None:
+        """Delete all sessions for an account."""
+        await Session.find_many(Session.account == account).delete()
+
 
 class PasswordResetTokenRepo:
     async def create(
@@ -88,6 +92,8 @@ class PasswordResetTokenRepo:
         """Get password reset token by token."""
         return await PasswordResetToken.find_one(
             PasswordResetToken.token_hash == self.hash_password_reset_token(token),
+            fetch_links=True,
+            nesting_depth=1,
         )
 
     async def delete(self, token: str) -> None:

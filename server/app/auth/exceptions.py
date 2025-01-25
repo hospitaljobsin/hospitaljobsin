@@ -8,3 +8,9 @@ class InvalidCredentialsError:
     """Raised when an user provides invalid credentials."""
 
     pass
+
+
+class InvalidPasswordResetTokenError:
+    """Raised when an invalid password reset token is provided."""
+
+    pass
