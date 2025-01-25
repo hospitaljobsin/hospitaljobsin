@@ -9,11 +9,16 @@ from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from strawberry import relay
 
-from app.base.types import AddressType, BaseErrorType, BaseNodeType
+from app.base.types import (
+    AddressType,
+    BaseConnectionType,
+    BaseEdgeType,
+    BaseErrorType,
+    BaseNodeType,
+)
 from app.companies.documents import Company, Job, SavedJob
 from app.companies.repositories import JobRepo
 from app.context import Info
-from app.database.paginator import PaginatedResult
 
 
 @strawberry.type(name="Company")
@@ -82,37 +87,21 @@ class CompanyType(BaseNodeType[Company]):
         return JobConnectionType.from_paginated_result(paginated_jobs)
 
 
-@strawberry.type(name="CompanyConnection")
-class CompanyConnectionType(relay.Connection[CompanyType]):
+@strawberry.type(name="CompanyEdge")
+class CompanyEdgeType(BaseEdgeType[CompanyType, Company]):
     @classmethod
-    def from_paginated_result(
-        cls, paginated_result: PaginatedResult[Company, str]
-    ) -> Self:
+    def marshal(cls, company: Company) -> Self:
+        """Marshal into a edge instance."""
         return cls(
-            page_info=relay.PageInfo(
-                has_next_page=paginated_result.page_info.has_next_page,
-                has_previous_page=paginated_result.page_info.has_previous_page,
-                start_cursor=relay.to_base64(
-                    CompanyType,
-                    paginated_result.page_info.start_cursor,
-                )
-                if paginated_result.page_info.start_cursor
-                else None,
-                end_cursor=relay.to_base64(
-                    CompanyType,
-                    paginated_result.page_info.end_cursor,
-                )
-                if paginated_result.page_info.end_cursor
-                else None,
-            ),
-            edges=[
-                relay.Edge(
-                    node=CompanyType.marshal(company),
-                    cursor=relay.to_base64(CompanyType, company.id),
-                )
-                for company in paginated_result.entities
-            ],
+            node=CompanyType.marshal(company),
+            cursor=relay.to_base64(CompanyType, company.id),
         )
+
+
+@strawberry.type(name="CompanyConnection")
+class CompanyConnectionType(BaseConnectionType[CompanyType, CompanyEdgeType]):
+    node_type = CompanyType
+    edge_type = CompanyEdgeType
 
 
 @strawberry.enum(name="JobType")
@@ -226,41 +215,25 @@ class JobType(BaseNodeType[Job]):
         return [cls.marshal(job) if job is not None else job for job in jobs]
 
 
-@strawberry.type(name="JobConnection")
-class JobConnectionType(relay.Connection[JobType]):
+@strawberry.type(name="JobEdge")
+class JobEdgeType(BaseEdgeType[JobType, Job]):
     @classmethod
-    def from_paginated_result(
-        cls, paginated_result: PaginatedResult[Job, ObjectId]
-    ) -> Self:
+    def marshal(cls, job: Job) -> Self:
+        """Marshal into a edge instance."""
         return cls(
-            page_info=relay.PageInfo(
-                has_next_page=paginated_result.page_info.has_next_page,
-                has_previous_page=paginated_result.page_info.has_previous_page,
-                start_cursor=relay.to_base64(
-                    JobType,
-                    paginated_result.page_info.start_cursor,
-                )
-                if paginated_result.page_info.start_cursor
-                else None,
-                end_cursor=relay.to_base64(
-                    JobType,
-                    paginated_result.page_info.end_cursor,
-                )
-                if paginated_result.page_info.end_cursor
-                else None,
-            ),
-            edges=[
-                relay.Edge(
-                    node=JobType.marshal(job),
-                    cursor=relay.to_base64(JobType, job.id),
-                )
-                for job in paginated_result.entities
-            ],
+            node=JobType.marshal(job),
+            cursor=relay.to_base64(JobType, job.id),
         )
 
 
+@strawberry.type(name="JobConnection")
+class JobConnectionType(BaseConnectionType[JobType, JobEdgeType]):
+    node_type = JobType
+    edge_type = JobEdgeType
+
+
 @strawberry.type(name="SavedJobEdge")
-class SavedJobEdgeType(relay.Edge[JobType]):
+class SavedJobEdgeType(BaseEdgeType[JobType, SavedJob]):
     saved_at: datetime
 
     @classmethod
@@ -274,47 +247,9 @@ class SavedJobEdgeType(relay.Edge[JobType]):
 
 
 @strawberry.type(name="SavedJobConnection")
-class SavedJobConnectionType:
-    page_info: Annotated[
-        relay.PageInfo,
-        strawberry.field(
-            description="Pagination data for this connection",
-        ),
-    ]
-
-    edges: Annotated[
-        list[SavedJobEdgeType],
-        strawberry.field(
-            description="Contains the nodes in this connection",
-        ),
-    ]
-
-    @classmethod
-    def from_paginated_result(
-        cls, paginated_result: PaginatedResult[SavedJob, ObjectId]
-    ) -> Self:
-        return cls(
-            page_info=relay.PageInfo(
-                has_next_page=paginated_result.page_info.has_next_page,
-                has_previous_page=paginated_result.page_info.has_previous_page,
-                start_cursor=relay.to_base64(
-                    JobType,
-                    paginated_result.page_info.start_cursor,
-                )
-                if paginated_result.page_info.start_cursor
-                else None,
-                end_cursor=relay.to_base64(
-                    JobType,
-                    paginated_result.page_info.end_cursor,
-                )
-                if paginated_result.page_info.end_cursor
-                else None,
-            ),
-            edges=[
-                SavedJobEdgeType.marshal(saved_job)
-                for saved_job in paginated_result.entities
-            ],
-        )
+class SavedJobConnectionType(BaseConnectionType[JobType, SavedJobEdgeType]):
+    node_type = JobType
+    edge_type = SavedJobEdgeType
 
 
 @strawberry.type

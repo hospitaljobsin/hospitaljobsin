@@ -113,11 +113,11 @@ type JobConnection {
   pageInfo: PageInfo!
 
   """Contains the nodes in this connection"""
-  edges: [JobEdge!]!
+  edges: [JobJobEdgeEdge!]!
 }
 
 """An edge in a connection."""
-type JobEdge {
+type JobJobEdgeEdge {
   """A cursor for use in pagination"""
   cursor: String!
 
@@ -130,6 +130,15 @@ type JobNotFoundError implements Error {
 }
 
 union JobPayload = Job | JobNotFoundError
+
+"""An edge in a connection."""
+type JobSavedJobEdgeEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+
+  """The item at the end of the edge"""
+  node: Job!
+}
 
 enum JobType {
   FULL_TIME
@@ -189,6 +198,18 @@ type Mutation {
     """The email of the existing user."""
     email: String!
   ): RequestPasswordResetPayload!
+
+  """Reset a user's password."""
+  resetPassword(
+    """The email of the existing user."""
+    email: String!
+
+    """The password reset token."""
+    passwordResetToken: String!
+
+    """The new password."""
+    newPassword: String!
+  ): ResetPasswordPayload!
 
   """Save a job."""
   saveJob(
@@ -295,6 +316,10 @@ type RequestPasswordResetPayload {
   message: String!
 }
 
+type ResetPasswordPayload {
+  message: String!
+}
+
 union SaveJobPayload = SaveJobResult | JobNotFoundError
 
 type SaveJobResult {
@@ -302,8 +327,11 @@ type SaveJobResult {
 }
 
 type SavedJobConnection {
+  """Pagination data for this connection"""
   pageInfo: PageInfo!
-  edges: [SavedJobEdge!]!
+
+  """Contains the nodes in this connection"""
+  edges: [JobSavedJobEdgeEdge!]!
 }
 
 type SavedJobEdge {

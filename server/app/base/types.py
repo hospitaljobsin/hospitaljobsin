@@ -1,10 +1,11 @@
-from typing import Generic, Self, TypeVar
+from typing import ClassVar, Generic, Self, TypeVar
 
 import strawberry
 from beanie import Document
 from strawberry import relay
 
 from app.base.models import Address
+from app.database.paginator import PaginatedResult
 
 ModelType = TypeVar("ModelType")
 
@@ -20,6 +21,49 @@ class BaseNodeType(Generic[ModelType], relay.Node):
 
 
 NodeType = TypeVar("NodeType", bound=BaseNodeType[Document])
+
+
+@strawberry.type
+class BaseEdgeType(Generic[NodeType, ModelType], relay.Edge[NodeType]):
+    @classmethod
+    def marshal(cls, model: ModelType) -> Self:
+        """Marshal into an edge instance."""
+        pass
+
+
+EdgeType = TypeVar("EdgeType", bound=BaseEdgeType[NodeType, ModelType])
+
+
+class BaseConnectionType(Generic[NodeType, EdgeType], relay.Connection[NodeType]):
+    node_type: ClassVar[NodeType]
+
+    edge_type: ClassVar[EdgeType]
+
+    @classmethod
+    def from_paginated_result(
+        cls, paginated_result: PaginatedResult[ModelType, str]
+    ) -> Self:
+        return cls(
+            page_info=relay.PageInfo(
+                has_next_page=paginated_result.page_info.has_next_page,
+                has_previous_page=paginated_result.page_info.has_previous_page,
+                start_cursor=relay.to_base64(
+                    cls.node_type,
+                    paginated_result.page_info.start_cursor,
+                )
+                if paginated_result.page_info.start_cursor
+                else None,
+                end_cursor=relay.to_base64(
+                    cls.node_type,
+                    paginated_result.page_info.end_cursor,
+                )
+                if paginated_result.page_info.end_cursor
+                else None,
+            ),
+            edges=[
+                cls.edge_type.marshal(entity) for entity in paginated_result.entities
+            ],
+        )
 
 
 @strawberry.interface(name="Error")

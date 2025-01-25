@@ -3,7 +3,7 @@ from typing import Annotated
 import strawberry
 
 from app.accounts.types import AccountType
-from app.base.types import BaseErrorType, NotAuthenticatedErrorType
+from app.base.types import BaseErrorType
 
 
 @strawberry.type(name="EmailInUseError")
