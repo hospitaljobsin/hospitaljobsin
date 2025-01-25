@@ -1,6 +1,5 @@
 import { dateFormat } from "@/lib/intl";
 import {
-	Avatar,
 	Button,
 	Card,
 	CardBody,
@@ -11,6 +10,7 @@ import {
 	Link,
 } from "@heroui/react";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
+import Image from "next/image";
 import NextLink from "next/link";
 import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
@@ -194,12 +194,13 @@ export default function JobDetails({
 
 			<Card fullWidth className="p-6" shadow="sm">
 				<CardBody className="flex items-center gap-6 flex-row w-full">
-					{" "}
-					<Avatar
-						name={data.company?.name}
-						src={data.company?.logoUrl || undefined}
-						size="lg"
+					<Image
+						src={data.company?.logoUrl || ""}
+						alt={data.company?.name || ""}
+						width={50}
+						height={50}
 					/>
+
 					<div className="w-full flex flex-col gap-2">
 						<Link
 							as={NextLink}

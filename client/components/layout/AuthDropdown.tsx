@@ -8,10 +8,10 @@ import {
 	DropdownMenu,
 	DropdownTrigger,
 	NavbarItem,
-	User,
 	useDisclosure,
 } from "@heroui/react";
 import { BookmarkIcon, ChevronDown, LogOutIcon, UserIcon } from "lucide-react";
+import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import LogoutModal from "./LogoutModal";
@@ -45,16 +45,14 @@ export default function AuthDropdown({ rootQuery }: Props) {
 							radius="sm"
 							variant="light"
 						>
-							<User
-								avatarProps={{
-									src: getGravatarURL(data.email),
-									size: "sm",
-								}}
-								name={data.fullName}
-								classNames={{
-									name: "truncate max-w-48",
-								}}
+							<Image
+								src={`https://${getGravatarURL(data.email)}`}
+								alt={data.fullName}
+								width={35}
+								height={35}
+								className="rounded-full"
 							/>
+							<p className="truncate max-w-48">{data.fullName}</p>
 						</Button>
 					</DropdownTrigger>
 				</NavbarItem>

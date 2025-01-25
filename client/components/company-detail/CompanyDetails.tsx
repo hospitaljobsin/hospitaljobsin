@@ -1,5 +1,6 @@
-import { Avatar, Button, Card, CardBody, CardHeader } from "@heroui/react";
+import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { Globe, MailIcon, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
 import type { CompanyDetailsFragment$key } from "./__generated__/CompanyDetailsFragment.graphql";
@@ -54,11 +55,11 @@ export default function CompanyDetails({
 				<CardHeader>
 					<div className="flex w-full justify-between gap-4 items-center">
 						<div className="flex gap-6 items-center">
-							<Avatar
-								name={data.name}
-								src={data.logoUrl || undefined}
-								size="lg"
-								className="h-20 w-20"
+							<Image
+								src={data.logoUrl || ""}
+								alt={data.name}
+								width={75}
+								height={75}
 							/>
 							<div className="flex flex-col gap-3 items-start">
 								<h4 className="text-xl font-medium">{data.name}</h4>

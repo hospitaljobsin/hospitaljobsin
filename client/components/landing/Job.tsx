@@ -1,15 +1,9 @@
 import { dateFormat } from "@/lib/intl";
 import links from "@/lib/links";
-import {
-	Avatar,
-	Card,
-	CardBody,
-	CardFooter,
-	CardHeader,
-	Chip,
-} from "@heroui/react";
+import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
+import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import JobControls from "../job-detail/JobControls";
@@ -138,10 +132,11 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			<CardHeader>
 				<div className="flex w-full justify-between gap-4 items-center">
 					<div className="flex items-center gap-4">
-						<Avatar
-							name={data.company?.name}
-							src={data.company?.logoUrl || undefined}
-							size="lg"
+						<Image
+							src={data.company?.logoUrl || ""}
+							alt={data.company?.name || ""}
+							width={50}
+							height={50}
 						/>
 						<div className="flex flex-col gap-2 items-start">
 							<h4 className="text-xl font-medium">{data.title}</h4>

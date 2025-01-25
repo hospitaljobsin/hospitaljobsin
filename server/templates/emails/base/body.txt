@@ -6,6 +6,4 @@
 
 [Company Name, LLC]
 
-1234 Street Rd.
-
-Suite 1234
+1234 Street Rd. Suite 1234
