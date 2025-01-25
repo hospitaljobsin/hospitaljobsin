@@ -9,14 +9,11 @@ export default function Landing() {
 		<>
 			<div className="bg-gray-100 w-full">
 				<div className="py-28 px-5 w-full h-full flex flex-col gap-8 text-center max-w-5xl mx-auto">
-					<h2 className="mx-auto text-xl text-balance text-foreground-500">
-						Connecting you to top locum opportunities in healthcare.
-					</h2>
 					<h1 className="text-5xl font-medium text-balance">
 						Your Trusted Locum Job Board
 					</h1>
 					<h2 className="mx-auto text-xl text-balance text-foreground-500">
-						Find <i>your</i> right role, right now.
+						Connecting you to top locum opportunities in healthcare.
 					</h2>
 				</div>
 			</div>
