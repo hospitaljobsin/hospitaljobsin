@@ -73,7 +73,7 @@ class AuthService:
             receiver=email,
             context={
                 "verification_token": verification_token,
-                "code_expires_in": naturaldelta(
+                "token_expires_in": naturaldelta(
                     timedelta(seconds=EMAIL_VERIFICATION_EXPIRES_IN)
                 ),
                 "user_agent": user_agent,

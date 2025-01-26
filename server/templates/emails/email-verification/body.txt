@@ -1,7 +1,7 @@
 {% extends "emails/base/body.txt" %}
 
 {% block title %}
-Use this code to verify your email. The code is only valid for {{ code_expires_in }}.
+Use this token to verify your email. The token is only valid for {{ token_expires_in }}.
 {% endblock%}
 
 
@@ -10,7 +10,7 @@ Use this code to verify your email. The code is only valid for {{ code_expires_i
 Hey there,
 ************
 
-We received an email verification request. This code is only valid for {{ code_expires_in }}.
+We received an email verification request. This token is only valid for {{ token_expires_in }}.
 
 Use the following email verification to proceed:
 
