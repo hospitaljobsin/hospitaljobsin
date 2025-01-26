@@ -229,7 +229,10 @@ export default function SignUpForm() {
 											onPress={() => setCurrentStep(1)}
 											type="button"
 										>
-											<Edit3Icon className="text-foreground-400" size={24} />
+											<Edit3Icon
+												className="text-foreground-400 mt-2"
+												size={24}
+											/>
 										</Button>
 									</Tooltip>
 								}
