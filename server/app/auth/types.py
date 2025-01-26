@@ -31,8 +31,15 @@ class EmailVerificationTokenCooldownErrorType(BaseErrorType):
     message: str = "Please wait before requesting a new email verification token."
 
 
+@strawberry.type(name="RequestEmailVerificationSuccess")
+class RequestEmailVerificationTokenSuccessType:
+    message: str = "Email verification token requested."
+
+
 RequestEmailVerificationTokenPayload = Annotated[
-    None | EmailInUseErrorType | EmailVerificationTokenCooldownErrorType,
+    RequestEmailVerificationTokenSuccessType
+    | EmailInUseErrorType
+    | EmailVerificationTokenCooldownErrorType,
     strawberry.union(name="RequestEmailVerificationTokenPayload"),
 ]
 

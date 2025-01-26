@@ -29,6 +29,7 @@ from .types import (
     LogoutPayloadType,
     RegisterPayload,
     RequestEmailVerificationTokenPayload,
+    RequestEmailVerificationTokenSuccessType,
     RequestPasswordResetPayloadType,
     ResetPasswordPayload,
 )
@@ -65,8 +66,7 @@ class AuthMutation:
                 case EmailInUseError():
                     return EmailInUseErrorType()
 
-        # TODO: Return a success message.
-        return None
+        return RequestEmailVerificationTokenSuccessType()
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RegisterPayload,

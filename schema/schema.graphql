@@ -68,6 +68,10 @@ type EmailInUseError implements Error {
   message: String!
 }
 
+type EmailVerificationTokenCooldownError implements Error {
+  message: String!
+}
+
 interface Error {
   message: String!
 }
@@ -160,10 +164,19 @@ enum MaritalStatusType {
 }
 
 type Mutation {
+  """Request an email verification token."""
+  requestEmailVerificationToken(
+    """The email to request an email verification token for."""
+    email: String!
+  ): RequestEmailVerificationTokenPayload!
+
   """Register a new user."""
   register(
     """The email of the new user."""
     email: String!
+
+    """The email verification token."""
+    emailVerificationToken: String!
 
     """The password of the new user."""
     password: String!
@@ -302,6 +315,12 @@ type Query {
 }
 
 union RegisterPayload = Account | EmailInUseError
+
+type RequestEmailVerificationSuccess {
+  message: String!
+}
+
+union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError
 
 type RequestPasswordResetPayload {
   message: String!

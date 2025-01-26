@@ -59,7 +59,7 @@ class Account(Document):
 
 class EmailVerificationToken(Document):
     email: Annotated[str, Indexed(unique=True)]
-    token_hash: str
+    token_hash: Annotated[str, Indexed()]
     expires_at: datetime
 
     @property
