@@ -268,7 +268,7 @@ export default function SignUpForm() {
 									variant="faded"
 									onPress={handleResendVerification}
 									className={cn(
-										errorsStep2.emailVerificationToken ? "mt-2" : "mt-6",
+										errorsStep2.emailVerificationToken ? "mt-2" : "mt-4",
 									)}
 								>
 									Resend
