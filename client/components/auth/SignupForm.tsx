@@ -3,6 +3,7 @@
 import { env } from "@/lib/env";
 import links from "@/lib/links";
 import {
+	Alert,
 	Button,
 	Card,
 	CardBody,
@@ -10,6 +11,7 @@ import {
 	CardHeader,
 	Divider,
 	Input,
+	InputOtp,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Google } from "@lobehub/icons";
@@ -17,7 +19,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import Link from "next/link";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import z from "zod";
@@ -78,7 +80,7 @@ export default function SignUpForm() {
 	const [email, setEmail] = useState("");
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-	// Step 1: Request verification code
+	// Step 1: Request verification token
 	const {
 		register: registerStep1,
 		handleSubmit: handleSubmitStep1,
@@ -98,6 +100,7 @@ export default function SignUpForm() {
 		register: registerStep2,
 		handleSubmit: handleSubmitStep2,
 		setError: setRegisterError,
+		control: registerControl,
 		formState: { errors: errorsStep2, isSubmitting: isSubmittingStep2 },
 	} = useForm<z.infer<typeof step2Schema>>({
 		resolver: zodResolver(step2Schema),
@@ -137,7 +140,12 @@ export default function SignUpForm() {
 			},
 			onCompleted(response) {
 				if (response.register.__typename === "EmailInUseError") {
-					setRegisterError("root", { message: response.register.message });
+					// we've hit the race condition failsafe.
+					// show an unexpected error message and reset the form
+					setCurrentStep(1);
+					setEmailError("root", {
+						message: "An unexpected error occurred. Please try again",
+					});
 				} else if (
 					response.register.__typename === "InvalidEmailVerificationTokenError"
 				) {
@@ -159,9 +167,11 @@ export default function SignUpForm() {
 					response.requestEmailVerificationToken.__typename ===
 					"EmailVerificationTokenCooldownError"
 				) {
-					setEmailError("root", {
+					setRegisterError("emailVerificationToken", {
 						message: response.requestEmailVerificationToken.message,
 					});
+				} else {
+					// TODO: show toast here to check inbox
 				}
 			},
 		});
@@ -172,7 +182,14 @@ export default function SignUpForm() {
 			<CardHeader>
 				<h1 className="text-2xl text-center w-full">Create your account</h1>
 			</CardHeader>
-			<CardBody>
+			<CardBody className="space-y-6">
+				{errorsStep1.root && (
+					<Alert
+						variant="flat"
+						color="danger"
+						description={errorsStep1.root.message}
+					/>
+				)}
 				{currentStep === 1 ? (
 					<form
 						onSubmit={handleSubmitStep1(handleRequestVerification)}
@@ -201,28 +218,44 @@ export default function SignUpForm() {
 							<Input
 								label="Email Address"
 								value={email}
-								isDisabled
-								// errorMessage={errorsStep2.email?.message}
-								// isInvalid={!!errorsStep2.email}
+								isReadOnly
+								description={
+									<div className="w-full flex justify-start">
+										<button
+											className="mt-2 cursor-pointer text-blue-500"
+											onClick={() => setCurrentStep(1)}
+											type="button"
+										>
+											Incorrect email? Go back
+										</button>
+									</div>
+								}
 							/>
-							<div className="w-full flex justify-start">
-								<Button
-									onPress={() => {
-										setCurrentStep(1);
-									}}
-									variant="light"
-								>
-									Incorrect email? Go back
-								</Button>
-							</div>
 							<div className="w-full flex justify-start items-center gap-6">
-								<Input
-									label="Email Verification Code"
-									placeholder="XXXX-XXXX"
-									{...registerStep2("emailVerificationToken")}
-									errorMessage={errorsStep2.emailVerificationToken?.message}
-									isInvalid={!!errorsStep2.emailVerificationToken}
+								<Controller
+									control={registerControl}
+									name="emailVerificationToken"
+									render={({ field }) => (
+										<div className="flex flex-col gap-2 w-full">
+											<p className="text-default-500 text-small">
+												Email Verification Token
+											</p>
+											<InputOtp
+												{...field}
+												length={6}
+												allowedKeys={"^[A-Za-z0-9]*$"}
+												errorMessage={
+													errorsStep2.emailVerificationToken?.message
+												}
+												isInvalid={!!errorsStep2.emailVerificationToken}
+												classNames={{
+													errorMessage: "font-normal",
+												}}
+											/>
+										</div>
+									)}
 								/>
+
 								<Button
 									size="md"
 									variant="faded"

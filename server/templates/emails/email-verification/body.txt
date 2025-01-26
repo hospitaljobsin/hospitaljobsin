@@ -10,7 +10,7 @@ Use this code to verify your email. The code is only valid for {{ code_expires_i
 Hey there,
 ************
 
-We received an email verification request. This code is only valid for the next {{ code_expires_in }}.
+We received an email verification request. This code is only valid for {{ code_expires_in }}.
 
 Use the following email verification to proceed:
 

@@ -1,5 +1,7 @@
 import hashlib
+import random
 import secrets
+import string
 from datetime import date, datetime, timedelta
 
 from beanie import PydanticObjectId, WriteRules
@@ -8,7 +10,10 @@ from bson import ObjectId
 from passlib.hash import argon2, sha256_crypt
 
 from app.base.models import Address
-from app.lib.constants import EMAIL_VERIFICATION_EXPIRES_IN
+from app.lib.constants import (
+    EMAIL_VERIFICATION_EXPIRES_IN,
+    EMAIL_VERIFICATION_TOKEN_LENGTH,
+)
 
 from .documents import (
     Account,
@@ -131,7 +136,12 @@ class EmailVerificationTokenRepo:
     @staticmethod
     def generate_verification_token() -> str:
         """Generate a new verification token."""
-        return secrets.token_hex(8)
+        return "".join(
+            random.choices(
+                string.ascii_uppercase + string.digits,
+                k=EMAIL_VERIFICATION_TOKEN_LENGTH,
+            )
+        )
 
     @staticmethod
     def hash_verification_token(token: str) -> str:

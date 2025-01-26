@@ -10,7 +10,7 @@ Use this link to reset your password. The link is only valid for {{ link_expires
 Hey there,
 ************
 
-We received a request to reset your {{ app_name }} account password. This reset link is only valid for the next {{ link_expires_in }}.
+We received a request to reset your {{ app_name }} account password. This reset link is only valid for {{ link_expires_in }}.
 
 Click on the following link to proceed:
 
