@@ -49,7 +49,7 @@ class BaseConnectionType(Generic[NodeType, EdgeType]):
     ]
 
     @classmethod
-    def from_paginated_result(
+    def marshal_paginated_result(
         cls, paginated_result: PaginatedResult[ModelType, str]
     ) -> Self:
         return cls(

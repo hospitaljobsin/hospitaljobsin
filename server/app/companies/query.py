@@ -51,7 +51,7 @@ class CompanyQuery:
             before=(before.node_id if before else None),
         )
 
-        return JobConnectionType.from_paginated_result(
+        return JobConnectionType.marshal_paginated_result(
             paginated_result=paginated_result,
         )
 
@@ -126,4 +126,4 @@ class CompanyQuery:
             first=first,
             last=last,
         )
-        return SavedJobConnectionType.from_paginated_result(result)
+        return SavedJobConnectionType.marshal_paginated_result(result)
