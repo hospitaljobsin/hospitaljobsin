@@ -1,4 +1,5 @@
-from datetime import date, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
+from time import timezone
 from typing import Annotated, Literal
 
 from beanie import BackLink, Document, Indexed, Link
@@ -70,10 +71,14 @@ class EmailVerificationToken(Document):
     @property
     def is_cooled_down(self) -> bool:
         """Check if the token is cooled down."""
-        return datetime.utcnow() >= (
-            self.id.generation_time
-            + timedelta(seconds=EMAIL_VERIFICATION_TOKEN_COOLDOWN)
+        # Get the current time as an aware datetime in UTC
+        current_time = datetime.now(UTC)
+        # Ensure generation_time is aware (assuming it's stored in UTC)
+        generation_time_aware = self.id.generation_time.replace(tzinfo=UTC)
+        cooldown_time = generation_time_aware + timedelta(
+            seconds=EMAIL_VERIFICATION_TOKEN_COOLDOWN
         )
+        return current_time >= cooldown_time
 
     class Settings:
         name = "email_verification_tokens"

@@ -120,7 +120,7 @@ class AuthMutation:
                 case InvalidEmailVerificationTokenError():
                     return InvalidEmailVerificationTokenErrorType()
 
-        return AccountType.marshal(result.ok_value)
+        return AccountType.marshal_with_profile(result.ok_value)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LoginPayload,

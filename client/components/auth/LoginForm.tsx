@@ -91,7 +91,7 @@ export default function LoginForm() {
 					<div className="w-full flex flex-col gap-6">
 						<Input
 							id="email"
-							label="Email"
+							label="Email Address"
 							placeholder="Enter your email address"
 							type="email"
 							{...register("email")}

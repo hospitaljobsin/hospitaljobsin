@@ -1,3 +1,4 @@
+import hashlib
 import secrets
 from datetime import date, datetime, timedelta
 
@@ -135,7 +136,7 @@ class EmailVerificationTokenRepo:
     @staticmethod
     def hash_verification_token(token: str) -> str:
         """Hash verification token."""
-        return sha256_crypt.hash(token)
+        return hashlib.md5(token.encode("utf-8")).hexdigest()
 
 
 class ProfileRepo:

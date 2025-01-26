@@ -86,6 +86,10 @@ type InvalidCredentialsError implements Error {
   message: String!
 }
 
+type InvalidEmailVerificationTokenError implements Error {
+  message: String!
+}
+
 type InvalidPasswordResetTokenError implements Error {
   message: String!
 }
@@ -314,7 +318,7 @@ type Query {
   savedJobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): SavedJobConnection! @isAuthenticated
 }
 
-union RegisterPayload = Account | EmailInUseError
+union RegisterPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError
 
 type RequestEmailVerificationSuccess {
   message: String!

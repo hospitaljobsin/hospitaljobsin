@@ -21,7 +21,7 @@ class InvalidPasswordResetTokenErrorType(BaseErrorType):
     message: str = "Invalid password reset token provided."
 
 
-@strawberry.type(name="EmailVerificationTokenCooldownError")
+@strawberry.type(name="InvalidEmailVerificationTokenError")
 class InvalidEmailVerificationTokenErrorType(BaseErrorType):
     message: str = "Invalid email verification token provided."
 
@@ -44,7 +44,7 @@ RequestEmailVerificationTokenPayload = Annotated[
 ]
 
 RegisterPayload = Annotated[
-    AccountType | EmailInUseErrorType,
+    AccountType | EmailInUseErrorType | InvalidEmailVerificationTokenErrorType,
     strawberry.union(name="RegisterPayload"),
 ]
 
