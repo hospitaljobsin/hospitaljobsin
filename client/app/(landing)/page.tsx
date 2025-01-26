@@ -17,7 +17,7 @@ export default function Landing() {
 					</h2>
 				</div>
 			</div>
-			<div className="py-8 w-full h-full flex flex-col gap-8 max-w-5xl mx-auto bg-foreground-100">
+			<div className="py-8 w-full h-full flex flex-col gap-8 max-w-5xl px-5 mx-auto bg-foreground-100">
 				<Suspense fallback={<LandingViewSkeleton />}>
 					<LandingView />
 				</Suspense>
