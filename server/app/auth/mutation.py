@@ -10,7 +10,9 @@ from app.accounts.repositories import AccountRepo
 from app.accounts.types import AccountType
 from app.auth.exceptions import (
     EmailInUseError,
+    EmailVerificationTokenCooldownError,
     InvalidCredentialsError,
+    InvalidEmailVerificationTokenError,
     InvalidPasswordResetTokenError,
 )
 from app.auth.permissions import IsAuthenticated
@@ -19,11 +21,14 @@ from app.context import AuthInfo, Info
 from .services import AuthService
 from .types import (
     EmailInUseErrorType,
+    EmailVerificationTokenCooldownErrorType,
     InvalidCredentialsErrorType,
+    InvalidEmailVerificationTokenErrorType,
     InvalidPasswordResetTokenErrorType,
     LoginPayload,
     LogoutPayloadType,
     RegisterPayload,
+    RequestEmailVerificationTokenPayload,
     RequestPasswordResetPayloadType,
     ResetPasswordPayload,
 )
@@ -31,6 +36,38 @@ from .types import (
 
 @strawberry.type
 class AuthMutation:
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RequestEmailVerificationTokenPayload,
+        description="Request an email verification token.",
+    )
+    @inject
+    async def request_email_verification_token(
+        self,
+        info: Info,
+        email: Annotated[
+            str,
+            strawberry.argument(
+                description="The email to request an email verification token for.",
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> RequestEmailVerificationTokenPayload:
+        result = await auth_service.request_email_verification_token(
+            email=email,
+            user_agent=info.context["user_agent"],
+            background_tasks=info.context["background_tasks"],
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case EmailVerificationTokenCooldownError():
+                    return EmailVerificationTokenCooldownErrorType()
+                case EmailInUseError():
+                    return EmailInUseErrorType()
+
+        # TODO: Return a success message.
+        return None
+
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RegisterPayload,
         description="Register a new user.",
@@ -43,6 +80,12 @@ class AuthMutation:
             str,
             strawberry.argument(
                 description="The email of the new user.",
+            ),
+        ],
+        email_verification_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The email verification token.",
             ),
         ],
         password: Annotated[
@@ -62,6 +105,7 @@ class AuthMutation:
         """Register a new user."""
         result = await auth_service.register(
             email=email,
+            email_verification_token=email_verification_token,
             password=password,
             full_name=full_name,
             user_agent=info.context["user_agent"],
@@ -73,6 +117,8 @@ class AuthMutation:
             match result.err_value:
                 case EmailInUseError():
                     return EmailInUseErrorType()
+                case InvalidEmailVerificationTokenError():
+                    return InvalidEmailVerificationTokenErrorType()
 
         return AccountType.marshal(result.ok_value)
 

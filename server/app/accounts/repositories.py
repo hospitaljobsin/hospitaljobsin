@@ -12,7 +12,7 @@ from app.lib.constants import EMAIL_VERIFICATION_EXPIRES_IN
 from .documents import (
     Account,
     CurrentJob,
-    EmailVerification,
+    EmailVerificationToken,
     Language,
     Profile,
 )
@@ -92,13 +92,13 @@ class AccountRepo:
         return await account.save()
 
 
-class EmailVerificationRepo:
-    async def create(self, account_id: ObjectId) -> str:
-        """Create a new email verification."""
+class EmailVerificationTokenRepo:
+    async def create(self, email: str) -> str:
+        """Create a new email verification token."""
         verification_token = self.generate_verification_token()
-        email_verification = EmailVerification(
-            account=account_id,
-            verification_token_hash=self.hash_verification_token(
+        email_verification = EmailVerificationToken(
+            email=email,
+            token_hash=self.hash_verification_token(
                 token=verification_token,
             ),
             expires_at=datetime.now()
@@ -110,12 +110,22 @@ class EmailVerificationRepo:
         await email_verification.insert()
         return verification_token
 
-    async def get(self, verification_token: str) -> EmailVerification | None:
+    async def get(self, verification_token: str) -> EmailVerificationToken | None:
         """Get an email verification by token."""
-        return await EmailVerification.find_one(
-            EmailVerification.verification_token_hash
+        return await EmailVerificationToken.find_one(
+            EmailVerificationToken.token_hash
             == self.hash_verification_token(verification_token)
         )
+
+    async def get_by_email(self, email: str) -> EmailVerificationToken | None:
+        """Get an email verification by email."""
+        return await EmailVerificationToken.find_one(
+            EmailVerificationToken.email == email
+        )
+
+    async def delete(self, email_verification: EmailVerificationToken) -> None:
+        """Delete an email verification by ID."""
+        await email_verification.delete()
 
     @staticmethod
     def generate_verification_token() -> str:

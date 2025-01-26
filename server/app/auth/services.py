@@ -6,15 +6,25 @@ from humanize import naturaldelta
 from result import Err, Ok, Result
 
 from app.accounts.documents import Account
-from app.accounts.repositories import AccountRepo, EmailVerificationRepo, ProfileRepo
+from app.accounts.repositories import (
+    AccountRepo,
+    EmailVerificationTokenRepo,
+    ProfileRepo,
+)
 from app.auth.exceptions import (
     EmailInUseError,
+    EmailVerificationTokenCooldownError,
     InvalidCredentialsError,
+    InvalidEmailVerificationTokenError,
     InvalidPasswordResetTokenError,
 )
 from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
 from app.config import settings
-from app.lib.constants import PASSWORD_RESET_EXPIRES_IN, USER_SESSION_EXPIRES_IN
+from app.lib.constants import (
+    EMAIL_VERIFICATION_EXPIRES_IN,
+    PASSWORD_RESET_EXPIRES_IN,
+    USER_SESSION_EXPIRES_IN,
+)
 from app.lib.emails import send_template_email
 
 
@@ -23,27 +33,79 @@ class AuthService:
         self,
         account_repo: AccountRepo,
         session_repo: SessionRepo,
-        email_verification_repo: EmailVerificationRepo,
+        email_verification_token_repo: EmailVerificationTokenRepo,
         profile_repo: ProfileRepo,
         password_reset_token_repo: PasswordResetTokenRepo,
     ) -> None:
         self._account_repo = account_repo
         self._session_repo = session_repo
-        self._email_verification_repo = email_verification_repo
+        self._email_verification_token_repo = email_verification_token_repo
         self._profile_repo = profile_repo
         self._password_reset_token_repo = password_reset_token_repo
+
+    async def request_email_verification_token(
+        self, email: str, user_agent: str, background_tasks: BackgroundTasks
+    ) -> Result[None, EmailInUseError | EmailVerificationTokenCooldownError]:
+        """Request an email verification token."""
+        existing_account = await self._account_repo.get_by_email(email=email)
+
+        if existing_account is not None:
+            return Err(EmailInUseError())
+
+        existing_email_verification_token = (
+            await self._email_verification_token_repo.get_by_email(email=email)
+        )
+
+        if existing_email_verification_token is not None:
+            if not existing_email_verification_token.is_cooled_down:
+                return Err(EmailVerificationTokenCooldownError())
+            await self._email_verification_token_repo.delete(
+                existing_email_verification_token
+            )
+
+        verification_token = await self._email_verification_token_repo.create(
+            email=email
+        )
+
+        background_tasks.add_task(
+            send_template_email,
+            template="email-verification",
+            receiver=email,
+            context={
+                "verification_token": verification_token,
+                "code_expires_in": naturaldelta(
+                    timedelta(seconds=EMAIL_VERIFICATION_EXPIRES_IN)
+                ),
+                "user_agent": user_agent,
+            },
+        )
 
     async def register(
         self,
         email: str,
+        email_verification_token: str,
         password: str,
         full_name: str,
         user_agent: str,
         request: Request,
         response: Response,
-    ) -> Result[Account, EmailInUseError]:
+    ) -> Result[Account, EmailInUseError | InvalidEmailVerificationTokenError]:
+        # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
+
+        existing_email_verification_token = (
+            await self._email_verification_token_repo.get(
+                verification_token=email_verification_token
+            )
+        )
+
+        if (
+            not existing_email_verification_token
+            or existing_email_verification_token.is_expired
+            or existing_email_verification_token.email != email
+        ):
+            return Err(InvalidEmailVerificationTokenError())
 
         account = await self._account_repo.create(
             email=email,
@@ -53,11 +115,10 @@ class AuthService:
 
         await self._profile_repo.create(account=account)
 
-        verification_token = await self._email_verification_repo.create(
-            account_id=account.id
+        # delete the email verification token
+        await self._email_verification_token_repo.delete(
+            existing_email_verification_token
         )
-
-        # TODO: send verification email here
 
         session_token = await self._session_repo.create(
             user_agent=user_agent,

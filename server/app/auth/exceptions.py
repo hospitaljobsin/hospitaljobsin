@@ -14,3 +14,15 @@ class InvalidPasswordResetTokenError:
     """Raised when an invalid password reset token is provided."""
 
     pass
+
+
+class EmailVerificationTokenCooldownError:
+    """Raised when an user tries to request a new email verification token too soon."""
+
+    pass
+
+
+class InvalidEmailVerificationTokenError:
+    """Raised when an invalid email verification token is provided."""
+
+    pass

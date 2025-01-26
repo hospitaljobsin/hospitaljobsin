@@ -2,7 +2,11 @@ from functools import lru_cache
 
 import aioinject
 
-from app.accounts.repositories import AccountRepo, EmailVerificationRepo, ProfileRepo
+from app.accounts.repositories import (
+    AccountRepo,
+    EmailVerificationTokenRepo,
+    ProfileRepo,
+)
 from app.accounts.services import AccountService, ProfileService
 from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
 from app.auth.services import AuthService
@@ -22,7 +26,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(AccountService))
     container.register(aioinject.Singleton(AccountRepo))
     container.register(aioinject.Singleton(SessionRepo))
-    container.register(aioinject.Singleton(EmailVerificationRepo))
+    container.register(aioinject.Singleton(EmailVerificationTokenRepo))
     container.register(aioinject.Singleton(PasswordResetTokenRepo))
     container.register(aioinject.Scoped(SavedJobService))
     return container

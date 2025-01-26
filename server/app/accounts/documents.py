@@ -1,10 +1,11 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Annotated, Literal
 
 from beanie import BackLink, Document, Indexed, Link
 from pydantic import BaseModel, Field
 
 from app.base.models import Address
+from app.lib.constants import EMAIL_VERIFICATION_TOKEN_COOLDOWN
 
 
 # Current Job Schema
@@ -56,10 +57,23 @@ class Account(Document):
         name = "accounts"
 
 
-class EmailVerification(Document):
-    account: Link[Account]
-    verification_token_hash: Annotated[str, Indexed(unique=True)]
+class EmailVerificationToken(Document):
+    email: Annotated[str, Indexed(unique=True)]
+    token_hash: str
     expires_at: datetime
 
+    @property
+    def is_expired(self) -> bool:
+        """Check if the token is expired."""
+        return datetime.utcnow() >= (self.expires_at)
+
+    @property
+    def is_cooled_down(self) -> bool:
+        """Check if the token is cooled down."""
+        return datetime.utcnow() >= (
+            self.id.generation_time
+            + timedelta(seconds=EMAIL_VERIFICATION_TOKEN_COOLDOWN)
+        )
+
     class Settings:
-        name = "email_verifications"
+        name = "email_verification_tokens"
