@@ -6,7 +6,6 @@ const links = {
 	companyDetail: (slug: string) => `/companies/${slug}`,
 	login: "/auth/login",
 	signup: "/auth/signup",
-	confirmSignup: "/auth/confirm-signup",
 	resetPasswordSubmit: "/auth/reset-password",
 	resetPasswordConfirm: (token: string) => `/auth/reset-password/${token}`,
 };

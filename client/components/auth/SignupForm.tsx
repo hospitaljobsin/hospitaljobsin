@@ -12,10 +12,12 @@ import {
 	Divider,
 	Input,
 	InputOtp,
+	Tooltip,
+	cn,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Google } from "@lobehub/icons";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { Edit3Icon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import Link from "next/link";
 import { useState } from "react";
@@ -153,7 +155,7 @@ export default function SignUpForm() {
 						message: response.register.message,
 					});
 				} else {
-					router.replace(links.confirmSignup);
+					router.replace(links.landing);
 				}
 			},
 		});
@@ -205,7 +207,7 @@ export default function SignUpForm() {
 								isInvalid={!!errorsStep1.email}
 							/>
 							<Button fullWidth type="submit" isLoading={isSubmittingStep1}>
-								Next
+								Continue
 							</Button>
 						</div>
 					</form>
@@ -219,16 +221,17 @@ export default function SignUpForm() {
 								label="Email Address"
 								value={email}
 								isReadOnly
-								description={
-									<div className="w-full flex justify-start">
-										<button
-											className="mt-2 cursor-pointer text-blue-500"
-											onClick={() => setCurrentStep(1)}
+								endContent={
+									<Tooltip content="Incorrect email? Go back">
+										<Button
+											isIconOnly
+											variant="light"
+											onPress={() => setCurrentStep(1)}
 											type="button"
 										>
-											Incorrect email? Go back
-										</button>
-									</div>
+											<Edit3Icon className="text-foreground-400" size={24} />
+										</Button>
+									</Tooltip>
 								}
 							/>
 							<div className="w-full flex justify-start items-center gap-6">
@@ -240,6 +243,7 @@ export default function SignUpForm() {
 											<p className="text-default-500 text-small">
 												Email Verification Token
 											</p>
+
 											<InputOtp
 												{...field}
 												length={6}
@@ -260,6 +264,9 @@ export default function SignUpForm() {
 									size="md"
 									variant="faded"
 									onPress={handleResendVerification}
+									className={cn(
+										errorsStep2.emailVerificationToken ? "mt-3" : "mt-7",
+									)}
 								>
 									Resend
 								</Button>
