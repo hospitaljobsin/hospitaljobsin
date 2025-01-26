@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default function Landing() {
 	return (
 		<>
-			<div className="bg-gray-100 w-full">
+			<div className="bg-foreground-200 w-full">
 				<div className="py-28 px-5 w-full h-full flex flex-col gap-8 text-center max-w-5xl mx-auto">
 					<h1 className="text-5xl font-medium text-balance">
 						Your Trusted Locum Job Board
@@ -17,7 +17,7 @@ export default function Landing() {
 					</h2>
 				</div>
 			</div>
-			<div className="py-8 w-full h-full flex flex-col gap-8 max-w-5xl mx-auto">
+			<div className="py-8 w-full h-full flex flex-col gap-8 max-w-5xl mx-auto bg-foreground-100">
 				<Suspense fallback={<LandingViewSkeleton />}>
 					<LandingView />
 				</Suspense>

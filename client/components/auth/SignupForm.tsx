@@ -12,8 +12,7 @@ import {
 	Divider,
 	Input,
 	InputOtp,
-	Tooltip,
-	cn,
+	Tooltip
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Google } from "@lobehub/icons";
@@ -195,7 +194,7 @@ export default function SignUpForm() {
 	};
 
 	return (
-		<Card className="p-6 space-y-6" shadow="sm">
+		<Card className="p-6 space-y-6" classNames={{base: "w-xl"}}>
 			<CardHeader>
 				<h1 className="text-2xl text-center w-full">Create your account</h1>
 			</CardHeader>
@@ -272,7 +271,9 @@ export default function SignUpForm() {
 												isInvalid={!!errorsStep2.emailVerificationToken}
 												classNames={{
 													errorMessage: "font-normal",
+													description: "font-normal"
 												}}
+												description="Check your email inbox (maybe spam)."
 											/>
 										</div>
 									)}
@@ -282,9 +283,7 @@ export default function SignUpForm() {
 									size="md"
 									variant="faded"
 									onPress={handleResendVerification}
-									className={cn(
-										errorsStep2.emailVerificationToken ? "mt-2" : "mt-4",
-									)}
+									className="mt-2"
 								>
 									Resend
 								</Button>

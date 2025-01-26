@@ -19,7 +19,14 @@ export default {
 	darkMode: "class",
 	plugins: [
 		heroui({
-			layout: {},
+			layout: {
+				// disable shadows- flat design
+				boxShadow: {
+					medium: "",
+					small: "",
+					large: ""
+				}
+			},
 			themes: {
 				light: {
 					colors: {

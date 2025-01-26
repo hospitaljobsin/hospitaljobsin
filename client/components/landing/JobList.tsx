@@ -90,7 +90,7 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (
-			<Card className="p-6 space-y-6" fullWidth shadow="sm">
+			<Card className="p-6 space-y-6" fullWidth>
 				<CardBody className="flex flex-col gap-8 w-full items-center">
 					<Image
 						src="/images/not-found.svg" // Add an illustration asset here

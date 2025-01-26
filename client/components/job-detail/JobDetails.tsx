@@ -149,7 +149,7 @@ export default function JobDetails({
 	return (
 		<div className="w-full flex flex-col gap-6">
 			{/* Job Title and Company */}
-			<Card fullWidth className="p-6" shadow="sm">
+			<Card fullWidth className="p-6">
 				<CardHeader>
 					<div className="flex w-full justify-between gap-4 items-center">
 						<div className="flex flex-col gap-2 items-start">
@@ -192,7 +192,7 @@ export default function JobDetails({
 
 			{/* Job and Company Details */}
 
-			<Card fullWidth className="p-6" shadow="sm">
+			<Card fullWidth className="p-6">
 				<CardBody className="flex items-center gap-6 flex-row w-full">
 					<Image
 						src={data.company?.logoUrl || ""}
@@ -217,7 +217,7 @@ export default function JobDetails({
 			</Card>
 
 			{/* Job Description */}
-			<Card className="p-6" fullWidth shadow="sm">
+			<Card className="p-6" fullWidth>
 				<CardHeader>
 					<h3 className="font-medium text-foreground-500">About the Job</h3>
 				</CardHeader>

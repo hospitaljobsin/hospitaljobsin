@@ -121,7 +121,6 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 		<Card
 			fullWidth
 			className="p-6 cursor-pointer"
-			shadow="sm"
 			isPressable
 			as="div"
 			disableRipple

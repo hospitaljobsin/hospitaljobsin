@@ -1,7 +1,6 @@
 "use client";
 
 import links from "@/lib/links";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	Alert,
 	Button,
@@ -13,6 +12,7 @@ import {
 	Input,
 	Link,
 } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
@@ -58,7 +58,7 @@ export default function SubmitResetPasswordFrom() {
 	}
 	return (
 		<>
-			<Card shadow="sm" className="p-6 space-y-6">
+			<Card className="p-6 space-y-6">
 				<CardHeader>
 					<h1 className="text-center text-2xl w-full">Reset Your Password</h1>
 				</CardHeader>

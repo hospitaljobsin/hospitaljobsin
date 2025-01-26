@@ -1,5 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarDate, parseDate } from "@internationalized/date";
 import {
 	Button,
 	Card,
@@ -10,6 +8,8 @@ import {
 	Select,
 	SelectItem,
 } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CalendarDate, parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";
@@ -147,7 +147,7 @@ export default function UpdatePersonalDetailsForm({
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
 			{/* Personal Details */}
-			<Card className="p-6 space-y-6" shadow="sm">
+			<Card className="p-6 space-y-6" >
 				<CardHeader>
 					<h1 className="text-lg font-medium">Editing Personal Details</h1>
 				</CardHeader>

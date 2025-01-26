@@ -1,7 +1,6 @@
 import { useFragment, useMutation } from "react-relay";
 
 import { getGravatarURL } from "@/lib/avatars";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	Avatar,
 	Badge,
@@ -11,6 +10,7 @@ import {
 	Input,
 	Tooltip,
 } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
@@ -80,7 +80,7 @@ export default function UpdateAccountDetailsForm({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-			<Card className="p-6 space-y-6" shadow="sm">
+			<Card className="p-6 space-y-6">
 				<CardHeader className="flex gap-6 w-full items-center justify-between">
 					<div className="flex gap-6 w-full items-center justify-start">
 						<Badge

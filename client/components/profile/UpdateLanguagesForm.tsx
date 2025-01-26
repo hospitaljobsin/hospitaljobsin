@@ -1,5 +1,5 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -94,7 +94,7 @@ export default function UpdateLanguagesForm({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-			<Card className="p-6 space-y-6" shadow="sm">
+			<Card className="p-6 space-y-6">
 				<CardHeader>
 					<h1 className="text-lg font-medium">Editing Languages</h1>
 				</CardHeader>

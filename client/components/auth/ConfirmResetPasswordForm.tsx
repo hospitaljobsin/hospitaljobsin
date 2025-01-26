@@ -69,7 +69,7 @@ export default function ConfirmResetPasswordForm() {
 		});
 	}
 	return (
-		<Card shadow="sm">
+		<Card>
 			<CardHeader>
 				<h1 className={"w-full text-center text-2xl"}>Reset your password</h1>
 			</CardHeader>
