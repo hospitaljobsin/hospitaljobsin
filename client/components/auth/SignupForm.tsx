@@ -20,7 +20,7 @@ import { Google } from "@lobehub/icons";
 import { Edit3Icon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -81,6 +81,21 @@ export default function SignUpForm() {
 	const [currentStep, setCurrentStep] = useState(1);
 	const [email, setEmail] = useState("");
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+	useEffect(() => {
+		// prevent user from leaving the page while completing registration
+		if (currentStep !== 2) return;
+
+		function beforeUnload(e: BeforeUnloadEvent) {
+			e.preventDefault();
+		}
+
+		window.addEventListener("beforeunload", beforeUnload);
+
+		return () => {
+			window.removeEventListener("beforeunload", beforeUnload);
+		};
+	}, [currentStep]);
 
 	// Step 1: Request verification token
 	const {
