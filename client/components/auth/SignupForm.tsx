@@ -172,6 +172,9 @@ export default function SignUpForm() {
 					router.replace(links.landing);
 				}
 			},
+			updater(store) {
+				store.invalidateStore();
+			},
 		});
 	};
 
