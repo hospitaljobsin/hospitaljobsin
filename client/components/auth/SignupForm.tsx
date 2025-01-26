@@ -240,7 +240,7 @@ export default function SignUpForm() {
 									name="emailVerificationToken"
 									render={({ field }) => (
 										<div className="flex flex-col gap-2 w-full">
-											<p className="text-default-500 text-small">
+											<p className="text-default-500 text-xs">
 												Email Verification Token
 											</p>
 
@@ -265,7 +265,7 @@ export default function SignUpForm() {
 									variant="faded"
 									onPress={handleResendVerification}
 									className={cn(
-										errorsStep2.emailVerificationToken ? "mt-3" : "mt-7",
+										errorsStep2.emailVerificationToken ? "mt-2" : "mt-6",
 									)}
 								>
 									Resend
