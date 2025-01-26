@@ -19,12 +19,12 @@ export default function LandingView() {
 	const [debouncedSearchTerm] = useDebounce(searchTerm, 1000);
 
 	return (
-		<>
+		<div className="w-full flex flex-col -mt-20 gap-8">
 			<JobListController
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
 			/>
 			<JobList searchTerm={debouncedSearchTerm} rootQuery={data} />
-		</>
+		</div>
 	);
 }
