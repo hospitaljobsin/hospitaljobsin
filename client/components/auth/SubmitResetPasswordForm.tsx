@@ -14,6 +14,7 @@ import {
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -21,8 +22,8 @@ import { z } from "zod";
 import type { SubmitResetPasswordFormMutation as SubmitResetPasswordFormMutationType } from "./__generated__/SubmitResetPasswordFormMutation.graphql";
 
 const SubmitResetPasswordFormMutation = graphql`
-  mutation SubmitResetPasswordFormMutation($email: String!) {
-	requestPasswordReset(email: $email) {
+  mutation SubmitResetPasswordFormMutation($email: String!, $recaptchaToken: String!) {
+	requestPasswordReset(email: $email, recaptchaToken: $recaptchaToken) {
 	  __typename
 	}
   }
@@ -46,16 +47,34 @@ export default function SubmitResetPasswordFrom() {
 		resolver: zodResolver(submitResetPasswordSchema),
 	});
 
-	function onSubmit(values: z.infer<typeof submitResetPasswordSchema>) {
+	const { executeRecaptcha } = useGoogleReCaptcha();
+
+	if (!executeRecaptcha) {
+		console.log("Recaptcha not loaded");
+		return;
+	}
+
+	async function onSubmit(values: z.infer<typeof submitResetPasswordSchema>) {
+		const token = await executeRecaptcha("password_reset_request");
 		commitMutation({
 			variables: {
 				email: values.email,
+				recaptchaToken: token,
 			},
-			onCompleted() {
-				setShowSuccessMessage(true);
+			onCompleted(response) {
+				if (
+					response.requestPasswordReset.__typename ===
+					"InvalidRecaptchaTokenError"
+				) {
+					// handle recaptcha failure
+					alert("Recaptcha failed. Please try again.");
+				} else {
+					setShowSuccessMessage(true);
+				}
 			},
 		});
 	}
+
 	return (
 		<>
 			<Card className="p-6 space-y-6">
@@ -98,7 +117,7 @@ export default function SubmitResetPasswordFrom() {
 						isVisible={showSuccessMessage}
 						onClose={() => setShowSuccessMessage(false)}
 						hideIcon
-						color="secondary"
+						color="success"
 						description={
 							"If an account with that email exists, we will send you a password reset link. Please check your email inbox."
 						}

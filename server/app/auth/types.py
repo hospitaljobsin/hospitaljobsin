@@ -68,10 +68,15 @@ class LogoutPayloadType:
     message: str = "Successfully logged out."
 
 
-@strawberry.type(name="RequestPasswordResetPayload")
-class RequestPasswordResetPayloadType:
+@strawberry.type(name="RequestPasswordResetSuccess")
+class RequestPasswordResetSuccessType:
     message: str = "Password reset requested."
 
+
+RequestPasswordResetPayload = Annotated[
+    RequestPasswordResetSuccessType | InvalidRecaptchaTokenErrorType,
+    strawberry.union(name="RequestPasswordResetPayload"),
+]
 
 ResetPasswordPayload = Annotated[
     AccountType | InvalidPasswordResetTokenErrorType,

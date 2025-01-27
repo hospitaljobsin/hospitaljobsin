@@ -215,6 +215,9 @@ type Mutation {
   requestPasswordReset(
     """The email of the existing user."""
     email: String!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
   ): RequestPasswordResetPayload!
 
   """Reset a user's password."""
@@ -336,7 +339,9 @@ type RequestEmailVerificationSuccess {
 
 union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError | InvalidRecaptchaTokenError
 
-type RequestPasswordResetPayload {
+union RequestPasswordResetPayload = RequestPasswordResetSuccess | InvalidRecaptchaTokenError
+
+type RequestPasswordResetSuccess {
   message: String!
 }
 

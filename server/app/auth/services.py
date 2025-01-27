@@ -274,9 +274,15 @@ class AuthService:
         )
 
     async def request_password_reset(
-        self, email: str, user_agent: str, background_tasks: BackgroundTasks
-    ) -> None:
+        self,
+        email: str,
+        user_agent: str,
+        recaptcha_token: str,
+        background_tasks: BackgroundTasks,
+    ) -> Result[None, InvalidRecaptchaTokenError]:
         """Request a password reset."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
         existing_user = await self._account_repo.get_by_email(email=email)
         if not existing_user:
             return
@@ -297,6 +303,8 @@ class AuthService:
                 "user_agent": user_agent,
             },
         )
+
+        return Ok(None)
 
     async def reset_password(
         self,

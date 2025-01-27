@@ -32,7 +32,8 @@ from .types import (
     RegisterPayload,
     RequestEmailVerificationTokenPayload,
     RequestEmailVerificationTokenSuccessType,
-    RequestPasswordResetPayloadType,
+    RequestPasswordResetPayload,
+    RequestPasswordResetSuccessType,
     ResetPasswordPayload,
 )
 
@@ -208,7 +209,7 @@ class AuthMutation:
         return LogoutPayloadType()
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=RequestPasswordResetPayloadType,
+        graphql_type=RequestPasswordResetPayload,
         description="Request a password reset.",
     )
     @inject
@@ -221,16 +222,28 @@ class AuthMutation:
                 description="The email of the existing user.",
             ),
         ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
         auth_service: Annotated[AuthService, Inject],
-    ) -> RequestPasswordResetPayloadType:
+    ) -> RequestPasswordResetPayload:
         """Request a password reset."""
-        await auth_service.request_password_reset(
+        result = await auth_service.request_password_reset(
             email=email,
+            recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             background_tasks=info.context["background_tasks"],
         )
 
-        return RequestPasswordResetPayloadType()
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
+
+        return RequestPasswordResetSuccessType()
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=ResetPasswordPayload,
