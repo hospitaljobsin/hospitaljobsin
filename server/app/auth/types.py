@@ -26,6 +26,11 @@ class InvalidEmailVerificationTokenErrorType(BaseErrorType):
     message: str = "Invalid email verification token provided."
 
 
+@strawberry.type(name="InvalidRecaptchaTokenError")
+class InvalidRecaptchaTokenErrorType(BaseErrorType):
+    message: str = "Invalid recaptcha token provided."
+
+
 @strawberry.type(name="EmailVerificationTokenCooldownError")
 class EmailVerificationTokenCooldownErrorType(BaseErrorType):
     message: str = "Please wait before requesting a new email verification token."
@@ -39,7 +44,8 @@ class RequestEmailVerificationTokenSuccessType:
 RequestEmailVerificationTokenPayload = Annotated[
     RequestEmailVerificationTokenSuccessType
     | EmailInUseErrorType
-    | EmailVerificationTokenCooldownErrorType,
+    | EmailVerificationTokenCooldownErrorType
+    | InvalidRecaptchaTokenErrorType,
     strawberry.union(name="RequestEmailVerificationTokenPayload"),
 ]
 

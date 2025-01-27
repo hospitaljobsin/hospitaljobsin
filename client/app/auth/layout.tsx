@@ -1,3 +1,5 @@
+"use client";
+
 export default function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="w-full flex h-screen items-center justify-center bg-foreground-100">

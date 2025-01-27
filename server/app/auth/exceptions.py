@@ -26,3 +26,9 @@ class InvalidEmailVerificationTokenError:
     """Raised when an invalid email verification token is provided."""
 
     pass
+
+
+class InvalidRecaptchaTokenError:
+    """Raised when an invalid recaptcha token is provided."""
+
+    pass

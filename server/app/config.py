@@ -120,6 +120,9 @@ class Settings(BaseSettings):
 
     app_url: str = "http://localhost:3000"
 
+    # Recaptcha config
+    recaptcha_secret_key: SecretStr
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",

@@ -1,6 +1,7 @@
 import secrets
 from datetime import UTC, datetime, timedelta
 
+import httpx
 from fastapi import BackgroundTasks, Request, Response
 from humanize import naturaldelta
 from result import Err, Ok, Result
@@ -17,6 +18,7 @@ from app.auth.exceptions import (
     InvalidCredentialsError,
     InvalidEmailVerificationTokenError,
     InvalidPasswordResetTokenError,
+    InvalidRecaptchaTokenError,
 )
 from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
 from app.config import settings
@@ -44,9 +46,20 @@ class AuthService:
         self._password_reset_token_repo = password_reset_token_repo
 
     async def request_email_verification_token(
-        self, email: str, user_agent: str, background_tasks: BackgroundTasks
-    ) -> Result[None, EmailInUseError | EmailVerificationTokenCooldownError]:
+        self,
+        email: str,
+        recaptcha_token: str,
+        user_agent: str,
+        background_tasks: BackgroundTasks,
+    ) -> Result[
+        None,
+        EmailInUseError
+        | EmailVerificationTokenCooldownError
+        | InvalidRecaptchaTokenError,
+    ]:
         """Request an email verification token."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
         existing_account = await self._account_repo.get_by_email(email=email)
 
         if existing_account is not None:
@@ -79,6 +92,22 @@ class AuthService:
                 "user_agent": user_agent,
             },
         )
+
+    async def _verify_recaptcha_token(self, recaptcha_token: str) -> bool:
+        """Verify whether the given recaptcha token is valid."""
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"https://www.google.com/recaptcha/api/siteverify?secret={settings.recaptcha_secret_key.get_secret_value()}&response={recaptcha_token}",
+                headers={
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+            )
+            response_data = response.json()
+
+        print("response_data", response_data)
+
+        return response_data["success"]
 
     async def register(
         self,

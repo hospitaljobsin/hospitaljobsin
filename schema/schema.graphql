@@ -94,6 +94,10 @@ type InvalidPasswordResetTokenError implements Error {
   message: String!
 }
 
+type InvalidRecaptchaTokenError implements Error {
+  message: String!
+}
+
 type Job implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -172,6 +176,9 @@ type Mutation {
   requestEmailVerificationToken(
     """The email to request an email verification token for."""
     email: String!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
   ): RequestEmailVerificationTokenPayload!
 
   """Register a new user."""
@@ -324,7 +331,7 @@ type RequestEmailVerificationSuccess {
   message: String!
 }
 
-union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError
+union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError | InvalidRecaptchaTokenError
 
 type RequestPasswordResetPayload {
   message: String!

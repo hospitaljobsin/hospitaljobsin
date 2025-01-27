@@ -14,6 +14,7 @@ from app.auth.exceptions import (
     InvalidCredentialsError,
     InvalidEmailVerificationTokenError,
     InvalidPasswordResetTokenError,
+    InvalidRecaptchaTokenError,
 )
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo, Info
@@ -25,6 +26,7 @@ from .types import (
     InvalidCredentialsErrorType,
     InvalidEmailVerificationTokenErrorType,
     InvalidPasswordResetTokenErrorType,
+    InvalidRecaptchaTokenErrorType,
     LoginPayload,
     LogoutPayloadType,
     RegisterPayload,
@@ -51,16 +53,25 @@ class AuthMutation:
                 description="The email to request an email verification token for.",
             ),
         ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
         auth_service: Annotated[AuthService, Inject],
     ) -> RequestEmailVerificationTokenPayload:
         result = await auth_service.request_email_verification_token(
             email=email,
+            recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             background_tasks=info.context["background_tasks"],
         )
 
         if isinstance(result, Err):
             match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
                 case EmailVerificationTokenCooldownError():
                     return EmailVerificationTokenCooldownErrorType()
                 case EmailInUseError():

@@ -12,7 +12,7 @@ import {
 	Divider,
 	Input,
 	InputOtp,
-	Tooltip
+	Tooltip,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Google } from "@lobehub/icons";
@@ -20,6 +20,7 @@ import { Edit3Icon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -28,13 +29,16 @@ import type { SignupFormRegisterMutation as SignupFormRegisterMutationType } fro
 import type { SignupFormRequestVerificationMutation as SignupFormRequestVerificationMutationType } from "./__generated__/SignupFormRequestVerificationMutation.graphql";
 
 const RequestVerificationMutation = graphql`
-  mutation SignupFormRequestVerificationMutation($email: String!) {
-    requestEmailVerificationToken(email: $email) {
+  mutation SignupFormRequestVerificationMutation($email: String!, $recaptchaToken: String!) {
+    requestEmailVerificationToken(email: $email, recaptchaToken: $recaptchaToken) {
       __typename
       ... on EmailInUseError {
         message
       }
 	  ... on EmailVerificationTokenCooldownError {
+		message
+	  }
+	  ... on InvalidRecaptchaTokenError {
 		message
 	  }
     }
@@ -81,6 +85,8 @@ export default function SignUpForm() {
 	const [email, setEmail] = useState("");
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+	const { executeRecaptcha } = useGoogleReCaptcha();
+
 	useEffect(() => {
 		// prevent user from leaving the page while completing registration
 		if (currentStep !== 2) return;
@@ -125,11 +131,17 @@ export default function SignUpForm() {
 	const [commitRegister] =
 		useMutation<SignupFormRegisterMutationType>(RegisterMutation);
 
+	if (!executeRecaptcha) {
+		console.log("Recaptcha not loaded");
+		return;
+	}
+
 	const handleRequestVerification = async (
 		data: z.infer<typeof step1Schema>,
 	) => {
+		const token = await executeRecaptcha("email_verification");
 		commitRequestVerification({
-			variables: { email: data.email },
+			variables: { email: data.email, recaptchaToken: token },
 			onCompleted(response) {
 				if (
 					response.requestEmailVerificationToken.__typename ===
@@ -138,6 +150,12 @@ export default function SignUpForm() {
 					setEmailError("email", {
 						message: response.requestEmailVerificationToken.message,
 					});
+				} else if (
+					response.requestEmailVerificationToken.__typename ===
+					"InvalidRecaptchaTokenError"
+				) {
+					// handle recaptcha failure
+					alert("Recaptcha failed. Please try again.");
 				} else {
 					setEmail(data.email);
 					setCurrentStep(2);
@@ -179,8 +197,9 @@ export default function SignUpForm() {
 	};
 
 	const handleResendVerification = async () => {
+		const token = await executeRecaptcha("email_verification_resend");
 		commitRequestVerification({
-			variables: { email },
+			variables: { email, recaptchaToken: token },
 			onCompleted(response) {
 				if (
 					response.requestEmailVerificationToken.__typename ===
@@ -189,6 +208,12 @@ export default function SignUpForm() {
 					setRegisterError("emailVerificationToken", {
 						message: response.requestEmailVerificationToken.message,
 					});
+				} else if (
+					response.requestEmailVerificationToken.__typename ===
+					"InvalidRecaptchaTokenError"
+				) {
+					// handle recaptcha failure
+					alert("Recaptcha failed. Please try again.");
 				} else {
 					// TODO: show toast here to check inbox
 				}
@@ -197,7 +222,7 @@ export default function SignUpForm() {
 	};
 
 	return (
-		<Card className="p-6 space-y-6" classNames={{base: "w-xl"}}>
+		<Card className="p-6 space-y-6" classNames={{ base: "w-xl" }}>
 			<CardHeader>
 				<h1 className="text-2xl text-center w-full">Create your account</h1>
 			</CardHeader>
@@ -274,7 +299,7 @@ export default function SignUpForm() {
 												isInvalid={!!errorsStep2.emailVerificationToken}
 												classNames={{
 													errorMessage: "font-normal",
-													description: "font-normal"
+													description: "font-normal",
 												}}
 												description="Check your email inbox (maybe spam)."
 											/>
