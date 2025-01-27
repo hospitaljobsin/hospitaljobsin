@@ -194,6 +194,9 @@ type Mutation {
 
     """The full name of the new user."""
     fullName: String!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
   ): RegisterPayload!
 
   """Log in a user."""
@@ -325,7 +328,7 @@ type Query {
   savedJobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): SavedJobConnection! @isAuthenticated
 }
 
-union RegisterPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError
+union RegisterPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError
 
 type RequestEmailVerificationSuccess {
   message: String!

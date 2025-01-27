@@ -113,12 +113,20 @@ class AuthService:
         self,
         email: str,
         email_verification_token: str,
+        recaptcha_token: str,
         password: str,
         full_name: str,
         user_agent: str,
         request: Request,
         response: Response,
-    ) -> Result[Account, EmailInUseError | InvalidEmailVerificationTokenError]:
+    ) -> Result[
+        Account,
+        EmailInUseError
+        | InvalidEmailVerificationTokenError
+        | InvalidRecaptchaTokenError,
+    ]:
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())

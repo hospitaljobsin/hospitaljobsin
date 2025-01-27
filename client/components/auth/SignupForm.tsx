@@ -51,18 +51,23 @@ const RegisterMutation = graphql`
     $emailVerificationToken: String!
     $password: String!
     $fullName: String!
+	$recaptchaToken: String!
   ) {
     register(
       email: $email
       emailVerificationToken: $emailVerificationToken
       password: $password
       fullName: $fullName
+	  recaptchaToken: $recaptchaToken
     ) {
       __typename
       ... on EmailInUseError {
         message
       }
 	  ... on InvalidEmailVerificationTokenError {
+		message
+	   }
+	   ... on InvalidRecaptchaTokenError {
 		message
 	   }
     }
@@ -165,12 +170,14 @@ export default function SignUpForm() {
 	};
 
 	const handleRegister = async (data: z.infer<typeof step2Schema>) => {
+		const token = await executeRecaptcha("register");
 		commitRegister({
 			variables: {
 				email,
 				emailVerificationToken: data.emailVerificationToken,
 				password: data.password,
 				fullName: data.fullName,
+				recaptchaToken: token,
 			},
 			onCompleted(response) {
 				if (response.register.__typename === "EmailInUseError") {
@@ -186,6 +193,11 @@ export default function SignUpForm() {
 					setRegisterError("emailVerificationToken", {
 						message: response.register.message,
 					});
+				} else if (
+					response.register.__typename === "InvalidRecaptchaTokenError"
+				) {
+					// handle recaptcha failure
+					alert("Recaptcha failed. Please try again.");
 				} else {
 					router.replace(links.landing);
 				}

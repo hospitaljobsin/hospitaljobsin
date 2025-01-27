@@ -3,10 +3,14 @@
 @tailwind utilities;
 
 @layer base {
-  html,
-  body {
-    @apply h-full;
-    @apply w-full;
-    @apply bg-foreground-100;
-  }
+	html,
+	body {
+		@apply h-full;
+		@apply w-full;
+		@apply bg-foreground-100;
+	}
+}
+
+.grecaptcha-badge {
+	visibility: hidden;
 }

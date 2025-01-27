@@ -111,6 +111,12 @@ class AuthMutation:
                 description="The full name of the new user.",
             ),
         ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
         auth_service: Annotated[AuthService, Inject],
     ) -> RegisterPayload:
         """Register a new user."""
@@ -119,6 +125,7 @@ class AuthMutation:
             email_verification_token=email_verification_token,
             password=password,
             full_name=full_name,
+            recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
@@ -126,6 +133,8 @@ class AuthMutation:
 
         if isinstance(result, Err):
             match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
                 case EmailInUseError():
                     return EmailInUseErrorType()
                 case InvalidEmailVerificationTokenError():

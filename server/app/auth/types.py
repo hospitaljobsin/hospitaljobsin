@@ -50,7 +50,10 @@ RequestEmailVerificationTokenPayload = Annotated[
 ]
 
 RegisterPayload = Annotated[
-    AccountType | EmailInUseErrorType | InvalidEmailVerificationTokenErrorType,
+    AccountType
+    | EmailInUseErrorType
+    | InvalidEmailVerificationTokenErrorType
+    | InvalidRecaptchaTokenErrorType,
     strawberry.union(name="RegisterPayload"),
 ]
 
