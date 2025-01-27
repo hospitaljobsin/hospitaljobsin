@@ -58,7 +58,7 @@ RegisterPayload = Annotated[
 ]
 
 LoginPayload = Annotated[
-    AccountType | InvalidCredentialsErrorType,
+    AccountType | InvalidCredentialsErrorType | InvalidRecaptchaTokenErrorType,
     strawberry.union(name="LoginPayload"),
 ]
 

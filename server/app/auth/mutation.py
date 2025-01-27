@@ -163,12 +163,19 @@ class AuthMutation:
                 description="The password of the user.",
             ),
         ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
         auth_service: Annotated[AuthService, Inject],
     ) -> LoginPayload:
         """Login a user."""
         result = await auth_service.login(
             email=email,
             password=password,
+            recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
@@ -176,6 +183,8 @@ class AuthMutation:
 
         if isinstance(result, Err):
             match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
                 case InvalidCredentialsError():
                     return InvalidCredentialsErrorType()
 

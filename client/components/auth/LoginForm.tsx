@@ -18,14 +18,15 @@ import { useRouter } from "next-nprogress-bar";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
 import type { LoginFormMutation as LoginFormMutationType } from "./__generated__/LoginFormMutation.graphql";
 
 const LoginFormMutation = graphql`
-  mutation LoginFormMutation($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+  mutation LoginFormMutation($email: String!, $password: String!, $recaptchaToken: String!) {
+    login(email: $email, password: $password, recaptchaToken: $recaptchaToken) {
       __typename
 	  ... on Account {
 		...AuthDropdownFragment
@@ -33,6 +34,9 @@ const LoginFormMutation = graphql`
       ... on InvalidCredentialsError {
         message
       }
+	  ... on InvalidRecaptchaTokenError {
+		message
+	  }
     }
   }
 `;
@@ -61,16 +65,28 @@ export default function LoginForm() {
 		reValidateMode: "onBlur",
 	});
 
-	function onSubmit(values: z.infer<typeof loginSchema>) {
+	const { executeRecaptcha } = useGoogleReCaptcha();
+
+	if (!executeRecaptcha) {
+		console.log("Recaptcha not loaded");
+		return;
+	}
+
+	async function onSubmit(values: z.infer<typeof loginSchema>) {
+		const token = await executeRecaptcha("login");
 		commitMutation({
 			variables: {
 				email: values.email,
 				password: values.password,
+				recaptchaToken: token,
 			},
 			onCompleted(response) {
 				if (response.login.__typename === "InvalidCredentialsError") {
 					setError("email", { message: response.login.message });
 					setError("password", { message: response.login.message });
+				} else if (response.login.__typename === "InvalidRecaptchaTokenError") {
+					// handle recaptcha failure
+					alert("Recaptcha failed. Please try again.");
 				} else {
 					router.replace(redirectTo);
 				}

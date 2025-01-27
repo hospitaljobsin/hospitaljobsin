@@ -174,11 +174,14 @@ class AuthService:
         self,
         email: str,
         password: str,
+        recaptcha_token: str,
         user_agent: str,
         request: Request,
         response: Response,
-    ) -> Result[Account, InvalidCredentialsError]:
+    ) -> Result[Account, InvalidCredentialsError | InvalidRecaptchaTokenError]:
         """Login a user."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
         account = await self._account_repo.get_by_email(email=email)
         if not account:
             return Err(InvalidCredentialsError())

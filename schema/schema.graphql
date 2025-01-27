@@ -160,7 +160,7 @@ input LanguageInput {
   proficiency: String!
 }
 
-union LoginPayload = Account | InvalidCredentialsError
+union LoginPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError
 
 type LogoutPayload {
   message: String!
@@ -206,6 +206,9 @@ type Mutation {
 
     """The password of the user."""
     password: String!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
   ): LoginPayload!
 
   """Log out the current user."""
