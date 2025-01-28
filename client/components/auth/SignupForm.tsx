@@ -11,7 +11,6 @@ import {
 	CardHeader,
 	Divider,
 	Input,
-	InputOtp,
 	Tooltip,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -380,34 +379,20 @@ export default function SignUpForm() {
 									control={emailVerificationControl}
 									name="emailVerificationToken"
 									render={({ field }) => (
-										<div className="flex flex-col gap-2 w-full">
-											<p className="text-default-500 text-xs">
-												Email Verification Token
-											</p>
-
-											<InputOtp
-												{...field}
-												length={6}
-												allowedKeys={"^[A-Za-z0-9]*$"}
-												errorMessage={
-													errorsStep2.emailVerificationToken?.message
-												}
-												isInvalid={!!errorsStep2.emailVerificationToken}
-												classNames={{
-													errorMessage: "font-normal",
-													description: "font-normal",
-												}}
-												description="Check your email inbox (maybe spam)."
-											/>
-										</div>
+										<Input
+											label="Email Verification Token"
+											description="Check your email inbox (maybe spam)."
+											errorMessage={errorsStep2.emailVerificationToken?.message}
+											isInvalid={!!errorsStep2.emailVerificationToken}
+											{...field}
+										/>
 									)}
 								/>
-
 								<Button
 									size="md"
 									variant="faded"
 									onPress={handleResendVerification}
-									className="mt-2"
+									className="mb-4"
 								>
 									Resend
 								</Button>
