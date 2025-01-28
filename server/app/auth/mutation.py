@@ -75,12 +75,16 @@ class AuthMutation:
             match result.err_value:
                 case InvalidRecaptchaTokenError():
                     return InvalidRecaptchaTokenErrorType()
-                case EmailVerificationTokenCooldownError():
-                    return EmailVerificationTokenCooldownErrorType()
+                case EmailVerificationTokenCooldownError() as err:
+                    return EmailVerificationTokenCooldownErrorType(
+                        remaining_seconds=err.remaining_seconds
+                    )
                 case EmailInUseError():
                     return EmailInUseErrorType()
 
-        return RequestEmailVerificationTokenSuccessType()
+        return RequestEmailVerificationTokenSuccessType(
+            remaining_seconds=result.ok_value.remaining_seconds
+        )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=VerifyEmailPayload,

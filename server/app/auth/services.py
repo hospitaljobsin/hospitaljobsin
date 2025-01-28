@@ -6,7 +6,7 @@ from fastapi import BackgroundTasks, Request, Response
 from humanize import naturaldelta
 from result import Err, Ok, Result
 
-from app.accounts.documents import Account
+from app.accounts.documents import Account, EmailVerificationToken
 from app.accounts.repositories import (
     AccountRepo,
     EmailVerificationTokenRepo,
@@ -52,7 +52,7 @@ class AuthService:
         user_agent: str,
         background_tasks: BackgroundTasks,
     ) -> Result[
-        None,
+        EmailVerificationToken,
         EmailInUseError
         | EmailVerificationTokenCooldownError
         | InvalidRecaptchaTokenError,
@@ -71,14 +71,19 @@ class AuthService:
 
         if existing_email_verification_token is not None:
             if not existing_email_verification_token.is_cooled_down:
-                return Err(EmailVerificationTokenCooldownError())
+                return Err(
+                    EmailVerificationTokenCooldownError(
+                        remaining_seconds=existing_email_verification_token.cooldown_remaining_seconds
+                    )
+                )
             await self._email_verification_token_repo.delete(
                 existing_email_verification_token
             )
 
-        verification_token = await self._email_verification_token_repo.create(
-            email=email
-        )
+        (
+            verification_token,
+            email_verification,
+        ) = await self._email_verification_token_repo.create(email=email)
 
         background_tasks.add_task(
             send_template_email,
@@ -92,6 +97,8 @@ class AuthService:
                 "user_agent": user_agent,
             },
         )
+
+        return Ok(email_verification)
 
     async def verify_email(
         self,

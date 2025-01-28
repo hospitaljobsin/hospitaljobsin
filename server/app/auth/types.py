@@ -34,11 +34,23 @@ class InvalidRecaptchaTokenErrorType(BaseErrorType):
 @strawberry.type(name="EmailVerificationTokenCooldownError")
 class EmailVerificationTokenCooldownErrorType(BaseErrorType):
     message: str = "Please wait before requesting a new email verification token."
+    remaining_seconds: Annotated[
+        int,
+        strawberry.field(
+            description="Remaining seconds before requesting another email verification token."
+        ),
+    ]
 
 
 @strawberry.type(name="RequestEmailVerificationSuccess")
 class RequestEmailVerificationTokenSuccessType:
     message: str = "Email verification token requested."
+    remaining_seconds: Annotated[
+        int,
+        strawberry.field(
+            description="Remaining seconds before requesting another email verification token."
+        ),
+    ]
 
 
 @strawberry.type(name="VerifyEmailSuccess")

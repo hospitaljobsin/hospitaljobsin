@@ -98,7 +98,7 @@ class AccountRepo:
 
 
 class EmailVerificationTokenRepo:
-    async def create(self, email: str) -> str:
+    async def create(self, email: str) -> tuple[str, EmailVerificationToken]:
         """Create a new email verification token."""
         verification_token = self.generate_verification_token()
         email_verification = EmailVerificationToken(
@@ -113,7 +113,7 @@ class EmailVerificationTokenRepo:
         )
 
         await email_verification.insert()
-        return verification_token
+        return verification_token, email_verification
 
     async def get(self, verification_token: str) -> EmailVerificationToken | None:
         """Get an email verification by token."""
