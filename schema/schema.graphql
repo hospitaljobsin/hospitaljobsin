@@ -181,6 +181,18 @@ type Mutation {
     recaptchaToken: String!
   ): RequestEmailVerificationTokenPayload!
 
+  """Verify an email."""
+  verifyEmail(
+    """The email to request an email verification token for."""
+    email: String!
+
+    """The email verification token."""
+    emailVerificationToken: String!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
+  ): VerifyEmailPayload!
+
   """Register a new user."""
   register(
     """The email of the new user."""
@@ -381,6 +393,8 @@ type UnsaveJobResult {
 }
 
 union UpdateProfilePayload = Account
+
+union VerifyEmailPayload = InvalidRecaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
 
 union ViewerPayload = Account | NotAuthenticatedError
 

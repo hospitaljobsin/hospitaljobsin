@@ -35,6 +35,8 @@ from .types import (
     RequestPasswordResetPayload,
     RequestPasswordResetSuccessType,
     ResetPasswordPayload,
+    VerifyEmailPayload,
+    VerifyEmailSuccessType,
 )
 
 
@@ -79,6 +81,51 @@ class AuthMutation:
                     return EmailInUseErrorType()
 
         return RequestEmailVerificationTokenSuccessType()
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=VerifyEmailPayload,
+        description="Verify an email.",
+    )
+    @inject
+    async def verify_email(
+        self,
+        info: Info,
+        email: Annotated[
+            str,
+            strawberry.argument(
+                description="The email to request an email verification token for.",
+            ),
+        ],
+        email_verification_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The email verification token.",
+            ),
+        ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> VerifyEmailPayload:
+        result = await auth_service.verify_email(
+            email=email,
+            email_verification_token=email_verification_token,
+            recaptcha_token=recaptcha_token,
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
+                case EmailInUseError():
+                    return EmailInUseErrorType()
+                case InvalidEmailVerificationTokenError():
+                    return InvalidEmailVerificationTokenErrorType()
+
+        return VerifyEmailSuccessType()
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RegisterPayload,

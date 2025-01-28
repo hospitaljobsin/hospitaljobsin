@@ -27,6 +27,7 @@ import { graphql } from "relay-runtime";
 import z from "zod";
 import type { SignupFormRegisterMutation as SignupFormRegisterMutationType } from "./__generated__/SignupFormRegisterMutation.graphql";
 import type { SignupFormRequestVerificationMutation as SignupFormRequestVerificationMutationType } from "./__generated__/SignupFormRequestVerificationMutation.graphql";
+import type { SignupFormVerifyEmailMutation as SignupFormVerifyEmailMutationType } from "./__generated__/SignupFormVerifyEmailMutation.graphql";
 
 const RequestVerificationMutation = graphql`
   mutation SignupFormRequestVerificationMutation($email: String!, $recaptchaToken: String!) {
@@ -44,6 +45,22 @@ const RequestVerificationMutation = graphql`
     }
   }
 `;
+
+const VerifyEmailMutation = graphql`
+mutation SignupFormVerifyEmailMutation($email: String!, $emailVerificationToken: String!, $recaptchaToken: String!) {
+	verifyEmail(email: $email, emailVerificationToken: $emailVerificationToken, recaptchaToken: $recaptchaToken) {
+		__typename
+		... on EmailInUseError {
+        message
+      }
+	  ... on InvalidEmailVerificationTokenError {
+		message
+	  }
+	  ... on InvalidRecaptchaTokenError {
+		message
+	  }
+	}
+}`;
 
 const RegisterMutation = graphql`
   mutation SignupFormRegisterMutation(
@@ -80,6 +97,9 @@ const step1Schema = z.object({
 
 const step2Schema = z.object({
 	emailVerificationToken: z.string().min(1),
+});
+
+const step3Schema = z.object({
 	password: z.string().min(6),
 	fullName: z.string().min(1),
 });
@@ -88,6 +108,7 @@ export default function SignUpForm() {
 	const router = useRouter();
 	const [currentStep, setCurrentStep] = useState(1);
 	const [email, setEmail] = useState("");
+	const [emailVerificationToken, setEmailVerificationToken] = useState("");
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
 	const { executeRecaptcha } = useGoogleReCaptcha();
@@ -107,7 +128,7 @@ export default function SignUpForm() {
 		};
 	}, [currentStep]);
 
-	// Step 1: Request verification token
+	// Step 1: Request email verification token
 	const {
 		register: registerStep1,
 		handleSubmit: handleSubmitStep1,
@@ -122,15 +143,28 @@ export default function SignUpForm() {
 			RequestVerificationMutation,
 		);
 
-	// Step 2: Complete registration
+	// Step 2: Verify email
 	const {
-		register: registerStep2,
 		handleSubmit: handleSubmitStep2,
-		setError: setRegisterError,
-		control: registerControl,
+		setError: setEmailVerificationError,
+		control: emailVerificationControl,
 		formState: { errors: errorsStep2, isSubmitting: isSubmittingStep2 },
 	} = useForm<z.infer<typeof step2Schema>>({
 		resolver: zodResolver(step2Schema),
+	});
+
+	const [commitVerifyEmail] =
+		useMutation<SignupFormVerifyEmailMutationType>(VerifyEmailMutation);
+
+	// step 3: complete registration
+	const {
+		register: registerStep3,
+		handleSubmit: handleSubmitStep3,
+		setError: setRegisterError,
+		control: registerControl,
+		formState: { errors: errorsStep3, isSubmitting: isSubmittingStep3 },
+	} = useForm<z.infer<typeof step3Schema>>({
+		resolver: zodResolver(step3Schema),
 	});
 
 	const [commitRegister] =
@@ -168,7 +202,49 @@ export default function SignUpForm() {
 		});
 	};
 
-	const handleRegister = async (data: z.infer<typeof step2Schema>) => {
+	const handleVerifyEmail = async (data: z.infer<typeof step2Schema>) => {
+		if (!executeRecaptcha) {
+			console.log("Recaptcha not loaded");
+			return;
+		}
+
+		const token = await executeRecaptcha("verify_email");
+
+		commitVerifyEmail({
+			variables: {
+				email: email,
+				emailVerificationToken: data.emailVerificationToken,
+				recaptchaToken: token,
+			},
+			onCompleted(response) {
+				if (response.verifyEmail.__typename === "EmailInUseError") {
+					// we've hit the race condition failsafe.
+					// show an unexpected error message and reset the form
+					setCurrentStep(1);
+					setEmailError("root", {
+						message: "An unexpected error occurred. Please try again",
+					});
+				} else if (
+					response.verifyEmail.__typename ===
+					"InvalidEmailVerificationTokenError"
+				) {
+					setEmailVerificationError("emailVerificationToken", {
+						message: response.verifyEmail.message,
+					});
+				} else if (
+					response.verifyEmail.__typename === "InvalidRecaptchaTokenError"
+				) {
+					// handle recaptcha failure
+					alert("Recaptcha failed. Please try again.");
+				} else {
+					setEmailVerificationToken(data.emailVerificationToken);
+					setCurrentStep(3);
+				}
+			},
+		});
+	};
+
+	const handleRegister = async (data: z.infer<typeof step3Schema>) => {
 		if (!executeRecaptcha) {
 			console.log("Recaptcha not loaded");
 			return;
@@ -177,7 +253,7 @@ export default function SignUpForm() {
 		commitRegister({
 			variables: {
 				email,
-				emailVerificationToken: data.emailVerificationToken,
+				emailVerificationToken: emailVerificationToken,
 				password: data.password,
 				fullName: data.fullName,
 				recaptchaToken: token,
@@ -193,7 +269,8 @@ export default function SignUpForm() {
 				} else if (
 					response.register.__typename === "InvalidEmailVerificationTokenError"
 				) {
-					setRegisterError("emailVerificationToken", {
+					setCurrentStep(2);
+					setEmailVerificationError("emailVerificationToken", {
 						message: response.register.message,
 					});
 				} else if (
@@ -224,7 +301,7 @@ export default function SignUpForm() {
 					response.requestEmailVerificationToken.__typename ===
 					"EmailVerificationTokenCooldownError"
 				) {
-					setRegisterError("emailVerificationToken", {
+					setEmailVerificationError("emailVerificationToken", {
 						message: response.requestEmailVerificationToken.message,
 					});
 				} else if (
@@ -272,9 +349,9 @@ export default function SignUpForm() {
 							</Button>
 						</div>
 					</form>
-				) : (
+				) : currentStep === 2 ? (
 					<form
-						onSubmit={handleSubmitStep2(handleRegister)}
+						onSubmit={handleSubmitStep2(handleVerifyEmail)}
 						className="space-y-3"
 					>
 						<div className="w-full flex flex-col gap-6">
@@ -300,7 +377,7 @@ export default function SignUpForm() {
 							/>
 							<div className="w-full flex justify-start items-center gap-6">
 								<Controller
-									control={registerControl}
+									control={emailVerificationControl}
 									name="emailVerificationToken"
 									render={({ field }) => (
 										<div className="flex flex-col gap-2 w-full">
@@ -335,12 +412,24 @@ export default function SignUpForm() {
 									Resend
 								</Button>
 							</div>
+
+							<Button fullWidth type="submit" isLoading={isSubmittingStep2}>
+								Continue
+							</Button>
+						</div>
+					</form>
+				) : (
+					<form
+						onSubmit={handleSubmitStep3(handleRegister)}
+						className="space-y-3"
+					>
+						<div className="w-full flex flex-col gap-6">
 							<Input
 								label="Full Name"
 								placeholder="Enter your full name"
-								{...registerStep2("fullName")}
-								errorMessage={errorsStep2.fullName?.message}
-								isInvalid={!!errorsStep2.fullName}
+								{...registerStep3("fullName")}
+								errorMessage={errorsStep3.fullName?.message}
+								isInvalid={!!errorsStep3.fullName}
 							/>
 							<Input
 								label="Password"
@@ -359,9 +448,9 @@ export default function SignUpForm() {
 										)}
 									</button>
 								}
-								{...registerStep2("password")}
-								errorMessage={errorsStep2.password?.message}
-								isInvalid={!!errorsStep2.password}
+								{...registerStep3("password")}
+								errorMessage={errorsStep3.password?.message}
+								isInvalid={!!errorsStep3.password}
 							/>
 							<Button fullWidth type="submit" isLoading={isSubmittingStep2}>
 								Create account

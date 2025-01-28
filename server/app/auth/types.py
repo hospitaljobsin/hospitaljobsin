@@ -41,12 +41,25 @@ class RequestEmailVerificationTokenSuccessType:
     message: str = "Email verification token requested."
 
 
+@strawberry.type(name="VerifyEmailSuccess")
+class VerifyEmailSuccessType:
+    message: str = "Email successfully verified."
+
+
 RequestEmailVerificationTokenPayload = Annotated[
     RequestEmailVerificationTokenSuccessType
     | EmailInUseErrorType
     | EmailVerificationTokenCooldownErrorType
     | InvalidRecaptchaTokenErrorType,
     strawberry.union(name="RequestEmailVerificationTokenPayload"),
+]
+
+VerifyEmailPayload = Annotated[
+    VerifyEmailSuccessType
+    | InvalidRecaptchaTokenErrorType
+    | InvalidEmailVerificationTokenErrorType
+    | EmailInUseErrorType,
+    strawberry.union(name="VerifyEmailPayload"),
 ]
 
 RegisterPayload = Annotated[

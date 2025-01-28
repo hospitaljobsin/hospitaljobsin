@@ -93,6 +93,42 @@ class AuthService:
             },
         )
 
+    async def verify_email(
+        self,
+        email: str,
+        email_verification_token: str,
+        recaptcha_token: str,
+    ) -> Result[
+        None,
+        EmailInUseError
+        | InvalidEmailVerificationTokenError
+        | InvalidRecaptchaTokenError,
+    ]:
+        """Verify an email address."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
+
+        # check email availability (failsafe)
+        if await self._account_repo.get_by_email(email=email):
+            return Err(EmailInUseError())
+
+        existing_email_verification_token = (
+            await self._email_verification_token_repo.get(
+                verification_token=email_verification_token
+            )
+        )
+
+        if (
+            not existing_email_verification_token
+            or existing_email_verification_token.is_expired
+            or existing_email_verification_token.email != email
+        ):
+            return Err(InvalidEmailVerificationTokenError())
+
+        # TODO: set session as verified here (or) mark token as verified
+        # this might simplify things client side
+        return Ok(None)
+
     async def _verify_recaptcha_token(self, recaptcha_token: str) -> bool:
         """Verify whether the given recaptcha token is valid."""
         async with httpx.AsyncClient() as client:
@@ -130,6 +166,8 @@ class AuthService:
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
+
+        # TODO: check if session is verified here
 
         existing_email_verification_token = (
             await self._email_verification_token_repo.get(
