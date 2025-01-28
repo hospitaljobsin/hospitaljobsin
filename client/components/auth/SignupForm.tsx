@@ -476,6 +476,7 @@ export default function SignUpForm() {
 						<div className="w-full flex flex-col gap-6">
 							<Input
 								label="Full Name"
+								autoComplete="given-name"
 								placeholder="Enter your full name"
 								{...registerStep3("fullName")}
 								errorMessage={errorsStep3.fullName?.message}
@@ -484,6 +485,7 @@ export default function SignUpForm() {
 							<Input
 								label="Password"
 								placeholder="Enter password"
+								autoComplete="new-password"
 								type={isPasswordVisible ? "text" : "password"}
 								endContent={
 									<button
@@ -510,7 +512,7 @@ export default function SignUpForm() {
 				)}
 			</CardBody>
 			<CardFooter className="flex flex-col w-full gap-8">
-				{currentStep === 1 ? (
+				{currentStep === 1 && (
 					<>
 						<div className="w-full flex items-center justify-center gap-6">
 							<Divider className="flex-1" />
@@ -533,15 +535,6 @@ export default function SignUpForm() {
 							</Link>
 						</div>
 					</>
-				) : (
-					<Button
-						fullWidth
-						onPress={() => setCurrentStep((prevStep) => prevStep - 1)}
-						variant="light"
-						className="text-blue-500"
-					>
-						Go back
-					</Button>
 				)}
 			</CardFooter>
 		</Card>

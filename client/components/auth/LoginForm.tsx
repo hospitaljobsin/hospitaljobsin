@@ -107,6 +107,7 @@ export default function LoginForm() {
 						<Input
 							id="email"
 							label="Email Address"
+							autoComplete="email"
 							placeholder="Enter your email address"
 							type="email"
 							{...register("email")}
@@ -117,6 +118,7 @@ export default function LoginForm() {
 							id="password"
 							label="Password"
 							placeholder="Enter password"
+							autoComplete="current-password"
 							type={isPasswordVisible ? "text" : "password"}
 							endContent={
 								<button
