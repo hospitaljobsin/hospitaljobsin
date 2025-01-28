@@ -335,9 +335,6 @@ export default function SignUpForm() {
 					setCooldownSeconds(
 						response.requestEmailVerificationToken.remainingSeconds,
 					);
-					setEmailVerificationError("emailVerificationToken", {
-						message: response.requestEmailVerificationToken.message,
-					});
 				} else if (
 					response.requestEmailVerificationToken.__typename ===
 					"EmailInUseError"
