@@ -115,7 +115,7 @@ export default function SignUpForm() {
 
 	useEffect(() => {
 		// prevent user from leaving the page while completing registration
-		if (currentStep !== 2) return;
+		if (currentStep < 2) return;
 
 		function beforeUnload(e: BeforeUnloadEvent) {
 			e.preventDefault();
@@ -452,7 +452,7 @@ export default function SignUpForm() {
 								errorMessage={errorsStep3.password?.message}
 								isInvalid={!!errorsStep3.password}
 							/>
-							<Button fullWidth type="submit" isLoading={isSubmittingStep2}>
+							<Button fullWidth type="submit" isLoading={isSubmittingStep3}>
 								Create account
 							</Button>
 						</div>
@@ -460,26 +460,39 @@ export default function SignUpForm() {
 				)}
 			</CardBody>
 			<CardFooter className="flex flex-col w-full gap-8">
-				<div className="w-full flex items-center justify-center gap-6">
-					<Divider className="flex-1" />
-					<p>or</p>
-					<Divider className="flex-1" />
-				</div>
-				<Button
-					fullWidth
-					variant="bordered"
-					startContent={<Google.Color size={20} />}
-					onPress={() => {
-						window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(window.location.origin)}`;
-					}}
-				>
-					Sign up with Google
-				</Button>
-				<div className="flex justify-center w-full">
-					<Link href={links.login} className="cursor-pointer text-blue-500">
-						Already have an account? Log in.
-					</Link>
-				</div>
+				{currentStep === 1 ? (
+					<>
+						<div className="w-full flex items-center justify-center gap-6">
+							<Divider className="flex-1" />
+							<p>or</p>
+							<Divider className="flex-1" />
+						</div>
+						<Button
+							fullWidth
+							variant="bordered"
+							startContent={<Google.Color size={20} />}
+							onPress={() => {
+								window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(window.location.origin)}`;
+							}}
+						>
+							Sign up with Google
+						</Button>
+						<div className="flex justify-center w-full">
+							<Link href={links.login} className="cursor-pointer text-blue-500">
+								Already have an account? Log in.
+							</Link>
+						</div>
+					</>
+				) : (
+					<Button
+						fullWidth
+						onPress={() => setCurrentStep((prevStep) => prevStep - 1)}
+						variant="light"
+						className="text-blue-500"
+					>
+						Go back
+					</Button>
+				)}
 			</CardFooter>
 		</Card>
 	);

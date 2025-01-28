@@ -167,7 +167,7 @@ class AuthService:
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
 
-        # TODO: check if session is verified here
+        # TODO: check if session is verified here, this will simplify things client side
 
         existing_email_verification_token = (
             await self._email_verification_token_repo.get(
@@ -251,6 +251,9 @@ class AuthService:
         self, user_info: dict, request: Request, response: Response, user_agent: str
     ) -> Account:
         """Sign in with Google."""
+        if not user_info["email_verified"]:
+            # TODO: handle user not verified
+            pass
         account = await self._account_repo.get_by_email(email=user_info["email"])
         if account is None:
             account = await self._account_repo.create(
@@ -258,12 +261,7 @@ class AuthService:
                 full_name=user_info["name"],
                 # generate initial password for the user
                 password=self.generate_random_password(),
-                email_verified=user_info["email_verified"],
             )
-
-        if not account.email_verified:
-            # TODO: handle user not verified
-            pass
 
         session_token = await self._session_repo.create(
             user_agent=user_agent,

@@ -36,7 +36,6 @@ class AccountRepo:
         account = Account(
             full_name=full_name,
             email=email,
-            email_verified=email_verified,
             password_hash=self.hash_password(
                 password=password,
             ),

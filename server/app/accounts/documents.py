@@ -48,7 +48,6 @@ class Profile(Document):
 class Account(Document):
     full_name: str
     email: Annotated[str, Indexed(unique=True)]
-    email_verified: bool = False
     password_hash: str
     has_onboarded: bool
     updated_at: datetime | None = None
