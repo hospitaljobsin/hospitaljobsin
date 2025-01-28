@@ -70,6 +70,7 @@ type EmailInUseError implements Error {
 
 type EmailVerificationTokenCooldownError implements Error {
   message: String!
+  remainingSeconds: Int!
 }
 
 interface Error {
@@ -350,6 +351,7 @@ union RegisterPayload = Account | EmailInUseError | InvalidEmailVerificationToke
 
 type RequestEmailVerificationSuccess {
   message: String!
+  remainingSeconds: Int!
 }
 
 union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError | InvalidRecaptchaTokenError
@@ -394,7 +396,11 @@ type UnsaveJobResult {
 
 union UpdateProfilePayload = Account
 
-union VerifyEmailPayload = InvalidRecaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
+union VerifyEmailPayload = VerifyEmailSuccess | InvalidRecaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
+
+type VerifyEmailSuccess {
+  message: String!
+}
 
 union ViewerPayload = Account | NotAuthenticatedError
 

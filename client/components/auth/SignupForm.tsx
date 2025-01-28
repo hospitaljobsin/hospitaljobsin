@@ -1,6 +1,7 @@
 "use client";
 
 import { env } from "@/lib/env";
+import { timeFormat } from "@/lib/intl";
 import links from "@/lib/links";
 import {
 	Alert,
@@ -37,9 +38,14 @@ const RequestVerificationMutation = graphql`
       }
 	  ... on EmailVerificationTokenCooldownError {
 		message
+		remainingSeconds
 	  }
 	  ... on InvalidRecaptchaTokenError {
 		message
+	  }
+	  ... on RequestEmailVerificationSuccess {
+		message
+		remainingSeconds
 	  }
     }
   }
@@ -108,6 +114,7 @@ export default function SignUpForm() {
 	const [currentStep, setCurrentStep] = useState(1);
 	const [email, setEmail] = useState("");
 	const [emailVerificationToken, setEmailVerificationToken] = useState("");
+	const [cooldownSeconds, setCooldownSeconds] = useState(0);
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
 	const { executeRecaptcha } = useGoogleReCaptcha();
@@ -126,6 +133,16 @@ export default function SignUpForm() {
 			window.removeEventListener("beforeunload", beforeUnload);
 		};
 	}, [currentStep]);
+
+	useEffect(() => {
+		if (cooldownSeconds <= 0) return;
+
+		const timer = setInterval(() => {
+			setCooldownSeconds((prev) => prev - 1);
+		}, 1000);
+
+		return () => clearInterval(timer);
+	}, [cooldownSeconds]);
 
 	// Step 1: Request email verification token
 	const {
@@ -193,7 +210,22 @@ export default function SignUpForm() {
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
-				} else {
+				} else if (
+					response.requestEmailVerificationToken.__typename ===
+					"EmailVerificationTokenCooldownError"
+				) {
+					setCooldownSeconds(
+						response.requestEmailVerificationToken.remainingSeconds,
+					);
+					setEmail(data.email);
+					setCurrentStep(2);
+				} else if (
+					response.requestEmailVerificationToken.__typename ===
+					"RequestEmailVerificationSuccess"
+				) {
+					setCooldownSeconds(
+						response.requestEmailVerificationToken.remainingSeconds,
+					);
 					setEmail(data.email);
 					setCurrentStep(2);
 				}
@@ -300,8 +332,21 @@ export default function SignUpForm() {
 					response.requestEmailVerificationToken.__typename ===
 					"EmailVerificationTokenCooldownError"
 				) {
+					setCooldownSeconds(
+						response.requestEmailVerificationToken.remainingSeconds,
+					);
 					setEmailVerificationError("emailVerificationToken", {
 						message: response.requestEmailVerificationToken.message,
+					});
+				} else if (
+					response.requestEmailVerificationToken.__typename ===
+					"EmailInUseError"
+				) {
+					// we've hit the race condition failsafe.
+					// show an unexpected error message and reset the form
+					setCurrentStep(1);
+					setEmailError("root", {
+						message: "An unexpected error occurred. Please try again",
 					});
 				} else if (
 					response.requestEmailVerificationToken.__typename ===
@@ -309,12 +354,25 @@ export default function SignUpForm() {
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
-				} else {
+				} else if (
+					response.requestEmailVerificationToken.__typename ===
+					"RequestEmailVerificationSuccess"
+				) {
+					setCooldownSeconds(
+						response.requestEmailVerificationToken.remainingSeconds,
+					);
 					// TODO: show toast here to check inbox
 				}
 			},
 		});
 	};
+
+	function formatResendCooldown(seconds: number): string {
+		const minutes = Math.floor(seconds / 60);
+		const remainingSeconds = seconds % 60;
+
+		return `${minutes}:${timeFormat.format(remainingSeconds)}`;
+	}
 
 	return (
 		<Card className="p-6 space-y-6" classNames={{ base: "w-xl" }}>
@@ -388,14 +446,21 @@ export default function SignUpForm() {
 										/>
 									)}
 								/>
-								<Button
-									size="md"
-									variant="faded"
-									onPress={handleResendVerification}
-									className="mb-4"
-								>
-									Resend
-								</Button>
+								{cooldownSeconds > 0 ? (
+									<p className="text-sm mb-4">
+										Resend in {formatResendCooldown(cooldownSeconds)}
+									</p>
+								) : (
+									<Button
+										size="md"
+										variant="faded"
+										onPress={handleResendVerification}
+										className="mb-4"
+										isDisabled={cooldownSeconds > 0}
+									>
+										Resend
+									</Button>
+								)}
 							</div>
 
 							<Button fullWidth type="submit" isLoading={isSubmittingStep2}>
