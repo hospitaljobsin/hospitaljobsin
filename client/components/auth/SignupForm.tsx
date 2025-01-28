@@ -513,8 +513,8 @@ export default function SignUpForm() {
 					</form>
 				)}
 			</CardBody>
-			<CardFooter className="flex flex-col w-full gap-8">
-				{currentStep === 1 && (
+			{currentStep === 1 && (
+				<CardFooter className="flex flex-col w-full gap-8">
 					<>
 						<div className="w-full flex items-center justify-center gap-6">
 							<Divider className="flex-1" />
@@ -537,8 +537,8 @@ export default function SignUpForm() {
 							</Link>
 						</div>
 					</>
-				)}
-			</CardFooter>
+				</CardFooter>
+			)}
 		</Card>
 	);
 }
