@@ -447,9 +447,14 @@ export default function SignUpForm() {
 									)}
 								/>
 								{cooldownSeconds > 0 ? (
-									<p className="text-sm mb-4">
-										Resend in {formatResendCooldown(cooldownSeconds)}
-									</p>
+									<div className="flex flex-col gap-1 text-foreground-500 mb-4">
+										<span className="text-tiny whitespace-nowrap">
+											Resend in
+										</span>
+										<p className="text-md font-medium">
+											{formatResendCooldown(cooldownSeconds)}
+										</p>
+									</div>
 								) : (
 									<Button
 										size="md"
