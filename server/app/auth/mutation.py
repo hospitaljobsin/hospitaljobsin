@@ -83,7 +83,7 @@ class AuthMutation:
                     return EmailInUseErrorType()
 
         return RequestEmailVerificationTokenSuccessType(
-            remaining_seconds=result.ok_value.remaining_seconds
+            remaining_seconds=result.ok_value.cooldown_remaining_seconds
         )
 
     @strawberry.mutation(  # type: ignore[misc]
