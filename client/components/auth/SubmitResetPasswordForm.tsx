@@ -49,12 +49,11 @@ export default function SubmitResetPasswordFrom() {
 
 	const { executeRecaptcha } = useGoogleReCaptcha();
 
-	if (!executeRecaptcha) {
-		console.log("Recaptcha not loaded");
-		return;
-	}
-
 	async function onSubmit(values: z.infer<typeof submitResetPasswordSchema>) {
+		if (!executeRecaptcha) {
+			console.log("Recaptcha not loaded");
+			return;
+		}
 		const token = await executeRecaptcha("password_reset_request");
 		commitMutation({
 			variables: {

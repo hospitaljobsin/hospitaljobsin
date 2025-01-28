@@ -136,14 +136,13 @@ export default function SignUpForm() {
 	const [commitRegister] =
 		useMutation<SignupFormRegisterMutationType>(RegisterMutation);
 
-	if (!executeRecaptcha) {
-		console.log("Recaptcha not loaded");
-		return;
-	}
-
 	const handleRequestVerification = async (
 		data: z.infer<typeof step1Schema>,
 	) => {
+		if (!executeRecaptcha) {
+			console.log("Recaptcha not loaded");
+			return;
+		}
 		const token = await executeRecaptcha("email_verification");
 		commitRequestVerification({
 			variables: { email: data.email, recaptchaToken: token },
@@ -170,6 +169,10 @@ export default function SignUpForm() {
 	};
 
 	const handleRegister = async (data: z.infer<typeof step2Schema>) => {
+		if (!executeRecaptcha) {
+			console.log("Recaptcha not loaded");
+			return;
+		}
 		const token = await executeRecaptcha("register");
 		commitRegister({
 			variables: {
@@ -209,6 +212,10 @@ export default function SignUpForm() {
 	};
 
 	const handleResendVerification = async () => {
+		if (!executeRecaptcha) {
+			console.log("Recaptcha not loaded");
+			return;
+		}
 		const token = await executeRecaptcha("email_verification_resend");
 		commitRequestVerification({
 			variables: { email, recaptchaToken: token },

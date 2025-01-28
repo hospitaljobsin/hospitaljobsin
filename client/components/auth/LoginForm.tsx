@@ -67,12 +67,11 @@ export default function LoginForm() {
 
 	const { executeRecaptcha } = useGoogleReCaptcha();
 
-	if (!executeRecaptcha) {
-		console.log("Recaptcha not loaded");
-		return;
-	}
-
 	async function onSubmit(values: z.infer<typeof loginSchema>) {
+		if (!executeRecaptcha) {
+			console.log("Recaptcha not loaded");
+			return;
+		}
 		const token = await executeRecaptcha("login");
 		commitMutation({
 			variables: {
