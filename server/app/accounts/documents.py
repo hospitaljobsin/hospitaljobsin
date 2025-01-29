@@ -4,6 +4,7 @@ from typing import Annotated, Literal
 
 from beanie import BackLink, Document, Indexed, Link
 from pydantic import BaseModel, Field
+from pymongo import IndexModel
 
 from app.base.models import Address
 from app.lib.constants import EMAIL_VERIFICATION_TOKEN_COOLDOWN
@@ -99,3 +100,10 @@ class EmailVerificationToken(Document):
 
     class Settings:
         name = "email_verification_tokens"
+        indexes = [
+            # expire verification tokens after they cross the expiration timestamp
+            IndexModel(
+                "expires_at",
+                expireAfterSeconds=0,
+            ),
+        ]

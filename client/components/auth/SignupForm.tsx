@@ -515,28 +515,26 @@ export default function SignUpForm() {
 			</CardBody>
 			{currentStep === 1 && (
 				<CardFooter className="flex flex-col w-full gap-8">
-					<>
-						<div className="w-full flex items-center justify-center gap-6">
-							<Divider className="flex-1" />
-							<p>or</p>
-							<Divider className="flex-1" />
-						</div>
-						<Button
-							fullWidth
-							variant="bordered"
-							startContent={<Google.Color size={20} />}
-							onPress={() => {
-								window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(window.location.origin)}`;
-							}}
-						>
-							Sign up with Google
-						</Button>
-						<div className="flex justify-center w-full">
-							<Link href={links.login} className="cursor-pointer text-blue-500">
-								Already have an account? Log in.
-							</Link>
-						</div>
-					</>
+					<div className="w-full flex items-center justify-center gap-6">
+						<Divider className="flex-1" />
+						<p>or</p>
+						<Divider className="flex-1" />
+					</div>
+					<Button
+						fullWidth
+						variant="bordered"
+						startContent={<Google.Color size={20} />}
+						onPress={() => {
+							window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(window.location.origin)}`;
+						}}
+					>
+						Sign up with Google
+					</Button>
+					<div className="flex justify-center w-full">
+						<Link href={links.login} className="cursor-pointer text-blue-500">
+							Already have an account? Log in.
+						</Link>
+					</div>
 				</CardFooter>
 			)}
 		</Card>
