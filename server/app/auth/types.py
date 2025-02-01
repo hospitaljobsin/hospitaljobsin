@@ -11,6 +11,11 @@ class EmailInUseErrorType(BaseErrorType):
     message: str = "Email address is already in use."
 
 
+@strawberry.type(name="InvalidEmailError")
+class InvalidEmailErrorType(BaseErrorType):
+    message: str = "Invalid email address provided."
+
+
 @strawberry.type(name="InvalidCredentialsError")
 class InvalidCredentialsErrorType(BaseErrorType):
     message: str = "Invalid credentials provided."
@@ -67,7 +72,8 @@ RequestEmailVerificationTokenPayload = Annotated[
     RequestEmailVerificationTokenSuccessType
     | EmailInUseErrorType
     | EmailVerificationTokenCooldownErrorType
-    | InvalidRecaptchaTokenErrorType,
+    | InvalidRecaptchaTokenErrorType
+    | InvalidEmailErrorType,
     strawberry.union(name="RequestEmailVerificationTokenPayload"),
 ]
 

@@ -36,6 +36,9 @@ const RequestVerificationMutation = graphql`
       ... on EmailInUseError {
         message
       }
+	  ... on InvalidEmailError {
+		message
+	  }
 	  ... on EmailVerificationTokenCooldownError {
 		message
 		remainingSeconds
@@ -217,7 +220,9 @@ export default function SignUpForm() {
 			onCompleted(response) {
 				if (
 					response.requestEmailVerificationToken.__typename ===
-					"EmailInUseError"
+						"EmailInUseError" ||
+					response.requestEmailVerificationToken.__typename ===
+						"InvalidEmailError"
 				) {
 					setEmailError("email", {
 						message: response.requestEmailVerificationToken.message,
@@ -359,7 +364,9 @@ export default function SignUpForm() {
 					);
 				} else if (
 					response.requestEmailVerificationToken.__typename ===
-					"EmailInUseError"
+						"EmailInUseError" ||
+					response.requestEmailVerificationToken.__typename ===
+						"InvalidEmailError"
 				) {
 					// we've hit the race condition failsafe.
 					// show an unexpected error message and reset the form

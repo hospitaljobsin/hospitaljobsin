@@ -4,6 +4,13 @@ class EmailInUseError:
     pass
 
 
+class InvalidEmailError:
+    """Raised when an invalid email address is provided."""
+
+    def __init__(self, message: str) -> None:
+        self.message = message
+
+
 class InvalidCredentialsError:
     """Raised when an user provides invalid credentials."""
 

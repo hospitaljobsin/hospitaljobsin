@@ -93,6 +93,7 @@ export default function ConfirmResetPasswordForm() {
 			},
 		});
 	}
+
 	return (
 		<Card className="p-6 space-y-6">
 			<CardHeader>

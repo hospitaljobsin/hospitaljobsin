@@ -15,8 +15,6 @@ dependencies = [
     "beanie>=1.27.0",
     "motor>=3.6.0",
     "uvicorn[standard]>=0.32.1",
-    "requests>=2.32.3",
-    "cryptography>=44.0.0",
     "passlib[argon2]>=1.7.4",
     "result>=0.17.0",
     "types-passlib>=1.7.7.20241221",
@@ -27,4 +25,5 @@ dependencies = [
     "aiosmtplib>=3.0.2",
     "jinja2>=3.1.5",
     "humanize>=4.11.0",
+    "email-validator>=2.2.0",
 ]

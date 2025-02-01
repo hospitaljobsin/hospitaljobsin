@@ -3,6 +3,7 @@ import secrets
 from datetime import UTC, datetime, timedelta
 
 import httpx
+from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, Request, Response
 from humanize import naturaldelta
 from result import Err, Ok, Result
@@ -17,6 +18,7 @@ from app.auth.exceptions import (
     EmailInUseError,
     EmailVerificationTokenCooldownError,
     InvalidCredentialsError,
+    InvalidEmailError,
     InvalidEmailVerificationTokenError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
@@ -57,11 +59,22 @@ class AuthService:
         EmailVerificationToken,
         EmailInUseError
         | EmailVerificationTokenCooldownError
-        | InvalidRecaptchaTokenError,
+        | InvalidRecaptchaTokenError
+        | InvalidEmailError,
     ]:
         """Request an email verification token."""
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
+
+        try:
+            email_info = validate_email(
+                email,
+                check_deliverability=True,
+            )
+            email = email_info.normalized
+        except EmailNotValidError as err:
+            return Err(InvalidEmailError(message=str(err)))
+
         existing_account = await self._account_repo.get_by_email(email=email)
 
         if existing_account is not None:

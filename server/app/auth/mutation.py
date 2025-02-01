@@ -12,6 +12,7 @@ from app.auth.exceptions import (
     EmailInUseError,
     EmailVerificationTokenCooldownError,
     InvalidCredentialsError,
+    InvalidEmailError,
     InvalidEmailVerificationTokenError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
@@ -25,6 +26,7 @@ from .types import (
     EmailInUseErrorType,
     EmailVerificationTokenCooldownErrorType,
     InvalidCredentialsErrorType,
+    InvalidEmailErrorType,
     InvalidEmailVerificationTokenErrorType,
     InvalidPasswordResetTokenErrorType,
     InvalidRecaptchaTokenErrorType,
@@ -81,6 +83,8 @@ class AuthMutation:
                     return EmailVerificationTokenCooldownErrorType(
                         remaining_seconds=err.remaining_seconds
                     )
+                case InvalidEmailError() as err:
+                    return InvalidEmailErrorType(message=err.message)
                 case EmailInUseError():
                     return EmailInUseErrorType()
 

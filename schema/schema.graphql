@@ -87,6 +87,10 @@ type InvalidCredentialsError implements Error {
   message: String!
 }
 
+type InvalidEmailError implements Error {
+  message: String!
+}
+
 type InvalidEmailVerificationTokenError implements Error {
   message: String!
 }
@@ -358,7 +362,7 @@ type RequestEmailVerificationSuccess {
   remainingSeconds: Int!
 }
 
-union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError | InvalidRecaptchaTokenError
+union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError | InvalidRecaptchaTokenError | InvalidEmailError
 
 union RequestPasswordResetPayload = RequestPasswordResetSuccess | InvalidRecaptchaTokenError
 
