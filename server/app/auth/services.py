@@ -1,3 +1,4 @@
+import re
 import secrets
 from datetime import UTC, datetime, timedelta
 
@@ -19,6 +20,7 @@ from app.auth.exceptions import (
     InvalidEmailVerificationTokenError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
+    PasswordNotStrongError,
 )
 from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
 from app.config import settings
@@ -166,7 +168,8 @@ class AuthService:
         Account,
         EmailInUseError
         | InvalidEmailVerificationTokenError
-        | InvalidRecaptchaTokenError,
+        | InvalidRecaptchaTokenError
+        | PasswordNotStrongError,
     ]:
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
@@ -188,6 +191,9 @@ class AuthService:
             or existing_email_verification_token.email != email
         ):
             return Err(InvalidEmailVerificationTokenError())
+
+        if not self.check_password_strength(password=password):
+            return Err(PasswordNotStrongError())
 
         account = await self._account_repo.create(
             email=email,
@@ -250,9 +256,26 @@ class AuthService:
 
         return Ok(account)
 
-    def generate_random_password(self) -> str:
+    @staticmethod
+    def generate_random_password() -> str:
         """Generate a random password."""
         return secrets.token_urlsafe(16)
+
+    @staticmethod
+    def check_password_strength(password: str) -> bool:
+        """
+        Checks if a password is strong.
+        A strong password must:
+        - Be at least 8 characters long
+        - Contain at least one lowercase letter
+        - Contain at least one uppercase letter
+        - Contain at least one digit
+        - Contain at least one special character (!@#$%^&*()-_+=)
+        """
+        pattern = re.compile(
+            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+]).{8,}$"
+        )
+        return bool(pattern.match(password))
 
     async def signin_with_google(
         self, user_info: dict, request: Request, response: Response, user_agent: str
@@ -360,7 +383,7 @@ class AuthService:
         user_agent: str,
         request: Request,
         response: Response,
-    ) -> Result[Account, InvalidPasswordResetTokenError]:
+    ) -> Result[Account, InvalidPasswordResetTokenError | PasswordNotStrongError]:
         """Reset a user's password."""
 
         existing_reset_token = await self._password_reset_token_repo.get(
@@ -369,6 +392,9 @@ class AuthService:
 
         if not existing_reset_token:
             return Err(InvalidPasswordResetTokenError())
+
+        if not self.check_password_strength(password=new_password):
+            return Err(PasswordNotStrongError())
 
         await self._account_repo.update_password(
             account=existing_reset_token.account, password=new_password

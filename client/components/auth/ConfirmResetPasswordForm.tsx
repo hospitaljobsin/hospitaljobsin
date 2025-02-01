@@ -23,13 +23,31 @@ const ConfirmResetPasswordFormMutation = graphql`
 	  ... on InvalidPasswordResetTokenError {
 		message
 	  }
+	  ... on PasswordNotStrongError {
+		message
+	  }
 	}
   }
 `;
 
 const confirmResetPasswordSchema = z.object({
 	email: z.string().email(),
-	password: z.string().min(6),
+	password: z
+		.string()
+		.min(8, "Password must be at least 8 characters long.")
+		.refine((password) => /[a-z]/.test(password), {
+			message: "Password must contain at least one lowercase letter.",
+		})
+		.refine((password) => /[A-Z]/.test(password), {
+			message: "Password must contain at least one uppercase letter.",
+		})
+		.refine((password) => /\d/.test(password), {
+			message: "Password must contain at least one number.",
+		})
+		.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
+			message:
+				"Password must contain at least one special character (!@#$%^&*()-_=+).",
+		}),
 });
 
 export default function ConfirmResetPasswordForm() {
@@ -46,6 +64,7 @@ export default function ConfirmResetPasswordForm() {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
+		setError,
 	} = useForm<z.infer<typeof confirmResetPasswordSchema>>({
 		resolver: zodResolver(confirmResetPasswordSchema),
 	});
@@ -57,11 +76,17 @@ export default function ConfirmResetPasswordForm() {
 				passwordResetToken: params.token,
 				newPassword: values.password,
 			},
-			onCompleted(data) {
+			onCompleted(response) {
 				if (
-					data.resetPassword.__typename === "InvalidPasswordResetTokenError"
+					response.resetPassword.__typename === "InvalidPasswordResetTokenError"
 				) {
-					setErrorMessage(data.resetPassword.message);
+					setErrorMessage(response.resetPassword.message);
+				} else if (
+					response.resetPassword.__typename === "PasswordNotStrongError"
+				) {
+					setError("password", {
+						message: response.resetPassword.message,
+					});
 				} else {
 					router.replace(links.landing);
 				}

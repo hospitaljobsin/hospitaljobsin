@@ -31,6 +31,11 @@ class InvalidRecaptchaTokenErrorType(BaseErrorType):
     message: str = "Invalid recaptcha token provided."
 
 
+@strawberry.type(name="PasswordNotStrongError")
+class PasswordNotStrongErrorType(BaseErrorType):
+    message: str = "Password is not strong enough."
+
+
 @strawberry.type(name="EmailVerificationTokenCooldownError")
 class EmailVerificationTokenCooldownErrorType(BaseErrorType):
     message: str = "Please wait before requesting a new email verification token."
@@ -78,7 +83,8 @@ RegisterPayload = Annotated[
     AccountType
     | EmailInUseErrorType
     | InvalidEmailVerificationTokenErrorType
-    | InvalidRecaptchaTokenErrorType,
+    | InvalidRecaptchaTokenErrorType
+    | PasswordNotStrongErrorType,
     strawberry.union(name="RegisterPayload"),
 ]
 
@@ -104,6 +110,6 @@ RequestPasswordResetPayload = Annotated[
 ]
 
 ResetPasswordPayload = Annotated[
-    AccountType | InvalidPasswordResetTokenErrorType,
+    AccountType | InvalidPasswordResetTokenErrorType | PasswordNotStrongErrorType,
     strawberry.union(name="ResetPasswordPayload"),
 ]

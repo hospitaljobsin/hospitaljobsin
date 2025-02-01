@@ -295,6 +295,10 @@ type PageInfo {
   endCursor: String
 }
 
+type PasswordNotStrongError implements Error {
+  message: String!
+}
+
 type Profile implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -347,7 +351,7 @@ type Query {
   savedJobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): SavedJobConnection! @isAuthenticated
 }
 
-union RegisterPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError
+union RegisterPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | PasswordNotStrongError
 
 type RequestEmailVerificationSuccess {
   message: String!
@@ -362,7 +366,7 @@ type RequestPasswordResetSuccess {
   message: String!
 }
 
-union ResetPasswordPayload = Account | InvalidPasswordResetTokenError
+union ResetPasswordPayload = Account | InvalidPasswordResetTokenError | PasswordNotStrongError
 
 union SaveJobPayload = SaveJobResult | JobNotFoundError
 

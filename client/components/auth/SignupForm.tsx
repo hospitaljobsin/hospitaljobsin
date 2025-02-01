@@ -92,6 +92,9 @@ const RegisterMutation = graphql`
 	   ... on InvalidRecaptchaTokenError {
 		message
 	   }
+	   ... on PasswordNotStrongError {
+		message
+	   }
     }
   }
 `;
@@ -105,7 +108,22 @@ const step2Schema = z.object({
 });
 
 const step3Schema = z.object({
-	password: z.string().min(6),
+	password: z
+		.string()
+		.min(8, "Password must be at least 8 characters long.")
+		.refine((password) => /[a-z]/.test(password), {
+			message: "Password must contain at least one lowercase letter.",
+		})
+		.refine((password) => /[A-Z]/.test(password), {
+			message: "Password must contain at least one uppercase letter.",
+		})
+		.refine((password) => /\d/.test(password), {
+			message: "Password must contain at least one number.",
+		})
+		.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
+			message:
+				"Password must contain at least one special character (!@#$%^&*()-_=+).",
+		}),
 	fullName: z.string().min(1),
 });
 
@@ -302,6 +320,10 @@ export default function SignUpForm() {
 				) {
 					setCurrentStep(2);
 					setEmailVerificationError("emailVerificationToken", {
+						message: response.register.message,
+					});
+				} else if (response.register.__typename === "PasswordNotStrongError") {
+					setRegisterError("password", {
 						message: response.register.message,
 					});
 				} else if (

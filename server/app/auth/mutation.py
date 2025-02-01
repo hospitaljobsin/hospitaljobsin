@@ -15,6 +15,7 @@ from app.auth.exceptions import (
     InvalidEmailVerificationTokenError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
+    PasswordNotStrongError,
 )
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo, Info
@@ -29,6 +30,7 @@ from .types import (
     InvalidRecaptchaTokenErrorType,
     LoginPayload,
     LogoutPayloadType,
+    PasswordNotStrongErrorType,
     RegisterPayload,
     RequestEmailVerificationTokenPayload,
     RequestEmailVerificationTokenSuccessType,
@@ -191,6 +193,8 @@ class AuthMutation:
                     return EmailInUseErrorType()
                 case InvalidEmailVerificationTokenError():
                     return InvalidEmailVerificationTokenErrorType()
+                case PasswordNotStrongError():
+                    return PasswordNotStrongErrorType()
 
         return AccountType.marshal_with_profile(result.ok_value)
 
@@ -347,5 +351,7 @@ class AuthMutation:
             match result.err_value:
                 case InvalidPasswordResetTokenError():
                     return InvalidPasswordResetTokenErrorType()
+                case PasswordNotStrongError():
+                    return PasswordNotStrongErrorType()
 
         return AccountType.marshal(result.ok_value)

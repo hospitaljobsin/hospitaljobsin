@@ -35,3 +35,9 @@ class InvalidRecaptchaTokenError:
     """Raised when an invalid recaptcha token is provided."""
 
     pass
+
+
+class PasswordNotStrongError:
+    """Raised when the provided password is not strong enough."""
+
+    pass
