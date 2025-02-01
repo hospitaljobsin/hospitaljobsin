@@ -29,6 +29,8 @@ import type { SignupFormRegisterMutation as SignupFormRegisterMutationType } fro
 import type { SignupFormRequestVerificationMutation as SignupFormRequestVerificationMutationType } from "./__generated__/SignupFormRequestVerificationMutation.graphql";
 import type { SignupFormVerifyEmailMutation as SignupFormVerifyEmailMutationType } from "./__generated__/SignupFormVerifyEmailMutation.graphql";
 
+// TODO: make this a wizard form. this might fix the fullName contamination error
+// (it's being populated by the email from the first step right now)
 const RequestVerificationMutation = graphql`
   mutation SignupFormRequestVerificationMutation($email: String!, $recaptchaToken: String!) {
     requestEmailVerificationToken(email: $email, recaptchaToken: $recaptchaToken) {
@@ -173,6 +175,9 @@ export default function SignUpForm() {
 		formState: { errors: errorsStep1, isSubmitting: isSubmittingStep1 },
 	} = useForm<z.infer<typeof step1Schema>>({
 		resolver: zodResolver(step1Schema),
+		defaultValues: {
+			email: "",
+		},
 	});
 
 	const [commitRequestVerification] =
@@ -188,6 +193,9 @@ export default function SignUpForm() {
 		formState: { errors: errorsStep2, isSubmitting: isSubmittingStep2 },
 	} = useForm<z.infer<typeof step2Schema>>({
 		resolver: zodResolver(step2Schema),
+		defaultValues: {
+			emailVerificationToken: "",
+		},
 	});
 
 	const [commitVerifyEmail] =
@@ -198,10 +206,13 @@ export default function SignUpForm() {
 		register: registerStep3,
 		handleSubmit: handleSubmitStep3,
 		setError: setRegisterError,
-		control: registerControl,
 		formState: { errors: errorsStep3, isSubmitting: isSubmittingStep3 },
 	} = useForm<z.infer<typeof step3Schema>>({
 		resolver: zodResolver(step3Schema),
+		defaultValues: {
+			fullName: "",
+			password: "",
+		},
 	});
 
 	const [commitRegister] =
@@ -415,6 +426,7 @@ export default function SignUpForm() {
 				)}
 				{currentStep === 1 ? (
 					<form
+						id="email-verification-request-form"
 						onSubmit={handleSubmitStep1(handleRequestVerification)}
 						className="space-y-3"
 					>
@@ -434,6 +446,7 @@ export default function SignUpForm() {
 					</form>
 				) : currentStep === 2 ? (
 					<form
+						id="email-verification-form"
 						onSubmit={handleSubmitStep2(handleVerifyEmail)}
 						className="space-y-3"
 					>
@@ -501,21 +514,23 @@ export default function SignUpForm() {
 					</form>
 				) : (
 					<form
+						id="registration-form"
 						onSubmit={handleSubmitStep3(handleRegister)}
 						className="space-y-3"
 					>
 						<div className="w-full flex flex-col gap-6">
 							<Input
 								label="Full Name"
-								autoComplete="given-name"
 								placeholder="Enter your full name"
 								{...registerStep3("fullName")}
+								autoComplete="off"
 								errorMessage={errorsStep3.fullName?.message}
 								isInvalid={!!errorsStep3.fullName}
 							/>
 							<Input
 								label="Password"
 								placeholder="Enter password"
+								{...registerStep3("password")}
 								autoComplete="new-password"
 								type={isPasswordVisible ? "text" : "password"}
 								endContent={
@@ -531,7 +546,6 @@ export default function SignUpForm() {
 										)}
 									</button>
 								}
-								{...registerStep3("password")}
 								errorMessage={errorsStep3.password?.message}
 								isInvalid={!!errorsStep3.password}
 							/>
