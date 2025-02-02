@@ -1,4 +1,3 @@
-// Step2VerificationForm.tsx
 "use client";
 
 import { timeFormat } from "@/lib/intl";

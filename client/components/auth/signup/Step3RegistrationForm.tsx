@@ -1,4 +1,3 @@
-// Step3RegistrationForm.tsx
 "use client";
 
 import links from "@/lib/links";
