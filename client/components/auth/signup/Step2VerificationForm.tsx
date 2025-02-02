@@ -96,9 +96,9 @@ export default function Step2VerificationForm() {
 	});
 
 	useEffect(() => {
+		// set email verifcation errors that may have arisen from other steps
 		if (emailVerificationError) {
 			setError("emailVerificationToken", {
-				type: "server",
 				message: emailVerificationError,
 			});
 		}

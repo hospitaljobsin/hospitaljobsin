@@ -54,9 +54,9 @@ export default function Step1EmailForm() {
 	});
 
 	useEffect(() => {
+		// set email errors that may have arisen from other steps
 		if (emailError) {
 			setError("email", {
-				type: "server",
 				message: emailError,
 			});
 		}
