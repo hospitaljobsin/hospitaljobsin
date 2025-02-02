@@ -115,7 +115,7 @@ export default function Step2VerificationForm() {
 
 	const [commitVerifyEmail] =
 		useMutation<Step2VerificationFormMutationType>(VerifyEmailMutation);
-	const [commitResendVerification] =
+	const [commitResendVerification, isResendMutationInFlight] =
 		useMutation<Step2VerificationFormRequestVerificationMutationType>(
 			RequestVerificationMutation,
 		);
@@ -261,7 +261,7 @@ export default function Step2VerificationForm() {
 							variant="faded"
 							onPress={handleResendVerification}
 							className="mb-4"
-							isDisabled={cooldownSeconds > 0}
+							isDisabled={isResendMutationInFlight}
 						>
 							Resend
 						</Button>
