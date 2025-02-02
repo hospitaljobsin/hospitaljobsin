@@ -192,7 +192,7 @@ export default function JobDetails({
 
 			{/* Job and Company Details */}
 
-			<Card fullWidth className="p-6">
+			<Card fullWidth className="p-6" shadow="none">
 				<CardBody className="flex items-center gap-6 flex-row w-full">
 					<Image
 						src={data.company?.logoUrl || ""}
@@ -217,7 +217,7 @@ export default function JobDetails({
 			</Card>
 
 			{/* Job Description */}
-			<Card className="p-6" fullWidth>
+			<Card className="p-6" fullWidth shadow="none">
 				<CardHeader>
 					<h3 className="font-medium text-foreground-500">About the Job</h3>
 				</CardHeader>
