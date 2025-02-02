@@ -31,12 +31,9 @@ const LoginFormMutation = graphql`
 	  ... on Account {
 		...AuthDropdownFragment
 	  }
-      ... on InvalidCredentialsError {
+      ... on Error {
         message
       }
-	  ... on InvalidRecaptchaTokenError {
-		message
-	  }
     }
   }
 `;
