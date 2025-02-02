@@ -9,7 +9,7 @@ import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import z from "zod";
 import type { Step1EmailFormMutation as Step1EmailFormMutationType } from "./__generated__/Step1EmailFormMutation.graphql";
-import SignupContext from "./machine";
+import SignupContext from "./signupMachine";
 
 const step1Schema = z.object({
 	email: z.string().email(),

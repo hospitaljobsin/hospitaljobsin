@@ -16,7 +16,7 @@ import { useEffect } from "react";
 import Step1EmailForm from "./Step1EmailForm";
 import Step2VerificationForm from "./Step2VerificationForm";
 import Step3RegistrationForm from "./Step3RegistrationForm";
-import SignupContext from "./machine";
+import SignupContext from "./signupMachine";
 
 export default function SignUpWizard() {
 	const state = SignupContext.useSelector((state) => state);

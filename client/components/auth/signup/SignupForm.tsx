@@ -1,6 +1,6 @@
 "use client";
 import SignUpWizard from "./SignupWizard";
-import SignupContext from "./machine";
+import SignupContext from "./signupMachine";
 
 export default function SignupForm() {
 	return (

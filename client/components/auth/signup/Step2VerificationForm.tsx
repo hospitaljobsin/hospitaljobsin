@@ -12,7 +12,7 @@ import { graphql } from "relay-runtime";
 import z from "zod";
 import type { Step2VerificationFormMutation as Step2VerificationFormMutationType } from "./__generated__/Step2VerificationFormMutation.graphql";
 import type { Step2VerificationFormRequestVerificationMutation as Step2VerificationFormRequestVerificationMutationType } from "./__generated__/Step2VerificationFormRequestVerificationMutation.graphql";
-import SignupContext from "./machine";
+import SignupContext from "./signupMachine";
 
 const step2Schema = z.object({
 	emailVerificationToken: z.string().min(1),

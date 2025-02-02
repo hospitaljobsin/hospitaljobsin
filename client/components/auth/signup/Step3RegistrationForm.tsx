@@ -12,7 +12,7 @@ import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import z from "zod";
 import type { Step3RegistrationFormMutation as Step3RegistrationFormMutationType } from "./__generated__/Step3RegistrationFormMutation.graphql";
-import SignupContext from "./machine";
+import SignupContext from "./signupMachine";
 
 const step3Schema = z.object({
 	password: z
