@@ -12,6 +12,7 @@ import { graphql } from "relay-runtime";
 import z from "zod";
 import type { Step2VerificationFormMutation as Step2VerificationFormMutationType } from "./__generated__/Step2VerificationFormMutation.graphql";
 import type { Step2VerificationFormRequestVerificationMutation as Step2VerificationFormRequestVerificationMutationType } from "./__generated__/Step2VerificationFormRequestVerificationMutation.graphql";
+import SignupContext from "./machine";
 
 const step2Schema = z.object({
 	emailVerificationToken: z.string().min(1),
@@ -70,21 +71,15 @@ const RequestVerificationMutation = graphql`
   }
 `;
 
-export default function Step2VerificationForm({
-	email,
-	cooldownSeconds,
-	onResend,
-	onSuccess,
-	onEditEmail,
-	onError,
-}: {
-	email: string;
-	cooldownSeconds: number;
-	onResend: (cooldown: number) => void;
-	onSuccess: (token: string) => void;
-	onEditEmail: () => void;
-	onError: () => void;
-}) {
+export default function Step2VerificationForm() {
+	const { send } = SignupContext.useActorRef();
+	const emailVerificationToken = SignupContext.useSelector(
+		(state) => state.context.emailVerificationToken,
+	);
+	const email = SignupContext.useSelector((state) => state.context.email);
+	const cooldownSeconds = SignupContext.useSelector(
+		(state) => state.context.cooldownSeconds,
+	);
 	const { executeRecaptcha } = useGoogleReCaptcha();
 	const {
 		control,
@@ -93,7 +88,10 @@ export default function Step2VerificationForm({
 		setError,
 	} = useForm({
 		resolver: zodResolver(step2Schema),
-		defaultValues: { emailVerificationToken: "" },
+		defaultValues: { emailVerificationToken: emailVerificationToken || "" },
+		// errors: {
+		// 	emailVerificationToken: { message: verificationError, type: "server" },
+		// },
 	});
 
 	const [commitVerifyEmail] =
@@ -121,7 +119,10 @@ export default function Step2VerificationForm({
 					response.requestEmailVerificationToken.__typename ===
 					"EmailVerificationTokenCooldownError"
 				) {
-					onResend(response.requestEmailVerificationToken.remainingSeconds);
+					send({
+						type: "RESEND_VERIFICATION",
+						cooldown: response.requestEmailVerificationToken.remainingSeconds,
+					});
 				} else if (
 					response.requestEmailVerificationToken.__typename ===
 						"EmailInUseError" ||
@@ -130,7 +131,10 @@ export default function Step2VerificationForm({
 				) {
 					// we've hit the race condition failsafe.
 					// show an unexpected error message and reset the form
-					onError();
+					send({
+						type: "SET_EMAIL_ERROR",
+						message: response.requestEmailVerificationToken.message,
+					});
 				} else if (
 					response.requestEmailVerificationToken.__typename ===
 					"InvalidRecaptchaTokenError"
@@ -141,7 +145,10 @@ export default function Step2VerificationForm({
 					response.requestEmailVerificationToken.__typename ===
 					"RequestEmailVerificationSuccess"
 				) {
-					onResend(response.requestEmailVerificationToken.remainingSeconds);
+					send({
+						type: "RESEND_VERIFICATION",
+						cooldown: response.requestEmailVerificationToken.remainingSeconds,
+					});
 					// TODO: show toast here to check inbox
 				}
 			},
@@ -162,7 +169,10 @@ export default function Step2VerificationForm({
 				if (response.verifyEmail.__typename === "EmailInUseError") {
 					// we've hit the race condition failsafe.
 					// show an unexpected error message and reset the form
-					onError();
+					send({
+						type: "SET_EMAIL_ERROR",
+						message: response.verifyEmail.message,
+					});
 				} else if (
 					response.verifyEmail.__typename ===
 					"InvalidEmailVerificationTokenError"
@@ -176,7 +186,10 @@ export default function Step2VerificationForm({
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
 				} else if (response.verifyEmail.__typename === "VerifyEmailSuccess") {
-					onSuccess(data.emailVerificationToken);
+					send({
+						type: "SUBMIT_VERIFICATION",
+						token: data.emailVerificationToken,
+					});
 				}
 			},
 		});
@@ -194,7 +207,7 @@ export default function Step2VerificationForm({
 							<Button
 								isIconOnly
 								variant="light"
-								onPress={onEditEmail}
+								onPress={() => send({ type: "EDIT_EMAIL" })}
 								type="button"
 							>
 								<Edit3Icon className="text-foreground-400 mt-2" size={24} />

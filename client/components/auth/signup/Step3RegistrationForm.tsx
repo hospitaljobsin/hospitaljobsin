@@ -13,6 +13,7 @@ import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import z from "zod";
 import type { Step3RegistrationFormMutation as Step3RegistrationFormMutationType } from "./__generated__/Step3RegistrationFormMutation.graphql";
+import SignupContext from "./machine";
 
 const step3Schema = z.object({
 	password: z
@@ -50,7 +51,7 @@ const RegisterMutation = graphql`
       recaptchaToken: $recaptchaToken
     ) {
       __typename
-      ... on Error {
+      ... on EmailInUseError {
         message
       }
       ... on InvalidEmailVerificationTokenError {
@@ -66,18 +67,13 @@ const RegisterMutation = graphql`
   }
 `;
 
-export default function Step3RegistrationForm({
-	email,
-	emailVerificationToken,
-	onError,
-	onInvalidEmailVerificationToken,
-}: {
-	email: string;
-	emailVerificationToken: string;
-	onError: () => void;
-	onInvalidEmailVerificationToken: (errorMessage: string) => void;
-}) {
+export default function Step3RegistrationForm() {
 	const router = useRouter();
+	const { send } = SignupContext.useActorRef();
+	const emailVerificationToken = SignupContext.useSelector(
+		(state) => state.context.emailVerificationToken,
+	);
+	const email = SignupContext.useSelector((state) => state.context.email);
 	const { executeRecaptcha } = useGoogleReCaptcha();
 	const {
 		register,
@@ -109,11 +105,14 @@ export default function Step3RegistrationForm({
 				if (response.register.__typename === "EmailInUseError") {
 					// we've hit the race condition failsafe.
 					// show an unexpected error message and reset the form
-					onError();
+					send({ type: "SET_EMAIL_ERROR", message: response.register.message });
 				} else if (
 					response.register.__typename === "InvalidEmailVerificationTokenError"
 				) {
-					onInvalidEmailVerificationToken(response.register.message);
+					send({
+						type: "SET_VERIFICATION_TOKEN_ERROR",
+						message: response.register.message,
+					});
 				} else if (response.register.__typename === "PasswordNotStrongError") {
 					setError("password", {
 						message: response.register.message,
