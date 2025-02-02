@@ -11,8 +11,8 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import z from "zod";
+import SignupContext from "./SignupContext";
 import type { Step3RegistrationFormMutation as Step3RegistrationFormMutationType } from "./__generated__/Step3RegistrationFormMutation.graphql";
-import SignupContext from "./signupMachine";
 
 const step3Schema = z.object({
 	password: z

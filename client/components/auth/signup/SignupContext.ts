@@ -90,4 +90,6 @@ export const signUpMachine = createMachine({
 	},
 });
 
-export default createActorContext(signUpMachine);
+const SignupContext = createActorContext(signUpMachine);
+
+export default SignupContext;
