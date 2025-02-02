@@ -6,7 +6,8 @@ import { graphql } from "relay-runtime";
 import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
 import type { JobListFragment$key } from "./__generated__/JobListFragment.graphql";
-import type { JobListInternalFragment$key, JobListInternalFragment as JobListInternalFragmentType } from './__generated__/JobListInternalFragment.graphql';
+import type { JobListInternalFragment$key } from "./__generated__/JobListInternalFragment.graphql";
+import type { LandingViewQuery } from "./__generated__/LandingViewQuery.graphql";
 
 const JobListFragment = graphql`
 fragment JobListFragment on Query {
@@ -49,10 +50,10 @@ type Props = {
 export default function JobList({ rootQuery, searchTerm }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(JobListFragment, rootQuery);
-	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<JobListInternalFragmentType, JobListInternalFragment$key>(
-		JobListInternalFragment,
-		root,
-	);
+	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
+		LandingViewQuery,
+		JobListInternalFragment$key
+	>(JobListInternalFragment, root);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -114,7 +115,11 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
 	return (
 		<div className="w-full flex flex-col gap-8 pb-6">
 			{data.jobs.edges.map((jobEdge) => (
-				<Job job={jobEdge.node} key={jobEdge.node.id} authQueryRef={root.viewer} />
+				<Job
+					job={jobEdge.node}
+					key={jobEdge.node.id}
+					authQueryRef={root.viewer}
+				/>
 			))}
 			<div ref={observerRef} className="h-10" />
 			{isLoadingNext && <JobListSkeleton />}
