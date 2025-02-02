@@ -95,7 +95,7 @@ export default function ConfirmResetPasswordForm() {
 	}
 
 	return (
-		<Card className="p-6 space-y-6">
+		<Card className="p-6 space-y-6" shadow="none">
 			<CardHeader>
 				<h1 className={"w-full text-center text-2xl"}>Reset your password</h1>
 			</CardHeader>

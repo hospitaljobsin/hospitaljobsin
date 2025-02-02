@@ -76,7 +76,7 @@ export default function SubmitResetPasswordFrom() {
 
 	return (
 		<>
-			<Card className="p-6 space-y-6">
+			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader>
 					<h1 className="text-center text-2xl w-full">Reset Your Password</h1>
 				</CardHeader>

@@ -149,7 +149,7 @@ export default function JobDetails({
 	return (
 		<div className="w-full flex flex-col gap-6">
 			{/* Job Title and Company */}
-			<Card fullWidth className="p-6">
+			<Card fullWidth className="p-6" shadow="none">
 				<CardHeader>
 					<div className="flex w-full justify-between gap-4 items-center">
 						<div className="flex flex-col gap-2 items-start">

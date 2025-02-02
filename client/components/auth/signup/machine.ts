@@ -3,14 +3,12 @@
 import { createActorContext } from "@xstate/react";
 import { assign, createMachine } from "xstate";
 
-// FIXME: resend cooldown countdown doesn't work properly
-
 const context = {
 	email: "",
 	emailVerificationToken: "",
 	cooldownSeconds: 0,
 	emailError: undefined as string | undefined,
-	verificationError: undefined as string | undefined,
+	emailVerificationError: undefined as string | undefined,
 };
 
 export const signUpMachine = createMachine({
@@ -24,7 +22,7 @@ export const signUpMachine = createMachine({
 					cooldown: number;
 			  }
 			| { type: "SUBMIT_VERIFICATION"; token: string }
-			| { type: "RESEND_VERIFICATION"; cooldown: number }
+			| { type: "SET_RESEND_COOLDOWN"; cooldown: number }
 			| { type: "EDIT_EMAIL" }
 			| { type: "SET_EMAIL_ERROR"; message: string }
 			| { type: "SET_VERIFICATION_TOKEN_ERROR"; message: string };
@@ -44,24 +42,15 @@ export const signUpMachine = createMachine({
 			},
 		},
 		step2: {
-			after: {
-				1000: {
-					guard: ({ context }) => context.cooldownSeconds > 0,
-					actions: assign({
-						cooldownSeconds: ({ context }) => context.cooldownSeconds - 1,
-					}),
-					target: "step2",
-				},
-			},
 			on: {
 				SUBMIT_VERIFICATION: {
 					target: "step3",
 					actions: assign({
 						emailVerificationToken: ({ event }) => event.token,
-						verificationError: () => undefined,
+						emailVerificationError: () => undefined,
 					}),
 				},
-				RESEND_VERIFICATION: {
+				SET_RESEND_COOLDOWN: {
 					actions: assign({
 						cooldownSeconds: ({ event }) => event.cooldown,
 					}),
@@ -93,7 +82,7 @@ export const signUpMachine = createMachine({
 				SET_VERIFICATION_TOKEN_ERROR: {
 					target: "step2",
 					actions: assign({
-						verificationError: ({ event }) => event.message,
+						emailVerificationError: ({ event }) => event.message,
 					}),
 				},
 			},

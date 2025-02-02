@@ -5,6 +5,7 @@ import { timeFormat } from "@/lib/intl";
 import { Button, Input, Tooltip } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit3Icon } from "lucide-react";
+import { useEffect } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
@@ -76,6 +77,9 @@ export default function Step2VerificationForm() {
 	const emailVerificationToken = SignupContext.useSelector(
 		(state) => state.context.emailVerificationToken,
 	);
+	const emailVerificationError = SignupContext.useSelector(
+		(state) => state.context.emailVerificationError,
+	);
 	const email = SignupContext.useSelector((state) => state.context.email);
 	const cooldownSeconds = SignupContext.useSelector(
 		(state) => state.context.cooldownSeconds,
@@ -89,10 +93,26 @@ export default function Step2VerificationForm() {
 	} = useForm({
 		resolver: zodResolver(step2Schema),
 		defaultValues: { emailVerificationToken: emailVerificationToken || "" },
-		// errors: {
-		// 	emailVerificationToken: { message: verificationError, type: "server" },
-		// },
 	});
+
+	useEffect(() => {
+		if (emailVerificationError) {
+			setError("emailVerificationToken", {
+				type: "server",
+				message: emailVerificationError,
+			});
+		}
+	}, [emailVerificationError, setError]);
+
+	useEffect(() => {
+		if (cooldownSeconds <= 0) return;
+
+		const timer = setInterval(() => {
+			send({ type: "SET_RESEND_COOLDOWN", cooldown: cooldownSeconds - 1 });
+		}, 1000);
+
+		return () => clearInterval(timer);
+	}, [cooldownSeconds, send]);
 
 	const [commitVerifyEmail] =
 		useMutation<Step2VerificationFormMutationType>(VerifyEmailMutation);
@@ -120,7 +140,7 @@ export default function Step2VerificationForm() {
 					"EmailVerificationTokenCooldownError"
 				) {
 					send({
-						type: "RESEND_VERIFICATION",
+						type: "SET_RESEND_COOLDOWN",
 						cooldown: response.requestEmailVerificationToken.remainingSeconds,
 					});
 				} else if (
@@ -146,7 +166,7 @@ export default function Step2VerificationForm() {
 					"RequestEmailVerificationSuccess"
 				) {
 					send({
-						type: "RESEND_VERIFICATION",
+						type: "SET_RESEND_COOLDOWN",
 						cooldown: response.requestEmailVerificationToken.remainingSeconds,
 					});
 					// TODO: show toast here to check inbox

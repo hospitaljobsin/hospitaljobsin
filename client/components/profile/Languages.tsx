@@ -32,7 +32,7 @@ export default function Languages({ rootQuery, onEditProfile }: Props) {
 
 	return (
 		<div className="space-y-12">
-			<Card className="p-6 space-y-6">
+			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader className="flex gap-6 w-full items-center justify-between">
 					<h1 className="w-full text-lg font-medium">Languages</h1>
 					<Button

@@ -37,7 +37,7 @@ export default function SignUpWizard() {
 	}, [state.value]);
 
 	return (
-		<Card className="p-6 space-y-6" classNames={{ base: "w-xl" }}>
+		<Card className="p-6 space-y-6" shadow="none">
 			<CardHeader>
 				<h1 className="text-2xl text-center w-full">Create your account</h1>
 			</CardHeader>

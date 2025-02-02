@@ -3,6 +3,7 @@
 
 import { Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
@@ -43,12 +44,23 @@ const RequestVerificationMutation = graphql`
 export default function Step1EmailForm() {
 	const { send } = SignupContext.useActorRef();
 	const email = SignupContext.useSelector((state) => state.context.email);
+	const emailError = SignupContext.useSelector(
+		(state) => state.context.emailError,
+	);
 	const { executeRecaptcha } = useGoogleReCaptcha();
 	const { register, handleSubmit, formState, setError } = useForm({
 		resolver: zodResolver(step1Schema),
 		defaultValues: { email: email || "" },
-		// errors: { email: { message: emailError, type: "server" } },
 	});
+
+	useEffect(() => {
+		if (emailError) {
+			setError("email", {
+				type: "server",
+				message: emailError,
+			});
+		}
+	}, [emailError, setError]);
 
 	const [commitRequestVerification] = useMutation<Step1EmailFormMutationType>(
 		RequestVerificationMutation,

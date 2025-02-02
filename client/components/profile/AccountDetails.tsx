@@ -30,7 +30,7 @@ export default function AccountDetails({ rootQuery, onEditAccount }: Props) {
 	const data = useFragment(AccountDetailsFragment, rootQuery);
 
 	return (
-		<Card className="p-6 space-y-6">
+		<Card className="p-6 space-y-6" shadow="none">
 			<CardHeader className="flex gap-6 w-full items-center justify-between">
 				<div className="flex gap-6 w-full items-center justify-start">
 					<Badge

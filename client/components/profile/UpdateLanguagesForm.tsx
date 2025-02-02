@@ -94,7 +94,7 @@ export default function UpdateLanguagesForm({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-			<Card className="p-6 space-y-6">
+			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader>
 					<h1 className="text-lg font-medium">Editing Languages</h1>
 				</CardHeader>

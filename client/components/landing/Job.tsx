@@ -127,6 +127,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			onPress={() => {
 				router.push(links.jobDetail(data.slug));
 			}}
+			shadow="none"
 		>
 			<CardHeader>
 				<div className="flex w-full justify-between gap-4 items-center">
