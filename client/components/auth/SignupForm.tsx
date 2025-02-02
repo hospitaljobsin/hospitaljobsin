@@ -35,12 +35,18 @@ const RequestVerificationMutation = graphql`
   mutation SignupFormRequestVerificationMutation($email: String!, $recaptchaToken: String!) {
     requestEmailVerificationToken(email: $email, recaptchaToken: $recaptchaToken) {
       __typename
-      ... on Error {
+      ... on EmailInUseError {
         message
       }
+	  ... on InvalidEmailError {
+		message
+	  }
 	  ... on EmailVerificationTokenCooldownError {
 		message
 		remainingSeconds
+	  }
+	  ... on InvalidRecaptchaTokenError {
+		message
 	  }
 	  ... on RequestEmailVerificationSuccess {
 		message
@@ -54,9 +60,15 @@ const VerifyEmailMutation = graphql`
 mutation SignupFormVerifyEmailMutation($email: String!, $emailVerificationToken: String!, $recaptchaToken: String!) {
 	verifyEmail(email: $email, emailVerificationToken: $emailVerificationToken, recaptchaToken: $recaptchaToken) {
 		__typename
-		... on Error {
+		... on EmailInUseError {
         message
       }
+	  ... on InvalidEmailVerificationTokenError {
+		message
+	  }
+	  ... on InvalidRecaptchaTokenError {
+		message
+	  }
 	}
 }`;
 
@@ -79,6 +91,15 @@ const RegisterMutation = graphql`
       ... on Error {
         message
       }
+	  ... on InvalidEmailVerificationTokenError {
+		message
+	   }
+	   ... on InvalidRecaptchaTokenError {
+		message
+	   }
+	   ... on PasswordNotStrongError {
+		message
+	   }
     }
   }
 `;

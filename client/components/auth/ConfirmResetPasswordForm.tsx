@@ -20,7 +20,10 @@ const ConfirmResetPasswordFormMutation = graphql`
 	  ... on Account {
 		...AuthDropdownFragment
 	  }
-	  ... on Error {
+	  ... on InvalidPasswordResetTokenError {
+		message
+	  }
+	  ... on PasswordNotStrongError {
 		message
 	  }
 	}
