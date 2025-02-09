@@ -2,7 +2,7 @@ from typing import Annotated
 
 from aioinject import Injected
 from aioinject.ext.fastapi import inject
-from fastapi import Depends, Header, Request, Response
+from fastapi import BackgroundTasks, Depends, Header, Request, Response
 from strawberry.fastapi import GraphQLRouter
 
 from app.auth.dependencies import get_session_token
@@ -18,6 +18,7 @@ from .schema import schema
 async def get_context(
     request: Request,
     response: Response,
+    background_tasks: BackgroundTasks,
     session_token: Annotated[
         str | None,
         Depends(
@@ -34,6 +35,7 @@ async def get_context(
             return AuthContext(
                 request=request,
                 response=response,
+                background_tasks=background_tasks,
                 loaders=create_dataloaders(),
                 current_user_id=session.account.ref.id,
                 user_agent=user_agent,
@@ -47,6 +49,7 @@ async def get_context(
     return Context(
         request=request,
         response=response,
+        background_tasks=background_tasks,
         loaders=create_dataloaders(),
         current_user_id=None,
         user_agent=user_agent,

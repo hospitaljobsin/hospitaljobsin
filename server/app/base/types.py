@@ -28,7 +28,7 @@ class BaseEdgeType(Generic[NodeType, ModelType], relay.Edge[NodeType]):
     @classmethod
     def marshal(cls, model: ModelType) -> Self:
         """Marshal into an edge instance."""
-        pass
+        raise NotImplementedError
 
 
 EdgeType = TypeVar("EdgeType", bound=BaseEdgeType[NodeType, ModelType])

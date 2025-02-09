@@ -87,7 +87,7 @@ class AccountMutation:
         return AccountType.marshal_with_profile(account)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=UpdateProfilePayload,
+        graphql_type=UpdateAccountPayload,
         description="Update the current user's account.",
         extensions=[
             PermissionExtension(
