@@ -68,7 +68,10 @@ export default function SignUpWizard() {
 						Sign up with Google
 					</Button>
 					<div className="flex justify-center w-full">
-						<Link href={links.login} className="cursor-pointer text-blue-500">
+						<Link
+							href={links.login}
+							className="cursor-pointer text-blue-500 text-small sm:text-sm text-center"
+						>
 							Already have an account? Log in.
 						</Link>
 					</div>

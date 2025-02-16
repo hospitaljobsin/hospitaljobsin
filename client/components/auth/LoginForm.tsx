@@ -178,7 +178,7 @@ export default function LoginForm() {
 				<div className="flex justify-center w-full">
 					<Link
 						href={links.signup}
-						className="mt-2 cursor-pointer text-blue-500"
+						className="mt-2 cursor-pointer text-center text-blue-500 text-small sm:text-sm"
 					>
 						{"Don't have an account? "} Sign up.
 					</Link>
