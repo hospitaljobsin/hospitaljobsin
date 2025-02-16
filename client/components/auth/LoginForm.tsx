@@ -86,7 +86,7 @@ export default function LoginForm() {
 	function getOauth2ErrorMessage(errorCode: string): string {
 		switch (errorCode) {
 			case "unverified_email":
-				return "Please verify your email address before signing in.";
+				return "Please verify your email before signing in.";
 			default:
 				return "An error occurred. Please try again.";
 		}
@@ -123,13 +123,14 @@ export default function LoginForm() {
 
 	return (
 		<>
-			{oauth2ErrorMessage && (
-				<Alert
-					title={getOauth2ErrorMessage(oauth2ErrorMessage)}
-					color="warning"
-					className="mb-4"
-				/>
-			)}
+			<Alert
+				isVisible={oauth2ErrorMessage !== null}
+				onClose={() => setOauth2ErrorMessage(null)}
+				hideIcon
+				description={getOauth2ErrorMessage(oauth2ErrorMessage || "")}
+				color="danger"
+				className="mb-4"
+			/>
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader>
 					<h1 className="text-2xl text-center w-full">Log in to continue</h1>
