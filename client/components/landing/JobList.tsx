@@ -113,7 +113,7 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
 	}
 
 	return (
-		<div className="w-full flex flex-col gap-8 pb-6">
+		<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
 			{data.jobs.edges.map((jobEdge) => (
 				<Job
 					job={jobEdge.node}

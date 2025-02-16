@@ -120,7 +120,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 	return (
 		<Card
 			fullWidth
-			className="p-6 cursor-pointer"
+			className="p-4 sm:p-6 cursor-pointer"
 			isPressable
 			as="div"
 			disableRipple
@@ -130,7 +130,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			shadow="none"
 		>
 			<CardHeader>
-				<div className="flex w-full justify-between gap-4 items-center">
+				<div className="flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center">
 					<div className="flex items-center gap-4">
 						<Image
 							src={data.company?.logoUrl || ""}
@@ -139,8 +139,8 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 							height={50}
 						/>
 						<div className="flex flex-col gap-2 items-start">
-							<h4 className="text-xl font-medium">{data.title}</h4>
-							<p className="text-md font-normal text-foreground-500">
+							<h4 className="text-lg sm:text-xl font-medium">{data.title}</h4>
+							<p className="text-sm sm:text-md font-normal text-foreground-500">
 								{data.company?.name}
 							</p>
 						</div>
@@ -149,12 +149,12 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 				</div>
 			</CardHeader>
 			<CardBody className="flex flex-col gap-6 w-full">
-				<div className="flex justify-between items-center gap-4 w-full">
-					<p className="text-foreground-500 text-md font-normal">
+				<div className="flex flex-col sm:flex-row justify-between items-start gap-4 w-full text-left">
+					<p className="text-foreground-500 text-sm sm:text-md font-normal">
 						Posted on {formattedCreatedAt}
 					</p>
 				</div>
-				<div className="flex flex-wrap gap-8 items-center text-foreground-600 w-full">
+				<div className="flex flex-wrap justify-start gap-4 sm:gap-8 items-start text-foreground-600 w-full text-center">
 					<p>{jobType(data.type)}</p>
 					<div className="flex items-center gap-2">
 						<MapPin size={16} /> {`${data.address.city}, ${data.address.state}`}
@@ -168,8 +168,8 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 					</div>
 				</div>
 			</CardBody>
-			<CardFooter className="flex items-center justify-between gap-6 w-full">
-				<div className="flex flex-wrap gap-4 mt-2 w-full">
+			<CardFooter className="flex flex-col sm:flex-row items-end sm:items-center justify-between gap-4 sm:gap-6 w-full text-center sm:text-left">
+				<div className="flex flex-wrap gap-2 sm:gap-4 mt-2 w-full justify-start">
 					{data.skills.map((skill) => (
 						<Chip variant="flat" key={skill}>
 							{skill}
