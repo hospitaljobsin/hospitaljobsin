@@ -1,5 +1,4 @@
 from datetime import UTC, date, datetime, timedelta
-from time import timezone
 from typing import Annotated, Literal
 
 from beanie import BackLink, Document, Indexed, Link
@@ -8,6 +7,7 @@ from pymongo import IndexModel
 
 from app.base.models import Address
 from app.lib.constants import EMAIL_VERIFICATION_TOKEN_COOLDOWN
+from app.organizations.documents import OrganizationMember
 
 
 # Current Job Schema
@@ -53,6 +53,7 @@ class Account(Document):
     has_onboarded: bool
     updated_at: datetime | None = None
     profile: Link["Profile"] | None = None
+    memberships: list[BackLink[OrganizationMember]] = Field(original_field="account")
 
     class Settings:
         name = "accounts"
