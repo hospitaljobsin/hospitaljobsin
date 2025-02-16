@@ -4,6 +4,4 @@
 
 {% block content %}{% endblock %}
 
-[Company Name, LLC]
-
-1234 Street Rd. Suite 1234
+Team {{app_name}}
