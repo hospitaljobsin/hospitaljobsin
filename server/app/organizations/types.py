@@ -80,7 +80,7 @@ class OrganizationType(BaseNodeType[Organization]):
         )
 
         # Convert to JobConnectionType
-        return JobConnectionType.marshal_paginated_result(paginated_jobs)
+        return JobConnectionType.marshal(paginated_jobs)
 
 
 @strawberry.type(name="OrganizationEdge")

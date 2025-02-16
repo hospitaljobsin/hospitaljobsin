@@ -49,9 +49,7 @@ class BaseConnectionType(Generic[NodeType, EdgeType]):
     ]
 
     @classmethod
-    def marshal_paginated_result(
-        cls, paginated_result: PaginatedResult[ModelType, str]
-    ) -> Self:
+    def marshal(cls, paginated_result: PaginatedResult[ModelType, str]) -> Self:
         return cls(
             page_info=relay.PageInfo(
                 has_next_page=paginated_result.page_info.has_next_page,
