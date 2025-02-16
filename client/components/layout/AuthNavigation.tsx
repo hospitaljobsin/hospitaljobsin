@@ -6,6 +6,7 @@ import {
 	Drawer,
 	DrawerBody,
 	DrawerContent,
+	DrawerHeader,
 	Dropdown,
 	DropdownItem,
 	DropdownMenu,
@@ -73,8 +74,8 @@ export default function AuthNavigation({ rootQuery }: Props) {
 				hideCloseButton
 			>
 				<DrawerContent>
-					<DrawerBody className=" divide-foreground-200 gap-4 mt-6 flex flex-col items-center">
-						<div className="w-1/4 h-2 bg-foreground-400 rounded-md" />
+					<DrawerHeader>Navigation Menu</DrawerHeader>
+					<DrawerBody className="gap-4 flex flex-col items-center">
 						<Button
 							className="w-full justify-start"
 							radius="sm"
@@ -82,6 +83,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							startContent={<UserIcon className="h-4 w-4" />}
 							href={links.profile}
 							as={links.profile ? "a" : "button"}
+							fullWidth
 						>
 							My Profile
 						</Button>
@@ -92,6 +94,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							startContent={<BookmarkIcon className="h-4 w-4" />}
 							href={links.savedJobs}
 							as={links.savedJobs ? "a" : "button"}
+							fullWidth
 						>
 							Saved Jobs
 						</Button>
@@ -101,6 +104,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							variant="light"
 							startContent={<LogOutIcon className="h-4 w-4" />}
 							onPress={onLogoutModalOpen}
+							fullWidth
 						>
 							Log Out
 						</Button>
@@ -109,7 +113,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 			</Drawer>
 
 			<Dropdown className="hidden md:block">
-				<NavbarItem>
+				<NavbarItem className="hidden md:block">
 					<DropdownTrigger>
 						<Button
 							disableRipple
@@ -136,6 +140,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					itemClasses={{
 						base: "gap-4",
 					}}
+					className="hidden md:block"
 				>
 					<DropdownItem
 						key="profile"
