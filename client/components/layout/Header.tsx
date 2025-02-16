@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import { useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";
-import AuthDropdown from "./AuthDropdown";
+import AuthDropdown from "./AuthNavigation";
 import type { HeaderQuery as HeaderQueryType } from "./__generated__/HeaderQuery.graphql";
 
 const HeaderQuery = graphql`
@@ -18,7 +18,7 @@ const HeaderQuery = graphql`
     viewer {
       ... on Account {
         __typename
-        ...AuthDropdownFragment
+        ...AuthNavigationFragment
       }
       ... on NotAuthenticatedError {
         __typename

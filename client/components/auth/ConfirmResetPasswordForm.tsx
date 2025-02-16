@@ -18,7 +18,7 @@ const ConfirmResetPasswordFormMutation = graphql`
 	resetPassword(email: $email, passwordResetToken: $passwordResetToken, newPassword: $newPassword) {
 	  __typename
 	  ... on Account {
-		...AuthDropdownFragment
+		...AuthNavigationFragment
 	  }
 	  ... on InvalidPasswordResetTokenError {
 		message

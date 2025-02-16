@@ -44,6 +44,8 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			isKeyboardDismissDisabled={true}
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
+			placement="center"
+			hideCloseButton
 		>
 			<ModalContent>
 				{(onClose) => (
