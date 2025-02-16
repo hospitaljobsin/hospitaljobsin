@@ -147,8 +147,6 @@ class AuthService:
         ):
             return Err(InvalidEmailVerificationTokenError())
 
-        # TODO: set session as verified here (or) mark token as verified
-        # this might simplify things client side
         return Ok(None)
 
     async def _verify_recaptcha_token(self, recaptcha_token: str) -> bool:
@@ -189,8 +187,6 @@ class AuthService:
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
-
-        # TODO: check if session is verified here, this will simplify things client side
 
         existing_email_verification_token = (
             await self._email_verification_token_repo.get(
@@ -292,11 +288,10 @@ class AuthService:
 
     async def signin_with_google(
         self, user_info: dict, request: Request, response: Response, user_agent: str
-    ) -> Account:
+    ) -> Result[Account, InvalidEmailError]:
         """Sign in with Google."""
         if not user_info["email_verified"]:
-            # TODO: handle user not verified
-            pass
+            return Err(InvalidEmailError())
         account = await self._account_repo.get_by_email(email=user_info["email"])
         if account is None:
             account = await self._account_repo.create(
@@ -316,7 +311,7 @@ class AuthService:
             response=response,
             value=session_token,
         )
-        return account
+        return Ok(account)
 
     def _set_user_session_cookie(
         self, request: Request, response: Response, value: str

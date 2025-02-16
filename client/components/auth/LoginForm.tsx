@@ -3,6 +3,7 @@
 import { env } from "@/lib/env";
 import links from "@/lib/links";
 import {
+	Alert,
 	Button,
 	Card,
 	CardBody,
@@ -17,7 +18,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
@@ -52,6 +53,21 @@ export default function LoginForm() {
 
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+	const oauth2Error = params.get("oauth2_error");
+
+	const [oauth2ErrorMessage, setOauth2ErrorMessage] = useState<null | string>(
+		null,
+	);
+
+	useEffect(() => {
+		if (oauth2Error !== null) {
+			setOauth2ErrorMessage(oauth2Error);
+			const url = new URL(window.location.href);
+			url.searchParams.delete("oauth2_error");
+			router.replace(url.toString(), undefined, { showProgressBar: false });
+		}
+	}, [oauth2Error, router]);
+
 	const redirectTo = params.get("return_to") || links.landing;
 	const [commitMutation, isMutationInFlight] =
 		useMutation<LoginFormMutationType>(LoginFormMutation);
@@ -66,6 +82,15 @@ export default function LoginForm() {
 	});
 
 	const { executeRecaptcha } = useGoogleReCaptcha();
+
+	function getOauth2ErrorMessage(errorCode: string): string {
+		switch (errorCode) {
+			case "unverified_email":
+				return "Please verify your email address before signing in.";
+			default:
+				return "An error occurred. Please try again.";
+		}
+	}
 
 	async function onSubmit(values: z.infer<typeof loginSchema>) {
 		if (!executeRecaptcha) {
@@ -97,93 +122,102 @@ export default function LoginForm() {
 	}
 
 	return (
-		<Card className="p-6 space-y-6" shadow="none">
-			<CardHeader>
-				<h1 className="text-2xl text-center w-full">Log in to continue</h1>
-			</CardHeader>
-			<CardBody>
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-					<div className="w-full flex flex-col gap-6">
-						<Input
-							id="email"
-							label="Email Address"
-							autoComplete="email"
-							placeholder="Enter your email address"
-							type="email"
-							{...register("email")}
-							errorMessage={errors.email?.message}
-							isInvalid={!!errors.email}
-						/>
-						<Input
-							id="password"
-							label="Password"
-							placeholder="Enter password"
-							autoComplete="current-password"
-							type={isPasswordVisible ? "text" : "password"}
-							endContent={
-								<button
-									aria-label="toggle password visibility"
-									className="focus:outline-none"
-									type="button"
-									onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-								>
-									{isPasswordVisible ? (
-										<EyeIcon className="text-2xl text-default-400 pointer-events-none" />
-									) : (
-										<EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
-									)}
-								</button>
-							}
-							{...register("password")}
-							errorMessage={errors.password?.message}
-							isInvalid={!!errors.password}
-							description={
-								<div className="w-full flex justify-start">
-									<Link
-										href={links.resetPasswordSubmit}
-										className="mt-2 cursor-pointer text-blue-500"
+		<>
+			{oauth2ErrorMessage && (
+				<Alert
+					title={getOauth2ErrorMessage(oauth2ErrorMessage)}
+					color="warning"
+					className="mb-4"
+				/>
+			)}
+			<Card className="p-6 space-y-6" shadow="none">
+				<CardHeader>
+					<h1 className="text-2xl text-center w-full">Log in to continue</h1>
+				</CardHeader>
+				<CardBody>
+					<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+						<div className="w-full flex flex-col gap-6">
+							<Input
+								id="email"
+								label="Email Address"
+								autoComplete="email"
+								placeholder="Enter your email address"
+								type="email"
+								{...register("email")}
+								errorMessage={errors.email?.message}
+								isInvalid={!!errors.email}
+							/>
+							<Input
+								id="password"
+								label="Password"
+								placeholder="Enter password"
+								autoComplete="current-password"
+								type={isPasswordVisible ? "text" : "password"}
+								endContent={
+									<button
+										aria-label="toggle password visibility"
+										className="focus:outline-none"
+										type="button"
+										onClick={() => setIsPasswordVisible(!isPasswordVisible)}
 									>
-										Forgot password?
-									</Link>
-								</div>
-							}
-						/>
+										{isPasswordVisible ? (
+											<EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+										) : (
+											<EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
+										)}
+									</button>
+								}
+								{...register("password")}
+								errorMessage={errors.password?.message}
+								isInvalid={!!errors.password}
+								description={
+									<div className="w-full flex justify-start">
+										<Link
+											href={links.resetPasswordSubmit}
+											className="mt-2 cursor-pointer text-blue-500"
+										>
+											Forgot password?
+										</Link>
+									</div>
+								}
+							/>
 
-						<Button
-							fullWidth
-							isLoading={isSubmitting || isMutationInFlight}
-							type="submit"
-						>
-							Log in
-						</Button>
+							<Button
+								fullWidth
+								isLoading={isSubmitting || isMutationInFlight}
+								type="submit"
+							>
+								Log in
+							</Button>
+						</div>
+					</form>
+				</CardBody>
+				<CardFooter className="flex flex-col w-full gap-8">
+					<div className="w-full flex items-center justify-center gap-6">
+						<Divider className="flex-1" />
+						<p>or</p>
+						<Divider className="flex-1" />
 					</div>
-				</form>
-			</CardBody>
-			<CardFooter className="flex flex-col w-full gap-8">
-				<div className="w-full flex items-center justify-center gap-6">
-					<Divider className="flex-1" />
-					<p>or</p>
-					<Divider className="flex-1" />
-				</div>
-				<Button
-					fullWidth
-					variant="bordered"
-					startContent={<Google.Color size={20} />}
-					onPress={() => {
-						window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(window.location.origin)}`;
-					}}
-				>
-					Sign in with Google
-				</Button>
-				<div className="flex justify-center w-full">
-					<Link
-						href={links.signup}
-						className="mt-2 cursor-pointer text-center text-blue-500 text-small sm:text-sm"
+					<Button
+						fullWidth
+						variant="bordered"
+						startContent={<Google.Color size={20} />}
+						onPress={() => {
+							window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(window.location.origin)}`;
+						}}
 					>
-						{"Don't have an account? "} Sign up.
-					</Link>
-				</div>
-			</CardFooter>
-		</Card>
+						Sign in with Google
+					</Button>
+					<div className="flex justify-center w-full">
+						<Link
+							href={links.signup}
+							className="mt-2 cursor-pointer text-center text-blue-500 text-small sm:text-sm"
+						>
+							{"Don't have an account? "} Sign up.
+						</Link>
+					</div>
+				</CardFooter>
+			</Card>
+		</>
 	);
 }
