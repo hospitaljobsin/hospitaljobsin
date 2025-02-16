@@ -53,7 +53,7 @@ export default function CompanyDetails({
 		<div className="w-full flex flex-col gap-6">
 			<Card fullWidth className="p-6 space-y-6" shadow="none">
 				<CardHeader>
-					<div className="flex w-full justify-between gap-4 items-center">
+					<div className="flex w-full justify-between gap-4 sm:items-center flex-col sm:flex-row items-start">
 						<div className="flex gap-6 items-center">
 							<Image
 								src={data.logoUrl || ""}
@@ -69,7 +69,9 @@ export default function CompanyDetails({
 								</p>
 							</div>
 						</div>
-						<Button size="lg">Follow</Button>
+						<Button size="lg" className="w-full sm:w-auto">
+							Follow
+						</Button>
 					</div>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-6 w-full">

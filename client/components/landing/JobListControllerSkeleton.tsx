@@ -6,8 +6,8 @@ export default function JobListControllerSkeleton() {
 		<Input
 			size="lg"
 			classNames={{
-				inputWrapper: "p-8 bg-background",
-				mainWrapper: "-mt-20",
+				inputWrapper: "p-4 sm:p-8 bg-background",
+				mainWrapper: "mt-4 sm:-mt-20",
 			}}
 			startContent={
 				<Search
