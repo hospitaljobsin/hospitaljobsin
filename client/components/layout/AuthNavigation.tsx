@@ -91,7 +91,10 @@ export default function AuthNavigation({ rootQuery }: Props) {
 								height={25}
 								className="rounded-full"
 							/>
-							<p className="truncate max-w-48">{data.fullName}</p>
+							<div className="flex flex-col gap-1 items-start">
+								<p className="text-tiny">Signed in as</p>
+								<p className="truncate max-w-48 text-medium">{data.fullName}</p>
+							</div>
 						</div>
 						<Divider />
 						<Button
@@ -196,7 +199,12 @@ export default function AuthNavigation({ rootQuery }: Props) {
 									height={25}
 									className="rounded-full"
 								/>
-								<p className="truncate max-w-48">{data.fullName}</p>
+								<div className="flex flex-col gap-1 items-start">
+									<p className="text-tiny">Signed in as</p>
+									<p className="truncate max-w-48 text-medium">
+										{data.fullName}
+									</p>
+								</div>
 							</div>
 						</DropdownItem>
 					</DropdownSection>
