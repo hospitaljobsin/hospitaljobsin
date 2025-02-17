@@ -3,6 +3,7 @@ import { getGravatarURL } from "@/lib/avatars";
 import links from "@/lib/links";
 import {
 	Button,
+	Divider,
 	Drawer,
 	DrawerBody,
 	DrawerContent,
@@ -10,11 +11,19 @@ import {
 	Dropdown,
 	DropdownItem,
 	DropdownMenu,
+	DropdownSection,
 	DropdownTrigger,
 	NavbarItem,
 	useDisclosure,
 } from "@heroui/react";
-import { BookmarkIcon, ChevronDown, LogOutIcon, UserIcon } from "lucide-react";
+import {
+	BookmarkIcon,
+	Building,
+	ChevronDown,
+	LogOutIcon,
+	PlusIcon,
+	UserIcon,
+} from "lucide-react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -51,8 +60,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 			<NavbarItem className="block md:hidden">
 				<Button
 					disableRipple
-					className="p-0 bg-transparent data-[hover=true]:bg-transparent flex items-center gap-4"
-					endContent={<ChevronDown className="h-4 w-4" />}
+					isIconOnly
 					radius="sm"
 					variant="light"
 					onPress={onDrawerOpen}
@@ -64,7 +72,6 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						height={35}
 						className="rounded-full"
 					/>
-					<p className="truncate max-w-48">{data.fullName}</p>
 				</Button>
 			</NavbarItem>
 			<Drawer
@@ -76,6 +83,17 @@ export default function AuthNavigation({ rootQuery }: Props) {
 				<DrawerContent>
 					<DrawerHeader>Navigation Menu</DrawerHeader>
 					<DrawerBody className="gap-4 flex flex-col items-center">
+						<div className="flex flex-row items-center gap-4 w-full">
+							<Image
+								src={`https://${getGravatarURL(data.email)}`}
+								alt={data.fullName}
+								width={25}
+								height={25}
+								className="rounded-full"
+							/>
+							<p className="truncate max-w-48">{data.fullName}</p>
+						</div>
+						<Divider />
 						<Button
 							className="w-full justify-start"
 							radius="sm"
@@ -98,6 +116,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						>
 							Saved Jobs
 						</Button>
+						<Divider />
 						<Button
 							className="w-full justify-start"
 							radius="sm"
@@ -111,17 +130,43 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
-
 			<Dropdown className="hidden md:block">
 				<NavbarItem className="hidden md:block">
 					<DropdownTrigger>
 						<Button
 							disableRipple
-							className="p-0 bg-transparent data-[hover=true]:bg-transparent items-center gap-4 hidden md:flex"
-							endContent={<ChevronDown className="h-4 w-4" />}
-							radius="sm"
-							variant="light"
+							size="sm"
+							variant="bordered"
+							endContent={<ChevronDown className="h-3 w-3" />}
 						>
+							<PlusIcon className="h-4 w-4" />
+						</Button>
+					</DropdownTrigger>
+				</NavbarItem>
+
+				<DropdownMenu
+					variant="light"
+					aria-label="Navigation Menu"
+					itemClasses={{
+						base: "gap-4",
+					}}
+					className="hidden md:block"
+				>
+					<DropdownSection>
+						<DropdownItem
+							key="profile"
+							startContent={<Building className="h-4 w-4" />}
+							href={links.profile}
+						>
+							New Organization
+						</DropdownItem>
+					</DropdownSection>
+				</DropdownMenu>
+			</Dropdown>
+			<Dropdown className="hidden md:block">
+				<NavbarItem className="hidden md:block">
+					<DropdownTrigger>
+						<Button disableRipple isIconOnly radius="sm" variant="light">
 							<Image
 								src={`https://${getGravatarURL(data.email)}`}
 								alt={data.fullName}
@@ -129,40 +174,57 @@ export default function AuthNavigation({ rootQuery }: Props) {
 								height={35}
 								className="rounded-full"
 							/>
-							<p className="truncate max-w-48">{data.fullName}</p>
 						</Button>
 					</DropdownTrigger>
 				</NavbarItem>
 
 				<DropdownMenu
 					variant="light"
-					aria-label="ACME features"
+					aria-label="Navigation Menu"
 					itemClasses={{
 						base: "gap-4",
 					}}
 					className="hidden md:block"
 				>
-					<DropdownItem
-						key="profile"
-						startContent={<UserIcon className="h-4 w-4" />}
-						href={links.profile}
-					>
-						My Profile
-					</DropdownItem>
-					<DropdownItem
-						key="saved"
-						startContent={<BookmarkIcon className="h-4 w-4" />}
-						href={links.savedJobs}
-					>
-						Saved Jobs
-					</DropdownItem>
-					<DropdownItem
-						key="logout"
-						startContent={<LogOutIcon className="h-4 w-4" />}
-						onPress={onLogoutModalOpen}
-					>
-						Log Out
-					</DropdownItem>
+					<DropdownSection showDivider>
+						<DropdownItem key="account-info">
+							<div className="flex flex-row items-center gap-4 w-full">
+								<Image
+									src={`https://${getGravatarURL(data.email)}`}
+									alt={data.fullName}
+									width={25}
+									height={25}
+									className="rounded-full"
+								/>
+								<p className="truncate max-w-48">{data.fullName}</p>
+							</div>
+						</DropdownItem>
+					</DropdownSection>
+					<DropdownSection showDivider>
+						<DropdownItem
+							key="profile"
+							startContent={<UserIcon className="h-4 w-4" />}
+							href={links.profile}
+						>
+							My Profile
+						</DropdownItem>
+						<DropdownItem
+							key="saved"
+							startContent={<BookmarkIcon className="h-4 w-4" />}
+							href={links.savedJobs}
+						>
+							Saved Jobs
+						</DropdownItem>
+					</DropdownSection>
+					<DropdownSection>
+						<DropdownItem
+							key="logout"
+							startContent={<LogOutIcon className="h-4 w-4" />}
+							onPress={onLogoutModalOpen}
+						>
+							Log Out
+						</DropdownItem>
+					</DropdownSection>
 				</DropdownMenu>
 			</Dropdown>
 			<LogoutModal
