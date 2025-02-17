@@ -3,7 +3,7 @@ const links = {
 	profile: "/profile",
 	savedJobs: "/saved",
 	jobDetail: (slug: string) => `/jobs/${slug}`,
-	companyDetail: (slug: string) => `/companies/${slug}`,
+	organizationDetail: (slug: string) => `/organizations/${slug}`,
 	login: "/auth/login",
 	signup: "/auth/signup",
 	resetPasswordSubmit: "/auth/reset-password",

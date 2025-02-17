@@ -1,4 +1,5 @@
 import { dateFormat } from "@/lib/intl";
+import links from "@/lib/links";
 import {
 	Button,
 	Card,
@@ -209,7 +210,7 @@ export default function JobDetails({
 							color="foreground"
 							isExternal
 							showAnchorIcon
-							href={`/companies/${data.organization?.slug || ""}`}
+							href={links.organizationDetail(data.organization?.slug || "")}
 						>
 							{data.organization?.name}
 						</Link>

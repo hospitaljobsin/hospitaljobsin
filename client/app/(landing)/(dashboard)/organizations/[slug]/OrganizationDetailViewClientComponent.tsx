@@ -1,6 +1,6 @@
 "use client";
 
-import OrganizationDetailView from "@/components/company-detail/OrganizationDetailView";
+import OrganizationDetailView from "@/components/organization-detail/OrganizationDetailView";
 import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 import {

@@ -1,7 +1,7 @@
 import { useFragment, usePaginationFragment } from "react-relay";
 import Job from "../landing/Job";
 
-import type { pageOrganizationDetailViewQuery } from "@/app/(landing)/(dashboard)/companies/[slug]/__generated__/pageOrganizationDetailViewQuery.graphql";
+import type { pageOrganizationDetailViewQuery } from "@/app/(landing)/(dashboard)/organizations/[slug]/__generated__/pageOrganizationDetailViewQuery.graphql";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
