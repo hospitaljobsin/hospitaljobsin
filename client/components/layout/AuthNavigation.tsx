@@ -133,7 +133,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
-			<Dropdown className="hidden md:block">
+			<Dropdown className="hidden md:block" placement="bottom-end">
 				<NavbarItem className="hidden md:block">
 					<DropdownTrigger>
 						<Button
@@ -166,7 +166,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					</DropdownSection>
 				</DropdownMenu>
 			</Dropdown>
-			<Dropdown className="hidden md:block">
+			<Dropdown className="hidden md:block" placement="bottom-end">
 				<NavbarItem className="hidden md:block">
 					<DropdownTrigger>
 						<Button disableRipple isIconOnly radius="sm" variant="light">
