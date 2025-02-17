@@ -140,7 +140,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 						/>
 						<div className="flex flex-col gap-2 items-start">
 							<h4 className="text-lg sm:text-xl font-medium">{data.title}</h4>
-							<p className="text-sm sm:text-md font-normal text-foreground-500">
+							<p className="text-sm sm:text-base font-normal text-foreground-500">
 								{data.organization?.name}
 							</p>
 						</div>
@@ -150,7 +150,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			</CardHeader>
 			<CardBody className="flex flex-col gap-6 w-full">
 				<div className="flex flex-col sm:flex-row justify-between items-start gap-4 w-full text-left">
-					<p className="text-foreground-500 text-sm sm:text-md font-normal">
+					<p className="text-foreground-500 text-sm sm:text-base font-normal">
 						Posted on {formattedCreatedAt}
 					</p>
 				</div>

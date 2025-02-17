@@ -137,7 +137,7 @@ export default function JobDetails({
 			<p className="text-sm">/ month</p>
 		</div>
 	) : (
-		<div className="flex items-center gap-2 text-sm text-foreground-500">
+		<div className="flex items-center gap-2 text-sm sm:text-base text-foreground-500">
 			{currencyIcon(data.currency)}
 			{"Not disclosed"}
 		</div>
@@ -153,13 +153,7 @@ export default function JobDetails({
 			<Card fullWidth className="p-6" shadow="none">
 				<CardHeader>
 					<div className="flex flex-col sm:flex-row w-full justify-between gap-4 items-start sm:items-center">
-						<div className="flex flex-col gap-2 items-start">
-							<h4 className="text-xl font-medium">{data.title}</h4>
-
-							<p className="text-md font-normal text-foreground-500">
-								{data.organization?.name}
-							</p>
-						</div>
+						<h4 className="text-xl font-medium">{data.title}</h4>
 
 						<Button size="lg" className="w-full sm:w-auto">
 							Apply now
@@ -168,7 +162,7 @@ export default function JobDetails({
 				</CardHeader>
 				<CardBody className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 w-full">
 					<div className="flex flex-col sm:flex-row justify-start items-start sm:items-center gap-8 w-full">
-						<p className="text-foreground-500 text-sm font-normal">
+						<p className="text-foreground-500 text-sm sm:text-base font-normal">
 							Posted on {formattedCreatedAt}
 						</p>
 						{salaryRange}
