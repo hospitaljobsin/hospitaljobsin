@@ -34,7 +34,9 @@ export default function NewOrganizationForm() {
 		},
 	});
 
-	function onSubmit(formData: z.infer<typeof formSchema>) {}
+	function onSubmit(formData: z.infer<typeof formSchema>) {
+		console.log(formData);
+	}
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
@@ -50,7 +52,7 @@ export default function NewOrganizationForm() {
 								label="Organization Full Name"
 								labelPlacement="outside"
 								placeholder="My Organization Name"
-								value={field.value ?? ""}
+								value={field.value}
 								errorMessage={errors.fullName?.message}
 								isInvalid={!!errors.fullName}
 							/>
@@ -65,7 +67,7 @@ export default function NewOrganizationForm() {
 								label="Organization Slug"
 								labelPlacement="outside"
 								placeholder="my-organization-slug"
-								value={field.value ?? ""}
+								value={field.value}
 								errorMessage={errors.slug?.message}
 								isInvalid={!!errors.slug}
 							/>
@@ -86,7 +88,7 @@ export default function NewOrganizationForm() {
 									label="Organization Website"
 									labelPlacement="outside"
 									placeholder="https://example.com"
-									value={field.value ?? ""}
+									value={field.value}
 									errorMessage={errors.website?.message}
 									isInvalid={!!errors.website}
 								/>
@@ -102,7 +104,7 @@ export default function NewOrganizationForm() {
 								label="Organization Description"
 								labelPlacement="outside"
 								placeholder="Enter Organization Description"
-								value={field.value ?? ""}
+								value={field.value}
 								errorMessage={errors.description?.message}
 								isInvalid={!!errors.description}
 							/>
@@ -110,7 +112,7 @@ export default function NewOrganizationForm() {
 					/>
 				</CardBody>
 				<CardFooter>
-					<Button fullWidth isLoading={isSubmitting}>
+					<Button type="submit" fullWidth isLoading={isSubmitting}>
 						Create Organization
 					</Button>
 				</CardFooter>
