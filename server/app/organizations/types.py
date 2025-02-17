@@ -26,10 +26,10 @@ if TYPE_CHECKING:
 class OrganizationType(BaseNodeType[Organization]):
     name: str
     slug: str
-    description: str
+    description: str | None
     address: AddressType
-    phone: str
-    website: str
+    email: str | None
+    website: str | None
     logo_url: str | None
 
     @classmethod
@@ -41,7 +41,7 @@ class OrganizationType(BaseNodeType[Organization]):
             name=organization.name,
             description=organization.description,
             address=AddressType.marshal(organization.address),
-            phone=organization.phone,
+            email=organization.email,
             website=organization.website,
             logo_url=organization.logo_url,
         )

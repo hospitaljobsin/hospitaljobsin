@@ -13,10 +13,10 @@ if TYPE_CHECKING:
 class Organization(Document):
     name: str
     slug: Indexed(str, unique=True)
-    description: str
+    description: str | None = None
     address: Address
-    phone: str
-    website: str
+    email: str | None = None
+    website: str | None = None
     logo_url: str | None = None
     members: list[BackLink["OrganizationMember"]] = Field(original_field="organization")
 

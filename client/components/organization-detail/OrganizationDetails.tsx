@@ -1,5 +1,5 @@
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
-import { Globe, MapPin, Phone } from "lucide-react";
+import { Globe, Mail, MapPin } from "lucide-react";
 import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
@@ -27,7 +27,7 @@ const OrganizationDetailsInternalFragment = graphql`
     logoUrl
     description
     website
-    phone
+    email
     address {
       city
       state
@@ -80,7 +80,7 @@ export default function OrganizationDetails({
 							{`${data.address.city}, ${data.address.state}`}
 						</div>
 						<div className="flex items-center gap-2">
-							<Phone size={16} /> {data.phone}
+							<Mail size={16} /> {data.email}
 						</div>
 						<div className="flex items-center gap-2">
 							<Globe size={16} /> {data.website}

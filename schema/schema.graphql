@@ -278,10 +278,10 @@ type Organization implements Node {
   id: ID!
   name: String!
   slug: String!
-  description: String!
+  description: String
   address: Address!
-  phone: String!
-  website: String!
+  email: String
+  website: String
   logoUrl: String
   jobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
 }
