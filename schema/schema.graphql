@@ -260,7 +260,22 @@ type Mutation {
   updateAccount(fullName: String!): UpdateAccountPayload! @isAuthenticated
 
   """Create an organization."""
-  createOrganization: CreateOrganizationPayload! @isAuthenticated
+  createOrganization(
+    """The full name of the organization."""
+    fullName: String!
+
+    """The slug of the organization."""
+    slug: String!
+
+    """The website of the organization."""
+    website: String = null
+
+    """The email of the organization."""
+    email: String = null
+
+    """The description of the organization."""
+    description: String = null
+  ): CreateOrganizationPayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""

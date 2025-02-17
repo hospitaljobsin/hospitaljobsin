@@ -10,7 +10,20 @@ import {
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { useMutation } from "react-relay";
+import { graphql } from "relay-runtime";
 import { z } from "zod";
+import type { NewOrganizationFormMutation } from "./__generated__/NewOrganizationFormMutation.graphql";
+
+const CreateOrganizationMutation = graphql`
+mutation NewOrganizationFormMutation($fullName: String!, $slug: String!, $website: String, $description: String) {
+    createOrganization(fullName: $fullName, slug: $slug, website: $website, description: $description) {
+        ...on Organization {
+            __typename
+        }
+    }
+}
+`;
 
 const formSchema = z.object({
 	fullName: z.string().min(1, "This field is required").max(75),
@@ -20,6 +33,8 @@ const formSchema = z.object({
 });
 
 export default function NewOrganizationForm() {
+	const [commitMutation, isMutationInFlight] =
+		useMutation<NewOrganizationFormMutation>(CreateOrganizationMutation);
 	const {
 		handleSubmit,
 		control,
@@ -35,7 +50,17 @@ export default function NewOrganizationForm() {
 	});
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
-		console.log(formData);
+		commitMutation({
+			variables: {
+				fullName: formData.fullName,
+				slug: formData.slug,
+				website: formData.website,
+				description: formData.description,
+			},
+			onCompleted(response, errors) {
+				console.log(response, errors);
+			},
+		});
 	}
 
 	return (
@@ -112,7 +137,11 @@ export default function NewOrganizationForm() {
 					/>
 				</CardBody>
 				<CardFooter>
-					<Button type="submit" fullWidth isLoading={isSubmitting}>
+					<Button
+						type="submit"
+						fullWidth
+						isLoading={isSubmitting || isMutationInFlight}
+					>
 						Create Organization
 					</Button>
 				</CardFooter>

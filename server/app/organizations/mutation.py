@@ -32,6 +32,24 @@ class OrganizationMutation:
         self,
         info: AuthInfo,
         organization_service: Annotated[OrganizationService, Inject],
+        full_name: Annotated[
+            str, strawberry.argument(description="The full name of the organization.")
+        ],
+        slug: Annotated[
+            str, strawberry.argument(description="The slug of the organization.")
+        ],
+        website: Annotated[
+            str | None,
+            strawberry.argument(description="The website of the organization."),
+        ] = None,
+        email: Annotated[
+            str | None,
+            strawberry.argument(description="The email of the organization."),
+        ] = None,
+        description: Annotated[
+            str | None,
+            strawberry.argument(description="The description of the organization."),
+        ] = None,
     ) -> CreateOrganizationPayload:
         """Create an organization."""
         pass
