@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Literal
 
-from beanie import BackLink, Document, Link
+from beanie import BackLink, Document, Indexed, Link
 from pydantic import Field
 from pymongo import IndexModel
 
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 
 class Organization(Document):
     name: str
+    slug: Indexed(str, unique=True)
     description: str
     address: Address
     phone: str

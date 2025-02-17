@@ -1,12 +1,10 @@
 from collections.abc import Iterable
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, Self
+from typing import TYPE_CHECKING, Annotated, Self
 
 import strawberry
-from aioinject import Inject
 from aioinject.ext.strawberry import inject
-from bson import ObjectId
 from strawberry import relay
 
 from app.base.types import (
@@ -16,92 +14,11 @@ from app.base.types import (
     BaseErrorType,
     BaseNodeType,
 )
-from app.companies.documents import Company, Job, SavedJob
-from app.companies.repositories import JobRepo
 from app.context import Info
+from app.jobs.documents import Job, SavedJob
 
-
-@strawberry.type(name="Company")
-class CompanyType(BaseNodeType[Company]):
-    name: str
-    slug: str
-    description: str
-    address: AddressType
-    phone: str
-    website: str
-    email: str
-    logo_url: str | None
-
-    @classmethod
-    def marshal(cls, company: Company) -> Self:
-        """Marshal into a node instance."""
-        return cls(
-            id=str(company.id),
-            name=company.name,
-            slug=company.slug,
-            description=company.description,
-            address=AddressType.marshal(company.address),
-            phone=company.phone,
-            website=company.website,
-            email=company.email,
-            logo_url=company.logo_url,
-        )
-
-    @classmethod
-    async def resolve_nodes(  # type: ignore[no-untyped-def] # noqa: ANN206
-        cls,
-        *,
-        info: Info,
-        node_ids: Iterable[str],
-        required: bool = False,  # noqa: ARG003
-    ):
-        companies = await info.context["loaders"].company_by_id.load_many(node_ids)
-        return [
-            cls.marshal(company) if company is not None else company
-            for company in companies
-        ]
-
-    @strawberry.field
-    @inject
-    async def jobs(
-        self,
-        job_repo: Annotated[
-            JobRepo,
-            Inject,
-        ],
-        before: relay.GlobalID | None = None,
-        after: relay.GlobalID | None = None,
-        first: int | None = None,
-        last: int | None = None,
-    ) -> Annotated["JobConnectionType", strawberry.lazy("app.companies.types")]:
-        """Return a paginated connection of jobs for the company."""
-        paginated_jobs = await job_repo.get_all_by_company_id(
-            company_id=ObjectId(self.id),
-            after=(after.node_id if after else None),
-            before=(before.node_id if before else None),
-            first=first,
-            last=last,
-        )
-
-        # Convert to JobConnectionType
-        return JobConnectionType.marshal(paginated_jobs)
-
-
-@strawberry.type(name="CompanyEdge")
-class CompanyEdgeType(BaseEdgeType[CompanyType, Company]):
-    @classmethod
-    def marshal(cls, company: Company) -> Self:
-        """Marshal into a edge instance."""
-        return cls(
-            node=CompanyType.marshal(company),
-            cursor=relay.to_base64(CompanyType, company.id),
-        )
-
-
-@strawberry.type(name="CompanyConnection")
-class CompanyConnectionType(BaseConnectionType[CompanyType, CompanyEdgeType]):
-    node_type = CompanyType
-    edge_type = CompanyEdgeType
+if TYPE_CHECKING:
+    from app.organizations.types import OrganizationType
 
 
 @strawberry.enum(name="JobType")
@@ -154,7 +71,7 @@ class JobType(BaseNodeType[Job]):
 
     is_saved: bool
 
-    company_id: strawberry.Private[str]
+    organization_id: strawberry.Private[str]
 
     @classmethod
     def marshal(cls, job: Job) -> Self:
@@ -180,7 +97,7 @@ class JobType(BaseNodeType[Job]):
             max_experience=job.max_experience,
             updated_at=job.updated_at,
             expires_at=job.expires_at,
-            company_id=str(job.company.ref.id),
+            organization_id=str(job.organization.ref.id),
         )
 
     @strawberry.field
@@ -196,12 +113,24 @@ class JobType(BaseNodeType[Job]):
 
     @strawberry.field
     @inject
-    async def company(self, info: Info) -> CompanyType | None:
-        company = await info.context["loaders"].company_by_id.load(self.company_id)
+    async def organization(
+        self, info: Info
+    ) -> (
+        Annotated[
+            "OrganizationType",
+            strawberry.lazy("app.organizations.types"),
+        ]
+        | None
+    ):
+        from app.organizations.types import OrganizationType
 
-        if company is None:
+        organization = await info.context["loaders"].organization_by_id.load(
+            self.organization_id
+        )
+
+        if organization is None:
             return None
-        return CompanyType.marshal(company)
+        return OrganizationType.marshal(organization)
 
     @classmethod
     async def resolve_nodes(  # type: ignore[no-untyped-def] # noqa: ANN206
@@ -272,11 +201,6 @@ class SavedJobNotFoundErrorType(BaseErrorType):
     message: str = "Saved job not found!"
 
 
-@strawberry.type(name="CompanyNotFoundError")
-class CompanyNotFoundErrorType(BaseErrorType):
-    message: str = "Company not found!"
-
-
 SaveJobPayload = Annotated[
     SaveJobResult | JobNotFoundErrorType,
     strawberry.union(name="SaveJobPayload"),
@@ -287,11 +211,6 @@ UnsaveJobPayload = Annotated[
     strawberry.union(name="UnsaveJobPayload"),
 ]
 
-
-CompanyPayload = Annotated[
-    CompanyType | CompanyNotFoundErrorType,
-    strawberry.union(name="CompanyPayload"),
-]
 
 JobPayload = Annotated[
     JobType | JobNotFoundErrorType,

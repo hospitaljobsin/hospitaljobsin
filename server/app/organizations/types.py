@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from typing import Annotated, Self
+from typing import TYPE_CHECKING, Annotated, Self
 
 import strawberry
 from aioinject import Inject
@@ -11,17 +11,21 @@ from app.base.types import (
     AddressType,
     BaseConnectionType,
     BaseEdgeType,
+    BaseErrorType,
     BaseNodeType,
 )
-from app.companies.types import JobConnectionType
 from app.context import Info
+from app.jobs.repositories import JobRepo
 from app.organizations.documents import Organization
-from app.organizations.repositories import JobRepo
+
+if TYPE_CHECKING:
+    from app.jobs.types import JobConnectionType
 
 
 @strawberry.type(name="Organization")
 class OrganizationType(BaseNodeType[Organization]):
     name: str
+    slug: str
     description: str
     address: AddressType
     phone: str
@@ -33,6 +37,7 @@ class OrganizationType(BaseNodeType[Organization]):
         """Marshal into a node instance."""
         return cls(
             id=str(organization.id),
+            slug=organization.slug,
             name=organization.name,
             description=organization.description,
             address=AddressType.marshal(organization.address),
@@ -69,8 +74,10 @@ class OrganizationType(BaseNodeType[Organization]):
         after: relay.GlobalID | None = None,
         first: int | None = None,
         last: int | None = None,
-    ) -> Annotated["JobConnectionType", strawberry.lazy("app.companies.types")]:
+    ) -> Annotated["JobConnectionType", strawberry.lazy("app.jobs.types")]:
         """Return a paginated connection of jobs for the organization."""
+        from app.jobs.types import JobConnectionType
+
         paginated_jobs = await job_repo.get_all_by_organization_id(
             organization_id=ObjectId(self.id),
             after=(after.node_id if after else None),
@@ -102,7 +109,18 @@ class OrganizationConnectionType(
     edge_type = OrganizationEdgeType
 
 
+@strawberry.type(name="OrganizationNotFoundError")
+class OrganizationNotFoundErrorType(BaseErrorType):
+    message: str = "Organization not found!"
+
+
 CreateOrganizationPayload = Annotated[
     OrganizationType,
     strawberry.union(name="CreateOrganizationPayload"),
+]
+
+
+OrganizationPayload = Annotated[
+    OrganizationType | OrganizationNotFoundErrorType,
+    strawberry.union(name="OrganizationPayload"),
 ]

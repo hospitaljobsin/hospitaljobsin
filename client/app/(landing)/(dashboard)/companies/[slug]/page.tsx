@@ -2,27 +2,27 @@ import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
-import CompanyDetailViewClientComponent from "./CompanyDetailViewClientComponent";
-import type { pageCompanyDetailMetadataFragment$key } from "./__generated__/pageCompanyDetailMetadataFragment.graphql";
-import type CompanyDetailViewQueryNode from "./__generated__/pageCompanyDetailViewQuery.graphql";
-import type { pageCompanyDetailViewQuery } from "./__generated__/pageCompanyDetailViewQuery.graphql";
+import OrganizationDetailViewClientComponent from "./OrganizationDetailViewClientComponent";
+import type { pageOrganizationDetailMetadataFragment$key } from "./__generated__/pageOrganizationDetailMetadataFragment.graphql";
+import type OrganizationDetailViewQueryNode from "./__generated__/pageOrganizationDetailViewQuery.graphql";
+import type { pageOrganizationDetailViewQuery } from "./__generated__/pageOrganizationDetailViewQuery.graphql";
 
-export const PageCompanyDetailViewQuery = graphql`
-  query pageCompanyDetailViewQuery($slug: String!) {	
-	...pageCompanyDetailMetadataFragment @arguments(slug: $slug)
-    ...CompanyDetailViewClientComponentFragment @arguments(slug: $slug)
+export const PageOrganizationDetailViewQuery = graphql`
+  query pageOrganizationDetailViewQuery($slug: String!) {	
+	...pageOrganizationDetailMetadataFragment @arguments(slug: $slug)
+    ...OrganizationDetailViewClientComponentFragment @arguments(slug: $slug)
   }
 `;
 
-const PageCompanyDetailMetadataFragment = graphql`
- fragment pageCompanyDetailMetadataFragment on Query @inline @argumentDefinitions(
+const PageOrganizationDetailMetadataFragment = graphql`
+ fragment pageOrganizationDetailMetadataFragment on Query @inline @argumentDefinitions(
 	  slug: {
 		type: "String!",
 	  }
 	) {
-	company(slug: $slug) {
+	organization(slug: $slug) {
 	  __typename
-	  ... on Company {
+	  ... on Organization {
 		name
 		description
 		logoUrl
@@ -33,11 +33,11 @@ const PageCompanyDetailMetadataFragment = graphql`
 `;
 
 // Function to load and cache the query result
-const loadCompany = cache(async (slug: string) => {
+const loadOrganization = cache(async (slug: string) => {
 	return await loadSerializableQuery<
-		typeof CompanyDetailViewQueryNode,
-		pageCompanyDetailViewQuery
-	>(PageCompanyDetailViewQuery, {
+		typeof OrganizationDetailViewQueryNode,
+		pageOrganizationDetailViewQuery
+	>(PageOrganizationDetailViewQuery, {
 		slug: slug,
 	});
 });
@@ -48,17 +48,17 @@ export async function generateMetadata({
 	params: Promise<{ slug: string }>;
 }) {
 	const slug = (await params).slug;
-	const preloadedQuery = await loadCompany(slug);
+	const preloadedQuery = await loadOrganization(slug);
 
-	const data = readInlineData<pageCompanyDetailMetadataFragment$key>(
-		PageCompanyDetailMetadataFragment,
+	const data = readInlineData<pageOrganizationDetailMetadataFragment$key>(
+		PageOrganizationDetailMetadataFragment,
 		preloadedQuery.data,
 	);
 
-	if (data.company.__typename !== "Company") {
+	if (data.organization.__typename !== "Organization") {
 		return {
-			title: "Company Not found",
-			description: "The company you are looking for does not exist",
+			title: "Organization Not found",
+			description: "The organization you are looking for does not exist",
 			openGraph: {
 				images: ["/default-image.img"],
 			},
@@ -66,31 +66,33 @@ export async function generateMetadata({
 	}
 
 	return {
-		title: data.company.name,
-		description: data.company.description,
+		title: data.organization.name,
+		description: data.organization.description,
 		openGraph: {
-			images: [data.company.logoUrl || "/default-image.img"],
+			images: [data.organization.logoUrl || "/default-image.img"],
 		},
 	};
 }
 
-export default async function CompanyDetailPage({
+export default async function OrganizationDetailPage({
 	params,
 }: {
 	params: Promise<{ slug: string }>;
 }) {
 	const slug = (await params).slug;
 
-	const preloadedQuery = await loadCompany(slug);
+	const preloadedQuery = await loadOrganization(slug);
 
-	const data = readInlineData<pageCompanyDetailMetadataFragment$key>(
-		PageCompanyDetailMetadataFragment,
+	const data = readInlineData<pageOrganizationDetailMetadataFragment$key>(
+		PageOrganizationDetailMetadataFragment,
 		preloadedQuery.data,
 	);
 
-	if (data.company.__typename !== "Company") {
+	if (data.organization.__typename !== "Organization") {
 		notFound();
 	}
 
-	return <CompanyDetailViewClientComponent preloadedQuery={preloadedQuery} />;
+	return (
+		<OrganizationDetailViewClientComponent preloadedQuery={preloadedQuery} />
+	);
 }

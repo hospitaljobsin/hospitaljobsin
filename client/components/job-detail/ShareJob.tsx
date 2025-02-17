@@ -30,7 +30,7 @@ export const ShareJobFragment = graphql`
     slug
     title
     description
-    company {
+    organization {
         name
         logoUrl
     }
@@ -42,7 +42,7 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 	const [showShareModal, setShowShareModal] = useState(false);
 	const data = useFragment(ShareJobFragment, job);
 	const shareUrl = `${env.NEXT_PUBLIC_URL}${links.jobDetail(data.slug)}`;
-	const title = `Job Position: ${data.title} at ${data.company?.name} - Apply Now!`;
+	const title = `Job Position: ${data.title} at ${data.organization?.name} - Apply Now!`;
 	const description = data.description
 		? `${data.description.slice(0, 100)}...`
 		: undefined;
@@ -87,14 +87,14 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 					<ModalHeader className="flex w-full justify-between items-center gap-4 py-6 px-8">
 						<div className="flex items-center gap-4">
 							<Avatar
-								name={data.company?.name}
-								src={data.company?.logoUrl || undefined}
+								name={data.organization?.name}
+								src={data.organization?.logoUrl || undefined}
 								size="lg"
 							/>
 							<div className="flex flex-col gap-2 items-start">
 								<h4 className="text-xl font-medium">{data.title}</h4>
 								<p className="text-md font-normal text-foreground-500">
-									{data.company?.name}
+									{data.organization?.name}
 								</p>
 							</div>
 						</div>

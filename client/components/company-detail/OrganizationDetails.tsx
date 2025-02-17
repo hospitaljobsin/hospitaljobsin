@@ -1,34 +1,33 @@
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
-import { Globe, MailIcon, MapPin, Phone } from "lucide-react";
+import { Globe, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
-import type { CompanyDetailsFragment$key } from "./__generated__/CompanyDetailsFragment.graphql";
-import type { CompanyDetailsInternalFragment$key as CompanyDetailsInternalFragmentType } from "./__generated__/CompanyDetailsInternalFragment.graphql";
+import type { OrganizationDetailsFragment$key } from "./__generated__/OrganizationDetailsFragment.graphql";
+import type { OrganizationDetailsInternalFragment$key as OrganizationDetailsInternalFragmentType } from "./__generated__/OrganizationDetailsInternalFragment.graphql";
 
-const CompanyDetailsFragment = graphql`
-  fragment CompanyDetailsFragment on Query @argumentDefinitions(
+const OrganizationDetailsFragment = graphql`
+  fragment OrganizationDetailsFragment on Query @argumentDefinitions(
       slug: {
         type: "String!",
       }
     ) {
-    company(slug: $slug) {
+    organization(slug: $slug) {
       __typename
-      ... on Company {
-        ...CompanyDetailsInternalFragment
+      ... on Organization {
+        ...OrganizationDetailsInternalFragment
       }
 	 
     }
   }
 `;
-const CompanyDetailsInternalFragment = graphql`
-  fragment CompanyDetailsInternalFragment on Company {
+const OrganizationDetailsInternalFragment = graphql`
+  fragment OrganizationDetailsInternalFragment on Organization {
     name
     logoUrl
     description
     website
     phone
-    email
     address {
       city
       state
@@ -36,17 +35,17 @@ const CompanyDetailsInternalFragment = graphql`
   }
 `;
 
-export default function CompanyDetails({
+export default function OrganizationDetails({
 	rootQuery,
-}: { rootQuery: CompanyDetailsFragment$key }) {
-	const root = useFragment(CompanyDetailsFragment, rootQuery);
+}: { rootQuery: OrganizationDetailsFragment$key }) {
+	const root = useFragment(OrganizationDetailsFragment, rootQuery);
 	invariant(
-		root.company.__typename === "Company",
-		"Expected 'Company' node type",
+		root.organization.__typename === "Organization",
+		"Expected 'Organization' node type",
 	);
-	const data = useFragment<CompanyDetailsInternalFragmentType>(
-		CompanyDetailsInternalFragment,
-		root.company,
+	const data = useFragment<OrganizationDetailsInternalFragmentType>(
+		OrganizationDetailsInternalFragment,
+		root.organization,
 	);
 
 	return (
@@ -79,9 +78,6 @@ export default function CompanyDetails({
 						<div className="flex items-center gap-2">
 							<MapPin size={16} />{" "}
 							{`${data.address.city}, ${data.address.state}`}
-						</div>
-						<div className="flex items-center gap-2">
-							<MailIcon size={16} /> {data.email}
 						</div>
 						<div className="flex items-center gap-2">
 							<Phone size={16} /> {data.phone}

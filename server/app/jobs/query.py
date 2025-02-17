@@ -11,9 +11,6 @@ from app.context import AuthInfo, Info
 
 from .repositories import JobRepo, SavedJobRepo
 from .types import (
-    CompanyNotFoundErrorType,
-    CompanyPayload,
-    CompanyType,
     JobConnectionType,
     JobNotFoundErrorType,
     JobPayload,
@@ -23,7 +20,7 @@ from .types import (
 
 
 @strawberry.type
-class CompanyQuery:
+class JobQuery:
     @strawberry.field(  # type: ignore[misc]
         graphql_type=JobConnectionType,
         description="Get all jobs available.",
@@ -54,28 +51,6 @@ class CompanyQuery:
         return JobConnectionType.marshal(
             paginated_result=paginated_result,
         )
-
-    @strawberry.field(  # type: ignore[misc]
-        graphql_type=CompanyPayload,
-        description="Get company by ID.",
-    )
-    @inject
-    async def company(
-        self,
-        info: Info,
-        slug: Annotated[
-            str,
-            strawberry.argument(
-                description="Slug of the company",
-            ),
-        ],
-    ) -> CompanyPayload:
-        result = await info.context["loaders"].company_by_slug.load(slug)
-
-        if result is None:
-            return CompanyNotFoundErrorType()
-
-        return CompanyType.marshal(result)
 
     @strawberry.field(  # type: ignore[misc]
         graphql_type=JobPayload,

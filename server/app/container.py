@@ -10,8 +10,8 @@ from app.accounts.repositories import (
 from app.accounts.services import AccountService, ProfileService
 from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
 from app.auth.services import AuthService
-from app.companies.repositories import CompanyRepo, JobRepo, SavedJobRepo
-from app.companies.services import SavedJobService
+from app.jobs.repositories import JobRepo, SavedJobRepo
+from app.jobs.services import SavedJobService
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
 from app.organizations.services import OrganizationService
 
@@ -21,7 +21,6 @@ def create_container() -> aioinject.Container:
     container = aioinject.Container()
     container.register(aioinject.Singleton(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
-    container.register(aioinject.Singleton(CompanyRepo))
     container.register(aioinject.Scoped(AuthService))
     container.register(aioinject.Singleton(ProfileRepo))
     container.register(aioinject.Scoped(ProfileService))

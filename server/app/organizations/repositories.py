@@ -72,6 +72,22 @@ class OrganizationRepo:
             for organization_id in organization_ids
         ]
 
+    async def get_many_by_slugs(
+        self, organization_slugs: list[str]
+    ) -> list[Organization | None]:
+        """Get multiple organizations by slugs."""
+        organizations = await Organization.find(
+            In(Organization.slug, organization_slugs)
+        ).to_list()
+        organization_by_slug = {
+            organization.slug: organization for organization in organizations
+        }
+
+        return [
+            organization_by_slug.get(organization_slug)
+            for organization_slug in organization_slugs
+        ]
+
     async def get_all(
         self,
         first: int | None = None,

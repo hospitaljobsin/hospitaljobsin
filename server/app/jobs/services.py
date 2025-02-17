@@ -2,9 +2,9 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from result import Err, Ok, Result
 
-from app.companies.documents import Job
-from app.companies.exceptions import JobNotFoundError, SavedJobNotFoundError
-from app.companies.repositories import JobRepo, SavedJobRepo
+from app.jobs.documents import Job
+from app.jobs.exceptions import JobNotFoundError, SavedJobNotFoundError
+from app.jobs.repositories import JobRepo, SavedJobRepo
 
 
 class SavedJobService:

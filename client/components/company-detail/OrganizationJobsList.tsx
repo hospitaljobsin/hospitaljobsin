@@ -1,24 +1,24 @@
 import { useFragment, usePaginationFragment } from "react-relay";
 import Job from "../landing/Job";
 
-import type { pageCompanyDetailViewQuery } from "@/app/(landing)/(dashboard)/companies/[slug]/__generated__/pageCompanyDetailViewQuery.graphql";
+import type { pageOrganizationDetailViewQuery } from "@/app/(landing)/(dashboard)/companies/[slug]/__generated__/pageOrganizationDetailViewQuery.graphql";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import JobListSkeleton from "../landing/JobListSkeleton";
-import type { CompanyJobsListFragment$key } from "./__generated__/CompanyJobsListFragment.graphql";
-import type { CompanyJobsListInternalFragment$key } from "./__generated__/CompanyJobsListInternalFragment.graphql";
+import type { OrganizationJobsListFragment$key } from "./__generated__/OrganizationJobsListFragment.graphql";
+import type { OrganizationJobsListInternalFragment$key } from "./__generated__/OrganizationJobsListInternalFragment.graphql";
 
-const CompanyJobsListFragment = graphql`
-fragment CompanyJobsListFragment on Query @argumentDefinitions(
+const OrganizationJobsListFragment = graphql`
+fragment OrganizationJobsListFragment on Query @argumentDefinitions(
       slug: {
         type: "String!",
       }
     )  {
-		company(slug: $slug) {
+		organization(slug: $slug) {
 			__typename
-			... on Company {
-				...CompanyJobsListInternalFragment
+			... on Organization {
+				...OrganizationJobsListInternalFragment
 			}
 		}
 	...JobListInternalFragment
@@ -28,15 +28,15 @@ fragment CompanyJobsListFragment on Query @argumentDefinitions(
 }
 `;
 
-const CompanyJobsListInternalFragment = graphql`
-  fragment CompanyJobsListInternalFragment on Company
+const OrganizationJobsListInternalFragment = graphql`
+  fragment OrganizationJobsListInternalFragment on Organization
   @argumentDefinitions(
     cursor: { type: "ID" }
     count: { type: "Int", defaultValue: 10 }
   )
-  @refetchable(queryName: "CompanyJobsListPaginationQuery") {
+  @refetchable(queryName: "OrganizationJobsListPaginationQuery") {
     jobs(after: $cursor, first: $count)
-      @connection(key: "CompanyJobsListInternalFragment_jobs") {
+      @connection(key: "OrganizationJobsListInternalFragment_jobs") {
       edges {
         node {
           id
@@ -51,19 +51,19 @@ const CompanyJobsListInternalFragment = graphql`
 `;
 
 type Props = {
-	rootQuery: CompanyJobsListFragment$key;
+	rootQuery: OrganizationJobsListFragment$key;
 };
 
-export default function CompanyJobsList({ rootQuery }: Props) {
-	const root = useFragment(CompanyJobsListFragment, rootQuery);
+export default function OrganizationJobsList({ rootQuery }: Props) {
+	const root = useFragment(OrganizationJobsListFragment, rootQuery);
 	invariant(
-		root.company.__typename === "Company",
-		"Expected 'Company' node type",
+		root.organization.__typename === "Organization",
+		"Expected 'Organization' node type",
 	);
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<
-		pageCompanyDetailViewQuery,
-		CompanyJobsListInternalFragment$key
-	>(CompanyJobsListInternalFragment, root.company);
+		pageOrganizationDetailViewQuery,
+		OrganizationJobsListInternalFragment$key
+	>(OrganizationJobsListInternalFragment, root.organization);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 

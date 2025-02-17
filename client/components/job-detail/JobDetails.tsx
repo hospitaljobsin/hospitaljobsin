@@ -62,7 +62,7 @@ const JobDetailsInternalFragment = graphql`
     minExperience
     maxExperience
     createdAt
-    company {
+    organization {
       slug
       name
       description
@@ -156,7 +156,7 @@ export default function JobDetails({
 							<h4 className="text-xl font-medium">{data.title}</h4>
 
 							<p className="text-md font-normal text-foreground-500">
-								{data.company?.name}
+								{data.organization?.name}
 							</p>
 						</div>
 
@@ -197,8 +197,8 @@ export default function JobDetails({
 			<Card fullWidth className="p-6" shadow="none">
 				<CardBody className="flex items-center gap-6 flex-row w-full">
 					<Image
-						src={data.company?.logoUrl || ""}
-						alt={data.company?.name || ""}
+						src={data.organization?.logoUrl || ""}
+						alt={data.organization?.name || ""}
 						width={50}
 						height={50}
 					/>
@@ -209,11 +209,11 @@ export default function JobDetails({
 							color="foreground"
 							isExternal
 							showAnchorIcon
-							href={`/companies/${data.company?.slug || ""}`}
+							href={`/companies/${data.organization?.slug || ""}`}
 						>
-							{data.company?.name}
+							{data.organization?.name}
 						</Link>
-						<p className="text-default-500">{data.company?.description}</p>
+						<p className="text-default-500">{data.organization?.description}</p>
 					</div>
 				</CardBody>
 			</Card>

@@ -8,9 +8,9 @@ from strawberry import relay
 from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated
-from app.companies.exceptions import JobNotFoundError, SavedJobNotFoundError
-from app.companies.services import SavedJobService
 from app.context import AuthInfo
+from app.jobs.exceptions import JobNotFoundError, SavedJobNotFoundError
+from app.jobs.services import SavedJobService
 
 from .types import (
     JobNotFoundErrorType,
@@ -24,7 +24,7 @@ from .types import (
 
 
 @strawberry.type
-class CompanyMutation:
+class JobMutation:
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=SaveJobPayload,
         description="Save a job.",

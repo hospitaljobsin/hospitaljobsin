@@ -34,7 +34,7 @@ export const JobFragment = graphql`
     minExperience
     maxExperience
     createdAt
-    company {
+    organization {
       name
       logoUrl
       address {
@@ -133,15 +133,15 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 				<div className="flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center">
 					<div className="flex items-center gap-4">
 						<Image
-							src={data.company?.logoUrl || ""}
-							alt={data.company?.name || ""}
+							src={data.organization?.logoUrl || ""}
+							alt={data.organization?.name || ""}
 							width={50}
 							height={50}
 						/>
 						<div className="flex flex-col gap-2 items-start">
 							<h4 className="text-lg sm:text-xl font-medium">{data.title}</h4>
 							<p className="text-sm sm:text-md font-normal text-foreground-500">
-								{data.company?.name}
+								{data.organization?.name}
 							</p>
 						</div>
 					</div>

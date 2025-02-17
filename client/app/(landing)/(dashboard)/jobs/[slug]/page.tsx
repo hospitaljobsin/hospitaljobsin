@@ -26,7 +26,7 @@ const PageJobDetailMetadataFragment = graphql`
       ... on Job {
         title
 		description
-		company {
+		organization {
 			logoUrl
 		}
       }
@@ -72,7 +72,7 @@ export async function generateMetadata({
 		title: data.job.title,
 		description: data.job.description,
 		openGraph: {
-			images: [data.job.company?.logoUrl || "/default-image.img"],
+			images: [data.job.organization?.logoUrl || "/default-image.img"],
 		},
 	};
 }

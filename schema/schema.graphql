@@ -10,6 +10,10 @@ type Account implements Node {
   profile: ProfilePayload!
 }
 
+type AccountNotFoundError implements Error {
+  message: String!
+}
+
 type Address {
   line1: String
   line2: String
@@ -28,25 +32,7 @@ input AddressInput {
   pincode: String
 }
 
-type Company implements Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
-  name: String!
-  slug: String!
-  description: String!
-  address: Address!
-  phone: String!
-  website: String!
-  email: String!
-  logoUrl: String
-  jobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
-}
-
-type CompanyNotFoundError implements Error {
-  message: String!
-}
-
-union CompanyPayload = Company | CompanyNotFoundError
+union CreateOrganizationPayload = Organization
 
 enum Currency {
   INR
@@ -126,7 +112,7 @@ type Job implements Node {
   expiresAt: DateTime
   createdAt: DateTime!
   isSaved: Boolean!
-  company: Company
+  organization: Organization
 }
 
 type JobConnection {
@@ -271,7 +257,10 @@ type Mutation {
   updateProfileLanguages(languages: [LanguageInput!]!): UpdateProfilePayload! @isAuthenticated
 
   """Update the current user's account."""
-  updateAccount(fullName: String!): UpdateProfilePayload! @isAuthenticated
+  updateAccount(fullName: String!): UpdateAccountPayload! @isAuthenticated
+
+  """Create an organization."""
+  createOrganization: CreateOrganizationPayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""
@@ -283,6 +272,25 @@ interface Node {
 type NotAuthenticatedError implements Error {
   message: String!
 }
+
+type Organization implements Node {
+  """The Globally Unique ID of this object"""
+  id: ID!
+  name: String!
+  slug: String!
+  description: String!
+  address: Address!
+  phone: String!
+  website: String!
+  logoUrl: String
+  jobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
+}
+
+type OrganizationNotFoundError implements Error {
+  message: String!
+}
+
+union OrganizationPayload = Organization | OrganizationNotFoundError
 
 """Information to aid in pagination."""
 type PageInfo {
@@ -341,18 +349,18 @@ type Query {
     last: Int = null
   ): JobConnection!
 
-  """Get company by ID."""
-  company(
-    """Slug of the company"""
-    slug: String!
-  ): CompanyPayload!
-
   """Get job by ID."""
   job(
     """Slug of the job"""
     slug: String!
   ): JobPayload!
   savedJobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): SavedJobConnection! @isAuthenticated
+
+  """Get organization by slug."""
+  organization(
+    """Slug of the organization"""
+    slug: String!
+  ): OrganizationPayload!
 }
 
 union RegisterPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | PasswordNotStrongError
@@ -401,6 +409,8 @@ union UnsaveJobPayload = UnsaveJobResult | SavedJobNotFoundError
 type UnsaveJobResult {
   savedJobEdge: SavedJobEdge!
 }
+
+union UpdateAccountPayload = Account | AccountNotFoundError
 
 union UpdateProfilePayload = Account
 

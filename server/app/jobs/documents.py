@@ -8,20 +8,7 @@ from pymongo.operations import SearchIndexModel
 
 from app.accounts.documents import Account
 from app.base.models import Address
-
-
-class Company(Document):
-    name: str
-    slug: Annotated[str, Indexed(unique=True)]
-    description: str
-    address: Address
-    phone: str
-    website: str
-    email: str
-    logo_url: str | None = None
-
-    class Settings:
-        name = "companies"
+from app.organizations.documents import Organization
 
 
 class Job(Document):
@@ -51,7 +38,7 @@ class Job(Document):
     updated_at: datetime
     expires_at: datetime | None = None
 
-    company: Link[Company]
+    organization: Link[Organization]
 
     class Settings:
         name = "jobs"
