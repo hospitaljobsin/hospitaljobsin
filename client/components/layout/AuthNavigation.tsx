@@ -159,7 +159,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						<DropdownItem
 							key="profile"
 							startContent={<Building className="h-4 w-4" />}
-							href={links.profile}
+							href={links.createOrganization}
 						>
 							New Organization
 						</DropdownItem>
