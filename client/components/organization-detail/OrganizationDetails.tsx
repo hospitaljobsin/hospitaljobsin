@@ -52,8 +52,8 @@ export default function OrganizationDetails({
 		<div className="w-full flex flex-col gap-6">
 			<Card fullWidth className="p-6 space-y-6" shadow="none">
 				<CardHeader>
-					<div className="flex w-full justify-between gap-4 sm:items-center flex-col sm:flex-row items-start">
-						<div className="flex gap-6 items-center">
+					<div className="flex w-full justify-between gap-12 sm:gap-6 sm:items-center flex-col sm:flex-row items-start">
+						<div className="flex gap-6 items-start">
 							<Image
 								src={data.logoUrl || ""}
 								alt={data.name}
@@ -62,10 +62,11 @@ export default function OrganizationDetails({
 							/>
 							<div className="flex flex-col gap-3 items-start">
 								<h4 className="text-xl font-medium">{data.name}</h4>
-
-								<p className="text-md font-normal text-foreground-500">
-									{data.description}
-								</p>
+								{data.description && (
+									<p className="text-md font-normal text-foreground-500">
+										{data.description}
+									</p>
+								)}
 							</div>
 						</div>
 						<Button size="lg" className="w-full sm:w-auto">
@@ -89,7 +90,7 @@ export default function OrganizationDetails({
 								<Globe size={16} />{" "}
 								<Link
 									showAnchorIcon
-									color="foreground"
+									className="text-foreground-600"
 									href={data.website}
 									isExternal
 								>
