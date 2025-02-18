@@ -131,7 +131,7 @@ class OrganizationMemberRepo:
 
         return await paginator.paginate(
             search_criteria=OrganizationMember.find(
-                OrganizationMember.organization == organization_id,
+                OrganizationMember.organization.id == organization_id,
                 fetch_links=True,
                 nesting_depth=1,
             ),
