@@ -12,6 +12,7 @@ from app.organizations.exceptions import OrganizationSlugInUseError
 from app.organizations.services import OrganizationService
 
 from .types import (
+    CreateOrganizationLogoPresignedURLPayloadType,
     CreateOrganizationPayload,
     OrganizationSlugInUseErrorType,
     OrganizationType,
@@ -70,3 +71,24 @@ class OrganizationMutation:
                     return OrganizationSlugInUseErrorType()
 
         return OrganizationType.marshal(result.ok_value)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreateOrganizationLogoPresignedURLPayloadType,
+        description="Create an organization logo presigned URL.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def create_organization_logo_presigned_url(
+        self,
+        info: AuthInfo,
+        organization_service: Annotated[OrganizationService, Inject],
+    ) -> CreateOrganizationLogoPresignedURLPayloadType:
+        """Create an organization logo presigned url."""
+        result = await organization_service.create_logo_presigned_url()
+        return CreateOrganizationLogoPresignedURLPayloadType(presigned_url=result)

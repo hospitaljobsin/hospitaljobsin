@@ -34,6 +34,10 @@ input AddressInput {
   pincode: String
 }
 
+type CreateOrganizationLogoPresignedURLPayload {
+  presignedUrl: String!
+}
+
 union CreateOrganizationPayload = Organization | OrganizationSlugInUseError
 
 enum Currency {
@@ -278,6 +282,9 @@ type Mutation {
     """The description of the organization."""
     description: String = null
   ): CreateOrganizationPayload! @isAuthenticated
+
+  """Create an organization logo presigned URL."""
+  createOrganizationLogoPresignedUrl: CreateOrganizationLogoPresignedURLPayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""

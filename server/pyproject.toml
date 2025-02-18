@@ -17,13 +17,21 @@ dependencies = [
     "uvicorn[standard]>=0.32.1",
     "passlib[argon2]>=1.7.4",
     "result>=0.17.0",
-    "types-passlib>=1.7.7.20241221",
     "authlib>=1.4.0",
     "httpx>=0.28.1",
-    "types-authlib>=1.4.0.20241230",
     "itsdangerous>=2.2.0",
     "aiosmtplib>=3.0.2",
     "jinja2>=3.1.5",
     "humanize>=4.11.0",
     "email-validator>=2.2.0",
+    "boto3>=1.36.1",
+    "aioboto3>=13.4.0",
+
+]
+
+[tool.uv]
+dev-dependencies = [
+    "types-passlib>=1.7.7.20241221",
+    "types-aioboto3[essential]>=13.4.0",
+    "types-authlib>=1.4.0.20241230",
 ]

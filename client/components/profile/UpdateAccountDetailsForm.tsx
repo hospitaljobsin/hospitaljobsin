@@ -135,8 +135,7 @@ export default function UpdateAccountDetailsForm({
 								/>
 							</div>
 							<Input
-								label="
-								Email Address"
+								label="Email Address"
 								placeholder="Add your 
 								email address"
 								value={data.email}

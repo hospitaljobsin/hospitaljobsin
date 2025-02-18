@@ -123,6 +123,10 @@ class Settings(BaseSettings):
     # Recaptcha config
     recaptcha_secret_key: SecretStr
 
+    # AWS Config
+
+    s3_avatar_bucket_name: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",

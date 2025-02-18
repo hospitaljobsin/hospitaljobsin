@@ -44,6 +44,8 @@ hospital-job-management/
 - **UV Package Manager**
 - **MongoDB**  
 
+local dev- create an S3 bucket named avatars
+
 ### Backend Setup  
 1. Navigate to the `server` directory:  
    ```bash  

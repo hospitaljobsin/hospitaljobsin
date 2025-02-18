@@ -190,3 +190,8 @@ OrganizationPayload = Annotated[
     OrganizationType | OrganizationNotFoundErrorType,
     strawberry.union(name="OrganizationPayload"),
 ]
+
+
+@strawberry.type(name="CreateOrganizationLogoPresignedURLPayload")
+class CreateOrganizationLogoPresignedURLPayloadType:
+    presigned_url: str

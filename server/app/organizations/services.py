@@ -1,4 +1,5 @@
 from result import Err, Ok, Result
+from types_aiobotocore_s3 import S3Client
 
 from app.accounts.documents import Account
 from app.base.models import Address
@@ -12,9 +13,11 @@ class OrganizationService:
         self,
         organization_repo: OrganizationRepo,
         organization_member_repo: OrganizationMemberRepo,
+        s3_client: S3Client,
     ):
         self._organization_repo = organization_repo
         self._organization_member_repo = organization_member_repo
+        self._s3_client = s3_client
 
     async def create(
         self,
@@ -51,3 +54,14 @@ class OrganizationService:
         )
 
         return Ok(organization)
+
+    async def create_logo_presigned_url(self) -> str:
+        """Create a presigned URL for uploading an organization logo."""
+        return await self._s3_client.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": "my-bucket",
+                "Key": "my-key",
+            },
+            ExpiresIn=3600,
+        )
