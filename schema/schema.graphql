@@ -300,7 +300,7 @@ type Organization implements Node {
   name: String!
   slug: String!
   description: String
-  address: Address
+  address: Address!
   email: String
   website: String
   logoUrl: String!

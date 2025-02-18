@@ -39,7 +39,7 @@ class OrganizationService:
             name=name,
             slug=slug,
             description=description,
-            address=None,
+            address=Address(),
             website=website,
             logo_url=logo_url,
         )

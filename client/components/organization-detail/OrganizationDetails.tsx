@@ -76,7 +76,7 @@ export default function OrganizationDetails({
 				</CardHeader>
 				<CardBody className="flex flex-col gap-6 w-full">
 					<div className="flex flex-wrap gap-8 items-center text-foreground-600 w-full">
-						{data.address && (
+						{data.address.city && data.address.city && (
 							<div className="flex items-center gap-2">
 								<MapPin size={16} />{" "}
 								{`${data.address.city}, ${data.address.state}`}

@@ -14,7 +14,7 @@ class Organization(Document):
     name: str
     slug: Indexed(str, unique=True)
     description: str | None = None
-    address: Address | None = None
+    address: Address
     email: str | None = None
     website: str | None = None
     logo_url: str | None = None
