@@ -136,10 +136,10 @@ export default function UpdateAccountDetailsForm({
 							</div>
 							<Input
 								label="
-								avatarUrl Address"
+								Email Address"
 								placeholder="Add your 
-								avatarUrl"
-								value={data.avatarUrl}
+								email address"
+								value={data.email}
 								isDisabled
 							/>
 						</div>
