@@ -96,7 +96,7 @@ class OrganizationType(BaseNodeType[Organization]):
         """Return the organization's logo URL, or a placeholder."""
         if self.assigned_logo_url is not None:
             return self.assigned_logo_url
-        slug_hash = hashlib.sha256(self.slug).hexdigest()
+        slug_hash = hashlib.sha256(self.slug.encode("utf-8")).hexdigest()
         return f"https://api.dicebear.com/9.x/identicon/png?seed={slug_hash}"
 
     @strawberry.field

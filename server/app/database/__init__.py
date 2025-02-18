@@ -9,6 +9,16 @@ from app.jobs.documents import Job, SavedJob
 from app.organizations.documents import Organization, OrganizationMember
 
 
+def rebuild_models():
+    """Rebuild models to update forward references."""
+    from app.accounts.documents import Account  # noqa: F401
+    from app.organizations.documents import OrganizationMember  # noqa: F401
+
+    Account.model_rebuild()
+
+    OrganizationMember.model_rebuild()
+
+
 @asynccontextmanager
 async def initialize_database(database_url: str):
     client: AsyncIOMotorClient = AsyncIOMotorClient(
@@ -18,6 +28,7 @@ async def initialize_database(database_url: str):
         serverSelectionTimeoutMS=1000,
     )
     try:
+        rebuild_models()
         await init_beanie(
             database=client.get_default_database(),
             document_models=[

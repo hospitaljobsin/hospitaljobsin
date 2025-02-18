@@ -1,4 +1,5 @@
 "use client";
+import links from "@/lib/links";
 import {
 	Button,
 	Card,
@@ -9,6 +10,7 @@ import {
 	Textarea,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next-nprogress-bar";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -18,34 +20,46 @@ import type { NewOrganizationFormMutation } from "./__generated__/NewOrganizatio
 const CreateOrganizationMutation = graphql`
 mutation NewOrganizationFormMutation($fullName: String!, $slug: String!, $website: String, $description: String) {
     createOrganization(fullName: $fullName, slug: $slug, website: $website, description: $description) {
+		__typename
         ...on Organization {
             __typename
+			slug
         }
+		... on OrganizationSlugInUseError {
+			message
+		}
     }
 }
 `;
 
 const formSchema = z.object({
 	fullName: z.string().min(1, "This field is required").max(75),
-	slug: z.string().min(1, "This field is required").max(75),
-	website: z.string().url().optional(),
-	description: z.string().optional(),
+	slug: z
+		.string()
+		.min(1, "This field is required")
+		.max(75)
+		.regex(/^[a-z0-9-]+$/, "Must be a valid slug")
+		.refine((value) => value === value.toLowerCase(), "Must be lowercase"),
+	website: z.string().url().nullable(),
+	description: z.string().nullable(),
 });
 
 export default function NewOrganizationForm() {
+	const router = useRouter();
 	const [commitMutation, isMutationInFlight] =
 		useMutation<NewOrganizationFormMutation>(CreateOrganizationMutation);
 	const {
 		handleSubmit,
 		control,
+		setError,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			fullName: "",
 			slug: "",
-			website: "",
-			description: "",
+			website: null,
+			description: null,
 		},
 	});
 
@@ -57,8 +71,18 @@ export default function NewOrganizationForm() {
 				website: formData.website,
 				description: formData.description,
 			},
-			onCompleted(response, errors) {
-				console.log(response, errors);
+			onCompleted(response) {
+				if (
+					response.createOrganization.__typename ===
+					"OrganizationSlugInUseError"
+				) {
+					setError("slug", { message: response.createOrganization.message });
+				} else if (response.createOrganization.__typename === "Organization") {
+					// Redirect to the organization detail page
+					router.push(
+						links.organizationDetail(response.createOrganization.slug),
+					);
+				}
 			},
 		});
 	}
@@ -113,7 +137,7 @@ export default function NewOrganizationForm() {
 									label="Organization Website"
 									labelPlacement="outside"
 									placeholder="https://example.com"
-									value={field.value}
+									value={field.value || ""}
 									errorMessage={errors.website?.message}
 									isInvalid={!!errors.website}
 								/>
@@ -129,7 +153,7 @@ export default function NewOrganizationForm() {
 								label="Organization Description"
 								labelPlacement="outside"
 								placeholder="Enter Organization Description"
-								value={field.value}
+								value={field.value || ""}
 								errorMessage={errors.description?.message}
 								isInvalid={!!errors.description}
 							/>
@@ -141,6 +165,7 @@ export default function NewOrganizationForm() {
 						type="submit"
 						fullWidth
 						isLoading={isSubmitting || isMutationInFlight}
+						size="lg"
 					>
 						Create Organization
 					</Button>

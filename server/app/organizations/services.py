@@ -1,7 +1,7 @@
+from bson import ObjectId
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
-from app.accounts.documents import Account
 from app.base.models import Address
 from app.organizations.documents import Organization
 from app.organizations.exceptions import OrganizationSlugInUseError
@@ -21,12 +21,10 @@ class OrganizationService:
 
     async def create(
         self,
-        admin: Account,
+        admin_id: ObjectId,
         name: str,
         slug: str,
         description: str,
-        address: Address,
-        phone: int,
         website: str,
         logo_url: str | None = None,
     ) -> Result[Organization, OrganizationSlugInUseError]:
@@ -39,9 +37,9 @@ class OrganizationService:
 
         organization = await self._organization_repo.create(
             name=name,
+            slug=slug,
             description=description,
-            address=address,
-            phone=phone,
+            address=Address(),
             website=website,
             logo_url=logo_url,
         )
@@ -49,7 +47,7 @@ class OrganizationService:
         # create initial admin member
         await self._organization_member_repo.create(
             organization=organization,
-            account=admin,
+            account_id=admin_id,
             role="admin",
         )
 

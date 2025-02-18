@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardHeader } from "@heroui/react";
+import { Button, Card, CardBody, CardHeader, Link } from "@heroui/react";
 import { Globe, Mail, MapPin } from "lucide-react";
 import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
@@ -79,12 +79,24 @@ export default function OrganizationDetails({
 							<MapPin size={16} />{" "}
 							{`${data.address.city}, ${data.address.state}`}
 						</div>
-						<div className="flex items-center gap-2">
-							<Mail size={16} /> {data.email}
-						</div>
-						<div className="flex items-center gap-2">
-							<Globe size={16} /> {data.website}
-						</div>
+						{data.email && (
+							<div className="flex items-center gap-2">
+								<Mail size={16} /> {data.email}
+							</div>
+						)}
+						{data.website && (
+							<div className="flex items-center gap-2">
+								<Globe size={16} />{" "}
+								<Link
+									showAnchorIcon
+									color="foreground"
+									href={data.website}
+									isExternal
+								>
+									{data.website}
+								</Link>
+							</div>
+						)}
 					</div>
 				</CardBody>
 			</Card>

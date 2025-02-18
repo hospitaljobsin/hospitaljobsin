@@ -12,19 +12,19 @@ from .documents import Organization, OrganizationMember
 class OrganizationRepo:
     async def create(
         self,
+        slug: str,
         name: str,
         description: str,
         address: Address,
-        phone: int,
         website: str,
         logo_url: str | None = None,
     ) -> Organization:
         """Create a new organization."""
         organization = Organization(
+            slug=slug,
             name=name,
             description=description,
             address=address,
-            phone=phone,
             website=website,
             logo_url=logo_url,
         )
@@ -102,14 +102,14 @@ class OrganizationMemberRepo:
     async def create(
         self,
         organization: Organization,
-        account: Account,
+        account_id: ObjectId,
         role: str,
     ) -> OrganizationMember:
         """Create a new organization member."""
         organization_member = OrganizationMember(
             organization=organization,
-            account=account,
             role=role,
+            account=account_id,
         )
 
         return await organization_member.insert()

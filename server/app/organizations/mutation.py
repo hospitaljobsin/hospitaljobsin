@@ -47,10 +47,6 @@ class OrganizationMutation:
             str | None,
             strawberry.argument(description="The website of the organization."),
         ] = None,
-        email: Annotated[
-            str | None,
-            strawberry.argument(description="The email of the organization."),
-        ] = None,
         description: Annotated[
             str | None,
             strawberry.argument(description="The description of the organization."),
@@ -58,10 +54,10 @@ class OrganizationMutation:
     ) -> CreateOrganizationPayload:
         """Create an organization."""
         result = await organization_service.create(
+            admin_id=info.context["current_user_id"],
             name=full_name,
             slug=slug,
             website=website,
-            email=email,
             description=description,
         )
 
