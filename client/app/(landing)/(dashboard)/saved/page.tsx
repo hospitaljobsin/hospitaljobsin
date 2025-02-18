@@ -1,4 +1,4 @@
-import SavedView from "@/components/saved/SavedView";
+import SavedView from "@/components/saved-jobs/SavedView";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";

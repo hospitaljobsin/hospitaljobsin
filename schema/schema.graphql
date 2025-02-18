@@ -276,9 +276,6 @@ type Mutation {
     """The website of the organization."""
     website: String = null
 
-    """The email of the organization."""
-    email: String = null
-
     """The description of the organization."""
     description: String = null
   ): CreateOrganizationPayload! @isAuthenticated
@@ -303,7 +300,7 @@ type Organization implements Node {
   name: String!
   slug: String!
   description: String
-  address: Address!
+  address: Address
   email: String
   website: String
   logoUrl: String!

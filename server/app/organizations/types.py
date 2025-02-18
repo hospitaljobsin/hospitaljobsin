@@ -55,7 +55,7 @@ class OrganizationType(BaseNodeType[Organization]):
     name: str
     slug: str
     description: str | None
-    address: AddressType
+    address: AddressType | None
     email: str | None
     website: str | None
 
@@ -69,7 +69,9 @@ class OrganizationType(BaseNodeType[Organization]):
             slug=organization.slug,
             name=organization.name,
             description=organization.description,
-            address=AddressType.marshal(organization.address),
+            address=AddressType.marshal(organization.address)
+            if organization.address
+            else None,
             email=organization.email,
             website=organization.website,
             assigned_logo_url=organization.logo_url,

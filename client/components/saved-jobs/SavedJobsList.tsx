@@ -82,7 +82,7 @@ export default function SavedJobsList({ rootQuery }: Props) {
 		!data.savedJobs.pageInfo.hasNextPage
 	) {
 		return (
-			<Card className="p-6 space-y-6" fullWidth>
+			<Card className="p-6 space-y-6" fullWidth shadow="none">
 				<CardBody className="flex flex-col gap-8 w-full items-center">
 					<Image
 						src="/images/bookmark.svg" // Add an illustration asset here
