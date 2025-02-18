@@ -20,7 +20,7 @@ const OrganizationDetailViewClientComponentFragment = graphql`
 		type: "String!",
 	  }
 	) {
-		...OrganizationOverviewTabFragment @arguments(slug: $slug)
+		...OrganizationDetailViewFragment @arguments(slug: $slug)
   }
 `;
 
