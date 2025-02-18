@@ -1,5 +1,4 @@
 "use client";
-import { getGravatarURL } from "@/lib/avatars";
 import links from "@/lib/links";
 import {
 	Button,
@@ -34,7 +33,7 @@ const AuthNavigationFragment = graphql`
   fragment AuthNavigationFragment on Account {
         __typename
         fullName
-        email
+		avatarUrl
   }
 `;
 
@@ -66,7 +65,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					onPress={onDrawerOpen}
 				>
 					<Image
-						src={`https://${getGravatarURL(data.email)}`}
+						src={data.avatarUrl}
 						alt={data.fullName}
 						width={35}
 						height={35}
@@ -85,7 +84,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					<DrawerBody className="gap-4 flex flex-col items-center">
 						<div className="flex flex-row items-center gap-4 w-full">
 							<Image
-								src={`https://${getGravatarURL(data.email)}`}
+								src={data.avatarUrl}
 								alt={data.fullName}
 								width={25}
 								height={25}
@@ -171,7 +170,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					<DropdownTrigger>
 						<Button disableRipple isIconOnly radius="sm" variant="light">
 							<Image
-								src={`https://${getGravatarURL(data.email)}`}
+								src={data.avatarUrl}
 								alt={data.fullName}
 								width={35}
 								height={35}
@@ -193,7 +192,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						<DropdownItem key="account-info">
 							<div className="flex flex-row items-center gap-4 w-full">
 								<Image
-									src={`https://${getGravatarURL(data.email)}`}
+									src={data.avatarUrl}
 									alt={data.fullName}
 									width={25}
 									height={25}

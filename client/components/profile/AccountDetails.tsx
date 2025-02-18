@@ -1,6 +1,5 @@
 import { useFragment } from "react-relay";
 
-import { getGravatarURL } from "@/lib/avatars";
 import {
 	Avatar,
 	Badge,
@@ -18,6 +17,7 @@ const AccountDetailsFragment = graphql`
   fragment AccountDetailsFragment on Account {
     fullName
     email
+	avatarUrl
   }
 `;
 
@@ -63,11 +63,7 @@ export default function AccountDetails({ rootQuery, onEditAccount }: Props) {
 						shape="circle"
 						showOutline={false}
 					>
-						<Avatar
-							name={data.fullName}
-							size="lg"
-							src={getGravatarURL(data.email)}
-						/>
+						<Avatar name={data.fullName} size="lg" src={data.avatarUrl} />
 					</Badge>
 					<div className="flex flex-col gap-2 w-full items-start justify-center">
 						<h1 className="w-full text-lg font-medium truncate max-w-64">

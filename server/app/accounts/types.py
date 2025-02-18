@@ -1,11 +1,16 @@
+import hashlib
+import urllib
 from collections.abc import Iterable
 from datetime import date, datetime
 from enum import Enum
-from typing import Annotated, Self
+from typing import TYPE_CHECKING, Annotated, Self
+from urllib.parse import urlencode
 
 import strawberry
+from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
+from strawberry import relay
 
 from app.accounts.documents import Account, CurrentJob, Language, Profile
 from app.base.types import (
@@ -15,6 +20,10 @@ from app.base.types import (
     NotAuthenticatedErrorType,
 )
 from app.context import Info
+from app.organizations.repositories import OrganizationMemberRepo
+
+if TYPE_CHECKING:
+    from app.organizations.types import OrganizationMemberConnectionType
 
 
 @strawberry.type(name="ProfileNotFoundError")
@@ -200,6 +209,49 @@ class AccountType(BaseNodeType[Account]):
             return ProfileType.marshal(self.profile_ref)
         result = await info.context["loaders"].profile_by_id.load(str(self.profile_ref))
         return ProfileType.marshal(result)
+
+    @strawberry.field
+    async def avatar_url(self) -> str:
+        """Return the user's avatar URL."""
+        email_encoded = self.email.lower().encode("utf-8")
+
+        # Generate the SHA256 hash of the email
+        email_hash = hashlib.sha256(email_encoded).hexdigest()
+
+        seed_query_params = urlencode({"seed": urllib.parse.quote_plus(self.full_name)})
+        # Construct the URL with encoded query parameters
+        query_params = urlencode(
+            {"d": f"https://api.dicebear.com/9.x/shapes/png/{seed_query_params}"}
+        )
+        return f"https://www.gravatar.com/avatar/{email_hash}?{query_params}"
+
+    @strawberry.field
+    @inject
+    async def organization_memberships(
+        self,
+        organization_member_repo: Annotated[
+            OrganizationMemberRepo,
+            Inject,
+        ],
+        before: relay.GlobalID | None = None,
+        after: relay.GlobalID | None = None,
+        first: int | None = None,
+        last: int | None = None,
+    ) -> Annotated[
+        "OrganizationMemberConnectionType", strawberry.lazy("app.organizations.types")
+    ]:
+        """Return a paginated connection of organization memberships for the user."""
+        from app.organizations.types import OrganizationMemberConnectionType
+
+        paginated_jobs = await organization_member_repo.get_all_by_account_id(
+            organization_id=ObjectId(self.id),
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
+            first=first,
+            last=last,
+        )
+
+        return OrganizationMemberConnectionType.marshal(paginated_jobs)
 
 
 ViewerPayload = Annotated[

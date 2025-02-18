@@ -8,6 +8,8 @@ type Account implements Node {
   hasOnboarded: Boolean!
   updatedAt: DateTime
   profile: ProfilePayload!
+  avatarUrl: String!
+  organizationMemberships(before: ID = null, after: ID = null, first: Int = null, last: Int = null): OrganizationMemberConnection!
 }
 
 type AccountNotFoundError implements Error {
@@ -32,7 +34,7 @@ input AddressInput {
   pincode: String
 }
 
-union CreateOrganizationPayload = Organization
+union CreateOrganizationPayload = Organization | OrganizationSlugInUseError
 
 enum Currency {
   INR
@@ -297,8 +299,24 @@ type Organization implements Node {
   address: Address!
   email: String
   website: String
-  logoUrl: String
+  logoUrl: String!
   jobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
+  members(before: ID = null, after: ID = null, first: Int = null, last: Int = null): OrganizationMemberConnection!
+}
+
+type OrganizationMemberConnection {
+  pageInfo: PageInfo!
+  edges: [OrganizationMemberEdge!]!
+}
+
+type OrganizationMemberEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+
+  """The item at the end of the edge"""
+  node: Account!
+  role: String!
+  createdAt: DateTime!
 }
 
 type OrganizationNotFoundError implements Error {
@@ -306,6 +324,10 @@ type OrganizationNotFoundError implements Error {
 }
 
 union OrganizationPayload = Organization | OrganizationNotFoundError
+
+type OrganizationSlugInUseError implements Error {
+  message: String!
+}
 
 """Information to aid in pagination."""
 type PageInfo {

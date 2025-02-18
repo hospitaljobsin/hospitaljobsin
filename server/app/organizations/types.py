@@ -1,12 +1,15 @@
+import hashlib
 from collections.abc import Iterable
+from datetime import datetime
 from typing import TYPE_CHECKING, Annotated, Self
 
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
-from strawberry import relay
+from strawberry import Private, relay
 
+from app.accounts.types import AccountType
 from app.base.types import (
     AddressType,
     BaseConnectionType,
@@ -16,10 +19,35 @@ from app.base.types import (
 )
 from app.context import Info
 from app.jobs.repositories import JobRepo
-from app.organizations.documents import Organization
+from app.organizations.documents import Organization, OrganizationMember
+from app.organizations.repositories import OrganizationMemberRepo
 
 if TYPE_CHECKING:
     from app.jobs.types import JobConnectionType
+
+
+@strawberry.type(name="OrganizationMemberEdge")
+class OrganizationMemberEdgeType(BaseEdgeType[AccountType, OrganizationMember]):
+    role: str
+    created_at: datetime
+
+    @classmethod
+    def marshal(cls, organization_member: OrganizationMember) -> Self:
+        """Marshal into a edge instance."""
+        return cls(
+            node=AccountType.marshal(organization_member.account),
+            cursor=relay.to_base64(AccountType, organization_member.account.id),
+            created_at=organization_member.id.generation_time,
+            role=organization_member.role,
+        )
+
+
+@strawberry.type(name="OrganizationMemberConnection")
+class OrganizationMemberConnectionType(
+    BaseConnectionType[AccountType, OrganizationMemberEdgeType]
+):
+    node_type = AccountType
+    edge_type = OrganizationMemberEdgeType
 
 
 @strawberry.type(name="Organization")
@@ -30,7 +58,8 @@ class OrganizationType(BaseNodeType[Organization]):
     address: AddressType
     email: str | None
     website: str | None
-    logo_url: str | None
+
+    assigned_logo_url: Private[str | None]
 
     @classmethod
     def marshal(cls, organization: Organization) -> Self:
@@ -43,7 +72,7 @@ class OrganizationType(BaseNodeType[Organization]):
             address=AddressType.marshal(organization.address),
             email=organization.email,
             website=organization.website,
-            logo_url=organization.logo_url,
+            assigned_logo_url=organization.logo_url,
         )
 
     @classmethod
@@ -61,6 +90,14 @@ class OrganizationType(BaseNodeType[Organization]):
             cls.marshal(organization) if organization is not None else organization
             for organization in organizations
         ]
+
+    @strawberry.field
+    async def logo_url(self) -> str:
+        """Return the organization's logo URL, or a placeholder."""
+        if self.assigned_logo_url is not None:
+            return self.assigned_logo_url
+        slug_hash = hashlib.sha256(self.slug).hexdigest()
+        return f"https://api.dicebear.com/9.x/identicon/png?seed={slug_hash}"
 
     @strawberry.field
     @inject
@@ -89,6 +126,30 @@ class OrganizationType(BaseNodeType[Organization]):
         # Convert to JobConnectionType
         return JobConnectionType.marshal(paginated_jobs)
 
+    @strawberry.field
+    @inject
+    async def members(
+        self,
+        organization_member_repo: Annotated[
+            OrganizationMemberRepo,
+            Inject,
+        ],
+        before: relay.GlobalID | None = None,
+        after: relay.GlobalID | None = None,
+        first: int | None = None,
+        last: int | None = None,
+    ) -> OrganizationMemberConnectionType:
+        """Return a paginated connection of members for the organization."""
+        paginated_members = await organization_member_repo.get_all_by_organization_id(
+            organization_id=ObjectId(self.id),
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
+            first=first,
+            last=last,
+        )
+
+        return OrganizationMemberConnectionType.marshal(paginated_members)
+
 
 @strawberry.type(name="OrganizationEdge")
 class OrganizationEdgeType(BaseEdgeType[OrganizationType, Organization]):
@@ -114,8 +175,13 @@ class OrganizationNotFoundErrorType(BaseErrorType):
     message: str = "Organization not found!"
 
 
+@strawberry.type(name="OrganizationSlugInUseError")
+class OrganizationSlugInUseErrorType(BaseErrorType):
+    message: str = "Organization with slug already exists!"
+
+
 CreateOrganizationPayload = Annotated[
-    OrganizationType,
+    OrganizationType | OrganizationSlugInUseErrorType,
     strawberry.union(name="CreateOrganizationPayload"),
 ]
 

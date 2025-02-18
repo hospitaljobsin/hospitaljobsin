@@ -1,6 +1,5 @@
 import { useFragment, useMutation } from "react-relay";
 
-import { getGravatarURL } from "@/lib/avatars";
 import {
 	Avatar,
 	Badge,
@@ -33,6 +32,7 @@ const UpdateAccountDetailsFormFragment = graphql`
   fragment UpdateAccountDetailsFormFragment on Account {
     fullName
     email
+	avatarUrl
   }
 `;
 
@@ -114,11 +114,7 @@ export default function UpdateAccountDetailsForm({
 							shape="circle"
 							showOutline={false}
 						>
-							<Avatar
-								name={data.fullName}
-								size="lg"
-								src={getGravatarURL(data.email)}
-							/>
+							<Avatar name={data.fullName} size="lg" src={data.avatarUrl} />
 						</Badge>
 						<div className="flex flex-col gap-8 w-full items-center justify-start">
 							<div className="flex flex-col w-full space-y-4">
@@ -139,9 +135,11 @@ export default function UpdateAccountDetailsForm({
 								/>
 							</div>
 							<Input
-								label="Email Address"
-								placeholder="Add your email"
-								value={data.email}
+								label="
+								avatarUrl Address"
+								placeholder="Add your 
+								avatarUrl"
+								value={data.avatarUrl}
 								isDisabled
 							/>
 						</div>
