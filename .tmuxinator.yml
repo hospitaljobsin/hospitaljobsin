@@ -6,10 +6,10 @@ windows:
       layout: even-horizontal
       panes:
         - cd server && uv run scripts/run_server.py
-  - client:
+  - seeker_portal:
       layout: even-horizontal
       panes:
-        - cd client && pnpm run dev
+        - cd apps/seeker-portal && pnpm run dev
   - docker:
       panes:
         - docker compose up

@@ -1,0 +1,7 @@
+{
+	"name": "PulseWork",
+	"short_name": "PulseWork",
+	"theme_color": "#ffffff",
+	"background_color": "#ffffff",
+	"display": "standalone"
+}
