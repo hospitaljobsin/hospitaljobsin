@@ -4,7 +4,7 @@ import links from "@/lib/links";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
@@ -17,7 +17,7 @@ const ConfirmResetPasswordFormMutation = graphql`
 	resetPassword(email: $email, passwordResetToken: $passwordResetToken, newPassword: $newPassword) {
 	  __typename
 	  ... on Account {
-		...AuthNavigationFragment
+		__typename
 	  }
 	  ... on InvalidPasswordResetTokenError {
 		message
@@ -30,7 +30,6 @@ const ConfirmResetPasswordFormMutation = graphql`
 `;
 
 const confirmResetPasswordSchema = z.object({
-	email: z.string().email(),
 	password: z
 		.string()
 		.min(8, "Password must be at least 8 characters long.")
@@ -52,6 +51,10 @@ const confirmResetPasswordSchema = z.object({
 export default function ConfirmResetPasswordForm() {
 	const params = useParams<{ token: string }>();
 
+	const searchParams = useSearchParams();
+
+	const email = searchParams.get("email");
+
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<ConfirmResetPasswordFormMutationType>(
@@ -70,7 +73,7 @@ export default function ConfirmResetPasswordForm() {
 	function onSubmit(values: z.infer<typeof confirmResetPasswordSchema>) {
 		commitMutation({
 			variables: {
-				email: values.email,
+				email: email,
 				passwordResetToken: params.token,
 				newPassword: values.password,
 			},
@@ -102,12 +105,11 @@ export default function ConfirmResetPasswordForm() {
 					<div className="w-full flex flex-col gap-6">
 						<Input
 							id="email"
-							label="Email"
+							label="Email Address"
 							placeholder="Enter your email address"
 							type="email"
-							{...register("email")}
-							errorMessage={errors.email?.message}
-							isInvalid={!!errors.email}
+							value={email || ""}
+							isReadOnly
 						/>
 						<Input
 							id="password"

@@ -48,3 +48,9 @@ class PasswordNotStrongError:
     """Raised when the provided password is not strong enough."""
 
     pass
+
+
+class PasswordResetTokenNotFoundError:
+    """Raised when a password reset token is not found."""
+
+    pass

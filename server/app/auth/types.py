@@ -1,9 +1,10 @@
-from typing import Annotated
+from typing import Annotated, Self
 
 import strawberry
 
 from app.accounts.types import AccountType
-from app.base.types import BaseErrorType
+from app.auth.documents import PasswordResetToken
+from app.base.types import BaseErrorType, BaseNodeType
 
 
 @strawberry.type(name="EmailInUseError")
@@ -34,6 +35,24 @@ class InvalidEmailVerificationTokenErrorType(BaseErrorType):
 @strawberry.type(name="InvalidRecaptchaTokenError")
 class InvalidRecaptchaTokenErrorType(BaseErrorType):
     message: str = "Invalid recaptcha token provided."
+
+
+@strawberry.type(name="PasswordResetToken")
+class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
+    email: str
+
+    @classmethod
+    def marshal(cls, reset_token: PasswordResetToken) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            id=str(reset_token.id),
+            email=reset_token.account.email,
+        )
+
+
+@strawberry.type(name="PasswordResetTokenNotFoundError")
+class PasswordResetTokenNotFoundErrorType(BaseErrorType):
+    message: str = "Password reset token not found."
 
 
 @strawberry.type(name="PasswordNotStrongError")
@@ -118,4 +137,9 @@ RequestPasswordResetPayload = Annotated[
 ResetPasswordPayload = Annotated[
     AccountType | InvalidPasswordResetTokenErrorType | PasswordNotStrongErrorType,
     strawberry.union(name="ResetPasswordPayload"),
+]
+
+PasswordResetTokenPayload = Annotated[
+    PasswordResetTokenType | PasswordResetTokenNotFoundErrorType,
+    strawberry.union(name="PasswordResetTokenPayload"),
 ]

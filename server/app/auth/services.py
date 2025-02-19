@@ -14,6 +14,7 @@ from app.accounts.repositories import (
     EmailVerificationTokenRepo,
     ProfileRepo,
 )
+from app.auth.documents import PasswordResetToken
 from app.auth.exceptions import (
     EmailInUseError,
     EmailVerificationTokenCooldownError,
@@ -23,6 +24,7 @@ from app.auth.exceptions import (
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
     PasswordNotStrongError,
+    PasswordResetTokenNotFoundError,
 )
 from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
 from app.config import settings
@@ -160,8 +162,6 @@ class AuthService:
                 },
             )
             response_data = response.json()
-
-        print("response_data", response_data)
 
         return response_data["success"]
 
@@ -350,6 +350,18 @@ class AuthService:
             samesite="lax",
         )
 
+    async def get_password_reset_token(
+        self, password_reset_token: str, email: str
+    ) -> Result[PasswordResetToken, PasswordResetTokenNotFoundError]:
+        """Get a password reset token (used to check it's validity)."""
+        reset_token = await self._password_reset_token_repo.get(
+            token=password_reset_token,
+            email=email,
+        )
+        if reset_token is None:
+            return Err(PasswordResetTokenNotFoundError())
+        return Ok(reset_token)
+
     async def request_password_reset(
         self,
         email: str,
@@ -373,7 +385,7 @@ class AuthService:
             template="password-reset",
             receiver=existing_user.email,
             context={
-                "reset_link": f"{settings.accounts_base_url}/auth/reset-password/{password_reset_token}",
+                "reset_link": f"{settings.accounts_base_url}/auth/reset-password/{password_reset_token}?email={existing_user.email}",
                 "link_expires_in": naturaldelta(
                     timedelta(seconds=PASSWORD_RESET_EXPIRES_IN)
                 ),
@@ -395,7 +407,8 @@ class AuthService:
         """Reset a user's password."""
 
         existing_reset_token = await self._password_reset_token_repo.get(
-            token=password_reset_token
+            token=password_reset_token,
+            email=email,
         )
 
         if not existing_reset_token:

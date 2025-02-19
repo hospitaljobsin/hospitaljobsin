@@ -30,7 +30,7 @@ const LoginFormMutation = graphql`
     login(email: $email, password: $password, recaptchaToken: $recaptchaToken) {
       __typename
 	  ... on Account {
-		...AuthNavigationFragment
+		__typename
 	  }
       ... on InvalidCredentialsError {
         message

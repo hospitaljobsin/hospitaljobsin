@@ -89,10 +89,11 @@ class PasswordResetTokenRepo:
         """Hash password reset token."""
         return hashlib.md5(token.encode("utf-8")).hexdigest()
 
-    async def get(self, token: str) -> PasswordResetToken | None:
+    async def get(self, token: str, email: str) -> PasswordResetToken | None:
         """Get password reset token by token."""
         return await PasswordResetToken.find_one(
             PasswordResetToken.token_hash == self.hash_password_reset_token(token),
+            PasswordResetToken.account.email == email,
             fetch_links=True,
             nesting_depth=1,
         )
