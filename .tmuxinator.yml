@@ -6,10 +6,22 @@ windows:
       layout: even-horizontal
       panes:
         - cd server && uv run scripts/run_server.py
+
   - seeker_portal:
       layout: even-horizontal
       panes:
         - cd apps/seeker-portal && pnpm run dev
+
+  - recruiter_portal:
+      layout: even-horizontal
+      panes:
+        - cd apps/recruiter-portal && pnpm run dev
+
+  - accounts:
+      layout: even-horizontal
+      panes:
+        - cd apps/accounts && pnpm run dev
+
   - docker:
       panes:
         - docker compose up
