@@ -121,7 +121,7 @@ export default function Step3RegistrationForm() {
 					alert("Recaptcha failed. Please try again.");
 				} else {
 					// redirect to landing page
-					window.location.href = links.landing;
+					window.location.href = links.seekerLanding;
 				}
 			},
 			updater(store) {

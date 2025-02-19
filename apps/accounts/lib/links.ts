@@ -1,7 +1,8 @@
 import { env } from "./env";
 
 const links = {
-	landing: `${env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL}/`,
+	seekerLanding: `${env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL}/`,
+	recruiterLanding: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/`,
 	login: "/auth/login",
 	signup: "/auth/signup",
 	resetPasswordSubmit: "/auth/reset-password",

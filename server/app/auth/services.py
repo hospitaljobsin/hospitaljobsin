@@ -373,7 +373,7 @@ class AuthService:
             template="password-reset",
             receiver=existing_user.email,
             context={
-                "reset_link": f"{settings.app_url}/auth/reset-password/{password_reset_token}",
+                "reset_link": f"{settings.accounts_base_url}/auth/reset-password/{password_reset_token}",
                 "link_expires_in": naturaldelta(
                     timedelta(seconds=PASSWORD_RESET_EXPIRES_IN)
                 ),
@@ -409,7 +409,7 @@ class AuthService:
         )
 
         # delete all existing user sessions
-        await self._session_repo.delete_all(account=existing_reset_token.account)
+        await self._session_repo.delete_all(account_id=existing_reset_token.account.id)
 
         session_token = await self._session_repo.create(
             user_agent=user_agent,

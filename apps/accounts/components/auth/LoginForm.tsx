@@ -68,7 +68,8 @@ export default function LoginForm() {
 		}
 	}, [oauth2Error, router]);
 
-	const redirectTo = params.get("return_to") || links.landing;
+	const redirectTo = params.get("return_to") || links.seekerLanding;
+
 	const [commitMutation, isMutationInFlight] =
 		useMutation<LoginFormMutationType>(LoginFormMutation);
 	const {

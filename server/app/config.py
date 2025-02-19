@@ -127,6 +127,9 @@ class Settings(BaseSettings):
 
     s3_avatar_bucket_name: str
 
+    # accounts config
+    accounts_base_url: str = "http://localhost:5002"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",

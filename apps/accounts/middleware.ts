@@ -1,9 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { env } from "./lib/env";
+import links from "./lib/links";
 
 const AUTH_COOKIE_KEY = env.AUTH_COOKIE_KEY;
 
-const AUTHENTICATED_ROUTES = [/\/saved(\/.*)?/, /\/profile/];
+const AUTHENTICATED_ROUTES: RegExp[] = [];
 
 // TODO: reset password should be accessed by anonymous users as well as authenticated users
 const ANONYMOUS_ROUTES = [/\/auth(\/.*)?/];
@@ -28,8 +29,7 @@ function getAuthenticationResponse(request: NextRequest): NextResponse {
 }
 
 function getAnonymousResponse(request: NextRequest): NextResponse {
-	const redirectURL = request.nextUrl.clone();
-	redirectURL.pathname = "/";
+	const redirectURL = new URL(links.seekerLanding);
 	return NextResponse.redirect(redirectURL);
 }
 

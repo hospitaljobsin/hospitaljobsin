@@ -86,7 +86,7 @@ export default function ConfirmResetPasswordForm() {
 						message: response.resetPassword.message,
 					});
 				} else {
-					window.location.href = links.landing;
+					window.location.href = links.seekerLanding;
 				}
 			},
 		});

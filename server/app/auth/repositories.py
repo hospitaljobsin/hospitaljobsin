@@ -3,6 +3,7 @@ import secrets
 from datetime import datetime, timedelta
 
 from beanie import WriteRules
+from bson import ObjectId
 
 from app.accounts.documents import Account
 from app.auth.documents import PasswordResetToken, Session
@@ -54,9 +55,9 @@ class SessionRepo:
             Session.token_hash == self.hash_session_token(token),
         ).delete()
 
-    async def delete_all(self, account: Account) -> None:
+    async def delete_all(self, account_id: ObjectId) -> None:
         """Delete all sessions for an account."""
-        await Session.find_many(Session.account == account).delete()
+        await Session.find_many(Session.account.id == account_id).delete()
 
 
 class PasswordResetTokenRepo:

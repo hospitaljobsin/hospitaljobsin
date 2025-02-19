@@ -31,7 +31,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			onCompleted(response, errors) {
 				if (!errors) {
 					// Redirect to login page
-					window.location.href = links.login;
+					window.location.href = links.login(window.location.href);
 				}
 			},
 		});

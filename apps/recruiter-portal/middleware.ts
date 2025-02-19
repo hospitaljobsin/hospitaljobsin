@@ -4,9 +4,9 @@ import links from "./lib/links";
 
 const AUTH_COOKIE_KEY = env.AUTH_COOKIE_KEY;
 
-const AUTHENTICATED_ROUTES = [/\/saved(\/.*)?/, /\/profile/];
+const AUTHENTICATED_ROUTES = [/^\/$/, /^\/new-organization$/];
 
-const ANONYMOUS_ROUTES = [/\/auth(\/.*)?/];
+const ANONYMOUS_ROUTES: RegExp[] = [];
 
 function requiresAuthenticated(request: NextRequest): boolean {
 	return AUTHENTICATED_ROUTES.some((route) =>
@@ -19,7 +19,7 @@ function requiresAnonymous(request: NextRequest): boolean {
 }
 
 function getAuthenticationResponse(request: NextRequest): NextResponse {
-	const redirectURL = new URL(links.login);
+	const redirectURL = new URL(links.login());
 	const returnTo = request.url;
 	redirectURL.searchParams.set("return_to", returnTo);
 	return NextResponse.redirect(redirectURL);
