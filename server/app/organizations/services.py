@@ -63,3 +63,16 @@ class OrganizationService:
             },
             ExpiresIn=3600,
         )
+
+
+class OrganizationMemberService:
+    def __init__(self, organization_member_repo: OrganizationMemberRepo):
+        self._organization_member_repo = organization_member_repo
+
+    async def is_admin(self, account_id: ObjectId, organization_id: ObjectId) -> bool:
+        member = await self._organization_member_repo.get(
+            account_id=account_id,
+            organization_id=organization_id,
+        )
+
+        return member is not None and member.role == "admin"

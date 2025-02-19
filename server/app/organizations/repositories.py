@@ -99,6 +99,15 @@ class OrganizationRepo:
 
 
 class OrganizationMemberRepo:
+    async def get(
+        self, organization_id: ObjectId, account_id: ObjectId
+    ) -> OrganizationMember | None:
+        """Get organization member by account ID and organization ID."""
+        return await OrganizationMember.find_one(
+            OrganizationMember.organization.id == organization_id,
+            OrganizationMember.account.id == account_id,
+        )
+
     async def create(
         self,
         organization: Organization,

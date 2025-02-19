@@ -1,6 +1,7 @@
 import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
-import { HomeIcon, UserIcon } from "lucide-react";
+import { HomeIcon, Settings, UserIcon } from "lucide-react";
+import { useParams, usePathname } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
@@ -15,14 +16,17 @@ const OrganizationTabsFragment = graphql`
         organization(slug: $slug) {
             __typename
             ... on Organization {
-                slug
+				isAdmin
             }
         }}
 `;
 
 export default function OrganizationTabs(props: {
 	rootQuery: OrganizationTabsFragment$key;
+	slug: string;
 }) {
+	const pathnname = usePathname();
+	const params = useParams<{ slug: string }>();
 	const data = useFragment(OrganizationTabsFragment, props.rootQuery);
 	invariant(
 		data.organization.__typename === "Organization",
@@ -34,10 +38,11 @@ export default function OrganizationTabs(props: {
 				aria-label="Organization Detail Menu"
 				color="default"
 				variant="light"
+				selectedKey={pathnname}
 			>
 				<Tab
-					key="overview"
-					href={links.organizationDetail(data.organization.slug)}
+					key={links.organizationDetail(params.slug)}
+					href={links.organizationDetail(params.slug)}
 					title={
 						<div className="flex items-center space-x-2">
 							<HomeIcon />
@@ -46,8 +51,8 @@ export default function OrganizationTabs(props: {
 					}
 				/>
 				<Tab
-					key="members"
-					href={links.organizationDetailMembers(data.organization.slug)}
+					key={links.organizationDetailMembers(params.slug)}
+					href={links.organizationDetailMembers(params.slug)}
 					title={
 						<div className="flex items-center space-x-2">
 							<UserIcon />
@@ -55,6 +60,18 @@ export default function OrganizationTabs(props: {
 						</div>
 					}
 				/>
+				{data.organization.isAdmin && (
+					<Tab
+						key={links.organizationDetailSettings(params.slug)}
+						href={links.organizationDetailSettings(params.slug)}
+						title={
+							<div className="flex items-center space-x-2">
+								<Settings />
+								<span>Settings</span>
+							</div>
+						}
+					/>
+				)}
 			</Tabs>
 		</div>
 	);

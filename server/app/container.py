@@ -14,7 +14,7 @@ from app.jobs.repositories import JobRepo, SavedJobRepo
 from app.jobs.services import SavedJobService
 from app.lib.aws_sdk import get_aioboto3_session, get_s3_client
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
-from app.organizations.services import OrganizationService
+from app.organizations.services import OrganizationMemberService, OrganizationService
 
 
 @lru_cache
@@ -36,4 +36,5 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(OrganizationRepo))
     container.register(aioinject.Singleton(OrganizationMemberRepo))
     container.register(aioinject.Scoped(OrganizationService))
+    container.register(aioinject.Scoped(OrganizationMemberService))
     return container

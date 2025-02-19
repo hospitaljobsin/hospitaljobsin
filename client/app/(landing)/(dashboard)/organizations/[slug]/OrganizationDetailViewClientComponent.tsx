@@ -1,6 +1,6 @@
 "use client";
 
-import OrganizationDetailView from "@/components/organization-detail/OrganizationDetailView";
+import OrganizationOverviewTab from "@/components/organization-detail/overview-tab/OrganizationOverviewTab";
 import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 import {
@@ -20,7 +20,7 @@ const OrganizationDetailViewClientComponentFragment = graphql`
 		type: "String!",
 	  }
 	) {
-		...OrganizationDetailViewFragment @arguments(slug: $slug)
+		...OrganizationOverviewTabFragment @arguments(slug: $slug)
   }
 `;
 
@@ -44,5 +44,9 @@ export default function OrganizationDetailViewClientComponent(props: {
 			data,
 		);
 
-	return <OrganizationDetailView rootQuery={rootQuery} />;
+	return (
+		<div className="py-4 w-full h-full flex flex-col items-center gap-2">
+			<OrganizationOverviewTab rootQuery={rootQuery} />
+		</div>
+	);
 }

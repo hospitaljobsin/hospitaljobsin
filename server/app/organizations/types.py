@@ -21,6 +21,7 @@ from app.context import Info
 from app.jobs.repositories import JobRepo
 from app.organizations.documents import Organization, OrganizationMember
 from app.organizations.repositories import OrganizationMemberRepo
+from app.organizations.services import OrganizationMemberService
 
 if TYPE_CHECKING:
     from app.jobs.types import JobConnectionType
@@ -98,6 +99,21 @@ class OrganizationType(BaseNodeType[Organization]):
             return self.assigned_logo_url
         slug_hash = hashlib.sha256(self.slug.encode("utf-8")).hexdigest()
         return f"https://api.dicebear.com/9.x/identicon/png?seed={slug_hash}"
+
+    @strawberry.field
+    @inject
+    async def is_admin(
+        self,
+        info: Info,
+        organization_member_service: Annotated[OrganizationMemberService, Inject],
+    ) -> bool:
+        """Return whether the current user is an admin in this organization."""
+        if info.context["current_user_id"] is None:
+            return False
+        return await organization_member_service.is_admin(
+            account_id=info.context["current_user_id"],
+            organization_id=ObjectId(self.id),
+        )
 
     @strawberry.field
     @inject
