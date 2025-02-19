@@ -1,18 +1,3 @@
-TODO:
-
-separate recruiter platform at recruiter.domain.xyz
-
-regular job seeking portal at domain.xyz
-
-we include a small link on the navbar of the job seeking portal to recruiter.domain.xyz
-
-auth: include one auth screen for both platforms??
-amazon seller seems to do this differently- it requires a separate seller account
-
-similarly, we can ask them to create a separate recruiter account
-
-this could lead to clean separation of concerns
-
 # Hospital Job Management Platform
 
 A comprehensive platform designed to streamline job management in hospitals. This system includes a powerful backend, a modern frontend, and a robust database to handle data efficiently.
