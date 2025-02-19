@@ -2,6 +2,7 @@ import { useFragment, usePaginationFragment } from "react-relay";
 import Job from "../../landing/Job";
 
 import type { pageOrganizationDetailViewQuery } from "@/app/(landing)/(dashboard)/organizations/[slug]/__generated__/pageOrganizationDetailViewQuery.graphql";
+import { Briefcase } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
@@ -89,26 +90,26 @@ export default function OrganizationJobsList({ rootQuery }: Props) {
 	}, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
-		return (
-			<div className="flex grow flex-col gap-8 px-4 items-center h-full">
-				<p className="font-medium text-muted-foreground">
-					Hmm, no jobs could be found
-				</p>
-			</div>
-		);
+		return null;
 	}
 
 	return (
-		<div className="w-full flex flex-col gap-8 pb-6">
-			{data.jobs.edges.map((jobEdge) => (
-				<Job
-					job={jobEdge.node}
-					key={jobEdge.node.id}
-					authQueryRef={root.viewer}
-				/>
-			))}
-			<div ref={observerRef} className="h-10" />
-			{isLoadingNext && <JobListSkeleton />}
+		<div className="w-full flex flex-col gap-6">
+			<div className="w-full flex items-center gap-4 px-2 text-foreground-600">
+				<Briefcase className="w-5 h-5" />
+				<p>Posted Jobs</p>
+			</div>
+			<div className="w-full flex flex-col gap-8 pb-6">
+				{data.jobs.edges.map((jobEdge) => (
+					<Job
+						job={jobEdge.node}
+						key={jobEdge.node.id}
+						authQueryRef={root.viewer}
+					/>
+				))}
+				<div ref={observerRef} className="h-10" />
+				{isLoadingNext && <JobListSkeleton />}
+			</div>
 		</div>
 	);
 }

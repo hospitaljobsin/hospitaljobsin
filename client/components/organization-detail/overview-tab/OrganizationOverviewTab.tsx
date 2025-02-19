@@ -1,6 +1,5 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
-import { Briefcase } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 import OrganizationDetails from "./OrganizationDetails";
 import OrganizationJobsList from "./OrganizationJobsList";
@@ -25,13 +24,7 @@ export default function OrganizationOverviewTab(props: {
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-12">
 			<OrganizationDetails rootQuery={query} />
-			<div className="w-full flex flex-col gap-6">
-				<div className="w-full flex items-center gap-4 px-2 text-foreground-600">
-					<Briefcase className="w-5 h-5" />
-					<p>Posted Jobs</p>
-				</div>
-				<OrganizationJobsList rootQuery={query} />
-			</div>
+			<OrganizationJobsList rootQuery={query} />
 		</div>
 	);
 }
