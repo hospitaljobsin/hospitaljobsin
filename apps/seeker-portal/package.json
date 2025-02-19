@@ -13,7 +13,7 @@
 	"relay": {
 		"src": "./",
 		"language": "typescript",
-		"schema": "../schema/schema.graphql",
+		"schema": "../../schema/schema.graphql",
 		"eagerEsModules": true,
 		"excludes": [
 			"**/node_modules/**",
