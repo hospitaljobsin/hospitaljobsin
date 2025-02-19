@@ -1,6 +1,4 @@
 import LandingView from "@/components/landing/LandingView";
-import LandingViewSkeleton from "@/components/landing/LandingViewSkeleton";
-import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -19,9 +17,9 @@ export default function Landing() {
 			</div>
 
 			<div className="py-4 sm:py-8 flex flex-col gap-4 sm:gap-8 max-w-5xl px-4 sm:px-5 mx-auto">
-				<Suspense fallback={<LandingViewSkeleton />}>
-					<LandingView />
-				</Suspense>
+				{/* <Suspense fallback={<LandingViewSkeleton />}> */}
+				<LandingView />
+				{/* </Suspense> */}
 			</div>
 		</>
 	);
