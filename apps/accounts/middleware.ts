@@ -6,8 +6,8 @@ const AUTH_COOKIE_KEY = env.AUTH_COOKIE_KEY;
 
 const AUTHENTICATED_ROUTES: RegExp[] = [];
 
-// TODO: reset password should be accessed by anonymous users as well as authenticated users
-const ANONYMOUS_ROUTES = [/\/auth(\/.*)?/];
+// reset password will be accessed by anonymous users as well as authenticated users
+const ANONYMOUS_ROUTES = [/^\/auth\/?(login|signup)?$/];
 
 function requiresAuthenticated(request: NextRequest): boolean {
 	return AUTHENTICATED_ROUTES.some((route) =>
