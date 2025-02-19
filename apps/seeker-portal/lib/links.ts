@@ -11,10 +11,6 @@ const links = {
 		`/organizations/${slug}/settings`,
 	createOrganization: "/new-organization",
 	login: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login`,
-	signup: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/signup`,
-	resetPasswordSubmit: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/reset-password`,
-	resetPasswordConfirm: (token: string) =>
-		`${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/reset-password/${token}`,
 };
 
 export default links;

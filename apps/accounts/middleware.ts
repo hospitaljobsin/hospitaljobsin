@@ -1,9 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { env } from "./lib/env";
 
-const AUTH_COOKIE_KEY = process.env.AUTH_COOKIE_KEY || "user_session";
+const AUTH_COOKIE_KEY = env.AUTH_COOKIE_KEY;
 
 const AUTHENTICATED_ROUTES = [/\/saved(\/.*)?/, /\/profile/];
 
+// TODO: reset password should be accessed by anonymous users as well as authenticated users
 const ANONYMOUS_ROUTES = [/\/auth(\/.*)?/];
 
 function requiresAuthenticated(request: NextRequest): boolean {

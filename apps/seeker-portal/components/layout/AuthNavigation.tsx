@@ -52,6 +52,17 @@ export default function AuthNavigation({ rootQuery }: Props) {
 	return (
 		<>
 			<NavbarItem className="block md:hidden">
+				<Link
+					href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
+					isExternal
+					color="foreground"
+					showAnchorIcon
+					size="sm"
+				>
+					for recruiters
+				</Link>
+			</NavbarItem>
+			<NavbarItem className="block md:hidden">
 				<Button
 					disableRipple
 					isIconOnly
@@ -68,6 +79,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					/>
 				</Button>
 			</NavbarItem>
+
 			<Drawer
 				isOpen={isDrawerOpen}
 				onClose={onDrawerOpenChange}
@@ -91,6 +103,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							</div>
 						</div>
 						<Divider />
+
 						<Button
 							className="w-full justify-start"
 							radius="sm"

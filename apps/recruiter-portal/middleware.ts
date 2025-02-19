@@ -1,7 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { env } from "./lib/env";
 import links from "./lib/links";
 
-const AUTH_COOKIE_KEY = process.env.AUTH_COOKIE_KEY || "user_session";
+const AUTH_COOKIE_KEY = env.AUTH_COOKIE_KEY;
 
 const AUTHENTICATED_ROUTES = [/\/saved(\/.*)?/, /\/profile/];
 

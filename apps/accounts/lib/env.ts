@@ -2,7 +2,9 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 export const env = createEnv({
-	server: {},
+	server: {
+		AUTH_COOKIE_KEY: z.string().default("user_session"),
+	},
 	client: {
 		NEXT_PUBLIC_URL: z.string().url(),
 		NEXT_PUBLIC_API_URL: z.string().url(),
