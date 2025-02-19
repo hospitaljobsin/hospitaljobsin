@@ -112,7 +112,7 @@ export default function LoginForm() {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
 				} else {
-					router.replace(redirectTo);
+					window.location.href = redirectTo;
 				}
 			},
 			updater(store) {

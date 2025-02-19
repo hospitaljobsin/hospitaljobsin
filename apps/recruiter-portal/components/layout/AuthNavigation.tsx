@@ -15,14 +15,7 @@ import {
 	NavbarItem,
 	useDisclosure,
 } from "@heroui/react";
-import {
-	BookmarkIcon,
-	Building,
-	ChevronDown,
-	LogOutIcon,
-	PlusIcon,
-	UserIcon,
-} from "lucide-react";
+import { Building, ChevronDown, LogOutIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -95,29 +88,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 								<p className="truncate max-w-48 text-medium">{data.fullName}</p>
 							</div>
 						</div>
-						<Divider />
-						<Button
-							className="w-full justify-start"
-							radius="sm"
-							variant="light"
-							startContent={<UserIcon className="h-4 w-4" />}
-							href={links.profile}
-							as={links.profile ? "a" : "button"}
-							fullWidth
-						>
-							My Profile
-						</Button>
-						<Button
-							className="w-full justify-start"
-							radius="sm"
-							variant="light"
-							startContent={<BookmarkIcon className="h-4 w-4" />}
-							href={links.savedJobs}
-							as={links.savedJobs ? "a" : "button"}
-							fullWidth
-						>
-							Saved Jobs
-						</Button>
+
 						<Divider />
 						<Button
 							className="w-full justify-start"
@@ -207,22 +178,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							</div>
 						</DropdownItem>
 					</DropdownSection>
-					<DropdownSection showDivider>
-						<DropdownItem
-							key="profile"
-							startContent={<UserIcon className="h-4 w-4" />}
-							href={links.profile}
-						>
-							My Profile
-						</DropdownItem>
-						<DropdownItem
-							key="saved"
-							startContent={<BookmarkIcon className="h-4 w-4" />}
-							href={links.savedJobs}
-						>
-							Saved Jobs
-						</DropdownItem>
-					</DropdownSection>
+
 					<DropdownSection>
 						<DropdownItem
 							key="logout"

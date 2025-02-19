@@ -1,4 +1,5 @@
 "use client";
+import { env } from "@/lib/env";
 import links from "@/lib/links";
 import {
 	Button,
@@ -12,17 +13,11 @@ import {
 	DropdownMenu,
 	DropdownSection,
 	DropdownTrigger,
+	Link,
 	NavbarItem,
 	useDisclosure,
 } from "@heroui/react";
-import {
-	BookmarkIcon,
-	Building,
-	ChevronDown,
-	LogOutIcon,
-	PlusIcon,
-	UserIcon,
-} from "lucide-react";
+import { BookmarkIcon, LogOutIcon, UserIcon } from "lucide-react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -132,39 +127,17 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
-			<Dropdown className="hidden md:block" placement="bottom-end">
-				<NavbarItem className="hidden md:block">
-					<DropdownTrigger>
-						<Button
-							disableRipple
-							size="sm"
-							variant="bordered"
-							endContent={<ChevronDown className="h-3 w-3" />}
-						>
-							<PlusIcon className="h-4 w-4" />
-						</Button>
-					</DropdownTrigger>
-				</NavbarItem>
-
-				<DropdownMenu
-					variant="light"
-					aria-label="Navigation Menu"
-					itemClasses={{
-						base: "gap-4",
-					}}
-					className="hidden md:block"
+			<NavbarItem className="hidden md:block">
+				<Link
+					href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
+					isExternal
+					color="foreground"
+					showAnchorIcon
 				>
-					<DropdownSection>
-						<DropdownItem
-							key="profile"
-							startContent={<Building className="h-4 w-4" />}
-							href={links.createOrganization}
-						>
-							New Organization
-						</DropdownItem>
-					</DropdownSection>
-				</DropdownMenu>
-			</Dropdown>
+					for recruiters
+				</Link>
+			</NavbarItem>
+
 			<Dropdown className="hidden md:block" placement="bottom-end">
 				<NavbarItem className="hidden md:block">
 					<DropdownTrigger>

@@ -7,7 +7,6 @@ import {
 	ModalFooter,
 	ModalHeader,
 } from "@heroui/react";
-import { useRouter } from "next/navigation";
 import { graphql, useMutation } from "react-relay";
 
 type Props = {
@@ -25,14 +24,14 @@ const LogoutModalMutation = graphql`
 
 export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 	const [commitMutation, isMutationInFlight] = useMutation(LogoutModalMutation);
-	const router = useRouter();
 
 	async function handleLogout() {
 		commitMutation({
 			variables: {},
 			onCompleted(response, errors) {
 				if (!errors) {
-					router.replace(links.login);
+					// Redirect to login page
+					window.location.href = links.login;
 				}
 			},
 		});

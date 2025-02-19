@@ -4,7 +4,6 @@ import links from "@/lib/links";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useRouter } from "next-nprogress-bar";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -51,7 +50,6 @@ const confirmResetPasswordSchema = z.object({
 });
 
 export default function ConfirmResetPasswordForm() {
-	const router = useRouter();
 	const params = useParams<{ token: string }>();
 
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -88,7 +86,7 @@ export default function ConfirmResetPasswordForm() {
 						message: response.resetPassword.message,
 					});
 				} else {
-					router.replace(links.landing);
+					window.location.href = links.landing;
 				}
 			},
 		});

@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import links from "./lib/links";
 
 const AUTH_COOKIE_KEY = process.env.AUTH_COOKIE_KEY || "user_session";
 
@@ -17,17 +18,14 @@ function requiresAnonymous(request: NextRequest): boolean {
 }
 
 function getAuthenticationResponse(request: NextRequest): NextResponse {
-	const redirectURL = request.nextUrl.clone();
-	redirectURL.pathname = "/auth/login";
-	redirectURL.search = "";
-	const returnTo = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+	const redirectURL = new URL(links.login);
+	const returnTo = request.url;
 	redirectURL.searchParams.set("return_to", returnTo);
 	return NextResponse.redirect(redirectURL);
 }
 
 function getAnonymousResponse(request: NextRequest): NextResponse {
-	const redirectURL = request.nextUrl.clone();
-	redirectURL.pathname = "/";
+	const redirectURL = new URL(links.landing);
 	return NextResponse.redirect(redirectURL);
 }
 

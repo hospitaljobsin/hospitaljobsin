@@ -1,3 +1,5 @@
+import { env } from "./env";
+
 const links = {
 	landing: "/",
 	profile: "/profile",
@@ -8,10 +10,11 @@ const links = {
 	organizationDetailSettings: (slug: string) =>
 		`/organizations/${slug}/settings`,
 	createOrganization: "/new-organization",
-	login: "/auth/login",
-	signup: "/auth/signup",
-	resetPasswordSubmit: "/auth/reset-password",
-	resetPasswordConfirm: (token: string) => `/auth/reset-password/${token}`,
+	login: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login`,
+	signup: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/signup`,
+	resetPasswordSubmit: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/reset-password`,
+	resetPasswordConfirm: (token: string) =>
+		`${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/reset-password/${token}`,
 };
 
 export default links;

@@ -4,7 +4,6 @@ import links from "@/lib/links";
 import { Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useRouter } from "next-nprogress-bar";
 import { useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
@@ -67,7 +66,6 @@ const RegisterMutation = graphql`
 `;
 
 export default function Step3RegistrationForm() {
-	const router = useRouter();
 	const { send } = SignupContext.useActorRef();
 	const emailVerificationToken = SignupContext.useSelector(
 		(state) => state.context.emailVerificationToken,
@@ -122,7 +120,8 @@ export default function Step3RegistrationForm() {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
 				} else {
-					router.replace(links.landing);
+					// redirect to landing page
+					window.location.href = links.landing;
 				}
 			},
 			updater(store) {
