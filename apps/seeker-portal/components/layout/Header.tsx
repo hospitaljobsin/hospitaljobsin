@@ -33,7 +33,7 @@ export default function Header() {
 	return (
 		<Navbar maxWidth="lg" isBordered>
 			<NavbarBrand>
-				<Link href="/" className="font-medium text-inherit">
+				<Link href={links.landing} className="font-medium text-inherit">
 					{APP_NAME}
 				</Link>
 			</NavbarBrand>

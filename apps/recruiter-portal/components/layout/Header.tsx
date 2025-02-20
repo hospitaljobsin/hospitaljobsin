@@ -1,5 +1,6 @@
 "use client";
 import { APP_NAME } from "@/lib/constants";
+import links from "@/lib/links";
 import {
 	Button,
 	Navbar,
@@ -32,7 +33,7 @@ export default function Header() {
 	return (
 		<Navbar maxWidth="lg" isBordered>
 			<NavbarBrand>
-				<Link href="/" className="font-medium text-inherit">
+				<Link href={links.dashboard} className="font-medium text-inherit">
 					{APP_NAME}
 				</Link>
 			</NavbarBrand>

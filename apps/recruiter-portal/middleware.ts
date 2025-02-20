@@ -29,7 +29,8 @@ function getAuthenticationResponse(request: NextRequest): NextResponse {
 }
 
 function getAnonymousResponse(request: NextRequest): NextResponse {
-	const redirectURL = new URL(links.dashboard);
+	const redirectURL = request.nextUrl.clone();
+	redirectURL.pathname = links.dashboard;
 	return NextResponse.redirect(redirectURL);
 }
 
