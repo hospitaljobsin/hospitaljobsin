@@ -105,7 +105,7 @@ export default function SubmitResetPasswordFrom() {
 				<Divider />
 				<CardFooter className="w-full flex items-center justify-center">
 					<Link
-						href={links.login}
+						href={links.login()}
 						className="cursor-pointer text-blue-500 text-small sm:text-sm text-center"
 					>
 						Back to login

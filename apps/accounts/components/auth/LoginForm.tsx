@@ -205,14 +205,14 @@ export default function LoginForm() {
 						variant="bordered"
 						startContent={<Google.Color size={20} />}
 						onPress={() => {
-							window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(window.location.origin)}`;
+							window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(redirectTo)}`;
 						}}
 					>
 						Sign in with Google
 					</Button>
 					<div className="flex justify-center w-full">
 						<Link
-							href={links.signup}
+							href={links.signup(params.get("return_to"))}
 							className="mt-2 cursor-pointer text-center text-blue-500 text-small sm:text-sm"
 						>
 							{"Don't have an account? "} Sign up.

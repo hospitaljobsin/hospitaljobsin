@@ -12,6 +12,7 @@ import {
 } from "@heroui/react";
 import { Google } from "@lobehub/icons";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import SignupContext from "./SignupContext";
 import Step1EmailForm from "./Step1EmailForm";
@@ -20,6 +21,8 @@ import Step3RegistrationForm from "./Step3RegistrationForm";
 
 export default function SignUpWizard() {
 	const state = SignupContext.useSelector((state) => state);
+	const params = useSearchParams();
+	const redirectTo = params.get("return_to") || links.seekerLanding;
 
 	useEffect(() => {
 		// prevent user from leaving the page while completing registration
@@ -62,14 +65,14 @@ export default function SignUpWizard() {
 						variant="bordered"
 						startContent={<Google.Color size={20} />}
 						onPress={() => {
-							window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(window.location.origin)}`;
+							window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(redirectTo)}`;
 						}}
 					>
 						Sign up with Google
 					</Button>
 					<div className="flex justify-center w-full">
 						<Link
-							href={links.login}
+							href={links.login(params.get("return_to"))}
 							className="cursor-pointer text-blue-500 text-small sm:text-sm text-center"
 						>
 							Already have an account? Log in.

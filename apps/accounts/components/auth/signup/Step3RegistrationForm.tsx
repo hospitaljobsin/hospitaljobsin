@@ -66,6 +66,8 @@ const RegisterMutation = graphql`
 `;
 
 export default function Step3RegistrationForm() {
+	const params = useSearchParams();
+	const redirectTo = params.get("return_to") || links.seekerLanding;
 	const { send } = SignupContext.useActorRef();
 	const emailVerificationToken = SignupContext.useSelector(
 		(state) => state.context.emailVerificationToken,
@@ -120,8 +122,8 @@ export default function Step3RegistrationForm() {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
 				} else {
-					// redirect to landing page
-					window.location.href = links.seekerLanding;
+					// redirect to redirect URL
+					window.location.href = redirectTo;
 				}
 			},
 			updater(store) {
