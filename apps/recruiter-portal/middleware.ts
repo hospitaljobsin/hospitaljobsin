@@ -4,9 +4,12 @@ import links from "./lib/links";
 
 const AUTH_COOKIE_KEY = env.AUTH_COOKIE_KEY;
 
-const AUTHENTICATED_ROUTES = [/^\/$/, /^\/new-organization$/];
+const AUTHENTICATED_ROUTES = [
+	/^\/dashboard$/,
+	/^\/dashboard\/new-organization$/,
+];
 
-const ANONYMOUS_ROUTES: RegExp[] = [];
+const ANONYMOUS_ROUTES: RegExp[] = [/^\/$/];
 
 function requiresAuthenticated(request: NextRequest): boolean {
 	return AUTHENTICATED_ROUTES.some((route) =>
@@ -26,7 +29,7 @@ function getAuthenticationResponse(request: NextRequest): NextResponse {
 }
 
 function getAnonymousResponse(request: NextRequest): NextResponse {
-	const redirectURL = new URL(links.landing);
+	const redirectURL = new URL(links.dashboard);
 	return NextResponse.redirect(redirectURL);
 }
 

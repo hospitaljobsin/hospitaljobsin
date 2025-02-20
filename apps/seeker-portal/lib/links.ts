@@ -2,6 +2,7 @@ import { env } from "./env";
 
 const links = {
 	landing: "/",
+	recruiterLanding: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/`,
 	profile: "/profile",
 	savedJobs: "/saved",
 	jobDetail: (slug: string) => `/jobs/${slug}`,

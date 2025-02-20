@@ -6,9 +6,9 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<>
+		<div className="w-full h-full flex flex-col">
 			<Header />
-			<div className="w-full mx-auto bg-foreground-100">{children}</div>
-		</>
+			<div className="w-full mx-auto bg-foreground-100 h-full">{children}</div>
+		</div>
 	);
 }

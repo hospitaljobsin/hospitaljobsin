@@ -1,13 +1,14 @@
 "use client";
 import { APP_NAME } from "@/lib/constants";
+import links from "@/lib/links";
 import {
 	Button,
+	Link,
 	Navbar,
 	NavbarBrand,
 	NavbarContent,
 	NavbarItem,
 } from "@heroui/react";
-import Link from "next/link";
 import { useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import AuthDropdown from "./AuthNavigation";
@@ -43,12 +44,22 @@ export default function Header() {
 				) : (
 					<>
 						<NavbarItem>
-							<Link color="foreground" href="/auth/login">
-								<Button color="default">Log In</Button>
-							</Link>
+							<Button
+								as={Link}
+								color="default"
+								href={links.login(window.location.href)}
+							>
+								Log In
+							</Button>
 						</NavbarItem>
 						<NavbarItem>
-							<Button color="default" variant="flat" disabled>
+							<Button
+								as={Link}
+								href={links.recruiterLanding}
+								isExternal
+								color="default"
+								variant="flat"
+							>
 								For recruiters
 							</Button>
 						</NavbarItem>
