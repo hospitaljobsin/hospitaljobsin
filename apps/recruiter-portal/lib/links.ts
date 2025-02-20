@@ -4,6 +4,7 @@ const links = {
 	landing: "/",
 	dashboard: "/dashboard",
 	createOrganization: "/dashboard/new-organization",
+	organizationDetail: (slug: string) => `/dashboard/organizations/${slug}`,
 	login: (returnTo: string | undefined = undefined) =>
 		returnTo
 			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}`

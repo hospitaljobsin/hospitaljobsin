@@ -6,8 +6,6 @@
     "editor.defaultFormatter": "hashicorp.terraform"
   },
   "editor.defaultFormatter": "biomejs.biome",
-  "relay.autoStartCompiler": true,
-  "relay.rootDirectory": "client/",
   "ruff.nativeServer": true,
   "python.languageServer": "Pylance",
   "python.analysis.typeCheckingMode": "basic",

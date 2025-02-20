@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Generic, TypeVar
 
 from beanie import Document
+from beanie.odm.queries.aggregation import AggregationQuery
 from beanie.odm.queries.find import FindMany
 from bson import ObjectId
 
@@ -89,45 +90,83 @@ class Paginator(Generic[ModelType, CursorType]):
         raise ValueError(no_first_and_last_error)
 
     def __apply_ordering(
-        self, *, search_criteria: FindMany[ModelType], last: int | None
-    ) -> FindMany[ModelType]:
+        self,
+        *,
+        search_criteria: FindMany[ModelType] | AggregationQuery[ModelType],
+        last: int | None,
+    ) -> FindMany[ModelType] | AggregationQuery[ModelType]:
         """Apply ordering on the search criteria."""
+
         if (self._reverse and last is None) or (last is not None and not self._reverse):
-            return search_criteria.sort(
-                -operator.attrgetter(self._paginate_by)(self._document_cls)
+            if isinstance(search_criteria, AggregationQuery):
+                search_criteria.aggregation_pipeline.append(
+                    {"$sort": {self._paginate_by: -1}}
+                )
+                return search_criteria
+            else:
+                return search_criteria.sort(
+                    -operator.attrgetter(self._paginate_by)(self._document_cls)
+                )
+
+        if isinstance(search_criteria, AggregationQuery):
+            search_criteria.aggregation_pipeline.append(
+                {"$sort": {self._paginate_by: 1}}
             )
-        return search_criteria.sort(
-            +operator.attrgetter(self._paginate_by)(self._document_cls)
-        )
+            return search_criteria
+        else:
+            return search_criteria.sort(
+                +operator.attrgetter(self._paginate_by)(self._document_cls)
+            )
 
     def __apply_filters(
         self,
         *,
-        search_criteria: FindMany[ModelType],
+        search_criteria: FindMany[ModelType] | AggregationQuery[ModelType],
         before: CursorType | None,
         after: CursorType | None,
-    ) -> FindMany[ModelType]:
+    ) -> FindMany[ModelType] | AggregationQuery[ModelType]:
         """Apply pagination filters on the search criteria."""
         if after is not None:
-            direction = (
-                operator.attrgetter(self._paginate_by)(self._document_cls) < after
-                if self._reverse
-                else operator.attrgetter(self._paginate_by)(self._document_cls) > after
-            )
-            return search_criteria.find(direction)
+            if isinstance(search_criteria, AggregationQuery):
+                filter = (
+                    {"$match": {self._paginate_by: {"$lt": after}}}
+                    if self._reverse
+                    else {"$match": {self._paginate_by: {"$gt": after}}}
+                )
+                search_criteria.aggregation_pipeline.append(filter)
+                return search_criteria
+            else:
+                direction = (
+                    operator.attrgetter(self._paginate_by)(self._document_cls) < after
+                    if self._reverse
+                    else operator.attrgetter(self._paginate_by)(self._document_cls)
+                    > after
+                )
+                return search_criteria.find(direction)
         if before is not None:
-            direction = (
-                operator.attrgetter(self._paginate_by)(self._document_cls) > before
-                if self._reverse
-                else operator.attrgetter(self._paginate_by)(self._document_cls) < before
-            )
-            return search_criteria.find(direction)
+            if isinstance(search_criteria, AggregationQuery):
+                filter = (
+                    {"$match": {self._paginate_by: {"$gt": before}}}
+                    if self._reverse
+                    else {"$match": {self._paginate_by: {"$lt": before}}}
+                )
+                search_criteria.aggregation_pipeline.append(filter)
+                return search_criteria
+            else:
+                direction = (
+                    operator.attrgetter(self._paginate_by)(self._document_cls) > before
+                    if self._reverse
+                    else operator.attrgetter(self._paginate_by)(self._document_cls)
+                    < before
+                )
+
+                return search_criteria.find(direction)
         return search_criteria
 
     async def paginate(
         self,
         *,
-        search_criteria: FindMany[ModelType],
+        search_criteria: FindMany[ModelType] | AggregationQuery[ModelType],
         last: int | None = None,
         first: int | None = None,
         before: CursorType | None = None,
@@ -148,7 +187,12 @@ class Paginator(Generic[ModelType, CursorType]):
             search_criteria=search_criteria, before=before, after=after
         )
 
-        search_criteria = search_criteria.limit(pagination_limit + 1)
+        if isinstance(search_criteria, AggregationQuery):
+            search_criteria.aggregation_pipeline.append(
+                {"$limit": pagination_limit + 1}
+            )
+        else:
+            search_criteria = search_criteria.limit(pagination_limit + 1)
 
         results = await search_criteria.to_list()
         entities = results[:pagination_limit]

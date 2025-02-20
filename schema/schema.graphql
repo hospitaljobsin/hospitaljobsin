@@ -9,7 +9,7 @@ type Account implements Node {
   updatedAt: DateTime
   profile: ProfilePayload!
   avatarUrl: String!
-  organizationMemberships(before: ID = null, after: ID = null, first: Int = null, last: Int = null): OrganizationMemberConnection!
+  organizations(before: ID = null, after: ID = null, first: Int = null, last: Int = null): OrganizationConnection!
 }
 
 type AccountNotFoundError implements Error {
@@ -307,6 +307,19 @@ type Organization implements Node {
   isAdmin: Boolean!
   jobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
   members(before: ID = null, after: ID = null, first: Int = null, last: Int = null): OrganizationMemberConnection!
+}
+
+type OrganizationConnection {
+  pageInfo: PageInfo!
+  edges: [OrganizationEdge!]!
+}
+
+type OrganizationEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+
+  """The item at the end of the edge"""
+  node: Organization!
 }
 
 type OrganizationMemberConnection {

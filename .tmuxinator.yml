@@ -7,17 +7,34 @@ windows:
         - uv run scripts/run_server.py
 
   - seeker_portal:
-        - cd apps/seeker-portal
-        - pnpm run dev
+      layout: even-horizontal
+      panes:
+        - next-server:
+          - cd apps/seeker-portal
+          - pnpm run dev
+        - relay:
+          - cd apps/seeker-portal
+          - pnpm run relay
 
   - recruiter_portal:
-        - cd apps/recruiter-portal
-        - pnpm run dev
+      layout: even-horizontal
+      panes:
+        - next-server:
+          - cd apps/recruiter-portal
+          - pnpm run dev
+        - relay:
+          - cd apps/recruiter-portal
+          - pnpm run relay
 
   - accounts:
-        - cd apps/accounts
-        - pnpm run dev
+      layout: even-horizontal
+      panes:
+        - next-server:
+          - cd apps/accounts
+          - pnpm run dev
+        - relay:
+          - cd apps/accounts
+          - pnpm run relay
 
   - docker:
-      panes:
-        - docker compose up
+      - docker compose up

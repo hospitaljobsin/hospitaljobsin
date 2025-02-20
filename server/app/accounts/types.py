@@ -20,10 +20,12 @@ from app.base.types import (
     NotAuthenticatedErrorType,
 )
 from app.context import Info
-from app.organizations.repositories import OrganizationMemberRepo
+from app.organizations.repositories import OrganizationRepo
 
 if TYPE_CHECKING:
-    from app.organizations.types import OrganizationMemberConnectionType
+    from app.organizations.types import (
+        OrganizationConnectionType,
+    )
 
 
 @strawberry.type(name="ProfileNotFoundError")
@@ -227,10 +229,10 @@ class AccountType(BaseNodeType[Account]):
 
     @strawberry.field
     @inject
-    async def organization_memberships(
+    async def organizations(
         self,
-        organization_member_repo: Annotated[
-            OrganizationMemberRepo,
+        organization_repo: Annotated[
+            OrganizationRepo,
             Inject,
         ],
         before: relay.GlobalID | None = None,
@@ -238,20 +240,20 @@ class AccountType(BaseNodeType[Account]):
         first: int | None = None,
         last: int | None = None,
     ) -> Annotated[
-        "OrganizationMemberConnectionType", strawberry.lazy("app.organizations.types")
+        "OrganizationConnectionType", strawberry.lazy("app.organizations.types")
     ]:
-        """Return a paginated connection of organization memberships for the user."""
-        from app.organizations.types import OrganizationMemberConnectionType
+        """Return the organizations the user is in."""
+        from app.organizations.types import OrganizationConnectionType
 
-        paginated_jobs = await organization_member_repo.get_all_by_account_id(
-            organization_id=ObjectId(self.id),
+        memberships = await organization_repo.get_all_by_account_id(
+            account_id=ObjectId(self.id),
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
             first=first,
             last=last,
         )
 
-        return OrganizationMemberConnectionType.marshal(paginated_jobs)
+        return OrganizationConnectionType.marshal(memberships)
 
 
 ViewerPayload = Annotated[

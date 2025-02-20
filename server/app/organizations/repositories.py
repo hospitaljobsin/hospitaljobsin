@@ -97,6 +97,47 @@ class OrganizationRepo:
         """Delete a organization by ID."""
         await organization.delete()
 
+    async def get_all_by_account_id(
+        self,
+        account_id: ObjectId,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[Organization, ObjectId]:
+        """Get all organizations by account ID."""
+
+        paginator: Paginator[Organization, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=Organization,
+            paginate_by="id",
+        )
+
+        pipeline = [
+            {"$match": {"account.$id": account_id}},
+            {
+                "$lookup": {
+                    "from": "organizations",
+                    "localField": "organization.$id",
+                    "foreignField": "_id",
+                    "as": "organization_data",
+                }
+            },
+            {"$unwind": "$organization_data"},
+            {"$replaceRoot": {"newRoot": "$organization_data"}},
+        ]
+
+        return await paginator.paginate(
+            search_criteria=OrganizationMember.aggregate(
+                aggregation_pipeline=pipeline,
+                projection_model=Organization,
+            ),
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
 
 class OrganizationMemberRepo:
     async def get(
