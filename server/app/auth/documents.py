@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Annotated
 
 from beanie import Document, Indexed, Link
+from pymongo import IndexModel
 
 from app.accounts.documents import Account
 
@@ -23,3 +24,10 @@ class PasswordResetToken(Document):
 
     class Settings:
         name = "password_reset_tokens"  # MongoDB collection name
+        indexes = [
+            # expire password reset tokens after they cross the expiration timestamp
+            IndexModel(
+                "expires_at",
+                expireAfterSeconds=0,
+            ),
+        ]
