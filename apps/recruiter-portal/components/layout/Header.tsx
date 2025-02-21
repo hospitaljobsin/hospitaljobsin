@@ -1,5 +1,6 @@
 "use client";
 import { APP_NAME } from "@/lib/constants";
+import { env } from "@/lib/env";
 import links from "@/lib/links";
 import {
 	Button,
@@ -44,7 +45,7 @@ export default function Header() {
 				) : (
 					<>
 						<NavbarItem>
-							<Link color="foreground" href="/auth/login">
+							<Link color="foreground" href={links.login(env.NEXT_PUBLIC_URL)}>
 								<Button color="default">Log In</Button>
 							</Link>
 						</NavbarItem>

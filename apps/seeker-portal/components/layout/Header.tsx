@@ -1,5 +1,6 @@
 "use client";
 import { APP_NAME } from "@/lib/constants";
+import { env } from "@/lib/env";
 import links from "@/lib/links";
 import {
 	Button,
@@ -47,7 +48,7 @@ export default function Header() {
 							<Button
 								as={Link}
 								color="default"
-								href={links.login(window.location.href)}
+								href={links.login(env.NEXT_PUBLIC_URL)}
 							>
 								Log In
 							</Button>

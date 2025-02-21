@@ -1,3 +1,4 @@
+import { env } from "@/lib/env";
 import links from "@/lib/links";
 import {
 	Button,
@@ -31,7 +32,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			onCompleted(response, errors) {
 				if (!errors) {
 					// Redirect to login page
-					window.location.href = links.login(window.location.href);
+					window.location.href = links.login(env.NEXT_PUBLIC_URL);
 				}
 			},
 		});

@@ -1,5 +1,6 @@
 "use client";
 import { env } from "@/lib/env";
+import links from "@/lib/links";
 import type {
 	CacheConfig,
 	GraphQLResponse,
@@ -43,7 +44,7 @@ export async function networkFetch(
 				// Apollo Server sets code to UNAUTHENTICATED
 				// when an AuthenticationError is thrown in a resolver
 				case "UNAUTHENTICATED":
-					window.location.href = "/auth/login";
+					window.location.href = links.login(env.NEXT_PUBLIC_URL);
 			}
 		}
 		console.error(json.errors);

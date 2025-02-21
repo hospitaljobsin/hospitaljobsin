@@ -2,7 +2,6 @@ from beanie import PydanticObjectId
 from beanie.operators import In
 from bson import ObjectId
 
-from app.accounts.documents import Account
 from app.base.models import Address
 from app.database.paginator import PaginatedResult, Paginator
 
@@ -152,13 +151,13 @@ class OrganizationMemberRepo:
 
     async def create(
         self,
-        organization: Organization,
+        organization_id: ObjectId,
         account_id: ObjectId,
         role: str,
     ) -> OrganizationMember:
         """Create a new organization member."""
         organization_member = OrganizationMember(
-            organization=organization,
+            organization=organization_id,
             role=role,
             account=account_id,
         )

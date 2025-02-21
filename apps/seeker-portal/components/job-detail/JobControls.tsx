@@ -1,3 +1,4 @@
+import { env } from "@/lib/env";
 import links from "@/lib/links";
 import { Button, Link, Tooltip } from "@heroui/react";
 import { BookmarkCheckIcon, BookmarkIcon } from "lucide-react";
@@ -136,7 +137,7 @@ export default function JobControls({
 						<div className="px-1 py-2">
 							<div className="text-sm">
 								<Link
-									href={links.login(window.location.href)}
+									href={links.login(env.NEXT_PUBLIC_URL)}
 									isExternal
 									size="sm"
 								>

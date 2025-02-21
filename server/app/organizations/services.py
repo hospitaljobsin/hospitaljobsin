@@ -46,7 +46,7 @@ class OrganizationService:
 
         # create initial admin member
         await self._organization_member_repo.create(
-            organization=organization,
+            organization_id=organization.id,
             account_id=admin_id,
             role="admin",
         )

@@ -28,6 +28,30 @@ services:
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+  # caddy:
+  #   build:
+  #     context: ./caddy
+  #     dockerfile: Dockerfile
+  #     target: development
+  #   restart: always
+  #   volumes:
+  #     - caddy_data:/data
+  #     - caddy_config:/config
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:80"]
+  #     interval: 5s
+  #     timeout: 1s
+  #     retries: 3
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
 
 volumes:
   mongodb_data:
+    driver: local
+  # caddy_data:
+  #   driver: local
+  # caddy_config:
+  #   driver: local
