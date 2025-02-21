@@ -21,7 +21,7 @@ export default function Providers({
 
 	return (
 		<HeroUIProvider navigate={router.push}>
-			<ToastProvider placement="top-left" />
+			<ToastProvider placement="top-left" toastOffset={60} />
 			<ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
 				<RelayEnvironmentProvider environment={environment}>
 					<GoogleReCaptchaProvider
