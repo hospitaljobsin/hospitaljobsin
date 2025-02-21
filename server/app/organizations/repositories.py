@@ -115,6 +115,7 @@ class OrganizationRepo:
 
         pipeline = [
             {"$match": {"account.$id": account_id}},
+            {"$sort": {"_id": -1}},
             {
                 "$lookup": {
                     "from": "organizations",
