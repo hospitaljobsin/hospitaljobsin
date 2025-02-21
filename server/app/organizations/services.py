@@ -76,3 +76,11 @@ class OrganizationMemberService:
         )
 
         return member is not None and member.role == "admin"
+
+    async def is_member(self, account_id: ObjectId, organization_id: ObjectId) -> bool:
+        return (
+            await self._organization_member_repo.get(
+                account_id=account_id, organization_id=organization_id
+            )
+            is not None
+        )

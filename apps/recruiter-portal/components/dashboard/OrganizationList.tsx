@@ -1,5 +1,6 @@
-import { Card, CardBody } from "@heroui/react";
-import Image from "next/image";
+import links from "@/lib/links";
+import { Button, Link } from "@heroui/react";
+import { Building } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -84,30 +85,21 @@ export default function OrganizationList({ rootQuery }: Props) {
 		data.organizations.edges.length === 0 &&
 		!data.organizations.pageInfo.hasNextPage
 	) {
-		return (
-			<Card className="p-6 space-y-6" fullWidth shadow="none">
-				<CardBody className="flex flex-col gap-8 w-full items-center">
-					<Image
-						src="/images/not-found.svg" // Add an illustration asset here
-						alt="Not Found Illustration"
-						width={350}
-						height={350}
-					/>
-					<div className="w-full flex flex-col gap-4 items-center">
-						<h2 className="font-medium text-muted-foreground text-lg">
-							Oops! No results found
-						</h2>
-						<p className="text-muted-foreground text-md">
-							Modify search criteria and try again
-						</p>
-					</div>
-				</CardBody>
-			</Card>
-		);
+		// TODO: add empty state here
+		return null;
 	}
 
 	return (
 		<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
+			<div className="flex w-full gap-6 justify-between items-center">
+				<div className="flex gap-4 items-center text-foreground-600">
+					<Building size={24} />
+					<h2 className="text-base font-medium">Your Organizations</h2>
+				</div>
+				<Button as={Link} href={links.createOrganization}>
+					Create Organization
+				</Button>
+			</div>
 			{data.organizations.edges.map((jobEdge) => (
 				<Organization organization={jobEdge.node} key={jobEdge.node.id} />
 			))}

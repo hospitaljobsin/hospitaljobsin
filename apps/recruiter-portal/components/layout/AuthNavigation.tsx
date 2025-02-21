@@ -1,5 +1,4 @@
 "use client";
-import links from "@/lib/links";
 import {
 	Button,
 	Divider,
@@ -15,7 +14,7 @@ import {
 	NavbarItem,
 	useDisclosure,
 } from "@heroui/react";
-import { Building, ChevronDown, LogOutIcon, PlusIcon } from "lucide-react";
+import { LogOutIcon } from "lucide-react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -103,39 +102,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
-			<Dropdown className="hidden md:block" placement="bottom-end">
-				<NavbarItem className="hidden md:block">
-					<DropdownTrigger>
-						<Button
-							disableRipple
-							size="sm"
-							variant="bordered"
-							endContent={<ChevronDown className="h-3 w-3" />}
-						>
-							<PlusIcon className="h-4 w-4" />
-						</Button>
-					</DropdownTrigger>
-				</NavbarItem>
 
-				<DropdownMenu
-					variant="light"
-					aria-label="Navigation Menu"
-					itemClasses={{
-						base: "gap-4",
-					}}
-					className="hidden md:block"
-				>
-					<DropdownSection>
-						<DropdownItem
-							key="profile"
-							startContent={<Building className="h-4 w-4" />}
-							href={links.createOrganization}
-						>
-							New Organization
-						</DropdownItem>
-					</DropdownSection>
-				</DropdownMenu>
-			</Dropdown>
 			<Dropdown className="hidden md:block" placement="bottom-end">
 				<NavbarItem className="hidden md:block">
 					<DropdownTrigger>

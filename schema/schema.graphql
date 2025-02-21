@@ -305,6 +305,7 @@ type Organization implements Node {
   website: String
   logoUrl: String!
   isAdmin: Boolean!
+  isMember: Boolean!
   jobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
   members(before: ID = null, after: ID = null, first: Int = null, last: Int = null): OrganizationMemberConnection!
 }

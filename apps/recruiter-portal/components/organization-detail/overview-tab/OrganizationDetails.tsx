@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardHeader, Link } from "@heroui/react";
+import { Card, CardBody, CardHeader, Link } from "@heroui/react";
 import { Globe, Mail, MapPin } from "lucide-react";
 import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
@@ -69,9 +69,6 @@ export default function OrganizationDetails({
 								)}
 							</div>
 						</div>
-						<Button size="lg" className="w-full sm:w-auto">
-							Follow
-						</Button>
 					</div>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-6 w-full">
@@ -102,6 +99,12 @@ export default function OrganizationDetails({
 						)}
 					</div>
 				</CardBody>
+			</Card>
+			<Card fullWidth className="p-6 space-y-6" shadow="none">
+				recent applications
+			</Card>
+			<Card fullWidth className="p-6 space-y-6" shadow="none">
+				hiring statistics
 			</Card>
 		</div>
 	);
