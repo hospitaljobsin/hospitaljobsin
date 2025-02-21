@@ -43,8 +43,8 @@ const LoginFormMutation = graphql`
 `;
 
 const loginSchema = z.object({
-	email: z.string().email(),
-	password: z.string().min(1),
+	email: z.string().min(1, "This field is required").email(),
+	password: z.string().min(1, "This field is required"),
 });
 
 export default function LoginForm() {

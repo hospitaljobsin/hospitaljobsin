@@ -12,7 +12,7 @@ import SignupContext from "./SignupContext";
 import type { Step1EmailFormMutation as Step1EmailFormMutationType } from "./__generated__/Step1EmailFormMutation.graphql";
 
 const step1Schema = z.object({
-	email: z.string().email(),
+	email: z.string().min(1, "This field is required").email(),
 });
 
 const RequestVerificationMutation = graphql`

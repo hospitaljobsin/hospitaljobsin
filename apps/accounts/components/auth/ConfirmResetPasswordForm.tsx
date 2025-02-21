@@ -32,6 +32,7 @@ const ConfirmResetPasswordFormMutation = graphql`
 const confirmResetPasswordSchema = z.object({
 	password: z
 		.string()
+		.min(1, "This field is required")
 		.min(8, "Password must be at least 8 characters long.")
 		.refine((password) => /[a-z]/.test(password), {
 			message: "Password must contain at least one lowercase letter.",

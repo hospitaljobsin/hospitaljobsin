@@ -30,7 +30,7 @@ const SubmitResetPasswordFormMutation = graphql`
 `;
 
 const submitResetPasswordSchema = z.object({
-	email: z.string().email(),
+	email: z.string().min(1, "This field is required").email(),
 });
 
 export default function SubmitResetPasswordFrom() {

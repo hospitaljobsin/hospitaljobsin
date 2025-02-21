@@ -1,7 +1,7 @@
 "use client";
 
 import { timeFormat } from "@/lib/intl";
-import { Button, Input, Tooltip } from "@heroui/react";
+import { Button, Input, Tooltip, addToast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit3Icon } from "lucide-react";
 import { useEffect } from "react";
@@ -15,7 +15,7 @@ import type { Step2VerificationFormMutation as Step2VerificationFormMutationType
 import type { Step2VerificationFormRequestVerificationMutation as Step2VerificationFormRequestVerificationMutationType } from "./__generated__/Step2VerificationFormRequestVerificationMutation.graphql";
 
 const step2Schema = z.object({
-	emailVerificationToken: z.string().min(1),
+	emailVerificationToken: z.string().min(1, "This field is required"),
 });
 
 const VerifyEmailMutation = graphql`
@@ -168,7 +168,12 @@ export default function Step2VerificationForm() {
 						type: "SET_RESEND_COOLDOWN",
 						cooldown: response.requestEmailVerificationToken.remainingSeconds,
 					});
-					// TODO: show toast here to check inbox
+					// show toast here to check inbox
+					addToast({
+						title: "Email Verification Token Sent",
+						description: "Please check your email inbox (maybe spam).",
+						color: "success",
+					});
 				}
 			},
 		});

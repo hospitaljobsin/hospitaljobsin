@@ -1,7 +1,7 @@
 "use client";
 import { env } from "@/lib/env";
 import { getCurrentEnvironment } from "@/lib/relay/environments";
-import { HeroUIProvider } from "@heroui/react";
+import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { AppProgressBar } from "next-nprogress-bar";
 import { ThemeProvider } from "next-themes";
 import { useRouter } from "next/navigation";
@@ -21,6 +21,7 @@ export default function Providers({
 
 	return (
 		<HeroUIProvider navigate={router.push}>
+			<ToastProvider placement="top-left" />
 			<ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
 				<RelayEnvironmentProvider environment={environment}>
 					<GoogleReCaptchaProvider

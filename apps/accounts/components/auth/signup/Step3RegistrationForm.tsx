@@ -16,6 +16,7 @@ import type { Step3RegistrationFormMutation as Step3RegistrationFormMutationType
 const step3Schema = z.object({
 	password: z
 		.string()
+		.min(1, "This field is required")
 		.min(8, "Password must be at least 8 characters long.")
 		.refine((password) => /[a-z]/.test(password), {
 			message: "Password must contain at least one lowercase letter.",
@@ -30,7 +31,7 @@ const step3Schema = z.object({
 			message:
 				"Password must contain at least one special character (!@#$%^&*()-_=+).",
 		}),
-	fullName: z.string().min(1),
+	fullName: z.string().min(1, "This field is required"),
 });
 
 const RegisterMutation = graphql`
