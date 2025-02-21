@@ -5,6 +5,10 @@ const links = {
 	dashboard: "/dashboard",
 	createOrganization: "/dashboard/new-organization",
 	organizationDetail: (slug: string) => `/dashboard/organizations/${slug}`,
+	organizationDetailMembers: (slug: string) =>
+		`/dashboard/organizations/${slug}/members`,
+	organizationDetailSettings: (slug: string) =>
+		`/dashboard/organizations/${slug}/settings`,
 	login: (returnTo: string | undefined = undefined) =>
 		returnTo
 			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}`
