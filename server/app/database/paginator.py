@@ -14,7 +14,11 @@ ModelType = TypeVar("ModelType", bound=Document)
 
 CursorType = TypeVar("CursorType", str, ObjectId)
 
-SearchType = TypeVar("SearchType", FindMany[ModelType], AggregationQuery[ModelType])
+SearchCriteriaType = TypeVar(
+    "SearchCriteriaType",
+    FindMany[ModelType],
+    AggregationQuery[ModelType],
+)
 
 
 @dataclass
@@ -94,9 +98,9 @@ class Paginator(Generic[ModelType, CursorType]):
     def __apply_ordering(
         self,
         *,
-        search_criteria: SearchType,
+        search_criteria: SearchCriteriaType,
         last: int | None,
-    ) -> SearchType:
+    ) -> SearchCriteriaType:
         """Apply ordering on the search criteria."""
 
         if (self._reverse and last is None) or (last is not None and not self._reverse):
@@ -123,10 +127,10 @@ class Paginator(Generic[ModelType, CursorType]):
     def __apply_filters(
         self,
         *,
-        search_criteria: SearchType,
+        search_criteria: SearchCriteriaType,
         before: CursorType | None,
         after: CursorType | None,
-    ) -> SearchType:
+    ) -> SearchCriteriaType:
         """Apply pagination filters on the search criteria."""
         if after is not None:
             if isinstance(search_criteria, AggregationQuery):
@@ -167,7 +171,7 @@ class Paginator(Generic[ModelType, CursorType]):
     async def paginate(
         self,
         *,
-        search_criteria: SearchType,
+        search_criteria: SearchCriteriaType,
         last: int | None = None,
         first: int | None = None,
         before: CursorType | None = None,
