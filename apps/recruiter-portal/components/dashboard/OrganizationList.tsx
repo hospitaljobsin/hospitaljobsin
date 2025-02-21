@@ -1,6 +1,6 @@
 import links from "@/lib/links";
 import { Button, Link } from "@heroui/react";
-import { Building } from "lucide-react";
+import { Building, PlusIcon } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -96,7 +96,11 @@ export default function OrganizationList({ rootQuery }: Props) {
 					<Building size={24} />
 					<h2 className="text-base font-medium">Your Organizations</h2>
 				</div>
-				<Button as={Link} href={links.createOrganization}>
+				<Button
+					as={Link}
+					href={links.createOrganization}
+					startContent={<PlusIcon className="h-4 w-4" />}
+				>
 					Create Organization
 				</Button>
 			</div>
