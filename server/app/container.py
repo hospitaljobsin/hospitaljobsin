@@ -26,7 +26,7 @@ def create_container() -> aioinject.Container:
     container = aioinject.Container()
     container.register(aioinject.Object(Settings()))
     container.register(aioinject.Singleton(get_jinja2_environment))
-    container.register(aioinject.Scoped(get_smtp_client))
+    container.register(aioinject.Singleton(get_smtp_client))
     container.register(aioinject.Scoped(EmailSender))
     container.register(aioinject.Scoped(get_aioboto3_session))
     container.register(aioinject.Scoped(get_s3_client))
