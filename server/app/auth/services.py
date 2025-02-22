@@ -27,13 +27,13 @@ from app.auth.exceptions import (
     PasswordResetTokenNotFoundError,
 )
 from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
-from app.config import settings
+from app.config import Settings
 from app.lib.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
     PASSWORD_RESET_EXPIRES_IN,
     USER_SESSION_EXPIRES_IN,
 )
-from app.lib.emails import send_template_email
+from app.lib.emails import EmailSender
 
 
 class AuthService:
@@ -44,12 +44,16 @@ class AuthService:
         email_verification_token_repo: EmailVerificationTokenRepo,
         profile_repo: ProfileRepo,
         password_reset_token_repo: PasswordResetTokenRepo,
+        email_sender: EmailSender,
+        settings: Settings,
     ) -> None:
         self._account_repo = account_repo
         self._session_repo = session_repo
         self._email_verification_token_repo = email_verification_token_repo
         self._profile_repo = profile_repo
         self._password_reset_token_repo = password_reset_token_repo
+        self._email_sender = email_sender
+        self._settings = settings
 
     async def request_email_verification_token(
         self,
@@ -103,7 +107,7 @@ class AuthService:
         ) = await self._email_verification_token_repo.create(email=email)
 
         background_tasks.add_task(
-            send_template_email,
+            self._email_sender.send_template_email,
             template="email-verification",
             receiver=email,
             context={
@@ -155,7 +159,7 @@ class AuthService:
         """Verify whether the given recaptcha token is valid."""
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                f"https://www.google.com/recaptcha/api/siteverify?secret={settings.recaptcha_secret_key.get_secret_value()}&response={recaptcha_token}",
+                f"https://www.google.com/recaptcha/api/siteverify?secret={self._settings.recaptcha_secret_key.get_secret_value()}&response={recaptcha_token}",
                 headers={
                     "Accept": "application/json",
                     "Content-Type": "application/json",
@@ -319,11 +323,11 @@ class AuthService:
         is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
         secure = False if is_localhost else True
         response.set_cookie(
-            key=settings.user_session_cookie_name,
+            key=self._settings.user_session_cookie_name,
             value=value,
             expires=datetime.now(UTC) + timedelta(seconds=USER_SESSION_EXPIRES_IN),
             path="/",
-            domain=settings.session_cookie_domain,
+            domain=self._settings.session_cookie_domain,
             secure=secure,
             httponly=True,
             samesite="lax",
@@ -342,9 +346,9 @@ class AuthService:
         await self._session_repo.delete(token=session_token)
 
         response.delete_cookie(
-            key=settings.user_session_cookie_name,
+            key=self._settings.user_session_cookie_name,
             path="/",
-            domain=settings.session_cookie_domain,
+            domain=self._settings.session_cookie_domain,
             secure=secure,
             httponly=True,
             samesite="lax",
@@ -381,11 +385,11 @@ class AuthService:
         )
 
         background_tasks.add_task(
-            send_template_email,
+            self._email_sender.send_template_email,
             template="password-reset",
             receiver=existing_user.email,
             context={
-                "reset_link": f"{settings.accounts_base_url}/auth/reset-password/{password_reset_token}?email={existing_user.email}",
+                "reset_link": f"{self._settings.accounts_base_url}/auth/reset-password/{password_reset_token}?email={existing_user.email}",
                 "link_expires_in": naturaldelta(
                     timedelta(seconds=PASSWORD_RESET_EXPIRES_IN)
                 ),

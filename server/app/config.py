@@ -150,6 +150,3 @@ class Settings(BaseSettings):
     def is_production(self) -> bool:
         """Check whether the current environment is production."""
         return self._is_environment(Environment.production)
-
-
-settings = Settings()  # type: ignore[call-arg]

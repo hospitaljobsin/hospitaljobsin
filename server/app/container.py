@@ -10,9 +10,13 @@ from app.accounts.repositories import (
 from app.accounts.services import AccountService, ProfileService
 from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
 from app.auth.services import AuthService
+from app.config import Settings
 from app.jobs.repositories import JobRepo, SavedJobRepo
 from app.jobs.services import SavedJobService
 from app.lib.aws_sdk import get_aioboto3_session, get_s3_client
+from app.lib.emails import EmailSender, get_smtp_client
+from app.lib.oauth import get_oauth_client
+from app.lib.templates import get_jinja2_environment
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
 from app.organizations.services import OrganizationMemberService, OrganizationService
 
@@ -20,8 +24,13 @@ from app.organizations.services import OrganizationMemberService, OrganizationSe
 @lru_cache
 def create_container() -> aioinject.Container:
     container = aioinject.Container()
+    container.register(aioinject.Object(Settings()))
+    container.register(aioinject.Singleton(get_jinja2_environment))
+    container.register(aioinject.Scoped(get_smtp_client))
+    container.register(aioinject.Scoped(EmailSender))
     container.register(aioinject.Scoped(get_aioboto3_session))
     container.register(aioinject.Scoped(get_s3_client))
+    container.register(aioinject.Singleton(get_oauth_client))
     container.register(aioinject.Singleton(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
     container.register(aioinject.Scoped(AuthService))

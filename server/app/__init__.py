@@ -1,3 +1,6 @@
+from re import A
+from typing import AsyncGenerator
+
 from aioinject.ext.fastapi import AioInjectMiddleware
 from asgi_correlation_id import CorrelationIdMiddleware
 from fastapi import FastAPI
@@ -5,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.auth.routes import auth_router
-from app.config import settings
+from app.config import Settings
 from app.container import create_container
 from app.database import initialize_database
 from app.graphql_app import create_graphql_router
@@ -20,7 +23,7 @@ def add_routes(app: FastAPI) -> None:
     app.include_router(auth_router)
 
 
-def add_middleware(app: FastAPI) -> None:
+def add_middleware(app: FastAPI, settings: Settings) -> None:
     """Register middleware for the app."""
     app.add_middleware(
         CORSMiddleware,
@@ -49,7 +52,9 @@ def add_middleware(app: FastAPI) -> None:
     )
 
 
-async def app_lifespan(app: FastAPI):
+async def app_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """Initialize the database when the app starts."""
+    settings = Settings()
     async with initialize_database(
         database_url=str(settings.database_url),
     ):
@@ -57,6 +62,7 @@ async def app_lifespan(app: FastAPI):
 
 
 def create_app() -> FastAPI:
+    settings = Settings()
     app = FastAPI(
         version="0.0.1",
         debug=settings.debug,
@@ -65,5 +71,5 @@ def create_app() -> FastAPI:
         lifespan=app_lifespan,
     )
     add_routes(app)
-    add_middleware(app)
+    add_middleware(app, settings=settings)
     return app
