@@ -51,7 +51,7 @@ class Profile(Document):
 class Account(Document):
     full_name: str
     email: Annotated[str, Indexed(unique=True)]
-    password_hash: str
+    password_hash: str | None = None
     has_onboarded: bool
     updated_at: datetime | None = None
     profile: Link["Profile"] | None = None

@@ -1,1 +1,5 @@
-{{ app_name }} Password Reset Request
+{% if is_initial %}
+    Set your {{ app_name }} password
+{% else %}
+    {{ app_name }} Password Reset Request
+{% endif %}

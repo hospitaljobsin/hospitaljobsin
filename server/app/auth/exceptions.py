@@ -50,6 +50,13 @@ class PasswordNotStrongError:
     pass
 
 
+class InvalidSignInMethodError:
+    """Raised when the user tries an invalid sign in method (occurs when users
+    sign in via Oauth2 and try to login with their password)."""
+
+    pass
+
+
 class PasswordResetTokenNotFoundError:
     """Raised when a password reset token is not found."""
 

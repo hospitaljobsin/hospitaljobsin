@@ -1,15 +1,23 @@
 {% extends "emails/base/body.html" %}
 
+{% if is_initial %}
+{% set action_text = "set your password" %}
+{% else %}
+{% set action_text = "reset your password" %}
+{% endif %}
+
 {% block title %}
-Reset Your Password
+{% if is_initial %}
+  Set Your Password
+{% else %}
+  Reset Your Password
+{% endif %}
 {% endblock%}
 
 {% block content %}
 <p>Hey there</p>
-<p>We received a request to reset your {{ app_name }} account password.
-  <strong
-    >This reset link is only valid for {{ link_expires_in }}.</strong
-  ></p>
+<p>We received a request to {{ action_text }} for your {{ app_name }} account password.
+  <strong>This reset link is only valid for {{ link_expires_in }}.</strong></p>
 <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
   <tbody>
     <tr>
@@ -17,7 +25,7 @@ Reset Your Password
         <table role="presentation" border="0" cellpadding="0" cellspacing="0">
           <tbody>
             <tr>
-              <td> <a href="{{ reset_link }}" target="_blank">Reset Password</a> </td>
+              <td> <a href="{{ reset_link }}" target="_blank">{{ action_text | capitalize }}</a> </td>
             </tr>
           </tbody>
         </table>
@@ -29,7 +37,7 @@ Reset Your Password
 <h6>Requester User Agent: {{ user_agent }}</h6>
 
 <p>
-  If you did not request a password reset, please ignore this email or
+  If you did not request to {{ action_text }}, please ignore this email or
 <a href="{{ support_email }}">contact support</a> if you have questions.
 </p>
 

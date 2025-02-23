@@ -16,6 +16,7 @@ from app.auth.exceptions import (
     InvalidEmailVerificationTokenError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
+    InvalidSignInMethodError,
     PasswordNotStrongError,
 )
 from app.auth.permissions import IsAuthenticated
@@ -30,6 +31,7 @@ from .types import (
     InvalidEmailVerificationTokenErrorType,
     InvalidPasswordResetTokenErrorType,
     InvalidRecaptchaTokenErrorType,
+    InvalidSignInMethodErrorType,
     LoginPayload,
     LogoutPayloadType,
     PasswordNotStrongErrorType,
@@ -246,6 +248,8 @@ class AuthMutation:
                     return InvalidRecaptchaTokenErrorType()
                 case InvalidCredentialsError():
                     return InvalidCredentialsErrorType()
+                case InvalidSignInMethodError():
+                    return InvalidSignInMethodErrorType()
 
         return AccountType.marshal(result.ok_value)
 

@@ -4,6 +4,7 @@ import { env } from "@/lib/env";
 import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
 import {
+	addToast,
 	Alert,
 	Button,
 	Card,
@@ -37,6 +38,10 @@ const LoginFormMutation = graphql`
         message
       }
 	  ... on InvalidRecaptchaTokenError {
+		message
+	  }
+
+	  ... on InvalidSignInMethodError {
 		message
 	  }
     }
@@ -113,6 +118,20 @@ export default function LoginForm() {
 				} else if (response.login.__typename === "InvalidRecaptchaTokenError") {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
+				} else if (response.login.__typename == "InvalidSignInMethodError") {
+					addToast({
+						title: "Invalid Sign In Method",
+						color: "warning",
+						timeout: 30_000,
+						endContent: (
+							<div className="w-full text-warning-400 text-sm">
+								You've previously signed in with Google. Please sign in with Google or <Link className="underline" href={links.resetPasswordSubmit}>set a password</Link>.
+							</div>
+						  ),
+						  classNames: {
+							base: "flex flex-col items-start gap-4"
+						  }
+					})
 				} else {
 					window.location.href = redirectTo;
 				}

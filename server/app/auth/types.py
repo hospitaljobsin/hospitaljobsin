@@ -37,6 +37,11 @@ class InvalidRecaptchaTokenErrorType(BaseErrorType):
     message: str = "Invalid recaptcha token provided."
 
 
+@strawberry.type(name="InvalidSignInMethodError")
+class InvalidSignInMethodErrorType(BaseErrorType):
+    message: str = "User's password is not set."
+
+
 @strawberry.type(name="PasswordResetToken")
 class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
     email: str
@@ -114,7 +119,10 @@ RegisterPayload = Annotated[
 ]
 
 LoginPayload = Annotated[
-    AccountType | InvalidCredentialsErrorType | InvalidRecaptchaTokenErrorType,
+    AccountType
+    | InvalidCredentialsErrorType
+    | InvalidRecaptchaTokenErrorType
+    | InvalidSignInMethodErrorType,
     strawberry.union(name="LoginPayload"),
 ]
 

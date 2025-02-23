@@ -1,13 +1,12 @@
 import hashlib
 import random
-import secrets
 import string
 from datetime import date, datetime, timedelta
 
 from beanie import PydanticObjectId, WriteRules
 from beanie.operators import In
 from bson import ObjectId
-from passlib.hash import argon2, sha256_crypt
+from passlib.hash import argon2
 
 from app.base.models import Address
 from app.lib.constants import (
@@ -28,9 +27,9 @@ class AccountRepo:
     async def create(
         self,
         email: str,
-        password: str,
         full_name: str,
         email_verified: bool = False,
+        password: str | None = None,
     ) -> Account:
         """Create a new account."""
         account = Account(
@@ -38,7 +37,9 @@ class AccountRepo:
             email=email,
             password_hash=self.hash_password(
                 password=password,
-            ),
+            )
+            if password
+            else None,
             has_onboarded=False,
             updated_at=None,
             profile=None,

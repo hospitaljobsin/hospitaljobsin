@@ -23,6 +23,7 @@ from app.auth.exceptions import (
     InvalidEmailVerificationTokenError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
+    InvalidSignInMethodError,
     PasswordNotStrongError,
     PasswordResetTokenNotFoundError,
 )
@@ -242,13 +243,20 @@ class AuthService:
         user_agent: str,
         request: Request,
         response: Response,
-    ) -> Result[Account, InvalidCredentialsError | InvalidRecaptchaTokenError]:
+    ) -> Result[
+        Account,
+        InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError,
+    ]:
         """Login a user."""
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
         account = await self._account_repo.get_by_email(email=email)
         if not account:
             return Err(InvalidCredentialsError())
+
+        if account.password_hash is None:
+            # return an error for users who signed up with Google
+            return Err(InvalidSignInMethodError())
 
         if not self._account_repo.verify_password(
             password=password,
@@ -268,11 +276,6 @@ class AuthService:
         )
 
         return Ok(account)
-
-    @staticmethod
-    def generate_random_password() -> str:
-        """Generate a random password."""
-        return secrets.token_urlsafe(16)
 
     @staticmethod
     def check_password_strength(password: str) -> bool:
@@ -301,8 +304,8 @@ class AuthService:
             account = await self._account_repo.create(
                 email=user_info["email"],
                 full_name=user_info["name"],
-                # generate initial password for the user
-                password=self.generate_random_password(),
+                # set initial password to None for the user
+                password=None,
             )
 
         session_token = await self._session_repo.create(
@@ -389,6 +392,7 @@ class AuthService:
             template="password-reset",
             receiver=existing_user.email,
             context={
+                "is_initial": existing_user.password_hash is None,
                 "reset_link": f"{self._settings.accounts_base_url}/auth/reset-password/{password_reset_token}?email={existing_user.email}",
                 "link_expires_in": naturaldelta(
                     timedelta(seconds=PASSWORD_RESET_EXPIRES_IN)

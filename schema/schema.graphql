@@ -95,6 +95,10 @@ type InvalidRecaptchaTokenError implements Error {
   message: String!
 }
 
+type InvalidSignInMethodError implements Error {
+  message: String!
+}
+
 type Job implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -157,7 +161,7 @@ input LanguageInput {
   proficiency: String!
 }
 
-union LoginPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError
+union LoginPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError
 
 type LogoutPayload {
   message: String!
