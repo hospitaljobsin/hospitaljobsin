@@ -2,6 +2,7 @@
 
 import { env } from "@/lib/env";
 import links from "@/lib/links";
+import { getValidRedirectURL } from "@/lib/redirects";
 import {
 	Alert,
 	Button,
@@ -50,6 +51,7 @@ const loginSchema = z.object({
 export default function LoginForm() {
 	const router = useRouter();
 	const params = useSearchParams();
+	const redirectTo = getValidRedirectURL(params.get("return_to"));
 
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -67,8 +69,6 @@ export default function LoginForm() {
 			router.replace(url.toString(), undefined, { showProgressBar: false });
 		}
 	}, [oauth2Error, router]);
-
-	const redirectTo = params.get("return_to") || links.seekerLanding;
 
 	const [commitMutation, isMutationInFlight] =
 		useMutation<LoginFormMutationType>(LoginFormMutation);

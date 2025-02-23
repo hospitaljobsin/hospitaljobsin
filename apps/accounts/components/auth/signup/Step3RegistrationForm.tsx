@@ -1,9 +1,10 @@
 "use client";
 
-import links from "@/lib/links";
+import { getValidRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
@@ -68,7 +69,7 @@ const RegisterMutation = graphql`
 
 export default function Step3RegistrationForm() {
 	const params = useSearchParams();
-	const redirectTo = params.get("return_to") || links.seekerLanding;
+	const redirectTo = getValidRedirectURL(params.get("return_to"));
 	const { send } = SignupContext.useActorRef();
 	const emailVerificationToken = SignupContext.useSelector(
 		(state) => state.context.emailVerificationToken,
