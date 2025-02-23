@@ -4,10 +4,7 @@ import links from "./lib/links";
 
 const AUTH_COOKIE_KEY = env.AUTH_COOKIE_KEY;
 
-const AUTHENTICATED_ROUTES = [
-	/^\/dashboard$/,
-	/^\/dashboard\/new-organization$/,
-];
+const AUTHENTICATED_ROUTES = [/^\/dashboard(?:\/.*)?$/];
 
 const ANONYMOUS_ROUTES: RegExp[] = [/^\/$/];
 
