@@ -76,10 +76,10 @@ export default function LoginForm() {
 		register,
 		handleSubmit,
 		setError,
+		clearErrors,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof loginSchema>>({
 		resolver: zodResolver(loginSchema),
-		reValidateMode: "onBlur",
 	});
 
 	const { executeRecaptcha } = useGoogleReCaptcha();
@@ -145,7 +145,9 @@ export default function LoginForm() {
 								autoComplete="email"
 								placeholder="Enter your email address"
 								type="email"
-								{...register("email")}
+								{...register("email", {
+									onChange: () => clearErrors(["email", "password"]),
+								})}
 								errorMessage={errors.email?.message}
 								isInvalid={!!errors.email}
 							/>
@@ -170,7 +172,9 @@ export default function LoginForm() {
 										)}
 									</button>
 								}
-								{...register("password")}
+								{...register("password", {
+									onChange: () => clearErrors(["email", "password"]),
+								})}
 								errorMessage={errors.password?.message}
 								isInvalid={!!errors.password}
 							/>
