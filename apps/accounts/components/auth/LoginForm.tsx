@@ -80,6 +80,7 @@ export default function LoginForm() {
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof loginSchema>>({
 		resolver: zodResolver(loginSchema),
+		reValidateMode: "onChange",
 	});
 
 	const { executeRecaptcha } = useGoogleReCaptcha();
