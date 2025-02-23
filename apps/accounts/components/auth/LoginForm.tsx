@@ -149,6 +149,7 @@ export default function LoginForm() {
 								errorMessage={errors.email?.message}
 								isInvalid={!!errors.email}
 							/>
+							<div className="w-full flex flex-col">
 							<Input
 								id="password"
 								label="Password"
@@ -172,17 +173,15 @@ export default function LoginForm() {
 								{...register("password")}
 								errorMessage={errors.password?.message}
 								isInvalid={!!errors.password}
-								description={
-									<div className="w-full flex justify-start">
-										<Link
-											href={links.resetPasswordSubmit}
-											className="mt-2 cursor-pointer text-blue-500"
-										>
-											Forgot password?
-										</Link>
-									</div>
-								}
 							/>
+							<div className="w-full flex justify-start text-tiny px-1">
+									<Link
+										href={links.resetPasswordSubmit}
+										className="mt-2 cursor-pointer text-blue-500"
+									>
+										Forgot password?
+									</Link>
+								</div></div>
 
 							<Button
 								fullWidth
