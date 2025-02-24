@@ -9,6 +9,7 @@ const links = {
 		returnTo ? `/auth/signup?return_to=${returnTo}` : "/auth/signup",
 	resetPasswordSubmit: "/auth/reset-password",
 	resetPasswordConfirm: (token: string) => `/auth/reset-password/${token}`,
+	settings: "/settings",
 };
 
 export default links;
