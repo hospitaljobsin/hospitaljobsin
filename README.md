@@ -1,3 +1,20 @@
+# TODO (auth)
+
+add accounts center
+where:
+
+- users can enable/ disable 2FA (along with passwords)
+- users can edit account details
+- users can add passkeys
+- users can log out all other sessions
+- users can delete their accounts
+
+edit register workflow
+- allow users to register using passkeys/ passwords
+
+edit login workflow
+- add sign in with passkey button
+
 # Hospital Job Management Platform
 
 A comprehensive platform designed to streamline job management in hospitals. This system includes a powerful backend, a modern frontend, and a robust database to handle data efficiently.
