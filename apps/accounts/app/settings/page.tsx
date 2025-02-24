@@ -1,3 +1,3 @@
-export default function ProfileSettingsPage() {
-	return <>profile settings</>;
+export default function AccountSettingsPage() {
+	return <>account settings</>;
 }
