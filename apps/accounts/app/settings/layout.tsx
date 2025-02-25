@@ -7,13 +7,15 @@ export default function SettingsLayout({
 	return (
 		<>
 			<Header />
-			<div className="relative w-full h-full">
+			<div className="relative w-full h-screen">
 				<div className="absolute top-0 left-0 w-1/2 h-screen bg-background-700" />
 				<div className="absolute top-0 right-0 w-1/2 h-screen bg-background-600" />
-				<div className="relative w-full mx-auto max-w-5xl h-full">
-					<div className="flex flex-col md:flex-row h-full">
+				<div className="relative w-full mx-auto max-w-5xl h-screen">
+					<div className="flex flex-col md:flex-row h-screen bg-background-600">
 						<SettingsSidebar />
-						<div className="flex-1 p-8 bg-background-600">{children}</div>
+						<div className="flex-1 p-4 md:p-8 bg-background-600">
+							{children}
+						</div>
 					</div>
 				</div>
 			</div>
