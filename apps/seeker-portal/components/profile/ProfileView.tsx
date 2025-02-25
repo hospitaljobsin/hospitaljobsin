@@ -1,11 +1,11 @@
 "use client";
+import links from "@/lib/links";
+import { Card, CardBody, Link } from "@heroui/react";
 import { useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
-import AccountDetails from "./AccountDetails";
 import Languages from "./Languages";
 import ProfileDetails from "./PersonalDetails";
-import UpdateAccountDetailsForm from "./UpdateAccountDetailsForm";
 import UpdateLanguagesForm from "./UpdateLanguagesForm";
 import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
 import type { ProfileViewQuery as ProfileViewQueryType } from "./__generated__/ProfileViewQuery.graphql";
@@ -27,7 +27,6 @@ const ProfileViewQuery = graphql`
 `;
 
 export default function ProfileView() {
-	const [isEditingAccount, setIsEditingAccount] = useState(false);
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
 	const [isEditingLanguages, setIsEditingLanguages] = useState(false);
 	const data = useLazyLoadQuery<ProfileViewQueryType>(ProfileViewQuery, {});
@@ -38,21 +37,16 @@ export default function ProfileView() {
 
 	return (
 		<div className="w-full h-full space-y-16">
-			{isEditingAccount ? (
-				<UpdateAccountDetailsForm
-					rootQuery={data.viewer}
-					onSaveChanges={() => {
-						setIsEditingAccount(false);
-					}}
-				/>
-			) : (
-				<AccountDetails
-					rootQuery={data.viewer}
-					onEditAccount={() => {
-						setIsEditingAccount(true);
-					}}
-				/>
-			)}
+			<Card className="p-6">
+				<CardBody>
+					<p>
+						Go to{" "}
+						<Link href={links.accountSettings} showAnchorIcon>
+							account settings
+						</Link>
+					</p>
+				</CardBody>
+			</Card>
 
 			{isEditingProfile ? (
 				<UpdateProfileDetailsForm

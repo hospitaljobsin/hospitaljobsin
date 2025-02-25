@@ -136,13 +136,8 @@ export default function NewOrganizationForm() {
 									{...field}
 									label="Organization Website"
 									labelPlacement="outside"
-									startContent={
-										<div className="pointer-events-none flex items-center">
-										  <span className="text-default-400 text-small">https://</span>
-										</div>
-									  }
 									type="url"
-									placeholder="example.com"
+									placeholder="https://example.com"
 									value={field.value || ""}
 									errorMessage={errors.website?.message}
 									isInvalid={!!errors.website}
