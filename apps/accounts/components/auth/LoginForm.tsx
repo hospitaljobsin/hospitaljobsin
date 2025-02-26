@@ -147,7 +147,7 @@ export default function LoginForm() {
 			console.log("Recaptcha not loaded");
 			return;
 		}
-		const token = await executeRecaptcha("login");
+		const token = await executeRecaptcha("login_password");
 		commitPasswordLoginMutation({
 			variables: {
 				email: values.email,
@@ -201,7 +201,9 @@ export default function LoginForm() {
 			console.log("Recaptcha not loaded");
 			return;
 		}
-		const token = await executeRecaptcha("login");
+		const token = await executeRecaptcha(
+			"passkey_generate_authentication_options",
+		);
 		commitGenerateAuthenticationOptionsMutation({
 			variables: {
 				recaptchaToken: token,
@@ -225,35 +227,37 @@ export default function LoginForm() {
 						optionsJSON: JSON.parse(authenticationOptions),
 					})
 						.then((authenticationResponse) => {
-							commitPasskeyLoginMutation({
-								variables: {
-									authenticationResponse: JSON.stringify(
-										authenticationResponse,
-									),
-									recaptchaToken: token,
-								},
-								onCompleted(response) {
-									if (
-										response.loginWithPasskey.__typename ===
-										"InvalidRecaptchaTokenError"
-									) {
-										// handle recaptcha failure
-										alert("Recaptcha failed. Please try again.");
-									} else if (
-										response.loginWithPasskey.__typename ===
-										"InvalidPasskeyAuthenticationCredentialError"
-									) {
-										// TODO: show a toast here
-										alert(
-											"Invalid passkey registration credential. Please try again.",
-										);
-									} else {
-										window.location.href = redirectTo;
-									}
-								},
-								updater(store) {
-									store.invalidateStore();
-								},
+							executeRecaptcha("login_passkey").then((recaptchaToken) => {
+								commitPasskeyLoginMutation({
+									variables: {
+										authenticationResponse: JSON.stringify(
+											authenticationResponse,
+										),
+										recaptchaToken: recaptchaToken,
+									},
+									onCompleted(response) {
+										if (
+											response.loginWithPasskey.__typename ===
+											"InvalidRecaptchaTokenError"
+										) {
+											// handle recaptcha failure
+											alert("Recaptcha failed. Please try again.");
+										} else if (
+											response.loginWithPasskey.__typename ===
+											"InvalidPasskeyAuthenticationCredentialError"
+										) {
+											// TODO: show a toast here
+											alert(
+												"Invalid passkey registration credential. Please try again.",
+											);
+										} else {
+											window.location.href = redirectTo;
+										}
+									},
+									updater(store) {
+										store.invalidateStore();
+									},
+								});
 							});
 						})
 						.catch((error) => {
