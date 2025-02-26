@@ -98,6 +98,11 @@ class InvalidPasskeyRegistrationCredentialErrorType(BaseErrorType):
     message: str = "Invalid passkey registration credential provided."
 
 
+@strawberry.type(name="InvalidPasskeyAuthenticationCredentialError")
+class InvalidPasskeyAuthenticationCredentialErrorType(BaseErrorType):
+    message: str = "Invalid passkey authentication credential provided."
+
+
 RequestEmailVerificationTokenPayload = Annotated[
     RequestEmailVerificationTokenSuccessType
     | EmailInUseErrorType
@@ -133,12 +138,19 @@ RegisterWithPasskeyPayload = Annotated[
     strawberry.union(name="RegisterWithPasskeyPayload"),
 ]
 
-LoginPayload = Annotated[
+LoginWithPasswordPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
     | InvalidRecaptchaTokenErrorType
     | InvalidSignInMethodErrorType,
-    strawberry.union(name="LoginPayload"),
+    strawberry.union(name="LoginWithPasswordPayload"),
+]
+
+LoginWithPasskeyPayload = Annotated[
+    AccountType
+    | InvalidPasskeyAuthenticationCredentialErrorType
+    | InvalidRecaptchaTokenErrorType,
+    strawberry.union(name="LoginWithPasskeyPayload"),
 ]
 
 
@@ -178,4 +190,15 @@ GeneratePasskeyRegistrationOptionsPayload = Annotated[
     | InvalidRecaptchaTokenErrorType
     | EmailInUseErrorType,
     strawberry.union(name="GeneratePasskeyRegistrationOptionsPayload"),
+]
+
+
+@strawberry.type(name="GenerateAuthenticationOptionsSuccess")
+class GenerateAuthenticationOptionsSuccessType:
+    authentication_options: JSON
+
+
+GenerateAuthenticationOptionsPayload = Annotated[
+    GenerateAuthenticationOptionsSuccessType | InvalidRecaptchaTokenErrorType,
+    strawberry.union(name="GenerateAuthenticationOptionsPayload"),
 ]

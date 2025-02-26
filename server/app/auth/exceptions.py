@@ -67,3 +67,9 @@ class InvalidPasskeyRegistrationCredentialError:
     """Raised when the passkey registration credential is invalid."""
 
     pass
+
+
+class InvalidPasskeyAuthenticationCredentialError:
+    """Raised when the passkey authentication credential is invalid."""
+
+    pass

@@ -16,6 +16,7 @@ from app.auth.exceptions import (
     InvalidCredentialsError,
     InvalidEmailError,
     InvalidEmailVerificationTokenError,
+    InvalidPasskeyAuthenticationCredentialError,
     InvalidPasskeyRegistrationCredentialError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
@@ -29,16 +30,20 @@ from .services import AuthService
 from .types import (
     EmailInUseErrorType,
     EmailVerificationTokenCooldownErrorType,
+    GenerateAuthenticationOptionsPayload,
+    GenerateAuthenticationOptionsSuccessType,
     GeneratePasskeyRegistrationOptionsPayload,
     GeneratePasskeyRegistrationOptionsSuccessType,
     InvalidCredentialsErrorType,
     InvalidEmailErrorType,
     InvalidEmailVerificationTokenErrorType,
+    InvalidPasskeyAuthenticationCredentialErrorType,
     InvalidPasskeyRegistrationCredentialErrorType,
     InvalidPasswordResetTokenErrorType,
     InvalidRecaptchaTokenErrorType,
     InvalidSignInMethodErrorType,
-    LoginPayload,
+    LoginWithPasskeyPayload,
+    LoginWithPasswordPayload,
     LogoutPayloadType,
     PasswordNotStrongErrorType,
     RegisterWithPasskeyPayload,
@@ -323,11 +328,81 @@ class AuthMutation:
         return AccountType.marshal_with_profile(result.ok_value)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=LoginPayload,
-        description="Log in a user.",
+        graphql_type=GenerateAuthenticationOptionsPayload,
+        description="Generate authentication options.",
     )
     @inject
-    async def login(
+    async def generate_authentication_options(
+        self,
+        info: Info,
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> GenerateAuthenticationOptionsPayload:
+        """Generate authentication options."""
+        result = await auth_service.generate_authentication_options(
+            recaptcha_token=recaptcha_token,
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
+
+        return GenerateAuthenticationOptionsSuccessType(
+            authentication_options=options_to_json(result.ok_value)
+        )
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=LoginWithPasskeyPayload,
+        description="Log in a user with a passkey.",
+    )
+    @inject
+    async def login_with_passkey(
+        self,
+        info: Info,
+        authentication_response: Annotated[
+            JSON,
+            strawberry.argument(
+                description="The authentication response of the user.",
+            ),
+        ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> LoginWithPasskeyPayload:
+        """Login a user with a passkey."""
+        result = await auth_service.login_with_passkey(
+            authentication_response=authentication_response,
+            recaptcha_token=recaptcha_token,
+            user_agent=info.context["user_agent"],
+            request=info.context["request"],
+            response=info.context["response"],
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
+                case InvalidPasskeyAuthenticationCredentialError():
+                    return InvalidPasskeyAuthenticationCredentialErrorType()
+
+        return AccountType.marshal(result.ok_value)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=LoginWithPasswordPayload,
+        description="Log in a user with email and password.",
+    )
+    @inject
+    async def login_with_password(
         self,
         info: Info,
         email: Annotated[
@@ -349,9 +424,9 @@ class AuthMutation:
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
-    ) -> LoginPayload:
-        """Login a user."""
-        result = await auth_service.login(
+    ) -> LoginWithPasswordPayload:
+        """Login a user with email and password."""
+        result = await auth_service.login_with_password(
             email=email,
             password=password,
             recaptcha_token=recaptcha_token,

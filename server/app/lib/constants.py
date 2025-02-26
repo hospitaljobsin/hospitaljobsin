@@ -23,3 +23,6 @@ EMAIL_VERIFICATION_TOKEN_LENGTH = 6
 
 # Password reset
 PASSWORD_RESET_EXPIRES_IN = 60 * 60 * 1  # 1 hour
+
+# WebAuthn challenge
+WEBAUTHN_CHALLENGE_EXPIRES_IN = 60 * 5  # 5 minutes

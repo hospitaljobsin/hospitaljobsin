@@ -35,7 +35,7 @@ class PasswordResetToken(Document):
 
 
 class WebAuthnCredential(Document):
-    credential_id: Annotated[bytes, Indexed()]
+    credential_id: Annotated[bytes, Indexed(unique=True)]
     public_key: bytes
     sign_count: int
     device_type: str
@@ -52,6 +52,14 @@ class WebAuthnCredential(Document):
 class WebAuthnChallenge(Document):
     challenge: Annotated[bytes, Indexed(unique=True)]
     generated_account_id: PydanticObjectId
+    expires_at: datetime
 
     class Settings:
         name = "webauthn_challenges"  # MongoDB collection name
+        indexes = [
+            # expire webauthn challenges after they cross the expiration timestamp
+            IndexModel(
+                "expires_at",
+                expireAfterSeconds=0,
+            ),
+        ]

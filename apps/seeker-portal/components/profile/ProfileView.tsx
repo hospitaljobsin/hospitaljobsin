@@ -15,8 +15,6 @@ const ProfileViewQuery = graphql`
     viewer {
       __typename
       ... on Account {
-        ...AccountDetailsFragment
-		...UpdateAccountDetailsFormFragment
 		...UpdatePersonalDetailsFormFragment
         ...PersonalDetailsFragment
 		...LanguagesFragment

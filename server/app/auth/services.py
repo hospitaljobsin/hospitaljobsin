@@ -1,6 +1,6 @@
 import re
-import secrets
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 import bson
 import httpx
@@ -8,9 +8,17 @@ from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, Request, Response
 from humanize import naturaldelta
 from result import Err, Ok, Result
-from webauthn import generate_registration_options, verify_registration_response
+from webauthn import (
+    generate_authentication_options,
+    generate_registration_options,
+    verify_authentication_response,
+    verify_registration_response,
+)
 from webauthn.helpers import parse_client_data_json
 from webauthn.helpers.exceptions import WebAuthnException
+from webauthn.helpers.parse_authentication_credential_json import (
+    parse_authentication_credential_json,
+)
 from webauthn.helpers.parse_registration_credential_json import (
     parse_registration_credential_json,
 )
@@ -18,6 +26,7 @@ from webauthn.helpers.structs import (
     AuthenticatorAttachment,
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
+    PublicKeyCredentialRequestOptions,
     ResidentKeyRequirement,
     UserVerificationRequirement,
 )
@@ -35,6 +44,7 @@ from app.auth.exceptions import (
     InvalidCredentialsError,
     InvalidEmailError,
     InvalidEmailVerificationTokenError,
+    InvalidPasskeyAuthenticationCredentialError,
     InvalidPasskeyRegistrationCredentialError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
@@ -301,7 +311,7 @@ class AuthService:
         email: str,
         email_verification_token: str,
         recaptcha_token: str,
-        passkey_registration_response: str,
+        passkey_registration_response: dict[Any, Any],
         full_name: str,
         user_agent: str,
         request: Request,
@@ -399,7 +409,85 @@ class AuthService:
 
         return Ok(account)
 
-    async def login(
+    async def generate_authentication_options(
+        self, recaptcha_token: str
+    ) -> Result[PublicKeyCredentialRequestOptions, InvalidRecaptchaTokenError]:
+        """Generate authentication options."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
+        auth_options = generate_authentication_options(
+            rp_id=self._settings.rp_id,
+            user_verification=UserVerificationRequirement.PREFERRED,
+        )
+
+        # TODO: set webauthn challenge cookie here
+        auth_options.challenge
+
+        return Ok(auth_options)
+
+    async def login_with_passkey(
+        self,
+        recaptcha_token: str,
+        authentication_response: dict[Any, Any],
+        user_agent: str,
+        request: Request,
+        response: Response,
+    ) -> Result[
+        Account,
+        InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError,
+    ]:
+        """Login a user with a passkey."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
+
+        try:
+            # TODO: get expected challenge from cookie
+            authentication_credential = parse_authentication_credential_json(
+                authentication_response
+            )
+            webauthn_credential = await self._webauthn_credential_repo.get(
+                credential_id=authentication_credential.raw_id
+            )
+
+            if webauthn_credential is None:
+                return Err(InvalidPasskeyAuthenticationCredentialError())
+
+            authentication_verification = verify_authentication_response(
+                credential=authentication_credential,
+                expected_challenge="",
+                expected_rp_id=self._settings.rp_id,
+                expected_origin=self._settings.rp_expected_origin,
+                require_user_verification=True,
+                credential_public_key=webauthn_credential.credential_public_key,
+                sign_count=webauthn_credential.sign_count,
+            )
+        except WebAuthnException:
+            return Err(InvalidPasskeyAuthenticationCredentialError())
+        if not authentication_verification.user_verified:
+            return Err(InvalidPasskeyAuthenticationCredentialError())
+
+        # update credential sign count
+        await self._webauthn_credential_repo.update(
+            webauthn_credential=webauthn_credential,
+            sign_count=authentication_verification.new_sign_count,
+        )
+
+        account = webauthn_credential.account
+
+        session_token = await self._session_repo.create(
+            user_agent=user_agent,
+            account=account,
+        )
+
+        self._set_user_session_cookie(
+            request=request,
+            response=response,
+            value=session_token,
+        )
+
+        return Ok(account)
+
+    async def login_with_password(
         self,
         email: str,
         password: str,
@@ -411,7 +499,7 @@ class AuthService:
         Account,
         InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError,
     ]:
-        """Login a user."""
+        """Login a user with email and password."""
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
         account = await self._account_repo.get_by_email(email=email)

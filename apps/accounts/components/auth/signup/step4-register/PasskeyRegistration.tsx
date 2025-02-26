@@ -1,7 +1,7 @@
 "use client";
 
 import { getValidRedirectURL } from "@/lib/redirects";
-import { Button } from "@heroui/react";
+import { Alert, Button } from "@heroui/react";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useSearchParams } from "next/navigation";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
@@ -124,71 +124,82 @@ export default function PasskeyRegistration() {
 
 					startRegistration({
 						optionsJSON: JSON.parse(registrationOptions),
-					}).then((registrationResponse) => {
-						commitRegister({
-							variables: {
-								email,
-								emailVerificationToken,
-								fullName,
-								passkeyRegistrationResponse:
-									JSON.stringify(registrationResponse),
-								recaptchaToken: token,
-							},
-							onCompleted(response) {
-								if (
-									response.registerWithPasskey.__typename === "EmailInUseError"
-								) {
-									// we've hit the race condition failsafe.
-									// show an unexpected error message and reset the form
-									send({
-										type: "SET_EMAIL_ERROR",
-										message: response.registerWithPasskey.message,
-									});
-								} else if (
-									response.registerWithPasskey.__typename ===
-									"InvalidEmailVerificationTokenError"
-								) {
-									send({
-										type: "SET_VERIFICATION_TOKEN_ERROR",
-										message: response.registerWithPasskey.message,
-									});
-								} else if (
-									response.registerWithPasskey.__typename ===
-									"InvalidRecaptchaTokenError"
-								) {
-									// handle recaptcha failure
-									alert("Recaptcha failed. Please try again.");
-								} else if (
-									response.registerWithPasskey.__typename ===
-									"InvalidPasskeyRegistrationCredentialError"
-								) {
-									alert(
-										"Invalid passkey registration credential. Please try again.",
-									);
-								} else {
-									// redirect to redirect URL
-									window.location.href = redirectTo;
-								}
-							},
-							updater(store) {
-								store.invalidateStore();
-							},
+					})
+						.then((registrationResponse) => {
+							commitRegister({
+								variables: {
+									email,
+									emailVerificationToken,
+									fullName,
+									passkeyRegistrationResponse:
+										JSON.stringify(registrationResponse),
+									recaptchaToken: token,
+								},
+								onCompleted(response) {
+									if (
+										response.registerWithPasskey.__typename ===
+										"EmailInUseError"
+									) {
+										// we've hit the race condition failsafe.
+										// show an unexpected error message and reset the form
+										send({
+											type: "SET_EMAIL_ERROR",
+											message: response.registerWithPasskey.message,
+										});
+									} else if (
+										response.registerWithPasskey.__typename ===
+										"InvalidEmailVerificationTokenError"
+									) {
+										send({
+											type: "SET_VERIFICATION_TOKEN_ERROR",
+											message: response.registerWithPasskey.message,
+										});
+									} else if (
+										response.registerWithPasskey.__typename ===
+										"InvalidRecaptchaTokenError"
+									) {
+										// handle recaptcha failure
+										alert("Recaptcha failed. Please try again.");
+									} else if (
+										response.registerWithPasskey.__typename ===
+										"InvalidPasskeyRegistrationCredentialError"
+									) {
+										alert(
+											"Invalid passkey registration credential. Please try again.",
+										);
+									} else {
+										// redirect to redirect URL
+										window.location.href = redirectTo;
+									}
+								},
+								updater(store) {
+									store.invalidateStore();
+								},
+							});
+						})
+						.catch((error) => {
+							// TODO: show toast here
 						});
-					});
 				}
 			},
 		});
 	};
 
 	return (
-		<Button
-			onPress={handleSubmit}
-			isLoading={
-				isCommitRegisterInFlight || isGenerateRegistrationOptionsInFlight
-			}
-			fullWidth
-		>
-			Create account
-		</Button>
+		<div className="w-full flex flex-col gap-6">
+			<Alert variant="faded" color="primary">
+				Passkeys are the new replacement for passwords, designed to give you
+				access to apps in an easier and more secure way.
+			</Alert>
+			<Button
+				onPress={handleSubmit}
+				isLoading={
+					isCommitRegisterInFlight || isGenerateRegistrationOptionsInFlight
+				}
+				fullWidth
+			>
+				Create account
+			</Button>
+		</div>
 	);
 }

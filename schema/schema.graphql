@@ -75,6 +75,12 @@ enum GenderType {
   OTHER
 }
 
+union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSuccess | InvalidRecaptchaTokenError
+
+type GenerateAuthenticationOptionsSuccess {
+  authenticationOptions: JSON!
+}
+
 union GeneratePasskeyRegistrationOptionsPayload = GeneratePasskeyRegistrationOptionsSuccess | InvalidRecaptchaTokenError | EmailInUseError
 
 type GeneratePasskeyRegistrationOptionsSuccess {
@@ -90,6 +96,10 @@ type InvalidEmailError implements Error {
 }
 
 type InvalidEmailVerificationTokenError implements Error {
+  message: String!
+}
+
+type InvalidPasskeyAuthenticationCredentialError implements Error {
   message: String!
 }
 
@@ -176,7 +186,9 @@ input LanguageInput {
   proficiency: String!
 }
 
-union LoginPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError
+union LoginWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError
+
+union LoginWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError
 
 type LogoutPayload {
   message: String!
@@ -257,8 +269,23 @@ type Mutation {
     recaptchaToken: String!
   ): RegisterWithPasskeyPayload!
 
-  """Log in a user."""
-  login(
+  """Generate authentication options."""
+  generateAuthenticationOptions(
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
+  ): GenerateAuthenticationOptionsPayload!
+
+  """Log in a user with a passkey."""
+  loginWithPasskey(
+    """The authentication response of the user."""
+    authenticationResponse: JSON!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
+  ): LoginWithPasskeyPayload!
+
+  """Log in a user with email and password."""
+  loginWithPassword(
     """The email of the user."""
     email: String!
 
@@ -267,7 +294,7 @@ type Mutation {
 
     """The recaptcha token to verify the user request."""
     recaptchaToken: String!
-  ): LoginPayload!
+  ): LoginWithPasswordPayload!
 
   """Log out the current user."""
   logout: LogoutPayload! @isAuthenticated

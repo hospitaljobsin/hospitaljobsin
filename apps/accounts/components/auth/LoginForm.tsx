@@ -4,7 +4,6 @@ import { env } from "@/lib/env";
 import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
 import {
-	addToast,
 	Alert,
 	Button,
 	Card,
@@ -13,10 +12,12 @@ import {
 	CardHeader,
 	Divider,
 	Input,
+	addToast,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Google } from "@lobehub/icons";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { startAuthentication } from "@simplewebauthn/browser";
+import { EyeIcon, EyeOffIcon, FingerprintIcon } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -25,11 +26,13 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
-import type { LoginFormMutation as LoginFormMutationType } from "./__generated__/LoginFormMutation.graphql";
+import type { LoginFormGenerateAuthenticationOptionsMutation } from "./__generated__/LoginFormGenerateAuthenticationOptionsMutation.graphql";
+import type { LoginFormPasskeyMutation as LoginFormPasskeyMutationType } from "./__generated__/LoginFormPasskeyMutation.graphql";
+import type { LoginFormPasswordMutation as LoginFormPasswordMutationType } from "./__generated__/LoginFormPasswordMutation.graphql";
 
-const LoginFormMutation = graphql`
-  mutation LoginFormMutation($email: String!, $password: String!, $recaptchaToken: String!) {
-    login(email: $email, password: $password, recaptchaToken: $recaptchaToken) {
+const LoginFormPasswordMutation = graphql`
+  mutation LoginFormPasswordMutation($email: String!, $password: String!, $recaptchaToken: String!) {
+    loginWithPassword(email: $email, password: $password, recaptchaToken: $recaptchaToken) {
       __typename
 	  ... on Account {
 		__typename
@@ -42,6 +45,38 @@ const LoginFormMutation = graphql`
 	  }
 
 	  ... on InvalidSignInMethodError {
+		message
+	  }
+    }
+  }
+`;
+
+const GenerateAuthenticationOptionsMutation = graphql`
+  mutation LoginFormGenerateAuthenticationOptionsMutation($recaptchaToken: String!) {
+    generateAuthenticationOptions(recaptchaToken: $recaptchaToken) {
+      __typename
+	  ... on InvalidRecaptchaTokenError {
+		message
+	  }
+
+	  ... on GenerateAuthenticationOptionsSuccess {
+		authenticationOptions
+	  }
+    }
+  }
+`;
+
+const LoginFormPasskeyMutation = graphql`
+  mutation LoginFormPasskeyMutation($authenticationResponse: JSON!, $recaptchaToken: String!) {
+    loginWithPasskey(authenticationResponse: $authenticationResponse, recaptchaToken: $recaptchaToken) {
+      __typename
+	  ... on Account {
+		__typename
+	  }
+      ... on InvalidPasskeyAuthenticationCredentialError {
+        message
+      }
+	  ... on InvalidRecaptchaTokenError {
 		message
 	  }
     }
@@ -75,8 +110,16 @@ export default function LoginForm() {
 		}
 	}, [oauth2Error, router]);
 
-	const [commitMutation, isMutationInFlight] =
-		useMutation<LoginFormMutationType>(LoginFormMutation);
+	const [commitPasswordLoginMutation, isPasswordLoginMutationInFlight] =
+		useMutation<LoginFormPasswordMutationType>(LoginFormPasswordMutation);
+	const [commitPasskeyLoginMutation, isPasskeyLoginMutationInFlight] =
+		useMutation<LoginFormPasskeyMutationType>(LoginFormPasskeyMutation);
+	const [
+		commitGenerateAuthenticationOptionsMutation,
+		isGenerateAuthenticationOptionsMutationInFlight,
+	] = useMutation<LoginFormGenerateAuthenticationOptionsMutation>(
+		GenerateAuthenticationOptionsMutation,
+	);
 	const {
 		register,
 		handleSubmit,
@@ -105,39 +148,110 @@ export default function LoginForm() {
 			return;
 		}
 		const token = await executeRecaptcha("login");
-		commitMutation({
+		commitPasswordLoginMutation({
 			variables: {
 				email: values.email,
 				password: values.password,
 				recaptchaToken: token,
 			},
 			onCompleted(response) {
-				if (response.login.__typename === "InvalidCredentialsError") {
-					setError("email", { message: response.login.message });
-					setError("password", { message: response.login.message });
-				} else if (response.login.__typename === "InvalidRecaptchaTokenError") {
+				if (
+					response.loginWithPassword.__typename === "InvalidCredentialsError"
+				) {
+					setError("email", { message: response.loginWithPassword.message });
+					setError("password", { message: response.loginWithPassword.message });
+				} else if (
+					response.loginWithPassword.__typename === "InvalidRecaptchaTokenError"
+				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
-				} else if (response.login.__typename == "InvalidSignInMethodError") {
+				} else if (
+					response.loginWithPassword.__typename === "InvalidSignInMethodError"
+				) {
 					addToast({
 						title: "Invalid Sign In Method",
 						color: "warning",
 						timeout: 30_000,
 						endContent: (
 							<div className="w-full text-warning-400 text-sm">
-								You've previously signed in with Google. Please sign in with Google or <Link className="underline" href={links.resetPasswordSubmit}>set a password</Link>.
+								You've previously signed in with Google. Please sign in with
+								Google or{" "}
+								<Link className="underline" href={links.resetPasswordSubmit}>
+									set a password
+								</Link>
+								.
 							</div>
-						  ),
-						  classNames: {
-							base: "flex flex-col items-start gap-4"
-						  }
-					})
+						),
+						classNames: {
+							base: "flex flex-col items-start gap-4",
+						},
+					});
 				} else {
 					window.location.href = redirectTo;
 				}
 			},
 			updater(store) {
 				store.invalidateStore();
+			},
+		});
+	}
+
+	async function handlePasskeyLogin() {
+		if (!executeRecaptcha) {
+			console.log("Recaptcha not loaded");
+			return;
+		}
+		const token = await executeRecaptcha("login");
+		commitGenerateAuthenticationOptionsMutation({
+			variables: {
+				recaptchaToken: token,
+			},
+			onCompleted(response) {
+				if (
+					response.generateAuthenticationOptions.__typename ===
+					"InvalidRecaptchaTokenError"
+				) {
+					// handle recaptcha failure
+					alert("Recaptcha failed. Please try again.");
+				} else if (
+					response.generateAuthenticationOptions.__typename ===
+					"GenerateAuthenticationOptionsSuccess"
+				) {
+					// login with passkey
+					const authenticationOptions =
+						response.generateAuthenticationOptions.authenticationOptions;
+
+					startAuthentication({
+						optionsJSON: JSON.parse(authenticationOptions),
+					})
+						.then((authenticationResponse) => {
+							commitPasskeyLoginMutation({
+								variables: {
+									authenticationResponse: JSON.stringify(
+										authenticationResponse,
+									),
+									recaptchaToken: token,
+								},
+								onCompleted(response) {
+									if (
+										response.loginWithPasskey.__typename ===
+										"InvalidRecaptchaTokenError"
+									) {
+										// handle recaptcha failure
+										alert("Recaptcha failed. Please try again.");
+									} else {
+										window.location.href = redirectTo;
+									}
+								},
+								updater(store) {
+									store.invalidateStore();
+								},
+							});
+						})
+						.catch((error) => {
+							// TODO: show toast here
+						});
+				}
 			},
 		});
 	}
@@ -172,44 +286,49 @@ export default function LoginForm() {
 								isInvalid={!!errors.email}
 							/>
 							<div className="w-full flex flex-col">
-							<Input
-								id="password"
-								label="Password"
-								placeholder="Enter password"
-								autoComplete="current-password"
-								type={isPasswordVisible ? "text" : "password"}
-								endContent={
-									<button
-										aria-label="toggle password visibility"
-										className="focus:outline-none"
-										type="button"
-										onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-									>
-										{isPasswordVisible ? (
-											<EyeIcon className="text-2xl text-default-400 pointer-events-none" />
-										) : (
-											<EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
-										)}
-									</button>
-								}
-								{...register("password", {
-									onChange: () => clearErrors(["email", "password"]),
-								})}
-								errorMessage={errors.password?.message}
-								isInvalid={!!errors.password}
-							/>
-							<div className="w-full flex justify-start text-tiny px-1">
+								<Input
+									id="password"
+									label="Password"
+									placeholder="Enter password"
+									autoComplete="current-password"
+									type={isPasswordVisible ? "text" : "password"}
+									endContent={
+										<button
+											aria-label="toggle password visibility"
+											className="focus:outline-none"
+											type="button"
+											onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+										>
+											{isPasswordVisible ? (
+												<EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+											) : (
+												<EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
+											)}
+										</button>
+									}
+									{...register("password", {
+										onChange: () => clearErrors(["email", "password"]),
+									})}
+									errorMessage={errors.password?.message}
+									isInvalid={!!errors.password}
+								/>
+								<div className="w-full flex justify-start text-tiny px-1">
 									<Link
 										href={links.resetPasswordSubmit}
 										className="mt-2 cursor-pointer text-blue-500"
 									>
 										Forgot password?
 									</Link>
-								</div></div>
+								</div>
+							</div>
 
 							<Button
 								fullWidth
-								isLoading={isSubmitting || isMutationInFlight}
+								isDisabled={
+									isPasskeyLoginMutationInFlight ||
+									isGenerateAuthenticationOptionsMutationInFlight
+								}
+								isLoading={isSubmitting || isPasswordLoginMutationInFlight}
 								type="submit"
 							>
 								Log in
@@ -223,16 +342,35 @@ export default function LoginForm() {
 						<p>or</p>
 						<Divider className="flex-1" />
 					</div>
-					<Button
-						fullWidth
-						variant="bordered"
-						startContent={<Google.Color size={20} />}
-						onPress={() => {
-							window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(redirectTo)}`;
-						}}
-					>
-						Sign in with Google
-					</Button>
+					<div className="flex flex-col w-full gap-6">
+						<Button
+							fullWidth
+							variant="bordered"
+							startContent={<FingerprintIcon size={20} />}
+							onPress={handlePasskeyLogin}
+							isLoading={
+								isPasskeyLoginMutationInFlight ||
+								isGenerateAuthenticationOptionsMutationInFlight
+							}
+						>
+							Sign in with passkey
+						</Button>
+						<Button
+							fullWidth
+							variant="bordered"
+							startContent={<Google.Color size={20} />}
+							isDisabled={
+								isPasswordLoginMutationInFlight ||
+								isPasskeyLoginMutationInFlight ||
+								isGenerateAuthenticationOptionsMutationInFlight
+							}
+							onPress={() => {
+								window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(redirectTo)}`;
+							}}
+						>
+							Sign in with Google
+						</Button>
+					</div>
 					<div className="flex justify-center w-full">
 						<Link
 							href={links.signup(params.get("return_to"))}

@@ -1,8 +1,7 @@
 import hashlib
 import secrets
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 
-import webauthn
 from beanie import WriteRules
 from bson import ObjectId
 from webauthn.helpers.structs import AuthenticatorTransport
@@ -14,7 +13,11 @@ from app.auth.documents import (
     WebAuthnChallenge,
     WebAuthnCredential,
 )
-from app.lib.constants import PASSWORD_RESET_EXPIRES_IN, USER_SESSION_EXPIRES_IN
+from app.lib.constants import (
+    PASSWORD_RESET_EXPIRES_IN,
+    USER_SESSION_EXPIRES_IN,
+    WEBAUTHN_CHALLENGE_EXPIRES_IN,
+)
 
 
 class SessionRepo:
@@ -145,14 +148,24 @@ class WebAuthnCredentialRepo:
         webauthn_credential.sign_count = sign_count
         await webauthn_credential.save()
 
+    async def get(self, credential_id: bytes) -> WebAuthnCredential | None:
+        """Get WebAuthn credential by credential ID."""
+        return await WebAuthnCredential.find_one(
+            WebAuthnCredential.credential_id == credential_id,
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
 
 class WebAuthnChallengeRepo:
     async def create(
         self, challenge: bytes, generated_account_id: ObjectId
     ) -> WebAuthnChallenge:
+        expires_at = datetime.now() + timedelta(seconds=WEBAUTHN_CHALLENGE_EXPIRES_IN)
         webauthn_challenge = WebAuthnChallenge(
             challenge=challenge,
             generated_account_id=generated_account_id,
+            expires_at=expires_at,
         )
         await webauthn_challenge.save()
         return webauthn_challenge
