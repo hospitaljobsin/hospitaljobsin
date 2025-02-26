@@ -46,7 +46,7 @@ export const signUpMachine = createMachine({
 		step2: {
 			on: {
 				SUBMIT_VERIFICATION: {
-					target: "step4",
+					target: "step3",
 					actions: assign({
 						emailVerificationToken: ({ event }) => event.token,
 						emailVerificationError: () => undefined,

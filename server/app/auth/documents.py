@@ -45,7 +45,13 @@ class WebAuthnCredential(Document):
 
     account: Link[Account]
 
+    class Settings:
+        name = "webauthn_credentials"  # MongoDB collection name
+
 
 class WebAuthnChallenge(Document):
     challenge: Annotated[bytes, Indexed(unique=True)]
     generated_account_id: PydanticObjectId
+
+    class Settings:
+        name = "webauthn_challenges"  # MongoDB collection name

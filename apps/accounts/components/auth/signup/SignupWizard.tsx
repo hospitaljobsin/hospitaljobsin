@@ -27,7 +27,7 @@ export default function SignUpWizard() {
 
 	useEffect(() => {
 		// prevent user from leaving the page while completing registration
-		if (state.value === "step1") return;
+		if (state.value === "step4" || state.value === "step1") return;
 
 		function beforeUnload(e: BeforeUnloadEvent) {
 			e.preventDefault();

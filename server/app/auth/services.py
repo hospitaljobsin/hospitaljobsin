@@ -260,8 +260,8 @@ class AuthService:
         return Ok(account)
 
     @staticmethod
-    def generate_account_id() -> bytes:
-        return bson.ObjectId().binary
+    def generate_account_id() -> bson.ObjectId:
+        return bson.ObjectId()
 
     async def generate_passkey_registration_options(
         self,
@@ -279,7 +279,7 @@ class AuthService:
         registration_options = generate_registration_options(
             rp_id=self._settings.rp_id,
             rp_name=self._settings.rp_name,
-            user_id=account_id,
+            user_id=account_id.binary,
             user_name=email,
             user_display_name=full_name,
             authenticator_selection=AuthenticatorSelectionCriteria(
@@ -366,10 +366,13 @@ class AuthService:
             full_name=full_name,
         )
 
+        # delete the webauthn challenge after account creation
+        await self._webauthn_challenge_repo.delete(webauthn_challenge)
+
         await self._webauthn_credential_repo.create(
             account_id=account.id,
             credential_id=verified_registration.credential_id,
-            public_key=verified_registration.credential_public_key,
+            credential_public_key=verified_registration.credential_public_key,
             sign_count=verified_registration.sign_count,
             backed_up=verified_registration.credential_backed_up,
             device_type=verified_registration.credential_device_type,

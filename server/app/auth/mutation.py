@@ -6,6 +6,7 @@ from aioinject.ext.strawberry import inject
 from result import Err
 from strawberry.permission import PermissionExtension
 from strawberry.scalars import JSON
+from webauthn import options_to_json
 
 from app.accounts.repositories import AccountRepo
 from app.accounts.types import AccountType
@@ -240,8 +241,7 @@ class AuthMutation:
     ) -> GeneratePasskeyRegistrationOptionsPayload:
         """Generate registration options for adding a passkey."""
         result = await auth_service.generate_passkey_registration_options(
-            email=email,
-            full_name=full_name,
+            email=email, full_name=full_name, recaptcha_token=recaptcha_token
         )
 
         if isinstance(result, Err):
@@ -254,7 +254,7 @@ class AuthMutation:
                     return InvalidEmailVerificationTokenErrorType()
 
         return GeneratePasskeyRegistrationOptionsSuccessType(
-            passkey_registration_options=result.ok_value,
+            registration_options=options_to_json(result.ok_value),
         )
 
     @strawberry.mutation(  # type: ignore[misc]

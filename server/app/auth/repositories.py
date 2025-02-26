@@ -120,6 +120,7 @@ class WebAuthnCredentialRepo:
         credential_public_key: bytes,
         sign_count: int,
         device_type: str,
+        backed_up: bool,
         transports: list[AuthenticatorTransport] | None = None,
     ) -> WebAuthnCredential:
         webauthn_credential = WebAuthnCredential(
@@ -129,7 +130,7 @@ class WebAuthnCredentialRepo:
             sign_count=sign_count,
             device_type=device_type,
             transports=transports,
-            backed_up=False,
+            backed_up=backed_up,
         )
         await webauthn_credential.save()
         return webauthn_credential
@@ -161,3 +162,7 @@ class WebAuthnChallengeRepo:
         return await WebAuthnChallenge.find_one(
             WebAuthnChallenge.challenge == challenge,
         )
+
+    async def delete(self, webauthn_challenge: WebAuthnChallenge) -> None:
+        """Delete WebAuthn challenge by ID."""
+        await webauthn_challenge.delete()
