@@ -1,5 +1,7 @@
 # TODO (auth)
 
+- store last signed in method on user accounts
+
 add accounts center
 where:
 
@@ -8,12 +10,6 @@ where:
 - users can add passkeys
 - users can log out all other sessions
 - users can delete their accounts
-
-edit register workflow
-- allow users to register using passkeys/ passwords
-
-edit login workflow
-- add sign in with passkey button
 
 # Hospital Job Management Platform
 
