@@ -458,8 +458,8 @@ class AuthService:
                 expected_rp_id=self._settings.rp_id,
                 expected_origin=self._settings.rp_expected_origin,
                 require_user_verification=True,
-                credential_public_key=webauthn_credential.credential_public_key,
-                sign_count=webauthn_credential.sign_count,
+                credential_public_key=webauthn_credential.public_key,
+                credential_current_sign_count=webauthn_credential.sign_count,
             )
         except WebAuthnException:
             return Err(InvalidPasskeyAuthenticationCredentialError())

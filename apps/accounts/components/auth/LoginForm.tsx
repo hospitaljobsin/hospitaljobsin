@@ -227,38 +227,43 @@ export default function LoginForm() {
 						optionsJSON: JSON.parse(authenticationOptions),
 					})
 						.then((authenticationResponse) => {
-							executeRecaptcha("login_passkey").then((recaptchaToken) => {
-								commitPasskeyLoginMutation({
-									variables: {
-										authenticationResponse: JSON.stringify(
-											authenticationResponse,
-										),
-										recaptchaToken: recaptchaToken,
-									},
-									onCompleted(response) {
-										if (
-											response.loginWithPasskey.__typename ===
-											"InvalidRecaptchaTokenError"
-										) {
-											// handle recaptcha failure
-											alert("Recaptcha failed. Please try again.");
-										} else if (
-											response.loginWithPasskey.__typename ===
-											"InvalidPasskeyAuthenticationCredentialError"
-										) {
-											// TODO: show a toast here
-											alert(
-												"Invalid passkey registration credential. Please try again.",
-											);
-										} else {
-											window.location.href = redirectTo;
-										}
-									},
-									updater(store) {
-										store.invalidateStore();
-									},
+							executeRecaptcha("login_passkey")
+								.then((recaptchaToken) => {
+									commitPasskeyLoginMutation({
+										variables: {
+											authenticationResponse: JSON.stringify(
+												authenticationResponse,
+											),
+											recaptchaToken: recaptchaToken,
+										},
+										onCompleted(response) {
+											if (
+												response.loginWithPasskey.__typename ===
+												"InvalidRecaptchaTokenError"
+											) {
+												// handle recaptcha failure
+												alert("Recaptcha failed. Please try again.");
+											} else if (
+												response.loginWithPasskey.__typename ===
+												"InvalidPasskeyAuthenticationCredentialError"
+											) {
+												// TODO: show a toast here
+												alert(
+													"Invalid passkey registration credential. Please try again.",
+												);
+											} else {
+												window.location.href = redirectTo;
+											}
+										},
+										updater(store) {
+											store.invalidateStore();
+										},
+									});
+								})
+								.catch((error) => {
+									console.error(error);
+									// TODO: show toast here
 								});
-							});
 						})
 						.catch((error) => {
 							// TODO: show toast here

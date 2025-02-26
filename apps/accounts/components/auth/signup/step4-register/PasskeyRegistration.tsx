@@ -128,59 +128,64 @@ export default function PasskeyRegistration() {
 						optionsJSON: JSON.parse(registrationOptions),
 					})
 						.then((registrationResponse) => {
-							executeRecaptcha("passkey_register").then((recaptchaToken) => {
-								commitRegister({
-									variables: {
-										email,
-										emailVerificationToken,
-										fullName,
-										passkeyRegistrationResponse:
-											JSON.stringify(registrationResponse),
-										recaptchaToken: recaptchaToken,
-									},
-									onCompleted(response) {
-										if (
-											response.registerWithPasskey.__typename ===
-											"EmailInUseError"
-										) {
-											// we've hit the race condition failsafe.
-											// show an unexpected error message and reset the form
-											send({
-												type: "SET_EMAIL_ERROR",
-												message: response.registerWithPasskey.message,
-											});
-										} else if (
-											response.registerWithPasskey.__typename ===
-											"InvalidEmailVerificationTokenError"
-										) {
-											send({
-												type: "SET_VERIFICATION_TOKEN_ERROR",
-												message: response.registerWithPasskey.message,
-											});
-										} else if (
-											response.registerWithPasskey.__typename ===
-											"InvalidRecaptchaTokenError"
-										) {
-											// handle recaptcha failure
-											alert("Recaptcha failed. Please try again.");
-										} else if (
-											response.registerWithPasskey.__typename ===
-											"InvalidPasskeyRegistrationCredentialError"
-										) {
-											// TODO: show a toast here
-											alert(
-												"Invalid passkey registration credential. Please try again.",
-											);
-										} else {
-											// redirect to redirect URL
-											window.location.href = redirectTo;
-										}
-									},
-									updater(store) {
-										store.invalidateStore();
-									},
+							executeRecaptcha("passkey_register")
+								.then((recaptchaToken) => {
+									commitRegister({
+										variables: {
+											email,
+											emailVerificationToken,
+											fullName,
+											passkeyRegistrationResponse:
+												JSON.stringify(registrationResponse),
+											recaptchaToken: recaptchaToken,
+										},
+										onCompleted(response) {
+											if (
+												response.registerWithPasskey.__typename ===
+												"EmailInUseError"
+											) {
+												// we've hit the race condition failsafe.
+												// show an unexpected error message and reset the form
+												send({
+													type: "SET_EMAIL_ERROR",
+													message: response.registerWithPasskey.message,
+												});
+											} else if (
+												response.registerWithPasskey.__typename ===
+												"InvalidEmailVerificationTokenError"
+											) {
+												send({
+													type: "SET_VERIFICATION_TOKEN_ERROR",
+													message: response.registerWithPasskey.message,
+												});
+											} else if (
+												response.registerWithPasskey.__typename ===
+												"InvalidRecaptchaTokenError"
+											) {
+												// handle recaptcha failure
+												alert("Recaptcha failed. Please try again.");
+											} else if (
+												response.registerWithPasskey.__typename ===
+												"InvalidPasskeyRegistrationCredentialError"
+											) {
+												// TODO: show a toast here
+												alert(
+													"Invalid passkey registration credential. Please try again.",
+												);
+											} else {
+												// redirect to redirect URL
+												window.location.href = redirectTo;
+											}
+										},
+										updater(store) {
+											store.invalidateStore();
+										},
+									});
+								})
+								.catch((error) => {
+									console.error(error);
+									// TODO: show toast here
 								});
-							});
 						})
 						.catch((error) => {
 							// TODO: show toast here
