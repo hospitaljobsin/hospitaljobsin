@@ -1,4 +1,5 @@
 import re
+from base64 import b64decode, b64encode
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
@@ -51,6 +52,7 @@ from app.auth.exceptions import (
     InvalidSignInMethodError,
     PasswordNotStrongError,
     PasswordResetTokenNotFoundError,
+    WebAuthnChallengeNotFoundError,
 )
 from app.auth.repositories import (
     PasswordResetTokenRepo,
@@ -369,6 +371,9 @@ class AuthService:
             challenge=client_data.challenge,
         )
 
+        if webauthn_challenge is None:
+            return Err(InvalidPasskeyRegistrationCredentialError())
+
         account = await self._account_repo.create(
             account_id=webauthn_challenge.generated_account_id,
             email=email,
@@ -410,7 +415,9 @@ class AuthService:
         return Ok(account)
 
     async def generate_authentication_options(
-        self, recaptcha_token: str
+        self,
+        recaptcha_token: str,
+        request: Request,
     ) -> Result[PublicKeyCredentialRequestOptions, InvalidRecaptchaTokenError]:
         """Generate authentication options."""
         if not await self._verify_recaptcha_token(recaptcha_token):
@@ -420,8 +427,10 @@ class AuthService:
             user_verification=UserVerificationRequirement.PREFERRED,
         )
 
-        # TODO: set webauthn challenge cookie here
-        auth_options.challenge
+        # set webauthn challenge in session
+        request.session["webauthn_challenge"] = b64encode(
+            auth_options.challenge
+        ).decode("utf-8")
 
         return Ok(auth_options)
 
@@ -434,14 +443,19 @@ class AuthService:
         response: Response,
     ) -> Result[
         Account,
-        InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError,
+        InvalidPasskeyAuthenticationCredentialError
+        | InvalidRecaptchaTokenError
+        | WebAuthnChallengeNotFoundError,
     ]:
         """Login a user with a passkey."""
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
 
+        webauthn_challenge: str = request.session.get("webauthn_challenge")
+        if webauthn_challenge is None:
+            return Err(WebAuthnChallengeNotFoundError())
+
         try:
-            # TODO: get expected challenge from cookie
             authentication_credential = parse_authentication_credential_json(
                 authentication_response
             )
@@ -454,7 +468,7 @@ class AuthService:
 
             authentication_verification = verify_authentication_response(
                 credential=authentication_credential,
-                expected_challenge="",
+                expected_challenge=b64decode(webauthn_challenge),
                 expected_rp_id=self._settings.rp_id,
                 expected_origin=self._settings.rp_expected_origin,
                 require_user_verification=True,
@@ -478,6 +492,9 @@ class AuthService:
             user_agent=user_agent,
             account=account,
         )
+
+        # delete webauthn challenge from session
+        del request.session["webauthn_challenge"]
 
         self._set_user_session_cookie(
             request=request,

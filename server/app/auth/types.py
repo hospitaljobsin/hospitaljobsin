@@ -103,6 +103,11 @@ class InvalidPasskeyAuthenticationCredentialErrorType(BaseErrorType):
     message: str = "Invalid passkey authentication credential provided."
 
 
+@strawberry.type(name="WebAuthnChallengeNotFoundError")
+class WebAuthnChallengeNotFoundErrorType(BaseErrorType):
+    message: str = "WebAuthn challenge not found."
+
+
 RequestEmailVerificationTokenPayload = Annotated[
     RequestEmailVerificationTokenSuccessType
     | EmailInUseErrorType
@@ -149,7 +154,8 @@ LoginWithPasswordPayload = Annotated[
 LoginWithPasskeyPayload = Annotated[
     AccountType
     | InvalidPasskeyAuthenticationCredentialErrorType
-    | InvalidRecaptchaTokenErrorType,
+    | InvalidRecaptchaTokenErrorType
+    | WebAuthnChallengeNotFoundErrorType,
     strawberry.union(name="LoginWithPasskeyPayload"),
 ]
 

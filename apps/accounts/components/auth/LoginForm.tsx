@@ -79,6 +79,10 @@ const LoginFormPasskeyMutation = graphql`
 	  ... on InvalidRecaptchaTokenError {
 		message
 	  }
+
+	  ... on WebAuthnChallengeNotFoundError {
+		message
+	  }
     }
   }
 `;
@@ -251,6 +255,11 @@ export default function LoginForm() {
 												alert(
 													"Invalid passkey registration credential. Please try again.",
 												);
+											} else if (
+												response.loginWithPasskey.__typename ===
+												"WebAuthnChallengeNotFoundError"
+											) {
+												// TODO: show a toast here
 											} else {
 												window.location.href = redirectTo;
 											}
@@ -365,6 +374,7 @@ export default function LoginForm() {
 							variant="bordered"
 							startContent={<FingerprintIcon size={20} />}
 							onPress={handlePasskeyLogin}
+							spinnerPlacement="end"
 							isLoading={
 								isPasskeyLoginMutationInFlight ||
 								isGenerateAuthenticationOptionsMutationInFlight

@@ -73,3 +73,9 @@ class InvalidPasskeyAuthenticationCredentialError:
     """Raised when the passkey authentication credential is invalid."""
 
     pass
+
+
+class WebAuthnChallengeNotFoundError:
+    """Raised when a WebAuthn challenge is not found."""
+
+    pass

@@ -22,6 +22,7 @@ from app.auth.exceptions import (
     InvalidRecaptchaTokenError,
     InvalidSignInMethodError,
     PasswordNotStrongError,
+    WebAuthnChallengeNotFoundError,
 )
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo, Info
@@ -55,6 +56,7 @@ from .types import (
     ResetPasswordPayload,
     VerifyEmailPayload,
     VerifyEmailSuccessType,
+    WebAuthnChallengeNotFoundErrorType,
 )
 
 
@@ -346,6 +348,7 @@ class AuthMutation:
         """Generate authentication options."""
         result = await auth_service.generate_authentication_options(
             recaptcha_token=recaptcha_token,
+            request=info.context["request"],
         )
 
         if isinstance(result, Err):
@@ -394,6 +397,8 @@ class AuthMutation:
                     return InvalidRecaptchaTokenErrorType()
                 case InvalidPasskeyAuthenticationCredentialError():
                     return InvalidPasskeyAuthenticationCredentialErrorType()
+                case WebAuthnChallengeNotFoundError():
+                    return WebAuthnChallengeNotFoundErrorType()
 
         return AccountType.marshal(result.ok_value)
 

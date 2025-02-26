@@ -186,7 +186,7 @@ input LanguageInput {
   proficiency: String!
 }
 
-union LoginWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError
+union LoginWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
 
 union LoginWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError
 
@@ -576,6 +576,10 @@ type VerifyEmailSuccess {
 }
 
 union ViewerPayload = Account | NotAuthenticatedError
+
+type WebAuthnChallengeNotFoundError implements Error {
+  message: String!
+}
 
 enum WorkMode {
   REMOTE
