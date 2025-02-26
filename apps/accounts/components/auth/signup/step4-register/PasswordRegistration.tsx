@@ -11,10 +11,10 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import z from "zod";
-import SignupContext from "./SignupContext";
-import type { Step3RegistrationFormMutation as Step3RegistrationFormMutationType } from "./__generated__/Step3RegistrationFormMutation.graphql";
+import SignupContext from "../SignupContext";
+import type { PasswordRegistrationMutation as PasswordRegistrationMutationType } from "./__generated__/PasswordRegistrationMutation.graphql";
 
-const step3Schema = z.object({
+const passwordRegistrationSchema = z.object({
 	password: z
 		.string()
 		.min(1, "This field is required")
@@ -32,18 +32,17 @@ const step3Schema = z.object({
 			message:
 				"Password must contain at least one special character (!@#$%^&*()-_=+).",
 		}),
-	fullName: z.string().min(1, "This field is required"),
 });
 
-const RegisterMutation = graphql`
-  mutation Step3RegistrationFormMutation(
+const RegisterWithPasswordMutation = graphql`
+  mutation PasswordRegistrationMutation(
     $email: String!
     $emailVerificationToken: String!
     $password: String!
     $fullName: String!
     $recaptchaToken: String!
   ) {
-    register(
+    registerWithPassword(
       email: $email
       emailVerificationToken: $emailVerificationToken
       password: $password
@@ -67,7 +66,7 @@ const RegisterMutation = graphql`
   }
 `;
 
-export default function Step3RegistrationForm() {
+export default function PasswordRegistration() {
 	const params = useSearchParams();
 	const redirectTo = getValidRedirectURL(params.get("return_to"));
 	const { send } = SignupContext.useActorRef();
@@ -75,6 +74,7 @@ export default function Step3RegistrationForm() {
 		(state) => state.context.emailVerificationToken,
 	);
 	const email = SignupContext.useSelector((state) => state.context.email);
+	const fullName = SignupContext.useSelector((state) => state.context.fullName);
 	const { executeRecaptcha } = useGoogleReCaptcha();
 	const {
 		register,
@@ -82,44 +82,51 @@ export default function Step3RegistrationForm() {
 		formState: { errors, isSubmitting },
 		setError,
 	} = useForm({
-		resolver: zodResolver(step3Schema),
+		resolver: zodResolver(passwordRegistrationSchema),
 		defaultValues: { password: "", fullName: "" },
 	});
 
-	const [commitRegister] =
-		useMutation<Step3RegistrationFormMutationType>(RegisterMutation);
+	const [commitRegisterWithPassword] =
+		useMutation<PasswordRegistrationMutationType>(RegisterWithPasswordMutation);
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
 	const onSubmit = async (data: { password: string; fullName: string }) => {
 		if (!executeRecaptcha) return;
 
 		const token = await executeRecaptcha("register");
-		commitRegister({
+		commitRegisterWithPassword({
 			variables: {
 				email,
 				emailVerificationToken,
+				fullName,
 				password: data.password,
-				fullName: data.fullName,
 				recaptchaToken: token,
 			},
 			onCompleted(response) {
-				if (response.register.__typename === "EmailInUseError") {
+				if (response.registerWithPassword.__typename === "EmailInUseError") {
 					// we've hit the race condition failsafe.
 					// show an unexpected error message and reset the form
-					send({ type: "SET_EMAIL_ERROR", message: response.register.message });
+					send({
+						type: "SET_EMAIL_ERROR",
+						message: response.registerWithPassword.message,
+					});
 				} else if (
-					response.register.__typename === "InvalidEmailVerificationTokenError"
+					response.registerWithPassword.__typename ===
+					"InvalidEmailVerificationTokenError"
 				) {
 					send({
 						type: "SET_VERIFICATION_TOKEN_ERROR",
-						message: response.register.message,
-					});
-				} else if (response.register.__typename === "PasswordNotStrongError") {
-					setError("password", {
-						message: response.register.message,
+						message: response.registerWithPassword.message,
 					});
 				} else if (
-					response.register.__typename === "InvalidRecaptchaTokenError"
+					response.registerWithPassword.__typename === "PasswordNotStrongError"
+				) {
+					setError("password", {
+						message: response.registerWithPassword.message,
+					});
+				} else if (
+					response.registerWithPassword.__typename ===
+					"InvalidRecaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
@@ -137,14 +144,6 @@ export default function Step3RegistrationForm() {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
 			<div className="w-full flex flex-col gap-6">
-				<Input
-					label="Full Name"
-					placeholder="Enter your full name"
-					{...register("fullName")}
-					autoComplete="off"
-					errorMessage={errors.fullName?.message}
-					isInvalid={!!errors.fullName}
-				/>
 				<Input
 					label="Password"
 					placeholder="Enter password"

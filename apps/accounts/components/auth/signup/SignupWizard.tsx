@@ -17,7 +17,8 @@ import { useEffect } from "react";
 import SignupContext from "./SignupContext";
 import Step1EmailForm from "./Step1EmailForm";
 import Step2VerificationForm from "./Step2VerificationForm";
-import Step3RegistrationForm from "./Step3RegistrationForm";
+import Step3NameForm from "./Step3NameForm";
+import Step4RegistrationForm from "./step4-register/Step4RegistrationForm";
 
 export default function SignUpWizard() {
 	const state = SignupContext.useSelector((state) => state);
@@ -49,8 +50,10 @@ export default function SignUpWizard() {
 					<Step1EmailForm />
 				) : state.matches("step2") ? (
 					<Step2VerificationForm />
+				) : state.matches("step3") ? (
+					<Step3NameForm />
 				) : (
-					<Step3RegistrationForm />
+					<Step4RegistrationForm />
 				)}
 			</CardBody>
 			{state.matches("step1") && (

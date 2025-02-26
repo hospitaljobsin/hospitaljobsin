@@ -4,7 +4,12 @@ from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.accounts.documents import Account, EmailVerificationToken, Profile
-from app.auth.documents import PasswordResetToken, Session
+from app.auth.documents import (
+    PasswordResetToken,
+    Session,
+    WebAuthnChallenge,
+    WebAuthnCredential,
+)
 from app.jobs.documents import Job, SavedJob
 from app.organizations.documents import Organization, OrganizationMember
 
@@ -12,9 +17,12 @@ from app.organizations.documents import Organization, OrganizationMember
 def rebuild_models():
     """Rebuild models to update forward references."""
     from app.accounts.documents import Account  # noqa: F401
+    from app.auth.documents import WebAuthnCredential  # noqa: F401
     from app.organizations.documents import OrganizationMember  # noqa: F401
 
     Account.model_rebuild()
+
+    WebAuthnCredential.model_rebuild()
 
     OrganizationMember.model_rebuild()
 
@@ -41,6 +49,8 @@ async def initialize_database(database_url: str):
                 PasswordResetToken,
                 Organization,
                 OrganizationMember,
+                WebAuthnCredential,
+                WebAuthnChallenge,
             ],
         )
         yield

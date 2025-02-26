@@ -1,6 +1,7 @@
 from typing import Annotated, Self
 
 import strawberry
+from strawberry.scalars import JSON
 
 from app.accounts.types import AccountType
 from app.auth.documents import PasswordResetToken
@@ -92,6 +93,11 @@ class VerifyEmailSuccessType:
     message: str = "Email successfully verified."
 
 
+@strawberry.type(name="InvalidPasskeyRegistrationCredentialError")
+class InvalidPasskeyRegistrationCredentialErrorType(BaseErrorType):
+    message: str = "Invalid passkey registration credential provided."
+
+
 RequestEmailVerificationTokenPayload = Annotated[
     RequestEmailVerificationTokenSuccessType
     | EmailInUseErrorType
@@ -109,13 +115,22 @@ VerifyEmailPayload = Annotated[
     strawberry.union(name="VerifyEmailPayload"),
 ]
 
-RegisterPayload = Annotated[
+RegisterWithPasswordPayload = Annotated[
     AccountType
     | EmailInUseErrorType
     | InvalidEmailVerificationTokenErrorType
     | InvalidRecaptchaTokenErrorType
     | PasswordNotStrongErrorType,
-    strawberry.union(name="RegisterPayload"),
+    strawberry.union(name="RegisterWithPasswordPayload"),
+]
+
+RegisterWithPasskeyPayload = Annotated[
+    AccountType
+    | EmailInUseErrorType
+    | InvalidEmailVerificationTokenErrorType
+    | InvalidRecaptchaTokenErrorType
+    | InvalidPasskeyRegistrationCredentialErrorType,
+    strawberry.union(name="RegisterWithPasskeyPayload"),
 ]
 
 LoginPayload = Annotated[
@@ -150,4 +165,17 @@ ResetPasswordPayload = Annotated[
 PasswordResetTokenPayload = Annotated[
     PasswordResetTokenType | PasswordResetTokenNotFoundErrorType,
     strawberry.union(name="PasswordResetTokenPayload"),
+]
+
+
+@strawberry.type(name="GeneratePasskeyRegistrationOptionsSuccess")
+class GeneratePasskeyRegistrationOptionsSuccessType:
+    registration_options: JSON
+
+
+GeneratePasskeyRegistrationOptionsPayload = Annotated[
+    GeneratePasskeyRegistrationOptionsSuccessType
+    | InvalidRecaptchaTokenErrorType
+    | EmailInUseErrorType,
+    strawberry.union(name="GeneratePasskeyRegistrationOptionsPayload"),
 ]

@@ -61,3 +61,9 @@ class PasswordResetTokenNotFoundError:
     """Raised when a password reset token is not found."""
 
     pass
+
+
+class InvalidPasskeyRegistrationCredentialError:
+    """Raised when the passkey registration credential is invalid."""
+
+    pass

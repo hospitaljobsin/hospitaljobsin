@@ -30,9 +30,11 @@ class AccountRepo:
         full_name: str,
         email_verified: bool = False,
         password: str | None = None,
+        account_id: ObjectId | None = None,
     ) -> Account:
         """Create a new account."""
         account = Account(
+            id=account_id,
             full_name=full_name,
             email=email,
             password_hash=self.hash_password(

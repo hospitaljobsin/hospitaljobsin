@@ -8,7 +8,12 @@ from app.accounts.repositories import (
     ProfileRepo,
 )
 from app.accounts.services import AccountService, ProfileService
-from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
+from app.auth.repositories import (
+    PasswordResetTokenRepo,
+    SessionRepo,
+    WebAuthnChallengeRepo,
+    WebAuthnCredentialRepo,
+)
 from app.auth.services import AuthService
 from app.config import Settings
 from app.jobs.repositories import JobRepo, SavedJobRepo
@@ -46,4 +51,6 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(OrganizationMemberRepo))
     container.register(aioinject.Scoped(OrganizationService))
     container.register(aioinject.Scoped(OrganizationMemberService))
+    container.register(aioinject.Singleton(WebAuthnCredentialRepo))
+    container.register(aioinject.Singleton(WebAuthnChallengeRepo))
     return container

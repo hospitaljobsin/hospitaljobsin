@@ -5,6 +5,7 @@ from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from result import Err
 from strawberry.permission import PermissionExtension
+from strawberry.scalars import JSON
 
 from app.accounts.repositories import AccountRepo
 from app.accounts.types import AccountType
@@ -14,6 +15,7 @@ from app.auth.exceptions import (
     InvalidCredentialsError,
     InvalidEmailError,
     InvalidEmailVerificationTokenError,
+    InvalidPasskeyRegistrationCredentialError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
     InvalidSignInMethodError,
@@ -26,16 +28,20 @@ from .services import AuthService
 from .types import (
     EmailInUseErrorType,
     EmailVerificationTokenCooldownErrorType,
+    GeneratePasskeyRegistrationOptionsPayload,
+    GeneratePasskeyRegistrationOptionsSuccessType,
     InvalidCredentialsErrorType,
     InvalidEmailErrorType,
     InvalidEmailVerificationTokenErrorType,
+    InvalidPasskeyRegistrationCredentialErrorType,
     InvalidPasswordResetTokenErrorType,
     InvalidRecaptchaTokenErrorType,
     InvalidSignInMethodErrorType,
     LoginPayload,
     LogoutPayloadType,
     PasswordNotStrongErrorType,
-    RegisterPayload,
+    RegisterWithPasskeyPayload,
+    RegisterWithPasswordPayload,
     RequestEmailVerificationTokenPayload,
     RequestEmailVerificationTokenSuccessType,
     RequestPasswordResetPayload,
@@ -140,11 +146,11 @@ class AuthMutation:
         return VerifyEmailSuccessType()
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=RegisterPayload,
-        description="Register a new user.",
+        graphql_type=RegisterWithPasswordPayload,
+        description="Register a new user with a password.",
     )
     @inject
-    async def register(
+    async def register_with_password(
         self,
         info: Info,
         email: Annotated[
@@ -178,9 +184,9 @@ class AuthMutation:
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
-    ) -> RegisterPayload:
-        """Register a new user."""
-        result = await auth_service.register(
+    ) -> RegisterWithPasswordPayload:
+        """Register a new user with a password."""
+        result = await auth_service.register_with_password(
             email=email,
             email_verification_token=email_verification_token,
             password=password,
@@ -201,6 +207,118 @@ class AuthMutation:
                     return InvalidEmailVerificationTokenErrorType()
                 case PasswordNotStrongError():
                     return PasswordNotStrongErrorType()
+
+        return AccountType.marshal_with_profile(result.ok_value)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=GeneratePasskeyRegistrationOptionsPayload,
+        description="Generate registration options for adding a passkey.",
+    )
+    @inject
+    async def generate_passkey_registration_options(
+        self,
+        info: Info,
+        email: Annotated[
+            str,
+            strawberry.argument(
+                description="The email of the new user.",
+            ),
+        ],
+        full_name: Annotated[
+            str,
+            strawberry.argument(
+                description="The full name of the new user.",
+            ),
+        ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> GeneratePasskeyRegistrationOptionsPayload:
+        """Generate registration options for adding a passkey."""
+        result = await auth_service.generate_passkey_registration_options(
+            email=email,
+            full_name=full_name,
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
+                case EmailInUseError():
+                    return EmailInUseErrorType()
+                case InvalidEmailVerificationTokenError():
+                    return InvalidEmailVerificationTokenErrorType()
+
+        return GeneratePasskeyRegistrationOptionsSuccessType(
+            passkey_registration_options=result.ok_value,
+        )
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RegisterWithPasskeyPayload,
+        description="Register a new user with a passkey.",
+    )
+    @inject
+    async def register_with_passkey(
+        self,
+        info: Info,
+        email: Annotated[
+            str,
+            strawberry.argument(
+                description="The email of the new user.",
+            ),
+        ],
+        email_verification_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The email verification token.",
+            ),
+        ],
+        passkey_registration_response: Annotated[
+            JSON,
+            strawberry.argument(
+                description="The passkey registration response of the new user.",
+            ),
+        ],
+        full_name: Annotated[
+            str,
+            strawberry.argument(
+                description="The full name of the new user.",
+            ),
+        ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> RegisterWithPasskeyPayload:
+        """Register a new user with a passkey."""
+        result = await auth_service.register_with_passkey(
+            email=email,
+            email_verification_token=email_verification_token,
+            passkey_registration_response=passkey_registration_response,
+            full_name=full_name,
+            recaptcha_token=recaptcha_token,
+            user_agent=info.context["user_agent"],
+            request=info.context["request"],
+            response=info.context["response"],
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
+                case EmailInUseError():
+                    return EmailInUseErrorType()
+                case InvalidEmailVerificationTokenError():
+                    return InvalidEmailVerificationTokenErrorType()
+                case InvalidPasskeyRegistrationCredentialError():
+                    return InvalidPasskeyRegistrationCredentialErrorType()
 
         return AccountType.marshal_with_profile(result.ok_value)
 

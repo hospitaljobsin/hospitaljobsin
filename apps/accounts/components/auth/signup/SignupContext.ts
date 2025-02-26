@@ -6,6 +6,7 @@ import { assign, createMachine } from "xstate";
 const context = {
 	email: "",
 	emailVerificationToken: "",
+	fullName: "",
 	cooldownSeconds: 0,
 	emailError: undefined as string | undefined,
 	emailVerificationError: undefined as string | undefined,
@@ -25,7 +26,8 @@ export const signUpMachine = createMachine({
 			| { type: "SET_RESEND_COOLDOWN"; cooldown: number }
 			| { type: "EDIT_EMAIL" }
 			| { type: "SET_EMAIL_ERROR"; message: string }
-			| { type: "SET_VERIFICATION_TOKEN_ERROR"; message: string };
+			| { type: "SET_VERIFICATION_TOKEN_ERROR"; message: string }
+			| { type: "SET_FULL_NAME"; fullName: string };
 	},
 	context: context,
 	states: {
@@ -44,7 +46,7 @@ export const signUpMachine = createMachine({
 		step2: {
 			on: {
 				SUBMIT_VERIFICATION: {
-					target: "step3",
+					target: "step4",
 					actions: assign({
 						emailVerificationToken: ({ event }) => event.token,
 						emailVerificationError: () => undefined,
@@ -72,6 +74,16 @@ export const signUpMachine = createMachine({
 			},
 		},
 		step3: {
+			on: {
+				SET_FULL_NAME: {
+					target: "step4",
+					actions: assign({
+						fullName: ({ event }) => event.fullName,
+					}),
+				},
+			},
+		},
+		step4: {
 			on: {
 				SET_EMAIL_ERROR: {
 					target: "step1",

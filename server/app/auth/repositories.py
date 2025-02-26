@@ -2,11 +2,18 @@ import hashlib
 import secrets
 from datetime import UTC, datetime, timedelta
 
+import webauthn
 from beanie import WriteRules
 from bson import ObjectId
+from webauthn.helpers.structs import AuthenticatorTransport
 
 from app.accounts.documents import Account
-from app.auth.documents import PasswordResetToken, Session
+from app.auth.documents import (
+    PasswordResetToken,
+    Session,
+    WebAuthnChallenge,
+    WebAuthnCredential,
+)
 from app.lib.constants import PASSWORD_RESET_EXPIRES_IN, USER_SESSION_EXPIRES_IN
 
 
@@ -103,3 +110,54 @@ class PasswordResetTokenRepo:
         await PasswordResetToken.find_one(
             PasswordResetToken.token_hash == self.hash_password_reset_token(token),
         ).delete()
+
+
+class WebAuthnCredentialRepo:
+    async def create(
+        self,
+        account_id: ObjectId,
+        credential_id: bytes,
+        credential_public_key: bytes,
+        sign_count: int,
+        device_type: str,
+        transports: list[AuthenticatorTransport] | None = None,
+    ) -> WebAuthnCredential:
+        webauthn_credential = WebAuthnCredential(
+            account=account_id,
+            credential_id=credential_id,
+            public_key=credential_public_key,
+            sign_count=sign_count,
+            device_type=device_type,
+            transports=transports,
+            backed_up=False,
+        )
+        await webauthn_credential.save()
+        return webauthn_credential
+
+    async def update(
+        self,
+        *,
+        webauthn_credential: WebAuthnCredential,
+        sign_count: int,
+    ) -> None:
+        """Update the given WebAuthn credential."""
+        webauthn_credential.sign_count = sign_count
+        await webauthn_credential.save()
+
+
+class WebAuthnChallengeRepo:
+    async def create(
+        self, challenge: bytes, generated_account_id: ObjectId
+    ) -> WebAuthnChallenge:
+        webauthn_challenge = WebAuthnChallenge(
+            challenge=challenge,
+            generated_account_id=generated_account_id,
+        )
+        await webauthn_challenge.save()
+        return webauthn_challenge
+
+    async def get(self, challenge: bytes) -> WebAuthnChallenge | None:
+        """Get WebAuthn challenge by challenge."""
+        return await WebAuthnChallenge.find_one(
+            WebAuthnChallenge.challenge == challenge,
+        )

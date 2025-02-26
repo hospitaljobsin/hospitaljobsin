@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import Annotated
 
-from beanie import Document, Indexed, Link
+from beanie import Document, Indexed, Link, PydanticObjectId
 from pymongo import IndexModel
+from webauthn.helpers.structs import AuthenticatorTransport
 
 from app.accounts.documents import Account
 
@@ -31,3 +32,20 @@ class PasswordResetToken(Document):
                 expireAfterSeconds=0,
             ),
         ]
+
+
+class WebAuthnCredential(Document):
+    credential_id: Annotated[bytes, Indexed()]
+    public_key: bytes
+    sign_count: int
+    device_type: str
+    backed_up: bool
+
+    transports: list[AuthenticatorTransport] | None
+
+    account: Link[Account]
+
+
+class WebAuthnChallenge(Document):
+    challenge: Annotated[bytes, Indexed(unique=True)]
+    generated_account_id: PydanticObjectId

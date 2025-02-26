@@ -75,6 +75,12 @@ enum GenderType {
   OTHER
 }
 
+union GeneratePasskeyRegistrationOptionsPayload = GeneratePasskeyRegistrationOptionsSuccess | InvalidRecaptchaTokenError | EmailInUseError
+
+type GeneratePasskeyRegistrationOptionsSuccess {
+  registrationOptions: JSON!
+}
+
 type InvalidCredentialsError implements Error {
   message: String!
 }
@@ -84,6 +90,10 @@ type InvalidEmailError implements Error {
 }
 
 type InvalidEmailVerificationTokenError implements Error {
+  message: String!
+}
+
+type InvalidPasskeyRegistrationCredentialError implements Error {
   message: String!
 }
 
@@ -98,6 +108,11 @@ type InvalidRecaptchaTokenError implements Error {
 type InvalidSignInMethodError implements Error {
   message: String!
 }
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
+"""
+scalar JSON @specifiedBy(url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf")
 
 type Job implements Node {
   """The Globally Unique ID of this object"""
@@ -194,8 +209,8 @@ type Mutation {
     recaptchaToken: String!
   ): VerifyEmailPayload!
 
-  """Register a new user."""
-  register(
+  """Register a new user with a password."""
+  registerWithPassword(
     """The email of the new user."""
     email: String!
 
@@ -210,7 +225,37 @@ type Mutation {
 
     """The recaptcha token to verify the user request."""
     recaptchaToken: String!
-  ): RegisterPayload!
+  ): RegisterWithPasswordPayload!
+
+  """Generate registration options for adding a passkey."""
+  generatePasskeyRegistrationOptions(
+    """The email of the new user."""
+    email: String!
+
+    """The full name of the new user."""
+    fullName: String!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
+  ): GeneratePasskeyRegistrationOptionsPayload!
+
+  """Register a new user with a passkey."""
+  registerWithPasskey(
+    """The email of the new user."""
+    email: String!
+
+    """The email verification token."""
+    emailVerificationToken: String!
+
+    """The passkey registration response of the new user."""
+    passkeyRegistrationResponse: JSON!
+
+    """The full name of the new user."""
+    fullName: String!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
+  ): RegisterWithPasskeyPayload!
 
   """Log in a user."""
   login(
@@ -444,7 +489,9 @@ type Query {
   ): OrganizationPayload!
 }
 
-union RegisterPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | PasswordNotStrongError
+union RegisterWithPasskeyPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | InvalidPasskeyRegistrationCredentialError
+
+union RegisterWithPasswordPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | PasswordNotStrongError
 
 type RequestEmailVerificationSuccess {
   message: String!

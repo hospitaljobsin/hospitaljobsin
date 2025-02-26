@@ -27,6 +27,7 @@
 		"@hookform/resolvers": "^3.9.1",
 		"@internationalized/date": "^3.6.0",
 		"@lobehub/icons": "^1.62.1",
+		"@simplewebauthn/browser": "^13.1.0",
 		"@t3-oss/env-nextjs": "^0.11.1",
 		"@tailwindcss/typography": "^0.5.15",
 		"@xstate/react": "^5.0.2",

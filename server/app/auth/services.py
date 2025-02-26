@@ -2,11 +2,25 @@ import re
 import secrets
 from datetime import UTC, datetime, timedelta
 
+import bson
 import httpx
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, Request, Response
 from humanize import naturaldelta
 from result import Err, Ok, Result
+from webauthn import generate_registration_options, verify_registration_response
+from webauthn.helpers import parse_client_data_json
+from webauthn.helpers.exceptions import WebAuthnException
+from webauthn.helpers.parse_registration_credential_json import (
+    parse_registration_credential_json,
+)
+from webauthn.helpers.structs import (
+    AuthenticatorAttachment,
+    AuthenticatorSelectionCriteria,
+    PublicKeyCredentialCreationOptions,
+    ResidentKeyRequirement,
+    UserVerificationRequirement,
+)
 
 from app.accounts.documents import Account, EmailVerificationToken
 from app.accounts.repositories import (
@@ -21,13 +35,19 @@ from app.auth.exceptions import (
     InvalidCredentialsError,
     InvalidEmailError,
     InvalidEmailVerificationTokenError,
+    InvalidPasskeyRegistrationCredentialError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
     InvalidSignInMethodError,
     PasswordNotStrongError,
     PasswordResetTokenNotFoundError,
 )
-from app.auth.repositories import PasswordResetTokenRepo, SessionRepo
+from app.auth.repositories import (
+    PasswordResetTokenRepo,
+    SessionRepo,
+    WebAuthnChallengeRepo,
+    WebAuthnCredentialRepo,
+)
 from app.config import Settings
 from app.lib.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
@@ -45,6 +65,8 @@ class AuthService:
         email_verification_token_repo: EmailVerificationTokenRepo,
         profile_repo: ProfileRepo,
         password_reset_token_repo: PasswordResetTokenRepo,
+        webauthn_credential_repo: WebAuthnCredentialRepo,
+        webauthn_challenge_repo: WebAuthnChallengeRepo,
         email_sender: EmailSender,
         settings: Settings,
     ) -> None:
@@ -53,6 +75,8 @@ class AuthService:
         self._email_verification_token_repo = email_verification_token_repo
         self._profile_repo = profile_repo
         self._password_reset_token_repo = password_reset_token_repo
+        self._webauthn_credential_repo = webauthn_credential_repo
+        self._webauthn_challenge_repo = webauthn_challenge_repo
         self._email_sender = email_sender
         self._settings = settings
 
@@ -170,7 +194,7 @@ class AuthService:
 
         return response_data["success"]
 
-    async def register(
+    async def register_with_password(
         self,
         email: str,
         email_verification_token: str,
@@ -213,6 +237,143 @@ class AuthService:
             email=email,
             password=password,
             full_name=full_name,
+        )
+
+        await self._profile_repo.create(account=account)
+
+        # delete the email verification token
+        await self._email_verification_token_repo.delete(
+            existing_email_verification_token
+        )
+
+        session_token = await self._session_repo.create(
+            user_agent=user_agent,
+            account=account,
+        )
+
+        self._set_user_session_cookie(
+            request=request,
+            response=response,
+            value=session_token,
+        )
+
+        return Ok(account)
+
+    @staticmethod
+    def generate_account_id() -> bytes:
+        return bson.ObjectId().binary
+
+    async def generate_passkey_registration_options(
+        self,
+        full_name: str,
+        email: str,
+        recaptcha_token: str,
+    ) -> Result[
+        PublicKeyCredentialCreationOptions, InvalidRecaptchaTokenError | EmailInUseError
+    ]:
+        """Generate passkey registration options."""
+        # check email availability (failsafe)
+        if await self._account_repo.get_by_email(email=email):
+            return Err(EmailInUseError())
+        account_id = self.generate_account_id()
+        registration_options = generate_registration_options(
+            rp_id=self._settings.rp_id,
+            rp_name=self._settings.rp_name,
+            user_id=account_id,
+            user_name=email,
+            user_display_name=full_name,
+            authenticator_selection=AuthenticatorSelectionCriteria(
+                authenticator_attachment=AuthenticatorAttachment.PLATFORM,
+                user_verification=UserVerificationRequirement.PREFERRED,
+                resident_key=ResidentKeyRequirement.REQUIRED,
+            ),
+        )
+
+        await self._webauthn_challenge_repo.create(
+            challenge=registration_options.challenge,
+            generated_account_id=account_id,
+        )
+
+        return Ok(registration_options)
+
+    async def register_with_passkey(
+        self,
+        email: str,
+        email_verification_token: str,
+        recaptcha_token: str,
+        passkey_registration_response: str,
+        full_name: str,
+        user_agent: str,
+        request: Request,
+        response: Response,
+    ) -> Result[
+        Account,
+        EmailInUseError
+        | InvalidEmailVerificationTokenError
+        | InvalidRecaptchaTokenError
+        | InvalidPasskeyRegistrationCredentialError,
+    ]:
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
+        # check email availability (failsafe)
+        if await self._account_repo.get_by_email(email=email):
+            return Err(EmailInUseError())
+
+        existing_email_verification_token = (
+            await self._email_verification_token_repo.get(
+                verification_token=email_verification_token
+            )
+        )
+
+        if (
+            not existing_email_verification_token
+            or existing_email_verification_token.is_expired
+            or existing_email_verification_token.email != email
+        ):
+            return Err(InvalidEmailVerificationTokenError())
+
+        try:
+            # validate passkey registration response
+            passkey_registration_credential = parse_registration_credential_json(
+                passkey_registration_response
+            )
+        except WebAuthnException:
+            return Err(InvalidPasskeyRegistrationCredentialError())
+
+        client_data = parse_client_data_json(
+            passkey_registration_credential.response.client_data_json,
+        )
+
+        verified_registration = verify_registration_response(
+            credential=passkey_registration_credential,
+            expected_challenge=client_data.challenge,
+            expected_rp_id=self._settings.rp_id,
+            expected_origin=self._settings.rp_expected_origin,
+            require_user_verification=True,
+        )
+
+        if not verified_registration.user_verified:
+            return Err(InvalidPasskeyRegistrationCredentialError())
+
+        webauthn_challenge = await self._webauthn_challenge_repo.get(
+            challenge=client_data.challenge,
+        )
+
+        account = await self._account_repo.create(
+            account_id=webauthn_challenge.generated_account_id,
+            email=email,
+            password=None,
+            full_name=full_name,
+        )
+
+        await self._webauthn_credential_repo.create(
+            account_id=account.id,
+            credential_id=verified_registration.credential_id,
+            public_key=verified_registration.credential_public_key,
+            sign_count=verified_registration.sign_count,
+            backed_up=verified_registration.credential_backed_up,
+            device_type=verified_registration.credential_device_type,
+            transports=passkey_registration_credential.response.transports,
         )
 
         await self._profile_repo.create(account=account)

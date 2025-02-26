@@ -130,6 +130,35 @@ class Settings(BaseSettings):
     # accounts config
     accounts_base_url: str = "http://localhost:5002"
 
+    # webauthn config
+
+    rp_id: Annotated[
+        str,
+        Field(
+            examples=[
+                "example.com",
+            ],
+        ),
+    ]
+
+    rp_name: Annotated[
+        str,
+        Field(
+            examples=[
+                "Example Inc.",
+            ],
+        ),
+    ]
+
+    rp_expected_origin: Annotated[
+        str,
+        Field(
+            examples=[
+                "",
+            ],
+        ),
+    ]
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",
