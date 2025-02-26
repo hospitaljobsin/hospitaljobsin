@@ -428,6 +428,7 @@ class AuthService:
         )
 
         # set webauthn challenge in session
+        # session cannot store raw bytes, so we encode it to base64
         request.session["webauthn_challenge"] = b64encode(
             auth_options.challenge
         ).decode("utf-8")
@@ -468,6 +469,7 @@ class AuthService:
 
             authentication_verification = verify_authentication_response(
                 credential=authentication_credential,
+                # decode the base64 encoded challenge
                 expected_challenge=b64decode(webauthn_challenge),
                 expected_rp_id=self._settings.rp_id,
                 expected_origin=self._settings.rp_expected_origin,
