@@ -239,6 +239,14 @@ export default function LoginForm() {
 									) {
 										// handle recaptcha failure
 										alert("Recaptcha failed. Please try again.");
+									} else if (
+										response.loginWithPasskey.__typename ===
+										"InvalidPasskeyAuthenticationCredentialError"
+									) {
+										// TODO: show a toast here
+										alert(
+											"Invalid passkey registration credential. Please try again.",
+										);
 									} else {
 										window.location.href = redirectTo;
 									}

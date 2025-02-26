@@ -164,6 +164,7 @@ export default function PasskeyRegistration() {
 										response.registerWithPasskey.__typename ===
 										"InvalidPasskeyRegistrationCredentialError"
 									) {
+										// TODO: show a toast here
 										alert(
 											"Invalid passkey registration credential. Please try again.",
 										);
