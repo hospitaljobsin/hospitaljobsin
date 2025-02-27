@@ -1,10 +1,11 @@
+from datetime import datetime
 from typing import Annotated, Self
 
 import strawberry
 from strawberry.scalars import JSON
 
 from app.accounts.types import AccountType
-from app.auth.documents import PasswordResetToken
+from app.auth.documents import PasswordResetToken, Session
 from app.base.types import BaseErrorType, BaseNodeType
 
 
@@ -53,6 +54,21 @@ class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
         return cls(
             id=str(reset_token.id),
             email=reset_token.account.email,
+        )
+
+
+@strawberry.type(name="Session")
+class SessionType(BaseNodeType[Session]):
+    user_agent: str
+    created_at: datetime
+
+    @classmethod
+    def marshal(cls, session: Session) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            id=str(session.id),
+            user_agent=session.user_agent,
+            created_at=session.id.generation_time,
         )
 
 
@@ -208,3 +224,8 @@ GenerateAuthenticationOptionsPayload = Annotated[
     GenerateAuthenticationOptionsSuccessType | InvalidRecaptchaTokenErrorType,
     strawberry.union(name="GenerateAuthenticationOptionsPayload"),
 ]
+
+
+@strawberry.type(name="RemoveOtherSessionsPayload")
+class RemoveOtherSessionsPayloadType:
+    message: str = "Successfully removed other sessions."

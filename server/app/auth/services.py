@@ -715,3 +715,12 @@ class AuthService:
         )
 
         return Ok(existing_reset_token.account)
+
+    async def remove_other_sessions(
+        self, account_id: bson.ObjectId, except_session_token: str
+    ) -> None:
+        """Remove all sessions except the current one."""
+        await self._session_repo.delete_all(
+            account_id=account_id,
+            except_session_token=except_session_token,
+        )

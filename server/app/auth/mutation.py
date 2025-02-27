@@ -49,6 +49,7 @@ from .types import (
     PasswordNotStrongErrorType,
     RegisterWithPasskeyPayload,
     RegisterWithPasswordPayload,
+    RemoveOtherSessionsPayloadType,
     RequestEmailVerificationTokenPayload,
     RequestEmailVerificationTokenSuccessType,
     RequestPasswordResetPayload,
@@ -561,3 +562,28 @@ class AuthMutation:
                     return PasswordNotStrongErrorType()
 
         return AccountType.marshal(result.ok_value)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RemoveOtherSessionsPayloadType,
+        description="Remove other sessions of the viewer than the current one.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def remove_other_sessions(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+    ) -> RemoveOtherSessionsPayloadType:
+        """Remove other sessions of the viewer than the current one."""
+        await auth_service.remove_other_sessions(
+            account_id=info.context["current_user_id"],
+            except_session_token=info.context["session_token"],
+        )
+
+        return RemoveOtherSessionsPayloadType()

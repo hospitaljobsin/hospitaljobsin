@@ -65,9 +65,17 @@ class SessionRepo:
             Session.token_hash == self.hash_session_token(token),
         ).delete()
 
-    async def delete_all(self, account_id: ObjectId) -> None:
+    async def delete_all(
+        self, account_id: ObjectId, except_session_token: str | None = None
+    ) -> None:
         """Delete all sessions for an account."""
-        await Session.find_many(Session.account.id == account_id).delete()
+        if except_session_token is None:
+            await Session.find_many(Session.account.id == account_id).delete()
+        else:
+            await Session.find_many(
+                Session.account.id == account_id,
+                Session.token_hash != self.hash_session_token(except_session_token),
+            ).delete()
 
 
 class PasswordResetTokenRepo:
