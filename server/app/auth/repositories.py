@@ -14,7 +14,7 @@ from app.auth.documents import (
     WebAuthnChallenge,
     WebAuthnCredential,
 )
-from app.database.paginator import PaginatedResult
+from app.database.paginator import PaginatedResult, Paginator
 from app.lib.constants import (
     PASSWORD_RESET_EXPIRES_IN,
     USER_SESSION_EXPIRES_IN,

@@ -3,12 +3,15 @@ from datetime import datetime
 from typing import Annotated, Self
 
 import strawberry
+from aioinject import Inject
+from aioinject.ext.strawberry import inject
 from bson import ObjectId
-from strawberry import relay
+from strawberry import Private, relay
 from strawberry.scalars import JSON
 
 from app.accounts.types import AccountType
 from app.auth.documents import PasswordResetToken, Session
+from app.auth.repositories import SessionRepo
 from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
 from app.context import AuthInfo
 from app.scalars import ID
@@ -67,6 +70,8 @@ class SessionType(BaseNodeType[Session]):
     user_agent: str
     created_at: datetime
 
+    token_hash: Private[str]
+
     @classmethod
     def marshal(cls, session: Session) -> Self:
         """Marshal into a node instance."""
@@ -74,12 +79,18 @@ class SessionType(BaseNodeType[Session]):
             id=str(session.id),
             user_agent=session.user_agent,
             created_at=session.id.generation_time,
+            token_hash=session.token_hash,
         )
 
     @strawberry.field
-    def is_current_session(self, info: AuthInfo) -> bool:
+    @inject
+    def is_current_session(
+        self, info: AuthInfo, session_repo: Annotated[SessionRepo, Inject]
+    ) -> bool:
         """Return whether the session is the current session."""
-        return info.context["current_session_id"] == self.id
+        return self.token_hash == session_repo.hash_session_token(
+            info.context["session_token"]
+        )
 
 
 @strawberry.type(name="SessionEdge")

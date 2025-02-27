@@ -15,12 +15,6 @@ export const OrganizationFragment = graphql`
   }
 `;
 
-export const OrganizationAuthFragment = graphql`
-  fragment OrganizationAuthFragment on ViewerPayload {
-	__typename
-  }
-`;
-
 type Props = {
 	organization: OrganizationFragment$key;
 };
