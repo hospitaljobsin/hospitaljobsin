@@ -79,3 +79,9 @@ class WebAuthnChallengeNotFoundError:
     """Raised when a WebAuthn challenge is not found."""
 
     pass
+
+
+class SessionNotFoundError:
+    """Raised when a session is not found."""
+
+    pass

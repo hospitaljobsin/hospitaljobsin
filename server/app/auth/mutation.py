@@ -3,7 +3,9 @@ from typing import Annotated
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
+from bson import ObjectId
 from result import Err
+from strawberry import relay
 from strawberry.permission import PermissionExtension
 from strawberry.scalars import JSON
 from webauthn import options_to_json
@@ -22,6 +24,7 @@ from app.auth.exceptions import (
     InvalidRecaptchaTokenError,
     InvalidSignInMethodError,
     PasswordNotStrongError,
+    SessionNotFoundError,
     WebAuthnChallengeNotFoundError,
 )
 from app.auth.permissions import IsAuthenticated
@@ -29,6 +32,9 @@ from app.context import AuthInfo, Info
 
 from .services import AuthService
 from .types import (
+    DeleteOtherSessionsPayloadType,
+    DeleteSessionPayload,
+    DeleteSessionSuccessType,
     EmailInUseErrorType,
     EmailVerificationTokenCooldownErrorType,
     GenerateAuthenticationOptionsPayload,
@@ -49,12 +55,13 @@ from .types import (
     PasswordNotStrongErrorType,
     RegisterWithPasskeyPayload,
     RegisterWithPasswordPayload,
-    RemoveOtherSessionsPayloadType,
     RequestEmailVerificationTokenPayload,
     RequestEmailVerificationTokenSuccessType,
     RequestPasswordResetPayload,
     RequestPasswordResetSuccessType,
     ResetPasswordPayload,
+    SessionEdgeType,
+    SessionNotFoundErrorType,
     VerifyEmailPayload,
     VerifyEmailSuccessType,
     WebAuthnChallengeNotFoundErrorType,
@@ -564,8 +571,8 @@ class AuthMutation:
         return AccountType.marshal(result.ok_value)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=RemoveOtherSessionsPayloadType,
-        description="Remove other sessions of the viewer than the current one.",
+        graphql_type=DeleteOtherSessionsPayloadType,
+        description="Delete other sessions of the viewer than the current one.",
         extensions=[
             PermissionExtension(
                 permissions=[
@@ -575,15 +582,56 @@ class AuthMutation:
         ],
     )
     @inject
-    async def remove_other_sessions(
+    async def delete_other_sessions(
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
-    ) -> RemoveOtherSessionsPayloadType:
-        """Remove other sessions of the viewer than the current one."""
-        await auth_service.remove_other_sessions(
+    ) -> DeleteOtherSessionsPayloadType:
+        """Delete other sessions of the viewer than the current one."""
+        # TODO: require sudo mode here
+        deleted_session_ids = await auth_service.delete_other_sessions(
             account_id=info.context["current_user_id"],
             except_session_token=info.context["session_token"],
         )
 
-        return RemoveOtherSessionsPayloadType()
+        return DeleteOtherSessionsPayloadType.marshal(deleted_session_ids)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=DeleteSessionPayload,
+        description="Delete session by ID.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def delete_session(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+        session_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the session to delete.",
+            ),
+        ],
+    ) -> DeleteSessionPayload:
+        """Delete session by ID."""
+        # TODO: require sudo mode here
+        result = await auth_service.delete_session(
+            account_id=info.context["current_user_id"],
+            session_id=ObjectId(session_id.node_id),
+            except_session_token=info.context["session_token"],
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case SessionNotFoundError():
+                    return SessionNotFoundErrorType()
+
+        return DeleteSessionSuccessType(
+            session_edge=SessionEdgeType.marshal(result.ok_value)
+        )

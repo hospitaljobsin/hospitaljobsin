@@ -1,12 +1,17 @@
+from ast import Delete
 from datetime import datetime
 from typing import Annotated, Self
 
 import strawberry
+from bson import ObjectId
+from strawberry import relay
 from strawberry.scalars import JSON
 
 from app.accounts.types import AccountType
 from app.auth.documents import PasswordResetToken, Session
-from app.base.types import BaseErrorType, BaseNodeType
+from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
+from app.context import AuthInfo
+from app.scalars import ID
 
 
 @strawberry.type(name="EmailInUseError")
@@ -70,6 +75,28 @@ class SessionType(BaseNodeType[Session]):
             user_agent=session.user_agent,
             created_at=session.id.generation_time,
         )
+
+    @strawberry.field
+    def is_current_session(self, info: AuthInfo) -> bool:
+        """Return whether the session is the current session."""
+        return info.context["current_session_id"] == self.id
+
+
+@strawberry.type(name="SessionEdge")
+class SessionEdgeType(BaseEdgeType[SessionType, Session]):
+    @classmethod
+    def marshal(cls, session: Session) -> Self:
+        """Marshal into a edge instance."""
+        return cls(
+            node=SessionType.marshal(session),
+            cursor=relay.to_base64(SessionType, session.id),
+        )
+
+
+@strawberry.type(name="SessionConnection")
+class SessionConnectionType(BaseConnectionType[SessionType, SessionEdgeType]):
+    node_type = SessionType
+    edge_type = SessionEdgeType
 
 
 @strawberry.type(name="PasswordResetTokenNotFoundError")
@@ -226,6 +253,35 @@ GenerateAuthenticationOptionsPayload = Annotated[
 ]
 
 
-@strawberry.type(name="RemoveOtherSessionsPayload")
-class RemoveOtherSessionsPayloadType:
-    message: str = "Successfully removed other sessions."
+@strawberry.type(name="DeleteOtherSessionsPayload")
+class DeleteOtherSessionsPayloadType:
+    deleted_session_ids: list[ID]
+
+    @classmethod
+    def marshal(cls, session_ids: list[ObjectId]) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            deleted_session_ids=[
+                relay.to_base64(
+                    SessionType,
+                    session_id,
+                )
+                for session_id in session_ids
+            ],
+        )
+
+
+@strawberry.type(name="SessionNotFoundError")
+class SessionNotFoundErrorType(BaseErrorType):
+    message: str = "Session not found."
+
+
+@strawberry.type(name="DeleteSessionSuccessType")
+class DeleteSessionSuccessType:
+    session_edge: SessionEdgeType
+
+
+DeleteSessionPayload = Annotated[
+    DeleteSessionSuccessType | SessionNotFoundErrorType,
+    strawberry.union(name="DeleteSessionPayload"),
+]

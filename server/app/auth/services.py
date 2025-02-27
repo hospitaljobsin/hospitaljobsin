@@ -38,7 +38,7 @@ from app.accounts.repositories import (
     EmailVerificationTokenRepo,
     ProfileRepo,
 )
-from app.auth.documents import PasswordResetToken
+from app.auth.documents import PasswordResetToken, Session
 from app.auth.exceptions import (
     EmailInUseError,
     EmailVerificationTokenCooldownError,
@@ -52,6 +52,7 @@ from app.auth.exceptions import (
     InvalidSignInMethodError,
     PasswordNotStrongError,
     PasswordResetTokenNotFoundError,
+    SessionNotFoundError,
     WebAuthnChallengeNotFoundError,
 )
 from app.auth.repositories import (
@@ -617,7 +618,7 @@ class AuthService:
         is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
         secure = False if is_localhost else True
 
-        await self._session_repo.delete(token=session_token)
+        await self._session_repo.delete_by_token(token=session_token)
 
         response.delete_cookie(
             key=self._settings.user_session_cookie_name,
@@ -716,11 +717,31 @@ class AuthService:
 
         return Ok(existing_reset_token.account)
 
-    async def remove_other_sessions(
+    async def delete_other_sessions(
         self, account_id: bson.ObjectId, except_session_token: str
-    ) -> None:
-        """Remove all sessions except the current one."""
-        await self._session_repo.delete_all(
+    ) -> list[bson.ObjectId]:
+        """Delete all sessions for the user except the current one."""
+        existing_sessions = await self._session_repo.get_all(
+            account_id=account_id, except_session_token=except_session_token
+        )
+        session_ids = [session.id for session in existing_sessions]
+        await self._session_repo.delete_many(session_ids=session_ids)
+
+        return session_ids
+
+    async def delete_session(
+        self,
+        session_id: bson.ObjectId,
+        account_id: bson.ObjectId,
+        except_session_token: str,
+    ) -> Result[Session, SessionNotFoundError]:
+        """Delete a session by ID."""
+        session = await self._session_repo.get_by_session_account_id(
+            session_id=session_id,
             account_id=account_id,
             except_session_token=except_session_token,
         )
+        if not session:
+            return Err(SessionNotFoundError())
+        await self._session_repo.delete(session)
+        return Ok(session)

@@ -3,6 +3,7 @@ import secrets
 from datetime import datetime, timedelta
 
 from beanie import WriteRules
+from beanie.operators import In
 from bson import ObjectId
 from webauthn.helpers.structs import AuthenticatorTransport
 
@@ -13,6 +14,7 @@ from app.auth.documents import (
     WebAuthnChallenge,
     WebAuthnCredential,
 )
+from app.database.paginator import PaginatedResult
 from app.lib.constants import (
     PASSWORD_RESET_EXPIRES_IN,
     USER_SESSION_EXPIRES_IN,
@@ -59,23 +61,75 @@ class SessionRepo:
             Session.token_hash == self.hash_session_token(token),
         )
 
-    async def delete(self, token: str) -> None:
+    async def get_by_session_account_id(
+        self,
+        session_id: ObjectId,
+        account_id: ObjectId,
+        except_session_token: str | None = None,
+    ) -> Session | None:
+        """Get session by session ID and account ID."""
+        if except_session_token:
+            return await Session.find_one(
+                Session.id == session_id,
+                Session.account.id == account_id,
+                Session.token_hash != self.hash_session_token(except_session_token),
+            )
+        return await Session.find_one(
+            Session.id == session_id,
+            Session.account.id == account_id,
+        )
+
+    async def get_all(
+        self, account_id: ObjectId, except_session_token: str | None = None
+    ) -> list[Session]:
+        """Get all sessions for an account."""
+        return await Session.find_many(
+            Session.account.id == account_id,
+            Session.token_hash != self.hash_session_token(except_session_token),
+        )
+
+    async def get_all_by_account_id(
+        self,
+        account_id: ObjectId,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[Session, ObjectId]:
+        """Get all sessions by account ID."""
+        paginator: Paginator[Session, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=Session,
+            paginate_by="id",
+        )
+
+        return await paginator.paginate(
+            search_criteria=Session.find(
+                Session.account.id == account_id,
+            ),
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
+    async def delete_by_token(self, token: str) -> None:
         """Delete session by token."""
         await Session.find_one(
             Session.token_hash == self.hash_session_token(token),
         ).delete()
 
-    async def delete_all(
-        self, account_id: ObjectId, except_session_token: str | None = None
-    ) -> None:
+    async def delete(self, session: Session) -> None:
+        """Delete session."""
+        await session.delete()
+
+    async def delete_many(self, session_ids: list[ObjectId]) -> None:
+        """Delete many sessions by ID."""
+        await Session.find_many(In(Session.id, session_ids)).delete()
+
+    async def delete_all(self, account_id: ObjectId) -> None:
         """Delete all sessions for an account."""
-        if except_session_token is None:
-            await Session.find_many(Session.account.id == account_id).delete()
-        else:
-            await Session.find_many(
-                Session.account.id == account_id,
-                Session.token_hash != self.hash_session_token(except_session_token),
-            ).delete()
+        await Session.find_many(Session.account.id == account_id).delete()
 
 
 class PasswordResetTokenRepo:

@@ -13,6 +13,7 @@ from bson import ObjectId
 from strawberry import relay
 
 from app.accounts.documents import Account, CurrentJob, Language, Profile
+from app.auth.repositories import SessionRepo
 from app.base.types import (
     AddressType,
     BaseErrorType,
@@ -23,6 +24,7 @@ from app.context import Info
 from app.organizations.repositories import OrganizationRepo
 
 if TYPE_CHECKING:
+    from app.auth.types import SessionConnectionType
     from app.organizations.types import (
         OrganizationConnectionType,
     )
@@ -254,6 +256,32 @@ class AccountType(BaseNodeType[Account]):
         )
 
         return OrganizationConnectionType.marshal(memberships)
+
+    @strawberry.field
+    @inject
+    async def sessions(
+        self,
+        session_repo: Annotated[
+            SessionRepo,
+            Inject,
+        ],
+        before: relay.GlobalID | None = None,
+        after: relay.GlobalID | None = None,
+        first: int | None = None,
+        last: int | None = None,
+    ) -> Annotated["SessionConnectionType", strawberry.lazy("app.auth.types")]:
+        """Return the sessions for the current user."""
+        from app.auth.types import SessionConnectionType
+
+        sessions = await session_repo.get_all_by_account_id(
+            account_id=ObjectId(self.id),
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
+            first=first,
+            last=last,
+        )
+
+        return SessionConnectionType.marshal(sessions)
 
 
 ViewerPayload = Annotated[
