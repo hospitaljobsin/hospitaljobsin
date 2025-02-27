@@ -1,6 +1,9 @@
 # TODO (auth)
 
 - store last signed in method on user accounts
+- (or) use multi-model accounts like
+   - https://www.better-auth.com/docs/concepts/database#core-schema
+   - https://beanie-odm.dev/tutorial/multi-model-pattern/
 
 add accounts center
 where:
