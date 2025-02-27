@@ -4,7 +4,7 @@ import links from "./lib/links";
 
 const AUTH_COOKIE_KEY = env.AUTH_COOKIE_KEY;
 
-const AUTHENTICATED_ROUTES: RegExp[] = [];
+const AUTHENTICATED_ROUTES: RegExp[] = [/^\/settings(\/.*)?$/];
 
 // reset password will be accessed by anonymous users as well as authenticated users
 const ANONYMOUS_ROUTES = [/^\/auth\/?(login|signup)?$/];
