@@ -17,7 +17,7 @@ import {
 	NavbarItem,
 	useDisclosure,
 } from "@heroui/react";
-import { BookmarkIcon, LogOutIcon, UserIcon } from "lucide-react";
+import { BookmarkIcon, LogOutIcon, Settings, UserIcon } from "lucide-react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -103,7 +103,17 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							</div>
 						</div>
 						<Divider />
-
+						<Button
+							className="w-full justify-start"
+							radius="sm"
+							variant="light"
+							startContent={<Settings className="h-4 w-4" />}
+							href={links.accountSettings}
+							as={links.accountSettings ? "a" : "button"}
+							fullWidth
+						>
+							Account
+						</Button>
 						<Button
 							className="w-full justify-start"
 							radius="sm"
@@ -113,7 +123,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							as={links.profile ? "a" : "button"}
 							fullWidth
 						>
-							My Profile
+							Job Seeker Profile
 						</Button>
 						<Button
 							className="w-full justify-start"
@@ -195,11 +205,18 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					</DropdownSection>
 					<DropdownSection showDivider>
 						<DropdownItem
+							key="account"
+							startContent={<Settings className="h-4 w-4" />}
+							href={links.accountSettings}
+						>
+							Account
+						</DropdownItem>
+						<DropdownItem
 							key="profile"
 							startContent={<UserIcon className="h-4 w-4" />}
 							href={links.profile}
 						>
-							My Profile
+							Job Seeker Profile
 						</DropdownItem>
 						<DropdownItem
 							key="saved"

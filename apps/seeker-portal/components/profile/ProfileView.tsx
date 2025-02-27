@@ -1,6 +1,4 @@
 "use client";
-import links from "@/lib/links";
-import { Card, CardBody, Link } from "@heroui/react";
 import { useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
@@ -35,17 +33,6 @@ export default function ProfileView() {
 
 	return (
 		<div className="w-full h-full space-y-16">
-			<Card className="p-6">
-				<CardBody>
-					<p>
-						Go to{" "}
-						<Link href={links.accountSettings} showAnchorIcon>
-							account settings
-						</Link>
-					</p>
-				</CardBody>
-			</Card>
-
 			{isEditingProfile ? (
 				<UpdateProfileDetailsForm
 					rootQuery={data.viewer}

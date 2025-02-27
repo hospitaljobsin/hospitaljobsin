@@ -1,4 +1,5 @@
 "use client";
+import links from "@/lib/links";
 import {
 	Button,
 	Divider,
@@ -14,7 +15,7 @@ import {
 	NavbarItem,
 	useDisclosure,
 } from "@heroui/react";
-import { LogOutIcon } from "lucide-react";
+import { LogOutIcon, Settings } from "lucide-react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -93,6 +94,18 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							className="w-full justify-start"
 							radius="sm"
 							variant="light"
+							startContent={<Settings className="h-4 w-4" />}
+							href={links.accountSettings}
+							as={links.accountSettings ? "a" : "button"}
+							fullWidth
+						>
+							Account
+						</Button>
+						<Divider />
+						<Button
+							className="w-full justify-start"
+							radius="sm"
+							variant="light"
 							startContent={<LogOutIcon className="h-4 w-4" />}
 							onPress={onLogoutModalOpen}
 							fullWidth
@@ -145,7 +158,15 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							</div>
 						</DropdownItem>
 					</DropdownSection>
-
+					<DropdownSection showDivider>
+						<DropdownItem
+							key="account"
+							startContent={<Settings className="h-4 w-4" />}
+							href={links.accountSettings}
+						>
+							Account
+						</DropdownItem>
+					</DropdownSection>
 					<DropdownSection>
 						<DropdownItem
 							key="logout"
