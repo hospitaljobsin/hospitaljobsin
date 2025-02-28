@@ -85,10 +85,10 @@ class SessionRepo:
         self, account_id: ObjectId, except_session_token: str | None = None
     ) -> list[Session]:
         """Get all sessions for an account."""
-        return await Session.find_many(
+        return await Session.find(
             Session.account.id == account_id,
             Session.token_hash != self.hash_session_token(except_session_token),
-        )
+        ).to_list()
 
     async def get_all_by_account_id(
         self,

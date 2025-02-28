@@ -13,6 +13,7 @@ const SessionsSettingsViewQuery = graphql`
       __typename
       ... on Account {
         ...SessionsListFragment
+		...SessionsControllerFragment
       }
     }
   }
@@ -32,7 +33,7 @@ export default function SessionsSettingsView() {
 		<div className="w-full h-full space-y-6">
 			<div className="flex w-full items-center justify-between gap-6">
 				<p className="text-foreground-600">My Sessions</p>
-				<SessionsController />
+				<SessionsController root={data.viewer} />
 			</div>
 			<Suspense fallback={<SessionsListSkeleton />}>
 				<SessionsList root={data.viewer} />
