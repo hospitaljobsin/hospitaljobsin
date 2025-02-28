@@ -768,11 +768,11 @@ class AuthService:
         await self._webauthn_credential_repo.delete(webauthn_credential)
         return Ok(webauthn_credential)
 
-    async def generate_passkey_creation_options(
+    async def generate_web_authn_credential_creation_options(
         self,
         account: Account,
     ) -> Result[PublicKeyCredentialCreationOptions, None]:
-        """Generate registration options for adding a new passkey."""
+        """Generate registration options for adding a new webauthn credential."""
         registration_options = generate_registration_options(
             rp_id=self._settings.rp_id,
             rp_name=self._settings.rp_name,
@@ -787,3 +787,46 @@ class AuthService:
         )
 
         return Ok(registration_options)
+
+    async def create_web_authn_credential(
+        self,
+        passkey_registration_response: dict[Any, Any],
+        account_id: bson.ObjectId,
+        nickname: str | None = None,
+    ) -> Result[WebAuthnCredential, InvalidPasskeyRegistrationCredentialError]:
+        """Create a new webauthn credential."""
+        try:
+            # validate passkey registration response
+            passkey_registration_credential = parse_registration_credential_json(
+                passkey_registration_response
+            )
+        except WebAuthnException:
+            return Err(InvalidPasskeyRegistrationCredentialError())
+
+        client_data = parse_client_data_json(
+            passkey_registration_credential.response.client_data_json,
+        )
+
+        verified_registration = verify_registration_response(
+            credential=passkey_registration_credential,
+            expected_challenge=client_data.challenge,
+            expected_rp_id=self._settings.rp_id,
+            expected_origin=self._settings.rp_expected_origin,
+            require_user_verification=True,
+        )
+
+        if not verified_registration.user_verified:
+            return Err(InvalidPasskeyRegistrationCredentialError())
+
+        webauthn_credential = await self._webauthn_credential_repo.create(
+            account_id=account_id,
+            credential_id=verified_registration.credential_id,
+            credential_public_key=verified_registration.credential_public_key,
+            sign_count=verified_registration.sign_count,
+            backed_up=verified_registration.credential_backed_up,
+            device_type=verified_registration.credential_device_type,
+            transports=passkey_registration_credential.response.transports,
+            nickname=nickname,
+        )
+
+        return Ok(webauthn_credential)

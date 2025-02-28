@@ -33,6 +33,8 @@ from app.context import AuthInfo, Info
 
 from .services import AuthService
 from .types import (
+    CreateWebAuthnCredentialPayload,
+    CreateWebAuthnCredentialSuccessType,
     DeleteOtherSessionsPayloadType,
     DeleteSessionPayload,
     DeleteSessionSuccessType,
@@ -686,23 +688,68 @@ class AuthMutation:
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GeneratePasskeyCreationOptionsPayload,
-        description="Generate registration options for adding a passkey.",
+        description="Generate registration options for adding a webauthn credential.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
     )
     @inject
-    async def generate_passkey_creation_options(
+    async def generate_web_authn_credential_creation_options(
         self,
-        info: Info,
+        info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
     ) -> GeneratePasskeyCreationOptionsPayload:
-        """Generate registration options for adding a passkey."""
+        """Generate registration options for adding a webauthn credential."""
         # TODO: require sudo mode here
-        result = await auth_service.generate_passkey_creation_options(
+        result = await auth_service.generate_web_authn_credential_creation_options(
             account=info.context["current_user"],
         )
 
-        if isinstance(result, Err):
-            pass
-
         return GeneratePasskeyCreationOptionsSuccessType(
             registration_options=options_to_json(result.ok_value),
+        )
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreateWebAuthnCredentialPayload,
+        description="Create a new webauthn credential for the current user.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def create_web_authn_credential(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+        nickname: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The nickname of the passkey.",
+            ),
+        ] = None,
+    ) -> CreateWebAuthnCredentialPayload:
+        """Create a new webauthn credential for the current user."""
+        # TODO: require sudo mode here
+        result = await auth_service.create_web_authn_credential(
+            account=info.context["current_user"],
+            nickname=nickname,
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidPasskeyRegistrationCredentialError():
+                    return InvalidPasskeyRegistrationCredentialErrorType()
+
+        return CreateWebAuthnCredentialSuccessType(
+            web_authn_credential_edge=WebAuthnCredentialEdgeType.marshal(
+                result.ok_value
+            ),
         )

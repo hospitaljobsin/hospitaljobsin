@@ -42,6 +42,12 @@ type CreateOrganizationLogoPresignedURLPayload {
 
 union CreateOrganizationPayload = Organization | OrganizationSlugInUseError
 
+union CreateWebAuthnCredentialPayload = CreateWebAuthnCredentialSuccess | InvalidPasskeyRegistrationCredentialError
+
+type CreateWebAuthnCredentialSuccess {
+  webAuthnCredentialEdge: WebAuthnCredentialEdge!
+}
+
 enum Currency {
   INR
 }
@@ -97,6 +103,12 @@ union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSucces
 
 type GenerateAuthenticationOptionsSuccess {
   authenticationOptions: JSON!
+}
+
+union GeneratePasskeyCreationOptionsPayload = GeneratePasskeyCreationOptionsSuccess
+
+type GeneratePasskeyCreationOptionsSuccess {
+  registrationOptions: JSON!
 }
 
 union GeneratePasskeyRegistrationOptionsPayload = GeneratePasskeyRegistrationOptionsSuccess | InvalidRecaptchaTokenError | EmailInUseError
@@ -257,7 +269,7 @@ type Mutation {
     recaptchaToken: String!
   ): RegisterWithPasswordPayload!
 
-  """Generate registration options for adding a passkey."""
+  """Generate registration options for registering via a passkey."""
   generatePasskeyRegistrationOptions(
     """The email of the new user."""
     email: String!
@@ -352,6 +364,15 @@ type Mutation {
     """The ID of the Webauthn credential to delete."""
     webAuthnCredentialId: ID!
   ): DeleteWebAuthnCredentialPayload! @isAuthenticated
+
+  """Generate registration options for adding a webauthn credential."""
+  generateWebAuthnCredentialCreationOptions: GeneratePasskeyCreationOptionsPayload! @isAuthenticated
+
+  """Create a new webauthn credential for the current user."""
+  createWebAuthnCredential(
+    """The nickname of the passkey."""
+    nickname: String = null
+  ): CreateWebAuthnCredentialPayload! @isAuthenticated
 
   """Save a job."""
   saveJob(

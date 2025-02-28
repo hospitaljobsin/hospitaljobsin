@@ -360,3 +360,14 @@ GeneratePasskeyCreationOptionsPayload = Annotated[
     GeneratePasskeyCreationOptionsSuccessType,
     strawberry.union(name="GeneratePasskeyCreationOptionsPayload"),
 ]
+
+
+@strawberry.type(name="CreateWebAuthnCredentialSuccess")
+class CreateWebAuthnCredentialSuccessType:
+    web_authn_credential_edge: WebAuthnCredentialEdgeType
+
+
+CreateWebAuthnCredentialPayload = Annotated[
+    CreateWebAuthnCredentialSuccessType | InvalidPasskeyRegistrationCredentialErrorType,
+    strawberry.union(name="CreateWebAuthnCredentialPayload"),
+]
