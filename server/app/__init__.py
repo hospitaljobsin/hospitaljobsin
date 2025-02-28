@@ -44,6 +44,10 @@ def add_middleware(app: FastAPI, settings: Settings) -> None:
         SessionMiddleware,
         secret_key=settings.secret_key,
         session_cookie="session",
+        path="/",
+        same_site="lax",
+        https_only=True,
+        domain=settings.session_cookie_domain,
     )
 
     app.add_middleware(
