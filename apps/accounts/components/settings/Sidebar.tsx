@@ -1,6 +1,7 @@
 "use client";
 
 import { Tab, Tabs } from "@heroui/react";
+import { Cookie, Fingerprint, UserIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function SettingsSidebar() {
@@ -22,16 +23,35 @@ export default function SettingsSidebar() {
 						tab: "py-5",
 					}}
 				>
-					<Tab key="/settings" href="/settings" title="Account" />
+					<Tab
+						key="/settings"
+						href="/settings"
+						title={
+							<div className="flex items-center space-x-4">
+								<UserIcon size={20} />
+								<span>Account</span>
+							</div>
+						}
+					/>
 					<Tab
 						key="/settings/passkeys"
 						href="/settings/passkeys"
-						title="Passkeys"
+						title={
+							<div className="flex items-center space-x-4">
+								<Fingerprint size={20} />
+								<span>Passkeys</span>
+							</div>
+						}
 					/>
 					<Tab
 						key="/settings/sessions"
 						href="/settings/sessions"
-						title="Sessions"
+						title={
+							<div className="flex items-center space-x-4">
+								<Cookie size={20} />
+								<span>Sessions</span>
+							</div>
+						}
 					/>
 				</Tabs>
 			</div>
@@ -40,17 +60,40 @@ export default function SettingsSidebar() {
 					aria-label="Settings Navigation"
 					variant="light"
 					selectedKey={pathname}
+					classNames={{
+						base: "w-full overflow-x-auto",
+						tabList: "gap-4",
+					}}
 				>
-					<Tab key="/settings" href="/settings" title="Account" />
+					<Tab
+						key="/settings"
+						href="/settings"
+						title={
+							<div className="flex items-center space-x-4">
+								<UserIcon size={16} />
+								<span>Account</span>
+							</div>
+						}
+					/>
 					<Tab
 						key="/settings/passkeys"
 						href="/settings/passkeys"
-						title="Passkeys"
+						title={
+							<div className="flex items-center space-x-4">
+								<Fingerprint size={16} />
+								<span>Passkeys</span>
+							</div>
+						}
 					/>
 					<Tab
 						key="/settings/sessions"
 						href="/settings/sessions"
-						title="Sessions"
+						title={
+							<div className="flex items-center space-x-4">
+								<Cookie size={16} />
+								<span>Sessions</span>
+							</div>
+						}
 					/>
 				</Tabs>
 			</div>
