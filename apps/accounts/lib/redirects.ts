@@ -6,7 +6,8 @@ import links from "./links";
 export function getValidRedirectURL(redirectTo: string | null): string {
 	if (!redirectTo) return links.seekerLanding;
 
-	if (redirectTo.startsWith("/")) return redirectTo;
+	// return the absolute URL, which is needed for Oauth2 redirects
+	if (redirectTo.startsWith("/")) return `${env.NEXT_PUBLIC_URL}${redirectTo}`;
 
 	return redirectTo.startsWith(env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL) ||
 		redirectTo.startsWith(env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL)
