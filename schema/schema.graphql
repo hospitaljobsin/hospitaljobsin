@@ -11,6 +11,7 @@ type Account implements Node {
   avatarUrl: String!
   organizations(before: ID = null, after: ID = null, first: Int = null, last: Int = null): OrganizationConnection!
   sessions(before: ID = null, after: ID = null, first: Int = null, last: Int = null): SessionConnection!
+  webauthnCredentials(before: ID = null, after: ID = null, first: Int = null, last: Int = null): WebAuthnCredentialConnection!
 }
 
 type AccountNotFoundError implements Error {
@@ -65,6 +66,12 @@ union DeleteSessionPayload = DeleteSessionSuccess | SessionNotFoundError
 
 type DeleteSessionSuccess {
   sessionEdge: SessionEdge!
+}
+
+union DeleteWebAuthnCredentialPayload = DeleteWebAuthnCredentialSuccess | WebAuthnCredentialNotFoundError
+
+type DeleteWebAuthnCredentialSuccess {
+  webAuthnCredentialEdge: WebAuthnCredentialEdge!
 }
 
 type EmailInUseError implements Error {
@@ -339,6 +346,12 @@ type Mutation {
     """The ID of the session to delete."""
     sessionId: ID!
   ): DeleteSessionPayload! @isAuthenticated
+
+  """Delete webauthn credential by ID."""
+  deleteWebAuthnCredential(
+    """The ID of the Webauthn credential to delete."""
+    webAuthnCredentialId: ID!
+  ): DeleteWebAuthnCredentialPayload! @isAuthenticated
 
   """Save a job."""
   saveJob(
@@ -624,6 +637,30 @@ type VerifyEmailSuccess {
 union ViewerPayload = Account | NotAuthenticatedError
 
 type WebAuthnChallengeNotFoundError implements Error {
+  message: String!
+}
+
+type WebAuthnCredential implements Node {
+  """The Globally Unique ID of this object"""
+  id: ID!
+  nickname: String!
+  createdAt: DateTime!
+}
+
+type WebAuthnCredentialConnection {
+  pageInfo: PageInfo!
+  edges: [WebAuthnCredentialEdge!]!
+}
+
+type WebAuthnCredentialEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+
+  """The item at the end of the edge"""
+  node: WebAuthnCredential!
+}
+
+type WebAuthnCredentialNotFoundError implements Error {
   message: String!
 }
 

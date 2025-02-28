@@ -1,4 +1,3 @@
-from ast import Delete
 from datetime import datetime
 from typing import Annotated, Self
 
@@ -10,7 +9,7 @@ from strawberry import Private, relay
 from strawberry.scalars import JSON
 
 from app.accounts.types import AccountType
-from app.auth.documents import PasswordResetToken, Session
+from app.auth.documents import PasswordResetToken, Session, WebAuthnCredential
 from app.auth.repositories import SessionRepo
 from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
 from app.context import AuthInfo
@@ -110,6 +109,42 @@ class SessionEdgeType(BaseEdgeType[SessionType, Session]):
 class SessionConnectionType(BaseConnectionType[SessionType, SessionEdgeType]):
     node_type = SessionType
     edge_type = SessionEdgeType
+
+
+@strawberry.type(name="WebAuthnCredential")
+class WebAuthnCredentialType(BaseNodeType[WebAuthnCredential]):
+    nickname: str
+    created_at: datetime
+
+    @classmethod
+    def marshal(cls, webauthn_credential: WebAuthnCredential) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            id=str(webauthn_credential.id),
+            nickname=webauthn_credential.nickname,
+            created_at=webauthn_credential.id.generation_time,
+        )
+
+
+@strawberry.type(name="WebAuthnCredentialEdge")
+class WebAuthnCredentialEdgeType(
+    BaseEdgeType[WebAuthnCredentialType, WebAuthnCredential]
+):
+    @classmethod
+    def marshal(cls, session: WebAuthnCredential) -> Self:
+        """Marshal into a edge instance."""
+        return cls(
+            node=WebAuthnCredentialType.marshal(session),
+            cursor=relay.to_base64(WebAuthnCredentialType, session.id),
+        )
+
+
+@strawberry.type(name="WebAuthnCredentialConnection")
+class WebAuthnCredentialConnectionType(
+    BaseConnectionType[WebAuthnCredentialType, WebAuthnCredentialEdgeType]
+):
+    node_type = WebAuthnCredentialType
+    edge_type = WebAuthnCredentialEdgeType
 
 
 @strawberry.type(name="PasswordResetTokenNotFoundError")
@@ -297,4 +332,20 @@ class DeleteSessionSuccessType:
 DeleteSessionPayload = Annotated[
     DeleteSessionSuccessType | SessionNotFoundErrorType,
     strawberry.union(name="DeleteSessionPayload"),
+]
+
+
+@strawberry.type(name="WebAuthnCredentialNotFoundError")
+class WebAuthnCredentialNotFoundErrorType(BaseErrorType):
+    message: str = "Webauthn credential not found."
+
+
+@strawberry.type(name="DeleteWebAuthnCredentialSuccess")
+class DeleteWebAuthnCredentialSuccessType:
+    web_authn_credential_edge: WebAuthnCredentialEdgeType
+
+
+DeleteWebAuthnCredentialPayload = Annotated[
+    DeleteWebAuthnCredentialSuccessType | WebAuthnCredentialNotFoundErrorType,
+    strawberry.union(name="DeleteWebAuthnCredentialPayload"),
 ]

@@ -42,6 +42,8 @@ class WebAuthnCredential(Document):
     device_type: str
     backed_up: bool
 
+    nickname: str = "Passkey"
+
     transports: list[AuthenticatorTransport] | None
 
     account: Link[Account]

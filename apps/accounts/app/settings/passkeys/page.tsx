@@ -1,3 +1,5 @@
+import PasskeysSettingsView from "@/components/settings/passkeys/PasskeysSettingsView";
+
 export default function PasskeysSettingsPage() {
-	return <>passkeys settings</>;
+	return <PasskeysSettingsView />;
 }

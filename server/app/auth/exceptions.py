@@ -85,3 +85,9 @@ class SessionNotFoundError:
     """Raised when a session is not found."""
 
     pass
+
+
+class WebAuthnCredentialNotFoundError:
+    """Raised when a WebAuthn credential is not found."""
+
+    pass

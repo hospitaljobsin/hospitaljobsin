@@ -12,7 +12,6 @@ const SessionsSettingsViewQuery = graphql`
       __typename
       ... on Account {
         ...SessionsListFragment
-		...SessionsControllerFragment
       }
     }
   }

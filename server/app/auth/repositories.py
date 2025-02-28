@@ -189,6 +189,7 @@ class WebAuthnCredentialRepo:
         device_type: str,
         backed_up: bool,
         transports: list[AuthenticatorTransport] | None = None,
+        nickname: str | None = None,
     ) -> WebAuthnCredential:
         webauthn_credential = WebAuthnCredential(
             account=account_id,
@@ -198,6 +199,7 @@ class WebAuthnCredentialRepo:
             device_type=device_type,
             transports=transports,
             backed_up=backed_up,
+            nickname=nickname,
         )
         await webauthn_credential.save()
         return webauthn_credential
@@ -218,6 +220,44 @@ class WebAuthnCredentialRepo:
             WebAuthnCredential.credential_id == credential_id,
             fetch_links=True,
             nesting_depth=1,
+        )
+
+    async def get_by_account_credential_id(
+        self, account_id: ObjectId, web_authn_credential_id: ObjectId
+    ) -> WebAuthnCredential | None:
+        """Get WebAuthn credential by account ID and credential ID."""
+        return await WebAuthnCredential.find_one(
+            WebAuthnCredential.id == web_authn_credential_id,
+            WebAuthnCredential.account.id == account_id,
+        )
+
+    async def delete(self, webauthn_credential: WebAuthnCredential) -> None:
+        """Delete WebAuthn credential."""
+        await webauthn_credential.delete()
+
+    async def get_all_by_account_id(
+        self,
+        account_id: ObjectId,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[WebAuthnCredential, ObjectId]:
+        """Get all webauthn credentials by account ID."""
+        paginator: Paginator[WebAuthnCredential, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=WebAuthnCredential,
+            paginate_by="id",
+        )
+
+        return await paginator.paginate(
+            search_criteria=WebAuthnCredential.find(
+                WebAuthnCredential.account.id == account_id,
+            ),
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
         )
 
 

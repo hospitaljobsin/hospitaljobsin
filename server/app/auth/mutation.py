@@ -26,6 +26,7 @@ from app.auth.exceptions import (
     PasswordNotStrongError,
     SessionNotFoundError,
     WebAuthnChallengeNotFoundError,
+    WebAuthnCredentialNotFoundError,
 )
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo, Info
@@ -35,6 +36,8 @@ from .types import (
     DeleteOtherSessionsPayloadType,
     DeleteSessionPayload,
     DeleteSessionSuccessType,
+    DeleteWebAuthnCredentialPayload,
+    DeleteWebAuthnCredentialSuccessType,
     EmailInUseErrorType,
     EmailVerificationTokenCooldownErrorType,
     GenerateAuthenticationOptionsPayload,
@@ -65,6 +68,8 @@ from .types import (
     VerifyEmailPayload,
     VerifyEmailSuccessType,
     WebAuthnChallengeNotFoundErrorType,
+    WebAuthnCredentialEdgeType,
+    WebAuthnCredentialNotFoundErrorType,
 )
 
 
@@ -634,4 +639,45 @@ class AuthMutation:
 
         return DeleteSessionSuccessType(
             session_edge=SessionEdgeType.marshal(result.ok_value)
+        )
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=DeleteWebAuthnCredentialPayload,
+        description="Delete webauthn credential by ID.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def delete_web_authn_credential(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+        web_authn_credential_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the Webauthn credential to delete.",
+            ),
+        ],
+    ) -> DeleteWebAuthnCredentialPayload:
+        """Delete Webauthn credential by ID."""
+        # TODO: require sudo mode here
+        result = await auth_service.delete_web_authn_credential(
+            account_id=info.context["current_user_id"],
+            web_authn_credential_id=ObjectId(web_authn_credential_id.node_id),
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case WebAuthnCredentialNotFoundError():
+                    return WebAuthnCredentialNotFoundErrorType()
+
+        return DeleteWebAuthnCredentialSuccessType(
+            web_authn_credential_edge=WebAuthnCredentialEdgeType.marshal(
+                result.ok_value
+            )
         )

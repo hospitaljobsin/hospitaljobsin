@@ -38,7 +38,7 @@ from app.accounts.repositories import (
     EmailVerificationTokenRepo,
     ProfileRepo,
 )
-from app.auth.documents import PasswordResetToken, Session
+from app.auth.documents import PasswordResetToken, Session, WebAuthnCredential
 from app.auth.exceptions import (
     EmailInUseError,
     EmailVerificationTokenCooldownError,
@@ -54,6 +54,7 @@ from app.auth.exceptions import (
     PasswordResetTokenNotFoundError,
     SessionNotFoundError,
     WebAuthnChallengeNotFoundError,
+    WebAuthnCredentialNotFoundError,
 )
 from app.auth.repositories import (
     PasswordResetTokenRepo,
@@ -750,3 +751,19 @@ class AuthService:
             return Err(SessionNotFoundError())
         await self._session_repo.delete(session)
         return Ok(session)
+
+    async def delete_web_authn_credential(
+        self, account_id: bson.ObjectId, web_authn_credential_id: bson.ObjectId
+    ) -> Result[WebAuthnCredential, WebAuthnCredentialNotFoundError]:
+        """Delete a WebAuthn credential by ID."""
+        # TODO: check if webauthn credentials are the only form of auth for the user,
+        # and that they have atleast one additional webauthn credential before deleting
+        webauthn_credential = (
+            await self._webauthn_credential_repo.get_by_account_credential_id(
+                account_id=account_id, web_authn_credential_id=web_authn_credential_id
+            )
+        )
+        if not webauthn_credential:
+            return Err(WebAuthnCredentialNotFoundError())
+        await self._webauthn_credential_repo.delete(webauthn_credential)
+        return Ok(webauthn_credential)

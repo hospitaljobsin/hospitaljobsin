@@ -13,7 +13,7 @@ from bson import ObjectId
 from strawberry import relay
 
 from app.accounts.documents import Account, CurrentJob, Language, Profile
-from app.auth.repositories import SessionRepo
+from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
 from app.base.types import (
     AddressType,
     BaseErrorType,
@@ -24,7 +24,7 @@ from app.context import Info
 from app.organizations.repositories import OrganizationRepo
 
 if TYPE_CHECKING:
-    from app.auth.types import SessionConnectionType
+    from app.auth.types import SessionConnectionType, WebAuthnCredentialConnectionType
     from app.organizations.types import (
         OrganizationConnectionType,
     )
@@ -282,6 +282,34 @@ class AccountType(BaseNodeType[Account]):
         )
 
         return SessionConnectionType.marshal(sessions)
+
+    @strawberry.field
+    @inject
+    async def webauthn_credentials(
+        self,
+        webauthn_credential_repo: Annotated[
+            WebAuthnCredentialRepo,
+            Inject,
+        ],
+        before: relay.GlobalID | None = None,
+        after: relay.GlobalID | None = None,
+        first: int | None = None,
+        last: int | None = None,
+    ) -> Annotated[
+        "WebAuthnCredentialConnectionType", strawberry.lazy("app.auth.types")
+    ]:
+        """Return the webauthn credentials for the current user."""
+        from app.auth.types import WebAuthnCredentialConnectionType
+
+        sessions = await webauthn_credential_repo.get_all_by_account_id(
+            account_id=ObjectId(self.id),
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
+            first=first,
+            last=last,
+        )
+
+        return WebAuthnCredentialConnectionType.marshal(sessions)
 
 
 ViewerPayload = Annotated[
