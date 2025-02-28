@@ -370,6 +370,9 @@ type Mutation {
 
   """Create a new webauthn credential for the current user."""
   createWebAuthnCredential(
+    """The passkey registration response."""
+    passkeyRegistrationResponse: JSON!
+
     """The nickname of the passkey."""
     nickname: String = null
   ): CreateWebAuthnCredentialPayload! @isAuthenticated

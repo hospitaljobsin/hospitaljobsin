@@ -729,6 +729,12 @@ class AuthMutation:
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
+        passkey_registration_response: Annotated[
+            JSON,
+            strawberry.argument(
+                description="The passkey registration response.",
+            ),
+        ],
         nickname: Annotated[
             str | None,
             strawberry.argument(
@@ -739,8 +745,9 @@ class AuthMutation:
         """Create a new webauthn credential for the current user."""
         # TODO: require sudo mode here
         result = await auth_service.create_web_authn_credential(
-            account=info.context["current_user"],
+            account_id=info.context["current_user"].id,
             nickname=nickname,
+            passkey_registration_response=passkey_registration_response,
         )
 
         if isinstance(result, Err):

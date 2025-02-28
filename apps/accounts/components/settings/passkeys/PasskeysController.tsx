@@ -1,13 +1,50 @@
-import { Button } from "@heroui/react";
+import {
+	Button,
+	Input,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	useDisclosure,
+} from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { startRegistration } from "@simplewebauthn/browser";
 import { PlusIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import { z } from "zod";
+import type { PasskeysControllerGenerateOptionsMutation } from "./__generated__/PasskeysControllerGenerateOptionsMutation.graphql";
 import type { PasskeysControllerMutation } from "./__generated__/PasskeysControllerMutation.graphql";
 
-const DeleteAllPasskeysMutation = graphql`
-    mutation PasskeysControllerMutation($connections: [ID!]!) {
-        deleteOtherSessions {
-            deletedSessionIds @deleteEdge(connections: $connections)
+const GeneratePasskeyCreationOptionsMutation = graphql`
+    mutation PasskeysControllerGenerateOptionsMutation {
+        generateWebAuthnCredentialCreationOptions {
+            ... on GeneratePasskeyCreationOptionsSuccess {
+                registrationOptions
+            }
+    }
+}
+`;
+
+const CreatePasskeyMutation = graphql`
+    mutation PasskeysControllerMutation($nickname: String, $passkeyRegistrationResponse: JSON!, $connections: [ID!]!) {
+        createWebAuthnCredential(nickname: $nickname, passkeyRegistrationResponse: $passkeyRegistrationResponse) {
+            __typename
+            ... on InvalidPasskeyRegistrationCredentialError {
+                message
+            }
+
+            ... on CreateWebAuthnCredentialSuccess {
+                webAuthnCredentialEdge @appendEdge(connections: $connections) {
+                    cursor
+                    node {
+                        id
+                        ...PasskeyFragment
+                    }
+                }
+            }
         }
 }
 `;
@@ -16,14 +53,64 @@ type Props = {
 	passkeysConnectionId: string;
 };
 
-export default function PasskeysController({ passkeysConnectionId }: Props) {
-	const [commitMutation, isMutationInFlight] =
-		useMutation<PasskeysControllerMutation>(DeleteAllPasskeysMutation);
+const createPasskeySchema = z.object({
+	nickname: z
+		.string()
+		.max(75, "Nickname cannot exceed 75 characters")
+		.nullable(),
+});
 
-	async function handleCreatePasskey() {
-		commitMutation({
-			variables: {
-				connections: [passkeysConnectionId],
+export default function PasskeysController({ passkeysConnectionId }: Props) {
+	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+	const [commitCreateMutation, isCreateMutationInFlight] =
+		useMutation<PasskeysControllerMutation>(CreatePasskeyMutation);
+	const [commitGenerateOptionsMutation, isGenerateOptionsMutationInFlight] =
+		useMutation<PasskeysControllerGenerateOptionsMutation>(
+			GeneratePasskeyCreationOptionsMutation,
+		);
+
+	const {
+		register,
+		handleSubmit,
+		setError,
+		clearErrors,
+		formState: { errors, isSubmitting },
+	} = useForm<z.infer<typeof createPasskeySchema>>({
+		resolver: zodResolver(createPasskeySchema),
+	});
+
+	async function onSubmit(values: z.infer<typeof createPasskeySchema>) {
+		commitGenerateOptionsMutation({
+			variables: {},
+			onCompleted(response) {
+				startRegistration({
+					optionsJSON: JSON.parse(
+						response.generateWebAuthnCredentialCreationOptions
+							.registrationOptions,
+					),
+				}).then((registrationResponse) => {
+					commitCreateMutation({
+						variables: {
+							connections: [passkeysConnectionId],
+							nickname: values.nickname,
+							passkeyRegistrationResponse: JSON.stringify(registrationResponse),
+						},
+						onCompleted(response) {
+							if (
+								response.createWebAuthnCredential.__typename ===
+								"InvalidPasskeyRegistrationCredentialError"
+							) {
+								// TODO: show a toast here
+								alert("Invalid passkey registration credential.");
+							} else if (
+								response.createWebAuthnCredential.__typename ===
+								"CreateWebAuthnCredentialSuccess"
+							) {
+								onClose();
+							}
+						},
+					});
+				});
 			},
 		});
 	}
@@ -33,8 +120,7 @@ export default function PasskeysController({ passkeysConnectionId }: Props) {
 			<Button
 				startContent={<PlusIcon size={16} />}
 				variant="flat"
-				onPress={handleCreatePasskey}
-				isLoading={isMutationInFlight}
+				onPress={onOpen}
 				spinnerPlacement="end"
 				className="hidden md:flex"
 			>
@@ -43,14 +129,53 @@ export default function PasskeysController({ passkeysConnectionId }: Props) {
 			<Button
 				startContent={<PlusIcon size={16} />}
 				variant="flat"
-				onPress={handleCreatePasskey}
-				isLoading={isMutationInFlight}
+				onPress={onOpen}
 				spinnerPlacement="end"
 				size="sm"
 				className="flex md:hidden"
 			>
 				Create Passkey
 			</Button>
+			<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+				<ModalContent>
+					{(onClose) => (
+						<>
+							<ModalHeader className="flex flex-col gap-1">
+								Create Passkey
+							</ModalHeader>
+							<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+								<ModalBody>
+									<Input
+										id="nickname"
+										label="Nickname"
+										placeholder="My Screen Lock"
+										{...register("nickname")}
+										description="Nicknames help identify your passkeys"
+										errorMessage={errors.nickname?.message}
+										isInvalid={!!errors.nickname}
+									/>
+								</ModalBody>
+								<ModalFooter>
+									<Button color="danger" variant="light" onPress={onClose}>
+										Cancel
+									</Button>
+									<Button
+										color="default"
+										type="submit"
+										isLoading={
+											isSubmitting ||
+											isCreateMutationInFlight ||
+											isGenerateOptionsMutationInFlight
+										}
+									>
+										Create Passkey
+									</Button>
+								</ModalFooter>
+							</form>
+						</>
+					)}
+				</ModalContent>
+			</Modal>
 		</>
 	);
 }
