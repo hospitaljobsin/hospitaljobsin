@@ -19,6 +19,7 @@ export default function SettingsSidebar() {
 						tabContent: "w-full",
 						tabList: "w-full",
 						panel: "h-full",
+						tab: "py-5",
 					}}
 				>
 					<Tab key="/settings" href="/settings" title="Account" />
