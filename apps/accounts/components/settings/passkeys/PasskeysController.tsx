@@ -13,19 +13,17 @@ const DeleteAllPasskeysMutation = graphql`
 `;
 
 type Props = {
-	webauthnCredentialsConnectionId: string;
+	passkeysConnectionId: string;
 };
 
-export default function PasskeysController({
-	webauthnCredentialsConnectionId,
-}: Props) {
+export default function PasskeysController({ passkeysConnectionId }: Props) {
 	const [commitMutation, isMutationInFlight] =
 		useMutation<PasskeysControllerMutation>(DeleteAllPasskeysMutation);
 
 	async function handleCreatePasskey() {
 		commitMutation({
 			variables: {
-				connections: [webauthnCredentialsConnectionId],
+				connections: [passkeysConnectionId],
 			},
 		});
 	}
