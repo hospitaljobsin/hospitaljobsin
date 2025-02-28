@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Session from "./Session";
@@ -63,15 +63,19 @@ export default function SessionsList({ root }: Props) {
 		return () => observer.disconnect();
 	}, [data.sessions.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
-	if (data.sessions.edges.length === 0 && !data.sessions.pageInfo.hasNextPage) {
-		return null;
-	}
+	const canDeleteAllSessions = useMemo(
+		() => data.sessions.edges.length > 1,
+		[data.sessions.edges.length],
+	);
 
 	return (
 		<div className="w-full flex flex-col gap-6">
 			<div className="flex w-full items-center justify-between gap-6">
 				<p className="text-foreground-600">My Sessions</p>
-				<SessionsController root={data.viewer} />
+				<SessionsController
+					sessionsConnectionId={data.sessions.__id}
+					isDisabled={!canDeleteAllSessions}
+				/>
 			</div>
 			<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
 				{data.sessions.edges.map((sessionEdge) => (

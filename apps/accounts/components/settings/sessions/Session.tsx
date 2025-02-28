@@ -9,7 +9,10 @@ import {
 	Tooltip,
 } from "@heroui/react";
 import {
+	CpuIcon,
+	Globe,
 	Laptop2,
+	Monitor,
 	Smartphone,
 	TabletIcon,
 	Trash2,
@@ -118,11 +121,34 @@ export default function Session({ session, sessionsConnectionId }: Props) {
 				)}
 			</CardHeader>
 			<CardBody>
-				<p className="text-foreground-500">
-					{browser.name} {browser.major}, {engine.name}, {os.name} {os.version}
-				</p>
+				<div className="flex flex-col gap-6 sm:gap-8 sm:flex-row">
+					{browser.name && (
+						<div className="flex items-center gap-2 text-foreground-500">
+							<Globe size={16} />
+							<span>
+								{browser.name} {browser.major}
+							</span>
+						</div>
+					)}
+					{engine.name && (
+						<div className="flex items-center gap-2 text-foreground-500">
+							<CpuIcon size={16} />
+							<span>
+								{engine.name} {engine.version}
+							</span>
+						</div>
+					)}
+					{os.name && (
+						<div className="flex items-center gap-2 text-foreground-500">
+							<Monitor size={16} />
+							<span>
+								{os.name} {os.version}
+							</span>
+						</div>
+					)}
+				</div>
 			</CardBody>
-			<CardFooter>
+			<CardFooter className="w-full flex justify-end sm:justify-start">
 				<p className="text-foreground-400 text-sm">
 					Created on {dateFormat.format(new Date(data.createdAt))}
 				</p>

@@ -14,9 +14,13 @@ const DeleteAllSessionsMutation = graphql`
 
 type Props = {
 	sessionsConnectionId: string;
+	isDisabled: boolean;
 };
 
-export default function SessionsController({ sessionsConnectionId }: Props) {
+export default function SessionsController({
+	sessionsConnectionId,
+	isDisabled,
+}: Props) {
 	const [commitMutation, isMutationInFlight] =
 		useMutation<SessionsControllerMutation>(DeleteAllSessionsMutation);
 
@@ -38,6 +42,7 @@ export default function SessionsController({ sessionsConnectionId }: Props) {
 				isLoading={isMutationInFlight}
 				spinnerPlacement="end"
 				className="hidden md:flex"
+				isDisabled={isDisabled}
 			>
 				Delete all sessions
 			</Button>
@@ -50,6 +55,7 @@ export default function SessionsController({ sessionsConnectionId }: Props) {
 				spinnerPlacement="end"
 				size="sm"
 				className="flex md:hidden"
+				isDisabled={isDisabled}
 			>
 				Delete all sessions
 			</Button>
