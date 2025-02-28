@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Session from "./Session";
+import SessionsController from "./SessionsController";
 import SessionsListSkeleton from "./SessionsListSkeleton";
 import type { SessionsListFragment$key } from "./__generated__/SessionsListFragment.graphql";
 import type { SessionsSettingsViewQuery } from "./__generated__/SessionsSettingsViewQuery.graphql";
@@ -67,16 +68,22 @@ export default function SessionsList({ root }: Props) {
 	}
 
 	return (
-		<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
-			{data.sessions.edges.map((sessionEdge) => (
-				<Session
-					session={sessionEdge.node}
-					key={sessionEdge.node.id}
-					sessionsConnectionId={data.sessions.__id}
-				/>
-			))}
-			<div ref={observerRef} className="h-10" />
-			{isLoadingNext && <SessionsListSkeleton />}
+		<div className="w-full flex flex-col gap-6">
+			<div className="flex w-full items-center justify-between gap-6">
+				<p className="text-foreground-600">My Sessions</p>
+				<SessionsController root={data.viewer} />
+			</div>
+			<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
+				{data.sessions.edges.map((sessionEdge) => (
+					<Session
+						session={sessionEdge.node}
+						key={sessionEdge.node.id}
+						sessionsConnectionId={data.sessions.__id}
+					/>
+				))}
+				<div ref={observerRef} className="h-10" />
+				{isLoadingNext && <SessionsListSkeleton />}
+			</div>{" "}
 		</div>
 	);
 }

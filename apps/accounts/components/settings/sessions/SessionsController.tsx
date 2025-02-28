@@ -1,8 +1,7 @@
 import { Button } from "@heroui/react";
 import { Trash2 } from "lucide-react";
-import { useFragment, useMutation } from "react-relay";
-import { ConnectionHandler, graphql } from "relay-runtime";
-import type { SessionsControllerFragment$key } from "./__generated__/SessionsControllerFragment.graphql";
+import { useMutation } from "react-relay";
+import { graphql } from "relay-runtime";
 import type { SessionsControllerMutation } from "./__generated__/SessionsControllerMutation.graphql";
 
 const DeleteAllSessionsMutation = graphql`
@@ -13,31 +12,18 @@ const DeleteAllSessionsMutation = graphql`
 }
 `;
 
-const SessionsControllerFragment = graphql`
-    fragment SessionsControllerFragment on Account {
-        id
-    }
-`;
-
 type Props = {
-	root: SessionsControllerFragment$key;
+	sessionsConnectionId: string;
 };
 
-export default function SessionsController({ root }: Props) {
+export default function SessionsController({ sessionsConnectionId }: Props) {
 	const [commitMutation, isMutationInFlight] =
 		useMutation<SessionsControllerMutation>(DeleteAllSessionsMutation);
-
-	const data = useFragment(SessionsControllerFragment, root);
-
-	const connectionID = ConnectionHandler.getConnectionID(
-		data.id,
-		"SessionsListFragment_sessions",
-	);
 
 	async function handleDeleteAllSessions() {
 		commitMutation({
 			variables: {
-				connections: [connectionID],
+				connections: [sessionsConnectionId],
 			},
 		});
 	}
