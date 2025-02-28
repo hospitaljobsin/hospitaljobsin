@@ -88,29 +88,34 @@ export default function PasskeysController({ passkeysConnectionId }: Props) {
 						response.generateWebAuthnCredentialCreationOptions
 							.registrationOptions,
 					),
-				}).then((registrationResponse) => {
-					commitCreateMutation({
-						variables: {
-							connections: [passkeysConnectionId],
-							nickname: values.nickname,
-							passkeyRegistrationResponse: JSON.stringify(registrationResponse),
-						},
-						onCompleted(response) {
-							if (
-								response.createWebAuthnCredential.__typename ===
-								"InvalidPasskeyRegistrationCredentialError"
-							) {
-								// TODO: show a toast here
-								alert("Invalid passkey registration credential.");
-							} else if (
-								response.createWebAuthnCredential.__typename ===
-								"CreateWebAuthnCredentialSuccess"
-							) {
-								onClose();
-							}
-						},
+				})
+					.then((registrationResponse) => {
+						commitCreateMutation({
+							variables: {
+								connections: [passkeysConnectionId],
+								nickname: values.nickname,
+								passkeyRegistrationResponse:
+									JSON.stringify(registrationResponse),
+							},
+							onCompleted(response) {
+								if (
+									response.createWebAuthnCredential.__typename ===
+									"InvalidPasskeyRegistrationCredentialError"
+								) {
+									// TODO: show a toast here
+									alert("Invalid passkey registration credential.");
+								} else if (
+									response.createWebAuthnCredential.__typename ===
+									"CreateWebAuthnCredentialSuccess"
+								) {
+									onClose();
+								}
+							},
+						});
+					})
+					.catch((error) => {
+						// TODO: show a toast here
 					});
-				});
 			},
 		});
 	}
