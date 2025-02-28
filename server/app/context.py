@@ -1,9 +1,9 @@
 from typing import TypedDict
 
-from bson import ObjectId
 from fastapi import BackgroundTasks, Request, Response
 from strawberry.types import Info as StrawberryInfo
 
+from app.accounts.documents import Account
 from app.dataloaders import Dataloaders
 
 
@@ -16,14 +16,14 @@ class BaseContext(TypedDict):
 
 
 class Context(BaseContext):
-    current_user_id: ObjectId | None
+    current_user: Account | None
 
 
 Info = StrawberryInfo[Context, None]
 
 
 class AuthContext(BaseContext):
-    current_user_id: ObjectId
+    current_user: Account
     session_token: str
 
 

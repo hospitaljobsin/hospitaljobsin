@@ -108,10 +108,10 @@ class OrganizationType(BaseNodeType[Organization]):
         organization_member_service: Annotated[OrganizationMemberService, Inject],
     ) -> bool:
         """Return whether the current user is an admin in this organization."""
-        if info.context["current_user_id"] is None:
+        if info.context["current_user"] is None:
             return False
         return await organization_member_service.is_admin(
-            account_id=info.context["current_user_id"],
+            account_id=info.context["current_user"].id,
             organization_id=ObjectId(self.id),
         )
 
@@ -123,10 +123,10 @@ class OrganizationType(BaseNodeType[Organization]):
         organization_member_service: Annotated[OrganizationMemberService, Inject],
     ) -> bool:
         """Return whether the current user is an member in this organization."""
-        if info.context["current_user_id"] is None:
+        if info.context["current_user"] is None:
             return False
         return await organization_member_service.is_member(
-            account_id=info.context["current_user_id"],
+            account_id=info.context["current_user"].id,
             organization_id=ObjectId(self.id),
         )
 

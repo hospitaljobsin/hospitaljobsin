@@ -286,7 +286,7 @@ class AuthService:
     ) -> Result[
         PublicKeyCredentialCreationOptions, InvalidRecaptchaTokenError | EmailInUseError
     ]:
-        """Generate passkey registration options."""
+        """Generate registration options for registering via a passkey."""
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
@@ -767,3 +767,23 @@ class AuthService:
             return Err(WebAuthnCredentialNotFoundError())
         await self._webauthn_credential_repo.delete(webauthn_credential)
         return Ok(webauthn_credential)
+
+    async def generate_passkey_creation_options(
+        self,
+        account: Account,
+    ) -> Result[PublicKeyCredentialCreationOptions, None]:
+        """Generate registration options for adding a new passkey."""
+        registration_options = generate_registration_options(
+            rp_id=self._settings.rp_id,
+            rp_name=self._settings.rp_name,
+            user_id=account.id.binary,
+            user_name=account.email,
+            user_display_name=account.full_name,
+            authenticator_selection=AuthenticatorSelectionCriteria(
+                authenticator_attachment=AuthenticatorAttachment.PLATFORM,
+                user_verification=UserVerificationRequirement.PREFERRED,
+                resident_key=ResidentKeyRequirement.REQUIRED,
+            ),
+        )
+
+        return Ok(registration_options)

@@ -30,14 +30,14 @@ async def get_context(
     user_agent: Annotated[str | None, Header()] = "unknown",
 ) -> BaseContext:
     if session_token:
-        session = await session_repo.get(token=session_token)
+        session = await session_repo.get(token=session_token, fetch_account=True)
         if session is not None:
             return AuthContext(
                 request=request,
                 response=response,
                 background_tasks=background_tasks,
                 loaders=create_dataloaders(),
-                current_user_id=session.account.ref.id,
+                current_user=session.account,
                 user_agent=user_agent,
                 session_token=session_token,
             )
@@ -51,7 +51,7 @@ async def get_context(
         response=response,
         background_tasks=background_tasks,
         loaders=create_dataloaders(),
-        current_user_id=None,
+        current_user=None,
         user_agent=user_agent,
     )
 

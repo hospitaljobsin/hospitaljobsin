@@ -95,7 +95,7 @@ class JobQuery:
         last: int | None = None,
     ) -> SavedJobConnectionType:
         result = await saved_job_repo.get_all_saved(
-            account_id=info.context["current_user_id"],
+            account_id=info.context["current_user"].id,
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
             first=first,

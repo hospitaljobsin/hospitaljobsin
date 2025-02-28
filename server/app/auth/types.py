@@ -349,3 +349,14 @@ DeleteWebAuthnCredentialPayload = Annotated[
     DeleteWebAuthnCredentialSuccessType | WebAuthnCredentialNotFoundErrorType,
     strawberry.union(name="DeleteWebAuthnCredentialPayload"),
 ]
+
+
+@strawberry.type(name="GeneratePasskeyCreationOptionsSuccess")
+class GeneratePasskeyCreationOptionsSuccessType:
+    registration_options: JSON
+
+
+GeneratePasskeyCreationOptionsPayload = Annotated[
+    GeneratePasskeyCreationOptionsSuccessType,
+    strawberry.union(name="GeneratePasskeyCreationOptionsPayload"),
+]

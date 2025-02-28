@@ -27,10 +27,7 @@ class AccountQuery:
             Inject,
         ],
     ) -> ViewerPayload:
-        current_user_id = info.context["current_user_id"]
-        if current_user_id is None:
+        current_user = info.context["current_user"]
+        if current_user is None:
             return NotAuthenticatedErrorType()
-        result = await account_repo.get(account_id=current_user_id)
-        if result is None:
-            return NotAuthenticatedErrorType()
-        return AccountType.marshal(result)
+        return AccountType.marshal(current_user)

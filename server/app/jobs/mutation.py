@@ -50,7 +50,7 @@ class JobMutation:
     ) -> SaveJobPayload:
         """Save a job."""
         result = await saved_job_service.save_job(
-            account_id=info.context["current_user_id"],
+            account_id=info.context["current_user"].id,
             job_id=job_id.node_id,
         )
 
@@ -90,7 +90,7 @@ class JobMutation:
     ) -> UnsaveJobPayload:
         """Save a job."""
         result = await saved_job_service.unsave_job(
-            account_id=info.context["current_user_id"],
+            account_id=info.context["current_user"].id,
             job_id=job_id.node_id,
         )
 

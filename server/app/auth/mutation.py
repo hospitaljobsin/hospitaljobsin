@@ -42,6 +42,8 @@ from .types import (
     EmailVerificationTokenCooldownErrorType,
     GenerateAuthenticationOptionsPayload,
     GenerateAuthenticationOptionsSuccessType,
+    GeneratePasskeyCreationOptionsPayload,
+    GeneratePasskeyCreationOptionsSuccessType,
     GeneratePasskeyRegistrationOptionsPayload,
     GeneratePasskeyRegistrationOptionsSuccessType,
     InvalidCredentialsErrorType,
@@ -233,7 +235,7 @@ class AuthMutation:
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GeneratePasskeyRegistrationOptionsPayload,
-        description="Generate registration options for adding a passkey.",
+        description="Generate registration options for registering via a passkey.",
     )
     @inject
     async def generate_passkey_registration_options(
@@ -259,7 +261,7 @@ class AuthMutation:
         ],
         auth_service: Annotated[AuthService, Inject],
     ) -> GeneratePasskeyRegistrationOptionsPayload:
-        """Generate registration options for adding a passkey."""
+        """Generate registration options for registering via a passkey."""
         result = await auth_service.generate_passkey_registration_options(
             email=email, full_name=full_name, recaptcha_token=recaptcha_token
         )
@@ -595,7 +597,7 @@ class AuthMutation:
         """Delete other sessions of the viewer than the current one."""
         # TODO: require sudo mode here
         deleted_session_ids = await auth_service.delete_other_sessions(
-            account_id=info.context["current_user_id"],
+            account_id=info.context["current_user"].id,
             except_session_token=info.context["session_token"],
         )
 
@@ -627,7 +629,7 @@ class AuthMutation:
         """Delete session by ID."""
         # TODO: require sudo mode here
         result = await auth_service.delete_session(
-            account_id=info.context["current_user_id"],
+            account_id=info.context["current_user"].id,
             session_id=ObjectId(session_id.node_id),
             except_session_token=info.context["session_token"],
         )
@@ -667,7 +669,7 @@ class AuthMutation:
         """Delete Webauthn credential by ID."""
         # TODO: require sudo mode here
         result = await auth_service.delete_web_authn_credential(
-            account_id=info.context["current_user_id"],
+            account_id=info.context["current_user"].id,
             web_authn_credential_id=ObjectId(web_authn_credential_id.node_id),
         )
 
@@ -680,4 +682,27 @@ class AuthMutation:
             web_authn_credential_edge=WebAuthnCredentialEdgeType.marshal(
                 result.ok_value
             )
+        )
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=GeneratePasskeyCreationOptionsPayload,
+        description="Generate registration options for adding a passkey.",
+    )
+    @inject
+    async def generate_passkey_creation_options(
+        self,
+        info: Info,
+        auth_service: Annotated[AuthService, Inject],
+    ) -> GeneratePasskeyCreationOptionsPayload:
+        """Generate registration options for adding a passkey."""
+        # TODO: require sudo mode here
+        result = await auth_service.generate_passkey_creation_options(
+            account=info.context["current_user"],
+        )
+
+        if isinstance(result, Err):
+            pass
+
+        return GeneratePasskeyCreationOptionsSuccessType(
+            registration_options=options_to_json(result.ok_value),
         )

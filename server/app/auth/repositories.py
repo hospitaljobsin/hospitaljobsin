@@ -57,8 +57,14 @@ class SessionRepo:
         """Hash session token."""
         return hashlib.md5(token.encode("utf-8")).hexdigest()
 
-    async def get(self, token: str) -> Session | None:
+    async def get(self, token: str, *, fetch_account: bool = False) -> Session | None:
         """Get session by token."""
+        if fetch_account:
+            return await Session.find_one(
+                Session.token_hash == self.hash_session_token(token),
+                fetch_links=True,
+                nesting_depth=1,
+            )
         return await Session.find_one(
             Session.token_hash == self.hash_session_token(token),
         )

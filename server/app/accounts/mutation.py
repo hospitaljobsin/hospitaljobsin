@@ -50,7 +50,7 @@ class AccountMutation:
     ) -> UpdateProfilePayload:
         """Update the current user's profile personal details."""
         account = await profile_service.update_personal_details(
-            account_id=info.context["current_user_id"],
+            account_id=info.context["current_user"].id,
             gender=gender,
             date_of_birth=date_of_birth,
             marital_status=marital_status,
@@ -80,7 +80,7 @@ class AccountMutation:
     ) -> UpdateProfilePayload:
         """Update the current user's profile languages."""
         account = await profile_service.update_languages(
-            account_id=info.context["current_user_id"],
+            account_id=info.context["current_user"].id,
             languages=[language.to_document() for language in languages],
         )
 
@@ -106,7 +106,7 @@ class AccountMutation:
     ) -> UpdateAccountPayload:
         """Update the current user's account."""
         result = await account_service.update(
-            account_id=info.context["current_user_id"],
+            account_id=info.context["current_user"].id,
             full_name=full_name,
         )
 
