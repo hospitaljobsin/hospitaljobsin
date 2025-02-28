@@ -7,7 +7,7 @@ export default function SettingsSidebar() {
 	const pathname = usePathname();
 	return (
 		<>
-			<div className="h-screen w-64 p-4 bg-background-700 justify-start hidden md:flex">
+			<div className="md:h-[calc(100vh-4rem)] w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky md:top-16">
 				<Tabs
 					aria-label="Settings Navigation"
 					isVertical
@@ -18,6 +18,7 @@ export default function SettingsSidebar() {
 						base: "w-full",
 						tabContent: "w-full",
 						tabList: "w-full",
+						panel: "h-full",
 					}}
 				>
 					<Tab key="/settings" href="/settings" title="Account" />

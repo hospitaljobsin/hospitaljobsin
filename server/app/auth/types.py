@@ -68,6 +68,7 @@ class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
 @strawberry.type(name="Session")
 class SessionType(BaseNodeType[Session]):
     user_agent: str
+    ip_address: str
     created_at: datetime
 
     token_hash: Private[str]
@@ -78,6 +79,7 @@ class SessionType(BaseNodeType[Session]):
         return cls(
             id=str(session.id),
             user_agent=session.user_agent,
+            ip_address=session.ip_address,
             created_at=session.id.generation_time,
             token_hash=session.token_hash,
         )
@@ -287,7 +289,7 @@ class SessionNotFoundErrorType(BaseErrorType):
     message: str = "Session not found."
 
 
-@strawberry.type(name="DeleteSessionSuccessType")
+@strawberry.type(name="DeleteSessionSuccess")
 class DeleteSessionSuccessType:
     session_edge: SessionEdgeType
 

@@ -11,6 +11,7 @@ from app.accounts.documents import Account
 class Session(Document):
     token_hash: Annotated[str, Indexed(unique=True)]
     user_agent: str
+    ip_address: str
     expires_at: datetime
     account: Link[Account]
 

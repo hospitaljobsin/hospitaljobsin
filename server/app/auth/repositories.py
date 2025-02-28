@@ -27,6 +27,7 @@ class SessionRepo:
         self,
         account: Account,
         user_agent: str,
+        ip_address: str,
     ) -> str:
         """Create a new session."""
         session_token = self.generate_session_token()
@@ -40,6 +41,7 @@ class SessionRepo:
                 seconds=USER_SESSION_EXPIRES_IN,
             ),
             user_agent=user_agent,
+            ip_address=ip_address,
         )
 
         await session.save(link_rule=WriteRules.WRITE)

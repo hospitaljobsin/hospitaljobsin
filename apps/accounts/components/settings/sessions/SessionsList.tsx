@@ -15,6 +15,7 @@ const SessionsListFragment = graphql`
   @refetchable(queryName: "SessionsListPaginationQuery") {
     sessions(after: $cursor, first: $count)
       @connection(key: "SessionsListFragment_sessions") {
+		__id
       edges {
         node {
           id
@@ -68,7 +69,11 @@ export default function SessionsList({ root }: Props) {
 	return (
 		<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
 			{data.sessions.edges.map((sessionEdge) => (
-				<Session session={sessionEdge.node} key={sessionEdge.node.id} />
+				<Session
+					session={sessionEdge.node}
+					key={sessionEdge.node.id}
+					sessionsConnectionId={data.sessions.__id}
+				/>
 			))}
 			<div ref={observerRef} className="h-10" />
 			{isLoadingNext && <SessionsListSkeleton />}

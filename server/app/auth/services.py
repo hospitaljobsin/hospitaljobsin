@@ -260,6 +260,7 @@ class AuthService:
         )
 
         session_token = await self._session_repo.create(
+            ip_address=request.client.host,
             user_agent=user_agent,
             account=account,
         )
@@ -403,6 +404,7 @@ class AuthService:
         )
 
         session_token = await self._session_repo.create(
+            ip_address=request.client.host,
             user_agent=user_agent,
             account=account,
         )
@@ -492,6 +494,7 @@ class AuthService:
         account = webauthn_credential.account
 
         session_token = await self._session_repo.create(
+            ip_address=request.client.host,
             user_agent=user_agent,
             account=account,
         )
@@ -537,6 +540,7 @@ class AuthService:
             return Err(InvalidCredentialsError())
 
         session_token = await self._session_repo.create(
+            ip_address=request.client.host,
             user_agent=user_agent,
             account=account,
         )
@@ -581,6 +585,7 @@ class AuthService:
             )
 
         session_token = await self._session_repo.create(
+            ip_address=request.client.host,
             user_agent=user_agent,
             account=account,
         )
@@ -705,6 +710,7 @@ class AuthService:
         await self._session_repo.delete_all(account_id=existing_reset_token.account.id)
 
         session_token = await self._session_repo.create(
+            ip_address=request.client.host,
             user_agent=user_agent,
             account=existing_reset_token.account,
         )

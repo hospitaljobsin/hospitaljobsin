@@ -61,9 +61,9 @@ type DeleteOtherSessionsPayload {
   deletedSessionIds: [ID!]!
 }
 
-union DeleteSessionPayload = DeleteSessionSuccessType | SessionNotFoundError
+union DeleteSessionPayload = DeleteSessionSuccess | SessionNotFoundError
 
-type DeleteSessionSuccessType {
+type DeleteSessionSuccess {
   sessionEdge: SessionEdge!
 }
 
@@ -583,6 +583,7 @@ type Session implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
   userAgent: String!
+  ipAddress: String!
   createdAt: DateTime!
   isCurrentSession: Boolean!
 }
