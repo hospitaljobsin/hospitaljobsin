@@ -91,3 +91,9 @@ class WebAuthnCredentialNotFoundError:
     """Raised when a WebAuthn credential is not found."""
 
     pass
+
+
+class AccountNotFoundError:
+    """Raised when an account is not found."""
+
+    pass

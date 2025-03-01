@@ -12,7 +12,7 @@ import { Edit2, Fingerprint, Trash2 } from "lucide-react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import UpdatePasskeyModal from "./UpdatePasskeyModal";
-import type { PasskeyAccountSudoFragment$key } from "./__generated__/PasskeyAccountSudoFragment.graphql";
+import type { PasskeyAccountMetadataFragment$key } from "./__generated__/PasskeyAccountMetadataFragment.graphql";
 import type { PasskeyDeleteMutation } from "./__generated__/PasskeyDeleteMutation.graphql";
 import type { PasskeyFragment$key } from "./__generated__/PasskeyFragment.graphql";
 
@@ -25,8 +25,8 @@ export const PasskeyFragment = graphql`
   }
 `;
 
-export const PasskeyAccountSudoFragment = graphql`
-  fragment PasskeyAccountSudoFragment on Account {
+export const PasskeyAccountMetadataFragment = graphql`
+  fragment PasskeyAccountMetadataFragment on Account {
 	sudoModeExpiresAt
   }
 `;
@@ -51,7 +51,7 @@ const DeletePasskeyMutation = graphql`
 
 type Props = {
 	passkey: PasskeyFragment$key;
-	account: PasskeyAccountSudoFragment$key;
+	account: PasskeyAccountMetadataFragment$key;
 	passkeysConnectionId: string;
 };
 
@@ -62,7 +62,7 @@ export default function Passkey({
 }: Props) {
 	const data = useFragment(PasskeyFragment, passkey);
 
-	const accountData = useFragment(PasskeyAccountSudoFragment, account);
+	const accountData = useFragment(PasskeyAccountMetadataFragment, account);
 
 	const { checkSudoMode } = useCheckSudoMode();
 

@@ -41,6 +41,7 @@ from app.accounts.repositories import (
 )
 from app.auth.documents import PasswordResetToken, Session, WebAuthnCredential
 from app.auth.exceptions import (
+    AccountNotFoundError,
     EmailInUseError,
     EmailVerificationTokenCooldownError,
     InvalidCredentialsError,
@@ -636,7 +637,10 @@ class AuthService:
             value=session_token,
         )
 
-        self._grant_sudo_mode(request)
+        if account.auth_providers == ["oauth_google"]:
+            # user has only the Oauth Google auth provider
+            # hence, we can grant sudo mode when they sign in
+            self._grant_sudo_mode(request)
 
         return Ok(account)
 
@@ -940,11 +944,6 @@ class AuthService:
 
     def _grant_sudo_mode(self, request: Request) -> None:
         """Grant sudo mode to the current user request."""
-        # TODO: consider this use case.
-        # The user signs in with google, they are granted sudo mode immediately
-        # this should not happen if they have a stronger mode of authentication-
-        # such as a webauthn credential or password
-        # we should store the last used sign in method and grant sudo mode based on that
         sudo_mode_expires_at = datetime.now(UTC) + timedelta(
             seconds=SUDO_MODE_EXPIRES_IN
         )
@@ -1035,5 +1034,20 @@ class AuthService:
             return Err(InvalidCredentialsError())
 
         self._grant_sudo_mode(request)
+
+        return Ok(account)
+
+    async def request_sudo_mode_with_google_oauth(
+        self, user_info: dict, request: Request
+    ) -> Result[Account, AccountNotFoundError]:
+        """Request sudo mode with Google Oauth."""
+        account = await self._account_repo.get_by_email(email=user_info["email"])
+        if account is None:
+            return Err(AccountNotFoundError)
+
+        if account.auth_providers == ["oauth_google"]:
+            # user has only the Oauth Google auth provider
+            # hence, we can grant sudo mode when they sign in
+            self._grant_sudo_mode(request)
 
         return Ok(account)

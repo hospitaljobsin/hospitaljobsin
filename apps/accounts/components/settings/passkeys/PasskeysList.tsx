@@ -10,7 +10,7 @@ import type { PasskeysSettingsViewQuery } from "./__generated__/PasskeysSettings
 
 const PasskeysListFragment = graphql`
   fragment PasskeysListFragment on Account{
-	...PasskeyAccountSudoFragment
+	...PasskeyAccountMetadataFragment
     ...PasskeysListInternalFragment
 	...PasskeysControllerFragment
   }

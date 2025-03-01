@@ -1,5 +1,6 @@
 "use client";
 
+import { env } from "@/lib/env";
 import {
 	Button,
 	Card,
@@ -9,6 +10,7 @@ import {
 	Divider,
 	Link,
 } from "@heroui/react";
+import { Google } from "@lobehub/icons";
 import { useSearchParams } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -71,7 +73,18 @@ export default function RequestSudoView({
 						</div>
 					)}
 					{hasWebauthn && <PasskeyAuthentication />}
-					{showGoogleOAuth && <p>authenticate with google</p>}
+					{showGoogleOAuth && (
+						<Button
+							fullWidth
+							variant="bordered"
+							startContent={<Google.Color size={20} />}
+							onPress={() => {
+								window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/request_sudo_mode/google?redirect_uri=${encodeURIComponent(`${env.NEXT_PUBLIC_URL}${redirectTo}`)}`;
+							}}
+						>
+							Authenticate with Google
+						</Button>
+					)}
 				</CardBody>
 				<CardFooter className="w-full flex items-center justify-center gap-6 pt-12 max-w-lg mx-auto">
 					<Button
