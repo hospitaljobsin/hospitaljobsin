@@ -288,6 +288,7 @@ export default function LoginForm() {
 						})
 						.catch((error) => {
 							// TODO: show toast here
+							setIsPasskeysPromptActive(false);
 						});
 				}
 			},

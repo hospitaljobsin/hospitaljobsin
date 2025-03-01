@@ -145,6 +145,7 @@ export default function PasskeyAuthentication() {
 						})
 						.catch((error) => {
 							// TODO: show toast here
+							setIsPasskeysPromptActive(false);
 						});
 				}
 			},

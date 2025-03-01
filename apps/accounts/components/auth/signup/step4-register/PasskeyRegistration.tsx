@@ -218,6 +218,7 @@ export default function PasskeyRegistration() {
 						})
 						.catch((error) => {
 							// TODO: show toast here
+							setIsPasskeysPromptActive(false);
 						});
 				}
 			},
