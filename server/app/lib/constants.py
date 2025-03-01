@@ -31,7 +31,7 @@ WEBAUTHN_CHALLENGE_EXPIRES_IN = 60 * 5  # 5 minutes
 
 
 # Sudo Mode (elevated privileges)
-SUDO_MODE_EXPIRES_IN = 60 * 5  # 5 minutes
+SUDO_MODE_EXPIRES_IN = 60 * 15  # 15 minutes
 
 
 # Auth Providers
