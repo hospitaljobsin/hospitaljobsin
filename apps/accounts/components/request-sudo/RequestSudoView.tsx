@@ -24,8 +24,9 @@ export default function RequestSudoView() {
 						Please authenticate to continue
 					</h2>
 					<p className="w-full text-balance text-center text-foreground-500">
-						You are entering sudo mode, which is needed to perform sensitive
-						operations. You won't be asked to authenticate again for a while.
+						You are entering <i>sudo mode</i>, which is needed to perform
+						sensitive operations. You won't be asked to authenticate again for a
+						while.
 					</p>
 				</CardHeader>
 				<CardBody className="max-w-lg w-full flex flex-col gap-12 pt-12 mx-auto">

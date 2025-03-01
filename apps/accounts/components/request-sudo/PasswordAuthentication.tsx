@@ -123,31 +123,40 @@ export default function PasswordAuthentication() {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
 			<div className="w-full flex flex-col gap-6">
-				<Input
-					id="password"
-					label="Password"
-					placeholder="Enter password"
-					autoComplete="current-password"
-					type={isPasswordVisible ? "text" : "password"}
-					endContent={
-						<button
-							aria-label="toggle password visibility"
-							className="focus:outline-none"
-							type="button"
-							onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+				<div className="w-full flex flex-col">
+					<Input
+						id="password"
+						label="Password"
+						placeholder="Enter password"
+						autoComplete="current-password"
+						type={isPasswordVisible ? "text" : "password"}
+						endContent={
+							<button
+								aria-label="toggle password visibility"
+								className="focus:outline-none"
+								type="button"
+								onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+							>
+								{isPasswordVisible ? (
+									<EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+								) : (
+									<EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
+								)}
+							</button>
+						}
+						{...register("password")}
+						errorMessage={errors.password?.message}
+						isInvalid={!!errors.password}
+					/>
+					<div className="w-full flex justify-start text-tiny px-1">
+						<Link
+							href={links.resetPasswordSubmit}
+							className="mt-2 cursor-pointer text-blue-500"
 						>
-							{isPasswordVisible ? (
-								<EyeIcon className="text-2xl text-default-400 pointer-events-none" />
-							) : (
-								<EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
-							)}
-						</button>
-					}
-					{...register("password")}
-					errorMessage={errors.password?.message}
-					isInvalid={!!errors.password}
-				/>
-
+							Forgot password?
+						</Link>
+					</div>
+				</div>
 				<Button
 					fullWidth
 					isLoading={isSubmitting || isPasswordLoginMutationInFlight}
