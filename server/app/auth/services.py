@@ -1038,16 +1038,18 @@ class AuthService:
         return Ok(account)
 
     async def request_sudo_mode_with_google_oauth(
-        self, user_info: dict, request: Request
+        self,
+        user_info: dict,
+        request: Request,
+        current_user: Account,
     ) -> Result[Account, AccountNotFoundError]:
         """Request sudo mode with Google Oauth."""
-        account = await self._account_repo.get_by_email(email=user_info["email"])
-        if account is None:
-            return Err(AccountNotFoundError)
+        if user_info["email"] != current_user.email:
+            return Err(AccountNotFoundError())
 
-        if account.auth_providers == ["oauth_google"]:
+        if current_user.auth_providers == ["oauth_google"]:
             # user has only the Oauth Google auth provider
             # hence, we can grant sudo mode when they sign in
             self._grant_sudo_mode(request)
 
-        return Ok(account)
+        return Ok(current_user)

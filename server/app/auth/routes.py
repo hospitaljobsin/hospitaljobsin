@@ -3,10 +3,12 @@ from typing import Annotated
 from aioinject import Inject
 from aioinject.ext.fastapi import inject
 from authlib.integrations.starlette_client import OAuth
-from fastapi import APIRouter, Header, Query, Request
+from fastapi import APIRouter, Depends, Header, Query, Request
 from result import Err
 from starlette.responses import RedirectResponse
 
+from app.accounts.documents import Account
+from app.auth.dependencies import get_current_user
 from app.auth.exceptions import AccountNotFoundError, InvalidEmailError
 from app.auth.services import AuthService
 from app.config import Settings
@@ -62,7 +64,8 @@ async def oauth2_signin_callback_google(
         match result.err_value:
             case InvalidEmailError():
                 return RedirectResponse(
-                    url=settings.app_url + "/auth/login?oauth2_error=unverified_email"
+                    url=settings.accounts_base_url
+                    + "/auth/login?oauth2_error=unverified_email"
                 )
 
     return response
@@ -77,7 +80,6 @@ async def oauth2_request_sudo_mode_google(
     user_agent: Annotated[str | None, Header()] = "unknown",
 ):
     """Signin with Google OAuth2."""
-    request.session["user_agent"] = user_agent
     request.session["redirect_uri"] = redirect_uri
 
     redirect_uri = request.url_for("oauth2_request_sudo_mode_callback_google")
@@ -95,6 +97,12 @@ async def oauth2_request_sudo_mode_callback_google(
     oauth_client: Annotated[OAuth, Inject],
     auth_service: Annotated[AuthService, Inject],
     settings: Annotated[Settings, Inject],
+    current_user: Annotated[
+        Account,
+        Depends(
+            dependency=get_current_user,
+        ),
+    ],
 ) -> RedirectResponse:
     """Request sudo mode with Google OAuth2."""
     token = await oauth_client.google.authorize_access_token(request)
@@ -108,15 +116,18 @@ async def oauth2_request_sudo_mode_callback_google(
     result = await auth_service.request_sudo_mode_with_google_oauth(
         user_info=user_info,
         request=request,
+        current_user=current_user,
     )
 
-    del request.session["user_agent"]
     del request.session["redirect_uri"]
 
     if isinstance(result, Err):
         match result.err_value:
             case AccountNotFoundError():
-                # TODO: return a response with an error query param here
-                return response
+                # return a response with an error query param
+                return RedirectResponse(
+                    url=settings.accounts_base_url
+                    + "/request-sudo?oauth2_error=invalid_account"
+                )
 
     return response

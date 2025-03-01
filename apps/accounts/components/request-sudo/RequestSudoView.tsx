@@ -2,6 +2,7 @@
 
 import { env } from "@/lib/env";
 import {
+	Alert,
 	Button,
 	Card,
 	CardBody,
@@ -11,7 +12,9 @@ import {
 	Link,
 } from "@heroui/react";
 import { Google } from "@lobehub/icons";
+import { useRouter } from "next-nprogress-bar";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
@@ -35,6 +38,23 @@ export default function RequestSudoView({
 	rootQuery,
 }: { rootQuery: RequestSudoViewFragment$key }) {
 	const searchParams = useSearchParams();
+	const router = useRouter();
+
+	const oauth2Error = searchParams.get("oauth2_error");
+
+	const [oauth2ErrorMessage, setOauth2ErrorMessage] = useState<null | string>(
+		null,
+	);
+
+	useEffect(() => {
+		if (oauth2Error !== null) {
+			setOauth2ErrorMessage(oauth2Error);
+			const url = new URL(window.location.href);
+			url.searchParams.delete("oauth2_error");
+			router.replace(url.toString(), undefined, { showProgressBar: false });
+		}
+	}, [oauth2Error, router]);
+
 	const redirectTo = getValidSudoModeRedirectURL(searchParams.get("return_to"));
 	const data = useFragment(RequestSudoViewFragment, rootQuery);
 
@@ -50,9 +70,26 @@ export default function RequestSudoView({
 	// Calculate if we need dividers (only between password and webauthn)
 	const showDivider = hasPassword && hasWebauthn;
 
+	function getOauth2ErrorMessage(errorCode: string): string {
+		switch (errorCode) {
+			case "invalid_account":
+				return "Invalid Oauth2 Account selected.";
+			default:
+				return "An error occurred. Please try again.";
+		}
+	}
+
 	return (
 		<div className="w-full flex flex-col gap-6 h-full min-h-screen items-center justify-center">
 			<Card className="p-6 sm:p-12 max-w-2xl" isPressable={false} shadow="none">
+				<Alert
+					isVisible={oauth2ErrorMessage !== null}
+					onClose={() => setOauth2ErrorMessage(null)}
+					hideIcon
+					description={getOauth2ErrorMessage(oauth2ErrorMessage || "")}
+					color="danger"
+					className="mb-4"
+				/>
 				<CardHeader className="flex flex-col gap-6">
 					<h2 className="text-lg sm:text-xl font-medium text-center w-full">
 						Please authenticate to continue

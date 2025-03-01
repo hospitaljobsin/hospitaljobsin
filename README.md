@@ -10,10 +10,9 @@ where:
 
 - users can enable/ disable 2FA (along with passwords)
 - users can delete their accounts
+- show previous auth method correctly on invalid signin method
 - improve passkey interaction loading UI
 - handle passkey deletion edge cases
-- handle request sudo mode with oauth edge cases (account with email doesn't exist, which can happen when the user selects another google account)
-  IMPORTANT- need to ensure the selected user account is the current user account
 
 # Hospital Job Management Platform
 
