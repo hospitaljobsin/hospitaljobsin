@@ -127,7 +127,16 @@ export default function Passkey({
 						</Tooltip>
 						<Tooltip
 							content={
-								canDelete ? "Delete passkey" : "Cannot delete the only passkey"
+								canDelete ? (
+									"Delete passkey"
+								) : (
+									<div className="max-w-64 flex flex-col gap-2">
+										<p className="text-balance text-center">
+											Cannot delete this passkey, add more authentication
+											methods first
+										</p>
+									</div>
+								)
 							}
 						>
 							<Button

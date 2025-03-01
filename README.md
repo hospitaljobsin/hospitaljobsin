@@ -12,7 +12,6 @@ where:
 - users can delete their accounts
 - show previous auth method correctly on invalid signin method
 - improve passkey interaction loading UI
-- handle passkey deletion edge cases
 
 # Hospital Job Management Platform
 
