@@ -37,7 +37,7 @@ const CreatePasskeyMutation = graphql`
             }
 
             ... on CreateWebAuthnCredentialSuccess {
-                webAuthnCredentialEdge @appendEdge(connections: $connections) {
+                webAuthnCredentialEdge @prependEdge(connections: $connections) {
                     cursor
                     node {
                         id
