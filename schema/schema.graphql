@@ -84,7 +84,7 @@ type DeleteSessionSuccess {
   sessionEdge: SessionEdge!
 }
 
-union DeleteWebAuthnCredentialPayload = DeleteWebAuthnCredentialSuccess | WebAuthnCredentialNotFoundError
+union DeleteWebAuthnCredentialPayload = DeleteWebAuthnCredentialSuccess | WebAuthnCredentialNotFoundError | InsufficientAuthProvidersError
 
 type DeleteWebAuthnCredentialSuccess {
   webAuthnCredentialEdge: WebAuthnCredentialEdge!
@@ -125,6 +125,10 @@ union GeneratePasskeyRegistrationOptionsPayload = GeneratePasskeyRegistrationOpt
 
 type GeneratePasskeyRegistrationOptionsSuccess {
   registrationOptions: JSON!
+}
+
+type InsufficientAuthProvidersError implements Error {
+  message: String!
 }
 
 type InvalidCredentialsError implements Error {

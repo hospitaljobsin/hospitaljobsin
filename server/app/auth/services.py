@@ -44,6 +44,7 @@ from app.auth.exceptions import (
     AccountNotFoundError,
     EmailInUseError,
     EmailVerificationTokenCooldownError,
+    InsufficientAuthProvidersError,
     InvalidCredentialsError,
     InvalidEmailError,
     InvalidEmailVerificationTokenError,
@@ -808,7 +809,10 @@ class AuthService:
 
     async def delete_web_authn_credential(
         self, account: Account, web_authn_credential_id: bson.ObjectId
-    ) -> Result[WebAuthnCredential, WebAuthnCredentialNotFoundError]:
+    ) -> Result[
+        WebAuthnCredential,
+        WebAuthnCredentialNotFoundError | InsufficientAuthProvidersError,
+    ]:
         """Delete a WebAuthn credential by ID."""
         webauthn_credentials = (
             await self._web_authn_credential_repo.get_all_by_account_list(
@@ -832,10 +836,9 @@ class AuthService:
             account.auth_providers == ["webauthn_credential"]
             and len(webauthn_credentials) == 1
         ):
-            # TODO: check if webauthn credentials are the only form of auth for the user,
-            # and that they have atleast one additional webauthn credential before deleting
-            # raise an error here
-            pass
+            # Cannot delete the only webauthn credential when it is the user's only authentication method
+            # This prevents users from locking themselves out of their account
+            return Err(InsufficientAuthProvidersError())
 
         await self._web_authn_credential_repo.delete(web_authn_credential)
 

@@ -97,3 +97,9 @@ class AccountNotFoundError:
     """Raised when an account is not found."""
 
     pass
+
+
+class InsufficientAuthProvidersError:
+    """Raised when the user has insufficient auth providers remaining."""
+
+    pass

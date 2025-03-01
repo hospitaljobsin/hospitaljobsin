@@ -89,6 +89,7 @@ export default function PasskeysList({ root }: Props) {
 						key={passkeyEdge.node.id}
 						passkeysConnectionId={data.webauthnCredentials.__id}
 						account={rootQuery}
+						totalPasskeys={data.webauthnCredentials.edges.length}
 					/>
 				))}
 				<div ref={observerRef} className="h-10" />

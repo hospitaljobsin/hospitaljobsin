@@ -28,6 +28,7 @@ export const PasskeyFragment = graphql`
 export const PasskeyAccountMetadataFragment = graphql`
   fragment PasskeyAccountMetadataFragment on Account {
 	sudoModeExpiresAt
+	authProviders
   }
 `;
 
@@ -45,6 +46,10 @@ const DeletePasskeyMutation = graphql`
 		... on WebAuthnCredentialNotFoundError {
 			message
 		}
+
+		... on InsufficientAuthProvidersError {
+			message
+		}
   }
 }
 `;
@@ -59,10 +64,16 @@ export default function Passkey({
 	passkey,
 	passkeysConnectionId,
 	account,
-}: Props) {
+	totalPasskeys,
+}: Props & { totalPasskeys: number }) {
 	const data = useFragment(PasskeyFragment, passkey);
-
 	const accountData = useFragment(PasskeyAccountMetadataFragment, account);
+
+	const isOnlyWebAuthn =
+		accountData.authProviders.length === 1 &&
+		accountData.authProviders[0] === "WEBAUTHN_CREDENTIAL";
+	const isLastPasskey = totalPasskeys === 1;
+	const canDelete = !(isOnlyWebAuthn && isLastPasskey);
 
 	const { checkSudoMode } = useCheckSudoMode();
 
@@ -82,6 +93,11 @@ export default function Passkey({
 					if (
 						response.deleteWebAuthnCredential.__typename ===
 						"WebAuthnCredentialNotFoundError"
+					) {
+						// TODO: show a toast here
+					} else if (
+						response.deleteWebAuthnCredential.__typename ===
+						"DeleteWebAuthnCredentialSuccess"
 					) {
 						// TODO: show a toast here
 					}
@@ -109,13 +125,18 @@ export default function Passkey({
 								<Edit2 size={20} />
 							</Button>
 						</Tooltip>
-						<Tooltip content="Delete passkey">
+						<Tooltip
+							content={
+								canDelete ? "Delete passkey" : "Cannot delete the only passkey"
+							}
+						>
 							<Button
 								isIconOnly
 								variant="light"
 								color="danger"
 								onPress={handlePasskeyDelete}
 								isLoading={isDeleteMutationInFlight}
+								isDisabled={!canDelete}
 							>
 								<Trash2 size={20} />
 							</Button>

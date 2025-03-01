@@ -345,8 +345,15 @@ class DeleteWebAuthnCredentialSuccessType:
     web_authn_credential_edge: WebAuthnCredentialEdgeType
 
 
+@strawberry.type(name="InsufficientAuthProvidersError")
+class InsufficientAuthProvidersErrorType(BaseErrorType):
+    message: str = "At least one authentication provider must be enabled."
+
+
 DeleteWebAuthnCredentialPayload = Annotated[
-    DeleteWebAuthnCredentialSuccessType | WebAuthnCredentialNotFoundErrorType,
+    DeleteWebAuthnCredentialSuccessType
+    | WebAuthnCredentialNotFoundErrorType
+    | InsufficientAuthProvidersErrorType,
     strawberry.union(name="DeleteWebAuthnCredentialPayload"),
 ]
 

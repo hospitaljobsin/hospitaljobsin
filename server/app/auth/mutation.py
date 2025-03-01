@@ -15,6 +15,7 @@ from app.accounts.types import AccountType
 from app.auth.exceptions import (
     EmailInUseError,
     EmailVerificationTokenCooldownError,
+    InsufficientAuthProvidersError,
     InvalidCredentialsError,
     InvalidEmailError,
     InvalidEmailVerificationTokenError,
@@ -48,6 +49,7 @@ from .types import (
     GeneratePasskeyCreationOptionsSuccessType,
     GeneratePasskeyRegistrationOptionsPayload,
     GeneratePasskeyRegistrationOptionsSuccessType,
+    InsufficientAuthProvidersErrorType,
     InvalidCredentialsErrorType,
     InvalidEmailErrorType,
     InvalidEmailVerificationTokenErrorType,
@@ -690,6 +692,8 @@ class AuthMutation:
             match result.err_value:
                 case WebAuthnCredentialNotFoundError():
                     return WebAuthnCredentialNotFoundErrorType()
+                case InsufficientAuthProvidersError():
+                    return InsufficientAuthProvidersErrorType()
 
         return DeleteWebAuthnCredentialSuccessType(
             web_authn_credential_edge=WebAuthnCredentialEdgeType.marshal(
