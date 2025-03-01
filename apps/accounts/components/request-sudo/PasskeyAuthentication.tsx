@@ -163,6 +163,7 @@ export default function PasskeyAuthentication() {
 				isGenerateAuthenticationOptionsMutationInFlight ||
 				isPasskeysPromptActive
 			}
+			spinnerPlacement="end"
 		>
 			Authenticate with passkey
 		</Button>

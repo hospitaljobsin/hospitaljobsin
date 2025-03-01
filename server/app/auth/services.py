@@ -549,7 +549,11 @@ class AuthService:
 
         if account.password_hash is None:
             # return an error for users who signed up with Google
-            return Err(InvalidSignInMethodError())
+            return Err(
+                InvalidSignInMethodError(
+                    available_providers=account.auth_providers,
+                )
+            )
 
         if not self._account_repo.verify_password(
             password=password,
@@ -1028,7 +1032,9 @@ class AuthService:
 
         if account.password_hash is None:
             # return an error for users who signed up with Google
-            return Err(InvalidSignInMethodError())
+            return Err(
+                InvalidSignInMethodError(available_providers=account.auth_providers)
+            )
 
         if not self._account_repo.verify_password(
             password=password,

@@ -1,3 +1,6 @@
+from app.lib.constants import AuthProvider
+
+
 class EmailInUseError:
     """Raised when an user with an email address already exists."""
 
@@ -52,9 +55,12 @@ class PasswordNotStrongError:
 
 class InvalidSignInMethodError:
     """Raised when the user tries an invalid sign in method (occurs when users
-    sign in via Oauth2 and try to login with their password)."""
+    sign in via Oauth2/ passkeys and try to login with their password)."""
 
-    pass
+    available_providers: list[AuthProvider]
+
+    def __init__(self, available_providers: list[AuthProvider]):
+        self.available_providers = available_providers
 
 
 class PasswordResetTokenNotFoundError:

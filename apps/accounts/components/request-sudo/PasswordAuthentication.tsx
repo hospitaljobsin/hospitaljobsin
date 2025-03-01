@@ -2,7 +2,7 @@
 
 import links from "@/lib/links";
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
-import { Button, Input, addToast } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
@@ -92,24 +92,9 @@ export default function PasswordAuthentication() {
 					response.requestSudoModeWithPassword.__typename ===
 					"InvalidSignInMethodError"
 				) {
-					addToast({
-						title: "Invalid Sign In Method",
-						color: "warning",
-						timeout: 30_000,
-						endContent: (
-							<div className="w-full text-warning-400 text-sm">
-								You've previously signed in with Google. Please authenticate
-								with Google or{" "}
-								<Link className="underline" href={links.resetPasswordSubmit}>
-									set a password
-								</Link>
-								.
-							</div>
-						),
-						classNames: {
-							base: "flex flex-col items-start gap-4",
-						},
-					});
+					// race condition: user removed their password inbetween
+					// the time they submitted the sudo mode request and submitted it
+					alert("Invalid sign-in method. Please try again.");
 				} else {
 					window.location.href = redirectTo;
 				}

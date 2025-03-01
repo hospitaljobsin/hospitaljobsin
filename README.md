@@ -1,16 +1,10 @@
 # TODO (auth)
 
-- store last signed in method on user accounts
-- (or) use multi-model accounts like
-   - https://www.better-auth.com/docs/concepts/database#core-schema
-   - https://beanie-odm.dev/tutorial/multi-model-pattern/
-
 add accounts center
 where:
 
 - users can enable/ disable 2FA (along with passwords)
 - users can delete their accounts
-- show previous auth method correctly on invalid signin method
 
 # Hospital Job Management Platform
 

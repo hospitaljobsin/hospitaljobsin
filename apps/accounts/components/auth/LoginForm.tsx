@@ -46,6 +46,7 @@ const LoginFormPasswordMutation = graphql`
 
 	  ... on InvalidSignInMethodError {
 		message
+		availableProviders
 	  }
     }
   }
@@ -174,19 +175,27 @@ export default function LoginForm() {
 				} else if (
 					response.loginWithPassword.__typename === "InvalidSignInMethodError"
 				) {
+					const providers = response.loginWithPassword.availableProviders;
+					let message = "You've previously signed in with ";
+
+					if (
+						providers.includes("OAUTH_GOOGLE") &&
+						providers.includes("WEBAUTHN_CREDENTIAL")
+					) {
+						message +=
+							"Google or a passkey. Please use one of these methods to sign in.";
+					} else if (providers.includes("OAUTH_GOOGLE")) {
+						message += "Google. Please sign in with Google.";
+					} else if (providers.includes("WEBAUTHN_CREDENTIAL")) {
+						message += "passkey. Please sign in with passkey.";
+					}
+
 					addToast({
 						title: "Invalid Sign In Method",
 						color: "warning",
 						timeout: 30_000,
 						endContent: (
-							<div className="w-full text-warning-400 text-sm">
-								You've previously signed in with Google. Please sign in with
-								Google or{" "}
-								<Link className="underline" href={links.resetPasswordSubmit}>
-									set a password
-								</Link>
-								.
-							</div>
+							<div className="w-full text-warning-400 text-sm">{message}</div>
 						),
 						classNames: {
 							base: "flex flex-col items-start gap-4",

@@ -476,8 +476,10 @@ class AuthMutation:
                     return InvalidRecaptchaTokenErrorType()
                 case InvalidCredentialsError():
                     return InvalidCredentialsErrorType()
-                case InvalidSignInMethodError():
-                    return InvalidSignInMethodErrorType()
+                case InvalidSignInMethodError() as err:
+                    return InvalidSignInMethodErrorType.marshal(
+                        available_providers=err.available_providers
+                    )
 
         return AccountType.marshal(result.ok_value)
 
@@ -909,7 +911,9 @@ class AuthMutation:
                     return InvalidRecaptchaTokenErrorType()
                 case InvalidCredentialsError():
                     return InvalidCredentialsErrorType()
-                case InvalidSignInMethodError():
-                    return InvalidSignInMethodErrorType()
+                case InvalidSignInMethodError() as err:
+                    return InvalidSignInMethodErrorType.marshal(
+                        available_providers=err.available_providers
+                    )
 
         return AccountType.marshal(result.ok_value)

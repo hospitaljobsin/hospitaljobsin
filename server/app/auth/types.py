@@ -8,7 +8,7 @@ from bson import ObjectId
 from strawberry import Private, relay
 from strawberry.scalars import JSON
 
-from app.accounts.types import AccountType
+from app.accounts.types import AccountType, AuthProviderEnum
 from app.auth.documents import PasswordResetToken, Session, WebAuthnCredential
 from app.auth.repositories import SessionRepo
 from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
@@ -49,6 +49,16 @@ class InvalidRecaptchaTokenErrorType(BaseErrorType):
 @strawberry.type(name="InvalidSignInMethodError")
 class InvalidSignInMethodErrorType(BaseErrorType):
     message: str = "User's password is not set."
+    available_providers: Annotated[list[AuthProviderEnum], strawberry.field]
+
+    @classmethod
+    def marshal(cls, available_providers: list[AuthProviderEnum]) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            available_providers=[
+                AuthProviderEnum[provider.upper()] for provider in available_providers
+            ],
+        )
 
 
 @strawberry.type(name="PasswordResetToken")
