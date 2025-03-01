@@ -1,4 +1,5 @@
 import { usePathname, useRouter } from "next/navigation";
+import links from "../links";
 import { isSudoModeActive } from "../sudoMode";
 
 export function useCheckSudoMode() {
@@ -12,7 +13,7 @@ export function useCheckSudoMode() {
 		}
 
 		// redirect to sudo mode request page
-		router.push(`/request-sudo?return_to=${encodeURIComponent(pathname)}`);
+		router.push(links.requestSudo(pathname));
 		return false;
 	}
 

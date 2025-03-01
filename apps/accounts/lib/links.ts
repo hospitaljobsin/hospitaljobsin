@@ -10,6 +10,8 @@ const links = {
 	resetPasswordSubmit: "/auth/reset-password",
 	resetPasswordConfirm: (token: string) => `/auth/reset-password/${token}`,
 	settings: "/settings",
+	requestSudo: (returnTo: string | null = null) =>
+		returnTo ? `/request-sudo?return_to=${returnTo}` : "/request-sudo",
 };
 
 export default links;
