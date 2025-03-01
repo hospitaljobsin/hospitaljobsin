@@ -230,6 +230,11 @@ class AccountType(BaseNodeType[Account]):
         return f"https://www.gravatar.com/avatar/{email_hash}?{query_params}"
 
     @strawberry.field
+    async def sudo_mode_expires_at(self, info: Info) -> datetime | None:
+        """Return when the user's sudo mode expires at."""
+        return info.context["request"].session.get("sudo_mode_expires_at")
+
+    @strawberry.field
     @inject
     async def organizations(
         self,

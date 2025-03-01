@@ -1,3 +1,4 @@
+import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import { dateFormat } from "@/lib/intl";
 import {
 	Button,
@@ -22,6 +23,7 @@ import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import type { IDevice } from "ua-parser-js";
 import { UAParser } from "ua-parser-js";
+import type { SessionAccountSudoFragment$key } from "./__generated__/SessionAccountSudoFragment.graphql";
 import type { SessionDeleteMutation } from "./__generated__/SessionDeleteMutation.graphql";
 import type { SessionFragment$key } from "./__generated__/SessionFragment.graphql";
 
@@ -32,6 +34,12 @@ export const SessionFragment = graphql`
 	ipAddress
     createdAt
     isCurrentSession
+  }
+`;
+
+export const SessionAccountSudoFragment = graphql`
+  fragment SessionAccountSudoFragment on Account {
+	sudoModeExpiresAt
   }
 `;
 
@@ -52,6 +60,7 @@ const DeleteSessionMutation = graphql`
 type Props = {
 	session: SessionFragment$key;
 	sessionsConnectionId: string;
+	account: SessionAccountSudoFragment$key;
 };
 
 function getSessionIcon(device: IDevice) {
@@ -67,20 +76,28 @@ function getSessionIcon(device: IDevice) {
 	}
 }
 
-export default function Session({ session, sessionsConnectionId }: Props) {
+export default function Session({
+	session,
+	sessionsConnectionId,
+	account,
+}: Props) {
+	const { checkSudoMode } = useCheckSudoMode();
 	const data = useFragment(SessionFragment, session);
+	const accountData = useFragment(SessionAccountSudoFragment, account);
 	const { browser, device, os, engine } = UAParser(data.userAgent);
 
 	const [commitDelete, isDeleteMutationInFlight] =
 		useMutation<SessionDeleteMutation>(DeleteSessionMutation);
 
 	async function handleSessionDelete() {
-		commitDelete({
-			variables: {
-				sessionId: data.id,
-				connections: [sessionsConnectionId],
-			},
-		});
+		if (checkSudoMode(accountData.sudoModeExpiresAt)) {
+			commitDelete({
+				variables: {
+					sessionId: data.id,
+					connections: [sessionsConnectionId],
+				},
+			});
+		}
 	}
 
 	return (

@@ -1,3 +1,4 @@
+import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import {
 	Button,
 	Input,
@@ -12,11 +13,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { startRegistration } from "@simplewebauthn/browser";
 import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useMutation } from "react-relay";
+import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
+import type { PasskeysControllerFragment$key } from "./__generated__/PasskeysControllerFragment.graphql";
 import type { PasskeysControllerGenerateOptionsMutation } from "./__generated__/PasskeysControllerGenerateOptionsMutation.graphql";
 import type { PasskeysControllerMutation } from "./__generated__/PasskeysControllerMutation.graphql";
+
+const PasskeysControllerFragment = graphql`
+  fragment PasskeysControllerFragment on Account {
+   	sudoModeExpiresAt
+  }
+`;
 
 const GeneratePasskeyCreationOptionsMutation = graphql`
     mutation PasskeysControllerGenerateOptionsMutation {
@@ -51,6 +59,7 @@ const CreatePasskeyMutation = graphql`
 
 type Props = {
 	passkeysConnectionId: string;
+	account: PasskeysControllerFragment$key;
 };
 
 const createPasskeySchema = z.object({
@@ -60,7 +69,12 @@ const createPasskeySchema = z.object({
 		.max(75, "Nickname cannot exceed 75 characters"),
 });
 
-export default function PasskeysController({ passkeysConnectionId }: Props) {
+export default function PasskeysController({
+	passkeysConnectionId,
+	account,
+}: Props) {
+	const { checkSudoMode } = useCheckSudoMode();
+	const data = useFragment(PasskeysControllerFragment, account);
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 	const [commitCreateMutation, isCreateMutationInFlight] =
 		useMutation<PasskeysControllerMutation>(CreatePasskeyMutation);
@@ -79,6 +93,12 @@ export default function PasskeysController({ passkeysConnectionId }: Props) {
 			nickname: "My Passkey",
 		},
 	});
+
+	function handleModalOpen() {
+		if (checkSudoMode(data.sudoModeExpiresAt)) {
+			onOpen();
+		}
+	}
 
 	async function onSubmit(values: z.infer<typeof createPasskeySchema>) {
 		commitGenerateOptionsMutation({
@@ -126,7 +146,7 @@ export default function PasskeysController({ passkeysConnectionId }: Props) {
 			<Button
 				startContent={<PlusIcon size={16} />}
 				variant="flat"
-				onPress={onOpen}
+				onPress={handleModalOpen}
 				spinnerPlacement="end"
 				className="hidden md:flex"
 			>
@@ -135,7 +155,7 @@ export default function PasskeysController({ passkeysConnectionId }: Props) {
 			<Button
 				startContent={<PlusIcon size={16} />}
 				variant="flat"
-				onPress={onOpen}
+				onPress={handleModalOpen}
 				spinnerPlacement="end"
 				size="sm"
 				className="flex md:hidden"

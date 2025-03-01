@@ -1,8 +1,16 @@
+import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import { Button } from "@heroui/react";
 import { Trash2 } from "lucide-react";
-import { useMutation } from "react-relay";
+import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { SessionsControllerFragment$key } from "./__generated__/SessionsControllerFragment.graphql";
 import type { SessionsControllerMutation } from "./__generated__/SessionsControllerMutation.graphql";
+
+const SessionsControllerFragment = graphql`
+  fragment SessionsControllerFragment on Account {
+   	sudoModeExpiresAt
+  }
+`;
 
 const DeleteAllSessionsMutation = graphql`
     mutation SessionsControllerMutation($connections: [ID!]!) {
@@ -13,6 +21,7 @@ const DeleteAllSessionsMutation = graphql`
 `;
 
 type Props = {
+	account: SessionsControllerFragment$key;
 	sessionsConnectionId: string;
 	isDisabled: boolean;
 };
@@ -20,16 +29,21 @@ type Props = {
 export default function SessionsController({
 	sessionsConnectionId,
 	isDisabled,
+	account,
 }: Props) {
+	const { checkSudoMode } = useCheckSudoMode();
+	const accountData = useFragment(SessionsControllerFragment, account);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<SessionsControllerMutation>(DeleteAllSessionsMutation);
 
 	async function handleDeleteAllSessions() {
-		commitMutation({
-			variables: {
-				connections: [sessionsConnectionId],
-			},
-		});
+		if (checkSudoMode(accountData.sudoModeExpiresAt)) {
+			commitMutation({
+				variables: {
+					connections: [sessionsConnectionId],
+				},
+			});
+		}
 	}
 
 	return (

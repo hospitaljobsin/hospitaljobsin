@@ -1,21 +1,30 @@
 import { useEffect, useMemo, useRef } from "react";
-import { usePaginationFragment } from "react-relay";
+import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Session from "./Session";
 import SessionsController from "./SessionsController";
 import SessionsListSkeleton from "./SessionsListSkeleton";
 import type { SessionsListFragment$key } from "./__generated__/SessionsListFragment.graphql";
+import type { SessionsListInternalFragment$key } from "./__generated__/SessionsListInternalFragment.graphql";
 import type { SessionsSettingsViewQuery } from "./__generated__/SessionsSettingsViewQuery.graphql";
 
 const SessionsListFragment = graphql`
-  fragment SessionsListFragment on Account
+  fragment SessionsListFragment on Account{
+	...SessionsControllerFragment
+    ...SessionsListInternalFragment
+	...SessionAccountSudoFragment
+  }
+`;
+
+const SessionsListInternalFragment = graphql`
+  fragment SessionsListInternalFragment on Account
   @argumentDefinitions(
     cursor: { type: "ID" }
     count: { type: "Int", defaultValue: 10 }
   )
   @refetchable(queryName: "SessionsListPaginationQuery") {
     sessions(after: $cursor, first: $count)
-      @connection(key: "SessionsListFragment_sessions") {
+      @connection(key: "SessionsListInternalFragment_sessions") {
 		__id
       edges {
         node {
@@ -36,10 +45,11 @@ type Props = {
 };
 
 export default function SessionsList({ root }: Props) {
+	const rootQuery = useFragment(SessionsListFragment, root);
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<
 		SessionsSettingsViewQuery,
-		SessionsListFragment$key
-	>(SessionsListFragment, root);
+		SessionsListInternalFragment$key
+	>(SessionsListInternalFragment, rootQuery);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -76,6 +86,7 @@ export default function SessionsList({ root }: Props) {
 				<SessionsController
 					sessionsConnectionId={data.sessions.__id}
 					isDisabled={!canDeleteAllSessions}
+					account={rootQuery}
 				/>
 			</div>
 			<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
@@ -84,6 +95,7 @@ export default function SessionsList({ root }: Props) {
 						session={sessionEdge.node}
 						key={sessionEdge.node.id}
 						sessionsConnectionId={data.sessions.__id}
+						account={rootQuery}
 					/>
 				))}
 				<div ref={observerRef} className="h-10" />
