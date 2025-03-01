@@ -73,7 +73,7 @@ export default function RequestSudoView({
 	function getOauth2ErrorMessage(errorCode: string): string {
 		switch (errorCode) {
 			case "invalid_account":
-				return "Invalid Oauth2 Account selected.";
+				return "Invalid Oauth2 account selected. Please select the account associated with your email address.";
 			default:
 				return "An error occurred. Please try again.";
 		}
