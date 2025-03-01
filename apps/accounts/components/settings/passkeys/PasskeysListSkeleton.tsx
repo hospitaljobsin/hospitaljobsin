@@ -9,7 +9,7 @@ export default function PasskeysListSkeleton() {
 				<PasskeysControllerSkeleton />
 			</div>
 			<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
-				{Array.from({ length: 8 }).map((_, index) => (
+				{Array.from({ length: 3 }).map((_, index) => (
 					<PasskeySkeleton key={`Passkey-skeleton-${index}`} />
 				))}
 			</div>

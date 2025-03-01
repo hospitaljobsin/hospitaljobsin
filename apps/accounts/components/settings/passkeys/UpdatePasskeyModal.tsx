@@ -62,7 +62,7 @@ export default function UpdatePasskeyModal({
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isSubmitting },
+		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof updatePasskeySchema>>({
 		resolver: zodResolver(updatePasskeySchema),
 		defaultValues: {
@@ -117,6 +117,7 @@ export default function UpdatePasskeyModal({
 							color="default"
 							type="submit"
 							isLoading={isSubmitting || isMutationInFlight}
+							isDisabled={!isDirty}
 						>
 							Update Passkey
 						</Button>

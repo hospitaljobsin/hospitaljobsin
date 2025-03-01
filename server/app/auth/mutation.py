@@ -28,7 +28,7 @@ from app.auth.exceptions import (
     WebAuthnChallengeNotFoundError,
     WebAuthnCredentialNotFoundError,
 )
-from app.auth.permissions import IsAuthenticated
+from app.auth.permissions import IsAuthenticated, IsInSudoMode
 from app.context import AuthInfo, Info
 
 from .services import AuthService
@@ -588,6 +588,7 @@ class AuthMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
+                    IsInSudoMode(),
                 ],
             )
         ],
@@ -599,7 +600,6 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> DeleteOtherSessionsPayloadType:
         """Delete other sessions of the viewer than the current one."""
-        # TODO: require sudo mode here
         deleted_session_ids = await auth_service.delete_other_sessions(
             account_id=info.context["current_user"].id,
             except_session_token=info.context["session_token"],
@@ -614,6 +614,7 @@ class AuthMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
+                    IsInSudoMode(),
                 ],
             )
         ],
@@ -631,7 +632,6 @@ class AuthMutation:
         ],
     ) -> DeleteSessionPayload:
         """Delete session by ID."""
-        # TODO: require sudo mode here
         result = await auth_service.delete_session(
             account_id=info.context["current_user"].id,
             session_id=ObjectId(session_id.node_id),
@@ -654,6 +654,7 @@ class AuthMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
+                    IsInSudoMode(),
                 ],
             )
         ],
@@ -671,7 +672,6 @@ class AuthMutation:
         ],
     ) -> DeleteWebAuthnCredentialPayload:
         """Delete Webauthn credential by ID."""
-        # TODO: require sudo mode here
         result = await auth_service.delete_web_authn_credential(
             account_id=info.context["current_user"].id,
             web_authn_credential_id=ObjectId(web_authn_credential_id.node_id),
@@ -738,6 +738,7 @@ class AuthMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
+                    IsInSudoMode(),
                 ],
             )
         ],
@@ -749,7 +750,6 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> GeneratePasskeyCreationOptionsPayload:
         """Generate registration options for adding a webauthn credential."""
-        # TODO: require sudo mode here
         result = await auth_service.generate_web_authn_credential_creation_options(
             account=info.context["current_user"],
         )
@@ -765,6 +765,7 @@ class AuthMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
+                    IsInSudoMode(),
                 ],
             )
         ],
@@ -788,7 +789,6 @@ class AuthMutation:
         ],
     ) -> CreateWebAuthnCredentialPayload:
         """Create a new webauthn credential for the current user."""
-        # TODO: require sudo mode here
         result = await auth_service.create_web_authn_credential(
             account_id=info.context["current_user"].id,
             nickname=nickname,
@@ -805,3 +805,23 @@ class AuthMutation:
                 result.ok_value
             ),
         )
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreateWebAuthnCredentialPayload,
+        description="Grant sudo mode for the current user.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def grant_sudo_mode(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+    ) -> CreateWebAuthnCredentialPayload:
+        """Grant sudo mode for the current user."""
+        pass
