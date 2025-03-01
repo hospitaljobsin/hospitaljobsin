@@ -82,8 +82,10 @@ async def oauth2_request_sudo_mode_google(
 
     redirect_uri = request.url_for("oauth2_request_sudo_mode_callback_google")
 
-    # TODO: add consent prompt here
-    return await oauth_client.google.authorize_redirect(request, redirect_uri)
+    # set prompt=consent to force Google to ask for consent every time
+    return await oauth_client.google.authorize_redirect(
+        request, redirect_uri, prompt="consent"
+    )
 
 
 @auth_router.get("/callback/request_sudo_mode/google")
@@ -114,6 +116,7 @@ async def oauth2_request_sudo_mode_callback_google(
     if isinstance(result, Err):
         match result.err_value:
             case AccountNotFoundError():
+                # TODO: return a response with an error query param here
                 return response
 
     return response

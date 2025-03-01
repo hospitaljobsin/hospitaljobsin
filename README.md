@@ -10,8 +10,6 @@ where:
 
 - users can enable/ disable 2FA (along with passwords)
 - users can delete their accounts
-- we conditionally show authenticate options to request sudo mode page,
-  based on the authenticators the user has (webauthn credentials, passwords or only Oauth2)
 - improve passkey interaction loading UI
 
 # Hospital Job Management Platform
