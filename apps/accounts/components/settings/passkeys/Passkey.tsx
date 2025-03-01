@@ -26,6 +26,7 @@ export const PasskeyFragment = graphql`
 const DeletePasskeyMutation = graphql`
   mutation PasskeyDeleteMutation($webAuthnCredentialId: ID!, $connections: [ID!]!) {
 	deleteWebAuthnCredential(webAuthnCredentialId: $webAuthnCredentialId) {
+		__typename
 		... on DeleteWebAuthnCredentialSuccess {
 			webAuthnCredentialEdge {
 			node {
@@ -33,6 +34,9 @@ const DeletePasskeyMutation = graphql`
 			}
 		}
 	}
+	... on WebAuthnCredentialNotFoundError {
+			message
+		}
   }
 }
 `;
@@ -55,6 +59,14 @@ export default function Passkey({ passkey, passkeysConnectionId }: Props) {
 			variables: {
 				webAuthnCredentialId: data.id,
 				connections: [passkeysConnectionId],
+			},
+			onCompleted(response) {
+				if (
+					response.deleteWebAuthnCredential.__typename ===
+					"WebAuthnCredentialNotFoundError"
+				) {
+					// TODO: show a toast here
+				}
 			},
 		});
 	}

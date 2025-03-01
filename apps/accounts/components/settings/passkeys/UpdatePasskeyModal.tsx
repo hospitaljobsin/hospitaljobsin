@@ -25,10 +25,15 @@ export const UpdatePasskeyModalFragment = graphql`
 const UpdatePasskeyMutation = graphql`
   mutation UpdatePasskeyModalMutation($webAuthnCredentialId: ID!, $nickname: String!) {
     updateWebAuthnCredential(webAuthnCredentialId: $webAuthnCredentialId, nickname: $nickname) {
+		__typename
         ... on WebAuthnCredential {
             id
 			nickname
         }
+
+		... on WebAuthnCredentialNotFoundError {
+			message
+		}
     }
   }
 `;
@@ -74,7 +79,13 @@ export default function UpdatePasskeyModal({
 				webAuthnCredentialId: data.id,
 				nickname: values.nickname,
 			},
-			onCompleted: () => {
+			onCompleted: (response) => {
+				if (
+					response.updateWebAuthnCredential.__typename ===
+					"WebAuthnCredentialNotFoundError"
+				) {
+					// TODO: show a toast here
+				}
 				onClose();
 			},
 		});
