@@ -4,6 +4,7 @@ import { startAuthentication } from "@simplewebauthn/browser";
 import { Fingerprint } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
 import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -62,6 +63,8 @@ export default function PasskeyAuthentication() {
 	] = useMutation<PasskeyAuthenticationGenerateOptionsMutation>(
 		GenerateAuthenticationOptionsMutation,
 	);
+
+	const [isPasskeysPromptActive, setIsPasskeysPromptActive] = useState(false);
 	const { executeRecaptcha } = useGoogleReCaptcha();
 
 	async function handlePasskeyAuthentication() {
@@ -87,6 +90,7 @@ export default function PasskeyAuthentication() {
 					response.generateAuthenticationOptions.__typename ===
 					"GenerateAuthenticationOptionsSuccess"
 				) {
+					setIsPasskeysPromptActive(true);
 					// login with passkey
 					const authenticationOptions =
 						response.generateAuthenticationOptions.authenticationOptions;
@@ -105,6 +109,7 @@ export default function PasskeyAuthentication() {
 											recaptchaToken: recaptchaToken,
 										},
 										onCompleted(response) {
+											setIsPasskeysPromptActive(false);
 											if (
 												response.requestSudoModeWithPasskey.__typename ===
 												"InvalidRecaptchaTokenError"
@@ -155,7 +160,8 @@ export default function PasskeyAuthentication() {
 			onPress={handlePasskeyAuthentication}
 			isLoading={
 				isPasskeyAuthenticateMutationInFlight ||
-				isGenerateAuthenticationOptionsMutationInFlight
+				isGenerateAuthenticationOptionsMutationInFlight ||
+				isPasskeysPromptActive
 			}
 		>
 			Authenticate with passkey

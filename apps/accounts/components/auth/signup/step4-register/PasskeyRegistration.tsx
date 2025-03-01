@@ -5,6 +5,7 @@ import { Alert, Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
@@ -101,6 +102,8 @@ export default function PasskeyRegistration() {
 		GeneratePasskeyRegistrationOptionsMutation,
 	);
 
+	const [isPasskeysPromptActive, setIsPasskeysPromptActive] = useState(false);
+
 	const {
 		register,
 		handleSubmit,
@@ -143,6 +146,7 @@ export default function PasskeyRegistration() {
 					response.generatePasskeyRegistrationOptions.__typename ===
 					"GeneratePasskeyRegistrationOptionsSuccess"
 				) {
+					setIsPasskeysPromptActive(true);
 					// register with passkey
 					const registrationOptions =
 						response.generatePasskeyRegistrationOptions.registrationOptions;
@@ -164,6 +168,7 @@ export default function PasskeyRegistration() {
 											recaptchaToken: recaptchaToken,
 										},
 										onCompleted(response) {
+											setIsPasskeysPromptActive(false);
 											if (
 												response.registerWithPasskey.__typename ===
 												"EmailInUseError"
@@ -239,7 +244,8 @@ export default function PasskeyRegistration() {
 					isLoading={
 						isSubmitting ||
 						isCommitRegisterInFlight ||
-						isGenerateRegistrationOptionsInFlight
+						isGenerateRegistrationOptionsInFlight ||
+						isPasskeysPromptActive
 					}
 					fullWidth
 				>

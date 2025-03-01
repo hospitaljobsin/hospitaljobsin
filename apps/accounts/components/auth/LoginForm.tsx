@@ -97,6 +97,8 @@ export default function LoginForm() {
 	const params = useSearchParams();
 	const redirectTo = getValidRedirectURL(params.get("return_to"));
 
+	const [isPasskeysPromptActive, setIsPasskeysPromptActive] = useState(false);
+
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
 	const oauth2Error = params.get("oauth2_error");
@@ -226,7 +228,7 @@ export default function LoginForm() {
 					// login with passkey
 					const authenticationOptions =
 						response.generateAuthenticationOptions.authenticationOptions;
-
+					setIsPasskeysPromptActive(true);
 					startAuthentication({
 						optionsJSON: JSON.parse(authenticationOptions),
 					})
@@ -241,6 +243,7 @@ export default function LoginForm() {
 											recaptchaToken: recaptchaToken,
 										},
 										onCompleted(response) {
+											setIsPasskeysPromptActive(false);
 											if (
 												response.loginWithPasskey.__typename ===
 												"InvalidRecaptchaTokenError"
@@ -352,7 +355,8 @@ export default function LoginForm() {
 								fullWidth
 								isDisabled={
 									isPasskeyLoginMutationInFlight ||
-									isGenerateAuthenticationOptionsMutationInFlight
+									isGenerateAuthenticationOptionsMutationInFlight ||
+									isPasskeysPromptActive
 								}
 								isLoading={isSubmitting || isPasswordLoginMutationInFlight}
 								type="submit"
@@ -377,7 +381,8 @@ export default function LoginForm() {
 							spinnerPlacement="end"
 							isLoading={
 								isPasskeyLoginMutationInFlight ||
-								isGenerateAuthenticationOptionsMutationInFlight
+								isGenerateAuthenticationOptionsMutationInFlight ||
+								isPasskeysPromptActive
 							}
 						>
 							Sign in with passkey
@@ -389,7 +394,8 @@ export default function LoginForm() {
 							isDisabled={
 								isPasswordLoginMutationInFlight ||
 								isPasskeyLoginMutationInFlight ||
-								isGenerateAuthenticationOptionsMutationInFlight
+								isGenerateAuthenticationOptionsMutationInFlight ||
+								isPasskeysPromptActive
 							}
 							onPress={() => {
 								window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(redirectTo)}`;

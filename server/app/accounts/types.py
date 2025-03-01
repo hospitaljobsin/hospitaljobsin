@@ -198,6 +198,10 @@ class AccountType(BaseNodeType[Account]):
             full_name=account.full_name,
             email=account.email,
             updated_at=account.updated_at,
+            auth_providers=[
+                AuthProviderEnum[provider.upper()]
+                for provider in account.auth_providers
+            ],
             has_onboarded=account.has_onboarded,
             profile_ref=account.profile,
         )
