@@ -42,7 +42,7 @@ class WebAuthnCredential(Document):
     device_type: str
     backed_up: bool
 
-    nickname: str = "Passkey"
+    nickname: str = "My Passkey"
 
     transports: list[AuthenticatorTransport] | None
 
