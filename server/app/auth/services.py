@@ -33,7 +33,6 @@ from webauthn.helpers.structs import (
     UserVerificationRequirement,
 )
 
-from app import auth
 from app.accounts.documents import Account, EmailVerificationToken
 from app.accounts.repositories import (
     AccountRepo,
@@ -603,8 +602,16 @@ class AuthService:
                 password=None,
                 auth_providers=["oauth_google"],
             )
+            # create an oauth credential for the user
+            await self._oauth_credential_repo.create(
+                account_id=account.id,
+                provider="google",
+                provider_user_id=user_info["sub"],
+            )
 
         if "oauth_google" not in account.auth_providers:
+            # user already exists, but this is the first time they are
+            # signing in with Google
             await self._account_repo.update_auth_providers(
                 account=account,
                 auth_providers=account.auth_providers + ["oauth_google"],
@@ -742,6 +749,14 @@ class AuthService:
             account=existing_reset_token.account, password=new_password
         )
 
+        if "password" not in existing_reset_token.account.auth_providers:
+            # user is setting their password for the first time
+            await self._account_repo.update_auth_providers(
+                account=existing_reset_token.account,
+                auth_providers=existing_reset_token.account.auth_providers
+                + ["password"],
+            )
+
         # delete all existing user sessions
         await self._session_repo.delete_all(account_id=existing_reset_token.account.id)
 
@@ -822,10 +837,14 @@ class AuthService:
 
         if len(webauthn_credentials) <= 1:
             # update auth providers for the account
-            account.auth_providers.remove("webauthn_credential")
+            # user has removed their last webauthn credential
             await self._account_repo.update_auth_providers(
                 account=account,
-                auth_providers=account.auth_providers,
+                auth_providers=[
+                    provider
+                    for provider in account.auth_providers
+                    if provider != "webauthn_credential"
+                ],
             )
         return Ok(web_authn_credential)
 
@@ -891,6 +910,7 @@ class AuthService:
         )
 
         if "webauthn_credential" not in account.auth_providers:
+            # user is creating their first webauthn credential
             await self._account_repo.update_auth_providers(
                 account=account,
                 auth_providers=account.auth_providers + ["webauthn_credential"],

@@ -14,6 +14,7 @@ import { Google } from "@lobehub/icons";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { getValidRedirectURL } from "../../../lib/redirects";
 import SignupContext from "./SignupContext";
 import Step1EmailForm from "./Step1EmailForm";
 import Step2VerificationForm from "./Step2VerificationForm";
@@ -23,7 +24,7 @@ import Step4RegistrationForm from "./step4-register/Step4RegistrationForm";
 export default function SignUpWizard() {
 	const state = SignupContext.useSelector((state) => state);
 	const params = useSearchParams();
-	const redirectTo = params.get("return_to") || links.seekerLanding;
+	const redirectTo = getValidRedirectURL(params.get("return_to"));
 
 	useEffect(() => {
 		// prevent user from leaving the page while completing registration
