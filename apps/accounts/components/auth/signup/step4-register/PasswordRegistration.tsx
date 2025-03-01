@@ -83,14 +83,14 @@ export default function PasswordRegistration() {
 		setError,
 	} = useForm({
 		resolver: zodResolver(passwordRegistrationSchema),
-		defaultValues: { password: "", fullName: "" },
+		defaultValues: { password: "" },
 	});
 
 	const [commitRegisterWithPassword] =
 		useMutation<PasswordRegistrationMutationType>(RegisterWithPasswordMutation);
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-	const onSubmit = async (data: { password: string; fullName: string }) => {
+	const onSubmit = async (data: z.infer<typeof passwordRegistrationSchema>) => {
 		if (!executeRecaptcha) return;
 
 		const token = await executeRecaptcha("register");

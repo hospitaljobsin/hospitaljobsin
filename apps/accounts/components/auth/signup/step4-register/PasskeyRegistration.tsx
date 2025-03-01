@@ -1,12 +1,15 @@
 "use client";
 
 import { getValidRedirectURL } from "@/lib/redirects";
-import { Alert, Button } from "@heroui/react";
+import { Alert, Button, Input } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useSearchParams } from "next/navigation";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import { z } from "zod";
 import SignupContext from "../SignupContext";
 import type { PasskeyRegistrationMutation } from "./__generated__/PasskeyRegistrationMutation.graphql";
 import type { PasskeyRegistrationOptionsMutation } from "./__generated__/PasskeyRegistrationOptionsMutation.graphql";
@@ -41,6 +44,7 @@ const RegisterWithPasskeyMutation = graphql`
     $email: String!
     $emailVerificationToken: String!
     $passkeyRegistrationResponse: JSON!
+	$passkeyNickname: String!
     $fullName: String!
     $recaptchaToken: String!
   ) {
@@ -48,6 +52,7 @@ const RegisterWithPasskeyMutation = graphql`
       email: $email
       emailVerificationToken: $emailVerificationToken
       passkeyRegistrationResponse: $passkeyRegistrationResponse
+	  passkeyNickname: $passkeyNickname
       fullName: $fullName
       recaptchaToken: $recaptchaToken
     ) {
@@ -67,6 +72,13 @@ const RegisterWithPasskeyMutation = graphql`
     }
   }
 `;
+
+const passkeyRegistrationSchema = z.object({
+	nickname: z
+		.string()
+		.min(1, "This field is required")
+		.max(75, "Nickname cannot exceed 75 characters"),
+});
 
 export default function PasskeyRegistration() {
 	const params = useSearchParams();
@@ -89,7 +101,18 @@ export default function PasskeyRegistration() {
 		GeneratePasskeyRegistrationOptionsMutation,
 	);
 
-	const handleSubmit = async () => {
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isSubmitting },
+	} = useForm({
+		resolver: zodResolver(passkeyRegistrationSchema),
+		defaultValues: { nickname: "My Passkey" },
+	});
+
+	const onSubmit = async (
+		values: z.infer<typeof passkeyRegistrationSchema>,
+	) => {
 		if (!executeRecaptcha) return;
 
 		const token = await executeRecaptcha(
@@ -137,6 +160,7 @@ export default function PasskeyRegistration() {
 											fullName,
 											passkeyRegistrationResponse:
 												JSON.stringify(registrationResponse),
+											passkeyNickname: values.nickname,
 											recaptchaToken: recaptchaToken,
 										},
 										onCompleted(response) {
@@ -196,20 +220,32 @@ export default function PasskeyRegistration() {
 	};
 
 	return (
-		<div className="w-full flex flex-col gap-6">
-			<Alert variant="faded" color="primary">
-				Passkeys are the new replacement for passwords, designed to give you
-				access to apps in an easier and more secure way.
-			</Alert>
-			<Button
-				onPress={handleSubmit}
-				isLoading={
-					isCommitRegisterInFlight || isGenerateRegistrationOptionsInFlight
-				}
-				fullWidth
-			>
-				Create account
-			</Button>
-		</div>
+		<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+			<div className="w-full flex flex-col gap-6">
+				<Alert variant="faded" color="primary">
+					Passkeys are the new replacement for passwords, designed to give you
+					access to apps in an easier and more secure way.
+				</Alert>
+				<Input
+					label="Nickname"
+					placeholder="My Screen Lock"
+					{...register("nickname")}
+					errorMessage={errors.nickname?.message}
+					isInvalid={!!errors.nickname}
+					description="Nicknames help identify your passkeys"
+				/>
+				<Button
+					type="submit"
+					isLoading={
+						isSubmitting ||
+						isCommitRegisterInFlight ||
+						isGenerateRegistrationOptionsInFlight
+					}
+					fullWidth
+				>
+					Create account
+				</Button>
+			</div>
+		</form>
 	);
 }

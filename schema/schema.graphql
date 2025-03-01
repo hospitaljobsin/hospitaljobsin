@@ -1,5 +1,7 @@
 directive @isAuthenticated on FIELD_DEFINITION
 
+directive @isInSudoMode on FIELD_DEFINITION
+
 type Account implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -292,6 +294,9 @@ type Mutation {
     """The passkey registration response of the new user."""
     passkeyRegistrationResponse: JSON!
 
+    """The nickname of the passkey."""
+    passkeyNickname: String!
+
     """The full name of the new user."""
     fullName: String!
 
@@ -351,19 +356,19 @@ type Mutation {
   ): ResetPasswordPayload!
 
   """Delete other sessions of the viewer than the current one."""
-  deleteOtherSessions: DeleteOtherSessionsPayload! @isAuthenticated
+  deleteOtherSessions: DeleteOtherSessionsPayload! @isAuthenticated @isInSudoMode
 
   """Delete session by ID."""
   deleteSession(
     """The ID of the session to delete."""
     sessionId: ID!
-  ): DeleteSessionPayload! @isAuthenticated
+  ): DeleteSessionPayload! @isAuthenticated @isInSudoMode
 
   """Delete webauthn credential by ID."""
   deleteWebAuthnCredential(
     """The ID of the Webauthn credential to delete."""
     webAuthnCredentialId: ID!
-  ): DeleteWebAuthnCredentialPayload! @isAuthenticated
+  ): DeleteWebAuthnCredentialPayload! @isAuthenticated @isInSudoMode
 
   """Delete webauthn credential by ID."""
   updateWebAuthnCredential(
@@ -375,7 +380,7 @@ type Mutation {
   ): UpdateWebAuthnCredentialPayload! @isAuthenticated
 
   """Generate registration options for adding a webauthn credential."""
-  generateWebAuthnCredentialCreationOptions: GeneratePasskeyCreationOptionsPayload! @isAuthenticated
+  generateWebAuthnCredentialCreationOptions: GeneratePasskeyCreationOptionsPayload! @isAuthenticated @isInSudoMode
 
   """Create a new webauthn credential for the current user."""
   createWebAuthnCredential(
@@ -384,7 +389,10 @@ type Mutation {
 
     """The nickname of the passkey."""
     nickname: String!
-  ): CreateWebAuthnCredentialPayload! @isAuthenticated
+  ): CreateWebAuthnCredentialPayload! @isAuthenticated @isInSudoMode
+
+  """Request a sudo mode grant for the current user."""
+  requestSudoMode: CreateWebAuthnCredentialPayload! @isAuthenticated
 
   """Save a job."""
   saveJob(

@@ -318,6 +318,7 @@ class AuthService:
         email_verification_token: str,
         recaptcha_token: str,
         passkey_registration_response: dict[Any, Any],
+        passkey_nickname: str,
         full_name: str,
         user_agent: str,
         request: Request,
@@ -396,6 +397,7 @@ class AuthService:
             backed_up=verified_registration.credential_backed_up,
             device_type=verified_registration.credential_device_type,
             transports=passkey_registration_credential.response.transports,
+            nickname=passkey_nickname,
         )
 
         await self._profile_repo.create(account=account)

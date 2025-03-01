@@ -309,6 +309,12 @@ class AuthMutation:
                 description="The passkey registration response of the new user.",
             ),
         ],
+        passkey_nickname: Annotated[
+            str,
+            strawberry.argument(
+                description="The nickname of the passkey.",
+            ),
+        ],
         full_name: Annotated[
             str,
             strawberry.argument(
@@ -328,6 +334,7 @@ class AuthMutation:
             email=email,
             email_verification_token=email_verification_token,
             passkey_registration_response=passkey_registration_response,
+            passkey_nickname=passkey_nickname,
             full_name=full_name,
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
@@ -808,7 +815,7 @@ class AuthMutation:
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=CreateWebAuthnCredentialPayload,
-        description="Grant sudo mode for the current user.",
+        description="Request a sudo mode grant for the current user.",
         extensions=[
             PermissionExtension(
                 permissions=[
@@ -818,10 +825,10 @@ class AuthMutation:
         ],
     )
     @inject
-    async def grant_sudo_mode(
+    async def request_sudo_mode(
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
     ) -> CreateWebAuthnCredentialPayload:
-        """Grant sudo mode for the current user."""
+        """Request a sudo mode grant for the current user."""
         pass

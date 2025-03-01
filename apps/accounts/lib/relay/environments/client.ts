@@ -41,10 +41,14 @@ export async function networkFetch(
 	if (Array.isArray(json.errors)) {
 		for (const err of json.errors) {
 			switch (err.extensions.code) {
-				// Apollo Server sets code to UNAUTHENTICATED
+				// Server sets code to UNAUTHENTICATED
 				// when an AuthenticationError is thrown in a resolver
 				case "UNAUTHENTICATED":
 					window.location.href = links.login(links.seekerLanding);
+					break;
+				case "REQUIRES_SUDO_MODE":
+					window.dispatchEvent(new Event("requires-sudo-mode"));
+					break;
 			}
 		}
 		console.error(json.errors);
