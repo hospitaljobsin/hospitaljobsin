@@ -5,6 +5,7 @@ from typing import Any
 
 import bson
 import httpx
+from bson.objectid import ObjectId
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, Request, Response
 from humanize import naturaldelta
@@ -79,7 +80,7 @@ class AuthService:
         email_verification_token_repo: EmailVerificationTokenRepo,
         profile_repo: ProfileRepo,
         password_reset_token_repo: PasswordResetTokenRepo,
-        webauthn_credential_repo: WebAuthnCredentialRepo,
+        web_authn_credential_repo: WebAuthnCredentialRepo,
         webauthn_challenge_repo: WebAuthnChallengeRepo,
         email_sender: EmailSender,
         settings: Settings,
@@ -89,7 +90,7 @@ class AuthService:
         self._email_verification_token_repo = email_verification_token_repo
         self._profile_repo = profile_repo
         self._password_reset_token_repo = password_reset_token_repo
-        self._webauthn_credential_repo = webauthn_credential_repo
+        self._web_authn_credential_repo = web_authn_credential_repo
         self._webauthn_challenge_repo = webauthn_challenge_repo
         self._email_sender = email_sender
         self._settings = settings
@@ -387,7 +388,7 @@ class AuthService:
         # delete the webauthn challenge after account creation
         await self._webauthn_challenge_repo.delete(webauthn_challenge)
 
-        await self._webauthn_credential_repo.create(
+        await self._web_authn_credential_repo.create(
             account_id=account.id,
             credential_id=verified_registration.credential_id,
             credential_public_key=verified_registration.credential_public_key,
@@ -464,11 +465,11 @@ class AuthService:
             authentication_credential = parse_authentication_credential_json(
                 authentication_response
             )
-            webauthn_credential = await self._webauthn_credential_repo.get(
+            web_authn_credential = await self._web_authn_credential_repo.get(
                 credential_id=authentication_credential.raw_id
             )
 
-            if webauthn_credential is None:
+            if web_authn_credential is None:
                 return Err(InvalidPasskeyAuthenticationCredentialError())
 
             authentication_verification = verify_authentication_response(
@@ -478,8 +479,8 @@ class AuthService:
                 expected_rp_id=self._settings.rp_id,
                 expected_origin=self._settings.rp_expected_origin,
                 require_user_verification=True,
-                credential_public_key=webauthn_credential.public_key,
-                credential_current_sign_count=webauthn_credential.sign_count,
+                credential_public_key=web_authn_credential.public_key,
+                credential_current_sign_count=web_authn_credential.sign_count,
             )
         except WebAuthnException:
             return Err(InvalidPasskeyAuthenticationCredentialError())
@@ -487,12 +488,12 @@ class AuthService:
             return Err(InvalidPasskeyAuthenticationCredentialError())
 
         # update credential sign count
-        await self._webauthn_credential_repo.update(
-            webauthn_credential=webauthn_credential,
+        await self._web_authn_credential_repo.update(
+            web_authn_credential=web_authn_credential,
             sign_count=authentication_verification.new_sign_count,
         )
 
-        account = webauthn_credential.account
+        account = web_authn_credential.account
 
         session_token = await self._session_repo.create(
             ip_address=request.client.host,
@@ -758,15 +759,15 @@ class AuthService:
         """Delete a WebAuthn credential by ID."""
         # TODO: check if webauthn credentials are the only form of auth for the user,
         # and that they have atleast one additional webauthn credential before deleting
-        webauthn_credential = (
-            await self._webauthn_credential_repo.get_by_account_credential_id(
+        web_authn_credential = (
+            await self._web_authn_credential_repo.get_by_account_credential_id(
                 account_id=account_id, web_authn_credential_id=web_authn_credential_id
             )
         )
-        if not webauthn_credential:
+        if not web_authn_credential:
             return Err(WebAuthnCredentialNotFoundError())
-        await self._webauthn_credential_repo.delete(webauthn_credential)
-        return Ok(webauthn_credential)
+        await self._web_authn_credential_repo.delete(web_authn_credential)
+        return Ok(web_authn_credential)
 
     async def generate_web_authn_credential_creation_options(
         self,
@@ -818,7 +819,7 @@ class AuthService:
         if not verified_registration.user_verified:
             return Err(InvalidPasskeyRegistrationCredentialError())
 
-        webauthn_credential = await self._webauthn_credential_repo.create(
+        web_authn_credential = await self._web_authn_credential_repo.create(
             account_id=account_id,
             credential_id=verified_registration.credential_id,
             credential_public_key=verified_registration.credential_public_key,
@@ -829,4 +830,24 @@ class AuthService:
             nickname=nickname,
         )
 
-        return Ok(webauthn_credential)
+        return Ok(web_authn_credential)
+
+    async def update_web_authn_credential(
+        self,
+        web_authn_credential_id: ObjectId,
+        account_id: bson.ObjectId,
+        nickname: str,
+    ) -> Result[WebAuthnCredential, WebAuthnCredentialNotFoundError]:
+        """Update a WebAuthn credential by ID."""
+        web_authn_credential = (
+            await self._web_authn_credential_repo.get_by_account_credential_id(
+                web_authn_credential_id=web_authn_credential_id,
+                account_id=account_id,
+            )
+        )
+        if not web_authn_credential:
+            return Err(WebAuthnCredentialNotFoundError())
+        web_authn_credential = await self._web_authn_credential_repo.update(
+            web_authn_credential=web_authn_credential, nickname=nickname
+        )
+        return Ok(web_authn_credential)

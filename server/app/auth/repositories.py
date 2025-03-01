@@ -197,7 +197,7 @@ class WebAuthnCredentialRepo:
         transports: list[AuthenticatorTransport] | None = None,
         nickname: str | None = None,
     ) -> WebAuthnCredential:
-        webauthn_credential = WebAuthnCredential(
+        web_authn_credential = WebAuthnCredential(
             account=account_id,
             credential_id=credential_id,
             public_key=credential_public_key,
@@ -207,18 +207,18 @@ class WebAuthnCredentialRepo:
             backed_up=backed_up,
             nickname=nickname,
         )
-        await webauthn_credential.save()
-        return webauthn_credential
+        await web_authn_credential.save()
+        return web_authn_credential
 
     async def update(
         self,
         *,
-        webauthn_credential: WebAuthnCredential,
+        web_authn_credential: WebAuthnCredential,
         sign_count: int,
     ) -> None:
         """Update the given WebAuthn credential."""
-        webauthn_credential.sign_count = sign_count
-        await webauthn_credential.save()
+        web_authn_credential.sign_count = sign_count
+        await web_authn_credential.save()
 
     async def get(self, credential_id: bytes) -> WebAuthnCredential | None:
         """Get WebAuthn credential by credential ID."""
@@ -237,9 +237,17 @@ class WebAuthnCredentialRepo:
             WebAuthnCredential.account.id == account_id,
         )
 
-    async def delete(self, webauthn_credential: WebAuthnCredential) -> None:
+    async def delete(self, web_authn_credential: WebAuthnCredential) -> None:
         """Delete WebAuthn credential."""
-        await webauthn_credential.delete()
+        await web_authn_credential.delete()
+
+    async def update(
+        self, web_authn_credential: WebAuthnCredential, nickname: str
+    ) -> WebAuthnCredential:
+        """Update WebAuthn credential."""
+        web_authn_credential.nickname = nickname
+        await web_authn_credential.save()
+        return web_authn_credential
 
     async def get_all_by_account_id(
         self,

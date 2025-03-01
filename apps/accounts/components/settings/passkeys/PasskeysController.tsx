@@ -72,8 +72,6 @@ export default function PasskeysController({ passkeysConnectionId }: Props) {
 	const {
 		register,
 		handleSubmit,
-		setError,
-		clearErrors,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof createPasskeySchema>>({
 		resolver: zodResolver(createPasskeySchema),

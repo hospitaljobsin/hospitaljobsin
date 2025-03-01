@@ -365,6 +365,15 @@ type Mutation {
     webAuthnCredentialId: ID!
   ): DeleteWebAuthnCredentialPayload! @isAuthenticated
 
+  """Delete webauthn credential by ID."""
+  updateWebAuthnCredential(
+    """The ID of the Webauthn credential to update."""
+    webAuthnCredentialId: ID!
+
+    """The nickname of the passkey."""
+    nickname: String!
+  ): UpdateWebAuthnCredentialPayload! @isAuthenticated
+
   """Generate registration options for adding a webauthn credential."""
   generateWebAuthnCredentialCreationOptions: GeneratePasskeyCreationOptionsPayload! @isAuthenticated
 
@@ -651,6 +660,8 @@ type UnsaveJobResult {
 union UpdateAccountPayload = Account | AccountNotFoundError
 
 union UpdateProfilePayload = Account
+
+union UpdateWebAuthnCredentialPayload = WebAuthnCredential | WebAuthnCredentialNotFoundError
 
 union VerifyEmailPayload = VerifyEmailSuccess | InvalidRecaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
 

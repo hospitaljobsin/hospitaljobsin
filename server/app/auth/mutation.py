@@ -69,11 +69,13 @@ from .types import (
     ResetPasswordPayload,
     SessionEdgeType,
     SessionNotFoundErrorType,
+    UpdateWebAuthnCredentialPayload,
     VerifyEmailPayload,
     VerifyEmailSuccessType,
     WebAuthnChallengeNotFoundErrorType,
     WebAuthnCredentialEdgeType,
     WebAuthnCredentialNotFoundErrorType,
+    WebAuthnCredentialType,
 )
 
 
@@ -685,6 +687,49 @@ class AuthMutation:
                 result.ok_value
             )
         )
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateWebAuthnCredentialPayload,
+        description="Delete webauthn credential by ID.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_web_authn_credential(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+        web_authn_credential_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the Webauthn credential to update.",
+            ),
+        ],
+        nickname: Annotated[
+            str,
+            strawberry.argument(
+                description="The nickname of the passkey.",
+            ),
+        ],
+    ) -> UpdateWebAuthnCredentialPayload:
+        """Update Webauthn credential by ID."""
+        result = await auth_service.update_web_authn_credential(
+            account_id=info.context["current_user"].id,
+            web_authn_credential_id=ObjectId(web_authn_credential_id.node_id),
+            nickname=nickname,
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case WebAuthnCredentialNotFoundError():
+                    return WebAuthnCredentialNotFoundErrorType()
+
+        return WebAuthnCredentialType.marshal(result.ok_value)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GeneratePasskeyCreationOptionsPayload,
