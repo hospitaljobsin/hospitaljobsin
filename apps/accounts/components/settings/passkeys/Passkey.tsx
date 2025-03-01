@@ -32,9 +32,9 @@ const DeletePasskeyMutation = graphql`
 			node {
 				id @deleteEdge(connections: $connections)
 			}
+			}
 		}
-	}
-	... on WebAuthnCredentialNotFoundError {
+		... on WebAuthnCredentialNotFoundError {
 			message
 		}
   }
@@ -74,10 +74,10 @@ export default function Passkey({ passkey, passkeysConnectionId }: Props) {
 	return (
 		<>
 			<Card fullWidth className="p-4 sm:p-6" isPressable={false} shadow="none">
-				<CardHeader className="w-full flex justify-between gap-6">
+				<CardHeader className="w-full flex-col sm:flex-row flex justify-between items-start gap-6">
 					<div className="flex gap-4 items-center">
 						<Fingerprint size={24} />
-						<h2 className="text-lg">{data.nickname}</h2>
+						<h2 className="text-md sm:text-lg">{data.nickname}</h2>
 					</div>
 					<div className="flex items-center gap-4">
 						<Tooltip content="Update passkey">

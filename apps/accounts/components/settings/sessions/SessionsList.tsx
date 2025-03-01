@@ -20,6 +20,7 @@ const SessionsListFragment = graphql`
       edges {
         node {
           id
+		  isCurrentSession
           ...SessionFragment
         }
       }
@@ -64,8 +65,8 @@ export default function SessionsList({ root }: Props) {
 	}, [data.sessions.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
 	const canDeleteAllSessions = useMemo(
-		() => data.sessions.edges.length > 1,
-		[data.sessions.edges.length],
+		() => data.sessions.edges.some((edge) => !edge.node.isCurrentSession),
+		[data.sessions.edges],
 	);
 
 	return (
