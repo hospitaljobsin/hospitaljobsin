@@ -937,3 +937,31 @@ class AuthService:
         self._grant_sudo_mode(request)
 
         return Ok(account)
+
+    async def request_sudo_mode_with_password(
+        self,
+        password: str,
+        recaptcha_token: str,
+        account: Account,
+        request: Request,
+    ) -> Result[
+        Account,
+        InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError,
+    ]:
+        """Login a user with email and password."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
+
+        if account.password_hash is None:
+            # return an error for users who signed up with Google
+            return Err(InvalidSignInMethodError())
+
+        if not self._account_repo.verify_password(
+            password=password,
+            password_hash=account.password_hash,
+        ):
+            return Err(InvalidCredentialsError())
+
+        self._grant_sudo_mode(request)
+
+        return Ok(account)

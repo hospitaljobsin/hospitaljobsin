@@ -1,4 +1,5 @@
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
+import { usePathname } from "next/navigation";
 import links from "../links";
 import { isSudoModeActive } from "../sudoMode";
 

@@ -47,7 +47,7 @@ export async function networkFetch(
 					window.location.href = links.login(links.seekerLanding);
 					break;
 				case "REQUIRES_SUDO_MODE":
-					window.location.href = links.requestSudo();
+					window.location.href = links.requestSudo(window.location.pathname);
 					break;
 			}
 		}

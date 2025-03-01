@@ -385,3 +385,11 @@ RequestSudoModeWithPasskeyPayload = Annotated[
     | WebAuthnChallengeNotFoundErrorType,
     strawberry.union(name="RequestSudoModeWithPasskeyPayload"),
 ]
+
+RequestSudoModeWithPasswordPayload = Annotated[
+    AccountType
+    | InvalidCredentialsErrorType
+    | InvalidRecaptchaTokenErrorType
+    | InvalidSignInMethodErrorType,
+    strawberry.union(name="RequestSudoModeWithPasswordPayload"),
+]

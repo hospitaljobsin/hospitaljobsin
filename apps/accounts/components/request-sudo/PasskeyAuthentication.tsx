@@ -1,7 +1,9 @@
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { Button } from "@heroui/react";
 import { startAuthentication } from "@simplewebauthn/browser";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Fingerprint } from "lucide-react";
+import { useRouter } from "next-nprogress-bar";
+import { useSearchParams } from "next/navigation";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -147,6 +149,7 @@ export default function PasskeyAuthentication() {
 	return (
 		<Button
 			fullWidth
+			startContent={<Fingerprint size={20} />}
 			variant="bordered"
 			onPress={handlePasskeyAuthentication}
 			isLoading={

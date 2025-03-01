@@ -67,6 +67,7 @@ from .types import (
     RequestPasswordResetPayload,
     RequestPasswordResetSuccessType,
     RequestSudoModeWithPasskeyPayload,
+    RequestSudoModeWithPasswordPayload,
     ResetPasswordPayload,
     SessionEdgeType,
     SessionNotFoundErrorType,
@@ -858,5 +859,53 @@ class AuthMutation:
                     return InvalidPasskeyAuthenticationCredentialErrorType()
                 case WebAuthnChallengeNotFoundError():
                     return WebAuthnChallengeNotFoundErrorType()
+
+        return AccountType.marshal(result.ok_value)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RequestSudoModeWithPasswordPayload,
+        description="Request a sudo mode grant for the current user using a password.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def request_sudo_mode_with_password(
+        self,
+        info: AuthInfo,
+        password: Annotated[
+            str,
+            strawberry.argument(
+                description="The password of the user.",
+            ),
+        ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> RequestSudoModeWithPasswordPayload:
+        """Request a sudo mode grant for the current user using a password."""
+        result = await auth_service.request_sudo_mode_with_password(
+            request=info.context["request"],
+            password=password,
+            recaptcha_token=recaptcha_token,
+            account=info.context["current_user"],
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
+                case InvalidCredentialsError():
+                    return InvalidCredentialsErrorType()
+                case InvalidSignInMethodError():
+                    return InvalidSignInMethodErrorType()
 
         return AccountType.marshal(result.ok_value)
