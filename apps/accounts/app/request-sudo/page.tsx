@@ -45,7 +45,7 @@ export default async function RequestSudoModePage({
 	}
 
 	return (
-		<div className="w-full mx-auto max-w-5xl h-full min-h-screen px-4 py-6 bg-background">
+		<div className="w-full mx-auto max-w-5xl h-full min-h-screen bg-background lg:bg-background-600">
 			<RequestSudoView />
 		</div>
 	);

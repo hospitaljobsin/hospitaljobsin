@@ -1,6 +1,7 @@
 "use client";
 
 import {
+	Button,
 	Card,
 	CardBody,
 	CardFooter,
@@ -18,12 +19,12 @@ export default function RequestSudoView() {
 	const redirectTo = getValidSudoModeRedirectURL(searchParams.get("return_to"));
 	return (
 		<div className="w-full flex flex-col gap-6 h-full min-h-screen items-center justify-center">
-			<Card fullWidth className="p-4 sm:p-6" isPressable={false} shadow="none">
+			<Card className="p-6 sm:p-12 max-w-2xl" isPressable={false} shadow="none">
 				<CardHeader className="flex flex-col gap-6">
-					<h2 className="text-lg font-medium">
+					<h2 className="text-lg sm:text-xl font-medium text-center w-full">
 						Please authenticate to continue
 					</h2>
-					<p className="w-full text-balance text-center text-foreground-500">
+					<p className="w-full text-balance text-center text-foreground-500 text-small sm:text-base">
 						You are entering <i>sudo mode</i>, which is needed to perform
 						sensitive operations. You won't be asked to authenticate again for a
 						while.
@@ -38,10 +39,16 @@ export default function RequestSudoView() {
 					</div>
 					<PasskeyAuthentication />
 				</CardBody>
-				<CardFooter className="w-full flex items-center justify-center gap-6 pt-12">
-					<Link href={redirectTo} className="text-blue-500 hover:underline">
+				<CardFooter className="w-full flex items-center justify-center gap-6 pt-12 max-w-lg mx-auto">
+					<Button
+						fullWidth
+						as={Link}
+						href={redirectTo}
+						variant="bordered"
+						color="default"
+					>
 						go back
-					</Link>
+					</Button>
 				</CardFooter>
 			</Card>
 		</div>

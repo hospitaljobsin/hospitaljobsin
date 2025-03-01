@@ -161,6 +161,7 @@ export default function PasswordAuthentication() {
 					fullWidth
 					isLoading={isSubmitting || isPasswordLoginMutationInFlight}
 					type="submit"
+					size="lg"
 				>
 					Authenticate with password
 				</Button>

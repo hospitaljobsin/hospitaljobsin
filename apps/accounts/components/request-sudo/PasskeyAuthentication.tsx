@@ -150,7 +150,8 @@ export default function PasskeyAuthentication() {
 		<Button
 			fullWidth
 			startContent={<Fingerprint size={20} />}
-			variant="bordered"
+			variant="ghost"
+			size="lg"
 			onPress={handlePasskeyAuthentication}
 			isLoading={
 				isPasskeyAuthenticateMutationInFlight ||
