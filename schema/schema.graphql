@@ -383,7 +383,7 @@ type Mutation {
     passkeyRegistrationResponse: JSON!
 
     """The nickname of the passkey."""
-    nickname: String = null
+    nickname: String!
   ): CreateWebAuthnCredentialPayload! @isAuthenticated
 
   """Save a job."""

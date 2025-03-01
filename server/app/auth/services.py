@@ -793,7 +793,7 @@ class AuthService:
         self,
         passkey_registration_response: dict[Any, Any],
         account_id: bson.ObjectId,
-        nickname: str | None = None,
+        nickname: str,
     ) -> Result[WebAuthnCredential, InvalidPasskeyRegistrationCredentialError]:
         """Create a new webauthn credential."""
         try:

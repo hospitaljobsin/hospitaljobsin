@@ -43,7 +43,7 @@ type Props = {
 const updatePasskeySchema = z.object({
 	nickname: z
 		.string()
-		.min(1, "Nickname is required")
+		.min(1, "This field is required")
 		.max(75, "Nickname cannot exceed 75 characters"),
 });
 
@@ -83,38 +83,34 @@ export default function UpdatePasskeyModal({
 	return (
 		<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
 			<ModalContent>
-				{(onClose) => (
-					<>
-						<ModalHeader className="flex flex-col gap-1">
+				<ModalHeader className="flex flex-col gap-1">
+					Update Passkey
+				</ModalHeader>
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+					<ModalBody>
+						<Input
+							id="nickname"
+							label="Nickname"
+							placeholder="My Screen Lock"
+							{...register("nickname")}
+							description="Nicknames help identify your passkeys"
+							errorMessage={errors.nickname?.message}
+							isInvalid={!!errors.nickname}
+						/>
+					</ModalBody>
+					<ModalFooter>
+						<Button color="danger" variant="light" onPress={onClose}>
+							Cancel
+						</Button>
+						<Button
+							color="default"
+							type="submit"
+							isLoading={isSubmitting || isMutationInFlight}
+						>
 							Update Passkey
-						</ModalHeader>
-						<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-							<ModalBody>
-								<Input
-									id="nickname"
-									label="Nickname"
-									placeholder="My Screen Lock"
-									{...register("nickname")}
-									description="Nicknames help identify your passkeys"
-									errorMessage={errors.nickname?.message}
-									isInvalid={!!errors.nickname}
-								/>
-							</ModalBody>
-							<ModalFooter>
-								<Button color="danger" variant="light" onPress={onClose}>
-									Cancel
-								</Button>
-								<Button
-									color="default"
-									type="submit"
-									isLoading={isSubmitting || isMutationInFlight}
-								>
-									Update Passkey
-								</Button>
-							</ModalFooter>
-						</form>
-					</>
-				)}
+						</Button>
+					</ModalFooter>
+				</form>
 			</ModalContent>
 		</Modal>
 	);

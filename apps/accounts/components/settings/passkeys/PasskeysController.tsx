@@ -29,7 +29,7 @@ const GeneratePasskeyCreationOptionsMutation = graphql`
 `;
 
 const CreatePasskeyMutation = graphql`
-    mutation PasskeysControllerMutation($nickname: String, $passkeyRegistrationResponse: JSON!, $connections: [ID!]!) {
+    mutation PasskeysControllerMutation($nickname: String!, $passkeyRegistrationResponse: JSON!, $connections: [ID!]!) {
         createWebAuthnCredential(nickname: $nickname, passkeyRegistrationResponse: $passkeyRegistrationResponse) {
             __typename
             ... on InvalidPasskeyRegistrationCredentialError {
@@ -56,8 +56,8 @@ type Props = {
 const createPasskeySchema = z.object({
 	nickname: z
 		.string()
-		.max(75, "Nickname cannot exceed 75 characters")
-		.nullable(),
+		.min(1, "This Field is required")
+		.max(75, "Nickname cannot exceed 75 characters"),
 });
 
 export default function PasskeysController({ passkeysConnectionId }: Props) {
@@ -75,6 +75,9 @@ export default function PasskeysController({ passkeysConnectionId }: Props) {
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof createPasskeySchema>>({
 		resolver: zodResolver(createPasskeySchema),
+		defaultValues: {
+			nickname: "My Passkey",
+		},
 	});
 
 	async function onSubmit(values: z.infer<typeof createPasskeySchema>) {
@@ -141,42 +144,38 @@ export default function PasskeysController({ passkeysConnectionId }: Props) {
 			</Button>
 			<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
 				<ModalContent>
-					{(onClose) => (
-						<>
-							<ModalHeader className="flex flex-col gap-1">
+					<ModalHeader className="flex flex-col gap-1">
+						Create Passkey
+					</ModalHeader>
+					<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+						<ModalBody>
+							<Input
+								id="nickname"
+								label="Nickname"
+								placeholder="My Screen Lock"
+								{...register("nickname")}
+								description="Nicknames help identify your passkeys"
+								errorMessage={errors.nickname?.message}
+								isInvalid={!!errors.nickname}
+							/>
+						</ModalBody>
+						<ModalFooter>
+							<Button color="danger" variant="light" onPress={onClose}>
+								Cancel
+							</Button>
+							<Button
+								color="default"
+								type="submit"
+								isLoading={
+									isSubmitting ||
+									isCreateMutationInFlight ||
+									isGenerateOptionsMutationInFlight
+								}
+							>
 								Create Passkey
-							</ModalHeader>
-							<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-								<ModalBody>
-									<Input
-										id="nickname"
-										label="Nickname"
-										placeholder="My Screen Lock"
-										{...register("nickname")}
-										description="Nicknames help identify your passkeys"
-										errorMessage={errors.nickname?.message}
-										isInvalid={!!errors.nickname}
-									/>
-								</ModalBody>
-								<ModalFooter>
-									<Button color="danger" variant="light" onPress={onClose}>
-										Cancel
-									</Button>
-									<Button
-										color="default"
-										type="submit"
-										isLoading={
-											isSubmitting ||
-											isCreateMutationInFlight ||
-											isGenerateOptionsMutationInFlight
-										}
-									>
-										Create Passkey
-									</Button>
-								</ModalFooter>
-							</form>
-						</>
-					)}
+							</Button>
+						</ModalFooter>
+					</form>
 				</ModalContent>
 			</Modal>
 		</>

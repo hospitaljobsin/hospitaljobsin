@@ -781,11 +781,11 @@ class AuthMutation:
             ),
         ],
         nickname: Annotated[
-            str | None,
+            str,
             strawberry.argument(
                 description="The nickname of the passkey.",
             ),
-        ] = None,
+        ],
     ) -> CreateWebAuthnCredentialPayload:
         """Create a new webauthn credential for the current user."""
         # TODO: require sudo mode here
