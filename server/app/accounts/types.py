@@ -232,7 +232,14 @@ class AccountType(BaseNodeType[Account]):
     @strawberry.field
     async def sudo_mode_expires_at(self, info: Info) -> datetime | None:
         """Return when the user's sudo mode expires at."""
-        return info.context["request"].session.get("sudo_mode_expires_at")
+        sudo_mode_expires_at = info.context["request"].session.get(
+            "sudo_mode_expires_at"
+        )
+        return (
+            datetime.fromisoformat(sudo_mode_expires_at)
+            if sudo_mode_expires_at
+            else None
+        )
 
     @strawberry.field
     @inject

@@ -24,7 +24,6 @@ class IsInSudoMode(BasePermission):
         sudo_mode_expires_at = info.context["request"].session.get(
             "sudo_mode_expires_at"
         )
-        return (
-            sudo_mode_expires_at is not None
-            and datetime.now(UTC) < sudo_mode_expires_at
-        )
+        return sudo_mode_expires_at is not None and datetime.now(
+            UTC
+        ) < datetime.fromisoformat(sudo_mode_expires_at)

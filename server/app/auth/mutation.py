@@ -66,6 +66,7 @@ from .types import (
     RequestEmailVerificationTokenSuccessType,
     RequestPasswordResetPayload,
     RequestPasswordResetSuccessType,
+    RequestSudoModeWithPasskeyPayload,
     ResetPasswordPayload,
     SessionEdgeType,
     SessionNotFoundErrorType,
@@ -814,8 +815,8 @@ class AuthMutation:
         )
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=CreateWebAuthnCredentialPayload,
-        description="Request a sudo mode grant for the current user.",
+        graphql_type=RequestSudoModeWithPasskeyPayload,
+        description="Request a sudo mode grant for the current user using a passkey.",
         extensions=[
             PermissionExtension(
                 permissions=[
@@ -825,10 +826,37 @@ class AuthMutation:
         ],
     )
     @inject
-    async def request_sudo_mode(
+    async def request_sudo_mode_with_passkey(
         self,
         info: AuthInfo,
+        authentication_response: Annotated[
+            JSON,
+            strawberry.argument(
+                description="The authentication response of the user.",
+            ),
+        ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
         auth_service: Annotated[AuthService, Inject],
-    ) -> CreateWebAuthnCredentialPayload:
-        """Request a sudo mode grant for the current user."""
-        pass
+    ) -> RequestSudoModeWithPasskeyPayload:
+        """Request a sudo mode grant for the current user using a passkey."""
+        result = await auth_service.request_sudo_mode_with_passkey(
+            request=info.context["request"],
+            authentication_response=authentication_response,
+            recaptcha_token=recaptcha_token,
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
+                case InvalidPasskeyAuthenticationCredentialError():
+                    return InvalidPasskeyAuthenticationCredentialErrorType()
+                case WebAuthnChallengeNotFoundError():
+                    return WebAuthnChallengeNotFoundErrorType()
+
+        return AccountType.marshal(result.ok_value)

@@ -210,7 +210,7 @@ class WebAuthnCredentialRepo:
         await web_authn_credential.save()
         return web_authn_credential
 
-    async def update(
+    async def update_sign_count(
         self,
         *,
         web_authn_credential: WebAuthnCredential,

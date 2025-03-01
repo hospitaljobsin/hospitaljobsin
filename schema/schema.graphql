@@ -392,8 +392,14 @@ type Mutation {
     nickname: String!
   ): CreateWebAuthnCredentialPayload! @isAuthenticated @isInSudoMode
 
-  """Request a sudo mode grant for the current user."""
-  requestSudoMode: CreateWebAuthnCredentialPayload! @isAuthenticated
+  """Request a sudo mode grant for the current user using a passkey."""
+  requestSudoModeWithPasskey(
+    """The authentication response of the user."""
+    authenticationResponse: JSON!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
+  ): RequestSudoModeWithPasskeyPayload! @isAuthenticated
 
   """Save a job."""
   saveJob(
@@ -607,6 +613,8 @@ union RequestPasswordResetPayload = RequestPasswordResetSuccess | InvalidRecaptc
 type RequestPasswordResetSuccess {
   message: String!
 }
+
+union RequestSudoModeWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
 
 union ResetPasswordPayload = Account | InvalidPasswordResetTokenError | PasswordNotStrongError
 

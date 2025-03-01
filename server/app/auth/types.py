@@ -377,3 +377,11 @@ CreateWebAuthnCredentialPayload = Annotated[
     CreateWebAuthnCredentialSuccessType | InvalidPasskeyRegistrationCredentialErrorType,
     strawberry.union(name="CreateWebAuthnCredentialPayload"),
 ]
+
+RequestSudoModeWithPasskeyPayload = Annotated[
+    AccountType
+    | InvalidPasskeyAuthenticationCredentialErrorType
+    | InvalidRecaptchaTokenErrorType
+    | WebAuthnChallengeNotFoundErrorType,
+    strawberry.union(name="RequestSudoModeWithPasskeyPayload"),
+]

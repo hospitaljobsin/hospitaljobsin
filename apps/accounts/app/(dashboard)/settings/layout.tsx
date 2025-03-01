@@ -1,4 +1,3 @@
-import Header from "@/components/settings/Header";
 import SettingsSidebar from "@/components/settings/Sidebar";
 
 export default function SettingsLayout({
@@ -6,7 +5,6 @@ export default function SettingsLayout({
 }: { children: React.ReactNode }) {
 	return (
 		<>
-			<Header />
 			<div className="relative w-full h-full">
 				<div className="absolute top-0 left-0 w-1/2 h-full bg-background-700" />
 				<div className="absolute top-0 right-0 w-1/2 h-full bg-background-600" />

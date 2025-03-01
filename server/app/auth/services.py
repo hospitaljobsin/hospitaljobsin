@@ -67,6 +67,7 @@ from app.config import Settings
 from app.lib.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
     PASSWORD_RESET_EXPIRES_IN,
+    SUDO_MODE_EXPIRES_IN,
     USER_SESSION_EXPIRES_IN,
 )
 from app.lib.emails import EmailSender
@@ -273,6 +274,8 @@ class AuthService:
             value=session_token,
         )
 
+        self._grant_sudo_mode(request)
+
         return Ok(account)
 
     @staticmethod
@@ -419,6 +422,8 @@ class AuthService:
             value=session_token,
         )
 
+        self._grant_sudo_mode(request)
+
         return Ok(account)
 
     async def generate_authentication_options(
@@ -490,7 +495,7 @@ class AuthService:
             return Err(InvalidPasskeyAuthenticationCredentialError())
 
         # update credential sign count
-        await self._web_authn_credential_repo.update(
+        await self._web_authn_credential_repo.update_sign_count(
             web_authn_credential=web_authn_credential,
             sign_count=authentication_verification.new_sign_count,
         )
@@ -511,6 +516,8 @@ class AuthService:
             response=response,
             value=session_token,
         )
+
+        self._grant_sudo_mode(request)
 
         return Ok(account)
 
@@ -554,6 +561,8 @@ class AuthService:
             response=response,
             value=session_token,
         )
+
+        self._grant_sudo_mode(request)
 
         return Ok(account)
 
@@ -599,6 +608,9 @@ class AuthService:
             response=response,
             value=session_token,
         )
+
+        self._grant_sudo_mode(request)
+
         return Ok(account)
 
     def _set_user_session_cookie(
@@ -853,3 +865,75 @@ class AuthService:
             web_authn_credential=web_authn_credential, nickname=nickname
         )
         return Ok(web_authn_credential)
+
+    def _grant_sudo_mode(self, request: Request) -> None:
+        """Grant sudo mode to the current user request."""
+        # TODO: consider this use case.
+        # The user signs in with google, they are granted sudo mode immediately
+        # this should not happen if they have a stronger mode of authentication-
+        # such as a webauthn credential or password
+        # we should store the last used sign in method and grant sudo mode based on that
+        sudo_mode_expires_at = datetime.now(UTC) + timedelta(
+            seconds=SUDO_MODE_EXPIRES_IN
+        )
+        request.session["sudo_mode_expires_at"] = sudo_mode_expires_at.isoformat()
+
+    async def request_sudo_mode_with_passkey(
+        self,
+        recaptcha_token: str,
+        authentication_response: dict[Any, Any],
+        request: Request,
+    ) -> Result[
+        Account,
+        InvalidPasskeyAuthenticationCredentialError
+        | InvalidRecaptchaTokenError
+        | WebAuthnChallengeNotFoundError,
+    ]:
+        """Request sudo mode with a passkey."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
+
+        webauthn_challenge: str = request.session.get("webauthn_challenge")
+        if webauthn_challenge is None:
+            return Err(WebAuthnChallengeNotFoundError())
+
+        try:
+            authentication_credential = parse_authentication_credential_json(
+                authentication_response
+            )
+            web_authn_credential = await self._web_authn_credential_repo.get(
+                credential_id=authentication_credential.raw_id
+            )
+
+            if web_authn_credential is None:
+                return Err(InvalidPasskeyAuthenticationCredentialError())
+
+            authentication_verification = verify_authentication_response(
+                credential=authentication_credential,
+                # decode the base64 encoded challenge
+                expected_challenge=b64decode(webauthn_challenge),
+                expected_rp_id=self._settings.rp_id,
+                expected_origin=self._settings.rp_expected_origin,
+                require_user_verification=True,
+                credential_public_key=web_authn_credential.public_key,
+                credential_current_sign_count=web_authn_credential.sign_count,
+            )
+        except WebAuthnException:
+            return Err(InvalidPasskeyAuthenticationCredentialError())
+        if not authentication_verification.user_verified:
+            return Err(InvalidPasskeyAuthenticationCredentialError())
+
+        # update credential sign count
+        await self._web_authn_credential_repo.update_sign_count(
+            web_authn_credential=web_authn_credential,
+            sign_count=authentication_verification.new_sign_count,
+        )
+
+        account = web_authn_credential.account
+
+        # delete webauthn challenge from session
+        del request.session["webauthn_challenge"]
+
+        self._grant_sudo_mode(request)
+
+        return Ok(account)
