@@ -1,11 +1,12 @@
 import { usePathname, useRouter } from "next/navigation";
+import { isSudoModeActive } from "../sudoMode";
 
 export function useCheckSudoMode() {
 	const router = useRouter();
 	const pathname = usePathname();
 
 	function checkSudoMode(sudoModeExpiresAt: string | null): boolean {
-		if (sudoModeExpiresAt != null && new Date() < new Date(sudoModeExpiresAt)) {
+		if (isSudoModeActive(sudoModeExpiresAt)) {
 			// we are in sudo mode already
 			return true;
 		}
