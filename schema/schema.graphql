@@ -9,6 +9,7 @@ type Account implements Node {
   email: String!
   hasOnboarded: Boolean!
   updatedAt: DateTime
+  authProviders: [AuthProvider!]!
   profile: ProfilePayload!
   avatarUrl: String!
   sudoModeExpiresAt: DateTime
@@ -37,6 +38,12 @@ input AddressInput {
   state: String
   country: String
   pincode: String
+}
+
+enum AuthProvider {
+  PASSWORD
+  WEBAUTHN_CREDENTIAL
+  OAUTH_GOOGLE
 }
 
 type CreateOrganizationLogoPresignedURLPayload {

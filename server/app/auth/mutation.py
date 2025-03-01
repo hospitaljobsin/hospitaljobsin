@@ -682,7 +682,7 @@ class AuthMutation:
     ) -> DeleteWebAuthnCredentialPayload:
         """Delete Webauthn credential by ID."""
         result = await auth_service.delete_web_authn_credential(
-            account_id=info.context["current_user"].id,
+            account=info.context["current_user"],
             web_authn_credential_id=ObjectId(web_authn_credential_id.node_id),
         )
 
@@ -799,7 +799,7 @@ class AuthMutation:
     ) -> CreateWebAuthnCredentialPayload:
         """Create a new webauthn credential for the current user."""
         result = await auth_service.create_web_authn_credential(
-            account_id=info.context["current_user"].id,
+            account=info.context["current_user"],
             nickname=nickname,
             passkey_registration_response=passkey_registration_response,
         )

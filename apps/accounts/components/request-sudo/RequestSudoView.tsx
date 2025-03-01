@@ -10,13 +10,44 @@ import {
 	Link,
 } from "@heroui/react";
 import { useSearchParams } from "next/navigation";
+import { useFragment } from "react-relay";
+import { graphql } from "relay-runtime";
+import invariant from "tiny-invariant";
 import { getValidSudoModeRedirectURL } from "../../lib/redirects";
 import PasskeyAuthentication from "./PasskeyAuthentication";
 import PasswordAuthentication from "./PasswordAuthentication";
+import type { RequestSudoViewFragment$key } from "./__generated__/RequestSudoViewFragment.graphql";
 
-export default function RequestSudoView() {
+const RequestSudoViewFragment = graphql`
+ fragment RequestSudoViewFragment on Query {
+	viewer {
+		__typename
+		... on Account {
+			authProviders
+		}
+	}
+  }
+`;
+
+export default function RequestSudoView({
+	rootQuery,
+}: { rootQuery: RequestSudoViewFragment$key }) {
 	const searchParams = useSearchParams();
 	const redirectTo = getValidSudoModeRedirectURL(searchParams.get("return_to"));
+	const data = useFragment(RequestSudoViewFragment, rootQuery);
+
+	invariant(data.viewer.__typename === "Account", "Account expected");
+
+	const hasPassword = data.viewer.authProviders.includes("PASSWORD");
+	const hasWebauthn = data.viewer.authProviders.includes("WEBAUTHN_CREDENTIAL");
+	const hasOauthGoogle = data.viewer.authProviders.includes("OAUTH_GOOGLE");
+
+	// Only show Google OAuth if no other auth methods are available
+	const showGoogleOAuth = hasOauthGoogle && !hasPassword && !hasWebauthn;
+
+	// Calculate if we need dividers (only between password and webauthn)
+	const showDivider = hasPassword && hasWebauthn;
+
 	return (
 		<div className="w-full flex flex-col gap-6 h-full min-h-screen items-center justify-center">
 			<Card className="p-6 sm:p-12 max-w-2xl" isPressable={false} shadow="none">
@@ -25,19 +56,22 @@ export default function RequestSudoView() {
 						Please authenticate to continue
 					</h2>
 					<p className="w-full text-balance text-center text-foreground-500 text-small sm:text-base">
-						You are entering <i>sudo mode</i>, which is needed to perform
+						You are entering <i>sudo mode,</i> which is needed to perform
 						sensitive operations. You won't be asked to authenticate again for a
 						while.
 					</p>
 				</CardHeader>
 				<CardBody className="max-w-lg w-full flex flex-col gap-12 pt-12 mx-auto">
-					<PasswordAuthentication />
-					<div className="w-full flex items-center justify-center gap-6">
-						<Divider className="flex-1" />
-						<p>or</p>
-						<Divider className="flex-1" />
-					</div>
-					<PasskeyAuthentication />
+					{hasPassword && <PasswordAuthentication />}
+					{showDivider && (
+						<div className="w-full flex items-center justify-center gap-6">
+							<Divider className="flex-1" />
+							<p>or</p>
+							<Divider className="flex-1" />
+						</div>
+					)}
+					{hasWebauthn && <PasskeyAuthentication />}
+					{showGoogleOAuth && <p>authenticate with google</p>}
 				</CardBody>
 				<CardFooter className="w-full flex items-center justify-center gap-6 pt-12 max-w-lg mx-auto">
 					<Button

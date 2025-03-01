@@ -12,6 +12,7 @@ from app.base.models import Address
 from app.lib.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
     EMAIL_VERIFICATION_TOKEN_LENGTH,
+    AuthProvider,
 )
 
 from .documents import (
@@ -28,7 +29,7 @@ class AccountRepo:
         self,
         email: str,
         full_name: str,
-        email_verified: bool = False,
+        auth_providers: list[AuthProvider],
         password: str | None = None,
         account_id: ObjectId | None = None,
     ) -> Account:
@@ -45,6 +46,7 @@ class AccountRepo:
             has_onboarded=False,
             updated_at=None,
             profile=None,
+            auth_providers=auth_providers,
         )
 
         return await account.insert()
@@ -94,8 +96,20 @@ class AccountRepo:
         account.full_name = full_name
         return await account.save()
 
+    async def update_auth_providers(
+        self,
+        account: Account,
+        auth_providers: list[AuthProvider],
+    ) -> Account:
+        """Update the given account."""
+        account.auth_providers = auth_providers
+        return await account.save()
+
     async def update_password(self, account: Account, password: str) -> Account:
         """Update the given account's password."""
+        if account.password_hash is None:
+            # account initially had no password
+            account.auth_providers.append("password")
         account.password_hash = self.hash_password(password)
         return await account.save()
 

@@ -6,10 +6,10 @@ from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
 from app.base.models import Address
-from app.lib.constants import EMAIL_VERIFICATION_TOKEN_COOLDOWN
+from app.lib.constants import EMAIL_VERIFICATION_TOKEN_COOLDOWN, AuthProvider
 
 if TYPE_CHECKING:
-    from app.auth.documents import WebAuthnCredential
+    from app.auth.documents import OAuthCredential, WebAuthnCredential
     from app.organizations.documents import OrganizationMember
 
 
@@ -55,10 +55,16 @@ class Account(Document):
     password_hash: str | None = None
     has_onboarded: bool
     updated_at: datetime | None = None
+
+    auth_providers: list[AuthProvider] = []
+
     profile: Link["Profile"] | None = None
 
     memberships: list[BackLink["OrganizationMember"]] = Field(original_field="account")
     webauthn_credentials: list[BackLink["WebAuthnCredential"]] = Field(
+        original_field="account"
+    )
+    oauth_credentials: list[BackLink["OAuthCredential"]] = Field(
         original_field="account"
     )
 

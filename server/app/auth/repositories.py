@@ -1,6 +1,7 @@
 import hashlib
 import secrets
 from datetime import datetime, timedelta
+from typing import Literal
 
 from beanie import WriteRules
 from beanie.operators import In
@@ -9,6 +10,7 @@ from webauthn.helpers.structs import AuthenticatorTransport
 
 from app.accounts.documents import Account
 from app.auth.documents import (
+    OAuthCredential,
     PasswordResetToken,
     Session,
     WebAuthnChallenge,
@@ -241,6 +243,14 @@ class WebAuthnCredentialRepo:
         """Delete WebAuthn credential."""
         await web_authn_credential.delete()
 
+    async def get_all_by_account_list(
+        self, account_id: ObjectId
+    ) -> list[WebAuthnCredential]:
+        """Get all webauthn credentials by account ID."""
+        return await WebAuthnCredential.find(
+            WebAuthnCredential.account.id == account_id,
+        ).to_list()
+
     async def update(
         self, web_authn_credential: WebAuthnCredential, nickname: str
     ) -> WebAuthnCredential:
@@ -297,3 +307,20 @@ class WebAuthnChallengeRepo:
     async def delete(self, webauthn_challenge: WebAuthnChallenge) -> None:
         """Delete WebAuthn challenge by ID."""
         await webauthn_challenge.delete()
+
+
+class OauthCredentialRepo:
+    async def create(
+        self,
+        account_id: ObjectId,
+        provider: Literal["google"],
+        provider_user_id: str,
+    ) -> OAuthCredential:
+        """Create a new OAuth credential."""
+        oauth_credential = OAuthCredential(
+            account=account_id,
+            provider=provider,
+            provider_user_id=provider_user_id,
+        )
+        await oauth_credential.save()
+        return oauth_credential

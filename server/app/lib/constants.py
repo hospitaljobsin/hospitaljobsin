@@ -1,5 +1,7 @@
 # branding
 
+from typing import Literal
+
 SUPPORT_EMAIL = "support@example.com"
 
 APP_NAME = "PulseWork"
@@ -30,3 +32,7 @@ WEBAUTHN_CHALLENGE_EXPIRES_IN = 60 * 5  # 5 minutes
 
 # Sudo Mode (elevated privileges)
 SUDO_MODE_EXPIRES_IN = 60 * 5  # 5 minutes
+
+
+# Auth Providers
+AuthProvider = Literal["password", "webauthn_credential", "oauth_google"]

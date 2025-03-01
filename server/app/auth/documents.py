@@ -66,3 +66,12 @@ class WebAuthnChallenge(Document):
                 expireAfterSeconds=0,
             ),
         ]
+
+
+class OAuthCredential(Document):
+    provider: Annotated[str, Indexed()]  # e.g., "google"
+    provider_user_id: str  # unique id from the provider
+    account: Link[Account]
+
+    class Settings:
+        name = "oauth_credentials"

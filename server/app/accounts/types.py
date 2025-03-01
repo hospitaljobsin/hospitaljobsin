@@ -158,12 +158,20 @@ ProfilePayload = Annotated[
 ]
 
 
+@strawberry.enum(name="AuthProvider")
+class AuthProviderEnum(Enum):
+    PASSWORD = "PASSWORD"
+    WEBAUTHN_CREDENTIAL = "WEBAUTHN_CREDENTIAL"
+    OAUTH_GOOGLE = "OAUTH_GOOGLE"
+
+
 @strawberry.type(name="Account")
 class AccountType(BaseNodeType[Account]):
     full_name: str
     email: str
     has_onboarded: bool
     updated_at: datetime | None
+    auth_providers: list[AuthProviderEnum]
     profile_ref: strawberry.Private[ObjectId | Profile | None] = None
 
     @classmethod
@@ -174,6 +182,10 @@ class AccountType(BaseNodeType[Account]):
             full_name=account.full_name,
             email=account.email,
             updated_at=account.updated_at,
+            auth_providers=[
+                AuthProviderEnum[provider.upper()]
+                for provider in account.auth_providers
+            ],
             has_onboarded=account.has_onboarded,
             profile_ref=account.profile.ref.id if account.profile is not None else None,
         )

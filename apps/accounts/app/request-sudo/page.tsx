@@ -1,16 +1,24 @@
-import RequestSudoView from "@/components/request-sudo/RequestSudoView";
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { isSudoModeActive } from "@/lib/sudoMode";
 import { redirect } from "next/navigation";
 import { cache } from "react";
-import { graphql } from "relay-runtime";
+import { graphql, readInlineData } from "relay-runtime";
 import invariant from "tiny-invariant";
+import RequestSudoModeViewClientComponent from "./RequestSudoModeViewClientComponent";
+import type { pageRequestSudoModeInternalFragment$key } from "./__generated__/pageRequestSudoModeInternalFragment.graphql";
 import type RequestSudoModeViewQueryNode from "./__generated__/pageRequestSudoModeViewQuery.graphql";
 import type { pageRequestSudoModeViewQuery } from "./__generated__/pageRequestSudoModeViewQuery.graphql";
 
 export const PageRequestSudoModeViewQuery = graphql`
   query pageRequestSudoModeViewQuery {	
+	...pageRequestSudoModeInternalFragment
+	...RequestSudoModeViewClientComponentFragment
+  }
+`;
+
+const PageRequestSudoModeInternalFragment = graphql`
+ fragment pageRequestSudoModeInternalFragment on Query @inline {
 	viewer {
 		__typename
 		... on Account {
@@ -37,16 +45,17 @@ export default async function RequestSudoModePage({
 	const redirectTo = getValidSudoModeRedirectURL(
 		redirectParam ? String(redirectParam) : null,
 	);
-	const { data } = await loadQuery();
+	const preloadedQuery = await loadQuery();
+
+	const data = readInlineData<pageRequestSudoModeInternalFragment$key>(
+		PageRequestSudoModeInternalFragment,
+		preloadedQuery.data,
+	);
 	invariant(data.viewer.__typename === "Account", "Account expected");
 
 	if (isSudoModeActive(data.viewer.sudoModeExpiresAt)) {
 		redirect(redirectTo);
 	}
 
-	return (
-		<div className="w-full mx-auto max-w-5xl h-full min-h-screen bg-background lg:bg-background-600">
-			<RequestSudoView />
-		</div>
-	);
+	return <RequestSudoModeViewClientComponent preloadedQuery={preloadedQuery} />;
 }

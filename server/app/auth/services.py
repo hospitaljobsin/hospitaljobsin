@@ -33,6 +33,7 @@ from webauthn.helpers.structs import (
     UserVerificationRequirement,
 )
 
+from app import auth
 from app.accounts.documents import Account, EmailVerificationToken
 from app.accounts.repositories import (
     AccountRepo,
@@ -58,6 +59,7 @@ from app.auth.exceptions import (
     WebAuthnCredentialNotFoundError,
 )
 from app.auth.repositories import (
+    OauthCredentialRepo,
     PasswordResetTokenRepo,
     SessionRepo,
     WebAuthnChallengeRepo,
@@ -83,6 +85,7 @@ class AuthService:
         password_reset_token_repo: PasswordResetTokenRepo,
         web_authn_credential_repo: WebAuthnCredentialRepo,
         webauthn_challenge_repo: WebAuthnChallengeRepo,
+        oauth_credential_repo: OauthCredentialRepo,
         email_sender: EmailSender,
         settings: Settings,
     ) -> None:
@@ -93,6 +96,7 @@ class AuthService:
         self._password_reset_token_repo = password_reset_token_repo
         self._web_authn_credential_repo = web_authn_credential_repo
         self._webauthn_challenge_repo = webauthn_challenge_repo
+        self._oauth_credential_repo = oauth_credential_repo
         self._email_sender = email_sender
         self._settings = settings
 
@@ -253,6 +257,7 @@ class AuthService:
             email=email,
             password=password,
             full_name=full_name,
+            auth_providers=["password"],
         )
 
         await self._profile_repo.create(account=account)
@@ -387,6 +392,7 @@ class AuthService:
             email=email,
             password=None,
             full_name=full_name,
+            auth_providers=["webauthn_credential"],
         )
 
         # delete the webauthn challenge after account creation
@@ -595,6 +601,20 @@ class AuthService:
                 full_name=user_info["name"],
                 # set initial password to None for the user
                 password=None,
+                auth_providers=["oauth_google"],
+            )
+
+        if "oauth_google" not in account.auth_providers:
+            await self._account_repo.update_auth_providers(
+                account=account,
+                auth_providers=account.auth_providers + ["oauth_google"],
+            )
+
+            # create an oauth credential for the user
+            await self._oauth_credential_repo.create(
+                account_id=account.id,
+                provider="google",
+                provider_user_id=user_info["sub"],
             )
 
         session_token = await self._session_repo.create(
@@ -768,19 +788,45 @@ class AuthService:
         return Ok(session)
 
     async def delete_web_authn_credential(
-        self, account_id: bson.ObjectId, web_authn_credential_id: bson.ObjectId
+        self, account: Account, web_authn_credential_id: bson.ObjectId
     ) -> Result[WebAuthnCredential, WebAuthnCredentialNotFoundError]:
         """Delete a WebAuthn credential by ID."""
-        # TODO: check if webauthn credentials are the only form of auth for the user,
-        # and that they have atleast one additional webauthn credential before deleting
-        web_authn_credential = (
-            await self._web_authn_credential_repo.get_by_account_credential_id(
-                account_id=account_id, web_authn_credential_id=web_authn_credential_id
+        webauthn_credentials = (
+            await self._web_authn_credential_repo.get_all_by_account_list(
+                account_id=account.id
             )
         )
+
+        web_authn_credential = next(
+            (
+                credential
+                for credential in webauthn_credentials
+                if credential.id == web_authn_credential_id
+            ),
+            None,
+        )
+
         if not web_authn_credential:
             return Err(WebAuthnCredentialNotFoundError())
+
+        if (
+            account.auth_providers == ["webauthn_credential"]
+            and len(webauthn_credentials) == 1
+        ):
+            # TODO: check if webauthn credentials are the only form of auth for the user,
+            # and that they have atleast one additional webauthn credential before deleting
+            # raise an error here
+            pass
+
         await self._web_authn_credential_repo.delete(web_authn_credential)
+
+        if len(webauthn_credentials) <= 1:
+            # update auth providers for the account
+            account.auth_providers.remove("webauthn_credential")
+            await self._account_repo.update_auth_providers(
+                account=account,
+                auth_providers=account.auth_providers,
+            )
         return Ok(web_authn_credential)
 
     async def generate_web_authn_credential_creation_options(
@@ -806,7 +852,7 @@ class AuthService:
     async def create_web_authn_credential(
         self,
         passkey_registration_response: dict[Any, Any],
-        account_id: bson.ObjectId,
+        account: Account,
         nickname: str,
     ) -> Result[WebAuthnCredential, InvalidPasskeyRegistrationCredentialError]:
         """Create a new webauthn credential."""
@@ -834,7 +880,7 @@ class AuthService:
             return Err(InvalidPasskeyRegistrationCredentialError())
 
         web_authn_credential = await self._web_authn_credential_repo.create(
-            account_id=account_id,
+            account_id=account.id,
             credential_id=verified_registration.credential_id,
             credential_public_key=verified_registration.credential_public_key,
             sign_count=verified_registration.sign_count,
@@ -843,6 +889,12 @@ class AuthService:
             transports=passkey_registration_credential.response.transports,
             nickname=nickname,
         )
+
+        if "webauthn_credential" not in account.auth_providers:
+            await self._account_repo.update_auth_providers(
+                account=account,
+                auth_providers=account.auth_providers + ["webauthn_credential"],
+            )
 
         return Ok(web_authn_credential)
 

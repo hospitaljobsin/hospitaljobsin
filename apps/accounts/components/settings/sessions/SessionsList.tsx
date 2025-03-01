@@ -100,7 +100,7 @@ export default function SessionsList({ root }: Props) {
 				))}
 				<div ref={observerRef} className="h-10" />
 				{isLoadingNext && <SessionsListSkeleton />}
-			</div>{" "}
+			</div>
 		</div>
 	);
 }

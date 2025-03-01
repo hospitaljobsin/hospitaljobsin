@@ -5,6 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.accounts.documents import Account, EmailVerificationToken, Profile
 from app.auth.documents import (
+    OAuthCredential,
     PasswordResetToken,
     Session,
     WebAuthnChallenge,
@@ -17,7 +18,10 @@ from app.organizations.documents import Organization, OrganizationMember
 def rebuild_models():
     """Rebuild models to update forward references."""
     from app.accounts.documents import Account  # noqa: F401
-    from app.auth.documents import WebAuthnCredential  # noqa: F401
+    from app.auth.documents import (
+        OAuthCredential,  # noqa: F401
+        WebAuthnCredential,  # noqa: F401
+    )
     from app.organizations.documents import OrganizationMember  # noqa: F401
 
     Account.model_rebuild()
@@ -51,6 +55,7 @@ async def initialize_database(database_url: str):
                 OrganizationMember,
                 WebAuthnCredential,
                 WebAuthnChallenge,
+                OAuthCredential,
             ],
         )
         yield
