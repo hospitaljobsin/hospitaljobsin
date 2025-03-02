@@ -38,9 +38,16 @@ uv sync -p 3.12 --frozen
 Create a `.env` file, referencing the template [here](./.env.example)
 
 
-## Local development
+## Development commands
+
+### 1. Generate GraphQL Schema
+Once you've modified code relevant to the GraphQL schema, you can generate a new schema using the following command:
+```bash
+uv run strawberry export-schema app.schema:schema > ../schema/schema.graphql
+```
+
+### 2. Run server
 After following the setup guide, the server can be run independently locally using the following command:
 ```bash
 uv run scripts/run_server.py
 ```
-
