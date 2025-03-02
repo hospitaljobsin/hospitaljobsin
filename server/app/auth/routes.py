@@ -30,7 +30,12 @@ async def oauth2_signin_google(
 
     redirect_uri = request.url_for("oauth2_signin_callback_google")
 
-    return await oauth_client.google.authorize_redirect(request, redirect_uri)
+    # ask Google to select an account every time
+    return await oauth_client.google.authorize_redirect(
+        request,
+        redirect_uri,
+        prompt="select_account",
+    )
 
 
 @auth_router.get("/callback/signin/google")
