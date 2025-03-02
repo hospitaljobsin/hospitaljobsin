@@ -160,7 +160,7 @@ ProfilePayload = Annotated[
 
 @strawberry.enum(name="AuthProvider")
 class AuthProviderEnum(Enum):
-    PASSWORD = "PASSWORD"
+    PASSWORD = "PASSWORD"  # noqa: S105
     WEBAUTHN_CREDENTIAL = "WEBAUTHN_CREDENTIAL"
     OAUTH_GOOGLE = "OAUTH_GOOGLE"
 

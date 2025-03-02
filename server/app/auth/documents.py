@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, ClassVar
 
 from beanie import Document, Indexed, Link, PydanticObjectId
 from pymongo import IndexModel
@@ -27,7 +27,7 @@ class PasswordResetToken(Document):
 
     class Settings:
         name = "password_reset_tokens"  # MongoDB collection name
-        indexes = [
+        indexes: ClassVar[list[IndexModel]] = [
             # expire password reset tokens after they cross the expiration timestamp
             IndexModel(
                 "expires_at",
@@ -60,7 +60,7 @@ class WebAuthnChallenge(Document):
 
     class Settings:
         name = "webauthn_challenges"  # MongoDB collection name
-        indexes = [
+        indexes: ClassVar[list[IndexModel]] = [
             # expire webauthn challenges after they cross the expiration timestamp
             IndexModel(
                 "expires_at",

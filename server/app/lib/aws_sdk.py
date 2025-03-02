@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 import aioboto3
 from types_aiobotocore_s3 import S3Client

@@ -26,12 +26,14 @@ async def load_organization_by_id(
     id_to_organization_map = {
         str(organization_id): organization
         for organization_id, organization in zip(
-            valid_ids, await organization_repo.get_many_by_ids(valid_ids)
+            valid_ids,
+            await organization_repo.get_many_by_ids(valid_ids),
+            strict=False,
         )
     }
 
     return [
-        id_to_organization_map.get(organization_id, None)
+        id_to_organization_map.get(organization_id)
         for organization_id in organization_ids
     ]
 
@@ -46,12 +48,12 @@ async def load_organization_by_slug(
 ) -> list[Organization | None]:
     """Load multiple organizations by their slugs."""
     # Map invalid IDs to `None` for a consistent response structure
-    slug_to_organization_map = {
-        slug: organization
-        for slug, organization in zip(
+    slug_to_organization_map = dict(
+        zip(
             organization_slugs,
             await organization_repo.get_many_by_slugs(organization_slugs),
+            strict=False,
         )
-    }
+    )
 
-    return [slug_to_organization_map.get(slug, None) for slug in organization_slugs]
+    return [slug_to_organization_map.get(slug) for slug in organization_slugs]

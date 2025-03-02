@@ -36,3 +36,88 @@ dev-dependencies = [
     "types-aioboto3[essential]>=13.4.0",
     "types-authlib>=1.4.0.20241230",
 ]
+
+[tool.mypy]
+plugins = ["pydantic.mypy", "strawberry.ext.mypy_plugin"]
+exclude = ["^.venv/"]
+
+strict = true
+follow_imports = "normal"
+ignore_missing_imports = false
+
+disallow_untyped_calls = false
+
+allow_redefinition = false
+disallow_any_explicit = false
+ignore_errors = false
+local_partial_types = true
+no_implicit_optional = true
+strict_optional = true
+warn_no_return = true
+warn_unused_ignores = false
+warn_return_any = false
+warn_unreachable = true
+
+pretty = true
+show_column_numbers = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = ["uvicorn.*"]
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+
+[tool.ruff]
+src = ["app", "tests"]
+lint.fixable = ["F", "E", "W", "I", "COM", "UP", "RUF"]
+lint.unfixable = [
+    "F841", # variable  is assigned to but never used
+]
+lint.select = ["ALL"]
+lint.ignore = [
+    "E501",    # line length
+    "ANN101",
+    "ANN102",
+    "D10",     # disable mandatory docstrings
+    "D203",    # one-blank-line-before-class
+    "D212",    # multi-line-summary-first-line
+    "PD",      # pandas-vet
+    "PLR0913", # too many arguments
+    "TCH001",
+    "TCH002",
+    "TCH003",
+    "EXE",
+    "COM812",
+    "ISC001",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*" = ["S101", "S105", "S106", "E712"]
+"migrations/*" = ["INP001"]
+"migrations/versions/*" = ["D400", "D415"]
+
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
+[tool.ruff.lint.mccabe]
+max-complexity = 6
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = []
+
+[tool.ruff.lint.pep8-naming]
+classmethod-decorators = ["classmethod"]
+staticmethod-decorators = ["staticmethod"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "parents"
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"starlette.status".msg = "Use http.HTTPStatus instead."
+"fastapi.status".msg = "Use http.HTTPStatus instead."
+"httpx.codes".msg = "Use http.HTTPStatus instead."

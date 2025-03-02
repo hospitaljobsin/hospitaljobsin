@@ -10,7 +10,6 @@ from strawberry.permission import PermissionExtension
 from strawberry.scalars import JSON
 from webauthn import options_to_json
 
-from app.accounts.repositories import AccountRepo
 from app.accounts.types import AccountType
 from app.auth.exceptions import (
     EmailInUseError,
@@ -138,7 +137,6 @@ class AuthMutation:
     @inject
     async def verify_email(
         self,
-        info: Info,
         email: Annotated[
             str,
             strawberry.argument(
@@ -248,7 +246,6 @@ class AuthMutation:
     @inject
     async def generate_passkey_registration_options(
         self,
-        info: Info,
         email: Annotated[
             str,
             strawberry.argument(
@@ -499,7 +496,6 @@ class AuthMutation:
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
-        account_repo: Annotated[AccountRepo, Inject],
     ) -> LogoutPayloadType:
         """Log out the current user."""
         await auth_service.logout(

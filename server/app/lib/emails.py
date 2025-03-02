@@ -17,11 +17,10 @@ def get_smtp_client(settings: Settings) -> SMTP:
             password=settings.email_password.get_secret_value(),
             username=settings.email_username,
         )
-    else:
-        return SMTP(
-            hostname=settings.email_host,
-            port=settings.email_port,
-        )
+    return SMTP(
+        hostname=settings.email_host,
+        port=settings.email_port,
+    )
 
 
 class EmailSender:

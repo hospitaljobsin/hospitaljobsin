@@ -102,27 +102,24 @@ class Paginator(Generic[ModelType, CursorType]):
         last: int | None,
     ) -> SearchCriteriaType:
         """Apply ordering on the search criteria."""
-
         if (self._reverse and last is None) or (last is not None and not self._reverse):
             if isinstance(search_criteria, AggregationQuery):
                 search_criteria.aggregation_pipeline.append(
                     {"$sort": {self._paginate_by: -1}}
                 )
                 return search_criteria
-            else:
-                return search_criteria.sort(
-                    -operator.attrgetter(self._paginate_by)(self._document_cls)
-                )
+            return search_criteria.sort(
+                -operator.attrgetter(self._paginate_by)(self._document_cls)
+            )
 
         if isinstance(search_criteria, AggregationQuery):
             search_criteria.aggregation_pipeline.append(
                 {"$sort": {self._paginate_by: 1}}
             )
             return search_criteria
-        else:
-            return search_criteria.sort(
-                +operator.attrgetter(self._paginate_by)(self._document_cls)
-            )
+        return search_criteria.sort(
+            +operator.attrgetter(self._paginate_by)(self._document_cls)
+        )
 
     def __apply_filters(
         self,
@@ -134,38 +131,34 @@ class Paginator(Generic[ModelType, CursorType]):
         """Apply pagination filters on the search criteria."""
         if after is not None:
             if isinstance(search_criteria, AggregationQuery):
-                filter = (
+                search_filter = (
                     {"$match": {self._paginate_by: {"$lt": after}}}
                     if self._reverse
                     else {"$match": {self._paginate_by: {"$gt": after}}}
                 )
-                search_criteria.aggregation_pipeline.append(filter)
+                search_criteria.aggregation_pipeline.append(search_filter)
                 return search_criteria
-            else:
-                direction = (
-                    operator.attrgetter(self._paginate_by)(self._document_cls) < after
-                    if self._reverse
-                    else operator.attrgetter(self._paginate_by)(self._document_cls)
-                    > after
-                )
-                return search_criteria.find(direction)
+            direction = (
+                operator.attrgetter(self._paginate_by)(self._document_cls) < after
+                if self._reverse
+                else operator.attrgetter(self._paginate_by)(self._document_cls) > after
+            )
+            return search_criteria.find(direction)
         if before is not None:
             if isinstance(search_criteria, AggregationQuery):
-                filter = (
+                search_filter = (
                     {"$match": {self._paginate_by: {"$gt": before}}}
                     if self._reverse
                     else {"$match": {self._paginate_by: {"$lt": before}}}
                 )
-                search_criteria.aggregation_pipeline.append(filter)
+                search_criteria.aggregation_pipeline.append(search_filter)
                 return search_criteria
-            else:
-                direction = (
-                    operator.attrgetter(self._paginate_by)(self._document_cls) > before
-                    if self._reverse
-                    else operator.attrgetter(self._paginate_by)(self._document_cls)
-                    < before
-                )
-                return search_criteria.find(direction)
+            direction = (
+                operator.attrgetter(self._paginate_by)(self._document_cls) > before
+                if self._reverse
+                else operator.attrgetter(self._paginate_by)(self._document_cls) < before
+            )
+            return search_criteria.find(direction)
         return search_criteria
 
     async def paginate(

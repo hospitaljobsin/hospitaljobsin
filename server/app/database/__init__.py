@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from beanie import init_beanie
@@ -15,24 +16,27 @@ from app.jobs.documents import Job, SavedJob
 from app.organizations.documents import Organization, OrganizationMember
 
 
-def rebuild_models():
+def rebuild_models() -> None:
     """Rebuild models to update forward references."""
-    from app.accounts.documents import Account  # noqa: F401
+    from app.accounts.documents import Account
     from app.auth.documents import (
-        OAuthCredential,  # noqa: F401
-        WebAuthnCredential,  # noqa: F401
+        OAuthCredential,
+        WebAuthnCredential,
     )
-    from app.organizations.documents import OrganizationMember  # noqa: F401
+    from app.organizations.documents import OrganizationMember
 
     Account.model_rebuild()
 
     WebAuthnCredential.model_rebuild()
 
+    OAuthCredential.model_rebuild()
+
     OrganizationMember.model_rebuild()
 
 
 @asynccontextmanager
-async def initialize_database(database_url: str):
+async def initialize_database(database_url: str) -> AsyncGenerator[None, None]:
+    """Initialize the database."""
     client: AsyncIOMotorClient = AsyncIOMotorClient(
         database_url,
         connectTimeoutMS=1000,

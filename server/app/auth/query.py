@@ -7,7 +7,6 @@ from result import Err
 
 from app.auth.exceptions import PasswordResetTokenNotFoundError
 from app.auth.services import AuthService
-from app.context import Info
 
 from .types import (
     PasswordResetTokenNotFoundErrorType,
@@ -25,7 +24,6 @@ class AuthQuery:
     @inject
     async def password_reset_token(
         self,
-        info: Info,
         auth_service: Annotated[AuthService, Inject],
         reset_token: Annotated[
             str,

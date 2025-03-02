@@ -1,5 +1,5 @@
 from datetime import UTC, date, datetime, timedelta
-from typing import TYPE_CHECKING, Annotated, Literal
+from typing import TYPE_CHECKING, Annotated, ClassVar, Literal
 
 from beanie import BackLink, Document, Indexed, Link
 from pydantic import BaseModel, Field
@@ -56,7 +56,7 @@ class Account(Document):
     has_onboarded: bool
     updated_at: datetime | None = None
 
-    auth_providers: list[AuthProvider] = []
+    auth_providers: list[AuthProvider]
 
     profile: Link["Profile"] | None = None
 
@@ -80,7 +80,7 @@ class EmailVerificationToken(Document):
     @property
     def is_expired(self) -> bool:
         """Check if the token is expired."""
-        return datetime.utcnow() >= (self.expires_at)
+        return datetime.now(UTC) >= (self.expires_at)
 
     @property
     def is_cooled_down(self) -> bool:
@@ -98,6 +98,7 @@ class EmailVerificationToken(Document):
     def cooldown_remaining_seconds(self) -> int:
         """
         Calculate remaining cooldown seconds.
+
         Returns 0 if cooldown has passed or token is invalid.
         """
         if self.is_cooled_down:
@@ -114,7 +115,7 @@ class EmailVerificationToken(Document):
 
     class Settings:
         name = "email_verification_tokens"
-        indexes = [
+        indexes: ClassVar[list[IndexModel]] = [
             # expire verification tokens after they cross the expiration timestamp
             IndexModel(
                 "expires_at",

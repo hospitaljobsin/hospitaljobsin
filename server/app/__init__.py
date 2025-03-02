@@ -1,5 +1,4 @@
-from re import A
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 from aioinject.ext.fastapi import AioInjectMiddleware
 from asgi_correlation_id import CorrelationIdMiddleware
@@ -56,7 +55,7 @@ def add_middleware(app: FastAPI, settings: Settings) -> None:
     )
 
 
-async def app_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     """Initialize the database when the app starts."""
     settings = Settings()
     async with initialize_database(

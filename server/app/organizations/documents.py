@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, ClassVar, Literal
 
 from beanie import BackLink, Document, Indexed, Link
 from pydantic import Field
@@ -31,7 +31,7 @@ class OrganizationMember(Document):
 
     class Settings:
         name = "organization_members"
-        indexes = [
+        indexes: ClassVar[list[IndexModel]] = [
             IndexModel(
                 [("organization", 1), ("account", 1)],
                 unique=True,

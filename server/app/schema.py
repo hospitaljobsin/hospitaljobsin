@@ -1,6 +1,6 @@
 from aioinject.ext.strawberry import AioInjectExtension
 from strawberry import Schema
-from strawberry.extensions import ParserCache, SchemaExtension, ValidationCache
+from strawberry.extensions import ParserCache, ValidationCache
 from strawberry.relay import GlobalID
 from strawberry.tools import merge_types
 
@@ -40,13 +40,6 @@ mutation = merge_types(
 )
 
 
-class MyExtension(SchemaExtension):
-    def on_validate(self):
-        print("GraphQL operation start")
-        print("Query:", self.execution_context.query)
-        yield
-
-
 schema = Schema(
     query=query,
     mutation=mutation,
@@ -56,7 +49,6 @@ schema = Schema(
         ),
         ParserCache(maxsize=128),
         ValidationCache(maxsize=128),
-        MyExtension,
     ],
     scalar_overrides={GlobalID: ID},
 )

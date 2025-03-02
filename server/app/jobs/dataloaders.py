@@ -19,10 +19,14 @@ async def load_job_by_id(
     # Map invalid IDs to `None` for a consistent response structure
     id_to_job_map = {
         str(job_id): job
-        for job_id, job in zip(valid_ids, await job_repo.get_many_by_ids(valid_ids))
+        for job_id, job in zip(
+            valid_ids,
+            await job_repo.get_many_by_ids(valid_ids),
+            strict=False,
+        )
     }
 
-    return [id_to_job_map.get(job_id, None) for job_id in job_ids]
+    return [id_to_job_map.get(job_id) for job_id in job_ids]
 
 
 @inject
@@ -31,15 +35,15 @@ async def load_job_by_slug(
     job_repo: Annotated[JobRepo, Inject],
 ) -> list[Job | None]:
     """Load multiple jobs by their slugs."""
-    slug_to_company_map = {
-        slug: company
-        for slug, company in zip(
+    slug_to_company_map = dict(
+        zip(
             job_slugs,
             await job_repo.get_many_by_slugs(job_slugs),
+            strict=False,
         )
-    }
+    )
 
-    return [slug_to_company_map.get(slug, None) for slug in job_slugs]
+    return [slug_to_company_map.get(slug) for slug in job_slugs]
 
 
 @inject
@@ -57,7 +61,9 @@ async def load_saved_job_by_id(
     id_to_job_map = {
         (str(account_id), str(job_id)): job
         for (account_id, job_id), job in zip(
-            valid_ids, await saved_job_repo.get_many_by_ids(valid_ids)
+            valid_ids,
+            await saved_job_repo.get_many_by_ids(valid_ids),
+            strict=False,
         )
     }
 

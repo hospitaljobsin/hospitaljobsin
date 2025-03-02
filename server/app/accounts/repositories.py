@@ -1,7 +1,7 @@
 import hashlib
-import random
+import secrets
 import string
-from datetime import date, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 from beanie import PydanticObjectId, WriteRules
 from beanie.operators import In
@@ -123,7 +123,7 @@ class EmailVerificationTokenRepo:
             token_hash=self.hash_verification_token(
                 token=verification_token,
             ),
-            expires_at=datetime.now()
+            expires_at=datetime.now(UTC)
             + timedelta(
                 seconds=EMAIL_VERIFICATION_EXPIRES_IN,
             ),
@@ -153,16 +153,14 @@ class EmailVerificationTokenRepo:
     def generate_verification_token() -> str:
         """Generate a new verification token."""
         return "".join(
-            random.choices(
-                string.ascii_uppercase + string.digits,
-                k=EMAIL_VERIFICATION_TOKEN_LENGTH,
-            )
+            secrets.choice(string.ascii_uppercase + string.digits)
+            for _ in range(EMAIL_VERIFICATION_TOKEN_LENGTH)
         )
 
     @staticmethod
     def hash_verification_token(token: str) -> str:
         """Hash verification token."""
-        return hashlib.md5(token.encode("utf-8")).hexdigest()
+        return hashlib.md5(token.encode("utf-8")).hexdigest()  # noqa: S324
 
 
 class ProfileRepo:
@@ -198,15 +196,15 @@ class ProfileRepo:
         self,
         profile: Profile,
         address: Address,
+        languages: list[Language],
         gender: str | None = None,
         date_of_birth: date | None = None,
         marital_status: str | None = None,
-        languages: list[Language] = [],
         category: str | None = None,
         current_job: CurrentJob | None = None,
         total_job_experience: float | None = None,
     ) -> Profile:
-        """update a profile."""
+        """Update a profile."""
         profile.gender = gender
         profile.date_of_birth = date_of_birth
         profile.address = address

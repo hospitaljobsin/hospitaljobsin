@@ -14,15 +14,12 @@ from app.config import Settings
 async def get_session_token(
     request: Request, settings: Annotated[Settings, Inject]
 ) -> str | None:
-    """
-    Get the session token from the request cookies.
-    """
+    """Get the session token from the request cookies."""
     return request.cookies.get(settings.user_session_cookie_name)
 
 
 @inject
 async def get_current_user(
-    request: Request,
     session_token: Annotated[
         str | None,
         Depends(
@@ -31,9 +28,7 @@ async def get_current_user(
     ],
     session_repo: Annotated[SessionRepo, Inject],
 ) -> Account:
-    """
-    Get the current user from the request.
-    """
+    """Get the current user from the request."""
     if session_token is None:
         raise HTTPException(
             status_code=HTTPStatus.UNAUTHORIZED,

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import Annotated, ClassVar, Literal
 
 import pymongo
 from beanie import Document, Indexed, Link
@@ -44,7 +44,7 @@ class Job(Document):
         name = "jobs"
 
     class Config:
-        indexes = [
+        indexes: ClassVar[list[IndexModel]] = [
             IndexModel(
                 [
                     ("title", pymongo.TEXT),
@@ -98,7 +98,7 @@ class SavedJob(Document):
 
     class Settings:
         name = "saved_jobs"
-        indexes = [
+        indexes: ClassVar[list[IndexModel]] = [
             IndexModel(
                 ["account", "job"],
                 name="account_job_unique_secondary_index",

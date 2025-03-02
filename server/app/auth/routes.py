@@ -23,7 +23,7 @@ async def oauth2_signin_google(
     oauth_client: Annotated[OAuth, Inject],
     redirect_uri: Annotated[str, Query()],
     user_agent: Annotated[str | None, Header()] = "unknown",
-):
+) -> RedirectResponse:
     """Signin with Google OAuth2."""
     request.session["user_agent"] = user_agent
     request.session["redirect_uri"] = redirect_uri
@@ -41,7 +41,7 @@ async def oauth2_signin_callback_google(
     auth_service: Annotated[AuthService, Inject],
     settings: Annotated[Settings, Inject],
 ) -> RedirectResponse:
-    """Callback for Google OAuth2 signin."""
+    """Google OAuth2 signin callback."""
     token = await oauth_client.google.authorize_access_token(request)
 
     user_info = token["userinfo"]
@@ -77,8 +77,7 @@ async def oauth2_request_sudo_mode_google(
     request: Request,
     oauth_client: Annotated[OAuth, Inject],
     redirect_uri: Annotated[str, Query()],
-    user_agent: Annotated[str | None, Header()] = "unknown",
-):
+) -> RedirectResponse:
     """Signin with Google OAuth2."""
     request.session["redirect_uri"] = redirect_uri
 

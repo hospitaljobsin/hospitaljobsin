@@ -14,7 +14,7 @@ class OrganizationService:
         organization_repo: OrganizationRepo,
         organization_member_repo: OrganizationMemberRepo,
         s3_client: S3Client,
-    ):
+    ) -> None:
         self._organization_repo = organization_repo
         self._organization_member_repo = organization_member_repo
         self._s3_client = s3_client
@@ -66,7 +66,7 @@ class OrganizationService:
 
 
 class OrganizationMemberService:
-    def __init__(self, organization_member_repo: OrganizationMemberRepo):
+    def __init__(self, organization_member_repo: OrganizationMemberRepo) -> None:
         self._organization_member_repo = organization_member_repo
 
     async def is_admin(self, account_id: ObjectId, organization_id: ObjectId) -> bool:

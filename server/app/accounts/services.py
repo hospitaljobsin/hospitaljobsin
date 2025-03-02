@@ -10,7 +10,7 @@ from app.base.models import Address
 
 
 class AccountService:
-    def __init__(self, account_repo: AccountRepo):
+    def __init__(self, account_repo: AccountRepo) -> None:
         self._account_repo = account_repo
 
     async def update(
@@ -24,7 +24,11 @@ class AccountService:
 
 
 class ProfileService:
-    def __init__(self, profile_repo: ProfileRepo, account_repo: AccountRepo):
+    def __init__(
+        self,
+        profile_repo: ProfileRepo,
+        account_repo: AccountRepo,
+    ) -> None:
         self._profile_repo = profile_repo
         self._account_repo = account_repo
 

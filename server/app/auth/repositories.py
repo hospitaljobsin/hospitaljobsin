@@ -1,6 +1,6 @@
 import hashlib
 import secrets
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from beanie import WriteRules
 from beanie.operators import In
@@ -38,7 +38,7 @@ class SessionRepo:
             token_hash=self.hash_session_token(
                 token=session_token,
             ),
-            expires_at=datetime.now()
+            expires_at=datetime.now(UTC)
             + timedelta(
                 seconds=USER_SESSION_EXPIRES_IN,
             ),
@@ -57,7 +57,7 @@ class SessionRepo:
     @staticmethod
     def hash_session_token(token: str) -> str:
         """Hash session token."""
-        return hashlib.md5(token.encode("utf-8")).hexdigest()
+        return hashlib.md5(token.encode("utf-8")).hexdigest()  # noqa: S324
 
     async def get(self, token: str, *, fetch_account: bool = False) -> Session | None:
         """Get session by token."""
@@ -150,7 +150,7 @@ class PasswordResetTokenRepo:
         """Create a new password reset token."""
         token = self.generate_password_reset_token()
         token_hash = self.hash_password_reset_token(token)
-        expires_at = datetime.now() + timedelta(seconds=PASSWORD_RESET_EXPIRES_IN)
+        expires_at = datetime.now(UTC) + timedelta(seconds=PASSWORD_RESET_EXPIRES_IN)
 
         password_reset_token = PasswordResetToken(
             account=account,
@@ -169,7 +169,7 @@ class PasswordResetTokenRepo:
     @staticmethod
     def hash_password_reset_token(token: str) -> str:
         """Hash password reset token."""
-        return hashlib.md5(token.encode("utf-8")).hexdigest()
+        return hashlib.md5(token.encode("utf-8")).hexdigest()  # noqa: S324
 
     async def get(self, token: str, email: str) -> PasswordResetToken | None:
         """Get password reset token by token."""
@@ -190,6 +190,7 @@ class PasswordResetTokenRepo:
 class WebAuthnCredentialRepo:
     async def create(
         self,
+        *,
         account_id: ObjectId,
         credential_id: bytes,
         credential_public_key: bytes,
@@ -289,7 +290,9 @@ class WebAuthnChallengeRepo:
     async def create(
         self, challenge: bytes, generated_account_id: ObjectId
     ) -> WebAuthnChallenge:
-        expires_at = datetime.now() + timedelta(seconds=WEBAUTHN_CHALLENGE_EXPIRES_IN)
+        expires_at = datetime.now(UTC) + timedelta(
+            seconds=WEBAUTHN_CHALLENGE_EXPIRES_IN
+        )
         webauthn_challenge = WebAuthnChallenge(
             challenge=challenge,
             generated_account_id=generated_account_id,

@@ -79,7 +79,6 @@ class JobRepo:
         after: str | None = None,
     ) -> PaginatedResult[Job, ObjectId]:
         """Get a paginated result of jobs."""
-
         paginator: Paginator[Job, ObjectId] = Paginator(
             reverse=True,
             document_cls=Job,
@@ -108,7 +107,6 @@ class JobRepo:
         after: str | None = None,
     ) -> PaginatedResult[Job, ObjectId]:
         """Get a paginated result of jobs."""
-
         paginator: Paginator[Job, ObjectId] = Paginator(
             reverse=True,
             document_cls=Job,
@@ -168,7 +166,6 @@ class SavedJobRepo:
         after: str | None = None,
     ) -> PaginatedResult[SavedJob, ObjectId]:
         """Get a paginated result of saved jobs for the given account."""
-
         paginator: Paginator[SavedJob, ObjectId] = Paginator(
             reverse=True,
             document_cls=SavedJob,

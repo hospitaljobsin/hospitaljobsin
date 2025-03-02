@@ -82,7 +82,6 @@ class OrganizationMutation:
     @inject
     async def create_organization_logo_presigned_url(
         self,
-        info: AuthInfo,
         organization_service: Annotated[OrganizationService, Inject],
     ) -> CreateOrganizationLogoPresignedURLPayloadType:
         """Create an organization logo presigned url."""

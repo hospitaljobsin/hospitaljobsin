@@ -1,4 +1,4 @@
-import uvicorn
+import uvicorn  # noqa: INP001
 from app.config import Settings
 from app.logger import build_server_log_config, setup_logging
 

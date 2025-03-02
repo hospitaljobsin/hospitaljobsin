@@ -297,6 +297,8 @@ class AuthService:
         PublicKeyCredentialCreationOptions, InvalidRecaptchaTokenError | EmailInUseError
     ]:
         """Generate registration options for registering via a passkey."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
             return Err(EmailInUseError())
@@ -580,7 +582,8 @@ class AuthService:
     @staticmethod
     def check_password_strength(password: str) -> bool:
         """
-        Checks if a password is strong.
+        Check if a password is strong.
+
         A strong password must:
         - Be at least 8 characters long
         - Contain at least one lowercase letter
@@ -620,7 +623,7 @@ class AuthService:
             # signing in with Google
             await self._account_repo.update_auth_providers(
                 account=account,
-                auth_providers=account.auth_providers + ["oauth_google"],
+                auth_providers=[*account.auth_providers, "oauth_google"],
             )
 
             # create an oauth credential for the user
@@ -653,7 +656,7 @@ class AuthService:
         self, request: Request, response: Response, value: str
     ) -> None:
         is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
-        secure = False if is_localhost else True
+        secure = not is_localhost
         response.set_cookie(
             key=self._settings.user_session_cookie_name,
             value=value,
@@ -673,7 +676,7 @@ class AuthService:
     ) -> None:
         """Log out the current user."""
         is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
-        secure = False if is_localhost else True
+        secure = not is_localhost
 
         await self._session_repo.delete_by_token(token=session_token)
 
@@ -710,7 +713,7 @@ class AuthService:
             return Err(InvalidRecaptchaTokenError())
         existing_user = await self._account_repo.get_by_email(email=email)
         if not existing_user:
-            return
+            return None
 
         password_reset_token = await self._password_reset_token_repo.create(
             account=existing_user
@@ -742,7 +745,6 @@ class AuthService:
         response: Response,
     ) -> Result[Account, InvalidPasswordResetTokenError | PasswordNotStrongError]:
         """Reset a user's password."""
-
         existing_reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
             email=email,
@@ -762,8 +764,10 @@ class AuthService:
             # user is setting their password for the first time
             await self._account_repo.update_auth_providers(
                 account=existing_reset_token.account,
-                auth_providers=existing_reset_token.account.auth_providers
-                + ["password"],
+                auth_providers=[
+                    *existing_reset_token.account.auth_providers,
+                    "password",
+                ],
             )
 
         # delete all existing user sessions
@@ -924,7 +928,7 @@ class AuthService:
             # user is creating their first webauthn credential
             await self._account_repo.update_auth_providers(
                 account=account,
-                auth_providers=account.auth_providers + ["webauthn_credential"],
+                auth_providers=[*account.auth_providers, "webauthn_credential"],
             )
 
         return Ok(web_authn_credential)

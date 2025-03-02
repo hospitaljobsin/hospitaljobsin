@@ -24,10 +24,12 @@ async def load_account_by_id(
     id_to_account_map = {
         str(account_id): account
         for account_id, account in zip(
-            valid_ids, await account_repo.get_many_by_ids(valid_ids)
+            valid_ids,
+            await account_repo.get_many_by_ids(valid_ids),
+            strict=False,
         )
     }
-    return [id_to_account_map.get(account_id, None) for account_id in account_ids]
+    return [id_to_account_map.get(account_id) for account_id in account_ids]
 
 
 @inject
@@ -45,7 +47,9 @@ async def load_profile_by_id(
     id_to_profile_map = {
         str(profile_id): profile
         for profile_id, profile in zip(
-            valid_ids, await profile_repo.get_many_by_ids(valid_ids)
+            valid_ids,
+            await profile_repo.get_many_by_ids(valid_ids),
+            strict=False,
         )
     }
-    return [id_to_profile_map.get(profile_id, None) for profile_id in profile_ids]
+    return [id_to_profile_map.get(profile_id) for profile_id in profile_ids]
