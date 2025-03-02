@@ -389,6 +389,7 @@ export default function LoginForm() {
 							startContent={<FingerprintIcon size={20} />}
 							onPress={handlePasskeyLogin}
 							spinnerPlacement="end"
+							isDisabled={isPasswordLoginMutationInFlight}
 							isLoading={
 								isPasskeyLoginMutationInFlight ||
 								isGenerateAuthenticationOptionsMutationInFlight ||
