@@ -2,8 +2,6 @@
 
 from typing import Literal
 
-from authlib.integrations.flask_client import OAuth
-
 SUPPORT_EMAIL = "support@example.com"
 
 APP_NAME = "PulseWork"
