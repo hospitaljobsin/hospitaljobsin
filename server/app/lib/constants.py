@@ -2,6 +2,8 @@
 
 from typing import Literal
 
+from authlib.integrations.flask_client import OAuth
+
 SUPPORT_EMAIL = "support@example.com"
 
 APP_NAME = "PulseWork"
@@ -36,3 +38,5 @@ SUDO_MODE_EXPIRES_IN = 60 * 15  # 15 minutes
 
 # Auth Providers
 AuthProvider = Literal["password", "webauthn_credential", "oauth_google"]
+
+OAuthProvider = Literal["google"]

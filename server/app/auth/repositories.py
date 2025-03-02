@@ -21,6 +21,7 @@ from app.lib.constants import (
     PASSWORD_RESET_EXPIRES_IN,
     USER_SESSION_EXPIRES_IN,
     WEBAUTHN_CHALLENGE_EXPIRES_IN,
+    OAuthProvider,
 )
 
 
@@ -313,7 +314,7 @@ class OauthCredentialRepo:
     async def create(
         self,
         account_id: ObjectId,
-        provider: Literal["google"],
+        provider: OAuthProvider,
         provider_user_id: str,
     ) -> OAuthCredential:
         """Create a new OAuth credential."""

@@ -6,6 +6,7 @@ from pymongo import IndexModel
 from webauthn.helpers.structs import AuthenticatorTransport
 
 from app.accounts.documents import Account
+from app.lib.constants import OAuthProvider
 
 
 class Session(Document):
@@ -69,7 +70,7 @@ class WebAuthnChallenge(Document):
 
 
 class OAuthCredential(Document):
-    provider: Annotated[str, Indexed()]  # e.g., "google"
+    provider: Annotated[OAuthProvider, Indexed()]  # e.g., "google"
     provider_user_id: str  # unique id from the provider
     account: Link[Account]
 
