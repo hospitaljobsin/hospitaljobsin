@@ -112,6 +112,9 @@ export default function PasswordAuthentication({
 					window.location.href = redirectTo;
 				}
 			},
+			onError(error) {
+				onAuthEnd();
+			},
 			updater(store) {
 				store.invalidateStore();
 			},

@@ -127,6 +127,8 @@ export default function PasskeyAuthentication({
 											) {
 												// handle recaptcha failure
 												alert("Recaptcha failed. Please try again.");
+
+												onAuthEnd();
 											} else if (
 												response.requestSudoModeWithPasskey.__typename ===
 												"InvalidPasskeyAuthenticationCredentialError"
@@ -135,15 +137,20 @@ export default function PasskeyAuthentication({
 												alert(
 													"Invalid passkey registration credential. Please try again.",
 												);
+												onAuthEnd();
 											} else if (
 												response.requestSudoModeWithPasskey.__typename ===
 												"WebAuthnChallengeNotFoundError"
 											) {
 												// TODO: show a toast here
+
+												onAuthEnd();
 											} else {
 												router.replace(redirectTo);
-												onAuthEnd();
 											}
+										},
+										onError(error) {
+											onAuthEnd();
 										},
 										updater(store) {
 											store.invalidateStore();
