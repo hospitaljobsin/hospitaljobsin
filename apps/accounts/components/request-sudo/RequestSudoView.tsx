@@ -46,6 +46,8 @@ export default function RequestSudoView({
 		null,
 	);
 
+	const [isAuthenticating, setIsAuthenticating] = useState(false);
+
 	useEffect(() => {
 		if (oauth2Error !== null) {
 			setOauth2ErrorMessage(oauth2Error);
@@ -101,7 +103,13 @@ export default function RequestSudoView({
 					</p>
 				</CardHeader>
 				<CardBody className="max-w-lg w-full flex flex-col gap-12 pt-12 mx-auto">
-					{hasPassword && <PasswordAuthentication />}
+					{hasPassword && (
+						<PasswordAuthentication
+							isDisabled={isAuthenticating}
+							onAuthStart={() => setIsAuthenticating(true)}
+							onAuthEnd={() => setIsAuthenticating(false)}
+						/>
+					)}
 					{showDivider && (
 						<div className="w-full flex items-center justify-center gap-6">
 							<Divider className="flex-1" />
@@ -109,7 +117,13 @@ export default function RequestSudoView({
 							<Divider className="flex-1" />
 						</div>
 					)}
-					{hasWebauthn && <PasskeyAuthentication />}
+					{hasWebauthn && (
+						<PasskeyAuthentication
+							isDisabled={isAuthenticating}
+							onAuthStart={() => setIsAuthenticating(true)}
+							onAuthEnd={() => setIsAuthenticating(false)}
+						/>
+					)}
 					{showGoogleOAuth && (
 						<Button
 							fullWidth

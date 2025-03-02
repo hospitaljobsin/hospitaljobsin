@@ -47,7 +47,15 @@ const PasskeyAuthenticationMutation = graphql`
   }
 `;
 
-export default function PasskeyAuthentication() {
+export default function PasskeyAuthentication({
+	isDisabled,
+	onAuthStart,
+	onAuthEnd,
+}: {
+	isDisabled: boolean;
+	onAuthStart: () => void;
+	onAuthEnd: () => void;
+}) {
 	const params = useSearchParams();
 	const router = useRouter();
 	const redirectTo = getValidSudoModeRedirectURL(params.get("return_to"));
@@ -68,8 +76,10 @@ export default function PasskeyAuthentication() {
 	const { executeRecaptcha } = useGoogleReCaptcha();
 
 	async function handlePasskeyAuthentication() {
+		onAuthStart();
 		if (!executeRecaptcha) {
 			console.log("Recaptcha not loaded");
+			onAuthEnd();
 			return;
 		}
 		const token = await executeRecaptcha(
@@ -86,6 +96,7 @@ export default function PasskeyAuthentication() {
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
+					onAuthEnd();
 				} else if (
 					response.generateAuthenticationOptions.__typename ===
 					"GenerateAuthenticationOptionsSuccess"
@@ -131,6 +142,7 @@ export default function PasskeyAuthentication() {
 												// TODO: show a toast here
 											} else {
 												router.replace(redirectTo);
+												onAuthEnd();
 											}
 										},
 										updater(store) {
@@ -140,14 +152,19 @@ export default function PasskeyAuthentication() {
 								})
 								.catch((error) => {
 									console.error(error);
+									onAuthEnd();
 									// TODO: show toast here
 								});
 						})
 						.catch((error) => {
 							// TODO: show toast here
 							setIsPasskeysPromptActive(false);
+							onAuthEnd();
 						});
 				}
+			},
+			onError: () => {
+				onAuthEnd();
 			},
 		});
 	}
@@ -158,6 +175,7 @@ export default function PasskeyAuthentication() {
 			startContent={<Fingerprint size={20} />}
 			variant="ghost"
 			size="lg"
+			isDisabled={isDisabled}
 			onPress={handlePasskeyAuthentication}
 			isLoading={
 				isPasskeyAuthenticateMutationInFlight ||

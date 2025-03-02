@@ -39,7 +39,15 @@ const passwordAuthenticationSchema = z.object({
 	password: z.string().min(1, "This field is required"),
 });
 
-export default function PasswordAuthentication() {
+export default function PasswordAuthentication({
+	isDisabled,
+	onAuthStart,
+	onAuthEnd,
+}: {
+	isDisabled: boolean;
+	onAuthStart: () => void;
+	onAuthEnd: () => void;
+}) {
 	const params = useSearchParams();
 	const redirectTo = getValidSudoModeRedirectURL(params.get("return_to"));
 
@@ -64,8 +72,10 @@ export default function PasswordAuthentication() {
 	async function onSubmit(
 		values: z.infer<typeof passwordAuthenticationSchema>,
 	) {
+		onAuthStart();
 		if (!executeRecaptcha) {
 			console.log("Recaptcha not loaded");
+			onAuthEnd();
 			return;
 		}
 		const token = await executeRecaptcha("login_password");
@@ -82,12 +92,14 @@ export default function PasswordAuthentication() {
 					setError("password", {
 						message: response.requestSudoModeWithPassword.message,
 					});
+					onAuthEnd();
 				} else if (
 					response.requestSudoModeWithPassword.__typename ===
 					"InvalidRecaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
+					onAuthEnd();
 				} else if (
 					response.requestSudoModeWithPassword.__typename ===
 					"InvalidSignInMethodError"
@@ -95,6 +107,7 @@ export default function PasswordAuthentication() {
 					// race condition: user removed their password inbetween
 					// the time they submitted the sudo mode request and submitted it
 					alert("Invalid sign-in method. Please try again.");
+					onAuthEnd();
 				} else {
 					window.location.href = redirectTo;
 				}
@@ -144,6 +157,7 @@ export default function PasswordAuthentication() {
 				</div>
 				<Button
 					fullWidth
+					isDisabled={isDisabled}
 					isLoading={isSubmitting || isPasswordLoginMutationInFlight}
 					type="submit"
 					size="lg"
