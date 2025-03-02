@@ -15,7 +15,7 @@ class IsAuthenticated(BasePermission):
         return info.context.get("current_user") is not None
 
 
-class IsInSudoMode(BasePermission):
+class RequiresSudoMode(BasePermission):
     message = "Action requires sudo mode"
     error_extensions: ClassVar[dict[str, str]] = {"code": "REQUIRES_SUDO_MODE"}
 

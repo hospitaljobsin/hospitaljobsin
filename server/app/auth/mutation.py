@@ -28,7 +28,7 @@ from app.auth.exceptions import (
     WebAuthnChallengeNotFoundError,
     WebAuthnCredentialNotFoundError,
 )
-from app.auth.permissions import IsAuthenticated, IsInSudoMode
+from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.context import AuthInfo, Info
 
 from .services import AuthService
@@ -597,7 +597,7 @@ class AuthMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    IsInSudoMode(),
+                    RequiresSudoMode(),
                 ],
             )
         ],
@@ -623,7 +623,7 @@ class AuthMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    IsInSudoMode(),
+                    RequiresSudoMode(),
                 ],
             )
         ],
@@ -663,7 +663,7 @@ class AuthMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    IsInSudoMode(),
+                    RequiresSudoMode(),
                 ],
             )
         ],
@@ -749,7 +749,7 @@ class AuthMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    IsInSudoMode(),
+                    RequiresSudoMode(),
                 ],
             )
         ],
@@ -776,7 +776,7 @@ class AuthMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    IsInSudoMode(),
+                    RequiresSudoMode(),
                 ],
             )
         ],
