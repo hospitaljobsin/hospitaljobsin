@@ -1,10 +1,46 @@
-Server auth idea: inspired by MrBeast's viewstats.com
+# Pulsework API
+> *GraphQL API Server Powering Pulsework*
 
-send an email verification token which is valid for 10-15 minutes
 
-have a cron job that cleans up verification tokens. if the tokens are expired and haven't been used to activate the account,
-delete the token and the corresponding account as well.
+## Tech Stack
+- [FastAPI](https://fastapi.tiangolo.com/) - Web framework
+- [Pydantic](https://docs.pydantic.dev/) - Data validation library
+- [Uvicorn](https://www.uvicorn.org/) - ASGI server
+- [Beanie](https://beanie-odm.dev/) - MongoDB ODM
+- [Strawberry GraphQL](https://strawberry.rocks/) - GraphQL library
+- [Result](https://github.com/rustedpy/result) - Error handling
+- [Aioinject](https://github.com/thirvondukr/aioinject) - Async DI library
+- [Authlib](https://authlib.org/) - OAuth2 client library
+- [Structlog](https://www.structlog.org/) - Structured logging
+- [MongoDB](https://www.mongodb.com/) - Database
 
-display a message:
+and other packages from [pyproject.toml](./pyproject.toml) 💖
 
-the code expires in 10 minutes. If you miss it, you'll have to sign up again!
+## GraphQL Schema
+
+The generated GraphQL Schema can be read [here](../schema/schema.graphql)
+
+## Setup Guide
+
+### Prerequisites
+
+| Tool    | Minimum Tested Version  | Description        |
+|---------|-------------------------|--------------------|
+| Python  | 3.12                    | Language           |
+| UV      | 0.4                     | Package Manager    |
+
+1. Install dependencies
+```bash
+uv sync -p 3.12 --frozen
+```
+
+2. Set Environment variables
+Create a `.env` file, referencing the template [here](./.env.example)
+
+
+## Local development
+After following the setup guide, the server can be run independently locally using the following command:
+```bash
+uv run scripts/run_server.py
+```
+

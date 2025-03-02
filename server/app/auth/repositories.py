@@ -1,7 +1,6 @@
 import hashlib
 import secrets
 from datetime import datetime, timedelta
-from typing import Literal
 
 from beanie import WriteRules
 from beanie.operators import In

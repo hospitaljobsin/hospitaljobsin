@@ -1,3 +1,11 @@
+## TODO (auth)
+
+add accounts center
+where:
+
+- users can enable/ disable 2FA (along with passwords)
+- users can delete their accounts
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
