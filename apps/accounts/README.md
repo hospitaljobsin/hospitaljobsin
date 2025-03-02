@@ -1,7 +1,7 @@
 # PulseWork Accounts
 > *Accounts/ Authentication UI for PulseWork*
 
-## TechStack
+## Tech Stack
 - [TypeScript](https://www.typescriptlang.org/) - Programming Language
 - [React.js](https://react.dev) - UI library
 - [Next.js](https://nextjs.org) - React metaframework
