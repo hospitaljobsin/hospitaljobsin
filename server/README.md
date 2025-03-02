@@ -1,5 +1,5 @@
-# Pulsework API
-> *GraphQL API Server Powering Pulsework*
+# PulseWork API
+> *GraphQL API Server Powering PulseWork*
 
 
 ## Tech Stack

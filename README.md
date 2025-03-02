@@ -4,10 +4,10 @@
 ## Codebase Structure
 | Service             | Directory                                         | Description                     |
 |---------------------|---------------------------------------------------|---------------------------------|
-| Pulsework Accounts  | [apps/accounts](./apps/accounts)                  | Authentication/ Accounts UI     |
-| Pulsework Recruiter | [apps/recruitment-portal](./apps/recruiter-portal)| Recruitment platform UI         |
-| Pulsework           | [apps/seeker-portal](./apps/seeker-portal)        | Job Seeker platform UI          |
-| Pulsework API       | [server](./server)                                | GraphQL API Server              |
+| PulseWork Accounts  | [apps/accounts](./apps/accounts)                  | Authentication/ Accounts UI     |
+| PulseWork Recruiter | [apps/recruitment-portal](./apps/recruiter-portal)| Recruitment platform UI         |
+| PulseWork           | [apps/seeker-portal](./apps/seeker-portal)        | Job Seeker platform UI          |
+| PulseWork API       | [server](./server)                                | GraphQL API Server              |
 
 
 ## License
