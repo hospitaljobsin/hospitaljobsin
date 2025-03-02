@@ -3,6 +3,7 @@
 
 
 ## Tech Stack
+- [Python](https://python.org) - Programming Language
 - [FastAPI](https://fastapi.tiangolo.com/) - Web framework
 - [Pydantic](https://docs.pydantic.dev/) - Data validation library
 - [Uvicorn](https://www.uvicorn.org/) - ASGI server
@@ -11,6 +12,7 @@
 - [Result](https://github.com/rustedpy/result) - Error handling
 - [Aioinject](https://github.com/thirvondukr/aioinject) - Async DI library
 - [Authlib](https://authlib.org/) - OAuth2 client library
+- [Py_WebAuthn](https://duo-labs.github.io/py_webauthn/) - WebAuthn library
 - [Structlog](https://www.structlog.org/) - Structured logging
 - [MongoDB](https://www.mongodb.com/) - Database
 
@@ -24,10 +26,10 @@ The generated GraphQL Schema can be read [here](../schema/schema.graphql)
 
 ### Prerequisites
 
-| Tool    | Minimum Tested Version  | Description        |
-|---------|-------------------------|--------------------|
-| Python  | 3.12                    | Language           |
-| UV      | 0.4                     | Package Manager    |
+| Tool                                  | Minimum Tested Version  | Description        |
+|---------------------------------------|-------------------------|--------------------|
+| [Python](https://python.org)          | 3.12                    | Language           |
+| [UV](https://docs.astral.sh/uv/)      | 0.4                     | Package Manager    |
 
 1. Install dependencies
 ```bash
