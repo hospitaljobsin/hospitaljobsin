@@ -11,7 +11,10 @@ type Account implements Node {
   updatedAt: DateTime
   authProviders: [AuthProvider!]!
   profile: ProfilePayload!
-  avatarUrl: String!
+  avatarUrl(
+    """The size of the avatar."""
+    size: Int! = 80
+  ): String!
   sudoModeExpiresAt: DateTime
   organizations(before: ID = null, after: ID = null, first: Int = null, last: Int = null): OrganizationConnection!
   sessions(before: ID = null, after: ID = null, first: Int = null, last: Int = null): SessionConnection!

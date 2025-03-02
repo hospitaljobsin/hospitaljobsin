@@ -231,7 +231,15 @@ class AccountType(BaseNodeType[Account]):
         return ProfileType.marshal(result)
 
     @strawberry.field
-    async def avatar_url(self) -> str:
+    async def avatar_url(
+        self,
+        size: Annotated[
+            int,
+            strawberry.argument(
+                description="The size of the avatar.",
+            ),
+        ] = 80,
+    ) -> str:
         """Return the user's avatar URL."""
         email_encoded = self.email.lower().encode("utf-8")
 
@@ -241,7 +249,10 @@ class AccountType(BaseNodeType[Account]):
         seed_query_params = urlencode({"seed": urllib.parse.quote_plus(self.full_name)})
         # Construct the URL with encoded query parameters
         query_params = urlencode(
-            {"d": f"https://api.dicebear.com/9.x/shapes/png/{seed_query_params}"}
+            {
+                "d": f"https://api.dicebear.com/9.x/shapes/png/{seed_query_params}",
+                "s": size,
+            }
         )
         return f"https://www.gravatar.com/avatar/{email_hash}?{query_params}"
 

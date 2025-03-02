@@ -17,7 +17,7 @@ const AccountDetailsFragment = graphql`
   fragment AccountDetailsFragment on Account {
     fullName
     email
-	avatarUrl
+	avatarUrl(size: 120)
   }
 `;
 
@@ -31,7 +31,7 @@ export default function AccountDetails({ rootQuery, onEditAccount }: Props) {
 
 	return (
 		<Card className="p-6 space-y-6" shadow="none">
-			<CardHeader className="flex gap-6 w-full items-center justify-between">
+			<CardHeader className="flex flex-col sm:flex-row gap-6 w-full items-end sm:items-center justify-between">
 				<div className="flex gap-6 w-full items-center justify-start">
 					<Badge
 						placement="bottom-right"
@@ -69,7 +69,9 @@ export default function AccountDetails({ rootQuery, onEditAccount }: Props) {
 						<h1 className="w-full text-lg font-medium truncate max-w-64">
 							{data.fullName}
 						</h1>
-						<h1 className="w-full">{data.email}</h1>
+						<h1 className="w-full truncate max-w-48 sm:max-w-64">
+							{data.email}
+						</h1>
 					</div>
 				</div>
 				<Button

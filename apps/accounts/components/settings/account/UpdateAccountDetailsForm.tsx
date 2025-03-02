@@ -32,7 +32,7 @@ const UpdateAccountDetailsFormFragment = graphql`
   fragment UpdateAccountDetailsFormFragment on Account {
     fullName
     email
-	avatarUrl
+	avatarUrl(size: 120)
   }
 `;
 
@@ -82,7 +82,7 @@ export default function UpdateAccountDetailsForm({
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader className="flex gap-6 w-full items-center justify-between">
-					<div className="flex gap-6 w-full items-center justify-start">
+					<div className="flex gap-6 w-full items-center justify-start flex-col sm:flex-row">
 						<Badge
 							placement="bottom-right"
 							variant="solid"
@@ -114,7 +114,11 @@ export default function UpdateAccountDetailsForm({
 							shape="circle"
 							showOutline={false}
 						>
-							<Avatar name={data.fullName} size="lg" src={data.avatarUrl} />
+							<Avatar
+								name={data.fullName}
+								className="w-32 h-32"
+								src={data.avatarUrl}
+							/>
 						</Badge>
 						<div className="flex flex-col gap-8 w-full items-center justify-start">
 							<div className="flex flex-col w-full space-y-4">
