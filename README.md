@@ -5,6 +5,12 @@
 
 ![Service Flowchart](./.github/assets/service-flowchart.png)
 
+<!-- 
+relevant UML code:
+
+https://www.planttext.com?text=u-LoA2v9B2efpStXvShBJqbLK0eepIbE3SylobPmJ4xEByqhALPII2nM20Xtn501bS3K6PIQN5IQMP9Q15KHnCk5nVW0Jx0qa0P90orGqDMr0t4Lh1HAYrEBGM91MCGmX1nIyrB0FW00
+-->
+
 | Service             | Directory                                         | Description                     |
 |---------------------|---------------------------------------------------|---------------------------------|
 | PulseWork Accounts  | [apps/accounts](./apps/accounts)                  | Authentication/ Accounts UI     |
