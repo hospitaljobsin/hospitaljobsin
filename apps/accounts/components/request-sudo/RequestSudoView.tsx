@@ -83,7 +83,7 @@ export default function RequestSudoView({
 
 	return (
 		<div className="w-full flex flex-col gap-6 h-full min-h-screen items-center justify-center">
-			<Card className="p-6 sm:p-12 max-w-2xl" isPressable={false} shadow="none">
+			<Card className="p-6 sm:p-12 max-w-xl" isPressable={false} shadow="none">
 				<Alert
 					isVisible={oauth2ErrorMessage !== null}
 					onClose={() => setOauth2ErrorMessage(null)}
