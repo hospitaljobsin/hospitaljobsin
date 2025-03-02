@@ -2,6 +2,9 @@
 > *recruitment and job seeking for medical professionals*
 
 ## Codebase Structure
+
+![Service Flowchart](./.github/assets/service-flowchart.png)
+
 | Service             | Directory                                         | Description                     |
 |---------------------|---------------------------------------------------|---------------------------------|
 | PulseWork Accounts  | [apps/accounts](./apps/accounts)                  | Authentication/ Accounts UI     |
