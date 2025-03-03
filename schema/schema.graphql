@@ -1,6 +1,6 @@
 directive @isAuthenticated on FIELD_DEFINITION
 
-directive @isInSudoMode on FIELD_DEFINITION
+directive @requiresSudoMode on FIELD_DEFINITION
 
 type Account implements Node {
   """The Globally Unique ID of this object"""
@@ -10,6 +10,8 @@ type Account implements Node {
   hasOnboarded: Boolean!
   updatedAt: DateTime
   authProviders: [AuthProvider!]!
+  has2faEnabled: Boolean!
+  has2fa: Boolean!
   profile: ProfilePayload!
   avatarUrl(
     """The size of the avatar."""
@@ -93,6 +95,8 @@ type DeleteWebAuthnCredentialSuccess {
   webAuthnCredentialEdge: WebAuthnCredentialEdge!
 }
 
+union DisableAccount2FAPayload = Account | TwoFactorAuthenticationNotEnabledError
+
 type EmailInUseError implements Error {
   message: String!
 }
@@ -110,6 +114,12 @@ enum GenderType {
   MALE
   FEMALE
   OTHER
+}
+
+union GenerateAccount2FAOTPURIPayload = GenerateAccount2FAOTPURISuccess | TwoFactorAuthenticationNotEnabledError
+
+type GenerateAccount2FAOTPURISuccess {
+  otpUri: String!
 }
 
 union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSuccess | InvalidRecaptchaTokenError
@@ -236,7 +246,7 @@ input LanguageInput {
 
 union LoginWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
 
-union LoginWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError
+union LoginWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError | TwoFactorAuthenticationRequiredError
 
 type LogoutPayload {
   message: String!
@@ -372,19 +382,19 @@ type Mutation {
   ): ResetPasswordPayload!
 
   """Delete other sessions of the viewer than the current one."""
-  deleteOtherSessions: DeleteOtherSessionsPayload! @isAuthenticated @isInSudoMode
+  deleteOtherSessions: DeleteOtherSessionsPayload! @isAuthenticated @requiresSudoMode
 
   """Delete session by ID."""
   deleteSession(
     """The ID of the session to delete."""
     sessionId: ID!
-  ): DeleteSessionPayload! @isAuthenticated @isInSudoMode
+  ): DeleteSessionPayload! @isAuthenticated @requiresSudoMode
 
   """Delete webauthn credential by ID."""
   deleteWebAuthnCredential(
     """The ID of the Webauthn credential to delete."""
     webAuthnCredentialId: ID!
-  ): DeleteWebAuthnCredentialPayload! @isAuthenticated @isInSudoMode
+  ): DeleteWebAuthnCredentialPayload! @isAuthenticated @requiresSudoMode
 
   """Delete webauthn credential by ID."""
   updateWebAuthnCredential(
@@ -396,7 +406,7 @@ type Mutation {
   ): UpdateWebAuthnCredentialPayload! @isAuthenticated
 
   """Generate registration options for adding a webauthn credential."""
-  generateWebAuthnCredentialCreationOptions: GeneratePasskeyCreationOptionsPayload! @isAuthenticated @isInSudoMode
+  generateWebAuthnCredentialCreationOptions: GeneratePasskeyCreationOptionsPayload! @isAuthenticated @requiresSudoMode
 
   """Create a new webauthn credential for the current user."""
   createWebAuthnCredential(
@@ -405,7 +415,7 @@ type Mutation {
 
     """The nickname of the passkey."""
     nickname: String!
-  ): CreateWebAuthnCredentialPayload! @isAuthenticated @isInSudoMode
+  ): CreateWebAuthnCredentialPayload! @isAuthenticated @requiresSudoMode
 
   """Request a sudo mode grant for the current user using a passkey."""
   requestSudoModeWithPasskey(
@@ -424,6 +434,18 @@ type Mutation {
     """The recaptcha token to verify the user request."""
     recaptchaToken: String!
   ): RequestSudoModeWithPasswordPayload! @isAuthenticated
+
+  """Set two factor authentication."""
+  setAccount2fa: SetAccount2FAPayload! @isAuthenticated @requiresSudoMode
+
+  """Disable two factor authentication."""
+  disableAccount2fa: DisableAccount2FAPayload! @isAuthenticated @requiresSudoMode
+
+  """Generate account 2FA OTP URI."""
+  generateAccount2faOtpUri: GenerateAccount2FAOTPURIPayload! @isAuthenticated @requiresSudoMode
+
+  """Verify Account 2FA challenge."""
+  verify2faChallenge: VerifyAccount2FATokenPayload!
 
   """Save a job."""
   saveJob(
@@ -694,6 +716,20 @@ type SessionNotFoundError implements Error {
   message: String!
 }
 
+union SetAccount2FAPayload = Account
+
+type TwoFactorAuthenticationChallengeNotFoundError implements Error {
+  message: String!
+}
+
+type TwoFactorAuthenticationNotEnabledError implements Error {
+  message: String!
+}
+
+type TwoFactorAuthenticationRequiredError implements Error {
+  message: String!
+}
+
 union UnsaveJobPayload = UnsaveJobResult | SavedJobNotFoundError
 
 type UnsaveJobResult {
@@ -705,6 +741,8 @@ union UpdateAccountPayload = Account | AccountNotFoundError
 union UpdateProfilePayload = Account
 
 union UpdateWebAuthnCredentialPayload = WebAuthnCredential | WebAuthnCredentialNotFoundError
+
+union VerifyAccount2FATokenPayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError
 
 union VerifyEmailPayload = VerifyEmailSuccess | InvalidRecaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
 
