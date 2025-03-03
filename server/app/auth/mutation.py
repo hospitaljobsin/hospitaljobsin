@@ -25,7 +25,9 @@ from app.auth.exceptions import (
     InvalidSignInMethodError,
     PasswordNotStrongError,
     SessionNotFoundError,
+    TwoFactorAuthenticationChallengeNotFoundError,
     TwoFactorAuthenticationNotEnabledError,
+    TwoFactorAuthenticationRequiredError,
     WebAuthnChallengeNotFoundError,
     WebAuthnCredentialNotFoundError,
 )
@@ -77,7 +79,9 @@ from .types import (
     SessionEdgeType,
     SessionNotFoundErrorType,
     SetAccount2FAPayload,
+    TwoFactorAuthenticationChallengeNotFoundErrorType,
     TwoFactorAuthenticationNotEnabledErrorType,
+    TwoFactorAuthenticationRequiredErrorType,
     UpdateWebAuthnCredentialPayload,
     VerifyAccount2FATokenPayload,
     VerifyEmailPayload,
@@ -484,6 +488,8 @@ class AuthMutation:
                     return InvalidSignInMethodErrorType.marshal(
                         available_providers=err.available_providers
                     )
+                case TwoFactorAuthenticationRequiredError():
+                    return TwoFactorAuthenticationRequiredErrorType()
 
         return AccountType.marshal(result.ok_value)
 
@@ -1005,25 +1011,16 @@ class AuthMutation:
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=VerifyAccount2FATokenPayload,
-        description="Verify Account 2FA token.",
-        extensions=[
-            PermissionExtension(
-                permissions=[
-                    # TODO: add special permission here maybe, which only allows users after login step?
-                    # IsAuthenticated(),
-                    # RequiresSudoMode(),
-                ],
-            )
-        ],
+        description="Verify Account 2FA challenge.",
     )
     @inject
-    async def verify_account_2fa(
+    async def verify_2fa_challenge(
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
     ) -> VerifyAccount2FATokenPayload:
-        """Verify Account 2FA token."""
-        result = await auth_service.verify_account_2fa(
+        """Verify Account 2FA challenge."""
+        result = await auth_service.verify_2fa_challenge(
             account=info.context["current_user"],
         )
 
@@ -1033,5 +1030,7 @@ class AuthMutation:
                     return TwoFactorAuthenticationNotEnabledErrorType()
                 case InvalidCredentialsError():
                     return InvalidCredentialsErrorType()
+                case TwoFactorAuthenticationChallengeNotFoundError():
+                    return TwoFactorAuthenticationChallengeNotFoundErrorType()
 
         return AccountType.marshal(result.ok_value)

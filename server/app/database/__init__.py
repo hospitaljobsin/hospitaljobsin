@@ -9,6 +9,7 @@ from app.auth.documents import (
     OAuthCredential,
     PasswordResetToken,
     Session,
+    TwoFactorAuthenticationChallenge,
     WebAuthnChallenge,
     WebAuthnCredential,
 )
@@ -60,6 +61,7 @@ async def initialize_database(database_url: str) -> AsyncGenerator[None, None]:
                 WebAuthnCredential,
                 WebAuthnChallenge,
                 OAuthCredential,
+                TwoFactorAuthenticationChallenge,
             ],
         )
         yield

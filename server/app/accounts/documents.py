@@ -69,6 +69,10 @@ class Account(Document):
         original_field="account"
     )
 
+    @property
+    def has_2fa_enabled(self) -> bool:
+        return self.two_factor_secret is not None
+
     class Settings:
         name = "accounts"
 

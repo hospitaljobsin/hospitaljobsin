@@ -72,6 +72,8 @@ class Settings(BaseSettings):
     # session cookies config
     user_session_cookie_name: str = "user_session"
 
+    two_factor_challenge_cookie_name: str = "2fa_challenge"
+
     session_cookie_domain: str | None = None
 
     # Oauth2 config

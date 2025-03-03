@@ -12,12 +12,14 @@ from app.auth.documents import (
     OAuthCredential,
     PasswordResetToken,
     Session,
+    TwoFactorAuthenticationChallenge,
     WebAuthnChallenge,
     WebAuthnCredential,
 )
 from app.database.paginator import PaginatedResult, Paginator
 from app.lib.constants import (
     PASSWORD_RESET_EXPIRES_IN,
+    TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN,
     USER_SESSION_EXPIRES_IN,
     WEBAUTHN_CHALLENGE_EXPIRES_IN,
     OAuthProvider,
@@ -327,3 +329,38 @@ class OauthCredentialRepo:
         )
         await oauth_credential.save()
         return oauth_credential
+
+
+class TwoFactorAuthenticationChallengeRepo:
+    @staticmethod
+    def hash_challenge(challenge: str) -> str:
+        """Hash the given challenge."""
+        return hashlib.md5(challenge.encode("utf-8")).hexdigest()  # noqa: S324
+
+    @staticmethod
+    def generate_challenge() -> str:
+        """Generate a new challenge."""
+        return secrets.token_hex(32)
+
+    async def create(self, account_id: ObjectId) -> str:
+        """Create a new 2FA challenge."""
+        challenge = self.generate_challenge()
+        expires_at = datetime.now(UTC) + timedelta(
+            seconds=TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN
+        )
+        two_factor_challenge = TwoFactorAuthenticationChallenge(
+            challenge_hash=self.hash_challenge(challenge),
+            expires_at=expires_at,
+            account=account_id,
+        )
+        await two_factor_challenge.save()
+        return challenge
+
+    async def get(self, challenge: str) -> TwoFactorAuthenticationChallenge | None:
+        """Get 2FA challenge by challenge."""
+        return await TwoFactorAuthenticationChallenge.find_one(
+            TwoFactorAuthenticationChallenge.challenge_hash
+            == self.hash_challenge(challenge),
+            fetch_links=True,
+            nesting_depth=1,
+        )

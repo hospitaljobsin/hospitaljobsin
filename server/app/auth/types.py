@@ -244,13 +244,6 @@ RegisterWithPasskeyPayload = Annotated[
     strawberry.union(name="RegisterWithPasskeyPayload"),
 ]
 
-LoginWithPasswordPayload = Annotated[
-    AccountType
-    | InvalidCredentialsErrorType
-    | InvalidRecaptchaTokenErrorType
-    | InvalidSignInMethodErrorType,
-    strawberry.union(name="LoginWithPasswordPayload"),
-]
 
 LoginWithPasskeyPayload = Annotated[
     AccountType
@@ -417,6 +410,16 @@ class TwoFactorAuthenticationNotEnabledErrorType(BaseErrorType):
     message: str = "Two-factor authentication is not enabled."
 
 
+@strawberry.type(name="TwoFactorAuthenticationChallengeNotFoundError")
+class TwoFactorAuthenticationChallengeNotFoundErrorType(BaseErrorType):
+    message: str = "Two-factor authentication challenge not found."
+
+
+@strawberry.type(name="TwoFactorAuthenticationRequiredError")
+class TwoFactorAuthenticationRequiredErrorType(BaseErrorType):
+    message: str = "Two-factor authentication is required."
+
+
 SetAccount2FAPayload = Annotated[
     AccountType, strawberry.union(name="SetAccount2FAPayload")
 ]
@@ -428,7 +431,7 @@ DisableAccount2FAPayload = Annotated[
 
 
 @strawberry.type(name="GenerateAccount2FAOTPURISuccess")
-class GenerateAccount2FAOTPURISuccessType(BaseErrorType):
+class GenerateAccount2FAOTPURISuccessType:
     otp_uri: str
 
 
@@ -440,6 +443,16 @@ GenerateAccount2FAOTPURIPayload = Annotated[
 VerifyAccount2FATokenPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
-    | TwoFactorAuthenticationNotEnabledErrorType,
+    | TwoFactorAuthenticationNotEnabledErrorType
+    | TwoFactorAuthenticationChallengeNotFoundErrorType,
     strawberry.union(name="VerifyAccount2FATokenPayload"),
+]
+
+LoginWithPasswordPayload = Annotated[
+    AccountType
+    | InvalidCredentialsErrorType
+    | InvalidRecaptchaTokenErrorType
+    | InvalidSignInMethodErrorType
+    | TwoFactorAuthenticationRequiredErrorType,
+    strawberry.union(name="LoginWithPasswordPayload"),
 ]

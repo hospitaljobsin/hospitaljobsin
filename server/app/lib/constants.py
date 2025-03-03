@@ -33,6 +33,9 @@ WEBAUTHN_CHALLENGE_EXPIRES_IN = 60 * 5  # 5 minutes
 # Sudo Mode (elevated privileges)
 SUDO_MODE_EXPIRES_IN = 60 * 15  # 15 minutes
 
+# Two-factor authentication
+TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN = 60 * 5  # 5 minutes
+
 
 # Auth Providers
 AuthProvider = Literal["password", "webauthn_credential", "oauth_google"]

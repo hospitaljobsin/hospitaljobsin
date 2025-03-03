@@ -76,3 +76,19 @@ class OAuthCredential(Document):
 
     class Settings:
         name = "oauth_credentials"
+
+
+class TwoFactorAuthenticationChallenge(Document):
+    challenge_hash: str
+    expires_at: datetime
+    account: Link[Account]
+
+    class Settings:
+        name = "two_factor_authentication_challenges"  # MongoDB collection name
+        indexes: ClassVar[list[IndexModel]] = [
+            # expire webauthn challenges after they cross the expiration timestamp
+            IndexModel(
+                "expires_at",
+                expireAfterSeconds=0,
+            ),
+        ]

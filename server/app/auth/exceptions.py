@@ -88,3 +88,11 @@ class InsufficientAuthProvidersError:
 
 class TwoFactorAuthenticationNotEnabledError:
     """Raised when the user's 2FA is not enabled."""
+
+
+class TwoFactorAuthenticationRequiredError:
+    """Raised when the user's 2FA is required."""
+
+
+class TwoFactorAuthenticationChallengeNotFoundError:
+    """Raised when a 2FA challenge is not found."""

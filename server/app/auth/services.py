@@ -57,7 +57,9 @@ from app.auth.exceptions import (
     PasswordNotStrongError,
     PasswordResetTokenNotFoundError,
     SessionNotFoundError,
+    TwoFactorAuthenticationChallengeNotFoundError,
     TwoFactorAuthenticationNotEnabledError,
+    TwoFactorAuthenticationRequiredError,
     WebAuthnChallengeNotFoundError,
     WebAuthnCredentialNotFoundError,
 )
@@ -65,6 +67,7 @@ from app.auth.repositories import (
     OauthCredentialRepo,
     PasswordResetTokenRepo,
     SessionRepo,
+    TwoFactorAuthenticationChallengeRepo,
     WebAuthnChallengeRepo,
     WebAuthnCredentialRepo,
 )
@@ -74,6 +77,7 @@ from app.lib.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
     PASSWORD_RESET_EXPIRES_IN,
     SUDO_MODE_EXPIRES_IN,
+    TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN,
     USER_SESSION_EXPIRES_IN,
 )
 from app.lib.emails import EmailSender
@@ -90,6 +94,7 @@ class AuthService:
         web_authn_credential_repo: WebAuthnCredentialRepo,
         webauthn_challenge_repo: WebAuthnChallengeRepo,
         oauth_credential_repo: OauthCredentialRepo,
+        two_factor_authentication_challenge_repo: TwoFactorAuthenticationChallengeRepo,
         email_sender: EmailSender,
         settings: Settings,
     ) -> None:
@@ -101,6 +106,9 @@ class AuthService:
         self._web_authn_credential_repo = web_authn_credential_repo
         self._webauthn_challenge_repo = webauthn_challenge_repo
         self._oauth_credential_repo = oauth_credential_repo
+        self._two_factor_authentication_challenge_repo = (
+            two_factor_authentication_challenge_repo
+        )
         self._email_sender = email_sender
         self._settings = settings
 
@@ -543,7 +551,10 @@ class AuthService:
         response: Response,
     ) -> Result[
         Account,
-        InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError,
+        InvalidCredentialsError
+        | InvalidRecaptchaTokenError
+        | InvalidSignInMethodError
+        | TwoFactorAuthenticationRequiredError,
     ]:
         """Login a user with email and password."""
         if not await self._verify_recaptcha_token(recaptcha_token):
@@ -565,6 +576,20 @@ class AuthService:
             password_hash=account.password_hash,
         ):
             return Err(InvalidCredentialsError())
+
+        if account.has_2fa_enabled:
+            # Set 2FA challenge cookie
+            two_factor_challenge = (
+                await self._two_factor_authentication_challenge_repo.create(
+                    account=account
+                )
+            )
+            self._set_two_factor_challenge_cookie(
+                request=request,
+                response=response,
+                value=two_factor_challenge,
+            )
+            return Err(TwoFactorAuthenticationRequiredError())
 
         session_token = await self._session_repo.create(
             ip_address=request.client.host,
@@ -664,6 +689,37 @@ class AuthService:
             key=self._settings.user_session_cookie_name,
             value=value,
             expires=datetime.now(UTC) + timedelta(seconds=USER_SESSION_EXPIRES_IN),
+            path="/",
+            domain=self._settings.session_cookie_domain,
+            secure=secure,
+            httponly=True,
+            samesite="lax",
+        )
+
+    def _set_two_factor_challenge_cookie(
+        self, request: Request, response: Response, value: str
+    ) -> None:
+        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
+        secure = not is_localhost
+        response.set_cookie(
+            key=self._settings.two_factor_challenge_cookie_name,
+            value=value,
+            expires=datetime.now(UTC)
+            + timedelta(seconds=TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN),
+            path="/",
+            domain=self._settings.session_cookie_domain,
+            secure=secure,
+            httponly=True,
+            samesite="lax",
+        )
+
+    def _delete_two_factor_challenge_cookie(
+        self, request: Request, response: Response
+    ) -> None:
+        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
+        secure = not is_localhost
+        response.delete_cookie(
+            key=self._settings.two_factor_challenge_cookie_name,
             path="/",
             domain=self._settings.session_cookie_domain,
             secure=secure,
@@ -1100,13 +1156,55 @@ class AuthService:
         )
         return Ok(otp_uri)
 
-    async def verify_account_2fa(
-        self, account: Account, token: str
-    ) -> Result[None, InvalidCredentialsError, TwoFactorAuthenticationNotEnabledError]:
-        """Verify a 2FA token for the account."""
+    async def verify_2fa_challenge(
+        self,
+        request: Request,
+        response: Response,
+        user_agent: str,
+        token: str,
+    ) -> Result[
+        Account,
+        InvalidCredentialsError
+        | TwoFactorAuthenticationNotEnabledError
+        | TwoFactorAuthenticationChallengeNotFoundError,
+    ]:
+        """Verify a 2FA challenge for the account."""
+        challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)
+
+        if challenge is None:
+            return Err(TwoFactorAuthenticationChallengeNotFoundError())
+
+        two_factor_authentication_challenge = (
+            await self._two_factor_authentication_challenge_repo.get(
+                challenge=challenge
+            )
+        )
+
+        if two_factor_authentication_challenge is None:
+            return Err(TwoFactorAuthenticationChallengeNotFoundError())
+
+        account = two_factor_authentication_challenge.account
+
         if account.two_factor_secret is None:
             return Err(TwoFactorAuthenticationNotEnabledError())
         totp = pyotp.TOTP(account.two_factor_secret)
         if not totp.verify(token):
             return Err(InvalidCredentialsError())
-        return Ok(None)
+
+        session_token = await self._session_repo.create(
+            ip_address=request.client.host,
+            user_agent=user_agent,
+            account=account,
+        )
+
+        self._delete_two_factor_challenge_cookie(request=request, response=response)
+
+        self._set_user_session_cookie(
+            request=request,
+            response=response,
+            value=session_token,
+        )
+
+        self._grant_sudo_mode(request)
+
+        return Ok(account)
