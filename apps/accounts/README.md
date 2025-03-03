@@ -57,3 +57,12 @@ where:
 - set the predefined passkey to use when asking to authenticate for sudo mode (like uninbox)
 - support recovery codes for authenticator app
 - option to disable password
+
+2FA ACTUAL SETUP:
+
+uninbox has stored challenges which has challenge cookie ID, account ID, and totp_secret.
+to set 2FA, we create a new challenge (cookie is set), then use TOTP(challenge.secret).verify()
+
+only if this is valid, we set the secret on the account as account.two_factor_secret = challenge.secret
+
+the token is passed to the enable/ reset 2fa mutation

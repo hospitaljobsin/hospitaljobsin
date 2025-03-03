@@ -1,8 +1,10 @@
 "use client";
+import { Divider } from "@heroui/react";
 import { useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
 import AccountDetails from "./AccountDetails";
+import TwoFactorAuthentication from "./TwoFactorAuthentication";
 import UpdateAccountDetailsForm from "./UpdateAccountDetailsForm";
 import type { AccountSettingsViewQuery as AccountSettingsViewQueryType } from "./__generated__/AccountSettingsViewQuery.graphql";
 
@@ -13,6 +15,7 @@ const AccountSettingsViewQuery = graphql`
       ... on Account {
         ...AccountDetailsFragment
 		...UpdateAccountDetailsFormFragment
+		...TwoFactorAuthenticationFragment
       }
     }
   }
@@ -46,6 +49,8 @@ export default function AccountSettingsView() {
 					}}
 				/>
 			)}
+			<Divider />
+			<TwoFactorAuthentication rootQuery={data.viewer} />
 		</div>
 	);
 }

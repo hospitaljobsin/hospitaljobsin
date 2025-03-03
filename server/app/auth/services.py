@@ -1181,6 +1181,7 @@ class AuthService:
         )
 
         if two_factor_authentication_challenge is None:
+            self._delete_two_factor_challenge_cookie(request=request, response=response)
             return Err(TwoFactorAuthenticationChallengeNotFoundError())
 
         account = two_factor_authentication_challenge.account
