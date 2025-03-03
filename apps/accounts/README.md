@@ -66,3 +66,5 @@ to set 2FA, we create a new challenge (cookie is set), then use TOTP(challenge.s
 only if this is valid, we set the secret on the account as account.two_factor_secret = challenge.secret
 
 the token is passed to the enable/ reset 2fa mutation
+
+cookie is deleted later
