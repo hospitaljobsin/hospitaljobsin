@@ -55,3 +55,4 @@ where:
 - users can enable/ disable 2FA (along with passwords)
 - users can delete their accounts
 - set the predefined passkey to use when asking to authenticate for sudo mode (like uninbox)
+- support recovery codes for authenticator app
