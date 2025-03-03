@@ -410,3 +410,36 @@ RequestSudoModeWithPasswordPayload = Annotated[
     | InvalidSignInMethodErrorType,
     strawberry.union(name="RequestSudoModeWithPasswordPayload"),
 ]
+
+
+@strawberry.type(name="TwoFactorAuthenticationNotEnabledError")
+class TwoFactorAuthenticationNotEnabledErrorType(BaseErrorType):
+    message: str = "Two-factor authentication is not enabled."
+
+
+SetAccount2FAPayload = Annotated[
+    AccountType, strawberry.union(name="SetAccount2FAPayload")
+]
+
+DisableAccount2FAPayload = Annotated[
+    AccountType | TwoFactorAuthenticationNotEnabledErrorType,
+    strawberry.union(name="DisableAccount2FAPayload"),
+]
+
+
+@strawberry.type(name="GenerateAccount2FAOTPURISuccess")
+class GenerateAccount2FAOTPURISuccessType(BaseErrorType):
+    otp_uri: str
+
+
+GenerateAccount2FAOTPURIPayload = Annotated[
+    GenerateAccount2FAOTPURISuccessType | TwoFactorAuthenticationNotEnabledErrorType,
+    strawberry.union(name="GenerateAccount2FAOTPURIPayload"),
+]
+
+VerifyAccount2FATokenPayload = Annotated[
+    AccountType
+    | InvalidCredentialsErrorType
+    | TwoFactorAuthenticationNotEnabledErrorType,
+    strawberry.union(name="VerifyAccount2FATokenPayload"),
+]

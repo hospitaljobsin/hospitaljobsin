@@ -84,3 +84,7 @@ class AccountNotFoundError:
 
 class InsufficientAuthProvidersError:
     """Raised when the user has insufficient auth providers remaining."""
+
+
+class TwoFactorAuthenticationNotEnabledError:
+    """Raised when the user's 2FA is not enabled."""

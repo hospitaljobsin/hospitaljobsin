@@ -25,6 +25,7 @@ from app.auth.exceptions import (
     InvalidSignInMethodError,
     PasswordNotStrongError,
     SessionNotFoundError,
+    TwoFactorAuthenticationNotEnabledError,
     WebAuthnChallengeNotFoundError,
     WebAuthnCredentialNotFoundError,
 )
@@ -40,8 +41,11 @@ from .types import (
     DeleteSessionSuccessType,
     DeleteWebAuthnCredentialPayload,
     DeleteWebAuthnCredentialSuccessType,
+    DisableAccount2FAPayload,
     EmailInUseErrorType,
     EmailVerificationTokenCooldownErrorType,
+    GenerateAccount2FAOTPURIPayload,
+    GenerateAccount2FAOTPURISuccessType,
     GenerateAuthenticationOptionsPayload,
     GenerateAuthenticationOptionsSuccessType,
     GeneratePasskeyCreationOptionsPayload,
@@ -72,7 +76,10 @@ from .types import (
     ResetPasswordPayload,
     SessionEdgeType,
     SessionNotFoundErrorType,
+    SetAccount2FAPayload,
+    TwoFactorAuthenticationNotEnabledErrorType,
     UpdateWebAuthnCredentialPayload,
+    VerifyAccount2FATokenPayload,
     VerifyEmailPayload,
     VerifyEmailSuccessType,
     WebAuthnChallengeNotFoundErrorType,
@@ -911,5 +918,120 @@ class AuthMutation:
                     return InvalidSignInMethodErrorType.marshal(
                         available_providers=err.available_providers
                     )
+
+        return AccountType.marshal(result.ok_value)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=SetAccount2FAPayload,
+        description="Set two factor authentication.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    RequiresSudoMode(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def set_account_2fa(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+    ) -> SetAccount2FAPayload:
+        """Set two factor authentication."""
+        result = await auth_service.set_account_2fa(
+            account=info.context["current_user"],
+        )
+
+        return AccountType.marshal(result.ok_value)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=DisableAccount2FAPayload,
+        description="Disable two factor authentication.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    RequiresSudoMode(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def disable_account_2fa(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+    ) -> DisableAccount2FAPayload:
+        """Disable two factor authentication."""
+        result = await auth_service.set_account_2fa(
+            account=info.context["current_user"],
+        )
+
+        return AccountType.marshal(result.ok_value)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=GenerateAccount2FAOTPURIPayload,
+        description="Generate account 2FA OTP URI.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    RequiresSudoMode(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def generate_account_2fa_otp_uri(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+    ) -> GenerateAccount2FAOTPURIPayload:
+        """Generate account 2FA OTP URI."""
+        result = await auth_service.generate_account_2fa_otp_uri(
+            account=info.context["current_user"],
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case TwoFactorAuthenticationNotEnabledError():
+                    return TwoFactorAuthenticationNotEnabledErrorType()
+
+        return GenerateAccount2FAOTPURISuccessType(
+            otp_uri=result.ok_value,
+        )
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=VerifyAccount2FATokenPayload,
+        description="Verify Account 2FA token.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    # TODO: add special permission here maybe, which only allows users after login step?
+                    # IsAuthenticated(),
+                    # RequiresSudoMode(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def verify_account_2fa(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+    ) -> VerifyAccount2FATokenPayload:
+        """Verify Account 2FA token."""
+        result = await auth_service.verify_account_2fa(
+            account=info.context["current_user"],
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case TwoFactorAuthenticationNotEnabledError():
+                    return TwoFactorAuthenticationNotEnabledErrorType()
+                case InvalidCredentialsError():
+                    return InvalidCredentialsErrorType()
 
         return AccountType.marshal(result.ok_value)

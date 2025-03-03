@@ -5,6 +5,7 @@ from typing import Any
 
 import bson
 import httpx
+import pyotp
 from bson.objectid import ObjectId
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, Request, Response
@@ -56,6 +57,7 @@ from app.auth.exceptions import (
     PasswordNotStrongError,
     PasswordResetTokenNotFoundError,
     SessionNotFoundError,
+    TwoFactorAuthenticationNotEnabledError,
     WebAuthnChallengeNotFoundError,
     WebAuthnCredentialNotFoundError,
 )
@@ -68,6 +70,7 @@ from app.auth.repositories import (
 )
 from app.config import Settings
 from app.lib.constants import (
+    APP_NAME,
     EMAIL_VERIFICATION_EXPIRES_IN,
     PASSWORD_RESET_EXPIRES_IN,
     SUDO_MODE_EXPIRES_IN,
@@ -1066,3 +1069,44 @@ class AuthService:
             self._grant_sudo_mode(request)
 
         return Ok(current_user)
+
+    async def set_account_2fa(
+        self,
+        account: Account,
+    ) -> Result[Account, None]:
+        """Enable two factor authentication for the account."""
+        await self._account_repo.set_two_factor_secret(account=account)
+        return account
+
+    async def disable_account_2fa(
+        self,
+        account: Account,
+    ) -> Result[Account, TwoFactorAuthenticationNotEnabledError]:
+        """Disable two factor authentication for the account."""
+        if account.two_factor_secret is None:
+            return Err(TwoFactorAuthenticationNotEnabledError())
+        await self._account_repo.delete_two_factor_secret(account=account)
+        return account
+
+    async def generate_account_2fa_otp_uri(
+        self, account: Account
+    ) -> Result[str, TwoFactorAuthenticationNotEnabledError]:
+        """Generate a QR code for 2FA for the account."""
+        two_factor_secret = account.two_factor_secret
+        if two_factor_secret is None:
+            return Err(TwoFactorAuthenticationNotEnabledError())
+        otp_uri = pyotp.totp.TOTP(two_factor_secret).provisioning_uri(
+            name=account.email, issuer_name=APP_NAME
+        )
+        return Ok(otp_uri)
+
+    async def verify_account_2fa(
+        self, account: Account, token: str
+    ) -> Result[None, InvalidCredentialsError, TwoFactorAuthenticationNotEnabledError]:
+        """Verify a 2FA token for the account."""
+        if account.two_factor_secret is None:
+            return Err(TwoFactorAuthenticationNotEnabledError())
+        totp = pyotp.TOTP(account.two_factor_secret)
+        if not totp.verify(token):
+            return Err(InvalidCredentialsError())
+        return Ok(None)

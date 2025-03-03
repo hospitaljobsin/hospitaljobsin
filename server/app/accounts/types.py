@@ -172,7 +172,10 @@ class AccountType(BaseNodeType[Account]):
     has_onboarded: bool
     updated_at: datetime | None
     auth_providers: list[AuthProviderEnum]
+    has_2fa_enabled: bool
+
     profile_ref: strawberry.Private[ObjectId | Profile | None] = None
+    two_factor_secret: strawberry.Private[str | None] = None
 
     @classmethod
     def marshal(cls, account: Account) -> Self:
@@ -187,6 +190,7 @@ class AccountType(BaseNodeType[Account]):
                 for provider in account.auth_providers
             ],
             has_onboarded=account.has_onboarded,
+            has_2fa_enabled=account.has_2fa_enabled,
             profile_ref=account.profile.ref.id if account.profile is not None else None,
         )
 
@@ -203,6 +207,7 @@ class AccountType(BaseNodeType[Account]):
                 for provider in account.auth_providers
             ],
             has_onboarded=account.has_onboarded,
+            has_2fa_enabled=account.has_2fa_enabled,
             profile_ref=account.profile,
         )
 
@@ -219,6 +224,11 @@ class AccountType(BaseNodeType[Account]):
             cls.marshal(account) if account is not None else account
             for account in accounts
         ]
+
+    @strawberry.field
+    async def has_2fa(self) -> bool:
+        """Check if the user has 2FA enabled."""
+        return self.two_factor_secret is not None
 
     @strawberry.field(graphql_type=ProfilePayload)
     @inject

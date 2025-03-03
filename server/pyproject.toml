@@ -28,6 +28,7 @@ dependencies = [
     "aioboto3>=13.4.0",
     "pymongo>=4.9.2",
     "webauthn>=2.5.1",
+    "pyotp>=2.9.0",
 ]
 
 [tool.uv]

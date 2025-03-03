@@ -105,6 +105,21 @@ class AccountRepo:
         account.auth_providers = auth_providers
         return await account.save()
 
+    @staticmethod
+    def generate_two_factor_secret() -> str:
+        """Generate a new 2fa secret."""
+        return secrets.token_urlsafe(32)
+
+    async def set_two_factor_secret(self, account: Account) -> Account:
+        """Set 2fa secret for the given account."""
+        account.two_factor_secret = self.generate_two_factor_secret()
+        return await account.save()
+
+    async def delete_two_factor_secret(self, account: Account) -> Account:
+        """Delete 2fa secret for the given account."""
+        account.two_factor_secret = None
+        return await account.save()
+
     async def update_password(self, account: Account, password: str) -> Account:
         """Update the given account's password."""
         if account.password_hash is None:
