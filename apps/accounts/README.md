@@ -68,3 +68,5 @@ only if this is valid, we set the secret on the account as account.two_factor_se
 the token is passed to the enable/ reset 2fa mutation
 
 cookie is deleted later
+
+THIS IS REQUIRED AS OTHERWISE USERS MIGHT NOT SET THEIR AUTHENTICATOR CORRECTLY, AND WILL BE LOCKED OUT ON NEXT LOGIN
