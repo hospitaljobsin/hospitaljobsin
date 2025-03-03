@@ -56,3 +56,4 @@ where:
 - users can delete their accounts
 - set the predefined passkey to use when asking to authenticate for sudo mode (like uninbox)
 - support recovery codes for authenticator app
+- option to disable password
