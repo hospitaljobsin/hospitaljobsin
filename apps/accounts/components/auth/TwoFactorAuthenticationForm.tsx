@@ -49,7 +49,6 @@ export default function TwoFactorAuthenticationForm() {
 			TwoFactorAuthenticationFormutation,
 		);
 	const {
-		register,
 		handleSubmit,
 		setError,
 		control,

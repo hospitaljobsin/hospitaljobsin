@@ -52,21 +52,11 @@ pnpm run dev
 add accounts center
 where:
 
-- users can enable/ disable 2FA (along with passwords)
 - users can delete their accounts
 - set the predefined passkey to use when asking to authenticate for sudo mode (like uninbox)
-- support recovery codes for authenticator app
 - option to disable password
-
-2FA ACTUAL SETUP:
-
-uninbox has stored challenges which has challenge cookie ID, account ID, and totp_secret.
-to set 2FA, we create a new challenge (cookie is set), then use TOTP(challenge.secret).verify()
-
-only if this is valid, we set the secret on the account as account.two_factor_secret = challenge.secret
-
-the token is passed to the enable/ reset 2fa mutation
-
-cookie is deleted later
-
-THIS IS REQUIRED AS OTHERWISE USERS MIGHT NOT SET THEIR AUTHENTICATOR CORRECTLY, AND WILL BE LOCKED OUT ON NEXT LOGIN
+- add 2FA verification requirement/ passkey before resetting password (like github)
+- If the user loses access to their 2FA device, provide secure fallback options:
+    Backup Codes: Encourage users to store backup codes when setting up 2FA.
+    Alternative 2FA Methods: Allow authentication via email or backup phone number.
+    Manual Verification via Support: If no 2FA method is available, require identity verification (e.g., ID document upload or security questions).
