@@ -105,14 +105,11 @@ class AccountRepo:
         account.auth_providers = auth_providers
         return await account.save()
 
-    @staticmethod
-    def generate_two_factor_secret() -> str:
-        """Generate a new 2fa secret."""
-        return secrets.token_urlsafe(32)
-
-    async def set_two_factor_secret(self, account: Account) -> Account:
+    async def set_two_factor_secret(
+        self, account: Account, totp_secret: str
+    ) -> Account:
         """Set 2fa secret for the given account."""
-        account.two_factor_secret = self.generate_two_factor_secret()
+        account.two_factor_secret = totp_secret
         return await account.save()
 
     async def delete_two_factor_secret(self, account: Account) -> Account:

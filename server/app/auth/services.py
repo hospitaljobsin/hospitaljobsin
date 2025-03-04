@@ -579,15 +579,17 @@ class AuthService:
 
         if account.has_2fa_enabled:
             # Set 2FA challenge cookie
-            two_factor_challenge = (
-                await self._two_factor_authentication_challenge_repo.create(
-                    account=account
-                )
+            (
+                challenge,
+                two_factor_challenge,
+            ) = await self._two_factor_authentication_challenge_repo.create(
+                account=account,
+                totp_secret=account.two_factor_secret,
             )
             self._set_two_factor_challenge_cookie(
                 request=request,
                 response=response,
-                value=two_factor_challenge,
+                value=challenge,
             )
             return Err(TwoFactorAuthenticationRequiredError())
 
@@ -1126,13 +1128,63 @@ class AuthService:
 
         return Ok(current_user)
 
+    async def generate_account_2fa_otp_uri(
+        self,
+        account: Account,
+        request: Request,
+        response: Response,
+    ) -> Result[str, TwoFactorAuthenticationNotEnabledError]:
+        """Generate a QR code for 2FA for the account."""
+        (
+            challenge,
+            two_factor_challenge,
+        ) = await self._two_factor_authentication_challenge_repo.create(
+            account=account,
+        )
+        otp_uri = pyotp.totp.TOTP(two_factor_challenge.totp_secret).provisioning_uri(
+            name=account.email, issuer_name=APP_NAME
+        )
+
+        self._set_two_factor_challenge_cookie(
+            request=request,
+            response=response,
+            value=challenge,
+        )
+        return Ok(otp_uri)
+
     async def set_account_2fa(
         self,
         account: Account,
-    ) -> Result[Account, None]:
+        token: str,
+        request: Request,
+        response: Response,
+    ) -> Result[
+        Account, TwoFactorAuthenticationChallengeNotFoundError | InvalidCredentialsError
+    ]:
         """Enable two factor authentication for the account."""
-        await self._account_repo.set_two_factor_secret(account=account)
-        return account
+        challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)
+
+        if challenge is None:
+            return Err(TwoFactorAuthenticationChallengeNotFoundError())
+
+        two_factor_authentication_challenge = (
+            await self._two_factor_authentication_challenge_repo.get(
+                challenge=challenge
+            )
+        )
+
+        if two_factor_authentication_challenge is None:
+            self._delete_two_factor_challenge_cookie(request=request, response=response)
+            return Err(TwoFactorAuthenticationChallengeNotFoundError())
+        totp = pyotp.TOTP(two_factor_authentication_challenge.totp_secret)
+        if not totp.verify(token):
+            return Err(InvalidCredentialsError())
+        await self._account_repo.set_two_factor_secret(
+            account=account,
+            totp_secret=two_factor_authentication_challenge.totp_secret,
+        )
+        self._delete_two_factor_challenge_cookie(request=request, response=response)
+        return Ok(account)
 
     async def disable_account_2fa(
         self,
@@ -1143,18 +1195,6 @@ class AuthService:
             return Err(TwoFactorAuthenticationNotEnabledError())
         await self._account_repo.delete_two_factor_secret(account=account)
         return account
-
-    async def generate_account_2fa_otp_uri(
-        self, account: Account
-    ) -> Result[str, TwoFactorAuthenticationNotEnabledError]:
-        """Generate a QR code for 2FA for the account."""
-        two_factor_secret = account.two_factor_secret
-        if two_factor_secret is None:
-            return Err(TwoFactorAuthenticationNotEnabledError())
-        otp_uri = pyotp.totp.TOTP(two_factor_secret).provisioning_uri(
-            name=account.email, issuer_name=APP_NAME
-        )
-        return Ok(otp_uri)
 
     async def verify_2fa_challenge(
         self,
@@ -1168,7 +1208,7 @@ class AuthService:
         | TwoFactorAuthenticationNotEnabledError
         | TwoFactorAuthenticationChallengeNotFoundError,
     ]:
-        """Verify a 2FA challenge for the account."""
+        """Verify a 2FA challenge for the account (after login)."""
         challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)
 
         if challenge is None:

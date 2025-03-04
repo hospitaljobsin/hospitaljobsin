@@ -342,7 +342,14 @@ class TwoFactorAuthenticationChallengeRepo:
         """Generate a new challenge."""
         return secrets.token_hex(32)
 
-    async def create(self, account_id: ObjectId) -> str:
+    @staticmethod
+    def generate_two_factor_secret() -> str:
+        """Generate a new 2fa secret."""
+        return secrets.token_urlsafe(32)
+
+    async def create(
+        self, *, account: Account, totp_secret: str | None = None
+    ) -> tuple[str, TwoFactorAuthenticationChallenge]:
         """Create a new 2FA challenge."""
         challenge = self.generate_challenge()
         expires_at = datetime.now(UTC) + timedelta(
@@ -351,7 +358,10 @@ class TwoFactorAuthenticationChallengeRepo:
         two_factor_challenge = TwoFactorAuthenticationChallenge(
             challenge_hash=self.hash_challenge(challenge),
             expires_at=expires_at,
-            account=account_id,
+            account=account.id,
+            totp_secret=self.generate_two_factor_secret()
+            if totp_secret is None
+            else totp_secret,
         )
         await two_factor_challenge.save()
         return challenge

@@ -81,6 +81,7 @@ class OAuthCredential(Document):
 class TwoFactorAuthenticationChallenge(Document):
     challenge_hash: str
     expires_at: datetime
+    totp_secret: str
     account: Link[Account]
 
     class Settings:
