@@ -77,13 +77,8 @@ export default function EnableTwoFactorAuthenticationModal({
 		});
 	}
 	return (
-		<Modal
-			isOpen={isOpen}
-			onOpenChange={onOpenChange}
-			size="xl"
-			className="p-4 sm:p-6"
-		>
-			<ModalContent className="flex flex-col w-full gap-6">
+		<Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
+			<ModalContent className="flex flex-col w-full gap-6 p-4 sm:p-6">
 				<ModalHeader className="flex flex-col gap-4 w-full">
 					<h2 className="text-lg font-medium">
 						Enable Two Factor Authentication
@@ -94,7 +89,7 @@ export default function EnableTwoFactorAuthenticationModal({
 					</p>
 				</ModalHeader>
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-12 w-full">
-					<ModalBody className="w-full flex flex-col gap-6 items-center justify-center">
+					<ModalBody className="w-full flex flex-col gap-6 items-start">
 						<QRCode
 							size={128}
 							className="sm:max-w-96 sm:min-w-64 max-w-64 min-w-48 h-auto"
