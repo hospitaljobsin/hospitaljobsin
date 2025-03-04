@@ -8,8 +8,10 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	Tooltip,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Clipboard } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import QRCode from "react-qr-code";
 import { useMutation } from "react-relay";
@@ -102,7 +104,20 @@ export default function EnableTwoFactorAuthenticationModal({
 						<p className="text-small text-foreground-500">
 							If you can't scan the QR code, copy the secret below:
 						</p>
-						<Code>{secret}</Code>
+						<div className="flex items-center gap-2">
+							<Code>{secret}</Code>
+							<Tooltip content="Copy secret to clipboard">
+								<Button
+									isIconOnly
+									variant="bordered"
+									size="sm"
+									onPress={() => navigator.clipboard.writeText(secret)}
+									aria-label="Copy secret to clipboard"
+								>
+									<Clipboard size={16} />
+								</Button>
+							</Tooltip>
+						</div>
 
 						<Divider />
 						<Controller
