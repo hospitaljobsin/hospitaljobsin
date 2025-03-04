@@ -48,26 +48,25 @@ export default function DisableTwoFactorAuthenticationModal({
 		<>
 			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
 				<ModalContent className="flex flex-col w-full gap-6 p-4 sm:p-6">
-					<ModalHeader className="flex flex-col gap-4 w-full">
+					<ModalHeader>
 						<h2 className="text-lg font-medium">
 							Disable Two Factor Authentication
 						</h2>
 					</ModalHeader>
-					<ModalBody className="w-full flex flex-col gap-8 items-start">
-						<p className="text-small text-foreground-500">
+					<ModalBody>
+						<p className="text-foreground-500">
 							Are you sure you want to disable Two Factor Authentication? This
 							could make your account less secure.
 						</p>
 					</ModalBody>
 					<ModalFooter className="w-full">
-						<Button variant="light" onPress={onClose} fullWidth>
+						<Button variant="light" onPress={onClose}>
 							Cancel
 						</Button>
 						<Button
 							color="danger"
 							isLoading={isMutationInFlight}
 							onPress={handleDisable2FA}
-							fullWidth
 						>
 							Disable 2FA
 						</Button>

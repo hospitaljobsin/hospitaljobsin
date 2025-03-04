@@ -1203,13 +1203,17 @@ class AuthService:
         response: Response,
         user_agent: str,
         token: str,
+        recaptcha_token: str,
     ) -> Result[
         Account,
         InvalidCredentialsError
         | TwoFactorAuthenticationNotEnabledError
-        | TwoFactorAuthenticationChallengeNotFoundError,
+        | TwoFactorAuthenticationChallengeNotFoundError
+        | InvalidRecaptchaTokenError,
     ]:
         """Verify a 2FA challenge for the account (after login)."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
         challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)
 
         if challenge is None:

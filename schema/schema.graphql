@@ -451,6 +451,9 @@ type Mutation {
   verify2faChallenge(
     """The 2FA token."""
     token: String!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
   ): VerifyAccount2FATokenPayload!
 
   """Save a job."""
@@ -748,7 +751,7 @@ union UpdateProfilePayload = Account
 
 union UpdateWebAuthnCredentialPayload = WebAuthnCredential | WebAuthnCredentialNotFoundError
 
-union VerifyAccount2FATokenPayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError
+union VerifyAccount2FATokenPayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError
 
 union VerifyEmailPayload = VerifyEmailSuccess | InvalidRecaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
 

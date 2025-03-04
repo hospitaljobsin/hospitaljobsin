@@ -88,18 +88,13 @@ export default function TwoFactorAuthentication({
 					Two Factor Authentication
 				</h2>
 				<p className="text-foreground-400">
-					Two-factor authentication (2FA) is an essential security measure that
+					Two-factor authentication (2FA) is a recommended security measure that
 					adds an extra layer of protection to your online accounts.{" "}
 				</p>
 			</CardHeader>
 			<CardBody>
 				{data.has2faEnabled ? (
-					<Button
-						fullWidth
-						variant="bordered"
-						color="danger"
-						onPress={handleDisable2faOpen}
-					>
+					<Button fullWidth variant="bordered" onPress={handleDisable2faOpen}>
 						Disable 2FA
 					</Button>
 				) : (

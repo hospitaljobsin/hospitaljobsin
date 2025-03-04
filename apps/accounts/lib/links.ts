@@ -12,6 +12,8 @@ const links = {
 	settings: "/settings",
 	requestSudo: (returnTo: string | null = null) =>
 		returnTo ? `/request-sudo?return_to=${returnTo}` : "/request-sudo",
+	twoFactorAuthentication: (returnTo: string | null = null) =>
+		returnTo ? `/auth/2fa?return_to=${returnTo}` : "/auth/2fa",
 };
 
 export default links;

@@ -34,9 +34,6 @@ const LoginFormPasswordMutation = graphql`
   mutation LoginFormPasswordMutation($email: String!, $password: String!, $recaptchaToken: String!) {
     loginWithPassword(email: $email, password: $password, recaptchaToken: $recaptchaToken) {
       __typename
-	  ... on Account {
-		__typename
-	  }
       ... on InvalidCredentialsError {
         message
       }
@@ -47,6 +44,10 @@ const LoginFormPasswordMutation = graphql`
 	  ... on InvalidSignInMethodError {
 		message
 		availableProviders
+	  }
+
+	  ... on TwoFactorAuthenticationRequiredError {
+		message
 	  }
     }
   }
@@ -201,6 +202,11 @@ export default function LoginForm() {
 							base: "flex flex-col items-start gap-4",
 						},
 					});
+				} else if (
+					response.loginWithPassword.__typename ===
+					"TwoFactorAuthenticationRequiredError"
+				) {
+					router.push(links.twoFactorAuthentication(params.get("return_to")));
 				} else {
 					window.location.href = redirectTo;
 				}

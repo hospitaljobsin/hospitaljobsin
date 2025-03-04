@@ -448,7 +448,8 @@ VerifyAccount2FATokenPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
     | TwoFactorAuthenticationNotEnabledErrorType
-    | TwoFactorAuthenticationChallengeNotFoundErrorType,
+    | TwoFactorAuthenticationChallengeNotFoundErrorType
+    | InvalidRecaptchaTokenErrorType,
     strawberry.union(name="VerifyAccount2FATokenPayload"),
 ]
 
