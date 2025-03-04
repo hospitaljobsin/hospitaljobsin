@@ -1,7 +1,7 @@
 import {
 	Button,
 	Code,
-	Input,
+	InputOtp,
 	Modal,
 	ModalBody,
 	ModalContent,
@@ -80,15 +80,20 @@ export default function EnableTwoFactorAuthenticationModal({
 							<h2 className="text-lg font-medium">
 								Enable Two Factor Authentication
 							</h2>
+							<p className="text-foreground-400 text-small">
+								Two Factor authentication adds an extra layer of security to
+								your account. It's recommended to enable it after you've set up
+								your password.
+							</p>
 						</ModalHeader>
 						<form
 							onSubmit={handleSubmit(onSubmit)}
 							className="space-y-12 w-full"
 						>
-							<ModalBody className="w-full">
+							<ModalBody className="w-full flex flex-col gap-6 items-center justify-center">
 								<QRCode
 									size={128}
-									style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+									className="max-w-64 min-w-48 h-auto"
 									value={otpUri}
 									viewBox="0 0 256 256"
 								/>
@@ -97,16 +102,20 @@ export default function EnableTwoFactorAuthenticationModal({
 								</p>
 								<Code>{secret}</Code>
 								<Controller
-									name="token"
 									control={control}
-									defaultValue=""
+									name="token"
 									render={({ field }) => (
-										<Input
+										<InputOtp
 											{...field}
-											label="Token"
-											value={field.value ?? ""}
 											errorMessage={errors.token?.message}
 											isInvalid={!!errors.token}
+											length={6}
+											description="Enter the 6-digit code from your 2FA app"
+											classNames={{
+												description:
+													"text-small font-normal text-foreground-500",
+												wrapper: "flex flex-col justify-center items-center",
+											}}
 										/>
 									)}
 								/>
