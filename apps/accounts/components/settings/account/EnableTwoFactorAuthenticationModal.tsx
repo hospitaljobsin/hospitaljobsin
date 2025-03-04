@@ -89,7 +89,7 @@ export default function EnableTwoFactorAuthenticationModal({
 					</p>
 				</ModalHeader>
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-12 w-full">
-					<ModalBody className="w-full flex flex-col gap-6 items-start">
+					<ModalBody className="w-full flex flex-col gap-8 items-start">
 						<QRCode
 							size={128}
 							className="sm:max-w-96 sm:min-w-64 max-w-64 min-w-48 h-auto"
@@ -124,6 +124,7 @@ export default function EnableTwoFactorAuthenticationModal({
 									errorMessage={errors.token?.message}
 									isInvalid={!!errors.token}
 									length={6}
+									size="lg"
 									description="Enter the 6-digit code from your 2FA app"
 									classNames={{
 										description: "text-small font-normal text-foreground-500",
