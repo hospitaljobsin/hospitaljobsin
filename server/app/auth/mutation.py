@@ -944,11 +944,27 @@ class AuthMutation:
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
+        token: Annotated[
+            str,
+            strawberry.argument(
+                description="The 2FA token.",
+            ),
+        ],
     ) -> SetAccount2FAPayload:
         """Set two factor authentication."""
         result = await auth_service.set_account_2fa(
             account=info.context["current_user"],
+            request=info.context["request"],
+            response=info.context["response"],
+            token=token,
         )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidCredentialsError():
+                    return InvalidCredentialsErrorType()
+                case TwoFactorAuthenticationChallengeNotFoundError():
+                    return TwoFactorAuthenticationChallengeNotFoundErrorType()
 
         return AccountType.marshal(result.ok_value)
 
@@ -971,9 +987,14 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> DisableAccount2FAPayload:
         """Disable two factor authentication."""
-        result = await auth_service.set_account_2fa(
+        result = await auth_service.disable_account_2fa(
             account=info.context["current_user"],
         )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case TwoFactorAuthenticationNotEnabledError():
+                    return TwoFactorAuthenticationNotEnabledErrorType()
 
         return AccountType.marshal(result.ok_value)
 
@@ -998,15 +1019,15 @@ class AuthMutation:
         """Generate account 2FA OTP URI."""
         result = await auth_service.generate_account_2fa_otp_uri(
             account=info.context["current_user"],
+            request=info.context["request"],
+            response=info.context["response"],
         )
 
-        if isinstance(result, Err):
-            match result.err_value:
-                case TwoFactorAuthenticationNotEnabledError():
-                    return TwoFactorAuthenticationNotEnabledErrorType()
+        otp_uri, secret = result.ok_value
 
         return GenerateAccount2FAOTPURISuccessType(
-            otp_uri=result.ok_value,
+            otp_uri=otp_uri,
+            secret=secret,
         )
 
     @strawberry.mutation(  # type: ignore[misc]
@@ -1018,10 +1039,19 @@ class AuthMutation:
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
+        token: Annotated[
+            str,
+            strawberry.argument(
+                description="The 2FA token.",
+            ),
+        ],
     ) -> VerifyAccount2FATokenPayload:
         """Verify Account 2FA challenge."""
         result = await auth_service.verify_2fa_challenge(
-            account=info.context["current_user"],
+            response=info.context["response"],
+            request=info.context["request"],
+            token=token,
+            user_agent=info.context["user_agent"],
         )
 
         if isinstance(result, Err):

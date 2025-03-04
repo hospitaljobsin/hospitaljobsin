@@ -837,6 +837,7 @@ class AuthService:
         session_token = await self._session_repo.create(
             user_agent=user_agent,
             account=existing_reset_token.account,
+            ip_address=request.client.host,
         )
 
         self._set_user_session_cookie(
@@ -1133,7 +1134,7 @@ class AuthService:
         account: Account,
         request: Request,
         response: Response,
-    ) -> Result[str, TwoFactorAuthenticationNotEnabledError]:
+    ) -> Result[tuple[str, str], None]:
         """Generate a QR code for 2FA for the account."""
         (
             challenge,
@@ -1141,16 +1142,16 @@ class AuthService:
         ) = await self._two_factor_authentication_challenge_repo.create(
             account=account,
         )
-        otp_uri = pyotp.totp.TOTP(two_factor_challenge.totp_secret).provisioning_uri(
-            name=account.email, issuer_name=APP_NAME
-        )
+
+        totp = pyotp.totp.TOTP(two_factor_challenge.totp_secret)
+        otp_uri = totp.provisioning_uri(name=account.email, issuer_name=APP_NAME)
 
         self._set_two_factor_challenge_cookie(
             request=request,
             response=response,
             value=challenge,
         )
-        return Ok(otp_uri)
+        return Ok((otp_uri, totp.secret))
 
     async def set_account_2fa(
         self,

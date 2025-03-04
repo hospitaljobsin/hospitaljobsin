@@ -1,5 +1,4 @@
 "use client";
-import { Divider } from "@heroui/react";
 import { useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
@@ -49,7 +48,7 @@ export default function AccountSettingsView() {
 					}}
 				/>
 			)}
-			<Divider />
+
 			<TwoFactorAuthentication rootQuery={data.viewer} />
 		</div>
 	);

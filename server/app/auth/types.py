@@ -421,7 +421,10 @@ class TwoFactorAuthenticationRequiredErrorType(BaseErrorType):
 
 
 SetAccount2FAPayload = Annotated[
-    AccountType, strawberry.union(name="SetAccount2FAPayload")
+    AccountType
+    | InvalidCredentialsErrorType
+    | TwoFactorAuthenticationChallengeNotFoundErrorType,
+    strawberry.union(name="SetAccount2FAPayload"),
 ]
 
 DisableAccount2FAPayload = Annotated[
@@ -433,10 +436,11 @@ DisableAccount2FAPayload = Annotated[
 @strawberry.type(name="GenerateAccount2FAOTPURISuccess")
 class GenerateAccount2FAOTPURISuccessType:
     otp_uri: str
+    secret: str
 
 
 GenerateAccount2FAOTPURIPayload = Annotated[
-    GenerateAccount2FAOTPURISuccessType | TwoFactorAuthenticationNotEnabledErrorType,
+    GenerateAccount2FAOTPURISuccessType,
     strawberry.union(name="GenerateAccount2FAOTPURIPayload"),
 ]
 

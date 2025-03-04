@@ -364,7 +364,7 @@ class TwoFactorAuthenticationChallengeRepo:
             else totp_secret,
         )
         await two_factor_challenge.save()
-        return challenge
+        return challenge, two_factor_challenge
 
     async def get(self, challenge: str) -> TwoFactorAuthenticationChallenge | None:
         """Get 2FA challenge by challenge."""

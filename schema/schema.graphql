@@ -116,10 +116,11 @@ enum GenderType {
   OTHER
 }
 
-union GenerateAccount2FAOTPURIPayload = GenerateAccount2FAOTPURISuccess | TwoFactorAuthenticationNotEnabledError
+union GenerateAccount2FAOTPURIPayload = GenerateAccount2FAOTPURISuccess
 
 type GenerateAccount2FAOTPURISuccess {
   otpUri: String!
+  secret: String!
 }
 
 union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSuccess | InvalidRecaptchaTokenError
@@ -436,7 +437,10 @@ type Mutation {
   ): RequestSudoModeWithPasswordPayload! @isAuthenticated
 
   """Set two factor authentication."""
-  setAccount2fa: SetAccount2FAPayload! @isAuthenticated @requiresSudoMode
+  setAccount2fa(
+    """The 2FA token."""
+    token: String!
+  ): SetAccount2FAPayload! @isAuthenticated @requiresSudoMode
 
   """Disable two factor authentication."""
   disableAccount2fa: DisableAccount2FAPayload! @isAuthenticated @requiresSudoMode
@@ -445,7 +449,10 @@ type Mutation {
   generateAccount2faOtpUri: GenerateAccount2FAOTPURIPayload! @isAuthenticated @requiresSudoMode
 
   """Verify Account 2FA challenge."""
-  verify2faChallenge: VerifyAccount2FATokenPayload!
+  verify2faChallenge(
+    """The 2FA token."""
+    token: String!
+  ): VerifyAccount2FATokenPayload!
 
   """Save a job."""
   saveJob(
@@ -716,7 +723,7 @@ type SessionNotFoundError implements Error {
   message: String!
 }
 
-union SetAccount2FAPayload = Account
+union SetAccount2FAPayload = Account | InvalidCredentialsError | TwoFactorAuthenticationChallengeNotFoundError
 
 type TwoFactorAuthenticationChallengeNotFoundError implements Error {
   message: String!
