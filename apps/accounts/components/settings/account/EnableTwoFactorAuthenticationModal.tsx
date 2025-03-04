@@ -111,22 +111,24 @@ export default function EnableTwoFactorAuthenticationModal({
 							value={otpUri}
 							viewBox="0 0 256 256"
 						/>
-						<p className="text-small text-foreground-500">
-							If you can't scan the QR code, copy the secret below:
-						</p>
-						<div className="flex items-center gap-2">
-							<Code className="overflow-x-auto">{secret}</Code>
-							<Tooltip content="Copy secret to clipboard">
-								<Button
-									isIconOnly
-									variant="bordered"
-									size="sm"
-									onPress={() => navigator.clipboard.writeText(secret)}
-									aria-label="Copy secret to clipboard"
-								>
-									<Clipboard size={16} />
-								</Button>
-							</Tooltip>
+						<div className="w-full flex flex-col gap-4">
+							<p className="text-small text-foreground-500">
+								If you can't scan the QR code, copy the secret below:
+							</p>
+							<div className="flex items-center gap-2">
+								<Code className="overflow-x-auto">{secret}</Code>
+								<Tooltip content="Copy secret to clipboard">
+									<Button
+										isIconOnly
+										variant="bordered"
+										size="sm"
+										onPress={() => navigator.clipboard.writeText(secret)}
+										aria-label="Copy secret to clipboard"
+									>
+										<Clipboard size={16} />
+									</Button>
+								</Tooltip>
+							</div>
 						</div>
 
 						<Divider />
@@ -142,6 +144,7 @@ export default function EnableTwoFactorAuthenticationModal({
 									size="lg"
 									description="Enter the 6-digit code from your 2FA app"
 									classNames={{
+										errorMessage: "text-small font-normal text-danger",
 										description: "text-small font-normal text-foreground-500",
 										wrapper: "flex flex-col justify-center items-center",
 									}}

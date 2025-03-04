@@ -2,6 +2,7 @@ import hashlib
 import secrets
 from datetime import UTC, datetime, timedelta
 
+import pyotp
 from beanie import WriteRules
 from beanie.operators import In
 from bson import ObjectId
@@ -345,7 +346,7 @@ class TwoFactorAuthenticationChallengeRepo:
     @staticmethod
     def generate_two_factor_secret() -> str:
         """Generate a new 2fa secret."""
-        return secrets.token_urlsafe(32)
+        return pyotp.random_base32()
 
     async def create(
         self, *, account: Account, totp_secret: str | None = None
