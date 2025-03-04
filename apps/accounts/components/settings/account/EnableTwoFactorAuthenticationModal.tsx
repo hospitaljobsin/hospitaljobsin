@@ -92,7 +92,12 @@ export default function EnableTwoFactorAuthenticationModal({
 		});
 	}
 	return (
-		<Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
+		<Modal
+			isOpen={isOpen}
+			onOpenChange={onOpenChange}
+			size="xl"
+			scrollBehavior="inside"
+		>
 			<ModalContent className="flex flex-col w-full gap-6 p-4 sm:p-6">
 				<ModalHeader className="flex flex-col gap-4 w-full">
 					<h2 className="text-lg font-medium">
