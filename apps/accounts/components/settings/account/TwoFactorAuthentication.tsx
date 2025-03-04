@@ -42,7 +42,7 @@ export default function TwoFactorAuthentication({
 		);
 	const [otpUri, setOtpUri] = useState("");
 	const [secret, setSecret] = useState("");
-	const { isOpen, onOpenChange, onOpen } = useDisclosure();
+	const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
 	const { checkSudoMode } = useCheckSudoMode();
 
 	function handle2faOpen() {
@@ -89,6 +89,7 @@ export default function TwoFactorAuthentication({
 				<EnableTwoFactorAuthenticationModal
 					isOpen={isOpen}
 					onOpenChange={onOpenChange}
+					onClose={onClose}
 					otpUri={otpUri}
 					secret={secret}
 				/>
