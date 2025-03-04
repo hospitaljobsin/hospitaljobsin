@@ -1195,7 +1195,7 @@ class AuthService:
         if account.two_factor_secret is None:
             return Err(TwoFactorAuthenticationNotEnabledError())
         await self._account_repo.delete_two_factor_secret(account=account)
-        return account
+        return Ok(account)
 
     async def verify_2fa_challenge(
         self,

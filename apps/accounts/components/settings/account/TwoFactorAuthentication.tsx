@@ -16,7 +16,7 @@ import type { TwoFactorAuthenticationGenerateOTPURIMutation } from "./__generate
 
 const TwoFactorAuthenticationFragment = graphql`
   fragment TwoFactorAuthenticationFragment on Account {
-    has2fa
+    has2faEnabled
 	sudoModeExpiresAt
   }
 `;
@@ -93,8 +93,13 @@ export default function TwoFactorAuthentication({
 				</p>
 			</CardHeader>
 			<CardBody>
-				{data.has2fa ? (
-					<Button fullWidth variant="bordered" onPress={handleDisable2faOpen}>
+				{data.has2faEnabled ? (
+					<Button
+						fullWidth
+						variant="bordered"
+						color="danger"
+						onPress={handleDisable2faOpen}
+					>
 						Disable 2FA
 					</Button>
 				) : (

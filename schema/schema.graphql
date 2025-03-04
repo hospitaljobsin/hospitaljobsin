@@ -11,7 +11,6 @@ type Account implements Node {
   updatedAt: DateTime
   authProviders: [AuthProvider!]!
   has2faEnabled: Boolean!
-  has2fa: Boolean!
   profile: ProfilePayload!
   avatarUrl(
     """The size of the avatar."""

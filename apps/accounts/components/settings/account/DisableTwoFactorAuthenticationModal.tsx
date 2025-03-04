@@ -52,10 +52,6 @@ export default function DisableTwoFactorAuthenticationModal({
 						<h2 className="text-lg font-medium">
 							Disable Two Factor Authentication
 						</h2>
-						<p className="text-foreground-400 text-small font-normal w-full">
-							2FA adds an extra layer of security to your account. It's
-							recommended to Disable it alongside password authentication.
-						</p>
 					</ModalHeader>
 					<ModalBody className="w-full flex flex-col gap-8 items-start">
 						<p className="text-small text-foreground-500">

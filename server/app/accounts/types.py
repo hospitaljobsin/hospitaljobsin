@@ -175,7 +175,6 @@ class AccountType(BaseNodeType[Account]):
     has_2fa_enabled: bool
 
     profile_ref: strawberry.Private[ObjectId | Profile | None] = None
-    two_factor_secret: strawberry.Private[str | None] = None
 
     @classmethod
     def marshal(cls, account: Account) -> Self:
@@ -224,11 +223,6 @@ class AccountType(BaseNodeType[Account]):
             cls.marshal(account) if account is not None else account
             for account in accounts
         ]
-
-    @strawberry.field
-    async def has_2fa(self) -> bool:
-        """Check if the user has 2FA enabled."""
-        return self.two_factor_secret is not None
 
     @strawberry.field(graphql_type=ProfilePayload)
     @inject
