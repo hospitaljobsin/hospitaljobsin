@@ -9,6 +9,7 @@ import {
 import { useState } from "react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import DisableTwoFactorAuthenticationModal from "./DisableTwoFactorAuthenticationModal";
 import EnableTwoFactorAuthenticationModal from "./EnableTwoFactorAuthenticationModal";
 import type { TwoFactorAuthenticationFragment$key } from "./__generated__/TwoFactorAuthenticationFragment.graphql";
 import type { TwoFactorAuthenticationGenerateOTPURIMutation } from "./__generated__/TwoFactorAuthenticationGenerateOTPURIMutation.graphql";
@@ -42,10 +43,21 @@ export default function TwoFactorAuthentication({
 		);
 	const [otpUri, setOtpUri] = useState("");
 	const [secret, setSecret] = useState("");
-	const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
+	const {
+		isOpen: isEnableModalOpen,
+		onOpenChange: onEnableModalOpenChange,
+		onOpen: onEnableModalOpen,
+		onClose: onEnableModalClose,
+	} = useDisclosure();
+	const {
+		isOpen: isDisableModalOpen,
+		onOpenChange: onDisableModalOpenChange,
+		onOpen: onDisableModalOpen,
+		onClose: onDisableModalClose,
+	} = useDisclosure();
 	const { checkSudoMode } = useCheckSudoMode();
 
-	function handle2faOpen() {
+	function handleEnable2faOpen() {
 		if (checkSudoMode(data.sudoModeExpiresAt)) {
 			// Generate OTP URI here
 			commitMutation({
@@ -57,10 +69,16 @@ export default function TwoFactorAuthentication({
 					) {
 						setOtpUri(response.generateAccount2faOtpUri.otpUri);
 						setSecret(response.generateAccount2faOtpUri.secret);
-						onOpen();
+						onEnableModalOpen();
 					}
 				},
 			});
+		}
+	}
+
+	function handleDisable2faOpen() {
+		if (checkSudoMode(data.sudoModeExpiresAt)) {
+			onDisableModalOpen();
 		}
 	}
 	return (
@@ -76,22 +94,29 @@ export default function TwoFactorAuthentication({
 			</CardHeader>
 			<CardBody>
 				{data.has2fa ? (
-					<p>you have 2fa</p>
+					<Button fullWidth variant="bordered" onPress={handleDisable2faOpen}>
+						Disable 2FA
+					</Button>
 				) : (
 					<Button
 						fullWidth
-						onPress={handle2faOpen}
+						onPress={handleEnable2faOpen}
 						isLoading={isMutationInFlight}
 					>
 						Enable 2FA
 					</Button>
 				)}
 				<EnableTwoFactorAuthenticationModal
-					isOpen={isOpen}
-					onOpenChange={onOpenChange}
-					onClose={onClose}
+					isOpen={isEnableModalOpen}
+					onOpenChange={onEnableModalOpenChange}
+					onClose={onEnableModalClose}
 					otpUri={otpUri}
 					secret={secret}
+				/>
+				<DisableTwoFactorAuthenticationModal
+					isOpen={isDisableModalOpen}
+					onOpenChange={onDisableModalOpenChange}
+					onClose={onDisableModalClose}
 				/>
 			</CardBody>
 		</Card>

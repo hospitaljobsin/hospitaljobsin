@@ -1,0 +1,82 @@
+import {
+	Button,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+} from "@heroui/react";
+import { useMutation } from "react-relay";
+import { graphql } from "relay-runtime";
+import type { DisableTwoFactorAuthenticationModalMutation } from "./__generated__/DisableTwoFactorAuthenticationModalMutation.graphql";
+
+const DisableTwoFactorAuthenticationMutation = graphql`
+  mutation DisableTwoFactorAuthenticationModalMutation {
+	disableAccount2fa {
+		__typename
+        ... on Account {
+            ...TwoFactorAuthenticationFragment
+        }
+		... on TwoFactorAuthenticationNotEnabledError {
+			message
+		}
+	}
+  }
+`;
+
+export default function DisableTwoFactorAuthenticationModal({
+	isOpen,
+	onOpenChange,
+	onClose,
+}: {
+	isOpen: boolean;
+	onOpenChange: (isOpen: boolean) => void;
+	onClose: () => void;
+}) {
+	const [commitMutation, isMutationInFlight] =
+		useMutation<DisableTwoFactorAuthenticationModalMutation>(
+			DisableTwoFactorAuthenticationMutation,
+		);
+
+	function handleDisable2FA() {
+		commitMutation({
+			variables: {},
+		});
+	}
+	return (
+		<>
+			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
+				<ModalContent className="flex flex-col w-full gap-6 p-4 sm:p-6">
+					<ModalHeader className="flex flex-col gap-4 w-full">
+						<h2 className="text-lg font-medium">
+							Disable Two Factor Authentication
+						</h2>
+						<p className="text-foreground-400 text-small font-normal w-full">
+							2FA adds an extra layer of security to your account. It's
+							recommended to Disable it alongside password authentication.
+						</p>
+					</ModalHeader>
+					<ModalBody className="w-full flex flex-col gap-8 items-start">
+						<p className="text-small text-foreground-500">
+							Are you sure you want to disable Two Factor Authentication? This
+							could make your account less secure.
+						</p>
+					</ModalBody>
+					<ModalFooter className="w-full">
+						<Button variant="light" onPress={onClose} fullWidth>
+							Cancel
+						</Button>
+						<Button
+							color="danger"
+							isLoading={isMutationInFlight}
+							onPress={handleDisable2FA}
+							fullWidth
+						>
+							Disable 2FA
+						</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
+		</>
+	);
+}
