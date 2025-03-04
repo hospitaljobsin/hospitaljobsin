@@ -78,7 +78,7 @@ export default function EnableTwoFactorAuthenticationModal({
 		<Modal
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
-			size="lg"
+			size="xl"
 			className="p-4 sm:p-6"
 		>
 			<ModalContent className="flex flex-col w-full gap-6">
@@ -86,9 +86,9 @@ export default function EnableTwoFactorAuthenticationModal({
 					<h2 className="text-lg font-medium">
 						Enable Two Factor Authentication
 					</h2>
-					<p className="text-foreground-400 text-small font-normal">
+					<p className="text-foreground-400 text-small font-normal w-full">
 						2FA adds an extra layer of security to your account. It's
-						recommended to enable it after you've set up your password.
+						recommended to enable it alongside password authentication.
 					</p>
 				</ModalHeader>
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-12 w-full">
