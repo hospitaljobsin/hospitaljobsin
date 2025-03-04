@@ -62,6 +62,7 @@ export default function EnableTwoFactorAuthenticationModal({
 	const {
 		handleSubmit,
 		control,
+		setError,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -74,6 +75,19 @@ export default function EnableTwoFactorAuthenticationModal({
 		commitMutation({
 			variables: {
 				token: formData.token,
+			},
+			onCompleted(response) {
+				if (
+					response.setAccount2fa.__typename === "Account" ||
+					response.setAccount2fa.__typename ===
+						"TwoFactorAuthenticationChallengeNotFoundError"
+				) {
+					onClose();
+				} else if (
+					response.setAccount2fa.__typename === "InvalidCredentialsError"
+				) {
+					setError("token", { message: response.setAccount2fa.message });
+				}
 			},
 		});
 	}
