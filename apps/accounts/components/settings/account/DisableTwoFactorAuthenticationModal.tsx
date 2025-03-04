@@ -15,6 +15,7 @@ const DisableTwoFactorAuthenticationMutation = graphql`
 	disableAccount2fa {
 		__typename
         ... on Account {
+            id
             ...TwoFactorAuthenticationFragment
         }
 		... on TwoFactorAuthenticationNotEnabledError {

@@ -24,6 +24,7 @@ const EnableTwoFactorAuthenticationMutation = graphql`
 	setAccount2fa(token: $token) {
 		__typename
 		... on Account {
+			id
 			...TwoFactorAuthenticationFragment
 		}
 		... on InvalidCredentialsError {
