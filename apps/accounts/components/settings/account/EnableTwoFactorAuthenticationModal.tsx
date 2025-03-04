@@ -97,7 +97,7 @@ export default function EnableTwoFactorAuthenticationModal({
 					<ModalBody className="w-full flex flex-col gap-6 items-center justify-center">
 						<QRCode
 							size={128}
-							className="max-w-64 min-w-48 h-auto"
+							className="sm:max-w-96 sm:min-w-64 max-w-64 min-w-48 h-auto"
 							value={otpUri}
 							viewBox="0 0 256 256"
 						/>
@@ -105,7 +105,7 @@ export default function EnableTwoFactorAuthenticationModal({
 							If you can't scan the QR code, copy the secret below:
 						</p>
 						<div className="flex items-center gap-2">
-							<Code>{secret}</Code>
+							<Code className="overflow-x-auto">{secret}</Code>
 							<Tooltip content="Copy secret to clipboard">
 								<Button
 									isIconOnly
