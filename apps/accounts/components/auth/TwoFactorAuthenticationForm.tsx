@@ -2,7 +2,15 @@
 
 import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
-import { Button, Card, CardBody, CardHeader, InputOtp } from "@heroui/react";
+import {
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	CardHeader,
+	Divider,
+	Input,
+} from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next-nprogress-bar";
 import { useSearchParams } from "next/navigation";
@@ -37,7 +45,7 @@ const TwoFactorAuthenticationFormutation = graphql`
 `;
 
 const twoFactorAuthenticationForm = z.object({
-	token: z.string().length(6, "Token must be 6 characters long"),
+	token: z.string().min(1, "This field is required"),
 });
 
 export default function TwoFactorAuthenticationForm() {
@@ -95,34 +103,29 @@ export default function TwoFactorAuthenticationForm() {
 	}
 
 	return (
-		<Card className="p-6 space-y-4" shadow="none">
+		<Card className="p-6 space-y-8" shadow="none">
 			<CardHeader className="w-full flex flex-col gap-4">
 				<h1 className="text-center text-2xl w-full">
 					Two Factor Authentication
 				</h1>
 				<p className="text-foreground-400 w-full text-center">
-					Enter the 6-digit code from your 2FA app
+					Open your 2FA app or browser extension to view your authentication
+					code
 				</p>
 			</CardHeader>
 			<CardBody>
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-					<div className="w-full flex flex-col gap-8 items-center">
+					<div className="w-full flex flex-col gap-6 items-center">
 						<Controller
 							control={control}
 							name="token"
 							render={({ field }) => (
-								<InputOtp
+								<Input
 									{...field}
+									label="Authentication Code"
 									errorMessage={errors.token?.message}
 									isInvalid={!!errors.token}
-									length={6}
-									size="lg"
-									classNames={{
-										errorMessage:
-											"text-small font-normal text-danger text-center",
-										description: "text-small font-normal text-foreground-500",
-										wrapper: "flex flex-col justify-center items-center",
-									}}
+									placeholder="XXXXXX"
 								/>
 							)}
 						/>
@@ -136,6 +139,11 @@ export default function TwoFactorAuthenticationForm() {
 					</div>
 				</form>
 			</CardBody>
+			<Divider />
+			<CardFooter className="w-full flex items-center justify-center text-foreground-400 text-center text-small">
+				Facing problems?
+				<br /> You can also enter a recovery code
+			</CardFooter>
 		</Card>
 	);
 }

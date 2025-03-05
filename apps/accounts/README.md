@@ -57,6 +57,5 @@ where:
 - option to disable password
 - add 2FA verification requirement/ passkey before resetting password (like github)
 - If the user loses access to their 2FA device, provide secure fallback options:
-    Backup Codes: Encourage users to store backup codes when setting up 2FA.
     Alternative 2FA Methods: Allow authentication via email or backup phone number.
     Manual Verification via Support: If no 2FA method is available, require identity verification (e.g., ID document upload or security questions).

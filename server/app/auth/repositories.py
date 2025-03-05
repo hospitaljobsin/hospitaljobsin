@@ -409,3 +409,14 @@ class RecoveryCodeRepo:
     async def delete_all(self, account_id: ObjectId) -> None:
         """Delete all recovery codes for an account."""
         await RecoveryCode.find_many(RecoveryCode.account.id == account_id).delete()
+
+    async def delete(self, recovery_code: RecoveryCode) -> None:
+        """Delete recovery code."""
+        await recovery_code.delete()
+
+    async def get(self, account_id: ObjectId, code: str) -> RecoveryCode | None:
+        """Get all recovery codes by account ID."""
+        return await RecoveryCode.find_one(
+            RecoveryCode.account.id == account_id,
+            RecoveryCode.code_hash == self.hash_recovery_code(code),
+        )

@@ -1241,9 +1241,18 @@ class AuthService:
 
         if account.two_factor_secret is None:
             return Err(TwoFactorAuthenticationNotEnabledError())
-        totp = pyotp.TOTP(account.two_factor_secret)
-        if not totp.verify(token):
-            return Err(InvalidCredentialsError())
+
+        recovery_code = await self._recovery_code_repo.get(
+            account_id=account.id, code=token
+        )
+
+        if recovery_code is not None:
+            # utilize a recovery code for the current user
+            await self._recovery_code_repo.delete(recovery_code)
+        else:
+            totp = pyotp.TOTP(account.two_factor_secret)
+            if not totp.verify(token):
+                return Err(InvalidCredentialsError())
 
         session_token = await self._session_repo.create(
             ip_address=request.client.host,
