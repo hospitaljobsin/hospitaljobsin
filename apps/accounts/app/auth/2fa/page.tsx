@@ -1,4 +1,4 @@
-import TwoFactorAuthenticationForm from "@/components/auth/TwoFactorAuthenticationForm";
+import TwoFactorAuthenticationForm from "@/components/auth/two-factor/TwoFactorAuthenticationForm";
 
 import type { Metadata } from "next";
 

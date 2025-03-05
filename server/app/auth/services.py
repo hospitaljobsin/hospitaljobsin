@@ -1280,17 +1280,73 @@ class AuthService:
         if account.two_factor_secret is None:
             return Err(TwoFactorAuthenticationNotEnabledError())
 
+        totp = pyotp.TOTP(account.two_factor_secret)
+        if not totp.verify(token):
+            return Err(InvalidCredentialsError())
+
+        session_token = await self._session_repo.create(
+            ip_address=request.client.host,
+            user_agent=user_agent,
+            account=account,
+        )
+
+        self._delete_two_factor_challenge_cookie(request=request, response=response)
+
+        self._set_user_session_cookie(
+            request=request,
+            response=response,
+            value=session_token,
+        )
+
+        self._grant_sudo_mode(request)
+
+        return Ok(account)
+
+    async def verify_2fa_recovery_code(
+        self,
+        request: Request,
+        response: Response,
+        user_agent: str,
+        token: str,
+        recaptcha_token: str,
+    ) -> Result[
+        Account,
+        InvalidCredentialsError
+        | TwoFactorAuthenticationNotEnabledError
+        | TwoFactorAuthenticationChallengeNotFoundError
+        | InvalidRecaptchaTokenError,
+    ]:
+        """Verify a 2FA recovery code for the account (after login)."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
+        challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)
+
+        if challenge is None:
+            return Err(TwoFactorAuthenticationChallengeNotFoundError())
+
+        two_factor_authentication_challenge = (
+            await self._two_factor_authentication_challenge_repo.get(
+                challenge=challenge
+            )
+        )
+
+        if two_factor_authentication_challenge is None:
+            self._delete_two_factor_challenge_cookie(request=request, response=response)
+            return Err(TwoFactorAuthenticationChallengeNotFoundError())
+
+        account = two_factor_authentication_challenge.account
+
+        if account.two_factor_secret is None:
+            return Err(TwoFactorAuthenticationNotEnabledError())
+
         recovery_code = await self._recovery_code_repo.get(
             account_id=account.id, code=token
         )
 
-        if recovery_code is not None:
-            # utilize a recovery code for the current user
-            await self._recovery_code_repo.delete(recovery_code)
-        else:
-            totp = pyotp.TOTP(account.two_factor_secret)
-            if not totp.verify(token):
-                return Err(InvalidCredentialsError())
+        if recovery_code is None:
+            return Err(InvalidCredentialsError())
+        # utilize a recovery code for the current user
+        await self._recovery_code_repo.delete(recovery_code)
 
         session_token = await self._session_repo.create(
             ip_address=request.client.host,

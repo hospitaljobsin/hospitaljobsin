@@ -10,6 +10,7 @@ import {
 	CardHeader,
 	Divider,
 	Input,
+	Link,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next-nprogress-bar";
@@ -19,9 +20,9 @@ import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
-import type { TwoFactorAuthenticationFormMutation as TwoFactorAuthenticationFormMutationType } from "./__generated__/TwoFactorAuthenticationFormMutation.graphql";
+import type { TwoFactorAuthenticationFormMutation as TwoFactorAuthenticationFormMutationType } from "../__generated__/TwoFactorAuthenticationFormMutation.graphql";
 
-const TwoFactorAuthenticationFormutation = graphql`
+const TwoFactorAuthenticationFormMutation = graphql`
   mutation TwoFactorAuthenticationFormMutation($token: String!, $recaptchaToken: String!) {
 	verify2faChallenge(token: $token, recaptchaToken: $recaptchaToken) {
 	  __typename
@@ -54,7 +55,7 @@ export default function TwoFactorAuthenticationForm() {
 	const redirectTo = getValidRedirectURL(params.get("return_to"));
 	const [commitMutation, isMutationInFlight] =
 		useMutation<TwoFactorAuthenticationFormMutationType>(
-			TwoFactorAuthenticationFormutation,
+			TwoFactorAuthenticationFormMutation,
 		);
 	const {
 		handleSubmit,
@@ -140,9 +141,14 @@ export default function TwoFactorAuthenticationForm() {
 				</form>
 			</CardBody>
 			<Divider />
-			<CardFooter className="w-full flex items-center justify-center text-foreground-400 text-center text-small">
-				Facing problems?
-				<br /> You can also enter a recovery code
+			<CardFooter className="w-full flex items-center justify-center text-foreground-400 text-center text-small gap-2 flex-col">
+				<p>Facing problems?</p>
+				<Link
+					href={links.twoFactorRecovery(params.get("return_to"))}
+					className="cursor-pointer text-blue-500 text-small sm:text-sm text-center"
+				>
+					Use a recovery code
+				</Link>
 			</CardFooter>
 		</Card>
 	);

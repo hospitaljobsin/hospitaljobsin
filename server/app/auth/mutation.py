@@ -1117,6 +1117,50 @@ class AuthMutation:
         return AccountType.marshal(result.ok_value)
 
     @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=VerifyAccount2FATokenPayload,
+        description="Verify Account 2FA recovery code.",
+    )
+    @inject
+    async def verify_2fa_recovery_code(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+        token: Annotated[
+            str,
+            strawberry.argument(
+                description="The 2FA token.",
+            ),
+        ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
+    ) -> VerifyAccount2FATokenPayload:
+        """Verify Account 2FA recovery code."""
+        result = await auth_service.verify_2fa_recovery_code(
+            response=info.context["response"],
+            request=info.context["request"],
+            token=token,
+            recaptcha_token=recaptcha_token,
+            user_agent=info.context["user_agent"],
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case TwoFactorAuthenticationNotEnabledError():
+                    return TwoFactorAuthenticationNotEnabledErrorType()
+                case InvalidCredentialsError():
+                    return InvalidCredentialsErrorType()
+                case TwoFactorAuthenticationChallengeNotFoundError():
+                    return TwoFactorAuthenticationChallengeNotFoundErrorType()
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
+
+        return AccountType.marshal(result.ok_value)
+
+    @strawberry.mutation(  # type: ignore[misc]
         graphql_type=Generate2FARecoveryCodesPayload,
         description="Generate 2FA recovery codes for the current user.",
         extensions=[

@@ -14,6 +14,10 @@ const links = {
 		returnTo ? `/request-sudo?return_to=${returnTo}` : "/request-sudo",
 	twoFactorAuthentication: (returnTo: string | null = null) =>
 		returnTo ? `/auth/2fa?return_to=${returnTo}` : "/auth/2fa",
+	twoFactorRecovery: (returnTo: string | null = null) =>
+		returnTo
+			? `/auth/2fa/recovery?return_to=${returnTo}`
+			: "/auth/2fa/recovery",
 };
 
 export default links;

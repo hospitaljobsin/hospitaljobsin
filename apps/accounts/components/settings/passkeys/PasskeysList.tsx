@@ -23,8 +23,8 @@ const PasskeysListInternalFragment = graphql`
     count: { type: "Int", defaultValue: 10 }
   )
   @refetchable(queryName: "PasskeysListPaginationQuery") {
-    webauthnCredentials(after: $cursor, first: $count)
-      @connection(key: "PasskeysListInternalFragment_webauthnCredentials") {
+    webAuthnCredentials(after: $cursor, first: $count)
+      @connection(key: "PasskeysListInternalFragment_webAuthnCredentials") {
         __id
       edges {
         node {
@@ -60,7 +60,7 @@ export default function PasskeysList({ root }: Props) {
 				const entry = entries[0];
 				if (
 					entry.isIntersecting &&
-					data.webauthnCredentials.pageInfo.hasNextPage &&
+					data.webAuthnCredentials.pageInfo.hasNextPage &&
 					!isLoadingNext
 				) {
 					loadNext(5);
@@ -71,25 +71,25 @@ export default function PasskeysList({ root }: Props) {
 
 		observer.observe(observerRef.current);
 		return () => observer.disconnect();
-	}, [data.webauthnCredentials.pageInfo.hasNextPage, isLoadingNext, loadNext]);
+	}, [data.webAuthnCredentials.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
 	return (
 		<div className="w-full flex flex-col gap-6">
 			<div className="flex w-full items-center justify-between gap-6">
 				<p className="text-foreground-600">My Passkeys</p>
 				<PasskeysController
-					passkeysConnectionId={data.webauthnCredentials.__id}
+					passkeysConnectionId={data.webAuthnCredentials.__id}
 					account={rootQuery}
 				/>
 			</div>
 			<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
-				{data.webauthnCredentials.edges.map((passkeyEdge) => (
+				{data.webAuthnCredentials.edges.map((passkeyEdge) => (
 					<Passkey
 						passkey={passkeyEdge.node}
 						key={passkeyEdge.node.id}
-						passkeysConnectionId={data.webauthnCredentials.__id}
+						passkeysConnectionId={data.webAuthnCredentials.__id}
 						account={rootQuery}
-						totalPasskeys={data.webauthnCredentials.edges.length}
+						totalPasskeys={data.webAuthnCredentials.edges.length}
 					/>
 				))}
 				<div ref={observerRef} className="h-10" />

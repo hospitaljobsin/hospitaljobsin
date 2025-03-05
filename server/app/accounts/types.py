@@ -328,9 +328,9 @@ class AccountType(BaseNodeType[Account]):
 
     @strawberry.field
     @inject
-    async def webauthn_credentials(
+    async def web_authn_credentials(
         self,
-        webauthn_credential_repo: Annotated[
+        web_authn_credential_repo: Annotated[
             WebAuthnCredentialRepo,
             Inject,
         ],
@@ -344,7 +344,7 @@ class AccountType(BaseNodeType[Account]):
         """Return the webauthn credentials for the current user."""
         from app.auth.types import WebAuthnCredentialConnectionType
 
-        sessions = await webauthn_credential_repo.get_all_by_account_id(
+        sessions = await web_authn_credential_repo.get_all_by_account_id(
             account_id=ObjectId(self.id),
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
