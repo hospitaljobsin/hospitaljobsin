@@ -607,6 +607,7 @@ type PasswordResetToken implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
   email: String!
+  needs2fa: Boolean!
 }
 
 type PasswordResetTokenNotFoundError implements Error {

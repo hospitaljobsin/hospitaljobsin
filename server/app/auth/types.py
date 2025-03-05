@@ -64,6 +64,7 @@ class InvalidSignInMethodErrorType(BaseErrorType):
 @strawberry.type(name="PasswordResetToken")
 class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
     email: str
+    needs_2fa: bool
 
     @classmethod
     def marshal(cls, reset_token: PasswordResetToken) -> Self:
@@ -71,6 +72,7 @@ class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
         return cls(
             id=str(reset_token.id),
             email=reset_token.account.email,
+            needs_2fa=reset_token.account.has_2fa_enabled,
         )
 
 
