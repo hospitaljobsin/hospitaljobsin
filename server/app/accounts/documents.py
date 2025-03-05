@@ -9,7 +9,7 @@ from app.base.models import Address
 from app.lib.constants import EMAIL_VERIFICATION_TOKEN_COOLDOWN, AuthProvider
 
 if TYPE_CHECKING:
-    from app.auth.documents import OAuthCredential, WebAuthnCredential
+    from app.auth.documents import OAuthCredential, RecoveryCode, WebAuthnCredential
     from app.organizations.documents import OrganizationMember
 
 
@@ -68,6 +68,8 @@ class Account(Document):
     oauth_credentials: list[BackLink["OAuthCredential"]] = Field(
         original_field="account"
     )
+
+    recovery_codes: list[BackLink["RecoveryCode"]] = Field(original_field="account")
 
     @property
     def has_2fa_enabled(self) -> bool:

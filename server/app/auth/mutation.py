@@ -46,6 +46,8 @@ from .types import (
     DisableAccount2FAPayload,
     EmailInUseErrorType,
     EmailVerificationTokenCooldownErrorType,
+    Generate2FARecoveryCodesPayload,
+    Generate2FARecoveryCodesSuccessType,
     GenerateAccount2FAOTPURIPayload,
     GenerateAccount2FAOTPURISuccessType,
     GenerateAuthenticationOptionsPayload,
@@ -79,6 +81,7 @@ from .types import (
     SessionEdgeType,
     SessionNotFoundErrorType,
     SetAccount2FAPayload,
+    SetAccount2FASuccessType,
     TwoFactorAuthenticationChallengeNotFoundErrorType,
     TwoFactorAuthenticationNotEnabledErrorType,
     TwoFactorAuthenticationRequiredErrorType,
@@ -966,7 +969,11 @@ class AuthMutation:
                 case TwoFactorAuthenticationChallengeNotFoundError():
                     return TwoFactorAuthenticationChallengeNotFoundErrorType()
 
-        return AccountType.marshal(result.ok_value)
+        (account, recovery_codes) = result.ok_value
+
+        return SetAccount2FASuccessType(
+            account=AccountType.marshal(account), recovery_codes=recovery_codes
+        )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=DisableAccount2FAPayload,
@@ -1073,3 +1080,35 @@ class AuthMutation:
                     return InvalidRecaptchaTokenErrorType()
 
         return AccountType.marshal(result.ok_value)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=Generate2FARecoveryCodesPayload,
+        description="Generate 2FA recovery codes for the current user.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    RequiresSudoMode(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def generate_2fa_recovery_codes(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+    ) -> Generate2FARecoveryCodesPayload:
+        """Generate 2FA recovery codes for the current user."""
+        result = await auth_service.generate_2fa_recovery_codes(
+            account=info.context["current_user"],
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case TwoFactorAuthenticationNotEnabledError():
+                    return TwoFactorAuthenticationNotEnabledErrorType()
+
+        return Generate2FARecoveryCodesSuccessType(
+            recovery_codes=result.ok_value,
+        )

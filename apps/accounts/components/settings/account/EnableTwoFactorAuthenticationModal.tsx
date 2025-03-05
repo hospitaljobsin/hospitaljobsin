@@ -12,20 +12,25 @@ import {
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Clipboard } from "lucide-react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import QRCode from "react-qr-code";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
+import SaveRecoveryCodesModal from "./SaveRecoveryCodesModal";
 import type { EnableTwoFactorAuthenticationModalMutation } from "./__generated__/EnableTwoFactorAuthenticationModalMutation.graphql";
 
 const EnableTwoFactorAuthenticationMutation = graphql`
   mutation EnableTwoFactorAuthenticationModalMutation($token: String!) {
 	setAccount2fa(token: $token) {
 		__typename
-		... on Account {
-			id
-			...TwoFactorAuthenticationFragment
+		... on SetAccount2FASuccess {
+			account {
+				id
+				...TwoFactorAuthenticationFragment
+			}
+			recoveryCodes
 		}
 		... on InvalidCredentialsError {
 			message
@@ -54,6 +59,9 @@ export default function EnableTwoFactorAuthenticationModal({
 	otpUri: string;
 	secret: string;
 }) {
+	const [recoveryCodes, setRecoveryCodes] = useState<readonly string[] | null>(
+		null,
+	);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<EnableTwoFactorAuthenticationModalMutation>(
 			EnableTwoFactorAuthenticationMutation,
@@ -78,19 +86,35 @@ export default function EnableTwoFactorAuthenticationModal({
 			},
 			onCompleted(response) {
 				if (
-					response.setAccount2fa.__typename === "Account" ||
 					response.setAccount2fa.__typename ===
-						"TwoFactorAuthenticationChallengeNotFoundError"
+					"TwoFactorAuthenticationChallengeNotFoundError"
 				) {
+					// TODO: show toast here
 					onClose();
 				} else if (
 					response.setAccount2fa.__typename === "InvalidCredentialsError"
 				) {
 					setError("token", { message: response.setAccount2fa.message });
+				} else if (
+					response.setAccount2fa.__typename === "SetAccount2FASuccess"
+				) {
+					setRecoveryCodes(response.setAccount2fa.recoveryCodes);
 				}
 			},
 		});
 	}
+
+	if (recoveryCodes) {
+		return (
+			<SaveRecoveryCodesModal
+				isOpen={isOpen}
+				onOpenChange={onOpenChange}
+				recoveryCodes={recoveryCodes}
+				onClose={onClose}
+			/>
+		);
+	}
+
 	return (
 		<Modal
 			isOpen={isOpen}

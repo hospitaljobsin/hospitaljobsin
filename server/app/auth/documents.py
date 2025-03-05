@@ -93,3 +93,11 @@ class TwoFactorAuthenticationChallenge(Document):
                 expireAfterSeconds=0,
             ),
         ]
+
+
+class RecoveryCode(Document):
+    code_hash: str
+    account: Link[Account]
+
+    class Settings:
+        name = "recovery_codes"  # MongoDB collection name

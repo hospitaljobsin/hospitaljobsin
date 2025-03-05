@@ -1,5 +1,6 @@
 import hashlib
 import secrets
+import string
 from datetime import UTC, datetime, timedelta
 
 import pyotp
@@ -12,6 +13,7 @@ from app.accounts.documents import Account
 from app.auth.documents import (
     OAuthCredential,
     PasswordResetToken,
+    RecoveryCode,
     Session,
     TwoFactorAuthenticationChallenge,
     WebAuthnChallenge,
@@ -375,3 +377,35 @@ class TwoFactorAuthenticationChallengeRepo:
             fetch_links=True,
             nesting_depth=1,
         )
+
+
+class RecoveryCodeRepo:
+    @staticmethod
+    def hash_recovery_code(recovery_code: str) -> str:
+        """Hash the given recovery code."""
+        return hashlib.md5(recovery_code.encode("utf-8")).hexdigest()  # noqa: S324
+
+    @staticmethod
+    def generate_recovery_code() -> str:
+        """Generate a new recovery code."""
+        charset = string.digits + string.ascii_letters
+        return "".join(secrets.choice(charset) for _ in range(8))
+
+    async def create_many(
+        self, account_id: ObjectId, code_count: int = 10
+    ) -> list[str]:
+        """Create many recovery codes."""
+        codes = [self.generate_recovery_code() for _ in range(code_count)]
+        recovery_codes = [
+            RecoveryCode(
+                code_hash=self.hash_recovery_code(code),
+                account=account_id,
+            )
+            for code in codes
+        ]
+        await RecoveryCode.insert_many(recovery_codes)
+        return codes
+
+    async def delete_all(self, account_id: ObjectId) -> None:
+        """Delete all recovery codes for an account."""
+        await RecoveryCode.find_many(RecoveryCode.account.id == account_id).delete()

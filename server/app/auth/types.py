@@ -420,8 +420,14 @@ class TwoFactorAuthenticationRequiredErrorType(BaseErrorType):
     message: str = "Two-factor authentication is required."
 
 
+@strawberry.type(name="SetAccount2FASuccess")
+class SetAccount2FASuccessType:
+    account: AccountType
+    recovery_codes: list[str]
+
+
 SetAccount2FAPayload = Annotated[
-    AccountType
+    SetAccount2FASuccessType
     | InvalidCredentialsErrorType
     | TwoFactorAuthenticationChallengeNotFoundErrorType,
     strawberry.union(name="SetAccount2FAPayload"),
@@ -442,6 +448,17 @@ class GenerateAccount2FAOTPURISuccessType:
 GenerateAccount2FAOTPURIPayload = Annotated[
     GenerateAccount2FAOTPURISuccessType,
     strawberry.union(name="GenerateAccount2FAOTPURIPayload"),
+]
+
+
+@strawberry.type(name="Generate2FARecoveryCodesSuccess")
+class Generate2FARecoveryCodesSuccessType:
+    recovery_codes: list[str]
+
+
+Generate2FARecoveryCodesPayload = Annotated[
+    Generate2FARecoveryCodesSuccessType | TwoFactorAuthenticationNotEnabledErrorType,
+    strawberry.union(name="Generate2FARecoveryCodesPayload"),
 ]
 
 VerifyAccount2FATokenPayload = Annotated[

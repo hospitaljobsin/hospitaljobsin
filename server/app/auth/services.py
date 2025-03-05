@@ -66,6 +66,7 @@ from app.auth.exceptions import (
 from app.auth.repositories import (
     OauthCredentialRepo,
     PasswordResetTokenRepo,
+    RecoveryCodeRepo,
     SessionRepo,
     TwoFactorAuthenticationChallengeRepo,
     WebAuthnChallengeRepo,
@@ -95,6 +96,7 @@ class AuthService:
         webauthn_challenge_repo: WebAuthnChallengeRepo,
         oauth_credential_repo: OauthCredentialRepo,
         two_factor_authentication_challenge_repo: TwoFactorAuthenticationChallengeRepo,
+        recovery_code_repo: RecoveryCodeRepo,
         email_sender: EmailSender,
         settings: Settings,
     ) -> None:
@@ -109,6 +111,7 @@ class AuthService:
         self._two_factor_authentication_challenge_repo = (
             two_factor_authentication_challenge_repo
         )
+        self._recovery_code_repo = recovery_code_repo
         self._email_sender = email_sender
         self._settings = settings
 
@@ -1160,7 +1163,8 @@ class AuthService:
         request: Request,
         response: Response,
     ) -> Result[
-        Account, TwoFactorAuthenticationChallengeNotFoundError | InvalidCredentialsError
+        tuple[Account, list[str]],
+        TwoFactorAuthenticationChallengeNotFoundError | InvalidCredentialsError,
     ]:
         """Enable two factor authentication for the account."""
         challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)
@@ -1184,8 +1188,11 @@ class AuthService:
             account=account,
             totp_secret=two_factor_authentication_challenge.totp_secret,
         )
+        recovey_codes = await self._recovery_code_repo.create_many(
+            account_id=account.id
+        )
         self._delete_two_factor_challenge_cookie(request=request, response=response)
-        return Ok(account)
+        return Ok((account, recovey_codes))
 
     async def disable_account_2fa(
         self,
@@ -1194,6 +1201,7 @@ class AuthService:
         """Disable two factor authentication for the account."""
         if account.two_factor_secret is None:
             return Err(TwoFactorAuthenticationNotEnabledError())
+        await self._recovery_code_repo.delete_all(account_id=account.id)
         await self._account_repo.delete_two_factor_secret(account=account)
         return Ok(account)
 
@@ -1254,3 +1262,15 @@ class AuthService:
         self._grant_sudo_mode(request)
 
         return Ok(account)
+
+    async def generate_2fa_recovery_codes(
+        self, account: Account
+    ) -> Result[list[str], TwoFactorAuthenticationNotEnabledError]:
+        """Generate 2FA recovery codes for the account."""
+        if account.two_factor_secret is None:
+            return Err(TwoFactorAuthenticationNotEnabledError())
+        await self._recovery_code_repo.delete_all(account_id=account.id)
+        recovery_codes = await self._recovery_code_repo.create_many(
+            account_id=account.id
+        )
+        return Ok(recovery_codes)

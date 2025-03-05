@@ -115,6 +115,12 @@ enum GenderType {
   OTHER
 }
 
+union Generate2FARecoveryCodesPayload = Generate2FARecoveryCodesSuccess | TwoFactorAuthenticationNotEnabledError
+
+type Generate2FARecoveryCodesSuccess {
+  recoveryCodes: [String!]!
+}
+
 union GenerateAccount2FAOTPURIPayload = GenerateAccount2FAOTPURISuccess
 
 type GenerateAccount2FAOTPURISuccess {
@@ -456,6 +462,9 @@ type Mutation {
     recaptchaToken: String!
   ): VerifyAccount2FATokenPayload!
 
+  """Generate 2FA recovery codes for the current user."""
+  generate2faRecoveryCodes: Generate2FARecoveryCodesPayload! @isAuthenticated @requiresSudoMode
+
   """Save a job."""
   saveJob(
     """The ID of the job to save."""
@@ -725,7 +734,12 @@ type SessionNotFoundError implements Error {
   message: String!
 }
 
-union SetAccount2FAPayload = Account | InvalidCredentialsError | TwoFactorAuthenticationChallengeNotFoundError
+union SetAccount2FAPayload = SetAccount2FASuccess | InvalidCredentialsError | TwoFactorAuthenticationChallengeNotFoundError
+
+type SetAccount2FASuccess {
+  account: Account!
+  recoveryCodes: [String!]!
+}
 
 type TwoFactorAuthenticationChallengeNotFoundError implements Error {
   message: String!

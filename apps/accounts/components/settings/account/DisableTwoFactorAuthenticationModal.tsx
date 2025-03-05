@@ -43,6 +43,7 @@ export default function DisableTwoFactorAuthenticationModal({
 		commitMutation({
 			variables: {},
 		});
+		onClose();
 	}
 	return (
 		<>

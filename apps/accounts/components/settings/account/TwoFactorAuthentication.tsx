@@ -6,11 +6,13 @@ import {
 	CardHeader,
 	useDisclosure,
 } from "@heroui/react";
+import { RotateCcw, Trash } from "lucide-react";
 import { useState } from "react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import DisableTwoFactorAuthenticationModal from "./DisableTwoFactorAuthenticationModal";
 import EnableTwoFactorAuthenticationModal from "./EnableTwoFactorAuthenticationModal";
+import RegenerateRecoveryCodesModal from "./RegenerateRecoveryCodesModal";
 import type { TwoFactorAuthenticationFragment$key } from "./__generated__/TwoFactorAuthenticationFragment.graphql";
 import type { TwoFactorAuthenticationGenerateOTPURIMutation } from "./__generated__/TwoFactorAuthenticationGenerateOTPURIMutation.graphql";
 
@@ -55,6 +57,12 @@ export default function TwoFactorAuthentication({
 		onOpen: onDisableModalOpen,
 		onClose: onDisableModalClose,
 	} = useDisclosure();
+	const {
+		isOpen: isRegenerateCodesModalOpen,
+		onOpenChange: onRegenerateCodesModalOpenChange,
+		onOpen: onRegenerateCodesModalOpen,
+		onClose: onRegenerateCodesModalClose,
+	} = useDisclosure();
 	const { checkSudoMode } = useCheckSudoMode();
 
 	function handleEnable2faOpen() {
@@ -81,6 +89,12 @@ export default function TwoFactorAuthentication({
 			onDisableModalOpen();
 		}
 	}
+
+	function handleRegenerateRecoveryCodesOpen() {
+		if (checkSudoMode(data.sudoModeExpiresAt)) {
+			onRegenerateCodesModalOpen();
+		}
+	}
 	return (
 		<Card className="p-4 sm:p-6" shadow="none">
 			<CardHeader className="flex flex-col gap-4 items-start">
@@ -94,9 +108,24 @@ export default function TwoFactorAuthentication({
 			</CardHeader>
 			<CardBody>
 				{data.has2faEnabled ? (
-					<Button fullWidth variant="bordered" onPress={handleDisable2faOpen}>
-						Disable 2FA
-					</Button>
+					<div className="w-full flex items-center gap-6">
+						<Button
+							fullWidth
+							variant="flat"
+							startContent={<Trash size={20} />}
+							onPress={handleDisable2faOpen}
+						>
+							Disable 2FA
+						</Button>
+						<Button
+							fullWidth
+							variant="bordered"
+							startContent={<RotateCcw size={20} />}
+							onPress={handleRegenerateRecoveryCodesOpen}
+						>
+							Regenerate Recovery Codes
+						</Button>
+					</div>
 				) : (
 					<Button
 						fullWidth
@@ -117,6 +146,11 @@ export default function TwoFactorAuthentication({
 					isOpen={isDisableModalOpen}
 					onOpenChange={onDisableModalOpenChange}
 					onClose={onDisableModalClose}
+				/>
+				<RegenerateRecoveryCodesModal
+					isOpen={isRegenerateCodesModalOpen}
+					onOpenChange={onRegenerateCodesModalOpenChange}
+					onClose={onRegenerateCodesModalClose}
 				/>
 			</CardBody>
 		</Card>
