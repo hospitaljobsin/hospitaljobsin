@@ -29,7 +29,9 @@ from webauthn.helpers.structs import (
     AuthenticatorAttachment,
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
+    PublicKeyCredentialDescriptor,
     PublicKeyCredentialRequestOptions,
+    PublicKeyCredentialType,
     ResidentKeyRequirement,
     UserVerificationRequirement,
 )
@@ -460,6 +462,42 @@ class AuthService:
         auth_options = generate_authentication_options(
             rp_id=self._settings.rp_id,
             user_verification=UserVerificationRequirement.PREFERRED,
+        )
+
+        # set webauthn challenge in session
+        # session cannot store raw bytes, so we encode it to base64
+        request.session["webauthn_challenge"] = b64encode(
+            auth_options.challenge
+        ).decode("utf-8")
+
+        return Ok(auth_options)
+
+    async def generate_reauthentication_options(
+        self,
+        recaptcha_token: str,
+        request: Request,
+        account: Account,
+    ) -> Result[PublicKeyCredentialRequestOptions, InvalidRecaptchaTokenError]:
+        """Generate reauthentication options (for sudo mode requests)."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
+
+        webauthn_credentials = (
+            await self._web_authn_credential_repo.get_all_by_account_list(
+                account_id=account.id
+            )
+        )
+        auth_options = generate_authentication_options(
+            rp_id=self._settings.rp_id,
+            user_verification=UserVerificationRequirement.PREFERRED,
+            allow_credentials=[
+                PublicKeyCredentialDescriptor(
+                    type=PublicKeyCredentialType.PUBLIC_KEY,
+                    id=credential.credential_id,
+                    transports=credential.transports,
+                )
+                for credential in webauthn_credentials
+            ],
         )
 
         # set webauthn challenge in session

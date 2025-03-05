@@ -342,6 +342,12 @@ type Mutation {
     recaptchaToken: String!
   ): GenerateAuthenticationOptionsPayload!
 
+  """Generate reauthentication options (for sudo mode requests)."""
+  generateReauthenticationOptions(
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
+  ): GenerateAuthenticationOptionsPayload!
+
   """Log in a user with a passkey."""
   loginWithPasskey(
     """The authentication response of the user."""

@@ -84,7 +84,7 @@ export default function RegenerateRecoveryCodesModal({
 			size="xl"
 			scrollBehavior="inside"
 		>
-			<ModalContent className="flex flex-col w-full gap-6 p-4 sm:p-6">
+			<ModalContent className="flex flex-col w-full p-4 sm:p-6">
 				<ModalHeader className="flex flex-col gap-4 w-full">
 					<h2 className="text-lg font-medium">Regenerate recovery codes</h2>
 				</ModalHeader>

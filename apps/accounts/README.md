@@ -53,7 +53,6 @@ add accounts center
 where:
 
 - users can delete their accounts
-- set the predefined passkey to use when asking to authenticate for sudo mode (like uninbox)
 - option to disable password
 - add 2FA verification requirement/ passkey before resetting password (like github)
 - If the user loses access to their 2FA device, provide secure fallback options:

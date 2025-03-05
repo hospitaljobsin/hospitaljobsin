@@ -48,7 +48,7 @@ export default function DisableTwoFactorAuthenticationModal({
 	return (
 		<>
 			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
-				<ModalContent className="flex flex-col w-full gap-6 p-4 sm:p-6">
+				<ModalContent className="flex flex-col w-full p-4 sm:p-6">
 					<ModalHeader>
 						<h2 className="text-lg font-medium">
 							Disable Two Factor Authentication

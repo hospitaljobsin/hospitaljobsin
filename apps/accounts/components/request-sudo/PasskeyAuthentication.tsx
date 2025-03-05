@@ -11,9 +11,9 @@ import { graphql } from "relay-runtime";
 import type { PasskeyAuthenticationGenerateOptionsMutation } from "./__generated__/PasskeyAuthenticationGenerateOptionsMutation.graphql";
 import type { PasskeyAuthenticationMutation as PasskeyAuthenticationMutationType } from "./__generated__/PasskeyAuthenticationMutation.graphql";
 
-const GenerateAuthenticationOptionsMutation = graphql`
+const GenerateReauthenticationOptionsMutation = graphql`
   mutation PasskeyAuthenticationGenerateOptionsMutation($recaptchaToken: String!) {
-    generateAuthenticationOptions(recaptchaToken: $recaptchaToken) {
+    generateReauthenticationOptions(recaptchaToken: $recaptchaToken) {
       __typename
       ... on InvalidRecaptchaTokenError {
         message
@@ -66,10 +66,10 @@ export default function PasskeyAuthentication({
 		PasskeyAuthenticationMutation,
 	);
 	const [
-		commitGenerateAuthenticationOptionsMutation,
-		isGenerateAuthenticationOptionsMutationInFlight,
+		commitGenerateReauthenticationOptionsMutation,
+		isGenerateReauthenticationOptionsMutationInFlight,
 	] = useMutation<PasskeyAuthenticationGenerateOptionsMutation>(
-		GenerateAuthenticationOptionsMutation,
+		GenerateReauthenticationOptionsMutation,
 	);
 
 	const [isPasskeysPromptActive, setIsPasskeysPromptActive] = useState(false);
@@ -85,26 +85,26 @@ export default function PasskeyAuthentication({
 		const token = await executeRecaptcha(
 			"passkey_generate_authentication_options",
 		);
-		commitGenerateAuthenticationOptionsMutation({
+		commitGenerateReauthenticationOptionsMutation({
 			variables: {
 				recaptchaToken: token,
 			},
 			onCompleted(response) {
 				if (
-					response.generateAuthenticationOptions.__typename ===
+					response.generateReauthenticationOptions.__typename ===
 					"InvalidRecaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
 					onAuthEnd();
 				} else if (
-					response.generateAuthenticationOptions.__typename ===
+					response.generateReauthenticationOptions.__typename ===
 					"GenerateAuthenticationOptionsSuccess"
 				) {
 					setIsPasskeysPromptActive(true);
 					// login with passkey
 					const authenticationOptions =
-						response.generateAuthenticationOptions.authenticationOptions;
+						response.generateReauthenticationOptions.authenticationOptions;
 
 					startAuthentication({
 						optionsJSON: JSON.parse(authenticationOptions),
@@ -186,7 +186,7 @@ export default function PasskeyAuthentication({
 			onPress={handlePasskeyAuthentication}
 			isLoading={
 				isPasskeyAuthenticateMutationInFlight ||
-				isGenerateAuthenticationOptionsMutationInFlight ||
+				isGenerateReauthenticationOptionsMutationInFlight ||
 				isPasskeysPromptActive
 			}
 			spinnerPlacement="end"

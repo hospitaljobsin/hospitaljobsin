@@ -402,6 +402,41 @@ class AuthMutation:
         )
 
     @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=GenerateAuthenticationOptionsPayload,
+        description="Generate reauthentication options (for sudo mode requests).",
+        permission_classes=[
+            IsAuthenticated,
+        ],
+    )
+    @inject
+    async def generate_reauthentication_options(
+        self,
+        info: AuthInfo,
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> GenerateAuthenticationOptionsPayload:
+        """Generate reauthentication options (for sudo mode requests)."""
+        result = await auth_service.generate_reauthentication_options(
+            recaptcha_token=recaptcha_token,
+            request=info.context["request"],
+            account=info.context["current_user"],
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidRecaptchaTokenError():
+                    return InvalidRecaptchaTokenErrorType()
+
+        return GenerateAuthenticationOptionsSuccessType(
+            authentication_options=options_to_json(result.ok_value)
+        )
+
+    @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LoginWithPasskeyPayload,
         description="Log in a user with a passkey.",
     )
