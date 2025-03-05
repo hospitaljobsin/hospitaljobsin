@@ -69,7 +69,10 @@ export default function RegenerateRecoveryCodesModal({
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
 				recoveryCodes={recoveryCodes}
-				onClose={onClose}
+				onClose={() => {
+					setRecoveryCodes(null);
+					onClose();
+				}}
 			/>
 		);
 	}
