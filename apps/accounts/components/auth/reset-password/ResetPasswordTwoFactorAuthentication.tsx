@@ -91,8 +91,8 @@ export default function ResetPasswordTwoFactorAuthentication({
 					Two Factor Authentication
 				</h1>
 				<p className="text-center text-sm text-foreground-400">
-					Enter the code from your authenticator app to proceed with resetting
-					your password.
+					Your account is protected by 2FA. Enter the code from your
+					authenticator app, or a recovery code to proceed.
 				</p>
 			</CardHeader>
 			<CardBody>
@@ -112,10 +112,10 @@ export default function ResetPasswordTwoFactorAuthentication({
 							render={({ field }) => (
 								<Input
 									{...field}
-									label="Authentication Code"
+									label="Enter Authentication or Recovery Code"
 									errorMessage={errors.token?.message}
 									isInvalid={!!errors.token}
-									placeholder="XXXXXX"
+									placeholder="XXXXXX or XXXX-XXXX"
 								/>
 							)}
 						/>

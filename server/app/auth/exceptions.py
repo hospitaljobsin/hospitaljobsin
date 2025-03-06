@@ -29,6 +29,15 @@ class EmailVerificationTokenCooldownError:
         self.remaining_seconds = remaining_seconds
 
 
+class PasswordResetTokenCooldownError:
+    """Raised when an user tries to request a new password reset token too soon."""
+
+    remaining_seconds: int
+
+    def __init__(self, remaining_seconds: int) -> None:
+        self.remaining_seconds = remaining_seconds
+
+
 class InvalidEmailVerificationTokenError:
     """Raised when an invalid email verification token is provided."""
 

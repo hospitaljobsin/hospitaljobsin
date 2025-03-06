@@ -24,6 +24,7 @@ from app.auth.exceptions import (
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
     PasswordNotStrongError,
+    PasswordResetTokenCooldownError,
     SessionNotFoundError,
     TwoFactorAuthenticationChallengeNotFoundError,
     TwoFactorAuthenticationNotEnabledError,
@@ -69,6 +70,7 @@ from .types import (
     LoginWithPasswordPayload,
     LogoutPayloadType,
     PasswordNotStrongErrorType,
+    PasswordResetTokenCooldownErrorType,
     PasswordResetTokenType,
     RegisterWithPasskeyPayload,
     RegisterWithPasswordPayload,
@@ -583,6 +585,10 @@ class AuthMutation:
                 match error:
                     case InvalidRecaptchaTokenError():
                         return InvalidRecaptchaTokenErrorType()
+                    case PasswordResetTokenCooldownError() as err:
+                        return PasswordResetTokenCooldownErrorType(
+                            remaining_seconds=err.remaining_seconds
+                        )
             case Ok():
                 return RequestPasswordResetSuccessType()
 

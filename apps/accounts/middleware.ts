@@ -10,7 +10,7 @@ const AUTHENTICATED_ROUTES: RegExp[] = [
 ];
 
 // reset password will be accessed by anonymous users as well as authenticated users
-const ANONYMOUS_ROUTES = [/^\/auth\/?(login|signup)?$/];
+const ANONYMOUS_ROUTES = [/^\/auth\/?(login|signup|2fa|2fa\/recovery)?$/];
 
 function requiresAuthenticated(request: NextRequest): boolean {
 	return AUTHENTICATED_ROUTES.some((route) =>

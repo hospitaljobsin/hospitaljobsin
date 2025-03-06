@@ -298,6 +298,23 @@ class EmailVerificationTokenCooldownErrorType(BaseErrorType):
 
 
 @strawberry.type(
+    name="PasswordResetTokenCooldownError",
+    description="Used when the password reset token cooldown is active.",
+)
+class PasswordResetTokenCooldownErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Please wait before requesting a new password reset token.",
+    )
+    remaining_seconds: Annotated[
+        int,
+        strawberry.field(
+            description="Remaining seconds before requesting another password reset token."
+        ),
+    ]
+
+
+@strawberry.type(
     name="RequestEmailVerificationSuccess",
     description="Request email verification success.",
 )
@@ -438,7 +455,9 @@ class RequestPasswordResetSuccessType:
 
 
 RequestPasswordResetPayload = Annotated[
-    RequestPasswordResetSuccessType | InvalidRecaptchaTokenErrorType,
+    RequestPasswordResetSuccessType
+    | InvalidRecaptchaTokenErrorType
+    | PasswordResetTokenCooldownErrorType,
     strawberry.union(
         name="RequestPasswordResetPayload",
         description="The request password reset payload.",

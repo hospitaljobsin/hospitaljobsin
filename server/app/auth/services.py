@@ -42,7 +42,12 @@ from app.accounts.repositories import (
     EmailVerificationTokenRepo,
     ProfileRepo,
 )
-from app.auth.documents import PasswordResetToken, Session, WebAuthnCredential
+from app.auth.documents import (
+    PasswordResetToken,
+    Session,
+    TemporaryTwoFactorChallenge,
+    WebAuthnCredential,
+)
 from app.auth.exceptions import (
     AccountNotFoundError,
     EmailInUseError,
@@ -57,6 +62,7 @@ from app.auth.exceptions import (
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
     PasswordNotStrongError,
+    PasswordResetTokenCooldownError,
     PasswordResetTokenNotFoundError,
     SessionNotFoundError,
     TwoFactorAuthenticationChallengeNotFoundError,
@@ -843,7 +849,7 @@ class AuthService:
         user_agent: str,
         recaptcha_token: str,
         background_tasks: BackgroundTasks,
-    ) -> Result[None, InvalidRecaptchaTokenError]:
+    ) -> Result[None, InvalidRecaptchaTokenError | PasswordResetTokenCooldownError]:
         """Request a password reset."""
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
@@ -851,9 +857,20 @@ class AuthService:
         if not existing_user:
             return None
 
-        # TODO: create a new password reset token, deleting previous ones with a cooldown time
-        # like email verification tokens
+        existing_password_reset_token = (
+            await self._password_reset_token_repo.get_by_account(
+                account_id=existing_user.id,
+            )
+        )
 
+        if existing_password_reset_token is not None:
+            if not existing_password_reset_token.is_cooled_down:
+                return Err(
+                    PasswordResetTokenCooldownError(
+                        remaining_seconds=existing_password_reset_token.cooldown_remaining_seconds
+                    )
+                )
+            await self._password_reset_token_repo.delete(existing_password_reset_token)
         password_reset_token = await self._password_reset_token_repo.create(
             account=existing_user
         )
@@ -901,9 +918,18 @@ class AuthService:
         if not account.has_2fa_enabled:
             return Err(TwoFactorAuthenticationNotEnabledError())
 
-        totp = pyotp.TOTP(account.two_factor_secret)
-        if not totp.verify(two_factor_token):
-            return Err(InvalidCredentialsError())
+        existing_recovery_code = await self._recovery_code_repo.get(
+            account_id=account.id,
+            code=two_factor_token,
+        )
+
+        if existing_recovery_code is None:
+            totp = pyotp.TOTP(account.two_factor_secret)
+            if not totp.verify(two_factor_token):
+                return Err(InvalidCredentialsError())
+        else:
+            # delete the recovery code
+            await self._recovery_code_repo.delete(existing_recovery_code)
 
         # set a cookie to indicate user has completed 2fa challenge for password reset
         challenge = await self._temp_two_factor_challenge_repo.create(
@@ -927,7 +953,6 @@ class AuthService:
         user_agent: str,
         request: Request,
         response: Response,
-        two_factor_token: str | None = None,
     ) -> Result[
         Account,
         InvalidPasswordResetTokenError

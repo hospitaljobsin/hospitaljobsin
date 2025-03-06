@@ -54,6 +54,7 @@ where:
 
 - users can delete their accounts
 - option to disable password
+- allow users to use 2fa recovery codes during password reset
 - If the user loses access to their 2FA device, provide secure fallback options:
     Alternative 2FA Methods: Allow authentication via email or backup phone number.
     Manual Verification via Support: If no 2FA method is available, require identity verification (e.g., ID document upload or security questions).

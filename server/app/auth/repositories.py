@@ -186,6 +186,14 @@ class PasswordResetTokenRepo:
             nesting_depth=1,
         )
 
+    async def get_by_account(self, account_id: ObjectId) -> PasswordResetToken | None:
+        """Get password reset token by account."""
+        return await PasswordResetToken.find_one(
+            PasswordResetToken.account.id == account_id,
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
     async def delete(self, token: PasswordResetToken) -> None:
         """Delete password reset token."""
         await token.delete()

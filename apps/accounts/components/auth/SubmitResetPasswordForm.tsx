@@ -2,7 +2,6 @@
 
 import links from "@/lib/links";
 import {
-	Alert,
 	Button,
 	Card,
 	CardBody,
@@ -25,6 +24,13 @@ const SubmitResetPasswordFormMutation = graphql`
   mutation SubmitResetPasswordFormMutation($email: String!, $recaptchaToken: String!) {
 	requestPasswordReset(email: $email, recaptchaToken: $recaptchaToken) {
 	  __typename
+	  ... on InvalidRecaptchaTokenError {
+		message 
+	  }
+	  ... on PasswordResetTokenCooldownError {
+		message 
+		remainingSeconds
+	  }
 	}
   }
 `;
@@ -67,6 +73,11 @@ export default function SubmitResetPasswordFrom() {
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
+				} else if (
+					response.requestPasswordReset.__typename ===
+					"PasswordResetTokenCooldownError"
+				) {
+					// TODO: show toast here
 				} else {
 					setShowSuccessMessage(true);
 				}
@@ -74,59 +85,65 @@ export default function SubmitResetPasswordFrom() {
 		});
 	}
 
-	return (
-		<>
+	if (showSuccessMessage) {
+		return (
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader>
-					<h1 className="text-center text-2xl w-full">Reset Your Password</h1>
+					<h1 className="text-center text-lg w-full">
+						Password Reset Requested
+					</h1>
 				</CardHeader>
 				<CardBody>
-					<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-						<div className="w-full flex flex-col gap-6">
-							<Input
-								id="email"
-								label="Email"
-								placeholder="Enter your email address"
-								type="email"
-								{...register("email")}
-								errorMessage={errors.email?.message}
-								isInvalid={!!errors.email}
-							/>
-							<Button
-								fullWidth
-								isLoading={isSubmitting || isMutationInFlight}
-								type="submit"
-							>
-								Request Password Reset
-							</Button>
-						</div>
-					</form>
+					<div className="text-center w-full text-foreground-500">
+						If an account with that email exists, we will send you a password
+						reset link. Please check your email inbox.
+					</div>
 				</CardBody>
-				<Divider />
-				<CardFooter className="w-full flex items-center justify-center">
-					<Link
-						href={links.login()}
-						className="cursor-pointer text-blue-500 text-small sm:text-sm text-center"
-					>
+				<CardFooter>
+					<Button fullWidth variant="ghost" as={Link} href={links.login()}>
 						Back to login
-					</Link>
+					</Button>
 				</CardFooter>
 			</Card>
+		);
+	}
 
-			{showSuccessMessage && (
-				<div className="mt-12">
-					<Alert
-						isVisible={showSuccessMessage}
-						onClose={() => setShowSuccessMessage(false)}
-						hideIcon
-						color="success"
-						description={
-							"If an account with that email exists, we will send you a password reset link. Please check your email inbox."
-						}
-						variant="flat"
-					/>
-				</div>
-			)}
-		</>
+	return (
+		<Card className="p-6 space-y-6" shadow="none">
+			<CardHeader>
+				<h1 className="text-center text-2xl w-full">Reset Your Password</h1>
+			</CardHeader>
+			<CardBody>
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+					<div className="w-full flex flex-col gap-6">
+						<Input
+							id="email"
+							label="Email"
+							placeholder="Enter your email address"
+							type="email"
+							{...register("email")}
+							errorMessage={errors.email?.message}
+							isInvalid={!!errors.email}
+						/>
+						<Button
+							fullWidth
+							isLoading={isSubmitting || isMutationInFlight}
+							type="submit"
+						>
+							Request Password Reset
+						</Button>
+					</div>
+				</form>
+			</CardBody>
+			<Divider />
+			<CardFooter className="w-full flex items-center justify-center">
+				<Link
+					href={links.login()}
+					className="cursor-pointer text-blue-500 text-small sm:text-sm text-center"
+				>
+					Back to login
+				</Link>
+			</CardFooter>
+		</Card>
 	);
 }

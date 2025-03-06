@@ -909,6 +909,13 @@ type PasswordResetToken implements Node {
   needs2fa: Boolean!
 }
 
+"""Used when the password reset token cooldown is active."""
+type PasswordResetTokenCooldownError implements Error {
+  """Human readable error message."""
+  message: String!
+  remainingSeconds: Int!
+}
+
 """Used when the password reset token is not found."""
 type PasswordResetTokenNotFoundError implements Error {
   """Human readable error message."""
@@ -1042,7 +1049,7 @@ type RequestEmailVerificationSuccess {
 union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError | InvalidRecaptchaTokenError | InvalidEmailError
 
 """The request password reset payload."""
-union RequestPasswordResetPayload = RequestPasswordResetSuccess | InvalidRecaptchaTokenError
+union RequestPasswordResetPayload = RequestPasswordResetSuccess | InvalidRecaptchaTokenError | PasswordResetTokenCooldownError
 
 """Request password reset success."""
 type RequestPasswordResetSuccess {

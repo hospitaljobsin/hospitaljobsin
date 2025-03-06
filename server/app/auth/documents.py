@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
 from typing import Annotated, ClassVar
 
 from beanie import Document, Indexed, Link, PydanticObjectId
@@ -6,7 +6,10 @@ from pymongo import IndexModel
 from webauthn.helpers.structs import AuthenticatorTransport
 
 from app.accounts.documents import Account
-from app.lib.constants import OAuthProvider
+from app.lib.constants import (
+    PASSWORD_RESET_TOKEN_COOLDOWN,
+    OAuthProvider,
+)
 
 
 class Session(Document):
@@ -23,7 +26,12 @@ class Session(Document):
 class PasswordResetToken(Document):
     token_hash: Annotated[str, Indexed(unique=True)]
     expires_at: datetime
-    account: Link[Account]
+    account: Annotated[
+        Link[Account],
+        Indexed(
+            unique=True,
+        ),
+    ]
 
     class Settings:
         name = "password_reset_tokens"  # MongoDB collection name
@@ -34,6 +42,37 @@ class PasswordResetToken(Document):
                 expireAfterSeconds=0,
             ),
         ]
+
+    @property
+    def is_cooled_down(self) -> bool:
+        """Check if the token is cooled down."""
+        # Get the current time as an aware datetime in UTC
+        current_time = datetime.now(UTC)
+        # Ensure generation_time is aware (assuming it's stored in UTC)
+        generation_time_aware = self.id.generation_time.replace(tzinfo=UTC)
+        cooldown_time = generation_time_aware + timedelta(
+            seconds=PASSWORD_RESET_TOKEN_COOLDOWN
+        )
+        return current_time >= cooldown_time
+
+    @property
+    def cooldown_remaining_seconds(self) -> int:
+        """
+        Calculate remaining cooldown seconds.
+
+        Returns 0 if cooldown has passed or token is invalid.
+        """
+        if self.is_cooled_down:
+            return 0
+
+        current_time = datetime.now(UTC)
+        generation_time_aware = self.id.generation_time.replace(tzinfo=UTC)
+        cooldown_time = generation_time_aware + timedelta(
+            seconds=PASSWORD_RESET_TOKEN_COOLDOWN
+        )
+
+        remaining = (cooldown_time - current_time).total_seconds()
+        return max(0, int(remaining))  # Ensure non-negative integer
 
 
 class WebAuthnCredential(Document):
