@@ -1283,13 +1283,13 @@ class AuthService:
 
         return Ok(current_user)
 
-    async def generate_account_2fa_otp_uri(
+    async def generate_account_2fa_challenge(
         self,
         account: Account,
         request: Request,
         response: Response,
     ) -> Result[tuple[str, str], None]:
-        """Generate a QR code for 2FA for the account."""
+        """Generate a 2FA challenge for the account."""
         (
             challenge,
             two_factor_challenge,

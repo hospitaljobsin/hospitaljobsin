@@ -239,10 +239,10 @@ type Generate2FARecoveryCodesSuccess {
 }
 
 """The generate account 2FA OTP URI payload."""
-union GenerateAccount2FAOTPURIPayload = GenerateAccount2FAOTPURISuccess
+union GenerateAccount2FAChallengePayload = GenerateAccount2FAChallengeSuccess
 
 """Generate account 2FA OTP URI success."""
-type GenerateAccount2FAOTPURISuccess {
+type GenerateAccount2FAChallengeSuccess {
   """The generated 2FA OTP URI."""
   otpUri: String!
 
@@ -685,8 +685,8 @@ type Mutation {
   """Disable two factor authentication."""
   disableAccount2fa: DisableAccount2FAPayload! @isAuthenticated @requiresSudoMode
 
-  """Generate account 2FA OTP URI."""
-  generateAccount2faOtpUri: GenerateAccount2FAOTPURIPayload! @isAuthenticated @requiresSudoMode
+  """Generate an account 2FA challenge."""
+  generateAccount2faChallenge: GenerateAccount2FAChallengePayload! @isAuthenticated @requiresSudoMode
 
   """Verify Account 2FA challenge."""
   verify2faChallenge(

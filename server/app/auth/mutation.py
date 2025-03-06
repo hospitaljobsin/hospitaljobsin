@@ -48,8 +48,8 @@ from .types import (
     EmailVerificationTokenCooldownErrorType,
     Generate2FARecoveryCodesPayload,
     Generate2FARecoveryCodesSuccessType,
-    GenerateAccount2FAOTPURIPayload,
-    GenerateAccount2FAOTPURISuccessType,
+    GenerateAccount2FAChallengePayload,
+    GenerateAccount2FAChallengeSuccessType,
     GenerateAuthenticationOptionsPayload,
     GenerateAuthenticationOptionsSuccessType,
     GeneratePasskeyCreationOptionsPayload,
@@ -1100,8 +1100,8 @@ class AuthMutation:
         return AccountType.marshal(result.ok_value)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=GenerateAccount2FAOTPURIPayload,
-        description="Generate account 2FA OTP URI.",
+        graphql_type=GenerateAccount2FAChallengePayload,
+        description="Generate an account 2FA challenge.",
         extensions=[
             PermissionExtension(
                 permissions=[
@@ -1112,13 +1112,13 @@ class AuthMutation:
         ],
     )
     @inject
-    async def generate_account_2fa_otp_uri(
+    async def generate_account_2fa_challenge(
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
-    ) -> GenerateAccount2FAOTPURIPayload:
-        """Generate account 2FA OTP URI."""
-        result = await auth_service.generate_account_2fa_otp_uri(
+    ) -> GenerateAccount2FAChallengePayload:
+        """Generate an account 2FA challenge."""
+        result = await auth_service.generate_account_2fa_challenge(
             account=info.context["current_user"],
             request=info.context["request"],
             response=info.context["response"],
@@ -1126,7 +1126,7 @@ class AuthMutation:
 
         otp_uri, secret = result.ok_value
 
-        return GenerateAccount2FAOTPURISuccessType(
+        return GenerateAccount2FAChallengeSuccessType(
             otp_uri=otp_uri,
             secret=secret,
         )

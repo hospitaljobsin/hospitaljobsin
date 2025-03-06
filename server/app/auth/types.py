@@ -724,10 +724,10 @@ DisableAccount2FAPayload = Annotated[
 
 
 @strawberry.type(
-    name="GenerateAccount2FAOTPURISuccess",
+    name="GenerateAccount2FAChallengeSuccess",
     description="Generate account 2FA OTP URI success.",
 )
-class GenerateAccount2FAOTPURISuccessType:
+class GenerateAccount2FAChallengeSuccessType:
     otp_uri: str = strawberry.field(
         description="The generated 2FA OTP URI.",
     )
@@ -736,10 +736,10 @@ class GenerateAccount2FAOTPURISuccessType:
     )
 
 
-GenerateAccount2FAOTPURIPayload = Annotated[
-    GenerateAccount2FAOTPURISuccessType,
+GenerateAccount2FAChallengePayload = Annotated[
+    GenerateAccount2FAChallengeSuccessType,
     strawberry.union(
-        name="GenerateAccount2FAOTPURIPayload",
+        name="GenerateAccount2FAChallengePayload",
         description="The generate account 2FA OTP URI payload.",
     ),
 ]

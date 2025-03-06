@@ -25,9 +25,9 @@ const TwoFactorAuthenticationFragment = graphql`
 
 const GenerateOTPURIMutation = graphql`
   mutation TwoFactorAuthenticationGenerateOTPURIMutation {
-	generateAccount2faOtpUri {
+	generateAccount2faChallenge {
 		__typename
-		... on GenerateAccount2FAOTPURISuccess {
+		... on GenerateAccount2FAChallengeSuccess {
 			otpUri
 			secret
 		}
@@ -72,11 +72,11 @@ export default function TwoFactorAuthentication({
 				variables: {},
 				onCompleted(response) {
 					if (
-						response.generateAccount2faOtpUri.__typename ===
-						"GenerateAccount2FAOTPURISuccess"
+						response.generateAccount2faChallenge.__typename ===
+						"GenerateAccount2FAChallengeSuccess"
 					) {
-						setOtpUri(response.generateAccount2faOtpUri.otpUri);
-						setSecret(response.generateAccount2faOtpUri.secret);
+						setOtpUri(response.generateAccount2faChallenge.otpUri);
+						setSecret(response.generateAccount2faChallenge.secret);
 						onEnableModalOpen();
 					}
 				},
