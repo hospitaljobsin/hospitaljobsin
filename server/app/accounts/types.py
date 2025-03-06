@@ -2,6 +2,7 @@ import hashlib
 import urllib
 from collections.abc import Iterable
 from datetime import date, datetime
+from email.policy import default
 from enum import Enum
 from typing import TYPE_CHECKING, Annotated, Self
 from urllib.parse import urlencode
@@ -32,31 +33,51 @@ if TYPE_CHECKING:
 
 @strawberry.type(name="ProfileNotFoundError")
 class ProfileNotFoundErrorType(BaseErrorType):
-    message: str = "Profile not found!"
+    message: str = strawberry.field(
+        default="Profile not found!",
+        description="Human readable error message.",
+    )
 
 
 @strawberry.type(name="AccountNotFoundError")
 class AccountNotFoundErrorType(BaseErrorType):
-    message: str = "Account not found!"
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Account not found!",
+    )
 
 
-@strawberry.enum(name="GenderType")
+@strawberry.enum(
+    name="GenderType",
+    description="Gender type.",
+)
 class GenderTypeEnum(Enum):
     MALE = "MALE"
     FEMALE = "FEMALE"
     OTHER = "OTHER"
 
 
-@strawberry.enum(name="MaritalStatusType")
+@strawberry.enum(
+    name="MaritalStatusType",
+    description="Marital status type.",
+)
 class MaritalStatusTypeEnum(Enum):
     MARRIED = "MARRIED"
     SINGLE = "SINGLE"
 
 
-@strawberry.type(name="Language")
+@strawberry.type(
+    name="Language",
+    description="The language details.",
+)
 class LanguageType:
-    name: str
-    proficiency: str
+    name: str = strawberry.field(
+        description="The name of the language.",
+    )
+
+    proficiency: str = strawberry.field(
+        description="The proficiency level of the language.",
+    )
 
     @classmethod
     def marshal(cls, language: Language) -> Self:
@@ -66,10 +87,17 @@ class LanguageType:
         )
 
 
-@strawberry.input(name="LanguageInput")
+@strawberry.input(
+    name="LanguageInput",
+    description="The language details input.",
+)
 class LanguageInputType:
-    name: str
-    proficiency: str
+    name: str = strawberry.field(
+        description="The name of the language.",
+    )
+    proficiency: str = strawberry.field(
+        description="The proficiency level of the language.",
+    )
 
     def to_document(self) -> Language:
         return Language(
@@ -78,11 +106,20 @@ class LanguageInputType:
         )
 
 
-@strawberry.type(name="CurrentJob")
+@strawberry.type(
+    name="CurrentJob",
+    description="The current job details.",
+)
 class CurrentJobType:
-    current_title: str
-    current_organization: str | None = None
-    current_salary: float | None = None
+    current_title: str = strawberry.field(
+        description="The current job title.",
+    )
+    current_organization: str | None = strawberry.field(
+        description="The current organization.",
+    )
+    current_salary: float | None = strawberry.field(
+        description="The current salary.",
+    )
 
     @classmethod
     def marshal(cls, current_job: CurrentJob) -> Self:
@@ -93,21 +130,42 @@ class CurrentJobType:
         )
 
 
-@strawberry.type(name="Profile")
+@strawberry.type(
+    name="Profile",
+    description="The profile details.",
+)
 class ProfileType(BaseNodeType[Profile]):
     # personal details
-    gender: GenderTypeEnum | None
-    date_of_birth: date | None
-    address: AddressType
-    marital_status: MaritalStatusTypeEnum | None
-    category: str | None
-    languages: list[LanguageType]
+    gender: GenderTypeEnum | None = strawberry.field(
+        description="The gender of the profile's user.",
+    )
+    date_of_birth: date = strawberry.field(
+        description="The date of birth of the profile's user.",
+    )
+    address: AddressType = strawberry.field(
+        description="The address of the profile's user.",
+    )
+    marital_status: MaritalStatusTypeEnum | None = strawberry.field(
+        description="The marital status of the profile's user.",
+    )
+    category: str | None = strawberry.field(
+        description="The category of the profile's user.",
+    )
+    languages: list[LanguageType] = strawberry.field(
+        description="The list of languages spoken by the profile's user.",
+    )
 
     # employment details
-    total_job_experience: float | None
-    current_job: CurrentJobType | None
+    total_job_experience: float | None = strawberry.field(
+        description="Total job experience (in years) of the profile's user.",
+    )
+    current_job: CurrentJobType | None = strawberry.field(
+        description="The current job of the profile's user.",
+    )
 
-    created_at: datetime
+    created_at: datetime = strawberry.field(
+        description="When the profile was created.",
+    )
 
     @classmethod
     def marshal(cls, profile: Profile) -> Self:
@@ -154,25 +212,41 @@ ProfilePayload = Annotated[
     ProfileType | ProfileNotFoundErrorType,
     strawberry.union(
         name="ProfilePayload",
+        description="The profile payload.",
     ),
 ]
 
 
-@strawberry.enum(name="AuthProvider")
+@strawberry.enum(
+    name="AuthProvider",
+    description="The authentication provider.",
+)
 class AuthProviderEnum(Enum):
     PASSWORD = "PASSWORD"  # noqa: S105
     WEBAUTHN_CREDENTIAL = "WEBAUTHN_CREDENTIAL"
     OAUTH_GOOGLE = "OAUTH_GOOGLE"
 
 
-@strawberry.type(name="Account")
+@strawberry.type(
+    name="Account",
+    description="The account details.",
+)
 class AccountType(BaseNodeType[Account]):
-    full_name: str
-    email: str
-    has_onboarded: bool
-    updated_at: datetime | None
-    auth_providers: list[AuthProviderEnum]
-    has_2fa_enabled: bool
+    full_name: str = strawberry.field(
+        description="The full name of the account.",
+    )
+    email: str = strawberry.field(
+        description="The email of the account.",
+    )
+    updated_at: datetime | None = strawberry.field(
+        description="When the account was last updated.",
+    )
+    auth_providers: list[AuthProviderEnum] = strawberry.field(
+        description="The authentication providers supported by the account."
+    )
+    has_2fa_enabled: bool = strawberry.field(
+        description="Whether the account has 2FA enabled.",
+    )
 
     profile_ref: strawberry.Private[ObjectId | Profile | None] = None
 
@@ -188,7 +262,6 @@ class AccountType(BaseNodeType[Account]):
                 AuthProviderEnum[provider.upper()]
                 for provider in account.auth_providers
             ],
-            has_onboarded=account.has_onboarded,
             has_2fa_enabled=account.has_2fa_enabled,
             profile_ref=account.profile.ref.id if account.profile is not None else None,
         )
@@ -205,7 +278,6 @@ class AccountType(BaseNodeType[Account]):
                 AuthProviderEnum[provider.upper()]
                 for provider in account.auth_providers
             ],
-            has_onboarded=account.has_onboarded,
             has_2fa_enabled=account.has_2fa_enabled,
             profile_ref=account.profile,
         )
@@ -224,7 +296,10 @@ class AccountType(BaseNodeType[Account]):
             for account in accounts
         ]
 
-    @strawberry.field(graphql_type=ProfilePayload)
+    @strawberry.field(
+        graphql_type=ProfilePayload,
+        description="The account's profile.",
+    )
     @inject
     async def profile(self, info: Info) -> ProfilePayload:
         if self.profile_ref is None:
@@ -234,7 +309,9 @@ class AccountType(BaseNodeType[Account]):
         result = await info.context["loaders"].profile_by_id.load(str(self.profile_ref))
         return ProfileType.marshal(result)
 
-    @strawberry.field
+    @strawberry.field(
+        description="The account's avatar URL.",
+    )
     async def avatar_url(
         self,
         size: Annotated[
@@ -260,7 +337,9 @@ class AccountType(BaseNodeType[Account]):
         )
         return f"https://www.gravatar.com/avatar/{email_hash}?{query_params}"
 
-    @strawberry.field
+    @strawberry.field(
+        description="When the user's sudo mode grant expires at.",
+    )
     async def sudo_mode_expires_at(self, info: Info) -> datetime | None:
         """Return when the user's sudo mode expires at."""
         sudo_mode_expires_at = info.context["request"].session.get(
@@ -272,7 +351,9 @@ class AccountType(BaseNodeType[Account]):
             else None
         )
 
-    @strawberry.field
+    @strawberry.field(
+        description="The organizations the account is in.",
+    )
     @inject
     async def organizations(
         self,
@@ -280,10 +361,30 @@ class AccountType(BaseNodeType[Account]):
             OrganizationRepo,
             Inject,
         ],
-        before: relay.GlobalID | None = None,
-        after: relay.GlobalID | None = None,
-        first: int | None = None,
-        last: int | None = None,
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
     ) -> Annotated[
         "OrganizationConnectionType", strawberry.lazy("app.organizations.types")
     ]:
@@ -300,7 +401,9 @@ class AccountType(BaseNodeType[Account]):
 
         return OrganizationConnectionType.marshal(memberships)
 
-    @strawberry.field
+    @strawberry.field(
+        description="The sessions for the account.",
+    )
     @inject
     async def sessions(
         self,
@@ -308,10 +411,30 @@ class AccountType(BaseNodeType[Account]):
             SessionRepo,
             Inject,
         ],
-        before: relay.GlobalID | None = None,
-        after: relay.GlobalID | None = None,
-        first: int | None = None,
-        last: int | None = None,
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
     ) -> Annotated["SessionConnectionType", strawberry.lazy("app.auth.types")]:
         """Return the sessions for the current user."""
         from app.auth.types import SessionConnectionType
@@ -326,7 +449,9 @@ class AccountType(BaseNodeType[Account]):
 
         return SessionConnectionType.marshal(sessions)
 
-    @strawberry.field
+    @strawberry.field(
+        description="The webauthn credentials for the account.",
+    )
     @inject
     async def web_authn_credentials(
         self,
@@ -334,10 +459,30 @@ class AccountType(BaseNodeType[Account]):
             WebAuthnCredentialRepo,
             Inject,
         ],
-        before: relay.GlobalID | None = None,
-        after: relay.GlobalID | None = None,
-        first: int | None = None,
-        last: int | None = None,
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
     ) -> Annotated[
         "WebAuthnCredentialConnectionType", strawberry.lazy("app.auth.types")
     ]:
@@ -359,6 +504,7 @@ ViewerPayload = Annotated[
     AccountType | NotAuthenticatedErrorType,
     strawberry.union(
         name="ViewerPayload",
+        description="The viewer payload.",
     ),
 ]
 
@@ -366,6 +512,7 @@ UpdateProfilePayload = Annotated[
     AccountType,
     strawberry.union(
         name="UpdateProfilePayload",
+        description="The update profile payload.",
     ),
 ]
 
@@ -373,6 +520,7 @@ UpdateAccountPayload = Annotated[
     AccountType | AccountNotFoundErrorType,
     strawberry.union(
         name="UpdateAccountPayload",
+        description="The update account payload.",
     ),
 ]
 
@@ -381,5 +529,6 @@ SaveJobPayload = Annotated[
     AccountType,
     strawberry.union(
         name="SaveJobPayload",
+        description="The save job payload.",
     ),
 ]

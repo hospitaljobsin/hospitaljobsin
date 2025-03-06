@@ -19,7 +19,7 @@ from .types import (
 class AuthQuery:
     @strawberry.field(  # type: ignore[misc]
         graphql_type=PasswordResetTokenPayload,
-        description="Geta password reset token.",
+        description="Get a password reset token.",
     )
     @inject
     async def password_reset_token(

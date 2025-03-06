@@ -35,10 +35,30 @@ class JobQuery:
                 description="Search term",
             ),
         ] = None,
-        before: relay.GlobalID | None = None,
-        after: relay.GlobalID | None = None,
-        first: int | None = None,
-        last: int | None = None,
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
     ) -> JobConnectionType:
         paginated_result = await job_repo.get_all(
             search_term=search_term,
@@ -89,10 +109,30 @@ class JobQuery:
         self,
         info: AuthInfo,
         saved_job_repo: Annotated[SavedJobRepo, Inject],
-        before: relay.GlobalID | None = None,
-        after: relay.GlobalID | None = None,
-        first: int | None = None,
-        last: int | None = None,
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
     ) -> SavedJobConnectionType:
         result = await saved_job_repo.get_all_saved(
             account_id=info.context["current_user"].id,

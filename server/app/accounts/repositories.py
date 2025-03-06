@@ -43,7 +43,6 @@ class AccountRepo:
             )
             if password
             else None,
-            has_onboarded=False,
             updated_at=None,
             profile=None,
             auth_providers=auth_providers,

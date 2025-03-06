@@ -1,4 +1,4 @@
-from typing import Annotated, ClassVar, Generic, Self, TypeVar
+from typing import ClassVar, Generic, Self, TypeVar
 
 import strawberry
 from beanie import Document
@@ -40,13 +40,13 @@ class BaseConnectionType(Generic[NodeType, EdgeType]):
 
     edge_type: ClassVar[EdgeType]
 
-    page_info: Annotated[
-        relay.PageInfo, field(description="Pagination data for this connection")
-    ]
+    page_info: relay.PageInfo = field(
+        description="Information to aid in pagination.",
+    )
 
-    edges: Annotated[
-        list[EdgeType], field(description="Contains the nodes in this connection")
-    ]
+    edges: list[EdgeType] = field(
+        description="A list of edges.",
+    )
 
     @classmethod
     def marshal(cls, paginated_result: PaginatedResult[ModelType, str]) -> Self:
@@ -73,24 +73,41 @@ class BaseConnectionType(Generic[NodeType, EdgeType]):
         )
 
 
-@strawberry.interface(name="Error")
+@strawberry.interface(name="Error", description="Human readable error.")
 class BaseErrorType:
-    message: str
+    message: str = field(
+        description="Human readable error message.",
+    )
 
 
 @strawberry.type(name="NotAuthenticatedError")
 class NotAuthenticatedErrorType(BaseErrorType):
-    message: str = "Not authenticated."
+    message: str = field(
+        default="Not authenticated.",
+        description="Human readable error message.",
+    )
 
 
 @strawberry.type(name="Address")
 class AddressType:
-    line1: str | None
-    line2: str | None
-    city: str | None
-    state: str | None
-    country: str | None
-    pincode: str | None
+    line1: str | None = field(
+        description="Address line 1.",
+    )
+    line2: str | None = field(
+        description="Address line 2.",
+    )
+    city: str | None = field(
+        description="City.",
+    )
+    state: str | None = field(
+        description="State.",
+    )
+    country: str | None = field(
+        description="Country.",
+    )
+    pincode: str | None = field(
+        description="Pincode.",
+    )
 
     @classmethod
     def marshal(cls, address: Address) -> Self:
@@ -107,12 +124,24 @@ class AddressType:
 
 @strawberry.input(name="AddressInput")
 class AddressInputType:
-    line1: str | None
-    line2: str | None
-    city: str | None
-    state: str | None
-    country: str | None
-    pincode: str | None
+    line1: str | None = field(
+        description="Address line 1.",
+    )
+    line2: str | None = field(
+        description="Address line 2.",
+    )
+    city: str | None = field(
+        description="City.",
+    )
+    state: str | None = field(
+        description="State.",
+    )
+    country: str | None = field(
+        description="Country.",
+    )
+    pincode: str | None = field(
+        description="Pincode.",
+    )
 
     def to_document(self) -> Address:
         """Marshal into a document instance."""

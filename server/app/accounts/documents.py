@@ -59,7 +59,6 @@ class Account(Document):
     email: Annotated[str, Indexed(unique=True)]
     password_hash: str | None = None
     two_factor_secret: str | None = None
-    has_onboarded: bool
     updated_at: datetime | None = None
 
     auth_providers: list[AuthProvider]

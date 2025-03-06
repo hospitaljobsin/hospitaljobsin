@@ -2,48 +2,130 @@ directive @isAuthenticated on FIELD_DEFINITION
 
 directive @requiresSudoMode on FIELD_DEFINITION
 
+"""The account details."""
 type Account implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
+
+  """The full name of the account."""
   fullName: String!
+
+  """The email of the account."""
   email: String!
-  hasOnboarded: Boolean!
+
+  """When the account was last updated."""
   updatedAt: DateTime
+
+  """The authentication providers supported by the account."""
   authProviders: [AuthProvider!]!
+
+  """Whether the account has 2FA enabled."""
   has2faEnabled: Boolean!
+
+  """The account's profile."""
   profile: ProfilePayload!
+
+  """The account's avatar URL."""
   avatarUrl(
     """The size of the avatar."""
     size: Int! = 80
   ): String!
+
+  """When the user's sudo mode grant expires at."""
   sudoModeExpiresAt: DateTime
-  organizations(before: ID = null, after: ID = null, first: Int = null, last: Int = null): OrganizationConnection!
-  sessions(before: ID = null, after: ID = null, first: Int = null, last: Int = null): SessionConnection!
-  webAuthnCredentials(before: ID = null, after: ID = null, first: Int = null, last: Int = null): WebAuthnCredentialConnection!
+
+  """The organizations the account is in."""
+  organizations(
+    """Returns items before the given cursor."""
+    before: ID = null
+
+    """Returns items after the given cursor."""
+    after: ID = null
+
+    """How many items to return after the cursor?"""
+    first: Int = null
+
+    """How many items to return before the cursor?"""
+    last: Int = null
+  ): OrganizationConnection!
+
+  """The sessions for the account."""
+  sessions(
+    """Returns items before the given cursor."""
+    before: ID = null
+
+    """Returns items after the given cursor."""
+    after: ID = null
+
+    """How many items to return after the cursor?"""
+    first: Int = null
+
+    """How many items to return before the cursor?"""
+    last: Int = null
+  ): SessionConnection!
+
+  """The webauthn credentials for the account."""
+  webAuthnCredentials(
+    """Returns items before the given cursor."""
+    before: ID = null
+
+    """Returns items after the given cursor."""
+    after: ID = null
+
+    """How many items to return after the cursor?"""
+    first: Int = null
+
+    """How many items to return before the cursor?"""
+    last: Int = null
+  ): WebAuthnCredentialConnection!
 }
 
 type AccountNotFoundError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type Address {
+  """Address line 1."""
   line1: String
+
+  """Address line 2."""
   line2: String
+
+  """City."""
   city: String
+
+  """State."""
   state: String
+
+  """Country."""
   country: String
+
+  """Pincode."""
   pincode: String
 }
 
 input AddressInput {
+  """Address line 1."""
   line1: String
+
+  """Address line 2."""
   line2: String
+
+  """City."""
   city: String
+
+  """State."""
   state: String
+
+  """Country."""
   country: String
+
+  """Pincode."""
   pincode: String
 }
 
+"""The authentication provider."""
 enum AuthProvider {
   PASSWORD
   WEBAUTHN_CREDENTIAL
@@ -56,9 +138,11 @@ type CreateOrganizationLogoPresignedURLPayload {
 
 union CreateOrganizationPayload = Organization | OrganizationSlugInUseError
 
+"""The create webauthn credential payload."""
 union CreateWebAuthnCredentialPayload = CreateWebAuthnCredentialSuccess | InvalidPasskeyRegistrationCredentialError
 
 type CreateWebAuthnCredentialSuccess {
+  """The created webauthn credential edge."""
   webAuthnCredentialEdge: WebAuthnCredentialEdge!
 }
 
@@ -66,9 +150,15 @@ enum Currency {
   INR
 }
 
+"""The current job details."""
 type CurrentJob {
+  """The current job title."""
   currentTitle: String!
+
+  """The current organization."""
   currentOrganization: String
+
+  """The current salary."""
   currentSalary: Float
 }
 
@@ -79,107 +169,141 @@ scalar Date
 scalar DateTime
 
 type DeleteOtherSessionsPayload {
+  """Deleted session IDs."""
   deletedSessionIds: [ID!]!
 }
 
+"""The delete session payload."""
 union DeleteSessionPayload = DeleteSessionSuccess | SessionNotFoundError
 
 type DeleteSessionSuccess {
+  """The Deleted session edge."""
   sessionEdge: SessionEdge!
 }
 
+"""The delete webauthn credential payload."""
 union DeleteWebAuthnCredentialPayload = DeleteWebAuthnCredentialSuccess | WebAuthnCredentialNotFoundError | InsufficientAuthProvidersError
 
 type DeleteWebAuthnCredentialSuccess {
+  """The Deleted webauthn credential edge."""
   webAuthnCredentialEdge: WebAuthnCredentialEdge!
 }
 
+"""The disable account 2FA payload."""
 union DisableAccount2FAPayload = Account | TwoFactorAuthenticationNotEnabledError
 
 type EmailInUseError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type EmailVerificationTokenCooldownError implements Error {
+  """Human readable error message."""
   message: String!
   remainingSeconds: Int!
 }
 
+"""Human readable error."""
 interface Error {
+  """Human readable error message."""
   message: String!
 }
 
+"""Gender type."""
 enum GenderType {
   MALE
   FEMALE
   OTHER
 }
 
+"""The generate 2FA recovery codes payload."""
 union Generate2FARecoveryCodesPayload = Generate2FARecoveryCodesSuccess | TwoFactorAuthenticationNotEnabledError
 
 type Generate2FARecoveryCodesSuccess {
+  """The generated 2FA recovery codes."""
   recoveryCodes: [String!]!
 }
 
+"""The generate account 2FA OTP URI payload."""
 union GenerateAccount2FAOTPURIPayload = GenerateAccount2FAOTPURISuccess
 
 type GenerateAccount2FAOTPURISuccess {
+  """The generated 2FA OTP URI."""
   otpUri: String!
+
+  """The generated 2FA secret."""
   secret: String!
 }
 
+"""The generate authentication options payload."""
 union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSuccess | InvalidRecaptchaTokenError
 
 type GenerateAuthenticationOptionsSuccess {
+  """Passkey authentication options."""
   authenticationOptions: JSON!
 }
 
+"""The generate passkey creation options payload."""
 union GeneratePasskeyCreationOptionsPayload = GeneratePasskeyCreationOptionsSuccess
 
 type GeneratePasskeyCreationOptionsSuccess {
+  """Passkey registration options for new passkey creation."""
   registrationOptions: JSON!
 }
 
+"""The generate passkey registration options payload."""
 union GeneratePasskeyRegistrationOptionsPayload = GeneratePasskeyRegistrationOptionsSuccess | InvalidRecaptchaTokenError | EmailInUseError
 
 type GeneratePasskeyRegistrationOptionsSuccess {
+  """Passkey registration options."""
   registrationOptions: JSON!
 }
 
 type InsufficientAuthProvidersError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type InvalidCredentialsError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type InvalidEmailError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type InvalidEmailVerificationTokenError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type InvalidPasskeyAuthenticationCredentialError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type InvalidPasskeyRegistrationCredentialError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type InvalidPasswordResetTokenError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type InvalidRecaptchaTokenError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type InvalidSignInMethodError implements Error {
+  """Human readable error message."""
   message: String!
+
+  """Available authentication providers for the account."""
   availableProviders: [AuthProvider!]!
 }
 
@@ -215,7 +339,10 @@ type Job implements Node {
 }
 
 type JobConnection {
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
+
+  """A list of edges."""
   edges: [JobEdge!]!
 }
 
@@ -240,24 +367,36 @@ enum JobType {
   CONTRACT
 }
 
+"""The language details."""
 type Language {
+  """The name of the language."""
   name: String!
+
+  """The proficiency level of the language."""
   proficiency: String!
 }
 
+"""The language details input."""
 input LanguageInput {
+  """The name of the language."""
   name: String!
+
+  """The proficiency level of the language."""
   proficiency: String!
 }
 
+"""The login with passkey payload."""
 union LoginWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
 
+"""The login with password payload."""
 union LoginWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError | TwoFactorAuthenticationRequiredError
 
 type LogoutPayload {
+  """Human readable success message."""
   message: String!
 }
 
+"""Marital status type."""
 enum MaritalStatusType {
   MARRIED
   SINGLE
@@ -542,6 +681,7 @@ interface Node {
 }
 
 type NotAuthenticatedError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
@@ -557,12 +697,39 @@ type Organization implements Node {
   logoUrl: String!
   isAdmin: Boolean!
   isMember: Boolean!
-  jobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): JobConnection!
-  members(before: ID = null, after: ID = null, first: Int = null, last: Int = null): OrganizationMemberConnection!
+  jobs(
+    """Returns items before the given cursor."""
+    before: ID = null
+
+    """Returns items after the given cursor."""
+    after: ID = null
+
+    """How many items to return after the cursor?"""
+    first: Int = null
+
+    """How many items to return before the cursor?"""
+    last: Int = null
+  ): JobConnection!
+  members(
+    """Returns items before the given cursor."""
+    before: ID = null
+
+    """Returns items after the given cursor."""
+    after: ID = null
+
+    """How many items to return after the cursor?"""
+    first: Int = null
+
+    """How many items to return before the cursor?"""
+    last: Int = null
+  ): OrganizationMemberConnection!
 }
 
 type OrganizationConnection {
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
+
+  """A list of edges."""
   edges: [OrganizationEdge!]!
 }
 
@@ -575,7 +742,10 @@ type OrganizationEdge {
 }
 
 type OrganizationMemberConnection {
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
+
+  """A list of edges."""
   edges: [OrganizationMemberEdge!]!
 }
 
@@ -615,47 +785,73 @@ type PageInfo {
 }
 
 type PasswordNotStrongError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type PasswordResetToken implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
+
+  """Email address of the password reset token's account."""
   email: String!
   needs2fa: Boolean!
 }
 
 type PasswordResetTokenNotFoundError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
+"""The password reset token payload."""
 union PasswordResetTokenPayload = PasswordResetToken | PasswordResetTokenNotFoundError
 
+"""The profile details."""
 type Profile implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
+
+  """The gender of the profile's user."""
   gender: GenderType
-  dateOfBirth: Date
+
+  """The date of birth of the profile's user."""
+  dateOfBirth: Date!
+
+  """The address of the profile's user."""
   address: Address!
+
+  """The marital status of the profile's user."""
   maritalStatus: MaritalStatusType
+
+  """The category of the profile's user."""
   category: String
+
+  """The list of languages spoken by the profile's user."""
   languages: [Language!]!
+
+  """Total job experience (in years) of the profile's user."""
   totalJobExperience: Float
+
+  """The current job of the profile's user."""
   currentJob: CurrentJob
+
+  """When the profile was created."""
   createdAt: DateTime!
 }
 
 type ProfileNotFoundError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
+"""The profile payload."""
 union ProfilePayload = Profile | ProfileNotFoundError
 
 type Query {
   """Get the current user."""
   viewer: ViewerPayload!
 
-  """Geta password reset token."""
+  """Get a password reset token."""
   passwordResetToken(
     """Generated password reset token"""
     resetToken: String!
@@ -672,9 +868,17 @@ type Query {
   jobs(
     """Search term"""
     searchTerm: String = null
+
+    """Returns items before the given cursor."""
     before: ID = null
+
+    """Returns items after the given cursor."""
     after: ID = null
+
+    """How many items to return after the cursor?"""
     first: Int = null
+
+    """How many items to return before the cursor?"""
     last: Int = null
   ): JobConnection!
 
@@ -683,7 +887,19 @@ type Query {
     """Slug of the job"""
     slug: String!
   ): JobPayload!
-  savedJobs(before: ID = null, after: ID = null, first: Int = null, last: Int = null): SavedJobConnection! @isAuthenticated
+  savedJobs(
+    """Returns items before the given cursor."""
+    before: ID = null
+
+    """Returns items after the given cursor."""
+    after: ID = null
+
+    """How many items to return after the cursor?"""
+    first: Int = null
+
+    """How many items to return before the cursor?"""
+    last: Int = null
+  ): SavedJobConnection! @isAuthenticated
 
   """Get organization by slug."""
   organization(
@@ -692,27 +908,38 @@ type Query {
   ): OrganizationPayload!
 }
 
+"""The register with passkey payload."""
 union RegisterWithPasskeyPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | InvalidPasskeyRegistrationCredentialError
 
+"""The register with password payload."""
 union RegisterWithPasswordPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | PasswordNotStrongError
 
 type RequestEmailVerificationSuccess {
+  """Human readable error message."""
   message: String!
+
+  """Remaining seconds before requesting another email verification token."""
   remainingSeconds: Int!
 }
 
+"""The request email verification token payload."""
 union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError | InvalidRecaptchaTokenError | InvalidEmailError
 
+"""The request password reset payload."""
 union RequestPasswordResetPayload = RequestPasswordResetSuccess | InvalidRecaptchaTokenError
 
 type RequestPasswordResetSuccess {
+  """Human readable success message."""
   message: String!
 }
 
+"""The request sudo mode with passkey payload."""
 union RequestSudoModeWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
 
+"""The request sudo mode with password payload."""
 union RequestSudoModeWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError
 
+"""The reset password payload."""
 union ResetPasswordPayload = Account | InvalidPasswordResetTokenError | PasswordNotStrongError | TwoFactorAuthenticationChallengeNotFoundError
 
 union SaveJobPayload = SaveJobResult | JobNotFoundError
@@ -722,7 +949,10 @@ type SaveJobResult {
 }
 
 type SavedJobConnection {
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
+
+  """A list of edges."""
   edges: [SavedJobEdge!]!
 }
 
@@ -742,14 +972,25 @@ type SavedJobNotFoundError implements Error {
 type Session implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
+
+  """User agent of the session."""
   userAgent: String!
+
+  """IP address of the session."""
   ipAddress: String!
+
+  """When the session was created."""
   createdAt: DateTime!
+
+  """Whether the session is the current account's session."""
   isCurrentSession: Boolean!
 }
 
 type SessionConnection {
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
+
+  """A list of edges."""
   edges: [SessionEdge!]!
 }
 
@@ -762,25 +1003,33 @@ type SessionEdge {
 }
 
 type SessionNotFoundError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
+"""The set account 2FA payload."""
 union SetAccount2FAPayload = SetAccount2FASuccess | InvalidCredentialsError | TwoFactorAuthenticationChallengeNotFoundError
 
 type SetAccount2FASuccess {
+  """The account with 2FA enabled."""
   account: Account!
+
+  """The recovery codes for the account."""
   recoveryCodes: [String!]!
 }
 
 type TwoFactorAuthenticationChallengeNotFoundError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type TwoFactorAuthenticationNotEnabledError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type TwoFactorAuthenticationRequiredError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
@@ -790,37 +1039,53 @@ type UnsaveJobResult {
   savedJobEdge: SavedJobEdge!
 }
 
+"""The update account payload."""
 union UpdateAccountPayload = Account | AccountNotFoundError
 
+"""The update profile payload."""
 union UpdateProfilePayload = Account
 
+"""The update webauthn credential payload."""
 union UpdateWebAuthnCredentialPayload = WebAuthnCredential | WebAuthnCredentialNotFoundError
 
+"""The verify 2FA password reset payload."""
 union Verify2FAPasswordResetPayload = PasswordResetToken | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | InvalidPasswordResetTokenError
 
+"""The verify account 2FA token payload."""
 union VerifyAccount2FATokenPayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError
 
+"""The verify email payload."""
 union VerifyEmailPayload = VerifyEmailSuccess | InvalidRecaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
 
 type VerifyEmailSuccess {
+  """Human readable success message."""
   message: String!
 }
 
+"""The viewer payload."""
 union ViewerPayload = Account | NotAuthenticatedError
 
 type WebAuthnChallengeNotFoundError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
 type WebAuthnCredential implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
+
+  """Nickname of the webauthn credential."""
   nickname: String!
+
+  """When the webauthn credential was created."""
   createdAt: DateTime!
 }
 
 type WebAuthnCredentialConnection {
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
+
+  """A list of edges."""
   edges: [WebAuthnCredentialEdge!]!
 }
 
@@ -833,6 +1098,7 @@ type WebAuthnCredentialEdge {
 }
 
 type WebAuthnCredentialNotFoundError implements Error {
+  """Human readable error message."""
   message: String!
 }
 

@@ -2,6 +2,7 @@ from aioinject.ext.strawberry import AioInjectExtension
 from strawberry import Schema
 from strawberry.extensions import ParserCache, ValidationCache
 from strawberry.relay import GlobalID
+from strawberry.schema.config import StrawberryConfig
 from strawberry.tools import merge_types
 
 from app.accounts.mutation import AccountMutation
@@ -51,4 +52,7 @@ schema = Schema(
         ValidationCache(maxsize=128),
     ],
     scalar_overrides={GlobalID: ID},
+    config=StrawberryConfig(
+        auto_camel_case=True,
+    ),
 )

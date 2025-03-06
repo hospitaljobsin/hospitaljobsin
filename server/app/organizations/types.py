@@ -138,10 +138,30 @@ class OrganizationType(BaseNodeType[Organization]):
             JobRepo,
             Inject,
         ],
-        before: relay.GlobalID | None = None,
-        after: relay.GlobalID | None = None,
-        first: int | None = None,
-        last: int | None = None,
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
     ) -> Annotated["JobConnectionType", strawberry.lazy("app.jobs.types")]:
         """Return a paginated connection of jobs for the organization."""
         from app.jobs.types import JobConnectionType
@@ -165,10 +185,30 @@ class OrganizationType(BaseNodeType[Organization]):
             OrganizationMemberRepo,
             Inject,
         ],
-        before: relay.GlobalID | None = None,
-        after: relay.GlobalID | None = None,
-        first: int | None = None,
-        last: int | None = None,
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
     ) -> OrganizationMemberConnectionType:
         """Return a paginated connection of members for the organization."""
         paginated_members = await organization_member_repo.get_all_by_organization_id(
