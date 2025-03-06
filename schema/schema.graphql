@@ -904,6 +904,8 @@ type PasswordResetToken implements Node {
 
   """Email address of the password reset token's account."""
   email: String!
+
+  """Whether the password reset token needs 2FA to be used."""
   needs2fa: Boolean!
 }
 
