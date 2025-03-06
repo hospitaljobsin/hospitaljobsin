@@ -95,7 +95,7 @@ class EmailVerificationToken(Document):
     @property
     def is_expired(self) -> bool:
         """Check if the token is expired."""
-        return datetime.now(UTC) >= (self.expires_at)
+        return datetime.now(UTC) >= (self.expires_at.replace(tzinfo=UTC))
 
     @property
     def is_cooled_down(self) -> bool:

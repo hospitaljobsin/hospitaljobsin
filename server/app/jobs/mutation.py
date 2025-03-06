@@ -3,7 +3,7 @@ from typing import Annotated
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
-from result import Err
+from result import Err, Ok
 from strawberry import relay
 from strawberry.permission import PermissionExtension
 
@@ -49,21 +49,20 @@ class JobMutation:
         saved_job_service: Annotated[SavedJobService, Inject],
     ) -> SaveJobPayload:
         """Save a job."""
-        result = await saved_job_service.save_job(
+        match await saved_job_service.save_job(
             account_id=info.context["current_user"].id,
             job_id=job_id.node_id,
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case JobNotFoundError():
-                    return JobNotFoundErrorType()
-
-        return SaveJobSuccess(
-            saved_job_edge=SavedJobEdgeType.marshal(
-                result.ok_value,
-            ),
-        )
+        ):
+            case Err(error):
+                match error:
+                    case JobNotFoundError():
+                        return JobNotFoundErrorType()
+            case Ok(saved_job):
+                return SaveJobSuccess(
+                    saved_job_edge=SavedJobEdgeType.marshal(
+                        saved_job,
+                    ),
+                )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UnsaveJobPayload,
@@ -89,18 +88,17 @@ class JobMutation:
         saved_job_service: Annotated[SavedJobService, Inject],
     ) -> UnsaveJobPayload:
         """Save a job."""
-        result = await saved_job_service.unsave_job(
+        match await saved_job_service.unsave_job(
             account_id=info.context["current_user"].id,
             job_id=job_id.node_id,
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case SavedJobNotFoundError():
-                    return SavedJobNotFoundErrorType()
-
-        return UnsaveJobSuccess(
-            saved_job_edge=SavedJobEdgeType.marshal(
-                result.ok_value,
-            ),
-        )
+        ):
+            case Err(error):
+                match error:
+                    case SavedJobNotFoundError():
+                        return SavedJobNotFoundErrorType()
+            case Ok(saved_job):
+                return UnsaveJobSuccess(
+                    saved_job_edge=SavedJobEdgeType.marshal(
+                        saved_job,
+                    ),
+                )

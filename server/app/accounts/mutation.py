@@ -4,7 +4,7 @@ from typing import Annotated
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
-from result import Err
+from result import Err, Ok
 from strawberry.permission import PermissionExtension
 
 from app.accounts.exceptions import AccountNotFoundError
@@ -49,16 +49,16 @@ class AccountMutation:
         category: str | None = None,
     ) -> UpdateProfilePayload:
         """Update the current user's profile personal details."""
-        account = await profile_service.update_personal_details(
+        match await profile_service.update_personal_details(
             account_id=info.context["current_user"].id,
             gender=gender,
             date_of_birth=date_of_birth,
             marital_status=marital_status,
             category=category,
             address=address.to_document(),
-        )
-
-        return AccountType.marshal_with_profile(account)
+        ):
+            case Ok(account):
+                return AccountType.marshal_with_profile(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateProfilePayload,
@@ -79,12 +79,12 @@ class AccountMutation:
         languages: list[LanguageInputType],
     ) -> UpdateProfilePayload:
         """Update the current user's profile languages."""
-        account = await profile_service.update_languages(
+        match await profile_service.update_languages(
             account_id=info.context["current_user"].id,
             languages=[language.to_document() for language in languages],
-        )
-
-        return AccountType.marshal_with_profile(account)
+        ):
+            case Ok(account):
+                return AccountType.marshal_with_profile(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateAccountPayload,
@@ -105,14 +105,13 @@ class AccountMutation:
         full_name: str,
     ) -> UpdateAccountPayload:
         """Update the current user's account."""
-        result = await account_service.update(
+        match await account_service.update(
             account_id=info.context["current_user"].id,
             full_name=full_name,
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case AccountNotFoundError():
-                    return AccountNotFoundErrorType()
-
-        return AccountType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case AccountNotFoundError():
+                        return AccountNotFoundErrorType()
+            case Ok(account):
+                return AccountType.marshal(account)

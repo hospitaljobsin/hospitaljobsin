@@ -40,7 +40,7 @@ class ProfileService:
         address: Address,
         marital_status: str | None,
         category: str | None,
-    ) -> Account:
+    ) -> Result[Account, None]:
         account = await self._account_repo.get(account_id, fetch_profile=True)
         existing_profile = account.profile
         if existing_profile is None:
@@ -56,13 +56,13 @@ class ProfileService:
             address=address,
         )
 
-        return account
+        return Ok(account)
 
     async def update_languages(
         self,
         account_id: ObjectId,
         languages: list[Language],
-    ) -> Account:
+    ) -> Result[Account, None]:
         account = await self._account_repo.get(account_id, fetch_profile=True)
         existing_profile = account.profile
         if existing_profile is None:
@@ -78,4 +78,4 @@ class ProfileService:
             address=existing_profile.address,
         )
 
-        return account
+        return Ok(account)

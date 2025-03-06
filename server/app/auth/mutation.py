@@ -4,7 +4,7 @@ import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
-from result import Err
+from result import Err, Ok
 from strawberry import relay
 from strawberry.permission import PermissionExtension
 from strawberry.scalars import JSON
@@ -122,29 +122,28 @@ class AuthMutation:
         ],
         auth_service: Annotated[AuthService, Inject],
     ) -> RequestEmailVerificationTokenPayload:
-        result = await auth_service.request_email_verification_token(
+        match await auth_service.request_email_verification_token(
             email=email,
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             background_tasks=info.context["background_tasks"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-                case EmailVerificationTokenCooldownError() as err:
-                    return EmailVerificationTokenCooldownErrorType(
-                        remaining_seconds=err.remaining_seconds
-                    )
-                case InvalidEmailError() as err:
-                    return InvalidEmailErrorType(message=err.message)
-                case EmailInUseError():
-                    return EmailInUseErrorType()
-
-        return RequestEmailVerificationTokenSuccessType(
-            remaining_seconds=result.ok_value.cooldown_remaining_seconds
-        )
+        ):
+            case Ok(verification_token):
+                return RequestEmailVerificationTokenSuccessType(
+                    remaining_seconds=verification_token.cooldown_remaining_seconds
+                )
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+                    case EmailVerificationTokenCooldownError() as err:
+                        return EmailVerificationTokenCooldownErrorType(
+                            remaining_seconds=err.remaining_seconds
+                        )
+                    case InvalidEmailError() as err:
+                        return InvalidEmailErrorType(message=err.message)
+                    case EmailInUseError():
+                        return EmailInUseErrorType()
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=VerifyEmailPayload,
@@ -173,22 +172,21 @@ class AuthMutation:
         ],
         auth_service: Annotated[AuthService, Inject],
     ) -> VerifyEmailPayload:
-        result = await auth_service.verify_email(
+        match await auth_service.verify_email(
             email=email,
             email_verification_token=email_verification_token,
             recaptcha_token=recaptcha_token,
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-                case EmailInUseError():
-                    return EmailInUseErrorType()
-                case InvalidEmailVerificationTokenError():
-                    return InvalidEmailVerificationTokenErrorType()
-
-        return VerifyEmailSuccessType()
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+                    case EmailInUseError():
+                        return EmailInUseErrorType()
+                    case InvalidEmailVerificationTokenError():
+                        return InvalidEmailVerificationTokenErrorType()
+            case Ok():
+                return VerifyEmailSuccessType()
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RegisterWithPasswordPayload,
@@ -231,7 +229,7 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> RegisterWithPasswordPayload:
         """Register a new user with a password."""
-        result = await auth_service.register_with_password(
+        match await auth_service.register_with_password(
             email=email,
             email_verification_token=email_verification_token,
             password=password,
@@ -240,20 +238,19 @@ class AuthMutation:
             user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-                case EmailInUseError():
-                    return EmailInUseErrorType()
-                case InvalidEmailVerificationTokenError():
-                    return InvalidEmailVerificationTokenErrorType()
-                case PasswordNotStrongError():
-                    return PasswordNotStrongErrorType()
-
-        return AccountType.marshal_with_profile(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+                    case EmailInUseError():
+                        return EmailInUseErrorType()
+                    case InvalidEmailVerificationTokenError():
+                        return InvalidEmailVerificationTokenErrorType()
+                    case PasswordNotStrongError():
+                        return PasswordNotStrongErrorType()
+            case Ok(account):
+                return AccountType.marshal_with_profile(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GeneratePasskeyRegistrationOptionsPayload,
@@ -283,22 +280,21 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> GeneratePasskeyRegistrationOptionsPayload:
         """Generate registration options for registering via a passkey."""
-        result = await auth_service.generate_passkey_registration_options(
+        match await auth_service.generate_passkey_registration_options(
             email=email, full_name=full_name, recaptcha_token=recaptcha_token
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-                case EmailInUseError():
-                    return EmailInUseErrorType()
-                case InvalidEmailVerificationTokenError():
-                    return InvalidEmailVerificationTokenErrorType()
-
-        return GeneratePasskeyRegistrationOptionsSuccessType(
-            registration_options=options_to_json(result.ok_value),
-        )
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+                    case EmailInUseError():
+                        return EmailInUseErrorType()
+                    case InvalidEmailVerificationTokenError():
+                        return InvalidEmailVerificationTokenErrorType()
+            case Ok(options):
+                return GeneratePasskeyRegistrationOptionsSuccessType(
+                    registration_options=options_to_json(options),
+                )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RegisterWithPasskeyPayload,
@@ -347,7 +343,7 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> RegisterWithPasskeyPayload:
         """Register a new user with a passkey."""
-        result = await auth_service.register_with_passkey(
+        match await auth_service.register_with_passkey(
             email=email,
             email_verification_token=email_verification_token,
             passkey_registration_response=passkey_registration_response,
@@ -357,20 +353,19 @@ class AuthMutation:
             user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-                case EmailInUseError():
-                    return EmailInUseErrorType()
-                case InvalidEmailVerificationTokenError():
-                    return InvalidEmailVerificationTokenErrorType()
-                case InvalidPasskeyRegistrationCredentialError():
-                    return InvalidPasskeyRegistrationCredentialErrorType()
-
-        return AccountType.marshal_with_profile(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+                    case EmailInUseError():
+                        return EmailInUseErrorType()
+                    case InvalidEmailVerificationTokenError():
+                        return InvalidEmailVerificationTokenErrorType()
+                    case InvalidPasskeyRegistrationCredentialError():
+                        return InvalidPasskeyRegistrationCredentialErrorType()
+            case Ok(account):
+                return AccountType.marshal_with_profile(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GenerateAuthenticationOptionsPayload,
@@ -389,19 +384,18 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> GenerateAuthenticationOptionsPayload:
         """Generate authentication options."""
-        result = await auth_service.generate_authentication_options(
+        match await auth_service.generate_authentication_options(
             recaptcha_token=recaptcha_token,
             request=info.context["request"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-
-        return GenerateAuthenticationOptionsSuccessType(
-            authentication_options=options_to_json(result.ok_value)
-        )
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+            case Ok(options):
+                return GenerateAuthenticationOptionsSuccessType(
+                    authentication_options=options_to_json(options)
+                )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GenerateAuthenticationOptionsPayload,
@@ -423,20 +417,19 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> GenerateAuthenticationOptionsPayload:
         """Generate reauthentication options (for sudo mode requests)."""
-        result = await auth_service.generate_reauthentication_options(
+        match await auth_service.generate_reauthentication_options(
             recaptcha_token=recaptcha_token,
             request=info.context["request"],
             account=info.context["current_user"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-
-        return GenerateAuthenticationOptionsSuccessType(
-            authentication_options=options_to_json(result.ok_value)
-        )
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+            case Ok(options):
+                return GenerateAuthenticationOptionsSuccessType(
+                    authentication_options=options_to_json(options)
+                )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LoginWithPasskeyPayload,
@@ -461,24 +454,23 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> LoginWithPasskeyPayload:
         """Login a user with a passkey."""
-        result = await auth_service.login_with_passkey(
+        match await auth_service.login_with_passkey(
             authentication_response=authentication_response,
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-                case InvalidPasskeyAuthenticationCredentialError():
-                    return InvalidPasskeyAuthenticationCredentialErrorType()
-                case WebAuthnChallengeNotFoundError():
-                    return WebAuthnChallengeNotFoundErrorType()
-
-        return AccountType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidPasskeyAuthenticationCredentialError():
+                        return InvalidPasskeyAuthenticationCredentialErrorType()
+                    case WebAuthnChallengeNotFoundError():
+                        return WebAuthnChallengeNotFoundErrorType()
+            case Ok(account):
+                return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LoginWithPasswordPayload,
@@ -509,29 +501,28 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> LoginWithPasswordPayload:
         """Login a user with email and password."""
-        result = await auth_service.login_with_password(
+        match await auth_service.login_with_password(
             email=email,
             password=password,
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-                case InvalidCredentialsError():
-                    return InvalidCredentialsErrorType()
-                case InvalidAuthenticationProviderError() as err:
-                    return InvalidAuthenticationProviderErrorType.marshal(
-                        available_providers=err.available_providers
-                    )
-                case TwoFactorAuthenticationRequiredError():
-                    return TwoFactorAuthenticationRequiredErrorType()
-
-        return AccountType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCredentialsError():
+                        return InvalidCredentialsErrorType()
+                    case InvalidAuthenticationProviderError() as err:
+                        return InvalidAuthenticationProviderErrorType.marshal(
+                            available_providers=err.available_providers
+                        )
+                    case TwoFactorAuthenticationRequiredError():
+                        return TwoFactorAuthenticationRequiredErrorType()
+            case Ok(account):
+                return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LogoutPayloadType,
@@ -582,19 +573,18 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> RequestPasswordResetPayload:
         """Request a password reset."""
-        result = await auth_service.request_password_reset(
+        match await auth_service.request_password_reset(
             email=email,
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             background_tasks=info.context["background_tasks"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-
-        return RequestPasswordResetSuccessType()
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+            case Ok():
+                return RequestPasswordResetSuccessType()
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=Verify2FAPasswordResetPayload,
@@ -625,24 +615,23 @@ class AuthMutation:
         ] = None,
     ) -> Verify2FAPasswordResetPayload:
         """Verify a 2FA challenge for password reset."""
-        result = await auth_service.verify_2fa_password_reset(
+        match await auth_service.verify_2fa_password_reset(
             email=email,
             password_reset_token=password_reset_token,
             two_factor_token=two_factor_token,
             request=info.context["request"],
             response=info.context["response"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidPasswordResetTokenError():
-                    return InvalidPasswordResetTokenErrorType()
-                case InvalidCredentialsError():
-                    return InvalidCredentialsErrorType()
-                case TwoFactorAuthenticationNotEnabledError():
-                    return TwoFactorAuthenticationNotEnabledErrorType()
-
-        return PasswordResetTokenType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case InvalidPasswordResetTokenError():
+                        return InvalidPasswordResetTokenErrorType()
+                    case InvalidCredentialsError():
+                        return InvalidCredentialsErrorType()
+                    case TwoFactorAuthenticationNotEnabledError():
+                        return TwoFactorAuthenticationNotEnabledErrorType()
+            case Ok(reset_token):
+                return PasswordResetTokenType.marshal(reset_token)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=ResetPasswordPayload,
@@ -679,7 +668,7 @@ class AuthMutation:
         ] = None,
     ) -> ResetPasswordPayload:
         """Reset a user's password."""
-        result = await auth_service.reset_password(
+        match await auth_service.reset_password(
             email=email,
             password_reset_token=password_reset_token,
             new_password=new_password,
@@ -687,18 +676,17 @@ class AuthMutation:
             user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidPasswordResetTokenError():
-                    return InvalidPasswordResetTokenErrorType()
-                case PasswordNotStrongError():
-                    return PasswordNotStrongErrorType()
-                case TwoFactorAuthenticationChallengeNotFoundError():
-                    return TwoFactorAuthenticationChallengeNotFoundErrorType()
-
-        return AccountType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case InvalidPasswordResetTokenError():
+                        return InvalidPasswordResetTokenErrorType()
+                    case PasswordNotStrongError():
+                        return PasswordNotStrongErrorType()
+                    case TwoFactorAuthenticationChallengeNotFoundError():
+                        return TwoFactorAuthenticationChallengeNotFoundErrorType()
+            case Ok(account):
+                return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=DeleteOtherSessionsPayloadType,
@@ -751,20 +739,19 @@ class AuthMutation:
         ],
     ) -> DeleteSessionPayload:
         """Delete session by ID."""
-        result = await auth_service.delete_session(
+        match await auth_service.delete_session(
             account_id=info.context["current_user"].id,
             session_id=ObjectId(session_id.node_id),
             except_session_token=info.context["session_token"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case SessionNotFoundError():
-                    return SessionNotFoundErrorType()
-
-        return DeleteSessionSuccessType(
-            session_edge=SessionEdgeType.marshal(result.ok_value)
-        )
+        ):
+            case Err(error):
+                match error:
+                    case SessionNotFoundError():
+                        return SessionNotFoundErrorType()
+            case Ok(session):
+                return DeleteSessionSuccessType(
+                    session_edge=SessionEdgeType.marshal(session)
+                )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=DeleteWebAuthnCredentialPayload,
@@ -791,23 +778,22 @@ class AuthMutation:
         ],
     ) -> DeleteWebAuthnCredentialPayload:
         """Delete Webauthn credential by ID."""
-        result = await auth_service.delete_web_authn_credential(
+        match await auth_service.delete_web_authn_credential(
             account=info.context["current_user"],
             web_authn_credential_id=ObjectId(web_authn_credential_id.node_id),
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case WebAuthnCredentialNotFoundError():
-                    return WebAuthnCredentialNotFoundErrorType()
-                case InsufficientAuthProvidersError():
-                    return InsufficientAuthProvidersErrorType()
-
-        return DeleteWebAuthnCredentialSuccessType(
-            web_authn_credential_edge=WebAuthnCredentialEdgeType.marshal(
-                result.ok_value
-            )
-        )
+        ):
+            case Err(error):
+                match error:
+                    case WebAuthnCredentialNotFoundError():
+                        return WebAuthnCredentialNotFoundErrorType()
+                    case InsufficientAuthProvidersError():
+                        return InsufficientAuthProvidersErrorType()
+            case Ok(web_authn_credential):
+                return DeleteWebAuthnCredentialSuccessType(
+                    web_authn_credential_edge=WebAuthnCredentialEdgeType.marshal(
+                        web_authn_credential
+                    )
+                )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateWebAuthnCredentialPayload,
@@ -839,18 +825,17 @@ class AuthMutation:
         ],
     ) -> UpdateWebAuthnCredentialPayload:
         """Update Webauthn credential by ID."""
-        result = await auth_service.update_web_authn_credential(
+        match await auth_service.update_web_authn_credential(
             account_id=info.context["current_user"].id,
             web_authn_credential_id=ObjectId(web_authn_credential_id.node_id),
             nickname=nickname,
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case WebAuthnCredentialNotFoundError():
-                    return WebAuthnCredentialNotFoundErrorType()
-
-        return WebAuthnCredentialType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case WebAuthnCredentialNotFoundError():
+                        return WebAuthnCredentialNotFoundErrorType()
+            case Ok(web_authn_credential):
+                return WebAuthnCredentialType.marshal(web_authn_credential)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GeneratePasskeyCreationOptionsPayload,
@@ -871,13 +856,13 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> GeneratePasskeyCreationOptionsPayload:
         """Generate registration options for adding a webauthn credential."""
-        result = await auth_service.generate_web_authn_credential_creation_options(
+        match await auth_service.generate_web_authn_credential_creation_options(
             account=info.context["current_user"],
-        )
-
-        return GeneratePasskeyCreationOptionsSuccessType(
-            registration_options=options_to_json(result.ok_value),
-        )
+        ):
+            case Ok(options):
+                return GeneratePasskeyCreationOptionsSuccessType(
+                    registration_options=options_to_json(options),
+                )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=CreateWebAuthnCredentialPayload,
@@ -910,22 +895,21 @@ class AuthMutation:
         ],
     ) -> CreateWebAuthnCredentialPayload:
         """Create a new webauthn credential for the current user."""
-        result = await auth_service.create_web_authn_credential(
+        match await auth_service.create_web_authn_credential(
             account=info.context["current_user"],
             nickname=nickname,
             passkey_registration_response=passkey_registration_response,
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidPasskeyRegistrationCredentialError():
-                    return InvalidPasskeyRegistrationCredentialErrorType()
-
-        return CreateWebAuthnCredentialSuccessType(
-            web_authn_credential_edge=WebAuthnCredentialEdgeType.marshal(
-                result.ok_value
-            ),
-        )
+        ):
+            case Err(error):
+                match error:
+                    case InvalidPasskeyRegistrationCredentialError():
+                        return InvalidPasskeyRegistrationCredentialErrorType()
+            case Ok(web_authn_credential):
+                return CreateWebAuthnCredentialSuccessType(
+                    web_authn_credential_edge=WebAuthnCredentialEdgeType.marshal(
+                        web_authn_credential
+                    ),
+                )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RequestSudoModeWithPasskeyPayload,
@@ -957,22 +941,21 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> RequestSudoModeWithPasskeyPayload:
         """Request a sudo mode grant for the current user using a passkey."""
-        result = await auth_service.request_sudo_mode_with_passkey(
+        match await auth_service.request_sudo_mode_with_passkey(
             request=info.context["request"],
             authentication_response=authentication_response,
             recaptcha_token=recaptcha_token,
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-                case InvalidPasskeyAuthenticationCredentialError():
-                    return InvalidPasskeyAuthenticationCredentialErrorType()
-                case WebAuthnChallengeNotFoundError():
-                    return WebAuthnChallengeNotFoundErrorType()
-
-        return AccountType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidPasskeyAuthenticationCredentialError():
+                        return InvalidPasskeyAuthenticationCredentialErrorType()
+                    case WebAuthnChallengeNotFoundError():
+                        return WebAuthnChallengeNotFoundErrorType()
+            case Ok(account):
+                return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RequestSudoModeWithPasswordPayload,
@@ -1004,25 +987,24 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> RequestSudoModeWithPasswordPayload:
         """Request a sudo mode grant for the current user using a password."""
-        result = await auth_service.request_sudo_mode_with_password(
+        match await auth_service.request_sudo_mode_with_password(
             request=info.context["request"],
             password=password,
             recaptcha_token=recaptcha_token,
             account=info.context["current_user"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-                case InvalidCredentialsError():
-                    return InvalidCredentialsErrorType()
-                case InvalidAuthenticationProviderError() as err:
-                    return InvalidAuthenticationProviderErrorType.marshal(
-                        available_providers=err.available_providers
-                    )
-
-        return AccountType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCredentialsError():
+                        return InvalidCredentialsErrorType()
+                    case InvalidAuthenticationProviderError() as err:
+                        return InvalidAuthenticationProviderErrorType.marshal(
+                            available_providers=err.available_providers
+                        )
+            case Ok(account):
+                return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=SetAccount2FAPayload,
@@ -1049,25 +1031,24 @@ class AuthMutation:
         ],
     ) -> SetAccount2FAPayload:
         """Set two factor authentication."""
-        result = await auth_service.set_account_2fa(
+        match await auth_service.set_account_2fa(
             account=info.context["current_user"],
             request=info.context["request"],
             response=info.context["response"],
             token=token,
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case InvalidCredentialsError():
-                    return InvalidCredentialsErrorType()
-                case TwoFactorAuthenticationChallengeNotFoundError():
-                    return TwoFactorAuthenticationChallengeNotFoundErrorType()
-
-        (account, recovery_codes) = result.ok_value
-
-        return SetAccount2FASuccessType(
-            account=AccountType.marshal(account), recovery_codes=recovery_codes
-        )
+        ):
+            case Err(error):
+                match error:
+                    case InvalidCredentialsError():
+                        return InvalidCredentialsErrorType()
+                    case TwoFactorAuthenticationChallengeNotFoundError():
+                        return TwoFactorAuthenticationChallengeNotFoundErrorType()
+            case Ok(result):
+                (account, recovery_codes) = result
+                return SetAccount2FASuccessType(
+                    account=AccountType.marshal(account),
+                    recovery_codes=recovery_codes,
+                )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=DisableAccount2FAPayload,
@@ -1088,16 +1069,15 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> DisableAccount2FAPayload:
         """Disable two factor authentication."""
-        result = await auth_service.disable_account_2fa(
+        match await auth_service.disable_account_2fa(
             account=info.context["current_user"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case TwoFactorAuthenticationNotEnabledError():
-                    return TwoFactorAuthenticationNotEnabledErrorType()
-
-        return AccountType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case TwoFactorAuthenticationNotEnabledError():
+                        return TwoFactorAuthenticationNotEnabledErrorType()
+            case Ok(account):
+                return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GenerateAccount2FAChallengePayload,
@@ -1118,18 +1098,17 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> GenerateAccount2FAChallengePayload:
         """Generate an account 2FA challenge."""
-        result = await auth_service.generate_account_2fa_challenge(
+        match await auth_service.generate_account_2fa_challenge(
             account=info.context["current_user"],
             request=info.context["request"],
             response=info.context["response"],
-        )
-
-        otp_uri, secret = result.ok_value
-
-        return GenerateAccount2FAChallengeSuccessType(
-            otp_uri=otp_uri,
-            secret=secret,
-        )
+        ):
+            case Ok(result):
+                otp_uri, secret = result
+                return GenerateAccount2FAChallengeSuccessType(
+                    otp_uri=otp_uri,
+                    secret=secret,
+                )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=VerifyAccount2FATokenPayload,
@@ -1154,26 +1133,25 @@ class AuthMutation:
         ],
     ) -> VerifyAccount2FATokenPayload:
         """Verify Account 2FA challenge."""
-        result = await auth_service.verify_2fa_challenge(
+        match await auth_service.verify_2fa_challenge(
             response=info.context["response"],
             request=info.context["request"],
             token=token,
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case TwoFactorAuthenticationNotEnabledError():
-                    return TwoFactorAuthenticationNotEnabledErrorType()
-                case InvalidCredentialsError():
-                    return InvalidCredentialsErrorType()
-                case TwoFactorAuthenticationChallengeNotFoundError():
-                    return TwoFactorAuthenticationChallengeNotFoundErrorType()
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-
-        return AccountType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case TwoFactorAuthenticationNotEnabledError():
+                        return TwoFactorAuthenticationNotEnabledErrorType()
+                    case InvalidCredentialsError():
+                        return InvalidCredentialsErrorType()
+                    case TwoFactorAuthenticationChallengeNotFoundError():
+                        return TwoFactorAuthenticationChallengeNotFoundErrorType()
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+            case Ok(account):
+                return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=VerifyAccount2FATokenPayload,
@@ -1198,26 +1176,25 @@ class AuthMutation:
         ],
     ) -> VerifyAccount2FATokenPayload:
         """Verify Account 2FA recovery code."""
-        result = await auth_service.verify_2fa_recovery_code(
+        match await auth_service.verify_2fa_recovery_code(
             response=info.context["response"],
             request=info.context["request"],
             token=token,
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case TwoFactorAuthenticationNotEnabledError():
-                    return TwoFactorAuthenticationNotEnabledErrorType()
-                case InvalidCredentialsError():
-                    return InvalidCredentialsErrorType()
-                case TwoFactorAuthenticationChallengeNotFoundError():
-                    return TwoFactorAuthenticationChallengeNotFoundErrorType()
-                case InvalidRecaptchaTokenError():
-                    return InvalidRecaptchaTokenErrorType()
-
-        return AccountType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case TwoFactorAuthenticationNotEnabledError():
+                        return TwoFactorAuthenticationNotEnabledErrorType()
+                    case InvalidCredentialsError():
+                        return InvalidCredentialsErrorType()
+                    case TwoFactorAuthenticationChallengeNotFoundError():
+                        return TwoFactorAuthenticationChallengeNotFoundErrorType()
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+            case Ok(account):
+                return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=Generate2FARecoveryCodesPayload,
@@ -1238,15 +1215,14 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> Generate2FARecoveryCodesPayload:
         """Generate 2FA recovery codes for the current user."""
-        result = await auth_service.generate_2fa_recovery_codes(
+        match await auth_service.generate_2fa_recovery_codes(
             account=info.context["current_user"],
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case TwoFactorAuthenticationNotEnabledError():
-                    return TwoFactorAuthenticationNotEnabledErrorType()
-
-        return Generate2FARecoveryCodesSuccessType(
-            recovery_codes=result.ok_value,
-        )
+        ):
+            case Err(error):
+                match error:
+                    case TwoFactorAuthenticationNotEnabledError():
+                        return TwoFactorAuthenticationNotEnabledErrorType()
+            case Ok(recovery_codes):
+                return Generate2FARecoveryCodesSuccessType(
+                    recovery_codes=recovery_codes,
+                )
