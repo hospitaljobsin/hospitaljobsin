@@ -107,6 +107,7 @@ export default function ConfirmResetPasswordForm({
 							type="email"
 							value={email || ""}
 							isReadOnly
+							variant="faded"
 						/>
 						<Input
 							id="password"

@@ -105,6 +105,7 @@ export default function ResetPasswordTwoFactorAuthentication({
 							type="email"
 							value={email || ""}
 							isReadOnly
+							variant="faded"
 						/>
 						<Controller
 							control={control}
@@ -112,7 +113,8 @@ export default function ResetPasswordTwoFactorAuthentication({
 							render={({ field }) => (
 								<Input
 									{...field}
-									label="Enter Authentication or Recovery Code"
+									label="2FA Code"
+									description="Enter your Authentication or Recovery Code"
 									errorMessage={errors.token?.message}
 									isInvalid={!!errors.token}
 									placeholder="XXXXXX or XXXX-XXXX"
