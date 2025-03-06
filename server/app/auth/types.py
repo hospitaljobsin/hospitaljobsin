@@ -128,7 +128,9 @@ class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
             account=reset_token.account,
         )
 
-    @strawberry.field
+    @strawberry.field(
+        description="Whether the password reset token needs 2FA to be used.",
+    )
     @inject
     async def needs_2fa(
         self,
