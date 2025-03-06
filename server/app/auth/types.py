@@ -10,8 +10,9 @@ from strawberry.scalars import JSON
 
 from app.accounts.types import AccountType, AuthProviderEnum
 from app.auth.documents import PasswordResetToken, Session, WebAuthnCredential
-from app.auth.repositories import SessionRepo
+from app.auth.repositories import SessionRepo, TemporaryTwoFactorChallengeRepo
 from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
+from app.config import Settings
 from app.context import AuthInfo
 from app.scalars import ID
 
@@ -64,7 +65,8 @@ class InvalidSignInMethodErrorType(BaseErrorType):
 @strawberry.type(name="PasswordResetToken")
 class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
     email: str
-    needs_2fa: bool
+
+    account: strawberry.Private[Account]
 
     @classmethod
     def marshal(cls, reset_token: PasswordResetToken) -> Self:
@@ -72,7 +74,31 @@ class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
         return cls(
             id=str(reset_token.id),
             email=reset_token.account.email,
-            needs_2fa=reset_token.account.has_2fa_enabled,
+            account=reset_token.account,
+        )
+
+    @strawberry.field
+    @inject
+    async def needs_2fa(
+        self,
+        info: Info,
+        settings: Annotated[Settings, Inject],
+        temp_two_factor_challenge_repo: Annotated[
+            TemporaryTwoFactorChallengeRepo,
+            Inject,
+        ],
+    ) -> bool:
+        """Return whether the account needs 2FA."""
+        challenge = info.context["request"].cookies.get(
+            settings.temp_two_factor_challenge_cookie_name
+        )
+        return (
+            self.account.has_2fa_enabled
+            and challenge is not None
+            and await temp_two_factor_challenge_repo.get(
+                challenge=challenge, password_reset_token_id=ObjectId(self.id)
+            )
+            is not None
         )
 
 
