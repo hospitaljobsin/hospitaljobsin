@@ -3,7 +3,7 @@ from typing import Annotated
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
-from result import Err
+from result import Err, Ok
 from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated
@@ -53,20 +53,19 @@ class OrganizationMutation:
         ] = None,
     ) -> CreateOrganizationPayload:
         """Create an organization."""
-        result = await organization_service.create(
+        match await organization_service.create(
             admin_id=info.context["current_user"].id,
             name=full_name,
             slug=slug,
             website=website,
             description=description,
-        )
-
-        if isinstance(result, Err):
-            match result.err_value:
-                case OrganizationSlugInUseError():
-                    return OrganizationSlugInUseErrorType()
-
-        return OrganizationType.marshal(result.ok_value)
+        ):
+            case Err(error):
+                match error:
+                    case OrganizationSlugInUseError():
+                        return OrganizationSlugInUseErrorType()
+            case Ok(organization):
+                return OrganizationType.marshal(organization)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=CreateOrganizationLogoPresignedURLPayloadType,
