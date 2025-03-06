@@ -34,7 +34,8 @@ const resetPassword2faSchema = z.object({
 export default function ResetPasswordTwoFactorAuthentication({
 	email,
 	resetToken,
-}: { email: string; resetToken: string }) {
+	onComplete,
+}: { email: string; resetToken: string; onComplete: () => void }) {
 	const router = useRouter();
 	const [commitMutation, isMutationInFlight] =
 		useMutation<ResetPasswordTwoFactorAuthenticationMutationType>(
@@ -75,9 +76,9 @@ export default function ResetPasswordTwoFactorAuthentication({
 					"TwoFactorAuthenticationNotEnabledError"
 				) {
 					// TODO: show a toast
+					onComplete();
 				} else {
-					// refresh the page (TODO: need to refresh the query here)
-					router.refresh();
+					onComplete();
 				}
 			},
 		});

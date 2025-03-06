@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import ConfirmResetPasswordForm from "./ConfirmResetPasswordForm";
@@ -25,11 +26,14 @@ export default function ResetPasswordView({
 
 	const data = useFragment(ResetPasswordViewFragment, rootQuery);
 
-	if (data.needs2fa) {
+	const [needs2fa, setNeeds2fa] = useState(data.needs2fa);
+
+	if (needs2fa) {
 		return (
 			<ResetPasswordTwoFactorAuthentication
 				email={email}
 				resetToken={params.token}
+				onComplete={() => setNeeds2fa(false)}
 			/>
 		);
 	}
