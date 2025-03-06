@@ -381,6 +381,18 @@ type Mutation {
     recaptchaToken: String!
   ): RequestPasswordResetPayload!
 
+  """Verify a 2FA challenge for password reset."""
+  verify2faPasswordReset(
+    """The email of the existing user."""
+    email: String!
+
+    """The password reset token."""
+    passwordResetToken: String!
+
+    """The 2FA token to verify password reset."""
+    twoFactorToken: String = null
+  ): Verify2FAPasswordResetPayload!
+
   """Reset a user's password."""
   resetPassword(
     """The email of the existing user."""
@@ -391,6 +403,9 @@ type Mutation {
 
     """The new password."""
     newPassword: String!
+
+    """The 2FA token to verify password reset."""
+    twoFactorToken: String = null
   ): ResetPasswordPayload!
 
   """Delete other sessions of the viewer than the current one."""
@@ -698,7 +713,7 @@ union RequestSudoModeWithPasskeyPayload = Account | InvalidPasskeyAuthentication
 
 union RequestSudoModeWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError
 
-union ResetPasswordPayload = Account | InvalidPasswordResetTokenError | PasswordNotStrongError
+union ResetPasswordPayload = Account | InvalidPasswordResetTokenError | PasswordNotStrongError | TwoFactorAuthenticationChallengeNotFoundError
 
 union SaveJobPayload = SaveJobResult | JobNotFoundError
 
@@ -780,6 +795,8 @@ union UpdateAccountPayload = Account | AccountNotFoundError
 union UpdateProfilePayload = Account
 
 union UpdateWebAuthnCredentialPayload = WebAuthnCredential | WebAuthnCredentialNotFoundError
+
+union Verify2FAPasswordResetPayload = PasswordResetToken | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | InvalidPasswordResetTokenError
 
 union VerifyAccount2FATokenPayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError
 

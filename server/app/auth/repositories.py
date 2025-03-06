@@ -186,11 +186,9 @@ class PasswordResetTokenRepo:
             nesting_depth=1,
         )
 
-    async def delete(self, token: str) -> None:
-        """Delete password reset token by token."""
-        await PasswordResetToken.find_one(
-            PasswordResetToken.token_hash == self.hash_password_reset_token(token),
-        ).delete()
+    async def delete(self, token: PasswordResetToken) -> None:
+        """Delete password reset token."""
+        await token.delete()
 
 
 class WebAuthnCredentialRepo:

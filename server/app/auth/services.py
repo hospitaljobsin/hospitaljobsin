@@ -851,6 +851,9 @@ class AuthService:
         if not existing_user:
             return None
 
+        # TODO: create a new password reset token, deleting previous ones with a cooldown time
+        # like email verification tokens
+
         password_reset_token = await self._password_reset_token_repo.create(
             account=existing_user
         )
@@ -879,7 +882,7 @@ class AuthService:
         password_reset_token: str,
         email: str,
     ) -> Result[
-        None,
+        PasswordResetToken,
         InvalidPasswordResetTokenError
         | InvalidCredentialsError
         | TwoFactorAuthenticationNotEnabledError,
@@ -914,7 +917,7 @@ class AuthService:
             value=challenge,
         )
 
-        return Ok(None)
+        return Ok(existing_reset_token)
 
     async def reset_password(
         self,
@@ -982,6 +985,9 @@ class AuthService:
             account=existing_reset_token.account,
             ip_address=request.client.host,
         )
+
+        # delete password reset token
+        await self._password_reset_token_repo.delete(existing_reset_token)
 
         if temp_challenge is not None:
             # delete the temp 2fa challenge cookie

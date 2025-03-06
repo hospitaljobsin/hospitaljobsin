@@ -8,12 +8,13 @@ from bson import ObjectId
 from strawberry import Private, relay
 from strawberry.scalars import JSON
 
+from app.accounts.documents import Account
 from app.accounts.types import AccountType, AuthProviderEnum
 from app.auth.documents import PasswordResetToken, Session, WebAuthnCredential
 from app.auth.repositories import SessionRepo, TemporaryTwoFactorChallengeRepo
 from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
 from app.config import Settings
-from app.context import AuthInfo
+from app.context import AuthInfo, Info
 from app.scalars import ID
 
 
@@ -96,11 +97,11 @@ class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
         )
 
         return (
-            challenge is not None
-            and await temp_two_factor_challenge_repo.get(
+            challenge is None
+            or await temp_two_factor_challenge_repo.get(
                 challenge=challenge, password_reset_token_id=ObjectId(self.id)
             )
-            is not None
+            is None
         )
 
 
@@ -299,13 +300,6 @@ RequestPasswordResetPayload = Annotated[
     strawberry.union(name="RequestPasswordResetPayload"),
 ]
 
-ResetPasswordPayload = Annotated[
-    AccountType
-    | InvalidPasswordResetTokenErrorType
-    | PasswordNotStrongErrorType
-    | TwoFactorAuthenticationChallengeNotFoundErrorType,
-    strawberry.union(name="ResetPasswordPayload"),
-]
 
 PasswordResetTokenPayload = Annotated[
     PasswordResetTokenType | PasswordResetTokenNotFoundErrorType,
@@ -513,15 +507,19 @@ LoginWithPasswordPayload = Annotated[
 ]
 
 
-@strawberry.type(name="Verify2FAPasswordResetSuccess")
-class Verify2FAPasswordResetSuccessType:
-    message: str = "2FA password reset verified."
-
-
 Verify2FAPasswordResetPayload = Annotated[
-    Verify2FAPasswordResetSuccessType
+    PasswordResetTokenType
     | InvalidCredentialsErrorType
     | TwoFactorAuthenticationNotEnabledErrorType
     | InvalidPasswordResetTokenErrorType,
     strawberry.union(name="Verify2FAPasswordResetPayload"),
+]
+
+
+ResetPasswordPayload = Annotated[
+    AccountType
+    | InvalidPasswordResetTokenErrorType
+    | PasswordNotStrongErrorType
+    | TwoFactorAuthenticationChallengeNotFoundErrorType,
+    strawberry.union(name="ResetPasswordPayload"),
 ]

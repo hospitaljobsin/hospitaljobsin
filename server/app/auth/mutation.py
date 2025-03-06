@@ -69,6 +69,7 @@ from .types import (
     LoginWithPasswordPayload,
     LogoutPayloadType,
     PasswordNotStrongErrorType,
+    PasswordResetTokenType,
     RegisterWithPasskeyPayload,
     RegisterWithPasswordPayload,
     RequestEmailVerificationTokenPayload,
@@ -87,7 +88,6 @@ from .types import (
     TwoFactorAuthenticationRequiredErrorType,
     UpdateWebAuthnCredentialPayload,
     Verify2FAPasswordResetPayload,
-    Verify2FAPasswordResetSuccessType,
     VerifyAccount2FATokenPayload,
     VerifyEmailPayload,
     VerifyEmailSuccessType,
@@ -629,7 +629,6 @@ class AuthMutation:
             email=email,
             password_reset_token=password_reset_token,
             two_factor_token=two_factor_token,
-            user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
         )
@@ -643,7 +642,7 @@ class AuthMutation:
                 case TwoFactorAuthenticationNotEnabledError():
                     return TwoFactorAuthenticationNotEnabledErrorType()
 
-        return Verify2FAPasswordResetSuccessType()
+        return PasswordResetTokenType.marshal(result.ok_value)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=ResetPasswordPayload,

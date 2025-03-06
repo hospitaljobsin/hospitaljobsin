@@ -4,13 +4,12 @@ import links from "@/lib/links";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
-import type { ConfirmResetPasswordFormMutation as ConfirmResetPasswordFormMutationType } from "./__generated__/ConfirmResetPasswordFormMutation.graphql";
+import type { ConfirmResetPasswordFormMutation as ConfirmResetPasswordFormMutationType } from "../__generated__/ConfirmResetPasswordFormMutation.graphql";
 
 const ConfirmResetPasswordFormMutation = graphql`
   mutation ConfirmResetPasswordFormMutation($email: String!, $passwordResetToken: String!, $newPassword: String!) {
@@ -49,13 +48,10 @@ const confirmResetPasswordSchema = z.object({
 		}),
 });
 
-export default function ConfirmResetPasswordForm() {
-	const params = useParams<{ token: string }>();
-
-	const searchParams = useSearchParams();
-
-	const email = searchParams.get("email");
-
+export default function ConfirmResetPasswordForm({
+	email,
+	resetToken,
+}: { email: string; resetToken: string }) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<ConfirmResetPasswordFormMutationType>(
@@ -75,7 +71,7 @@ export default function ConfirmResetPasswordForm() {
 		commitMutation({
 			variables: {
 				email: email,
-				passwordResetToken: params.token,
+				passwordResetToken: resetToken,
 				newPassword: values.password,
 			},
 			onCompleted(response) {
