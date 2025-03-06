@@ -10,6 +10,7 @@ from app.auth.documents import (
     PasswordResetToken,
     RecoveryCode,
     Session,
+    TemporaryTwoFactorChallenge,
     TwoFactorAuthenticationChallenge,
     WebAuthnChallenge,
     WebAuthnCredential,
@@ -21,7 +22,12 @@ from app.organizations.documents import Organization, OrganizationMember
 def rebuild_models() -> None:
     """Rebuild models to update forward references."""
     from app.accounts.documents import Account
-    from app.auth.documents import OAuthCredential, RecoveryCode, WebAuthnCredential
+    from app.auth.documents import (
+        OAuthCredential,
+        RecoveryCode,
+        TemporaryTwoFactorChallenge,
+        WebAuthnCredential,
+    )
     from app.organizations.documents import OrganizationMember
 
     Account.model_rebuild()
@@ -33,6 +39,8 @@ def rebuild_models() -> None:
     OrganizationMember.model_rebuild()
 
     RecoveryCode.model_rebuild()
+
+    TemporaryTwoFactorChallenge.model_rebuild()
 
 
 @asynccontextmanager
@@ -63,6 +71,7 @@ async def initialize_database(database_url: str) -> AsyncGenerator[None, None]:
                 OAuthCredential,
                 TwoFactorAuthenticationChallenge,
                 RecoveryCode,
+                TemporaryTwoFactorChallenge,
             ],
         )
         yield

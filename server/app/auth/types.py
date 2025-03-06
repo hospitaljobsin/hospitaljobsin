@@ -272,7 +272,10 @@ RequestPasswordResetPayload = Annotated[
 ]
 
 ResetPasswordPayload = Annotated[
-    AccountType | InvalidPasswordResetTokenErrorType | PasswordNotStrongErrorType,
+    AccountType
+    | InvalidPasswordResetTokenErrorType
+    | PasswordNotStrongErrorType
+    | TwoFactorAuthenticationChallengeNotFoundErrorType,
     strawberry.union(name="ResetPasswordPayload"),
 ]
 
@@ -479,4 +482,18 @@ LoginWithPasswordPayload = Annotated[
     | InvalidSignInMethodErrorType
     | TwoFactorAuthenticationRequiredErrorType,
     strawberry.union(name="LoginWithPasswordPayload"),
+]
+
+
+@strawberry.type(name="Verify2FAPasswordResetSuccess")
+class Verify2FAPasswordResetSuccessType:
+    message: str = "2FA password reset verified."
+
+
+Verify2FAPasswordResetPayload = Annotated[
+    Verify2FAPasswordResetSuccessType
+    | InvalidCredentialsErrorType
+    | TwoFactorAuthenticationNotEnabledErrorType
+    | InvalidPasswordResetTokenErrorType,
+    strawberry.union(name="Verify2FAPasswordResetPayload"),
 ]

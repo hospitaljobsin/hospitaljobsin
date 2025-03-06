@@ -101,3 +101,22 @@ class RecoveryCode(Document):
 
     class Settings:
         name = "recovery_codes"  # MongoDB collection name
+
+
+class TemporaryTwoFactorChallenge(Document):
+    """Temporary 2FA challenge used for 2FA password resets."""
+
+    challenge_hash: Indexed(str, unique=True)
+    expires_at: datetime
+    account: Link[Account]
+    password_reset_token: Link[PasswordResetToken]
+
+    class Settings:
+        name = "temporary_two_factor_challenges"  # MongoDB collection name
+        indexes: ClassVar[list[IndexModel]] = [
+            # Automatically expire challenges after expiration timestamp
+            IndexModel(
+                "expires_at",
+                expireAfterSeconds=0,
+            ),
+        ]

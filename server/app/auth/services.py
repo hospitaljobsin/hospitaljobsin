@@ -70,6 +70,7 @@ from app.auth.repositories import (
     PasswordResetTokenRepo,
     RecoveryCodeRepo,
     SessionRepo,
+    TemporaryTwoFactorChallengeRepo,
     TwoFactorAuthenticationChallengeRepo,
     WebAuthnChallengeRepo,
     WebAuthnCredentialRepo,
@@ -99,6 +100,7 @@ class AuthService:
         oauth_credential_repo: OauthCredentialRepo,
         two_factor_authentication_challenge_repo: TwoFactorAuthenticationChallengeRepo,
         recovery_code_repo: RecoveryCodeRepo,
+        temp_two_factor_challenge_repo: TemporaryTwoFactorChallengeRepo,
         email_sender: EmailSender,
         settings: Settings,
     ) -> None:
@@ -114,6 +116,7 @@ class AuthService:
             two_factor_authentication_challenge_repo
         )
         self._recovery_code_repo = recovery_code_repo
+        self._temp_two_factor_challenge_repo = temp_two_factor_challenge_repo
         self._email_sender = email_sender
         self._settings = settings
 
@@ -770,6 +773,37 @@ class AuthService:
             samesite="lax",
         )
 
+    def _set_temp_two_factor_challenge_cookie(
+        self, request: Request, response: Response, value: str
+    ) -> None:
+        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
+        secure = not is_localhost
+        response.set_cookie(
+            key=self._settings.temp_two_factor_challenge_cookie_name,
+            value=value,
+            expires=datetime.now(UTC)
+            + timedelta(seconds=TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN),
+            path="/",
+            domain=self._settings.session_cookie_domain,
+            secure=secure,
+            httponly=True,
+            samesite="lax",
+        )
+
+    def _delete_temp_two_factor_challenge_cookie(
+        self, request: Request, response: Response
+    ) -> None:
+        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
+        secure = not is_localhost
+        response.delete_cookie(
+            key=self._settings.temp_two_factor_challenge_cookie_name,
+            path="/",
+            domain=self._settings.session_cookie_domain,
+            secure=secure,
+            httponly=True,
+            samesite="lax",
+        )
+
     async def logout(
         self,
         request: Request,
@@ -837,6 +871,51 @@ class AuthService:
 
         return Ok(None)
 
+    async def verify_2fa_password_reset(
+        self,
+        request: Request,
+        response: Response,
+        two_factor_token: str,
+        password_reset_token: str,
+        email: str,
+    ) -> Result[
+        None,
+        InvalidPasswordResetTokenError
+        | InvalidCredentialsError
+        | TwoFactorAuthenticationNotEnabledError,
+    ]:
+        """Verify a 2FA challenge for password reset."""
+        existing_reset_token = await self._password_reset_token_repo.get(
+            token=password_reset_token,
+            email=email,
+        )
+
+        if existing_reset_token is None:
+            return Err(InvalidPasswordResetTokenError())
+
+        account = existing_reset_token.account
+
+        if not account.has_2fa_enabled:
+            return Err(TwoFactorAuthenticationNotEnabledError())
+
+        totp = pyotp.TOTP(account.two_factor_secret)
+        if not totp.verify(two_factor_token):
+            return Err(InvalidCredentialsError())
+
+        # set a cookie to indicate user has completed 2fa challenge for password reset
+        challenge = await self._temp_two_factor_challenge_repo.create(
+            account_id=account.id,
+            password_reset_token_id=existing_reset_token.id,
+        )
+
+        self._set_temp_two_factor_challenge_cookie(
+            request=request,
+            response=response,
+            value=challenge,
+        )
+
+        return Ok(None)
+
     async def reset_password(
         self,
         password_reset_token: str,
@@ -845,7 +924,13 @@ class AuthService:
         user_agent: str,
         request: Request,
         response: Response,
-    ) -> Result[Account, InvalidPasswordResetTokenError | PasswordNotStrongError]:
+        two_factor_token: str | None = None,
+    ) -> Result[
+        Account,
+        InvalidPasswordResetTokenError
+        | PasswordNotStrongError
+        | TwoFactorAuthenticationChallengeNotFoundError,
+    ]:
         """Reset a user's password."""
         existing_reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
@@ -854,6 +939,23 @@ class AuthService:
 
         if not existing_reset_token:
             return Err(InvalidPasswordResetTokenError())
+
+        temp_challenge: TemporaryTwoFactorChallenge | None = None
+
+        if existing_reset_token.account.has_2fa_enabled:
+            challenge = request.cookies.get(
+                self._settings.temp_two_factor_challenge_cookie_name
+            )
+            if challenge is None:
+                return Err(TwoFactorAuthenticationChallengeNotFoundError())
+
+            temp_challenge = await self._temp_two_factor_challenge_repo.get(
+                challenge=challenge, password_reset_token_id=existing_reset_token.id
+            )
+            if temp_challenge is None:
+                return Err(TwoFactorAuthenticationChallengeNotFoundError())
+            # we don't need to verify the TOTP token as the challenge cookie
+            # is set only after the user completes a 2FA challenge
 
         if not self.check_password_strength(password=new_password):
             return Err(PasswordNotStrongError())
@@ -880,6 +982,11 @@ class AuthService:
             account=existing_reset_token.account,
             ip_address=request.client.host,
         )
+
+        if temp_challenge is not None:
+            # delete the temp 2fa challenge cookie
+            self._delete_temp_two_factor_challenge_cookie(request, response)
+            await self._temp_two_factor_challenge_repo.delete(temp_challenge)
 
         self._set_user_session_cookie(
             request=request,

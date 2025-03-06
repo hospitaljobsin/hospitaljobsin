@@ -15,6 +15,7 @@ from app.auth.documents import (
     PasswordResetToken,
     RecoveryCode,
     Session,
+    TemporaryTwoFactorChallenge,
     TwoFactorAuthenticationChallenge,
     WebAuthnChallenge,
     WebAuthnCredential,
@@ -420,3 +421,51 @@ class RecoveryCodeRepo:
             RecoveryCode.account.id == account_id,
             RecoveryCode.code_hash == self.hash_recovery_code(code),
         )
+
+
+class TemporaryTwoFactorChallengeRepo:
+    @staticmethod
+    def hash_challenge(challenge: str) -> str:
+        """Hash the given challenge."""
+        return hashlib.md5(challenge.encode("utf-8")).hexdigest()  # noqa: S324
+
+    @staticmethod
+    def generate_challenge() -> str:
+        """Generate a new challenge."""
+        return secrets.token_hex(32)
+
+    async def create(
+        self, account_id: ObjectId, password_reset_token_id: ObjectId
+    ) -> str:
+        """Create a new temporary 2FA challenge."""
+        challenge = self.generate_challenge()
+        expires_at = datetime.now(UTC) + timedelta(
+            seconds=PASSWORD_RESET_EXPIRES_IN,
+        )
+        temporary_two_factor_challenge = TemporaryTwoFactorChallenge(
+            challenge_hash=self.hash_challenge(challenge),
+            expires_at=expires_at,
+            account=account_id,
+            password_reset_token=password_reset_token_id,
+        )
+        await temporary_two_factor_challenge.save()
+        return challenge
+
+    async def get(
+        self, challenge: str, password_reset_token_id: ObjectId
+    ) -> TemporaryTwoFactorChallenge | None:
+        """Get temporary 2FA challenge by challenge."""
+        return await TemporaryTwoFactorChallenge.find_one(
+            TemporaryTwoFactorChallenge.challenge_hash
+            == self.hash_challenge(challenge),
+            TemporaryTwoFactorChallenge.password_reset_token.id
+            == password_reset_token_id,
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
+    async def delete(
+        self, temporary_two_factor_challenge: TemporaryTwoFactorChallenge
+    ) -> None:
+        """Delete temporary 2FA challenge."""
+        await temporary_two_factor_challenge.delete()

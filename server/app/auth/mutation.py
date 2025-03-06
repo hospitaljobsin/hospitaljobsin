@@ -86,6 +86,8 @@ from .types import (
     TwoFactorAuthenticationNotEnabledErrorType,
     TwoFactorAuthenticationRequiredErrorType,
     UpdateWebAuthnCredentialPayload,
+    Verify2FAPasswordResetPayload,
+    Verify2FAPasswordResetSuccessType,
     VerifyAccount2FATokenPayload,
     VerifyEmailPayload,
     VerifyEmailSuccessType,
@@ -595,6 +597,55 @@ class AuthMutation:
         return RequestPasswordResetSuccessType()
 
     @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=Verify2FAPasswordResetPayload,
+        description="Verify a 2FA challenge for password reset.",
+    )
+    @inject
+    async def verify_2fa_password_reset(
+        self,
+        info: Info,
+        auth_service: Annotated[AuthService, Inject],
+        email: Annotated[
+            str,
+            strawberry.argument(
+                description="The email of the existing user.",
+            ),
+        ],
+        password_reset_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The password reset token.",
+            ),
+        ],
+        two_factor_token: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The 2FA token to verify password reset.",
+            ),
+        ] = None,
+    ) -> Verify2FAPasswordResetPayload:
+        """Verify a 2FA challenge for password reset."""
+        result = await auth_service.verify_2fa_password_reset(
+            email=email,
+            password_reset_token=password_reset_token,
+            two_factor_token=two_factor_token,
+            user_agent=info.context["user_agent"],
+            request=info.context["request"],
+            response=info.context["response"],
+        )
+
+        if isinstance(result, Err):
+            match result.err_value:
+                case InvalidPasswordResetTokenError():
+                    return InvalidPasswordResetTokenErrorType()
+                case InvalidCredentialsError():
+                    return InvalidCredentialsErrorType()
+                case TwoFactorAuthenticationNotEnabledError():
+                    return TwoFactorAuthenticationNotEnabledErrorType()
+
+        return Verify2FAPasswordResetSuccessType()
+
+    @strawberry.mutation(  # type: ignore[misc]
         graphql_type=ResetPasswordPayload,
         description="Reset a user's password.",
     )
@@ -602,6 +653,7 @@ class AuthMutation:
     async def reset_password(
         self,
         info: Info,
+        auth_service: Annotated[AuthService, Inject],
         email: Annotated[
             str,
             strawberry.argument(
@@ -620,13 +672,19 @@ class AuthMutation:
                 description="The new password.",
             ),
         ],
-        auth_service: Annotated[AuthService, Inject],
+        two_factor_token: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The 2FA token to verify password reset.",
+            ),
+        ] = None,
     ) -> ResetPasswordPayload:
         """Reset a user's password."""
         result = await auth_service.reset_password(
             email=email,
             password_reset_token=password_reset_token,
             new_password=new_password,
+            two_factor_token=two_factor_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
@@ -638,6 +696,8 @@ class AuthMutation:
                     return InvalidPasswordResetTokenErrorType()
                 case PasswordNotStrongError():
                     return PasswordNotStrongErrorType()
+                case TwoFactorAuthenticationChallengeNotFoundError():
+                    return TwoFactorAuthenticationChallengeNotFoundErrorType()
 
         return AccountType.marshal(result.ok_value)
 

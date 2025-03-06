@@ -13,6 +13,7 @@ from app.auth.repositories import (
     PasswordResetTokenRepo,
     RecoveryCodeRepo,
     SessionRepo,
+    TemporaryTwoFactorChallengeRepo,
     TwoFactorAuthenticationChallengeRepo,
     WebAuthnChallengeRepo,
     WebAuthnCredentialRepo,
@@ -59,4 +60,5 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(OauthCredentialRepo))
     container.register(aioinject.Singleton(TwoFactorAuthenticationChallengeRepo))
     container.register(aioinject.Singleton(RecoveryCodeRepo))
+    container.register(aioinject.Singleton(TemporaryTwoFactorChallengeRepo))
     return container
