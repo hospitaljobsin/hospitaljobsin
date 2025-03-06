@@ -54,8 +54,6 @@ where:
 
 - users can delete their accounts
 - option to disable password
-- add 2FA verification requirement/ passkey before resetting password (like github)
-github has one URL to enter 2fa, then redirects to another url to enter password
 - If the user loses access to their 2FA device, provide secure fallback options:
     Alternative 2FA Methods: Allow authentication via email or backup phone number.
     Manual Verification via Support: If no 2FA method is available, require identity verification (e.g., ID document upload or security questions).

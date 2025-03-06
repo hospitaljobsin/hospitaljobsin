@@ -438,7 +438,7 @@ class TemporaryTwoFactorChallengeRepo:
         """Create a new temporary 2FA challenge."""
         challenge = self.generate_challenge()
         expires_at = datetime.now(UTC) + timedelta(
-            seconds=PASSWORD_RESET_EXPIRES_IN,
+            seconds=TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN,
         )
         temporary_two_factor_challenge = TemporaryTwoFactorChallenge(
             challenge_hash=self.hash_challenge(challenge),
