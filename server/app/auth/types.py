@@ -86,10 +86,10 @@ class InvalidRecaptchaTokenErrorType(BaseErrorType):
 
 
 @strawberry.type(
-    name="InvalidSignInMethodError",
+    name="InvalidAuthenticationProviderError",
     description="Used when an invalid authentication provider is used.",
 )
-class InvalidSignInMethodErrorType(BaseErrorType):
+class InvalidAuthenticationProviderErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
         default="Invalid authentication provider used.",
@@ -650,7 +650,7 @@ RequestSudoModeWithPasswordPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
     | InvalidRecaptchaTokenErrorType
-    | InvalidSignInMethodErrorType,
+    | InvalidAuthenticationProviderErrorType,
     strawberry.union(
         name="RequestSudoModeWithPasswordPayload",
         description="The request sudo mode with password payload.",
@@ -725,7 +725,7 @@ DisableAccount2FAPayload = Annotated[
 
 @strawberry.type(
     name="GenerateAccount2FAChallengeSuccess",
-    description="Generate account 2FA OTP URI success.",
+    description="Generate account 2FA Challenge success.",
 )
 class GenerateAccount2FAChallengeSuccessType:
     otp_uri: str = strawberry.field(
@@ -779,7 +779,7 @@ LoginWithPasswordPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
     | InvalidRecaptchaTokenErrorType
-    | InvalidSignInMethodErrorType
+    | InvalidAuthenticationProviderErrorType
     | TwoFactorAuthenticationRequiredErrorType,
     strawberry.union(
         name="LoginWithPasswordPayload",

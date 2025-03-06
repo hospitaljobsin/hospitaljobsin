@@ -241,7 +241,7 @@ type Generate2FARecoveryCodesSuccess {
 """The generate account 2FA OTP URI payload."""
 union GenerateAccount2FAChallengePayload = GenerateAccount2FAChallengeSuccess
 
-"""Generate account 2FA OTP URI success."""
+"""Generate account 2FA Challenge success."""
 type GenerateAccount2FAChallengeSuccess {
   """The generated 2FA OTP URI."""
   otpUri: String!
@@ -281,6 +281,15 @@ type GeneratePasskeyRegistrationOptionsSuccess {
 type InsufficientAuthProvidersError implements Error {
   """Human readable error message."""
   message: String!
+}
+
+"""Used when an invalid authentication provider is used."""
+type InvalidAuthenticationProviderError implements Error {
+  """Human readable error message."""
+  message: String!
+
+  """Available authentication providers for the account."""
+  availableProviders: [AuthProvider!]!
 }
 
 """Used when invalid credentials are provided."""
@@ -323,15 +332,6 @@ type InvalidPasswordResetTokenError implements Error {
 type InvalidRecaptchaTokenError implements Error {
   """Human readable error message."""
   message: String!
-}
-
-"""Used when an invalid authentication provider is used."""
-type InvalidSignInMethodError implements Error {
-  """Human readable error message."""
-  message: String!
-
-  """Available authentication providers for the account."""
-  availableProviders: [AuthProvider!]!
 }
 
 """
@@ -463,7 +463,7 @@ input LanguageInput {
 union LoginWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
 
 """The login with password payload."""
-union LoginWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError | TwoFactorAuthenticationRequiredError
+union LoginWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidAuthenticationProviderError | TwoFactorAuthenticationRequiredError
 
 """The logout payload."""
 type LogoutPayload {
@@ -1052,7 +1052,7 @@ type RequestPasswordResetSuccess {
 union RequestSudoModeWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
 
 """The request sudo mode with password payload."""
-union RequestSudoModeWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError
+union RequestSudoModeWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidAuthenticationProviderError
 
 """The reset password payload."""
 union ResetPasswordPayload = Account | InvalidPasswordResetTokenError | PasswordNotStrongError | TwoFactorAuthenticationChallengeNotFoundError

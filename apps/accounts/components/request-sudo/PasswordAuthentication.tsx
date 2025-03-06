@@ -28,7 +28,7 @@ const PasswordAuthenticationMutation = graphql`
 		message
 	  }
 
-	  ... on InvalidSignInMethodError {
+	  ... on InvalidAuthenticationProviderError {
 		message
 	  }
     }
@@ -102,7 +102,7 @@ export default function PasswordAuthentication({
 					onAuthEnd();
 				} else if (
 					response.requestSudoModeWithPassword.__typename ===
-					"InvalidSignInMethodError"
+					"InvalidAuthenticationProviderError"
 				) {
 					// race condition: user removed their password inbetween
 					// the time they submitted the sudo mode request and submitted it

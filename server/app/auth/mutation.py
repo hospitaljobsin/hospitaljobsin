@@ -15,6 +15,7 @@ from app.auth.exceptions import (
     EmailInUseError,
     EmailVerificationTokenCooldownError,
     InsufficientAuthProvidersError,
+    InvalidAuthenticationProviderError,
     InvalidCredentialsError,
     InvalidEmailError,
     InvalidEmailVerificationTokenError,
@@ -22,7 +23,6 @@ from app.auth.exceptions import (
     InvalidPasskeyRegistrationCredentialError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
-    InvalidSignInMethodError,
     PasswordNotStrongError,
     SessionNotFoundError,
     TwoFactorAuthenticationChallengeNotFoundError,
@@ -57,6 +57,7 @@ from .types import (
     GeneratePasskeyRegistrationOptionsPayload,
     GeneratePasskeyRegistrationOptionsSuccessType,
     InsufficientAuthProvidersErrorType,
+    InvalidAuthenticationProviderErrorType,
     InvalidCredentialsErrorType,
     InvalidEmailErrorType,
     InvalidEmailVerificationTokenErrorType,
@@ -64,7 +65,6 @@ from .types import (
     InvalidPasskeyRegistrationCredentialErrorType,
     InvalidPasswordResetTokenErrorType,
     InvalidRecaptchaTokenErrorType,
-    InvalidSignInMethodErrorType,
     LoginWithPasskeyPayload,
     LoginWithPasswordPayload,
     LogoutPayloadType,
@@ -524,8 +524,8 @@ class AuthMutation:
                     return InvalidRecaptchaTokenErrorType()
                 case InvalidCredentialsError():
                     return InvalidCredentialsErrorType()
-                case InvalidSignInMethodError() as err:
-                    return InvalidSignInMethodErrorType.marshal(
+                case InvalidAuthenticationProviderError() as err:
+                    return InvalidAuthenticationProviderErrorType.marshal(
                         available_providers=err.available_providers
                     )
                 case TwoFactorAuthenticationRequiredError():
@@ -1017,8 +1017,8 @@ class AuthMutation:
                     return InvalidRecaptchaTokenErrorType()
                 case InvalidCredentialsError():
                     return InvalidCredentialsErrorType()
-                case InvalidSignInMethodError() as err:
-                    return InvalidSignInMethodErrorType.marshal(
+                case InvalidAuthenticationProviderError() as err:
+                    return InvalidAuthenticationProviderErrorType.marshal(
                         available_providers=err.available_providers
                     )
 

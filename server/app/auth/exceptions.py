@@ -41,9 +41,9 @@ class PasswordNotStrongError:
     """Raised when the provided password is not strong enough."""
 
 
-class InvalidSignInMethodError:
+class InvalidAuthenticationProviderError:
     """
-    Raised when the user tries an invalid sign in method.
+    Raised when the user tries an invalid authetication provider.
 
     (occurs when users sign in via Oauth2/ passkeys and try to login with their password).
     """

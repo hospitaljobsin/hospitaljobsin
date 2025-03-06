@@ -48,6 +48,7 @@ from app.auth.exceptions import (
     EmailInUseError,
     EmailVerificationTokenCooldownError,
     InsufficientAuthProvidersError,
+    InvalidAuthenticationProviderError,
     InvalidCredentialsError,
     InvalidEmailError,
     InvalidEmailVerificationTokenError,
@@ -55,7 +56,6 @@ from app.auth.exceptions import (
     InvalidPasskeyRegistrationCredentialError,
     InvalidPasswordResetTokenError,
     InvalidRecaptchaTokenError,
-    InvalidSignInMethodError,
     PasswordNotStrongError,
     PasswordResetTokenNotFoundError,
     SessionNotFoundError,
@@ -597,7 +597,7 @@ class AuthService:
         Account,
         InvalidCredentialsError
         | InvalidRecaptchaTokenError
-        | InvalidSignInMethodError
+        | InvalidAuthenticationProviderError
         | TwoFactorAuthenticationRequiredError,
     ]:
         """Login a user with email and password."""
@@ -610,7 +610,7 @@ class AuthService:
         if account.password_hash is None:
             # return an error for users who signed up with Google
             return Err(
-                InvalidSignInMethodError(
+                InvalidAuthenticationProviderError(
                     available_providers=account.auth_providers,
                 )
             )
@@ -1244,7 +1244,9 @@ class AuthService:
         request: Request,
     ) -> Result[
         Account,
-        InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError,
+        InvalidCredentialsError
+        | InvalidRecaptchaTokenError
+        | InvalidAuthenticationProviderError,
     ]:
         """Login a user with email and password."""
         if not await self._verify_recaptcha_token(recaptcha_token):
@@ -1253,7 +1255,9 @@ class AuthService:
         if account.password_hash is None:
             # return an error for users who signed up with Google
             return Err(
-                InvalidSignInMethodError(available_providers=account.auth_providers)
+                InvalidAuthenticationProviderError(
+                    available_providers=account.auth_providers
+                )
             )
 
         if not self._account_repo.verify_password(

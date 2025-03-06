@@ -41,7 +41,7 @@ const LoginFormPasswordMutation = graphql`
 		message
 	  }
 
-	  ... on InvalidSignInMethodError {
+	  ... on InvalidAuthenticationProviderError {
 		message
 		availableProviders
 	  }
@@ -174,7 +174,8 @@ export default function LoginForm() {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
 				} else if (
-					response.loginWithPassword.__typename === "InvalidSignInMethodError"
+					response.loginWithPassword.__typename ===
+					"InvalidAuthenticationProviderError"
 				) {
 					const providers = response.loginWithPassword.availableProviders;
 					let message = "You've previously signed in with ";

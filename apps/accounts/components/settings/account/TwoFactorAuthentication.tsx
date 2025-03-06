@@ -14,7 +14,7 @@ import DisableTwoFactorAuthenticationModal from "./DisableTwoFactorAuthenticatio
 import EnableTwoFactorAuthenticationModal from "./EnableTwoFactorAuthenticationModal";
 import RegenerateRecoveryCodesModal from "./RegenerateRecoveryCodesModal";
 import type { TwoFactorAuthenticationFragment$key } from "./__generated__/TwoFactorAuthenticationFragment.graphql";
-import type { TwoFactorAuthenticationGenerateOTPURIMutation } from "./__generated__/TwoFactorAuthenticationGenerateOTPURIMutation.graphql";
+import type { TwoFactorAuthenticationGenerate2FAChallengeMutation } from "./__generated__/TwoFactorAuthenticationGenerate2FAChallengeMutation.graphql";
 
 const TwoFactorAuthenticationFragment = graphql`
   fragment TwoFactorAuthenticationFragment on Account {
@@ -23,8 +23,8 @@ const TwoFactorAuthenticationFragment = graphql`
   }
 `;
 
-const GenerateOTPURIMutation = graphql`
-  mutation TwoFactorAuthenticationGenerateOTPURIMutation {
+const Generate2FAChallengeMutation = graphql`
+  mutation TwoFactorAuthenticationGenerate2FAChallengeMutation {
 	generateAccount2faChallenge {
 		__typename
 		... on GenerateAccount2FAChallengeSuccess {
@@ -40,8 +40,8 @@ export default function TwoFactorAuthentication({
 }: { rootQuery: TwoFactorAuthenticationFragment$key }) {
 	const data = useFragment(TwoFactorAuthenticationFragment, rootQuery);
 	const [commitMutation, isMutationInFlight] =
-		useMutation<TwoFactorAuthenticationGenerateOTPURIMutation>(
-			GenerateOTPURIMutation,
+		useMutation<TwoFactorAuthenticationGenerate2FAChallengeMutation>(
+			Generate2FAChallengeMutation,
 		);
 	const [otpUri, setOtpUri] = useState("");
 	const [secret, setSecret] = useState("");
