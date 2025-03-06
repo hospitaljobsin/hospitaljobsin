@@ -89,12 +89,14 @@ class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
         ],
     ) -> bool:
         """Return whether the account needs 2FA."""
+        if not self.account.has_2fa_enabled:
+            return False
         challenge = info.context["request"].cookies.get(
             settings.temp_two_factor_challenge_cookie_name
         )
+
         return (
-            self.account.has_2fa_enabled
-            and challenge is not None
+            challenge is not None
             and await temp_two_factor_challenge_repo.get(
                 challenge=challenge, password_reset_token_id=ObjectId(self.id)
             )
