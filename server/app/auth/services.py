@@ -1344,7 +1344,7 @@ class AuthService:
         account: Account,
     ) -> Result[Account, TwoFactorAuthenticationNotEnabledError]:
         """Disable two factor authentication for the account."""
-        if account.two_factor_secret is None:
+        if not account.has_2fa_enabled:
             return Err(TwoFactorAuthenticationNotEnabledError())
         await self._recovery_code_repo.delete_all(account_id=account.id)
         await self._account_repo.delete_two_factor_secret(account=account)
@@ -1384,7 +1384,7 @@ class AuthService:
 
         account = two_factor_authentication_challenge.account
 
-        if account.two_factor_secret is None:
+        if not account.has_2fa_enabled:
             return Err(TwoFactorAuthenticationNotEnabledError())
 
         totp = pyotp.TOTP(account.two_factor_secret)
@@ -1443,7 +1443,7 @@ class AuthService:
 
         account = two_factor_authentication_challenge.account
 
-        if account.two_factor_secret is None:
+        if not account.has_2fa_enabled:
             return Err(TwoFactorAuthenticationNotEnabledError())
 
         recovery_code = await self._recovery_code_repo.get(
@@ -1477,7 +1477,7 @@ class AuthService:
         self, account: Account
     ) -> Result[list[str], TwoFactorAuthenticationNotEnabledError]:
         """Generate 2FA recovery codes for the account."""
-        if account.two_factor_secret is None:
+        if not account.has_2fa_enabled:
             return Err(TwoFactorAuthenticationNotEnabledError())
         await self._recovery_code_repo.delete_all(account_id=account.id)
         recovery_codes = await self._recovery_code_repo.create_many(
