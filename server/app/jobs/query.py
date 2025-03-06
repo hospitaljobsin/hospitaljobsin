@@ -95,6 +95,7 @@ class JobQuery:
         return JobType.marshal(result)
 
     @strawberry.field(
+        description="Get all saved jobs for the current user.",
         graphql_type=SavedJobConnectionType,
         extensions=[
             PermissionExtension(

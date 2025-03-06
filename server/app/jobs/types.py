@@ -21,7 +21,10 @@ if TYPE_CHECKING:
     from app.organizations.types import OrganizationType
 
 
-@strawberry.enum(name="JobType")
+@strawberry.enum(
+    name="JobType",
+    description="The type of job.",
+)
 class JobTypeEnum(Enum):
     FULL_TIME = "full_time"
     PART_TIME = "part_time"
@@ -29,47 +32,92 @@ class JobTypeEnum(Enum):
     CONTRACT = "contract"
 
 
-@strawberry.enum(name="WorkMode")
+@strawberry.enum(
+    name="WorkMode",
+    description="The work mode of the job.",
+)
 class WorkModeEnum(Enum):
     REMOTE = "remote"
     HYBRID = "hybrid"
     OFFICE = "office"
 
 
-@strawberry.enum(name="Currency")
+@strawberry.enum(
+    name="Currency",
+    description="The currency of the amount.",
+)
 class CurrencyEnum(Enum):
     INR = "INR"
 
 
-@strawberry.type(name="Job")
+@strawberry.type(
+    name="Job",
+    description="A job posting.",
+)
 class JobType(BaseNodeType[Job]):
-    title: str
-    slug: str
-    description: str | None
-    category: str
-    type: JobTypeEnum
-    work_mode: WorkModeEnum
+    title: str = strawberry.field(
+        description="The title of the job.",
+    )
+    slug: str = strawberry.field(
+        description="The slug of the job.",
+    )
+    description: str | None = strawberry.field(
+        description="The description of the job.",
+    )
+    category: str = strawberry.field(
+        description="The category of the job.",
+    )
+    type: JobTypeEnum = strawberry.field(
+        description="The type of the job.",
+    )
+    work_mode: WorkModeEnum = strawberry.field(
+        description="The work mode of the job.",
+    )
 
-    address: AddressType
-    application: str
-    skills: list[str]
+    address: AddressType = strawberry.field(
+        description="The address of the job.",
+    )
+    application: str = strawberry.field(
+        description="The application link for the job.",
+    )
+    skills: list[str] = strawberry.field(
+        description="The skills required for the job.",
+    )
 
-    currency: CurrencyEnum
+    currency: CurrencyEnum = strawberry.field(
+        description="The currency of the salary.",
+    )
 
-    has_salary_range: bool
-    min_salary: int | None
-    max_salary: int | None
+    has_salary_range: bool = strawberry.field(
+        description="Whether the job has a salary range.",
+    )
+    min_salary: int | None = strawberry.field(
+        description="The minimum salary of the job.",
+    )
+    max_salary: int | None = strawberry.field(
+        description="The maximum salary of the job.",
+    )
 
-    has_experience_range: bool
-    min_experience: int | None
-    max_experience: int | None
+    has_experience_range: bool = strawberry.field(
+        description="Whether the job has an experience range.",
+    )
+    min_experience: int | None = strawberry.field(
+        description="The minimum experience required for the job.",
+    )
+    max_experience: int | None = strawberry.field(
+        description="The maximum experience required for the job.",
+    )
 
-    updated_at: datetime
-    expires_at: datetime | None
+    updated_at: datetime = strawberry.field(
+        description="When the job was last updated at.",
+    )
+    expires_at: datetime | None = strawberry.field(
+        description="The expiry time of the job.",
+    )
 
-    created_at: datetime
-
-    is_saved: bool
+    created_at: datetime = strawberry.field(
+        description="When the job was created at.",
+    )
 
     organization_id: strawberry.Private[str]
 
@@ -100,7 +148,9 @@ class JobType(BaseNodeType[Job]):
             organization_id=str(job.organization.ref.id),
         )
 
-    @strawberry.field
+    @strawberry.field(
+        description="Whether the job is saved by the current user.",
+    )
     async def is_saved(self, info: Info) -> bool:
         current_user = info.context["current_user"]
         if current_user is None:
@@ -111,7 +161,9 @@ class JobType(BaseNodeType[Job]):
         )
         return saved_job is not None
 
-    @strawberry.field
+    @strawberry.field(
+        description="The organization of the job.",
+    )
     @inject
     async def organization(
         self, info: Info
@@ -163,7 +215,9 @@ class JobConnectionType(BaseConnectionType[JobType, JobEdgeType]):
 
 @strawberry.type(name="SavedJobEdge")
 class SavedJobEdgeType(BaseEdgeType[JobType, SavedJob]):
-    saved_at: datetime
+    saved_at: datetime = strawberry.field(
+        description="When the job was saved at by the current user.",
+    )
 
     @classmethod
     def marshal(cls, saved_job: SavedJob) -> Self:
@@ -181,38 +235,67 @@ class SavedJobConnectionType(BaseConnectionType[JobType, SavedJobEdgeType]):
     edge_type = SavedJobEdgeType
 
 
-@strawberry.type
-class SaveJobResult:
-    saved_job_edge: SavedJobEdgeType
+@strawberry.type(
+    description="Save job success.",
+)
+class SaveJobSuccess:
+    saved_job_edge: SavedJobEdgeType = strawberry.field(
+        description="The edge of the saved job.",
+    )
 
 
-@strawberry.type
-class UnsaveJobResult:
-    saved_job_edge: SavedJobEdgeType
+@strawberry.type(
+    description="Unsave job success.",
+)
+class UnsaveJobSuccess:
+    saved_job_edge: SavedJobEdgeType = strawberry.field(
+        description="The edge of the unsaved job.",
+    )
 
 
-@strawberry.type(name="JobNotFoundError")
+@strawberry.type(
+    name="JobNotFoundError",
+    description="Used when the job is not found.",
+)
 class JobNotFoundErrorType(BaseErrorType):
-    message: str = "Job not found!"
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Job not found!",
+    )
 
 
-@strawberry.type(name="SavedJobNotFoundError")
+@strawberry.type(
+    name="SavedJobNotFoundError",
+    description="Used when a saved job is not found.",
+)
 class SavedJobNotFoundErrorType(BaseErrorType):
-    message: str = "Saved job not found!"
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Saved job not found!",
+    )
 
 
 SaveJobPayload = Annotated[
-    SaveJobResult | JobNotFoundErrorType,
-    strawberry.union(name="SaveJobPayload"),
+    SaveJobSuccess | JobNotFoundErrorType,
+    strawberry.union(
+        name="SaveJobPayload",
+        description="The save job payload.",
+    ),
 ]
 
 UnsaveJobPayload = Annotated[
-    UnsaveJobResult | SavedJobNotFoundErrorType,
-    strawberry.union(name="UnsaveJobPayload"),
+    UnsaveJobSuccess | SavedJobNotFoundErrorType,
+    strawberry.union(
+        name="UnsaveJobPayload",
+        description="The unsave job payload.",
+    ),
 ]
 
 
 JobPayload = Annotated[
     JobType | JobNotFoundErrorType,
-    strawberry.union("JobPayload"),
+    strawberry.union(
+        "JobPayload",
+        description="The job payload.",
+    ),
 ]

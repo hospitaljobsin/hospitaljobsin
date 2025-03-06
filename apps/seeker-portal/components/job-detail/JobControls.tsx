@@ -29,7 +29,7 @@ export const JobControlsFragment = graphql`
 const JobControlsSaveMutation = graphql`
   mutation JobControlsSaveMutation($jobId: ID!) {
     saveJob(jobId: $jobId) {
-    ... on SaveJobResult  {
+    ... on SaveJobSuccess  {
         savedJobEdge {
             node {
                 id
@@ -45,7 +45,7 @@ const JobControlsSaveMutation = graphql`
 const JobControlsUnsaveMutation = graphql`
   mutation JobControlsUnsaveMutation($jobId: ID!) {
     unsaveJob(jobId: $jobId) {
-    ... on UnsaveJobResult {
+    ... on UnsaveJobSuccess {
         savedJobEdge {
             node {
             id

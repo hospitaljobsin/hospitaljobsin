@@ -31,7 +31,10 @@ if TYPE_CHECKING:
     )
 
 
-@strawberry.type(name="ProfileNotFoundError")
+@strawberry.type(
+    name="ProfileNotFoundError",
+    description="Used when the profile is not found.",
+)
 class ProfileNotFoundErrorType(BaseErrorType):
     message: str = strawberry.field(
         default="Profile not found!",
@@ -39,7 +42,10 @@ class ProfileNotFoundErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="AccountNotFoundError")
+@strawberry.type(
+    name="AccountNotFoundError",
+    description="Used when the account is not found.",
+)
 class AccountNotFoundErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -132,7 +138,7 @@ class CurrentJobType:
 
 @strawberry.type(
     name="Profile",
-    description="The profile details.",
+    description="An account's profile.",
 )
 class ProfileType(BaseNodeType[Profile]):
     # personal details
@@ -229,7 +235,7 @@ class AuthProviderEnum(Enum):
 
 @strawberry.type(
     name="Account",
-    description="The account details.",
+    description="An account.",
 )
 class AccountType(BaseNodeType[Account]):
     full_name: str = strawberry.field(

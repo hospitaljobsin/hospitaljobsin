@@ -2,7 +2,7 @@ directive @isAuthenticated on FIELD_DEFINITION
 
 directive @requiresSudoMode on FIELD_DEFINITION
 
-"""The account details."""
+"""An account."""
 type Account implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -80,6 +80,7 @@ type Account implements Node {
   ): WebAuthnCredentialConnection!
 }
 
+"""Used when the account is not found."""
 type AccountNotFoundError implements Error {
   """Human readable error message."""
   message: String!
@@ -132,20 +133,27 @@ enum AuthProvider {
   OAUTH_GOOGLE
 }
 
+"""
+The payload for creating a presigned URL for uploading the organization logo.
+"""
 type CreateOrganizationLogoPresignedURLPayload {
+  """The presigned URL for uploading the organization logo."""
   presignedUrl: String!
 }
 
+"""The create organization payload."""
 union CreateOrganizationPayload = Organization | OrganizationSlugInUseError
 
 """The create webauthn credential payload."""
 union CreateWebAuthnCredentialPayload = CreateWebAuthnCredentialSuccess | InvalidPasskeyRegistrationCredentialError
 
+"""Create webauthn credential success."""
 type CreateWebAuthnCredentialSuccess {
   """The created webauthn credential edge."""
   webAuthnCredentialEdge: WebAuthnCredentialEdge!
 }
 
+"""The currency of the amount."""
 enum Currency {
   INR
 }
@@ -168,6 +176,7 @@ scalar Date
 """Date with time (isoformat)"""
 scalar DateTime
 
+"""The delete other sessions payload."""
 type DeleteOtherSessionsPayload {
   """Deleted session IDs."""
   deletedSessionIds: [ID!]!
@@ -176,6 +185,7 @@ type DeleteOtherSessionsPayload {
 """The delete session payload."""
 union DeleteSessionPayload = DeleteSessionSuccess | SessionNotFoundError
 
+"""Delete session success."""
 type DeleteSessionSuccess {
   """The Deleted session edge."""
   sessionEdge: SessionEdge!
@@ -184,6 +194,7 @@ type DeleteSessionSuccess {
 """The delete webauthn credential payload."""
 union DeleteWebAuthnCredentialPayload = DeleteWebAuthnCredentialSuccess | WebAuthnCredentialNotFoundError | InsufficientAuthProvidersError
 
+"""Delete webauthn credential success."""
 type DeleteWebAuthnCredentialSuccess {
   """The Deleted webauthn credential edge."""
   webAuthnCredentialEdge: WebAuthnCredentialEdge!
@@ -192,11 +203,13 @@ type DeleteWebAuthnCredentialSuccess {
 """The disable account 2FA payload."""
 union DisableAccount2FAPayload = Account | TwoFactorAuthenticationNotEnabledError
 
+"""Used when the email address is in use."""
 type EmailInUseError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""Used when the email verification token cooldown is active."""
 type EmailVerificationTokenCooldownError implements Error {
   """Human readable error message."""
   message: String!
@@ -219,6 +232,7 @@ enum GenderType {
 """The generate 2FA recovery codes payload."""
 union Generate2FARecoveryCodesPayload = Generate2FARecoveryCodesSuccess | TwoFactorAuthenticationNotEnabledError
 
+"""Generate 2FA recovery codes success."""
 type Generate2FARecoveryCodesSuccess {
   """The generated 2FA recovery codes."""
   recoveryCodes: [String!]!
@@ -227,6 +241,7 @@ type Generate2FARecoveryCodesSuccess {
 """The generate account 2FA OTP URI payload."""
 union GenerateAccount2FAOTPURIPayload = GenerateAccount2FAOTPURISuccess
 
+"""Generate account 2FA OTP URI success."""
 type GenerateAccount2FAOTPURISuccess {
   """The generated 2FA OTP URI."""
   otpUri: String!
@@ -238,6 +253,7 @@ type GenerateAccount2FAOTPURISuccess {
 """The generate authentication options payload."""
 union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSuccess | InvalidRecaptchaTokenError
 
+"""Generate authentication options success."""
 type GenerateAuthenticationOptionsSuccess {
   """Passkey authentication options."""
   authenticationOptions: JSON!
@@ -246,6 +262,7 @@ type GenerateAuthenticationOptionsSuccess {
 """The generate passkey creation options payload."""
 union GeneratePasskeyCreationOptionsPayload = GeneratePasskeyCreationOptionsSuccess
 
+"""Generate passkey creation options success."""
 type GeneratePasskeyCreationOptionsSuccess {
   """Passkey registration options for new passkey creation."""
   registrationOptions: JSON!
@@ -254,51 +271,61 @@ type GeneratePasskeyCreationOptionsSuccess {
 """The generate passkey registration options payload."""
 union GeneratePasskeyRegistrationOptionsPayload = GeneratePasskeyRegistrationOptionsSuccess | InvalidRecaptchaTokenError | EmailInUseError
 
+"""Generate passkey registration options success."""
 type GeneratePasskeyRegistrationOptionsSuccess {
   """Passkey registration options."""
   registrationOptions: JSON!
 }
 
+"""Used when at least one authentication provider must be enabled."""
 type InsufficientAuthProvidersError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""Used when invalid credentials are provided."""
 type InvalidCredentialsError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""Used when an invalid email address is provided."""
 type InvalidEmailError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""Used when an invalid email verification token is provided."""
 type InvalidEmailVerificationTokenError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""Used when an invalid passkey authentication credential is provided."""
 type InvalidPasskeyAuthenticationCredentialError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""Used when an invalid passkey registration credential is provided."""
 type InvalidPasskeyRegistrationCredentialError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""Used when an invalid password reset token is provided."""
 type InvalidPasswordResetTokenError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""Used when an invalid recaptcha token is provided."""
 type InvalidRecaptchaTokenError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""Used when an invalid authentication provider is used."""
 type InvalidSignInMethodError implements Error {
   """Human readable error message."""
   message: String!
@@ -312,29 +339,72 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](https:/
 """
 scalar JSON @specifiedBy(url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf")
 
+"""A job posting."""
 type Job implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
+
+  """The title of the job."""
   title: String!
+
+  """The slug of the job."""
   slug: String!
+
+  """The description of the job."""
   description: String
+
+  """The category of the job."""
   category: String!
+
+  """The type of the job."""
   type: JobType!
+
+  """The work mode of the job."""
   workMode: WorkMode!
+
+  """The address of the job."""
   address: Address!
+
+  """The application link for the job."""
   application: String!
+
+  """The skills required for the job."""
   skills: [String!]!
+
+  """The currency of the salary."""
   currency: Currency!
+
+  """Whether the job has a salary range."""
   hasSalaryRange: Boolean!
+
+  """The minimum salary of the job."""
   minSalary: Int
+
+  """The maximum salary of the job."""
   maxSalary: Int
+
+  """Whether the job has an experience range."""
   hasExperienceRange: Boolean!
+
+  """The minimum experience required for the job."""
   minExperience: Int
+
+  """The maximum experience required for the job."""
   maxExperience: Int
+
+  """When the job was last updated at."""
   updatedAt: DateTime!
+
+  """The expiry time of the job."""
   expiresAt: DateTime
+
+  """When the job was created at."""
   createdAt: DateTime!
+
+  """Whether the job is saved by the current user."""
   isSaved: Boolean!
+
+  """The organization of the job."""
   organization: Organization
 }
 
@@ -354,12 +424,16 @@ type JobEdge {
   node: Job!
 }
 
+"""Used when the job is not found."""
 type JobNotFoundError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
+"""The job payload."""
 union JobPayload = Job | JobNotFoundError
 
+"""The type of job."""
 enum JobType {
   FULL_TIME
   PART_TIME
@@ -391,6 +465,7 @@ union LoginWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredential
 """The login with password payload."""
 union LoginWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidSignInMethodError | TwoFactorAuthenticationRequiredError
 
+"""The logout payload."""
 type LogoutPayload {
   """Human readable success message."""
   message: String!
@@ -685,18 +760,39 @@ type NotAuthenticatedError implements Error {
   message: String!
 }
 
+"""An organization owned by an account."""
 type Organization implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
+
+  """The name of the organization."""
   name: String!
+
+  """The slug of the organization."""
   slug: String!
+
+  """The description of the organization."""
   description: String
+
+  """The address of the organization."""
   address: Address!
+
+  """The contact email of the organization."""
   email: String
+
+  """The website of the organization."""
   website: String
+
+  """The logo URL of the organization."""
   logoUrl: String!
+
+  """Whether the current user is an admin in this organization."""
   isAdmin: Boolean!
+
+  """Whether the current user is an member in this organization."""
   isMember: Boolean!
+
+  """The jobs posted in the organization."""
   jobs(
     """Returns items before the given cursor."""
     before: ID = null
@@ -710,6 +806,8 @@ type Organization implements Node {
     """How many items to return before the cursor?"""
     last: Int = null
   ): JobConnection!
+
+  """The members of the organization."""
   members(
     """Returns items before the given cursor."""
     before: ID = null
@@ -755,17 +853,26 @@ type OrganizationMemberEdge {
 
   """The item at the end of the edge"""
   node: Account!
+
+  """The role of the user in the organization."""
   role: String!
+
+  """When the user joined the organization."""
   createdAt: DateTime!
 }
 
+"""Used when the organization is not found."""
 type OrganizationNotFoundError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
+"""The organization payload."""
 union OrganizationPayload = Organization | OrganizationNotFoundError
 
+"""Used when a organization with the slug already exists."""
 type OrganizationSlugInUseError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
@@ -784,11 +891,13 @@ type PageInfo {
   endCursor: String
 }
 
+"""Used when the password is not strong enough."""
 type PasswordNotStrongError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""A password reset token."""
 type PasswordResetToken implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -798,6 +907,7 @@ type PasswordResetToken implements Node {
   needs2fa: Boolean!
 }
 
+"""Used when the password reset token is not found."""
 type PasswordResetTokenNotFoundError implements Error {
   """Human readable error message."""
   message: String!
@@ -806,7 +916,7 @@ type PasswordResetTokenNotFoundError implements Error {
 """The password reset token payload."""
 union PasswordResetTokenPayload = PasswordResetToken | PasswordResetTokenNotFoundError
 
-"""The profile details."""
+"""An account's profile."""
 type Profile implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -839,6 +949,7 @@ type Profile implements Node {
   createdAt: DateTime!
 }
 
+"""Used when the profile is not found."""
 type ProfileNotFoundError implements Error {
   """Human readable error message."""
   message: String!
@@ -887,6 +998,8 @@ type Query {
     """Slug of the job"""
     slug: String!
   ): JobPayload!
+
+  """Get all saved jobs for the current user."""
   savedJobs(
     """Returns items before the given cursor."""
     before: ID = null
@@ -914,6 +1027,7 @@ union RegisterWithPasskeyPayload = Account | EmailInUseError | InvalidEmailVerif
 """The register with password payload."""
 union RegisterWithPasswordPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | PasswordNotStrongError
 
+"""Request email verification success."""
 type RequestEmailVerificationSuccess {
   """Human readable error message."""
   message: String!
@@ -928,6 +1042,7 @@ union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | E
 """The request password reset payload."""
 union RequestPasswordResetPayload = RequestPasswordResetSuccess | InvalidRecaptchaTokenError
 
+"""Request password reset success."""
 type RequestPasswordResetSuccess {
   """Human readable success message."""
   message: String!
@@ -942,9 +1057,12 @@ union RequestSudoModeWithPasswordPayload = Account | InvalidCredentialsError | I
 """The reset password payload."""
 union ResetPasswordPayload = Account | InvalidPasswordResetTokenError | PasswordNotStrongError | TwoFactorAuthenticationChallengeNotFoundError
 
-union SaveJobPayload = SaveJobResult | JobNotFoundError
+"""The save job payload."""
+union SaveJobPayload = SaveJobSuccess | JobNotFoundError
 
-type SaveJobResult {
+"""Save job success."""
+type SaveJobSuccess {
+  """The edge of the saved job."""
   savedJobEdge: SavedJobEdge!
 }
 
@@ -962,13 +1080,18 @@ type SavedJobEdge {
 
   """The item at the end of the edge"""
   node: Job!
+
+  """When the job was saved at by the current user."""
   savedAt: DateTime!
 }
 
+"""Used when a saved job is not found."""
 type SavedJobNotFoundError implements Error {
+  """Human readable error message."""
   message: String!
 }
 
+"""An account's session."""
 type Session implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -1002,6 +1125,7 @@ type SessionEdge {
   node: Session!
 }
 
+"""Used when the session is not found."""
 type SessionNotFoundError implements Error {
   """Human readable error message."""
   message: String!
@@ -1010,6 +1134,7 @@ type SessionNotFoundError implements Error {
 """The set account 2FA payload."""
 union SetAccount2FAPayload = SetAccount2FASuccess | InvalidCredentialsError | TwoFactorAuthenticationChallengeNotFoundError
 
+"""Set account 2FA success."""
 type SetAccount2FASuccess {
   """The account with 2FA enabled."""
   account: Account!
@@ -1018,24 +1143,30 @@ type SetAccount2FASuccess {
   recoveryCodes: [String!]!
 }
 
+"""Used when the 2FA challenge is not found."""
 type TwoFactorAuthenticationChallengeNotFoundError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""Used when 2FA is not enabled for the account."""
 type TwoFactorAuthenticationNotEnabledError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""Used when 2FA is required."""
 type TwoFactorAuthenticationRequiredError implements Error {
   """Human readable error message."""
   message: String!
 }
 
-union UnsaveJobPayload = UnsaveJobResult | SavedJobNotFoundError
+"""The unsave job payload."""
+union UnsaveJobPayload = UnsaveJobSuccess | SavedJobNotFoundError
 
-type UnsaveJobResult {
+"""Unsave job success."""
+type UnsaveJobSuccess {
+  """The edge of the unsaved job."""
   savedJobEdge: SavedJobEdge!
 }
 
@@ -1057,6 +1188,7 @@ union VerifyAccount2FATokenPayload = Account | InvalidCredentialsError | TwoFact
 """The verify email payload."""
 union VerifyEmailPayload = VerifyEmailSuccess | InvalidRecaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
 
+"""Verify email success."""
 type VerifyEmailSuccess {
   """Human readable success message."""
   message: String!
@@ -1065,11 +1197,13 @@ type VerifyEmailSuccess {
 """The viewer payload."""
 union ViewerPayload = Account | NotAuthenticatedError
 
+"""Used when the WebAuthn challenge is not found."""
 type WebAuthnChallengeNotFoundError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""A WebAuthn Credential belonging to an account."""
 type WebAuthnCredential implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
@@ -1097,11 +1231,13 @@ type WebAuthnCredentialEdge {
   node: WebAuthnCredential!
 }
 
+"""Used when the webauthn credential is not found."""
 type WebAuthnCredentialNotFoundError implements Error {
   """Human readable error message."""
   message: String!
 }
 
+"""The work mode of the job."""
 enum WorkMode {
   REMOTE
   HYBRID

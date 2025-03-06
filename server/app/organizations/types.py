@@ -29,8 +29,12 @@ if TYPE_CHECKING:
 
 @strawberry.type(name="OrganizationMemberEdge")
 class OrganizationMemberEdgeType(BaseEdgeType[AccountType, OrganizationMember]):
-    role: str
-    created_at: datetime
+    role: str = strawberry.field(
+        description="The role of the user in the organization.",
+    )
+    created_at: datetime = strawberry.field(
+        description="When the user joined the organization.",
+    )
 
     @classmethod
     def marshal(cls, organization_member: OrganizationMember) -> Self:
@@ -51,14 +55,29 @@ class OrganizationMemberConnectionType(
     edge_type = OrganizationMemberEdgeType
 
 
-@strawberry.type(name="Organization")
+@strawberry.type(
+    name="Organization",
+    description="An organization owned by an account.",
+)
 class OrganizationType(BaseNodeType[Organization]):
-    name: str
-    slug: str
-    description: str | None
-    address: AddressType
-    email: str | None
-    website: str | None
+    name: str = strawberry.field(
+        description="The name of the organization.",
+    )
+    slug: str = strawberry.field(
+        description="The slug of the organization.",
+    )
+    description: str | None = strawberry.field(
+        description="The description of the organization.",
+    )
+    address: AddressType = strawberry.field(
+        description="The address of the organization.",
+    )
+    email: str | None = strawberry.field(
+        description="The contact email of the organization.",
+    )
+    website: str | None = strawberry.field(
+        description="The website of the organization.",
+    )
 
     assigned_logo_url: Private[str | None]
 
@@ -92,7 +111,9 @@ class OrganizationType(BaseNodeType[Organization]):
             for organization in organizations
         ]
 
-    @strawberry.field
+    @strawberry.field(
+        description="The logo URL of the organization.",
+    )
     async def logo_url(self) -> str:
         """Return the organization's logo URL, or a placeholder."""
         if self.assigned_logo_url is not None:
@@ -100,7 +121,9 @@ class OrganizationType(BaseNodeType[Organization]):
         slug_hash = hashlib.sha256(self.slug.encode("utf-8")).hexdigest()
         return f"https://api.dicebear.com/9.x/identicon/png?seed={slug_hash}"
 
-    @strawberry.field
+    @strawberry.field(
+        description="Whether the current user is an admin in this organization.",
+    )
     @inject
     async def is_admin(
         self,
@@ -115,7 +138,9 @@ class OrganizationType(BaseNodeType[Organization]):
             organization_id=ObjectId(self.id),
         )
 
-    @strawberry.field
+    @strawberry.field(
+        description="Whether the current user is an member in this organization.",
+    )
     @inject
     async def is_member(
         self,
@@ -130,7 +155,9 @@ class OrganizationType(BaseNodeType[Organization]):
             organization_id=ObjectId(self.id),
         )
 
-    @strawberry.field
+    @strawberry.field(
+        description="The jobs posted in the organization.",
+    )
     @inject
     async def jobs(
         self,
@@ -177,7 +204,9 @@ class OrganizationType(BaseNodeType[Organization]):
         # Convert to JobConnectionType
         return JobConnectionType.marshal(paginated_jobs)
 
-    @strawberry.field
+    @strawberry.field(
+        description="The members of the organization.",
+    )
     @inject
     async def members(
         self,
@@ -241,28 +270,51 @@ class OrganizationConnectionType(
     edge_type = OrganizationEdgeType
 
 
-@strawberry.type(name="OrganizationNotFoundError")
+@strawberry.type(
+    name="OrganizationNotFoundError",
+    description="Used when the organization is not found.",
+)
 class OrganizationNotFoundErrorType(BaseErrorType):
-    message: str = "Organization not found!"
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Organization not found!",
+    )
 
 
-@strawberry.type(name="OrganizationSlugInUseError")
+@strawberry.type(
+    name="OrganizationSlugInUseError",
+    description="Used when a organization with the slug already exists.",
+)
 class OrganizationSlugInUseErrorType(BaseErrorType):
-    message: str = "Organization with slug already exists!"
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Organization with slug already exists!",
+    )
 
 
 CreateOrganizationPayload = Annotated[
     OrganizationType | OrganizationSlugInUseErrorType,
-    strawberry.union(name="CreateOrganizationPayload"),
+    strawberry.union(
+        name="CreateOrganizationPayload",
+        description="The create organization payload.",
+    ),
 ]
 
 
 OrganizationPayload = Annotated[
     OrganizationType | OrganizationNotFoundErrorType,
-    strawberry.union(name="OrganizationPayload"),
+    strawberry.union(
+        name="OrganizationPayload",
+        description="The organization payload.",
+    ),
 ]
 
 
-@strawberry.type(name="CreateOrganizationLogoPresignedURLPayload")
+@strawberry.type(
+    name="CreateOrganizationLogoPresignedURLPayload",
+    description="The payload for creating a presigned URL for uploading the organization logo.",
+)
 class CreateOrganizationLogoPresignedURLPayloadType:
-    presigned_url: str
+    presigned_url: str = strawberry.field(
+        description="The presigned URL for uploading the organization logo.",
+    )

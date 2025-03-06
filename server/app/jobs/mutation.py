@@ -17,9 +17,9 @@ from .types import (
     SavedJobEdgeType,
     SavedJobNotFoundErrorType,
     SaveJobPayload,
-    SaveJobResult,
+    SaveJobSuccess,
     UnsaveJobPayload,
-    UnsaveJobResult,
+    UnsaveJobSuccess,
 )
 
 
@@ -59,7 +59,7 @@ class JobMutation:
                 case JobNotFoundError():
                     return JobNotFoundErrorType()
 
-        return SaveJobResult(
+        return SaveJobSuccess(
             saved_job_edge=SavedJobEdgeType.marshal(
                 result.ok_value,
             ),
@@ -99,7 +99,7 @@ class JobMutation:
                 case SavedJobNotFoundError():
                     return SavedJobNotFoundErrorType()
 
-        return UnsaveJobResult(
+        return UnsaveJobSuccess(
             saved_job_edge=SavedJobEdgeType.marshal(
                 result.ok_value,
             ),

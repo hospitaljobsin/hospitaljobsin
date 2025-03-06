@@ -5,7 +5,7 @@ import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
-from passlib.utils import des
+from passlib.crypto import des
 from strawberry import Private, relay
 from strawberry.scalars import JSON
 
@@ -19,7 +19,10 @@ from app.context import AuthInfo, Info
 from app.scalars import ID
 
 
-@strawberry.type(name="EmailInUseError")
+@strawberry.type(
+    name="EmailInUseError",
+    description="Used when the email address is in use.",
+)
 class EmailInUseErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -27,7 +30,10 @@ class EmailInUseErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="InvalidEmailError")
+@strawberry.type(
+    name="InvalidEmailError",
+    description="Used when an invalid email address is provided.",
+)
 class InvalidEmailErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -35,7 +41,10 @@ class InvalidEmailErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="InvalidCredentialsError")
+@strawberry.type(
+    name="InvalidCredentialsError",
+    description="Used when invalid credentials are provided.",
+)
 class InvalidCredentialsErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -43,7 +52,10 @@ class InvalidCredentialsErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="InvalidPasswordResetTokenError")
+@strawberry.type(
+    name="InvalidPasswordResetTokenError",
+    description="Used when an invalid password reset token is provided.",
+)
 class InvalidPasswordResetTokenErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -51,7 +63,10 @@ class InvalidPasswordResetTokenErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="InvalidEmailVerificationTokenError")
+@strawberry.type(
+    name="InvalidEmailVerificationTokenError",
+    description="Used when an invalid email verification token is provided.",
+)
 class InvalidEmailVerificationTokenErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -59,7 +74,10 @@ class InvalidEmailVerificationTokenErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="InvalidRecaptchaTokenError")
+@strawberry.type(
+    name="InvalidRecaptchaTokenError",
+    description="Used when an invalid recaptcha token is provided.",
+)
 class InvalidRecaptchaTokenErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -67,11 +85,14 @@ class InvalidRecaptchaTokenErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="InvalidSignInMethodError")
+@strawberry.type(
+    name="InvalidSignInMethodError",
+    description="Used when an invalid authentication provider is used.",
+)
 class InvalidSignInMethodErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
-        default="User's password is not set.",
+        default="Invalid authentication provider used.",
     )
     available_providers: list[AuthProviderEnum] = strawberry.field(
         description="Available authentication providers for the account.",
@@ -87,7 +108,10 @@ class InvalidSignInMethodErrorType(BaseErrorType):
         )
 
 
-@strawberry.type(name="PasswordResetToken")
+@strawberry.type(
+    name="PasswordResetToken",
+    description="A password reset token.",
+)
 class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
     email: str = strawberry.field(
         description="Email address of the password reset token's account.",
@@ -131,7 +155,10 @@ class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
         )
 
 
-@strawberry.type(name="Session")
+@strawberry.type(
+    name="Session",
+    description="An account's session.",
+)
 class SessionType(BaseNodeType[Session]):
     user_agent: str = strawberry.field(
         description="User agent of the session.",
@@ -186,7 +213,10 @@ class SessionConnectionType(BaseConnectionType[SessionType, SessionEdgeType]):
     edge_type = SessionEdgeType
 
 
-@strawberry.type(name="WebAuthnCredential")
+@strawberry.type(
+    name="WebAuthnCredential",
+    description="A WebAuthn Credential belonging to an account.",
+)
 class WebAuthnCredentialType(BaseNodeType[WebAuthnCredential]):
     nickname: str = strawberry.field(
         description="Nickname of the webauthn credential.",
@@ -226,7 +256,10 @@ class WebAuthnCredentialConnectionType(
     edge_type = WebAuthnCredentialEdgeType
 
 
-@strawberry.type(name="PasswordResetTokenNotFoundError")
+@strawberry.type(
+    name="PasswordResetTokenNotFoundError",
+    description="Used when the password reset token is not found.",
+)
 class PasswordResetTokenNotFoundErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -234,7 +267,10 @@ class PasswordResetTokenNotFoundErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="PasswordNotStrongError")
+@strawberry.type(
+    name="PasswordNotStrongError",
+    description="Used when the password is not strong enough.",
+)
 class PasswordNotStrongErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -242,7 +278,10 @@ class PasswordNotStrongErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="EmailVerificationTokenCooldownError")
+@strawberry.type(
+    name="EmailVerificationTokenCooldownError",
+    description="Used when the email verification token cooldown is active.",
+)
 class EmailVerificationTokenCooldownErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -256,7 +295,10 @@ class EmailVerificationTokenCooldownErrorType(BaseErrorType):
     ]
 
 
-@strawberry.type(name="RequestEmailVerificationSuccess")
+@strawberry.type(
+    name="RequestEmailVerificationSuccess",
+    description="Request email verification success.",
+)
 class RequestEmailVerificationTokenSuccessType:
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -267,7 +309,10 @@ class RequestEmailVerificationTokenSuccessType:
     )
 
 
-@strawberry.type(name="VerifyEmailSuccess")
+@strawberry.type(
+    name="VerifyEmailSuccess",
+    description="Verify email success.",
+)
 class VerifyEmailSuccessType:
     message: str = strawberry.field(
         description="Human readable success message.",
@@ -275,7 +320,10 @@ class VerifyEmailSuccessType:
     )
 
 
-@strawberry.type(name="InvalidPasskeyRegistrationCredentialError")
+@strawberry.type(
+    name="InvalidPasskeyRegistrationCredentialError",
+    description="Used when an invalid passkey registration credential is provided.",
+)
 class InvalidPasskeyRegistrationCredentialErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -283,7 +331,10 @@ class InvalidPasskeyRegistrationCredentialErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="InvalidPasskeyAuthenticationCredentialError")
+@strawberry.type(
+    name="InvalidPasskeyAuthenticationCredentialError",
+    description="Used when an invalid passkey authentication credential is provided.",
+)
 class InvalidPasskeyAuthenticationCredentialErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -291,7 +342,10 @@ class InvalidPasskeyAuthenticationCredentialErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="WebAuthnChallengeNotFoundError")
+@strawberry.type(
+    name="WebAuthnChallengeNotFoundError",
+    description="Used when the WebAuthn challenge is not found.",
+)
 class WebAuthnChallengeNotFoundErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -359,7 +413,10 @@ LoginWithPasskeyPayload = Annotated[
 ]
 
 
-@strawberry.type(name="LogoutPayload")
+@strawberry.type(
+    name="LogoutPayload",
+    description="The logout payload.",
+)
 class LogoutPayloadType:
     message: str = strawberry.field(
         description="Human readable success message.",
@@ -367,7 +424,10 @@ class LogoutPayloadType:
     )
 
 
-@strawberry.type(name="RequestPasswordResetSuccess")
+@strawberry.type(
+    name="RequestPasswordResetSuccess",
+    description="Request password reset success.",
+)
 class RequestPasswordResetSuccessType:
     message: str = strawberry.field(
         description="Human readable success message.",
@@ -393,7 +453,10 @@ PasswordResetTokenPayload = Annotated[
 ]
 
 
-@strawberry.type(name="GeneratePasskeyRegistrationOptionsSuccess")
+@strawberry.type(
+    name="GeneratePasskeyRegistrationOptionsSuccess",
+    description="Generate passkey registration options success.",
+)
 class GeneratePasskeyRegistrationOptionsSuccessType:
     registration_options: JSON = strawberry.field(
         description="Passkey registration options.",
@@ -411,7 +474,10 @@ GeneratePasskeyRegistrationOptionsPayload = Annotated[
 ]
 
 
-@strawberry.type(name="GenerateAuthenticationOptionsSuccess")
+@strawberry.type(
+    name="GenerateAuthenticationOptionsSuccess",
+    description="Generate authentication options success.",
+)
 class GenerateAuthenticationOptionsSuccessType:
     authentication_options: JSON = strawberry.field(
         description="Passkey authentication options.",
@@ -427,7 +493,10 @@ GenerateAuthenticationOptionsPayload = Annotated[
 ]
 
 
-@strawberry.type(name="DeleteOtherSessionsPayload")
+@strawberry.type(
+    name="DeleteOtherSessionsPayload",
+    description="The delete other sessions payload.",
+)
 class DeleteOtherSessionsPayloadType:
     deleted_session_ids: list[ID] = strawberry.field(
         description="Deleted session IDs.",
@@ -447,7 +516,10 @@ class DeleteOtherSessionsPayloadType:
         )
 
 
-@strawberry.type(name="SessionNotFoundError")
+@strawberry.type(
+    name="SessionNotFoundError",
+    description="Used when the session is not found.",
+)
 class SessionNotFoundErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -455,7 +527,10 @@ class SessionNotFoundErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="DeleteSessionSuccess")
+@strawberry.type(
+    name="DeleteSessionSuccess",
+    description="Delete session success.",
+)
 class DeleteSessionSuccessType:
     session_edge: SessionEdgeType = strawberry.field(
         description="The Deleted session edge.",
@@ -471,7 +546,10 @@ DeleteSessionPayload = Annotated[
 ]
 
 
-@strawberry.type(name="WebAuthnCredentialNotFoundError")
+@strawberry.type(
+    name="WebAuthnCredentialNotFoundError",
+    description="Used when the webauthn credential is not found.",
+)
 class WebAuthnCredentialNotFoundErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -479,14 +557,20 @@ class WebAuthnCredentialNotFoundErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="DeleteWebAuthnCredentialSuccess")
+@strawberry.type(
+    name="DeleteWebAuthnCredentialSuccess",
+    description="Delete webauthn credential success.",
+)
 class DeleteWebAuthnCredentialSuccessType:
     web_authn_credential_edge: WebAuthnCredentialEdgeType = strawberry.field(
         description="The Deleted webauthn credential edge.",
     )
 
 
-@strawberry.type(name="InsufficientAuthProvidersError")
+@strawberry.type(
+    name="InsufficientAuthProvidersError",
+    description="Used when at least one authentication provider must be enabled.",
+)
 class InsufficientAuthProvidersErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -514,7 +598,10 @@ UpdateWebAuthnCredentialPayload = Annotated[
 ]
 
 
-@strawberry.type(name="GeneratePasskeyCreationOptionsSuccess")
+@strawberry.type(
+    name="GeneratePasskeyCreationOptionsSuccess",
+    description="Generate passkey creation options success.",
+)
 class GeneratePasskeyCreationOptionsSuccessType:
     registration_options: JSON = strawberry.field(
         description="Passkey registration options for new passkey creation.",
@@ -530,7 +617,10 @@ GeneratePasskeyCreationOptionsPayload = Annotated[
 ]
 
 
-@strawberry.type(name="CreateWebAuthnCredentialSuccess")
+@strawberry.type(
+    name="CreateWebAuthnCredentialSuccess",
+    description="Create webauthn credential success.",
+)
 class CreateWebAuthnCredentialSuccessType:
     web_authn_credential_edge: WebAuthnCredentialEdgeType = strawberry.field(
         description="The created webauthn credential edge.",
@@ -568,7 +658,10 @@ RequestSudoModeWithPasswordPayload = Annotated[
 ]
 
 
-@strawberry.type(name="TwoFactorAuthenticationNotEnabledError")
+@strawberry.type(
+    name="TwoFactorAuthenticationNotEnabledError",
+    description="Used when 2FA is not enabled for the account.",
+)
 class TwoFactorAuthenticationNotEnabledErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -576,7 +669,10 @@ class TwoFactorAuthenticationNotEnabledErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="TwoFactorAuthenticationChallengeNotFoundError")
+@strawberry.type(
+    name="TwoFactorAuthenticationChallengeNotFoundError",
+    description="Used when the 2FA challenge is not found.",
+)
 class TwoFactorAuthenticationChallengeNotFoundErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -584,7 +680,10 @@ class TwoFactorAuthenticationChallengeNotFoundErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="TwoFactorAuthenticationRequiredError")
+@strawberry.type(
+    name="TwoFactorAuthenticationRequiredError",
+    description="Used when 2FA is required.",
+)
 class TwoFactorAuthenticationRequiredErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
@@ -592,7 +691,10 @@ class TwoFactorAuthenticationRequiredErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="SetAccount2FASuccess")
+@strawberry.type(
+    name="SetAccount2FASuccess",
+    description="Set account 2FA success.",
+)
 class SetAccount2FASuccessType:
     account: AccountType = strawberry.field(
         description="The account with 2FA enabled.",
@@ -621,7 +723,10 @@ DisableAccount2FAPayload = Annotated[
 ]
 
 
-@strawberry.type(name="GenerateAccount2FAOTPURISuccess")
+@strawberry.type(
+    name="GenerateAccount2FAOTPURISuccess",
+    description="Generate account 2FA OTP URI success.",
+)
 class GenerateAccount2FAOTPURISuccessType:
     otp_uri: str = strawberry.field(
         description="The generated 2FA OTP URI.",
@@ -640,7 +745,10 @@ GenerateAccount2FAOTPURIPayload = Annotated[
 ]
 
 
-@strawberry.type(name="Generate2FARecoveryCodesSuccess")
+@strawberry.type(
+    name="Generate2FARecoveryCodesSuccess",
+    description="Generate 2FA recovery codes success.",
+)
 class Generate2FARecoveryCodesSuccessType:
     recovery_codes: list[str] = strawberry.field(
         description="The generated 2FA recovery codes.",
