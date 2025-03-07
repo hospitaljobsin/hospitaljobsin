@@ -831,3 +831,15 @@ ResetPasswordPayload = Annotated[
         description="The reset password payload.",
     ),
 ]
+
+
+RequestSudoModeWith2FAPayload = Annotated[
+    AccountType
+    | InvalidCredentialsErrorType
+    | InvalidRecaptchaTokenErrorType
+    | TwoFactorAuthenticationNotEnabledErrorType,
+    strawberry.union(
+        name="RequestSudoModeWith2FAPayload",
+        description="The request sudo mode with 2FA payload.",
+    ),
+]

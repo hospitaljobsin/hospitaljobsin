@@ -8,7 +8,6 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
-	Divider,
 	Link,
 } from "@heroui/react";
 import { Google } from "@lobehub/icons";
@@ -21,6 +20,7 @@ import invariant from "tiny-invariant";
 import { getValidSudoModeRedirectURL } from "../../lib/redirects";
 import PasskeyAuthentication from "./PasskeyAuthentication";
 import PasswordAuthentication from "./PasswordAuthentication";
+import TwoFactorAuthentication from "./TwoFactorAuthentication";
 import type { RequestSudoViewFragment$key } from "./__generated__/RequestSudoViewFragment.graphql";
 
 const RequestSudoViewFragment = graphql`
@@ -29,16 +29,27 @@ const RequestSudoViewFragment = graphql`
 		__typename
 		... on Account {
 			authProviders
+			has2faEnabled
 		}
 	}
   }
 `;
+
+const AUTH_METHOD_MESSAGES = {
+	password: "Try using your password",
+	passkey: "Try using your passkey",
+	"2fa": "Try using your authenticator app",
+	google: "Try authenticating with Google",
+} as const;
 
 export default function RequestSudoView({
 	rootQuery,
 }: { rootQuery: RequestSudoViewFragment$key }) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
+	const [currentAuthMethod, setCurrentAuthMethod] = useState<
+		"password" | "passkey" | "2fa" | "google"
+	>("password");
 
 	const oauth2Error = searchParams.get("oauth2_error");
 
@@ -66,11 +77,11 @@ export default function RequestSudoView({
 	const hasWebauthn = data.viewer.authProviders.includes("WEBAUTHN_CREDENTIAL");
 	const hasOauthGoogle = data.viewer.authProviders.includes("OAUTH_GOOGLE");
 
-	// Only show Google OAuth if no other auth methods are available
-	const showGoogleOAuth = hasOauthGoogle && !hasPassword && !hasWebauthn;
+	const has2faEnabled = data.viewer.has2faEnabled;
 
-	// Calculate if we need dividers (only between password and webauthn)
-	const showDivider = hasPassword && hasWebauthn;
+	// Only show Google OAuth if no other auth methods are available
+	const showGoogleOAuth =
+		hasOauthGoogle && !hasPassword && !hasWebauthn && !has2faEnabled;
 
 	function getOauth2ErrorMessage(errorCode: string): string {
 		switch (errorCode) {
@@ -80,6 +91,58 @@ export default function RequestSudoView({
 				return "An error occurred. Please try again.";
 		}
 	}
+
+	const getAvailableAuthMethods = () => {
+		const methods = [];
+		if (hasPassword) methods.push("password");
+		if (hasWebauthn) methods.push("passkey");
+		if (has2faEnabled) methods.push("2fa");
+		if (showGoogleOAuth) methods.push("google");
+		return methods;
+	};
+
+	const renderAuthMethod = () => {
+		switch (currentAuthMethod) {
+			case "password":
+				return hasPassword ? (
+					<PasswordAuthentication
+						isDisabled={isAuthenticating}
+						onAuthStart={() => setIsAuthenticating(true)}
+						onAuthEnd={() => setIsAuthenticating(false)}
+					/>
+				) : null;
+			case "passkey":
+				return hasWebauthn ? (
+					<PasskeyAuthentication
+						isDisabled={isAuthenticating}
+						onAuthStart={() => setIsAuthenticating(true)}
+						onAuthEnd={() => setIsAuthenticating(false)}
+					/>
+				) : null;
+			case "2fa":
+				return has2faEnabled ? (
+					<TwoFactorAuthentication
+						isDisabled={isAuthenticating}
+						onAuthStart={() => setIsAuthenticating(true)}
+						onAuthEnd={() => setIsAuthenticating(false)}
+					/>
+				) : null;
+			case "google":
+				return showGoogleOAuth ? (
+					<Button
+						fullWidth
+						variant="bordered"
+						size="lg"
+						startContent={<Google.Color size={20} />}
+						onPress={() => {
+							window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/request_sudo_mode/google?redirect_uri=${encodeURIComponent(`${env.NEXT_PUBLIC_URL}${redirectTo}`)}`;
+						}}
+					>
+						Authenticate with Google
+					</Button>
+				) : null;
+		}
+	};
 
 	return (
 		<div className="w-full flex flex-col gap-6 h-full min-h-screen items-center justify-center">
@@ -103,48 +166,28 @@ export default function RequestSudoView({
 					</p>
 				</CardHeader>
 				<CardBody className="max-w-lg w-full flex flex-col gap-12 pt-12 mx-auto">
-					{hasPassword && (
-						<PasswordAuthentication
-							isDisabled={isAuthenticating}
-							onAuthStart={() => setIsAuthenticating(true)}
-							onAuthEnd={() => setIsAuthenticating(false)}
-						/>
-					)}
-					{showDivider && (
-						<div className="w-full flex items-center justify-center gap-6">
-							<Divider className="flex-1" />
-							<p>or</p>
-							<Divider className="flex-1" />
-						</div>
-					)}
-					{hasWebauthn && (
-						<PasskeyAuthentication
-							isDisabled={isAuthenticating}
-							onAuthStart={() => setIsAuthenticating(true)}
-							onAuthEnd={() => setIsAuthenticating(false)}
-						/>
-					)}
-					{showGoogleOAuth && (
-						<Button
-							fullWidth
-							variant="bordered"
-							size="lg"
-							startContent={<Google.Color size={20} />}
-							onPress={() => {
-								window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/request_sudo_mode/google?redirect_uri=${encodeURIComponent(`${env.NEXT_PUBLIC_URL}${redirectTo}`)}`;
-							}}
-						>
-							Authenticate with Google
-						</Button>
-					)}
+					{renderAuthMethod()}
 				</CardBody>
-				<CardFooter className="w-full flex items-center justify-center gap-6 pt-12 max-w-lg mx-auto">
+				<CardFooter className="w-full flex flex-col items-center justify-center gap-6 pt-12 max-w-lg mx-auto">
+					{getAvailableAuthMethods().map(
+						(method) =>
+							method !== currentAuthMethod && (
+								<Button
+									key={method}
+									variant="bordered"
+									fullWidth
+									onPress={() => setCurrentAuthMethod(method)}
+								>
+									{AUTH_METHOD_MESSAGES[method]}
+								</Button>
+							),
+					)}
 					<Button
-						fullWidth
 						as={Link}
 						href={redirectTo}
-						variant="bordered"
+						variant="light"
 						color="default"
+						fullWidth
 					>
 						go back
 					</Button>

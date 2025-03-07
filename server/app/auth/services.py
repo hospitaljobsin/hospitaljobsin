@@ -1289,7 +1289,7 @@ class AuthService:
         | InvalidRecaptchaTokenError
         | InvalidAuthenticationProviderError,
     ]:
-        """Login a user with email and password."""
+        """Request sudo mode with password."""
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
 
@@ -1305,6 +1305,34 @@ class AuthService:
             password=password,
             password_hash=account.password_hash,
         ):
+            return Err(InvalidCredentialsError())
+
+        self._grant_sudo_mode(request)
+
+        return Ok(account)
+
+    async def request_sudo_mode_with_2fa(
+        self,
+        two_factor_token: str,
+        recaptcha_token: str,
+        account: Account,
+        request: Request,
+    ) -> Result[
+        Account,
+        InvalidCredentialsError
+        | InvalidRecaptchaTokenError
+        | TwoFactorAuthenticationNotEnabledError,
+    ]:
+        """Request sudo mode with 2FA."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
+
+        if not account.has_2fa_enabled:
+            # return an error for users who signed up with Google
+            return Err(TwoFactorAuthenticationNotEnabledError())
+
+        totp = pyotp.TOTP(account.two_factor_secret)
+        if not totp.verify(token):
             return Err(InvalidCredentialsError())
 
         self._grant_sudo_mode(request)

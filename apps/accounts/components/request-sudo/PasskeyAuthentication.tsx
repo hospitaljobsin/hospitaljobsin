@@ -180,7 +180,6 @@ export default function PasskeyAuthentication({
 		<Button
 			fullWidth
 			startContent={<Fingerprint size={20} />}
-			variant="ghost"
 			size="lg"
 			isDisabled={isDisabled}
 			onPress={handlePasskeyAuthentication}

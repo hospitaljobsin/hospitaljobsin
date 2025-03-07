@@ -676,6 +676,15 @@ type Mutation {
     recaptchaToken: String!
   ): RequestSudoModeWithPasswordPayload! @isAuthenticated
 
+  """Request a sudo mode grant for the current user using 2FA."""
+  requestSudoModeWith2fa(
+    """The 2FA token of the user."""
+    twoFactorToken: String!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
+  ): RequestSudoModeWith2FAPayload! @isAuthenticated
+
   """Set two factor authentication."""
   setAccount2fa(
     """The 2FA token."""
@@ -1056,6 +1065,9 @@ type RequestPasswordResetSuccess {
   """Human readable success message."""
   message: String!
 }
+
+"""The request sudo mode with 2FA payload."""
+union RequestSudoModeWith2FAPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | TwoFactorAuthenticationNotEnabledError
 
 """The request sudo mode with passkey payload."""
 union RequestSudoModeWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError

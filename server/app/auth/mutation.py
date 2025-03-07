@@ -78,6 +78,7 @@ from .types import (
     RequestEmailVerificationTokenSuccessType,
     RequestPasswordResetPayload,
     RequestPasswordResetSuccessType,
+    RequestSudoModeWith2FAPayload,
     RequestSudoModeWithPasskeyPayload,
     RequestSudoModeWithPasswordPayload,
     ResetPasswordPayload,
@@ -1009,6 +1010,53 @@ class AuthMutation:
                         return InvalidAuthenticationProviderErrorType.marshal(
                             available_providers=err.available_providers
                         )
+            case Ok(account):
+                return AccountType.marshal(account)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RequestSudoModeWith2FAPayload,
+        description="Request a sudo mode grant for the current user using 2FA.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def request_sudo_mode_with_2fa(
+        self,
+        info: AuthInfo,
+        two_factor_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The 2FA token of the user.",
+            ),
+        ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
+        auth_service: Annotated[AuthService, Inject],
+    ) -> RequestSudoModeWith2FAPayload:
+        """Request a sudo mode grant for the current user using 2FA."""
+        match await auth_service.request_sudo_mode_with_2fa(
+            request=info.context["request"],
+            two_factor_token=two_factor_token,
+            recaptcha_token=recaptcha_token,
+            account=info.context["current_user"],
+        ):
+            case Err(error):
+                match error:
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCredentialsError():
+                        return InvalidCredentialsErrorType()
+                    case TwoFactorAuthenticationNotEnabledError():
+                        return TwoFactorAuthenticationNotEnabledErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
 
