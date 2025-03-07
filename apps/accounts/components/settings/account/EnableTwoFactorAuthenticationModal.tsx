@@ -132,7 +132,7 @@ export default function EnableTwoFactorAuthenticationModal({
 					</h2>
 					<p className="text-foreground-400 text-small font-normal w-full">
 						2FA adds an extra layer of security to your account. It's
-						recommended to enable it alongside password authentication.
+						recommended to enable it alongside password/ Oauth2 authentication.
 					</p>
 				</ModalHeader>
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-12 w-full">
