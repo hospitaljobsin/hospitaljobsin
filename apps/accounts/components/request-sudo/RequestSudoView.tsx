@@ -177,6 +177,7 @@ export default function RequestSudoView({
 									variant="bordered"
 									fullWidth
 									onPress={() => setCurrentAuthMethod(method)}
+									isDisabled={isAuthenticating}
 								>
 									{AUTH_METHOD_MESSAGES[method]}
 								</Button>
