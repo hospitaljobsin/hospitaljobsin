@@ -53,6 +53,7 @@ add accounts center
 where:
 
 - users can delete their accounts
+- add modal before deleting passkeys, sessions, and delete all sessions
 - add passkey as a second factor option
 - option to disable password
 - If the user loses access to their 2FA device, provide secure fallback options:
