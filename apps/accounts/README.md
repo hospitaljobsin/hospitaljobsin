@@ -53,7 +53,6 @@ add accounts center
 where:
 
 - users can delete their accounts
-- add option to use authenticator app to enter sudo mode
 - add passkey as a second factor option
 - option to disable password
 - If the user loses access to their 2FA device, provide secure fallback options:
