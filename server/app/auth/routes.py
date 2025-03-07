@@ -9,7 +9,11 @@ from starlette.responses import RedirectResponse
 
 from app.accounts.documents import Account
 from app.auth.dependencies import get_current_user
-from app.auth.exceptions import AccountNotFoundError, InvalidEmailError
+from app.auth.exceptions import (
+    AccountNotFoundError,
+    InvalidEmailError,
+    TwoFactorAuthenticationRequiredError,
+)
 from app.auth.services import AuthService
 from app.config import Settings
 
@@ -70,7 +74,12 @@ async def oauth2_signin_callback_google(
             case InvalidEmailError():
                 return RedirectResponse(
                     url=settings.accounts_base_url
-                    + "/auth/login?oauth2_error=unverified_email"
+                    + "/auth/login?oauth2_error=unverified_email",
+                )
+            case TwoFactorAuthenticationRequiredError():
+                return RedirectResponse(
+                    url=settings.accounts_base_url + "/auth/2fa",
+                    headers=response.headers,
                 )
 
     return response

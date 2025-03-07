@@ -678,7 +678,7 @@ class AuthService:
 
     async def signin_with_google(
         self, user_info: dict, request: Request, response: Response, user_agent: str
-    ) -> Result[Account, InvalidEmailError]:
+    ) -> Result[Account, InvalidEmailError | TwoFactorAuthenticationRequiredError]:
         """Sign in with Google."""
         if not user_info["email_verified"]:
             return Err(InvalidEmailError())
@@ -712,6 +712,22 @@ class AuthService:
                 provider="google",
                 provider_user_id=user_info["sub"],
             )
+
+        if account.has_2fa_enabled:
+            # Set 2FA challenge cookie
+            (
+                challenge,
+                two_factor_challenge,
+            ) = await self._two_factor_authentication_challenge_repo.create(
+                account=account,
+                totp_secret=account.two_factor_secret,
+            )
+            self._set_two_factor_challenge_cookie(
+                request=request,
+                response=response,
+                value=challenge,
+            )
+            return Err(TwoFactorAuthenticationRequiredError())
 
         session_token = await self._session_repo.create(
             ip_address=request.client.host,
