@@ -1029,7 +1029,7 @@ class AuthService:
 
     async def delete_other_sessions(
         self, account_id: bson.ObjectId, except_session_token: str
-    ) -> list[bson.ObjectId]:
+    ) -> Result[list[bson.ObjectId], None]:
         """Delete all sessions for the user except the current one."""
         existing_sessions = await self._session_repo.get_all(
             account_id=account_id, except_session_token=except_session_token
@@ -1037,7 +1037,7 @@ class AuthService:
         session_ids = [session.id for session in existing_sessions]
         await self._session_repo.delete_many(session_ids=session_ids)
 
-        return session_ids
+        return Ok(session_ids)
 
     async def delete_session(
         self,

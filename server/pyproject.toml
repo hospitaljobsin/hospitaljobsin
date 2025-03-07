@@ -105,9 +105,6 @@ lint.ignore = [
 fixture-parentheses = false
 mark-parentheses = false
 
-[tool.ruff.lint.mccabe]
-max-complexity = 6
-
 [tool.ruff.lint.flake8-bugbear]
 extend-immutable-calls = []
 

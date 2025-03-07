@@ -713,12 +713,12 @@ class AuthMutation:
         auth_service: Annotated[AuthService, Inject],
     ) -> DeleteOtherSessionsPayloadType:
         """Delete other sessions of the viewer than the current one."""
-        deleted_session_ids = await auth_service.delete_other_sessions(
+        match await auth_service.delete_other_sessions(
             account_id=info.context["current_user"].id,
             except_session_token=info.context["session_token"],
-        )
-
-        return DeleteOtherSessionsPayloadType.marshal(deleted_session_ids)
+        ):
+            case Ok(deleted_session_ids):
+                return DeleteOtherSessionsPayloadType.marshal(deleted_session_ids)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=DeleteSessionPayload,
