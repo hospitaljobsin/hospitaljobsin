@@ -1332,7 +1332,7 @@ class AuthService:
             return Err(TwoFactorAuthenticationNotEnabledError())
 
         totp = pyotp.TOTP(account.two_factor_secret)
-        if not totp.verify(token):
+        if not totp.verify(two_factor_token):
             return Err(InvalidCredentialsError())
 
         self._grant_sudo_mode(request)
