@@ -22,7 +22,11 @@ import { getValidSudoModeRedirectURL } from "../../lib/redirects";
 import PasskeyAuthentication from "./PasskeyAuthentication";
 import PasswordAuthentication from "./PasswordAuthentication";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
-import type { RequestSudoViewFragment$key } from "./__generated__/RequestSudoViewFragment.graphql";
+import type {
+	AuthProvider,
+	RequestSudoViewFragment$key,
+	TwoFactorProvider,
+} from "./__generated__/RequestSudoViewFragment.graphql";
 
 const RequestSudoViewFragment = graphql`
  fragment RequestSudoViewFragment on Query {
@@ -37,23 +41,55 @@ const RequestSudoViewFragment = graphql`
   }
 `;
 
-type AuthMethod = "password" | "passkey" | "authenticator" | "google";
-
-const AUTH_METHOD_MESSAGES: Record<AuthMethod, string> = {
-	password: "Try using your password",
-	passkey: "Try using your passkey",
-	authenticator: "Try using your authenticator app",
-	google: "Try authenticating with Google",
+const AUTH_METHOD_MESSAGES: Record<AuthProvider | TwoFactorProvider, string> = {
+	PASSWORD: "Try using your password",
+	WEBAUTHN_CREDENTIAL: "Try using your passkey",
+	AUTHENTICATOR: "Try using your authenticator app",
+	OAUTH_GOOGLE: "Try authenticating with Google",
+	"%future added value": "Try another sign-in method",
 };
+
+function getDefaultAuthMethod(
+	authProviders: readonly AuthProvider[],
+	has2faEnabled: boolean,
+	twoFactorProviders: readonly TwoFactorProvider[],
+): AuthProvider | TwoFactorProvider {
+	const hasPassword = authProviders.includes("PASSWORD");
+	const hasPasskey = authProviders.includes("WEBAUTHN_CREDENTIAL");
+	const hasOauthGoogle = authProviders.includes("OAUTH_GOOGLE");
+
+	const hasAuthenticator =
+		has2faEnabled && twoFactorProviders.includes("AUTHENTICATOR");
+
+	// Only show Google OAuth if no other auth methods are available
+	const showGoogleOAuth =
+		hasOauthGoogle && !hasPassword && !hasPasskey && !hasAuthenticator;
+
+	if (hasPasskey) {
+		return "WEBAUTHN_CREDENTIAL";
+	}
+	if (hasPassword) {
+		return "PASSWORD";
+	}
+	if (hasAuthenticator) {
+		return "AUTHENTICATOR";
+	}
+	if (showGoogleOAuth) {
+		return "OAUTH_GOOGLE";
+	}
+	return authProviders[0];
+}
 
 export default function RequestSudoView({
 	rootQuery,
 }: { rootQuery: RequestSudoViewFragment$key }) {
+	const data = useFragment(RequestSudoViewFragment, rootQuery);
+
+	invariant(data.viewer.__typename === "Account", "Account expected");
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
-	const [currentAuthMethod, setCurrentAuthMethod] =
-		useState<AuthMethod>("password");
+	console.log(data.viewer.authProviders[0]);
 
 	const oauth2Error = searchParams.get("oauth2_error");
 
@@ -72,13 +108,20 @@ export default function RequestSudoView({
 		}
 	}, [oauth2Error, router]);
 
-	const redirectTo = getValidSudoModeRedirectURL(searchParams.get("return_to"));
-	const data = useFragment(RequestSudoViewFragment, rootQuery);
+	const [currentAuthMethod, setCurrentAuthMethod] = useState<
+		AuthProvider | TwoFactorProvider
+	>(
+		getDefaultAuthMethod(
+			data.viewer.authProviders,
+			data.viewer.has2faEnabled,
+			data.viewer.twoFactorProviders,
+		),
+	);
 
-	invariant(data.viewer.__typename === "Account", "Account expected");
+	const redirectTo = getValidSudoModeRedirectURL(searchParams.get("return_to"));
 
 	const hasPassword = data.viewer.authProviders.includes("PASSWORD");
-	const hasWebauthn = data.viewer.authProviders.includes("WEBAUTHN_CREDENTIAL");
+	const hasPasskey = data.viewer.authProviders.includes("WEBAUTHN_CREDENTIAL");
 	const hasOauthGoogle = data.viewer.authProviders.includes("OAUTH_GOOGLE");
 
 	const hasAuthenticator =
@@ -87,7 +130,7 @@ export default function RequestSudoView({
 
 	// Only show Google OAuth if no other auth methods are available
 	const showGoogleOAuth =
-		hasOauthGoogle && !hasPassword && !hasWebauthn && !hasAuthenticator;
+		hasOauthGoogle && !hasPassword && !hasPasskey && !hasAuthenticator;
 
 	function getOauth2ErrorMessage(errorCode: string): string {
 		switch (errorCode) {
@@ -98,18 +141,18 @@ export default function RequestSudoView({
 		}
 	}
 
-	function getAvailableAuthMethods(): AuthMethod[] {
-		const methods: AuthMethod[] = [];
-		if (hasPassword) methods.push("password");
-		if (hasWebauthn) methods.push("passkey");
-		if (hasAuthenticator) methods.push("authenticator");
-		if (showGoogleOAuth) methods.push("google");
+	function getAvailableAuthMethods(): (AuthProvider | TwoFactorProvider)[] {
+		const methods: (AuthProvider | TwoFactorProvider)[] = [];
+		if (hasPasskey) methods.push("WEBAUTHN_CREDENTIAL");
+		if (hasPassword) methods.push("PASSWORD");
+		if (hasAuthenticator) methods.push("AUTHENTICATOR");
+		if (showGoogleOAuth) methods.push("OAUTH_GOOGLE");
 		return methods;
 	}
 
 	const renderAuthMethod = () => {
 		switch (currentAuthMethod) {
-			case "password":
+			case "PASSWORD":
 				return hasPassword ? (
 					<PasswordAuthentication
 						isDisabled={isAuthenticating}
@@ -117,15 +160,15 @@ export default function RequestSudoView({
 						onAuthEnd={() => setIsAuthenticating(false)}
 					/>
 				) : null;
-			case "passkey":
-				return hasWebauthn ? (
+			case "WEBAUTHN_CREDENTIAL":
+				return hasPasskey ? (
 					<PasskeyAuthentication
 						isDisabled={isAuthenticating}
 						onAuthStart={() => setIsAuthenticating(true)}
 						onAuthEnd={() => setIsAuthenticating(false)}
 					/>
 				) : null;
-			case "authenticator":
+			case "AUTHENTICATOR":
 				return hasAuthenticator ? (
 					<TwoFactorAuthentication
 						isDisabled={isAuthenticating}
@@ -133,7 +176,7 @@ export default function RequestSudoView({
 						onAuthEnd={() => setIsAuthenticating(false)}
 					/>
 				) : null;
-			case "google":
+			case "OAUTH_GOOGLE":
 				return showGoogleOAuth ? (
 					<Button
 						fullWidth
