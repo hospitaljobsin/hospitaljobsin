@@ -8,6 +8,7 @@ import {
 	CardHeader,
 	Chip,
 	Tooltip,
+	useDisclosure,
 } from "@heroui/react";
 import {
 	CpuIcon,
@@ -16,15 +17,15 @@ import {
 	Monitor,
 	Smartphone,
 	TabletIcon,
-	Trash2,
+	Trash,
 	WatchIcon,
 } from "lucide-react";
-import { useFragment, useMutation } from "react-relay";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import type { IDevice } from "ua-parser-js";
 import { UAParser } from "ua-parser-js";
+import DeleteSessionModal from "./DeleteSessionModal";
 import type { SessionAccountSudoFragment$key } from "./__generated__/SessionAccountSudoFragment.graphql";
-import type { SessionDeleteMutation } from "./__generated__/SessionDeleteMutation.graphql";
 import type { SessionFragment$key } from "./__generated__/SessionFragment.graphql";
 
 export const SessionFragment = graphql`
@@ -34,6 +35,7 @@ export const SessionFragment = graphql`
 	ipAddress
     createdAt
     isCurrentSession
+	...DeleteSessionModalFragment
   }
 `;
 
@@ -41,20 +43,6 @@ export const SessionAccountSudoFragment = graphql`
   fragment SessionAccountSudoFragment on Account {
 	sudoModeExpiresAt
   }
-`;
-
-const DeleteSessionMutation = graphql`
-  mutation SessionDeleteMutation($sessionId: ID!, $connections: [ID!]!) {
-	deleteSession(sessionId: $sessionId) {
-		... on DeleteSessionSuccess {
-			sessionEdge {
-			node {
-				id @deleteEdge(connections: $connections)
-			}
-		}
-	}
-  }
-}
 `;
 
 type Props = {
@@ -86,90 +74,92 @@ export default function Session({
 	const accountData = useFragment(SessionAccountSudoFragment, account);
 	const { browser, device, os, engine } = UAParser(data.userAgent);
 
-	const [commitDelete, isDeleteMutationInFlight] =
-		useMutation<SessionDeleteMutation>(DeleteSessionMutation);
+	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
 	async function handleSessionDelete() {
 		if (checkSudoMode(accountData.sudoModeExpiresAt)) {
-			commitDelete({
-				variables: {
-					sessionId: data.id,
-					connections: [sessionsConnectionId],
-				},
-			});
+			onOpen();
 		}
 	}
 
 	return (
-		<Card fullWidth className="p-4 sm:p-6" isPressable={false} shadow="none">
-			<CardHeader className="w-full flex justify-between gap-6">
-				<div className="flex gap-4 items-center">
-					{getSessionIcon(device)}
-					<h2 className="text-lg">{data.ipAddress}</h2>
-				</div>
-				{data.isCurrentSession ? (
-					<>
-						<Chip
-							variant="flat"
-							color="success"
-							size="sm"
-							className="flex sm:hidden"
-						>
-							Current session
-						</Chip>
-						<Chip variant="flat" color="success" className="hidden sm:flex">
-							Current session
-						</Chip>
-					</>
-				) : (
-					<div className="flex items-center">
-						<Tooltip content="Delete session">
-							<Button
-								isIconOnly
-								variant="light"
-								color="danger"
-								onPress={handleSessionDelete}
-								isLoading={isDeleteMutationInFlight}
-							>
-								<Trash2 size={20} />
-							</Button>
-						</Tooltip>
+		<>
+			<Card fullWidth className="p-4 sm:p-6" isPressable={false} shadow="none">
+				<CardHeader className="w-full flex justify-between gap-6">
+					<div className="flex gap-4 items-center">
+						{getSessionIcon(device)}
+						<h2 className="text-lg">{data.ipAddress}</h2>
 					</div>
-				)}
-			</CardHeader>
-			<CardBody>
-				<div className="flex flex-col gap-6 sm:gap-8 sm:flex-row">
-					{browser.name && (
-						<div className="flex items-center gap-2 text-foreground-500">
-							<Globe size={16} />
-							<span>
-								{browser.name} {browser.major}
-							</span>
+					{data.isCurrentSession ? (
+						<>
+							<Chip
+								variant="flat"
+								color="success"
+								size="sm"
+								className="flex sm:hidden"
+							>
+								Current session
+							</Chip>
+							<Chip variant="flat" color="success" className="hidden sm:flex">
+								Current session
+							</Chip>
+						</>
+					) : (
+						<div className="flex items-center">
+							<Tooltip content="Delete session">
+								<Button
+									isIconOnly
+									variant="light"
+									color="danger"
+									onPress={handleSessionDelete}
+								>
+									<Trash size={20} />
+								</Button>
+							</Tooltip>
 						</div>
 					)}
-					{engine.name && (
-						<div className="flex items-center gap-2 text-foreground-500">
-							<CpuIcon size={16} />
-							<span>
-								{engine.name} {engine.version}
-							</span>
-						</div>
-					)}
-					{os.name && (
-						<div className="flex items-center gap-2 text-foreground-500">
-							<Monitor size={16} />
-							<span>
-								{os.name} {os.version}
-							</span>
-						</div>
-					)}
-				</div>
-			</CardBody>
-			<CardFooter className="w-full flex justify-end sm:justify-start">
-				<p className="text-foreground-400 text-sm">
-					Created on {dateFormat.format(new Date(data.createdAt))}
-				</p>
-			</CardFooter>
-		</Card>
+				</CardHeader>
+				<CardBody>
+					<div className="flex flex-col gap-6 sm:gap-8 sm:flex-row">
+						{browser.name && (
+							<div className="flex items-center gap-2 text-foreground-500">
+								<Globe size={16} />
+								<span>
+									{browser.name} {browser.major}
+								</span>
+							</div>
+						)}
+						{engine.name && (
+							<div className="flex items-center gap-2 text-foreground-500">
+								<CpuIcon size={16} />
+								<span>
+									{engine.name} {engine.version}
+								</span>
+							</div>
+						)}
+						{os.name && (
+							<div className="flex items-center gap-2 text-foreground-500">
+								<Monitor size={16} />
+								<span>
+									{os.name} {os.version}
+								</span>
+							</div>
+						)}
+					</div>
+				</CardBody>
+				<CardFooter className="w-full flex justify-end sm:justify-start">
+					<p className="text-foreground-400 text-sm">
+						Created on {dateFormat.format(new Date(data.createdAt))}
+					</p>
+				</CardFooter>
+			</Card>
+			<DeleteSessionModal
+				isOpen={isOpen}
+				onClose={onClose}
+				onOpenChange={onOpenChange}
+				session={data}
+				sessionsConnectionId={sessionsConnectionId}
+			/>
+		</>
 	);
 }

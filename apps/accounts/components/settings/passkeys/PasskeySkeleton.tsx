@@ -14,7 +14,7 @@ export default function PasskeySkeleton() {
 				</div>
 			</CardHeader>
 
-			<CardFooter className="w-full flex justify-end sm:justify-start">
+			<CardFooter className="w-full flex justify-end sm:justify-start pt-0">
 				<Skeleton className="h-6 rounded-md w-1/3" />
 			</CardFooter>
 		</Card>

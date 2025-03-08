@@ -123,7 +123,7 @@ export default function Passkey({
 					</div>
 				</CardHeader>
 
-				<CardFooter className="w-full flex justify-end sm:justify-start gap-8">
+				<CardFooter className="w-full flex justify-end sm:justify-start gap-8 pt-0">
 					<p className="text-foreground-400 text-sm">
 						Created on {dateFormat.format(new Date(data.createdAt))}
 					</p>
