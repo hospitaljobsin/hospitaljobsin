@@ -9,11 +9,11 @@ import {
 	useDisclosure,
 } from "@heroui/react";
 import { Edit2, Fingerprint, Trash } from "lucide-react";
-import { useFragment, useMutation } from "react-relay";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import DeletePasskeyModal from "./DeletePasskeyModal";
 import UpdatePasskeyModal from "./UpdatePasskeyModal";
 import type { PasskeyAccountMetadataFragment$key } from "./__generated__/PasskeyAccountMetadataFragment.graphql";
-import type { PasskeyDeleteMutation } from "./__generated__/PasskeyDeleteMutation.graphql";
 import type { PasskeyFragment$key } from "./__generated__/PasskeyFragment.graphql";
 
 export const PasskeyFragment = graphql`
@@ -23,6 +23,7 @@ export const PasskeyFragment = graphql`
     createdAt
 	lastUsedAt
 	...UpdatePasskeyModalFragment
+	...DeletePasskeyModalFragment
   }
 `;
 
@@ -31,28 +32,6 @@ export const PasskeyAccountMetadataFragment = graphql`
 	sudoModeExpiresAt
 	authProviders
   }
-`;
-
-const DeletePasskeyMutation = graphql`
-  mutation PasskeyDeleteMutation($webAuthnCredentialId: ID!, $connections: [ID!]!) {
-	deleteWebAuthnCredential(webAuthnCredentialId: $webAuthnCredentialId) {
-		__typename
-		... on DeleteWebAuthnCredentialSuccess {
-			webAuthnCredentialEdge {
-			node {
-				id @deleteEdge(connections: $connections)
-			}
-			}
-		}
-		... on WebAuthnCredentialNotFoundError {
-			message
-		}
-
-		... on InsufficientAuthProvidersError {
-			message
-		}
-  }
-}
 `;
 
 type Props = {
@@ -78,32 +57,23 @@ export default function Passkey({
 
 	const { checkSudoMode } = useCheckSudoMode();
 
-	const { onOpen, onOpenChange, onClose, isOpen } = useDisclosure();
+	const {
+		onOpen: onUpdatePasskeyModalOpen,
+		onOpenChange: onUpdatePasskeyModalOpenChange,
+		onClose: onUpdatePasskeyModalClose,
+		isOpen: isUpdatePasskeyModalOpen,
+	} = useDisclosure();
 
-	const [commitDelete, isDeleteMutationInFlight] =
-		useMutation<PasskeyDeleteMutation>(DeletePasskeyMutation);
+	const {
+		onOpen: onDeletePasskeyModalOpen,
+		onOpenChange: onDeletePasskeyModalOpenChange,
+		onClose: onDeletePasskeyModalClose,
+		isOpen: isDeletePasskeyModalOpen,
+	} = useDisclosure();
 
-	async function handlePasskeyDelete() {
+	async function handlePasskeyDeleteModalOpen() {
 		if (checkSudoMode(accountData.sudoModeExpiresAt)) {
-			commitDelete({
-				variables: {
-					webAuthnCredentialId: data.id,
-					connections: [passkeysConnectionId],
-				},
-				onCompleted(response) {
-					if (
-						response.deleteWebAuthnCredential.__typename ===
-						"WebAuthnCredentialNotFoundError"
-					) {
-						// TODO: show a toast here
-					} else if (
-						response.deleteWebAuthnCredential.__typename ===
-						"DeleteWebAuthnCredentialSuccess"
-					) {
-						// TODO: show a toast here
-					}
-				},
-			});
+			onDeletePasskeyModalOpen();
 		}
 	}
 
@@ -121,7 +91,7 @@ export default function Passkey({
 								isIconOnly
 								variant="light"
 								color="default"
-								onPress={onOpen}
+								onPress={onUpdatePasskeyModalOpen}
 							>
 								<Edit2 size={20} />
 							</Button>
@@ -144,8 +114,7 @@ export default function Passkey({
 								isIconOnly
 								variant="light"
 								color="danger"
-								onPress={handlePasskeyDelete}
-								isLoading={isDeleteMutationInFlight}
+								onPress={handlePasskeyDeleteModalOpen}
 								isDisabled={!canDelete}
 							>
 								<Trash size={20} />
@@ -164,10 +133,17 @@ export default function Passkey({
 				</CardFooter>
 			</Card>
 			<UpdatePasskeyModal
-				isOpen={isOpen}
-				onClose={onClose}
-				onOpenChange={onOpenChange}
+				isOpen={isUpdatePasskeyModalOpen}
+				onClose={onUpdatePasskeyModalClose}
+				onOpenChange={onUpdatePasskeyModalOpenChange}
 				passkey={data}
+			/>
+			<DeletePasskeyModal
+				isOpen={isDeletePasskeyModalOpen}
+				onOpenChange={onDeletePasskeyModalOpenChange}
+				onClose={onDeletePasskeyModalClose}
+				passkey={data}
+				passkeysConnectionId={passkeysConnectionId}
 			/>
 		</>
 	);
