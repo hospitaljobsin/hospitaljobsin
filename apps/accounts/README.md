@@ -53,6 +53,8 @@ add accounts center
 where:
 
 - users can delete their accounts
+- when user is stuck while verifying their 2FA code, allow them to use their passkey, like Github (for better UX)
+- allow usage of passkeys for resetting passwords
 - add modal before deleting passkeys, sessions, and delete all sessions
 - add passkey as a second factor option
 - option to disable password
