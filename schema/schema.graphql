@@ -595,8 +595,8 @@ type Mutation {
     recaptchaToken: String!
   ): RequestPasswordResetPayload!
 
-  """Verify a 2FA challenge for password reset."""
-  verify2faPasswordReset(
+  """Verify a 2FA challenge for password reset using an authenticator app."""
+  verify2faPasswordResetWithAuthenticator(
     """The email of the existing user."""
     email: String!
 
@@ -604,8 +604,23 @@ type Mutation {
     passwordResetToken: String!
 
     """The 2FA token to verify password reset."""
-    twoFactorToken: String = null
-  ): Verify2FAPasswordResetPayload!
+    twoFactorToken: String!
+  ): Verify2FAPasswordResetWithAuthenticatorPayload!
+
+  """Verify a 2FA challenge for password reset using a passkey."""
+  verify2faPasswordResetWithPasskey(
+    """The email of the existing user."""
+    email: String!
+
+    """The password reset token."""
+    passwordResetToken: String!
+
+    """The passkey authentication response to verify password reset."""
+    authenticationResponse: JSON!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
+  ): Verify2FAPasswordResetWithPasskeyPayload!
 
   """Reset a user's password."""
   resetPassword(
@@ -617,9 +632,6 @@ type Mutation {
 
     """The new password."""
     newPassword: String!
-
-    """The 2FA token to verify password reset."""
-    twoFactorToken: String = null
   ): ResetPasswordPayload!
 
   """Delete other sessions of the viewer than the current one."""
@@ -914,6 +926,9 @@ type PasswordResetToken implements Node {
   """Email address of the password reset token's account."""
   email: String!
 
+  """Available 2FA providers for the password reset token's account."""
+  twoFactorProviders: [TwoFactorProvider!]!
+
   """Whether the password reset token needs 2FA to be used."""
   needs2fa: Boolean!
 }
@@ -1182,6 +1197,12 @@ type TwoFactorAuthenticationRequiredError implements Error {
   message: String!
 }
 
+"""The 2fA provider."""
+enum TwoFactorProvider {
+  WEBAUTHN_CREDENTIAL
+  AUTHENTICATOR
+}
+
 """The unsave job payload."""
 union UnsaveJobPayload = UnsaveJobSuccess | SavedJobNotFoundError
 
@@ -1200,8 +1221,11 @@ union UpdateProfilePayload = Account
 """The update webauthn credential payload."""
 union UpdateWebAuthnCredentialPayload = WebAuthnCredential | WebAuthnCredentialNotFoundError
 
-"""The verify 2FA password reset payload."""
-union Verify2FAPasswordResetPayload = PasswordResetToken | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | InvalidPasswordResetTokenError
+"""The verify 2FA password reset with authenticator payload."""
+union Verify2FAPasswordResetWithAuthenticatorPayload = PasswordResetToken | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | InvalidPasswordResetTokenError | InvalidRecaptchaTokenError
+
+"""The verify 2FA password reset with passkey payload."""
+union Verify2FAPasswordResetWithPasskeyPayload = PasswordResetToken | InvalidPasskeyAuthenticationCredentialError | TwoFactorAuthenticationNotEnabledError | InvalidPasswordResetTokenError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
 
 """The verify account 2FA token payload."""
 union VerifyAccount2FATokenPayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError

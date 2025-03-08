@@ -5,13 +5,14 @@ import { useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import ConfirmResetPasswordForm from "./ConfirmResetPasswordForm";
-import ResetPasswordTwoFactorAuthentication from "./ResetPasswordTwoFactorAuthentication";
+import ResetPasswordTwoFactorAuthentication from "./TwoFactorAuthentication";
 import type { ResetPasswordViewFragment$key } from "./__generated__/ResetPasswordViewFragment.graphql";
 
 const ResetPasswordViewFragment = graphql`
  fragment ResetPasswordViewFragment on PasswordResetToken {
 	id
 	needs2fa
+	...TwoFactorAuthenticationResetPasswordFragment
   }
 `;
 
@@ -34,6 +35,7 @@ export default function ResetPasswordView({
 				email={email}
 				resetToken={params.token}
 				onComplete={() => setNeeds2fa(false)}
+				passwordResetToken={data}
 			/>
 		);
 	}

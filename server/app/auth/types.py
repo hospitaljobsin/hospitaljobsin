@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from typing import Annotated, Self
 
 import strawberry
@@ -108,6 +109,15 @@ class InvalidAuthenticationProviderErrorType(BaseErrorType):
         )
 
 
+@strawberry.enum(
+    name="TwoFactorProvider",
+    description="The 2fA provider.",
+)
+class TwoFactorProviderEnum(Enum):
+    WEBAUTHN_CREDENTIAL = "WEBAUTHN_CREDENTIAL"
+    AUTHENTICATOR = "AUTHENTICATOR"
+
+
 @strawberry.type(
     name="PasswordResetToken",
     description="A password reset token.",
@@ -115,6 +125,10 @@ class InvalidAuthenticationProviderErrorType(BaseErrorType):
 class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
     email: str = strawberry.field(
         description="Email address of the password reset token's account.",
+    )
+
+    two_factor_providers: list[TwoFactorProviderEnum] = strawberry.field(
+        description="Available 2FA providers for the password reset token's account.",
     )
 
     account: strawberry.Private[Account]
@@ -126,6 +140,10 @@ class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
             id=str(reset_token.id),
             email=reset_token.account.email,
             account=reset_token.account,
+            two_factor_providers=[
+                TwoFactorProviderEnum[provider.upper()]
+                for provider in reset_token.account.two_factor_providers
+            ],
         )
 
     @strawberry.field(
@@ -809,14 +827,28 @@ LoginWithPasswordPayload = Annotated[
 ]
 
 
-Verify2FAPasswordResetPayload = Annotated[
+Verify2FAPasswordResetWithAuthenticatorPayload = Annotated[
     PasswordResetTokenType
     | InvalidCredentialsErrorType
     | TwoFactorAuthenticationNotEnabledErrorType
-    | InvalidPasswordResetTokenErrorType,
+    | InvalidPasswordResetTokenErrorType
+    | InvalidRecaptchaTokenErrorType,
     strawberry.union(
-        name="Verify2FAPasswordResetPayload",
-        description="The verify 2FA password reset payload.",
+        name="Verify2FAPasswordResetWithAuthenticatorPayload",
+        description="The verify 2FA password reset with authenticator payload.",
+    ),
+]
+
+Verify2FAPasswordResetWithPasskeyPayload = Annotated[
+    PasswordResetTokenType
+    | InvalidPasskeyAuthenticationCredentialErrorType
+    | TwoFactorAuthenticationNotEnabledErrorType
+    | InvalidPasswordResetTokenErrorType
+    | InvalidRecaptchaTokenErrorType
+    | WebAuthnChallengeNotFoundErrorType,
+    strawberry.union(
+        name="Verify2FAPasswordResetWithPasskeyPayload",
+        description="The verify 2FA password reset with passkey payload.",
     ),
 ]
 

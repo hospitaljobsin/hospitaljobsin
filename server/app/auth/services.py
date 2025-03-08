@@ -907,20 +907,24 @@ class AuthService:
 
         return Ok(None)
 
-    async def verify_2fa_password_reset(
+    async def verify_2fa_password_reset_with_authenticator(
         self,
         request: Request,
         response: Response,
         two_factor_token: str,
         password_reset_token: str,
         email: str,
+        recaptcha_token: str,
     ) -> Result[
         PasswordResetToken,
         InvalidPasswordResetTokenError
         | InvalidCredentialsError
-        | TwoFactorAuthenticationNotEnabledError,
+        | TwoFactorAuthenticationNotEnabledError
+        | InvalidRecaptchaTokenError,
     ]:
-        """Verify a 2FA challenge for password reset."""
+        """Verify a 2FA challenge for password reset with an authenticator app."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
         existing_reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
             email=email,
@@ -946,6 +950,88 @@ class AuthService:
         else:
             # delete the recovery code
             await self._recovery_code_repo.delete(existing_recovery_code)
+
+        # set a cookie to indicate user has completed 2fa challenge for password reset
+        challenge = await self._temp_two_factor_challenge_repo.create(
+            account_id=account.id,
+            password_reset_token_id=existing_reset_token.id,
+        )
+
+        self._set_temp_two_factor_challenge_cookie(
+            request=request,
+            response=response,
+            value=challenge,
+        )
+
+        return Ok(existing_reset_token)
+
+    async def verify_2fa_password_reset_with_passkey(
+        self,
+        request: Request,
+        response: Response,
+        authentication_response: dict[Any, Any],
+        password_reset_token: str,
+        email: str,
+        recaptcha_token: str,
+    ) -> Result[
+        PasswordResetToken,
+        InvalidPasswordResetTokenError
+        | InvalidPasskeyAuthenticationCredentialError
+        | TwoFactorAuthenticationNotEnabledError
+        | InvalidRecaptchaTokenError
+        | WebAuthnChallengeNotFoundError,
+    ]:
+        """Verify a 2FA challenge for password reset with a passkey."""
+        if not await self._verify_recaptcha_token(recaptcha_token):
+            return Err(InvalidRecaptchaTokenError())
+        existing_reset_token = await self._password_reset_token_repo.get(
+            token=password_reset_token,
+            email=email,
+        )
+
+        if existing_reset_token is None:
+            return Err(InvalidPasswordResetTokenError())
+
+        webauthn_challenge: str = request.session.get("webauthn_challenge")
+        if webauthn_challenge is None:
+            return Err(WebAuthnChallengeNotFoundError())
+
+        try:
+            authentication_credential = parse_authentication_credential_json(
+                authentication_response
+            )
+            web_authn_credential = await self._web_authn_credential_repo.get(
+                credential_id=authentication_credential.raw_id
+            )
+
+            if web_authn_credential is None:
+                return Err(InvalidPasskeyAuthenticationCredentialError())
+
+            authentication_verification = verify_authentication_response(
+                credential=authentication_credential,
+                # decode the base64 encoded challenge
+                expected_challenge=b64decode(webauthn_challenge),
+                expected_rp_id=self._settings.rp_id,
+                expected_origin=self._settings.rp_expected_origin,
+                require_user_verification=True,
+                credential_public_key=web_authn_credential.public_key,
+                credential_current_sign_count=web_authn_credential.sign_count,
+            )
+        except WebAuthnException:
+            return Err(InvalidPasskeyAuthenticationCredentialError())
+        if not authentication_verification.user_verified:
+            return Err(InvalidPasskeyAuthenticationCredentialError())
+
+        # update credential sign count
+        await self._web_authn_credential_repo.update_sign_count(
+            web_authn_credential=web_authn_credential,
+            sign_count=authentication_verification.new_sign_count,
+        )
+
+        account = web_authn_credential.account
+
+        # delete webauthn challenge from session
+        del request.session["webauthn_challenge"]
 
         # set a cookie to indicate user has completed 2fa challenge for password reset
         challenge = await self._temp_two_factor_challenge_repo.create(

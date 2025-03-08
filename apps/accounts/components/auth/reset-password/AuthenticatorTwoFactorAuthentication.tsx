@@ -1,15 +1,14 @@
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
-import type { ResetPasswordTwoFactorAuthenticationMutation as ResetPasswordTwoFactorAuthenticationMutationType } from "./__generated__/ResetPasswordTwoFactorAuthenticationMutation.graphql";
+import type { AuthenticatorTwoFactorAuthenticationResetPasswordMutation as AuthenticatorTwoFactorAuthenticationResetPasswordMutationType } from "./__generated__/AuthenticatorTwoFactorAuthenticationResetPasswordMutation.graphql";
 
-const ResetPasswordTwoFactorAuthenticationMutation = graphql`
-  mutation ResetPasswordTwoFactorAuthenticationMutation($email: String!, $passwordResetToken: String!, $twoFactorToken: String!) {
-    verify2faPasswordReset(email: $email, passwordResetToken: $passwordResetToken, twoFactorToken: $twoFactorToken) {
+const AuthenticatorTwoFactorAuthenticationResetPasswordMutation = graphql`
+  mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation($email: String!, $passwordResetToken: String!, $twoFactorToken: String!) {
+    verify2faPasswordResetWithAuthenticator(email: $email, passwordResetToken: $passwordResetToken, twoFactorToken: $twoFactorToken) {
       __typename
       ... on PasswordResetToken {
         ...ResetPasswordViewFragment
@@ -31,15 +30,28 @@ const resetPassword2faSchema = z.object({
 	token: z.string().min(1, "This field is required"),
 });
 
-export default function ResetPasswordTwoFactorAuthentication({
+export default function AuthenticatorTwoFactorAuthentication({
 	email,
 	resetToken,
 	onComplete,
-}: { email: string; resetToken: string; onComplete: () => void }) {
-	const router = useRouter();
+	isDisabled,
+	onAuthStart,
+	onAuthEnd,
+	hasPasskey,
+	onSwitchToPasskey,
+}: {
+	email: string;
+	resetToken: string;
+	onComplete: () => void;
+	isDisabled: boolean;
+	onAuthStart: () => void;
+	onAuthEnd: () => void;
+	hasPasskey?: boolean;
+	onSwitchToPasskey?: () => void;
+}) {
 	const [commitMutation, isMutationInFlight] =
-		useMutation<ResetPasswordTwoFactorAuthenticationMutationType>(
-			ResetPasswordTwoFactorAuthenticationMutation,
+		useMutation<AuthenticatorTwoFactorAuthenticationResetPasswordMutationType>(
+			AuthenticatorTwoFactorAuthenticationResetPasswordMutation,
 		);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const {
@@ -52,6 +64,7 @@ export default function ResetPasswordTwoFactorAuthentication({
 	});
 
 	function onSubmit(values: z.infer<typeof resetPassword2faSchema>) {
+		onAuthStart();
 		commitMutation({
 			variables: {
 				email: email,
@@ -60,24 +73,30 @@ export default function ResetPasswordTwoFactorAuthentication({
 			},
 			onCompleted(response) {
 				if (
-					response.verify2faPasswordReset.__typename ===
+					response.verify2faPasswordResetWithAuthenticator.__typename ===
 					"InvalidPasswordResetTokenError"
 				) {
-					setErrorMessage(response.verify2faPasswordReset.message);
+					setErrorMessage(
+						response.verify2faPasswordResetWithAuthenticator.message,
+					);
+					onAuthEnd();
 				} else if (
-					response.verify2faPasswordReset.__typename ===
+					response.verify2faPasswordResetWithAuthenticator.__typename ===
 					"InvalidCredentialsError"
 				) {
 					setError("token", {
-						message: response.verify2faPasswordReset.message,
+						message: response.verify2faPasswordResetWithAuthenticator.message,
 					});
+					onAuthEnd();
 				} else if (
-					response.verify2faPasswordReset.__typename ===
+					response.verify2faPasswordResetWithAuthenticator.__typename ===
 					"TwoFactorAuthenticationNotEnabledError"
 				) {
 					// TODO: show a toast
+					onAuthEnd();
 					onComplete();
 				} else {
+					onAuthEnd();
 					onComplete();
 				}
 			},
@@ -124,10 +143,16 @@ export default function ResetPasswordTwoFactorAuthentication({
 						<Button
 							fullWidth
 							isLoading={isSubmitting || isMutationInFlight}
+							isDisabled={isDisabled}
 							type="submit"
 						>
 							Verify Code
 						</Button>
+						{hasPasskey && (
+							<Button variant="light" onPress={onSwitchToPasskey} fullWidth>
+								Use passkey instead
+							</Button>
+						)}
 					</div>
 
 					<div className="flex h-8 items-end space-x-1">

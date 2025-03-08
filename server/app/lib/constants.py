@@ -43,3 +43,5 @@ TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN = 60 * 5  # 5 minutes
 AuthProvider = Literal["password", "webauthn_credential", "oauth_google"]
 
 OAuthProvider = Literal["google"]
+
+TwoFactorProvider = Literal["authenticator", "webauthn_credential"]

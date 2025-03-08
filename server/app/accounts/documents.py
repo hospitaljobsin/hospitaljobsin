@@ -6,7 +6,11 @@ from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
 from app.base.models import Address
-from app.lib.constants import EMAIL_VERIFICATION_TOKEN_COOLDOWN, AuthProvider
+from app.lib.constants import (
+    EMAIL_VERIFICATION_TOKEN_COOLDOWN,
+    AuthProvider,
+    TwoFactorProvider,
+)
 
 if TYPE_CHECKING:
     from app.auth.documents import (
@@ -81,7 +85,18 @@ class Account(Document):
 
     @property
     def has_2fa_enabled(self) -> bool:
+        """Whether two-factor authentication is enabled for the account."""
         return self.two_factor_secret is not None
+
+    @property
+    def two_factor_providers(self) -> list[TwoFactorProvider]:
+        """The two-factor authentication providers enabled for the account."""
+        providers = []
+        if self.two_factor_secret:
+            providers.append("authenticator")
+        if "webauthn_credential" in self.auth_providers:
+            providers.append("webauthn_credential")
+        return providers
 
     class Settings:
         name = "accounts"

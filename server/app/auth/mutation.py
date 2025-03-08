@@ -90,7 +90,8 @@ from .types import (
     TwoFactorAuthenticationNotEnabledErrorType,
     TwoFactorAuthenticationRequiredErrorType,
     UpdateWebAuthnCredentialPayload,
-    Verify2FAPasswordResetPayload,
+    Verify2FAPasswordResetWithAuthenticatorPayload,
+    Verify2FAPasswordResetWithPasskeyPayload,
     VerifyAccount2FATokenPayload,
     VerifyEmailPayload,
     VerifyEmailSuccessType,
@@ -594,11 +595,11 @@ class AuthMutation:
                 return RequestPasswordResetSuccessType()
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=Verify2FAPasswordResetPayload,
-        description="Verify a 2FA challenge for password reset.",
+        graphql_type=Verify2FAPasswordResetWithAuthenticatorPayload,
+        description="Verify a 2FA challenge for password reset using an authenticator app.",
     )
     @inject
-    async def verify_2fa_password_reset(
+    async def verify_2fa_password_reset_with_authenticator(
         self,
         info: Info,
         auth_service: Annotated[AuthService, Inject],
@@ -615,14 +616,14 @@ class AuthMutation:
             ),
         ],
         two_factor_token: Annotated[
-            str | None,
+            str,
             strawberry.argument(
                 description="The 2FA token to verify password reset.",
             ),
-        ] = None,
-    ) -> Verify2FAPasswordResetPayload:
-        """Verify a 2FA challenge for password reset."""
-        match await auth_service.verify_2fa_password_reset(
+        ],
+    ) -> Verify2FAPasswordResetWithAuthenticatorPayload:
+        """Verify a 2FA challenge for password reset using an authenticator app."""
+        match await auth_service.verify_2fa_password_reset_with_authenticator(
             email=email,
             password_reset_token=password_reset_token,
             two_factor_token=two_factor_token,
@@ -637,6 +638,66 @@ class AuthMutation:
                         return InvalidCredentialsErrorType()
                     case TwoFactorAuthenticationNotEnabledError():
                         return TwoFactorAuthenticationNotEnabledErrorType()
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+            case Ok(reset_token):
+                return PasswordResetTokenType.marshal(reset_token)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=Verify2FAPasswordResetWithPasskeyPayload,
+        description="Verify a 2FA challenge for password reset using a passkey.",
+    )
+    @inject
+    async def verify_2fa_password_reset_with_passkey(
+        self,
+        info: Info,
+        auth_service: Annotated[AuthService, Inject],
+        email: Annotated[
+            str,
+            strawberry.argument(
+                description="The email of the existing user.",
+            ),
+        ],
+        password_reset_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The password reset token.",
+            ),
+        ],
+        authentication_response: Annotated[
+            JSON,
+            strawberry.argument(
+                description="The passkey authentication response to verify password reset.",
+            ),
+        ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
+    ) -> Verify2FAPasswordResetWithPasskeyPayload:
+        """Verify a 2FA challenge for password reset using a passkey."""
+        match await auth_service.verify_2fa_password_reset_with_passkey(
+            email=email,
+            password_reset_token=password_reset_token,
+            authentication_response=authentication_response,
+            request=info.context["request"],
+            response=info.context["response"],
+            recaptcha_token=recaptcha_token,
+        ):
+            case Err(error):
+                match error:
+                    case InvalidPasswordResetTokenError():
+                        return InvalidPasswordResetTokenErrorType()
+                    case InvalidPasskeyAuthenticationCredentialError():
+                        return InvalidPasskeyAuthenticationCredentialErrorType()
+                    case TwoFactorAuthenticationNotEnabledError():
+                        return TwoFactorAuthenticationNotEnabledErrorType()
+                    case InvalidRecaptchaTokenError():
+                        return InvalidRecaptchaTokenErrorType()
+                    case WebAuthnChallengeNotFoundError():
+                        return WebAuthnChallengeNotFoundErrorType()
             case Ok(reset_token):
                 return PasswordResetTokenType.marshal(reset_token)
 
@@ -667,19 +728,12 @@ class AuthMutation:
                 description="The new password.",
             ),
         ],
-        two_factor_token: Annotated[
-            str | None,
-            strawberry.argument(
-                description="The 2FA token to verify password reset.",
-            ),
-        ] = None,
     ) -> ResetPasswordPayload:
         """Reset a user's password."""
         match await auth_service.reset_password(
             email=email,
             password_reset_token=password_reset_token,
             new_password=new_password,
-            two_factor_token=two_factor_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
             response=info.context["response"],
