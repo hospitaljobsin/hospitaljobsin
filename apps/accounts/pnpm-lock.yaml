@@ -19,7 +19,7 @@ importers:
         version: 3.6.0
       '@lobehub/icons':
         specifier: ^1.62.1
-        version: 1.62.1(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        version: 1.62.1(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@simplewebauthn/browser':
         specifier: ^13.1.0
         version: 13.1.0
@@ -2881,6 +2881,9 @@ packages:
   data-view-byte-offset@1.0.0:
     resolution: {integrity: sha512-t/Ygsytq+R995EJ5PZlD4Cu56sWa8InXySaViRzw9apusqsOO2bQP+SbYzAhR0pFKoB+43lYy8rWban9JSuXnA==}
     engines: {node: '>= 0.4'}
+
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
@@ -7059,12 +7062,12 @@ snapshots:
 
   '@lobehub/emojilib@1.0.0': {}
 
-  '@lobehub/fluent-emoji@1.2.0(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@lobehub/fluent-emoji@1.2.0(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@lobehub/emojilib': 1.0.0
-      '@lobehub/ui': 1.164.3(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      antd: 5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      antd-style: 3.7.1(@types/react@19.0.1)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@lobehub/ui': 1.164.3(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd: 5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd-style: 3.7.1(@types/react@19.0.1)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       emoji-regex: 10.4.0
       lodash-es: 4.17.21
       lucide-react: 0.469.0(react@19.0.0)
@@ -7079,11 +7082,11 @@ snapshots:
       - acorn
       - supports-color
 
-  '@lobehub/icons@1.62.1(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@lobehub/icons@1.62.1(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
-      '@lobehub/ui': 1.164.3(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      antd: 5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      antd-style: 3.7.1(@types/react@19.0.1)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@lobehub/ui': 1.164.3(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd: 5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd-style: 3.7.1(@types/react@19.0.1)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       lucide-react: 0.469.0(react@19.0.0)
       polished: 4.3.1
       react: 19.0.0
@@ -7096,7 +7099,7 @@ snapshots:
       - acorn
       - supports-color
 
-  '@lobehub/ui@1.164.3(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@lobehub/ui@1.164.3(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@ant-design/cssinjs': 1.22.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@dnd-kit/core': 6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -7107,16 +7110,16 @@ snapshots:
       '@emoji-mart/react': 1.1.1(emoji-mart@5.6.0)(react@19.0.0)
       '@floating-ui/react': 0.27.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@giscus/react': 3.1.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@lobehub/fluent-emoji': 1.2.0(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@lobehub/icons': 1.62.1(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@lobehub/fluent-emoji': 1.2.0(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@lobehub/icons': 1.62.1(@babel/core@7.26.0)(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(acorn@8.14.0)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@mdx-js/mdx': 3.1.0(acorn@8.14.0)
       '@mdx-js/react': 3.1.0(@types/react@19.0.1)(react@19.0.0)
       '@radix-ui/react-slot': 1.1.1(@types/react@19.0.1)(react@19.0.0)
       '@shikijs/transformers': 1.29.1
       '@splinetool/runtime': 0.9.526
       ahooks: 3.8.4(react@19.0.0)
-      antd: 5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      antd-style: 3.7.1(@types/react@19.0.1)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd: 5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd-style: 3.7.1(@types/react@19.0.1)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       chroma-js: 3.1.2
       class-variance-authority: 0.7.1
       dayjs: 1.11.13
@@ -8692,7 +8695,7 @@ snapshots:
 
   ansi-styles@6.2.1: {}
 
-  antd-style@3.7.1(@types/react@19.0.1)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  antd-style@3.7.1(@types/react@19.0.1)(antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@ant-design/cssinjs': 1.22.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@babel/runtime': 7.26.0
@@ -8701,7 +8704,7 @@ snapshots:
       '@emotion/react': 11.14.0(@types/react@19.0.1)(react@19.0.0)
       '@emotion/serialize': 1.3.3
       '@emotion/utils': 1.4.2
-      antd: 5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      antd: 5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
       use-merge-value: 1.2.0(react@19.0.0)
     transitivePeerDependencies:
@@ -8709,7 +8712,7 @@ snapshots:
       - react-dom
       - supports-color
 
-  antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  antd@5.23.2(date-fns@4.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@ant-design/colors': 7.2.0
       '@ant-design/cssinjs': 1.22.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -8741,7 +8744,7 @@ snapshots:
       rc-motion: 2.9.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-notification: 5.6.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-pagination: 5.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      rc-picker: 4.9.2(dayjs@1.11.13)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      rc-picker: 4.9.2(date-fns@4.1.0)(dayjs@1.11.13)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-progress: 4.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-rate: 2.13.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-resize-observer: 1.4.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -9288,6 +9291,9 @@ snapshots:
       call-bind: 1.0.7
       es-errors: 1.3.0
       is-data-view: 1.0.1
+
+  date-fns@4.1.0:
+    optional: true
 
   dayjs@1.11.13: {}
 
@@ -11458,7 +11464,7 @@ snapshots:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
 
-  rc-picker@4.9.2(dayjs@1.11.13)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  rc-picker@4.9.2(date-fns@4.1.0)(dayjs@1.11.13)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@babel/runtime': 7.26.0
       '@rc-component/trigger': 2.2.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -11469,6 +11475,7 @@ snapshots:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
     optionalDependencies:
+      date-fns: 4.1.0
       dayjs: 1.11.13
 
   rc-progress@4.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0):

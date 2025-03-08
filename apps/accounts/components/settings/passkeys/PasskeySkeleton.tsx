@@ -8,7 +8,8 @@ export default function PasskeySkeleton() {
 					<Skeleton className="h-10 w-10 rounded-full" />
 					<Skeleton className="h-6 rounded-md w-1/2" />
 				</div>
-				<div className="flex items-center">
+				<div className="flex items-center gap-4">
+					<Skeleton className="h-10 w-10 rounded-md" />
 					<Skeleton className="h-10 w-10 rounded-md" />
 				</div>
 			</CardHeader>

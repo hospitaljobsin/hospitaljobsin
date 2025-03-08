@@ -1,5 +1,5 @@
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
-import { dateFormat } from "@/lib/intl";
+import { dateFormat, getRelativeTimeString } from "@/lib/intl";
 import {
 	Button,
 	Card,
@@ -8,7 +8,7 @@ import {
 	Tooltip,
 	useDisclosure,
 } from "@heroui/react";
-import { Edit2, Fingerprint, Trash2 } from "lucide-react";
+import { Edit2, Fingerprint, Trash } from "lucide-react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import UpdatePasskeyModal from "./UpdatePasskeyModal";
@@ -21,6 +21,7 @@ export const PasskeyFragment = graphql`
 	id
 	nickname
     createdAt
+	lastUsedAt
 	...UpdatePasskeyModalFragment
   }
 `;
@@ -147,15 +148,18 @@ export default function Passkey({
 								isLoading={isDeleteMutationInFlight}
 								isDisabled={!canDelete}
 							>
-								<Trash2 size={20} />
+								<Trash size={20} />
 							</Button>
 						</Tooltip>
 					</div>
 				</CardHeader>
 
-				<CardFooter className="w-full flex justify-end sm:justify-start">
+				<CardFooter className="w-full flex justify-end sm:justify-start gap-8">
 					<p className="text-foreground-400 text-sm">
 						Created on {dateFormat.format(new Date(data.createdAt))}
+					</p>
+					<p className="text-foreground-400 text-sm">
+						Last used {getRelativeTimeString(new Date(data.lastUsedAt))}
 					</p>
 				</CardFooter>
 			</Card>

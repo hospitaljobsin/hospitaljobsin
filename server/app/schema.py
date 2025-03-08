@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from aioinject.ext.strawberry import AioInjectExtension
 from strawberry import Schema
 from strawberry.extensions import ParserCache, ValidationCache
@@ -13,7 +15,7 @@ from app.jobs.mutation import JobMutation
 from app.jobs.query import JobQuery
 from app.organizations.mutation import OrganizationMutation
 from app.organizations.query import OrganizationQuery
-from app.scalars import ID
+from app.scalars import ID, DateTime
 
 from .base.query import BaseQuery
 from .container import create_container
@@ -51,7 +53,7 @@ schema = Schema(
         ParserCache(maxsize=128),
         ValidationCache(maxsize=128),
     ],
-    scalar_overrides={GlobalID: ID},
+    scalar_overrides={GlobalID: ID, datetime: DateTime},
     config=StrawberryConfig(
         auto_camel_case=True,
     ),

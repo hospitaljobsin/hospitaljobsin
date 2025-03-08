@@ -55,8 +55,6 @@ where:
 - users can delete their accounts
 - show not founds on the 2fa pages if the challenge doesn't exist already (like GitHub does)
 - delete existing 2fa challenge before trying another sign in method
-- add last used at field to passkeys
-- rename webAuthnCredentials to passKeys as the former is more generic?
 - add modal before deleting passkeys, sessions, and delete all sessions
 - option to disable password
 

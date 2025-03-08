@@ -1268,6 +1268,9 @@ type WebAuthnCredential implements Node {
 
   """When the webauthn credential was created."""
   createdAt: DateTime!
+
+  """When the webauthn credential was last used."""
+  lastUsedAt: DateTime!
 }
 
 type WebAuthnCredentialConnection {

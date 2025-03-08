@@ -88,6 +88,8 @@ class WebAuthnCredential(Document):
 
     account: Link[Account]
 
+    last_used_at: datetime
+
     class Settings:
         name = "webauthn_credentials"  # MongoDB collection name
 

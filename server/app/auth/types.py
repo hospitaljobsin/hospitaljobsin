@@ -1,12 +1,10 @@
 from datetime import datetime
-from enum import Enum
 from typing import Annotated, Self
 
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
-from passlib.crypto import des
 from strawberry import Private, relay
 from strawberry.scalars import JSON
 
@@ -244,6 +242,10 @@ class WebAuthnCredentialType(BaseNodeType[WebAuthnCredential]):
         description="When the webauthn credential was created.",
     )
 
+    last_used_at: datetime = strawberry.field(
+        description="When the webauthn credential was last used.",
+    )
+
     @classmethod
     def marshal(cls, webauthn_credential: WebAuthnCredential) -> Self:
         """Marshal into a node instance."""
@@ -251,6 +253,7 @@ class WebAuthnCredentialType(BaseNodeType[WebAuthnCredential]):
             id=str(webauthn_credential.id),
             nickname=webauthn_credential.nickname,
             created_at=webauthn_credential.id.generation_time,
+            last_used_at=webauthn_credential.last_used_at,
         )
 
 

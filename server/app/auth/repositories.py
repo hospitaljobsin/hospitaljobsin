@@ -221,6 +221,7 @@ class WebAuthnCredentialRepo:
             transports=transports,
             backed_up=backed_up,
             nickname=nickname,
+            last_used_at=datetime.now(UTC),
         )
         await web_authn_credential.save()
         return web_authn_credential
@@ -233,6 +234,7 @@ class WebAuthnCredentialRepo:
     ) -> None:
         """Update the given WebAuthn credential."""
         web_authn_credential.sign_count = sign_count
+        web_authn_credential.last_used_at = datetime.now(UTC)
         await web_authn_credential.save()
 
     async def get(self, credential_id: bytes) -> WebAuthnCredential | None:
