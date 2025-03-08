@@ -8,6 +8,7 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
+	Divider,
 	Link,
 } from "@heroui/react";
 import { Google } from "@lobehub/icons";
@@ -35,21 +36,23 @@ const RequestSudoViewFragment = graphql`
   }
 `;
 
-const AUTH_METHOD_MESSAGES = {
+type AuthMethod = "password" | "passkey" | "2fa" | "google";
+
+const AUTH_METHOD_MESSAGES: Record<AuthMethod, string> = {
 	password: "Try using your password",
 	passkey: "Try using your passkey",
 	"2fa": "Try using your authenticator app",
 	google: "Try authenticating with Google",
-} as const;
+};
 
 export default function RequestSudoView({
 	rootQuery,
 }: { rootQuery: RequestSudoViewFragment$key }) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
-	const [currentAuthMethod, setCurrentAuthMethod] = useState<
-		"password" | "passkey" | "2fa" | "google"
-	>("password");
+
+	const [currentAuthMethod, setCurrentAuthMethod] =
+		useState<AuthMethod>("password");
 
 	const oauth2Error = searchParams.get("oauth2_error");
 
@@ -92,14 +95,14 @@ export default function RequestSudoView({
 		}
 	}
 
-	const getAvailableAuthMethods = () => {
-		const methods = [];
+	function getAvailableAuthMethods(): AuthMethod[] {
+		const methods: AuthMethod[] = [];
 		if (hasPassword) methods.push("password");
 		if (hasWebauthn) methods.push("passkey");
 		if (has2faEnabled) methods.push("2fa");
 		if (showGoogleOAuth) methods.push("google");
 		return methods;
-	};
+	}
 
 	const renderAuthMethod = () => {
 		switch (currentAuthMethod) {
@@ -144,6 +147,8 @@ export default function RequestSudoView({
 		}
 	};
 
+	const authMethods = getAvailableAuthMethods();
+
 	return (
 		<div className="w-full flex flex-col gap-6 h-full min-h-screen items-center justify-center">
 			<Card className="p-6 sm:p-12 max-w-xl" isPressable={false} shadow="none">
@@ -155,11 +160,11 @@ export default function RequestSudoView({
 					color="danger"
 					className="mb-4"
 				/>
-				<CardHeader className="flex flex-col gap-6">
+				<CardHeader className="flex flex-col gap-8">
 					<h2 className="text-lg sm:text-xl font-medium text-center w-full">
 						Please authenticate to continue
 					</h2>
-					<p className="w-full text-balance text-center text-foreground-500 text-small sm:text-base">
+					<p className="w-full text-balance text-center text-foreground-400 text-tiny sm:text-base">
 						You are entering <i>sudo mode,</i> which is needed to perform
 						sensitive operations. You won't be asked to authenticate again for a
 						while.
@@ -169,7 +174,8 @@ export default function RequestSudoView({
 					{renderAuthMethod()}
 				</CardBody>
 				<CardFooter className="w-full flex flex-col items-center justify-center gap-6 pt-12 max-w-lg mx-auto">
-					{getAvailableAuthMethods().map(
+					<Divider className="mb-6" />
+					{authMethods.map(
 						(method) =>
 							method !== currentAuthMethod && (
 								<Button

@@ -1328,7 +1328,6 @@ class AuthService:
             return Err(InvalidRecaptchaTokenError())
 
         if not account.has_2fa_enabled:
-            # return an error for users who signed up with Google
             return Err(TwoFactorAuthenticationNotEnabledError())
 
         totp = pyotp.TOTP(account.two_factor_secret)
