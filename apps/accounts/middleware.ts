@@ -10,7 +10,9 @@ const AUTHENTICATED_ROUTES: RegExp[] = [
 ];
 
 // reset password will be accessed by anonymous users as well as authenticated users
-const ANONYMOUS_ROUTES = [/^\/auth\/?(login|signup|2fa|2fa\/recovery)?$/];
+const ANONYMOUS_ROUTES = [/^\/auth\/?(login|signup)?$/];
+
+const REQUIRES_2FA_CHALLENGE_ROUTES = [/^\/auth\/?(2fa|2fa\/recovery)?$/];
 
 function requiresAuthenticated(request: NextRequest): boolean {
 	return AUTHENTICATED_ROUTES.some((route) =>
@@ -20,6 +22,12 @@ function requiresAuthenticated(request: NextRequest): boolean {
 
 function requiresAnonymous(request: NextRequest): boolean {
 	return ANONYMOUS_ROUTES.some((route) => route.test(request.nextUrl.pathname));
+}
+
+function requires2FAChallenge(request: NextRequest): boolean {
+	return REQUIRES_2FA_CHALLENGE_ROUTES.some((route) =>
+		route.test(request.nextUrl.pathname),
+	);
 }
 
 function getAuthenticationResponse(request: NextRequest): NextResponse {
@@ -36,6 +44,13 @@ function getAnonymousResponse(request: NextRequest): NextResponse {
 	return NextResponse.redirect(redirectURL);
 }
 
+function get2FAChallengeResponse(request: NextRequest): NextResponse {
+	const redirectURL = request.nextUrl.clone();
+	redirectURL.pathname = "/auth/login";
+	redirectURL.search = "";
+	return NextResponse.redirect(redirectURL);
+}
+
 export async function middleware(request: NextRequest) {
 	const response = NextResponse.next();
 	const hasAuthCookie = request.cookies.has(AUTH_COOKIE_KEY);
@@ -46,6 +61,11 @@ export async function middleware(request: NextRequest) {
 
 	if (requiresAnonymous(request)) {
 		return hasAuthCookie ? getAnonymousResponse(request) : response;
+	}
+
+	if (requires2FAChallenge(request)) {
+		const has2FAChallengeCookie = request.cookies.has("2fa_challenge");
+		return has2FAChallengeCookie ? response : get2FAChallengeResponse(request);
 	}
 
 	return response;

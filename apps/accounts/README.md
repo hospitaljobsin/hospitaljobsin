@@ -53,7 +53,6 @@ add accounts center
 where:
 
 - users can delete their accounts
-- show not founds on the 2fa pages if the challenge doesn't exist already (like GitHub does)
 - delete existing 2fa challenge before trying another sign in method
 - option to disable password
 
