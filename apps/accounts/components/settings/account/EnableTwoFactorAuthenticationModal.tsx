@@ -23,9 +23,9 @@ import type { EnableTwoFactorAuthenticationModalMutation } from "./__generated__
 
 const EnableTwoFactorAuthenticationMutation = graphql`
   mutation EnableTwoFactorAuthenticationModalMutation($token: String!) {
-	setAccount2fa(token: $token) {
+	enableAccount2faWithAuthenticator(token: $token) {
 		__typename
-		... on SetAccount2FASuccess {
+		... on EnableAccount2FAWithAuthenticatorSuccess {
 			account {
 				id
 				...TwoFactorAuthenticationFragment
@@ -86,19 +86,25 @@ export default function EnableTwoFactorAuthenticationModal({
 			},
 			onCompleted(response) {
 				if (
-					response.setAccount2fa.__typename ===
+					response.enableAccount2faWithAuthenticator.__typename ===
 					"TwoFactorAuthenticationChallengeNotFoundError"
 				) {
 					// TODO: show toast here
 					onClose();
 				} else if (
-					response.setAccount2fa.__typename === "InvalidCredentialsError"
+					response.enableAccount2faWithAuthenticator.__typename ===
+					"InvalidCredentialsError"
 				) {
-					setError("token", { message: response.setAccount2fa.message });
+					setError("token", {
+						message: response.enableAccount2faWithAuthenticator.message,
+					});
 				} else if (
-					response.setAccount2fa.__typename === "SetAccount2FASuccess"
+					response.enableAccount2faWithAuthenticator.__typename ===
+					"EnableAccount2FAWithAuthenticatorSuccess"
 				) {
-					setRecoveryCodes(response.setAccount2fa.recoveryCodes);
+					setRecoveryCodes(
+						response.enableAccount2faWithAuthenticator.recoveryCodes,
+					);
 				}
 			},
 		});
@@ -124,6 +130,7 @@ export default function EnableTwoFactorAuthenticationModal({
 			onOpenChange={onOpenChange}
 			size="xl"
 			scrollBehavior="inside"
+			className="overflow-y-auto"
 		>
 			<ModalContent className="flex flex-col w-full gap-6 p-4 sm:p-6">
 				<ModalHeader className="flex flex-col gap-4 w-full">
@@ -136,7 +143,7 @@ export default function EnableTwoFactorAuthenticationModal({
 					</p>
 				</ModalHeader>
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-12 w-full">
-					<ModalBody className="w-full flex flex-col gap-8 items-start">
+					<ModalBody className="w-full flex flex-col gap-6 items-start">
 						<QRCode
 							size={128}
 							className="sm:max-w-96 sm:min-w-64 max-w-64 min-w-48 h-auto"
@@ -184,7 +191,7 @@ export default function EnableTwoFactorAuthenticationModal({
 							)}
 						/>
 					</ModalBody>
-					<ModalFooter className="w-full">
+					<ModalFooter className="w-full pt-0">
 						<Button color="danger" variant="light" onPress={onClose} fullWidth>
 							Cancel
 						</Button>
@@ -194,7 +201,7 @@ export default function EnableTwoFactorAuthenticationModal({
 							isLoading={isMutationInFlight || isSubmitting}
 							fullWidth
 						>
-							Enable 2FA
+							Enable
 						</Button>
 					</ModalFooter>
 				</form>

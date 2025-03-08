@@ -86,6 +86,7 @@ class Account(Document):
     @property
     def has_2fa_enabled(self) -> bool:
         """Whether two-factor authentication is enabled for the account."""
+        # our only 2FA provider is authenticator for now, so we just check if the secret is set
         return self.two_factor_secret is not None
 
     @property
@@ -94,8 +95,6 @@ class Account(Document):
         providers = []
         if self.two_factor_secret:
             providers.append("authenticator")
-        if "webauthn_credential" in self.auth_providers:
-            providers.append("webauthn_credential")
         return providers
 
     class Settings:

@@ -233,6 +233,14 @@ class AuthProviderEnum(Enum):
     OAUTH_GOOGLE = "OAUTH_GOOGLE"
 
 
+@strawberry.enum(
+    name="TwoFactorProvider",
+    description="The two factor provider provider.",
+)
+class TwoFactorProviderEnum(Enum):
+    AUTHENTICATOR = "AUTHENTICATOR"
+
+
 @strawberry.type(
     name="Account",
     description="An account.",
@@ -249,6 +257,9 @@ class AccountType(BaseNodeType[Account]):
     )
     auth_providers: list[AuthProviderEnum] = strawberry.field(
         description="The authentication providers supported by the account."
+    )
+    two_factor_providers: list[TwoFactorProviderEnum] = strawberry.field(
+        description="Available 2FA providers for the account.",
     )
     has_2fa_enabled: bool = strawberry.field(
         description="Whether the account has 2FA enabled.",
@@ -268,6 +279,10 @@ class AccountType(BaseNodeType[Account]):
                 AuthProviderEnum[provider.upper()]
                 for provider in account.auth_providers
             ],
+            two_factor_providers=[
+                TwoFactorProviderEnum[provider.upper()]
+                for provider in account.two_factor_providers
+            ],
             has_2fa_enabled=account.has_2fa_enabled,
             profile_ref=account.profile.ref.id if account.profile is not None else None,
         )
@@ -283,6 +298,10 @@ class AccountType(BaseNodeType[Account]):
             auth_providers=[
                 AuthProviderEnum[provider.upper()]
                 for provider in account.auth_providers
+            ],
+            two_factor_providers=[
+                TwoFactorProviderEnum[provider.upper()]
+                for provider in account.two_factor_providers
             ],
             has_2fa_enabled=account.has_2fa_enabled,
             profile_ref=account.profile,

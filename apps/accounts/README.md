@@ -54,18 +54,12 @@ where:
 
 - users can delete their accounts
 - when user is stuck while verifying their 2FA code, allow them to use their passkey, like Github (for better UX)
-  (GITHUB SUPPORTS sms, passkeys and authenticator apps as valid 2FA methods)
+  (GITHUB SUPPORTS sms, security keys and authenticator apps as valid 2FA methods)
 - add modal before deleting passkeys, sessions, and delete all sessions
 - option to disable password
 - If the user loses access to their 2FA device, provide secure fallback options:
     Alternative 2FA Methods: Allow authentication via email or backup phone number.
     Manual Verification via Support: If no 2FA method is available, require identity verification (e.g., ID document upload or security questions).
 
-TODO:
-completely change 2FA
-
-2FA shouldnt be enabled via authenticator app alone
-2FA can be enabled via passkeys also
-has_2fa_enabled should be a boolean field on the document
-- last passkey cannot be deleted if 2fa is enabled with it
-- authenticator app can be configured and disabled separately, but cannot be disabled if 2fa is enabled with only it
+Github Uses SECURITY KEYS only as a form of 2fa, not PASSKEYS.
+hence our current setup is correct

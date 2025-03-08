@@ -4,9 +4,10 @@ import {
 	Card,
 	CardBody,
 	CardHeader,
+	Divider,
 	useDisclosure,
 } from "@heroui/react";
-import { RotateCcw, Trash } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -20,6 +21,7 @@ const TwoFactorAuthenticationFragment = graphql`
   fragment TwoFactorAuthenticationFragment on Account {
     has2faEnabled
 	sudoModeExpiresAt
+	twoFactorProviders
   }
 `;
 
@@ -107,34 +109,50 @@ export default function TwoFactorAuthentication({
 				</p>
 			</CardHeader>
 			<CardBody>
-				{data.has2faEnabled ? (
-					<div className="w-full flex items-center gap-6">
-						<Button
-							fullWidth
-							variant="flat"
-							startContent={<Trash size={20} />}
-							onPress={handleDisable2faOpen}
-						>
-							Disable 2FA
-						</Button>
-						<Button
-							fullWidth
-							variant="bordered"
-							startContent={<RotateCcw size={20} />}
-							onPress={handleRegenerateRecoveryCodesOpen}
-						>
-							Regenerate Recovery Codes
-						</Button>
+				<div className="w-full flex flex-col gap-12">
+					<div className="w-full flex flex-col items-center gap-6">
+						<div className="w-full flex flex-col sm:flex-row items-center gap-4 justify-between">
+							<div className="flex flex-col gap-4">
+								<h3>Authenticator App</h3>
+								<p className="text-small text-foreground-400">
+									Use an authentication app or browser extension to get
+									two-factor authentication codes when prompted.
+								</p>
+							</div>
+							{data.twoFactorProviders.includes("AUTHENTICATOR") ? (
+								<Button
+									variant="flat"
+									className="w-full sm:w-auto"
+									onPress={handleDisable2faOpen}
+								>
+									Disable
+								</Button>
+							) : (
+								<Button
+									className="w-full sm:w-auto"
+									onPress={handleEnable2faOpen}
+									isLoading={isMutationInFlight}
+								>
+									Enable
+								</Button>
+							)}
+						</div>
 					</div>
-				) : (
-					<Button
-						fullWidth
-						onPress={handleEnable2faOpen}
-						isLoading={isMutationInFlight}
-					>
-						Enable 2FA
-					</Button>
-				)}
+					{data.has2faEnabled && (
+						<>
+							<Divider />
+							<Button
+								fullWidth
+								variant="bordered"
+								startContent={<RotateCcw size={20} />}
+								onPress={handleRegenerateRecoveryCodesOpen}
+							>
+								Regenerate Recovery Codes
+							</Button>
+						</>
+					)}
+				</div>
+
 				<EnableTwoFactorAuthenticationModal
 					isOpen={isEnableModalOpen}
 					onOpenChange={onEnableModalOpenChange}

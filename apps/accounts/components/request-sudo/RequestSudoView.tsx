@@ -30,18 +30,19 @@ const RequestSudoViewFragment = graphql`
 		__typename
 		... on Account {
 			authProviders
+			twoFactorProviders
 			has2faEnabled
 		}
 	}
   }
 `;
 
-type AuthMethod = "password" | "passkey" | "2fa" | "google";
+type AuthMethod = "password" | "passkey" | "authenticator" | "google";
 
 const AUTH_METHOD_MESSAGES: Record<AuthMethod, string> = {
 	password: "Try using your password",
 	passkey: "Try using your passkey",
-	"2fa": "Try using your authenticator app",
+	authenticator: "Try using your authenticator app",
 	google: "Try authenticating with Google",
 };
 
@@ -80,11 +81,13 @@ export default function RequestSudoView({
 	const hasWebauthn = data.viewer.authProviders.includes("WEBAUTHN_CREDENTIAL");
 	const hasOauthGoogle = data.viewer.authProviders.includes("OAUTH_GOOGLE");
 
-	const has2faEnabled = data.viewer.has2faEnabled;
+	const hasAuthenticator =
+		data.viewer.has2faEnabled &&
+		data.viewer.twoFactorProviders.includes("AUTHENTICATOR");
 
 	// Only show Google OAuth if no other auth methods are available
 	const showGoogleOAuth =
-		hasOauthGoogle && !hasPassword && !hasWebauthn && !has2faEnabled;
+		hasOauthGoogle && !hasPassword && !hasWebauthn && !hasAuthenticator;
 
 	function getOauth2ErrorMessage(errorCode: string): string {
 		switch (errorCode) {
@@ -99,7 +102,7 @@ export default function RequestSudoView({
 		const methods: AuthMethod[] = [];
 		if (hasPassword) methods.push("password");
 		if (hasWebauthn) methods.push("passkey");
-		if (has2faEnabled) methods.push("2fa");
+		if (hasAuthenticator) methods.push("authenticator");
 		if (showGoogleOAuth) methods.push("google");
 		return methods;
 	}
@@ -122,8 +125,8 @@ export default function RequestSudoView({
 						onAuthEnd={() => setIsAuthenticating(false)}
 					/>
 				) : null;
-			case "2fa":
-				return has2faEnabled ? (
+			case "authenticator":
+				return hasAuthenticator ? (
 					<TwoFactorAuthentication
 						isDisabled={isAuthenticating}
 						onAuthStart={() => setIsAuthenticating(true)}

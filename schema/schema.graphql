@@ -19,6 +19,9 @@ type Account implements Node {
   """The authentication providers supported by the account."""
   authProviders: [AuthProvider!]!
 
+  """Available 2FA providers for the account."""
+  twoFactorProviders: [TwoFactorProvider!]!
+
   """Whether the account has 2FA enabled."""
   has2faEnabled: Boolean!
 
@@ -201,7 +204,7 @@ type DeleteWebAuthnCredentialSuccess {
 }
 
 """The disable account 2FA payload."""
-union DisableAccount2FAPayload = Account | TwoFactorAuthenticationNotEnabledError
+union DisableAccount2FAWithAuthenticatorPayload = Account | TwoFactorAuthenticationNotEnabledError
 
 """Used when the email address is in use."""
 type EmailInUseError implements Error {
@@ -214,6 +217,15 @@ type EmailVerificationTokenCooldownError implements Error {
   """Human readable error message."""
   message: String!
   remainingSeconds: Int!
+}
+
+"""Enable account 2FA with authenticator success."""
+type EnableAccount2FAWithAuthenticatorSuccess {
+  """The account with 2FA enabled."""
+  account: Account!
+
+  """The recovery codes for the account."""
+  recoveryCodes: [String!]!
 }
 
 """Human readable error."""
@@ -688,23 +700,25 @@ type Mutation {
     recaptchaToken: String!
   ): RequestSudoModeWithPasswordPayload! @isAuthenticated
 
-  """Request a sudo mode grant for the current user using 2FA."""
-  requestSudoModeWith2fa(
+  """
+  Request a sudo mode grant for the current user using an authenticator app.
+  """
+  requestSudoModeWithAuthenticator(
     """The 2FA token of the user."""
     twoFactorToken: String!
 
     """The recaptcha token to verify the user request."""
     recaptchaToken: String!
-  ): RequestSudoModeWith2FAPayload! @isAuthenticated
+  ): RequestSudoModeWithAuthenticatorPayload! @isAuthenticated
 
   """Set two factor authentication."""
-  setAccount2fa(
+  enableAccount2faWithAuthenticator(
     """The 2FA token."""
     token: String!
   ): SetAccount2FAPayload! @isAuthenticated @requiresSudoMode
 
-  """Disable two factor authentication."""
-  disableAccount2fa: DisableAccount2FAPayload! @isAuthenticated @requiresSudoMode
+  """Disable two factor authentication with authenticator app."""
+  disableAccount2faWithAuthenticator: DisableAccount2FAWithAuthenticatorPayload! @isAuthenticated @requiresSudoMode
 
   """Generate an account 2FA challenge."""
   generateAccount2faChallenge: GenerateAccount2FAChallengePayload! @isAuthenticated @requiresSudoMode
@@ -927,6 +941,9 @@ type PasswordResetToken implements Node {
   email: String!
 
   """Available 2FA providers for the password reset token's account."""
+  authProviders: [AuthProvider!]!
+
+  """Available 2FA providers for the password reset token's account."""
   twoFactorProviders: [TwoFactorProvider!]!
 
   """Whether the password reset token needs 2FA to be used."""
@@ -1081,8 +1098,8 @@ type RequestPasswordResetSuccess {
   message: String!
 }
 
-"""The request sudo mode with 2FA payload."""
-union RequestSudoModeWith2FAPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | TwoFactorAuthenticationNotEnabledError
+"""The request sudo mode with authenticator app payload."""
+union RequestSudoModeWithAuthenticatorPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | TwoFactorAuthenticationNotEnabledError
 
 """The request sudo mode with passkey payload."""
 union RequestSudoModeWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
@@ -1167,17 +1184,8 @@ type SessionNotFoundError implements Error {
   message: String!
 }
 
-"""The set account 2FA payload."""
-union SetAccount2FAPayload = SetAccount2FASuccess | InvalidCredentialsError | TwoFactorAuthenticationChallengeNotFoundError
-
-"""Set account 2FA success."""
-type SetAccount2FASuccess {
-  """The account with 2FA enabled."""
-  account: Account!
-
-  """The recovery codes for the account."""
-  recoveryCodes: [String!]!
-}
+"""The enable account 2FA with authenticator payload."""
+union SetAccount2FAPayload = EnableAccount2FAWithAuthenticatorSuccess | InvalidCredentialsError | TwoFactorAuthenticationChallengeNotFoundError
 
 """Used when the 2FA challenge is not found."""
 type TwoFactorAuthenticationChallengeNotFoundError implements Error {
@@ -1197,9 +1205,8 @@ type TwoFactorAuthenticationRequiredError implements Error {
   message: String!
 }
 
-"""The 2fA provider."""
+"""The two factor provider provider."""
 enum TwoFactorProvider {
-  WEBAUTHN_CREDENTIAL
   AUTHENTICATOR
 }
 

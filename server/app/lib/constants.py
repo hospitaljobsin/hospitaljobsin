@@ -44,4 +44,4 @@ AuthProvider = Literal["password", "webauthn_credential", "oauth_google"]
 
 OAuthProvider = Literal["google"]
 
-TwoFactorProvider = Literal["authenticator", "webauthn_credential"]
+TwoFactorProvider = Literal["authenticator",]

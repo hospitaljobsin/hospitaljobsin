@@ -11,7 +11,7 @@ from strawberry import Private, relay
 from strawberry.scalars import JSON
 
 from app.accounts.documents import Account
-from app.accounts.types import AccountType, AuthProviderEnum
+from app.accounts.types import AccountType, AuthProviderEnum, TwoFactorProviderEnum
 from app.auth.documents import PasswordResetToken, Session, WebAuthnCredential
 from app.auth.repositories import SessionRepo, TemporaryTwoFactorChallengeRepo
 from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
@@ -109,15 +109,6 @@ class InvalidAuthenticationProviderErrorType(BaseErrorType):
         )
 
 
-@strawberry.enum(
-    name="TwoFactorProvider",
-    description="The 2fA provider.",
-)
-class TwoFactorProviderEnum(Enum):
-    WEBAUTHN_CREDENTIAL = "WEBAUTHN_CREDENTIAL"
-    AUTHENTICATOR = "AUTHENTICATOR"
-
-
 @strawberry.type(
     name="PasswordResetToken",
     description="A password reset token.",
@@ -125,6 +116,10 @@ class TwoFactorProviderEnum(Enum):
 class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
     email: str = strawberry.field(
         description="Email address of the password reset token's account.",
+    )
+
+    auth_providers: list[AuthProviderEnum] = strawberry.field(
+        description="Available 2FA providers for the password reset token's account.",
     )
 
     two_factor_providers: list[TwoFactorProviderEnum] = strawberry.field(
@@ -140,6 +135,10 @@ class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
             id=str(reset_token.id),
             email=reset_token.account.email,
             account=reset_token.account,
+            auth_providers=[
+                AuthProviderEnum[provider.upper()]
+                for provider in reset_token.account.auth_providers
+            ],
             two_factor_providers=[
                 TwoFactorProviderEnum[provider.upper()]
                 for provider in reset_token.account.two_factor_providers
@@ -731,10 +730,10 @@ class TwoFactorAuthenticationRequiredErrorType(BaseErrorType):
 
 
 @strawberry.type(
-    name="SetAccount2FASuccess",
-    description="Set account 2FA success.",
+    name="EnableAccount2FAWithAuthenticatorSuccess",
+    description="Enable account 2FA with authenticator success.",
 )
-class SetAccount2FASuccessType:
+class EnableAccount2FAWithAuthenticatorSuccessType:
     account: AccountType = strawberry.field(
         description="The account with 2FA enabled.",
     )
@@ -743,20 +742,20 @@ class SetAccount2FASuccessType:
     )
 
 
-SetAccount2FAPayload = Annotated[
-    SetAccount2FASuccessType
+EnableAccount2FAWithAuthenticatorPayload = Annotated[
+    EnableAccount2FAWithAuthenticatorSuccessType
     | InvalidCredentialsErrorType
     | TwoFactorAuthenticationChallengeNotFoundErrorType,
     strawberry.union(
         name="SetAccount2FAPayload",
-        description="The set account 2FA payload.",
+        description="The enable account 2FA with authenticator payload.",
     ),
 ]
 
-DisableAccount2FAPayload = Annotated[
+DisableAccount2FAWithAuthenticatorPayload = Annotated[
     AccountType | TwoFactorAuthenticationNotEnabledErrorType,
     strawberry.union(
-        name="DisableAccount2FAPayload",
+        name="DisableAccount2FAWithAuthenticatorPayload",
         description="The disable account 2FA payload.",
     ),
 ]
@@ -865,13 +864,13 @@ ResetPasswordPayload = Annotated[
 ]
 
 
-RequestSudoModeWith2FAPayload = Annotated[
+RequestSudoModeWithAuthenticatorPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
     | InvalidRecaptchaTokenErrorType
     | TwoFactorAuthenticationNotEnabledErrorType,
     strawberry.union(
-        name="RequestSudoModeWith2FAPayload",
-        description="The request sudo mode with 2FA payload.",
+        name="RequestSudoModeWithAuthenticatorPayload",
+        description="The request sudo mode with authenticator app payload.",
     ),
 ]

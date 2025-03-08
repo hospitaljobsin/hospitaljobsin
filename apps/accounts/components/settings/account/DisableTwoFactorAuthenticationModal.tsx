@@ -12,7 +12,7 @@ import type { DisableTwoFactorAuthenticationModalMutation } from "./__generated_
 
 const DisableTwoFactorAuthenticationMutation = graphql`
   mutation DisableTwoFactorAuthenticationModalMutation {
-	disableAccount2fa {
+	disableAccount2faWithAuthenticator {
 		__typename
         ... on Account {
             id
@@ -56,8 +56,8 @@ export default function DisableTwoFactorAuthenticationModal({
 					</ModalHeader>
 					<ModalBody>
 						<p className="text-foreground-500">
-							Are you sure you want to disable Two Factor Authentication? This
-							could make your account less secure.
+							Are you sure you want to disable Two Factor Authentication via
+							your authenticator app? This could make your account less secure.
 						</p>
 					</ModalBody>
 					<ModalFooter className="w-full">
@@ -69,7 +69,7 @@ export default function DisableTwoFactorAuthenticationModal({
 							isLoading={isMutationInFlight}
 							onPress={handleDisable2FA}
 						>
-							Disable 2FA
+							Disable
 						</Button>
 					</ModalFooter>
 				</ModalContent>

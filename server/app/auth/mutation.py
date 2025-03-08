@@ -44,9 +44,11 @@ from .types import (
     DeleteSessionSuccessType,
     DeleteWebAuthnCredentialPayload,
     DeleteWebAuthnCredentialSuccessType,
-    DisableAccount2FAPayload,
+    DisableAccount2FAWithAuthenticatorPayload,
     EmailInUseErrorType,
     EmailVerificationTokenCooldownErrorType,
+    EnableAccount2FAWithAuthenticatorPayload,
+    EnableAccount2FAWithAuthenticatorSuccessType,
     Generate2FARecoveryCodesPayload,
     Generate2FARecoveryCodesSuccessType,
     GenerateAccount2FAChallengePayload,
@@ -78,14 +80,12 @@ from .types import (
     RequestEmailVerificationTokenSuccessType,
     RequestPasswordResetPayload,
     RequestPasswordResetSuccessType,
-    RequestSudoModeWith2FAPayload,
+    RequestSudoModeWithAuthenticatorPayload,
     RequestSudoModeWithPasskeyPayload,
     RequestSudoModeWithPasswordPayload,
     ResetPasswordPayload,
     SessionEdgeType,
     SessionNotFoundErrorType,
-    SetAccount2FAPayload,
-    SetAccount2FASuccessType,
     TwoFactorAuthenticationChallengeNotFoundErrorType,
     TwoFactorAuthenticationNotEnabledErrorType,
     TwoFactorAuthenticationRequiredErrorType,
@@ -1068,8 +1068,8 @@ class AuthMutation:
                 return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=RequestSudoModeWith2FAPayload,
-        description="Request a sudo mode grant for the current user using 2FA.",
+        graphql_type=RequestSudoModeWithAuthenticatorPayload,
+        description="Request a sudo mode grant for the current user using an authenticator app.",
         extensions=[
             PermissionExtension(
                 permissions=[
@@ -1079,7 +1079,7 @@ class AuthMutation:
         ],
     )
     @inject
-    async def request_sudo_mode_with_2fa(
+    async def request_sudo_mode_with_authenticator(
         self,
         info: AuthInfo,
         two_factor_token: Annotated[
@@ -1095,9 +1095,9 @@ class AuthMutation:
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
-    ) -> RequestSudoModeWith2FAPayload:
-        """Request a sudo mode grant for the current user using 2FA."""
-        match await auth_service.request_sudo_mode_with_2fa(
+    ) -> RequestSudoModeWithAuthenticatorPayload:
+        """Request a sudo mode grant for the current user using an authenticator app."""
+        match await auth_service.request_sudo_mode_with_authenticator(
             request=info.context["request"],
             two_factor_token=two_factor_token,
             recaptcha_token=recaptcha_token,
@@ -1115,7 +1115,7 @@ class AuthMutation:
                 return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=SetAccount2FAPayload,
+        graphql_type=EnableAccount2FAWithAuthenticatorPayload,
         description="Set two factor authentication.",
         extensions=[
             PermissionExtension(
@@ -1127,7 +1127,7 @@ class AuthMutation:
         ],
     )
     @inject
-    async def set_account_2fa(
+    async def enable_account_2fa_with_authenticator(
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
@@ -1137,9 +1137,9 @@ class AuthMutation:
                 description="The 2FA token.",
             ),
         ],
-    ) -> SetAccount2FAPayload:
+    ) -> EnableAccount2FAWithAuthenticatorPayload:
         """Set two factor authentication."""
-        match await auth_service.set_account_2fa(
+        match await auth_service.enable_account_2fa_with_authenticator(
             account=info.context["current_user"],
             request=info.context["request"],
             response=info.context["response"],
@@ -1153,14 +1153,14 @@ class AuthMutation:
                         return TwoFactorAuthenticationChallengeNotFoundErrorType()
             case Ok(result):
                 (account, recovery_codes) = result
-                return SetAccount2FASuccessType(
+                return EnableAccount2FAWithAuthenticatorSuccessType(
                     account=AccountType.marshal(account),
                     recovery_codes=recovery_codes,
                 )
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=DisableAccount2FAPayload,
-        description="Disable two factor authentication.",
+        graphql_type=DisableAccount2FAWithAuthenticatorPayload,
+        description="Disable two factor authentication with authenticator app.",
         extensions=[
             PermissionExtension(
                 permissions=[
@@ -1171,13 +1171,13 @@ class AuthMutation:
         ],
     )
     @inject
-    async def disable_account_2fa(
+    async def disable_account_2fa_with_authenticator(
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
-    ) -> DisableAccount2FAPayload:
-        """Disable two factor authentication."""
-        match await auth_service.disable_account_2fa(
+    ) -> DisableAccount2FAWithAuthenticatorPayload:
+        """Disable two factor authentication with authenticator app."""
+        match await auth_service.disable_account_2fa_with_authenticator(
             account=info.context["current_user"],
         ):
             case Err(error):

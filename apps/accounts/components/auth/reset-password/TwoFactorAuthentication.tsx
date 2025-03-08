@@ -3,6 +3,7 @@ import { graphql, useFragment } from "react-relay";
 import AuthenticatorTwoFactorAuthentication from "./AuthenticatorTwoFactorAuthentication";
 import PasskeyTwoFactorAuthentication from "./PasskeyTwoFactorAuthentication";
 import type {
+	AuthProvider,
 	TwoFactorAuthenticationResetPasswordFragment$key,
 	TwoFactorProvider,
 } from "./__generated__/TwoFactorAuthenticationResetPasswordFragment.graphql";
@@ -10,6 +11,7 @@ import type {
 const TwoFactorAuthenticationResetPasswordFragment = graphql`
   fragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken {
 	twoFactorProviders
+	authProviders
   }
   `;
 
@@ -29,11 +31,12 @@ export default function TwoFactorAuthentication({
 		passwordResetToken,
 	);
 	const [isAuthenticating, setIsAuthenticating] = useState(false);
-	const [activeProvider, setActiveProvider] = useState<TwoFactorProvider>(
-		data.twoFactorProviders[0],
-	);
+	const [activeProvider, setActiveProvider] = useState<
+		AuthProvider | TwoFactorProvider
+	>(data.twoFactorProviders[0]);
 
-	const showPasskey = data.twoFactorProviders.includes("WEBAUTHN_CREDENTIAL");
+	const showPasskey = data.authProviders.includes("WEBAUTHN_CREDENTIAL");
+
 	const showAuthenticator = data.twoFactorProviders.includes("AUTHENTICATOR");
 
 	return (

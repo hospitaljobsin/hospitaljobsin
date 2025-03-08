@@ -629,6 +629,7 @@ class AuthService:
 
         if account.has_2fa_enabled:
             # Set 2FA challenge cookie
+            # TODO: 2fa is not only for authenticator apps
             (
                 challenge,
                 two_factor_challenge,
@@ -715,6 +716,7 @@ class AuthService:
 
         if account.has_2fa_enabled:
             # Set 2FA challenge cookie
+            # TODO: 2fa is not only for authenticator apps
             (
                 challenge,
                 two_factor_challenge,
@@ -935,7 +937,7 @@ class AuthService:
 
         account = existing_reset_token.account
 
-        if not account.has_2fa_enabled:
+        if account.two_factor_secret is None:
             return Err(TwoFactorAuthenticationNotEnabledError())
 
         existing_recovery_code = await self._recovery_code_repo.get(
@@ -1397,7 +1399,7 @@ class AuthService:
 
         return Ok(account)
 
-    async def request_sudo_mode_with_2fa(
+    async def request_sudo_mode_with_authenticator(
         self,
         two_factor_token: str,
         recaptcha_token: str,
@@ -1413,7 +1415,7 @@ class AuthService:
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
 
-        if not account.has_2fa_enabled:
+        if account.two_factor_secret is None:
             return Err(TwoFactorAuthenticationNotEnabledError())
 
         totp = pyotp.TOTP(account.two_factor_secret)
@@ -1465,7 +1467,7 @@ class AuthService:
         )
         return Ok((otp_uri, totp.secret))
 
-    async def set_account_2fa(
+    async def enable_account_2fa_with_authenticator(
         self,
         account: Account,
         token: str,
@@ -1475,7 +1477,7 @@ class AuthService:
         tuple[Account, list[str]],
         TwoFactorAuthenticationChallengeNotFoundError | InvalidCredentialsError,
     ]:
-        """Enable two factor authentication for the account."""
+        """Enable two factor authentication for the account using an authenticator."""
         challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)
 
         if challenge is None:
@@ -1503,12 +1505,12 @@ class AuthService:
         self._delete_two_factor_challenge_cookie(request=request, response=response)
         return Ok((account, recovey_codes))
 
-    async def disable_account_2fa(
+    async def disable_account_2fa_with_authenticator(
         self,
         account: Account,
     ) -> Result[Account, TwoFactorAuthenticationNotEnabledError]:
-        """Disable two factor authentication for the account."""
-        if not account.has_2fa_enabled:
+        """Disable two factor authentication for the account with authenticator app."""
+        if not account.two_factor_secret:
             return Err(TwoFactorAuthenticationNotEnabledError())
         await self._recovery_code_repo.delete_all(account_id=account.id)
         await self._account_repo.delete_two_factor_secret(account=account)
@@ -1548,7 +1550,7 @@ class AuthService:
 
         account = two_factor_authentication_challenge.account
 
-        if not account.has_2fa_enabled:
+        if not account.two_factor_secret:
             return Err(TwoFactorAuthenticationNotEnabledError())
 
         totp = pyotp.TOTP(account.two_factor_secret)

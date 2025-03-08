@@ -12,7 +12,7 @@ import type { TwoFactorAuthenticationMutation as TwoFactorAuthenticationMutation
 
 const TwoFactorAuthenticationMutation = graphql`
   mutation TwoFactorAuthenticationMutation($twoFactorToken: String!, $recaptchaToken: String!) {
-    requestSudoModeWith2fa(twoFactorToken: $twoFactorToken, recaptchaToken: $recaptchaToken) {
+    requestSudoModeWithAuthenticator(twoFactorToken: $twoFactorToken, recaptchaToken: $recaptchaToken) {
       __typename
       ... on Account {
         __typename
@@ -82,22 +82,22 @@ export default function TwoFactorAuthentication({
 			},
 			onCompleted(response) {
 				if (
-					response.requestSudoModeWith2fa.__typename ===
+					response.requestSudoModeWithAuthenticator.__typename ===
 					"InvalidCredentialsError"
 				) {
 					setError("twoFactorToken", {
-						message: response.requestSudoModeWith2fa.message,
+						message: response.requestSudoModeWithAuthenticator.message,
 					});
 					onAuthEnd();
 				} else if (
-					response.requestSudoModeWith2fa.__typename ===
+					response.requestSudoModeWithAuthenticator.__typename ===
 					"InvalidRecaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
 					onAuthEnd();
 				} else if (
-					response.requestSudoModeWith2fa.__typename ===
+					response.requestSudoModeWithAuthenticator.__typename ===
 					"TwoFactorAuthenticationNotEnabledError"
 				) {
 					// race condition: show a toast here
