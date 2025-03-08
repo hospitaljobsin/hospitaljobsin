@@ -753,80 +753,27 @@ class AuthService:
     def _set_user_session_cookie(
         self, request: Request, response: Response, value: str
     ) -> None:
-        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
-        secure = not is_localhost
-        response.set_cookie(
-            key=self._settings.user_session_cookie_name,
-            value=value,
-            expires=datetime.now(UTC) + timedelta(seconds=USER_SESSION_EXPIRES_IN),
-            path="/",
-            domain=self._settings.session_cookie_domain,
-            secure=secure,
-            httponly=True,
-            samesite="lax",
-        )
+        request.session["session_token"] = value
 
     def _set_two_factor_challenge_cookie(
         self, request: Request, response: Response, value: str
     ) -> None:
-        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
-        secure = not is_localhost
-        response.set_cookie(
-            key=self._settings.two_factor_challenge_cookie_name,
-            value=value,
-            expires=datetime.now(UTC)
-            + timedelta(seconds=TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN),
-            path="/",
-            domain=self._settings.session_cookie_domain,
-            secure=secure,
-            httponly=True,
-            samesite="lax",
-        )
+        request.session["2fa_challenge"] = value
 
     def _delete_two_factor_challenge_cookie(
         self, request: Request, response: Response
     ) -> None:
-        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
-        secure = not is_localhost
-        response.delete_cookie(
-            key=self._settings.two_factor_challenge_cookie_name,
-            path="/",
-            domain=self._settings.session_cookie_domain,
-            secure=secure,
-            httponly=True,
-            samesite="lax",
-        )
+        del request.session["2fa_challenge"]
 
     def _set_temp_two_factor_challenge_cookie(
         self, request: Request, response: Response, value: str
     ) -> None:
-        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
-        secure = not is_localhost
-        response.set_cookie(
-            key=self._settings.temp_two_factor_challenge_cookie_name,
-            value=value,
-            expires=datetime.now(UTC)
-            + timedelta(seconds=TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN),
-            path="/",
-            domain=self._settings.session_cookie_domain,
-            secure=secure,
-            httponly=True,
-            samesite="lax",
-        )
+        request.session["temp_2fa_challenge"] = value
 
     def _delete_temp_two_factor_challenge_cookie(
         self, request: Request, response: Response
     ) -> None:
-        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
-        secure = not is_localhost
-        response.delete_cookie(
-            key=self._settings.temp_two_factor_challenge_cookie_name,
-            path="/",
-            domain=self._settings.session_cookie_domain,
-            secure=secure,
-            httponly=True,
-            samesite="lax",
-        )
+        del request.session["temp_2fa_challenge"]
 
     async def logout(
         self,
@@ -840,14 +787,21 @@ class AuthService:
 
         await self._session_repo.delete_by_token(token=session_token)
 
-        response.delete_cookie(
-            key=self._settings.user_session_cookie_name,
-            path="/",
-            domain=self._settings.session_cookie_domain,
-            secure=secure,
-            httponly=True,
-            samesite="lax",
-        )
+        # delete entire session
+        del request.session
+
+        # # TODO: delete entire session here
+        # del request.session["session_token"]
+        # del request.session["sudo_mode_expires_at"]
+
+        # response.delete_cookie(
+        #     key=self._settings.user_session_cookie_name,
+        #     path="/",
+        #     domain=self._settings.session_cookie_domain,
+        #     secure=secure,
+        #     httponly=True,
+        #     samesite="lax",
+        # )
 
     async def get_password_reset_token(
         self, password_reset_token: str, email: str
@@ -1075,9 +1029,7 @@ class AuthService:
         temp_challenge: TemporaryTwoFactorChallenge | None = None
 
         if existing_reset_token.account.has_2fa_enabled:
-            challenge = request.cookies.get(
-                self._settings.temp_two_factor_challenge_cookie_name
-            )
+            challenge = request.session.get("temp_2fa_challenge")
             if challenge is None:
                 return Err(TwoFactorAuthenticationChallengeNotFoundError())
 
@@ -1478,7 +1430,7 @@ class AuthService:
         TwoFactorAuthenticationChallengeNotFoundError | InvalidCredentialsError,
     ]:
         """Enable two factor authentication for the account using an authenticator."""
-        challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)
+        challenge = request.session.get("2fa_challenge")
 
         if challenge is None:
             return Err(TwoFactorAuthenticationChallengeNotFoundError())
@@ -1533,7 +1485,7 @@ class AuthService:
         """Verify a 2FA challenge for the account with an authenticator (after login)."""
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
-        challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)
+        challenge = request.session.get("2fa_challenge")
 
         if challenge is None:
             return Err(TwoFactorAuthenticationChallengeNotFoundError())
@@ -1592,7 +1544,7 @@ class AuthService:
         """Verify account 2FA with a recovery code (after login)."""
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
-        challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)
+        challenge = request.session.get("2fa_challenge")
 
         if challenge is None:
             return Err(TwoFactorAuthenticationChallengeNotFoundError())

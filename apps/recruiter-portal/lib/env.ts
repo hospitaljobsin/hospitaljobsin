@@ -3,7 +3,8 @@ import { z } from "zod";
 
 export const env = createEnv({
 	server: {
-		AUTH_COOKIE_KEY: z.string().default("user_session"),
+		SESSION_COOKIE_KEY: z.string().default("user_session"),
+		SECRET_KEY: z.string(),
 	},
 	client: {
 		NEXT_PUBLIC_URL: z.string().url(),

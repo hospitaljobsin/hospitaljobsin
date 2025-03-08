@@ -1,8 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { env } from "./lib/env";
 import links from "./lib/links";
-
-const AUTH_COOKIE_KEY = env.AUTH_COOKIE_KEY;
+import { unsign } from "./lib/session";
 
 const AUTHENTICATED_ROUTES: RegExp[] = [
 	/^\/settings(\/.*)?$/,
@@ -53,19 +52,33 @@ function get2FAChallengeResponse(request: NextRequest): NextResponse {
 
 export async function middleware(request: NextRequest) {
 	const response = NextResponse.next();
-	const hasAuthCookie = request.cookies.has(AUTH_COOKIE_KEY);
+	const sessionCookie = request.cookies.get(env.SESSION_COOKIE_KEY);
+
+	let isAuthenticated = false;
+
+	let has2FAChallenge = false;
+
+	if (sessionCookie !== undefined) {
+		const payload = unsign(sessionCookie.value, env.SECRET_KEY);
+		console.log(request.cookies.get(env.SESSION_COOKIE_KEY), payload);
+		if (payload.session_token !== undefined) {
+			isAuthenticated = true;
+		}
+		if (payload["2fa_challenge"] !== undefined) {
+			has2FAChallenge = true;
+		}
+	}
 
 	if (requiresAuthenticated(request)) {
-		return hasAuthCookie ? response : getAuthenticationResponse(request);
+		return isAuthenticated ? response : getAuthenticationResponse(request);
 	}
 
 	if (requiresAnonymous(request)) {
-		return hasAuthCookie ? getAnonymousResponse(request) : response;
+		return isAuthenticated ? getAnonymousResponse(request) : response;
 	}
 
 	if (requires2FAChallenge(request)) {
-		const has2FAChallengeCookie = request.cookies.has("2fa_challenge");
-		return has2FAChallengeCookie ? response : get2FAChallengeResponse(request);
+		return has2FAChallenge ? response : get2FAChallengeResponse(request);
 	}
 
 	return response;

@@ -1,8 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { env } from "./lib/env";
 import links from "./lib/links";
-
-const AUTH_COOKIE_KEY = env.AUTH_COOKIE_KEY;
+import { unsign } from "./lib/session";
 
 const AUTHENTICATED_ROUTES = [/^\/dashboard(?:\/.*)?$/];
 
@@ -33,14 +32,24 @@ function getAnonymousResponse(request: NextRequest): NextResponse {
 
 export async function middleware(request: NextRequest) {
 	const response = NextResponse.next();
-	const hasAuthCookie = request.cookies.has(AUTH_COOKIE_KEY);
+	const sessionCookie = request.cookies.get(env.SESSION_COOKIE_KEY);
+
+	let isAuthenticated = false;
+
+	if (sessionCookie !== undefined) {
+		const payload = unsign(sessionCookie.value, env.SECRET_KEY);
+		console.log(request.cookies.get(env.SESSION_COOKIE_KEY), payload);
+		if (payload.session_token !== undefined) {
+			isAuthenticated = true;
+		}
+	}
 
 	if (requiresAuthenticated(request)) {
-		return hasAuthCookie ? response : getAuthenticationResponse(request);
+		return isAuthenticated ? response : getAuthenticationResponse(request);
 	}
 
 	if (requiresAnonymous(request)) {
-		return hasAuthCookie ? getAnonymousResponse(request) : response;
+		return isAuthenticated ? getAnonymousResponse(request) : response;
 	}
 
 	return response;

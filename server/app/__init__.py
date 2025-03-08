@@ -4,13 +4,13 @@ from aioinject.ext.fastapi import AioInjectMiddleware
 from asgi_correlation_id import CorrelationIdMiddleware
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.sessions import SessionMiddleware
 
 from app.auth.routes import auth_router
 from app.config import Settings
 from app.container import create_container
 from app.database import initialize_database
 from app.graphql_app import create_graphql_router
+from app.lib.middleware import SessionMiddleware
 
 
 def add_routes(app: FastAPI) -> None:
@@ -42,7 +42,7 @@ def add_middleware(app: FastAPI, settings: Settings) -> None:
     app.add_middleware(
         SessionMiddleware,
         secret_key=settings.secret_key,
-        session_cookie="session",
+        session_cookie="user_session",
         path="/",
         same_site="lax",
         https_only=True,

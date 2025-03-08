@@ -7,15 +7,12 @@ from fastapi import Depends, HTTPException, Request
 
 from app.accounts.documents import Account
 from app.auth.repositories import SessionRepo
-from app.config import Settings
 
 
 @inject
-async def get_session_token(
-    request: Request, settings: Annotated[Settings, Inject]
-) -> str | None:
-    """Get the session token from the request cookies."""
-    return request.cookies.get(settings.user_session_cookie_name)
+async def get_session_token(request: Request) -> str | None:
+    """Get the session token from the request session."""
+    return request.session.get("session_token")
 
 
 @inject
