@@ -55,9 +55,7 @@ where:
 - users can delete their accounts
 - when user is stuck while verifying their 2FA code, allow them to use their passkey, like Github (for better UX)
   (GITHUB SUPPORTS sms, passkeys and authenticator apps as valid 2FA methods)
-- allow usage of passkeys for resetting passwords (the button is shown conditionally)
 - add modal before deleting passkeys, sessions, and delete all sessions
-- add passkey as a second factor option
 - option to disable password
 - If the user loses access to their 2FA device, provide secure fallback options:
     Alternative 2FA Methods: Allow authentication via email or backup phone number.
