@@ -78,6 +78,7 @@ export default function SubmitResetPasswordFrom() {
 					"PasswordResetTokenCooldownError"
 				) {
 					// TODO: show toast here
+					setShowSuccessMessage(true);
 				} else {
 					setShowSuccessMessage(true);
 				}

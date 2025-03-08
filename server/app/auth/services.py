@@ -310,8 +310,8 @@ class AuthService:
         return Ok(account)
 
     @staticmethod
-    def generate_account_id() -> bson.ObjectId:
-        return bson.ObjectId()
+    def generate_account_id() -> ObjectId:
+        return ObjectId()
 
     async def generate_passkey_registration_options(
         self,
@@ -1132,8 +1132,8 @@ class AuthService:
         return Ok(existing_reset_token.account)
 
     async def delete_other_sessions(
-        self, account_id: bson.ObjectId, except_session_token: str
-    ) -> Result[list[bson.ObjectId], None]:
+        self, account_id: ObjectId, except_session_token: str
+    ) -> Result[list[ObjectId], None]:
         """Delete all sessions for the user except the current one."""
         existing_sessions = await self._session_repo.get_all(
             account_id=account_id, except_session_token=except_session_token
@@ -1145,8 +1145,8 @@ class AuthService:
 
     async def delete_session(
         self,
-        session_id: bson.ObjectId,
-        account_id: bson.ObjectId,
+        session_id: ObjectId,
+        account_id: ObjectId,
         except_session_token: str,
     ) -> Result[Session, SessionNotFoundError]:
         """Delete a session by ID."""
@@ -1161,7 +1161,7 @@ class AuthService:
         return Ok(session)
 
     async def delete_web_authn_credential(
-        self, account: Account, web_authn_credential_id: bson.ObjectId
+        self, account: Account, web_authn_credential_id: ObjectId
     ) -> Result[
         WebAuthnCredential,
         WebAuthnCredentialNotFoundError | InsufficientAuthProvidersError,
@@ -1281,7 +1281,7 @@ class AuthService:
     async def update_web_authn_credential(
         self,
         web_authn_credential_id: ObjectId,
-        account_id: bson.ObjectId,
+        account_id: ObjectId,
         nickname: str,
     ) -> Result[WebAuthnCredential, WebAuthnCredentialNotFoundError]:
         """Update a WebAuthn credential by ID."""
