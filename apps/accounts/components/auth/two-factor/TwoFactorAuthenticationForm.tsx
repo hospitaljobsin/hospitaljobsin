@@ -20,11 +20,11 @@ import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
-import type { TwoFactorAuthenticationFormMutation as TwoFactorAuthenticationFormMutationType } from "../__generated__/TwoFactorAuthenticationFormMutation.graphql";
+import type { TwoFactorAuthenticationFormMutation as TwoFactorAuthenticationFormMutationType } from "./__generated__/TwoFactorAuthenticationFormMutation.graphql";
 
 const TwoFactorAuthenticationFormMutation = graphql`
   mutation TwoFactorAuthenticationFormMutation($token: String!, $recaptchaToken: String!) {
-	verify2faChallenge(token: $token, recaptchaToken: $recaptchaToken) {
+	verify2faWithAuthenticator(token: $token, recaptchaToken: $recaptchaToken) {
 	  __typename
       ... on TwoFactorAuthenticationChallengeNotFoundError {
         message
@@ -81,17 +81,20 @@ export default function TwoFactorAuthenticationForm() {
 			},
 			onCompleted(response) {
 				if (
-					response.verify2faChallenge.__typename ===
+					response.verify2faWithAuthenticator.__typename ===
 					"InvalidRecaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
 				} else if (
-					response.verify2faChallenge.__typename === "InvalidCredentialsError"
+					response.verify2faWithAuthenticator.__typename ===
+					"InvalidCredentialsError"
 				) {
-					setError("token", { message: response.verify2faChallenge.message });
+					setError("token", {
+						message: response.verify2faWithAuthenticator.message,
+					});
 				} else if (
-					response.verify2faChallenge.__typename ===
+					response.verify2faWithAuthenticator.__typename ===
 					"TwoFactorAuthenticationChallengeNotFoundError"
 				) {
 					// redirect to login page when 2fa challenge expires/ is invalid

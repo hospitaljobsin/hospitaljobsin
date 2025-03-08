@@ -20,7 +20,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
-import type { TwoFactorRecoveryCodeFormMutation as TwoFactorRecoveryCodeFormMutationType } from "../__generated__/TwoFactorRecoveryCodeFormMutation.graphql";
+import type { TwoFactorRecoveryCodeFormMutation as TwoFactorRecoveryCodeFormMutationType } from "./__generated__/TwoFactorRecoveryCodeFormMutation.graphql";
 
 const TwoFactorRecoveryCodeFormMutation = graphql`
   mutation TwoFactorRecoveryCodeFormMutation($token: String!, $recaptchaToken: String!) {
@@ -81,17 +81,20 @@ export default function TwoFactorRecoveryCodeForm() {
 			},
 			onCompleted(response) {
 				if (
-					response.verify2faChallenge.__typename ===
+					response.verify2faRecoveryCode.__typename ===
 					"InvalidRecaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
 				} else if (
-					response.verify2faChallenge.__typename === "InvalidCredentialsError"
+					response.verify2faRecoveryCode.__typename ===
+					"InvalidCredentialsError"
 				) {
-					setError("token", { message: response.verify2faChallenge.message });
+					setError("token", {
+						message: response.verify2faRecoveryCode.message,
+					});
 				} else if (
-					response.verify2faChallenge.__typename ===
+					response.verify2faRecoveryCode.__typename ===
 					"TwoFactorAuthenticationChallengeNotFoundError"
 				) {
 					// redirect to login page when 2fa challenge expires/ is invalid

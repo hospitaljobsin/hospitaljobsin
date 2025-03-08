@@ -1443,13 +1443,13 @@ class AuthService:
 
         return Ok(current_user)
 
-    async def generate_account_2fa_challenge(
+    async def generate_authenticator_2fa_challenge(
         self,
         account: Account,
         request: Request,
         response: Response,
     ) -> Result[tuple[str, str], None]:
-        """Generate a 2FA challenge for the account."""
+        """Generate a 2FA challenge for the account to setup an authenticator."""
         (
             challenge,
             two_factor_challenge,
@@ -1516,7 +1516,7 @@ class AuthService:
         await self._account_repo.delete_two_factor_secret(account=account)
         return Ok(account)
 
-    async def verify_2fa_challenge(
+    async def verify_2fa_with_authenticator(
         self,
         request: Request,
         response: Response,
@@ -1530,7 +1530,7 @@ class AuthService:
         | TwoFactorAuthenticationChallengeNotFoundError
         | InvalidRecaptchaTokenError,
     ]:
-        """Verify a 2FA challenge for the account (after login)."""
+        """Verify a 2FA challenge for the account with an authenticator (after login)."""
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
         challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)
@@ -1575,7 +1575,7 @@ class AuthService:
 
         return Ok(account)
 
-    async def verify_2fa_recovery_code(
+    async def verify_2fa_with_recovery_code(
         self,
         request: Request,
         response: Response,
@@ -1589,7 +1589,7 @@ class AuthService:
         | TwoFactorAuthenticationChallengeNotFoundError
         | InvalidRecaptchaTokenError,
     ]:
-        """Verify a 2FA recovery code for the account (after login)."""
+        """Verify account 2FA with a recovery code (after login)."""
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
         challenge = request.cookies.get(self._settings.two_factor_challenge_cookie_name)

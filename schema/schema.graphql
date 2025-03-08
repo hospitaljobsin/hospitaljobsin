@@ -250,18 +250,6 @@ type Generate2FARecoveryCodesSuccess {
   recoveryCodes: [String!]!
 }
 
-"""The generate account 2FA OTP URI payload."""
-union GenerateAccount2FAChallengePayload = GenerateAccount2FAChallengeSuccess
-
-"""Generate account 2FA Challenge success."""
-type GenerateAccount2FAChallengeSuccess {
-  """The generated 2FA OTP URI."""
-  otpUri: String!
-
-  """The generated 2FA secret."""
-  secret: String!
-}
-
 """The generate authentication options payload."""
 union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSuccess | InvalidRecaptchaTokenError
 
@@ -269,6 +257,18 @@ union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSucces
 type GenerateAuthenticationOptionsSuccess {
   """Passkey authentication options."""
   authenticationOptions: JSON!
+}
+
+"""The generate authenticator 2FA challenge payload."""
+union GenerateAuthenticator2FAChallengePayload = GenerateAuthenticator2FAChallengeSuccess
+
+"""Generate account 2FA Challenge success."""
+type GenerateAuthenticator2FAChallengeSuccess {
+  """The generated 2FA OTP URI."""
+  otpUri: String!
+
+  """The generated 2FA secret."""
+  secret: String!
 }
 
 """The generate passkey creation options payload."""
@@ -720,26 +720,26 @@ type Mutation {
   """Disable two factor authentication with authenticator app."""
   disableAccount2faWithAuthenticator: DisableAccount2FAWithAuthenticatorPayload! @isAuthenticated @requiresSudoMode
 
-  """Generate an account 2FA challenge."""
-  generateAccount2faChallenge: GenerateAccount2FAChallengePayload! @isAuthenticated @requiresSudoMode
+  """Generate an account 2FA challenge to setup an authenticator."""
+  generateAuthenticator2faChallenge: GenerateAuthenticator2FAChallengePayload! @isAuthenticated @requiresSudoMode
 
-  """Verify Account 2FA challenge."""
-  verify2faChallenge(
+  """Verify Account 2FA challenge with an authenticator."""
+  verify2faWithAuthenticator(
     """The 2FA token."""
     token: String!
 
     """The recaptcha token to verify the user request."""
     recaptchaToken: String!
-  ): VerifyAccount2FATokenPayload!
+  ): Verify2FAWithAuthenticatorPayload!
 
-  """Verify Account 2FA recovery code."""
-  verify2faRecoveryCode(
+  """Verify Account 2FA with a recovery code."""
+  verify2faWithRecoveryCode(
     """The 2FA token."""
     token: String!
 
     """The recaptcha token to verify the user request."""
     recaptchaToken: String!
-  ): VerifyAccount2FATokenPayload!
+  ): Verify2FAWithRecoveryCodePayload!
 
   """Generate 2FA recovery codes for the current user."""
   generate2faRecoveryCodes: Generate2FARecoveryCodesPayload! @isAuthenticated @requiresSudoMode
@@ -1234,8 +1234,11 @@ union Verify2FAPasswordResetWithAuthenticatorPayload = PasswordResetToken | Inva
 """The verify 2FA password reset with passkey payload."""
 union Verify2FAPasswordResetWithPasskeyPayload = PasswordResetToken | InvalidPasskeyAuthenticationCredentialError | TwoFactorAuthenticationNotEnabledError | InvalidPasswordResetTokenError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
 
-"""The verify account 2FA token payload."""
-union VerifyAccount2FATokenPayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError
+"""The verify 2FA with authenticator payload."""
+union Verify2FAWithAuthenticatorPayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError
+
+"""The verify 2FA with recovery code payload."""
+union Verify2FAWithRecoveryCodePayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError
 
 """The verify email payload."""
 union VerifyEmailPayload = VerifyEmailSuccess | InvalidRecaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError

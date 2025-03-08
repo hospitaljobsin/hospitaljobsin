@@ -51,10 +51,10 @@ from .types import (
     EnableAccount2FAWithAuthenticatorSuccessType,
     Generate2FARecoveryCodesPayload,
     Generate2FARecoveryCodesSuccessType,
-    GenerateAccount2FAChallengePayload,
-    GenerateAccount2FAChallengeSuccessType,
     GenerateAuthenticationOptionsPayload,
     GenerateAuthenticationOptionsSuccessType,
+    GenerateAuthenticator2FAChallengePayload,
+    GenerateAuthenticator2FAChallengeSuccessType,
     GeneratePasskeyCreationOptionsPayload,
     GeneratePasskeyCreationOptionsSuccessType,
     GeneratePasskeyRegistrationOptionsPayload,
@@ -92,7 +92,8 @@ from .types import (
     UpdateWebAuthnCredentialPayload,
     Verify2FAPasswordResetWithAuthenticatorPayload,
     Verify2FAPasswordResetWithPasskeyPayload,
-    VerifyAccount2FATokenPayload,
+    Verify2FAWithAuthenticatorPayload,
+    Verify2FAWithRecoveryCodePayload,
     VerifyEmailPayload,
     VerifyEmailSuccessType,
     WebAuthnChallengeNotFoundErrorType,
@@ -1188,8 +1189,8 @@ class AuthMutation:
                 return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=GenerateAccount2FAChallengePayload,
-        description="Generate an account 2FA challenge.",
+        graphql_type=GenerateAuthenticator2FAChallengePayload,
+        description="Generate an account 2FA challenge to setup an authenticator.",
         extensions=[
             PermissionExtension(
                 permissions=[
@@ -1200,30 +1201,30 @@ class AuthMutation:
         ],
     )
     @inject
-    async def generate_account_2fa_challenge(
+    async def generate_authenticator_2fa_challenge(
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
-    ) -> GenerateAccount2FAChallengePayload:
-        """Generate an account 2FA challenge."""
-        match await auth_service.generate_account_2fa_challenge(
+    ) -> GenerateAuthenticator2FAChallengePayload:
+        """Generate an account 2FA challenge to setup an authenticator."""
+        match await auth_service.generate_authenticator_2fa_challenge(
             account=info.context["current_user"],
             request=info.context["request"],
             response=info.context["response"],
         ):
             case Ok(result):
                 otp_uri, secret = result
-                return GenerateAccount2FAChallengeSuccessType(
+                return GenerateAuthenticator2FAChallengeSuccessType(
                     otp_uri=otp_uri,
                     secret=secret,
                 )
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=VerifyAccount2FATokenPayload,
-        description="Verify Account 2FA challenge.",
+        graphql_type=Verify2FAWithAuthenticatorPayload,
+        description="Verify Account 2FA challenge with an authenticator.",
     )
     @inject
-    async def verify_2fa_challenge(
+    async def verify_2fa_with_authenticator(
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
@@ -1239,9 +1240,9 @@ class AuthMutation:
                 description="The recaptcha token to verify the user request."
             ),
         ],
-    ) -> VerifyAccount2FATokenPayload:
-        """Verify Account 2FA challenge."""
-        match await auth_service.verify_2fa_challenge(
+    ) -> Verify2FAWithAuthenticatorPayload:
+        """Verify Account 2FA challenge with an authenticator."""
+        match await auth_service.verify_2fa_with_authenticator(
             response=info.context["response"],
             request=info.context["request"],
             token=token,
@@ -1262,11 +1263,11 @@ class AuthMutation:
                 return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=VerifyAccount2FATokenPayload,
-        description="Verify Account 2FA recovery code.",
+        graphql_type=Verify2FAWithRecoveryCodePayload,
+        description="Verify Account 2FA with a recovery code.",
     )
     @inject
-    async def verify_2fa_recovery_code(
+    async def verify_2fa_with_recovery_code(
         self,
         info: AuthInfo,
         auth_service: Annotated[AuthService, Inject],
@@ -1282,9 +1283,9 @@ class AuthMutation:
                 description="The recaptcha token to verify the user request."
             ),
         ],
-    ) -> VerifyAccount2FATokenPayload:
-        """Verify Account 2FA recovery code."""
-        match await auth_service.verify_2fa_recovery_code(
+    ) -> Verify2FAWithRecoveryCodePayload:
+        """Verify Account 2FA with a recovery code."""
+        match await auth_service.verify_2fa_with_recovery_code(
             response=info.context["response"],
             request=info.context["request"],
             token=token,

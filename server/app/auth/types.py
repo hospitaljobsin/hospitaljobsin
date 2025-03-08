@@ -762,10 +762,10 @@ DisableAccount2FAWithAuthenticatorPayload = Annotated[
 
 
 @strawberry.type(
-    name="GenerateAccount2FAChallengeSuccess",
+    name="GenerateAuthenticator2FAChallengeSuccess",
     description="Generate account 2FA Challenge success.",
 )
-class GenerateAccount2FAChallengeSuccessType:
+class GenerateAuthenticator2FAChallengeSuccessType:
     otp_uri: str = strawberry.field(
         description="The generated 2FA OTP URI.",
     )
@@ -774,11 +774,11 @@ class GenerateAccount2FAChallengeSuccessType:
     )
 
 
-GenerateAccount2FAChallengePayload = Annotated[
-    GenerateAccount2FAChallengeSuccessType,
+GenerateAuthenticator2FAChallengePayload = Annotated[
+    GenerateAuthenticator2FAChallengeSuccessType,
     strawberry.union(
-        name="GenerateAccount2FAChallengePayload",
-        description="The generate account 2FA OTP URI payload.",
+        name="GenerateAuthenticator2FAChallengePayload",
+        description="The generate authenticator 2FA challenge payload.",
     ),
 ]
 
@@ -801,15 +801,27 @@ Generate2FARecoveryCodesPayload = Annotated[
     ),
 ]
 
-VerifyAccount2FATokenPayload = Annotated[
+Verify2FAWithAuthenticatorPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
     | TwoFactorAuthenticationNotEnabledErrorType
     | TwoFactorAuthenticationChallengeNotFoundErrorType
     | InvalidRecaptchaTokenErrorType,
     strawberry.union(
-        name="VerifyAccount2FATokenPayload",
-        description="The verify account 2FA token payload.",
+        name="Verify2FAWithAuthenticatorPayload",
+        description="The verify 2FA with authenticator payload.",
+    ),
+]
+
+Verify2FAWithRecoveryCodePayload = Annotated[
+    AccountType
+    | InvalidCredentialsErrorType
+    | TwoFactorAuthenticationNotEnabledErrorType
+    | TwoFactorAuthenticationChallengeNotFoundErrorType
+    | InvalidRecaptchaTokenErrorType,
+    strawberry.union(
+        name="Verify2FAWithRecoveryCodePayload",
+        description="The verify 2FA with recovery code payload.",
     ),
 ]
 
