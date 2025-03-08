@@ -76,7 +76,7 @@ export default function PasskeysList({ root }: Props) {
 	return (
 		<div className="w-full flex flex-col gap-6">
 			<div className="flex w-full items-center justify-between gap-6">
-				<p className="text-foreground-600">My Passkeys</p>
+				<p className="text-foreground-600">Your Passkeys</p>
 				<PasskeysController
 					passkeysConnectionId={data.webAuthnCredentials.__id}
 					account={rootQuery}

@@ -24,7 +24,7 @@ import type { TwoFactorRecoveryCodeFormMutation as TwoFactorRecoveryCodeFormMuta
 
 const TwoFactorRecoveryCodeFormMutation = graphql`
   mutation TwoFactorRecoveryCodeFormMutation($token: String!, $recaptchaToken: String!) {
-	verify2faRecoveryCode(token: $token, recaptchaToken: $recaptchaToken) {
+	verify2faWithRecoveryCode(token: $token, recaptchaToken: $recaptchaToken) {
 	  __typename
       ... on TwoFactorAuthenticationChallengeNotFoundError {
         message
@@ -81,20 +81,20 @@ export default function TwoFactorRecoveryCodeForm() {
 			},
 			onCompleted(response) {
 				if (
-					response.verify2faRecoveryCode.__typename ===
+					response.verify2faWithRecoveryCode.__typename ===
 					"InvalidRecaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
 				} else if (
-					response.verify2faRecoveryCode.__typename ===
+					response.verify2faWithRecoveryCode.__typename ===
 					"InvalidCredentialsError"
 				) {
 					setError("token", {
-						message: response.verify2faRecoveryCode.message,
+						message: response.verify2faWithRecoveryCode.message,
 					});
 				} else if (
-					response.verify2faRecoveryCode.__typename ===
+					response.verify2faWithRecoveryCode.__typename ===
 					"TwoFactorAuthenticationChallengeNotFoundError"
 				) {
 					// redirect to login page when 2fa challenge expires/ is invalid
@@ -142,13 +142,20 @@ export default function TwoFactorRecoveryCodeForm() {
 				</form>
 			</CardBody>
 			<Divider />
-			<CardFooter className="w-full flex items-center justify-center text-foreground-400 text-center text-small">
+			<CardFooter className="w-full flex flex-col gap-4 items-center justify-center text-foreground-400 text-center text-small">
 				<Link
 					href={links.twoFactorAuthentication(params.get("return_to"))}
 					className="cursor-pointer text-blue-500 text-small sm:text-sm text-center"
 				>
-					Use your authenticator app
+					Use your authenticator app instead
 				</Link>
+				<Button
+					as={Link}
+					href={links.login(params.get("return_to"))}
+					variant="light"
+				>
+					Try another sign in method
+				</Button>
 			</CardFooter>
 		</Card>
 	);

@@ -144,14 +144,21 @@ export default function TwoFactorAuthenticationForm() {
 				</form>
 			</CardBody>
 			<Divider />
-			<CardFooter className="w-full flex items-center justify-center text-foreground-400 text-center text-small gap-2 flex-col">
+			<CardFooter className="w-full flex items-center justify-center text-foreground-400 text-center text-small gap-4 flex-col">
 				<p>Facing problems?</p>
 				<Link
 					href={links.twoFactorRecovery(params.get("return_to"))}
 					className="cursor-pointer text-blue-500 text-small sm:text-sm text-center"
 				>
-					Use a recovery code
+					Use a recovery code instead
 				</Link>
+				<Button
+					as={Link}
+					href={links.login(params.get("return_to"))}
+					variant="light"
+				>
+					Try another sign in method
+				</Button>
 			</CardFooter>
 		</Card>
 	);

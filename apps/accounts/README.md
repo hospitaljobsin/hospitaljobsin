@@ -53,10 +53,8 @@ add accounts center
 where:
 
 - users can delete their accounts
-- when user is stuck while verifying their 2FA code, allow them to use their passkey, like Github (for better UX) CONDITIONALLY
-  (GITHUB SUPPORTS sms, security keys and authenticator apps as valid 2FA methods)
-- we need to store the auth providers of the users in some way or another while issuing the 2fa challenge
- (GitHub seems to store this in the session itself)
+- show not founds on the 2fa pages if the challenge doesn't exist already (like GitHub does)
+- delete existing 2fa challenge before trying another sign in method
 - add modal before deleting passkeys, sessions, and delete all sessions
 - option to disable password
 
