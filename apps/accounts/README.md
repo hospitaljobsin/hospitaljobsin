@@ -59,9 +59,6 @@ where:
  (GitHub seems to store this in the session itself)
 - add modal before deleting passkeys, sessions, and delete all sessions
 - option to disable password
-- If the user loses access to their 2FA device, provide secure fallback options:
-    Alternative 2FA Methods: Allow authentication via email or backup phone number.
-    Manual Verification via Support: If no 2FA method is available, require identity verification (e.g., ID document upload or security questions).
 
 Github Uses SECURITY KEYS only as a form of 2fa, not PASSKEYS.
 hence our current setup is correct
