@@ -59,6 +59,7 @@ where:
 - delete existing 2fa challenge before trying another sign in method
 - option to disable password
 - encrypt user session cookie using JWE
+- rename TwoFactorAuthenticationNotEnabledError to AuthenticatorNotEnabledError wherever applicable (ex: verify_2fa_challenge_with_authenticator)
 
 Github Uses SECURITY KEYS only as a form of 2fa, not PASSKEYS.
 hence our current setup is correct
