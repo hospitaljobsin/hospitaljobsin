@@ -58,6 +58,7 @@ where:
 - check if 2fa challenge has expired in session, if so, show not found on 2fa verification page
 - delete existing 2fa challenge before trying another sign in method
 - option to disable password
+- encrypt user session cookie using JWE
 
 Github Uses SECURITY KEYS only as a form of 2fa, not PASSKEYS.
 hence our current setup is correct
