@@ -30,6 +30,7 @@ pnpm install
 
 2. Set Environment variables
 Create a `.env` file, referencing the template [here](./.env.example)
+- To set the `RSA_PUBLIC_KEY` variable, Obtain the public key from the RSA key pair generated while setting up the server, replacing `\n` with `\\n` to ensure the key fits in a single line.
 
 ## Development commands
 

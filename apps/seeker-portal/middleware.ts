@@ -36,10 +36,14 @@ export async function middleware(request: NextRequest) {
 	let isAuthenticated = false;
 
 	if (sessionCookie !== undefined) {
-		const payload = unsign(sessionCookie.value, env.SECRET_KEY);
-		console.log(request.cookies.get(env.SESSION_COOKIE_KEY), payload);
-		if (payload.session_token !== undefined) {
-			isAuthenticated = true;
+		try {
+			const payload = await unsign(sessionCookie.value);
+			console.log(request.cookies.get(env.SESSION_COOKIE_KEY), payload);
+			if (payload.session_token !== undefined) {
+				isAuthenticated = true;
+			}
+		} catch (error) {
+			request.cookies.delete(env.SESSION_COOKIE_KEY);
 		}
 	}
 

@@ -299,9 +299,8 @@ class AuthService:
             account=account,
         )
 
-        self._set_user_session_cookie(
+        self._set_user_session(
             request=request,
-            response=response,
             value=session_token,
         )
 
@@ -450,9 +449,8 @@ class AuthService:
             account=account,
         )
 
-        self._set_user_session_cookie(
+        self._set_user_session(
             request=request,
-            response=response,
             value=session_token,
         )
 
@@ -581,9 +579,8 @@ class AuthService:
         # delete webauthn challenge from session
         del request.session["webauthn_challenge"]
 
-        self._set_user_session_cookie(
+        self._set_user_session(
             request=request,
-            response=response,
             value=session_token,
         )
 
@@ -637,9 +634,8 @@ class AuthService:
                 account=account,
                 totp_secret=account.two_factor_secret,
             )
-            self._set_two_factor_challenge_cookie(
+            self._set_two_factor_challenge(
                 request=request,
-                response=response,
                 value=challenge,
             )
             return Err(TwoFactorAuthenticationRequiredError())
@@ -650,9 +646,8 @@ class AuthService:
             account=account,
         )
 
-        self._set_user_session_cookie(
+        self._set_user_session(
             request=request,
-            response=response,
             value=session_token,
         )
 
@@ -724,9 +719,8 @@ class AuthService:
                 account=account,
                 totp_secret=account.two_factor_secret,
             )
-            self._set_two_factor_challenge_cookie(
+            self._set_two_factor_challenge(
                 request=request,
-                response=response,
                 value=challenge,
             )
             return Err(TwoFactorAuthenticationRequiredError())
@@ -737,9 +731,8 @@ class AuthService:
             account=account,
         )
 
-        self._set_user_session_cookie(
+        self._set_user_session(
             request=request,
-            response=response,
             value=session_token,
         )
 
@@ -750,58 +743,27 @@ class AuthService:
 
         return Ok(account)
 
-    def _set_user_session_cookie(
-        self, request: Request, response: Response, value: str
-    ) -> None:
+    def _set_user_session(self, request: Request, value: str) -> None:
         request.session["session_token"] = value
 
-    def _set_two_factor_challenge_cookie(
-        self, request: Request, response: Response, value: str
-    ) -> None:
+    def _set_two_factor_challenge(self, request: Request, value: str) -> None:
         request.session["2fa_challenge"] = value
 
-    def _delete_two_factor_challenge_cookie(
-        self, request: Request, response: Response
-    ) -> None:
+    def _delete_two_factor_challenge(self, request: Request) -> None:
         del request.session["2fa_challenge"]
 
-    def _set_temp_two_factor_challenge_cookie(
-        self, request: Request, response: Response, value: str
-    ) -> None:
+    def _set_temp_two_factor_challenge(self, request: Request, value: str) -> None:
         request.session["temp_2fa_challenge"] = value
 
-    def _delete_temp_two_factor_challenge_cookie(
-        self, request: Request, response: Response
-    ) -> None:
+    def _delete_temp_two_factor_challenge(self, request: Request) -> None:
         del request.session["temp_2fa_challenge"]
 
-    async def logout(
-        self,
-        request: Request,
-        response: Response,
-        session_token: str,
-    ) -> None:
+    async def logout(self, request: Request, session_token: str) -> None:
         """Log out the current user."""
-        is_localhost = request.url.hostname in ["127.0.0.1", "localhost"]
-        secure = not is_localhost
-
         await self._session_repo.delete_by_token(token=session_token)
 
         # delete entire session
         del request.session
-
-        # # TODO: delete entire session here
-        # del request.session["session_token"]
-        # del request.session["sudo_mode_expires_at"]
-
-        # response.delete_cookie(
-        #     key=self._settings.user_session_cookie_name,
-        #     path="/",
-        #     domain=self._settings.session_cookie_domain,
-        #     secure=secure,
-        #     httponly=True,
-        #     samesite="lax",
-        # )
 
     async def get_password_reset_token(
         self, password_reset_token: str, email: str
@@ -913,9 +875,8 @@ class AuthService:
             password_reset_token_id=existing_reset_token.id,
         )
 
-        self._set_temp_two_factor_challenge_cookie(
+        self._set_temp_two_factor_challenge(
             request=request,
-            response=response,
             value=challenge,
         )
 
@@ -995,9 +956,8 @@ class AuthService:
             password_reset_token_id=existing_reset_token.id,
         )
 
-        self._set_temp_two_factor_challenge_cookie(
+        self._set_temp_two_factor_challenge(
             request=request,
-            response=response,
             value=challenge,
         )
 
@@ -1072,12 +1032,11 @@ class AuthService:
 
         if temp_challenge is not None:
             # delete the temp 2fa challenge cookie
-            self._delete_temp_two_factor_challenge_cookie(request, response)
+            self._delete_temp_two_factor_challenge(request=request)
             await self._temp_two_factor_challenge_repo.delete(temp_challenge)
 
-        self._set_user_session_cookie(
+        self._set_user_session(
             request=request,
-            response=response,
             value=session_token,
         )
 
@@ -1412,9 +1371,8 @@ class AuthService:
         totp = pyotp.totp.TOTP(two_factor_challenge.totp_secret)
         otp_uri = totp.provisioning_uri(name=account.email, issuer_name=APP_NAME)
 
-        self._set_two_factor_challenge_cookie(
+        self._set_two_factor_challenge(
             request=request,
-            response=response,
             value=challenge,
         )
         return Ok((otp_uri, totp.secret))
@@ -1442,7 +1400,7 @@ class AuthService:
         )
 
         if two_factor_authentication_challenge is None:
-            self._delete_two_factor_challenge_cookie(request=request, response=response)
+            self._delete_two_factor_challenge(request=request)
             return Err(TwoFactorAuthenticationChallengeNotFoundError())
         totp = pyotp.TOTP(two_factor_authentication_challenge.totp_secret)
         if not totp.verify(token):
@@ -1454,7 +1412,7 @@ class AuthService:
         recovey_codes = await self._recovery_code_repo.create_many(
             account_id=account.id
         )
-        self._delete_two_factor_challenge_cookie(request=request, response=response)
+        self._delete_two_factor_challenge(request=request)
         return Ok((account, recovey_codes))
 
     async def disable_account_2fa_with_authenticator(
@@ -1497,7 +1455,7 @@ class AuthService:
         )
 
         if two_factor_authentication_challenge is None:
-            self._delete_two_factor_challenge_cookie(request=request, response=response)
+            self._delete_two_factor_challenge(request=request)
             return Err(TwoFactorAuthenticationChallengeNotFoundError())
 
         account = two_factor_authentication_challenge.account
@@ -1515,11 +1473,10 @@ class AuthService:
             account=account,
         )
 
-        self._delete_two_factor_challenge_cookie(request=request, response=response)
+        self._delete_two_factor_challenge(request=request)
 
-        self._set_user_session_cookie(
+        self._set_user_session(
             request=request,
-            response=response,
             value=session_token,
         )
 
@@ -1556,7 +1513,7 @@ class AuthService:
         )
 
         if two_factor_authentication_challenge is None:
-            self._delete_two_factor_challenge_cookie(request=request, response=response)
+            self._delete_two_factor_challenge(request=request)
             return Err(TwoFactorAuthenticationChallengeNotFoundError())
 
         account = two_factor_authentication_challenge.account
@@ -1579,11 +1536,10 @@ class AuthService:
             account=account,
         )
 
-        self._delete_two_factor_challenge_cookie(request=request, response=response)
+        self._delete_two_factor_challenge(request=request)
 
-        self._set_user_session_cookie(
+        self._set_user_session(
             request=request,
-            response=response,
             value=session_token,
         )
 

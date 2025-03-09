@@ -59,13 +59,18 @@ export async function middleware(request: NextRequest) {
 	let has2FAChallenge = false;
 
 	if (sessionCookie !== undefined) {
-		const payload = unsign(sessionCookie.value, env.SECRET_KEY);
-		console.log(request.cookies.get(env.SESSION_COOKIE_KEY), payload);
-		if (payload.session_token !== undefined) {
-			isAuthenticated = true;
-		}
-		if (payload["2fa_challenge"] !== undefined) {
-			has2FAChallenge = true;
+		try {
+			const payload = await unsign(sessionCookie.value);
+			console.log(request.cookies.get(env.SESSION_COOKIE_KEY), payload);
+			if (payload.session_token !== undefined) {
+				isAuthenticated = true;
+			}
+			if (payload["2fa_challenge"] !== undefined) {
+				has2FAChallenge = true;
+			}
+		} catch (error) {
+			console.log("Error unsigning session cookie", error);
+			request.cookies.delete(env.SESSION_COOKIE_KEY);
 		}
 	}
 

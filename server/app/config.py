@@ -71,7 +71,15 @@ class Settings(BaseSettings):
 
     # session cookies config
 
+    session_user_cookie_name: str = "user_session"
+
     session_cookie_domain: str | None = None
+
+    # RSA keys config
+    # TODO: replace("\\n", "\n") here
+    rsa_private_key: str
+
+    rsa_public_key: str
 
     # Oauth2 config
     google_client_id: str
@@ -161,6 +169,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",
+        secrets_dir="./secrets",
     )
 
     def _is_environment(self, environment: Environment) -> bool:

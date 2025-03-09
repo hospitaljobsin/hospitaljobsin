@@ -10,16 +10,18 @@ class SessionMiddleware(BaseHTTPMiddleware):
         self,
         app: FastAPI,
         *,
+        rsa_private_key: str,
+        rsa_public_key: str,
         session_cookie: str = "session",
         max_age: int = 14 * 24 * 60 * 60,  # 14 days
         path: str = "/",
         same_site: str = "lax",
-        secret_key: str | bytes | None = None,
         https_only: bool = False,
         domain: str | None = None,
     ) -> None:
         super().__init__(app)
-        self.secret_key = secret_key
+        self.rsa_private_key = rsa_private_key
+        self.rsa_public_key = rsa_public_key
         self.session_cookie = session_cookie
         self.max_age = max_age
         self.path = path
@@ -36,13 +38,14 @@ class SessionMiddleware(BaseHTTPMiddleware):
         cookie = request.cookies.get(self.session_cookie)
         if cookie:
             try:
-                # Decode the JWT cookie without verifying any signature.
-                # (Using algorithm "none" disables signature verification.)
+                # Decode JWT with RS256 using the public key
                 session_data = jwt.decode(
-                    cookie, options={"verify_signature": False}, algorithms=["none"]
+                    cookie,
+                    key=self.rsa_public_key,
+                    algorithms=["RS256"],
                 )
                 initial_session_was_empty = False
-            except Exception:
+            except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
                 session_data = {}
 
         # Add the session to both request.state and request.scope.
@@ -57,10 +60,11 @@ class SessionMiddleware(BaseHTTPMiddleware):
 
         # On response, if session data exists, encode it into a JWT cookie.
         if request.state.session:
+            # sign with RS256 algorithm
             token = jwt.encode(
                 request.state.session,
-                key=None,  # key is ignored when algorithm is "none"
-                algorithm="none",
+                key=self.rsa_private_key,
+                algorithm="RS256",
             )
             response.set_cookie(
                 self.session_cookie,
@@ -75,7 +79,9 @@ class SessionMiddleware(BaseHTTPMiddleware):
         # If the session was cleared during the request, delete the cookie.
         elif not request.state.session and not initial_session_was_empty:
             response.delete_cookie(
-                self.session_cookie, path=self.path, domain=self.domain
+                self.session_cookie,
+                path=self.path,
+                domain=self.domain,
             )
 
         return response

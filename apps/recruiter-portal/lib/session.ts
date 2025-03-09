@@ -1,9 +1,18 @@
-import jwt from "jsonwebtoken";
+import { importSPKI, jwtVerify } from "jose";
+import { env } from "./env";
 
-export function unsign(
-	signedValue: string,
-	secretKey: string,
-): Record<string, string> {
-	return jwt.decode(signedValue, { complete: true, json: true })
-		?.payload as Record<string, string>;
+export async function unsign(signedValue: string): Promise<Record<string, string>> {
+    const publicKey = await importSPKI(env.RSA_PUBLIC_KEY, "RS256");
+
+    const { payload } = await jwtVerify(signedValue, publicKey, {
+        algorithms: ["RS256"],
+    });
+
+    console.log("decoded", payload);
+
+    if (typeof payload !== "object" || payload === null) {
+        throw new Error("Invalid token");
+    }
+
+    return payload as Record<string, string>;
 }

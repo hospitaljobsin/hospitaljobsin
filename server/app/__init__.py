@@ -37,12 +37,11 @@ def add_middleware(app: FastAPI, settings: Settings) -> None:
         header_name="X-Request-ID",
     )
 
-    # sessions are needed to store temporary code & state
-    # needed for OAuth2 authorization code flows
     app.add_middleware(
         SessionMiddleware,
-        secret_key=settings.secret_key,
-        session_cookie="user_session",
+        rsa_private_key=settings.rsa_private_key,
+        rsa_public_key=settings.rsa_public_key,
+        session_cookie=settings.session_user_cookie_name,
         path="/",
         same_site="lax",
         https_only=True,
