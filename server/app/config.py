@@ -73,8 +73,6 @@ class Settings(BaseSettings):
 
     session_cookie_domain: str | None = None
 
-    # RSA keys config
-    # TODO: replace("\\n", "\n") here
     rsa_private_key: str
 
     rsa_public_key: str
