@@ -16,8 +16,6 @@ class Settings(BaseSettings):
 
     environment: Environment = Environment.development
 
-    secret_key: str
-
     host: Annotated[
         str,
         Field(
