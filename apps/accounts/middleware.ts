@@ -31,7 +31,7 @@ function requires2FAChallenge(request: NextRequest): boolean {
 
 function getAuthenticationResponse(request: NextRequest): NextResponse {
 	const redirectURL = request.nextUrl.clone();
-	redirectURL.pathname = "/auth/login";
+	redirectURL.pathname = links.login();
 	redirectURL.search = "";
 	const returnTo = `${request.nextUrl.pathname}${request.nextUrl.search}`;
 	redirectURL.searchParams.set("return_to", returnTo);
@@ -45,7 +45,7 @@ function getAnonymousResponse(request: NextRequest): NextResponse {
 
 function get2FAChallengeResponse(request: NextRequest): NextResponse {
 	const redirectURL = request.nextUrl.clone();
-	redirectURL.pathname = "/auth/login";
+	redirectURL.pathname = links.login();
 	redirectURL.search = "";
 	return NextResponse.redirect(redirectURL);
 }
