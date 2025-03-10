@@ -3,6 +3,8 @@ from datetime import datetime
 import strawberry
 from strawberry.relay import GlobalID
 
+from app.lib.formatting import format_datetime
+
 # temporary hack until strawberry fixes relay ID scalar generation
 # https://github.com/strawberry-graphql/strawberry/issues/3551
 ID = strawberry.scalar(
@@ -13,6 +15,6 @@ ID = strawberry.scalar(
 
 DateTime = strawberry.scalar(
     datetime,
-    serialize=lambda value: value.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    serialize=format_datetime,
     parse_value=lambda value: datetime.fromisoformat(value),
 )

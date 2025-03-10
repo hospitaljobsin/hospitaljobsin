@@ -90,6 +90,7 @@ from app.lib.constants import (
     SUDO_MODE_EXPIRES_IN,
 )
 from app.lib.emails import EmailSender
+from app.lib.formatting import format_datetime
 
 
 class AuthService:
@@ -750,8 +751,8 @@ class AuthService:
         challenge_expires_at: datetime,
     ) -> None:
         request.session["2fa_challenge"] = challenge
-        request.session["2fa_challenge_expires_at"] = challenge_expires_at.strftime(
-            "%Y-%m-%dT%H:%M:%SZ"
+        request.session["2fa_challenge_expires_at"] = format_datetime(
+            challenge_expires_at
         )
 
     def _delete_two_factor_challenge(self, request: Request) -> None:
@@ -1217,7 +1218,7 @@ class AuthService:
         sudo_mode_expires_at = datetime.now(UTC) + timedelta(
             seconds=SUDO_MODE_EXPIRES_IN
         )
-        request.session["sudo_mode_expires_at"] = sudo_mode_expires_at.isoformat()
+        request.session["sudo_mode_expires_at"] = format_datetime(sudo_mode_expires_at)
 
     async def request_sudo_mode_with_passkey(
         self,
