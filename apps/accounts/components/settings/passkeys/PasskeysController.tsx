@@ -180,11 +180,11 @@ export default function PasskeysController({
 							/>
 						</ModalBody>
 						<ModalFooter>
-							<Button color="danger" variant="light" onPress={onClose}>
+							<Button variant="light" onPress={onClose}>
 								Cancel
 							</Button>
 							<Button
-								color="default"
+								color="primary"
 								type="submit"
 								isLoading={
 									isSubmitting ||
