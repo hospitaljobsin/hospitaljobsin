@@ -14,7 +14,7 @@ type Account implements Node {
   email: String!
 
   """When the account was last updated."""
-  updatedAt: DateTime
+  updatedAt: datetime
 
   """The authentication providers supported by the account."""
   authProviders: [AuthProvider!]!
@@ -35,7 +35,7 @@ type Account implements Node {
   ): String!
 
   """When the user's sudo mode grant expires at."""
-  sudoModeExpiresAt: DateTime
+  sudoModeExpiresAt: datetime
 
   """The organizations the account is in."""
   organizations(
@@ -175,9 +175,6 @@ type CurrentJob {
 
 """Date (isoformat)"""
 scalar Date
-
-"""Date with time (isoformat)"""
-scalar DateTime
 
 """The delete other sessions payload."""
 type DeleteOtherSessionsPayload {
@@ -405,13 +402,13 @@ type Job implements Node {
   maxExperience: Int
 
   """When the job was last updated at."""
-  updatedAt: DateTime!
+  updatedAt: datetime!
 
   """The expiry time of the job."""
-  expiresAt: DateTime
+  expiresAt: datetime
 
   """When the job was created at."""
-  createdAt: DateTime!
+  createdAt: datetime!
 
   """Whether the job is saved by the current user."""
   isSaved: Boolean!
@@ -711,7 +708,7 @@ type Mutation {
     recaptchaToken: String!
   ): RequestSudoModeWithAuthenticatorPayload! @isAuthenticated
 
-  """Set two factor authentication."""
+  """Enable account 2FA with authenticator."""
   enableAccount2faWithAuthenticator(
     """The 2FA token."""
     token: String!
@@ -893,7 +890,7 @@ type OrganizationMemberEdge {
   role: String!
 
   """When the user joined the organization."""
-  createdAt: DateTime!
+  createdAt: datetime!
 }
 
 """Used when the organization is not found."""
@@ -996,7 +993,7 @@ type Profile implements Node {
   currentJob: CurrentJob
 
   """When the profile was created."""
-  createdAt: DateTime!
+  createdAt: datetime!
 }
 
 """Used when the profile is not found."""
@@ -1135,7 +1132,7 @@ type SavedJobEdge {
   node: Job!
 
   """When the job was saved at by the current user."""
-  savedAt: DateTime!
+  savedAt: datetime!
 }
 
 """Used when a saved job is not found."""
@@ -1156,7 +1153,7 @@ type Session implements Node {
   ipAddress: String!
 
   """When the session was created."""
-  createdAt: DateTime!
+  createdAt: datetime!
 
   """Whether the session is the current account's session."""
   isCurrentSession: Boolean!
@@ -1267,10 +1264,10 @@ type WebAuthnCredential implements Node {
   nickname: String!
 
   """When the webauthn credential was created."""
-  createdAt: DateTime!
+  createdAt: datetime!
 
   """When the webauthn credential was last used."""
-  lastUsedAt: DateTime!
+  lastUsedAt: datetime!
 }
 
 type WebAuthnCredentialConnection {
@@ -1301,3 +1298,5 @@ enum WorkMode {
   HYBRID
   OFFICE
 }
+
+scalar datetime

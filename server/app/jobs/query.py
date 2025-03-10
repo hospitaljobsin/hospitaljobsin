@@ -74,7 +74,7 @@ class JobQuery:
 
     @strawberry.field(  # type: ignore[misc]
         graphql_type=JobPayload,
-        description="Get job by ID.",
+        description="Get job by slug.",
     )
     @inject
     async def job(

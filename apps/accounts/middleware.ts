@@ -65,7 +65,10 @@ export async function middleware(request: NextRequest) {
 			if (payload.session_token !== undefined) {
 				isAuthenticated = true;
 			}
-			if (payload["2fa_challenge"] !== undefined) {
+			if (
+				payload["2fa_challenge_expires_at"] !== undefined &&
+				new Date(payload["2fa_challenge_expires_at"]) > new Date()
+			) {
 				has2FAChallenge = true;
 			}
 		} catch (error) {

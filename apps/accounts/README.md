@@ -53,9 +53,8 @@ pnpm run dev
 
 add accounts center
 where:
-
+ 
 - users can delete their accounts
-- check if 2fa challenge has expired in session, if so, show not found on 2fa verification page
 - delete existing 2fa challenge before trying another sign in method
 - option to disable password
 - encrypt user session cookie using JWE

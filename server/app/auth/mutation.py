@@ -1116,7 +1116,7 @@ class AuthMutation:
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=EnableAccount2FAWithAuthenticatorPayload,
-        description="Set two factor authentication.",
+        description="Enable account 2FA with authenticator.",
         extensions=[
             PermissionExtension(
                 permissions=[

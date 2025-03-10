@@ -636,7 +636,8 @@ class AuthService:
             )
             self._set_two_factor_challenge(
                 request=request,
-                value=challenge,
+                challenge=challenge,
+                challenge_expires_at=two_factor_challenge.expires_at,
             )
             return Err(TwoFactorAuthenticationRequiredError())
 
@@ -721,7 +722,8 @@ class AuthService:
             )
             self._set_two_factor_challenge(
                 request=request,
-                value=challenge,
+                challenge=challenge,
+                challenge_expires_at=two_factor_challenge.expires_at,
             )
             return Err(TwoFactorAuthenticationRequiredError())
 
@@ -746,11 +748,20 @@ class AuthService:
     def _set_user_session(self, request: Request, value: str) -> None:
         request.session["session_token"] = value
 
-    def _set_two_factor_challenge(self, request: Request, value: str) -> None:
-        request.session["2fa_challenge"] = value
+    def _set_two_factor_challenge(
+        self,
+        request: Request,
+        challenge: str,
+        challenge_expires_at: datetime,
+    ) -> None:
+        request.session["2fa_challenge"] = challenge
+        request.session["2fa_challenge_expires_at"] = challenge_expires_at.strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        )
 
     def _delete_two_factor_challenge(self, request: Request) -> None:
         del request.session["2fa_challenge"]
+        del request.session["2fa_challenge_expires_at"]
 
     def _set_temp_two_factor_challenge(self, request: Request, value: str) -> None:
         request.session["temp_2fa_challenge"] = value
@@ -1373,7 +1384,8 @@ class AuthService:
 
         self._set_two_factor_challenge(
             request=request,
-            value=challenge,
+            challenge=challenge,
+            challenge_expires_at=two_factor_challenge.expires_at,
         )
         return Ok((otp_uri, totp.secret))
 
