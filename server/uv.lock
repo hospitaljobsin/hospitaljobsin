@@ -429,6 +429,18 @@ wheels = [
 ]
 
 [[package]]
+name = "ecdsa"
+version = "0.19.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5e/d0/ec8ac1de7accdcf18cfe468653ef00afd2f609faf67c423efbd02491051b/ecdsa-0.19.0.tar.gz", hash = "sha256:60eaad1199659900dd0af521ed462b793bbdf867432b3948e87416ae4caf6bf8", size = 197791 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/00/e7/ed3243b30d1bec41675b6394a1daae46349dc2b855cb83be846a5a918238/ecdsa-0.19.0-py2.py3-none-any.whl", hash = "sha256:2cea9b88407fdac7bbeca0833b189e4c9c53f2ef1e1eaa29f6224dbc809b707a", size = 149266 },
+]
+
+[[package]]
 name = "email-validator"
 version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -824,6 +836,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pyasn1"
+version = "0.4.8"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a4/db/fffec68299e6d7bad3d504147f9094830b704527a7fc098b721d38cc7fa7/pyasn1-0.4.8.tar.gz", hash = "sha256:aef77c9fb94a3ac588e87841208bdec464471d9871bd5050a287cc9a475cd0ba", size = 146820 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/62/1e/a94a8d635fa3ce4cfc7f506003548d0a2447ae76fd5ca53932970fe3053f/pyasn1-0.4.8-py2.py3-none-any.whl", hash = "sha256:39c7e2ec30515947ff4e87fb6f456dfc6e84857d34be479c9d4a4ba4bf46aa5d", size = 77145 },
+]
+
+[[package]]
 name = "pycparser"
 version = "2.22"
 source = { registry = "https://pypi.org/simple" }
@@ -908,15 +929,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pyjwt"
-version = "2.10.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e7/46/bd74733ff231675599650d3e47f361794b22ef3e3770998dda30d3b63726/pyjwt-2.10.1.tar.gz", hash = "sha256:3cc5772eb20009233caf06e9d8a0577824723b44e6648ee0a2aedb6cf9381953", size = 87785 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/61/ad/689f02752eeec26aed679477e80e632ef1b682313be70793d798c1d5fc8f/PyJWT-2.10.1-py3-none-any.whl", hash = "sha256:dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb", size = 22997 },
-]
-
-[[package]]
 name = "pymongo"
 version = "4.9.2"
 source = { registry = "https://pypi.org/simple" }
@@ -989,6 +1001,25 @@ wheels = [
 ]
 
 [[package]]
+name = "python-jose"
+version = "3.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "ecdsa" },
+    { name = "pyasn1" },
+    { name = "rsa" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8e/a0/c49687cf40cb6128ea4e0559855aff92cd5ebd1a60a31c08526818c0e51e/python-jose-3.4.0.tar.gz", hash = "sha256:9a9a40f418ced8ecaf7e3b28d69887ceaa76adad3bcaa6dae0d9e596fec1d680", size = 92145 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/63/b0/2586ea6b6fd57a994ece0b56418cbe93fff0efb85e2c9eb6b0caf24a4e37/python_jose-3.4.0-py2.py3-none-any.whl", hash = "sha256:9c9f616819652d109bd889ecd1e15e9a162b9b94d682534c9c2146092945b78f", size = 34616 },
+]
+
+[package.optional-dependencies]
+cryptography = [
+    { name = "cryptography" },
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1037,6 +1068,18 @@ wheels = [
 ]
 
 [[package]]
+name = "rsa"
+version = "4.9"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyasn1" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/aa/65/7d973b89c4d2351d7fb232c2e452547ddfa243e93131e7cfa766da627b52/rsa-4.9.tar.gz", hash = "sha256:e38464a49c6c85d7f1351b0126661487a7e0a14a50f1675ec50eb34d4f20ef21", size = 29711 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/49/97/fa78e3d2f65c02c8e1268b9aba606569fe97f6c8f7c2d74394553347c145/rsa-4.9-py3-none-any.whl", hash = "sha256:90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7", size = 34315 },
+]
+
+[[package]]
 name = "s3transfer"
 version = "0.11.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1070,9 +1113,9 @@ dependencies = [
     { name = "passlib", extra = ["argon2"] },
     { name = "pydantic" },
     { name = "pydantic-settings" },
-    { name = "pyjwt" },
     { name = "pymongo" },
     { name = "pyotp" },
+    { name = "python-jose", extra = ["cryptography"] },
     { name = "result" },
     { name = "strawberry-graphql", extra = ["cli"] },
     { name = "structlog" },
@@ -1085,6 +1128,7 @@ dev = [
     { name = "types-aioboto3", extra = ["essential"] },
     { name = "types-authlib" },
     { name = "types-passlib" },
+    { name = "types-python-jose" },
 ]
 
 [package.metadata]
@@ -1106,9 +1150,9 @@ requires-dist = [
     { name = "passlib", extras = ["argon2"], specifier = ">=1.7.4" },
     { name = "pydantic", specifier = ">=2.10.2" },
     { name = "pydantic-settings", specifier = ">=2.6.1" },
-    { name = "pyjwt", specifier = ">=2.10.1" },
     { name = "pymongo", specifier = ">=4.9.2" },
     { name = "pyotp", specifier = ">=2.9.0" },
+    { name = "python-jose", extras = ["cryptography"], specifier = ">=3.4.0" },
     { name = "result", specifier = ">=0.17.0" },
     { name = "strawberry-graphql", extras = ["cli"], specifier = ">=0.253.0" },
     { name = "structlog", specifier = ">=24.4.0" },
@@ -1121,6 +1165,7 @@ dev = [
     { name = "types-aioboto3", extras = ["essential"], specifier = ">=13.4.0" },
     { name = "types-authlib", specifier = ">=1.4.0.20241230" },
     { name = "types-passlib", specifier = ">=1.7.7.20241221" },
+    { name = "types-python-jose", specifier = ">=3.4.0.20250224" },
 ]
 
 [[package]]
@@ -1345,6 +1390,27 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d9/65/2af3d80436091cf59f06864ca2780499ab14a85ee06a6255bc653ad76913/types_passlib-1.7.7.20241221.tar.gz", hash = "sha256:c7e7d2d836aef2ef26a650110fc89cff896163767aebd8f5d6d5b2675e460173", size = 23128 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/18/71/759a7c7f679ea041c06fca673e29e3ee09fe37fb12176bfa1d29826e6255/types_passlib-1.7.7.20241221-py3-none-any.whl", hash = "sha256:2376ac4e4b6c179205e987c28d77df9cceba1ebb1f79cfa23623a9cc581dde07", size = 37998 },
+]
+
+[[package]]
+name = "types-pyasn1"
+version = "0.6.0.20250208"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/8c/26/e4720de0e8d5fd9c3edfabe1fdbc46b9c22fae8a41a62cc05081d0210913/types_pyasn1-0.6.0.20250208.tar.gz", hash = "sha256:14c6a0463555fb74ec81aca67ad2eb6d8409895359238511a3eceda7b5426235", size = 17207 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/40/e3/be3db2c74ba005ee98bc0267d23fff60115d6bfa6ddf77731bd1d6328cb3/types_pyasn1-0.6.0.20250208-py3-none-any.whl", hash = "sha256:4a4fef8801efa983a88a1db52f6d7ac70cb1ad48abf25fad59134237603d5334", size = 24143 },
+]
+
+[[package]]
+name = "types-python-jose"
+version = "3.4.0.20250224"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "types-pyasn1" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/53/85/d68b549506335d51a2a9ed33ad00cbeede6b52188fa01e6a4c71fe437636/types_python_jose-3.4.0.20250224.tar.gz", hash = "sha256:70d70880d55416e89ed659f0b735af5437dd49ba6c86a116f5af4448aef6a5c8", size = 11912 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/75/af/15e65d18bc1bd48d9b7693109cd68ab9af863dc7322a28181293d1cd8b5c/types_python_jose-3.4.0.20250224-py3-none-any.whl", hash = "sha256:fb0c4134882b700a871f854c4a1bc865ad048ee472cd8d4f4625d1a7b842b264", size = 14794 },
 ]
 
 [[package]]

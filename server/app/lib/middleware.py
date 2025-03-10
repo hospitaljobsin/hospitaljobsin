@@ -1,10 +1,10 @@
-import jwt
 from fastapi import FastAPI, Request, Response
+from jose import jwt
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
 
 class SessionMiddleware(BaseHTTPMiddleware):
-    """JWT based session middleware."""
+    """JWS based session middleware."""
 
     def __init__(
         self,
