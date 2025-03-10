@@ -57,7 +57,6 @@ where:
 - users can delete their accounts
 - delete existing 2fa challenge before trying another sign in method
 - option to disable password
-- encrypt user session cookie using JWE
 
 Github Uses SECURITY KEYS only as a form of 2fa, not PASSKEYS.
 hence our current setup is correct

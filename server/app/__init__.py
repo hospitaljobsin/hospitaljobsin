@@ -10,7 +10,7 @@ from app.config import Settings
 from app.container import create_container
 from app.database import initialize_database
 from app.graphql_app import create_graphql_router
-from app.lib.middleware import SessionMiddleware
+from app.middleware import SessionMiddleware
 
 
 def add_routes(app: FastAPI) -> None:
@@ -39,8 +39,7 @@ def add_middleware(app: FastAPI, settings: Settings) -> None:
 
     app.add_middleware(
         SessionMiddleware,
-        rsa_private_key=settings.rsa_private_key,
-        rsa_public_key=settings.rsa_public_key,
+        jwe_secret_key=settings.jwe_secret_key.get_secret_value(),
         session_cookie=settings.session_user_cookie_name,
         path="/",
         same_site="lax",

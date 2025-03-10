@@ -39,13 +39,6 @@ uv sync -p 3.12 --frozen
 2. Set Environment variables
 Create a `.env` file, referencing the template [here](./.env.example)
 
-3. Generate RSA key pair
-
-    We use RS256 signed JWTs for session cookies.
-    Generate an RSA key pair, and store them at:
-    - `./secrets/server_rsa_private_key`
-    - `./secrets/server_rsa_public_key`
-
 
 ## Development commands
 

@@ -73,9 +73,7 @@ class Settings(BaseSettings):
 
     session_cookie_domain: str | None = None
 
-    rsa_private_key: str
-
-    rsa_public_key: str
+    jwe_secret_key: SecretStr
 
     # Oauth2 config
     google_client_id: str
@@ -165,7 +163,6 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",
-        secrets_dir="./secrets",
     )
 
     def _is_environment(self, environment: Environment) -> bool:

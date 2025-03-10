@@ -4,9 +4,7 @@ import { z } from "zod";
 export const env = createEnv({
 	server: {
 		SESSION_COOKIE_KEY: z.string().default("user_session"),
-		RSA_PUBLIC_KEY: z.string().transform((value) => {
-			return value.replace(/\\n/g, '\n');
-		}),
+		JWE_SECRET_KEY: z.string(),
 	},
 	client: {
 		NEXT_PUBLIC_URL: z.string().url(),

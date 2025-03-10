@@ -1,18 +1,18 @@
-import { importSPKI, jwtVerify } from "jose";
+import { compactDecrypt } from "jose";
 import { env } from "./env";
 
-export async function unsign(signedValue: string): Promise<Record<string, string>> {
-    const publicKey = await importSPKI(env.RSA_PUBLIC_KEY, "RS256");
+export async function unsign(
+	signedValue: string,
+): Promise<Record<string, string>> {
+	const secretKey = new TextEncoder().encode(env.JWE_SECRET_KEY);
+	const { plaintext } = await compactDecrypt(signedValue, secretKey);
 
-    const { payload } = await jwtVerify(signedValue, publicKey, {
-        algorithms: ["RS256"],
-    });
+	// Convert plaintext (Uint8Array) to string and parse JSON
+	const payload = JSON.parse(new TextDecoder().decode(plaintext));
 
-    console.log("decoded", payload);
+	if (typeof payload !== "object" || payload === null) {
+		throw new Error("Invalid token");
+	}
 
-    if (typeof payload !== "object" || payload === null) {
-        throw new Error("Invalid token");
-    }
-
-    return payload as Record<string, string>;
+	return payload as Record<string, string>;
 }

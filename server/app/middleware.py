@@ -1,17 +1,19 @@
+import json
+
 from fastapi import FastAPI, Request, Response
-from jose import jwt
+from jose import jwe
+from jose.exceptions import JWEError
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
 
 class SessionMiddleware(BaseHTTPMiddleware):
-    """JWS based session middleware."""
+    """JWE based session middleware."""
 
     def __init__(
         self,
         app: FastAPI,
         *,
-        rsa_private_key: str,
-        rsa_public_key: str,
+        jwe_secret_key: str,
         session_cookie: str = "session",
         max_age: int = 14 * 24 * 60 * 60,  # 14 days
         path: str = "/",
@@ -20,8 +22,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
         domain: str | None = None,
     ) -> None:
         super().__init__(app)
-        self.rsa_private_key = rsa_private_key
-        self.rsa_public_key = rsa_public_key
+        self.jwe_secret_key = jwe_secret_key
         self.session_cookie = session_cookie
         self.max_age = max_age
         self.path = path
@@ -38,14 +39,14 @@ class SessionMiddleware(BaseHTTPMiddleware):
         cookie = request.cookies.get(self.session_cookie)
         if cookie:
             try:
-                # Decode JWT with RS256 using the public key
-                session_data = jwt.decode(
-                    cookie,
-                    key=self.rsa_public_key,
-                    algorithms=["RS256"],
+                # Decrypt JWE cookie.
+                session_data_bytes = jwe.decrypt(
+                    cookie.encode("utf-8"),
+                    key=self.jwe_secret_key,
                 )
+                session_data = json.loads(session_data_bytes)
                 initial_session_was_empty = False
-            except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            except JWEError:
                 session_data = {}
 
         # Add the session to both request.state and request.scope.
@@ -60,15 +61,15 @@ class SessionMiddleware(BaseHTTPMiddleware):
 
         # On response, if session data exists, encode it into a JWT cookie.
         if request.state.session:
-            # sign with RS256 algorithm
-            token = jwt.encode(
-                request.state.session,
-                key=self.rsa_private_key,
-                algorithm="RS256",
+            # encrypt the session data into a JWE cookie.
+            token = jwe.encrypt(
+                json.dumps(request.state.session),
+                key=self.jwe_secret_key,
+                algorithm="dir",
             )
             response.set_cookie(
                 self.session_cookie,
-                token,
+                token.decode("utf-8"),
                 max_age=self.max_age,
                 path=self.path,
                 httponly=True,
