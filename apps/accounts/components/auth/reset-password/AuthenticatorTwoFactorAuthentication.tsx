@@ -19,7 +19,7 @@ const AuthenticatorTwoFactorAuthenticationResetPasswordMutation = graphql`
       ... on InvalidCredentialsError {
         message
       }
-      ... on TwoFactorAuthenticationNotEnabledError {
+      ... on AuthenticatorNotEnabledError {
         message
       }
     }
@@ -90,7 +90,7 @@ export default function AuthenticatorTwoFactorAuthentication({
 					onAuthEnd();
 				} else if (
 					response.verify2faPasswordResetWithAuthenticator.__typename ===
-					"TwoFactorAuthenticationNotEnabledError"
+					"AuthenticatorNotEnabledError"
 				) {
 					// TODO: show a toast
 					onAuthEnd();

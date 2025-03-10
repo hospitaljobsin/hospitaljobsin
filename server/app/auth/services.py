@@ -50,6 +50,7 @@ from app.auth.documents import (
 )
 from app.auth.exceptions import (
     AccountNotFoundError,
+    AuthenticatorNotEnabledError,
     EmailInUseError,
     EmailVerificationTokenCooldownError,
     InsufficientAuthProvidersError,
@@ -87,8 +88,6 @@ from app.lib.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
     PASSWORD_RESET_EXPIRES_IN,
     SUDO_MODE_EXPIRES_IN,
-    TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN,
-    USER_SESSION_EXPIRES_IN,
 )
 from app.lib.emails import EmailSender
 
@@ -249,7 +248,6 @@ class AuthService:
         full_name: str,
         user_agent: str,
         request: Request,
-        response: Response,
     ) -> Result[
         Account,
         EmailInUseError
@@ -357,7 +355,6 @@ class AuthService:
         full_name: str,
         user_agent: str,
         request: Request,
-        response: Response,
     ) -> Result[
         Account,
         EmailInUseError
@@ -521,7 +518,6 @@ class AuthService:
         authentication_response: dict[Any, Any],
         user_agent: str,
         request: Request,
-        response: Response,
     ) -> Result[
         Account,
         InvalidPasskeyAuthenticationCredentialError
@@ -595,7 +591,6 @@ class AuthService:
         recaptcha_token: str,
         user_agent: str,
         request: Request,
-        response: Response,
     ) -> Result[
         Account,
         InvalidCredentialsError
@@ -674,7 +669,7 @@ class AuthService:
         return bool(pattern.match(password))
 
     async def signin_with_google(
-        self, user_info: dict, request: Request, response: Response, user_agent: str
+        self, user_info: dict, request: Request, user_agent: str
     ) -> Result[Account, InvalidEmailError | TwoFactorAuthenticationRequiredError]:
         """Sign in with Google."""
         if not user_info["email_verified"]:
@@ -839,7 +834,6 @@ class AuthService:
     async def verify_2fa_password_reset_with_authenticator(
         self,
         request: Request,
-        response: Response,
         two_factor_token: str,
         password_reset_token: str,
         email: str,
@@ -848,7 +842,7 @@ class AuthService:
         PasswordResetToken,
         InvalidPasswordResetTokenError
         | InvalidCredentialsError
-        | TwoFactorAuthenticationNotEnabledError
+        | AuthenticatorNotEnabledError
         | InvalidRecaptchaTokenError,
     ]:
         """Verify a 2FA challenge for password reset with an authenticator app."""
@@ -865,7 +859,7 @@ class AuthService:
         account = existing_reset_token.account
 
         if account.two_factor_secret is None:
-            return Err(TwoFactorAuthenticationNotEnabledError())
+            return Err(AuthenticatorNotEnabledError())
 
         existing_recovery_code = await self._recovery_code_repo.get(
             account_id=account.id,
@@ -896,7 +890,6 @@ class AuthService:
     async def verify_2fa_password_reset_with_passkey(
         self,
         request: Request,
-        response: Response,
         authentication_response: dict[Any, Any],
         password_reset_token: str,
         email: str,
@@ -981,7 +974,6 @@ class AuthService:
         new_password: str,
         user_agent: str,
         request: Request,
-        response: Response,
     ) -> Result[
         Account,
         InvalidPasswordResetTokenError
@@ -1331,14 +1323,14 @@ class AuthService:
         Account,
         InvalidCredentialsError
         | InvalidRecaptchaTokenError
-        | TwoFactorAuthenticationNotEnabledError,
+        | AuthenticatorNotEnabledError,
     ]:
         """Request sudo mode with 2FA."""
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
 
         if account.two_factor_secret is None:
-            return Err(TwoFactorAuthenticationNotEnabledError())
+            return Err(AuthenticatorNotEnabledError())
 
         totp = pyotp.TOTP(account.two_factor_secret)
         if not totp.verify(two_factor_token):
@@ -1369,7 +1361,6 @@ class AuthService:
         self,
         account: Account,
         request: Request,
-        response: Response,
     ) -> Result[tuple[str, str], None]:
         """Generate a 2FA challenge for the account to setup an authenticator."""
         (
@@ -1394,7 +1385,6 @@ class AuthService:
         account: Account,
         token: str,
         request: Request,
-        response: Response,
     ) -> Result[
         tuple[Account, list[str]],
         TwoFactorAuthenticationChallengeNotFoundError | InvalidCredentialsError,
@@ -1430,10 +1420,10 @@ class AuthService:
     async def disable_account_2fa_with_authenticator(
         self,
         account: Account,
-    ) -> Result[Account, TwoFactorAuthenticationNotEnabledError]:
+    ) -> Result[Account, AuthenticatorNotEnabledError]:
         """Disable two factor authentication for the account with authenticator app."""
         if not account.two_factor_secret:
-            return Err(TwoFactorAuthenticationNotEnabledError())
+            return Err(AuthenticatorNotEnabledError())
         await self._recovery_code_repo.delete_all(account_id=account.id)
         await self._account_repo.delete_two_factor_secret(account=account)
         return Ok(account)
@@ -1441,14 +1431,13 @@ class AuthService:
     async def verify_2fa_with_authenticator(
         self,
         request: Request,
-        response: Response,
         user_agent: str,
         token: str,
         recaptcha_token: str,
     ) -> Result[
         Account,
         InvalidCredentialsError
-        | TwoFactorAuthenticationNotEnabledError
+        | AuthenticatorNotEnabledError
         | TwoFactorAuthenticationChallengeNotFoundError
         | InvalidRecaptchaTokenError,
     ]:
@@ -1473,7 +1462,7 @@ class AuthService:
         account = two_factor_authentication_challenge.account
 
         if not account.two_factor_secret:
-            return Err(TwoFactorAuthenticationNotEnabledError())
+            return Err(AuthenticatorNotEnabledError())
 
         totp = pyotp.TOTP(account.two_factor_secret)
         if not totp.verify(token):
@@ -1499,7 +1488,6 @@ class AuthService:
     async def verify_2fa_with_recovery_code(
         self,
         request: Request,
-        response: Response,
         user_agent: str,
         token: str,
         recaptcha_token: str,

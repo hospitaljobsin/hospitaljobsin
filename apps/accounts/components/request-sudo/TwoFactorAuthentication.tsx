@@ -24,7 +24,7 @@ const TwoFactorAuthenticationMutation = graphql`
         message
       }
 
-      ... on TwoFactorAuthenticationNotEnabledError {
+      ... on AuthenticatorNotEnabledError {
         message
       }
     }
@@ -98,7 +98,7 @@ export default function TwoFactorAuthentication({
 					onAuthEnd();
 				} else if (
 					response.requestSudoModeWithAuthenticator.__typename ===
-					"TwoFactorAuthenticationNotEnabledError"
+					"AuthenticatorNotEnabledError"
 				) {
 					// race condition: show a toast here
 					onAuthEnd();

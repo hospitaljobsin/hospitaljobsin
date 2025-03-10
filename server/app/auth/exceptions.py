@@ -99,6 +99,10 @@ class TwoFactorAuthenticationNotEnabledError:
     """Raised when the user's 2FA is not enabled."""
 
 
+class AuthenticatorNotEnabledError:
+    """Raised when the authenticator 2FA method is not enabled."""
+
+
 class TwoFactorAuthenticationRequiredError:
     """Raised when the user's 2FA is required."""
 

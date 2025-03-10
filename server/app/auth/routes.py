@@ -62,7 +62,6 @@ async def oauth2_signin_callback_google(
     result = await auth_service.signin_with_google(
         user_info=user_info,
         request=request,
-        response=response,
         user_agent=request.session.get("user_agent", "unknown"),
     )
 

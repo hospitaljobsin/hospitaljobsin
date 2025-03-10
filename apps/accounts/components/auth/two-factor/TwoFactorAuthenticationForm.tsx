@@ -33,13 +33,18 @@ const TwoFactorAuthenticationFormMutation = graphql`
         message
       }
 
-      ... on TwoFactorAuthenticationNotEnabledError {
+      ... on AuthenticatorNotEnabledError {
         message
       }
 
       ... on InvalidCredentialsError {
         message
       }
+
+
+	  ... on Account {
+		__typename
+	  }
 
 	}
   }
@@ -98,6 +103,12 @@ export default function TwoFactorAuthenticationForm() {
 					"TwoFactorAuthenticationChallengeNotFoundError"
 				) {
 					// redirect to login page when 2fa challenge expires/ is invalid
+					router.replace(links.login(params.get("return_to")));
+				} else if (
+					response.verify2faWithAuthenticator.__typename ===
+					"AuthenticatorNotEnabledError"
+				) {
+					// redirect to login page when authenticator is not enabled
 					router.replace(links.login(params.get("return_to")));
 				} else {
 					window.location.href = redirectTo;

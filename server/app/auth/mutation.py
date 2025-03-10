@@ -12,6 +12,7 @@ from webauthn import options_to_json
 
 from app.accounts.types import AccountType
 from app.auth.exceptions import (
+    AuthenticatorNotEnabledError,
     EmailInUseError,
     EmailVerificationTokenCooldownError,
     InsufficientAuthProvidersError,
@@ -37,6 +38,7 @@ from app.context import AuthInfo, Info
 
 from .services import AuthService
 from .types import (
+    AuthenticatorNotEnabledErrorType,
     CreateWebAuthnCredentialPayload,
     CreateWebAuthnCredentialSuccessType,
     DeleteOtherSessionsPayloadType,
@@ -242,7 +244,6 @@ class AuthMutation:
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
-            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -357,7 +358,6 @@ class AuthMutation:
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
-            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -464,7 +464,6 @@ class AuthMutation:
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
-            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -512,7 +511,6 @@ class AuthMutation:
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
-            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -628,7 +626,6 @@ class AuthMutation:
             password_reset_token=password_reset_token,
             two_factor_token=two_factor_token,
             request=info.context["request"],
-            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -636,8 +633,8 @@ class AuthMutation:
                         return InvalidPasswordResetTokenErrorType()
                     case InvalidCredentialsError():
                         return InvalidCredentialsErrorType()
-                    case TwoFactorAuthenticationNotEnabledError():
-                        return TwoFactorAuthenticationNotEnabledErrorType()
+                    case AuthenticatorNotEnabledError():
+                        return AuthenticatorNotEnabledErrorType()
                     case InvalidRecaptchaTokenError():
                         return InvalidRecaptchaTokenErrorType()
             case Ok(reset_token):
@@ -683,7 +680,6 @@ class AuthMutation:
             password_reset_token=password_reset_token,
             authentication_response=authentication_response,
             request=info.context["request"],
-            response=info.context["response"],
             recaptcha_token=recaptcha_token,
         ):
             case Err(error):
@@ -736,7 +732,6 @@ class AuthMutation:
             new_password=new_password,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
-            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -1109,8 +1104,8 @@ class AuthMutation:
                         return InvalidRecaptchaTokenErrorType()
                     case InvalidCredentialsError():
                         return InvalidCredentialsErrorType()
-                    case TwoFactorAuthenticationNotEnabledError():
-                        return TwoFactorAuthenticationNotEnabledErrorType()
+                    case AuthenticatorNotEnabledError():
+                        return AuthenticatorNotEnabledErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
 
@@ -1142,7 +1137,6 @@ class AuthMutation:
         match await auth_service.enable_account_2fa_with_authenticator(
             account=info.context["current_user"],
             request=info.context["request"],
-            response=info.context["response"],
             token=token,
         ):
             case Err(error):
@@ -1182,8 +1176,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case TwoFactorAuthenticationNotEnabledError():
-                        return TwoFactorAuthenticationNotEnabledErrorType()
+                    case AuthenticatorNotEnabledError():
+                        return AuthenticatorNotEnabledErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
 
@@ -1209,7 +1203,6 @@ class AuthMutation:
         match await auth_service.generate_authenticator_2fa_challenge(
             account=info.context["current_user"],
             request=info.context["request"],
-            response=info.context["response"],
         ):
             case Ok(result):
                 otp_uri, secret = result
@@ -1242,7 +1235,6 @@ class AuthMutation:
     ) -> Verify2FAWithAuthenticatorPayload:
         """Verify Account 2FA challenge with an authenticator."""
         match await auth_service.verify_2fa_with_authenticator(
-            response=info.context["response"],
             request=info.context["request"],
             token=token,
             recaptcha_token=recaptcha_token,
@@ -1250,8 +1242,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case TwoFactorAuthenticationNotEnabledError():
-                        return TwoFactorAuthenticationNotEnabledErrorType()
+                    case AuthenticatorNotEnabledError():
+                        return AuthenticatorNotEnabledErrorType()
                     case InvalidCredentialsError():
                         return InvalidCredentialsErrorType()
                     case TwoFactorAuthenticationChallengeNotFoundError():
@@ -1285,7 +1277,6 @@ class AuthMutation:
     ) -> Verify2FAWithRecoveryCodePayload:
         """Verify Account 2FA with a recovery code."""
         match await auth_service.verify_2fa_with_recovery_code(
-            response=info.context["response"],
             request=info.context["request"],
             token=token,
             recaptcha_token=recaptcha_token,

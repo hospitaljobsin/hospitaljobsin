@@ -18,7 +18,7 @@ const DisableTwoFactorAuthenticationMutation = graphql`
             id
             ...TwoFactorAuthenticationFragment
         }
-		... on TwoFactorAuthenticationNotEnabledError {
+		... on AuthenticatorNotEnabledError {
 			message
 		}
 	}
@@ -42,8 +42,17 @@ export default function DisableTwoFactorAuthenticationModal({
 	function handleDisable2FA() {
 		commitMutation({
 			variables: {},
+			onCompleted(response) {
+				if (
+					response.disableAccount2faWithAuthenticator?.__typename ===
+					"AuthenticatorNotEnabledError"
+				) {
+					// TODO: show a toast here
+				}
+
+				onClose();
+			},
 		});
-		onClose();
 	}
 	return (
 		<>

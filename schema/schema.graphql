@@ -136,6 +136,12 @@ enum AuthProvider {
   OAUTH_GOOGLE
 }
 
+"""Used when the authenticator 2FA method is not enabled."""
+type AuthenticatorNotEnabledError implements Error {
+  """Human readable error message."""
+  message: String!
+}
+
 """
 The payload for creating a presigned URL for uploading the organization logo.
 """
@@ -201,7 +207,7 @@ type DeleteWebAuthnCredentialSuccess {
 }
 
 """The disable account 2FA payload."""
-union DisableAccount2FAWithAuthenticatorPayload = Account | TwoFactorAuthenticationNotEnabledError
+union DisableAccount2FAWithAuthenticatorPayload = Account | AuthenticatorNotEnabledError
 
 """Used when the email address is in use."""
 type EmailInUseError implements Error {
@@ -1040,7 +1046,7 @@ type Query {
     last: Int = null
   ): JobConnection!
 
-  """Get job by ID."""
+  """Get job by slug."""
   job(
     """Slug of the job"""
     slug: String!
@@ -1096,7 +1102,7 @@ type RequestPasswordResetSuccess {
 }
 
 """The request sudo mode with authenticator app payload."""
-union RequestSudoModeWithAuthenticatorPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | TwoFactorAuthenticationNotEnabledError
+union RequestSudoModeWithAuthenticatorPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | AuthenticatorNotEnabledError
 
 """The request sudo mode with passkey payload."""
 union RequestSudoModeWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
@@ -1226,13 +1232,13 @@ union UpdateProfilePayload = Account
 union UpdateWebAuthnCredentialPayload = WebAuthnCredential | WebAuthnCredentialNotFoundError
 
 """The verify 2FA password reset with authenticator payload."""
-union Verify2FAPasswordResetWithAuthenticatorPayload = PasswordResetToken | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | InvalidPasswordResetTokenError | InvalidRecaptchaTokenError
+union Verify2FAPasswordResetWithAuthenticatorPayload = PasswordResetToken | InvalidCredentialsError | AuthenticatorNotEnabledError | InvalidPasswordResetTokenError | InvalidRecaptchaTokenError
 
 """The verify 2FA password reset with passkey payload."""
 union Verify2FAPasswordResetWithPasskeyPayload = PasswordResetToken | InvalidPasskeyAuthenticationCredentialError | TwoFactorAuthenticationNotEnabledError | InvalidPasswordResetTokenError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
 
 """The verify 2FA with authenticator payload."""
-union Verify2FAWithAuthenticatorPayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError
+union Verify2FAWithAuthenticatorPayload = Account | InvalidCredentialsError | AuthenticatorNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError
 
 """The verify 2FA with recovery code payload."""
 union Verify2FAWithRecoveryCodePayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError

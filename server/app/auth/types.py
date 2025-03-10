@@ -150,7 +150,6 @@ class PasswordResetTokenType(BaseNodeType[PasswordResetToken]):
     async def needs_2fa(
         self,
         info: Info,
-        settings: Annotated[Settings, Inject],
         temp_two_factor_challenge_repo: Annotated[
             TemporaryTwoFactorChallengeRepo,
             Inject,
@@ -709,6 +708,17 @@ class TwoFactorAuthenticationNotEnabledErrorType(BaseErrorType):
 
 
 @strawberry.type(
+    name="AuthenticatorNotEnabledError",
+    description="Used when the authenticator 2FA method is not enabled.",
+)
+class AuthenticatorNotEnabledErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Authenticator 2FA method is not enabled.",
+    )
+
+
+@strawberry.type(
     name="TwoFactorAuthenticationChallengeNotFoundError",
     description="Used when the 2FA challenge is not found.",
 )
@@ -754,7 +764,7 @@ EnableAccount2FAWithAuthenticatorPayload = Annotated[
 ]
 
 DisableAccount2FAWithAuthenticatorPayload = Annotated[
-    AccountType | TwoFactorAuthenticationNotEnabledErrorType,
+    AccountType | AuthenticatorNotEnabledErrorType,
     strawberry.union(
         name="DisableAccount2FAWithAuthenticatorPayload",
         description="The disable account 2FA payload.",
@@ -805,7 +815,7 @@ Generate2FARecoveryCodesPayload = Annotated[
 Verify2FAWithAuthenticatorPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
-    | TwoFactorAuthenticationNotEnabledErrorType
+    | AuthenticatorNotEnabledErrorType
     | TwoFactorAuthenticationChallengeNotFoundErrorType
     | InvalidRecaptchaTokenErrorType,
     strawberry.union(
@@ -842,7 +852,7 @@ LoginWithPasswordPayload = Annotated[
 Verify2FAPasswordResetWithAuthenticatorPayload = Annotated[
     PasswordResetTokenType
     | InvalidCredentialsErrorType
-    | TwoFactorAuthenticationNotEnabledErrorType
+    | AuthenticatorNotEnabledErrorType
     | InvalidPasswordResetTokenErrorType
     | InvalidRecaptchaTokenErrorType,
     strawberry.union(
@@ -881,7 +891,7 @@ RequestSudoModeWithAuthenticatorPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
     | InvalidRecaptchaTokenErrorType
-    | TwoFactorAuthenticationNotEnabledErrorType,
+    | AuthenticatorNotEnabledErrorType,
     strawberry.union(
         name="RequestSudoModeWithAuthenticatorPayload",
         description="The request sudo mode with authenticator app payload.",
