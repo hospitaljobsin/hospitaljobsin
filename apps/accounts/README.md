@@ -55,7 +55,7 @@ add accounts center
 where:
  
 - users can delete their accounts
-- delete existing 2fa challenge before trying another sign in method
+- pin current session to top
 
 Github Uses SECURITY KEYS only as a form of 2fa, not PASSKEYS.
 hence our current setup is correct
