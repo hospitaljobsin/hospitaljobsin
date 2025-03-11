@@ -85,7 +85,7 @@ export default function PasskeysList({ root }: Props) {
 			</div>
 			<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
 				{data.webAuthnCredentials.edges.length < 1 ? (
-					<div className="w-full flex flex-col items-center justify-center gap-8 py-12 border-dashed border-foreground-300 border-2 rounded-lg">
+					<div className="w-full flex flex-col items-center justify-center gap-8 py-12 px-6 border-dashed border-foreground-300 border-2 rounded-lg">
 						<div className="p-4 rounded-full bg-primary/10">
 							<KeySquareIcon className="w-8 h-8 text-primary" />
 						</div>

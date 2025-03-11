@@ -756,14 +756,14 @@ class AuthService:
         )
 
     def _delete_two_factor_challenge(self, request: Request) -> None:
-        del request.session["2fa_challenge"]
-        del request.session["2fa_challenge_expires_at"]
+        request.session.pop("2fa_challenge", None)
+        request.session.pop("2fa_challenge_expires_at", None)
 
     def _set_temp_two_factor_challenge(self, request: Request, value: str) -> None:
         request.session["temp_2fa_challenge"] = value
 
     def _delete_temp_two_factor_challenge(self, request: Request) -> None:
-        del request.session["temp_2fa_challenge"]
+        request.session.pop("temp_2fa_challenge", None)
 
     async def logout(self, request: Request, session_token: str) -> None:
         """Log out the current user."""

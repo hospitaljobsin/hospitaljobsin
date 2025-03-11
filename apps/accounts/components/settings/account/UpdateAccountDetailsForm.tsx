@@ -82,7 +82,7 @@ export default function UpdateAccountDetailsForm({
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader className="flex gap-6 w-full items-center justify-between">
-					<div className="flex gap-6 w-full items-center justify-start flex-col sm:flex-row">
+					<div className="flex gap-6 w-full items-start sm:items-center justify-start flex-col sm:flex-row">
 						<Badge
 							placement="bottom-right"
 							variant="solid"

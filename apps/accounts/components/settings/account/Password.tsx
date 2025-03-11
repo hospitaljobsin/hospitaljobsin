@@ -85,14 +85,9 @@ export default function Password({
 									<Tooltip
 										showArrow
 										content={
-											<div className="px-1 py-2 flex flex-col gap-2 max-w-72">
-												<div className="text-small font-semibold">
-													Insufficient Authentication Providers
-												</div>
-												<div className="text-tiny">
-													Set up a passkey or connect your Google account before
-													deleting your password.
-												</div>
+											<div className="px-1 py-2 text-center text-tiny max-w-72">
+												Set up a passkey or connect your Google account before
+												deleting your password.
 											</div>
 										}
 									>
