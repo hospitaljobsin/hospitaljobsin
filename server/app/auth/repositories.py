@@ -95,7 +95,7 @@ class SessionRepo:
             Session.account.id == account_id,
         )
 
-    async def get_all(
+    async def get_all_list(
         self, account_id: ObjectId, except_session_token: str | None = None
     ) -> list[Session]:
         """Get all sessions for an account."""

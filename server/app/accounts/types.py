@@ -2,7 +2,6 @@ import hashlib
 import urllib
 from collections.abc import Iterable
 from datetime import date, datetime
-from email.policy import default
 from enum import Enum
 from typing import TYPE_CHECKING, Annotated, Self
 from urllib.parse import urlencode

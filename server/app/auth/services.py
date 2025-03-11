@@ -1091,7 +1091,7 @@ class AuthService:
         self, account_id: ObjectId, except_session_token: str
     ) -> Result[list[ObjectId], None]:
         """Delete all sessions for the user except the current one."""
-        existing_sessions = await self._session_repo.get_all(
+        existing_sessions = await self._session_repo.get_all_list(
             account_id=account_id, except_session_token=except_session_token
         )
         session_ids = [session.id for session in existing_sessions]
