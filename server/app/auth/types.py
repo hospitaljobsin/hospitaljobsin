@@ -684,17 +684,6 @@ RequestSudoModeWithPasskeyPayload = Annotated[
     ),
 ]
 
-RequestSudoModeWithPasswordPayload = Annotated[
-    AccountType
-    | InvalidCredentialsErrorType
-    | InvalidRecaptchaTokenErrorType
-    | InvalidAuthenticationProviderErrorType,
-    strawberry.union(
-        name="RequestSudoModeWithPasswordPayload",
-        description="The request sudo mode with password payload.",
-    ),
-]
-
 
 @strawberry.type(
     name="TwoFactorAuthenticationNotEnabledError",
@@ -895,5 +884,17 @@ RequestSudoModeWithAuthenticatorPayload = Annotated[
     strawberry.union(
         name="RequestSudoModeWithAuthenticatorPayload",
         description="The request sudo mode with authenticator app payload.",
+    ),
+]
+
+RequestSudoModeWithPasswordPayload = Annotated[
+    AccountType
+    | InvalidCredentialsErrorType
+    | InvalidRecaptchaTokenErrorType
+    | InvalidAuthenticationProviderErrorType
+    | TwoFactorAuthenticationRequiredErrorType,
+    strawberry.union(
+        name="RequestSudoModeWithPasswordPayload",
+        description="The request sudo mode with password payload.",
     ),
 ]

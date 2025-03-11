@@ -128,6 +128,8 @@ export default function RequestSudoView({
 		data.viewer.has2faEnabled &&
 		data.viewer.twoFactorProviders.includes("AUTHENTICATOR");
 
+	const showPassword = hasPassword && !data.viewer.has2faEnabled;
+
 	// Only show Google OAuth if no other auth methods are available
 	const showGoogleOAuth =
 		hasOauthGoogle && !hasPassword && !hasPasskey && !hasAuthenticator;
@@ -136,6 +138,8 @@ export default function RequestSudoView({
 		switch (errorCode) {
 			case "invalid_account":
 				return "Invalid Oauth2 account selected. Please select the account associated with your email address.";
+			case "2fa_required":
+				return "Two-factor authentication is required to continue.";
 			default:
 				return "An error occurred. Please try again.";
 		}
@@ -144,8 +148,8 @@ export default function RequestSudoView({
 	function getAvailableAuthMethods(): (AuthProvider | TwoFactorProvider)[] {
 		const methods: (AuthProvider | TwoFactorProvider)[] = [];
 		if (hasPasskey) methods.push("WEBAUTHN_CREDENTIAL");
-		if (hasPassword) methods.push("PASSWORD");
 		if (hasAuthenticator) methods.push("AUTHENTICATOR");
+		if (showPassword) methods.push("PASSWORD");
 		if (showGoogleOAuth) methods.push("OAUTH_GOOGLE");
 		return methods;
 	}
@@ -153,7 +157,7 @@ export default function RequestSudoView({
 	const renderAuthMethod = () => {
 		switch (currentAuthMethod) {
 			case "PASSWORD":
-				return hasPassword ? (
+				return showPassword ? (
 					<PasswordAuthentication
 						isDisabled={isAuthenticating}
 						onAuthStart={() => setIsAuthenticating(true)}

@@ -56,6 +56,7 @@ where:
  
 - users can delete their accounts
 - delete existing 2fa challenge before trying another sign in method
+- option to set password if user doesn't have a password already
 - option to disable password
 
 Github Uses SECURITY KEYS only as a form of 2fa, not PASSKEYS.

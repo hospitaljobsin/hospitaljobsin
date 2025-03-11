@@ -674,7 +674,7 @@ class AuthService:
     ) -> Result[Account, InvalidEmailError | TwoFactorAuthenticationRequiredError]:
         """Sign in with Google."""
         if not user_info["email_verified"]:
-            return Err(InvalidEmailError())
+            return Err(InvalidEmailError(message="Email address is not verified."))
         account = await self._account_repo.get_by_email(email=user_info["email"])
         if account is None:
             account = await self._account_repo.create(
@@ -1046,6 +1046,31 @@ class AuthService:
 
         return Ok(existing_reset_token.account)
 
+    async def set_password(
+        self,
+        new_password: str,
+        account: Account,
+        user_agent: str,
+        request: Request,
+    ) -> Result[Account, PasswordNotStrongError]:
+        """Set the current user's password."""
+        if not self.check_password_strength(password=new_password):
+            return Err(PasswordNotStrongError())
+
+        await self._account_repo.update_password(account=account, password=new_password)
+
+        if "password" not in account.auth_providers:
+            # user is setting their password for the first time
+            await self._account_repo.update_auth_providers(
+                account=account,
+                auth_providers=[
+                    *account.auth_providers,
+                    "password",
+                ],
+            )
+
+        return Ok(account)
+
     async def delete_other_sessions(
         self, account_id: ObjectId, except_session_token: str
     ) -> Result[list[ObjectId], None]:
@@ -1290,7 +1315,8 @@ class AuthService:
         Account,
         InvalidCredentialsError
         | InvalidRecaptchaTokenError
-        | InvalidAuthenticationProviderError,
+        | InvalidAuthenticationProviderError
+        | TwoFactorAuthenticationRequiredError,
     ]:
         """Request sudo mode with password."""
         if not await self._verify_recaptcha_token(recaptcha_token):
@@ -1303,6 +1329,9 @@ class AuthService:
                     available_providers=account.auth_providers
                 )
             )
+
+        if account.has_2fa_enabled:
+            return Err(TwoFactorAuthenticationRequiredError())
 
         if not self._account_repo.verify_password(
             password=password,
@@ -1346,10 +1375,13 @@ class AuthService:
         user_info: dict,
         request: Request,
         current_user: Account,
-    ) -> Result[Account, AccountNotFoundError]:
+    ) -> Result[Account, AccountNotFoundError | TwoFactorAuthenticationRequiredError]:
         """Request sudo mode with Google Oauth."""
         if user_info["email"] != current_user.email:
             return Err(AccountNotFoundError())
+
+        if current_user.has_2fa_enabled:
+            return Err(TwoFactorAuthenticationRequiredError())
 
         if current_user.auth_providers == ["oauth_google"]:
             # user has only the Oauth Google auth provider

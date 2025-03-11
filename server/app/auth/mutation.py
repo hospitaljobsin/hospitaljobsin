@@ -6,6 +6,7 @@ from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from result import Err, Ok
 from strawberry import relay
+from strawberry.federation.schema_directives import Requires
 from strawberry.permission import PermissionExtension
 from strawberry.scalars import JSON
 from webauthn import options_to_json
@@ -745,6 +746,48 @@ class AuthMutation:
                 return AccountType.marshal(account)
 
     @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=ResetPasswordPayload,
+        description="Set the current user's password.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    RequiresSudoMode(),
+                ]
+            )
+        ],
+    )
+    @inject
+    async def set_password(
+        self,
+        info: AuthInfo,
+        auth_service: Annotated[AuthService, Inject],
+        new_password: Annotated[
+            str,
+            strawberry.argument(
+                description="The new password.",
+            ),
+        ],
+    ) -> ResetPasswordPayload:
+        """Set the current user's password."""
+        match await auth_service.set_password(
+            new_password=new_password,
+            account=info.context["current_user"],
+            user_agent=info.context["user_agent"],
+            request=info.context["request"],
+        ):
+            case Err(error):
+                match error:
+                    case InvalidPasswordResetTokenError():
+                        return InvalidPasswordResetTokenErrorType()
+                    case PasswordNotStrongError():
+                        return PasswordNotStrongErrorType()
+                    case TwoFactorAuthenticationChallengeNotFoundError():
+                        return TwoFactorAuthenticationChallengeNotFoundErrorType()
+            case Ok(account):
+                return AccountType.marshal(account)
+
+    @strawberry.mutation(  # type: ignore[misc]
         graphql_type=DeleteOtherSessionsPayloadType,
         description="Delete other sessions of the viewer than the current one.",
         extensions=[
@@ -1059,6 +1102,8 @@ class AuthMutation:
                         return InvalidAuthenticationProviderErrorType.marshal(
                             available_providers=err.available_providers
                         )
+                    case TwoFactorAuthenticationRequiredError():
+                        return TwoFactorAuthenticationRequiredErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
 

@@ -141,5 +141,10 @@ async def oauth2_request_sudo_mode_callback_google(
                     url=settings.accounts_base_url
                     + "/request-sudo?oauth2_error=invalid_account"
                 )
+            case TwoFactorAuthenticationRequiredError():
+                return RedirectResponse(
+                    url=settings.accounts_base_url
+                    + "/request-sudo?oauth2_error=2fa_required",
+                )
 
     return response
