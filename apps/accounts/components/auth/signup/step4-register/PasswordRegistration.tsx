@@ -32,6 +32,10 @@ const passwordRegistrationSchema = z.object({
 			message:
 				"Password must contain at least one special character (!@#$%^&*()-_=+).",
 		}),
+		confirmPassword: z.string().min(1, "This field is required"),
+}).refine((data) => data.password === data.confirmPassword, {
+	message: "Passwords don't match",
+	path: ["confirmPassword"],
 });
 
 const RegisterWithPasswordMutation = graphql`
@@ -81,14 +85,16 @@ export default function PasswordRegistration() {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		setError,
-	} = useForm({
+	} = useForm<z.infer<typeof passwordRegistrationSchema>>({
 		resolver: zodResolver(passwordRegistrationSchema),
 		defaultValues: { password: "" },
 	});
 
 	const [commitRegisterWithPassword] =
 		useMutation<PasswordRegistrationMutationType>(RegisterWithPasswordMutation);
+
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
 	const onSubmit = async (data: z.infer<typeof passwordRegistrationSchema>) => {
 		if (!executeRecaptcha) return;
@@ -166,6 +172,28 @@ export default function PasswordRegistration() {
 					errorMessage={errors.password?.message}
 					isInvalid={!!errors.password}
 				/>
+										<Input
+											label="Confirm Password"
+											placeholder="Confirm password"
+											{...register("confirmPassword")}
+											autoComplete="new-password"
+											type={isConfirmPasswordVisible ? "text" : "password"}
+											endContent={
+												<button
+													type="button"
+													onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+													className="focus:outline-none"
+												>
+													{isConfirmPasswordVisible ? (
+														<EyeIcon className="text-2xl text-default-400" />
+													) : (
+														<EyeOffIcon className="text-2xl text-default-400" />
+													)}
+												</button>
+											}
+											errorMessage={errors.confirmPassword?.message}
+											isInvalid={!!errors.confirmPassword}
+										/>
 				<Button fullWidth type="submit" isLoading={isSubmitting}>
 					Create account
 				</Button>

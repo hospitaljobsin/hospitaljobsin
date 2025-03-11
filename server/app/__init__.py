@@ -43,7 +43,7 @@ def add_middleware(app: FastAPI, settings: Settings) -> None:
         session_cookie=settings.session_user_cookie_name,
         path="/",
         same_site="lax",
-        https_only=True,
+        secure=False,
         domain=settings.session_cookie_domain,
     )
 

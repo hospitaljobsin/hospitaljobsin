@@ -56,7 +56,11 @@ const formSchema = z.object({
 		.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
 			message:
 				"Password must contain at least one special character (!@#$%^&*()-_=+).",
-		}),
+			}),
+	confirmNewPassword: z.string().min(1, "This field is required"),
+}).refine((data) => data.newPassword === data.confirmNewPassword, {
+	message: "Passwords don't match",
+	path: ["confirmNewPassword"],
 });
 
 export default function UpdatePasswordModal({
@@ -83,10 +87,12 @@ export default function UpdatePasswordModal({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			newPassword: "",
+			confirmNewPassword: "",
 		},
 	});
 
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		commitMutation({
@@ -146,17 +152,39 @@ export default function UpdatePasswordModal({
 							}
 							errorMessage={errors.newPassword?.message}
 							isInvalid={!!errors.newPassword}
+							/>
+						<Input
+							label="Confirm New Password"
+							placeholder="Confirm new password"
+							{...register("confirmNewPassword")}
+							autoComplete="new-password"
+							type={isConfirmPasswordVisible ? "text" : "password"}
+							endContent={
+								<button
+									type="button"
+									onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+									className="focus:outline-none"
+								>
+									{isConfirmPasswordVisible ? (
+										<EyeIcon className="text-2xl text-default-400" />
+									) : (
+										<EyeOffIcon className="text-2xl text-default-400" />
+									)}
+								</button>
+							}
+							errorMessage={errors.confirmNewPassword?.message}
+							isInvalid={!!errors.confirmNewPassword}
 						/>
 					</ModalBody>
 					<ModalFooter className="w-full pt-0">
-						<Button variant="light" onPress={onClose} fullWidth>
+						<Button variant="light" onPress={onClose} >
 							Cancel
 						</Button>
 						<Button
 							color="primary"
 							type="submit"
 							isLoading={isMutationInFlight || isSubmitting}
-							fullWidth
+							
 						>
 							{data.authProviders.includes("PASSWORD")
 								? "Update password"

@@ -18,7 +18,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
         max_age: int = 14 * 24 * 60 * 60,  # 14 days
         path: str = "/",
         same_site: str = "lax",
-        https_only: bool = False,
+        secure: bool = False,
         domain: str | None = None,
     ) -> None:
         super().__init__(app)
@@ -27,7 +27,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
         self.max_age = max_age
         self.path = path
         self.same_site = same_site
-        self.https_only = https_only
+        self.secure = secure
         self.domain = domain
 
     async def dispatch(
@@ -74,7 +74,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
                 path=self.path,
                 httponly=True,
                 samesite=self.same_site,
-                secure=self.https_only,
+                secure=self.secure,
                 domain=self.domain,
             )
         # If the session was cleared during the request, delete the cookie.

@@ -765,19 +765,12 @@ class AuthService:
     def _delete_temp_two_factor_challenge(self, request: Request) -> None:
         del request.session["temp_2fa_challenge"]
 
-    async def logout(self, response: Response, session_token: str) -> None:
+    async def logout(self, request: Request, session_token: str) -> None:
         """Log out the current user."""
         await self._session_repo.delete_by_token(token=session_token)
 
-        # delete entire session
-        response.delete_cookie(
-            key=self._settings.session_user_cookie_name,
-            path="/",
-            domain=self._settings.session_cookie_domain,
-            secure=True,
-            httponly=True,
-            samesite="lax",
-        )
+        # clear request session
+        request.session.clear()
 
     async def get_password_reset_token(
         self, password_reset_token: str, email: str

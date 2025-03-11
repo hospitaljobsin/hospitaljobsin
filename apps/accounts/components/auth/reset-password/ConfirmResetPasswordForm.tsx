@@ -46,6 +46,10 @@ const confirmResetPasswordSchema = z.object({
 			message:
 				"Password must contain at least one special character (!@#$%^&*()-_=+).",
 		}),
+		confirmPassword: z.string().min(1, "This field is required"),
+}).refine((data) => data.password === data.confirmPassword, {
+	message: "Passwords don't match",
+	path: ["confirmPassword"],
 });
 
 export default function ConfirmResetPasswordForm({
@@ -53,6 +57,7 @@ export default function ConfirmResetPasswordForm({
 	resetToken,
 }: { email: string; resetToken: string }) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<ConfirmResetPasswordFormMutationType>(
 			ConfirmResetPasswordFormMutation,
@@ -112,7 +117,7 @@ export default function ConfirmResetPasswordForm({
 						<Input
 							id="password"
 							label="New Password"
-							placeholder="Enter password"
+							placeholder="Enter new password"
 							type={isPasswordVisible ? "text" : "password"}
 							endContent={
 								<button
@@ -131,6 +136,28 @@ export default function ConfirmResetPasswordForm({
 							{...register("password")}
 							errorMessage={errors.password?.message}
 							isInvalid={!!errors.password}
+						/>
+												<Input
+							label="Confirm New Password"
+							placeholder="Confirm new password"
+							{...register("confirmPassword")}
+							autoComplete="new-password"
+							type={isConfirmPasswordVisible ? "text" : "password"}
+							endContent={
+								<button
+									type="button"
+									onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+									className="focus:outline-none"
+								>
+									{isConfirmPasswordVisible ? (
+										<EyeIcon className="text-2xl text-default-400" />
+									) : (
+										<EyeOffIcon className="text-2xl text-default-400" />
+									)}
+								</button>
+							}
+							errorMessage={errors.confirmPassword?.message}
+							isInvalid={!!errors.confirmPassword}
 						/>
 						<Button
 							fullWidth

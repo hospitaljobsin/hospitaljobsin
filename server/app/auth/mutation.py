@@ -548,7 +548,7 @@ class AuthMutation:
     ) -> LogoutPayloadType:
         """Log out the current user."""
         await auth_service.logout(
-            response=info.context["response"],
+            request=info.context["request"],
             session_token=info.context["session_token"],
         )
 
