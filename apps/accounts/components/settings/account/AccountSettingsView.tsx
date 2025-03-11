@@ -28,7 +28,7 @@ export default function AccountSettingsView() {
 		AccountSettingsViewQuery,
 		{},
 	);
-	console.log("DATA: ", data);
+
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",
