@@ -1,3 +1,4 @@
+import { KeySquareIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -83,15 +84,36 @@ export default function PasskeysList({ root }: Props) {
 				/>
 			</div>
 			<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
-				{data.webAuthnCredentials.edges.map((passkeyEdge) => (
-					<Passkey
-						passkey={passkeyEdge.node}
-						key={passkeyEdge.node.id}
-						passkeysConnectionId={data.webAuthnCredentials.__id}
-						account={rootQuery}
-						totalPasskeys={data.webAuthnCredentials.edges.length}
-					/>
-				))}
+				{data.webAuthnCredentials.edges.length < 1 ? (
+					<div className="w-full flex flex-col items-center justify-center gap-8 py-12 border-dashed border-foreground-300 border-2 rounded-lg">
+						<div className="p-4 rounded-full bg-primary/10">
+							<KeySquareIcon className="w-8 h-8 text-primary" />
+						</div>
+						<div className="flex flex-col items-center gap-1.5">
+							<h3 className="font-medium text-lg">No passkeys added</h3>
+							<p className="text-foreground-600 text-center">
+								Add a passkey to sign in without a password
+							</p>
+						</div>
+						<PasskeysController
+							passkeysConnectionId={data.webAuthnCredentials.__id}
+							account={rootQuery}
+						/>
+					</div>
+				) : (
+					<>
+						{data.webAuthnCredentials.edges.map((passkeyEdge) => (
+							<Passkey
+								passkey={passkeyEdge.node}
+								key={passkeyEdge.node.id}
+								passkeysConnectionId={data.webAuthnCredentials.__id}
+								account={rootQuery}
+								totalPasskeys={data.webAuthnCredentials.edges.length}
+							/>
+						))}
+					</>
+				)}
+
 				<div ref={observerRef} className="h-10" />
 				{isLoadingNext && <PasskeysListSkeleton />}
 			</div>

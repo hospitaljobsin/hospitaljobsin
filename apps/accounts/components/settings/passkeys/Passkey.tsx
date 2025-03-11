@@ -96,30 +96,44 @@ export default function Passkey({
 								<Edit2 size={20} />
 							</Button>
 						</Tooltip>
-						<Tooltip
-							content={
-								canDelete ? (
-									"Delete passkey"
-								) : (
-									<div className="max-w-64 flex flex-col gap-2">
-										<p className="text-balance text-center">
-											Cannot delete this passkey, add more authentication
-											methods first
-										</p>
+						{canDelete ? (
+							<Tooltip content="Delete passkey">
+								<Button
+									isIconOnly
+									variant="light"
+									color="danger"
+									onPress={handlePasskeyDeleteModalOpen}
+								>
+									<Trash size={20} />
+								</Button>
+							</Tooltip>
+						) : (
+							<Tooltip
+								content={
+									<div className="px-1 py-2 flex flex-col gap-2 max-w-72">
+										<div className="text-small font-semibold">
+											Insufficient Authentication Providers
+										</div>
+										<div className="text-tiny">
+											Set up a password or connect your Google account before
+											deleting this passkey.
+										</div>
 									</div>
-								)
-							}
-						>
-							<Button
-								isIconOnly
-								variant="light"
-								color="danger"
-								onPress={handlePasskeyDeleteModalOpen}
-								isDisabled={!canDelete}
+								}
 							>
-								<Trash size={20} />
-							</Button>
-						</Tooltip>
+								<Button
+									isIconOnly
+									variant="light"
+									color="danger"
+									onPress={handlePasskeyDeleteModalOpen}
+									isDisabled
+								>
+									<span>
+										<Trash size={20} />
+									</span>
+								</Button>
+							</Tooltip>
+						)}
 					</div>
 				</CardHeader>
 

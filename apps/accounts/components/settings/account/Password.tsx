@@ -82,16 +82,31 @@ export default function Password({
 										Delete password
 									</Button>
 								) : (
-									<Tooltip content="You must have at least one more authentication provider enabled to delete your password.">
-										<Button
-											startContent={<TrashIcon size={16} />}
-											onPress={handleDeletePasswordOpen}
-											isDisabled
-											variant="bordered"
-											fullWidth
-										>
-											Delete password
-										</Button>
+									<Tooltip
+										showArrow
+										content={
+											<div className="px-1 py-2 flex flex-col gap-2 max-w-72">
+												<div className="text-small font-semibold">
+													Insufficient Authentication Providers
+												</div>
+												<div className="text-tiny">
+													Set up a passkey or connect your Google account before
+													deleting your password.
+												</div>
+											</div>
+										}
+									>
+										<span className="w-full">
+											<Button
+												startContent={<TrashIcon size={16} />}
+												onPress={handleDeletePasswordOpen}
+												isDisabled
+												variant="bordered"
+												fullWidth
+											>
+												Delete password
+											</Button>
+										</span>
 									</Tooltip>
 								)}
 							</div>
