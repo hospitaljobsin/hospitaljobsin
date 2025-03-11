@@ -8,10 +8,10 @@ import {
 } from "@heroui/react";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import type { DisableTwoFactorAuthenticationModalMutation } from "./__generated__/DisableTwoFactorAuthenticationModalMutation.graphql";
+import type { DisableAuthenticator2FAModalMutation } from "./__generated__/DisableAuthenticator2FAModalMutation.graphql";
 
-const DisableTwoFactorAuthenticationMutation = graphql`
-  mutation DisableTwoFactorAuthenticationModalMutation {
+const DisableAuthenticator2FAMutation = graphql`
+  mutation DisableAuthenticator2FAModalMutation {
 	disableAccount2faWithAuthenticator {
 		__typename
         ... on Account {
@@ -25,7 +25,7 @@ const DisableTwoFactorAuthenticationMutation = graphql`
   }
 `;
 
-export default function DisableTwoFactorAuthenticationModal({
+export default function DisableAuthenticator2FAModal({
 	isOpen,
 	onOpenChange,
 	onClose,
@@ -35,8 +35,8 @@ export default function DisableTwoFactorAuthenticationModal({
 	onClose: () => void;
 }) {
 	const [commitMutation, isMutationInFlight] =
-		useMutation<DisableTwoFactorAuthenticationModalMutation>(
-			DisableTwoFactorAuthenticationMutation,
+		useMutation<DisableAuthenticator2FAModalMutation>(
+			DisableAuthenticator2FAMutation,
 		);
 
 	function handleDisable2FA() {

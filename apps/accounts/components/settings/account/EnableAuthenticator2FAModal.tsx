@@ -19,10 +19,10 @@ import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
 import SaveRecoveryCodesModal from "./SaveRecoveryCodesModal";
-import type { EnableTwoFactorAuthenticationModalMutation } from "./__generated__/EnableTwoFactorAuthenticationModalMutation.graphql";
+import type { EnableAuthenticator2FAModalMutation } from "./__generated__/EnableAuthenticator2FAModalMutation.graphql";
 
-const EnableTwoFactorAuthenticationMutation = graphql`
-  mutation EnableTwoFactorAuthenticationModalMutation($token: String!) {
+const EnableAuthenticator2FAMutation = graphql`
+  mutation EnableAuthenticator2FAModalMutation($token: String!) {
 	enableAccount2faWithAuthenticator(token: $token) {
 		__typename
 		... on EnableAccount2FAWithAuthenticatorSuccess {
@@ -46,7 +46,7 @@ const formSchema = z.object({
 	token: z.string().length(6, "Token must be 6 characters long"),
 });
 
-export default function EnableTwoFactorAuthenticationModal({
+export default function EnableAuthenticator2FAModal({
 	isOpen,
 	onOpenChange,
 	otpUri,
@@ -63,8 +63,8 @@ export default function EnableTwoFactorAuthenticationModal({
 		null,
 	);
 	const [commitMutation, isMutationInFlight] =
-		useMutation<EnableTwoFactorAuthenticationModalMutation>(
-			EnableTwoFactorAuthenticationMutation,
+		useMutation<EnableAuthenticator2FAModalMutation>(
+			EnableAuthenticator2FAMutation,
 		);
 
 	const {

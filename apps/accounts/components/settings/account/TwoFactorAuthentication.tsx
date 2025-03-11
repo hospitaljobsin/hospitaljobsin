@@ -11,8 +11,8 @@ import { RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import DisableTwoFactorAuthenticationModal from "./DisableTwoFactorAuthenticationModal";
-import EnableTwoFactorAuthenticationModal from "./EnableTwoFactorAuthenticationModal";
+import DisableAuthenticator2FAModal from "./DisableAuthenticator2FAModal";
+import EnableAuthenticator2FAModal from "./EnableAuthenticator2FAModal";
 import RegenerateRecoveryCodesModal from "./RegenerateRecoveryCodesModal";
 import type { TwoFactorAuthenticationFragment$key } from "./__generated__/TwoFactorAuthenticationFragment.graphql";
 import type { TwoFactorAuthenticationGenerate2FAChallengeMutation } from "./__generated__/TwoFactorAuthenticationGenerate2FAChallengeMutation.graphql";
@@ -155,14 +155,14 @@ export default function TwoFactorAuthentication({
 					</div>
 				</CardBody>
 			</Card>
-			<EnableTwoFactorAuthenticationModal
+			<EnableAuthenticator2FAModal
 				isOpen={isEnableModalOpen}
 				onOpenChange={onEnableModalOpenChange}
 				onClose={onEnableModalClose}
 				otpUri={otpUri}
 				secret={secret}
 			/>
-			<DisableTwoFactorAuthenticationModal
+			<DisableAuthenticator2FAModal
 				isOpen={isDisableModalOpen}
 				onOpenChange={onDisableModalOpenChange}
 				onClose={onDisableModalClose}
