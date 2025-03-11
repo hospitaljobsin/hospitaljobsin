@@ -124,6 +124,12 @@ class AccountRepo:
         account.password_hash = self.hash_password(password)
         return await account.save()
 
+    async def delete_password(self, account: Account) -> Account:
+        """Delete the given account's password."""
+        account.password_hash = None
+        account.auth_providers.remove("password")
+        return await account.save()
+
 
 class EmailVerificationTokenRepo:
     async def create(self, email: str) -> tuple[str, EmailVerificationToken]:

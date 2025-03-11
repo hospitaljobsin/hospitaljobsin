@@ -188,6 +188,9 @@ type DeleteOtherSessionsPayload {
   deletedSessionIds: [ID!]!
 }
 
+"""The delete password payload."""
+union DeletePasswordPayload = Account | InsufficientAuthProvidersError
+
 """The delete session payload."""
 union DeleteSessionPayload = DeleteSessionSuccess | SessionNotFoundError
 
@@ -649,6 +652,15 @@ type Mutation {
     newPassword: String!
   ): ResetPasswordPayload!
 
+  """Update the current user's password."""
+  updatePassword(
+    """The new password."""
+    newPassword: String!
+  ): UpdatePasswordPayload! @isAuthenticated @requiresSudoMode
+
+  """Delete the current user's password."""
+  deletePassword: DeletePasswordPayload! @isAuthenticated @requiresSudoMode
+
   """Delete other sessions of the viewer than the current one."""
   deleteOtherSessions: DeleteOtherSessionsPayload! @isAuthenticated @requiresSudoMode
 
@@ -1108,7 +1120,7 @@ union RequestSudoModeWithAuthenticatorPayload = Account | InvalidCredentialsErro
 union RequestSudoModeWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
 
 """The request sudo mode with password payload."""
-union RequestSudoModeWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidAuthenticationProviderError
+union RequestSudoModeWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidAuthenticationProviderError | TwoFactorAuthenticationRequiredError
 
 """The reset password payload."""
 union ResetPasswordPayload = Account | InvalidPasswordResetTokenError | PasswordNotStrongError | TwoFactorAuthenticationChallengeNotFoundError
@@ -1224,6 +1236,9 @@ type UnsaveJobSuccess {
 
 """The update account payload."""
 union UpdateAccountPayload = Account | AccountNotFoundError
+
+"""The update password payload."""
+union UpdatePasswordPayload = Account | PasswordNotStrongError
 
 """The update profile payload."""
 union UpdateProfilePayload = Account

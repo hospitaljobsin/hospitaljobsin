@@ -875,6 +875,22 @@ ResetPasswordPayload = Annotated[
     ),
 ]
 
+UpdatePasswordPayload = Annotated[
+    AccountType | PasswordNotStrongErrorType,
+    strawberry.union(
+        name="UpdatePasswordPayload",
+        description="The update password payload.",
+    ),
+]
+
+DeletePasswordPayload = Annotated[
+    AccountType | InsufficientAuthProvidersErrorType,
+    strawberry.union(
+        name="DeletePasswordPayload",
+        description="The delete password payload.",
+    ),
+]
+
 
 RequestSudoModeWithAuthenticatorPayload = Annotated[
     AccountType

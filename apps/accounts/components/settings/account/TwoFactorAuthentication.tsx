@@ -98,79 +98,80 @@ export default function TwoFactorAuthentication({
 		}
 	}
 	return (
-		<Card className="p-4 sm:p-6" shadow="none">
-			<CardHeader className="flex flex-col gap-4 items-start">
-				<h2 className="text-md font-medium text-foreground-500">
-					Two Factor Authentication
-				</h2>
-				<p className="text-foreground-400">
-					Two-factor authentication (2FA) is a recommended security measure that
-					adds an extra layer of protection to your online accounts.{" "}
-				</p>
-			</CardHeader>
-			<CardBody>
-				<div className="w-full flex flex-col gap-12">
-					<div className="w-full flex flex-col items-center gap-6">
-						<div className="w-full flex flex-col sm:flex-row items-center gap-4 justify-between">
-							<div className="flex flex-col gap-4">
-								<h3>Authenticator App</h3>
-								<p className="text-small text-foreground-400">
-									Use an authentication app or browser extension to get
-									two-factor authentication codes when prompted.
-								</p>
+		<>
+			<Card className="p-4 sm:p-6" shadow="none">
+				<CardHeader className="flex flex-col gap-4 items-start">
+					<h2 className="text-md font-medium text-foreground-500">
+						Two Factor Authentication
+					</h2>
+					<p className="text-foreground-400">
+						Two-factor authentication (2FA) is a recommended security measure
+						that adds an extra layer of protection to your online accounts.{" "}
+					</p>
+				</CardHeader>
+				<CardBody>
+					<div className="w-full flex flex-col gap-12">
+						<div className="w-full flex flex-col items-center gap-6">
+							<div className="w-full flex flex-col sm:flex-row items-center gap-4 justify-between">
+								<div className="flex flex-col gap-4">
+									<h3>Authenticator App</h3>
+									<p className="text-small text-foreground-400">
+										Use an authentication app or browser extension to get
+										two-factor authentication codes when prompted.
+									</p>
+								</div>
+								{data.twoFactorProviders.includes("AUTHENTICATOR") ? (
+									<Button
+										variant="flat"
+										className="w-full sm:w-auto"
+										onPress={handleDisable2faOpen}
+									>
+										Disable
+									</Button>
+								) : (
+									<Button
+										className="w-full sm:w-auto"
+										onPress={handleEnable2faOpen}
+										isLoading={isMutationInFlight}
+									>
+										Enable
+									</Button>
+								)}
 							</div>
-							{data.twoFactorProviders.includes("AUTHENTICATOR") ? (
-								<Button
-									variant="flat"
-									className="w-full sm:w-auto"
-									onPress={handleDisable2faOpen}
-								>
-									Disable
-								</Button>
-							) : (
-								<Button
-									className="w-full sm:w-auto"
-									onPress={handleEnable2faOpen}
-									isLoading={isMutationInFlight}
-								>
-									Enable
-								</Button>
-							)}
 						</div>
+						{data.has2faEnabled && (
+							<>
+								<Divider />
+								<Button
+									fullWidth
+									variant="bordered"
+									startContent={<RotateCcw size={20} />}
+									onPress={handleRegenerateRecoveryCodesOpen}
+								>
+									Regenerate Recovery Codes
+								</Button>
+							</>
+						)}
 					</div>
-					{data.has2faEnabled && (
-						<>
-							<Divider />
-							<Button
-								fullWidth
-								variant="bordered"
-								startContent={<RotateCcw size={20} />}
-								onPress={handleRegenerateRecoveryCodesOpen}
-							>
-								Regenerate Recovery Codes
-							</Button>
-						</>
-					)}
-				</div>
-
-				<EnableTwoFactorAuthenticationModal
-					isOpen={isEnableModalOpen}
-					onOpenChange={onEnableModalOpenChange}
-					onClose={onEnableModalClose}
-					otpUri={otpUri}
-					secret={secret}
-				/>
-				<DisableTwoFactorAuthenticationModal
-					isOpen={isDisableModalOpen}
-					onOpenChange={onDisableModalOpenChange}
-					onClose={onDisableModalClose}
-				/>
-				<RegenerateRecoveryCodesModal
-					isOpen={isRegenerateCodesModalOpen}
-					onOpenChange={onRegenerateCodesModalOpenChange}
-					onClose={onRegenerateCodesModalClose}
-				/>
-			</CardBody>
-		</Card>
+				</CardBody>
+			</Card>
+			<EnableTwoFactorAuthenticationModal
+				isOpen={isEnableModalOpen}
+				onOpenChange={onEnableModalOpenChange}
+				onClose={onEnableModalClose}
+				otpUri={otpUri}
+				secret={secret}
+			/>
+			<DisableTwoFactorAuthenticationModal
+				isOpen={isDisableModalOpen}
+				onOpenChange={onDisableModalOpenChange}
+				onClose={onDisableModalClose}
+			/>
+			<RegenerateRecoveryCodesModal
+				isOpen={isRegenerateCodesModalOpen}
+				onOpenChange={onRegenerateCodesModalOpenChange}
+				onClose={onRegenerateCodesModalClose}
+			/>
+		</>
 	);
 }

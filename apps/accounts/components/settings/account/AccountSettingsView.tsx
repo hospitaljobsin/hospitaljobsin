@@ -3,6 +3,7 @@ import { useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
 import AccountDetails from "./AccountDetails";
+import Password from "./Password";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
 import UpdateAccountDetailsForm from "./UpdateAccountDetailsForm";
 import type { AccountSettingsViewQuery as AccountSettingsViewQueryType } from "./__generated__/AccountSettingsViewQuery.graphql";
@@ -15,6 +16,7 @@ const AccountSettingsViewQuery = graphql`
         ...AccountDetailsFragment
 		...UpdateAccountDetailsFormFragment
 		...TwoFactorAuthenticationFragment
+		...PasswordFragment
       }
     }
   }
@@ -26,6 +28,7 @@ export default function AccountSettingsView() {
 		AccountSettingsViewQuery,
 		{},
 	);
+	console.log("DATA: ", data);
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",
@@ -48,6 +51,8 @@ export default function AccountSettingsView() {
 					}}
 				/>
 			)}
+
+			<Password rootQuery={data.viewer} />
 
 			<TwoFactorAuthentication rootQuery={data.viewer} />
 		</div>
