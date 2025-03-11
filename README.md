@@ -26,10 +26,11 @@ This project has a proprietary license. Read the entire license [here](./README.
 ## Local development- Quickstart
 
 ### Prerequisites
-| Tool           | Minimum Tested Version  | Description                 |
-|----------------|-------------------------|-----------------------------|
-| Docker Engine  | 4.35                    | Container runtime           |
-| Tmuxinator     | 3.0                     | TMUX session manager        |
+| Tool                                                       | Minimum Tested Version  | Description                 |
+|------------------------------------------------------------|-------------------------|-----------------------------|
+| [Docker Engine](https://docs.docker.com/engine/)           | 4.35                    | Container runtime           |
+| [TMUX](https://github.com/tmux/tmux)                       | 3.2a                    | Terminal Multiplexer        |
+| [Tmuxinator](https://github.com/tmuxinator/tmuxinator)     | 3.0                     | TMUX session manager        |
 
 Go through the setup guides of the services above, which covers installation of required dependencies,
 and other service specific setup tasks.
