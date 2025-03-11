@@ -20,11 +20,15 @@ from app.base.types import (
     BaseNodeType,
     NotAuthenticatedErrorType,
 )
-from app.context import Info
+from app.context import AuthInfo, Info
 from app.organizations.repositories import OrganizationRepo
 
 if TYPE_CHECKING:
-    from app.auth.types import SessionConnectionType, WebAuthnCredentialConnectionType
+    from app.auth.types import (
+        SessionConnectionType,
+        SessionType,
+        WebAuthnCredentialConnectionType,
+    )
     from app.organizations.types import (
         OrganizationConnectionType,
     )
@@ -426,11 +430,24 @@ class AccountType(BaseNodeType[Account]):
         return OrganizationConnectionType.marshal(memberships)
 
     @strawberry.field(
+        description="The session for the current user.",
+    )
+    @inject
+    async def current_session(
+        self, info: AuthInfo
+    ) -> Annotated["SessionType", strawberry.lazy("app.auth.types")]:
+        """Return the current session for the user."""
+        from app.auth.types import SessionType
+
+        return SessionType.marshal(info.context["session"])
+
+    @strawberry.field(
         description="The sessions for the account.",
     )
     @inject
     async def sessions(
         self,
+        info: AuthInfo,
         session_repo: Annotated[
             SessionRepo,
             Inject,
@@ -465,6 +482,7 @@ class AccountType(BaseNodeType[Account]):
 
         sessions = await session_repo.get_all_by_account_id(
             account_id=ObjectId(self.id),
+            except_session_token=info.context["session_token"],
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
             first=first,

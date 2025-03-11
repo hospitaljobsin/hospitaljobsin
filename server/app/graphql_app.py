@@ -38,6 +38,7 @@ async def get_context(
                 background_tasks=background_tasks,
                 loaders=create_dataloaders(),
                 current_user=session.account,
+                session=session,
                 user_agent=user_agent,
                 session_token=session_token,
             )
@@ -51,6 +52,7 @@ async def get_context(
         background_tasks=background_tasks,
         loaders=create_dataloaders(),
         current_user=None,
+        session=None,
         user_agent=user_agent,
     )
 

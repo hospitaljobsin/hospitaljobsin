@@ -107,6 +107,7 @@ class SessionRepo:
     async def get_all_by_account_id(
         self,
         account_id: ObjectId,
+        except_session_token: str,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
@@ -122,6 +123,10 @@ class SessionRepo:
         return await paginator.paginate(
             search_criteria=Session.find(
                 Session.account.id == account_id,
+                Session.token_hash
+                != self.hash_session_token(
+                    except_session_token,
+                ),
             ),
             first=first,
             last=last,

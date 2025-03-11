@@ -197,18 +197,6 @@ class SessionType(BaseNodeType[Session]):
             token_hash=session.token_hash,
         )
 
-    @strawberry.field(
-        description="Whether the session is the current account's session."
-    )
-    @inject
-    def is_current_session(
-        self, info: AuthInfo, session_repo: Annotated[SessionRepo, Inject]
-    ) -> bool:
-        """Return whether the session is the current session."""
-        return self.token_hash == session_repo.hash_session_token(
-            info.context["session_token"]
-        )
-
 
 @strawberry.type(name="SessionEdge")
 class SessionEdgeType(BaseEdgeType[SessionType, Session]):

@@ -34,7 +34,6 @@ export const SessionFragment = graphql`
 	userAgent
 	ipAddress
     createdAt
-    isCurrentSession
 	...DeleteSessionModalFragment
   }
 `;
@@ -49,6 +48,7 @@ type Props = {
 	session: SessionFragment$key;
 	sessionsConnectionId: string;
 	account: SessionAccountSudoFragment$key;
+	isCurrentSession: boolean;
 };
 
 function getSessionIcon(device: IDevice) {
@@ -68,6 +68,7 @@ export default function Session({
 	session,
 	sessionsConnectionId,
 	account,
+	isCurrentSession,
 }: Props) {
 	const { checkSudoMode } = useCheckSudoMode();
 	const data = useFragment(SessionFragment, session);
@@ -90,7 +91,7 @@ export default function Session({
 						{getSessionIcon(device)}
 						<h2 className="text-lg">{data.ipAddress}</h2>
 					</div>
-					{data.isCurrentSession ? (
+					{isCurrentSession ? (
 						<>
 							<Chip
 								variant="flat"

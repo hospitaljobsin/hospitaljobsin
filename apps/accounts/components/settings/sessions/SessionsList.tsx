@@ -4,6 +4,7 @@ import { graphql } from "relay-runtime";
 import Session from "./Session";
 import SessionsController from "./SessionsController";
 import SessionsListSkeleton from "./SessionsListSkeleton";
+import type { SessionsListCurrentSessionFragment$key } from "./__generated__/SessionsListCurrentSessionFragment.graphql";
 import type { SessionsListFragment$key } from "./__generated__/SessionsListFragment.graphql";
 import type { SessionsListInternalFragment$key } from "./__generated__/SessionsListInternalFragment.graphql";
 import type { SessionsSettingsViewQuery } from "./__generated__/SessionsSettingsViewQuery.graphql";
@@ -12,9 +13,17 @@ const SessionsListFragment = graphql`
   fragment SessionsListFragment on Account{
 	...SessionsControllerFragment
     ...SessionsListInternalFragment
+	...SessionsListCurrentSessionFragment
 	...SessionAccountSudoFragment
   }
 `;
+
+const SessionsListCurrentSessionFragment = graphql`
+fragment SessionsListCurrentSessionFragment on Account {
+	  currentSession { 
+		...SessionFragment
+	  }
+}`;
 
 const SessionsListInternalFragment = graphql`
   fragment SessionsListInternalFragment on Account
@@ -29,7 +38,6 @@ const SessionsListInternalFragment = graphql`
       edges {
         node {
           id
-		  isCurrentSession
           ...SessionFragment
         }
       }
@@ -46,6 +54,10 @@ type Props = {
 
 export default function SessionsList({ root }: Props) {
 	const rootQuery = useFragment(SessionsListFragment, root);
+	const currentSession = useFragment<SessionsListCurrentSessionFragment$key>(
+		SessionsListCurrentSessionFragment,
+		rootQuery,
+	);
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<
 		SessionsSettingsViewQuery,
 		SessionsListInternalFragment$key
@@ -75,7 +87,7 @@ export default function SessionsList({ root }: Props) {
 	}, [data.sessions.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
 	const canDeleteAllSessions = useMemo(
-		() => data.sessions.edges.some((edge) => !edge.node.isCurrentSession),
+		() => data.sessions.edges.length > 1,
 		[data.sessions.edges],
 	);
 
@@ -90,12 +102,19 @@ export default function SessionsList({ root }: Props) {
 				/>
 			</div>
 			<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
+				<Session
+					session={currentSession.currentSession}
+					sessionsConnectionId={data.sessions.__id}
+					account={rootQuery}
+					isCurrentSession
+				/>
 				{data.sessions.edges.map((sessionEdge) => (
 					<Session
 						session={sessionEdge.node}
 						key={sessionEdge.node.id}
 						sessionsConnectionId={data.sessions.__id}
 						account={rootQuery}
+						isCurrentSession={false}
 					/>
 				))}
 				<div ref={observerRef} className="h-10" />

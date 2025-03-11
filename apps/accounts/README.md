@@ -55,7 +55,6 @@ add accounts center
 where:
  
 - users can delete their accounts
-- pin current session to top (sort in the server itself)
 
 Github Uses SECURITY KEYS only as a form of 2fa, not PASSKEYS.
 hence our current setup is correct
