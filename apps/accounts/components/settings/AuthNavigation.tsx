@@ -1,4 +1,5 @@
 "use client";
+import type { AuthNavigationFragment$key } from "@/__generated__/AuthNavigationFragment.graphql";
 import {
 	Button,
 	Divider,
@@ -19,7 +20,6 @@ import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import LogoutModal from "./LogoutModal";
-import type { AuthNavigationFragment$key } from "./__generated__/AuthNavigationFragment.graphql";
 
 const AuthNavigationFragment = graphql`
   fragment AuthNavigationFragment on Account {

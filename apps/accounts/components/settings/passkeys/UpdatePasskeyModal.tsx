@@ -1,3 +1,5 @@
+import type { UpdatePasskeyModalFragment$key } from "@/__generated__/UpdatePasskeyModalFragment.graphql";
+import type { UpdatePasskeyModalMutation } from "@/__generated__/UpdatePasskeyModalMutation.graphql";
 import {
 	Button,
 	Input,
@@ -12,8 +14,6 @@ import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
-import type { UpdatePasskeyModalFragment$key } from "./__generated__/UpdatePasskeyModalFragment.graphql";
-import type { UpdatePasskeyModalMutation } from "./__generated__/UpdatePasskeyModalMutation.graphql";
 
 export const UpdatePasskeyModalFragment = graphql`
   fragment UpdatePasskeyModalFragment on WebAuthnCredential {

@@ -1,12 +1,12 @@
 "use client";
 
+import type { ResetPasswordViewFragment$key } from "@/__generated__/ResetPasswordViewFragment.graphql";
 import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import ConfirmResetPasswordForm from "./ConfirmResetPasswordForm";
 import ResetPasswordTwoFactorAuthentication from "./TwoFactorAuthentication";
-import type { ResetPasswordViewFragment$key } from "./__generated__/ResetPasswordViewFragment.graphql";
 
 const ResetPasswordViewFragment = graphql`
  fragment ResetPasswordViewFragment on PasswordResetToken {

@@ -1,11 +1,11 @@
+import type { PasskeyTwoFactorAuthenticationGenerateOptionsMutation } from "@/__generated__/PasskeyTwoFactorAuthenticationGenerateOptionsMutation.graphql";
+import type { PasskeyTwoFactorAuthenticationResetPasswordMutation as PasskeyTwoFactorAuthenticationResetPasswordMutationType } from "@/__generated__/PasskeyTwoFactorAuthenticationResetPasswordMutation.graphql";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { Fingerprint } from "lucide-react";
 import { useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { graphql, useMutation } from "react-relay";
-import type { PasskeyTwoFactorAuthenticationGenerateOptionsMutation } from "./__generated__/PasskeyTwoFactorAuthenticationGenerateOptionsMutation.graphql";
-import type { PasskeyTwoFactorAuthenticationResetPasswordMutation as PasskeyTwoFactorAuthenticationResetPasswordMutationType } from "./__generated__/PasskeyTwoFactorAuthenticationResetPasswordMutation.graphql";
 
 const GenerateAuthenticationOptionsMutation = graphql`
   mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation($recaptchaToken: String!) {

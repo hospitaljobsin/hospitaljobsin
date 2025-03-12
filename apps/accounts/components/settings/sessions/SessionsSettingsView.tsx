@@ -1,10 +1,10 @@
 "use client";
+import type { SessionsSettingsViewQuery as SessionsSettingsViewQueryType } from "@/__generated__/SessionsSettingsViewQuery.graphql";
 import { Suspense } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
 import SessionsList from "./SessionsList";
 import SessionsListSkeleton from "./SessionsListSkeleton";
-import type { SessionsSettingsViewQuery as SessionsSettingsViewQueryType } from "./__generated__/SessionsSettingsViewQuery.graphql";
 
 const SessionsSettingsViewQuery = graphql`
   query SessionsSettingsViewQuery {

@@ -1,5 +1,6 @@
 import { useFragment, useMutation } from "react-relay";
 
+import type { UpdateAccountDetailsFormFragment$key } from "@/__generated__/UpdateAccountDetailsFormFragment.graphql";
 import {
 	Avatar,
 	Badge,
@@ -15,7 +16,6 @@ import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
-import type { UpdateAccountDetailsFormFragment$key } from "./__generated__/UpdateAccountDetailsFormFragment.graphql";
 
 const UpdateAccountDetailsFormMutation = graphql`
 mutation UpdateAccountDetailsFormMutation($fullName: String!)  {

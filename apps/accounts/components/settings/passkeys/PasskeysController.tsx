@@ -1,3 +1,6 @@
+import type { PasskeysControllerFragment$key } from "@/__generated__/PasskeysControllerFragment.graphql";
+import type { PasskeysControllerGenerateOptionsMutation } from "@/__generated__/PasskeysControllerGenerateOptionsMutation.graphql";
+import type { PasskeysControllerMutation } from "@/__generated__/PasskeysControllerMutation.graphql";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import {
 	Button,
@@ -16,9 +19,6 @@ import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
-import type { PasskeysControllerFragment$key } from "./__generated__/PasskeysControllerFragment.graphql";
-import type { PasskeysControllerGenerateOptionsMutation } from "./__generated__/PasskeysControllerGenerateOptionsMutation.graphql";
-import type { PasskeysControllerMutation } from "./__generated__/PasskeysControllerMutation.graphql";
 
 const PasskeysControllerFragment = graphql`
   fragment PasskeysControllerFragment on Account {

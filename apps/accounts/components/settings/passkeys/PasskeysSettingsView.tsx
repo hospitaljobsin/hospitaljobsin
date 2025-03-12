@@ -1,4 +1,5 @@
 "use client";
+import type { PasskeysSettingsViewQuery as PasskeysSettingsViewQueryType } from "@/__generated__/PasskeysSettingsViewQuery.graphql";
 import { LEARN_MORE_ABOUT_PASSKEYS_LINK } from "@/lib/constants";
 import { Link } from "@heroui/react";
 import { Suspense } from "react";
@@ -6,7 +7,6 @@ import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
 import PasskeysList from "./PasskeysList";
 import PasskeysListSkeleton from "./PasskeysListSkeleton";
-import type { PasskeysSettingsViewQuery as PasskeysSettingsViewQueryType } from "./__generated__/PasskeysSettingsViewQuery.graphql";
 
 const PasskeysSettingsViewQuery = graphql`
   query PasskeysSettingsViewQuery {

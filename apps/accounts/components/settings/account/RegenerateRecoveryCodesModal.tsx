@@ -1,3 +1,4 @@
+import type { RegenerateRecoveryCodesModalMutation } from "@/__generated__/RegenerateRecoveryCodesModalMutation.graphql";
 import {
 	Button,
 	Modal,
@@ -10,7 +11,6 @@ import { useState } from "react";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import SaveRecoveryCodesModal from "./SaveRecoveryCodesModal";
-import type { RegenerateRecoveryCodesModalMutation } from "./__generated__/RegenerateRecoveryCodesModalMutation.graphql";
 
 const RegenerateRecoveryCodesMutation = graphql`
   mutation RegenerateRecoveryCodesModalMutation {

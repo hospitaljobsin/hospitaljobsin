@@ -1,12 +1,12 @@
+import type { pagePasswordResetTokenMetadataFragment$key } from "@/__generated__/pagePasswordResetTokenMetadataFragment.graphql";
+import type PasswordResetTokenViewQueryNode from "@/__generated__/pageResetPasswordViewQuery.graphql";
+import type { pageResetPasswordViewQuery } from "@/__generated__/pageResetPasswordViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
 import ResetPasswordViewClientComponent from "./ResetPasswordViewClientComponent";
-import type { pagePasswordResetTokenMetadataFragment$key } from "./__generated__/pagePasswordResetTokenMetadataFragment.graphql";
-import type PasswordResetTokenViewQueryNode from "./__generated__/pageResetPasswordViewQuery.graphql";
-import type { pageResetPasswordViewQuery } from "./__generated__/pageResetPasswordViewQuery.graphql";
 
 export const PageResetPasswordViewQuery = graphql`
   query pageResetPasswordViewQuery($resetToken: String!, $email: String!) {	

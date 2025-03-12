@@ -1,3 +1,6 @@
+import type { pageRequestSudoModeInternalFragment$key } from "@/__generated__/pageRequestSudoModeInternalFragment.graphql";
+import type RequestSudoModeViewQueryNode from "@/__generated__/pageRequestSudoModeViewQuery.graphql";
+import type { pageRequestSudoModeViewQuery } from "@/__generated__/pageRequestSudoModeViewQuery.graphql";
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { isSudoModeActive } from "@/lib/sudoMode";
@@ -6,9 +9,6 @@ import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
 import invariant from "tiny-invariant";
 import RequestSudoModeViewClientComponent from "./RequestSudoModeViewClientComponent";
-import type { pageRequestSudoModeInternalFragment$key } from "./__generated__/pageRequestSudoModeInternalFragment.graphql";
-import type RequestSudoModeViewQueryNode from "./__generated__/pageRequestSudoModeViewQuery.graphql";
-import type { pageRequestSudoModeViewQuery } from "./__generated__/pageRequestSudoModeViewQuery.graphql";
 
 export const PageRequestSudoModeViewQuery = graphql`
   query pageRequestSudoModeViewQuery {	

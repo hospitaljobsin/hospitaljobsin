@@ -1,5 +1,6 @@
 "use client";
 
+import type { ConfirmResetPasswordFormMutation as ConfirmResetPasswordFormMutationType } from "@/__generated__/ConfirmResetPasswordFormMutation.graphql";
 import links from "@/lib/links";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +10,6 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
-import type { ConfirmResetPasswordFormMutation as ConfirmResetPasswordFormMutationType } from "../__generated__/ConfirmResetPasswordFormMutation.graphql";
 
 const ConfirmResetPasswordFormMutation = graphql`
   mutation ConfirmResetPasswordFormMutation($email: String!, $passwordResetToken: String!, $newPassword: String!) {
@@ -28,36 +28,39 @@ const ConfirmResetPasswordFormMutation = graphql`
   }
 `;
 
-const confirmResetPasswordSchema = z.object({
-	password: z
-		.string()
-		.min(1, "This field is required")
-		.min(8, "Password must be at least 8 characters long.")
-		.refine((password) => /[a-z]/.test(password), {
-			message: "Password must contain at least one lowercase letter.",
-		})
-		.refine((password) => /[A-Z]/.test(password), {
-			message: "Password must contain at least one uppercase letter.",
-		})
-		.refine((password) => /\d/.test(password), {
-			message: "Password must contain at least one number.",
-		})
-		.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
-			message:
-				"Password must contain at least one special character (!@#$%^&*()-_=+).",
-		}),
+const confirmResetPasswordSchema = z
+	.object({
+		password: z
+			.string()
+			.min(1, "This field is required")
+			.min(8, "Password must be at least 8 characters long.")
+			.refine((password) => /[a-z]/.test(password), {
+				message: "Password must contain at least one lowercase letter.",
+			})
+			.refine((password) => /[A-Z]/.test(password), {
+				message: "Password must contain at least one uppercase letter.",
+			})
+			.refine((password) => /\d/.test(password), {
+				message: "Password must contain at least one number.",
+			})
+			.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
+				message:
+					"Password must contain at least one special character (!@#$%^&*()-_=+).",
+			}),
 		confirmPassword: z.string().min(1, "This field is required"),
-}).refine((data) => data.password === data.confirmPassword, {
-	message: "Passwords don't match",
-	path: ["confirmPassword"],
-});
+	})
+	.refine((data) => data.password === data.confirmPassword, {
+		message: "Passwords don't match",
+		path: ["confirmPassword"],
+	});
 
 export default function ConfirmResetPasswordForm({
 	email,
 	resetToken,
 }: { email: string; resetToken: string }) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+		useState(false);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<ConfirmResetPasswordFormMutationType>(
 			ConfirmResetPasswordFormMutation,
@@ -137,7 +140,7 @@ export default function ConfirmResetPasswordForm({
 							errorMessage={errors.password?.message}
 							isInvalid={!!errors.password}
 						/>
-												<Input
+						<Input
 							label="Confirm New Password"
 							placeholder="Confirm new password"
 							{...register("confirmPassword")}
@@ -146,7 +149,9 @@ export default function ConfirmResetPasswordForm({
 							endContent={
 								<button
 									type="button"
-									onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+									onClick={() =>
+										setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
+									}
 									className="focus:outline-none"
 								>
 									{isConfirmPasswordVisible ? (

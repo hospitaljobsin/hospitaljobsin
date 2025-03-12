@@ -1,3 +1,4 @@
+import type { DeleteOtherSessionsModalMutation } from "@/__generated__/DeleteOtherSessionsModalMutation.graphql";
 import {
 	Button,
 	Modal,
@@ -8,7 +9,6 @@ import {
 } from "@heroui/react";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import type { DeleteOtherSessionsModalMutation } from "./__generated__/DeleteOtherSessionsModalMutation.graphql";
 
 const DeleteOtherSessionsMutation = graphql`
   mutation DeleteOtherSessionsModalMutation($connections: [ID!]!) {

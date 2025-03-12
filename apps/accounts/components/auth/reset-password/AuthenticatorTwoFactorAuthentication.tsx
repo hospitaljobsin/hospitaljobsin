@@ -1,10 +1,10 @@
+import type { AuthenticatorTwoFactorAuthenticationResetPasswordMutation as AuthenticatorTwoFactorAuthenticationResetPasswordMutationType } from "@/__generated__/AuthenticatorTwoFactorAuthenticationResetPasswordMutation.graphql";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
-import type { AuthenticatorTwoFactorAuthenticationResetPasswordMutation as AuthenticatorTwoFactorAuthenticationResetPasswordMutationType } from "./__generated__/AuthenticatorTwoFactorAuthenticationResetPasswordMutation.graphql";
 
 const AuthenticatorTwoFactorAuthenticationResetPasswordMutation = graphql`
   mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation($email: String!, $passwordResetToken: String!, $twoFactorToken: String!) {

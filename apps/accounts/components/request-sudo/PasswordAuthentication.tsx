@@ -1,5 +1,6 @@
 "use client";
 
+import type { PasswordAuthenticationMutation as PasswordAuthenticationMutationType } from "@/__generated__/PasswordAuthenticationMutation.graphql";
 import links from "@/lib/links";
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
@@ -12,7 +13,6 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
-import type { PasswordAuthenticationMutation as PasswordAuthenticationMutationType } from "./__generated__/PasswordAuthenticationMutation.graphql";
 
 const PasswordAuthenticationMutation = graphql`
   mutation PasswordAuthenticationMutation($password: String!, $recaptchaToken: String!) {

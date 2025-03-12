@@ -1,3 +1,5 @@
+import type { PasskeyAuthenticationGenerateOptionsMutation } from "@/__generated__/PasskeyAuthenticationGenerateOptionsMutation.graphql";
+import type { PasskeyAuthenticationMutation as PasskeyAuthenticationMutationType } from "@/__generated__/PasskeyAuthenticationMutation.graphql";
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { Button } from "@heroui/react";
 import { startAuthentication } from "@simplewebauthn/browser";
@@ -8,8 +10,6 @@ import { useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import type { PasskeyAuthenticationGenerateOptionsMutation } from "./__generated__/PasskeyAuthenticationGenerateOptionsMutation.graphql";
-import type { PasskeyAuthenticationMutation as PasskeyAuthenticationMutationType } from "./__generated__/PasskeyAuthenticationMutation.graphql";
 
 const GenerateReauthenticationOptionsMutation = graphql`
   mutation PasskeyAuthenticationGenerateOptionsMutation($recaptchaToken: String!) {

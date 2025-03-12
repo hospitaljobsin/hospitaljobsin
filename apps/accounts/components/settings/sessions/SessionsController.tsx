@@ -1,10 +1,10 @@
+import type { SessionsControllerFragment$key } from "@/__generated__/SessionsControllerFragment.graphql";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import { Button, useDisclosure } from "@heroui/react";
 import { Trash } from "lucide-react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import DeleteOtherSessionsModal from "./DeleteOtherSessionsModal";
-import type { SessionsControllerFragment$key } from "./__generated__/SessionsControllerFragment.graphql";
 
 const SessionsControllerFragment = graphql`
   fragment SessionsControllerFragment on Account {

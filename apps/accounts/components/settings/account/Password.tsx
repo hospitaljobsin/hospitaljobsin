@@ -1,3 +1,4 @@
+import type { PasswordFragment$key } from "@/__generated__/PasswordFragment.graphql";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import {
 	Button,
@@ -12,7 +13,6 @@ import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import DeletePasswordModal from "./DeletePasswordModal";
 import UpdatePasswordModal from "./UpdatePasswordModal";
-import type { PasswordFragment$key } from "./__generated__/PasswordFragment.graphql";
 
 const PasswordFragment = graphql`
   fragment PasswordFragment on Account {

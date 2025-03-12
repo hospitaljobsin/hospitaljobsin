@@ -1,5 +1,10 @@
 "use client";
 
+import type {
+	AuthProvider,
+	RequestSudoViewFragment$key,
+	TwoFactorProvider,
+} from "@/__generated__/RequestSudoViewFragment.graphql";
 import { env } from "@/lib/env";
 import {
 	Alert,
@@ -22,11 +27,6 @@ import { getValidSudoModeRedirectURL } from "../../lib/redirects";
 import PasskeyAuthentication from "./PasskeyAuthentication";
 import PasswordAuthentication from "./PasswordAuthentication";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
-import type {
-	AuthProvider,
-	RequestSudoViewFragment$key,
-	TwoFactorProvider,
-} from "./__generated__/RequestSudoViewFragment.graphql";
 
 const RequestSudoViewFragment = graphql`
  fragment RequestSudoViewFragment on Query {

@@ -1,3 +1,5 @@
+import type { PasskeyAccountMetadataFragment$key } from "@/__generated__/PasskeyAccountMetadataFragment.graphql";
+import type { PasskeyFragment$key } from "@/__generated__/PasskeyFragment.graphql";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import { dateFormat, getRelativeTimeString } from "@/lib/intl";
 import {
@@ -13,8 +15,6 @@ import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import DeletePasskeyModal from "./DeletePasskeyModal";
 import UpdatePasskeyModal from "./UpdatePasskeyModal";
-import type { PasskeyAccountMetadataFragment$key } from "./__generated__/PasskeyAccountMetadataFragment.graphql";
-import type { PasskeyFragment$key } from "./__generated__/PasskeyFragment.graphql";
 
 export const PasskeyFragment = graphql`
   fragment PasskeyFragment on WebAuthnCredential {

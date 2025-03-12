@@ -1,5 +1,7 @@
 "use client";
 
+import type { PasskeyRegistrationMutation } from "@/__generated__/PasskeyRegistrationMutation.graphql";
+import type { PasskeyRegistrationOptionsMutation } from "@/__generated__/PasskeyRegistrationOptionsMutation.graphql";
 import { getValidRedirectURL } from "@/lib/redirects";
 import { Alert, Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,8 +14,6 @@ import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
 import SignupContext from "../SignupContext";
-import type { PasskeyRegistrationMutation } from "./__generated__/PasskeyRegistrationMutation.graphql";
-import type { PasskeyRegistrationOptionsMutation } from "./__generated__/PasskeyRegistrationOptionsMutation.graphql";
 
 const GeneratePasskeyRegistrationOptionsMutation = graphql`
   mutation PasskeyRegistrationOptionsMutation(

@@ -1,13 +1,13 @@
+import type { SessionsListCurrentSessionFragment$key } from "@/__generated__/SessionsListCurrentSessionFragment.graphql";
+import type { SessionsListFragment$key } from "@/__generated__/SessionsListFragment.graphql";
+import type { SessionsListInternalFragment$key } from "@/__generated__/SessionsListInternalFragment.graphql";
+import type { SessionsSettingsViewQuery } from "@/__generated__/SessionsSettingsViewQuery.graphql";
 import { useEffect, useMemo, useRef } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Session from "./Session";
 import SessionsController from "./SessionsController";
 import SessionsListSkeleton from "./SessionsListSkeleton";
-import type { SessionsListCurrentSessionFragment$key } from "./__generated__/SessionsListCurrentSessionFragment.graphql";
-import type { SessionsListFragment$key } from "./__generated__/SessionsListFragment.graphql";
-import type { SessionsListInternalFragment$key } from "./__generated__/SessionsListInternalFragment.graphql";
-import type { SessionsSettingsViewQuery } from "./__generated__/SessionsSettingsViewQuery.graphql";
 
 const SessionsListFragment = graphql`
   fragment SessionsListFragment on Account{

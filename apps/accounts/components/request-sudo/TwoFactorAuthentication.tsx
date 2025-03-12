@@ -1,5 +1,6 @@
 "use client";
 
+import type { TwoFactorAuthenticationMutation as TwoFactorAuthenticationMutationType } from "@/__generated__/TwoFactorAuthenticationMutation.graphql";
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +9,6 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
-import type { TwoFactorAuthenticationMutation as TwoFactorAuthenticationMutationType } from "./__generated__/TwoFactorAuthenticationMutation.graphql";
 
 const TwoFactorAuthenticationMutation = graphql`
   mutation TwoFactorAuthenticationMutation($twoFactorToken: String!, $recaptchaToken: String!) {

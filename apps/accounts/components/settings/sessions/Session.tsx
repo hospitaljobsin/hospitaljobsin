@@ -1,3 +1,5 @@
+import type { SessionAccountSudoFragment$key } from "@/__generated__/SessionAccountSudoFragment.graphql";
+import type { SessionFragment$key } from "@/__generated__/SessionFragment.graphql";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import { dateFormat } from "@/lib/intl";
 import {
@@ -25,8 +27,6 @@ import { graphql } from "relay-runtime";
 import type { IDevice } from "ua-parser-js";
 import { UAParser } from "ua-parser-js";
 import DeleteSessionModal from "./DeleteSessionModal";
-import type { SessionAccountSudoFragment$key } from "./__generated__/SessionAccountSudoFragment.graphql";
-import type { SessionFragment$key } from "./__generated__/SessionFragment.graphql";
 
 export const SessionFragment = graphql`
   fragment SessionFragment on Session {

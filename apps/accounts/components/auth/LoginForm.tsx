@@ -1,5 +1,8 @@
 "use client";
 
+import type { LoginFormGenerateAuthenticationOptionsMutation } from "@/__generated__/LoginFormGenerateAuthenticationOptionsMutation.graphql";
+import type { LoginFormPasskeyMutation as LoginFormPasskeyMutationType } from "@/__generated__/LoginFormPasskeyMutation.graphql";
+import type { LoginFormPasswordMutation as LoginFormPasswordMutationType } from "@/__generated__/LoginFormPasswordMutation.graphql";
 import { env } from "@/lib/env";
 import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
@@ -26,9 +29,6 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
-import type { LoginFormGenerateAuthenticationOptionsMutation } from "./__generated__/LoginFormGenerateAuthenticationOptionsMutation.graphql";
-import type { LoginFormPasskeyMutation as LoginFormPasskeyMutationType } from "./__generated__/LoginFormPasskeyMutation.graphql";
-import type { LoginFormPasswordMutation as LoginFormPasswordMutationType } from "./__generated__/LoginFormPasswordMutation.graphql";
 
 const LoginFormPasswordMutation = graphql`
   mutation LoginFormPasswordMutation($email: String!, $password: String!, $recaptchaToken: String!) {

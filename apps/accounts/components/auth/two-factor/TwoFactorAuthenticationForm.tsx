@@ -1,5 +1,6 @@
 "use client";
 
+import type { TwoFactorAuthenticationFormMutation as TwoFactorAuthenticationFormMutationType } from "@/__generated__/TwoFactorAuthenticationFormMutation.graphql";
 import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
 import {
@@ -20,7 +21,6 @@ import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
-import type { TwoFactorAuthenticationFormMutation as TwoFactorAuthenticationFormMutationType } from "./__generated__/TwoFactorAuthenticationFormMutation.graphql";
 
 const TwoFactorAuthenticationFormMutation = graphql`
   mutation TwoFactorAuthenticationFormMutation($token: String!, $recaptchaToken: String!) {

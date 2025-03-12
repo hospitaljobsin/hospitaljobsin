@@ -1,5 +1,6 @@
 "use client";
 
+import type { SubmitResetPasswordFormMutation as SubmitResetPasswordFormMutationType } from "@/__generated__/SubmitResetPasswordFormMutation.graphql";
 import links from "@/lib/links";
 import {
 	Button,
@@ -18,7 +19,6 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
-import type { SubmitResetPasswordFormMutation as SubmitResetPasswordFormMutationType } from "./__generated__/SubmitResetPasswordFormMutation.graphql";
 
 const SubmitResetPasswordFormMutation = graphql`
   mutation SubmitResetPasswordFormMutation($email: String!, $recaptchaToken: String!) {

@@ -1,5 +1,6 @@
 import { useFragment } from "react-relay";
 
+import type { AccountDetailsFragment$key } from "@/__generated__/AccountDetailsFragment.graphql";
 import {
 	Avatar,
 	Badge,
@@ -11,7 +12,6 @@ import {
 import { EditIcon, InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { graphql } from "relay-runtime";
-import type { AccountDetailsFragment$key } from "./__generated__/AccountDetailsFragment.graphql";
 
 const AccountDetailsFragment = graphql`
   fragment AccountDetailsFragment on Account {

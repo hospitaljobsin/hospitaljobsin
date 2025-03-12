@@ -1,3 +1,4 @@
+import type { EnableAuthenticator2FAModalMutation } from "@/__generated__/EnableAuthenticator2FAModalMutation.graphql";
 import {
 	Button,
 	Code,
@@ -19,7 +20,6 @@ import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
 import SaveRecoveryCodesModal from "./SaveRecoveryCodesModal";
-import type { EnableAuthenticator2FAModalMutation } from "./__generated__/EnableAuthenticator2FAModalMutation.graphql";
 
 const EnableAuthenticator2FAMutation = graphql`
   mutation EnableAuthenticator2FAModalMutation($token: String!) {

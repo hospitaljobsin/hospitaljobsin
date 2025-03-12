@@ -9,20 +9,7 @@
 		"start": "next start -p 5002",
 		"lint": "next lint",
 		"relay": "relay-compiler --watch",
-		"test:e2e": "playwright test",
-		"serve": "npx http-server --port 5002 ./out"
-	},
-	"relay": {
-		"src": "./",
-		"language": "typescript",
-		"schema": "../../schema/schema.graphql",
-		"eagerEsModules": true,
-		"excludes": [
-			"**/node_modules/**",
-			"**/__mocks__/**",
-			"**/__tests__/**",
-			"**/__generated__/**"
-		]
+		"test:e2e": "playwright test"
 	},
 	"dependencies": {
 		"@heroui/react": "2.7.2",
@@ -57,6 +44,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@playwright/test": "^1.51.0",
+		"@swc/plugin-relay": "^7.0.0",
 		"@types/gravatar": "^1.8.6",
 		"@types/node": "^20",
 		"@types/react": "^19.0.1",

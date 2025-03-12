@@ -1,3 +1,5 @@
+import type { TwoFactorAuthenticationFragment$key } from "@/__generated__/TwoFactorAuthenticationFragment.graphql";
+import type { TwoFactorAuthenticationGenerate2FAChallengeMutation } from "@/__generated__/TwoFactorAuthenticationGenerate2FAChallengeMutation.graphql";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import {
 	Button,
@@ -14,8 +16,6 @@ import { graphql } from "relay-runtime";
 import DisableAuthenticator2FAModal from "./DisableAuthenticator2FAModal";
 import EnableAuthenticator2FAModal from "./EnableAuthenticator2FAModal";
 import RegenerateRecoveryCodesModal from "./RegenerateRecoveryCodesModal";
-import type { TwoFactorAuthenticationFragment$key } from "./__generated__/TwoFactorAuthenticationFragment.graphql";
-import type { TwoFactorAuthenticationGenerate2FAChallengeMutation } from "./__generated__/TwoFactorAuthenticationGenerate2FAChallengeMutation.graphql";
 
 const TwoFactorAuthenticationFragment = graphql`
   fragment TwoFactorAuthenticationFragment on Account {

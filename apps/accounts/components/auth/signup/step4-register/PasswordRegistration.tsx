@@ -1,5 +1,6 @@
 "use client";
 
+import type { PasswordRegistrationMutation as PasswordRegistrationMutationType } from "@/__generated__/PasswordRegistrationMutation.graphql";
 import { getValidRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,31 +13,32 @@ import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import z from "zod";
 import SignupContext from "../SignupContext";
-import type { PasswordRegistrationMutation as PasswordRegistrationMutationType } from "./__generated__/PasswordRegistrationMutation.graphql";
 
-const passwordRegistrationSchema = z.object({
-	password: z
-		.string()
-		.min(1, "This field is required")
-		.min(8, "Password must be at least 8 characters long.")
-		.refine((password) => /[a-z]/.test(password), {
-			message: "Password must contain at least one lowercase letter.",
-		})
-		.refine((password) => /[A-Z]/.test(password), {
-			message: "Password must contain at least one uppercase letter.",
-		})
-		.refine((password) => /\d/.test(password), {
-			message: "Password must contain at least one number.",
-		})
-		.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
-			message:
-				"Password must contain at least one special character (!@#$%^&*()-_=+).",
-		}),
+const passwordRegistrationSchema = z
+	.object({
+		password: z
+			.string()
+			.min(1, "This field is required")
+			.min(8, "Password must be at least 8 characters long.")
+			.refine((password) => /[a-z]/.test(password), {
+				message: "Password must contain at least one lowercase letter.",
+			})
+			.refine((password) => /[A-Z]/.test(password), {
+				message: "Password must contain at least one uppercase letter.",
+			})
+			.refine((password) => /\d/.test(password), {
+				message: "Password must contain at least one number.",
+			})
+			.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
+				message:
+					"Password must contain at least one special character (!@#$%^&*()-_=+).",
+			}),
 		confirmPassword: z.string().min(1, "This field is required"),
-}).refine((data) => data.password === data.confirmPassword, {
-	message: "Passwords don't match",
-	path: ["confirmPassword"],
-});
+	})
+	.refine((data) => data.password === data.confirmPassword, {
+		message: "Passwords don't match",
+		path: ["confirmPassword"],
+	});
 
 const RegisterWithPasswordMutation = graphql`
   mutation PasswordRegistrationMutation(
@@ -94,7 +96,8 @@ export default function PasswordRegistration() {
 		useMutation<PasswordRegistrationMutationType>(RegisterWithPasswordMutation);
 
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+		useState(false);
 
 	const onSubmit = async (data: z.infer<typeof passwordRegistrationSchema>) => {
 		if (!executeRecaptcha) return;
@@ -172,28 +175,30 @@ export default function PasswordRegistration() {
 					errorMessage={errors.password?.message}
 					isInvalid={!!errors.password}
 				/>
-										<Input
-											label="Confirm Password"
-											placeholder="Confirm password"
-											{...register("confirmPassword")}
-											autoComplete="new-password"
-											type={isConfirmPasswordVisible ? "text" : "password"}
-											endContent={
-												<button
-													type="button"
-													onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
-													className="focus:outline-none"
-												>
-													{isConfirmPasswordVisible ? (
-														<EyeIcon className="text-2xl text-default-400" />
-													) : (
-														<EyeOffIcon className="text-2xl text-default-400" />
-													)}
-												</button>
-											}
-											errorMessage={errors.confirmPassword?.message}
-											isInvalid={!!errors.confirmPassword}
-										/>
+				<Input
+					label="Confirm Password"
+					placeholder="Confirm password"
+					{...register("confirmPassword")}
+					autoComplete="new-password"
+					type={isConfirmPasswordVisible ? "text" : "password"}
+					endContent={
+						<button
+							type="button"
+							onClick={() =>
+								setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
+							}
+							className="focus:outline-none"
+						>
+							{isConfirmPasswordVisible ? (
+								<EyeIcon className="text-2xl text-default-400" />
+							) : (
+								<EyeOffIcon className="text-2xl text-default-400" />
+							)}
+						</button>
+					}
+					errorMessage={errors.confirmPassword?.message}
+					isInvalid={!!errors.confirmPassword}
+				/>
 				<Button fullWidth type="submit" isLoading={isSubmitting}>
 					Create account
 				</Button>
