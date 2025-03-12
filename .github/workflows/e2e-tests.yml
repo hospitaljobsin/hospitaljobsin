@@ -27,6 +27,8 @@ jobs:
           echo "CI=true" >> .env
     #   - name: Push schema to database
     #     run: npx prisma db push && npx prisma generate
+      - name: Create __generated__ directory
+        run: mkdir -p __generated__
       - name: Build Application
         run: pnpm build
       - name: Run Playwright tests
