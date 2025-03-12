@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { mockRecaptcha } from "../../utils/recaptcha";
+// import { mockRecaptcha } from "../../utils/recaptcha";
 
 test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
 		// Setup mock for recaptcha
-		await mockRecaptcha(page);
+		// await mockRecaptcha(page);
 
 		// Navigate to login page
 		await page.goto("/auth/login");
