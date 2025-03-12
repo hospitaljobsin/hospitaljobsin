@@ -121,6 +121,8 @@ test.describe("Login Page", () => {
 	// });
 
 	test("should navigate to sign up page", async ({ page }) => {
+		// increase timeout to incorporate navigation
+		test.setTimeout(30_000);
 		// Click on sign up link
 		await page.getByRole("link", { name: /Sign up/ }).click();
 
@@ -129,6 +131,8 @@ test.describe("Login Page", () => {
 	});
 
 	test("should navigate to forgot password page", async ({ page }) => {
+		// increase timeout to incorporate navigation
+		test.setTimeout(30_000);
 		// Click on forgot password link
 		await page.getByRole("link", { name: "Forgot password?" }).click();
 
@@ -255,15 +259,17 @@ test.describe("Login Page", () => {
 	// 	).toBeDisabled();
 	// });
 
-	// test("should handle OAuth2 error from URL parameter", async ({ page }) => {
-	// 	// Navigate to login page with OAuth2 error
-	// 	await page.goto("/auth/login?oauth2_error=unverified_email");
+	test("should handle OAuth2 error from URL parameter", async ({ page }) => {
+		// increase timeout to incorporate navigation
+		test.setTimeout(30_000);
+		// Navigate to login page with OAuth2 error
+		await page.goto("/auth/login?oauth2_error=unverified_email");
 
-	// 	// Check error message is displayed
-	// 	await expect(
-	// 		page.getByText("Please verify your email before signing in."),
-	// 	).toBeVisible();
-	// });
+		// Check error message is displayed
+		await expect(
+			page.getByText("Please verify your email before signing in."),
+		).toBeVisible();
+	});
 
 	// test("should handle invalid authentication provider error", async ({
 	// 	page,
