@@ -1,13 +1,13 @@
 import { useFragment, usePaginationFragment } from "react-relay";
 
-import type { pageOrganizationDetailViewQuery } from "@/app/dashboard/organizations/[slug]/__generated__/pageOrganizationDetailViewQuery.graphql";
+import type { OrganizationMembersListFragment$key } from "@/__generated__/OrganizationMembersListFragment.graphql";
+import type { OrganizationMembersListInternalFragment$key } from "@/__generated__/OrganizationMembersListInternalFragment.graphql";
+import type { pageOrganizationDetailViewQuery } from "@/__generated__/pageOrganizationDetailViewQuery.graphql";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import Member from "./Member";
 import OrganizationMembersListSkeleton from "./OrganizationMembersListSkeleton";
-import type { OrganizationMembersListFragment$key } from "./__generated__/OrganizationMembersListFragment.graphql";
-import type { OrganizationMembersListInternalFragment$key } from "./__generated__/OrganizationMembersListInternalFragment.graphql";
 
 const OrganizationMembersListFragment = graphql`
 fragment OrganizationMembersListFragment on Query @argumentDefinitions(

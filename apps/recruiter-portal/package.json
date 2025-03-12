@@ -10,18 +10,6 @@
 		"lint": "next lint",
 		"relay": "relay-compiler --watch"
 	},
-	"relay": {
-		"src": "./",
-		"language": "typescript",
-		"schema": "../../schema/schema.graphql",
-		"eagerEsModules": true,
-		"excludes": [
-			"**/node_modules/**",
-			"**/__mocks__/**",
-			"**/__tests__/**",
-			"**/__generated__/**"
-		]
-	},
 	"dependencies": {
 		"@heroui/react": "2.7.2",
 		"@hookform/resolvers": "^3.9.1",

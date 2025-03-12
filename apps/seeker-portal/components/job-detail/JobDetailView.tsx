@@ -1,7 +1,7 @@
+import type { JobDetailViewFragment$key } from "@/__generated__/JobDetailViewFragment.graphql";
 /* eslint-disable relay/must-colocate-fragment-spreads */
 import { graphql, useFragment } from "react-relay";
 import JobDetails from "./JobDetails";
-import type { JobDetailViewFragment$key } from "./__generated__/JobDetailViewFragment.graphql";
 
 const JobDetailViewFragment = graphql`
  fragment JobDetailViewFragment on Query @argumentDefinitions(

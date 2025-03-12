@@ -1,10 +1,10 @@
 "use client";
+import type { DashboardViewQuery as DashboardViewQueryType } from "@/__generated__/DashboardViewQuery.graphql";
 import { Suspense } from "react";
 import { useLazyLoadQuery } from "react-relay/hooks";
 import { graphql } from "relay-runtime";
 import OrganizationList from "./OrganizationList";
 import OrganizationListSkeleton from "./OrganizationListSkeleton";
-import type { DashboardViewQuery as DashboardViewQueryType } from "./__generated__/DashboardViewQuery.graphql";
 
 const DashboardViewQuery = graphql`
 	query DashboardViewQuery {

@@ -1,10 +1,10 @@
+import type { UpdateLanguagesFormFragment$key } from "@/__generated__/UpdateLanguagesFormFragment.graphql";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";
-import type { UpdateLanguagesFormFragment$key } from "./__generated__/UpdateLanguagesFormFragment.graphql";
 
 const UpdateLanguagesFormMutation = graphql`
 mutation UpdateLanguagesFormMutation($languages: [LanguageInput!]!) {

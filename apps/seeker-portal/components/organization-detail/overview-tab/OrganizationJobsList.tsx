@@ -1,14 +1,14 @@
 import { useFragment, usePaginationFragment } from "react-relay";
 import Job from "../../landing/Job";
 
-import type { pageOrganizationDetailViewQuery } from "@/app/(landing)/(dashboard)/organizations/[slug]/__generated__/pageOrganizationDetailViewQuery.graphql";
+import type { OrganizationJobsListFragment$key } from "@/__generated__/OrganizationJobsListFragment.graphql";
+import type { OrganizationJobsListInternalFragment$key } from "@/__generated__/OrganizationJobsListInternalFragment.graphql";
+import type { pageOrganizationDetailViewQuery } from "@/__generated__/pageOrganizationDetailViewQuery.graphql";
 import { Briefcase } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import JobListSkeleton from "../../landing/JobListSkeleton";
-import type { OrganizationJobsListFragment$key } from "./__generated__/OrganizationJobsListFragment.graphql";
-import type { OrganizationJobsListInternalFragment$key } from "./__generated__/OrganizationJobsListInternalFragment.graphql";
 
 const OrganizationJobsListFragment = graphql`
 fragment OrganizationJobsListFragment on Query @argumentDefinitions(

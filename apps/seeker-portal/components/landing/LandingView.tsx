@@ -1,10 +1,10 @@
 "use client";
+import type { LandingViewQuery as LandingViewQueryType } from "@/__generated__/LandingViewQuery.graphql";
 import { useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import { useDebounce } from "use-debounce";
 import JobList from "./JobList";
 import JobListController from "./JobListController";
-import type { LandingViewQuery as LandingViewQueryType } from "./__generated__/LandingViewQuery.graphql";
 
 const LandingViewQuery = graphql`
   query LandingViewQuery {

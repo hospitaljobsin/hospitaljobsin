@@ -1,8 +1,8 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
+import type { OrganizationOverviewTabFragment$key } from "@/__generated__/OrganizationOverviewTabFragment.graphql";
 import { graphql, useFragment } from "react-relay";
 import OrganizationDetails from "./OrganizationDetails";
-import type { OrganizationOverviewTabFragment$key } from "./__generated__/OrganizationOverviewTabFragment.graphql";
 
 const OrganizationOverviewTabFragment = graphql`
  fragment OrganizationOverviewTabFragment on Query @argumentDefinitions(

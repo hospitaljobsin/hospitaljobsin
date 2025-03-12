@@ -1,8 +1,8 @@
+import type { MemberFragment$key } from "@/__generated__/MemberFragment.graphql";
 import { Card, CardBody } from "@heroui/react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import type { MemberFragment$key } from "./__generated__/MemberFragment.graphql";
 
 export const MemberFragment = graphql`
   fragment MemberFragment on OrganizationMemberEdge {

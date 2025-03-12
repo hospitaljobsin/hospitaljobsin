@@ -1,7 +1,7 @@
 "use client";
+import type { SavedViewQuery as SavedViewQueryType } from "@/__generated__/SavedViewQuery.graphql";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import SavedJobsList from "./SavedJobsList";
-import type { SavedViewQuery as SavedViewQueryType } from "./__generated__/SavedViewQuery.graphql";
 
 const SavedViewQuery = graphql`
   query SavedViewQuery {

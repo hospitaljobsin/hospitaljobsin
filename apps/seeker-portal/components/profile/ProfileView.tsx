@@ -1,4 +1,5 @@
 "use client";
+import type { ProfileViewQuery as ProfileViewQueryType } from "@/__generated__/ProfileViewQuery.graphql";
 import { useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
@@ -6,7 +7,6 @@ import Languages from "./Languages";
 import ProfileDetails from "./PersonalDetails";
 import UpdateLanguagesForm from "./UpdateLanguagesForm";
 import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
-import type { ProfileViewQuery as ProfileViewQueryType } from "./__generated__/ProfileViewQuery.graphql";
 
 const ProfileViewQuery = graphql`
   query ProfileViewQuery {

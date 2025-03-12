@@ -1,3 +1,5 @@
+import type { JobControlsAuthFragment$key } from "@/__generated__/JobControlsAuthFragment.graphql";
+import type { JobControlsFragment$key } from "@/__generated__/JobControlsFragment.graphql";
 import { env } from "@/lib/env";
 import links from "@/lib/links";
 import { Button, Link, Tooltip } from "@heroui/react";
@@ -9,8 +11,6 @@ import {
 	useMutation,
 } from "react-relay";
 import ShareJob from "./ShareJob";
-import type { JobControlsAuthFragment$key } from "./__generated__/JobControlsAuthFragment.graphql";
-import type { JobControlsFragment$key } from "./__generated__/JobControlsFragment.graphql";
 
 export const JobControlsAuthFragment = graphql`
   fragment JobControlsAuthFragment on ViewerPayload {

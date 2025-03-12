@@ -1,3 +1,6 @@
+import type { DashboardViewQuery } from "@/__generated__/DashboardViewQuery.graphql";
+import type { OrganizationListFragment$key } from "@/__generated__/OrganizationListFragment.graphql";
+import type { OrganizationListInternalFragment$key } from "@/__generated__/OrganizationListInternalFragment.graphql";
 import links from "@/lib/links";
 import { Button, Link } from "@heroui/react";
 import { Building, PlusIcon } from "lucide-react";
@@ -7,9 +10,6 @@ import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import Organization from "./Organization";
 import OrganizationListSkeleton from "./OrganizationListSkeleton";
-import type { DashboardViewQuery } from "./__generated__/DashboardViewQuery.graphql";
-import type { OrganizationListFragment$key } from "./__generated__/OrganizationListFragment.graphql";
-import type { OrganizationListInternalFragment$key } from "./__generated__/OrganizationListInternalFragment.graphql";
 
 const OrganizationListFragment = graphql`
 fragment OrganizationListFragment on Query {

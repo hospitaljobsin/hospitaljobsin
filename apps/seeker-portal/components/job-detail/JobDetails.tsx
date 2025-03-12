@@ -1,3 +1,9 @@
+import type {
+	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
+	JobType,
+	WorkMode,
+} from "@/__generated__/JobDetailsInternalFragment.graphql";
+import type { JobDetailsQuery$key } from "@/__generated__/JobDetailsQuery.graphql";
 import { dateFormat } from "@/lib/intl";
 import links from "@/lib/links";
 import {
@@ -17,12 +23,6 @@ import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
 import JobControls from "./JobControls";
-import type {
-	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
-	JobType,
-	WorkMode,
-} from "./__generated__/JobDetailsInternalFragment.graphql";
-import type { JobDetailsQuery$key } from "./__generated__/JobDetailsQuery.graphql";
 
 const JobDetailsQuery = graphql`
   fragment JobDetailsQuery on Query @argumentDefinitions(

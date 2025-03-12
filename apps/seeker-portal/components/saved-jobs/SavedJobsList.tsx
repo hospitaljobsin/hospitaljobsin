@@ -1,16 +1,15 @@
 import { useFragment, usePaginationFragment } from "react-relay";
 import Job from "../landing/Job";
 
+import type { SavedJobsListFragment$key } from "@/__generated__/SavedJobsListFragment.graphql";
+
+import type { SavedJobsListInternalFragment$key } from "@/__generated__/SavedJobsListInternalFragment.graphql";
+import type { SavedViewQuery } from "@/__generated__/SavedViewQuery.graphql";
 import { Card, CardBody } from "@heroui/react";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import SavedJobsListSkeleton from "../landing/JobListSkeleton";
-import type { SavedJobsListFragment$key } from "./__generated__/SavedJobsListFragment.graphql";
-import type {
-	SavedJobsListInternalFragment$key,
-	SavedJobsListInternalFragment as SavedJobsListInternalFragmentType,
-} from "./__generated__/SavedJobsListInternalFragment.graphql";
 
 const SavedJobsListFragment = graphql`
 fragment SavedJobsListFragment on Query {
@@ -50,7 +49,7 @@ type Props = {
 export default function SavedJobsList({ rootQuery }: Props) {
 	const root = useFragment(SavedJobsListFragment, rootQuery);
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<
-		SavedJobsListInternalFragmentType,
+		SavedViewQuery,
 		SavedJobsListInternalFragment$key
 	>(SavedJobsListInternalFragment, root);
 

@@ -1,11 +1,11 @@
+import type { pageOrganizationMembersMetadataFragment$key } from "@/__generated__/pageOrganizationMembersMetadataFragment.graphql";
+import type OrganizationMembersViewQueryNode from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
+import type { pageOrganizationMembersViewQuery } from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
 import OrganizationMembersViewClientComponent from "./OrganizationMembersViewClientComponent";
-import type { pageOrganizationMembersMetadataFragment$key } from "./__generated__/pageOrganizationMembersMetadataFragment.graphql";
-import type OrganizationMembersViewQueryNode from "./__generated__/pageOrganizationMembersViewQuery.graphql";
-import type { pageOrganizationMembersViewQuery } from "./__generated__/pageOrganizationMembersViewQuery.graphql";
 
 export const PageOrganizationMembersViewQuery = graphql`
   query pageOrganizationMembersViewQuery($slug: String!) {	

@@ -1,5 +1,9 @@
 "use client";
 
+import type { OrganizationMembersViewClientComponentFragment$key } from "@/__generated__/OrganizationMembersViewClientComponentFragment.graphql";
+import type OrganizationMembersViewQueryNode from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
+import type { pageOrganizationMembersViewQuery } from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
+import PageOrganizationMembersViewQuery from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
 import OrganizationMembersTab from "@/components/organization-detail/members-tab/OrganizationMembersTab";
 import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
@@ -9,10 +13,6 @@ import {
 	usePreloadedQuery,
 	useRelayEnvironment,
 } from "react-relay";
-import type { OrganizationMembersViewClientComponentFragment$key } from "./__generated__/OrganizationMembersViewClientComponentFragment.graphql";
-import type OrganizationMembersViewQueryNode from "./__generated__/pageOrganizationMembersViewQuery.graphql";
-import type { pageOrganizationMembersViewQuery } from "./__generated__/pageOrganizationMembersViewQuery.graphql";
-import PageOrganizationMembersViewQuery from "./__generated__/pageOrganizationMembersViewQuery.graphql";
 
 const OrganizationMembersViewClientComponentFragment = graphql`
  fragment OrganizationMembersViewClientComponentFragment on Query @argumentDefinitions(

@@ -1,3 +1,6 @@
+import type { JobListFragment$key } from "@/__generated__/JobListFragment.graphql";
+import type { JobListInternalFragment$key } from "@/__generated__/JobListInternalFragment.graphql";
+import type { LandingViewQuery } from "@/__generated__/LandingViewQuery.graphql";
 import { Card, CardBody } from "@heroui/react";
 import Image from "next/image";
 import { useEffect, useRef, useTransition } from "react";
@@ -5,9 +8,6 @@ import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
-import type { JobListFragment$key } from "./__generated__/JobListFragment.graphql";
-import type { JobListInternalFragment$key } from "./__generated__/JobListInternalFragment.graphql";
-import type { LandingViewQuery } from "./__generated__/LandingViewQuery.graphql";
 
 const JobListFragment = graphql`
 fragment JobListFragment on Query {
@@ -82,12 +82,12 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
 	useEffect(() => {
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
-				refetch({ first: 10, searchTerm }, { fetchPolicy: "store-or-network" });
+				refetch({}, { fetchPolicy: "store-or-network" });
 			});
 		}, 300); // Adjust debounce delay as needed
 
 		return () => clearTimeout(debounceTimeout);
-	}, [searchTerm, refetch]);
+	}, [refetch]);
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (

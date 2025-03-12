@@ -1,3 +1,9 @@
+import type { JobControlsAuthFragment$key } from "@/__generated__/JobControlsAuthFragment.graphql";
+import type { JobType } from "@/__generated__/JobDetailsInternalFragment.graphql";
+import type {
+	JobFragment$key,
+	WorkMode,
+} from "@/__generated__/JobFragment.graphql";
 import { dateFormat } from "@/lib/intl";
 import links from "@/lib/links";
 import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
@@ -7,12 +13,6 @@ import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import JobControls from "../job-detail/JobControls";
-import type { JobControlsAuthFragment$key } from "../job-detail/__generated__/JobControlsAuthFragment.graphql";
-import type { JobType } from "../job-detail/__generated__/JobDetailsInternalFragment.graphql";
-import type {
-	JobFragment$key,
-	WorkMode,
-} from "./__generated__/JobFragment.graphql";
 
 export const JobFragment = graphql`
   fragment JobFragment on Job {

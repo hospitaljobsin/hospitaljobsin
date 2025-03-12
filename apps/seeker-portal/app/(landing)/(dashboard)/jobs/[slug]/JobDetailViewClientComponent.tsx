@@ -9,11 +9,11 @@ import {
 	useRelayEnvironment,
 } from "react-relay";
 
+import type { JobDetailViewClientComponentFragment$key } from "@/__generated__/JobDetailViewClientComponentFragment.graphql";
+import type JobDetailViewQueryNode from "@/__generated__/pageJobDetailViewQuery.graphql";
+import type { pageJobDetailViewQuery } from "@/__generated__/pageJobDetailViewQuery.graphql";
+import PageJobDetailViewQuery from "@/__generated__/pageJobDetailViewQuery.graphql";
 import JobDetailView from "@/components/job-detail/JobDetailView";
-import type { JobDetailViewClientComponentFragment$key } from "./__generated__/JobDetailViewClientComponentFragment.graphql";
-import type JobDetailViewQueryNode from "./__generated__/pageJobDetailViewQuery.graphql";
-import type { pageJobDetailViewQuery } from "./__generated__/pageJobDetailViewQuery.graphql";
-import PageJobDetailViewQuery from "./__generated__/pageJobDetailViewQuery.graphql";
 
 const JobDetailViewClientComponentFragment = graphql`
  fragment JobDetailViewClientComponentFragment on Query @argumentDefinitions(

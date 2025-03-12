@@ -1,3 +1,4 @@
+import type { UpdatePersonalDetailsFormFragment$key } from "@/__generated__/UpdatePersonalDetailsFormFragment.graphql";
 import {
 	Button,
 	Card,
@@ -13,7 +14,6 @@ import { CalendarDate, parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";
-import type { UpdatePersonalDetailsFormFragment$key } from "./__generated__/UpdatePersonalDetailsFormFragment.graphql";
 
 const UpdatePersonalDetailsFormMutation = graphql`
 mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $address: AddressInput!, $maritalStatus: MaritalStatusType, $category: String) {

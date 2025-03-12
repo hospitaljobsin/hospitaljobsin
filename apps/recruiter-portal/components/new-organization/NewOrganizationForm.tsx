@@ -1,4 +1,5 @@
 "use client";
+import type { NewOrganizationFormMutation } from "@/__generated__/NewOrganizationFormMutation.graphql";
 import links from "@/lib/links";
 import {
 	Button,
@@ -15,7 +16,6 @@ import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
-import type { NewOrganizationFormMutation } from "./__generated__/NewOrganizationFormMutation.graphql";
 
 const CreateOrganizationMutation = graphql`
 mutation NewOrganizationFormMutation($fullName: String!, $slug: String!, $website: String, $description: String) {
