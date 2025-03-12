@@ -24,6 +24,7 @@ jobs:
           echo "NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://localhost:5001" >> .env
           echo "NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL=http://localhost:5000" >> .env
           echo "JWE_SECRET_KEY="ca07d5f965a534ffb07d1699e30385a6"" >> .env
+          echo "CI=true" >> .env
     #   - name: Push schema to database
     #     run: npx prisma db push && npx prisma generate
       - name: Build Application
