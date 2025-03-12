@@ -40,3 +40,7 @@ To start all services in development, run the following command:
 ```bash
 tmuxinator start medical_jobs
 ```
+
+PLAYWRIGHT SETUP REFERENCE:
+- https://github.com/Netflix/dispatch/blob/main/.github/workflows/playwright.yml
+- https://github.com/Netflix/dispatch/blob/main/playwright.config.ts
