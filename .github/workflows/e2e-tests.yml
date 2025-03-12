@@ -15,7 +15,7 @@ jobs:
         with:
             version: 10
       - name: Install dependencies and playwright binaries
-        run: pnpm install && npx playwright install chromium
+        run: pnpm install && npx playwright install --with-deps
       - name: Setup environment variables
         run: |
           echo "NEXT_PUBLIC_API_URL=http://localhost:8000" >> .env
