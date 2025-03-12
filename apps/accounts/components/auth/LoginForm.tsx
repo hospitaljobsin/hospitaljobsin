@@ -90,7 +90,7 @@ const LoginFormPasskeyMutation = graphql`
 `;
 
 const loginSchema = z.object({
-	email: z.string().min(1, "This field is required").email(),
+	email: z.string().min(1, "This field is required").email("Invalid email"),
 	password: z.string().min(1, "This field is required"),
 });
 
@@ -223,6 +223,7 @@ export default function LoginForm() {
 			console.log("Recaptcha not loaded");
 			return;
 		}
+		setIsPasskeysPromptActive(true);
 		const token = await executeRecaptcha(
 			"passkey_generate_authentication_options",
 		);
@@ -236,6 +237,7 @@ export default function LoginForm() {
 					"InvalidRecaptchaTokenError"
 				) {
 					// handle recaptcha failure
+					setIsPasskeysPromptActive(false);
 					alert("Recaptcha failed. Please try again.");
 				} else if (
 					response.generateAuthenticationOptions.__typename ===
@@ -244,7 +246,7 @@ export default function LoginForm() {
 					// login with passkey
 					const authenticationOptions =
 						response.generateAuthenticationOptions.authenticationOptions;
-					setIsPasskeysPromptActive(true);
+
 					startAuthentication({
 						optionsJSON: JSON.parse(authenticationOptions),
 					})
@@ -257,6 +259,9 @@ export default function LoginForm() {
 												authenticationResponse,
 											),
 											recaptchaToken: recaptchaToken,
+										},
+										onError() {
+											setIsPasskeysPromptActive(false);
 										},
 										onCompleted(response) {
 											setIsPasskeysPromptActive(false);
@@ -289,8 +294,8 @@ export default function LoginForm() {
 									});
 								})
 								.catch((error) => {
-									console.error(error);
 									// TODO: show toast here
+									setIsPasskeysPromptActive(false);
 								});
 						})
 						.catch((error) => {
@@ -298,6 +303,9 @@ export default function LoginForm() {
 							setIsPasskeysPromptActive(false);
 						});
 				}
+			},
+			onError() {
+				setIsPasskeysPromptActive(false);
 			},
 		});
 	}
@@ -324,7 +332,7 @@ export default function LoginForm() {
 								label="Email Address"
 								autoComplete="email"
 								placeholder="Enter your email address"
-								type="email"
+								type="text"
 								{...register("email", {
 									onChange: () => clearErrors(["email", "password"]),
 								})}
@@ -390,21 +398,23 @@ export default function LoginForm() {
 						<Divider className="flex-1" />
 					</div>
 					<div className="flex flex-col w-full gap-6">
-						<Button
-							fullWidth
-							variant="bordered"
-							startContent={<FingerprintIcon size={20} />}
-							onPress={handlePasskeyLogin}
-							spinnerPlacement="end"
-							isDisabled={isPasswordLoginMutationInFlight}
-							isLoading={
-								isPasskeyLoginMutationInFlight ||
-								isGenerateAuthenticationOptionsMutationInFlight ||
-								isPasskeysPromptActive
-							}
-						>
-							Sign in with passkey
-						</Button>
+						{isPasskeysPromptActive ? (
+							<Button fullWidth variant="bordered" isLoading>
+								Waiting for browser interaction
+							</Button>
+						) : (
+							<Button
+								fullWidth
+								variant="bordered"
+								startContent={<FingerprintIcon size={20} />}
+								onPress={handlePasskeyLogin}
+								spinnerPlacement="end"
+								isDisabled={isPasswordLoginMutationInFlight}
+							>
+								Sign in with passkey
+							</Button>
+						)}
+
 						<Button
 							fullWidth
 							variant="bordered"

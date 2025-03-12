@@ -9,7 +9,8 @@
 		"start": "next start -p 5002",
 		"lint": "next lint",
 		"relay": "relay-compiler --watch",
-		"test:e2e": "playwright test"
+		"test:e2e": "playwright test",
+		"serve": "npx http-server --port 5002 ./out"
 	},
 	"relay": {
 		"src": "./",

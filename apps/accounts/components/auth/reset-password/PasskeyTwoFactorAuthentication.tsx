@@ -90,6 +90,7 @@ export default function PasskeyTwoFactorAuthentication({
 			onAuthEnd();
 			return;
 		}
+		setIsPasskeysPromptActive(true);
 		const token = await executeRecaptcha(
 			"reset_password_passkey_generate_authentication_options",
 		);
@@ -103,13 +104,13 @@ export default function PasskeyTwoFactorAuthentication({
 					"InvalidRecaptchaTokenError"
 				) {
 					// handle recaptcha failure
-					alert("Recaptcha failed. Please try again.");
+					setIsPasskeysPromptActive(false);
 					onAuthEnd();
+					alert("Recaptcha failed. Please try again.");
 				} else if (
 					response.generateAuthenticationOptions.__typename ===
 					"GenerateAuthenticationOptionsSuccess"
 				) {
-					setIsPasskeysPromptActive(true);
 					// login with passkey
 					const authenticationOptions =
 						response.generateAuthenticationOptions.authenticationOptions;
@@ -174,7 +175,8 @@ export default function PasskeyTwoFactorAuthentication({
 												onComplete();
 											}
 										},
-										onError(error) {
+										onError() {
+											setIsPasskeysPromptActive(false);
 											onAuthEnd();
 										},
 										updater(store) {
@@ -183,7 +185,7 @@ export default function PasskeyTwoFactorAuthentication({
 									});
 								})
 								.catch((error) => {
-									console.error(error);
+									setIsPasskeysPromptActive(false);
 									onAuthEnd();
 									// TODO: show toast here
 								});
@@ -196,6 +198,7 @@ export default function PasskeyTwoFactorAuthentication({
 				}
 			},
 			onError: () => {
+				setIsPasskeysPromptActive(false);
 				onAuthEnd();
 			},
 		});
@@ -222,21 +225,23 @@ export default function PasskeyTwoFactorAuthentication({
 						isReadOnly
 						variant="faded"
 					/>
-					<Button
-						fullWidth
-						startContent={<Fingerprint size={20} />}
-						size="lg"
-						isDisabled={isDisabled}
-						onPress={handlePasskeyAuthentication}
-						isLoading={
-							isPasskeyAuthenticateMutationInFlight ||
-							isGenerateReauthenticationOptionsMutationInFlight ||
-							isPasskeysPromptActive
-						}
-						spinnerPlacement="end"
-					>
-						Authenticate with passkey
-					</Button>
+					{isPasskeysPromptActive ? (
+						<Button fullWidth size="lg" isDisabled={isDisabled} isLoading>
+							Waiting for browser interaction
+						</Button>
+					) : (
+						<Button
+							fullWidth
+							startContent={<Fingerprint size={20} />}
+							size="lg"
+							isDisabled={isDisabled}
+							onPress={handlePasskeyAuthentication}
+							spinnerPlacement="end"
+						>
+							Authenticate with passkey
+						</Button>
+					)}
+
 					{hasAuthenticator && (
 						<Button variant="light" onPress={onSwitchToAuthenticator} fullWidth>
 							Use authenticator app instead

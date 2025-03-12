@@ -82,6 +82,7 @@ export default function PasskeyAuthentication({
 			onAuthEnd();
 			return;
 		}
+		setIsPasskeysPromptActive(true);
 		const token = await executeRecaptcha(
 			"passkey_generate_authentication_options",
 		);
@@ -95,13 +96,13 @@ export default function PasskeyAuthentication({
 					"InvalidRecaptchaTokenError"
 				) {
 					// handle recaptcha failure
-					alert("Recaptcha failed. Please try again.");
+					setIsPasskeysPromptActive(false);
 					onAuthEnd();
+					alert("Recaptcha failed. Please try again.");
 				} else if (
 					response.generateReauthenticationOptions.__typename ===
 					"GenerateAuthenticationOptionsSuccess"
 				) {
-					setIsPasskeysPromptActive(true);
 					// login with passkey
 					const authenticationOptions =
 						response.generateReauthenticationOptions.authenticationOptions;
@@ -150,6 +151,7 @@ export default function PasskeyAuthentication({
 											}
 										},
 										onError(error) {
+											setIsPasskeysPromptActive(false);
 											onAuthEnd();
 										},
 										updater(store) {
@@ -158,7 +160,7 @@ export default function PasskeyAuthentication({
 									});
 								})
 								.catch((error) => {
-									console.error(error);
+									setIsPasskeysPromptActive(false);
 									onAuthEnd();
 									// TODO: show toast here
 								});
@@ -171,9 +173,18 @@ export default function PasskeyAuthentication({
 				}
 			},
 			onError: () => {
+				setIsPasskeysPromptActive(false);
 				onAuthEnd();
 			},
 		});
+	}
+
+	if (isPasskeysPromptActive) {
+		return (
+			<Button fullWidth size="lg" isLoading isDisabled={isDisabled}>
+				Waiting for browser interaction
+			</Button>
+		);
 	}
 
 	return (
@@ -185,8 +196,7 @@ export default function PasskeyAuthentication({
 			onPress={handlePasskeyAuthentication}
 			isLoading={
 				isPasskeyAuthenticateMutationInFlight ||
-				isGenerateReauthenticationOptionsMutationInFlight ||
-				isPasskeysPromptActive
+				isGenerateReauthenticationOptionsMutationInFlight
 			}
 			spinnerPlacement="end"
 		>

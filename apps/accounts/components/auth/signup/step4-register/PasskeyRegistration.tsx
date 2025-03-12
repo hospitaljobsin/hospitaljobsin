@@ -118,6 +118,8 @@ export default function PasskeyRegistration() {
 	) => {
 		if (!executeRecaptcha) return;
 
+		setIsPasskeysPromptActive(true);
+
 		const token = await executeRecaptcha(
 			"passkey_generate_registration_options",
 		);
@@ -133,11 +135,13 @@ export default function PasskeyRegistration() {
 					response.generatePasskeyRegistrationOptions.__typename ===
 					"InvalidRecaptchaTokenError"
 				) {
+					setIsPasskeysPromptActive(false);
 					alert("Recaptcha failed. Please try again.");
 				} else if (
 					response.generatePasskeyRegistrationOptions.__typename ===
 					"EmailInUseError"
 				) {
+					setIsPasskeysPromptActive(false);
 					send({
 						type: "SET_EMAIL_ERROR",
 						message: response.generatePasskeyRegistrationOptions.message,
@@ -146,7 +150,6 @@ export default function PasskeyRegistration() {
 					response.generatePasskeyRegistrationOptions.__typename ===
 					"GeneratePasskeyRegistrationOptionsSuccess"
 				) {
-					setIsPasskeysPromptActive(true);
 					// register with passkey
 					const registrationOptions =
 						response.generatePasskeyRegistrationOptions.registrationOptions;
@@ -166,6 +169,9 @@ export default function PasskeyRegistration() {
 												JSON.stringify(registrationResponse),
 											passkeyNickname: values.nickname,
 											recaptchaToken: recaptchaToken,
+										},
+										onError() {
+											setIsPasskeysPromptActive(false);
 										},
 										onCompleted(response) {
 											setIsPasskeysPromptActive(false);
@@ -212,8 +218,8 @@ export default function PasskeyRegistration() {
 									});
 								})
 								.catch((error) => {
-									console.error(error);
 									// TODO: show toast here
+									setIsPasskeysPromptActive(false);
 								});
 						})
 						.catch((error) => {
@@ -221,6 +227,9 @@ export default function PasskeyRegistration() {
 							setIsPasskeysPromptActive(false);
 						});
 				}
+			},
+			onError() {
+				setIsPasskeysPromptActive(false);
 			},
 		});
 	};
@@ -240,18 +249,23 @@ export default function PasskeyRegistration() {
 					isInvalid={!!errors.nickname}
 					description="Nicknames help identify your passkeys"
 				/>
-				<Button
-					type="submit"
-					isLoading={
-						isSubmitting ||
-						isCommitRegisterInFlight ||
-						isGenerateRegistrationOptionsInFlight ||
-						isPasskeysPromptActive
-					}
-					fullWidth
-				>
-					Create account
-				</Button>
+				{isPasskeysPromptActive ? (
+					<Button fullWidth size="lg" isLoading>
+						Waiting for browser interaction
+					</Button>
+				) : (
+					<Button
+						type="submit"
+						isLoading={
+							isSubmitting ||
+							isCommitRegisterInFlight ||
+							isGenerateRegistrationOptionsInFlight
+						}
+						fullWidth
+					>
+						Create account
+					</Button>
+				)}
 			</div>
 		</form>
 	);
