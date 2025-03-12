@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
 			src: "./",
 			language: "typescript",
 			eagerEsModules: true,
+			artifactDirectory: "__generated__",
 		},
 	},
 	typescript: {
