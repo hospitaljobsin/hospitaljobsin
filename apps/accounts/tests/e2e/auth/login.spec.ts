@@ -7,7 +7,7 @@ test.describe("Login Page", () => {
 		// await mockRecaptcha(page);
 
 		// Navigate to login page
-		await page.goto("/auth/login");
+		await page.goto("http://localhost:5002/auth/login");
 	});
 
 	test("should display login form with all elements", async ({ page }) => {
@@ -248,7 +248,9 @@ test.describe("Login Page", () => {
 
 	test("should handle OAuth2 error from URL parameter", async ({ page }) => {
 		// Navigate to login page with OAuth2 error
-		await page.goto("/auth/login?oauth2_error=unverified_email");
+		await page.goto(
+			"http://localhost:5002/auth/login?oauth2_error=unverified_email",
+		);
 
 		// Check error message is displayed
 		await expect(
