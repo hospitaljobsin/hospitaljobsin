@@ -5,7 +5,7 @@
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
 		"dev": "next dev -p 5001",
-		"build": "next build",
+		"build": "relay-compiler && next build",
 		"start": "next start",
 		"lint": "next lint",
 		"relay": "relay-compiler --watch"
