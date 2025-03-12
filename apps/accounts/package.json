@@ -8,7 +8,8 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"relay": "relay-compiler --watch"
+		"relay": "relay-compiler --watch",
+		"test:e2e": "playwright test"
 	},
 	"relay": {
 		"src": "./",
@@ -54,6 +55,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
+		"@playwright/test": "^1.51.0",
 		"@types/gravatar": "^1.8.6",
 		"@types/node": "^20",
 		"@types/react": "^19.0.1",
