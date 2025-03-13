@@ -35,3 +35,7 @@ jobs:
         run: pnpm test:e2e
         working-directory: apps/accounts
       - run: docker compose -f docker-compose.e2e.yml down -v --remove-orphans
+      - name: Show Docker logs if tests fail
+        if: failure()
+        run: docker compose logs
+    
