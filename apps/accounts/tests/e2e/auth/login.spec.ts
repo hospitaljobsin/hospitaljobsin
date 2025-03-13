@@ -8,6 +8,11 @@ test.describe("Login Page", () => {
 
 		// Navigate to login page
 		await page.goto("/auth/login");
+		// Wait for recaptcha to load
+		await page.waitForFunction(
+			() =>
+				typeof window.grecaptcha !== "undefined" && window.grecaptcha.execute,
+		);
 	});
 
 	test("should display login form with all elements", async ({ page }) => {
@@ -90,34 +95,31 @@ test.describe("Login Page", () => {
 	});
 
 	test("should handle invalid credentials", async ({ page }) => {
-		// Mock the GraphQL response for invalid credentials
-		// await page.route("**/graphql", async (route) => {
-		// 	const json = route.request().postDataJSON();
-		// 	if (json.operationName === "LoginFormPasswordMutation") {
-		// 		await route.fulfill({
-		// 			status: 200,
-		// 			contentType: "application/json",
-		// 			body: JSON.stringify({
-		// 				data: {
-		// 					loginWithPassword: {
-		// 						__typename: "InvalidCredentialsError",
-		// 						message: "Invalid email or password",
-		// 					},
-		// 				},
-		// 			}),
-		// 		});
-		// 	} else {
-		// 		await route.continue();
-		// 	}
-		// });
-
 		// Fill form with invalid credentials
 		await page.getByLabel("Email Address").fill("tester@example.org");
-		await page.getByRole("textbox", { name: "Password Password" }).fill("wrongpassword");
+		await page
+			.getByRole("textbox", { name: "Password Password" })
+			.fill("invalidpassword");
+
+		// Click the login button
 		await page.getByRole("button", { name: "Log in" }).click();
 
-		// Check error message
-		await expect(page.getByText("Invalid credentials provided.")).toBeVisible();
+		// Now check for error messages
+		await expect(
+			page
+				.locator("div")
+				.filter({ hasText: /^Invalid credentials provided\.$/ })
+				.first(),
+		).toBeVisible();
+		await expect(
+			page
+				.locator("div")
+				.filter({ hasText: /^Invalid credentials provided\.$/ })
+				.nth(2),
+		).toBeVisible();
+
+		// TODO: this error arises because recaptcha is not loaded
+		// but this works when we click manually
 	});
 
 	test("should navigate to sign up page", async ({ page }) => {
