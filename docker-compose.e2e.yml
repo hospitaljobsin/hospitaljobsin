@@ -41,6 +41,7 @@ services:
     ports:
       - "5002:5002"
     environment:
+        HOST: 0.0.0.0
         NEXT_PUBLIC_API_URL: http://localhost:8000
         NEXT_PUBLIC_URL: http://localhost:5002
         NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${RECAPTCHA_SITE_KEY}
