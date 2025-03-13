@@ -19,6 +19,48 @@ jobs:
           working-directory: apps/accounts
     steps:
       - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12' 
+
+      - name: Install the latest version of UV
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      - name: Install backend dependencies
+        run: uv sync
+        working-directory: server
+
+      # Run the backend
+      - name: Start FastAPI backend
+        run: uv run scripts/run_server.py
+        working-directory: server
+        env:
+          SERVER_DEBUG: 'true'
+          SERVER_ENVIRONMENT: 'testing'
+          SERVER_DATABASE_URL: 'mongodb://user:pass@localhost:27017/medical_jobs'
+          SERVER_HOST: '127.0.0.1'
+          SERVER_PORT: '8000'
+          SERVER_LOG_LEVEL: 'INFO'
+          SERVER_CORS_ALLOW_ORIGINS: '["http://localhost:5000", "http://127.0.0.1:5000", "http://localhost:5001", "http://127.0.0.1:5001", "http://localhost:5002", "http://127.0.0.1:5002"]'
+          SERVER_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          SERVER_GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          SERVER_EMAIL_HOST: 'localhost'
+          SERVER_EMAIL_PORT: '1025'
+          SERVER_EMAIL_USERNAME: ''
+          SERVER_EMAIL_PASSWORD: ''
+          SERVER_EMAIL_FROM: 'noreply@example.com'
+          SERVER_APP_URL: "http://localhost:3000"
+          SERVER_RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+          SERVER_S3_AVATAR_BUCKET_NAME: "avatars"
+          SERVER_ACCOUNTS_BASE_URL: "http://localhost:5002"
+          SERVER_RP_ID: 'localhost'
+          SERVER_RP_NAME: 'Starter'
+          SERVER_RP_EXPECTED_ORIGIN: 'http://localhost:5002'
+          SERVER_JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+
       - uses: actions/setup-node@v3
         with:
           node-version: 22
@@ -27,20 +69,19 @@ jobs:
             version: 10
       - name: Install dependencies and playwright binaries
         run: pnpm install && npx playwright install --with-deps
-      - name: Setup environment variables
-        run: |
-          echo "NEXT_PUBLIC_API_URL=http://localhost:8000" >> .env
-          echo "NEXT_PUBLIC_URL=http://localhost:5002" >> .env
-          echo "NEXT_PUBLIC_RECAPTCHA_SITE_KEY=" >> .env
-          echo "NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://localhost:5001" >> .env
-          echo "NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL=http://localhost:5000" >> .env
-          echo "JWE_SECRET_KEY="ca07d5f965a534ffb07d1699e30385a6"" >> .env
-          echo "CI=true" >> .env
     #   - name: Push schema to database
     #     run: npx prisma db push && npx prisma generate
-      - name: Create __generated__ directory
+      - name: Create Relay artifacts directory
         run: mkdir -p __generated__
       - name: Build Application
         run: pnpm build
       - name: Run Playwright tests
         run: pnpm test:e2e
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+          NEXT_PUBLIC_URL: http://localhost:5002
+          NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${{ secrets.RECAPTCHA_SITE_KEY }}
+          NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: http://localhost:5001
+          NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: http://localhost:5000
+          JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+          CI: true

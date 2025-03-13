@@ -89,36 +89,36 @@ test.describe("Login Page", () => {
 		).toHaveAttribute("type", "password");
 	});
 
-	// test("should handle invalid credentials", async ({ page }) => {
-	// 	// Mock the GraphQL response for invalid credentials
-	// 	await page.route("**/graphql", async (route) => {
-	// 		const json = route.request().postDataJSON();
-	// 		if (json.operationName === "LoginFormPasswordMutation") {
-	// 			await route.fulfill({
-	// 				status: 200,
-	// 				contentType: "application/json",
-	// 				body: JSON.stringify({
-	// 					data: {
-	// 						loginWithPassword: {
-	// 							__typename: "InvalidCredentialsError",
-	// 							message: "Invalid email or password",
-	// 						},
-	// 					},
-	// 				}),
-	// 			});
-	// 		} else {
-	// 			await route.continue();
-	// 		}
-	// 	});
+	test("should handle invalid credentials", async ({ page }) => {
+		// Mock the GraphQL response for invalid credentials
+		// await page.route("**/graphql", async (route) => {
+		// 	const json = route.request().postDataJSON();
+		// 	if (json.operationName === "LoginFormPasswordMutation") {
+		// 		await route.fulfill({
+		// 			status: 200,
+		// 			contentType: "application/json",
+		// 			body: JSON.stringify({
+		// 				data: {
+		// 					loginWithPassword: {
+		// 						__typename: "InvalidCredentialsError",
+		// 						message: "Invalid email or password",
+		// 					},
+		// 				},
+		// 			}),
+		// 		});
+		// 	} else {
+		// 		await route.continue();
+		// 	}
+		// });
 
-	// 	// Fill form with invalid credentials
-	// 	await page.getByLabel("Email Address").fill("test@example.com");
-	// 	await page.getByRole("textbox", { name: "Password Password" }).fill("wrongpassword");
-	// 	await page.getByRole("button", { name: "Log in" }).click();
+		// Fill form with invalid credentials
+		await page.getByLabel("Email Address").fill("tester@example.org");
+		await page.getByRole("textbox", { name: "Password Password" }).fill("wrongpassword");
+		await page.getByRole("button", { name: "Log in" }).click();
 
-	// 	// Check error message
-	// 	await expect(page.getByText("Invalid email or password")).toBeVisible();
-	// });
+		// Check error message
+		await expect(page.getByText("Invalid credentials")).toBeVisible();
+	});
 
 	test("should navigate to sign up page", async ({ page }) => {
 		// increase timeout to incorporate navigation
