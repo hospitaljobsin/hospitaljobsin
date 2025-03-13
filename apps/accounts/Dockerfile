@@ -9,6 +9,9 @@ WORKDIR /app/apps/accounts
 RUN pnpm install
 
 COPY ./apps/accounts/ ./
+
+RUN mkdir -p __generated__/
+
 RUN pnpm build
 
 FROM node:22-alpine AS release
