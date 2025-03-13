@@ -1,5 +1,7 @@
 name: E2E Tests
 on: [push]
+# TODO: run unit tests, build, push docker image of server
+# then use that image as a service below
 jobs:
   test-accounts:
     runs-on: ubuntu-latest
