@@ -17,7 +17,7 @@ async def setup_test_database() -> None:
             email="tester@example.org",
             full_name="Tester",
             auth_providers=["password"],
-            password="password",
+            password="Password123!",
         )
 
 
