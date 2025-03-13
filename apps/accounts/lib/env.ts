@@ -23,4 +23,9 @@ export const env = createEnv({
 		NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL:
 			process.env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL,
 	},
+	/**
+	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
+	 * This is especially useful for Docker builds.
+	 */
+	skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });

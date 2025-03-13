@@ -12,6 +12,8 @@ COPY ./apps/accounts/ ./
 
 RUN mkdir -p __generated__/
 
+ENV SKIP_ENV_VALIDATION true
+
 RUN pnpm build
 
 FROM node:22-alpine AS release
