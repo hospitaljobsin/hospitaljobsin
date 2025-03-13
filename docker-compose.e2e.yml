@@ -1,7 +1,7 @@
-version: '3.8'
 
 services:
   server:
+    container_name: test-server
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -10,8 +10,8 @@ services:
     environment:
       SERVER_DEBUG: 'true'
       SERVER_ENVIRONMENT: 'testing'
-      SERVER_DATABASE_URL: 'mongodb://user:pass@localhost:27017/medical_jobs_tests'
-      SERVER_HOST: '127.0.0.1'
+      SERVER_DATABASE_URL: 'mongodb://user:pass@mongodb:27017/medical_jobs_tests'
+      SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '8000'
       SERVER_LOG_LEVEL: 'INFO'
       SERVER_CORS_ALLOW_ORIGINS: '["http://localhost:5000", "http://127.0.0.1:5000", "http://localhost:5001", "http://127.0.0.1:5001", "http://localhost:5002", "http://127.0.0.1:5002"]'
@@ -34,6 +34,7 @@ services:
       - mongodb
 
   accounts-ui:
+    container_name: test-accounts-ui
     build:
       context: .
       dockerfile: apps/accounts/Dockerfile
@@ -46,6 +47,7 @@ services:
         NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: http://localhost:5001
         NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: http://localhost:5000
         JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+        API_URL: http://server:8000
         CI: ${CI}
     depends_on:
       - server
@@ -56,17 +58,18 @@ services:
       - "1025:1025"
       - "8025:8025"
   mongodb:
+    container_name: test-mongodb
     image: docker.io/bitnami/mongodb:8.0
     ports:
       - "27017:27017"
     environment:
       - MONGODB_USERNAME=user
       - MONGODB_PASSWORD=pass
-      - MONGODB_DATABASE=medical_jobs_test
+      - MONGODB_DATABASE=medical_jobs_tests
       - MONGODB_ROOT_PASSWORD=rootpass
     volumes:
-      - "mongodb_data:/bitnami/mongodb"
+      - "test_mongodb_data:/bitnami/mongodb"
 
 volumes:
-  mongodb_data:
+  test_mongodb_data:
     driver: local

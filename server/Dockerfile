@@ -22,8 +22,10 @@ COPY --from=builder /project/.venv/ /project/.venv
 ENV PYTHONPATH="/project"
 ENV PATH="/project/.venv/bin:$PATH"
 # set command/entrypoint, adapt to fit your needs
-COPY app ./project/app
+COPY ./ ./project/
 
 WORKDIR /project
+
+EXPOSE 8000
 
 CMD ["python", "scripts/run_server.py"]

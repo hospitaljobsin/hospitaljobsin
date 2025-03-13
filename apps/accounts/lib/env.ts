@@ -5,6 +5,7 @@ export const env = createEnv({
 	server: {
 		SESSION_COOKIE_KEY: z.string().default("user_session"),
 		JWE_SECRET_KEY: z.string(),
+		API_URL: z.string()
 	},
 	client: {
 		NEXT_PUBLIC_URL: z.string().url(),
