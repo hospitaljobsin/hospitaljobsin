@@ -117,7 +117,7 @@ test.describe("Login Page", () => {
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		// Check error message
-		await expect(page.getByText("Invalid credentials")).toBeVisible();
+		await expect(page.getByText("Invalid credentials provided.")).toBeVisible();
 	});
 
 	test("should navigate to sign up page", async ({ page }) => {
