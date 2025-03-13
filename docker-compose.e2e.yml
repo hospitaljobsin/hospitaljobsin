@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      SERVER_DEBUG: 'true'
+      SERVER_ENVIRONMENT: 'testing'
+      SERVER_DATABASE_URL: 'mongodb://user:pass@localhost:27017/medical_jobs_tests'
+      SERVER_HOST: '127.0.0.1'
+      SERVER_PORT: '8000'
+      SERVER_LOG_LEVEL: 'INFO'
+      SERVER_CORS_ALLOW_ORIGINS: '["http://localhost:5000", "http://127.0.0.1:5000", "http://localhost:5001", "http://127.0.0.1:5001", "http://localhost:5002", "http://127.0.0.1:5002"]'
+      SERVER_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      SERVER_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      SERVER_EMAIL_HOST: 'localhost'
+      SERVER_EMAIL_PORT: '1025'
+      SERVER_EMAIL_USERNAME: ''
+      SERVER_EMAIL_PASSWORD: ''
+      SERVER_EMAIL_FROM: 'noreply@example.com'
+      SERVER_APP_URL: "http://localhost:3000"
+      SERVER_RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
+      SERVER_S3_AVATAR_BUCKET_NAME: "avatars"
+      SERVER_ACCOUNTS_BASE_URL: "http://localhost:5002"
+      SERVER_RP_ID: 'localhost'
+      SERVER_RP_NAME: 'Starter'
+      SERVER_RP_EXPECTED_ORIGIN: 'http://localhost:5002'
+      SERVER_JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+    depends_on:
+      - mongodb
+
+  accounts-ui:
+    build:
+      context: .
+      dockerfile: apps/accounts/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+        NEXT_PUBLIC_URL: http://localhost:5002
+        NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${RECAPTCHA_SITE_KEY}
+        NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: http://localhost:5001
+        NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: http://localhost:5000
+        JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+        CI: ${CI}
+    depends_on:
+      - server
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+  mongodb:
+    image: docker.io/bitnami/mongodb:8.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGODB_USERNAME=user
+      - MONGODB_PASSWORD=pass
+      - MONGODB_DATABASE=medical_jobs_test
+      - MONGODB_ROOT_PASSWORD=rootpass
+    volumes:
+      - "mongodb_data:/bitnami/mongodb"
+
+volumes:
+  mongodb_data:
+    driver: local
