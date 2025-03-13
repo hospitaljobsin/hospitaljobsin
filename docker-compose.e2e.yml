@@ -38,7 +38,7 @@ services:
       context: .
       dockerfile: apps/accounts/Dockerfile
     ports:
-      - "3000:3000"
+      - "5002:5002"
     environment:
         NEXT_PUBLIC_API_URL: http://localhost:8000
         NEXT_PUBLIC_URL: http://localhost:5002

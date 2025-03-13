@@ -4,15 +4,25 @@ on: [push]
 jobs:
   test-accounts:
     runs-on: ubuntu-latest
-      
-    defaults:
-        run:
-          working-directory: apps/accounts
     steps:
       - uses: actions/checkout@v3
 
-      - run: docker compose build
-      - run: docker compose down -v --remove-orphans
+      - run: docker compose -f docker-compose.e2e.yml up --build -d
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+           
+      - name: Install dependencies and playwright binaries
+        run: pnpm install && npx playwright install --with-deps
+        working-directory: apps/accounts
+      - name: Setup environment variables
+        run: |
+          echo "CI=true" >> .env
+        working-directory: apps/accounts
       - name: Run Playwright tests
-        run: docker compose run --rm playwright npx playwright test --fail-on-flaky-tests --trace=retain-on-failure
-      - run: docker compose down -v --remove-orphans
+        run: pnpm test:e2e
+        working-directory: apps/accounts
+      - run: docker compose -f docker-compose.e2e.yml down -v --remove-orphans
