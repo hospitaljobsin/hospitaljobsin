@@ -169,14 +169,17 @@ class Settings(BaseSettings):
         """Check whether the current environment is the given environment."""
         return self.environment == environment
 
+    @property
     def is_development(self) -> bool:
         """Check whether the current environment is development."""
         return self._is_environment(Environment.development)
 
+    @property
     def is_testing(self) -> bool:
         """Check whether the current environment is testing."""
         return self._is_environment(Environment.testing)
 
+    @property
     def is_production(self) -> bool:
         """Check whether the current environment is production."""
         return self._is_environment(Environment.production)

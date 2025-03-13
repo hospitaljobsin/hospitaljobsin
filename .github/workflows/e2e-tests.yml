@@ -3,6 +3,17 @@ on: [push]
 jobs:
   test-accounts:
     runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: docker.io/bitnami/mongodb:8.0
+        ports:
+          - "27017:27017"
+        env:
+          MONGODB_USERNAME: user
+          MONGODB_PASSWORD: pass
+          MONGODB_DATABASE: medical_jobs_test
+          MONGODB_ROOT_PASSWORD: rootpass
+      
     defaults:
         run:
           working-directory: apps/accounts
