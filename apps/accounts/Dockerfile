@@ -6,7 +6,7 @@ COPY ./schema/ ./schema/
 
 WORKDIR /app/apps/accounts
 
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 COPY ./apps/accounts/ ./
 
