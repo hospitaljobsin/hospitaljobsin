@@ -32,7 +32,7 @@ jobs:
           cache-dependency-path: apps/accounts/pnpm-lock.yaml 
            
       - name: Install dependencies and Playwright browsers  
-        run: pnpm install && npx playwright install-deps
+        run: pnpm install && npx playwright install --with-deps
         working-directory: apps/accounts
       - name: Run Playwright tests
         run: pnpm test:e2e --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
