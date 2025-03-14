@@ -3,12 +3,11 @@ from base64 import b64decode, b64encode
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-import bson
 import httpx
 import pyotp
 from bson.objectid import ObjectId
 from email_validator import EmailNotValidError, validate_email
-from fastapi import BackgroundTasks, Request, Response
+from fastapi import BackgroundTasks, Request
 from humanize import naturaldelta
 from result import Err, Ok, Result
 from webauthn import (
@@ -91,6 +90,7 @@ from app.lib.constants import (
 )
 from app.lib.emails import EmailSender
 from app.lib.formatting import format_datetime
+from app.lib.recaptcha import BaseRecaptchaVerifier
 
 
 class AuthService:
@@ -108,6 +108,7 @@ class AuthService:
         recovery_code_repo: RecoveryCodeRepo,
         temp_two_factor_challenge_repo: TemporaryTwoFactorChallengeRepo,
         email_sender: EmailSender,
+        recaptcha_verifier: BaseRecaptchaVerifier,
         settings: Settings,
     ) -> None:
         self._account_repo = account_repo
@@ -125,6 +126,7 @@ class AuthService:
         self._temp_two_factor_challenge_repo = temp_two_factor_challenge_repo
         self._email_sender = email_sender
         self._settings = settings
+        self._recaptcha_verifier = recaptcha_verifier
 
     async def request_email_verification_token(
         self,
@@ -228,17 +230,7 @@ class AuthService:
 
     async def _verify_recaptcha_token(self, recaptcha_token: str) -> bool:
         """Verify whether the given recaptcha token is valid."""
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                f"https://www.google.com/recaptcha/api/siteverify?secret={self._settings.recaptcha_secret_key.get_secret_value()}&response={recaptcha_token}",
-                headers={
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                },
-            )
-            response_data = response.json()
-
-        return response_data["success"]
+        return await self._recaptcha_verifier.verify(recaptcha_token)
 
     async def register_with_password(
         self,
