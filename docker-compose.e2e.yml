@@ -53,6 +53,7 @@ services:
         HOST: 0.0.0.0
         JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
         API_URL: http://test-server:8000
+        NODE_ENV: production
         CI: ${CI}
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:5002/"]
