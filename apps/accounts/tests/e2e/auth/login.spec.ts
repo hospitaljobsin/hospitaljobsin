@@ -4,18 +4,24 @@ test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
 		// Intercept and mock the reCAPTCHA script
 		console.log("🚀 Intercepting reCAPTCHA script..."); // Debug log
-		await page.route("**/recaptcha/**", (route) => {
-			console.log("✅ Mocking reCAPTCHA script..."); // Debug log
-			route.fulfill({
-				status: 200,
-				contentType: "application/javascript",
-				body: `
-        window.grecaptcha = {
-          ready: (cb) => cb(),
-          execute: () => Promise.resolve('dummy_recaptcha_token')
-        };
-      `,
-			});
+		// 	await page.route("**/recaptcha/**", (route) => {
+		// 		console.log("✅ Mocking reCAPTCHA script..."); // Debug log
+		// 		route.fulfill({
+		// 			status: 200,
+		// 			contentType: "application/javascript",
+		// 			body: `
+		//     window.grecaptcha = {
+		//       ready: (cb) => cb(),
+		//       execute: () => Promise.resolve('dummy_recaptcha_token')
+		//     };
+		//   `,
+		// 		});
+		// 	});
+		await page.addInitScript(() => {
+			window.grecaptcha = {
+				ready: (cb) => cb(),
+				execute: () => Promise.resolve("ci_dummy_recaptcha_token"),
+			};
 		});
 
 		// Navigate to login page
