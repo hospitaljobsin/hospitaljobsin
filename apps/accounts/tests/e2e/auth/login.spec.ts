@@ -3,8 +3,19 @@ import { expect, test } from "@playwright/test";
 
 test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
-		// Setup mock for recaptcha
-		// await mockRecaptcha(page);
+		// Intercept and mock the reCAPTCHA script
+		await page.route("**/recaptcha/api.js*", (route) => {
+			route.fulfill({
+				status: 200,
+				contentType: "application/javascript",
+				body: `
+        window.grecaptcha = {
+          ready: (cb) => cb(),
+          execute: () => Promise.resolve('dummy_recaptcha_token')
+        };
+      `,
+			});
+		});
 
 		// Navigate to login page
 		await page.goto("/auth/login");
@@ -12,6 +23,7 @@ test.describe("Login Page", () => {
 		await page.waitForFunction(
 			() =>
 				typeof window.grecaptcha !== "undefined" && window.grecaptcha.execute,
+			{ timeout: 10_000 },
 		);
 	});
 

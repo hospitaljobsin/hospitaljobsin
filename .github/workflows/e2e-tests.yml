@@ -5,8 +5,6 @@ env:
   CI: true
   GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
   GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-  RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
-  RECAPTCHA_SITE_KEY: ${{ secrets.RECAPTCHA_SITE_KEY }}
 
 jobs:
   test-accounts:
@@ -14,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: docker compose -f docker-compose.e2e.yml up --build -d --wait
+      - run: docker compose -f docker-compose.e2e.yml up --build -d --wait --remove-orphans
       - name: Check if server is running
         run: curl -v http://localhost:5002 || (echo "Server not running!" && exit 1)
       - uses: actions/setup-node@v3
