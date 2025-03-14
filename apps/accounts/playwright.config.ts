@@ -34,10 +34,10 @@ export default defineConfig({
 	},
 
 	expect: {
-		timeout: 10_000,
+		timeout: IS_CI ? 25_000 : 10_000,
 	},
 
-	timeout: IS_CI ? 30_000 : 20_000,
+	timeout: IS_CI ? 35_000 : 20_000,
 
 	/* Configure projects for major browsers */
 	projects: [
