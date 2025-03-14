@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
 		// Intercept and mock the reCAPTCHA script
-		console.log("🚀 Intercepting reCAPTCHA script..."); // Debug log
+		// console.log("🚀 Intercepting reCAPTCHA script..."); // Debug log
 		// 	await page.route("**/recaptcha/**", (route) => {
 		// 		console.log("✅ Mocking reCAPTCHA script..."); // Debug log
 		// 		route.fulfill({
@@ -17,6 +17,26 @@ test.describe("Login Page", () => {
 		//   `,
 		// 		});
 		// 	});
+		await page.route(
+			(request) => {
+				const url = request.url();
+				console.log("✅ Mocking reCAPTCHA script... ", url); // Debug log
+				return url.includes("recaptcha");
+			},
+			(route) => {
+				console.log("✅ Mocking reCAPTCHA script...");
+				route.fulfill({
+					status: 200,
+					contentType: "application/javascript",
+					body: `
+				window.grecaptcha = {
+				  ready: (cb) => cb(),
+				  execute: () => Promise.resolve('dummy_recaptcha_token')
+				};
+			  `,
+				});
+			},
+		);
 		await page.addInitScript(() => {
 			window.grecaptcha = {
 				ready: (cb) => cb(),
