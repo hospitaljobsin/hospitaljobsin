@@ -43,3 +43,5 @@ tmuxinator start medical_jobs
 
 # TODO: e2e: cause of failing tests is because the UI in github actions is misaligned and missing a CSS file (loads only one when the local version loads 2)
 tests pass locally otherwise and dont need any changes
+
+maybe install dev deps also before build to include proper tailwindcss assets
