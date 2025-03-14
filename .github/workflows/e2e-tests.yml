@@ -6,20 +6,31 @@ env:
   GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
 jobs:
+  setup-services:
+    name: "Setup Services"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Start Docker Compose services
+        run: docker compose -f docker-compose.e2e.yml up --build -d --wait --remove-orphans
+
+      - name: Check if server is running
+        run: curl -v http://localhost:5002 || (echo "Server not running!" && exit 1)
+
   test-accounts:
     name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
+    needs: setup-services
     strategy:
       fail-fast: false
       matrix:
         project: [chromium, firefox, webkit]
         shard: [1, 2, 3, 4]
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.30.0
     steps:
       - uses: actions/checkout@v3
-
-      - run: docker compose -f docker-compose.e2e.yml up --build -d --wait --remove-orphans
-      - name: Check if server is running
-        run: curl -v http://localhost:5002 || (echo "Server not running!" && exit 1)
 
       - uses: pnpm/action-setup@v4
         with:
@@ -29,10 +40,10 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-
+          cache-dependency-path: apps/accounts/pnpm-lock.yaml 
            
-      - name: Install dependencies  and playwright binaries
-        run: pnpm install && npx playwright install --with-deps
+      - name: Install dependencies
+        run: pnpm install
         working-directory: apps/accounts
       - name: Run Playwright tests
         run: pnpm test:e2e --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
