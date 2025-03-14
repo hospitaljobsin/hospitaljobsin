@@ -41,6 +41,12 @@ services:
     build:
       context: .
       dockerfile: apps/accounts/Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8000
+        - NEXT_PUBLIC_URL=http://localhost:5002
+        - NEXT_PUBLIC_RECAPTCHA_SITE_KEY=dummy_key
+        - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://localhost:5001
+        - NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL=http://localhost:5000
     ports:
       - "5002:5002"
     environment:
