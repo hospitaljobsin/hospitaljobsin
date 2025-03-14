@@ -2,7 +2,6 @@ name: E2E Tests
 on: [push]
 
 env:
-  CI: true
   GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
   GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
@@ -25,13 +24,11 @@ jobs:
       - name: Install dependencies and playwright binaries
         run: pnpm install && npx playwright install --with-deps
         working-directory: apps/accounts
-      - name: Setup environment variables
-        run: |
-          echo "CI=true" >> .env
-        working-directory: apps/accounts
       - name: Run Playwright tests
         run: pnpm test:e2e
         working-directory: apps/accounts
+        env:
+          CI: true
       - run: docker compose -f docker-compose.e2e.yml down -v --remove-orphans
       - name: Show Docker logs if tests fail
         if: failure()

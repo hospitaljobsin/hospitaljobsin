@@ -129,9 +129,6 @@ test.describe("Login Page", () => {
 				.filter({ hasText: /^Invalid credentials provided\.$/ })
 				.nth(2),
 		).toBeVisible();
-
-		// TODO: this error arises because recaptcha is not loaded
-		// but this works when we click manually
 	});
 
 	test("should navigate to sign up page", async ({ page }) => {
