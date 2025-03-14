@@ -57,9 +57,16 @@ test.describe("Login Page", () => {
 
 		// Check validation messages
 		await expect(
-			page.getByText("This field is required").first(),
+			page
+				.locator("div")
+				.filter({ hasText: /^This field is required$/ })
+				.first(),
 		).toBeVisible();
-		await expect(page.getByText("This field is required").nth(1)).toBeVisible();
+		await page
+			.locator("div")
+			.filter({ hasText: /^This field is required$/ })
+			.nth(2)
+			.click();
 	});
 
 	test("should validate email format", async ({ page }) => {
@@ -71,7 +78,12 @@ test.describe("Login Page", () => {
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		// Check validation message
-		await expect(page.getByText("Invalid email")).toBeVisible();
+		await expect(
+			page
+				.locator("div")
+				.filter({ hasText: /^Invalid email$/ })
+				.first(),
+		).toBeVisible();
 	});
 
 	test("should toggle password visibility", async ({ page }) => {
