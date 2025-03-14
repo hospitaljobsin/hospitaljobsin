@@ -11,15 +11,17 @@ import { defineConfig, devices } from "@playwright/test";
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+const IS_CI = process.env.CI;
+
 export default defineConfig({
 	testDir: "./tests/e2e",
 	/* Run tests in files in parallel */
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
-	forbidOnly: !!process.env.CI,
+	forbidOnly: !!IS_CI,
 	retries: 0,
 	/* Opt out of parallel tests on CI. */
-	workers: process.env.CI ? 1 : undefined,
+	workers: IS_CI ? 1 : undefined,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: "list",
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -28,14 +30,14 @@ export default defineConfig({
 		baseURL: "http://localhost:5002",
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-		trace: "on-first-retry",
+		trace: "on",
 	},
 
 	expect: {
 		timeout: 10_000,
 	},
 
-	timeout: process.env.CI ? 30_000 : 20_000,
+	timeout: IS_CI ? 30_000 : 20_000,
 
 	/* Configure projects for major browsers */
 	projects: [
