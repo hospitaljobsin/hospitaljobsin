@@ -24,10 +24,7 @@ test.describe("Login Page", () => {
 
 		console.log("🚀 Waiting for reCAPTCHA to load..."); // Debug log
 		// Wait for recaptcha to load
-		await page.waitForFunction(
-			() =>
-				typeof window.grecaptcha !== "undefined" && window.grecaptcha.execute,
-		);
+		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 	});
 
 	test("should display login form with all elements", async ({ page }) => {
