@@ -56,7 +56,7 @@ services:
         CI: ${CI}
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:5002/"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 10
     depends_on:
@@ -81,7 +81,7 @@ services:
       - "test_mongodb_data:/bitnami/mongodb"
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 10
 
