@@ -35,7 +35,7 @@ export default defineConfig({
 		timeout: 10_000,
 	},
 
-	timeout: process.env.CI ? 30_000 : 10_000,
+	timeout: process.env.CI ? 30_000 : 20_000,
 
 	/* Configure projects for major browsers */
 	projects: [

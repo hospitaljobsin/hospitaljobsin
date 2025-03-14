@@ -4,7 +4,7 @@ test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
 		// Intercept and mock the reCAPTCHA script
 		console.log("🚀 Intercepting reCAPTCHA script..."); // Debug log
-		await page.route("**/recaptcha/api.js*", (route) => {
+		await page.route("**/recaptcha/**", (route) => {
 			console.log("✅ Mocking reCAPTCHA script..."); // Debug log
 			route.fulfill({
 				status: 200,
