@@ -10,6 +10,7 @@ from app.config import Settings
 from app.container import create_container
 from app.database import initialize_database
 from app.graphql_app import create_graphql_router
+from app.health.routes import health_router
 from app.middleware import SessionMiddleware
 
 
@@ -19,6 +20,7 @@ def add_routes(app: FastAPI) -> None:
         create_graphql_router(),
         prefix="/graphql",
     )
+    app.include_router(health_router)
     app.include_router(auth_router)
 
 

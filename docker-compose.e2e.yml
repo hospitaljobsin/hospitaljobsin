@@ -1,7 +1,6 @@
 
 services:
-  server:
-    container_name: test-server
+  test-server:
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -10,14 +9,14 @@ services:
     environment:
       SERVER_DEBUG: 'true'
       SERVER_ENVIRONMENT: 'testing'
-      SERVER_DATABASE_URL: 'mongodb://user:pass@mongodb:27017/medical_jobs_tests'
+      SERVER_DATABASE_URL: 'mongodb://user:pass@test-mongodb:27017/medical_jobs_tests'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '8000'
       SERVER_LOG_LEVEL: 'INFO'
       SERVER_CORS_ALLOW_ORIGINS: '["http://localhost:5000", "http://127.0.0.1:5000", "http://localhost:5001", "http://127.0.0.1:5001", "http://localhost:5002", "http://127.0.0.1:5002"]'
       SERVER_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       SERVER_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      SERVER_EMAIL_HOST: 'localhost'
+      SERVER_EMAIL_HOST: 'mailhog'
       SERVER_EMAIL_PORT: '1025'
       SERVER_EMAIL_USERNAME: ''
       SERVER_EMAIL_PASSWORD: ''
@@ -30,11 +29,16 @@ services:
       SERVER_RP_NAME: 'Starter'
       SERVER_RP_EXPECTED_ORIGIN: 'http://localhost:5002'
       SERVER_JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     depends_on:
-      - mongodb
+      test-mongodb:
+        condition: service_healthy
 
-  accounts-ui:
-    container_name: test-accounts-ui
+  test-accounts-ui:
     build:
       context: .
       dockerfile: apps/accounts/Dockerfile
@@ -48,18 +52,23 @@ services:
         NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: http://localhost:5001
         NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: http://localhost:5000
         JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
-        API_URL: http://server:8000
+        API_URL: http://test-server:8000
         CI: ${CI}
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:5002/"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     depends_on:
-      - server
+      test-server:
+        condition: service_healthy
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
     ports:
       - "1025:1025"
       - "8025:8025"
-  mongodb:
-    container_name: test-mongodb
+  test-mongodb:
     image: docker.io/bitnami/mongodb:8.0
     ports:
       - "27017:27017"
@@ -70,6 +79,11 @@ services:
       - MONGODB_ROOT_PASSWORD=rootpass
     volumes:
       - "test_mongodb_data:/bitnami/mongodb"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
   test_mongodb_data:

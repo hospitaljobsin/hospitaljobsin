@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: docker compose -f docker-compose.e2e.yml up --build -d
+      - run: docker compose -f docker-compose.e2e.yml up --build -d --wait
       - name: Check if server is running
         run: curl -v http://localhost:5002 || (echo "Server not running!" && exit 1)
       - uses: actions/setup-node@v3
