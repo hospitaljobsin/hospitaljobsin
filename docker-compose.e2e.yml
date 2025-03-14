@@ -30,7 +30,7 @@ services:
       SERVER_RP_EXPECTED_ORIGIN: 'http://localhost:5002'
       SERVER_JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8000/health"]
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/health/"]
       interval: 5s
       timeout: 5s
       retries: 10
