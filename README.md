@@ -44,3 +44,9 @@ tmuxinator start medical_jobs
 PLAYWRIGHT SETUP REFERENCE:
 - https://github.com/Netflix/dispatch/blob/main/.github/workflows/playwright.yml
 - https://github.com/Netflix/dispatch/blob/main/playwright.config.ts
+
+E2E todo:
+- tests are failing because recaptcha mode doesn't load in headless browsers where the user agent is detected as a bot (github actions)
+- we need to mock recaptcha for testing
+- in the server, separate recaptcha solving into a separate service. in the service getter via aioinject, conditionally return the service based on the current mode (testing or prod)
+- in the frontend, mock the recaptcha lib to always return a constant token like XXX which the mock recaptcha service always accepts
