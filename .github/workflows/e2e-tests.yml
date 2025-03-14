@@ -14,8 +14,6 @@ jobs:
         project: [chromium, firefox, webkit]
         shard: [1, 2, 3, 4]
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.30.0
     steps:
       - uses: actions/checkout@v3
 
@@ -31,9 +29,10 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+
            
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install dependencies  and playwright binaries
+        run: pnpm install && npx playwright install --with-deps
         working-directory: apps/accounts
       - name: Run Playwright tests
         run: pnpm test:e2e --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
