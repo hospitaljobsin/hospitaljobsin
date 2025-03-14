@@ -20,6 +20,9 @@ FROM node:22-alpine AS release
 WORKDIR /app
 RUN corepack enable
 
+# add curl
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 COPY --from=base /app/apps/accounts/node_modules ./node_modules
 COPY --from=base /app/apps/accounts/package.json ./package.json
 COPY --from=base /app/apps/accounts/.next ./.next
