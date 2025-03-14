@@ -9,7 +9,7 @@
 		"start": "next start -p 5002",
 		"lint": "next lint",
 		"relay": "relay-compiler --watch",
-		"test:e2e": "playwright test"
+		"test:e2e": "npx playwright test"
 	},
 	"dependencies": {
 		"@heroui/react": "2.7.2",

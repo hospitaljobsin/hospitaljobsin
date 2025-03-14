@@ -7,38 +7,44 @@ env:
 
 jobs:
   test-accounts:
-    runs-on: ubuntu-20.04
+    name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit]
+        shard: [1, 2, 3, 4]
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.30.0
     steps:
       - uses: actions/checkout@v3
 
       - run: docker compose -f docker-compose.e2e.yml up --build -d --wait --remove-orphans
       - name: Check if server is running
         run: curl -v http://localhost:5002 || (echo "Server not running!" && exit 1)
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 22
+
       - uses: pnpm/action-setup@v4
         with:
           version: 10
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 22
+          cache: pnpm
            
-      - name: Install dependencies and playwright binaries
-        run: pnpm install && npx playwright install --with-deps
+      - name: Install dependencies
+        run: pnpm install
         working-directory: apps/accounts
       - name: Run Playwright tests
-        run: pnpm test:e2e --trace=on
+        run: pnpm test:e2e --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
         working-directory: apps/accounts
         env:
           CI: true
           DEBUG: pw:browser
-      - name: Upload Playwright trace
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-trace
-          path: test-results/**/*.zip
-        
-      - run: docker compose -f docker-compose.e2e.yml down -v --remove-orphans
-      - name: Show Docker logs if tests fail
-        if: failure()
-        run: docker compose logs
+          name: playwright-report-${{ matrix.project }}-${{ matrix.shard }}
+          path: playwright-report/
+          retention-days: 30
     
