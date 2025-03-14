@@ -29,6 +29,7 @@ jobs:
         working-directory: apps/accounts
         env:
           CI: true
+          DEBUG: pw:browser
       - name: Upload Playwright trace
         uses: actions/upload-artifact@v4
         if: always()

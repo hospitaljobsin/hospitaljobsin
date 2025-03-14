@@ -3,45 +3,19 @@ import { expect, test } from "@playwright/test";
 test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
 		// Intercept and mock the reCAPTCHA script
-		// console.log("🚀 Intercepting reCAPTCHA script..."); // Debug log
-		// 	await page.route("**/recaptcha/**", (route) => {
-		// 		console.log("✅ Mocking reCAPTCHA script..."); // Debug log
-		// 		route.fulfill({
-		// 			status: 200,
-		// 			contentType: "application/javascript",
-		// 			body: `
-		//     window.grecaptcha = {
-		//       ready: (cb) => cb(),
-		//       execute: () => Promise.resolve('dummy_recaptcha_token')
-		//     };
-		//   `,
-		// 		});
-		// 	});
-		await page.route(
-			(request) => {
-				const url = request.url();
-				console.log("✅ Mocking reCAPTCHA script... ", url); // Debug log
-				return url.includes("recaptcha");
-			},
-			(route) => {
-				console.log("✅ Mocking reCAPTCHA script...");
-				route.fulfill({
-					status: 200,
-					contentType: "application/javascript",
-					body: `
-				window.grecaptcha = {
-				  ready: (cb) => cb(),
-				  execute: () => Promise.resolve('dummy_recaptcha_token')
-				};
-			  `,
-				});
-			},
-		);
-		await page.addInitScript(() => {
-			window.grecaptcha = {
-				ready: (cb) => cb(),
-				execute: () => Promise.resolve("dummy_recaptcha_token"),
-			};
+		console.log("🚀 Intercepting reCAPTCHA script..."); // Debug log
+		await page.route("**/recaptcha/**", (route) => {
+			console.log("✅ Mocking reCAPTCHA script..."); // Debug log
+			route.fulfill({
+				status: 200,
+				contentType: "application/javascript",
+				body: `
+        window.grecaptcha = {
+          ready: (cb) => cb(),
+          execute: () => Promise.resolve('dummy_recaptcha_token')
+        };
+      `,
+			});
 		});
 
 		console.log("🚀 Navigating to login page..."); // Debug log
@@ -50,10 +24,10 @@ test.describe("Login Page", () => {
 
 		console.log("🚀 Waiting for reCAPTCHA to load..."); // Debug log
 		// Wait for recaptcha to load
-		// await page.waitForFunction(
-		// 	() =>
-		// 		typeof window.grecaptcha !== "undefined" && window.grecaptcha.execute,
-		// );
+		await page.waitForFunction(
+			() =>
+				typeof window.grecaptcha !== "undefined" && window.grecaptcha.execute,
+		);
 	});
 
 	test("should display login form with all elements", async ({ page }) => {
