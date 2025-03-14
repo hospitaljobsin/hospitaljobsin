@@ -21,7 +21,7 @@ WORKDIR /app
 RUN corepack enable
 
 # add curl
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apk --no-cache add curl
 
 COPY --from=base /app/apps/accounts/node_modules ./node_modules
 COPY --from=base /app/apps/accounts/package.json ./package.json
