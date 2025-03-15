@@ -4,3 +4,4 @@ __generated__/
 test-results/
 .env
 .env.example
+.git

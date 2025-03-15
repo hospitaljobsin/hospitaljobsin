@@ -45,7 +45,6 @@
 		"@biomejs/biome": "1.9.4",
 		"@playwright/test": "^1.51.0",
 		"@swc/plugin-relay": "^7.0.0",
-		"@tailwindcss/postcss": "^4.0.14",
 		"@types/gravatar": "^1.8.6",
 		"@types/node": "^20",
 		"@types/react": "^19.0.1",
