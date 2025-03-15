@@ -243,15 +243,6 @@ test.describe("Sign Up Page", () => {
 				page.getByText(/Password must contain at least one special character/),
 			).toBeVisible();
 		});
-	});
-
-	test("should fail when passwords don't match", async ({
-		page,
-		request,
-		context,
-	}) => {
-		const emailAddress = "mismatch-tester@outlook.com";
-		await completeSteps1To3({ page, request, context, emailAddress });
 
 		await test.step("Step 4: Enter mismatched passwords", async () => {
 			await enterPassword({
