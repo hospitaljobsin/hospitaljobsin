@@ -234,7 +234,7 @@ test.describe("Login Page", () => {
 				credentialId: "4KwTS6Y6Hzd7L6ijwZd2Mg==", // Base64-encoded mock credential ID
 				isResidentCredential: true,
 				privateKey:
-					"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg7l0KKu5Iu8yoiiTDmjpk8gVsqGN9smBjL/2i5UJs09yhRANCAATpStgeKBb3lgeDw+ezfPdZ6nFVwEWGRxPsh/u0TE3ci7jryI0DAz/iCBe57qxeD7DuvmejwHaP7jSc8TxQC2Ka", // Base64-encoded mock private key (COSE later if needed)
+					"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgaXHR/cXGj5XEgk3jpoqK50mry/3gOFAyQwgXRNSz+ZyhRANCAAR9WkpjDhNVmt1JxiXmdtXFV9X46pefmf2zU5AzFPczSLtppVXd9i2gzKClvkenoESvvdOaF299W1Gp8TESeQpx", // Base64-encoded mock private key (COSE later if needed)
 				rpId: "localhost",
 				userHandle: "YPG5s7Ozs7Ozs7Oz", // Ensure it's 16 bytes (padded)
 				signCount: 0,
