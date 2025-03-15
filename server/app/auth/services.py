@@ -528,9 +528,12 @@ class AuthService:
             authentication_credential = parse_authentication_credential_json(
                 authentication_response
             )
+            print("authentication_credential", authentication_credential)
             web_authn_credential = await self._web_authn_credential_repo.get(
                 credential_id=authentication_credential.raw_id
             )
+
+            print("web_authn_credential", web_authn_credential)
 
             if web_authn_credential is None:
                 return Err(InvalidPasskeyAuthenticationCredentialError())

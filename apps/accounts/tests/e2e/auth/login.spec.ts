@@ -160,7 +160,9 @@ test.describe("Login Page", () => {
 	test("should handle successful email-password login", async ({ page }) => {
 		// Fill form with valid credentials
 		await page.getByLabel("Email Address").fill("tester@example.org");
-		await page.getByRole("textbox", { name: "Password Password" }).fill("Password123!");
+		await page
+			.getByRole("textbox", { name: "Password Password" })
+			.fill("Password123!");
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		await page.waitForURL("http://localhost:5000/");
@@ -197,60 +199,93 @@ test.describe("Login Page", () => {
 	// 	await expect(page).toHaveURL(/\/two-factor-authentication/);
 	// });
 
-	// test("should handle passkey authentication", async ({ page }) => {
-	// 	// Mock the GraphQL responses for passkey flow
-	// 	await page.route("**/graphql", async (route) => {
-	// 		const json = route.request().postDataJSON();
+	test("should handle successful passkey login", async ({
+		page,
+		context,
+		browserName,
+	}) => {
+		test.skip(browserName !== "chromium", "Only supported in Chromium");
+		test.setTimeout(30_000);
+		// Set up Chrome DevTools Protocol session
+		const client = await context.newCDPSession(page);
+		await client.send("WebAuthn.enable");
 
-	// 		if (
-	// 			json.operationName === "LoginFormGenerateAuthenticationOptionsMutation"
-	// 		) {
-	// 			await route.fulfill({
-	// 				status: 200,
-	// 				contentType: "application/json",
-	// 				body: JSON.stringify({
-	// 					data: {
-	// 						generateAuthenticationOptions: {
-	// 							__typename: "GenerateAuthenticationOptionsSuccess",
-	// 							authenticationOptions: JSON.stringify({
-	// 								challenge: "mockChallenge",
-	// 								timeout: 60000,
-	// 								rpId: "localhost",
-	// 								allowCredentials: [],
-	// 							}),
-	// 						},
-	// 					},
-	// 				}),
-	// 			});
-	// 		} else {
-	// 			await route.continue();
-	// 		}
-	// 	});
+		// Add virtual authenticator with correct options
+		const { authenticatorId } = await client.send(
+			"WebAuthn.addVirtualAuthenticator",
+			{
+				options: {
+					protocol: "ctap2",
+					transport: "internal",
+					hasResidentKey: true,
+					hasUserVerification: true,
+					isUserVerified: true,
+					automaticPresenceSimulation: false,
+				},
+			},
+		);
 
-	// 	// Mock WebAuthn API
-	// 	await page.addInitScript(() => {
-	// 		window.navigator.credentials = {
-	// 			get: () =>
-	// 				Promise.resolve({
-	// 					id: "mockCredentialId",
-	// 					type: "public-key",
-	// 					response: {
-	// 						authenticatorData: "mockAuthenticatorData",
-	// 						clientDataJSON: "mockClientDataJSON",
-	// 						signature: "mockSignature",
-	// 					},
-	// 				}),
-	// 		};
-	// 	});
+		console.log("✅ Authenticator added with ID:", authenticatorId);
 
-	// 	// Click passkey button
-	// 	await page.getByRole("button", { name: "Sign in with passkey" }).click();
+		// Register a mock credential
+		await client.send("WebAuthn.addCredential", {
+			authenticatorId,
+			credential: {
+				credentialId: "4KwTS6Y6Hzd7L6ijwZd2Mg==", // Base64-encoded mock credential ID
+				isResidentCredential: true,
+				privateKey:
+					"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg7l0KKu5Iu8yoiiTDmjpk8gVsqGN9smBjL/2i5UJs09yhRANCAATpStgeKBb3lgeDw+ezfPdZ6nFVwEWGRxPsh/u0TE3ci7jryI0DAz/iCBe57qxeD7DuvmejwHaP7jSc8TxQC2Ka", // Base64-encoded mock private key (COSE later if needed)
+				rpId: "localhost",
+				userHandle: "YPG5s7Ozs7Ozs7Oz", // Ensure it's 16 bytes (padded)
+				signCount: 0,
+			},
+		});
 
-	// 	// Check that button shows loading state
-	// 	await expect(
-	// 		page.getByRole("button", { name: "Sign in with passkey" }),
-	// 	).toBeDisabled();
-	// });
+		console.log("✅ Mock credential added!");
+
+		const credentials = await client.send("WebAuthn.getCredentials", {
+			authenticatorId,
+		});
+
+		expect(credentials.credentials).toHaveLength(1);
+
+		// initialize event listeners to wait for a successful passkey input event
+		const operationCompleted = new Promise<void>((resolve) => {
+			client.on("WebAuthn.credentialAdded", () => resolve());
+			client.on("WebAuthn.credentialAsserted", () => resolve());
+		});
+
+		// set isUserVerified option to true
+		// (so that subsequent passkey operations will be successful)
+		await client.send("WebAuthn.setUserVerified", {
+			authenticatorId: authenticatorId,
+			isUserVerified: true,
+		});
+
+		// set automaticPresenceSimulation option to true
+		// (so that the virtual authenticator will respond to the next passkey prompt)
+		await client.send("WebAuthn.setAutomaticPresenceSimulation", {
+			authenticatorId: authenticatorId,
+			enabled: true,
+		});
+
+		// Click passkey button to trigger authentication
+		await page.getByRole("button", { name: "Sign in with passkey" }).click();
+
+		// wait to receive the event that the passkey was successfully registered or verified
+		await operationCompleted;
+
+		// set automaticPresenceSimulation option back to false
+		await client.send("WebAuthn.setAutomaticPresenceSimulation", {
+			authenticatorId,
+			enabled: false,
+		});
+
+		// Ensure redirection happens after successful authentication
+		await page.waitForURL("http://localhost:5000/");
+
+		console.log("✅ Passkey login successful!");
+	});
 
 	test("should handle OAuth2 error from URL parameter", async ({ page }) => {
 		// increase timeout to incorporate navigation
