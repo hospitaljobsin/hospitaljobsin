@@ -1,3 +1,34 @@
+# Exclude virtual environments and Python cache
 .venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment files and secrets
 .env
-.env.example
+.env.*
+*.pem
+*.key
+
+# Git and version control files
+.git
+.gitignore
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Logs and temp files
+*.log
+logs/
+*.pid
+*.sock
+tmp/
+*.bak
+
+
+# Python package build artifacts
+*.egg-info/
+dist/
+build/

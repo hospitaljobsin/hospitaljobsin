@@ -1,7 +1,38 @@
+# Node dependencies and build outputs
 **/node_modules/
+**/dist/
+**/build/
 **/.next/
-**/__generated__/
+**/coverage/
 **/test-results/
+**/__generated__/
+
+# Environment files and secrets
 **/.env
-**/.env.example
+**/.env.*
+**/secrets.*
+**/*.pem
+**/*.key
+
+# Version control
 **/.git
+**/.gitignore
+
+# Logs, cache, and temp files
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+**/logs/
+**/*.log
+**/tmp/
+**/.cache/
+**/.eslintcache
+**/.turbo/
+**/.parcel-cache/
+
+# IDE and OS files
+**/.vscode/
+**/.idea/
+**/.DS_Store
+**/Thumbs.db
