@@ -40,7 +40,7 @@ export default function Step3NameForm() {
 					isInvalid={!!errors.fullName}
 				/>
 				<Button fullWidth type="submit" isLoading={isSubmitting}>
-					Next
+					Continue
 				</Button>
 			</div>
 		</form>

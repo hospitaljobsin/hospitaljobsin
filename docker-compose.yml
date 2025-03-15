@@ -11,11 +11,11 @@ services:
     volumes:
       - "mongodb_data:/bitnami/mongodb"
 
-  mailhog:
-    image: mailhog/mailhog:v1.0.1
+  mailcatcher:
+    image: schickling/mailcatcher:latest
     ports:
+      - "1080:1080"
       - "1025:1025"
-      - "8025:8025"
 
   localstack:
     image: localstack/localstack
