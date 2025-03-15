@@ -3,9 +3,7 @@ import { expect, test } from "@playwright/test";
 test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
 		// Intercept and mock the reCAPTCHA script
-		console.log("🚀 Intercepting reCAPTCHA script..."); // Debug log
 		await page.route("**/recaptcha/**", (route) => {
-			console.log("✅ Mocking reCAPTCHA script..."); // Debug log
 			route.fulfill({
 				status: 200,
 				contentType: "application/javascript",
@@ -17,12 +15,8 @@ test.describe("Login Page", () => {
       `,
 			});
 		});
-
-		console.log("🚀 Navigating to login page..."); // Debug log
 		// Navigate to login page
 		await page.goto("/auth/login");
-
-		console.log("🚀 Waiting for reCAPTCHA to load..."); // Debug log
 		// Wait for recaptcha to load
 		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 	});
