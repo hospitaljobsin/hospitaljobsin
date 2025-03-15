@@ -40,3 +40,15 @@ To start all services in development, run the following command:
 ```bash
 tmuxinator start medical_jobs
 ```
+
+### Running E2E tests
+Start the docker compose E2E services:
+```bash
+docker compose -f docker-compose.e2e.yml up --wait --build --remove-orphans -d
+```
+
+Run the E2E tests (only accounts UI is configured as of now):
+```bash
+cd apps/accounts
+pnpm test:e2e
+```
