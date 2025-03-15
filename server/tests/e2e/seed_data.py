@@ -9,7 +9,7 @@ async def setup_test_database() -> None:
     # Initialize Beanie with test database
     settings = Settings()
     async with initialize_database(
-        database_url=settings.database_url,
+        database_url=str(settings.database_url),
     ):
         # Create test data
         account_repo = AccountRepo()
@@ -25,7 +25,7 @@ async def teardown_test_database() -> None:
     """Remove e2e fixtures from test database."""
     # Get connection to database
     settings = Settings()
-    client: AsyncIOMotorClient = AsyncIOMotorClient(settings.database_url)
+    client: AsyncIOMotorClient = AsyncIOMotorClient(str(settings.database_url))
     await client.drop_database(settings.database_url.path)
 
     # Close connection

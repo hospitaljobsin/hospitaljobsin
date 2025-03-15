@@ -8,7 +8,7 @@ from beanie.odm.queries.aggregation import AggregationQuery
 from beanie.odm.queries.find import FindMany
 from bson import ObjectId
 
-from app.lib.constants import MAX_PAGINATION_LIMIT
+from app.core.constants import MAX_PAGINATION_LIMIT
 
 ModelType = TypeVar("ModelType", bound=Document)
 

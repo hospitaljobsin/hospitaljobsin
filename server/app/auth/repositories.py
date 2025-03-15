@@ -20,14 +20,14 @@ from app.auth.documents import (
     WebAuthnChallenge,
     WebAuthnCredential,
 )
-from app.database.paginator import PaginatedResult, Paginator
-from app.lib.constants import (
+from app.core.constants import (
     PASSWORD_RESET_EXPIRES_IN,
     TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN,
     USER_SESSION_EXPIRES_IN,
     WEBAUTHN_CHALLENGE_EXPIRES_IN,
     OAuthProvider,
 )
+from app.database.paginator import PaginatedResult, Paginator
 
 
 class SessionRepo:

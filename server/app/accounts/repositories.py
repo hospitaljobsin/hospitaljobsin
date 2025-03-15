@@ -9,7 +9,7 @@ from bson import ObjectId
 from passlib.hash import argon2
 
 from app.base.models import Address
-from app.lib.constants import (
+from app.core.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
     EMAIL_VERIFICATION_TOKEN_LENGTH,
     AuthProvider,

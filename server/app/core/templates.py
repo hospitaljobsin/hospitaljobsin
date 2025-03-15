@@ -1,7 +1,7 @@
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from app.config import Settings
-from app.lib.constants import (
+from app.core.constants import (
     APP_NAME,
     SUPPORT_EMAIL,
 )

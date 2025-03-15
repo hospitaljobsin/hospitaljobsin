@@ -20,13 +20,13 @@ from app.auth.repositories import (
 )
 from app.auth.services import AuthService
 from app.config import Settings
+from app.core.aws_sdk import get_aioboto3_session, get_s3_client
+from app.core.emails import EmailSender, get_smtp_client
+from app.core.oauth import get_oauth_client
+from app.core.recaptcha import get_recaptcha_verifier
+from app.core.templates import get_jinja2_environment
 from app.jobs.repositories import JobRepo, SavedJobRepo
 from app.jobs.services import SavedJobService
-from app.lib.aws_sdk import get_aioboto3_session, get_s3_client
-from app.lib.emails import EmailSender, get_smtp_client
-from app.lib.oauth import get_oauth_client
-from app.lib.recaptcha import get_recaptcha_verifier
-from app.lib.templates import get_jinja2_environment
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
 from app.organizations.services import OrganizationMemberService, OrganizationService
 

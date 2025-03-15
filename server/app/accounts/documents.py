@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
 from app.base.models import Address
-from app.lib.constants import (
+from app.core.constants import (
     EMAIL_VERIFICATION_TOKEN_COOLDOWN,
     AuthProvider,
     TwoFactorProvider,

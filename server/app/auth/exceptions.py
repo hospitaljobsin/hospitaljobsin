@@ -1,4 +1,4 @@
-from app.lib.constants import AuthProvider
+from app.core.constants import AuthProvider
 
 
 class EmailInUseError:

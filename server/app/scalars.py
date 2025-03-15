@@ -3,7 +3,7 @@ from datetime import datetime
 import strawberry
 from strawberry.relay import GlobalID
 
-from app.lib.formatting import format_datetime
+from app.core.formatting import format_datetime
 
 # temporary hack until strawberry fixes relay ID scalar generation
 # https://github.com/strawberry-graphql/strawberry/issues/3551

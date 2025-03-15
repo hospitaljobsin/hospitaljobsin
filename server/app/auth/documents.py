@@ -6,7 +6,7 @@ from pymongo import IndexModel
 from webauthn.helpers.structs import AuthenticatorTransport
 
 from app.accounts.documents import Account
-from app.lib.constants import (
+from app.core.constants import (
     PASSWORD_RESET_TOKEN_COOLDOWN,
     OAuthProvider,
 )
