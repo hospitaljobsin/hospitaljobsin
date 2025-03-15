@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { PlaywrightTestArgs, expect, test } from "@playwright/test";
 import { findLastEmail } from "../utils/mailcatcher";
 
 test.describe("Sign Up Page", () => {
@@ -87,6 +87,7 @@ test.describe("Sign Up Page", () => {
 		// ensure we get to step 2
 		await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
 		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
+		await expect(page.getByRole("button", { name: "Continue" })).toBeVisible();
 
 		await test.step("Step 2: Enter verification token", async () => {
 			await page
@@ -105,69 +106,162 @@ test.describe("Sign Up Page", () => {
 		});
 	});
 
-	test("should successfully register with password", async ({
+	async function completeSteps1To3({
 		page,
 		request,
 		context,
-	}) => {
-		const emailAddress = "new-tester@outlook.com";
-		await test.step("Step 1: Enter email address", async () => {
-			await page.getByLabel("Email Address").fill(emailAddress);
+		emailAddress,
+	}: {
+		page: PlaywrightTestArgs["page"];
+		request: PlaywrightTestArgs["request"];
+		context: PlaywrightTestArgs["context"];
+		emailAddress: string;
+	}) {
+		// Step 1: Enter email and proceed
+		await page.getByLabel("Email Address").fill(emailAddress);
+		await page.getByRole("button", { name: "Continue" }).click();
 
-			await page.getByRole("button", { name: "Continue" }).click();
-		});
-
-		// ensure we get to step 2
 		await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
 		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
 
-		// TODO: get code from email here
+		// Step 2: Get verification code from email
 		const emailMessage = await findLastEmail({
 			request,
-			timeout: 5_000,
+			timeout: 5000,
 			filter: (e) => e.recipients.includes(`<${emailAddress}>`),
 		});
-
-		// Open email in a new browser context/tab
 		const emailPage = await context.newPage();
 		await emailPage.goto(
 			`http://localhost:1080/messages/${emailMessage.id}.html`,
 		);
 
-		// Extract verification code from the email content
 		const verificationCode = await emailPage.evaluate(() => {
-			// Find the token in the email content which appears in an h1 element
 			const codeElement = document.querySelector(".btn-primary h1");
-			if (codeElement) {
-				return codeElement.textContent?.trim() || "";
-			}
-			// Fallback in case the structure changes
-			const emailText = document.body.textContent || "";
-			const matches = emailText.match(/([A-Z0-9]{6})/);
-			return matches?.[1] || "";
+			return codeElement?.textContent?.trim() || "";
 		});
-
-		// Close the email tab
 		await emailPage.close();
 
-		await test.step("Step 2: Enter verification token", async () => {
-			await page
-				.getByRole("textbox", { name: "Email Verification Token" })
-				.fill(verificationCode);
+		await page
+			.getByRole("textbox", { name: "Email Verification Token" })
+			.fill(verificationCode);
+		await page.getByRole("button", { name: "Continue" }).click();
 
-			await page.getByRole("button", { name: "Continue" }).click();
-		});
-
-		// ensure we get to step 3
+		// Step 3: Enter full name
 		await expect(page.getByLabel("Full Name")).toBeVisible();
+		await page.getByLabel("Full Name").fill("Tester");
+		await page.getByRole("button", { name: "Continue" }).click();
 
-		await test.step("Step 3: Enter full name", async () => {
-			await page.getByLabel("Full Name").fill("Tester");
+		await expect(
+			page.getByText(/Passkeys are the new replacement for passwords/),
+		).toBeVisible();
+		await expect(
+			page.getByRole("button", { name: "Create account" }),
+		).toBeVisible();
+	}
 
-			await page.getByRole("button", { name: "Continue" }).click();
+	async function enterPassword({
+		page,
+		password,
+		confirmPassword,
+	}: {
+		password: string;
+		confirmPassword: string;
+		page: PlaywrightTestArgs["page"];
+	}) {
+		await page.getByRole("tab", { name: "Password" }).click();
+		await page
+			.getByRole("textbox", { name: "Password Password" })
+			.fill(password);
+		await page
+			.getByRole("textbox", { name: "Confirm Password Confirm" })
+			.fill(confirmPassword);
+		await page.getByRole("button", { name: "Create account" }).click();
+	}
+
+	test("should successfully register with valid password", async ({
+		page,
+		request,
+		context,
+	}) => {
+		const emailAddress = "new-tester@outlook.com";
+		await completeSteps1To3({ page, request, context, emailAddress });
+
+		await test.step("Step 4: Enter valid password", async () => {
+			await enterPassword({
+				page,
+				password: "Password123!",
+				confirmPassword: "Password123!",
+			});
+			await page.waitForURL("http://localhost:5000/");
+		});
+	});
+
+	test("should fail with invalid password", async ({
+		page,
+		request,
+		context,
+	}) => {
+		const emailAddress = "invalid-password-tester@outlook.com";
+		await completeSteps1To3({ page, request, context, emailAddress });
+
+		await test.step("Step 4: Enter short password", async () => {
+			await enterPassword({ page, password: "123", confirmPassword: "123" });
+			await expect(
+				page.getByText("Password must be at least 8 characters long."),
+			).toBeVisible();
 		});
 
-		// ensure we get to step 4
-		// await expect(page.getByLabel("Full Name")).toBeVisible();
+		await test.step("Step 4: Enter password without capital letters", async () => {
+			await enterPassword({
+				page,
+				password: "abcdefghijk",
+				confirmPassword: "abcdefghijk",
+			});
+			await expect(
+				page.getByText("Password must contain at least one uppercase letter."),
+			).toBeVisible();
+		});
+
+		await test.step("Step 4: Enter password without numbers", async () => {
+			await enterPassword({
+				page,
+				password: "Abcdefghijk",
+				confirmPassword: "Abcdefghijk",
+			});
+			await expect(
+				page.getByText("Password must contain at least one number."),
+			).toBeVisible();
+		});
+
+		await test.step("Step 4: Enter password without special letters", async () => {
+			await enterPassword({
+				page,
+				password: "Abcdefghijk2",
+				confirmPassword: "Abcdefghijk2",
+			});
+			await expect(
+				page.getByText(/Password must contain at least one special character/),
+			).toBeVisible();
+		});
+	});
+
+	test("should fail when passwords don't match", async ({
+		page,
+		request,
+		context,
+	}) => {
+		const emailAddress = "mismatch-tester@outlook.com";
+		await completeSteps1To3({ page, request, context, emailAddress });
+
+		await test.step("Step 4: Enter mismatched passwords", async () => {
+			await enterPassword({
+				page,
+				password: "Password123!",
+				confirmPassword: "Password321!",
+			});
+			await expect(page.getByText("Passwords don't match")).toBeVisible();
+		});
 	});
 });
+
+// TODO: test register with passkeys
