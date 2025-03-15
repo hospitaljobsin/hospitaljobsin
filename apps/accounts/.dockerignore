@@ -1,6 +1,6 @@
-node_modules/
-.next/
-__generated__/
+**/node_modules/
+**/.next/
+**/__generated__/
 test-results/
 .env
 .env.example
