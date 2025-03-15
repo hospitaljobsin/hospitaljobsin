@@ -33,6 +33,9 @@ export default defineConfig({
 		trace: "on",
 	},
 
+	globalSetup: require.resolve("./tests/e2e/global.setup.ts"),
+	globalTeardown: require.resolve("./tests/e2e/global.teardown.ts"),
+
 	expect: {
 		timeout: IS_CI ? 25_000 : 10_000,
 	},
