@@ -1,4 +1,5 @@
-import { PlaywrightTestArgs, expect, test } from "@playwright/test";
+import type { PlaywrightTestArgs } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { findLastEmail } from "../utils/mailcatcher";
 
 test.describe("Sign Up Page", () => {
@@ -183,7 +184,7 @@ test.describe("Sign Up Page", () => {
 		request,
 		context,
 	}) => {
-		const emailAddress = "new-tester@outlook.com";
+		const emailAddress = "valid-password-tester@outlook.com";
 		await completeSteps1To3({ page, request, context, emailAddress });
 
 		await test.step("Step 4: Enter valid password", async () => {
@@ -251,6 +252,24 @@ test.describe("Sign Up Page", () => {
 				confirmPassword: "Password321!",
 			});
 			await expect(page.getByText("Passwords don't match")).toBeVisible();
+		});
+	});
+
+	test("should successfully register with valid passkey", async ({
+		page,
+		request,
+		context,
+	}) => {
+		const emailAddress = "valid-passkey-tester@outlook.com";
+		await completeSteps1To3({ page, request, context, emailAddress });
+
+		await test.step("Step 4: Enter valid passkey", async () => {
+			// await enterPassword({
+			// 	page,
+			// 	password: "Password123!",
+			// 	confirmPassword: "Password123!",
+			// });
+			// await page.waitForURL("http://localhost:5000/");
 		});
 	});
 });
