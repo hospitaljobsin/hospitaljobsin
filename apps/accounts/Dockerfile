@@ -1,7 +1,7 @@
 FROM node:22 AS base
 WORKDIR /app
 RUN corepack enable
-COPY ./apps/accounts/package.json ./apps/accounts/pnpm-lock.yaml ./apps/accounts/
+COPY ./apps/accounts/package.json ./apps/accounts/pnpm-lock.yaml ./apps/accounts/.npmrc ./apps/accounts/
 COPY ./schema/ ./schema/
 
 WORKDIR /app/apps/accounts
