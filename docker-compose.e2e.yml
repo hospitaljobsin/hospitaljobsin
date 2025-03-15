@@ -53,10 +53,37 @@ services:
         HOST: 0.0.0.0
         JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
         API_URL: http://test-server:8000
-        NODE_ENV: production
+        NODE_ENV: test
         CI: ${CI}
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:5002/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      test-server:
+        condition: service_healthy
+
+  test-seeker-portal-ui:
+    build:
+      context: .
+      dockerfile: apps/seeker-portal/Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8000
+        - NEXT_PUBLIC_URL=http://localhost:5000
+        - NEXT_PUBLIC_RECAPTCHA_SITE_KEY=dummy_key
+        - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://localhost:5001
+        - NEXT_PUBLIC_ACCOUNTS_BASE_URL=http://localhost:5002
+    ports:
+      - "5000:5000"
+    environment:
+        HOST: 0.0.0.0
+        JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+        API_URL: http://test-server:8000
+        NODE_ENV: test
+        CI: ${CI}
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:5000/"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -85,6 +112,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+
+  # playwright:
+  #   image: mcr.microsoft.com/playwright:v1.51.0-noble
+  #   environment:
+  #     PLAYWRIGHT_BROWSERS_PATH: /usr/bin
+  #     CI: true
+  #   volumes:
+  #     - /usr/bin:/usr/bin
+  #   depends_on:
+  #     test-accounts-ui:
+  #       condition: service_healthy
 
 volumes:
   test_mongodb_data:

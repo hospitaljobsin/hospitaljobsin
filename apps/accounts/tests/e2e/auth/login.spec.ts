@@ -157,38 +157,14 @@ test.describe("Login Page", () => {
 		await expect(page).toHaveURL(/\/auth\/reset-password/);
 	});
 
-	// test("should handle successful login", async ({ page }) => {
-	// 	// Mock the GraphQL response for successful login
-	// 	await page.route("**/graphql", async (route) => {
-	// 		const json = route.request().postDataJSON();
-	// 		if (json.operationName === "LoginFormPasswordMutation") {
-	// 			await route.fulfill({
-	// 				status: 200,
-	// 				contentType: "application/json",
-	// 				body: JSON.stringify({
-	// 					data: {
-	// 						loginWithPassword: {
-	// 							__typename: "Account",
-	// 						},
-	// 					},
-	// 				}),
-	// 			});
-	// 		} else {
-	// 			await route.continue();
-	// 		}
-	// 	});
+	test("should handle successful email-password login", async ({ page }) => {
+		// Fill form with valid credentials
+		await page.getByLabel("Email Address").fill("tester@example.org");
+		await page.getByRole("textbox", { name: "Password Password" }).fill("Password123!");
+		await page.getByRole("button", { name: "Log in" }).click();
 
-	// 	// Fill form with valid credentials
-	// 	await page.getByLabel("Email Address").fill("valid@example.com");
-	// 	await page.getByRole("textbox", { name: "Password Password" }).fill("correctpassword");
-	// 	await page.getByRole("button", { name: "Log in" }).click();
-
-	// 	// Should redirect (since we're testing locally without actual redirection)
-	// 	// Just check that form submission completes without errors
-	// 	await expect(
-	// 		page.getByRole("button", { name: "Log in" }),
-	// 	).not.toBeDisabled();
-	// });
+		await page.waitForURL("http://localhost:5000/");
+	});
 
 	// test("should handle 2FA requirement", async ({ page }) => {
 	// 	// Mock the GraphQL response for 2FA requirement

@@ -5,6 +5,7 @@ export const env = createEnv({
 	server: {
 		SESSION_COOKIE_KEY: z.string().default("user_session"),
 		JWE_SECRET_KEY: z.string(),
+		API_URL: z.string().url(),
 	},
 	client: {
 		NEXT_PUBLIC_URL: z.string().url(),
@@ -22,4 +23,9 @@ export const env = createEnv({
 		NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL:
 			process.env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL,
 	},
+	/**
+	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
+	 * This is especially useful for Docker builds.
+	 */
+	skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
