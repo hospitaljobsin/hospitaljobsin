@@ -3,7 +3,6 @@ from base64 import b64decode, b64encode
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-import httpx
 import pyotp
 from bson.objectid import ObjectId
 from email_validator import EmailNotValidError, validate_email
@@ -82,15 +81,15 @@ from app.auth.repositories import (
     WebAuthnCredentialRepo,
 )
 from app.config import Settings
-from app.lib.constants import (
+from app.core.constants import (
     APP_NAME,
     EMAIL_VERIFICATION_EXPIRES_IN,
     PASSWORD_RESET_EXPIRES_IN,
     SUDO_MODE_EXPIRES_IN,
 )
-from app.lib.emails import EmailSender
-from app.lib.formatting import format_datetime
-from app.lib.recaptcha import BaseRecaptchaVerifier
+from app.core.emails import EmailSender
+from app.core.formatting import format_datetime
+from app.core.recaptcha import BaseRecaptchaVerifier
 
 
 class AuthService:
