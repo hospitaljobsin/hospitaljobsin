@@ -175,36 +175,17 @@ test.describe("Login Page", () => {
 		await page.waitForURL("http://localhost:5000/");
 	});
 
-	// test("should handle 2FA requirement", async ({ page }) => {
-	// 	// Mock the GraphQL response for 2FA requirement
-	// 	await page.route("**/graphql", async (route) => {
-	// 		const json = route.request().postDataJSON();
-	// 		if (json.operationName === "LoginFormPasswordMutation") {
-	// 			await route.fulfill({
-	// 				status: 200,
-	// 				contentType: "application/json",
-	// 				body: JSON.stringify({
-	// 					data: {
-	// 						loginWithPassword: {
-	// 							__typename: "TwoFactorAuthenticationRequiredError",
-	// 							message: "2FA required",
-	// 						},
-	// 					},
-	// 				}),
-	// 			});
-	// 		} else {
-	// 			await route.continue();
-	// 		}
-	// 	});
+	test("should redirect on 2FA requirement", async ({ page }) => {
+		// Fill form with credentials that require 2FA
+		await page.getByLabel("Email Address").fill("twofactor-tester@example.org");
+		await page
+			.getByRole("textbox", { name: "Password Password" })
+			.fill("Password123!");
+		await page.getByRole("button", { name: "Log in" }).click();
 
-	// 	// Fill form with credentials that require 2FA
-	// 	await page.getByLabel("Email Address").fill("2fa@example.com");
-	// 	await page.getByRole("textbox", { name: "Password Password" }).fill("password123");
-	// 	await page.getByRole("button", { name: "Log in" }).click();
-
-	// 	// Should redirect to 2FA page
-	// 	await expect(page).toHaveURL(/\/two-factor-authentication/);
-	// });
+		// Should redirect to 2FA page
+		await page.waitForURL("http://localhost:5002/auth/2fa");
+	});
 
 	test("should handle successful passkey login", async ({
 		page,

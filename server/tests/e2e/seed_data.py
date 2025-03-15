@@ -1,5 +1,8 @@
 from app.accounts.repositories import AccountRepo
-from app.auth.repositories import WebAuthnCredentialRepo
+from app.auth.repositories import (
+    TwoFactorAuthenticationChallengeRepo,
+    WebAuthnCredentialRepo,
+)
 from app.config import Settings
 from app.database import initialize_database
 from bson import ObjectId
@@ -30,6 +33,13 @@ async def setup_test_database() -> None:
             account_id=ObjectId("60f1b9b3b3b3b3b3b3b3b3b3"),
         )
 
+        two_factor_account = await account_repo.create(
+            email="twofactor-tester@example.org",
+            full_name="Two Factor Tester",
+            auth_providers=["password"],
+            password="Password123!",
+        )
+
         webauthn_credential_repo = WebAuthnCredentialRepo()
 
         await webauthn_credential_repo.create(
@@ -41,6 +51,16 @@ async def setup_test_database() -> None:
             device_type="platform",
             nickname="My Passkey",
             transports=[AuthenticatorTransport.INTERNAL],
+        )
+
+        two_factor_challenge_repo = TwoFactorAuthenticationChallengeRepo()
+        (_challenge, two_factor_challenge) = await two_factor_challenge_repo.create(
+            account=two_factor_account,
+        )
+
+        await account_repo.set_two_factor_secret(
+            account=two_factor_account,
+            totp_secret=two_factor_challenge.totp_secret,
         )
 
 

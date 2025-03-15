@@ -41,7 +41,7 @@ class AccountRepo:
             password_hash=self.hash_password(
                 password=password,
             )
-            if password
+            if password is not None
             else None,
             updated_at=None,
             profile=None,
