@@ -26,7 +26,14 @@ async def teardown_test_database() -> None:
     # Get connection to database
     settings = Settings()
     client: AsyncIOMotorClient = AsyncIOMotorClient(str(settings.database_url))
-    await client.drop_database(settings.database_url.path)
+
+    database = client.get_default_database()
+
+    collections = await database.list_collection_names()
+
+    for collection_name in collections:
+        collection = database.get_collection(collection_name)
+        await collection.delete_many({})
 
     # Close connection
     client.close()
