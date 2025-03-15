@@ -59,3 +59,5 @@ tmuxinator start medical_jobs
 
 
 # TODO: E2E: call python scripts from playwright during global setup and teardown, to seed and delete the test data in database.
+- add a new e2e docker compose service called playwright and run that service itself (with a docker container)
+ this will skip the need to install playwright binaries every time (checkout fullstack-fastapi-example for reference)
