@@ -56,3 +56,6 @@ tmuxinator start medical_jobs
     cd apps/accounts
     pnpm test:e2e
     ```
+
+
+# TODO: E2E: call python scripts from playwright during global setup and teardown, to seed and delete the test data in database.

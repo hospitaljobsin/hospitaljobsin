@@ -63,6 +63,7 @@ async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
 
 
 def create_app() -> FastAPI:
+    """Create an application instance."""
     settings = Settings()
     app = FastAPI(
         version="0.0.1",
