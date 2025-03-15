@@ -12,7 +12,7 @@ import z from "zod";
 import SignupContext from "./SignupContext";
 
 const step1Schema = z.object({
-	email: z.string().min(1, "This field is required").email(),
+	email: z.string().min(1, "This field is required").email("Invalid email"),
 });
 
 const RequestVerificationMutation = graphql`
@@ -114,10 +114,10 @@ export default function Step1EmailForm() {
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
 			<div className="w-full flex flex-col gap-6">
 				<Input
+					{...register("email")}
 					label="Email Address"
 					placeholder="Enter your email address"
-					type="email"
-					{...register("email")}
+					type="text"
 					errorMessage={formState.errors.email?.message}
 					isInvalid={!!formState.errors.email}
 				/>

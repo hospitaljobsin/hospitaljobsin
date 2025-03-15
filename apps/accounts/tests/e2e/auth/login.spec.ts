@@ -8,11 +8,11 @@ test.describe("Login Page", () => {
 				status: 200,
 				contentType: "application/javascript",
 				body: `
-        window.grecaptcha = {
-          ready: (cb) => cb(),
-          execute: () => Promise.resolve('dummy_recaptcha_token')
-        };
-      `,
+					window.grecaptcha = {
+					ready: (cb) => cb(),
+					execute: () => Promise.resolve('dummy_recaptcha_token')
+					};
+				`,
 			});
 		});
 		// Navigate to login page
@@ -24,6 +24,8 @@ test.describe("Login Page", () => {
 	test("should display login form with all elements", async ({ page }) => {
 		// Check page title
 		await expect(page).toHaveTitle(/Login/);
+
+		await expect(page.getByText(/Log in to continue/)).toBeVisible();
 
 		// Check form elements
 		await expect(page.getByLabel("Email Address")).toBeVisible();
