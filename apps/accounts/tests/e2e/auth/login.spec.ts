@@ -43,6 +43,13 @@ test.describe("Login Page", () => {
 		await expect(
 			page.getByText("Don't have an account? Sign up."),
 		).toBeVisible();
+
+		// ensure recaptcha terms and conditions are visible
+		await expect(
+			page.getByText(/This site is protected by reCAPTCHA/),
+		).toBeVisible();
+		await expect(page.getByText("Privacy Policy")).toBeVisible();
+		await expect(page.getByText("Terms of Service")).toBeVisible();
 	});
 
 	test("should validate empty form submission", async ({ page }) => {
@@ -225,8 +232,6 @@ test.describe("Login Page", () => {
 			},
 		);
 
-		console.log("✅ Authenticator added with ID:", authenticatorId);
-
 		// Register a mock credential
 		await client.send("WebAuthn.addCredential", {
 			authenticatorId,
@@ -241,12 +246,11 @@ test.describe("Login Page", () => {
 			},
 		});
 
-		console.log("✅ Mock credential added!");
-
 		const credentials = await client.send("WebAuthn.getCredentials", {
 			authenticatorId,
 		});
 
+		// Ensure the credential was added successfully
 		expect(credentials.credentials).toHaveLength(1);
 
 		// initialize event listeners to wait for a successful passkey input event
@@ -283,8 +287,6 @@ test.describe("Login Page", () => {
 
 		// Ensure redirection happens after successful authentication
 		await page.waitForURL("http://localhost:5000/");
-
-		console.log("✅ Passkey login successful!");
 	});
 
 	test("should handle OAuth2 error from URL parameter", async ({ page }) => {
@@ -299,40 +301,26 @@ test.describe("Login Page", () => {
 		).toBeVisible();
 	});
 
-	// test("should handle invalid authentication provider error", async ({
-	// 	page,
-	// }) => {
-	// 	// Mock the GraphQL response for invalid auth provider
-	// 	await page.route("**/graphql", async (route) => {
-	// 		const json = route.request().postDataJSON();
-	// 		if (json.operationName === "LoginFormPasswordMutation") {
-	// 			await route.fulfill({
-	// 				status: 200,
-	// 				contentType: "application/json",
-	// 				body: JSON.stringify({
-	// 					data: {
-	// 						loginWithPassword: {
-	// 							__typename: "InvalidAuthenticationProviderError",
-	// 							message: "Invalid authentication provider",
-	// 							availableProviders: ["OAUTH_GOOGLE"],
-	// 						},
-	// 					},
-	// 				}),
-	// 			});
-	// 		} else {
-	// 			await route.continue();
-	// 		}
-	// 	});
+	test("should handle invalid authentication provider error", async ({
+		page,
+	}) => {
+		// Fill form
+		await page.getByLabel("Email Address").fill("webauthn-tester@example.org");
+		await page
+			.getByRole("textbox", { name: "Password Password" })
+			.fill("Password123!");
+		await page.getByRole("button", { name: "Log in" }).click();
 
-	// 	// Fill form
-	// 	await page.getByLabel("Email Address").fill("google-user@example.com");
-	// 	await page.getByRole("textbox", { name: "Password Password" }).fill("password123");
-	// 	await page.getByRole("button", { name: "Log in" }).click();
+		// Check toast message
+		await expect(page.getByText("Invalid Sign In Method")).toBeVisible();
+		await expect(page.getByText(/Please sign in with passkey./)).toBeVisible();
+	});
 
-	// 	// Check toast message
-	// 	await expect(page.getByText("Invalid Sign In Method")).toBeVisible();
-	// 	await expect(
-	// 		page.getByText(/You've previously signed in with Google/),
-	// 	).toBeVisible();
-	// });
+	test("should redirect successfully to Google accounts page on Google login", async ({
+		page,
+	}) => {
+		await page.getByRole("button", { name: "Sign in with Google" }).click();
+
+		await page.waitForURL("https://accounts.google.com/**");
+	});
 });
