@@ -42,13 +42,17 @@ tmuxinator start medical_jobs
 ```
 
 ### Running E2E tests
-Start the docker compose E2E services:
-```bash
-docker compose -f docker-compose.e2e.yml up --wait --build --remove-orphans -d
-```
+1. Stop the currently running services:
+    ```bash
+    tmuxinator stop medical_jobs
+    ```
+2. Start the docker compose E2E services:
+    ```bash
+    docker compose -f docker-compose.e2e.yml up --wait --build --remove-orphans -d
+    ```
 
-Run the E2E tests (only accounts UI is configured as of now):
-```bash
-cd apps/accounts
-pnpm test:e2e
-```
+3. Run the E2E tests (only accounts UI is configured as of now):
+    ```bash
+    cd apps/accounts
+    pnpm test:e2e
+    ```
