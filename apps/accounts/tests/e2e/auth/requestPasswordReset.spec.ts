@@ -91,12 +91,16 @@ test.describe("Request Password Reset Page", () => {
 		const emailMessage = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) => e.recipients.includes(`<${emailAddress}>`),
+			filter: (e) =>
+				e.recipients.includes(`<${emailAddress}>`) &&
+				e.subject.includes("Password Reset Request"),
 		});
 
 		expect(emailMessage).not.toBeNull();
 
-		expect(emailMessage.subject).toContain("Password Reset Request");
+		await page.getByRole("button", { name: "Back to login" }).click();
+
+		await page.waitForURL(/\/auth\/login/);
 	});
 
 	test("should handle invalid password reset email", async ({
@@ -120,6 +124,10 @@ test.describe("Request Password Reset Page", () => {
 		});
 
 		expect(emailMessage).toBeNull();
+
+		await page.getByRole("button", { name: "Back to login" }).click();
+
+		await page.waitForURL(/\/auth\/login/);
 	});
 
 	test("should navigate to login page", async ({ page }) => {
