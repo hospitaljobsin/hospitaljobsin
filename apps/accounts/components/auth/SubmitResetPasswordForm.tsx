@@ -36,7 +36,7 @@ const SubmitResetPasswordFormMutation = graphql`
 `;
 
 const submitResetPasswordSchema = z.object({
-	email: z.string().min(1, "This field is required").email(),
+	email: z.string().min(1, "This field is required").email("Invalid email"),
 });
 
 export default function SubmitResetPasswordFrom() {
@@ -119,9 +119,9 @@ export default function SubmitResetPasswordFrom() {
 					<div className="w-full flex flex-col gap-6">
 						<Input
 							id="email"
-							label="Email"
+							label="Email Address"
 							placeholder="Enter your email address"
-							type="email"
+							type="text"
 							{...register("email")}
 							errorMessage={errors.email?.message}
 							isInvalid={!!errors.email}

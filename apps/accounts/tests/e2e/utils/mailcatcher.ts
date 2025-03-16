@@ -9,7 +9,10 @@ type Email = {
 async function findEmail({
 	request,
 	filter,
-}: { request: APIRequestContext; filter?: (email: Email) => boolean }) {
+}: {
+	request: APIRequestContext;
+	filter?: (email: Email) => boolean;
+}): Promise<Email | null> {
 	const response = await request.get("http://localhost:1080/messages");
 
 	let emails = await response.json();
@@ -35,12 +38,9 @@ export function findLastEmail({
 	request: APIRequestContext;
 	filter?: (email: Email) => boolean;
 	timeout?: number;
-}) {
-	const timeoutPromise = new Promise<never>((_, reject) =>
-		setTimeout(
-			() => reject(new Error("Timeout while trying to get latest email")),
-			timeout,
-		),
+}): Promise<Email | null> {
+	const timeoutPromise = new Promise<Email | null>((resolve, _reject) =>
+		setTimeout(() => resolve(null), timeout),
 	);
 
 	const checkEmails = async () => {

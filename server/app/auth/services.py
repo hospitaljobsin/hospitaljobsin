@@ -790,7 +790,7 @@ class AuthService:
             return Err(InvalidRecaptchaTokenError())
         existing_user = await self._account_repo.get_by_email(email=email)
         if not existing_user:
-            return None
+            return Ok(None)
 
         existing_password_reset_token = (
             await self._password_reset_token_repo.get_by_account(

@@ -132,6 +132,8 @@ test.describe("Sign Up Page", () => {
 			timeout: 10_000,
 			filter: (e) => e.recipients.includes(`<${emailAddress}>`),
 		});
+
+		expect(emailMessage).not.toBeNull();
 		const emailPage = await context.newPage();
 		await emailPage.goto(
 			`http://localhost:1080/messages/${emailMessage.id}.html`,
