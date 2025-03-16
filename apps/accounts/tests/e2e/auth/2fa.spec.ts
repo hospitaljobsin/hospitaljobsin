@@ -1,4 +1,8 @@
 import { generateValidOTP } from "@/tests/e2e/utils/authenticator";
+import {
+	TOTP_USER_SECRET,
+	TWO_FACTOR_TESTER_1_EMAIL,
+} from "@/tests/e2e/utils/constants";
 import { expect, test } from "@playwright/test";
 
 test.describe("2FA Page", () => {
@@ -23,7 +27,7 @@ test.describe("2FA Page", () => {
 		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 
 		// Fill form with credentials that require 2FA
-		await page.getByLabel("Email Address").fill("twofactor-tester@example.org");
+		await page.getByLabel("Email Address").fill(TWO_FACTOR_TESTER_1_EMAIL);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -101,7 +105,7 @@ test.describe("2FA Page", () => {
 		page,
 	}) => {
 		const otp = await generateValidOTP({
-			totp_secret: "RW5SJG5SRCHL3YEBPUOOIB6W5VDOF4MA",
+			totp_secret: TOTP_USER_SECRET,
 		});
 
 		await page.getByLabel("Authentication Code").fill(otp);

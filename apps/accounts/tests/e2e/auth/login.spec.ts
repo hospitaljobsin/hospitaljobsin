@@ -1,3 +1,8 @@
+import {
+	TESTER_EMAIL,
+	TWO_FACTOR_TESTER_1_EMAIL,
+	WEBAUTHN_TESTER_EMAIL,
+} from "@/tests/e2e/utils/constants";
 import { expect, test } from "@playwright/test";
 
 test.describe("Login Page", () => {
@@ -123,7 +128,7 @@ test.describe("Login Page", () => {
 
 	test("should handle invalid credentials", async ({ page }) => {
 		// Fill form with invalid credentials
-		await page.getByLabel("Email Address").fill("tester@example.org");
+		await page.getByLabel("Email Address").fill(TESTER_EMAIL);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("invalidpassword");
@@ -168,7 +173,7 @@ test.describe("Login Page", () => {
 
 	test("should handle successful email-password login", async ({ page }) => {
 		// Fill form with valid credentials
-		await page.getByLabel("Email Address").fill("tester@example.org");
+		await page.getByLabel("Email Address").fill(TESTER_EMAIL);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -179,7 +184,7 @@ test.describe("Login Page", () => {
 
 	test("should redirect on 2FA requirement", async ({ page }) => {
 		// Fill form with credentials that require 2FA
-		await page.getByLabel("Email Address").fill("twofactor-tester@example.org");
+		await page.getByLabel("Email Address").fill(TWO_FACTOR_TESTER_1_EMAIL);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -350,7 +355,7 @@ test.describe("Login Page", () => {
 		page,
 	}) => {
 		// Fill form
-		await page.getByLabel("Email Address").fill("webauthn-tester@example.org");
+		await page.getByLabel("Email Address").fill(WEBAUTHN_TESTER_EMAIL);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");

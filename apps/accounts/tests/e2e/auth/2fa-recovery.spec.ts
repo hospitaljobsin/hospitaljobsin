@@ -1,4 +1,9 @@
 import { generateValidOTP } from "@/tests/e2e/utils/authenticator";
+import {
+	RECOVERY_CODE_1,
+	TOTP_USER_SECRET,
+	TWO_FACTOR_TESTER_1_EMAIL,
+} from "@/tests/e2e/utils/constants";
 import { expect, test } from "@playwright/test";
 
 test.describe("2FA Recovery Page", () => {
@@ -23,7 +28,7 @@ test.describe("2FA Recovery Page", () => {
 		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 
 		// Fill form with credentials that require 2FA
-		await page.getByLabel("Email Address").fill("twofactor-tester@example.org");
+		await page.getByLabel("Email Address").fill(TWO_FACTOR_TESTER_1_EMAIL);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -106,7 +111,7 @@ test.describe("2FA Recovery Page", () => {
 
 	test("should not verify authentication code", async ({ page }) => {
 		const otp = await generateValidOTP({
-			totp_secret: "RW5SJG5SRCHL3YEBPUOOIB6W5VDOF4MA",
+			totp_secret: TOTP_USER_SECRET,
 		});
 
 		await page.getByLabel("Recovery Code").fill(otp);
@@ -122,7 +127,7 @@ test.describe("2FA Recovery Page", () => {
 	});
 
 	test("should successfully verify valid recovery code", async ({ page }) => {
-		await page.getByLabel("Recovery Code").fill("12345678");
+		await page.getByLabel("Recovery Code").fill(RECOVERY_CODE_1);
 		await page.getByRole("button", { name: "Verify Code" }).click();
 
 		// Should redirect to home page

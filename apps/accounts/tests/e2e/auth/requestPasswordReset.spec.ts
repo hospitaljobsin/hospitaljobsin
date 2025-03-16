@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { NONEXISTENT_TESTER_EMAIL, TESTER_EMAIL } from "../utils/constants";
 import { findLastEmail } from "../utils/mailcatcher";
 
 test.describe("Request Password Reset Page", () => {
@@ -78,7 +79,7 @@ test.describe("Request Password Reset Page", () => {
 		page,
 		request,
 	}) => {
-		const emailAddress = "tester@example.org";
+		const emailAddress = TESTER_EMAIL;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -107,7 +108,7 @@ test.describe("Request Password Reset Page", () => {
 		page,
 		request,
 	}) => {
-		const emailAddress = "nonexistent-tester@example.org";
+		const emailAddress = NONEXISTENT_TESTER_EMAIL;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 

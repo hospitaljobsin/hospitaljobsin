@@ -30,8 +30,15 @@ async def setup_test_database() -> None:
             account_id=ObjectId("60f1b9b3b3b3b3b3b3b3b3b3"),
         )
 
-        two_factor_account = await account_repo.create(
+        two_factor_account_1 = await account_repo.create(
             email="twofactor-tester@example.org",
+            full_name="Two Factor Tester",
+            auth_providers=["password"],
+            password="Password123!",
+        )
+
+        two_factor_account_2 = await account_repo.create(
+            email="twofactor-tester2@example.org",
             full_name="Two Factor Tester",
             auth_providers=["password"],
             password="Password123!",
@@ -51,15 +58,25 @@ async def setup_test_database() -> None:
         )
 
         await account_repo.set_two_factor_secret(
-            account=two_factor_account,
+            account=two_factor_account_1,
+            totp_secret="RW5SJG5SRCHL3YEBPUOOIB6W5VDOF4MA",
+        )
+
+        await account_repo.set_two_factor_secret(
+            account=two_factor_account_2,
             totp_secret="RW5SJG5SRCHL3YEBPUOOIB6W5VDOF4MA",
         )
 
         recovery_code_repo = RecoveryCodeRepo()
 
         await recovery_code_repo.create(
-            account_id=two_factor_account.id,
-            code="12345678",
+            account_id=two_factor_account_1.id,
+            code="11111111",
+        )
+
+        await recovery_code_repo.create(
+            account_id=two_factor_account_2.id,
+            code="11111111",
         )
 
 

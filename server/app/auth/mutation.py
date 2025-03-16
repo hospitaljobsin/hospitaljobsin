@@ -621,12 +621,19 @@ class AuthMutation:
                 description="The 2FA token to verify password reset.",
             ),
         ],
+        recaptcha_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The recaptcha token to verify the user request."
+            ),
+        ],
     ) -> Verify2FAPasswordResetWithAuthenticatorPayload:
         """Verify a 2FA challenge for password reset using an authenticator app."""
         match await auth_service.verify_2fa_password_reset_with_authenticator(
             email=email,
             password_reset_token=password_reset_token,
             two_factor_token=two_factor_token,
+            recaptcha_token=recaptcha_token,
             request=info.context["request"],
         ):
             case Err(error):

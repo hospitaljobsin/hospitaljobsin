@@ -1,5 +1,6 @@
 import { test as setup } from "@playwright/test";
 import path from "node:path";
+import { TESTER_EMAIL } from "./utils/constants";
 
 const authFile = path.join(__dirname, "../../playwright/.auth/user.json");
 
@@ -21,7 +22,7 @@ setup("authenticate", async ({ page }) => {
 	await page.goto("/auth/login");
 	// Wait for recaptcha to load
 	await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
-	await page.getByLabel("Email Address").fill("tester@example.org");
+	await page.getByLabel("Email Address").fill(TESTER_EMAIL);
 	await page
 		.getByRole("textbox", { name: "Password Password" })
 		.fill("Password123!");

@@ -2,13 +2,14 @@ import type { AuthenticatorTwoFactorAuthenticationResetPasswordMutation as Authe
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
 
 const AuthenticatorTwoFactorAuthenticationResetPasswordMutation = graphql`
-  mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation($email: String!, $passwordResetToken: String!, $twoFactorToken: String!) {
-    verify2faPasswordResetWithAuthenticator(email: $email, passwordResetToken: $passwordResetToken, twoFactorToken: $twoFactorToken) {
+  mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation($email: String!, $passwordResetToken: String!, $twoFactorToken: String!, $recaptchaToken: String!) {
+    verify2faPasswordResetWithAuthenticator(email: $email, passwordResetToken: $passwordResetToken, twoFactorToken: $twoFactorToken, recaptchaToken: $recaptchaToken) {
       __typename
       ... on PasswordResetToken {
         ...ResetPasswordViewFragment
@@ -22,6 +23,9 @@ const AuthenticatorTwoFactorAuthenticationResetPasswordMutation = graphql`
       ... on AuthenticatorNotEnabledError {
         message
       }
+	  ... on InvalidRecaptchaTokenError {
+		message
+	  }
     }
   }
 `;
@@ -55,24 +59,39 @@ export default function AuthenticatorTwoFactorAuthentication({
 		);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const {
-		control,
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		setError,
+		register,
 	} = useForm<z.infer<typeof resetPassword2faSchema>>({
 		resolver: zodResolver(resetPassword2faSchema),
 	});
 
-	function onSubmit(values: z.infer<typeof resetPassword2faSchema>) {
+	const { executeRecaptcha } = useGoogleReCaptcha();
+
+	async function onSubmit(values: z.infer<typeof resetPassword2faSchema>) {
+		if (!executeRecaptcha) {
+			console.error("Recaptcha not loaded");
+			return;
+		}
+
+		const token = await executeRecaptcha("reset_password_2fa");
 		onAuthStart();
 		commitMutation({
 			variables: {
 				email: email,
 				passwordResetToken: resetToken,
 				twoFactorToken: values.token,
+				recaptchaToken: token,
 			},
 			onCompleted(response) {
 				if (
+					response.verify2faPasswordResetWithAuthenticator.__typename ===
+					"InvalidRecaptchaTokenError"
+				) {
+					alert("Recaptcha token is invalid");
+					onAuthEnd();
+				} else if (
 					response.verify2faPasswordResetWithAuthenticator.__typename ===
 					"InvalidPasswordResetTokenError"
 				) {
@@ -126,19 +145,13 @@ export default function AuthenticatorTwoFactorAuthentication({
 							isReadOnly
 							variant="faded"
 						/>
-						<Controller
-							control={control}
-							name="token"
-							render={({ field }) => (
-								<Input
-									{...field}
-									label="2FA Code"
-									description="Enter your Authentication or Recovery Code"
-									errorMessage={errors.token?.message}
-									isInvalid={!!errors.token}
-									placeholder="XXXXXX or XXXX-XXXX"
-								/>
-							)}
+						<Input
+							{...register("token")}
+							label="2FA Code"
+							description="Enter your Authentication or Recovery Code"
+							errorMessage={errors.token?.message}
+							isInvalid={!!errors.token}
+							placeholder="XXXXXX or XXXX-XXXX"
 						/>
 						<Button
 							fullWidth

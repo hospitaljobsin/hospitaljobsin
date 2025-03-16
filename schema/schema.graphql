@@ -626,6 +626,9 @@ type Mutation {
 
     """The 2FA token to verify password reset."""
     twoFactorToken: String!
+
+    """The recaptcha token to verify the user request."""
+    recaptchaToken: String!
   ): Verify2FAPasswordResetWithAuthenticatorPayload!
 
   """Verify a 2FA challenge for password reset using a passkey."""
