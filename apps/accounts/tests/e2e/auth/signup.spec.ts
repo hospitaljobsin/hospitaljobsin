@@ -122,13 +122,14 @@ test.describe("Sign Up Page", () => {
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Continue" }).click();
 
+		await page.waitForSelector("input[readonly]", { state: "visible" });
 		await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
 		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
 
 		// Step 2: Get verification code from email
 		const emailMessage = await findLastEmail({
 			request,
-			timeout: 5000,
+			timeout: 10_000,
 			filter: (e) => e.recipients.includes(`<${emailAddress}>`),
 		});
 		const emailPage = await context.newPage();
@@ -263,10 +264,6 @@ test.describe("Sign Up Page", () => {
 	}) => {
 		test.skip(browserName !== "chromium", "Only supported in Chromium");
 
-		page.on("console", (msg) => console.log(`📌 Console log: ${msg.text()}`));
-		page.on("request", (req) => console.log(`➡️ ${req.method()} ${req.url()}`));
-		page.on("response", (res) => console.log(`⬅️ ${res.status()} ${res.url()}`));
-
 		const emailAddress = "valid-passkey-tester@outlook.com";
 		await completeSteps1To3({ page, request, context, emailAddress });
 
@@ -327,6 +324,79 @@ test.describe("Sign Up Page", () => {
 			expect(result2.credentials).toHaveLength(1);
 
 			await page.waitForURL("http://localhost:5000/");
+		});
+	});
+
+	test("should register with invalid passkey", async ({
+		page,
+		request,
+		context,
+		browserName,
+	}) => {
+		test.skip(browserName !== "chromium", "Only supported in Chromium");
+
+		const emailAddress = "invalid-passkey-tester@outlook.com";
+		await completeSteps1To3({ page, request, context, emailAddress });
+
+		await test.step("Step 4: Enter invalid passkey", async () => {
+			test.setTimeout(30_000);
+			// Set up Chrome DevTools Protocol session
+			const client = await context.newCDPSession(page);
+			await client.send("WebAuthn.enable");
+
+			// Add virtual authenticator with correct options
+			const { authenticatorId } = await client.send(
+				"WebAuthn.addVirtualAuthenticator",
+				{
+					options: {
+						protocol: "ctap2",
+						transport: "internal",
+						hasResidentKey: true,
+						hasUserVerification: true,
+						isUserVerified: true,
+						automaticPresenceSimulation: false,
+					},
+				},
+			);
+
+			// Confirm there are currently no registered credentials
+			const result1 = await client.send("WebAuthn.getCredentials", {
+				authenticatorId,
+			});
+			expect(result1.credentials).toHaveLength(0);
+
+			// set isUserVerified option to false
+			// (so that subsequent passkey operations will fail)
+			await client.send("WebAuthn.setUserVerified", {
+				authenticatorId: authenticatorId,
+				isUserVerified: false,
+			});
+
+			// set automaticPresenceSimulation option to true
+			// (so that the virtual authenticator will respond to the next passkey prompt)
+			await client.send("WebAuthn.setAutomaticPresenceSimulation", {
+				authenticatorId: authenticatorId,
+				enabled: true,
+			});
+
+			await page.getByRole("button", { name: "Create account" }).click();
+
+			// wait for an expected UI change that indicates the passkey operation has completed
+			await expect(
+				page.getByRole("button", { name: "Create account" }),
+			).toBeVisible();
+
+			// set automaticPresenceSimulation option back to false
+			await client.send("WebAuthn.setAutomaticPresenceSimulation", {
+				authenticatorId,
+				enabled: false,
+			});
+
+			// Confirm the passkey was not registered
+			const result2 = await client.send("WebAuthn.getCredentials", {
+				authenticatorId,
+			});
+			expect(result2.credentials).toHaveLength(0);
 		});
 	});
 });

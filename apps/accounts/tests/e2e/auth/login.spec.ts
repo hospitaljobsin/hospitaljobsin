@@ -272,6 +272,68 @@ test.describe("Login Page", () => {
 		await page.waitForURL("http://localhost:5000/");
 	});
 
+	test("should handle invalid passkey login", async ({
+		page,
+		context,
+		browserName,
+	}) => {
+		test.skip(browserName !== "chromium", "Only supported in Chromium");
+		test.setTimeout(30_000);
+		// Set up Chrome DevTools Protocol session
+		const client = await context.newCDPSession(page);
+		await client.send("WebAuthn.enable");
+
+		// Add virtual authenticator with correct options
+		const { authenticatorId } = await client.send(
+			"WebAuthn.addVirtualAuthenticator",
+			{
+				options: {
+					protocol: "ctap2",
+					transport: "internal",
+					hasResidentKey: true,
+					hasUserVerification: true,
+					isUserVerified: true,
+					automaticPresenceSimulation: false,
+				},
+			},
+		);
+
+		const credentials = await client.send("WebAuthn.getCredentials", {
+			authenticatorId,
+		});
+
+		// Ensure we have no credentials
+		expect(credentials.credentials).toHaveLength(0);
+
+		// set isUserVerified option to false
+		// (so that subsequent passkey operations will fail)
+		await client.send("WebAuthn.setUserVerified", {
+			authenticatorId: authenticatorId,
+			isUserVerified: false,
+		});
+
+		// set automaticPresenceSimulation option to true
+		// (so that the virtual authenticator will respond to the next passkey prompt)
+		await client.send("WebAuthn.setAutomaticPresenceSimulation", {
+			authenticatorId: authenticatorId,
+			enabled: true,
+		});
+
+		// Click passkey button to trigger authentication
+		await page.getByRole("button", { name: "Sign in with passkey" }).click();
+
+		// wait for an expected UI change that indicates the passkey operation has completed
+		await expect(
+			page.getByRole("button", { name: "Sign in with passkey" }),
+		).toBeVisible();
+
+		// set automaticPresenceSimulation option back to false
+		await client.send("WebAuthn.setAutomaticPresenceSimulation", {
+			authenticatorId,
+			enabled: false,
+		});
+	});
+
 	test("should handle OAuth2 error from URL parameter", async ({ page }) => {
 		// increase timeout to incorporate navigation
 		test.setTimeout(30_000);

@@ -158,10 +158,8 @@ export default function PasskeyRegistration() {
 						optionsJSON: JSON.parse(registrationOptions),
 					})
 						.then((registrationResponse) => {
-							console.log("🚀 Registration Response:", registrationResponse);
 							executeRecaptcha("passkey_register")
 								.then((recaptchaToken) => {
-									console.log("Got innter recaptcha token", recaptchaToken);
 									commitRegister({
 										variables: {
 											email,

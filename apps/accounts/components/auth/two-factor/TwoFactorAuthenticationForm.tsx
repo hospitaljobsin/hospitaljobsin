@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next-nprogress-bar";
 import { useSearchParams } from "next/navigation";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
@@ -65,7 +65,7 @@ export default function TwoFactorAuthenticationForm() {
 	const {
 		handleSubmit,
 		setError,
-		control,
+		register,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof twoFactorAuthenticationForm>>({
 		resolver: zodResolver(twoFactorAuthenticationForm),
@@ -131,18 +131,12 @@ export default function TwoFactorAuthenticationForm() {
 			<CardBody>
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
 					<div className="w-full flex flex-col gap-6 items-center">
-						<Controller
-							control={control}
-							name="token"
-							render={({ field }) => (
-								<Input
-									{...field}
-									label="Authentication Code"
-									errorMessage={errors.token?.message}
-									isInvalid={!!errors.token}
-									placeholder="XXXXXX"
-								/>
-							)}
+						<Input
+							{...register("token")}
+							label="Authentication Code"
+							errorMessage={errors.token?.message}
+							isInvalid={!!errors.token}
+							placeholder="XXXXXX"
 						/>
 						<Button
 							fullWidth

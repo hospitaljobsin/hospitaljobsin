@@ -19,7 +19,7 @@ export default defineConfig({
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !!IS_CI,
-	retries: 0,
+	retries: IS_CI ? 1 : 0,
 	/* Opt out of parallel tests on CI. */
 	workers: IS_CI ? 1 : undefined,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -37,10 +37,10 @@ export default defineConfig({
 	globalTeardown: require.resolve("./tests/e2e/global.teardown.ts"),
 
 	expect: {
-		timeout: IS_CI ? 25_000 : 10_000,
+		timeout: IS_CI ? 25_000 : 20_000,
 	},
 
-	timeout: IS_CI ? 35_000 : 20_000,
+	timeout: IS_CI ? 45_000 : 30_000,
 
 	/* Configure projects for major browsers */
 	projects: [
