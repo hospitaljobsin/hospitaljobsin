@@ -1,6 +1,7 @@
 import { findLastEmail } from "@/tests/e2e/utils/mailcatcher";
 import type { PlaywrightTestArgs } from "@playwright/test";
 import { expect, test } from "@playwright/test";
+import path from "node:path";
 
 test.describe("Sign Up Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -404,7 +405,9 @@ test.describe("Sign Up Page", () => {
 });
 
 test.describe("Sign Up Page Authentication Redirects", () => {
-	test.use({ storageState: "../../../playwright/.auth/user.json" });
+	test.use({
+		storageState: path.join(__dirname, "../../../playwright/.auth/user.json"),
+	});
 
 	test("should redirect to home page when already authenticated", async ({
 		page,

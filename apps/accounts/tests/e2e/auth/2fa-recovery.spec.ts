@@ -5,6 +5,7 @@ import {
 	TWO_FACTOR_TESTER_1_EMAIL,
 } from "@/tests/e2e/utils/constants";
 import { expect, test } from "@playwright/test";
+import path from "node:path";
 
 test.describe("2FA Recovery Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -148,7 +149,9 @@ test.describe("2FA Recovery Page 2FA Challenge Redirects", () => {
 });
 
 test.describe("2FA Recovery Page Authentication Redirects", () => {
-	test.use({ storageState: "../../../playwright/.auth/user.json" });
+	test.use({
+		storageState: path.join(__dirname, "../../../playwright/.auth/user.json"),
+	});
 
 	test("should redirect to home page when already authenticated", async ({
 		page,
