@@ -402,3 +402,14 @@ test.describe("Sign Up Page", () => {
 		});
 	});
 });
+
+test.describe("Sign Up Page Authentication Redirects", () => {
+	test.use({ storageState: "playwright/.auth/user.json" });
+
+	test("should redirect to home page when already authenticated", async ({
+		page,
+	}) => {
+		await page.goto("/auth/signup");
+		await page.waitForURL("http://localhost:5000/");
+	});
+});

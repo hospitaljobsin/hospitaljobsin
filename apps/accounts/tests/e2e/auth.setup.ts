@@ -4,8 +4,23 @@ import path from "node:path";
 const authFile = path.join(__dirname, "../../playwright/.auth/user.json");
 
 setup("authenticate", async ({ page }) => {
-	// Perform authentication steps. Replace these actions with your own.
+	// Intercept and mock the reCAPTCHA script
+	await page.route("**/recaptcha/**", (route) => {
+		route.fulfill({
+			status: 200,
+			contentType: "application/javascript",
+			body: `
+					window.grecaptcha = {
+					ready: (cb) => cb(),
+					execute: () => Promise.resolve('dummy_recaptcha_token')
+					};
+				`,
+		});
+	});
+	// Navigate to login page
 	await page.goto("/auth/login");
+	// Wait for recaptcha to load
+	await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 	await page.getByLabel("Email Address").fill("tester@example.org");
 	await page
 		.getByRole("textbox", { name: "Password Password" })
@@ -16,12 +31,6 @@ setup("authenticate", async ({ page }) => {
 	// Sometimes login flow sets cookies in the process of several redirects.
 	// Wait for the final URL to ensure that the cookies are actually set.
 	await page.waitForURL("http://localhost:5000/");
-	// Alternatively, you can wait until the page reaches a state where all cookies are set.
-	// await expect(
-	// 	page.getByRole("button", { name: "View profile and more" }),
-	// ).toBeVisible();
-
-	// End of authentication steps.
 
 	await page.context().storageState({ path: authFile });
 });

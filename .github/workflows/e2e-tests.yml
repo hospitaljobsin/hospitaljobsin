@@ -32,12 +32,14 @@ jobs:
       - name: Install dependencies and Playwright browsers  
         run: pnpm install && npx playwright install --with-deps
         working-directory: apps/accounts
+  
       - name: Run Playwright tests
         run: pnpm test:e2e --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
         working-directory: apps/accounts
         env:
           CI: true
           DEBUG: pw:browser
+  
       - name: Upload Playwright Report and Traces
         uses: actions/upload-artifact@v4
         if: always()

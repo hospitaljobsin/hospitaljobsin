@@ -29,6 +29,7 @@ async def get_context(
     auth_service: Injected[AuthService],
     user_agent: Annotated[str | None, Header()] = "unknown",
 ) -> BaseContext:
+    """Get the context for the GraphQL request."""
     if session_token:
         session = await session_repo.get(token=session_token, fetch_account=True)
         if session is not None:
@@ -58,8 +59,9 @@ async def get_context(
 
 
 def create_graphql_router() -> GraphQLRouter:
+    """Create a GraphQL router."""
     return GraphQLRouter(
         schema=schema,
         context_getter=get_context,
-        graphql_ide="graphiql",
+        graphql_ide="apollo-sandbox",
     )

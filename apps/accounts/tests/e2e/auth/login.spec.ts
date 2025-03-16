@@ -369,3 +369,14 @@ test.describe("Login Page", () => {
 		await page.waitForURL("https://accounts.google.com/**");
 	});
 });
+
+test.describe("Login Page Authentication Redirects", () => {
+	test.use({ storageState: "playwright/.auth/user.json" });
+
+	test("should redirect to home page when already authenticated", async ({
+		page,
+	}) => {
+		await page.goto("/auth/login");
+		await page.waitForURL("http://localhost:5000/");
+	});
+});

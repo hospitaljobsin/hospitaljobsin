@@ -112,7 +112,7 @@ test.describe("2FA Page", () => {
 	});
 });
 
-test.describe("2FA Page Redirects", () => {
+test.describe("2FA Page 2FA Challenge Redirects", () => {
 	test("should redirect to login page when 2fa challenge expires/ is invalid", async ({
 		page,
 	}) => {
@@ -121,5 +121,16 @@ test.describe("2FA Page Redirects", () => {
 
 		// expect to redirect to login page
 		await page.waitForURL("http://localhost:5002/auth/login");
+	});
+});
+
+test.describe("2FA Page 2FA Authentication Redirects", () => {
+	test.use({ storageState: "playwright/.auth/user.json" });
+
+	test("should redirect to home page when already authenticated", async ({
+		page,
+	}) => {
+		await page.goto("/auth/2fa");
+		await page.waitForURL("http://localhost:5000/");
 	});
 });

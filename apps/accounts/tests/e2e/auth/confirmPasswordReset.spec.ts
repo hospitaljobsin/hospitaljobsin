@@ -184,3 +184,11 @@ test.describe("Confirm Password Reset Page", () => {
 		});
 	});
 });
+
+test.describe("Confirm Password Reset Page Not Found", () => {
+	test("should handle invalid password reset link", async ({ page }) => {
+		await page.goto("/auth/reset-password/invalid-token");
+
+		await expect(page.getByText(/404 Not Found/)).toBeVisible();
+	});
+});
