@@ -1,8 +1,7 @@
 import { test as setup } from "@playwright/test";
-import path from "node:path";
 import { TESTER_EMAIL } from "./utils/constants";
 
-const authFile = path.join(__dirname, "../../playwright/.auth/user.json");
+const authFile = "playwright/.auth/user.json";
 
 setup("authenticate", async ({ page }) => {
 	// Intercept and mock the reCAPTCHA script
