@@ -158,8 +158,10 @@ export default function PasskeyRegistration() {
 						optionsJSON: JSON.parse(registrationOptions),
 					})
 						.then((registrationResponse) => {
+							console.log("🚀 Registration Response:", registrationResponse);
 							executeRecaptcha("passkey_register")
 								.then((recaptchaToken) => {
+									console.log("Got innter recaptcha token", recaptchaToken);
 									commitRegister({
 										variables: {
 											email,
@@ -170,7 +172,8 @@ export default function PasskeyRegistration() {
 											passkeyNickname: values.nickname,
 											recaptchaToken: recaptchaToken,
 										},
-										onError() {
+										onError(error) {
+											console.error(error);
 											setIsPasskeysPromptActive(false);
 										},
 										onCompleted(response) {
@@ -220,16 +223,19 @@ export default function PasskeyRegistration() {
 								.catch((error) => {
 									// TODO: show toast here
 									setIsPasskeysPromptActive(false);
+									console.error(error);
 								});
 						})
 						.catch((error) => {
 							// TODO: show toast here
 							setIsPasskeysPromptActive(false);
+							console.error(error);
 						});
 				}
 			},
-			onError() {
+			onError(error) {
 				setIsPasskeysPromptActive(false);
+				console.error(error);
 			},
 		});
 	};

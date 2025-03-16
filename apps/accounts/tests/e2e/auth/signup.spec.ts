@@ -259,19 +259,74 @@ test.describe("Sign Up Page", () => {
 		page,
 		request,
 		context,
+		browserName,
 	}) => {
+		test.skip(browserName !== "chromium", "Only supported in Chromium");
+
+		page.on("console", (msg) => console.log(`📌 Console log: ${msg.text()}`));
+		page.on("request", (req) => console.log(`➡️ ${req.method()} ${req.url()}`));
+		page.on("response", (res) => console.log(`⬅️ ${res.status()} ${res.url()}`));
+
 		const emailAddress = "valid-passkey-tester@outlook.com";
 		await completeSteps1To3({ page, request, context, emailAddress });
 
 		await test.step("Step 4: Enter valid passkey", async () => {
-			// await enterPassword({
-			// 	page,
-			// 	password: "Password123!",
-			// 	confirmPassword: "Password123!",
-			// });
-			// await page.waitForURL("http://localhost:5000/");
+			test.setTimeout(30_000);
+			// Set up Chrome DevTools Protocol session
+			const client = await context.newCDPSession(page);
+			await client.send("WebAuthn.enable");
+
+			// Add virtual authenticator with correct options
+			const { authenticatorId } = await client.send(
+				"WebAuthn.addVirtualAuthenticator",
+				{
+					options: {
+						protocol: "ctap2",
+						transport: "internal",
+						hasResidentKey: true,
+						hasUserVerification: true,
+						isUserVerified: true,
+						automaticPresenceSimulation: false,
+					},
+				},
+			);
+
+			// Confirm there are currently no registered credentials
+			const result1 = await client.send("WebAuthn.getCredentials", {
+				authenticatorId,
+			});
+			expect(result1.credentials).toHaveLength(0);
+
+			const operationCompleted = new Promise<void>((resolve) => {
+				client.on("WebAuthn.credentialAdded", () => resolve());
+				client.on("WebAuthn.credentialAsserted", () => resolve());
+			});
+
+			// set automaticPresenceSimulation option to true
+			// (so that the virtual authenticator will respond to the next passkey prompt)
+			await client.send("WebAuthn.setAutomaticPresenceSimulation", {
+				authenticatorId: authenticatorId,
+				enabled: true,
+			});
+
+			await page.getByRole("button", { name: "Create account" }).click();
+
+			// wait to receive the event that the passkey was successfully registered or verified
+			await operationCompleted;
+
+			// set automaticPresenceSimulation option back to false
+			await client.send("WebAuthn.setAutomaticPresenceSimulation", {
+				authenticatorId,
+				enabled: false,
+			});
+
+			// Confirm the passkey was successfully registered
+			const result2 = await client.send("WebAuthn.getCredentials", {
+				authenticatorId,
+			});
+			expect(result2.credentials).toHaveLength(1);
+
+			await page.waitForURL("http://localhost:5000/");
 		});
 	});
 });
-
-// TODO: test register with passkeys
