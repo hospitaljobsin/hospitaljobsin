@@ -1,6 +1,6 @@
+import { findLastEmail } from "@/tests/e2e/utils/mailcatcher";
 import type { PlaywrightTestArgs } from "@playwright/test";
 import { expect, test } from "@playwright/test";
-import { findLastEmail } from "../utils/mailcatcher";
 
 test.describe("Sign Up Page", () => {
 	test.beforeEach(async ({ page }) => {

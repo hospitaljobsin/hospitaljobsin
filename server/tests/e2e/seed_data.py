@@ -53,14 +53,9 @@ async def setup_test_database() -> None:
             transports=[AuthenticatorTransport.INTERNAL],
         )
 
-        two_factor_challenge_repo = TwoFactorAuthenticationChallengeRepo()
-        (_challenge, two_factor_challenge) = await two_factor_challenge_repo.create(
-            account=two_factor_account,
-        )
-
         await account_repo.set_two_factor_secret(
             account=two_factor_account,
-            totp_secret=two_factor_challenge.totp_secret,
+            totp_secret="RW5SJG5SRCHL3YEBPUOOIB6W5VDOF4MA",
         )
 
 

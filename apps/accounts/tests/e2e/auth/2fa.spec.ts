@@ -1,3 +1,4 @@
+import { generateValidOTP } from "@/tests/e2e/utils/authenticator";
 import { expect, test } from "@playwright/test";
 
 test.describe("2FA Page", () => {
@@ -94,5 +95,19 @@ test.describe("2FA Page", () => {
 				.filter({ hasText: /^Invalid credentials provided.$/ })
 				.first(),
 		).toBeVisible();
+	});
+
+	test("should successfully verify valid authentication code", async ({
+		page,
+	}) => {
+		const otp = await generateValidOTP({
+			totp_secret: "RW5SJG5SRCHL3YEBPUOOIB6W5VDOF4MA",
+		});
+
+		await page.getByLabel("Authentication Code").fill(otp);
+		await page.getByRole("button", { name: "Verify Code" }).click();
+
+		// Should redirect to home page
+		await page.waitForURL("http://localhost:5000/");
 	});
 });
