@@ -32,6 +32,10 @@ jobs:
       - name: Install dependencies and Playwright browsers  
         run: pnpm install && npx playwright install --with-deps
         working-directory: apps/accounts
+
+      - name: Create Playwright Browser State Directory
+        run : mkdir -p playwright/.auth
+        working-directory: apps/accounts
   
       - name: Run Playwright tests
         run: pnpm test:e2e --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4

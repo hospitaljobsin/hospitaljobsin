@@ -129,7 +129,7 @@ test.describe("2FA Page 2FA Challenge Redirects", () => {
 });
 
 test.describe("2FA Page 2FA Authentication Redirects", () => {
-	test.use({ storageState: "playwright/.auth/user.json" });
+	test.use({ storageState: "../../../playwright/.auth/user.json" });
 
 	test("should redirect to home page when already authenticated", async ({
 		page,

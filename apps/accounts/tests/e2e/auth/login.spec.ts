@@ -376,7 +376,7 @@ test.describe("Login Page", () => {
 });
 
 test.describe("Login Page Authentication Redirects", () => {
-	test.use({ storageState: "playwright/.auth/user.json" });
+	test.use({ storageState: "../../../playwright/.auth/user.json" });
 
 	test("should redirect to home page when already authenticated", async ({
 		page,
