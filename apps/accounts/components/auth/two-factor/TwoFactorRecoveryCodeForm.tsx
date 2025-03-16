@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next-nprogress-bar";
 import { useSearchParams } from "next/navigation";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
@@ -60,7 +60,7 @@ export default function TwoFactorRecoveryCodeForm() {
 	const {
 		handleSubmit,
 		setError,
-		control,
+		register,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof twoFactorRecoveryCodeForm>>({
 		resolver: zodResolver(twoFactorRecoveryCodeForm),
@@ -118,18 +118,12 @@ export default function TwoFactorRecoveryCodeForm() {
 			<CardBody>
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
 					<div className="w-full flex flex-col gap-6 items-center">
-						<Controller
-							control={control}
-							name="token"
-							render={({ field }) => (
-								<Input
-									{...field}
-									label="Recovery Code"
-									errorMessage={errors.token?.message}
-									isInvalid={!!errors.token}
-									placeholder="XXXX-XXXX"
-								/>
-							)}
+						<Input
+							{...register("token")}
+							label="Recovery Code"
+							errorMessage={errors.token?.message}
+							isInvalid={!!errors.token}
+							placeholder="XXXX-XXXX"
 						/>
 						<Button
 							fullWidth

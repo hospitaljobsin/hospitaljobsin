@@ -8,7 +8,7 @@ import { authenticator } from "otplib";
  */
 export function getOTPRemainingSeconds(period = 30): number {
 	// Use a custom epoch if provided in authenticator.options, otherwise default to 0.
-	const epoch = authenticator.options?.epoch || 0;
+	const epoch = authenticator.options.epoch || 0;
 	const now = Math.floor(Date.now() / 1000);
 	return period - ((now - epoch) % period);
 }

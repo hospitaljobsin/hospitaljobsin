@@ -1,8 +1,5 @@
 from app.accounts.repositories import AccountRepo
-from app.auth.repositories import (
-    TwoFactorAuthenticationChallengeRepo,
-    WebAuthnCredentialRepo,
-)
+from app.auth.repositories import RecoveryCodeRepo, WebAuthnCredentialRepo
 from app.config import Settings
 from app.database import initialize_database
 from bson import ObjectId
@@ -56,6 +53,13 @@ async def setup_test_database() -> None:
         await account_repo.set_two_factor_secret(
             account=two_factor_account,
             totp_secret="RW5SJG5SRCHL3YEBPUOOIB6W5VDOF4MA",
+        )
+
+        recovery_code_repo = RecoveryCodeRepo()
+
+        await recovery_code_repo.create(
+            account_id=two_factor_account.id,
+            code="12345678",
         )
 
 

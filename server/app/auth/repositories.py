@@ -405,6 +405,19 @@ class RecoveryCodeRepo:
         charset = string.digits + string.ascii_letters
         return "".join(secrets.choice(charset) for _ in range(8))
 
+    async def create(
+        self,
+        account_id: ObjectId,
+        code: str | None = None,
+    ) -> str:
+        """Create a recovery code for an account (used in E2E testing)."""
+        code = code or self.generate_recovery_code()
+        await RecoveryCode(
+            code_hash=self.hash_recovery_code(code),
+            account=account_id,
+        ).save()
+        return code
+
     async def create_many(
         self, account_id: ObjectId, code_count: int = 10
     ) -> list[str]:
