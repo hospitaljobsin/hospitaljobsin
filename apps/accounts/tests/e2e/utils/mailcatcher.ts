@@ -15,7 +15,7 @@ async function findEmail({
 }): Promise<Email | null> {
 	const response = await request.get("http://localhost:1080/messages");
 
-	let emails = await response.json();
+	let emails: Email[] = await response.json();
 
 	if (filter) {
 		emails = emails.filter(filter);
@@ -24,7 +24,7 @@ async function findEmail({
 	const email = emails[emails.length - 1];
 
 	if (email) {
-		return email as Email;
+		return email;
 	}
 
 	return null;

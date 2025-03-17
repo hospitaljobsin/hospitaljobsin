@@ -32,6 +32,8 @@ jobs:
       - name: Install Playwright
         id: install-playwright
         uses: ./.github/actions/playwright
+        with:
+          working-directory: apps/accounts
 
       - name: Debug Playwright cache
         run: |
