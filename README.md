@@ -56,8 +56,3 @@ tmuxinator start medical_jobs
     cd apps/accounts
     pnpm test:e2e
     ```
-
-
-# TODO: E2E:
-- add a new e2e docker compose service called playwright and run that service itself (with a docker container)
- this will skip the need to install playwright binaries every time (checkout fullstack-fastapi-example for reference)

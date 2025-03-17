@@ -29,8 +29,16 @@ jobs:
           cache: pnpm
           cache-dependency-path: apps/accounts/pnpm-lock.yaml 
            
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ matrix.project }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+  
       - name: Install dependencies and Playwright browsers  
-        run: pnpm install && npx playwright install --with-deps
+        run: pnpm install && npx playwright install --with-deps ${{ matrix.project }}
         working-directory: apps/accounts
 
       - name: Create Playwright Browser State Directory
