@@ -1,4 +1,4 @@
-import { EMAIL_VERIFICATION_TOKEN_COOLDOWN, TESTER_EMAIL_2 } from "@/tests/e2e/utils/constants";
+import { EMAIL_VERIFICATION_TOKEN_COOLDOWN } from "@/tests/e2e/utils/constants";
 import type { Email } from "@/tests/e2e/utils/mailcatcher";
 import { findLastEmail } from "@/tests/e2e/utils/mailcatcher";
 import type { PlaywrightTestArgs } from "@playwright/test";
@@ -413,7 +413,7 @@ test.describe("Sign Up Page", () => {
 		test("should handle cooldown on multiple email verification requests", async ({ page, request }) => {
 			// increase timeout to incorporate cooldown
 			test.setTimeout(45_000);
-			const emailAddress = TESTER_EMAIL_2;
+			const emailAddress = "new-tester2@outlook.com";
 		
 			// First email verification request
 	
