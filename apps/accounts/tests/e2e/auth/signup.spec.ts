@@ -421,8 +421,7 @@ test.describe("Sign Up Page", () => {
 			await page.getByRole("button", { name: "Continue" }).click();
 
 			// wait for second step to load
-			await page.waitForSelector("input[readonly]", { state: "visible" });
-			await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
+			await expect(page.getByLabel("Email Verification Token")).toBeVisible();
 		
 			const firstEmail = await findLastEmail({
 				request,
@@ -442,8 +441,7 @@ test.describe("Sign Up Page", () => {
 			await page.getByRole("button", { name: "Continue" }).click();
 		
 			// wait for second step to load
-			await page.waitForSelector("input[readonly]", { state: "visible" });
-			await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
+			await expect(page.getByLabel("Email Verification Token")).toBeVisible();
 		
 			const secondEmail = await findLastEmail({
 				request,
@@ -468,8 +466,7 @@ test.describe("Sign Up Page", () => {
 			await page.getByRole("button", { name: "Continue" }).click();
 
 			// wait for second step to load
-			await page.waitForSelector("input[readonly]", { state: "visible" });
-			await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
+			await expect(page.getByLabel("Email Verification Token")).toBeVisible();
 		
 			const thirdEmail = await findLastEmail({
 				request,
