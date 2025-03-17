@@ -6,6 +6,7 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	addToast,
 } from "@heroui/react";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -44,10 +45,13 @@ export default function DisableAuthenticator2FAModal({
 			variables: {},
 			onCompleted(response) {
 				if (
-					response.disableAccount2faWithAuthenticator?.__typename ===
+					response.disableAccount2faWithAuthenticator.__typename ===
 					"AuthenticatorNotEnabledError"
 				) {
-					// TODO: show a toast here
+					addToast({
+						title: "An unexpected error occurred. Please try again.",
+						color: "danger",
+					});
 				}
 
 				onClose();

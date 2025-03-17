@@ -7,6 +7,7 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	addToast,
 } from "@heroui/react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -67,12 +68,18 @@ export default function DeletePasskeyModal({
 					response.deleteWebAuthnCredential.__typename ===
 					"WebAuthnCredentialNotFoundError"
 				) {
-					// TODO: show a toast here
+					addToast({
+						title: "Passkey not found!",
+						color: "danger",
+					});
 				} else if (
 					response.deleteWebAuthnCredential.__typename ===
 					"DeleteWebAuthnCredentialSuccess"
 				) {
-					// TODO: show a toast here
+					addToast({
+						title: "Passkey deleted successfully!",
+						color: "success",
+					});
 				}
 			},
 		});

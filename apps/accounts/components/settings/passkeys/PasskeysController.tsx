@@ -10,6 +10,7 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	addToast,
 	useDisclosure,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -123,8 +124,10 @@ export default function PasskeysController({
 									response.createWebAuthnCredential.__typename ===
 									"InvalidPasskeyRegistrationCredentialError"
 								) {
-									// TODO: show a toast here
-									alert("Invalid passkey registration credential.");
+									addToast({
+										title: "Passkey creation failed!",
+										color: "danger",
+									});
 								} else if (
 									response.createWebAuthnCredential.__typename ===
 									"CreateWebAuthnCredentialSuccess"
@@ -135,7 +138,10 @@ export default function PasskeysController({
 						});
 					})
 					.catch((error) => {
-						// TODO: show a toast here
+						addToast({
+							title: "Passkey creation failed!",
+							color: "danger",
+						});
 					});
 			},
 		});

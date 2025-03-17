@@ -1,7 +1,7 @@
 import type { PasskeyAuthenticationGenerateOptionsMutation } from "@/__generated__/PasskeyAuthenticationGenerateOptionsMutation.graphql";
 import type { PasskeyAuthenticationMutation as PasskeyAuthenticationMutationType } from "@/__generated__/PasskeyAuthenticationMutation.graphql";
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
-import { Button } from "@heroui/react";
+import { Button, addToast } from "@heroui/react";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { Fingerprint } from "lucide-react";
 import { useRouter } from "next-nprogress-bar";
@@ -134,17 +134,20 @@ export default function PasskeyAuthentication({
 												response.requestSudoModeWithPasskey.__typename ===
 												"InvalidPasskeyAuthenticationCredentialError"
 											) {
-												// TODO: show a toast here
-												alert(
-													"Invalid passkey registration credential. Please try again.",
-												);
+												addToast({
+													title: "Passkey authentication failed!",
+													color: "danger",
+												});
 												onAuthEnd();
 											} else if (
 												response.requestSudoModeWithPasskey.__typename ===
 												"WebAuthnChallengeNotFoundError"
 											) {
-												// TODO: show a toast here
-
+												addToast({
+													title:
+														"An unexpected error occurred. Please try again.",
+													color: "danger",
+												});
 												onAuthEnd();
 											} else {
 												router.replace(redirectTo);
@@ -160,19 +163,29 @@ export default function PasskeyAuthentication({
 									});
 								})
 								.catch((error) => {
+									addToast({
+										title: "Passkey authentication failed!",
+										color: "danger",
+									});
 									setIsPasskeysPromptActive(false);
 									onAuthEnd();
-									// TODO: show toast here
 								});
 						})
 						.catch((error) => {
-							// TODO: show toast here
+							addToast({
+								title: "Passkey authentication failed!",
+								color: "danger",
+							});
 							setIsPasskeysPromptActive(false);
 							onAuthEnd();
 						});
 				}
 			},
 			onError: () => {
+				addToast({
+					title: "An unexpected error occurred. Please try again.",
+					color: "danger",
+				});
 				setIsPasskeysPromptActive(false);
 				onAuthEnd();
 			},

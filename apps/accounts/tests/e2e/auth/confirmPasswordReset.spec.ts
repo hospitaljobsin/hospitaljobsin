@@ -194,7 +194,6 @@ test.describe("Confirm Password Reset Page", () => {
 	});
 });
 
-// TODO: handle timeouts
 test.describe("2FA Confirm Password Reset Page", () => {
 	test.beforeEach(async ({ page, request }) => {
 		// Intercept and mock the reCAPTCHA script

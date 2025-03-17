@@ -261,6 +261,11 @@ export default function LoginForm() {
 											recaptchaToken: recaptchaToken,
 										},
 										onError() {
+											addToast({
+												title:
+													"An unexpected error occurred. Please try again.",
+												color: "danger",
+											});
 											setIsPasskeysPromptActive(false);
 										},
 										onCompleted(response) {
@@ -275,15 +280,19 @@ export default function LoginForm() {
 												response.loginWithPasskey.__typename ===
 												"InvalidPasskeyAuthenticationCredentialError"
 											) {
-												// TODO: show a toast here
-												alert(
-													"Invalid passkey registration credential. Please try again.",
-												);
+												addToast({
+													title: "Passkey authentication failed!",
+													color: "danger",
+												});
 											} else if (
 												response.loginWithPasskey.__typename ===
 												"WebAuthnChallengeNotFoundError"
 											) {
-												// TODO: show a toast here
+												addToast({
+													title:
+														"An unexpected error occurred. Please try again.",
+													color: "danger",
+												});
 											} else {
 												window.location.href = redirectTo;
 											}
@@ -294,17 +303,27 @@ export default function LoginForm() {
 									});
 								})
 								.catch((error) => {
-									// TODO: show toast here
+									addToast({
+										title: "Passkey authentication failed!",
+										color: "danger",
+									});
 									setIsPasskeysPromptActive(false);
 								});
 						})
 						.catch((error) => {
-							// TODO: show toast here
+							addToast({
+								title: "Passkey authentication failed!",
+								color: "danger",
+							});
 							setIsPasskeysPromptActive(false);
 						});
 				}
 			},
 			onError() {
+				addToast({
+					title: "An unexpected error occurred. Please try again.",
+					color: "danger",
+				});
 				setIsPasskeysPromptActive(false);
 			},
 		});

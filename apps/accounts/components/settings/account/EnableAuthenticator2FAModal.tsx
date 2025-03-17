@@ -10,6 +10,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 	Tooltip,
+	addToast,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Clipboard } from "lucide-react";
@@ -89,7 +90,10 @@ export default function EnableAuthenticator2FAModal({
 					response.enableAccount2faWithAuthenticator.__typename ===
 					"TwoFactorAuthenticationChallengeNotFoundError"
 				) {
-					// TODO: show toast here
+					addToast({
+						title: "An unexpected error occurred. Please try again.",
+						color: "danger",
+					});
 					onClose();
 				} else if (
 					response.enableAccount2faWithAuthenticator.__typename ===

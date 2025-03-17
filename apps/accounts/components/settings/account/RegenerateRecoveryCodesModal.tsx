@@ -51,7 +51,6 @@ export default function RegenerateRecoveryCodesModal({
 					response.generate2faRecoveryCodes.__typename ===
 					"TwoFactorAuthenticationNotEnabledError"
 				) {
-					// TODO: show toast here
 					onClose();
 				} else if (
 					response.generate2faRecoveryCodes.__typename ===

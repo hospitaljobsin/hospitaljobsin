@@ -111,7 +111,10 @@ export default function AuthenticatorTwoFactorAuthentication({
 					response.verify2faPasswordResetWithAuthenticator.__typename ===
 					"AuthenticatorNotEnabledError"
 				) {
-					// TODO: show a toast
+					addToast({
+						title: "An unexpected error occurred. Please try again.",
+						color: "danger",
+					});
 					onAuthEnd();
 					onComplete();
 				} else {

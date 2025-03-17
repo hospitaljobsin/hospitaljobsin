@@ -8,6 +8,7 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	addToast,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -84,7 +85,10 @@ export default function UpdatePasskeyModal({
 					response.updateWebAuthnCredential.__typename ===
 					"WebAuthnCredentialNotFoundError"
 				) {
-					// TODO: show a toast here
+					addToast({
+						title: "Passkey not found!",
+						color: "danger",
+					});
 				}
 				onClose();
 			},

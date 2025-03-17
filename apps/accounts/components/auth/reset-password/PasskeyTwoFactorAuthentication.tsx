@@ -1,6 +1,13 @@
 import type { PasskeyTwoFactorAuthenticationGenerateOptionsMutation } from "@/__generated__/PasskeyTwoFactorAuthenticationGenerateOptionsMutation.graphql";
 import type { PasskeyTwoFactorAuthenticationResetPasswordMutation as PasskeyTwoFactorAuthenticationResetPasswordMutationType } from "@/__generated__/PasskeyTwoFactorAuthenticationResetPasswordMutation.graphql";
-import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
+import {
+	Button,
+	Card,
+	CardBody,
+	CardHeader,
+	Input,
+	addToast,
+} from "@heroui/react";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { Fingerprint } from "lucide-react";
 import { useState } from "react";
@@ -145,10 +152,10 @@ export default function PasskeyTwoFactorAuthentication({
 													.__typename ===
 												"InvalidPasskeyAuthenticationCredentialError"
 											) {
-												// TODO: show a toast here
-												alert(
-													"Invalid passkey registration credential. Please try again.",
-												);
+												addToast({
+													title: "Passkey authentication failed!",
+													color: "danger",
+												});
 												onAuthEnd();
 											} else if (
 												response.verify2faPasswordResetWithPasskey
@@ -162,13 +169,21 @@ export default function PasskeyTwoFactorAuthentication({
 													.__typename ===
 												"TwoFactorAuthenticationNotEnabledError"
 											) {
-												// TODO: show a toast
+												addToast({
+													title:
+														"An unexpected error occurred. Please try again.",
+													color: "danger",
+												});
 												onComplete();
 											} else if (
 												response.verify2faPasswordResetWithPasskey
 													.__typename === "WebAuthnChallengeNotFoundError"
 											) {
-												// TODO: show a toast here
+												addToast({
+													title:
+														"An unexpected error occurred. Please try again.",
+													color: "danger",
+												});
 
 												onAuthEnd();
 											} else {
@@ -176,6 +191,11 @@ export default function PasskeyTwoFactorAuthentication({
 											}
 										},
 										onError() {
+											addToast({
+												title:
+													"An unexpected error occurred. Please try again.",
+												color: "danger",
+											});
 											setIsPasskeysPromptActive(false);
 											onAuthEnd();
 										},
@@ -185,19 +205,29 @@ export default function PasskeyTwoFactorAuthentication({
 									});
 								})
 								.catch((error) => {
+									addToast({
+										title: "Passkey authentication failed!",
+										color: "danger",
+									});
 									setIsPasskeysPromptActive(false);
 									onAuthEnd();
-									// TODO: show toast here
 								});
 						})
 						.catch((error) => {
-							// TODO: show toast here
+							addToast({
+								title: "Passkey authentication failed!",
+								color: "danger",
+							});
 							setIsPasskeysPromptActive(false);
 							onAuthEnd();
 						});
 				}
 			},
 			onError: () => {
+				addToast({
+					title: "An unexpected error occurred. Please try again.",
+					color: "danger",
+				});
 				setIsPasskeysPromptActive(false);
 				onAuthEnd();
 			},

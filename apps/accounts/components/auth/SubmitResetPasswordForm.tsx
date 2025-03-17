@@ -77,7 +77,6 @@ export default function SubmitResetPasswordFrom() {
 					response.requestPasswordReset.__typename ===
 					"PasswordResetTokenCooldownError"
 				) {
-					// TODO: show toast here
 					setShowSuccessMessage(true);
 				} else {
 					setShowSuccessMessage(true);

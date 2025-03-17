@@ -6,6 +6,7 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	addToast,
 } from "@heroui/react";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -45,7 +46,12 @@ export default function DeletePasswordModal({
 					response.deletePassword.__typename ===
 					"InsufficientAuthProvidersError"
 				) {
-					// TODO: show a toast here
+					addToast({
+						title: "Insufficient authentication providers",
+						description:
+							"Please add a passkey or sign in via Google before deleting your password.",
+						color: "danger",
+					});
 				}
 
 				onClose();

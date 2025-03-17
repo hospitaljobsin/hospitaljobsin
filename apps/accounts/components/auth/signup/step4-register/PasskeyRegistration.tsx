@@ -3,7 +3,7 @@
 import type { PasskeyRegistrationMutation } from "@/__generated__/PasskeyRegistrationMutation.graphql";
 import type { PasskeyRegistrationOptionsMutation } from "@/__generated__/PasskeyRegistrationOptionsMutation.graphql";
 import { getValidRedirectURL } from "@/lib/redirects";
-import { Alert, Button, Input } from "@heroui/react";
+import { Alert, Button, Input, addToast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useSearchParams } from "next/navigation";
@@ -204,10 +204,10 @@ export default function PasskeyRegistration() {
 												response.registerWithPasskey.__typename ===
 												"InvalidPasskeyRegistrationCredentialError"
 											) {
-												// TODO: show a toast here
-												alert(
-													"Invalid passkey registration credential. Please try again.",
-												);
+												addToast({
+													title: "Passkey creation failed!",
+													color: "danger",
+												});
 											} else {
 												// redirect to redirect URL
 												window.location.href = redirectTo;
@@ -219,19 +219,29 @@ export default function PasskeyRegistration() {
 									});
 								})
 								.catch((error) => {
-									// TODO: show toast here
+									addToast({
+										title: "Passkey creation failed!",
+										color: "danger",
+									});
 									setIsPasskeysPromptActive(false);
 									console.error(error);
 								});
 						})
 						.catch((error) => {
-							// TODO: show toast here
+							addToast({
+								title: "Passkey creation failed!",
+								color: "danger",
+							});
 							setIsPasskeysPromptActive(false);
 							console.error(error);
 						});
 				}
 			},
 			onError(error) {
+				addToast({
+					title: "An unexpected error occurred. Please try again.",
+					color: "danger",
+				});
 				setIsPasskeysPromptActive(false);
 				console.error(error);
 			},
