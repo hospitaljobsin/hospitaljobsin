@@ -1,7 +1,23 @@
+import { EMAIL_VERIFICATION_TOKEN_COOLDOWN, TESTER_EMAIL_2 } from "@/tests/e2e/utils/constants";
+import type { Email } from "@/tests/e2e/utils/mailcatcher";
 import { findLastEmail } from "@/tests/e2e/utils/mailcatcher";
 import type { PlaywrightTestArgs } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import path from "node:path";
+
+async function findVerificationCode({emailMessage, context} : {emailMessage: Email, context: PlaywrightTestArgs["context"]}): Promise<string> {
+	const emailPage = await context.newPage();
+	await emailPage.goto(
+		`http://localhost:1080/messages/${emailMessage.id}.html`,
+	);
+
+	const verificationCode = await emailPage.evaluate(() => {
+		const codeElement = document.querySelector(".btn-primary h1");
+		return codeElement?.textContent?.trim() || "";
+	});
+	await emailPage.close();
+	return verificationCode
+}
 
 test.describe("Sign Up Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -131,20 +147,11 @@ test.describe("Sign Up Page", () => {
 		const emailMessage = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) => e.recipients.includes(`<${emailAddress}>`),
+			filter: (e) => e.recipients.includes(`<${emailAddress}>`) && e.subject.includes("Email Verification Request"),
 		});
 
 		expect(emailMessage).not.toBeNull();
-		const emailPage = await context.newPage();
-		await emailPage.goto(
-			`http://localhost:1080/messages/${emailMessage.id}.html`,
-		);
-
-		const verificationCode = await emailPage.evaluate(() => {
-			const codeElement = document.querySelector(".btn-primary h1");
-			return codeElement?.textContent?.trim() || "";
-		});
-		await emailPage.close();
+		const verificationCode = await findVerificationCode({emailMessage, context}); 
 
 		await page
 			.getByRole("textbox", { name: "Email Verification Token" })
@@ -402,6 +409,78 @@ test.describe("Sign Up Page", () => {
 			expect(result2.credentials).toHaveLength(0);
 		});
 	});
+
+		test("should handle cooldown on multiple email verification requests", async ({ page, request }) => {
+			// increase timeout to incorporate cooldown
+			test.setTimeout(45_000);
+			const emailAddress = TESTER_EMAIL_2;
+		
+			// First email verification request
+	
+			await page.getByLabel("Email Address").fill(emailAddress);
+			await page.getByRole("button", { name: "Continue" }).click();
+
+			// wait for second step to load
+			await page.waitForSelector("input[readonly]", { state: "visible" });
+			await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
+		
+			const firstEmail = await findLastEmail({
+				request,
+				timeout: 10_000,
+				filter: (e) => e.recipients.includes(`<${emailAddress}>`) && e.subject.includes("Email Verification Request"),
+			});
+
+			expect(firstEmail).not.toBeNull();
+	
+			// Navigate to signup page
+			await page.goto("/auth/signup");
+			// Wait for recaptcha to load
+			await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		
+			// Second email verification request immediately after
+			await page.getByLabel("Email Address").fill(emailAddress);
+			await page.getByRole("button", { name: "Continue" }).click();
+		
+			// wait for second step to load
+			await page.waitForSelector("input[readonly]", { state: "visible" });
+			await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
+		
+			const secondEmail = await findLastEmail({
+				request,
+				timeout: 3_000,
+				filter: (e) => e.recipients.includes(`<${emailAddress}>`) && e.subject.includes("Email Verification Request"),
+			});
+		
+			// Ensure no second email was sent due to rate limit
+			expect(secondEmail).not.toBeNull();
+			expect(secondEmail.id).toEqual(firstEmail.id);
+		
+			// Wait for cooldown and try again (after testing env rate limit expires)
+			await page.waitForTimeout(EMAIL_VERIFICATION_TOKEN_COOLDOWN);
+	
+			// Navigate to reset password page
+			// Navigate to signup page
+			await page.goto("/auth/signup");
+			// Wait for recaptcha to load
+			await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+	
+			await page.getByLabel("Email Address").fill(emailAddress);
+			await page.getByRole("button", { name: "Continue" }).click();
+
+			// wait for second step to load
+			await page.waitForSelector("input[readonly]", { state: "visible" });
+			await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
+		
+			const thirdEmail = await findLastEmail({
+				request,
+				timeout: 10_000,
+				filter: (e) => e.recipients.includes(`<${emailAddress}>`) && e.subject.includes("Email Verification Request"),
+			});
+		
+			// Confirm third attempt succeeded after rate limit expired
+			expect(thirdEmail).not.toBeNull();
+			expect(thirdEmail.id).not.toEqual(firstEmail.id);
+		});
 });
 
 test.describe("Sign Up Page Authentication Redirects", () => {

@@ -18,28 +18,35 @@ async def setup_test_database() -> None:
         account_repo = AccountRepo()
         await account_repo.create(
             email="tester@example.org",
-            full_name="Tester",
+            full_name="Tester 1",
+            auth_providers=["password"],
+            password="Password123!",
+        )
+
+        await account_repo.create(
+            email="tester2@example.org",
+            full_name="Tester 2",
             auth_providers=["password"],
             password="Password123!",
         )
 
         webauthn_account = await account_repo.create(
             email="webauthn-tester@example.org",
-            full_name="WebAuthn Tester",
+            full_name="WebAuthn Tester 1",
             auth_providers=["webauthn_credential"],
             account_id=ObjectId("60f1b9b3b3b3b3b3b3b3b3b3"),
         )
 
         two_factor_account_1 = await account_repo.create(
             email="twofactor-tester@example.org",
-            full_name="Two Factor Tester",
+            full_name="Two Factor Tester 1",
             auth_providers=["password"],
             password="Password123!",
         )
 
         two_factor_account_2 = await account_repo.create(
             email="twofactor-tester2@example.org",
-            full_name="Two Factor Tester",
+            full_name="Two Factor Tester 2",
             auth_providers=["password"],
             password="Password123!",
         )

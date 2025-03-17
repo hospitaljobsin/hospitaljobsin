@@ -2,6 +2,8 @@
 
 from typing import Literal
 
+from app.config import Settings
+
 SUPPORT_EMAIL = "support@example.com"
 
 APP_NAME = "PulseWork"
@@ -18,7 +20,10 @@ USER_SESSION_EXPIRES_IN = 60 * 60 * 24 * 30  # 30 days
 # Email verification
 EMAIL_VERIFICATION_EXPIRES_IN = 60 * 60 * 1  # 1 hour
 
-EMAIL_VERIFICATION_TOKEN_COOLDOWN = 60 * 3  # 3 minutes
+if Settings().is_testing:
+    EMAIL_VERIFICATION_TOKEN_COOLDOWN = 20  # 20 seconds
+else:
+    EMAIL_VERIFICATION_TOKEN_COOLDOWN = 60 * 3  # 3 minutes
 
 EMAIL_VERIFICATION_TOKEN_LENGTH = 6
 
@@ -26,7 +31,10 @@ EMAIL_VERIFICATION_TOKEN_LENGTH = 6
 # Password reset
 PASSWORD_RESET_EXPIRES_IN = 60 * 60 * 1  # 1 hour
 
-PASSWORD_RESET_TOKEN_COOLDOWN = 60 * 3  # 3 minutes
+if Settings().is_testing:
+    PASSWORD_RESET_TOKEN_COOLDOWN = 20  # 20 seconds
+else:
+    PASSWORD_RESET_TOKEN_COOLDOWN = 60 * 3  # 3 minutes
 
 # WebAuthn challenge
 WEBAUTHN_CHALLENGE_EXPIRES_IN = 60 * 5  # 5 minutes

@@ -1,6 +1,6 @@
+import { NONEXISTENT_TESTER_EMAIL, PASSWORD_RESET_TOKEN_COOLDONW, TESTER_EMAIL, TESTER_EMAIL_2 } from "@/tests/e2e/utils/constants";
+import { findLastEmail } from "@/tests/e2e/utils/mailcatcher";
 import { expect, test } from "@playwright/test";
-import { NONEXISTENT_TESTER_EMAIL, TESTER_EMAIL } from "../utils/constants";
-import { findLastEmail } from "../utils/mailcatcher";
 
 test.describe("Request Password Reset Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -140,4 +140,82 @@ test.describe("Request Password Reset Page", () => {
 		// Verify navigation
 		await expect(page).toHaveURL(/\/auth\/login/);
 	});
+
+	test("should handle cooldown on multiple password reset requests", async ({ page, request }) => {
+		// increase timeout to incorporate cooldown
+		test.setTimeout(45_000);
+		const emailAddress = TESTER_EMAIL_2;
+	
+		// First password reset request
+
+		await page.getByLabel("Email Address").fill(emailAddress);
+		await page.getByRole("button", { name: "Request Password Reset" }).click();
+	
+		await expect(
+			page.getByText(
+				/If an account with that email exists, we will send you a password reset link. Please check your email inbox./
+			)
+		).toBeVisible();
+	
+		const firstEmail = await findLastEmail({
+			request,
+			timeout: 10_000,
+			filter: (e) => e.recipients.includes(`<${emailAddress}>`) && e.subject.includes("Password Reset Request"),
+		});
+	
+		expect(firstEmail).not.toBeNull();
+
+		// Navigate to reset password page
+		await page.goto("/auth/reset-password");
+		// Wait for recaptcha to load
+		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+	
+		// Second password reset request immediately after
+		await page.getByLabel("Email Address").fill(emailAddress);
+		await page.getByRole("button", { name: "Request Password Reset" }).click();
+	
+		await expect(
+			page.getByText(
+				/If an account with that email exists, we will send you a password reset link. Please check your email inbox./
+			)
+		).toBeVisible();
+	
+		const secondEmail = await findLastEmail({
+			request,
+			timeout: 3_000,
+			filter: (e) => e.recipients.includes(`<${emailAddress}>`) && e.subject.includes("Password Reset Request"),
+		});
+	
+		// Ensure no second email was sent due to rate limit
+		expect(secondEmail).not.toBeNull();
+		expect(secondEmail.id).toEqual(firstEmail.id);
+	
+		// Wait for cooldown and try again (after testing env rate limit expires)
+		await page.waitForTimeout(PASSWORD_RESET_TOKEN_COOLDONW);
+
+		// Navigate to reset password page
+		await page.goto("/auth/reset-password");
+		// Wait for recaptcha to load
+		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+
+		await page.getByLabel("Email Address").fill(emailAddress);
+		await page.getByRole("button", { name: "Request Password Reset" }).click();
+
+		await expect(
+			page.getByText(
+				/If an account with that email exists, we will send you a password reset link. Please check your email inbox./
+			)
+		).toBeVisible();
+	
+		const thirdEmail = await findLastEmail({
+			request,
+			timeout: 10_000,
+			filter: (e) => e.recipients.includes(`<${emailAddress}>`) && e.subject.includes("Password Reset Request"),
+		});
+	
+		// Confirm third attempt succeeded after rate limit expired
+		expect(thirdEmail).not.toBeNull();
+		expect(thirdEmail.id).not.toEqual(firstEmail.id);
+	});
+	
 });

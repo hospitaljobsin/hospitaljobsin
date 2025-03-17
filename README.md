@@ -61,5 +61,3 @@ tmuxinator start medical_jobs
 # TODO: E2E:
 - add a new e2e docker compose service called playwright and run that service itself (with a docker container)
  this will skip the need to install playwright binaries every time (checkout fullstack-fastapi-example for reference)
-
- - test email verification tokens cooldown and password reset tokens cooldown
