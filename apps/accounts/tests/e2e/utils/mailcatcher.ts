@@ -19,7 +19,6 @@ async function findEmail({
 
 	if (filter) {
 		emails = emails.filter(filter);
-		console.log("emails: ", emails);
 	}
 
 	const email = emails[emails.length - 1];
