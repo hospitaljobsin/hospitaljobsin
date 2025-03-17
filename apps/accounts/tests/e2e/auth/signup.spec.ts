@@ -5,7 +5,13 @@ import type { PlaywrightTestArgs } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import path from "node:path";
 
-async function findVerificationCode({emailMessage, context} : {emailMessage: Email, context: PlaywrightTestArgs["context"]}): Promise<string> {
+async function findVerificationCode({
+	emailMessage,
+	context,
+}: {
+	emailMessage: Email;
+	context: PlaywrightTestArgs["context"];
+}): Promise<string> {
 	const emailPage = await context.newPage();
 	await emailPage.goto(
 		`http://localhost:1080/messages/${emailMessage.id}.html`,
@@ -16,7 +22,7 @@ async function findVerificationCode({emailMessage, context} : {emailMessage: Ema
 		return codeElement?.textContent?.trim() || "";
 	});
 	await emailPage.close();
-	return verificationCode
+	return verificationCode;
 }
 
 test.describe("Sign Up Page", () => {
@@ -86,6 +92,46 @@ test.describe("Sign Up Page", () => {
 		).toBeVisible();
 	});
 
+	test("should validate email availability", async ({ page }) => {
+		await test.step("Enter email address with invalid domain", async () => {
+			// Enter invalid email
+			await page
+				.getByLabel("Email Address")
+				.fill("new-emailtester@example.org");
+
+			await page.getByRole("button", { name: "Continue" }).click();
+
+			// Check validation message
+			await expect(
+				page
+					.locator("div")
+					.filter({
+						hasText: /The domain name example.org does not accept email/,
+					})
+					.first(),
+			).toBeVisible();
+		});
+
+		await test.step("Enter email address with nonexistent domain", async () => {
+			// Enter invalid email
+			await page
+				.getByLabel("Email Address")
+				.fill("new-emailtester@example.nonexistent");
+
+			await page.getByRole("button", { name: "Continue" }).click();
+
+			// Check validation message
+			await expect(
+				page
+					.locator("div")
+					.filter({
+						hasText: /The domain name example.nonexistent does not exist/,
+					})
+					.first(),
+			).toBeVisible();
+		});
+	});
+
 	test("should redirect successfully to Google accounts page on Google signup", async ({
 		page,
 	}) => {
@@ -147,11 +193,16 @@ test.describe("Sign Up Page", () => {
 		const emailMessage = await findLastEmail({
 			request,
 			timeout: 10_000,
-			filter: (e) => e.recipients.includes(`<${emailAddress}>`) && e.subject.includes("Email Verification Request"),
+			filter: (e) =>
+				e.recipients.includes(`<${emailAddress}>`) &&
+				e.subject.includes("Email Verification Request"),
 		});
 
 		expect(emailMessage).not.toBeNull();
-		const verificationCode = await findVerificationCode({emailMessage, context}); 
+		const verificationCode = await findVerificationCode({
+			emailMessage,
+			context,
+		});
 
 		await page
 			.getByRole("textbox", { name: "Email Verification Token" })
@@ -410,74 +461,83 @@ test.describe("Sign Up Page", () => {
 		});
 	});
 
-		test("should handle cooldown on multiple email verification requests", async ({ page, request }) => {
-			// increase timeout to incorporate cooldown
-			test.setTimeout(45_000);
-			const emailAddress = "new-tester2@outlook.com";
-		
-			// First email verification request
-	
-			await page.getByLabel("Email Address").fill(emailAddress);
-			await page.getByRole("button", { name: "Continue" }).click();
+	test("should handle cooldown on multiple email verification requests", async ({
+		page,
+		request,
+	}) => {
+		// increase timeout to incorporate cooldown
+		test.setTimeout(45_000);
+		const emailAddress = "new-tester2@outlook.com";
 
-			// wait for second step to load
-			await expect(page.getByLabel("Email Verification Token")).toBeVisible();
-		
-			const firstEmail = await findLastEmail({
-				request,
-				timeout: 10_000,
-				filter: (e) => e.recipients.includes(`<${emailAddress}>`) && e.subject.includes("Email Verification Request"),
-			});
+		// First email verification request
 
-			expect(firstEmail).not.toBeNull();
-	
-			// Navigate to signup page
-			await page.goto("/auth/signup");
-			// Wait for recaptcha to load
-			await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
-		
-			// Second email verification request immediately after
-			await page.getByLabel("Email Address").fill(emailAddress);
-			await page.getByRole("button", { name: "Continue" }).click();
-		
-			// wait for second step to load
-			await expect(page.getByLabel("Email Verification Token")).toBeVisible();
-		
-			const secondEmail = await findLastEmail({
-				request,
-				timeout: 3_000,
-				filter: (e) => e.recipients.includes(`<${emailAddress}>`) && e.subject.includes("Email Verification Request"),
-			});
-		
-			// Ensure no second email was sent due to rate limit
-			expect(secondEmail).not.toBeNull();
-			expect(secondEmail.id).toEqual(firstEmail.id);
-		
-			// Wait for cooldown and try again (after testing env rate limit expires)
-			await page.waitForTimeout(EMAIL_VERIFICATION_TOKEN_COOLDOWN);
-	
-			// Navigate to reset password page
-			// Navigate to signup page
-			await page.goto("/auth/signup");
-			// Wait for recaptcha to load
-			await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
-	
-			await page.getByLabel("Email Address").fill(emailAddress);
-			await page.getByRole("button", { name: "Continue" }).click();
+		await page.getByLabel("Email Address").fill(emailAddress);
+		await page.getByRole("button", { name: "Continue" }).click();
 
-			// wait for second step to load
-			await expect(page.getByLabel("Email Verification Token")).toBeVisible();
-		
-			const thirdEmail = await findLastEmail({
-				request,
-				timeout: 10_000,
-				filter: (e) => e.recipients.includes(`<${emailAddress}>`) && e.subject.includes("Email Verification Request"),
-			});
-		
-			// Confirm third attempt succeeded after rate limit expired
-			expect(thirdEmail).not.toBeNull();
-			expect(thirdEmail.id).not.toEqual(firstEmail.id);
+		// wait for second step to load
+		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
+
+		const firstEmail = await findLastEmail({
+			request,
+			timeout: 10_000,
+			filter: (e) =>
+				e.recipients.includes(`<${emailAddress}>`) &&
+				e.subject.includes("Email Verification Request"),
 		});
+
+		expect(firstEmail).not.toBeNull();
+
+		// Navigate to signup page
+		await page.goto("/auth/signup");
+		// Wait for recaptcha to load
+		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+
+		// Second email verification request immediately after
+		await page.getByLabel("Email Address").fill(emailAddress);
+		await page.getByRole("button", { name: "Continue" }).click();
+
+		// wait for second step to load
+		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
+
+		const secondEmail = await findLastEmail({
+			request,
+			timeout: 3_000,
+			filter: (e) =>
+				e.recipients.includes(`<${emailAddress}>`) &&
+				e.subject.includes("Email Verification Request"),
+		});
+
+		// Ensure no second email was sent due to rate limit
+		expect(secondEmail).not.toBeNull();
+		expect(secondEmail.id).toEqual(firstEmail.id);
+
+		// Wait for cooldown and try again (after testing env rate limit expires)
+		await page.waitForTimeout(EMAIL_VERIFICATION_TOKEN_COOLDOWN);
+
+		// Navigate to reset password page
+		// Navigate to signup page
+		await page.goto("/auth/signup");
+		// Wait for recaptcha to load
+		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+
+		await page.getByLabel("Email Address").fill(emailAddress);
+		await page.getByRole("button", { name: "Continue" }).click();
+
+		// wait for second step to load
+		await expect(page.getByLabel("Email Verification Token")).toBeVisible();
+
+		const thirdEmail = await findLastEmail({
+			request,
+			timeout: 10_000,
+			filter: (e) =>
+				e.recipients.includes(`<${emailAddress}>`) &&
+				e.subject.includes("Email Verification Request"),
+		});
+
+		// Confirm third attempt succeeded after rate limit expired
+		expect(thirdEmail).not.toBeNull();
+		expect(thirdEmail.id).not.toEqual(firstEmail.id);
+	});
 });
 
 test.describe("Sign Up Page Authentication Redirects", () => {

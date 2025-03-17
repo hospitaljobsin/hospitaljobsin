@@ -8,6 +8,7 @@ import {
 import { findLastEmail } from "@/tests/e2e/utils/mailcatcher";
 import type { PlaywrightTestArgs } from "@playwright/test";
 import { expect, test } from "@playwright/test";
+import path from "node:path";
 
 async function enterPassword({
 	page,
@@ -383,5 +384,69 @@ test.describe("Confirm Password Reset Page Not Found", () => {
 		await page.goto("/auth/reset-password/invalid-token");
 
 		await expect(page.getByText(/404 Not Found/)).toBeVisible();
+	});
+});
+
+test.describe("Confirm Password Reset Page Authentication Redirects", () => {
+	test.use({
+		storageState: path.join(__dirname, "../../../playwright/.auth/user.json"),
+	});
+
+	test("should not redirect to home page when already authenticated", async ({
+		page,
+		request,
+	}) => {
+		// Intercept and mock the reCAPTCHA script
+		await page.route("**/recaptcha/**", (route) => {
+			route.fulfill({
+				status: 200,
+				contentType: "application/javascript",
+				body: `
+			window.grecaptcha = {
+			ready: (cb) => cb(),
+			execute: () => Promise.resolve('dummy_recaptcha_token')
+			};
+		`,
+			});
+		});
+		// Navigate to reset password page
+		await page.goto("/auth/reset-password");
+		// Wait for recaptcha to load
+		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+
+		const emailAddress = TESTER_EMAIL;
+		await page.getByLabel("Email Address").fill(emailAddress);
+		await page.getByRole("button", { name: "Request Password Reset" }).click();
+
+		await expect(
+			page.getByText(
+				/If an account with that email exists, we will send you a password reset link. Please check your email inbox./,
+			),
+		).toBeVisible();
+
+		const emailMessage = await findLastEmail({
+			request,
+			timeout: 10_000,
+			filter: (e) =>
+				e.recipients.includes(`<${emailAddress}>`) &&
+				e.subject.includes("Password Reset Request"),
+		});
+
+		expect(emailMessage).not.toBeNull();
+
+		await page.goto(`http://localhost:1080/messages/${emailMessage.id}.html`);
+
+		// Extract the reset password link
+		const resetLink = await page.getAttribute(
+			'a[href*="reset-password"]',
+			"href",
+		);
+
+		expect(resetLink).not.toBeNull();
+
+		await page.goto(resetLink);
+		// ensure we are not redirected here
+		await expect(page).not.toHaveURL("http://localhost:5000/");
+		await expect(page).toHaveURL(resetLink);
 	});
 });
