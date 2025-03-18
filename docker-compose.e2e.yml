@@ -56,7 +56,7 @@ services:
         NODE_ENV: test
         CI: ${CI}
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:5002/"]
+      test: ["CMD", "curl", "--fail", "http://localhost:5002/api/health/"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -83,7 +83,7 @@ services:
         NODE_ENV: test
         CI: ${CI}
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:5000/"]
+      test: ["CMD", "curl", "--fail", "http://localhost:5000/api/health/"]
       interval: 10s
       timeout: 5s
       retries: 10

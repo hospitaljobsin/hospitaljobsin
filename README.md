@@ -56,6 +56,3 @@ tmuxinator start medical_jobs
     cd apps/accounts
     pnpm test:e2e
     ```
-
-
-# TODO: use API routes for health checks in nextjs clients
