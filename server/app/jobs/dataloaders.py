@@ -2,8 +2,8 @@ from typing import Annotated
 
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
-from bson import ObjectId
 
+from app.core.dataloaders import load_many_entities, transform_valid_object_id
 from app.jobs.repositories import JobRepo, SavedJobRepo
 
 from .documents import Job
@@ -15,18 +15,11 @@ async def load_job_by_id(
     job_repo: Annotated[JobRepo, Inject],
 ) -> list[Job | None]:
     """Load multiple jobs by their IDs."""
-    valid_ids = [ObjectId(job_id) for job_id in job_ids if ObjectId.is_valid(job_id)]
-    # Map invalid IDs to `None` for a consistent response structure
-    id_to_job_map = {
-        str(job_id): job
-        for job_id, job in zip(
-            valid_ids,
-            await job_repo.get_many_by_ids(valid_ids),
-            strict=False,
-        )
-    }
-
-    return [id_to_job_map.get(job_id) for job_id in job_ids]
+    return await load_many_entities(
+        keys=job_ids,
+        repo_method=job_repo.get_many_by_ids,
+        key_transform=transform_valid_object_id,
+    )
 
 
 @inject
@@ -35,15 +28,10 @@ async def load_job_by_slug(
     job_repo: Annotated[JobRepo, Inject],
 ) -> list[Job | None]:
     """Load multiple jobs by their slugs."""
-    slug_to_company_map = dict(
-        zip(
-            job_slugs,
-            await job_repo.get_many_by_slugs(job_slugs),
-            strict=False,
-        )
+    return await load_many_entities(
+        keys=job_slugs,
+        repo_method=job_repo.get_many_by_slugs,
     )
-
-    return [slug_to_company_map.get(slug) for slug in job_slugs]
 
 
 @inject
@@ -52,22 +40,11 @@ async def load_saved_job_by_id(
     saved_job_repo: Annotated[SavedJobRepo, Inject],
 ) -> list[Job | None]:
     """Load multiple saved jobs by their IDs."""
-    valid_ids = [
-        (ObjectId(account_id), ObjectId(job_id))
-        for (account_id, job_id) in job_ids
-        if ObjectId.is_valid(account_id) and ObjectId.is_valid(job_id)
-    ]
-    # Map invalid IDs to `None` for a consistent response structure
-    id_to_job_map = {
-        (str(account_id), str(job_id)): job
-        for (account_id, job_id), job in zip(
-            valid_ids,
-            await saved_job_repo.get_many_by_ids(valid_ids),
-            strict=False,
-        )
-    }
-
-    return [
-        id_to_job_map.get((account_id, job_id), None)
-        for (account_id, job_id) in job_ids
-    ]
+    return await load_many_entities(
+        keys=job_ids,
+        repo_method=saved_job_repo.get_many_by_ids,
+        key_transform=lambda saved_job_key: (
+            transform_valid_object_id(saved_job_key[0]),
+            transform_valid_object_id(saved_job_key[1]),
+        ),
+    )
