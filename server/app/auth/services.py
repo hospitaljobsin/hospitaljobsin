@@ -166,7 +166,7 @@ class AuthService:
         user_agent: str,
         background_tasks: BackgroundTasks,
     ) -> Result[
-        EmailVerificationToken,
+        int,
         EmailInUseError
         | EmailVerificationTokenCooldownError
         | InvalidRecaptchaTokenError
@@ -227,7 +227,11 @@ class AuthService:
             },
         )
 
-        return Ok(email_verification)
+        return Ok(
+            self._email_verification_token_cooldown_remaining_seconds(
+                email_verification
+            )
+        )
 
     async def verify_email(
         self,

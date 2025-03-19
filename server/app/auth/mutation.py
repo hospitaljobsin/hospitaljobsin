@@ -137,9 +137,9 @@ class AuthMutation:
             user_agent=info.context["user_agent"],
             background_tasks=info.context["background_tasks"],
         ):
-            case Ok(verification_token):
+            case Ok(cooldown_remaining_seconds):
                 return RequestEmailVerificationTokenSuccessType(
-                    remaining_seconds=verification_token.cooldown_remaining_seconds
+                    remaining_seconds=cooldown_remaining_seconds
                 )
             case Err(error):
                 match error:
