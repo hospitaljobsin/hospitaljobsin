@@ -84,7 +84,9 @@ from app.config import Settings
 from app.core.constants import (
     APP_NAME,
     EMAIL_VERIFICATION_EXPIRES_IN,
+    EMAIL_VERIFICATION_TOKEN_COOLDOWN,
     PASSWORD_RESET_EXPIRES_IN,
+    PASSWORD_RESET_TOKEN_COOLDOWN,
     SUDO_MODE_EXPIRES_IN,
 )
 from app.core.emails import EmailSender
@@ -127,6 +129,38 @@ class AuthService:
         self._settings = settings
         self._recaptcha_verifier = recaptcha_verifier
 
+    def _is_email_verification_token_cooled_down(
+        self, token: EmailVerificationToken
+    ) -> bool:
+        """Check if an email verification token is cooled down."""
+        current_time = datetime.now(UTC)
+        # Ensure generation_time is aware (assuming it's stored in UTC)
+        generation_time_aware = token.id.generation_time.replace(tzinfo=UTC)
+        cooldown_time = generation_time_aware + timedelta(
+            seconds=EMAIL_VERIFICATION_TOKEN_COOLDOWN
+        )
+        return current_time >= cooldown_time
+
+    def _email_verification_token_cooldown_remaining_seconds(
+        self, token: EmailVerificationToken
+    ) -> int:
+        """
+        Calculate remaining cooldown seconds for the email verification token.
+
+        Returns 0 if cooldown has passed or token is invalid.
+        """
+        if self._is_email_verification_token_cooled_down(token):
+            return 0
+
+        current_time = datetime.now(UTC)
+        generation_time_aware = token.id.generation_time.replace(tzinfo=UTC)
+        cooldown_time = generation_time_aware + timedelta(
+            seconds=EMAIL_VERIFICATION_TOKEN_COOLDOWN
+        )
+
+        remaining = (cooldown_time - current_time).total_seconds()
+        return max(0, int(remaining))  # Ensure non-negative integer
+
     async def request_email_verification_token(
         self,
         email: str,
@@ -163,10 +197,14 @@ class AuthService:
         )
 
         if existing_email_verification_token is not None:
-            if not existing_email_verification_token.is_cooled_down:
+            if not self._is_email_verification_token_cooled_down(
+                existing_email_verification_token
+            ):
                 return Err(
                     EmailVerificationTokenCooldownError(
-                        remaining_seconds=existing_email_verification_token.cooldown_remaining_seconds
+                        remaining_seconds=self._email_verification_token_cooldown_remaining_seconds(
+                            existing_email_verification_token
+                        )
                     )
                 )
             await self._email_verification_token_repo.delete(
@@ -776,6 +814,38 @@ class AuthService:
             return Err(PasswordResetTokenNotFoundError())
         return Ok(reset_token)
 
+    def _is_password_reset_token_cooled_down(
+        self, token: EmailVerificationToken
+    ) -> bool:
+        """Check if a password reset token is cooled down."""
+        current_time = datetime.now(UTC)
+        # Ensure generation_time is aware (assuming it's stored in UTC)
+        generation_time_aware = token.id.generation_time.replace(tzinfo=UTC)
+        cooldown_time = generation_time_aware + timedelta(
+            seconds=PASSWORD_RESET_TOKEN_COOLDOWN
+        )
+        return current_time >= cooldown_time
+
+    def _password_reset_token_cooldown_remaining_seconds(
+        self, token: EmailVerificationToken
+    ) -> int:
+        """
+        Calculate remaining cooldown seconds for the password reset token.
+
+        Returns 0 if cooldown has passed or token is invalid.
+        """
+        if self._is_password_reset_token_cooled_down(token):
+            return 0
+
+        current_time = datetime.now(UTC)
+        generation_time_aware = token.id.generation_time.replace(tzinfo=UTC)
+        cooldown_time = generation_time_aware + timedelta(
+            seconds=PASSWORD_RESET_TOKEN_COOLDOWN
+        )
+
+        remaining = (cooldown_time - current_time).total_seconds()
+        return max(0, int(remaining))  # Ensure non-negative integer
+
     async def request_password_reset(
         self,
         email: str,
@@ -797,10 +867,14 @@ class AuthService:
         )
 
         if existing_password_reset_token is not None:
-            if not existing_password_reset_token.is_cooled_down:
+            if not self._is_password_reset_token_cooled_down(
+                existing_password_reset_token
+            ):
                 return Err(
                     PasswordResetTokenCooldownError(
-                        remaining_seconds=existing_password_reset_token.cooldown_remaining_seconds
+                        remaining_seconds=self._password_reset_token_cooldown_remaining_seconds(
+                            existing_password_reset_token
+                        )
                     )
                 )
             await self._password_reset_token_repo.delete(existing_password_reset_token)

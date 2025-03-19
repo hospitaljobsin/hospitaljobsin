@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Literal
 
 from beanie import BackLink, Document, Indexed, Link
@@ -7,7 +7,6 @@ from pymongo import IndexModel
 
 from app.base.models import Address
 from app.core.constants import (
-    EMAIL_VERIFICATION_TOKEN_COOLDOWN,
     AuthProvider,
     TwoFactorProvider,
 )
@@ -110,37 +109,6 @@ class EmailVerificationToken(Document):
     def is_expired(self) -> bool:
         """Check if the token is expired."""
         return datetime.now(UTC) >= (self.expires_at.replace(tzinfo=UTC))
-
-    @property
-    def is_cooled_down(self) -> bool:
-        """Check if the token is cooled down."""
-        # Get the current time as an aware datetime in UTC
-        current_time = datetime.now(UTC)
-        # Ensure generation_time is aware (assuming it's stored in UTC)
-        generation_time_aware = self.id.generation_time.replace(tzinfo=UTC)
-        cooldown_time = generation_time_aware + timedelta(
-            seconds=EMAIL_VERIFICATION_TOKEN_COOLDOWN
-        )
-        return current_time >= cooldown_time
-
-    @property
-    def cooldown_remaining_seconds(self) -> int:
-        """
-        Calculate remaining cooldown seconds.
-
-        Returns 0 if cooldown has passed or token is invalid.
-        """
-        if self.is_cooled_down:
-            return 0
-
-        current_time = datetime.now(UTC)
-        generation_time_aware = self.id.generation_time.replace(tzinfo=UTC)
-        cooldown_time = generation_time_aware + timedelta(
-            seconds=EMAIL_VERIFICATION_TOKEN_COOLDOWN
-        )
-
-        remaining = (cooldown_time - current_time).total_seconds()
-        return max(0, int(remaining))  # Ensure non-negative integer
 
     class Settings:
         name = "email_verification_tokens"
