@@ -781,7 +781,6 @@ class AuthMutation:
         match await auth_service.update_password(
             new_password=new_password,
             account=info.context["current_user"],
-            request=info.context["request"],
         ):
             case Err(error):
                 match error:
@@ -811,7 +810,6 @@ class AuthMutation:
         """Delete the current user's password."""
         match await auth_service.delete_password(
             account=info.context["current_user"],
-            request=info.context["request"],
         ):
             case Err(error):
                 match error:

@@ -38,7 +38,6 @@ function writePreloadedQueryToCache<
 	TRequest extends ConcreteRequest,
 	TQuery extends OperationType,
 >(preloadedQueryObject: SerializablePreloadedQuery<TRequest, TQuery>) {
-	// TODO: write the normalized data to cache here
 	const cacheKey =
 		preloadedQueryObject.params.id ?? preloadedQueryObject.params.cacheID;
 	responseCache?.set(

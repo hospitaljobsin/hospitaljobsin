@@ -614,9 +614,8 @@ class AuthService:
         ):
             return Err(InvalidCredentialsError())
 
-        if account.has_2fa_enabled:
+        if account.has_2fa_enabled and "authenticator" in account.two_factor_providers:
             # Set 2FA challenge cookie
-            # TODO: 2fa is not only for authenticator apps
             (
                 challenge,
                 two_factor_challenge,
@@ -700,9 +699,8 @@ class AuthService:
                 provider_user_id=user_info["sub"],
             )
 
-        if account.has_2fa_enabled:
+        if account.has_2fa_enabled and "authenticator" in account.two_factor_providers:
             # Set 2FA challenge cookie
-            # TODO: 2fa is not only for authenticator apps
             (
                 challenge,
                 two_factor_challenge,
@@ -1044,7 +1042,6 @@ class AuthService:
         self,
         new_password: str,
         account: Account,
-        request: Request,
     ) -> Result[Account, PasswordNotStrongError]:
         """Update the current user's password."""
         if not self.check_password_strength(password=new_password):
@@ -1062,22 +1059,16 @@ class AuthService:
                 ],
             )
 
-        # TODO: logout all other sessions here??
-
         return Ok(account)
 
     async def delete_password(
-        self,
-        account: Account,
-        request: Request,
+        self, account: Account
     ) -> Result[Account, InsufficientAuthProvidersError]:
         """Delete the current user's password."""
         if account.auth_providers == ["password"]:
             return Err(InsufficientAuthProvidersError())
 
         account = await self._account_repo.delete_password(account=account)
-
-        # TODO: logout all other sessions here??
 
         return Ok(account)
 
