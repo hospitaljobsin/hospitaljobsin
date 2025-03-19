@@ -84,9 +84,7 @@ from app.config import Settings
 from app.core.constants import (
     APP_NAME,
     EMAIL_VERIFICATION_EXPIRES_IN,
-    EMAIL_VERIFICATION_TOKEN_COOLDOWN,
     PASSWORD_RESET_EXPIRES_IN,
-    PASSWORD_RESET_TOKEN_COOLDOWN,
     SUDO_MODE_EXPIRES_IN,
 )
 from app.core.emails import EmailSender
@@ -137,7 +135,7 @@ class AuthService:
         # Ensure generation_time is aware (assuming it's stored in UTC)
         generation_time_aware = token.id.generation_time.replace(tzinfo=UTC)
         cooldown_time = generation_time_aware + timedelta(
-            seconds=EMAIL_VERIFICATION_TOKEN_COOLDOWN
+            seconds=self._settings.email_verification_token_cooldown
         )
         return current_time >= cooldown_time
 
@@ -155,7 +153,7 @@ class AuthService:
         current_time = datetime.now(UTC)
         generation_time_aware = token.id.generation_time.replace(tzinfo=UTC)
         cooldown_time = generation_time_aware + timedelta(
-            seconds=EMAIL_VERIFICATION_TOKEN_COOLDOWN
+            seconds=self._settings.email_verification_token_cooldown
         )
 
         remaining = (cooldown_time - current_time).total_seconds()
@@ -822,7 +820,7 @@ class AuthService:
         # Ensure generation_time is aware (assuming it's stored in UTC)
         generation_time_aware = token.id.generation_time.replace(tzinfo=UTC)
         cooldown_time = generation_time_aware + timedelta(
-            seconds=PASSWORD_RESET_TOKEN_COOLDOWN
+            seconds=self._settings.password_reset_token_cooldown
         )
         return current_time >= cooldown_time
 
@@ -840,7 +838,7 @@ class AuthService:
         current_time = datetime.now(UTC)
         generation_time_aware = token.id.generation_time.replace(tzinfo=UTC)
         cooldown_time = generation_time_aware + timedelta(
-            seconds=PASSWORD_RESET_TOKEN_COOLDOWN
+            seconds=self._settings.password_reset_token_cooldown
         )
 
         remaining = (cooldown_time - current_time).total_seconds()

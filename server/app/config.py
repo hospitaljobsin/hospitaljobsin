@@ -160,6 +160,11 @@ class Settings(BaseSettings):
         ),
     ]
 
+    # tokens cooldown config
+    email_verification_token_cooldown: int = 60 * 3
+
+    password_reset_token_cooldown: int = 60 * 3
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",

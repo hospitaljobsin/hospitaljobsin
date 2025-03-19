@@ -28,6 +28,8 @@ services:
       SERVER_RP_NAME: 'Starter'
       SERVER_RP_EXPECTED_ORIGIN: 'http://localhost:5002'
       SERVER_JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
+      SERVER_EMAIL_VERIFICATION_TOKEN_COOLDOWN: 20
+      SERVER_PASSWORD_RESET_TOKEN_COOLDOWN: 20
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8000/health/"]
       interval: 10s
