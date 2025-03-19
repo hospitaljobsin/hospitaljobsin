@@ -1,6 +1,6 @@
 import {
 	NONEXISTENT_TESTER_EMAIL,
-	PASSWORD_RESET_TOKEN_COOLDONW,
+	PASSWORD_RESET_TOKEN_COOLDOWN,
 	TESTER_EMAIL,
 	TESTER_EMAIL_2,
 } from "@/tests/e2e/utils/constants";
@@ -204,7 +204,7 @@ test.describe("Request Password Reset Page", () => {
 		expect(secondEmail.id).toEqual(firstEmail.id);
 
 		// Wait for cooldown and try again (after testing env rate limit expires)
-		await page.waitForTimeout(PASSWORD_RESET_TOKEN_COOLDONW);
+		await page.waitForTimeout(PASSWORD_RESET_TOKEN_COOLDOWN);
 
 		// Navigate to reset password page
 		await page.goto("/auth/reset-password");
