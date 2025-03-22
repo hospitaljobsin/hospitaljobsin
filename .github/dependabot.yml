@@ -3,28 +3,28 @@ updates:
   # Enable version updates for accounts
   - package-ecosystem: "npm"
     directory: "/apps/accounts/"
-    # Check the npm registry for updates every day (weekdays)
+    # Check the npm registry for updates every week
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   # Enable version updates for seeker-portal
   - package-ecosystem: "npm"
     directory: "/apps/seeker-portal/"
-    # Check the npm registry for updates every day (weekdays)
+    # Check the npm registry for updates every week
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   # Enable version updates for recruiter-portal
   - package-ecosystem: "npm"
     directory: "/apps/recruiter-portal/"
-    # Check the npm registry for updates every day (weekdays)
+    # Check the npm registry for updates every week
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   # Enable version updates for server
   - package-ecosystem: "uv"
     directory: "/server/"
-    # Check the pip registry for updates every day (weekdays)
+    # Check the pip registry for updates every week
     schedule:
       interval: "weekly"
 
@@ -39,6 +39,17 @@ updates:
   # Enable version updates for Terraform infrastructure
   - package-ecosystem: "terraform"
     directory: "/infrastructure/"
-    # Check the Terraform registry for updates every day (weekdays)
+    # Check the Terraform registry for updates every week
     schedule:
-      interval: "daily"
+      interval: "weekly"
+
+  # Enable version updates for Docker images
+  - package-ecosystem: "docker"
+    directories: 
+      - "/server/"
+      - "/apps/accounts/"
+      - "/apps/seeker-portal/"
+      - "/apps/recruiter-portal/"
+    # Check the Docker registry for updates every week
+    schedule:
+      interval: "weekly"
