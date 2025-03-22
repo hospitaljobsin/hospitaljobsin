@@ -10,8 +10,8 @@ K = TypeVar("K")
 
 async def load_many_entities(
     keys: list[K],
-    repo_method: Callable[[list], Awaitable[list[T]]],
-    key_transform: Callable[[K], T | None] = lambda x: x,
+    repo_method: Callable[[list[K]], Awaitable[list[T]]],
+    key_transform: Callable[[K], K | None] = lambda x: x,
 ) -> list[T | None]:
     """
     Load entities by keys (IDs, slugs, etc.).
@@ -22,7 +22,9 @@ async def load_many_entities(
     :return: A list of entities matching the keys, preserving the original order.
     """
     # Transform and validate keys
-    valid_keys = [key_transform(key) for key in keys if key_transform(key)]
+    valid_keys: list[K] = [
+        key for key in (key_transform(key) for key in keys) if key is not None
+    ]
 
     # Fetch data using the provided repo method
     fetched_entities = await repo_method(valid_keys)
@@ -37,7 +39,12 @@ async def load_many_entities(
     )
 
     # Return entities in the original key order, with None for invalid/missing keys
-    return [key_to_entity_map.get(key_transform(key)) for key in keys]
+    return [
+        key_to_entity_map.get(transformed_key)
+        if (transformed_key := key_transform(key)) is not None
+        else None
+        for key in keys
+    ]
 
 
 def transform_valid_object_id(key: str) -> ObjectId | None:

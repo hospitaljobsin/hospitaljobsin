@@ -38,6 +38,8 @@ dev-dependencies = [
     "types-aioboto3[essential]>=13.4.0",
     "types-authlib>=1.4.0.20241230",
     "types-python-jose>=3.4.0.20250224",
+    "mypy>=1.15.0",
+    "ruff>=0.11.2",
 ]
 
 [tool.mypy]
