@@ -29,11 +29,12 @@ class Dataloaders:
     profile_by_id: DataLoader[ObjectId, Profile | None]
 
 
+# TODO: add create_dataloaders to container, that way we can inject it
 def create_dataloaders() -> Dataloaders:
     """Create and return all dataloaders."""
     return Dataloaders(
         job_by_id=DataLoader(
-            load_fn=load_job_by_id,
+            load_fn=load_job_by_id,  # type: ignore[arg-type]
         ),
         job_by_slug=DataLoader(
             load_fn=load_job_by_slug,  # type: ignore[arg-type]
