@@ -35,3 +35,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+
+  # Enable version updates for Terraform infrastructure
+  - package-ecosystem: "terraform"
+    directory: "/infrastructure/"
+    # Check the Terraform registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
