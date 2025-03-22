@@ -53,3 +53,10 @@ updates:
     # Check the Docker registry for updates every week
     schedule:
       interval: "weekly"
+
+  # Enable version updates for Docker Compose files
+  - package-ecosystem: "docker-compose"
+    directory: "/"
+    # Check the Docker registry for updates every week
+    schedule:
+      interval: "weekly"
