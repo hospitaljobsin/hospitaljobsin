@@ -33,7 +33,7 @@ def create_dataloaders() -> Dataloaders:
     """Create and return all dataloaders."""
     return Dataloaders(
         job_by_id=DataLoader(
-            load_fn=load_job_by_id,  # type: ignore[arg-type]
+            load_fn=load_job_by_id,
         ),
         job_by_slug=DataLoader(
             load_fn=load_job_by_slug,  # type: ignore[arg-type]

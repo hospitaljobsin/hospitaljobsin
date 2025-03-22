@@ -1,0 +1,37 @@
+version: 2
+updates:
+  # Enable version updates for accounts
+  - package-ecosystem: "npm"
+    directory: "/apps/accounts/"
+    # Check the npm registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
+
+  # Enable version updates for seeker-portal
+  - package-ecosystem: "npm"
+    directory: "/apps/seeker-portal/"
+    # Check the npm registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
+
+  # Enable version updates for recruiter-portal
+  - package-ecosystem: "npm"
+    directory: "/apps/recruiter-portal/"
+    # Check the npm registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
+
+  # Enable version updates for server
+  - package-ecosystem: "uv"
+    directory: "/server/"
+    # Check the pip registry for updates every day (weekdays)
+    schedule:
+      interval: "weekly"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    # Workflow files stored in the default location of `.github/workflows`
+    # You don't need to specify `/.github/workflows` for `directory`. You can use `directory: "/"`.
+    directory: "/"
+    schedule:
+      interval: "weekly"
