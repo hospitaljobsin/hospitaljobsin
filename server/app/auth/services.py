@@ -560,7 +560,7 @@ class AuthService:
         if not await self._verify_recaptcha_token(recaptcha_token):
             return Err(InvalidRecaptchaTokenError())
 
-        webauthn_challenge: str = request.session.get("webauthn_challenge")
+        webauthn_challenge: str | None = request.session.get("webauthn_challenge")
         if webauthn_challenge is None:
             return Err(WebAuthnChallengeNotFoundError())
 
@@ -568,12 +568,9 @@ class AuthService:
             authentication_credential = parse_authentication_credential_json(
                 authentication_response
             )
-            print("authentication_credential", authentication_credential)
             web_authn_credential = await self._web_authn_credential_repo.get(
                 credential_id=authentication_credential.raw_id
             )
-
-            print("web_authn_credential", web_authn_credential)
 
             if web_authn_credential is None:
                 return Err(InvalidPasskeyAuthenticationCredentialError())
