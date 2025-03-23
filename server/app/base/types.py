@@ -1,4 +1,4 @@
-from typing import ClassVar, Generic, Self, TypeVar
+from typing import Generic, Self, TypeVar, get_args, get_origin
 
 import strawberry
 from beanie import Document
@@ -36,10 +36,6 @@ EdgeType = TypeVar("EdgeType", bound=BaseEdgeType[NodeType, ModelType])
 
 @strawberry.type(name="Connection")
 class BaseConnectionType(Generic[NodeType, EdgeType]):
-    node_type: ClassVar[NodeType]
-
-    edge_type: ClassVar[EdgeType]
-
     page_info: relay.PageInfo = field(
         description="Information to aid in pagination.",
     )
@@ -49,26 +45,51 @@ class BaseConnectionType(Generic[NodeType, EdgeType]):
     )
 
     @classmethod
+    def get_node_type(cls) -> type[NodeType]:
+        """Introspect the generic bases to extract the NodeType."""
+        for base in getattr(cls, "__orig_bases__", []):
+            origin = get_origin(base)
+            if origin is BaseConnectionType:
+                args = get_args(base)
+                if args:
+                    return args[0]
+        error_message = f"NodeType not found for {cls.__name__}"
+        raise RuntimeError(error_message)
+
+    @classmethod
+    def get_edge_type(cls) -> type[EdgeType]:
+        """Introspect the generic bases to extract the EdgeType."""
+        for base in getattr(cls, "__orig_bases__", []):
+            origin = get_origin(base)
+            if origin is BaseConnectionType:
+                args = get_args(base)
+                if len(args) > 1:
+                    return args[1]
+        error_message = f"EdgeType not found for {cls.__name__}"
+        raise RuntimeError(error_message)
+
+    @classmethod
     def marshal(cls, paginated_result: PaginatedResult[ModelType, CursorType]) -> Self:
         return cls(
             page_info=relay.PageInfo(
                 has_next_page=paginated_result.page_info.has_next_page,
                 has_previous_page=paginated_result.page_info.has_previous_page,
                 start_cursor=relay.to_base64(
-                    cls.node_type,
+                    cls.get_node_type(),
                     paginated_result.page_info.start_cursor,
                 )
                 if paginated_result.page_info.start_cursor
                 else None,
                 end_cursor=relay.to_base64(
-                    cls.node_type,
+                    cls.get_node_type(),
                     paginated_result.page_info.end_cursor,
                 )
                 if paginated_result.page_info.end_cursor
                 else None,
             ),
             edges=[
-                cls.edge_type.marshal(entity) for entity in paginated_result.entities
+                cls.get_edge_type().marshal(entity)
+                for entity in paginated_result.entities
             ],
         )
 

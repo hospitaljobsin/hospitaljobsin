@@ -209,8 +209,7 @@ class JobEdgeType(BaseEdgeType[JobType, Job]):
 
 @strawberry.type(name="JobConnection")
 class JobConnectionType(BaseConnectionType[JobType, JobEdgeType]):
-    node_type = JobType
-    edge_type = JobEdgeType
+    pass
 
 
 @strawberry.type(name="SavedJobEdge")
@@ -231,8 +230,7 @@ class SavedJobEdgeType(BaseEdgeType[JobType, SavedJob]):
 
 @strawberry.type(name="SavedJobConnection")
 class SavedJobConnectionType(BaseConnectionType[JobType, SavedJobEdgeType]):
-    node_type = JobType
-    edge_type = SavedJobEdgeType
+    pass
 
 
 @strawberry.type(

@@ -51,8 +51,7 @@ class OrganizationMemberEdgeType(BaseEdgeType[AccountType, OrganizationMember]):
 class OrganizationMemberConnectionType(
     BaseConnectionType[AccountType, OrganizationMemberEdgeType]
 ):
-    node_type = AccountType
-    edge_type = OrganizationMemberEdgeType
+    pass
 
 
 @strawberry.type(
@@ -266,8 +265,7 @@ class OrganizationEdgeType(BaseEdgeType[OrganizationType, Organization]):
 class OrganizationConnectionType(
     BaseConnectionType[OrganizationType, OrganizationEdgeType]
 ):
-    node_type = OrganizationType
-    edge_type = OrganizationEdgeType
+    pass
 
 
 @strawberry.type(
