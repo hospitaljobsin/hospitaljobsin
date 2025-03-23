@@ -1,35 +1,37 @@
 from typing import Annotated
 
 from aioinject import Inject
-from aioinject.ext.strawberry import inject
+from strawberry.dataloader import DataLoader
 
 from app.accounts.repositories import AccountRepo, ProfileRepo
-from app.core.dataloaders import load_many_entities, transform_valid_object_id
+from app.core.dataloaders import (
+    create_dataloader,
+    transform_valid_object_id,
+)
 
 from .documents import Account, Profile
 
+type AccountByIdLoader = DataLoader[str, Account | None]
 
-@inject
-async def load_account_by_id(
-    account_ids: list[str],
+
+async def get_account_by_id_dataloader(
     account_repo: Annotated[AccountRepo, Inject],
-) -> list[Account | None]:
-    """Load multiple accounts by their IDs."""
-    return await load_many_entities(
-        keys=account_ids,
+) -> AccountByIdLoader:
+    """Create a dataloader to load accounts by their IDs."""
+    return create_dataloader(
         repo_method=account_repo.get_many_by_ids,
         key_transform=transform_valid_object_id,
     )
 
 
-@inject
-async def load_profile_by_id(
-    profile_ids: list[str],
+type ProfileByIdLoader = DataLoader[str, Profile | None]
+
+
+async def get_profile_by_id_dataloader(
     profile_repo: Annotated[ProfileRepo, Inject],
-) -> list[Profile | None]:
-    """Load multiple profiles by their IDs."""
-    return await load_many_entities(
-        keys=profile_ids,
+) -> ProfileByIdLoader:
+    """Create a dataloader to load profiles by their IDs."""
+    return create_dataloader(
         repo_method=profile_repo.get_many_by_ids,
         key_transform=transform_valid_object_id,
     )

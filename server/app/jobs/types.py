@@ -148,7 +148,7 @@ class JobType(BaseNodeType[Job]):
             organization_id=str(job.organization.ref.id),
         )
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="Whether the job is saved by the current user.",
     )
     async def is_saved(self, info: Info) -> bool:
@@ -161,7 +161,7 @@ class JobType(BaseNodeType[Job]):
         )
         return saved_job is not None
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="The organization of the job.",
     )
     @inject

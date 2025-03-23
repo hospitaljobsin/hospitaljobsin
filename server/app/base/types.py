@@ -5,9 +5,9 @@ from beanie import Document
 from strawberry import field, relay
 
 from app.base.models import Address
-from app.database.paginator import PaginatedResult
+from app.database.paginator import CursorType, PaginatedResult
 
-ModelType = TypeVar("ModelType")
+ModelType = TypeVar("ModelType", bound=Document)
 
 
 @strawberry.type
@@ -20,7 +20,7 @@ class BaseNodeType(Generic[ModelType], relay.Node):
         raise NotImplementedError
 
 
-NodeType = TypeVar("NodeType", bound=BaseNodeType[Document])
+NodeType = TypeVar("NodeType", bound=BaseNodeType[ModelType])
 
 
 @strawberry.type
@@ -49,7 +49,7 @@ class BaseConnectionType(Generic[NodeType, EdgeType]):
     )
 
     @classmethod
-    def marshal(cls, paginated_result: PaginatedResult[ModelType, str]) -> Self:
+    def marshal(cls, paginated_result: PaginatedResult[ModelType, CursorType]) -> Self:
         return cls(
             page_info=relay.PageInfo(
                 has_next_page=paginated_result.page_info.has_next_page,

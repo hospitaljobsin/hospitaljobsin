@@ -111,7 +111,7 @@ class OrganizationType(BaseNodeType[Organization]):
             for organization in organizations
         ]
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="The logo URL of the organization.",
     )
     async def logo_url(self) -> str:
@@ -121,7 +121,7 @@ class OrganizationType(BaseNodeType[Organization]):
         slug_hash = hashlib.sha256(self.slug.encode("utf-8")).hexdigest()
         return f"https://api.dicebear.com/9.x/identicon/png?seed={slug_hash}"
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="Whether the current user is an admin in this organization.",
     )
     @inject
@@ -138,7 +138,7 @@ class OrganizationType(BaseNodeType[Organization]):
             organization_id=ObjectId(self.id),
         )
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="Whether the current user is an member in this organization.",
     )
     @inject
@@ -155,7 +155,7 @@ class OrganizationType(BaseNodeType[Organization]):
             organization_id=ObjectId(self.id),
         )
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="The jobs posted in the organization.",
     )
     @inject
@@ -204,7 +204,7 @@ class OrganizationType(BaseNodeType[Organization]):
         # Convert to JobConnectionType
         return JobConnectionType.marshal(paginated_jobs)
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="The members of the organization.",
     )
     @inject

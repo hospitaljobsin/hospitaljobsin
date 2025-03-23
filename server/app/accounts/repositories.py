@@ -81,9 +81,9 @@ class AccountRepo:
     async def get_many_by_ids(
         self, account_ids: list[ObjectId]
     ) -> list[Account | None]:
-        """Get multiple profiles by IDs."""
-        profiles = await Account.find(In(Account.id, account_ids)).to_list()
-        account_by_id = {account.id: account for account in profiles}
+        """Get multiple accounts by IDs."""
+        accounts = await Account.find(In(Account.id, account_ids)).to_list()
+        account_by_id = {account.id: account for account in accounts}
 
         return [
             account_by_id.get(PydanticObjectId(account_id))

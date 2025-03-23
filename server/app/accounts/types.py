@@ -324,7 +324,7 @@ class AccountType(BaseNodeType[Account]):
             for account in accounts
         ]
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         graphql_type=ProfilePayload,
         description="The account's profile.",
     )
@@ -335,9 +335,11 @@ class AccountType(BaseNodeType[Account]):
         if isinstance(self.profile_ref, Profile):
             return ProfileType.marshal(self.profile_ref)
         result = await info.context["loaders"].profile_by_id.load(str(self.profile_ref))
+        if result is None:
+            return ProfileNotFoundErrorType()
         return ProfileType.marshal(result)
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="The account's avatar URL.",
     )
     async def avatar_url(
@@ -365,7 +367,7 @@ class AccountType(BaseNodeType[Account]):
         )
         return f"https://www.gravatar.com/avatar/{email_hash}?{query_params}"
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="When the user's sudo mode grant expires at.",
     )
     async def sudo_mode_expires_at(self, info: Info) -> datetime | None:
@@ -379,7 +381,7 @@ class AccountType(BaseNodeType[Account]):
             else None
         )
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="The organizations the account is in.",
     )
     @inject
@@ -429,7 +431,7 @@ class AccountType(BaseNodeType[Account]):
 
         return OrganizationConnectionType.marshal(memberships)
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="The session for the current user.",
     )
     @inject
@@ -441,7 +443,7 @@ class AccountType(BaseNodeType[Account]):
 
         return SessionType.marshal(info.context["session"])
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="The sessions for the account.",
     )
     @inject
@@ -491,7 +493,7 @@ class AccountType(BaseNodeType[Account]):
 
         return SessionConnectionType.marshal(sessions)
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="The webauthn credentials for the account.",
     )
     @inject

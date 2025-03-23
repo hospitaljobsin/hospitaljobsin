@@ -10,7 +10,7 @@ from app.auth.repositories import SessionRepo
 from app.auth.services import AuthService
 
 from .context import AuthContext, BaseContext, Context
-from .dataloaders import create_dataloaders
+from .dataloaders import Dataloaders
 from .schema import schema
 
 
@@ -27,6 +27,7 @@ async def get_context(
     ],
     session_repo: Injected[SessionRepo],
     auth_service: Injected[AuthService],
+    dataloaders: Injected[Dataloaders],
     user_agent: Annotated[str | None, Header()] = "unknown",
 ) -> BaseContext:
     """Get the context for the GraphQL request."""
@@ -37,7 +38,7 @@ async def get_context(
                 request=request,
                 response=response,
                 background_tasks=background_tasks,
-                loaders=create_dataloaders(),
+                loaders=dataloaders,
                 current_user=session.account,
                 session=session,
                 user_agent=user_agent,
@@ -51,7 +52,7 @@ async def get_context(
         request=request,
         response=response,
         background_tasks=background_tasks,
-        loaders=create_dataloaders(),
+        loaders=dataloaders,
         current_user=None,
         session=None,
         user_agent=user_agent,

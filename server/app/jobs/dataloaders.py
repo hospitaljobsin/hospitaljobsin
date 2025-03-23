@@ -1,50 +1,52 @@
 from typing import Annotated
 
 from aioinject import Inject
-from aioinject.ext.strawberry import inject
+from strawberry.dataloader import DataLoader
 
-from app.core.dataloaders import load_many_entities, transform_valid_object_id
+from app.core.dataloaders import (
+    create_dataloader,
+    transform_default,
+    transform_valid_object_id,
+    transform_valid_object_id_tuple,
+)
 from app.jobs.repositories import JobRepo, SavedJobRepo
 
 from .documents import Job
 
+type JobByIdLoader = DataLoader[str, Job | None]
 
-@inject
-async def load_job_by_id(
-    job_ids: list[str],
+
+async def get_job_by_id_dataloader(
     job_repo: Annotated[JobRepo, Inject],
-) -> list[Job | None]:
-    """Load multiple jobs by their IDs."""
-    return await load_many_entities(
-        keys=job_ids,
+) -> JobByIdLoader:
+    """Create a dataloader to load jobs by their IDs."""
+    return create_dataloader(
         repo_method=job_repo.get_many_by_ids,
         key_transform=transform_valid_object_id,
     )
 
 
-@inject
-async def load_job_by_slug(
-    job_slugs: list[str],
+type JobBySlugLoader = DataLoader[str, Job | None]
+
+
+async def get_job_by_slug_dataloader(
     job_repo: Annotated[JobRepo, Inject],
-) -> list[Job | None]:
-    """Load multiple jobs by their slugs."""
-    return await load_many_entities(
-        keys=job_slugs,
+) -> JobBySlugLoader:
+    """Create a dataloader to load jobs by their slugs."""
+    return create_dataloader(
         repo_method=job_repo.get_many_by_slugs,
+        key_transform=transform_default,
     )
 
 
-@inject
-async def load_saved_job_by_id(
-    job_ids: list[tuple[str, str]],
+type SavedJobByIdLoader = DataLoader[tuple[str, str], Job | None]
+
+
+async def get_saved_job_by_id_dataloader(
     saved_job_repo: Annotated[SavedJobRepo, Inject],
-) -> list[Job | None]:
-    """Load multiple saved jobs by their IDs."""
-    return await load_many_entities(
-        keys=job_ids,
+) -> SavedJobByIdLoader:
+    """Create a dataloader to load saved jobs by their IDs."""
+    return create_dataloader(
         repo_method=saved_job_repo.get_many_by_ids,
-        key_transform=lambda saved_job_key: (
-            transform_valid_object_id(saved_job_key[0]),
-            transform_valid_object_id(saved_job_key[1]),
-        ),
+        key_transform=transform_valid_object_id_tuple,
     )

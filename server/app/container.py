@@ -2,6 +2,10 @@ from functools import lru_cache
 
 import aioinject
 
+from app.accounts.dataloaders import (
+    get_account_by_id_dataloader,
+    get_profile_by_id_dataloader,
+)
 from app.accounts.repositories import (
     AccountRepo,
     EmailVerificationTokenRepo,
@@ -25,8 +29,18 @@ from app.core.emails import EmailSender, get_smtp_client
 from app.core.oauth import get_oauth_client
 from app.core.recaptcha import get_recaptcha_verifier
 from app.core.templates import get_jinja2_environment
+from app.dataloaders import create_dataloaders
+from app.jobs.dataloaders import (
+    get_job_by_id_dataloader,
+    get_job_by_slug_dataloader,
+    get_saved_job_by_id_dataloader,
+)
 from app.jobs.repositories import JobRepo, SavedJobRepo
 from app.jobs.services import SavedJobService
+from app.organizations.dataloaders import (
+    get_organization_by_id_dataloader,
+    get_organization_by_slug_dataloader,
+)
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
 from app.organizations.services import OrganizationMemberService, OrganizationService
 
@@ -63,4 +77,12 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(TwoFactorAuthenticationChallengeRepo))
     container.register(aioinject.Singleton(RecoveryCodeRepo))
     container.register(aioinject.Singleton(TemporaryTwoFactorChallengeRepo))
+    container.register(aioinject.Scoped(get_account_by_id_dataloader))
+    container.register(aioinject.Scoped(get_profile_by_id_dataloader))
+    container.register(aioinject.Scoped(get_job_by_id_dataloader))
+    container.register(aioinject.Scoped(get_job_by_slug_dataloader))
+    container.register(aioinject.Scoped(get_saved_job_by_id_dataloader))
+    container.register(aioinject.Scoped(get_organization_by_id_dataloader))
+    container.register(aioinject.Scoped(get_organization_by_slug_dataloader))
+    container.register(aioinject.Scoped(create_dataloaders))
     return container
