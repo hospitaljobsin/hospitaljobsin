@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, assert_never
 
 import strawberry
 from aioinject import Inject
@@ -66,8 +66,8 @@ class OrganizationMutation:
                         return OrganizationSlugInUseErrorType()
             case Ok(organization):
                 return OrganizationType.marshal(organization)
-            case _:
-                raise NotImplementedError
+            case _ as unreachable:
+                assert_never(unreachable)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=CreateOrganizationLogoPresignedURLPayloadType,

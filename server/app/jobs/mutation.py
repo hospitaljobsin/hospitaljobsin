@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, assert_never
 
 import strawberry
 from aioinject import Inject
@@ -63,8 +63,8 @@ class JobMutation:
                         saved_job,
                     ),
                 )
-            case _:
-                raise NotImplementedError
+            case _ as unreachable:
+                assert_never(unreachable)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UnsaveJobPayload,
@@ -104,5 +104,5 @@ class JobMutation:
                         saved_job,
                     ),
                 )
-            case _:
-                raise NotImplementedError
+            case _ as unreachable:
+                assert_never(unreachable)

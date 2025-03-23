@@ -38,42 +38,35 @@ dev-dependencies = [
     "types-aioboto3[essential]>=13.4.0",
     "types-authlib>=1.4.0.20241230",
     "types-python-jose>=3.4.0.20250224",
-    "mypy>=1.15.0",
     "ruff>=0.11.2",
+    "pyright>=1.1.397",
 ]
 
-[tool.mypy]
-plugins = ["pydantic.mypy", "strawberry.ext.mypy_plugin"]
+[tool.pyright]
+include = ["app", "tests"]
 exclude = ["^.venv/"]
 
-strict = true
-follow_imports = "normal"
-ignore_missing_imports = false
 
-disallow_untyped_calls = false
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
 
-allow_redefinition = false
-disallow_any_explicit = false
-ignore_errors = false
-local_partial_types = true
-no_implicit_optional = true
-strict_optional = true
-warn_no_return = true
-warn_unused_ignores = false
-warn_return_any = false
-warn_unreachable = true
+# Error reporting
+reportMissingImports = true
+reportMissingTypeStubs = true
+reportUntypedFunctionDecorator = "error"
+reportUntypedClassDecorator = "error"
+reportUntypedBaseClass = "error"
+reportUntypedNamedTuple = "error"
+reportCallInDefaultInitializer = "error"
+reportImplicitOptional = "error"
+reportUnnecessaryIsInstance = "error"
+reportUnnecessaryCast = "error"
+reportUnusedImport = "warning"
+reportUnusedClass = "warning"
+reportUnusedFunction = "warning"
+reportUnusedVariable = "warning"
+reportUnreachable = "error"
 
-pretty = true
-show_column_numbers = true
-show_error_codes = true
-
-[[tool.mypy.overrides]]
-module = ["uvicorn.*"]
-ignore_missing_imports = true
-
-[tool.pydantic-mypy]
-init_forbid_extra = true
-init_typed = true
 
 [tool.ruff]
 src = ["app", "tests"]

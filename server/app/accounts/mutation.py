@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Annotated
+from typing import Annotated, assert_never
 
 import strawberry
 from aioinject import Inject
@@ -59,8 +59,8 @@ class AccountMutation:
         ):
             case Ok(account):
                 return AccountType.marshal_with_profile(account)
-            case _:
-                raise NotImplementedError
+            case _ as unreachable:
+                assert_never(unreachable)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateProfilePayload,
@@ -87,8 +87,8 @@ class AccountMutation:
         ):
             case Ok(account):
                 return AccountType.marshal_with_profile(account)
-            case _:
-                raise NotImplementedError
+            case _ as unreachable:
+                assert_never(unreachable)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateAccountPayload,
@@ -119,5 +119,5 @@ class AccountMutation:
                         return AccountNotFoundErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
-            case _:
-                raise NotImplementedError
+            case _ as unreachable:
+                assert_never(unreachable)
