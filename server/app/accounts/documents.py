@@ -49,7 +49,7 @@ class Profile(Document):
     current_job: CurrentJob | None
 
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-    account: BackLink["Account"] = Field(
+    account: BackLink["Account"] = Field(  # type: ignore[call-overload]
         original_field="profile",
     )
 
@@ -68,18 +68,18 @@ class Account(Document):
 
     profile: Link["Profile"] | None = None
 
-    memberships: list[BackLink["OrganizationMember"]] = Field(original_field="account")
-    webauthn_credentials: list[BackLink["WebAuthnCredential"]] = Field(
+    memberships: list[BackLink["OrganizationMember"]] = Field(original_field="account")  # type: ignore[call-overload]
+    webauthn_credentials: list[BackLink["WebAuthnCredential"]] = Field(  # type: ignore[call-overload]
         original_field="account"
     )
-    oauth_credentials: list[BackLink["OAuthCredential"]] = Field(
+    oauth_credentials: list[BackLink["OAuthCredential"]] = Field(  # type: ignore[call-overload]
         original_field="account"
     )
 
-    recovery_codes: list[BackLink["RecoveryCode"]] = Field(original_field="account")
+    recovery_codes: list[BackLink["RecoveryCode"]] = Field(original_field="account")  # type: ignore[call-overload]
 
     temporary_two_factor_challenges: list[BackLink["TemporaryTwoFactorChallenge"]] = (
-        Field(original_field="account")
+        Field(original_field="account")  # type: ignore[call-overload]
     )
 
     @property

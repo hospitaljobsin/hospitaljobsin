@@ -12,7 +12,6 @@ health_router = APIRouter(prefix="/health")
     tags=["healthcheck"],
     summary="Perform a Health Check",
     status_code=HTTPStatus.OK,
-    response_model=HealthCheck,
 )
 def get_health() -> HealthCheck:
     """Perform a health check."""

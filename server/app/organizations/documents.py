@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, ClassVar, Literal
+from typing import TYPE_CHECKING, Annotated, ClassVar, Literal
 
 from beanie import BackLink, Document, Indexed, Link
 from pydantic import Field
@@ -12,13 +12,13 @@ if TYPE_CHECKING:
 
 class Organization(Document):
     name: str
-    slug: Indexed(str, unique=True)
+    slug: Annotated[str, Indexed(unique=True)]
     description: str | None = None
     address: Address
     email: str | None = None
     website: str | None = None
     logo_url: str | None = None
-    members: list[BackLink["OrganizationMember"]] = Field(original_field="organization")
+    members: list[BackLink["OrganizationMember"]] = Field(original_field="organization")  # type: ignore[call-overload]
 
     class Settings:
         name = "organizations"

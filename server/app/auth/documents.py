@@ -115,7 +115,7 @@ class RecoveryCode(Document):
 class TemporaryTwoFactorChallenge(Document):
     """Temporary 2FA challenge used for 2FA password resets."""
 
-    challenge_hash: Indexed(str, unique=True)
+    challenge_hash: Annotated[str, Indexed(unique=True)]
     expires_at: datetime
     account: Link[Account]
     password_reset_token: Link[PasswordResetToken]
