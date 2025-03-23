@@ -16,7 +16,7 @@ from .documents import Job
 type JobByIdLoader = DataLoader[str, Job | None]
 
 
-async def get_job_by_id_dataloader(
+async def create_job_by_id_dataloader(
     job_repo: Annotated[JobRepo, Inject],
 ) -> JobByIdLoader:
     """Create a dataloader to load jobs by their IDs."""
@@ -29,7 +29,7 @@ async def get_job_by_id_dataloader(
 type JobBySlugLoader = DataLoader[str, Job | None]
 
 
-async def get_job_by_slug_dataloader(
+async def create_job_by_slug_dataloader(
     job_repo: Annotated[JobRepo, Inject],
 ) -> JobBySlugLoader:
     """Create a dataloader to load jobs by their slugs."""
@@ -42,7 +42,7 @@ async def get_job_by_slug_dataloader(
 type SavedJobByIdLoader = DataLoader[tuple[str, str], Job | None]
 
 
-async def get_saved_job_by_id_dataloader(
+async def create_saved_job_by_id_dataloader(
     saved_job_repo: Annotated[SavedJobRepo, Inject],
 ) -> SavedJobByIdLoader:
     """Create a dataloader to load saved jobs by their IDs."""

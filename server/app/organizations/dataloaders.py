@@ -15,7 +15,7 @@ from .repositories import OrganizationRepo
 type OrganizationByIdLoader = DataLoader[str, Organization | None]
 
 
-async def get_organization_by_id_dataloader(
+async def create_organization_by_id_dataloader(
     organization_repo: Annotated[OrganizationRepo, Inject],
 ) -> OrganizationByIdLoader:
     """Create a dataloader to load oganizations by their IDs."""
@@ -28,7 +28,7 @@ async def get_organization_by_id_dataloader(
 type OrganizationBySlugLoader = DataLoader[str, Organization | None]
 
 
-async def get_organization_by_slug_dataloader(
+async def create_organization_by_slug_dataloader(
     organization_repo: Annotated[OrganizationRepo, Inject],
 ) -> OrganizationBySlugLoader:
     """Create a dataloader to load oganizations by their slugs."""

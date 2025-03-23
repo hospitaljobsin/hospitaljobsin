@@ -14,7 +14,7 @@ from .documents import Account, Profile
 type AccountByIdLoader = DataLoader[str, Account | None]
 
 
-async def get_account_by_id_dataloader(
+async def create_account_by_id_dataloader(
     account_repo: Annotated[AccountRepo, Inject],
 ) -> AccountByIdLoader:
     """Create a dataloader to load accounts by their IDs."""
@@ -27,7 +27,7 @@ async def get_account_by_id_dataloader(
 type ProfileByIdLoader = DataLoader[str, Profile | None]
 
 
-async def get_profile_by_id_dataloader(
+async def create_profile_by_id_dataloader(
     profile_repo: Annotated[ProfileRepo, Inject],
 ) -> ProfileByIdLoader:
     """Create a dataloader to load profiles by their IDs."""
