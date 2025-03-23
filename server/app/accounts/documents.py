@@ -91,7 +91,7 @@ class Account(Document):
     @property
     def two_factor_providers(self) -> list[TwoFactorProvider]:
         """The two-factor authentication providers enabled for the account."""
-        providers = []
+        providers: list[TwoFactorProvider] = []
         if self.two_factor_secret:
             providers.append("authenticator")
         return providers

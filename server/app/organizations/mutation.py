@@ -66,6 +66,8 @@ class OrganizationMutation:
                         return OrganizationSlugInUseErrorType()
             case Ok(organization):
                 return OrganizationType.marshal(organization)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=CreateOrganizationLogoPresignedURLPayloadType,

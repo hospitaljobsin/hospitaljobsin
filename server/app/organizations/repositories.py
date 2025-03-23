@@ -13,9 +13,9 @@ class OrganizationRepo:
         self,
         slug: str,
         name: str,
-        description: str,
         address: Address,
-        website: str,
+        description: str | None = None,
+        website: str | None = None,
         logo_url: str | None = None,
     ) -> Organization:
         """Create a new organization."""

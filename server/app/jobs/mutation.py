@@ -63,6 +63,8 @@ class JobMutation:
                         saved_job,
                     ),
                 )
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UnsaveJobPayload,
@@ -102,3 +104,5 @@ class JobMutation:
                         saved_job,
                     ),
                 )
+            case _:
+                raise NotImplementedError

@@ -24,8 +24,8 @@ class OrganizationService:
         admin_id: ObjectId,
         name: str,
         slug: str,
-        description: str,
-        website: str,
+        description: str | None = None,
+        website: str | None = None,
         logo_url: str | None = None,
     ) -> Result[Organization, OrganizationSlugInUseError]:
         existing_organization = await self._organization_repo.get_by_slug(

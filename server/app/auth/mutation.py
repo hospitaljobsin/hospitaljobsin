@@ -153,6 +153,8 @@ class AuthMutation:
                         return InvalidEmailErrorType(message=err.message)
                     case EmailInUseError():
                         return EmailInUseErrorType()
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=VerifyEmailPayload,
@@ -196,6 +198,8 @@ class AuthMutation:
                         return InvalidEmailVerificationTokenErrorType()
             case Ok():
                 return VerifyEmailSuccessType()
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RegisterWithPasswordPayload,
@@ -259,6 +263,8 @@ class AuthMutation:
                         return PasswordNotStrongErrorType()
             case Ok(account):
                 return AccountType.marshal_with_profile(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GeneratePasskeyRegistrationOptionsPayload,
@@ -303,6 +309,8 @@ class AuthMutation:
                 return GeneratePasskeyRegistrationOptionsSuccessType(
                     registration_options=options_to_json(options),
                 )
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RegisterWithPasskeyPayload,
@@ -373,6 +381,8 @@ class AuthMutation:
                         return InvalidPasskeyRegistrationCredentialErrorType()
             case Ok(account):
                 return AccountType.marshal_with_profile(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GenerateAuthenticationOptionsPayload,
@@ -403,6 +413,8 @@ class AuthMutation:
                 return GenerateAuthenticationOptionsSuccessType(
                     authentication_options=options_to_json(options)
                 )
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GenerateAuthenticationOptionsPayload,
@@ -437,6 +449,8 @@ class AuthMutation:
                 return GenerateAuthenticationOptionsSuccessType(
                     authentication_options=options_to_json(options)
                 )
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LoginWithPasskeyPayload,
@@ -477,6 +491,8 @@ class AuthMutation:
                         return WebAuthnChallengeNotFoundErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LoginWithPasswordPayload,
@@ -528,6 +544,8 @@ class AuthMutation:
                         return TwoFactorAuthenticationRequiredErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LogoutPayloadType,
@@ -593,6 +611,8 @@ class AuthMutation:
                         )
             case Ok():
                 return RequestPasswordResetSuccessType()
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=Verify2FAPasswordResetWithAuthenticatorPayload,
@@ -648,6 +668,8 @@ class AuthMutation:
                         return InvalidRecaptchaTokenErrorType()
             case Ok(reset_token):
                 return PasswordResetTokenType.marshal(reset_token)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=Verify2FAPasswordResetWithPasskeyPayload,
@@ -705,6 +727,8 @@ class AuthMutation:
                         return WebAuthnChallengeNotFoundErrorType()
             case Ok(reset_token):
                 return PasswordResetTokenType.marshal(reset_token)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=ResetPasswordPayload,
@@ -752,6 +776,8 @@ class AuthMutation:
                         return TwoFactorAuthenticationChallengeNotFoundErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdatePasswordPayload,
@@ -788,6 +814,8 @@ class AuthMutation:
                         return PasswordNotStrongErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=DeletePasswordPayload,
@@ -817,6 +845,8 @@ class AuthMutation:
                         return InsufficientAuthProvidersErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=DeleteOtherSessionsPayloadType,
@@ -843,6 +873,8 @@ class AuthMutation:
         ):
             case Ok(deleted_session_ids):
                 return DeleteOtherSessionsPayloadType.marshal(deleted_session_ids)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=DeleteSessionPayload,
@@ -882,6 +914,8 @@ class AuthMutation:
                 return DeleteSessionSuccessType(
                     session_edge=SessionEdgeType.marshal(session)
                 )
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=DeleteWebAuthnCredentialPayload,
@@ -924,6 +958,8 @@ class AuthMutation:
                         web_authn_credential
                     )
                 )
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateWebAuthnCredentialPayload,
@@ -966,6 +1002,8 @@ class AuthMutation:
                         return WebAuthnCredentialNotFoundErrorType()
             case Ok(web_authn_credential):
                 return WebAuthnCredentialType.marshal(web_authn_credential)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GeneratePasskeyCreationOptionsPayload,
@@ -993,6 +1031,8 @@ class AuthMutation:
                 return GeneratePasskeyCreationOptionsSuccessType(
                     registration_options=options_to_json(options),
                 )
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=CreateWebAuthnCredentialPayload,
@@ -1040,6 +1080,8 @@ class AuthMutation:
                         web_authn_credential
                     ),
                 )
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RequestSudoModeWithPasskeyPayload,
@@ -1086,6 +1128,8 @@ class AuthMutation:
                         return WebAuthnChallengeNotFoundErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RequestSudoModeWithPasswordPayload,
@@ -1137,6 +1181,8 @@ class AuthMutation:
                         return TwoFactorAuthenticationRequiredErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=RequestSudoModeWithAuthenticatorPayload,
@@ -1184,6 +1230,8 @@ class AuthMutation:
                         return AuthenticatorNotEnabledErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=EnableAccount2FAWithAuthenticatorPayload,
@@ -1227,6 +1275,8 @@ class AuthMutation:
                     account=AccountType.marshal(account),
                     recovery_codes=recovery_codes,
                 )
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=DisableAccount2FAWithAuthenticatorPayload,
@@ -1256,6 +1306,8 @@ class AuthMutation:
                         return AuthenticatorNotEnabledErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=GenerateAuthenticator2FAChallengePayload,
@@ -1286,6 +1338,8 @@ class AuthMutation:
                     otp_uri=otp_uri,
                     secret=secret,
                 )
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=Verify2FAWithAuthenticatorPayload,
@@ -1328,6 +1382,8 @@ class AuthMutation:
                         return InvalidRecaptchaTokenErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=Verify2FAWithRecoveryCodePayload,
@@ -1370,6 +1426,8 @@ class AuthMutation:
                         return InvalidRecaptchaTokenErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
+            case _:
+                raise NotImplementedError
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=Generate2FARecoveryCodesPayload,
@@ -1401,3 +1459,5 @@ class AuthMutation:
                 return Generate2FARecoveryCodesSuccessType(
                     recovery_codes=recovery_codes,
                 )
+            case _:
+                raise NotImplementedError
