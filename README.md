@@ -1,3 +1,5 @@
+# Put the dataloader in the container itself as scoped, and inject in the resolvers. As containers are created for each request, dataloaders will be cached
+
 # PulseWork
 > *recruitment and job seeking for medical professionals*
 
