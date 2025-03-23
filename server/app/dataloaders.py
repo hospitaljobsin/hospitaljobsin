@@ -1,7 +1,4 @@
 import dataclasses
-from typing import Annotated
-
-from aioinject import Inject
 
 from app.accounts.dataloaders import AccountByIdLoader, ProfileByIdLoader
 from app.jobs.dataloaders import JobByIdLoader, JobBySlugLoader, SavedJobByIdLoader
@@ -23,34 +20,13 @@ class Dataloaders:
 
 
 def create_dataloaders(
-    account_by_id: Annotated[
-        AccountByIdLoader,
-        Inject,
-    ],
-    profile_by_id: Annotated[
-        ProfileByIdLoader,
-        Inject,
-    ],
-    job_by_id: Annotated[
-        JobByIdLoader,
-        Inject,
-    ],
-    job_by_slug: Annotated[
-        JobBySlugLoader,
-        Inject,
-    ],
-    saved_job_by_id: Annotated[
-        SavedJobByIdLoader,
-        Inject,
-    ],
-    organization_by_id: Annotated[
-        OrganizationByIdLoader,
-        Inject,
-    ],
-    organization_by_slug: Annotated[
-        OrganizationBySlugLoader,
-        Inject,
-    ],
+    account_by_id: AccountByIdLoader,
+    profile_by_id: ProfileByIdLoader,
+    job_by_id: JobByIdLoader,
+    job_by_slug: JobBySlugLoader,
+    saved_job_by_id: SavedJobByIdLoader,
+    organization_by_id: OrganizationByIdLoader,
+    organization_by_slug: OrganizationBySlugLoader,
 ) -> Dataloaders:
     """Create dataloaders for the current context."""
     return Dataloaders(
