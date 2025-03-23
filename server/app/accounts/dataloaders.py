@@ -1,6 +1,3 @@
-from typing import Annotated
-
-from aioinject import Inject
 from strawberry.dataloader import DataLoader
 
 from app.accounts.repositories import AccountRepo, ProfileRepo
@@ -15,7 +12,7 @@ type AccountByIdLoader = DataLoader[str, Account | None]
 
 
 async def create_account_by_id_dataloader(
-    account_repo: Annotated[AccountRepo, Inject],
+    account_repo: AccountRepo,
 ) -> AccountByIdLoader:
     """Create a dataloader to load accounts by their IDs."""
     return create_dataloader(
@@ -28,7 +25,7 @@ type ProfileByIdLoader = DataLoader[str, Profile | None]
 
 
 async def create_profile_by_id_dataloader(
-    profile_repo: Annotated[ProfileRepo, Inject],
+    profile_repo: ProfileRepo,
 ) -> ProfileByIdLoader:
     """Create a dataloader to load profiles by their IDs."""
     return create_dataloader(

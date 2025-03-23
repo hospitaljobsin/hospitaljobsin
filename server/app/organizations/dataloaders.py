@@ -1,6 +1,3 @@
-from typing import Annotated
-
-from aioinject import Inject
 from strawberry.dataloader import DataLoader
 
 from app.core.dataloaders import (
@@ -16,7 +13,7 @@ type OrganizationByIdLoader = DataLoader[str, Organization | None]
 
 
 async def create_organization_by_id_dataloader(
-    organization_repo: Annotated[OrganizationRepo, Inject],
+    organization_repo: OrganizationRepo,
 ) -> OrganizationByIdLoader:
     """Create a dataloader to load oganizations by their IDs."""
     return create_dataloader(
@@ -29,7 +26,7 @@ type OrganizationBySlugLoader = DataLoader[str, Organization | None]
 
 
 async def create_organization_by_slug_dataloader(
-    organization_repo: Annotated[OrganizationRepo, Inject],
+    organization_repo: OrganizationRepo,
 ) -> OrganizationBySlugLoader:
     """Create a dataloader to load oganizations by their slugs."""
     return create_dataloader(

@@ -1,6 +1,3 @@
-from typing import Annotated
-
-from aioinject import Inject
 from strawberry.dataloader import DataLoader
 
 from app.core.dataloaders import (
@@ -17,7 +14,7 @@ type JobByIdLoader = DataLoader[str, Job | None]
 
 
 async def create_job_by_id_dataloader(
-    job_repo: Annotated[JobRepo, Inject],
+    job_repo: JobRepo,
 ) -> JobByIdLoader:
     """Create a dataloader to load jobs by their IDs."""
     return create_dataloader(
@@ -30,7 +27,7 @@ type JobBySlugLoader = DataLoader[str, Job | None]
 
 
 async def create_job_by_slug_dataloader(
-    job_repo: Annotated[JobRepo, Inject],
+    job_repo: JobRepo,
 ) -> JobBySlugLoader:
     """Create a dataloader to load jobs by their slugs."""
     return create_dataloader(
@@ -43,7 +40,7 @@ type SavedJobByIdLoader = DataLoader[tuple[str, str], Job | None]
 
 
 async def create_saved_job_by_id_dataloader(
-    saved_job_repo: Annotated[SavedJobRepo, Inject],
+    saved_job_repo: SavedJobRepo,
 ) -> SavedJobByIdLoader:
     """Create a dataloader to load saved jobs by their IDs."""
     return create_dataloader(
