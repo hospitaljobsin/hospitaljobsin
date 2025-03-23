@@ -148,7 +148,7 @@ class ProfileType(BaseNodeType[Profile]):
     gender: GenderTypeEnum | None = strawberry.field(
         description="The gender of the profile's user.",
     )
-    date_of_birth: date = strawberry.field(
+    date_of_birth: date | None = strawberry.field(
         description="The date of birth of the profile's user.",
     )
     address: AddressType = strawberry.field(

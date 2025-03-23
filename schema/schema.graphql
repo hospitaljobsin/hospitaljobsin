@@ -996,7 +996,7 @@ type Profile implements Node {
   gender: GenderType
 
   """The date of birth of the profile's user."""
-  dateOfBirth: Date!
+  dateOfBirth: Date
 
   """The address of the profile's user."""
   address: Address!

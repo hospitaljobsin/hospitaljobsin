@@ -16,8 +16,8 @@ CursorType = TypeVar("CursorType", str, ObjectId)
 
 SearchCriteriaType = TypeVar(
     "SearchCriteriaType",
-    FindMany[ModelType],
-    AggregationQuery[ModelType],
+    FindMany[Document],
+    AggregationQuery[Document],
 )
 
 
