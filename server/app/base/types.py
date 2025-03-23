@@ -45,28 +45,27 @@ class BaseConnectionType(Generic[NodeType, EdgeType]):
     )
 
     @classmethod
-    def get_node_type(cls) -> type[NodeType]:
-        """Introspect the generic bases to extract the NodeType."""
+    def _extract_generic_arg(cls, index: int, error_message: str) -> type:
+        """Simpler helper to extract a generic argument from BaseConnectionType."""
         for base in getattr(cls, "__orig_bases__", []):
-            origin = get_origin(base)
-            if origin is BaseConnectionType:
-                args = get_args(base)
-                if args:
-                    return args[0]
-        error_message = f"NodeType not found for {cls.__name__}"
+            if (
+                (args := get_args(base))
+                and get_origin(base) is BaseConnectionType
+                and len(args) > index
+                and isinstance(args[index], type)
+            ):
+                return args[index]
         raise RuntimeError(error_message)
 
     @classmethod
+    def get_node_type(cls) -> type[NodeType]:
+        """Extract the NodeType from the generic bases."""
+        return cls._extract_generic_arg(0, f"NodeType not found for {cls.__name__}")
+
+    @classmethod
     def get_edge_type(cls) -> type[EdgeType]:
-        """Introspect the generic bases to extract the EdgeType."""
-        for base in getattr(cls, "__orig_bases__", []):
-            origin = get_origin(base)
-            if origin is BaseConnectionType:
-                args = get_args(base)
-                if len(args) > 1:
-                    return args[1]
-        error_message = f"EdgeType not found for {cls.__name__}"
-        raise RuntimeError(error_message)
+        """Extract the EdgeType from the generic bases."""
+        return cls._extract_generic_arg(1, f"EdgeType not found for {cls.__name__}")
 
     @classmethod
     def marshal(cls, paginated_result: PaginatedResult[ModelType, CursorType]) -> Self:
