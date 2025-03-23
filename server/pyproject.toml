@@ -45,12 +45,8 @@ dev-dependencies = [
 [tool.pyright]
 include = ["app", "tests"]
 exclude = ["^.venv/"]
-
-
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
-
-# Error reporting
 reportMissingImports = true
 reportMissingTypeStubs = true
 reportUntypedFunctionDecorator = "error"
@@ -77,8 +73,6 @@ lint.unfixable = [
 lint.select = ["ALL"]
 lint.ignore = [
     "E501",    # line length
-    "ANN101",
-    "ANN102",
     "D10",     # disable mandatory docstrings
     "D203",    # one-blank-line-before-class
     "D212",    # multi-line-summary-first-line
