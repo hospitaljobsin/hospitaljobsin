@@ -6,7 +6,7 @@ env:
   GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
 jobs:
-  test-accounts:
+  test-e2e:
     name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
     strategy:
       fail-fast: false
