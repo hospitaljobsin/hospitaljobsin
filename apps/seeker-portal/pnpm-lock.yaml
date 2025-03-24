@@ -60,8 +60,8 @@ importers:
         specifier: ^7.54.2
         version: 7.54.2(react@19.0.0)
       react-markdown:
-        specifier: ^9.1.0
-        version: 9.1.0(@types/react@19.0.12)(react@19.0.0)
+        specifier: ^10.1.0
+        version: 10.1.0(@types/react@19.0.12)(react@19.0.0)
       react-share:
         specifier: ^5.2.2
         version: 5.2.2(react@19.0.0)
@@ -4772,6 +4772,12 @@ packages:
   react-layout-kit@1.9.1:
     resolution: {integrity: sha512-tQO5J+Ajppu2JCdhgFaFbWCg01WJXXaQ5vg8cxzsv8vVeogJKGFgoJm9OI2saDFchfKP3RABd+aRY5vB++poqw==}
     peerDependencies:
+      react: '>=18'
+
+  react-markdown@10.1.0:
+    resolution: {integrity: sha512-qKxVopLT/TyA6BX3Ue5NwabOsAzm0Q7kAPwq6L+wWDwisYs7R8vZ0nRXqq6rkueboxpkjvLGU9fWifiX/ZZFxQ==}
+    peerDependencies:
+      '@types/react': '>=18'
       react: '>=18'
 
   react-markdown@9.1.0:
@@ -12118,6 +12124,24 @@ snapshots:
       '@babel/runtime': 7.26.10
       '@emotion/css': 11.13.5
       react: 19.0.0
+    transitivePeerDependencies:
+      - supports-color
+
+  react-markdown@10.1.0(@types/react@19.0.12)(react@19.0.0):
+    dependencies:
+      '@types/hast': 3.0.4
+      '@types/mdast': 4.0.4
+      '@types/react': 19.0.12
+      devlop: 1.1.0
+      hast-util-to-jsx-runtime: 2.3.6
+      html-url-attributes: 3.0.1
+      mdast-util-to-hast: 13.2.0
+      react: 19.0.0
+      remark-parse: 11.0.0
+      remark-rehype: 11.1.1
+      unified: 11.0.5
+      unist-util-visit: 5.0.0
+      vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
