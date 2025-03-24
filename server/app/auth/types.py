@@ -211,8 +211,7 @@ class SessionEdgeType(BaseEdgeType[SessionType, Session]):
 
 @strawberry.type(name="SessionConnection")
 class SessionConnectionType(BaseConnectionType[SessionType, SessionEdgeType]):
-    node_type = SessionType
-    edge_type = SessionEdgeType
+    pass
 
 
 @strawberry.type(
@@ -259,8 +258,7 @@ class WebAuthnCredentialEdgeType(
 class WebAuthnCredentialConnectionType(
     BaseConnectionType[WebAuthnCredentialType, WebAuthnCredentialEdgeType]
 ):
-    node_type = WebAuthnCredentialType
-    edge_type = WebAuthnCredentialEdgeType
+    pass
 
 
 @strawberry.type(
