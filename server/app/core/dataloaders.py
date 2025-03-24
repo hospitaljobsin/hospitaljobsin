@@ -55,7 +55,7 @@ def transform_valid_object_id_tuple(
     key: tuple[str, str],
 ) -> tuple[ObjectId, ObjectId] | None:
     """Check if a string tuple is a valid ObjectId tuple."""
-    if len(key) == 2 and ObjectId.is_valid(key[0]) and ObjectId.is_valid(key[1]):
+    if len(key) == 2 and ObjectId.is_valid(key[0]) and ObjectId.is_valid(key[1]):  # noqa: PLR2004
         return (ObjectId(key[0]), ObjectId(key[1]))
     return None
 
