@@ -1,4 +1,4 @@
-FROM node:22 AS base
+FROM node:23 AS base
 WORKDIR /app
 RUN corepack enable
 COPY ./apps/recruiter-portal/package.json ./apps/recruiter-portal/pnpm-lock.yaml ./apps/recruiter-portal/.npmrc ./apps/recruiter-portal/
@@ -29,7 +29,7 @@ ENV NEXT_PUBLIC_ACCOUNTS_BASE_URL=$NEXT_PUBLIC_ACCOUNTS_BASE_URL
 
 RUN pnpm build
 
-FROM node:22-alpine AS release
+FROM node:23-alpine AS release
 WORKDIR /app
 RUN corepack enable
 
