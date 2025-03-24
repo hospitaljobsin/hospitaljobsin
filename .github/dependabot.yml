@@ -21,6 +21,13 @@ updates:
     schedule:
       interval: "weekly"
 
+  # Enable version updates for e2e tests
+  - package-ecosystem: "npm"
+    directory: "/e2e/"
+    # Check the npm registry for updates every week
+    schedule:
+      interval: "weekly"
+
   # Enable version updates for server
   - package-ecosystem: "uv"
     directory: "/server/"

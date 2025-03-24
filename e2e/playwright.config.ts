@@ -14,7 +14,7 @@ import { defineConfig, devices } from "@playwright/test";
 const IS_CI = process.env.CI;
 
 export default defineConfig({
-	testDir: "./tests/e2e",
+	testDir: "./tests/",
 	/* Run tests in files in parallel */
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -33,8 +33,8 @@ export default defineConfig({
 		trace: "on",
 	},
 
-	globalSetup: require.resolve("./tests/e2e/global.setup.ts"),
-	globalTeardown: require.resolve("./tests/e2e/global.teardown.ts"),
+	globalSetup: require.resolve("./tests/global.setup.ts"),
+	globalTeardown: require.resolve("./tests/global.teardown.ts"),
 
 	expect: {
 		timeout: IS_CI ? 25_000 : 30_000,

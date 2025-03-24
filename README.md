@@ -17,6 +17,7 @@ https://www.planttext.com?text=u-LoA2v9B2efpStXvShBJqbLK0eepIbE3SylobPmJ4xEByqhA
 | PulseWork Recruiter | [apps/recruitment-portal](./apps/recruiter-portal)| Recruitment platform UI         |
 | PulseWork           | [apps/seeker-portal](./apps/seeker-portal)        | Job Seeker platform UI          |
 | PulseWork API       | [server](./server)                                | GraphQL API Server              |
+| E2E Test Suite      | [e2e](./e2e)                                      | Playwright Integration Tests    |
 
 
 ## License
@@ -51,8 +52,8 @@ tmuxinator start medical_jobs
     docker compose -f docker-compose.e2e.yml up --wait --build --remove-orphans -d
     ```
 
-3. Run the E2E tests (only accounts UI is configured as of now):
+3. Run the E2E tests:
     ```bash
-    cd apps/accounts
-    pnpm test:e2e
+    cd e2e
+    pnpm run test
     ```

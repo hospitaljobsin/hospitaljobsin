@@ -1,14 +1,13 @@
-import { generateValidOTP } from "@/tests/e2e/utils/authenticator";
+import { generateValidOTP } from "@/tests/utils/authenticator";
 import {
 	RECOVERY_CODE_1,
 	TESTER_EMAIL,
 	TOTP_USER_SECRET,
 	TWO_FACTOR_TESTER_2_EMAIL,
-} from "@/tests/e2e/utils/constants";
-import { findLastEmail } from "@/tests/e2e/utils/mailcatcher";
+} from "@/tests/utils/constants";
+import { findLastEmail } from "@/tests/utils/mailcatcher";
 import type { PlaywrightTestArgs } from "@playwright/test";
 import { expect, test } from "@playwright/test";
-import path from "node:path";
 
 async function enterPassword({
 	page,
@@ -44,7 +43,7 @@ test.describe("Confirm Password Reset Page", () => {
 			});
 		});
 		// Navigate to reset password page
-		await page.goto("/auth/reset-password");
+		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 
@@ -210,7 +209,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 			});
 		});
 		// Navigate to reset password page
-		await page.goto("/auth/reset-password");
+		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 
@@ -380,7 +379,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 
 test.describe("Confirm Password Reset Page Not Found", () => {
 	test("should handle invalid password reset link", async ({ page }) => {
-		await page.goto("/auth/reset-password/invalid-token");
+		await page.goto("http://localhost:5002/auth/reset-password/invalid-token");
 
 		await expect(page.getByText(/404 Not Found/)).toBeVisible();
 	});
@@ -388,7 +387,7 @@ test.describe("Confirm Password Reset Page Not Found", () => {
 
 test.describe("Confirm Password Reset Page Authentication Redirects", () => {
 	test.use({
-		storageState: path.join(__dirname, "../../../playwright/.auth/user.json"),
+		storageState: "playwright/.auth/user.json",
 	});
 
 	test("should not redirect to home page when already authenticated", async ({
@@ -409,7 +408,7 @@ test.describe("Confirm Password Reset Page Authentication Redirects", () => {
 			});
 		});
 		// Navigate to reset password page
-		await page.goto("/auth/reset-password");
+		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 

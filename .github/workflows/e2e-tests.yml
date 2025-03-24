@@ -27,17 +27,17 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: apps/accounts/pnpm-lock.yaml 
+          cache-dependency-path: e2e/pnpm-lock.yaml 
   
       - name: Install dependencies 
         run: pnpm install
-        working-directory: apps/accounts
+        working-directory: e2e
 
       - name: Install Playwright
         id: install-playwright
         uses: ./.github/actions/playwright
         with:
-          working-directory: apps/accounts
+          working-directory: e2e
 
       - name: Debug Playwright cache
         run: |
@@ -46,11 +46,11 @@ jobs:
 
       - name: Create Playwright Browser State Directory
         run : mkdir -p playwright/.auth
-        working-directory: apps/accounts
+        working-directory: e2e
   
       - name: Run Playwright tests
-        run: pnpm test:e2e --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
-        working-directory: apps/accounts
+        run: pnpm test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
+        working-directory: e2e
         env:
           CI: true
           DEBUG: pw:browser
@@ -61,8 +61,8 @@ jobs:
         with:
           name: playwright-report-${{ matrix.project }}-${{ matrix.shard }}
           path: |
-            apps/accounts/playwright-report/
-            apps/accounts/test-results/**/*.zip
+            e2e/playwright-report/
+            e2e/test-results/**/*.zip
           retention-days: 30
 
     

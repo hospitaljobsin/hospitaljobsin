@@ -2,9 +2,8 @@ import {
 	TESTER_EMAIL,
 	TWO_FACTOR_TESTER_1_EMAIL,
 	WEBAUTHN_TESTER_EMAIL,
-} from "@/tests/e2e/utils/constants";
+} from "@/tests/utils/constants";
 import { expect, test } from "@playwright/test";
-import path from "node:path";
 
 test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -22,7 +21,7 @@ test.describe("Login Page", () => {
 			});
 		});
 		// Navigate to login page
-		await page.goto("/auth/login");
+		await page.goto("http://localhost:5002/auth/login");
 		// Wait for recaptcha to load
 		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 	});
@@ -344,7 +343,9 @@ test.describe("Login Page", () => {
 		// increase timeout to incorporate navigation
 		test.setTimeout(30_000);
 		// Navigate to login page with OAuth2 error
-		await page.goto("/auth/login?oauth2_error=unverified_email");
+		await page.goto(
+			"http://localhost:5002/auth/login?oauth2_error=unverified_email",
+		);
 
 		// Check error message is displayed
 		await expect(
@@ -378,13 +379,13 @@ test.describe("Login Page", () => {
 
 test.describe("Login Page Authentication Redirects", () => {
 	test.use({
-		storageState: path.join(__dirname, "../../../playwright/.auth/user.json"),
+		storageState: "playwright/.auth/user.json",
 	});
 
 	test("should redirect to home page when already authenticated", async ({
 		page,
 	}) => {
-		await page.goto("/auth/login");
+		await page.goto("http://localhost:5002/auth/login");
 		await page.waitForURL("http://localhost:5000/");
 	});
 });

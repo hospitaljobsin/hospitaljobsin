@@ -1,8 +1,7 @@
+import { TESTER_EMAIL } from "@/tests/utils/constants";
 import { test as setup } from "@playwright/test";
-import path from "node:path";
-import { TESTER_EMAIL } from "./utils/constants";
 
-const authFile = path.join(__dirname, "../../playwright/.auth/user.json");
+const authFile = "playwright/.auth/user.json";
 
 setup("authenticate", async ({ page }) => {
 	// Intercept and mock the reCAPTCHA script
@@ -19,7 +18,7 @@ setup("authenticate", async ({ page }) => {
 		});
 	});
 	// Navigate to login page
-	await page.goto("/auth/login");
+	await page.goto("http://localhost:5002/auth/login");
 	// Wait for recaptcha to load
 	await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 	await page.getByLabel("Email Address").fill(TESTER_EMAIL);

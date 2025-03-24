@@ -3,10 +3,9 @@ import {
 	PASSWORD_RESET_TOKEN_COOLDOWN,
 	TESTER_EMAIL,
 	TESTER_EMAIL_2,
-} from "@/tests/e2e/utils/constants";
-import { findLastEmail } from "@/tests/e2e/utils/mailcatcher";
+} from "@/tests/utils/constants";
+import { findLastEmail } from "@/tests/utils/mailcatcher";
 import { expect, test } from "@playwright/test";
-import path from "node:path";
 
 test.describe("Request Password Reset Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -24,7 +23,7 @@ test.describe("Request Password Reset Page", () => {
 			});
 		});
 		// Navigate to reset password page
-		await page.goto("/auth/reset-password");
+		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 	});
@@ -177,7 +176,7 @@ test.describe("Request Password Reset Page", () => {
 		expect(firstEmail).not.toBeNull();
 
 		// Navigate to reset password page
-		await page.goto("/auth/reset-password");
+		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 
@@ -207,7 +206,7 @@ test.describe("Request Password Reset Page", () => {
 		await page.waitForTimeout(PASSWORD_RESET_TOKEN_COOLDOWN);
 
 		// Navigate to reset password page
-		await page.goto("/auth/reset-password");
+		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
 
@@ -236,15 +235,15 @@ test.describe("Request Password Reset Page", () => {
 
 test.describe("Request Password Reset Page Authentication Redirects", () => {
 	test.use({
-		storageState: path.join(__dirname, "../../../playwright/.auth/user.json"),
+		storageState: "playwright/.auth/user.json",
 	});
 
 	test("should not redirect to home page when already authenticated", async ({
 		page,
 	}) => {
-		await page.goto("/auth/reset-password");
+		await page.goto("http://localhost:5002/auth/reset-password");
 		// ensure we are not redirected here
 		await expect(page).not.toHaveURL("http://localhost:5000/");
-		await expect(page).toHaveURL("/auth/reset-password");
+		await expect(page).toHaveURL("http://localhost:5002/auth/reset-password");
 	});
 });
