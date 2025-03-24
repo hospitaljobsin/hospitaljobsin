@@ -7,19 +7,12 @@ from beanie import Document
 from beanie.odm.queries.aggregation import AggregationQuery
 from beanie.odm.queries.find import FindMany
 from bson import ObjectId
-from pydantic import BaseModel
 
 from app.core.constants import MAX_PAGINATION_LIMIT
 
-ModelType = TypeVar("ModelType", BaseModel)  # type: ignore
+ModelType = TypeVar("ModelType", bound=Document)
 
 CursorType = TypeVar("CursorType", str, ObjectId)
-
-SearchCriteriaType = TypeVar(
-    "SearchCriteriaType",
-    FindMany[Document],
-    AggregationQuery[Document],
-)
 
 
 @dataclass
@@ -40,7 +33,7 @@ class Paginator(Generic[ModelType, CursorType]):
     def __init__(
         self,
         *,
-        document_cls: type[Document],
+        document_cls: type[ModelType],
         reverse: bool = False,
         paginate_by: str,
     ) -> None:
@@ -99,9 +92,9 @@ class Paginator(Generic[ModelType, CursorType]):
     def __apply_ordering(
         self,
         *,
-        search_criteria: SearchCriteriaType,
+        search_criteria: FindMany[ModelType] | AggregationQuery[ModelType],
         last: int | None,
-    ) -> SearchCriteriaType:
+    ) -> FindMany[ModelType] | AggregationQuery[ModelType]:
         """Apply ordering on the search criteria."""
         if (self._reverse and last is None) or (last is not None and not self._reverse):
             if isinstance(search_criteria, AggregationQuery):
@@ -125,10 +118,10 @@ class Paginator(Generic[ModelType, CursorType]):
     def __apply_filters(
         self,
         *,
-        search_criteria: SearchCriteriaType,
+        search_criteria: FindMany[ModelType] | AggregationQuery[ModelType],
         before: CursorType | None,
         after: CursorType | None,
-    ) -> SearchCriteriaType:
+    ) -> FindMany[ModelType] | AggregationQuery[ModelType]:
         """Apply pagination filters on the search criteria."""
         if after is not None:
             if isinstance(search_criteria, AggregationQuery):
@@ -165,7 +158,7 @@ class Paginator(Generic[ModelType, CursorType]):
     async def paginate(
         self,
         *,
-        search_criteria: SearchCriteriaType,
+        search_criteria: FindMany[ModelType] | AggregationQuery[ModelType],
         last: int | None = None,
         first: int | None = None,
         before: CursorType | None = None,

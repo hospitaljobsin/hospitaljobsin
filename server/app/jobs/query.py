@@ -94,7 +94,7 @@ class JobQuery:
 
         return JobType.marshal(result)
 
-    @strawberry.field(
+    @strawberry.field(  # type: ignore[misc]
         description="Get all saved jobs for the current user.",
         graphql_type=SavedJobConnectionType,
         extensions=[
