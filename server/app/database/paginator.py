@@ -7,10 +7,11 @@ from beanie import Document
 from beanie.odm.queries.aggregation import AggregationQuery
 from beanie.odm.queries.find import FindMany
 from bson import ObjectId
+from pydantic import BaseModel
 
 from app.core.constants import MAX_PAGINATION_LIMIT
 
-ModelType = TypeVar("ModelType", bound=Document)
+ModelType = TypeVar("ModelType", BaseModel)  # type: ignore
 
 CursorType = TypeVar("CursorType", str, ObjectId)
 

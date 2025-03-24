@@ -303,8 +303,6 @@ class AuthMutation:
                         return InvalidRecaptchaTokenErrorType()
                     case EmailInUseError():
                         return EmailInUseErrorType()
-                    case InvalidEmailVerificationTokenError():
-                        return InvalidEmailVerificationTokenErrorType()
             case Ok(options):
                 return GeneratePasskeyRegistrationOptionsSuccessType(
                     registration_options=options_to_json(options),

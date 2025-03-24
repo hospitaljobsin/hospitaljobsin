@@ -1,6 +1,6 @@
 from datetime import date
 
-from beanie import DeleteRules, PydanticObjectId, WriteRules
+from beanie import DeleteRules, PydanticObjectId
 from beanie.operators import And, In
 from bson import ObjectId
 
@@ -21,18 +21,19 @@ class JobRepo:
         organization: Organization,
     ) -> Job:
         """Create a new job."""
-        job = Job(
-            title=title,
-            description=description,
-            location=location,
-            salary=salary,
-            closing_date=closing_date,
-            organization=organization,
-        )
+        # job = Job(
+        #     title=title,
+        #     description=description,
+        #     location=location,
+        #     salary=salary,
+        #     closing_date=closing_date,
+        #     organization=organization,
+        # )
 
-        return await job.insert(
-            link_rule=WriteRules.DO_NOTHING,
-        )
+        # return await job.insert(
+        #     link_rule=WriteRules.DO_NOTHING,
+        # )
+        raise NotImplementedError
 
     async def get(self, job_id: ObjectId) -> Job | None:
         """Get job by ID."""
@@ -44,16 +45,10 @@ class JobRepo:
         *,
         title: str,
         description: str,
-        location: str,
-        salary: str,
-        closing_date: date,
     ) -> Job:
         """Update the given job."""
         job.title = title
         job.description = description
-        job.location = location
-        job.salary = salary
-        job.closing_date = closing_date
         return await job.save()
 
     async def get_many_by_ids(self, job_ids: list[ObjectId]) -> list[Job | None]:
@@ -176,7 +171,7 @@ class SavedJobRepo:
             SavedJob.account.id == account_id,
             fetch_links=True,
             nesting_depth=1,
-        ).sort(-SavedJob.id)
+        ).sort("-id")
 
         return await paginator.paginate(
             search_criteria=search_criteria,

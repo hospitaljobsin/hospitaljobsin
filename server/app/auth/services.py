@@ -1147,7 +1147,7 @@ class AuthService:
 
     async def delete_other_sessions(
         self, account_id: ObjectId, except_session_token: str
-    ) -> Result[list[ObjectId], None]:
+    ) -> Ok[list[ObjectId]]:
         """Delete all sessions for the user except the current one."""
         existing_sessions = await self._session_repo.get_all_list(
             account_id=account_id, except_session_token=except_session_token
@@ -1446,7 +1446,7 @@ class AuthService:
 
     async def request_sudo_mode_with_google_oauth(
         self,
-        user_info: dict,
+        user_info: dict[str, Any],
         request: Request,
         current_user: Account,
     ) -> Result[Account, AccountNotFoundError | TwoFactorAuthenticationRequiredError]:
@@ -1468,7 +1468,7 @@ class AuthService:
         self,
         account: Account,
         request: Request,
-    ) -> Result[tuple[str, str], None]:
+    ) -> Ok[tuple[str, str]]:
         """Generate a 2FA challenge for the account to setup an authenticator."""
         (
             challenge,

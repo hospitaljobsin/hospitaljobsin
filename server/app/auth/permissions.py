@@ -1,5 +1,5 @@
 from datetime import UTC, datetime
-from typing import Any, ClassVar
+from typing import Any
 
 from strawberry.permission import BasePermission
 
@@ -8,7 +8,7 @@ from app.context import Info
 
 class IsAuthenticated(BasePermission):
     message = "User is not authenticated"
-    error_extensions: ClassVar[dict[str, str]] = {"code": "UNAUTHENTICATED"}
+    error_extensions = {"code": "UNAUTHENTICATED"}  # noqa: RUF012
 
     # This method can also be async!
     def has_permission(self, source: Any, info: Info, **kwargs: Any) -> bool:  # noqa:  ANN401, ARG002
@@ -17,7 +17,7 @@ class IsAuthenticated(BasePermission):
 
 class RequiresSudoMode(BasePermission):
     message = "Action requires sudo mode"
-    error_extensions: ClassVar[dict[str, str]] = {"code": "REQUIRES_SUDO_MODE"}
+    error_extensions = {"code": "REQUIRES_SUDO_MODE"}  # noqa: RUF012
 
     # This method can also be async!
     def has_permission(self, source: Any, info: Info, **kwargs: Any) -> bool:  # noqa:  ANN401, ARG002

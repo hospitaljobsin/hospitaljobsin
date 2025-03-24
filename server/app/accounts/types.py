@@ -45,17 +45,6 @@ class ProfileNotFoundErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(
-    name="AccountNotFoundError",
-    description="Used when the account is not found.",
-)
-class AccountNotFoundErrorType(BaseErrorType):
-    message: str = strawberry.field(
-        description="Human readable error message.",
-        default="Account not found!",
-    )
-
-
 @strawberry.enum(
     name="GenderType",
     description="Gender type.",
@@ -561,7 +550,7 @@ UpdateProfilePayload = Annotated[
 ]
 
 UpdateAccountPayload = Annotated[
-    AccountType | AccountNotFoundErrorType,
+    AccountType,
     strawberry.union(
         name="UpdateAccountPayload",
         description="The update account payload.",

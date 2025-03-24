@@ -86,12 +86,6 @@ type Account implements Node {
   ): WebAuthnCredentialConnection!
 }
 
-"""Used when the account is not found."""
-type AccountNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
-}
-
 type Address {
   """Address line 1."""
   line1: String
@@ -1238,7 +1232,7 @@ type UnsaveJobSuccess {
 }
 
 """The update account payload."""
-union UpdateAccountPayload = Account | AccountNotFoundError
+union UpdateAccountPayload = Account
 
 """The update password payload."""
 union UpdatePasswordPayload = Account | PasswordNotStrongError

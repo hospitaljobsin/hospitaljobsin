@@ -2,7 +2,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from result import Err, Ok, Result
 
-from app.jobs.documents import Job
+from app.jobs.documents import SavedJob
 from app.jobs.exceptions import JobNotFoundError, SavedJobNotFoundError
 from app.jobs.repositories import JobRepo, SavedJobRepo
 
@@ -14,7 +14,7 @@ class SavedJobService:
 
     async def save_job(
         self, account_id: ObjectId, job_id: str
-    ) -> Result[Job, JobNotFoundError]:
+    ) -> Result[SavedJob, JobNotFoundError]:
         try:
             job_id = ObjectId(job_id)
         except InvalidId:
@@ -31,7 +31,7 @@ class SavedJobService:
 
     async def unsave_job(
         self, account_id: ObjectId, job_id: str
-    ) -> Result[Job, SavedJobNotFoundError]:
+    ) -> Result[SavedJob, SavedJobNotFoundError]:
         try:
             job_id = ObjectId(job_id)
         except InvalidId:

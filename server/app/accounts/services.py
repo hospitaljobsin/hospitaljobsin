@@ -1,10 +1,8 @@
 from datetime import date
 
-from bson import ObjectId
-from result import Err, Ok, Result
+from result import Ok
 
 from app.accounts.documents import Account, Language
-from app.accounts.exceptions import AccountNotFoundError
 from app.accounts.repositories import AccountRepo, ProfileRepo
 from app.base.models import Address
 
@@ -13,12 +11,7 @@ class AccountService:
     def __init__(self, account_repo: AccountRepo) -> None:
         self._account_repo = account_repo
 
-    async def update(
-        self, account_id: ObjectId, full_name: str
-    ) -> Result[Account, AccountNotFoundError]:
-        account = await self._account_repo.get(account_id)
-        if account is None:
-            return Err(AccountNotFoundError())
+    async def update(self, account: Account, full_name: str) -> Ok[Account]:
         await self._account_repo.update(account=account, full_name=full_name)
         return Ok(account)
 
@@ -34,15 +27,14 @@ class ProfileService:
 
     async def update_personal_details(
         self,
-        account_id: ObjectId,
+        account: Account,
         gender: str | None,
         date_of_birth: date | None,
         address: Address,
         marital_status: str | None,
         category: str | None,
-    ) -> Result[Account, None]:
-        account = await self._account_repo.get(account_id, fetch_profile=True)
-        existing_profile = account.profile
+    ) -> Ok[Account]:
+        existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
             existing_profile = await self._profile_repo.create(account)
 
@@ -60,10 +52,10 @@ class ProfileService:
 
     async def update_languages(
         self,
-        account_id: ObjectId,
+        account: Account,
         languages: list[Language],
-    ) -> Result[Account, None]:
-        account = await self._account_repo.get(account_id, fetch_profile=True)
+    ) -> Ok[Account]:
+        existing_profile = await self._profile_repo.get_by_account(account)
         existing_profile = account.profile
         if existing_profile is None:
             existing_profile = await self._profile_repo.create(account)

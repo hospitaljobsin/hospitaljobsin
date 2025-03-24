@@ -11,10 +11,10 @@ from strawberry.scalars import JSON
 from app.accounts.documents import Account
 from app.accounts.types import AccountType, AuthProviderEnum, TwoFactorProviderEnum
 from app.auth.documents import PasswordResetToken, Session, WebAuthnCredential
-from app.auth.repositories import SessionRepo, TemporaryTwoFactorChallengeRepo
+from app.auth.repositories import TemporaryTwoFactorChallengeRepo
 from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
-from app.config import Settings
-from app.context import AuthInfo, Info
+from app.context import Info
+from app.core.constants import AuthProvider
 from app.scalars import ID
 
 
@@ -98,7 +98,7 @@ class InvalidAuthenticationProviderErrorType(BaseErrorType):
     )
 
     @classmethod
-    def marshal(cls, available_providers: list[AuthProviderEnum]) -> Self:
+    def marshal(cls, available_providers: list[AuthProvider]) -> Self:
         """Marshal into a node instance."""
         return cls(
             available_providers=[

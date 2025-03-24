@@ -4,17 +4,15 @@ from typing import Annotated, assert_never
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
-from result import Err, Ok
+from result import Ok
 from strawberry.permission import PermissionExtension
 
-from app.accounts.exceptions import AccountNotFoundError
 from app.accounts.services import AccountService, ProfileService
 from app.auth.permissions import IsAuthenticated
 from app.base.types import AddressInputType
 from app.context import AuthInfo
 
 from .types import (
-    AccountNotFoundErrorType,
     AccountType,
     GenderTypeEnum,
     LanguageInputType,
@@ -50,7 +48,7 @@ class AccountMutation:
     ) -> UpdateProfilePayload:
         """Update the current user's profile personal details."""
         match await profile_service.update_personal_details(
-            account_id=info.context["current_user"].id,
+            account=info.context["current_user"],
             gender=gender,
             date_of_birth=date_of_birth,
             marital_status=marital_status,
@@ -82,7 +80,7 @@ class AccountMutation:
     ) -> UpdateProfilePayload:
         """Update the current user's profile languages."""
         match await profile_service.update_languages(
-            account_id=info.context["current_user"].id,
+            account=info.context["current_user"],
             languages=[language.to_document() for language in languages],
         ):
             case Ok(account):
@@ -110,13 +108,9 @@ class AccountMutation:
     ) -> UpdateAccountPayload:
         """Update the current user's account."""
         match await account_service.update(
-            account_id=info.context["current_user"].id,
+            account=info.context["current_user"],
             full_name=full_name,
         ):
-            case Err(error):
-                match error:
-                    case AccountNotFoundError():
-                        return AccountNotFoundErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
             case _ as unreachable:
