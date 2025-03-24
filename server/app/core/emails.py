@@ -8,8 +8,8 @@ from jinja2 import Environment
 from app.config import Settings
 
 
-def get_smtp_client(settings: Settings) -> SMTP:
-    """Get the SMTP client."""
+def create_smtp_client(settings: Settings) -> SMTP:
+    """Create an SMTP client."""
     if settings.email_username and settings.email_password:
         return SMTP(
             hostname=settings.email_host,

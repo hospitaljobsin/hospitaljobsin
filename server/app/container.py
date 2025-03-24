@@ -24,11 +24,11 @@ from app.auth.repositories import (
 )
 from app.auth.services import AuthService
 from app.config import Settings
-from app.core.aws_sdk import get_aioboto3_session, get_s3_client
-from app.core.emails import EmailSender, get_smtp_client
-from app.core.oauth import get_oauth_client
-from app.core.recaptcha import get_recaptcha_verifier
-from app.core.templates import get_jinja2_environment
+from app.core.aws_sdk import create_aioboto3_session, create_s3_client
+from app.core.emails import EmailSender, create_smtp_client
+from app.core.oauth import create_oauth_client
+from app.core.recaptcha import create_recaptcha_verifier
+from app.core.templates import create_jinja2_environment
 from app.dataloaders import create_dataloaders
 from app.jobs.dataloaders import (
     create_job_by_id_dataloader,
@@ -48,14 +48,14 @@ from app.organizations.services import OrganizationMemberService, OrganizationSe
 @lru_cache
 def create_container() -> aioinject.Container:
     container = aioinject.Container()
-    container.register(aioinject.Object(Settings()))
-    container.register(aioinject.Singleton(get_jinja2_environment))
-    container.register(aioinject.Singleton(get_smtp_client))
+    container.register(aioinject.Object(Settings()))  # type: ignore[arg-type]
+    container.register(aioinject.Singleton(create_jinja2_environment))
+    container.register(aioinject.Singleton(create_smtp_client))
     container.register(aioinject.Scoped(EmailSender))
-    container.register(aioinject.Scoped(get_aioboto3_session))
-    container.register(aioinject.Scoped(get_s3_client))
-    container.register(aioinject.Singleton(get_oauth_client))
-    container.register(aioinject.Singleton(get_recaptcha_verifier))
+    container.register(aioinject.Scoped(create_aioboto3_session))
+    container.register(aioinject.Scoped(create_s3_client))
+    container.register(aioinject.Singleton(create_oauth_client))
+    container.register(aioinject.Singleton(create_recaptcha_verifier))
     container.register(aioinject.Singleton(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
     container.register(aioinject.Scoped(AuthService))

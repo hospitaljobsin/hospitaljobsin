@@ -38,8 +38,8 @@ class DummyRecaptchaVerifier(BaseRecaptchaVerifier):
         return recaptcha_token == "dummy_recaptcha_token"  # noqa: S105
 
 
-def get_recaptcha_verifier(settings: Settings) -> BaseRecaptchaVerifier:
-    """Get Recaptcha verifier."""
+def create_recaptcha_verifier(settings: Settings) -> BaseRecaptchaVerifier:
+    """Create a Recaptcha verifier."""
     if settings.is_testing:
         return DummyRecaptchaVerifier()
     return RecaptchaVerifier(settings)

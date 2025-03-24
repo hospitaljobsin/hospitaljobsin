@@ -14,8 +14,8 @@ def register_globals(environment: Environment, settings: Settings) -> None:
     environment.globals["support_email"] = SUPPORT_EMAIL
 
 
-def get_jinja2_environment(settings: Settings) -> Environment:
-    """Initialize an environment for template rendering."""
+def create_jinja2_environment(settings: Settings) -> Environment:
+    """Create an environment for template rendering."""
     environment = Environment(
         loader=FileSystemLoader(
             "templates",

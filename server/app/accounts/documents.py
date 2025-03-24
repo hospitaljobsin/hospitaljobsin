@@ -48,7 +48,7 @@ class Profile(Document):
     total_job_experience: float | None  # Total experience in years
     current_job: CurrentJob | None
 
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     account: BackLink["Account"] = Field(  # type: ignore[call-overload]
         original_field="profile",
     )
