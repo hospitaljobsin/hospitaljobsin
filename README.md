@@ -17,7 +17,7 @@ https://www.planttext.com?text=u-LoA2v9B2efpStXvShBJqbLK0eepIbE3SylobPmJ4xEByqhA
 | PulseWork Recruiter | [apps/recruitment-portal](./apps/recruiter-portal)| Recruitment platform UI         |
 | PulseWork           | [apps/seeker-portal](./apps/seeker-portal)        | Job Seeker platform UI          |
 | PulseWork API       | [server](./server)                                | GraphQL API Server              |
-| E2E Test Suite      | [e2e](./e2e)                                      | Playwright Integration Tests    |
+| E2E Test Suite      | [e2e](./e2e)                                      | Playwright End-To-End Tests     |
 
 
 ## License
