@@ -32,7 +32,6 @@ export default function Providers({
 							},
 						}}
 					>
-						{" "}
 						<ProgressProvider
 							height="4px"
 							color="#00a925"
