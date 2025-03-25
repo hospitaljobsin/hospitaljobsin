@@ -6,9 +6,9 @@ import type {
 } from "@/__generated__/JobFragment.graphql";
 import { dateFormat } from "@/lib/intl";
 import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
 import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
-import { useRouter } from "next-nprogress-bar";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";

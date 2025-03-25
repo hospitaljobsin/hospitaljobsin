@@ -6,6 +6,7 @@ import type {
 	TwoFactorProvider,
 } from "@/__generated__/RequestSudoViewFragment.graphql";
 import { env } from "@/lib/env";
+import { useRouter } from "@bprogress/next";
 import {
 	Alert,
 	Button,
@@ -17,7 +18,6 @@ import {
 	Link,
 } from "@heroui/react";
 import { Google } from "@lobehub/icons";
-import { useRouter } from "next-nprogress-bar";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFragment } from "react-relay";
@@ -104,7 +104,7 @@ export default function RequestSudoView({
 			setOauth2ErrorMessage(oauth2Error);
 			const url = new URL(window.location.href);
 			url.searchParams.delete("oauth2_error");
-			router.replace(url.toString(), undefined, { showProgressBar: false });
+			router.replace(url.toString(), undefined, { showProgress: false });
 		}
 	}, [oauth2Error, router]);
 

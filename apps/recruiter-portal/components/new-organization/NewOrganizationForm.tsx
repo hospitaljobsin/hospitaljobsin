@@ -1,6 +1,7 @@
 "use client";
 import type { NewOrganizationFormMutation } from "@/__generated__/NewOrganizationFormMutation.graphql";
 import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
 import {
 	Button,
 	Card,
@@ -11,7 +12,6 @@ import {
 	Textarea,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next-nprogress-bar";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";

@@ -1,8 +1,8 @@
 "use client";
 import { env } from "@/lib/env";
 import { getCurrentEnvironment } from "@/lib/relay/environments";
+import { ProgressProvider } from "@bprogress/next/app";
 import { HeroUIProvider } from "@heroui/react";
-import { AppProgressBar } from "next-nprogress-bar";
 import { ThemeProvider } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -32,13 +32,15 @@ export default function Providers({
 							},
 						}}
 					>
-						{children}
-						<AppProgressBar
+						{" "}
+						<ProgressProvider
 							height="4px"
 							color="#00a925"
 							options={{ showSpinner: false }}
 							shallowRouting
-						/>
+						>
+							{children}
+						</ProgressProvider>
 					</GoogleReCaptchaProvider>
 				</RelayEnvironmentProvider>
 			</ThemeProvider>

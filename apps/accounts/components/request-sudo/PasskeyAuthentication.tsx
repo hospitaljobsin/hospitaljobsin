@@ -1,10 +1,10 @@
 import type { PasskeyAuthenticationGenerateOptionsMutation } from "@/__generated__/PasskeyAuthenticationGenerateOptionsMutation.graphql";
 import type { PasskeyAuthenticationMutation as PasskeyAuthenticationMutationType } from "@/__generated__/PasskeyAuthenticationMutation.graphql";
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
+import { useRouter } from "@bprogress/next";
 import { Button, addToast } from "@heroui/react";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { Fingerprint } from "lucide-react";
-import { useRouter } from "next-nprogress-bar";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";

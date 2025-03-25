@@ -3,6 +3,7 @@
 import type { TwoFactorAuthenticationFormMutation as TwoFactorAuthenticationFormMutationType } from "@/__generated__/TwoFactorAuthenticationFormMutation.graphql";
 import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
+import { useRouter } from "@bprogress/next";
 import {
 	Button,
 	Card,
@@ -14,7 +15,6 @@ import {
 	Link,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next-nprogress-bar";
 import { useSearchParams } from "next/navigation";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";

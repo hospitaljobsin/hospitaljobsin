@@ -60,9 +60,9 @@ def transform_valid_object_id_tuple(
     return None
 
 
-def transform_default(key: U) -> str | None:
+def transform_default(key: str) -> str | None:
     """Return the key as is."""
-    return str(key)
+    return key
 
 
 def create_dataloader(

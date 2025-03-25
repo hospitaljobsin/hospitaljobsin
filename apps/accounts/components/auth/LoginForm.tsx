@@ -6,6 +6,7 @@ import type { LoginFormPasswordMutation as LoginFormPasswordMutationType } from 
 import { env } from "@/lib/env";
 import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
+import { useRouter } from "@bprogress/next";
 import {
 	Alert,
 	Button,
@@ -21,7 +22,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Google } from "@lobehub/icons";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { EyeIcon, EyeOffIcon, FingerprintIcon } from "lucide-react";
-import { useRouter } from "next-nprogress-bar";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -114,7 +114,7 @@ export default function LoginForm() {
 			setOauth2ErrorMessage(oauth2Error);
 			const url = new URL(window.location.href);
 			url.searchParams.delete("oauth2_error");
-			router.replace(url.toString(), undefined, { showProgressBar: false });
+			router.replace(url.toString(), undefined, { showProgress: false });
 		}
 	}, [oauth2Error, router]);
 
