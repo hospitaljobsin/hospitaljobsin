@@ -1,13 +1,11 @@
-from typing import TYPE_CHECKING, Annotated, ClassVar, Literal
+from typing import Annotated, ClassVar, Literal
 
 from beanie import BackLink, Document, Indexed, Link
 from pydantic import Field
 from pymongo import IndexModel
 
+from app.accounts.documents import Account
 from app.base.models import Address
-
-if TYPE_CHECKING:
-    from app.accounts.documents import Account
 
 
 class Organization(Document):
@@ -26,14 +24,15 @@ class Organization(Document):
 
 class OrganizationMember(Document):
     organization: Link[Organization]
-    account: Link["Account"]
+    account: Link[Account]
     role: Literal["admin", "member"]
 
     class Settings:
         name = "organization_members"
         indexes: ClassVar[list[IndexModel]] = [
             IndexModel(
-                [("organization", 1), ("account", 1)],
+                ["organization", "account"],
+                name="organization_account_unique_secondary_index",
                 unique=True,
             ),
         ]

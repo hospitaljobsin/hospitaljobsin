@@ -178,12 +178,14 @@ class OrganizationMemberRepo:
             paginate_by="account.id",
         )
 
+        search_criteria = OrganizationMember.find(
+            OrganizationMember.organization.id == organization_id,
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
         return await paginator.paginate(
-            search_criteria=OrganizationMember.find(
-                OrganizationMember.organization.id == organization_id,
-                fetch_links=True,
-                nesting_depth=1,
-            ),
+            search_criteria=search_criteria,
             first=first,
             last=last,
             before=ObjectId(before) if before else None,

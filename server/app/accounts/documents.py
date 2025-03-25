@@ -18,7 +18,6 @@ if TYPE_CHECKING:
         TemporaryTwoFactorChallenge,
         WebAuthnCredential,
     )
-    from app.organizations.documents import OrganizationMember
 
 
 # Current Job Schema
@@ -68,7 +67,6 @@ class Account(Document):
 
     profile: Link["Profile"] | None = None
 
-    memberships: list[BackLink["OrganizationMember"]] = Field(original_field="account")  # type: ignore[call-overload]
     webauthn_credentials: list[BackLink["WebAuthnCredential"]] = Field(  # type: ignore[call-overload]
         original_field="account"
     )

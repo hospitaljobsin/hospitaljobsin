@@ -28,15 +28,12 @@ def rebuild_models() -> None:
         TemporaryTwoFactorChallenge,
         WebAuthnCredential,
     )
-    from app.organizations.documents import OrganizationMember
 
     Account.model_rebuild()
 
     WebAuthnCredential.model_rebuild()
 
     OAuthCredential.model_rebuild()
-
-    OrganizationMember.model_rebuild()
 
     RecoveryCode.model_rebuild()
 
