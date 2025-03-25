@@ -20,7 +20,7 @@
 		"@t3-oss/env-nextjs": "^0.11.1",
 		"@tailwindcss/typography": "^0.5.16",
 		"@xstate/react": "^5.0.3",
-		"framer-motion": "^11.18.2",
+		"framer-motion": "^12.5.0",
 		"jiti": "^2.4.2",
 		"jose": "^6.0.10",
 		"lucide-react": "^0.462.0",
