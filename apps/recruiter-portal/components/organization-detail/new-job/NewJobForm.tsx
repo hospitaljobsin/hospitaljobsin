@@ -99,6 +99,14 @@ export default function NewJobForm({ account, organization }: Props) {
 			description: "",
 			application: "",
 			skills: [],
+			address: {
+				city: null,
+				country: null,
+				line1: null,
+				line2: null,
+				pincode: null,
+				state: null,
+			},
 		},
 	});
 
@@ -120,12 +128,12 @@ export default function NewJobForm({ account, organization }: Props) {
 				application: formData.application,
 				skills: formData.skills,
 				address: {
-					city: null,
-					country: null,
-					line1: null,
-					line2: null,
-					pincode: null,
-					state: null,
+					city: formData.address.city,
+					country: formData.address.country,
+					line1: formData.address.line1,
+					line2: formData.address.line2,
+					pincode: formData.address.pincode,
+					state: formData.address.state,
 				},
 			},
 			onCompleted(response) {
