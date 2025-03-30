@@ -1,10 +1,18 @@
+from datetime import datetime
+
 from bson import ObjectId
 from bson.errors import InvalidId
 from result import Err, Ok, Result
 
-from app.jobs.documents import SavedJob
-from app.jobs.exceptions import JobNotFoundError, SavedJobNotFoundError
+from app.base.models import Address
+from app.jobs.documents import Job, SavedJob
+from app.jobs.exceptions import (
+    JobNotFoundError,
+    OrganizationNotFoundError,
+    SavedJobNotFoundError,
+)
 from app.jobs.repositories import JobRepo, SavedJobRepo
+from app.organizations.repositories import OrganizationRepo
 
 
 class SavedJobService:
@@ -42,3 +50,62 @@ class SavedJobService:
         await self._saved_job_repo.delete(saved_job)
 
         return Ok(saved_job)
+
+
+class JobService:
+    def __init__(self, job_repo: JobRepo, organization_repo: OrganizationRepo) -> None:
+        self._job_repo = job_repo
+        self._organization_repo = organization_repo
+
+    async def create(
+        self,
+        *,
+        account_id: ObjectId,
+        organization_id: str,
+        title: str,
+        description: str,
+        application: str,
+        address: Address,
+        has_salary_range: bool = False,
+        min_salary: int | None = None,
+        max_salary: int | None = None,
+        has_experience_range: bool = False,
+        min_experience: int | None = None,
+        max_experience: int | None = None,
+        expires_at: datetime | None = None,
+        category: str | None = None,
+        job_type: str | None = None,
+        work_mode: str | None = None,
+        skills: list[str] = [],
+        currency: str = "INR",
+    ) -> Result[Job, OrganizationNotFoundError]:
+        """Create a new job."""
+        try:
+            organization_id = ObjectId(organization_id)
+        except InvalidId:
+            return Err(OrganizationNotFoundError())
+        existing_organization = await self._organization_repo.get(organization_id)
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        job = await self._job_repo.create(
+            organization=existing_organization,
+            title=title,
+            description=description,
+            application=application,
+            address=address,
+            has_salary_range=has_salary_range,
+            min_salary=min_salary,
+            max_salary=max_salary,
+            has_experience_range=has_experience_range,
+            min_experience=min_experience,
+            max_experience=max_experience,
+            expires_at=expires_at,
+            category=category,
+            job_type=job_type,
+            work_mode=work_mode,
+            skills=skills,
+            currency=currency,
+        )
+
+        return Ok(job)

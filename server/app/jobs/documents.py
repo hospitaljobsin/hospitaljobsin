@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Annotated, ClassVar, Literal
 
 import pymongo
 from beanie import Document, Indexed, Link
+from pydantic import Field
 from pymongo import IndexModel
 from pymongo.operations import SearchIndexModel
 
@@ -35,7 +36,7 @@ class Job(Document):
 
     job_embedding: list[float] | None = None
 
-    updated_at: datetime
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     expires_at: datetime | None = None
 
     organization: Link[Organization]

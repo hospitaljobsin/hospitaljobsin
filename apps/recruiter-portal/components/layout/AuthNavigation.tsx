@@ -162,8 +162,13 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					</DropdownSection>
 					<DropdownSection showDivider>
 						<DropdownItem key="account">
-							<Link color="foreground" href={links.accountSettings} isExternal className="w-full gap-4 items-center">
-							<Settings className="h-4 w-4" /> Account
+							<Link
+								color="foreground"
+								href={links.accountSettings}
+								isExternal
+								className="w-full gap-4 items-center text-small"
+							>
+								<Settings className="h-4 w-4" /> Account
 							</Link>
 						</DropdownItem>
 					</DropdownSection>

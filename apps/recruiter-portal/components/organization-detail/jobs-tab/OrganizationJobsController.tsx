@@ -1,5 +1,7 @@
-import { Button, Input } from "@heroui/react";
+import links from "@/lib/links";
+import { Button, Input, Link } from "@heroui/react";
 import { BriefcaseBusiness, Search } from "lucide-react";
+import { useParams } from "next/navigation";
 
 interface OrganizationJobsControllerProps {
 	searchTerm: string | null;
@@ -9,6 +11,7 @@ interface OrganizationJobsControllerProps {
 export default function OrganizationJobsController(
 	props: OrganizationJobsControllerProps,
 ) {
+	const { slug } = useParams<{ slug: string }>();
 	return (
 		<div className="w-full flex items-center gap-8">
 			<Input
@@ -29,7 +32,12 @@ export default function OrganizationJobsController(
 				onClear={() => props.setSearchTerm(null)}
 				fullWidth
 			/>
-			<Button color="primary" startContent={<BriefcaseBusiness size={25} />}>
+			<Button
+				as={Link}
+				href={links.organizationCreateJob(slug)}
+				color="primary"
+				startContent={<BriefcaseBusiness size={25} />}
+			>
 				New
 			</Button>
 		</div>

@@ -1,16 +1,23 @@
 import { useFragment, usePaginationFragment } from "react-relay";
 
-import type { OrganizationJobsListFragment$key } from "@/__generated__/OrganizationJobsListFragment.graphql";
-import type { OrganizationJobsListInternalFragment$key } from "@/__generated__/OrganizationJobsListInternalFragment.graphql";
+import type { OrganizationJobsTableFragment$key } from "@/__generated__/OrganizationJobsTableFragment.graphql";
+import type { OrganizationJobsTableInternalFragment$key } from "@/__generated__/OrganizationJobsTableInternalFragment.graphql";
 import type { pageOrganizationJobsViewQuery } from "@/__generated__/pageOrganizationJobsViewQuery.graphql";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableColumn,
+	TableHeader,
+	TableRow,
+	getKeyValue,
+} from "@heroui/react";
 import { startTransition, useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
-import Job from "./Job";
-import OrganizationJobsListSkeleton from "./OrganizationJobsListSkeleton";
 
-const OrganizationJobsListFragment = graphql`
-fragment OrganizationJobsListFragment on Query @argumentDefinitions(
+const OrganizationJobsTableFragment = graphql`
+fragment OrganizationJobsTableFragment on Query @argumentDefinitions(
       slug: {
         type: "String!",
       }
@@ -19,27 +26,27 @@ fragment OrganizationJobsListFragment on Query @argumentDefinitions(
         organization(slug: $slug) {
             __typename
             ... on Organization {
-            ...OrganizationJobsListInternalFragment @arguments(searchTerm: $searchTerm)
+            ...OrganizationJobsTableInternalFragment @arguments(searchTerm: $searchTerm)
             }
         }
 }
 `;
 
-const OrganizationJobsListInternalFragment = graphql`
-  fragment OrganizationJobsListInternalFragment on Organization
+const OrganizationJobsTableInternalFragment = graphql`
+  fragment OrganizationJobsTableInternalFragment on Organization
   @argumentDefinitions(
     cursor: { type: "ID" }
 	searchTerm: { type: "String", defaultValue: null }
     count: { type: "Int", defaultValue: 10 }
   )
-  @refetchable(queryName: "OrganizationJobsListPaginationQuery") {
+  @refetchable(queryName: "OrganizationJobsTablePaginationQuery") {
     jobs(after: $cursor, first: $count, searchTerm: $searchTerm)
-      @connection(key: "OrganizationJobsListInternalFragment_jobs", filters: ["searchTerm"]) {
+      @connection(key: "OrganizationJobsTableInternalFragment_jobs", filters: ["searchTerm"]) {
       edges {
 		node {
 			id
+			title
 		}
-        ...JobFragment
       }
       pageInfo {
         hasNextPage
@@ -49,20 +56,30 @@ const OrganizationJobsListInternalFragment = graphql`
 `;
 
 type Props = {
-	rootQuery: OrganizationJobsListFragment$key;
+	rootQuery: OrganizationJobsTableFragment$key;
 	searchTerm: string | null;
 };
 
-export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
-	const root = useFragment(OrganizationJobsListFragment, rootQuery);
+const columns = [
+	{
+		key: "title",
+		label: "Title",
+	},
+];
+
+export default function OrganizationJobsTable({
+	rootQuery,
+	searchTerm,
+}: Props) {
+	const root = useFragment(OrganizationJobsTableFragment, rootQuery);
 	invariant(
 		root.organization.__typename === "Organization",
 		"Expected 'Organization' node type",
 	);
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
 		pageOrganizationJobsViewQuery,
-		OrganizationJobsListInternalFragment$key
-	>(OrganizationJobsListInternalFragment, root.organization);
+		OrganizationJobsTableInternalFragment$key
+	>(OrganizationJobsTableInternalFragment, root.organization);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -111,13 +128,22 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 		);
 	}
 
+	const rows = data.jobs.edges;
+
 	return (
-		<div className="w-full flex flex-col gap-8 pb-6">
-			{data.jobs.edges.map((jobEdge) => (
-				<Job job={jobEdge} key={jobEdge.node.id} />
-			))}
-			<div ref={observerRef} className="h-10" />
-			{isLoadingNext && <OrganizationJobsListSkeleton />}
-		</div>
+		<Table bottomContent={<div ref={observerRef} className="h-10" />}>
+			<TableHeader columns={columns}>
+				{(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+			</TableHeader>
+			<TableBody items={rows}>
+				{(jobEdge) => (
+					<TableRow key={jobEdge.node.id}>
+						{(columnKey) => (
+							<TableCell>{getKeyValue(jobEdge.node, columnKey)}</TableCell>
+						)}
+					</TableRow>
+				)}
+			</TableBody>
+		</Table>
 	);
 }

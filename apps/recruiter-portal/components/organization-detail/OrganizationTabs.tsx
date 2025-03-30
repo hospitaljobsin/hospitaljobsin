@@ -5,15 +5,23 @@ import { BriefcaseBusiness, HomeIcon, UserIcon } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 
 export default function OrganizationTabs() {
-	const pathnname = usePathname();
+	const pathname = usePathname();
 	const params = useParams<{ slug: string }>();
+
+	function getSelectedKey(pathname: string) {
+		if (pathname === links.organizationCreateJob(params.slug)) {
+			return links.organizationDetailJobs(params.slug);
+		}
+		return pathname;
+	}
+
 	return (
 		<div className="flex w-full flex-col border-b border-gray-300 py-4">
 			<Tabs
 				aria-label="Organization Detail Menu"
 				color="default"
 				variant="light"
-				selectedKey={pathnname}
+				selectedKey={getSelectedKey(pathname)}
 			>
 				<Tab
 					key={links.organizationDetail(params.slug)}
@@ -35,7 +43,7 @@ export default function OrganizationTabs() {
 						</div>
 					}
 				/>
-								<Tab
+				<Tab
 					key={links.organizationDetailJobs(params.slug)}
 					href={links.organizationDetailJobs(params.slug)}
 					title={

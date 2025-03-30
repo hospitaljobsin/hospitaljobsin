@@ -16,6 +16,7 @@ from app.base.types import (
 )
 from app.context import Info
 from app.jobs.documents import Job, SavedJob
+from app.organizations.types import OrganizationNotFoundErrorType
 
 if TYPE_CHECKING:
     from app.organizations.types import OrganizationType
@@ -286,6 +287,25 @@ UnsaveJobPayload = Annotated[
     strawberry.union(
         name="UnsaveJobPayload",
         description="The unsave job payload.",
+    ),
+]
+
+
+@strawberry.type(
+    name="CreateJobSuccess",
+    description="Used when the job is created successfully.",
+)
+class CreateJobSuccess:
+    job_edge: JobEdgeType = strawberry.field(
+        description="The edge of the created job.",
+    )
+
+
+CreateJobPayload = Annotated[
+    CreateJobSuccess | OrganizationNotFoundErrorType,
+    strawberry.union(
+        name="CreateJobPayload",
+        description="The create job payload.",
     ),
 ]
 

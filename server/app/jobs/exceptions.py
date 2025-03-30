@@ -8,3 +8,7 @@ class SavedJobNotFoundError:
 
 class CompanyNotFoundError:
     """Raised when a company is not found."""
+
+
+class OrganizationNotFoundError:
+    """Raised when an organization is not found."""

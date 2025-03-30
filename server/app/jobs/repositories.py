@@ -1,9 +1,11 @@
-from datetime import date
+import secrets
+from datetime import date, datetime
 
 from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.operators import And, In
 from bson import ObjectId
 
+from app.base.models import Address
 from app.database.paginator import PaginatedResult, Paginator
 from app.organizations.documents import Organization
 
@@ -11,23 +13,56 @@ from .documents import Job, SavedJob
 
 
 class JobRepo:
+    async def generate_slug(self, title: str) -> str:
+        """Generate a slug from the job title."""
+        slug = title.lower().replace(" ", "-")
+        if await self.get_by_slug(slug):
+            suffix = secrets.token_urlsafe(8)
+            while await self.get_by_slug(f"{slug}-{suffix}"):
+                suffix = secrets.token_urlsafe(8)
+            slug = f"{slug}-{suffix}"
+        return slug
+
     async def create(
         self,
+        organization: Organization,
         title: str,
         description: str,
-        location: str,
-        salary: str,
-        closing_date: date,
-        organization: Organization,
+        application: str,
+        address: Address,
+        has_salary_range: bool = False,
+        min_salary: int | None = None,
+        max_salary: int | None = None,
+        has_experience_range: bool = False,
+        min_experience: int | None = None,
+        max_experience: int | None = None,
+        expires_at: datetime | None = None,
+        category: str | None = None,
+        job_type: str | None = None,
+        work_mode: str | None = None,
+        skills: list[str] = [],
+        currency: str = "INR",
     ) -> Job:
         """Create a new job."""
         job = Job(
             title=title,
             description=description,
-            location=location,
-            salary=salary,
-            closing_date=closing_date,
+            application=application,
+            address=address,
+            has_salary_range=has_salary_range,
+            min_salary=min_salary,
+            max_salary=max_salary,
+            has_experience_range=has_experience_range,
+            min_experience=min_experience,
+            max_experience=max_experience,
+            expires_at=expires_at,
             organization=organization,
+            category=category,
+            type=job_type,
+            work_mode=work_mode,
+            skills=skills,
+            currency=currency,
+            slug=await self.generate_slug(title),
         )
 
         return await job.insert(
@@ -37,6 +72,10 @@ class JobRepo:
     async def get(self, job_id: ObjectId) -> Job | None:
         """Get job by ID."""
         return await Job.get(job_id)
+
+    async def get_by_slug(self, slug: str) -> Job | None:
+        """Get job by slug."""
+        return await Job.find_one(Job.slug == slug)
 
     async def update(
         self,
