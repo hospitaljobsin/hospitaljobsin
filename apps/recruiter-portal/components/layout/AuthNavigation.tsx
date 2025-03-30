@@ -13,6 +13,7 @@ import {
 	DropdownMenu,
 	DropdownSection,
 	DropdownTrigger,
+	Link,
 	NavbarItem,
 	useDisclosure,
 } from "@heroui/react";
@@ -96,7 +97,8 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							variant="light"
 							startContent={<Settings className="h-4 w-4" />}
 							href={links.accountSettings}
-							as={links.accountSettings ? "a" : "button"}
+							as={Link}
+							isExternal
 							fullWidth
 						>
 							Account
@@ -159,12 +161,10 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						</DropdownItem>
 					</DropdownSection>
 					<DropdownSection showDivider>
-						<DropdownItem
-							key="account"
-							startContent={<Settings className="h-4 w-4" />}
-							href={links.accountSettings}
-						>
-							Account
+						<DropdownItem key="account">
+							<Link color="foreground" href={links.accountSettings} isExternal className="w-full gap-4 items-center">
+							<Settings className="h-4 w-4" /> Account
+							</Link>
 						</DropdownItem>
 					</DropdownSection>
 					<DropdownSection>
