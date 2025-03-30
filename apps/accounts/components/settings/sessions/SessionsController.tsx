@@ -44,7 +44,7 @@ export default function SessionsController({
 				className="hidden md:flex"
 				isDisabled={isDisabled}
 			>
-				Delete all sessions
+				Logout all sessions
 			</Button>
 			<Button
 				startContent={<Trash size={16} />}
@@ -56,7 +56,7 @@ export default function SessionsController({
 				className="flex md:hidden"
 				isDisabled={isDisabled}
 			>
-				Delete all sessions
+				Logout all sessions
 			</Button>
 			<DeleteOtherSessionsModal
 				isOpen={isOpen}

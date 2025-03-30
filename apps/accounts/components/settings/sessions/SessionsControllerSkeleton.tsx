@@ -12,7 +12,7 @@ export default function SessionsControllerSkeleton() {
 				spinnerPlacement="end"
 				className="hidden md:flex"
 			>
-				Delete all sessions
+				Logout all sessions
 			</Button>
 			<Button
 				startContent={<Trash2 size={16} />}
@@ -23,7 +23,7 @@ export default function SessionsControllerSkeleton() {
 				size="sm"
 				className="flex md:hidden"
 			>
-				Delete all sessions
+				Logout all sessions
 			</Button>
 		</>
 	);
