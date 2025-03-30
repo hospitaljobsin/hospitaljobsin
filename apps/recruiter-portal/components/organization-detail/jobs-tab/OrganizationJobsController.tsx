@@ -16,7 +16,7 @@ export default function OrganizationJobsController(
 		<div className="w-full flex items-center gap-8">
 			<Input
 				classNames={{
-					inputWrapper: "bg-background",
+					inputWrapper: "bg-background shadow-none",
 				}}
 				startContent={
 					<Search

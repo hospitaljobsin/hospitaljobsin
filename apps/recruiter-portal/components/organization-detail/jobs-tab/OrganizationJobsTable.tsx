@@ -118,24 +118,15 @@ export default function OrganizationJobsTable({
 		return () => clearTimeout(debounceTimeout);
 	}, [refetch, searchTerm]);
 
-	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
-		return (
-			<div className="flex grow flex-col gap-8 px-4 items-center h-full">
-				<p className="font-medium text-muted-foreground">
-					Hmm, no Jobs could be found
-				</p>
-			</div>
-		);
-	}
-
-	const rows = data.jobs.edges;
-
 	return (
-		<Table bottomContent={<div ref={observerRef} className="h-10" />}>
+		<Table
+			bottomContent={<div ref={observerRef} className="h-10" />}
+			shadow="none"
+		>
 			<TableHeader columns={columns}>
 				{(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
 			</TableHeader>
-			<TableBody items={rows}>
+			<TableBody items={data.jobs.edges} emptyContent={<p>No jobs found</p>}>
 				{(jobEdge) => (
 					<TableRow key={jobEdge.node.id}>
 						{(columnKey) => (
