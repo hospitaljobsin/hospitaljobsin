@@ -2,8 +2,8 @@ import { useFragment, usePaginationFragment } from "react-relay";
 
 import type { OrganizationJobsListFragment$key } from "@/__generated__/OrganizationJobsListFragment.graphql";
 import type { OrganizationJobsListInternalFragment$key } from "@/__generated__/OrganizationJobsListInternalFragment.graphql";
-import type { pageOrganizationDetailViewQuery } from "@/__generated__/pageOrganizationDetailViewQuery.graphql";
-import { useEffect, useRef } from "react";
+import type { pageOrganizationJobsViewQuery } from "@/__generated__/pageOrganizationJobsViewQuery.graphql";
+import { startTransition, useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import Job from "./Job";
@@ -14,11 +14,12 @@ fragment OrganizationJobsListFragment on Query @argumentDefinitions(
       slug: {
         type: "String!",
       }
+      searchTerm: { type: "String", defaultValue: null }
     )  {
         organization(slug: $slug) {
             __typename
             ... on Organization {
-            ...OrganizationJobsListInternalFragment
+            ...OrganizationJobsListInternalFragment @arguments(searchTerm: $searchTerm)
             }
         }
 }
@@ -28,11 +29,12 @@ const OrganizationJobsListInternalFragment = graphql`
   fragment OrganizationJobsListInternalFragment on Organization
   @argumentDefinitions(
     cursor: { type: "ID" }
+	searchTerm: { type: "String", defaultValue: null }
     count: { type: "Int", defaultValue: 10 }
   )
   @refetchable(queryName: "OrganizationJobsListPaginationQuery") {
-    jobs(after: $cursor, first: $count)
-      @connection(key: "OrganizationJobsListInternalFragment_jobs") {
+    jobs(after: $cursor, first: $count, searchTerm: $searchTerm)
+      @connection(key: "OrganizationJobsListInternalFragment_jobs", filters: ["searchTerm"]) {
       edges {
 		node {
 			id
@@ -48,16 +50,17 @@ const OrganizationJobsListInternalFragment = graphql`
 
 type Props = {
 	rootQuery: OrganizationJobsListFragment$key;
+	searchTerm: string | null;
 };
 
-export default function OrganizationJobsList({ rootQuery }: Props) {
+export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 	const root = useFragment(OrganizationJobsListFragment, rootQuery);
 	invariant(
 		root.organization.__typename === "Organization",
 		"Expected 'Organization' node type",
 	);
-	const { data, loadNext, isLoadingNext } = usePaginationFragment<
-		pageOrganizationDetailViewQuery,
+	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
+		pageOrganizationJobsViewQuery,
 		OrganizationJobsListInternalFragment$key
 	>(OrganizationJobsListInternalFragment, root.organization);
 
@@ -83,6 +86,20 @@ export default function OrganizationJobsList({ rootQuery }: Props) {
 		observer.observe(observerRef.current);
 		return () => observer.disconnect();
 	}, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
+
+	// Debounced search term refetch
+	useEffect(() => {
+		const debounceTimeout = setTimeout(() => {
+			startTransition(() => {
+				refetch(
+					{ searchTerm: searchTerm },
+					{ fetchPolicy: "store-or-network" },
+				);
+			});
+		}, 300); // Adjust debounce delay as needed
+
+		return () => clearTimeout(debounceTimeout);
+	}, [refetch, searchTerm]);
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (

@@ -19,8 +19,9 @@ const OrganizationJobsViewClientComponentFragment = graphql`
 	  slug: {
 		type: "String!",
 	  }
+	  searchTerm: { type: "String", defaultValue: null }
 	) {
-		...OrganizationJobsTabFragment @arguments(slug: $slug)
+		...OrganizationJobsTabFragment @arguments(slug: $slug, searchTerm: $searchTerm)
   }
 `;
 

@@ -32,7 +32,7 @@ class JobQuery:
         search_term: Annotated[
             str | None,
             strawberry.argument(
-                description="Search term",
+                description="The search (query) term",
             ),
         ] = None,
         before: Annotated[

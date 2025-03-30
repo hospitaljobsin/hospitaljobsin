@@ -10,8 +10,10 @@ import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
 
 const JobListFragment = graphql`
-fragment JobListFragment on Query {
-	...JobListInternalFragment
+fragment JobListFragment on Query @argumentDefinitions(
+	searchTerm: { type: "String", defaultValue: null }
+) {
+	...JobListInternalFragment @arguments(searchTerm: $searchTerm)
 	viewer {
 		...JobControlsAuthFragment
 	}
@@ -82,12 +84,15 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
 	useEffect(() => {
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
-				refetch({}, { fetchPolicy: "store-or-network" });
+				refetch(
+					{ searchTerm: searchTerm },
+					{ fetchPolicy: "store-or-network" },
+				);
 			});
 		}, 300); // Adjust debounce delay as needed
 
 		return () => clearTimeout(debounceTimeout);
-	}, [refetch]);
+	}, [refetch, searchTerm]);
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (

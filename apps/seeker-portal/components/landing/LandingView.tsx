@@ -7,8 +7,8 @@ import JobList from "./JobList";
 import JobListController from "./JobListController";
 
 const LandingViewQuery = graphql`
-  query LandingViewQuery {
-    ...JobListFragment
+  query LandingViewQuery($searchTerm: String) {
+    ...JobListFragment @arguments(searchTerm: $searchTerm)
   }
 `;
 

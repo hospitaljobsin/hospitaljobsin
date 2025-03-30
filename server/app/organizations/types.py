@@ -164,6 +164,12 @@ class OrganizationType(BaseNodeType[Organization]):
             JobRepo,
             Inject,
         ],
+        search_term: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The search (query) term",
+            ),
+        ] = None,
         before: Annotated[
             relay.GlobalID | None,
             strawberry.argument(
@@ -194,6 +200,7 @@ class OrganizationType(BaseNodeType[Organization]):
 
         paginated_jobs = await job_repo.get_all_by_organization_id(
             organization_id=ObjectId(self.id),
+            search_term=search_term,
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
             first=first,

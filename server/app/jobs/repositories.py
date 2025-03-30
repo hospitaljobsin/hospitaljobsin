@@ -101,6 +101,7 @@ class JobRepo:
     async def get_all_by_organization_id(
         self,
         organization_id: ObjectId,
+        search_term: str | None = None,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
@@ -114,6 +115,9 @@ class JobRepo:
         )
 
         search_criteria = Job.find(Job.organization.id == organization_id)
+
+        if search_term:
+            search_criteria = search_criteria.find({"$text": {"$search": search_term}})
 
         return await paginator.paginate(
             search_criteria=search_criteria,

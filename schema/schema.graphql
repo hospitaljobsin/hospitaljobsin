@@ -844,6 +844,9 @@ type Organization implements Node {
 
   """The jobs posted in the organization."""
   jobs(
+    """The search (query) term"""
+    searchTerm: String = null
+
     """Returns items before the given cursor."""
     before: ID = null
 
@@ -1042,7 +1045,7 @@ type Query {
 
   """Get all jobs available."""
   jobs(
-    """Search term"""
+    """The search (query) term"""
     searchTerm: String = null
 
     """Returns items before the given cursor."""
