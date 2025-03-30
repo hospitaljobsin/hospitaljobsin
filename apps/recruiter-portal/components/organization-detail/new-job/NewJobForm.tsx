@@ -1,5 +1,7 @@
 "use client";
+import type { NewJobFormAccountFragment$key } from "@/__generated__/NewJobFormAccountFragment.graphql";
 import type { NewJobFormMutation } from "@/__generated__/NewJobFormMutation.graphql";
+import type { NewJobFormOrganizationFragment$key } from "@/__generated__/NewJobFormOrganizationFragment.graphql";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {
@@ -7,80 +9,138 @@ import {
 	Card,
 	CardBody,
 	CardFooter,
-	CardHeader,
 	Input,
-	Textarea,
+	addToast,
+	useDisclosure,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import { Controller, useForm } from "react-hook-form";
-import { useMutation } from "react-relay";
+import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
+import CancelNewJobModal from "./CancelNewJobModal";
 
 const CreateJobMutation = graphql`
-mutation NewJobFormMutation($fullName: String!, $slug: String!, $website: String, $description: String) {
-    createOrganization(fullName: $fullName, slug: $slug, website: $website, description: $description) {
+mutation NewJobFormMutation($title: String!, $description: String!, $application: String!, $skills: [String!]!, $address: AddressInput! $organizationId: ID!) {
+    createJob(title: $title, description: $description, application: $application, skills: $skills, address: $address, organizationId: $organizationId) {
         __typename
-        ...on Organization {
+        ...on CreateJobSuccess {
             __typename
-            slug
+            jobEdge {
+				node {
+					slug
+				}
+			}
         }
-        ... on OrganizationSlugInUseError {
-            message
-        }
+
+		... on OrganizationNotFoundError {
+			__typename
+		}
     }
 }
 `;
 
+const NewJobFormAccountFragment = graphql`
+fragment NewJobFormAccountFragment on Account {
+	__typename
+	fullName
+	avatarUrl
+}
+`;
+
+const NewJobFormOrganizationFragment = graphql`
+fragment NewJobFormOrganizationFragment on Organization {
+	__typename
+	slug
+	...CancelNewJobModalOrganizationFragment
+}
+`;
+
 const formSchema = z.object({
-	fullName: z.string().min(1, "This field is required").max(75),
-	slug: z
-		.string()
-		.min(1, "This field is required")
-		.max(75)
-		.regex(/^[a-z0-9-]+$/, "Must be a valid slug")
-		.refine((value) => value === value.toLowerCase(), "Must be lowercase"),
-	website: z.string().url().nullable(),
-	description: z.string().nullable(),
+	title: z.string().min(1, "This field is required").max(75),
+	description: z.string().min(1, "This field is required").max(75),
+	application: z.string().min(1, "This field is required").url(),
+	skills: z.array(z.string().min(1, "This field is required")),
+	address: z.object({
+		city: z.string().nullable(),
+		country: z.string().nullable(),
+		line1: z.string().nullable(),
+		line2: z.string().nullable(),
+		pincode: z.string().nullable(),
+		state: z.string().nullable(),
+	}),
 });
 
-export default function NewJobForm() {
+type Props = {
+	account: NewJobFormAccountFragment$key;
+	organization: NewJobFormOrganizationFragment$key;
+};
+
+export default function NewJobForm({ account, organization }: Props) {
 	const router = useRouter();
+	const { isOpen, onOpenChange, onOpen } = useDisclosure();
+	const data = useFragment(NewJobFormAccountFragment, account);
+	const organizationData = useFragment(
+		NewJobFormOrganizationFragment,
+		organization,
+	);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<NewJobFormMutation>(CreateJobMutation);
 	const {
 		handleSubmit,
 		control,
-		setError,
-		formState: { errors, isSubmitting },
+		register,
+		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			fullName: "",
-			slug: "",
-			website: null,
-			description: null,
+			title: "",
+			description: "",
+			application: "",
+			skills: [],
 		},
 	});
+
+	function handleCancel() {
+		if (isDirty) {
+			// show confirmation modal
+			onOpen();
+		} else {
+			router.push(links.organizationDetailJobs(organizationData.slug));
+		}
+	}
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		commitMutation({
 			variables: {
-				fullName: formData.fullName,
-				slug: formData.slug,
-				website: formData.website,
+				organizationId: "",
+				title: formData.title,
 				description: formData.description,
+				application: formData.application,
+				skills: formData.skills,
+				address: {
+					city: null,
+					country: null,
+					line1: null,
+					line2: null,
+					pincode: null,
+					state: null,
+				},
 			},
 			onCompleted(response) {
-				if (
-					response.createOrganization.__typename ===
-					"OrganizationSlugInUseError"
-				) {
-					setError("slug", { message: response.createOrganization.message });
-				} else if (response.createOrganization.__typename === "Organization") {
+				if (response.createJob.__typename === "OrganizationNotFoundError") {
+					addToast({
+						color: "danger",
+						title: "An unexpected error occurred. Please try again.",
+					});
+				} else if (response.createJob.__typename === "CreateJobSuccess") {
 					// Redirect to the organization detail page
 					router.push(
-						links.organizationDetail(response.createOrganization.slug),
+						links.organizationJobDetail(
+							organizationData.slug,
+							response.createJob.jobEdge.node.slug,
+						),
 					);
 				}
 			},
@@ -88,90 +148,64 @@ export default function NewJobForm() {
 	}
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-			<Card shadow="none" className="p-6 gap-8">
-				<CardHeader>Create a job posting</CardHeader>
-				<CardBody className="flex flex-col gap-8">
-					<Controller
-						name="fullName"
-						control={control}
-						render={({ field }) => (
+		<>
+			<div className="w-full gap-6 flex flex-col sm:flex-row items-start">
+				<Image
+					src={data.avatarUrl}
+					alt={data.fullName}
+					width={35}
+					height={35}
+					className="rounded-full hidden sm:block"
+				/>
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
+					<h2 className="text-lg font-medium mt-1 text-foreground-400">
+						Create new job posting
+					</h2>
+					<Card shadow="none" className="p-6 gap-8">
+						<CardBody className="flex flex-col gap-8">
 							<Input
-								{...field}
+								{...register("title")}
 								label="Job Title"
 								labelPlacement="outside"
 								placeholder="My Job Title"
-								value={field.value}
-								errorMessage={errors.fullName?.message}
-								isInvalid={!!errors.fullName}
+								errorMessage={errors.title?.message}
+								isInvalid={!!errors.title}
 							/>
-						)}
-					/>
-					<Controller
-						name="slug"
-						control={control}
-						render={({ field }) => (
-							<Input
-								{...field}
-								label="Organization Slug"
-								labelPlacement="outside"
-								placeholder="my-organization-slug"
-								value={field.value}
-								errorMessage={errors.slug?.message}
-								isInvalid={!!errors.slug}
+							<Controller
+								name="description"
+								control={control}
+								render={({ field }) => (
+									<Input
+										{...field}
+										label="Job Description"
+										labelPlacement="outside"
+										value={field.value}
+										errorMessage={errors.description?.message}
+										isInvalid={!!errors.description}
+									/>
+								)}
 							/>
-						)}
-					/>
-					<div className="flex gap-12 w-full items-center">
-						<Input
-							label="Organization Logo"
-							labelPlacement="outside"
-							type="file"
-						/>
-						<Controller
-							name="website"
-							control={control}
-							render={({ field }) => (
-								<Input
-									{...field}
-									label="Organization Website"
-									labelPlacement="outside"
-									type="url"
-									placeholder="https://example.com"
-									value={field.value || ""}
-									errorMessage={errors.website?.message}
-									isInvalid={!!errors.website}
-								/>
-							)}
-						/>
-					</div>
-					<Controller
-						name="description"
-						control={control}
-						render={({ field }) => (
-							<Textarea
-								{...field}
-								label="Organization Description"
-								labelPlacement="outside"
-								placeholder="Enter Organization Description"
-								value={field.value || ""}
-								errorMessage={errors.description?.message}
-								isInvalid={!!errors.description}
-							/>
-						)}
-					/>
-				</CardBody>
-				<CardFooter>
-					<Button
-						type="submit"
-						fullWidth
-						isLoading={isSubmitting || isMutationInFlight}
-						size="lg"
-					>
-						Create Organization
-					</Button>
-				</CardFooter>
-			</Card>
-		</form>
+						</CardBody>
+						<CardFooter className="w-full justify-end gap-6">
+							<Button type="button" variant="bordered" onPress={handleCancel}>
+								Cancel
+							</Button>
+							<Button
+								type="submit"
+								color="primary"
+								isLoading={isSubmitting || isMutationInFlight}
+							>
+								Create Job
+							</Button>
+						</CardFooter>
+					</Card>
+				</form>
+			</div>
+			<CancelNewJobModal
+				isOpen={isOpen}
+				onOpenChange={onOpenChange}
+				organization={organizationData}
+			/>
+		</>
 	);
 }

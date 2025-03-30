@@ -139,6 +139,15 @@ type AuthenticatorNotEnabledError implements Error {
   message: String!
 }
 
+"""The create job payload."""
+union CreateJobPayload = CreateJobSuccess | OrganizationNotFoundError
+
+"""Used when the job is created successfully."""
+type CreateJobSuccess {
+  """The edge of the created job."""
+  jobEdge: JobEdge!
+}
+
 """
 The payload for creating a presigned URL for uploading the organization logo.
 """
@@ -770,6 +779,60 @@ type Mutation {
     """The ID of the job to unsave."""
     jobId: ID!
   ): UnsaveJobPayload! @isAuthenticated
+
+  """Create a new job."""
+  createJob(
+    """The ID of the organization to create the job under."""
+    organizationId: ID!
+
+    """The title of the job."""
+    title: String!
+
+    """The description of the job."""
+    description: String!
+
+    """The application link of the job."""
+    application: String!
+
+    """The address of the job."""
+    address: AddressInput!
+
+    """The skills required for the job."""
+    skills: [String!]!
+
+    """Whether the job has a salary range."""
+    hasSalaryRange: Boolean! = false
+
+    """The minimum salary of the job."""
+    minSalary: Int = null
+
+    """The maximum salary of the job."""
+    maxSalary: Int = null
+
+    """Whether the job has an experience range."""
+    hasExperienceRange: Boolean! = false
+
+    """The minimum experience of the job."""
+    minExperience: Int = null
+
+    """The maximum experience of the job."""
+    maxExperience: Int = null
+
+    """The expiration date of the job."""
+    expiresAt: datetime = null
+
+    """The category of the job."""
+    category: String = null
+
+    """The type of the job."""
+    jobType: String = null
+
+    """The work mode of the job."""
+    workMode: String = null
+
+    """The currency of the job."""
+    currency: String! = "INR"
+  ): CreateJobPayload! @isAuthenticated
 
   """Update the current user's profile personal details."""
   updateProfilePersonalDetails(address: AddressInput!, gender: GenderType = null, dateOfBirth: Date = null, maritalStatus: MaritalStatusType = null, category: String = null): UpdateProfilePayload! @isAuthenticated
