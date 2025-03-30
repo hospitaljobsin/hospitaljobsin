@@ -45,7 +45,6 @@ class OrganizationRepo:
         name: str,
         description: str,
         address: Address,
-        phone: str,
         website: str,
         email: str,
         logo_url: str | None = None,
@@ -54,7 +53,6 @@ class OrganizationRepo:
         organization.name = name
         organization.description = description
         organization.address = address
-        organization.phone = phone
         organization.website = website
         organization.email = email
         organization.logo_url = logo_url

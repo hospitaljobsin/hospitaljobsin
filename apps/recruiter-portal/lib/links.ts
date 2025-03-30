@@ -7,6 +7,8 @@ const links = {
 	organizationDetail: (slug: string) => `/dashboard/organizations/${slug}`,
 	organizationDetailMembers: (slug: string) =>
 		`/dashboard/organizations/${slug}/members`,
+	organizationDetailJobs: (slug: string) =>
+		`/dashboard/organizations/${slug}/jobs`,
 	organizationDetailSettings: (slug: string) =>
 		`/dashboard/organizations/${slug}/settings`,
 	login: (returnTo: string | undefined = undefined) =>

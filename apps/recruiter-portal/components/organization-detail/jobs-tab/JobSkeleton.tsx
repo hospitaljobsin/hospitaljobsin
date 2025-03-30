@@ -1,6 +1,6 @@
 import { Card, CardBody, Skeleton } from "@heroui/react";
 
-export default function MemberSkeleton() {
+export default function JobSkeleton() {
 	return (
 		<Card fullWidth className="p-4 sm:p-6" isPressable={false} shadow="none">
 			<CardBody className="flex items-center gap-6 w-full flex-row">

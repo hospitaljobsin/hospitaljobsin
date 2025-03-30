@@ -14,11 +14,6 @@ export const MemberFragment = graphql`
   }
 `;
 
-export const MemberAuthFragment = graphql`
-  fragment MemberAuthFragment on ViewerPayload {
-	__typename
-  }
-`;
 
 type Props = {
 	member: MemberFragment$key;

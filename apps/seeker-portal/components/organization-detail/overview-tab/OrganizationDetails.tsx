@@ -1,7 +1,7 @@
 import type { OrganizationDetailsFragment$key } from "@/__generated__/OrganizationDetailsFragment.graphql";
 import type { OrganizationDetailsInternalFragment$key as OrganizationDetailsInternalFragmentType } from "@/__generated__/OrganizationDetailsInternalFragment.graphql";
 import { Button, Card, CardBody, CardHeader, Link } from "@heroui/react";
-import { Globe, Mail, MapPin } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
@@ -88,17 +88,14 @@ export default function OrganizationDetails({
 							</div>
 						)}
 						{data.website && (
-							<div className="flex items-center gap-2">
-								<Globe size={16} />{" "}
 								<Link
 									showAnchorIcon
 									className="text-foreground-600"
 									href={data.website}
 									isExternal
 								>
-									{data.website}
+									Visit website
 								</Link>
-							</div>
 						)}
 					</div>
 				</CardBody>

@@ -1,7 +1,7 @@
 "use client";
 import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
-import { HomeIcon, UserIcon } from "lucide-react";
+import { BriefcaseBusiness, HomeIcon, UserIcon } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 
 export default function OrganizationTabs() {
@@ -32,6 +32,16 @@ export default function OrganizationTabs() {
 						<div className="flex items-center space-x-2">
 							<UserIcon />
 							<span>Members</span>
+						</div>
+					}
+				/>
+								<Tab
+					key={links.organizationDetailJobs(params.slug)}
+					href={links.organizationDetailJobs(params.slug)}
+					title={
+						<div className="flex items-center space-x-2">
+							<BriefcaseBusiness />
+							<span>Jobs</span>
 						</div>
 					}
 				/>
