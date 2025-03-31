@@ -26,6 +26,7 @@ import {
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarDate } from "@internationalized/date";
+import type { Key } from "@react-types/shared";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import {
@@ -35,6 +36,7 @@ import {
 	TimerIcon,
 } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -212,6 +214,38 @@ export default function NewJobForm({ account, organization }: Props) {
 			});
 		},
 	});
+
+	// Track which accordions should be open
+	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<
+		Iterable<Key>
+	>(new Set([]));
+
+	// Update accordions when errors change
+	useEffect(() => {
+		const newOpenAccordions = [];
+
+		if (
+			errors.address?.city ||
+			errors.address?.country ||
+			errors.address?.line1 ||
+			errors.address?.line2 ||
+			errors.address?.pincode ||
+			errors.address?.state
+		) {
+			newOpenAccordions.push("address");
+		}
+		if (errors.minSalary || errors.maxSalary) {
+			newOpenAccordions.push("salary-range");
+		}
+		if (errors.minExperience || errors.maxExperience) {
+			newOpenAccordions.push("experience-range");
+		}
+		if (errors.expiresAt) {
+			newOpenAccordions.push("expires-at");
+		}
+
+		setAccordionSelectedKeys(newOpenAccordions);
+	}, [errors]);
 
 	function handleCancel() {
 		if (isDirty) {
@@ -396,6 +430,10 @@ export default function NewJobForm({ account, organization }: Props) {
 								keepContentMounted
 								fullWidth
 								itemClasses={{ base: "pb-8" }}
+								selectedKeys={accordionSelectedKeys}
+								onSelectionChange={(keys) => {
+									setAccordionSelectedKeys(keys);
+								}}
 							>
 								<AccordionItem
 									key="salary-range"

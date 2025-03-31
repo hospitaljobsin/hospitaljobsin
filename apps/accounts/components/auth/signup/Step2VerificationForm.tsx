@@ -95,6 +95,7 @@ export default function Step2VerificationForm() {
 	});
 
 	useEffect(() => {
+		// TODO: pass the errors to the errors param in useForm instead of this
 		// set email verification token errors that may have arisen from other steps
 		if (emailVerificationError) {
 			setError("emailVerificationToken", {
