@@ -2,6 +2,7 @@
 import type { NewJobFormAccountFragment$key } from "@/__generated__/NewJobFormAccountFragment.graphql";
 import type { NewJobFormMutation } from "@/__generated__/NewJobFormMutation.graphql";
 import type { NewJobFormOrganizationFragment$key } from "@/__generated__/NewJobFormOrganizationFragment.graphql";
+import FixedMenu from "@/components/text-editor/FixedMenu";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {
@@ -14,10 +15,13 @@ import {
 	useDisclosure,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import Image from "next/image";
 import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import { Markdown } from "tiptap-markdown";
 import { z } from "zod";
 import CancelNewJobModal from "./CancelNewJobModal";
 
@@ -87,10 +91,12 @@ export default function NewJobForm({ account, organization }: Props) {
 	);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<NewJobFormMutation>(CreateJobMutation);
+
 	const {
 		handleSubmit,
 		control,
 		register,
+		setValue,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -107,6 +113,23 @@ export default function NewJobForm({ account, organization }: Props) {
 				pincode: null,
 				state: null,
 			},
+		},
+	});
+
+	const editor = useEditor({
+		extensions: [StarterKit, Markdown],
+		content: "",
+		editorProps: {
+			attributes: {
+				class:
+					"p-4 prose prose-sm sm:prose-base focus:outline-none border-2 border-background-700 w-full min-w-full rounded-md",
+			},
+		},
+		onUpdate({ editor }) {
+			// convert the editor's JSON to markdown
+			const markdown = editor.storage.markdown.getMarkdown();
+			console.log(markdown);
+			setValue("description", markdown);
 		},
 	});
 
@@ -183,14 +206,13 @@ export default function NewJobForm({ account, organization }: Props) {
 								name="description"
 								control={control}
 								render={({ field }) => (
-									<Input
-										{...field}
-										label="Job Description"
-										labelPlacement="outside"
-										value={field.value}
-										errorMessage={errors.description?.message}
-										isInvalid={!!errors.description}
-									/>
+									<div className="flex flex-col gap-6 w-full">
+										<h2 className="text-small">Job Description</h2>
+										<div className="w-full flex flex-col gap-4">
+											<FixedMenu editor={editor} />
+											<EditorContent editor={editor} className="w-full" />
+										</div>
+									</div>
 								)}
 							/>
 						</CardBody>
