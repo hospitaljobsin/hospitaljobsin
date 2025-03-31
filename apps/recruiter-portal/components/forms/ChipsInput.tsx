@@ -12,7 +12,7 @@ interface ChipsInputProps<
 	name: TName;
 	control: Control<TFieldValues>;
 	placeholder?: string;
-	delimiters?: string[];
+	delimiters: string[];
 	chipProps?: ChipProps;
 	inputProps?: InputProps;
 	allowDuplicates?: boolean;
@@ -25,7 +25,7 @@ export function ChipsInput<
 	name,
 	control,
 	label,
-	delimiters = [",", "Enter"],
+	delimiters,
 	chipProps = {},
 	inputProps = {},
 	allowDuplicates = false,

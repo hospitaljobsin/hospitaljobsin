@@ -12,6 +12,7 @@ import {
 	CardBody,
 	CardFooter,
 	Input,
+	Kbd,
 	Link,
 	addToast,
 	useDisclosure,
@@ -224,13 +225,22 @@ export default function NewJobForm({ account, organization }: Props) {
 							<ChipsInput<z.infer<typeof formSchema>, "skills">
 								name="skills"
 								label="Job Skills"
+								delimiters={[",", "Enter"]}
 								control={control}
 								chipProps={{
 									variant: "flat",
 								}}
 								inputProps={{
 									placeholder: "Enter skills...",
-									description: "Separate skills with commas or Enter",
+									description: (
+										<p className="mt-2">
+											Separate skills with commas or Enter{" "}
+											<Kbd
+												keys={["enter"]}
+												classNames={{ base: "p-0 px-2 shadow-none" }}
+											/>
+										</p>
+									),
 								}}
 							/>
 						</CardBody>
