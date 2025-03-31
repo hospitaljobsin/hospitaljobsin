@@ -57,6 +57,7 @@ updates:
       - "/apps/accounts/"
       - "/apps/seeker-portal/"
       - "/apps/recruiter-portal/"
+      - "/minio/"
     # Check the Docker registry for updates every week
     schedule:
       interval: "weekly"
