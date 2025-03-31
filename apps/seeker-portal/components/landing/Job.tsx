@@ -101,7 +101,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 	};
 
 	const salaryRange = data.hasSalaryRange ? (
-		<div className="flex items-center gap-2 text-xl font-medium">
+		<div className="flex items-center gap-2 text-xl font-medium text-nowrap">
 			{currencyIcon(data.currency)}
 			{`${data.minSalary} - ${data.maxSalary}`}{" "}
 			<p className="text-foreground-500 text-sm">/ month</p>
@@ -139,7 +139,9 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 							height={50}
 						/>
 						<div className="flex flex-col gap-2 items-start">
-							<h4 className="text-lg sm:text-xl font-medium">{data.title}</h4>
+							<h4 className="text-lg/7 sm:text-xl/8 font-medium text-balance">
+								{data.title}
+							</h4>
 							<p className="text-sm sm:text-base font-normal text-foreground-500">
 								{data.organization?.name}
 							</p>

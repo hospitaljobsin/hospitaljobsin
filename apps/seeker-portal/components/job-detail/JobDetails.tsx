@@ -221,7 +221,7 @@ export default function JobDetails({
 				</CardHeader>
 				<Divider />
 				<CardBody className="w-full">
-					<ReactMarkdown className="prose dark:prose-invert prose-h2:text-sm w-full">
+					<ReactMarkdown className="prose prose-sm w-full">
 						{data.description}
 					</ReactMarkdown>
 				</CardBody>

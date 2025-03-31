@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from bson import ObjectId
 from bson.errors import InvalidId
@@ -72,10 +73,11 @@ class JobService:
         min_experience: int | None = None,
         max_experience: int | None = None,
         expires_at: datetime | None = None,
-        job_type: str | None = None,
-        work_mode: str | None = None,
+        job_type: Literal["full_time", "part_time", "internship", "contract"]
+        | None = None,
+        work_mode: Literal["hybrid", "remote", "office"] | None = None,
         skills: list[str] = [],
-        currency: str = "INR",
+        currency: Literal["INR"] = "INR",
     ) -> Result[Job, OrganizationNotFoundError]:
         """Create a new job."""
         try:
