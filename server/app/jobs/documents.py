@@ -16,8 +16,8 @@ class Job(Document):
     title: str
     slug: Annotated[str, Indexed(unique=True)]
     description: str | None = None
-    type: Literal["full_time", "part_time", "internship", "contract"]
-    work_mode: Literal["remote", "hybrid", "office"]
+    type: Literal["full_time", "part_time", "internship", "contract"] | None = None
+    work_mode: Literal["remote", "hybrid", "office"] | None = None
 
     address: Address
     skills: list[str]

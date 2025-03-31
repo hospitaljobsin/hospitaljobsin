@@ -378,10 +378,10 @@ type Job implements Node {
   description: String
 
   """The type of the job."""
-  type: JobType!
+  type: JobType
 
   """The work mode of the job."""
-  workMode: WorkMode!
+  workMode: WorkMode
 
   """The address of the job."""
   address: Address!

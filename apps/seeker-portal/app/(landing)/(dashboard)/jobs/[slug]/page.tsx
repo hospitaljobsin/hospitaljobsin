@@ -49,7 +49,7 @@ export async function generateMetadata({
 }: {
 	params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-	const slug = (await params).slug;
+	const slug = decodeURIComponent((await params).slug);
 
 	const preloadedQuery = await loadJob(slug);
 

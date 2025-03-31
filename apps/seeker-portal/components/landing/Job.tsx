@@ -155,17 +155,18 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 					</p>
 				</div>
 				<div className="flex flex-wrap justify-start gap-4 sm:gap-8 items-start text-foreground-600 w-full text-center">
-					<p>{jobType(data.type)}</p>
+					{data.type && <p>{jobType(data.type)}</p>}
 					<div className="flex items-center gap-2">
 						<MapPin size={16} /> {`${data.address.city}, ${data.address.state}`}
 					</div>
 					<div className="flex items-center gap-2">
 						<Briefcase size={16} /> {experienceRange}
 					</div>
-
-					<div className="flex items-center gap-2">
-						<Globe size={16} /> {workMode(data.workMode)}
-					</div>
+					{data.workMode && (
+						<div className="flex items-center gap-2">
+							<Globe size={16} /> {workMode(data.workMode)}
+						</div>
+					)}
 				</div>
 			</CardBody>
 			<CardFooter className="flex flex-col sm:flex-row items-end sm:items-center justify-between gap-4 sm:gap-6 w-full text-center sm:text-left">

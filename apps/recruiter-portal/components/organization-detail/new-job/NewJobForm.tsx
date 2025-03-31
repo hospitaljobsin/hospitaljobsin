@@ -19,6 +19,7 @@ import {
 	Radio,
 	RadioGroup,
 	addToast,
+	cn,
 	useDisclosure,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -95,13 +96,22 @@ const NewJobFormOrganizationFragment = graphql`
 fragment NewJobFormOrganizationFragment on Organization {
 	__typename
 	slug
+	id
+	address {
+		city
+		country
+		line1
+		line2
+		pincode
+		state
+	}
 	...CancelNewJobModalOrganizationFragment
 }
 `;
 
 const formSchema = z.object({
 	title: z.string().min(1, "This field is required").max(75),
-	description: z.string().min(1, "This field is required").max(75),
+	description: z.string().min(1, "This field is required").max(2000),
 	skills: z.array(z.object({ value: z.string() })),
 	address: z.object({
 		city: z.string().nullable(),
@@ -146,17 +156,18 @@ export default function NewJobForm({ account, organization }: Props) {
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
+		reValidateMode: "onChange",
 		defaultValues: {
 			title: "",
 			description: "",
 			skills: [],
 			address: {
-				city: null,
-				country: null,
-				line1: null,
-				line2: null,
-				pincode: null,
-				state: null,
+				city: organizationData.address.city,
+				country: organizationData.address.country,
+				line1: organizationData.address.line1,
+				line2: organizationData.address.line2,
+				pincode: organizationData.address.pincode,
+				state: organizationData.address.state,
 			},
 			minSalary: null,
 			maxSalary: null,
@@ -172,16 +183,25 @@ export default function NewJobForm({ account, organization }: Props) {
 		extensions: [StarterKit, Markdown],
 		content: "",
 		immediatelyRender: false,
+		shouldRerenderOnTransaction: false,
 		editorProps: {
 			attributes: {
-				class:
-					"p-4 prose prose-sm sm:prose-base focus:outline-none border-2 border-background-700 w-full min-w-full rounded-md min-h-56",
+				class: cn(
+					"p-4 prose prose-sm sm:prose-base focus:outline-none border-2 w-full min-w-full rounded-md min-h-56",
+					{
+						"border-danger": errors.description,
+						"border-background-700": !errors.description,
+					},
+				),
 			},
 		},
 		onUpdate({ editor }) {
 			// convert the editor's JSON to markdown
 			const markdown = editor.storage.markdown.getMarkdown();
-			setValue("description", markdown, { shouldDirty: true });
+			setValue("description", markdown, {
+				shouldDirty: true,
+				shouldValidate: true,
+			});
 		},
 	});
 
@@ -197,7 +217,7 @@ export default function NewJobForm({ account, organization }: Props) {
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		commitMutation({
 			variables: {
-				organizationId: "",
+				organizationId: organizationData.id,
 				title: formData.title,
 				description: formData.description,
 				skills: formData.skills.flatMap((skill) => skill.value),
@@ -263,24 +283,41 @@ export default function NewJobForm({ account, organization }: Props) {
 								placeholder="My Job Title"
 								errorMessage={errors.title?.message}
 								isInvalid={!!errors.title}
+								isRequired
+								validationBehavior="aria"
 							/>
 							<div className="flex flex-col gap-4 w-full">
-								<h2 className="text-small">Job Description</h2>
+								<h2
+									className={cn("text-small inline-flex gap-0.5", {
+										"text-danger": errors.description,
+									})}
+								>
+									Job Description <p className="text-danger">*</p>
+								</h2>
 								<div className="w-full flex flex-col gap-4">
 									<FixedMenu editor={editor} />
-									<EditorContent editor={editor} className="w-full" />
-									<p className="text-tiny text-foreground-400">
-										Markdown editing is supported.{" "}
-										<Link
-											isExternal
-											showAnchorIcon
-											href="https://www.markdownguide.org/getting-started/"
-											size="sm"
-											className="text-tiny"
-										>
-											Learn more
-										</Link>
-									</p>
+									<div className="flex flex-col w-full gap-1">
+										<EditorContent editor={editor} className="w-full" />
+
+										{errors.description ? (
+											<p className="text-tiny text-danger">
+												{errors.description.message}
+											</p>
+										) : (
+											<p className="text-tiny text-foreground-400">
+												Markdown editing is supported.{" "}
+												<Link
+													isExternal
+													showAnchorIcon
+													href="https://www.markdownguide.org/getting-started/"
+													size="sm"
+													className="text-tiny"
+												>
+													Learn more
+												</Link>
+											</p>
+										)}
+									</div>
 								</div>
 							</div>
 							<ChipsInput<z.infer<typeof formSchema>, "skills">
@@ -346,7 +383,7 @@ export default function NewJobForm({ account, organization }: Props) {
 							<div className="w-full flex flex-col gap-2">
 								<h2 className="text-small">Salary Range</h2>
 
-								<div className="w-full flex gap-6 items-center">
+								<div className="w-full flex gap-6 items-start">
 									<Controller
 										control={control}
 										name="minSalary"
@@ -377,8 +414,8 @@ export default function NewJobForm({ account, organization }: Props) {
 										render={({ field }) => {
 											return (
 												<NumberInput
-													errorMessage={errors.minSalary?.message}
-													isInvalid={!!errors.minSalary}
+													errorMessage={errors.maxSalary?.message}
+													isInvalid={!!errors.maxSalary}
 													label="Maximum Salary"
 													placeholder="Enter maximum salary"
 													formatOptions={{
@@ -401,7 +438,7 @@ export default function NewJobForm({ account, organization }: Props) {
 							<div className="w-full flex flex-col gap-2">
 								<h2 className="text-small">Experience Range</h2>
 
-								<div className="w-full flex gap-6 items-center">
+								<div className="w-full flex gap-6 items-start">
 									<Controller
 										control={control}
 										name="minExperience"
@@ -431,8 +468,8 @@ export default function NewJobForm({ account, organization }: Props) {
 										render={({ field }) => {
 											return (
 												<NumberInput
-													errorMessage={errors.minExperience?.message}
-													isInvalid={!!errors.minExperience}
+													errorMessage={errors.maxExperience?.message}
+													isInvalid={!!errors.maxExperience}
 													label="Maximum Experience"
 													placeholder="Enter maximum experience"
 													formatOptions={{
@@ -469,6 +506,100 @@ export default function NewJobForm({ account, organization }: Props) {
 									);
 								}}
 							/>
+							<div className="flex flex-col gap-4">
+								<p className="text-small">Address</p>
+
+								<div className="flex gap-8 mb-12">
+									<div className="flex flex-col w-full gap-8">
+										<Controller
+											name="address.city"
+											control={control}
+											render={({ field }) => (
+												<Input
+													{...field}
+													label="City"
+													placeholder="Add your city"
+													value={field.value ?? ""}
+													errorMessage={errors.address?.city?.message}
+													isInvalid={!!errors.address?.city}
+												/>
+											)}
+										/>
+										<Controller
+											name="address.country"
+											control={control}
+											render={({ field }) => (
+												<Input
+													{...field}
+													label="Country"
+													placeholder="Add your country"
+													value={field.value ?? ""}
+													errorMessage={errors.address?.country?.message}
+													isInvalid={!!errors.address?.country}
+												/>
+											)}
+										/>
+										<Controller
+											name="address.pincode"
+											control={control}
+											render={({ field }) => (
+												<Input
+													{...field}
+													label="Pincode"
+													placeholder="Add your pincode"
+													value={field.value ?? ""}
+													errorMessage={errors.address?.pincode?.message}
+													isInvalid={!!errors.address?.pincode}
+												/>
+											)}
+										/>
+									</div>
+									<div className="flex flex-col w-full gap-8">
+										<Controller
+											name="address.line1"
+											control={control}
+											render={({ field }) => (
+												<Input
+													{...field}
+													label="Line 1"
+													placeholder="Add line 1"
+													value={field.value ?? ""}
+													errorMessage={errors.address?.line1?.message}
+													isInvalid={!!errors.address?.line1}
+												/>
+											)}
+										/>
+										<Controller
+											name="address.line2"
+											control={control}
+											render={({ field }) => (
+												<Input
+													{...field}
+													label="Line 2"
+													placeholder="Add line 2"
+													value={field.value ?? ""}
+													errorMessage={errors.address?.line2?.message}
+													isInvalid={!!errors.address?.line2}
+												/>
+											)}
+										/>
+										<Controller
+											name="address.state"
+											control={control}
+											render={({ field }) => (
+												<Input
+													{...field}
+													label="State"
+													placeholder="Add your state"
+													value={field.value ?? ""}
+													errorMessage={errors.address?.state?.message}
+													isInvalid={!!errors.address?.state}
+												/>
+											)}
+										/>
+									</div>
+								</div>
+							</div>
 						</CardBody>
 						<CardFooter className="w-full justify-end gap-6">
 							<Button type="button" variant="bordered" onPress={handleCancel}>

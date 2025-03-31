@@ -186,6 +186,8 @@ export default function NewOrganizationForm() {
 								value={field.value}
 								errorMessage={errors.fullName?.message}
 								isInvalid={!!errors.fullName}
+								isRequired
+								validationBehavior="aria"
 							/>
 						)}
 					/>
@@ -201,6 +203,8 @@ export default function NewOrganizationForm() {
 								value={field.value}
 								errorMessage={errors.slug?.message}
 								isInvalid={!!errors.slug}
+								isRequired
+								validationBehavior="aria"
 							/>
 						)}
 					/>

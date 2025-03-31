@@ -1,5 +1,6 @@
 import secrets
 from datetime import date, datetime
+from typing import Literal
 
 from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.operators import And, In
@@ -25,6 +26,7 @@ class JobRepo:
 
     async def create(
         self,
+        *,
         organization: Organization,
         title: str,
         description: str,
@@ -36,10 +38,11 @@ class JobRepo:
         min_experience: int | None = None,
         max_experience: int | None = None,
         expires_at: datetime | None = None,
-        job_type: str | None = None,
-        work_mode: str | None = None,
+        job_type: Literal["full_time", "part_time", "internship", "contract"]
+        | None = None,
+        work_mode: Literal["hybrid", "remote", "office"] | None = None,
         skills: list[str] = [],
-        currency: str = "INR",
+        currency: Literal["INR"] = "INR",
     ) -> Job:
         """Create a new job."""
         job = Job(
@@ -53,7 +56,7 @@ class JobRepo:
             min_experience=min_experience,
             max_experience=max_experience,
             expires_at=expires_at,
-            organization=organization,
+            organization=organization.id,
             type=job_type,
             work_mode=work_mode,
             skills=skills,

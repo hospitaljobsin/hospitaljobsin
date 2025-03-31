@@ -170,7 +170,7 @@ export default function JobDetails({
 				</CardBody>
 				<CardFooter className="flex flex-col sm:flex-row justify-between items-end sm:items-center w-full gap-6">
 					<div className="flex sm:flex-row flex-wrap gap-8 items-start sm:items-center text-foreground-600 w-full">
-						<p>{jobType(data.type)}</p>
+						{data.type && <p>{jobType(data.type)}</p>}
 						<div className="flex items-center gap-2">
 							<MapPin size={16} />{" "}
 							{`${data.address.city}, ${data.address.state}`}
@@ -178,10 +178,11 @@ export default function JobDetails({
 						<div className="flex items-center gap-2">
 							<Briefcase size={16} /> {experienceRange}
 						</div>
-
-						<div className="flex items-center gap-2">
-							<Globe size={16} /> {workMode(data.workMode)}
-						</div>
+						{data.workMode && (
+							<div className="flex items-center gap-2">
+								<Globe size={16} /> {workMode(data.workMode)}
+							</div>
+						)}
 					</div>
 					<JobControls job={data} authQueryRef={root.viewer} />
 				</CardFooter>
