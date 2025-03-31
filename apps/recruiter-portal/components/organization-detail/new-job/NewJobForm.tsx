@@ -2,7 +2,8 @@
 import type { NewJobFormAccountFragment$key } from "@/__generated__/NewJobFormAccountFragment.graphql";
 import type { NewJobFormMutation } from "@/__generated__/NewJobFormMutation.graphql";
 import type { NewJobFormOrganizationFragment$key } from "@/__generated__/NewJobFormOrganizationFragment.graphql";
-import FixedMenu from "@/components/text-editor/FixedMenu";
+import { ChipsInput } from "@/components/forms/ChipsInput";
+import FixedMenu from "@/components/forms/text-editor/FixedMenu";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {
@@ -66,7 +67,7 @@ const formSchema = z.object({
 	title: z.string().min(1, "This field is required").max(75),
 	description: z.string().min(1, "This field is required").max(75),
 	application: z.string().min(1, "This field is required").url(),
-	skills: z.array(z.string().min(1, "This field is required")),
+	skills: z.array(z.object({ value: z.string() })),
 	address: z.object({
 		city: z.string().nullable(),
 		country: z.string().nullable(),
@@ -95,9 +96,9 @@ export default function NewJobForm({ account, organization }: Props) {
 
 	const {
 		handleSubmit,
-		control,
 		register,
 		setValue,
+		control,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -123,13 +124,13 @@ export default function NewJobForm({ account, organization }: Props) {
 		editorProps: {
 			attributes: {
 				class:
-					"p-4 prose prose-sm sm:prose-base focus:outline-none border-2 border-background-700 w-full min-w-full rounded-md",
+					"p-4 prose prose-sm sm:prose-base focus:outline-none border-2 border-background-700 w-full min-w-full rounded-md min-h-56",
 			},
 		},
 		onUpdate({ editor }) {
 			// convert the editor's JSON to markdown
 			const markdown = editor.storage.markdown.getMarkdown();
-			setValue("description", markdown);
+			setValue("description", markdown, { shouldDirty: true });
 		},
 	});
 
@@ -149,7 +150,7 @@ export default function NewJobForm({ account, organization }: Props) {
 				title: formData.title,
 				description: formData.description,
 				application: formData.application,
-				skills: formData.skills,
+				skills: formData.skills.flatMap((skill) => skill.value),
 				address: {
 					city: formData.address.city,
 					country: formData.address.country,
@@ -220,6 +221,18 @@ export default function NewJobForm({ account, organization }: Props) {
 									</Link>
 								</p>
 							</div>
+							<ChipsInput<z.infer<typeof formSchema>, "skills">
+								name="skills"
+								label="Job Skills"
+								control={control}
+								chipProps={{
+									variant: "flat",
+								}}
+								inputProps={{
+									placeholder: "Enter skills...",
+									description: "Separate skills with commas or Enter",
+								}}
+							/>
 						</CardBody>
 						<CardFooter className="w-full justify-end gap-6">
 							<Button type="button" variant="bordered" onPress={handleCancel}>
