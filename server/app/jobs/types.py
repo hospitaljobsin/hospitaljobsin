@@ -65,9 +65,6 @@ class JobType(BaseNodeType[Job]):
     description: str | None = strawberry.field(
         description="The description of the job.",
     )
-    category: str = strawberry.field(
-        description="The category of the job.",
-    )
     type: JobTypeEnum = strawberry.field(
         description="The type of the job.",
     )
@@ -78,9 +75,7 @@ class JobType(BaseNodeType[Job]):
     address: AddressType = strawberry.field(
         description="The address of the job.",
     )
-    application: str = strawberry.field(
-        description="The application link for the job.",
-    )
+
     skills: list[str] = strawberry.field(
         description="The skills required for the job.",
     )
@@ -131,11 +126,9 @@ class JobType(BaseNodeType[Job]):
             created_at=job.id.generation_time,
             title=job.title,
             description=job.description,
-            category=job.category,
             type=JobTypeEnum[job.type.upper()],
             work_mode=WorkModeEnum[job.work_mode.upper()],
             address=AddressType.marshal(job.address),
-            application=job.application,
             skills=job.skills,
             currency=CurrencyEnum[job.currency.upper()],
             has_salary_range=job.has_salary_range,

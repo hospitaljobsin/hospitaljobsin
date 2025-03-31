@@ -11,17 +11,22 @@ import {
 	Card,
 	CardBody,
 	CardFooter,
+	DatePicker,
 	Input,
 	Kbd,
 	Link,
+	NumberInput,
+	Radio,
+	RadioGroup,
 	addToast,
 	useDisclosure,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CalendarDate } from "@internationalized/date";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { Markdown } from "tiptap-markdown";
@@ -29,8 +34,38 @@ import { z } from "zod";
 import CancelNewJobModal from "./CancelNewJobModal";
 
 const CreateJobMutation = graphql`
-mutation NewJobFormMutation($title: String!, $description: String!, $application: String!, $skills: [String!]!, $address: AddressInput! $organizationId: ID!) {
-    createJob(title: $title, description: $description, application: $application, skills: $skills, address: $address, organizationId: $organizationId) {
+mutation NewJobFormMutation(
+	$title: String!, 
+	$description: String!, 
+	$skills: [String!]!, 
+	$address: AddressInput! 
+	$organizationId: ID!, 
+	$hasSalaryRange: Boolean!, 
+	$minSalary: Int, 
+	$maxSalary: Int, 
+	$hasExperienceRange: Boolean!, 
+	$minExperience: Int, 
+	$maxExperience: Int,
+	$expiresAt: datetime,
+	$workMode: WorkMode,
+	$jobType: JobType
+) {
+    createJob(
+		title: $title,
+		description: $description, 
+		skills: $skills, 
+		address: $address, 
+		organizationId: $organizationId, 
+		hasSalaryRange: $hasSalaryRange, 
+		minSalary: $minSalary, 
+		maxSalary: $maxSalary, 
+		hasExperienceRange: $hasExperienceRange, 
+		minExperience: $minExperience, 
+		maxExperience: $maxExperience,
+		expiresAt: $expiresAt,
+		workMode: $workMode,
+		jobType: $jobType
+	) {
         __typename
         ...on CreateJobSuccess {
             __typename
@@ -67,7 +102,6 @@ fragment NewJobFormOrganizationFragment on Organization {
 const formSchema = z.object({
 	title: z.string().min(1, "This field is required").max(75),
 	description: z.string().min(1, "This field is required").max(75),
-	application: z.string().min(1, "This field is required").url(),
 	skills: z.array(z.object({ value: z.string() })),
 	address: z.object({
 		city: z.string().nullable(),
@@ -77,6 +111,15 @@ const formSchema = z.object({
 		pincode: z.string().nullable(),
 		state: z.string().nullable(),
 	}),
+	minSalary: z.number().positive().nullable(),
+	maxSalary: z.number().positive().nullable(),
+	minExperience: z.number().positive().nullable(),
+	maxExperience: z.number().positive().nullable(),
+	expiresAt: z.instanceof(CalendarDate).nullable(),
+	jobType: z
+		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])
+		.nullable(),
+	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE"]).nullable(),
 });
 
 type Props = {
@@ -106,7 +149,6 @@ export default function NewJobForm({ account, organization }: Props) {
 		defaultValues: {
 			title: "",
 			description: "",
-			application: "",
 			skills: [],
 			address: {
 				city: null,
@@ -116,12 +158,20 @@ export default function NewJobForm({ account, organization }: Props) {
 				pincode: null,
 				state: null,
 			},
+			minSalary: null,
+			maxSalary: null,
+			minExperience: null,
+			maxExperience: null,
+			expiresAt: null,
+			jobType: null,
+			workMode: null,
 		},
 	});
 
 	const editor = useEditor({
 		extensions: [StarterKit, Markdown],
 		content: "",
+		immediatelyRender: false,
 		editorProps: {
 			attributes: {
 				class:
@@ -150,7 +200,6 @@ export default function NewJobForm({ account, organization }: Props) {
 				organizationId: "",
 				title: formData.title,
 				description: formData.description,
-				application: formData.application,
 				skills: formData.skills.flatMap((skill) => skill.value),
 				address: {
 					city: formData.address.city,
@@ -160,6 +209,17 @@ export default function NewJobForm({ account, organization }: Props) {
 					pincode: formData.address.pincode,
 					state: formData.address.state,
 				},
+				hasSalaryRange:
+					formData.minSalary !== null || formData.maxSalary !== null,
+				minSalary: formData.minSalary,
+				maxSalary: formData.maxSalary,
+				hasExperienceRange:
+					formData.minExperience !== null || formData.maxExperience !== null,
+				minExperience: formData.minExperience,
+				maxExperience: formData.maxExperience,
+				expiresAt: formData.expiresAt ? formData.expiresAt.toString() : null,
+				jobType: formData.jobType,
+				workMode: formData.workMode,
 			},
 			onCompleted(response) {
 				if (response.createJob.__typename === "OrganizationNotFoundError") {
@@ -194,8 +254,8 @@ export default function NewJobForm({ account, organization }: Props) {
 					<h2 className="text-lg font-medium mt-1 text-foreground-400">
 						Create new job posting
 					</h2>
-					<Card shadow="none" className="p-6 gap-8">
-						<CardBody className="flex flex-col gap-8">
+					<Card shadow="none" className="p-6 gap-12 flex flex-col">
+						<CardBody className="flex flex-col gap-12">
 							<Input
 								{...register("title")}
 								label="Job Title"
@@ -204,23 +264,24 @@ export default function NewJobForm({ account, organization }: Props) {
 								errorMessage={errors.title?.message}
 								isInvalid={!!errors.title}
 							/>
-							<div className="flex flex-col gap-6 w-full">
+							<div className="flex flex-col gap-4 w-full">
 								<h2 className="text-small">Job Description</h2>
 								<div className="w-full flex flex-col gap-4">
 									<FixedMenu editor={editor} />
 									<EditorContent editor={editor} className="w-full" />
+									<p className="text-tiny text-foreground-400">
+										Markdown editing is supported.{" "}
+										<Link
+											isExternal
+											showAnchorIcon
+											href="https://www.markdownguide.org/getting-started/"
+											size="sm"
+											className="text-tiny"
+										>
+											Learn more
+										</Link>
+									</p>
 								</div>
-								<p className="text-sm text-foreground-400">
-									Markdown editing is supported.{" "}
-									<Link
-										isExternal
-										showAnchorIcon
-										href="https://www.markdownguide.org/getting-started/"
-										size="sm"
-									>
-										Learn more
-									</Link>
-								</p>
 							</div>
 							<ChipsInput<z.infer<typeof formSchema>, "skills">
 								name="skills"
@@ -241,6 +302,171 @@ export default function NewJobForm({ account, organization }: Props) {
 											/>
 										</p>
 									),
+								}}
+							/>
+							<div className="w-full flex gap-12 items-start justify-start">
+								{/* Job Type */}
+								<Controller
+									control={control}
+									name="jobType"
+									render={({ field }) => {
+										return (
+											<RadioGroup
+												label="Select Job Type"
+												value={field.value}
+												onValueChange={field.onChange}
+											>
+												<Radio value="CONTRACT">Contract</Radio>
+												<Radio value="FULL_TIME">Full Time</Radio>
+												<Radio value="INTERNSHIP">Internship</Radio>
+												<Radio value="PART_TIME">Part Time</Radio>
+											</RadioGroup>
+										);
+									}}
+								/>
+								{/* Work Mode */}
+								<Controller
+									control={control}
+									name="workMode"
+									render={({ field }) => {
+										return (
+											<RadioGroup
+												label="Select Work Mode"
+												value={field.value}
+												onValueChange={field.onChange}
+											>
+												<Radio value="HYBRID">Hybrid</Radio>
+												<Radio value="OFFICE">Office</Radio>
+												<Radio value="REMOTE">Remote</Radio>
+											</RadioGroup>
+										);
+									}}
+								/>
+							</div>
+							<div className="w-full flex flex-col gap-2">
+								<h2 className="text-small">Salary Range</h2>
+
+								<div className="w-full flex gap-6 items-center">
+									<Controller
+										control={control}
+										name="minSalary"
+										render={({ field }) => {
+											return (
+												<NumberInput
+													errorMessage={errors.minSalary?.message}
+													isInvalid={!!errors.minSalary}
+													label="Minimum Salary"
+													placeholder="Enter minimum salary"
+													formatOptions={{
+														style: "currency",
+														currency: "INR",
+														currencyDisplay: "code",
+														currencySign: "accounting",
+													}}
+													value={field.value || 0}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+												/>
+											);
+										}}
+									/>
+									<Controller
+										control={control}
+										name="maxSalary"
+										render={({ field }) => {
+											return (
+												<NumberInput
+													errorMessage={errors.minSalary?.message}
+													isInvalid={!!errors.minSalary}
+													label="Maximum Salary"
+													placeholder="Enter maximum salary"
+													formatOptions={{
+														style: "currency",
+														currency: "INR",
+														currencyDisplay: "code",
+														currencySign: "accounting",
+													}}
+													value={field.value || 0}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+												/>
+											);
+										}}
+									/>
+								</div>
+							</div>
+
+							<div className="w-full flex flex-col gap-2">
+								<h2 className="text-small">Experience Range</h2>
+
+								<div className="w-full flex gap-6 items-center">
+									<Controller
+										control={control}
+										name="minExperience"
+										render={({ field }) => {
+											return (
+												<NumberInput
+													errorMessage={errors.minExperience?.message}
+													isInvalid={!!errors.minExperience}
+													label="Minimum Experience"
+													placeholder="Enter minimum experience"
+													formatOptions={{
+														style: "unit",
+														unit: "year",
+														unitDisplay: "long",
+													}}
+													value={field.value || 0}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+												/>
+											);
+										}}
+									/>
+									<Controller
+										control={control}
+										name="maxExperience"
+										render={({ field }) => {
+											return (
+												<NumberInput
+													errorMessage={errors.minExperience?.message}
+													isInvalid={!!errors.minExperience}
+													label="Maximum Experience"
+													placeholder="Enter maximum experience"
+													formatOptions={{
+														style: "unit",
+														unit: "year",
+														unitDisplay: "long",
+													}}
+													value={field.value || 0}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+												/>
+											);
+										}}
+									/>
+								</div>
+							</div>
+							<Controller
+								control={control}
+								name="expiresAt"
+								render={({ field }) => {
+									return (
+										<DatePicker
+											showMonthAndYearPickers
+											selectorButtonPlacement="start"
+											granularity="hour"
+											errorMessage={errors.expiresAt?.message}
+											isInvalid={!!errors.expiresAt}
+											label="Job Posting Expires At"
+											labelPlacement="outside"
+											value={field.value ?? undefined}
+											onChange={field.onChange}
+										/>
+									);
 								}}
 							/>
 						</CardBody>

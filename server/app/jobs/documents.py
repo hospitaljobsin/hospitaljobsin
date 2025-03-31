@@ -16,12 +16,10 @@ class Job(Document):
     title: str
     slug: Annotated[str, Indexed(unique=True)]
     description: str | None = None
-    category: str
     type: Literal["full_time", "part_time", "internship", "contract"]
     work_mode: Literal["remote", "hybrid", "office"]
 
     address: Address
-    application: str
     skills: list[str]
 
     currency: Literal["INR"] = "INR"
@@ -55,10 +53,6 @@ class Job(Document):
                 weights={"title": 10, "description": 5},
                 name="title_description_skills_text_index",
                 default_language="english",
-            ),
-            IndexModel(
-                [("category", pymongo.ASCENDING), ("city", pymongo.ASCENDING)],
-                name="category_city_index",
             ),
             IndexModel(
                 [("expired", pymongo.ASCENDING), ("deleted", pymongo.ASCENDING)],

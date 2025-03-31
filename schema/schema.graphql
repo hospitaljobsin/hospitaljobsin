@@ -377,9 +377,6 @@ type Job implements Node {
   """The description of the job."""
   description: String
 
-  """The category of the job."""
-  category: String!
-
   """The type of the job."""
   type: JobType!
 
@@ -388,9 +385,6 @@ type Job implements Node {
 
   """The address of the job."""
   address: Address!
-
-  """The application link for the job."""
-  application: String!
 
   """The skills required for the job."""
   skills: [String!]!
@@ -791,9 +785,6 @@ type Mutation {
     """The description of the job."""
     description: String!
 
-    """The application link of the job."""
-    application: String!
-
     """The address of the job."""
     address: AddressInput!
 
@@ -821,14 +812,11 @@ type Mutation {
     """The expiration date of the job."""
     expiresAt: datetime = null
 
-    """The category of the job."""
-    category: String = null
-
     """The type of the job."""
-    jobType: String = null
+    jobType: JobType = null
 
     """The work mode of the job."""
-    workMode: String = null
+    workMode: WorkMode = null
 
     """The currency of the job."""
     currency: String! = "INR"

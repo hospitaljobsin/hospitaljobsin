@@ -24,12 +24,14 @@ from .types import (
     CreateJobSuccess,
     JobEdgeType,
     JobNotFoundErrorType,
+    JobTypeEnum,
     SavedJobEdgeType,
     SavedJobNotFoundErrorType,
     SaveJobPayload,
     SaveJobSuccess,
     UnsaveJobPayload,
     UnsaveJobSuccess,
+    WorkModeEnum,
 )
 
 
@@ -152,12 +154,6 @@ class JobMutation:
                 description="The description of the job.",
             ),
         ],
-        application: Annotated[
-            str,
-            strawberry.argument(
-                description="The application link of the job.",
-            ),
-        ],
         address: Annotated[
             AddressInputType,
             strawberry.argument(
@@ -212,20 +208,14 @@ class JobMutation:
                 description="The expiration date of the job.",
             ),
         ] = None,
-        category: Annotated[
-            str | None,
-            strawberry.argument(
-                description="The category of the job.",
-            ),
-        ] = None,
         job_type: Annotated[
-            str | None,
+            JobTypeEnum | None,
             strawberry.argument(
                 description="The type of the job.",
             ),
         ] = None,
         work_mode: Annotated[
-            str | None,
+            WorkModeEnum | None,
             strawberry.argument(
                 description="The work mode of the job.",
             ),
@@ -243,7 +233,6 @@ class JobMutation:
             organization_id=organization_id.node_id,
             title=title,
             description=description,
-            application=application,
             address=AddressInputType.to_document(address),
             has_salary_range=has_salary_range,
             min_salary=min_salary,
@@ -252,9 +241,8 @@ class JobMutation:
             min_experience=min_experience,
             max_experience=max_experience,
             expires_at=expires_at,
-            category=category,
-            job_type=job_type,
-            work_mode=work_mode,
+            job_type=job_type.value if job_type else None,
+            work_mode=work_mode.value if work_mode else None,
             skills=skills,
             currency=currency,
         ):
