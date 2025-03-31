@@ -27,5 +27,6 @@
 	},
 	"terminal.integrated.env.windows": {
 		"PYTHONPATH": "${workspaceFolder}/server"
-	}
+	},
+	"tailwindCSS.experimental.classRegex": ["class:\\s*?[\"'`]([^\"'`]*).*?,"]
 }
