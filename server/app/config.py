@@ -128,6 +128,12 @@ class Settings(BaseSettings):
 
     s3_avatar_bucket_name: str
 
+    aws_endpoint_url: str | None = None
+
+    aws_secret_access_key: SecretStr | None = None
+
+    aws_access_key_id: str | None = None
+
     # accounts config
     accounts_base_url: str = "http://localhost:5002"
 

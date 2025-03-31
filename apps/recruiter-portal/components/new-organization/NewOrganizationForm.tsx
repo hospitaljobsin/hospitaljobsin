@@ -1,4 +1,5 @@
 "use client";
+import type { NewOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/NewOrganizationFormLogoPresignedUrlMutation.graphql";
 import type { NewOrganizationFormMutation } from "@/__generated__/NewOrganizationFormMutation.graphql";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
@@ -7,19 +8,19 @@ import {
 	Card,
 	CardBody,
 	CardFooter,
-	CardHeader,
 	Input,
 	Textarea,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
 
 const CreateOrganizationMutation = graphql`
-mutation NewOrganizationFormMutation($fullName: String!, $slug: String!, $website: String, $description: String) {
-    createOrganization(fullName: $fullName, slug: $slug, website: $website, description: $description) {
+mutation NewOrganizationFormMutation($fullName: String!, $slug: String!, $website: String, $description: String, $logoUrl: String) {
+    createOrganization(fullName: $fullName, slug: $slug, website: $website, description: $description, logoUrl: $logoUrl) {
 		__typename
         ...on Organization {
             __typename
@@ -29,6 +30,14 @@ mutation NewOrganizationFormMutation($fullName: String!, $slug: String!, $websit
 			message
 		}
     }
+}
+`;
+
+const CreateOrganizationLogoPresignedUrlMutation = graphql`
+mutation NewOrganizationFormLogoPresignedUrlMutation {
+	createOrganizationLogoPresignedUrl {
+		presignedUrl
+	}
 }
 `;
 
@@ -46,8 +55,20 @@ const formSchema = z.object({
 
 export default function NewOrganizationForm() {
 	const router = useRouter();
-	const [commitMutation, isMutationInFlight] =
-		useMutation<NewOrganizationFormMutation>(CreateOrganizationMutation);
+	const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
+
+	const [
+		commitCreateOrganizationMutation,
+		isCreateOrganizationMutationInflight,
+	] = useMutation<NewOrganizationFormMutation>(CreateOrganizationMutation);
+
+	const [
+		commitCreateOrganizationLogoPresignedUrlMutation,
+		isCreateOrganizationLogoPresignedUrlMutationInflight,
+	] = useMutation<NewOrganizationFormLogoPresignedUrlMutation>(
+		CreateOrganizationLogoPresignedUrlMutation,
+	);
+
 	const {
 		handleSubmit,
 		control,
@@ -63,34 +84,95 @@ export default function NewOrganizationForm() {
 		},
 	});
 
-	function onSubmit(formData: z.infer<typeof formSchema>) {
-		commitMutation({
-			variables: {
-				fullName: formData.fullName,
-				slug: formData.slug,
-				website: formData.website,
-				description: formData.description,
-			},
-			onCompleted(response) {
-				if (
-					response.createOrganization.__typename ===
-					"OrganizationSlugInUseError"
-				) {
-					setError("slug", { message: response.createOrganization.message });
-				} else if (response.createOrganization.__typename === "Organization") {
-					// Redirect to the organization detail page
-					router.push(
-						links.organizationDetail(response.createOrganization.slug),
+	function getPresignedUrl(): Promise<string | null> {
+		return new Promise((resolve, reject) => {
+			commitCreateOrganizationLogoPresignedUrlMutation({
+				variables: {},
+				onCompleted: (response) => {
+					resolve(
+						response.createOrganizationLogoPresignedUrl?.presignedUrl || null,
 					);
-				}
-			},
+				},
+				onError: (error) => {
+					console.error("Error fetching presigned URL:", error);
+					reject(error);
+				},
+			});
 		});
 	}
 
+	async function uploadFileToS3(
+		presignedUrl: string,
+		file: File,
+	): Promise<void> {
+		try {
+			const response = await fetch(presignedUrl, {
+				method: "PUT",
+				body: file,
+				headers: {
+					"Content-Type": file.type,
+				},
+			});
+
+			if (!response.ok) {
+				console.error("Failed to upload file to S3:", response);
+				throw new Error("Failed to upload file to S3");
+			}
+		} catch (error) {
+			console.error("Error uploading file to S3:", error);
+			throw error;
+		}
+	}
+
+	async function onSubmit(formData: z.infer<typeof formSchema>) {
+		let logoUrlResult: string | null = null;
+		if (selectedLogo) {
+			const presignedUrl = await getPresignedUrl();
+			if (presignedUrl) {
+				await uploadFileToS3(presignedUrl, selectedLogo);
+				// Extract the URL from the presignedUrl
+				logoUrlResult = presignedUrl.split("?")[0];
+			}
+		}
+		try {
+			commitCreateOrganizationMutation({
+				variables: {
+					fullName: formData.fullName,
+					slug: formData.slug,
+					website: formData.website,
+					description: formData.description,
+					logoUrl: logoUrlResult,
+				},
+				onCompleted(response) {
+					if (
+						response.createOrganization.__typename ===
+						"OrganizationSlugInUseError"
+					) {
+						setError("slug", { message: response.createOrganization.message });
+					} else if (
+						response.createOrganization.__typename === "Organization"
+					) {
+						// Redirect to the organization detail page
+						router.push(
+							links.organizationDetail(response.createOrganization.slug),
+						);
+					}
+				},
+				onError: (error) => {
+					console.error("Error creating organization:", error);
+				},
+			});
+		} catch (error) {
+			console.error("Error in onSubmit:", error);
+		}
+	}
+
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
+		<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+			<h2 className="text-lg font-medium mt-1 text-foreground-400">
+				Create new organization
+			</h2>
 			<Card shadow="none" className="p-6 gap-8">
-				<CardHeader>Create an Organization</CardHeader>
 				<CardBody className="flex flex-col gap-8">
 					<Controller
 						name="fullName"
@@ -127,6 +209,13 @@ export default function NewOrganizationForm() {
 							label="Organization Logo"
 							labelPlacement="outside"
 							type="file"
+							accept="image/*"
+							placeholder="Upload Organization Logo"
+							onChange={(e) => {
+								if (e.target.files && e.target.files.length > 0) {
+									setSelectedLogo(e.target.files[0]);
+								}
+							}}
 						/>
 						<Controller
 							name="website"
@@ -165,7 +254,11 @@ export default function NewOrganizationForm() {
 					<Button
 						type="submit"
 						fullWidth
-						isLoading={isSubmitting || isMutationInFlight}
+						isLoading={
+							isSubmitting ||
+							isCreateOrganizationMutationInflight ||
+							isCreateOrganizationLogoPresignedUrlMutationInflight
+						}
 						size="lg"
 					>
 						Create Organization

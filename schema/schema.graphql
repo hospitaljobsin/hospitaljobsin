@@ -856,6 +856,9 @@ type Mutation {
 
     """The description of the organization."""
     description: String = null
+
+    """The logo URL of the organization."""
+    logoUrl: String = null
   ): CreateOrganizationPayload! @isAuthenticated
 
   """Create an organization logo presigned URL."""

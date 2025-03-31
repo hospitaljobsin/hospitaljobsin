@@ -51,6 +51,10 @@ class OrganizationMutation:
             str | None,
             strawberry.argument(description="The description of the organization."),
         ] = None,
+        logo_url: Annotated[
+            str | None,
+            strawberry.argument(description="The logo URL of the organization."),
+        ] = None,
     ) -> CreateOrganizationPayload:
         """Create an organization."""
         match await organization_service.create(
@@ -59,6 +63,7 @@ class OrganizationMutation:
             slug=slug,
             website=website,
             description=description,
+            logo_url=logo_url,
         ):
             case Err(error):
                 match error:

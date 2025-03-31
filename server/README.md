@@ -39,7 +39,6 @@ uv sync -p 3.12 --frozen
 2. Set Environment variables
 Create a `.env` file, referencing the template [here](./.env.example)
 
-
 ## Development commands
 
 ### 1. Generate GraphQL Schema

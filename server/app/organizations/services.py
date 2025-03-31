@@ -1,8 +1,11 @@
+import uuid
+
 from bson import ObjectId
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
 from app.base.models import Address
+from app.config import Settings
 from app.organizations.documents import Organization
 from app.organizations.exceptions import OrganizationSlugInUseError
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
@@ -14,10 +17,12 @@ class OrganizationService:
         organization_repo: OrganizationRepo,
         organization_member_repo: OrganizationMemberRepo,
         s3_client: S3Client,
+        settings: Settings,
     ) -> None:
         self._organization_repo = organization_repo
         self._organization_member_repo = organization_member_repo
         self._s3_client = s3_client
+        self._settings = settings
 
     async def create(
         self,
@@ -58,10 +63,11 @@ class OrganizationService:
         return await self._s3_client.generate_presigned_url(
             "put_object",
             Params={
-                "Bucket": "my-bucket",
-                "Key": "my-key",
+                "Bucket": self._settings.s3_avatar_bucket_name,
+                "Key": f"org-logos/{uuid.uuid4()}",
             },
             ExpiresIn=3600,
+            HttpMethod="PUT",
         )
 
 
