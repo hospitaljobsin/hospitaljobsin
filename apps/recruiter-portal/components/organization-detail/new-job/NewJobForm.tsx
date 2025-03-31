@@ -349,7 +349,7 @@ export default function NewJobForm({ account, organization }: Props) {
 									),
 								}}
 							/>
-							<div className="w-full flex gap-12 items-start justify-start">
+							<div className="w-full flex flex-col sm:flex-row gap-12 items-start justify-start">
 								{/* Job Type */}
 								<Controller
 									control={control}
@@ -360,6 +360,7 @@ export default function NewJobForm({ account, organization }: Props) {
 												label="Select Job Type"
 												value={field.value}
 												onValueChange={field.onChange}
+												className="flex-1 w-full"
 											>
 												<Radio value="CONTRACT">Contract</Radio>
 												<Radio value="FULL_TIME">Full Time</Radio>
@@ -379,6 +380,7 @@ export default function NewJobForm({ account, organization }: Props) {
 												label="Select Work Mode"
 												value={field.value}
 												onValueChange={field.onChange}
+												className="flex-1 w-full"
 											>
 												<Radio value="HYBRID">Hybrid</Radio>
 												<Radio value="OFFICE">Office</Radio>
