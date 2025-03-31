@@ -221,6 +221,7 @@ export default function NewJobForm({ account, organization }: Props) {
 	>(new Set([]));
 
 	// Update accordions when errors change
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const newOpenAccordions = new Set<Key>([...accordionSelectedKeys]);
 
@@ -245,7 +246,7 @@ export default function NewJobForm({ account, organization }: Props) {
 		}
 
 		setAccordionSelectedKeys(newOpenAccordions);
-	}, [errors, accordionSelectedKeys]);
+	}, [errors]);
 
 	function handleCancel() {
 		if (isDirty) {
