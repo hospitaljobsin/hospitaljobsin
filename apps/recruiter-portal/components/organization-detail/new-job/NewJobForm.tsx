@@ -222,7 +222,7 @@ export default function NewJobForm({ account, organization }: Props) {
 
 	// Update accordions when errors change
 	useEffect(() => {
-		const newOpenAccordions = [];
+		const newOpenAccordions = new Set<Key>([...accordionSelectedKeys]);
 
 		if (
 			errors.address?.city ||
@@ -232,20 +232,20 @@ export default function NewJobForm({ account, organization }: Props) {
 			errors.address?.pincode ||
 			errors.address?.state
 		) {
-			newOpenAccordions.push("address");
+			newOpenAccordions.add("address");
 		}
 		if (errors.minSalary || errors.maxSalary) {
-			newOpenAccordions.push("salary-range");
+			newOpenAccordions.add("salary-range");
 		}
 		if (errors.minExperience || errors.maxExperience) {
-			newOpenAccordions.push("experience-range");
+			newOpenAccordions.add("experience-range");
 		}
 		if (errors.expiresAt) {
-			newOpenAccordions.push("expires-at");
+			newOpenAccordions.add("expires-at");
 		}
 
 		setAccordionSelectedKeys(newOpenAccordions);
-	}, [errors]);
+	}, [errors, accordionSelectedKeys]);
 
 	function handleCancel() {
 		if (isDirty) {
