@@ -15,6 +15,7 @@ interface ChipsInputProps<
 	delimiters?: string[];
 	chipProps?: ChipProps;
 	inputProps?: InputProps;
+	allowDuplicates?: boolean;
 }
 
 export function ChipsInput<
@@ -27,6 +28,7 @@ export function ChipsInput<
 	delimiters = [",", "Enter"],
 	chipProps = {},
 	inputProps = {},
+	allowDuplicates = false,
 }: ChipsInputProps<TFieldValues, TName>) {
 	const { fields, append, remove } = useFieldArray<
 		TFieldValues,
@@ -43,6 +45,13 @@ export function ChipsInput<
 			e.preventDefault();
 			const trimmedValue = inputValue.trim();
 			if (trimmedValue) {
+				if (
+					!allowDuplicates &&
+					fields.some((field) => field.value === trimmedValue)
+				) {
+					setInputValue("");
+					return;
+				}
 				append({
 					value: trimmedValue,
 				} as unknown as TFieldValues[TName][number]);
@@ -54,6 +63,13 @@ export function ChipsInput<
 	const handleBlur = () => {
 		const trimmedValue = inputValue.trim();
 		if (trimmedValue) {
+			if (
+				!allowDuplicates &&
+				fields.some((field) => field.value === trimmedValue)
+			) {
+				setInputValue("");
+				return;
+			}
 			append({ value: trimmedValue } as unknown as TFieldValues[TName][number]);
 			setInputValue("");
 		}
