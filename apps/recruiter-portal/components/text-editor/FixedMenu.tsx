@@ -17,7 +17,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 					size="sm"
 					isIconOnly
 					onPress={() => editor.chain().focus().toggleBold().run()}
-					variant={editor.isActive("bold") ? "solid" : "bordered"}
+					variant={editor.isActive("bold") ? "faded" : "bordered"}
 					className="text-foreground-400 font-semibold text-md"
 				>
 					B
@@ -26,7 +26,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 					size="sm"
 					isIconOnly
 					onPress={() => editor.chain().focus().toggleItalic().run()}
-					variant={editor.isActive("italic") ? "solid" : "bordered"}
+					variant={editor.isActive("italic") ? "faded" : "bordered"}
 					className="text-foreground-400 font-medium italic text-md"
 				>
 					I
@@ -35,7 +35,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 					size="sm"
 					isIconOnly
 					onPress={() => editor.chain().focus().toggleStrike().run()}
-					variant={editor.isActive("strike") ? "solid" : "bordered"}
+					variant={editor.isActive("strike") ? "faded" : "bordered"}
 					className="text-foreground-400 font-medium line-through text-md"
 				>
 					S
@@ -47,7 +47,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 						editor.chain().focus().toggleHeading({ level: 1 }).run()
 					}
 					variant={
-						editor.isActive("heading", { level: 1 }) ? "solid" : "bordered"
+						editor.isActive("heading", { level: 1 }) ? "faded" : "bordered"
 					}
 					className="text-foreground-400 font-medium text-sm"
 				>
@@ -60,7 +60,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 						editor.chain().focus().toggleHeading({ level: 2 }).run()
 					}
 					variant={
-						editor.isActive("heading", { level: 2 }) ? "solid" : "bordered"
+						editor.isActive("heading", { level: 2 }) ? "faded" : "bordered"
 					}
 					className="text-foreground-400 font-medium text-sm"
 				>
@@ -73,7 +73,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 						editor.chain().focus().toggleHeading({ level: 3 }).run()
 					}
 					variant={
-						editor.isActive("heading", { level: 3 }) ? "solid" : "bordered"
+						editor.isActive("heading", { level: 3 }) ? "faded" : "bordered"
 					}
 					className="text-foreground-400 font-medium text-sm"
 				>
@@ -86,7 +86,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 						editor.chain().focus().toggleHeading({ level: 4 }).run()
 					}
 					variant={
-						editor.isActive("heading", { level: 4 }) ? "solid" : "bordered"
+						editor.isActive("heading", { level: 4 }) ? "faded" : "bordered"
 					}
 					className="text-foreground-400 font-medium text-sm"
 				>
@@ -99,7 +99,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 						editor.chain().focus().toggleHeading({ level: 5 }).run()
 					}
 					variant={
-						editor.isActive("heading", { level: 5 }) ? "solid" : "bordered"
+						editor.isActive("heading", { level: 5 }) ? "faded" : "bordered"
 					}
 					className="text-foreground-400 font-medium text-sm"
 				>
@@ -112,7 +112,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 						editor.chain().focus().toggleHeading({ level: 6 }).run()
 					}
 					variant={
-						editor.isActive("heading", { level: 6 }) ? "solid" : "bordered"
+						editor.isActive("heading", { level: 6 }) ? "faded" : "bordered"
 					}
 					className="text-foreground-400 font-medium text-sm"
 				>
@@ -122,7 +122,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 					size="sm"
 					isIconOnly
 					onPress={() => editor.chain().focus().toggleBulletList().run()}
-					variant={editor.isActive("bulletList") ? "solid" : "bordered"}
+					variant={editor.isActive("bulletList") ? "faded" : "bordered"}
 				>
 					<List size={20} className="text-foreground-400" />
 				</Button>
@@ -130,7 +130,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 					size="sm"
 					isIconOnly
 					onPress={() => editor.chain().focus().toggleBlockquote().run()}
-					variant={editor.isActive("blockquote") ? "solid" : "bordered"}
+					variant={editor.isActive("blockquote") ? "faded" : "bordered"}
 				>
 					<Quote
 						size={18}
