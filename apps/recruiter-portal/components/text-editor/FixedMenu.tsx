@@ -12,7 +12,7 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 
 	return (
 		<div className="w-full z-10">
-			<div className="max-w-4xl mx-auto flex gap-2 items-center">
+			<div className="w-full items-start flex gap-2 overflow-x-auto">
 				<Button
 					size="sm"
 					isIconOnly

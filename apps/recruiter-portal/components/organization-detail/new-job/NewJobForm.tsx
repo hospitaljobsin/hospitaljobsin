@@ -11,6 +11,7 @@ import {
 	CardBody,
 	CardFooter,
 	Input,
+	Link,
 	addToast,
 	useDisclosure,
 } from "@heroui/react";
@@ -18,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "next/image";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { Markdown } from "tiptap-markdown";
@@ -128,7 +129,6 @@ export default function NewJobForm({ account, organization }: Props) {
 		onUpdate({ editor }) {
 			// convert the editor's JSON to markdown
 			const markdown = editor.storage.markdown.getMarkdown();
-			console.log(markdown);
 			setValue("description", markdown);
 		},
 	});
@@ -202,19 +202,24 @@ export default function NewJobForm({ account, organization }: Props) {
 								errorMessage={errors.title?.message}
 								isInvalid={!!errors.title}
 							/>
-							<Controller
-								name="description"
-								control={control}
-								render={({ field }) => (
-									<div className="flex flex-col gap-6 w-full">
-										<h2 className="text-small">Job Description</h2>
-										<div className="w-full flex flex-col gap-4">
-											<FixedMenu editor={editor} />
-											<EditorContent editor={editor} className="w-full" />
-										</div>
-									</div>
-								)}
-							/>
+							<div className="flex flex-col gap-6 w-full">
+								<h2 className="text-small">Job Description</h2>
+								<div className="w-full flex flex-col gap-4">
+									<FixedMenu editor={editor} />
+									<EditorContent editor={editor} className="w-full" />
+								</div>
+								<p className="text-sm text-foreground-400">
+									Markdown editing is supported.{" "}
+									<Link
+										isExternal
+										showAnchorIcon
+										href="https://www.markdownguide.org/getting-started/"
+										size="sm"
+									>
+										Learn more
+									</Link>
+								</p>
+							</div>
 						</CardBody>
 						<CardFooter className="w-full justify-end gap-6">
 							<Button type="button" variant="bordered" onPress={handleCancel}>
