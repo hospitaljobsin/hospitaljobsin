@@ -7,6 +7,8 @@ import FixedMenu from "@/components/forms/text-editor/FixedMenu";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {
+	Accordion,
+	AccordionItem,
 	Button,
 	Card,
 	CardBody,
@@ -26,6 +28,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarDate } from "@internationalized/date";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import {
+	BriefcaseBusiness,
+	IndianRupee,
+	MapPin,
+	TimerIcon,
+} from "lucide-react";
 import Image from "next/image";
 import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
@@ -275,7 +283,7 @@ export default function NewJobForm({ account, organization }: Props) {
 						Create new job posting
 					</h2>
 					<Card shadow="none" className="p-6 gap-12 flex flex-col">
-						<CardBody className="flex flex-col gap-12">
+						<CardBody className="flex flex-col gap-12 overflow-y-hidden">
 							<Input
 								{...register("title")}
 								label="Job Title"
@@ -380,226 +388,249 @@ export default function NewJobForm({ account, organization }: Props) {
 									}}
 								/>
 							</div>
-							<div className="w-full flex flex-col gap-2">
-								<h2 className="text-small">Salary Range</h2>
-
-								<div className="w-full flex gap-6 items-start">
-									<Controller
-										control={control}
-										name="minSalary"
-										render={({ field }) => {
-											return (
-												<NumberInput
-													errorMessage={errors.minSalary?.message}
-													isInvalid={!!errors.minSalary}
-													label="Minimum Salary"
-													placeholder="Enter minimum salary"
-													formatOptions={{
-														style: "currency",
-														currency: "INR",
-														currencyDisplay: "code",
-														currencySign: "accounting",
-													}}
-													value={field.value || 0}
-													onValueChange={(value) => {
-														field.onChange(value);
-													}}
-												/>
-											);
-										}}
-									/>
-									<Controller
-										control={control}
-										name="maxSalary"
-										render={({ field }) => {
-											return (
-												<NumberInput
-													errorMessage={errors.maxSalary?.message}
-													isInvalid={!!errors.maxSalary}
-													label="Maximum Salary"
-													placeholder="Enter maximum salary"
-													formatOptions={{
-														style: "currency",
-														currency: "INR",
-														currencyDisplay: "code",
-														currencySign: "accounting",
-													}}
-													value={field.value || 0}
-													onValueChange={(value) => {
-														field.onChange(value);
-													}}
-												/>
-											);
-										}}
-									/>
-								</div>
-							</div>
-
-							<div className="w-full flex flex-col gap-2">
-								<h2 className="text-small">Experience Range</h2>
-
-								<div className="w-full flex gap-6 items-start">
-									<Controller
-										control={control}
-										name="minExperience"
-										render={({ field }) => {
-											return (
-												<NumberInput
-													errorMessage={errors.minExperience?.message}
-													isInvalid={!!errors.minExperience}
-													label="Minimum Experience"
-													placeholder="Enter minimum experience"
-													formatOptions={{
-														style: "unit",
-														unit: "year",
-														unitDisplay: "long",
-													}}
-													value={field.value || 0}
-													onValueChange={(value) => {
-														field.onChange(value);
-													}}
-												/>
-											);
-										}}
-									/>
-									<Controller
-										control={control}
-										name="maxExperience"
-										render={({ field }) => {
-											return (
-												<NumberInput
-													errorMessage={errors.maxExperience?.message}
-													isInvalid={!!errors.maxExperience}
-													label="Maximum Experience"
-													placeholder="Enter maximum experience"
-													formatOptions={{
-														style: "unit",
-														unit: "year",
-														unitDisplay: "long",
-													}}
-													value={field.value || 0}
-													onValueChange={(value) => {
-														field.onChange(value);
-													}}
-												/>
-											);
-										}}
-									/>
-								</div>
-							</div>
-							<Controller
-								control={control}
-								name="expiresAt"
-								render={({ field }) => {
-									return (
-										<DatePicker
-											showMonthAndYearPickers
-											selectorButtonPlacement="start"
-											granularity="hour"
-											errorMessage={errors.expiresAt?.message}
-											isInvalid={!!errors.expiresAt}
-											label="Job Posting Expires At"
-											labelPlacement="outside"
-											value={field.value ?? undefined}
-											onChange={field.onChange}
-										/>
-									);
-								}}
-							/>
-							<div className="flex flex-col gap-4">
-								<p className="text-small">Address</p>
-
-								<div className="flex gap-8 mb-12">
-									<div className="flex flex-col w-full gap-8">
+							<Accordion
+								selectionMode="multiple"
+								variant="light"
+								keepContentMounted
+								fullWidth
+								itemClasses={{ base: "pb-8" }}
+							>
+								<AccordionItem
+									key="salary-range"
+									aria-label="Salary range"
+									title="Salary range"
+									startContent={<IndianRupee size={20} />}
+								>
+									<div className="w-full flex gap-6 items-start">
 										<Controller
-											name="address.city"
 											control={control}
-											render={({ field }) => (
-												<Input
-													{...field}
-													label="City"
-													placeholder="Add your city"
-													value={field.value ?? ""}
-													errorMessage={errors.address?.city?.message}
-													isInvalid={!!errors.address?.city}
-												/>
-											)}
+											name="minSalary"
+											render={({ field }) => {
+												return (
+													<NumberInput
+														errorMessage={errors.minSalary?.message}
+														isInvalid={!!errors.minSalary}
+														label="Minimum Salary"
+														placeholder="Enter minimum salary"
+														formatOptions={{
+															style: "currency",
+															currency: "INR",
+															currencyDisplay: "code",
+															currencySign: "accounting",
+														}}
+														value={field.value || 0}
+														onValueChange={(value) => {
+															field.onChange(value);
+														}}
+													/>
+												);
+											}}
 										/>
 										<Controller
-											name="address.country"
 											control={control}
-											render={({ field }) => (
-												<Input
-													{...field}
-													label="Country"
-													placeholder="Add your country"
-													value={field.value ?? ""}
-													errorMessage={errors.address?.country?.message}
-													isInvalid={!!errors.address?.country}
-												/>
-											)}
-										/>
-										<Controller
-											name="address.pincode"
-											control={control}
-											render={({ field }) => (
-												<Input
-													{...field}
-													label="Pincode"
-													placeholder="Add your pincode"
-													value={field.value ?? ""}
-													errorMessage={errors.address?.pincode?.message}
-													isInvalid={!!errors.address?.pincode}
-												/>
-											)}
+											name="maxSalary"
+											render={({ field }) => {
+												return (
+													<NumberInput
+														errorMessage={errors.maxSalary?.message}
+														isInvalid={!!errors.maxSalary}
+														label="Maximum Salary"
+														placeholder="Enter maximum salary"
+														formatOptions={{
+															style: "currency",
+															currency: "INR",
+															currencyDisplay: "code",
+															currencySign: "accounting",
+														}}
+														value={field.value || 0}
+														onValueChange={(value) => {
+															field.onChange(value);
+														}}
+													/>
+												);
+											}}
 										/>
 									</div>
-									<div className="flex flex-col w-full gap-8">
+								</AccordionItem>
+								<AccordionItem
+									key="experience-range"
+									aria-label="Experience range"
+									title="Experience range"
+									startContent={<BriefcaseBusiness size={20} />}
+								>
+									<div className="w-full flex gap-6 items-start">
 										<Controller
-											name="address.line1"
 											control={control}
-											render={({ field }) => (
-												<Input
-													{...field}
-													label="Line 1"
-													placeholder="Add line 1"
-													value={field.value ?? ""}
-													errorMessage={errors.address?.line1?.message}
-													isInvalid={!!errors.address?.line1}
-												/>
-											)}
+											name="minExperience"
+											render={({ field }) => {
+												return (
+													<NumberInput
+														errorMessage={errors.minExperience?.message}
+														isInvalid={!!errors.minExperience}
+														label="Minimum Experience"
+														placeholder="Enter minimum experience"
+														formatOptions={{
+															style: "unit",
+															unit: "year",
+															unitDisplay: "long",
+														}}
+														value={field.value || 0}
+														onValueChange={(value) => {
+															field.onChange(value);
+														}}
+													/>
+												);
+											}}
 										/>
 										<Controller
-											name="address.line2"
 											control={control}
-											render={({ field }) => (
-												<Input
-													{...field}
-													label="Line 2"
-													placeholder="Add line 2"
-													value={field.value ?? ""}
-													errorMessage={errors.address?.line2?.message}
-													isInvalid={!!errors.address?.line2}
-												/>
-											)}
-										/>
-										<Controller
-											name="address.state"
-											control={control}
-											render={({ field }) => (
-												<Input
-													{...field}
-													label="State"
-													placeholder="Add your state"
-													value={field.value ?? ""}
-													errorMessage={errors.address?.state?.message}
-													isInvalid={!!errors.address?.state}
-												/>
-											)}
+											name="maxExperience"
+											render={({ field }) => {
+												return (
+													<NumberInput
+														errorMessage={errors.maxExperience?.message}
+														isInvalid={!!errors.maxExperience}
+														label="Maximum Experience"
+														placeholder="Enter maximum experience"
+														formatOptions={{
+															style: "unit",
+															unit: "year",
+															unitDisplay: "long",
+														}}
+														value={field.value || 0}
+														onValueChange={(value) => {
+															field.onChange(value);
+														}}
+													/>
+												);
+											}}
 										/>
 									</div>
-								</div>
-							</div>
+								</AccordionItem>
+								<AccordionItem
+									key="expires-at"
+									aria-label="Posting expires at"
+									title="Posting expires at"
+									startContent={<TimerIcon size={20} />}
+								>
+									<Controller
+										control={control}
+										name="expiresAt"
+										render={({ field }) => {
+											return (
+												<DatePicker
+													showMonthAndYearPickers
+													selectorButtonPlacement="start"
+													granularity="hour"
+													errorMessage={errors.expiresAt?.message}
+													isInvalid={!!errors.expiresAt}
+													value={field.value ?? undefined}
+													onChange={field.onChange}
+												/>
+											);
+										}}
+									/>
+								</AccordionItem>
+								<AccordionItem
+									key="address"
+									aria-label="Address"
+									title="Address"
+									startContent={<MapPin size={20} />}
+								>
+									<div className="flex flex-col gap-4">
+										<div className="flex gap-8 mb-12">
+											<div className="flex flex-col w-full gap-8">
+												<Controller
+													name="address.city"
+													control={control}
+													render={({ field }) => (
+														<Input
+															{...field}
+															label="City"
+															placeholder="Add your city"
+															value={field.value ?? ""}
+															errorMessage={errors.address?.city?.message}
+															isInvalid={!!errors.address?.city}
+														/>
+													)}
+												/>
+												<Controller
+													name="address.country"
+													control={control}
+													render={({ field }) => (
+														<Input
+															{...field}
+															label="Country"
+															placeholder="Add your country"
+															value={field.value ?? ""}
+															errorMessage={errors.address?.country?.message}
+															isInvalid={!!errors.address?.country}
+														/>
+													)}
+												/>
+												<Controller
+													name="address.pincode"
+													control={control}
+													render={({ field }) => (
+														<Input
+															{...field}
+															label="Pincode"
+															placeholder="Add your pincode"
+															value={field.value ?? ""}
+															errorMessage={errors.address?.pincode?.message}
+															isInvalid={!!errors.address?.pincode}
+														/>
+													)}
+												/>
+											</div>
+											<div className="flex flex-col w-full gap-8">
+												<Controller
+													name="address.line1"
+													control={control}
+													render={({ field }) => (
+														<Input
+															{...field}
+															label="Line 1"
+															placeholder="Add line 1"
+															value={field.value ?? ""}
+															errorMessage={errors.address?.line1?.message}
+															isInvalid={!!errors.address?.line1}
+														/>
+													)}
+												/>
+												<Controller
+													name="address.line2"
+													control={control}
+													render={({ field }) => (
+														<Input
+															{...field}
+															label="Line 2"
+															placeholder="Add line 2"
+															value={field.value ?? ""}
+															errorMessage={errors.address?.line2?.message}
+															isInvalid={!!errors.address?.line2}
+														/>
+													)}
+												/>
+												<Controller
+													name="address.state"
+													control={control}
+													render={({ field }) => (
+														<Input
+															{...field}
+															label="State"
+															placeholder="Add your state"
+															value={field.value ?? ""}
+															errorMessage={errors.address?.state?.message}
+															isInvalid={!!errors.address?.state}
+														/>
+													)}
+												/>
+											</div>
+										</div>
+									</div>
+								</AccordionItem>
+							</Accordion>
 						</CardBody>
 						<CardFooter className="w-full justify-end gap-6">
 							<Button type="button" variant="bordered" onPress={handleCancel}>
