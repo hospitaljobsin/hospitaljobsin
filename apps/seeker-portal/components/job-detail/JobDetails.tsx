@@ -177,6 +177,27 @@ export default function JobDetails({
 		return parts.length > 0 ? parts.join(", ") : "Not specified";
 	};
 
+	function formatExperienceRange({
+		hasExperienceRange,
+		minExperience,
+		maxExperience,
+	}: {
+		hasExperienceRange: boolean;
+		minExperience: number | null | undefined;
+		maxExperience: number | null | undefined;
+	}) {
+		if (hasExperienceRange) {
+			if (!minExperience) {
+				return `Maximum ${maxExperience} years`;
+			}
+			if (!maxExperience) {
+				return `Minimum ${minExperience} years`;
+			}
+			return `${minExperience} - ${maxExperience} years`;
+		}
+		return "Not specified";
+	}
+
 	const salaryRange = data.hasSalaryRange ? (
 		<div className="flex items-center gap-2 text-xl text-foreground-500">
 			{currencyIcon(data.currency)}
@@ -189,10 +210,6 @@ export default function JobDetails({
 			{"Not disclosed"}
 		</div>
 	);
-
-	const experienceRange = data.hasExperienceRange
-		? `${data.minExperience} - ${data.maxExperience} years`
-		: "Not specified";
 
 	return (
 		<div className="w-full flex flex-col gap-6">
@@ -226,7 +243,12 @@ export default function JobDetails({
 							</div>
 						)}
 						<div className="flex items-center gap-2">
-							<Briefcase size={16} /> {experienceRange}
+							<Briefcase size={16} />{" "}
+							{formatExperienceRange({
+								hasExperienceRange: data.hasExperienceRange,
+								minExperience: data.minExperience,
+								maxExperience: data.maxExperience,
+							})}
 						</div>
 						{data.workMode && (
 							<div className="flex items-center gap-2">

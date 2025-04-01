@@ -137,9 +137,26 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 		</div>
 	);
 
-	const experienceRange = data.hasExperienceRange
-		? `${data.minExperience} - ${data.maxExperience} years`
-		: "Not specified";
+	function formatExperienceRange({
+		hasExperienceRange,
+		minExperience,
+		maxExperience,
+	}: {
+		hasExperienceRange: boolean;
+		minExperience: number | null | undefined;
+		maxExperience: number | null | undefined;
+	}) {
+		if (hasExperienceRange) {
+			if (!minExperience) {
+				return `Maximum ${maxExperience} years`;
+			}
+			if (!maxExperience) {
+				return `Minimum ${minExperience} years`;
+			}
+			return `${minExperience} - ${maxExperience} years`;
+		}
+		return "Not specified";
+	}
 
 	return (
 		<Card
@@ -186,7 +203,12 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 						<MapPin size={16} /> {formatAddress(data.address)}
 					</div>
 					<div className="flex items-center gap-2">
-						<Briefcase size={16} /> {experienceRange}
+						<Briefcase size={16} />{" "}
+						{formatExperienceRange({
+							hasExperienceRange: data.hasExperienceRange,
+							minExperience: data.minExperience,
+							maxExperience: data.maxExperience,
+						})}
 					</div>
 					{data.workMode && (
 						<div className="flex items-center gap-2">
