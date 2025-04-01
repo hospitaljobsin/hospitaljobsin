@@ -110,7 +110,8 @@ export default function JobDetails({
 		immediatelyRender: false,
 		editorProps: {
 			attributes: {
-				class: "prose prose-foreground prose-sm w-full min-w-full",
+				class:
+					"prose prose-foreground prose-sm w-full min-w-full whitespace-pre-wrap",
 			},
 		},
 		editable: false, // Disable editing to make it a viewer

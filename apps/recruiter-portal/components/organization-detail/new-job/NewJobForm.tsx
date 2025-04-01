@@ -203,7 +203,7 @@ export default function NewJobForm({ account, organization }: Props) {
 		editorProps: {
 			attributes: {
 				class: cn(
-					"p-4 prose prose-foreground prose-sm focus:outline-none border-2 w-full min-w-full rounded-md min-h-56 ",
+					"p-4 prose prose-foreground prose-sm focus:outline-none border-2 w-full min-w-full rounded-md min-h-56 whitespace-pre-wrap",
 					{
 						"border-danger": errors.description,
 						"border-background-700": !errors.description,
