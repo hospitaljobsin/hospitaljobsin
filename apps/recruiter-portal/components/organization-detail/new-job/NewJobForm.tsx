@@ -27,6 +27,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarDate } from "@internationalized/date";
 import type { Key } from "@react-types/shared";
+import Heading from "@tiptap/extension-heading";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import {
@@ -190,7 +191,15 @@ export default function NewJobForm({ account, organization }: Props) {
 	});
 
 	const editor = useEditor({
-		extensions: [StarterKit, Markdown],
+		extensions: [
+			StarterKit.configure({
+				heading: false, // Disable default heading
+			}),
+			Heading.configure({
+				levels: [1, 2, 3], // Allow only H1, H2, and H3
+			}),
+			Markdown,
+		],
 		content: "",
 		immediatelyRender: false,
 		shouldRerenderOnTransaction: false,

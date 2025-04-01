@@ -16,12 +16,15 @@ import {
 	Divider,
 	Link,
 } from "@heroui/react";
+import Heading from "@tiptap/extension-heading";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import Image from "next/image";
 import NextLink from "next/link";
-import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import { Markdown } from "tiptap-markdown";
 import JobControls from "./JobControls";
 
 const JobDetailsQuery = graphql`
@@ -89,6 +92,26 @@ export default function JobDetails({
 		JobDetailsInternalFragment,
 		root.job,
 	);
+
+	const editor = useEditor({
+		extensions: [
+			StarterKit.configure({
+				heading: false, // Disable default heading
+			}),
+			Heading.configure({
+				levels: [1, 2, 3], // Allow only H1, H2, and H3
+			}),
+			Markdown,
+		],
+		immediatelyRender: false,
+		editorProps: {
+			attributes: {
+				class: "prose prose-foreground prose-sm w-full",
+			},
+		},
+		editable: false, // Disable editing to make it a viewer
+		content: data.description,
+	});
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
 
@@ -221,9 +244,7 @@ export default function JobDetails({
 				</CardHeader>
 				<Divider />
 				<CardBody className="w-full">
-					<ReactMarkdown className="prose prose-foreground prose-sm w-full">
-						{data.description}
-					</ReactMarkdown>
+					<EditorContent editor={editor} />
 				</CardBody>
 				<CardFooter>
 					<div className="flex flex-wrap gap-4 mt-2 w-full">

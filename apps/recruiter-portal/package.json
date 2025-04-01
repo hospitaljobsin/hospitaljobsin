@@ -17,6 +17,7 @@
 		"@internationalized/date": "^3.7.0",
 		"@lobehub/icons": "^1.94.0",
 		"@t3-oss/env-nextjs": "^0.11.1",
+		"@tiptap/extension-heading": "^2.11.7",
 		"@tiptap/pm": "^2.11.7",
 		"@tiptap/react": "^2.11.7",
 		"@tiptap/starter-kit": "^2.11.7",
