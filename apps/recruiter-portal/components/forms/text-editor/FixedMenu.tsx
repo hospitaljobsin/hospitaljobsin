@@ -82,45 +82,6 @@ export default function FixedMenu({ editor }: FixedMenuProps) {
 				<Button
 					size="sm"
 					isIconOnly
-					onPress={() =>
-						editor.chain().focus().toggleHeading({ level: 4 }).run()
-					}
-					variant={
-						editor.isActive("heading", { level: 4 }) ? "faded" : "bordered"
-					}
-					className="text-foreground-400 font-medium text-sm"
-				>
-					H4
-				</Button>
-				<Button
-					size="sm"
-					isIconOnly
-					onPress={() =>
-						editor.chain().focus().toggleHeading({ level: 5 }).run()
-					}
-					variant={
-						editor.isActive("heading", { level: 5 }) ? "faded" : "bordered"
-					}
-					className="text-foreground-400 font-medium text-sm"
-				>
-					H5
-				</Button>
-				<Button
-					size="sm"
-					isIconOnly
-					onPress={() =>
-						editor.chain().focus().toggleHeading({ level: 6 }).run()
-					}
-					variant={
-						editor.isActive("heading", { level: 6 }) ? "faded" : "bordered"
-					}
-					className="text-foreground-400 font-medium text-sm"
-				>
-					H6
-				</Button>
-				<Button
-					size="sm"
-					isIconOnly
 					onPress={() => editor.chain().focus().toggleBulletList().run()}
 					variant={editor.isActive("bulletList") ? "faded" : "bordered"}
 				>
