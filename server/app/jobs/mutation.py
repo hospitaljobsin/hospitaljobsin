@@ -166,12 +166,6 @@ class JobMutation:
                 description="The skills required for the job.",
             ),
         ],
-        has_salary_range: Annotated[
-            bool,
-            strawberry.argument(
-                description="Whether the job has a salary range.",
-            ),
-        ] = False,
         min_salary: Annotated[
             int | None,
             strawberry.argument(
@@ -184,12 +178,6 @@ class JobMutation:
                 description="The maximum salary of the job.",
             ),
         ] = None,
-        has_experience_range: Annotated[
-            bool,
-            strawberry.argument(
-                description="Whether the job has an experience range.",
-            ),
-        ] = False,
         min_experience: Annotated[
             int | None,
             strawberry.argument(
@@ -234,10 +222,8 @@ class JobMutation:
             title=title,
             description=description,
             address=AddressInputType.to_document(address),
-            has_salary_range=has_salary_range,
             min_salary=min_salary,
             max_salary=max_salary,
-            has_experience_range=has_experience_range,
             min_experience=min_experience,
             max_experience=max_experience,
             expires_at=expires_at,

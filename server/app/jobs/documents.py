@@ -24,11 +24,9 @@ class Job(Document):
 
     currency: Literal["INR"] = "INR"
 
-    has_salary_range: bool = False
     min_salary: int | None = None
     max_salary: int | None = None
 
-    has_experience_range: bool = False
     min_experience: int | None = None
     max_experience: int | None = None
 

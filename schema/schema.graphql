@@ -392,17 +392,11 @@ type Job implements Node {
   """The currency of the salary."""
   currency: Currency!
 
-  """Whether the job has a salary range."""
-  hasSalaryRange: Boolean!
-
   """The minimum salary of the job."""
   minSalary: Int
 
   """The maximum salary of the job."""
   maxSalary: Int
-
-  """Whether the job has an experience range."""
-  hasExperienceRange: Boolean!
 
   """The minimum experience required for the job."""
   minExperience: Int
@@ -418,6 +412,12 @@ type Job implements Node {
 
   """When the job was created at."""
   createdAt: datetime!
+
+  """Whether the job has a salary range."""
+  hasSalaryRange: Boolean!
+
+  """Whether the job has an experience range."""
+  hasExperienceRange: Boolean!
 
   """Whether the job is saved by the current user."""
   isSaved: Boolean!
@@ -791,17 +791,11 @@ type Mutation {
     """The skills required for the job."""
     skills: [String!]!
 
-    """Whether the job has a salary range."""
-    hasSalaryRange: Boolean! = false
-
     """The minimum salary of the job."""
     minSalary: Int = null
 
     """The maximum salary of the job."""
     maxSalary: Int = null
-
-    """Whether the job has an experience range."""
-    hasExperienceRange: Boolean! = false
 
     """The minimum experience of the job."""
     minExperience: Int = null

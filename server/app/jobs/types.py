@@ -84,9 +84,6 @@ class JobType(BaseNodeType[Job]):
         description="The currency of the salary.",
     )
 
-    has_salary_range: bool = strawberry.field(
-        description="Whether the job has a salary range.",
-    )
     min_salary: int | None = strawberry.field(
         description="The minimum salary of the job.",
     )
@@ -94,9 +91,6 @@ class JobType(BaseNodeType[Job]):
         description="The maximum salary of the job.",
     )
 
-    has_experience_range: bool = strawberry.field(
-        description="Whether the job has an experience range.",
-    )
     min_experience: int | None = strawberry.field(
         description="The minimum experience required for the job.",
     )
@@ -131,16 +125,26 @@ class JobType(BaseNodeType[Job]):
             address=AddressType.marshal(job.address),
             skills=job.skills,
             currency=CurrencyEnum[job.currency.upper()],
-            has_salary_range=job.has_salary_range,
             min_salary=job.min_salary,
             max_salary=job.max_salary,
-            has_experience_range=job.has_experience_range,
             min_experience=job.min_experience,
             max_experience=job.max_experience,
             updated_at=job.updated_at,
             expires_at=job.expires_at,
             organization_id=str(job.organization.ref.id),
         )
+
+    @strawberry.field(  # type: ignore[misc]
+        description="Whether the job has a salary range.",
+    )
+    def has_salary_range(self) -> bool:
+        return self.min_salary is not None and self.max_salary is not None
+
+    @strawberry.field(  # type: ignore[misc]
+        description="Whether the job has an experience range.",
+    )
+    def has_experience_range(self) -> bool:
+        return self.min_experience is not None and self.max_experience is not None
 
     @strawberry.field(  # type: ignore[misc]
         description="Whether the job is saved by the current user.",
