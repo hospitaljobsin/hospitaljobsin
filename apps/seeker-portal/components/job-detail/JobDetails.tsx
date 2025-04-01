@@ -106,7 +106,7 @@ export default function JobDetails({
 		immediatelyRender: false,
 		editorProps: {
 			attributes: {
-				class: "prose prose-foreground prose-sm w-full",
+				class: "prose prose-foreground prose-sm w-full min-w-full",
 			},
 		},
 		editable: false, // Disable editing to make it a viewer
@@ -244,7 +244,7 @@ export default function JobDetails({
 				</CardHeader>
 				<Divider />
 				<CardBody className="w-full">
-					<EditorContent editor={editor} />
+					<EditorContent editor={editor} className="w-full" />
 				</CardBody>
 				<CardFooter>
 					<div className="flex flex-wrap gap-4 mt-2 w-full">
