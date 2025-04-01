@@ -3,7 +3,7 @@ from app.config import Settings
 from app.logger import build_server_log_config, setup_logging
 
 if __name__ == "__main__":
-    settings = Settings()
+    settings = Settings()  # type: ignore[call-arg]
     # set up logging
     setup_logging(
         human_readable=settings.debug,

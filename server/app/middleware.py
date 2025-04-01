@@ -1,9 +1,11 @@
 import json
+from typing import Literal
 
-from fastapi import FastAPI, Request, Response
+from fastapi import Request, Response
 from jose import jwe
 from jose.exceptions import JWEError
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.types import ASGIApp
 
 
 class SessionMiddleware(BaseHTTPMiddleware):
@@ -11,13 +13,13 @@ class SessionMiddleware(BaseHTTPMiddleware):
 
     def __init__(
         self,
-        app: FastAPI,
+        app: ASGIApp,
         *,
         jwe_secret_key: str,
         session_cookie: str = "session",
         max_age: int = 14 * 24 * 60 * 60,  # 14 days
         path: str = "/",
-        same_site: str = "lax",
+        same_site: Literal["lax", "strict", "none"] | None = "lax",
         secure: bool = False,
         domain: str | None = None,
     ) -> None:
@@ -26,13 +28,13 @@ class SessionMiddleware(BaseHTTPMiddleware):
         self.session_cookie = session_cookie
         self.max_age = max_age
         self.path = path
-        self.same_site = same_site
+        self.same_site: Literal["lax", "strict", "none"] | None = same_site
         self.secure = secure
         self.domain = domain
 
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint
-    ) -> None:
+    ) -> Response:
         # Try to get the session from the cookie.
         initial_session_was_empty = True
         session_data = {}
@@ -44,8 +46,11 @@ class SessionMiddleware(BaseHTTPMiddleware):
                     cookie.encode("utf-8"),
                     key=self.jwe_secret_key,
                 )
-                session_data = json.loads(session_data_bytes)
-                initial_session_was_empty = False
+                if not session_data_bytes:
+                    session_data = {}
+                else:
+                    session_data = json.loads(session_data_bytes)
+                    initial_session_was_empty = False
             except JWEError:
                 session_data = {}
 

@@ -1,6 +1,11 @@
 # TODO- seeker portal
-MCP powered job search- like horsetinder on fireship's vid
-- for that, we need an MCP client and an MCP server
+
+
+- carousel of jobs horizontally (recommended jobs feed)
+- big text box asking what can I do for you?
+
+- if prompt is show me jobs satisfying XXX conditions, we get a tool call done to call the appropriate jobs. we handle that and show the result client side.
+- we can add other tools too, like showing current applications, saved jobs etc
 
 # PulseWork
 > *recruitment and job seeking for medical professionals*

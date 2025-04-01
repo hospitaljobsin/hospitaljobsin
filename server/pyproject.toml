@@ -30,6 +30,7 @@ dependencies = [
     "webauthn>=2.5.1",
     "pyotp>=2.9.0",
     "python-jose[cryptography]>=3.4.0",
+    "mcp[cli]>=1.6.0",
 ]
 
 [tool.uv]

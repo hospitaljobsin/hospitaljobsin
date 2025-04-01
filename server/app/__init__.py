@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 
 from aioinject.ext.fastapi import AioInjectMiddleware
 from asgi_correlation_id import CorrelationIdMiddleware
@@ -55,16 +56,17 @@ def add_middleware(app: FastAPI, settings: Settings) -> None:
     )
 
 
+@asynccontextmanager
 async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     """Initialize the database when the app starts."""
-    settings = Settings()
+    settings = Settings()  # type: ignore[call-arg]
     async with initialize_database(database_url=str(settings.database_url)):
         yield
 
 
 def create_app() -> FastAPI:
     """Create an application instance."""
-    settings = Settings()
+    settings = Settings()  # type: ignore[call-arg]
     app = FastAPI(
         version="0.0.1",
         debug=settings.debug,
