@@ -1,3 +1,7 @@
+# TODO- seeker portal
+MCP powered job search- like horsetinder on fireship's vid
+- for that, we need an MCP client and an MCP server
+
 # PulseWork
 > *recruitment and job seeking for medical professionals*
 
