@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthDropdown from "./AuthNavigation";
 
 const HeaderQuery = graphql`
@@ -23,23 +24,28 @@ const HeaderQuery = graphql`
   }
 `;
 
-export default function Header() {
+export default function OrgDetailHeader() {
 	const data = useLazyLoadQuery<HeaderQueryType>(HeaderQuery, {});
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",
 	);
 	return (
-		<Navbar maxWidth="lg" isBordered>
-			<NavbarBrand>
-				<Link href={links.dashboard} className="font-medium text-inherit">
-					{APP_NAME}
-				</Link>
-			</NavbarBrand>
+		<div className="w-full flex flex-col bg-background border-b border-gray-300">
+			<Navbar maxWidth="lg">
+				<NavbarBrand>
+					<Link href={links.dashboard} className="font-medium text-inherit">
+						{APP_NAME}
+					</Link>
+				</NavbarBrand>
 
-			<NavbarContent justify="end">
-				<AuthDropdown rootQuery={data.viewer} />
-			</NavbarContent>
-		</Navbar>
+				<NavbarContent justify="end">
+					<AuthDropdown rootQuery={data.viewer} />
+				</NavbarContent>
+			</Navbar>
+			<div className="w-full max-w-5xl mx-auto flex items-center justify-between">
+				<OrganizationTabs />
+			</div>
+		</div>
 	);
 }
