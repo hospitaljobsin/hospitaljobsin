@@ -8,6 +8,11 @@
 - if prompt is show me jobs satisfying XXX conditions, we get a tool call done to call the appropriate jobs. we handle that and show the result client side.
 - we can add other tools too, like showing current applications, saved jobs etc
 
+# TODO- recruiter portal
+
+- make rich text editor more performant
+- add preview to create new job form
+
 # PulseWork
 > *recruitment and job seeking for medical professionals*
 

@@ -3,8 +3,8 @@ import Job from "./Job";
 
 import type { OrganizationJobsListFragment$key } from "@/__generated__/OrganizationJobsListFragment.graphql";
 import type { OrganizationJobsListInternalFragment$key } from "@/__generated__/OrganizationJobsListInternalFragment.graphql";
-import type { pageOrganizationDetailViewQuery } from "@/__generated__/pageOrganizationDetailViewQuery.graphql";
-import { useEffect, useRef } from "react";
+import type { pageOrganizationJobsViewQuery } from "@/__generated__/pageOrganizationJobsViewQuery.graphql";
+import { startTransition, useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import JobListSkeleton from "./JobListSkeleton";
@@ -59,8 +59,8 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 		root.organization.__typename === "Organization",
 		"Expected 'Organization' node type",
 	);
-	const { data, loadNext, isLoadingNext } = usePaginationFragment<
-		pageOrganizationDetailViewQuery,
+	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
+		pageOrganizationJobsViewQuery,
 		OrganizationJobsListInternalFragment$key
 	>(OrganizationJobsListInternalFragment, root.organization);
 
@@ -86,6 +86,20 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 		observer.observe(observerRef.current);
 		return () => observer.disconnect();
 	}, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
+
+	// Debounced search term refetch
+	useEffect(() => {
+		const debounceTimeout = setTimeout(() => {
+			startTransition(() => {
+				refetch(
+					{ searchTerm: searchTerm },
+					{ fetchPolicy: "store-or-network" },
+				);
+			});
+		}, 300); // Adjust debounce delay as needed
+
+		return () => clearTimeout(debounceTimeout);
+	}, [refetch, searchTerm]);
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return null;
