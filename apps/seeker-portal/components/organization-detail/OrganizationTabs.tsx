@@ -8,11 +8,15 @@ export default function OrganizationTabs() {
 	const pathnname = usePathname();
 	const params = useParams<{ slug: string }>();
 	return (
-		<div className="flex w-full flex-col border-b border-gray-300 py-4">
+		<div className="flex w-full flex-col">
 			<Tabs
 				aria-label="Organization Detail Menu"
 				color="default"
-				variant="light"
+				variant="underlined"
+				classNames={{
+					tabList: "py-0",
+					tab: "py-6",
+				}}
 				selectedKey={pathnname}
 			>
 				<Tab
