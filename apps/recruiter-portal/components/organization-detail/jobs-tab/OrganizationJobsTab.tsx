@@ -4,7 +4,7 @@ import type { OrganizationJobsTabFragment$key } from "@/__generated__/Organizati
 import { useState } from "react";
 import { graphql, useFragment } from "react-relay";
 import OrganizationJobsController from "./OrganizationJobsController";
-import OrganizationJobsTable from "./OrganizationJobsTable";
+import OrganizationJobsList from "./OrganizationJobsList";
 
 const OrganizationJobsTabFragment = graphql`
  fragment OrganizationJobsTabFragment on Query @argumentDefinitions(
@@ -13,7 +13,7 @@ const OrganizationJobsTabFragment = graphql`
       }
 	  searchTerm: { type: "String", defaultValue: null }
     ) {
-        ...OrganizationJobsTableFragment @arguments(slug: $slug, searchTerm: $searchTerm)
+        ...OrganizationJobsListFragment @arguments(slug: $slug, searchTerm: $searchTerm)
   }
 `;
 
@@ -29,7 +29,7 @@ export default function OrganizationJobsTab(props: {
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
 			/>
-			<OrganizationJobsTable rootQuery={query} searchTerm={searchTerm} />
+			<OrganizationJobsList rootQuery={query} searchTerm={searchTerm} />
 		</div>
 	);
 }

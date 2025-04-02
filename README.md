@@ -1,5 +1,6 @@
 # TODO- seeker portal
 
+- we need a separate resource that can return the searched jobs
 
 - carousel of jobs horizontally (recommended jobs feed)
 - big text box asking what can I do for you?
