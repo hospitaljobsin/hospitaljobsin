@@ -1,11 +1,13 @@
 "use client";
 
+import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
-import { Cookie, Fingerprint, UserIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { Settings } from "lucide-react";
+import { useParams, usePathname } from "next/navigation";
 
 export default function SettingsSidebar() {
 	const pathname = usePathname();
+	const params = useParams<{ slug: string }>();
 	return (
 		<>
 			<div className="md:h-[calc(100vh-4.2rem)] w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky md:top-16">
@@ -24,32 +26,12 @@ export default function SettingsSidebar() {
 					}}
 				>
 					<Tab
-						key="/settings"
-						href="/settings"
+						key={links.organizationDetailSettings(params.slug)}
+						href={links.organizationDetailSettings(params.slug)}
 						title={
 							<div className="flex items-center space-x-4">
-								<UserIcon size={20} />
-								<span>Account</span>
-							</div>
-						}
-					/>
-					<Tab
-						key="/settings/passkeys"
-						href="/settings/passkeys"
-						title={
-							<div className="flex items-center space-x-4">
-								<Fingerprint size={20} />
-								<span>Passkeys</span>
-							</div>
-						}
-					/>
-					<Tab
-						key="/settings/sessions"
-						href="/settings/sessions"
-						title={
-							<div className="flex items-center space-x-4">
-								<Cookie size={20} />
-								<span>Sessions</span>
+								<Settings size={20} />
+								<span>General</span>
 							</div>
 						}
 					/>
@@ -66,32 +48,12 @@ export default function SettingsSidebar() {
 					}}
 				>
 					<Tab
-						key="/settings"
-						href="/settings"
+						key={links.organizationDetailSettings(params.slug)}
+						href={links.organizationDetailSettings(params.slug)}
 						title={
 							<div className="flex items-center space-x-4">
-								<UserIcon size={16} />
-								<span>Account</span>
-							</div>
-						}
-					/>
-					<Tab
-						key="/settings/passkeys"
-						href="/settings/passkeys"
-						title={
-							<div className="flex items-center space-x-4">
-								<Fingerprint size={16} />
-								<span>Passkeys</span>
-							</div>
-						}
-					/>
-					<Tab
-						key="/settings/sessions"
-						href="/settings/sessions"
-						title={
-							<div className="flex items-center space-x-4">
-								<Cookie size={16} />
-								<span>Sessions</span>
+								<Settings size={16} />
+								<span>General</span>
 							</div>
 						}
 					/>

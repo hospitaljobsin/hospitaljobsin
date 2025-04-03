@@ -1,5 +1,6 @@
 "use client";
 
+import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
 import { Cookie, Fingerprint, UserIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -24,8 +25,8 @@ export default function SettingsSidebar() {
 					}}
 				>
 					<Tab
-						key="/settings"
-						href="/settings"
+						key={links.settings}
+						href={links.settings}
 						title={
 							<div className="flex items-center space-x-4">
 								<UserIcon size={20} />
@@ -34,8 +35,8 @@ export default function SettingsSidebar() {
 						}
 					/>
 					<Tab
-						key="/settings/passkeys"
-						href="/settings/passkeys"
+						key={links.settingsPasskeys}
+						href={links.settingsPasskeys}
 						title={
 							<div className="flex items-center space-x-4">
 								<Fingerprint size={20} />
@@ -44,8 +45,8 @@ export default function SettingsSidebar() {
 						}
 					/>
 					<Tab
-						key="/settings/sessions"
-						href="/settings/sessions"
+						key={links.settingsSessions}
+						href={links.settingsSessions}
 						title={
 							<div className="flex items-center space-x-4">
 								<Cookie size={20} />
@@ -66,8 +67,8 @@ export default function SettingsSidebar() {
 					}}
 				>
 					<Tab
-						key="/settings"
-						href="/settings"
+						key={links.settings}
+						href={links.settings}
 						title={
 							<div className="flex items-center space-x-4">
 								<UserIcon size={16} />
@@ -76,8 +77,8 @@ export default function SettingsSidebar() {
 						}
 					/>
 					<Tab
-						key="/settings/passkeys"
-						href="/settings/passkeys"
+						key={links.settingsPasskeys}
+						href={links.settingsPasskeys}
 						title={
 							<div className="flex items-center space-x-4">
 								<Fingerprint size={16} />
@@ -86,8 +87,8 @@ export default function SettingsSidebar() {
 						}
 					/>
 					<Tab
-						key="/settings/sessions"
-						href="/settings/sessions"
+						key={links.settingsSessions}
+						href={links.settingsSessions}
 						title={
 							<div className="flex items-center space-x-4">
 								<Cookie size={16} />

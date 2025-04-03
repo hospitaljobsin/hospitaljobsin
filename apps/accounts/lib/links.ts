@@ -10,6 +10,8 @@ const links = {
 	resetPasswordSubmit: "/auth/reset-password",
 	resetPasswordConfirm: (token: string) => `/auth/reset-password/${token}`,
 	settings: "/settings",
+	settingsPasskeys: "/settings/passkeys",
+	settingsSessions: "/settings/sessions",
 	requestSudo: (returnTo: string | null = null) =>
 		returnTo ? `/request-sudo?return_to=${returnTo}` : "/request-sudo",
 	twoFactorAuthentication: (returnTo: string | null = null) =>
