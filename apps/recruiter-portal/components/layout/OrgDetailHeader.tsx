@@ -35,7 +35,7 @@ export default function OrgDetailHeader() {
 	);
 	return (
 		<div className="w-full flex flex-col bg-background border-b border-gray-300">
-			<Navbar maxWidth="lg">
+			<Navbar maxWidth="lg" position="static">
 				<NavbarBrand>
 					<Link href={links.dashboard} className="font-medium text-inherit">
 						{APP_NAME}
