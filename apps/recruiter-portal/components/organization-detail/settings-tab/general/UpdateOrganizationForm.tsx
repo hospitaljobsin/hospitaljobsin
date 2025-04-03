@@ -2,7 +2,7 @@ import type { UpdateOrganizationFormFragment$key } from "@/__generated__/UpdateO
 import type { UpdateOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql";
 import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from "@/__generated__/UpdateOrganizationFormMutation.graphql";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
-import { Button, Card, CardBody, Input } from "@heroui/react";
+import { Button, Card, CardBody, CardFooter, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useState } from "react";
@@ -283,7 +283,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 					<div className="flex flex-col gap-4">
 						<p className="text-xs text-foreground-500 px-2">Address</p>
 
-						<div className="flex gap-8 mb-12">
+						<div className="flex gap-8">
 							<div className="flex flex-col w-full gap-8">
 								<Controller
 									name="address.city"
@@ -375,21 +375,20 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 						</div>
 					</div>
 				</CardBody>
+				<CardFooter>
+					<Button
+						type="submit"
+						color="primary"
+						isLoading={
+							isSubmitting ||
+							isMutationInFlight ||
+							isCreateOrganizationLogoPresignedUrlMutationInflight
+						}
+					>
+						Save Changes
+					</Button>
+				</CardFooter>
 			</Card>
-
-			<div className="mt-4 flex justify-end gap-6">
-				<Button
-					type="submit"
-					color="primary"
-					isLoading={
-						isSubmitting ||
-						isMutationInFlight ||
-						isCreateOrganizationLogoPresignedUrlMutationInflight
-					}
-				>
-					Save Changes
-				</Button>
-			</div>
 		</form>
 	);
 }
