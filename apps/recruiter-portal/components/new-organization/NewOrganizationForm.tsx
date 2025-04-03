@@ -2,6 +2,7 @@
 import type { NewOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/NewOrganizationFormLogoPresignedUrlMutation.graphql";
 import type { NewOrganizationFormMutation } from "@/__generated__/NewOrganizationFormMutation.graphql";
 import links from "@/lib/links";
+import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next";
 import {
 	Button,
@@ -99,29 +100,6 @@ export default function NewOrganizationForm() {
 				},
 			});
 		});
-	}
-
-	async function uploadFileToS3(
-		presignedUrl: string,
-		file: File,
-	): Promise<void> {
-		try {
-			const response = await fetch(presignedUrl, {
-				method: "PUT",
-				body: file,
-				headers: {
-					"Content-Type": file.type,
-				},
-			});
-
-			if (!response.ok) {
-				console.error("Failed to upload file to S3:", response);
-				throw new Error("Failed to upload file to S3");
-			}
-		} catch (error) {
-			console.error("Error uploading file to S3:", error);
-			throw error;
-		}
 	}
 
 	async function onSubmit(formData: z.infer<typeof formSchema>) {

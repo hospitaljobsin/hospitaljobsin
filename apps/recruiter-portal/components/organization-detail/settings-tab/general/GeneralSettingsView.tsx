@@ -32,7 +32,7 @@ export default function GeneralSettingsView({
 		"Expected 'Organization' node type",
 	);
 	return (
-		<div className="py-8 w-full h-full flex flex-col items-center gap-12">
+		<div className="w-full h-full flex flex-col items-center gap-12">
 			<UpdateOrganizationForm rootQuery={data.organization} />
 		</div>
 	);

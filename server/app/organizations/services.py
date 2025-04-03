@@ -94,7 +94,8 @@ class OrganizationService:
         # only admins can update the organization
 
         if (
-            await self._organization_repo.get_by_slug(
+            slug != existing_organization.slug
+            and await self._organization_repo.get_by_slug(
                 organization_slug=slug,
             )
             is not None
