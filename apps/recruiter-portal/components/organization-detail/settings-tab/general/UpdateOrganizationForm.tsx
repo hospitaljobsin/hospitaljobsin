@@ -1,7 +1,9 @@
 import type { UpdateOrganizationFormFragment$key } from "@/__generated__/UpdateOrganizationFormFragment.graphql";
 import type { UpdateOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql";
 import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from "@/__generated__/UpdateOrganizationFormMutation.graphql";
+import links from "@/lib/links";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
+import { useRouter } from "@bprogress/next";
 import { Button, Card, CardBody, CardFooter, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -16,6 +18,7 @@ mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $s
 		__typename
 		...on Organization {
 			id
+			slug
 			...UpdateOrganizationFormFragment
 		}
         ... on OrganizationNotFoundError {
@@ -76,6 +79,7 @@ const formSchema = z.object({
 });
 
 export default function UpdateOrganizationForm({ rootQuery }: Props) {
+	const router = useRouter();
 	const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<UpdateOrganizationFormMutationType>(
@@ -93,6 +97,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		handleSubmit,
 		control,
 		setError,
+		getFieldState,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -164,6 +169,14 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			},
 			onCompleted(response) {
 				if (response.updateOrganization.__typename === "Organization") {
+					if (getFieldState("slug").isDirty) {
+						// slug changed, redirect to new URL
+						router.replace(
+							links.organizationDetailSettings(
+								response.updateOrganization.slug,
+							),
+						);
+					}
 					// Handle successful update
 				} else if (
 					response.updateOrganization.__typename === "OrganizationNotFoundError"
