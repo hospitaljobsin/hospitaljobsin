@@ -1,5 +1,5 @@
 "use client";
-import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
+import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
 import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
@@ -10,8 +10,8 @@ import invariant from "tiny-invariant";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthDropdown from "./AuthNavigation";
 
-const HeaderQuery = graphql`
-  query HeaderQuery {
+const OrgDetailHeaderQuery = graphql`
+  query OrgDetailHeaderQuery {
     viewer {
       ... on Account {
         __typename
@@ -25,7 +25,7 @@ const HeaderQuery = graphql`
 `;
 
 export default function OrgDetailHeader() {
-	const data = useLazyLoadQuery<HeaderQueryType>(HeaderQuery, {});
+	const data = useLazyLoadQuery<OrgDetailHeaderQueryType>(OrgDetailHeaderQuery, {});
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",

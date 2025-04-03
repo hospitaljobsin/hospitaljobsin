@@ -1,5 +1,5 @@
 "use client";
-import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
+import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
 import { APP_NAME } from "@/lib/constants";
 import { env } from "@/lib/env";
 import links from "@/lib/links";
@@ -16,8 +16,8 @@ import { graphql } from "relay-runtime";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthDropdown from "./AuthNavigation";
 
-const HeaderQuery = graphql`
-  query HeaderQuery {
+const OrgDetailHeaderQuery = graphql`
+  query OrgDetailHeaderQuery {
     viewer {
       ... on Account {
         __typename
@@ -31,7 +31,7 @@ const HeaderQuery = graphql`
 `;
 
 export default function OrgDetailHeader() {
-	const data = useLazyLoadQuery<HeaderQueryType>(HeaderQuery, {});
+	const data = useLazyLoadQuery<OrgDetailHeaderQueryType>(OrgDetailHeaderQuery, {});
 	return (
 		<div className="w-full flex flex-col bg-background border-b border-gray-300">
 			<Navbar maxWidth="lg">
