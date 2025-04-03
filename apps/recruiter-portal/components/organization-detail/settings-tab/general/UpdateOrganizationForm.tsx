@@ -78,7 +78,7 @@ const formSchema = z.object({
 	name: z.string().min(1, { message: "Organization name is required" }),
 	slug: z.string().min(1, { message: "Slug is required" }),
 	website: z.string().url({ message: "Invalid URL" }).optional().nullable(),
-	description: z.string().optional().nullable(),
+	description: z.string().max(300).optional().nullable(),
 	address: z.object({
 		city: z.string().nullable(),
 		country: z.string().nullable(),

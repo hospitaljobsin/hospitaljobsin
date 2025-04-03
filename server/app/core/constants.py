@@ -20,6 +20,9 @@ EMAIL_VERIFICATION_EXPIRES_IN = 60 * 60 * 1  # 1 hour
 
 EMAIL_VERIFICATION_TOKEN_LENGTH = 6
 
+# Organization invites
+ORGANIZATION_INVITE_EXPIRES_IN = 60 * 60 * 24 * 7  # 7 days
+
 
 # Password reset
 PASSWORD_RESET_EXPIRES_IN = 60 * 60 * 1  # 1 hour

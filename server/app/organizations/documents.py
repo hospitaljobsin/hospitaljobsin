@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated, ClassVar, Literal
 
 from beanie import BackLink, Document, Indexed, Link
@@ -34,5 +35,25 @@ class OrganizationMember(Document):
                 ["organization", "account"],
                 name="organization_account_unique_secondary_index",
                 unique=True,
+            ),
+        ]
+
+
+class Invite(Document):
+    email: str
+    organization: Link[Organization]
+    created_by: Link[Account]
+    token_hash: Annotated[str, Indexed(unique=True)]
+    status: Literal["pending", "accepted", "declined"]
+
+    expires_at: datetime
+
+    class Settings:
+        name = "organization_invites"
+        indexes: ClassVar[list[IndexModel]] = [
+            # expire invites after they cross the expiration timestamp
+            IndexModel(
+                "expires_at",
+                expireAfterSeconds=0,
             ),
         ]

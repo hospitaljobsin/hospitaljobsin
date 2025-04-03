@@ -16,7 +16,7 @@ from app.auth.documents import (
     WebAuthnCredential,
 )
 from app.jobs.documents import Job, SavedJob
-from app.organizations.documents import Organization, OrganizationMember
+from app.organizations.documents import Invite, Organization, OrganizationMember
 
 
 def rebuild_models() -> None:
@@ -69,6 +69,7 @@ async def initialize_database(database_url: str) -> AsyncGenerator[None, None]:
                 TwoFactorAuthenticationChallenge,
                 RecoveryCode,
                 TemporaryTwoFactorChallenge,
+                Invite,
             ],
         )
         yield

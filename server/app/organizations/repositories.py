@@ -1,11 +1,18 @@
+import hashlib
+import secrets
+from datetime import UTC, datetime, timedelta
+
 from beanie import PydanticObjectId
 from beanie.operators import In
 from bson import ObjectId
 
 from app.base.models import Address
+from app.core.constants import (
+    ORGANIZATION_INVITE_EXPIRES_IN,
+)
 from app.database.paginator import PaginatedResult, Paginator
 
-from .documents import Organization, OrganizationMember
+from .documents import Invite, Organization, OrganizationMember
 
 
 class OrganizationRepo:
@@ -218,3 +225,44 @@ class OrganizationMemberRepo:
             before=ObjectId(before) if before else None,
             after=ObjectId(after) if after else None,
         )
+
+
+class InviteRepo:
+    @classmethod
+    def generate_token(cls) -> str:
+        """Generate a new invite token."""
+        return secrets.token_urlsafe(16)
+
+    @classmethod
+    def hash_token(cls, token: str) -> str:
+        """Hash the given invite token."""
+        return hashlib.md5(token.encode("utf-8")).hexdigest()  # noqa: S324
+
+    async def create(
+        self,
+        organization_id: ObjectId,
+        account_id: ObjectId,
+        email: str,
+    ) -> tuple[Invite, str]:
+        """Create a new invite."""
+        invite_token = self.generate_token()
+        while await self.get_by_token(invite_token) is not None:
+            invite_token = self.generate_token()
+
+        invite = Invite(
+            organization=organization_id,
+            created_by=account_id,
+            email=email,
+            token_hash=self.hash_token(invite_token),
+            status="pending",
+            expires_at=datetime.now(UTC)
+            + timedelta(
+                seconds=ORGANIZATION_INVITE_EXPIRES_IN,
+            ),
+        )
+
+        return await invite.insert(), invite_token
+
+    async def get_by_token(self, token: str) -> Invite | None:
+        """Get invite by token."""
+        return await Invite.find_one(Invite.token_hash == self.hash_token(token))
