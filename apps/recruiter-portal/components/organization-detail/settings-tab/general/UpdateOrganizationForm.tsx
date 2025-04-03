@@ -218,7 +218,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 							/>
 						</div>
 						<div className="flex flex-col gap-2 flex-shrink-0">
-							<p className="text-sm text-foreground-500">Organization Logo</p>
+							<p className="text-tiny text-foreground-500">Organization Logo</p>
 							<div className="flex flex-col items-start gap-4">
 								<Image
 									src={
@@ -228,10 +228,10 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 									}
 									alt="Organization Logo"
 									className="object-cover rounded-md border"
-									height={90}
-									width={90}
+									height={120}
+									width={120}
 								/>
-								<label className="cursor-pointer text-sm">
+								<Button as="label" variant="bordered" size="sm">
 									Upload new logo
 									<input
 										type="file"
@@ -240,7 +240,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 										multiple={false}
 										onChange={handleLogoChange}
 									/>
-								</label>
+								</Button>
 							</div>
 						</div>
 					</div>
