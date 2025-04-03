@@ -1,5 +1,7 @@
 # TODO- seeker portal
 
+- add job apply feature
+
 - we need a separate resource that can return the searched jobs
 
 - carousel of jobs horizontally (recommended jobs feed)
@@ -10,6 +12,8 @@
 
 # TODO- recruiter portal
 
+- add applications feature
+- list applications
 - make rich text editor more performant
 - add preview to create new job form
 
