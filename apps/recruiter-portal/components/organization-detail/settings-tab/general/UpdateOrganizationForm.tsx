@@ -19,6 +19,18 @@ mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $s
 		...on Organization {
 			id
 			slug
+			name
+			website
+			description
+			logoUrl
+			address {
+				city
+				country
+				line1
+				line2
+				pincode
+				state
+			}
 			...UpdateOrganizationFormFragment
 		}
         ... on OrganizationNotFoundError {
@@ -98,7 +110,8 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		control,
 		setError,
 		getFieldState,
-		formState: { errors, isSubmitting },
+		reset,
+		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -176,6 +189,23 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 								response.updateOrganization.slug,
 							),
 						);
+					} else {
+						// set isDirty to false to disable the save button
+						reset({
+							name: response.updateOrganization.name,
+							slug: response.updateOrganization.slug,
+							website: response.updateOrganization.website,
+							description: response.updateOrganization.description,
+							address: {
+								city: response.updateOrganization.address.city || null,
+								country: response.updateOrganization.address.country || null,
+								line1: response.updateOrganization.address.line1 || null,
+								line2: response.updateOrganization.address.line2 || null,
+								pincode: response.updateOrganization.address.pincode || null,
+								state: response.updateOrganization.address.state || null,
+							},
+						});
+						setSelectedLogo(null);
 					}
 					// Handle successful update
 				} else if (
@@ -392,6 +422,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 					<Button
 						type="submit"
 						color="primary"
+						isDisabled={!isDirty}
 						isLoading={
 							isSubmitting ||
 							isMutationInFlight ||
