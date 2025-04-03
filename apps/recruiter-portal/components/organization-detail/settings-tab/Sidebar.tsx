@@ -10,7 +10,7 @@ export default function SettingsSidebar() {
 	const params = useParams<{ slug: string }>();
 	return (
 		<>
-			<div className="md:h-[calc(100vh-4.2rem)] w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky md:top-16">
+			<div className="w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky top-0 self-stretch max-h-screen">
 				<Tabs
 					aria-label="Settings Navigation"
 					isVertical

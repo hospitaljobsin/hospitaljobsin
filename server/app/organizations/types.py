@@ -305,6 +305,14 @@ CreateOrganizationPayload = Annotated[
     ),
 ]
 
+UpdateOrganizationPayload = Annotated[
+    OrganizationType | OrganizationSlugInUseErrorType | OrganizationNotFoundErrorType,
+    strawberry.union(
+        name="UpdateOrganizationPayload",
+        description="The update organization payload.",
+    ),
+]
+
 
 OrganizationPayload = Annotated[
     OrganizationType | OrganizationNotFoundErrorType,

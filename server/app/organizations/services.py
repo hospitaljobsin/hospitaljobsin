@@ -4,8 +4,10 @@ from bson import ObjectId
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
+from app.accounts.documents import Account
 from app.base.models import Address
 from app.config import Settings
+from app.jobs.exceptions import OrganizationNotFoundError
 from app.organizations.documents import Organization
 from app.organizations.exceptions import OrganizationSlugInUseError
 from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
@@ -69,6 +71,47 @@ class OrganizationService:
             ExpiresIn=3600,
             HttpMethod="PUT",
         )
+
+    async def update(
+        self,
+        account: Account,
+        organization_id: ObjectId,
+        name: str,
+        slug: str,
+        address: Address,
+        description: str | None = None,
+        website: str | None = None,
+        logo_url: str | None = None,
+    ) -> Result[Organization, OrganizationSlugInUseError | OrganizationNotFoundError]:
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        # TODO: check if user is admin of the organization
+        # only admins can update the organization
+
+        if (
+            await self._organization_repo.get_by_slug(
+                organization_slug=slug,
+            )
+            is not None
+        ):
+            return Err(OrganizationSlugInUseError())
+
+        organization = await self._organization_repo.update(
+            existing_organization,
+            name=name,
+            slug=slug,
+            description=description,
+            address=address,
+            website=website,
+            logo_url=logo_url,
+        )
+
+        return Ok(organization)
 
 
 class OrganizationMemberService:

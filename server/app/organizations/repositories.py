@@ -43,14 +43,16 @@ class OrganizationRepo:
         organization: Organization,
         *,
         name: str,
-        description: str,
+        slug: str,
         address: Address,
-        website: str,
-        email: str,
+        email: str | None = None,
+        description: str | None = None,
+        website: str | None = None,
         logo_url: str | None = None,
     ) -> Organization:
         """Update the given organization."""
         organization.name = name
+        organization.slug = slug
         organization.description = description
         organization.address = address
         organization.website = website

@@ -845,6 +845,30 @@ type Mutation {
 
   """Create an organization logo presigned URL."""
   createOrganizationLogoPresignedUrl: CreateOrganizationLogoPresignedURLPayload! @isAuthenticated
+
+  """Update an organization."""
+  updateOrganization(
+    """The ID of the organization to update."""
+    organizationId: ID!
+
+    """The name of the organization."""
+    name: String!
+
+    """The slug of the organization."""
+    slug: String!
+
+    """The address of the organization."""
+    address: AddressInput!
+
+    """The website of the organization."""
+    website: String = null
+
+    """The description of the organization."""
+    description: String = null
+
+    """The logo URL of the organization."""
+    logoUrl: String = null
+  ): UpdateOrganizationPayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""
@@ -1284,6 +1308,9 @@ type UnsaveJobSuccess {
 
 """The update account payload."""
 union UpdateAccountPayload = Account
+
+"""The update organization payload."""
+union UpdateOrganizationPayload = Organization | OrganizationSlugInUseError | OrganizationNotFoundError
 
 """The update password payload."""
 union UpdatePasswordPayload = Account | PasswordNotStrongError
