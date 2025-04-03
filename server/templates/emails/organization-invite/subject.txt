@@ -1,0 +1,1 @@
+{{ invited_by_name }} Invited you to {{ organization_name }}

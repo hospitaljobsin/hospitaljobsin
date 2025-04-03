@@ -1,16 +1,29 @@
 import uuid
+from datetime import timedelta
 
 from bson import ObjectId
+from fastapi import BackgroundTasks
+from humanize import naturaldelta
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
 from app.accounts.documents import Account
+from app.accounts.repositories import AccountRepo
 from app.base.models import Address
 from app.config import Settings
+from app.core.constants import ORGANIZATION_INVITE_EXPIRES_IN
+from app.core.emails import EmailSender
 from app.jobs.exceptions import OrganizationNotFoundError
-from app.organizations.documents import Organization
-from app.organizations.exceptions import OrganizationSlugInUseError
-from app.organizations.repositories import OrganizationMemberRepo, OrganizationRepo
+from app.organizations.documents import Invite, Organization
+from app.organizations.exceptions import (
+    MemberAlreadyExistsError,
+    OrganizationSlugInUseError,
+)
+from app.organizations.repositories import (
+    InviteRepo,
+    OrganizationMemberRepo,
+    OrganizationRepo,
+)
 
 
 class OrganizationService:
@@ -134,3 +147,67 @@ class OrganizationMemberService:
             )
             is not None
         )
+
+
+class InviteService:
+    def __init__(
+        self,
+        invite_repo: InviteRepo,
+        organization_repo: OrganizationRepo,
+        organization_member_repo: OrganizationMemberRepo,
+        account_repo: AccountRepo,
+        email_sender: EmailSender,
+        settings: Settings,
+    ) -> None:
+        self._invite_repo = invite_repo
+        self._organization_repo = organization_repo
+        self._organization_member_repo = organization_member_repo
+        self._account_repo = account_repo
+        self._email_sender = email_sender
+        self._settings = settings
+
+    async def create(
+        self,
+        organization_id: ObjectId,
+        account: Account,
+        email: str,
+        background_tasks: BackgroundTasks,
+    ) -> Result[Invite, OrganizationNotFoundError | MemberAlreadyExistsError]:
+        """Create a new invite for an organization."""
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        existing_account = await self._account_repo.get_by_email(email=email)
+
+        if existing_account is not None and await self._organization_member_repo.get(
+            account_id=existing_account.id,
+            organization_id=organization_id,
+        ):
+            return Err(MemberAlreadyExistsError())
+
+        invite, invite_token = await self._invite_repo.create(
+            organization_id=organization_id,
+            account_id=account.id,
+            email=email,
+        )
+
+        background_tasks.add_task(
+            self._email_sender.send_template_email,
+            template="organization-invite",
+            receiver=email,
+            context={
+                "invited_by_name": account.full_name,
+                "organization_name": existing_organization.name,
+                "invite_link": f"{self._settings.recruiter_portal_base_url}/invites/{invite_token}",
+                "organization_logo_url": existing_organization.logo_url,
+                "invite_expires_in": naturaldelta(
+                    timedelta(seconds=ORGANIZATION_INVITE_EXPIRES_IN)
+                ),
+            },
+        )
+
+        return Ok(invite)

@@ -1,0 +1,22 @@
+{% extends "emails/base/body.txt" %}
+
+{% block title %}
+You're invited to join {{ organization_name }}! This invitation is only valid for {{ invite_expires_in }}.
+{% endblock %}
+
+{% block content %}
+************
+Hey there,
+************
+
+{{ invited_by_name }} has invited you to join {{ organization_name }}.
+This invitation is only valid for {{ invite_expires_in }}.
+
+Click on the following link to view your invitation:
+
+{{ invite_link }}
+
+If you did not expect this invitation, you can safely ignore this email.
+
+Looking forward to having you on board!
+{% endblock %}

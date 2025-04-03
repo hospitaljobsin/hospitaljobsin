@@ -137,6 +137,9 @@ class Settings(BaseSettings):
     # accounts config
     accounts_base_url: str = "http://localhost:5002"
 
+    # recruiter portal config
+    recruiter_portal_base_url: str = "http://localhost:5001"
+
     # webauthn config
 
     rp_id: Annotated[

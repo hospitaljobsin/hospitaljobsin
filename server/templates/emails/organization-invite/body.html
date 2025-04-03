@@ -1,0 +1,33 @@
+{% extends "emails/base/body.html" %}
+
+{% block title %}
+{{ invited_by_name }} Invited you to {{ organization_name }}
+{% endblock %}
+
+{% block content %}
+<p>Hey there,</p>
+<p>{{ invited_by_name }} has invited you to join <strong>{{ organization_name }}</strong>.
+  <strong>This invitation will expire in {{ invite_expires_in }}.</strong></p>
+
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+  <tbody>
+    <tr>
+      <td align="left">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td> <a href="{{ invite_link }}" target="_blank">View Invitation</a> </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If you did not expect this invitation, you can safely ignore this email.</p>
+
+<p>Looking forward to having you on board!</p>
+
+<img src="{{ organization_logo_url }}" alt="{{ organization_name }} Logo" style="max-width: 200px; margin-top: 20px;">
+{% endblock %}
