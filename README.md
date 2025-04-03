@@ -12,6 +12,11 @@
 
 # TODO- recruiter portal
 
+- members- search feature
+    - table instead of list, like github
+    - invite members by email feature (admin only)
+    - actions available to admin only (kick, promote member to admin)
+
 - add applications feature
 - list applications
 - group applications into stages:
