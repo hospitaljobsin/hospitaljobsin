@@ -18,6 +18,7 @@
     - actions available to admin only (kick, promote member to admin)
 
 - add applications feature
+    - custom application form that can be created for each job
 - list applications
 - group applications into stages:
     - waiting for review
