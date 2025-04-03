@@ -25,7 +25,10 @@ const OrgDetailHeaderQuery = graphql`
 `;
 
 export default function OrgDetailHeader() {
-	const data = useLazyLoadQuery<OrgDetailHeaderQueryType>(OrgDetailHeaderQuery, {});
+	const data = useLazyLoadQuery<OrgDetailHeaderQueryType>(
+		OrgDetailHeaderQuery,
+		{},
+	);
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",

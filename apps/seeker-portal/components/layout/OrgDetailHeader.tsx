@@ -31,7 +31,10 @@ const OrgDetailHeaderQuery = graphql`
 `;
 
 export default function OrgDetailHeader() {
-	const data = useLazyLoadQuery<OrgDetailHeaderQueryType>(OrgDetailHeaderQuery, {});
+	const data = useLazyLoadQuery<OrgDetailHeaderQueryType>(
+		OrgDetailHeaderQuery,
+		{},
+	);
 	return (
 		<div className="w-full flex flex-col bg-background border-b border-gray-300">
 			<Navbar maxWidth="lg">
