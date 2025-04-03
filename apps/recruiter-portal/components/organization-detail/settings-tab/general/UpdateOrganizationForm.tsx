@@ -31,7 +31,6 @@ mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $s
 				pincode
 				state
 			}
-			...UpdateOrganizationFormFragment
 		}
         ... on OrganizationNotFoundError {
             __typename
