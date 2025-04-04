@@ -319,7 +319,11 @@ class OrganizationInviteRepo:
         )
 
         if search_term:
-            search_criteria = search_criteria.find({"$text": {"$search": search_term}})
+            search_criteria = search_criteria.find(
+                {"$text": {"$search": search_term}},
+                fetch_links=True,
+                nesting_depth=1,
+            )
 
         return await paginator.paginate(
             search_criteria=search_criteria,

@@ -265,7 +265,7 @@ class OrganizationType(BaseNodeType[Organization]):
     ) -> InviteConnectionType:
         """Return a paginated connection of invites for the organization."""
 
-        paginated_jobs = await invite_repo.get_all_by_organization_id(
+        paginated_invites = await invite_repo.get_all_by_organization_id(
             organization_id=ObjectId(self.id),
             search_term=search_term,
             after=(after.node_id if after else None),
@@ -274,7 +274,7 @@ class OrganizationType(BaseNodeType[Organization]):
             last=last,
         )
 
-        return InviteConnectionType.marshal(paginated_jobs)
+        return InviteConnectionType.marshal(paginated_invites)
 
     @strawberry.field(  # type: ignore[misc]
         description="The jobs posted in the organization.",
