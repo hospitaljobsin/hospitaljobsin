@@ -152,7 +152,7 @@ export default function InviteMemberModal({
 							<Input
 								{...register("email")}
 								label="Email Address"
-								placeholder="Enter your email address"
+								placeholder="Enter new member's email address"
 								type="text"
 								errorMessage={formState.errors.email?.message}
 								isInvalid={!!formState.errors.email}

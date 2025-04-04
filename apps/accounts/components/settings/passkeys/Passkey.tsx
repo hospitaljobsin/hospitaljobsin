@@ -101,7 +101,6 @@ export default function Passkey({
 								<Button
 									isIconOnly
 									variant="light"
-									color="danger"
 									onPress={handlePasskeyDeleteModalOpen}
 								>
 									<Trash size={20} />

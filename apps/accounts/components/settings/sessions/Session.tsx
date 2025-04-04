@@ -111,7 +111,6 @@ export default function Session({
 								<Button
 									isIconOnly
 									variant="light"
-									color="danger"
 									onPress={handleSessionDelete}
 								>
 									<Trash size={20} />

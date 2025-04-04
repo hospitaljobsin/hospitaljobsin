@@ -12,6 +12,9 @@ export default function OrganizationTabs() {
 		if (pathname === links.organizationCreateJob(params.slug)) {
 			return links.organizationDetailJobs(params.slug);
 		}
+		if (pathname === links.organizationDetailMemberInvites(params.slug)) {
+			return links.organizationDetailMembers(params.slug);
+		}
 		return pathname;
 	}
 

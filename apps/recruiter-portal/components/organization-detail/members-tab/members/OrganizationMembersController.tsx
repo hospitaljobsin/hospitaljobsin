@@ -68,9 +68,9 @@ export default function OrganizationMembersController(
 				/>
 				<Button
 					color="primary"
-					startContent={<UserPlus size={25} />}
+					startContent={<UserPlus size={20} />}
 					onPress={handleOpenModal}
-					className="w-full sm:w-auto"
+					className="w-full sm:w-auto flex-shrink-0"
 				>
 					Invite
 				</Button>
