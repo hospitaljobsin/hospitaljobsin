@@ -42,11 +42,15 @@ from app.organizations.dataloaders import (
     create_organization_by_slug_dataloader,
 )
 from app.organizations.repositories import (
-    InviteRepo,
+    OrganizationInviteRepo,
     OrganizationMemberRepo,
     OrganizationRepo,
 )
-from app.organizations.services import OrganizationMemberService, OrganizationService
+from app.organizations.services import (
+    OrganizationInviteService,
+    OrganizationMemberService,
+    OrganizationService,
+)
 
 
 @lru_cache
@@ -82,7 +86,8 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(TwoFactorAuthenticationChallengeRepo))
     container.register(aioinject.Singleton(RecoveryCodeRepo))
     container.register(aioinject.Singleton(TemporaryTwoFactorChallengeRepo))
-    container.register(aioinject.Singleton(InviteRepo))
+    container.register(aioinject.Singleton(OrganizationInviteRepo))
+    container.register(aioinject.Scoped(OrganizationInviteService))
     container.register(aioinject.Scoped(create_account_by_id_dataloader))
     container.register(aioinject.Scoped(create_profile_by_id_dataloader))
     container.register(aioinject.Scoped(create_job_by_id_dataloader))

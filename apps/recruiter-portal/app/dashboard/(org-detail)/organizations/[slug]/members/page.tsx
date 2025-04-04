@@ -8,9 +8,9 @@ import { graphql, readInlineData } from "relay-runtime";
 import OrganizationMembersViewClientComponent from "./OrganizationMembersViewClientComponent";
 
 export const PageOrganizationMembersViewQuery = graphql`
-  query pageOrganizationMembersViewQuery($slug: String!) {	
+  query pageOrganizationMembersViewQuery($slug: String!, $searchTerm: String) {	
 	...pageOrganizationMembersMetadataFragment @arguments(slug: $slug)
-    ...OrganizationMembersViewClientComponentFragment @arguments(slug: $slug)
+    ...OrganizationMembersViewClientComponentFragment @arguments(slug: $slug, searchTerm: $searchTerm)
   }
 `;
 

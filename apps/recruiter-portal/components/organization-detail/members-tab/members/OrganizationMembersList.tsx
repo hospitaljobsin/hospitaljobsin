@@ -2,8 +2,8 @@ import { useFragment, usePaginationFragment } from "react-relay";
 
 import type { OrganizationMembersListFragment$key } from "@/__generated__/OrganizationMembersListFragment.graphql";
 import type { OrganizationMembersListInternalFragment$key } from "@/__generated__/OrganizationMembersListInternalFragment.graphql";
-import type { pageOrganizationDetailViewQuery } from "@/__generated__/pageOrganizationDetailViewQuery.graphql";
-import { useEffect, useRef } from "react";
+import type { pageOrganizationMembersViewQuery } from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
+import { startTransition, useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import Member from "./Member";
@@ -14,11 +14,12 @@ fragment OrganizationMembersListFragment on Query @argumentDefinitions(
       slug: {
         type: "String!",
       }
+	  searchTerm: { type: "String", defaultValue: null }
     )  {
         organization(slug: $slug) {
             __typename
             ... on Organization {
-            ...OrganizationMembersListInternalFragment
+            ...OrganizationMembersListInternalFragment @arguments(searchTerm: $searchTerm)
             }
         }
 }
@@ -29,10 +30,11 @@ const OrganizationMembersListInternalFragment = graphql`
   @argumentDefinitions(
     cursor: { type: "ID" }
     count: { type: "Int", defaultValue: 10 }
+	searchTerm: { type: "String", defaultValue: null }
   )
   @refetchable(queryName: "OrganizationMembersListPaginationQuery") {
-    members(after: $cursor, first: $count)
-      @connection(key: "OrganizationMembersListInternalFragment_members") {
+	  members(after: $cursor, first: $count, searchTerm: $searchTerm)
+      @connection(key: "OrganizationMembersListInternalFragment_members", filters: ["searchTerm"]) {
       edges {
 		node {
 			id
@@ -48,16 +50,20 @@ const OrganizationMembersListInternalFragment = graphql`
 
 type Props = {
 	rootQuery: OrganizationMembersListFragment$key;
+	searchTerm: string | null;
 };
 
-export default function OrganizationMembersList({ rootQuery }: Props) {
+export default function OrganizationMembersList({
+	rootQuery,
+	searchTerm,
+}: Props) {
 	const root = useFragment(OrganizationMembersListFragment, rootQuery);
 	invariant(
 		root.organization.__typename === "Organization",
 		"Expected 'Organization' node type",
 	);
-	const { data, loadNext, isLoadingNext } = usePaginationFragment<
-		pageOrganizationDetailViewQuery,
+	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
+		pageOrganizationMembersViewQuery,
 		OrganizationMembersListInternalFragment$key
 	>(OrganizationMembersListInternalFragment, root.organization);
 
@@ -83,6 +89,20 @@ export default function OrganizationMembersList({ rootQuery }: Props) {
 		observer.observe(observerRef.current);
 		return () => observer.disconnect();
 	}, [data.members.pageInfo.hasNextPage, isLoadingNext, loadNext]);
+
+	// Debounced search term refetch
+	useEffect(() => {
+		const debounceTimeout = setTimeout(() => {
+			startTransition(() => {
+				refetch(
+					{ searchTerm: searchTerm },
+					{ fetchPolicy: "store-or-network" },
+				);
+			});
+		}, 300); // Adjust debounce delay as needed
+
+		return () => clearTimeout(debounceTimeout);
+	}, [refetch, searchTerm]);
 
 	if (data.members.edges.length === 0 && !data.members.pageInfo.hasNextPage) {
 		return (

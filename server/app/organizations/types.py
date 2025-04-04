@@ -1,6 +1,7 @@
 import hashlib
 from collections.abc import Iterable
 from datetime import datetime
+from enum import Enum
 from typing import TYPE_CHECKING, Annotated, Self
 
 import strawberry
@@ -19,12 +20,79 @@ from app.base.types import (
 )
 from app.context import Info
 from app.jobs.repositories import JobRepo
-from app.organizations.documents import Organization, OrganizationMember
-from app.organizations.repositories import OrganizationMemberRepo
+from app.organizations.documents import (
+    Organization,
+    OrganizationInvite,
+    OrganizationMember,
+)
+from app.organizations.repositories import (
+    OrganizationInviteRepo,
+    OrganizationMemberRepo,
+)
 from app.organizations.services import OrganizationMemberService
 
 if TYPE_CHECKING:
     from app.jobs.types import JobConnectionType
+
+
+@strawberry.enum(
+    name="InviteStatus",
+    description="Invite status type.",
+)
+class InviteStatusTypeEnum(Enum):
+    PENDING = "PENDING"
+    ACCEPTED = "ACCEPTED"
+    DECLINED = "DECLINED"
+
+
+@strawberry.type(
+    name="OrganizationInvite",
+    description="An invite to an organization.",
+)
+class OrganizationInviteType(BaseNodeType[OrganizationInvite]):
+    email: str = strawberry.field(
+        description="The email address of the invite.",
+    )
+    created_by: AccountType = strawberry.field(
+        description="The account that created this invite.",
+    )
+    status: InviteStatusTypeEnum = strawberry.field(
+        description="The status of the invite.",
+    )
+    expires_at: datetime = strawberry.field(
+        description="When the invite expires.",
+    )
+
+    @classmethod
+    def marshal(cls, invite: OrganizationInvite) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            id=str(invite.id),
+            created_by=AccountType.marshal(invite.created_by),
+            email=invite.email,
+            status=InviteStatusTypeEnum[invite.status.upper()],
+            expires_at=invite.expires_at,
+        )
+
+
+@strawberry.type(name="OrganizationInviteEdge")
+class OrganizationInviteEdgeType(
+    BaseEdgeType[OrganizationInviteType, OrganizationInvite]
+):
+    @classmethod
+    def marshal(cls, invite: OrganizationInvite) -> Self:
+        """Marshal into a edge instance."""
+        return cls(
+            node=OrganizationInviteType.marshal(invite),
+            cursor=relay.to_base64(AccountType, invite.id),
+        )
+
+
+@strawberry.type(name="InviteConnection")
+class InviteConnectionType(
+    BaseConnectionType[OrganizationInviteType, OrganizationInviteEdgeType]
+):
+    pass
 
 
 @strawberry.type(name="OrganizationMemberEdge")
@@ -155,6 +223,60 @@ class OrganizationType(BaseNodeType[Organization]):
         )
 
     @strawberry.field(  # type: ignore[misc]
+        description="The invites created for the organization.",
+    )
+    @inject
+    async def invites(
+        self,
+        invite_repo: Annotated[
+            OrganizationInviteRepo,
+            Inject,
+        ],
+        search_term: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The search (query) term",
+            ),
+        ] = None,
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
+    ) -> InviteConnectionType:
+        """Return a paginated connection of invites for the organization."""
+
+        paginated_jobs = await invite_repo.get_all_by_organization_id(
+            organization_id=ObjectId(self.id),
+            search_term=search_term,
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
+            first=first,
+            last=last,
+        )
+
+        return InviteConnectionType.marshal(paginated_jobs)
+
+    @strawberry.field(  # type: ignore[misc]
         description="The jobs posted in the organization.",
     )
     @inject
@@ -207,7 +329,6 @@ class OrganizationType(BaseNodeType[Organization]):
             last=last,
         )
 
-        # Convert to JobConnectionType
         return JobConnectionType.marshal(paginated_jobs)
 
     @strawberry.field(  # type: ignore[misc]
@@ -220,6 +341,12 @@ class OrganizationType(BaseNodeType[Organization]):
             OrganizationMemberRepo,
             Inject,
         ],
+        search_term: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The search (query) term",
+            ),
+        ] = None,
         before: Annotated[
             relay.GlobalID | None,
             strawberry.argument(
@@ -248,6 +375,7 @@ class OrganizationType(BaseNodeType[Organization]):
         """Return a paginated connection of members for the organization."""
         paginated_members = await organization_member_repo.get_all_by_organization_id(
             organization_id=ObjectId(self.id),
+            search_term=search_term,
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
             first=first,
@@ -297,6 +425,17 @@ class OrganizationSlugInUseErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="MemberAlreadyExistsError",
+    description="Used when the user is already a member of the organization.",
+)
+class MemberAlreadyExistsErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="User is already a member of the organization!",
+    )
+
+
 CreateOrganizationPayload = Annotated[
     OrganizationType | OrganizationSlugInUseErrorType,
     strawberry.union(
@@ -331,3 +470,36 @@ class CreateOrganizationLogoPresignedURLPayloadType:
     presigned_url: str = strawberry.field(
         description="The presigned URL for uploading the organization logo.",
     )
+
+
+CreateOrganizationInvitePayload = Annotated[
+    OrganizationInviteType
+    | OrganizationNotFoundErrorType
+    | MemberAlreadyExistsErrorType,
+    strawberry.union(
+        name="CreateOrganizationInvitePayload",
+        description="The create organization invite payload.",
+    ),
+]
+
+
+@strawberry.type(
+    name="OrganizationInviteNotFoundError",
+    description="Used when the organization invite is not found.",
+)
+class OrganizationInviteNotFoundErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Organization invite not found!",
+    )
+
+
+DeleteOrganizationInvitePayload = Annotated[
+    OrganizationInviteEdgeType
+    | OrganizationNotFoundErrorType
+    | OrganizationInviteNotFoundErrorType,
+    strawberry.union(
+        name="DeleteOrganizationInvitePayload",
+        description="The delete organization invite payload.",
+    ),
+]

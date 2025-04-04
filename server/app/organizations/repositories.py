@@ -6,13 +6,14 @@ from beanie import PydanticObjectId
 from beanie.operators import In
 from bson import ObjectId
 
+from app.accounts.documents import Account
 from app.base.models import Address
 from app.core.constants import (
     ORGANIZATION_INVITE_EXPIRES_IN,
 )
 from app.database.paginator import PaginatedResult, Paginator
 
-from .documents import Invite, Organization, OrganizationMember
+from .documents import Organization, OrganizationInvite, OrganizationMember
 
 
 class OrganizationRepo:
@@ -173,12 +174,14 @@ class OrganizationMemberRepo:
     async def get_all_by_organization_id(
         self,
         organization_id: ObjectId,
+        search_term: str | None = None,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
     ) -> PaginatedResult[OrganizationMember, ObjectId]:
         """Get all organization members by organization ID."""
+        # TODO: get search by account name working
         paginator: Paginator[OrganizationMember, ObjectId] = Paginator(
             reverse=True,
             document_cls=OrganizationMember,
@@ -190,6 +193,9 @@ class OrganizationMemberRepo:
             fetch_links=True,
             nesting_depth=1,
         )
+
+        if search_term:
+            search_criteria = search_criteria.find({"$text": {"$search": search_term}})
 
         return await paginator.paginate(
             search_criteria=search_criteria,
@@ -227,7 +233,7 @@ class OrganizationMemberRepo:
         )
 
 
-class InviteRepo:
+class OrganizationInviteRepo:
     @classmethod
     def generate_token(cls) -> str:
         """Generate a new invite token."""
@@ -240,18 +246,18 @@ class InviteRepo:
 
     async def create(
         self,
-        organization_id: ObjectId,
-        account_id: ObjectId,
+        organization: Organization,
+        account: Account,
         email: str,
-    ) -> tuple[Invite, str]:
-        """Create a new invite."""
+    ) -> tuple[OrganizationInvite, str]:
+        """Create a new organization invite."""
         invite_token = self.generate_token()
         while await self.get_by_token(invite_token) is not None:
             invite_token = self.generate_token()
 
-        invite = Invite(
-            organization=organization_id,
-            created_by=account_id,
+        invite = OrganizationInvite(
+            organization=organization,
+            created_by=account,
             email=email,
             token_hash=self.hash_token(invite_token),
             status="pending",
@@ -261,8 +267,64 @@ class InviteRepo:
             ),
         )
 
-        return await invite.insert(), invite_token
+        await invite.insert()
 
-    async def get_by_token(self, token: str) -> Invite | None:
+        await invite.fetch_all_links()
+
+        return invite, invite_token
+
+    async def delete(self, invite: OrganizationInvite) -> None:
+        """Delete an organization invite."""
+        await invite.delete()
+
+    async def get_by_token(self, token: str) -> OrganizationInvite | None:
         """Get invite by token."""
-        return await Invite.find_one(Invite.token_hash == self.hash_token(token))
+        return await OrganizationInvite.find_one(
+            OrganizationInvite.token_hash == self.hash_token(token),
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
+    async def get(
+        self, organization_id: ObjectId, invite_id: ObjectId
+    ) -> OrganizationInvite | None:
+        """Get invite by organization ID and invite ID."""
+        return await OrganizationInvite.find_one(
+            OrganizationInvite.organization.id == organization_id,
+            OrganizationInvite.id == invite_id,
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
+    async def get_all_by_organization_id(
+        self,
+        organization_id: ObjectId,
+        search_term: str | None = None,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[OrganizationInvite, ObjectId]:
+        """Get all invites by organization ID."""
+        paginator: Paginator[OrganizationInvite, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=OrganizationInvite,
+            paginate_by="id",
+        )
+
+        search_criteria = OrganizationInvite.find(
+            OrganizationInvite.organization.id == organization_id,
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
+        if search_term:
+            search_criteria = search_criteria.find({"$text": {"$search": search_term}})
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )

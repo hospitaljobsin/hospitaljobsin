@@ -14,13 +14,14 @@ from app.config import Settings
 from app.core.constants import ORGANIZATION_INVITE_EXPIRES_IN
 from app.core.emails import EmailSender
 from app.jobs.exceptions import OrganizationNotFoundError
-from app.organizations.documents import Invite, Organization
+from app.organizations.documents import Organization, OrganizationInvite
 from app.organizations.exceptions import (
     MemberAlreadyExistsError,
+    OrganizationInviteNotFoundError,
     OrganizationSlugInUseError,
 )
 from app.organizations.repositories import (
-    InviteRepo,
+    OrganizationInviteRepo,
     OrganizationMemberRepo,
     OrganizationRepo,
 )
@@ -103,9 +104,6 @@ class OrganizationService:
         if existing_organization is None:
             return Err(OrganizationNotFoundError())
 
-        # TODO: check if user is admin of the organization
-        # only admins can update the organization
-
         if (
             slug != existing_organization.slug
             and await self._organization_repo.get_by_slug(
@@ -149,10 +147,10 @@ class OrganizationMemberService:
         )
 
 
-class InviteService:
+class OrganizationInviteService:
     def __init__(
         self,
-        invite_repo: InviteRepo,
+        invite_repo: OrganizationInviteRepo,
         organization_repo: OrganizationRepo,
         organization_member_repo: OrganizationMemberRepo,
         account_repo: AccountRepo,
@@ -172,7 +170,9 @@ class InviteService:
         account: Account,
         email: str,
         background_tasks: BackgroundTasks,
-    ) -> Result[Invite, OrganizationNotFoundError | MemberAlreadyExistsError]:
+    ) -> Result[
+        OrganizationInvite, OrganizationNotFoundError | MemberAlreadyExistsError
+    ]:
         """Create a new invite for an organization."""
         existing_organization = await self._organization_repo.get(
             organization_id=organization_id,
@@ -190,8 +190,8 @@ class InviteService:
             return Err(MemberAlreadyExistsError())
 
         invite, invite_token = await self._invite_repo.create(
-            organization_id=organization_id,
-            account_id=account.id,
+            organization=existing_organization,
+            account=account,
             email=email,
         )
 
@@ -202,7 +202,7 @@ class InviteService:
             context={
                 "invited_by_name": account.full_name,
                 "organization_name": existing_organization.name,
-                "invite_link": f"{self._settings.recruiter_portal_base_url}/invites/{invite_token}",
+                "invite_link": f"{self._settings.recruiter_portal_base_url}/dashboard/invites/{invite_token}",
                 "organization_logo_url": existing_organization.logo_url,
                 "invite_expires_in": naturaldelta(
                     timedelta(seconds=ORGANIZATION_INVITE_EXPIRES_IN)
@@ -211,3 +211,30 @@ class InviteService:
         )
 
         return Ok(invite)
+
+    async def delete(
+        self,
+        account: Account,
+        organization_id: ObjectId,
+        invite_id: ObjectId,
+    ) -> Result[
+        OrganizationInvite, OrganizationNotFoundError | OrganizationInviteNotFoundError
+    ]:
+        """Delete an invite in an organization."""
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        existing_invite = await self._invite_repo.get(
+            invite_id=invite_id, organization_id=organization_id
+        )
+
+        if existing_invite is None:
+            return Err(OrganizationInviteNotFoundError())
+
+        await self._invite_repo.delete(existing_invite)
+
+        return Ok(existing_invite)

@@ -112,7 +112,7 @@ class JobType(BaseNodeType[Job]):
     organization_id: strawberry.Private[str]
 
     @classmethod
-    def marshal(cls, job: Job) -> Self:
+    def marshal_with_links(cls, job: Job) -> Self:
         """Marshal into a node instance."""
         return cls(
             id=str(job.id),
@@ -180,7 +180,7 @@ class JobType(BaseNodeType[Job]):
 
         if organization is None:
             return None
-        return OrganizationType.marshal(organization)
+        return OrganizationType.marshal_with_links(organization)
 
     @classmethod
     async def resolve_nodes(  # type: ignore[no-untyped-def] # noqa: ANN206
@@ -191,7 +191,7 @@ class JobType(BaseNodeType[Job]):
         required: bool = False,  # noqa: ARG003
     ):
         jobs = await info.context["loaders"].job_by_id.load_many(node_ids)
-        return [cls.marshal(job) if job is not None else job for job in jobs]
+        return [cls.marshal_with_links(job) if job is not None else job for job in jobs]
 
 
 @strawberry.type(name="JobEdge")
@@ -200,7 +200,7 @@ class JobEdgeType(BaseEdgeType[JobType, Job]):
     def marshal(cls, job: Job) -> Self:
         """Marshal into a edge instance."""
         return cls(
-            node=JobType.marshal(job),
+            node=JobType.marshal_with_links(job),
             cursor=relay.to_base64(JobType, job.id),
         )
 
@@ -220,7 +220,7 @@ class SavedJobEdgeType(BaseEdgeType[JobType, SavedJob]):
     def marshal(cls, saved_job: SavedJob) -> Self:
         """Marshal into a edge instance."""
         return cls(
-            node=JobType.marshal(saved_job.job),
+            node=JobType.marshal_with_links(saved_job.job),
             cursor=relay.to_base64(JobType, saved_job.job.id),
             saved_at=saved_job.id.generation_time,
         )

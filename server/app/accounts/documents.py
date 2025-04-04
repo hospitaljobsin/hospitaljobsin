@@ -1,6 +1,7 @@
 from datetime import UTC, date, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Literal
 
+import pymongo
 from beanie import BackLink, Document, Indexed, Link
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
@@ -96,6 +97,15 @@ class Account(Document):
 
     class Settings:
         name = "accounts"
+        indexes: ClassVar[list[IndexModel]] = [
+            IndexModel(
+                [
+                    ("name", pymongo.TEXT),
+                ],
+                name="account_name_text_index",
+                default_language="english",
+            ),
+        ]
 
 
 class EmailVerificationToken(Document):

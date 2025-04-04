@@ -9,6 +9,8 @@ const links = {
 		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}`,
 	organizationDetailMembers: (slug: string) =>
 		`/dashboard/organizations/${slug}/members`,
+	organizationDetailMemberInvites: (slug: string) =>
+		`/dashboard/organizations/${slug}/members/invites`,
 	organizationDetailJobs: (slug: string) =>
 		`/dashboard/organizations/${slug}/jobs`,
 	organizationCreateJob: (slug: string) =>

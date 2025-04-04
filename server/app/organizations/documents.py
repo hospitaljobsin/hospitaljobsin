@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Annotated, ClassVar, Literal
 
+import pymongo
 from beanie import BackLink, Document, Indexed, Link
 from pydantic import Field
 from pymongo import IndexModel
@@ -39,7 +40,7 @@ class OrganizationMember(Document):
         ]
 
 
-class Invite(Document):
+class OrganizationInvite(Document):
     email: str
     organization: Link[Organization]
     created_by: Link[Account]
@@ -55,5 +56,12 @@ class Invite(Document):
             IndexModel(
                 "expires_at",
                 expireAfterSeconds=0,
+            ),
+            IndexModel(
+                [
+                    ("email", pymongo.TEXT),
+                ],
+                name="organization_invite_email_text_index",
+                default_language="english",
             ),
         ]

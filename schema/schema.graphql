@@ -148,6 +148,9 @@ type CreateJobSuccess {
   jobEdge: JobEdge!
 }
 
+"""The create organization invite payload."""
+union CreateOrganizationInvitePayload = OrganizationInvite | OrganizationNotFoundError | MemberAlreadyExistsError
+
 """
 The payload for creating a presigned URL for uploading the organization logo.
 """
@@ -187,6 +190,9 @@ type CurrentJob {
 
 """Date (isoformat)"""
 scalar Date
+
+"""The delete organization invite payload."""
+union DeleteOrganizationInvitePayload = OrganizationInviteEdge | OrganizationNotFoundError | OrganizationInviteNotFoundError
 
 """The delete other sessions payload."""
 type DeleteOtherSessionsPayload {
@@ -358,6 +364,21 @@ type InvalidRecaptchaTokenError implements Error {
   message: String!
 }
 
+type InviteConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [OrganizationInviteEdge!]!
+}
+
+"""Invite status type."""
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
 """
@@ -493,6 +514,12 @@ type LogoutPayload {
 enum MaritalStatusType {
   MARRIED
   SINGLE
+}
+
+"""Used when the user is already a member of the organization."""
+type MemberAlreadyExistsError implements Error {
+  """Human readable error message."""
+  message: String!
 }
 
 type Mutation {
@@ -869,6 +896,24 @@ type Mutation {
     """The logo URL of the organization."""
     logoUrl: String = null
   ): UpdateOrganizationPayload! @isAuthenticated
+
+  """Create an organization invite."""
+  createOrganizationInvite(
+    """The ID of the organization to create an invite for."""
+    organizationId: ID!
+
+    """The email address of the invite."""
+    email: String!
+  ): CreateOrganizationInvitePayload! @isAuthenticated
+
+  """Delete an organization invite."""
+  deleteOrganizationInvite(
+    """The ID of the organization to delete the invite from."""
+    organizationId: ID!
+
+    """The ID of the invite to delete."""
+    inviteId: ID!
+  ): DeleteOrganizationInvitePayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""
@@ -914,6 +959,24 @@ type Organization implements Node {
   """Whether the current user is an member in this organization."""
   isMember: Boolean!
 
+  """The invites created for the organization."""
+  invites(
+    """The search (query) term"""
+    searchTerm: String = null
+
+    """Returns items before the given cursor."""
+    before: ID = null
+
+    """Returns items after the given cursor."""
+    after: ID = null
+
+    """How many items to return after the cursor?"""
+    first: Int = null
+
+    """How many items to return before the cursor?"""
+    last: Int = null
+  ): InviteConnection!
+
   """The jobs posted in the organization."""
   jobs(
     """The search (query) term"""
@@ -934,6 +997,9 @@ type Organization implements Node {
 
   """The members of the organization."""
   members(
+    """The search (query) term"""
+    searchTerm: String = null
+
     """Returns items before the given cursor."""
     before: ID = null
 
@@ -962,6 +1028,38 @@ type OrganizationEdge {
 
   """The item at the end of the edge"""
   node: Organization!
+}
+
+"""An invite to an organization."""
+type OrganizationInvite implements Node {
+  """The Globally Unique ID of this object"""
+  id: ID!
+
+  """The email address of the invite."""
+  email: String!
+
+  """The account that created this invite."""
+  createdBy: Account!
+
+  """The status of the invite."""
+  status: InviteStatus!
+
+  """When the invite expires."""
+  expiresAt: datetime!
+}
+
+type OrganizationInviteEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+
+  """The item at the end of the edge"""
+  node: OrganizationInvite!
+}
+
+"""Used when the organization invite is not found."""
+type OrganizationInviteNotFoundError implements Error {
+  """Human readable error message."""
+  message: String!
 }
 
 type OrganizationMemberConnection {

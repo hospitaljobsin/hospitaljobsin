@@ -4,3 +4,7 @@ class OrganizationSlugInUseError:
 
 class MemberAlreadyExistsError:
     """Raised when a member already exists in the organization."""
+
+
+class OrganizationInviteNotFoundError:
+    """Raised when an organization invite is not found."""

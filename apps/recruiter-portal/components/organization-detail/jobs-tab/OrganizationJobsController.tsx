@@ -13,7 +13,7 @@ export default function OrganizationJobsController(
 ) {
 	const { slug } = useParams<{ slug: string }>();
 	return (
-		<div className="w-full flex items-center gap-8">
+		<div className="w-full flex flex-col sm:flex-row items-center gap-8">
 			<Input
 				classNames={{
 					inputWrapper: "bg-background shadow-none",
@@ -37,6 +37,7 @@ export default function OrganizationJobsController(
 				href={links.organizationCreateJob(slug)}
 				color="primary"
 				startContent={<BriefcaseBusiness size={25} />}
+				className="w-full sm:w-auto"
 			>
 				New
 			</Button>

@@ -4,7 +4,7 @@ import type { OrganizationMembersViewClientComponentFragment$key } from "@/__gen
 import type OrganizationMembersViewQueryNode from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
 import type { pageOrganizationMembersViewQuery } from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
 import PageOrganizationMembersViewQuery from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
-import OrganizationMembersTab from "@/components/organization-detail/members-tab/OrganizationMembersTab";
+import OrganizationMembersView from "@/components/organization-detail/members-tab/members/OrganizationMembersView";
 import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 import {
@@ -18,9 +18,10 @@ const OrganizationMembersViewClientComponentFragment = graphql`
  fragment OrganizationMembersViewClientComponentFragment on Query @argumentDefinitions(
 	  slug: {
 		type: "String!",
-	  }
+	  },
+	  searchTerm: { type: "String", defaultValue: null }
 	) {
-		...OrganizationMembersTabFragment @arguments(slug: $slug)
+		...OrganizationMembersViewFragment @arguments(slug: $slug, searchTerm: $searchTerm)
   }
 `;
 
@@ -44,5 +45,5 @@ export default function OrganizationMembersViewClientComponent(props: {
 			data,
 		);
 
-	return <OrganizationMembersTab rootQuery={rootQuery} />;
+	return <OrganizationMembersView rootQuery={rootQuery} />;
 }

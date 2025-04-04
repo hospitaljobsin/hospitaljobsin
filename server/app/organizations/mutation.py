@@ -12,12 +12,22 @@ from app.auth.permissions import IsAuthenticated
 from app.base.types import AddressInputType
 from app.context import AuthInfo
 from app.jobs.exceptions import OrganizationNotFoundError
-from app.organizations.exceptions import OrganizationSlugInUseError
-from app.organizations.services import OrganizationService
+from app.organizations.exceptions import (
+    MemberAlreadyExistsError,
+    OrganizationInviteNotFoundError,
+    OrganizationSlugInUseError,
+)
+from app.organizations.services import OrganizationInviteService, OrganizationService
 
 from .types import (
+    CreateOrganizationInvitePayload,
     CreateOrganizationLogoPresignedURLPayloadType,
     CreateOrganizationPayload,
+    DeleteOrganizationInvitePayload,
+    MemberAlreadyExistsErrorType,
+    OrganizationInviteEdgeType,
+    OrganizationInviteNotFoundErrorType,
+    OrganizationInviteType,
     OrganizationNotFoundErrorType,
     OrganizationSlugInUseErrorType,
     OrganizationType,
@@ -107,6 +117,7 @@ class OrganizationMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
+                    # TODO: ensure only organization admins can update the organization
                 ],
             )
         ],
@@ -164,5 +175,97 @@ class OrganizationMutation:
                         return OrganizationSlugInUseErrorType()
             case Ok(organization):
                 return OrganizationType.marshal(organization)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreateOrganizationInvitePayload,
+        description="Create an organization invite.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    # TODO: ensure only organization admins can create an invite
+                ],
+            )
+        ],
+    )
+    @inject
+    async def create_organization_invite(
+        self,
+        info: AuthInfo,
+        organization_invite_service: Annotated[OrganizationInviteService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization to create an invite for.",
+            ),
+        ],
+        email: Annotated[
+            str, strawberry.argument(description="The email address of the invite.")
+        ],
+    ) -> CreateOrganizationInvitePayload:
+        """Create an organization invite."""
+        match await organization_invite_service.create(
+            account=info.context["current_user"],
+            organization_id=ObjectId(organization_id.node_id),
+            email=email,
+            background_tasks=info.context["background_tasks"],
+        ):
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case MemberAlreadyExistsError():
+                        return MemberAlreadyExistsErrorType()
+            case Ok(invite):
+                return OrganizationInviteType.marshal(invite)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=DeleteOrganizationInvitePayload,
+        description="Delete an organization invite.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    # TODO: ensure only organization admins can delete an invite
+                ],
+            )
+        ],
+    )
+    @inject
+    async def delete_organization_invite(
+        self,
+        info: AuthInfo,
+        organization_invite_service: Annotated[OrganizationInviteService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization to delete the invite from.",
+            ),
+        ],
+        invite_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the invite to delete.",
+            ),
+        ],
+    ) -> DeleteOrganizationInvitePayload:
+        """Delete an organization invite."""
+        match await organization_invite_service.delete(
+            account=info.context["current_user"],
+            organization_id=ObjectId(organization_id.node_id),
+            invite_id=ObjectId(invite_id.node_id),
+        ):
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case OrganizationInviteNotFoundError():
+                        return OrganizationInviteNotFoundErrorType()
+            case Ok(invite):
+                return OrganizationInviteEdgeType.marshal(invite)
             case _ as unreachable:
                 assert_never(unreachable)
