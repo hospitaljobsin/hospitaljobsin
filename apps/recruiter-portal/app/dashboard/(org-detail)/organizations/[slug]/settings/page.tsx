@@ -26,6 +26,7 @@ const PageGeneralSettingsMetadataFragment = graphql`
 		name
 		description
 		logoUrl
+		isMember
 	  }
 	 
 	}
@@ -55,7 +56,10 @@ export async function generateMetadata({
 		preloadedQuery.data,
 	);
 
-	if (data.organization.__typename !== "Organization") {
+	if (
+		data.organization.__typename !== "Organization" ||
+		!data.organization.isMember
+	) {
 		return {
 			title: "Organization Not found",
 			description: "The organization you are looking for does not exist",
@@ -88,7 +92,10 @@ export default async function GeneralSettingsPage({
 		preloadedQuery.data,
 	);
 
-	if (data.organization.__typename !== "Organization") {
+	if (
+		data.organization.__typename !== "Organization" ||
+		!data.organization.isMember
+	) {
 		notFound();
 	}
 
