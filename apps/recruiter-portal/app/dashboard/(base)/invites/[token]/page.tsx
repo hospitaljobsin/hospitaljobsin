@@ -1,8 +1,9 @@
 import type { pageInviteDetailMetadataFragment$key } from "@/__generated__/pageInviteDetailMetadataFragment.graphql";
 import type InviteDetailViewQueryNode from "@/__generated__/pageInviteDetailViewQuery.graphql";
 import type { pageInviteDetailViewQuery } from "@/__generated__/pageInviteDetailViewQuery.graphql";
+import links from "@/lib/links";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
 import InviteDetailViewClientComponent from "./InviteDetailViewClientComponent";
@@ -30,6 +31,8 @@ const PageInviteDetailMetadataFragment = graphql`
 		organization {
 		  name
 		  logoUrl
+		  isMember
+		  slug
 		}
 	  }
 	 
@@ -98,6 +101,13 @@ export default async function InviteDetailPage({
 
 	if (data.organizationInvite.__typename !== "OrganizationInvite") {
 		notFound();
+	}
+
+	// redirect if the user is already a member of the organization
+	if (data.organizationInvite.organization.isMember) {
+		redirect(
+			links.organizationDetail(data.organizationInvite.organization.slug),
+		);
 	}
 
 	return <InviteDetailViewClientComponent preloadedQuery={preloadedQuery} />;

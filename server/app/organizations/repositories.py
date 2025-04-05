@@ -4,7 +4,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Literal
 
 from beanie import PydanticObjectId
-from beanie.operators import In
+from beanie.operators import And, In
 from bson import ObjectId
 
 from app.accounts.documents import Account
@@ -282,10 +282,12 @@ class OrganizationInviteRepo:
         self,
         invite: OrganizationInvite,
         *,
+        expires_at: datetime | None,
         status: Literal["pending", "accepted", "declined"],
     ) -> OrganizationInvite:
         """Update the given organization invite."""
         invite.status = status
+        invite.expires_at = expires_at
         return await invite.save()
 
     async def get_by_token(self, token: str) -> OrganizationInvite | None:
@@ -344,24 +346,36 @@ class OrganizationInviteRepo:
             after=ObjectId(after) if after else None,
         )
 
-    async def get_many_by_tokens(
-        self, invite_tokens: list[str]
+    async def get_many_active_invites(
+        self, invite_tokens: list[tuple[str, str]]
     ) -> list[OrganizationInvite | None]:
-        """Get multiple organization invites by tokens."""
+        """Get multiple active organization invites by emails and tokens."""
+        filters = [
+            And(
+                {"email": email},
+                {"token_hash": self.hash_token(token)},
+                # select only pending invites
+                {"status": "pending"},
+            )
+            for email, token in invite_tokens
+        ]
+
+        # Use the Or operator to combine all conditions
         organization_invites = await OrganizationInvite.find(
-            In(
-                OrganizationInvite.token_hash,
-                [self.hash_token(token) for token in invite_tokens],
-            ),
-            fetch_links=True,
-            nesting_depth=1,
+            {"$or": filters}, fetch_links=True, nesting_depth=1
         ).to_list()
+
         organization_invite_by_token = {
-            organization_invite.token_hash: organization_invite
+            (
+                organization_invite.email,
+                organization_invite.token_hash,
+            ): organization_invite
             for organization_invite in organization_invites
         }
 
         return [
-            organization_invite_by_token.get(self.hash_token(invite_token))
+            organization_invite_by_token.get(
+                (invite_token[0], self.hash_token(invite_token[1]))
+            )
             for invite_token in invite_tokens
         ]

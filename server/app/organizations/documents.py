@@ -47,7 +47,7 @@ class OrganizationInvite(Document):
     token_hash: Annotated[str, Indexed(unique=True)]
     status: Literal["pending", "accepted", "declined"]
 
-    expires_at: datetime
+    expires_at: datetime | None = None
 
     class Settings:
         name = "organization_invites"

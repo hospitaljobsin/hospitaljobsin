@@ -52,6 +52,8 @@ export default function Invite({
 	);
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
+	// TODO: show status as expired if invite expires
+
 	const renderStatus = (status: string) => {
 		switch (status) {
 			case "PENDING":
@@ -90,11 +92,14 @@ export default function Invite({
 						<Info size={20} />
 						<p> {renderStatus(data.status)}</p>
 					</div>
-					<p className="text-foreground-400">
-						Expires in {getRelativeTimeString(data.expiresAt)}
-					</p>
+					{data.expiresAt && (
+						<p className="text-foreground-400">
+							Expires {getRelativeTimeString(data.expiresAt)}
+						</p>
+					)}
+
 					<div className="flex gap-4 items-center">
-						<p className="text-foreground-400">Created by</p>
+						<p className="text-foreground-400">Invited by</p>
 						<Tooltip
 							content={
 								<div className="flex flex-col gap-2">

@@ -63,7 +63,7 @@ class OrganizationInviteType(BaseNodeType[OrganizationInvite]):
     status: InviteStatusTypeEnum = strawberry.field(
         description="The status of the invite.",
     )
-    expires_at: datetime = strawberry.field(
+    expires_at: datetime | None = strawberry.field(
         description="When the invite expires.",
     )
 

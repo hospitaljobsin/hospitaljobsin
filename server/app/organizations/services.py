@@ -268,7 +268,9 @@ class OrganizationInviteService:
         ):
             return Err(OrganizationInviteNotFoundError())
 
-        await self._invite_repo.update(existing_invite, status="accepted")
+        await self._invite_repo.update(
+            existing_invite, status="accepted", expires_at=None
+        )
 
         # create a member in the organization
         await self._organization_member_repo.create(
@@ -296,6 +298,8 @@ class OrganizationInviteService:
         ):
             return Err(OrganizationInviteNotFoundError())
 
-        await self._invite_repo.update(existing_invite, status="declined")
+        await self._invite_repo.update(
+            existing_invite, status="declined", expires_at=None
+        )
 
         return Ok(existing_invite)

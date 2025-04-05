@@ -1066,7 +1066,7 @@ type OrganizationInvite implements Node {
   status: InviteStatus!
 
   """When the invite expires."""
-  expiresAt: datetime!
+  expiresAt: datetime
 }
 
 type OrganizationInviteEdge {
@@ -1282,11 +1282,11 @@ type Query {
     slug: String!
   ): OrganizationPayload!
 
-  """Get organization invite by token."""
+  """Get a pending organization invite by token."""
   organizationInvite(
-    """Token of the invite"""
+    """Token of the pending invite"""
     inviteToken: String!
-  ): OrganizationInvitePayload!
+  ): OrganizationInvitePayload! @isAuthenticated
 }
 
 """The register with passkey payload."""

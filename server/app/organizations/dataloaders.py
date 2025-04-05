@@ -35,7 +35,14 @@ async def create_organization_by_slug_dataloader(
     )
 
 
-type OrganizationInviteByTokenLoader = DataLoader[str, OrganizationInvite | None]
+type OrganizationInviteByTokenLoader = DataLoader[
+    tuple[str, str], OrganizationInvite | None
+]
+
+
+def transform_email_token(key: tuple[str, str]) -> tuple[str, str] | None:
+    """Return the key as is."""
+    return key
 
 
 async def create_organization_invite_by_token_dataloader(
@@ -43,6 +50,6 @@ async def create_organization_invite_by_token_dataloader(
 ) -> OrganizationInviteByTokenLoader:
     """Create a dataloader to load oganization invites by their tokens."""
     return create_dataloader(
-        repo_method=organization_invite_repo.get_many_by_tokens,
-        key_transform=transform_default,
+        repo_method=organization_invite_repo.get_many_active_invites,
+        key_transform=transform_email_token,
     )
