@@ -1,12 +1,23 @@
 "use client";
+import type { OrganizationTabsFragment$key } from "@/__generated__/OrganizationTabsFragment.graphql";
 import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
 import { BriefcaseBusiness, HomeIcon, Settings, UserIcon } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
+import { useFragment } from "react-relay";
+import { graphql } from "relay-runtime";
 
-export default function OrganizationTabs() {
+const OrganizationTabsFragment = graphql`
+fragment OrganizationTabsFragment on Organization {
+  isAdmin
+}`;
+
+export default function OrganizationTabs({
+	organization,
+}: { organization: OrganizationTabsFragment$key }) {
 	const pathname = usePathname();
 	const params = useParams<{ slug: string }>();
+	const data = useFragment(OrganizationTabsFragment, organization);
 
 	function getSelectedKey(pathname: string) {
 		if (pathname === links.organizationCreateJob(params.slug)) {
@@ -60,17 +71,18 @@ export default function OrganizationTabs() {
 						</div>
 					}
 				/>
-
-				<Tab
-					key={links.organizationDetailSettings(params.slug)}
-					href={links.organizationDetailSettings(params.slug)}
-					title={
-						<div className="flex items-center space-x-2">
-							<Settings />
-							<span>Settings</span>
-						</div>
-					}
-				/>
+				{data.isAdmin && (
+					<Tab
+						key={links.organizationDetailSettings(params.slug)}
+						href={links.organizationDetailSettings(params.slug)}
+						title={
+							<div className="flex items-center space-x-2">
+								<Settings />
+								<span>Settings</span>
+							</div>
+						}
+					/>
+				)}
 			</Tabs>
 		</div>
 	);

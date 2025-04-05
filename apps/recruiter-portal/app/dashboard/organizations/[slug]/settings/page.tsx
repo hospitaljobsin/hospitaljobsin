@@ -26,7 +26,7 @@ const PageGeneralSettingsMetadataFragment = graphql`
 		name
 		description
 		logoUrl
-		isMember
+		isAdmin
 	  }
 	 
 	}
@@ -58,7 +58,7 @@ export async function generateMetadata({
 
 	if (
 		data.organization.__typename !== "Organization" ||
-		!data.organization.isMember
+		!data.organization.isAdmin
 	) {
 		return {
 			title: "Organization Not found",
@@ -92,9 +92,10 @@ export default async function GeneralSettingsPage({
 		preloadedQuery.data,
 	);
 
+	// only admins can view and change organization settings
 	if (
 		data.organization.__typename !== "Organization" ||
-		!data.organization.isMember
+		!data.organization.isAdmin
 	) {
 		notFound();
 	}
