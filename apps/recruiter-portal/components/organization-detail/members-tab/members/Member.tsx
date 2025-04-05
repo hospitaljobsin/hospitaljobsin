@@ -1,5 +1,6 @@
 import type { MemberFragment$key } from "@/__generated__/MemberFragment.graphql";
 import type { MemberOrganizationFragment$key } from "@/__generated__/MemberOrganizationFragment.graphql";
+import { dateFormat } from "@/lib/intl";
 import { Card, CardBody, Chip } from "@heroui/react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
@@ -9,6 +10,7 @@ import MemberControls from "./member-controls/MemberControls";
 const MemberFragment = graphql`
   fragment MemberFragment on OrganizationMemberEdge {
 	role
+	createdAt
     node {
         fullName
         avatarUrl
@@ -53,13 +55,18 @@ export default function Member({
 				/>
 				<div className="w-full flex item-center justify-between gap-6">
 					<div className="w-full flex flex-col gap-4">
-						<p className="text-medium">{data.node.fullName}</p>
-						<Chip
-							variant="flat"
-							color={data.role === "admin" ? "primary" : "default"}
-						>
-							{data.role}
-						</Chip>
+						<div className="flex gap-4 items-baseline">
+							<p className="text-medium">{data.node.fullName}</p>
+							<Chip
+								variant="flat"
+								color={data.role === "admin" ? "primary" : "default"}
+							>
+								{data.role}
+							</Chip>
+						</div>
+						<p className="text-sm text-foreground-400">
+							Joined on {dateFormat.format(new Date(data.createdAt))}
+						</p>
 					</div>
 					{organizationData.isAdmin && (
 						<MemberControls

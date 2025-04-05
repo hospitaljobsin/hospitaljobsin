@@ -78,7 +78,9 @@ export default function MemberControls({
 				</DropdownTrigger>
 				<DropdownMenu
 					aria-label="Member Actions"
-					disabledKeys={data.role === "admin" ? ["remove", "promote"] : []}
+					disabledKeys={
+						data.role === "admin" ? ["remove", "promote"] : ["demote"]
+					}
 				>
 					<DropdownItem
 						startContent={<UserMinus size={20} />}
