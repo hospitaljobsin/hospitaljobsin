@@ -548,13 +548,13 @@ class OrganizationMemberNotFoundErrorType(BaseErrorType):
     )
 
 
-KickOrganizationMemberPayload = Annotated[
+RemoveOrganizationMemberPayload = Annotated[
     OrganizationMemberEdgeType
     | OrganizationNotFoundErrorType
     | OrganizationMemberNotFoundErrorType,
     strawberry.union(
-        name="KickOrganizationMemberPayload",
-        description="The kick organization member payload.",
+        name="RemoveOrganizationMemberPayload",
+        description="The remove organization member payload.",
     ),
 ]
 

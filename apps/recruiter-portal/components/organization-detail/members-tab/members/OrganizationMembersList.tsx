@@ -20,6 +20,7 @@ fragment OrganizationMembersListFragment on Query @argumentDefinitions(
             __typename
             ... on Organization {
             ...OrganizationMembersListInternalFragment @arguments(searchTerm: $searchTerm)
+			...MemberOrganizationFragment
             }
         }
 }
@@ -35,6 +36,7 @@ const OrganizationMembersListInternalFragment = graphql`
   @refetchable(queryName: "OrganizationMembersListPaginationQuery") {
 	  members(after: $cursor, first: $count, searchTerm: $searchTerm)
       @connection(key: "OrganizationMembersListInternalFragment_members", filters: ["searchTerm"]) {
+		__id
       edges {
 		node {
 			id
@@ -62,6 +64,7 @@ export default function OrganizationMembersList({
 		root.organization.__typename === "Organization",
 		"Expected 'Organization' node type",
 	);
+
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
 		pageOrganizationMembersViewQuery,
 		OrganizationMembersListInternalFragment$key
@@ -117,7 +120,12 @@ export default function OrganizationMembersList({
 	return (
 		<div className="w-full flex flex-col gap-8 pb-6">
 			{data.members.edges.map((memberEdge) => (
-				<Member member={memberEdge} key={memberEdge.node.id} />
+				<Member
+					member={memberEdge}
+					organization={root.organization}
+					key={memberEdge.node.id}
+					membersConnectionId={data.members.__id}
+				/>
 			))}
 			<div ref={observerRef} className="h-10" />
 			{isLoadingNext && <OrganizationMembersListSkeleton />}

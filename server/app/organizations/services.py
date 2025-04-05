@@ -158,7 +158,7 @@ class OrganizationMemberService:
             is not None
         )
 
-    async def kick_member(
+    async def remove_member(
         self,
         account: Account,
         organization_id: ObjectId,

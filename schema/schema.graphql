@@ -227,6 +227,9 @@ type DeleteWebAuthnCredentialSuccess {
   webAuthnCredentialEdge: WebAuthnCredentialEdge!
 }
 
+"""The demote organization member payload."""
+union DemoteOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError
+
 """The disable account 2FA payload."""
 union DisableAccount2FAWithAuthenticatorPayload = Account | AuthenticatorNotEnabledError
 
@@ -932,6 +935,33 @@ type Mutation {
     """The token of the invite to decline."""
     inviteToken: String!
   ): DeclineOrganizationInvitePayload! @isAuthenticated
+
+  """Remove an organization member."""
+  removeOrganizationMember(
+    """The ID of the organization to remove the member from."""
+    organizationId: ID!
+
+    """The ID of the account to remove from the organization."""
+    accountId: ID!
+  ): RemoveOrganizationMemberPayload! @isAuthenticated
+
+  """Promote an organization member."""
+  promoteOrganizationMember(
+    """The ID of the organization to promote the member from."""
+    organizationId: ID!
+
+    """The ID of the account to promote in the organization."""
+    accountId: ID!
+  ): PromoteOrganizationMemberPayload! @isAuthenticated
+
+  """Demote an organization member."""
+  demoteOrganizationMember(
+    """The ID of the organization to promote the member from."""
+    organizationId: ID!
+
+    """The ID of the account to promote in the organization."""
+    accountId: ID!
+  ): DemoteOrganizationMemberPayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""
@@ -1108,6 +1138,12 @@ type OrganizationMemberEdge {
   createdAt: datetime!
 }
 
+"""Used when the organization member is not found."""
+type OrganizationMemberNotFoundError implements Error {
+  """Human readable error message."""
+  message: String!
+}
+
 """Used when the organization is not found."""
 type OrganizationNotFoundError implements Error {
   """Human readable error message."""
@@ -1220,6 +1256,9 @@ type ProfileNotFoundError implements Error {
 """The profile payload."""
 union ProfilePayload = Profile | ProfileNotFoundError
 
+"""The promote organization member payload."""
+union PromoteOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError
+
 type Query {
   """Get the current user."""
   viewer: ViewerPayload!
@@ -1294,6 +1333,9 @@ union RegisterWithPasskeyPayload = Account | EmailInUseError | InvalidEmailVerif
 
 """The register with password payload."""
 union RegisterWithPasswordPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | PasswordNotStrongError
+
+"""The remove organization member payload."""
+union RemoveOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError
 
 """Request email verification success."""
 type RequestEmailVerificationSuccess {

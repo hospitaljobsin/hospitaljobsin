@@ -155,6 +155,8 @@ class OrganizationMemberRepo:
         return await OrganizationMember.find_one(
             OrganizationMember.organization.id == organization_id,
             OrganizationMember.account.id == account_id,
+            fetch_links=True,
+            nesting_depth=1,
         )
 
     async def create(

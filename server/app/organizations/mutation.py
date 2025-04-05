@@ -34,7 +34,6 @@ from .types import (
     DeclineOrganizationInvitePayload,
     DeleteOrganizationInvitePayload,
     DemoteOrganizationMemberPayload,
-    KickOrganizationMemberPayload,
     MemberAlreadyExistsErrorType,
     OrganizationInviteEdgeType,
     OrganizationInviteNotFoundErrorType,
@@ -45,6 +44,7 @@ from .types import (
     OrganizationSlugInUseErrorType,
     OrganizationType,
     PromoteOrganizationMemberPayload,
+    RemoveOrganizationMemberPayload,
     UpdateOrganizationPayload,
 )
 
@@ -361,8 +361,8 @@ class OrganizationMutation:
                 assert_never(unreachable)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=KickOrganizationMemberPayload,
-        description="Kick an organization member.",
+        graphql_type=RemoveOrganizationMemberPayload,
+        description="Remove an organization member.",
         extensions=[
             PermissionExtension(
                 permissions=[
@@ -373,14 +373,14 @@ class OrganizationMutation:
         ],
     )
     @inject
-    async def kick_organization_member(
+    async def remove_organization_member(
         self,
         info: AuthInfo,
         organization_member_service: Annotated[OrganizationMemberService, Inject],
         organization_id: Annotated[
             relay.GlobalID,
             strawberry.argument(
-                description="The ID of the organization to kick the member from.",
+                description="The ID of the organization to remove the member from.",
             ),
         ],
         account_id: Annotated[
@@ -389,9 +389,9 @@ class OrganizationMutation:
                 description="The ID of the account to remove from the organization.",
             ),
         ],
-    ) -> KickOrganizationMemberPayload:
-        """Kick an organization member."""
-        match await organization_member_service.kick_member(
+    ) -> RemoveOrganizationMemberPayload:
+        """Remove an organization member."""
+        match await organization_member_service.remove_member(
             account=info.context["current_user"],
             organization_id=ObjectId(organization_id.node_id),
             member_account_id=ObjectId(account_id.node_id),

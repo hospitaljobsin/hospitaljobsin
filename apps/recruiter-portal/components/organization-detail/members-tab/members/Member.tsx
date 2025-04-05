@@ -1,26 +1,45 @@
 import type { MemberFragment$key } from "@/__generated__/MemberFragment.graphql";
-import { Card, CardBody } from "@heroui/react";
+import type { MemberOrganizationFragment$key } from "@/__generated__/MemberOrganizationFragment.graphql";
+import { Card, CardBody, Chip } from "@heroui/react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import MemberControls from "./member-controls/MemberControls";
 
-export const MemberFragment = graphql`
+const MemberFragment = graphql`
   fragment MemberFragment on OrganizationMemberEdge {
 	role
     node {
         fullName
         avatarUrl
     }
+	...MemberControlsFragment
   }
 `;
 
+const MemberOrganizationFragment = graphql`
+  fragment MemberOrganizationFragment on Organization {
+	isAdmin
+	...MemberControlsOrganizationFragment
+  }
+`;
 
 type Props = {
 	member: MemberFragment$key;
+	organization: MemberOrganizationFragment$key;
+	membersConnectionId: string;
 };
 
-export default function Member({ member }: Props) {
+export default function Member({
+	member,
+	organization,
+	membersConnectionId,
+}: Props) {
 	const data = useFragment(MemberFragment, member);
+	const organizationData = useFragment(
+		MemberOrganizationFragment,
+		organization,
+	);
 
 	return (
 		<Card fullWidth className="p-4 sm:p-6" isPressable={false} shadow="none">
@@ -32,7 +51,24 @@ export default function Member({ member }: Props) {
 					height={50}
 					className="rounded-full"
 				/>
-				<h2>{data.node.fullName}</h2>
+				<div className="w-full flex item-center justify-between gap-6">
+					<div className="w-full flex flex-col gap-4">
+						<p className="text-medium">{data.node.fullName}</p>
+						<Chip
+							variant="flat"
+							color={data.role === "admin" ? "primary" : "default"}
+						>
+							{data.role}
+						</Chip>
+					</div>
+					{organizationData.isAdmin && (
+						<MemberControls
+							member={data}
+							organization={organizationData}
+							membersConnectionId={membersConnectionId}
+						/>
+					)}
+				</div>
 			</CardBody>
 		</Card>
 	);
