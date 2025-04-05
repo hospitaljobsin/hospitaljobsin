@@ -218,7 +218,7 @@ class JobMutation:
     ) -> CreateJobPayload:
         """Create a new job."""
         match await job_service.create(
-            account_id=info.context["current_user"].id,
+            account=info.context["current_user"],
             organization_id=organization_id.node_id,
             title=title,
             description=description,

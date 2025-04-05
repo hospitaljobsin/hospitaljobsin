@@ -26,7 +26,7 @@ const PageOrganizationInvitesMetadataFragment = graphql`
         name
         description
         logoUrl
-		isMember
+		isAdmin
       }
      
     }
@@ -58,7 +58,7 @@ export async function generateMetadata({
 
 	if (
 		data.organization.__typename !== "Organization" ||
-		!data.organization.isMember
+		!data.organization.isAdmin
 	) {
 		return {
 			title: "Organization Not found",
@@ -91,9 +91,10 @@ export default async function OrganizationInvitesPage({
 		preloadedQuery.data,
 	);
 
+	// only admins can manage invites in the organization
 	if (
 		data.organization.__typename !== "Organization" ||
-		!data.organization.isMember
+		!data.organization.isAdmin
 	) {
 		notFound();
 	}

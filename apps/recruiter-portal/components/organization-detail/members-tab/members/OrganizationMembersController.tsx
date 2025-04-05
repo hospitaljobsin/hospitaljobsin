@@ -21,6 +21,7 @@ fragment OrganizationMembersControllerFragment on Query @argumentDefinitions(
         organization(slug: $slug) {
             __typename
             ... on Organization {
+				isAdmin
             ...InviteMemberModalFragment
             }
         }
@@ -41,8 +42,12 @@ export default function OrganizationMembersController(
 		"Expected 'Organization' node type",
 	);
 
+	const isAdmin = data.organization.isAdmin;
+
 	function handleOpenModal() {
-		onOpen();
+		if (isAdmin) {
+			onOpen();
+		}
 	}
 
 	return (
@@ -66,14 +71,16 @@ export default function OrganizationMembersController(
 					onClear={() => props.setSearchTerm(null)}
 					fullWidth
 				/>
-				<Button
-					color="primary"
-					startContent={<UserPlus size={20} />}
-					onPress={handleOpenModal}
-					className="w-full sm:w-auto flex-shrink-0"
-				>
-					Invite
-				</Button>
+				{isAdmin && (
+					<Button
+						color="primary"
+						startContent={<UserPlus size={20} />}
+						onPress={handleOpenModal}
+						className="w-full sm:w-auto flex-shrink-0"
+					>
+						Invite
+					</Button>
+				)}
 			</div>
 			<InviteMemberModal
 				onOpenChange={onOpenChange}

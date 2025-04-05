@@ -5,6 +5,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from result import Err, Ok, Result
 
+from app.accounts.documents import Account
 from app.base.models import Address
 from app.jobs.documents import Job, SavedJob
 from app.jobs.exceptions import (
@@ -61,7 +62,7 @@ class JobService:
     async def create(
         self,
         *,
-        account_id: ObjectId,
+        account: Account,
         organization_id: str,
         title: str,
         description: str,
