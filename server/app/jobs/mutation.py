@@ -126,6 +126,7 @@ class JobMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
+                    # TODO: ensure only organization admins can create a job
                 ],
             )
         ],

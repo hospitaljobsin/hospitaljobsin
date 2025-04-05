@@ -14,6 +14,7 @@ const OrganizationJobsTabFragment = graphql`
 	  searchTerm: { type: "String", defaultValue: null }
     ) {
         ...OrganizationJobsListFragment @arguments(slug: $slug, searchTerm: $searchTerm)
+		...OrganizationJobsControllerFragment @arguments(slug: $slug)
   }
 `;
 
@@ -28,6 +29,7 @@ export default function OrganizationJobsTab(props: {
 			<OrganizationJobsController
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
+				rootQuery={query}
 			/>
 			<OrganizationJobsList rootQuery={query} searchTerm={searchTerm} />
 		</div>
