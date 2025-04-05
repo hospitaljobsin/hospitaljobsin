@@ -1,13 +1,14 @@
 "use client";
-import type { NewJobViewQuery as NewJobViewQueryType } from "@/__generated__/NewJobViewQuery.graphql";
-import { useParams } from "next/navigation";
-import { useLazyLoadQuery } from "react-relay";
+import type { NewJobViewFragment$key } from "@/__generated__/NewJobViewFragment.graphql";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import NewJobForm from "./NewJobForm";
 
-const NewJobViewQuery = graphql`
- query NewJobViewQuery($slug: String!) {
+const NewJobViewFragment = graphql`
+ fragment NewJobViewFragment on Query @argumentDefinitions(
+		slug: { type: "String!" }
+	) {
         viewer {
             __typename
             ... on Account {
@@ -24,11 +25,10 @@ const NewJobViewQuery = graphql`
   }
 `;
 
-export default function NewJobView() {
-	const params = useParams<{ slug: string }>();
-	const data = useLazyLoadQuery<NewJobViewQueryType>(NewJobViewQuery, {
-		slug: params.slug,
-	});
+export default function NewJobView({
+	rootQuery,
+}: { rootQuery: NewJobViewFragment$key }) {
+	const data = useFragment(NewJobViewFragment, rootQuery);
 
 	invariant(
 		data.viewer.__typename === "Account",
