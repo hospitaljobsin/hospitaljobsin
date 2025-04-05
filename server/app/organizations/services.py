@@ -2,6 +2,7 @@ import uuid
 from datetime import timedelta
 
 from bson import ObjectId
+from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks
 from humanize import naturaldelta
 from result import Err, Ok, Result
@@ -9,6 +10,7 @@ from types_aiobotocore_s3 import S3Client
 
 from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo
+from app.auth.exceptions import InvalidEmailError
 from app.base.models import Address
 from app.config import Settings
 from app.core.constants import ORGANIZATION_INVITE_EXPIRES_IN
@@ -171,7 +173,8 @@ class OrganizationInviteService:
         email: str,
         background_tasks: BackgroundTasks,
     ) -> Result[
-        OrganizationInvite, OrganizationNotFoundError | MemberAlreadyExistsError
+        OrganizationInvite,
+        InvalidEmailError | OrganizationNotFoundError | MemberAlreadyExistsError,
     ]:
         """Create a new invite for an organization."""
         existing_organization = await self._organization_repo.get(
@@ -180,6 +183,15 @@ class OrganizationInviteService:
 
         if existing_organization is None:
             return Err(OrganizationNotFoundError())
+
+        try:
+            email_info = validate_email(
+                email,
+                check_deliverability=True,
+            )
+            email = email_info.normalized
+        except EmailNotValidError as err:
+            return Err(InvalidEmailError(message=str(err)))
 
         existing_account = await self._account_repo.get_by_email(email=email)
 
@@ -236,5 +248,54 @@ class OrganizationInviteService:
             return Err(OrganizationInviteNotFoundError())
 
         await self._invite_repo.delete(existing_invite)
+
+        return Ok(existing_invite)
+
+    async def accept(
+        self,
+        account: Account,
+        invite_token: str,
+    ) -> Result[OrganizationInvite, OrganizationInviteNotFoundError]:
+        """Accept an invite in an organization."""
+        existing_invite = await self._invite_repo.get_by_token(
+            token=invite_token,
+        )
+
+        if (
+            existing_invite is None
+            or existing_invite.status != "pending"
+            or existing_invite.email != account.email
+        ):
+            return Err(OrganizationInviteNotFoundError())
+
+        await self._invite_repo.update(existing_invite, status="accepted")
+
+        # create a member in the organization
+        await self._organization_member_repo.create(
+            organization_id=existing_invite.organization.id,
+            account_id=account.id,
+            role="member",
+        )
+
+        return Ok(existing_invite)
+
+    async def decline(
+        self,
+        account: Account,
+        invite_token: str,
+    ) -> Result[OrganizationInvite, OrganizationInviteNotFoundError]:
+        """Decline an invite in an organization."""
+        existing_invite = await self._invite_repo.get_by_token(
+            token=invite_token,
+        )
+
+        if (
+            existing_invite is None
+            or existing_invite.status != "pending"
+            or existing_invite.email != account.email
+        ):
+            return Err(OrganizationInviteNotFoundError())
+
+        await self._invite_repo.update(existing_invite, status="declined")
 
         return Ok(existing_invite)

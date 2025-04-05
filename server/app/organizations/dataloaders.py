@@ -6,8 +6,8 @@ from app.core.dataloaders import (
     transform_valid_object_id,
 )
 
-from .documents import Organization
-from .repositories import OrganizationRepo
+from .documents import Organization, OrganizationInvite
+from .repositories import OrganizationInviteRepo, OrganizationRepo
 
 type OrganizationByIdLoader = DataLoader[str, Organization | None]
 
@@ -31,5 +31,18 @@ async def create_organization_by_slug_dataloader(
     """Create a dataloader to load oganizations by their slugs."""
     return create_dataloader(
         repo_method=organization_repo.get_many_by_slugs,
+        key_transform=transform_default,
+    )
+
+
+type OrganizationInviteByTokenLoader = DataLoader[str, OrganizationInvite | None]
+
+
+async def create_organization_invite_by_token_dataloader(
+    organization_invite_repo: OrganizationInviteRepo,
+) -> OrganizationInviteByTokenLoader:
+    """Create a dataloader to load oganization invites by their tokens."""
+    return create_dataloader(
+        repo_method=organization_invite_repo.get_many_by_tokens,
         key_transform=transform_default,
     )

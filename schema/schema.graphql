@@ -2,6 +2,9 @@ directive @isAuthenticated on FIELD_DEFINITION
 
 directive @requiresSudoMode on FIELD_DEFINITION
 
+"""The accept organization invite payload."""
+union AcceptOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
+
 """An account."""
 type Account implements Node {
   """The Globally Unique ID of this object"""
@@ -149,7 +152,7 @@ type CreateJobSuccess {
 }
 
 """The create organization invite payload."""
-union CreateOrganizationInvitePayload = OrganizationInvite | OrganizationNotFoundError | MemberAlreadyExistsError
+union CreateOrganizationInvitePayload = OrganizationInvite | InvalidEmailError | OrganizationNotFoundError | MemberAlreadyExistsError
 
 """
 The payload for creating a presigned URL for uploading the organization logo.
@@ -190,6 +193,9 @@ type CurrentJob {
 
 """Date (isoformat)"""
 scalar Date
+
+"""The decline organization invite payload."""
+union DeclineOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
 
 """The delete organization invite payload."""
 union DeleteOrganizationInvitePayload = OrganizationInviteEdge | OrganizationNotFoundError | OrganizationInviteNotFoundError
@@ -914,6 +920,18 @@ type Mutation {
     """The ID of the invite to delete."""
     inviteId: ID!
   ): DeleteOrganizationInvitePayload! @isAuthenticated
+
+  """Accept an organization invite."""
+  acceptOrganizationInvite(
+    """The token of the invite to accept."""
+    inviteToken: String!
+  ): AcceptOrganizationInvitePayload! @isAuthenticated
+
+  """Decline an organization invite."""
+  declineOrganizationInvite(
+    """The token of the invite to decline."""
+    inviteToken: String!
+  ): DeclineOrganizationInvitePayload! @isAuthenticated
 }
 
 """An object with a Globally Unique ID"""
@@ -1041,6 +1059,9 @@ type OrganizationInvite implements Node {
   """The account that created this invite."""
   createdBy: Account!
 
+  """The organization that the invite is for."""
+  organization: Organization!
+
   """The status of the invite."""
   status: InviteStatus!
 
@@ -1061,6 +1082,9 @@ type OrganizationInviteNotFoundError implements Error {
   """Human readable error message."""
   message: String!
 }
+
+"""The organization invite payload."""
+union OrganizationInvitePayload = OrganizationInvite | OrganizationInviteNotFoundError
 
 type OrganizationMemberConnection {
   """Information to aid in pagination."""
@@ -1257,6 +1281,12 @@ type Query {
     """Slug of the organization"""
     slug: String!
   ): OrganizationPayload!
+
+  """Get organization invite by token."""
+  organizationInvite(
+    """Token of the invite"""
+    inviteToken: String!
+  ): OrganizationInvitePayload!
 }
 
 """The register with passkey payload."""

@@ -5,7 +5,14 @@ from aioinject.ext.strawberry import inject
 
 from app.context import Info
 
-from .types import OrganizationNotFoundErrorType, OrganizationPayload, OrganizationType
+from .types import (
+    OrganizationInviteNotFoundErrorType,
+    OrganizationInvitePayload,
+    OrganizationInviteType,
+    OrganizationNotFoundErrorType,
+    OrganizationPayload,
+    OrganizationType,
+)
 
 
 @strawberry.type
@@ -31,3 +38,27 @@ class OrganizationQuery:
             return OrganizationNotFoundErrorType()
 
         return OrganizationType.marshal(result)
+
+    @strawberry.field(  # type: ignore[misc]
+        graphql_type=OrganizationInvitePayload,
+        description="Get organization invite by token.",
+    )
+    @inject
+    async def organization_invite(
+        self,
+        info: Info,
+        invite_token: Annotated[
+            str,
+            strawberry.argument(
+                description="Token of the invite",
+            ),
+        ],
+    ) -> OrganizationInvitePayload:
+        result = await info.context["loaders"].organization_invite_by_token.load(
+            invite_token
+        )
+
+        if result is None:
+            return OrganizationInviteNotFoundErrorType()
+
+        return OrganizationInviteType.marshal(result)

@@ -1,6 +1,7 @@
 import hashlib
 import secrets
 from datetime import UTC, datetime, timedelta
+from typing import Literal
 
 from beanie import PydanticObjectId
 from beanie.operators import In
@@ -277,6 +278,16 @@ class OrganizationInviteRepo:
         """Delete an organization invite."""
         await invite.delete()
 
+    async def update(
+        self,
+        invite: OrganizationInvite,
+        *,
+        status: Literal["pending", "accepted", "declined"],
+    ) -> OrganizationInvite:
+        """Update the given organization invite."""
+        invite.status = status
+        return await invite.save()
+
     async def get_by_token(self, token: str) -> OrganizationInvite | None:
         """Get invite by token."""
         return await OrganizationInvite.find_one(
@@ -332,3 +343,25 @@ class OrganizationInviteRepo:
             before=ObjectId(before) if before else None,
             after=ObjectId(after) if after else None,
         )
+
+    async def get_many_by_tokens(
+        self, invite_tokens: list[str]
+    ) -> list[OrganizationInvite | None]:
+        """Get multiple organization invites by tokens."""
+        organization_invites = await OrganizationInvite.find(
+            In(
+                OrganizationInvite.token_hash,
+                [self.hash_token(token) for token in invite_tokens],
+            ),
+            fetch_links=True,
+            nesting_depth=1,
+        ).to_list()
+        organization_invite_by_token = {
+            organization_invite.token_hash: organization_invite
+            for organization_invite in organization_invites
+        }
+
+        return [
+            organization_invite_by_token.get(self.hash_token(invite_token))
+            for invite_token in invite_tokens
+        ]

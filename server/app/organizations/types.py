@@ -11,6 +11,7 @@ from bson import ObjectId
 from strawberry import Private, relay
 
 from app.accounts.types import AccountType
+from app.auth.types import InvalidEmailErrorType
 from app.base.types import (
     AddressType,
     BaseConnectionType,
@@ -56,6 +57,9 @@ class OrganizationInviteType(BaseNodeType[OrganizationInvite]):
     created_by: AccountType = strawberry.field(
         description="The account that created this invite.",
     )
+    organization: "OrganizationType" = strawberry.field(
+        description="The organization that the invite is for."
+    )
     status: InviteStatusTypeEnum = strawberry.field(
         description="The status of the invite.",
     )
@@ -69,6 +73,7 @@ class OrganizationInviteType(BaseNodeType[OrganizationInvite]):
         return cls(
             id=str(invite.id),
             created_by=AccountType.marshal(invite.created_by),
+            organization=OrganizationType.marshal(invite.organization),
             email=invite.email,
             status=InviteStatusTypeEnum[invite.status.upper()],
             expires_at=invite.expires_at,
@@ -474,6 +479,7 @@ class CreateOrganizationLogoPresignedURLPayloadType:
 
 CreateOrganizationInvitePayload = Annotated[
     OrganizationInviteType
+    | InvalidEmailErrorType
     | OrganizationNotFoundErrorType
     | MemberAlreadyExistsErrorType,
     strawberry.union(
@@ -501,5 +507,31 @@ DeleteOrganizationInvitePayload = Annotated[
     strawberry.union(
         name="DeleteOrganizationInvitePayload",
         description="The delete organization invite payload.",
+    ),
+]
+
+
+AcceptOrganizationInvitePayload = Annotated[
+    OrganizationInviteEdgeType | OrganizationInviteNotFoundErrorType,
+    strawberry.union(
+        name="AcceptOrganizationInvitePayload",
+        description="The accept organization invite payload.",
+    ),
+]
+
+
+DeclineOrganizationInvitePayload = Annotated[
+    OrganizationInviteEdgeType | OrganizationInviteNotFoundErrorType,
+    strawberry.union(
+        name="DeclineOrganizationInvitePayload",
+        description="The decline organization invite payload.",
+    ),
+]
+
+OrganizationInvitePayload = Annotated[
+    OrganizationInviteType | OrganizationInviteNotFoundErrorType,
+    strawberry.union(
+        name="OrganizationInvitePayload",
+        description="The organization invite payload.",
     ),
 ]

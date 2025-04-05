@@ -31,9 +31,6 @@ const inviteMemberSchema = z.object({
 	email: z.string().min(1, "This field is required").email("Invalid email"),
 });
 
-// TODO: add invite to connection here manually if available
-// like we did for saved jobs
-
 const InviteMemberModalMutation = graphql`
   mutation InviteMemberModalMutation($organizationId: ID!, $email: String!) {
     createOrganizationInvite(organizationId: $organizationId, email: $email) {
@@ -42,6 +39,10 @@ const InviteMemberModalMutation = graphql`
         id
         ...InviteFragment
       }
+	  ... on InvalidEmailError {
+		__typename
+		message
+	  }
       ... on OrganizationNotFoundError {
         __typename
       }
@@ -77,11 +78,10 @@ export default function InviteMemberModal({
 		commitMutation({
 			variables: { email: values.email, organizationId: data.id },
 			updater: (store, responseData) => {
-				if (!responseData) return;
-
 				if (
+					responseData &&
 					responseData.createOrganizationInvite.__typename ===
-					"OrganizationInvite"
+						"OrganizationInvite"
 				) {
 					// Retrieve the connection from the store
 					const organizationRecord = store.get(data.id);
@@ -112,6 +112,13 @@ export default function InviteMemberModal({
 					response.createOrganizationInvite.__typename === "OrganizationInvite"
 				) {
 					onOpenChange(false);
+				} else if (
+					response.createOrganizationInvite.__typename === "InvalidEmailError"
+				) {
+					setError("email", {
+						type: "server",
+						message: response.createOrganizationInvite.message,
+					});
 				} else if (
 					response.createOrganizationInvite.__typename ===
 					"MemberAlreadyExistsError"

@@ -8,7 +8,9 @@ from result import Err, Ok
 from strawberry import relay
 from strawberry.permission import PermissionExtension
 
+from app.auth.exceptions import InvalidEmailError
 from app.auth.permissions import IsAuthenticated
+from app.auth.types import InvalidEmailErrorType
 from app.base.types import AddressInputType
 from app.context import AuthInfo
 from app.jobs.exceptions import OrganizationNotFoundError
@@ -20,9 +22,11 @@ from app.organizations.exceptions import (
 from app.organizations.services import OrganizationInviteService, OrganizationService
 
 from .types import (
+    AcceptOrganizationInvitePayload,
     CreateOrganizationInvitePayload,
     CreateOrganizationLogoPresignedURLPayloadType,
     CreateOrganizationPayload,
+    DeclineOrganizationInvitePayload,
     DeleteOrganizationInvitePayload,
     MemberAlreadyExistsErrorType,
     OrganizationInviteEdgeType,
@@ -218,6 +222,8 @@ class OrganizationMutation:
                         return OrganizationNotFoundErrorType()
                     case MemberAlreadyExistsError():
                         return MemberAlreadyExistsErrorType()
+                    case InvalidEmailError() as err:
+                        return InvalidEmailErrorType(message=err.message)
             case Ok(invite):
                 return OrganizationInviteType.marshal(invite)
             case _ as unreachable:
@@ -263,6 +269,80 @@ class OrganizationMutation:
                 match error:
                     case OrganizationNotFoundError():
                         return OrganizationNotFoundErrorType()
+                    case OrganizationInviteNotFoundError():
+                        return OrganizationInviteNotFoundErrorType()
+            case Ok(invite):
+                return OrganizationInviteEdgeType.marshal(invite)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=AcceptOrganizationInvitePayload,
+        description="Accept an organization invite.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def accept_organization_invite(
+        self,
+        info: AuthInfo,
+        organization_invite_service: Annotated[OrganizationInviteService, Inject],
+        invite_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The token of the invite to accept.",
+            ),
+        ],
+    ) -> AcceptOrganizationInvitePayload:
+        """Accept an organization invite."""
+        match await organization_invite_service.accept(
+            account=info.context["current_user"],
+            invite_token=invite_token,
+        ):
+            case Err(error):
+                match error:
+                    case OrganizationInviteNotFoundError():
+                        return OrganizationInviteNotFoundErrorType()
+            case Ok(invite):
+                return OrganizationInviteEdgeType.marshal(invite)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=DeclineOrganizationInvitePayload,
+        description="Decline an organization invite.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def decline_organization_invite(
+        self,
+        info: AuthInfo,
+        organization_invite_service: Annotated[OrganizationInviteService, Inject],
+        invite_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The token of the invite to decline.",
+            ),
+        ],
+    ) -> DeclineOrganizationInvitePayload:
+        """Decline an organization invite."""
+        match await organization_invite_service.decline(
+            account=info.context["current_user"],
+            invite_token=invite_token,
+        ):
+            case Err(error):
+                match error:
                     case OrganizationInviteNotFoundError():
                         return OrganizationInviteNotFoundErrorType()
             case Ok(invite):

@@ -40,6 +40,7 @@ from app.jobs.services import JobService, SavedJobService
 from app.organizations.dataloaders import (
     create_organization_by_id_dataloader,
     create_organization_by_slug_dataloader,
+    create_organization_invite_by_token_dataloader,
 )
 from app.organizations.repositories import (
     OrganizationInviteRepo,
@@ -95,5 +96,6 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_saved_job_by_id_dataloader))
     container.register(aioinject.Scoped(create_organization_by_id_dataloader))
     container.register(aioinject.Scoped(create_organization_by_slug_dataloader))
+    container.register(aioinject.Scoped(create_organization_invite_by_token_dataloader))
     container.register(aioinject.Scoped(create_dataloaders))
     return container
