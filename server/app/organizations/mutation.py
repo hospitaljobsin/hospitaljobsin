@@ -17,9 +17,14 @@ from app.jobs.exceptions import OrganizationNotFoundError
 from app.organizations.exceptions import (
     MemberAlreadyExistsError,
     OrganizationInviteNotFoundError,
+    OrganizationMemberNotFoundError,
     OrganizationSlugInUseError,
 )
-from app.organizations.services import OrganizationInviteService, OrganizationService
+from app.organizations.services import (
+    OrganizationInviteService,
+    OrganizationMemberService,
+    OrganizationService,
+)
 
 from .types import (
     AcceptOrganizationInvitePayload,
@@ -28,13 +33,18 @@ from .types import (
     CreateOrganizationPayload,
     DeclineOrganizationInvitePayload,
     DeleteOrganizationInvitePayload,
+    DemoteOrganizationMemberPayload,
+    KickOrganizationMemberPayload,
     MemberAlreadyExistsErrorType,
     OrganizationInviteEdgeType,
     OrganizationInviteNotFoundErrorType,
     OrganizationInviteType,
+    OrganizationMemberEdgeType,
+    OrganizationMemberNotFoundErrorType,
     OrganizationNotFoundErrorType,
     OrganizationSlugInUseErrorType,
     OrganizationType,
+    PromoteOrganizationMemberPayload,
     UpdateOrganizationPayload,
 )
 
@@ -347,5 +357,146 @@ class OrganizationMutation:
                         return OrganizationInviteNotFoundErrorType()
             case Ok(invite):
                 return OrganizationInviteEdgeType.marshal(invite)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=KickOrganizationMemberPayload,
+        description="Kick an organization member.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    # TODO: ensure only organization admins can kick a member
+                ],
+            )
+        ],
+    )
+    @inject
+    async def kick_organization_member(
+        self,
+        info: AuthInfo,
+        organization_member_service: Annotated[OrganizationMemberService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization to kick the member from.",
+            ),
+        ],
+        account_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the account to remove from the organization.",
+            ),
+        ],
+    ) -> KickOrganizationMemberPayload:
+        """Kick an organization member."""
+        match await organization_member_service.kick_member(
+            account=info.context["current_user"],
+            organization_id=ObjectId(organization_id.node_id),
+            member_account_id=ObjectId(account_id.node_id),
+        ):
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case OrganizationMemberNotFoundError():
+                        return OrganizationMemberNotFoundErrorType()
+            case Ok(member):
+                return OrganizationMemberEdgeType.marshal(member)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=PromoteOrganizationMemberPayload,
+        description="Promote an organization member.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    # TODO: ensure only organization admins can promote a member
+                ],
+            )
+        ],
+    )
+    @inject
+    async def promote_organization_member(
+        self,
+        info: AuthInfo,
+        organization_member_service: Annotated[OrganizationMemberService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization to promote the member from.",
+            ),
+        ],
+        account_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the account to promote in the organization.",
+            ),
+        ],
+    ) -> PromoteOrganizationMemberPayload:
+        """Promote an organization member."""
+        match await organization_member_service.promote_member(
+            account=info.context["current_user"],
+            organization_id=ObjectId(organization_id.node_id),
+            member_account_id=ObjectId(account_id.node_id),
+        ):
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case OrganizationMemberNotFoundError():
+                        return OrganizationMemberNotFoundErrorType()
+            case Ok(member):
+                return OrganizationMemberEdgeType.marshal(member)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=DemoteOrganizationMemberPayload,
+        description="Demote an organization member.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    # TODO: ensure only organization admins can demote a member
+                ],
+            )
+        ],
+    )
+    @inject
+    async def demote_organization_member(
+        self,
+        info: AuthInfo,
+        organization_member_service: Annotated[OrganizationMemberService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization to promote the member from.",
+            ),
+        ],
+        account_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the account to promote in the organization.",
+            ),
+        ],
+    ) -> DemoteOrganizationMemberPayload:
+        """Demote an organization member."""
+        match await organization_member_service.demote_member(
+            account=info.context["current_user"],
+            organization_id=ObjectId(organization_id.node_id),
+            member_account_id=ObjectId(account_id.node_id),
+        ):
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case OrganizationMemberNotFoundError():
+                        return OrganizationMemberNotFoundErrorType()
+            case Ok(member):
+                return OrganizationMemberEdgeType.marshal(member)
             case _ as unreachable:
                 assert_never(unreachable)

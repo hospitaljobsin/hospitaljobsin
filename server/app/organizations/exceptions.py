@@ -8,3 +8,7 @@ class MemberAlreadyExistsError:
 
 class OrganizationInviteNotFoundError:
     """Raised when an organization invite is not found."""
+
+
+class OrganizationMemberNotFoundError:
+    """Raised when an organization member is not found."""

@@ -535,3 +535,45 @@ OrganizationInvitePayload = Annotated[
         description="The organization invite payload.",
     ),
 ]
+
+
+@strawberry.type(
+    name="OrganizationMemberNotFoundError",
+    description="Used when the organization member is not found.",
+)
+class OrganizationMemberNotFoundErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Organization member not found!",
+    )
+
+
+KickOrganizationMemberPayload = Annotated[
+    OrganizationMemberEdgeType
+    | OrganizationNotFoundErrorType
+    | OrganizationMemberNotFoundErrorType,
+    strawberry.union(
+        name="KickOrganizationMemberPayload",
+        description="The kick organization member payload.",
+    ),
+]
+
+PromoteOrganizationMemberPayload = Annotated[
+    OrganizationMemberEdgeType
+    | OrganizationNotFoundErrorType
+    | OrganizationMemberNotFoundErrorType,
+    strawberry.union(
+        name="PromoteOrganizationMemberPayload",
+        description="The promote organization member payload.",
+    ),
+]
+
+DemoteOrganizationMemberPayload = Annotated[
+    OrganizationMemberEdgeType
+    | OrganizationNotFoundErrorType
+    | OrganizationMemberNotFoundErrorType,
+    strawberry.union(
+        name="DemoteOrganizationMemberPayload",
+        description="The demote organization member payload.",
+    ),
+]

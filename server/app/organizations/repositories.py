@@ -172,6 +172,20 @@ class OrganizationMemberRepo:
 
         return await organization_member.insert()
 
+    async def delete(self, organization_member: OrganizationMember) -> None:
+        """Delete an organization member."""
+        await organization_member.delete()
+
+    async def update(
+        self,
+        organization_member: OrganizationMember,
+        *,
+        role: str,
+    ) -> OrganizationMember:
+        """Update the given organization member."""
+        organization_member.role = role
+        return await organization_member.save()
+
     async def get_all_by_organization_id(
         self,
         organization_id: ObjectId,

@@ -52,8 +52,6 @@ export default function Invite({
 	);
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-	// TODO: show status as expired if invite expires
-
 	const renderStatus = (status: string) => {
 		switch (status) {
 			case "PENDING":

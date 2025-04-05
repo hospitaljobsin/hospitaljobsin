@@ -53,8 +53,6 @@ export default function Step1EmailForm() {
 	});
 
 	useEffect(() => {
-		// TODO: pass the errors to the errors param in useForm instead of this
-		// set email errors that may have arisen from other steps
 		if (emailError) {
 			setError("email", {
 				message: emailError,
