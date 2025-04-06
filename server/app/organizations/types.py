@@ -63,6 +63,9 @@ class OrganizationInviteType(BaseNodeType[OrganizationInvite]):
     status: InviteStatusTypeEnum = strawberry.field(
         description="The status of the invite.",
     )
+    created_at: datetime = strawberry.field(
+        description="When the invite was created.",
+    )
     expires_at: datetime | None = strawberry.field(
         description="When the invite expires.",
     )
@@ -72,6 +75,7 @@ class OrganizationInviteType(BaseNodeType[OrganizationInvite]):
         """Marshal into a node instance."""
         return cls(
             id=str(invite.id),
+            created_at=invite.id.generation_time,
             created_by=AccountType.marshal(invite.created_by),
             organization=OrganizationType.marshal(invite.organization),
             email=invite.email,

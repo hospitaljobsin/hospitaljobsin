@@ -367,6 +367,7 @@ class OrganizationMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
+                    # TODO: require sudo mode here
                     # TODO: ensure only organization admins can kick a member
                 ],
             )
@@ -414,6 +415,7 @@ class OrganizationMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
+                    # TODO: require sudo mode here
                     # TODO: ensure only organization admins can promote a member
                 ],
             )
@@ -461,6 +463,7 @@ class OrganizationMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
+                    # TODO: require sudo mode here
                     # TODO: ensure only organization admins can demote a member
                 ],
             )

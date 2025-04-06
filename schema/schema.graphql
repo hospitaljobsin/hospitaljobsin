@@ -1095,6 +1095,9 @@ type OrganizationInvite implements Node {
   """The status of the invite."""
   status: InviteStatus!
 
+  """When the invite was created."""
+  createdAt: datetime!
+
   """When the invite expires."""
   expiresAt: datetime
 }

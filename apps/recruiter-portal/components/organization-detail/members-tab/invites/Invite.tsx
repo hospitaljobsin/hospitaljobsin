@@ -1,15 +1,8 @@
 import type { InviteFragment$key } from "@/__generated__/InviteFragment.graphql";
 import type { InviteOrganizationFragment$key } from "@/__generated__/InviteOrganizationFragment.graphql";
 import { getRelativeTimeString } from "@/lib/intl";
-import {
-	Button,
-	Card,
-	CardBody,
-	CardHeader,
-	Tooltip,
-	useDisclosure,
-} from "@heroui/react";
-import { Info, Mail, Trash } from "lucide-react";
+import { Button, Card, CardBody, Tooltip, useDisclosure } from "@heroui/react";
+import { Info, Mail, Timer, Trash } from "lucide-react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -24,6 +17,7 @@ export const InviteFragment = graphql`
 		fullName
 		avatarUrl
 	}
+	createdAt
 	...DeleteInviteModalFragment
   }
 `;
@@ -72,46 +66,55 @@ export default function Invite({
 	return (
 		<>
 			<Card fullWidth className="p-4 sm:p-6" isPressable={false} shadow="none">
-				<CardHeader className="w-full flex justify-between gap-6">
-					<div className="flex gap-4 items-center">
-						<Mail size={24} />
-						<h2 className="text-lg">{data.email}</h2>
+				<CardBody className="flex flex-col lg:flex-row items-center justify-between gap-4 duration-200 w-full">
+					<div className="flex items-center gap-6 w-full">
+						<div className="p-3 bg-foreground-100 rounded-full">
+							<Mail size={20} className="text-foreground-500" />
+						</div>
+						<div className="flex flex-col gap-4">
+							<h2 className="text-lg font-medium">{data.email}</h2>
+							<p className="text-sm text-foreground-400 flex items-center gap-2">
+								Invited{" "}
+								<span className="italic">
+									{getRelativeTimeString(data.createdAt)}
+								</span>{" "}
+								by{" "}
+								<Tooltip
+									content={
+										<div className="flex flex-col gap-2">
+											<h3>{data.createdBy.fullName}</h3>
+										</div>
+									}
+								>
+									<Image
+										src={data.createdBy.avatarUrl}
+										alt={data.createdBy.fullName}
+										width={18}
+										height={18}
+										className="rounded-full mr-1"
+									/>
+								</Tooltip>
+							</p>
+						</div>
 					</div>
-					<div className="flex items-center">
+
+					<div className="flex items-center gap-4 md:gap-6 w-full justify-end">
+						<div className="flex items-center gap-2 text-foreground-400">
+							<Info size={16} />
+							<p className="text-sm">{renderStatus(data.status)}</p>
+						</div>
+						{data.expiresAt && (
+							<div className="flex items-center gap-2 text-foreground-400">
+								<Timer size={16} />
+								<p className="text-sm text-foreground-400">
+									Expires {getRelativeTimeString(data.expiresAt)}
+								</p>
+							</div>
+						)}
 						<Tooltip content="Delete Invite">
 							<Button isIconOnly variant="light" onPress={handleInviteDelete}>
-								<Trash size={20} />
+								<Trash size={16} />
 							</Button>
-						</Tooltip>
-					</div>
-				</CardHeader>
-				<CardBody className="w-full flex gap-8 items-start sm:items-center flex-col sm:flex-row">
-					<div className="flex items-center gap-2 text-foreground-400">
-						<Info size={20} />
-						<p> {renderStatus(data.status)}</p>
-					</div>
-					{data.expiresAt && (
-						<p className="text-foreground-400">
-							Expires {getRelativeTimeString(data.expiresAt)}
-						</p>
-					)}
-
-					<div className="flex gap-4 items-center">
-						<p className="text-foreground-400">Invited by</p>
-						<Tooltip
-							content={
-								<div className="flex flex-col gap-2">
-									<h3>{data.createdBy.fullName}</h3>
-								</div>
-							}
-						>
-							<Image
-								src={data.createdBy.avatarUrl}
-								alt={data.createdBy.fullName}
-								width={25}
-								height={25}
-								className="rounded-full"
-							/>
 						</Tooltip>
 					</div>
 				</CardBody>
