@@ -592,8 +592,21 @@ class InsufficientOrganizationAdminsErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="RemoveOrganizationMemberSuccess",
+    description="Remove organization member success.",
+)
+class RemoveOrganizationMemberSuccessType:
+    organization_member_edge: OrganizationMemberEdgeType = strawberry.field(
+        description="The organization member edge.",
+    )
+    organization: OrganizationType = strawberry.field(
+        description="The updated organization.",
+    )
+
+
 RemoveOrganizationMemberPayload = Annotated[
-    OrganizationMemberEdgeType
+    RemoveOrganizationMemberSuccessType
     | OrganizationNotFoundErrorType
     | OrganizationMemberNotFoundErrorType
     | OrganizationAuthorizationErrorType,
@@ -603,8 +616,22 @@ RemoveOrganizationMemberPayload = Annotated[
     ),
 ]
 
+
+@strawberry.type(
+    name="PromoteOrganizationMemberSuccess",
+    description="Promote organization member success.",
+)
+class PromoteOrganizationMemberSuccessType:
+    organization_member_edge: OrganizationMemberEdgeType = strawberry.field(
+        description="The organization member edge.",
+    )
+    organization: OrganizationType = strawberry.field(
+        description="The updated organization.",
+    )
+
+
 PromoteOrganizationMemberPayload = Annotated[
-    OrganizationMemberEdgeType
+    PromoteOrganizationMemberSuccessType
     | OrganizationNotFoundErrorType
     | OrganizationMemberNotFoundErrorType
     | OrganizationAuthorizationErrorType,
@@ -614,8 +641,22 @@ PromoteOrganizationMemberPayload = Annotated[
     ),
 ]
 
+
+@strawberry.type(
+    name="DemoteOrganizationMemberSuccess",
+    description="Demote organization member success.",
+)
+class DemoteOrganizationMemberSuccessType:
+    organization_member_edge: OrganizationMemberEdgeType = strawberry.field(
+        description="The organization member edge.",
+    )
+    organization: OrganizationType = strawberry.field(
+        description="The updated organization.",
+    )
+
+
 DemoteOrganizationMemberPayload = Annotated[
-    OrganizationMemberEdgeType
+    DemoteOrganizationMemberSuccessType
     | OrganizationNotFoundErrorType
     | OrganizationMemberNotFoundErrorType
     | InsufficientOrganizationAdminsErrorType

@@ -156,6 +156,7 @@ export default function MemberControls({
 				onClose={onDemoteMemberModalClose}
 				member={data}
 				organization={organizationData}
+				membersConnectionId={membersConnectionId}
 			/>
 			<PromoteMemberModal
 				isOpen={isPromoteMemberModalOpen}

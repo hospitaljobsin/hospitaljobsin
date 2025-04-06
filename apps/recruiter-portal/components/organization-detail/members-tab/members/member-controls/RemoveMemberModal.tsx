@@ -31,11 +31,17 @@ const DeleteMemberMutation = graphql`
   mutation RemoveMemberModalMutation($accountId: ID!, $organizationId: ID!, $connections: [ID!]!) {
     removeOrganizationMember(accountId: $accountId, organizationId: $organizationId) {
         __typename
-        ... on OrganizationMemberEdge {
-            node {
-                id @deleteEdge(connections: $connections)
-            }
-        }
+        ... on RemoveOrganizationMemberSuccess { 
+			organizationMemberEdge {
+            	node {
+                	id @deleteEdge(connections: $connections)
+            	}
+       		} 
+			organization {
+				id
+				...MemberControlsOrganizationFragment
+			}
+		}
         ... on OrganizationNotFoundError {
             __typename
         }
@@ -82,7 +88,7 @@ export default function RemoveMemberModal({
 			onCompleted(response) {
 				if (
 					response.removeOrganizationMember.__typename ===
-					"OrganizationMemberEdge"
+					"RemoveOrganizationMemberSuccess"
 				) {
 					// successful case
 				} else if (

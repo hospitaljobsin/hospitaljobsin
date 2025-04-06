@@ -36,6 +36,7 @@ from .types import (
     DeclineOrganizationInvitePayload,
     DeleteOrganizationInvitePayload,
     DemoteOrganizationMemberPayload,
+    DemoteOrganizationMemberSuccessType,
     InsufficientOrganizationAdminsErrorType,
     MemberAlreadyExistsErrorType,
     OrganizationAuthorizationErrorType,
@@ -48,7 +49,9 @@ from .types import (
     OrganizationSlugInUseErrorType,
     OrganizationType,
     PromoteOrganizationMemberPayload,
+    PromoteOrganizationMemberSuccessType,
     RemoveOrganizationMemberPayload,
+    RemoveOrganizationMemberSuccessType,
     UpdateOrganizationPayload,
 )
 
@@ -411,8 +414,12 @@ class OrganizationMutation:
                         return OrganizationMemberNotFoundErrorType()
                     case OrganizationAuthorizationError():
                         return OrganizationAuthorizationErrorType()
-            case Ok(member):
-                return OrganizationMemberEdgeType.marshal(member)
+            case Ok(result):
+                (member, organization) = result
+                return RemoveOrganizationMemberSuccessType(
+                    organization=OrganizationType.marshal(organization),
+                    organization_member_edge=OrganizationMemberEdgeType.marshal(member),
+                )
             case _ as unreachable:
                 assert_never(unreachable)
 
@@ -460,8 +467,12 @@ class OrganizationMutation:
                         return OrganizationMemberNotFoundErrorType()
                     case OrganizationAuthorizationError():
                         return OrganizationAuthorizationErrorType()
-            case Ok(member):
-                return OrganizationMemberEdgeType.marshal(member)
+            case Ok(result):
+                (member, organization) = result
+                return PromoteOrganizationMemberSuccessType(
+                    organization=OrganizationType.marshal(organization),
+                    organization_member_edge=OrganizationMemberEdgeType.marshal(member),
+                )
             case _ as unreachable:
                 assert_never(unreachable)
 
@@ -511,7 +522,11 @@ class OrganizationMutation:
                         return InsufficientOrganizationAdminsErrorType()
                     case OrganizationAuthorizationError():
                         return OrganizationAuthorizationErrorType()
-            case Ok(member):
-                return OrganizationMemberEdgeType.marshal(member)
+            case Ok(result):
+                (member, organization) = result
+                return DemoteOrganizationMemberSuccessType(
+                    organization=OrganizationType.marshal(organization),
+                    organization_member_edge=OrganizationMemberEdgeType.marshal(member),
+                )
             case _ as unreachable:
                 assert_never(unreachable)

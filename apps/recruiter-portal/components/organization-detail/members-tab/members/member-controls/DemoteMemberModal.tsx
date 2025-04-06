@@ -28,12 +28,18 @@ const DemoteMemberModalOrganizationFragment = graphql`
 `;
 
 const DemoteMemberMutation = graphql`
-  mutation DemoteMemberModalMutation($accountId: ID!, $organizationId: ID!) {
+  mutation DemoteMemberModalMutation($accountId: ID!, $organizationId: ID!, $connections: [ID!]!) {
     demoteOrganizationMember(accountId: $accountId, organizationId: $organizationId) {
         __typename
-        ... on OrganizationMemberEdge {
-            ...MemberFragment
-        }
+		... on DemoteOrganizationMemberSuccess {
+			organizationMemberEdge @appendEdge(connections: $connections) {
+				...MemberFragment
+			}
+			organization {
+				id
+				...MemberControlsOrganizationFragment
+			}
+		}
         ... on OrganizationNotFoundError {
             __typename
         }
@@ -56,12 +62,14 @@ export default function DemoteMemberModal({
 	onClose,
 	member,
 	organization,
+	membersConnectionId,
 }: {
 	isOpen: boolean;
 	onOpenChange: (isOpen: boolean) => void;
 	onClose: () => void;
 	member: DemoteMemberModalFragment$key;
 	organization: DemoteMemberModalOrganizationFragment$key;
+	membersConnectionId: string;
 }) {
 	const data = useFragment(DemoteMemberModalFragment, member);
 	const organizationData = useFragment(
@@ -71,19 +79,18 @@ export default function DemoteMemberModal({
 	const [commitMutation, isMutationInFlight] =
 		useMutation<DemoteMemberModalMutation>(DemoteMemberMutation);
 
-	// TODO: refresh organization's admin count after demoting a member
-
 	function handleDemoteMember() {
 		commitMutation({
 			variables: {
 				accountId: data.node.id,
 				organizationId: organizationData.id,
+				connections: [membersConnectionId],
 			},
 
 			updater: (store, response) => {
 				if (
 					response?.demoteOrganizationMember?.__typename !==
-					"OrganizationMemberEdge"
+					"DemoteOrganizationMemberSuccess"
 				) {
 					return;
 				}
@@ -98,7 +105,10 @@ export default function DemoteMemberModal({
 				);
 				if (!connection) return;
 
-				const newEdge = store.getRootField("demoteOrganizationMember");
+				const root = store.getRootField("demoteOrganizationMember");
+				if (!root) return;
+
+				const newEdge = root.getLinkedRecord("organizationMemberEdge");
 				if (!newEdge) return;
 
 				const newNode = newEdge.getLinkedRecord("node");
@@ -121,7 +131,7 @@ export default function DemoteMemberModal({
 			onCompleted(response) {
 				if (
 					response.demoteOrganizationMember.__typename ===
-					"OrganizationMemberEdge"
+					"DemoteOrganizationMemberSuccess"
 				) {
 					// successful case
 				} else if (

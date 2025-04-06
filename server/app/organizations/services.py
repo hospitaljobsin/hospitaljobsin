@@ -67,7 +67,7 @@ class OrganizationMemberService:
         organization_id: ObjectId,
         member_account_id: ObjectId,
     ) -> Result[
-        OrganizationMember,
+        tuple[OrganizationMember, Organization],
         OrganizationNotFoundError
         | OrganizationMemberNotFoundError
         | OrganizationAuthorizationError,
@@ -103,7 +103,7 @@ class OrganizationMemberService:
 
         await self._organization_member_repo.delete(existing_organization_member)
 
-        return Ok(existing_organization_member)
+        return Ok((existing_organization_member, existing_organization))
 
     async def promote_member(
         self,
@@ -111,7 +111,7 @@ class OrganizationMemberService:
         organization_id: ObjectId,
         member_account_id: ObjectId,
     ) -> Result[
-        OrganizationMember,
+        tuple[OrganizationMember, Organization],
         OrganizationNotFoundError
         | OrganizationMemberNotFoundError
         | OrganizationAuthorizationError,
@@ -143,7 +143,7 @@ class OrganizationMemberService:
             role="admin",
         )
 
-        return Ok(existing_organization_member)
+        return Ok((existing_organization_member, existing_organization))
 
     async def demote_member(
         self,
@@ -151,7 +151,7 @@ class OrganizationMemberService:
         organization_id: ObjectId,
         member_account_id: ObjectId,
     ) -> Result[
-        OrganizationMember,
+        tuple[OrganizationMember, Organization],
         OrganizationNotFoundError
         | OrganizationMemberNotFoundError
         | InsufficientOrganizationAdminsError
@@ -194,7 +194,7 @@ class OrganizationMemberService:
             role="member",
         )
 
-        return Ok(existing_organization_member)
+        return Ok((existing_organization_member, existing_organization))
 
 
 class OrganizationService:

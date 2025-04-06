@@ -228,7 +228,16 @@ type DeleteWebAuthnCredentialSuccess {
 }
 
 """The demote organization member payload."""
-union DemoteOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError | InsufficientOrganizationAdminsError | OrganizationAuthorizationError
+union DemoteOrganizationMemberPayload = DemoteOrganizationMemberSuccess | OrganizationNotFoundError | OrganizationMemberNotFoundError | InsufficientOrganizationAdminsError | OrganizationAuthorizationError
+
+"""Demote organization member success."""
+type DemoteOrganizationMemberSuccess {
+  """The organization member edge."""
+  organizationMemberEdge: OrganizationMemberEdge!
+
+  """The updated organization."""
+  organization: Organization!
+}
 
 """The disable account 2FA payload."""
 union DisableAccount2FAWithAuthenticatorPayload = Account | AuthenticatorNotEnabledError
@@ -1298,7 +1307,16 @@ type ProfileNotFoundError implements Error {
 union ProfilePayload = Profile | ProfileNotFoundError
 
 """The promote organization member payload."""
-union PromoteOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError | OrganizationAuthorizationError
+union PromoteOrganizationMemberPayload = PromoteOrganizationMemberSuccess | OrganizationNotFoundError | OrganizationMemberNotFoundError | OrganizationAuthorizationError
+
+"""Promote organization member success."""
+type PromoteOrganizationMemberSuccess {
+  """The organization member edge."""
+  organizationMemberEdge: OrganizationMemberEdge!
+
+  """The updated organization."""
+  organization: Organization!
+}
 
 type Query {
   """Get the current user."""
@@ -1376,7 +1394,16 @@ union RegisterWithPasskeyPayload = Account | EmailInUseError | InvalidEmailVerif
 union RegisterWithPasswordPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | PasswordNotStrongError
 
 """The remove organization member payload."""
-union RemoveOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError | OrganizationAuthorizationError
+union RemoveOrganizationMemberPayload = RemoveOrganizationMemberSuccess | OrganizationNotFoundError | OrganizationMemberNotFoundError | OrganizationAuthorizationError
+
+"""Remove organization member success."""
+type RemoveOrganizationMemberSuccess {
+  """The organization member edge."""
+  organizationMemberEdge: OrganizationMemberEdge!
+
+  """The updated organization."""
+  organization: Organization!
+}
 
 """Request email verification success."""
 type RequestEmailVerificationSuccess {

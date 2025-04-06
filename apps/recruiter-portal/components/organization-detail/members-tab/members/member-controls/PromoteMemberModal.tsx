@@ -31,9 +31,15 @@ const PromoteMemberMutation = graphql`
   mutation PromoteMemberModalMutation($accountId: ID!, $organizationId: ID!) {
     promoteOrganizationMember(accountId: $accountId, organizationId: $organizationId) {
         __typename
-        ... on OrganizationMemberEdge {
-            ...MemberFragment
-        }
+		... on PromoteOrganizationMemberSuccess {
+			organizationMemberEdge {
+				...MemberFragment
+			}
+			organization {
+				id
+				...MemberControlsOrganizationFragment
+			}
+		}
         ... on OrganizationNotFoundError {
             __typename
         }
@@ -77,7 +83,7 @@ export default function PromoteMemberModal({
 			updater: (store, response) => {
 				if (
 					response?.promoteOrganizationMember?.__typename !==
-					"OrganizationMemberEdge"
+					"PromoteOrganizationMemberSuccess"
 				) {
 					return;
 				}
@@ -92,7 +98,10 @@ export default function PromoteMemberModal({
 				);
 				if (!connection) return;
 
-				const newEdge = store.getRootField("promoteOrganizationMember");
+				const root = store.getRootField("promoteOrganizationMember");
+				if (!root) return;
+
+				const newEdge = root.getLinkedRecord("organizationMemberEdge");
 				if (!newEdge) return;
 
 				const newNode = newEdge.getLinkedRecord("node");
@@ -114,7 +123,7 @@ export default function PromoteMemberModal({
 			onCompleted(response) {
 				if (
 					response.promoteOrganizationMember.__typename ===
-					"OrganizationMemberEdge"
+					"PromoteOrganizationMemberSuccess"
 				) {
 					// successful case
 				} else if (
