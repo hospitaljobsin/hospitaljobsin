@@ -79,78 +79,6 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					/>
 				</Button>
 			</NavbarItem>
-
-			<Drawer
-				isOpen={isDrawerOpen}
-				onClose={onDrawerOpenChange}
-				placement="bottom"
-				hideCloseButton
-			>
-				<DrawerContent>
-					<DrawerHeader>Navigation Menu</DrawerHeader>
-					<DrawerBody className="gap-4 flex flex-col items-center">
-						<div className="flex flex-row items-center gap-4 w-full">
-							<Image
-								src={data.avatarUrl}
-								alt={data.fullName}
-								width={25}
-								height={25}
-								className="rounded-full"
-							/>
-							<div className="flex flex-col gap-1 items-start">
-								<p className="text-tiny">Signed in as</p>
-								<p className="truncate max-w-48 text-medium">{data.fullName}</p>
-							</div>
-						</div>
-						<Divider />
-						<Button
-							className="w-full justify-start"
-							radius="sm"
-							variant="light"
-							startContent={<Settings className="h-4 w-4" />}
-							href={links.accountSettings}
-							as={Link}
-							isExternal
-							fullWidth
-						>
-							Account
-						</Button>
-						<Button
-							className="w-full justify-start"
-							radius="sm"
-							variant="light"
-							startContent={<UserIcon className="h-4 w-4" />}
-							href={links.profile}
-							as={links.profile ? "a" : "button"}
-							fullWidth
-						>
-							Job Seeker Profile
-						</Button>
-						<Button
-							className="w-full justify-start"
-							radius="sm"
-							variant="light"
-							startContent={<BookmarkIcon className="h-4 w-4" />}
-							href={links.savedJobs}
-							as={links.savedJobs ? "a" : "button"}
-							fullWidth
-						>
-							Saved Jobs
-						</Button>
-						<Divider />
-						<Button
-							className="w-full justify-start"
-							radius="sm"
-							variant="light"
-							startContent={<LogOutIcon className="h-4 w-4" />}
-							onPress={onLogoutModalOpen}
-							fullWidth
-						>
-							Log Out
-						</Button>
-					</DrawerBody>
-				</DrawerContent>
-			</Drawer>
 			<NavbarItem className="hidden md:block">
 				<Link
 					href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
@@ -161,6 +89,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					for recruiters
 				</Link>
 			</NavbarItem>
+
 			<NavbarItem className="hidden md:block">
 				<Dropdown className="hidden md:block" placement="bottom-end">
 					<DropdownTrigger>
@@ -240,6 +169,77 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					</DropdownMenu>
 				</Dropdown>
 			</NavbarItem>
+			<Drawer
+				isOpen={isDrawerOpen}
+				onClose={onDrawerOpenChange}
+				placement="bottom"
+				hideCloseButton
+			>
+				<DrawerContent>
+					<DrawerHeader>Navigation Menu</DrawerHeader>
+					<DrawerBody className="gap-4 flex flex-col items-center">
+						<div className="flex flex-row items-center gap-4 w-full">
+							<Image
+								src={data.avatarUrl}
+								alt={data.fullName}
+								width={25}
+								height={25}
+								className="rounded-full"
+							/>
+							<div className="flex flex-col gap-1 items-start">
+								<p className="text-tiny">Signed in as</p>
+								<p className="truncate max-w-48 text-medium">{data.fullName}</p>
+							</div>
+						</div>
+						<Divider />
+						<Button
+							className="w-full justify-start"
+							radius="sm"
+							variant="light"
+							startContent={<Settings className="h-4 w-4" />}
+							href={links.accountSettings}
+							as={Link}
+							isExternal
+							fullWidth
+						>
+							Account
+						</Button>
+						<Button
+							className="w-full justify-start"
+							radius="sm"
+							variant="light"
+							startContent={<UserIcon className="h-4 w-4" />}
+							href={links.profile}
+							as={links.profile ? "a" : "button"}
+							fullWidth
+						>
+							Job Seeker Profile
+						</Button>
+						<Button
+							className="w-full justify-start"
+							radius="sm"
+							variant="light"
+							startContent={<BookmarkIcon className="h-4 w-4" />}
+							href={links.savedJobs}
+							as={links.savedJobs ? "a" : "button"}
+							fullWidth
+						>
+							Saved Jobs
+						</Button>
+						<Divider />
+						<Button
+							className="w-full justify-start"
+							radius="sm"
+							variant="light"
+							startContent={<LogOutIcon className="h-4 w-4" />}
+							onPress={onLogoutModalOpen}
+							fullWidth
+						>
+							Log Out
+						</Button>
+					</DrawerBody>
+				</DrawerContent>
+			</Drawer>
 			<LogoutModal
 				onOpenChange={onLogoutModalOpenChange}
 				isOpen={isLogoutModalOpen}

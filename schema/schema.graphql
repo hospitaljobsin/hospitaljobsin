@@ -143,7 +143,7 @@ type AuthenticatorNotEnabledError implements Error {
 }
 
 """The create job payload."""
-union CreateJobPayload = CreateJobSuccess | OrganizationNotFoundError
+union CreateJobPayload = CreateJobSuccess | OrganizationNotFoundError | OrganizationAuthorizationError
 
 """Used when the job is created successfully."""
 type CreateJobSuccess {
@@ -152,7 +152,7 @@ type CreateJobSuccess {
 }
 
 """The create organization invite payload."""
-union CreateOrganizationInvitePayload = OrganizationInvite | InvalidEmailError | OrganizationNotFoundError | MemberAlreadyExistsError
+union CreateOrganizationInvitePayload = OrganizationInvite | InvalidEmailError | OrganizationNotFoundError | MemberAlreadyExistsError | OrganizationAuthorizationError
 
 """
 The payload for creating a presigned URL for uploading the organization logo.
@@ -198,7 +198,7 @@ scalar Date
 union DeclineOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
 
 """The delete organization invite payload."""
-union DeleteOrganizationInvitePayload = OrganizationInviteEdge | OrganizationNotFoundError | OrganizationInviteNotFoundError
+union DeleteOrganizationInvitePayload = OrganizationInviteEdge | OrganizationNotFoundError | OrganizationInviteNotFoundError | OrganizationAuthorizationError
 
 """The delete other sessions payload."""
 type DeleteOtherSessionsPayload {
@@ -228,7 +228,7 @@ type DeleteWebAuthnCredentialSuccess {
 }
 
 """The demote organization member payload."""
-union DemoteOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError | InsufficientOrganizationAdminsError
+union DemoteOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError | InsufficientOrganizationAdminsError | OrganizationAuthorizationError
 
 """The disable account 2FA payload."""
 union DisableAccount2FAWithAuthenticatorPayload = Account | AuthenticatorNotEnabledError
@@ -1092,6 +1092,14 @@ type Organization implements Node {
   ): OrganizationMemberConnection!
 }
 
+"""
+Used when the user is not authorized to perform the action in the organization.
+"""
+type OrganizationAuthorizationError implements Error {
+  """Human readable error message."""
+  message: String!
+}
+
 type OrganizationConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
@@ -1290,7 +1298,7 @@ type ProfileNotFoundError implements Error {
 union ProfilePayload = Profile | ProfileNotFoundError
 
 """The promote organization member payload."""
-union PromoteOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError
+union PromoteOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError | OrganizationAuthorizationError
 
 type Query {
   """Get the current user."""
@@ -1368,7 +1376,7 @@ union RegisterWithPasskeyPayload = Account | EmailInUseError | InvalidEmailVerif
 union RegisterWithPasswordPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | PasswordNotStrongError
 
 """The remove organization member payload."""
-union RemoveOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError
+union RemoveOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError | OrganizationAuthorizationError
 
 """Request email verification success."""
 type RequestEmailVerificationSuccess {
@@ -1513,7 +1521,7 @@ type UnsaveJobSuccess {
 union UpdateAccountPayload = Account
 
 """The update organization payload."""
-union UpdateOrganizationPayload = Organization | OrganizationSlugInUseError | OrganizationNotFoundError
+union UpdateOrganizationPayload = Organization | OrganizationSlugInUseError | OrganizationNotFoundError | OrganizationAuthorizationError
 
 """The update password payload."""
 union UpdatePasswordPayload = Account | PasswordNotStrongError

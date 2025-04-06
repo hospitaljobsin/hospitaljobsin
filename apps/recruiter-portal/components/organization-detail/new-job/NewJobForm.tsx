@@ -87,6 +87,10 @@ mutation NewJobFormMutation(
 		... on OrganizationNotFoundError {
 			__typename
 		}
+
+		... on OrganizationAuthorizationError {
+			__typename
+		}
     }
 }
 `;
@@ -300,6 +304,13 @@ export default function NewJobForm({ account, organization }: Props) {
 							response.createJob.jobEdge.node.slug,
 						),
 					);
+				} else if (
+					response.createJob.__typename === "OrganizationAuthorizationError"
+				) {
+					addToast({
+						color: "danger",
+						title: "You are not authorized to perform this action.",
+					});
 				}
 			},
 		});

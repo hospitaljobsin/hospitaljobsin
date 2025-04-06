@@ -16,3 +16,7 @@ class OrganizationMemberNotFoundError:
 
 class InsufficientOrganizationAdminsError:
     """Raised when there are not enough organization admins to remove an admin."""
+
+
+class OrganizationAuthorizationError:
+    """Raised when an organization authorization fails (insufficient role privileges)."""

@@ -50,6 +50,10 @@ const InviteMemberModalMutation = graphql`
         __typename
         message
       }
+
+	  ... on OrganizationAuthorizationError {
+		__typename
+	  }
     }
   }
 `;
@@ -133,6 +137,13 @@ export default function InviteMemberModal({
 				) {
 					addToast({
 						description: "An unexpected error occurred. Please try again.",
+						color: "danger",
+					});
+				} else if (
+					response.createOrganizationInvite.__typename === "OrganizationAuthorizationError"
+				) {
+					addToast({
+						description: "You are not authorized to perform this action.",
 						color: "danger",
 					});
 				}

@@ -4,7 +4,14 @@ import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationTy
 import links from "@/lib/links";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next";
-import { Button, Card, CardBody, CardFooter, Input } from "@heroui/react";
+import {
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	Input,
+	addToast,
+} from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useState } from "react";
@@ -39,6 +46,10 @@ mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $s
             __typename
 			message
         }
+
+		... on OrganizationAuthorizationError {
+			__typename			
+		}
 	}
 }
 `;
@@ -210,7 +221,10 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 				} else if (
 					response.updateOrganization.__typename === "OrganizationNotFoundError"
 				) {
-					// Handle organization not found error
+					addToast({
+						description: "An unexpected error occurred. Please try again.",
+						color: "danger",
+					});
 				} else if (
 					response.updateOrganization.__typename ===
 					"OrganizationSlugInUseError"
@@ -218,6 +232,14 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 					// Handle slug in use error
 					setError("slug", {
 						message: response.updateOrganization.message,
+					});
+				} else if (
+					response.updateOrganization.__typename ===
+					"OrganizationAuthorizationError"
+				) {
+					addToast({
+						description: "You are not authorized to perform this action.",
+						color: "danger",
 					});
 				}
 			},

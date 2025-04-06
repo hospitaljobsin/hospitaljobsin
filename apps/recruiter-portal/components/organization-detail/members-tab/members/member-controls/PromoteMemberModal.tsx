@@ -40,6 +40,9 @@ const PromoteMemberMutation = graphql`
         ... on OrganizationMemberNotFoundError {
             __typename
         }
+		... on OrganizationAuthorizationError {
+			__typename
+		}
     }
   }
 `;
@@ -128,6 +131,14 @@ export default function PromoteMemberModal({
 				) {
 					addToast({
 						description: "An unexpected error occurred. Please try again.",
+						color: "danger",
+					});
+				} else if (
+					response.promoteOrganizationMember.__typename ===
+					"OrganizationAuthorizationError"
+				) {
+					addToast({
+						description: "You are not authorized to perform this action.",
 						color: "danger",
 					});
 				}

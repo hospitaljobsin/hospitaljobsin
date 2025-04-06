@@ -41,6 +41,10 @@ const DeleteInviteMutation = graphql`
         ... on OrganizationInviteNotFoundError {
             __typename
         }
+
+		... on OrganizationAuthorizationError {
+			__typename
+		}
 	}
   }
 `;
@@ -95,6 +99,14 @@ export default function DeleteInviteModal({
 				) {
 					addToast({
 						description: "An unexpected error occurred. Please try again.",
+						color: "danger",
+					});
+				} else if (
+					response.deleteOrganizationInvite.__typename ===
+					"OrganizationAuthorizationError"
+				) {
+					addToast({
+						description: "You are not authorized to perform this action.",
 						color: "danger",
 					});
 				}

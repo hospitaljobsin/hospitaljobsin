@@ -458,6 +458,17 @@ class MemberAlreadyExistsErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="OrganizationAuthorizationError",
+    description="Used when the user is not authorized to perform the action in the organization.",
+)
+class OrganizationAuthorizationErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="You do not have sufficient role privileges to perform this action!",
+    )
+
+
 CreateOrganizationPayload = Annotated[
     OrganizationType | OrganizationSlugInUseErrorType,
     strawberry.union(
@@ -467,7 +478,10 @@ CreateOrganizationPayload = Annotated[
 ]
 
 UpdateOrganizationPayload = Annotated[
-    OrganizationType | OrganizationSlugInUseErrorType | OrganizationNotFoundErrorType,
+    OrganizationType
+    | OrganizationSlugInUseErrorType
+    | OrganizationNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
     strawberry.union(
         name="UpdateOrganizationPayload",
         description="The update organization payload.",
@@ -498,7 +512,8 @@ CreateOrganizationInvitePayload = Annotated[
     OrganizationInviteType
     | InvalidEmailErrorType
     | OrganizationNotFoundErrorType
-    | MemberAlreadyExistsErrorType,
+    | MemberAlreadyExistsErrorType
+    | OrganizationAuthorizationErrorType,
     strawberry.union(
         name="CreateOrganizationInvitePayload",
         description="The create organization invite payload.",
@@ -520,7 +535,8 @@ class OrganizationInviteNotFoundErrorType(BaseErrorType):
 DeleteOrganizationInvitePayload = Annotated[
     OrganizationInviteEdgeType
     | OrganizationNotFoundErrorType
-    | OrganizationInviteNotFoundErrorType,
+    | OrganizationInviteNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
     strawberry.union(
         name="DeleteOrganizationInvitePayload",
         description="The delete organization invite payload.",
@@ -579,7 +595,8 @@ class InsufficientOrganizationAdminsErrorType(BaseErrorType):
 RemoveOrganizationMemberPayload = Annotated[
     OrganizationMemberEdgeType
     | OrganizationNotFoundErrorType
-    | OrganizationMemberNotFoundErrorType,
+    | OrganizationMemberNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
     strawberry.union(
         name="RemoveOrganizationMemberPayload",
         description="The remove organization member payload.",
@@ -589,7 +606,8 @@ RemoveOrganizationMemberPayload = Annotated[
 PromoteOrganizationMemberPayload = Annotated[
     OrganizationMemberEdgeType
     | OrganizationNotFoundErrorType
-    | OrganizationMemberNotFoundErrorType,
+    | OrganizationMemberNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
     strawberry.union(
         name="PromoteOrganizationMemberPayload",
         description="The promote organization member payload.",
@@ -600,7 +618,8 @@ DemoteOrganizationMemberPayload = Annotated[
     OrganizationMemberEdgeType
     | OrganizationNotFoundErrorType
     | OrganizationMemberNotFoundErrorType
-    | InsufficientOrganizationAdminsErrorType,
+    | InsufficientOrganizationAdminsErrorType
+    | OrganizationAuthorizationErrorType,
     strawberry.union(
         name="DemoteOrganizationMemberPayload",
         description="The demote organization member payload.",

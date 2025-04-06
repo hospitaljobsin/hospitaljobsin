@@ -16,7 +16,10 @@ from app.base.types import (
 )
 from app.context import Info
 from app.jobs.documents import Job, SavedJob
-from app.organizations.types import OrganizationNotFoundErrorType
+from app.organizations.types import (
+    OrganizationAuthorizationErrorType,
+    OrganizationNotFoundErrorType,
+)
 
 if TYPE_CHECKING:
     from app.organizations.types import OrganizationType
@@ -299,7 +302,9 @@ class CreateJobSuccess:
 
 
 CreateJobPayload = Annotated[
-    CreateJobSuccess | OrganizationNotFoundErrorType,
+    CreateJobSuccess
+    | OrganizationNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
     strawberry.union(
         name="CreateJobPayload",
         description="The create job payload.",

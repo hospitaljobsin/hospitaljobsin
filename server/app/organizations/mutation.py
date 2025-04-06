@@ -17,6 +17,7 @@ from app.jobs.exceptions import OrganizationNotFoundError
 from app.organizations.exceptions import (
     InsufficientOrganizationAdminsError,
     MemberAlreadyExistsError,
+    OrganizationAuthorizationError,
     OrganizationInviteNotFoundError,
     OrganizationMemberNotFoundError,
     OrganizationSlugInUseError,
@@ -37,6 +38,7 @@ from .types import (
     DemoteOrganizationMemberPayload,
     InsufficientOrganizationAdminsErrorType,
     MemberAlreadyExistsErrorType,
+    OrganizationAuthorizationErrorType,
     OrganizationInviteEdgeType,
     OrganizationInviteNotFoundErrorType,
     OrganizationInviteType,
@@ -133,7 +135,6 @@ class OrganizationMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: ensure only organization admins can update the organization
                 ],
             )
         ],
@@ -189,6 +190,8 @@ class OrganizationMutation:
                         return OrganizationNotFoundErrorType()
                     case OrganizationSlugInUseError():
                         return OrganizationSlugInUseErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
             case Ok(organization):
                 return OrganizationType.marshal(organization)
             case _ as unreachable:
@@ -201,7 +204,6 @@ class OrganizationMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: ensure only organization admins can create an invite
                 ],
             )
         ],
@@ -236,6 +238,8 @@ class OrganizationMutation:
                         return MemberAlreadyExistsErrorType()
                     case InvalidEmailError() as err:
                         return InvalidEmailErrorType(message=err.message)
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
             case Ok(invite):
                 return OrganizationInviteType.marshal(invite)
             case _ as unreachable:
@@ -248,7 +252,6 @@ class OrganizationMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: ensure only organization admins can delete an invite
                 ],
             )
         ],
@@ -283,6 +286,8 @@ class OrganizationMutation:
                         return OrganizationNotFoundErrorType()
                     case OrganizationInviteNotFoundError():
                         return OrganizationInviteNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
             case Ok(invite):
                 return OrganizationInviteEdgeType.marshal(invite)
             case _ as unreachable:
@@ -370,7 +375,6 @@ class OrganizationMutation:
                 permissions=[
                     IsAuthenticated(),
                     # TODO: require sudo mode here
-                    # TODO: ensure only organization admins can kick a member
                 ],
             )
         ],
@@ -405,6 +409,8 @@ class OrganizationMutation:
                         return OrganizationNotFoundErrorType()
                     case OrganizationMemberNotFoundError():
                         return OrganizationMemberNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
             case Ok(member):
                 return OrganizationMemberEdgeType.marshal(member)
             case _ as unreachable:
@@ -418,7 +424,6 @@ class OrganizationMutation:
                 permissions=[
                     IsAuthenticated(),
                     # TODO: require sudo mode here
-                    # TODO: ensure only organization admins can promote a member
                 ],
             )
         ],
@@ -453,6 +458,8 @@ class OrganizationMutation:
                         return OrganizationNotFoundErrorType()
                     case OrganizationMemberNotFoundError():
                         return OrganizationMemberNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
             case Ok(member):
                 return OrganizationMemberEdgeType.marshal(member)
             case _ as unreachable:
@@ -466,7 +473,6 @@ class OrganizationMutation:
                 permissions=[
                     IsAuthenticated(),
                     # TODO: require sudo mode here
-                    # TODO: ensure only organization admins can demote a member
                 ],
             )
         ],
@@ -503,6 +509,8 @@ class OrganizationMutation:
                         return OrganizationMemberNotFoundErrorType()
                     case InsufficientOrganizationAdminsError():
                         return InsufficientOrganizationAdminsErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
             case Ok(member):
                 return OrganizationMemberEdgeType.marshal(member)
             case _ as unreachable:

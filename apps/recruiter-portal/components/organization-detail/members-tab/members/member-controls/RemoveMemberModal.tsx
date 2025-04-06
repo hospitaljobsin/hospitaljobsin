@@ -42,6 +42,9 @@ const DeleteMemberMutation = graphql`
         ... on OrganizationMemberNotFoundError {
             __typename
         }
+		... on OrganizationAuthorizationError {
+			__typename
+		}
     }
   }
 `;
@@ -96,6 +99,14 @@ export default function RemoveMemberModal({
 				) {
 					addToast({
 						description: "An unexpected error occurred. Please try again.",
+						color: "danger",
+					});
+				} else if (
+					response.removeOrganizationMember.__typename ===
+					"OrganizationAuthorizationError"
+				) {
+					addToast({
+						description: "You are not authorized to perform this action.",
 						color: "danger",
 					});
 				}

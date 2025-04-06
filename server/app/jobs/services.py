@@ -14,7 +14,9 @@ from app.jobs.exceptions import (
     SavedJobNotFoundError,
 )
 from app.jobs.repositories import JobRepo, SavedJobRepo
+from app.organizations.exceptions import OrganizationAuthorizationError
 from app.organizations.repositories import OrganizationRepo
+from app.organizations.services import OrganizationMemberService
 
 
 class SavedJobService:
@@ -55,9 +57,15 @@ class SavedJobService:
 
 
 class JobService:
-    def __init__(self, job_repo: JobRepo, organization_repo: OrganizationRepo) -> None:
+    def __init__(
+        self,
+        job_repo: JobRepo,
+        organization_repo: OrganizationRepo,
+        organization_member_service: OrganizationMemberService,
+    ) -> None:
         self._job_repo = job_repo
         self._organization_repo = organization_repo
+        self._organization_member_service = organization_member_service
 
     async def create(
         self,
@@ -77,7 +85,7 @@ class JobService:
         work_mode: Literal["hybrid", "remote", "office"] | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",
-    ) -> Result[Job, OrganizationNotFoundError]:
+    ) -> Result[Job, OrganizationNotFoundError | OrganizationAuthorizationError]:
         """Create a new job."""
         try:
             organization_id = ObjectId(organization_id)
@@ -86,6 +94,12 @@ class JobService:
         existing_organization = await self._organization_repo.get(organization_id)
         if existing_organization is None:
             return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_member(
+            account_id=account.id,
+            organization_id=existing_organization.id,
+        ):
+            return Err(OrganizationAuthorizationError())
 
         job = await self._job_repo.create(
             organization=existing_organization,

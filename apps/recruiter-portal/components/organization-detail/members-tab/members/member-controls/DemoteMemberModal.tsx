@@ -43,6 +43,9 @@ const DemoteMemberMutation = graphql`
 		... on InsufficientOrganizationAdminsError {
 			__typename
 		}
+		... on OrganizationAuthorizationError {
+			__typename
+		}
     }
   }
 `;
@@ -142,6 +145,14 @@ export default function DemoteMemberModal({
 					addToast({
 						description:
 							"You must have at least one admin in the organization.",
+						color: "danger",
+					});
+				} else if (
+					response.demoteOrganizationMember.__typename ===
+					"OrganizationAuthorizationError"
+				) {
+					addToast({
+						description: "You are not authorized to perform this action.",
 						color: "danger",
 					});
 				}

@@ -24,6 +24,7 @@ from app.organizations.documents import (
 from app.organizations.exceptions import (
     InsufficientOrganizationAdminsError,
     MemberAlreadyExistsError,
+    OrganizationAuthorizationError,
     OrganizationInviteNotFoundError,
     OrganizationMemberNotFoundError,
     OrganizationSlugInUseError,
@@ -35,16 +36,179 @@ from app.organizations.repositories import (
 )
 
 
+class OrganizationMemberService:
+    def __init__(
+        self,
+        organization_member_repo: OrganizationMemberRepo,
+        organization_repo: OrganizationRepo,
+    ) -> None:
+        self._organization_member_repo = organization_member_repo
+        self._organization_repo = organization_repo
+
+    async def is_admin(self, account_id: ObjectId, organization_id: ObjectId) -> bool:
+        member = await self._organization_member_repo.get(
+            account_id=account_id,
+            organization_id=organization_id,
+        )
+
+        return member is not None and member.role == "admin"
+
+    async def is_member(self, account_id: ObjectId, organization_id: ObjectId) -> bool:
+        return (
+            await self._organization_member_repo.get(
+                account_id=account_id, organization_id=organization_id
+            )
+            is not None
+        )
+
+    async def remove_member(
+        self,
+        account: Account,
+        organization_id: ObjectId,
+        member_account_id: ObjectId,
+    ) -> Result[
+        OrganizationMember,
+        OrganizationNotFoundError
+        | OrganizationMemberNotFoundError
+        | OrganizationAuthorizationError,
+    ]:
+        """Kick a member from an organization."""
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        if not await self.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        existing_organization_member = await self._organization_member_repo.get(
+            account_id=member_account_id,
+            organization_id=organization_id,
+        )
+
+        if existing_organization_member is None:
+            return Err(OrganizationMemberNotFoundError())
+
+        if existing_organization_member.role == "admin":
+            # we cannot kick other admins
+            return Err(OrganizationAuthorizationError())
+
+        # we don't need to check if we have atleast one admin, as admins cannot be removed
+        # and we check for minimum admins in the demote method
+
+        await self._organization_member_repo.delete(existing_organization_member)
+
+        return Ok(existing_organization_member)
+
+    async def promote_member(
+        self,
+        account: Account,
+        organization_id: ObjectId,
+        member_account_id: ObjectId,
+    ) -> Result[
+        OrganizationMember,
+        OrganizationNotFoundError
+        | OrganizationMemberNotFoundError
+        | OrganizationAuthorizationError,
+    ]:
+        """Promote a member in an organization."""
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        if not await self.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        existing_organization_member = await self._organization_member_repo.get(
+            account_id=member_account_id,
+            organization_id=organization_id,
+        )
+
+        if existing_organization_member is None:
+            return Err(OrganizationMemberNotFoundError())
+
+        existing_organization_member = await self._organization_member_repo.update(
+            existing_organization_member,
+            role="admin",
+        )
+
+        return Ok(existing_organization_member)
+
+    async def demote_member(
+        self,
+        account: Account,
+        organization_id: ObjectId,
+        member_account_id: ObjectId,
+    ) -> Result[
+        OrganizationMember,
+        OrganizationNotFoundError
+        | OrganizationMemberNotFoundError
+        | InsufficientOrganizationAdminsError
+        | OrganizationAuthorizationError,
+    ]:
+        """Demote a member in an organization."""
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        if not await self.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        existing_organization_member = await self._organization_member_repo.get(
+            account_id=member_account_id,
+            organization_id=organization_id,
+        )
+
+        if existing_organization_member is None:
+            return Err(OrganizationMemberNotFoundError())
+
+        if (
+            existing_organization_member.role == "admin"
+            and await self._organization_member_repo.get_admin_count(
+                organization_id=organization_id,
+            )
+            <= 1
+        ):
+            # we need at least one admin in the organization
+            return Err(InsufficientOrganizationAdminsError())
+
+        existing_organization_member = await self._organization_member_repo.update(
+            existing_organization_member,
+            role="member",
+        )
+
+        return Ok(existing_organization_member)
+
+
 class OrganizationService:
     def __init__(
         self,
         organization_repo: OrganizationRepo,
         organization_member_repo: OrganizationMemberRepo,
+        organization_member_service: OrganizationMemberService,
         s3_client: S3Client,
         settings: Settings,
     ) -> None:
         self._organization_repo = organization_repo
         self._organization_member_repo = organization_member_repo
+        self._organization_member_service = organization_member_service
         self._s3_client = s3_client
         self._settings = settings
 
@@ -104,13 +268,24 @@ class OrganizationService:
         description: str | None = None,
         website: str | None = None,
         logo_url: str | None = None,
-    ) -> Result[Organization, OrganizationSlugInUseError | OrganizationNotFoundError]:
+    ) -> Result[
+        Organization,
+        OrganizationSlugInUseError
+        | OrganizationNotFoundError
+        | OrganizationAuthorizationError,
+    ]:
         existing_organization = await self._organization_repo.get(
             organization_id=organization_id,
         )
 
         if existing_organization is None:
             return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
 
         if (
             slug != existing_organization.slug
@@ -134,144 +309,13 @@ class OrganizationService:
         return Ok(organization)
 
 
-class OrganizationMemberService:
-    def __init__(
-        self,
-        organization_member_repo: OrganizationMemberRepo,
-        organization_repo: OrganizationRepo,
-    ) -> None:
-        self._organization_member_repo = organization_member_repo
-        self._organization_repo = organization_repo
-
-    async def is_admin(self, account_id: ObjectId, organization_id: ObjectId) -> bool:
-        member = await self._organization_member_repo.get(
-            account_id=account_id,
-            organization_id=organization_id,
-        )
-
-        return member is not None and member.role == "admin"
-
-    async def is_member(self, account_id: ObjectId, organization_id: ObjectId) -> bool:
-        return (
-            await self._organization_member_repo.get(
-                account_id=account_id, organization_id=organization_id
-            )
-            is not None
-        )
-
-    async def remove_member(
-        self,
-        account: Account,
-        organization_id: ObjectId,
-        member_account_id: ObjectId,
-    ) -> Result[
-        OrganizationMember, OrganizationNotFoundError | OrganizationMemberNotFoundError
-    ]:
-        """Kick a member from an organization."""
-        existing_organization = await self._organization_repo.get(
-            organization_id=organization_id,
-        )
-
-        if existing_organization is None:
-            return Err(OrganizationNotFoundError())
-
-        existing_organization_member = await self._organization_member_repo.get(
-            account_id=member_account_id,
-            organization_id=organization_id,
-        )
-
-        if existing_organization_member is None:
-            return Err(OrganizationMemberNotFoundError())
-
-        if existing_organization_member.role == "admin":
-            # we cannot kick other admins
-            return Err(OrganizationMemberNotFoundError())
-
-        await self._organization_member_repo.delete(existing_organization_member)
-
-        return Ok(existing_organization_member)
-
-    async def promote_member(
-        self,
-        account: Account,
-        organization_id: ObjectId,
-        member_account_id: ObjectId,
-    ) -> Result[
-        OrganizationMember, OrganizationNotFoundError | OrganizationMemberNotFoundError
-    ]:
-        """Promote a member in an organization."""
-        existing_organization = await self._organization_repo.get(
-            organization_id=organization_id,
-        )
-
-        if existing_organization is None:
-            return Err(OrganizationNotFoundError())
-
-        existing_organization_member = await self._organization_member_repo.get(
-            account_id=member_account_id,
-            organization_id=organization_id,
-        )
-
-        if existing_organization_member is None:
-            return Err(OrganizationMemberNotFoundError())
-
-        existing_organization_member = await self._organization_member_repo.update(
-            existing_organization_member,
-            role="admin",
-        )
-
-        return Ok(existing_organization_member)
-
-    async def demote_member(
-        self,
-        account: Account,
-        organization_id: ObjectId,
-        member_account_id: ObjectId,
-    ) -> Result[
-        OrganizationMember,
-        OrganizationNotFoundError
-        | OrganizationMemberNotFoundError
-        | InsufficientOrganizationAdminsError,
-    ]:
-        """Demote a member in an organization."""
-        existing_organization = await self._organization_repo.get(
-            organization_id=organization_id,
-        )
-
-        if existing_organization is None:
-            return Err(OrganizationNotFoundError())
-
-        existing_organization_member = await self._organization_member_repo.get(
-            account_id=member_account_id,
-            organization_id=organization_id,
-        )
-
-        if existing_organization_member is None:
-            return Err(OrganizationMemberNotFoundError())
-
-        if (
-            await self._organization_member_repo.get_admin_count(
-                organization_id=organization_id,
-            )
-            <= 1
-        ):
-            # we need at least one admin in the organization
-            return Err(InsufficientOrganizationAdminsError())
-
-        existing_organization_member = await self._organization_member_repo.update(
-            existing_organization_member,
-            role="member",
-        )
-
-        return Ok(existing_organization_member)
-
-
 class OrganizationInviteService:
     def __init__(
         self,
         invite_repo: OrganizationInviteRepo,
         organization_repo: OrganizationRepo,
         organization_member_repo: OrganizationMemberRepo,
+        organization_member_service: OrganizationMemberService,
         account_repo: AccountRepo,
         email_sender: EmailSender,
         settings: Settings,
@@ -279,19 +323,23 @@ class OrganizationInviteService:
         self._invite_repo = invite_repo
         self._organization_repo = organization_repo
         self._organization_member_repo = organization_member_repo
+        self._organization_member_service = organization_member_service
         self._account_repo = account_repo
         self._email_sender = email_sender
         self._settings = settings
 
     async def create(
         self,
-        organization_id: ObjectId,
         account: Account,
+        organization_id: ObjectId,
         email: str,
         background_tasks: BackgroundTasks,
     ) -> Result[
         OrganizationInvite,
-        InvalidEmailError | OrganizationNotFoundError | MemberAlreadyExistsError,
+        InvalidEmailError
+        | OrganizationNotFoundError
+        | MemberAlreadyExistsError
+        | OrganizationAuthorizationError,
     ]:
         """Create a new invite for an organization."""
         existing_organization = await self._organization_repo.get(
@@ -300,6 +348,12 @@ class OrganizationInviteService:
 
         if existing_organization is None:
             return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
 
         try:
             email_info = validate_email(
@@ -347,7 +401,10 @@ class OrganizationInviteService:
         organization_id: ObjectId,
         invite_id: ObjectId,
     ) -> Result[
-        OrganizationInvite, OrganizationNotFoundError | OrganizationInviteNotFoundError
+        OrganizationInvite,
+        OrganizationNotFoundError
+        | OrganizationInviteNotFoundError
+        | OrganizationAuthorizationError,
     ]:
         """Delete an invite in an organization."""
         existing_organization = await self._organization_repo.get(
@@ -356,6 +413,12 @@ class OrganizationInviteService:
 
         if existing_organization is None:
             return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
 
         existing_invite = await self._invite_repo.get(
             invite_id=invite_id, organization_id=organization_id

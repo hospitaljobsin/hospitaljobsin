@@ -13,7 +13,7 @@ import {
 } from "@heroui/react";
 import { useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";
-import AuthDropdown from "./AuthNavigation";
+import AuthNavigation from "./AuthNavigation";
 
 const HeaderQuery = graphql`
   query HeaderQuery {
@@ -41,7 +41,7 @@ export default function Header() {
 
 			<NavbarContent justify="end">
 				{data.viewer.__typename === "Account" ? (
-					<AuthDropdown rootQuery={data.viewer} />
+					<AuthNavigation rootQuery={data.viewer} />
 				) : (
 					<>
 						<NavbarItem>

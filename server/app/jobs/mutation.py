@@ -17,7 +17,11 @@ from app.jobs.exceptions import (
     SavedJobNotFoundError,
 )
 from app.jobs.services import JobService, SavedJobService
-from app.organizations.types import OrganizationNotFoundErrorType
+from app.organizations.exceptions import OrganizationAuthorizationError
+from app.organizations.types import (
+    OrganizationAuthorizationErrorType,
+    OrganizationNotFoundErrorType,
+)
 
 from .types import (
     CreateJobPayload,
@@ -126,7 +130,6 @@ class JobMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: ensure only organization admins can create a job
                 ],
             )
         ],
@@ -237,6 +240,8 @@ class JobMutation:
                 match error:
                     case OrganizationNotFoundError():
                         return OrganizationNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
             case Ok(job):
                 return CreateJobSuccess(
                     job_edge=JobEdgeType.marshal(job),
