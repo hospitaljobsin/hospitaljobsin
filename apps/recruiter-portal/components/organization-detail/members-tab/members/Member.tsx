@@ -58,6 +58,7 @@ export default function Member({
 						<div className="flex gap-4 items-baseline">
 							<p className="text-medium">{data.node.fullName}</p>
 							<Chip
+								size="sm"
 								variant="flat"
 								color={data.role === "admin" ? "primary" : "default"}
 							>
