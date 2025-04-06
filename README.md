@@ -12,6 +12,8 @@
 
 # TODO- recruiter portal
 
+- improve invite detail page UI
+- improve invite email UI
 - invites edge case:
     - an invite is sent to the user
     - another invite is sent to the user
