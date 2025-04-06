@@ -22,6 +22,7 @@ from app.organizations.documents import (
     OrganizationMember,
 )
 from app.organizations.exceptions import (
+    InsufficientOrganizationAdminsError,
     MemberAlreadyExistsError,
     OrganizationInviteNotFoundError,
     OrganizationMemberNotFoundError,
@@ -227,7 +228,10 @@ class OrganizationMemberService:
         organization_id: ObjectId,
         member_account_id: ObjectId,
     ) -> Result[
-        OrganizationMember, OrganizationNotFoundError | OrganizationMemberNotFoundError
+        OrganizationMember,
+        OrganizationNotFoundError
+        | OrganizationMemberNotFoundError
+        | InsufficientOrganizationAdminsError,
     ]:
         """Demote a member in an organization."""
         existing_organization = await self._organization_repo.get(
@@ -245,7 +249,14 @@ class OrganizationMemberService:
         if existing_organization_member is None:
             return Err(OrganizationMemberNotFoundError())
 
-        # TODO: prevent demoting the last admin in the organization
+        if (
+            await self._organization_member_repo.get_admin_count(
+                organization_id=organization_id,
+            )
+            <= 1
+        ):
+            # we need at least one admin in the organization
+            return Err(InsufficientOrganizationAdminsError())
 
         existing_organization_member = await self._organization_member_repo.update(
             existing_organization_member,

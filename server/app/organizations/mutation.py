@@ -15,6 +15,7 @@ from app.base.types import AddressInputType
 from app.context import AuthInfo
 from app.jobs.exceptions import OrganizationNotFoundError
 from app.organizations.exceptions import (
+    InsufficientOrganizationAdminsError,
     MemberAlreadyExistsError,
     OrganizationInviteNotFoundError,
     OrganizationMemberNotFoundError,
@@ -34,6 +35,7 @@ from .types import (
     DeclineOrganizationInvitePayload,
     DeleteOrganizationInvitePayload,
     DemoteOrganizationMemberPayload,
+    InsufficientOrganizationAdminsErrorType,
     MemberAlreadyExistsErrorType,
     OrganizationInviteEdgeType,
     OrganizationInviteNotFoundErrorType,
@@ -499,6 +501,8 @@ class OrganizationMutation:
                         return OrganizationNotFoundErrorType()
                     case OrganizationMemberNotFoundError():
                         return OrganizationMemberNotFoundErrorType()
+                    case InsufficientOrganizationAdminsError():
+                        return InsufficientOrganizationAdminsErrorType()
             case Ok(member):
                 return OrganizationMemberEdgeType.marshal(member)
             case _ as unreachable:

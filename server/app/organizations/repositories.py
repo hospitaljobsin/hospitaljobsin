@@ -174,6 +174,13 @@ class OrganizationMemberRepo:
 
         return await organization_member.insert()
 
+    async def get_admin_count(self, organization_id: ObjectId) -> int:
+        """Get the number of admins in an organization."""
+        return await OrganizationMember.find(
+            OrganizationMember.organization.id == organization_id,
+            OrganizationMember.role == "admin",
+        ).count()
+
     async def delete(self, organization_member: OrganizationMember) -> None:
         """Delete an organization member."""
         await organization_member.delete()

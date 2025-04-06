@@ -12,3 +12,7 @@ class OrganizationInviteNotFoundError:
 
 class OrganizationMemberNotFoundError:
     """Raised when an organization member is not found."""
+
+
+class InsufficientOrganizationAdminsError:
+    """Raised when there are not enough organization admins to remove an admin."""

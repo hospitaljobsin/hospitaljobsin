@@ -552,6 +552,17 @@ class OrganizationMemberNotFoundErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="InsufficientOrganizationAdminsError",
+    description="Used when there are not enough organization admins to remove an admin.",
+)
+class InsufficientOrganizationAdminsErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="There are not enough organization admins to remove this admin!",
+    )
+
+
 RemoveOrganizationMemberPayload = Annotated[
     OrganizationMemberEdgeType
     | OrganizationNotFoundErrorType
@@ -575,7 +586,8 @@ PromoteOrganizationMemberPayload = Annotated[
 DemoteOrganizationMemberPayload = Annotated[
     OrganizationMemberEdgeType
     | OrganizationNotFoundErrorType
-    | OrganizationMemberNotFoundErrorType,
+    | OrganizationMemberNotFoundErrorType
+    | InsufficientOrganizationAdminsErrorType,
     strawberry.union(
         name="DemoteOrganizationMemberPayload",
         description="The demote organization member payload.",

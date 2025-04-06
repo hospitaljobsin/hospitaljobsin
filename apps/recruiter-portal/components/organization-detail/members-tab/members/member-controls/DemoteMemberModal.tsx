@@ -40,6 +40,9 @@ const DemoteMemberMutation = graphql`
         ... on OrganizationMemberNotFoundError {
             __typename
         }
+		... on InsufficientOrganizationAdminsError {
+			__typename
+		}
     }
   }
 `;
@@ -130,6 +133,15 @@ export default function DemoteMemberModal({
 				) {
 					addToast({
 						description: "An unexpected error occurred. Please try again.",
+						color: "danger",
+					});
+				} else if (
+					response.demoteOrganizationMember.__typename ===
+					"InsufficientOrganizationAdminsError"
+				) {
+					addToast({
+						description:
+							"You must have at least one admin in the organization.",
 						color: "danger",
 					});
 				}

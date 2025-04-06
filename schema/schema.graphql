@@ -228,7 +228,7 @@ type DeleteWebAuthnCredentialSuccess {
 }
 
 """The demote organization member payload."""
-union DemoteOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError
+union DemoteOrganizationMemberPayload = OrganizationMemberEdge | OrganizationNotFoundError | OrganizationMemberNotFoundError | InsufficientOrganizationAdminsError
 
 """The disable account 2FA payload."""
 union DisableAccount2FAWithAuthenticatorPayload = Account | AuthenticatorNotEnabledError
@@ -318,6 +318,12 @@ type GeneratePasskeyRegistrationOptionsSuccess {
 
 """Used when at least one authentication provider must be enabled."""
 type InsufficientAuthProvidersError implements Error {
+  """Human readable error message."""
+  message: String!
+}
+
+"""Used when there are not enough organization admins to remove an admin."""
+type InsufficientOrganizationAdminsError implements Error {
   """Human readable error message."""
   message: String!
 }
