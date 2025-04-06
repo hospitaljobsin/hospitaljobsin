@@ -113,7 +113,7 @@ export default function PromoteMemberModal({
 					response.promoteOrganizationMember.__typename ===
 					"OrganizationMemberEdge"
 				) {
-					onClose();
+					// successful case
 				} else if (
 					response.promoteOrganizationMember.__typename ===
 					"OrganizationNotFoundError"
@@ -131,6 +131,7 @@ export default function PromoteMemberModal({
 						color: "danger",
 					});
 				}
+				onClose();
 			},
 		});
 	}

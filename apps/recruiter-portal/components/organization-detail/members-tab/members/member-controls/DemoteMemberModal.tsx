@@ -118,7 +118,7 @@ export default function DemoteMemberModal({
 					response.demoteOrganizationMember.__typename ===
 					"OrganizationMemberEdge"
 				) {
-					onClose();
+					// successful case
 				} else if (
 					response.demoteOrganizationMember.__typename ===
 					"OrganizationNotFoundError"
@@ -145,6 +145,7 @@ export default function DemoteMemberModal({
 						color: "danger",
 					});
 				}
+				onClose();
 			},
 		});
 	}

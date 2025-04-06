@@ -81,7 +81,7 @@ export default function RemoveMemberModal({
 					response.removeOrganizationMember.__typename ===
 					"OrganizationMemberEdge"
 				) {
-					onClose();
+					// successful case
 				} else if (
 					response.removeOrganizationMember.__typename ===
 					"OrganizationNotFoundError"
@@ -99,6 +99,7 @@ export default function RemoveMemberModal({
 						color: "danger",
 					});
 				}
+				onClose();
 			},
 		});
 	}
