@@ -72,7 +72,7 @@ export default function Invite({
 							<Mail size={20} className="text-foreground-500" />
 						</div>
 						<div className="flex flex-col gap-4">
-							<h2 className="text-lg font-medium">{data.email}</h2>
+							<h2 className="text-md">{data.email}</h2>
 							<p className="text-sm text-foreground-400 flex items-center gap-2">
 								Invited{" "}
 								<span className="italic">
