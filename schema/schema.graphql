@@ -853,13 +853,34 @@ type Mutation {
   ): CreateJobPayload! @isAuthenticated
 
   """Update the current user's profile personal details."""
-  updateProfilePersonalDetails(address: AddressInput!, gender: GenderType = null, dateOfBirth: Date = null, maritalStatus: MaritalStatusType = null, category: String = null): UpdateProfilePayload! @isAuthenticated
+  updateProfilePersonalDetails(
+    """The address of the user profile."""
+    address: AddressInput!
+
+    """The gender of the user profile."""
+    gender: GenderType = null
+
+    """The date of birth of the user profile."""
+    dateOfBirth: Date = null
+
+    """The marital status of the user profile."""
+    maritalStatus: MaritalStatusType = null
+
+    """The category of the user profile."""
+    category: String = null
+  ): UpdateProfilePayload! @isAuthenticated
 
   """Update the current user's profile languages."""
-  updateProfileLanguages(languages: [LanguageInput!]!): UpdateProfilePayload! @isAuthenticated
+  updateProfileLanguages(
+    """The languages of the user profile."""
+    languages: [LanguageInput!]!
+  ): UpdateProfilePayload! @isAuthenticated
 
   """Update the current user's account."""
-  updateAccount(fullName: String!): UpdateAccountPayload! @isAuthenticated
+  updateAccount(
+    """The full name of the user account."""
+    fullName: String!
+  ): UpdateAccountPayload! @isAuthenticated
 
   """Create an organization."""
   createOrganization(

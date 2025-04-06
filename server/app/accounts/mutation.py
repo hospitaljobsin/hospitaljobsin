@@ -40,11 +40,36 @@ class AccountMutation:
         self,
         info: AuthInfo,
         profile_service: Annotated[ProfileService, Inject],
-        address: AddressInputType,
-        gender: GenderTypeEnum | None = None,
-        date_of_birth: date | None = None,
-        marital_status: MaritalStatusTypeEnum | None = None,
-        category: str | None = None,
+        address: Annotated[
+            AddressInputType,
+            strawberry.argument(
+                description="The address of the user profile.",
+            ),
+        ],
+        gender: Annotated[
+            GenderTypeEnum | None,
+            strawberry.argument(
+                description="The gender of the user profile.",
+            ),
+        ] = None,
+        date_of_birth: Annotated[
+            date | None,
+            strawberry.argument(
+                description="The date of birth of the user profile.",
+            ),
+        ] = None,
+        marital_status: Annotated[
+            MaritalStatusTypeEnum | None,
+            strawberry.argument(
+                description="The marital status of the user profile.",
+            ),
+        ] = None,
+        category: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The category of the user profile.",
+            ),
+        ] = None,
     ) -> UpdateProfilePayload:
         """Update the current user's profile personal details."""
         match await profile_service.update_personal_details(
@@ -76,7 +101,12 @@ class AccountMutation:
         self,
         info: AuthInfo,
         profile_service: Annotated[ProfileService, Inject],
-        languages: list[LanguageInputType],
+        languages: Annotated[
+            list[LanguageInputType],
+            strawberry.argument(
+                description="The languages of the user profile.",
+            ),
+        ],
     ) -> UpdateProfilePayload:
         """Update the current user's profile languages."""
         match await profile_service.update_languages(
@@ -104,7 +134,12 @@ class AccountMutation:
         self,
         info: AuthInfo,
         account_service: Annotated[AccountService, Inject],
-        full_name: str,
+        full_name: Annotated[
+            str,
+            strawberry.argument(
+                description="The full name of the user account.",
+            ),
+        ],
     ) -> UpdateAccountPayload:
         """Update the current user's account."""
         match await account_service.update(
