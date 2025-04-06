@@ -102,9 +102,8 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
-
-			<Dropdown className="hidden md:block" placement="bottom-end">
-				<NavbarItem className="hidden md:block">
+			<NavbarItem className="hidden md:block">
+				<Dropdown className="hidden md:block" placement="bottom-end">
 					<DropdownTrigger>
 						<Button disableRipple isIconOnly radius="sm" variant="light">
 							<Image
@@ -116,47 +115,47 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							/>
 						</Button>
 					</DropdownTrigger>
-				</NavbarItem>
 
-				<DropdownMenu
-					variant="light"
-					aria-label="Navigation Menu"
-					itemClasses={{
-						base: "gap-4",
-					}}
-					className="hidden md:block"
-				>
-					<DropdownSection showDivider>
-						<DropdownItem key="account-info">
-							<div className="flex flex-row items-center gap-4 w-full">
-								<Image
-									src={data.avatarUrl}
-									alt={data.fullName}
-									width={25}
-									height={25}
-									className="rounded-full"
-								/>
-								<div className="flex flex-col gap-1 items-start">
-									<p className="text-tiny">Signed in as</p>
-									<p className="truncate max-w-48 text-medium">
-										{data.fullName}
-									</p>
+					<DropdownMenu
+						variant="light"
+						aria-label="Navigation Menu"
+						itemClasses={{
+							base: "gap-4",
+						}}
+						className="hidden md:block"
+					>
+						<DropdownSection showDivider>
+							<DropdownItem key="account-info">
+								<div className="flex flex-row items-center gap-4 w-full">
+									<Image
+										src={data.avatarUrl}
+										alt={data.fullName}
+										width={25}
+										height={25}
+										className="rounded-full"
+									/>
+									<div className="flex flex-col gap-1 items-start">
+										<p className="text-tiny">Signed in as</p>
+										<p className="truncate max-w-48 text-medium">
+											{data.fullName}
+										</p>
+									</div>
 								</div>
-							</div>
-						</DropdownItem>
-					</DropdownSection>
+							</DropdownItem>
+						</DropdownSection>
 
-					<DropdownSection>
-						<DropdownItem
-							key="logout"
-							startContent={<LogOutIcon className="h-4 w-4" />}
-							onPress={onLogoutModalOpen}
-						>
-							Log Out
-						</DropdownItem>
-					</DropdownSection>
-				</DropdownMenu>
-			</Dropdown>
+						<DropdownSection>
+							<DropdownItem
+								key="logout"
+								startContent={<LogOutIcon className="h-4 w-4" />}
+								onPress={onLogoutModalOpen}
+							>
+								Log Out
+							</DropdownItem>
+						</DropdownSection>
+					</DropdownMenu>
+				</Dropdown>
+			</NavbarItem>
 			<LogoutModal
 				onOpenChange={onLogoutModalOpenChange}
 				isOpen={isLogoutModalOpen}

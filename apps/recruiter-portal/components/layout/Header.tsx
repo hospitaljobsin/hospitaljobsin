@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
-import AuthDropdown from "./AuthNavigation";
+import AuthNavigation from "./AuthNavigation";
 
 const HeaderQuery = graphql`
   query HeaderQuery {
@@ -38,7 +38,7 @@ export default function Header() {
 			</NavbarBrand>
 
 			<NavbarContent justify="end">
-				<AuthDropdown rootQuery={data.viewer} />
+				<AuthNavigation rootQuery={data.viewer} />
 			</NavbarContent>
 		</Navbar>
 	);

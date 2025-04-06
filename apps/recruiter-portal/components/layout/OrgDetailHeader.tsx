@@ -9,7 +9,7 @@ import { useFragment, useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
-import AuthDropdown from "./AuthNavigation";
+import AuthNavigation from "./AuthNavigation";
 
 const OrgDetailHeaderQuery = graphql`
   query OrgDetailHeaderQuery {
@@ -57,7 +57,7 @@ export default function OrgDetailHeader({
 				</NavbarBrand>
 
 				<NavbarContent justify="end">
-					<AuthDropdown rootQuery={data.viewer} />
+					<AuthNavigation rootQuery={data.viewer} />
 				</NavbarContent>
 			</Navbar>
 			<div className="w-full max-w-5xl mx-auto flex items-center justify-between">
