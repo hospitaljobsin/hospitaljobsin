@@ -9,7 +9,7 @@ export default function SettingsSidebar() {
 	const pathname = usePathname();
 	return (
 		<>
-			<div className="self-stretch max-h-screen w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky md:top-16 ">
+			<div className="self-stretch h-[calc(100vh-4.2rem)] w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky md:top-16 ">
 				<Tabs
 					aria-label="Settings Navigation"
 					isVertical
