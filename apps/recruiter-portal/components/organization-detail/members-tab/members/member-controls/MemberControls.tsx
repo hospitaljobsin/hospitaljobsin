@@ -32,6 +32,7 @@ const MemberControlsOrganizationFragment = graphql`
         ...RemoveMemberModalOrganizationFragment
         ...DemoteMemberModalOrganizationFragment
         ...PromoteMemberModalOrganizationFragment
+		adminCount
     }
     `;
 
@@ -79,7 +80,11 @@ export default function MemberControls({
 				<DropdownMenu
 					aria-label="Member Actions"
 					disabledKeys={
-						data.role === "admin" ? ["remove", "promote"] : ["demote"]
+						data.role === "admin"
+							? organizationData.adminCount <= 1
+								? ["remove", "promote", "demote"]
+								: ["remove", "promote"]
+							: ["demote"]
 					}
 				>
 					<DropdownItem

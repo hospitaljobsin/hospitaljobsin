@@ -198,6 +198,19 @@ class OrganizationType(BaseNodeType[Organization]):
         return f"https://api.dicebear.com/9.x/identicon/png?seed={slug_hash}"
 
     @strawberry.field(  # type: ignore[misc]
+        description="The number of admin members in the organization.",
+    )
+    @inject
+    async def admin_count(
+        self,
+        organization_member_repo: Annotated[OrganizationMemberRepo, Inject],
+    ) -> int:
+        """Return the number of admin members in the organization."""
+        return await organization_member_repo.get_admin_count(
+            organization_id=ObjectId(self.id),
+        )
+
+    @strawberry.field(  # type: ignore[misc]
         description="Whether the current user is an admin in this organization.",
     )
     @inject

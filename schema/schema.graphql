@@ -1028,6 +1028,9 @@ type Organization implements Node {
   """The logo URL of the organization."""
   logoUrl: String!
 
+  """The number of admin members in the organization."""
+  adminCount: Int!
+
   """Whether the current user is an admin in this organization."""
   isAdmin: Boolean!
 
