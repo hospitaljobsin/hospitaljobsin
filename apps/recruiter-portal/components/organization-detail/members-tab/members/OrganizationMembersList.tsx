@@ -23,6 +23,12 @@ fragment OrganizationMembersListFragment on Query @argumentDefinitions(
 			...MemberOrganizationFragment
             }
         }
+		viewer {
+			__typename
+			... on Account {
+				...MemberAccountFragment
+			}
+		}
 }
 `;
 
@@ -60,15 +66,20 @@ export default function OrganizationMembersList({
 	searchTerm,
 }: Props) {
 	const root = useFragment(OrganizationMembersListFragment, rootQuery);
+	const organization = root.organization;
 	invariant(
-		root.organization.__typename === "Organization",
+		organization.__typename === "Organization",
 		"Expected 'Organization' node type",
 	);
+
+	const account = root.viewer;
+
+	invariant(account.__typename === "Account", "Expected 'Account' node type");
 
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
 		pageOrganizationMembersViewQuery,
 		OrganizationMembersListInternalFragment$key
-	>(OrganizationMembersListInternalFragment, root.organization);
+	>(OrganizationMembersListInternalFragment, organization);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -122,9 +133,10 @@ export default function OrganizationMembersList({
 			{data.members.edges.map((memberEdge) => (
 				<Member
 					member={memberEdge}
-					organization={root.organization}
+					organization={organization}
 					key={memberEdge.node.id}
 					membersConnectionId={data.members.__id}
+					account={account}
 				/>
 			))}
 			<div ref={observerRef} className="h-10" />

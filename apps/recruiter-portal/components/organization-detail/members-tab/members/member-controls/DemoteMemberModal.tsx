@@ -71,6 +71,8 @@ export default function DemoteMemberModal({
 	const [commitMutation, isMutationInFlight] =
 		useMutation<DemoteMemberModalMutation>(DemoteMemberMutation);
 
+	// TODO: refresh organization's admin count after demoting a member
+
 	function handleDemoteMember() {
 		commitMutation({
 			variables: {

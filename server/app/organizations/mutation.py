@@ -9,7 +9,7 @@ from strawberry import relay
 from strawberry.permission import PermissionExtension
 
 from app.auth.exceptions import InvalidEmailError
-from app.auth.permissions import IsAuthenticated
+from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.auth.types import InvalidEmailErrorType
 from app.base.types import AddressInputType
 from app.context import AuthInfo
@@ -374,7 +374,7 @@ class OrganizationMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: require sudo mode here
+                    RequiresSudoMode(),
                 ],
             )
         ],
@@ -423,7 +423,7 @@ class OrganizationMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: require sudo mode here
+                    RequiresSudoMode(),
                 ],
             )
         ],
@@ -472,7 +472,7 @@ class OrganizationMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: require sudo mode here
+                    RequiresSudoMode(),
                 ],
             )
         ],

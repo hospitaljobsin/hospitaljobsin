@@ -1,3 +1,4 @@
+"use client";
 import type { InviteFragment$key } from "@/__generated__/InviteFragment.graphql";
 import type { InviteOrganizationFragment$key } from "@/__generated__/InviteOrganizationFragment.graphql";
 import { getRelativeTimeString } from "@/lib/intl";
@@ -75,7 +76,7 @@ export default function Invite({
 							<h2 className="text-md">{data.email}</h2>
 							<p className="text-sm text-foreground-400 flex items-center gap-2">
 								Invited{" "}
-								<span className="italic">
+								<span className="italic" suppressHydrationWarning>
 									{getRelativeTimeString(data.createdAt)}
 								</span>{" "}
 								by{" "}

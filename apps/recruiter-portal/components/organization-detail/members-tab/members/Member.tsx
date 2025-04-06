@@ -1,3 +1,4 @@
+import type { MemberAccountFragment$key } from "@/__generated__/MemberAccountFragment.graphql";
 import type { MemberFragment$key } from "@/__generated__/MemberFragment.graphql";
 import type { MemberOrganizationFragment$key } from "@/__generated__/MemberOrganizationFragment.graphql";
 import { dateFormat } from "@/lib/intl";
@@ -26,9 +27,16 @@ const MemberOrganizationFragment = graphql`
   }
 `;
 
+const MemberAccountFragment = graphql`
+	fragment MemberAccountFragment on Account {
+		...MemberControlsAccountFragment
+	}
+`;
+
 type Props = {
 	member: MemberFragment$key;
 	organization: MemberOrganizationFragment$key;
+	account: MemberAccountFragment$key;
 	membersConnectionId: string;
 };
 
@@ -36,12 +44,14 @@ export default function Member({
 	member,
 	organization,
 	membersConnectionId,
+	account,
 }: Props) {
 	const data = useFragment(MemberFragment, member);
 	const organizationData = useFragment(
 		MemberOrganizationFragment,
 		organization,
 	);
+	const accountData = useFragment(MemberAccountFragment, account);
 
 	return (
 		<Card fullWidth className="p-4 sm:p-6" isPressable={false} shadow="none">
@@ -74,6 +84,7 @@ export default function Member({
 							member={data}
 							organization={organizationData}
 							membersConnectionId={membersConnectionId}
+							account={accountData}
 						/>
 					)}
 				</div>

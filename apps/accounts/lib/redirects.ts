@@ -18,8 +18,12 @@ export function getValidRedirectURL(redirectTo: string | null): string {
 export function getValidSudoModeRedirectURL(redirectTo: string | null): string {
 	if (!redirectTo) return links.settings;
 
-	// only allow relative URLs
-	if (redirectTo.startsWith("/")) return redirectTo;
+	// only allow relative URLs or recruiter portal URLs
+	if (
+		redirectTo.startsWith("/") ||
+		redirectTo.startsWith(env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL)
+	)
+		return redirectTo;
 
 	return links.settings;
 }

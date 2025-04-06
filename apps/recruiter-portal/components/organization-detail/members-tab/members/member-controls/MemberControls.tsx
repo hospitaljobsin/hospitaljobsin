@@ -1,5 +1,8 @@
+"use client";
+import type { MemberControlsAccountFragment$key } from "@/__generated__/MemberControlsAccountFragment.graphql";
 import type { MemberControlsFragment$key } from "@/__generated__/MemberControlsFragment.graphql";
 import type { MemberControlsOrganizationFragment$key } from "@/__generated__/MemberControlsOrganizationFragment.graphql";
+import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import {
 	Button,
 	Dropdown,
@@ -36,20 +39,31 @@ const MemberControlsOrganizationFragment = graphql`
     }
     `;
 
+const MemberControlsAccountFragment = graphql`
+	fragment MemberControlsAccountFragment on Account {
+		sudoModeExpiresAt
+	}
+`;
+
 export default function MemberControls({
 	member,
 	organization,
 	membersConnectionId,
+	account,
 }: {
 	member: MemberControlsFragment$key;
 	organization: MemberControlsOrganizationFragment$key;
+	account: MemberControlsAccountFragment$key;
 	membersConnectionId: string;
 }) {
+	const { checkSudoMode } = useCheckSudoMode();
 	const data = useFragment(MemberControlsFragment, member);
 	const organizationData = useFragment(
 		MemberControlsOrganizationFragment,
 		organization,
 	);
+	const accountData = useFragment(MemberControlsAccountFragment, account);
+
 	const {
 		isOpen: isRemoveMemberModalOpen,
 		onOpen: onRemoveMemberModalOpen,
@@ -68,6 +82,24 @@ export default function MemberControls({
 		onClose: onDemoteMemberModalClose,
 		onOpenChange: onDemoteMemberModalOpenChange,
 	} = useDisclosure();
+
+	function handleRemoveMemberModalOpen() {
+		if (checkSudoMode(accountData.sudoModeExpiresAt)) {
+			onRemoveMemberModalOpen();
+		}
+	}
+
+	function handlePromoteMemberModalClose() {
+		if (checkSudoMode(accountData.sudoModeExpiresAt)) {
+			onPromoteMemberModalOpen();
+		}
+	}
+
+	function handleDemoteMemberModalOpen() {
+		if (checkSudoMode(accountData.sudoModeExpiresAt)) {
+			onDemoteMemberModalOpen();
+		}
+	}
 
 	return (
 		<>
@@ -90,21 +122,21 @@ export default function MemberControls({
 					<DropdownItem
 						startContent={<UserMinus size={20} />}
 						key="demote"
-						onPress={onDemoteMemberModalOpen}
+						onPress={handleDemoteMemberModalOpen}
 					>
 						Demote member
 					</DropdownItem>
 					<DropdownItem
 						startContent={<ShieldUser size={20} />}
 						key="promote"
-						onPress={onPromoteMemberModalOpen}
+						onPress={handlePromoteMemberModalClose}
 					>
 						Promote member
 					</DropdownItem>
 					<DropdownItem
 						startContent={<UserX size={20} />}
 						key="remove"
-						onPress={onRemoveMemberModalOpen}
+						onPress={handleRemoveMemberModalOpen}
 					>
 						Remove member
 					</DropdownItem>

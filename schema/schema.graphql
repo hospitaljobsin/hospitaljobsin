@@ -970,7 +970,7 @@ type Mutation {
 
     """The ID of the account to remove from the organization."""
     accountId: ID!
-  ): RemoveOrganizationMemberPayload! @isAuthenticated
+  ): RemoveOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
 
   """Promote an organization member."""
   promoteOrganizationMember(
@@ -979,7 +979,7 @@ type Mutation {
 
     """The ID of the account to promote in the organization."""
     accountId: ID!
-  ): PromoteOrganizationMemberPayload! @isAuthenticated
+  ): PromoteOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
 
   """Demote an organization member."""
   demoteOrganizationMember(
@@ -988,7 +988,7 @@ type Mutation {
 
     """The ID of the account to promote in the organization."""
     accountId: ID!
-  ): DemoteOrganizationMemberPayload! @isAuthenticated
+  ): DemoteOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
 }
 
 """An object with a Globally Unique ID"""
