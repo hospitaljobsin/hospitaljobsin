@@ -11,12 +11,6 @@
 - we can add other tools too, like showing current applications, saved jobs etc
 
 # TODO- recruiter portal
-- invites edge case:
-    - an invite is sent to the user
-    - another invite is sent to the user
-    - user accepts invite 1
-    - invite 2 is still active, if the user tries to use that link again we get an unique violation error on our org members document
-
 - members- search feature
 - add applications feature
     - custom application form that can be created for each job

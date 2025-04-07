@@ -4,7 +4,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Literal
 
 from beanie import PydanticObjectId
-from beanie.operators import And, In
+from beanie.operators import And, In, Set
 from bson import ObjectId
 
 from app.accounts.documents import Account
@@ -297,6 +297,14 @@ class OrganizationInviteRepo:
 
         return invite, invite_token
 
+    async def mark_other_as_hidden(self, organization_id: ObjectId, email: str) -> None:
+        """Mark other invites as hidden for a given email in an organization."""
+        await OrganizationInvite.find(
+            OrganizationInvite.organization.id == organization_id,
+            OrganizationInvite.email == email,
+            OrganizationInvite.status == "pending",
+        ).update(Set({OrganizationInvite.is_hidden: True}))
+
     async def delete(self, invite: OrganizationInvite) -> None:
         """Delete an organization invite."""
         await invite.delete()
@@ -350,6 +358,7 @@ class OrganizationInviteRepo:
 
         search_criteria = OrganizationInvite.find(
             OrganizationInvite.organization.id == organization_id,
+            OrganizationInvite.is_hidden == False,
             fetch_links=True,
             nesting_depth=1,
         )
@@ -379,6 +388,7 @@ class OrganizationInviteRepo:
                 {"token_hash": self.hash_token(token)},
                 # select only pending invites
                 {"status": "pending"},
+                {"is_hidden": False},
             )
             for email, token in invite_tokens
         ]

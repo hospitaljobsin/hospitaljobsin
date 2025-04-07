@@ -46,7 +46,7 @@ class OrganizationInvite(Document):
     created_by: Link[Account]
     token_hash: Annotated[str, Indexed(unique=True)]
     status: Literal["pending", "accepted", "declined"]
-
+    is_hidden: bool = False
     expires_at: datetime | None = None
 
     class Settings:

@@ -452,6 +452,11 @@ class OrganizationInviteService:
             existing_invite, status="accepted", expires_at=None
         )
 
+        await self._invite_repo.mark_other_as_hidden(
+            organization_id=existing_invite.organization.id,
+            email=existing_invite.email,
+        )
+
         # create a member in the organization
         await self._organization_member_repo.create(
             organization_id=existing_invite.organization.id,
