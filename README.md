@@ -11,9 +11,6 @@
 - we can add other tools too, like showing current applications, saved jobs etc
 
 # TODO- recruiter portal
-- org name should be visible in org detail header (like github). otherwise, user feels like they are lost in an unknown place
-- improve invite detail page UI
-- improve invite email UI
 - invites edge case:
     - an invite is sent to the user
     - another invite is sent to the user
