@@ -1,9 +1,9 @@
 "use client";
 import type { OrgDetailHeaderOrganizationFragment$key } from "@/__generated__/OrgDetailHeaderOrganizationFragment.graphql";
 import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
-import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import { Building2 } from "lucide-react";
 import Link from "next/link";
 import { useFragment, useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -28,6 +28,8 @@ const OrgDetailHeaderQuery = graphql`
 const OrgDetailHeaderOrganizationFragment = graphql`
 fragment OrgDetailHeaderOrganizationFragment on Organization {
   ...OrganizationTabsFragment
+  name
+  slug
 }`;
 
 export default function OrgDetailHeader({
@@ -50,11 +52,19 @@ export default function OrgDetailHeader({
 	return (
 		<div className="w-full flex flex-col bg-background border-b border-gray-300">
 			<Navbar maxWidth="lg" position="static">
-				<NavbarBrand>
-					<Link href={links.dashboard} className="font-medium text-inherit">
-						{APP_NAME}
-					</Link>
-				</NavbarBrand>
+				<NavbarContent justify="start">
+					<NavbarBrand className="flex items-center gap-4">
+						<Link href={links.dashboard} className="font-medium text-inherit">
+							<Building2 />
+						</Link>
+						<Link
+							href={links.organizationDetail(orgData.slug)}
+							className="font-medium text-inherit"
+						>
+							{orgData.name}
+						</Link>
+					</NavbarBrand>
+				</NavbarContent>
 
 				<NavbarContent justify="end">
 					<AuthNavigation rootQuery={data.viewer} />

@@ -139,40 +139,41 @@ export default function InviteForm({
 			<Card fullWidth className="p-6 space-y-6" shadow="none">
 				<CardHeader>
 					<div className="flex w-full justify-between gap-12 sm:gap-6 sm:items-center flex-col sm:flex-row items-start">
-						<div className="flex flex-col gap-6 items-center justify-center w-full">
-							<div className="flex w-full gap-6 items-center justify-center">
+						<div className="flex flex-col gap-10 items-center justify-center w-full">
+							<div className="flex w-full gap-10 items-center justify-center">
 								<Image
 									src={data.organizationInvite.createdBy.avatarUrl}
 									alt={data.organizationInvite.createdBy.fullName}
 									width={75}
 									height={75}
-									className="rounded-md"
+									className="rounded-md transition-transform transform hover:scale-105"
 								/>
 								<Image
 									src={data.organizationInvite.organization.logoUrl}
 									alt={data.organizationInvite.organization.name}
 									width={75}
 									height={75}
-									className="rounded-md"
+									className="rounded-md transition-transform transform hover:scale-105"
 								/>
 							</div>
 							<div className="flex flex-col gap-3 items-center justify-center w-full">
-								<h4 className="text-lg w-full text-center">
-									{data.organizationInvite.createdBy.fullName} invited you to
-									join
+								<h4 className="text-lg w-full text-center text-gray-700">
+									<span className="font-medium">
+										{data.organizationInvite.createdBy.fullName}
+									</span>{" "}
+									invited you to join
 								</h4>
-								<h2 className="text-xl font-semibold w-full text-center">
+								<h2 className="text-2xl font-medium w-full text-center text-gray-900">
 									{data.organizationInvite.organization.name}
 								</h2>
 							</div>
 						</div>
 					</div>
 				</CardHeader>
-				<CardBody className="flex flex-col sm:flex-row gap-6 w-full max-w-xl mx-auto">
+				<CardBody className="flex flex-col sm:flex-row gap-10 w-full max-w-xl mx-auto">
 					<Button
 						color="primary"
 						fullWidth
-						size="lg"
 						onPress={handleAccept}
 						isLoading={isAcceptMutationInFlight}
 						isDisabled={isDeclineMutationInFlight}
@@ -181,7 +182,6 @@ export default function InviteForm({
 					</Button>
 					<Button
 						fullWidth
-						size="lg"
 						onPress={handleDecline}
 						isLoading={isDeclineMutationInFlight}
 						isDisabled={isAcceptMutationInFlight}

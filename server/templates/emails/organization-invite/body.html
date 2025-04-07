@@ -5,29 +5,41 @@
 {% endblock %}
 
 {% block content %}
-<p>Hey there,</p>
-<p>{{ invited_by_name }} has invited you to join <strong>{{ organization_name }}</strong>.
-  <strong>This invitation will expire in {{ invite_expires_in }}.</strong></p>
+<!-- Header Section -->
+<div style="text-align: center; padding: 16px 0;">
+  <img src="{{ organization_logo_url }}" alt="{{ organization_name }} Logo" style="max-width: 100px; margin-bottom: 8px;  border-radius: 8px 8px 0 0;">
+  <h1 style="margin: 0; font-size: 24px;">Welcome to {{ organization_name }}!</h1>
+</div>
 
-<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
-  <tbody>
-    <tr>
-      <td align="left">
-        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-          <tbody>
-            <tr>
-              <td> <a href="{{ invite_link }}" target="_blank">View Invitation</a> </td>
-            </tr>
-          </tbody>
-        </table>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<!-- Main Content -->
+<div style="background-color: #ffffff; padding: 24px; border-radius: 0 0 8px 8px;">
+  <p>{{ invited_by_name }} has invited you to join <strong>{{ organization_name }}</strong>.<br/>
+  <b>This invitation will expire in {{ invite_expires_in }}.</b></p>
 
-<p>If you did not expect this invitation, you can safely ignore this email.</p>
+  <!-- Call-to-Action Button -->
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="margin: 16px 0;">
+    <tbody>
+      <tr>
+        <td align="center">
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+            <tbody>
+              <tr>
+                <td>
+                  <a href="{{ invite_link }}" target="_blank" style="background-color: #0867ec; color: #ffffff; padding: 12px 24px; border-radius: 4px; text-decoration: none; font-size: 16px;">View Invitation</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-<p>Looking forward to having you on board!</p>
+  <p>If you did not expect this invitation, you can safely ignore this email.</p>
 
-<img src="{{ organization_logo_url }}" alt="{{ organization_name }} Logo" style="max-width: 200px; margin-top: 20px;">
+  <hr style="border: none; border-top: 1px solid #eaebed; margin: 24px 0;">
+
+  <p style="text-align: center; font-size: 14px; color: #9a9ea6;">Looking forward to having you on board!</p>
+</div>
+
 {% endblock %}

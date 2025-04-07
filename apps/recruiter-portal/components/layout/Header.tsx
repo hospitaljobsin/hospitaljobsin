@@ -3,6 +3,7 @@ import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery
 import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import { Building2 } from "lucide-react";
 import Link from "next/link";
 import { useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -31,7 +32,8 @@ export default function Header() {
 	);
 	return (
 		<Navbar maxWidth="lg" isBordered>
-			<NavbarBrand>
+			<NavbarBrand className="flex items-center gap-4">
+				<Building2 />
 				<Link href={links.dashboard} className="font-medium text-inherit">
 					{APP_NAME}
 				</Link>
