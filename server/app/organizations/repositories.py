@@ -162,14 +162,15 @@ class OrganizationMemberRepo:
     async def create(
         self,
         organization_id: ObjectId,
-        account_id: ObjectId,
+        account: Account,
         role: str,
     ) -> OrganizationMember:
         """Create a new organization member."""
         organization_member = OrganizationMember(
             organization=organization_id,
             role=role,
-            account=account_id,
+            full_name=account.full_name,
+            account=account,
         )
 
         return await organization_member.insert()
@@ -195,6 +196,12 @@ class OrganizationMemberRepo:
         organization_member.role = role
         return await organization_member.save()
 
+    async def update_all(self, account: Account, *, full_name: str) -> None:
+        """Update all organization members for the given account."""
+        await OrganizationMember.find(
+            OrganizationMember.account.id == account.id
+        ).update(Set({OrganizationMember.full_name: full_name}))
+
     async def get_all_by_organization_id(
         self,
         organization_id: ObjectId,
@@ -205,7 +212,6 @@ class OrganizationMemberRepo:
         after: str | None = None,
     ) -> PaginatedResult[OrganizationMember, ObjectId]:
         """Get all organization members by organization ID."""
-        # TODO: get search by account name working
         paginator: Paginator[OrganizationMember, ObjectId] = Paginator(
             reverse=True,
             document_cls=OrganizationMember,
@@ -219,7 +225,11 @@ class OrganizationMemberRepo:
         )
 
         if search_term:
-            search_criteria = search_criteria.find({"$text": {"$search": search_term}})
+            search_criteria = search_criteria.find(
+                {"$text": {"$search": search_term}},
+                fetch_links=True,
+                nesting_depth=1,
+            )
 
         return await paginator.paginate(
             search_criteria=search_criteria,

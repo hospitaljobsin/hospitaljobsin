@@ -95,7 +95,7 @@ class OrganizationMutation:
     ) -> CreateOrganizationPayload:
         """Create an organization."""
         match await organization_service.create(
-            admin_id=info.context["current_user"].id,
+            admin=info.context["current_user"],
             name=full_name,
             slug=slug,
             website=website,

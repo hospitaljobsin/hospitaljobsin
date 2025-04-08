@@ -11,7 +11,6 @@
 - we can add other tools too, like showing current applications, saved jobs etc
 
 # TODO- recruiter portal
-- members- search feature
 - add applications feature
     - custom application form that can be created for each job
 - list applications

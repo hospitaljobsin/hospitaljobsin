@@ -5,14 +5,25 @@ from result import Ok
 from app.accounts.documents import Account, Language
 from app.accounts.repositories import AccountRepo, ProfileRepo
 from app.base.models import Address
+from app.organizations.repositories import OrganizationMemberRepo
 
 
 class AccountService:
-    def __init__(self, account_repo: AccountRepo) -> None:
+    def __init__(
+        self,
+        account_repo: AccountRepo,
+        organization_member_repo: OrganizationMemberRepo,
+    ) -> None:
         self._account_repo = account_repo
+        self._organization_member_repo = organization_member_repo
 
     async def update(self, account: Account, full_name: str) -> Ok[Account]:
+        """Update the given account."""
         await self._account_repo.update(account=account, full_name=full_name)
+        # update denormalized full_name in organization members
+        await self._organization_member_repo.update_all(
+            account=account, full_name=full_name
+        )
         return Ok(account)
 
 

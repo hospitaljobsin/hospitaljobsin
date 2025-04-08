@@ -214,7 +214,7 @@ class OrganizationService:
 
     async def create(
         self,
-        admin_id: ObjectId,
+        admin: Account,
         name: str,
         slug: str,
         description: str | None = None,
@@ -240,7 +240,7 @@ class OrganizationService:
         # create initial admin member
         await self._organization_member_repo.create(
             organization_id=organization.id,
-            account_id=admin_id,
+            account=admin,
             role="admin",
         )
 
@@ -460,7 +460,7 @@ class OrganizationInviteService:
         # create a member in the organization
         await self._organization_member_repo.create(
             organization_id=existing_invite.organization.id,
-            account_id=account.id,
+            account=account,
             role="member",
         )
 
