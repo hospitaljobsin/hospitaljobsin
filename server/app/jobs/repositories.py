@@ -7,10 +7,11 @@ from beanie.operators import And, In
 from bson import ObjectId
 
 from app.base.models import Address
+from app.core.constants import JobApplicationStatus
 from app.database.paginator import PaginatedResult, Paginator
 from app.organizations.documents import Organization
 
-from .documents import Job, SavedJob
+from .documents import Job, JobApplication, SavedJob
 
 
 class JobRepo:
@@ -240,3 +241,16 @@ class SavedJobRepo:
     async def delete(self, saved_job: SavedJob) -> None:
         """Unsave the given job under the given account."""
         await saved_job.delete(link_rule=DeleteRules.DO_NOTHING)
+
+
+class JobApplicationRepo:
+    async def get_count_by_job_id(
+        self,
+        job_id: ObjectId,
+        status: JobApplicationStatus,
+    ) -> int:
+        """Get the count of applications for a given job ID."""
+        return await JobApplication.find(
+            JobApplication.job.id == job_id,
+            JobApplication.status == status,
+        ).count()

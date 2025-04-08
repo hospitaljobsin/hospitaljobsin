@@ -3,12 +3,10 @@ import type {
 	JobFragment$key,
 	WorkMode,
 } from "@/__generated__/JobFragment.graphql";
-import { dateFormat } from "@/lib/intl";
+import { getRelativeTimeString } from "@/lib/intl";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
-import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
-import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 
@@ -31,6 +29,7 @@ export const JobFragment = graphql`
     minExperience
     maxExperience
     createdAt
+	applicationCount
     organization {
       name
       logoUrl
@@ -54,18 +53,6 @@ type Props = {
 export default function Job({ job }: Props) {
 	const router = useRouter();
 	const data = useFragment(JobFragment, job);
-
-	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
-
-	// Map currency to icons
-	const currencyIcon = (currency: string) => {
-		switch (currency) {
-			case "INR":
-				return <IndianRupee size={16} />;
-			default:
-				return null; // Handle other currencies or add more cases
-		}
-	};
 
 	const jobType = (type: JobType) => {
 		switch (type) {
@@ -115,19 +102,6 @@ export default function Job({ job }: Props) {
 		return parts.length > 0 ? parts.join(", ") : "Not specified";
 	};
 
-	const salaryRange = data.hasSalaryRange ? (
-		<div className="flex items-center gap-2 text-xl font-medium text-nowrap">
-			{currencyIcon(data.currency)}
-			{`${data.minSalary} - ${data.maxSalary}`}{" "}
-			<p className="text-foreground-500 text-sm">/ month</p>
-		</div>
-	) : (
-		<div className="flex items-center gap-2 text-xl font-medium">
-			{currencyIcon(data.currency)}
-			{"Not disclosed"}
-		</div>
-	);
-
 	function formatExperienceRange({
 		hasExperienceRange,
 		minExperience,
@@ -164,53 +138,11 @@ export default function Job({ job }: Props) {
 			shadow="none"
 		>
 			<CardHeader>
-				<div className="flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center">
-					<div className="flex items-center gap-4">
-						<Image
-							src={data.organization?.logoUrl || ""}
-							alt={data.organization?.name || ""}
-							width={50}
-							height={50}
-						/>
-						<div className="flex flex-col gap-2 items-start">
-							<h4 className="text-lg/7 sm:text-xl/8 font-medium text-balance">
-								{data.title}
-							</h4>
-							<p className="text-sm sm:text-base font-normal text-foreground-500">
-								{data.organization?.name}
-							</p>
-						</div>
-					</div>
-					{salaryRange}
-				</div>
+				<h4 className="text-lg/7 sm:text-xl/8 font-medium text-balance">
+					{data.title}
+				</h4>
 			</CardHeader>
-			<CardBody className="flex flex-col gap-6 w-full">
-				<div className="flex flex-col sm:flex-row justify-between items-start gap-4 w-full text-left">
-					<p className="text-foreground-500 text-sm sm:text-base font-normal">
-						Posted on {formattedCreatedAt}
-					</p>
-				</div>
-				<div className="flex flex-wrap justify-start gap-4 sm:gap-8 items-start text-foreground-600 w-full text-center">
-					{data.type && <p>{jobType(data.type)}</p>}
-					<div className="flex items-center gap-2">
-						<MapPin size={16} /> {formatAddress(data.address)}
-					</div>
-					<div className="flex items-center gap-2">
-						<Briefcase size={16} />{" "}
-						{formatExperienceRange({
-							hasExperienceRange: data.hasExperienceRange,
-							minExperience: data.minExperience,
-							maxExperience: data.maxExperience,
-						})}
-					</div>
-					{data.workMode && (
-						<div className="flex items-center gap-2">
-							<Globe size={16} /> {workMode(data.workMode)}
-						</div>
-					)}
-				</div>
-			</CardBody>
-			<CardFooter className="flex flex-col sm:flex-row items-end sm:items-center justify-between gap-4 sm:gap-6 w-full text-center sm:text-left">
+			<CardBody className="flex flex-col gap-10 w-full">
 				<div className="flex flex-wrap gap-2 sm:gap-4 mt-2 w-full justify-start">
 					{data.skills.map((skill) => (
 						<Chip variant="flat" key={skill}>
@@ -218,7 +150,46 @@ export default function Job({ job }: Props) {
 						</Chip>
 					))}
 				</div>
-				{/* <JobControls job={data} authQueryRef={rootQuery} /> */}
+				<div className="w-full flex flex-wrap justify-between items-center gap-4 sm:gap-8">
+					<div className="flex flex-col items-center gap-2">
+						<h2 className="text-2xl font-medium text-foreground-700">
+							{data.applicationCount}
+						</h2>
+						<p className="text-md text-foreground-500">Applied</p>
+					</div>
+					<div className="flex flex-col items-center gap-2">
+						<h2 className="text-2xl font-medium text-foreground-700">
+							{data.applicationCount}
+						</h2>
+						<p className="text-md text-foreground-500">Shortlisted</p>
+					</div>
+					<div className="flex flex-col items-center gap-2">
+						<h2 className="text-2xl font-medium text-foreground-700">
+							{data.applicationCount}
+						</h2>
+						<p className="text-md text-foreground-500">Interviewed</p>
+					</div>
+					<div className="flex flex-col items-center gap-2">
+						<h2 className="text-2xl font-medium text-foreground-700">
+							{data.applicationCount}
+						</h2>
+						<p className="text-md text-foreground-500">On Hold</p>
+					</div>
+					<div className="flex flex-col items-center gap-2">
+						<h2 className="text-2xl font-medium text-foreground-700">
+							{data.applicationCount}
+						</h2>
+						<p className="text-md text-foreground-500">Offered</p>
+					</div>
+				</div>
+			</CardBody>
+			<CardFooter className="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-4 sm:gap-6 w-full text-center sm:text-left">
+				<p
+					className="text-foreground-500 text-sm sm:text-base font-normal whitespace-nowrap"
+					suppressHydrationWarning
+				>
+					Posted {getRelativeTimeString(data.createdAt)}
+				</p>
 			</CardFooter>
 		</Card>
 	);

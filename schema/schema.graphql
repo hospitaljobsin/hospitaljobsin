@@ -467,6 +467,9 @@ type Job implements Node {
   """Whether the job is saved by the current user."""
   isSaved: Boolean!
 
+  """The number of applications for the job."""
+  applicationCount: Int!
+
   """The organization of the job."""
   organization: Organization
 }

@@ -4,7 +4,9 @@ from enum import Enum
 from typing import TYPE_CHECKING, Annotated, Self
 
 import strawberry
+from aioinject import Injected
 from aioinject.ext.strawberry import inject
+from bson import ObjectId
 from strawberry import relay
 
 from app.base.types import (
@@ -16,6 +18,7 @@ from app.base.types import (
 )
 from app.context import Info
 from app.jobs.documents import Job, SavedJob
+from app.jobs.repositories import JobApplicationRepo
 from app.organizations.types import (
     OrganizationAuthorizationErrorType,
     OrganizationNotFoundErrorType,
@@ -161,6 +164,18 @@ class JobType(BaseNodeType[Job]):
             (str(current_user.id), str(self.id))
         )
         return saved_job is not None
+
+    @strawberry.field(  # type: ignore[misc]
+        description="The number of applications for the job.",
+    )
+    @inject
+    async def application_count(
+        self, info: Info, job_application_repo: Injected[JobApplicationRepo]
+    ) -> int:
+        """Get the number of applications for the job."""
+        return await job_application_repo.get_count_by_job_id(
+            job_id=ObjectId(self.id), status="applied"
+        )
 
     @strawberry.field(  # type: ignore[misc]
         description="The organization of the job.",

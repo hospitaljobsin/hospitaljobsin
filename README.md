@@ -11,6 +11,8 @@
 - we can add other tools too, like showing current applications, saved jobs etc
 
 # TODO- recruiter portal
+- feature: save job as draft
+- jobs: add open positions and display it in UI
 - add applications feature
     - custom application form that can be created for each job
 - list applications

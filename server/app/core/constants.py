@@ -44,3 +44,9 @@ AuthProvider = Literal["password", "webauthn_credential", "oauth_google"]
 OAuthProvider = Literal["google"]
 
 TwoFactorProvider = Literal["authenticator",]
+
+
+# Job Applications
+JobApplicationStatus = Literal[
+    "applied", "shortlisted", "interviewed", "onhold", "offered"
+]
