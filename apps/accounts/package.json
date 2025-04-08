@@ -44,7 +44,7 @@
 		"@biomejs/biome": "1.9.4",
 		"@swc/plugin-relay": "^7.0.1",
 		"@types/gravatar": "^1.8.6",
-		"@types/node": "^20.17.30",
+		"@types/node": "^22.14.0",
 		"@types/react": "^19.1.0",
 		"@types/react-dom": "^19.1.1",
 		"@types/react-relay": "^18.2.0",
