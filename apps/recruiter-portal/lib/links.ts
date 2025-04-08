@@ -26,6 +26,8 @@ const links = {
 		returnTo
 			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/request-sudo?return_to=${returnTo}`
 			: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/request-sudo`,
+	terms: "/terms",
+	privacy: "/privacy",
 };
 
 export default links;

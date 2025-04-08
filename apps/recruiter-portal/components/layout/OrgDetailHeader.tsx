@@ -3,11 +3,11 @@ import type { OrgDetailHeaderOrganizationFragment$key } from "@/__generated__/Or
 import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
 import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
-import { Building2 } from "lucide-react";
 import Link from "next/link";
 import { useFragment, useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import Logo from "../Logo";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthNavigation from "./AuthNavigation";
 
@@ -55,7 +55,7 @@ export default function OrgDetailHeader({
 				<NavbarContent justify="start">
 					<NavbarBrand className="flex items-center gap-4">
 						<Link href={links.dashboard} className="font-medium text-inherit">
-							<Building2 />
+							<Logo />
 						</Link>
 						<Link
 							href={links.organizationDetail(orgData.slug)}
