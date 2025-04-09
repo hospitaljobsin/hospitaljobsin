@@ -16,7 +16,7 @@ from app.jobs.exceptions import (
     OrganizationNotFoundError,
     SavedJobNotFoundError,
 )
-from app.jobs.services import JobService, SavedJobService
+from app.jobs.services import JobApplicationFormService, JobService, SavedJobService
 from app.organizations.exceptions import OrganizationAuthorizationError
 from app.organizations.types import (
     OrganizationAuthorizationErrorType,
@@ -24,8 +24,10 @@ from app.organizations.types import (
 )
 
 from .types import (
+    ApplicationFieldInputType,
     CreateJobPayload,
     CreateJobSuccess,
+    JobApplicationFormType,
     JobEdgeType,
     JobNotFoundErrorType,
     JobTypeEnum,
@@ -35,6 +37,8 @@ from .types import (
     SaveJobSuccess,
     UnsaveJobPayload,
     UnsaveJobSuccess,
+    UpdateJobApplicationFormPayload,
+    UpdateJobApplicationFormPayloadSuccess,
     WorkModeEnum,
 )
 
@@ -252,6 +256,57 @@ class JobMutation:
             case Ok(job):
                 return CreateJobSuccess(
                     job_edge=JobEdgeType.marshal(job),
+                )
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateJobApplicationFormPayload,
+        description="Update job application form.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_job_application_form(
+        self,
+        info: AuthInfo,
+        job_application_form_service: Annotated[JobApplicationFormService, Inject],
+        *,
+        job_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the job to update the application form for.",
+            ),
+        ],
+        fields: Annotated[
+            list[ApplicationFieldInputType],
+            strawberry.argument(
+                description="The fields required for the job application form.",
+            ),
+        ],
+    ) -> UpdateJobApplicationFormPayload:
+        """Update job application form."""
+        match await job_application_form_service.update(
+            account=info.context["current_user"],
+            job_id=job_id.node_id,
+            fields=[ApplicationFieldInputType.to_document(field) for field in fields],
+        ):
+            case Err(error):
+                match error:
+                    case JobNotFoundError():
+                        return JobNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case Ok(job_application_form):
+                return UpdateJobApplicationFormPayloadSuccess(
+                    job_application_form=JobApplicationFormType.marshal(
+                        job_application_form
+                    ),
                 )
             case _ as unreachable:
                 assert_never(unreachable)

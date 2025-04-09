@@ -7,13 +7,13 @@ from result import Err, Ok, Result
 
 from app.accounts.documents import Account
 from app.base.models import Address
-from app.jobs.documents import Job, SavedJob
+from app.jobs.documents import ApplicationField, Job, JobApplicationForm, SavedJob
 from app.jobs.exceptions import (
     JobNotFoundError,
     OrganizationNotFoundError,
     SavedJobNotFoundError,
 )
-from app.jobs.repositories import JobRepo, SavedJobRepo
+from app.jobs.repositories import JobApplicationFormRepo, JobRepo, SavedJobRepo
 from app.organizations.exceptions import OrganizationAuthorizationError
 from app.organizations.repositories import OrganizationRepo
 from app.organizations.services import OrganizationMemberService
@@ -120,3 +120,42 @@ class JobService:
         )
 
         return Ok(job)
+
+
+class JobApplicationFormService:
+    def __init__(
+        self,
+        job_application_form_repo: JobApplicationFormRepo,
+        job_repo: JobRepo,
+        organization_member_service: OrganizationMemberService,
+    ) -> None:
+        self._job_application_form_repo = job_application_form_repo
+        self._job_repo = job_repo
+        self._organization_member_service = organization_member_service
+
+    async def update(
+        self, account: Account, job_id: ObjectId, fields: list[ApplicationField]
+    ) -> Result[JobApplicationForm, JobNotFoundError | OrganizationAuthorizationError]:
+        existing_job = await self._job_repo.get(job_id=job_id)
+        if existing_job is None:
+            return Err(JobNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=existing_job.organization.id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        existing_application_form = await self._job_application_form_repo.get(
+            job_id=job_id
+        )
+        if existing_application_form is None:
+            existing_application_form = await self._job_application_form_repo.create(
+                job=existing_job, fields=fields
+            )
+        else:
+            await self._job_application_form_repo.update(
+                existing_application_form,
+                fields=fields,
+            )
+        return Ok(existing_application_form)

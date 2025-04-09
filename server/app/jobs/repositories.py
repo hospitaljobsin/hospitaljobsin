@@ -11,7 +11,13 @@ from app.core.constants import JobApplicationStatus
 from app.database.paginator import PaginatedResult, Paginator
 from app.organizations.documents import Organization
 
-from .documents import Job, JobApplication, SavedJob
+from .documents import (
+    ApplicationField,
+    Job,
+    JobApplication,
+    JobApplicationForm,
+    SavedJob,
+)
 
 
 class JobRepo:
@@ -256,3 +262,30 @@ class JobApplicationRepo:
             JobApplication.job.id == job_id,
             JobApplication.status == status,
         ).count()
+
+
+class JobApplicationFormRepo:
+    async def get(self, job_id: ObjectId) -> JobApplicationForm | None:
+        """Get job application form by job ID."""
+        return await JobApplicationForm.find_one(
+            JobApplicationForm.job.id == job_id,
+        )
+
+    async def create(
+        self, job: Job, fields: list[ApplicationField]
+    ) -> JobApplicationForm:
+        """Create a new job application form."""
+        form = JobApplicationForm(
+            job=job,
+            fields=fields,
+        )
+        return await form.insert(link_rule=WriteRules.DO_NOTHING)
+
+    async def update(
+        self,
+        job_application_form: JobApplicationForm,
+        fields: list[ApplicationField],
+    ) -> JobApplicationForm:
+        """Update the job application form."""
+        job_application_form.fields = fields
+        return await job_application_form.save(link_rule=WriteRules.DO_NOTHING)

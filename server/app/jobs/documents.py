@@ -3,7 +3,7 @@ from typing import Annotated, ClassVar, Literal
 
 import pymongo
 from beanie import Document, Indexed, Link
-from pydantic import Field
+from pydantic import BaseModel, Field
 from pymongo import IndexModel
 from pymongo.operations import SearchIndexModel
 
@@ -101,6 +101,21 @@ class SavedJob(Document):
                 unique=True,
             ),
         ]
+
+
+class ApplicationField(BaseModel):
+    field_name: str
+    default_value: str | None = None
+    required: bool = False
+
+
+class JobApplicationForm(Document):
+    job: Link[Job]
+    fields: list[ApplicationField]
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+    class Settings:
+        name = "job_application_forms"
 
 
 class JobApplication(Document):

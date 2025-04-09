@@ -17,8 +17,8 @@ from app.base.types import (
     BaseNodeType,
 )
 from app.context import Info
-from app.jobs.documents import Job, SavedJob
-from app.jobs.repositories import JobApplicationRepo
+from app.jobs.documents import ApplicationField, Job, JobApplicationForm, SavedJob
+from app.jobs.repositories import JobApplicationFormRepo, JobApplicationRepo
 from app.organizations.types import (
     OrganizationAuthorizationErrorType,
     OrganizationNotFoundErrorType,
@@ -55,6 +55,64 @@ class WorkModeEnum(Enum):
 )
 class CurrencyEnum(Enum):
     INR = "INR"
+
+
+@strawberry.input(
+    name="ApplicationFieldInput",
+    description="An application field belonging to a job application form input.",
+)
+class ApplicationFieldInputType:
+    field_name: str = strawberry.field(
+        description="The name of the field.",
+    )
+    default_value: str | None = strawberry.field(
+        description="The default value of the field.",
+    )
+
+    @classmethod
+    def to_document(cls, field: Self) -> ApplicationField:
+        """Convert to a document."""
+        return ApplicationField(
+            field_name=field.field_name,
+            default_value=field.default_value,
+        )
+
+
+@strawberry.type(
+    name="ApplicationField",
+    description="An application field belonging to a job application form.",
+)
+class ApplicationFieldType:
+    field_name: str = strawberry.field(
+        description="The name of the field.",
+    )
+    default_value: str | None = strawberry.field(
+        description="The default value of the field.",
+    )
+
+
+@strawberry.type(
+    name="JobApplicationForm",
+    description="A custom application form belonging to a job posting.",
+)
+class JobApplicationFormType(BaseNodeType[JobApplicationForm]):
+    fields: list[ApplicationFieldType] = strawberry.field(
+        description="The fields of the application form.",
+    )
+
+    @classmethod
+    def marshal(cls, application_form: JobApplicationForm) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            id=str(application_form.id),
+            fields=[
+                ApplicationFieldType(
+                    field_name=field.field_name,
+                    default_value=field.default_value,
+                )
+                for field in application_form.fields
+            ],
+        )
 
 
 @strawberry.type(
@@ -180,6 +238,19 @@ class JobType(BaseNodeType[Job]):
         return await job_application_repo.get_count_by_job_id(
             job_id=ObjectId(self.id), status="applied"
         )
+
+    @strawberry.field(  # type: ignore[misc]
+        description="The custom application form for the job.",
+    )
+    @inject
+    async def application_form(
+        self, info: Info, application_form_repo: Injected[JobApplicationFormRepo]
+    ) -> JobApplicationFormType | None:
+        """Get the custom application form for the job."""
+        application_form = await application_form_repo.get(job_id=ObjectId(self.id))
+        if not application_form:
+            return None
+        return JobApplicationFormType.marshal(application_form)
 
     @strawberry.field(  # type: ignore[misc]
         description="The organization of the job.",
@@ -330,6 +401,26 @@ CreateJobPayload = Annotated[
     ),
 ]
 
+
+@strawberry.type(
+    name="UpdateJobApplicationFormPayloadSuccess",
+    description="Used when the job application form is updated successfully.",
+)
+class UpdateJobApplicationFormPayloadSuccess:
+    job_application_form: JobApplicationFormType = strawberry.field(
+        description="The updated job application form.",
+    )
+
+
+UpdateJobApplicationFormPayload = Annotated[
+    UpdateJobApplicationFormPayloadSuccess
+    | JobNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
+    strawberry.union(
+        name="UpdateJobApplicationFormPayload",
+        description="The update job application form payload.",
+    ),
+]
 
 JobPayload = Annotated[
     JobType | JobNotFoundErrorType,

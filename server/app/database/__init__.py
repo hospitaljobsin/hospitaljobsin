@@ -15,7 +15,7 @@ from app.auth.documents import (
     WebAuthnChallenge,
     WebAuthnCredential,
 )
-from app.jobs.documents import Job, JobApplication, SavedJob
+from app.jobs.documents import Job, JobApplication, JobApplicationForm, SavedJob
 from app.organizations.documents import (
     Organization,
     OrganizationInvite,
@@ -60,6 +60,7 @@ async def initialize_database(database_url: str) -> AsyncGenerator[None, None]:
             document_models=[
                 Job,
                 JobApplication,
+                JobApplicationForm,
                 Account,
                 Profile,
                 SavedJob,
