@@ -14,6 +14,7 @@ export const JobFragment = graphql`
     skills
     createdAt
 	applicationCount
+	vacancies
   }
 `;
 
@@ -84,7 +85,12 @@ export default function Job({ job }: Props) {
 					</div>
 				</div>
 			</CardBody>
-			<CardFooter className="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-4 sm:gap-6 w-full text-center sm:text-left">
+			<CardFooter className="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-6 sm:gap-8 w-full text-center sm:text-left">
+				{data.vacancies && (
+					<p className="text-foreground-500 text-sm sm:text-base font-normal whitespace-nowrap">
+						<span className="font-medium">{data.vacancies}</span> vacancies
+					</p>
+				)}
 				<p
 					className="text-foreground-500 text-sm sm:text-base font-normal whitespace-nowrap"
 					suppressHydrationWarning

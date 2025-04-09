@@ -58,7 +58,8 @@ mutation NewJobFormMutation(
 	$maxExperience: Int,
 	$expiresAt: datetime,
 	$workMode: WorkMode,
-	$jobType: JobType
+	$jobType: JobType,
+	$vacancies: Int
 ) {
     createJob(
 		title: $title,
@@ -72,7 +73,8 @@ mutation NewJobFormMutation(
 		maxExperience: $maxExperience,
 		expiresAt: $expiresAt,
 		workMode: $workMode,
-		jobType: $jobType
+		jobType: $jobType,
+		vacancies: $vacancies
 	) {
         __typename
         ...on CreateJobSuccess {
@@ -123,6 +125,7 @@ fragment NewJobFormOrganizationFragment on Organization {
 const formSchema = z.object({
 	title: z.string().min(1, "This field is required").max(75),
 	description: z.string().min(1, "This field is required").max(2000),
+	vacancies: z.number().positive().nullable(),
 	skills: z.array(z.object({ value: z.string() })),
 	address: z.object({
 		city: z.string().nullable(),
@@ -171,6 +174,7 @@ export default function NewJobForm({ account, organization }: Props) {
 		defaultValues: {
 			title: "",
 			description: "",
+			vacancies: null,
 			skills: [],
 			address: {
 				city: organizationData.address.city,
@@ -273,6 +277,7 @@ export default function NewJobForm({ account, organization }: Props) {
 				organizationId: organizationData.id,
 				title: formData.title,
 				description: formData.description,
+				vacancies: formData.vacancies,
 				skills: formData.skills.flatMap((skill) => skill.value),
 				address: {
 					city: formData.address.city,
@@ -395,6 +400,25 @@ export default function NewJobForm({ account, organization }: Props) {
 											/>
 										</p>
 									),
+								}}
+							/>
+							<Controller
+								control={control}
+								name="vacancies"
+								render={({ field }) => {
+									return (
+										<NumberInput
+											errorMessage={errors.vacancies?.message}
+											isInvalid={!!errors.vacancies}
+											label="Vacancies"
+											placeholder="Enter vacancies"
+											labelPlacement="outside"
+											value={field.value || 0}
+											onValueChange={(value) => {
+												field.onChange(value);
+											}}
+										/>
+									);
 								}}
 							/>
 							<div className="w-full flex flex-col sm:flex-row gap-12 items-start justify-start">

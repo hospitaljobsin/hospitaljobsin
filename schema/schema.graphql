@@ -422,6 +422,9 @@ type Job implements Node {
   """The description of the job."""
   description: String
 
+  """The number of vacancies for the job."""
+  vacancies: Int
+
   """The type of the job."""
   type: JobType
 
@@ -844,6 +847,9 @@ type Mutation {
 
     """The skills required for the job."""
     skills: [String!]!
+
+    """The number of vacancies for the job."""
+    vacancies: Int = null
 
     """The minimum salary of the job."""
     minSalary: Int = null

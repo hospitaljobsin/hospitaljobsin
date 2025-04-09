@@ -31,6 +31,8 @@ class Job(Document):
     min_experience: int | None = None
     max_experience: int | None = None
 
+    vacancies: int | None = None
+
     job_embedding: list[float] | None = None
 
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

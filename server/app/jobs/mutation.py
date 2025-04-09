@@ -170,6 +170,12 @@ class JobMutation:
                 description="The skills required for the job.",
             ),
         ],
+        vacancies: Annotated[
+            int | None,
+            strawberry.argument(
+                description="The number of vacancies for the job.",
+            ),
+        ] = None,
         min_salary: Annotated[
             int | None,
             strawberry.argument(
@@ -225,6 +231,7 @@ class JobMutation:
             organization_id=organization_id.node_id,
             title=title,
             description=description,
+            vacancies=vacancies,
             address=AddressInputType.to_document(address),
             min_salary=min_salary,
             max_salary=max_salary,

@@ -32,6 +32,7 @@ class JobRepo:
         title: str,
         description: str,
         address: Address,
+        vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
         min_experience: int | None = None,
@@ -47,6 +48,7 @@ class JobRepo:
         job = Job(
             title=title,
             description=description,
+            vacancies=vacancies,
             address=address,
             min_salary=min_salary,
             max_salary=max_salary,
