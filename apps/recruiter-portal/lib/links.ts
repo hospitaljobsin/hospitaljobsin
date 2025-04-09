@@ -17,6 +17,8 @@ const links = {
 		`/dashboard/organizations/${slug}/new-job`,
 	organizationDetailSettings: (slug: string) =>
 		`/dashboard/organizations/${slug}/settings`,
+	jobDetailApplicationForm: (organizationSlug: string, jobSlug: string) =>
+		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/application-form`,
 	login: (returnTo: string | undefined = undefined) =>
 		returnTo
 			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}`

@@ -129,6 +129,24 @@ input AddressInput {
   pincode: String
 }
 
+"""An application field belonging to a job application form."""
+type ApplicationField {
+  """The name of the field."""
+  fieldName: String!
+
+  """The default value of the field."""
+  defaultValue: String
+}
+
+"""An application field belonging to a job application form input."""
+input ApplicationFieldInput {
+  """The name of the field."""
+  fieldName: String!
+
+  """The default value of the field."""
+  defaultValue: String
+}
+
 """The authentication provider."""
 enum AuthProvider {
   PASSWORD
@@ -473,8 +491,20 @@ type Job implements Node {
   """The number of applications for the job."""
   applicationCount: Int!
 
+  """The custom application form for the job."""
+  applicationForm: JobApplicationForm
+
   """The organization of the job."""
   organization: Organization
+}
+
+"""A custom application form belonging to a job posting."""
+type JobApplicationForm implements Node {
+  """The Globally Unique ID of this object"""
+  id: ID!
+
+  """The fields of the application form."""
+  fields: [ApplicationField!]!
 }
 
 type JobConnection {
@@ -875,6 +905,15 @@ type Mutation {
     """The currency of the job."""
     currency: String! = "INR"
   ): CreateJobPayload! @isAuthenticated
+
+  """Update job application form."""
+  updateJobApplicationForm(
+    """The ID of the job to update the application form for."""
+    jobId: ID!
+
+    """The fields required for the job application form."""
+    fields: [ApplicationFieldInput!]!
+  ): UpdateJobApplicationFormPayload! @isAuthenticated
 
   """Update the current user's profile personal details."""
   updateProfilePersonalDetails(
@@ -1555,6 +1594,15 @@ type UnsaveJobSuccess {
 
 """The update account payload."""
 union UpdateAccountPayload = Account
+
+"""The update job application form payload."""
+union UpdateJobApplicationFormPayload = UpdateJobApplicationFormPayloadSuccess | JobNotFoundError | OrganizationAuthorizationError
+
+"""Used when the job application form is updated successfully."""
+type UpdateJobApplicationFormPayloadSuccess {
+  """The updated job application form."""
+  jobApplicationForm: JobApplicationForm!
+}
 
 """The update organization payload."""
 union UpdateOrganizationPayload = Organization | OrganizationSlugInUseError | OrganizationNotFoundError | OrganizationAuthorizationError

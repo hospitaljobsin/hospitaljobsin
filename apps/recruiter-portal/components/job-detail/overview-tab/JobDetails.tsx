@@ -1,5 +1,8 @@
 import type { JobDetailsFragment$key } from "@/__generated__/JobDetailsFragment.graphql";
 import type { JobDetailsInternalFragment$key as JobDetailsInternalFragmentType } from "@/__generated__/JobDetailsInternalFragment.graphql";
+import links from "@/lib/links";
+import { Alert, Button, Link } from "@heroui/react";
+import { useParams } from "next/navigation";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
 
@@ -23,12 +26,19 @@ const JobDetailsInternalFragment = graphql`
   fragment JobDetailsInternalFragment on Job {
     title
     description
+    applicationForm {
+      __typename
+    }
+    organization {
+      isAdmin
+    }
   }
 `;
 
 export default function JobDetails({
 	rootQuery,
 }: { rootQuery: JobDetailsFragment$key }) {
+	const params = useParams<{ slug: string; jobSlug: string }>();
 	const root = useFragment(JobDetailsFragment, rootQuery);
 	invariant(root.job.__typename === "Job", "Expected 'Job' node type");
 	const data = useFragment<JobDetailsInternalFragmentType>(
@@ -36,5 +46,27 @@ export default function JobDetails({
 		root.job,
 	);
 
-	return <div className="w-full flex flex-col gap-6"></div>;
+	const hasApplicationForm = data.applicationForm !== null;
+
+	return (
+		<div className="w-full flex flex-col gap-6">
+			{!hasApplicationForm && data.organization?.isAdmin ? (
+				<Alert
+					color="warning"
+					title="You need to set up an application form before publishing this job"
+					variant="flat"
+					endContent={
+						<Button
+							variant="flat"
+							color="warning"
+							as={Link}
+							href={links.jobDetailApplicationForm(params.slug, params.jobSlug)}
+						>
+							Set up application form
+						</Button>
+					}
+				/>
+			) : null}
+		</div>
+	);
 }

@@ -2,7 +2,7 @@
 import type { JobTabsFragment$key } from "@/__generated__/JobTabsFragment.graphql";
 import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
-import { File, FileText, HomeIcon, Users } from "lucide-react";
+import { FileText, HomeIcon, Users } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -67,8 +67,8 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 				/>
 				{organization.isAdmin && (
 					<Tab
-						key={links.organizationDetailSettings(params.slug)}
-						href={links.organizationDetailSettings(params.slug)}
+						key={links.jobDetailApplicationForm(params.slug, params.jobSlug)}
+						href={links.jobDetailApplicationForm(params.slug, params.jobSlug)}
 						title={
 							<div className="flex items-center space-x-2">
 								<FileText />
