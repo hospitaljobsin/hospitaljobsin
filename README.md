@@ -19,11 +19,6 @@
     - waiting for review
     - waiting for interview
     - selected
-- update recruiter job UI to display:
-    - num of applicants
-    - num of pending interviews
-    - num selected applicants
-    (instead of the salary, which isnt relevant in the recruiter dashboard)
 
 - make rich text editor more performant
 - add preview to create new job form
