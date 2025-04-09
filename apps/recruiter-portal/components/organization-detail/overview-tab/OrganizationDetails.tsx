@@ -21,6 +21,7 @@ const OrganizationDetailsFragment = graphql`
     }
   }
 `;
+
 const OrganizationDetailsInternalFragment = graphql`
   fragment OrganizationDetailsInternalFragment on Organization {
     name
@@ -85,14 +86,14 @@ export default function OrganizationDetails({
 							</div>
 						)}
 						{data.website && (
-								<Link
-									showAnchorIcon
-									className="text-foreground-600"
-									href={data.website}
-									isExternal
-								>
-									Visit website
-								</Link>
+							<Link
+								showAnchorIcon
+								className="text-foreground-600"
+								href={data.website}
+								isExternal
+							>
+								Visit website
+							</Link>
 						)}
 					</div>
 				</CardBody>

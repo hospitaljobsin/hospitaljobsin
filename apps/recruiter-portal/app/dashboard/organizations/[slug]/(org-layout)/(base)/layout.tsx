@@ -1,4 +1,4 @@
-export default function BaseLayout({
+export default function OrganizationBaseLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;

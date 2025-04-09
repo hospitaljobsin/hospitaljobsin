@@ -51,7 +51,7 @@ export default function Job({ job }: Props) {
 				</div>
 			</CardHeader>
 			<CardBody className="flex flex-col gap-10 w-full">
-				<div className="w-full flex flex-wrap justify-between items-center gap-4 sm:gap-8">
+				<div className="w-full flex flex-wrap justify-between items-center gap-4 sm:gap-8 px-6 sm:px-8">
 					<div className="flex flex-col items-center gap-2">
 						<h2 className="text-2xl font-medium text-foreground-700">
 							{data.applicationCount}
