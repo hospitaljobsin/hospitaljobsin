@@ -3,12 +3,10 @@
 - add job apply feature
 
 - we need a separate resource that can return the searched jobs
-
-- carousel of jobs horizontally (recommended jobs feed)
-- big text box asking what can I do for you?
+aaa
 
 - if prompt is show me jobs satisfying XXX conditions, we get a tool call done to call the appropriate jobs. we handle that and show the result client side.
-- we can add other tools too, like showing current applications, saved jobs etc
+- we can add other tools too, like showing current applications, saved jobs etcaaa
 
 # TODO- recruiter portal
 - feature: save job as draft
