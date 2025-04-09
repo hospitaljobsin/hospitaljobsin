@@ -1596,10 +1596,10 @@ type UnsaveJobSuccess {
 union UpdateAccountPayload = Account
 
 """The update job application form payload."""
-union UpdateJobApplicationFormPayload = UpdateJobApplicationFormPayloadSuccess | JobNotFoundError | OrganizationAuthorizationError
+union UpdateJobApplicationFormPayload = UpdateJobApplicationFormSuccess | JobNotFoundError | OrganizationAuthorizationError
 
 """Used when the job application form is updated successfully."""
-type UpdateJobApplicationFormPayloadSuccess {
+type UpdateJobApplicationFormSuccess {
   """The updated job application form."""
   jobApplicationForm: JobApplicationForm!
 }

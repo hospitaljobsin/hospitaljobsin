@@ -403,17 +403,17 @@ CreateJobPayload = Annotated[
 
 
 @strawberry.type(
-    name="UpdateJobApplicationFormPayloadSuccess",
+    name="UpdateJobApplicationFormSuccess",
     description="Used when the job application form is updated successfully.",
 )
-class UpdateJobApplicationFormPayloadSuccess:
+class UpdateJobApplicationFormSuccessType:
     job_application_form: JobApplicationFormType = strawberry.field(
         description="The updated job application form.",
     )
 
 
 UpdateJobApplicationFormPayload = Annotated[
-    UpdateJobApplicationFormPayloadSuccess
+    UpdateJobApplicationFormSuccessType
     | JobNotFoundErrorType
     | OrganizationAuthorizationErrorType,
     strawberry.union(

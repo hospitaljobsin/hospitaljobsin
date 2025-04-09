@@ -38,7 +38,7 @@ from .types import (
     UnsaveJobPayload,
     UnsaveJobSuccess,
     UpdateJobApplicationFormPayload,
-    UpdateJobApplicationFormPayloadSuccess,
+    UpdateJobApplicationFormSuccessType,
     WorkModeEnum,
 )
 
@@ -303,7 +303,7 @@ class JobMutation:
                     case OrganizationAuthorizationError():
                         return OrganizationAuthorizationErrorType()
             case Ok(job_application_form):
-                return UpdateJobApplicationFormPayloadSuccess(
+                return UpdateJobApplicationFormSuccessType(
                     job_application_form=JobApplicationFormType.marshal(
                         job_application_form
                     ),
