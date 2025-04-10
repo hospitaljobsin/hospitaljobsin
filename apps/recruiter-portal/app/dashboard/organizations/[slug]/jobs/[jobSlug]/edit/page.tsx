@@ -1,21 +1,21 @@
-import type { pageJobApplicationFormMetadataFragment$key } from "@/__generated__/pageJobApplicationFormMetadataFragment.graphql";
-import type JobApplicationFormViewQueryNode from "@/__generated__/pageJobApplicationFormViewQuery.graphql";
-import type { pageJobApplicationFormViewQuery } from "@/__generated__/pageJobApplicationFormViewQuery.graphql";
+import type { pageJobEditMetadataFragment$key } from "@/__generated__/pageJobEditMetadataFragment.graphql";
+import type JobEditViewQueryNode from "@/__generated__/pageJobEditViewQuery.graphql";
+import type { pageJobEditViewQuery } from "@/__generated__/pageJobEditViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
-import JobApplicationFormViewClientComponent from "./JobApplicationFormViewClientComponent";
+import JobEditViewClientComponent from "./JobEditViewClientComponent";
 
-export const PageJobApplicationFormViewQuery = graphql`
-  query pageJobApplicationFormViewQuery($slug: String!) {	
-    ...pageJobApplicationFormMetadataFragment @arguments(slug: $slug)
-    ...JobApplicationFormViewClientComponentFragment @arguments(slug: $slug)
+export const PageJobEditViewQuery = graphql`
+  query pageJobEditViewQuery($slug: String!) {	
+    ...pageJobEditMetadataFragment @arguments(slug: $slug)
+    ...JobEditViewClientComponentFragment @arguments(slug: $slug)
   }
 `;
 
-const PageJobApplicationFormMetadataFragment = graphql`
- fragment pageJobApplicationFormMetadataFragment on Query @inline @argumentDefinitions(
+const PageJobEditMetadataFragment = graphql`
+ fragment pageJobEditMetadataFragment on Query @inline @argumentDefinitions(
       slug: {
         type: "String!",
       }
@@ -39,9 +39,9 @@ const PageJobApplicationFormMetadataFragment = graphql`
 // Function to load and cache the query result
 const loadJob = cache(async (slug: string) => {
 	return await loadSerializableQuery<
-		typeof JobApplicationFormViewQueryNode,
-		pageJobApplicationFormViewQuery
-	>(PageJobApplicationFormViewQuery, {
+		typeof JobEditViewQueryNode,
+		pageJobEditViewQuery
+	>(PageJobEditViewQuery, {
 		slug: slug,
 	});
 });
@@ -54,12 +54,12 @@ export async function generateMetadata({
 	const slug = (await params).jobSlug;
 	const preloadedQuery = await loadJob(slug);
 
-	const data = readInlineData<pageJobApplicationFormMetadataFragment$key>(
-		PageJobApplicationFormMetadataFragment,
+	const data = readInlineData<pageJobEditMetadataFragment$key>(
+		PageJobEditMetadataFragment,
 		preloadedQuery.data,
 	);
 
-	// only members can edit the job application form
+	// only members can edit the job
 	if (
 		data.job.__typename !== "Job" ||
 		!data.job.organization ||
@@ -83,7 +83,7 @@ export async function generateMetadata({
 	};
 }
 
-export default async function JobApplicationFormPage({
+export default async function JobEditPage({
 	params,
 }: {
 	params: Promise<{ slug: string; jobSlug: string }>;
@@ -92,12 +92,12 @@ export default async function JobApplicationFormPage({
 
 	const preloadedQuery = await loadJob(slug);
 
-	const data = readInlineData<pageJobApplicationFormMetadataFragment$key>(
-		PageJobApplicationFormMetadataFragment,
+	const data = readInlineData<pageJobEditMetadataFragment$key>(
+		PageJobEditMetadataFragment,
 		preloadedQuery.data,
 	);
 
-	// only admins can edit the job application form
+	// only admins can edit the job
 	if (
 		data.job.__typename !== "Job" ||
 		!data.job.organization ||
@@ -106,7 +106,5 @@ export default async function JobApplicationFormPage({
 		notFound();
 	}
 
-	return (
-		<JobApplicationFormViewClientComponent preloadedQuery={preloadedQuery} />
-	);
+	return <JobEditViewClientComponent preloadedQuery={preloadedQuery} />;
 }

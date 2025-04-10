@@ -94,14 +94,15 @@ export default function UnpublishJobModal({
 			onOpenChange={onOpenChange}
 			placement="center"
 			hideCloseButton
+			size="xl"
 		>
-			<ModalContent>
+			<ModalContent className="p-4 sm:p-6">
 				<ModalHeader className="flex flex-col gap-1">Unpublish job</ModalHeader>
 				<ModalBody>
 					Are you sure you want to unpublish this job? It won't be visible to
 					job seekers on the platform with immediate effect.
 				</ModalBody>
-				<ModalFooter>
+				<ModalFooter className="flex justify-end gap-4">
 					<Button variant="light" onPress={onClose}>
 						Cancel
 					</Button>
