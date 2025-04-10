@@ -443,7 +443,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 					<Button
 						type="submit"
 						color="primary"
-						isDisabled={!isDirty}
+						isDisabled={!isDirty && !selectedLogo}
 						isLoading={
 							isSubmitting ||
 							isMutationInFlight ||
