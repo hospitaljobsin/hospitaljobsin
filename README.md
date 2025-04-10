@@ -9,6 +9,11 @@ aaa
 - we can add other tools too, like showing current applications, saved jobs etcaaa
 
 # TODO- recruiter portal
+- add is_active field to job
+- add make job active (publish mutation)
+- only show active jobs in seeker portal
+- option to make a job inactive
+
 - feature: save job as draft
 - add applications feature
     - custom application form that can be created for each job
