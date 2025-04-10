@@ -1,9 +1,9 @@
+import type { JobDetailsFragment$key } from "@/__generated__/JobDetailsFragment.graphql";
 import type {
 	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
 	JobType,
 	WorkMode,
 } from "@/__generated__/JobDetailsInternalFragment.graphql";
-import type { JobDetailsQuery$key } from "@/__generated__/JobDetailsQuery.graphql";
 import { dateFormat } from "@/lib/intl";
 import links from "@/lib/links";
 import {
@@ -27,8 +27,8 @@ import invariant from "tiny-invariant";
 import { Markdown } from "tiptap-markdown";
 import JobControls from "./JobControls";
 
-const JobDetailsQuery = graphql`
-  fragment JobDetailsQuery on Query @argumentDefinitions(
+const JobDetailsFragment = graphql`
+  fragment JobDetailsFragment on Query @argumentDefinitions(
       slug: {
         type: "String!",
       }
@@ -86,9 +86,9 @@ const JobDetailsInternalFragment = graphql`
 export default function JobDetails({
 	rootQuery,
 }: {
-	rootQuery: JobDetailsQuery$key;
+	rootQuery: JobDetailsFragment$key;
 }) {
-	const root = useFragment(JobDetailsQuery, rootQuery);
+	const root = useFragment(JobDetailsFragment, rootQuery);
 
 	invariant(root.job.__typename === "Job", "Expected 'Job' node type");
 

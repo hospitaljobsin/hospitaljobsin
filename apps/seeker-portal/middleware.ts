@@ -3,7 +3,11 @@ import { env } from "./lib/env";
 import links from "./lib/links";
 import { unsign } from "./lib/session";
 
-const AUTHENTICATED_ROUTES = [/\/saved(\/.*)?/, /\/profile/];
+const AUTHENTICATED_ROUTES = [
+	/\/saved(\/.*)?/,
+	/\/profile/,
+	/\/jobs\/[^/]+\/apply/,
+];
 
 const ANONYMOUS_ROUTES: RegExp[] = [];
 
