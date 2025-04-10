@@ -1,3 +1,4 @@
+"use client"
 import { Input } from "@heroui/react";
 import { Search } from "lucide-react";
 
