@@ -38,12 +38,14 @@ export default function Organization({ organization }: Props) {
 			<CardHeader>
 				<div className="flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center">
 					<div className="flex items-center gap-4">
-						<Image
-							src={data.logoUrl || ""}
-							alt={data.name || ""}
-							width={50}
-							height={50}
-						/>
+						<div className="relative h-14 w-14">
+							<Image
+								src={data.logoUrl || ""}
+								alt={data.name}
+								fill
+								className="rounded-md object-cover"
+							/>
+						</div>
 						<div className="flex flex-col gap-2 items-start">
 							<h4 className="text-lg sm:text-xl font-medium">{data.name}</h4>
 							<p className="text-sm sm:text-base font-normal text-foreground-500">

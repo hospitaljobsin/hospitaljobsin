@@ -54,7 +54,7 @@ export default function OrganizationDetails({
 				<CardHeader>
 					<div className="flex w-full justify-between gap-12 sm:gap-6 sm:items-center flex-col sm:flex-row items-start">
 						<div className="flex gap-6 items-start">
-							<div className="relative h-20 w-20">
+							<div className="relative h-16 w-16">
 								<Image
 									src={data.logoUrl || ""}
 									alt={data.name}
