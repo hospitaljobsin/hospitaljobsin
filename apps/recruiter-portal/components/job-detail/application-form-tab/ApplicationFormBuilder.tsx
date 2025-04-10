@@ -48,6 +48,9 @@ const ApplicationFormBuilderMutation = graphql`
     updateJobApplicationForm(jobId: $jobId, fields: $fields) {
       __typename
       ... on UpdateJobApplicationFormSuccess {
+		job {
+			...JobDetailsInternalFragment
+		}
         jobApplicationForm {
             fields {
                 fieldName

@@ -311,8 +311,10 @@ class JobMutation:
                         return JobNotFoundErrorType()
                     case OrganizationAuthorizationError():
                         return OrganizationAuthorizationErrorType()
-            case Ok(job_application_form):
+            case Ok(result):
+                (job_application_form, job) = result
                 return UpdateJobApplicationFormSuccessType(
+                    job=JobType.marshal(job),
                     job_application_form=JobApplicationFormType.marshal(
                         job_application_form
                     ),

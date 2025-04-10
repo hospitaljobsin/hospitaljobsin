@@ -3,7 +3,7 @@ import type { NewJobFormAccountFragment$key } from "@/__generated__/NewJobFormAc
 import type { NewJobFormMutation } from "@/__generated__/NewJobFormMutation.graphql";
 import type { NewJobFormOrganizationFragment$key } from "@/__generated__/NewJobFormOrganizationFragment.graphql";
 import { ChipsInput } from "@/components/forms/ChipsInput";
-import FixedMenu from "@/components/forms/text-editor/FixedMenu";
+import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {
@@ -27,9 +27,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarDate } from "@internationalized/date";
 import type { Key } from "@react-types/shared";
-import Heading from "@tiptap/extension-heading";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
 import {
 	BriefcaseBusiness,
 	IndianRupee,
@@ -41,7 +38,6 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { Markdown } from "tiptap-markdown";
 import { z } from "zod";
 import CancelNewJobModal from "./CancelNewJobModal";
 
@@ -165,7 +161,6 @@ export default function NewJobForm({ account, organization }: Props) {
 	const {
 		handleSubmit,
 		register,
-		setValue,
 		control,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
@@ -191,41 +186,6 @@ export default function NewJobForm({ account, organization }: Props) {
 			expiresAt: null,
 			jobType: null,
 			workMode: null,
-		},
-	});
-
-	const editor = useEditor({
-		extensions: [
-			StarterKit.configure({
-				heading: false, // Disable default heading
-			}),
-			Heading.configure({
-				levels: [1, 2, 3], // Allow only H1, H2, and H3
-			}),
-			Markdown,
-		],
-		content: "",
-		immediatelyRender: false,
-		shouldRerenderOnTransaction: false,
-		injectCSS: false,
-		editorProps: {
-			attributes: {
-				class: cn(
-					"p-4 prose prose-foreground prose-sm focus:outline-none border-2 w-full min-w-full rounded-md min-h-56 whitespace-pre-wrap",
-					{
-						"border-danger": errors.description,
-						"border-background-700": !errors.description,
-					},
-				),
-			},
-		},
-		onUpdate({ editor }) {
-			// convert the editor's JSON to markdown
-			const markdown = editor.storage.markdown.getMarkdown();
-			setValue("description", markdown, {
-				shouldDirty: true,
-				shouldValidate: true,
-			});
 		},
 	});
 
@@ -347,40 +307,48 @@ export default function NewJobForm({ account, organization }: Props) {
 								isRequired
 								validationBehavior="aria"
 							/>
-							<div className="flex flex-col gap-4 w-full">
-								<h2
-									className={cn("text-small inline-flex gap-0.5", {
-										"text-danger": errors.description,
-									})}
-								>
-									Job Description <p className="text-danger">*</p>
-								</h2>
-								<div className="w-full flex flex-col gap-4">
-									<FixedMenu editor={editor} />
-									<div className="flex flex-col w-full gap-1">
-										<EditorContent editor={editor} className="w-full" />
-
-										{errors.description ? (
-											<p className="text-tiny text-danger">
-												{errors.description.message}
-											</p>
-										) : (
-											<p className="text-tiny text-foreground-400">
-												Markdown editing is supported.{" "}
-												<Link
-													isExternal
-													showAnchorIcon
-													href="https://www.markdownguide.org/getting-started/"
-													size="sm"
-													className="text-tiny"
-												>
-													Learn more
-												</Link>
-											</p>
-										)}
+							<Controller
+								control={control}
+								name="description"
+								render={({ field }) => (
+									<div className="flex flex-col gap-4 w-full">
+										<h2
+											className={cn("text-small inline-flex gap-0.5", {
+												"text-danger": errors.description,
+											})}
+										>
+											Job Description <p className="text-danger">*</p>
+										</h2>
+										<MarkdownEditor
+											onValueChange={(value) => {
+												field.onChange(value);
+											}}
+											isInvalid={errors.description != null}
+											description={
+												errors.description ? (
+													<p className="text-tiny text-danger">
+														{errors.description.message}
+													</p>
+												) : (
+													<p className="text-tiny text-foreground-400">
+														Markdown editing is supported.{" "}
+														<Link
+															isExternal
+															showAnchorIcon
+															href="https://www.markdownguide.org/getting-started/"
+															size="sm"
+															className="text-tiny"
+														>
+															Learn more
+														</Link>
+													</p>
+												)
+											}
+										/>
 									</div>
-								</div>
-							</div>
+								)}
+							/>
+
 							<ChipsInput<z.infer<typeof formSchema>, "skills">
 								name="skills"
 								label="Job Skills"

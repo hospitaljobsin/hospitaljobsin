@@ -1,9 +1,9 @@
 import type { JobControlsFragment$key } from "@/__generated__/JobControlsFragment.graphql";
-import type { JobControlsPublishMutation as JobControlsPublishMutationType } from "@/__generated__/JobControlsPublishMutation.graphql";
-import { Button, addToast, useDisclosure } from "@heroui/react";
+import { Button, useDisclosure } from "@heroui/react";
 import { BookPlus, BookX } from "lucide-react";
-import { useFragment, useMutation } from "react-relay";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import PublishJobModal from "./PublishJobModal";
 import UnpublishJobModal from "./UnpublishJobModal";
 
 const JobControlsFragment = graphql`
@@ -11,31 +11,8 @@ const JobControlsFragment = graphql`
     id
     isActive
     ...UnpublishJobModalFragment
+    ...PublishJobModalFragment
   }
-`;
-
-const JobControlsPublishMutation = graphql`
-mutation JobControlsPublishMutation($jobId: ID!) {
-  publishJob(jobId: $jobId) {
-    __typename
-    ... on Job {
-        __typename
-        ...JobControlsFragment
-    }
-
-    ... on JobNotFoundError {
-        __typename
-    }
-
-    ... on OrganizationAuthorizationError {
-        __typename
-    }
-
-    ... on JobApplicationFormNotFoundError {
-        __typename
-    }
-  }
-}
 `;
 
 type Props = {
@@ -44,41 +21,27 @@ type Props = {
 
 export default function JobControls({ job }: Props) {
 	const data = useFragment(JobControlsFragment, job);
-	const [commitPublishMutation, isPublishMutationInFlight] =
-		useMutation<JobControlsPublishMutationType>(JobControlsPublishMutation);
 
-	const { isOpen, onClose, onOpen, onOpenChange } = useDisclosure();
+	const {
+		isOpen: isUnpublishModalOpen,
+		onClose: onUnpublishModalClose,
+		onOpen: onUnpublishModalOpen,
+		onOpenChange: onUnpublishModalOpenChange,
+	} = useDisclosure();
+
+	const {
+		isOpen: isPublishModalOpen,
+		onClose: onPublishModalClose,
+		onOpen: onPublishModalOpen,
+		onOpenChange: onPublishModalOpenChange,
+	} = useDisclosure();
 
 	async function handlePublishJob() {
-		commitPublishMutation({
-			variables: {
-				jobId: data.id,
-			},
-			onCompleted(response) {
-				if (response.publishJob.__typename === "Job") {
-					// Handle success
-				} else if (
-					response.publishJob.__typename === "JobNotFoundError" ||
-					response.publishJob.__typename === "JobApplicationFormNotFoundError"
-				) {
-					addToast({
-						description: "An unexpected error occurred. Please try again.",
-						color: "danger",
-					});
-				} else if (
-					response.publishJob.__typename === "OrganizationAuthorizationError"
-				) {
-					addToast({
-						description: "You are not authorized to perform this action.",
-						color: "danger",
-					});
-				}
-			},
-		});
+		onPublishModalOpen();
 	}
 
 	function handleUnpublishJob() {
-		onOpen();
+		onUnpublishModalOpen();
 	}
 
 	return (
@@ -95,16 +58,22 @@ export default function JobControls({ job }: Props) {
 				<Button
 					color="primary"
 					onPress={handlePublishJob}
-					isLoading={isPublishMutationInFlight}
 					startContent={<BookPlus size={20} />}
+					className="w-full sm:w-auto"
 				>
 					Publish job
 				</Button>
 			)}
 			<UnpublishJobModal
-				isOpen={isOpen}
-				onClose={onClose}
-				onOpenChange={onOpenChange}
+				isOpen={isUnpublishModalOpen}
+				onClose={onUnpublishModalClose}
+				onOpenChange={onUnpublishModalOpenChange}
+				job={data}
+			/>
+			<PublishJobModal
+				isOpen={isPublishModalOpen}
+				onClose={onPublishModalClose}
+				onOpenChange={onPublishModalOpenChange}
 				job={data}
 			/>
 		</>

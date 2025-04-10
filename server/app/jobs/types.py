@@ -426,6 +426,9 @@ CreateJobPayload = Annotated[
     description="Used when the job application form is updated successfully.",
 )
 class UpdateJobApplicationFormSuccessType:
+    job: JobType = strawberry.field(
+        description="The updated job.",
+    )
     job_application_form: JobApplicationFormType = strawberry.field(
         description="The updated job application form.",
     )

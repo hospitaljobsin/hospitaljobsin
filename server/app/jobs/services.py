@@ -193,7 +193,10 @@ class JobApplicationFormService:
 
     async def update(
         self, account: Account, job_id: ObjectId, fields: list[ApplicationField]
-    ) -> Result[JobApplicationForm, JobNotFoundError | OrganizationAuthorizationError]:
+    ) -> Result[
+        tuple[JobApplicationForm, Job],
+        JobNotFoundError | OrganizationAuthorizationError,
+    ]:
         existing_job = await self._job_repo.get(job_id=job_id)
         if existing_job is None:
             return Err(JobNotFoundError())
@@ -216,4 +219,4 @@ class JobApplicationFormService:
                 existing_application_form,
                 fields=fields,
             )
-        return Ok(existing_application_form)
+        return Ok((existing_application_form, existing_job))

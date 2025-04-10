@@ -1639,6 +1639,9 @@ union UpdateJobApplicationFormPayload = UpdateJobApplicationFormSuccess | JobNot
 
 """Used when the job application form is updated successfully."""
 type UpdateJobApplicationFormSuccess {
+  """The updated job."""
+  job: Job!
+
   """The updated job application form."""
   jobApplicationForm: JobApplicationForm!
 }

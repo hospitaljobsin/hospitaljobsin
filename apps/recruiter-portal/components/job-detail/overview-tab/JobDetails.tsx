@@ -273,8 +273,8 @@ export default function JobDetails({
 			{hasApplicationForm && data.organization?.isAdmin ? (
 				<Card className="p-6" shadow="none">
 					<div className="flex justify-between items-center">
-						<div className="sm:flex items-center gap-2 hidden">
-							<FileText className="w-5 h-5 text-primary-500" />
+						<div className="sm:flex items-center gap-4 hidden">
+							<FileText size={20} />
 							<h3 className="text-md">Application Form</h3>
 						</div>
 						<Button
