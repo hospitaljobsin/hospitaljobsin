@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
-		"dev": "next dev -p 5001",
+		"dev": "next dev -p 5001 --turbopack",
 		"build": "relay-compiler && next build",
 		"start": "next start -p 5001",
 		"lint": "next lint",

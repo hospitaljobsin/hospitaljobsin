@@ -39,7 +39,6 @@ export async function middleware(request: NextRequest) {
 	if (sessionCookie !== undefined) {
 		try {
 			const payload = await unsign(sessionCookie.value);
-			console.log(request.cookies.get(env.SESSION_COOKIE_KEY), payload);
 			if (payload.session_token !== undefined) {
 				isAuthenticated = true;
 			}

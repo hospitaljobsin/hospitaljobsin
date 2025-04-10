@@ -1,3 +1,4 @@
+"use client";
 import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
 import { Link } from "@heroui/react";

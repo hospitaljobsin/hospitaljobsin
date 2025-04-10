@@ -61,7 +61,6 @@ export async function middleware(request: NextRequest) {
 	if (sessionCookie !== undefined) {
 		try {
 			const payload = await unsign(sessionCookie.value);
-			console.log(request.cookies.get(env.SESSION_COOKIE_KEY), payload);
 			if (payload.session_token !== undefined) {
 				isAuthenticated = true;
 			}
@@ -73,7 +72,6 @@ export async function middleware(request: NextRequest) {
 				has2FAChallenge = true;
 			}
 		} catch (error) {
-			console.log("Error unsigning session cookie", error);
 			request.cookies.delete(env.SESSION_COOKIE_KEY);
 		}
 	}

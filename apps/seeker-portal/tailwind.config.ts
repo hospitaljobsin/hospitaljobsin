@@ -56,7 +56,7 @@ export default {
 						"--tw-prose-invert-captions": "hsl(var(--heroui-foreground-400))",
 						"--tw-prose-invert-code": "hsl(var(--heroui-white))",
 						"--tw-prose-invert-pre-code": "hsl(var(--heroui-foreground-300))",
-						"--tw-prose-invert-pre-bg": "rgb(0 0 0 / 50%))",
+						"--tw-prose-invert-pre-bg": "rgb((0 0 0 / 50%))",
 						"--tw-prose-invert-th-borders": "hsl(var(--heroui-foreground-600))",
 						"--tw-prose-invert-td-borders": "hsl(var(--heroui-foreground-700))",
 					},
