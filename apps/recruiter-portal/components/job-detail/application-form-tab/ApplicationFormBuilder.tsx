@@ -6,12 +6,13 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
+	Checkbox,
 	Input,
 	addToast,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash } from "lucide-react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -30,6 +31,7 @@ const ApplicationFormBuilderFragment = graphql`
             fields {
                 fieldName
                 defaultValue
+                isRequired
             }
         }
       }
@@ -50,6 +52,7 @@ const ApplicationFormBuilderMutation = graphql`
             fields {
                 fieldName
                 defaultValue
+                isRequired
                 }
             }
         }
@@ -69,6 +72,7 @@ const formSchema = z.object({
 		z.object({
 			fieldName: z.string().min(1, "This field is required"),
 			defaultValue: z.string().nullable(),
+			isRequired: z.boolean().default(false),
 		}),
 	),
 });
@@ -86,33 +90,50 @@ export default function ApplicationFormBuilder({
 			ApplicationFormBuilderMutation,
 		);
 
-	const { control, register, handleSubmit, reset } = useForm<
-		z.infer<typeof formSchema>
-	>({
+	const {
+		control,
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors },
+	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			fields: [
-				{
-					fieldName: "",
-					defaultValue: null,
-				},
-			],
+			fields:
+				job.applicationForm != null
+					? job.applicationForm.fields.map((field) => ({
+							fieldName: field.fieldName,
+							defaultValue: field.defaultValue,
+							isRequired: field.isRequired,
+						}))
+					: [
+							{
+								fieldName: "",
+								defaultValue: null,
+								isRequired: false,
+							},
+						],
 		},
+		mode: "onSubmit",
+		reValidateMode: "onChange",
 	});
 
-	const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-		{
-			control,
-			name: "fields",
-		},
-	);
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: "fields",
+	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
+		console.log("Submitting form with values:", values);
 		// Handle form submission
 		commitMutation({
 			variables: {
 				jobId: job.id,
-				fields: values.fields,
+				fields: values.fields.map((field) => ({
+					fieldName: field.fieldName,
+					defaultValue: field.defaultValue,
+					isRequired: field.isRequired,
+				})),
 			},
 
 			onCompleted(response) {
@@ -121,9 +142,19 @@ export default function ApplicationFormBuilder({
 					"UpdateJobApplicationFormSuccess"
 				) {
 					// handle success case
-					reset({
-						fields: {},
-					});
+					reset(
+						{
+							fields:
+								response.updateJobApplicationForm.jobApplicationForm.fields.map(
+									(field) => ({
+										fieldName: field.fieldName,
+										defaultValue: field.defaultValue || null,
+										isRequired: field.isRequired,
+									}),
+								),
+						},
+						{ keepDirty: false },
+					);
 				} else if (
 					response.updateJobApplicationForm.__typename === "JobNotFoundError"
 				) {
@@ -156,18 +187,47 @@ export default function ApplicationFormBuilder({
 						<div className="space-y-6 w-full">
 							<div className="w-full flex flex-col gap-6 items-center">
 								{fields.map((item, index) => (
-									<div key={item.id} className="flex w-full items-center gap-6">
+									<div key={item.id} className="flex w-full items-start gap-6">
 										<Input
 											{...register(`fields.${index}.fieldName`)}
 											defaultValue={item.fieldName}
 											placeholder="Field Name"
+											isInvalid={!!errors.fields?.[index]?.fieldName?.message}
+											errorMessage={errors.fields?.[index]?.fieldName?.message}
 										/>
 										<Input
 											{...register(`fields.${index}.defaultValue`)}
 											defaultValue={item.defaultValue || ""}
 											placeholder="Default Value"
+											isInvalid={
+												!!errors.fields?.[index]?.defaultValue?.message
+											}
+											errorMessage={
+												errors.fields?.[index]?.defaultValue?.message
+											}
+										/>
+										<Controller
+											control={control}
+											name={`fields.${index}.isRequired`}
+											render={({ field }) => (
+												<Checkbox
+													type="checkbox"
+													size="lg"
+													defaultChecked={item.isRequired}
+													isSelected={field.value}
+													onValueChange={field.onChange}
+													placeholder="Required"
+													className="text-nowrap"
+													isInvalid={
+														!!errors.fields?.[index]?.isRequired?.message
+													}
+												>
+													Is required
+												</Checkbox>
+											)}
 										/>
 										<Button
+											type="button"
 											isIconOnly
 											onPress={() => remove(index)}
 											isDisabled={fields.length <= 1}
@@ -179,7 +239,14 @@ export default function ApplicationFormBuilder({
 								))}
 							</div>
 							<Button
-								onPress={() => append({ fieldName: "", defaultValue: null })}
+								type="button"
+								onPress={() =>
+									append({
+										fieldName: "",
+										defaultValue: null,
+										isRequired: false,
+									})
+								}
 								variant="bordered"
 							>
 								<Plus size={20} /> form field
@@ -187,7 +254,9 @@ export default function ApplicationFormBuilder({
 						</div>
 					</CardBody>
 					<CardFooter className="w-full flex justify-end">
-						<Button color="primary">Save Application Form</Button>
+						<Button color="primary" type="submit">
+							Save Application Form
+						</Button>
 					</CardFooter>
 				</form>
 			</Card>

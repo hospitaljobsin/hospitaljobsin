@@ -142,7 +142,7 @@ class JobApplicationFormService:
 
         if not await self._organization_member_service.is_admin(
             account_id=account.id,
-            organization_id=existing_job.organization.id,
+            organization_id=existing_job.organization.ref.id,
         ):
             return Err(OrganizationAuthorizationError())
 

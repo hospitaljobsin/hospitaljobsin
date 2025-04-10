@@ -68,6 +68,10 @@ class ApplicationFieldInputType:
     default_value: str | None = strawberry.field(
         description="The default value of the field.",
     )
+    is_required: bool = strawberry.field(
+        description="Whether the field is required.",
+        default=False,
+    )
 
     @classmethod
     def to_document(cls, field: Self) -> ApplicationField:
@@ -75,6 +79,7 @@ class ApplicationFieldInputType:
         return ApplicationField(
             field_name=field.field_name,
             default_value=field.default_value,
+            is_required=field.is_required,
         )
 
 
@@ -89,6 +94,19 @@ class ApplicationFieldType:
     default_value: str | None = strawberry.field(
         description="The default value of the field.",
     )
+    is_required: bool = strawberry.field(
+        description="Whether the field is required.",
+        default=False,
+    )
+
+    @classmethod
+    def marshal(cls, field: ApplicationField) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            field_name=field.field_name,
+            default_value=field.default_value,
+            is_required=field.is_required,
+        )
 
 
 @strawberry.type(
@@ -106,11 +124,7 @@ class JobApplicationFormType(BaseNodeType[JobApplicationForm]):
         return cls(
             id=str(application_form.id),
             fields=[
-                ApplicationFieldType(
-                    field_name=field.field_name,
-                    default_value=field.default_value,
-                )
-                for field in application_form.fields
+                ApplicationFieldType.marshal(field) for field in application_form.fields
             ],
         )
 

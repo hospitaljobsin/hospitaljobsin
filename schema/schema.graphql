@@ -136,6 +136,9 @@ type ApplicationField {
 
   """The default value of the field."""
   defaultValue: String
+
+  """Whether the field is required."""
+  isRequired: Boolean!
 }
 
 """An application field belonging to a job application form input."""
@@ -145,6 +148,9 @@ input ApplicationFieldInput {
 
   """The default value of the field."""
   defaultValue: String
+
+  """Whether the field is required."""
+  isRequired: Boolean! = false
 }
 
 """The authentication provider."""

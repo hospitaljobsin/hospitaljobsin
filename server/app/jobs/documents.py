@@ -106,7 +106,7 @@ class SavedJob(Document):
 class ApplicationField(BaseModel):
     field_name: str
     default_value: str | None = None
-    required: bool = False
+    is_required: bool = False
 
 
 class JobApplicationForm(Document):
