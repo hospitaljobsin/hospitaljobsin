@@ -1,3 +1,4 @@
+import Footer from "@/components/layout/Footer";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
@@ -24,7 +25,10 @@ export default async function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={`${workSans.variable} antialiased h-full`}>
-				<Providers>{children}</Providers>
+				<Providers>
+					{children}
+					<Footer />
+				</Providers>
 			</body>
 		</html>
 	);

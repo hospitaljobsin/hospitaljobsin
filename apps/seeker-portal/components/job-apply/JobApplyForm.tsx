@@ -11,7 +11,13 @@ const JobApplyFormFragment = graphql`
     job(slug: $slug) {
       __typename
       ... on Job {
-        id
+        applicationForm {
+          fields {
+            fieldName
+            defaultValue
+            isRequired
+          }
+        }
       }
      
     }

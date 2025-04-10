@@ -6,6 +6,7 @@ const links = {
 	profile: "/profile",
 	savedJobs: "/saved",
 	jobDetail: (slug: string) => `/jobs/${slug}`,
+	jobDetailApply: (slug: string) => `/jobs/${slug}/apply`,
 	organizationDetail: (slug: string) => `/organizations/${slug}`,
 	organizationDetailMembers: (slug: string) => `/organizations/${slug}/members`,
 	organizationDetailSettings: (slug: string) =>
@@ -16,6 +17,8 @@ const links = {
 			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}`
 			: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login`,
 	accountSettings: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/settings`,
+	terms: "/terms",
+	privacy: "/privacy",
 };
 
 export default links;

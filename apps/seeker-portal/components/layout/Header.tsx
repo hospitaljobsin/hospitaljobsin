@@ -13,6 +13,7 @@ import {
 } from "@heroui/react";
 import { useLazyLoadQuery } from "react-relay";
 import { graphql } from "relay-runtime";
+import Logo from "../Logo";
 import AuthNavigation from "./AuthNavigation";
 
 const HeaderQuery = graphql`
@@ -33,8 +34,12 @@ export default function Header() {
 	const data = useLazyLoadQuery<HeaderQueryType>(HeaderQuery, {});
 	return (
 		<Navbar maxWidth="lg" isBordered>
-			<NavbarBrand>
-				<Link href={links.landing} className="font-medium text-inherit">
+			<NavbarBrand className="flex items-center gap-4">
+				<Link
+					href={links.landing}
+					className="font-medium text-inherit flex items-center gap-4"
+				>
+					<Logo />
 					{APP_NAME}
 				</Link>
 			</NavbarBrand>

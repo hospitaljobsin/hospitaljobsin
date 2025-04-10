@@ -50,6 +50,7 @@ const JobDetailsInternalFragment = graphql`
   fragment JobDetailsInternalFragment on Job {
 	...JobControlsFragment
     title
+	slug
     description
     type
     workMode
@@ -219,8 +220,13 @@ export default function JobDetails({
 				<CardHeader>
 					<div className="flex flex-col sm:flex-row w-full justify-between gap-4 items-start sm:items-center">
 						<h4 className="text-xl font-medium">{data.title}</h4>
-
-						<Button size="lg" className="w-full sm:w-auto">
+						{/* TODO: check for authentication before redirecting here */}
+						<Button
+							as={Link}
+							href={links.jobDetailApply(data.slug)}
+							size="lg"
+							className="w-full sm:w-auto"
+						>
 							Apply now
 						</Button>
 					</div>
