@@ -156,9 +156,9 @@ export default function JobDetails({
 
 			{/* Job Details Card */}
 			<Card className="p-6" shadow="none">
-				<div className="flex justify-between items-start gap-6">
+				<div className="flex justify-between items-start gap-6 flex-col sm:flex-row">
 					<h2 className="text-lg font-medium w-full">{data.title}</h2>
-					<div className="items-center gap-4 flex justify-end">
+					<div className="items-center gap-4 flex justify-end flex-col sm:flex-row">
 						{hasApplicationForm && data.organization?.isAdmin ? (
 							<JobControls job={data} />
 						) : null}
@@ -167,6 +167,7 @@ export default function JobDetails({
 							href={links.jobDetailEdit(params.slug, params.jobSlug)}
 							variant="bordered"
 							startContent={<Edit2 className="w-4 h-4" />}
+							className="w-full sm:w-auto"
 						>
 							Edit Details
 						</Button>

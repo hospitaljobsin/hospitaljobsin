@@ -1,6 +1,7 @@
 import type { JobControlsFragment$key } from "@/__generated__/JobControlsFragment.graphql";
 import type { JobControlsPublishMutation as JobControlsPublishMutationType } from "@/__generated__/JobControlsPublishMutation.graphql";
 import { Button, addToast, useDisclosure } from "@heroui/react";
+import { BookPlus, BookX } from "lucide-react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import UnpublishJobModal from "./UnpublishJobModal";
@@ -83,12 +84,19 @@ export default function JobControls({ job }: Props) {
 	return (
 		<>
 			{data.isActive ? (
-				<Button onPress={handleUnpublishJob}>Unpublish job</Button>
+				<Button
+					onPress={handleUnpublishJob}
+					startContent={<BookX size={20} />}
+					className="w-full sm:w-auto"
+				>
+					Unpublish job
+				</Button>
 			) : (
 				<Button
 					color="primary"
 					onPress={handlePublishJob}
 					isLoading={isPublishMutationInFlight}
+					startContent={<BookPlus size={20} />}
 				>
 					Publish job
 				</Button>

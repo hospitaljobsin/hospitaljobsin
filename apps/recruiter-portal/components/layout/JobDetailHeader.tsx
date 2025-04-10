@@ -56,8 +56,8 @@ export default function JobDetailHeader({
 	return (
 		<div className="w-full flex flex-col bg-background border-b border-gray-300">
 			<Navbar maxWidth="lg" position="static">
-				<NavbarContent justify="start">
-					<NavbarBrand className="flex items-center gap-4">
+				<NavbarContent justify="start" className="w-full">
+					<NavbarBrand className="flex items-center gap-4 w-full">
 						<Link href={links.dashboard} className="font-medium text-inherit">
 							<Logo />
 						</Link>
@@ -75,15 +75,14 @@ export default function JobDetailHeader({
 								organization.slug,
 								jobData.slug,
 							)}
-							className="font-medium text-inherit"
+							className="font-medium text-inherit truncate"
 						>
 							{jobData.title}
 						</Link>
+						<div className="ml-auto">
+							<AuthNavigation rootQuery={data.viewer} />
+						</div>
 					</NavbarBrand>
-				</NavbarContent>
-
-				<NavbarContent justify="end">
-					<AuthNavigation rootQuery={data.viewer} />
 				</NavbarContent>
 			</Navbar>
 			<div className="w-full max-w-5xl mx-auto flex items-center justify-between">
