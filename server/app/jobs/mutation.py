@@ -12,12 +12,16 @@ from app.auth.permissions import IsAuthenticated
 from app.base.types import AddressInputType
 from app.context import AuthInfo
 from app.jobs.exceptions import (
+    JobApplicationFormNotFoundError,
     JobNotFoundError,
+    JobNotPublishedError,
     OrganizationNotFoundError,
     SavedJobNotFoundError,
 )
 from app.jobs.services import JobApplicationFormService, JobService, SavedJobService
-from app.organizations.exceptions import OrganizationAuthorizationError
+from app.organizations.exceptions import (
+    OrganizationAuthorizationError,
+)
 from app.organizations.types import (
     OrganizationAuthorizationErrorType,
     OrganizationNotFoundErrorType,
@@ -27,14 +31,19 @@ from .types import (
     ApplicationFieldInputType,
     CreateJobPayload,
     CreateJobSuccess,
+    JobApplicationFormNotFoundErrorType,
     JobApplicationFormType,
     JobEdgeType,
     JobNotFoundErrorType,
+    JobNotPublishedErrorType,
+    JobType,
     JobTypeEnum,
+    PublishJobPayload,
     SavedJobEdgeType,
     SavedJobNotFoundErrorType,
     SaveJobPayload,
     SaveJobSuccess,
+    UnpublishJobPayload,
     UnsaveJobPayload,
     UnsaveJobSuccess,
     UpdateJobApplicationFormPayload,
@@ -308,5 +317,89 @@ class JobMutation:
                         job_application_form
                     ),
                 )
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=PublishJobPayload,
+        description="Make a job active.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def publish_job(
+        self,
+        info: AuthInfo,
+        job_service: Annotated[JobService, Inject],
+        *,
+        job_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the job to activate.",
+            ),
+        ],
+    ) -> PublishJobPayload:
+        """Make a job active."""
+        match await job_service.publish(
+            account=info.context["current_user"],
+            job_id=job_id.node_id,
+        ):
+            case Err(error):
+                match error:
+                    case JobNotFoundError():
+                        return JobNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+                    case JobApplicationFormNotFoundError():
+                        return JobApplicationFormNotFoundErrorType()
+            case Ok(job):
+                return JobType.marshal(job)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UnpublishJobPayload,
+        description="Make a job inactive.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def unpublish_job(
+        self,
+        info: AuthInfo,
+        job_service: Annotated[JobService, Inject],
+        *,
+        job_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the job to activate.",
+            ),
+        ],
+    ) -> UnpublishJobPayload:
+        """Make a job inactive."""
+        match await job_service.unpublish(
+            account=info.context["current_user"],
+            job_id=job_id.node_id,
+        ):
+            case Err(error):
+                match error:
+                    case JobNotFoundError():
+                        return JobNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+                    case JobNotPublishedError():
+                        return JobNotPublishedErrorType()
+            case Ok(job):
+                return JobType.marshal(job)
             case _ as unreachable:
                 assert_never(unreachable)

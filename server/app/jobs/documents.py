@@ -38,6 +38,8 @@ class Job(Document):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     expires_at: datetime | None = None
 
+    is_active: bool = False
+
     organization: Link[Organization]
 
     class Settings:
@@ -110,7 +112,7 @@ class ApplicationField(BaseModel):
 
 
 class JobApplicationForm(Document):
-    job: Link[Job]
+    job: Annotated[Link[Job], Indexed(unique=True)]
     fields: list[ApplicationField]
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 

@@ -5,6 +5,7 @@ import { Alert, Button, Link } from "@heroui/react";
 import { useParams } from "next/navigation";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import JobControls from "./JobControls";
 
 const JobDetailsFragment = graphql`
   fragment JobDetailsFragment on Query @argumentDefinitions(
@@ -32,6 +33,7 @@ const JobDetailsInternalFragment = graphql`
     organization {
       isAdmin
     }
+	...JobControlsFragment
   }
 `;
 
@@ -66,6 +68,9 @@ export default function JobDetails({
 						</Button>
 					}
 				/>
+			) : null}
+			{hasApplicationForm && data.organization?.isAdmin ? (
+				<JobControls job={data} />
 			) : null}
 		</div>
 	);

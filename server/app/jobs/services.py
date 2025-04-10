@@ -9,12 +9,16 @@ from app.accounts.documents import Account
 from app.base.models import Address
 from app.jobs.documents import ApplicationField, Job, JobApplicationForm, SavedJob
 from app.jobs.exceptions import (
+    JobApplicationFormNotFoundError,
     JobNotFoundError,
+    JobNotPublishedError,
     OrganizationNotFoundError,
     SavedJobNotFoundError,
 )
 from app.jobs.repositories import JobApplicationFormRepo, JobRepo, SavedJobRepo
-from app.organizations.exceptions import OrganizationAuthorizationError
+from app.organizations.exceptions import (
+    OrganizationAuthorizationError,
+)
 from app.organizations.repositories import OrganizationRepo
 from app.organizations.services import OrganizationMemberService
 
@@ -62,10 +66,12 @@ class JobService:
         job_repo: JobRepo,
         organization_repo: OrganizationRepo,
         organization_member_service: OrganizationMemberService,
+        job_application_form_repo: JobApplicationFormRepo,
     ) -> None:
         self._job_repo = job_repo
         self._organization_repo = organization_repo
         self._organization_member_service = organization_member_service
+        self._job_application_form_repo = job_application_form_repo
 
     async def create(
         self,
@@ -120,6 +126,58 @@ class JobService:
         )
 
         return Ok(job)
+
+    async def publish(
+        self,
+        account: Account,
+        job_id: ObjectId,
+    ) -> Result[
+        Job,
+        JobNotFoundError
+        | OrganizationAuthorizationError
+        | JobApplicationFormNotFoundError,
+    ]:
+        existing_job = await self._job_repo.get(job_id=job_id)
+        if existing_job is None:
+            return Err(JobNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=existing_job.organization.ref.id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        if await self._job_application_form_repo.get(job_id=existing_job.id) is None:
+            return Err(JobApplicationFormNotFoundError())
+
+        existing_job = await self._job_repo.update_active(existing_job, is_active=True)
+
+        return Ok(existing_job)
+
+    async def unpublish(
+        self,
+        account: Account,
+        job_id: ObjectId,
+    ) -> Result[
+        Job,
+        JobNotFoundError | OrganizationAuthorizationError | JobNotPublishedError,
+    ]:
+        existing_job = await self._job_repo.get(job_id=job_id)
+        if existing_job is None:
+            return Err(JobNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=existing_job.organization.ref.id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        if not existing_job.is_active:
+            return Err(JobNotPublishedError())
+
+        existing_job = await self._job_repo.update_active(existing_job, is_active=False)
+
+        return Ok(existing_job)
 
 
 class JobApplicationFormService:

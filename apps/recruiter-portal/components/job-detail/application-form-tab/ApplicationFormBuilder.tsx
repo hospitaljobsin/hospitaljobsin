@@ -95,7 +95,7 @@ export default function ApplicationFormBuilder({
 		register,
 		handleSubmit,
 		reset,
-		formState: { errors },
+		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -254,7 +254,7 @@ export default function ApplicationFormBuilder({
 						</div>
 					</CardBody>
 					<CardFooter className="w-full flex justify-end">
-						<Button color="primary" type="submit">
+						<Button color="primary" type="submit" isLoading={isSubmitting}>
 							Save Application Form
 						</Button>
 					</CardFooter>

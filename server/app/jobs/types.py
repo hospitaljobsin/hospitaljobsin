@@ -179,6 +179,10 @@ class JobType(BaseNodeType[Job]):
         description="The maximum experience required for the job.",
     )
 
+    is_active: bool = strawberry.field(
+        description="Whether the job is active.",
+    )
+
     updated_at: datetime = strawberry.field(
         description="When the job was last updated at.",
     )
@@ -213,6 +217,7 @@ class JobType(BaseNodeType[Job]):
             max_experience=job.max_experience,
             updated_at=job.updated_at,
             expires_at=job.expires_at,
+            is_active=job.is_active,
             organization_id=str(job.organization.ref.id),
         )
 
@@ -441,5 +446,51 @@ JobPayload = Annotated[
     strawberry.union(
         "JobPayload",
         description="The job payload.",
+    ),
+]
+
+
+@strawberry.type(
+    name="JobApplicationFormNotFoundError",
+    description="Used when the job application form is not found.",
+)
+class JobApplicationFormNotFoundErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Job application form not found!",
+    )
+
+
+PublishJobPayload = Annotated[
+    JobType
+    | JobNotFoundErrorType
+    | OrganizationAuthorizationErrorType
+    | JobApplicationFormNotFoundErrorType,
+    strawberry.union(
+        name="PublishJobPayload",
+        description="The publish job payload.",
+    ),
+]
+
+
+@strawberry.type(
+    name="JobNotPublishedError",
+    description="Used when the job is not yet published.",
+)
+class JobNotPublishedErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Job is not yet published!",
+    )
+
+
+UnpublishJobPayload = Annotated[
+    JobType
+    | JobNotFoundErrorType
+    | OrganizationAuthorizationErrorType
+    | JobNotPublishedErrorType,
+    strawberry.union(
+        name="UnpublishJobPayload",
+        description="The unpublish job payload.",
     ),
 ]

@@ -26,8 +26,8 @@ export default {
 						h3: {
 							"font-weight": "500",
 						},
-						"--tw-prose-body": "hsl(var(--heroui-foreground-400))",
-						"--tw-prose-headings": "hsl(var(--heroui-foreground-500))",
+						"--tw-prose-body": "hsl(var(--heroui-foreground-500))",
+						"--tw-prose-headings": "hsl(var(--heroui-foreground-600))",
 						"--tw-prose-lead": "hsl(var(--heroui-foreground-600))",
 						"--tw-prose-links": "hsl(var(--heroui-primary-400))",
 						"--tw-prose-bold": "hsl(var(--heroui-foreground-700))",

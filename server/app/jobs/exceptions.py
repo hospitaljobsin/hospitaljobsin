@@ -12,3 +12,11 @@ class CompanyNotFoundError:
 
 class OrganizationNotFoundError:
     """Raised when an organization is not found."""
+
+
+class JobApplicationFormNotFoundError:
+    """Raised when a job application form is not found."""
+
+
+class JobNotPublishedError:
+    """Raised when a job is not published."""

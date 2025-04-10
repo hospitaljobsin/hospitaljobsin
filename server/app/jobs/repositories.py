@@ -67,6 +67,7 @@ class JobRepo:
             skills=skills,
             currency=currency,
             slug=await self.generate_slug(title),
+            is_active=False,
         )
 
         return await job.insert(
@@ -99,6 +100,11 @@ class JobRepo:
         job.closing_date = closing_date
         return await job.save()
 
+    async def update_active(self, job: Job, *, is_active: bool) -> Job:
+        """Update the given job."""
+        job.is_active = is_active
+        return await job.save()
+
     async def get_many_by_ids(self, job_ids: list[ObjectId]) -> list[Job | None]:
         """Get multiple jobs by IDs."""
         jobs = await Job.find(In(Job.id, job_ids)).to_list()
@@ -113,7 +119,7 @@ class JobRepo:
 
         return [job_by_slug.get(slug) for slug in slugs]
 
-    async def get_all(
+    async def get_all_active(
         self,
         search_term: str | None = None,
         first: int | None = None,
@@ -121,17 +127,19 @@ class JobRepo:
         before: str | None = None,
         after: str | None = None,
     ) -> PaginatedResult[Job, ObjectId]:
-        """Get a paginated result of jobs."""
+        """Get a paginated result of active jobs."""
         paginator: Paginator[Job, ObjectId] = Paginator(
             reverse=True,
             document_cls=Job,
             paginate_by="id",
         )
 
-        search_criteria = Job.find()
+        search_criteria = Job.find(Job.is_active == True)
 
         if search_term:
-            search_criteria = Job.find({"$text": {"$search": search_term}})
+            search_criteria = Job.find(
+                Job.is_active == True, {"$text": {"$search": search_term}}
+            )
 
         return await paginator.paginate(
             search_criteria=search_criteria,

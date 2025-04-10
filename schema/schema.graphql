@@ -476,6 +476,9 @@ type Job implements Node {
   """The maximum experience required for the job."""
   maxExperience: Int
 
+  """Whether the job is active."""
+  isActive: Boolean!
+
   """When the job was last updated at."""
   updatedAt: datetime!
 
@@ -513,6 +516,12 @@ type JobApplicationForm implements Node {
   fields: [ApplicationField!]!
 }
 
+"""Used when the job application form is not found."""
+type JobApplicationFormNotFoundError implements Error {
+  """Human readable error message."""
+  message: String!
+}
+
 type JobConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
@@ -531,6 +540,12 @@ type JobEdge {
 
 """Used when the job is not found."""
 type JobNotFoundError implements Error {
+  """Human readable error message."""
+  message: String!
+}
+
+"""Used when the job is not yet published."""
+type JobNotPublishedError implements Error {
   """Human readable error message."""
   message: String!
 }
@@ -920,6 +935,18 @@ type Mutation {
     """The fields required for the job application form."""
     fields: [ApplicationFieldInput!]!
   ): UpdateJobApplicationFormPayload! @isAuthenticated
+
+  """Make a job active."""
+  publishJob(
+    """The ID of the job to activate."""
+    jobId: ID!
+  ): PublishJobPayload! @isAuthenticated
+
+  """Make a job inactive."""
+  unpublishJob(
+    """The ID of the job to activate."""
+    jobId: ID!
+  ): UnpublishJobPayload! @isAuthenticated
 
   """Update the current user's profile personal details."""
   updateProfilePersonalDetails(
@@ -1372,6 +1399,9 @@ type PromoteOrganizationMemberSuccess {
   organization: Organization!
 }
 
+"""The publish job payload."""
+union PublishJobPayload = Job | JobNotFoundError | OrganizationAuthorizationError | JobApplicationFormNotFoundError
+
 type Query {
   """Get the current user."""
   viewer: ViewerPayload!
@@ -1389,7 +1419,7 @@ type Query {
     id: ID!
   ): Node
 
-  """Get all jobs available."""
+  """Get all active jobs available."""
   jobs(
     """The search (query) term"""
     searchTerm: String = null
@@ -1588,6 +1618,9 @@ type TwoFactorAuthenticationRequiredError implements Error {
 enum TwoFactorProvider {
   AUTHENTICATOR
 }
+
+"""The unpublish job payload."""
+union UnpublishJobPayload = Job | JobNotFoundError | OrganizationAuthorizationError | JobNotPublishedError
 
 """The unsave job payload."""
 union UnsaveJobPayload = UnsaveJobSuccess | SavedJobNotFoundError

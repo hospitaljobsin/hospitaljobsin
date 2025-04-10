@@ -23,7 +23,7 @@ from .types import (
 class JobQuery:
     @strawberry.field(  # type: ignore[misc]
         graphql_type=JobConnectionType,
-        description="Get all jobs available.",
+        description="Get all active jobs available.",
     )
     @inject
     async def jobs(
@@ -60,7 +60,7 @@ class JobQuery:
             ),
         ] = None,
     ) -> JobConnectionType:
-        paginated_result = await job_repo.get_all(
+        paginated_result = await job_repo.get_all_active(
             search_term=search_term,
             first=first,
             last=last,
