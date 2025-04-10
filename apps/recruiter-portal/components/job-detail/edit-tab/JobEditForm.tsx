@@ -1,10 +1,47 @@
+"use client";
 import type { JobEditFormFragment$key } from "@/__generated__/JobEditFormFragment.graphql";
-import { useFragment } from "react-relay";
+import type { JobEditFormMutation } from "@/__generated__/JobEditFormMutation.graphql";
+import { ChipsInput } from "@/components/forms/ChipsInput";
+import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
+import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
+import {
+	Accordion,
+	AccordionItem,
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	DatePicker,
+	Input,
+	Kbd,
+	Link,
+	NumberInput,
+	Radio,
+	RadioGroup,
+	addToast,
+	cn,
+	useDisclosure,
+} from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CalendarDate, parseAbsoluteToLocal } from "@internationalized/date";
+import type { Key } from "@react-types/shared";
+import {
+	BriefcaseBusiness,
+	IndianRupee,
+	MapPin,
+	TimerIcon,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import { z } from "zod";
+import CancelEditJobModal from "./CancelEditJobModal";
 
 const JobEditFormFragment = graphql`
-  fragment JobEditFormFragment on Query @argumentDefinitions(
+fragment JobEditFormFragment on Query @argumentDefinitions(
       slug: {
         type: "String!",
       }
@@ -13,27 +50,679 @@ const JobEditFormFragment = graphql`
       __typename
       ... on Job {
         id
-        applicationForm {
-            fields {
-                fieldName
-                defaultValue
-                isRequired
-            }
+        title
+        description
+        minExperience
+        maxExperience
+        minSalary
+        maxSalary
+        vacancies
+        skills
+        type
+        workMode
+        expiresAt
+        address {
+            city
+            country
+            line1
+            line2
+            pincode
+            state
+        }
+        organization {
+            ...JobEditFormOrganizationFragment
         }
       }
      
     }
-  }
+  }`;
+
+const JobEditFormOrganizationFragment = graphql`
+fragment JobEditFormOrganizationFragment on Organization {
+    __typename
+    slug
+    id
+    address {
+        city
+        country
+        line1
+        line2
+        pincode
+        state
+    }
+    ...CancelEditJobModalOrganizationFragment
+}
 `;
 
-export default function JobEditForm({
-	rootQuery,
-}: {
+const CreateJobMutation = graphql`
+mutation JobEditFormMutation(
+    $title: String!, 
+    $description: String!, 
+    $skills: [String!]!, 
+    $address: AddressInput! 
+    $organizationId: ID!, 
+    $minSalary: Int, 
+    $maxSalary: Int,  
+    $minExperience: Int, 
+    $maxExperience: Int,
+    $expiresAt: datetime,
+    $workMode: WorkMode,
+    $jobType: JobType,
+    $vacancies: Int
+) {
+    createJob(
+        title: $title,
+        description: $description, 
+        skills: $skills, 
+        address: $address, 
+        organizationId: $organizationId, 
+        minSalary: $minSalary, 
+        maxSalary: $maxSalary, 
+        minExperience: $minExperience, 
+        maxExperience: $maxExperience,
+        expiresAt: $expiresAt,
+        workMode: $workMode,
+        jobType: $jobType,
+        vacancies: $vacancies
+    ) {
+        __typename
+        ...on CreateJobSuccess {
+            __typename
+            jobEdge {
+                node {
+                    slug
+                }
+            }
+        }
+
+        ... on OrganizationNotFoundError {
+            __typename
+        }
+
+        ... on OrganizationAuthorizationError {
+            __typename
+        }
+    }
+}
+`;
+
+const formSchema = z.object({
+	title: z.string().min(1, "This field is required").max(75),
+	description: z.string().min(1, "This field is required").max(2000),
+	vacancies: z.number().positive().nullable(),
+	skills: z.array(z.object({ value: z.string() })),
+	address: z.object({
+		city: z.string().nullable(),
+		country: z.string().nullable(),
+		line1: z.string().nullable(),
+		line2: z.string().nullable(),
+		pincode: z.string().nullable(),
+		state: z.string().nullable(),
+	}),
+	minSalary: z.number().positive().nullable(),
+	maxSalary: z.number().positive().nullable(),
+	minExperience: z.number().positive().nullable(),
+	maxExperience: z.number().positive().nullable(),
+	expiresAt: z.instanceof(CalendarDate).nullable(),
+	jobType: z
+		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])
+		.nullable(),
+	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE"]).nullable(),
+});
+
+type Props = {
 	rootQuery: JobEditFormFragment$key;
-}) {
+};
+
+export default function JobEditForm({ rootQuery }: Props) {
+	const router = useRouter();
+	const { isOpen, onOpenChange, onOpen } = useDisclosure();
 	const root = useFragment(JobEditFormFragment, rootQuery);
+	const job = root.job;
+	invariant(job.__typename === "Job", "Expected 'Job' node type");
+	const organization = job.organization;
+	invariant(organization, "Expected 'Organization' node type");
+	const organizationData = useFragment(
+		JobEditFormOrganizationFragment,
+		organization,
+	);
+	const [commitMutation, isMutationInFlight] =
+		useMutation<JobEditFormMutation>(CreateJobMutation);
 
-	invariant(root.job.__typename === "Job", "Expected 'Job' node type");
+	const {
+		handleSubmit,
+		register,
+		control,
+		formState: { errors, isSubmitting, isDirty },
+	} = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		reValidateMode: "onChange",
+		defaultValues: {
+			title: job.title,
+			description: job.description ?? "",
+			vacancies: job.vacancies,
+			skills: job.skills.map((skill) => ({
+				value: skill,
+			})),
+			address: {
+				city: job.address.city,
+				country: job.address.country,
+				line1: job.address.line1,
+				line2: job.address.line2,
+				pincode: job.address.pincode,
+				state: job.address.state,
+			},
+			minSalary: job.minSalary,
+			maxSalary: job.maxSalary,
+			minExperience: job.minExperience,
+			maxExperience: job.maxExperience,
+			expiresAt: job.expiresAt ? parseAbsoluteToLocal(job.expiresAt) : null,
+			jobType: job.type ? job.type.toString() : null,
+			workMode: job.workMode ? job.workMode.toString() : null,
+		},
+	});
 
-	return <div className="w-full flex flex-col gap-6">job edit form</div>;
+	// Track which accordions should be open
+	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<
+		Iterable<Key>
+	>(new Set([]));
+
+	// Update accordions when errors change
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		const newOpenAccordions = new Set<Key>([...accordionSelectedKeys]);
+
+		if (
+			errors.address?.city ||
+			errors.address?.country ||
+			errors.address?.line1 ||
+			errors.address?.line2 ||
+			errors.address?.pincode ||
+			errors.address?.state
+		) {
+			newOpenAccordions.add("address");
+		}
+		if (errors.minSalary || errors.maxSalary) {
+			newOpenAccordions.add("salary-range");
+		}
+		if (errors.minExperience || errors.maxExperience) {
+			newOpenAccordions.add("experience-range");
+		}
+		if (errors.expiresAt) {
+			newOpenAccordions.add("expires-at");
+		}
+
+		setAccordionSelectedKeys(newOpenAccordions);
+	}, [errors]);
+
+	function handleCancel() {
+		if (isDirty) {
+			// show confirmation modal
+			onOpen();
+		} else {
+			router.push(links.organizationDetailJobs(organizationData.slug));
+		}
+	}
+
+	function onSubmit(formData: z.infer<typeof formSchema>) {
+		commitMutation({
+			variables: {
+				organizationId: organizationData.id,
+				title: formData.title,
+				description: formData.description,
+				vacancies: formData.vacancies,
+				skills: formData.skills.flatMap((skill) => skill.value),
+				address: {
+					city: formData.address.city,
+					country: formData.address.country,
+					line1: formData.address.line1,
+					line2: formData.address.line2,
+					pincode: formData.address.pincode,
+					state: formData.address.state,
+				},
+				minSalary: formData.minSalary,
+				maxSalary: formData.maxSalary,
+				minExperience: formData.minExperience,
+				maxExperience: formData.maxExperience,
+				expiresAt: formData.expiresAt ? formData.expiresAt.toString() : null,
+				jobType: formData.jobType,
+				workMode: formData.workMode,
+			},
+			onCompleted(response) {
+				if (response.createJob.__typename === "OrganizationNotFoundError") {
+					addToast({
+						color: "danger",
+						title: "An unexpected error occurred. Please try again.",
+					});
+				} else if (response.createJob.__typename === "CreateJobSuccess") {
+					// Redirect to the organization detail page
+					router.push(
+						links.organizationJobDetail(
+							organizationData.slug,
+							response.createJob.jobEdge.node.slug,
+						),
+					);
+				} else if (
+					response.createJob.__typename === "OrganizationAuthorizationError"
+				) {
+					addToast({
+						color: "danger",
+						title: "You are not authorized to perform this action.",
+					});
+				}
+			},
+		});
+	}
+
+	return (
+		<>
+			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
+				<h2 className="text-lg font-medium mt-1 text-foreground-400">
+					Update job posting
+				</h2>
+				<Card shadow="none" className="p-6 gap-12 flex flex-col">
+					<CardBody className="flex flex-col gap-12 overflow-y-hidden">
+						<Input
+							{...register("title")}
+							label="Job Title"
+							labelPlacement="outside"
+							placeholder="My Job Title"
+							errorMessage={errors.title?.message}
+							isInvalid={!!errors.title}
+							isRequired
+							validationBehavior="aria"
+						/>
+						<Controller
+							control={control}
+							name="description"
+							render={({ field }) => (
+								<div className="flex flex-col gap-4 w-full">
+									<h2
+										className={cn("text-small inline-flex gap-0.5", {
+											"text-danger": errors.description,
+										})}
+									>
+										Job Description <p className="text-danger">*</p>
+									</h2>
+									<MarkdownEditor
+										initialValue={field.value}
+										onValueChange={(value) => {
+											field.onChange(value);
+										}}
+										isInvalid={errors.description != null}
+										description={
+											errors.description ? (
+												<p className="text-tiny text-danger">
+													{errors.description.message}
+												</p>
+											) : (
+												<p className="text-tiny text-foreground-400">
+													Markdown editing is supported.{" "}
+													<Link
+														isExternal
+														showAnchorIcon
+														href="https://www.markdownguide.org/getting-started/"
+														size="sm"
+														className="text-tiny"
+													>
+														Learn more
+													</Link>
+												</p>
+											)
+										}
+									/>
+								</div>
+							)}
+						/>
+
+						<ChipsInput<z.infer<typeof formSchema>, "skills">
+							name="skills"
+							label="Job Skills"
+							delimiters={[",", "Enter"]}
+							control={control}
+							chipProps={{
+								variant: "flat",
+							}}
+							inputProps={{
+								placeholder: "Enter skills...",
+								description: (
+									<p className="mt-2">
+										Separate skills with commas or Enter{" "}
+										<Kbd
+											keys={["enter"]}
+											classNames={{ base: "p-0 px-2 shadow-none" }}
+										/>
+									</p>
+								),
+							}}
+						/>
+						<Controller
+							control={control}
+							name="vacancies"
+							render={({ field }) => {
+								return (
+									<NumberInput
+										errorMessage={errors.vacancies?.message}
+										isInvalid={!!errors.vacancies}
+										label="Vacancies"
+										placeholder="Enter vacancies"
+										labelPlacement="outside"
+										value={field.value || 0}
+										onValueChange={(value) => {
+											field.onChange(value);
+										}}
+									/>
+								);
+							}}
+						/>
+						<div className="w-full flex flex-col sm:flex-row gap-12 items-start justify-start">
+							{/* Job Type */}
+							<Controller
+								control={control}
+								name="jobType"
+								render={({ field }) => {
+									return (
+										<RadioGroup
+											label="Select Job Type"
+											value={field.value}
+											onValueChange={field.onChange}
+											className="flex-1 w-full"
+										>
+											<Radio value="CONTRACT">Contract</Radio>
+											<Radio value="FULL_TIME">Full Time</Radio>
+											<Radio value="INTERNSHIP">Internship</Radio>
+											<Radio value="PART_TIME">Part Time</Radio>
+										</RadioGroup>
+									);
+								}}
+							/>
+							{/* Work Mode */}
+							<Controller
+								control={control}
+								name="workMode"
+								render={({ field }) => {
+									return (
+										<RadioGroup
+											label="Select Work Mode"
+											value={field.value}
+											onValueChange={field.onChange}
+											className="flex-1 w-full"
+										>
+											<Radio value="HYBRID">Hybrid</Radio>
+											<Radio value="OFFICE">Office</Radio>
+											<Radio value="REMOTE">Remote</Radio>
+										</RadioGroup>
+									);
+								}}
+							/>
+						</div>
+						<Accordion
+							selectionMode="multiple"
+							variant="light"
+							keepContentMounted
+							fullWidth
+							itemClasses={{ base: "pb-8" }}
+							selectedKeys={accordionSelectedKeys}
+							onSelectionChange={(keys) => {
+								setAccordionSelectedKeys(keys);
+							}}
+						>
+							<AccordionItem
+								key="salary-range"
+								aria-label="Salary range"
+								title="Salary range"
+								startContent={<IndianRupee size={20} />}
+							>
+								<div className="w-full flex gap-6 items-start">
+									<Controller
+										control={control}
+										name="minSalary"
+										render={({ field }) => {
+											return (
+												<NumberInput
+													errorMessage={errors.minSalary?.message}
+													isInvalid={!!errors.minSalary}
+													label="Minimum Salary"
+													placeholder="Enter minimum salary"
+													formatOptions={{
+														style: "currency",
+														currency: "INR",
+														currencyDisplay: "code",
+														currencySign: "accounting",
+													}}
+													value={field.value || 0}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+												/>
+											);
+										}}
+									/>
+									<Controller
+										control={control}
+										name="maxSalary"
+										render={({ field }) => {
+											return (
+												<NumberInput
+													errorMessage={errors.maxSalary?.message}
+													isInvalid={!!errors.maxSalary}
+													label="Maximum Salary"
+													placeholder="Enter maximum salary"
+													formatOptions={{
+														style: "currency",
+														currency: "INR",
+														currencyDisplay: "code",
+														currencySign: "accounting",
+													}}
+													value={field.value || 0}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+												/>
+											);
+										}}
+									/>
+								</div>
+							</AccordionItem>
+							<AccordionItem
+								key="experience-range"
+								aria-label="Experience range"
+								title="Experience range"
+								startContent={<BriefcaseBusiness size={20} />}
+							>
+								<div className="w-full flex gap-6 items-start">
+									<Controller
+										control={control}
+										name="minExperience"
+										render={({ field }) => {
+											return (
+												<NumberInput
+													errorMessage={errors.minExperience?.message}
+													isInvalid={!!errors.minExperience}
+													label="Minimum Experience"
+													placeholder="Enter minimum experience"
+													formatOptions={{
+														style: "unit",
+														unit: "year",
+														unitDisplay: "long",
+													}}
+													value={field.value || 0}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+												/>
+											);
+										}}
+									/>
+									<Controller
+										control={control}
+										name="maxExperience"
+										render={({ field }) => {
+											return (
+												<NumberInput
+													errorMessage={errors.maxExperience?.message}
+													isInvalid={!!errors.maxExperience}
+													label="Maximum Experience"
+													placeholder="Enter maximum experience"
+													formatOptions={{
+														style: "unit",
+														unit: "year",
+														unitDisplay: "long",
+													}}
+													value={field.value || 0}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+												/>
+											);
+										}}
+									/>
+								</div>
+							</AccordionItem>
+							<AccordionItem
+								key="expires-at"
+								aria-label="Posting expires at"
+								title="Posting expires at"
+								startContent={<TimerIcon size={20} />}
+							>
+								<Controller
+									control={control}
+									name="expiresAt"
+									render={({ field }) => {
+										return (
+											<DatePicker
+												showMonthAndYearPickers
+												selectorButtonPlacement="start"
+												granularity="hour"
+												errorMessage={errors.expiresAt?.message}
+												isInvalid={!!errors.expiresAt}
+												value={field.value ?? undefined}
+												onChange={field.onChange}
+											/>
+										);
+									}}
+								/>
+							</AccordionItem>
+							<AccordionItem
+								key="address"
+								aria-label="Address"
+								title="Address"
+								startContent={<MapPin size={20} />}
+							>
+								<div className="flex flex-col gap-4">
+									<div className="flex gap-8 mb-12">
+										<div className="flex flex-col w-full gap-8">
+											<Controller
+												name="address.city"
+												control={control}
+												render={({ field }) => (
+													<Input
+														{...field}
+														label="City"
+														placeholder="Add your city"
+														value={field.value ?? ""}
+														errorMessage={errors.address?.city?.message}
+														isInvalid={!!errors.address?.city}
+													/>
+												)}
+											/>
+											<Controller
+												name="address.country"
+												control={control}
+												render={({ field }) => (
+													<Input
+														{...field}
+														label="Country"
+														placeholder="Add your country"
+														value={field.value ?? ""}
+														errorMessage={errors.address?.country?.message}
+														isInvalid={!!errors.address?.country}
+													/>
+												)}
+											/>
+											<Controller
+												name="address.pincode"
+												control={control}
+												render={({ field }) => (
+													<Input
+														{...field}
+														label="Pincode"
+														placeholder="Add your pincode"
+														value={field.value ?? ""}
+														errorMessage={errors.address?.pincode?.message}
+														isInvalid={!!errors.address?.pincode}
+													/>
+												)}
+											/>
+										</div>
+										<div className="flex flex-col w-full gap-8">
+											<Controller
+												name="address.line1"
+												control={control}
+												render={({ field }) => (
+													<Input
+														{...field}
+														label="Line 1"
+														placeholder="Add line 1"
+														value={field.value ?? ""}
+														errorMessage={errors.address?.line1?.message}
+														isInvalid={!!errors.address?.line1}
+													/>
+												)}
+											/>
+											<Controller
+												name="address.line2"
+												control={control}
+												render={({ field }) => (
+													<Input
+														{...field}
+														label="Line 2"
+														placeholder="Add line 2"
+														value={field.value ?? ""}
+														errorMessage={errors.address?.line2?.message}
+														isInvalid={!!errors.address?.line2}
+													/>
+												)}
+											/>
+											<Controller
+												name="address.state"
+												control={control}
+												render={({ field }) => (
+													<Input
+														{...field}
+														label="State"
+														placeholder="Add your state"
+														value={field.value ?? ""}
+														errorMessage={errors.address?.state?.message}
+														isInvalid={!!errors.address?.state}
+													/>
+												)}
+											/>
+										</div>
+									</div>
+								</div>
+							</AccordionItem>
+						</Accordion>
+					</CardBody>
+					<CardFooter className="w-full justify-end gap-6">
+						<Button type="button" variant="bordered" onPress={handleCancel}>
+							Cancel
+						</Button>
+						<Button
+							type="submit"
+							color="primary"
+							isLoading={isSubmitting || isMutationInFlight}
+						>
+							Update Job
+						</Button>
+					</CardFooter>
+				</Card>
+			</form>
+			<CancelEditJobModal
+				isOpen={isOpen}
+				onOpenChange={onOpenChange}
+				organization={organizationData}
+			/>
+		</>
+	);
 }

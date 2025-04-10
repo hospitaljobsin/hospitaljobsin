@@ -10,12 +10,13 @@ export default function MarkdownEditor({
 	description,
 	isInvalid,
 	onValueChange,
+	initialValue,
 }: {
 	description: ReactNode;
 	isInvalid: boolean;
 	onValueChange: (value: string) => void;
+	initialValue: string;
 }) {
-	console.log("MarkdownEditor rendered");
 	const editor = useEditor({
 		extensions: [
 			StarterKit.configure({
@@ -26,7 +27,7 @@ export default function MarkdownEditor({
 			}),
 			Markdown,
 		],
-		content: "",
+		content: initialValue,
 		immediatelyRender: false,
 		shouldRerenderOnTransaction: false,
 		injectCSS: false,

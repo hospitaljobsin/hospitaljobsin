@@ -320,6 +320,7 @@ export default function NewJobForm({ account, organization }: Props) {
 											Job Description <p className="text-danger">*</p>
 										</h2>
 										<MarkdownEditor
+											initialValue=""
 											onValueChange={(value) => {
 												field.onChange(value);
 											}}
