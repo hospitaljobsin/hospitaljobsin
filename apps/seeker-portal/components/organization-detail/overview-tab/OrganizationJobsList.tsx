@@ -41,7 +41,7 @@ const OrganizationJobsListInternalFragment = graphql`
       edges {
         node {
           id
-          ...JobFragment
+          ...JobFragment @arguments(showOrganization: false)
         }
       }
       pageInfo {

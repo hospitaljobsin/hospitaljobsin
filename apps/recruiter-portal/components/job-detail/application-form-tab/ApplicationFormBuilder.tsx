@@ -86,7 +86,7 @@ export default function ApplicationFormBuilder({
 			ApplicationFormBuilderMutation,
 		);
 
-	const { control, register, handleSubmit } = useForm<
+	const { control, register, handleSubmit, reset } = useForm<
 		z.infer<typeof formSchema>
 	>({
 		resolver: zodResolver(formSchema),
@@ -121,6 +121,9 @@ export default function ApplicationFormBuilder({
 					"UpdateJobApplicationFormSuccess"
 				) {
 					// handle success case
+					reset({
+						fields: {},
+					});
 				} else if (
 					response.updateJobApplicationForm.__typename === "JobNotFoundError"
 				) {

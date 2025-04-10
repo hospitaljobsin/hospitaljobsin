@@ -15,7 +15,9 @@ import { graphql } from "relay-runtime";
 import JobControls from "../job-detail/JobControls";
 
 export const JobFragment = graphql`
-  fragment JobFragment on Job {
+  fragment JobFragment on Job @argumentDefinitions(
+		showOrganization: { type: "Boolean!", defaultValue: true }
+	) {
 	...JobControlsFragment
     slug
     title
@@ -34,7 +36,7 @@ export const JobFragment = graphql`
     minExperience
     maxExperience
     createdAt
-    organization {
+    organization @include(if: $showOrganization) {
       name
       logoUrl
       address {
@@ -173,19 +175,23 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			<CardHeader>
 				<div className="flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center">
 					<div className="flex items-center gap-4">
-						<Image
-							src={data.organization?.logoUrl || ""}
-							alt={data.organization?.name || ""}
-							width={50}
-							height={50}
-						/>
+						{data.organization && (
+							<Image
+								src={data.organization.logoUrl || ""}
+								alt={data.organization.name || ""}
+								width={50}
+								height={50}
+							/>
+						)}
 						<div className="flex flex-col gap-2 items-start">
 							<h4 className="text-lg/7 sm:text-xl/8 font-medium text-balance">
 								{data.title}
 							</h4>
-							<p className="text-sm sm:text-base font-normal text-foreground-500">
-								{data.organization?.name}
-							</p>
+							{data.organization && (
+								<p className="text-sm sm:text-base font-normal text-foreground-500">
+									{data.organization.name}
+								</p>
+							)}
 						</div>
 					</div>
 					{salaryRange}
