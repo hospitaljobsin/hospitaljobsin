@@ -41,6 +41,7 @@ const JobDetailsFragment = graphql`
 	 
     }
 	viewer {
+		__typename
 		...JobControlsAuthFragment
 	  }
   }
