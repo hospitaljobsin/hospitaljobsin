@@ -54,12 +54,14 @@ export default function OrganizationDetails({
 				<CardHeader>
 					<div className="flex w-full justify-between gap-12 sm:gap-6 sm:items-center flex-col sm:flex-row items-start">
 						<div className="flex gap-6 items-start">
-							<Image
-								src={data.logoUrl || ""}
-								alt={data.name}
-								width={75}
-								height={75}
-							/>
+							<div className="relative h-20 w-20">
+								<Image
+									src={data.logoUrl || ""}
+									alt={data.name}
+									fill
+									className="rounded-md object-cover"
+								/>
+							</div>
 							<div className="flex flex-col gap-3 items-start">
 								<h4 className="text-xl font-medium">{data.name}</h4>
 								{data.description && (
@@ -88,14 +90,14 @@ export default function OrganizationDetails({
 							</div>
 						)}
 						{data.website && (
-								<Link
-									showAnchorIcon
-									className="text-foreground-600"
-									href={data.website}
-									isExternal
-								>
-									Visit website
-								</Link>
+							<Link
+								showAnchorIcon
+								className="text-foreground-600"
+								href={data.website}
+								isExternal
+							>
+								Visit website
+							</Link>
 						)}
 					</div>
 				</CardBody>

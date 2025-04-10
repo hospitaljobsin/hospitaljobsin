@@ -265,12 +265,14 @@ export default function JobDetails({
 
 			<Card fullWidth className="p-6" shadow="none">
 				<CardBody className="flex items-center gap-6 flex-row w-full">
-					<Image
-						src={data.organization?.logoUrl || ""}
-						alt={data.organization?.name || ""}
-						width={50}
-						height={50}
-					/>
+												<div className="relative h-14 w-14">
+													<Image
+														src={data.organization?.logoUrl || ""}
+														alt={data.organization?.name || "organization-logo"}
+														fill
+														className="rounded-md object-cover"
+													/>
+												</div>
 
 					<div className="w-full flex flex-col gap-2">
 						<Link
