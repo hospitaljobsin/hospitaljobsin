@@ -1,5 +1,5 @@
 import secrets
-from datetime import date, datetime
+from datetime import datetime
 from typing import Literal
 
 from beanie import DeleteRules, PydanticObjectId, WriteRules
@@ -74,6 +74,42 @@ class JobRepo:
             link_rule=WriteRules.DO_NOTHING,
         )
 
+    async def update(
+        self,
+        *,
+        job: Job,
+        title: str,
+        description: str,
+        address: Address,
+        vacancies: int | None = None,
+        min_salary: int | None = None,
+        max_salary: int | None = None,
+        min_experience: int | None = None,
+        max_experience: int | None = None,
+        expires_at: datetime | None = None,
+        job_type: Literal["full_time", "part_time", "internship", "contract"]
+        | None = None,
+        work_mode: Literal["hybrid", "remote", "office"] | None = None,
+        skills: list[str] = [],
+        currency: Literal["INR"] = "INR",
+    ) -> Job:
+        """Update a job."""
+        job.title = title
+        job.description = description
+        job.vacancies = vacancies
+        job.address = address
+        job.min_salary = min_salary
+        job.max_salary = max_salary
+        job.min_experience = min_experience
+        job.max_experience = max_experience
+        job.expires_at = expires_at
+        job.type = job_type
+        job.work_mode = work_mode
+        job.skills = skills
+        job.currency = currency
+        job.slug = await self.generate_slug(title)
+        return await job.save(link_rule=WriteRules.DO_NOTHING)
+
     async def get(self, job_id: ObjectId) -> Job | None:
         """Get job by ID."""
         return await Job.get(job_id)
@@ -81,24 +117,6 @@ class JobRepo:
     async def get_by_slug(self, slug: str) -> Job | None:
         """Get job by slug."""
         return await Job.find_one(Job.slug == slug)
-
-    async def update(
-        self,
-        job: Job,
-        *,
-        title: str,
-        description: str,
-        location: str,
-        salary: str,
-        closing_date: date,
-    ) -> Job:
-        """Update the given job."""
-        job.title = title
-        job.description = description
-        job.location = location
-        job.salary = salary
-        job.closing_date = closing_date
-        return await job.save()
 
     async def update_active(self, job: Job, *, is_active: bool) -> Job:
         """Update the given job."""

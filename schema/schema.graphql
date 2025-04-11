@@ -927,6 +927,51 @@ type Mutation {
     currency: String! = "INR"
   ): CreateJobPayload! @isAuthenticated
 
+  """Update a job."""
+  updateJob(
+    """The ID of the job to update."""
+    jobId: ID!
+
+    """The title of the job."""
+    title: String!
+
+    """The description of the job."""
+    description: String!
+
+    """The address of the job."""
+    address: AddressInput!
+
+    """The skills required for the job."""
+    skills: [String!]!
+
+    """The number of vacancies for the job."""
+    vacancies: Int = null
+
+    """The minimum salary of the job."""
+    minSalary: Int = null
+
+    """The maximum salary of the job."""
+    maxSalary: Int = null
+
+    """The minimum experience of the job."""
+    minExperience: Int = null
+
+    """The maximum experience of the job."""
+    maxExperience: Int = null
+
+    """The expiration date of the job."""
+    expiresAt: datetime = null
+
+    """The type of the job."""
+    jobType: JobType = null
+
+    """The work mode of the job."""
+    workMode: WorkMode = null
+
+    """The currency of the job."""
+    currency: String! = "INR"
+  ): UpdateJobPayload! @isAuthenticated
+
   """Update job application form."""
   updateJobApplicationForm(
     """The ID of the job to update the application form for."""
@@ -1644,6 +1689,15 @@ type UpdateJobApplicationFormSuccess {
 
   """The updated job application form."""
   jobApplicationForm: JobApplicationForm!
+}
+
+"""The update job payload."""
+union UpdateJobPayload = UpdateJobSuccess | JobNotFoundError | OrganizationAuthorizationError
+
+"""Used when the job is updated successfully."""
+type UpdateJobSuccess {
+  """The updated job."""
+  job: Job!
 }
 
 """The update organization payload."""

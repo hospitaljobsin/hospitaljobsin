@@ -32,6 +32,7 @@ import {
 	MapPin,
 	TimerIcon,
 } from "lucide-react";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
@@ -69,38 +70,19 @@ fragment JobEditFormFragment on Query @argumentDefinitions(
             pincode
             state
         }
-        organization {
-            ...JobEditFormOrganizationFragment
-        }
+		...CancelEditJobModalJobFragment
       }
      
     }
   }`;
 
-const JobEditFormOrganizationFragment = graphql`
-fragment JobEditFormOrganizationFragment on Organization {
-    __typename
-    slug
-    id
-    address {
-        city
-        country
-        line1
-        line2
-        pincode
-        state
-    }
-    ...CancelEditJobModalOrganizationFragment
-}
-`;
-
-const CreateJobMutation = graphql`
+const UpdateJobMutation = graphql`
 mutation JobEditFormMutation(
     $title: String!, 
     $description: String!, 
     $skills: [String!]!, 
     $address: AddressInput! 
-    $organizationId: ID!, 
+    $jobId: ID!, 
     $minSalary: Int, 
     $maxSalary: Int,  
     $minExperience: Int, 
@@ -110,12 +92,12 @@ mutation JobEditFormMutation(
     $jobType: JobType,
     $vacancies: Int
 ) {
-    createJob(
+    updateJob(
         title: $title,
         description: $description, 
         skills: $skills, 
         address: $address, 
-        organizationId: $organizationId, 
+        jobId: $jobId, 
         minSalary: $minSalary, 
         maxSalary: $maxSalary, 
         minExperience: $minExperience, 
@@ -126,16 +108,19 @@ mutation JobEditFormMutation(
         vacancies: $vacancies
     ) {
         __typename
-        ...on CreateJobSuccess {
+        ...on UpdateJobSuccess {
             __typename
-            jobEdge {
-                node {
-                    slug
-                }
+            job {
+                slug
+				...JobDetailHeaderJobFragment
+				...JobTabsFragment
+				...JobControlsFragment
+				...JobDetailsInternalFragment
+				...JobFragment
             }
         }
 
-        ... on OrganizationNotFoundError {
+        ... on JobNotFoundError {
             __typename
         }
 
@@ -176,18 +161,14 @@ type Props = {
 
 export default function JobEditForm({ rootQuery }: Props) {
 	const router = useRouter();
+	const params = useParams<{ slug: string; jobSlug: string }>();
 	const { isOpen, onOpenChange, onOpen } = useDisclosure();
 	const root = useFragment(JobEditFormFragment, rootQuery);
 	const job = root.job;
 	invariant(job.__typename === "Job", "Expected 'Job' node type");
-	const organization = job.organization;
-	invariant(organization, "Expected 'Organization' node type");
-	const organizationData = useFragment(
-		JobEditFormOrganizationFragment,
-		organization,
-	);
+
 	const [commitMutation, isMutationInFlight] =
-		useMutation<JobEditFormMutation>(CreateJobMutation);
+		useMutation<JobEditFormMutation>(UpdateJobMutation);
 
 	const {
 		handleSubmit,
@@ -260,14 +241,14 @@ export default function JobEditForm({ rootQuery }: Props) {
 			// show confirmation modal
 			onOpen();
 		} else {
-			router.push(links.organizationDetailJobs(organizationData.slug));
+			router.push(links.organizationJobDetail(params.slug, job.slug));
 		}
 	}
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		commitMutation({
 			variables: {
-				organizationId: organizationData.id,
+				jobId: job.id,
 				title: formData.title,
 				description: formData.description,
 				vacancies: formData.vacancies,
@@ -289,21 +270,18 @@ export default function JobEditForm({ rootQuery }: Props) {
 				workMode: formData.workMode,
 			},
 			onCompleted(response) {
-				if (response.createJob.__typename === "OrganizationNotFoundError") {
+				if (response.updateJob.__typename === "JobNotFoundError") {
 					addToast({
 						color: "danger",
 						title: "An unexpected error occurred. Please try again.",
 					});
-				} else if (response.createJob.__typename === "CreateJobSuccess") {
-					// Redirect to the organization detail page
+				} else if (response.updateJob.__typename === "UpdateJobSuccess") {
+					// handle success
 					router.push(
-						links.organizationJobDetail(
-							organizationData.slug,
-							response.createJob.jobEdge.node.slug,
-						),
+						links.jobDetailEdit(params.slug, response.updateJob.job.slug),
 					);
 				} else if (
-					response.createJob.__typename === "OrganizationAuthorizationError"
+					response.updateJob.__typename === "OrganizationAuthorizationError"
 				) {
 					addToast({
 						color: "danger",
@@ -712,6 +690,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 							type="submit"
 							color="primary"
 							isLoading={isSubmitting || isMutationInFlight}
+							isDisabled={!isDirty}
 						>
 							Update Job
 						</Button>
@@ -721,7 +700,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 			<CancelEditJobModal
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
-				organization={organizationData}
+				job={job}
 			/>
 		</>
 	);

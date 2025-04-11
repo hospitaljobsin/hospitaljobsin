@@ -30,7 +30,7 @@ from app.organizations.types import (
 from .types import (
     ApplicationFieldInputType,
     CreateJobPayload,
-    CreateJobSuccess,
+    CreateJobSuccessType,
     JobApplicationFormNotFoundErrorType,
     JobApplicationFormType,
     JobEdgeType,
@@ -48,6 +48,8 @@ from .types import (
     UnsaveJobSuccess,
     UpdateJobApplicationFormPayload,
     UpdateJobApplicationFormSuccessType,
+    UpdateJobPayload,
+    UpdateJobSuccessType,
     WorkModeEnum,
 )
 
@@ -263,8 +265,141 @@ class JobMutation:
                     case OrganizationAuthorizationError():
                         return OrganizationAuthorizationErrorType()
             case Ok(job):
-                return CreateJobSuccess(
+                return CreateJobSuccessType(
                     job_edge=JobEdgeType.marshal(job),
+                )
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateJobPayload,
+        description="Update a job.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_job(
+        self,
+        info: AuthInfo,
+        job_service: Annotated[JobService, Inject],
+        *,
+        job_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the job to update.",
+            ),
+        ],
+        title: Annotated[
+            str,
+            strawberry.argument(
+                description="The title of the job.",
+            ),
+        ],
+        description: Annotated[
+            str,
+            strawberry.argument(
+                description="The description of the job.",
+            ),
+        ],
+        address: Annotated[
+            AddressInputType,
+            strawberry.argument(
+                description="The address of the job.",
+            ),
+        ],
+        skills: Annotated[
+            list[str],
+            strawberry.argument(
+                description="The skills required for the job.",
+            ),
+        ],
+        vacancies: Annotated[
+            int | None,
+            strawberry.argument(
+                description="The number of vacancies for the job.",
+            ),
+        ] = None,
+        min_salary: Annotated[
+            int | None,
+            strawberry.argument(
+                description="The minimum salary of the job.",
+            ),
+        ] = None,
+        max_salary: Annotated[
+            int | None,
+            strawberry.argument(
+                description="The maximum salary of the job.",
+            ),
+        ] = None,
+        min_experience: Annotated[
+            int | None,
+            strawberry.argument(
+                description="The minimum experience of the job.",
+            ),
+        ] = None,
+        max_experience: Annotated[
+            int | None,
+            strawberry.argument(
+                description="The maximum experience of the job.",
+            ),
+        ] = None,
+        expires_at: Annotated[
+            datetime | None,
+            strawberry.argument(
+                description="The expiration date of the job.",
+            ),
+        ] = None,
+        job_type: Annotated[
+            JobTypeEnum | None,
+            strawberry.argument(
+                description="The type of the job.",
+            ),
+        ] = None,
+        work_mode: Annotated[
+            WorkModeEnum | None,
+            strawberry.argument(
+                description="The work mode of the job.",
+            ),
+        ] = None,
+        currency: Annotated[
+            str,
+            strawberry.argument(
+                description="The currency of the job.",
+            ),
+        ] = "INR",
+    ) -> UpdateJobPayload:
+        """Update a job."""
+        match await job_service.update(
+            account=info.context["current_user"],
+            job_id=job_id.node_id,
+            title=title,
+            description=description,
+            vacancies=vacancies,
+            address=AddressInputType.to_document(address),
+            min_salary=min_salary,
+            max_salary=max_salary,
+            min_experience=min_experience,
+            max_experience=max_experience,
+            expires_at=expires_at,
+            job_type=job_type.value if job_type else None,
+            work_mode=work_mode.value if work_mode else None,
+            skills=skills,
+            currency=currency,
+        ):
+            case Err(error):
+                match error:
+                    case JobNotFoundError():
+                        return JobNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case Ok(job):
+                return UpdateJobSuccessType(
+                    job=JobType.marshal(job),
                 )
             case _ as unreachable:
                 assert_never(unreachable)

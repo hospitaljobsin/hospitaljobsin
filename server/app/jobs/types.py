@@ -404,14 +404,14 @@ UnsaveJobPayload = Annotated[
     name="CreateJobSuccess",
     description="Used when the job is created successfully.",
 )
-class CreateJobSuccess:
+class CreateJobSuccessType:
     job_edge: JobEdgeType = strawberry.field(
         description="The edge of the created job.",
     )
 
 
 CreateJobPayload = Annotated[
-    CreateJobSuccess
+    CreateJobSuccessType
     | OrganizationNotFoundErrorType
     | OrganizationAuthorizationErrorType,
     strawberry.union(
@@ -495,5 +495,24 @@ UnpublishJobPayload = Annotated[
     strawberry.union(
         name="UnpublishJobPayload",
         description="The unpublish job payload.",
+    ),
+]
+
+
+@strawberry.type(
+    name="UpdateJobSuccess",
+    description="Used when the job is updated successfully.",
+)
+class UpdateJobSuccessType:
+    job: JobType = strawberry.field(
+        description="The updated job.",
+    )
+
+
+UpdateJobPayload = Annotated[
+    UpdateJobSuccessType | JobNotFoundErrorType | OrganizationAuthorizationErrorType,
+    strawberry.union(
+        name="UpdateJobPayload",
+        description="The update job payload.",
     ),
 ]

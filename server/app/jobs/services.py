@@ -127,6 +127,60 @@ class JobService:
 
         return Ok(job)
 
+    async def update(
+        self,
+        *,
+        account: Account,
+        job_id: str,
+        title: str,
+        description: str,
+        address: Address,
+        vacancies: int | None = None,
+        min_salary: int | None = None,
+        max_salary: int | None = None,
+        min_experience: int | None = None,
+        max_experience: int | None = None,
+        expires_at: datetime | None = None,
+        job_type: Literal["full_time", "part_time", "internship", "contract"]
+        | None = None,
+        work_mode: Literal["hybrid", "remote", "office"] | None = None,
+        skills: list[str] = [],
+        currency: Literal["INR"] = "INR",
+    ) -> Result[Job, JobNotFoundError | OrganizationAuthorizationError]:
+        """Update a job."""
+        try:
+            job_id = ObjectId(job_id)
+        except InvalidId:
+            return Err(JobNotFoundError())
+        existing_job = await self._job_repo.get(job_id)
+        if existing_job is None:
+            return Err(JobNotFoundError())
+
+        if not await self._organization_member_service.is_member(
+            account_id=account.id,
+            organization_id=existing_job.organization.ref.id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        job = await self._job_repo.update(
+            job=existing_job,
+            title=title,
+            description=description,
+            vacancies=vacancies,
+            address=address,
+            min_salary=min_salary,
+            max_salary=max_salary,
+            min_experience=min_experience,
+            max_experience=max_experience,
+            expires_at=expires_at,
+            job_type=job_type,
+            work_mode=work_mode,
+            skills=skills,
+            currency=currency,
+        )
+
+        return Ok(job)
+
     async def publish(
         self,
         account: Account,
