@@ -4,6 +4,10 @@ import Job from "./Job";
 import type { OrganizationJobsListFragment$key } from "@/__generated__/OrganizationJobsListFragment.graphql";
 import type { OrganizationJobsListInternalFragment$key } from "@/__generated__/OrganizationJobsListInternalFragment.graphql";
 import type { pageOrganizationJobsViewQuery } from "@/__generated__/pageOrganizationJobsViewQuery.graphql";
+import links from "@/lib/links";
+import { Button, Link } from "@heroui/react";
+import { BriefcaseBusiness, Plus } from "lucide-react";
+import { useParams } from "next/navigation";
 import { startTransition, useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
@@ -54,6 +58,7 @@ type Props = {
 };
 
 export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
+	const { slug } = useParams<{ slug: string }>();
 	const root = useFragment(OrganizationJobsListFragment, rootQuery);
 	invariant(
 		root.organization.__typename === "Organization",
@@ -102,7 +107,25 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 	}, [refetch, searchTerm]);
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
-		return null;
+		return (
+			<div className="w-full flex flex-col items-center justify-center gap-8 py-12 px-6 border-dashed border-foreground-300 border-2 rounded-lg">
+				<div className="p-4 rounded-full bg-primary/10">
+					<BriefcaseBusiness className="w-8 h-8 text-primary" />
+				</div>
+				<div className="flex flex-col items-center gap-1.5">
+					<h3 className="font-medium text-lg">No jobs found</h3>
+				</div>
+				<Button
+					as={Link}
+					href={links.organizationCreateJob(slug)}
+					color="primary"
+					startContent={<Plus size={25} />}
+					className="w-full sm:w-auto"
+				>
+					Add a job
+				</Button>
+			</div>
+		);
 	}
 
 	return (
