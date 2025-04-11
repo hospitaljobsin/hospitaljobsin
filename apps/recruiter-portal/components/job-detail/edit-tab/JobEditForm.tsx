@@ -1,5 +1,5 @@
 "use client";
-import type { JobEditFormFragment$key } from "@/__generated__/JobEditFormFragment.graphql";
+import { JobEditFormFragment$key } from "@/__generated__/JobEditFormFragment.graphql";
 import type { JobEditFormMutation } from "@/__generated__/JobEditFormMutation.graphql";
 import { ChipsInput } from "@/components/forms/ChipsInput";
 import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
@@ -24,7 +24,10 @@ import {
 	useDisclosure,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarDate, parseAbsoluteToLocal } from "@internationalized/date";
+import {
+	CalendarDateTime,
+	parseAbsoluteToLocal,
+} from "@internationalized/date";
 import type { Key } from "@react-types/shared";
 import {
 	BriefcaseBusiness,
@@ -37,45 +40,33 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 import { z } from "zod";
 import CancelEditJobModal from "./CancelEditJobModal";
 
 const JobEditFormFragment = graphql`
-fragment JobEditFormFragment on Query @argumentDefinitions(
-      slug: {
-        type: "String!",
-      }
-    ) {
-    job(slug: $slug) {
-      __typename
-      ... on Job {
-        id
-        title
-        description
-        minExperience
-        maxExperience
-        minSalary
-        maxSalary
-        vacancies
-        skills
-        type
-        workMode
-        expiresAt
-        address {
-            city
-            country
-            line1
-            line2
-            pincode
-            state
-        }
-		...CancelEditJobModalJobFragment
-      }
-     
-    }
-  }`;
-
+  fragment JobEditFormFragment on Job {
+	id
+	title
+	description
+	minExperience
+	maxExperience
+	minSalary
+	maxSalary
+	vacancies
+	skills
+	type
+	workMode
+	expiresAt
+	address {
+		city
+		country
+		line1
+		line2
+		pincode
+		state
+	}
+	...CancelEditJobModalJobFragment
+}`;
 const UpdateJobMutation = graphql`
 mutation JobEditFormMutation(
     $title: String!, 
@@ -117,6 +108,7 @@ mutation JobEditFormMutation(
 				...JobControlsFragment
 				...JobDetailsInternalFragment
 				...JobFragment
+				...JobEditFormFragment
             }
         }
 
@@ -148,7 +140,7 @@ const formSchema = z.object({
 	maxSalary: z.number().positive().nullable(),
 	minExperience: z.number().positive().nullable(),
 	maxExperience: z.number().positive().nullable(),
-	expiresAt: z.instanceof(CalendarDate).nullable(),
+	expiresAt: z.instanceof(CalendarDateTime).nullable(),
 	jobType: z
 		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])
 		.nullable(),
@@ -163,9 +155,8 @@ export default function JobEditForm({ rootQuery }: Props) {
 	const router = useRouter();
 	const params = useParams<{ slug: string; jobSlug: string }>();
 	const { isOpen, onOpenChange, onOpen } = useDisclosure();
-	const root = useFragment(JobEditFormFragment, rootQuery);
-	const job = root.job;
-	invariant(job.__typename === "Job", "Expected 'Job' node type");
+
+	const jobData = useFragment(JobEditFormFragment, rootQuery);
 
 	const [commitMutation, isMutationInFlight] =
 		useMutation<JobEditFormMutation>(UpdateJobMutation);
@@ -179,27 +170,29 @@ export default function JobEditForm({ rootQuery }: Props) {
 		resolver: zodResolver(formSchema),
 		reValidateMode: "onChange",
 		defaultValues: {
-			title: job.title,
-			description: job.description ?? "",
-			vacancies: job.vacancies,
-			skills: job.skills.map((skill) => ({
+			title: jobData.title,
+			description: jobData.description ?? "",
+			vacancies: jobData.vacancies,
+			skills: jobData.skills.map((skill) => ({
 				value: skill,
 			})),
 			address: {
-				city: job.address.city,
-				country: job.address.country,
-				line1: job.address.line1,
-				line2: job.address.line2,
-				pincode: job.address.pincode,
-				state: job.address.state,
+				city: jobData.address.city,
+				country: jobData.address.country,
+				line1: jobData.address.line1,
+				line2: jobData.address.line2,
+				pincode: jobData.address.pincode,
+				state: jobData.address.state,
 			},
-			minSalary: job.minSalary,
-			maxSalary: job.maxSalary,
-			minExperience: job.minExperience,
-			maxExperience: job.maxExperience,
-			expiresAt: job.expiresAt ? parseAbsoluteToLocal(job.expiresAt) : null,
-			jobType: job.type ? job.type.toString() : null,
-			workMode: job.workMode ? job.workMode.toString() : null,
+			minSalary: jobData.minSalary,
+			maxSalary: jobData.maxSalary,
+			minExperience: jobData.minExperience,
+			maxExperience: jobData.maxExperience,
+			expiresAt: jobData.expiresAt
+				? parseAbsoluteToLocal(jobData.expiresAt)
+				: null,
+			jobType: jobData.type ? jobData.type.toString() : null,
+			workMode: jobData.workMode ? jobData.workMode.toString() : null,
 		},
 	});
 
@@ -241,14 +234,14 @@ export default function JobEditForm({ rootQuery }: Props) {
 			// show confirmation modal
 			onOpen();
 		} else {
-			router.push(links.organizationJobDetail(params.slug, job.slug));
+			router.push(links.organizationJobDetail(params.slug, jobData.slug));
 		}
 	}
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		commitMutation({
 			variables: {
-				jobId: job.id,
+				jobId: jobData.id,
 				title: formData.title,
 				description: formData.description,
 				vacancies: formData.vacancies,
@@ -700,7 +693,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 			<CancelEditJobModal
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
-				job={job}
+				job={jobData}
 			/>
 		</>
 	);
