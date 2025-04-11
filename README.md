@@ -9,15 +9,14 @@ aaa
 - we can add other tools too, like showing current applications, saved jobs etcaaa
 
 # TODO- recruiter portal
-- feature: save job as draft
 - list applications
+- show applicant detail view
+    - show applicant's form data
+    - show applicant's job seeker profile
 - group applications into stages:
     - waiting for review
     - waiting for interview
     - selected
-
-- make rich text editor more performant
-- add preview to create new job form
 
 # PulseWork
 > *recruitment and job seeking for medical professionals*
