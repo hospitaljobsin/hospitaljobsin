@@ -1,5 +1,7 @@
 import type { DeleteJobModalFragment$key } from "@/__generated__/DeleteJobModalFragment.graphql";
 import type { DeleteJobModalMutation } from "@/__generated__/DeleteJobModalMutation.graphql";
+import links from "@/lib/links";
+import { useRouter } from "@bprogress/next/app";
 import {
 	Button,
 	Modal,
@@ -9,6 +11,7 @@ import {
 	ModalHeader,
 	addToast,
 } from "@heroui/react";
+import { useParams } from "next/navigation";
 import { useFragment, useMutation } from "react-relay";
 import { ConnectionHandler, graphql } from "relay-runtime";
 
@@ -43,20 +46,23 @@ export default function DeleteJobModal({
 	isOpen,
 	onOpenChange,
 	onClose,
-	invite,
+	job,
 }: {
 	isOpen: boolean;
 	onOpenChange: (isOpen: boolean) => void;
 	onClose: () => void;
-	invite: DeleteJobModalFragment$key;
+	job: DeleteJobModalFragment$key;
 }) {
-	const data = useFragment(DeleteJobModalFragment, invite);
+	const router = useRouter();
+	const params = useParams<{ slug: string }>();
+	const data = useFragment(DeleteJobModalFragment, job);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<DeleteJobModalMutation>(DeleteJobMutation);
 
 	const connectionID = ConnectionHandler.getConnectionID(
-		data.organization.id, // passed as input to the mutation/subscription
+		data.organization.id,
 		"OrganizationJobsListInternalFragment_jobs",
+		[],
 	);
 
 	function handleDeleteJob() {
@@ -69,6 +75,7 @@ export default function DeleteJobModal({
 				onClose();
 				if (response.deleteJob.__typename === "Job") {
 					// handle success
+					router.push(links.organizationDetailJobs(params.slug));
 				} else if (response.deleteJob.__typename === "JobNotFoundError") {
 					addToast({
 						description: "An unexpected error occurred. Please try again.",
