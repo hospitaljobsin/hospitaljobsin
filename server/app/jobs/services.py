@@ -13,6 +13,7 @@ from app.jobs.documents import (
     Job,
     JobApplicant,
     JobApplicationForm,
+    JobMetric,
     SavedJob,
 )
 from app.jobs.exceptions import (
@@ -26,6 +27,7 @@ from app.jobs.exceptions import (
 from app.jobs.repositories import (
     JobApplicantRepo,
     JobApplicationFormRepo,
+    JobMetricRepo,
     JobRepo,
     SavedJobRepo,
 )
@@ -80,11 +82,26 @@ class JobService:
         organization_repo: OrganizationRepo,
         organization_member_service: OrganizationMemberService,
         job_application_form_repo: JobApplicationFormRepo,
+        job_metric_repo: JobMetricRepo,
     ) -> None:
         self._job_repo = job_repo
         self._organization_repo = organization_repo
         self._organization_member_service = organization_member_service
         self._job_application_form_repo = job_application_form_repo
+        self._job_metric_repo = job_metric_repo
+
+    async def log_view(self, job_id: str) -> Result[JobMetric, JobNotFoundError]:
+        try:
+            job_id = ObjectId(job_id)
+        except InvalidId:
+            return Err(JobNotFoundError())
+        existing_job = await self._job_repo.get(job_id=job_id)
+        if existing_job is None:
+            return Err(JobNotFoundError())
+
+        metric = await self._job_metric_repo.create(job_id=job_id, event_type="view")
+
+        return Ok(metric)
 
     async def create(
         self,

@@ -1,5 +1,5 @@
 import secrets
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Literal
 
 from beanie import DeleteRules, PydanticObjectId, WriteRules
@@ -8,7 +8,7 @@ from bson import ObjectId
 
 from app.accounts.documents import Account
 from app.base.models import Address
-from app.core.constants import JobApplicantStatus
+from app.core.constants import JobApplicantStatus, JobMetricEventType
 from app.database.paginator import PaginatedResult, Paginator
 from app.organizations.documents import Organization
 
@@ -18,6 +18,7 @@ from .documents import (
     Job,
     JobApplicant,
     JobApplicationForm,
+    JobMetric,
     SavedJob,
 )
 
@@ -398,3 +399,14 @@ class JobApplicationFormRepo:
         return [
             application_form_by_id.get(PydanticObjectId(job_id)) for job_id in job_ids
         ]
+
+
+class JobMetricRepo:
+    async def create(self, job_id: str, event_type: JobMetricEventType) -> JobMetric:
+        """Create a new job metric."""
+        job_metric = JobMetric(
+            event_type=event_type,
+            timestamp=datetime.now(UTC),
+            job_id=job_id,
+        )
+        return await job_metric.insert(link_rule=WriteRules.DO_NOTHING)

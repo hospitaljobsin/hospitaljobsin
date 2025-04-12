@@ -2,14 +2,21 @@ from datetime import UTC, datetime
 from typing import Annotated, ClassVar, Literal
 
 import pymongo
-from beanie import Document, Indexed, Link
+from beanie import (
+    Document,
+    Granularity,
+    Indexed,
+    Link,
+    PydanticObjectId,
+    TimeSeriesConfig,
+)
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
 from pymongo.operations import SearchIndexModel
 
 from app.accounts.documents import Account
 from app.base.models import Address
-from app.core.constants import JobApplicantStatus
+from app.core.constants import JobApplicantStatus, JobMetricEventType
 from app.organizations.documents import Organization
 
 
@@ -134,3 +141,17 @@ class JobApplicant(Document):
 
     class Settings:
         name = "job_applicants"
+
+
+class JobMetric(Document):
+    event_type: JobMetricEventType
+    timestamp: datetime = Field(default_factory=datetime.now)
+    job_id: PydanticObjectId
+
+    class Settings:
+        name = "job_metrics"
+        timeseries = TimeSeriesConfig(
+            time_field="timestamp",  #  Required
+            meta_field="job_id",  #  Optional
+            granularity=Granularity.minutes,  #  Optional
+        )

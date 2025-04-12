@@ -39,6 +39,7 @@ from app.jobs.dataloaders import (
 from app.jobs.repositories import (
     JobApplicantRepo,
     JobApplicationFormRepo,
+    JobMetricRepo,
     JobRepo,
     SavedJobRepo,
 )
@@ -104,6 +105,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(JobApplicationFormService))
     container.register(aioinject.Scoped(OrganizationInviteService))
     container.register(aioinject.Scoped(JobApplicantService))
+    container.register(aioinject.Singleton(JobMetricRepo))
     container.register(aioinject.Scoped(create_account_by_id_dataloader))
     container.register(aioinject.Scoped(create_profile_by_id_dataloader))
     container.register(aioinject.Scoped(create_job_by_id_dataloader))

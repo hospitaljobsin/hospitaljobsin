@@ -50,3 +50,7 @@ TwoFactorProvider = Literal["authenticator",]
 JobApplicantStatus = Literal[
     "applied", "shortlisted", "interviewed", "onhold", "offered"
 ]
+
+
+# Job metrics
+JobMetricEventType = Literal["view", "impression"]

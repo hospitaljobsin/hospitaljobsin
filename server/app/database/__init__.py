@@ -19,6 +19,7 @@ from app.jobs.documents import (
     Job,
     JobApplicant,
     JobApplicationForm,
+    JobMetric,
     SavedJob,
 )
 from app.organizations.documents import (
@@ -66,6 +67,7 @@ async def initialize_database(database_url: str) -> AsyncGenerator[None, None]:
                 Job,
                 JobApplicant,
                 JobApplicationForm,
+                JobMetric,
                 Account,
                 Profile,
                 SavedJob,
