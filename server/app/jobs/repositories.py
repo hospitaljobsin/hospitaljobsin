@@ -6,6 +6,7 @@ from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.operators import And, In
 from bson import ObjectId
 
+from app.accounts.documents import Account
 from app.base.models import Address
 from app.core.constants import JobApplicationStatus
 from app.database.paginator import PaginatedResult, Paginator
@@ -289,6 +290,21 @@ class JobApplicationRepo:
             JobApplication.status == status,
         ).count()
 
+    async def create(
+        self,
+        account: Account,
+        job: Job,
+        application_fields: list[ApplicationField],
+    ) -> JobApplication:
+        """Create a new job application."""
+        application = JobApplication(
+            job=job,
+            account=account,
+            status="applied",
+            application_fields=application_fields,
+        )
+        return await application.insert(link_rule=WriteRules.DO_NOTHING)
+
 
 class JobApplicationFormRepo:
     async def get(self, job_id: ObjectId) -> JobApplicationForm | None:
@@ -315,3 +331,19 @@ class JobApplicationFormRepo:
         """Update the job application form."""
         job_application_form.fields = fields
         return await job_application_form.save(link_rule=WriteRules.DO_NOTHING)
+
+    async def get_many_by_ids(
+        self, job_ids: list[ObjectId]
+    ) -> list[JobApplicationForm | None]:
+        """Get multiple application forms by IDs."""
+        application_forms = await JobApplicationForm.find(
+            In(JobApplicationForm.job.id, job_ids)
+        ).to_list()
+        application_form_by_id = {
+            application_form.job.ref.id: application_form
+            for application_form in application_forms
+        }
+
+        return [
+            application_form_by_id.get(PydanticObjectId(job_id)) for job_id in job_ids
+        ]

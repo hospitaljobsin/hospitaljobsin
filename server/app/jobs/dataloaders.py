@@ -6,9 +6,9 @@ from app.core.dataloaders import (
     transform_valid_object_id,
     transform_valid_object_id_tuple,
 )
-from app.jobs.repositories import JobRepo, SavedJobRepo
+from app.jobs.repositories import JobApplicationFormRepo, JobRepo, SavedJobRepo
 
-from .documents import Job
+from .documents import Job, JobApplicationForm
 
 type JobByIdLoader = DataLoader[str, Job | None]
 
@@ -19,6 +19,19 @@ async def create_job_by_id_dataloader(
     """Create a dataloader to load jobs by their IDs."""
     return create_dataloader(
         repo_method=job_repo.get_many_by_ids,
+        key_transform=transform_valid_object_id,
+    )
+
+
+type JobApplicationFormByIdLoader = DataLoader[str, JobApplicationForm | None]
+
+
+async def create_job_application_form_by_id_dataloader(
+    job_application_form_repo: JobApplicationFormRepo,
+) -> JobApplicationFormByIdLoader:
+    """Create a dataloader to load jobs by their IDs."""
+    return create_dataloader(
+        repo_method=job_application_form_repo.get_many_by_ids,
         key_transform=transform_valid_object_id,
     )
 

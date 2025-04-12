@@ -18,7 +18,12 @@ from app.jobs.exceptions import (
     OrganizationNotFoundError,
     SavedJobNotFoundError,
 )
-from app.jobs.services import JobApplicationFormService, JobService, SavedJobService
+from app.jobs.services import (
+    JobApplicationFormService,
+    JobApplicationService,
+    JobService,
+    SavedJobService,
+)
 from app.organizations.exceptions import (
     OrganizationAuthorizationError,
 )
@@ -29,10 +34,13 @@ from app.organizations.types import (
 
 from .types import (
     ApplicationFieldInputType,
+    CreateJobApplicationPayload,
+    CreateJobApplicationSuccessType,
     CreateJobPayload,
     CreateJobSuccessType,
     JobApplicationFormNotFoundErrorType,
     JobApplicationFormType,
+    JobApplicationType,
     JobEdgeType,
     JobNotFoundErrorType,
     JobNotPublishedErrorType,
@@ -538,5 +546,57 @@ class JobMutation:
                         return JobNotPublishedErrorType()
             case Ok(job):
                 return JobType.marshal(job)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreateJobApplicationPayload,
+        description="Create a job application.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def create_job_application(
+        self,
+        info: AuthInfo,
+        job_application_service: Annotated[JobApplicationService, Inject],
+        *,
+        job_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the job to apply for.",
+            ),
+        ],
+        application_fields: Annotated[
+            list[ApplicationFieldInputType],
+            strawberry.argument(
+                description="The fields required by the job application form.",
+            ),
+        ],
+    ) -> CreateJobApplicationPayload:
+        """Create a job application."""
+        match await job_application_service.create(
+            account=info.context["current_user"],
+            job_id=job_id.node_id,
+            application_fields=[
+                ApplicationFieldInputType.to_document(field)
+                for field in application_fields
+            ],
+        ):
+            case Err(error):
+                match error:
+                    case JobNotFoundError():
+                        return JobNotFoundErrorType()
+                    case JobNotPublishedError():
+                        return JobNotPublishedErrorType()
+            case Ok(job_application):
+                return CreateJobApplicationSuccessType(
+                    job_application=JobApplicationType.marshal(job_application)
+                )
             case _ as unreachable:
                 assert_never(unreachable)

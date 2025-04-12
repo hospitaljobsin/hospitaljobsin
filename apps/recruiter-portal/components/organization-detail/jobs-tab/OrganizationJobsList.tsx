@@ -112,18 +112,18 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 				<div className="p-4 rounded-full bg-primary/10">
 					<BriefcaseBusiness className="w-8 h-8 text-primary" />
 				</div>
-				<div className="flex flex-col items-center gap-1.5">
+				<div className="flex flex-col items-center gap-4">
 					<h3 className="font-medium text-lg">No jobs found</h3>
+					<Button
+						as={Link}
+						href={links.organizationCreateJob(slug)}
+						color="primary"
+						startContent={<Plus size={25} />}
+						className="w-full sm:w-auto"
+					>
+						Add a job
+					</Button>
 				</div>
-				<Button
-					as={Link}
-					href={links.organizationCreateJob(slug)}
-					color="primary"
-					startContent={<Plus size={25} />}
-					className="w-full sm:w-auto"
-				>
-					Add a job
-				</Button>
 			</div>
 		);
 	}

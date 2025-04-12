@@ -124,9 +124,7 @@ class JobApplication(Document):
     account: Link[Account]
     job: Link[Job]
     status: JobApplicationStatus
-    application_form_data: dict | None = (
-        None  # custom data that is collected via appliaction forms
-    )
+    application_fields: list[ApplicationField]
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     class Settings:

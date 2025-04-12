@@ -31,6 +31,7 @@ from app.core.recaptcha import create_recaptcha_verifier
 from app.core.templates import create_jinja2_environment
 from app.dataloaders import create_dataloaders
 from app.jobs.dataloaders import (
+    create_job_application_form_by_id_dataloader,
     create_job_by_id_dataloader,
     create_job_by_slug_dataloader,
     create_saved_job_by_id_dataloader,
@@ -105,5 +106,6 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_organization_by_id_dataloader))
     container.register(aioinject.Scoped(create_organization_by_slug_dataloader))
     container.register(aioinject.Scoped(create_organization_invite_by_token_dataloader))
+    container.register(aioinject.Scoped(create_job_application_form_by_id_dataloader))
     container.register(aioinject.Scoped(create_dataloaders))
     return container

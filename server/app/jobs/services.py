@@ -7,7 +7,13 @@ from result import Err, Ok, Result
 
 from app.accounts.documents import Account
 from app.base.models import Address
-from app.jobs.documents import ApplicationField, Job, JobApplicationForm, SavedJob
+from app.jobs.documents import (
+    ApplicationField,
+    Job,
+    JobApplication,
+    JobApplicationForm,
+    SavedJob,
+)
 from app.jobs.exceptions import (
     JobApplicationFormNotFoundError,
     JobNotFoundError,
@@ -15,7 +21,12 @@ from app.jobs.exceptions import (
     OrganizationNotFoundError,
     SavedJobNotFoundError,
 )
-from app.jobs.repositories import JobApplicationFormRepo, JobRepo, SavedJobRepo
+from app.jobs.repositories import (
+    JobApplicationFormRepo,
+    JobApplicationRepo,
+    JobRepo,
+    SavedJobRepo,
+)
 from app.organizations.exceptions import (
     OrganizationAuthorizationError,
 )
@@ -274,3 +285,41 @@ class JobApplicationFormService:
                 fields=fields,
             )
         return Ok((existing_application_form, existing_job))
+
+
+class JobApplicationService:
+    def __init__(
+        self,
+        job_repo: JobRepo,
+        job_application_repo: JobApplicationRepo,
+        organization_member_service: OrganizationMemberService,
+    ) -> None:
+        self._job_repo = job_repo
+        self._organization_member_service = organization_member_service
+        self._job_application_repo = job_application_repo
+
+    async def create(
+        self,
+        account: Account,
+        job_id: str,
+        application_fields: list[ApplicationField],
+    ) -> Result[JobApplication, JobNotFoundError | JobNotPublishedError]:
+        """Create a job application."""
+        try:
+            job_id = ObjectId(job_id)
+        except InvalidId:
+            return Err(JobNotFoundError())
+        existing_job = await self._job_repo.get(job_id=job_id)
+        if existing_job is None:
+            return Err(JobNotFoundError())
+
+        if not existing_job.is_active:
+            return Err(JobNotPublishedError())
+
+        job_application = await self._job_application_repo.create(
+            job=existing_job,
+            account=account,
+            application_fields=application_fields,
+        )
+
+        return Ok(job_application)

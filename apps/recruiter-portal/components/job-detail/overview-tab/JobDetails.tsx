@@ -1,9 +1,8 @@
-import type { JobDetailsFragment$key } from "@/__generated__/JobDetailsFragment.graphql";
 import type {
-	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
+	JobDetailsFragment$key,
 	JobType,
 	WorkMode,
-} from "@/__generated__/JobDetailsInternalFragment.graphql";
+} from "@/__generated__/JobDetailsFragment.graphql";
 import { dateFormat } from "@/lib/intl";
 import links from "@/lib/links";
 import {
@@ -30,28 +29,11 @@ import {
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { graphql, useFragment } from "react-relay";
-import invariant from "tiny-invariant";
 import { Markdown } from "tiptap-markdown";
 import JobControls from "./JobControls";
 
 const JobDetailsFragment = graphql`
-  fragment JobDetailsFragment on Query @argumentDefinitions(
-      slug: {
-        type: "String!",
-      }
-    ) {
-    job(slug: $slug) {
-      __typename
-      ... on Job {
-        ...JobDetailsInternalFragment
-      }
-     
-    }
-  }
-`;
-
-const JobDetailsInternalFragment = graphql`
-  fragment JobDetailsInternalFragment on Job {
+  fragment JobDetailsFragment on Job {
     title
     description
     slug
@@ -89,12 +71,7 @@ export default function JobDetails({
 	rootQuery,
 }: { rootQuery: JobDetailsFragment$key }) {
 	const params = useParams<{ slug: string; jobSlug: string }>();
-	const root = useFragment(JobDetailsFragment, rootQuery);
-	invariant(root.job.__typename === "Job", "Expected 'Job' node type");
-	const data = useFragment<JobDetailsInternalFragmentType>(
-		JobDetailsInternalFragment,
-		root.job,
-	);
+	const data = useFragment(JobDetailsFragment, rootQuery);
 
 	const editor = useEditor({
 		extensions: [

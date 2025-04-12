@@ -56,8 +56,8 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 					}
 				/>
 				<Tab
-					key={links.organizationDetailJobs(params.slug)}
-					href={links.organizationDetailJobs(params.slug)}
+					key={links.jobDetailApplicants(params.slug, params.jobSlug)}
+					href={links.jobDetailApplicants(params.slug, params.jobSlug)}
 					title={
 						<div className="flex items-center space-x-2">
 							<Users />

@@ -9,6 +9,7 @@ aaa
 - we can add other tools too, like showing current applications, saved jobs etcaaa
 
 # TODO- recruiter portal
+- add job delete button (need sudo mode)
 - list applications
 - show applicant detail view
     - show applicant's form data

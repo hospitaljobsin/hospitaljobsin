@@ -106,7 +106,7 @@ mutation JobEditFormMutation(
 				...JobDetailHeaderJobFragment
 				...JobTabsFragment
 				...JobControlsFragment
-				...JobDetailsInternalFragment
+				...JobDetailsFragment
 				...JobFragment
 				...JobEditFormFragment
             }
