@@ -333,14 +333,33 @@ class JobType(BaseNodeType[Job]):
         return saved_job is not None
 
     @strawberry.field(  # type: ignore[misc]
+        description="Whether the current user has applied to the job already.",
+    )
+    @inject
+    async def is_applied(
+        self, info: Info, job_applicant_repo: Injected[JobApplicantRepo]
+    ) -> bool:
+        """Get the number of applications for the job."""
+        current_user = info.context["current_user"]
+        if current_user is None:
+            return False
+
+        return (
+            await job_applicant_repo.get(
+                account_id=current_user.id, job_id=ObjectId(self.id)
+            )
+            is not None
+        )
+
+    @strawberry.field(  # type: ignore[misc]
         description="The number of applications for the job.",
     )
     @inject
     async def application_count(
-        self, info: Info, job_application_repo: Injected[JobApplicantRepo]
+        self, job_applicant_repo: Injected[JobApplicantRepo]
     ) -> int:
         """Get the number of applications for the job."""
-        return await job_application_repo.get_count_by_job_id(
+        return await job_applicant_repo.get_count_by_job_id(
             job_id=ObjectId(self.id), status="applied"
         )
 
@@ -604,19 +623,33 @@ UpdateJobPayload = Annotated[
 
 
 @strawberry.type(
-    name="CreateJobApplicationSuccess",
+    name="CreateJobApplicantSuccess",
     description="Used when a job application is created successfully.",
 )
-class CreateJobApplicationSuccessType:
+class CreateJobApplicantSuccessType:
     job_applicant: JobApplicantType = strawberry.field(
         description="The created job application.",
     )
 
 
-CreateJobApplicationPayload = Annotated[
-    CreateJobApplicationSuccessType | JobNotFoundErrorType | JobNotPublishedErrorType,
+@strawberry.type(
+    name="JobApplicantAlreadyExistsError",
+    description="Used when the job applicant already exists.",
+)
+class JobApplicantAlreadyExistsErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Job applicant already exists!",
+    )
+
+
+CreateJobApplicantPayload = Annotated[
+    CreateJobApplicantSuccessType
+    | JobNotFoundErrorType
+    | JobNotPublishedErrorType
+    | JobApplicantAlreadyExistsErrorType,
     strawberry.union(
-        name="CreateJobApplicationPayload",
+        name="CreateJobApplicantPayload",
         description="The create job application payload.",
     ),
 ]

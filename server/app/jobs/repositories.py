@@ -281,6 +281,13 @@ class SavedJobRepo:
 
 
 class JobApplicantRepo:
+    async def get(self, account_id: ObjectId, job_id: ObjectId) -> JobApplicant | None:
+        """Get job applicant by account ID and job ID."""
+        return await JobApplicant.find_one(
+            JobApplicant.account.id == account_id,
+            JobApplicant.job.id == job_id,
+        )
+
     async def get_count_by_job_id(
         self,
         job_id: ObjectId,

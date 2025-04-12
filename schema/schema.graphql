@@ -176,10 +176,10 @@ type AuthenticatorNotEnabledError implements Error {
 }
 
 """The create job application payload."""
-union CreateJobApplicationPayload = CreateJobApplicationSuccess | JobNotFoundError | JobNotPublishedError
+union CreateJobApplicantPayload = CreateJobApplicantSuccess | JobNotFoundError | JobNotPublishedError | JobApplicantAlreadyExistsError
 
 """Used when a job application is created successfully."""
-type CreateJobApplicationSuccess {
+type CreateJobApplicantSuccess {
   """The created job application."""
   jobApplicant: JobApplicant!
 }
@@ -515,6 +515,9 @@ type Job implements Node {
   """Whether the job is saved by the current user."""
   isSaved: Boolean!
 
+  """Whether the current user has applied to the job already."""
+  isApplied: Boolean!
+
   """The number of applications for the job."""
   applicationCount: Int!
 
@@ -535,6 +538,12 @@ type JobApplicant implements Node {
 
   """The fields of the job application."""
   applicationFields: [ApplicationField!]!
+}
+
+"""Used when the job applicant already exists."""
+type JobApplicantAlreadyExistsError implements Error {
+  """Human readable error message."""
+  message: String!
 }
 
 """The status of the job application."""
@@ -1032,14 +1041,14 @@ type Mutation {
     jobId: ID!
   ): UnpublishJobPayload! @isAuthenticated
 
-  """Create a job application."""
+  """Create a job applicant."""
   createJobApplication(
     """The ID of the job to apply for."""
     jobId: ID!
 
-    """The fields required by the job application form."""
+    """The fields required by the job's application form."""
     applicantFields: [ApplicantFieldInput!]!
-  ): CreateJobApplicationPayload! @isAuthenticated
+  ): CreateJobApplicantPayload! @isAuthenticated
 
   """Update the current user's profile personal details."""
   updateProfilePersonalDetails(

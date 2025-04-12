@@ -26,6 +26,7 @@ const PageJobApplyMetadataFragment = graphql`
       ... on Job {
         title
         description
+		isApplied
         organization {
             logoUrl
         }
@@ -58,7 +59,8 @@ export async function generateMetadata({
 		preloadedQuery.data,
 	);
 
-	if (data.job.__typename !== "Job") {
+	// only users who have not applied can access this page
+	if (data.job.__typename !== "Job" || data.job.isApplied) {
 		return {
 			title: "Job Not found",
 			description: "The job you are looking for does not exist",
@@ -91,7 +93,8 @@ export default async function JobApplyPage({
 		preloadedQuery.data,
 	);
 
-	if (data.job.__typename !== "Job") {
+	// only users who have not applied can access this page
+	if (data.job.__typename !== "Job" || data.job.isApplied) {
 		notFound();
 	}
 

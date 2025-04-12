@@ -68,6 +68,7 @@ const JobDetailsInternalFragment = graphql`
     minExperience
     maxExperience
     createdAt
+	isApplied
     organization @required(action: THROW) {
       slug
       name
@@ -227,8 +228,9 @@ export default function JobDetails({
 							href={links.jobDetailApply(data.slug)}
 							size="lg"
 							className="w-full sm:w-auto"
+							isDisabled={data.isApplied}
 						>
-							Apply now
+							{data.isApplied ? "Applied" : "Apply now"}
 						</Button>
 					</div>
 				</CardHeader>

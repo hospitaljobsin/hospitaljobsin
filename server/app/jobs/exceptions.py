@@ -20,3 +20,7 @@ class JobApplicationFormNotFoundError:
 
 class JobNotPublishedError:
     """Raised when a job is not published."""
+
+
+class JobApplicantAlreadyExistsError:
+    """Raised when a job applicant already exists."""

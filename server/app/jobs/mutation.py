@@ -12,6 +12,7 @@ from app.auth.permissions import IsAuthenticated
 from app.base.types import AddressInputType
 from app.context import AuthInfo
 from app.jobs.exceptions import (
+    JobApplicantAlreadyExistsError,
     JobApplicationFormNotFoundError,
     JobNotFoundError,
     JobNotPublishedError,
@@ -35,10 +36,11 @@ from app.organizations.types import (
 from .types import (
     ApplicantFieldInputType,
     ApplicationFieldInputType,
-    CreateJobApplicationPayload,
-    CreateJobApplicationSuccessType,
+    CreateJobApplicantPayload,
+    CreateJobApplicantSuccessType,
     CreateJobPayload,
     CreateJobSuccessType,
+    JobApplicantAlreadyExistsErrorType,
     JobApplicantType,
     JobApplicationFormNotFoundErrorType,
     JobApplicationFormType,
@@ -551,8 +553,8 @@ class JobMutation:
                 assert_never(unreachable)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=CreateJobApplicationPayload,
-        description="Create a job application.",
+        graphql_type=CreateJobApplicantPayload,
+        description="Create a job applicant.",
         extensions=[
             PermissionExtension(
                 permissions=[
@@ -576,11 +578,11 @@ class JobMutation:
         applicant_fields: Annotated[
             list[ApplicantFieldInputType],
             strawberry.argument(
-                description="The fields required by the job application form.",
+                description="The fields required by the job's application form.",
             ),
         ],
-    ) -> CreateJobApplicationPayload:
-        """Create a job application."""
+    ) -> CreateJobApplicantPayload:
+        """Create a job applicant."""
         match await job_application_service.create(
             account=info.context["current_user"],
             job_id=job_id.node_id,
@@ -594,8 +596,10 @@ class JobMutation:
                         return JobNotFoundErrorType()
                     case JobNotPublishedError():
                         return JobNotPublishedErrorType()
+                    case JobApplicantAlreadyExistsError():
+                        return JobApplicantAlreadyExistsErrorType()
             case Ok(job_application):
-                return CreateJobApplicationSuccessType(
+                return CreateJobApplicantSuccessType(
                     job_applicant=JobApplicantType.marshal(job_application)
                 )
             case _ as unreachable:

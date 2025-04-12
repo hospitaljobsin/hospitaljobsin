@@ -28,11 +28,11 @@ const JobApplyFormFragment = graphql`
   }
 `;
 
-const CreateJobApplicationMutation = graphql`
+const CreateJobApplicantMutation = graphql`
   mutation JobApplyFormMutation($jobId: ID!, $applicantFields: [ApplicantFieldInput!]!) {
     createJobApplication(jobId: $jobId, applicantFields: $applicantFields) {
       __typename
-      ... on CreateJobApplicationSuccess {
+      ... on CreateJobApplicantSuccess {
         __typename
       }
 
@@ -41,6 +41,10 @@ const CreateJobApplicationMutation = graphql`
       }
 
       ... on JobNotPublishedError {
+        __typename
+      }
+
+      ... on JobApplicantAlreadyExistsError {
         __typename
       }
     }
@@ -63,7 +67,7 @@ export default function JobApplyForm({
 	const router = useRouter();
 	const data = useFragment(JobApplyFormFragment, rootQuery);
 	const [commitMutation, isMutationInFlight] =
-		useMutation<JobApplyFormMutation>(CreateJobApplicationMutation);
+		useMutation<JobApplyFormMutation>(CreateJobApplicantMutation);
 
 	const {
 		handleSubmit,
@@ -86,13 +90,15 @@ export default function JobApplyForm({
 			onCompleted(response) {
 				if (
 					response.createJobApplication.__typename ===
-					"CreateJobApplicationSuccess"
+					"CreateJobApplicantSuccess"
 				) {
 					// Handle success
 					router.push(links.jobDetail(data.slug));
 				} else if (
 					response.createJobApplication.__typename === "JobNotFoundError" ||
-					response.createJobApplication.__typename === "JobNotPublishedError"
+					response.createJobApplication.__typename === "JobNotPublishedError" ||
+					response.createJobApplication.__typename ===
+						"JobApplicantAlreadyExistsError"
 				) {
 					// Handle job not found error
 					addToast({

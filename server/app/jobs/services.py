@@ -16,6 +16,7 @@ from app.jobs.documents import (
     SavedJob,
 )
 from app.jobs.exceptions import (
+    JobApplicantAlreadyExistsError,
     JobApplicationFormNotFoundError,
     JobNotFoundError,
     JobNotPublishedError,
@@ -310,7 +311,10 @@ class JobApplicantService:
         account: Account,
         job_id: str,
         applicant_fields: list[ApplicantField],
-    ) -> Result[JobApplicant, JobNotFoundError | JobNotPublishedError]:
+    ) -> Result[
+        JobApplicant,
+        JobNotFoundError | JobNotPublishedError | JobApplicantAlreadyExistsError,
+    ]:
         """Create a job application."""
         try:
             job_id = ObjectId(job_id)
@@ -322,6 +326,14 @@ class JobApplicantService:
 
         if not existing_job.is_active:
             return Err(JobNotPublishedError())
+
+        # check if user has already applied here
+        existing_job_application = await self._job_application_repo.get(
+            account_id=account.id, job_id=existing_job.id
+        )
+
+        if existing_job_application is not None:
+            return Err(JobApplicantAlreadyExistsError())
 
         job_application = await self._job_application_repo.create(
             job=existing_job,
