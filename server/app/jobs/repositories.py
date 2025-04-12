@@ -153,11 +153,12 @@ class JobRepo:
             paginate_by="id",
         )
 
-        search_criteria = Job.find(Job.is_active == True)
+        search_criteria = Job.find(Job.is_active == True)  # noqa: E712
 
         if search_term:
             search_criteria = Job.find(
-                Job.is_active == True, {"$text": {"$search": search_term}}
+                Job.is_active == True,  # noqa: E712
+                {"$text": {"$search": search_term}},
             )
 
         return await paginator.paginate(
