@@ -80,11 +80,12 @@ export default function DeleteInviteModal({
 				connections: [invitesConnectionId],
 			},
 			onCompleted(response) {
+				onClose();
 				if (
 					response.deleteOrganizationInvite.__typename ===
 					"OrganizationInviteEdge"
 				) {
-					onClose();
+					// handle success
 				} else if (
 					response.deleteOrganizationInvite.__typename ===
 					"OrganizationNotFoundError"
