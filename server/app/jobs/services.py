@@ -90,16 +90,14 @@ class JobService:
         self._job_application_form_repo = job_application_form_repo
         self._job_metric_repo = job_metric_repo
 
-    async def log_view(self, job_id: str) -> Result[JobMetric, JobNotFoundError]:
-        try:
-            job_id = ObjectId(job_id)
-        except InvalidId:
-            return Err(JobNotFoundError())
-        existing_job = await self._job_repo.get(job_id=job_id)
+    async def log_view(self, slug: str) -> Result[JobMetric, JobNotFoundError]:
+        existing_job = await self._job_repo.get_by_slug(slug=slug)
         if existing_job is None:
             return Err(JobNotFoundError())
 
-        metric = await self._job_metric_repo.create(job_id=job_id, event_type="view")
+        metric = await self._job_metric_repo.create(
+            job_id=existing_job.id, event_type="view"
+        )
 
         return Ok(metric)
 

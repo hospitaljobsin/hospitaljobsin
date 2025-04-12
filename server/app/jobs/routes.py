@@ -17,15 +17,15 @@ class LogJobViewResult(BaseModel):
 
 
 @jobs_router.post(
-    "/{job_id}/view",
+    "/{slug}/view",
     status_code=HTTPStatus.ACCEPTED,
 )
 @inject
 async def log_job_view(
-    job_id: str,
+    slug: str,
     background_tasks: BackgroundTasks,
     job_service: Injected[JobService],
 ) -> LogJobViewResult:
     """Log a job view."""
-    background_tasks.add_task(job_service.log_view, job_id=job_id)
+    background_tasks.add_task(job_service.log_view, slug=slug)
     return LogJobViewResult(status="OK")
