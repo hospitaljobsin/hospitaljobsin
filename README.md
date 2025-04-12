@@ -1,6 +1,6 @@
 # TODO- seeker portal
 
-- add job apply feature
+- add applied jobs list (linkedin has both applied and saved jobs on the same page- differentiated by a filter)
 
 - we need a separate resource that can return the searched jobs
 aaa
@@ -9,6 +9,7 @@ aaa
 - we can add other tools too, like showing current applications, saved jobs etcaaa
 
 # TODO- recruiter portal
+- add time based stats- number of views, impressions
 - add select option type applicant field
 - add option to use screening questions and apply via the app (called EasyApply on Linkedin), or redirect to a custom application link (cannot be changed after job is published)
 - if you have an external application link, you CANNOT see applicants in dashboard. this feature cannot be changed after creating the job.
