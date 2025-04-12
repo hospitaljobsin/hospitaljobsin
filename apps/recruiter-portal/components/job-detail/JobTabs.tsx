@@ -24,12 +24,12 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 	invariant(organization, "Expected 'Organization' node type");
 
 	function getSelectedKey(pathname: string) {
-		// if (pathname === links.organizationCreateJob(params.slug)) {
-		// 	return links.organizationDetailJobs(params.slug);
-		// }
-		// if (pathname === links.organizationDetailMemberInvites(params.slug)) {
-		// 	return links.organizationDetailMembers(params.slug);
-		// }
+		if (
+			pathname ===
+			links.jobDetailSettingsApplicationForm(params.slug, params.jobSlug)
+		) {
+			return links.jobDetailSettings(params.slug, params.jobSlug);
+		}
 		return pathname;
 	}
 

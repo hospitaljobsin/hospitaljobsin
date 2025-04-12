@@ -200,7 +200,7 @@ class JobRepo:
         )
 
     async def delete(self, job: Job) -> None:
-        """Delete a job by ID."""
+        """Delete a job."""
         await job.delete()
 
 

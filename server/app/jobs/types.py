@@ -653,3 +653,12 @@ CreateJobApplicantPayload = Annotated[
         description="The create job application payload.",
     ),
 ]
+
+
+DeleteJobPayload = Annotated[
+    JobType | JobNotFoundErrorType | OrganizationAuthorizationErrorType,
+    strawberry.union(
+        name="DeleteJobPayload",
+        description="The delete job payload.",
+    ),
+]

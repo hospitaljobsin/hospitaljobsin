@@ -197,13 +197,17 @@ class JobService:
     async def publish(
         self,
         account: Account,
-        job_id: ObjectId,
+        job_id: str,
     ) -> Result[
         Job,
         JobNotFoundError
         | OrganizationAuthorizationError
         | JobApplicationFormNotFoundError,
     ]:
+        try:
+            job_id = ObjectId(job_id)
+        except InvalidId:
+            return Err(JobNotFoundError())
         existing_job = await self._job_repo.get(job_id=job_id)
         if existing_job is None:
             return Err(JobNotFoundError())
@@ -224,11 +228,15 @@ class JobService:
     async def unpublish(
         self,
         account: Account,
-        job_id: ObjectId,
+        job_id: str,
     ) -> Result[
         Job,
         JobNotFoundError | OrganizationAuthorizationError | JobNotPublishedError,
     ]:
+        try:
+            job_id = ObjectId(job_id)
+        except InvalidId:
+            return Err(JobNotFoundError())
         existing_job = await self._job_repo.get(job_id=job_id)
         if existing_job is None:
             return Err(JobNotFoundError())
@@ -243,6 +251,32 @@ class JobService:
             return Err(JobNotPublishedError())
 
         existing_job = await self._job_repo.update_active(existing_job, is_active=False)
+
+        return Ok(existing_job)
+
+    async def delete(
+        self,
+        account: Account,
+        job_id: str,
+    ) -> Result[
+        Job,
+        JobNotFoundError | OrganizationAuthorizationError,
+    ]:
+        try:
+            job_id = ObjectId(job_id)
+        except InvalidId:
+            return Err(JobNotFoundError())
+        existing_job = await self._job_repo.get(job_id=job_id)
+        if existing_job is None:
+            return Err(JobNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=existing_job.organization.ref.id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        await self._job_repo.delete(existing_job)
 
         return Ok(existing_job)
 

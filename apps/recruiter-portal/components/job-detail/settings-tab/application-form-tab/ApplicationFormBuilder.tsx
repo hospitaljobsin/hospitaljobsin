@@ -5,7 +5,6 @@ import {
 	Card,
 	CardBody,
 	CardFooter,
-	CardHeader,
 	Checkbox,
 	Input,
 	addToast,
@@ -182,10 +181,11 @@ export default function ApplicationFormBuilder({
 
 	return (
 		<div className="w-full flex flex-col gap-6">
+			<h2 className="text-foreground-400 font-medium text-lg">
+				Update Application Form
+			</h2>
 			<Card fullWidth className="p-6 space-y-6" shadow="none">
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-					<CardHeader>Update Application Form</CardHeader>
-
 					<CardBody className="space-y-6 w-full">
 						<div className="space-y-6 w-full">
 							<div className="w-full flex flex-col gap-6 items-center">

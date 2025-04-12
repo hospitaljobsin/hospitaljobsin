@@ -129,6 +129,15 @@ input AddressInput {
   pincode: String
 }
 
+"""An applicant field belonging to a job applicant."""
+type ApplicantField {
+  """The name of the field."""
+  fieldName: String!
+
+  """The value of the field."""
+  fieldValue: String!
+}
+
 """An applicant field belonging to a job applicant input."""
 input ApplicantFieldInput {
   """The name of the field."""
@@ -238,6 +247,9 @@ scalar Date
 
 """The decline organization invite payload."""
 union DeclineOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
+
+"""The delete job payload."""
+union DeleteJobPayload = Job | JobNotFoundError | OrganizationAuthorizationError
 
 """The delete organization invite payload."""
 union DeleteOrganizationInvitePayload = OrganizationInviteEdge | OrganizationNotFoundError | OrganizationInviteNotFoundError | OrganizationAuthorizationError
@@ -537,7 +549,7 @@ type JobApplicant implements Node {
   status: JobApplicantStatus!
 
   """The fields of the job application."""
-  applicationFields: [ApplicationField!]!
+  applicantFields: [ApplicantField!]!
 }
 
 """Used when the job applicant already exists."""
@@ -1049,6 +1061,12 @@ type Mutation {
     """The fields required by the job's application form."""
     applicantFields: [ApplicantFieldInput!]!
   ): CreateJobApplicantPayload! @isAuthenticated
+
+  """Delete a job."""
+  deleteJob(
+    """The ID of the job to delete."""
+    jobId: ID!
+  ): DeleteJobPayload! @isAuthenticated @requiresSudoMode
 
   """Update the current user's profile personal details."""
   updateProfilePersonalDetails(

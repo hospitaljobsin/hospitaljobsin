@@ -8,7 +8,7 @@ from result import Err, Ok
 from strawberry import relay
 from strawberry.permission import PermissionExtension
 
-from app.auth.permissions import IsAuthenticated
+from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.base.types import AddressInputType
 from app.context import AuthInfo
 from app.jobs.exceptions import (
@@ -40,6 +40,7 @@ from .types import (
     CreateJobApplicantSuccessType,
     CreateJobPayload,
     CreateJobSuccessType,
+    DeleteJobPayload,
     JobApplicantAlreadyExistsErrorType,
     JobApplicantType,
     JobApplicationFormNotFoundErrorType,
@@ -602,5 +603,46 @@ class JobMutation:
                 return CreateJobApplicantSuccessType(
                     job_applicant=JobApplicantType.marshal(job_application)
                 )
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=DeleteJobPayload,
+        description="Delete a job.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    RequiresSudoMode(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def delete_job(
+        self,
+        info: AuthInfo,
+        job_service: Annotated[JobService, Inject],
+        *,
+        job_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the job to delete.",
+            ),
+        ],
+    ) -> DeleteJobPayload:
+        """Delete a job."""
+        match await job_service.delete(
+            account=info.context["current_user"],
+            job_id=job_id.node_id,
+        ):
+            case Err(error):
+                match error:
+                    case JobNotFoundError():
+                        return JobNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case Ok(job):
+                return JobType.marshal(job)
             case _ as unreachable:
                 assert_never(unreachable)
