@@ -13,8 +13,8 @@ export const JobFragment = graphql`
     title
     skills
     createdAt
-	applicationCount
-	vacancies
+    applicationCount
+    vacancies
   }
 `;
 

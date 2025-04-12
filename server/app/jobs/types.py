@@ -4,11 +4,12 @@ from enum import Enum
 from typing import TYPE_CHECKING, Annotated, Self
 
 import strawberry
-from aioinject import Injected
+from aioinject import Inject, Injected
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from strawberry import relay
 
+from app.accounts.types import AccountType
 from app.base.types import (
     AddressType,
     BaseConnectionType,
@@ -195,6 +196,10 @@ class JobApplicantStatusEnum(Enum):
     description="A job application for a posting.",
 )
 class JobApplicantType(BaseNodeType[JobApplicant]):
+    account: AccountType = strawberry.field(
+        description="The account of the job applicant.",
+    )
+
     status: JobApplicantStatusEnum = strawberry.field(
         description="The status of the job application.",
     )
@@ -207,12 +212,31 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
         """Marshal into a node instance."""
         return cls(
             id=str(job_applicant.id),
+            account=AccountType.marshal(job_applicant.account),
             status=JobApplicantStatusEnum[job_applicant.status.upper()],
             applicant_fields=[
                 ApplicantFieldType.marshal(field)
                 for field in job_applicant.applicant_fields
             ],
         )
+
+
+@strawberry.type(name="JobApplicantEdge")
+class JobApplicantEdgeType(BaseEdgeType[JobApplicantType, JobApplicant]):
+    @classmethod
+    def marshal(cls, job_applicant: JobApplicant) -> Self:
+        """Marshal into a edge instance."""
+        return cls(
+            node=JobApplicantType.marshal(job_applicant),
+            cursor=relay.to_base64(JobApplicantType, job_applicant.id),
+        )
+
+
+@strawberry.type(name="JobApplicantConnection")
+class JobApplicantConnectionType(
+    BaseConnectionType[JobApplicantType, JobApplicantEdgeType]
+):
+    pass
 
 
 @strawberry.type(
@@ -318,6 +342,59 @@ class JobType(BaseNodeType[Job]):
     )
     def has_experience_range(self) -> bool:
         return self.min_experience is not None and self.max_experience is not None
+
+    @strawberry.field(  # type: ignore[misc]
+        description="The applicants for the job.",
+    )
+    @inject
+    async def applicants(
+        self,
+        job_applicant_repo: Annotated[
+            JobApplicantRepo,
+            Inject,
+        ],
+        search_term: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The search (query) term",
+            ),
+        ] = None,
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
+    ) -> JobApplicantConnectionType:
+        """Return a paginated connection of invites for the organization."""
+        paginated_invites = await job_applicant_repo.get_all_by_job_id(
+            job_id=ObjectId(self.id),
+            search_term=search_term,
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
+            first=first,
+            last=last,
+        )
+
+        return JobApplicantConnectionType.marshal(paginated_invites)
 
     @strawberry.field(  # type: ignore[misc]
         description="Whether the job is saved by the current user.",

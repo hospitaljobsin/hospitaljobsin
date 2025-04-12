@@ -286,6 +286,8 @@ class JobApplicantRepo:
         return await JobApplicant.find_one(
             JobApplicant.account.id == account_id,
             JobApplicant.job.id == job_id,
+            fetch_links=True,
+            nesting_depth=1,
         )
 
     async def get_count_by_job_id(
@@ -313,6 +315,46 @@ class JobApplicantRepo:
             applicant_fields=applicant_fields,
         )
         return await application.insert(link_rule=WriteRules.DO_NOTHING)
+
+    async def get_all_by_job_id(
+        self,
+        job_id: ObjectId,
+        search_term: str | None = None,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[JobApplicant, ObjectId]:
+        """Get a paginated result of job applicants for the given job."""
+        paginator: Paginator[JobApplicant, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=SavedJob,
+            paginate_by="job.id",
+        )
+
+        search_criteria = JobApplicant.find(
+            JobApplicant.job.id == job_id,
+            fetch_links=True,
+            nesting_depth=1,
+        ).sort(-JobApplicant.id)
+
+        if search_term:
+            search_criteria = JobApplicant.find(
+                And(
+                    JobApplicant.job.id == job_id,
+                    {"$text": {"$search": search_term}},
+                ),
+                fetch_links=True,
+                nesting_depth=1,
+            ).sort(-JobApplicant.id)
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
 
 
 class JobApplicationFormRepo:

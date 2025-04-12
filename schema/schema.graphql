@@ -524,6 +524,24 @@ type Job implements Node {
   """Whether the job has an experience range."""
   hasExperienceRange: Boolean!
 
+  """The applicants for the job."""
+  applicants(
+    """The search (query) term"""
+    searchTerm: String = null
+
+    """Returns items before the given cursor."""
+    before: ID = null
+
+    """Returns items after the given cursor."""
+    after: ID = null
+
+    """How many items to return after the cursor?"""
+    first: Int = null
+
+    """How many items to return before the cursor?"""
+    last: Int = null
+  ): JobApplicantConnection!
+
   """Whether the job is saved by the current user."""
   isSaved: Boolean!
 
@@ -545,6 +563,9 @@ type JobApplicant implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
 
+  """The account of the job applicant."""
+  account: Account!
+
   """The status of the job application."""
   status: JobApplicantStatus!
 
@@ -556,6 +577,22 @@ type JobApplicant implements Node {
 type JobApplicantAlreadyExistsError implements Error {
   """Human readable error message."""
   message: String!
+}
+
+type JobApplicantConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [JobApplicantEdge!]!
+}
+
+type JobApplicantEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+
+  """The item at the end of the edge"""
+  node: JobApplicant!
 }
 
 """The status of the job application."""

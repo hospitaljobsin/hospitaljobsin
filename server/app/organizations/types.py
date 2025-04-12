@@ -286,7 +286,6 @@ class OrganizationType(BaseNodeType[Organization]):
         ] = None,
     ) -> InviteConnectionType:
         """Return a paginated connection of invites for the organization."""
-
         paginated_invites = await invite_repo.get_all_by_organization_id(
             organization_id=ObjectId(self.id),
             search_term=search_term,

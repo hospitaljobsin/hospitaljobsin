@@ -284,17 +284,18 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 						<div className="flex flex-col gap-2 flex-shrink-0">
 							<p className="text-tiny text-foreground-500">Organization Logo</p>
 							<div className="flex flex-col items-start gap-4">
-								<Image
-									src={
-										selectedLogo
-											? URL.createObjectURL(selectedLogo)
-											: data.logoUrl
-									}
-									alt="Organization Logo"
-									className="object-cover rounded-md border"
-									height={120}
-									width={120}
-								/>
+								<div className="relative w-28 h-28">
+									<Image
+										src={
+											selectedLogo
+												? URL.createObjectURL(selectedLogo)
+												: data.logoUrl
+										}
+										alt="Organization Logo"
+										className="object-cover rounded-md border"
+										fill
+									/>
+								</div>
 								<Button as="label" variant="bordered" size="sm">
 									Upload new logo
 									<input
