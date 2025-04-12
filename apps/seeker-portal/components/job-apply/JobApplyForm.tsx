@@ -1,7 +1,10 @@
 import type { JobApplyFormFragment$key } from "@/__generated__/JobApplyFormFragment.graphql";
 import type { JobApplyFormMutation } from "@/__generated__/JobApplyFormMutation.graphql";
-import { Button, Card, Input } from "@heroui/react";
+import links from "@/lib/links";
+import { useRouter } from "@bprogress/next/app";
+import { Button, Card, CardFooter, Input, addToast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";
@@ -9,6 +12,7 @@ import { z } from "zod";
 const JobApplyFormFragment = graphql`
   fragment JobApplyFormFragment on Job {
     id
+    slug
     title
     applicationForm {
       fields {
@@ -17,8 +21,9 @@ const JobApplyFormFragment = graphql`
         isRequired
       }
     }
-    organization {
+    organization @required(action: THROW) {
       name
+      logoUrl
     }
   }
 `;
@@ -55,6 +60,7 @@ export default function JobApplyForm({
 }: {
 	rootQuery: JobApplyFormFragment$key;
 }) {
+	const router = useRouter();
 	const data = useFragment(JobApplyFormFragment, rootQuery);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<JobApplyFormMutation>(CreateJobApplicationMutation);
@@ -77,6 +83,24 @@ export default function JobApplyForm({
 					fieldValue: field.fieldValue,
 				})),
 			},
+			onCompleted(response) {
+				if (
+					response.createJobApplication.__typename ===
+					"CreateJobApplicationSuccess"
+				) {
+					// Handle success
+					router.push(links.jobDetail(data.slug));
+				} else if (
+					response.createJobApplication.__typename === "JobNotFoundError" ||
+					response.createJobApplication.__typename === "JobNotPublishedError"
+				) {
+					// Handle job not found error
+					addToast({
+						description: "An unexpected error occurred. Please try again.",
+						color: "danger",
+					});
+				}
+			},
 		});
 	}
 
@@ -85,7 +109,17 @@ export default function JobApplyForm({
 			<h2 className="text-lg font-medium mt-1 text-foreground-400">
 				Apply for {data.title}
 			</h2>
-			<h3>In {data.organization?.name}</h3>
+			<div className="w-full flex items-center gap-4 text-foreground-400">
+				<div className="relative w-8 h-8">
+					<Image
+						src={data.organization.logoUrl}
+						alt={data.organization.name}
+						fill
+						className="object-cover rounded-full"
+					/>
+				</div>
+				{data.organization.name}
+			</div>
 			<Card className="p-6" shadow="none">
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 					{data.applicationForm?.fields.map((field, index) => (
@@ -108,14 +142,16 @@ export default function JobApplyForm({
 							/>
 						</div>
 					))}
-					<Button
-						type="submit"
-						color="primary"
-						disabled={isSubmitting}
-						className="w-full sm:w-auto"
-					>
-						Submit Application
-					</Button>
+					<CardFooter className="w-full justify-end">
+						<Button
+							type="submit"
+							color="primary"
+							disabled={isSubmitting}
+							className="w-full sm:w-auto"
+						>
+							Submit Application
+						</Button>
+					</CardFooter>
 				</form>
 			</Card>
 		</div>

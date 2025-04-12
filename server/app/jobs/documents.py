@@ -9,7 +9,7 @@ from pymongo.operations import SearchIndexModel
 
 from app.accounts.documents import Account
 from app.base.models import Address
-from app.core.constants import JobApplicationStatus
+from app.core.constants import JobApplicantStatus
 from app.organizations.documents import Organization
 
 
@@ -125,12 +125,12 @@ class ApplicantField(BaseModel):
     field_value: str
 
 
-class JobApplication(Document):
+class JobApplicant(Document):
     account: Link[Account]
     job: Link[Job]
-    status: JobApplicationStatus
+    status: JobApplicantStatus
     applicant_fields: list[ApplicantField]
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     class Settings:
-        name = "job_applications"
+        name = "job_applicants"

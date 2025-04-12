@@ -181,7 +181,7 @@ union CreateJobApplicationPayload = CreateJobApplicationSuccess | JobNotFoundErr
 """Used when a job application is created successfully."""
 type CreateJobApplicationSuccess {
   """The created job application."""
-  jobApplication: JobApplication!
+  jobApplicant: JobApplicant!
 }
 
 """The create job payload."""
@@ -526,15 +526,24 @@ type Job implements Node {
 }
 
 """A job application for a posting."""
-type JobApplication implements Node {
+type JobApplicant implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
 
   """The status of the job application."""
-  status: JobApplicationStatus!
+  status: JobApplicantStatus!
 
   """The fields of the job application."""
   applicationFields: [ApplicationField!]!
+}
+
+"""The status of the job application."""
+enum JobApplicantStatus {
+  APPLIED
+  SHORTLISTED
+  INTERVIEWED
+  ONHOLD
+  OFFERED
 }
 
 """A custom application form belonging to a job posting."""
@@ -550,15 +559,6 @@ type JobApplicationForm implements Node {
 type JobApplicationFormNotFoundError implements Error {
   """Human readable error message."""
   message: String!
-}
-
-"""The status of the job application."""
-enum JobApplicationStatus {
-  APPLIED
-  SHORTLISTED
-  INTERVIEWED
-  ONHOLD
-  OFFERED
 }
 
 type JobConnection {

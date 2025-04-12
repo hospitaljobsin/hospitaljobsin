@@ -19,8 +19,8 @@ from app.jobs.exceptions import (
     SavedJobNotFoundError,
 )
 from app.jobs.services import (
+    JobApplicantService,
     JobApplicationFormService,
-    JobApplicationService,
     JobService,
     SavedJobService,
 )
@@ -39,9 +39,9 @@ from .types import (
     CreateJobApplicationSuccessType,
     CreateJobPayload,
     CreateJobSuccessType,
+    JobApplicantType,
     JobApplicationFormNotFoundErrorType,
     JobApplicationFormType,
-    JobApplicationType,
     JobEdgeType,
     JobNotFoundErrorType,
     JobNotPublishedErrorType,
@@ -565,7 +565,7 @@ class JobMutation:
     async def create_job_application(
         self,
         info: AuthInfo,
-        job_application_service: Annotated[JobApplicationService, Inject],
+        job_application_service: Annotated[JobApplicantService, Inject],
         *,
         job_id: Annotated[
             relay.GlobalID,
@@ -596,7 +596,7 @@ class JobMutation:
                         return JobNotPublishedErrorType()
             case Ok(job_application):
                 return CreateJobApplicationSuccessType(
-                    job_application=JobApplicationType.marshal(job_application)
+                    job_applicant=JobApplicantType.marshal(job_application)
                 )
             case _ as unreachable:
                 assert_never(unreachable)

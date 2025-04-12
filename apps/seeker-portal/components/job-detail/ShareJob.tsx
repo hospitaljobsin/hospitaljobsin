@@ -2,7 +2,6 @@ import type { ShareJobFragment$key } from "@/__generated__/ShareJobFragment.grap
 import { env } from "@/lib/env";
 import links from "@/lib/links";
 import {
-	Avatar,
 	Button,
 	Modal,
 	ModalBody,
@@ -13,6 +12,7 @@ import {
 	Tooltip,
 } from "@heroui/react";
 import { GlobeIcon, Share2Icon } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { useFragment } from "react-relay";
 import {
@@ -30,7 +30,7 @@ export const ShareJobFragment = graphql`
     slug
     title
     description
-    organization {
+    organization @required(action: THROW) {
         name
         logoUrl
     }
@@ -42,7 +42,7 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 	const [showShareModal, setShowShareModal] = useState(false);
 	const data = useFragment(ShareJobFragment, job);
 	const shareUrl = `${env.NEXT_PUBLIC_URL}${links.jobDetail(data.slug)}`;
-	const title = `Job Position: ${data.title} at ${data.organization?.name} - Apply Now!`;
+	const title = `Job Position: ${data.title} at ${data.organization.name} - Apply Now!`;
 	const description = data.description
 		? `${data.description.slice(0, 100)}...`
 		: undefined;
@@ -85,16 +85,21 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 			>
 				<ModalContent>
 					<ModalHeader className="flex w-full justify-between items-center gap-4 py-6 px-8">
-						<div className="flex items-center gap-4">
-							<Avatar
-								name={data.organization?.name}
-								src={data.organization?.logoUrl || undefined}
-								size="lg"
-							/>
+						<div className="flex items-center gap-8">
+							<div className="relative h-14 w-14">
+								<Image
+									alt={data.organization.name}
+									src={data.organization.logoUrl}
+									fill
+									className="object-cover rounded-md"
+								/>
+							</div>
 							<div className="flex flex-col gap-2 items-start">
-								<h4 className="text-xl font-medium">{data.title}</h4>
+								<h4 className="text-xl font-medium text-pretty w-full">
+									{data.title}
+								</h4>
 								<p className="text-md font-normal text-foreground-500">
-									{data.organization?.name}
+									{data.organization.name}
 								</p>
 							</div>
 						</div>

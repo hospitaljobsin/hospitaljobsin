@@ -37,8 +37,8 @@ from app.jobs.dataloaders import (
     create_saved_job_by_id_dataloader,
 )
 from app.jobs.repositories import (
+    JobApplicantRepo,
     JobApplicationFormRepo,
-    JobApplicationRepo,
     JobRepo,
     SavedJobRepo,
 )
@@ -94,7 +94,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(RecoveryCodeRepo))
     container.register(aioinject.Singleton(TemporaryTwoFactorChallengeRepo))
     container.register(aioinject.Singleton(OrganizationInviteRepo))
-    container.register(aioinject.Singleton(JobApplicationRepo))
+    container.register(aioinject.Singleton(JobApplicantRepo))
     container.register(aioinject.Singleton(JobApplicationFormRepo))
     container.register(aioinject.Scoped(JobApplicationFormService))
     container.register(aioinject.Scoped(OrganizationInviteService))

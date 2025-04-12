@@ -11,7 +11,7 @@ from app.jobs.documents import (
     ApplicantField,
     ApplicationField,
     Job,
-    JobApplication,
+    JobApplicant,
     JobApplicationForm,
     SavedJob,
 )
@@ -23,8 +23,8 @@ from app.jobs.exceptions import (
     SavedJobNotFoundError,
 )
 from app.jobs.repositories import (
+    JobApplicantRepo,
     JobApplicationFormRepo,
-    JobApplicationRepo,
     JobRepo,
     SavedJobRepo,
 )
@@ -294,11 +294,11 @@ class JobApplicationFormService:
         return Ok((existing_application_form, existing_job))
 
 
-class JobApplicationService:
+class JobApplicantService:
     def __init__(
         self,
         job_repo: JobRepo,
-        job_application_repo: JobApplicationRepo,
+        job_application_repo: JobApplicantRepo,
         organization_member_service: OrganizationMemberService,
     ) -> None:
         self._job_repo = job_repo
@@ -310,7 +310,7 @@ class JobApplicationService:
         account: Account,
         job_id: str,
         applicant_fields: list[ApplicantField],
-    ) -> Result[JobApplication, JobNotFoundError | JobNotPublishedError]:
+    ) -> Result[JobApplicant, JobNotFoundError | JobNotPublishedError]:
         """Create a job application."""
         try:
             job_id = ObjectId(job_id)

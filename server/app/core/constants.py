@@ -47,6 +47,6 @@ TwoFactorProvider = Literal["authenticator",]
 
 
 # Job Applications
-JobApplicationStatus = Literal[
+JobApplicantStatus = Literal[
     "applied", "shortlisted", "interviewed", "onhold", "offered"
 ]

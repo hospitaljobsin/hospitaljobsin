@@ -21,11 +21,11 @@ from app.jobs.documents import (
     ApplicantField,
     ApplicationField,
     Job,
-    JobApplication,
+    JobApplicant,
     JobApplicationForm,
     SavedJob,
 )
-from app.jobs.repositories import JobApplicationRepo
+from app.jobs.repositories import JobApplicantRepo
 from app.organizations.types import (
     OrganizationAuthorizationErrorType,
     OrganizationNotFoundErrorType,
@@ -179,10 +179,10 @@ class JobApplicationFormType(BaseNodeType[JobApplicationForm]):
 
 
 @strawberry.enum(
-    name="JobApplicationStatus",
+    name="JobApplicantStatus",
     description="The status of the job application.",
 )
-class JobApplicationStatusEnum(Enum):
+class JobApplicantStatusEnum(Enum):
     APPLIED = "APPLIED"
     SHORTLISTED = "SHORTLISTED"
     INTERVIEWED = "INTERVIEWED"
@@ -191,11 +191,11 @@ class JobApplicationStatusEnum(Enum):
 
 
 @strawberry.type(
-    name="JobApplication",
+    name="JobApplicant",
     description="A job application for a posting.",
 )
-class JobApplicationType(BaseNodeType[JobApplication]):
-    status: JobApplicationStatusEnum = strawberry.field(
+class JobApplicantType(BaseNodeType[JobApplicant]):
+    status: JobApplicantStatusEnum = strawberry.field(
         description="The status of the job application.",
     )
     application_fields: list[ApplicationFieldType] = strawberry.field(
@@ -203,14 +203,14 @@ class JobApplicationType(BaseNodeType[JobApplication]):
     )
 
     @classmethod
-    def marshal(cls, job_application: JobApplication) -> Self:
+    def marshal(cls, job_applicant: JobApplicant) -> Self:
         """Marshal into a node instance."""
         return cls(
-            id=str(job_application.id),
-            status=JobApplicationStatusEnum[job_application.status.upper()],
+            id=str(job_applicant.id),
+            status=JobApplicantStatusEnum[job_applicant.status.upper()],
             application_fields=[
                 ApplicationFieldType.marshal(field)
-                for field in job_application.application_fields
+                for field in job_applicant.application_fields
             ],
         )
 
@@ -337,7 +337,7 @@ class JobType(BaseNodeType[Job]):
     )
     @inject
     async def application_count(
-        self, info: Info, job_application_repo: Injected[JobApplicationRepo]
+        self, info: Info, job_application_repo: Injected[JobApplicantRepo]
     ) -> int:
         """Get the number of applications for the job."""
         return await job_application_repo.get_count_by_job_id(
@@ -608,7 +608,7 @@ UpdateJobPayload = Annotated[
     description="Used when a job application is created successfully.",
 )
 class CreateJobApplicationSuccessType:
-    job_application: JobApplicationType = strawberry.field(
+    job_applicant: JobApplicantType = strawberry.field(
         description="The created job application.",
     )
 

@@ -1,5 +1,6 @@
 import type { CancelEditJobModalJobFragment$key } from "@/__generated__/CancelEditJobModalJobFragment.graphql";
 import links from "@/lib/links";
+import { useRouter } from "@bprogress/next/app";
 import {
 	Button,
 	Modal,
@@ -8,14 +9,13 @@ import {
 	ModalFooter,
 	ModalHeader,
 } from "@heroui/react";
-import { useRouter } from "next/navigation";
 import { graphql, useFragment } from "react-relay";
 
 export const CancelEditJobModalJobFragment = graphql`
     fragment CancelEditJobModalJobFragment on Job {
         __typename
         slug
-        organization {
+        organization @required(action: THROW) {
             slug
         }
 }`;
@@ -35,9 +35,7 @@ export default function CancelEditJobModal({
 	const data = useFragment(CancelEditJobModalJobFragment, job);
 
 	function handleDiscardChanges() {
-		router.push(
-			links.organizationJobDetail(data.organization?.slug, data.slug),
-		);
+		router.push(links.organizationJobDetail(data.organization.slug, data.slug));
 	}
 
 	return (

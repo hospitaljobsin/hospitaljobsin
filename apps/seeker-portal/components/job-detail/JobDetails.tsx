@@ -68,7 +68,7 @@ const JobDetailsInternalFragment = graphql`
     minExperience
     maxExperience
     createdAt
-    organization {
+    organization @required(action: THROW) {
       slug
       name
       description
@@ -274,8 +274,8 @@ export default function JobDetails({
 				<CardBody className="flex items-center gap-6 flex-row w-full">
 					<div className="relative h-14 w-14">
 						<Image
-							src={data.organization?.logoUrl || ""}
-							alt={data.organization?.name || "organization-logo"}
+							src={data.organization.logoUrl}
+							alt={data.organization.name}
 							fill
 							className="rounded-md object-cover"
 						/>
@@ -287,11 +287,11 @@ export default function JobDetails({
 							color="foreground"
 							isExternal
 							showAnchorIcon
-							href={links.organizationDetail(data.organization?.slug || "")}
+							href={links.organizationDetail(data.organization.slug)}
 						>
-							{data.organization?.name}
+							{data.organization.name}
 						</Link>
-						<p className="text-default-500">{data.organization?.description}</p>
+						<p className="text-default-500">{data.organization.description}</p>
 					</div>
 				</CardBody>
 			</Card>

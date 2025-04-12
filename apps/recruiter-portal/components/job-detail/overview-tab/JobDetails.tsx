@@ -59,7 +59,7 @@ const JobDetailsFragment = graphql`
       __typename
       id
     }
-    organization {
+    organization @required(action: THROW) {
       isAdmin
       name
     }
@@ -196,7 +196,7 @@ export default function JobDetails({
 						<h4 className="text-xl font-medium text-pretty w-full">
 							{data.title}
 						</h4>
-						{data.organization?.isAdmin && (
+						{data.organization.isAdmin && (
 							<div className="items-center gap-4 flex justify-end flex-col sm:flex-row w-full">
 								{hasApplicationForm ? <JobControls job={data} /> : null}
 								<Button
@@ -247,7 +247,7 @@ export default function JobDetails({
 				</CardFooter>
 			</Card>
 			{/* Application Form Card */}
-			{hasApplicationForm && data.organization?.isAdmin ? (
+			{hasApplicationForm && data.organization.isAdmin ? (
 				<Card className="p-6" shadow="none">
 					<div className="flex justify-between items-center">
 						<div className="sm:flex items-center gap-4 hidden">

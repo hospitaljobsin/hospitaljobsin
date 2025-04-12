@@ -8,7 +8,7 @@ from bson import ObjectId
 
 from app.accounts.documents import Account
 from app.base.models import Address
-from app.core.constants import JobApplicationStatus
+from app.core.constants import JobApplicantStatus
 from app.database.paginator import PaginatedResult, Paginator
 from app.organizations.documents import Organization
 
@@ -16,7 +16,7 @@ from .documents import (
     ApplicantField,
     ApplicationField,
     Job,
-    JobApplication,
+    JobApplicant,
     JobApplicationForm,
     SavedJob,
 )
@@ -280,16 +280,16 @@ class SavedJobRepo:
         await saved_job.delete(link_rule=DeleteRules.DO_NOTHING)
 
 
-class JobApplicationRepo:
+class JobApplicantRepo:
     async def get_count_by_job_id(
         self,
         job_id: ObjectId,
-        status: JobApplicationStatus,
+        status: JobApplicantStatus,
     ) -> int:
         """Get the count of applications for a given job ID."""
-        return await JobApplication.find(
-            JobApplication.job.id == job_id,
-            JobApplication.status == status,
+        return await JobApplicant.find(
+            JobApplicant.job.id == job_id,
+            JobApplicant.status == status,
         ).count()
 
     async def create(
@@ -297,9 +297,9 @@ class JobApplicationRepo:
         account: Account,
         job: Job,
         applicant_fields: list[ApplicantField],
-    ) -> JobApplication:
-        """Create a new job application."""
-        application = JobApplication(
+    ) -> JobApplicant:
+        """Create a new job applicant."""
+        application = JobApplicant(
             job=job,
             account=account,
             status="applied",

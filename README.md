@@ -9,6 +9,7 @@ aaa
 - we can add other tools too, like showing current applications, saved jobs etcaaa
 
 # TODO- recruiter portal
+- add select option type applicant field
 - add option to use screening questions and apply via the app (called EasyApply on Linkedin), or redirect to a custom application link (cannot be changed after job is published)
 - if you have an external application link, you CANNOT see applicants in dashboard. this feature cannot be changed after creating the job.
 - add setting in organization that mentions whether jobs are handled within the app by default (to help in job creation UI)
