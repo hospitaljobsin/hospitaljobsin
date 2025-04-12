@@ -542,6 +542,15 @@ type Job implements Node {
     last: Int = null
   ): JobApplicantConnection!
 
+  """Viewer count for the job, filtered by time."""
+  viewerCount(
+    """Start date for filtering the view count."""
+    startDate: datetime!
+
+    """End date for filtering the view count."""
+    endDate: datetime!
+  ): Int! @isAuthenticated
+
   """Whether the job is saved by the current user."""
   isSaved: Boolean!
 

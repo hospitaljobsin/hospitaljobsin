@@ -410,3 +410,20 @@ class JobMetricRepo:
             job_id=job_id,
         )
         return await job_metric.insert(link_rule=WriteRules.DO_NOTHING)
+
+    async def get_count(
+        self,
+        job_id: ObjectId,
+        event_type: JobMetricEventType,
+        start_date: datetime,
+        end_date: datetime,
+    ) -> int:
+        """Get the count of job metrics for a given job ID and event type."""
+        return await JobMetric.find(
+            And(
+                JobMetric.job_id == job_id,
+                JobMetric.event_type == event_type,
+                JobMetric.timestamp >= start_date,
+                JobMetric.timestamp <= end_date,
+            )
+        ).count()

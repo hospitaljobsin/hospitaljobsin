@@ -8,8 +8,10 @@ from aioinject import Inject, Injected
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from strawberry import relay
+from strawberry.permission import PermissionExtension
 
 from app.accounts.types import AccountType
+from app.auth.permissions import IsAuthenticated
 from app.base.types import (
     AddressType,
     BaseConnectionType,
@@ -26,7 +28,7 @@ from app.jobs.documents import (
     JobApplicationForm,
     SavedJob,
 )
-from app.jobs.repositories import JobApplicantRepo
+from app.jobs.repositories import JobApplicantRepo, JobMetricRepo
 from app.organizations.types import (
     OrganizationAuthorizationErrorType,
     OrganizationNotFoundErrorType,
@@ -395,6 +397,41 @@ class JobType(BaseNodeType[Job]):
         )
 
         return JobApplicantConnectionType.marshal(paginated_invites)
+
+    @strawberry.field(  # type: ignore[misc]
+        description="Viewer count for the job, filtered by time.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    # TODO: ensure only org admins can view this field
+                ]
+            )
+        ],
+    )
+    @inject
+    async def viewer_count(
+        self,
+        job_metric_repo: Injected[JobMetricRepo],
+        start_date: Annotated[
+            datetime,
+            strawberry.argument(
+                description="Start date for filtering the view count.",
+            ),
+        ],
+        end_date: Annotated[
+            datetime,
+            strawberry.argument(
+                description="End date for filtering the view count.",
+            ),
+        ],
+    ) -> int:
+        return await job_metric_repo.get_count(
+            job_id=ObjectId(self.id),
+            event_type="view",
+            start_date=start_date,
+            end_date=end_date,
+        )
 
     @strawberry.field(  # type: ignore[misc]
         description="Whether the job is saved by the current user.",
