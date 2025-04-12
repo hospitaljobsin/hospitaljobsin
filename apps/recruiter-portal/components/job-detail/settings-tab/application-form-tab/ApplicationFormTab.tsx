@@ -20,7 +20,7 @@ export default function ApplicationFormTab(props: {
 	const query = useFragment(ApplicationFormTabFragment, props.rootQuery);
 
 	return (
-		<div className="py-8 w-full h-full flex flex-col items-center gap-12">
+		<div className="w-full h-full flex flex-col items-center gap-12">
 			<ApplicationFormBuilder rootQuery={query} />
 		</div>
 	);

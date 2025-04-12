@@ -19,14 +19,7 @@ import {
 import Heading from "@tiptap/extension-heading";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import {
-	Briefcase,
-	Edit2,
-	FileText,
-	Globe,
-	IndianRupee,
-	MapPin,
-} from "lucide-react";
+import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import { useParams } from "next/navigation";
 import { graphql, useFragment } from "react-relay";
 import { Markdown } from "tiptap-markdown";
@@ -199,15 +192,6 @@ export default function JobDetails({
 						{data.organization.isAdmin && (
 							<div className="items-center gap-4 flex justify-end flex-col sm:flex-row w-full">
 								{hasApplicationForm ? <JobControls job={data} /> : null}
-								<Button
-									as={Link}
-									href={links.jobDetailEdit(params.slug, params.jobSlug)}
-									variant="bordered"
-									startContent={<Edit2 className="w-4 h-4" />}
-									className="w-full sm:w-auto"
-								>
-									Edit Details
-								</Button>
 							</div>
 						)}
 					</div>
@@ -247,24 +231,7 @@ export default function JobDetails({
 				</CardFooter>
 			</Card>
 			{/* Application Form Card */}
-			{hasApplicationForm && data.organization.isAdmin ? (
-				<Card className="p-6" shadow="none">
-					<div className="flex justify-between items-center">
-						<div className="sm:flex items-center gap-4 hidden">
-							<FileText size={20} />
-							<h3 className="text-md">Application Form</h3>
-						</div>
-						<Button
-							as={Link}
-							href={links.jobDetailApplicationForm(params.slug, params.jobSlug)}
-							variant="bordered"
-							className="w-full sm:w-auto"
-						>
-							Update Application Form
-						</Button>
-					</div>
-				</Card>
-			) : (
+			{hasApplicationForm && data.organization.isAdmin ? null : (
 				<Alert
 					color="warning"
 					title="You need to set up an application form before publishing this job"
@@ -274,7 +241,10 @@ export default function JobDetails({
 							variant="flat"
 							color="warning"
 							as={Link}
-							href={links.jobDetailApplicationForm(params.slug, params.jobSlug)}
+							href={links.jobDetailSettingsApplicationForm(
+								params.slug,
+								params.jobSlug,
+							)}
 						>
 							Set up application form
 						</Button>

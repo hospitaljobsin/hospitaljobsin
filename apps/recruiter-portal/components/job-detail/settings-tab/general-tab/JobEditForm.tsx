@@ -271,7 +271,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 				} else if (response.updateJob.__typename === "UpdateJobSuccess") {
 					// handle success
 					router.push(
-						links.jobDetailEdit(params.slug, response.updateJob.job.slug),
+						links.jobDetailSettings(params.slug, response.updateJob.job.slug),
 					);
 				} else if (
 					response.updateJob.__typename === "OrganizationAuthorizationError"
@@ -288,9 +288,6 @@ export default function JobEditForm({ rootQuery }: Props) {
 	return (
 		<>
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
-				<h2 className="text-lg font-medium mt-1 text-foreground-400">
-					Update job posting
-				</h2>
 				<Card shadow="none" className="p-6 gap-12 flex flex-col">
 					<CardBody className="flex flex-col gap-12 overflow-y-hidden">
 						<Input

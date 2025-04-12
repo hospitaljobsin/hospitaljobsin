@@ -17,10 +17,13 @@ const links = {
 		`/dashboard/organizations/${slug}/new-job`,
 	organizationDetailSettings: (slug: string) =>
 		`/dashboard/organizations/${slug}/settings`,
-	jobDetailApplicationForm: (organizationSlug: string, jobSlug: string) =>
-		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/application-form`,
-	jobDetailEdit: (organizationSlug: string, jobSlug: string) =>
-		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/edit`,
+	jobDetailSettingsApplicationForm: (
+		organizationSlug: string,
+		jobSlug: string,
+	) =>
+		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/settings/application-form`,
+	jobDetailSettings: (organizationSlug: string, jobSlug: string) =>
+		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/settings`,
 	jobDetailApplicants: (organizationSlug: string, jobSlug: string) =>
 		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/applicants`,
 	login: (returnTo: string | undefined = undefined) =>

@@ -1,21 +1,21 @@
-import type { pageJobEditMetadataFragment$key } from "@/__generated__/pageJobEditMetadataFragment.graphql";
-import type JobEditViewQueryNode from "@/__generated__/pageJobEditViewQuery.graphql";
-import type { pageJobEditViewQuery } from "@/__generated__/pageJobEditViewQuery.graphql";
+import type { pageJobSettingsMetadataFragment$key } from "@/__generated__/pageJobSettingsMetadataFragment.graphql";
+import type JobSettingsViewQueryNode from "@/__generated__/pageJobSettingsViewQuery.graphql";
+import type { pageJobSettingsViewQuery } from "@/__generated__/pageJobSettingsViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
-import JobEditViewClientComponent from "./JobEditViewClientComponent";
+import JobSettingsViewClientComponent from "./JobSettingsViewClientComponent";
 
-export const PageJobEditViewQuery = graphql`
-  query pageJobEditViewQuery($slug: String!) {	
-    ...pageJobEditMetadataFragment @arguments(slug: $slug)
-    ...JobEditViewClientComponentFragment @arguments(slug: $slug)
+export const PageJobSettingsViewQuery = graphql`
+  query pageJobSettingsViewQuery($slug: String!) {	
+    ...pageJobSettingsMetadataFragment @arguments(slug: $slug)
+    ...JobSettingsViewClientComponentFragment @arguments(slug: $slug)
   }
 `;
 
-const PageJobEditMetadataFragment = graphql`
- fragment pageJobEditMetadataFragment on Query @inline @argumentDefinitions(
+const PageJobSettingsMetadataFragment = graphql`
+ fragment pageJobSettingsMetadataFragment on Query @inline @argumentDefinitions(
       slug: {
         type: "String!",
       }
@@ -39,9 +39,9 @@ const PageJobEditMetadataFragment = graphql`
 // Function to load and cache the query result
 const loadJob = cache(async (slug: string) => {
 	return await loadSerializableQuery<
-		typeof JobEditViewQueryNode,
-		pageJobEditViewQuery
-	>(PageJobEditViewQuery, {
+		typeof JobSettingsViewQueryNode,
+		pageJobSettingsViewQuery
+	>(PageJobSettingsViewQuery, {
 		slug: slug,
 	});
 });
@@ -54,8 +54,8 @@ export async function generateMetadata({
 	const slug = (await params).jobSlug;
 	const preloadedQuery = await loadJob(slug);
 
-	const data = readInlineData<pageJobEditMetadataFragment$key>(
-		PageJobEditMetadataFragment,
+	const data = readInlineData<pageJobSettingsMetadataFragment$key>(
+		PageJobSettingsMetadataFragment,
 		preloadedQuery.data,
 	);
 
@@ -83,7 +83,7 @@ export async function generateMetadata({
 	};
 }
 
-export default async function JobEditPage({
+export default async function JobSettingsPage({
 	params,
 }: {
 	params: Promise<{ slug: string; jobSlug: string }>;
@@ -92,8 +92,8 @@ export default async function JobEditPage({
 
 	const preloadedQuery = await loadJob(slug);
 
-	const data = readInlineData<pageJobEditMetadataFragment$key>(
-		PageJobEditMetadataFragment,
+	const data = readInlineData<pageJobSettingsMetadataFragment$key>(
+		PageJobSettingsMetadataFragment,
 		preloadedQuery.data,
 	);
 
@@ -106,5 +106,5 @@ export default async function JobEditPage({
 		notFound();
 	}
 
-	return <JobEditViewClientComponent preloadedQuery={preloadedQuery} />;
+	return <JobSettingsViewClientComponent preloadedQuery={preloadedQuery} />;
 }

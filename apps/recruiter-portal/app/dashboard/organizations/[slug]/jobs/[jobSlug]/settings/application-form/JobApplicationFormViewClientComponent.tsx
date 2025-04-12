@@ -4,7 +4,7 @@ import type { JobApplicationFormViewClientComponentFragment$key } from "@/__gene
 import type JobApplicationFormViewQueryNode from "@/__generated__/pageJobApplicationFormViewQuery.graphql";
 import type { pageJobApplicationFormViewQuery } from "@/__generated__/pageJobApplicationFormViewQuery.graphql";
 import PageJobDetailViewQuery from "@/__generated__/pageJobApplicationFormViewQuery.graphql";
-import ApplicationFormTab from "@/components/job-detail/application-form-tab/ApplicationFormTab";
+import ApplicationFormTab from "@/components/job-detail/settings-tab/application-form-tab/ApplicationFormTab";
 import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 import {
