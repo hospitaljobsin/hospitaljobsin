@@ -137,7 +137,7 @@ class ApplicantFieldInputType:
         )
 
 
-@strawberry.input(
+@strawberry.type(
     name="ApplicantField",
     description="An applicant field belonging to a job applicant.",
 )
@@ -198,7 +198,7 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
     status: JobApplicantStatusEnum = strawberry.field(
         description="The status of the job application.",
     )
-    application_fields: list[ApplicationFieldType] = strawberry.field(
+    applicant_fields: list[ApplicantFieldType] = strawberry.field(
         description="The fields of the job application.",
     )
 
@@ -208,9 +208,9 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
         return cls(
             id=str(job_applicant.id),
             status=JobApplicantStatusEnum[job_applicant.status.upper()],
-            application_fields=[
-                ApplicationFieldType.marshal(field)
-                for field in job_applicant.application_fields
+            applicant_fields=[
+                ApplicantFieldType.marshal(field)
+                for field in job_applicant.applicant_fields
             ],
         )
 
