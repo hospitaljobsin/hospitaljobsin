@@ -120,11 +120,16 @@ class JobApplicationForm(Document):
         name = "job_application_forms"
 
 
+class ApplicantField(BaseModel):
+    field_name: str
+    field_value: str
+
+
 class JobApplication(Document):
     account: Link[Account]
     job: Link[Job]
     status: JobApplicationStatus
-    application_fields: list[ApplicationField]
+    applicant_fields: list[ApplicantField]
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     class Settings:

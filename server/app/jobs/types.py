@@ -18,6 +18,7 @@ from app.base.types import (
 )
 from app.context import Info
 from app.jobs.documents import (
+    ApplicantField,
     ApplicationField,
     Job,
     JobApplication,
@@ -112,6 +113,48 @@ class ApplicationFieldType:
             field_name=field.field_name,
             default_value=field.default_value,
             is_required=field.is_required,
+        )
+
+
+@strawberry.input(
+    name="ApplicantFieldInput",
+    description="An applicant field belonging to a job applicant input.",
+)
+class ApplicantFieldInputType:
+    field_name: str = strawberry.field(
+        description="The name of the field.",
+    )
+    field_value: str = strawberry.field(
+        description="The value of the field.",
+    )
+
+    @classmethod
+    def to_document(cls, field: Self) -> ApplicantField:
+        """Convert to a document."""
+        return ApplicantField(
+            field_name=field.field_name,
+            field_value=field.field_value,
+        )
+
+
+@strawberry.input(
+    name="ApplicantField",
+    description="An applicant field belonging to a job applicant.",
+)
+class ApplicantFieldType:
+    field_name: str = strawberry.field(
+        description="The name of the field.",
+    )
+    field_value: str = strawberry.field(
+        description="The value of the field.",
+    )
+
+    @classmethod
+    def marshal(cls, applicant_field: ApplicantField) -> Self:
+        """Convert to a document."""
+        return cls(
+            field_name=applicant_field.field_name,
+            field_value=applicant_field.field_value,
         )
 
 

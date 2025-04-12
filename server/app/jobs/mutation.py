@@ -33,6 +33,7 @@ from app.organizations.types import (
 )
 
 from .types import (
+    ApplicantFieldInputType,
     ApplicationFieldInputType,
     CreateJobApplicationPayload,
     CreateJobApplicationSuccessType,
@@ -572,8 +573,8 @@ class JobMutation:
                 description="The ID of the job to apply for.",
             ),
         ],
-        application_fields: Annotated[
-            list[ApplicationFieldInputType],
+        applicant_fields: Annotated[
+            list[ApplicantFieldInputType],
             strawberry.argument(
                 description="The fields required by the job application form.",
             ),
@@ -583,9 +584,8 @@ class JobMutation:
         match await job_application_service.create(
             account=info.context["current_user"],
             job_id=job_id.node_id,
-            application_fields=[
-                ApplicationFieldInputType.to_document(field)
-                for field in application_fields
+            applicant_fields=[
+                ApplicantFieldInputType.to_document(field) for field in applicant_fields
             ],
         ):
             case Err(error):

@@ -129,6 +129,15 @@ input AddressInput {
   pincode: String
 }
 
+"""An applicant field belonging to a job applicant input."""
+input ApplicantFieldInput {
+  """The name of the field."""
+  fieldName: String!
+
+  """The value of the field."""
+  fieldValue: String!
+}
+
 """An application field belonging to a job application form."""
 type ApplicationField {
   """The name of the field."""
@@ -164,6 +173,15 @@ enum AuthProvider {
 type AuthenticatorNotEnabledError implements Error {
   """Human readable error message."""
   message: String!
+}
+
+"""The create job application payload."""
+union CreateJobApplicationPayload = CreateJobApplicationSuccess | JobNotFoundError | JobNotPublishedError
+
+"""Used when a job application is created successfully."""
+type CreateJobApplicationSuccess {
+  """The created job application."""
+  jobApplication: JobApplication!
 }
 
 """The create job payload."""
@@ -507,6 +525,18 @@ type Job implements Node {
   organization: Organization
 }
 
+"""A job application for a posting."""
+type JobApplication implements Node {
+  """The Globally Unique ID of this object"""
+  id: ID!
+
+  """The status of the job application."""
+  status: JobApplicationStatus!
+
+  """The fields of the job application."""
+  applicationFields: [ApplicationField!]!
+}
+
 """A custom application form belonging to a job posting."""
 type JobApplicationForm implements Node {
   """The Globally Unique ID of this object"""
@@ -520,6 +550,15 @@ type JobApplicationForm implements Node {
 type JobApplicationFormNotFoundError implements Error {
   """Human readable error message."""
   message: String!
+}
+
+"""The status of the job application."""
+enum JobApplicationStatus {
+  APPLIED
+  SHORTLISTED
+  INTERVIEWED
+  ONHOLD
+  OFFERED
 }
 
 type JobConnection {
@@ -992,6 +1031,15 @@ type Mutation {
     """The ID of the job to activate."""
     jobId: ID!
   ): UnpublishJobPayload! @isAuthenticated
+
+  """Create a job application."""
+  createJobApplication(
+    """The ID of the job to apply for."""
+    jobId: ID!
+
+    """The fields required by the job application form."""
+    applicantFields: [ApplicantFieldInput!]!
+  ): CreateJobApplicationPayload! @isAuthenticated
 
   """Update the current user's profile personal details."""
   updateProfilePersonalDetails(

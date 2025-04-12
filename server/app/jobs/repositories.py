@@ -13,6 +13,7 @@ from app.database.paginator import PaginatedResult, Paginator
 from app.organizations.documents import Organization
 
 from .documents import (
+    ApplicantField,
     ApplicationField,
     Job,
     JobApplication,
@@ -295,20 +296,20 @@ class JobApplicationRepo:
         self,
         account: Account,
         job: Job,
-        application_fields: list[ApplicationField],
+        applicant_fields: list[ApplicantField],
     ) -> JobApplication:
         """Create a new job application."""
         application = JobApplication(
             job=job,
             account=account,
             status="applied",
-            application_fields=application_fields,
+            applicant_fields=applicant_fields,
         )
         return await application.insert(link_rule=WriteRules.DO_NOTHING)
 
 
 class JobApplicationFormRepo:
-    async def get(self, job_id: ObjectId) -> JobApplicationForm | None:
+    async def get_by_job_id(self, job_id: ObjectId) -> JobApplicationForm | None:
         """Get job application form by job ID."""
         return await JobApplicationForm.find_one(
             JobApplicationForm.job.id == job_id,

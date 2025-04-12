@@ -8,6 +8,7 @@ from result import Err, Ok, Result
 from app.accounts.documents import Account
 from app.base.models import Address
 from app.jobs.documents import (
+    ApplicantField,
     ApplicationField,
     Job,
     JobApplication,
@@ -257,11 +258,16 @@ class JobApplicationFormService:
         self._organization_member_service = organization_member_service
 
     async def update(
-        self, account: Account, job_id: ObjectId, fields: list[ApplicationField]
+        self, account: Account, job_id: str, fields: list[ApplicationField]
     ) -> Result[
         tuple[JobApplicationForm, Job],
         JobNotFoundError | OrganizationAuthorizationError,
     ]:
+        try:
+            job_id = ObjectId(job_id)
+        except InvalidId:
+            return Err(JobNotFoundError())
+
         existing_job = await self._job_repo.get(job_id=job_id)
         if existing_job is None:
             return Err(JobNotFoundError())
@@ -272,9 +278,10 @@ class JobApplicationFormService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        existing_application_form = await self._job_application_form_repo.get(
-            job_id=job_id
+        existing_application_form = await self._job_application_form_repo.get_by_job_id(
+            job_id=existing_job.id
         )
+
         if existing_application_form is None:
             existing_application_form = await self._job_application_form_repo.create(
                 job=existing_job, fields=fields
@@ -302,7 +309,7 @@ class JobApplicationService:
         self,
         account: Account,
         job_id: str,
-        application_fields: list[ApplicationField],
+        applicant_fields: list[ApplicantField],
     ) -> Result[JobApplication, JobNotFoundError | JobNotPublishedError]:
         """Create a job application."""
         try:
@@ -319,7 +326,7 @@ class JobApplicationService:
         job_application = await self._job_application_repo.create(
             job=existing_job,
             account=account,
-            application_fields=application_fields,
+            applicant_fields=applicant_fields,
         )
 
         return Ok(job_application)
