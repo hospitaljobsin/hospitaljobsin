@@ -20,6 +20,7 @@ from .documents import (
     JobApplicant,
     JobApplicationForm,
     JobMetric,
+    JobMetricMetadata,
     SavedJob,
 )
 
@@ -413,8 +414,10 @@ class JobMetricRepo:
         job_metric = JobMetric(
             event_type=event_type,
             timestamp=datetime.now(UTC),
-            job_id=job_id,
-            organization=organization_id,
+            metadata=JobMetricMetadata(
+                job_id=job_id,
+                organization_id=organization_id,
+            ),
         )
         return await job_metric.insert(link_rule=WriteRules.DO_NOTHING)
 
@@ -426,7 +429,10 @@ class JobMetricRepo:
         end_date: datetime | None = None,
     ) -> int:
         """Get the count of job metrics for a given job ID and event type."""
-        expressions = [JobMetric.job_id == job_id, JobMetric.event_type == event_type]
+        expressions = [
+            JobMetric.metadata.job_id == job_id,
+            JobMetric.event_type == event_type,
+        ]
 
         if start_date:
             expressions.append(JobMetric.timestamp >= start_date)
@@ -435,11 +441,53 @@ class JobMetricRepo:
 
         return await JobMetric.find(And(*expressions)).count()
 
+    async def get_organization_count(
+        self,
+        organization_id: ObjectId,
+        event_type: JobMetricEventType,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+    ) -> int:
+        """Get the count of job metrics for a given organization ID and event type."""
+        expressions = [
+            JobMetric.metadata.organization_id == organization_id,
+            JobMetric.event_type == event_type,
+        ]
+
+        if start_date:
+            expressions.append(JobMetric.timestamp >= start_date)
+        if end_date:
+            expressions.append(JobMetric.timestamp <= end_date)
+
+        return await JobMetric.find(And(*expressions)).count()
+
+    async def get_organization_metric_points(
+        self, organization_id: ObjectId, event_type: JobMetricEventType
+    ) -> list[dict[str, Any]]:
+        pipeline = [
+            {
+                "$match": {
+                    "metadata.organization_id": organization_id,
+                    "event_type": event_type,
+                }
+            },
+            {
+                "$group": {
+                    "_id": {"$dateTrunc": {"date": "$timestamp", "unit": "minute"}},
+                    "count": {"$sum": 1},
+                }
+            },
+            {"$sort": {"_id": pymongo.ASCENDING}},
+            {"$project": {"timestamp": "$_id", "count": 1, "_id": 0}},
+        ]
+
+        return await JobMetric.aggregate(pipeline).to_list()
+
     async def get_metric_points(
         self, job_id: ObjectId, event_type: JobMetricEventType
     ) -> list[dict[str, Any]]:
         pipeline = [
-            {"$match": {"job_id": job_id, "event_type": event_type}},
+            {"$match": {"metadata.job_id": job_id, "event_type": event_type}},
             {
                 "$group": {
                     "_id": {"$dateTrunc": {"date": "$timestamp", "unit": "minute"}},

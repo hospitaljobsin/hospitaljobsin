@@ -143,16 +143,20 @@ class JobApplicant(Document):
         name = "job_applicants"
 
 
+class JobMetricMetadata(BaseModel):
+    job_id: PydanticObjectId
+    organization_id: PydanticObjectId
+
+
 class JobMetric(Document):
     event_type: JobMetricEventType
     timestamp: datetime = Field(default_factory=datetime.now)
-    job_id: PydanticObjectId
-    organization: Link[Organization]
+    metadata: JobMetricMetadata
 
     class Settings:
         name = "job_metrics"
         timeseries = TimeSeriesConfig(
             time_field="timestamp",  #  Required
-            meta_field="job_id",  #  Optional
+            meta_field="metadata",  #  Optional
             granularity=Granularity.minutes,  #  Optional
         )

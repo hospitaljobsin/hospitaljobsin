@@ -5,6 +5,7 @@ import { Mail, MapPin } from "lucide-react";
 import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import OrganizationStatistics from "./OrganizationStatistics";
 
 const OrganizationDetailsFragment = graphql`
   fragment OrganizationDetailsFragment on Query @argumentDefinitions(
@@ -33,6 +34,7 @@ const OrganizationDetailsInternalFragment = graphql`
       city
       state
     }
+	... OrganizationStatisticsFragment
   }
 `;
 
@@ -103,9 +105,7 @@ export default function OrganizationDetails({
 			<Card fullWidth className="p-6 space-y-6" shadow="none">
 				recent applications
 			</Card>
-			<Card fullWidth className="p-6 space-y-6" shadow="none">
-				hiring statistics
-			</Card>
+			<OrganizationStatistics organization={data} />
 		</div>
 	);
 }

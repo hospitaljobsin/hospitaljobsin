@@ -5,12 +5,14 @@ from enum import Enum
 from typing import TYPE_CHECKING, Annotated, Self
 
 import strawberry
-from aioinject import Inject
+from aioinject import Inject, Injected
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from strawberry import Private, relay
+from strawberry.permission import PermissionExtension
 
 from app.accounts.types import AccountType
+from app.auth.permissions import IsAuthenticated
 from app.auth.types import InvalidEmailErrorType
 from app.base.types import (
     AddressType,
@@ -20,7 +22,7 @@ from app.base.types import (
     BaseNodeType,
 )
 from app.context import Info
-from app.jobs.repositories import JobRepo
+from app.jobs.repositories import JobMetricRepo, JobRepo
 from app.organizations.documents import (
     Organization,
     OrganizationInvite,
@@ -33,7 +35,7 @@ from app.organizations.repositories import (
 from app.organizations.services import OrganizationMemberService
 
 if TYPE_CHECKING:
-    from app.jobs.types import JobConnectionType
+    from app.jobs.types import JobConnectionType, JobMetricPointType
 
 
 @strawberry.enum(
@@ -186,6 +188,65 @@ class OrganizationType(BaseNodeType[Organization]):
             cls.marshal(organization) if organization is not None else organization
             for organization in organizations
         ]
+
+    @strawberry.field(  # type: ignore[misc]
+        description="Total viewer count for the organization's jobs, filtered by time.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    # TODO: ensure only org members can view this field
+                ]
+            )
+        ],
+    )
+    @inject
+    async def total_view_count(
+        self,
+        job_metric_repo: Injected[JobMetricRepo],
+        start_date: Annotated[
+            datetime | None,
+            strawberry.argument(
+                description="Start date for filtering the view count.",
+            ),
+        ] = None,
+        end_date: Annotated[
+            datetime | None,
+            strawberry.argument(
+                description="End date for filtering the view count.",
+            ),
+        ] = None,
+    ) -> int:
+        return await job_metric_repo.get_organization_count(
+            organization_id=ObjectId(self.id),
+            event_type="view",
+            start_date=start_date,
+            end_date=end_date,
+        )
+
+    @strawberry.field(  # type: ignore[misc]
+        description="Total view metric points for the organization's jobs, filtered by time.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    # TODO: ensure only org members can view this field
+                ]
+            )
+        ],
+    )
+    @inject
+    async def total_view_metric_points(
+        self,
+        job_metric_repo: Injected[JobMetricRepo],
+    ) -> list[Annotated["JobMetricPointType", strawberry.lazy("app.jobs.types")]]:
+        from app.jobs.types import JobMetricPointType
+
+        metric_points = await job_metric_repo.get_organization_metric_points(
+            organization_id=ObjectId(self.id),
+            event_type="view",
+        )
+        return [JobMetricPointType.marshal(point) for point in metric_points]
 
     @strawberry.field(  # type: ignore[misc]
         description="The logo URL of the organization.",

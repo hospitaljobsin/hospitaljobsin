@@ -12,7 +12,7 @@ export const JobFragment = graphql`
     slug
     title
     skills
-	viewerCount
+	viewCount
     createdAt
     applicationCount
     vacancies
@@ -94,7 +94,7 @@ export default function Job({ job }: Props) {
 				)}
 				<div className="w-full flex justify-end gap-6 sm:gap-8">
 					<p className="text-primary-600 text-sm sm:text-base font-normal whitespace-nowrap">
-						<span className="font-medium">{data.viewerCount}</span> views
+						<span className="font-medium">{data.viewCount}</span> views
 					</p>
 					<p
 						className="text-foreground-500 text-sm sm:text-base font-normal whitespace-nowrap"

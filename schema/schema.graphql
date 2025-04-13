@@ -546,7 +546,7 @@ type Job implements Node {
   ): JobApplicantConnection!
 
   """Viewer count for the job, filtered by time."""
-  viewerCount(
+  viewCount(
     """Start date for filtering the view count."""
     startDate: datetime = null
 
@@ -1301,6 +1301,20 @@ type Organization implements Node {
 
   """The website of the organization."""
   website: String
+
+  """Total viewer count for the organization's jobs, filtered by time."""
+  totalViewCount(
+    """Start date for filtering the view count."""
+    startDate: datetime = null
+
+    """End date for filtering the view count."""
+    endDate: datetime = null
+  ): Int! @isAuthenticated
+
+  """
+  Total view metric points for the organization's jobs, filtered by time.
+  """
+  totalViewMetricPoints: [JobMetricPoint!]! @isAuthenticated
 
   """The logo URL of the organization."""
   logoUrl: String!

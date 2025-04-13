@@ -1,4 +1,4 @@
-import type { JobStatisticsFragment$key } from "@/__generated__/JobStatisticsFragment.graphql";
+import type { OrganizationStatisticsFragment$key } from "@/__generated__/OrganizationStatisticsFragment.graphql";
 import { dateFormat } from "@/lib/intl";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import React from "react";
@@ -14,10 +14,10 @@ import {
 } from "recharts";
 import { graphql } from "relay-runtime";
 
-const JobStatisticsFragment = graphql`
-fragment JobStatisticsFragment on Job {
-    viewCount
-    viewMetricPoints {
+const OrganizationStatisticsFragment = graphql`
+fragment OrganizationStatisticsFragment on Organization {
+    totalViewCount
+    totalViewMetricPoints {
         timestamp
         count
     }
@@ -25,24 +25,28 @@ fragment JobStatisticsFragment on Job {
 `;
 
 type Props = {
-	job: JobStatisticsFragment$key;
+	organization: OrganizationStatisticsFragment$key;
 };
 
-export default function JobStatistics(props: Props) {
-	const data = useFragment(JobStatisticsFragment, props.job);
+export default function OrganizationStatistics(props: Props) {
+	const data = useFragment(OrganizationStatisticsFragment, props.organization);
+
+	console.log("OrganizationStatistics", data);
 
 	// Process the data for the chart
 	const chartData = React.useMemo(() => {
-		return data.viewMetricPoints.map((point) => ({
+		return data.totalViewMetricPoints.map((point) => ({
 			date: dateFormat.format(new Date(point.timestamp)),
 			views: point.count,
 		}));
-	}, [data.viewMetricPoints]);
+	}, [data.totalViewMetricPoints]);
 
 	return (
 		<Card className="p-6" shadow="none" fullWidth>
 			<CardHeader className="w-full flex gap-6 justify-between">
-				<h3 className="text-lg font-medium mb-4">{data.viewCount} Views</h3>
+				<h3 className="text-lg font-medium mb-4">
+					{data.totalViewCount} Total Views
+				</h3>
 			</CardHeader>
 			<CardBody>
 				<div style={{ width: "100%", height: 300 }}>

@@ -10,7 +10,6 @@ aaa
 
 # TODO- recruiter portal
 - add pagination to job view metrics (normal connections should be enough??)
-- add org level stats
 - add time based stats- number of views, impressions using MongoDB timeseries collections
 - add select option type applicant field
 - add option to use screening questions and apply via the app (called EasyApply on Linkedin), or redirect to a custom application link (cannot be changed after job is published)

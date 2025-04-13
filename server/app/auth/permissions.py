@@ -12,7 +12,6 @@ class IsAuthenticated(BasePermission):
 
     # This method can also be async!
     def has_permission(self, source: Any, info: Info, **kwargs: Any) -> bool:  # noqa:  ANN401, ARG002
-        print("source", source)
         return info.context.get("current_user") is not None
 
 

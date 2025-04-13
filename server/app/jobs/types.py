@@ -430,7 +430,7 @@ class JobType(BaseNodeType[Job]):
         ],
     )
     @inject
-    async def viewer_count(
+    async def view_count(
         self,
         job_metric_repo: Injected[JobMetricRepo],
         start_date: Annotated[
