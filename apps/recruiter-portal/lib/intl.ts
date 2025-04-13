@@ -7,6 +7,13 @@ export const timeFormat = new Intl.NumberFormat("en-US", {
 	useGrouping: false,
 });
 
+export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
+	month: "long",
+	day: "numeric",
+	hour: "2-digit",
+	minute: "2-digit",
+});
+
 /**
  * Convert a date to a relative time string, such as
  * "a minute ago", "in 2 hours", "yesterday", "3 months ago", etc.

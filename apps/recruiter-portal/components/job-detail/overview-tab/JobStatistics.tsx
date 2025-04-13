@@ -1,8 +1,9 @@
 import type { JobStatisticsFragment$key } from "@/__generated__/JobStatisticsFragment.graphql";
-import { dateFormat } from "@/lib/intl";
+import { dateFormat, dateTimeFormat } from "@/lib/intl";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import React from "react";
 import { useFragment } from "react-relay";
+import type { TooltipProps } from "recharts";
 import {
 	Area,
 	AreaChart,
@@ -31,13 +32,32 @@ type Props = {
 export default function JobStatistics(props: Props) {
 	const data = useFragment(JobStatisticsFragment, props.job);
 
+	// Create a formatter for date and time
+
 	// Process the data for the chart
 	const chartData = React.useMemo(() => {
-		return data.viewMetricPoints.map((point) => ({
-			date: dateFormat.format(new Date(point.timestamp)),
-			views: point.count,
-		}));
+		return data.viewMetricPoints.map((point) => {
+			const date = new Date(point.timestamp);
+			return {
+				date: dateFormat.format(date),
+				dateTime: dateTimeFormat.format(date),
+				views: point.count,
+			};
+		});
 	}, [data.viewMetricPoints]);
+
+	// Custom tooltip to display date and time
+	const CustomTooltip = ({ active, payload }: TooltipProps<string, string>) => {
+		if (active && payload && payload.length) {
+			return (
+				<div className="bg-background p-3 border border-border rounded-md shadow-md">
+					<p>{payload[0].payload.dateTime}</p>
+					<p className="font-medium">{`Views: ${payload[0].value}`}</p>
+				</div>
+			);
+		}
+		return null;
+	};
 
 	return (
 		<Card className="p-6" shadow="none" fullWidth>
@@ -59,7 +79,7 @@ export default function JobStatistics(props: Props) {
 								<CartesianGrid strokeDasharray="3 3" />
 								<XAxis dataKey="date" dy={10} />
 								<YAxis dx={-10} />
-								<Tooltip />
+								<Tooltip content={<CustomTooltip />} />
 								<Area
 									type="natural"
 									dataKey="views"
