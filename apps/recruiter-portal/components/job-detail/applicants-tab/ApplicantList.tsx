@@ -2,7 +2,8 @@ import { usePaginationFragment } from "react-relay";
 import Applicant from "./Applicant";
 
 import type { ApplicantListFragment$key } from "@/__generated__/ApplicantListFragment.graphql";
-import type { pageOrganizationJobsViewQuery } from "@/__generated__/pageOrganizationJobsViewQuery.graphql";
+import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
+import type { pageJobApplicantsViewQuery } from "@/__generated__/pageJobApplicantsViewQuery.graphql";
 import { UserRound } from "lucide-react";
 import { startTransition, useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
@@ -14,10 +15,11 @@ const ApplicantListFragment = graphql`
 	cursor: { type: "ID" }
 	count: { type: "Int", defaultValue: 10 }
 	searchTerm: { type: "String", defaultValue: null }
+	status: { type: "JobApplicantStatus", defaultValue: null }
   )
   @refetchable(queryName: "ApplicantListPaginationQuery") {
-	applicants(after: $cursor, first: $count, searchTerm: $searchTerm)
-	  @connection(key: "ApplicantListFragment_applicants", filters: ["searchTerm"]) {
+	applicants(after: $cursor, first: $count, searchTerm: $searchTerm, status: $status)
+	  @connection(key: "ApplicantListFragment_applicants", filters: ["status", "searchTerm"]) {
 	  edges {
 		node {
 		  id
@@ -34,11 +36,16 @@ const ApplicantListFragment = graphql`
 type Props = {
 	rootQuery: ApplicantListFragment$key;
 	searchTerm: string | null;
+	status: JobApplicantStatus | null;
 };
 
-export default function ApplicantList({ rootQuery, searchTerm }: Props) {
+export default function ApplicantList({
+	rootQuery,
+	searchTerm,
+	status,
+}: Props) {
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
-		pageOrganizationJobsViewQuery,
+		pageJobApplicantsViewQuery,
 		ApplicantListFragment$key
 	>(ApplicantListFragment, rootQuery);
 
@@ -67,17 +74,18 @@ export default function ApplicantList({ rootQuery, searchTerm }: Props) {
 
 	// Debounced search term refetch
 	useEffect(() => {
+		console.log("status", status, typeof status);
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
 				refetch(
-					{ searchTerm: searchTerm },
+					{ searchTerm: searchTerm, status: status },
 					{ fetchPolicy: "store-or-network" },
 				);
 			});
 		}, 300); // Adjust debounce delay as needed
 
 		return () => clearTimeout(debounceTimeout);
-	}, [refetch, searchTerm]);
+	}, [refetch, searchTerm, status]);
 
 	if (
 		data.applicants.edges.length === 0 &&

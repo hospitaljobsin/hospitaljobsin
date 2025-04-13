@@ -531,6 +531,7 @@ type Job implements Node {
   applicants(
     """The search (query) term"""
     searchTerm: String = null
+    status: JobApplicantStatus = null
 
     """Returns items before the given cursor."""
     before: ID = null
@@ -1302,6 +1303,9 @@ type Organization implements Node {
   """The website of the organization."""
   website: String
 
+  """The logo URL of the organization."""
+  logoUrl: String!
+
   """Total viewer count for the organization's jobs, filtered by time."""
   totalViewCount(
     """Start date for filtering the view count."""
@@ -1315,9 +1319,6 @@ type Organization implements Node {
   Total view metric points for the organization's jobs, filtered by time.
   """
   totalViewMetricPoints: [JobMetricPoint!]! @isAuthenticated
-
-  """The logo URL of the organization."""
-  logoUrl: String!
 
   """The number of admin members in the organization."""
   adminCount: Int!

@@ -1,5 +1,6 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
+import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
 import type { ApplicantsTabFragment$key } from "@/__generated__/ApplicantsTabFragment.graphql";
 import { useState } from "react";
 import { graphql, useFragment } from "react-relay";
@@ -12,12 +13,13 @@ const ApplicantsTabFragment = graphql`
       slug: {
         type: "String!",
       }
+	  searchTerm: { type: "String", defaultValue: null }
+	  status: { type: "JobApplicantStatus", defaultValue: null }
     ) {
 		job(slug: $slug) {
 			__typename
 			... on Job {
-				...ApplicantListFragment
-				...ApplicantControllerFragment
+				...ApplicantListFragment @arguments(searchTerm: $searchTerm, status: $status)
 			}     
     	}
   }
@@ -27,6 +29,7 @@ export default function ApplicantsTab(props: {
 	rootQuery: ApplicantsTabFragment$key;
 }) {
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
+	const [status, setStatus] = useState<JobApplicantStatus | null>(null);
 	const query = useFragment(ApplicantsTabFragment, props.rootQuery);
 	invariant(query.job.__typename === "Job", "Expected 'job' type");
 
@@ -35,9 +38,14 @@ export default function ApplicantsTab(props: {
 			<ApplicantController
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
-				rootQuery={query.job}
+				status={status}
+				setStatus={setStatus}
 			/>
-			<ApplicantList rootQuery={query.job} searchTerm={searchTerm} />
+			<ApplicantList
+				rootQuery={query.job}
+				searchTerm={searchTerm}
+				status={status}
+			/>
 		</div>
 	);
 }

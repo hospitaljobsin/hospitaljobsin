@@ -1,27 +1,31 @@
-import type { ApplicantControllerFragment$key } from "@/__generated__/ApplicantControllerFragment.graphql";
-import links from "@/lib/links";
-import { Button, Input, Link } from "@heroui/react";
-import { BriefcaseBusiness, Search } from "lucide-react";
-import { useParams } from "next/navigation";
-import { useFragment } from "react-relay";
-import { graphql } from "relay-runtime";
+import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
+import { Input, Select, SelectItem } from "@heroui/react";
+import { Search } from "lucide-react";
 
 interface ApplicantControllerProps {
 	searchTerm: string | null;
 	setSearchTerm: (searchTerm: string | null) => void;
-	rootQuery: ApplicantControllerFragment$key;
+	status: JobApplicantStatus | null;
+	setStatus: (status: JobApplicantStatus | null) => void;
 }
 
-const ApplicantControllerFragment = graphql`
-	fragment ApplicantControllerFragment on Job {
-			__typename
-		}
-`;
+const applicantStatus = [
+	{ key: "ALL", label: "All" },
+	{ key: "APPLIED", label: "Applied" },
+	{ key: "SHORTLISTED", label: "Shortlisted" },
+	{ key: "INTERVIEWED", label: "Interviewed" },
+	{ key: "ONHOLD", label: "On Hold" },
+	{ key: "OFFERED", label: "Offered" },
+] as { key: JobApplicantStatus; label: string }[];
 
 export default function ApplicantController(props: ApplicantControllerProps) {
-	const { slug } = useParams<{ slug: string }>();
-	const data = useFragment(ApplicantControllerFragment, props.rootQuery);
-
+	const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		if (e.target.value === "ALL") {
+			props.setStatus(null);
+			return;
+		}
+		props.setStatus(e.target.value as JobApplicantStatus);
+	};
 	return (
 		<div className="w-full flex flex-col sm:flex-row items-center gap-8">
 			<Input
@@ -43,15 +47,18 @@ export default function ApplicantController(props: ApplicantControllerProps) {
 				fullWidth
 			/>
 			{/* TODO: add sorting controls here */}
-			<Button
-				as={Link}
-				href={links.organizationCreateJob(slug)}
+			<Select
+				label="Status"
 				color="primary"
-				startContent={<BriefcaseBusiness size={25} />}
-				className="w-full sm:w-auto"
+				size="sm"
+				className="max-w-xs"
+				onChange={handleSelectionChange}
+				selectedKeys={props.status ? [props.status] : ["ALL"]}
 			>
-				New
-			</Button>
+				{applicantStatus.map((status) => (
+					<SelectItem key={status.key}>{status.label}</SelectItem>
+				))}
+			</Select>
 		</div>
 	);
 }

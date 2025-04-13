@@ -381,6 +381,7 @@ class JobType(BaseNodeType[Job]):
                 description="The search (query) term",
             ),
         ] = None,
+        status: Annotated[JobApplicantStatusEnum | None, strawberry.argument()] = None,
         before: Annotated[
             relay.GlobalID | None,
             strawberry.argument(
@@ -410,6 +411,7 @@ class JobType(BaseNodeType[Job]):
         paginated_invites = await job_applicant_repo.get_all_by_job_id(
             job_id=ObjectId(self.id),
             search_term=search_term,
+            status=status.value.lower() if status else None,
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
             first=first,

@@ -323,6 +323,7 @@ class JobApplicantRepo:
         self,
         job_id: ObjectId,
         search_term: str | None = None,
+        status: JobApplicantStatus | None = None,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
@@ -350,6 +351,13 @@ class JobApplicantRepo:
                 fetch_links=True,
                 nesting_depth=1,
             ).sort(-JobApplicant.id)
+
+        if status:
+            search_criteria = search_criteria.find(
+                JobApplicant.status == status,
+                fetch_links=True,
+                nesting_depth=1,
+            )
 
         return await paginator.paginate(
             search_criteria=search_criteria,

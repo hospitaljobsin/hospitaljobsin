@@ -8,9 +8,9 @@ import { graphql, readInlineData } from "relay-runtime";
 import JobApplicantsViewClientComponent from "./JobApplicantsViewClientComponent";
 
 export const PageJobApplicantsViewQuery = graphql`
-  query pageJobApplicantsViewQuery($slug: String!) {	
+  query pageJobApplicantsViewQuery($slug: String!, $searchTerm: String, $status: JobApplicantStatus) {	
     ...pageJobApplicantsMetadataFragment @arguments(slug: $slug)
-    ...JobApplicantsViewClientComponentFragment @arguments(slug: $slug)
+    ...JobApplicantsViewClientComponentFragment @arguments(slug: $slug, searchTerm: $searchTerm, status: $status)
   }
 `;
 
