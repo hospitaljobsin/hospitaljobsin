@@ -146,10 +146,10 @@ class JobApplicant(Document):
 class JobMetricMetadata(BaseModel):
     job_id: PydanticObjectId
     organization_id: PydanticObjectId
+    event_type: JobMetricEventType
 
 
 class JobMetric(Document):
-    event_type: JobMetricEventType
     timestamp: datetime = Field(default_factory=datetime.now)
     metadata: JobMetricMetadata
 

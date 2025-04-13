@@ -412,11 +412,11 @@ class JobMetricRepo:
     ) -> JobMetric:
         """Create a new job metric."""
         job_metric = JobMetric(
-            event_type=event_type,
             timestamp=datetime.now(UTC),
             metadata=JobMetricMetadata(
                 job_id=job_id,
                 organization_id=organization_id,
+                event_type=event_type,
             ),
         )
         return await job_metric.insert(link_rule=WriteRules.DO_NOTHING)
@@ -431,7 +431,7 @@ class JobMetricRepo:
         """Get the count of job metrics for a given job ID and event type."""
         expressions = [
             JobMetric.metadata.job_id == job_id,
-            JobMetric.event_type == event_type,
+            JobMetric.metadata.event_type == event_type,
         ]
 
         if start_date:
@@ -451,7 +451,7 @@ class JobMetricRepo:
         """Get the count of job metrics for a given organization ID and event type."""
         expressions = [
             JobMetric.metadata.organization_id == organization_id,
-            JobMetric.event_type == event_type,
+            JobMetric.metadata.event_type == event_type,
         ]
 
         if start_date:
@@ -468,7 +468,7 @@ class JobMetricRepo:
             {
                 "$match": {
                     "metadata.organization_id": organization_id,
-                    "event_type": event_type,
+                    "metadata.event_type": event_type,
                 }
             },
             {
@@ -487,7 +487,7 @@ class JobMetricRepo:
         self, job_id: ObjectId, event_type: JobMetricEventType
     ) -> list[dict[str, Any]]:
         pipeline = [
-            {"$match": {"metadata.job_id": job_id, "event_type": event_type}},
+            {"$match": {"metadata.job_id": job_id, "metadata.event_type": event_type}},
             {
                 "$group": {
                     "_id": {"$dateTrunc": {"date": "$timestamp", "unit": "minute"}},
