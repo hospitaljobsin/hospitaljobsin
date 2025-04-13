@@ -98,8 +98,9 @@ async def teardown_test_database() -> None:
     collections = await database.list_collection_names()
 
     for collection_name in collections:
-        collection = database.get_collection(collection_name)
-        await collection.delete_many({})
+        if collection_name.startswith("system."):
+            continue
+        await database.drop_collection(collection_name)
 
     # Close connection
     client.close()
