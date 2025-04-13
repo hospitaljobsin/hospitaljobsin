@@ -33,11 +33,11 @@ fragment DeleteOrganizationModalAccountFragment on Account {
 `;
 
 const DeleteOrganizationMutation = graphql`
-  mutation DeleteOrganizationModalMutation($organizationId: ID!, $connections: [ID!]!) {
+  mutation DeleteOrganizationModalMutation($organizationId: ID!) {
     deleteOrganization(organizationId: $organizationId) {
         __typename
         ... on Organization {
-            id @deleteEdge(connections: $connections)
+            id
         }
         ... on OrganizationNotFoundError {
             __typename
@@ -88,12 +88,6 @@ export default function DeleteOrganizationModal({
 		},
 	});
 
-	const connectionID = ConnectionHandler.getConnectionID(
-		accountData.id,
-		"OrganizationListFragment_organizations",
-		[],
-	);
-
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		if (values.name !== data.name) {
 			setError("name", {
@@ -105,7 +99,23 @@ export default function DeleteOrganizationModal({
 		commitMutation({
 			variables: {
 				organizationId: data.id,
-				connections: [connectionID],
+			},
+			updater(store) {
+				const connectionID = ConnectionHandler.getConnectionID(
+					accountData.id,
+					"OrganizationListFragment_organizations",
+				);
+				const connectionRecord = store.get(connectionID);
+
+				const organizationRecord = store.get(data.id);
+
+				// Only update if the connection exists
+				if (connectionRecord && organizationRecord) {
+					ConnectionHandler.deleteNode(
+						connectionRecord,
+						organizationRecord.getDataID(),
+					);
+				}
 			},
 			onCompleted(response) {
 				onClose();

@@ -25,11 +25,11 @@ const DeleteJobModalFragment = graphql`
     `;
 
 const DeleteJobMutation = graphql`
-  mutation DeleteJobModalMutation($jobId: ID!, $connections: [ID!]!) {
+  mutation DeleteJobModalMutation($jobId: ID!) {
     deleteJob(jobId: $jobId) {
         __typename
         ... on Job {
-            id @deleteEdge(connections: $connections)
+            id
         }
         ... on JobNotFoundError {
             __typename
@@ -59,18 +59,27 @@ export default function DeleteJobModal({
 	const [commitMutation, isMutationInFlight] =
 		useMutation<DeleteJobModalMutation>(DeleteJobMutation);
 
-	const connectionID = ConnectionHandler.getConnectionID(
-		data.organization.id,
-		"OrganizationJobsListInternalFragment_jobs",
-		[],
-	);
-
 	function handleDeleteJob() {
 		commitMutation({
 			variables: {
 				jobId: data.id,
-				connections: [connectionID],
 			},
+			updater(store) {
+				const connectionID = ConnectionHandler.getConnectionID(
+					data.organization.id,
+					"OrganizationJobsListInternalFragment_jobs",
+					[],
+				);
+				const connectionRecord = store.get(connectionID);
+
+				const jobRecord = store.get(data.id);
+
+				// Only update if the connection exists
+				if (connectionRecord && jobRecord) {
+					ConnectionHandler.deleteNode(connectionRecord, jobRecord.getDataID());
+				}
+			},
+
 			onCompleted(response) {
 				onClose();
 				if (response.deleteJob.__typename === "Job") {
