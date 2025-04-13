@@ -19,6 +19,7 @@ aaa
 - show applicant detail view
     - show applicant's form data
     - show applicant's job seeker profile
+- add export applicants to XLSX button
 
 # PulseWork
 > *recruitment and job seeking for medical professionals*
