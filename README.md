@@ -12,7 +12,6 @@ aaa
 - make job slug unique to a particular org, always use org slug and job slug to query for jobs
 - fix applicant text search
 - add pagination to job view metrics (normal connections should be enough??)
-- add time based stats- number of views, impressions using MongoDB timeseries collections
 - add select option type applicant field
 - add option to use screening questions and apply via the app (called EasyApply on Linkedin), or redirect to a custom application link (cannot be changed after job is published)
 - if you have an external application link, you CANNOT see applicants in dashboard. this feature cannot be changed after creating the job.
