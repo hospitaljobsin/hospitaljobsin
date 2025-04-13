@@ -31,7 +31,7 @@
 		"react-dom": "19.0.0",
 		"react-google-recaptcha-v3": "^1.10.1",
 		"react-hook-form": "^7.55.0",
-		"react-markdown": "^9.1.0",
+		"react-markdown": "^10.1.0",
 		"react-share": "^5.2.2",
 		"recharts": "^2.15.2",
 		"relay-runtime": "^18.2.0",
