@@ -102,7 +102,7 @@ class OrganizationRepo:
         ]
 
     async def delete(self, organization: Organization) -> None:
-        """Delete a organization by ID."""
+        """Delete an organization."""
         await organization.delete()
 
     async def get_all_by_account_id(
@@ -122,7 +122,6 @@ class OrganizationRepo:
 
         pipeline = [
             {"$match": {"account.$id": account_id}},
-            {"$sort": {"_id": -1}},
             {
                 "$lookup": {
                     "from": "organizations",
@@ -133,6 +132,7 @@ class OrganizationRepo:
             },
             {"$unwind": "$organization_data"},
             {"$replaceRoot": {"newRoot": "$organization_data"}},
+            {"$sort": {"_id": -1}},
         ]
 
         return await paginator.paginate(

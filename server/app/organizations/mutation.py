@@ -35,6 +35,7 @@ from .types import (
     CreateOrganizationPayload,
     DeclineOrganizationInvitePayload,
     DeleteOrganizationInvitePayload,
+    DeleteOrganizationPayload,
     DemoteOrganizationMemberPayload,
     DemoteOrganizationMemberSuccessType,
     InsufficientOrganizationAdminsErrorType,
@@ -193,6 +194,43 @@ class OrganizationMutation:
                         return OrganizationNotFoundErrorType()
                     case OrganizationSlugInUseError():
                         return OrganizationSlugInUseErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case Ok(organization):
+                return OrganizationType.marshal(organization)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=DeleteOrganizationPayload,
+        description="Delete an organization.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def delete_organization(
+        self,
+        info: AuthInfo,
+        organization_service: Annotated[OrganizationService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(description="The ID of the organization to delete."),
+        ],
+    ) -> DeleteOrganizationPayload:
+        """Delete an organization."""
+        match await organization_service.delete(
+            account=info.context["current_user"],
+            organization_id=organization_id.node_id,
+        ):
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
                     case OrganizationAuthorizationError():
                         return OrganizationAuthorizationErrorType()
             case Ok(organization):

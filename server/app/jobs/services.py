@@ -96,7 +96,9 @@ class JobService:
             return Err(JobNotFoundError())
 
         metric = await self._job_metric_repo.create(
-            job_id=existing_job.id, event_type="view"
+            job_id=existing_job.id,
+            organization_id=existing_job.organization.ref.id,
+            event_type="view",
         )
 
         return Ok(metric)

@@ -147,6 +147,7 @@ class JobMetric(Document):
     event_type: JobMetricEventType
     timestamp: datetime = Field(default_factory=datetime.now)
     job_id: PydanticObjectId
+    organization: Link[Organization]
 
     class Settings:
         name = "job_metrics"

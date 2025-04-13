@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Annotated, Self
+from typing import TYPE_CHECKING, Annotated, Any, Self
 
 import strawberry
 from aioinject import Inject, Injected
@@ -242,6 +242,26 @@ class JobApplicantConnectionType(
 
 
 @strawberry.type(
+    name="JobMetricPoint",
+    description="A metric point belonging to a series of job metrics.",
+)
+class JobMetricPointType:
+    timestamp: datetime = strawberry.field(
+        description="The timestamp of the job metric point."
+    )
+    count: int = strawberry.field(
+        description="The count of the job metric point.",
+    )
+
+    @classmethod
+    def marshal(cls, metric_point: dict[str, Any]) -> Self:
+        return cls(
+            timestamp=metric_point.get("timestamp"),
+            count=metric_point.get("count"),
+        )
+
+
+@strawberry.type(
     name="Job",
     description="A job posting.",
 )
@@ -404,7 +424,7 @@ class JobType(BaseNodeType[Job]):
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: ensure only org admins can view this field
+                    # TODO: ensure only org members can view this field
                 ]
             )
         ],
@@ -414,17 +434,17 @@ class JobType(BaseNodeType[Job]):
         self,
         job_metric_repo: Injected[JobMetricRepo],
         start_date: Annotated[
-            datetime,
+            datetime | None,
             strawberry.argument(
                 description="Start date for filtering the view count.",
             ),
-        ],
+        ] = None,
         end_date: Annotated[
-            datetime,
+            datetime | None,
             strawberry.argument(
                 description="End date for filtering the view count.",
             ),
-        ],
+        ] = None,
     ) -> int:
         return await job_metric_repo.get_count(
             job_id=ObjectId(self.id),
@@ -432,6 +452,28 @@ class JobType(BaseNodeType[Job]):
             start_date=start_date,
             end_date=end_date,
         )
+
+    @strawberry.field(  # type: ignore[misc]
+        description="View metric points for the job, filtered by time.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    # TODO: ensure only org members can view this field
+                ]
+            )
+        ],
+    )
+    @inject
+    async def view_metric_points(
+        self,
+        job_metric_repo: Injected[JobMetricRepo],
+    ) -> list[JobMetricPointType]:
+        metric_points = await job_metric_repo.get_metric_points(
+            job_id=ObjectId(self.id),
+            event_type="view",
+        )
+        return [JobMetricPointType.marshal(point) for point in metric_points]
 
     @strawberry.field(  # type: ignore[misc]
         description="Whether the job is saved by the current user.",

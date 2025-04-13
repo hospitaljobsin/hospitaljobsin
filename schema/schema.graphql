@@ -254,6 +254,9 @@ union DeleteJobPayload = Job | JobNotFoundError | OrganizationAuthorizationError
 """The delete organization invite payload."""
 union DeleteOrganizationInvitePayload = OrganizationInviteEdge | OrganizationNotFoundError | OrganizationInviteNotFoundError | OrganizationAuthorizationError
 
+"""The delete organization payload."""
+union DeleteOrganizationPayload = Organization | OrganizationNotFoundError | OrganizationAuthorizationError
+
 """The delete other sessions payload."""
 type DeleteOtherSessionsPayload {
   """Deleted session IDs."""
@@ -545,11 +548,14 @@ type Job implements Node {
   """Viewer count for the job, filtered by time."""
   viewerCount(
     """Start date for filtering the view count."""
-    startDate: datetime!
+    startDate: datetime = null
 
     """End date for filtering the view count."""
-    endDate: datetime!
+    endDate: datetime = null
   ): Int! @isAuthenticated
+
+  """View metric points for the job, filtered by time."""
+  viewMetricPoints: [JobMetricPoint!]! @isAuthenticated
 
   """Whether the job is saved by the current user."""
   isSaved: Boolean!
@@ -642,6 +648,15 @@ type JobEdge {
 
   """The item at the end of the edge"""
   node: Job!
+}
+
+"""A metric point belonging to a series of job metrics."""
+type JobMetricPoint {
+  """The timestamp of the job metric point."""
+  timestamp: datetime!
+
+  """The count of the job metric point."""
+  count: Int!
 }
 
 """Used when the job is not found."""
@@ -1188,6 +1203,12 @@ type Mutation {
     """The logo URL of the organization."""
     logoUrl: String = null
   ): UpdateOrganizationPayload! @isAuthenticated
+
+  """Delete an organization."""
+  deleteOrganization(
+    """The ID of the organization to delete."""
+    organizationId: ID!
+  ): DeleteOrganizationPayload! @isAuthenticated
 
   """Create an organization invite."""
   createOrganizationInvite(

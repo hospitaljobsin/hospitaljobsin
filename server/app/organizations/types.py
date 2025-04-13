@@ -488,6 +488,16 @@ UpdateOrganizationPayload = Annotated[
 ]
 
 
+DeleteOrganizationPayload = Annotated[
+    OrganizationType
+    | OrganizationNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
+    strawberry.union(
+        name="DeleteOrganizationPayload",
+        description="The delete organization payload.",
+    ),
+]
+
 OrganizationPayload = Annotated[
     OrganizationType | OrganizationNotFoundErrorType,
     strawberry.union(

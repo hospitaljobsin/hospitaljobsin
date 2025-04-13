@@ -2,6 +2,7 @@ import uuid
 from datetime import timedelta
 
 from bson import ObjectId
+from bson.errors import InvalidId
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks
 from humanize import naturaldelta
@@ -307,6 +308,33 @@ class OrganizationService:
         )
 
         return Ok(organization)
+
+    async def delete(
+        self, account: Account, organization_id: str
+    ) -> Result[
+        Organization, OrganizationNotFoundError | OrganizationAuthorizationError
+    ]:
+        """Delete an organization."""
+        try:
+            organization_id = ObjectId(organization_id)
+        except InvalidId:
+            return Err(OrganizationNotFoundError())
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=existing_organization.id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        await self._organization_repo.delete(existing_organization)
+
+        return Ok(existing_organization)
 
 
 class OrganizationInviteService:

@@ -1,7 +1,8 @@
 import secrets
 from datetime import UTC, datetime
-from typing import Literal
+from typing import Any, Literal
 
+import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.operators import And, In
 from bson import ObjectId
@@ -402,12 +403,18 @@ class JobApplicationFormRepo:
 
 
 class JobMetricRepo:
-    async def create(self, job_id: str, event_type: JobMetricEventType) -> JobMetric:
+    async def create(
+        self,
+        job_id: ObjectId,
+        organization_id: ObjectId,
+        event_type: JobMetricEventType,
+    ) -> JobMetric:
         """Create a new job metric."""
         job_metric = JobMetric(
             event_type=event_type,
             timestamp=datetime.now(UTC),
             job_id=job_id,
+            organization=organization_id,
         )
         return await job_metric.insert(link_rule=WriteRules.DO_NOTHING)
 
@@ -415,15 +422,32 @@ class JobMetricRepo:
         self,
         job_id: ObjectId,
         event_type: JobMetricEventType,
-        start_date: datetime,
-        end_date: datetime,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
     ) -> int:
         """Get the count of job metrics for a given job ID and event type."""
-        return await JobMetric.find(
-            And(
-                JobMetric.job_id == job_id,
-                JobMetric.event_type == event_type,
-                JobMetric.timestamp >= start_date,
-                JobMetric.timestamp <= end_date,
-            )
-        ).count()
+        expressions = [JobMetric.job_id == job_id, JobMetric.event_type == event_type]
+
+        if start_date:
+            expressions.append(JobMetric.timestamp >= start_date)
+        if end_date:
+            expressions.append(JobMetric.timestamp <= end_date)
+
+        return await JobMetric.find(And(*expressions)).count()
+
+    async def get_metric_points(
+        self, job_id: ObjectId, event_type: JobMetricEventType
+    ) -> list[dict[str, Any]]:
+        pipeline = [
+            {"$match": {"job_id": job_id, "event_type": event_type}},
+            {
+                "$group": {
+                    "_id": {"$dateTrunc": {"date": "$timestamp", "unit": "minute"}},
+                    "count": {"$sum": 1},
+                }
+            },
+            {"$sort": {"_id": pymongo.ASCENDING}},
+            {"$project": {"timestamp": "$_id", "count": 1, "_id": 0}},
+        ]
+
+        return await JobMetric.aggregate(pipeline).to_list()

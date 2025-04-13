@@ -1,7 +1,7 @@
 "use client";
 import { env } from "@/lib/env";
 import { getCurrentEnvironment } from "@/lib/relay/environments";
-import { ProgressProvider } from "@bprogress/next/app";
+import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { ThemeProvider } from "next-themes";
 import { useRouter } from "next/navigation";
@@ -35,7 +35,8 @@ export default function Providers({
 					>
 						<ProgressProvider
 							height="4px"
-							color="#00a925"
+							color="hsl(var(--heroui-primary-400))"
+							nonce="progressbar-nonce"
 							options={{ showSpinner: false }}
 							shallowRouting
 						>
