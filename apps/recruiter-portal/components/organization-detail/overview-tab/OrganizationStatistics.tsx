@@ -1,6 +1,7 @@
 import type { OrganizationStatisticsFragment$key } from "@/__generated__/OrganizationStatisticsFragment.graphql";
 import { dateFormat, dateTimeFormat } from "@/lib/intl";
 import { Card, CardBody, CardHeader } from "@heroui/react";
+import { EyeIcon } from "lucide-react";
 import React from "react";
 import { useFragment } from "react-relay";
 import type { TooltipProps } from "recharts";
@@ -59,10 +60,9 @@ export default function OrganizationStatistics(props: Props) {
 
 	return (
 		<Card className="p-6" shadow="none" fullWidth>
-			<CardHeader className="w-full flex gap-6 justify-between">
-				<h3 className="text-lg font-medium mb-4">
-					{data.totalViewCount} Total Views
-				</h3>
+			<CardHeader className="w-full flex gap-4 justify-start items-center">
+				<EyeIcon size={24} />
+				<h3 className="text-lg font-medium">{data.totalViewCount} Job Views</h3>
 			</CardHeader>
 			<CardBody>
 				<div style={{ width: "100%", height: 300 }}>

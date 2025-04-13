@@ -3,6 +3,7 @@ import { getRelativeTimeString } from "@/lib/intl";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
+import { EyeIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -99,9 +100,12 @@ export default function Job({ job }: Props) {
 					</p>
 				)}
 				<div className="w-full flex justify-end gap-6 sm:gap-8">
-					<p className="text-primary-600 text-sm sm:text-base font-normal whitespace-nowrap">
-						<span className="font-medium">{data.viewCount}</span> views
-					</p>
+					<div className="flex items-center gap-2">
+						<EyeIcon size={16} className="text-primary-600" />
+						<p className="text-primary-600 text-sm sm:text-base font-normal whitespace-nowrap">
+							<span className="font-medium">{data.viewCount}</span> views
+						</p>
+					</div>
 					<p
 						className="text-foreground-500 text-sm sm:text-base font-normal whitespace-nowrap"
 						suppressHydrationWarning
