@@ -1,7 +1,7 @@
 import secrets
 from collections import defaultdict
 from datetime import UTC, datetime
-from typing import Any, Literal
+from typing import Any, Literal, get_args
 
 import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
@@ -299,12 +299,11 @@ class JobApplicantRepo:
         job_ids: list[ObjectId],
     ) -> list[dict[str, int] | None]:
         """
-        Return a list where each item corresponds to a job_id from the input list:
-        - A dict of {status: count} if the job has applicants.
-        - An empty dict {} if the job exists but has no applicants.
-        - None if the job_id is invalid or not found.
+        For each job ID:
+        - Return a dict with all statuses and counts (0 if no applicants for that status).
+        - Return {} if the job exists but has no applicants.
+        - Return None if job does not exist.
         """
-        # Run aggregation to get counts for all provided job_ids
         pipeline = [
             {"$match": {"job.$id": {"$in": job_ids}}},
             {
@@ -317,7 +316,7 @@ class JobApplicantRepo:
 
         result = await JobApplicant.aggregate(pipeline).to_list()
 
-        # Build a mapping: job_id -> {status: count}
+        # job_id -> {status: count}
         job_status_counts: dict[ObjectId, dict[str, int]] = defaultdict(dict)
         for entry in result:
             job_id = entry["_id"]["job_id"]
@@ -325,15 +324,23 @@ class JobApplicantRepo:
             count = entry["count"]
             job_status_counts[job_id][status] = count
 
-        # Construct the ordered result list
+        # Final output list
         output: list[dict[str, int] | None] = []
+
         for job_id in job_ids:
             if job_id in job_status_counts:
-                output.append(job_status_counts[job_id])
+                counts = {
+                    status: job_status_counts[job_id].get(status, 0)
+                    for status in get_args(JobApplicantStatus)
+                }
+                output.append(counts)
             else:
-                # Optionally check if job exists in DB before deciding to return {} or None
                 exists = await Job.find_one(Job.id == job_id)
-                output.append({} if exists else None)
+                output.append(
+                    {status: 0 for status in get_args(JobApplicantStatus)}
+                    if exists
+                    else None
+                )
 
         return output
 
