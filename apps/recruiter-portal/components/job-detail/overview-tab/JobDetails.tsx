@@ -24,6 +24,7 @@ import { useParams } from "next/navigation";
 import { graphql, useFragment } from "react-relay";
 import { Markdown } from "tiptap-markdown";
 import JobControls from "./JobControls";
+import JobStatistics from "./JobStatistics";
 
 const JobDetailsFragment = graphql`
   fragment JobDetailsFragment on Job {
@@ -57,6 +58,7 @@ const JobDetailsFragment = graphql`
       name
     }
 	  ...JobControlsFragment
+	  ...JobStatisticsFragment
   }
 `;
 
@@ -251,6 +253,7 @@ export default function JobDetails({
 					}
 				/>
 			)}
+			<JobStatistics job={data} />
 			{/* Job Description */}
 			<Card className="p-6" fullWidth shadow="none">
 				<CardHeader>
@@ -270,55 +273,6 @@ export default function JobDetails({
 					</div>
 				</CardFooter>
 			</Card>
-
-			{/* Hiring Stats Overview */}
-			{/* {data.hiringStats && (
-				<Card className="p-6">
-					<div className="flex items-center gap-2 mb-4">
-						<ChartBarIcon className="w-5 h-5 text-primary-500" />
-						<h3 className="font-semibold text-lg">Hiring Statistics</h3>
-					</div>
-
-					<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-						<div className="bg-gray-50 p-4 rounded-lg text-center">
-							<p className="text-2xl font-bold">
-								{data.hiringStats.totalApplications}
-							</p>
-							<p className="text-sm text-gray-600">Total Applications</p>
-						</div>
-						<div className="bg-blue-50 p-4 rounded-lg text-center">
-							<p className="text-2xl font-bold text-blue-600">
-								{data.hiringStats.newApplications}
-							</p>
-							<p className="text-sm text-gray-600">New Applications</p>
-						</div>
-						<div className="bg-purple-50 p-4 rounded-lg text-center">
-							<p className="text-2xl font-bold text-purple-600">
-								{data.hiringStats.interviewsScheduled}
-							</p>
-							<p className="text-sm text-gray-600">Interviews Scheduled</p>
-						</div>
-						<div className="bg-yellow-50 p-4 rounded-lg text-center">
-							<p className="text-2xl font-bold text-yellow-600">
-								{data.hiringStats.offersExtended}
-							</p>
-							<p className="text-sm text-gray-600">Offers Extended</p>
-						</div>
-						<div className="bg-green-50 p-4 rounded-lg text-center">
-							<p className="text-2xl font-bold text-green-600">
-								{data.hiringStats.hiredCount}
-							</p>
-							<p className="text-sm text-gray-600">Hired</p>
-						</div>
-						<div className="bg-red-50 p-4 rounded-lg text-center">
-							<p className="text-2xl font-bold text-red-600">
-								{data.hiringStats.rejectedCount}
-							</p>
-							<p className="text-sm text-gray-600">Rejected</p>
-						</div>
-					</div>
-				</Card>
-			)} */}
 		</div>
 	);
 }

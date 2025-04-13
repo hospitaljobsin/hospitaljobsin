@@ -12,6 +12,7 @@ export const JobFragment = graphql`
     slug
     title
     skills
+	viewerCount
     createdAt
     applicationCount
     vacancies
@@ -85,18 +86,23 @@ export default function Job({ job }: Props) {
 					</div>
 				</div>
 			</CardBody>
-			<CardFooter className="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-6 sm:gap-8 w-full text-center sm:text-left">
+			<CardFooter className="flex flex-col sm:flex-row items-end sm:items-center justify-between gap-6 sm:gap-8 w-full text-center sm:text-left">
 				{data.vacancies && (
 					<p className="text-foreground-500 text-sm sm:text-base font-normal whitespace-nowrap">
 						<span className="font-medium">{data.vacancies}</span> vacancies
 					</p>
 				)}
-				<p
-					className="text-foreground-500 text-sm sm:text-base font-normal whitespace-nowrap"
-					suppressHydrationWarning
-				>
-					Posted {getRelativeTimeString(data.createdAt)}
-				</p>
+				<div className="w-full flex justify-end gap-6 sm:gap-8">
+					<p className="text-primary-600 text-sm sm:text-base font-normal whitespace-nowrap">
+						<span className="font-medium">{data.viewerCount}</span> views
+					</p>
+					<p
+						className="text-foreground-500 text-sm sm:text-base font-normal whitespace-nowrap"
+						suppressHydrationWarning
+					>
+						Posted {getRelativeTimeString(data.createdAt)}
+					</p>
+				</div>
 			</CardFooter>
 		</Card>
 	);
