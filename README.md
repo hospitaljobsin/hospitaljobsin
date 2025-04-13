@@ -9,6 +9,7 @@ aaa
 - we can add other tools too, like showing current applications, saved jobs etcaaa
 
 # TODO- recruiter portal
+- make job slug unique to a particular org, always use org slug and job slug to query for jobs
 - fix applicant text search
 - add pagination to job view metrics (normal connections should be enough??)
 - add time based stats- number of views, impressions using MongoDB timeseries collections
