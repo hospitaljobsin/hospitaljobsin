@@ -36,6 +36,7 @@ export default function Providers({
 						<ProgressProvider
 							height="4px"
 							color="hsl(var(--heroui-primary-400))"
+							nonce="progressbar-nonce"
 							options={{ showSpinner: false }}
 							shallowRouting
 						>
