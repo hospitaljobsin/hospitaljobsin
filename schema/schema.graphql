@@ -565,7 +565,7 @@ type Job implements Node {
   isApplied: Boolean!
 
   """The number of applications for the job."""
-  applicationCount: Int!
+  applicationCount(status: JobApplicantStatus = null): Int! @isAuthenticated
 
   """The custom application form for the job."""
   applicationForm: JobApplicationForm

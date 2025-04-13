@@ -14,7 +14,11 @@ export const JobFragment = graphql`
     skills
 	viewCount
     createdAt
-    applicationCount
+    appliedCount: applicationCount(status: APPLIED)
+	shortlistedCount: applicationCount(status: SHORTLISTED)
+	interviewedCount: applicationCount(status: INTERVIEWED)
+	onHoldCount: applicationCount(status: ONHOLD)
+	offeredCount: applicationCount(status: OFFERED)
     vacancies
   }
 `;
@@ -56,31 +60,31 @@ export default function Job({ job }: Props) {
 				<div className="w-full flex flex-wrap justify-between items-center gap-4 sm:gap-8 px-6 sm:px-8">
 					<div className="flex flex-col items-center gap-2">
 						<h2 className="text-2xl font-medium text-foreground-700">
-							{data.applicationCount}
+							{data.appliedCount}
 						</h2>
 						<p className="text-md text-foreground-500">Applied</p>
 					</div>
 					<div className="flex flex-col items-center gap-2">
 						<h2 className="text-2xl font-medium text-foreground-700">
-							{data.applicationCount}
+							{data.shortlistedCount}
 						</h2>
 						<p className="text-md text-foreground-500">Shortlisted</p>
 					</div>
 					<div className="flex flex-col items-center gap-2">
 						<h2 className="text-2xl font-medium text-foreground-700">
-							{data.applicationCount}
+							{data.interviewedCount}
 						</h2>
 						<p className="text-md text-foreground-500">Interviewed</p>
 					</div>
 					<div className="flex flex-col items-center gap-2">
 						<h2 className="text-2xl font-medium text-foreground-700">
-							{data.applicationCount}
+							{data.onHoldCount}
 						</h2>
 						<p className="text-md text-foreground-500">On Hold</p>
 					</div>
 					<div className="flex flex-col items-center gap-2">
 						<h2 className="text-2xl font-medium text-foreground-700">
-							{data.applicationCount}
+							{data.offeredCount}
 						</h2>
 						<p className="text-md text-foreground-500">Offered</p>
 					</div>

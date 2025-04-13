@@ -296,12 +296,16 @@ class JobApplicantRepo:
     async def get_count_by_job_id(
         self,
         job_id: ObjectId,
-        status: JobApplicantStatus,
+        status: JobApplicantStatus | None,
     ) -> int:
         """Get the count of applications for a given job ID."""
+        if status:
+            return await JobApplicant.find(
+                JobApplicant.job.id == job_id,
+                JobApplicant.status == status,
+            ).count()
         return await JobApplicant.find(
             JobApplicant.job.id == job_id,
-            JobApplicant.status == status,
         ).count()
 
     async def create(

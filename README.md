@@ -9,7 +9,6 @@ aaa
 - we can add other tools too, like showing current applications, saved jobs etcaaa
 
 # TODO- recruiter portal
-- update applicant count (based on status) in job preview, recruiter portal
 - make job slug unique to a particular org, always use org slug and job slug to query for jobs
 - fix applicant text search
 - add pagination to job view metrics (normal connections should be enough??)

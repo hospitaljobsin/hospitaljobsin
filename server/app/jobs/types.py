@@ -511,14 +511,25 @@ class JobType(BaseNodeType[Job]):
 
     @strawberry.field(  # type: ignore[misc]
         description="The number of applications for the job.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    # TODO: ensure only org members can view this field
+                ]
+            )
+        ],
     )
     @inject
     async def application_count(
-        self, job_applicant_repo: Injected[JobApplicantRepo]
+        self,
+        job_applicant_repo: Injected[JobApplicantRepo],
+        status: JobApplicantStatusEnum | None = None,
     ) -> int:
         """Get the number of applications for the job."""
         return await job_applicant_repo.get_count_by_job_id(
-            job_id=ObjectId(self.id), status="applied"
+            job_id=ObjectId(self.id),
+            status=status.value.lower() if status else None,
         )
 
     @strawberry.field(  # type: ignore[misc]
