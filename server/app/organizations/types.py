@@ -1,4 +1,3 @@
-import hashlib
 from collections.abc import Iterable
 from datetime import datetime
 from enum import Enum
@@ -8,7 +7,7 @@ import strawberry
 from aioinject import Inject, Injected
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
-from strawberry import Private, relay
+from strawberry import relay
 from strawberry.permission import PermissionExtension
 
 from app.accounts.types import AccountType
@@ -156,8 +155,9 @@ class OrganizationType(BaseNodeType[Organization]):
     website: str | None = strawberry.field(
         description="The website of the organization.",
     )
-
-    assigned_logo_url: Private[str | None]
+    logo_url: str = strawberry.field(
+        description="The logo URL of the organization.",
+    )
 
     @classmethod
     def marshal(cls, organization: Organization) -> Self:
@@ -170,7 +170,7 @@ class OrganizationType(BaseNodeType[Organization]):
             address=AddressType.marshal(organization.address),
             email=organization.email,
             website=organization.website,
-            assigned_logo_url=organization.logo_url,
+            logo_url=organization.logo_url,
         )
 
     @classmethod
@@ -247,16 +247,6 @@ class OrganizationType(BaseNodeType[Organization]):
             event_type="view",
         )
         return [JobMetricPointType.marshal(point) for point in metric_points]
-
-    @strawberry.field(  # type: ignore[misc]
-        description="The logo URL of the organization.",
-    )
-    async def logo_url(self) -> str:
-        """Return the organization's logo URL, or a placeholder."""
-        if self.assigned_logo_url is not None:
-            return self.assigned_logo_url
-        slug_hash = hashlib.sha256(self.slug.encode("utf-8")).hexdigest()
-        return f"https://api.dicebear.com/9.x/identicon/png?seed={slug_hash}"
 
     @strawberry.field(  # type: ignore[misc]
         description="The number of admin members in the organization.",

@@ -45,7 +45,7 @@ export default function JobStatistics(props: Props) {
 				<h3 className="text-lg font-medium mb-4">{data.viewCount} Views</h3>
 			</CardHeader>
 			<CardBody>
-				<div style={{ width: "100%", height: 300 }}>
+				<div className="w-full h-48 sm:h-72">
 					{chartData.length > 0 ? (
 						<ResponsiveContainer width="100%" height="100%">
 							<AreaChart

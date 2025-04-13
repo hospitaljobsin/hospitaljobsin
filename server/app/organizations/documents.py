@@ -1,3 +1,4 @@
+import hashlib
 from datetime import datetime
 from typing import Annotated, ClassVar, Literal
 
@@ -17,8 +18,16 @@ class Organization(Document):
     address: Address
     email: str | None = None
     website: str | None = None
-    logo_url: str | None = None
+    internal_logo_url: str | None = Field(default=None, alias="logo_url")
     members: list[BackLink["OrganizationMember"]] = Field(original_field="organization")  # type: ignore[call-overload]
+
+    @property
+    def logo_url(self) -> str:
+        """Return the organization's logo URL, or a placeholder."""
+        if self.internal_logo_url is not None:
+            return self.internal_logo_url
+        slug_hash = hashlib.sha256(self.slug.encode("utf-8")).hexdigest()
+        return f"https://api.dicebear.com/9.x/identicon/png?seed={slug_hash}"
 
     class Settings:
         name = "organizations"
