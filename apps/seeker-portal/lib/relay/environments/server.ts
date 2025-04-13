@@ -1,4 +1,5 @@
 import { env } from "@/lib/env";
+import links from "@/lib/links";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import type {
@@ -38,7 +39,7 @@ export async function networkFetch(
 			switch (err.extensions.code) {
 				// when an AuthenticationError is thrown in a resolver
 				case "UNAUTHENTICATED":
-					redirect("/auth/login");
+					redirect(links.login(links.landing));
 			}
 		}
 		console.error(json.errors);

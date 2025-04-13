@@ -45,6 +45,12 @@ export async function networkFetch(
 				// when an AuthenticationError is thrown in a resolver
 				case "UNAUTHENTICATED":
 					window.location.href = links.login(env.NEXT_PUBLIC_URL);
+					break;
+				case "REQUIRES_SUDO_MODE":
+					window.location.href = links.accountSettingsRequestSudo(
+						window.location.pathname,
+					);
+					break;
 			}
 		}
 		console.error(json.errors);
