@@ -32,8 +32,6 @@ type Props = {
 export default function OrganizationStatistics(props: Props) {
 	const data = useFragment(OrganizationStatisticsFragment, props.organization);
 
-	console.log("OrganizationStatistics", data);
-
 	// Process the data for the chart
 	const chartData = React.useMemo(() => {
 		return data.totalViewMetricPoints.map((point) => {
