@@ -262,6 +262,38 @@ class JobMetricPointType:
 
 
 @strawberry.type(
+    name="JobApplicantCount",
+    description="Application count data of a job.",
+)
+class JobApplicantCountType:
+    applied: int = strawberry.field(
+        description="The number of applicants in applied status for the job.",
+    )
+    shortlisted: int = strawberry.field(
+        description="The number of applicants in shortlisted status for the job.",
+    )
+    interviewed: int = strawberry.field(
+        description="The number of applicants in interviewed status for the job.",
+    )
+    on_hold: int = strawberry.field(
+        description="The number of applicants in onhold status for the job.",
+    )
+    offered: int = strawberry.field(
+        description="The number of applicants in offered status for the job.",
+    )
+
+    @classmethod
+    def marshal(cls, metric_point: dict[str, int]) -> Self:
+        return cls(
+            applied=metric_point.get("applied", 0),
+            shortlisted=metric_point.get("shortlisted", 0),
+            interviewed=metric_point.get("interviewed", 0),
+            on_hold=metric_point.get("on_hold", 0),
+            offered=metric_point.get("offered", 0),
+        )
+
+
+@strawberry.type(
     name="Job",
     description="A job posting.",
 )
@@ -521,16 +553,19 @@ class JobType(BaseNodeType[Job]):
         ],
     )
     @inject
-    async def application_count(
+    async def applicant_count(
         self,
-        job_applicant_repo: Injected[JobApplicantRepo],
-        status: JobApplicantStatusEnum | None = None,
-    ) -> int:
+        info: Info,
+    ) -> JobApplicantCountType | None:
         """Get the number of applications for the job."""
-        return await job_applicant_repo.get_count_by_job_id(
-            job_id=ObjectId(self.id),
-            status=status.value.lower() if status else None,
+        applicant_count = await info.context["loaders"].applicant_count_by_job_id.load(
+            str(self.id)
         )
+
+        if not applicant_count:
+            return None
+
+        return JobApplicantCountType.marshal(applicant_count)
 
     @strawberry.field(  # type: ignore[misc]
         description="The custom application form for the job.",

@@ -2,6 +2,7 @@ import dataclasses
 
 from app.accounts.dataloaders import AccountByIdLoader, ProfileByIdLoader
 from app.jobs.dataloaders import (
+    ApplicantCountByJobIdLoader,
     JobApplicationFormByIdLoader,
     JobByIdLoader,
     JobBySlugLoader,
@@ -25,6 +26,7 @@ class Dataloaders:
     account_by_id: AccountByIdLoader
     profile_by_id: ProfileByIdLoader
     organization_invite_by_token: OrganizationInviteByTokenLoader
+    applicant_count_by_job_id: ApplicantCountByJobIdLoader
 
 
 def create_dataloaders(
@@ -37,6 +39,7 @@ def create_dataloaders(
     organization_by_id: OrganizationByIdLoader,
     organization_by_slug: OrganizationBySlugLoader,
     organization_invite_by_token: OrganizationInviteByTokenLoader,
+    applicant_count_by_job_id: ApplicantCountByJobIdLoader,
 ) -> Dataloaders:
     """Create dataloaders for the current context."""
     return Dataloaders(
@@ -49,4 +52,5 @@ def create_dataloaders(
         account_by_id=account_by_id,
         profile_by_id=profile_by_id,
         organization_invite_by_token=organization_invite_by_token,
+        applicant_count_by_job_id=applicant_count_by_job_id,
     )

@@ -1,4 +1,5 @@
 import secrets
+from collections import defaultdict
 from datetime import UTC, datetime
 from typing import Any, Literal
 
@@ -293,20 +294,48 @@ class JobApplicantRepo:
             nesting_depth=1,
         )
 
-    async def get_count_by_job_id(
+    async def get_many_counts_by_job_id(
         self,
-        job_id: ObjectId,
-        status: JobApplicantStatus | None,
-    ) -> int:
-        """Get the count of applications for a given job ID."""
-        if status:
-            return await JobApplicant.find(
-                JobApplicant.job.id == job_id,
-                JobApplicant.status == status,
-            ).count()
-        return await JobApplicant.find(
-            JobApplicant.job.id == job_id,
-        ).count()
+        job_ids: list[ObjectId],
+    ) -> list[dict[str, int] | None]:
+        """
+        Return a list where each item corresponds to a job_id from the input list:
+        - A dict of {status: count} if the job has applicants.
+        - An empty dict {} if the job exists but has no applicants.
+        - None if the job_id is invalid or not found.
+        """
+        # Run aggregation to get counts for all provided job_ids
+        pipeline = [
+            {"$match": {"job.$id": {"$in": job_ids}}},
+            {
+                "$group": {
+                    "_id": {"job_id": "$job.$id", "status": "$status"},
+                    "count": {"$sum": 1},
+                }
+            },
+        ]
+
+        result = await JobApplicant.aggregate(pipeline).to_list()
+
+        # Build a mapping: job_id -> {status: count}
+        job_status_counts: dict[ObjectId, dict[str, int]] = defaultdict(dict)
+        for entry in result:
+            job_id = entry["_id"]["job_id"]
+            status = entry["_id"]["status"].lower()
+            count = entry["count"]
+            job_status_counts[job_id][status] = count
+
+        # Construct the ordered result list
+        output: list[dict[str, int] | None] = []
+        for job_id in job_ids:
+            if job_id in job_status_counts:
+                output.append(job_status_counts[job_id])
+            else:
+                # Optionally check if job exists in DB before deciding to return {} or None
+                exists = await Job.find_one(Job.id == job_id)
+                output.append({} if exists else None)
+
+        return output
 
     async def create(
         self,

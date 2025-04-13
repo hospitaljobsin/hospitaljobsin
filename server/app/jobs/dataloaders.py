@@ -6,7 +6,12 @@ from app.core.dataloaders import (
     transform_valid_object_id,
     transform_valid_object_id_tuple,
 )
-from app.jobs.repositories import JobApplicationFormRepo, JobRepo, SavedJobRepo
+from app.jobs.repositories import (
+    JobApplicantRepo,
+    JobApplicationFormRepo,
+    JobRepo,
+    SavedJobRepo,
+)
 
 from .documents import Job, JobApplicationForm
 
@@ -32,6 +37,19 @@ async def create_job_application_form_by_id_dataloader(
     """Create a dataloader to load jobs by their IDs."""
     return create_dataloader(
         repo_method=job_application_form_repo.get_many_by_ids,
+        key_transform=transform_valid_object_id,
+    )
+
+
+type ApplicantCountByJobIdLoader = DataLoader[str, dict[str, int] | None]
+
+
+async def create_applicant_count_by_job_id_dataloader(
+    job_applicant_repo: JobApplicantRepo,
+) -> ApplicantCountByJobIdLoader:
+    """Create a dataloader to load jobs by their IDs."""
+    return create_dataloader(
+        repo_method=job_applicant_repo.get_many_counts_by_job_id,
         key_transform=transform_valid_object_id,
     )
 

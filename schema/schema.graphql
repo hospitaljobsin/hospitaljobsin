@@ -565,7 +565,7 @@ type Job implements Node {
   isApplied: Boolean!
 
   """The number of applications for the job."""
-  applicationCount(status: JobApplicantStatus = null): Int! @isAuthenticated
+  applicantCount: JobApplicantCount @isAuthenticated
 
   """The custom application form for the job."""
   applicationForm: JobApplicationForm
@@ -601,6 +601,24 @@ type JobApplicantConnection {
 
   """A list of edges."""
   edges: [JobApplicantEdge!]!
+}
+
+"""Application count data of a job."""
+type JobApplicantCount {
+  """The number of applicants in applied status for the job."""
+  applied: Int!
+
+  """The number of applicants in shortlisted status for the job."""
+  shortlisted: Int!
+
+  """The number of applicants in interviewed status for the job."""
+  interviewed: Int!
+
+  """The number of applicants in onhold status for the job."""
+  onHold: Int!
+
+  """The number of applicants in offered status for the job."""
+  offered: Int!
 }
 
 type JobApplicantEdge {
