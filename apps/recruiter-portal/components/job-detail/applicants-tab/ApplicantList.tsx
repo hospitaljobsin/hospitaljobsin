@@ -16,6 +16,7 @@ const ApplicantListFragment = graphql`
 	count: { type: "Int", defaultValue: 10 }
 	searchTerm: { type: "String", defaultValue: null }
 	status: { type: "JobApplicantStatus", defaultValue: null }
+	showStatus: { type: "Boolean", defaultValue: true }
   )
   @refetchable(queryName: "ApplicantListPaginationQuery") {
 	applicants(after: $cursor, first: $count, searchTerm: $searchTerm, status: $status)
@@ -23,7 +24,7 @@ const ApplicantListFragment = graphql`
 	  edges {
 		node {
 		  id
-		  ...ApplicantFragment
+		  ...ApplicantFragment @arguments(showStatus: $showStatus)
 		}
 	  }
 	  pageInfo {
@@ -78,7 +79,11 @@ export default function ApplicantList({
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
 				refetch(
-					{ searchTerm: searchTerm, status: status },
+					{
+						searchTerm: searchTerm,
+						status: status,
+						showStatus: status === null,
+					},
 					{ fetchPolicy: "store-or-network" },
 				);
 			});

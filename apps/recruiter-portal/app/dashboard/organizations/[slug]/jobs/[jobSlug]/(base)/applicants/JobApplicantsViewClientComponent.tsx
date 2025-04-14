@@ -21,8 +21,9 @@ const JobApplicantsViewClientComponentFragment = graphql`
       }
 	  searchTerm: { type: "String", defaultValue: null }
 	  status: { type: "JobApplicantStatus", defaultValue: null }
+	  showStatus: { type: "Boolean", defaultValue: true }
     ) {
-        ...ApplicantsTabFragment @arguments(slug: $slug, searchTerm: $searchTerm, status: $status)
+        ...ApplicantsTabFragment @arguments(slug: $slug, searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
   }
 `;
 

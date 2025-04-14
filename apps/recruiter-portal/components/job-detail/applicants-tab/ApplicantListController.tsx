@@ -2,7 +2,7 @@ import type { JobApplicantStatus } from "@/__generated__/ApplicantListPagination
 import { Input, Select, SelectItem } from "@heroui/react";
 import { Search } from "lucide-react";
 
-interface ApplicantControllerProps {
+interface ApplicantListControllerProps {
 	searchTerm: string | null;
 	setSearchTerm: (searchTerm: string | null) => void;
 	status: JobApplicantStatus | null;
@@ -18,7 +18,9 @@ const applicantStatus = [
 	{ key: "OFFERED", label: "Offered" },
 ] as { key: JobApplicantStatus; label: string }[];
 
-export default function ApplicantController(props: ApplicantControllerProps) {
+export default function ApplicantListController(
+	props: ApplicantListControllerProps,
+) {
 	const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		if (e.target.value === "ALL") {
 			props.setStatus(null);

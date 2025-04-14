@@ -5,8 +5,8 @@ import type { ApplicantsTabFragment$key } from "@/__generated__/ApplicantsTabFra
 import { useState } from "react";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
-import ApplicantController from "./ApplicantController";
 import ApplicantList from "./ApplicantList";
+import ApplicantListController from "./ApplicantListController";
 
 const ApplicantsTabFragment = graphql`
  fragment ApplicantsTabFragment on Query @argumentDefinitions(
@@ -15,11 +15,12 @@ const ApplicantsTabFragment = graphql`
       }
 	  searchTerm: { type: "String", defaultValue: null }
 	  status: { type: "JobApplicantStatus", defaultValue: null }
+	  showStatus: { type: "Boolean", defaultValue: true }
     ) {
 		job(slug: $slug) {
 			__typename
 			... on Job {
-				...ApplicantListFragment @arguments(searchTerm: $searchTerm, status: $status)
+				...ApplicantListFragment @arguments(searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
 			}     
     	}
   }
@@ -35,7 +36,7 @@ export default function ApplicantsTab(props: {
 
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-12">
-			<ApplicantController
+			<ApplicantListController
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
 				status={status}
