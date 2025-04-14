@@ -49,7 +49,7 @@
 		"@types/react-relay": "^18.2.0",
 		"@types/relay-runtime": "^18.2.5",
 		"eslint": "^9.24.0",
-		"eslint-config-next": "^15.2.4",
+		"eslint-config-next": "^15.3.0",
 		"eslint-plugin-relay": "^1.8.3",
 		"postcss": "^8.5.3",
 		"react-relay": "^18.2.0",
