@@ -19,9 +19,12 @@ aaa
 - if you have an external application link, you CANNOT see applicants in dashboard. this feature cannot be changed after creating the job.
 - add setting in organization that mentions whether jobs are handled within the app by default (to help in job creation UI)
 - show applicant detail view
-    - show applicant's form data
-    - show applicant's job seeker profile
+    - show applicant's job seeker profile (after resolving the separate resume issue)
 - add export applicants to XLSX button
+
+future:
+- ensure members can also create jobs, but they can only view and manage jobs they own.
+- ensure admins can view and edit all jobs, though.
 
 # PulseWork
 > *recruitment and job seeking for medical professionals*
