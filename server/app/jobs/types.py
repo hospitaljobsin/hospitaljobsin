@@ -202,6 +202,9 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
     status: JobApplicantStatusEnum = strawberry.field(
         description="The status of the job application.",
     )
+    slug: str = strawberry.field(
+        description="The slug of the job application.",
+    )
     applicant_fields: list[ApplicantFieldType] = strawberry.field(
         description="The fields of the job application.",
     )
@@ -229,6 +232,7 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
         return cls(
             id=str(job_applicant.id),
             _account=job_applicant.account,
+            slug=job_applicant.slug,
             status=JobApplicantStatusEnum[job_applicant.status.upper()],
             applicant_fields=[
                 ApplicantFieldType.marshal(field)
@@ -242,6 +246,7 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
         return cls(
             id=str(job_applicant.id),
             _account=job_applicant.account.ref.id,
+            slug=job_applicant.slug,
             status=JobApplicantStatusEnum[job_applicant.status.upper()],
             applicant_fields=[
                 ApplicantFieldType.marshal(field)
@@ -282,6 +287,17 @@ class JobApplicantConnectionType(
     BaseConnectionType[JobApplicantType, JobApplicantEdgeType]
 ):
     pass
+
+
+@strawberry.type(
+    name="JobApplicantNotFoundError",
+    description="Used when the job applicant is not found.",
+)
+class JobApplicantNotFoundErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Job applicant not found!",
+    )
 
 
 @strawberry.type(
@@ -621,6 +637,27 @@ class JobType(BaseNodeType[Job]):
         if not application_form:
             return None
         return JobApplicationFormType.marshal(application_form)
+
+    @strawberry.field(  # type: ignore[misc]
+        description="Get a job applicant by slug.",
+    )
+    @inject
+    async def job_applicant(
+        self,
+        info: Info,
+        slug: Annotated[
+            str,
+            strawberry.argument(
+                description="The slug of the job applicant.",
+            ),
+        ],
+    ) -> JobApplicantType | JobApplicantNotFoundErrorType:
+        job_applicant = await info.context["loaders"].job_applicant_by_slug.load(slug)
+
+        if job_applicant is None or job_applicant.job.ref.id != ObjectId(self.id):
+            # ensure the job applicant belongs to the job
+            return JobApplicantNotFoundErrorType()
+        return JobApplicantType.marshal(job_applicant)
 
     @strawberry.field(  # type: ignore[misc]
         description="The organization of the job.",

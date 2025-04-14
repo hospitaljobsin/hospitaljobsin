@@ -12,7 +12,7 @@ export const ApplicantFragment = graphql`
   fragment ApplicantFragment on JobApplicant @argumentDefinitions(
 	showStatus: { type: "Boolean", defaultValue: true }
   ) {
-	id
+	slug
 	status @include(if: $showStatus)
 	account {
 		fullName
@@ -44,7 +44,7 @@ export default function Applicant({ applicant }: Props) {
 					links.applicantDetail(
 						params.slug,
 						params.jobSlug,
-						encodeURIComponent(data.id),
+						encodeURIComponent(data.slug),
 					),
 				);
 			}}

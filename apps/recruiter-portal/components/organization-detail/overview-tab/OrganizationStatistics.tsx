@@ -81,6 +81,7 @@ export default function OrganizationStatistics(props: Props) {
 								<YAxis dx={-10} />
 								<Tooltip content={<CustomTooltip />} />
 								<Area
+									isAnimationActive={false}
 									type="natural"
 									dataKey="views"
 									name="Views"

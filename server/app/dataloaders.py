@@ -4,6 +4,7 @@ from app.accounts.dataloaders import AccountByIdLoader, ProfileByIdLoader
 from app.jobs.dataloaders import (
     ApplicantCountByJobIdLoader,
     JobApplicantByIdLoader,
+    JobApplicantBySlugLoader,
     JobApplicationFormByIdLoader,
     JobByIdLoader,
     JobBySlugLoader,
@@ -20,6 +21,7 @@ from app.organizations.dataloaders import (
 class Dataloaders:
     job_by_id: JobByIdLoader
     job_applicant_by_id: JobApplicantByIdLoader
+    job_applicant_by_slug: JobApplicantBySlugLoader
     job_by_slug: JobBySlugLoader
     job_application_form_by_id: JobApplicationFormByIdLoader
     saved_job_by_id: SavedJobByIdLoader
@@ -34,6 +36,7 @@ class Dataloaders:
 def create_dataloaders(
     account_by_id: AccountByIdLoader,
     job_applicant_by_id: JobApplicantByIdLoader,
+    job_applicant_by_slug: JobApplicantBySlugLoader,
     profile_by_id: ProfileByIdLoader,
     job_by_id: JobByIdLoader,
     job_by_slug: JobBySlugLoader,
@@ -48,6 +51,7 @@ def create_dataloaders(
     return Dataloaders(
         job_by_id=job_by_id,
         job_applicant_by_id=job_applicant_by_id,
+        job_applicant_by_slug=job_applicant_by_slug,
         job_by_slug=job_by_slug,
         job_application_form_by_id=job_application_form_by_id,
         saved_job_by_id=saved_job_by_id,

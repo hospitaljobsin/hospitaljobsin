@@ -1,4 +1,5 @@
 import secrets
+import uuid
 from collections import defaultdict
 from datetime import UTC, datetime
 from typing import Any, Literal, get_args
@@ -344,6 +345,11 @@ class JobApplicantRepo:
 
         return output
 
+    @staticmethod
+    def generate_slug() -> str:
+        """Generate a unique slug for the job applicant."""
+        return uuid.uuid4().hex
+
     async def create(
         self,
         account: Account,
@@ -356,8 +362,7 @@ class JobApplicantRepo:
             account=account,
             status="applied",
             applicant_fields=applicant_fields,
-            # TODO: increment this number count for each job
-            number=0,
+            slug=self.generate_slug(),
         )
         return await application.insert(link_rule=WriteRules.DO_NOTHING)
 
@@ -424,6 +429,19 @@ class JobApplicantRepo:
             job_applicant_by_id.get(PydanticObjectId(job_id))
             for job_id in job_applicant_ids
         ]
+
+    async def get_many_by_slugs(
+        self, job_applicant_slugs: list[str]
+    ) -> list[JobApplicant | None]:
+        """Get multiple job applicants by slugs."""
+        job_applicants = await JobApplicant.find(
+            In(JobApplicant.slug, job_applicant_slugs)
+        ).to_list()
+        job_applicant_by_slug = {
+            job_applicant.slug: job_applicant for job_applicant in job_applicants
+        }
+
+        return [job_applicant_by_slug.get(job_slug) for job_slug in job_applicant_slugs]
 
 
 class JobApplicationFormRepo:

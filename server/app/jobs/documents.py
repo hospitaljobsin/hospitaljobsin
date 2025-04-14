@@ -135,7 +135,7 @@ class ApplicantField(BaseModel):
 class JobApplicant(Document):
     account: Link[Account]
     job: Link[Job]
-    number: int
+    slug: Annotated[str, Indexed()]
     status: JobApplicantStatus
     applicant_fields: list[ApplicantField]
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
@@ -144,8 +144,8 @@ class JobApplicant(Document):
         name = "job_applicants"
         indexes: ClassVar[list[IndexModel]] = [
             IndexModel(
-                ["number", "job"],
-                name="number_job_unique_secondary_index",
+                ["slug", "job"],
+                name="slug_job_unique_secondary_index",
                 unique=True,
             ),
         ]

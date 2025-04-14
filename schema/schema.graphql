@@ -570,6 +570,12 @@ type Job implements Node {
   """The custom application form for the job."""
   applicationForm: JobApplicationForm
 
+  """Get a job applicant by slug."""
+  jobApplicant(
+    """The slug of the job applicant."""
+    slug: String!
+  ): JobApplicantJobApplicantNotFoundError!
+
   """The organization of the job."""
   organization: Organization
 }
@@ -579,14 +585,17 @@ type JobApplicant implements Node {
   """The Globally Unique ID of this object"""
   id: ID!
 
-  """The account of the job applicant."""
-  account: Account!
-
   """The status of the job application."""
   status: JobApplicantStatus!
 
+  """The slug of the job application."""
+  slug: String!
+
   """The fields of the job application."""
   applicantFields: [ApplicantField!]!
+
+  """The account of the job applicant."""
+  account: Account
 }
 
 """Used when the job applicant already exists."""
@@ -627,6 +636,14 @@ type JobApplicantEdge {
 
   """The item at the end of the edge"""
   node: JobApplicant!
+}
+
+union JobApplicantJobApplicantNotFoundError = JobApplicant | JobApplicantNotFoundError
+
+"""Used when the job applicant is not found."""
+type JobApplicantNotFoundError implements Error {
+  """Human readable error message."""
+  message: String!
 }
 
 """The status of the job application."""

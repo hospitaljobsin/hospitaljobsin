@@ -7,14 +7,18 @@ import ApplicantDetails from "./ApplicantDetails";
 
 const ApplicantDetailViewFragment = graphql`
  fragment ApplicantDetailViewFragment on Query @argumentDefinitions(
-      id: {
-        type: "ID!",
-      }
+    slug: { type: "String!"}
+	applicantSlug: { type: "String!"}
     ) {
-        node(id: $id) {
+        job(slug: $slug) {
             __typename
-            ... on JobApplicant {
-                ...ApplicantDetailsFragment
+            ... on Job {
+                jobApplicant(slug: $applicantSlug) {
+                    __typename
+                    ... on JobApplicant {
+                        ...ApplicantDetailsFragment
+                    }
+                }
             }     
         }
   }
@@ -25,13 +29,14 @@ export default function ApplicantDetailView(props: {
 }) {
 	const query = useFragment(ApplicantDetailViewFragment, props.rootQuery);
 	invariant(
-		query.node && query.node.__typename === "JobApplicant",
-		"`JobApplicant` node type expected.",
+		query.job.__typename === "Job" &&
+			query.job.jobApplicant.__typename === "JobApplicant",
+		"`Job` and `JobApplicant` node type expected.",
 	);
 
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-12">
-			<ApplicantDetails rootQuery={query.node} />
+			<ApplicantDetails rootQuery={query.job.jobApplicant} />
 		</div>
 	);
 }

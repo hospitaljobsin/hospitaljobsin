@@ -33,6 +33,7 @@ from app.dataloaders import create_dataloaders
 from app.jobs.dataloaders import (
     create_applicant_count_by_job_id_dataloader,
     create_job_applicant_by_id_dataloader,
+    create_job_applicant_by_slug_dataloader,
     create_job_application_form_by_id_dataloader,
     create_job_by_id_dataloader,
     create_job_by_slug_dataloader,
@@ -119,5 +120,6 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_job_application_form_by_id_dataloader))
     container.register(aioinject.Scoped(create_applicant_count_by_job_id_dataloader))
     container.register(aioinject.Scoped(create_job_applicant_by_id_dataloader))
+    container.register(aioinject.Scoped(create_job_applicant_by_slug_dataloader))
     container.register(aioinject.Scoped(create_dataloaders))
     return container

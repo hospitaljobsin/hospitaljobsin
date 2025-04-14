@@ -16,11 +16,10 @@ import {
 
 const ApplicantDetailViewClientComponentFragment = graphql`
  fragment ApplicantDetailViewClientComponentFragment on Query @argumentDefinitions(
-      id: {
-        type: "ID!",
-      }
+    slug: { type: "String!"}
+	applicantSlug: { type: "String!"}
     ) {
-        ...ApplicantDetailViewFragment @arguments(id: $id)
+        ...ApplicantDetailViewFragment @arguments(slug: $slug, applicantSlug: $applicantSlug)
   }
 `;
 

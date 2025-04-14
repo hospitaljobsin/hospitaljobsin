@@ -26,8 +26,12 @@ const links = {
 		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/settings`,
 	jobDetailApplicants: (organizationSlug: string, jobSlug: string) =>
 		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/applicants`,
-	applicantDetail: (organizationSlug: string, jobSlug: string, id: string) =>
-		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/applicants/${id}`,
+	applicantDetail: (
+		organizationSlug: string,
+		jobSlug: string,
+		applicantSlug: string,
+	) =>
+		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/applicants/${applicantSlug}`,
 	login: (returnTo: string | undefined = undefined) =>
 		returnTo
 			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}`

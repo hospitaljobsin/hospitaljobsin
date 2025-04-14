@@ -41,6 +41,19 @@ async def create_job_applicant_by_id_dataloader(
     )
 
 
+type JobApplicantBySlugLoader = DataLoader[str, JobApplicant | None]
+
+
+async def create_job_applicant_by_slug_dataloader(
+    job_applicant_repo: JobApplicantRepo,
+) -> JobApplicantBySlugLoader:
+    """Create a dataloader to load job applicants by their slugs."""
+    return create_dataloader(
+        repo_method=job_applicant_repo.get_many_by_slugs,
+        key_transform=transform_default,
+    )
+
+
 type JobApplicationFormByIdLoader = DataLoader[str, JobApplicationForm | None]
 
 

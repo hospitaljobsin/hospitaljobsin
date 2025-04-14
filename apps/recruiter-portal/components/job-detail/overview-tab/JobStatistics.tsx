@@ -83,6 +83,7 @@ export default function JobStatistics(props: Props) {
 								<YAxis dx={-10} />
 								<Tooltip content={<CustomTooltip />} />
 								<Area
+									isAnimationActive={false}
 									type="natural"
 									dataKey="views"
 									name="Views"
