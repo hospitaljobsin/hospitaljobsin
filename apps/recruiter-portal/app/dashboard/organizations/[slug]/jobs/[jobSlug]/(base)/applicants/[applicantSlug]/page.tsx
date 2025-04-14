@@ -23,6 +23,9 @@ const PageApplicantDetailMetadataFragment = graphql`
       __typename
       ... on Job {
         __typename
+		organization {
+			isMember
+		}
         jobApplicant(slug: $applicantSlug) {
 		  __typename
 		  ... on JobApplicant {
@@ -67,7 +70,8 @@ export async function generateMetadata({
 
 	if (
 		data.job.__typename !== "Job" ||
-		data.job.jobApplicant.__typename !== "JobApplicant"
+		data.job.jobApplicant.__typename !== "JobApplicant" ||
+		!data.job.organization?.isMember
 	) {
 		return {
 			title: "Job Applicant Not found",
@@ -107,7 +111,8 @@ export default async function ApplicantDetailPage({
 
 	if (
 		data.job.__typename !== "Job" ||
-		data.job.jobApplicant.__typename !== "JobApplicant"
+		data.job.jobApplicant.__typename !== "JobApplicant" ||
+		!data.job.organization?.isMember
 	) {
 		notFound();
 	}
