@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.12"
 
 [[package]]
@@ -106,14 +107,14 @@ wheels = [
 
 [[package]]
 name = "aioinject"
-version = "0.38.0"
+version = "0.38.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3f/d2/78b7c1c21c49645f9b3f2ce43ec33868280cf046dd2b432d6706e5f2d123/aioinject-0.38.0.tar.gz", hash = "sha256:b5c5e2c6315ee49ccc692664dd7498986ae5fca9f93df2a4896a795e337c05dc", size = 32541 }
+sdist = { url = "https://files.pythonhosted.org/packages/9f/0a/01419f9cfb687da1729844ecd769c77ff872483b8469972302ae546644bb/aioinject-0.38.1.tar.gz", hash = "sha256:6bb5047c6b13eef1b62ee3a5693586b9b44d0bd455cd095b6bd8c0fcfbb5cfd1", size = 32684 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d7/bd/70c51a209aa4b35c87fdcf5efee279c1611d179685df690cdf70f67af3e6/aioinject-0.38.0-py3-none-any.whl", hash = "sha256:c2b5af93100664ee3ab5694ecc2ab0197c7d7423e5dd78b4b3f31d69f932d898", size = 20028 },
+    { url = "https://files.pythonhosted.org/packages/96/cb/ae16773c926cad56aaba8a00b12938cc363d8ff9cb08626ca722e20f5cec/aioinject-0.38.1-py3-none-any.whl", hash = "sha256:9e79a4c3d018fc615dd11276005683c5ac54966f402dc61818247b3df134a041", size = 20085 },
 ]
 
 [[package]]
@@ -372,7 +373,7 @@ name = "click"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "platform_system == 'Windows'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593 }
 wheels = [
