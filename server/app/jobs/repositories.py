@@ -356,6 +356,8 @@ class JobApplicantRepo:
             account=account,
             status="applied",
             applicant_fields=applicant_fields,
+            # TODO: increment this number count for each job
+            number=0,
         )
         return await application.insert(link_rule=WriteRules.DO_NOTHING)
 

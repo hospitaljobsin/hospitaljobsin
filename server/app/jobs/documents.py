@@ -135,12 +135,20 @@ class ApplicantField(BaseModel):
 class JobApplicant(Document):
     account: Link[Account]
     job: Link[Job]
+    number: int
     status: JobApplicantStatus
     applicant_fields: list[ApplicantField]
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     class Settings:
         name = "job_applicants"
+        indexes: ClassVar[list[IndexModel]] = [
+            IndexModel(
+                ["number", "job"],
+                name="number_job_unique_secondary_index",
+                unique=True,
+            ),
+        ]
 
 
 class JobMetricMetadata(BaseModel):

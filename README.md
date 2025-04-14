@@ -10,6 +10,14 @@ aaa
 
 # TODO- recruiter portal
 - add github style `number` field to each job applicant. they are accessed at /orgs/<slug>/jobs/<slug>/applicants/<number>
+- like github, applicant must be queried like:
+```graphql
+job(slug: "slug") {
+    applicant(number: 123) {
+        __typename
+    }
+}
+```
 - make job slug unique to a particular org, always use org slug and job slug to query for jobs
 - fix applicant text search
 - add pagination to job view metrics (normal connections should be enough??)
