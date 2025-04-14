@@ -17,7 +17,7 @@ fragment JobTabsFragment on Job {
 
 export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 	const pathname = usePathname();
-	const params = useParams<{ slug: string; jobSlug: string }>();
+	const params = useParams<{ slug: string; jobSlug: string; id?: string }>();
 	const data = useFragment(JobTabsFragment, job);
 
 	const organization = data.organization;
@@ -29,6 +29,13 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 			links.jobDetailSettingsApplicationForm(params.slug, params.jobSlug)
 		) {
 			return links.jobDetailSettings(params.slug, params.jobSlug);
+		}
+
+		if (
+			params.id &&
+			pathname === links.applicantDetail(params.slug, params.jobSlug, params.id)
+		) {
+			return links.jobDetailApplicants(params.slug, params.jobSlug);
 		}
 		return pathname;
 	}

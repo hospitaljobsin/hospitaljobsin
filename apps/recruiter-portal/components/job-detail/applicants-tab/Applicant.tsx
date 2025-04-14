@@ -1,8 +1,10 @@
 import type { ApplicantFragment$key } from "@/__generated__/ApplicantFragment.graphql";
+import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import { Card, CardHeader, Chip } from "@heroui/react";
 import { Mail } from "lucide-react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 
@@ -10,6 +12,7 @@ export const ApplicantFragment = graphql`
   fragment ApplicantFragment on JobApplicant @argumentDefinitions(
 	showStatus: { type: "Boolean", defaultValue: true }
   ) {
+	id
 	status @include(if: $showStatus)
 	account {
 		fullName
@@ -25,6 +28,7 @@ type Props = {
 
 export default function Applicant({ applicant }: Props) {
 	const router = useRouter();
+	const params = useParams<{ slug: string; jobSlug: string }>();
 	const data = useFragment(ApplicantFragment, applicant);
 
 	return (
@@ -34,6 +38,16 @@ export default function Applicant({ applicant }: Props) {
 			as="div"
 			disableRipple
 			shadow="none"
+			isPressable
+			onPress={() => {
+				router.push(
+					links.applicantDetail(
+						params.slug,
+						params.jobSlug,
+						encodeURIComponent(data.id),
+					),
+				);
+			}}
 		>
 			<CardHeader className="flex w-full justify-center flex-row gap-6 items-center">
 				<div className="flex flex-col sm:flex-row gap-6 w-full items-center">
@@ -53,7 +67,12 @@ export default function Applicant({ applicant }: Props) {
 						</div>
 					</div>
 				</div>
-				{data.status && <Chip>{data.status}</Chip>}
+				{data.status && (
+					<div className="flex items-center gap-4">
+						<p className="text-foreground-400 text-sm">Status</p>
+						<Chip>{data.status}</Chip>
+					</div>
+				)}
 			</CardHeader>
 		</Card>
 	);
