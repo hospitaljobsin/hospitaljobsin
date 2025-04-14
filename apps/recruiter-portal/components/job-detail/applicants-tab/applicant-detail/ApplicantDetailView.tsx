@@ -25,7 +25,7 @@ export default function ApplicantDetailView(props: {
 }) {
 	const query = useFragment(ApplicantDetailViewFragment, props.rootQuery);
 	invariant(
-		query.node.__typename === "JobApplicant",
+		query.node && query.node.__typename === "JobApplicant",
 		"`JobApplicant` node type expected.",
 	);
 
