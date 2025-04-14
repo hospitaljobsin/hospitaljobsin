@@ -640,6 +640,14 @@ class JobType(BaseNodeType[Job]):
 
     @strawberry.field(  # type: ignore[misc]
         description="Get a job applicant by slug.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                    # TODO: ensure only org members can view this field
+                ]
+            )
+        ],
     )
     @inject
     async def job_applicant(

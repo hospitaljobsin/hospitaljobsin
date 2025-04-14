@@ -1,5 +1,7 @@
 # TODO- seeker portal
 
+- each job application requires a different resume. but right now we have one centralized profile shared across all applications. this must be changed
+    (option to send specific resume for each job application)
 - add applied jobs list (linkedin has both applied and saved jobs on the same page- differentiated by a filter)
 
 - we need a separate resource that can return the searched jobs
