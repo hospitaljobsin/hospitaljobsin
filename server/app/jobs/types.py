@@ -7,9 +7,10 @@ import strawberry
 from aioinject import Inject, Injected
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
-from strawberry import relay
+from strawberry import Private, relay
 from strawberry.permission import PermissionExtension
 
+from app.accounts.documents import Account
 from app.accounts.types import AccountType
 from app.auth.permissions import IsAuthenticated
 from app.base.types import (
@@ -198,10 +199,6 @@ class JobApplicantStatusEnum(Enum):
     description="A job application for a posting.",
 )
 class JobApplicantType(BaseNodeType[JobApplicant]):
-    account: AccountType = strawberry.field(
-        description="The account of the job applicant.",
-    )
-
     status: JobApplicantStatusEnum = strawberry.field(
         description="The status of the job application.",
     )
@@ -209,18 +206,64 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
         description="The fields of the job application.",
     )
 
+    _account: Private[Account | ObjectId]
+
+    @strawberry.field(  # type: ignore[misc]
+        description="The account of the job applicant.",
+    )
+    @inject
+    async def account(self, info: Info) -> AccountType | None:
+        if isinstance(self._account, ObjectId):
+            account = await info.context["loaders"].account_by_id.load(
+                str(self._account)
+            )
+
+            if account is None:
+                return None
+            return AccountType.marshal(account)
+        return AccountType.marshal(self._account)
+
     @classmethod
-    def marshal(cls, job_applicant: JobApplicant) -> Self:
+    def marshal_with_account(cls, job_applicant: JobApplicant) -> Self:
         """Marshal into a node instance."""
         return cls(
             id=str(job_applicant.id),
-            account=AccountType.marshal(job_applicant.account),
+            _account=job_applicant.account,
             status=JobApplicantStatusEnum[job_applicant.status.upper()],
             applicant_fields=[
                 ApplicantFieldType.marshal(field)
                 for field in job_applicant.applicant_fields
             ],
         )
+
+    @classmethod
+    def marshal(cls, job_applicant: JobApplicant) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            id=str(job_applicant.id),
+            _account=job_applicant.account.ref.id,
+            status=JobApplicantStatusEnum[job_applicant.status.upper()],
+            applicant_fields=[
+                ApplicantFieldType.marshal(field)
+                for field in job_applicant.applicant_fields
+            ],
+        )
+
+    @classmethod
+    async def resolve_nodes(  # type: ignore[no-untyped-def] # noqa: ANN206
+        cls,
+        *,
+        info: Info,
+        node_ids: Iterable[str],
+        required: bool = False,  # noqa: ARG003
+    ):
+        job_applicants = await info.context["loaders"].job_applicant_by_id.load_many(
+            node_ids
+        )
+        return [
+            cls.marshal(job_applicant) if job_applicant is not None else job_applicant
+            for job_applicant in job_applicants
+        ]
 
 
 @strawberry.type(name="JobApplicantEdge")
@@ -229,7 +272,7 @@ class JobApplicantEdgeType(BaseEdgeType[JobApplicantType, JobApplicant]):
     def marshal(cls, job_applicant: JobApplicant) -> Self:
         """Marshal into a edge instance."""
         return cls(
-            node=JobApplicantType.marshal(job_applicant),
+            node=JobApplicantType.marshal_with_account(job_applicant),
             cursor=relay.to_base64(JobApplicantType, job_applicant.id),
         )
 

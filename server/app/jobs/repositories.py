@@ -407,6 +407,22 @@ class JobApplicantRepo:
             after=ObjectId(after) if after else None,
         )
 
+    async def get_many_by_ids(
+        self, job_applicant_ids: list[ObjectId]
+    ) -> list[JobApplicant | None]:
+        """Get multiple job applicants by IDs."""
+        job_applicants = await JobApplicant.find(
+            In(JobApplicant.id, job_applicant_ids)
+        ).to_list()
+        job_applicant_by_id = {
+            job_applicant.id: job_applicant for job_applicant in job_applicants
+        }
+
+        return [
+            job_applicant_by_id.get(PydanticObjectId(job_id))
+            for job_id in job_applicant_ids
+        ]
+
 
 class JobApplicationFormRepo:
     async def get_by_job_id(self, job_id: ObjectId) -> JobApplicationForm | None:

@@ -9,6 +9,7 @@ aaa
 - we can add other tools too, like showing current applications, saved jobs etcaaa
 
 # TODO- recruiter portal
+- add github style `number` field to each job applicant. they are accessed at /orgs/<slug>/jobs/<slug>/applicants/<number>
 - make job slug unique to a particular org, always use org slug and job slug to query for jobs
 - fix applicant text search
 - add pagination to job view metrics (normal connections should be enough??)

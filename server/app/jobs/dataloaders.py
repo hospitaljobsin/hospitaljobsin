@@ -13,7 +13,7 @@ from app.jobs.repositories import (
     SavedJobRepo,
 )
 
-from .documents import Job, JobApplicationForm
+from .documents import Job, JobApplicant, JobApplicationForm, SavedJob
 
 type JobByIdLoader = DataLoader[str, Job | None]
 
@@ -24,6 +24,19 @@ async def create_job_by_id_dataloader(
     """Create a dataloader to load jobs by their IDs."""
     return create_dataloader(
         repo_method=job_repo.get_many_by_ids,
+        key_transform=transform_valid_object_id,
+    )
+
+
+type JobApplicantByIdLoader = DataLoader[str, JobApplicant | None]
+
+
+async def create_job_applicant_by_id_dataloader(
+    job_applicant_repo: JobApplicantRepo,
+) -> JobApplicantByIdLoader:
+    """Create a dataloader to load job applicants by their IDs."""
+    return create_dataloader(
+        repo_method=job_applicant_repo.get_many_by_ids,
         key_transform=transform_valid_object_id,
     )
 
@@ -67,7 +80,7 @@ async def create_job_by_slug_dataloader(
     )
 
 
-type SavedJobByIdLoader = DataLoader[tuple[str, str], Job | None]
+type SavedJobByIdLoader = DataLoader[tuple[str, str], SavedJob | None]
 
 
 async def create_saved_job_by_id_dataloader(
