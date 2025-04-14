@@ -1,6 +1,7 @@
 import type { ApplicantDetailsFragment$key } from "@/__generated__/ApplicantDetailsFragment.graphql";
-import { Avatar, Card, CardBody, CardHeader, Chip } from "@heroui/react";
-import { CheckCircle, Clock, Mail, MapIcon, XCircle } from "lucide-react";
+import { Card, CardBody, CardHeader, Chip, Divider, Link } from "@heroui/react";
+import { Mail, ShieldQuestion } from "lucide-react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { graphql, useFragment } from "react-relay";
 
@@ -39,92 +40,54 @@ export default function ApplicantDetails({
 	const params = useParams<{ slug: string; jobSlug: string; id: string }>();
 	const data = useFragment(ApplicantDetailsFragment, rootQuery);
 
-	// Helper function to get status badge style
-	const getStatusChip = (status: string) => {
-		switch (status.toLowerCase()) {
-			case "accepted":
-				return (
-					<Chip color="success">
-						<CheckCircle />
-						{status}
-					</Chip>
-				);
-			case "rejected":
-				return (
-					<Chip color="danger">
-						<XCircle />
-						{status}
-					</Chip>
-				);
-			case "pending":
-				return (
-					<Chip color="warning">
-						<Clock />
-						{status}
-					</Chip>
-				);
-			default:
-				return <Chip>{status}</Chip>;
-		}
-	};
-
-	// Get location string if available
-	const location =
-		data.account.profile?.__typename === "Profile" &&
-		data.account.profile.address
-			? `${data.account.profile.address.city}, ${data.account.profile.address.state}`
-			: "Location not provided";
-
 	return (
 		<div className="w-full flex flex-col gap-6">
 			{/* Applicant Header Card */}
-			<Card fullWidth className="p-6 overflow-hidden" shadow="sm">
-				<div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-					<Avatar
-						size="lg"
-						src={data.account.avatarUrl || undefined}
-						name={data.account.fullName}
-						className="border-4 border-primary-100"
-					/>
-
-					<div className="flex flex-col gap-2 flex-grow">
-						<div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
-							<CardHeader as="h2" className="text-2xl font-bold m-0 p-0">
-								{data.account.fullName}
-							</CardHeader>
-
-							{data.status && <div>{getStatusChip(data.status)}</div>}
+			<Card fullWidth className="p-6 " shadow="none">
+				<CardHeader className="w-full flex flex-row gap-6 justify-between">
+					<div className="flex gap-6 items-center">
+						<div className="relative h-20 w-20">
+							<Image
+								src={data.account.avatarUrl}
+								alt={data.account.fullName}
+								fill
+								className="rounded-full object-cover"
+							/>
 						</div>
-
-						<div className="flex flex-col gap-2 text-gray-600">
-							<div className="flex items-center gap-2">
-								<Mail size={16} />
-								<span>{data.account.email}</span>
-							</div>
-
-							<div className="flex items-center gap-2">
-								<MapIcon size={16} />
-								<span>{location}</span>
+						<div className="flex flex-col gap-4">
+							<h2 className="text-xl font-medium">{data.account.fullName}</h2>
+							<div className="flex items-center gap-2 text-foreground-600">
+								<Mail size={20} />
+								<Link href={`mailto:${data.account.email}`} color="foreground">
+									{data.account.email}
+								</Link>
 							</div>
 						</div>
 					</div>
-				</div>
+					<Chip color="primary">{data.status}</Chip>
+				</CardHeader>
 			</Card>
 
 			{/* Application Fields */}
 			{data.applicantFields && data.applicantFields.length > 0 && (
-				<Card fullWidth shadow="sm">
-					<CardHeader className="border-b">
-						<h3 className="text-xl font-semibold">Application Details</h3>
+				<Card fullWidth shadow="none" className="p-6 space-y-6">
+					<CardHeader>
+						<h3 className="text-medium font-medium text-foreground-600">
+							Application Details
+						</h3>
 					</CardHeader>
-					<CardBody className="p-6">
+					<Divider />
+					<CardBody>
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							{data.applicantFields.map((field, index) => (
-								<div key={index} className="flex flex-col gap-1">
-									<h4 className="text-sm text-gray-500 font-medium">
-										{field.fieldName}
-									</h4>
-									<p className="text-gray-900">{field.fieldValue || "-"}</p>
+								<div key={index} className="flex flex-col gap-4">
+									<div className="w-full flex items-center gap-2">
+										<ShieldQuestion className="text-foreground-500" size={20} />
+										<h4 className="text-foreground-500 font-medium">
+											{field.fieldName}
+										</h4>
+									</div>
+									<p className="text-foreground">{field.fieldValue}</p>
 								</div>
 							))}
 						</div>
