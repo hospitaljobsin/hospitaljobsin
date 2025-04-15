@@ -11,20 +11,25 @@ aaa
 - we can add other tools too, like showing current applications, saved jobs etcaaa
 
 # TODO- recruiter portal
+- reduce job address field to location, and geocode it into coordinates (for geospatial filtering)
+    - https://beanie-odm.dev/api-documentation/operators/find/#geointersects
+    - https://wiki.openstreetmap.org/wiki/Geocoding
 - make job slug unique to a particular org, always use org slug and job slug to query for jobs
 - fix applicant text search
-- add pagination to job view metrics (normal connections should be enough??)
-- add select option type applicant field
+
 - add option to use screening questions and apply via the app (called EasyApply on Linkedin), or redirect to a custom application link (cannot be changed after job is published)
 - if you have an external application link, you CANNOT see applicants in dashboard. this feature cannot be changed after creating the job.
 - add setting in organization that mentions whether jobs are handled within the app by default (to help in job creation UI)
 - show applicant detail view
     - show applicant's job seeker profile (after resolving the separate resume issue)
-- add export applicants to XLSX button
+
 
 future:
 - ensure members can also create jobs, but they can only view and manage jobs they own.
 - ensure admins can view and edit all jobs, though.
+- add export applicants to XLSX button
+- add select option type applicant field
+- add pagination to job view metrics (normal connections should be enough??)
 
 # PulseWork
 > *recruitment and job seeking for medical professionals*
@@ -39,13 +44,14 @@ relevant UML code:
 https://www.planttext.com?text=u-LoA2v9B2efpStXvShBJqbLK0eepIbE3SylobPmJ4xEByqhALPII2nM20Xtn501bS3K6PIQN5IQMP9Q15KHnCk5nVW0Jx0qa0P90orGqDMr0t4Lh1HAYrEBGM91MCGmX1nIyrB0FW00
 -->
 
-| Service             | Directory                                         | Description                     |
-|---------------------|---------------------------------------------------|---------------------------------|
-| PulseWork Accounts  | [apps/accounts](./apps/accounts)                  | Authentication/ Accounts UI     |
-| PulseWork Recruiter | [apps/recruitment-portal](./apps/recruiter-portal)| Recruitment platform UI         |
-| PulseWork           | [apps/seeker-portal](./apps/seeker-portal)        | Job Seeker platform UI          |
-| PulseWork API       | [server](./server)                                | GraphQL API Server              |
-| E2E Test Suite      | [e2e](./e2e)                                      | Playwright End-To-End Tests     |
+| Service             | Directory                                         | Description                      |
+|---------------------|---------------------------------------------------|----------------------------------|
+| PulseWork Accounts  | [apps/accounts](./apps/accounts)                  | Authentication/ Accounts UI      |
+| PulseWork Recruiter | [apps/recruitment-portal](./apps/recruiter-portal)| Recruitment platform UI          |
+| PulseWork           | [apps/seeker-portal](./apps/seeker-portal)        | Job Seeker platform UI           |
+| PulseWork API       | [server](./server)                                | GraphQL API Server               |
+| E2E Test Suite      | [e2e](./e2e)                                      | Playwright End-To-End Tests      |
+| Infrastructure      | [infrastructure](./infrastructure)                | Terraform Infrastructure as Code |
 
 
 ## License
