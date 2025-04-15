@@ -3,6 +3,7 @@ import type { NewJobFormAccountFragment$key } from "@/__generated__/NewJobFormAc
 import type { NewJobFormMutation } from "@/__generated__/NewJobFormMutation.graphql";
 import type { NewJobFormOrganizationFragment$key } from "@/__generated__/NewJobFormOrganizationFragment.graphql";
 import { ChipsInput } from "@/components/forms/ChipsInput";
+import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
@@ -561,11 +562,11 @@ export default function NewJobForm({ account, organization }: Props) {
 											name="location"
 											control={control}
 											render={({ field }) => (
-												<Input
-													{...field}
+												<LocationAutocomplete
 													label="Location"
 													placeholder="Add job location"
 													value={field.value ?? ""}
+													onChange={field.onChange}
 													errorMessage={errors.location?.message}
 													isInvalid={!!errors.location}
 												/>

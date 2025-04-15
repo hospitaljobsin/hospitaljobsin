@@ -179,6 +179,8 @@ class Settings(BaseSettings):
 
     geocoder_user_agent: str
 
+    geocoder_scheme: str = "http"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",

@@ -430,7 +430,7 @@ class JobType(BaseNodeType[Job]):
             vacancies=job.vacancies,
             type=JobTypeEnum[job.type.upper()] if job.type else None,
             work_mode=WorkModeEnum[job.work_mode.upper()] if job.work_mode else None,
-            location=job.address,
+            location=job.location,
             skills=job.skills,
             currency=CurrencyEnum[job.currency.upper()],
             min_salary=job.min_salary,

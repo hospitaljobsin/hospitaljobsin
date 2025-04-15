@@ -10,7 +10,6 @@ from app.auth.routes import auth_router
 from app.config import Settings
 from app.container import create_container
 from app.database import initialize_database
-from app.geocoding.routes import geocoding_router
 from app.graphql_app import create_graphql_router
 from app.health.routes import health_router
 from app.jobs.routes import jobs_router
@@ -24,7 +23,6 @@ def add_routes(app: FastAPI) -> None:
         prefix="/graphql",
     )
     app.include_router(health_router)
-    app.include_router(geocoding_router)
     app.include_router(auth_router)
     app.include_router(jobs_router)
 

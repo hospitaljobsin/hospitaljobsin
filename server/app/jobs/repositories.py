@@ -90,6 +90,7 @@ class JobRepo:
         title: str,
         description: str,
         location: str | None = None,
+        geo: GeoObject | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -107,6 +108,7 @@ class JobRepo:
         job.description = description
         job.vacancies = vacancies
         job.location = location
+        job.geo = geo
         job.min_salary = min_salary
         job.max_salary = max_salary
         job.min_experience = min_experience

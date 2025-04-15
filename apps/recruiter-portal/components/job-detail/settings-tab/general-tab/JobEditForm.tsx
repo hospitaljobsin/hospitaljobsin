@@ -1,7 +1,8 @@
 "use client";
-import { JobEditFormFragment$key } from "@/__generated__/JobEditFormFragment.graphql";
+import type { JobEditFormFragment$key } from "@/__generated__/JobEditFormFragment.graphql";
 import type { JobEditFormMutation } from "@/__generated__/JobEditFormMutation.graphql";
 import { ChipsInput } from "@/components/forms/ChipsInput";
+import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
@@ -60,6 +61,7 @@ const JobEditFormFragment = graphql`
 	location
 	...CancelEditJobModalJobFragment
 }`;
+
 const UpdateJobMutation = graphql`
 mutation JobEditFormMutation(
     $title: String!, 
@@ -547,11 +549,11 @@ export default function JobEditForm({ rootQuery }: Props) {
 										name="location"
 										control={control}
 										render={({ field }) => (
-											<Input
-												{...field}
+											<LocationAutocomplete
 												label="Location"
 												placeholder="Add job location"
 												value={field.value ?? ""}
+												onChange={field.onChange}
 												errorMessage={errors.location?.message}
 												isInvalid={!!errors.location}
 											/>

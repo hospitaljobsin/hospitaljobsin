@@ -44,8 +44,8 @@ services:
         - "8080:8080"
     environment:
         # see https://github.com/mediagis/nominatim-docker/tree/master/5.1#configuration for more options
-        PBF_URL: https://download.geofabrik.de/asia/india-latest.osm.pbf
-        REPLICATION_URL: https://download.geofabrik.de/asia/india-updates/
+        PBF_URL: https://download.geofabrik.de/europe/monaco-latest.osm.pbf
+        REPLICATION_URL: https://download.geofabrik.de/europe/monaco-updates/
         NOMINATIM_PASSWORD: pass
     volumes:
         - nominatim_data:/var/lib/postgresql/16/main

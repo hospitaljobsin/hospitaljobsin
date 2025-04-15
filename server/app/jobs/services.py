@@ -144,9 +144,10 @@ class JobService:
         geo = None
         if location is not None:
             result = await self._geocoder.geocode(location)
-            geo = GeoObject(
-                coordinates=(result.latitude, result.longitude),
-            )
+            if result is not None:
+                geo = GeoObject(
+                    coordinates=(result.latitude, result.longitude),
+                )
 
         job = await self._job_repo.create(
             organization=existing_organization,
@@ -203,12 +204,21 @@ class JobService:
         ):
             return Err(OrganizationAuthorizationError())
 
+        geo = None
+        if location is not None:
+            result = await self._geocoder.geocode(location)
+            if result is not None:
+                geo = GeoObject(
+                    coordinates=(result.latitude, result.longitude),
+                )
+
         job = await self._job_repo.update(
             job=existing_job,
             title=title,
             description=description,
             vacancies=vacancies,
             location=location,
+            geo=geo,
             min_salary=min_salary,
             max_salary=max_salary,
             min_experience=min_experience,

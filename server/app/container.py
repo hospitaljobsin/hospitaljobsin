@@ -31,6 +31,7 @@ from app.core.oauth import create_oauth_client
 from app.core.recaptcha import create_recaptcha_verifier
 from app.core.templates import create_jinja2_environment
 from app.dataloaders import create_dataloaders
+from app.geocoding.services import GeocodingService
 from app.jobs.dataloaders import (
     create_applicant_count_by_job_id_dataloader,
     create_job_applicant_by_id_dataloader,
@@ -82,6 +83,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_recaptcha_verifier))
     container.register(aioinject.Singleton(create_geocoder))
+    container.register(aioinject.Scoped(GeocodingService))
     container.register(aioinject.Singleton(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
     container.register(aioinject.Scoped(AuthService))

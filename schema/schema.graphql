@@ -1706,6 +1706,15 @@ type Query {
     """Token of the pending invite"""
     inviteToken: String!
   ): OrganizationInvitePayload! @isAuthenticated
+
+  """Get available locations for the given search term."""
+  searchLocations(
+    """The search (query) term"""
+    searchTerm: String!
+
+    """How many items to return"""
+    limit: Int! = 5
+  ): SearchLocationsPayload!
 }
 
 """The register with passkey payload."""
@@ -1791,6 +1800,27 @@ type SavedJobEdge {
 type SavedJobNotFoundError implements Error {
   """Human readable error message."""
   message: String!
+}
+
+"""Search location entity."""
+type SearchLocation {
+  """Latitude of the location"""
+  latitude: Float!
+
+  """Longitude of the location"""
+  longitude: Float!
+
+  """Display name of the location"""
+  displayName: String!
+
+  """Place ID of the location"""
+  placeId: Int!
+}
+
+"""The payload for the search locations query."""
+type SearchLocationsPayload {
+  """List of search locations."""
+  locations: [SearchLocation!]!
 }
 
 """An account's session."""

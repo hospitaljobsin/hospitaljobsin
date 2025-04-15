@@ -70,7 +70,7 @@ export async function generateMetadata({
 	}
 
 	return {
-		title: `NewJob - ${data.organization.name}`,
+		title: `New Job - ${data.organization.name}`,
 		openGraph: {
 			images: [data.organization.logoUrl || "/default-image.img"],
 		},

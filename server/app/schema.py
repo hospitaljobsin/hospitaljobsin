@@ -11,6 +11,7 @@ from app.accounts.mutation import AccountMutation
 from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
 from app.auth.query import AuthQuery
+from app.geocoding.query import GeocodingQuery
 from app.jobs.mutation import JobMutation
 from app.jobs.query import JobQuery
 from app.organizations.mutation import OrganizationMutation
@@ -28,6 +29,7 @@ query = merge_types(
         BaseQuery,
         JobQuery,
         OrganizationQuery,
+        GeocodingQuery,
     ),
 )
 
