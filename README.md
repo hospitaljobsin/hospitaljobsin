@@ -4,11 +4,6 @@
     (option to send specific resume for each job application)
 - add applied jobs list (linkedin has both applied and saved jobs on the same page- differentiated by a filter)
 
-- we need a separate resource that can return the searched jobs
-aaa
-
-- if prompt is show me jobs satisfying XXX conditions, we get a tool call done to call the appropriate jobs. we handle that and show the result client side.
-- we can add other tools too, like showing current applications, saved jobs etcaaa
 
 # TODO- recruiter portal
 - reduce job address field to location, and geocode it into coordinates (for geospatial filtering)
@@ -30,6 +25,11 @@ future:
 - add export applicants to XLSX button
 - add select option type applicant field
 - add pagination to job view metrics (normal connections should be enough??)
+
+- we need a separate resource that can return the searched jobs
+
+- if prompt is show me jobs satisfying XXX conditions, we get a tool call done to call the appropriate jobs. we handle that and show the result client side.
+- we can add other tools too, like showing current applications, saved jobs etc
 
 # PulseWork
 > *recruitment and job seeking for medical professionals*
