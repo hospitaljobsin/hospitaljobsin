@@ -116,9 +116,8 @@ export default function LocationAutocomplete({
 
 	const handleInputChange = (value: string) => {
 		setInputValue(value);
-		if (!value) {
-			onChange("");
-		}
+		// Always call onChange to ensure form state is updated
+		onChange(value);
 	};
 
 	return (
