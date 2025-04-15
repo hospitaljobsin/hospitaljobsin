@@ -1,9 +1,6 @@
 "use client";
 
-import type {
-	LocationAutocompleteQuery,
-	SearchLocation,
-} from "@/__generated__/LocationAutocompleteQuery.graphql";
+import type { LocationAutocompleteQuery } from "@/__generated__/LocationAutocompleteQuery.graphql";
 import { useDebounce } from "@/lib/hooks/useDebounce";
 import type { AutocompleteProps } from "@heroui/react";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
@@ -14,10 +11,17 @@ import { usePreloadedQuery, useQueryLoader } from "react-relay";
 import { graphql } from "relay-runtime";
 
 interface LocationAutocompleteProps
-	extends Omit<AutocompleteProps, "children"> {
+	extends Omit<AutocompleteProps, "children" | "onChange"> {
 	value: string;
 	onChange: (value: string) => void;
 }
+
+type SearchLocation = {
+	id: number;
+	displayName: string;
+	lat: number;
+	lon: number;
+};
 
 const SearchLocationsQuery = graphql`
     query LocationAutocompleteQuery($searchTerm: String!) {
@@ -33,34 +37,31 @@ const SearchLocationsQuery = graphql`
     }
 `;
 
-// Create a separate component to handle the preloaded query
-function LocationResults({
+// Separate component to handle data fetching using the query reference
+function LocationResultControls({
 	queryReference,
-	setIsLoading,
-	setSuggestions,
+	onDataLoaded,
 }: {
 	queryReference: PreloadedQuery<LocationAutocompleteQuery>;
-	setIsLoading: (loading: boolean) => void;
-	setSuggestions: (suggestions: SearchLocation[]) => void;
+	onDataLoaded: (locations: SearchLocation[]) => void;
 }) {
 	const data = usePreloadedQuery(SearchLocationsQuery, queryReference);
 
 	useEffect(() => {
-		if (data && data.searchLocations && data.searchLocations.locations) {
-			const mapped = data.searchLocations.locations.map((item) => ({
+		if (data?.searchLocations?.locations) {
+			const mappedLocations = data.searchLocations.locations.map((item) => ({
 				id: item.placeId,
 				displayName: item.displayName,
 				lat: item.latitude,
 				lon: item.longitude,
 			}));
-
-			setSuggestions(mapped);
+			onDataLoaded(mappedLocations);
 		} else {
-			setSuggestions([]);
+			onDataLoaded([]);
 		}
-		setIsLoading(false);
-	}, [data, setSuggestions, setIsLoading]);
+	}, [data, onDataLoaded]);
 
+	// This component doesn't render anything visually
 	return null;
 }
 
@@ -76,6 +77,11 @@ export default function LocationAutocomplete({
 
 	const [queryReference, loadQuery, disposeQuery] =
 		useQueryLoader<LocationAutocompleteQuery>(SearchLocationsQuery);
+
+	const handleDataLoaded = useCallback((locations: SearchLocation[]) => {
+		setSuggestions(locations);
+		setIsLoading(false);
+	}, []);
 
 	const fetchSuggestions = useCallback(
 		(query: string) => {
@@ -118,10 +124,9 @@ export default function LocationAutocomplete({
 	return (
 		<>
 			{queryReference && (
-				<LocationResults
+				<LocationResultControls
 					queryReference={queryReference}
-					setIsLoading={setIsLoading}
-					setSuggestions={setSuggestions}
+					onDataLoaded={handleDataLoaded}
 				/>
 			)}
 			<Autocomplete
@@ -132,7 +137,7 @@ export default function LocationAutocomplete({
 				onSelectionChange={handleSelectionChange}
 			>
 				{suggestions.map((suggestion) => (
-					<AutocompleteItem key={suggestion.id} value={suggestion.id}>
+					<AutocompleteItem key={suggestion.id}>
 						{suggestion.displayName}
 					</AutocompleteItem>
 				))}
