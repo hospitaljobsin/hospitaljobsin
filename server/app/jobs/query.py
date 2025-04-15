@@ -35,6 +35,18 @@ class JobQuery:
                 description="The search (query) term",
             ),
         ] = None,
+        location: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The location to search for jobs",
+            ),
+        ] = None,
+        proximity_km: Annotated[
+            int | None,
+            strawberry.argument(
+                description="The proximity in km to search for jobs",
+            ),
+        ] = None,
         before: Annotated[
             relay.GlobalID | None,
             strawberry.argument(
@@ -62,6 +74,8 @@ class JobQuery:
     ) -> JobConnectionType:
         paginated_result = await job_repo.get_all_active(
             search_term=search_term,
+            location=location,
+            proximity_km=proximity_km,
             first=first,
             last=last,
             after=(after.node_id if after else None),

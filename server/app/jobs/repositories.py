@@ -6,8 +6,9 @@ from typing import Any, Literal, get_args
 
 import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
-from beanie.operators import And, In
+from beanie.operators import And, In, NearSphere
 from bson import ObjectId
+from geopy.geocoders.base import Geocoder
 
 from app.accounts.documents import Account
 from app.base.models import GeoObject
@@ -28,6 +29,9 @@ from .documents import (
 
 
 class JobRepo:
+    def __init__(self, geocoder: Geocoder) -> None:
+        self._geocoder = geocoder
+
     async def generate_slug(self, title: str) -> str:
         """Generate a slug from the job title."""
         slug = title.lower().replace(" ", "-")
@@ -151,6 +155,8 @@ class JobRepo:
     async def get_all_active(
         self,
         search_term: str | None = None,
+        location: str | None = None,
+        proximity_km: float | None = None,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
@@ -170,6 +176,37 @@ class JobRepo:
                 Job.is_active == True,  # noqa: E712
                 {"$text": {"$search": search_term}},
             )
+
+        # Apply location proximity filter if both location and proximity are provided
+        if location and proximity_km:
+            # Geocode the location string to coordinates
+            geocoded_location = await self._geocoder.geocode(location)
+            # Use Beanie's NearSphere operator instead of raw MongoDB query
+            # The max_distance parameter expects meters, so convert km to meters
+            max_distance_meters = proximity_km * 1000.0
+
+            # Combine existing search criteria with geo query using NearSphere
+            if search_term:
+                search_criteria = Job.find(
+                    Job.is_active == True,  # noqa: E712
+                    {"$text": {"$search": search_term}},
+                    NearSphere(
+                        Job.geo,
+                        geocoded_location.longitude,
+                        geocoded_location.latitude,
+                        max_distance=max_distance_meters,
+                    ),
+                )
+            else:
+                search_criteria = Job.find(
+                    Job.is_active == True,  # noqa: E712
+                    NearSphere(
+                        Job.geo,
+                        geocoded_location.longitude,
+                        geocoded_location.latitude,
+                        max_distance=max_distance_meters,
+                    ),
+                )
 
         return await paginator.paginate(
             search_criteria=search_criteria,

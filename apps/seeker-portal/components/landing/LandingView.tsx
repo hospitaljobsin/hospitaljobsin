@@ -7,14 +7,16 @@ import JobList from "./JobList";
 import JobListController from "./JobListController";
 
 const LandingViewQuery = graphql`
-  query LandingViewQuery($searchTerm: String) {
-    ...JobListFragment @arguments(searchTerm: $searchTerm)
+  query LandingViewQuery($searchTerm: String, $location: String, $proximityKm: Int) {
+    ...JobListFragment @arguments(searchTerm: $searchTerm, location: $location, proximityKm: $proximityKm)
   }
 `;
 
 export default function LandingView() {
 	const data = useLazyLoadQuery<LandingViewQueryType>(LandingViewQuery, {});
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
+	const [location, setLocation] = useState<string | null>(null);
+	const [proximityKm, setProximityKm] = useState<number | null>(null);
 
 	const [debouncedSearchTerm] = useDebounce(searchTerm, 1000);
 
@@ -23,8 +25,17 @@ export default function LandingView() {
 			<JobListController
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
+				location={location}
+				setLocation={setLocation}
+				proximityKm={proximityKm}
+				setProximityKm={setProximityKm}
 			/>
-			<JobList searchTerm={debouncedSearchTerm} rootQuery={data} />
+			<JobList
+				searchTerm={debouncedSearchTerm}
+				rootQuery={data}
+				location={location}
+				proximityKm={proximityKm}
+			/>
 		</div>
 	);
 }

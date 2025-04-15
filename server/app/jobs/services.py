@@ -256,7 +256,10 @@ class JobService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        if await self._job_application_form_repo.get(job_id=existing_job.id) is None:
+        if (
+            await self._job_application_form_repo.get_by_job_id(job_id=existing_job.id)
+            is None
+        ):
             return Err(JobApplicationFormNotFoundError())
 
         existing_job = await self._job_repo.update_active(existing_job, is_active=True)

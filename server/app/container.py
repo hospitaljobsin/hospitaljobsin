@@ -84,7 +84,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_recaptcha_verifier))
     container.register(aioinject.Singleton(create_geocoder))
     container.register(aioinject.Scoped(GeocodingService))
-    container.register(aioinject.Singleton(JobRepo))
+    container.register(aioinject.Scoped(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
     container.register(aioinject.Scoped(AuthService))
     container.register(aioinject.Singleton(ProfileRepo))

@@ -12,8 +12,10 @@ import JobListSkeleton from "./JobListSkeleton";
 const JobListFragment = graphql`
 fragment JobListFragment on Query @argumentDefinitions(
 	searchTerm: { type: "String", defaultValue: null }
+	location: { type: "String", defaultValue: null }
+	proximityKm: { type: "Int", defaultValue: null }
 ) {
-	...JobListInternalFragment @arguments(searchTerm: $searchTerm)
+	...JobListInternalFragment @arguments(searchTerm: $searchTerm, location: $location, proximityKm: $proximityKm)
 	viewer {
 		...JobControlsAuthFragment
 	}
@@ -25,10 +27,12 @@ const JobListInternalFragment = graphql`
   @argumentDefinitions(
     cursor: { type: "ID" }
     searchTerm: { type: "String", defaultValue: null }
+	location: { type: "String", defaultValue: null }
+	proximityKm: { type: "Int", defaultValue: null }
     count: { type: "Int", defaultValue: 10 }
   )
   @refetchable(queryName: "JobListPaginationQuery") {
-    jobs(after: $cursor, first: $count, searchTerm: $searchTerm)
+    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, location: $location, proximityKm: $proximityKm)
       @connection(key: "JobListFragment_jobs", filters: ["searchTerm"]) {
       edges {
         node {
@@ -47,9 +51,16 @@ const JobListInternalFragment = graphql`
 type Props = {
 	rootQuery: JobListFragment$key;
 	searchTerm: string | null;
+	location: string | null;
+	proximityKm: number | null;
 };
 
-export default function JobList({ rootQuery, searchTerm }: Props) {
+export default function JobList({
+	rootQuery,
+	searchTerm,
+	location,
+	proximityKm,
+}: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(JobListFragment, rootQuery);
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
@@ -85,14 +96,18 @@ export default function JobList({ rootQuery, searchTerm }: Props) {
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
 				refetch(
-					{ searchTerm: searchTerm },
+					{
+						searchTerm: searchTerm,
+						location: location,
+						proximityKm: proximityKm,
+					},
 					{ fetchPolicy: "store-or-network" },
 				);
 			});
 		}, 300); // Adjust debounce delay as needed
 
 		return () => clearTimeout(debounceTimeout);
-	}, [refetch, searchTerm]);
+	}, [refetch, searchTerm, location, proximityKm]);
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (
