@@ -488,8 +488,8 @@ type Job implements Node {
   """The work mode of the job."""
   workMode: WorkMode
 
-  """The address of the job."""
-  address: Address!
+  """The location of the job."""
+  location: String
 
   """The skills required for the job."""
   skills: [String!]!
@@ -574,7 +574,7 @@ type Job implements Node {
   jobApplicant(
     """The slug of the job applicant."""
     slug: String!
-  ): JobApplicantJobApplicantNotFoundError!
+  ): JobApplicantJobApplicantNotFoundError! @isAuthenticated
 
   """The organization of the job."""
   organization: Organization
@@ -1050,11 +1050,11 @@ type Mutation {
     """The description of the job."""
     description: String!
 
-    """The address of the job."""
-    address: AddressInput!
-
     """The skills required for the job."""
     skills: [String!]!
+
+    """The location of the job."""
+    location: String = null
 
     """The number of vacancies for the job."""
     vacancies: Int = null
@@ -1095,11 +1095,11 @@ type Mutation {
     """The description of the job."""
     description: String!
 
-    """The address of the job."""
-    address: AddressInput!
-
     """The skills required for the job."""
     skills: [String!]!
+
+    """The location of the job."""
+    location: String = null
 
     """The number of vacancies for the job."""
     vacancies: Int = null

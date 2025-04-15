@@ -3,10 +3,11 @@ from typing import Literal
 
 from bson import ObjectId
 from bson.errors import InvalidId
+from geopy.geocoders.base import Geocoder
 from result import Err, Ok, Result
 
 from app.accounts.documents import Account
-from app.base.models import Address
+from app.base.models import GeoObject
 from app.jobs.documents import (
     ApplicantField,
     ApplicationField,
@@ -83,12 +84,14 @@ class JobService:
         organization_member_service: OrganizationMemberService,
         job_application_form_repo: JobApplicationFormRepo,
         job_metric_repo: JobMetricRepo,
+        geocoder: Geocoder,
     ) -> None:
         self._job_repo = job_repo
         self._organization_repo = organization_repo
         self._organization_member_service = organization_member_service
         self._job_application_form_repo = job_application_form_repo
         self._job_metric_repo = job_metric_repo
+        self._geocoder = geocoder
 
     async def log_view(self, slug: str) -> Result[JobMetric, JobNotFoundError]:
         existing_job = await self._job_repo.get_by_slug(slug=slug)
@@ -110,7 +113,7 @@ class JobService:
         organization_id: str,
         title: str,
         description: str,
-        address: Address,
+        location: str | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -138,12 +141,19 @@ class JobService:
         ):
             return Err(OrganizationAuthorizationError())
 
+        geo = None
+        if location is not None:
+            result = await self._geocoder.geocode(location)
+            geo = GeoObject(
+                coordinates=(result.latitude, result.longitude),
+            )
+
         job = await self._job_repo.create(
             organization=existing_organization,
             title=title,
             description=description,
             vacancies=vacancies,
-            address=address,
+            location=location,
             min_salary=min_salary,
             max_salary=max_salary,
             min_experience=min_experience,
@@ -153,6 +163,7 @@ class JobService:
             work_mode=work_mode,
             skills=skills,
             currency=currency,
+            geo=geo,
         )
 
         return Ok(job)
@@ -164,7 +175,7 @@ class JobService:
         job_id: str,
         title: str,
         description: str,
-        address: Address,
+        location: str | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -197,7 +208,7 @@ class JobService:
             title=title,
             description=description,
             vacancies=vacancies,
-            address=address,
+            location=location,
             min_salary=min_salary,
             max_salary=max_salary,
             min_experience=min_experience,

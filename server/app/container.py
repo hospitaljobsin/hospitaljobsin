@@ -26,6 +26,7 @@ from app.auth.services import AuthService
 from app.config import Settings
 from app.core.aws_sdk import create_aioboto3_session, create_s3_client
 from app.core.emails import EmailSender, create_smtp_client
+from app.core.geocoding import create_geocoder
 from app.core.oauth import create_oauth_client
 from app.core.recaptcha import create_recaptcha_verifier
 from app.core.templates import create_jinja2_environment
@@ -80,6 +81,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_s3_client))
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_recaptcha_verifier))
+    container.register(aioinject.Singleton(create_geocoder))
     container.register(aioinject.Singleton(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
     container.register(aioinject.Scoped(AuthService))

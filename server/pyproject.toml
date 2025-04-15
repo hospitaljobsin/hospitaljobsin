@@ -31,6 +31,7 @@ dependencies = [
     "pyotp>=2.9.0",
     "python-jose[cryptography]>=3.4.0",
     "mcp[cli]>=1.6.0",
+    "geopy>=2.4.1",
 ]
 
 [tool.uv]

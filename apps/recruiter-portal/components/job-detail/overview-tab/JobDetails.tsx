@@ -41,11 +41,7 @@ const JobDetailsFragment = graphql`
 	currency
 	workMode
 	type
-    address {
-      city
-      state
-      country
-    }
+    location
     createdAt
     updatedAt
     isActive
@@ -90,26 +86,6 @@ export default function JobDetails({
 	});
 
 	const hasApplicationForm = data.applicationForm !== null;
-
-	const formatAddress = (address: {
-		readonly city: string | null | undefined;
-		readonly state: string | null | undefined;
-		readonly country?: string | null | undefined;
-		readonly line1?: string | null | undefined;
-		readonly line2?: string | null | undefined;
-		readonly pincode?: string | null | undefined;
-	}) => {
-		const { city, state, country } = address;
-
-		// Build address parts with available components
-		const parts = [];
-		if (city) parts.push(city);
-		if (state) parts.push(state);
-		if (country) parts.push(country);
-
-		// Return combined parts or default message
-		return parts.length > 0 ? parts.join(", ") : "Not specified";
-	};
 
 	function formatExperienceRange({
 		hasExperienceRange,
@@ -210,10 +186,10 @@ export default function JobDetails({
 					<div className="flex sm:flex-row flex-wrap gap-8 items-start sm:items-center text-foreground-600 w-full">
 						{data.type && <p>{jobType(data.type)}</p>}
 
-						{data.address && (
+						{data.location && (
 							<div className="flex items-center gap-2">
 								<MapPin size={16} />
-								{formatAddress(data.address)}
+								{data.location}
 							</div>
 						)}
 						<div className="flex items-center gap-2">

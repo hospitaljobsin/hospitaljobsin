@@ -46,7 +46,7 @@ mutation NewJobFormMutation(
 	$title: String!, 
 	$description: String!, 
 	$skills: [String!]!, 
-	$address: AddressInput! 
+	$location: String,
 	$organizationId: ID!, 
 	$minSalary: Int, 
 	$maxSalary: Int,  
@@ -61,7 +61,7 @@ mutation NewJobFormMutation(
 		title: $title,
 		description: $description, 
 		skills: $skills, 
-		address: $address, 
+		location: $location, 
 		organizationId: $organizationId, 
 		minSalary: $minSalary, 
 		maxSalary: $maxSalary, 
@@ -123,14 +123,7 @@ const formSchema = z.object({
 	description: z.string().min(1, "This field is required").max(2000),
 	vacancies: z.number().positive().nullable(),
 	skills: z.array(z.object({ value: z.string() })),
-	address: z.object({
-		city: z.string().nullable(),
-		country: z.string().nullable(),
-		line1: z.string().nullable(),
-		line2: z.string().nullable(),
-		pincode: z.string().nullable(),
-		state: z.string().nullable(),
-	}),
+	location: z.string().nullable(),
 	minSalary: z.number().positive().nullable(),
 	maxSalary: z.number().positive().nullable(),
 	minExperience: z.number().positive().nullable(),
@@ -171,14 +164,7 @@ export default function NewJobForm({ account, organization }: Props) {
 			description: "",
 			vacancies: null,
 			skills: [],
-			address: {
-				city: organizationData.address.city,
-				country: organizationData.address.country,
-				line1: organizationData.address.line1,
-				line2: organizationData.address.line2,
-				pincode: organizationData.address.pincode,
-				state: organizationData.address.state,
-			},
+			location: null,
 			minSalary: null,
 			maxSalary: null,
 			minExperience: null,
@@ -199,14 +185,7 @@ export default function NewJobForm({ account, organization }: Props) {
 	useEffect(() => {
 		const newOpenAccordions = new Set<Key>([...accordionSelectedKeys]);
 
-		if (
-			errors.address?.city ||
-			errors.address?.country ||
-			errors.address?.line1 ||
-			errors.address?.line2 ||
-			errors.address?.pincode ||
-			errors.address?.state
-		) {
+		if (errors.location) {
 			newOpenAccordions.add("address");
 		}
 		if (errors.minSalary || errors.maxSalary) {
@@ -239,14 +218,7 @@ export default function NewJobForm({ account, organization }: Props) {
 				description: formData.description,
 				vacancies: formData.vacancies,
 				skills: formData.skills.flatMap((skill) => skill.value),
-				address: {
-					city: formData.address.city,
-					country: formData.address.country,
-					line1: formData.address.line1,
-					line2: formData.address.line2,
-					pincode: formData.address.pincode,
-					state: formData.address.state,
-				},
+				location: formData.location,
 				minSalary: formData.minSalary,
 				maxSalary: formData.maxSalary,
 				minExperience: formData.minExperience,
@@ -585,96 +557,20 @@ export default function NewJobForm({ account, organization }: Props) {
 									startContent={<MapPin size={20} />}
 								>
 									<div className="flex flex-col gap-4">
-										<div className="flex gap-8 mb-12">
-											<div className="flex flex-col w-full gap-8">
-												<Controller
-													name="address.city"
-													control={control}
-													render={({ field }) => (
-														<Input
-															{...field}
-															label="City"
-															placeholder="Add your city"
-															value={field.value ?? ""}
-															errorMessage={errors.address?.city?.message}
-															isInvalid={!!errors.address?.city}
-														/>
-													)}
+										<Controller
+											name="location"
+											control={control}
+											render={({ field }) => (
+												<Input
+													{...field}
+													label="Location"
+													placeholder="Add job location"
+													value={field.value ?? ""}
+													errorMessage={errors.location?.message}
+													isInvalid={!!errors.location}
 												/>
-												<Controller
-													name="address.country"
-													control={control}
-													render={({ field }) => (
-														<Input
-															{...field}
-															label="Country"
-															placeholder="Add your country"
-															value={field.value ?? ""}
-															errorMessage={errors.address?.country?.message}
-															isInvalid={!!errors.address?.country}
-														/>
-													)}
-												/>
-												<Controller
-													name="address.pincode"
-													control={control}
-													render={({ field }) => (
-														<Input
-															{...field}
-															label="Pincode"
-															placeholder="Add your pincode"
-															value={field.value ?? ""}
-															errorMessage={errors.address?.pincode?.message}
-															isInvalid={!!errors.address?.pincode}
-														/>
-													)}
-												/>
-											</div>
-											<div className="flex flex-col w-full gap-8">
-												<Controller
-													name="address.line1"
-													control={control}
-													render={({ field }) => (
-														<Input
-															{...field}
-															label="Line 1"
-															placeholder="Add line 1"
-															value={field.value ?? ""}
-															errorMessage={errors.address?.line1?.message}
-															isInvalid={!!errors.address?.line1}
-														/>
-													)}
-												/>
-												<Controller
-													name="address.line2"
-													control={control}
-													render={({ field }) => (
-														<Input
-															{...field}
-															label="Line 2"
-															placeholder="Add line 2"
-															value={field.value ?? ""}
-															errorMessage={errors.address?.line2?.message}
-															isInvalid={!!errors.address?.line2}
-														/>
-													)}
-												/>
-												<Controller
-													name="address.state"
-													control={control}
-													render={({ field }) => (
-														<Input
-															{...field}
-															label="State"
-															placeholder="Add your state"
-															value={field.value ?? ""}
-															errorMessage={errors.address?.state?.message}
-															isInvalid={!!errors.address?.state}
-														/>
-													)}
-												/>
-											</div>
-										</div>
+											)}
+										/>
 									</div>
 								</AccordionItem>
 							</Accordion>

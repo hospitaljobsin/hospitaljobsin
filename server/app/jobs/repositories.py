@@ -10,7 +10,7 @@ from beanie.operators import And, In
 from bson import ObjectId
 
 from app.accounts.documents import Account
-from app.base.models import Address
+from app.base.models import GeoObject
 from app.core.constants import JobApplicantStatus, JobMetricEventType
 from app.database.paginator import PaginatedResult, Paginator
 from app.organizations.documents import Organization
@@ -44,7 +44,8 @@ class JobRepo:
         organization: Organization,
         title: str,
         description: str,
-        address: Address,
+        location: str | None = None,
+        geo: GeoObject | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -62,7 +63,8 @@ class JobRepo:
             title=title,
             description=description,
             vacancies=vacancies,
-            address=address,
+            location=location,
+            geo=geo,
             min_salary=min_salary,
             max_salary=max_salary,
             min_experience=min_experience,
@@ -87,7 +89,7 @@ class JobRepo:
         job: Job,
         title: str,
         description: str,
-        address: Address,
+        location: str | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
@@ -104,7 +106,7 @@ class JobRepo:
         job.title = title
         job.description = description
         job.vacancies = vacancies
-        job.address = address
+        job.location = location
         job.min_salary = min_salary
         job.max_salary = max_salary
         job.min_experience = min_experience

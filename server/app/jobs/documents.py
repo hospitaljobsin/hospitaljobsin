@@ -15,7 +15,7 @@ from pymongo import IndexModel
 from pymongo.operations import SearchIndexModel
 
 from app.accounts.documents import Account
-from app.base.models import Address
+from app.base.models import GeoObject
 from app.core.constants import JobApplicantStatus, JobMetricEventType
 from app.organizations.documents import Organization
 
@@ -27,7 +27,8 @@ class Job(Document):
     type: Literal["full_time", "part_time", "internship", "contract"] | None = None
     work_mode: Literal["remote", "hybrid", "office"] | None = None
 
-    address: Address
+    location: str | None = None
+    geo: GeoObject | None = None
     skills: list[str]
 
     currency: Literal["INR"] = "INR"

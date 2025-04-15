@@ -23,10 +23,7 @@ export const JobFragment = graphql`
     title
     type
     workMode
-    address {
-      city
-      state
-    }
+    location
     skills
     currency
     hasSalaryRange
@@ -104,26 +101,6 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			default:
 				return null;
 		}
-	};
-
-	const formatAddress = (address: {
-		readonly city: string | null | undefined;
-		readonly state: string | null | undefined;
-		readonly country?: string | null | undefined;
-		readonly line1?: string | null | undefined;
-		readonly line2?: string | null | undefined;
-		readonly pincode?: string | null | undefined;
-	}) => {
-		const { city, state, country } = address;
-
-		// Build address parts with available components
-		const parts = [];
-		if (city) parts.push(city);
-		if (state) parts.push(state);
-		if (country) parts.push(country);
-
-		// Return combined parts or default message
-		return parts.length > 0 ? parts.join(", ") : "Not specified";
 	};
 
 	const salaryRange = data.hasSalaryRange ? (
@@ -207,9 +184,11 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 				</div>
 				<div className="flex flex-wrap justify-start gap-4 sm:gap-8 items-start text-foreground-600 w-full text-center">
 					{data.type && <p>{jobType(data.type)}</p>}
-					<div className="flex items-center gap-2">
-						<MapPin size={16} /> {formatAddress(data.address)}
-					</div>
+					{data.location && (
+						<div className="flex items-center gap-2">
+							<MapPin size={16} /> {data.location}
+						</div>
+					)}
 					<div className="flex items-center gap-2">
 						<Briefcase size={16} />{" "}
 						{formatExperienceRange({

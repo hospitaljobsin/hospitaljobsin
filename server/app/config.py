@@ -174,6 +174,11 @@ class Settings(BaseSettings):
 
     password_reset_token_cooldown: int = 60 * 3
 
+    # geocoder config
+    geocoder_domain: str
+
+    geocoder_user_agent: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",

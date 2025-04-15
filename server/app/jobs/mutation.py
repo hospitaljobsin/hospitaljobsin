@@ -9,7 +9,6 @@ from strawberry import relay
 from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
-from app.base.types import AddressInputType
 from app.context import AuthInfo
 from app.jobs.exceptions import (
     JobApplicantAlreadyExistsError,
@@ -185,18 +184,18 @@ class JobMutation:
                 description="The description of the job.",
             ),
         ],
-        address: Annotated[
-            AddressInputType,
-            strawberry.argument(
-                description="The address of the job.",
-            ),
-        ],
         skills: Annotated[
             list[str],
             strawberry.argument(
                 description="The skills required for the job.",
             ),
         ],
+        location: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The location of the job.",
+            ),
+        ] = None,
         vacancies: Annotated[
             int | None,
             strawberry.argument(
@@ -259,7 +258,7 @@ class JobMutation:
             title=title,
             description=description,
             vacancies=vacancies,
-            address=AddressInputType.to_document(address),
+            location=location,
             min_salary=min_salary,
             max_salary=max_salary,
             min_experience=min_experience,
@@ -318,18 +317,18 @@ class JobMutation:
                 description="The description of the job.",
             ),
         ],
-        address: Annotated[
-            AddressInputType,
-            strawberry.argument(
-                description="The address of the job.",
-            ),
-        ],
         skills: Annotated[
             list[str],
             strawberry.argument(
                 description="The skills required for the job.",
             ),
         ],
+        location: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The location of the job.",
+            ),
+        ] = None,
         vacancies: Annotated[
             int | None,
             strawberry.argument(
@@ -392,7 +391,7 @@ class JobMutation:
             title=title,
             description=description,
             vacancies=vacancies,
-            address=AddressInputType.to_document(address),
+            location=location,
             min_salary=min_salary,
             max_salary=max_salary,
             min_experience=min_experience,
