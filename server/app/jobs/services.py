@@ -146,7 +146,7 @@ class JobService:
             result = await self._geocoder.geocode(location)
             if result is not None:
                 geo = GeoObject(
-                    coordinates=(result.latitude, result.longitude),
+                    coordinates=(result.longitude, result.latitude),
                 )
 
         job = await self._job_repo.create(
@@ -209,7 +209,7 @@ class JobService:
             result = await self._geocoder.geocode(location)
             if result is not None:
                 geo = GeoObject(
-                    coordinates=(result.latitude, result.longitude),
+                    coordinates=(result.longitude, result.latitude),
                 )
 
         job = await self._job_repo.update(

@@ -17,7 +17,7 @@ interface LocationAutocompleteProps
     extends Omit<AutocompleteProps, "children" | "onChange"> {
     value: string;
     onChange: (value: string) => void;
-    onClear: () => void;
+    onClear?: () => void;
 }
 
 type SearchLocation = {
@@ -110,7 +110,10 @@ export default function LocationAutocomplete({
 
     const handleSelectionChange = (selectedKey: Key | null) => {
         if (!selectedKey) { 
-            onClear()
+			if (onClear) {
+				onClear()
+			}
+
             return;
         }
         const selected = suggestions.find((item) =>renderKey(item) === selectedKey);
