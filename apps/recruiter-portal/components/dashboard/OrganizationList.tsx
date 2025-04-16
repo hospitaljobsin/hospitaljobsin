@@ -86,20 +86,21 @@ export default function OrganizationList({ rootQuery }: Props) {
 		!data.organizations.pageInfo.hasNextPage
 	) {
 		return (
-			<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
-				<div className="flex w-full gap-6 justify-between items-center">
-					<div className="flex gap-4 items-center text-foreground-600">
-						<Building size={24} />
-						<h2 className="text-base font-medium">Your Organizations</h2>
-					</div>
-					<Button
-						as={Link}
-						href={links.createOrganization}
-						startContent={<PlusIcon className="h-4 w-4" />}
-					>
-						Create Organization
-					</Button>
+			<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6 border-2 border-dashed border-foreground-300 rounded-md p-6 items-center justify-center">
+				<div className="flex flex-col gap-4 items-center text-foreground-600">
+					<Building size={48} />
+					<h2 className="text-lg font-medium">No Organizations Yet</h2>
+					<p className="text-sm text-foreground-500 text-center">
+						Get started by creating your first organization.
+					</p>
 				</div>
+				<Button
+					as={Link}
+					href={links.createOrganization}
+					startContent={<PlusIcon className="h-4 w-4" />}
+				>
+					Create Organization
+				</Button>
 			</div>
 		);
 	}
