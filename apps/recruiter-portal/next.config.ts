@@ -1,3 +1,4 @@
+import createMDX from "@next/mdx";
 import { createJiti } from "jiti";
 import type { NextConfig } from "next";
 import { fileURLToPath } from "node:url";
@@ -8,6 +9,11 @@ jiti.esmResolve("./lib/env");
 
 const nextConfig: NextConfig = {
 	/* config options here */
+	// Configure `pageExtensions` to include markdown and MDX files
+	pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+	experimental: {
+		mdxRs: true,
+	},
 	reactStrictMode: true,
 	compiler: {
 		relay: {
@@ -37,4 +43,9 @@ const nextConfig: NextConfig = {
 	},
 };
 
-export default nextConfig;
+const withMDX = createMDX({
+	// Add markdown plugins here, as desired
+});
+
+// Merge MDX config with Next.js config
+export default withMDX(nextConfig);
