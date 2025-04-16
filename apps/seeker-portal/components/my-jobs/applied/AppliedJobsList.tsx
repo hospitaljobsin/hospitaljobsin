@@ -1,38 +1,40 @@
+import Job from "@/components/landing/Job";
 import { useFragment, usePaginationFragment } from "react-relay";
-import Job from "../landing/Job";
 
-import type { SavedJobsListFragment$key } from "@/__generated__/SavedJobsListFragment.graphql";
+import type { AppliedJobsListFragment$key } from "@/__generated__/AppliedJobsListFragment.graphql";
 
-import type { SavedJobsListInternalFragment$key } from "@/__generated__/SavedJobsListInternalFragment.graphql";
-import type { SavedViewQuery } from "@/__generated__/SavedViewQuery.graphql";
+import type { AppliedJobsListInternalFragment$key } from "@/__generated__/AppliedJobsListInternalFragment.graphql";
+import type { AppliedViewQuery } from "@/__generated__/AppliedViewQuery.graphql";
+import AppliedJobsListSkeleton from "@/components/landing/JobListSkeleton";
 import { Card, CardBody } from "@heroui/react";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
-import SavedJobsListSkeleton from "../landing/JobListSkeleton";
 
-const SavedJobsListFragment = graphql`
-fragment SavedJobsListFragment on Query {
-		...SavedJobsListInternalFragment
+const AppliedJobsListFragment = graphql`
+fragment AppliedJobsListFragment on Query {
+	...AppliedJobsListInternalFragment
 	viewer {
 		...JobControlsAuthFragment
 	}
 }
 `;
 
-const SavedJobsListInternalFragment = graphql`
-  fragment SavedJobsListInternalFragment on Query
+const AppliedJobsListInternalFragment = graphql`
+  fragment AppliedJobsListInternalFragment on Query
   @argumentDefinitions(
     cursor: { type: "ID" }
     count: { type: "Int", defaultValue: 10 }
   )
-  @refetchable(queryName: "SavedJobsListPaginationQuery") {
-    savedJobs(after: $cursor, first: $count)
-      @connection(key: "SavedJobListFragment_savedJobs") {
+  @refetchable(queryName: "AppliedJobsListPaginationQuery") {
+    appliedJobs(after: $cursor, first: $count)
+      @connection(key: "AppliedJobListFragment_appliedJobs") {
       edges {
         node {
           id
-          ...JobFragment
+		  job @required(action: THROW) {
+          	...JobFragment
+		  }
         }
       }
       pageInfo {
@@ -43,15 +45,15 @@ const SavedJobsListInternalFragment = graphql`
 `;
 
 type Props = {
-	rootQuery: SavedJobsListFragment$key;
+	rootQuery: AppliedJobsListFragment$key;
 };
 
-export default function SavedJobsList({ rootQuery }: Props) {
-	const root = useFragment(SavedJobsListFragment, rootQuery);
+export default function AppliedJobsList({ rootQuery }: Props) {
+	const root = useFragment(AppliedJobsListFragment, rootQuery);
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<
-		SavedViewQuery,
-		SavedJobsListInternalFragment$key
-	>(SavedJobsListInternalFragment, root);
+		AppliedViewQuery,
+		AppliedJobsListInternalFragment$key
+	>(AppliedJobsListInternalFragment, root);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -63,7 +65,7 @@ export default function SavedJobsList({ rootQuery }: Props) {
 				const entry = entries[0];
 				if (
 					entry.isIntersecting &&
-					data.savedJobs.pageInfo.hasNextPage &&
+					data.appliedJobs.pageInfo.hasNextPage &&
 					!isLoadingNext
 				) {
 					loadNext(5);
@@ -74,11 +76,11 @@ export default function SavedJobsList({ rootQuery }: Props) {
 
 		observer.observe(observerRef.current);
 		return () => observer.disconnect();
-	}, [data.savedJobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
+	}, [data.appliedJobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
 	if (
-		data.savedJobs.edges.length === 0 &&
-		!data.savedJobs.pageInfo.hasNextPage
+		data.appliedJobs.edges.length === 0 &&
+		!data.appliedJobs.pageInfo.hasNextPage
 	) {
 		return (
 			<Card className="p-6 space-y-6" fullWidth shadow="none">
@@ -104,15 +106,15 @@ export default function SavedJobsList({ rootQuery }: Props) {
 
 	return (
 		<div className="w-full flex flex-col gap-8 pb-6">
-			{data.savedJobs.edges.map((jobEdge) => (
+			{data.appliedJobs.edges.map((jobEdge) => (
 				<Job
-					job={jobEdge.node}
+					job={jobEdge.node.job}
 					key={jobEdge.node.id}
 					authQueryRef={root.viewer}
 				/>
 			))}
 			<div ref={observerRef} className="h-10" />
-			{isLoadingNext && <SavedJobsListSkeleton />}
+			{isLoadingNext && <AppliedJobsListSkeleton />}
 		</div>
 	);
 }

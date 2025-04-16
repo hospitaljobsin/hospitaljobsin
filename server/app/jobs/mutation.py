@@ -600,7 +600,7 @@ class JobMutation:
                         return JobApplicantAlreadyExistsErrorType()
             case Ok(job_application):
                 return CreateJobApplicantSuccessType(
-                    job_applicant=JobApplicantType.marshal_with_account(job_application)
+                    job_applicant=JobApplicantType.marshal_with_links(job_application)
                 )
             case _ as unreachable:
                 assert_never(unreachable)

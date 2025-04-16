@@ -9,8 +9,9 @@ from strawberry.permission import PermissionExtension
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo, Info
 
-from .repositories import JobRepo, SavedJobRepo
+from .repositories import JobApplicantRepo, JobRepo, SavedJobRepo
 from .types import (
+    JobApplicantConnectionType,
     JobConnectionType,
     JobNotFoundErrorType,
     JobPayload,
@@ -157,3 +158,53 @@ class JobQuery:
             last=last,
         )
         return SavedJobConnectionType.marshal(result)
+
+    @strawberry.field(  # type: ignore[misc]
+        description="Get all applied jobs for the current user.",
+        graphql_type=JobApplicantConnectionType,
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def applied_jobs(
+        self,
+        info: AuthInfo,
+        job_applicant_repo: Annotated[JobApplicantRepo, Inject],
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
+    ) -> JobApplicantConnectionType:
+        result = await job_applicant_repo.get_all_by_account_id(
+            account_id=info.context["current_user"].id,
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
+            first=first,
+            last=last,
+        )
+        return JobApplicantConnectionType.marshal(result)

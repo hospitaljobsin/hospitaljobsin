@@ -596,6 +596,9 @@ type JobApplicant implements Node {
 
   """The account of the job applicant."""
   account: Account
+
+  """The job of the job applicant."""
+  job: Job
 }
 
 """Used when the job applicant already exists."""
@@ -1700,6 +1703,21 @@ type Query {
     """How many items to return before the cursor?"""
     last: Int = null
   ): SavedJobConnection! @isAuthenticated
+
+  """Get all applied jobs for the current user."""
+  appliedJobs(
+    """Returns items before the given cursor."""
+    before: ID = null
+
+    """Returns items after the given cursor."""
+    after: ID = null
+
+    """How many items to return after the cursor?"""
+    first: Int = null
+
+    """How many items to return before the cursor?"""
+    last: Int = null
+  ): JobApplicantConnection! @isAuthenticated
 
   """Get organization by slug."""
   organization(

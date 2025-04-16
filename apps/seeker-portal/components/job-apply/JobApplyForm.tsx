@@ -34,6 +34,11 @@ const CreateJobApplicantMutation = graphql`
       __typename
       ... on CreateJobApplicantSuccess {
         __typename
+		jobApplicant {
+			job {
+				...JobDetailsInternalFragment
+			}
+		}
       }
 
       ... on JobNotFoundError {

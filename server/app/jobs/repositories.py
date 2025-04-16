@@ -192,9 +192,9 @@ class JobRepo:
                         has_previous_page=False,
                         start_cursor=None,
                         end_cursor=None,
-                    ),
+                    ),  # type: ignore[arg-type]
                 )
-            # Use Beanie's NearSphere operator instead of raw MongoDB query
+
             # The max_distance parameter expects meters, so convert km to meters
             max_distance_meters = proximity_km * 1000.0
 
@@ -356,6 +356,8 @@ class JobApplicantRepo:
         job_ids: list[ObjectId],
     ) -> list[dict[str, int] | None]:
         """
+        Get many applicant counts by job ID.
+
         For each job ID:
         - Return a dict with all statuses and counts (0 if no applicants for that status).
         - Return {} if the job exists but has no applicants.
@@ -394,9 +396,7 @@ class JobApplicantRepo:
             else:
                 exists = await Job.find_one(Job.id == job_id)
                 output.append(
-                    {status: 0 for status in get_args(JobApplicantStatus)}
-                    if exists
-                    else None
+                    dict.fromkeys(get_args(JobApplicantStatus), 0) if exists else None
                 )
 
         return output
@@ -498,6 +498,35 @@ class JobApplicantRepo:
         }
 
         return [job_applicant_by_slug.get(job_slug) for job_slug in job_applicant_slugs]
+
+    async def get_all_by_account_id(
+        self,
+        account_id: ObjectId,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[JobApplicant, ObjectId]:
+        """Get a paginated result of job applicants for the given account."""
+        paginator: Paginator[JobApplicant, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=JobApplicant,
+            paginate_by="job.id",
+        )
+
+        search_criteria = JobApplicant.find(
+            JobApplicant.account.id == account_id,
+            fetch_links=True,
+            nesting_depth=1,
+        ).sort(-JobApplicant.id)
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
 
 
 class JobApplicationFormRepo:

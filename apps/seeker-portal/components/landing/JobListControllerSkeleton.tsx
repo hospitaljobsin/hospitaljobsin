@@ -18,7 +18,7 @@ export default function JobListControllerSkeleton() {
 					/>
 				}
 				isClearable
-				placeholder="Search for jobs, in plain English"
+				placeholder="Search for your next job"
 				variant="bordered"
 				fullWidth
 				isDisabled

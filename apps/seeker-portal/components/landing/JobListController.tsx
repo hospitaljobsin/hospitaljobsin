@@ -33,7 +33,7 @@ export default function JobListController(props: JobListControllerProps) {
 					/>
 				}
 				isClearable
-				placeholder="Search for jobs, in plain English"
+				placeholder="Search for your next job"
 				variant="bordered"
 				value={props.searchTerm || ""}
 				onValueChange={(value) => props.setSearchTerm(value)}

@@ -210,6 +210,8 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
 
     _account: Private[Account | ObjectId]
 
+    _job: Private[Job | ObjectId]
+
     @strawberry.field(  # type: ignore[misc]
         description="The account of the job applicant.",
     )
@@ -225,12 +227,28 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
             return AccountType.marshal(account)
         return AccountType.marshal(self._account)
 
+    @strawberry.field(  # type: ignore[misc]
+        description="The job of the job applicant.",
+    )
+    @inject
+    async def job(
+        self, info: Info
+    ) -> Annotated["JobType", strawberry.lazy("app.jobs.types")] | None:
+        if isinstance(self._job, ObjectId):
+            job = await info.context["loaders"].job_by_id.load(str(self._job))
+
+            if job is None:
+                return None
+            return JobType.marshal(job)
+        return JobType.marshal(self._job)
+
     @classmethod
-    def marshal_with_account(cls, job_applicant: JobApplicant) -> Self:
+    def marshal_with_links(cls, job_applicant: JobApplicant) -> Self:
         """Marshal into a node instance."""
         return cls(
             id=str(job_applicant.id),
             _account=job_applicant.account,
+            _job=job_applicant.job,
             slug=job_applicant.slug,
             status=JobApplicantStatusEnum[job_applicant.status.upper()],
             applicant_fields=[
@@ -245,6 +263,7 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
         return cls(
             id=str(job_applicant.id),
             _account=job_applicant.account.ref.id,
+            _job=job_applicant.job.ref.id,
             slug=job_applicant.slug,
             status=JobApplicantStatusEnum[job_applicant.status.upper()],
             applicant_fields=[
@@ -276,7 +295,7 @@ class JobApplicantEdgeType(BaseEdgeType[JobApplicantType, JobApplicant]):
     def marshal(cls, job_applicant: JobApplicant) -> Self:
         """Marshal into a edge instance."""
         return cls(
-            node=JobApplicantType.marshal_with_account(job_applicant),
+            node=JobApplicantType.marshal_with_links(job_applicant),
             cursor=relay.to_base64(JobApplicantType, job_applicant.id),
         )
 
