@@ -19,9 +19,6 @@ class SearchLocationType:
     display_name: str = strawberry.field(
         description="Display name of the location",
     )
-    place_id: int = strawberry.field(
-        description="Place ID of the location",
-    )
 
     @classmethod
     def marshal(cls, data: SearchLocation) -> Self:
@@ -29,7 +26,6 @@ class SearchLocationType:
             latitude=data.latitude,
             longitude=data.longitude,
             display_name=data.display_name,
-            place_id=data.place_id,
         )
 
 

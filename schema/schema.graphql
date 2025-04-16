@@ -1818,9 +1818,6 @@ type SearchLocation {
 
   """Display name of the location"""
   displayName: String!
-
-  """Place ID of the location"""
-  placeId: Int!
 }
 
 """The payload for the search locations query."""

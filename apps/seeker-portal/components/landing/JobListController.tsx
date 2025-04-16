@@ -1,5 +1,7 @@
+import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import { Card, CardBody, Input, Slider } from "@heroui/react";
 import { MapPin, Search } from "lucide-react";
+import { FormEvent } from "react";
 
 interface JobListControllerProps {
 	searchTerm: string | null;
@@ -11,8 +13,13 @@ interface JobListControllerProps {
 }
 
 export default function JobListController(props: JobListControllerProps) {
+	// Prevent form submission when pressing Enter
+	const handleSubmit = (e: FormEvent) => {
+		e.preventDefault();
+	};
+
 	return (
-		<div className="flex flex-col gap-4 w-full">
+		<form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
 			<Input
 				size="lg"
 				classNames={{
@@ -39,16 +46,14 @@ export default function JobListController(props: JobListControllerProps) {
 					<CardBody className="p-4">
 						<div className="flex flex-col sm:flex-row gap-4 w-full">
 							<div className="flex-1">
-								<Input
+								<LocationAutocomplete
 									label="Location"
 									placeholder="Enter city, state, or zip"
 									startContent={
 										<MapPin size={18} className="text-default-400" />
 									}
 									value={props.location || ""}
-									onValueChange={(value) => props.setLocation(value)}
-									isClearable
-									onClear={() => props.setLocation(null)}
+									onChange={(value) => props.setLocation(value)}
 									fullWidth
 								/>
 							</div>
@@ -79,6 +84,6 @@ export default function JobListController(props: JobListControllerProps) {
 					</CardBody>
 				</Card>
 			</div>
-		</div>
+			</form>
 	);
 }

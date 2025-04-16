@@ -22,7 +22,6 @@ class GeocodingService:
                         latitude=float(item.get("lat")),
                         longitude=float(item.get("lon")),
                         display_name=item.get("display_name"),
-                        place_id=item.get("place_id"),
                     )
                     for item in data
                 ]
