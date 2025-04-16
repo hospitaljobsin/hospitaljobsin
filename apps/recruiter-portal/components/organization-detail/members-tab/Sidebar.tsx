@@ -23,6 +23,7 @@ export default function MembersSidebar() {
 						tabList: "w-full",
 						panel: "h-full",
 						tab: "py-5",
+						cursor: "shadow-none",
 					}}
 				>
 					<Tab
@@ -55,6 +56,7 @@ export default function MembersSidebar() {
 					classNames={{
 						base: "w-full overflow-x-auto",
 						tabList: "gap-4",
+						cursor: "shadow-none",
 					}}
 				>
 					<Tab

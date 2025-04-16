@@ -27,7 +27,7 @@ export default function JobListControllerSkeleton() {
 			<div className="flex gap-4 w-full">
 				<Card className="w-full" shadow="none">
 					<CardBody className="p-4">
-						<div className="flex flex-col sm:flex-row gap-4 w-full">
+						<div className="flex flex-col sm:flex-row gap-8 w-full">
 								<div className="flex-1">
 									<Input
 										size="lg"
