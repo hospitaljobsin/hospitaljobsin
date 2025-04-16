@@ -33,7 +33,7 @@ const JobListInternalFragment = graphql`
   )
   @refetchable(queryName: "JobListPaginationQuery") {
     jobs(after: $cursor, first: $count, searchTerm: $searchTerm, location: $location, proximityKm: $proximityKm)
-      @connection(key: "JobListFragment_jobs", filters: ["searchTerm"]) {
+      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "location", "proximityKm"]) {
       edges {
         node {
           id

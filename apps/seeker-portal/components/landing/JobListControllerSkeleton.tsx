@@ -28,36 +28,31 @@ export default function JobListControllerSkeleton() {
 				<Card className="w-full" shadow="none">
 					<CardBody className="p-4">
 						<div className="flex flex-col sm:flex-row gap-8 w-full items-center">
-								<div className="flex-1">
-									<Input
-										size="md"
-										placeholder="Filter by location"
-										startContent={
-											<MapPin size={18} className="text-foreground-400" />
-										}
-										fullWidth
-										isDisabled
-									/>
-								</div>
-								<div className="flex-1">
-									<Slider								
-										label="Proximity"
-										size="sm"
-										step={5}
-										minValue={0}
-										maxValue={100}
-										value={1}
-										className="max-w-md"
-										showOutline={true}
-										tooltipProps={{
-											offset: 10,
-											placement: "top",
-											content: "1 km",
-										}}
-										formatOptions={{ style: "unit", unit: "kilometer" }}
-										isDisabled
-									/>
-								</div>
+							<div className="flex-1">
+								<Input
+									size="md"
+									placeholder="Filter by location"
+									startContent={
+										<MapPin size={18} className="text-foreground-400" />
+									}
+									fullWidth
+									isDisabled
+								/>
+							</div>
+							<div className="flex-1">
+								<Slider
+									label="Proximity"
+									size="sm"
+									step={5}
+									minValue={0}
+									maxValue={100}
+									value={1}
+									className="max-w-md"
+									showOutline
+									formatOptions={{ style: "unit", unit: "kilometer" }}
+									isDisabled
+								/>
+							</div>
 						</div>
 					</CardBody>
 				</Card>
