@@ -71,14 +71,6 @@ const JobDetailsInternalFragment = graphql`
       name
       description
       logoUrl
-      address {
-        city
-        state
-		line1
-		line2
-		pincode
-		country
-      }
     }
   }
 `;

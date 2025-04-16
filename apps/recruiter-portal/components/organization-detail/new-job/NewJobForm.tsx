@@ -107,14 +107,6 @@ fragment NewJobFormOrganizationFragment on Organization {
 	__typename
 	slug
 	id
-	address {
-		city
-		country
-		line1
-		line2
-		pincode
-		state
-	}
 	...CancelNewJobModalOrganizationFragment
 }
 `;

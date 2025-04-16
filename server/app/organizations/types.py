@@ -14,7 +14,6 @@ from app.accounts.types import AccountType
 from app.auth.permissions import IsAuthenticated
 from app.auth.types import InvalidEmailErrorType
 from app.base.types import (
-    AddressType,
     BaseConnectionType,
     BaseEdgeType,
     BaseErrorType,
@@ -146,8 +145,8 @@ class OrganizationType(BaseNodeType[Organization]):
     description: str | None = strawberry.field(
         description="The description of the organization.",
     )
-    address: AddressType = strawberry.field(
-        description="The address of the organization.",
+    location: str | None = strawberry.field(
+        description="The location of the organization.",
     )
     email: str | None = strawberry.field(
         description="The contact email of the organization.",
@@ -167,7 +166,7 @@ class OrganizationType(BaseNodeType[Organization]):
             slug=organization.slug,
             name=organization.name,
             description=organization.description,
-            address=AddressType.marshal(organization.address),
+            location=organization.location,
             email=organization.email,
             website=organization.website,
             logo_url=organization.logo_url,

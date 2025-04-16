@@ -30,10 +30,7 @@ const OrganizationDetailsInternalFragment = graphql`
     description
     website
     email
-    address {
-      city
-      state
-    }
+    location
 	... OrganizationStatisticsFragment
   }
 `;
@@ -78,10 +75,10 @@ export default function OrganizationDetails({
 				</CardHeader>
 				<CardBody className="flex flex-col gap-6 w-full">
 					<div className="flex flex-wrap gap-8 items-center text-foreground-600 w-full">
-						{data.address.city && data.address.city && (
+						{data.location && (
 							<div className="flex items-center gap-2">
-								<MapPin size={16} />{" "}
-								{`${data.address.city}, ${data.address.state}`}
+								<MapPin size={16} />
+								{data.location}
 							</div>
 						)}
 						{data.email && (

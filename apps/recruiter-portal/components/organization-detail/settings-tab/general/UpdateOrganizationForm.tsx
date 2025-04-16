@@ -20,8 +20,8 @@ import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";
 
 const UpdateOrganizationFormMutation = graphql`
-mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $address: AddressInput!, $website: String, $logoUrl: String, $description: String) {
-	updateOrganization(organizationId: $organizationId, name: $name, slug: $slug, address: $address, website: $website, logoUrl: $logoUrl, description: $description) {
+mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $description: String) {
+	updateOrganization(organizationId: $organizationId, name: $name, slug: $slug, location: $location, website: $website, logoUrl: $logoUrl, description: $description) {
 		__typename
 		...on Organization {
 			id
@@ -30,14 +30,7 @@ mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $s
 			website
 			description
 			logoUrl
-			address {
-				city
-				country
-				line1
-				line2
-				pincode
-				state
-			}
+			location
 		}
         ... on OrganizationNotFoundError {
             __typename
@@ -70,14 +63,7 @@ const UpdateOrganizationFormFragment = graphql`
 	website
 	logoUrl
 	description
-	address {
-		city
-		country
-		line1
-		line2
-		pincode
-		state
-	}
+	location
   }
 `;
 
@@ -90,14 +76,7 @@ const formSchema = z.object({
 	slug: z.string().min(1, { message: "Slug is required" }),
 	website: z.string().url({ message: "Invalid URL" }).optional().nullable(),
 	description: z.string().max(300).optional().nullable(),
-	address: z.object({
-		city: z.string().nullable(),
-		country: z.string().nullable(),
-		line1: z.string().nullable(),
-		line2: z.string().nullable(),
-		pincode: z.string().nullable(),
-		state: z.string().nullable(),
-	}),
+	location: z.string().nullable(),
 });
 
 export default function UpdateOrganizationForm({ rootQuery }: Props) {
@@ -129,14 +108,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			slug: data.slug,
 			website: data.website ?? null,
 			description: data.description ?? null,
-			address: {
-				city: data.address.city ?? null,
-				country: data.address.country ?? null,
-				line1: data.address.line1 ?? null,
-				line2: data.address.line2 ?? null,
-				pincode: data.address.pincode ?? null,
-				state: data.address.state ?? null,
-			},
+			location: data.location ?? null
 		},
 	});
 
@@ -181,14 +153,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 				website: formData.website || null,
 				logoUrl: logoUrlResult,
 				description: formData.description || null,
-				address: {
-					city: formData.address.city || null,
-					country: formData.address.country || null,
-					line1: formData.address.line1 || null,
-					line2: formData.address.line2 || null,
-					pincode: formData.address.pincode || null,
-					state: formData.address.state || null,
-				},
+				location: formData.location
 			},
 			onCompleted(response) {
 				if (response.updateOrganization.__typename === "Organization") {
@@ -206,14 +171,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 							slug: response.updateOrganization.slug,
 							website: response.updateOrganization.website,
 							description: response.updateOrganization.description,
-							address: {
-								city: response.updateOrganization.address.city || null,
-								country: response.updateOrganization.address.country || null,
-								line1: response.updateOrganization.address.line1 || null,
-								line2: response.updateOrganization.address.line2 || null,
-								pincode: response.updateOrganization.address.pincode || null,
-								state: response.updateOrganization.address.state || null,
-							},
+							location: response.updateOrganization.location
 						});
 						setSelectedLogo(null);
 					}
@@ -345,99 +303,21 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 						/>
 					</div>
 
-					<div className="flex flex-col gap-4">
-						<p className="text-xs text-foreground-500 px-2">Address</p>
-
-						<div className="flex gap-8">
-							<div className="flex flex-col w-full gap-8">
-								<Controller
-									name="address.city"
-									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="City"
-											placeholder="Add your city"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.city?.message}
-											isInvalid={!!errors.address?.city}
-										/>
-									)}
-								/>
-								<Controller
-									name="address.country"
-									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="Country"
-											placeholder="Add your country"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.country?.message}
-											isInvalid={!!errors.address?.country}
-										/>
-									)}
-								/>
-								<Controller
-									name="address.pincode"
-									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="Pincode"
-											placeholder="Add your pincode"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.pincode?.message}
-											isInvalid={!!errors.address?.pincode}
-										/>
-									)}
-								/>
-							</div>
-							<div className="flex flex-col w-full gap-8">
-								<Controller
-									name="address.line1"
-									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="Line 1"
-											placeholder="Add line 1"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.line1?.message}
-											isInvalid={!!errors.address?.line1}
-										/>
-									)}
-								/>
-								<Controller
-									name="address.line2"
-									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="Line 2"
-											placeholder="Add line 2"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.line2?.message}
-											isInvalid={!!errors.address?.line2}
-										/>
-									)}
-								/>
-								<Controller
-									name="address.state"
-									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="State"
-											placeholder="Add your state"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.state?.message}
-											isInvalid={!!errors.address?.state}
-										/>
-									)}
-								/>
-							</div>
-						</div>
+					<div className="mb-12">
+						<Controller
+						name="location"
+						control={control}
+						render={({ field }) => (
+							<Input
+								{...field}
+								label="Location"
+								placeholder="Add organization location"
+								value={field.value ?? ""}
+								errorMessage={errors.location?.message}
+								isInvalid={!!errors.location}
+							/>
+						)}
+					/>
 					</div>
 				</CardBody>
 				<CardFooter>

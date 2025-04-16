@@ -8,14 +8,13 @@ from pydantic import Field
 from pymongo import IndexModel
 
 from app.accounts.documents import Account
-from app.base.models import Address
 
 
 class Organization(Document):
     name: str
     slug: Annotated[str, Indexed(unique=True)]
     description: str | None = None
-    address: Address
+    location: str | None = None
     email: str | None = None
     website: str | None = None
     internal_logo_url: str | None = Field(default=None, alias="logo_url")

@@ -36,14 +36,6 @@ export const JobFragment = graphql`
     organization @include(if: $showOrganization) {
       name
       logoUrl
-      address {
-        city
-        state
-		line1
-		line2
-		pincode
-		country
-      }
     }
   }
 `;

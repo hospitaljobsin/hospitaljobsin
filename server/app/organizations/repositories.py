@@ -8,7 +8,6 @@ from beanie.operators import And, In, Set
 from bson import ObjectId
 
 from app.accounts.documents import Account
-from app.base.models import Address
 from app.core.constants import (
     ORGANIZATION_INVITE_EXPIRES_IN,
 )
@@ -22,7 +21,7 @@ class OrganizationRepo:
         self,
         slug: str,
         name: str,
-        address: Address,
+        location: str | None = None,
         description: str | None = None,
         website: str | None = None,
         logo_url: str | None = None,
@@ -32,7 +31,7 @@ class OrganizationRepo:
             slug=slug,
             name=name,
             description=description,
-            address=address,
+            location=location,
             website=website,
             logo_url=logo_url,
         )
@@ -53,7 +52,7 @@ class OrganizationRepo:
         *,
         name: str,
         slug: str,
-        address: Address,
+        location: str | None = None,
         email: str | None = None,
         description: str | None = None,
         website: str | None = None,
@@ -63,7 +62,7 @@ class OrganizationRepo:
         organization.name = name
         organization.slug = slug
         organization.description = description
-        organization.address = address
+        organization.location = location
         organization.website = website
         organization.email = email
         organization.logo_url = logo_url

@@ -11,7 +11,6 @@ from strawberry.permission import PermissionExtension
 from app.auth.exceptions import InvalidEmailError
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.auth.types import InvalidEmailErrorType
-from app.base.types import AddressInputType
 from app.context import AuthInfo
 from app.jobs.exceptions import OrganizationNotFoundError
 from app.organizations.exceptions import (
@@ -160,10 +159,10 @@ class OrganizationMutation:
         slug: Annotated[
             str, strawberry.argument(description="The slug of the organization.")
         ],
-        address: Annotated[
-            AddressInputType,
-            strawberry.argument(description="The address of the organization."),
-        ],
+        location: Annotated[
+            str | None,
+            strawberry.argument(description="The location of the organization."),
+        ] = None,
         website: Annotated[
             str | None,
             strawberry.argument(description="The website of the organization."),
@@ -183,7 +182,7 @@ class OrganizationMutation:
             organization_id=ObjectId(organization_id.node_id),
             name=name,
             slug=slug,
-            address=AddressInputType.to_document(address),
+            location=location,
             website=website,
             description=description,
             logo_url=logo_url,

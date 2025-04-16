@@ -12,7 +12,6 @@ from types_aiobotocore_s3 import S3Client
 from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo
 from app.auth.exceptions import InvalidEmailError
-from app.base.models import Address
 from app.config import Settings
 from app.core.constants import ORGANIZATION_INVITE_EXPIRES_IN
 from app.core.emails import EmailSender
@@ -233,7 +232,7 @@ class OrganizationService:
             name=name,
             slug=slug,
             description=description,
-            address=Address(),
+            location=None,
             website=website,
             logo_url=logo_url,
         )
@@ -265,7 +264,7 @@ class OrganizationService:
         organization_id: ObjectId,
         name: str,
         slug: str,
-        address: Address,
+        location: str | None = None,
         description: str | None = None,
         website: str | None = None,
         logo_url: str | None = None,
@@ -302,7 +301,7 @@ class OrganizationService:
             name=name,
             slug=slug,
             description=description,
-            address=address,
+            location=location,
             website=website,
             logo_url=logo_url,
         )

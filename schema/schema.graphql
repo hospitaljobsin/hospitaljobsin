@@ -1230,8 +1230,8 @@ type Mutation {
     """The slug of the organization."""
     slug: String!
 
-    """The address of the organization."""
-    address: AddressInput!
+    """The location of the organization."""
+    location: String = null
 
     """The website of the organization."""
     website: String = null
@@ -1332,8 +1332,8 @@ type Organization implements Node {
   """The description of the organization."""
   description: String
 
-  """The address of the organization."""
-  address: Address!
+  """The location of the organization."""
+  location: String
 
   """The contact email of the organization."""
   email: String
