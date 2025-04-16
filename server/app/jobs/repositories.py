@@ -49,6 +49,7 @@ class JobRepo:
         organization: Organization,
         title: str,
         description: str,
+        external_application_url: str | None = None,
         location: str | None = None,
         geo: GeoObject | None = None,
         vacancies: int | None = None,
@@ -80,6 +81,7 @@ class JobRepo:
             work_mode=work_mode,
             skills=skills,
             currency=currency,
+            external_application_url=external_application_url,
             slug=await self.generate_slug(title, organization.id),
             is_active=False,
         )

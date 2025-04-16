@@ -435,6 +435,10 @@ class JobType(BaseNodeType[Job]):
         description="When the job was created at.",
     )
 
+    external_application_url: str | None = strawberry.field(
+        description="The external application URL for the job.",
+    )
+
     organization_id: strawberry.Private[str]
 
     @classmethod
@@ -459,6 +463,7 @@ class JobType(BaseNodeType[Job]):
             updated_at=job.updated_at,
             expires_at=job.expires_at,
             is_active=job.is_active,
+            external_application_url=job.external_application_url,
             organization_id=str(job.organization.ref.id),
         )
 
@@ -797,6 +802,17 @@ class SavedJobNotFoundErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="JobIsExternalError",
+    description="Used when the job is externally handled.",
+)
+class JobIsExternalErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Job is externally handled!",
+    )
+
+
 SaveJobPayload = Annotated[
     SaveJobSuccess | JobNotFoundErrorType,
     strawberry.union(
@@ -851,7 +867,8 @@ class UpdateJobApplicationFormSuccessType:
 UpdateJobApplicationFormPayload = Annotated[
     UpdateJobApplicationFormSuccessType
     | JobNotFoundErrorType
-    | OrganizationAuthorizationErrorType,
+    | OrganizationAuthorizationErrorType
+    | JobIsExternalErrorType,
     strawberry.union(
         name="UpdateJobApplicationFormPayload",
         description="The update job application form payload.",
@@ -955,7 +972,8 @@ CreateJobApplicantPayload = Annotated[
     CreateJobApplicantSuccessType
     | JobNotFoundErrorType
     | JobNotPublishedErrorType
-    | JobApplicantAlreadyExistsErrorType,
+    | JobApplicantAlreadyExistsErrorType
+    | JobIsExternalErrorType,
     strawberry.union(
         name="CreateJobApplicantPayload",
         description="The create job application payload.",

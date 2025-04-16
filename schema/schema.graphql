@@ -185,7 +185,7 @@ type AuthenticatorNotEnabledError implements Error {
 }
 
 """The create job application payload."""
-union CreateJobApplicantPayload = CreateJobApplicantSuccess | JobNotFoundError | JobNotPublishedError | JobApplicantAlreadyExistsError
+union CreateJobApplicantPayload = CreateJobApplicantSuccess | JobNotFoundError | JobNotPublishedError | JobApplicantAlreadyExistsError | JobIsExternalError
 
 """Used when a job application is created successfully."""
 type CreateJobApplicantSuccess {
@@ -521,6 +521,9 @@ type Job implements Node {
   """When the job was created at."""
   createdAt: datetime!
 
+  """The external application URL for the job."""
+  externalApplicationUrl: String
+
   """Whether the job has a salary range."""
   hasSalaryRange: Boolean!
 
@@ -687,6 +690,12 @@ type JobEdge {
 
   """The item at the end of the edge"""
   node: Job!
+}
+
+"""Used when the job is externally handled."""
+type JobIsExternalError implements Error {
+  """Human readable error message."""
+  message: String!
 }
 
 """A metric point belonging to a series of job metrics."""
@@ -1055,6 +1064,9 @@ type Mutation {
 
     """The skills required for the job."""
     skills: [String!]!
+
+    """The external application URL for the job."""
+    externalApplicationUrl: String = null
 
     """The location of the job."""
     location: String = null
@@ -1923,7 +1935,7 @@ type UnsaveJobSuccess {
 union UpdateAccountPayload = Account
 
 """The update job application form payload."""
-union UpdateJobApplicationFormPayload = UpdateJobApplicationFormSuccess | JobNotFoundError | OrganizationAuthorizationError
+union UpdateJobApplicationFormPayload = UpdateJobApplicationFormSuccess | JobNotFoundError | OrganizationAuthorizationError | JobIsExternalError
 
 """Used when the job application form is updated successfully."""
 type UpdateJobApplicationFormSuccess {

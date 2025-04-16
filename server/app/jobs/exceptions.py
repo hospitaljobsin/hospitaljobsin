@@ -24,3 +24,7 @@ class JobNotPublishedError:
 
 class JobApplicantAlreadyExistsError:
     """Raised when a job applicant already exists."""
+
+
+class JobIsExternalError:
+    """Raised when a job is external."""

@@ -53,6 +53,10 @@ const CreateJobApplicantMutation = graphql`
       ... on JobApplicantAlreadyExistsError {
         __typename
       }
+
+	  ... on JobIsExternalError {
+		__typename
+	  }
     }
   }
     `;
@@ -104,7 +108,8 @@ export default function JobApplyForm({
 					response.createJobApplication.__typename === "JobNotFoundError" ||
 					response.createJobApplication.__typename === "JobNotPublishedError" ||
 					response.createJobApplication.__typename ===
-						"JobApplicantAlreadyExistsError"
+						"JobApplicantAlreadyExistsError" ||
+					response.createJobApplication.__typename === "JobIsExternalError"
 				) {
 					// Handle job not found error
 					addToast({

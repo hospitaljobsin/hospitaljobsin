@@ -20,6 +20,7 @@ from app.jobs.documents import (
 from app.jobs.exceptions import (
     JobApplicantAlreadyExistsError,
     JobApplicationFormNotFoundError,
+    JobIsExternalError,
     JobNotFoundError,
     JobNotPublishedError,
     OrganizationNotFoundError,
@@ -121,6 +122,7 @@ class JobService:
         organization_id: str,
         title: str,
         description: str,
+        external_application_url: str | None = None,
         location: str | None = None,
         vacancies: int | None = None,
         min_salary: int | None = None,
@@ -172,6 +174,7 @@ class JobService:
             work_mode=work_mode,
             skills=skills,
             currency=currency,
+            external_application_url=external_application_url,
             geo=geo,
         )
 
@@ -265,7 +268,10 @@ class JobService:
             return Err(OrganizationAuthorizationError())
 
         if (
-            await self._job_application_form_repo.get_by_job_id(job_id=existing_job.id)
+            existing_job.external_application_url is None
+            and await self._job_application_form_repo.get_by_job_id(
+                job_id=existing_job.id
+            )
             is None
         ):
             return Err(JobApplicationFormNotFoundError())
@@ -345,7 +351,7 @@ class JobApplicationFormService:
         self, account: Account, job_id: str, fields: list[ApplicationField]
     ) -> Result[
         tuple[JobApplicationForm, Job],
-        JobNotFoundError | OrganizationAuthorizationError,
+        JobNotFoundError | OrganizationAuthorizationError | JobIsExternalError,
     ]:
         try:
             job_id = ObjectId(job_id)
@@ -355,6 +361,9 @@ class JobApplicationFormService:
         existing_job = await self._job_repo.get(job_id=job_id)
         if existing_job is None:
             return Err(JobNotFoundError())
+
+        if existing_job.external_application_url is not None:
+            return Err(JobIsExternalError())
 
         if not await self._organization_member_service.is_admin(
             account_id=account.id,
@@ -396,7 +405,10 @@ class JobApplicantService:
         applicant_fields: list[ApplicantField],
     ) -> Result[
         JobApplicant,
-        JobNotFoundError | JobNotPublishedError | JobApplicantAlreadyExistsError,
+        JobNotFoundError
+        | JobNotPublishedError
+        | JobApplicantAlreadyExistsError
+        | JobIsExternalError,
     ]:
         """Create a job application."""
         try:
@@ -409,6 +421,9 @@ class JobApplicantService:
 
         if not existing_job.is_active:
             return Err(JobNotPublishedError())
+
+        if existing_job.external_application_url is not None:
+            return Err(JobIsExternalError())
 
         # check if user has already applied here
         existing_job_application = await self._job_application_repo.get(

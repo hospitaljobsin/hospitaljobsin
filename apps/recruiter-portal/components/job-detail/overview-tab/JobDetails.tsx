@@ -45,6 +45,7 @@ const JobDetailsFragment = graphql`
     createdAt
     updatedAt
     isActive
+	externalApplicationUrl
     applicationForm {
       __typename
       id
@@ -85,7 +86,14 @@ export default function JobDetails({
 		content: data.description,
 	});
 
-	const hasApplicationForm = data.applicationForm !== null;
+	const showApplicationFormWarning =
+		data.organization.isAdmin &&
+		data.externalApplicationUrl === null &&
+		!data.applicationForm;
+
+	const showJobControls =
+		(data.organization.isAdmin && data.applicationForm !== null) ||
+		(data.organization.isAdmin && data.externalApplicationUrl !== null);
 
 	function formatExperienceRange({
 		hasExperienceRange,
@@ -169,7 +177,7 @@ export default function JobDetails({
 						</h4>
 						{data.organization.isAdmin && (
 							<div className="items-center gap-4 flex justify-end flex-col sm:flex-row w-full">
-								{hasApplicationForm ? <JobControls job={data} /> : null}
+								{showJobControls ? <JobControls job={data} /> : null}
 							</div>
 						)}
 					</div>
@@ -209,7 +217,7 @@ export default function JobDetails({
 				</CardFooter>
 			</Card>
 			{/* Application Form Card */}
-			{hasApplicationForm && data.organization.isAdmin ? null : (
+			{showApplicationFormWarning ? (
 				<Alert
 					color="warning"
 					title="You need to set up an application form before publishing this job"
@@ -228,7 +236,7 @@ export default function JobDetails({
 						</Button>
 					}
 				/>
-			)}
+			) : null}
 			<JobStatistics job={data} />
 			{/* Job Description */}
 			<Card className="p-6" fullWidth shadow="none">

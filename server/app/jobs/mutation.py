@@ -13,6 +13,7 @@ from app.context import AuthInfo
 from app.jobs.exceptions import (
     JobApplicantAlreadyExistsError,
     JobApplicationFormNotFoundError,
+    JobIsExternalError,
     JobNotFoundError,
     JobNotPublishedError,
     OrganizationNotFoundError,
@@ -45,6 +46,7 @@ from .types import (
     JobApplicationFormNotFoundErrorType,
     JobApplicationFormType,
     JobEdgeType,
+    JobIsExternalErrorType,
     JobNotFoundErrorType,
     JobNotPublishedErrorType,
     JobType,
@@ -190,6 +192,12 @@ class JobMutation:
                 description="The skills required for the job.",
             ),
         ],
+        external_application_url: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The external application URL for the job.",
+            ),
+        ] = None,
         location: Annotated[
             str | None,
             strawberry.argument(
@@ -268,6 +276,7 @@ class JobMutation:
             work_mode=work_mode.value if work_mode else None,
             skills=skills,
             currency=currency,
+            external_application_url=external_application_url,
         ):
             case Err(error):
                 match error:
@@ -457,6 +466,8 @@ class JobMutation:
                         return JobNotFoundErrorType()
                     case OrganizationAuthorizationError():
                         return OrganizationAuthorizationErrorType()
+                    case JobIsExternalError():
+                        return JobIsExternalErrorType()
             case Ok(result):
                 (job_application_form, job) = result
                 return UpdateJobApplicationFormSuccessType(
@@ -598,6 +609,8 @@ class JobMutation:
                         return JobNotPublishedErrorType()
                     case JobApplicantAlreadyExistsError():
                         return JobApplicantAlreadyExistsErrorType()
+                    case JobIsExternalError():
+                        return JobIsExternalErrorType()
             case Ok(job_application):
                 return CreateJobApplicantSuccessType(
                     job_applicant=JobApplicantType.marshal_with_links(job_application)

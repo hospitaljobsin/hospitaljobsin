@@ -14,6 +14,7 @@ import {
 	Card,
 	CardBody,
 	CardFooter,
+	Checkbox,
 	DatePicker,
 	Input,
 	Kbd,
@@ -56,7 +57,8 @@ mutation NewJobFormMutation(
 	$expiresAt: datetime,
 	$workMode: WorkMode,
 	$jobType: JobType,
-	$vacancies: Int
+	$vacancies: Int,
+	$externalApplicationUrl: String,
 ) {
     createJob(
 		title: $title,
@@ -71,7 +73,8 @@ mutation NewJobFormMutation(
 		expiresAt: $expiresAt,
 		workMode: $workMode,
 		jobType: $jobType,
-		vacancies: $vacancies
+		vacancies: $vacancies,
+		externalApplicationUrl: $externalApplicationUrl,
 	) {
         __typename
         ...on CreateJobSuccess {
@@ -126,6 +129,8 @@ const formSchema = z.object({
 		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])
 		.nullable(),
 	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE"]).nullable(),
+	isExternal: z.boolean().default(false),
+	externalApplicationUrl: z.string().url().nullable().optional(),
 });
 
 type Props = {
@@ -147,8 +152,13 @@ export default function NewJobForm({ account, organization }: Props) {
 	const {
 		handleSubmit,
 		register,
+		unregister,
 		control,
+		setValue,
+		setError,
+		clearErrors,
 		formState: { errors, isSubmitting, isDirty },
+		watch,
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		reValidateMode: "onChange",
@@ -165,8 +175,23 @@ export default function NewJobForm({ account, organization }: Props) {
 			expiresAt: null,
 			jobType: null,
 			workMode: null,
+			externalApplicationUrl: null,
+			isExternal: false,
 		},
 	});
+
+	// Watch the value of externalApplicationUrl for conditional rendering
+	const isExternal = watch("isExternal");
+
+	useEffect(() => {
+		if (isExternal) {
+			register("externalApplicationUrl");
+		} else {
+			unregister("externalApplicationUrl");
+		}
+	}, [register, unregister, isExternal]);
+
+	console.log("Form errors", errors);
 
 	// Track which accordions should be open
 	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<
@@ -219,6 +244,7 @@ export default function NewJobForm({ account, organization }: Props) {
 				expiresAt: formData.expiresAt ? formData.expiresAt.toString() : null,
 				jobType: formData.jobType,
 				workMode: formData.workMode,
+				externalApplicationUrl: formData.externalApplicationUrl,
 			},
 			onCompleted(response) {
 				if (response.createJob.__typename === "OrganizationNotFoundError") {
@@ -396,6 +422,22 @@ export default function NewJobForm({ account, organization }: Props) {
 									}}
 								/>
 							</div>
+							<Checkbox {...register("isExternal")}>
+								Handle job applications externally
+							</Checkbox>
+							{isExternal ? (
+								<Input
+									{...register("externalApplicationUrl")}
+									label="External Application URL"
+									labelPlacement="outside"
+									placeholder="https://external-application.com"
+									description="We'll redirect job applicants to this URL."
+									isRequired
+									errorMessage={errors.externalApplicationUrl?.message}
+									isInvalid={!!errors.externalApplicationUrl}
+									validationBehavior="aria"
+								/>
+							) : null}
 							<Accordion
 								selectionMode="multiple"
 								variant="light"

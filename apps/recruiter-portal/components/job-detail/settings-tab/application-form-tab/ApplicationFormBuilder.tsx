@@ -70,6 +70,10 @@ const ApplicationFormBuilderMutation = graphql`
         ... on OrganizationAuthorizationError {
             __typename
         }
+
+		... on JobIsExternalError {
+			__typename
+		}
     }
 }`;
 
@@ -167,7 +171,8 @@ export default function ApplicationFormBuilder({
 						{ keepDirty: false },
 					);
 				} else if (
-					response.updateJobApplicationForm.__typename === "JobNotFoundError"
+					response.updateJobApplicationForm.__typename === "JobNotFoundError" ||
+					response.updateJobApplicationForm.__typename === "JobIsExternalError"
 				) {
 					// handle job not found error
 					addToast({

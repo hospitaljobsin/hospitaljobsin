@@ -45,6 +45,8 @@ class Job(Document):
 
     is_active: bool = False
 
+    external_application_url: str | None = None
+
     organization: Link[Organization]
 
     class Settings:

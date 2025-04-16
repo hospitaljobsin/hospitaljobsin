@@ -1,13 +1,24 @@
 "use client";
 
+import type { SidebarJobSettingsFragment$key } from "@/__generated__/SidebarJobSettingsFragment.graphql";
 import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
 import { FileText, Settings } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
+import { useFragment } from "react-relay";
+import { graphql } from "relay-runtime";
 
-export default function SettingsSidebar() {
+const SidebarJobSettingsFragment = graphql`
+fragment SidebarJobSettingsFragment on Job {
+	externalApplicationUrl
+}`;
+
+export default function SettingsSidebar({
+	job,
+}: { job: SidebarJobSettingsFragment$key }) {
 	const pathname = usePathname();
 	const params = useParams<{ slug: string; jobSlug: string }>();
+	const data = useFragment(SidebarJobSettingsFragment, job);
 	return (
 		<>
 			<div className="w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky top-0 self-stretch max-h-screen">
@@ -23,7 +34,7 @@ export default function SettingsSidebar() {
 						tabList: "w-full",
 						panel: "h-full",
 						tab: "py-5",
-						cursor: "shadow-none"
+						cursor: "shadow-none",
 					}}
 				>
 					<Tab
@@ -36,22 +47,24 @@ export default function SettingsSidebar() {
 							</div>
 						}
 					/>
-					<Tab
-						key={links.jobDetailSettingsApplicationForm(
-							params.slug,
-							params.jobSlug,
-						)}
-						href={links.jobDetailSettingsApplicationForm(
-							params.slug,
-							params.jobSlug,
-						)}
-						title={
-							<div className="flex items-center space-x-4">
-								<FileText size={20} />
-								<span>Application Form</span>
-							</div>
-						}
-					/>
+					{data.externalApplicationUrl === null && (
+						<Tab
+							key={links.jobDetailSettingsApplicationForm(
+								params.slug,
+								params.jobSlug,
+							)}
+							href={links.jobDetailSettingsApplicationForm(
+								params.slug,
+								params.jobSlug,
+							)}
+							title={
+								<div className="flex items-center space-x-4">
+									<FileText size={20} />
+									<span>Application Form</span>
+								</div>
+							}
+						/>
+					)}
 				</Tabs>
 			</div>
 			<div className="w-full md:hidden p-4 bg-background-700 flex justify-start">

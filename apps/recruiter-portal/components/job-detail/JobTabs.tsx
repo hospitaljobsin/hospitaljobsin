@@ -10,6 +10,7 @@ import invariant from "tiny-invariant";
 
 const JobTabsFragment = graphql`
 fragment JobTabsFragment on Job {
+	externalApplicationUrl
   organization {
     isAdmin
   }
@@ -67,16 +68,18 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 						</div>
 					}
 				/>
-				<Tab
-					key={links.jobDetailApplicants(params.slug, params.jobSlug)}
-					href={links.jobDetailApplicants(params.slug, params.jobSlug)}
-					title={
-						<div className="flex items-center space-x-2">
-							<Users />
-							<span>Applicants</span>
-						</div>
-					}
-				/>
+				{data.externalApplicationUrl === null && (
+					<Tab
+						key={links.jobDetailApplicants(params.slug, params.jobSlug)}
+						href={links.jobDetailApplicants(params.slug, params.jobSlug)}
+						title={
+							<div className="flex items-center space-x-2">
+								<Users />
+								<span>Applicants</span>
+							</div>
+						}
+					/>
+				)}
 				{organization.isAdmin && (
 					<Tab
 						key={links.jobDetailSettings(params.slug, params.jobSlug)}

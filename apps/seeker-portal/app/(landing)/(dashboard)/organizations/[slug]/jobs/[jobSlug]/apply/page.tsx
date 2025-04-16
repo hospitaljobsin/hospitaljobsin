@@ -30,6 +30,7 @@ const PageJobApplyMetadataFragment = graphql`
 					title
 					description
 					isApplied
+					externalApplicationUrl
 				}
 				
 				}
@@ -75,7 +76,8 @@ export async function generateMetadata({
 	// only users who have not applied can access this page
 	if (
 		data.organization.job.__typename !== "Job" ||
-		data.organization.job.isApplied
+		data.organization.job.isApplied ||
+		data.organization.job.externalApplicationUrl !== null
 	) {
 		return {
 			title: "Job Not found",
@@ -115,7 +117,8 @@ export default async function JobApplyPage({
 	if (
 		data.organization.__typename !== "Organization" ||
 		data.organization.job.__typename !== "Job" ||
-		data.organization.job.isApplied
+		data.organization.job.isApplied ||
+		data.organization.job.externalApplicationUrl !== null
 	) {
 		notFound();
 	}

@@ -69,6 +69,7 @@ const JobDetailsInternalFragment = graphql`
     maxExperience
     createdAt
 	isApplied
+	externalApplicationUrl
     organization @required(action: THROW) {
       slug
       name
@@ -203,15 +204,29 @@ export default function JobDetails({
 					<div className="flex flex-col sm:flex-row w-full justify-between gap-4 items-start sm:items-center">
 						<h4 className="text-xl font-medium">{data.title}</h4>
 						{/* TODO: check for authentication before redirecting here */}
-						<Button
-							as={Link}
-							href={links.jobDetailApply(data.organization.slug, data.slug)}
-							size="lg"
-							className="w-full sm:w-auto"
-							isDisabled={data.isApplied}
-						>
-							{data.isApplied ? "Applied" : "Apply now"}
-						</Button>
+						{data.externalApplicationUrl !== null ? (
+							<Button
+								as={Link}
+								href={data.externalApplicationUrl}
+								size="lg"
+								className="w-full sm:w-auto"
+								showAnchorIcon
+								isExternal
+								isDisabled={data.isApplied}
+							>
+								{data.isApplied ? "Applied" : "Apply now"}
+							</Button>
+						) : (
+							<Button
+								as={Link}
+								href={links.jobDetailApply(data.organization.slug, data.slug)}
+								size="lg"
+								className="w-full sm:w-auto"
+								isDisabled={data.isApplied}
+							>
+								{data.isApplied ? "Applied" : "Apply now"}
+							</Button>
+						)}
 					</div>
 				</CardHeader>
 				<CardBody className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 w-full">
