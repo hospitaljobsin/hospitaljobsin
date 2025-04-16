@@ -5,6 +5,7 @@ from result import Ok
 from app.accounts.documents import Account, Language
 from app.accounts.repositories import AccountRepo, ProfileRepo
 from app.base.models import Address
+from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
 
 
@@ -13,9 +14,11 @@ class AccountService:
         self,
         account_repo: AccountRepo,
         organization_member_repo: OrganizationMemberRepo,
+        job_applicant_repo: JobApplicantRepo,
     ) -> None:
         self._account_repo = account_repo
         self._organization_member_repo = organization_member_repo
+        self._job_applicant_repo = job_applicant_repo
 
     async def update(self, account: Account, full_name: str) -> Ok[Account]:
         """Update the given account."""
@@ -24,6 +27,8 @@ class AccountService:
         await self._organization_member_repo.update_all(
             account=account, full_name=full_name
         )
+        # update denormalized full_name in job applicants
+        await self._job_applicant_repo.update_all(account=account, full_name=full_name)
         return Ok(account)
 
 

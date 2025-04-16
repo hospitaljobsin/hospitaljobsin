@@ -110,6 +110,9 @@ class ApplicantField(BaseModel):
 
 class JobApplicant(Document):
     account: Link[Account]
+    account_full_name: (
+        str  # denormalized from the account document for full-text search
+    )
     job: Link[Job]
     slug: Annotated[str, Indexed()]
     status: JobApplicantStatus
@@ -123,6 +126,13 @@ class JobApplicant(Document):
                 ["slug", "job"],
                 name="slug_job_unique_secondary_index",
                 unique=True,
+            ),
+            IndexModel(
+                [
+                    ("account_full_name", pymongo.TEXT),
+                ],
+                name="account_full_name_text_index",
+                default_language="english",
             ),
         ]
 

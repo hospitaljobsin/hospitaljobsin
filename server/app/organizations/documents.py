@@ -35,7 +35,9 @@ class Organization(Document):
 class OrganizationMember(Document):
     organization: Link[Organization]
     account: Link[Account]
-    full_name: str  # denormalized from the account document for full-text search
+    account_full_name: (
+        str  # denormalized from the account document for full-text search
+    )
     role: Literal["admin", "member"]
 
     class Settings:
@@ -48,9 +50,9 @@ class OrganizationMember(Document):
             ),
             IndexModel(
                 [
-                    ("full_name", pymongo.TEXT),
+                    ("account_full_name", pymongo.TEXT),
                 ],
-                name="full_name_text_index",
+                name="account_full_name_text_index",
                 default_language="english",
             ),
         ]

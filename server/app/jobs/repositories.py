@@ -6,7 +6,7 @@ from typing import Any, Literal, get_args
 
 import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
-from beanie.operators import And, In, NearSphere
+from beanie.operators import And, In, NearSphere, Set
 from bson import ObjectId
 from geopy.geocoders.base import Geocoder
 from strawberry.relay import PageInfo
@@ -355,6 +355,12 @@ class SavedJobRepo:
 
 
 class JobApplicantRepo:
+    async def update_all(self, account: Account, full_name: str) -> None:
+        """Update all job applicants for the given account."""
+        await JobApplicant.find(JobApplicant.account.id == account.id).update(
+            Set({JobApplicant.account_full_name: full_name})
+        )
+
     async def get(self, account_id: ObjectId, job_id: ObjectId) -> JobApplicant | None:
         """Get job applicant by account ID and job ID."""
         return await JobApplicant.find_one(
@@ -429,6 +435,7 @@ class JobApplicantRepo:
         application = JobApplicant(
             job=job,
             account=account,
+            account_full_name=account.full_name,
             status="applied",
             applicant_fields=applicant_fields,
             slug=self.generate_slug(),

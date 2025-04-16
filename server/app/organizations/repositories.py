@@ -168,7 +168,7 @@ class OrganizationMemberRepo:
         organization_member = OrganizationMember(
             organization=organization_id,
             role=role,
-            full_name=account.full_name,
+            account_full_name=account.full_name,
             account=account,
         )
 
@@ -199,7 +199,7 @@ class OrganizationMemberRepo:
         """Update all organization members for the given account."""
         await OrganizationMember.find(
             OrganizationMember.account.id == account.id
-        ).update(Set({OrganizationMember.full_name: full_name}))
+        ).update(Set({OrganizationMember.account_full_name: full_name}))
 
     async def get_all_by_organization_id(
         self,
