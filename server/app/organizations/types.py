@@ -204,9 +204,9 @@ class OrganizationType(BaseNodeType[Organization]):
     ) -> Annotated["JobPayloadType", strawberry.lazy("app.jobs.types")]:
         from app.jobs.types import JobNotFoundErrorType, JobType
 
-        result = await info.context["loaders"].job_by_slug.load(slug)
+        result = await info.context["loaders"].job_by_slug.load((self.id, slug))
 
-        if result is None or result.organization.ref.id != ObjectId(self.id):
+        if result is None:
             # if the job is not found or the job does not belong to this organization, return an error
             return JobNotFoundErrorType()
 

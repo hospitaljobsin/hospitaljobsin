@@ -1,4 +1,5 @@
 "use client";
+import type { layoutJobRootQuery } from "@/__generated__/layoutJobRootQuery.graphql";
 import JobDetailHeader from "@/components/layout/JobDetailHeader";
 import { useParams } from "next/navigation";
 import { useLazyLoadQuery } from "react-relay";

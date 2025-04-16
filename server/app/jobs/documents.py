@@ -21,7 +21,7 @@ from app.organizations.documents import Organization
 
 class Job(Document):
     title: str
-    slug: Annotated[str, Indexed(unique=True)]
+    slug: Annotated[str, Indexed()]
     description: str | None = None
     type: Literal["full_time", "part_time", "internship", "contract"] | None = None
     work_mode: Literal["remote", "hybrid", "office"] | None = None
@@ -65,6 +65,11 @@ class Job(Document):
                 name="expired_deleted_index",
             ),
             IndexModel([("geo", pymongo.GEOSPHERE)], name="geo_2dsphere_index"),
+            IndexModel(
+                [("slug", pymongo.ASCENDING), ("organization", pymongo.ASCENDING)],
+                name="slug_organization_unique_index",
+                unique=True,
+            ),
         ]
 
 

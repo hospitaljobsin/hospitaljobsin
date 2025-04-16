@@ -1,3 +1,4 @@
+from bson import ObjectId
 from strawberry.dataloader import DataLoader
 
 from app.core.dataloaders import (
@@ -80,7 +81,16 @@ async def create_applicant_count_by_job_id_dataloader(
     )
 
 
-type JobBySlugLoader = DataLoader[str, Job | None]
+def transform_valid_object_id_str_tuple(
+    key: tuple[str, str],
+) -> tuple[ObjectId, str] | None:
+    """Check if a string tuple is a valid ObjectId and string tuple."""
+    if len(key) == 2 and ObjectId.is_valid(key[0]):  # noqa: PLR2004
+        return (ObjectId(key[0]), key[1])
+    return None
+
+
+type JobBySlugLoader = DataLoader[tuple[str, str], Job | None]
 
 
 async def create_job_by_slug_dataloader(
@@ -89,7 +99,7 @@ async def create_job_by_slug_dataloader(
     """Create a dataloader to load jobs by their slugs."""
     return create_dataloader(
         repo_method=job_repo.get_many_by_slugs,
-        key_transform=transform_default,
+        key_transform=transform_valid_object_id_str_tuple,
     )
 
 

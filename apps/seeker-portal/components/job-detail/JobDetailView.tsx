@@ -17,15 +17,20 @@ const JobDetailViewFragment = graphql`
 export default function JobDetailView(props: {
 	rootQuery: JobDetailViewFragment$key;
 }) {
-	const slug = useParams<{ slug: string }>().slug;
+	const params = useParams<{ slug: string; jobSlug: string }>();
+	const slug = decodeURIComponent(params.slug);
+	const jobSlug = decodeURIComponent(params.jobSlug);
 	const query = useFragment(JobDetailViewFragment, props.rootQuery);
 
 	useEffect(() => {
 		if (slug) {
 			// register a user view for the job
-			fetch(`${env.NEXT_PUBLIC_API_URL}/jobs/${slug}/view`, { method: "POST" });
+			fetch(
+				`${env.NEXT_PUBLIC_API_URL}/organizations/${slug}/jobs/${jobSlug}/log_view`,
+				{ method: "POST" },
+			);
 		}
-	}, [slug]);
+	}, [slug, jobSlug]);
 
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-6">

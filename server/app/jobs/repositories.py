@@ -33,12 +33,12 @@ class JobRepo:
     def __init__(self, geocoder: Geocoder) -> None:
         self._geocoder = geocoder
 
-    async def generate_slug(self, title: str) -> str:
+    async def generate_slug(self, title: str, organization_id: ObjectId) -> str:
         """Generate a slug from the job title."""
         slug = title.lower().replace(" ", "-")
-        if await self.get_by_slug(slug):
+        if await self.get_by_slug(slug, organization_id):
             suffix = secrets.token_urlsafe(8)
-            while await self.get_by_slug(f"{slug}-{suffix}"):
+            while await self.get_by_slug(f"{slug}-{suffix}", organization_id):
                 suffix = secrets.token_urlsafe(8)
             slug = f"{slug}-{suffix}"
         return slug
@@ -80,7 +80,7 @@ class JobRepo:
             work_mode=work_mode,
             skills=skills,
             currency=currency,
-            slug=await self.generate_slug(title),
+            slug=await self.generate_slug(title, organization.id),
             is_active=False,
         )
 
@@ -123,16 +123,18 @@ class JobRepo:
         job.work_mode = work_mode
         job.skills = skills
         job.currency = currency
-        job.slug = await self.generate_slug(title)
+        job.slug = await self.generate_slug(title, job.organization.id)
         return await job.save(link_rule=WriteRules.DO_NOTHING)
 
     async def get(self, job_id: ObjectId) -> Job | None:
         """Get job by ID."""
         return await Job.get(job_id)
 
-    async def get_by_slug(self, slug: str) -> Job | None:
-        """Get job by slug."""
-        return await Job.find_one(Job.slug == slug)
+    async def get_by_slug(self, slug: str, organization_id: ObjectId) -> Job | None:
+        """Get job by slug and organization ID."""
+        return await Job.find_one(
+            Job.slug == slug, Job.organization.id == organization_id
+        )
 
     async def update_active(self, job: Job, *, is_active: bool) -> Job:
         """Update the given job."""
@@ -146,12 +148,23 @@ class JobRepo:
 
         return [job_by_id.get(PydanticObjectId(job_id)) for job_id in job_ids]
 
-    async def get_many_by_slugs(self, slugs: list[str]) -> list[Job | None]:
-        """Get multiple jobs by IDs."""
-        jobs = await Job.find(In(Job.slug, slugs)).to_list()
-        job_by_slug = {job.slug: job for job in jobs}
+    async def get_many_by_slugs(
+        self, slugs: list[tuple[ObjectId, str]]
+    ) -> list[Job | None]:
+        """Get multiple jobs by slugs and organization IDs."""
+        filters = [
+            And({"organization.$id": org_id}, {"slug": job_slug})
+            for org_id, job_slug in slugs
+        ]
 
-        return [job_by_slug.get(slug) for slug in slugs]
+        # Use the Or operator to combine all conditions
+        jobs = await Job.find({"$or": filters}).to_list()
+        job_by_slug = {(job.organization.ref.id, job.slug): job for job in jobs}
+
+        return [
+            job_by_slug.get((organization_id, job_slug))
+            for organization_id, job_slug in slugs
+        ]
 
     async def get_all_active(
         self,

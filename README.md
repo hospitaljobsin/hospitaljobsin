@@ -6,7 +6,6 @@
 
 # TODO- recruiter portal
 - add organizations list empty state
-- make job slug unique to a particular org, always use org slug and job slug to query for jobs
 - fix applicant text search
 
 - add option to use screening questions and apply via the app (called EasyApply on Linkedin), or redirect to a custom application link (cannot be changed after job is published)

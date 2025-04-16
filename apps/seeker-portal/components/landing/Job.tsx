@@ -145,7 +145,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			<CardHeader>
 				<div className="flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center">
 					<div className="flex items-center gap-4">
-						{data.organization && (
+						{data.organization.logoUrl && (
 							<div className="relative h-14 w-14">
 								<Image
 									src={data.organization.logoUrl || ""}

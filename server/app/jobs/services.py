@@ -93,8 +93,16 @@ class JobService:
         self._job_metric_repo = job_metric_repo
         self._geocoder = geocoder
 
-    async def log_view(self, slug: str) -> Result[JobMetric, JobNotFoundError]:
-        existing_job = await self._job_repo.get_by_slug(slug=slug)
+    async def log_view(
+        self, slug: str, organization_slug: str
+    ) -> Result[JobMetric, JobNotFoundError]:
+        """Log a job view."""
+        organization = await self._organization_repo.get_by_slug(organization_slug)
+        if organization is None:
+            return Err(JobNotFoundError())
+        existing_job = await self._job_repo.get_by_slug(
+            slug=slug, organization_id=organization.id
+        )
         if existing_job is None:
             return Err(JobNotFoundError())
 
