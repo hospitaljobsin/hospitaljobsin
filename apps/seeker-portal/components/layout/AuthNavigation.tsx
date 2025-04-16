@@ -18,7 +18,7 @@ import {
 	NavbarItem,
 	useDisclosure,
 } from "@heroui/react";
-import { BookmarkIcon, LogOutIcon, Settings, UserIcon } from "lucide-react";
+import { BriefcaseBusiness, LogOutIcon, Settings, UserIcon } from "lucide-react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -151,10 +151,10 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							</DropdownItem>
 							<DropdownItem
 								key="saved"
-								startContent={<BookmarkIcon className="h-4 w-4" />}
+								startContent={<BriefcaseBusiness className="h-4 w-4" />}
 								href={links.savedJobs}
 							>
-								Saved Jobs
+								My Jobs
 							</DropdownItem>
 						</DropdownSection>
 						<DropdownSection>
@@ -219,12 +219,12 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							className="w-full justify-start"
 							radius="sm"
 							variant="light"
-							startContent={<BookmarkIcon className="h-4 w-4" />}
+							startContent={<BriefcaseBusiness className="h-4 w-4" />}
 							href={links.savedJobs}
 							as={links.savedJobs ? "a" : "button"}
 							fullWidth
 						>
-							Saved Jobs
+							My Jobs
 						</Button>
 						<Divider />
 						<Button

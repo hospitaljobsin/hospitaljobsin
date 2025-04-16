@@ -93,10 +93,10 @@ export default function AppliedJobsList({ rootQuery }: Props) {
 					/>
 					<div className="w-full flex flex-col gap-4 items-center">
 						<h2 className="font-medium text-muted-foreground text-lg">
-							No saved jobs found
+							No applied jobs found
 						</h2>
 						<p className="text-muted-foreground text-md">
-							Your saved jobs will appear here
+							Your applied jobs will appear here
 						</p>
 					</div>
 				</CardBody>
