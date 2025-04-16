@@ -10,13 +10,20 @@ const JobOverviewTabFragment = graphql`
       slug: {
         type: "String!",
       }
+	  jobSlug: {type: "String!"}
     ) {
-		job(slug: $slug) {
+		organization(slug: $slug) {
+			__typename
+			... on Organization {
+				job(slug: $jobSlug) {
 			__typename
 			... on Job {
 				...JobDetailsFragment
 			}     
     	}
+			}
+		}
+
   }
 `;
 
@@ -24,11 +31,18 @@ export default function JobOverviewTab(props: {
 	rootQuery: JobOverviewTabFragment$key;
 }) {
 	const query = useFragment(JobOverviewTabFragment, props.rootQuery);
-	invariant(query.job.__typename === "Job", "`Job` node type expected.");
+	invariant(
+		query.organization.__typename === "Organization",
+		"`Organization` node type expected.",
+	);
+	invariant(
+		query.organization.job.__typename === "Job",
+		"`Job` node type expected.",
+	);
 
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-12">
-			<JobDetails rootQuery={query.job} />
+			<JobDetails rootQuery={query.organization.job} />
 		</div>
 	);
 }

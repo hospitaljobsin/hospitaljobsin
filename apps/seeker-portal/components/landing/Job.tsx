@@ -33,9 +33,10 @@ export const JobFragment = graphql`
     minExperience
     maxExperience
     createdAt
-    organization @include(if: $showOrganization) {
-      name
-      logoUrl
+    organization @required(action: THROW) {
+      name @include(if: $showOrganization)
+      logoUrl @include(if: $showOrganization)
+	  slug
     }
   }
 `;
@@ -137,7 +138,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			as="div"
 			disableRipple
 			onPress={() => {
-				router.push(links.jobDetail(data.slug));
+				router.push(links.jobDetail(data.organization.slug, data.slug));
 			}}
 			shadow="none"
 		>
@@ -148,7 +149,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 							<div className="relative h-14 w-14">
 								<Image
 									src={data.organization.logoUrl || ""}
-									alt={data.organization.name}
+									alt={data.organization?.name || ""}
 									fill
 									className="rounded-md object-cover"
 								/>

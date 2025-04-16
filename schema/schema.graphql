@@ -1344,6 +1344,12 @@ type Organization implements Node {
   """The logo URL of the organization."""
   logoUrl: String!
 
+  """Get job by slug."""
+  job(
+    """Slug of the job"""
+    slug: String!
+  ): JobPayload!
+
   """Total viewer count for the organization's jobs, filtered by time."""
   totalViewCount(
     """Start date for filtering the view count."""
@@ -1682,12 +1688,6 @@ type Query {
     """How many items to return before the cursor?"""
     last: Int = null
   ): JobConnection!
-
-  """Get job by slug."""
-  job(
-    """Slug of the job"""
-    slug: String!
-  ): JobPayload!
 
   """Get all saved jobs for the current user."""
   savedJobs(

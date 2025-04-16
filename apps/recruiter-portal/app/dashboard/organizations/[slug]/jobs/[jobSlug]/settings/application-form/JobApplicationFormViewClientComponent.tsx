@@ -19,8 +19,9 @@ const JobApplicationFormViewClientComponentFragment = graphql`
       slug: {
         type: "String!",
       }
+	  jobSlug: {type: "String!"}
     ) {
-        ...ApplicationFormTabFragment @arguments(slug: $slug)
+        ...ApplicationFormTabFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }
 `;
 

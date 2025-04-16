@@ -17,11 +17,10 @@ import JobDetailView from "@/components/job-detail/JobDetailView";
 
 const JobDetailViewClientComponentFragment = graphql`
  fragment JobDetailViewClientComponentFragment on Query @argumentDefinitions(
-	  slug: {
-		type: "String!",
-	  }
+	slug: { type: "String!"}
+	jobSlug: { type: "String!"}
 	) {
-		...JobDetailViewFragment @arguments(slug: $slug)
+		...JobDetailViewFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }
 `;
 

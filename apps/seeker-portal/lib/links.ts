@@ -6,8 +6,10 @@ const links = {
 	profile: "/profile",
 	savedJobs: "/my-jobs/saved",
 	appliedJobs: "/my-jobs/applied",
-	jobDetail: (slug: string) => `/jobs/${slug}`,
-	jobDetailApply: (slug: string) => `/jobs/${slug}/apply`,
+	jobDetail: (slug: string, jobSlug: string) =>
+		`/organizations/${slug}/jobs/${jobSlug}`,
+	jobDetailApply: (slug: string, jobSlug: string) =>
+		`/organizations/${slug}/jobs/${jobSlug}/apply`,
 	organizationDetail: (slug: string) => `/organizations/${slug}`,
 	organizationDetailMembers: (slug: string) => `/organizations/${slug}/members`,
 	organizationDetailSettings: (slug: string) =>

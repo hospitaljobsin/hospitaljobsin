@@ -19,11 +19,12 @@ const JobApplicantsViewClientComponentFragment = graphql`
       slug: {
         type: "String!",
       }
+	  jobSlug: {type: "String!"}
 	  searchTerm: { type: "String", defaultValue: null }
 	  status: { type: "JobApplicantStatus", defaultValue: null }
 	  showStatus: { type: "Boolean", defaultValue: true }
     ) {
-        ...ApplicantsTabFragment @arguments(slug: $slug, searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
+        ...ApplicantsTabFragment @arguments(slug: $slug, jobSlug: $jobSlug, searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
   }
 `;
 

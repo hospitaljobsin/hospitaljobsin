@@ -9,8 +9,9 @@ const ApplicationFormTabFragment = graphql`
       slug: {
         type: "String!",
       }
+	  jobSlug: {type: "String!"}
     ) {
-        ...ApplicationFormBuilderFragment @arguments(slug: $slug)
+        ...ApplicationFormBuilderFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }
 `;
 

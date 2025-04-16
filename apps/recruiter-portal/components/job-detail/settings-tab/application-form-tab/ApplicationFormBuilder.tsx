@@ -21,21 +21,25 @@ const ApplicationFormBuilderFragment = graphql`
       slug: {
         type: "String!",
       }
+	  jobSlug: {type: "String!"}
     ) {
-    job(slug: $slug) {
-      __typename
-      ... on Job {
-        id
-        applicationForm {
-            fields {
-                fieldName
-                defaultValue
-                isRequired
-            }
-        }
-      }
-     
-    }
+		organization(slug: $slug) {
+		__typename
+		... on Organization {
+			job(slug: $jobSlug) {
+				__typename
+				... on Job {
+					id
+					applicationForm {
+						fields {
+							fieldName
+							defaultValue
+							isRequired
+						}
+					}
+				}
+			}
+		}}
   }
 `;
 
@@ -84,7 +88,12 @@ export default function ApplicationFormBuilder({
 }: { rootQuery: ApplicationFormBuilderFragment$key }) {
 	const data = useFragment(ApplicationFormBuilderFragment, rootQuery);
 
-	const job = data.job;
+	invariant(
+		data.organization.__typename === "Organization",
+		"Expected 'Organization' node type",
+	);
+
+	const job = data.organization.job;
 	invariant(job.__typename === "Job", "Expected 'Job' node type");
 
 	const [commitMutation, isMutationInflight] =

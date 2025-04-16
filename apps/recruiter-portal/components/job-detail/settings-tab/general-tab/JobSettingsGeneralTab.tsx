@@ -13,14 +13,20 @@ const JobSettingsGeneralTabFragment = graphql`
       slug: {
         type: "String!",
       }
+	  jobSlug: {type: "String!"}
     ) {
-        job(slug: $slug) {
-            __typename
-            ... on Job {
-                ...JobEditFormFragment
-                ...DeleteJobModalFragment
-            }
-        }
+		organization(slug: $slug) {
+		__typename
+		... on Organization {
+			job(slug: $jobSlug) {
+				__typename
+				... on Job {
+					...JobEditFormFragment
+					...DeleteJobModalFragment
+				}
+			}
+		}
+		}
 
         viewer {
             __typename
@@ -35,7 +41,14 @@ export default function JobSettingsGeneralTab(props: {
 	rootQuery: JobSettingsGeneralTabFragment$key;
 }) {
 	const query = useFragment(JobSettingsGeneralTabFragment, props.rootQuery);
-	invariant(query.job.__typename === "Job", "Expected 'Job' node type");
+	invariant(
+		query.organization.__typename === "Organization",
+		"Expected 'Organization' node type",
+	);
+	invariant(
+		query.organization.job.__typename === "Job",
+		"Expected 'Job' node type",
+	);
 	invariant(
 		query.viewer.__typename === "Account",
 		"Expected 'Account' node type",
@@ -54,7 +67,7 @@ export default function JobSettingsGeneralTab(props: {
 	return (
 		<>
 			<div className="w-full h-full flex flex-col gap-12">
-				<JobEditForm rootQuery={query.job} />
+				<JobEditForm rootQuery={query.organization.job} />
 				<Divider />
 				<div className="flex flex-col gap-6 w-full">
 					<h2 className="font-medium text-foreground-400">Danger Zone</h2>
@@ -92,7 +105,7 @@ export default function JobSettingsGeneralTab(props: {
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
 				onClose={onClose}
-				job={query.job}
+				job={query.organization.job}
 			/>
 		</>
 	);

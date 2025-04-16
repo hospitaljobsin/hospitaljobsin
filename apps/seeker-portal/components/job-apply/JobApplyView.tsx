@@ -5,17 +5,22 @@ import JobApplyForm from "./JobApplyForm";
 
 const JobApplyViewFragment = graphql`
  fragment JobApplyViewFragment on Query @argumentDefinitions(
-      slug: {
-        type: "String!",
-      }
+      slug: { type: "String!"}
+      jobSlug: { type: "String!"}
     ) {
-		job(slug: $slug) {
-      __typename
-      ... on Job {
-        ...JobApplyFormFragment
+      organization(slug: $slug) {
+        __typename
+        ... on Organization {
+          job(slug: $jobSlug) {
+            __typename
+            ... on Job {
+              ...JobApplyFormFragment
+            }
+          
+          }
+        }
       }
-     
-    }
+
   }
 `;
 
@@ -24,11 +29,19 @@ export default function JobApplyView(props: {
 }) {
 	const query = useFragment(JobApplyViewFragment, props.rootQuery);
 
-	invariant(query.job.__typename === "Job", "Expected 'Job' node type");
+	invariant(
+		query.organization.__typename === "Organization",
+		"Expected 'Organization' node type",
+	);
+
+	invariant(
+		query.organization.job.__typename === "Job",
+		"Expected 'Job' node type",
+	);
 
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-6">
-			<JobApplyForm rootQuery={query.job} />
+			<JobApplyForm rootQuery={query.organization.job} />
 		</div>
 	);
 }

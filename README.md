@@ -5,6 +5,7 @@
 
 
 # TODO- recruiter portal
+- add organizations list empty state
 - make job slug unique to a particular org, always use org slug and job slug to query for jobs
 - fix applicant text search
 

@@ -19,8 +19,9 @@ const JobDetailViewClientComponentFragment = graphql`
       slug: {
         type: "String!",
       }
+	  jobSlug: {type: "String!"}
     ) {
-        ...JobOverviewTabFragment @arguments(slug: $slug)
+        ...JobOverviewTabFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }
 `;
 

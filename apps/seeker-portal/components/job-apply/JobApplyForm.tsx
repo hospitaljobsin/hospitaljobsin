@@ -24,6 +24,7 @@ const JobApplyFormFragment = graphql`
     organization @required(action: THROW) {
       name
       logoUrl
+	  slug
     }
   }
 `;
@@ -98,7 +99,7 @@ export default function JobApplyForm({
 					"CreateJobApplicantSuccess"
 				) {
 					// Handle success
-					router.push(links.jobDetail(data.slug));
+					router.push(links.jobDetail(data.organization.slug, data.slug));
 				} else if (
 					response.createJobApplication.__typename === "JobNotFoundError" ||
 					response.createJobApplication.__typename === "JobNotPublishedError" ||

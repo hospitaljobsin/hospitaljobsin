@@ -33,6 +33,7 @@ export const ShareJobFragment = graphql`
     organization @required(action: THROW) {
         name
         logoUrl
+		slug
     }
   }
 
@@ -41,7 +42,7 @@ export const ShareJobFragment = graphql`
 export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 	const [showShareModal, setShowShareModal] = useState(false);
 	const data = useFragment(ShareJobFragment, job);
-	const shareUrl = `${env.NEXT_PUBLIC_URL}${links.jobDetail(data.slug)}`;
+	const shareUrl = `${env.NEXT_PUBLIC_URL}${links.jobDetail(data.organization.slug, data.slug)}`;
 	const title = `Job Position: ${data.title} at ${data.organization.name} - Apply Now!`;
 	const description = data.description
 		? `${data.description.slice(0, 100)}...`

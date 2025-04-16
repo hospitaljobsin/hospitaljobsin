@@ -8,9 +8,9 @@ import { graphql, readInlineData } from "relay-runtime";
 import JobApplicantsViewClientComponent from "./JobApplicantsViewClientComponent";
 
 export const PageJobApplicantsViewQuery = graphql`
-  query pageJobApplicantsViewQuery($slug: String!, $searchTerm: String, $status: JobApplicantStatus, $showStatus: Boolean = true) {	
-    ...pageJobApplicantsMetadataFragment @arguments(slug: $slug)
-    ...JobApplicantsViewClientComponentFragment @arguments(slug: $slug, searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
+  query pageJobApplicantsViewQuery($slug: String!, $jobSlug: String!, $searchTerm: String, $status: JobApplicantStatus, $showStatus: Boolean = true) {	
+    ...pageJobApplicantsMetadataFragment @arguments(slug: $slug, jobSlug: $jobSlug)
+    ...JobApplicantsViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug, searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
   }
 `;
 
@@ -19,30 +19,36 @@ const PageJobApplicantsMetadataFragment = graphql`
       slug: {
         type: "String!",
       }
+	  jobSlug: { type: "String!" }
     ) {
-    job(slug: $slug) {
-      __typename
-      ... on Job {
-        title
-        organization {
-            name
-            description
-            logoUrl
-            isMember
-        }
-      }
-     
-    }
+	organization(slug: $slug) {
+		__typename
+		... on Organization {
+			name
+			description
+			logoUrl
+			isMember
+			job(slug: $jobSlug) {
+			__typename
+			... on Job {
+				title
+			}
+			
+			}
+		}
+	}
+    
   }
 `;
 
 // Function to load and cache the query result
-const loadJob = cache(async (slug: string) => {
+const loadJob = cache(async (slug: string, jobSlug: string) => {
 	return await loadSerializableQuery<
 		typeof JobApplicantsViewQueryNode,
 		pageJobApplicantsViewQuery
 	>(PageJobApplicantsViewQuery, {
 		slug: slug,
+		jobSlug: jobSlug,
 	});
 });
 
@@ -51,19 +57,27 @@ export async function generateMetadata({
 }: {
 	params: Promise<{ slug: string; jobSlug: string }>;
 }) {
-	const slug = (await params).jobSlug;
-	const preloadedQuery = await loadJob(slug);
+	const pathParams = await params;
+	const slug = decodeURIComponent(pathParams.slug);
+	const jobSlug = decodeURIComponent(pathParams.jobSlug);
+	const preloadedQuery = await loadJob(slug, jobSlug);
 
 	const data = readInlineData<pageJobApplicantsMetadataFragment$key>(
 		PageJobApplicantsMetadataFragment,
 		preloadedQuery.data,
 	);
 
+	if (data.organization.__typename !== "Organization") {
+		return {
+			title: "Organization Not found",
+			description: "The organization you are looking for does not exist",
+		};
+	}
+
 	// only members can view the job applicants
 	if (
-		data.job.__typename !== "Job" ||
-		!data.job.organization ||
-		!data.job.organization.isMember
+		data.organization.job.__typename !== "Job" ||
+		!data.organization.isMember
 	) {
 		return {
 			title: "Job Not found",
@@ -75,10 +89,10 @@ export async function generateMetadata({
 	}
 
 	return {
-		title: data.job.title,
-		description: data.job.organization.description,
+		title: data.organization.job.title,
+		description: data.organization.description,
 		openGraph: {
-			images: [data.job.organization.logoUrl || "/default-image.img"],
+			images: [data.organization.logoUrl || "/default-image.img"],
 		},
 	};
 }
@@ -88,9 +102,10 @@ export default async function JobApplicantsPage({
 }: {
 	params: Promise<{ slug: string; jobSlug: string }>;
 }) {
-	const slug = (await params).jobSlug;
-
-	const preloadedQuery = await loadJob(slug);
+	const pathParams = await params;
+	const slug = decodeURIComponent(pathParams.slug);
+	const jobSlug = decodeURIComponent(pathParams.jobSlug);
+	const preloadedQuery = await loadJob(slug, jobSlug);
 
 	const data = readInlineData<pageJobApplicantsMetadataFragment$key>(
 		PageJobApplicantsMetadataFragment,
@@ -99,9 +114,9 @@ export default async function JobApplicantsPage({
 
 	// only members can view the job applicants
 	if (
-		data.job.__typename !== "Job" ||
-		!data.job.organization ||
-		!data.job.organization.isMember
+		data.organization.__typename !== "Organization" ||
+		data.organization.job.__typename !== "Job" ||
+		!data.organization.isMember
 	) {
 		notFound();
 	}

@@ -7,11 +7,10 @@ import JobDetails from "./JobDetails";
 
 const JobDetailViewFragment = graphql`
  fragment JobDetailViewFragment on Query @argumentDefinitions(
-      slug: {
-        type: "String!",
-      }
+	slug: { type: "String!"}
+	jobSlug: { type: "String!"}
     ) {
-		...JobDetailsFragment @arguments(slug: $slug)
+		...JobDetailsFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }
 `;
 

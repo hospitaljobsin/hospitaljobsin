@@ -8,9 +8,9 @@ import { graphql, readInlineData } from "relay-runtime";
 import ApplicantDetailViewClientComponent from "./ApplicantDetailViewClientComponent";
 
 export const PageApplicantDetailViewQuery = graphql`
-  query pageApplicantDetailViewQuery($slug: String!, $applicantSlug: String!) {	
-    ...pageApplicantDetailMetadataFragment @arguments(slug: $slug, applicantSlug: $applicantSlug)
-    ...ApplicantDetailViewClientComponentFragment @arguments(slug: $slug, applicantSlug: $applicantSlug)
+  query pageApplicantDetailViewQuery($slug: String!, $jobSlug: String!, $applicantSlug: String!) {	
+    ...pageApplicantDetailMetadataFragment @arguments(slug: $slug, jobSlug: $jobSlug, applicantSlug: $applicantSlug)
+    ...ApplicantDetailViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug, applicantSlug: $applicantSlug)
   }
 `;
 
@@ -18,39 +18,47 @@ const PageApplicantDetailMetadataFragment = graphql`
  fragment pageApplicantDetailMetadataFragment on Query @inline @argumentDefinitions(
     slug: { type: "String!"}
 	applicantSlug: { type: "String!"}
+	jobSlug: { type: "String!"}
     ) {
-    job(slug: $slug) {
-      __typename
-      ... on Job {
-        __typename
-		organization {
-			isMember
-		}
-        jobApplicant(slug: $applicantSlug) {
-		  __typename
-		  ... on JobApplicant {
-			account {
-				fullName
-				avatarUrl
+		organization(slug: $slug) {
+			__typename
+			... on Organization {
+				isMember
+				job(slug: $jobSlug) {
+					__typename
+					... on Job {
+					__typename
+					jobApplicant(slug: $applicantSlug) {
+					__typename
+					... on JobApplicant {
+						account {
+							fullName
+							avatarUrl
+						}
+					}
+					}
+				}
+				
+				}
 			}
-		  }
-        }
-      }
-     
-    }
+		}
+
   }
 `;
 
 // Function to load and cache the query result
-const loadJobApplicant = cache(async (slug: string, applicantSlug: string) => {
-	return await loadSerializableQuery<
-		typeof ApplicantDetailViewQueryNode,
-		pageApplicantDetailViewQuery
-	>(PageApplicantDetailViewQuery, {
-		slug: slug,
-		applicantSlug: applicantSlug,
-	});
-});
+const loadJobApplicant = cache(
+	async (slug: string, jobSlug: string, applicantSlug: string) => {
+		return await loadSerializableQuery<
+			typeof ApplicantDetailViewQueryNode,
+			pageApplicantDetailViewQuery
+		>(PageApplicantDetailViewQuery, {
+			slug: slug,
+			jobSlug: jobSlug,
+			applicantSlug: applicantSlug,
+		});
+	},
+);
 
 export async function generateMetadata({
 	params,
@@ -58,10 +66,10 @@ export async function generateMetadata({
 	params: Promise<{ slug: string; jobSlug: string; applicantSlug: string }>;
 }) {
 	const pathParams = await params;
-	const preloadedQuery = await loadJobApplicant(
-		pathParams.jobSlug,
-		pathParams.applicantSlug,
-	);
+	const slug = decodeURIComponent(pathParams.slug);
+	const jobSlug = decodeURIComponent(pathParams.jobSlug);
+	const applicantSlug = decodeURIComponent(pathParams.applicantSlug);
+	const preloadedQuery = await loadJobApplicant(slug, jobSlug, applicantSlug);
 
 	const data = readInlineData<pageApplicantDetailMetadataFragment$key>(
 		PageApplicantDetailMetadataFragment,
@@ -69,9 +77,10 @@ export async function generateMetadata({
 	);
 
 	if (
-		data.job.__typename !== "Job" ||
-		data.job.jobApplicant.__typename !== "JobApplicant" ||
-		!data.job.organization?.isMember
+		data.organization.__typename !== "Organization" ||
+		data.organization.job.__typename !== "Job" ||
+		data.organization.job.jobApplicant.__typename !== "JobApplicant" ||
+		!data.organization.isMember
 	) {
 		return {
 			title: "Job Applicant Not found",
@@ -83,10 +92,11 @@ export async function generateMetadata({
 	}
 
 	return {
-		title: data.job.jobApplicant.account?.fullName,
+		title: data.organization.job.jobApplicant.account?.fullName,
 		openGraph: {
 			images: [
-				data.job.jobApplicant.account?.avatarUrl || "/default-image.img",
+				data.organization.job.jobApplicant.account?.avatarUrl ||
+					"/default-image.img",
 			],
 		},
 	};
@@ -98,11 +108,10 @@ export default async function ApplicantDetailPage({
 	params: Promise<{ slug: string; jobSlug: string; applicantSlug: string }>;
 }) {
 	const pathParams = await params;
-
-	const preloadedQuery = await loadJobApplicant(
-		pathParams.jobSlug,
-		pathParams.applicantSlug,
-	);
+	const slug = decodeURIComponent(pathParams.slug);
+	const jobSlug = decodeURIComponent(pathParams.jobSlug);
+	const applicantSlug = decodeURIComponent(pathParams.applicantSlug);
+	const preloadedQuery = await loadJobApplicant(slug, jobSlug, applicantSlug);
 
 	const data = readInlineData<pageApplicantDetailMetadataFragment$key>(
 		PageApplicantDetailMetadataFragment,
@@ -110,9 +119,10 @@ export default async function ApplicantDetailPage({
 	);
 
 	if (
-		data.job.__typename !== "Job" ||
-		data.job.jobApplicant.__typename !== "JobApplicant" ||
-		!data.job.organization?.isMember
+		data.organization.__typename !== "Organization" ||
+		data.organization.job.__typename !== "Job" ||
+		data.organization.job.jobApplicant.__typename !== "JobApplicant" ||
+		!data.organization.isMember
 	) {
 		notFound();
 	}

@@ -13,16 +13,23 @@ const ApplicantsTabFragment = graphql`
       slug: {
         type: "String!",
       }
+	  jobSlug: {type: "String!"}
 	  searchTerm: { type: "String", defaultValue: null }
 	  status: { type: "JobApplicantStatus", defaultValue: null }
 	  showStatus: { type: "Boolean", defaultValue: true }
     ) {
-		job(slug: $slug) {
+		organization(slug: $slug) {
 			__typename
-			... on Job {
-				...ApplicantListFragment @arguments(searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
-			}     
-    	}
+			... on Organization {
+				job(slug: $jobSlug) {
+					__typename
+					... on Job {
+						...ApplicantListFragment @arguments(searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
+					}     
+				}
+			}
+		}
+
   }
 `;
 
@@ -32,7 +39,11 @@ export default function ApplicantsTab(props: {
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 	const [status, setStatus] = useState<JobApplicantStatus | null>(null);
 	const query = useFragment(ApplicantsTabFragment, props.rootQuery);
-	invariant(query.job.__typename === "Job", "Expected 'job' type");
+	invariant(
+		query.organization.__typename === "Organization",
+		"Expected 'organization' type",
+	);
+	invariant(query.organization.job.__typename === "Job", "Expected 'job' type");
 
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-12">
@@ -43,7 +54,7 @@ export default function ApplicantsTab(props: {
 				setStatus={setStatus}
 			/>
 			<ApplicantList
-				rootQuery={query.job}
+				rootQuery={query.organization.job}
 				searchTerm={searchTerm}
 				status={status}
 			/>

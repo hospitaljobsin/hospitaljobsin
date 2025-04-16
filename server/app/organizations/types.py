@@ -33,7 +33,7 @@ from app.organizations.repositories import (
 from app.organizations.services import OrganizationMemberService
 
 if TYPE_CHECKING:
-    from app.jobs.types import JobConnectionType, JobMetricPointType
+    from app.jobs.types import JobConnectionType, JobMetricPointType, JobPayloadType
 
 
 @strawberry.enum(
@@ -187,6 +187,30 @@ class OrganizationType(BaseNodeType[Organization]):
             cls.marshal(organization) if organization is not None else organization
             for organization in organizations
         ]
+
+    @strawberry.field(  # type: ignore[misc]
+        description="Get job by slug.",
+    )
+    @inject
+    async def job(
+        self,
+        info: Info,
+        slug: Annotated[
+            str,
+            strawberry.argument(
+                description="Slug of the job",
+            ),
+        ],
+    ) -> Annotated["JobPayloadType", strawberry.lazy("app.jobs.types")]:
+        from app.jobs.types import JobNotFoundErrorType, JobType
+
+        result = await info.context["loaders"].job_by_slug.load(slug)
+
+        if result is None or result.organization.ref.id != ObjectId(self.id):
+            # if the job is not found or the job does not belong to this organization, return an error
+            return JobNotFoundErrorType()
+
+        return JobType.marshal(result)
 
     @strawberry.field(  # type: ignore[misc]
         description="Total viewer count for the organization's jobs, filtered by time.",

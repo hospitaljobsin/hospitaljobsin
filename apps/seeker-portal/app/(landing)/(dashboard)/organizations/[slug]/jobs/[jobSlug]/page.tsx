@@ -9,56 +9,67 @@ import { graphql, readInlineData } from "relay-runtime";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 
 export const PageJobDetailViewQuery = graphql`
-  query pageJobDetailViewQuery($slug: String!) {	
-	...pageJobDetailMetadataFragment @arguments(slug: $slug)
-    ...JobDetailViewClientComponentFragment @arguments(slug: $slug)
+  query pageJobDetailViewQuery($slug: String!, $jobSlug: String!) {	
+	...pageJobDetailMetadataFragment @arguments(slug: $slug, jobSlug: $jobSlug)
+    ...JobDetailViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }
 `;
 
 const PageJobDetailMetadataFragment = graphql`
  fragment pageJobDetailMetadataFragment on Query @inline @argumentDefinitions(
-      slug: {
-        type: "String!",
-      }
+      slug: { type: "String!"}
+	  jobSlug: { type: "String!"}
     ) {
-    job(slug: $slug) {
-      __typename
-      ... on Job {
-        title
-		description
-		organization {
+		organization(slug: $slug) {
+			__typename
+			... on Organization {
 			logoUrl
+			job(slug: $jobSlug) {
+			__typename
+			... on Job {
+				title
+				description
+			}
+			}
 		}
-      }
-	 
-    }
+	}
   }
 `;
 
-const loadJob = cache(async (slug: string) => {
+const loadJob = cache(async (slug: string, jobSlug: string) => {
 	return await loadSerializableQuery<
 		typeof JobDetailViewQueryNode,
 		pageJobDetailViewQuery
 	>(PageJobDetailViewQuery, {
 		slug: slug,
+		jobSlug: jobSlug,
 	});
 });
 
 export async function generateMetadata({
 	params,
 }: {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ slug: string; jobSlug: string }>;
 }): Promise<Metadata> {
-	const slug = decodeURIComponent((await params).slug);
+	const pathParams = await params;
+	const slug = decodeURIComponent(pathParams.slug);
+	const jobSlug = decodeURIComponent(pathParams.jobSlug);
 
-	const preloadedQuery = await loadJob(slug);
+	const preloadedQuery = await loadJob(slug, jobSlug);
 
 	const data = readInlineData<pageJobDetailMetadataFragment$key>(
 		PageJobDetailMetadataFragment,
 		preloadedQuery.data,
 	);
 
-	if (data.job.__typename !== "Job") {
+	if (data.organization.__typename !== "Organization") {
+		return {
+			title: "Organization Not found",
+			description: "The organization you are looking for does not exist",
+		};
+	}
+
+	if (data.organization.job.__typename !== "Job") {
 		return {
 			title: "Job Not found",
 			description: "The job you are looking for does not exist",
@@ -69,10 +80,10 @@ export async function generateMetadata({
 	}
 
 	return {
-		title: data.job.title,
-		description: data.job.description,
+		title: data.organization.job.title,
+		description: data.organization.job.description,
 		openGraph: {
-			images: [data.job.organization?.logoUrl || "/default-image.img"],
+			images: [data.organization.logoUrl || "/default-image.img"],
 		},
 	};
 }
@@ -80,18 +91,23 @@ export async function generateMetadata({
 export default async function JobDetailPage({
 	params,
 }: {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ slug: string; jobSlug: string }>;
 }) {
-	const slug = (await params).slug;
+	const pathParams = await params;
+	const slug = decodeURIComponent(pathParams.slug);
+	const jobSlug = decodeURIComponent(pathParams.jobSlug);
 
-	const preloadedQuery = await loadJob(slug);
+	const preloadedQuery = await loadJob(slug, jobSlug);
 
 	const data = readInlineData<pageJobDetailMetadataFragment$key>(
 		PageJobDetailMetadataFragment,
 		preloadedQuery.data,
 	);
 
-	if (data.job.__typename !== "Job") {
+	if (
+		data.organization.__typename !== "Organization" ||
+		data.organization.job.__typename !== "Job"
+	) {
 		notFound();
 	}
 

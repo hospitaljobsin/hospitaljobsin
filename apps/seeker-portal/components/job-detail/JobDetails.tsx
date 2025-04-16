@@ -29,17 +29,20 @@ import JobControls from "./JobControls";
 
 const JobDetailsFragment = graphql`
   fragment JobDetailsFragment on Query @argumentDefinitions(
-      slug: {
-        type: "String!",
-      }
+	slug: { type: "String!"}
+	jobSlug: { type: "String!"}
     ) {
-    job(slug: $slug) {
-      __typename
-      ... on Job {
-        ...JobDetailsInternalFragment
-      }
-	 
-    }
+		organization(slug: $slug) {
+		__typename
+		... on Organization {
+			job(slug: $jobSlug) {
+				__typename
+				... on Job {
+					...JobDetailsInternalFragment
+				}
+			}
+		}
+	}
 	viewer {
 		__typename
 		...JobControlsAuthFragment
@@ -82,11 +85,19 @@ export default function JobDetails({
 }) {
 	const root = useFragment(JobDetailsFragment, rootQuery);
 
-	invariant(root.job.__typename === "Job", "Expected 'Job' node type");
+	invariant(
+		root.organization.__typename === "Organization",
+		"Expected 'Organization' node type",
+	);
+
+	invariant(
+		root.organization.job.__typename === "Job",
+		"Expected 'Job' node type",
+	);
 
 	const data = useFragment<JobDetailsInternalFragmentType>(
 		JobDetailsInternalFragment,
-		root.job,
+		root.organization.job,
 	);
 
 	const editor = useEditor({
@@ -194,7 +205,7 @@ export default function JobDetails({
 						{/* TODO: check for authentication before redirecting here */}
 						<Button
 							as={Link}
-							href={links.jobDetailApply(data.slug)}
+							href={links.jobDetailApply(data.organization.slug, data.slug)}
 							size="lg"
 							className="w-full sm:w-auto"
 							isDisabled={data.isApplied}

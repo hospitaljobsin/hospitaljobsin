@@ -7,15 +7,12 @@ from strawberry import relay
 from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated
-from app.context import AuthInfo, Info
+from app.context import AuthInfo
 
 from .repositories import JobApplicantRepo, JobRepo, SavedJobRepo
 from .types import (
     JobApplicantConnectionType,
     JobConnectionType,
-    JobNotFoundErrorType,
-    JobPayload,
-    JobType,
     SavedJobConnectionType,
 )
 
@@ -86,28 +83,6 @@ class JobQuery:
         return JobConnectionType.marshal(
             paginated_result=paginated_result,
         )
-
-    @strawberry.field(  # type: ignore[misc]
-        graphql_type=JobPayload,
-        description="Get job by slug.",
-    )
-    @inject
-    async def job(
-        self,
-        info: Info,
-        slug: Annotated[
-            str,
-            strawberry.argument(
-                description="Slug of the job",
-            ),
-        ],
-    ) -> JobPayload:
-        result = await info.context["loaders"].job_by_slug.load(slug)
-
-        if result is None:
-            return JobNotFoundErrorType()
-
-        return JobType.marshal(result)
 
     @strawberry.field(  # type: ignore[misc]
         description="Get all saved jobs for the current user.",

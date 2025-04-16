@@ -18,8 +18,9 @@ const ApplicantDetailViewClientComponentFragment = graphql`
  fragment ApplicantDetailViewClientComponentFragment on Query @argumentDefinitions(
     slug: { type: "String!"}
 	applicantSlug: { type: "String!"}
+	jobSlug: { type: "String!"}
     ) {
-        ...ApplicantDetailViewFragment @arguments(slug: $slug, applicantSlug: $applicantSlug)
+        ...ApplicantDetailViewFragment @arguments(slug: $slug, jobSlug: $jobSlug, applicantSlug: $applicantSlug)
   }
 `;
 
