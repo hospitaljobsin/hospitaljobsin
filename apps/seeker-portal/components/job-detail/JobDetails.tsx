@@ -226,7 +226,7 @@ export default function JobDetails({
 						{data.location && (
 							<div className="flex items-center gap-2">
 								<MapPin size={16} />
-								{location}
+								{data.location}
 							</div>
 						)}
 						<div className="flex items-center gap-2">

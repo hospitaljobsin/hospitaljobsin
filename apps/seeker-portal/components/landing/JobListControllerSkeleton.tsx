@@ -4,7 +4,7 @@ import { MapPin, Search } from "lucide-react";
 
 export default function JobListControllerSkeleton() {
 	return (
-		<div className="flex flex-col gap-4 w-full">
+		<form className="flex flex-col gap-4 w-full">
 			<Input
 				size="lg"
 				classNames={{
@@ -28,35 +28,40 @@ export default function JobListControllerSkeleton() {
 				<Card className="w-full" shadow="none">
 					<CardBody className="p-4">
 						<div className="flex flex-col sm:flex-row gap-4 w-full">
-							<div className="flex-1">
-								<Input
-									placeholder="Filter by location"
-									startContent={
-										<MapPin size={18} className="text-default-400" />
-									}
-									fullWidth
-									isDisabled
-								/>
-							</div>
-							<div className="flex-1">
-								<div className="flex flex-col gap-2">
-									<Slider
+								<div className="flex-1">
+									<Input
+										size="lg"
+										placeholder="Filter by location"
+										startContent={
+											<MapPin size={18} className="text-foreground-400" />
+										}
+										fullWidth
+										isDisabled
+									/>
+								</div>
+								<div className="flex-1">
+									<Slider								
 										label="Proximity"
 										size="sm"
 										step={5}
 										minValue={0}
 										maxValue={100}
-										value={0}
+										value={1}
 										className="max-w-md"
 										showOutline={true}
+										tooltipProps={{
+											offset: 10,
+											placement: "top",
+											content: "1 km",
+										}}
+										formatOptions={{ style: "unit", unit: "kilometer" }}
 										isDisabled
 									/>
 								</div>
-							</div>
 						</div>
 					</CardBody>
 				</Card>
 			</div>
-		</div>
+		</form>
 	);
 }
