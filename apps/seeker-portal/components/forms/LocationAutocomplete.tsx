@@ -10,6 +10,7 @@ import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery, useQueryLoader } from "react-relay";
 import { graphql } from "relay-runtime";
 
+// TODO: remodel this component based on https://github.com/Amraneze/osm-autocomplete
 interface LocationAutocompleteProps
     extends Omit<AutocompleteProps, "children" | "onChange"> {
     value: string;
