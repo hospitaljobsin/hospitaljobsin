@@ -6,9 +6,6 @@
 
 
 # TODO- recruiter portal
-- reduce job address field to location, and geocode it into coordinates (for geospatial filtering)
-    - https://beanie-odm.dev/api-documentation/operators/find/#geointersects
-    - https://wiki.openstreetmap.org/wiki/Geocoding
 - make job slug unique to a particular org, always use org slug and job slug to query for jobs
 - fix applicant text search
 
