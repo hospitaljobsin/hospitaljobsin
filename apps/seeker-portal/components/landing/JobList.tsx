@@ -93,22 +93,21 @@ export default function JobList({
 
 	// Debounced search term refetch
 	useEffect(() => {
-		console.log("Refetching jobs with search term:", searchTerm, location, proximityKm);
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
 				refetch(
 					{
-						searchTerm: searchTerm,
-						location: location,
-						proximityKm: proximityKm,
+						searchTerm,
+						location,
+						proximityKm,
 					},
-					{ fetchPolicy: "store-or-network" },
+					{ fetchPolicy: "network-only" }, // Use network-only to ensure fresh data when parameters change to null
 				);
 			});
 		}, 300); // Adjust debounce delay as needed
 
 		return () => clearTimeout(debounceTimeout);
-	}, [refetch, searchTerm, location, proximityKm]);
+	}, [refetch, searchTerm, location, proximityKm]); // Dependencies correctly tracked
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (
