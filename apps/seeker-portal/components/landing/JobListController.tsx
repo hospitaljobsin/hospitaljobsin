@@ -1,7 +1,7 @@
 import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import { Card, CardBody, Input, Slider } from "@heroui/react";
 import { MapPin, Search } from "lucide-react";
-import { FormEvent } from "react";
+import type { FormEvent } from "react";
 
 interface JobListControllerProps {
 	searchTerm: string | null;
@@ -53,16 +53,16 @@ export default function JobListController(props: JobListControllerProps) {
 										<MapPin size={18} className="text-default-400" />
 									}
 									value={props.location || ""}
-									onChange={(value) => props.setLocation(value)}
+									onChange={(value) => {
+										props.setLocation(value);
+									}}
 									fullWidth
 								/>
 							</div>
 							<div className="flex-1">
 								<div className="flex flex-col gap-2">
-									<label className="text-sm text-foreground-500">
-										Distance (km): {props.proximityKm ?? 0}
-									</label>
 									<Slider
+										label="Proximity"
 										size="sm"
 										step={5}
 										minValue={0}
@@ -84,6 +84,6 @@ export default function JobListController(props: JobListControllerProps) {
 					</CardBody>
 				</Card>
 			</div>
-			</form>
+		</form>
 	);
 }

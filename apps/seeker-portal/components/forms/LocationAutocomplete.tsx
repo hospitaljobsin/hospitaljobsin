@@ -5,7 +5,7 @@ import { useDebounce } from "@/lib/hooks/useDebounce";
 import type { AutocompleteProps } from "@heroui/react";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import type { Key } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery, useQueryLoader } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -72,6 +72,7 @@ export default function LocationAutocomplete({
     const [suggestions, setSuggestions] = useState<SearchLocation[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const debouncedQuery = useDebounce(inputValue, 300);
+    const [isPending, startTransition] = useTransition();
 
     const [queryReference, loadQuery, disposeQuery] =
         useQueryLoader<LocationAutocompleteQuery>(SearchLocationsQuery);
@@ -86,7 +87,9 @@ export default function LocationAutocomplete({
         // Only fetch suggestions if we have a valid query
         if (debouncedQuery && debouncedQuery.length >= 3) {
             setIsLoading(true);
-            loadQuery({ searchTerm: debouncedQuery }, { fetchPolicy: "store-or-network" });
+            startTransition(() => {
+                loadQuery({ searchTerm: debouncedQuery }, { fetchPolicy: "store-or-network" });
+            });
         } else {
             // Clear suggestions and loading state for empty or short queries
             setSuggestions([]);
@@ -136,7 +139,7 @@ export default function LocationAutocomplete({
                 {...props}
                 inputValue={inputValue}
                 onInputChange={handleInputChange}
-                isLoading={isLoading}
+                isLoading={isLoading || isPending}
                 onSelectionChange={handleSelectionChange}
                 onKeyDown={preventFormSubmission}
             >
