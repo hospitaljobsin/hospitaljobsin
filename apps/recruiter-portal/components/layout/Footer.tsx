@@ -23,6 +23,7 @@ export default function Footer() {
 							color="foreground"
 							size="sm"
 							className="text-foreground-500"
+							isExternal
 						>
 							Terms
 						</Link>
@@ -31,6 +32,7 @@ export default function Footer() {
 							color="foreground"
 							size="sm"
 							className="text-foreground-500"
+							isExternal
 						>
 							Privacy
 						</Link>
