@@ -1658,14 +1658,14 @@ type Query {
 
   """Get all active jobs available."""
   jobs(
+    """The proximity in km to search for jobs"""
+    proximityKm: Float = null
+
     """The search (query) term"""
     searchTerm: String = null
 
     """The location to search for jobs"""
     location: String = null
-
-    """The proximity in km to search for jobs"""
-    proximityKm: Int = null
 
     """Returns items before the given cursor."""
     before: ID = null

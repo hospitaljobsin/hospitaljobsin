@@ -22,7 +22,6 @@ fragment OrganizationJobsListFragment on Query @argumentDefinitions(
 				...OrganizationJobsListInternalFragment
 			}
 		}
-	...JobListInternalFragment
 	viewer {
 		...JobControlsAuthFragment
 	}

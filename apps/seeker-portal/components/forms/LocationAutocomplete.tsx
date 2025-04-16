@@ -10,11 +10,14 @@ import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery, useQueryLoader } from "react-relay";
 import { graphql } from "relay-runtime";
 
-// TODO: remodel this component based on https://github.com/Amraneze/osm-autocomplete
+function renderKey (item: SearchLocation) {
+    return `${item.displayName}-${item.lat}-${item.lon}`;
+}
 interface LocationAutocompleteProps
     extends Omit<AutocompleteProps, "children" | "onChange"> {
     value: string;
     onChange: (value: string) => void;
+    onClear: () => void;
 }
 
 type SearchLocation = {
@@ -66,6 +69,7 @@ function LocationResultControls({
 export default function LocationAutocomplete({
     value,
     onChange,
+    onClear,
     ...props
 }: LocationAutocompleteProps) {
     const [inputValue, setInputValue] = useState(value);
@@ -105,7 +109,11 @@ export default function LocationAutocomplete({
     }, [debouncedQuery, loadQuery, disposeQuery]);
 
     const handleSelectionChange = (selectedKey: Key | null) => {
-        const selected = suggestions.find((item) => item.displayName === selectedKey);
+        if (!selectedKey) { 
+            onClear()
+            return;
+        }
+        const selected = suggestions.find((item) =>renderKey(item) === selectedKey);
         if (selected) {
             setInputValue(selected.displayName);
             onChange(selected.displayName);
@@ -144,7 +152,7 @@ export default function LocationAutocomplete({
                 onKeyDown={preventFormSubmission}
             >
                 {suggestions.map((suggestion) => (
-                    <AutocompleteItem key={suggestion.displayName}>
+                    <AutocompleteItem key={renderKey(suggestion)}>
                         {suggestion.displayName}
                     </AutocompleteItem>
                 ))}

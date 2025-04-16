@@ -45,41 +45,41 @@ export default function JobListController(props: JobListControllerProps) {
 				<Card className="w-full" shadow="none">
 					<CardBody className="p-4">
 						<div className="flex flex-col sm:flex-row gap-4 w-full">
-							<div className="flex-1">
-								<LocationAutocomplete
-									label="Location"
-									placeholder="Enter city, state, or zip"
+								<LocationAutocomplete className="flex-1"
+									size="lg"
+									placeholder="Filter by location"
 									startContent={
-										<MapPin size={18} className="text-default-400" />
+										<MapPin size={18} className="text-foreground-400" />
 									}
 									value={props.location || ""}
 									onChange={(value) => {
+									
 										props.setLocation(value);
 									}}
+									onClear={() => {
+										console.log("cleared");
+										props.setLocation(null)}}
 									fullWidth
 								/>
-							</div>
-							<div className="flex-1">
-								<div className="flex flex-col gap-2">
-									<Slider
+								<div className="flex-1">
+									<Slider								
 										label="Proximity"
 										size="sm"
 										step={5}
 										minValue={0}
 										maxValue={100}
-										value={props.proximityKm || 0}
+										value={props.proximityKm || 1}
 										onChange={(value) => props.setProximityKm(value as number)}
 										className="max-w-md"
 										showOutline={true}
 										tooltipProps={{
 											offset: 10,
 											placement: "top",
-											content: `${props.proximityKm || 0} km`,
+											content: `${props.proximityKm || 1} km`,
 										}}
 										formatOptions={{ style: "unit", unit: "kilometer" }}
 									/>
 								</div>
-							</div>
 						</div>
 					</CardBody>
 				</Card>

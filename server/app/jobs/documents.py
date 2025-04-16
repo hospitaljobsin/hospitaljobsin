@@ -12,7 +12,6 @@ from beanie import (
 )
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
-from pymongo.operations import SearchIndexModel
 
 from app.accounts.documents import Account
 from app.base.models import GeoObject
@@ -41,8 +40,6 @@ class Job(Document):
 
     vacancies: int | None = None
 
-    job_embedding: list[float] | None = None
-
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     expires_at: datetime | None = None
 
@@ -52,8 +49,6 @@ class Job(Document):
 
     class Settings:
         name = "jobs"
-
-    class Config:
         indexes: ClassVar[list[IndexModel]] = [
             IndexModel(
                 [
@@ -69,32 +64,7 @@ class Job(Document):
                 [("expired", pymongo.ASCENDING), ("deleted", pymongo.ASCENDING)],
                 name="expired_deleted_index",
             ),
-            SearchIndexModel(
-                definition={
-                    "fields": [
-                        {
-                            "type": "vector",
-                            "numDimensions": 1536,  # depends on embedding model
-                            "path": "job_embedding",
-                            "similarity": "dotProduct",  # depends on embedding model
-                        },
-                        {
-                            "type": "filter",
-                            "path": "min_salary",
-                        },
-                        {
-                            "type": "filter",
-                            "path": "type",
-                        },
-                        {
-                            "type": "filter",
-                            "path": "work_mode",
-                        },
-                    ]
-                },
-                name="job_embedding_index",
-                type="vectorSearch",
-            ),
+            IndexModel([("geo", pymongo.GEOSPHERE)], name="geo_2dsphere_index"),
         ]
 
 

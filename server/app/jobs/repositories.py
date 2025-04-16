@@ -9,6 +9,7 @@ from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.operators import And, In, NearSphere
 from bson import ObjectId
 from geopy.geocoders.base import Geocoder
+from strawberry.relay import PageInfo
 
 from app.accounts.documents import Account
 from app.base.models import GeoObject
@@ -178,9 +179,21 @@ class JobRepo:
             )
 
         # Apply location proximity filter if both location and proximity are provided
-        if location and proximity_km:
+        if location:
+            proximity_km = proximity_km or 1.0  # Default to 1 km if not provided
             # Geocode the location string to coordinates
             geocoded_location = await self._geocoder.geocode(location)
+
+            if geocoded_location is None:
+                return PaginatedResult(
+                    entities=[],
+                    page_info=PageInfo(
+                        has_next_page=False,
+                        has_previous_page=False,
+                        start_cursor=None,
+                        end_cursor=None,
+                    ),
+                )
             # Use Beanie's NearSphere operator instead of raw MongoDB query
             # The max_distance parameter expects meters, so convert km to meters
             max_distance_meters = proximity_km * 1000.0
@@ -195,6 +208,7 @@ class JobRepo:
                         geocoded_location.longitude,
                         geocoded_location.latitude,
                         max_distance=max_distance_meters,
+                        min_distance=0.0,
                     ),
                 )
             else:
@@ -205,6 +219,7 @@ class JobRepo:
                         geocoded_location.longitude,
                         geocoded_location.latitude,
                         max_distance=max_distance_meters,
+                        min_distance=0.0,
                     ),
                 )
 

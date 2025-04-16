@@ -30,8 +30,7 @@ export default function JobListControllerSkeleton() {
 						<div className="flex flex-col sm:flex-row gap-4 w-full">
 							<div className="flex-1">
 								<Input
-									label="Location"
-									placeholder="Enter city, state, or zip"
+									placeholder="Filter by location"
 									startContent={
 										<MapPin size={18} className="text-default-400" />
 									}

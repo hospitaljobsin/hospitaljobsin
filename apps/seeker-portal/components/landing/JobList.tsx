@@ -11,9 +11,9 @@ import JobListSkeleton from "./JobListSkeleton";
 
 const JobListFragment = graphql`
 fragment JobListFragment on Query @argumentDefinitions(
+	proximityKm: { type: "Float", defaultValue: null }
 	searchTerm: { type: "String", defaultValue: null }
 	location: { type: "String", defaultValue: null }
-	proximityKm: { type: "Int", defaultValue: null }
 ) {
 	...JobListInternalFragment @arguments(searchTerm: $searchTerm, location: $location, proximityKm: $proximityKm)
 	viewer {
@@ -26,9 +26,9 @@ const JobListInternalFragment = graphql`
   fragment JobListInternalFragment on Query
   @argumentDefinitions(
     cursor: { type: "ID" }
+	proximityKm: { type: "Float", defaultValue: null }
     searchTerm: { type: "String", defaultValue: null }
 	location: { type: "String", defaultValue: null }
-	proximityKm: { type: "Int", defaultValue: null }
     count: { type: "Int", defaultValue: 10 }
   )
   @refetchable(queryName: "JobListPaginationQuery") {
@@ -84,7 +84,7 @@ export default function JobList({
 					loadNext(5);
 				}
 			},
-			{ threshold: 1.0 },
+			{ threshold: null },
 		);
 
 		observer.observe(observerRef.current);
@@ -93,6 +93,7 @@ export default function JobList({
 
 	// Debounced search term refetch
 	useEffect(() => {
+		console.log("Refetching jobs with search term:", searchTerm, location, proximityKm);
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
 				refetch(

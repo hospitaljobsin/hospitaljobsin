@@ -29,6 +29,12 @@ class JobQuery:
     async def jobs(
         self,
         job_repo: Annotated[JobRepo, Inject],
+        proximity_km: Annotated[
+            float | None,
+            strawberry.argument(
+                description="The proximity in km to search for jobs",
+            ),
+        ] = None,
         search_term: Annotated[
             str | None,
             strawberry.argument(
@@ -39,12 +45,6 @@ class JobQuery:
             str | None,
             strawberry.argument(
                 description="The location to search for jobs",
-            ),
-        ] = None,
-        proximity_km: Annotated[
-            int | None,
-            strawberry.argument(
-                description="The proximity in km to search for jobs",
             ),
         ] = None,
         before: Annotated[
