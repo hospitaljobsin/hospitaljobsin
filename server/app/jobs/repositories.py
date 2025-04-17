@@ -432,6 +432,7 @@ class JobApplicantRepo:
         account: Account,
         job: Job,
         applicant_fields: list[ApplicantField],
+        resume_url: str,
     ) -> JobApplicant:
         """Create a new job applicant."""
         application = JobApplicant(
@@ -441,6 +442,7 @@ class JobApplicantRepo:
             status="applied",
             applicant_fields=applicant_fields,
             slug=self.generate_slug(),
+            resume_url=resume_url,
         )
         return await application.insert(link_rule=WriteRules.DO_NOTHING)
 

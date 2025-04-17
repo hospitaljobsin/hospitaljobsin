@@ -28,17 +28,24 @@ else
   for pair in "${BUCKET_PAIRS[@]}"; do
     # Split each pair by colon (":") to extract the bucket name.
     IFS=':' read -ra parts <<< "${pair}"
-    bucket="${parts[0]}"
-    
+    bucket="$(echo "${parts[0]}" | tr -d '\n' | xargs)"
+
     echo "Processing bucket '${bucket}'..."
-    
-    # Use a case statement to decide whether to configure anonymous GET access based on the bucket name.
+
+    # Check if the bucket exists, create it if it doesn't
+    if ! mc ls myminio/"${bucket}" >/dev/null 2>&1; then
+      echo "Bucket '${bucket}' does not exist. Creating..."
+      mc mb myminio/"${bucket}"
+    else
+      echo "Bucket '${bucket}' already exists."
+    fi
+
+    # Apply anonymous policy conditionally
     case "$bucket" in
-      avatars)
+      medicaljobs)
         echo "Setting anonymous GET (download) access on '${bucket}' bucket..."
         mc anonymous set download myminio/"${bucket}"
         ;;
-      # Add additional bucket cases here if needed.
       *)
         echo "No anonymous GET configuration required for bucket '${bucket}'."
         ;;

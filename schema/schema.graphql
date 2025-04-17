@@ -187,6 +187,14 @@ type AuthenticatorNotEnabledError implements Error {
 """The create job application payload."""
 union CreateJobApplicantPayload = CreateJobApplicantSuccess | JobNotFoundError | JobNotPublishedError | JobApplicantAlreadyExistsError | JobIsExternalError
 
+"""
+The payload for creating a presigned URL for uploading the job applicant's resume.
+"""
+type CreateJobApplicantResumePresignedURLPayload {
+  """The presigned URL for uploading the job applicant's resume."""
+  presignedUrl: String!
+}
+
 """Used when a job application is created successfully."""
 type CreateJobApplicantSuccess {
   """The created job application."""
@@ -596,6 +604,9 @@ type JobApplicant implements Node {
 
   """The fields of the job application."""
   applicantFields: [ApplicantField!]!
+
+  """The URL of the resume."""
+  resumeUrl: String!
 
   """The account of the job applicant."""
   account: Account
@@ -1172,6 +1183,9 @@ type Mutation {
 
     """The fields required by the job's application form."""
     applicantFields: [ApplicantFieldInput!]!
+
+    """The URL of the job applicant's resume."""
+    resumeUrl: String!
   ): CreateJobApplicantPayload! @isAuthenticated
 
   """Delete a job."""
@@ -1179,6 +1193,9 @@ type Mutation {
     """The ID of the job to delete."""
     jobId: ID!
   ): DeleteJobPayload! @isAuthenticated @requiresSudoMode
+
+  """Create a presigned URL for a job applicant's resume."""
+  createJobApplicantResumePresignedUrl: CreateJobApplicantResumePresignedURLPayload! @isAuthenticated
 
   """Update the current user's profile personal details."""
   updateProfilePersonalDetails(

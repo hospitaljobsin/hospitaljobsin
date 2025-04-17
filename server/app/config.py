@@ -126,7 +126,7 @@ class Settings(BaseSettings):
 
     # AWS Config
 
-    s3_avatar_bucket_name: str
+    s3_bucket_name: str
 
     aws_endpoint_url: str | None = None
 

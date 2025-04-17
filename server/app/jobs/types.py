@@ -208,6 +208,10 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
         description="The fields of the job application.",
     )
 
+    resume_url: str = strawberry.field(
+        description="The URL of the resume.",
+    )
+
     _account: Private[Account | ObjectId]
 
     _job: Private[Job | ObjectId]
@@ -255,6 +259,7 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
                 ApplicantFieldType.marshal(field)
                 for field in job_applicant.applicant_fields
             ],
+            resume_url=job_applicant.resume_url,
         )
 
     @classmethod
@@ -270,6 +275,7 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
                 ApplicantFieldType.marshal(field)
                 for field in job_applicant.applicant_fields
             ],
+            resume_url=job_applicant.resume_url,
         )
 
     @classmethod
@@ -988,3 +994,13 @@ DeleteJobPayload = Annotated[
         description="The delete job payload.",
     ),
 ]
+
+
+@strawberry.type(
+    name="CreateJobApplicantResumePresignedURLPayload",
+    description="The payload for creating a presigned URL for uploading the job applicant's resume.",
+)
+class CreateJobApplicantResumePresignedURLPayloadType:
+    presigned_url: str = strawberry.field(
+        description="The presigned URL for uploading the job applicant's resume.",
+    )

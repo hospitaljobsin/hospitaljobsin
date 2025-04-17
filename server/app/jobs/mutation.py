@@ -37,6 +37,7 @@ from .types import (
     ApplicantFieldInputType,
     ApplicationFieldInputType,
     CreateJobApplicantPayload,
+    CreateJobApplicantResumePresignedURLPayloadType,
     CreateJobApplicantSuccessType,
     CreateJobPayload,
     CreateJobSuccessType,
@@ -592,6 +593,12 @@ class JobMutation:
                 description="The fields required by the job's application form.",
             ),
         ],
+        resume_url: Annotated[
+            str,
+            strawberry.argument(
+                description="The URL of the job applicant's resume.",
+            ),
+        ],
     ) -> CreateJobApplicantPayload:
         """Create a job applicant."""
         match await job_application_service.create(
@@ -600,6 +607,7 @@ class JobMutation:
             applicant_fields=[
                 ApplicantFieldInputType.to_document(field) for field in applicant_fields
             ],
+            resume_url=resume_url,
         ):
             case Err(error):
                 match error:
@@ -658,3 +666,23 @@ class JobMutation:
                 return JobType.marshal(job)
             case _ as unreachable:
                 assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreateJobApplicantResumePresignedURLPayloadType,
+        description="Create a presigned URL for a job applicant's resume.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def create_job_applicant_resume_presigned_url(
+        self,
+        job_applicant_service: Annotated[JobApplicantService, Inject],
+    ) -> CreateJobApplicantResumePresignedURLPayloadType:
+        """Create a job applicant resume presigned url."""
+        result = await job_applicant_service.create_resume_presigned_url()
+        return CreateJobApplicantResumePresignedURLPayloadType(presigned_url=result)

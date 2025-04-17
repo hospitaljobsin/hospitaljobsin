@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from typing import Literal
 
@@ -5,9 +6,11 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from geopy.geocoders.base import Geocoder
 from result import Err, Ok, Result
+from types_aiobotocore_s3 import S3Client
 
 from app.accounts.documents import Account
 from app.base.models import GeoObject
+from app.config import Settings
 from app.jobs.documents import (
     ApplicantField,
     ApplicationField,
@@ -393,16 +396,21 @@ class JobApplicantService:
         job_repo: JobRepo,
         job_application_repo: JobApplicantRepo,
         organization_member_service: OrganizationMemberService,
+        s3_client: S3Client,
+        settings: Settings,
     ) -> None:
         self._job_repo = job_repo
         self._organization_member_service = organization_member_service
         self._job_application_repo = job_application_repo
+        self._s3_client = s3_client
+        self._settings = settings
 
     async def create(
         self,
         account: Account,
         job_id: str,
         applicant_fields: list[ApplicantField],
+        resume_url: str,
     ) -> Result[
         JobApplicant,
         JobNotFoundError
@@ -437,6 +445,19 @@ class JobApplicantService:
             job=existing_job,
             account=account,
             applicant_fields=applicant_fields,
+            resume_url=resume_url,
         )
 
         return Ok(job_application)
+
+    async def create_resume_presigned_url(self) -> str:
+        """Create a presigned URL for uploading a resume."""
+        return await self._s3_client.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": self._settings.s3_bucket_name,
+                "Key": f"applicant-resumes/{uuid.uuid4()}",
+            },
+            ExpiresIn=3600,
+            HttpMethod="PUT",
+        )

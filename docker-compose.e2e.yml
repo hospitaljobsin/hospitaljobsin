@@ -22,7 +22,7 @@ services:
       SERVER_EMAIL_FROM: 'noreply@example.com'
       SERVER_APP_URL: "http://localhost:3000"
       SERVER_RECAPTCHA_SECRET_KEY: "dummy_key"
-      SERVER_S3_AVATAR_BUCKET_NAME: "avatars"
+      SERVER_S3_BUCKET_NAME: "medicaljobs"
       SERVER_ACCOUNTS_BASE_URL: "http://localhost:5002"
       SERVER_RP_ID: 'localhost'
       SERVER_RP_NAME: 'Starter'

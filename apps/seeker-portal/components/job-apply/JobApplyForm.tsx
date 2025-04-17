@@ -1,6 +1,8 @@
 import type { JobApplyFormFragment$key } from "@/__generated__/JobApplyFormFragment.graphql";
 import type { JobApplyFormMutation } from "@/__generated__/JobApplyFormMutation.graphql";
+import type { JobApplyFormResumePresignedUrlMutation } from "@/__generated__/JobApplyFormResumePresignedUrlMutation.graphql";
 import links from "@/lib/links";
+import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next/app";
 import { Button, Card, CardFooter, Input, addToast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,9 +31,17 @@ const JobApplyFormFragment = graphql`
   }
 `;
 
+const CreateJobApplicantResumePresignedUrlMutation = graphql`
+mutation JobApplyFormResumePresignedUrlMutation {
+	createJobApplicantResumePresignedUrl {
+		presignedUrl
+	}
+}
+`;
+
 const CreateJobApplicantMutation = graphql`
-  mutation JobApplyFormMutation($jobId: ID!, $applicantFields: [ApplicantFieldInput!]!) {
-    createJobApplication(jobId: $jobId, applicantFields: $applicantFields) {
+  mutation JobApplyFormMutation($jobId: ID!, $applicantFields: [ApplicantFieldInput!]!, $resumeUrl: String!) {
+    createJobApplication(jobId: $jobId, applicantFields: $applicantFields, resumeUrl: $resumeUrl) {
       __typename
       ... on CreateJobApplicantSuccess {
         __typename
@@ -67,6 +77,9 @@ const formSchema = z.object({
 			fieldValue: z.string().min(1, "This field is required"),
 		}),
 	),
+	resume: z
+		.instanceof(File)
+		.refine((file) => file && file.size > 0, "Resume is required"),
 });
 
 export default function JobApplyForm({
@@ -79,16 +92,48 @@ export default function JobApplyForm({
 	const [commitMutation, isMutationInFlight] =
 		useMutation<JobApplyFormMutation>(CreateJobApplicantMutation);
 
+	const [
+		commitCreateJobApplicantResumePresignedUrlMutation,
+		isCreateJobApplicantResumePresignedUrlMutationInflight,
+	] = useMutation<JobApplyFormResumePresignedUrlMutation>(
+		CreateJobApplicantResumePresignedUrlMutation,
+	);
+
 	const {
 		handleSubmit,
 		register,
+		setValue,
 		formState: { errors, isSubmitting },
+		setError,
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 	});
 
+	async function getPresignedUrl(): Promise<string | null> {
+		return new Promise((resolve, reject) => {
+			commitCreateJobApplicantResumePresignedUrlMutation({
+				variables: {},
+				onCompleted: (response) => {
+					resolve(
+						response.createJobApplicantResumePresignedUrl?.presignedUrl || null,
+					);
+				},
+				onError: (error) => {
+					console.error("Error fetching presigned URL:", error);
+					reject(error);
+				},
+			});
+		});
+	}
+
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		// Handle form submission
+		const presignedUrl = await getPresignedUrl();
+		if (!presignedUrl) {
+			setError("resume", { message: "Could not get upload URL. Try again." });
+			return;
+		}
+		await uploadFileToS3(presignedUrl, values.resume);
+		const resumeUrlResult = presignedUrl.split("?")[0];
 		commitMutation({
 			variables: {
 				jobId: data.id,
@@ -96,22 +141,15 @@ export default function JobApplyForm({
 					fieldName: data.applicationForm?.fields[index].fieldName || "",
 					fieldValue: field.fieldValue,
 				})),
+				resumeUrl: resumeUrlResult,
 			},
 			onCompleted(response) {
 				if (
 					response.createJobApplication.__typename ===
 					"CreateJobApplicantSuccess"
 				) {
-					// Handle success
 					router.push(links.jobDetail(data.organization.slug, data.slug));
-				} else if (
-					response.createJobApplication.__typename === "JobNotFoundError" ||
-					response.createJobApplication.__typename === "JobNotPublishedError" ||
-					response.createJobApplication.__typename ===
-						"JobApplicantAlreadyExistsError" ||
-					response.createJobApplication.__typename === "JobIsExternalError"
-				) {
-					// Handle job not found error
+				} else {
 					addToast({
 						description: "An unexpected error occurred. Please try again.",
 						color: "danger",
@@ -138,11 +176,27 @@ export default function JobApplyForm({
 				{data.organization.name}
 			</div>
 			<Card className="p-6" shadow="none">
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-					{data.applicationForm?.fields.map((field, index) => (
-						<div key={field.fieldName} className="flex flex-col gap-2">
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
+					<Input
+						type="file"
+						label="Resume"
+						labelPlacement="outside"
+						accept="application/pdf,.doc,.docx"
+						required
+						onChange={(e) => {
+							if (e.target.files && e.target.files.length > 0) {
+								setValue("resume", e.target.files[0]);
+							}
+						}}
+						errorMessage={errors.resume?.message}
+						isInvalid={!!errors.resume}
+					/>
+					<div className="flex flex-col gap-6">
+						<h2 className="text-sm">Screening Questions</h2>
+						{data.applicationForm?.fields.map((field, index) => (
 							<Input
 								type="text"
+								key={field.fieldName}
 								label={field.fieldName}
 								labelPlacement="outside"
 								isRequired={
@@ -157,8 +211,8 @@ export default function JobApplyForm({
 								isInvalid={!!errors.applicantFields?.[index]?.fieldValue}
 								{...register(`applicantFields.${index}.fieldValue`)}
 							/>
-						</div>
-					))}
+						))}
+					</div>
 					<CardFooter className="w-full justify-end">
 						<Button
 							type="submit"

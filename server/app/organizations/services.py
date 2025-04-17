@@ -251,7 +251,7 @@ class OrganizationService:
         return await self._s3_client.generate_presigned_url(
             "put_object",
             Params={
-                "Bucket": self._settings.s3_avatar_bucket_name,
+                "Bucket": self._settings.s3_bucket_name,
                 "Key": f"org-logos/{uuid.uuid4()}",
             },
             ExpiresIn=3600,
