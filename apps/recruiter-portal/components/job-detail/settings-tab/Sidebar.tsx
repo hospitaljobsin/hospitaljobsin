@@ -60,7 +60,7 @@ export default function SettingsSidebar({
 							title={
 								<div className="flex items-center space-x-4">
 									<FileText size={20} />
-									<span>Application Form</span>
+									<span>Screening Questions</span>
 								</div>
 							}
 						/>
@@ -100,7 +100,7 @@ export default function SettingsSidebar({
 						title={
 							<div className="flex items-center space-x-4">
 								<FileText size={16} />
-								<span>Application Form</span>
+								<span>Screening Questions</span>
 							</div>
 						}
 					/>

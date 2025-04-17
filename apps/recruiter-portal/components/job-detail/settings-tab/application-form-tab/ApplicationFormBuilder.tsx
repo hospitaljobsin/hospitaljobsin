@@ -196,7 +196,7 @@ export default function ApplicationFormBuilder({
 	return (
 		<div className="w-full flex flex-col gap-6">
 			<h2 className="text-foreground-400 font-medium text-lg">
-				Update Application Form
+				Update Screening Questions
 			</h2>
 			<Card fullWidth className="p-6 space-y-6" shadow="none">
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -272,7 +272,7 @@ export default function ApplicationFormBuilder({
 					</CardBody>
 					<CardFooter className="w-full flex justify-end">
 						<Button color="primary" type="submit" isLoading={isSubmitting}>
-							Save Application Form
+							Save Changes
 						</Button>
 					</CardFooter>
 				</form>

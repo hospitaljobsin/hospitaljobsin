@@ -220,7 +220,7 @@ export default function JobDetails({
 			{showApplicationFormWarning ? (
 				<Alert
 					color="warning"
-					title="You need to set up an application form before publishing this job"
+					title="You need to set up screening questions before publishing this job"
 					variant="flat"
 					endContent={
 						<Button
@@ -232,7 +232,7 @@ export default function JobDetails({
 								params.jobSlug,
 							)}
 						>
-							Set up application form
+							Set up screening questions
 						</Button>
 					}
 				/>
