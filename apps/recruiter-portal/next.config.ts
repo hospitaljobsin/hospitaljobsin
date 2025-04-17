@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
 	experimental: {
 		mdxRs: true,
 	},
+	turbopack: {
+		resolveAlias: {
+			canvas: "./empty-module.ts",
+		},
+	},
 	reactStrictMode: true,
 	compiler: {
 		relay: {

@@ -181,7 +181,7 @@ export default function JobApplyForm({
 						type="file"
 						label="Resume"
 						labelPlacement="outside"
-						accept="application/pdf,.doc,.docx"
+						accept="application/pdf"
 						required
 						onChange={(e) => {
 							if (e.target.files && e.target.files.length > 0) {

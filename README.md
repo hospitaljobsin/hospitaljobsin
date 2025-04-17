@@ -1,16 +1,4 @@
-# TODO- seeker portal
-
-- each job application requires a different resume. but right now we have one centralized profile shared across all applications. this must be changed
-    (option to send specific resume for each job application)
-
-
-# TODO- recruiter portal
-
-- show applicant detail view
-    - show applicant's job seeker profile (after resolving the separate resume issue)
-
-
-future:
+# Future- TODO
 - ensure members can also create jobs, but they can only view and manage jobs they own.
 - ensure admins can view and edit all jobs, though.
 - add export applicants to XLSX button

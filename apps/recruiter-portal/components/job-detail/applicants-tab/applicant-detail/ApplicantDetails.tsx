@@ -1,4 +1,6 @@
+"use client";
 import type { ApplicantDetailsFragment$key } from "@/__generated__/ApplicantDetailsFragment.graphql";
+import PDFViewer from "@/components/pdf-viewer/PDFViewer";
 import { Card, CardBody, CardHeader, Chip, Divider, Link } from "@heroui/react";
 import { Mail, ShieldQuestion } from "lucide-react";
 import Image from "next/image";
@@ -8,6 +10,7 @@ import { graphql, useFragment } from "react-relay";
 const ApplicantDetailsFragment = graphql`
   fragment ApplicantDetailsFragment on JobApplicant {
 	status
+	resumeUrl
 	applicantFields {
 			fieldName
 			fieldValue
@@ -73,7 +76,7 @@ export default function ApplicantDetails({
 				<Card fullWidth shadow="none" className="p-6 space-y-6">
 					<CardHeader>
 						<h3 className="text-medium font-medium text-foreground-600">
-							Application Details
+							Screening Questions
 						</h3>
 					</CardHeader>
 					<Divider />
@@ -91,6 +94,24 @@ export default function ApplicantDetails({
 								</div>
 							))}
 						</div>
+					</CardBody>
+				</Card>
+			)}
+
+			{/* PDF Resume Viewer */}
+			{data.resumeUrl && (
+				<Card
+					fullWidth
+					shadow="none"
+					className="p-6 flex flex-col items-center bg-background"
+				>
+					<CardHeader>
+						<h3 className="text-medium font-medium text-foreground-600">
+							Resume
+						</h3>
+					</CardHeader>
+					<CardBody>
+						<PDFViewer file={data.resumeUrl} width={600} />
 					</CardBody>
 				</Card>
 			)}
