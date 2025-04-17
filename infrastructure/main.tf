@@ -6,6 +6,11 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+
+    mongodbatlas = {
+      source  = "mongodb/mongodbatlas"
+      version = "~> 1.33"
+    }
   }
 
   backend "remote" {
@@ -21,3 +26,6 @@ terraform {
 provider "aws" {
   region = var.region
 }
+
+# Configure the MongoDB Atlas Provider 
+provider "mongodbatlas" {}

@@ -16,3 +16,15 @@ variable "region" {
   description = "Location for all AWS resources."
   default     = "us-east-1"
 }
+
+
+variable "mongodb_atlas_region" {
+  type        = string
+  description = "MongoDB Atlas region."
+  default     = "US_EAST_1"
+}
+
+variable "mongodb_atlas_org_id" {
+  type        = string
+  description = "MongoDB Atlas organization ID."
+}
