@@ -6,7 +6,7 @@ import { unsign } from "./lib/session";
 const AUTHENTICATED_ROUTES = [
 	/\/saved(\/.*)?/,
 	/\/profile/,
-	/\/jobs\/[^/]+\/apply/,
+	/\/organizations\/[^/]+\/jobs\/[^/]+\/apply/,
 ];
 
 const ANONYMOUS_ROUTES: RegExp[] = [];

@@ -203,7 +203,6 @@ export default function JobDetails({
 				<CardHeader>
 					<div className="flex flex-col sm:flex-row w-full justify-between gap-4 items-start sm:items-center">
 						<h4 className="text-xl font-medium">{data.title}</h4>
-						{/* TODO: check for authentication before redirecting here */}
 						{data.externalApplicationUrl !== null ? (
 							<Button
 								as={Link}
