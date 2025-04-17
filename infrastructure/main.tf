@@ -6,11 +6,6 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
-
-    random = {
-      source  = "hashicorp/random"
-      version = ">= 3.0"
-    }
   }
 
   backend "remote" {
@@ -24,5 +19,5 @@ terraform {
 
 
 provider "aws" {
-  region = var.aws_region
+  region = var.region
 }
