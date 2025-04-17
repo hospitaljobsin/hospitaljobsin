@@ -1,5 +1,5 @@
-# PulseWork Accounts
-> *Accounts/ Authentication UI for PulseWork*
+# Hospital Jobs Accounts
+> *Accounts/ Authentication UI for Hospital Jobs*
 
 ## Tech Stack
 - [TypeScript](https://www.typescriptlang.org/) - Programming Language

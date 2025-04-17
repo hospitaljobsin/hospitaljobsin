@@ -1,5 +1,5 @@
-# PulseWork
-> *Job Seeker Platform UI for PulseWork*
+# Hospital Jobs
+> *Job Seeker Platform UI for Hospital Jobs*
 
 ## Tech Stack
 - [TypeScript](https://www.typescriptlang.org/) - Programming Language

@@ -1,5 +1,5 @@
-# PulseWork API
-> *GraphQL API Server Powering PulseWork*
+# Hospital Jobs API
+> *GraphQL API Server Powering Hospital Jobs*
 
 
 ## Tech Stack

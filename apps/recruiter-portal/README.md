@@ -1,5 +1,5 @@
-# PulseWork Recruiter
-> *Recruiter Platform UI for PulseWork*
+# Hospital Jobs Recruiter
+> *Recruiter Platform UI for Hospital Jobs*
 
 ## Tech Stack
 - [TypeScript](https://www.typescriptlang.org/) - Programming Language

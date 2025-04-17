@@ -1,5 +1,5 @@
 "use client";
-import { APP_NAME } from "@/lib/constants";
+import { COMPANY_NAME } from "@/lib/constants";
 import links from "@/lib/links";
 import { Link } from "@heroui/react";
 import Logo from "../Logo";
@@ -14,7 +14,7 @@ export default function Footer() {
 							<Logo className="text-foreground-500" size={18} />
 						</Link>
 						<p className="text-sm text-foreground-500">
-							© {new Date().getFullYear()} {APP_NAME}.
+							© {new Date().getFullYear()} {COMPANY_NAME}.
 						</p>
 					</div>
 					<div className="w-full flex items-center gap-4 justify-end">

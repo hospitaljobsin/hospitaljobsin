@@ -4,7 +4,7 @@ from typing import Literal
 
 SUPPORT_EMAIL = "support@example.com"
 
-APP_NAME = "PulseWork"
+APP_NAME = "Hospital Jobs"
 
 # pagination
 

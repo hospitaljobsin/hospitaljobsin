@@ -99,9 +99,9 @@ export default function OrganizationDetails({
 					</div>
 				</CardBody>
 			</Card>
-			<Card fullWidth className="p-6 space-y-6" shadow="none">
+			{/* <Card fullWidth className="p-6 space-y-6" shadow="none">
 				recent applications
-			</Card>
+			</Card> */}
 			<OrganizationStatistics organization={data} />
 		</div>
 	);
