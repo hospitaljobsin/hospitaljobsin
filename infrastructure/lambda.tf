@@ -106,7 +106,7 @@ resource "aws_lambda_function" "backend" {
       SERVER_HOST                 = "0.0.0.0"
       SERVER_PORT                 = "8000"
       SERVER_LOG_LEVEL            = "INFO"
-      SERVER_CORS_ALLOW_ORIGINS   = "['http://localhost:5000', 'http://localhost:5001', 'http://localhost:5002']"
+      SERVER_CORS_ALLOW_ORIGINS   = "[\"http://localhost:5000\", \"http://localhost:5001\", \"http://localhost:5002\"]"
       SERVER_GOOGLE_CLIENT_ID     = "XXX"
       SERVER_GOOGLE_CLIENT_SECRET = "XXX"
       SERVER_EMAIl_PROVIDER       = "aws_ses"
