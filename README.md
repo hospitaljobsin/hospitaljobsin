@@ -121,50 +121,81 @@ Click Next, name it optionally, and then click Create access key.
 Ensure the following policy is added to the user:
 ```
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ecr:CreateRepository",
-        "ecr:DescribeRepositories",
-        "iam:CreateRole",
-        "iam:GetRole",
-        "ses:VerifyDomainIdentity",
-        "secretsmanager:CreateSecret",
-        "secretsmanager:DescribeSecret", 
-        "s3:CreateBucket",
-        "s3:GetBucketCORS",
-        "geo:CreatePlaceIndex",
-        "geo:DescribePlaceIndex",
-        "ec2:AllocateAddress",
-        "ec2:DescribeAddresses",
-        "route53:CreateHostedZone",
-        "route53:GetHostedZone",
-        "ec2:CreateVpc",
-        "ec2:DescribeVpcs",
-        "acm:RequestCertificate",
-        "acm:DescribeCertificate",
-        "ses:VerifyEmailIdentity",
-        "ses:GetIdentityVerificationAttributes",
-        "lambda:createFunction"
-      ],
-      "Resource": "*"
-    },
-     {
-      "Effect": "Allow",
-      "Action": [
-        "apigateway:POST",
-        "apigateway:GET",
-        "apigateway:PUT",
-        "apigateway:DELETE",
-        "apigateway:PATCH"
-      ],
-      "Resource": "arn:aws:apigateway:*::/restapis*"
-    }
-  ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Action": [
+				"ecr:CreateRepository",
+				"ecr:DescribeRepositories",
+				"ecr:ListTagsForResource",
+				"ecr:GetRepositoryPolicy",
+				"iam:CreateRole",
+				"iam:GetRole",
+				"iam:ListRolePolicies",
+				"iam:ListAttachedRolePolicies",
+				"ses:VerifyDomainIdentity",
+				"ses:GetIdentityDkimAttributes",
+				"ses:VerifyEmailIdentity",
+				"ses:GetIdentityVerificationAttributes",
+				"secretsmanager:CreateSecret",
+				"secretsmanager:DescribeSecret",
+				"secretsmanager:GetResourcePolicy",
+				"s3:CreateBucket",
+				"s3:GetBucketCORS",
+				"geo:CreatePlaceIndex",
+				"geo:DescribePlaceIndex",
+				"acm:RequestCertificate",
+				"acm:DescribeCertificate",
+				"acm:ListTagsForCertificate",
+				"lambda:CreateFunction",
+				"ec2:CreateVpc",
+				"ec2:DescribeVpcs",
+				"ec2:DescribeVpcAttribute",
+				"ec2:AllocateAddress",
+				"ec2:DescribeAddresses",
+				"ec2:DescribeAddressesAttribute",
+				"ec2:CreateInternetGateway",
+				"ec2:AttachInternetGateway",
+				"ec2:DeleteInternetGateway",
+				"ec2:DescribeInternetGateways",
+				"ec2:CreateRouteTable",
+				"ec2:AssociateRouteTable",
+				"ec2:DeleteRouteTable",
+				"ec2:DescribeRouteTables",
+				"ec2:CreateRoute",
+				"ec2:DeleteRoute",
+				"ec2:CreateSecurityGroup",
+				"ec2:AuthorizeSecurityGroupIngress",
+				"ec2:AuthorizeSecurityGroupEgress",
+				"ec2:RevokeSecurityGroupIngress",
+				"ec2:RevokeSecurityGroupEgress",
+				"ec2:DeleteSecurityGroup",
+				"ec2:DescribeSecurityGroups",
+				"route53:CreateHostedZone",
+				"route53:GetHostedZone",
+				"route53:ListTagsForResource",
+				"route53:ListResourceRecordSets",
+				"iam:GetPolicy",
+				"ec2:DescribeSubnets",
+				"ec2:DescribeInternetGateways",
+				"ec2:DescribeSecurityGroups",
+				"ec2:DescribeRouteTables",
+				"ec2:DescribeVpcs",
+				"ec2:DescribeNatGateways",
+				"iam:GetPolicy",
+				"iam:GetPolicyVersion",
+				"apigateway:POST",
+				"apigateway:GET",
+				"apigateway:PUT",
+				"apigateway:DELETE",
+				"apigateway:PATCH",
+				"s3:PutBucketCORS"
+			],
+			"Resource": "*"
+		}
+	]
 }
-
 ```
 
 - save the access key ID and secret key in the environment variables
