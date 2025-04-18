@@ -9,8 +9,3 @@ resource "aws_secretsmanager_secret" "recaptcha_secret_key" {
 }
 
 
-resource "random_password" "dbuser_password" {
-  length  = 20
-  special = true
-
-}

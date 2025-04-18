@@ -42,7 +42,6 @@ resource "mongodbatlas_advanced_cluster" "this" {
 
 resource "mongodbatlas_database_user" "user" {
   username           = "${var.resource_prefix}-user"
-  password           = random_password.dbuser_password.result
   project_id         = mongodbatlas_project.project.id
   auth_database_name = "admin"
 
