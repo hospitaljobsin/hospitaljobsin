@@ -12,7 +12,9 @@ class Environment(StrEnum):
     production = "production"
 
 
-MongoSRVDsn = Annotated[MultiHostUrl, UrlConstraints(allowed_schemes=["mongodb+srv"])]
+MongoSRVDsn = Annotated[
+    MultiHostUrl, UrlConstraints(allowed_schemes=["mongodb+srv", "mongodb"])
+]
 
 
 class Settings(BaseSettings):

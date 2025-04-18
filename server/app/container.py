@@ -27,6 +27,7 @@ from app.auth.services import AuthService
 from app.config import Settings
 from app.core.aws_sdk import (
     create_aioboto3_session,
+    create_location_service_client,
     create_s3_client,
     create_ses_client,
 )
@@ -111,6 +112,7 @@ def register_location_service(container: aioinject.Container) -> None:
                 aioinject.Scoped(NominatimLocationService, BaseLocationService)
             )
         case "aws_location":
+            container.register(aioinject.Scoped(create_location_service_client))
             container.register(
                 aioinject.Singleton(AWSLocationService, BaseLocationService)
             )
