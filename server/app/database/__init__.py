@@ -1,7 +1,8 @@
 import urllib
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from urllib.parse import urlparse
+from shlex import quote
+from urllib.parse import urlparse, urlunparse
 
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -31,6 +32,31 @@ from app.organizations.documents import (
 )
 
 
+def percent_encode_uri(uri: str) -> str:
+    # Separate the URI into components
+    parsed_uri = urlparse(uri)
+
+    print(f"Original URI: {uri}")
+    print(f"Parsed URI: {parsed_uri}")
+
+    # Percent-encode the username and password if they exist
+    username = quote(parsed_uri.username) if parsed_uri.username else ""
+    password = quote(parsed_uri.password) if parsed_uri.password else ""
+
+    # Rebuild the URI with percent-encoded username and password
+    encoded_uri = parsed_uri._replace(
+        netloc=f"{username}:{password}@{parsed_uri.hostname}",
+        path=parsed_uri.path,
+        query=parsed_uri.query,
+        fragment=parsed_uri.fragment,
+    )
+
+    print(f"Encoded URI: {encoded_uri}")
+
+    # Rebuild the URI string
+    return urlunparse(encoded_uri)
+
+
 def rebuild_models() -> None:
     """Rebuild models to update forward references."""
     from app.accounts.documents import Account
@@ -58,7 +84,7 @@ async def initialize_database(
 ) -> AsyncGenerator[None, None]:
     """Initialize the database."""
     client: AsyncIOMotorClient = AsyncIOMotorClient(
-        urlparse(database_url),
+        urllib.parse.urlparse(database_url),
         connectTimeoutMS=1000,
         socketTimeoutMS=1000,
         serverSelectionTimeoutMS=1000,
