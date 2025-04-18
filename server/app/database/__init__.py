@@ -87,7 +87,7 @@ async def initialize_database(
 ) -> AsyncGenerator[None, None]:
     """Initialize the database."""
     client: AsyncIOMotorClient = AsyncIOMotorClient(
-        urllib.parse.urlparse(database_url),
+        database_url,
         connectTimeoutMS=1000,
         socketTimeoutMS=1000,
         serverSelectionTimeoutMS=1000,
