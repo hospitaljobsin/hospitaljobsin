@@ -102,10 +102,8 @@ resource "aws_lambda_function" "backend" {
   environment {
     variables = {
       SERVER_DEBUG                     = "false"
-      SERVER_ENVIRONMENT               = "development"
-      test                             = mongodbatlas_database_user.user.auth_database_name
-      DATABASE_URL                     = "mongodb://${mongodbatlas_database_user.user.username}:${mongodbatlas_database_user.user.password}@localhost:27017/${mongodbatlas_database_user.user.auth_database_name}"
-      SERVER_DATABASE_URL              = "mongodb://user:pass@localhost:27017/medical_jobs"
+      SERVER_ENVIRONMENT               = "production"
+      SERVER_DATABASE_URL              = "mongodb://${mongodbatlas_database_user.user.username}:${mongodbatlas_database_user.user.password}@localhost:27017/${var.mongodb_database_name}"
       SERVER_HOST                      = "0.0.0.0"
       SERVER_PORT                      = "8000"
       SERVER_LOG_LEVEL                 = "INFO"

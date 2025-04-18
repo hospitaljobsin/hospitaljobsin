@@ -14,7 +14,7 @@ COPY . .
 RUN uv sync --frozen
 
 # production stage
-FROM python:$PYTHON_BASE
+FROM python:$PYTHON_BASE AS development
 
 # Install curl
 RUN apt-get update && \
@@ -34,3 +34,26 @@ WORKDIR /project
 EXPOSE 8000
 
 CMD ["python", "scripts/run_server.py"]
+
+# Use the AWS Lambda Python 3.12 base image
+FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Set the working directory
+WORKDIR /project
+
+# Copy the application files
+COPY . .
+
+# Install dependencies
+RUN uv sync --frozen
+
+# Set environment variables for Python
+ENV PYTHONPATH="/project"
+ENV PATH="/project/.venv/bin:$PATH"
+
+ENTRYPOINT [ "python", "-m", "awslambdaric" ]
+
+# Set the Lambda handler
+CMD ["app.lambda_handler.handler"]
