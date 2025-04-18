@@ -73,5 +73,51 @@ tmuxinator start medical_jobs
 
 
 ## Cloud deployment
+
+### Prerequisites
+- [Install the MongoDB Atlas CLI](https://www.mongodb.com/docs/atlas/cli/current/install-atlas-cli/)
+- Copy the MongoDB Organization ID from the dashboard and store it in environment variables
+- Run the follow commands to generate API keys:
+    ```bash
+    atlas organizations apiKeys create --role ORG_OWNER --desc "My API Key" --orgId <ORG_ID> --output json
+    ```
+- Store the public key and private key in environment variables
+
+1. Log in to the AWS Management Console
+Go to https://console.aws.amazon.com/
+
+2. Go to the IAM Console
+In the search bar, type IAM, and open IAM (Identity and Access Management).
+
+3. Select a User or Create a New One
+Go to Users in the sidebar.
+
+Either:
+
+Click the user you want to use with Terraform.
+
+Or click "Add user" to create a new one.
+
+💡 For Terraform use, the user should ideally have Programmatic access only.
+
+4. Set Permissions
+You can:
+
+Attach existing policies directly (e.g., AdministratorAccess for testing, or fine-grained permissions for production).
+
+Or add to a group with the necessary policies.
+
+5. Create Access Keys
+Click on the user → Security credentials tab.
+
+Scroll down to Access keys section.
+
+Click Create access key.
+
+Choose Use access key for CLI, SDK, & API access.
+
+Click Next, name it optionally, and then click Create access key.
+
+- save the access key ID and secret key in the environment variables
 - run terraform apply
 - update GoDaddy's NS records to the Route 53 nameservers

@@ -11,13 +11,18 @@ terraform {
       source  = "mongodb/mongodbatlas"
       version = "~> 1.33"
     }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
+    }
   }
 
   backend "remote" {
     organization = "HospitalJobsIN"
 
     workspaces {
-      name = "medical-job-board"
+      name = "main"
     }
   }
 }

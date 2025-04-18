@@ -7,3 +7,10 @@ resource "aws_secretsmanager_secret" "recaptcha_secret_key" {
   name        = "recaptcha/secret-key"
   description = "Google reCAPTCHA secret key"
 }
+
+
+resource "random_password" "dbuser_password" {
+  length  = 20
+  special = true
+
+}

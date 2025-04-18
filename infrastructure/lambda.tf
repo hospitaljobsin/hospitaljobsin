@@ -56,7 +56,7 @@ resource "aws_iam_policy" "lambda_custom_policy" {
           "geo:SearchPlaceIndexForPosition",
         ],
         Resource = [
-          aws_location_place_index.this.arn
+          aws_location_place_index.this.index_arn
         ]
       }
     ]
@@ -94,8 +94,8 @@ resource "aws_lambda_function" "backend" {
 
   # VPC Configuration
   vpc_config {
-    subnet_ids         = aws_subnet.private.*.id        # Use private subnets here
-    security_group_ids = [aws_security_group.lambda.id] # Security group for Lambda
+    subnet_ids         = values(aws_subnet.private)[*].id # Use private subnets here
+    security_group_ids = [aws_security_group.lambda.id]   # Security group for Lambda
   }
 
   environment {
@@ -106,14 +106,14 @@ resource "aws_lambda_function" "backend" {
       SERVER_HOST                 = "0.0.0.0"
       SERVER_PORT                 = "8000"
       SERVER_LOG_LEVEL            = "INFO"
-      SERVER_CORS_ALLOW_ORIGINS   = ["http://localhost:5000", "http://127.0.0.1:5000", "http://localhost:5001", "http://127.0.0.1:5001", "http://localhost:5002", "http://127.0.0.1:5002"]
+      SERVER_CORS_ALLOW_ORIGINS   = "['http://localhost:5000', 'http://localhost:5001', 'http://localhost:5002']"
       SERVER_GOOGLE_CLIENT_ID     = "XXX"
       SERVER_GOOGLE_CLIENT_SECRET = "XXX"
       SERVER_EMAIl_PROVIDER       = "aws_ses"
-      SERVER_EMAIL_FROM           = aws_ses_email_identity.sender.email
+      SERVER_EMAIL_FROM           = aws_ses_email_identity.this.email
       # TODO: pass ARN and fetch from Secrets Manager
       SERVER_RECAPTCHA_SECRET_KEY      = "XXX"
-      SERVER_S3_BUCKET_NAME            = data.aws_s3_bucket.this.bucket
+      SERVER_S3_BUCKET_NAME            = aws_s3_bucket.this.bucket
       SERVER_ACCOUNTS_BASE_URL         = "https://accounts.${var.domain_name}"
       SERVER_RECRUITER_PORTAL_BASE_URL = "https://recruiter.${var.domain_name}"
       SERVER_SEEKER_PORTAL_BASE_URL    = "https://${var.domain_name}"

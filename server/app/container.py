@@ -104,13 +104,18 @@ def register_location_service(container: aioinject.Container) -> None:
     with container.sync_context() as ctx:
         settings = ctx.resolve(Settings)
 
-    if settings.geocoder_domain:
-        container.register(aioinject.Scoped(create_nominatim_geocoder))
-        container.register(
-            aioinject.Scoped(NominatimLocationService, BaseLocationService)
-        )
-    else:
-        container.register(aioinject.Singleton(AWSLocationService, BaseLocationService))
+    match settings.geocoding_provider:
+        case "nominatim":
+            container.register(aioinject.Scoped(create_nominatim_geocoder))
+            container.register(
+                aioinject.Scoped(NominatimLocationService, BaseLocationService)
+            )
+        case "aws_location":
+            container.register(
+                aioinject.Singleton(AWSLocationService, BaseLocationService)
+            )
+        case _ as unreachable:
+            assert_never(unreachable)
 
 
 @lru_cache
