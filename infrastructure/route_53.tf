@@ -30,6 +30,13 @@ resource "aws_route53_record" "api_cert_validation" {
 resource "aws_acm_certificate_validation" "api_cert" {
   certificate_arn         = aws_acm_certificate.api_cert.arn
   validation_record_fqdns = [for record in aws_route53_record.api_cert_validation : record.fqdn]
+
+  depends_on = [aws_route53_record.api_cert_validation]
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = [validation_record_fqdns]
+  }
 }
 
 
