@@ -35,31 +35,6 @@ from app.organizations.documents import (
 logger = get_logger()
 
 
-def percent_encode_uri(uri: str) -> str:
-    # Separate the URI into components
-    parsed_uri = urlparse(uri)
-
-    logger.info(f"Original URI: {uri}")
-    logger.info(f"Parsed URI: {parsed_uri}")
-
-    # Percent-encode the username and password if they exist
-    username = quote(parsed_uri.username) if parsed_uri.username else ""
-    password = quote(parsed_uri.password) if parsed_uri.password else ""
-
-    # Rebuild the URI with percent-encoded username and password
-    encoded_uri = parsed_uri._replace(
-        netloc=f"{username}:{password}@{parsed_uri.hostname}",
-        path=parsed_uri.path,
-        query=parsed_uri.query,
-        fragment=parsed_uri.fragment,
-    )
-
-    logger.info(f"Encoded URI: {encoded_uri}")
-
-    # Rebuild the URI string
-    return urlunparse(encoded_uri)
-
-
 def rebuild_models() -> None:
     """Rebuild models to update forward references."""
     from app.accounts.documents import Account

@@ -1,7 +1,8 @@
 from enum import StrEnum
 from typing import Annotated, Literal
 
-from pydantic import Field, MongoDsn, SecretStr
+from pydantic import Field, SecretStr, UrlConstraints
+from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -9,6 +10,9 @@ class Environment(StrEnum):
     development = "development"
     testing = "testing"
     production = "production"
+
+
+MongoSRVDsn = Annotated[MultiHostUrl, UrlConstraints(allowed_schemes=["mongodb+srv"])]
 
 
 class Settings(BaseSettings):
@@ -59,7 +63,7 @@ class Settings(BaseSettings):
     # database config
 
     database_url: Annotated[
-        MongoDsn,
+        MongoSRVDsn,
         Field(
             examples=[
                 "mongodb://localhost:27017/medical-jobs",
