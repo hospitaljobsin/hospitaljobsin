@@ -1,5 +1,5 @@
 resource "mongodbatlas_project" "project" {
-  name   = "project-name"
+  name   = "${var.resource_prefix}-project"
   org_id = var.mongodb_atlas_org_id
 
   limits {
@@ -10,12 +10,6 @@ resource "mongodbatlas_project" "project" {
   limits {
     name  = "atlas.project.deployment.nodesPerPrivateLinkRegion"
     value = 3
-  }
-  tags = {
-    Owner       = "Terraform"
-    Environment = "Example"
-    Team        = "tf-experts"
-    CurrentDRI  = "unset"
   }
   lifecycle {
     ignore_changes = [
@@ -32,4 +26,35 @@ resource "mongodbatlas_flex_cluster" "example-cluster" {
     region_name           = var.mongodb_atlas_region
   }
   termination_protection_enabled = true
+}
+
+
+resource "mongodbatlas_database_user" "user" {
+  username           = var.dbuser
+  password           = var.dbuser_password
+  project_id         = mongodbatlas_project.project.id
+  auth_database_name = "admin"
+
+  roles {
+    role_name     = "readWrite"
+    database_name = var.mongodb_database_name # The database name and collection name need not exist in the cluster before creating the user.
+  }
+  labels {
+    key   = "Name"
+    value = "DB User1"
+  }
+}
+
+
+resource "mongodbatlas_privatelink_endpoint" "pe_east" {
+  project_id    = mongodbatlas_project.project.id
+  provider_name = "AWS"
+  region        = var.region
+}
+
+resource "mongodbatlas_privatelink_endpoint_service" "pe_east_service" {
+  project_id          = mongodbatlas_privatelink_endpoint.pe_east.project_id
+  private_link_id     = mongodbatlas_privatelink_endpoint.pe_east.id
+  endpoint_service_id = aws_vpc_endpoint.vpce_east.id
+  provider_name       = "AWS"
 }

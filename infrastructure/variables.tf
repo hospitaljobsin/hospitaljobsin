@@ -9,7 +9,6 @@ variable "resource_prefix" {
   default     = "hj"
 }
 
-
 variable "region" {
   type        = string
   description = "Location for all AWS resources."
@@ -26,4 +25,11 @@ variable "mongodb_atlas_region" {
 variable "mongodb_atlas_org_id" {
   type        = string
   description = "MongoDB Atlas organization ID."
+}
+
+
+variable "mongodb_database_name" {
+  type        = string
+  description = "MongoDB database name."
+  default     = "medical_jobs"
 }

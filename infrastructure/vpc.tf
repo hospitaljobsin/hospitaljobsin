@@ -118,3 +118,13 @@ resource "aws_route" "private_nat_gateway" {
     create = "5m"
   }
 }
+
+
+resource "aws_vpc_endpoint" "vpce_east" {
+  vpc_id            = aws_vpc.this.id
+  service_name      = mongodbatlas_privatelink_endpoint.pe_east.endpoint_service_name
+  vpc_endpoint_type = "Interface"
+
+  subnet_ids         = aws_subnet.private.*.id
+  security_group_ids = [aws_security_group.lambda.id]
+}

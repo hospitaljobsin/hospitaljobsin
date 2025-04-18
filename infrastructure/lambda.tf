@@ -101,14 +101,36 @@ resource "aws_lambda_function" "backend" {
 
   environment {
     variables = {
-      #   BOTO3_REGION         = var.region
-      #   BOTO3_S3_BUCKET_NAME = aws_s3_bucket.this.id
-      #   DEBUG                = "False"
-      #   CLOUD_PLATFORM       = "aws"
-      #   APP_OPENAPI_URL      = "/openapi.json"
-      SERVER_HOST = "0.0.0.0"
-      SERVER_PORT = "8000"
-      #   LOGGING_LEVEL        = "info"
+      SERVER_DEBUG                     = "false"
+      SERVER_ENVIRONMENT               = "development"
+      test                             = mongodbatlas_database_user.user.auth_database_name
+      DATABASE_URL                     = "mongodb://${mongodbatlas_database_user.user.username}:${mongodbatlas_database_user.user.password}@localhost:27017/${mongodbatlas_database_user.user.auth_database_name}"
+      SERVER_DATABASE_URL              = "mongodb://user:pass@localhost:27017/medical_jobs"
+      SERVER_HOST                      = "0.0.0.0"
+      SERVER_PORT                      = "8000"
+      SERVER_LOG_LEVEL                 = "INFO"
+      SERVER_CORS_ALLOW_ORIGINS        = ["http://localhost:5000", "http://127.0.0.1:5000", "http://localhost:5001", "http://127.0.0.1:5001", "http://localhost:5002", "http://127.0.0.1:5002"]
+      SERVER_GOOGLE_CLIENT_ID          = "54903425274-ru25bg9cvfrbsms789vcse41sdpe0ku0.apps.googleusercontent.com"
+      SERVER_GOOGLE_CLIENT_SECRET      = "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"
+      SERVER_EMAIL_HOST                = "localhost"
+      SERVER_EMAIL_PORT                = "1025"
+      SERVER_EMAIL_USERNAME            = ""
+      SERVER_EMAIL_PASSWORD            = ""
+      SERVER_EMAIL_FROM                = "noreply@example.com"
+      SERVER_APP_URL                   = "http://localhost:3000"
+      SERVER_RECAPTCHA_SECRET_KEY      = "6LfYvMQqAAAAAE4n1S3dCQAmJoyfIaufnRJ4EXBy"
+      SERVER_S3_BUCKET_NAME            = "medicaljobs"
+      SERVER_ACCOUNTS_BASE_URL         = "http://localhost:5002"
+      SERVER_RECRUITER_PORTAL_BASE_URL = "http://localhost:5001"
+      SERVER_RP_ID                     = "localhost"
+      SERVER_RP_NAME                   = "Starter"
+      SERVER_RP_EXPECTED_ORIGIN        = "http://localhost:5002"
+      SERVER_JWE_SECRET_KEY            = "ca07d5f965a534ffb07d1699e30385a6"
+      SERVER_AWS_ENDPOINT_URL          = "http://localhost:9000"
+      SERVER_AWS_SECRET_ACCESS_KEY     = "minio-secret-key"
+      SERVER_AWS_ACCESS_KEY_ID         = "minio-access-key"
+      SERVER_GEOCODER_DOMAIN           = "localhost:8080"
+      SERVER_GEOCODER_USER_AGENT       = "medical-jobs-server"
     }
   }
 
