@@ -44,6 +44,7 @@ dev-dependencies = [
     "ruff>=0.11.2",
     "pyright>=1.1.397",
     "types-aiobotocore-ses>=2.21.1",
+    "types-aiobotocore-location>=2.21.1",
 ]
 
 [tool.pyright]

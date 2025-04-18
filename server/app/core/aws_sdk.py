@@ -2,6 +2,7 @@ import contextlib
 from collections.abc import AsyncGenerator
 
 import aioboto3
+from types_aiobotocore_location import LocationServiceClient
 from types_aiobotocore_s3 import S3Client
 from types_aiobotocore_ses import SESClient
 
@@ -33,6 +34,15 @@ async def create_s3_client(
 async def create_ses_client(
     session: aioboto3.Session,
 ) -> AsyncGenerator[SESClient, None]:
-    """Create an S3 client."""
+    """Create an SES client."""
     async with session.client("ses") as ses_client:
+        yield ses_client
+
+
+@contextlib.asynccontextmanager
+async def create_location_service_client(
+    session: aioboto3.Session,
+) -> AsyncGenerator[LocationServiceClient, None]:
+    """Create a location service client."""
+    async with session.client("geo-places") as ses_client:
         yield ses_client

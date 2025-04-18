@@ -36,12 +36,16 @@ from app.core.emails import (
     SMTPEmailSender,
     create_smtp_client,
 )
-from app.core.geocoding import create_geocoder
+from app.core.geocoding import (
+    AWSLocationService,
+    BaseLocationService,
+    NominatimLocationService,
+    create_nominatim_geocoder,
+)
 from app.core.oauth import create_oauth_client
 from app.core.recaptcha import create_recaptcha_verifier
 from app.core.templates import create_jinja2_environment
 from app.dataloaders import create_dataloaders
-from app.geocoding.services import GeocodingService
 from app.jobs.dataloaders import (
     create_applicant_count_by_job_id_dataloader,
     create_job_applicant_by_id_dataloader,
@@ -96,18 +100,30 @@ def register_email_sender(container: aioinject.Container) -> None:
             assert_never(unreachable)
 
 
+def register_location_service(container: aioinject.Container) -> None:
+    with container.sync_context() as ctx:
+        settings = ctx.resolve(Settings)
+
+    if settings.geocoder_domain:
+        container.register(aioinject.Scoped(create_nominatim_geocoder))
+        container.register(
+            aioinject.Scoped(NominatimLocationService, BaseLocationService)
+        )
+    else:
+        container.register(aioinject.Singleton(AWSLocationService, BaseLocationService))
+
+
 @lru_cache
 def create_container() -> aioinject.Container:
     container = aioinject.Container()
     container.register(aioinject.Object(Settings()))  # type: ignore[arg-type]
     container.register(aioinject.Singleton(create_jinja2_environment))
     register_email_sender(container)
+    register_location_service(container)
     container.register(aioinject.Scoped(create_aioboto3_session))
     container.register(aioinject.Scoped(create_s3_client))
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_recaptcha_verifier))
-    container.register(aioinject.Singleton(create_geocoder))
-    container.register(aioinject.Scoped(GeocodingService))
     container.register(aioinject.Scoped(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
     container.register(aioinject.Scoped(AuthService))

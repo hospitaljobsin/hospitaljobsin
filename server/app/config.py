@@ -178,6 +178,8 @@ class Settings(BaseSettings):
     password_reset_token_cooldown: int = 60 * 3
 
     # geocoder config
+    geocoding_provider: Literal["nominatim", "aws"] = "nominatim"
+
     geocoder_domain: str
 
     geocoder_user_agent: str
@@ -244,5 +246,16 @@ class Settings(BaseSettings):
             if email_password is not None:
                 raise ValueError(
                     "email_password must be None when email_provider is ses"
+                )
+
+        geocoding_provider = values.get("geocoding_provider")
+        if geocoding_provider == "nominatim":
+            if not values.get("geocoder_domain"):
+                raise ValueError(
+                    "geocoder_domain is required when geocoding_provider is nominatim"
+                )
+            if not values.get("geocoder_user_agent"):
+                raise ValueError(
+                    "geocoder_user_agent is required when geocoding_provider is nominatim"
                 )
         return values

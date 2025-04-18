@@ -8,12 +8,12 @@ import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.operators import And, In, NearSphere, Set
 from bson import ObjectId
-from geopy.geocoders.base import Geocoder
 from strawberry.relay import PageInfo
 
 from app.accounts.documents import Account
 from app.base.models import GeoObject
 from app.core.constants import JobApplicantStatus, JobMetricEventType
+from app.core.geocoding import BaseLocationService
 from app.database.paginator import PaginatedResult, Paginator
 from app.organizations.documents import Organization
 
@@ -30,8 +30,8 @@ from .documents import (
 
 
 class JobRepo:
-    def __init__(self, geocoder: Geocoder) -> None:
-        self._geocoder = geocoder
+    def __init__(self, location_service: BaseLocationService) -> None:
+        self._location_service = location_service
 
     async def generate_slug(self, title: str, organization_id: ObjectId) -> str:
         """Generate a slug from the job title."""
@@ -197,7 +197,7 @@ class JobRepo:
         if location:
             proximity_km = proximity_km or 1.0  # Default to 1 km if not provided
             # Geocode the location string to coordinates
-            geocoded_location = await self._geocoder.geocode(location)
+            geocoded_location = await self._location_service.geocode(location)
 
             if geocoded_location is None:
                 return PaginatedResult(

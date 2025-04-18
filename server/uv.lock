@@ -1287,6 +1287,7 @@ dev = [
     { name = "pyright" },
     { name = "ruff" },
     { name = "types-aioboto3", extra = ["essential"] },
+    { name = "types-aiobotocore-location" },
     { name = "types-aiobotocore-ses" },
     { name = "types-authlib" },
     { name = "types-passlib" },
@@ -1330,6 +1331,7 @@ dev = [
     { name = "pyright", specifier = ">=1.1.397" },
     { name = "ruff", specifier = ">=0.11.2" },
     { name = "types-aioboto3", extras = ["essential"], specifier = ">=13.4.0" },
+    { name = "types-aiobotocore-location", specifier = ">=2.21.1" },
     { name = "types-aiobotocore-ses", specifier = ">=2.21.1" },
     { name = "types-authlib", specifier = ">=1.4.0.20241230" },
     { name = "types-passlib", specifier = ">=1.7.7.20241221" },
@@ -1515,6 +1517,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/77/e6/49c67d4db5ebc93accf991cdc11e1a3f2b97f8fa724a836fe008af41983e/types_aiobotocore_lambda-2.21.1.tar.gz", hash = "sha256:9a64cff10888ad268fc9c3df9f2db22f64023a6a53d38ab1cc053427fe513e46", size = 41619 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/16/e6/4963ba602d8375c3529829caf31b2fc9810054fd1c2f8fcd25575b761d20/types_aiobotocore_lambda-2.21.1-py3-none-any.whl", hash = "sha256:4444c2679774c0cadc59f84885bdbd3f704ba3f174170a5f86e292742f76159e", size = 48700 },
+]
+
+[[package]]
+name = "types-aiobotocore-location"
+version = "2.21.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/72/db/d05af86db5684feb4984264198fbeb067c157dd1ce5e0f021c2616388812/types_aiobotocore_location-2.21.1.tar.gz", hash = "sha256:7a653cb273d3288571e70630419d5ba25d17735121c40fb72623ea3489ce4825", size = 36138 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/a4/e5280735f4b9f5f6723ba128db0cfc33ceb6f288bbbb1f93c29717fac5f4/types_aiobotocore_location-2.21.1-py3-none-any.whl", hash = "sha256:24335b1f258805eb98f327d169faa51edc4dfe2eb7aa2a73af8c38b2211a4341", size = 40865 },
 ]
 
 [[package]]

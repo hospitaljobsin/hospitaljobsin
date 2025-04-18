@@ -4,7 +4,8 @@ import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
 
-from .services import GeocodingService
+from app.core.geocoding import BaseLocationService
+
 from .types import (
     SearchLocationsPayloadType,
     SearchLocationType,
@@ -20,7 +21,7 @@ class GeocodingQuery:
     @inject
     async def search_locations(
         self,
-        geocoding_service: Annotated[GeocodingService, Inject],
+        location_service: Annotated[BaseLocationService, Inject],
         search_term: Annotated[
             str,
             strawberry.argument(
@@ -34,7 +35,7 @@ class GeocodingQuery:
             ),
         ] = 5,
     ) -> SearchLocationsPayloadType:
-        results = await geocoding_service.get_locations(
+        results = await location_service.get_locations(
             search_term=search_term,
             limit=limit,
         )

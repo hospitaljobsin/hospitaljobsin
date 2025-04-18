@@ -4,13 +4,13 @@ from typing import Literal
 
 from bson import ObjectId
 from bson.errors import InvalidId
-from geopy.geocoders.base import Geocoder
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
 from app.accounts.documents import Account
 from app.base.models import GeoObject
 from app.config import Settings
+from app.core.geocoding import BaseLocationService
 from app.jobs.documents import (
     ApplicantField,
     ApplicationField,
@@ -88,14 +88,14 @@ class JobService:
         organization_member_service: OrganizationMemberService,
         job_application_form_repo: JobApplicationFormRepo,
         job_metric_repo: JobMetricRepo,
-        geocoder: Geocoder,
+        location_service: BaseLocationService,
     ) -> None:
         self._job_repo = job_repo
         self._organization_repo = organization_repo
         self._organization_member_service = organization_member_service
         self._job_application_form_repo = job_application_form_repo
         self._job_metric_repo = job_metric_repo
-        self._geocoder = geocoder
+        self._location_service = location_service
 
     async def log_view(
         self, slug: str, organization_slug: str
@@ -156,7 +156,7 @@ class JobService:
 
         geo = None
         if location is not None:
-            result = await self._geocoder.geocode(location)
+            result = await self._location_service.geocode(location)
             if result is not None:
                 geo = GeoObject(
                     coordinates=(result.longitude, result.latitude),
@@ -220,7 +220,7 @@ class JobService:
 
         geo = None
         if location is not None:
-            result = await self._geocoder.geocode(location)
+            result = await self._location_service.geocode(location)
             if result is not None:
                 geo = GeoObject(
                     coordinates=(result.longitude, result.latitude),
