@@ -67,6 +67,8 @@ class Settings(BaseSettings):
         ),
     ]
 
+    default_database_name: str = "medicaljobs"
+
     # session cookies config
 
     session_user_cookie_name: str = "user_session"

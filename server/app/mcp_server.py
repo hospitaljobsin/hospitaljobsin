@@ -16,7 +16,10 @@ from app.database import initialize_database
 async def server_lifespan(_server: Server) -> AsyncGenerator[None, None]:
     """Initialize the database when the server starts."""
     settings = Settings()  # type: ignore[call-arg]
-    async with initialize_database(database_url=str(settings.database_url)):
+    async with initialize_database(
+        database_url=str(settings.database_url),
+        default_database_name=settings.default_database_name,
+    ) as _:
         yield
 
 

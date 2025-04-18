@@ -62,7 +62,10 @@ def add_middleware(app: FastAPI, settings: Settings) -> None:
 async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     """Initialize the database when the app starts."""
     settings = Settings()  # type: ignore[call-arg]
-    async with initialize_database(database_url=str(settings.database_url)):
+    async with initialize_database(
+        database_url=str(settings.database_url),
+        default_database_name=settings.database_name,
+    ) as _:
         yield
 
 

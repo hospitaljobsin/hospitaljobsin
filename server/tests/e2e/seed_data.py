@@ -13,6 +13,7 @@ async def setup_test_database() -> None:
     settings = Settings()
     async with initialize_database(
         database_url=str(settings.database_url),
+        default_database_name=settings.default_database_name,
     ):
         # Create test data
         account_repo = AccountRepo()

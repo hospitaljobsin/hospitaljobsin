@@ -51,7 +51,9 @@ def rebuild_models() -> None:
 
 
 @asynccontextmanager
-async def initialize_database(database_url: str) -> AsyncGenerator[None, None]:
+async def initialize_database(
+    database_url: str, default_database_name: str
+) -> AsyncGenerator[None, None]:
     """Initialize the database."""
     client: AsyncIOMotorClient = AsyncIOMotorClient(
         database_url,
@@ -62,7 +64,7 @@ async def initialize_database(database_url: str) -> AsyncGenerator[None, None]:
     try:
         rebuild_models()
         await init_beanie(
-            database=client.get_default_database(default="medicaljobs"),
+            database=client.get_default_database(default=default_database_name),
             document_models=[
                 Job,
                 JobApplicant,
