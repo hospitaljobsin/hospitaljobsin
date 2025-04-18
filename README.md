@@ -147,7 +147,7 @@ Ensure the following policy is added to the user:
 				"acm:RequestCertificate",
 				"acm:DescribeCertificate",
 				"acm:ListTagsForCertificate",
-				"lambda:CreateFunction",
+				"lambda:*",
 				"ec2:CreateVpc",
 				"ec2:DescribeVpcs",
 				"ec2:DescribeVpcAttribute",
@@ -207,3 +207,11 @@ Ensure the following policy is added to the user:
 
 - run terraform apply
 - update GoDaddy's NS records to the Route 53 nameservers midway, to ensure certificate validation takes place
+
+- set the following Github actions secrets:
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+
+- set the following Github actions variables:
+    - AWS_REGION
+    - BACKEND_IMAGE_NAME
