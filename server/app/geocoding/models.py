@@ -2,8 +2,7 @@ from pydantic import BaseModel
 
 
 class SearchLocation(BaseModel):
-    latitude: float
-    longitude: float
+    place_id: str
     display_name: str
 
 

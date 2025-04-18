@@ -1857,11 +1857,8 @@ type SavedJobNotFoundError implements Error {
 
 """Search location entity."""
 type SearchLocation {
-  """Latitude of the location"""
-  latitude: Float!
-
-  """Longitude of the location"""
-  longitude: Float!
+  """Place ID of the location"""
+  placeId: String!
 
   """Display name of the location"""
   displayName: String!

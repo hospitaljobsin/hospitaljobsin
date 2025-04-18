@@ -178,11 +178,13 @@ class Settings(BaseSettings):
     password_reset_token_cooldown: int = 60 * 3
 
     # geocoder config
-    geocoding_provider: Literal["nominatim", "aws"] = "nominatim"
+    geocoding_provider: Literal["nominatim", "aws_location"] = "nominatim"
 
-    geocoder_domain: str
+    location_place_index_name: str | None = None
 
-    geocoder_user_agent: str
+    geocoder_domain: str | None = None
+
+    geocoder_user_agent: str | None = None
 
     geocoder_scheme: str = "http"
 
@@ -257,5 +259,10 @@ class Settings(BaseSettings):
             if not values.get("geocoder_user_agent"):
                 raise ValueError(
                     "geocoder_user_agent is required when geocoding_provider is nominatim"
+                )
+        elif geocoding_provider == "aws_location":
+            if not values.get("location_place_index_name"):
+                raise ValueError(
+                    "location_place_index_name is required when geocoding_provider is aws_location"
                 )
         return values

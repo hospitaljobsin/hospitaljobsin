@@ -44,5 +44,5 @@ async def create_location_service_client(
     session: aioboto3.Session,
 ) -> AsyncGenerator[LocationServiceClient, None]:
     """Create a location service client."""
-    async with session.client("geo-places") as ses_client:
-        yield ses_client
+    async with session.client("location") as location_client:
+        yield location_client

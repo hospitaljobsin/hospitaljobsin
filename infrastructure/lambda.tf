@@ -111,9 +111,9 @@ resource "aws_lambda_function" "backend" {
       SERVER_RP_NAME                   = var.app_name
       SERVER_RP_EXPECTED_ORIGIN        = "https://accounts.${var.domain_name}"
       # TODO: pass ARN and fetch from Secrets Manager
-      SERVER_JWE_SECRET_KEY      = "ca07d5f965a534ffb07d1699e30385a6"
-      SERVER_GEOCODER_DOMAIN     = "localhost:8080"
-      SERVER_GEOCODER_USER_AGENT = "medical-jobs-server"
+      SERVER_JWE_SECRET_KEY            = "ca07d5f965a534ffb07d1699e30385a6"
+      SERVER_GEOCODING_PROVIDER        = "aws_location"
+      SERVER_LOCATION_PLACE_INDEX_NAME = aws_location_place_index.this.index_name
     }
   }
 

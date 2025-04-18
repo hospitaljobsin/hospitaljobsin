@@ -10,11 +10,8 @@ from .models import SearchLocation
     description="Search location entity.",
 )
 class SearchLocationType:
-    latitude: float = strawberry.field(
-        description="Latitude of the location",
-    )
-    longitude: float = strawberry.field(
-        description="Longitude of the location",
+    place_id: str = strawberry.field(
+        description="Place ID of the location",
     )
     display_name: str = strawberry.field(
         description="Display name of the location",
@@ -23,8 +20,7 @@ class SearchLocationType:
     @classmethod
     def marshal(cls, data: SearchLocation) -> Self:
         return cls(
-            latitude=data.latitude,
-            longitude=data.longitude,
+            place_id=data.place_id,
             display_name=data.display_name,
         )
 

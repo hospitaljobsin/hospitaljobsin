@@ -1,3 +1,4 @@
+import uuid
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from http import HTTPStatus
@@ -9,6 +10,11 @@ from types_aiobotocore_location import LocationServiceClient
 
 from app.config import Settings
 from app.geocoding.models import GeocodeResult, SearchLocation
+
+
+def generate_place_id(text: str) -> str:
+    """Generate a place ID from the text."""
+    return text.replace(" ", "_").replace(",", "").lower() + uuid.uuid4().hex
 
 
 class BaseLocationService:
@@ -64,8 +70,11 @@ class NominatimLocationService(BaseLocationService):
                 data = response.json()
                 return [
                     SearchLocation(
-                        latitude=float(item.get("lat")),
-                        longitude=float(item.get("lon")),
+                        place_id=str(
+                            item.get(
+                                "place_id", generate_place_id(item["display_name"])
+                            )
+                        ),
                         display_name=item.get("display_name"),
                     )
                     for item in data
@@ -74,8 +83,11 @@ class NominatimLocationService(BaseLocationService):
 
 
 class AWSLocationService(BaseLocationService):
-    def __init__(self, location_client: LocationServiceClient) -> None:
+    def __init__(
+        self, location_client: LocationServiceClient, settings: Settings
+    ) -> None:
         self._location_client = location_client
+        self._settings = settings
 
     async def geocode(
         self,
@@ -84,7 +96,7 @@ class AWSLocationService(BaseLocationService):
         """Geocode a query using AWS LocationServiceClient."""
         # The operation is search_place_index_for_text for geocoding
         response = await self._location_client.search_place_index_for_text(
-            IndexName="YourPlaceIndexName",  # Replace with your AWS Place Index name
+            IndexName=self._settings.location_place_index_name,
             Text=query,
             MaxResults=1,
         )
@@ -99,23 +111,16 @@ class AWSLocationService(BaseLocationService):
 
     async def get_locations(self, search_term: str, limit: int) -> list[SearchLocation]:
         """Get relevant search locations for the given search term using AWS LocationServiceClient."""
-        response = await self._location_client.search_place_index_for_text(
-            IndexName="YourPlaceIndexName",  # Replace with your AWS Place Index name
+        response = await self._location_client.search_place_index_for_suggestions(
+            IndexName=self._settings.location_place_index_name,
             Text=search_term,
             MaxResults=limit,
         )
         results = response.get("Results", [])
-        locations = []
-        for item in results:
-            place = item.get("Place", {})
-            geometry = place.get("Geometry", {})
-            point = geometry.get("Point", None)
-            if point and place.get("Label") is not None:
-                locations.append(
-                    SearchLocation(
-                        latitude=point[1],
-                        longitude=point[0],
-                        display_name=place.get("Label"),
-                    )
-                )
-        return locations
+        return [
+            SearchLocation(
+                place_id=str(item.get("PlaceId", generate_place_id(item["Text"]))),
+                display_name=item["Text"],
+            )
+            for item in results
+        ]
