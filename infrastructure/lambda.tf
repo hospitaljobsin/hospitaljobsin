@@ -102,7 +102,7 @@ resource "aws_lambda_function" "backend" {
     variables = {
       SERVER_DEBUG                 = "false"
       SERVER_ENVIRONMENT           = "production"
-      SERVER_DATABASE_URL          = mongodbatlas_advanced_cluster.this.connection_strings.0.standard
+      SERVER_DATABASE_URL          = "${mongodbatlas_advanced_cluster.this.connection_strings.0.standard_srv}?authMechanism=MONGODB-AWS&authSource=admin"
       SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
       SERVER_HOST                  = "0.0.0.0"
       SERVER_PORT                  = "8000"

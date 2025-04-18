@@ -1093,6 +1093,24 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/7d/64/11d87df61cdca4fef90388af592247e17f3d31b15a909780f186d2739592/pymongo-4.11.3-cp313-cp313t-win_amd64.whl", hash = "sha256:07d40b831590bc458b624f421849c2b09ad2b9110b956f658b583fe01fe01c01", size = 987855 },
 ]
 
+[package.optional-dependencies]
+aws = [
+    { name = "pymongo-auth-aws" },
+]
+
+[[package]]
+name = "pymongo-auth-aws"
+version = "1.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "boto3" },
+    { name = "botocore" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c7/37/ca8d840f322f0047b71afcec7a489b1ea1f59a5f6d29f91ad8004024736f/pymongo_auth_aws-1.3.0.tar.gz", hash = "sha256:d0fa893958dc525ca29f601c34f2ca73c860f66bc6511ec0a7da6eb7ea44e94f", size = 18559 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f4/12/a997fc108416f31fac55748e5406c1c8c4e976a4073f07b5553825641611/pymongo_auth_aws-1.3.0-py3-none-any.whl", hash = "sha256:367f6d853da428a02e9e450422756133715d40f8141f47ae5d98f139a88c0ce5", size = 15470 },
+]
+
 [[package]]
 name = "pyopenssl"
 version = "25.0.0"
@@ -1291,7 +1309,7 @@ dependencies = [
     { name = "passlib", extra = ["argon2"] },
     { name = "pydantic" },
     { name = "pydantic-settings" },
-    { name = "pymongo" },
+    { name = "pymongo", extra = ["aws"] },
     { name = "pyotp" },
     { name = "python-jose", extra = ["cryptography"] },
     { name = "result" },
@@ -1336,7 +1354,7 @@ requires-dist = [
     { name = "passlib", extras = ["argon2"], specifier = ">=1.7.4" },
     { name = "pydantic", specifier = ">=2.10.2" },
     { name = "pydantic-settings", specifier = ">=2.6.1" },
-    { name = "pymongo", specifier = ">=4.9.2" },
+    { name = "pymongo", extras = ["aws"], specifier = ">=4.9.2" },
     { name = "pyotp", specifier = ">=2.9.0" },
     { name = "python-jose", extras = ["cryptography"], specifier = ">=3.4.0" },
     { name = "result", specifier = ">=0.17.0" },

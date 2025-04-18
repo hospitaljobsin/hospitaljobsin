@@ -45,8 +45,10 @@ resource "mongodbatlas_database_user" "user" {
   project_id         = mongodbatlas_project.project.id
   auth_database_name = "admin"
 
+  aws_iam_type = "ROLE"
+
   roles {
-    role_name     = "dbAdmin"                 # TODO: maybe restric the role to readWrite later, after figuring out how to init_database without it (or a custom role)
+    role_name     = "readWrite"               # "dbAdmin"                 # TODO: maybe restrict the role to readWrite later, after figuring out how to init_database without it (or a custom role)
     database_name = var.mongodb_database_name # The database name and collection name need not exist in the cluster before creating the user.
   }
 }
