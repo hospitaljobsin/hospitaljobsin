@@ -87,7 +87,7 @@ from app.core.constants import (
     PASSWORD_RESET_EXPIRES_IN,
     SUDO_MODE_EXPIRES_IN,
 )
-from app.core.emails import EmailSender
+from app.core.emails import BaseEmailSender
 from app.core.formatting import format_datetime
 from app.core.recaptcha import BaseRecaptchaVerifier
 
@@ -106,7 +106,7 @@ class AuthService:
         two_factor_authentication_challenge_repo: TwoFactorAuthenticationChallengeRepo,
         recovery_code_repo: RecoveryCodeRepo,
         temp_two_factor_challenge_repo: TemporaryTwoFactorChallengeRepo,
-        email_sender: EmailSender,
+        email_sender: BaseEmailSender,
         recaptcha_verifier: BaseRecaptchaVerifier,
         settings: Settings,
     ) -> None:

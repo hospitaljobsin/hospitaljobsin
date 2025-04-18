@@ -20,7 +20,7 @@ resource "aws_iam_role" "lambda_exec_role" {
 # Custom policy to allow access to S3, Textract, and Bedrock
 resource "aws_iam_policy" "lambda_custom_policy" {
   name        = "lambda_exec_custom_policy"
-  description = "Custom policy for Lambda to access S3 and Textract"
+  description = "Custom policy for Lambda to access S3 and SES"
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -40,11 +40,14 @@ resource "aws_iam_policy" "lambda_custom_policy" {
       {
         Effect = "Allow",
         Action = [
-          "textract:DetectDocumentText",
-          "textract:AnalyzeDocument",
-          "textract:GetDocumentTextDetection"
+          "ses:SendEmail",
+          "ses:SendRawEmail"
+          # optionally:
+          # "ses:SendTemplatedEmail"
         ],
         Resource = "*"
+        # Optional: restrict to verified identity
+        # Resource = "arn:aws:ses:<region>:<account-id>:identity/noreply@hospitaljobs.in"
       }
     ]
   })
@@ -96,11 +99,8 @@ resource "aws_lambda_function" "backend" {
       SERVER_CORS_ALLOW_ORIGINS   = ["http://localhost:5000", "http://127.0.0.1:5000", "http://localhost:5001", "http://127.0.0.1:5001", "http://localhost:5002", "http://127.0.0.1:5002"]
       SERVER_GOOGLE_CLIENT_ID     = "XXX"
       SERVER_GOOGLE_CLIENT_SECRET = "XXX"
-      SERVER_EMAIL_HOST           = "localhost"
-      SERVER_EMAIL_PORT           = "1025"
-      SERVER_EMAIL_USERNAME       = ""
-      SERVER_EMAIL_PASSWORD       = ""
-      SERVER_EMAIL_FROM           = "noreply@hospitaljobs.in"
+      SERVER_EMAIl_PROVIDER       = "ses"
+      SERVER_EMAIL_FROM           = aws_ses_email_identity.sender.email
       # TODO: pass ARN and fetch from Secrets Manager
       SERVER_RECAPTCHA_SECRET_KEY      = "XXX"
       SERVER_S3_BUCKET_NAME            = data.aws_s3_bucket.this.bucket

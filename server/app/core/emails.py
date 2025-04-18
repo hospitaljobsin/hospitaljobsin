@@ -4,6 +4,7 @@ from typing import Any
 
 from aiosmtplib import SMTP
 from jinja2 import Environment
+from types_aiobotocore_ses import SESClient
 
 from app.config import Settings
 
@@ -23,16 +24,14 @@ def create_smtp_client(settings: Settings) -> SMTP:
     )
 
 
-class EmailSender:
-    """Email sender class."""
+class BaseEmailSender:
+    """Base email sender class."""
 
     def __init__(
         self,
-        smtp_client: SMTP,
         environment: Environment,
         settings: Settings,
     ) -> None:
-        self._smtp_client = smtp_client
         self._environment = environment
         self._default_sender = settings.email_from
 
@@ -73,6 +72,33 @@ class EmailSender:
         html: str,
     ) -> None:
         """Send an email via SMTP."""
+        raise NotImplementedError
+
+
+class SMTPEmailSender(BaseEmailSender):
+    """SMTP Email sender class."""
+
+    def __init__(
+        self,
+        smtp_client: SMTP,
+        environment: Environment,
+        settings: Settings,
+    ) -> None:
+        super().__init__(
+            environment=environment,
+            settings=settings,
+        )
+        self._smtp_client = smtp_client
+
+    async def send_email(
+        self,
+        sender: str,
+        receiver: str,
+        subject: str,
+        text: str,
+        html: str,
+    ) -> None:
+        """Send an email via SMTP."""
         message = MIMEMultipart("alternative")
         message["From"] = sender
         message["To"] = receiver
@@ -82,3 +108,51 @@ class EmailSender:
 
         async with self._smtp_client:
             await self._smtp_client.send_message(message)
+
+
+class SESEmailSender(BaseEmailSender):
+    """SES Email sender class."""
+
+    def __init__(
+        self,
+        ses_client: SESClient,
+        environment: Environment,
+        settings: Settings,
+    ) -> None:
+        super().__init__(
+            environment=environment,
+            settings=settings,
+        )
+        self._ses_client = ses_client
+
+    async def send_email(
+        self,
+        sender: str,
+        receiver: str,
+        subject: str,
+        text: str,
+        html: str,
+    ) -> None:
+        """Send an email via SMTP."""
+        await self._ses_client.send_email(
+            Source=sender,
+            Destination={
+                "ToAddresses": [receiver],
+            },
+            Message={
+                "Subject": {
+                    "Data": subject,
+                    "Charset": "UTF-8",
+                },
+                "Body": {
+                    "Text": {
+                        "Data": text,
+                        "Charset": "UTF-8",
+                    },
+                    "Html": {
+                        "Data": html,
+                        "Charset": "UTF-8",
+                    },
+                },
+            },
+        )

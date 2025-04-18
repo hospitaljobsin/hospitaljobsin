@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import assert_never
 
 import aioinject
 
@@ -24,8 +25,17 @@ from app.auth.repositories import (
 )
 from app.auth.services import AuthService
 from app.config import Settings
-from app.core.aws_sdk import create_aioboto3_session, create_s3_client
-from app.core.emails import EmailSender, create_smtp_client
+from app.core.aws_sdk import (
+    create_aioboto3_session,
+    create_s3_client,
+    create_ses_client,
+)
+from app.core.emails import (
+    BaseEmailSender,
+    SESEmailSender,
+    SMTPEmailSender,
+    create_smtp_client,
+)
 from app.core.geocoding import create_geocoder
 from app.core.oauth import create_oauth_client
 from app.core.recaptcha import create_recaptcha_verifier
@@ -71,13 +81,27 @@ from app.organizations.services import (
 )
 
 
+def register_email_sender(container: aioinject.Container) -> None:
+    with container.sync_context() as ctx:
+        settings = ctx.resolve(Settings)
+
+    match settings.email_provider:
+        case "smtp":
+            container.register(aioinject.Singleton(create_smtp_client))
+            container.register(aioinject.Scoped(SMTPEmailSender, BaseEmailSender))
+        case "ses":
+            container.register(aioinject.Scoped(create_ses_client))
+            container.register(aioinject.Scoped(SESEmailSender, BaseEmailSender))
+        case _ as unreachable:
+            assert_never(unreachable)
+
+
 @lru_cache
 def create_container() -> aioinject.Container:
     container = aioinject.Container()
     container.register(aioinject.Object(Settings()))  # type: ignore[arg-type]
     container.register(aioinject.Singleton(create_jinja2_environment))
-    container.register(aioinject.Singleton(create_smtp_client))
-    container.register(aioinject.Scoped(EmailSender))
+    register_email_sender(container)
     container.register(aioinject.Scoped(create_aioboto3_session))
     container.register(aioinject.Scoped(create_s3_client))
     container.register(aioinject.Singleton(create_oauth_client))

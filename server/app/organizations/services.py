@@ -14,7 +14,7 @@ from app.accounts.repositories import AccountRepo
 from app.auth.exceptions import InvalidEmailError
 from app.config import Settings
 from app.core.constants import ORGANIZATION_INVITE_EXPIRES_IN
-from app.core.emails import EmailSender
+from app.core.emails import BaseEmailSender
 from app.jobs.exceptions import OrganizationNotFoundError
 from app.organizations.documents import (
     Organization,
@@ -344,7 +344,7 @@ class OrganizationInviteService:
         organization_member_repo: OrganizationMemberRepo,
         organization_member_service: OrganizationMemberService,
         account_repo: AccountRepo,
-        email_sender: EmailSender,
+        email_sender: BaseEmailSender,
         settings: Settings,
     ) -> None:
         self._invite_repo = invite_repo

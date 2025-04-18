@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Annotated
+from typing import Annotated, Literal
 
 from pydantic import Field, MongoDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -86,8 +86,10 @@ class Settings(BaseSettings):
 
     # email config
 
+    email_provider: Literal["smtp", "ses"] = "smtp"
+
     email_port: Annotated[
-        int,
+        int | None,
         Field(
             examples=[
                 587,
@@ -96,13 +98,13 @@ class Settings(BaseSettings):
     ] = 587
 
     email_host: Annotated[
-        str,
+        str | None,
         Field(
             examples=[
                 "localhost",
             ],
         ),
-    ]
+    ] = None
 
     email_username: str | None = None
 
@@ -205,3 +207,42 @@ class Settings(BaseSettings):
     def is_production(self) -> bool:
         """Check whether the current environment is production."""
         return self._is_environment(Environment.production)
+
+    @classmethod
+    def model_validate(cls, values):
+        # Pydantic v2+ custom validation
+        email_provider = values.get("email_provider")
+        environment = values.get("environment")
+        email_port = values.get("email_port")
+        email_host = values.get("email_host")
+        email_username = values.get("email_username")
+        email_password = values.get("email_password")
+
+        if email_provider == "smtp":
+            if email_port is None:
+                raise ValueError("email_port is required when email_provider is smtp")
+            if email_host is None:
+                raise ValueError("email_host is required when email_provider is smtp")
+            if environment == "production":
+                if email_username is None:
+                    raise ValueError(
+                        "email_username is required when email_provider is smtp and environment is production"
+                    )
+                if email_password is None:
+                    raise ValueError(
+                        "email_password is required when email_provider is smtp and environment is production"
+                    )
+        elif email_provider == "ses":
+            if email_port is not None:
+                raise ValueError("email_port must be None when email_provider is ses")
+            if email_host is not None:
+                raise ValueError("email_host must be None when email_provider is ses")
+            if email_username is not None:
+                raise ValueError(
+                    "email_username must be None when email_provider is ses"
+                )
+            if email_password is not None:
+                raise ValueError(
+                    "email_password must be None when email_provider is ses"
+                )
+        return values

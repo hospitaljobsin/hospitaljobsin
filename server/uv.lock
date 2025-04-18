@@ -1287,6 +1287,7 @@ dev = [
     { name = "pyright" },
     { name = "ruff" },
     { name = "types-aioboto3", extra = ["essential"] },
+    { name = "types-aiobotocore-ses" },
     { name = "types-authlib" },
     { name = "types-passlib" },
     { name = "types-python-jose" },
@@ -1329,6 +1330,7 @@ dev = [
     { name = "pyright", specifier = ">=1.1.397" },
     { name = "ruff", specifier = ">=0.11.2" },
     { name = "types-aioboto3", extras = ["essential"], specifier = ">=13.4.0" },
+    { name = "types-aiobotocore-ses", specifier = ">=2.21.1" },
     { name = "types-authlib", specifier = ">=1.4.0.20241230" },
     { name = "types-passlib", specifier = ">=1.7.7.20241221" },
     { name = "types-python-jose", specifier = ">=3.4.0.20250224" },
@@ -1531,6 +1533,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e4/71/de81daa98ff5dbba2f426268c36514af3740f3997107bb7f3235072f4a9e/types_aiobotocore_s3-2.21.1.tar.gz", hash = "sha256:5c8a68b78d577006062de4c158bd902eab2c38e81570be5bac0227375f9d8153", size = 74063 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/04/af/67b6e27f273ad69d3498afd5488a060e718e0c21e24c2f0aeffb8702e640/types_aiobotocore_s3-2.21.1-py3-none-any.whl", hash = "sha256:64b04b7729a3322e4758401e722c21277aa0e798c00d0077c4f43a9f584858fd", size = 81395 },
+]
+
+[[package]]
+name = "types-aiobotocore-ses"
+version = "2.21.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/00/12/2d615dbaf6ef01267d2f9febed34be57a95003594a71f579b5a1fe07a16c/types_aiobotocore_ses-2.21.1.tar.gz", hash = "sha256:255eaf6ce6d2ff931e36b3908e0800a5b223199a50a816701be2eec3b7dd3feb", size = 31639 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/31/62/460e7a482ba5d7554c84351998a7180ab4b2c3e6588ed13a9f8d1f42c008/types_aiobotocore_ses-2.21.1-py3-none-any.whl", hash = "sha256:5a12b842c9be5c4e9871ba2a32510fdb55a29253769cac72cd15e8d012cceb23", size = 39979 },
 ]
 
 [[package]]

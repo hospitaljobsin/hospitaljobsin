@@ -3,6 +3,7 @@ from collections.abc import AsyncGenerator
 
 import aioboto3
 from types_aiobotocore_s3 import S3Client
+from types_aiobotocore_ses import SESClient
 
 from app.config import Settings
 
@@ -26,3 +27,12 @@ async def create_s3_client(
         aws_access_key_id=settings.aws_access_key_id,
     ) as s3_client:
         yield s3_client
+
+
+@contextlib.asynccontextmanager
+async def create_ses_client(
+    session: aioboto3.Session,
+) -> AsyncGenerator[SESClient, None]:
+    """Create an S3 client."""
+    async with session.client("ses") as ses_client:
+        yield ses_client

@@ -45,3 +45,28 @@ resource "aws_route53_record" "api_gateway" {
   }
 }
 
+
+resource "aws_route53_record" "ses_verification" {
+  zone_id = aws_route53_zone.main.zone_id
+  name    = "_amazonses.${var.domain_name}"
+  type    = "TXT"
+  ttl     = 600
+  records = [aws_ses_domain_identity.this.verification_token]
+}
+
+resource "aws_route53_record" "dkim_records" {
+  count   = 3
+  zone_id = aws_route53_zone.main.zone_id
+  name    = "${aws_ses_domain_dkim.this.dkim_tokens[count.index]}._domainkey.${var.domain_name}"
+  type    = "CNAME"
+  ttl     = 600
+  records = ["${aws_ses_domain_dkim.this.dkim_tokens[count.index]}.dkim.amazonses.com"]
+}
+
+resource "aws_route53_record" "spf" {
+  zone_id = aws_route53_zone.main.zone_id
+  name    = var.domain_name
+  type    = "TXT"
+  ttl     = 600
+  records = ["v=spf1 include:amazonses.com ~all"]
+}
