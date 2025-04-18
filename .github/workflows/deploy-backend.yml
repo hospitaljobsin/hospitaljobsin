@@ -33,4 +33,4 @@ jobs:
             IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $REGISTRY/$IMAGE_NAME:$IMAGE_TAG ./server
-          docker push $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+          docker push $REGISTRY/$IMAGE_NAME:$IMAGE_TAG $REGISTRY/$IMAGE_NAME:latest
