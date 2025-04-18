@@ -1,8 +1,6 @@
 # Create the S3 Bucket
 resource "aws_s3_bucket" "this" {
   bucket_prefix = var.resource_prefix
-
-  force_destroy = true
 }
 
 # Create CORS Configuration for the S3 Bucket
