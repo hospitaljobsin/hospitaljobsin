@@ -126,11 +126,7 @@ Ensure the following policy is added to the user:
 		{
 			"Effect": "Allow",
 			"Action": [
-                "ecr:GetAuthorizationToken",
-				"ecr:CreateRepository",
-				"ecr:DescribeRepositories",
-				"ecr:ListTagsForResource",
-				"ecr:GetRepositoryPolicy",
+                "ecr:*",
 				"iam:CreateRole",
 				"iam:GetRole",
 				"iam:ListRolePolicies",
