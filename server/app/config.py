@@ -86,7 +86,7 @@ class Settings(BaseSettings):
 
     # email config
 
-    email_provider: Literal["smtp", "ses"] = "smtp"
+    email_provider: Literal["smtp", "aws_ses"] = "smtp"
 
     email_port: Annotated[
         int | None,
@@ -236,7 +236,7 @@ class Settings(BaseSettings):
                     raise ValueError(
                         "email_password is required when email_provider is smtp and environment is production"
                     )
-        elif email_provider == "ses":
+        elif email_provider == "aws_ses":
             if email_port is not None:
                 raise ValueError("email_port must be None when email_provider is ses")
             if email_host is not None:

@@ -93,7 +93,7 @@ def register_email_sender(container: aioinject.Container) -> None:
         case "smtp":
             container.register(aioinject.Singleton(create_smtp_client))
             container.register(aioinject.Scoped(SMTPEmailSender, BaseEmailSender))
-        case "ses":
+        case "aws_ses":
             container.register(aioinject.Scoped(create_ses_client))
             container.register(aioinject.Scoped(SESEmailSender, BaseEmailSender))
         case _ as unreachable:

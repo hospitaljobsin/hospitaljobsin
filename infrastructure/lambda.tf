@@ -48,6 +48,16 @@ resource "aws_iam_policy" "lambda_custom_policy" {
         Resource = "*"
         # Optional: restrict to verified identity
         # Resource = "arn:aws:ses:<region>:<account-id>:identity/noreply@hospitaljobs.in"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "geo:SearchPlaceIndexForText",
+          "geo:SearchPlaceIndexForPosition",
+        ],
+        Resource = [
+          aws_location_place_index.this.arn
+        ]
       }
     ]
   })
@@ -99,7 +109,7 @@ resource "aws_lambda_function" "backend" {
       SERVER_CORS_ALLOW_ORIGINS   = ["http://localhost:5000", "http://127.0.0.1:5000", "http://localhost:5001", "http://127.0.0.1:5001", "http://localhost:5002", "http://127.0.0.1:5002"]
       SERVER_GOOGLE_CLIENT_ID     = "XXX"
       SERVER_GOOGLE_CLIENT_SECRET = "XXX"
-      SERVER_EMAIl_PROVIDER       = "ses"
+      SERVER_EMAIl_PROVIDER       = "aws_ses"
       SERVER_EMAIL_FROM           = aws_ses_email_identity.sender.email
       # TODO: pass ARN and fetch from Secrets Manager
       SERVER_RECAPTCHA_SECRET_KEY      = "XXX"
