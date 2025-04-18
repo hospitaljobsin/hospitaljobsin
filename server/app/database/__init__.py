@@ -1,5 +1,7 @@
+import urllib
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from urllib.parse import urlparse
 
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -56,7 +58,7 @@ async def initialize_database(
 ) -> AsyncGenerator[None, None]:
     """Initialize the database."""
     client: AsyncIOMotorClient = AsyncIOMotorClient(
-        database_url,
+        urlparse(database_url),
         connectTimeoutMS=1000,
         socketTimeoutMS=1000,
         serverSelectionTimeoutMS=1000,
