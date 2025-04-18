@@ -64,7 +64,7 @@ async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     settings = Settings()  # type: ignore[call-arg]
     async with initialize_database(
         database_url=str(settings.database_url),
-        default_database_name=settings.database_name,
+        default_database_name=settings.default_database_name,
     ) as _:
         yield
 
