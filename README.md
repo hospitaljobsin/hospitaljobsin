@@ -118,6 +118,44 @@ Choose Use access key for CLI, SDK, & API access.
 
 Click Next, name it optionally, and then click Create access key.
 
+Ensure the following policy is added to the user:
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecr:CreateRepository",
+        "iam:CreateRole",
+        "ses:VerifyDomainIdentity",
+        "secretsmanager:CreateSecret",
+        "s3:CreateBucket",
+        "geo:CreatePlaceIndex",
+        "ec2:AllocateAddress",
+        "route53:CreateHostedZone",
+        "ec2:CreateVpc",
+        "acm:RequestCertificate",
+        "ses:VerifyEmailIdentity"
+      ],
+      "Resource": "*"
+    },
+     {
+      "Effect": "Allow",
+      "Action": [
+        "apigateway:POST",
+        "apigateway:GET",
+        "apigateway:PUT",
+        "apigateway:DELETE",
+        "apigateway:PATCH"
+      ],
+      "Resource": "arn:aws:apigateway:*::/restapis*"
+    }
+  ]
+}
+
+```
+
 - save the access key ID and secret key in the environment variables
 - run terraform apply
 - update GoDaddy's NS records to the Route 53 nameservers
