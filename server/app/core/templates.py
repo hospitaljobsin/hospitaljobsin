@@ -10,7 +10,7 @@ from app.core.constants import (
 def register_globals(environment: Environment, settings: Settings) -> None:
     """Register global variables for the environment."""
     environment.globals["app_name"] = APP_NAME
-    environment.globals["app_url"] = settings.app_url
+    environment.globals["app_url"] = settings.seeker_portal_base_url
     environment.globals["support_email"] = SUPPORT_EMAIL
 
 

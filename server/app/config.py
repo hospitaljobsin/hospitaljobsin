@@ -119,8 +119,6 @@ class Settings(BaseSettings):
 
     # app config
 
-    app_url: str = "http://localhost:3000"
-
     # Recaptcha config
     recaptcha_secret_key: SecretStr
 
@@ -139,6 +137,9 @@ class Settings(BaseSettings):
 
     # recruiter portal config
     recruiter_portal_base_url: str = "http://localhost:5001"
+
+    # seeker portal config
+    seeker_portal_base_url: str = "http://localhost:5000"
 
     # webauthn config
 

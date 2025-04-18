@@ -53,15 +53,17 @@ resource "mongodbatlas_database_user" "user" {
 }
 
 
-resource "mongodbatlas_privatelink_endpoint" "pe_east" {
-  project_id    = mongodbatlas_project.project.id
-  provider_name = "AWS"
-  region        = var.region
-}
+# these resources are not available for tenant/ flex deployments
 
-resource "mongodbatlas_privatelink_endpoint_service" "pe_east_service" {
-  project_id          = mongodbatlas_privatelink_endpoint.pe_east.project_id
-  private_link_id     = mongodbatlas_privatelink_endpoint.pe_east.id
-  endpoint_service_id = aws_vpc_endpoint.vpce_east.id
-  provider_name       = "AWS"
-}
+# resource "mongodbatlas_privatelink_endpoint" "pe_east" {
+#   project_id    = mongodbatlas_project.project.id
+#   provider_name = "AWS"
+#   region        = var.region
+# }
+
+# resource "mongodbatlas_privatelink_endpoint_service" "pe_east_service" {
+#   project_id          = mongodbatlas_privatelink_endpoint.pe_east.project_id
+#   private_link_id     = mongodbatlas_privatelink_endpoint.pe_east.id
+#   endpoint_service_id = aws_vpc_endpoint.vpce_east.id
+#   provider_name       = "AWS"
+# }
