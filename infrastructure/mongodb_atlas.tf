@@ -46,7 +46,7 @@ resource "mongodbatlas_database_user" "user" {
   auth_database_name = "admin"
 
   roles {
-    role_name     = "readWrite"
+    role_name     = "dbAdmin"                 # TODO: maybe restric the role to readWrite later, after figuring out how to init_database without it (or a custom role)
     database_name = var.mongodb_database_name # The database name and collection name need not exist in the cluster before creating the user.
   }
 }
