@@ -179,7 +179,7 @@ Ensure the following policy is added to the user:
                 "route53:ChangeResourceRecordSets",
                 "route53:GetChange",
                 "route53:DeleteHostedZone",
-"route53:ChangeTagsForResource",
+                "route53:ChangeTagsForResource",
 				"iam:GetPolicy",
 				"ec2:DescribeSubnets",
 				"ec2:DescribeInternetGateways",
