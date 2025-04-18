@@ -25,7 +25,11 @@ resource "mongodbatlas_advanced_cluster" "this" {
 
   replication_specs {
     region_configs {
-      provider_name         = "FLEX"
+      electable_specs {
+        instance_size = "M0"
+      }
+
+      provider_name         = "TENANT"
       backing_provider_name = "AWS"
       priority              = 7
       region_name           = var.mongodb_atlas_region
