@@ -1,6 +1,6 @@
 variable "app_name" {
   type    = string
-  default = "Hospital Job Board"
+  default = "Hospital Job"
 }
 
 variable "resource_prefix" {

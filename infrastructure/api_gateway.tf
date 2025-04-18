@@ -3,6 +3,7 @@ resource "aws_api_gateway_rest_api" "this" {
   description = "API Gateway for ${var.app_name} backend"
 }
 
+
 # Deployment of API Gateway
 resource "aws_api_gateway_deployment" "this" {
   depends_on = [
@@ -12,6 +13,15 @@ resource "aws_api_gateway_deployment" "this" {
   ]
 
   rest_api_id = aws_api_gateway_rest_api.this.id
+
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_integration.lambda.id,
+      aws_api_gateway_integration.cors_options.id,
+      aws_api_gateway_method.proxy.id,
+      aws_api_gateway_method.proxy_options.id,
+    ]))
+  }
 }
 
 
@@ -83,6 +93,10 @@ resource "aws_api_gateway_integration_response" "cors_200" {
     "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST,PUT,PATCH,DELETE'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
   }
+
+  depends_on = [
+    aws_api_gateway_method_response.cors_200
+  ]
 }
 
 # Method Response for CORS OPTIONS Method
@@ -97,4 +111,18 @@ resource "aws_api_gateway_method_response" "cors_200" {
     "method.response.header.Access-Control-Allow-Methods" = true
     "method.response.header.Access-Control-Allow-Origin"  = true
   }
+}
+
+
+# Domain name mapping
+
+resource "aws_api_gateway_domain_name" "custom" {
+  domain_name     = "api.${var.domain_name}"
+  certificate_arn = aws_acm_certificate_validation.api_cert.certificate_arn
+}
+
+resource "aws_api_gateway_base_path_mapping" "api" {
+  api_id      = aws_api_gateway_rest_api.this.id
+  stage_name  = aws_api_gateway_stage.production.stage_name
+  domain_name = aws_api_gateway_domain_name.custom.domain_name
 }

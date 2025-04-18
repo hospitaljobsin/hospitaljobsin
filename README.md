@@ -70,3 +70,8 @@ tmuxinator start medical_jobs
     cd e2e
     pnpm run test
     ```
+
+
+## Cloud deployment
+- run terraform apply
+- update GoDaddy's NS records to the Route 53 nameservers

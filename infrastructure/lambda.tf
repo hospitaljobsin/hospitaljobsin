@@ -20,7 +20,7 @@ resource "aws_iam_role" "lambda_exec_role" {
 # Custom policy to allow access to S3, Textract, and Bedrock
 resource "aws_iam_policy" "lambda_custom_policy" {
   name        = "lambda_exec_custom_policy"
-  description = "Custom policy for Lambda to access S3, Textract, and Bedrock"
+  description = "Custom policy for Lambda to access S3 and Textract"
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -43,20 +43,6 @@ resource "aws_iam_policy" "lambda_custom_policy" {
           "textract:DetectDocumentText",
           "textract:AnalyzeDocument",
           "textract:GetDocumentTextDetection"
-        ],
-        Resource = "*"
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "bedrock:*"
-        ],
-        Resource = "*"
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "dynamodb:*"
         ],
         Resource = "*"
       }
@@ -121,12 +107,13 @@ resource "aws_lambda_function" "backend" {
       SERVER_ACCOUNTS_BASE_URL         = "http://localhost:5002"
       SERVER_RECRUITER_PORTAL_BASE_URL = "http://localhost:5001"
       SERVER_SEEKER_PORTAL_BASE_URL    = "http://localhost:5000"
-      SERVER_RP_ID                     = "localhost"
-      SERVER_RP_NAME                   = "Starter"
+      SERVER_RP_ID                     = var.domain_name
+      SERVER_RP_NAME                   = var.app_name
       SERVER_RP_EXPECTED_ORIGIN        = "http://localhost:5002"
-      SERVER_JWE_SECRET_KEY            = "ca07d5f965a534ffb07d1699e30385a6"
-      SERVER_GEOCODER_DOMAIN           = "localhost:8080"
-      SERVER_GEOCODER_USER_AGENT       = "medical-jobs-server"
+      # TODO: pass ARN and fetch from Secrets Manager
+      SERVER_JWE_SECRET_KEY      = "ca07d5f965a534ffb07d1699e30385a6"
+      SERVER_GEOCODER_DOMAIN     = "localhost:8080"
+      SERVER_GEOCODER_USER_AGENT = "medical-jobs-server"
     }
   }
 
