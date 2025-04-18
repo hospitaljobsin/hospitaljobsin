@@ -102,7 +102,7 @@ resource "aws_lambda_function" "backend" {
     variables = {
       SERVER_DEBUG                = "false"
       SERVER_ENVIRONMENT          = "production"
-      SERVER_DATABASE_URL         = mongodbatlas_advanced_cluster.this.connection_strings.0.standard_srv
+      SERVER_DATABASE_URL         = mongodbatlas_advanced_cluster.this.connection_strings.0.standard
       SERVER_HOST                 = "0.0.0.0"
       SERVER_PORT                 = "8000"
       SERVER_LOG_LEVEL            = "INFO"

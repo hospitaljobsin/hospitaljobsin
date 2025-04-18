@@ -51,6 +51,12 @@ resource "mongodbatlas_database_user" "user" {
   }
 }
 
+resource "mongodbatlas_project_ip_access_list" "this" {
+  project_id = mongodbatlas_project.project.id
+  cidr_block = "0.0.0.0/0" # This allows access from any IP address
+  comment    = "cidr block for tf acc testing"
+}
+
 
 # these resources are not available for tenant/ flex deployments
 
