@@ -6,6 +6,7 @@ from urllib.parse import urlparse, urlunparse
 
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
+from structlog import get_logger
 
 from app.accounts.documents import Account, EmailVerificationToken, Profile
 from app.auth.documents import (
@@ -31,13 +32,15 @@ from app.organizations.documents import (
     OrganizationMember,
 )
 
+logger = get_logger()
+
 
 def percent_encode_uri(uri: str) -> str:
     # Separate the URI into components
     parsed_uri = urlparse(uri)
 
-    print(f"Original URI: {uri}")
-    print(f"Parsed URI: {parsed_uri}")
+    logger.info(f"Original URI: {uri}")
+    logger.info(f"Parsed URI: {parsed_uri}")
 
     # Percent-encode the username and password if they exist
     username = quote(parsed_uri.username) if parsed_uri.username else ""
@@ -51,7 +54,7 @@ def percent_encode_uri(uri: str) -> str:
         fragment=parsed_uri.fragment,
     )
 
-    print(f"Encoded URI: {encoded_uri}")
+    logger.info(f"Encoded URI: {encoded_uri}")
 
     # Rebuild the URI string
     return urlunparse(encoded_uri)
