@@ -29,7 +29,8 @@ terraform {
 
 
 provider "aws" {
-  region = var.region
+  region            = var.region
+  s3_use_path_style = true
 }
 
 # Configure the MongoDB Atlas Provider 
