@@ -3,6 +3,12 @@ variable "app_name" {
   default = "Hospital Job"
 }
 
+variable "domain_name" {
+  type        = string
+  description = "Domain name for the application."
+  default     = "hospitaljobs.in"
+}
+
 variable "resource_prefix" {
   type        = string
   description = "The prefix to use for all resources."

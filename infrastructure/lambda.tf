@@ -104,12 +104,12 @@ resource "aws_lambda_function" "backend" {
       # TODO: pass ARN and fetch from Secrets Manager
       SERVER_RECAPTCHA_SECRET_KEY      = "XXX"
       SERVER_S3_BUCKET_NAME            = data.aws_s3_bucket.this.bucket
-      SERVER_ACCOUNTS_BASE_URL         = "http://localhost:5002"
-      SERVER_RECRUITER_PORTAL_BASE_URL = "http://localhost:5001"
-      SERVER_SEEKER_PORTAL_BASE_URL    = "http://localhost:5000"
+      SERVER_ACCOUNTS_BASE_URL         = "https://accounts.${var.domain_name}"
+      SERVER_RECRUITER_PORTAL_BASE_URL = "https://recruiter.${var.domain_name}"
+      SERVER_SEEKER_PORTAL_BASE_URL    = "https://${var.domain_name}"
       SERVER_RP_ID                     = var.domain_name
       SERVER_RP_NAME                   = var.app_name
-      SERVER_RP_EXPECTED_ORIGIN        = "http://localhost:5002"
+      SERVER_RP_EXPECTED_ORIGIN        = "https://accounts.${var.domain_name}"
       # TODO: pass ARN and fetch from Secrets Manager
       SERVER_JWE_SECRET_KEY      = "ca07d5f965a534ffb07d1699e30385a6"
       SERVER_GEOCODER_DOMAIN     = "localhost:8080"
