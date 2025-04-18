@@ -38,5 +38,5 @@ variable "mongodb_atlas_org_id" {
 variable "mongodb_database_name" {
   type        = string
   description = "MongoDB database name."
-  default     = "medical_jobs"
+  default     = "medicaljobs"
 }
