@@ -190,21 +190,11 @@ Ensure the following policy is added to the user:
 				"apigateway:PUT",
 				"apigateway:DELETE",
 				"apigateway:PATCH",
-				"s3:PutBucketCORS"
+				"s3:PutBucketCORS",
+                "iam:CreateServiceLinkedRole"
 			],
 			"Resource": "*"
-		},
-        {
-        "Effect": "Allow",
-        "Action": "iam:CreateServiceLinkedRole",
-        "Resource": "*",
-        "Condition": {
-            "StringEquals": {
-            "iam:AWSServiceName": "apigateway.amazonaws.com"
-            }
-        }
-        }
-
+		}
 	]
 }
 ```

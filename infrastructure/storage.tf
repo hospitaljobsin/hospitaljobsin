@@ -1,6 +1,6 @@
 # Create the S3 Bucket
 resource "aws_s3_bucket" "this" {
-  bucket = "${var.resource_prefix}-hospitaljobs-default-bucket"
+  bucket = "${var.resource_prefix}-hospitaljobs-media-bucket"
 }
 
 # Create CORS Configuration for the S3 Bucket
