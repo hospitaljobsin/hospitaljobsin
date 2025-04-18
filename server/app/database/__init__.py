@@ -62,7 +62,7 @@ async def initialize_database(database_url: str) -> AsyncGenerator[None, None]:
     try:
         rebuild_models()
         await init_beanie(
-            database=client.get_default_database(),
+            database=client.get_default_database(default="medicaljobs"),
             document_models=[
                 Job,
                 JobApplicant,
