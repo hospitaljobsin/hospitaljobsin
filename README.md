@@ -119,7 +119,7 @@ Choose Use access key for CLI, SDK, & API access.
 Click Next, name it optionally, and then click Create access key.
 
 Ensure the following policy is added to the user:
-```
+```json
 {
 	"Version": "2012-10-17",
 	"Statement": [
@@ -193,7 +193,18 @@ Ensure the following policy is added to the user:
 				"s3:PutBucketCORS"
 			],
 			"Resource": "*"
-		}
+		},
+        {
+        "Effect": "Allow",
+        "Action": "iam:CreateServiceLinkedRole",
+        "Resource": "*",
+        "Condition": {
+            "StringEquals": {
+            "iam:AWSServiceName": "apigateway.amazonaws.com"
+            }
+        }
+        }
+
 	]
 }
 ```
