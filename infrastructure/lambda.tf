@@ -1,3 +1,4 @@
+
 # Lambda Execution Role
 resource "aws_iam_role" "lambda_exec_role" {
   name = "lambda_exec_role"
@@ -63,6 +64,26 @@ resource "aws_iam_policy" "lambda_custom_policy" {
   })
 }
 
+# Add this inline policy to your lambda role
+resource "aws_iam_role_policy" "lambda_mongodb_aws_auth" {
+  name = "mongodb_aws_auth"
+  role = aws_iam_role.lambda_exec_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "sts:AssumeRole",
+          "sts:GetCallerIdentity"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 
 # Attach AWS-managed policies for Lambda execution, logging, and VPC access
 resource "aws_iam_role_policy_attachment" "lambda_exec_policy" {
@@ -102,7 +123,7 @@ resource "aws_lambda_function" "backend" {
     variables = {
       SERVER_DEBUG                 = "false"
       SERVER_ENVIRONMENT           = "production"
-      SERVER_DATABASE_URL          = "${mongodbatlas_advanced_cluster.this.connection_strings.0.standard_srv}?authMechanism=MONGODB-AWS&authSource=admin"
+      SERVER_DATABASE_URL          = "${mongodbatlas_advanced_cluster.this.connection_strings.0.standard_srv}?authMechanism=MONGODB-AWS"
       SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
       SERVER_HOST                  = "0.0.0.0"
       SERVER_PORT                  = "8000"

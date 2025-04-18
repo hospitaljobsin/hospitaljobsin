@@ -41,11 +41,10 @@ resource "mongodbatlas_advanced_cluster" "this" {
 
 
 resource "mongodbatlas_database_user" "user" {
-  username           = "${var.resource_prefix}-user"
+  username           = aws_iam_role.lambda_exec_role.arn
   project_id         = mongodbatlas_project.project.id
-  auth_database_name = "admin"
-
-  aws_iam_type = "ROLE"
+  auth_database_name = "$external"
+  aws_iam_type       = "ROLE"
 
   roles {
     role_name     = "readWrite"               # "dbAdmin"                 # TODO: maybe restrict the role to readWrite later, after figuring out how to init_database without it (or a custom role)
