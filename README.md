@@ -136,7 +136,8 @@ Ensure the following policy is added to the user:
         "route53:CreateHostedZone",
         "ec2:CreateVpc",
         "acm:RequestCertificate",
-        "ses:VerifyEmailIdentity"
+        "ses:VerifyEmailIdentity",
+        "lambda:createFunction"
       ],
       "Resource": "*"
     },
@@ -157,5 +158,11 @@ Ensure the following policy is added to the user:
 ```
 
 - save the access key ID and secret key in the environment variables
+
+Create a free SSL certificate for your domain using AWS Route 53 and AWS Certificate Manager (ACM):
+
+Log in to the AWS Management Console
+Navigate to the ACM service by searching for "ACM" and selecting "Certificate Manager"
+Use Route 53 to create a CNAME record for the SSL/TLS certificate
 - run terraform apply
 - update GoDaddy's NS records to the Route 53 nameservers
