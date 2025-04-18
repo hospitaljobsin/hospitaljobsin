@@ -20,7 +20,7 @@ resource "aws_iam_role" "lambda_exec_role" {
 # Custom policy to allow access to S3, Textract, and Bedrock
 resource "aws_iam_policy" "lambda_custom_policy" {
   name        = "lambda_exec_custom_policy"
-  description = "Custom policy for Lambda to access S3 and SES"
+  description = "Custom policy for Lambda to access S3, Location and SES"
 
   policy = jsonencode({
     Version = "2012-10-17",
