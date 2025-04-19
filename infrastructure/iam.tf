@@ -36,7 +36,8 @@ resource "aws_iam_policy" "github_actions_ecr" {
           "ecr:InitiateLayerUpload",
           "ecr:UploadLayerPart",
           "ecr:CompleteLayerUpload",
-          "ecr:PutImage"
+          "ecr:PutImage",
+          "lambda:UpdateFunctionCode"
         ]
         Effect = "Allow"
         # Limit to the specific ECR repository if possible, otherwise use "*" if multiple repos are needed
