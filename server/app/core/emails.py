@@ -1,3 +1,5 @@
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Any
@@ -9,19 +11,20 @@ from types_aiobotocore_ses import SESClient
 from app.config import Settings
 
 
-def create_smtp_client(settings: Settings) -> SMTP:
+@asynccontextmanager
+async def create_smtp_client(settings: Settings) -> AsyncGenerator[SMTP, None]:
     """Create an SMTP client."""
-    if settings.email_username and settings.email_password:
-        return SMTP(
-            hostname=settings.email_host,
-            port=settings.email_port,
-            password=settings.email_password.get_secret_value(),
-            username=settings.email_username,
-        )
-    return SMTP(
+    smtp_client = SMTP(
         hostname=settings.email_host,
         port=settings.email_port,
+        password=settings.email_password.get_secret_value()
+        if settings.email_password
+        else None,
+        username=settings.email_username,
     )
+
+    async with smtp_client:
+        yield smtp_client
 
 
 class BaseEmailSender:
@@ -106,8 +109,7 @@ class SMTPEmailSender(BaseEmailSender):
         message.attach(MIMEText(text, "plain"))
         message.attach(MIMEText(html, "html"))
 
-        async with self._smtp_client:
-            await self._smtp_client.send_message(message)
+        await self._smtp_client.send_message(message)
 
 
 class SESEmailSender(BaseEmailSender):
