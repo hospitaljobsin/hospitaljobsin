@@ -127,14 +127,32 @@ Ensure the following policy is added to the user:
 			"Effect": "Allow",
 			"Action": [
 				"ecr:*",
-				"ecr:GetRepositoryPolicy",
 				"iam:CreateRole",
 				"iam:GetRole",
 				"iam:ListRolePolicies",
 				"iam:ListAttachedRolePolicies",
 				"iam:ListPolicyVersions",
 				"iam:PassRole",
+				"iam:CreateUser",
+				"iam:TagUser",
 				"iam:CreatePolicyVersion",
+				"iam:CreatePolicy",
+				"iam:GetUser",
+				"iam:DeleteUser",
+				"iam:TagPolicy",
+				"iam:ListGroupsForUser",
+				"iam:ListAttachedUserPolicies",
+				"iam:ListAccessKeys",
+				"iam:CreateAccessKey",
+				"iam:AttachUserPolicy",
+				"iam:GetPolicy",
+				"iam:GetPolicy",
+				"iam:GetPolicyVersion",
+				"iam:PutRolePolicy",
+				"iam:GetRolePolicy",
+				"iam:DeleteRolePolicy",
+				"iam:DetachUserPolicy",
+				"iam:CreateServiceLinkedRole",
 				"ses:VerifyDomainIdentity",
 				"ses:GetIdentityDkimAttributes",
 				"ses:VerifyEmailIdentity",
@@ -149,7 +167,6 @@ Ensure the following policy is added to the user:
 				"acm:DescribeCertificate",
 				"acm:ListTagsForCertificate",
 				"lambda:*",
-				"lambda:GetFunction",
 				"ec2:CreateVpc",
 				"ec2:DescribeVpcs",
 				"ec2:DescribeVpcAttribute",
@@ -181,24 +198,13 @@ Ensure the following policy is added to the user:
 				"route53:GetChange",
 				"route53:DeleteHostedZone",
 				"route53:ChangeTagsForResource",
-				"iam:GetPolicy",
 				"ec2:DescribeSubnets",
 				"ec2:DescribeInternetGateways",
 				"ec2:DescribeSecurityGroups",
 				"ec2:DescribeRouteTables",
 				"ec2:DescribeVpcs",
 				"ec2:DescribeNatGateways",
-				"iam:GetPolicy",
-				"iam:GetPolicyVersion",
-				"apigateway:POST",
-				"apigateway:GET",
-				"apigateway:PUT",
-				"apigateway:DELETE",
-				"apigateway:PATCH",
-				"iam:CreateServiceLinkedRole",
-				"iam:PutRolePolicy",
-				"iam:GetRolePolicy",
-				"iam:DeleteRolePolicy",
+				"apigateway:*",
 				"cloudfront:UpdateDistribution"
 			],
 			"Resource": "*"
@@ -207,19 +213,11 @@ Ensure the following policy is added to the user:
 }
 ```
 
-- save the access key ID and secret key in the environment variables
+- save the access key ID and secret key in the terraform cloud environment variables
 
 
 - run terraform apply
 - update GoDaddy's NS records to the Route 53 nameservers midway, to ensure certificate validation takes place
-
-- set the following Github actions secrets:
-    - AWS_ACCESS_KEY_ID
-    - AWS_SECRET_ACCESS_KEY
-
-- set the following Github actions variables:
-    - AWS_REGION
-    - BACKEND_IMAGE_NAME
 
 - Generate a new Github access token and set it in the GITHUB_TOKEN env var in terraform cloud
 	with following permissions:

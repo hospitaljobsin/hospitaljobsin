@@ -37,7 +37,13 @@ jobs:
           docker push $REGISTRY/$IMAGE_NAME:$IMAGE_TAG 
           docker push $REGISTRY/$IMAGE_NAME:latest
 
+      - name: Update AWS Lambda function
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_NAME: ${{ vars.AWS_BACKEND_IMAGE_NAME }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: aws lambda update-function-code --function-name ${{ vars.AWS_BACKEND_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
 
-# TODO: update the lambda function to use the latest image
+
 
 # TODO: wait for relevant tests to pass before building and pushing
