@@ -227,8 +227,6 @@ Ensure the following policy is added to the user:
 
 
 ## TODO: infrastructure
-
-- don't use background tasks to send emails in production, as we are using lambda
 - wait for relevant tests to pass before building and pushing
 - cache geocoding results to save costs
 - update lambda secrets loading via aws secrets manager (jwe secret, captcha key, google client ID, client secret etc)

@@ -37,7 +37,6 @@ async def get_context(
             return AuthContext(
                 request=request,
                 response=response,
-                background_tasks=background_tasks,
                 loaders=dataloaders,
                 current_user=session.account,
                 session=session,
@@ -51,7 +50,6 @@ async def get_context(
     return Context(
         request=request,
         response=response,
-        background_tasks=background_tasks,
         loaders=dataloaders,
         current_user=None,
         session=None,

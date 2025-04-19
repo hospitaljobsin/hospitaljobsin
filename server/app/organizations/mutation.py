@@ -268,7 +268,6 @@ class OrganizationMutation:
             account=info.context["current_user"],
             organization_id=ObjectId(organization_id.node_id),
             email=email,
-            background_tasks=info.context["background_tasks"],
         ):
             case Err(error):
                 match error:

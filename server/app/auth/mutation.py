@@ -135,7 +135,6 @@ class AuthMutation:
             email=email,
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
-            background_tasks=info.context["background_tasks"],
         ):
             case Ok(cooldown_remaining_seconds):
                 return RequestEmailVerificationTokenSuccessType(
@@ -597,7 +596,6 @@ class AuthMutation:
             email=email,
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
-            background_tasks=info.context["background_tasks"],
         ):
             case Err(error):
                 match error:

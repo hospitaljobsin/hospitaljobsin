@@ -4,7 +4,6 @@ from datetime import timedelta
 from bson import ObjectId
 from bson.errors import InvalidId
 from email_validator import EmailNotValidError, validate_email
-from fastapi import BackgroundTasks
 from humanize import naturaldelta
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
@@ -360,7 +359,6 @@ class OrganizationInviteService:
         account: Account,
         organization_id: ObjectId,
         email: str,
-        background_tasks: BackgroundTasks,
     ) -> Result[
         OrganizationInvite,
         InvalidEmailError
@@ -405,8 +403,7 @@ class OrganizationInviteService:
             email=email,
         )
 
-        background_tasks.add_task(
-            self._email_sender.send_template_email,
+        await self._email_sender.send_template_email(
             template="organization-invite",
             receiver=email,
             context={

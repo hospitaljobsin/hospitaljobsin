@@ -6,7 +6,7 @@ from typing import Any
 import pyotp
 from bson.objectid import ObjectId
 from email_validator import EmailNotValidError, validate_email
-from fastapi import BackgroundTasks, Request
+from fastapi import Request
 from humanize import naturaldelta
 from result import Err, Ok, Result
 from webauthn import (
@@ -164,7 +164,6 @@ class AuthService:
         email: str,
         recaptcha_token: str,
         user_agent: str,
-        background_tasks: BackgroundTasks,
     ) -> Result[
         int,
         EmailInUseError
@@ -214,8 +213,7 @@ class AuthService:
             email_verification,
         ) = await self._email_verification_token_repo.create(email=email)
 
-        background_tasks.add_task(
-            self._email_sender.send_template_email,
+        await self._email_sender.send_template_email(
             template="email-verification",
             receiver=email,
             context={
@@ -850,7 +848,6 @@ class AuthService:
         email: str,
         user_agent: str,
         recaptcha_token: str,
-        background_tasks: BackgroundTasks,
     ) -> Result[None, InvalidRecaptchaTokenError | PasswordResetTokenCooldownError]:
         """Request a password reset."""
         if not await self._verify_recaptcha_token(recaptcha_token):
@@ -881,8 +878,7 @@ class AuthService:
             account=existing_user
         )
 
-        background_tasks.add_task(
-            self._email_sender.send_template_email,
+        await self._email_sender.send_template_email(
             template="password-reset",
             receiver=existing_user.email,
             context={
