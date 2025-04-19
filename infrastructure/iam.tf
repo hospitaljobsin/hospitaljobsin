@@ -2,6 +2,11 @@
 resource "aws_iam_user" "github_actions" {
   name = "github-actions-ecr-user-${data.github_repository.this.name}"
   path = "/system/"
+
+  tags = {
+    Terraform  = "true"
+    Repository = data.github_repository.this.name
+  }
 }
 
 # Define an IAM policy for ECR access needed by GitHub Actions
@@ -49,6 +54,11 @@ resource "aws_iam_policy" "github_actions_ecr" {
       }
     ]
   })
+
+  tags = {
+    Terraform  = "true"
+    Repository = data.github_repository.this.name
+  }
 }
 
 # Attach the ECR policy to the GitHub Actions IAM user
