@@ -37,12 +37,20 @@ resource "aws_iam_policy" "github_actions_ecr" {
           "ecr:UploadLayerPart",
           "ecr:CompleteLayerUpload",
           "ecr:PutImage",
-          "lambda:UpdateFunctionCode"
         ]
         Effect = "Allow"
         # Limit to the specific ECR repository if possible, otherwise use "*" if multiple repos are needed
         # Resource = aws_ecr_repository.backend.arn # Example for a specific repo
         Resource = "*" # Or adjust as needed for specific repositories
+      },
+      {
+        Action = [
+          "lambda:UpdateFunctionCode"
+        ]
+        Effect = "Allow"
+        # Limit to the specific AWS lambda if possible, otherwise use "*" if multiple functions are needed
+        # Resource = aws_ecr_repository.backend.arn # Example for a specific repo
+        Resource = "*"
       }
     ]
   })
