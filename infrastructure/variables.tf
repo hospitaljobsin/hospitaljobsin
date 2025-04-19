@@ -40,3 +40,9 @@ variable "mongodb_database_name" {
   description = "MongoDB database name."
   default     = "medicaljobs"
 }
+
+variable "github_repository_name" {
+  type        = string
+  description = "GitHub repository name."
+  default     = "aryaniyaps/hospital-jobs"
+}

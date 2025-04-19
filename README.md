@@ -221,11 +221,15 @@ Ensure the following policy is added to the user:
     - AWS_REGION
     - BACKEND_IMAGE_NAME
 
+- Generate a new Github access token and set it in the GITHUB_TOKEN env var in terraform cloud
+	with following permissions:
+	- secrets: read and write
+	- variables: read and write
+
 
 
 ## TODO: infrastructure
 
-- get IP address forwarding working correctly
 - don't use background tasks to send emails in production, as we are using lambda
 - set up github actions secrets and variables via terraform
 - auto update function with new image each time after building and pushing
