@@ -43,5 +43,5 @@ variable "mongodb_database_name" {
 variable "github_repository_name" {
   type        = string
   description = "GitHub repository name."
-  default     = "aryaniyaps/hospital-jobs"
+  default     = "aryaniyaps/medical-job-board"
 }
