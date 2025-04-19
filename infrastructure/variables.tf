@@ -31,7 +31,6 @@ variable "mongodb_atlas_region" {
 variable "mongodb_atlas_org_id" {
   type        = string
   description = "MongoDB Atlas organization ID."
-  default     = "68021a7cf811546590c87974"
 }
 
 
