@@ -54,7 +54,7 @@ resource "aws_iam_policy" "lambda_custom_policy" {
         Effect = "Allow",
         Action = [
           "geo:SearchPlaceIndexForText",
-          "geo:SearchPlaceIndexForPosition",
+          "geo:SearchPlaceIndexForSuggestions",
         ],
         Resource = [
           aws_location_place_index.this.index_arn
