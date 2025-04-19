@@ -233,5 +233,7 @@ Ensure the following policy is added to the user:
 - ensure geocoding API works (cache geocoding results to save costs)
 
 - deploy frontends to Next.js to reduce latency (possibly using OpenNext)
+	- https://github.com/nhs-england-tools/terraform-aws-opennext
+	- https://github.com/opennextjs/opennextjs-aws
 - update relevant CORS configuration in the backend
 - update API Gateway CORS configuration
