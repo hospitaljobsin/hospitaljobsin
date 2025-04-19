@@ -234,3 +234,4 @@ Ensure the following policy is added to the user:
 
 - deploy frontends to Next.js to reduce latency (possibly using OpenNext)
 - update relevant CORS configuration in the backend
+- update API Gateway CORS configuration
