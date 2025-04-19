@@ -229,8 +229,6 @@ Ensure the following policy is added to the user:
 ## TODO: infrastructure
 
 - don't use background tasks to send emails in production, as we are using lambda
-- set up github actions secrets and variables via terraform
-- auto update function with new image each time after building and pushing
 - wait for relevant tests to pass before building and pushing
 - ensure geocoding API works (cache geocoding results to save costs)
 
