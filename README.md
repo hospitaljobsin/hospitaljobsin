@@ -235,3 +235,4 @@ Ensure the following policy is added to the user:
 	- https://github.com/opennextjs/opennextjs-aws
 - update relevant CORS configuration in the backend
 - update API Gateway CORS configuration
+- remove background task for logging job view, use some other mechanism to asynchronously log the views.
