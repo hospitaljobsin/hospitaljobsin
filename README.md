@@ -1,3 +1,7 @@
+# Fix E2E tests
+E2E tests are failing since we removed background tasks for email sending
+maybe need to increase test timeout, or bring back some similar mechanism to send emails in bg in dev environment
+
 # Future- TODO
 - ensure members can also create jobs, but they can only view and manage jobs they own.
 - ensure admins can view and edit all jobs, though.
