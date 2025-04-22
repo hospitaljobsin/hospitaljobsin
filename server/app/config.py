@@ -235,25 +235,17 @@ class Settings(BaseSettings):
         dotenv_settings: PydanticBaseSettingsSource,
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> tuple[PydanticBaseSettingsSource, ...]:
+        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
         aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
 
-        if not aws_secret_id:
-            return (
-                init_settings,
-                env_settings,
-                dotenv_settings,
-                file_secret_settings,
+        if aws_secret_id is not None:
+            sources.append(
+                AWSSecretsManagerSettingsSource(
+                    settings_cls,
+                    aws_secret_id,
+                )
             )
-        return (
-            init_settings,
-            env_settings,
-            dotenv_settings,
-            file_secret_settings,
-            AWSSecretsManagerSettingsSource(
-                settings_cls,
-                aws_secret_id,
-            ),
-        )
+        return tuple(sources)
 
     @classmethod
     def model_validate(cls, values):
