@@ -1,3 +1,4 @@
+import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
 	TESTER_EMAIL,
 	TWO_FACTOR_TESTER_1_EMAIL,
@@ -7,23 +8,10 @@ import { expect, test } from "@playwright/test";
 
 test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
-		// Intercept and mock the reCAPTCHA script
-		await page.route("**/recaptcha/**", (route) => {
-			route.fulfill({
-				status: 200,
-				contentType: "application/javascript",
-				body: `
-					window.grecaptcha = {
-					ready: (cb) => cb(),
-					execute: () => Promise.resolve('dummy_recaptcha_token')
-					};
-				`,
-			});
-		});
 		// Navigate to login page
 		await page.goto("http://localhost:5002/auth/login");
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 	});
 
 	test("should display login form with all elements", async ({ page }) => {

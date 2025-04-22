@@ -1,3 +1,4 @@
+import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
 	NONEXISTENT_TESTER_EMAIL,
 	PASSWORD_RESET_TOKEN_COOLDOWN,
@@ -9,23 +10,10 @@ import { expect, test } from "@playwright/test";
 
 test.describe("Request Password Reset Page", () => {
 	test.beforeEach(async ({ page }) => {
-		// Intercept and mock the reCAPTCHA script
-		await page.route("**/recaptcha/**", (route) => {
-			route.fulfill({
-				status: 200,
-				contentType: "application/javascript",
-				body: `
-                    window.grecaptcha = {
-                    ready: (cb) => cb(),
-                    execute: () => Promise.resolve('dummy_recaptcha_token')
-                    };
-                `,
-			});
-		});
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 	});
 
 	test("should display reset password form with all elements", async ({
@@ -178,7 +166,7 @@ test.describe("Request Password Reset Page", () => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 
 		// Second password reset request immediately after
 		await page.getByLabel("Email Address").fill(emailAddress);
@@ -208,7 +196,7 @@ test.describe("Request Password Reset Page", () => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();

@@ -1,26 +1,14 @@
 import { TESTER_EMAIL } from "@/tests/utils/constants";
 import { test as setup } from "@playwright/test";
+import { waitForCaptcha } from "./utils/captcha";
 
 const authFile = "playwright/.auth/user.json";
 
 setup("authenticate", async ({ page }) => {
-	// Intercept and mock the reCAPTCHA script
-	await page.route("**/recaptcha/**", (route) => {
-		route.fulfill({
-			status: 200,
-			contentType: "application/javascript",
-			body: `
-					window.grecaptcha = {
-					ready: (cb) => cb(),
-					execute: () => Promise.resolve('dummy_recaptcha_token')
-					};
-				`,
-		});
-	});
 	// Navigate to login page
 	await page.goto("http://localhost:5002/auth/login");
 	// Wait for recaptcha to load
-	await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+	await waitForCaptcha({ page });
 	await page.getByLabel("Email Address").fill(TESTER_EMAIL);
 	await page
 		.getByRole("textbox", { name: "Password Password" })

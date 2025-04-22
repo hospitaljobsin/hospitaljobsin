@@ -1,3 +1,4 @@
+import { waitForCaptcha } from "@/tests/utils/captcha";
 import { EMAIL_VERIFICATION_TOKEN_COOLDOWN } from "@/tests/utils/constants";
 import type { Email } from "@/tests/utils/mailcatcher";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
@@ -26,23 +27,10 @@ async function findVerificationCode({
 
 test.describe("Sign Up Page", () => {
 	test.beforeEach(async ({ page }) => {
-		// Intercept and mock the reCAPTCHA script
-		await page.route("**/recaptcha/**", (route) => {
-			route.fulfill({
-				status: 200,
-				contentType: "application/javascript",
-				body: `
-					window.grecaptcha = {
-					ready: (cb) => cb(),
-					execute: () => Promise.resolve('dummy_recaptcha_token')
-					};
-				`,
-			});
-		});
 		// Navigate to login page
 		await page.goto("http://localhost:5002/auth/signup");
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 	});
 
 	test("should display signup form with all elements", async ({ page }) => {
@@ -489,7 +477,7 @@ test.describe("Sign Up Page", () => {
 		// Navigate to signup page
 		await page.goto("http://localhost:5002/auth/signup");
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 
 		// Second email verification request immediately after
 		await page.getByLabel("Email Address").fill(emailAddress);
@@ -517,7 +505,7 @@ test.describe("Sign Up Page", () => {
 		// Navigate to signup page
 		await page.goto("http://localhost:5002/auth/signup");
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Continue" }).click();

@@ -62,6 +62,4 @@ class DummyCaptchaVerifier(BaseCaptchaVerifier):
 
 def create_captcha_verifier(settings: Settings) -> BaseCaptchaVerifier:
     """Create a captcha verifier."""
-    if settings.is_testing:
-        return DummyCaptchaVerifier()
     return TurnstileCaptchaVerifier(settings)

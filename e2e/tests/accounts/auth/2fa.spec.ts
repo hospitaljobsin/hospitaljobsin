@@ -1,4 +1,5 @@
 import { generateValidOTP } from "@/tests/utils/authenticator";
+import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
 	TOTP_USER_SECRET,
 	TWO_FACTOR_TESTER_1_EMAIL,
@@ -7,24 +8,11 @@ import { expect, test } from "@playwright/test";
 
 test.describe("2FA Page", () => {
 	test.beforeEach(async ({ page }) => {
-		// Intercept and mock the reCAPTCHA script
-		await page.route("**/recaptcha/**", (route) => {
-			route.fulfill({
-				status: 200,
-				contentType: "application/javascript",
-				body: `
-                    window.grecaptcha = {
-                    ready: (cb) => cb(),
-                    execute: () => Promise.resolve('dummy_recaptcha_token')
-                    };
-                `,
-			});
-		});
 		// Navigate to login page
 		await page.goto("http://localhost:5002/auth/login");
 
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 
 		// Fill form with credentials that require 2FA
 		await page.getByLabel("Email Address").fill(TWO_FACTOR_TESTER_1_EMAIL);
@@ -37,7 +25,7 @@ test.describe("2FA Page", () => {
 		await page.waitForURL("http://localhost:5002/auth/2fa");
 
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 	});
 
 	test("should display 2FA form with all elements", async ({ page }) => {

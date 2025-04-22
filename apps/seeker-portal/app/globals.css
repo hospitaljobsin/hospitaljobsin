@@ -10,7 +10,3 @@
 		@apply bg-background-600;
 	}
 }
-
-.grecaptcha-badge {
-	visibility: hidden;
-}

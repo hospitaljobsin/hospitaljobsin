@@ -1,4 +1,5 @@
 import { generateValidOTP } from "@/tests/utils/authenticator";
+import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
 	RECOVERY_CODE_1,
 	TESTER_EMAIL,
@@ -29,23 +30,10 @@ async function enterPassword({
 
 test.describe("Confirm Password Reset Page", () => {
 	test.beforeEach(async ({ page, request }) => {
-		// Intercept and mock the reCAPTCHA script
-		await page.route("**/recaptcha/**", (route) => {
-			route.fulfill({
-				status: 200,
-				contentType: "application/javascript",
-				body: `
-                    window.grecaptcha = {
-                    ready: (cb) => cb(),
-                    execute: () => Promise.resolve('dummy_recaptcha_token')
-                    };
-                `,
-			});
-		});
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 
 		const emailAddress = TESTER_EMAIL;
 		await page.getByLabel("Email Address").fill(emailAddress);
@@ -195,23 +183,10 @@ test.describe("Confirm Password Reset Page", () => {
 
 test.describe("2FA Confirm Password Reset Page", () => {
 	test.beforeEach(async ({ page, request }) => {
-		// Intercept and mock the reCAPTCHA script
-		await page.route("**/recaptcha/**", (route) => {
-			route.fulfill({
-				status: 200,
-				contentType: "application/javascript",
-				body: `
-                    window.grecaptcha = {
-                    ready: (cb) => cb(),
-                    execute: () => Promise.resolve('dummy_recaptcha_token')
-                    };
-                `,
-			});
-		});
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 
 		const emailAddress = TWO_FACTOR_TESTER_2_EMAIL;
 		await page.getByLabel("Email Address").fill(emailAddress);
@@ -394,23 +369,10 @@ test.describe("Confirm Password Reset Page Authentication Redirects", () => {
 		page,
 		request,
 	}) => {
-		// Intercept and mock the reCAPTCHA script
-		await page.route("**/recaptcha/**", (route) => {
-			route.fulfill({
-				status: 200,
-				contentType: "application/javascript",
-				body: `
-			window.grecaptcha = {
-			ready: (cb) => cb(),
-			execute: () => Promise.resolve('dummy_recaptcha_token')
-			};
-		`,
-			});
-		});
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
-		await page.waitForFunction(() => typeof window.grecaptcha !== "undefined");
+		await waitForCaptcha({ page });
 
 		const emailAddress = TESTER_EMAIL;
 		await page.getByLabel("Email Address").fill(emailAddress);
