@@ -6,9 +6,9 @@ resource "aws_secretsmanager_secret" "backend" {
 resource "aws_secretsmanager_secret_version" "example" {
   secret_id = aws_secretsmanager_secret.backend.id
   secret_string = jsonencode({
-    SERVER_JWE_SECRET_KEY       = "",
-    SERVER_GOOGLE_CLIENT_ID     = "",
-    SERVER_GOOGLE_CLIENT_SECRET = "",
-    SERVER_RECAPTCHA_SECRET_KEY = ""
+    SERVER_JWE_SECRET_KEY       = "TEST",
+    SERVER_GOOGLE_CLIENT_ID     = "TEST",
+    SERVER_GOOGLE_CLIENT_SECRET = "TEST",
+    SERVER_RECAPTCHA_SECRET_KEY = "TEST"
   })
 }
