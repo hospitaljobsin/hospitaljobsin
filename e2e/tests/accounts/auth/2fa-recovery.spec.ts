@@ -52,10 +52,9 @@ test.describe("2FA Recovery Page", () => {
 
 		// ensure recaptcha terms and conditions are visible
 		await expect(
-			page.getByText(/This site is protected by reCAPTCHA/),
+			page.getByText(/This site is protected by Cloudflare Turnstile/),
 		).toBeVisible();
-		await expect(page.getByText("Privacy Policy")).toBeVisible();
-		await expect(page.getByText("Terms of Service")).toBeVisible();
+		await expect(page.getByText("Cloudflare Privacy Policy")).toBeVisible();
 	});
 
 	test("should navigate to 2FA page", async ({ page }) => {
