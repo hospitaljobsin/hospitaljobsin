@@ -160,6 +160,8 @@ Ensure the following policy is added to the user:
 				"secretsmanager:CreateSecret",
 				"secretsmanager:DescribeSecret",
 				"secretsmanager:GetResourcePolicy",
+				"secretsmanager:PutSecretValue",
+				"secretsmanager:DeleteSecret",
 				"s3:*",
 				"geo:CreatePlaceIndex",
 				"geo:DescribePlaceIndex",
