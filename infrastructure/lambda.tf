@@ -59,9 +59,10 @@ resource "aws_iam_policy" "lambda_custom_policy" {
         Resource = [
           aws_location_place_index.this.index_arn
         ]
-        }, {
+      },
+      {
         Effect = "Allow",
-        action = ["secretsmanager:GetSecretValue"],
+        Action = ["secretsmanager:GetSecretValue"],
         Resource = [
           aws_secretsmanager_secret.backend.arn,
           "${aws_secretsmanager_secret.backend.arn}/*"
