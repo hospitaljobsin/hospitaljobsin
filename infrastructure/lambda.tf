@@ -121,20 +121,16 @@ resource "aws_lambda_function" "backend" {
 
   environment {
     variables = {
-      SERVER_DEBUG                 = "false"
-      SERVER_ENVIRONMENT           = "production"
-      SERVER_DATABASE_URL          = "${mongodbatlas_advanced_cluster.this.connection_strings.0.standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
-      SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
-      SERVER_HOST                  = "0.0.0.0"
-      SERVER_PORT                  = "8000"
-      SERVER_LOG_LEVEL             = "INFO"
-      SERVER_CORS_ALLOW_ORIGINS    = "[\"http://localhost:5000\", \"http://localhost:5001\", \"http://localhost:5002\"]"
-      SERVER_GOOGLE_CLIENT_ID      = "XXX"
-      SERVER_GOOGLE_CLIENT_SECRET  = "XXX"
-      SERVER_EMAIl_PROVIDER        = "aws_ses"
-      SERVER_EMAIL_FROM            = aws_ses_email_identity.this.email
-      # TODO: pass ARN and fetch from Secrets Manager
-      SERVER_RECAPTCHA_SECRET_KEY      = "XXX"
+      SERVER_DEBUG                     = "false"
+      SERVER_ENVIRONMENT               = "production"
+      SERVER_DATABASE_URL              = "${mongodbatlas_advanced_cluster.this.connection_strings.0.standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME     = var.mongodb_database_name
+      SERVER_HOST                      = "0.0.0.0"
+      SERVER_PORT                      = "8000"
+      SERVER_LOG_LEVEL                 = "INFO"
+      SERVER_CORS_ALLOW_ORIGINS        = "[\"http://localhost:5000\", \"http://localhost:5001\", \"http://localhost:5002\"]"
+      SERVER_EMAIl_PROVIDER            = "aws_ses"
+      SERVER_EMAIL_FROM                = aws_ses_email_identity.this.email
       SERVER_S3_BUCKET_NAME            = aws_s3_bucket.this.bucket
       SERVER_ACCOUNTS_BASE_URL         = "https://accounts.${var.domain_name}"
       SERVER_RECRUITER_PORTAL_BASE_URL = "https://recruiter.${var.domain_name}"
@@ -142,10 +138,10 @@ resource "aws_lambda_function" "backend" {
       SERVER_RP_ID                     = var.domain_name
       SERVER_RP_NAME                   = var.app_name
       SERVER_RP_EXPECTED_ORIGIN        = "https://accounts.${var.domain_name}"
-      # TODO: pass ARN and fetch from Secrets Manager
-      SERVER_JWE_SECRET_KEY            = "ca07d5f965a534ffb07d1699e30385a6"
       SERVER_GEOCODING_PROVIDER        = "aws_location"
       SERVER_LOCATION_PLACE_INDEX_NAME = aws_location_place_index.this.index_name
+
+      AWS_SECRETS_MANAGER_SECRET_ID = ""
     }
   }
 

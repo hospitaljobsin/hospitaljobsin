@@ -1,9 +1,15 @@
+import os
 from enum import StrEnum
 from typing import Annotated, Literal
 
 from pydantic import Field, SecretStr, UrlConstraints
 from pydantic_core import MultiHostUrl
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import (
+    AWSSecretsManagerSettingsSource,
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+)
 
 
 class Environment(StrEnum):
@@ -219,6 +225,35 @@ class Settings(BaseSettings):
     def is_production(self) -> bool:
         """Check whether the current environment is production."""
         return self._is_environment(Environment.production)
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
+
+        if not aws_secret_id:
+            return (
+                init_settings,
+                env_settings,
+                dotenv_settings,
+                file_secret_settings,
+            )
+        return (
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            file_secret_settings,
+            AWSSecretsManagerSettingsSource(
+                settings_cls,
+                aws_secret_id,
+            ),
+        )
 
     @classmethod
     def model_validate(cls, values):
