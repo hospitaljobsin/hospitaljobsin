@@ -2,12 +2,12 @@
 
 import type { Step2VerificationFormMutation as Step2VerificationFormMutationType } from "@/__generated__/Step2VerificationFormMutation.graphql";
 import type { Step2VerificationFormRequestVerificationMutation as Step2VerificationFormRequestVerificationMutationType } from "@/__generated__/Step2VerificationFormRequestVerificationMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
 import { timeFormat } from "@/lib/intl";
 import { Button, Input, Tooltip, addToast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit3Icon } from "lucide-react";
 import { useEffect } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -83,7 +83,7 @@ export default function Step2VerificationForm() {
 	const cooldownSeconds = SignupContext.useSelector(
 		(state) => state.context.cooldownSeconds,
 	);
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 	const {
 		control,
 		handleSubmit,

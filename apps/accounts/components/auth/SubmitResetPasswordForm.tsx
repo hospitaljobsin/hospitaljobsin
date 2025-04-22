@@ -14,11 +14,11 @@ import {
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
+import { useTurnstile } from "../TurnstileProvider";
 
 const SubmitResetPasswordFormMutation = graphql`
   mutation SubmitResetPasswordFormMutation($email: String!, $recaptchaToken: String!) {
@@ -53,7 +53,7 @@ export default function SubmitResetPasswordFrom() {
 		resolver: zodResolver(submitResetPasswordSchema),
 	});
 
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 
 	async function onSubmit(values: z.infer<typeof submitResetPasswordSchema>) {
 		if (!executeRecaptcha) {

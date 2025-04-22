@@ -60,7 +60,7 @@ class DummyCaptchaVerifier(BaseCaptchaVerifier):
         return captcha_token == "dummy_recaptcha_token"  # noqa: S105
 
 
-def create_recaptcha_verifier(settings: Settings) -> BaseCaptchaVerifier:
+def create_captcha_verifier(settings: Settings) -> BaseCaptchaVerifier:
     """Create a captcha verifier."""
     if settings.is_testing:
         return DummyCaptchaVerifier()

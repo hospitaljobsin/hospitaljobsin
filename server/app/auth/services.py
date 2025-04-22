@@ -81,6 +81,7 @@ from app.auth.repositories import (
     WebAuthnCredentialRepo,
 )
 from app.config import Settings
+from app.core.captcha import BaseCaptchaVerifier
 from app.core.constants import (
     APP_NAME,
     EMAIL_VERIFICATION_EXPIRES_IN,
@@ -89,7 +90,6 @@ from app.core.constants import (
 )
 from app.core.emails import BaseEmailSender
 from app.core.formatting import format_datetime
-from app.core.recaptcha import BaseRecaptchaVerifier
 
 
 class AuthService:
@@ -107,7 +107,7 @@ class AuthService:
         recovery_code_repo: RecoveryCodeRepo,
         temp_two_factor_challenge_repo: TemporaryTwoFactorChallengeRepo,
         email_sender: BaseEmailSender,
-        recaptcha_verifier: BaseRecaptchaVerifier,
+        captcha_verifier: BaseCaptchaVerifier,
         settings: Settings,
     ) -> None:
         self._account_repo = account_repo
@@ -125,7 +125,7 @@ class AuthService:
         self._temp_two_factor_challenge_repo = temp_two_factor_challenge_repo
         self._email_sender = email_sender
         self._settings = settings
-        self._recaptcha_verifier = recaptcha_verifier
+        self._captcha_verifier = captcha_verifier
 
     def _is_email_verification_token_cooled_down(
         self, token: EmailVerificationToken
@@ -267,7 +267,7 @@ class AuthService:
 
     async def _verify_recaptcha_token(self, recaptcha_token: str) -> bool:
         """Verify whether the given recaptcha token is valid."""
-        return await self._recaptcha_verifier.verify(recaptcha_token)
+        return await self._captcha_verifier.verify(recaptcha_token)
 
     async def register_with_password(
         self,

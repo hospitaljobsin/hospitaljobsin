@@ -7,9 +7,9 @@ import { startAuthentication } from "@simplewebauthn/browser";
 import { Fingerprint } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import { useTurnstile } from "../TurnstileProvider";
 
 const GenerateReauthenticationOptionsMutation = graphql`
   mutation PasskeyAuthenticationGenerateOptionsMutation($recaptchaToken: String!) {
@@ -73,7 +73,7 @@ export default function PasskeyAuthentication({
 	);
 
 	const [isPasskeysPromptActive, setIsPasskeysPromptActive] = useState(false);
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 
 	async function handlePasskeyAuthentication() {
 		onAuthStart();

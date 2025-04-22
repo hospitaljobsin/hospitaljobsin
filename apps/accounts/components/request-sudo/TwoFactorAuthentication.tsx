@@ -5,10 +5,10 @@ import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
+import { useTurnstile } from "../TurnstileProvider";
 
 const TwoFactorAuthenticationMutation = graphql`
   mutation TwoFactorAuthenticationMutation($twoFactorToken: String!, $recaptchaToken: String!) {
@@ -63,7 +63,7 @@ export default function TwoFactorAuthentication({
 		resolver: zodResolver(twoFactorAuthenticationSchema),
 	});
 
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 
 	async function onSubmit(
 		values: z.infer<typeof twoFactorAuthenticationSchema>,

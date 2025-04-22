@@ -50,7 +50,7 @@ services:
       args:
         - NEXT_PUBLIC_API_URL=http://localhost:8000
         - NEXT_PUBLIC_URL=http://localhost:5002
-        - NEXT_PUBLIC_RECAPTCHA_SITE_KEY=dummy_key
+        - NEXT_PUBLIC_CAPTCHA_SITE_KEY=dummy_key
         - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://localhost:5001
         - NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL=http://localhost:5000
     ports:
@@ -77,7 +77,7 @@ services:
       args:
         - NEXT_PUBLIC_API_URL=http://localhost:8000
         - NEXT_PUBLIC_URL=http://localhost:5000
-        - NEXT_PUBLIC_RECAPTCHA_SITE_KEY=dummy_key
+        - NEXT_PUBLIC_CAPTCHA_SITE_KEY=dummy_key
         - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://localhost:5001
         - NEXT_PUBLIC_ACCOUNTS_BASE_URL=http://localhost:5002
     ports:

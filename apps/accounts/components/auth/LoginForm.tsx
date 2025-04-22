@@ -25,10 +25,10 @@ import { EyeIcon, EyeOffIcon, FingerprintIcon } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
+import { useTurnstile } from "../TurnstileProvider";
 
 const LoginFormPasswordMutation = graphql`
   mutation LoginFormPasswordMutation($email: String!, $password: String!, $recaptchaToken: String!) {
@@ -139,7 +139,7 @@ export default function LoginForm() {
 		reValidateMode: "onChange",
 	});
 
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 
 	function getOauth2ErrorMessage(errorCode: string): string {
 		switch (errorCode) {

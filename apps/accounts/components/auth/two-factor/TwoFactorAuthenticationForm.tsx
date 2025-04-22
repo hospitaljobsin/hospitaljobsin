@@ -1,6 +1,7 @@
 "use client";
 
 import type { TwoFactorAuthenticationFormMutation as TwoFactorAuthenticationFormMutationType } from "@/__generated__/TwoFactorAuthenticationFormMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
 import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
 import { useRouter } from "@bprogress/next";
@@ -16,7 +17,6 @@ import {
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -71,7 +71,7 @@ export default function TwoFactorAuthenticationForm() {
 		resolver: zodResolver(twoFactorAuthenticationForm),
 	});
 
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 
 	async function onSubmit(values: z.infer<typeof twoFactorAuthenticationForm>) {
 		if (!executeRecaptcha) {

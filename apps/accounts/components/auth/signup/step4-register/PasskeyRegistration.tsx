@@ -2,13 +2,13 @@
 
 import type { PasskeyRegistrationMutation } from "@/__generated__/PasskeyRegistrationMutation.graphql";
 import type { PasskeyRegistrationOptionsMutation } from "@/__generated__/PasskeyRegistrationOptionsMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
 import { getValidRedirectURL } from "@/lib/redirects";
 import { Alert, Button, Input, addToast } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -90,7 +90,7 @@ export default function PasskeyRegistration() {
 	);
 	const email = SignupContext.useSelector((state) => state.context.email);
 	const fullName = SignupContext.useSelector((state) => state.context.fullName);
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 
 	const [commitRegister, isCommitRegisterInFlight] =
 		useMutation<PasskeyRegistrationMutation>(RegisterWithPasskeyMutation);

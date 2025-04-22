@@ -1,10 +1,10 @@
 "use client";
 
 import type { Step1EmailFormMutation as Step1EmailFormMutationType } from "@/__generated__/Step1EmailFormMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
 import { Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -46,7 +46,7 @@ export default function Step1EmailForm() {
 	const emailError = SignupContext.useSelector(
 		(state) => state.context.emailError,
 	);
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 	const { register, handleSubmit, formState, setError } = useForm({
 		resolver: zodResolver(step1Schema),
 		defaultValues: { email: email || "" },

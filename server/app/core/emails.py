@@ -14,14 +14,18 @@ from app.config import Settings
 @asynccontextmanager
 async def create_smtp_client(settings: Settings) -> AsyncGenerator[SMTP, None]:
     """Create an SMTP client."""
-    smtp_client = SMTP(
-        hostname=settings.email_host,
-        port=settings.email_port,
-        password=settings.email_password.get_secret_value()
-        if settings.email_password
-        else None,
-        username=settings.email_username,
-    )
+    if settings.email_username and settings.email_password:
+        smtp_client = SMTP(
+            hostname=settings.email_host,
+            port=settings.email_port,
+            password=settings.email_password.get_secret_value(),
+            username=settings.email_username,
+        )
+    else:
+        smtp_client = SMTP(
+            hostname=settings.email_host,
+            port=settings.email_port,
+        )
 
     async with smtp_client:
         yield smtp_client

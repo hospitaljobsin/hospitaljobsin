@@ -31,6 +31,7 @@ from app.core.aws_sdk import (
     create_s3_client,
     create_ses_client,
 )
+from app.core.captcha import create_captcha_verifier
 from app.core.emails import (
     BaseEmailSender,
     SESEmailSender,
@@ -44,7 +45,6 @@ from app.core.geocoding import (
     create_nominatim_geocoder,
 )
 from app.core.oauth import create_oauth_client
-from app.core.recaptcha import create_recaptcha_verifier
 from app.core.templates import create_jinja2_environment
 from app.dataloaders import create_dataloaders
 from app.jobs.dataloaders import (
@@ -130,7 +130,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_aioboto3_session))
     container.register(aioinject.Scoped(create_s3_client))
     container.register(aioinject.Singleton(create_oauth_client))
-    container.register(aioinject.Singleton(create_recaptcha_verifier))
+    container.register(aioinject.Singleton(create_captcha_verifier))
     container.register(aioinject.Scoped(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
     container.register(aioinject.Scoped(AuthService))

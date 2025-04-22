@@ -1,8 +1,8 @@
 import type { AuthenticatorTwoFactorAuthenticationResetPasswordMutation as AuthenticatorTwoFactorAuthenticationResetPasswordMutationType } from "@/__generated__/AuthenticatorTwoFactorAuthenticationResetPasswordMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
@@ -67,7 +67,7 @@ export default function AuthenticatorTwoFactorAuthentication({
 		resolver: zodResolver(resetPassword2faSchema),
 	});
 
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 
 	async function onSubmit(values: z.infer<typeof resetPassword2faSchema>) {
 		if (!executeRecaptcha) {

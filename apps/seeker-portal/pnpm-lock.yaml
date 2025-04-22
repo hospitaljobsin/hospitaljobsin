@@ -23,6 +23,9 @@ importers:
       '@lobehub/icons':
         specifier: ^1.95.0
         version: 1.95.0(@babel/core@7.26.0)(@types/react@19.1.0)(acorn@8.14.1)(antd@5.23.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@marsidev/react-turnstile':
+        specifier: ^1.1.0
+        version: 1.1.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@mdx-js/loader':
         specifier: ^3.1.0
         version: 3.1.0(acorn@8.14.1)
@@ -74,9 +77,6 @@ importers:
       react-dom:
         specifier: 19.0.0
         version: 19.0.0(react@19.0.0)
-      react-google-recaptcha-v3:
-        specifier: ^1.10.1
-        version: 1.10.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react-hook-form:
         specifier: ^7.55.0
         version: 7.55.0(react@19.0.0)
@@ -1295,6 +1295,12 @@ packages:
       antd: ^5.23.0
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
+
+  '@marsidev/react-turnstile@1.1.0':
+    resolution: {integrity: sha512-X7bP9ZYutDd+E+klPYF+/BJHqEyyVkN4KKmZcNRr84zs3DcMoftlMAuoKqNSnqg0HE7NQ1844+TLFSJoztCdSA==}
+    peerDependencies:
+      react: ^17.0.2 || ^18.0.0 || ^19.0
+      react-dom: ^17.0.2 || ^18.0.0 || ^19.0
 
   '@mdx-js/loader@3.1.0':
     resolution: {integrity: sha512-xU/lwKdOyfXtQGqn3VnJjlDrmKXEvMi1mgYxVmukEUtVycIz1nh7oQ40bKTd4cA7rLStqu0740pnhGYxGoqsCg==}
@@ -5078,12 +5084,6 @@ packages:
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
-  react-google-recaptcha-v3@1.10.1:
-    resolution: {integrity: sha512-K3AYzSE0SasTn+XvV2tq+6YaxM+zQypk9rbCgG4OVUt7Rh4ze9basIKefoBz9sC0CNslJj9N1uwTTgRMJQbQJQ==}
-    peerDependencies:
-      react: ^16.3 || ^17.0 || ^18.0
-      react-dom: ^17.0 || ^18.0
-
   react-hook-form@7.55.0:
     resolution: {integrity: sha512-XRnjsH3GVMQz1moZTW53MxfoWN7aDpUg/GpVNc4A3eXRVNdGXfbzJ4vM4aLQ8g6XCUh1nIbx70aaNCl7kxnjog==}
     engines: {node: '>=18.0.0'}
@@ -7676,6 +7676,11 @@ snapshots:
       - '@types/react'
       - acorn
       - supports-color
+
+  '@marsidev/react-turnstile@1.1.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
 
   '@mdx-js/loader@3.1.0(acorn@8.14.1)':
     dependencies:
@@ -12801,12 +12806,6 @@ snapshots:
       react: 19.0.0
 
   react-fast-compare@3.2.2: {}
-
-  react-google-recaptcha-v3@1.10.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
-    dependencies:
-      hoist-non-react-statics: 3.3.2
-      react: 19.0.0
-      react-dom: 19.0.0(react@19.0.0)
 
   react-hook-form@7.55.0(react@19.0.0):
     dependencies:

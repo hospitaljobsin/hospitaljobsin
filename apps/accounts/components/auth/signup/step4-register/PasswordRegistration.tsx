@@ -1,13 +1,13 @@
 "use client";
 
 import type { PasswordRegistrationMutation as PasswordRegistrationMutationType } from "@/__generated__/PasswordRegistrationMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
 import { getValidRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -81,7 +81,7 @@ export default function PasswordRegistration() {
 	);
 	const email = SignupContext.useSelector((state) => state.context.email);
 	const fullName = SignupContext.useSelector((state) => state.context.fullName);
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 	const {
 		register,
 		handleSubmit,

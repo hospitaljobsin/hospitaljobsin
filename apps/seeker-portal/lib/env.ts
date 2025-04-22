@@ -10,7 +10,7 @@ export const env = createEnv({
 	client: {
 		NEXT_PUBLIC_URL: z.string().url(),
 		NEXT_PUBLIC_API_URL: z.string().url(),
-		NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string(),
+		NEXT_PUBLIC_CAPTCHA_SITE_KEY: z.string(),
 		NEXT_PUBLIC_ACCOUNTS_BASE_URL: z.string().url(),
 		NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: z.string().url(),
 	},
@@ -18,12 +18,12 @@ export const env = createEnv({
 	experimental__runtimeEnv: {
 		NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
 		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-		NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
+		NEXT_PUBLIC_CAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY,
 		NEXT_PUBLIC_ACCOUNTS_BASE_URL: process.env.NEXT_PUBLIC_ACCOUNTS_BASE_URL,
 		NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL:
 			process.env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL,
 	},
-		/**
+	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
 	 * This is especially useful for Docker builds.
 	 */

@@ -1,5 +1,6 @@
 import type { PasskeyTwoFactorAuthenticationGenerateOptionsMutation } from "@/__generated__/PasskeyTwoFactorAuthenticationGenerateOptionsMutation.graphql";
 import type { PasskeyTwoFactorAuthenticationResetPasswordMutation as PasskeyTwoFactorAuthenticationResetPasswordMutationType } from "@/__generated__/PasskeyTwoFactorAuthenticationResetPasswordMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
 import {
 	Button,
 	Card,
@@ -11,7 +12,6 @@ import {
 import { startAuthentication } from "@simplewebauthn/browser";
 import { Fingerprint } from "lucide-react";
 import { useState } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { graphql, useMutation } from "react-relay";
 
 const GenerateAuthenticationOptionsMutation = graphql`
@@ -86,7 +86,7 @@ export default function PasskeyTwoFactorAuthentication({
 	] = useMutation<PasskeyTwoFactorAuthenticationGenerateOptionsMutation>(
 		GenerateAuthenticationOptionsMutation,
 	);
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 	const [isPasskeysPromptActive, setIsPasskeysPromptActive] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 

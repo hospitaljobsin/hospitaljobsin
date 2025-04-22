@@ -9,10 +9,10 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
+import { useTurnstile } from "../TurnstileProvider";
 
 const PasswordAuthenticationMutation = graphql`
   mutation PasswordAuthenticationMutation($password: String!, $recaptchaToken: String!) {
@@ -67,7 +67,7 @@ export default function PasswordAuthentication({
 		resolver: zodResolver(passwordAuthenticationSchema),
 	});
 
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 
 	async function onSubmit(
 		values: z.infer<typeof passwordAuthenticationSchema>,

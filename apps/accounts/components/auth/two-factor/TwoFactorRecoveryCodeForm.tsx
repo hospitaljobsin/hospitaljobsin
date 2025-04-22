@@ -1,6 +1,7 @@
 "use client";
 
 import type { TwoFactorRecoveryCodeFormMutation as TwoFactorRecoveryCodeFormMutationType } from "@/__generated__/TwoFactorRecoveryCodeFormMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
 import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
 import { useRouter } from "@bprogress/next";
@@ -16,7 +17,6 @@ import {
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -66,7 +66,7 @@ export default function TwoFactorRecoveryCodeForm() {
 		resolver: zodResolver(twoFactorRecoveryCodeForm),
 	});
 
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const { executeRecaptcha } = useTurnstile();
 
 	async function onSubmit(values: z.infer<typeof twoFactorRecoveryCodeForm>) {
 		if (!executeRecaptcha) {

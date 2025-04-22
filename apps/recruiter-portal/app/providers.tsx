@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { RelayEnvironmentProvider } from "react-relay";
+import { TurnstileProvider } from "../components/TurnstileProvider";
 
 export default function Providers({
 	children,
@@ -24,15 +25,7 @@ export default function Providers({
 			<ToastProvider placement="bottom-left" toastOffset={15} />
 			<ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
 				<RelayEnvironmentProvider environment={environment}>
-					<GoogleReCaptchaProvider
-						reCaptchaKey={env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-						useRecaptchaNet
-						container={{
-							parameters: {
-								badge: "inline",
-							},
-						}}
-					>
+					<TurnstileProvider>
 						<ProgressProvider
 							height="4px"
 							color="hsl(var(--heroui-primary-400))"
@@ -42,7 +35,7 @@ export default function Providers({
 						>
 							{children}
 						</ProgressProvider>
-					</GoogleReCaptchaProvider>
+					</TurnstileProvider>
 				</RelayEnvironmentProvider>
 			</ThemeProvider>
 		</HeroUIProvider>
