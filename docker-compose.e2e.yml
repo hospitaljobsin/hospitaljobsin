@@ -21,7 +21,7 @@ services:
       SERVER_EMAIL_USERNAME: ''
       SERVER_EMAIL_PASSWORD: ''
       SERVER_EMAIL_FROM: 'noreply@example.com'
-      SERVER_RECAPTCHA_SECRET_KEY: "dummy_key"
+      SERVER_CAPTCHA_SECRET_KEY: "dummy_key"
       SERVER_S3_BUCKET_NAME: "medicaljobs"
       SERVER_ACCOUNTS_BASE_URL: "http://localhost:5002"
       SERVER_SEEKER_PORTAL_BASE_URL: "http://localhost:5001"

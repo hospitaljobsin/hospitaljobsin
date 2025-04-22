@@ -13,6 +13,6 @@ resource "aws_secretsmanager_secret_version" "example" {
     server_jwe_secret_key       = random_bytes.jwt_secret.base64,
     server_google_client_id     = "test",
     server_google_client_secret = "test",
-    server_recaptcha_secret_key = "test"
+    server_captcha_secret_key   = cloudflare_turnstile_widget.example.secret
   })
 }

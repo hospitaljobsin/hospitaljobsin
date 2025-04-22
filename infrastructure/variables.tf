@@ -45,3 +45,9 @@ variable "github_repository_name" {
   description = "GitHub repository name."
   default     = "aryaniyaps/medical-job-board"
 }
+
+
+variable "cloudflare_acount_id" {
+  type        = string
+  description = "Cloudflare account ID."
+}

@@ -226,6 +226,9 @@ Ensure the following policy is added to the user:
 	- secrets: read and write
 	- variables: read and write
 
+- Create a cloudflare API token and store it under env vars in terraform cloud (CLOUDFLARE_API_TOKEN)
+- set the cloudflare account ID terraform variable
+
 
 
 ## TODO: infrastructure

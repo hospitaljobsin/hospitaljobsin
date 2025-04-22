@@ -135,8 +135,8 @@ class Settings(BaseSettings):
 
     # app config
 
-    # Recaptcha config
-    recaptcha_secret_key: SecretStr
+    # Captcha config
+    captcha_secret_key: SecretStr
 
     # AWS Config
 
