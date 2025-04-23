@@ -103,14 +103,14 @@ resource "aws_eip" "nat" {
   }
 }
 
-resource "aws_nat_gateway" "this" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public["${var.aws_region}a"].id
+# resource "aws_nat_gateway" "this" {
+#   allocation_id = aws_eip.nat.id
+#   subnet_id     = aws_subnet.public["${var.aws_region}a"].id
 
-  tags = {
-    Name = "${var.resource_prefix}-nat-gw"
-  }
-}
+#   tags = {
+#     Name = "${var.resource_prefix}-nat-gw"
+#   }
+# }
 
 # resource "aws_route" "private_nat_gateway" {
 #   route_table_id         = aws_route_table.private.id
