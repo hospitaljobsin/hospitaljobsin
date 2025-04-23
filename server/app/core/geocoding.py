@@ -82,6 +82,9 @@ class NominatimLocationService(BaseLocationService):
             return []
 
 
+# TODO: ensure we use the singleuse places index only for suggestions and autocomplete (0.50$ per 1k requests)
+# we need to use a storage (intended use) places index for geocoding and storing the coordinates (4.0$ per 1k requests)
+# as a result, we need to update the job search to directly enter coordinates as arguments- no search term and then geocoding it again- which is expensive
 class AWSLocationService(BaseLocationService):
     def __init__(
         self, location_client: LocationServiceClient, settings: Settings
