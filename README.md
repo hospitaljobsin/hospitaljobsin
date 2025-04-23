@@ -224,7 +224,23 @@ Ensure the following policy is added to the user:
 
 - Create a cloudflare API token and store it under env vars in terraform cloud (CLOUDFLARE_API_TOKEN)
 - set the cloudflare account ID terraform variable
+- Create a GCP project, and create Oauth 2.0 web credentials.
+- set the `google_oauth_client_id` and `google_oauth_client_secret` terraform vars.
+- Client config:
+	- Authorized Javascript origins:
+		- https://accounts.hospitaljobs.in
+	- Authorized Redirect URIs:
+		- https://api.hospitaljobs.in/auth/callback/signin/google
+		- https://api.hospitaljobs.in/auth/callback/request_sudo_mode/google
 
+- Project Branding config:
+	- App name: Hospital Jobs
+	- App Domain:
+		- Application home page: https://hospitaljobs.in
+		- Application privacy policy link: https://hospitaljobs.in/privacy
+		- Application terms of service link: https://hospitaljobs.in/terms
+	- Authorized domains:
+		- hospitaljobs.in
 
 
 ## TODO: infrastructure
