@@ -230,8 +230,6 @@ Ensure the following policy is added to the user:
 ## TODO: infrastructure
 - wait for relevant tests to pass before building and pushing
 - cache geocoding results to save costs
-- update lambda secrets loading via aws secrets manager (jwe secret, captcha key, google client ID, client secret etc)
-	- https://docs.pydantic.dev/latest/concepts/pydantic_settings/#aws-secrets-manager
 - deploy frontends to Next.js to reduce latency (possibly using OpenNext)
 	- https://github.com/nhs-england-tools/terraform-aws-opennext
 	- https://github.com/opennextjs/opennextjs-aws
