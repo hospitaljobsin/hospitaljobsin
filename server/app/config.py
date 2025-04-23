@@ -194,7 +194,9 @@ class Settings(BaseSettings):
     # geocoder config
     geocoding_provider: Literal["nominatim", "aws_location"] = "nominatim"
 
-    location_place_index_name: str | None = None
+    single_use_location_place_index_name: str | None = None
+
+    storage_location_place_index_name: str | None = None
 
     geocoder_domain: str | None = None
 
@@ -296,8 +298,12 @@ class Settings(BaseSettings):
                     "geocoder_user_agent is required when geocoding_provider is nominatim"
                 )
         elif geocoding_provider == "aws_location":
-            if not values.get("location_place_index_name"):
+            if not values.get("single_use_location_place_index_name"):
                 raise ValueError(
-                    "location_place_index_name is required when geocoding_provider is aws_location"
+                    "single_use_location_place_index_name is required when geocoding_provider is aws_location"
+                )
+            if not values.get("storage_location_place_index_name"):
+                raise ValueError(
+                    "storage_location_place_index_name is required when geocoding_provider is aws_location"
                 )
         return values

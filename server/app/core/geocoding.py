@@ -9,7 +9,7 @@ from geopy.geocoders.nominatim import Nominatim
 from types_aiobotocore_location import LocationServiceClient
 
 from app.config import Settings
-from app.geocoding.models import GeocodeResult, SearchLocation
+from app.geocoding.models import Coordinates, SearchLocation
 
 
 def generate_place_id(text: str) -> str:
@@ -20,7 +20,7 @@ def generate_place_id(text: str) -> str:
 class BaseLocationService:
     """Base geocoder class."""
 
-    async def geocode(self, query: str) -> GeocodeResult | None:
+    async def geocode(self, query: str) -> Coordinates | None:
         """Geocode a query."""
         raise NotImplementedError
 
@@ -51,11 +51,11 @@ class NominatimLocationService(BaseLocationService):
     async def geocode(
         self,
         query: str,
-    ) -> GeocodeResult | None:
+    ) -> Coordinates | None:
         """Geocode a query."""
         location = await self._geocoder.geocode(query)
         if location:
-            return GeocodeResult(
+            return Coordinates(
                 latitude=location.latitude,
                 longitude=location.longitude,
             )
@@ -76,6 +76,10 @@ class NominatimLocationService(BaseLocationService):
                             )
                         ),
                         display_name=item.get("display_name"),
+                        coordinates=Coordinates(
+                            latitude=item.get("lat"),
+                            longitude=item.get("lon"),
+                        ),
                     )
                     for item in data
                 ]
@@ -95,18 +99,18 @@ class AWSLocationService(BaseLocationService):
     async def geocode(
         self,
         query: str,
-    ) -> GeocodeResult | None:
+    ) -> Coordinates | None:
         """Geocode a query using AWS LocationServiceClient."""
         # The operation is search_place_index_for_text for geocoding
         response = await self._location_client.search_place_index_for_text(
-            IndexName=self._settings.location_place_index_name,
+            IndexName=self._settings.storage_location_place_index_name,
             Text=query,
             MaxResults=1,
         )
         results = response.get("Results", [])
         if results:
             point = results[0]["Place"]["Geometry"]["Point"]
-            return GeocodeResult(
+            return Coordinates(
                 latitude=point[1],
                 longitude=point[0],
             )
@@ -114,8 +118,8 @@ class AWSLocationService(BaseLocationService):
 
     async def get_locations(self, search_term: str, limit: int) -> list[SearchLocation]:
         """Get relevant search locations for the given search term using AWS LocationServiceClient."""
-        response = await self._location_client.search_place_index_for_suggestions(
-            IndexName=self._settings.location_place_index_name,
+        response = await self._location_client.search_place_index_for_text(
+            IndexName=self._settings.single_use_location_place_index_name,
             Text=search_term,
             MaxResults=limit,
         )
@@ -124,6 +128,11 @@ class AWSLocationService(BaseLocationService):
             SearchLocation(
                 place_id=str(item.get("PlaceId", generate_place_id(item["Text"]))),
                 display_name=item["Text"],
+                coordinates=Coordinates(
+                    latitude=item["Place"]["Geometry"]["Point"][1],
+                    longitude=item["Place"]["Geometry"]["Point"][0],
+                ),
             )
             for item in results
+            if item["Place"]["Geometry"].get("Point") is not None
         ]

@@ -8,6 +8,7 @@ from strawberry.permission import PermissionExtension
 
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo
+from app.geocoding.types import CoordinatesInputType
 
 from .repositories import JobApplicantRepo, JobRepo, SavedJobRepo
 from .types import (
@@ -39,10 +40,10 @@ class JobQuery:
                 description="The search (query) term",
             ),
         ] = None,
-        location: Annotated[
-            str | None,
+        coordinates: Annotated[
+            CoordinatesInputType | None,
             strawberry.argument(
-                description="The location to search for jobs",
+                description="The location coordinates to search for jobs",
             ),
         ] = None,
         before: Annotated[
@@ -72,7 +73,9 @@ class JobQuery:
     ) -> JobConnectionType:
         paginated_result = await job_repo.get_all_active(
             search_term=search_term,
-            location=location,
+            coordinates=CoordinatesInputType.to_document(coordinates)
+            if coordinates
+            else None,
             proximity_km=proximity_km,
             first=first,
             last=last,

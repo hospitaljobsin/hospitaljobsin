@@ -8,13 +8,12 @@ import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.operators import And, In, NearSphere, Set
 from bson import ObjectId
-from strawberry.relay import PageInfo
 
 from app.accounts.documents import Account
 from app.base.models import GeoObject
 from app.core.constants import JobApplicantStatus, JobMetricEventType
-from app.core.geocoding import BaseLocationService
 from app.database.paginator import PaginatedResult, Paginator
+from app.geocoding.models import Coordinates
 from app.organizations.documents import Organization
 
 from .documents import (
@@ -30,9 +29,6 @@ from .documents import (
 
 
 class JobRepo:
-    def __init__(self, location_service: BaseLocationService) -> None:
-        self._location_service = location_service
-
     async def generate_slug(self, title: str, organization_id: ObjectId) -> str:
         """Generate a slug from the job title."""
         slug = title.lower().replace(" ", "-")
@@ -171,7 +167,7 @@ class JobRepo:
     async def get_all_active(
         self,
         search_term: str | None = None,
-        location: str | None = None,
+        coordinates: Coordinates | None = None,
         proximity_km: float | None = None,
         first: int | None = None,
         last: int | None = None,
@@ -194,21 +190,8 @@ class JobRepo:
             )
 
         # Apply location proximity filter if both location and proximity are provided
-        if location:
+        if coordinates:
             proximity_km = proximity_km or 1.0  # Default to 1 km if not provided
-            # Geocode the location string to coordinates
-            geocoded_location = await self._location_service.geocode(location)
-
-            if geocoded_location is None:
-                return PaginatedResult(
-                    entities=[],
-                    page_info=PageInfo(
-                        has_next_page=False,
-                        has_previous_page=False,
-                        start_cursor=None,
-                        end_cursor=None,
-                    ),  # type: ignore[arg-type]
-                )
 
             # The max_distance parameter expects meters, so convert km to meters
             max_distance_meters = proximity_km * 1000.0
@@ -220,8 +203,8 @@ class JobRepo:
                     {"$text": {"$search": search_term}},
                     NearSphere(
                         Job.geo,
-                        geocoded_location.longitude,
-                        geocoded_location.latitude,
+                        coordinates.longitude,
+                        coordinates.latitude,
                         max_distance=max_distance_meters,
                         min_distance=0.0,
                     ),
@@ -231,8 +214,8 @@ class JobRepo:
                     Job.is_active == True,  # noqa: E712
                     NearSphere(
                         Job.geo,
-                        geocoded_location.longitude,
-                        geocoded_location.latitude,
+                        coordinates.longitude,
+                        coordinates.latitude,
                         max_distance=max_distance_meters,
                         min_distance=0.0,
                     ),

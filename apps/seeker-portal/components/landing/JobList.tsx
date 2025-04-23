@@ -1,5 +1,6 @@
 import type { JobListFragment$key } from "@/__generated__/JobListFragment.graphql";
 import type { JobListInternalFragment$key } from "@/__generated__/JobListInternalFragment.graphql";
+import type { CoordinatesInput } from "@/__generated__/JobListPaginationQuery.graphql";
 import type { LandingViewQuery } from "@/__generated__/LandingViewQuery.graphql";
 import { Card, CardBody } from "@heroui/react";
 import Image from "next/image";
@@ -13,9 +14,9 @@ const JobListFragment = graphql`
 fragment JobListFragment on Query @argumentDefinitions(
 	proximityKm: { type: "Float", defaultValue: null }
 	searchTerm: { type: "String", defaultValue: null }
-	location: { type: "String", defaultValue: null }
+	coordinates: { type: "CoordinatesInput", defaultValue: null }
 ) {
-	...JobListInternalFragment @arguments(searchTerm: $searchTerm, location: $location, proximityKm: $proximityKm)
+	...JobListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
 	viewer {
 		...JobControlsAuthFragment
 	}
@@ -28,12 +29,12 @@ const JobListInternalFragment = graphql`
     cursor: { type: "ID" }
 	proximityKm: { type: "Float", defaultValue: null }
     searchTerm: { type: "String", defaultValue: null }
-	location: { type: "String", defaultValue: null }
+	coordinates: { type: "CoordinatesInput", defaultValue: null }
     count: { type: "Int", defaultValue: 10 }
   )
   @refetchable(queryName: "JobListPaginationQuery") {
-    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, location: $location, proximityKm: $proximityKm)
-      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "location", "proximityKm"]) {
+    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
+      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm"]) {
       edges {
         node {
           id
@@ -51,14 +52,14 @@ const JobListInternalFragment = graphql`
 type Props = {
 	rootQuery: JobListFragment$key;
 	searchTerm: string | null;
-	location: string | null;
+	coordinates: CoordinatesInput | null;
 	proximityKm: number | null;
 };
 
 export default function JobList({
 	rootQuery,
 	searchTerm,
-	location,
+	coordinates,
 	proximityKm,
 }: Props) {
 	const [_isPending, startTransition] = useTransition();
@@ -98,7 +99,7 @@ export default function JobList({
 				refetch(
 					{
 						searchTerm,
-						location,
+						coordinates,
 						proximityKm,
 					},
 					{ fetchPolicy: "network-only" }, // Use network-only to ensure fresh data when parameters change to null
@@ -107,7 +108,7 @@ export default function JobList({
 		}, 300); // Adjust debounce delay as needed
 
 		return () => clearTimeout(debounceTimeout);
-	}, [refetch, searchTerm, location, proximityKm]); // Dependencies correctly tracked
+	}, [refetch, searchTerm, coordinates, proximityKm]); // Dependencies correctly tracked
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (

@@ -553,7 +553,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 												label="Location"
 												placeholder="Add job location"
 												value={field.value ?? ""}
-												onChange={field.onChange}
+												onChange={(value) => {
+													field.onChange(value.displayName);
+												}}
 												errorMessage={errors.location?.message}
 												isInvalid={!!errors.location}
 											/>

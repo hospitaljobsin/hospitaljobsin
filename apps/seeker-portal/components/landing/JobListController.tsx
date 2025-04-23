@@ -1,13 +1,14 @@
+import type { CoordinatesInput } from "@/__generated__/JobListPaginationQuery.graphql";
 import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import { Card, CardBody, Input, Slider } from "@heroui/react";
 import { MapPin, Search } from "lucide-react";
-import type { FormEvent } from "react";
+import { type FormEvent, useState } from "react";
 
 interface JobListControllerProps {
+	coordinates: CoordinatesInput | null;
+	setCoordinates: (searchTerm: CoordinatesInput | null) => void;
 	searchTerm: string | null;
-	setSearchTerm: (searchTerm: string | null) => void;
-	location: string | null;
-	setLocation: (location: string | null) => void;
+	setSearchTerm: (location: string | null) => void;
 	proximityKm: number | null;
 	setProximityKm: (proximityKm: number | null) => void;
 }
@@ -17,6 +18,8 @@ export default function JobListController(props: JobListControllerProps) {
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 	};
+
+	const [location, setLocation] = useState<string | null>(null);
 
 	return (
 		<form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
@@ -52,13 +55,14 @@ export default function JobListController(props: JobListControllerProps) {
 								startContent={
 									<MapPin size={18} className="text-foreground-400" />
 								}
-								value={props.location || ""}
+								value={location || ""}
 								onChange={(value) => {
-									props.setLocation(value);
+									setLocation(value.displayName);
+									props.setCoordinates(value.coordinates);
 								}}
 								onClear={() => {
-									console.log("cleared");
-									props.setLocation(null);
+									setLocation(null);
+									props.setCoordinates(null);
 								}}
 								fullWidth
 							/>

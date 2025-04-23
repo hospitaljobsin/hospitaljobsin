@@ -184,6 +184,24 @@ type AuthenticatorNotEnabledError implements Error {
   message: String!
 }
 
+"""Geographic coordinates."""
+type Coordinates {
+  """Longitude of the location."""
+  longitude: Float!
+
+  """Latitude of the location."""
+  latitude: Float!
+}
+
+"""Geographic coordinates input."""
+input CoordinatesInput {
+  """Longitude of the location."""
+  longitude: Float!
+
+  """Latitude of the location."""
+  latitude: Float!
+}
+
 """The create job application payload."""
 union CreateJobApplicantPayload = CreateJobApplicantSuccess | JobNotFoundError | JobNotPublishedError | JobApplicantAlreadyExistsError | JobIsExternalError
 
@@ -1702,8 +1720,8 @@ type Query {
     """The search (query) term"""
     searchTerm: String = null
 
-    """The location to search for jobs"""
-    location: String = null
+    """The location coordinates to search for jobs"""
+    coordinates: CoordinatesInput = null
 
     """Returns items before the given cursor."""
     before: ID = null
@@ -1862,6 +1880,9 @@ type SearchLocation {
 
   """Display name of the location"""
   displayName: String!
+
+  """Coordinates of the location"""
+  coordinates: Coordinates!
 }
 
 """The payload for the search locations query."""
