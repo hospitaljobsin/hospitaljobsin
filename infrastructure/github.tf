@@ -20,7 +20,7 @@ resource "github_actions_secret" "aws_secret_access_key" {
 resource "github_actions_variable" "aws_region" {
   repository    = data.github_repository.this.name
   variable_name = "AWS_REGION"
-  value         = var.region
+  value         = var.aws_region
 }
 
 # Store the backend function name as a variable in GitHub Actions

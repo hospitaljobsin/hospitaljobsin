@@ -1,6 +1,6 @@
 variable "app_name" {
   type    = string
-  default = "Hospital Job"
+  default = "Hospital Jobs"
 }
 
 variable "domain_name" {
@@ -15,12 +15,11 @@ variable "resource_prefix" {
   default     = "hj"
 }
 
-variable "region" {
+variable "aws_region" {
   type        = string
   description = "Location for all AWS resources."
   default     = "us-east-1"
 }
-
 
 variable "mongodb_atlas_region" {
   type        = string
@@ -50,4 +49,22 @@ variable "github_repository_name" {
 variable "cloudflare_acount_id" {
   type        = string
   description = "Cloudflare account ID."
+}
+
+
+variable "support_email" {
+  type        = string
+  description = "Support email for IAP."
+}
+
+
+variable "google_oauth_client_id" {
+  type        = string
+  description = "Google OAuth client ID."
+}
+
+variable "google_oauth_client_secret" {
+  type        = string
+  description = "Google OAuth client secret."
+  sensitive   = true
 }

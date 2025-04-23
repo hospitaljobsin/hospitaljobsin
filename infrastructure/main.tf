@@ -7,6 +7,11 @@ terraform {
       version = "~> 5.0"
     }
 
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 6.31"
+    }
+
     mongodbatlas = {
       source  = "mongodb/mongodbatlas"
       version = "~> 1.33"
@@ -39,8 +44,13 @@ terraform {
 
 
 provider "aws" {
-  region            = var.region
+  region            = var.aws_region
   s3_use_path_style = true
+}
+
+provider "google" {
+  region  = var.google_region
+  project = var.google_project
 }
 
 # Configure the MongoDB Atlas Provider 

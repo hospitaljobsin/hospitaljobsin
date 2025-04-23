@@ -1,13 +1,13 @@
 locals {
   public_subnets = {
-    "${var.region}a" = "10.10.101.0/24"
-    "${var.region}b" = "10.10.102.0/24"
-    "${var.region}c" = "10.10.103.0/24"
+    "${var.aws_region}a" = "10.10.101.0/24"
+    "${var.aws_region}b" = "10.10.102.0/24"
+    "${var.aws_region}c" = "10.10.103.0/24"
   }
   private_subnets = {
-    "${var.region}a" = "10.10.201.0/24"
-    "${var.region}b" = "10.10.202.0/24"
-    "${var.region}c" = "10.10.203.0/24"
+    "${var.aws_region}a" = "10.10.201.0/24"
+    "${var.aws_region}b" = "10.10.202.0/24"
+    "${var.aws_region}c" = "10.10.203.0/24"
   }
 }
 
@@ -105,7 +105,7 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "this" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public["${var.region}a"].id
+  subnet_id     = aws_subnet.public["${var.aws_region}a"].id
 
   tags = {
     Name = "${var.resource_prefix}-nat-gw"

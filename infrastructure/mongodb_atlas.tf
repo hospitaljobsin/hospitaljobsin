@@ -58,7 +58,7 @@ resource "mongodbatlas_database_user" "user" {
 # resource "mongodbatlas_privatelink_endpoint" "pe_east" {
 #   project_id    = mongodbatlas_project.project.id
 #   provider_name = "AWS"
-#   region        = var.region
+#   region        = var.aws_region
 # }
 
 # resource "mongodbatlas_privatelink_endpoint_service" "pe_east_service" {
