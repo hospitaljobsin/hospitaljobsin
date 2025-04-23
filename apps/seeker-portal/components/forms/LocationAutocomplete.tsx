@@ -10,6 +10,8 @@ import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery, useQueryLoader } from "react-relay";
 import { graphql } from "relay-runtime";
 
+// TODO: if I type in small case `france` and France is in options, the autocomplete clears on blur
+// if I type in the exact name `France` it works
 interface LocationAutocompleteProps
 	extends Omit<AutocompleteProps, "children" | "onChange"> {
 	value: string;
@@ -83,7 +85,6 @@ export default function LocationAutocomplete({
 	const [isLoading, setIsLoading] = useState(false);
 	const debouncedQuery = useDebounce(inputValue, 300);
 	const [isPending, startTransition] = useTransition();
-
 	const [queryReference, loadQuery, disposeQuery] =
 		useQueryLoader<LocationAutocompleteQuery>(SearchLocationsQuery);
 
@@ -108,14 +109,16 @@ export default function LocationAutocomplete({
 			setSuggestions([]);
 			setIsLoading(false);
 			// Make sure to dispose any pending query
-			disposeQuery();
+			// disposeQuery();
 		}
+	}, [debouncedQuery, loadQuery]);
 
-		// Cleanup function
+	// Effect #2: dispose *once* on real unmount
+	useEffect(() => {
 		return () => {
 			disposeQuery();
 		};
-	}, [debouncedQuery, loadQuery, disposeQuery]);
+	}, [disposeQuery]);
 
 	const handleSelectionChange = (selectedKey: Key | null) => {
 		if (!selectedKey) {
@@ -162,6 +165,7 @@ export default function LocationAutocomplete({
 				isLoading={isLoading || isPending}
 				onSelectionChange={handleSelectionChange}
 				onKeyDown={preventFormSubmission}
+				isClearable
 			>
 				{suggestions.map((suggestion) => (
 					<AutocompleteItem key={suggestion.placeId}>

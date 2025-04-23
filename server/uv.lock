@@ -901,6 +901,15 @@ wheels = [
 ]
 
 [[package]]
+name = "nanoid"
+version = "2.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b7/9d/0250bf5935d88e214df469d35eccc0f6ff7e9db046fc8a9aeb4b2a192775/nanoid-2.0.0.tar.gz", hash = "sha256:5a80cad5e9c6e9ae3a41fa2fb34ae189f7cb420b2a5d8f82bd9d23466e4efa68", size = 3290 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2e/0d/8630f13998638dc01e187fadd2e5c6d42d127d08aeb4943d231664d6e539/nanoid-2.0.0-py3-none-any.whl", hash = "sha256:90aefa650e328cffb0893bbd4c236cfd44c48bc1f2d0b525ecc53c3187b653bb", size = 5844 },
+]
+
+[[package]]
 name = "nodeenv"
 version = "1.9.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1340,6 +1349,7 @@ dependencies = [
     { name = "mangum" },
     { name = "mcp", extra = ["cli"] },
     { name = "motor" },
+    { name = "nanoid" },
     { name = "passlib", extra = ["argon2"] },
     { name = "pydantic" },
     { name = "pydantic-settings", extra = ["aws-secrets-manager"] },
@@ -1385,6 +1395,7 @@ requires-dist = [
     { name = "mangum", specifier = ">=0.19.0" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.6.0" },
     { name = "motor", specifier = ">=3.6.0" },
+    { name = "nanoid", specifier = ">=2.0.0" },
     { name = "passlib", extras = ["argon2"], specifier = ">=1.7.4" },
     { name = "pydantic", specifier = ">=2.10.2" },
     { name = "pydantic-settings", extras = ["aws-secrets-manager"], specifier = "==2.9.1" },
