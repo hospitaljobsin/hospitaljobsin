@@ -12,7 +12,6 @@ from app.config import Settings
 from app.geocoding.models import Coordinates, SearchLocation
 
 
-
 class BaseLocationService:
     """Base geocoder class."""
 
@@ -66,11 +65,7 @@ class NominatimLocationService(BaseLocationService):
                 data = response.json()
                 return [
                     SearchLocation(
-                        place_id=str(
-                            item.get(
-                                "place_id", generate(size=10)
-                            )
-                        ),
+                        place_id=str(item.get("place_id", generate(size=10))),
                         display_name=item.get("display_name"),
                         coordinates=Coordinates(
                             latitude=item.get("lat"),
@@ -119,7 +114,7 @@ class AWSLocationService(BaseLocationService):
         results = response.get("Results", [])
         return [
             SearchLocation(
-                place_id=str(item.get("PlaceId", generate(size=10),
+                place_id=str(item.get("PlaceId", generate(size=10))),
                 display_name=item["Text"],
                 coordinates=Coordinates(
                     latitude=item["Place"]["Geometry"]["Point"][1],
