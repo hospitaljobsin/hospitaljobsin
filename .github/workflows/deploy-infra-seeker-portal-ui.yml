@@ -48,6 +48,10 @@ jobs:
         working-directory: ./apps/seeker-portal/
         run: pnpm install
 
+      - name: Create artifacts directory
+        working-directory: ./apps/accounts-ui/
+        run: mkdir -p ./__generated__
+
       - name: Build
         working-directory: ./apps/seeker-portal/
         run: pnpm package
