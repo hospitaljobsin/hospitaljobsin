@@ -32,9 +32,6 @@ env:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./infrastructure
 
     steps:
       - name: Checkout code
@@ -69,19 +66,23 @@ jobs:
 
       - name: Terraform Init
         id: init
+        working-directory: ./infrastructure
         run: terraform init -backend-config="bucket=${{vars.TERRAFORM_AWS_BACKEND_BUCKET_NAME}}" -backend-config="region=${{vars.AWS_REGION}}"
 
       - name: Terraform Format
         id: fmt
+        working-directory: ./infrastructure
         run: terraform fmt -check
 
       - name: Terraform Validate
         id: validate
+        working-directory: ./infrastructure
         run: terraform validate
 
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         id: plan
+        working-directory: ./infrastructure
         run: terraform plan -no-color -input=false -target=module.accounts_ui
         continue-on-error: true
 
@@ -117,5 +118,6 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
+        working-directory: ./infrastructure
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -no-color -target=module.accounts_ui
