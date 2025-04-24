@@ -58,7 +58,7 @@ jobs:
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         id: plan
-        run: terraform plan -no-color -input=false
+        run: terraform plan -no-color -input=false -target=module.core
         continue-on-error: true
 
       - uses: actions/github-script@v6
@@ -94,4 +94,4 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -no-color
+        run: terraform apply -auto-approve -no-color -target=module.core

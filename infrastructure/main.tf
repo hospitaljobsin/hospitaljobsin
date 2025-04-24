@@ -63,21 +63,21 @@ module "core" {
 }
 
 
-module "accounts-ui" {
+module "accounts_ui" {
   source          = "./modules/accounts-ui"
   certificate_arn = module.core.accounts_cert_arn
   hosted_zone_id  = module.core.hosted_zone_id
   domain_name     = module.core.accounts_domain_name
 }
 
-module "seeker-portal-ui" {
+module "seeker_portal_ui" {
   source          = "./modules/seeker-portal-ui"
   certificate_arn = module.core.seeker_portal_cert_arn
   hosted_zone_id  = module.core.hosted_zone_id
   domain_name     = module.core.seeker_portal_domain_name
 }
 
-module "recruiter-portal-ui" {
+module "recruiter_portal_ui" {
   source          = "./modules/recruiter-portal-ui"
   certificate_arn = module.core.recruiter_portal_cert_arn
   hosted_zone_id  = module.core.hosted_zone_id

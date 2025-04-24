@@ -40,6 +40,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: apps/recruiter-portal/package.json
+
+      - name: Install dependencies
+        working-directory: apps/recruiter-portal/
+        run: pnpm install
+
+      - name: Build
+        working-directory: apps/recruiter-portal/
+        run: pnpm package
+        env:
+            NEXT_PUBLIC_API_URL: http://localhost:8000
+            NEXT_PUBLIC_URL: http://localhost:5001
+            NEXT_PUBLIC_CAPTCHA_SITE_KEY: 
+            NEXT_PUBLIC_ACCOUNTS_BASE_URL: http://localhost:5002
+            NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: http://localhost:5000
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -60,7 +78,7 @@ jobs:
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         id: plan
-        run: terraform plan -no-color -input=false
+        run: terraform plan -no-color -input=false -target=module.recruiter_portal_ui
         continue-on-error: true
 
       - uses: actions/github-script@v6
@@ -96,4 +114,4 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -no-color
+        run: terraform apply -auto-approve -no-color -target=module.recruiter_portal_ui
