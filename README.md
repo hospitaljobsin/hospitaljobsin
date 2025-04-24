@@ -1,4 +1,5 @@
 # Future- TODO
+- migrate heroui to tailwindcss v4 (https://www.heroui.com/docs/guide/tailwind-v4)
 - ensure members can also create jobs, but they can only view and manage jobs they own.
 - ensure admins can view and edit all jobs, though.
 - add export applicants to XLSX button
