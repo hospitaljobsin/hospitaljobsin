@@ -11,4 +11,11 @@ module "opennext_seeker_portal" {
     aliases             = [var.domain_name]   # Your domain name
     acm_certificate_arn = var.certificate_arn # The ACM (SSL) certificate for your domain
   }
+
+  server_options = {
+    envrionment_variables = {
+      JWE_SECRET_KEY = ""
+      API_URL        = ""
+    }
+  }
 }
