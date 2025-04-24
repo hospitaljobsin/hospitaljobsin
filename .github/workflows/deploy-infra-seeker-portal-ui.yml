@@ -42,15 +42,15 @@ jobs:
           version: 10
 
       - name: Install dependencies
-        working-directory: ./apps/seeker-portal/
+        working-directory: ./apps/seeker-portal
         run: pnpm install
 
       - name: Create artifacts directory
-        working-directory: ./apps/accounts-ui/
+        working-directory: ./apps/seeker-portal
         run: mkdir -p ./__generated__
 
       - name: Build
-        working-directory: ./apps/seeker-portal/
+        working-directory: ./apps/seeker-portal
         run: pnpm package
         env:
             NEXT_PUBLIC_API_URL: http://localhost:8000
