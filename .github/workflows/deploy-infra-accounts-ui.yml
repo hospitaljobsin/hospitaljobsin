@@ -45,11 +45,11 @@ jobs:
           version: 10
 
       - name: Install dependencies
-        working-directory: apps/accounts-ui/
+        working-directory: ./apps/accounts-ui/
         run: pnpm install
 
       - name: Build
-        working-directory: apps/accounts-ui/
+        working-directory: ./apps/accounts-ui/
         run: pnpm package
         env:
             NEXT_PUBLIC_API_URL: http://localhost:8000
