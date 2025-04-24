@@ -53,6 +53,7 @@ jobs:
         working-directory: ./apps/recruiter-portal
         run: pnpm package
         env:
+            SKIP_ENV_VALIDATION: true
             NEXT_PUBLIC_API_URL: http://localhost:8000
             NEXT_PUBLIC_URL: http://localhost:5001
             NEXT_PUBLIC_CAPTCHA_SITE_KEY: 
