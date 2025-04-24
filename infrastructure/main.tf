@@ -68,6 +68,8 @@ module "accounts_ui" {
   certificate_arn = module.core.accounts_cert_arn
   hosted_zone_id  = module.core.hosted_zone_id
   domain_name     = module.core.accounts_domain_name
+  api_url         = module.core.api_url
+  jwe_secret_key  = module.core.jwe_secret_key
 }
 
 module "seeker_portal_ui" {
@@ -75,6 +77,8 @@ module "seeker_portal_ui" {
   certificate_arn = module.core.seeker_portal_cert_arn
   hosted_zone_id  = module.core.hosted_zone_id
   domain_name     = module.core.seeker_portal_domain_name
+  api_url         = module.core.api_url
+  jwe_secret_key  = module.core.jwe_secret_key
 }
 
 module "recruiter_portal_ui" {
@@ -82,4 +86,6 @@ module "recruiter_portal_ui" {
   certificate_arn = module.core.recruiter_portal_cert_arn
   hosted_zone_id  = module.core.hosted_zone_id
   domain_name     = module.core.recruiter_portal_domain_name
+  api_url         = module.core.api_url
+  jwe_secret_key  = module.core.jwe_secret_key
 }

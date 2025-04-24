@@ -25,3 +25,15 @@ variable "domain_name" {
   type        = string
   description = "Domain name for the application."
 }
+
+variable "api_url" {
+  type        = string
+  description = "The URL of the API."
+}
+
+
+variable "jwe_secret_key" {
+  type        = string
+  description = "Secret key for JWE encryption."
+  sensitive   = true
+}

@@ -14,8 +14,8 @@ module "opennext_recruiter_portal" {
 
   server_options = {
     envrionment_variables = {
-      JWE_SECRET_KEY = ""
-      API_URL        = ""
+      JWE_SECRET_KEY = var.jwe_secret_key
+      API_URL        = var.api_url
     }
   }
 }
