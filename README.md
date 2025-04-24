@@ -206,7 +206,8 @@ Ensure the following policy is added to the user:
 				"ec2:DescribeVpcs",
 				"ec2:DescribeNatGateways",
 				"apigateway:*",
-				"cloudfront:UpdateDistribution"
+				"cloudfront:UpdateDistribution",
+				"cloudfront:ListOriginRequestPolicies",
 			],
 			"Resource": "*"
 		}
@@ -215,7 +216,7 @@ Ensure the following policy is added to the user:
 ```
 
 - save the access key ID and secret key in the terraform cloud environment variables
-
+- save the aws region in env vars
 
 - run terraform apply
 - update GoDaddy's NS records to the Route 53 nameservers midway, to ensure certificate validation takes place

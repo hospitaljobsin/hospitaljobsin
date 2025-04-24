@@ -28,12 +28,8 @@ terraform {
     }
   }
 
-  backend "remote" {
-    organization = "HospitalJobsIN"
-
-    workspaces {
-      name = "main"
-    }
+  backend "s3" {
+    key = "prod.terraform.tfstate"
   }
 }
 
@@ -48,3 +44,42 @@ provider "mongodbatlas" {}
 
 # Configure the GitHub Provider
 provider "github" {}
+
+
+module "core" {
+  source                     = "./modules/core"
+  app_name                   = var.app_name
+  aws_region                 = var.aws_region
+  cloudflare_acount_id       = var.cloudflare_acount_id
+  domain_name                = var.domain_name
+  github_repository_name     = var.github_repository_name
+  google_oauth_client_id     = var.google_oauth_client_id
+  google_oauth_client_secret = var.google_oauth_client_secret
+  mongodb_atlas_org_id       = var.mongodb_atlas_org_id
+  mongodb_atlas_region       = var.mongodb_atlas_region
+  mongodb_database_name      = var.mongodb_database_name
+  resource_prefix            = var.resource_prefix
+  support_email              = var.support_email
+}
+
+
+module "accounts-ui" {
+  source          = "./modules/accounts-ui"
+  certificate_arn = module.core.accounts_cert_arn
+  hosted_zone_id  = module.core.hosted_zone_id
+  domain_name     = module.core.accounts_domain_name
+}
+
+module "seeker-portal-ui" {
+  source          = "./modules/seeker-portal-ui"
+  certificate_arn = module.core.seeker_portal_cert_arn
+  hosted_zone_id  = module.core.hosted_zone_id
+  domain_name     = module.core.seeker_portal_domain_name
+}
+
+module "recruiter-portal-ui" {
+  source          = "./modules/recruiter-portal-ui"
+  certificate_arn = module.core.recruiter_portal_cert_arn
+  hosted_zone_id  = module.core.hosted_zone_id
+  domain_name     = module.core.recruiter_portal_domain_name
+}
