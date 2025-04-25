@@ -92,16 +92,14 @@ resource "github_actions_variable" "sst_accounts_base_url" {
 
 
 // Fetch all subnets in the VPC
-data "aws_subnet_ids" "all" {
-  vpc_id = aws_vpc.this.id
-}
-// Fetch only private subnets: assume you tag them with Type=private
-data "aws_subnet_ids" "private" {
-  vpc_id = aws_vpc.this.id
-  tags = {
-    Type = "private"
+
+data "aws_subnets" "all" {
+  filter {
+    name   = "vpc-id"
+    values = [aws_vpc.this.id]
   }
 }
+
 // Fetch all security groups in the VPC
 data "aws_security_groups" "vpc" {
   filter {
@@ -114,15 +112,8 @@ resource "github_actions_variable" "sst_vpc_subnets" {
   repository    = data.github_repository.this.name
   variable_name = "SST_VPC_SUBNETS"
   # comma‑delimited list
-  value = join(",", data.aws_subnet_ids.all.ids)
+  value = join(",", data.aws_subnets.all.ids)
 }
-
-resource "github_actions_variable" "sst_vpc_private_subnets" {
-  repository    = data.github_repository.this.name
-  variable_name = "SST_VPC_PRIVATE_SUBNETS"
-  value         = join(",", data.aws_subnet_ids.private.ids)
-}
-
 resource "github_actions_variable" "sst_vpc_security_groups" {
   repository    = data.github_repository.this.name
   variable_name = "SST_VPC_SECURITY_GROUPS"
