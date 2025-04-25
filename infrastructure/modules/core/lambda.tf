@@ -123,7 +123,7 @@ resource "docker_image" "backend" {
   name = "${var.resource_prefix}-backend"
   build {
     context = "../server"
-    tag     = ["latest"]
+    tag     = ["${var.resource_prefix}-backend:latest"]
   }
 }
 
