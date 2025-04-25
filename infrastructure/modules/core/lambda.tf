@@ -124,6 +124,13 @@ resource "docker_image" "backend" {
   build {
     context = "../server"
     tag     = ["${var.resource_prefix}-backend:latest"]
+
+    auth_config {
+      host_name      = data.aws_ecr_authorization_token.token.proxy_endpoint
+      server_address = data.aws_ecr_authorization_token.token.proxy_endpoint
+      user_name      = data.aws_ecr_authorization_token.token.user_name
+      password       = data.aws_ecr_authorization_token.token.password
+    }
   }
 }
 
