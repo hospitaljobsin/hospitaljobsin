@@ -51,6 +51,100 @@ resource "aws_iam_policy" "github_actions" {
         # Limit to the specific AWS lambda if possible, otherwise use "*" if multiple functions are needed
         # Resource = aws_ecr_repository.backend.arn # Example for a specific repo
         Resource = aws_lambda_function.backend.arn
+      },
+      # SST deploy permissions
+      {
+        Sid    = "ManageBootstrapStateBucket"
+        Effect = "Allow"
+        Action = [
+          "s3:CreateBucket",
+          "s3:PutBucketVersioning",
+          "s3:PutBucketNotification",
+          "s3:PutBucketPolicy",
+          "s3:DeleteObject",
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject"
+        ]
+        Resource = [
+          "arn:aws:s3:::sst-state-*"
+        ]
+      },
+      {
+        Sid    = "ManageBootstrapAssetBucket"
+        Effect = "Allow"
+        Action = [
+          "s3:CreateBucket",
+          "s3:PutBucketVersioning",
+          "s3:PutBucketNotification",
+          "s3:PutBucketPolicy",
+          "s3:DeleteObject",
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject"
+        ]
+        Resource = [
+          "arn:aws:s3:::sst-asset-*"
+        ]
+      },
+      {
+        Sid    = "ManageBootstrapECRRepo"
+        Effect = "Allow"
+        Action = [
+          "ecr:CreateRepository",
+          "ecr:DescribeRepositories"
+        ]
+        Resource = [
+          "arn:aws:ecr:REGION:ACCOUNT:repository/sst-asset"
+        ]
+      },
+      {
+        Sid    = "ManageBootstrapSSMParameter"
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameters",
+          "ssm:PutParameter"
+        ]
+        Resource = [
+          "arn:aws:ssm:REGION:ACCOUNT:parameter/sst/passphrase/*",
+          "arn:aws:ssm:REGION:ACCOUNT:parameter/sst/bootstrap"
+        ]
+      },
+      {
+        Sid    = "Deployments"
+        Effect = "Allow"
+        Action = [
+          "*"
+        ]
+        Resource = [
+          "*"
+        ]
+      },
+      {
+        Sid    = "ManageSecrets"
+        Effect = "Allow"
+        Action = [
+          "ssm:DeleteParameter",
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath",
+          "ssm:PutParameter"
+        ]
+        Resource = [
+          "arn:aws:ssm:REGION:ACCOUNT:parameter/sst/*"
+        ]
+      },
+      {
+        Sid    = "LiveLambdaSocketConnection"
+        Effect = "Allow"
+        Action = [
+          "appsync:EventSubscribe",
+          "appsync:EventPublish",
+          "appsync:EventConnect"
+        ]
+        Resource = [
+          "*"
+        ]
       }
     ]
   })

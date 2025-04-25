@@ -143,6 +143,7 @@ Ensure the following policy is added to the user:
 				"iam:CreatePolicy",
 				"iam:GetUser",
 				"iam:DeleteUser",
+				"iam:DeletePolicy",
 				"iam:TagPolicy",
 				"iam:ListGroupsForUser",
 				"iam:ListAttachedUserPolicies",
