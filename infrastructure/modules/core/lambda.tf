@@ -129,7 +129,8 @@ resource "docker_image" "backend" {
 
 # push image to ecr repo
 resource "docker_registry_image" "backend" {
-  name = docker_image.backend.name
+  name          = docker_image.backend.name
+  keep_remotely = true
 
   auth_config {
     address  = data.aws_ecr_authorization_token.token.proxy_endpoint
