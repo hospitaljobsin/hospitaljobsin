@@ -10,7 +10,7 @@ resource "aws_iam_user" "github_actions" {
 }
 
 # Define an IAM policy for ECR access needed by GitHub Actions
-resource "aws_iam_policy" "github_actions_ecr" {
+resource "aws_iam_policy" "github_actions" {
   name        = "github-actions-ecr-policy-${data.github_repository.this.name}"
   description = "Policy granting ECR permissions for GitHub Actions"
 
@@ -62,9 +62,9 @@ resource "aws_iam_policy" "github_actions_ecr" {
 }
 
 # Attach the ECR policy to the GitHub Actions IAM user
-resource "aws_iam_user_policy_attachment" "github_actions_ecr_attach" {
+resource "aws_iam_user_policy_attachment" "github_actions_attach" {
   user       = aws_iam_user.github_actions.name
-  policy_arn = aws_iam_policy.github_actions_ecr.arn
+  policy_arn = aws_iam_policy.github_actions.arn
 }
 
 # Create access keys for the GitHub Actions IAM user
