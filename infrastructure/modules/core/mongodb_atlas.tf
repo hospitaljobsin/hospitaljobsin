@@ -39,12 +39,21 @@ resource "mongodbatlas_advanced_cluster" "this" {
   termination_protection_enabled = true
 }
 
+# comment out the following after setting the password initially
+resource "random_string" "mongodb_atlas_password" {
+  length  = 16
+  special = true
+}
+
 
 resource "mongodbatlas_database_user" "user" {
   username           = aws_iam_role.lambda_exec_role.arn
   project_id         = mongodbatlas_project.project.id
   auth_database_name = "$external"
   aws_iam_type       = "ROLE"
+
+  # comment out the following after setting the password initially
+  password = random_string.mongodb_atlas_password.result
 
   roles {
     role_name     = "readWrite"

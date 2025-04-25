@@ -11,11 +11,11 @@ export default $config({
     };
   },
   async run() {
-    const myVpc = sst.aws.Vpc.get("MyVpc", "vpc-id-goes-here");
+    const myVpc = sst.aws.Vpc.get("MyVpc", process.env.SST_VPC_ID);
     
     new sst.aws.Nextjs("accounts-ui", {
       buildCommand: "pnpm run package",
-      domain: "",
+      domain: process.env.SST_ACCOUNTS_DOMAIN,
       environment: {
         NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
         NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,

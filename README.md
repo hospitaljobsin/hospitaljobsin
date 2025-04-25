@@ -187,6 +187,7 @@ Ensure the following policy is added to the user:
 				"ec2:DeleteRoute",
 				"ec2:DeleteNatGateway",
 				"ec2:CreateSecurityGroup",
+				"ec2:DeleteVpc",
 				"ec2:AuthorizeSecurityGroupIngress",
 				"ec2:AuthorizeSecurityGroupEgress",
 				"ec2:RevokeSecurityGroupIngress",
@@ -217,7 +218,7 @@ Ensure the following policy is added to the user:
 ```
 
 - save the access key ID and secret key in the terraform cloud environment variables
-- save the aws region in env vars
+- save the terraform_aws_region in env vars
 
 - run terraform apply
 - update GoDaddy's NS records to the Route 53 nameservers midway, to ensure certificate validation takes place
