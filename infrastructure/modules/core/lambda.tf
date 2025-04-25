@@ -157,8 +157,8 @@ resource "aws_lambda_function" "backend" {
 
   # VPC Configuration
   vpc_config {
-    subnet_ids         = values(aws_subnet.private)[*].id # Use private subnets here
-    security_group_ids = [aws_security_group.lambda.id]   # Security group for Lambda
+    subnet_ids         = values(aws_subnet.public)[*].id # TODO: Use private subnets here after setting up private links
+    security_group_ids = [aws_security_group.lambda.id]  # Security group for Lambda
   }
 
   environment {
