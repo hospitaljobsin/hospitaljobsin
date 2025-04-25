@@ -40,10 +40,10 @@ resource "mongodbatlas_advanced_cluster" "this" {
 }
 
 # comment out the following after setting the password initially
-resource "random_string" "mongodb_atlas_password" {
-  length  = 16
-  special = true
-}
+# resource "random_string" "mongodb_atlas_password" {
+#   length  = 16
+#   special = true
+# }
 
 
 resource "mongodbatlas_database_user" "user" {
@@ -53,7 +53,7 @@ resource "mongodbatlas_database_user" "user" {
   aws_iam_type       = "ROLE"
 
   # comment out the following after setting the password initially
-  password = random_string.mongodb_atlas_password.result
+  # password = random_string.mongodb_atlas_password.result
 
   roles {
     role_name     = "readWrite"

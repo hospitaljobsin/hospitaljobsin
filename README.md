@@ -167,6 +167,7 @@ Ensure the following policy is added to the user:
 				"acm:DescribeCertificate",
 				"acm:ListTagsForCertificate",
 				"lambda:*",
+				"ec2:CreateSubnet",
 				"ec2:CreateTags",
 				"ec2:CreateVpc",
 				"ec2:DescribeVpcs",
