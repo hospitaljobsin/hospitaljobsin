@@ -1,7 +1,6 @@
 # Hospital Jobs API
 > *GraphQL API Server Powering Hospital Jobs*
 
-
 ## Tech Stack
 - [Python](https://python.org) - Programming Language
 - [FastAPI](https://fastapi.tiangolo.com/) - Web framework
