@@ -1,0 +1,20 @@
+name: Build and Deploy Accounts UI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/accounts/**'
+      - '.github/workflows/deploy-accounts-ui.yml'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+
+
+# TODO: wait for relevant tests to pass before building and pushing

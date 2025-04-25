@@ -3,7 +3,7 @@ resource "random_bytes" "jwt_secret" {
 }
 
 resource "aws_secretsmanager_secret" "backend" {
-  name        = "${var.resource_prefix}/backend"
+  name        = "${var.resource_prefix}/backend/prod"
   description = "Production settings secret for the backend"
 }
 

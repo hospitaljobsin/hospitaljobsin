@@ -51,3 +51,9 @@ node_modules/
 /playwright/.cache/
 
 playwright/.auth
+
+# sst
+.sst
+
+# open-next
+.open-next
