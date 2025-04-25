@@ -52,8 +52,8 @@ resource "aws_iam_policy" "github_actions" {
         # Resource = aws_ecr_repository.backend.arn # Example for a specific repo
         Resource = aws_lambda_function.backend.arn
       },
-      # SST deploy permissions
       {
+        # SST deploy permissions
         Sid    = "ManageBootstrapStateBucket"
         Effect = "Allow"
         Action = [
