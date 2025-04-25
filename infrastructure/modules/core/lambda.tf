@@ -112,13 +112,18 @@ resource "aws_iam_role_policy_attachment" "lambda_custom_policy_attachment" {
 }
 
 
+data "aws_ecr_image" "backend_latest" {
+  repository_name = aws_ecr_repository.backend.name
+  image_tag       = "latest"
+}
+
 # Lambda Function in Private Subnets
 resource "aws_lambda_function" "backend" {
   function_name = "${var.resource_prefix}-backend-lambda"
 
   role         = aws_iam_role.lambda_exec_role.arn
   package_type = "Image"
-  image_uri    = "${aws_ecr_repository.backend.repository_url}:latest"
+  image_uri    = data.aws_ecr_image.backend_latest.image_uri
 
   publish = true
 
