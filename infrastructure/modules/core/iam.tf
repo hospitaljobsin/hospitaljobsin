@@ -64,7 +64,7 @@ resource "aws_iam_policy" "github_actions" {
           "s3:DeleteObject",
           "s3:GetObject",
           "s3:ListBucket",
-          "s3:PutObject"
+          "s3:PutObject",
         ]
         Resource = [
           "arn:aws:s3:::sst-state-*"
@@ -81,7 +81,7 @@ resource "aws_iam_policy" "github_actions" {
           "s3:DeleteObject",
           "s3:GetObject",
           "s3:ListBucket",
-          "s3:PutObject"
+          "s3:PutObject",
         ]
         Resource = [
           "arn:aws:s3:::sst-asset-*"
@@ -92,10 +92,10 @@ resource "aws_iam_policy" "github_actions" {
         Effect = "Allow"
         Action = [
           "ecr:CreateRepository",
-          "ecr:DescribeRepositories"
+          "ecr:DescribeRepositories",
         ]
         Resource = [
-          "arn:aws:ecr:REGION:ACCOUNT:repository/sst-asset"
+          "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:repository/sst-asset"
         ]
       },
       {
@@ -103,11 +103,11 @@ resource "aws_iam_policy" "github_actions" {
         Effect = "Allow"
         Action = [
           "ssm:GetParameters",
-          "ssm:PutParameter"
+          "ssm:PutParameter",
         ]
         Resource = [
-          "arn:aws:ssm:REGION:ACCOUNT:parameter/sst/passphrase/*",
-          "arn:aws:ssm:REGION:ACCOUNT:parameter/sst/bootstrap"
+          "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/sst/passphrase/*",
+          "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/sst/bootstrap"
         ]
       },
       {
@@ -131,7 +131,7 @@ resource "aws_iam_policy" "github_actions" {
           "ssm:PutParameter"
         ]
         Resource = [
-          "arn:aws:ssm:REGION:ACCOUNT:parameter/sst/*"
+          "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/sst/*"
         ]
       },
       {
@@ -140,7 +140,7 @@ resource "aws_iam_policy" "github_actions" {
         Action = [
           "appsync:EventSubscribe",
           "appsync:EventPublish",
-          "appsync:EventConnect"
+          "appsync:EventConnect",
         ]
         Resource = [
           "*"
