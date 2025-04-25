@@ -99,8 +99,8 @@ data "aws_subnets" "private" {
     values = [aws_vpc.this.id]
   }
   filter {
-    name   = "tag:Type"
-    values = ["private"]
+    name   = "map-public-ip-on-launch"
+    values = [false]
   }
 }
 
@@ -112,7 +112,7 @@ data "aws_security_groups" "vpc" {
   }
 }
 
-resource "github_actions_variable" "sst_vpc_subnets" {
+resource "github_actions_variable" "sst_vpc_private_subnets" {
   repository    = data.github_repository.this.name
   variable_name = "SST_VPC_PRIVATE_SUBNETS"
   # comma‑delimited list
