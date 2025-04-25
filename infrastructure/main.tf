@@ -26,6 +26,11 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 4"
     }
+
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "3.4.0"
+    }
   }
 
   backend "s3" {

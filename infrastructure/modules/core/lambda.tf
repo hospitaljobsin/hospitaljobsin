@@ -132,7 +132,7 @@ resource "docker_registry_image" "backend" {
   name          = docker_image.backend.name
   keep_remotely = true
 
-  auth_config = {
+  auth_config {
     address  = data.aws_ecr_authorization_token.token.proxy_endpoint
     username = data.aws_ecr_authorization_token.token.user_name
     password = data.aws_ecr_authorization_token.token.password
