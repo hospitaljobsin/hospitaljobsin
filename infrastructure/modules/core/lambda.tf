@@ -115,7 +115,9 @@ resource "aws_iam_role_policy_attachment" "lambda_custom_policy_attachment" {
 # TODO: create a ecr push here via a terraform resource and make the lambda depend on it
 
 # get authorization credentials to push to ecr
-data "aws_ecr_authorization_token" "token" {}
+data "aws_ecr_authorization_token" "token" {
+  registry_id = aws_ecr_repository.backend.registry_id
+}
 
 # configure docker provider
 provider "docker" {

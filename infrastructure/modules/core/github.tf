@@ -44,7 +44,7 @@ resource "github_actions_variable" "sst_accounts_domain" {
 resource "github_actions_variable" "sst_captcha_site_key" {
   repository    = data.github_repository.this.name
   variable_name = "SST_CAPTCHA_SITE_KEY"
-  value         = cloudflare_turnstile_widget.example.sitekey
+  value         = cloudflare_turnstile_widget.example.id
 }
 
 # Store the backend function name as a variable in GitHub Actions
