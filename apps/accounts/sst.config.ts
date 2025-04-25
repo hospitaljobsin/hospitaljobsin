@@ -11,7 +11,7 @@ export default $config({
     };
   },
   async run() {
-    const myVpc = sst.aws.Vpc.get("MyVpc", process.env.SST_VPC_ID);
+    const myVpc = sst.aws.Vpc.get("MyVpc", {id: process.env.SST_VPC_ID});
     
     new sst.aws.Nextjs("accounts-ui", {
       buildCommand: "pnpm run package",
