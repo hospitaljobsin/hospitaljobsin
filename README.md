@@ -174,6 +174,7 @@ Ensure the following policy is added to the user:
 				"ec2:AllocateAddress",
 				"ec2:DescribeAddresses",
 				"ec2:DescribeAddressesAttribute",
+				"ec2:ModifyVpcAttribute",
 				"ec2:CreateInternetGateway",
 				"ec2:AttachInternetGateway",
 				"ec2:DeleteInternetGateway",
