@@ -40,12 +40,12 @@ jobs:
         env:
             SST_VPC_ID: ${{ vars.SST_VPC_ID }}
             SST_ACCOUNTS_DOMAIN: ${{vars.SST_ACCOUNTS_DOMAIN }}
-            NEXT_PUBLIC_API_URL: http://localhost:8000
+            NEXT_PUBLIC_API_URL: ${{ vars.SST_API_URL }}
             NEXT_PUBLIC_URL: http://localhost:5002
             NEXT_PUBLIC_CAPTCHA_SITE_KEY: ${{ vars.SST_CAPTCHA_SITE_KEY }}
             NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: http://localhost:5001
             NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: http://localhost:5000
-            API_URL: ${{vars.SST_API_URL }}
+            API_URL: ${{ vars.SST_API_URL }}
             JWE_SECRET_KEY: ${{ secrets.SST_JWE_SECRET_KEY }}
 
 # TODO: wait for relevant tests to pass before building and pushing

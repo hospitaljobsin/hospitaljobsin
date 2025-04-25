@@ -16,6 +16,31 @@ resource "github_actions_secret" "aws_secret_access_key" {
   plaintext_value = aws_iam_access_key.github_actions.secret
 }
 
+
+# Store the backend function name as a variable in GitHub Actions
+resource "github_actions_variable" "aws_lambda_backend_function_name" {
+  repository    = data.github_repository.this.name
+  variable_name = "AWS_BACKEND_FUNCTION_NAME"
+  value         = aws_lambda_function.backend.function_name
+}
+
+# Store the backend ECR image name as a variable in GitHub Actions
+resource "github_actions_variable" "aws_lambda_backend_image" {
+  repository    = data.github_repository.this.name
+  variable_name = "AWS_BACKEND_IMAGE_NAME"
+  value         = aws_ecr_repository.backend.name
+}
+
+
+resource "github_actions_variable" "aws_region" {
+  repository    = data.github_repository.this.name
+  variable_name = "AWS_REGION"
+  value         = var.aws_region
+}
+
+
+# SST variables and secrets
+
 resource "github_actions_secret" "sst_jwe_secret_key" {
   repository      = data.github_repository.this.name
   secret_name     = "SST_JWE_SECRET_KEY"
@@ -47,23 +72,20 @@ resource "github_actions_variable" "sst_captcha_site_key" {
   value         = cloudflare_turnstile_widget.example.id
 }
 
-# Store the backend function name as a variable in GitHub Actions
-resource "github_actions_variable" "aws_lambda_backend_function_name" {
+resource "github_actions_variable" "sst_recruiter_portal_base_url" {
   repository    = data.github_repository.this.name
-  variable_name = "AWS_BACKEND_FUNCTION_NAME"
-  value         = aws_lambda_function.backend.function_name
+  variable_name = "SST_RECRUITER_PORTAL_BASE_URL"
+  value         = "https://recruiter.${var.domain_name}"
 }
 
-# Store the backend ECR image name as a variable in GitHub Actions
-resource "github_actions_variable" "aws_lambda_backend_image" {
+resource "github_actions_variable" "sst_seeker_portal_base_url" {
   repository    = data.github_repository.this.name
-  variable_name = "AWS_BACKEND_IMAGE_NAME"
-  value         = aws_ecr_repository.backend.name
+  variable_name = "SST_SEEKER_PORTAL_BASE_URL"
+  value         = "https://${var.domain_name}"
 }
 
-
-resource "github_actions_variable" "aws_region" {
+resource "github_actions_variable" "sst_accounts_base_url" {
   repository    = data.github_repository.this.name
-  variable_name = "AWS_REGION"
-  value         = var.aws_region
+  variable_name = "SST_ACCOUNTS_BASE_URL"
+  value         = "https://accounts.${var.domain_name}"
 }
