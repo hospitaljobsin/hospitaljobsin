@@ -50,7 +50,7 @@ resource "github_actions_secret" "sst_jwe_secret_key" {
 resource "github_actions_variable" "sst_api_url" {
   repository    = data.github_repository.this.name
   variable_name = "SST_API_URL"
-  value         = aws_lambda_function.backend.function_name
+  value         = aws_api_gateway_domain_name.custom.cloudfront_domain_name
 }
 
 resource "github_actions_variable" "sst_vpc_id" {

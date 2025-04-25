@@ -48,5 +48,5 @@ jobs:
             API_URL: ${{ vars.SST_API_URL }}
             JWE_SECRET_KEY: ${{ secrets.SST_JWE_SECRET_KEY }}
 
-
+            
 # TODO: wait for relevant tests to pass before building and pushing
