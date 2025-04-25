@@ -11,8 +11,8 @@ resource "aws_iam_user" "github_actions" {
 
 # Define an IAM policy for ECR access needed by GitHub Actions
 resource "aws_iam_policy" "github_actions" {
-  name        = "github-actions-ecr-policy-${data.github_repository.this.name}"
-  description = "Policy granting ECR permissions for GitHub Actions"
+  name        = "github-actions-policy-${data.github_repository.this.name}"
+  description = "Policy granting ECR and SST deploy permissions for GitHub Actions"
 
   policy = jsonencode({
     Version = "2012-10-17"
