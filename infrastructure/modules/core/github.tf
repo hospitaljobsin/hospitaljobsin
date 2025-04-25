@@ -116,7 +116,7 @@ resource "github_actions_variable" "sst_vpc_subnets" {
   repository    = data.github_repository.this.name
   variable_name = "SST_VPC_PRIVATE_SUBNETS"
   # comma‑delimited list
-  value = join(",", data.aws_subnets.all.ids)
+  value = join(",", data.aws_subnets.private.ids)
 }
 resource "github_actions_variable" "sst_vpc_security_groups" {
   repository    = data.github_repository.this.name
