@@ -120,10 +120,9 @@ data "aws_ecr_authorization_token" "token" {
 }
 
 resource "docker_image" "backend" {
-  name = "${var.resource_prefix}-backend"
+  name = "${aws_ecr_repository.backend.repository_url}:latest"
   build {
     context = "../server"
-    tag     = ["${var.resource_prefix}-backend:latest"]
 
     auth_config {
       host_name      = data.aws_ecr_authorization_token.token.proxy_endpoint
@@ -136,7 +135,7 @@ resource "docker_image" "backend" {
 
 # push image to ecr repo
 resource "docker_registry_image" "backend" {
-  name          = "${aws_ecr_repository.backend.repository_url}:latest"
+  name          = docker_image.backend.name
   keep_remotely = true
 
   auth_config {
