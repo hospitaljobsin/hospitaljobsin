@@ -119,15 +119,6 @@ data "aws_ecr_authorization_token" "token" {
   registry_id = aws_ecr_repository.backend.registry_id
 }
 
-# configure docker provider
-provider "docker" {
-  registry_auth {
-    address  = data.aws_ecr_authorization_token.token.proxy_endpoint
-    username = data.aws_ecr_authorization_token.token.user_name
-    password = data.aws_ecr_authorization_token.token.password
-  }
-}
-
 resource "docker_image" "backend" {
   name = "${var.resource_prefix}-backend"
   build {
@@ -139,10 +130,13 @@ resource "docker_image" "backend" {
 # push image to ecr repo
 resource "docker_registry_image" "backend" {
   name = docker_image.backend.name
+
+  auth_config {
+    address  = data.aws_ecr_authorization_token.token.proxy_endpoint
+    username = data.aws_ecr_authorization_token.token.user_name
+    password = data.aws_ecr_authorization_token.token.password
+  }
 }
-
-
-
 
 # Lambda Function in Private Subnets
 resource "aws_lambda_function" "backend" {
