@@ -40,6 +40,13 @@ resource "github_actions_variable" "sst_accounts_domain" {
   value         = "accounts.${var.domain_name}"
 }
 
+
+resource "github_actions_variable" "sst_captcha_site_key" {
+  repository    = data.github_repository.this.name
+  variable_name = "SST_CAPTCHA_SITE_KEY"
+  value         = cloudflare_turnstile_widget.example.sitekey
+}
+
 # Store the backend function name as a variable in GitHub Actions
 resource "github_actions_variable" "aws_lambda_backend_function_name" {
   repository    = data.github_repository.this.name

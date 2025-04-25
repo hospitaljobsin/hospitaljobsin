@@ -112,18 +112,44 @@ resource "aws_iam_role_policy_attachment" "lambda_custom_policy_attachment" {
 }
 
 
-data "aws_ecr_image" "backend_latest" {
-  repository_name = aws_ecr_repository.backend.name
-  image_tag       = "latest"
+# TODO: create a ecr push here via a terraform resource and make the lambda depend on it
+
+# get authorization credentials to push to ecr
+data "aws_ecr_authorization_token" "token" {}
+
+# configure docker provider
+provider "docker" {
+  registry_auth {
+    address  = data.aws_ecr_authorization_token.token.proxy_endpoint
+    username = data.aws_ecr_authorization_token.token.user_name
+    password = data.aws_ecr_authorization_token.token.password
+  }
 }
+
+resource "docker_image" "backend" {
+  name = "${var.resource_prefix}-backend"
+  build {
+    context = "../server"
+    tag     = ["latest"]
+  }
+}
+
+# push image to ecr repo
+resource "docker_registry_image" "backend" {
+  name = docker_image.backend.name
+}
+
+
+
 
 # Lambda Function in Private Subnets
 resource "aws_lambda_function" "backend" {
+  depends_on    = [docker_registry_image.backend]
   function_name = "${var.resource_prefix}-backend-lambda"
 
   role         = aws_iam_role.lambda_exec_role.arn
   package_type = "Image"
-  image_uri    = data.aws_ecr_image.backend_latest.image_uri
+  image_uri    = "${aws_ecr_repository.backend.repository_url}:latest"
 
   publish = true
 
