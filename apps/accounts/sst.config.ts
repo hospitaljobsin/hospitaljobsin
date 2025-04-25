@@ -10,9 +10,7 @@ export default $config({
       home: "aws",
     };
   },
-  async run() {
-    const myVpc = sst.aws.Vpc.get("MyVpc", {id: process.env.SST_VPC_ID});
-    
+  async run() {    
     new sst.aws.Nextjs("accounts-ui", {
       buildCommand: "pnpm run package",
       domain: process.env.SST_ACCOUNTS_DOMAIN,
@@ -25,7 +23,11 @@ export default $config({
         JWE_SECRET_KEY: process.env.JWE_SECRET_KEY,
         API_URL: process.env.API_URL,
       },
-      vpc: myVpc,
+      vpc: {
+        securityGroups: [],
+        privateSubnets: [],
+        subnets: []
+      },
       server: {
         runtime: "nodejs22.x",
       }
