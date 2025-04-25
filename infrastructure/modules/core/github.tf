@@ -29,3 +29,10 @@ resource "github_actions_variable" "aws_lambda_backend_image" {
   variable_name = "AWS_BACKEND_IMAGE_NAME"
   value         = aws_ecr_repository.backend.name
 }
+
+
+resource "github_actions_variable" "aws_region" {
+  repository    = data.github_repository.this.name
+  variable_name = "AWS_REGION"
+  value         = var.aws_region
+}

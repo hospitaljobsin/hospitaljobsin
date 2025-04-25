@@ -61,31 +61,3 @@ module "core" {
   resource_prefix            = var.resource_prefix
   support_email              = var.support_email
 }
-
-
-module "accounts_ui" {
-  source          = "./modules/accounts-ui"
-  certificate_arn = module.core.accounts_cert_arn
-  hosted_zone_id  = module.core.hosted_zone_id
-  domain_name     = module.core.accounts_domain_name
-  api_url         = module.core.api_url
-  jwe_secret_key  = module.core.jwe_secret_key
-}
-
-module "seeker_portal_ui" {
-  source          = "./modules/seeker-portal-ui"
-  certificate_arn = module.core.seeker_portal_cert_arn
-  hosted_zone_id  = module.core.hosted_zone_id
-  domain_name     = module.core.seeker_portal_domain_name
-  api_url         = module.core.api_url
-  jwe_secret_key  = module.core.jwe_secret_key
-}
-
-module "recruiter_portal_ui" {
-  source          = "./modules/recruiter-portal-ui"
-  certificate_arn = module.core.recruiter_portal_cert_arn
-  hosted_zone_id  = module.core.hosted_zone_id
-  domain_name     = module.core.recruiter_portal_domain_name
-  api_url         = module.core.api_url
-  jwe_secret_key  = module.core.jwe_secret_key
-}

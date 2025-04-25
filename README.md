@@ -128,6 +128,8 @@ Ensure the following policy is added to the user:
 			"Effect": "Allow",
 			"Action": [
 				"ecr:*",
+				"acm:DeleteCertificate",
+				"sts:GetCallerIdentity",
 				"iam:CreateRole",
 				"iam:GetRole",
 				"iam:ListRolePolicies",
@@ -154,10 +156,7 @@ Ensure the following policy is added to the user:
 				"iam:DeleteRolePolicy",
 				"iam:DetachUserPolicy",
 				"iam:CreateServiceLinkedRole",
-				"ses:VerifyDomainIdentity",
-				"ses:GetIdentityDkimAttributes",
-				"ses:VerifyEmailIdentity",
-				"ses:GetIdentityVerificationAttributes",
+				"ses:*",
 				"secretsmanager:*",
 				"s3:*",
 				"geo:CreatePlaceIndex",
@@ -206,8 +205,7 @@ Ensure the following policy is added to the user:
 				"ec2:DescribeVpcs",
 				"ec2:DescribeNatGateways",
 				"apigateway:*",
-				"cloudfront:UpdateDistribution",
-				"cloudfront:ListOriginRequestPolicies",
+				"cloudfront:UpdateDistribution"
 			],
 			"Resource": "*"
 		}

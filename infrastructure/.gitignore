@@ -39,3 +39,5 @@ terraform.rc
 # Ignore provider override files
 provider_override.tf
 provider_override.tf.json
+
+*.tfvars
