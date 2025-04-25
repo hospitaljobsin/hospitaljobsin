@@ -38,7 +38,8 @@ jobs:
         working-directory: ./apps/accounts
         run: npx sst deploy --stage production
         env:
-            SST_VPC_ID: ${{ vars.SST_VPC_ID }}
+            SST_VPC_PRIVATE_SUBNETS: ${{ vars.SST_VPC_PRIVATE_SUBNETS }}
+            SST_VPC_SECURITY_GROUPS: ${{ vars.SST_VPC_SECURITY_GROUPS }}
             SST_ACCOUNTS_DOMAIN: ${{vars.SST_ACCOUNTS_DOMAIN }}
             NEXT_PUBLIC_API_URL: ${{ vars.SST_API_URL }}
             NEXT_PUBLIC_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}

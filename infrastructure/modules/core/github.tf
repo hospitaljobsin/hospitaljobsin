@@ -91,12 +91,16 @@ resource "github_actions_variable" "sst_accounts_base_url" {
 }
 
 
-// Fetch all subnets in the VPC
+// Fetch private subnets in the VPC
 
-data "aws_subnets" "all" {
+data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
     values = [aws_vpc.this.id]
+  }
+  filter {
+    name   = "tag:Type"
+    values = ["private"]
   }
 }
 
@@ -110,7 +114,7 @@ data "aws_security_groups" "vpc" {
 
 resource "github_actions_variable" "sst_vpc_subnets" {
   repository    = data.github_repository.this.name
-  variable_name = "SST_VPC_SUBNETS"
+  variable_name = "SST_VPC_PRIVATE_SUBNETS"
   # comma‑delimited list
   value = join(",", data.aws_subnets.all.ids)
 }
