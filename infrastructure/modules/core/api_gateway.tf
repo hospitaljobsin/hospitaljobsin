@@ -8,7 +8,6 @@ resource "aws_api_gateway_rest_api" "this" {
 resource "aws_api_gateway_deployment" "this" {
   depends_on = [
     aws_api_gateway_integration.lambda,
-    aws_api_gateway_integration.cors_options,
     aws_api_gateway_integration_response.cors_200,
   ]
 
@@ -17,9 +16,7 @@ resource "aws_api_gateway_deployment" "this" {
   triggers = {
     redeployment = sha1(jsonencode([
       aws_api_gateway_integration.lambda.id,
-      aws_api_gateway_integration.cors_options.id,
       aws_api_gateway_method.proxy.id,
-      aws_api_gateway_method.proxy_options.id,
     ]))
   }
 }
