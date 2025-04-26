@@ -37,6 +37,9 @@ export default $config({
 			// },
 			server: {
 				runtime: "nodejs22.x",
+				layers: [
+					"arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:17",
+				],
 			},
 			permissions: [
 				{
