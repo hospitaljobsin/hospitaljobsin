@@ -6,7 +6,7 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 if (process.env.AWS_SECRET_ID !== undefined) {
-	const client = new SecretsManagerClient({});
+	const client = new SecretsManagerClient({ region: process.env.AWS_REGION });
 
 	const cmd = new GetSecretValueCommand({
 		SecretId: process.env.AWS_SECRET_ID, // the secret ID that contains your JWE key

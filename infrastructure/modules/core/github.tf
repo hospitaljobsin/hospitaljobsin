@@ -41,12 +41,6 @@ resource "github_actions_variable" "aws_region" {
 
 # SST variables and secrets
 
-resource "github_actions_secret" "sst_jwe_secret_key" {
-  repository      = data.github_repository.this.name
-  secret_name     = "SST_JWE_SECRET_KEY"
-  plaintext_value = random_bytes.jwe_secret.hex
-}
-
 resource "github_actions_variable" "sst_api_url" {
   repository    = data.github_repository.this.name
   variable_name = "SST_API_URL"
