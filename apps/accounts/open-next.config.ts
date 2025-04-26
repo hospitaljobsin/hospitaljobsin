@@ -5,6 +5,7 @@ const config = {
 			tagCache: "dynamodb-lite",
 			incrementalCache: "s3-lite",
 			queue: "sqs-lite",
+			wrapper: () => import("./wrapper").then((mod) => mod.default),
 		},
 	},
 } satisfies OpenNextConfig;
