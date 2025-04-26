@@ -95,9 +95,10 @@ resource "aws_api_gateway_integration_response" "cors_200" {
   status_code = "200"
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization'"
-    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST,PUT,PATCH,DELETE'"
-    "method.response.header.Access-Control-Allow-Origin"  = "https://accounts.${var.domain_name}"
+    "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,Authorization'"
+    "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,GET,POST,PUT,PATCH,DELETE'"
+    "method.response.header.Access-Control-Allow-Origin"      = "https://accounts.${var.domain_name}"
+    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
   }
 
   depends_on = [
@@ -113,9 +114,10 @@ resource "aws_api_gateway_method_response" "cors_200" {
   status_code = "200"
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers" = true
-    "method.response.header.Access-Control-Allow-Methods" = true
-    "method.response.header.Access-Control-Allow-Origin"  = true
+    "method.response.header.Access-Control-Allow-Headers"     = true
+    "method.response.header.Access-Control-Allow-Methods"     = true
+    "method.response.header.Access-Control-Allow-Origin"      = true
+    "method.response.header.Access-Control-Allow-Credentials" = true
   }
 }
 
