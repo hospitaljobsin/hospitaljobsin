@@ -18,6 +18,10 @@ resource "aws_api_gateway_deployment" "this" {
       aws_api_gateway_method.proxy.id,
     ]))
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 
