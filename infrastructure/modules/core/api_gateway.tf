@@ -60,6 +60,22 @@ resource "aws_api_gateway_integration" "lambda" {
   uri                     = aws_lambda_function.backend.invoke_arn
 }
 
+resource "aws_api_gateway_method" "proxy_options" {
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  resource_id   = aws_api_gateway_resource.proxy.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "lambda_options" {
+  rest_api_id             = aws_api_gateway_rest_api.this.id
+  resource_id             = aws_api_gateway_method.proxy_options.resource_id
+  http_method             = aws_api_gateway_method.proxy_options.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.backend.invoke_arn
+}
+
 
 
 # Domain name mapping
