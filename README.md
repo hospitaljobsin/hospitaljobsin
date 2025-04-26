@@ -217,6 +217,8 @@ Ensure the following policy is added to the user:
 		- hospitaljobs.in
 
 
+- Request SES production access manually
+
 ## TODO: infrastructure
 - wait for relevant tests to pass before building and pushing
 - fix subnets config (we removed nat gateway-managed and are facing endpoint timeouts as the backend lambda cannot access the AWS services.)
