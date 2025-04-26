@@ -1,5 +1,5 @@
 resource "random_bytes" "jwt_secret" {
-  length = 64
+  length = 32
 }
 
 resource "aws_secretsmanager_secret" "backend" {
