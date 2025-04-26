@@ -15,7 +15,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: z.string().url(),
 	},
 	// For Next.js >= 13.4.4, you only need to destructure client variables:
-	experimental__runtimeEnv: {
+	runtimeEnv: {
 		NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
 		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
 		NEXT_PUBLIC_CAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY,
@@ -23,6 +23,9 @@ export const env = createEnv({
 			process.env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL,
 		NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL:
 			process.env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL,
+		JWE_SECRET_KEY: process.env.JWE_SECRET_KEY,
+		API_URL: process.env.API_URL,
+		SESSION_COOKIE_KEY: process.env.SESSION_COOKIE_KEY,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
