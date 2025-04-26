@@ -3,9 +3,11 @@ import { z } from "zod";
 
 async function loadSecrets() {
 	if (process.env.AWS_SECRET_ID !== undefined) {
+		console.log("Loading secrets from AWS Secrets Manager");
 		const secretId = process.env.AWS_SECRET_ID;
 		const runtimeApi = process.env.AWS_LAMBDA_RUNTIME_API;
 		if (runtimeApi) {
+			console.log("Using AWS Lambda Runtime API to load secrets");
 			// use local Secrets & Parameters Extension
 			const url = `http://${runtimeApi}/secretsmanager/get?secretId=${encodeURIComponent(secretId)}`;
 			const res = await fetch(url, {
@@ -24,6 +26,7 @@ async function loadSecrets() {
 			}
 			const secret = JSON.parse(payload.secretString);
 			if (secret.jwe_secret_key) {
+				console.log("Loaded JWE secret key from AWS Secrets Manager");
 				process.env.JWE_SECRET_KEY = secret.jwe_secret_key;
 			}
 		}
