@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { env } from "./lib/env/server";
+import { env } from "./lib/env/client";
 import links from "./lib/links";
 import { unsign } from "./lib/session";
 
@@ -52,7 +52,7 @@ function get2FAChallengeResponse(request: NextRequest): NextResponse {
 
 export async function middleware(request: NextRequest) {
 	const response = NextResponse.next();
-	const sessionCookie = request.cookies.get(env.SESSION_COOKIE_KEY);
+	const sessionCookie = request.cookies.get(env.NEXT_PUBLIC_SESSION_COOKIE_KEY);
 
 	let isAuthenticated = false;
 
@@ -72,7 +72,7 @@ export async function middleware(request: NextRequest) {
 				has2FAChallenge = true;
 			}
 		} catch (error) {
-			request.cookies.delete(env.SESSION_COOKIE_KEY);
+			request.cookies.delete(env.NEXT_PUBLIC_SESSION_COOKIE_KEY);
 		}
 	}
 
