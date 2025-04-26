@@ -37,6 +37,12 @@ export default $config({
 			server: {
 				runtime: "nodejs22.x",
 			},
+			permissions: [
+				{
+					actions: ["secretsmanager:GetSecretValue"],
+					resources: ["*"], // TODO: restrict to the secret ARN
+				},
+			],
 		});
 	},
 });
