@@ -18,9 +18,15 @@ resource "aws_api_gateway_deployment" "this" {
     redeployment = sha1(jsonencode([
       aws_api_gateway_integration.lambda.id,
       aws_api_gateway_integration.cors_options.id,
+      aws_api_gateway_integration_response.cors_200.id,
       aws_api_gateway_method.proxy.id,
       aws_api_gateway_method.proxy_options.id,
+      aws_api_gateway_method_response.cors_200.id,
     ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -89,7 +95,7 @@ resource "aws_api_gateway_integration_response" "cors_200" {
   status_code = "200"
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers" = "'*'"
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization'"
     "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST,PUT,PATCH,DELETE'"
     "method.response.header.Access-Control-Allow-Origin"  = "https://accounts.${var.domain_name}"
   }
