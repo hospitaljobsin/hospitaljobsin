@@ -8,7 +8,6 @@ resource "aws_api_gateway_rest_api" "this" {
 resource "aws_api_gateway_deployment" "this" {
   depends_on = [
     aws_api_gateway_integration.lambda,
-    aws_api_gateway_integration_response.cors_200,
   ]
 
   rest_api_id = aws_api_gateway_rest_api.this.id
