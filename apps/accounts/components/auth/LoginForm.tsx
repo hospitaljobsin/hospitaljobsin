@@ -3,7 +3,7 @@
 import type { LoginFormGenerateAuthenticationOptionsMutation } from "@/__generated__/LoginFormGenerateAuthenticationOptionsMutation.graphql";
 import type { LoginFormPasskeyMutation as LoginFormPasskeyMutationType } from "@/__generated__/LoginFormPasskeyMutation.graphql";
 import type { LoginFormPasswordMutation as LoginFormPasswordMutationType } from "@/__generated__/LoginFormPasswordMutation.graphql";
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
 import { useRouter } from "@bprogress/next";

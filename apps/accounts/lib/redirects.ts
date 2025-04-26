@@ -1,4 +1,4 @@
-import { env } from "./env";
+import { env } from "./env/client";
 import links from "./links";
 
 // validate redirect to URLs to prevent open redirect attacks

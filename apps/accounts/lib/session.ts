@@ -1,5 +1,5 @@
 import { compactDecrypt } from "jose";
-import { env } from "./env";
+import { env } from "./env/server";
 
 export async function unsign(
 	signedValue: string,

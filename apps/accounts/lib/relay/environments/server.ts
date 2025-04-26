@@ -1,4 +1,4 @@
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/server";
 import links from "@/lib/links";
 import { redirect } from "next/navigation";
 import { cache } from "react";

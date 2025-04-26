@@ -5,7 +5,7 @@ import type {
 	RequestSudoViewFragment$key,
 	TwoFactorProvider,
 } from "@/__generated__/RequestSudoViewFragment.graphql";
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/client";
 import { useRouter } from "@bprogress/next";
 import {
 	Alert,

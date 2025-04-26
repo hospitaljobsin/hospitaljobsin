@@ -1,4 +1,4 @@
-import { env } from "./env";
+import { env } from "./env/client";
 
 const links = {
 	seekerLanding: `${env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL}/`,

@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { env } from "./lib/env";
+import { env } from "./lib/env/server";
 import links from "./lib/links";
 import { unsign } from "./lib/session";
 
