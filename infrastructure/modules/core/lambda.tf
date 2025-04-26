@@ -155,7 +155,7 @@ resource "aws_lambda_function" "backend" {
 
   publish = true
 
-  # VPC Configuration
+  # VPC Configuration - uncomment this while moving to private subnets
   # vpc_config {
   #   subnet_ids         = values(aws_subnet.private)[*].id
   #   security_group_ids = [aws_security_group.lambda.id] # Security group for Lambda
@@ -198,7 +198,8 @@ resource "aws_lambda_function" "backend" {
 #   qualifier                         = aws_lambda_function.backend.version
 # }
 
-# Security Group for Lambda in Private Subnets
+# Security Group for Lambda in Private Subnets- uncomment this while moving to private subnets
+
 # resource "aws_security_group" "lambda" {
 #   name   = "${var.resource_prefix}-lambda-sg"
 #   vpc_id = aws_vpc.this.id
