@@ -219,6 +219,8 @@ Ensure the following policy is added to the user:
 
 ## TODO: infrastructure
 - wait for relevant tests to pass before building and pushing
+- fix subnets config (we removed nat gateway-managed and are facing endpoint timeouts as the backend lambda cannot access the AWS services.)
+	- this might also cause the frontend to return 504s (routing is done, but the ssr part isnt working?)
 - deploy frontends to Next.js to reduce latency (possibly using OpenNext)
 	- https://github.com/nhs-england-tools/terraform-aws-opennext
 	- https://github.com/opennextjs/opennextjs-aws
