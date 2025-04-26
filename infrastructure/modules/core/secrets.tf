@@ -28,7 +28,7 @@ resource "aws_secretsmanager_secret" "accounts" {
 resource "aws_secretsmanager_secret_version" "accounts" {
   secret_id = aws_secretsmanager_secret.accounts.id
   secret_string = jsonencode({
-    server_jwe_secret_key = random_bytes.jwe_secret.hex,
+    jwe_secret_key = random_bytes.jwe_secret.hex,
   })
 
   depends_on = [random_bytes.jwe_secret, ]
@@ -43,7 +43,7 @@ resource "aws_secretsmanager_secret" "seeker_portal" {
 resource "aws_secretsmanager_secret_version" "seeker_portal" {
   secret_id = aws_secretsmanager_secret.seeker_portal.id
   secret_string = jsonencode({
-    server_jwe_secret_key = random_bytes.jwe_secret.hex,
+    jwe_secret_key = random_bytes.jwe_secret.hex,
   })
 
   depends_on = [random_bytes.jwe_secret, ]
@@ -57,7 +57,7 @@ resource "aws_secretsmanager_secret" "recruiter_portal" {
 resource "aws_secretsmanager_secret_version" "recruiter_portal" {
   secret_id = aws_secretsmanager_secret.recruiter_portal.id
   secret_string = jsonencode({
-    server_jwe_secret_key = random_bytes.jwe_secret.hex,
+    jwe_secret_key = random_bytes.jwe_secret.hex,
   })
 
   depends_on = [random_bytes.jwe_secret, ]

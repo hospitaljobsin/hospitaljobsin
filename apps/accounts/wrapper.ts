@@ -24,7 +24,7 @@ export async function loadSecrets() {
 			if (!payload.SecretString) {
 				throw new Error("SecretString missing in extension response");
 			}
-			const secret = JSON.parse(payload.secretString);
+			const secret = JSON.parse(payload.SecretString);
 			if (secret.jwe_secret_key) {
 				console.log("Loaded JWE secret key from AWS Secrets Manager");
 				process.env.JWE_SECRET_KEY = secret.jwe_secret_key;
