@@ -36,9 +36,7 @@ jobs:
 
       - name: SST Deploy
         working-directory: ./apps/accounts
-        run: |
-          npx sst unlock --stage=production
-          npx sst deploy --stage production --print-logs
+        run: npx sst deploy --stage production --print-logs
         env:
             SST_VPC_PRIVATE_SUBNETS: ${{ vars.SST_VPC_PRIVATE_SUBNETS }}
             SST_VPC_SECURITY_GROUPS: ${{ vars.SST_VPC_SECURITY_GROUPS }}
@@ -48,7 +46,7 @@ jobs:
             NEXT_PUBLIC_CAPTCHA_SITE_KEY: ${{ vars.SST_CAPTCHA_SITE_KEY }}
             NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: ${{ vars.SST_RECRUITER_PORTAL_BASE_URL }}
             NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL}}
-            NEXT_PUBLIC_SESSION_COOKIE_KEY: "user_session"
+            NEXT_PUBLIC_SESSION_COOKIE_KEY: user_session
             API_URL: ${{ vars.SST_API_URL }}
             AWS_SECRET_ID: ${{ secrets.SST_ACCOUNTS_SECRET_ID }}
             SKIP_ENV_VALIDATION: true
