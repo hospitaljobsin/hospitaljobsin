@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./.sst/platform/config.d.ts" />
-const { env } = await import("./lib/env");
+const { env } = await import("./lib/env/client");
 
 export default $config({
 	app(input) {
@@ -27,7 +27,7 @@ export default $config({
 				NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL:
 					env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL,
 				AWS_SECRET_ID: process.env.AWS_SECRET_ID,
-				API_URL: env.API_URL,
+				API_URL: process.env.API_URL,
 			},
 			// uncomment the following block after the VPC is properly setup using endpoints
 			// (right now, the API can be accessed from the public internet only)
