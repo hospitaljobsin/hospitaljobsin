@@ -13,6 +13,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-secrets-manager": "^3.797.0",
+		"@aws-sdk/credential-provider-node": "^3.797.0",
 		"@bprogress/next": "^3.2.10",
 		"@heroui/react": "2.7.2",
 		"@hookform/resolvers": "^3.10.0",

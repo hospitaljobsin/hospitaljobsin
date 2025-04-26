@@ -11,6 +11,9 @@ importers:
       '@aws-sdk/client-secrets-manager':
         specifier: ^3.797.0
         version: 3.797.0
+      '@aws-sdk/credential-provider-node':
+        specifier: ^3.797.0
+        version: 3.797.0
       '@bprogress/next':
         specifier: ^3.2.10
         version: 3.2.10(next@15.2.4(@babel/core@7.26.0)(@playwright/test@1.51.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
