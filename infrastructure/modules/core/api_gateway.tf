@@ -8,6 +8,8 @@ resource "aws_api_gateway_rest_api" "this" {
 resource "aws_api_gateway_deployment" "this" {
   depends_on = [
     aws_api_gateway_integration.lambda,
+    aws_api_gateway_integration.cors_options,
+    aws_api_gateway_integration_response.cors_200,
   ]
 
   rest_api_id = aws_api_gateway_rest_api.this.id
@@ -15,12 +17,10 @@ resource "aws_api_gateway_deployment" "this" {
   triggers = {
     redeployment = sha1(jsonencode([
       aws_api_gateway_integration.lambda.id,
+      aws_api_gateway_integration.cors_options.id,
       aws_api_gateway_method.proxy.id,
+      aws_api_gateway_method.proxy_options.id,
     ]))
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 }
 
@@ -59,6 +59,60 @@ resource "aws_api_gateway_integration" "lambda" {
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.backend.invoke_arn
 }
+
+# CORS OPTIONS Method
+resource "aws_api_gateway_method" "proxy_options" {
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  resource_id   = aws_api_gateway_resource.proxy.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+# Integration for CORS OPTIONS Method
+resource "aws_api_gateway_integration" "cors_options" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy_options.http_method
+
+  type                 = "MOCK"
+  passthrough_behavior = "NEVER"
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+# Integration Response for CORS OPTIONS Method
+resource "aws_api_gateway_integration_response" "cors_200" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'*'"
+    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST,PUT,PATCH,DELETE'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+
+  depends_on = [
+    aws_api_gateway_method_response.cors_200
+  ]
+}
+
+# Method Response for CORS OPTIONS Method
+resource "aws_api_gateway_method_response" "cors_200" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+}
+
 
 # Domain name mapping
 
