@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./.sst/platform/config.d.ts" />
-import { env } from "./lib/env";
+const { env } = await import("./lib/env");
 
 export default $config({
 	app(input) {
