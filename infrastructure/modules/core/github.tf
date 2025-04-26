@@ -65,6 +65,24 @@ resource "github_actions_variable" "sst_accounts_domain" {
   value         = "accounts.${var.domain_name}"
 }
 
+resource "github_actions_secret" "sst_accounts_secret_id" {
+  repository      = data.github_repository.this.name
+  secret_name     = "SST_ACCOUNTS_SECRET_ID"
+  plaintext_value = aws_secretsmanager_secret.accounts.id
+}
+
+
+resource "github_actions_secret" "sst_seeker_portal_secret_id" {
+  repository      = data.github_repository.this.name
+  secret_name     = "SST_SEEKER_PORTAL_SECRET_ID"
+  plaintext_value = aws_secretsmanager_secret.seeker_portal.id
+}
+
+resource "github_actions_secret" "sst_recruiter_portal_secret_id" {
+  repository      = data.github_repository.this.name
+  secret_name     = "SST_RECRUITER_PORTAL_SECRET_ID"
+  plaintext_value = aws_secretsmanager_secret.recruiter_portal.id
+}
 
 resource "github_actions_variable" "sst_captcha_site_key" {
   repository    = data.github_repository.this.name
