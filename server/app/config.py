@@ -66,7 +66,7 @@ class Settings(BaseSettings):
                 },
             ],
         ),
-    ] = ["*"]
+    ]
 
     # database config
 
