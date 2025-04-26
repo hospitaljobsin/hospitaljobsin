@@ -200,27 +200,27 @@ resource "aws_lambda_function" "backend" {
 
 # Security Group for Lambda in Private Subnets- uncomment this while moving to private subnets
 
-# resource "aws_security_group" "lambda" {
-#   name   = "${var.resource_prefix}-lambda-sg"
-#   vpc_id = aws_vpc.this.id
+resource "aws_security_group" "lambda" {
+  name   = "${var.resource_prefix}-lambda-sg"
+  vpc_id = aws_vpc.this.id
 
-#   # Allow outbound traffic to the internet through NAT for external services (S3, Textract)
-#   egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+  # Allow outbound traffic to the internet through NAT for external services (S3, Textract)
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-#   # Ingress rules (if needed) for access from specific sources, like ECS or API Gateway
-#   # Example: Allow access from VPC internal IPs
-#   ingress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["10.0.0.0/16"] # Replace with VPC CIDR block
-#   }
-# }
+  # Ingress rules (if needed) for access from specific sources, like ECS or API Gateway
+  # Example: Allow access from VPC internal IPs
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["10.0.0.0/16"] # Replace with VPC CIDR block
+  }
+}
 
 
 resource "aws_lambda_permission" "backend" {
