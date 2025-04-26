@@ -26,7 +26,7 @@ export default $config({
 					env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL,
 				NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL:
 					env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL,
-				JWE_SECRET_KEY: env.JWE_SECRET_KEY,
+				AWS_SECRET_ID: process.env.AWS_SECRET_ID,
 				API_URL: env.API_URL,
 			},
 			// uncomment the following block after the VPC is properly setup using endpoints
