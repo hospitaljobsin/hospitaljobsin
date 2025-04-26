@@ -8,7 +8,7 @@ export async function loadSecrets() {
 		if (runtimeApi) {
 			console.log("Using AWS Lambda Runtime API to load secrets");
 			// use local Secrets & Parameters Extension
-			const url = `http://${runtimeApi}/secretsmanager/get?secretId=${encodeURIComponent(secretId)}`;
+			const url = `http://localhost:2773/secretsmanager/get?secretId=${encodeURIComponent(secretId)}`;
 			const res = await fetch(url, {
 				headers: {
 					"X-Aws-Parameters-Secrets-Token": process.env.AWS_SESSION_TOKEN ?? "",
