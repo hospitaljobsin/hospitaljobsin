@@ -1,5 +1,3 @@
-import defaultWrapper from "@opennextjs/aws/overrides/wrappers/aws-lambda.js";
-
 export async function loadSecrets() {
 	if (process.env.AWS_SECRET_ID !== undefined) {
 		console.log("Loading secrets from AWS Secrets Manager");
@@ -32,10 +30,3 @@ export async function loadSecrets() {
 		}
 	}
 }
-
-loadSecrets().catch((err) => {
-	console.error("Failed to load secrets", err);
-	process.exit(1);
-});
-
-export default defaultWrapper;
