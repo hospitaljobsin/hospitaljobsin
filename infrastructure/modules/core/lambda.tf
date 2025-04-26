@@ -198,8 +198,7 @@ resource "aws_lambda_function" "backend" {
 #   qualifier                         = aws_lambda_function.backend.version
 # }
 
-# Security Group for Lambda in Private Subnets- uncomment this while moving to private subnets
-
+# Security Group for Lambda in Private Subnets
 resource "aws_security_group" "lambda" {
   name   = "${var.resource_prefix}-lambda-sg"
   vpc_id = aws_vpc.this.id
