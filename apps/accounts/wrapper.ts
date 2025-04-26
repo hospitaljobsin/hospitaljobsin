@@ -20,6 +20,7 @@ export async function loadSecrets() {
 				);
 			}
 			const payload = await res.json();
+			console.log("Loaded secret from extension", payload);
 			if (!payload.SecretString) {
 				throw new Error("SecretString missing in extension response");
 			}
