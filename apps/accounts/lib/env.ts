@@ -1,5 +1,27 @@
+import {
+	GetSecretValueCommand,
+	SecretsManagerClient,
+} from "@aws-sdk/client-secrets-manager";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
+
+if (process.env.AWS_SECRET_ID !== undefined) {
+	const client = new SecretsManagerClient({});
+
+	const cmd = new GetSecretValueCommand({
+		SecretId: process.env.AWS_SECRET_ID, // the secret ID that contains your JWE key
+	});
+	const resp = await client.send(cmd);
+
+	if (resp.SecretString === undefined) {
+		throw new Error("SecretString not found for AWS secret.");
+	}
+
+	const secret = JSON.parse(resp.SecretString);
+	if (secret.jwe_secret_key !== undefined) {
+		process.env.JWE_SECRET_KEY = secret.jwe_secret_key;
+	}
+}
 
 export const env = createEnv({
 	server: {

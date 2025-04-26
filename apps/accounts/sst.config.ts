@@ -16,7 +16,6 @@ export default $config({
 
 		new sst.aws.Nextjs("accounts-ui", {
 			buildCommand: "pnpm run package",
-			openNextVersion: "3.5.8",
 			domain: process.env.SST_ACCOUNTS_DOMAIN,
 			environment: {
 				NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
