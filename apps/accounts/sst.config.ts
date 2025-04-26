@@ -15,7 +15,7 @@ export default $config({
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
 
 		new sst.aws.Nextjs("accounts-ui", {
-			buildCommand: "pnpm run package",
+			buildCommand: "pnpm run build",
 			domain: process.env.SST_ACCOUNTS_DOMAIN,
 			environment: {
 				NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
