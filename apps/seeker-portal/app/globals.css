@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 @plugin './hero.ts';
 @plugin "@tailwindcss/typography";
 @config "../tailwind.config.js";
