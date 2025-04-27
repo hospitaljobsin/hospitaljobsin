@@ -65,11 +65,23 @@ resource "github_actions_secret" "sst_accounts_secret_id" {
   plaintext_value = aws_secretsmanager_secret.accounts.id
 }
 
+resource "github_actions_variable" "sst_seeker_portal_domain" {
+  repository    = data.github_repository.this.name
+  variable_name = "SST_SEEKER_PORTAL_DOMAIN"
+  value         = var.domain_name
+}
+
 
 resource "github_actions_secret" "sst_seeker_portal_secret_id" {
   repository      = data.github_repository.this.name
   secret_name     = "SST_SEEKER_PORTAL_SECRET_ID"
   plaintext_value = aws_secretsmanager_secret.seeker_portal.id
+}
+
+resource "github_actions_variable" "sst_recruiter_portal_domain" {
+  repository    = data.github_repository.this.name
+  variable_name = "SST_RECRUITER_PORTAL_DOMAIN"
+  value         = "recruiter.${var.domain_name}"
 }
 
 resource "github_actions_secret" "sst_recruiter_portal_secret_id" {
