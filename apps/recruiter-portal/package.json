@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"@bprogress/next": "^3.2.11",
-		"@heroui/react": "2.7.6",
+		"@heroui/react": "2.8.0-beta.2",
 		"@hookform/resolvers": "^3.10.0",
 		"@internationalized/date": "^3.8.0",
 		"@lobehub/icons": "^1.96.0",
@@ -50,6 +50,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@react-types/shared": "^3.29.0",
+		"@tailwindcss/postcss": "^4.1.4",
 		"@tailwindcss/typography": "^0.5.16",
 		"@types/gravatar": "^1.8.6",
 		"@types/node": "^22.14.1",
@@ -63,7 +64,7 @@
 		"postcss": "^8.5.3",
 		"react-relay": "^18.2.0",
 		"relay-compiler": "^18.2.0",
-		"tailwindcss": "^3.4.17",
+		"tailwindcss": "^4.1.4",
 		"typescript": "^5.8.3"
 	},
 	"packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321"
