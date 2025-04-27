@@ -35,6 +35,7 @@ fragment OrgDetailHeaderOrganizationFragment on Organization {
 export default function OrgDetailHeader({
 	organization,
 }: { organization: OrgDetailHeaderOrganizationFragment$key }) {
+	// TODO: move this query to the parent layout component
 	const data = useLazyLoadQuery<OrgDetailHeaderQueryType>(
 		OrgDetailHeaderQuery,
 		{},

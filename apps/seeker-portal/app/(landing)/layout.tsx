@@ -1,4 +1,6 @@
 import Header from "@/components/layout/Header";
+import HeaderSkeleton from "@/components/layout/HeaderSkeleton";
+import { Suspense } from "react";
 
 export default function RootLayout({
 	children,
@@ -7,7 +9,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<div className="w-full h-full flex flex-col">
-			<Header />
+			<Suspense fallback={<HeaderSkeleton />}>
+				<Header />
+			</Suspense>
 			<div className="w-full mx-auto bg-background-600 h-full">{children}</div>
 		</div>
 	);

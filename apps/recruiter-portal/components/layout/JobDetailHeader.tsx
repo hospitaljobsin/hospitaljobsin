@@ -39,6 +39,7 @@ fragment JobDetailHeaderJobFragment on Job {
 export default function JobDetailHeader({
 	job,
 }: { job: JobDetailHeaderJobFragment$key }) {
+	// TODO: move this query to the parent layout component
 	const data = useLazyLoadQuery<JobDetailHeaderQueryType>(
 		JobDetailHeaderQuery,
 		{},

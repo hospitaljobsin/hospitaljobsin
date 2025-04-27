@@ -1,4 +1,5 @@
 import OrgDetailHeader from "@/components/layout/OrgDetailHeader";
+import { Suspense } from "react";
 
 export default function RootLayout({
 	children,
@@ -7,7 +8,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<div className="w-full h-full flex flex-col">
-			<OrgDetailHeader />
+			<Suspense>
+				<OrgDetailHeader />
+			</Suspense>
 			<div className="w-full mx-auto bg-background-600 h-full">
 				<div className="w-full px-5 max-w-5xl mx-auto h-full">{children}</div>
 			</div>
