@@ -4,6 +4,8 @@ import { env } from "./env/server";
 export async function unsign(
 	signedValue: string,
 ): Promise<Record<string, string>> {
+	console.log("Unsigning value:", signedValue);
+	console.log("Secret key:", env.JWE_SECRET_KEY);
 	const secretKey = new TextEncoder().encode(env.JWE_SECRET_KEY);
 	const { plaintext } = await compactDecrypt(signedValue, secretKey);
 

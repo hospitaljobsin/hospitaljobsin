@@ -72,6 +72,7 @@ export async function middleware(request: NextRequest) {
 				has2FAChallenge = true;
 			}
 		} catch (error) {
+			console.error("Error unsigning session cookie:", error);
 			request.cookies.delete(env.NEXT_PUBLIC_SESSION_COOKIE_KEY);
 		}
 	}
