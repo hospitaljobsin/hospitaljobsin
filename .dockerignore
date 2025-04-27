@@ -10,7 +10,6 @@
 # Environment files and secrets
 **/.env
 **/.env.*
-**/secrets.*
 **/*.pem
 **/*.key
 

@@ -39,7 +39,7 @@ export default function JobListControllerSkeleton() {
 									isDisabled
 								/>
 							</div>
-							<div className="flex-1">
+							<div className="flex-1 w-full">
 								<Slider
 									label="Proximity"
 									size="sm"
