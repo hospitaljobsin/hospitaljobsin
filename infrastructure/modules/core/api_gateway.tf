@@ -116,7 +116,8 @@ resource "aws_api_gateway_integration_response" "cors_200" {
   }
 
   depends_on = [
-    aws_api_gateway_method_response.cors_200
+    aws_api_gateway_method_response.cors_200,
+    aws_api_gateway_integration.cors_options
   ]
 }
 
