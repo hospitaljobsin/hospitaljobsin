@@ -39,7 +39,7 @@ export async function networkFetch(
 	// throw an error to indicate to the developer what went wrong.
 	if (Array.isArray(json.errors)) {
 		for (const err of json.errors) {
-			switch (err.extensions.code) {
+			switch (err.extensions?.code) {
 				// Apollo Server sets code to UNAUTHENTICATED
 				// when an AuthenticationError is thrown in a resolver
 				case "UNAUTHENTICATED":

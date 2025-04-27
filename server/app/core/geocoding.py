@@ -97,11 +97,12 @@ class AWSLocationService(BaseLocationService):
         )
         results = response.get("Results", [])
         if results:
-            point = results[0]["Place"]["Geometry"]["Point"]
-            return Coordinates(
-                latitude=point[1],
-                longitude=point[0],
-            )
+            point = results[0]["Place"]["Geometry"].get("Point")
+            if point:
+                return Coordinates(
+                    latitude=point[1],
+                    longitude=point[0],
+                )
         return None
 
     async def get_locations(self, search_term: str, limit: int) -> list[SearchLocation]:
@@ -115,7 +116,7 @@ class AWSLocationService(BaseLocationService):
         return [
             SearchLocation(
                 place_id=str(item.get("PlaceId", generate(size=10))),
-                display_name=item["Text"],
+                display_name=item["Place"].get("Label"),
                 coordinates=Coordinates(
                     latitude=item["Place"]["Geometry"]["Point"][1],
                     longitude=item["Place"]["Geometry"]["Point"][0],
@@ -123,4 +124,5 @@ class AWSLocationService(BaseLocationService):
             )
             for item in results
             if item["Place"]["Geometry"].get("Point") is not None
+            and item["Place"].get("Label") is not None
         ]
