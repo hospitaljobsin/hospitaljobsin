@@ -107,16 +107,6 @@ resource "aws_api_gateway_method" "proxy" {
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_integration" "lambda" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  resource_id = aws_api_gateway_method.proxy.resource_id
-  http_method = aws_api_gateway_method.proxy.http_method
-
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.backend.invoke_arn
-}
-
 # CORS OPTIONS Method
 resource "aws_api_gateway_method" "proxy_options" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
@@ -127,6 +117,18 @@ resource "aws_api_gateway_method" "proxy_options" {
     "method.request.header.Origin" = true
   }
 }
+
+resource "aws_api_gateway_integration" "lambda" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_method.proxy.resource_id
+  http_method = aws_api_gateway_method.proxy.http_method
+
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.backend.invoke_arn
+}
+
+
 
 # Integration Response for CORS OPTIONS Method
 resource "aws_api_gateway_integration_response" "cors_200" {
@@ -139,7 +141,7 @@ resource "aws_api_gateway_integration_response" "cors_200" {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization,Cookie,Set-Cookie'"
     "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST,PUT,PATCH,DELETE'"
     # fallback origin
-    # "method.response.header.Access-Control-Allow-Origin"      = "'https://accounts.${var.domain_name}'"
+    # "method.response.header.Access-Control-Allow-Origin"      = "'*'"
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
   }
 
@@ -167,9 +169,7 @@ resource "aws_api_gateway_integration" "cors_options" {
           "https://accounts.${var.domain_name}",
           "https://recruiter.${var.domain_name}"
         ])
-        #set($origin = $input.params("origin"))
-        #if($domains.contains($origin))
-        #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)
+        #set($context.responseOverride.header.Access-Control-Allow-Origin = "https://${var.domain_name}")
         #end
       EOF
   }
