@@ -2,11 +2,9 @@
 import type { PasskeysSettingsViewQuery as PasskeysSettingsViewQueryType } from "@/__generated__/PasskeysSettingsViewQuery.graphql";
 import { LEARN_MORE_ABOUT_PASSKEYS_LINK } from "@/lib/constants";
 import { Link } from "@heroui/react";
-import { Suspense } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
 import PasskeysList from "./PasskeysList";
-import PasskeysListSkeleton from "./PasskeysListSkeleton";
 
 const PasskeysSettingsViewQuery = graphql`
   query PasskeysSettingsViewQuery {
@@ -42,9 +40,7 @@ export default function PasskeysSettingsView() {
 					</Link>
 				</p>
 			</div>
-			<Suspense fallback={<PasskeysListSkeleton />}>
-				<PasskeysList root={data.viewer} />
-			</Suspense>
+			<PasskeysList root={data.viewer} />
 		</div>
 	);
 }

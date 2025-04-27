@@ -1,5 +1,5 @@
 # Future- TODO
-- fix invariant errors that blow up in prod, and also unnecessary double fetches
+- fix invariant errors that blow up in prod (fix is to wrap components that call useLazyLoadQuery with suspense), and also unnecessary double fetches
 - update skeleton UIs (landing page and org list skeletons are outdated)
 - ensure members can also create jobs, but they can only view and manage jobs they own.
 - ensure admins can view and edit all jobs, though.

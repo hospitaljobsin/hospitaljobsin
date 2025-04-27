@@ -1,12 +1,16 @@
 import Header from "@/components/settings/Header";
+import HeaderSkeleton from "@/components/settings/HeaderSkeleton";
 import SettingsSidebar from "@/components/settings/Sidebar";
+import { Suspense } from "react";
 
 export default function SettingsLayout({
 	children,
 }: { children: React.ReactNode }) {
 	return (
 		<>
-			<Header />
+			<Suspense fallback={<HeaderSkeleton />}>
+				<Header />
+			</Suspense>
 			<div className="relative w-full h-full">
 				<div className="absolute top-0 left-0 w-1/2 h-full bg-background-700" />
 				<div className="absolute top-0 right-0 w-1/2 h-full bg-background-600" />

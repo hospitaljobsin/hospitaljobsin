@@ -1,10 +1,8 @@
 "use client";
 import type { SessionsSettingsViewQuery as SessionsSettingsViewQueryType } from "@/__generated__/SessionsSettingsViewQuery.graphql";
-import { Suspense } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import invariant from "tiny-invariant";
 import SessionsList from "./SessionsList";
-import SessionsListSkeleton from "./SessionsListSkeleton";
 
 const SessionsSettingsViewQuery = graphql`
   query SessionsSettingsViewQuery {
@@ -30,9 +28,7 @@ export default function SessionsSettingsView() {
 
 	return (
 		<div className="w-full h-full space-y-6">
-			<Suspense fallback={<SessionsListSkeleton />}>
-				<SessionsList root={data.viewer} />
-			</Suspense>
+			<SessionsList root={data.viewer} />
 		</div>
 	);
 }
