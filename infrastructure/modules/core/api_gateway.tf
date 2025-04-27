@@ -85,21 +85,21 @@ resource "aws_api_gateway_integration" "cors_options" {
   passthrough_behavior = "WHEN_NO_MATCH"
   request_templates = {
     "application/json" = <<EOF
-      {
-        "statusCode": 200
-      }
-      #set($domains = [
-        "https://${var.domain_name}",
-        "https://accounts.${var.domain_name}",
-        "https://recruiter.${var.domain_name}",
-      ])
-      #set($origin = $input.params("origin"))
-      #if($domains.contains($origin))
-        #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)
-      #end
-      #set($context.responseOverride.header.Access-Control-Allow-Methods = "OPTIONS,GET,POST,PUT,PATCH,DELETE")
-      #set($context.responseOverride.header.Access-Control-Allow-Headers = "Content-Type,Authorization,Cookie,Set-Cookie")
-      #set($context.responseOverride.header.Access-Control-Allow-Credentials = "true")
+        #set($domains = [
+          "https://${var.domain_name}",
+          "https://accounts.${var.domain_name}",
+          "https://recruiter.${var.domain_name}",
+        ])
+        #set($origin = $input.params("origin"))
+        #if($domains.contains($origin))
+          #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)
+        #end
+        #set($context.responseOverride.header.Access-Control-Allow-Methods = "OPTIONS,GET,POST,PUT,PATCH,DELETE")
+        #set($context.responseOverride.header.Access-Control-Allow-Headers = "Content-Type,Authorization,Cookie,Set-Cookie")
+        #set($context.responseOverride.header.Access-Control-Allow-Credentials = "true")
+        {
+          "statusCode": 200
+        }
       EOF
   }
 }
