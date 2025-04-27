@@ -39,79 +39,79 @@ resource "aws_acm_certificate_validation" "api_cert" {
   }
 }
 
-resource "aws_acm_certificate" "seeker_portal_cert" {
-  domain_name       = var.domain_name
-  validation_method = "DNS"
+# resource "aws_acm_certificate" "seeker_portal_cert" {
+#   domain_name       = var.domain_name
+#   validation_method = "DNS"
 
-  lifecycle {
-    create_before_destroy = true
-  }
-}
+#   lifecycle {
+#     create_before_destroy = true
+#   }
+# }
 
-resource "aws_route53_record" "seeker_portal_cert_validation" {
-  for_each = {
-    for dvo in aws_acm_certificate.seeker_portal_cert.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      type   = dvo.resource_record_type
-      record = dvo.resource_record_value
-    }
-  }
+# resource "aws_route53_record" "seeker_portal_cert_validation" {
+#   for_each = {
+#     for dvo in aws_acm_certificate.seeker_portal_cert.domain_validation_options : dvo.domain_name => {
+#       name   = dvo.resource_record_name
+#       type   = dvo.resource_record_type
+#       record = dvo.resource_record_value
+#     }
+#   }
 
-  zone_id = aws_route53_zone.main.zone_id
-  name    = each.value.name
-  type    = each.value.type
-  records = [each.value.record]
-  ttl     = 60
-}
+#   zone_id = aws_route53_zone.main.zone_id
+#   name    = each.value.name
+#   type    = each.value.type
+#   records = [each.value.record]
+#   ttl     = 60
+# }
 
-resource "aws_acm_certificate_validation" "seeker_portal_cert" {
-  certificate_arn         = aws_acm_certificate.seeker_portal_cert.arn
-  validation_record_fqdns = [for record in aws_route53_record.seeker_portal_cert_validation : record.fqdn]
+# resource "aws_acm_certificate_validation" "seeker_portal_cert" {
+#   certificate_arn         = aws_acm_certificate.seeker_portal_cert.arn
+#   validation_record_fqdns = [for record in aws_route53_record.seeker_portal_cert_validation : record.fqdn]
 
-  depends_on = [aws_route53_record.seeker_portal_cert_validation]
+#   depends_on = [aws_route53_record.seeker_portal_cert_validation]
 
-  lifecycle {
-    create_before_destroy = true
-    ignore_changes        = [validation_record_fqdns]
-  }
-}
+#   lifecycle {
+#     create_before_destroy = true
+#     ignore_changes        = [validation_record_fqdns]
+#   }
+# }
 
-resource "aws_acm_certificate" "recruiter_portal_cert" {
-  domain_name       = "recruiter.${var.domain_name}"
-  validation_method = "DNS"
+# resource "aws_acm_certificate" "recruiter_portal_cert" {
+#   domain_name       = "recruiter.${var.domain_name}"
+#   validation_method = "DNS"
 
-  lifecycle {
-    create_before_destroy = true
-  }
-}
+#   lifecycle {
+#     create_before_destroy = true
+#   }
+# }
 
-resource "aws_route53_record" "recruiter_portal_cert_validation" {
-  for_each = {
-    for dvo in aws_acm_certificate.recruiter_portal_cert.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      type   = dvo.resource_record_type
-      record = dvo.resource_record_value
-    }
-  }
+# resource "aws_route53_record" "recruiter_portal_cert_validation" {
+#   for_each = {
+#     for dvo in aws_acm_certificate.recruiter_portal_cert.domain_validation_options : dvo.domain_name => {
+#       name   = dvo.resource_record_name
+#       type   = dvo.resource_record_type
+#       record = dvo.resource_record_value
+#     }
+#   }
 
-  zone_id = aws_route53_zone.main.zone_id
-  name    = each.value.name
-  type    = each.value.type
-  records = [each.value.record]
-  ttl     = 60
-}
+#   zone_id = aws_route53_zone.main.zone_id
+#   name    = each.value.name
+#   type    = each.value.type
+#   records = [each.value.record]
+#   ttl     = 60
+# }
 
-resource "aws_acm_certificate_validation" "recruiter_portal_cert" {
-  certificate_arn         = aws_acm_certificate.recruiter_portal_cert.arn
-  validation_record_fqdns = [for record in aws_route53_record.recruiter_portal_cert_validation : record.fqdn]
+# resource "aws_acm_certificate_validation" "recruiter_portal_cert" {
+#   certificate_arn         = aws_acm_certificate.recruiter_portal_cert.arn
+#   validation_record_fqdns = [for record in aws_route53_record.recruiter_portal_cert_validation : record.fqdn]
 
-  depends_on = [aws_route53_record.recruiter_portal_cert_validation]
+#   depends_on = [aws_route53_record.recruiter_portal_cert_validation]
 
-  lifecycle {
-    create_before_destroy = true
-    ignore_changes        = [validation_record_fqdns]
-  }
-}
+#   lifecycle {
+#     create_before_destroy = true
+#     ignore_changes        = [validation_record_fqdns]
+#   }
+# }
 
 
 # resource "aws_acm_certificate" "accounts_cert" {
