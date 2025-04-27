@@ -1,4 +1,4 @@
-import { env } from "@/lib/env";
+import { getEnv } from "@/lib/env/server";
 import links from "@/lib/links";
 import { redirect } from "next/navigation";
 import { cache } from "react";
@@ -15,6 +15,8 @@ export async function networkFetch(
 ): Promise<GraphQLResponse> {
 	const { cookies } = await import("next/headers");
 	const serverCookie = await cookies();
+
+	const env = await getEnv();
 
 	const resp = await fetch(`${env.API_URL}/graphql`, {
 		method: "POST",

@@ -1,6 +1,6 @@
 "use client";
 import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import {
 	Button,

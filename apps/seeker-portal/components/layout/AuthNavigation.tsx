@@ -1,6 +1,6 @@
 "use client";
 import type { AuthNavigationFragment$key } from "@/__generated__/AuthNavigationFragment.graphql";
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import {
 	Button,
@@ -18,7 +18,12 @@ import {
 	NavbarItem,
 	useDisclosure,
 } from "@heroui/react";
-import { BriefcaseBusiness, LogOutIcon, Settings, UserIcon } from "lucide-react";
+import {
+	BriefcaseBusiness,
+	LogOutIcon,
+	Settings,
+	UserIcon,
+} from "lucide-react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";

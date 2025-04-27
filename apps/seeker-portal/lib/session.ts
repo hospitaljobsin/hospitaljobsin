@@ -1,9 +1,10 @@
 import { compactDecrypt } from "jose";
-import { env } from "./env";
+import { getEnv } from "./env/server";
 
 export async function unsign(
 	signedValue: string,
 ): Promise<Record<string, string>> {
+	const env = await getEnv();
 	const secretKey = new TextEncoder().encode(env.JWE_SECRET_KEY);
 	const { plaintext } = await compactDecrypt(signedValue, secretKey);
 

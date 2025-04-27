@@ -1,0 +1,51 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="./.sst/platform/config.d.ts" />
+const { env } = await import("./lib/env/client");
+
+export default $config({
+	app(input) {
+		return {
+			name: "seeker-portal",
+			removal: input?.stage === "production" ? "retain" : "remove",
+			protect: ["production"].includes(input?.stage),
+			home: "aws",
+		};
+	},
+	async run() {
+		// const privateSubnets = process.env.SST_VPC_PRIVATE_SUBNETS?.split(",") || [];
+		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
+		new sst.aws.Nextjs("seeker-portal-ui", {
+			buildCommand: "pnpm run package",
+			domain: process.env.SST_SEEKER_PORTAL_DOMAIN,
+			environment: {
+				NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL,
+				NEXT_PUBLIC_URL: env.NEXT_PUBLIC_URL,
+				NEXT_PUBLIC_CAPTCHA_SITE_KEY: env.NEXT_PUBLIC_CAPTCHA_SITE_KEY,
+				NEXT_PUBLIC_ACCOUNTS_BASE_URL: env.NEXT_PUBLIC_ACCOUNTS_BASE_URL,
+				NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL:
+					env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL,
+				NEXT_PUBLIC_SESSION_COOKIE_KEY: env.NEXT_PUBLIC_SESSION_COOKIE_KEY,
+				AWS_SECRET_ID: process.env.AWS_SECRET_ID,
+				API_URL: process.env.API_URL,
+			},
+			// uncomment the following block after the VPC is properly setup using endpoints
+			// (right now, the API can be accessed from the public internet only)
+			// vpc: {
+			//   securityGroups: securityGroups,
+			//   privateSubnets: privateSubnets,
+			// },
+			server: {
+				runtime: "nodejs22.x",
+				layers: [
+					"arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:17",
+				],
+			},
+			permissions: [
+				{
+					actions: ["secretsmanager:GetSecretValue"],
+					resources: ["*"], // TODO: restrict to the secret ARN
+				},
+			],
+		});
+	},
+});

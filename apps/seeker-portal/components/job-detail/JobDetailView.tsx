@@ -1,5 +1,5 @@
 import type { JobDetailViewFragment$key } from "@/__generated__/JobDetailViewFragment.graphql";
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/client";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { graphql, useFragment } from "react-relay";

@@ -1,7 +1,7 @@
 "use client";
 import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
 import { APP_NAME } from "@/lib/constants";
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import {
 	Button,

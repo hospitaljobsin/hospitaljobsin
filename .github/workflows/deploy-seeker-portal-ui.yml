@@ -1,0 +1,67 @@
+name: Build and Deploy Seeker Portal UI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/seeker-portal/**'
+      - '.github/workflows/deploy-seeker-portal-ui.yml'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/cache@v4
+        with:
+          # See here for caching with `yarn`, `bun` or other package managers https://github.com/actions/cache/blob/main/examples.md or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
+          path: |
+            ~/.pnpm-store
+            ${{ github.workspace }}/apps/seeker-portal/.next/cache
+          # Generate a new cache whenever packages or source files change.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('apps/seeker-portal/pnpm-lock.yaml') }}-${{ hashFiles('apps/seeker-portal/**/*.js', 'apps/seeker-portal/**/*.jsx', 'apps/seeker-portal/**/*.ts', 'apps/seeker-portal/**/*.tsx') }}
+          # If source files changed but packages didn't, rebuild from a prior cache.
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('apps/seeker-portal/pnpm-lock.yaml') }}-
+
+      - name: Install dependencies
+        working-directory: ./apps/seeker-portal
+        run: pnpm install --frozen-lockfile --shamefully-hoist
+
+      - name: Create artifacts directory
+        working-directory: ./apps/seeker-portal
+        run: mkdir -p ./__generated__
+
+      - name: SST Deploy
+        working-directory: ./apps/seeker-portal
+        run: npx sst deploy --stage production --print-logs
+        env:
+            SST_VPC_PRIVATE_SUBNETS: ${{ vars.SST_VPC_PRIVATE_SUBNETS }}
+            SST_VPC_SECURITY_GROUPS: ${{ vars.SST_VPC_SECURITY_GROUPS }}
+            SST_SEEKER_PORTAL_DOMAIN: ${{vars.SST_SEEKER_PORTAL_DOMAIN }}
+            NEXT_PUBLIC_API_URL: ${{ vars.SST_API_URL }}
+            NEXT_PUBLIC_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL }}
+            NEXT_PUBLIC_CAPTCHA_SITE_KEY: ${{ vars.SST_CAPTCHA_SITE_KEY }}
+            NEXT_PUBLIC_ACCOUNTS_BASE_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
+            NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: ${{ vars.SST_RECRUITER_PORTAL_BASE_URL}}
+            NEXT_PUBLIC_SESSION_COOKIE_KEY: user_session
+            API_URL: ${{ vars.SST_API_URL }}
+            AWS_SECRET_ID: ${{ secrets.SST_SEEKER_PORTAL_SECRET_ID }}
+            SKIP_ENV_VALIDATION: true
+
+            
+# TODO: wait for relevant tests to pass before building and pushing

@@ -1,6 +1,6 @@
 import type { JobControlsAuthFragment$key } from "@/__generated__/JobControlsAuthFragment.graphql";
 import type { JobControlsFragment$key } from "@/__generated__/JobControlsFragment.graphql";
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import { Button, Link, Tooltip } from "@heroui/react";
 import { BookmarkCheckIcon, BookmarkIcon } from "lucide-react";

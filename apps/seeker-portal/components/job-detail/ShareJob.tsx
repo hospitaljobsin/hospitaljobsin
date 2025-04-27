@@ -1,5 +1,5 @@
 import type { ShareJobFragment$key } from "@/__generated__/ShareJobFragment.graphql";
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import {
 	Button,
