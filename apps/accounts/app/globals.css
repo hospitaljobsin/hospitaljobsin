@@ -8,7 +8,7 @@
 /* @custom-variant dark (&:where(.dark, .dark *)); */
 
 @theme {
-	--font-display: "Work Sans", "sans-serif";
+	--font-sans: "Work Sans", "sans-serif";
 }
 
 @layer base {
