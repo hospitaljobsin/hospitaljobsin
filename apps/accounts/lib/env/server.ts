@@ -20,9 +20,16 @@ export function createServerEnv(): Readonly<{
 	});
 }
 
-export let env: ReturnType<typeof createServerEnv>;
+let env: ReturnType<typeof createServerEnv>;
 
 export async function initializeEnv() {
 	await loadSecrets();
 	env = createServerEnv();
+}
+
+export function getEnv() {
+	if (!env) {
+		throw new Error("env not initialized yet. Call initializeEnv() first.");
+	}
+	return env;
 }
