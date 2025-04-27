@@ -16,7 +16,9 @@ export async function networkFetch(
 	const { cookies } = await import("next/headers");
 	const serverCookie = await cookies();
 
-	const resp = await fetch(`${getEnv().API_URL}/graphql`, {
+	const env = await getEnv();
+
+	const resp = await fetch(`${env.API_URL}/graphql`, {
 		method: "POST",
 		headers: {
 			Accept: "application/json",

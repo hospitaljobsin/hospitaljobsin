@@ -22,15 +22,10 @@ export function createServerEnv(): Readonly<{
 
 let env: ReturnType<typeof createServerEnv>;
 
-export function getEnv() {
+export async function getEnv() {
 	if (!env) {
-		loadSecrets()
-			.then(() => {
-				env = createServerEnv();
-			})
-			.catch((error) => {
-				console.error("Error loading secrets:", error);
-			});
+		await loadSecrets();
+		env = createServerEnv();
 	}
 	return env;
 }
