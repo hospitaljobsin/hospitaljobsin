@@ -169,7 +169,9 @@ resource "aws_api_gateway_integration" "cors_options" {
           "https://accounts.${var.domain_name}",
           "https://recruiter.${var.domain_name}"
         ])
-        #set($context.responseOverride.header.Access-Control-Allow-Origin = "https://${var.domain_name}")
+        #set($origin = $input.params("origin"))
+        #if($domains.contains($origin))
+        #set($context.requestOverride.header.Access-Control-Allow-Origin = $origin)
         #end
       EOF
   }
@@ -190,6 +192,8 @@ resource "aws_api_gateway_method_response" "cors_200" {
     "method.response.header.Access-Control-Allow-Origin"      = true
     "method.response.header.Access-Control-Allow-Credentials" = true
   }
+
+
 }
 
 
