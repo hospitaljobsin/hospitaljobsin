@@ -2,9 +2,11 @@
 
 import { initializeEnv } from "./lib/env/server";
 
-export async function register() {
+export function register() {
 	if (typeof window === "undefined") {
 		// load secrets only on the server
-		await initializeEnv();
+		initializeEnv().catch((error) => {
+			console.error("Error initializing environment:", error);
+		});
 	}
 }

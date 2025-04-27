@@ -34,6 +34,18 @@ jobs:
         working-directory: ./apps/accounts
         run: mkdir -p ./__generated__
 
+      - uses: actions/cache@v4
+        with:
+          # See here for caching with `yarn`, `bun` or other package managers https://github.com/actions/cache/blob/main/examples.md or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
+          path: |
+            ~/.pnpm-store
+            ${{ github.workspace }}/apps/accounts/.next/cache
+          # Generate a new cache whenever packages or source files change.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('apps/accounts/pnpm-lock.yaml') }}-${{ hashFiles('apps/accounts/**/*.js', 'apps/accounts/**/*.jsx', 'apps/accounts/**/*.ts', 'apps/accounts/**/*.tsx') }}
+          # If source files changed but packages didn't, rebuild from a prior cache.
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('apps/accounts/pnpm-lock.yaml') }}-
+
       - name: SST Deploy
         working-directory: ./apps/accounts
         run: npx sst deploy --stage production --print-logs
