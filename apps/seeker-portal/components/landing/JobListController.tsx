@@ -66,7 +66,7 @@ export default function JobListController(props: JobListControllerProps) {
 								}}
 								fullWidth
 							/>
-							<div className="flex-1">
+							<div className="flex-1 w-full">
 								<Slider
 									label="Proximity"
 									radius="lg"
