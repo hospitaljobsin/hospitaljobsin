@@ -241,6 +241,8 @@ class Settings(BaseSettings):
         aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
 
         if aws_secret_id is not None:
+            # TODO: load from the lambda secrets and parameters extension instead
+            # this will result in a fewer calls to the AWS API
             sources.append(
                 AWSSecretsManagerSettingsSource(
                     settings_cls,

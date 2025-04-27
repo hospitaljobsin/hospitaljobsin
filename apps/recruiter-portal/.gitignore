@@ -42,3 +42,10 @@ next-env.d.ts
 
 # relay
 __generated__
+
+# sst
+.sst
+
+
+# open-next
+.open-next

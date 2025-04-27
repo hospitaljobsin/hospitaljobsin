@@ -1,5 +1,5 @@
 "use client";
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import type {
 	CacheConfig,

@@ -1,5 +1,5 @@
 import { usePathname } from "next/navigation";
-import { env } from "../env";
+import { env } from "../env/client";
 import links from "../links";
 import { isSudoModeActive } from "../sudoMode";
 
