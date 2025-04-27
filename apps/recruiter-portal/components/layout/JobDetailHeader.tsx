@@ -42,6 +42,7 @@ export default function JobDetailHeader({
 	const data = useLazyLoadQuery<JobDetailHeaderQueryType>(
 		JobDetailHeaderQuery,
 		{},
+		{ fetchPolicy: "store-or-network" },
 	);
 	invariant(
 		data.viewer.__typename === "Account",

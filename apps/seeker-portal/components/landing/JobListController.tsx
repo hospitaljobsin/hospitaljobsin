@@ -76,7 +76,7 @@ export default function JobListController(props: JobListControllerProps) {
 									maxValue={100}
 									value={props.proximityKm || 1}
 									onChange={(value) => props.setProximityKm(value as number)}
-									className="max-w-md"
+									className="max-w-md w-full"
 									showOutline
 									formatOptions={{ style: "unit", unit: "kilometer" }}
 								/>

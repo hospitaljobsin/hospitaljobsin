@@ -25,7 +25,11 @@ const ProfileViewQuery = graphql`
 export default function ProfileView() {
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
 	const [isEditingLanguages, setIsEditingLanguages] = useState(false);
-	const data = useLazyLoadQuery<ProfileViewQueryType>(ProfileViewQuery, {});
+	const data = useLazyLoadQuery<ProfileViewQueryType>(
+		ProfileViewQuery,
+		{},
+		{ fetchPolicy: "store-or-network" },
+	);
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",

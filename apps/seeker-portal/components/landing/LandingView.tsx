@@ -16,7 +16,11 @@ const LandingViewQuery = graphql`
 `;
 
 export default function LandingView() {
-	const data = useLazyLoadQuery<LandingViewQueryType>(LandingViewQuery, {});
+	const data = useLazyLoadQuery<LandingViewQueryType>(
+		LandingViewQuery,
+		{},
+		{ fetchPolicy: "store-or-network" },
+	);
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 	const [coordinates, setCoordinates] = useState<CoordinatesInput | null>(null);
 

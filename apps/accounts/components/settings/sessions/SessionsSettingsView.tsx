@@ -21,6 +21,7 @@ export default function SessionsSettingsView() {
 	const data = useLazyLoadQuery<SessionsSettingsViewQueryType>(
 		SessionsSettingsViewQuery,
 		{},
+		{ fetchPolicy: "store-or-network" },
 	);
 	invariant(
 		data.viewer.__typename === "Account",

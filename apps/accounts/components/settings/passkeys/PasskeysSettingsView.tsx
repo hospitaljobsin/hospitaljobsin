@@ -23,6 +23,7 @@ export default function PasskeysSettingsView() {
 	const data = useLazyLoadQuery<PasskeysSettingsViewQueryType>(
 		PasskeysSettingsViewQuery,
 		{},
+		{ fetchPolicy: "store-or-network" },
 	);
 	invariant(
 		data.viewer.__typename === "Account",

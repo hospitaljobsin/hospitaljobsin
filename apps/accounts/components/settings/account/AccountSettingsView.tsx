@@ -27,6 +27,7 @@ export default function AccountSettingsView() {
 	const data = useLazyLoadQuery<AccountSettingsViewQueryType>(
 		AccountSettingsViewQuery,
 		{},
+		{ fetchPolicy: "store-or-network" },
 	);
 
 	invariant(

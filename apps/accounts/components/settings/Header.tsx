@@ -30,7 +30,11 @@ const HeaderQuery = graphql`
 `;
 
 export default function Header() {
-	const data = useLazyLoadQuery<HeaderQueryType>(HeaderQuery, {});
+	const data = useLazyLoadQuery<HeaderQueryType>(
+		HeaderQuery,
+		{},
+		{ fetchPolicy: "store-or-network" },
+	);
 	return (
 		<Navbar maxWidth="lg" isBordered>
 			<NavbarBrand>

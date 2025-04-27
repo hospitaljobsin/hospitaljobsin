@@ -38,6 +38,7 @@ export default function OrgDetailHeader({
 	const data = useLazyLoadQuery<OrgDetailHeaderQueryType>(
 		OrgDetailHeaderQuery,
 		{},
+		{ fetchPolicy: "store-or-network" },
 	);
 	invariant(
 		data.viewer.__typename === "Account",

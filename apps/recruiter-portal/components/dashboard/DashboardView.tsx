@@ -12,7 +12,11 @@ const DashboardViewQuery = graphql`
 	}`;
 
 export default function DashboardView() {
-	const root = useLazyLoadQuery<DashboardViewQueryType>(DashboardViewQuery, {});
+	const root = useLazyLoadQuery<DashboardViewQueryType>(
+		DashboardViewQuery,
+		{},
+		{ fetchPolicy: "store-or-network" },
+	);
 
 	return (
 		<div className="w-full h-full flex flex-col py-6 gap-6">

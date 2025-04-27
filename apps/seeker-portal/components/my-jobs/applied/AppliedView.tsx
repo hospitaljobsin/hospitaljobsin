@@ -10,7 +10,11 @@ const AppliedViewQuery = graphql`
 `;
 
 export default function AppliedView() {
-	const data = useLazyLoadQuery<AppliedViewQueryType>(AppliedViewQuery, {});
+	const data = useLazyLoadQuery<AppliedViewQueryType>(
+		AppliedViewQuery,
+		{},
+		{ fetchPolicy: "store-or-network" },
+	);
 
 	return (
 		<>

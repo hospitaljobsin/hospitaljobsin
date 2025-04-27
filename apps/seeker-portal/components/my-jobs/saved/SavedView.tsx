@@ -10,7 +10,11 @@ const SavedViewQuery = graphql`
 `;
 
 export default function SavedView() {
-	const data = useLazyLoadQuery<SavedViewQueryType>(SavedViewQuery, {});
+	const data = useLazyLoadQuery<SavedViewQueryType>(
+		SavedViewQuery,
+		{},
+		{ fetchPolicy: "store-or-network" },
+	);
 
 	return (
 		<>

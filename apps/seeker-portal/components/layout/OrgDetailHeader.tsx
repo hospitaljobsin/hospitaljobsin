@@ -44,6 +44,7 @@ export default function OrgDetailHeader() {
 	const data = useLazyLoadQuery<OrgDetailHeaderQueryType>(
 		OrgDetailHeaderQuery,
 		{ slug: slug },
+		{ fetchPolicy: "store-or-network" },
 	);
 	const organization = data.organization;
 	invariant(
