@@ -75,6 +75,27 @@ resource "aws_api_gateway_method" "proxy_options" {
   }
 }
 
+# Integration Response for CORS OPTIONS Method
+resource "aws_api_gateway_integration_response" "cors_200" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy_options.http_method
+  status_code = aws_api_gateway_method_response.cors_200.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization,Cookie,Set-Cookie'"
+    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST,PUT,PATCH,DELETE'"
+    # fallback origin
+    # "method.response.header.Access-Control-Allow-Origin"      = "'https://accounts.${var.domain_name}'"
+    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
+  }
+
+  depends_on = [
+    aws_api_gateway_method_response.cors_200,
+    aws_api_gateway_integration.cors_options
+  ]
+}
+
 # Integration for CORS OPTIONS Method
 resource "aws_api_gateway_integration" "cors_options" {
   rest_api_id = aws_api_gateway_rest_api.this.id
@@ -85,6 +106,9 @@ resource "aws_api_gateway_integration" "cors_options" {
   passthrough_behavior = "WHEN_NO_MATCH"
   request_templates = {
     "application/json" = <<EOF
+        {
+          "statusCode": 200
+        }
         #set($domains = [
           "https://${var.domain_name}",
           "https://accounts.${var.domain_name}",
@@ -94,32 +118,11 @@ resource "aws_api_gateway_integration" "cors_options" {
         #if($domains.contains($origin))
           #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)
         #end
-        #set($context.responseOverride.header.Access-Control-Allow-Methods = "OPTIONS,GET,POST,PUT,PATCH,DELETE")
-        #set($context.responseOverride.header.Access-Control-Allow-Headers = "Content-Type,Authorization,Cookie,Set-Cookie")
-        #set($context.responseOverride.header.Access-Control-Allow-Credentials = "true")
-        {
-          "statusCode": 200
-        }
       EOF
   }
 }
 
-# Integration Response for CORS OPTIONS Method
-resource "aws_api_gateway_integration_response" "cors_200" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  resource_id = aws_api_gateway_resource.proxy.id
-  http_method = aws_api_gateway_method.proxy_options.http_method
-  status_code = aws_api_gateway_method_response.cors_200.status_code
 
-  response_parameters = {
-    # Empty because response headers are already overridden in template
-  }
-
-  depends_on = [
-    aws_api_gateway_method_response.cors_200,
-    aws_api_gateway_integration.cors_options
-  ]
-}
 
 # Method Response for CORS OPTIONS Method
 resource "aws_api_gateway_method_response" "cors_200" {
