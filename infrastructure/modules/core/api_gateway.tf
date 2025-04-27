@@ -112,11 +112,11 @@ resource "aws_api_gateway_integration" "cors_options" {
         #set($domains = [
           "https://${var.domain_name}",
           "https://accounts.${var.domain_name}",
-          "https://recruiter.${var.domain_name}",
+          "https://recruiter.${var.domain_name}"
         ])
         #set($origin = $input.params("origin"))
         #if($domains.contains($origin))
-          #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)
+        #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)
         #end
       EOF
   }
