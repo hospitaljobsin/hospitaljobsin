@@ -66,8 +66,8 @@ importers:
         specifier: ^6.0.10
         version: 6.0.10
       lucide-react:
-        specifier: ^0.476.0
-        version: 0.476.0(react@19.0.0)
+        specifier: ^0.503.0
+        version: 0.503.0(react@19.0.0)
       next:
         specifier: ^15.3.1
         version: 15.3.1(@babel/core@7.26.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -5419,13 +5419,13 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  lucide-react@0.476.0:
-    resolution: {integrity: sha512-x6cLTk8gahdUPje0hSgLN1/MgiJH+Xl90Xoxy9bkPAsMPOUiyRSKR4JCDPGVCEpyqnZXH3exFWNItcvra9WzUQ==}
+  lucide-react@0.484.0:
+    resolution: {integrity: sha512-oZy8coK9kZzvqhSgfbGkPtTgyjpBvs3ukLgDPv14dSOZtBtboryWF5o8i3qen7QbGg7JhiJBz5mK1p8YoMZTLQ==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  lucide-react@0.484.0:
-    resolution: {integrity: sha512-oZy8coK9kZzvqhSgfbGkPtTgyjpBvs3ukLgDPv14dSOZtBtboryWF5o8i3qen7QbGg7JhiJBz5mK1p8YoMZTLQ==}
+  lucide-react@0.503.0:
+    resolution: {integrity: sha512-HGGkdlPWQ0vTF8jJ5TdIqhQXZi6uh3LnNgfZ8MHiuxFfX3RZeA79r2MW2tHAZKlAVfoNE8esm3p+O6VkIvpj6w==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -6205,8 +6205,8 @@ packages:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
 
-  rc-notification@5.6.3:
-    resolution: {integrity: sha512-42szwnn8VYQoT6GnjO00i1iwqV9D1TTMvxObWsuLwgl0TsOokzhkYiufdtQBsJMFjJravS1hfDKVMHLKLcPE4g==}
+  rc-notification@5.6.4:
+    resolution: {integrity: sha512-KcS4O6B4qzM3KH7lkwOB7ooLPZ4b6J+VMmQgT51VZCeEcmghdeR4IrMcFq0LG+RPdnbe/ArT086tGM8Snimgiw==}
     engines: {node: '>=8.x'}
     peerDependencies:
       react: '>=16.9.0'
@@ -12966,7 +12966,7 @@ snapshots:
       rc-mentions: 2.19.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-menu: 9.16.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-motion: 2.9.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      rc-notification: 5.6.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      rc-notification: 5.6.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-pagination: 5.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-picker: 4.9.2(dayjs@1.11.13)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       rc-progress: 4.0.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -14972,11 +14972,11 @@ snapshots:
     dependencies:
       react: 19.0.0
 
-  lucide-react@0.476.0(react@19.0.0):
+  lucide-react@0.484.0(react@19.0.0):
     dependencies:
       react: 19.0.0
 
-  lucide-react@0.484.0(react@19.0.0):
+  lucide-react@0.503.0(react@19.0.0):
     dependencies:
       react: 19.0.0
 
@@ -16162,7 +16162,7 @@ snapshots:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
 
-  rc-notification@5.6.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  rc-notification@5.6.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@babel/runtime': 7.27.0
       classnames: 2.5.1
