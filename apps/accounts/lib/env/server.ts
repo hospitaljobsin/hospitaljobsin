@@ -1,7 +1,6 @@
-// env.ts
+import { loadSecrets } from "@/lib/secrets";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
-import { loadSecrets } from "../secrets";
 
 export function createServerEnv(): Readonly<{
 	JWE_SECRET_KEY: string;
