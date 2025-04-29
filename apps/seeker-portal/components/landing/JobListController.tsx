@@ -45,7 +45,7 @@ export default function JobListController(props: JobListControllerProps) {
 			/>
 
 			<div className="flex gap-4 w-full">
-				<Card className="w-full" shadow="none">
+				<Card className="w-full" shadow="sm">
 					<CardBody className="p-4">
 						<div className="flex flex-col sm:flex-row gap-8 w-full items-center">
 							<LocationAutocomplete

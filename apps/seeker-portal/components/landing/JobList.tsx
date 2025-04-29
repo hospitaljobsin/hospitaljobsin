@@ -112,20 +112,21 @@ export default function JobList({
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (
-			<Card className="p-6 space-y-6" fullWidth shadow="none">
-				<CardBody className="flex flex-col gap-8 w-full items-center">
-					<Image
-						src="/images/not-found.svg" // Add an illustration asset here
-						alt="Not Found Illustration"
-						width={350}
-						height={350}
-					/>
-					<div className="w-full flex flex-col gap-4 items-center">
-						<h2 className="font-medium text-muted-foreground text-lg">
-							Oops! No results found
+			<Card className="p-6" fullWidth shadow="none" style={{ background: "transparent" }}>
+				<CardBody className="flex flex-col gap-6 w-full items-center">
+					<div className="flex flex-col items-center">
+						{/* Simple monochrome icon (e.g., magnifying glass) */}
+						<svg width={56} height={56} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+							<circle cx="11" cy="11" r="7" stroke="#A3A3A3" strokeWidth="2" />
+							<line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#A3A3A3" strokeWidth="2" strokeLinecap="round" />
+						</svg>
+					</div>
+					<div className="w-full flex flex-col gap-2 items-center">
+						<h2 className="font-medium text-muted-foreground text-base">
+							No jobs found
 						</h2>
-						<p className="text-muted-foreground text-md">
-							Modify search criteria and try again
+						<p className="text-muted-foreground text-sm text-center max-w-xs">
+							Try adjusting your search or filters to see more results.
 						</p>
 					</div>
 				</CardBody>
