@@ -26,7 +26,7 @@ export default function Providers({
 					<TurnstileProvider>
 						<ProgressProvider
 							height="4px"
-							color="hsl(var(--heroui-primary-400))"
+							color="hsl(var(--heroui-primary-300))"
 							nonce="progressbar-nonce"
 							options={{ showSpinner: false }}
 							shallowRouting
