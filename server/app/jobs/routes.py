@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from aioinject import Injected
 from aioinject.ext.fastapi import inject
-from fastapi import APIRouter, BackgroundTasks
+from fastapi import APIRouter
 from pydantic import BaseModel
 
 from app.jobs.services import JobService
@@ -24,12 +24,10 @@ class LogJobViewResult(BaseModel):
 async def log_job_view(
     organization_slug: str,
     job_slug: str,
-    background_tasks: BackgroundTasks,
     job_service: Injected[JobService],
 ) -> LogJobViewResult:
     """Log a job view."""
-    background_tasks.add_task(
-        job_service.log_view,
+    await job_service.log_view(
         slug=job_slug,
         organization_slug=organization_slug,
     )
