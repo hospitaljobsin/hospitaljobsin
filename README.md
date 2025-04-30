@@ -1,5 +1,6 @@
 # Future- TODO
-- fix invariant errors that blow up in prod (fix is to wrap components that call useLazyLoadQuery with suspense), and also unnecessary double fetches
+- fix invariant errors that blow up in prod (fix is to wrap components that call useLazyLoadQuery with suspense)
+	- we also need to use usePreloadedQuery instead os useLazyLoadQuery- this will avoid timing issues and hence invariant blowing up
 - update skeleton UIs (landing page and org list skeletons are outdated)
 - ensure members can also create jobs, but they can only view and manage jobs they own.
 - ensure admins can view and edit all jobs, though.
@@ -227,4 +228,3 @@ Ensure the following policy is added to the user:
 - wait for relevant tests to pass before building and pushing
 - fix subnets config (we removed nat gateway-managed and are facing endpoint timeouts as the backend lambda cannot access the AWS services.)
 	- this might also cause the frontend to return 504s (routing is done, but the ssr part isnt working?)
-- remove background task for logging job view, use some other mechanism to asynchronously log the views.
