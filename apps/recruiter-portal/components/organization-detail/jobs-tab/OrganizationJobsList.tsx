@@ -70,6 +70,8 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 	>(OrganizationJobsListInternalFragment, root.organization);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
+	
+	const hasMountedRef = useRef(false);
 
 	useEffect(() => {
 		if (!observerRef.current) return;
@@ -94,6 +96,11 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 
 	// Debounced search term refetch
 	useEffect(() => {
+		if (!hasMountedRef.current) {
+			// don't refetch on first render
+			hasMountedRef.current = true;
+			return;
+		}
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
 				refetch(

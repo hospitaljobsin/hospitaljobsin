@@ -52,6 +52,8 @@ export default function ApplicantList({
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 
+	const hasMountedRef = useRef(false);
+
 	useEffect(() => {
 		if (!observerRef.current) return;
 
@@ -75,7 +77,11 @@ export default function ApplicantList({
 
 	// Debounced search term refetch
 	useEffect(() => {
-		console.log("status", status, typeof status);
+		if (!hasMountedRef.current) {
+			// don't refetch on first render
+			hasMountedRef.current = true;
+			return;
+		}
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
 				refetch(

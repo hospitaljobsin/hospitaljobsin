@@ -1,4 +1,4 @@
-import type { CoordinatesInput } from "@/__generated__/JobListPaginationQuery.graphql";
+import type { CoordinatesInput } from "@/__generated__/LandingViewQuery.graphql";
 import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import { Card, CardBody, Input, Slider } from "@heroui/react";
 import { MapPin, Search } from "lucide-react";

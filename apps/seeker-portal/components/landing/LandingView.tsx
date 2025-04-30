@@ -16,11 +16,7 @@ const LandingViewQuery = graphql`
 `;
 
 export default function LandingView() {
-	const data = useLazyLoadQuery<LandingViewQueryType>(
-		LandingViewQuery,
-		{},
-		{ fetchPolicy: "store-or-network" },
-	);
+
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 	const [coordinates, setCoordinates] = useState<CoordinatesInput | null>(null);
 
@@ -29,6 +25,12 @@ export default function LandingView() {
 	const [debouncedSearchTerm] = useDebounce(searchTerm, 1000);
 	const [debouncedCoordinates] = useDebounce(coordinates, 1000);
 	const [debouncedProximityKm] = useDebounce(proximityKm, 1000);
+
+	const data = useLazyLoadQuery<LandingViewQueryType>(
+		LandingViewQuery,
+		{},
+		{ fetchPolicy: "store-or-network" },
+	);
 
 	return (
 		<div className="w-full h-full flex flex-col mt-4 sm:-mt-20 gap-4 sm:gap-8">

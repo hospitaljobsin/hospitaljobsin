@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
 	pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
 	experimental: {
 		mdxRs: true,
+		reactCompiler: true,
 	},
 	reactStrictMode: true,
 	compiler: {

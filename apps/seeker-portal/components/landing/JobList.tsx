@@ -1,15 +1,13 @@
 import type { JobListFragment$key } from "@/__generated__/JobListFragment.graphql";
 import type { JobListInternalFragment$key } from "@/__generated__/JobListInternalFragment.graphql";
-import type { CoordinatesInput } from "@/__generated__/JobListPaginationQuery.graphql";
-import type { LandingViewQuery } from "@/__generated__/LandingViewQuery.graphql";
+import type { CoordinatesInput, LandingViewQuery } from "@/__generated__/LandingViewQuery.graphql";
 import { Card, CardBody } from "@heroui/react";
-import Image from "next/image";
+import { Search } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
-import {Search}	 from "lucide-react";
 
 const JobListFragment = graphql`
 fragment JobListFragment on Query @argumentDefinitions(
@@ -26,14 +24,14 @@ fragment JobListFragment on Query @argumentDefinitions(
 
 const JobListInternalFragment = graphql`
   fragment JobListInternalFragment on Query
+  @refetchable(queryName: "JobListRefetchQuery") 
   @argumentDefinitions(
     cursor: { type: "ID" }
 	proximityKm: { type: "Float", defaultValue: null }
     searchTerm: { type: "String", defaultValue: null }
 	coordinates: { type: "CoordinatesInput", defaultValue: null }
     count: { type: "Int", defaultValue: 10 }
-  )
-  @refetchable(queryName: "JobListPaginationQuery") {
+  ){
     jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
       @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm"]) {
       edges {
@@ -72,6 +70,8 @@ export default function JobList({
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 
+	const hasMountedRef = useRef(false);
+
 	useEffect(() => {
 		if (!observerRef.current) return;
 
@@ -95,6 +95,11 @@ export default function JobList({
 
 	// Debounced search term refetch
 	useEffect(() => {
+		if (!hasMountedRef.current) {
+			// don't refetch on first render
+			hasMountedRef.current = true;
+			return;
+		}
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
 				refetch(
