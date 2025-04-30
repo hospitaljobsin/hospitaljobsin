@@ -9,6 +9,9 @@ jiti.esmResolve("./lib/env/client");
 const nextConfig: NextConfig = {
 	/* config options here */
 	reactStrictMode: true,
+	experimental: {
+		reactCompiler: true,
+	},
 	compiler: {
 		relay: {
 			src: "./",

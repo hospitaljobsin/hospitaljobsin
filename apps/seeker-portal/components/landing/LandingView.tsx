@@ -3,11 +3,12 @@ import type {
 	CoordinatesInput,
 	LandingViewQuery as LandingViewQueryType,
 } from "@/__generated__/LandingViewQuery.graphql";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { graphql, useLazyLoadQuery } from "react-relay";
 import { useDebounce } from "use-debounce";
 import JobList from "./JobList";
 import JobListController from "./JobListController";
+import JobListSkeleton from "./JobListSkeleton";
 
 const LandingViewQuery = graphql`
   query LandingViewQuery($searchTerm: String, $coordinates: CoordinatesInput, $proximityKm: Float) {
@@ -42,12 +43,13 @@ export default function LandingView() {
 				proximityKm={proximityKm}
 				setProximityKm={setProximityKm}
 			/>
+			<Suspense fallback={<JobListSkeleton />}>
 			<JobList
 				searchTerm={debouncedSearchTerm}
 				rootQuery={data}
 				coordinates={debouncedCoordinates}
 				proximityKm={debouncedProximityKm}
-			/>
+			/></Suspense>
 		</div>
 	);
 }
