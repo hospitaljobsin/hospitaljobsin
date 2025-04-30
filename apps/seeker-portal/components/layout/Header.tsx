@@ -30,14 +30,14 @@ const HeaderQuery = graphql`
   }
 `;
 
-export default function Header() {
+export default function Header({variant} : {variant: "hero" | "default"}) {
 	const data = useLazyLoadQuery<HeaderQueryType>(
 		HeaderQuery,
 		{},
 		{ fetchPolicy: "store-or-network" },
 	);
 	return (
-		<Navbar maxWidth="lg" isBordered>
+		<Navbar maxWidth="lg" isBordered={variant !== "hero"} classNames={{base: variant === "hero" ? "bg-primary-400 text-primary-foreground" : "bg-white"}} isBlurred={variant !== "hero"}>
 			<NavbarBrand className="flex items-center gap-4">
 				<Link
 					href={links.landing}
@@ -50,7 +50,18 @@ export default function Header() {
 
 			<NavbarContent justify="end">
 				{data.viewer.__typename === "Account" ? (
-					<AuthNavigation rootQuery={data.viewer} />
+					<>			<NavbarItem className="hidden md:block">
+									<Link
+										href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
+										isExternal
+										color="foreground"
+										showAnchorIcon
+										className={variant === "hero" ? "text-primary-foreground" : "text-foreground"}
+									>
+										for recruiters
+									</Link>
+								</NavbarItem>
+					<AuthNavigation rootQuery={data.viewer} /></>
 				) : (
 					<>
 						<NavbarItem>

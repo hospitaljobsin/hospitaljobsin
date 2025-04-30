@@ -1,6 +1,5 @@
 "use client";
 import type { AuthNavigationFragment$key } from "@/__generated__/AuthNavigationFragment.graphql";
-import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import {
 	Button,
@@ -57,17 +56,6 @@ export default function AuthNavigation({ rootQuery }: Props) {
 	return (
 		<>
 			<NavbarItem className="block md:hidden">
-				<Link
-					href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
-					isExternal
-					color="foreground"
-					showAnchorIcon
-					size="sm"
-				>
-					for recruiters
-				</Link>
-			</NavbarItem>
-			<NavbarItem className="block md:hidden">
 				<Button
 					disableRipple
 					isIconOnly
@@ -83,16 +71,6 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						className="rounded-full"
 					/>
 				</Button>
-			</NavbarItem>
-			<NavbarItem className="hidden md:block">
-				<Link
-					href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
-					isExternal
-					color="foreground"
-					showAnchorIcon
-				>
-					for recruiters
-				</Link>
 			</NavbarItem>
 
 			<NavbarItem className="hidden md:block">

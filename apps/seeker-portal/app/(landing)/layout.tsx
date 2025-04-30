@@ -9,8 +9,8 @@ export default function RootLayout({
 }>) {
 	return (
 		<div className="w-full h-full flex flex-col">
-			<Suspense fallback={<HeaderSkeleton />}>
-				<Header />
+			<Suspense fallback={<HeaderSkeleton variant="hero" />}>
+				<Header variant="hero" />
 			</Suspense>
 			<div className="w-full mx-auto bg-background-600 h-full">{children}</div>
 		</div>
