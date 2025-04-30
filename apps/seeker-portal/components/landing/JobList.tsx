@@ -9,6 +9,7 @@ import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
+import {Search}	 from "lucide-react";
 
 const JobListFragment = graphql`
 fragment JobListFragment on Query @argumentDefinitions(
@@ -116,10 +117,7 @@ export default function JobList({
 				<CardBody className="flex flex-col gap-6 w-full items-center">
 					<div className="flex flex-col items-center">
 						{/* Simple monochrome icon (e.g., magnifying glass) */}
-						<svg width={56} height={56} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-							<circle cx="11" cy="11" r="7" stroke="#A3A3A3" strokeWidth="2" />
-							<line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#A3A3A3" strokeWidth="2" strokeLinecap="round" />
-						</svg>
+						<Search className="text-foreground-800" size={35} />
 					</div>
 					<div className="w-full flex flex-col gap-2 items-center">
 						<h2 className="font-medium text-muted-foreground text-base">

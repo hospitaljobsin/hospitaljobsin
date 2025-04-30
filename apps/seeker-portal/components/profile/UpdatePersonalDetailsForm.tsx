@@ -185,6 +185,7 @@ export default function UpdatePersonalDetailsForm({
 								return (
 									<DatePicker
 										fullWidth
+										showMonthAndYearPickers
 										label="Date of Birth"
 										{...field}
 										value={field.value ?? undefined}

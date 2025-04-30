@@ -10,9 +10,6 @@ export default function Footer() {
 			<div className="flex items-center gap-2 w-full max-w-5xl mx-auto px-4">
 				<div className="flex w-full gap-6 justify-between items-center">
 					<div className="w-full flex items-center gap-4">
-						<Link href={links.landing} className="font-medium text-inherit">
-							<Logo className="text-foreground-500" size={18} />
-						</Link>
 						<p className="text-sm text-foreground-500">
 							© {new Date().getFullYear()} {COMPANY_NAME}.
 						</p>
