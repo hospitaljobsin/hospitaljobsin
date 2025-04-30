@@ -1,6 +1,7 @@
 "use client";
 import type { NewOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/NewOrganizationFormLogoPresignedUrlMutation.graphql";
 import type { NewOrganizationFormMutation } from "@/__generated__/NewOrganizationFormMutation.graphql";
+import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next";
@@ -177,7 +178,8 @@ export default function NewOrganizationForm() {
 								{...field}
 								label="Organization Slug"
 								labelPlacement="outside"
-								placeholder="my-organization-slug"
+								placeholder="my-company"
+								description={<p>A unique name for your organization used in URLs (like {env.NEXT_PUBLIC_URL.split("//")[1]}/<b>my-company</b>)</p>}
 								value={field.value}
 								errorMessage={errors.slug?.message}
 								isInvalid={!!errors.slug}
