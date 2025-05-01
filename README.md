@@ -7,6 +7,8 @@
 - when certain non required fields are touched, they become invalid. even when the field is cleared, users are unable to submit forms. need to fix this
 - fix google oauth2 internal server error in prod
 - make language proficiency a dropdown
+- fix location autocomplete- the selected location disappears when no results are found
+	(root cause is ID changes when the results are fetched the second time- as we are using a random ID generator- nanoid() for the places)
 
 (features)
 - ensure members can also create jobs, but they can only view and manage jobs they own.
