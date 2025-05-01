@@ -66,7 +66,7 @@ const formSchema = z.object({
 		state: z.string().nullable(),
 	}),
 	maritalStatus: z.enum(["MARRIED", "SINGLE"]).nullable(),
-	category: z.string().max(25).nullable(),
+	category: z.union([z.string().max(25).nullable(), z.literal("")]),
 });
 
 export default function UpdatePersonalDetailsForm({

@@ -51,7 +51,7 @@ const formSchema = z.object({
 		.max(75)
 		.regex(/^[a-z0-9-]+$/, "Must be a valid slug")
 		.refine((value) => value === value.toLowerCase(), "Must be lowercase"),
-	website: z.string().url().nullable(),
+	website: z.union([z.string().url(), z.literal("")]),
 	description: z.string().nullable(),
 });
 
@@ -81,7 +81,7 @@ export default function NewOrganizationForm() {
 		defaultValues: {
 			fullName: "",
 			slug: "",
-			website: null,
+			website: "",
 			description: null,
 		},
 	});
@@ -118,7 +118,7 @@ export default function NewOrganizationForm() {
 				variables: {
 					fullName: formData.fullName,
 					slug: formData.slug,
-					website: formData.website,
+					website: formData.website || null,
 					description: formData.description,
 					logoUrl: logoUrlResult,
 				},
@@ -179,7 +179,12 @@ export default function NewOrganizationForm() {
 								label="Organization Slug"
 								labelPlacement="outside"
 								placeholder="my-company"
-								description={<p>A unique name for your organization used in URLs (like {env.NEXT_PUBLIC_URL.split("//")[1]}/<b>my-company</b>)</p>}
+								description={
+									<p>
+										A unique name for your organization used in URLs (like{" "}
+										{env.NEXT_PUBLIC_URL.split("//")[1]}/<b>my-company</b>)
+									</p>
+								}
 								value={field.value}
 								errorMessage={errors.slug?.message}
 								isInvalid={!!errors.slug}
@@ -211,7 +216,7 @@ export default function NewOrganizationForm() {
 									labelPlacement="outside"
 									type="url"
 									placeholder="https://example.com"
-									value={field.value || ""}
+									value={field.value}
 									errorMessage={errors.website?.message}
 									isInvalid={!!errors.website}
 								/>

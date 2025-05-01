@@ -75,7 +75,10 @@ const formSchema = z.object({
 	name: z.string().min(1, { message: "Organization name is required" }),
 	slug: z.string().min(1, { message: "Slug is required" }),
 	website: z.string().url({ message: "Invalid URL" }).optional().nullable(),
-	description: z.string().max(300).optional().nullable(),
+	description: z.union([
+		z.string().max(300).optional().nullable(),
+		z.literal(""),
+	]),
 	location: z.string().nullable(),
 });
 
@@ -107,8 +110,8 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			name: data.name,
 			slug: data.slug,
 			website: data.website ?? null,
-			description: data.description ?? null,
-			location: data.location ?? null
+			description: data.description ?? "",
+			location: data.location ?? null,
 		},
 	});
 
@@ -153,7 +156,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 				website: formData.website || null,
 				logoUrl: logoUrlResult,
 				description: formData.description || null,
-				location: formData.location
+				location: formData.location,
 			},
 			onCompleted(response) {
 				if (response.updateOrganization.__typename === "Organization") {
@@ -171,7 +174,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 							slug: response.updateOrganization.slug,
 							website: response.updateOrganization.website,
 							description: response.updateOrganization.description,
-							location: response.updateOrganization.location
+							location: response.updateOrganization.location,
 						});
 						setSelectedLogo(null);
 					}
@@ -305,19 +308,19 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 
 					<div className="mb-12">
 						<Controller
-						name="location"
-						control={control}
-						render={({ field }) => (
-							<Input
-								{...field}
-								label="Location"
-								placeholder="Add organization location"
-								value={field.value ?? ""}
-								errorMessage={errors.location?.message}
-								isInvalid={!!errors.location}
-							/>
-						)}
-					/>
+							name="location"
+							control={control}
+							render={({ field }) => (
+								<Input
+									{...field}
+									label="Location"
+									placeholder="Add organization location"
+									value={field.value ?? ""}
+									errorMessage={errors.location?.message}
+									isInvalid={!!errors.location}
+								/>
+							)}
+						/>
 					</div>
 				</CardBody>
 				<CardFooter>
