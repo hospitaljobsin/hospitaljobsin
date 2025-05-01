@@ -73,7 +73,6 @@ export default function NewOrganizationForm() {
 
 	const {
 		handleSubmit,
-		control,
 		setError,
 		register,
 		formState: { errors, isSubmitting },
