@@ -1,7 +1,14 @@
 # Future- TODO
+(UX)
 - fix invariant errors that blow up in prod (fix is to wrap components that call useLazyLoadQuery with suspense)
 	- we also need to use usePreloadedQuery instead os useLazyLoadQuery- this will avoid timing issues and hence invariant blowing up
 - update skeleton UIs (landing page and org list skeletons are outdated)
+- fix cloudflare turnstile- captcha token refreshing is not working, and calling execute/refresh manually takes some time and affects UX
+- when certain non required fields are touched, they become invalid. even when the field is cleared, users are unable to submit forms. need to fix this
+- fix google oauth2 internal server error in prod
+- make language proficiency a dropdown
+
+(features)
 - ensure members can also create jobs, but they can only view and manage jobs they own.
 - ensure admins can view and edit all jobs, though.
 - add export applicants to XLSX button
