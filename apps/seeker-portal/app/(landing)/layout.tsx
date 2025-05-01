@@ -2,7 +2,7 @@ import Header from "@/components/layout/Header";
 import HeaderSkeleton from "@/components/layout/HeaderSkeleton";
 import { Suspense } from "react";
 
-export default function RootLayout({
+export default function LandingLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
