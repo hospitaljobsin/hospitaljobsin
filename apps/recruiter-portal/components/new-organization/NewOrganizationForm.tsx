@@ -15,7 +15,7 @@ import {
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
@@ -51,7 +51,7 @@ const formSchema = z.object({
 		.max(75)
 		.regex(/^[a-z0-9-]+$/, "Must be a valid slug")
 		.refine((value) => value === value.toLowerCase(), "Must be lowercase"),
-	website: z.union([z.string().url(), z.literal("")]),
+	website: z.union([z.string().url("Invalid URL").nullish(), z.literal("")]),
 	description: z.string().nullable(),
 });
 
@@ -75,6 +75,7 @@ export default function NewOrganizationForm() {
 		handleSubmit,
 		control,
 		setError,
+		register,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -82,8 +83,9 @@ export default function NewOrganizationForm() {
 			fullName: "",
 			slug: "",
 			website: "",
-			description: null,
+			description: "",
 		},
+		mode: "onChange",
 	});
 
 	function getPresignedUrl(): Promise<string | null> {
@@ -119,7 +121,7 @@ export default function NewOrganizationForm() {
 					fullName: formData.fullName,
 					slug: formData.slug,
 					website: formData.website || null,
-					description: formData.description,
+					description: formData.description || null,
 					logoUrl: logoUrlResult,
 				},
 				onCompleted(response) {
@@ -153,47 +155,33 @@ export default function NewOrganizationForm() {
 			</h2>
 			<Card shadow="none" className="p-6 gap-8">
 				<CardBody className="flex flex-col gap-8">
-					<Controller
-						name="fullName"
-						control={control}
-						render={({ field }) => (
-							<Input
-								{...field}
-								label="Organization Full Name"
-								labelPlacement="outside"
-								placeholder="My Organization Name"
-								value={field.value}
-								errorMessage={errors.fullName?.message}
-								isInvalid={!!errors.fullName}
-								isRequired
-								validationBehavior="aria"
-							/>
-						)}
+					<Input
+						{...register("fullName")}
+						label="Organization Full Name"
+						labelPlacement="outside"
+						placeholder="My Organization Name"
+						errorMessage={errors.fullName?.message}
+						isInvalid={!!errors.fullName}
+						isRequired
+						validationBehavior="aria"
 					/>
-					<Controller
-						name="slug"
-						control={control}
-						render={({ field }) => (
-							<Input
-								{...field}
-								label="Organization Slug"
-								labelPlacement="outside"
-								placeholder="my-company"
-								description={
-									<p>
-										A unique name for your organization used in URLs (like{" "}
-										{env.NEXT_PUBLIC_URL.split("//")[1]}/<b>my-company</b>)
-									</p>
-								}
-								value={field.value}
-								errorMessage={errors.slug?.message}
-								isInvalid={!!errors.slug}
-								isRequired
-								validationBehavior="aria"
-							/>
-						)}
+					<Input
+						{...register("slug")}
+						label="Organization Slug"
+						labelPlacement="outside"
+						placeholder="my-company"
+						description={
+							<p>
+								A unique name for your organization used in URLs (like{" "}
+								{env.NEXT_PUBLIC_URL.split("//")[1]}/<b>my-company</b>)
+							</p>
+						}
+						errorMessage={errors.slug?.message}
+						isInvalid={!!errors.slug}
+						isRequired
+						validationBehavior="aria"
 					/>
-					<div className="flex gap-12 w-full items-center">
+					<div className="flex gap-12 w-full items-start">
 						<Input
 							label="Organization Logo"
 							labelPlacement="outside"
@@ -206,37 +194,24 @@ export default function NewOrganizationForm() {
 								}
 							}}
 						/>
-						<Controller
-							name="website"
-							control={control}
-							render={({ field }) => (
-								<Input
-									{...field}
-									label="Organization Website"
-									labelPlacement="outside"
-									type="url"
-									placeholder="https://example.com"
-									value={field.value}
-									errorMessage={errors.website?.message}
-									isInvalid={!!errors.website}
-								/>
-							)}
+						<Input
+							{...register("website")}
+							label="Organization Website"
+							labelPlacement="outside"
+							type="url"
+							placeholder="https://example.com"
+							errorMessage={errors.website?.message}
+							isInvalid={!!errors.website}
+							validationBehavior="aria"
 						/>
 					</div>
-					<Controller
-						name="description"
-						control={control}
-						render={({ field }) => (
-							<Textarea
-								{...field}
-								label="Organization Description"
-								labelPlacement="outside"
-								placeholder="Enter Organization Description"
-								value={field.value || ""}
-								errorMessage={errors.description?.message}
-								isInvalid={!!errors.description}
-							/>
-						)}
+					<Textarea
+						{...register("description")}
+						label="Organization Description"
+						labelPlacement="outside"
+						placeholder="Enter Organization Description"
+						errorMessage={errors.description?.message}
+						isInvalid={!!errors.description}
 					/>
 				</CardBody>
 				<CardFooter>
