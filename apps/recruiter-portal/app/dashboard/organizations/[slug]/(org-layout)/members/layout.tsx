@@ -16,7 +16,7 @@ query layoutOrganizationMembersQuery($slug: String!) {
 	}
 }`;
 
-export default function OrganizationmembersLayout({
+export default function OrganizationMembersLayout({
 	children,
 }: { children: React.ReactNode }) {
 	const slug = useParams<{ slug: string }>().slug;

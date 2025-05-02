@@ -98,7 +98,6 @@ mutation JobEditFormMutation(
             __typename
             job {
                 slug
-				...JobDetailHeaderJobFragment
 				...JobTabsFragment
 				...JobControlsFragment
 				...JobDetailsFragment

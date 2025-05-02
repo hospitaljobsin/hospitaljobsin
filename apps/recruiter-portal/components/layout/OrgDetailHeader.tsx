@@ -1,19 +1,19 @@
 "use client";
-import type { OrgDetailHeaderOrganizationFragment$key } from "@/__generated__/OrgDetailHeaderOrganizationFragment.graphql";
-import type { OrgDetailHeaderQueryFragment$key } from "@/__generated__/OrgDetailHeaderQueryFragment.graphql";
+import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
 import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import Link from "next/link";
-import { useFragment } from "react-relay";
+import type { PreloadedQuery } from "react-relay";
+import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import Logo from "../Logo";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthNavigation from "./AuthNavigation";
 
-const OrgDetailHeaderQueryFragment = graphql`
-  fragment OrgDetailHeaderQueryFragment on Query {
-    viewer {
+export const OrgDetailHeaderQuery = graphql`
+	query OrgDetailHeaderQuery($slug: String!) {
+		viewer {
       ... on Account {
         __typename
         ...AuthNavigationFragment
@@ -22,33 +22,32 @@ const OrgDetailHeaderQueryFragment = graphql`
         __typename
       }
     }
-  }
+		organization(slug: $slug) {
+			__typename
+			... on Organization {
+				...OrganizationTabsFragment
+				name
+				slug
+			}
+		}
+	}
 `;
 
-const OrgDetailHeaderOrganizationFragment = graphql`
-fragment OrgDetailHeaderOrganizationFragment on Organization {
-  ...OrganizationTabsFragment
-  name
-  slug
-}`;
-
 export default function OrgDetailHeader({
-	organization,
-	query,
+	queryReference,
 }: {
-	organization: OrgDetailHeaderOrganizationFragment$key;
-	query: OrgDetailHeaderQueryFragment$key;
+	queryReference: PreloadedQuery<OrgDetailHeaderQueryType>;
 }) {
 	// TODO: move this query to the parent layout component
-	const data = useFragment(OrgDetailHeaderQueryFragment, query);
+	const data = usePreloadedQuery(OrgDetailHeaderQuery, queryReference);
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",
 	);
 
-	const orgData = useFragment(
-		OrgDetailHeaderOrganizationFragment,
-		organization,
+	invariant(
+		data.organization.__typename === "Organization",
+		"Expected 'Organization' node type",
 	);
 
 	return (
@@ -60,10 +59,10 @@ export default function OrgDetailHeader({
 							<Logo />
 						</Link>
 						<Link
-							href={links.organizationDetail(orgData.slug)}
+							href={links.organizationDetail(data.organization.slug)}
 							className="font-medium text-inherit"
 						>
-							{orgData.name}
+							{data.organization.name}
 						</Link>
 					</NavbarBrand>
 				</NavbarContent>
@@ -73,7 +72,7 @@ export default function OrgDetailHeader({
 				</NavbarContent>
 			</Navbar>
 			<div className="w-full max-w-5xl mx-auto flex items-center justify-between">
-				<OrganizationTabs organization={orgData} />
+				<OrganizationTabs organization={data.organization} />
 			</div>
 		</div>
 	);

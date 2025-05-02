@@ -1,24 +1,44 @@
 "use client";
 
-import type { SidebarJobSettingsFragment$key } from "@/__generated__/SidebarJobSettingsFragment.graphql";
+import type { SidebarJobSettingsQuery as SidebarJobSettingsQueryType } from "@/__generated__/SidebarJobSettingsQuery.graphql";
 import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
 import { FileText, Settings } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
-import { useFragment } from "react-relay";
+import type { PreloadedQuery } from "react-relay";
+import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
+import invariant from "tiny-invariant";
 
-const SidebarJobSettingsFragment = graphql`
-fragment SidebarJobSettingsFragment on Job {
-	externalApplicationUrl
-}`;
+export const SidebarJobSettingsQuery = graphql`
+	query SidebarJobSettingsQuery($slug: String!, $jobSlug: String!) {
+		organization(slug: $slug) {
+			__typename
+			... on Organization {
+				job(slug: $jobSlug) {
+					__typename
+					... on Job {
+						externalApplicationUrl
+					}
+				}
+			}
+		}
+	}
+`;
 
 export default function SettingsSidebar({
-	job,
-}: { job: SidebarJobSettingsFragment$key }) {
+	queryReference,
+}: { queryReference: PreloadedQuery<SidebarJobSettingsQueryType> }) {
 	const pathname = usePathname();
 	const params = useParams<{ slug: string; jobSlug: string }>();
-	const data = useFragment(SidebarJobSettingsFragment, job);
+	const data = usePreloadedQuery(SidebarJobSettingsQuery, queryReference);
+
+	invariant(
+		data.organization.__typename === "Organization",
+		"Expected 'Organization' type.",
+	);
+	invariant(data.organization.job.__typename === "Job", "Expected 'Job' type.");
+
 	return (
 		<>
 			<div className="w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky top-0 self-stretch max-h-screen">
@@ -47,7 +67,7 @@ export default function SettingsSidebar({
 							</div>
 						}
 					/>
-					{data.externalApplicationUrl === null && (
+					{data.organization.job.externalApplicationUrl === null && (
 						<Tab
 							key={links.jobDetailSettingsApplicationForm(
 								params.slug,

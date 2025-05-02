@@ -1,26 +1,12 @@
 "use client";
-import type { layoutJobSettingsQuery } from "@/__generated__/layoutJobSettingsQuery.graphql";
-import SettingsSidebar from "@/components/job-detail/settings-tab/Sidebar";
+import type { SidebarJobSettingsQuery as SidebarJobSettingsQueryType } from "@/__generated__/SidebarJobSettingsQuery.graphql";
+import SettingsSidebar, {
+	SidebarJobSettingsQuery,
+} from "@/components/job-detail/settings-tab/Sidebar";
+import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { useParams } from "next/navigation";
-import { useLazyLoadQuery } from "react-relay";
-import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
-
-const JobSettingsLayoutQuery = graphql`
-	query layoutJobSettingsQuery($slug: String!, $jobSlug: String!) {
-		organization(slug: $slug) {
-			__typename
-			... on Organization {
-				job(slug: $jobSlug) {
-					__typename
-					... on Job {
-						...SidebarJobSettingsFragment
-					}
-				}
-			}
-		}
-	}
-`;
+import { Suspense } from "react";
+import { loadQuery } from "react-relay";
 
 export default function JobSettingsLayout({
 	children,
@@ -29,19 +15,15 @@ export default function JobSettingsLayout({
 	const slug = decodeURIComponent(params.slug);
 	const jobSlug = decodeURIComponent(params.jobSlug);
 
-	const data = useLazyLoadQuery<layoutJobSettingsQuery>(
-		JobSettingsLayoutQuery,
+	const queryReference = loadQuery<SidebarJobSettingsQueryType>(
+		getCurrentEnvironment(),
+		SidebarJobSettingsQuery,
 		{
 			slug: slug,
 			jobSlug: jobSlug,
 		},
 		{ fetchPolicy: "store-or-network" },
 	);
-	invariant(
-		data.organization.__typename === "Organization",
-		"Expected 'Organization' type.",
-	);
-	invariant(data.organization.job.__typename === "Job", "Expected 'Job' type.");
 
 	return (
 		<>
@@ -51,7 +33,9 @@ export default function JobSettingsLayout({
 				<div className="relative w-full mx-auto max-w-5xl">
 					<div className="flex flex-col md:flex-row min-h-screen bg-background-600">
 						{/* Sidebar will now grow to fill the height */}
-						<SettingsSidebar job={data.organization.job} />
+						<Suspense>
+							<SettingsSidebar queryReference={queryReference} />
+						</Suspense>
 						<div className="flex-1 px-4 py-6 md:pl-12 bg-background-600">
 							{children}
 						</div>

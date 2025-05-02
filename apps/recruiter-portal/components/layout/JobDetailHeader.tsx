@@ -1,19 +1,19 @@
 "use client";
-import type { JobDetailHeaderJobFragment$key } from "@/__generated__/JobDetailHeaderJobFragment.graphql";
-import type { JobDetailHeaderQueryFragment$key } from "@/__generated__/JobDetailHeaderQueryFragment.graphql";
+import type { JobDetailHeaderQuery as JobDetailHeaderQueryType } from "@/__generated__/JobDetailHeaderQuery.graphql";
 import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import Link from "next/link";
-import { useFragment } from "react-relay";
+import type { PreloadedQuery } from "react-relay";
+import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import Logo from "../Logo";
 import JobTabs from "../job-detail/JobTabs";
 import AuthNavigation from "./AuthNavigation";
 
-const JobDetailHeaderQueryFragment = graphql`
-  fragment JobDetailHeaderQueryFragment on Query {
-    viewer {
+export const JobDetailHeaderQuery = graphql`
+	query JobDetailHeaderQuery($slug: String!, $jobSlug: String!) {
+		viewer {
       ... on Account {
         __typename
         ...AuthNavigationFragment
@@ -22,37 +22,45 @@ const JobDetailHeaderQueryFragment = graphql`
         __typename
       }
     }
-  }
+		organization(slug: $slug) {
+			__typename
+			... on Organization {
+				slug
+				name
+				job(slug: $jobSlug) {
+					__typename
+					... on Job {
+						...JobTabsFragment
+						title
+						slug
+					}
+				}
+			}
+		}
+
+	}
 `;
 
-const JobDetailHeaderJobFragment = graphql`
-fragment JobDetailHeaderJobFragment on Job {
-  ...JobTabsFragment
-  title
-  slug
-  organization {
-    name
-    slug
-  }
-}`;
-
 export default function JobDetailHeader({
-	job,
-	query,
+	queryReference,
 }: {
-	job: JobDetailHeaderJobFragment$key;
-	query: JobDetailHeaderQueryFragment$key;
+	queryReference: PreloadedQuery<JobDetailHeaderQueryType>;
 }) {
-	const data = useFragment(JobDetailHeaderQueryFragment, query);
+	const data = usePreloadedQuery(JobDetailHeaderQuery, queryReference);
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",
 	);
 
-	const jobData = useFragment(JobDetailHeaderJobFragment, job);
+	invariant(
+		data.organization.__typename === "Organization",
+		"Expected 'Organization' node type",
+	);
 
-	const organization = jobData.organization;
-	invariant(organization, "Expected 'Organization' node type");
+	invariant(
+		data.organization.job.__typename === "Job",
+		"Expected 'Job' node type",
+	);
 
 	return (
 		<div className="w-full flex flex-col bg-background border-b border-gray-300">
@@ -64,21 +72,21 @@ export default function JobDetailHeader({
 						</Link>
 						<div className="hidden gap-4 sm:flex sm:items-center">
 							<Link
-								href={links.organizationDetail(organization.slug)}
+								href={links.organizationDetail(data.organization.slug)}
 								className="text-inherit"
 							>
-								{organization.name}
+								{data.organization.name}
 							</Link>
 							<span>/</span>
 						</div>
 						<Link
 							href={links.organizationJobDetail(
-								organization.slug,
-								jobData.slug,
+								data.organization.slug,
+								data.organization.job.slug,
 							)}
 							className="font-medium text-inherit truncate"
 						>
-							{jobData.title}
+							{data.organization.job.title}
 						</Link>
 						<div className="ml-auto">
 							<AuthNavigation rootQuery={data.viewer} />
@@ -87,7 +95,7 @@ export default function JobDetailHeader({
 				</NavbarContent>
 			</Navbar>
 			<div className="w-full max-w-5xl mx-auto flex items-center justify-between">
-				<JobTabs job={jobData} />
+				<JobTabs job={data.organization.job} />
 			</div>
 		</div>
 	);
