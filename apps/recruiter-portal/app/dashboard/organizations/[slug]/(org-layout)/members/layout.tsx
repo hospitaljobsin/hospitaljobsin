@@ -20,6 +20,7 @@ export default function OrganizationMembersLayout({
 	children,
 }: { children: React.ReactNode }) {
 	const slug = useParams<{ slug: string }>().slug;
+	// TODO: move data fetching to the page OR create a separate page for normal members to view
 	const data = useLazyLoadQuery<layoutOrganizationMembersQuery>(
 		OrganizationMembersLayoutQuery,
 		{
