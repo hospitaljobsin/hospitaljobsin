@@ -11,11 +11,12 @@ import {
 	NavbarItem,
 } from "@heroui/react";
 import Link from "next/link";
-import { useLazyLoadQuery } from "react-relay";
+import type { PreloadedQuery } from "react-relay";
+import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import AuthDropdown from "./AuthNavigation";
 
-const HeaderQuery = graphql`
+export const HeaderQuery = graphql`
   query HeaderQuery {
     viewer {
       ... on Account {
@@ -29,12 +30,10 @@ const HeaderQuery = graphql`
   }
 `;
 
-export default function Header() {
-	const data = useLazyLoadQuery<HeaderQueryType>(
-		HeaderQuery,
-		{},
-		{ fetchPolicy: "store-or-network" },
-	);
+export default function Header({
+	queryReference,
+}: { queryReference: PreloadedQuery<HeaderQueryType> }) {
+	const data = usePreloadedQuery(HeaderQuery, queryReference);
 	return (
 		<Navbar maxWidth="lg" isBordered>
 			<NavbarBrand>

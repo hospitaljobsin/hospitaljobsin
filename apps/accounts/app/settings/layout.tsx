@@ -1,15 +1,24 @@
-import Header from "@/components/settings/Header";
+"use client";
+import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
+import Header, { HeaderQuery } from "@/components/settings/Header";
 import HeaderSkeleton from "@/components/settings/HeaderSkeleton";
 import SettingsSidebar from "@/components/settings/Sidebar";
+import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { Suspense } from "react";
+import { loadQuery } from "react-relay";
 
 export default function SettingsLayout({
 	children,
 }: { children: React.ReactNode }) {
+	const queryReference = loadQuery<HeaderQueryType>(
+		getCurrentEnvironment(),
+		HeaderQuery,
+		{},
+	);
 	return (
 		<>
 			<Suspense fallback={<HeaderSkeleton />}>
-				<Header />
+				<Header queryReference={queryReference} />
 			</Suspense>
 			<div className="relative w-full h-full">
 				<div className="absolute top-0 left-0 w-1/2 h-full bg-background-700" />
