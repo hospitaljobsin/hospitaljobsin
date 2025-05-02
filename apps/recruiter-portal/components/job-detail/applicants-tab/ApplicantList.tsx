@@ -65,7 +65,7 @@ export default function ApplicantList({
 					data.applicants.pageInfo.hasNextPage &&
 					!isLoadingNext
 				) {
-					loadNext(5);
+					loadNext(25);
 				}
 			},
 			{ threshold: 1.0 },

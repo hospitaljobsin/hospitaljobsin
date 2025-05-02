@@ -68,7 +68,7 @@ export default function AppliedJobsList({ rootQuery }: Props) {
 					data.appliedJobs.pageInfo.hasNextPage &&
 					!isLoadingNext
 				) {
-					loadNext(5);
+					loadNext(25);
 				}
 			},
 			{ threshold: 1.0 },

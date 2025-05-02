@@ -84,10 +84,10 @@ export default function JobList({
 					data.jobs.pageInfo.hasNextPage &&
 					!isLoadingNext
 				) {
-					loadNext(5);
+					loadNext(25);
 				}
 			},
-			{ threshold: null },
+			{ threshold: 1.0 },
 		);
 
 		observer.observe(observerRef.current);

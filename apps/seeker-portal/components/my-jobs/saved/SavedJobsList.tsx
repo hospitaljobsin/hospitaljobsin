@@ -66,7 +66,7 @@ export default function SavedJobsList({ rootQuery }: Props) {
 					data.savedJobs.pageInfo.hasNextPage &&
 					!isLoadingNext
 				) {
-					loadNext(5);
+					loadNext(25);
 				}
 			},
 			{ threshold: 1.0 },

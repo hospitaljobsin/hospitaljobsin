@@ -70,7 +70,7 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 	>(OrganizationJobsListInternalFragment, root.organization);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
-	
+
 	const hasMountedRef = useRef(false);
 
 	useEffect(() => {
@@ -84,7 +84,7 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 					data.jobs.pageInfo.hasNextPage &&
 					!isLoadingNext
 				) {
-					loadNext(5);
+					loadNext(25);
 				}
 			},
 			{ threshold: 1.0 },

@@ -76,7 +76,7 @@ export default function SessionsList({ root }: Props) {
 					data.sessions.pageInfo.hasNextPage &&
 					!isLoadingNext
 				) {
-					loadNext(5);
+					loadNext(25);
 				}
 			},
 			{ threshold: 1.0 },
