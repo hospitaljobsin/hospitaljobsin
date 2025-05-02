@@ -8,6 +8,7 @@ import invariant from "tiny-invariant";
 
 const OrganizationRootLayoutQuery = graphql`
 	query layoutOrganizationRootQuery($slug: String!) {
+		...OrgDetailHeaderQueryFragment
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
@@ -37,7 +38,7 @@ export default function OrganizationRootLayout({
 
 	return (
 		<>
-			<OrgDetailHeader organization={data.organization} />
+			<OrgDetailHeader organization={data.organization} query={data} />
 			<div className="w-full mx-auto bg-background-600">{children}</div>
 		</>
 	);

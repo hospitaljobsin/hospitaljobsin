@@ -1,6 +1,6 @@
 import type { JobListFragment$key } from "@/__generated__/JobListFragment.graphql";
 import type { JobListInternalFragment$key } from "@/__generated__/JobListInternalFragment.graphql";
-import type { CoordinatesInput, LandingViewQuery } from "@/__generated__/LandingViewQuery.graphql";
+import type { CoordinatesInput } from "@/__generated__/JobListRefetchQuery.graphql";
 import { Card, CardBody } from "@heroui/react";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
@@ -8,6 +8,7 @@ import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
+import type { LandingViewQuery } from "./__generated__/LandingViewQuery.graphql";
 
 const JobListFragment = graphql`
 fragment JobListFragment on Query @argumentDefinitions(
@@ -118,7 +119,12 @@ export default function JobList({
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (
-			<Card className="p-6" fullWidth shadow="none" style={{ background: "transparent" }}>
+			<Card
+				className="p-6"
+				fullWidth
+				shadow="none"
+				style={{ background: "transparent" }}
+			>
 				<CardBody className="flex flex-col gap-6 w-full items-center">
 					<div className="flex flex-col items-center">
 						{/* Simple monochrome icon (e.g., magnifying glass) */}

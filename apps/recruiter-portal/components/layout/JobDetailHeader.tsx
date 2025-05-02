@@ -1,18 +1,18 @@
 "use client";
 import type { JobDetailHeaderJobFragment$key } from "@/__generated__/JobDetailHeaderJobFragment.graphql";
-import type { JobDetailHeaderQuery as JobDetailHeaderQueryType } from "@/__generated__/JobDetailHeaderQuery.graphql";
+import type { JobDetailHeaderQueryFragment$key } from "@/__generated__/JobDetailHeaderQueryFragment.graphql";
 import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import Link from "next/link";
-import { useFragment, useLazyLoadQuery } from "react-relay";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import Logo from "../Logo";
 import JobTabs from "../job-detail/JobTabs";
 import AuthNavigation from "./AuthNavigation";
 
-const JobDetailHeaderQuery = graphql`
-  query JobDetailHeaderQuery {
+const JobDetailHeaderQueryFragment = graphql`
+  fragment JobDetailHeaderQueryFragment on Query {
     viewer {
       ... on Account {
         __typename
@@ -38,13 +38,12 @@ fragment JobDetailHeaderJobFragment on Job {
 
 export default function JobDetailHeader({
 	job,
-}: { job: JobDetailHeaderJobFragment$key }) {
-	// TODO: move this query to the parent layout component
-	const data = useLazyLoadQuery<JobDetailHeaderQueryType>(
-		JobDetailHeaderQuery,
-		{},
-		{ fetchPolicy: "store-or-network" },
-	);
+	query,
+}: {
+	job: JobDetailHeaderJobFragment$key;
+	query: JobDetailHeaderQueryFragment$key;
+}) {
+	const data = useFragment(JobDetailHeaderQueryFragment, query);
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",

@@ -2,14 +2,15 @@
 import type { MyJobsHeaderQuery as MyJobsHeaderQueryType } from "@/__generated__/MyJobsHeaderQuery.graphql";
 import links from "@/lib/links";
 import { Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
-import { useLazyLoadQuery } from "react-relay";
+import type { PreloadedQuery } from "react-relay";
+import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import Logo from "../Logo";
 import MyJobsTabs from "../my-jobs/MyJobsTabs";
 import AuthNavigation from "./AuthNavigation";
 
-const MyJobsHeaderQuery = graphql`
+export const MyJobsHeaderQuery = graphql`
   query MyJobsHeaderQuery {
     viewer {
       ... on Account {
@@ -23,12 +24,10 @@ const MyJobsHeaderQuery = graphql`
   }
 `;
 
-export default function MyJobsHeader() {
-	const data = useLazyLoadQuery<MyJobsHeaderQueryType>(
-		MyJobsHeaderQuery,
-		{},
-		{ fetchPolicy: "store-or-network" },
-	);
+export default function MyJobsHeader({
+	queryReference,
+}: { queryReference: PreloadedQuery<MyJobsHeaderQueryType> }) {
+	const data = usePreloadedQuery(MyJobsHeaderQuery, queryReference);
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",

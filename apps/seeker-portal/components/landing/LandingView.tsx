@@ -1,23 +1,26 @@
 "use client";
-import type {
-	CoordinatesInput,
-	LandingViewQuery as LandingViewQueryType,
-} from "@/__generated__/LandingViewQuery.graphql";
+import type { LandingViewFragment$key } from "@/__generated__/LandingViewFragment.graphql";
 import { Suspense, useState } from "react";
-import { graphql, useLazyLoadQuery } from "react-relay";
+import { graphql, useFragment } from "react-relay";
 import { useDebounce } from "use-debounce";
+import type { CoordinatesInput } from "../../__generated__/JobListRefetchQuery.graphql";
 import JobList from "./JobList";
 import JobListController from "./JobListController";
 import JobListSkeleton from "./JobListSkeleton";
 
-const LandingViewQuery = graphql`
-  query LandingViewQuery($searchTerm: String, $coordinates: CoordinatesInput, $proximityKm: Float) {
+const LandingViewFragment = graphql`
+  fragment LandingViewFragment on Query   @argumentDefinitions(
+    searchTerm: { type: "String" }
+    coordinates: { type: "CoordinatesInput"}
+	proximityKm: { type: "Float" }
+  ) {
     ...JobListFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
   }
 `;
 
-export default function LandingView() {
-
+export default function LandingView({
+	query,
+}: { query: LandingViewFragment$key }) {
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 	const [coordinates, setCoordinates] = useState<CoordinatesInput | null>(null);
 
@@ -27,11 +30,7 @@ export default function LandingView() {
 	const [debouncedCoordinates] = useDebounce(coordinates, 1000);
 	const [debouncedProximityKm] = useDebounce(proximityKm, 1000);
 
-	const data = useLazyLoadQuery<LandingViewQueryType>(
-		LandingViewQuery,
-		{},
-		{ fetchPolicy: "store-or-network" },
-	);
+	const data = useFragment(LandingViewFragment, query);
 
 	return (
 		<div className="w-full h-full flex flex-col mt-4 sm:-mt-20 gap-4 sm:gap-8">
@@ -44,12 +43,13 @@ export default function LandingView() {
 				setProximityKm={setProximityKm}
 			/>
 			<Suspense fallback={<JobListSkeleton />}>
-			<JobList
-				searchTerm={debouncedSearchTerm}
-				rootQuery={data}
-				coordinates={debouncedCoordinates}
-				proximityKm={debouncedProximityKm}
-			/></Suspense>
+				<JobList
+					searchTerm={debouncedSearchTerm}
+					rootQuery={data}
+					coordinates={debouncedCoordinates}
+					proximityKm={debouncedProximityKm}
+				/>
+			</Suspense>
 		</div>
 	);
 }

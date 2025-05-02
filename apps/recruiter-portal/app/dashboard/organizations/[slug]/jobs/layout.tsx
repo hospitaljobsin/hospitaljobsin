@@ -8,6 +8,7 @@ import invariant from "tiny-invariant";
 
 const JobRootLayoutQuery = graphql`
 	query layoutJobRootQuery($slug: String!, $jobSlug: String!) {
+		...JobDetailHeaderQueryFragment
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
@@ -47,7 +48,7 @@ export default function JobRootLayout({
 
 	return (
 		<>
-			<JobDetailHeader job={data.organization.job} />
+			<JobDetailHeader job={data.organization.job} query={data} />
 			<div className="w-full mx-auto bg-background-600">{children}</div>
 		</>
 	);

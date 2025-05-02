@@ -4,13 +4,14 @@ import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import Link from "next/link";
-import { useLazyLoadQuery } from "react-relay";
+import type { PreloadedQuery } from "react-relay";
+import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import Logo from "../Logo";
 import AuthNavigation from "./AuthNavigation";
 
-const HeaderQuery = graphql`
+export const HeaderQuery = graphql`
   query HeaderQuery {
     viewer {
       ... on Account {
@@ -24,12 +25,10 @@ const HeaderQuery = graphql`
   }
 `;
 
-export default function Header() {
-	const data = useLazyLoadQuery<HeaderQueryType>(
-		HeaderQuery,
-		{},
-		{ fetchPolicy: "store-or-network" },
-	);
+export default function Header({
+	queryReference,
+}: { queryReference: PreloadedQuery<HeaderQueryType> }) {
+	const data = usePreloadedQuery<HeaderQueryType>(HeaderQuery, queryReference);
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",

@@ -1,15 +1,15 @@
 "use client";
-import type { ProfileViewQuery as ProfileViewQueryType } from "@/__generated__/ProfileViewQuery.graphql";
+import type { ProfileViewFragment$key } from "@/__generated__/ProfileViewFragment.graphql";
 import { useState } from "react";
-import { graphql, useLazyLoadQuery } from "react-relay";
+import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
 import Languages from "./Languages";
 import ProfileDetails from "./PersonalDetails";
 import UpdateLanguagesForm from "./UpdateLanguagesForm";
 import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
 
-const ProfileViewQuery = graphql`
-  query ProfileViewQuery {
+const ProfileViewFragment = graphql`
+  fragment ProfileViewFragment on Query {
     viewer {
       __typename
       ... on Account {
@@ -22,14 +22,12 @@ const ProfileViewQuery = graphql`
   }
 `;
 
-export default function ProfileView() {
+export default function ProfileView({
+	query,
+}: { query: ProfileViewFragment$key }) {
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
 	const [isEditingLanguages, setIsEditingLanguages] = useState(false);
-	const data = useLazyLoadQuery<ProfileViewQueryType>(
-		ProfileViewQuery,
-		{},
-		{ fetchPolicy: "store-or-network" },
-	);
+	const data = useFragment(ProfileViewFragment, query);
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",

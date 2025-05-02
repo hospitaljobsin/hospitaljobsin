@@ -1,18 +1,18 @@
 "use client";
 import type { OrgDetailHeaderOrganizationFragment$key } from "@/__generated__/OrgDetailHeaderOrganizationFragment.graphql";
-import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
+import type { OrgDetailHeaderQueryFragment$key } from "@/__generated__/OrgDetailHeaderQueryFragment.graphql";
 import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import Link from "next/link";
-import { useFragment, useLazyLoadQuery } from "react-relay";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import Logo from "../Logo";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthNavigation from "./AuthNavigation";
 
-const OrgDetailHeaderQuery = graphql`
-  query OrgDetailHeaderQuery {
+const OrgDetailHeaderQueryFragment = graphql`
+  fragment OrgDetailHeaderQueryFragment on Query {
     viewer {
       ... on Account {
         __typename
@@ -34,13 +34,13 @@ fragment OrgDetailHeaderOrganizationFragment on Organization {
 
 export default function OrgDetailHeader({
 	organization,
-}: { organization: OrgDetailHeaderOrganizationFragment$key }) {
+	query,
+}: {
+	organization: OrgDetailHeaderOrganizationFragment$key;
+	query: OrgDetailHeaderQueryFragment$key;
+}) {
 	// TODO: move this query to the parent layout component
-	const data = useLazyLoadQuery<OrgDetailHeaderQueryType>(
-		OrgDetailHeaderQuery,
-		{},
-		{ fetchPolicy: "store-or-network" },
-	);
+	const data = useFragment(OrgDetailHeaderQueryFragment, query);
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",
