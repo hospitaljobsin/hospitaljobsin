@@ -81,6 +81,7 @@ RUN uv sync --frozen
 ENV PYTHONPATH="/project"
 ENV PATH="/project/.venv/bin:$PATH"
 
+# TODO: maybe entrypoint isnt allowing extensions to initialize normally
 ENTRYPOINT [ "python", "-m", "awslambdaric" ]
 
 # Set the Lambda handler
