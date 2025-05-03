@@ -55,7 +55,7 @@ def add_middleware(
 
     app.add_middleware(
         SessionMiddleware,
-        jwe_secret_key=secret_settings.jwe_secret_key.get_secret_value(),
+        container=create_container(),
         session_cookie=auth_settings.session_user_cookie_name,
         path="/",
         same_site="lax",

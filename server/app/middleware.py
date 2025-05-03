@@ -1,11 +1,14 @@
 import json
 from typing import Literal
 
+from aioinject import Container
 from fastapi import Request, Response
 from jose import jwe
 from jose.exceptions import JWEError
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.types import ASGIApp
+
+from app.config import SecretSettings
 
 
 class SessionMiddleware(BaseHTTPMiddleware):
@@ -15,7 +18,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
         self,
         app: ASGIApp,
         *,
-        jwe_secret_key: str,
+        container: Container,
         session_cookie: str = "session",
         max_age: int = 14 * 24 * 60 * 60,  # 14 days
         path: str = "/",
@@ -24,13 +27,22 @@ class SessionMiddleware(BaseHTTPMiddleware):
         domain: str | None = None,
     ) -> None:
         super().__init__(app)
-        self.jwe_secret_key = jwe_secret_key
+        self.container = container
+        self._jwe_secret_key = None
         self.session_cookie = session_cookie
         self.max_age = max_age
         self.path = path
         self.same_site: Literal["lax", "strict", "none"] | None = same_site
         self.secure = secure
         self.domain = domain
+
+    def get_jwe_secret_key(self) -> str:
+        """Get the JWE secret key."""
+        if self._jwe_secret_key is None:
+            with self.container.sync_context() as ctx:
+                secret_settings = ctx.resolve(SecretSettings)
+            self._jwe_secret_key = secret_settings.jwe_secret_key.get_secret_value()
+        return self._jwe_secret_key
 
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint
@@ -44,7 +56,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
                 # Decrypt JWE cookie.
                 session_data_bytes = jwe.decrypt(
                     cookie.encode("utf-8"),
-                    key=self.jwe_secret_key,
+                    key=self.get_jwe_secret_key(),
                 )
                 if not session_data_bytes:
                     session_data = {}
@@ -69,7 +81,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
             # encrypt the session data into a JWE cookie.
             token = jwe.encrypt(
                 json.dumps(request.state.session),
-                key=self.jwe_secret_key,
+                key=self.get_jwe_secret_key(),
                 algorithm="dir",
             )
             response.set_cookie(
