@@ -1,6 +1,6 @@
 from app.accounts.repositories import AccountRepo
 from app.auth.repositories import RecoveryCodeRepo, WebAuthnCredentialRepo
-from app.config import Settings
+from app.config import DatabaseSettings, get_settings
 from app.database import initialize_database
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -10,7 +10,7 @@ from webauthn.helpers.structs import AuthenticatorTransport
 async def setup_test_database() -> None:
     """Seed test database with e2e fixtures."""
     # Initialize Beanie with test database
-    settings = Settings()
+    settings = get_settings(DatabaseSettings)
     async with initialize_database(
         database_url=str(settings.database_url),
         default_database_name=settings.default_database_name,
@@ -91,7 +91,7 @@ async def setup_test_database() -> None:
 async def teardown_test_database() -> None:
     """Remove e2e fixtures from test database."""
     # Get connection to database
-    settings = Settings()
+    settings = get_settings(DatabaseSettings)
     client: AsyncIOMotorClient = AsyncIOMotorClient(str(settings.database_url))
 
     database = client.get_default_database()
