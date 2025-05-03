@@ -27,15 +27,21 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push Docker image
+        uses: docker/build-push-action@v5
         env:
-            REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-            IMAGE_NAME: ${{ vars.AWS_BACKEND_IMAGE_NAME }}
-            IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $REGISTRY/$IMAGE_NAME:latest ./server
-          docker tag $REGISTRY/$IMAGE_NAME:latest $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
-          docker push $REGISTRY/$IMAGE_NAME:$IMAGE_TAG 
-          docker push $REGISTRY/$IMAGE_NAME:latest
+          AWS_DEFAULT_REGION: ${{ vars.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
+        with:
+          context: ./server
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_BACKEND_IMAGE_NAME }}:latest
+            ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_BACKEND_IMAGE_NAME }}:${{ github.sha }}
+          build-args: |
+            AWS_DEFAULT_REGION=${{ env.AWS_DEFAULT_REGION }}
+            AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
 
       - name: Update AWS Lambda function
         env:
