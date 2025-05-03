@@ -66,22 +66,11 @@ FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# WORKDIR /opt
-# COPY --from=layer-build /opt .
-
 COPY --from=layer-build /opt/extensions /opt/extensions
 
 RUN chmod +x /opt/extensions/*
 
-# Ensure that all extensions are executable
-# RUN chmod -R +x /opt/extensions
-
-ENV PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL=debug
-ENV AWS_LAMBDA_LOG_FORMAT=json
-ENV DEBUG_LOGGING_ENABLED=true
-
 ENV PYTHONUNBUFFERED=1
-ENV AWS_LAMBDA_EXEC_WRAPPER=/opt/bootstrap
 
 # Set the working directory
 WORKDIR /project
