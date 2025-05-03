@@ -64,6 +64,9 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 WORKDIR /opt/extensions
 COPY --from=layer-build /opt/extensions/ .
 
+# Ensure that all extensions are executable
+RUN chmod -R +x /opt/extensions
+
 ENV PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL=debug
 ENV AWS_LAMBDA_LOG_FORMAT=json
 
