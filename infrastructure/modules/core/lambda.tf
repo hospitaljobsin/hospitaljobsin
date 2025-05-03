@@ -124,6 +124,13 @@ resource "docker_image" "backend" {
   build {
     context = "../server"
 
+    # TODO: add build args here
+    build_args = {
+      AWS_DEFAULT_REGION : var.aws_region
+      AWS_ACCESS_KEY_ID : aws_iam_access_key.github_actions.id
+      AWS_SECRET_ACCESS_KEY : aws_iam_access_key.github_actions.secret
+    }
+
     auth_config {
       host_name      = data.aws_ecr_authorization_token.token.proxy_endpoint
       server_address = data.aws_ecr_authorization_token.token.proxy_endpoint
