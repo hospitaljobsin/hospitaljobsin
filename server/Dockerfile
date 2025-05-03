@@ -58,8 +58,11 @@ FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-WORKDIR /opt
-COPY --from=layer-build /opt .
+# WORKDIR /opt
+# COPY --from=layer-build /opt .
+
+WORKDIR /opt/extensions
+COPY --from=layer-build /opt/extensions/ .
 
 # Set the working directory
 WORKDIR /project
