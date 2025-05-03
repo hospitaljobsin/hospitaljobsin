@@ -77,6 +77,7 @@ RUN chmod -R +x /opt/extensions
 
 ENV PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL=debug
 ENV AWS_LAMBDA_LOG_FORMAT=json
+ENV DEBUG_LOGGING_ENABLED=true
 
 # Set the working directory
 WORKDIR /project
