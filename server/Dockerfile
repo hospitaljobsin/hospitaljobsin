@@ -61,6 +61,33 @@ RUN curl $(aws lambda get-layer-version-by-arn --arn arn:aws:lambda:us-east-1:17
 RUN unzip layer.zip -d /opt && \
     rm layer.zip
 
+
+FROM ghcr.io/astral-sh/uv:0.7.2 AS uv
+
+# First, bundle the dependencies into the task root.
+FROM public.ecr.aws/lambda/python:3.13 AS production-builder
+
+# Enable bytecode compilation, to improve cold-start performance.
+ENV UV_COMPILE_BYTECODE=1
+
+# Disable installer metadata, to create a deterministic layer.
+ENV UV_NO_INSTALLER_METADATA=1
+
+# Enable copy mode to support bind mount caching.
+ENV UV_LINK_MODE=copy
+
+# Bundle the dependencies into the Lambda task root via `uv pip install --target`.
+#
+# Omit any local packages (`--no-emit-workspace`) and development dependencies (`--no-dev`).
+# This ensures that the Docker layer cache is only invalidated when the `pyproject.toml` or `uv.lock`
+# files change, but remains robust to changes in the application code.
+RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv export --frozen --no-emit-workspace --no-dev --no-editable -o requirements.txt && \
+    uv pip install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
+
 # Use the AWS Lambda Python 3.12 base image
 FROM public.ecr.aws/lambda/python:3.12 AS production
 
@@ -76,18 +103,13 @@ ENV PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL=debug
 ENV AWS_LAMBDA_LOG_FORMAT=json
 ENV DEBUG_LOGGING_ENABLED=true
 
-# Set the working directory
-WORKDIR /var/task
 
-# Copy the application files
-COPY . .
+# Copy the runtime dependencies from the builder stage.
+COPY --from=production-builder ${LAMBDA_TASK_ROOT} ${LAMBDA_TASK_ROOT}
 
-# Install dependencies
-RUN uv sync --frozen
+# Copy the application code.
+COPY ./ ${LAMBDA_TASK_ROOT}/
 
-# Set environment variables for Python
-ENV PYTHONPATH="/var/task"
-ENV PATH="/var/task/.venv/bin:$PATH"
 
 # TODO: maybe entrypoint isnt allowing extensions to initialize normally
 # ENTRYPOINT [ "python", "-m", "awslambdaric" ]
