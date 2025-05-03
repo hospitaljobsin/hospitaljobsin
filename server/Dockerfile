@@ -81,6 +81,7 @@ ENV AWS_LAMBDA_LOG_FORMAT=json
 ENV DEBUG_LOGGING_ENABLED=true
 
 ENV PYTHONUNBUFFERED=1
+ENV AWS_LAMBDA_EXEC_WRAPPER=/opt/bootstrap
 
 # Set the working directory
 WORKDIR /project
