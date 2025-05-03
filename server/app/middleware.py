@@ -28,7 +28,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
     ) -> None:
         super().__init__(app)
         self.container = container
-        self._jwe_secret_key = None
+        self._jwe_secret_key: str | None = None
         self.session_cookie = session_cookie
         self.max_age = max_age
         self.path = path
