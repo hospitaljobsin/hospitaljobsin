@@ -155,8 +155,6 @@ resource "aws_lambda_function" "backend" {
 
   publish = true
 
-  layers = ["arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:17"]
-
   # VPC Configuration - uncomment this while moving to private subnets
   # vpc_config {
   #   subnet_ids         = values(aws_subnet.private)[*].id

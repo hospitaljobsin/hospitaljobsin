@@ -49,6 +49,15 @@ COPY . .
 # Install dependencies
 RUN uv sync --frozen
 
+
+# Download and install the AWS Parameters and Secrets Lambda Extension
+RUN curl -sSL \
+    https://aws-parameters-and-secrets-lambda-extension.s3.us-east-1.amazonaws.com/AWS-Parameters-and-Secrets-Lambda-Extension-17.zip \
+    -o /tmp/extension.zip && \
+    unzip /tmp/extension.zip -d /opt && \
+    chmod +x /opt/extensions/* && \
+    rm /tmp/extension.zip
+
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
 ENV PATH="/project/.venv/bin:$PATH"
