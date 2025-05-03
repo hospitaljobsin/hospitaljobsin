@@ -1,5 +1,4 @@
 # Future- TODO
-- when we look at SST console, only after bootstrap is done, the AWS Parameters and Secrets Lambda Extension becomes available to serve requests. But our server attempts to load these secrets at bootstrap time itself. this needs to be changed to lazy load the settings after bootstrap is complete. this is how we load secrets in our frontends.
 (UX)
 - we cannot be generating metadata in some pages (like org detail members page) because outer layouts are client components. we need to try and make sure that the outer layouts are a server component
 - fix invariant errors that blow up in prod (fix is to wrap components that call useLazyLoadQuery with suspense)
