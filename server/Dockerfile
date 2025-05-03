@@ -36,8 +36,9 @@ EXPOSE 8000
 CMD ["python", "scripts/run_server.py"]
 
 
-FROM alpine:latest as layer-build
+FROM debian:12-slim as layer-build
 
+# Set AWS environment variables with optional defaults
 ARG AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-"us-east-1"}
 ARG AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-""}
 ARG AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-""}
@@ -45,13 +46,20 @@ ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
 ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
 ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 
-RUN apk add aws-cli curl unzip
+# Update package list and install dependencies
+RUN apt-get update && \
+    apt-get install -y awscli curl unzip && \
+    rm -rf /var/lib/apt/lists/*
 
+# Create directory for the layer
 RUN mkdir -p /opt
 
+# Download the layer from AWS Lambda
 RUN curl $(aws lambda get-layer-version-by-arn --arn arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:17 --query 'Content.Location' --output text) --output layer.zip
-RUN unzip layer.zip -d /opt
-RUN rm layer.zip
+
+# Unzip the downloaded layer and clean up
+RUN unzip layer.zip -d /opt && \
+    rm layer.zip
 
 # Use the AWS Lambda Python 3.12 base image
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
