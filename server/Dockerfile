@@ -63,8 +63,6 @@ RUN mkdir -p /tmp/layer && \
     chmod +x /tmp/add-layer.sh && \
     /tmp/add-layer.sh || echo "Layer installation failed, continuing build..."
 
-# Alternative approach: directly copying the extension files
-COPY extensions/ /opt/extensions/
 
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
