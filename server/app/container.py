@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from functools import lru_cache
 from typing import assert_never
 
@@ -34,6 +35,8 @@ from app.config import (
     GeocoderSettings,
     Oauth2Settings,
     SecretSettings,
+    TSettings,
+    get_settings,
 )
 from app.core.aws_sdk import (
     create_aioboto3_session,
@@ -107,6 +110,15 @@ settings_classes: list[type[BaseSettings]] = [
 ]
 
 
+def create_settings_factory(
+    settings_cls: type[TSettings],
+) -> Callable[[], TSettings]:
+    def settings_factory() -> TSettings:
+        return get_settings(settings_cls)
+
+    return settings_factory
+
+
 def register_email_sender(container: aioinject.Container) -> None:
     with container.sync_context() as ctx:
         email_settings = ctx.resolve(EmailSettings)
@@ -145,7 +157,11 @@ def register_location_service(container: aioinject.Container) -> None:
 def create_container() -> aioinject.Container:
     container = aioinject.Container()
     for settings_cls in settings_classes:
-        container.register(aioinject.Object(settings_cls()))
+        container.register(
+            aioinject.Singleton(
+                create_settings_factory(settings_cls=settings_cls), settings_cls
+            )
+        )
     container.register(aioinject.Singleton(create_jinja2_environment))
     register_email_sender(container)
     register_location_service(container)
