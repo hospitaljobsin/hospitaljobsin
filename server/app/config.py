@@ -48,7 +48,7 @@ class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
 
         if response.status_code != HTTPStatus.OK:
             raise Exception(
-                f"Failed to load secret from extension: {response.status_code} {response.reason_phrase}"
+                f"Failed to load secret from extension: {response.status_code} {response.reason_phrase} {response.text}"
             )
 
         payload = response.json()
