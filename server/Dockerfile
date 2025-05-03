@@ -53,15 +53,10 @@ RUN mkdir -p /opt/extensions
 
 # Add AWS Parameters and Secrets Lambda Extension using the layer ARN
 # This requires AWS credentials to be available during build
-RUN mkdir -p /tmp/layer && \
-    echo '#!/bin/bash \n\
-    aws lambda get-layer-version-by-arn --arn arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:17 > /tmp/layer-info.json \n\
-    DOWNLOAD_URL=$(cat /tmp/layer-info.json | jq -r .Content.Location) \n\
-    curl -sSL "$DOWNLOAD_URL" -o /tmp/layer.zip \n\
-    unzip -q /tmp/layer.zip -d /opt \n\
-    rm -f /tmp/layer.zip /tmp/layer-info.json' > /tmp/add-layer.sh && \
-    chmod +x /tmp/add-layer.sh && \
-    /tmp/add-layer.sh || echo "Layer installation failed, continuing build..."
+RUN mkdir -p /opt/extensions && \
+    curl -sSL "https://aws-secrets-manager-lambda-extensions.s3.amazonaws.com/aws-parameters-and-secrets-extension-latest" \
+    -o /opt/extensions/aws-parameters-and-secrets-extension && \
+    chmod +x /opt/extensions/aws-parameters-and-secrets-extension
 
 
 
