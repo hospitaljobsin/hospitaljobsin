@@ -65,8 +65,9 @@ resource "aws_iam_policy" "lambda_custom_policy" {
         Effect = "Allow",
         Action = ["secretsmanager:GetSecretValue"],
         Resource = [
-          aws_secretsmanager_secret.backend.arn,
-          "${aws_secretsmanager_secret.backend.arn}/*"
+          # aws_secretsmanager_secret.backend.arn,
+          # "${aws_secretsmanager_secret.backend.arn}/*"
+          "*"
         ]
       }
     ]
