@@ -3,9 +3,8 @@ import type { JobDetailHeaderQuery as JobDetailHeaderQueryType } from "@/__gener
 import JobDetailHeader, {
 	JobDetailHeaderQuery,
 } from "@/components/layout/JobDetailHeader";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { useParams } from "next/navigation";
-import { loadQuery } from "react-relay";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 
 export default function JobRootLayout({
 	children,
@@ -13,10 +12,11 @@ export default function JobRootLayout({
 	children: React.ReactNode;
 }>) {
 	const params = useParams<{ slug: string; jobSlug: string }>();
+	const environment = useRelayEnvironment();
 	const slug = decodeURIComponent(params.slug);
 	const jobSlug = decodeURIComponent(params.jobSlug);
 	const queryReference = loadQuery<JobDetailHeaderQueryType>(
-		getCurrentEnvironment(),
+		environment,
 		JobDetailHeaderQuery,
 		{
 			slug: slug,

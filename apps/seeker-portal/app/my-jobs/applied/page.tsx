@@ -1,9 +1,8 @@
 "use client";
 
 import type { pageAppliedJobsQuery } from "@/__generated__/pageAppliedJobsQuery.graphql";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { Suspense } from "react";
-import { loadQuery } from "react-relay";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
 import AppliedJobsClientComponent from "./AppliedJobsClientComponent";
 
@@ -14,8 +13,9 @@ export const AppliedJobsPageQuery = graphql`
 `;
 
 export default function AppliedJobsPage() {
+	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<pageAppliedJobsQuery>(
-		getCurrentEnvironment(),
+		environment,
 		AppliedJobsPageQuery,
 		{},
 		{ fetchPolicy: "store-or-network" },

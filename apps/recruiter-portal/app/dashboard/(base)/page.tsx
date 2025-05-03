@@ -1,9 +1,8 @@
 "use client";
 import type { pageDashboardQuery } from "@/__generated__/pageDashboardQuery.graphql";
 import DashboardViewSkeleton from "@/components/dashboard/DashboardViewSkeleton";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { Suspense } from "react";
-import { loadQuery } from "react-relay";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
 import DashboardClientComponent from "./DashboardClientComponent";
 
@@ -14,8 +13,9 @@ export const DashboardPageQuery = graphql`
 `;
 
 export default function DashboardPage() {
+	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<pageDashboardQuery>(
-		getCurrentEnvironment(),
+		environment,
 		DashboardPageQuery,
 		{},
 		{ fetchPolicy: "store-or-network" },

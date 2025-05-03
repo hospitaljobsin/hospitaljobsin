@@ -4,17 +4,17 @@ import type { MyJobsHeaderQuery as MyJobsHeaderQueryType } from "@/__generated__
 import MyJobsHeader, {
 	MyJobsHeaderQuery,
 } from "@/components/layout/MyJobsHeader";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { Suspense } from "react";
-import { loadQuery } from "react-relay";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 
 export default function MyJobsLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<MyJobsHeaderQueryType>(
-		getCurrentEnvironment(),
+		environment,
 		MyJobsHeaderQuery,
 		{},
 		{ fetchPolicy: "store-or-network" },

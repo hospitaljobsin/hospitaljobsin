@@ -3,10 +3,9 @@ import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__gener
 import OrgDetailHeader, {
 	OrgDetailHeaderQuery,
 } from "@/components/layout/OrgDetailHeader";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { useParams } from "next/navigation";
 import { Suspense } from "react";
-import { loadQuery } from "react-relay";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 
 export default function OrgDetailLayout({
 	children,
@@ -14,8 +13,9 @@ export default function OrgDetailLayout({
 	children: React.ReactNode;
 }>) {
 	const slug = useParams<{ slug: string }>().slug;
+	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<OrgDetailHeaderQueryType>(
-		getCurrentEnvironment(),
+		environment,
 		OrgDetailHeaderQuery,
 		{ slug: slug },
 		{ fetchPolicy: "store-or-network" },

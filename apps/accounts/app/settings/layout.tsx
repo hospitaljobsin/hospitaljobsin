@@ -3,15 +3,15 @@ import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery
 import Header, { HeaderQuery } from "@/components/settings/Header";
 import HeaderSkeleton from "@/components/settings/HeaderSkeleton";
 import SettingsSidebar from "@/components/settings/Sidebar";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { Suspense } from "react";
-import { loadQuery } from "react-relay";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 
 export default function SettingsLayout({
 	children,
 }: { children: React.ReactNode }) {
+	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<HeaderQueryType>(
-		getCurrentEnvironment(),
+		environment,
 		HeaderQuery,
 		{},
 	);

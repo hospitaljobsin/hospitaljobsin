@@ -1,8 +1,7 @@
 "use client";
 import type { pageProfileQuery } from "@/__generated__/pageProfileQuery.graphql";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { Suspense } from "react";
-import { loadQuery } from "react-relay";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
 import ProfileClientComponent from "./ProfileClientComponent";
 
@@ -13,8 +12,9 @@ export const ProfilePageQuery = graphql`
 `;
 
 export default function Profile() {
+	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<pageProfileQuery>(
-		getCurrentEnvironment(),
+		environment,
 		ProfilePageQuery,
 		{},
 		{ fetchPolicy: "store-or-network" },

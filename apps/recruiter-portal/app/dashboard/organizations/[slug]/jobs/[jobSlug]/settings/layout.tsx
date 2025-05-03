@@ -3,20 +3,20 @@ import type { SidebarJobSettingsQuery as SidebarJobSettingsQueryType } from "@/_
 import SettingsSidebar, {
 	SidebarJobSettingsQuery,
 } from "@/components/job-detail/settings-tab/Sidebar";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { useParams } from "next/navigation";
 import { Suspense } from "react";
-import { loadQuery } from "react-relay";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 
 export default function JobSettingsLayout({
 	children,
 }: { children: React.ReactNode }) {
 	const params = useParams<{ slug: string; jobSlug: string }>();
+	const environment = useRelayEnvironment();
 	const slug = decodeURIComponent(params.slug);
 	const jobSlug = decodeURIComponent(params.jobSlug);
 
 	const queryReference = loadQuery<SidebarJobSettingsQueryType>(
-		getCurrentEnvironment(),
+		environment,
 		SidebarJobSettingsQuery,
 		{
 			slug: slug,

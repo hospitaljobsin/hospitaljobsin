@@ -1,5 +1,6 @@
 # Future- TODO
 (UX)
+- we cannot be generating metadata in some pages (like org detail members page) because outer layouts are client components. we need to try and make sure that the outer layouts are a server component
 - fix invariant errors that blow up in prod (fix is to wrap components that call useLazyLoadQuery with suspense)
 	- we also need to use usePreloadedQuery instead os useLazyLoadQuery- this will avoid timing issues and hence invariant blowing up
 - update skeleton UIs (landing page and org list skeletons are outdated)

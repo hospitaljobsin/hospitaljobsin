@@ -1,9 +1,8 @@
 "use client";
 import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
 import LandingViewSkeleton from "@/components/landing/LandingViewSkeleton";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { Suspense } from "react";
-import { loadQuery } from "react-relay";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
 import LandingClientComponent from "./LandingClientComponent";
 
@@ -14,8 +13,9 @@ export const LandingPageQuery = graphql`
 `;
 
 export default function Landing() {
+	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<pageLandingQuery>(
-		getCurrentEnvironment(),
+		environment,
 		LandingPageQuery,
 		{},
 		{ fetchPolicy: "store-or-network" },
