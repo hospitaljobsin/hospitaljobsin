@@ -71,6 +71,8 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 COPY --from=layer-build /opt/extensions /opt/extensions
 
+RUN chmod +x /opt/extensions/*
+
 # Ensure that all extensions are executable
 # RUN chmod -R +x /opt/extensions
 
