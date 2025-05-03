@@ -42,7 +42,7 @@ class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
     @backoff.on_exception(
         backoff.expo,
         Exception,  # retry on any exception
-        max_tries=5,  # max 5 attempts
+        max_tries=10,  # max 10 attempts
         jitter=backoff.full_jitter,  # adds randomness to reduce thundering herd
     )
     def _fetch_secret_payload(self, url, headers):
