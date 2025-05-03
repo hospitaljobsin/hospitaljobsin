@@ -62,25 +62,22 @@ RUN unzip layer.zip -d /opt && \
     rm layer.zip
 
 # Use the AWS Lambda Python 3.12 base image
-FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
+FROM public.ecr.aws/lambda/python:$PYTHON_BASE AS production
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-WORKDIR /opt
-COPY --from=layer-build /opt .
+# WORKDIR /opt
+# COPY --from=layer-build /opt .
 
 WORKDIR /opt/extensions
 COPY --from=layer-build /opt/extensions/ .
-
-# Ensure that all extensions are executable
-RUN chmod -R +x /opt/extensions
 
 ENV PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL=debug
 ENV AWS_LAMBDA_LOG_FORMAT=json
 ENV DEBUG_LOGGING_ENABLED=true
 
 # Set the working directory
-WORKDIR /project
+WORKDIR /var/task
 
 # Copy the application files
 COPY . .
@@ -89,11 +86,11 @@ COPY . .
 RUN uv sync --frozen
 
 # Set environment variables for Python
-ENV PYTHONPATH="/project"
-ENV PATH="/project/.venv/bin:$PATH"
+ENV PYTHONPATH="/var/task"
+ENV PATH="/var/task/.venv/bin:$PATH"
 
 # TODO: maybe entrypoint isnt allowing extensions to initialize normally
-ENTRYPOINT [ "python", "-m", "awslambdaric" ]
+# ENTRYPOINT [ "python", "-m", "awslambdaric" ]
 
 # Set the Lambda handler
 CMD ["app.lambda_handler.handler"]
