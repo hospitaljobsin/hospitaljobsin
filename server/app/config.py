@@ -40,7 +40,7 @@ class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
 
     def _load_env_vars(self) -> Mapping[str, str | None]:
         print("Loading secrets from AWS Secrets Manager")
-        url = f"http://localhost:2773/secretsmanager/get?secretId={secret_id}"
+        url = f"http://localhost:2773/secretsmanager/get?secretId={self._secret_id}"
         headers = {"X-Aws-Parameters-Secrets-Token": os.getenv("AWS_SESSION_TOKEN", "")}
 
         with httpx.Client() as client:
