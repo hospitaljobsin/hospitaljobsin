@@ -62,7 +62,7 @@ RUN unzip layer.zip -d /opt && \
     rm layer.zip
 
 # Use the AWS Lambda Python 3.12 base image
-FROM public.ecr.aws/lambda/python:$PYTHON_BASE AS production
+FROM public.ecr.aws/lambda/python:3.12 AS production
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
