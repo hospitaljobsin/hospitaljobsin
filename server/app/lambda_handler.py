@@ -1,36 +1,39 @@
-from mangum import Mangum
-
-from app import create_app
-
-app = create_app()
-handler = Mangum(app, lifespan="auto")
-
-# from collections.abc import AsyncGenerator
-# from contextlib import asynccontextmanager
-
-# from fastapi import FastAPI
 # from mangum import Mangum
 
+# from app import create_app
 
-# @asynccontextmanager
-# async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
-#     """Initialize the database when the app starts."""
-#     print("before app start")
-#     yield
-#     print("after app stop")
+# app = create_app()
+# handler = Mangum(app, lifespan="auto")
 
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 
-# app = FastAPI()
+from fastapi import FastAPI
+from mangum import Mangum
+from structlog import get_logger
 
-
-# @app.get("/")
-# def read_root():
-#     return {"Hello": "World"}
+logger = get_logger(__name__)
 
 
-# @app.get("/items/{item_id}")
-# def read_item(item_id: int, q: str = None):
-#     return {"item_id": item_id, "q": q}
+@asynccontextmanager
+async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
+    """Initialize the database when the app starts."""
+    logger.info("before app start")
+    yield
+    logger.info("after app stop")
 
 
-# handler = Mangum(app, lifespan="on")
+app = FastAPI()
+
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: str = None):
+    return {"item_id": item_id, "q": q}
+
+
+handler = Mangum(app, lifespan="on")
