@@ -5,6 +5,7 @@ from enum import StrEnum
 from http import HTTPStatus
 from typing import Annotated, Literal
 
+import backoff
 import httpx
 from pydantic import Field, SecretStr, UrlConstraints
 from pydantic_core import MultiHostUrl
@@ -38,20 +39,28 @@ class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
             env_parse_enums=env_parse_enums,
         )
 
+    @backoff.on_exception(
+        backoff.expo,
+        Exception,  # retry on any exception
+        max_tries=5,  # max 5 attempts
+        jitter=backoff.full_jitter,  # adds randomness to reduce thundering herd
+    )
+    def _fetch_secret_payload(self, url, headers):
+        with httpx.Client() as client:
+            response = client.get(url, headers=headers)
+        if response.status_code != HTTPStatus.OK:
+            raise Exception(
+                f"Extension not ready: {response.status_code} {response.reason_phrase} {response.text}"
+            )
+        return response.json()
+
     def _load_env_vars(self) -> Mapping[str, str | None]:
         print("Loading secrets from AWS Secrets Manager")
         url = f"http://localhost:2773/secretsmanager/get?secretId={self._secret_id}"
         headers = {"X-Aws-Parameters-Secrets-Token": os.getenv("AWS_SESSION_TOKEN", "")}
 
-        with httpx.Client() as client:
-            response = client.get(url, headers=headers)
+        payload = self._fetch_secret_payload(url, headers)
 
-        if response.status_code != HTTPStatus.OK:
-            raise Exception(
-                f"Failed to load secret from extension: {response.status_code} {response.reason_phrase} {response.text}"
-            )
-
-        payload = response.json()
         if "SecretString" not in payload:
             raise Exception("SecretString missing in extension response")
 
