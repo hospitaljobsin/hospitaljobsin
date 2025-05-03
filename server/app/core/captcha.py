@@ -1,6 +1,6 @@
 import httpx
 
-from app.config import Settings
+from app.config import SecretSettings
 
 # TODO: add request IP while verifying captcha here
 
@@ -16,7 +16,7 @@ class BaseCaptchaVerifier:
 class RecaptchaVerifier(BaseCaptchaVerifier):
     """Recaptcha verifier class."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: SecretSettings) -> None:
         self._settings = settings
 
     async def verify(self, captcha_token: str) -> bool:
@@ -36,7 +36,7 @@ class RecaptchaVerifier(BaseCaptchaVerifier):
 class TurnstileCaptchaVerifier(BaseCaptchaVerifier):
     """Turnstile captcha verifier class."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: SecretSettings) -> None:
         self._settings = settings
 
     async def verify(self, captcha_token: str) -> bool:
@@ -60,6 +60,6 @@ class DummyCaptchaVerifier(BaseCaptchaVerifier):
         return captcha_token == "dummy_recaptcha_token"  # noqa: S105
 
 
-def create_captcha_verifier(settings: Settings) -> BaseCaptchaVerifier:
+def create_captcha_verifier(settings: SecretSettings) -> BaseCaptchaVerifier:
     """Create a captcha verifier."""
     return TurnstileCaptchaVerifier(settings)

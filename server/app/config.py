@@ -3,7 +3,7 @@ import os
 from collections.abc import Mapping
 from enum import StrEnum
 from http import HTTPStatus
-from typing import Annotated, Literal
+from typing import Annotated, Literal, TypeVar
 
 import backoff
 import httpx
@@ -78,7 +78,7 @@ MongoSRVDsn = Annotated[
 ]
 
 
-class Settings(BaseSettings):
+class AppSettings(BaseSettings):
     debug: bool
 
     environment: Environment = Environment.development
@@ -123,6 +123,46 @@ class Settings(BaseSettings):
         ),
     ]
 
+    openapi_url: str | None = None
+
+    root_path: str = ""
+
+    # accounts config
+    accounts_base_url: str = "http://localhost:5002"
+
+    # recruiter portal config
+    recruiter_portal_base_url: str = "http://localhost:5001"
+
+    # seeker portal config
+    seeker_portal_base_url: str = "http://localhost:5000"
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+    def _is_environment(self, environment: Environment) -> bool:
+        """Check whether the current environment is the given environment."""
+        return self.environment == environment
+
+    @property
+    def is_development(self) -> bool:
+        """Check whether the current environment is development."""
+        return self._is_environment(Environment.development)
+
+    @property
+    def is_testing(self) -> bool:
+        """Check whether the current environment is testing."""
+        return self._is_environment(Environment.testing)
+
+    @property
+    def is_production(self) -> bool:
+        """Check whether the current environment is production."""
+        return self._is_environment(Environment.production)
+
+
+class DatabaseSettings(BaseSettings):
     # database config
 
     database_url: Annotated[
@@ -136,23 +176,60 @@ class Settings(BaseSettings):
 
     default_database_name: str = "medicaljobs"
 
-    # session cookies config
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
 
-    session_user_cookie_name: str = "user_session"
 
-    session_cookie_domain: str | None = None
+class SecretSettings(BaseSettings):
+    captcha_secret_key: SecretStr
 
     jwe_secret_key: SecretStr
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
+        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
+
+        if aws_secret_id is not None:
+            sources.append(
+                AWSSecretsManagerExtensionSettingsSource(
+                    settings_cls,
+                    secret_id=aws_secret_id,
+                )
+            )
+        return tuple(sources)
+
+
+class Oauth2Settings(BaseSettings):
     # Oauth2 config
     google_client_id: str
 
     google_client_secret: str
 
-    openapi_url: str | None = None
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
 
-    root_path: str = ""
 
+class EmailSettings(BaseSettings):
     # email config
 
     email_provider: Literal["smtp", "aws_ses"] = "smtp"
@@ -188,121 +265,11 @@ class Settings(BaseSettings):
         ),
     ]
 
-    # app config
-
-    # Captcha config
-    captcha_secret_key: SecretStr
-
-    # AWS Config
-
-    s3_bucket_name: str
-
-    aws_endpoint_url: str | None = None
-
-    aws_secret_access_key: SecretStr | None = None
-
-    aws_access_key_id: str | None = None
-
-    # accounts config
-    accounts_base_url: str = "http://localhost:5002"
-
-    # recruiter portal config
-    recruiter_portal_base_url: str = "http://localhost:5001"
-
-    # seeker portal config
-    seeker_portal_base_url: str = "http://localhost:5000"
-
-    # webauthn config
-
-    rp_id: Annotated[
-        str,
-        Field(
-            examples=[
-                "example.com",
-            ],
-        ),
-    ]
-
-    rp_name: Annotated[
-        str,
-        Field(
-            examples=[
-                "Example Inc.",
-            ],
-        ),
-    ]
-
-    rp_expected_origin: Annotated[
-        str,
-        Field(
-            examples=[
-                "",
-            ],
-        ),
-    ]
-
-    # tokens cooldown config
-    email_verification_token_cooldown: int = 60 * 3
-
-    password_reset_token_cooldown: int = 60 * 3
-
-    # geocoder config
-    geocoding_provider: Literal["nominatim", "aws_location"] = "nominatim"
-
-    single_use_location_place_index_name: str | None = None
-
-    storage_location_place_index_name: str | None = None
-
-    geocoder_domain: str | None = None
-
-    geocoder_user_agent: str | None = None
-
-    geocoder_scheme: str = "http"
-
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",
+        extra="allow",
     )
-
-    def _is_environment(self, environment: Environment) -> bool:
-        """Check whether the current environment is the given environment."""
-        return self.environment == environment
-
-    @property
-    def is_development(self) -> bool:
-        """Check whether the current environment is development."""
-        return self._is_environment(Environment.development)
-
-    @property
-    def is_testing(self) -> bool:
-        """Check whether the current environment is testing."""
-        return self._is_environment(Environment.testing)
-
-    @property
-    def is_production(self) -> bool:
-        """Check whether the current environment is production."""
-        return self._is_environment(Environment.production)
-
-    @classmethod
-    def settings_customise_sources(
-        cls,
-        settings_cls: type[BaseSettings],
-        init_settings: PydanticBaseSettingsSource,
-        env_settings: PydanticBaseSettingsSource,
-        dotenv_settings: PydanticBaseSettingsSource,
-        file_secret_settings: PydanticBaseSettingsSource,
-    ) -> tuple[PydanticBaseSettingsSource, ...]:
-        sources = [init_settings, env_settings, dotenv_settings, file_secret_settings]
-        aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
-
-        if aws_secret_id is not None:
-            sources.append(
-                AWSSecretsManagerExtensionSettingsSource(
-                    settings_cls,
-                    secret_id=aws_secret_id,
-                )
-            )
-        return tuple(sources)
 
     @classmethod
     def model_validate(cls, values):
@@ -341,7 +308,94 @@ class Settings(BaseSettings):
                 raise ValueError(
                     "email_password must be None when email_provider is ses"
                 )
+        return values
 
+
+class AWSSettings(BaseSettings):
+    # AWS Config
+
+    s3_bucket_name: str
+
+    aws_endpoint_url: str | None = None
+
+    aws_secret_access_key: SecretStr | None = None
+
+    aws_access_key_id: str | None = None
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+
+class AuthSettings(BaseSettings):
+    session_user_cookie_name: str = "user_session"
+
+    session_cookie_domain: str | None = None
+    # webauthn config
+
+    rp_id: Annotated[
+        str,
+        Field(
+            examples=[
+                "example.com",
+            ],
+        ),
+    ]
+
+    rp_name: Annotated[
+        str,
+        Field(
+            examples=[
+                "Example Inc.",
+            ],
+        ),
+    ]
+
+    rp_expected_origin: Annotated[
+        str,
+        Field(
+            examples=[
+                "",
+            ],
+        ),
+    ]
+
+    # tokens cooldown config
+    email_verification_token_cooldown: int = 60 * 3
+
+    password_reset_token_cooldown: int = 60 * 3
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+
+class GeocoderSettings(BaseSettings):
+    # geocoder config
+    geocoding_provider: Literal["nominatim", "aws_location"] = "nominatim"
+
+    single_use_location_place_index_name: str | None = None
+
+    storage_location_place_index_name: str | None = None
+
+    geocoder_domain: str | None = None
+
+    geocoder_user_agent: str | None = None
+
+    geocoder_scheme: str = "http"
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+    @classmethod
+    def model_validate(cls, values):
         geocoding_provider = values.get("geocoding_provider")
         if geocoding_provider == "nominatim":
             if not values.get("geocoder_domain"):
@@ -362,3 +416,10 @@ class Settings(BaseSettings):
                     "storage_location_place_index_name is required when geocoding_provider is aws_location"
                 )
         return values
+
+
+TSettings = TypeVar("TSettings", bound=BaseSettings)
+
+
+def get_settings(cls: type[TSettings]) -> TSettings:
+    return cls()

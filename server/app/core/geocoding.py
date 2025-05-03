@@ -8,7 +8,7 @@ from geopy.geocoders.nominatim import Nominatim
 from nanoid import generate
 from types_aiobotocore_location import LocationServiceClient
 
-from app.config import Settings
+from app.config import GeocoderSettings
 from app.geocoding.models import Coordinates, SearchLocation
 
 
@@ -26,7 +26,7 @@ class BaseLocationService:
 
 @asynccontextmanager
 async def create_nominatim_geocoder(
-    settings: Settings,
+    settings: GeocoderSettings,
 ) -> AsyncGenerator[Nominatim, None]:
     """Create a geocoder instance."""
     async with Nominatim(
@@ -39,7 +39,7 @@ async def create_nominatim_geocoder(
 
 
 class NominatimLocationService(BaseLocationService):
-    def __init__(self, geocoder: Nominatim, settings: Settings) -> None:
+    def __init__(self, geocoder: Nominatim, settings: GeocoderSettings) -> None:
         self._geocoder = geocoder
         self._settings = settings
 
@@ -79,7 +79,7 @@ class NominatimLocationService(BaseLocationService):
 
 class AWSLocationService(BaseLocationService):
     def __init__(
-        self, location_client: LocationServiceClient, settings: Settings
+        self, location_client: LocationServiceClient, settings: GeocoderSettings
     ) -> None:
         self._location_client = location_client
         self._settings = settings

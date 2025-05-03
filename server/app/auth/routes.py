@@ -15,7 +15,7 @@ from app.auth.exceptions import (
     TwoFactorAuthenticationRequiredError,
 )
 from app.auth.services import AuthService
-from app.config import Settings
+from app.config import AppSettings
 
 auth_router = APIRouter(prefix="/auth")
 
@@ -48,14 +48,14 @@ async def oauth2_signin_callback_google(
     request: Request,
     oauth_client: Annotated[OAuth, Inject],
     auth_service: Annotated[AuthService, Inject],
-    settings: Annotated[Settings, Inject],
+    app_settings: Annotated[AppSettings, Inject],
 ) -> RedirectResponse:
     """Google OAuth2 signin callback."""
     token = await oauth_client.google.authorize_access_token(request)
 
     user_info = token["userinfo"]
 
-    redirect_uri = request.session.get("redirect_uri", settings.accounts_base_url)
+    redirect_uri = request.session.get("redirect_uri", app_settings.accounts_base_url)
 
     response = RedirectResponse(url=redirect_uri)
 
@@ -72,12 +72,12 @@ async def oauth2_signin_callback_google(
         match result.err_value:
             case InvalidEmailError():
                 return RedirectResponse(
-                    url=settings.accounts_base_url
+                    url=app_settings.accounts_base_url
                     + "/auth/login?oauth2_error=unverified_email",
                 )
             case TwoFactorAuthenticationRequiredError():
                 return RedirectResponse(
-                    url=settings.accounts_base_url + "/auth/2fa",
+                    url=app_settings.accounts_base_url + "/auth/2fa",
                     headers=response.headers,
                 )
 
@@ -108,7 +108,7 @@ async def oauth2_request_sudo_mode_callback_google(
     request: Request,
     oauth_client: Annotated[OAuth, Inject],
     auth_service: Annotated[AuthService, Inject],
-    settings: Annotated[Settings, Inject],
+    app_settings: Annotated[AppSettings, Inject],
     current_user: Annotated[
         Account,
         Depends(
@@ -121,7 +121,7 @@ async def oauth2_request_sudo_mode_callback_google(
 
     user_info = token["userinfo"]
 
-    redirect_uri = request.session.get("redirect_uri", settings.accounts_base_url)
+    redirect_uri = request.session.get("redirect_uri", app_settings.accounts_base_url)
 
     response = RedirectResponse(url=redirect_uri)
 
@@ -138,12 +138,12 @@ async def oauth2_request_sudo_mode_callback_google(
             case AccountNotFoundError():
                 # return a response with an error query param
                 return RedirectResponse(
-                    url=settings.accounts_base_url
+                    url=app_settings.accounts_base_url
                     + "/request-sudo?oauth2_error=invalid_account"
                 )
             case TwoFactorAuthenticationRequiredError():
                 return RedirectResponse(
-                    url=settings.accounts_base_url
+                    url=app_settings.accounts_base_url
                     + "/request-sudo?oauth2_error=2fa_required",
                 )
 

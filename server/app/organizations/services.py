@@ -11,7 +11,7 @@ from types_aiobotocore_s3 import S3Client
 from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo
 from app.auth.exceptions import InvalidEmailError
-from app.config import Settings
+from app.config import AppSettings, AWSSettings
 from app.core.constants import ORGANIZATION_INVITE_EXPIRES_IN
 from app.core.emails import BaseEmailSender
 from app.jobs.exceptions import OrganizationNotFoundError
@@ -203,13 +203,13 @@ class OrganizationService:
         organization_member_repo: OrganizationMemberRepo,
         organization_member_service: OrganizationMemberService,
         s3_client: S3Client,
-        settings: Settings,
+        aws_settings: AWSSettings,
     ) -> None:
         self._organization_repo = organization_repo
         self._organization_member_repo = organization_member_repo
         self._organization_member_service = organization_member_service
         self._s3_client = s3_client
-        self._settings = settings
+        self._aws_settings = aws_settings
 
     async def create(
         self,
@@ -250,7 +250,7 @@ class OrganizationService:
         return await self._s3_client.generate_presigned_url(
             "put_object",
             Params={
-                "Bucket": self._settings.s3_bucket_name,
+                "Bucket": self._aws_settings.s3_bucket_name,
                 "Key": f"org-logos/{uuid.uuid4()}",
             },
             ExpiresIn=3600,
@@ -344,7 +344,7 @@ class OrganizationInviteService:
         organization_member_service: OrganizationMemberService,
         account_repo: AccountRepo,
         email_sender: BaseEmailSender,
-        settings: Settings,
+        app_settings: AppSettings,
     ) -> None:
         self._invite_repo = invite_repo
         self._organization_repo = organization_repo
@@ -352,7 +352,7 @@ class OrganizationInviteService:
         self._organization_member_service = organization_member_service
         self._account_repo = account_repo
         self._email_sender = email_sender
-        self._settings = settings
+        self._app_settings = app_settings
 
     async def create(
         self,
@@ -409,7 +409,7 @@ class OrganizationInviteService:
             context={
                 "invited_by_name": account.full_name,
                 "organization_name": existing_organization.name,
-                "invite_link": f"{self._settings.recruiter_portal_base_url}/dashboard/invites/{invite_token}",
+                "invite_link": f"{self._app_settings.recruiter_portal_base_url}/dashboard/invites/{invite_token}",
                 "organization_logo_url": existing_organization.logo_url,
                 "invite_expires_in": naturaldelta(
                     timedelta(seconds=ORGANIZATION_INVITE_EXPIRES_IN)

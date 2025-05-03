@@ -8,11 +8,11 @@ from aiosmtplib import SMTP
 from jinja2 import Environment
 from types_aiobotocore_ses import SESClient
 
-from app.config import Settings
+from app.config import EmailSettings
 
 
 @asynccontextmanager
-async def create_smtp_client(settings: Settings) -> AsyncGenerator[SMTP, None]:
+async def create_smtp_client(settings: EmailSettings) -> AsyncGenerator[SMTP, None]:
     """Create an SMTP client."""
     if settings.email_username and settings.email_password:
         smtp_client = SMTP(
@@ -37,7 +37,7 @@ class BaseEmailSender:
     def __init__(
         self,
         environment: Environment,
-        settings: Settings,
+        settings: EmailSettings,
     ) -> None:
         self._environment = environment
         self._default_sender = settings.email_from
@@ -89,7 +89,7 @@ class SMTPEmailSender(BaseEmailSender):
         self,
         smtp_client: SMTP,
         environment: Environment,
-        settings: Settings,
+        settings: EmailSettings,
     ) -> None:
         super().__init__(
             environment=environment,
@@ -123,7 +123,7 @@ class SESEmailSender(BaseEmailSender):
         self,
         ses_client: SESClient,
         environment: Environment,
-        settings: Settings,
+        settings: EmailSettings,
     ) -> None:
         super().__init__(
             environment=environment,

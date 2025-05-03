@@ -2,6 +2,7 @@ from functools import lru_cache
 from typing import assert_never
 
 import aioinject
+from pydantic_settings import BaseSettings
 
 from app.accounts.dataloaders import (
     create_account_by_id_dataloader,
@@ -24,7 +25,16 @@ from app.auth.repositories import (
     WebAuthnCredentialRepo,
 )
 from app.auth.services import AuthService
-from app.config import Settings
+from app.config import (
+    AppSettings,
+    AuthSettings,
+    AWSSettings,
+    DatabaseSettings,
+    EmailSettings,
+    GeocoderSettings,
+    Oauth2Settings,
+    SecretSettings,
+)
 from app.core.aws_sdk import (
     create_aioboto3_session,
     create_location_service_client,
@@ -85,12 +95,23 @@ from app.organizations.services import (
     OrganizationService,
 )
 
+settings_classes: list[type[BaseSettings]] = [
+    AppSettings,
+    DatabaseSettings,
+    SecretSettings,
+    Oauth2Settings,
+    EmailSettings,
+    AWSSettings,
+    AuthSettings,
+    GeocoderSettings,
+]
+
 
 def register_email_sender(container: aioinject.Container) -> None:
     with container.sync_context() as ctx:
-        settings = ctx.resolve(Settings)
+        email_settings = ctx.resolve(EmailSettings)
 
-    match settings.email_provider:
+    match email_settings.email_provider:
         case "smtp":
             container.register(aioinject.Scoped(create_smtp_client))
             container.register(aioinject.Scoped(SMTPEmailSender, BaseEmailSender))
@@ -103,9 +124,9 @@ def register_email_sender(container: aioinject.Container) -> None:
 
 def register_location_service(container: aioinject.Container) -> None:
     with container.sync_context() as ctx:
-        settings = ctx.resolve(Settings)
+        geocoder_settings = ctx.resolve(GeocoderSettings)
 
-    match settings.geocoding_provider:
+    match geocoder_settings.geocoding_provider:
         case "nominatim":
             container.register(aioinject.Scoped(create_nominatim_geocoder))
             container.register(
@@ -123,7 +144,8 @@ def register_location_service(container: aioinject.Container) -> None:
 @lru_cache
 def create_container() -> aioinject.Container:
     container = aioinject.Container()
-    container.register(aioinject.Object(Settings()))  # type: ignore[arg-type]
+    for settings_cls in settings_classes:
+        container.register(aioinject.Object(settings_cls()))
     container.register(aioinject.Singleton(create_jinja2_environment))
     register_email_sender(container)
     register_location_service(container)

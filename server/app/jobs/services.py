@@ -9,7 +9,7 @@ from types_aiobotocore_s3 import S3Client
 
 from app.accounts.documents import Account
 from app.base.models import GeoObject
-from app.config import Settings
+from app.config import AWSSettings
 from app.core.geocoding import BaseLocationService
 from app.jobs.documents import (
     ApplicantField,
@@ -397,13 +397,13 @@ class JobApplicantService:
         job_application_repo: JobApplicantRepo,
         organization_member_service: OrganizationMemberService,
         s3_client: S3Client,
-        settings: Settings,
+        aws_settings: AWSSettings,
     ) -> None:
         self._job_repo = job_repo
         self._organization_member_service = organization_member_service
         self._job_application_repo = job_application_repo
         self._s3_client = s3_client
-        self._settings = settings
+        self._aws_settings = aws_settings
 
     async def create(
         self,
@@ -455,7 +455,7 @@ class JobApplicantService:
         return await self._s3_client.generate_presigned_url(
             "put_object",
             Params={
-                "Bucket": self._settings.s3_bucket_name,
+                "Bucket": self._aws_settings.s3_bucket_name,
                 "Key": f"applicant-resumes/{uuid.uuid4()}",
             },
             ExpiresIn=3600,

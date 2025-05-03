@@ -6,7 +6,7 @@ from types_aiobotocore_location import LocationServiceClient
 from types_aiobotocore_s3 import S3Client
 from types_aiobotocore_ses import SESClient
 
-from app.config import Settings
+from app.config import AWSSettings
 
 
 def create_aioboto3_session() -> aioboto3.Session:
@@ -16,7 +16,7 @@ def create_aioboto3_session() -> aioboto3.Session:
 
 @contextlib.asynccontextmanager
 async def create_s3_client(
-    session: aioboto3.Session, settings: Settings
+    session: aioboto3.Session, settings: AWSSettings
 ) -> AsyncGenerator[S3Client, None]:
     """Create an S3 client."""
     async with session.client(

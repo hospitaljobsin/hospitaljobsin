@@ -1,9 +1,9 @@
 import uvicorn  # noqa: INP001
-from app.config import Settings
+from app.config import AppSettings
 from app.logger import build_server_log_config, setup_logging
 
 if __name__ == "__main__":
-    settings = Settings()  # type: ignore[call-arg]
+    settings = AppSettings()  # type: ignore[call-arg]
     # set up logging
     setup_logging(
         human_readable=settings.debug,

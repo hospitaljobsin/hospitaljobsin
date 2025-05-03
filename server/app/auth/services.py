@@ -80,7 +80,7 @@ from app.auth.repositories import (
     WebAuthnChallengeRepo,
     WebAuthnCredentialRepo,
 )
-from app.config import Settings
+from app.config import AppSettings, AuthSettings
 from app.core.captcha import BaseCaptchaVerifier
 from app.core.constants import (
     APP_NAME,
@@ -108,7 +108,8 @@ class AuthService:
         temp_two_factor_challenge_repo: TemporaryTwoFactorChallengeRepo,
         email_sender: BaseEmailSender,
         captcha_verifier: BaseCaptchaVerifier,
-        settings: Settings,
+        settings: AuthSettings,
+        app_settings: AppSettings,
     ) -> None:
         self._account_repo = account_repo
         self._session_repo = session_repo
@@ -125,6 +126,7 @@ class AuthService:
         self._temp_two_factor_challenge_repo = temp_two_factor_challenge_repo
         self._email_sender = email_sender
         self._settings = settings
+        self._app_settings = app_settings
         self._captcha_verifier = captcha_verifier
 
     def _is_email_verification_token_cooled_down(
@@ -883,7 +885,7 @@ class AuthService:
             receiver=existing_user.email,
             context={
                 "is_initial": existing_user.password_hash is None,
-                "reset_link": f"{self._settings.accounts_base_url}/auth/reset-password/{password_reset_token}?email={existing_user.email}",
+                "reset_link": f"{self._app_settings.accounts_base_url}/auth/reset-password/{password_reset_token}?email={existing_user.email}",
                 "link_expires_in": naturaldelta(
                     timedelta(seconds=PASSWORD_RESET_EXPIRES_IN)
                 ),
