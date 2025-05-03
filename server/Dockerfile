@@ -35,32 +35,31 @@ EXPOSE 8000
 
 CMD ["python", "scripts/run_server.py"]
 
+
+FROM alpine:latest as layer-build
+
+ARG AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-"us-east-1"}
+ARG AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-""}
+ARG AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-""}
+ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+
+RUN apk add aws-cli curl unzip
+
+RUN mkdir -p /opt
+
+RUN curl $(aws lambda get-layer-version-by-arn --arn arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:17 --query 'Content.Location' --output text) --output layer.zip
+RUN unzip layer.zip -d /opt
+RUN rm layer.zip
+
 # Use the AWS Lambda Python 3.12 base image
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
-# Install AWS CLI and other dependencies
-RUN apt-get update && \
-    apt-get install -y curl unzip && \
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install && \
-    apt-get install -y jq && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf aws awscliv2.zip
-
-# Create the extensions directory
-RUN mkdir -p /opt/extensions
-
-# Add AWS Parameters and Secrets Lambda Extension using the layer ARN
-# This requires AWS credentials to be available during build
-RUN mkdir -p /opt/extensions && \
-    curl -sSL "https://aws-secrets-manager-lambda-extensions.s3.amazonaws.com/aws-parameters-and-secrets-extension-latest" \
-    -o /opt/extensions/aws-parameters-and-secrets-extension && \
-    chmod +x /opt/extensions/aws-parameters-and-secrets-extension
-
-
-
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /opt
+COPY --from=layer-build /opt .
 
 # Set the working directory
 WORKDIR /project
@@ -70,7 +69,6 @@ COPY . .
 
 # Install dependencies
 RUN uv sync --frozen
-
 
 
 # Set environment variables for Python
