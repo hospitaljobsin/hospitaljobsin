@@ -290,7 +290,7 @@ class Settings(BaseSettings):
             sources.append(
                 AWSSecretsManagerExtensionSettingsSource(
                     settings_cls,
-                    aws_secret_id,
+                    secret_id=aws_secret_id,
                 )
             )
         return tuple(sources)
