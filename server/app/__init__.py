@@ -53,7 +53,6 @@ def add_middleware(
 
     app.add_middleware(
         SessionMiddleware,
-        container=create_container(),
         session_cookie=auth_settings.session_user_cookie_name,
         path="/",
         same_site="lax",
