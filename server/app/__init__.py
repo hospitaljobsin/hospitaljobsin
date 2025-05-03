@@ -11,7 +11,6 @@ from app.config import (
     AppSettings,
     AuthSettings,
     DatabaseSettings,
-    SecretSettings,
     get_settings,
 )
 from app.container import create_container
@@ -37,7 +36,6 @@ def add_middleware(
     app: FastAPI,
     app_settings: AppSettings,
     auth_settings: AuthSettings,
-    secret_settings: SecretSettings,
 ) -> None:
     """Register middleware for the app."""
     app.add_middleware(
@@ -95,6 +93,5 @@ def create_app() -> FastAPI:
         app,
         app_settings=app_settings,
         auth_settings=get_settings(AuthSettings),
-        secret_settings=get_settings(SecretSettings),
     )
     return app

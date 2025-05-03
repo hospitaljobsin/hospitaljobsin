@@ -4,6 +4,7 @@ from typing import assert_never
 
 import aioinject
 from pydantic_settings import BaseSettings
+from structlog import get_logger
 
 from app.accounts.dataloaders import (
     create_account_by_id_dataloader,
@@ -109,11 +110,14 @@ settings_classes: list[type[BaseSettings]] = [
     GeocoderSettings,
 ]
 
+logger = get_logger(__name__)
+
 
 def create_settings_factory(
     settings_cls: type[TSettings],
 ) -> Callable[[], TSettings]:
     def settings_factory() -> TSettings:
+        logger.info(f"Creating settings for {settings_cls.__name__}")
         return get_settings(settings_cls)
 
     return settings_factory
