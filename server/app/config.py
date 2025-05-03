@@ -1,15 +1,61 @@
+import json
 import os
+from collections.abc import Mapping
 from enum import StrEnum
+from http import HTTPStatus
 from typing import Annotated, Literal
 
+import httpx
 from pydantic import Field, SecretStr, UrlConstraints
 from pydantic_core import MultiHostUrl
 from pydantic_settings import (
-    AWSSecretsManagerSettingsSource,
     BaseSettings,
+    EnvSettingsSource,
     PydanticBaseSettingsSource,
     SettingsConfigDict,
 )
+
+
+class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
+    _secret_id: str
+
+    def __init__(
+        self,
+        settings_cls: type[BaseSettings],
+        secret_id: str,
+        env_prefix: str | None = None,
+        env_parse_none_str: str | None = None,
+        env_parse_enums: bool | None = None,
+    ) -> None:
+        self._secret_id = secret_id
+        super().__init__(
+            settings_cls,
+            case_sensitive=True,
+            env_prefix=env_prefix,
+            env_nested_delimiter="--",
+            env_ignore_empty=False,
+            env_parse_none_str=env_parse_none_str,
+            env_parse_enums=env_parse_enums,
+        )
+
+    def _load_env_vars(self) -> Mapping[str, str | None]:
+        print("Loading secrets from AWS Secrets Manager")
+        url = f"http://localhost:2773/secretsmanager/get?secretId={secret_id}"
+        headers = {"X-Aws-Parameters-Secrets-Token": os.getenv("AWS_SESSION_TOKEN", "")}
+
+        with httpx.Client() as client:
+            response = client.get(url, headers=headers)
+
+        if response.status_code != HTTPStatus.OK:
+            raise Exception(
+                f"Failed to load secret from extension: {response.status_code} {response.reason_phrase}"
+            )
+
+        payload = response.json()
+        if "SecretString" not in payload:
+            raise Exception("SecretString missing in extension response")
+
+        return json.loads(payload["SecretString"])
 
 
 class Environment(StrEnum):
@@ -241,10 +287,8 @@ class Settings(BaseSettings):
         aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
 
         if aws_secret_id is not None:
-            # TODO: load from the lambda secrets and parameters extension instead
-            # this will result in a fewer calls to the AWS API
             sources.append(
-                AWSSecretsManagerSettingsSource(
+                AWSSecretsManagerExtensionSettingsSource(
                     settings_cls,
                     aws_secret_id,
                 )
