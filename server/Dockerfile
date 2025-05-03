@@ -66,8 +66,8 @@ FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# WORKDIR /opt
-# COPY --from=layer-build /opt .
+WORKDIR /opt
+COPY --from=layer-build /opt .
 
 WORKDIR /opt/extensions
 COPY --from=layer-build /opt/extensions/ .
@@ -88,14 +88,9 @@ COPY . .
 # Install dependencies
 RUN uv sync --frozen
 
-ENV PATH=/var/lang/bin:/usr/local/bin:/usr/bin/:/bin:/opt/bin
-ENV LAMBDA_RUNTIME_DIR=/var/runtime
-
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
 ENV PATH="/project/.venv/bin:$PATH"
-
-
 
 # TODO: maybe entrypoint isnt allowing extensions to initialize normally
 ENTRYPOINT [ "python", "-m", "awslambdaric" ]
