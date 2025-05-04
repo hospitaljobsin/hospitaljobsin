@@ -68,7 +68,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 COPY --from=layer-build /opt/extensions /opt/extensions
 
-RUN chmod +x /opt/extensions/*
+# RUN chmod +x /opt/extensions/*
 
 ENV PYTHONUNBUFFERED=1
 
