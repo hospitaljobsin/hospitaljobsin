@@ -1,4 +1,4 @@
-ARG PYTHON_BASE=3.12-alpine3.21
+ARG PYTHON_BASE=3.12-alpine3.20
 # build stage
 FROM python:$PYTHON_BASE AS builder
 
@@ -6,7 +6,7 @@ FROM python:$PYTHON_BASE AS builder
 RUN apk add --no-cache curl build-base libffi-dev openssl-dev
 
 # Install UV (static binary)
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:alpine3.20 /uv /uvx /bin/
 
 WORKDIR /project
 
@@ -35,7 +35,7 @@ EXPOSE 8000
 CMD ["python", "scripts/run_server.py"]
 
 # layer build stage
-FROM alpine:3.21 AS layer-build
+FROM alpine:3.20 AS layer-build
 
 ARG AWS_DEFAULT_REGION="us-east-1"
 ARG AWS_ACCESS_KEY_ID=""
