@@ -75,6 +75,7 @@ RUN chmod +x /opt/extensions/*
 # RUN chmod -R +x /opt/extensions
 
 ENV PYTHONUNBUFFERED=1
+ENV UV_COMPILE_BYTECODE=1
 
 # Set the working directory
 WORKDIR /project
