@@ -216,9 +216,13 @@ the following GitHub actions variables and secrets need to be set to enable depl
 
 GitHub Actions Variables:
 	- `TERRAFORM_AWS_BACKEND_BUCKET_NAME`
+
 	- `TERRAFORM_AWS_REGION`
+
 	- `CLOUDFLARE_ACCOUNT_ID`
+
 	- `MONGODB_ATLAS_ORG_ID`
+
 	- `SUPPORT_EMAIL`
 
 GitHub Actions Secrets:
