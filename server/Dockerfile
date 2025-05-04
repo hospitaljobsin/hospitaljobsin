@@ -1,17 +1,4 @@
 ARG PYTHON_BASE=3.13-slim
-# build stage
-FROM python:$PYTHON_BASE AS builder
-
-# install UV
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-
-WORKDIR /project
-
-# Copy the application files
-COPY . .
-
-# Install dependencies
-RUN uv sync --frozen
 
 # production stage
 FROM python:$PYTHON_BASE AS development
@@ -21,7 +8,7 @@ RUN apt-get update && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /project/.venv/ /project/.venv
+RUN uv sync --locked
 
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
@@ -33,7 +20,7 @@ WORKDIR /project
 
 EXPOSE 8000
 
-CMD ["python", "scripts/run_server.py"]
+CMD ["uv", "run", "scripts/run_server.py"]
 
 
 FROM debian:12-slim as layer-build
@@ -69,15 +56,23 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 COPY --from=layer-build /opt/extensions /opt/extensions
 
 ENV PYTHONUNBUFFERED=1
+ENV UV_COMPILE_BYTECODE=1
 
 # Set the working directory
 WORKDIR /project
 
+# Install dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project
+
 # Copy the application files
 COPY . .
 
-# Install dependencies
-RUN uv sync --frozen
+# Sync the project
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked
 
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
