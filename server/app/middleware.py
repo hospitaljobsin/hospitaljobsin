@@ -39,10 +39,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
 
     def get_jwe_secret_key(self) -> str:
         """Get the JWE secret key."""
-        if self._jwe_secret_key is None:
-            secret_settings = get_settings(SecretSettings)
-            self._jwe_secret_key = secret_settings.jwe_secret_key.get_secret_value()
-        return self._jwe_secret_key
+        return get_settings(SecretSettings).jwe_secret_key.get_secret_value()
 
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint

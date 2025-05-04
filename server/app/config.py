@@ -2,8 +2,9 @@ import json
 import os
 from collections.abc import Mapping
 from enum import StrEnum
+from functools import lru_cache
 from http import HTTPStatus
-from typing import Annotated, Literal, TypeVar
+from typing import TYPE_CHECKING, Annotated, Literal, TypeVar
 
 import httpx
 from pydantic import Field, SecretStr, UrlConstraints
@@ -419,3 +420,7 @@ TSettings = TypeVar("TSettings", bound=BaseSettings)
 
 def get_settings(cls: type[TSettings]) -> TSettings:
     return cls()
+
+
+if not TYPE_CHECKING:  # pragma: no cover
+    get_settings = lru_cache(get_settings)

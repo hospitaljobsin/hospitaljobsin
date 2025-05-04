@@ -12,6 +12,7 @@ from app.config import (
     AppSettings,
     AuthSettings,
     DatabaseSettings,
+    SecretSettings,
     get_settings,
 )
 from app.container import create_container
@@ -73,6 +74,9 @@ def add_middleware(
 @asynccontextmanager
 async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     """Initialize the database when the app starts."""
+    logger.info("LIFESPAN INITIALIZED IN CODE: Initializing secret settings")
+    # load secrets during startup
+    get_settings(SecretSettings)
     logger.info("LIFESPAN INITIALIZED IN CODE: Initializing database")
     settings = get_settings(DatabaseSettings)
     async with initialize_database(
