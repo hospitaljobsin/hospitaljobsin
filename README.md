@@ -88,7 +88,9 @@ tmuxinator start medical_jobs
 
 ## Cloud deployment
 
-### Prerequisites
+Follow these steps to deploy the project to the cloud:
+
+1. MongoDB Setup
 - [Install the MongoDB Atlas CLI](https://www.mongodb.com/docs/atlas/cli/current/install-atlas-cli/)
 - Copy the MongoDB Organization ID from the dashboard and store it in environment variables
 - Run the follow commands to generate API keys:
@@ -97,42 +99,11 @@ tmuxinator start medical_jobs
     ```
 - Store the public key and private key in environment variables
 
-1. Log in to the AWS Management Console
-Go to https://console.aws.amazon.com/
-
-2. Go to the IAM Console
-In the search bar, type IAM, and open IAM (Identity and Access Management).
-
-3. Select a User or Create a New One
-Go to Users in the sidebar.
-
-Either:
-
-Click the user you want to use with Terraform.
-
-Or click "Add user" to create a new one.
-
-💡 For Terraform use, the user should ideally have Programmatic access only.
-
-4. Set Permissions
-You can:
-
-Attach existing policies directly (e.g., AdministratorAccess for testing, or fine-grained permissions for production).
-
-Or add to a group with the necessary policies.
-
-5. Create Access Keys
-Click on the user → Security credentials tab.
-
-Scroll down to Access keys section.
-
-Click Create access key.
-
-Choose Use access key for CLI, SDK, & API access.
-
-Click Next, name it optionally, and then click Create access key.
-
-Ensure the following policy is added to the user:
+2. AWS Account Setup
+- [Log in to the AWS Management Console](https://console.aws.amazon.com/)
+- Create a new AWS account/ log into an existing account
+- Create a new IAM user (to be used by terraform)
+- Attach the following permissions (inline policy) to the IAM user:
 ```json
 {
 	"Version": "2012-10-17",
@@ -201,6 +172,46 @@ Ensure the following policy is added to the user:
 }
 ```
 
+- Create Access Keys for the user (choose  access key for CLI, SDK, & API access)
+
+3. Google Oauth2 Setup
+- [Go to the google cloud console](https://console.cloud.google.com/)
+- Create/ select a new project
+- Configure the Oauth consent screen
+- Go to "APIs & Services" > "Credentials", and create new Oauth 2.0 Credentials
+- While creating the credentials, fill in the following information:
+	- Client config:
+		- Authorized Javascript origins:
+			- https://accounts.hospitaljobs.in
+		- Authorized Redirect URIs:
+			- https://api.hospitaljobs.in/auth/callback/signin/google
+			- https://api.hospitaljobs.in/auth/callback/request_sudo_mode/google
+
+	- Project Branding config:
+		- App name: Hospital Jobs
+		- App Domain:
+			- Application home page: https://hospitaljobs.in
+			- Application privacy policy link: https://hospitaljobs.in/privacy
+			- Application terms of service link: https://hospitaljobs.in/terms
+		- Authorized domains:
+			- hospitaljobs.in
+
+4. Cloudflare setup
+- [Go to the Cloudflare dashboard](https://dash.cloudflare.com/)
+- Login to your cloudflare account
+- Under Manage Account / Account tokens, click on "Create Token"
+
+
+5. Terraform setup
+Terraform deployments are automated via GitHub Actions CI/CD.
+the following GitHub actions variables and secrets need to be set to enable deployments:
+
+GitHub Actions Variables:
+- 
+
+GitHub Actions Secrets:
+-
+
 - save the access key ID and secret key in the terraform cloud environment variables
 - save the terraform_aws_region in env vars
 
@@ -214,23 +225,7 @@ Ensure the following policy is added to the user:
 
 - Create a cloudflare API token and store it under env vars in terraform cloud (CLOUDFLARE_API_TOKEN)
 - set the cloudflare account ID terraform variable
-- Create a GCP project, and create Oauth 2.0 web credentials.
 - set the `google_oauth_client_id` and `google_oauth_client_secret` terraform vars.
-- Client config:
-	- Authorized Javascript origins:
-		- https://accounts.hospitaljobs.in
-	- Authorized Redirect URIs:
-		- https://api.hospitaljobs.in/auth/callback/signin/google
-		- https://api.hospitaljobs.in/auth/callback/request_sudo_mode/google
-
-- Project Branding config:
-	- App name: Hospital Jobs
-	- App Domain:
-		- Application home page: https://hospitaljobs.in
-		- Application privacy policy link: https://hospitaljobs.in/privacy
-		- Application terms of service link: https://hospitaljobs.in/terms
-	- Authorized domains:
-		- hospitaljobs.in
 
 
 - Request SES production access manually

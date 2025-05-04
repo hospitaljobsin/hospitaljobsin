@@ -147,3 +147,10 @@ resource "github_actions_variable" "sst_vpc_security_groups" {
   variable_name = "SST_VPC_SECURITY_GROUPS"
   value         = join(",", data.aws_security_groups.vpc.ids)
 }
+
+
+resource "github_actions_variable" "dummy" {
+  repository    = data.github_repository.this.name
+  variable_name = "dummy"
+  value         = "dummy"
+}
