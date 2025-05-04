@@ -102,6 +102,9 @@ Follow these steps to deploy the project to the cloud:
 - [Log in to the AWS Management Console](https://console.aws.amazon.com/)
 - Create a new AWS account/ log into an existing account
 - Create a new IAM user (to be used by terraform)
+- Add the `"arn:aws:iam::aws:policy/AdministratorAccess"` managed IAM policy to the user
+
+<!--
 - Attach the following permissions (inline policy) to the IAM user:
 ```json
 {
@@ -169,7 +172,7 @@ Follow these steps to deploy the project to the cloud:
 		}
 	]
 }
-```
+``` -->
 
 - Create Access Keys for the user (choose  access key for CLI, SDK, & API access)
 
