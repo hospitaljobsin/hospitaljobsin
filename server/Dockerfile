@@ -1,4 +1,4 @@
-ARG PYTHON_BASE=3.13-slim
+ARG PYTHON_BASE=3.12.0-slim
 # build stage
 FROM python:$PYTHON_BASE AS builder
 
@@ -66,7 +66,13 @@ FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
+
 COPY --from=layer-build /opt/extensions /opt/extensions
+
+RUN chmod +x /opt/extensions/*
+
+# Ensure that all extensions are executable
+# RUN chmod -R +x /opt/extensions
 
 ENV PYTHONUNBUFFERED=1
 
