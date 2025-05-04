@@ -264,15 +264,6 @@ wheels = [
 ]
 
 [[package]]
-name = "backoff"
-version = "2.2.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/47/d7/5bbeb12c44d7c4f2fb5b56abce497eb5ed9f34d85701de869acedd602619/backoff-2.2.1.tar.gz", hash = "sha256:03f829f5bb1923180821643f8753b0502c3b682293992485b0eef2807afa5cba", size = 17001 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/df/73/b6e24bd22e6720ca8ee9a85a0c4a2971af8497d8f3193fa05390cbd46e09/backoff-2.2.1-py3-none-any.whl", hash = "sha256:63579f9a0628e06278f7e47b7d7d5b6ce20dc65c5e96a6f3ca99a6adca0396e8", size = 15148 },
-]
-
-[[package]]
 name = "beanie"
 version = "1.29.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1312,7 +1303,6 @@ dependencies = [
     { name = "asgi-correlation-id" },
     { name = "authlib" },
     { name = "awslambdaric" },
-    { name = "backoff" },
     { name = "beanie" },
     { name = "boto3" },
     { name = "email-validator" },
@@ -1334,6 +1324,7 @@ dependencies = [
     { name = "result" },
     { name = "strawberry-graphql", extra = ["cli"] },
     { name = "structlog" },
+    { name = "tenacity" },
     { name = "uvicorn", extra = ["standard"] },
     { name = "webauthn" },
 ]
@@ -1358,7 +1349,6 @@ requires-dist = [
     { name = "asgi-correlation-id", specifier = ">=4.3.4" },
     { name = "authlib", specifier = ">=1.4.0" },
     { name = "awslambdaric", specifier = ">=3.0.2" },
-    { name = "backoff", specifier = ">=2.2.1" },
     { name = "beanie", specifier = ">=1.27.0" },
     { name = "boto3", specifier = ">=1.36.1" },
     { name = "email-validator", specifier = ">=2.2.0" },
@@ -1380,6 +1370,7 @@ requires-dist = [
     { name = "result", specifier = ">=0.17.0" },
     { name = "strawberry-graphql", extras = ["cli"], specifier = ">=0.253.0" },
     { name = "structlog", specifier = ">=24.4.0" },
+    { name = "tenacity", specifier = ">=9.1.2" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.32.1" },
     { name = "webauthn", specifier = ">=2.5.1" },
 ]
@@ -1509,6 +1500,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/78/b8/d3670aec25747e32d54cd5258102ae0d69b9c61c79e7aa326be61a570d0d/structlog-25.2.0.tar.gz", hash = "sha256:d9f9776944207d1035b8b26072b9b140c63702fd7aa57c2f85d28ab701bd8e92", size = 1367438 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/51/eb/244741c1abf7b4092686db0798a4c43491298f40ddec4226f5c4f6b5d3eb/structlog-25.2.0-py3-none-any.whl", hash = "sha256:0fecea2e345d5d491b72f3db2e5fcd6393abfc8cd06a4851f21fcd4d1a99f437", size = 68448 },
+]
+
+[[package]]
+name = "tenacity"
+version = "9.1.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0a/d4/2b0cd0fe285e14b36db076e78c93766ff1d529d70408bd1d2a5a84f1d929/tenacity-9.1.2.tar.gz", hash = "sha256:1169d376c297e7de388d18b4481760d478b0e99a777cad3a9c86e556f4b697cb", size = 48036 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e5/30/643397144bfbfec6f6ef821f36f33e57d35946c44a2352d3c9f0ae847619/tenacity-9.1.2-py3-none-any.whl", hash = "sha256:f77bf36710d8b73a50b2dd155c97b870017ad21afe6ab300326b0371b3b05138", size = 28248 },
 ]
 
 [[package]]

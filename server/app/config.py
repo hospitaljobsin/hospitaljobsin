@@ -5,7 +5,6 @@ from enum import StrEnum
 from http import HTTPStatus
 from typing import Annotated, Literal, TypeVar
 
-import backoff
 import httpx
 from pydantic import Field, SecretStr, UrlConstraints
 from pydantic_core import MultiHostUrl
@@ -15,6 +14,7 @@ from pydantic_settings import (
     PydanticBaseSettingsSource,
     SettingsConfigDict,
 )
+from tenacity import retry, retry_if_result
 
 
 class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
@@ -39,27 +39,23 @@ class AWSSecretsManagerExtensionSettingsSource(EnvSettingsSource):
             env_parse_enums=env_parse_enums,
         )
 
-    @backoff.on_exception(
-        backoff.expo,
-        Exception,  # retry on any exception
-        max_tries=5,  # max 5 attempts
-        jitter=backoff.full_jitter,  # adds randomness to reduce thundering herd
+    @retry(
+        retry=retry_if_result(
+            lambda response: response.status_code != HTTPStatus.OK,
+        )
     )
-    def _fetch_secret_payload(self, url, headers):
+    def _fetch_secret_payload(self):
+        port = os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT", 2773)
+        url = f"http://localhost:{port}/secretsmanager/get?secretId={self._secret_id}"
+        headers = {"X-Aws-Parameters-Secrets-Token": os.getenv("AWS_SESSION_TOKEN", "")}
         with httpx.Client() as client:
             response = client.get(url, headers=headers)
-        if response.status_code != HTTPStatus.OK:
-            raise Exception(
-                f"Extension not ready: {response.status_code} {response.reason_phrase} {response.text}"
-            )
-        return response.json()
+        return response
 
     def _load_env_vars(self) -> Mapping[str, str | None]:
-        print("Loading secrets from AWS Secrets Manager")
-        url = f"http://localhost:2773/secretsmanager/get?secretId={self._secret_id}"
-        headers = {"X-Aws-Parameters-Secrets-Token": os.getenv("AWS_SESSION_TOKEN", "")}
+        response = self._fetch_secret_payload()
 
-        payload = self._fetch_secret_payload(url, headers)
+        payload = response.json()
 
         if "SecretString" not in payload:
             raise Exception("SecretString missing in extension response")

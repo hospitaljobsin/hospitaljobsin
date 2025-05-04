@@ -2,9 +2,10 @@ export async function loadSecrets() {
 	if (process.env.AWS_SECRET_ID !== undefined) {
 		console.info("Loading secrets from AWS Secrets Manager");
 		const secretId = process.env.AWS_SECRET_ID;
+		const port = process.env.PARAMETERS_SECRETS_EXTENSION_HTTP_PORT || 2773;
 		// use local Secrets & Parameters Lambda Extension
 		const res = await fetch(
-			`http://localhost:2773/secretsmanager/get?secretId=${secretId}`,
+			`http://localhost:${port}/secretsmanager/get?secretId=${secretId}`,
 			{
 				headers: {
 					"X-Aws-Parameters-Secrets-Token": process.env.AWS_SESSION_TOKEN ?? "",
