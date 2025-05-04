@@ -97,7 +97,6 @@ Follow these steps to deploy the project to the cloud:
     ```bash
     atlas organizations apiKeys create --role ORG_OWNER --desc "My API Key" --orgId <ORG_ID> --output json
     ```
-- Store the public key and private key in environment variables
 
 2. AWS Account Setup
 - [Log in to the AWS Management Console](https://console.aws.amazon.com/)
@@ -216,21 +215,21 @@ Terraform deployments are automated via GitHub Actions CI/CD.
 the following GitHub actions variables and secrets need to be set to enable deployments:
 
 GitHub Actions Variables:
-- TERRAFORM_AWS_BACKEND_BUCKET_NAME
-- TERRAFORM_AWS_REGION
-- CLOUDFLARE_ACCOUNT_ID
-- MONGODB_ATLAS_ORG_ID
-- SUPPORT_EMAIL
+- `TERRAFORM_AWS_BACKEND_BUCKET_NAME`
+- `TERRAFORM_AWS_REGION`
+- `CLOUDFLARE_ACCOUNT_ID`
+- `MONGODB_ATLAS_ORG_ID`
+- `SUPPORT_EMAIL`
 
 GitHub Actions Secrets:
-- TERRAFORM_AWS_ACCESS_KEY_ID
-- TERRAFORM_AWS_SECRET_ACCESS_KEY
-- CLOUDFLARE_API_TOKEN
-- PA_TOKEN_GITHUB
-- MONGODB_ATLAS_PRIVATE_KEY
-- MONGODB_ATLAS_PUBLIC_KEY
-- GOOGLE_OAUTH_CLIENT_ID
-- GOOGLE_OAUTH_CLIENT_SECRET
+- `TERRAFORM_AWS_ACCESS_KEY_ID`
+- `TERRAFORM_AWS_SECRET_ACCESS_KEY`
+- `CLOUDFLARE_API_TOKEN`
+- `PA_TOKEN_GITHUB`
+- `MONGODB_ATLAS_PRIVATE_KEY`
+- `MONGODB_ATLAS_PUBLIC_KEY`
+- `GOOGLE_OAUTH_CLIENT_ID`
+- `GOOGLE_OAUTH_CLIENT_SECRET`
 
 - Trigger the GitHub actions workflow.
 - During the initial terraform deployment:
