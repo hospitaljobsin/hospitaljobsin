@@ -179,20 +179,20 @@ Follow these steps to deploy the project to the cloud:
 - Configure the Oauth consent screen
 - Go to "APIs & Services" > "Credentials", and create new Oauth 2.0 Credentials
 - While creating the credentials, fill in the following information:
-	- Client config:
-		- Authorized Javascript origins:
+	- **Client config:**
+		- *Authorized Javascript origins:*
 			- https://accounts.hospitaljobs.in
-		- Authorized Redirect URIs:
+		- *Authorized Redirect URIs:*
 			- https://api.hospitaljobs.in/auth/callback/signin/google
 			- https://api.hospitaljobs.in/auth/callback/request_sudo_mode/google
 
-	- Project Branding config:
-		- App name: Hospital Jobs
-		- App Domain:
+	- **Project Branding config:**
+		- *App name:* Hospital Jobs
+		- *App Domain:*
 			- Application home page: https://hospitaljobs.in
 			- Application privacy policy link: https://hospitaljobs.in/privacy
 			- Application terms of service link: https://hospitaljobs.in/terms
-		- Authorized domains:
+		- *Authorized domains:*
 			- hospitaljobs.in
 
 ### 4. Cloudflare setup
@@ -215,29 +215,26 @@ Terraform deployments are automated via GitHub Actions CI/CD.
 the following GitHub actions variables and secrets need to be set to enable deployments:
 
 GitHub Actions Variables:
-	- `TERRAFORM_AWS_BACKEND_BUCKET_NAME`
-
-	- `TERRAFORM_AWS_REGION`
-
-	- `CLOUDFLARE_ACCOUNT_ID`
-
-	- `MONGODB_ATLAS_ORG_ID`
-
-	- `SUPPORT_EMAIL`
+- `TERRAFORM_AWS_BACKEND_BUCKET_NAME`
+- `TERRAFORM_AWS_REGION`
+- `CLOUDFLARE_ACCOUNT_ID`
+- `MONGODB_ATLAS_ORG_ID`
+- `SUPPORT_EMAIL`
 
 GitHub Actions Secrets:
-	- `TERRAFORM_AWS_ACCESS_KEY_ID`
-	- `TERRAFORM_AWS_SECRET_ACCESS_KEY`
-	- `CLOUDFLARE_API_TOKEN`
-	- `PA_TOKEN_GITHUB`
-	- `MONGODB_ATLAS_PRIVATE_KEY`
-	- `MONGODB_ATLAS_PUBLIC_KEY`
-	- `GOOGLE_OAUTH_CLIENT_ID`
-	- `GOOGLE_OAUTH_CLIENT_SECRET`
+- `TERRAFORM_AWS_ACCESS_KEY_ID`
+- `TERRAFORM_AWS_SECRET_ACCESS_KEY`
+- `CLOUDFLARE_API_TOKEN`
+- `PA_TOKEN_GITHUB`
+- `MONGODB_ATLAS_PRIVATE_KEY`
+- `MONGODB_ATLAS_PUBLIC_KEY`
+- `GOOGLE_OAUTH_CLIENT_ID`
+- `GOOGLE_OAUTH_CLIENT_SECRET`
 
-- Trigger the GitHub actions workflow.
-- During the initial terraform deployment:
-	- update the domain registrar (GoDaddy/ NameCheap/ Google Domains)'s NS records to the Route 53 nameservers midway, to ensure certificate validation takes place
+
+
+During the initial terraform deployment:
+- update the domain registrar (GoDaddy/ NameCheap/ Google Domains)'s NS records to the Route 53 nameservers midway, to ensure certificate validation takes place
 
 After automated deployment, you need to:
 - Request SES production access manually
