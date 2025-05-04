@@ -42,7 +42,6 @@ def add_middleware(
     auth_settings: AuthSettings,
 ) -> None:
     """Register middleware for the app."""
-    logger.info("ADDING MIDDLEWARE...")
     app.add_middleware(
         CORSMiddleware,
         allow_origins=app_settings.cors_allow_origins,
@@ -74,17 +73,16 @@ def add_middleware(
 @asynccontextmanager
 async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     """Initialize the database when the app starts."""
-    logger.info("LIFESPAN INITIALIZED IN CODE: Initializing secret settings")
+    logger.debug("Initializing application secrets")
     # load secrets during startup
     get_settings(SecretSettings)
-    logger.info("LIFESPAN INITIALIZED IN CODE: Initializing database")
-    settings = get_settings(DatabaseSettings)
+    database_settings = get_settings(DatabaseSettings)
+    logger.debug("Initializing database connection")
     async with initialize_database(
-        database_url=str(settings.database_url),
-        default_database_name=settings.default_database_name,
+        database_url=str(database_settings.database_url),
+        default_database_name=database_settings.default_database_name,
     ) as _:
         yield
-    logger.info("LIFESPAN DESTROYED IN CODE")
 
 
 def create_app() -> FastAPI:
