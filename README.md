@@ -90,7 +90,7 @@ tmuxinator start medical_jobs
 
 Follow these steps to deploy the project to the cloud:
 
-1. MongoDB Setup
+### 1. MongoDB Setup
 - [Install the MongoDB Atlas CLI](https://www.mongodb.com/docs/atlas/cli/current/install-atlas-cli/)
 - Copy the MongoDB Organization ID from the dashboard and store it in environment variables
 - Run the follow commands to generate API keys:
@@ -98,7 +98,7 @@ Follow these steps to deploy the project to the cloud:
     atlas organizations apiKeys create --role ORG_OWNER --desc "My API Key" --orgId <ORG_ID> --output json
     ```
 
-2. AWS Account Setup
+### 2. AWS Account Setup
 - [Log in to the AWS Management Console](https://console.aws.amazon.com/)
 - Create a new AWS account/ log into an existing account
 - Create a new IAM user (to be used by terraform)
@@ -173,7 +173,7 @@ Follow these steps to deploy the project to the cloud:
 
 - Create Access Keys for the user (choose  access key for CLI, SDK, & API access)
 
-3. Google Oauth2 Setup
+### 3. Google Oauth2 Setup
 - [Go to the google cloud console](https://console.cloud.google.com/)
 - Create/ select a new project
 - Configure the Oauth consent screen
@@ -195,20 +195,20 @@ Follow these steps to deploy the project to the cloud:
 		- Authorized domains:
 			- hospitaljobs.in
 
-4. Cloudflare setup
+### 4. Cloudflare setup
 - [Go to the Cloudflare dashboard](https://dash.cloudflare.com/)
 - Login to your cloudflare account
 - Under Manage Account / Account tokens, click on "Create Token"
 
-5. GitHub setup
+### 5. GitHub setup
 - Go to developer settings
 - Create a new GitHub access token with permissions for the current repository:
 	- *secrets: read and write*
 	- *variables: read and write*
 
-6. Terraform setup
+### 6. Terraform setup
 
-6.1 Prerequisites:
+#### 6.1 Prerequisites:
 - Create an S3 bucket that will act as the terraform state backend
 
 Terraform deployments are automated via GitHub Actions CI/CD.
