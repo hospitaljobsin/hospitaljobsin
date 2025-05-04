@@ -30,7 +30,7 @@ env:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions: read-all
     defaults:
       run:
         working-directory: ./infrastructure
