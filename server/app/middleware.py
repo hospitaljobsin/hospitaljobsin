@@ -33,7 +33,8 @@ class SessionMiddleware(BaseHTTPMiddleware):
         self.secure = secure
         self.domain = domain
 
-    def get_jwe_secret_key(self) -> str:
+    @staticmethod
+    def get_jwe_secret_key() -> str:
         """Get the JWE secret key."""
         return get_settings(SecretSettings).jwe_secret_key.get_secret_value()
 
