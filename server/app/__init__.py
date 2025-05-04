@@ -5,6 +5,7 @@ from aioinject.ext.fastapi import AioInjectMiddleware
 from asgi_correlation_id import CorrelationIdMiddleware
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from structlog import get_logger
 
 from app.auth.routes import auth_router
 from app.config import (
@@ -66,15 +67,20 @@ def add_middleware(
     )
 
 
+logger = get_logger(__name__)
+
+
 @asynccontextmanager
 async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     """Initialize the database when the app starts."""
+    logger.info("LIFESPAN INITIALIZED IN CODE: Initializing database")
     settings = get_settings(DatabaseSettings)
     async with initialize_database(
         database_url=str(settings.database_url),
         default_database_name=settings.default_database_name,
     ) as _:
         yield
+    logger.info("LIFESPAN DESTROYED IN CODE")
 
 
 def create_app() -> FastAPI:
