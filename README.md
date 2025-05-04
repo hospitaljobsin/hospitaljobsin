@@ -201,36 +201,44 @@ Follow these steps to deploy the project to the cloud:
 - Login to your cloudflare account
 - Under Manage Account / Account tokens, click on "Create Token"
 
+5. GitHub setup
+- Go to developer settings
+- Create a new GitHub access token with permissions for the current repository:
+	- *secrets: read and write*
+	- *variables: read and write*
 
-5. Terraform setup
+6. Terraform setup
+
+6.1 Prerequisites:
+- Create an S3 bucket that will act as the terraform state backend
+
 Terraform deployments are automated via GitHub Actions CI/CD.
 the following GitHub actions variables and secrets need to be set to enable deployments:
 
 GitHub Actions Variables:
-- 
+- TERRAFORM_AWS_BACKEND_BUCKET_NAME
+- TERRAFORM_AWS_REGION
+- CLOUDFLARE_ACCOUNT_ID
+- MONGODB_ATLAS_ORG_ID
+- SUPPORT_EMAIL
 
 GitHub Actions Secrets:
--
+- TERRAFORM_AWS_ACCESS_KEY_ID
+- TERRAFORM_AWS_SECRET_ACCESS_KEY
+- CLOUDFLARE_API_TOKEN
+- PA_TOKEN_GITHUB
+- MONGODB_ATLAS_PRIVATE_KEY
+- MONGODB_ATLAS_PUBLIC_KEY
+- GOOGLE_OAUTH_CLIENT_ID
+- GOOGLE_OAUTH_CLIENT_SECRET
 
-- save the access key ID and secret key in the terraform cloud environment variables
-- save the terraform_aws_region in env vars
+- Trigger the GitHub actions workflow.
+- During the initial terraform deployment:
+	- update the domain registrar (GoDaddy/ NameCheap/ Google Domains)'s NS records to the Route 53 nameservers midway, to ensure certificate validation takes place
 
-- run terraform apply
-- update GoDaddy's NS records to the Route 53 nameservers midway, to ensure certificate validation takes place
-
-- Generate a new Github access token and set it in the GITHUB_TOKEN env var in terraform cloud
-	with following permissions:
-	- secrets: read and write
-	- variables: read and write
-
-- Create a cloudflare API token and store it under env vars in terraform cloud (CLOUDFLARE_API_TOKEN)
-- set the cloudflare account ID terraform variable
-- set the `google_oauth_client_id` and `google_oauth_client_secret` terraform vars.
-
-
+After automated deployment, you need to:
 - Request SES production access manually
 
 ## TODO: infrastructure
 - wait for relevant tests to pass before building and pushing
-- fix subnets config (we removed nat gateway-managed and are facing endpoint timeouts as the backend lambda cannot access the AWS services.)
-	- this might also cause the frontend to return 504s (routing is done, but the ssr part isnt working?)
+- move lambda functions inside VPCs and assign internet gateway endpoints to VPCs

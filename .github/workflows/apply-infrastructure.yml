@@ -18,7 +18,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_AWS_SECRET_ACCESS_KEY }}
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.PA_TOKEN_GITHUB }}
   MONGODB_ATLAS_PRIVATE_KEY: ${{ secrets.MONGODB_ATLAS_PRIVATE_KEY }}
   MONGODB_ATLAS_PUBLIC_KEY: ${{ secrets.MONGODB_ATLAS_PUBLIC_KEY }}
   TF_VAR_cloudflare_acount_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
@@ -30,7 +30,6 @@ env:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    permissions: write-all
     defaults:
       run:
         working-directory: ./infrastructure
