@@ -6,8 +6,11 @@ from jose import jwe
 from jose.exceptions import JWEError
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.types import ASGIApp
+from structlog import get_logger
 
 from app.config import SecretSettings, get_settings
+
+logger = get_logger(__name__)
 
 
 class SessionMiddleware(BaseHTTPMiddleware):
@@ -24,6 +27,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
         secure: bool = False,
         domain: str | None = None,
     ) -> None:
+        logger.info("INITIALIZING SESSION MIDDLEWARE")
         super().__init__(app)
         self._jwe_secret_key: str | None = None
         self.session_cookie = session_cookie

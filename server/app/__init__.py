@@ -21,6 +21,8 @@ from app.health.routes import health_router
 from app.jobs.routes import jobs_router
 from app.middleware import SessionMiddleware
 
+logger = get_logger(__name__)
+
 
 def add_routes(app: FastAPI) -> None:
     """Register routes for the app."""
@@ -39,6 +41,7 @@ def add_middleware(
     auth_settings: AuthSettings,
 ) -> None:
     """Register middleware for the app."""
+    logger.info("ADDING MIDDLEWARE...")
     app.add_middleware(
         CORSMiddleware,
         allow_origins=app_settings.cors_allow_origins,
@@ -65,9 +68,6 @@ def add_middleware(
         AioInjectMiddleware,
         container=create_container(),
     )
-
-
-logger = get_logger(__name__)
 
 
 @asynccontextmanager
