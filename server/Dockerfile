@@ -48,39 +48,31 @@ RUN curl $(aws lambda get-layer-version-by-arn --arn arn:aws:lambda:us-east-1:17
 RUN unzip layer.zip -d /opt && \
     rm layer.zip
 
+# Use the AWS Lambda Python 3.12 base image
+FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
-FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS builder
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-WORKDIR /project
+COPY --from=layer-build /opt/extensions /opt/extensions
 
+ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
+
+# Set the working directory
+WORKDIR /project
 
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project --no-editable
+    uv sync --locked --no-install-project
 
 # Copy the application files
 COPY . .
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-editable
-
-# Use the AWS Lambda Python 3.12 base image
-FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
-
-COPY --from=layer-build /opt/extensions /opt/extensions
-
-ENV PYTHONUNBUFFERED=1
-
-# Set the working directory
-# WORKDIR /project
-
-# Copy the environment, but not the source code
-COPY --from=builder --chown=project:project /project/.venv /project/.venv
+    uv sync --locked
 
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
