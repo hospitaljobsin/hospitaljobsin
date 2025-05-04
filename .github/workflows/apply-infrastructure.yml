@@ -6,13 +6,13 @@ on:
       - main
     paths:
       - "infrastructure/**"
-      - ".github/workflows/deploy-infra-core.yml"
+      - ".github/workflows/apply-infrastructure.yml"
   pull_request:
     branches:
       - main
     paths:
       - "infrastructure/**"
-      - ".github/workflows/deploy-infra-core.yml"
+      - ".github/workflows/apply-infrastructure.yml"
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_AWS_ACCESS_KEY_ID }}
@@ -30,7 +30,7 @@ env:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    permissions: read-all
+    permissions: write-all
     defaults:
       run:
         working-directory: ./infrastructure
