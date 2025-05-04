@@ -69,7 +69,6 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 COPY --from=layer-build /opt/extensions /opt/extensions
 
 ENV PYTHONUNBUFFERED=1
-ENV UV_COMPILE_BYTECODE=1
 
 # Set the working directory
 WORKDIR /project
@@ -78,7 +77,7 @@ WORKDIR /project
 COPY . .
 
 # Install dependencies
-RUN uv sync --locked
+RUN uv sync --frozen
 
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
