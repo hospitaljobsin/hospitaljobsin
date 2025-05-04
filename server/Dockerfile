@@ -21,7 +21,7 @@ RUN apt-get update && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/*
 
-RUN uv sync --locked
+COPY --from=builder /project/.venv/ /project/.venv
 
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
@@ -33,7 +33,7 @@ WORKDIR /project
 
 EXPOSE 8000
 
-CMD ["uv" "run", "scripts/run_server.py"]
+CMD ["python", "scripts/run_server.py"]
 
 
 FROM debian:12-slim as layer-build
@@ -64,7 +64,7 @@ RUN unzip layer.zip -d /opt && \
 # Use the AWS Lambda Python 3.12 base image
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
-# COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 COPY --from=layer-build /opt/extensions /opt/extensions
 
@@ -78,9 +78,7 @@ WORKDIR /project
 COPY . .
 
 # Install dependencies
-RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
-    uv sync --locked
-# RUN uv sync --locked
+RUN uv sync --locked
 
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
