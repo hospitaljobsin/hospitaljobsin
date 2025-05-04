@@ -76,7 +76,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
-ENV PATH="/project/.venv/bin:$PATH"
+# ENV PATH="/project/.venv/bin:$PATH"
 
 # TODO: maybe entrypoint isnt allowing extensions to initialize normally
 ENTRYPOINT [ "python", "-m", "awslambdaric" ]
