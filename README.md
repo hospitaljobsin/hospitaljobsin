@@ -189,9 +189,9 @@ Follow these steps to deploy the project to the cloud:
 	- **Project Branding config:**
 		- *App name:* Hospital Jobs
 		- *App Domain:*
-			- Application home page: https://hospitaljobs.in
-			- Application privacy policy link: https://hospitaljobs.in/privacy
-			- Application terms of service link: https://hospitaljobs.in/terms
+			- *Application home page:* https://hospitaljobs.in
+			- *Application privacy policy link:* https://hospitaljobs.in/privacy
+			- *Application terms of service link:* https://hospitaljobs.in/terms
 		- *Authorized domains:*
 			- hospitaljobs.in
 
