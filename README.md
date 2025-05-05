@@ -172,18 +172,18 @@ Follow these steps to deploy the project to the cloud:
 		- *Authorized domains:*
 			- hospitaljobs.in
 
-### 4. Cloudflare setup
+### 4. Cloudflare Setup
 - [Go to the Cloudflare dashboard](https://dash.cloudflare.com/)
 - Login to your cloudflare account
 - Under Manage Account / Account tokens, click on "Create Token"
 
-### 5. GitHub setup
+### 5. GitHub Setup
 - Go to developer settings
 - Create a new GitHub access token with permissions for the current repository:
 	- *secrets: read and write*
 	- *variables: read and write*
 
-### 6. Terraform setup
+### 6. Terraform Setup
 
 #### 6.1 Prerequisites:
 - Create an S3 bucket that will act as the terraform state backend
