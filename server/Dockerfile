@@ -61,7 +61,6 @@ RUN curl $(aws lambda get-layer-version-by-arn --arn arn:aws:lambda:us-east-1:17
 RUN unzip layer.zip -d /opt && \
     rm layer.zip
 
-# Use the AWS Lambda Python 3.12 base image
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
@@ -69,10 +68,6 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 COPY --from=layer-build /opt/extensions /opt/extensions
 
-RUN chmod +x /opt/extensions/*
-
-# Ensure that all extensions are executable
-# RUN chmod -R +x /opt/extensions
 
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1

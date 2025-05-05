@@ -178,7 +178,7 @@ Follow these steps to deploy the project to the cloud:
 - Under Manage Account / Account tokens, click on "Create Token"
 
 ### 5. GitHub Setup
-- Go to developer settings
+- [Go to GitHub developer settings](https://github.com/settings/tokens)
 - Create a new GitHub access token with permissions for the current repository:
 	- *secrets: read and write*
 	- *variables: read and write*
