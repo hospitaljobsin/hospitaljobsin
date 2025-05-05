@@ -47,13 +47,3 @@ After following the setup guide, the server can be run independently locally usi
 ```bash
 pnpm run dev
 ```
-
-## TODO (auth)
-
-add accounts center
-where:
- 
-- users can delete their accounts
-
-Github Uses SECURITY KEYS only as a form of 2fa, not PASSKEYS.
-hence our current setup is correct

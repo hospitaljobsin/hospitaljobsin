@@ -1,29 +1,3 @@
-# Future- TODO
-(UX)
-- we cannot be generating metadata in some pages (like org detail members page) because outer layouts are client components. we need to try and make sure that the outer layouts are a server component
-- fix invariant errors that blow up in prod (fix is to wrap components that call useLazyLoadQuery with suspense)
-	- we also need to use usePreloadedQuery instead os useLazyLoadQuery- this will avoid timing issues and hence invariant blowing up
-- update skeleton UIs (landing page and org list skeletons are outdated)
-- fix cloudflare turnstile- captcha token refreshing is not working, and calling execute/refresh manually takes some time and affects UX
-- when certain non required fields are touched, they become invalid. even when the field is cleared, users are unable to submit forms. need to fix this
-- fix google oauth2 internal server error in prod
-- make language proficiency a dropdown
-- allow optional radio groups to be unselected- possibly convert them into select components (job type, work mode in create job form)
-- fix location autocomplete- the selected location disappears when no results are found
-	(root cause is ID changes when the results are fetched the second time- as we are using a random ID generator- nanoid() for the places)
-
-(features)
-- ensure members can also create jobs, but they can only view and manage jobs they own.
-- ensure admins can view and edit all jobs, though.
-- add export applicants to XLSX button
-- add select option type applicant field
-- add pagination to job view metrics (normal connections should be enough??)
-
-- we need a separate resource that can return the searched jobs
-
-- if prompt is show me jobs satisfying XXX conditions, we get a tool call done to call the appropriate jobs. we handle that and show the result client side.
-- we can add other tools too, like showing current applications, saved jobs etc
-
 # Hospital Jobs
 > *recruitment and job seeking for medical professionals*
 
@@ -241,7 +215,3 @@ During the initial terraform deployment:
 
 After automated deployment, you need to:
 - Request SES production access manually
-
-## TODO: infrastructure
-- wait for relevant tests to pass before building and pushing
-- move lambda functions inside VPCs and assign internet gateway endpoints to VPCs
