@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"build": "relay-compiler && next experimental-compile --turbopack",
+		"build": "relay-compiler && next build --turbopack",
 		"dev": "next dev -p 5002 --turbopack",
 		"lint": "next lint",
 		"package": "open-next build",
