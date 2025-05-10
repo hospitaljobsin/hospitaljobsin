@@ -22,8 +22,6 @@ from app.health.routes import health_router
 from app.jobs.routes import jobs_router
 from app.middleware import SessionMiddleware
 
-logger = get_logger(__name__)
-
 
 def add_routes(app: FastAPI) -> None:
     """Register routes for the app."""
@@ -73,6 +71,7 @@ def add_middleware(
 @asynccontextmanager
 async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     """Initialize the database when the app starts."""
+    logger = get_logger(__name__)
     logger.debug("Initializing application secrets")
     # load secrets during startup
     get_settings(SecretSettings)

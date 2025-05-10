@@ -38,7 +38,6 @@ export default function OrgDetailHeader({
 }: {
 	queryReference: PreloadedQuery<OrgDetailHeaderQueryType>;
 }) {
-	// TODO: move this query to the parent layout component
 	const data = usePreloadedQuery(OrgDetailHeaderQuery, queryReference);
 	invariant(
 		data.viewer.__typename === "Account",

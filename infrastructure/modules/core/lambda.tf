@@ -124,7 +124,6 @@ resource "docker_image" "backend" {
   build {
     context = "../server"
 
-    # TODO: add build args here
     build_args = {
       AWS_DEFAULT_REGION : var.aws_region
       AWS_ACCESS_KEY_ID : aws_iam_access_key.github_actions.id
