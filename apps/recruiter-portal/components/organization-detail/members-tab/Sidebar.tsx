@@ -1,13 +1,35 @@
 "use client";
 
+import type { SidebarMembersQuery as SidebarMembersQueryType } from "@/__generated__/SidebarMembersQuery.graphql";
 import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
 import { Mail, User } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
+import { usePreloadedQuery, type PreloadedQuery } from "react-relay";
+import { graphql } from "relay-runtime";
+import invariant from "tiny-invariant";
 
-export default function MembersSidebar() {
+export const SidebarMembersQuery = graphql`
+	query SidebarMembersQuery($slug: String!) {
+		organization(slug: $slug) {
+			__typename
+			... on Organization {
+				isAdmin
+			}
+		}
+	}
+`;
+
+export default function MembersSidebar({
+	queryReference,
+}: { queryReference: PreloadedQuery<SidebarMembersQueryType> }) {
 	const pathname = usePathname();
 	const params = useParams<{ slug: string }>();
+	const data = usePreloadedQuery(SidebarMembersQuery, queryReference);
+
+	invariant(
+		data.organization.__typename === "Organization",
+		"Expected 'Organization' type.",)
 	return (
 		<>
 			<div className="w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky top-0 self-stretch max-h-screen">
@@ -38,7 +60,8 @@ export default function MembersSidebar() {
 					/>
 					<Tab
 						key={links.organizationDetailMemberInvites(params.slug)}
-						href={links.organizationDetailMemberInvites(params.slug)}
+						href={links.organizationDetailMemberInvites(params.slug)}						
+						isDisabled={!data.organization.isAdmin}
 						title={
 							<div className="flex items-center space-x-4">
 								<Mail size={20} />
@@ -72,6 +95,7 @@ export default function MembersSidebar() {
 					<Tab
 						key={links.organizationDetailMemberInvites(params.slug)}
 						href={links.organizationDetailMemberInvites(params.slug)}
+						isDisabled={!data.organization.isAdmin}
 						title={
 							<div className="flex items-center space-x-4">
 								<Mail size={16} />
