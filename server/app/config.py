@@ -185,6 +185,11 @@ class SecretSettings(BaseSettings):
 
     jwe_secret_key: SecretStr
 
+    # Oauth2 config
+    google_client_id: str
+
+    google_client_secret: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",
@@ -211,19 +216,6 @@ class SecretSettings(BaseSettings):
                 )
             )
         return tuple(sources)
-
-
-class Oauth2Settings(BaseSettings):
-    # Oauth2 config
-    google_client_id: str
-
-    google_client_secret: str
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_prefix="server_",
-        extra="allow",
-    )
 
 
 class EmailSettings(BaseSettings):
