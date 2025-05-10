@@ -33,10 +33,11 @@ const OrganizationJobsListInternalFragment = graphql`
   @argumentDefinitions(
     cursor: { type: "ID" }
     count: { type: "Int", defaultValue: 10 }
+	isActive: { type: "Boolean", defaultValue: true }
   )
   @refetchable(queryName: "OrganizationJobsListPaginationQuery") {
-    jobs(after: $cursor, first: $count)
-      @connection(key: "OrganizationJobsListInternalFragment_jobs") {
+    jobs(after: $cursor, first: $count, isActive: $isActive)
+      @connection(key: "OrganizationJobsListInternalFragment_jobs", filters: ["isActive"]) {
       edges {
         node {
           id

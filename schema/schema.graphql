@@ -1443,6 +1443,9 @@ type Organization implements Node {
     """The search (query) term"""
     searchTerm: String = null
 
+    """Whether only active jobs must be returned."""
+    isActive: Boolean = null
+
     """Returns items before the given cursor."""
     before: ID = null
 

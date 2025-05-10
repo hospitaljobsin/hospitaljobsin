@@ -387,6 +387,12 @@ class OrganizationType(BaseNodeType[Organization]):
                 description="The search (query) term",
             ),
         ] = None,
+        is_active: Annotated[
+            bool | None,
+            strawberry.argument(
+                description="Whether only active jobs must be returned.",
+            ),
+        ] = None,
         before: Annotated[
             relay.GlobalID | None,
             strawberry.argument(
@@ -418,6 +424,7 @@ class OrganizationType(BaseNodeType[Organization]):
         paginated_jobs = await job_repo.get_all_by_organization_id(
             organization_id=ObjectId(self.id),
             search_term=search_term,
+            is_active=is_active,
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
             first=first,

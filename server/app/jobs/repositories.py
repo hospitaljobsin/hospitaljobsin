@@ -233,6 +233,7 @@ class JobRepo:
         self,
         organization_id: ObjectId,
         search_term: str | None = None,
+        is_active: bool | None = None,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
@@ -246,6 +247,9 @@ class JobRepo:
         )
 
         search_criteria = Job.find(Job.organization.id == organization_id)
+
+        if is_active is not None:
+            search_criteria = search_criteria.find(Job.is_active == is_active)
 
         if search_term:
             search_criteria = search_criteria.find({"$text": {"$search": search_term}})
