@@ -1,19 +1,20 @@
 "use client";
 
 import type { LocationAutocompleteQuery } from "@/__generated__/LocationAutocompleteQuery.graphql";
-import { useDebounce } from "@/lib/hooks/useDebounce";
 import type { AutocompleteProps } from "@heroui/react";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import type { Key } from "react";
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery, useQueryLoader } from "react-relay";
 import { graphql } from "relay-runtime";
+import { useDebounce } from "use-debounce";
 
 interface LocationAutocompleteProps
 	extends Omit<AutocompleteProps, "children" | "onChange"> {
 	value: string;
 	onChange: (value: SearchLocation) => void;
+	onValueChange: (value: string) => void;
 	onClear?: () => void;
 }
 
@@ -27,19 +28,19 @@ type SearchLocation = {
 };
 
 const SearchLocationsQuery = graphql`
-    query LocationAutocompleteQuery($searchTerm: String!) {
-        searchLocations(searchTerm: $searchTerm) {
-            locations {
-                __typename
-                displayName
-                placeId
+	query LocationAutocompleteQuery($searchTerm: String!) {
+		searchLocations(searchTerm: $searchTerm) {
+			locations {
+				__typename
+				displayName
+				placeId
 				coordinates {
 					latitude
 					longitude
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 `;
 
 // Separate component to handle data fetching using the query reference
@@ -76,16 +77,17 @@ export default function LocationAutocomplete({
 	value,
 	onChange,
 	onClear,
+	onValueChange,
 	...props
 }: LocationAutocompleteProps) {
-	const [inputValue, setInputValue] = useState(value);
+	const [debouncedLocation] = useDebounce(value, 300);
 	const [suggestions, setSuggestions] = useState<SearchLocation[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const debouncedQuery = useDebounce(inputValue, 300);
 	const [isPending, startTransition] = useTransition();
-
 	const [queryReference, loadQuery, disposeQuery] =
 		useQueryLoader<LocationAutocompleteQuery>(SearchLocationsQuery);
+
+	const shouldRefetchSuggestions = useRef(true);
 
 	const handleDataLoaded = useCallback((locations: SearchLocation[]) => {
 		setSuggestions(locations);
@@ -94,12 +96,16 @@ export default function LocationAutocomplete({
 	}, []);
 
 	useEffect(() => {
+		if (!shouldRefetchSuggestions.current) {
+			shouldRefetchSuggestions.current = true;
+			return;
+		}
 		// Only fetch suggestions if we have a valid query
-		if (debouncedQuery && debouncedQuery.length >= 3) {
+		if (debouncedLocation && debouncedLocation.length >= 3) {
 			setIsLoading(true);
 			startTransition(() => {
 				loadQuery(
-					{ searchTerm: debouncedQuery },
+					{ searchTerm: debouncedLocation },
 					{ fetchPolicy: "store-or-network" },
 				);
 			});
@@ -108,14 +114,13 @@ export default function LocationAutocomplete({
 			setSuggestions([]);
 			setIsLoading(false);
 			// Make sure to dispose any pending query
-			disposeQuery();
+			// disposeQuery();
 		}
 
-		// Cleanup function
 		return () => {
 			disposeQuery();
 		};
-	}, [debouncedQuery, loadQuery, disposeQuery]);
+	}, [debouncedLocation, loadQuery, disposeQuery]);
 
 	const handleSelectionChange = (selectedKey: Key | null) => {
 		if (!selectedKey) {
@@ -127,7 +132,8 @@ export default function LocationAutocomplete({
 		}
 		const selected = suggestions.find((item) => item.placeId === selectedKey);
 		if (selected) {
-			setInputValue(selected.displayName);
+			// TODO: this potentially triggers a re-render, because the text in the selection is different from the query text
+			shouldRefetchSuggestions.current = false;
 			onChange(selected);
 			setIsLoading(false);
 			// Clear query reference to completely stop the loading state
@@ -136,7 +142,7 @@ export default function LocationAutocomplete({
 	};
 
 	const handleInputChange = (value: string) => {
-		setInputValue(value);
+		onValueChange(value);
 		// Don't call onChange here, only when selection changes
 	};
 
@@ -157,11 +163,12 @@ export default function LocationAutocomplete({
 			)}
 			<Autocomplete
 				{...props}
-				inputValue={inputValue}
+				inputValue={value}
 				onInputChange={handleInputChange}
 				isLoading={isLoading || isPending}
 				onSelectionChange={handleSelectionChange}
 				onKeyDown={preventFormSubmission}
+				isClearable
 			>
 				{suggestions.map((suggestion) => (
 					<AutocompleteItem key={suggestion.placeId}>

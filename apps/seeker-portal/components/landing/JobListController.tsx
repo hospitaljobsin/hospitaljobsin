@@ -60,6 +60,9 @@ export default function JobListController(props: JobListControllerProps) {
 									setLocation(value.displayName);
 									props.setCoordinates(value.coordinates);
 								}}
+								onValueChange={(value) => {
+									setLocation(value);
+								}}
 								onClear={() => {
 									setLocation(null);
 									props.setCoordinates(null);

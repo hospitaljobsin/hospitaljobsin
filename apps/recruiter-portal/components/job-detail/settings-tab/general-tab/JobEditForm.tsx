@@ -555,6 +555,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 												onChange={(value) => {
 													field.onChange(value.displayName);
 												}}
+												onValueChange={(value) => {
+													field.onChange(value);
+												}}
 												errorMessage={errors.location?.message}
 												isInvalid={!!errors.location}
 											/>
