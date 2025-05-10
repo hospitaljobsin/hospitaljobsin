@@ -51,6 +51,7 @@ export default function JobListController(props: JobListControllerProps) {
 							<LocationAutocomplete
 								className="flex-1"
 								size="md"
+								aria-label="Location"
 								placeholder="Filter by location"
 								startContent={
 									<MapPin size={18} className="text-foreground-400" />
