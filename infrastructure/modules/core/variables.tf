@@ -61,3 +61,11 @@ variable "google_oauth_client_secret" {
   description = "Google OAuth client secret."
   sensitive   = true
 }
+
+
+variable "sentry_backend_dsn" {
+  type        = string
+  description = "Sentry DSN for the backend."
+  sensitive   = true
+
+}

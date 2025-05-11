@@ -16,6 +16,7 @@ from app.config import (
     get_settings,
 )
 from app.container import create_container
+from app.core.instrumentation import initialize_instrumentation
 from app.database import initialize_database
 from app.graphql_app import create_graphql_router
 from app.health.routes import health_router
@@ -87,6 +88,7 @@ async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
 def create_app() -> FastAPI:
     """Create an application instance."""
     app_settings = get_settings(AppSettings)
+    initialize_instrumentation(settings=app_settings)
     app = FastAPI(
         version="0.0.1",
         debug=app_settings.debug,

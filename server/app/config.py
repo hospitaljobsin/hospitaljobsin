@@ -190,6 +190,9 @@ class SecretSettings(BaseSettings):
 
     google_client_secret: SecretStr
 
+    # sentry config
+    sentry_dsn: SecretStr | None = None
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",

@@ -13,7 +13,8 @@ resource "aws_secretsmanager_secret_version" "example" {
     server_jwe_secret_key       = random_bytes.jwe_secret.hex,
     server_google_client_id     = var.google_oauth_client_id,
     server_google_client_secret = var.google_oauth_client_secret,
-    server_captcha_secret_key   = cloudflare_turnstile_widget.example.secret
+    server_captcha_secret_key   = cloudflare_turnstile_widget.example.secret,
+    server_sentry_dsn           = var.sentry_backend_dsn,
   })
 
   depends_on = [random_bytes.jwe_secret, cloudflare_turnstile_widget.example]

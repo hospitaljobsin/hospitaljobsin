@@ -56,6 +56,11 @@ provider "mongodbatlas" {}
 provider "github" {}
 
 
+module "sentry" {
+  source                   = "./modules/sentry"
+  sentry_organization_slug = var.sentry_organization_slug
+}
+
 module "core" {
   source                     = "./modules/core"
   app_name                   = var.app_name
@@ -70,10 +75,8 @@ module "core" {
   mongodb_database_name      = var.mongodb_database_name
   resource_prefix            = var.resource_prefix
   support_email              = var.support_email
+  sentry_backend_dsn         = module.sentry.sentry_backend_dsn
 }
 
 
-module "sentry" {
-  source                   = "./modules/sentry"
-  sentry_organization_slug = var.sentry_organization_slug
-}
+
