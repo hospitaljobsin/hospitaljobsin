@@ -6,7 +6,6 @@ import { ThemeProvider } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
-import { TurnstileProvider } from "../components/TurnstileProvider";
 
 export default function Providers({
 	children,
@@ -23,7 +22,6 @@ export default function Providers({
 			<ToastProvider placement="bottom-left" toastOffset={15} />
 			<ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
 				<RelayEnvironmentProvider environment={environment}>
-					<TurnstileProvider>
 						<ProgressProvider
 							height="4px"
 							color="hsl(var(--heroui-primary-300))"
@@ -33,7 +31,6 @@ export default function Providers({
 						>
 							{children}
 						</ProgressProvider>
-					</TurnstileProvider>
 				</RelayEnvironmentProvider>
 			</ThemeProvider>
 		</HeroUIProvider>

@@ -61,7 +61,7 @@ export const TurnstileProvider = ({ children }: { children: ReactNode }) => {
 				options={{
 					execution: "execute",
 					size: "invisible",
-					appearance: "interaction-only",
+					appearance: "execute",
 				}}
 				scriptOptions={{
 					nonce: "turnstile-nonce",
