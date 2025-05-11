@@ -19,6 +19,7 @@
 		"@lobehub/icons": "^1.95.0",
 		"@marsidev/react-turnstile": "^1.1.0",
 		"@opennextjs/aws": "^3.5.8",
+		"@sentry/nextjs": "^9.17.0",
 		"@simplewebauthn/browser": "^13.1.0",
 		"@t3-oss/env-nextjs": "^0.11.1",
 		"@tailwindcss/typography": "^0.5.16",

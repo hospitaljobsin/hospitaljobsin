@@ -67,3 +67,9 @@ variable "sentry_backend_dsn" {
   type        = string
   description = "Sentry DSN for the backend."
 }
+
+
+variable "sentry_accounts_ui_dsn" {
+  type        = string
+  description = "Sentry DSN for the accounts UI."
+}

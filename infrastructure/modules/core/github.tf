@@ -65,6 +65,12 @@ resource "github_actions_secret" "sst_accounts_secret_id" {
   plaintext_value = aws_secretsmanager_secret.accounts.id
 }
 
+resource "github_actions_secret" "sst_accounts_secret_id" {
+  repository      = data.github_repository.this.name
+  secret_name     = "SST_ACCOUNTS_SENTRY_DSN"
+  plaintext_value = var.sentry_accounts_ui_dsn
+}
+
 resource "github_actions_variable" "sst_seeker_portal_domain" {
   repository    = data.github_repository.this.name
   variable_name = "SST_SEEKER_PORTAL_DOMAIN"

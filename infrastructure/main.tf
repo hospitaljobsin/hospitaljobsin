@@ -76,6 +76,7 @@ module "core" {
   resource_prefix            = var.resource_prefix
   support_email              = var.support_email
   sentry_backend_dsn         = module.sentry.sentry_backend_dsn
+  sentry_accounts_ui_dsn     = module.sentry.sentry_accounts_ui_dsn
 }
 
 

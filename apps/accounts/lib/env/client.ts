@@ -9,6 +9,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: z.string().url(),
 		NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: z.string().url(),
 		NEXT_PUBLIC_SESSION_COOKIE_KEY: z.string(),
+		NEXT_PUBLIC_SENTRY_DSN: z.string().url(),
 	},
 	// For Next.js >= 13.4.4, you only need to destructure client variables:
 	runtimeEnv: {
@@ -20,6 +21,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL:
 			process.env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL,
 		NEXT_PUBLIC_SESSION_COOKIE_KEY: process.env.NEXT_PUBLIC_SESSION_COOKIE_KEY,
+		NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
