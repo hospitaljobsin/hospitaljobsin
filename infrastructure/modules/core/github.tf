@@ -84,6 +84,12 @@ resource "github_actions_secret" "sst_seeker_portal_secret_id" {
   plaintext_value = aws_secretsmanager_secret.seeker_portal.id
 }
 
+resource "github_actions_secret" "sst_seeker_portal_sentry_dsn" {
+  repository      = data.github_repository.this.name
+  secret_name     = "SST_SEEKER_PORTAL_SENTRY_DSN"
+  plaintext_value = var.sentry_seeker_portal_ui_dsn
+}
+
 resource "github_actions_variable" "sst_recruiter_portal_domain" {
   repository    = data.github_repository.this.name
   variable_name = "SST_RECRUITER_PORTAL_DOMAIN"
@@ -94,6 +100,12 @@ resource "github_actions_secret" "sst_recruiter_portal_secret_id" {
   repository      = data.github_repository.this.name
   secret_name     = "SST_RECRUITER_PORTAL_SECRET_ID"
   plaintext_value = aws_secretsmanager_secret.recruiter_portal.id
+}
+
+resource "github_actions_secret" "sst_recruiter_portal_sentry_dsn" {
+  repository      = data.github_repository.this.name
+  secret_name     = "SST_RECRUITER_PORTAL_SENTRY_DSN"
+  plaintext_value = var.sentry_recruiter_portal_ui_dsn
 }
 
 resource "github_actions_variable" "sst_captcha_site_key" {
