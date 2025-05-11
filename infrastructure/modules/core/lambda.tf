@@ -192,6 +192,7 @@ resource "aws_lambda_function" "backend" {
       SERVER_GEOCODING_PROVIDER                   = "aws_location"
       SERVER_SINGLE_USE_LOCATION_PLACE_INDEX_NAME = aws_location_place_index.single_use.index_name
       SERVER_STORAGE_LOCATION_PLACE_INDEX_NAME    = aws_location_place_index.storage.index_name
+      SERVER_SENTRY_DSN                           = var.sentry_backend_dsn
 
       AWS_SECRETS_MANAGER_SECRET_ID = aws_secretsmanager_secret.backend.id
     }
