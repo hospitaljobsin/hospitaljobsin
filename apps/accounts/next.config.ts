@@ -1,7 +1,7 @@
+import { fileURLToPath } from "node:url";
 import { withSentryConfig } from "@sentry/nextjs";
 import { createJiti } from "jiti";
 import type { NextConfig } from "next";
-import { fileURLToPath } from "node:url";
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
 // Import env here to validate during build. Using jiti we can import .ts files :)
@@ -62,11 +62,11 @@ export default withSentryConfig(nextConfig, {
 	// Upload a larger set of source maps for prettier stack traces (increases build time)
 	widenClientFileUpload: true,
 
-	// Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
+	// Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
 	// This can increase your server load as well as your hosting bill.
 	// Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
 	// side errors will fail.
-	tunnelRoute: "/monitoring",
+	// tunnelRoute: "/monitoring",
 
 	// Automatically tree-shake Sentry logger statements to reduce bundle size
 	disableLogger: true,
