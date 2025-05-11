@@ -35,7 +35,7 @@ dependencies = [
     "awslambdaric>=3.0.2",
     "nanoid>=2.0.0",
     "tenacity>=9.1.2",
-    "sentry-sdk>=2.27.0",
+    "sentry-sdk[fastapi]>=2.27.0",
 ]
 
 [tool.uv]
