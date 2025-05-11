@@ -68,3 +68,9 @@ variable "google_oauth_client_secret" {
   description = "Google OAuth client secret."
   sensitive   = true
 }
+
+variable "sentry_organization_slug" {
+  description = "The slug of the Sentry organization."
+  type        = string
+  default     = "vnadi"
+}

@@ -31,6 +31,11 @@ terraform {
       source  = "kreuzwerker/docker"
       version = "3.4.0"
     }
+
+    sentry = {
+      source  = "jianyuan/sentry"
+      version = "0.14.5"
+    }
   }
 
   backend "s3" {
@@ -65,4 +70,10 @@ module "core" {
   mongodb_database_name      = var.mongodb_database_name
   resource_prefix            = var.resource_prefix
   support_email              = var.support_email
+}
+
+
+module "sentry" {
+  source                   = "./modules/sentry"
+  sentry_organization_slug = var.sentry_organization_slug
 }

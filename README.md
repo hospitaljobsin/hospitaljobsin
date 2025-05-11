@@ -183,9 +183,13 @@ Follow these steps to deploy the project to the cloud:
 	- *secrets: read and write*
 	- *variables: read and write*
 
-### 6. Terraform Setup
+### 6. Sentry Setup
+- Create a new organization
+- [Create a Sentry Authentication Token](https://docs.sentry.io/organization/integrations/integration-platform/internal-integration/#auth-tokens) (via an internal integration)
 
-#### 6.1 Prerequisites:
+### 7. Terraform Setup
+
+#### 7.1 Prerequisites:
 - Create an S3 bucket that will act as the terraform state backend
 
 Terraform deployments are automated via GitHub Actions CI/CD.
@@ -207,6 +211,7 @@ GitHub Actions Secrets:
 - `MONGODB_ATLAS_PUBLIC_KEY`
 - `GOOGLE_OAUTH_CLIENT_ID`
 - `GOOGLE_OAUTH_CLIENT_SECRET`
+- `SENTRY_AUTH_TOKEN`
 
 
 
