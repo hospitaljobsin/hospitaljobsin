@@ -219,4 +219,5 @@ During the initial terraform deployment:
 - update the domain registrar (GoDaddy/ NameCheap/ Google Domains)'s NS records to the Route 53 nameservers midway, to ensure certificate validation takes place
 
 After automated deployment, you need to:
-- Request SES production access manually
+- Request SES production access manually on AWS
+- Join the created team on sentry with your account
