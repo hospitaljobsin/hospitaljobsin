@@ -1,6 +1,6 @@
 resource "sentry_key" "backend" {
-  organization = "my-organization"
+  organization = data.sentry_organization.main.id
 
-  project = sentry_project.backend.slug
+  project = sentry_project.backend.id
   name    = "Backend Key"
 }
