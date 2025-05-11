@@ -76,6 +76,7 @@ async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     logger.debug("Initializing application secrets")
     # load secrets during startup
     get_settings(SecretSettings)
+    initialize_instrumentation(settings=get_settings(AppSettings))
     database_settings = get_settings(DatabaseSettings)
     logger.debug("Initializing database connection")
     async with initialize_database(
@@ -88,7 +89,6 @@ async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
 def create_app() -> FastAPI:
     """Create an application instance."""
     app_settings = get_settings(AppSettings)
-    initialize_instrumentation(settings=app_settings)
     app = FastAPI(
         version="0.0.1",
         debug=app_settings.debug,
