@@ -1309,6 +1309,9 @@ wheels = [
 fastapi = [
     { name = "fastapi" },
 ]
+pymongo = [
+    { name = "pymongo" },
+]
 
 [[package]]
 name = "server"
@@ -1340,7 +1343,7 @@ dependencies = [
     { name = "pyotp" },
     { name = "python-jose", extra = ["cryptography"] },
     { name = "result" },
-    { name = "sentry-sdk", extra = ["fastapi"] },
+    { name = "sentry-sdk", extra = ["fastapi", "pymongo"] },
     { name = "strawberry-graphql", extra = ["cli"] },
     { name = "structlog" },
     { name = "tenacity" },
@@ -1387,7 +1390,7 @@ requires-dist = [
     { name = "pyotp", specifier = ">=2.9.0" },
     { name = "python-jose", extras = ["cryptography"], specifier = ">=3.4.0" },
     { name = "result", specifier = ">=0.17.0" },
-    { name = "sentry-sdk", extras = ["fastapi"], specifier = ">=2.27.0" },
+    { name = "sentry-sdk", extras = ["fastapi", "pymongo"], specifier = ">=2.27.0" },
     { name = "strawberry-graphql", extras = ["cli"], specifier = ">=0.253.0" },
     { name = "structlog", specifier = ">=24.4.0" },
     { name = "tenacity", specifier = ">=9.1.2" },
