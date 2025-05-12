@@ -19,6 +19,7 @@ on:
       - '.github/workflows/e2e-tests.yml'
 
 env:
+  COMPOSE_BAKE: true
   GOOGLE_CLIENT_ID: ${{ secrets.TEST_GOOGLE_OAUTH_CLIENT_ID }}
   GOOGLE_CLIENT_SECRET: ${{ secrets.TEST_GOOGLE_OAUTH_CLIENT_SECRET }}
   SEEKER_PORTAL_UI_SENTRY_DSN: ${{secrets.SEEKER_PORTAL_SENTRY_DSN}}
