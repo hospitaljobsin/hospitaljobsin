@@ -108,6 +108,8 @@ resource "github_actions_secret" "recruiter_portal_sentry_dsn" {
   plaintext_value = var.sentry_recruiter_portal_ui_dsn
 }
 
+
+
 resource "github_actions_variable" "sst_captcha_site_key" {
   repository    = data.github_repository.this.name
   variable_name = "SST_CAPTCHA_SITE_KEY"
