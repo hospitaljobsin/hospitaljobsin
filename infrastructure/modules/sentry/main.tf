@@ -9,6 +9,3 @@ terraform {
   }
 }
 
-
-
-provider "sentry" {}
