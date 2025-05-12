@@ -58,6 +58,12 @@ resource "sentry_project" "seeker_portal_ui" {
   teams        = [sentry_team.main.id]
   name         = "Hospital Jobs Seeker Portal UI"
   platform     = "javascript-nextjs"
+  client_security = {
+    allowed_domains = [
+      "https://${var.domain_name}",
+      "http://localhost:5000",
+    ]
+  }
 }
 
 resource "sentry_project_spike_protection" "seeker_portal_ui" {
@@ -82,6 +88,13 @@ resource "sentry_project" "recruiter_portal_ui" {
   teams        = [sentry_team.main.id]
   name         = "Hospital Jobs Recruiter Portal UI"
   platform     = "javascript-nextjs"
+
+  client_security = {
+    allowed_domains = [
+      "https://recruiter.${var.domain_name}",
+      "http://localhost:5001",
+    ]
+  }
 }
 
 resource "sentry_project_spike_protection" "recruiter_portal_ui" {
