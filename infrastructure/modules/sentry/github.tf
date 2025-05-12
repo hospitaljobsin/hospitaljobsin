@@ -20,3 +20,10 @@ resource "github_actions_variable" "accounts_sentry_project" {
   variable_name = "ACCOUNTS_SENTRY_PROJECT"
   value         = sentry_project.accounts_ui.id
 }
+
+
+resource "github_actions_variable" "sentry_organization" {
+  repository    = data.github_repository.this.name
+  variable_name = "SENTRY_ORGANIZATION"
+  value         = data.sentry_organization.main.id
+}
