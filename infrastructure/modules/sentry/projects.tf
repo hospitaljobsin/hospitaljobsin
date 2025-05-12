@@ -12,9 +12,9 @@ resource "sentry_project_spike_protection" "backend" {
 }
 
 resource "sentry_organization_code_mapping" "backend" {
-  organization   = "my-organization"
-  integration_id = data.sentry_organization_integration.github.internal_id
-  repository_id  = sentry_organization_repository.github.internal_id
+  organization   = data.sentry_organization.main.id
+  integration_id = data.sentry_organization_integration.github.id
+  repository_id  = sentry_organization_repository.github.id
   project_id     = sentry_project.backend.internal_id
 
   default_branch = "main"
