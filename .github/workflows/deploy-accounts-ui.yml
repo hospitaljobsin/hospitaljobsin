@@ -62,8 +62,8 @@ jobs:
             NEXT_PUBLIC_SESSION_COOKIE_KEY: user_session
             NEXT_PUBLIC_ENVIRONMENT: production
             NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.ACCOUNTS_SENTRY_DSN }}
-            NEXT_PUBLIC_SENTRY_ORGANIZATION: vnadi
-            NEXT_PUBLIC_SENTRY_PROJECT: hospital-jobs-accounts-ui
+            NEXT_PUBLIC_SENTRY_ORGANIZATION: ${{ vars.SENTRY_ORGANIZATION }}
+            NEXT_PUBLIC_SENTRY_PROJECT: ${{vars.ACCOUNTS_SENTRY_PROJECT}}
             API_URL: ${{ vars.SST_API_URL }}
             AWS_SECRET_ID: ${{ secrets.SST_ACCOUNTS_SECRET_ID }}
             SKIP_ENV_VALIDATION: true
