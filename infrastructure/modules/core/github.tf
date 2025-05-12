@@ -65,9 +65,9 @@ resource "github_actions_secret" "sst_accounts_secret_id" {
   plaintext_value = aws_secretsmanager_secret.accounts.id
 }
 
-resource "github_actions_secret" "sst_accounts_sentry_dsn" {
+resource "github_actions_secret" "accounts_sentry_dsn" {
   repository      = data.github_repository.this.name
-  secret_name     = "SST_ACCOUNTS_SENTRY_DSN"
+  secret_name     = "ACCOUNTS_SENTRY_DSN"
   plaintext_value = var.sentry_accounts_ui_dsn
 }
 
@@ -84,9 +84,9 @@ resource "github_actions_secret" "sst_seeker_portal_secret_id" {
   plaintext_value = aws_secretsmanager_secret.seeker_portal.id
 }
 
-resource "github_actions_secret" "sst_seeker_portal_sentry_dsn" {
+resource "github_actions_secret" "seeker_portal_sentry_dsn" {
   repository      = data.github_repository.this.name
-  secret_name     = "SST_SEEKER_PORTAL_SENTRY_DSN"
+  secret_name     = "SEEKER_PORTAL_SENTRY_DSN"
   plaintext_value = var.sentry_seeker_portal_ui_dsn
 }
 
@@ -102,9 +102,9 @@ resource "github_actions_secret" "sst_recruiter_portal_secret_id" {
   plaintext_value = aws_secretsmanager_secret.recruiter_portal.id
 }
 
-resource "github_actions_secret" "sst_recruiter_portal_sentry_dsn" {
+resource "github_actions_secret" "recruiter_portal_sentry_dsn" {
   repository      = data.github_repository.this.name
-  secret_name     = "SST_RECRUITER_PORTAL_SENTRY_DSN"
+  secret_name     = "RECRUITER_PORTAL_SENTRY_DSN"
   plaintext_value = var.sentry_recruiter_portal_ui_dsn
 }
 
@@ -132,6 +132,12 @@ resource "github_actions_variable" "sst_accounts_base_url" {
   value         = "https://accounts.${var.domain_name}"
 }
 
+
+resource "github_actions_secret" "server_sentry_dsn" {
+  secret_name     = "SERVER_SENTRY_DSN"
+  repository      = data.github_repository.this.name
+  plaintext_value = var.sentry_backend_dsn
+}
 
 // Fetch private subnets in the VPC
 

@@ -7,13 +7,11 @@ from app.config import AppSettings, SentrySettings, get_settings
 
 def initialize_instrumentation(settings: AppSettings) -> None:
     """Initialize Sentry for error tracking and performance monitoring."""
-    if not settings.is_production:
-        # Skip Sentry initialization in non-production environments
-        return
     logger = get_logger(__name__)
     logger.debug("initializing Sentry for error tracking and performance monitoring.")
     sentry_sdk.init(
         dsn=get_settings(SentrySettings).sentry_dsn,
+        environment=settings.environment,
         send_default_pii=True,  # Send personally identifiable information
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for tracing.
