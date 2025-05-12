@@ -46,6 +46,11 @@ variable "github_repository_name" {
 }
 
 
+variable "github_organization_name" {
+  type        = string
+  description = "GitHub organization name."
+  default     = "aryaniyaps"
+}
 variable "cloudflare_acount_id" {
   type        = string
   description = "Cloudflare account ID."

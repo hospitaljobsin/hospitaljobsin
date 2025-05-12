@@ -5,6 +5,22 @@ resource "sentry_project" "backend" {
   platform     = "python-fastapi"
 }
 
+resource "sentry_project_spike_protection" "backend" {
+  organization = sentry_project.backend.organization
+  project      = sentry_project.backend.id
+  enabled      = true
+}
+
+resource "sentry_organization_code_mapping" "backend" {
+  organization   = "my-organization"
+  integration_id = data.sentry_organization_integration.github.internal_id
+  repository_id  = sentry_organization_repository.github.internal_id
+  project_id     = sentry_project.backend.internal_id
+
+  default_branch = "main"
+  stack_root     = "/"
+  source_root    = "server/"
+}
 
 resource "sentry_project" "accounts_ui" {
   organization = sentry_team.main.organization
@@ -13,6 +29,11 @@ resource "sentry_project" "accounts_ui" {
   platform     = "javascript-nextjs"
 }
 
+resource "sentry_project_spike_protection" "accounts_ui" {
+  organization = sentry_project.accounts_ui.organization
+  project      = sentry_project.accounts_ui.id
+  enabled      = true
+}
 
 resource "sentry_project" "seeker_portal_ui" {
   organization = sentry_team.main.organization
@@ -21,10 +42,22 @@ resource "sentry_project" "seeker_portal_ui" {
   platform     = "javascript-nextjs"
 }
 
+resource "sentry_project_spike_protection" "seeker_portal_ui" {
+  organization = sentry_project.seeker_portal_ui.organization
+  project      = sentry_project.seeker_portal_ui.id
+  enabled      = true
+}
+
 
 resource "sentry_project" "recruiter_portal_ui" {
   organization = sentry_team.main.organization
   teams        = [sentry_team.main.id]
   name         = "Hospital Jobs Recruiter Portal UI"
   platform     = "javascript-nextjs"
+}
+
+resource "sentry_project_spike_protection" "recruiter_portal_ui" {
+  organization = sentry_project.recruiter_portal_ui.organization
+  project      = sentry_project.recruiter_portal_ui.id
+  enabled      = true
 }
