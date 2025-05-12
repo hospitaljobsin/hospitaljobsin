@@ -54,6 +54,8 @@ services:
         - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://localhost:5001
         - NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL=http://localhost:5000
         - NEXT_PUBLIC_SESSION_COOKIE_KEY=user_session
+        - NEXT_PUBLIC_SENTRY_DSN=${ACCOUNTS_UI_SENTRY_DSN}
+        - NEXT_PUBLIC_ENVIRONMENT=testing
     ports:
       - "5002:5002"
     environment:
@@ -82,6 +84,8 @@ services:
         - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://localhost:5001
         - NEXT_PUBLIC_ACCOUNTS_BASE_URL=http://localhost:5002
         - NEXT_PUBLIC_SESSION_COOKIE_KEY=user_session
+        - NEXT_PUBLIC_SENTRY_DSN=${SEEKER_PORTAL_UI_SENTRY_DSN}
+        - NEXT_PUBLIC_ENVIRONMENT=testing
     ports:
       - "5000:5000"
     environment:
