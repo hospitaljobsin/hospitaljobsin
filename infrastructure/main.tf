@@ -61,6 +61,7 @@ module "sentry" {
   sentry_organization_slug = var.sentry_organization_slug
   github_organization_name = var.github_organization_name
   github_repository_name   = var.github_repository_name
+  domain_name              = var.domain_name
 }
 
 module "core" {

@@ -13,3 +13,9 @@ variable "github_organization_name" {
   type        = string
   description = "GitHub organization name."
 }
+
+
+variable "domain_name" {
+  type        = string
+  description = "Domain name for the application."
+}

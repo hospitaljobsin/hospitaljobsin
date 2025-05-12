@@ -185,7 +185,7 @@ Follow these steps to deploy the project to the cloud:
 
 ### 6. Sentry Setup
 - Create a new organization
-- [Setup the Sentry GitHub Integration](https://docs.sentry.io/organization/integrations/source-code-mgmt/github/#installing-github) (repository linking is automated)
+- [Install the Sentry GitHub Integration](https://docs.sentry.io/organization/integrations/source-code-mgmt/github/#installing-github) (repository linking is automated)
 - [Create a Sentry Authentication Token](https://docs.sentry.io/organization/integrations/integration-platform/internal-integration/#auth-tokens) (via an internal integration)
 
 ### 7. Terraform Setup

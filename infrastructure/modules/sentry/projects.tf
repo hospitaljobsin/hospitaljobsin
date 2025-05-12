@@ -27,6 +27,13 @@ resource "sentry_project" "accounts_ui" {
   teams        = [sentry_team.main.id]
   name         = "Hospital Jobs Accounts UI"
   platform     = "javascript-nextjs"
+
+  client_security {
+    allowed_domains = [
+      "https://accounts.${var.domain_name}",
+      "http://localhost:5002",
+    ]
+  }
 }
 
 resource "sentry_project_spike_protection" "accounts_ui" {
