@@ -1,7 +1,8 @@
-import { fileURLToPath } from "node:url";
 import { withSentryConfig } from "@sentry/nextjs";
 import { createJiti } from "jiti";
 import type { NextConfig } from "next";
+import { fileURLToPath } from "node:url";
+import { env } from "./lib/env/client";
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
 // Import env here to validate during build. Using jiti we can import .ts files :)
@@ -50,8 +51,8 @@ export default withSentryConfig(nextConfig, {
 	// For all available options, see:
 	// https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-	org: "vnadi",
-	project: "hospital-jobs-accounts-ui",
+	org: env.NEXT_PUBLIC_SENTRY_ORGANIZATION,
+	project: env.NEXT_PUBLIC_SENTRY_PROJECT,
 
 	// Only print logs for uploading source maps in CI
 	silent: !process.env.CI,
