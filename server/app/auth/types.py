@@ -15,7 +15,6 @@ from app.auth.repositories import TemporaryTwoFactorChallengeRepo
 from app.base.types import BaseConnectionType, BaseEdgeType, BaseErrorType, BaseNodeType
 from app.context import Info
 from app.core.constants import AuthProvider
-from app.scalars import ID
 
 
 @strawberry.type(
@@ -522,7 +521,7 @@ GenerateAuthenticationOptionsPayload = Annotated[
     description="The delete other sessions payload.",
 )
 class DeleteOtherSessionsPayloadType:
-    deleted_session_ids: list[ID] = strawberry.field(
+    deleted_session_ids: list[relay.GlobalID] = strawberry.field(
         description="Deleted session IDs.",
     )
 
@@ -531,9 +530,9 @@ class DeleteOtherSessionsPayloadType:
         """Marshal into a node instance."""
         return cls(
             deleted_session_ids=[
-                relay.to_base64(
-                    SessionType,
-                    session_id,
+                relay.GlobalID(
+                    type_name="Session",
+                    node_id=str(session_id),
                 )
                 for session_id in session_ids
             ],
