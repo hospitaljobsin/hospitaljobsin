@@ -1,4 +1,4 @@
-FROM node:23 AS base
+FROM node:24 AS base
 WORKDIR /app
 RUN corepack enable
 COPY ./apps/seeker-portal/package.json ./apps/seeker-portal/pnpm-lock.yaml ./apps/seeker-portal/.npmrc ./apps/seeker-portal/
@@ -39,7 +39,7 @@ ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 
 RUN pnpm build
 
-FROM node:23-alpine AS release
+FROM node:24-alpine AS release
 WORKDIR /app
 RUN corepack enable
 
