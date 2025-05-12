@@ -28,7 +28,7 @@ resource "sentry_project" "accounts_ui" {
   name         = "Hospital Jobs Accounts UI"
   platform     = "javascript-nextjs"
 
-  client_security {
+  client_security = {
     allowed_domains = [
       "https://accounts.${var.domain_name}",
       "http://localhost:5002",
