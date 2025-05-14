@@ -2,8 +2,6 @@ import httpx
 
 from app.config import SecretSettings
 
-# TODO: add request IP while verifying captcha here
-
 
 class BaseCaptchaVerifier:
     """Base class for Captcha verifier."""
