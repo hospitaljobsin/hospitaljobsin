@@ -1,4 +1,4 @@
-FROM node:24 AS base
+FROM node:24-alpine AS base
 WORKDIR /app
 RUN corepack enable
 COPY ./apps/seeker-portal/package.json ./apps/seeker-portal/pnpm-lock.yaml ./apps/seeker-portal/.npmrc ./apps/seeker-portal/

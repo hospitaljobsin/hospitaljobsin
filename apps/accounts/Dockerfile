@@ -1,4 +1,4 @@
-FROM node:24 AS base
+FROM node:24-alpine AS base
 WORKDIR /app
 RUN corepack enable
 COPY ./apps/accounts/package.json ./apps/accounts/pnpm-lock.yaml ./apps/accounts/.npmrc ./apps/accounts/

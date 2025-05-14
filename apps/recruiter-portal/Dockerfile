@@ -1,4 +1,4 @@
-FROM node:24 AS base
+FROM node:24-alpine AS base
 WORKDIR /app
 RUN corepack enable
 COPY ./apps/recruiter-portal/package.json ./apps/recruiter-portal/pnpm-lock.yaml ./apps/recruiter-portal/.npmrc ./apps/recruiter-portal/
