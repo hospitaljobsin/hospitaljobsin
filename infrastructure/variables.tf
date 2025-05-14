@@ -39,12 +39,18 @@ variable "mongodb_database_name" {
   default     = "medicaljobs"
 }
 
-variable "github_repository_name" {
+variable "github_repository_full_name" {
   type        = string
-  description = "GitHub repository name."
+  description = "GitHub repository full name."
   default     = "aryaniyaps/medical-job-board"
 }
 
+
+variable "github_repository_name" {
+  type        = string
+  description = "GitHub repository name."
+  default     = "medical-job-board"
+}
 
 variable "github_organization_name" {
   type        = string
