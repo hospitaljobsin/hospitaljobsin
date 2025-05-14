@@ -1,4 +1,3 @@
-
 # Lambda Execution Role
 resource "aws_iam_role" "lambda_exec_role" {
   name = "lambda_exec_role"
@@ -136,6 +135,11 @@ resource "docker_image" "backend" {
       user_name      = data.aws_ecr_authorization_token.token.user_name
       password       = data.aws_ecr_authorization_token.token.password
     }
+  }
+
+  triggers = {
+    # Change this value to manually trigger a rebuild
+    manual_rebuild_version = "1.0.0"
   }
 }
 
