@@ -1,4 +1,3 @@
-
 # Store the AWS Access Key ID as a GitHub Actions secret
 resource "github_actions_secret" "aws_access_key_id" {
   repository      = data.github_repository.this.name

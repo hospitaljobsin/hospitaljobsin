@@ -1,7 +1,3 @@
-data "github_repository" "this" {
-  full_name = var.github_repository_name
-}
-
 # Store the backend function name as a variable in GitHub Actions
 resource "github_actions_variable" "aws_backend_function_name" {
   repository    = data.github_repository.this.name
