@@ -8,7 +8,7 @@ from app.config import AppSettings, SentrySettings, get_settings
 def initialize_instrumentation(settings: AppSettings) -> None:
     """Initialize Sentry for error tracking and performance monitoring."""
     logger = get_logger(__name__)
-    logger.debug("initializing Sentry for error tracking and performance monitoring.")
+    logger.debug("Initializing Sentry for error tracking and performance monitoring.")
     sentry_sdk.init(
         dsn=get_settings(SentrySettings).sentry_dsn,
         environment=settings.environment,
