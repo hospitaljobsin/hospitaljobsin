@@ -1,17 +1,17 @@
 # Create an IAM user for GitHub Actions
 resource "aws_iam_user" "github_actions" {
-  name = "github-actions-ecr-user-${data.github_repository.this.name}"
+  name = "github-actions-ecr-user-${var.github_repository_name}"
   path = "/system/"
 
   tags = {
     Terraform  = "true"
-    Repository = data.github_repository.this.name
+    Repository = var.github_repository_name
   }
 }
 
 # Define an IAM policy for ECR access needed by GitHub Actions
 resource "aws_iam_policy" "github_actions" {
-  name        = "github-actions-policy-${data.github_repository.this.name}"
+  name        = "github-actions-policy-${var.github_repository_name}"
   description = "Policy granting ECR and SST deploy permissions for GitHub Actions"
 
   policy = jsonencode({
@@ -151,7 +151,7 @@ resource "aws_iam_policy" "github_actions" {
 
   tags = {
     Terraform  = "true"
-    Repository = data.github_repository.this.name
+    Repository = var.github_repository_name
   }
 }
 
