@@ -12,7 +12,7 @@ from app.config import AppSettings
 
 from .context import AuthContext, BaseContext, Context
 from .dataloaders import Dataloaders
-from .schema import schema
+from .schema import create_schema
 
 
 @inject
@@ -60,7 +60,7 @@ async def get_context(
 def create_graphql_router(app_settings: AppSettings) -> GraphQLRouter:
     """Create a GraphQL router."""
     return GraphQLRouter(
-        schema=schema,
+        schema=create_schema(app_settings=app_settings),
         context_getter=get_context,
         graphql_ide=None if app_settings.is_production else "apollo-sandbox",
     )
