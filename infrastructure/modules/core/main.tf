@@ -19,12 +19,12 @@ terraform {
 
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "~> 4"
+      version = "~> 5"
     }
 
     docker = {
       source  = "kreuzwerker/docker"
-      version = "3.4.0"
+      version = "~> 3.5.0"
     }
 
   }
