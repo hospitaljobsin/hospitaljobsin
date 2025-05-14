@@ -132,7 +132,6 @@ export default function LocationAutocomplete({
 		}
 		const selected = suggestions.find((item) => item.placeId === selectedKey);
 		if (selected) {
-			// TODO: this potentially triggers a re-render, because the text in the selection is different from the query text
 			shouldRefetchSuggestions.current = false;
 			onChange(selected);
 			setIsLoading(false);

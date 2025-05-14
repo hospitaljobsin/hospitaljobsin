@@ -44,8 +44,6 @@ export const loadOrganization = cache(async (slug: string) => {
 	});
 });
 
-// TODO: we cannot be generating metadata here because outer layouts are client components
-// we need to try and make sure that the outer layouts are a server component
 export async function generateMetadata({
 	params,
 }: {
