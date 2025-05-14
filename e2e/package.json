@@ -12,11 +12,11 @@
 	"packageManager": "pnpm@10.11.0",
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@types/node": "^22.13.13",
-		"typescript": "^5.8.2"
+		"@types/node": "^22.15.18",
+		"typescript": "^5.8.3"
 	},
 	"dependencies": {
-		"@playwright/test": "^1.51.1",
+		"@playwright/test": "^1.52.0",
 		"otplib": "^12.0.1"
 	}
 }
