@@ -8,6 +8,7 @@ from strawberry.fastapi import GraphQLRouter
 from app.auth.dependencies import get_session_token
 from app.auth.repositories import SessionRepo
 from app.auth.services import AuthService
+from app.config import AppSettings
 
 from .context import AuthContext, BaseContext, Context
 from .dataloaders import Dataloaders
@@ -56,10 +57,10 @@ async def get_context(
     )
 
 
-def create_graphql_router() -> GraphQLRouter:
+def create_graphql_router(app_settings: AppSettings) -> GraphQLRouter:
     """Create a GraphQL router."""
     return GraphQLRouter(
         schema=schema,
         context_getter=get_context,
-        graphql_ide="apollo-sandbox",
+        graphql_ide=None if app_settings.is_production else "apollo-sandbox",
     )

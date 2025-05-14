@@ -24,10 +24,10 @@ from app.jobs.routes import jobs_router
 from app.middleware import SessionMiddleware
 
 
-def add_routes(app: FastAPI) -> None:
+def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
     """Register routes for the app."""
     app.include_router(
-        create_graphql_router(),
+        create_graphql_router(app_settings=app_settings),
         prefix="/graphql",
     )
     app.include_router(health_router)
@@ -96,7 +96,7 @@ def create_app() -> FastAPI:
         root_path=app_settings.root_path,
         lifespan=app_lifespan,
     )
-    add_routes(app)
+    add_routes(app, app_settings=app_settings)
     add_middleware(
         app,
         app_settings=app_settings,
