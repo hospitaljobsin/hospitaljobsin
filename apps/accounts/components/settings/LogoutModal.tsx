@@ -64,7 +64,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 							<Button
 								color="danger"
 								onPress={handleLogout}
-								isDisabled={isMutationInFlight}
+								isLoading={isMutationInFlight}
 							>
 								Logout
 							</Button>
