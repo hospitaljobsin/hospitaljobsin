@@ -4,7 +4,7 @@ variable "sentry_organization_slug" {
 }
 
 
-variable "github_repository_name" {
+variable "github_repository_full_name" {
   type        = string
   description = "GitHub repository name."
 }

@@ -33,11 +33,15 @@ variable "mongodb_database_name" {
   description = "MongoDB database name."
 }
 
+variable "github_repository_full_name" {
+  type        = string
+  description = "GitHub repository full name."
+}
+
 variable "github_repository_name" {
   type        = string
   description = "GitHub repository name."
 }
-
 
 variable "cloudflare_acount_id" {
   type        = string

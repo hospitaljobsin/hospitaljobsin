@@ -1,6 +1,6 @@
 # Create an IAM user for GitHub Actions
 resource "aws_iam_user" "github_actions" {
-  name = "${var.resource_prefix}-github-actions-ecr-user"
+  name = "github-actions-ecr-user-${var.github_repository_name}"
   path = "/system/"
 
   tags = {
@@ -11,7 +11,7 @@ resource "aws_iam_user" "github_actions" {
 
 # Define an IAM policy for ECR access needed by GitHub Actions
 resource "aws_iam_policy" "github_actions" {
-  name        = "${var.resource_prefix}-github-actions-policy"
+  name        = "github-actions-policy-${var.github_repository_name}"
   description = "Policy granting ECR and SST deploy permissions for GitHub Actions"
 
   policy = jsonencode({

@@ -60,7 +60,7 @@ module "github" {
   aws_backend_function_name        = module.core.aws_lambda_backend_function_name
   aws_backend_image_name           = module.core.aws_lambda_backend_image
   aws_region                       = var.aws_region
-  github_repository_name           = var.github_repository_name
+  github_repository_full_name      = var.github_repository_full_name
   sentry_accounts_ui_dsn           = module.sentry.sentry_accounts_ui_dsn
   sentry_seeker_portal_ui_dsn      = module.sentry.sentry_seeker_portal_ui_dsn
   sentry_recruiter_portal_ui_dsn   = module.sentry.sentry_recruiter_portal_ui_dsn
@@ -86,11 +86,11 @@ module "github" {
 
 
 module "sentry" {
-  source                   = "./modules/sentry"
-  sentry_organization_slug = var.sentry_organization_slug
-  github_organization_name = var.github_organization_name
-  github_repository_name   = var.github_repository_name
-  domain_name              = var.domain_name
+  source                      = "./modules/sentry"
+  sentry_organization_slug    = var.sentry_organization_slug
+  github_organization_name    = var.github_organization_name
+  github_repository_full_name = var.github_repository_full_name
+  domain_name                 = var.domain_name
 }
 
 module "core" {
@@ -99,7 +99,7 @@ module "core" {
   aws_region                     = var.aws_region
   cloudflare_acount_id           = var.cloudflare_acount_id
   domain_name                    = var.domain_name
-  github_repository_name         = var.github_repository_name
+  github_repository_full_name    = var.github_repository_full_name
   google_oauth_client_id         = var.google_oauth_client_id
   google_oauth_client_secret     = var.google_oauth_client_secret
   mongodb_atlas_org_id           = var.mongodb_atlas_org_id
@@ -111,6 +111,7 @@ module "core" {
   sentry_accounts_ui_dsn         = module.sentry.sentry_accounts_ui_dsn
   sentry_recruiter_portal_ui_dsn = module.sentry.sentry_recruiter_portal_ui_dsn
   sentry_seeker_portal_ui_dsn    = module.sentry.sentry_seeker_portal_ui_dsn
+  github_repository_name         = var.github_repository_name
 }
 
 

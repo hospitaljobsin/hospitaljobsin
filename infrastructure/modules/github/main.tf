@@ -11,5 +11,5 @@ terraform {
 
 
 data "github_repository" "this" {
-  full_name = var.github_repository_name
+  full_name = var.github_repository_full_name
 }
