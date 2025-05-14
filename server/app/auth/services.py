@@ -166,6 +166,7 @@ class AuthService:
         email: str,
         recaptcha_token: str,
         user_agent: str,
+        request: Request,
     ) -> Result[
         int,
         EmailInUseError
@@ -174,7 +175,9 @@ class AuthService:
         | InvalidEmailError,
     ]:
         """Request an email verification token."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
 
         try:
@@ -238,6 +241,7 @@ class AuthService:
         email: str,
         email_verification_token: str,
         recaptcha_token: str,
+        request: Request,
     ) -> Result[
         None,
         EmailInUseError
@@ -245,7 +249,9 @@ class AuthService:
         | InvalidRecaptchaTokenError,
     ]:
         """Verify an email address."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
 
         # check email availability (failsafe)
@@ -267,9 +273,13 @@ class AuthService:
 
         return Ok(None)
 
-    async def _verify_recaptcha_token(self, recaptcha_token: str) -> bool:
+    async def _verify_recaptcha_token(
+        self, recaptcha_token: str, ip_address: str
+    ) -> bool:
         """Verify whether the given recaptcha token is valid."""
-        return await self._captcha_verifier.verify(recaptcha_token)
+        return await self._captcha_verifier.verify(
+            recaptcha_token, ip_address=ip_address
+        )
 
     async def register_with_password(
         self,
@@ -287,7 +297,9 @@ class AuthService:
         | InvalidRecaptchaTokenError
         | PasswordNotStrongError,
     ]:
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
@@ -347,11 +359,14 @@ class AuthService:
         full_name: str,
         email: str,
         recaptcha_token: str,
+        request: Request,
     ) -> Result[
         PublicKeyCredentialCreationOptions, InvalidRecaptchaTokenError | EmailInUseError
     ]:
         """Generate registration options for registering via a passkey."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
@@ -394,7 +409,9 @@ class AuthService:
         | InvalidRecaptchaTokenError
         | InvalidPasskeyRegistrationCredentialError,
     ]:
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
         # check email availability (failsafe)
         if await self._account_repo.get_by_email(email=email):
@@ -493,7 +510,9 @@ class AuthService:
         request: Request,
     ) -> Result[PublicKeyCredentialRequestOptions, InvalidRecaptchaTokenError]:
         """Generate authentication options."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
         auth_options = generate_authentication_options(
             rp_id=self._settings.rp_id,
@@ -515,7 +534,9 @@ class AuthService:
         account: Account,
     ) -> Result[PublicKeyCredentialRequestOptions, InvalidRecaptchaTokenError]:
         """Generate reauthentication options (for sudo mode requests)."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
 
         webauthn_credentials = (
@@ -557,7 +578,9 @@ class AuthService:
         | WebAuthnChallengeNotFoundError,
     ]:
         """Login a user with a passkey."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
 
         webauthn_challenge: str | None = request.session.get("webauthn_challenge")
@@ -631,7 +654,9 @@ class AuthService:
         | TwoFactorAuthenticationRequiredError,
     ]:
         """Login a user with email and password."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
         account = await self._account_repo.get_by_email(email=email)
         if not account:
@@ -850,9 +875,12 @@ class AuthService:
         email: str,
         user_agent: str,
         recaptcha_token: str,
+        request: Request,
     ) -> Result[None, InvalidRecaptchaTokenError | PasswordResetTokenCooldownError]:
         """Request a password reset."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
         existing_user = await self._account_repo.get_by_email(email=email)
         if not existing_user:
@@ -910,7 +938,9 @@ class AuthService:
         | InvalidRecaptchaTokenError,
     ]:
         """Verify a 2FA challenge for password reset with an authenticator app."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
         existing_reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
@@ -967,7 +997,9 @@ class AuthService:
         | WebAuthnChallengeNotFoundError,
     ]:
         """Verify a 2FA challenge for password reset with a passkey."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
         existing_reset_token = await self._password_reset_token_repo.get(
             token=password_reset_token,
@@ -1223,7 +1255,7 @@ class AuthService:
     async def generate_web_authn_credential_creation_options(
         self,
         account: Account,
-    ) -> Result[PublicKeyCredentialCreationOptions, None]:
+    ) -> Ok[PublicKeyCredentialCreationOptions]:
         """Generate registration options for adding a new webauthn credential."""
         registration_options = generate_registration_options(
             rp_id=self._settings.rp_id,
@@ -1329,7 +1361,9 @@ class AuthService:
         | WebAuthnChallengeNotFoundError,
     ]:
         """Request sudo mode with a passkey."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
 
         webauthn_challenge: str = request.session.get("webauthn_challenge")
@@ -1391,7 +1425,9 @@ class AuthService:
         | TwoFactorAuthenticationRequiredError,
     ]:
         """Request sudo mode with password."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
 
         if account.password_hash is None:
@@ -1428,7 +1464,9 @@ class AuthService:
         | AuthenticatorNotEnabledError,
     ]:
         """Request sudo mode with 2FA."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
 
         if account.two_factor_secret is None:
@@ -1547,7 +1585,9 @@ class AuthService:
         | InvalidRecaptchaTokenError,
     ]:
         """Verify a 2FA challenge for the account with an authenticator (after login)."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
         challenge = request.session.get("2fa_challenge")
 
@@ -1604,7 +1644,9 @@ class AuthService:
         | InvalidRecaptchaTokenError,
     ]:
         """Verify account 2FA with a recovery code (after login)."""
-        if not await self._verify_recaptcha_token(recaptcha_token):
+        if not await self._verify_recaptcha_token(
+            recaptcha_token, ip_address=request.client.host
+        ):
             return Err(InvalidRecaptchaTokenError())
         challenge = request.session.get("2fa_challenge")
 

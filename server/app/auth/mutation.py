@@ -135,6 +135,7 @@ class AuthMutation:
             email=email,
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
+            request=info.context["request"],
         ):
             case Ok(cooldown_remaining_seconds):
                 return RequestEmailVerificationTokenSuccessType(
@@ -162,6 +163,7 @@ class AuthMutation:
     @inject
     async def verify_email(
         self,
+        info: Info,
         email: Annotated[
             str,
             strawberry.argument(
@@ -186,6 +188,7 @@ class AuthMutation:
             email=email,
             email_verification_token=email_verification_token,
             recaptcha_token=recaptcha_token,
+            request=info.context["request"],
         ):
             case Err(error):
                 match error:
@@ -272,6 +275,7 @@ class AuthMutation:
     @inject
     async def generate_passkey_registration_options(
         self,
+        info: Info,
         email: Annotated[
             str,
             strawberry.argument(
@@ -294,7 +298,10 @@ class AuthMutation:
     ) -> GeneratePasskeyRegistrationOptionsPayload:
         """Generate registration options for registering via a passkey."""
         match await auth_service.generate_passkey_registration_options(
-            email=email, full_name=full_name, recaptcha_token=recaptcha_token
+            email=email,
+            full_name=full_name,
+            recaptcha_token=recaptcha_token,
+            request=info.context["request"],
         ):
             case Err(error):
                 match error:
@@ -596,6 +603,7 @@ class AuthMutation:
             email=email,
             recaptcha_token=recaptcha_token,
             user_agent=info.context["user_agent"],
+            request=info.context["request"],
         ):
             case Err(error):
                 match error:
