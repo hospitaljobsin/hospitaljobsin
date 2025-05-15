@@ -3,7 +3,7 @@
 
 ## Codebase Structure
 
-![Service Flowchart](./.github/assets/service-flowchart.png)
+![Service Flowchart](./.github/assets/service-flowchart.svg)
 
 <!-- 
 relevant UML code:
