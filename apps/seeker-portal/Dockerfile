@@ -5,7 +5,7 @@ RUN apk add --no-cache libc6-compat
 RUN apk update
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@latest-10
 
 # Configure pnpm global
 ENV PNPM_HOME=/app/.pnpm
