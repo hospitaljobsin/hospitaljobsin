@@ -1,4 +1,4 @@
-FROM node:24-alpine AS base
+FROM node:22-alpine AS base
 
 # Update
 RUN apk add --no-cache libc6-compat
@@ -51,7 +51,7 @@ ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 
 RUN pnpm build
 
-FROM node:24-alpine AS release
+FROM node:22-alpine AS release
 WORKDIR /app
 RUN corepack enable
 
