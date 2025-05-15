@@ -1,6 +1,17 @@
-FROM node:23 AS base
+FROM node:24-alpine AS base
+
+# Update
+RUN apk add --no-cache libc6-compat
+RUN apk update
+
+# Install pnpm
+RUN npm install -g pnpm@latest-10
+
+# Configure pnpm global
+ENV PNPM_HOME=/app/.pnpm
+ENV PATH=$PATH:$PNPM_HOME
+
 WORKDIR /app
-RUN corepack enable
 
 COPY ./apps/seeker-portal/package.json ./apps/seeker-portal/pnpm-lock.yaml ./apps/seeker-portal/.npmrc ./apps/seeker-portal/
 COPY ./schema/ ./schema/
@@ -40,7 +51,7 @@ ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 
 RUN pnpm build
 
-FROM node:23-alpine AS release
+FROM node:24-alpine AS release
 WORKDIR /app
 RUN corepack enable
 
