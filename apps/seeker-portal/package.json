@@ -2,6 +2,9 @@
 	"name": "seeker-portal",
 	"version": "0.1.0",
 	"private": true,
+	"engines": {
+		"node": ">=22"
+	},
 	"scripts": {
 		"build": "relay-compiler && next build --turbopack --experimental-build-mode compile",
 		"dev": "next dev -p 5000 --turbopack",
@@ -40,7 +43,7 @@
 		"react-hook-form": "^7.56.3",
 		"react-share": "^5.2.2",
 		"relay-runtime": "^19.0.0",
-		"sst": "3.14.19",
+		"sst": "3.14.24",
 		"tiny-invariant": "^1.3.3",
 		"tiptap-markdown": "^0.8.10",
 		"use-debounce": "^10.0.4",
@@ -56,7 +59,7 @@
 		"@types/react-dom": "^19.1.5",
 		"@types/react-relay": "^18.2.1",
 		"@types/relay-runtime": "^19.0.1",
-		"babel-plugin-react-compiler": "19.1.0-rc.1",
+		"babel-plugin-react-compiler": "19.1.0-rc.2",
 		"eslint": "^9.26.0",
 		"eslint-config-next": "^15.3.2",
 		"eslint-plugin-relay": "^2.0.0",
