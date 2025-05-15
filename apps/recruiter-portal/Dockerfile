@@ -1,6 +1,18 @@
 FROM node:24-alpine AS base
+
+# Update
+RUN apk add --no-cache libc6-compat
+RUN apk update
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Configure pnpm global
+ENV PNPM_HOME=/app/.pnpm
+ENV PATH=$PATH:$PNPM_HOME
+
 WORKDIR /app
-RUN corepack enable
+
 COPY ./apps/recruiter-portal/package.json ./apps/recruiter-portal/pnpm-lock.yaml ./apps/recruiter-portal/.npmrc ./apps/recruiter-portal/
 COPY ./schema/ ./schema/
 
