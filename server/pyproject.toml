@@ -9,7 +9,7 @@ dependencies = [
     "asgi-correlation-id>=4.3.4",
     "fastapi>=0.115.5",
     "pydantic>=2.10.2",
-    "pydantic-settings[aws-secrets-manager]==2.9.1",
+    "pydantic-settings>=2.9.1",
     "strawberry-graphql[cli]>=0.268.0",
     "structlog>=24.4.0",
     "beanie>=1.27.0",
