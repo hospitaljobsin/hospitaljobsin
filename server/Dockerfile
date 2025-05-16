@@ -79,13 +79,17 @@ FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
 # Install any Python build‑deps for wheels
 RUN apk add --no-cache \
-      build-base \
-      linux-headers \
-      libjpeg-turbo-dev \
-      zlib-dev \
-      openssl-dev \
-      libffi-dev \
-      cmake
+    build-base \
+    linux-headers \
+    libjpeg-turbo-dev \
+    zlib-dev \
+    openssl-dev \
+    libffi-dev \
+    cmake \
+    autoconf \
+    automake \
+    libtool \
+    gettext
 
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
