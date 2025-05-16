@@ -69,12 +69,12 @@ RUN unzip layer.zip -d /opt && \
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
 # to go back to autoconf=2.71-r2; the upgrade to 2.72-r0 breaks the awslambdaric install
-RUN echo https://dl-cdn.alpinelinux.org/alpine/v3.19/main >> /etc/apk/repositories
-RUN echo https://dl-cdn.alpinelinux.org/alpine/v3.19/community >> /etc/apk/repositories
-RUN apk add autoconf=2.71-r2 automake bash binutils cmake g++ gcc libtool make nodejs
+# RUN echo https://dl-cdn.alpinelinux.org/alpine/v3.19/main >> /etc/apk/repositories
+# RUN echo https://dl-cdn.alpinelinux.org/alpine/v3.19/community >> /etc/apk/repositories
+# RUN apk add autoconf=2.71-r2 automake bash binutils cmake g++ gcc libtool make nodejs
 
-# it has to be 3.16, too, after that it was removed :'(
-RUN apk add --no-cache --update --repository=https://dl-cdn.alpinelinux.org/alpine/v3.16/main/ libexecinfo-dev
+# # it has to be 3.16, too, after that it was removed :'(
+# RUN apk add --no-cache --update --repository=https://dl-cdn.alpinelinux.org/alpine/v3.16/main/ libexecinfo-dev
 
 
 # Install any Python build‑deps for wheels
