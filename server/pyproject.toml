@@ -32,7 +32,6 @@ dependencies = [
     "python-jose[cryptography]>=3.4.0",
     "geopy>=2.4.1",
     "mangum>=0.19.0",
-    "awslambdaric>=3.0.2",
     "nanoid>=2.0.0",
     "tenacity>=9.1.2",
     "sentry-sdk[fastapi,pymongo]>=2.27.0",

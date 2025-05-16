@@ -68,10 +68,6 @@ RUN unzip layer.zip -d /opt && \
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-
-COPY --from=layer-build /opt/extensions /opt/extensions
-
 # to go back to autoconf=2.71-r2; the upgrade to 2.72-r0 breaks the awslambdaric install
 RUN echo https://dl-cdn.alpinelinux.org/alpine/v3.19/main >> /etc/apk/repositories
 RUN echo https://dl-cdn.alpinelinux.org/alpine/v3.19/community >> /etc/apk/repositories
@@ -79,6 +75,7 @@ RUN apk add autoconf=2.71-r2 automake bash binutils cmake g++ gcc libtool make n
 
 # it has to be 3.16, too, after that it was removed :'(
 RUN apk add --no-cache --update --repository=https://dl-cdn.alpinelinux.org/alpine/v3.16/main/ libexecinfo-dev
+
 
 # Install any Python build‑deps for wheels
 RUN apk add --no-cache \
@@ -88,6 +85,11 @@ RUN apk add --no-cache \
       zlib-dev \
       openssl-dev \
       libffi-dev
+
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+COPY --from=layer-build /opt/extensions /opt/extensions
 
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
@@ -100,6 +102,9 @@ COPY . .
 
 # Install dependencies
 RUN uv sync --frozen
+
+# Install the AWS Lambda Runtime Interface Client
+RUN uv pip install awslambdaric
 
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
