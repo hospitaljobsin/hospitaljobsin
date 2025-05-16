@@ -77,19 +77,20 @@ FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 # RUN apk add --no-cache --update --repository=https://dl-cdn.alpinelinux.org/alpine/v3.16/main/ libexecinfo-dev
 
 
-# Install any Python build‑deps for wheels
+RUN apk add --no-cache \
+    libstdc++
+
+# Install aws-lambda-cpp build dependencies
 RUN apk add --no-cache \
     build-base \
-    linux-headers \
-    libjpeg-turbo-dev \
-    zlib-dev \
-    openssl-dev \
-    libffi-dev \
-    cmake \
+    libtool \
     autoconf \
     automake \
-    libtool \
-    gettext
+    libexecinfo-dev \
+    make \
+    cmake \
+    libcurl
+
 
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
