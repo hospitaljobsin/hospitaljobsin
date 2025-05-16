@@ -1,4 +1,4 @@
-ARG PYTHON_BASE=3.13-alpine3.21
+ARG PYTHON_BASE=3.13-slim
 # build stage
 FROM python:$PYTHON_BASE AS builder
 
@@ -16,18 +16,10 @@ RUN uv sync --frozen
 # production stage
 FROM python:$PYTHON_BASE AS development
 
-
 # Install curl
-RUN apk add --no-cache curl
-
-# Install any Python build‑deps for wheels
-RUN apk add --no-cache \
-      build-base \
-      linux-headers \
-      libjpeg-turbo-dev \
-      zlib-dev \
-      openssl-dev \
-      libffi-dev
+RUN apt-get update && \
+    apt-get install -y curl && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /project/.venv/ /project/.venv
 
@@ -44,7 +36,7 @@ EXPOSE 8000
 CMD ["python", "scripts/run_server.py"]
 
 
-FROM alpine:3.21 AS layer-build
+FROM debian:12-slim AS layer-build
 
 # Set AWS environment variables with optional defaults
 ARG AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-"us-east-1"}
@@ -54,7 +46,10 @@ ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
 ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
 ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 
-RUN apk add aws-cli curl unzip
+# Update package list and install dependencies
+RUN apt-get update && \
+    apt-get install -y awscli curl unzip && \
+    rm -rf /var/lib/apt/lists/*
 
 # Create directory for the layer
 RUN mkdir -p /opt
@@ -68,33 +63,11 @@ RUN unzip layer.zip -d /opt && \
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
-# to go back to autoconf=2.71-r2; the upgrade to 2.72-r0 breaks the awslambdaric install
-# RUN echo https://dl-cdn.alpinelinux.org/alpine/v3.19/main >> /etc/apk/repositories
-# RUN echo https://dl-cdn.alpinelinux.org/alpine/v3.19/community >> /etc/apk/repositories
-# RUN apk add autoconf=2.71-r2 automake bash binutils cmake g++ gcc libtool make nodejs
-
-# # it has to be 3.16, too, after that it was removed :'(
-# RUN apk add --no-cache --update --repository=https://dl-cdn.alpinelinux.org/alpine/v3.16/main/ libexecinfo-dev
-
-
-# Install base system dependencies
-RUN apk add --no-cache \
-    libstdc++ \
-    build-base \
-    cmake \
-    autoconf \
-    automake \
-    libtool \
-    make \
-    curl-dev \
-    python3-dev \
-    py3-setuptools \
-    py3-wheel \
-    git
-
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
+
 COPY --from=layer-build /opt/extensions /opt/extensions
+
 
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
