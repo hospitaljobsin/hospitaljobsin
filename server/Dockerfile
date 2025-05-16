@@ -3,7 +3,7 @@ ARG PYTHON_BASE=3.13-alpine
 FROM python:$PYTHON_BASE AS builder
 
 # install UV
-COPY --from=ghcr.io/astral-sh/uv:python3.13-alpine /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:alpine /uv /uvx /bin/
 
 WORKDIR /project
 
@@ -19,7 +19,6 @@ FROM python:$PYTHON_BASE AS development
 
 # Install curl
 RUN apk add --no-cache curl
-
 
 # Install any Python build‑deps for wheels
 RUN apk add --no-cache \
@@ -69,6 +68,10 @@ RUN unzip layer.zip -d /opt && \
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
+COPY --from=ghcr.io/astral-sh/uv:alpine /uv /uvx /bin/
+
+COPY --from=layer-build /opt/extensions /opt/extensions
+
 # Install any Python build‑deps for wheels
 RUN apk add --no-cache \
       build-base \
@@ -77,11 +80,6 @@ RUN apk add --no-cache \
       zlib-dev \
       openssl-dev \
       libffi-dev
-
-COPY --from=ghcr.io/astral-sh/uv:python3.13-alpine /uv /uvx /bin/
-
-COPY --from=layer-build /opt/extensions /opt/extensions
-
 
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
