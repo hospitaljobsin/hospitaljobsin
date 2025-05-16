@@ -1,4 +1,4 @@
-ARG PYTHON_BASE=3.13-alpine
+ARG PYTHON_BASE=3.13-alpine3.20
 # build stage
 FROM python:$PYTHON_BASE AS builder
 
@@ -44,7 +44,7 @@ EXPOSE 8000
 CMD ["python", "scripts/run_server.py"]
 
 
-FROM alpine:latest AS layer-build
+FROM alpine:3.20 AS layer-build
 
 # Set AWS environment variables with optional defaults
 ARG AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-"us-east-1"}
