@@ -84,7 +84,8 @@ RUN apk add --no-cache \
       libjpeg-turbo-dev \
       zlib-dev \
       openssl-dev \
-      libffi-dev
+      libffi-dev \
+      cmake
 
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
