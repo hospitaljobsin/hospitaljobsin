@@ -3,7 +3,7 @@ ARG PYTHON_BASE=3.13-alpine
 FROM python:$PYTHON_BASE AS builder
 
 # install UV
-COPY --from=ghcr.io/astral-sh/uv:alpine /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /project
 
@@ -68,7 +68,7 @@ RUN unzip layer.zip -d /opt && \
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
-COPY --from=ghcr.io/astral-sh/uv:alpine /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 COPY --from=layer-build /opt/extensions /opt/extensions
 
