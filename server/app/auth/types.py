@@ -74,7 +74,7 @@ class InvalidEmailVerificationTokenErrorType(BaseErrorType):
 
 @strawberry.type(
     name="InvalidCaptchaTokenError",
-    description="Used when an invalid recaptcha token is provided.",
+    description="Used when an invalid captcha token is provided.",
 )
 class InvalidCaptchaTokenErrorType(BaseErrorType):
     message: str = strawberry.field(

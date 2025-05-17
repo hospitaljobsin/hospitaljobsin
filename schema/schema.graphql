@@ -429,7 +429,7 @@ type InvalidAuthenticationProviderError implements Error {
   availableProviders: [AuthProvider!]!
 }
 
-"""Used when an invalid recaptcha token is provided."""
+"""Used when an invalid captcha token is provided."""
 type InvalidCaptchaTokenError implements Error {
   """Human readable error message."""
   message: String!
