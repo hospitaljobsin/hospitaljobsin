@@ -10,7 +10,7 @@ export default function SettingsSidebar() {
 	return (
 		<>
 			<div className="self-stretch h-[calc(100vh-4.2rem)] w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky md:top-16 ">
-				<Tabs				
+				<Tabs
 					aria-label="Settings Navigation"
 					isVertical
 					variant="light"
@@ -22,7 +22,7 @@ export default function SettingsSidebar() {
 						tabList: "w-full",
 						panel: "h-full",
 						tab: "py-5",
-						cursor: "shadow-none"			
+						cursor: "shadow-none",
 					}}
 				>
 					<Tab
