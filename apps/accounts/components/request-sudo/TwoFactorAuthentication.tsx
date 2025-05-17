@@ -11,8 +11,8 @@ import { z } from "zod";
 import { useTurnstile } from "../TurnstileProvider";
 
 const TwoFactorAuthenticationMutation = graphql`
-  mutation TwoFactorAuthenticationMutation($twoFactorToken: String!, $recaptchaToken: String!) {
-    requestSudoModeWithAuthenticator(twoFactorToken: $twoFactorToken, recaptchaToken: $recaptchaToken) {
+  mutation TwoFactorAuthenticationMutation($twoFactorToken: String!, $captchaToken: String!) {
+    requestSudoModeWithAuthenticator(twoFactorToken: $twoFactorToken, captchaToken: $captchaToken) {
       __typename
       ... on Account {
         __typename
@@ -78,7 +78,7 @@ export default function TwoFactorAuthentication({
 		committwoFactorTokenLoginMutation({
 			variables: {
 				twoFactorToken: values.twoFactorToken,
-				recaptchaToken: token,
+				captchaToken: token,
 			},
 			onCompleted(response) {
 				if (

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d137dd2929a00b822945c71d60ddcb11>>
+ * @generated SignedSource<<3570919d0f1263088d66f4cc95d3ccf2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type TwoFactorAuthenticationMutation$variables = {
-  recaptchaToken: string;
+  captchaToken: string;
   twoFactorToken: string;
 };
 export type TwoFactorAuthenticationMutation$data = {
@@ -41,7 +41,7 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "recaptchaToken"
+  "name": "captchaToken"
 },
 v1 = {
   "defaultValue": null,
@@ -51,8 +51,8 @@ v1 = {
 v2 = [
   {
     "kind": "Variable",
-    "name": "recaptchaToken",
-    "variableName": "recaptchaToken"
+    "name": "captchaToken",
+    "variableName": "captchaToken"
   },
   {
     "kind": "Variable",
@@ -164,16 +164,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "27fe995411361d19110adde23c93c4eb",
+    "cacheID": "d90a3ecb92197327ffe1725307be7e97",
     "id": null,
     "metadata": {},
     "name": "TwoFactorAuthenticationMutation",
     "operationKind": "mutation",
-    "text": "mutation TwoFactorAuthenticationMutation(\n  $twoFactorToken: String!\n  $recaptchaToken: String!\n) {\n  requestSudoModeWithAuthenticator(twoFactorToken: $twoFactorToken, recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation TwoFactorAuthenticationMutation(\n  $twoFactorToken: String!\n  $captchaToken: String!\n) {\n  requestSudoModeWithAuthenticator(twoFactorToken: $twoFactorToken, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "facf55f6cdad7aa8e5c0f611cb1724e4";
+(node as any).hash = "6401803ad3f38de8017638ba2078c67b";
 
 export default node;

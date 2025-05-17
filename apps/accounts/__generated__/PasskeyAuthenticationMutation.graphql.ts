@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<864f389f69017c49afd0875637f5c679>>
+ * @generated SignedSource<<1cbd5f48defb4363a196c67206ab9c5e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ConcreteRequest } from 'relay-runtime';
 export type PasskeyAuthenticationMutation$variables = {
   authenticationResponse: any;
-  recaptchaToken: string;
+  captchaToken: string;
 };
 export type PasskeyAuthenticationMutation$data = {
   readonly requestSudoModeWithPasskey: {
@@ -47,7 +47,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "recaptchaToken"
+    "name": "captchaToken"
   }
 ],
 v1 = [
@@ -58,8 +58,8 @@ v1 = [
   },
   {
     "kind": "Variable",
-    "name": "recaptchaToken",
-    "variableName": "recaptchaToken"
+    "name": "captchaToken",
+    "variableName": "captchaToken"
   }
 ],
 v2 = {
@@ -160,16 +160,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a59deb2672d2eaa66d079688b69623c8",
+    "cacheID": "8fffd967d2dd6c14793d708703ce44aa",
     "id": null,
     "metadata": {},
     "name": "PasskeyAuthenticationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyAuthenticationMutation(\n  $authenticationResponse: JSON!\n  $recaptchaToken: String!\n) {\n  requestSudoModeWithPasskey(authenticationResponse: $authenticationResponse, recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidPasskeyAuthenticationCredentialError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on WebAuthnChallengeNotFoundError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation PasskeyAuthenticationMutation(\n  $authenticationResponse: JSON!\n  $captchaToken: String!\n) {\n  requestSudoModeWithPasskey(authenticationResponse: $authenticationResponse, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidPasskeyAuthenticationCredentialError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on WebAuthnChallengeNotFoundError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "8cb27f53078d39dbe9f09c83297332e8";
+(node as any).hash = "1b78e3b89d69e8edfaaf5ed7e308fd5a";
 
 export default node;

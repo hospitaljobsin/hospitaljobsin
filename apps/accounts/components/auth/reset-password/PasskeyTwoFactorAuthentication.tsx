@@ -15,8 +15,8 @@ import { useState } from "react";
 import { graphql, useMutation } from "react-relay";
 
 const GenerateAuthenticationOptionsMutation = graphql`
-  mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation($recaptchaToken: String!) {
-    generateAuthenticationOptions(recaptchaToken: $recaptchaToken) {
+  mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation($captchaToken: String!) {
+    generateAuthenticationOptions(captchaToken: $captchaToken) {
       __typename
       ... on InvalidRecaptchaTokenError {
         message
@@ -30,8 +30,8 @@ const GenerateAuthenticationOptionsMutation = graphql`
 `;
 
 const PasskeyTwoFactorAuthenticationResetPasswordMutation = graphql`
-  mutation PasskeyTwoFactorAuthenticationResetPasswordMutation($email: String!, $passwordResetToken: String!, $authenticationResponse: JSON!, $recaptchaToken: String!) {
-    verify2faPasswordResetWithPasskey(email: $email, passwordResetToken: $passwordResetToken, authenticationResponse: $authenticationResponse, recaptchaToken: $recaptchaToken) {
+  mutation PasskeyTwoFactorAuthenticationResetPasswordMutation($email: String!, $passwordResetToken: String!, $authenticationResponse: JSON!, $captchaToken: String!) {
+    verify2faPasswordResetWithPasskey(email: $email, passwordResetToken: $passwordResetToken, authenticationResponse: $authenticationResponse, captchaToken: $captchaToken) {
       __typename
       ... on PasswordResetToken {
         ...ResetPasswordViewFragment
@@ -103,7 +103,7 @@ export default function PasskeyTwoFactorAuthentication({
 		);
 		commitGenerateReauthenticationOptionsMutation({
 			variables: {
-				recaptchaToken: token,
+				captchaToken: token,
 			},
 			onCompleted(response) {
 				if (
@@ -127,7 +127,7 @@ export default function PasskeyTwoFactorAuthentication({
 					})
 						.then((authenticationResponse) => {
 							executeRecaptcha("password_reset_authenticate_passkey")
-								.then((recaptchaToken) => {
+								.then((captchaToken) => {
 									commitPasskeyAuthenticateMutation({
 										variables: {
 											email: email,
@@ -135,7 +135,7 @@ export default function PasskeyTwoFactorAuthentication({
 											authenticationResponse: JSON.stringify(
 												authenticationResponse,
 											),
-											recaptchaToken: recaptchaToken,
+											captchaToken: captchaToken,
 										},
 										onCompleted(response) {
 											setIsPasskeysPromptActive(false);

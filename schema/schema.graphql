@@ -807,8 +807,8 @@ type Mutation {
     """The email to request an email verification token for."""
     email: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): RequestEmailVerificationTokenPayload!
 
   """Verify an email."""
@@ -819,8 +819,8 @@ type Mutation {
     """The email verification token."""
     emailVerificationToken: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): VerifyEmailPayload!
 
   """Register a new user with a password."""
@@ -837,8 +837,8 @@ type Mutation {
     """The full name of the new user."""
     fullName: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): RegisterWithPasswordPayload!
 
   """Generate registration options for registering via a passkey."""
@@ -849,8 +849,8 @@ type Mutation {
     """The full name of the new user."""
     fullName: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): GeneratePasskeyRegistrationOptionsPayload!
 
   """Register a new user with a passkey."""
@@ -870,20 +870,20 @@ type Mutation {
     """The full name of the new user."""
     fullName: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): RegisterWithPasskeyPayload!
 
   """Generate authentication options."""
   generateAuthenticationOptions(
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): GenerateAuthenticationOptionsPayload!
 
   """Generate reauthentication options (for sudo mode requests)."""
   generateReauthenticationOptions(
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): GenerateAuthenticationOptionsPayload!
 
   """Log in a user with a passkey."""
@@ -891,8 +891,8 @@ type Mutation {
     """The authentication response of the user."""
     authenticationResponse: JSON!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): LoginWithPasskeyPayload!
 
   """Log in a user with email and password."""
@@ -903,8 +903,8 @@ type Mutation {
     """The password of the user."""
     password: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): LoginWithPasswordPayload!
 
   """Log out the current user."""
@@ -915,8 +915,8 @@ type Mutation {
     """The email of the existing user."""
     email: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): RequestPasswordResetPayload!
 
   """Verify a 2FA challenge for password reset using an authenticator app."""
@@ -930,8 +930,8 @@ type Mutation {
     """The 2FA token to verify password reset."""
     twoFactorToken: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): Verify2FAPasswordResetWithAuthenticatorPayload!
 
   """Verify a 2FA challenge for password reset using a passkey."""
@@ -945,8 +945,8 @@ type Mutation {
     """The passkey authentication response to verify password reset."""
     authenticationResponse: JSON!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): Verify2FAPasswordResetWithPasskeyPayload!
 
   """Reset a user's password."""
@@ -1011,8 +1011,8 @@ type Mutation {
     """The authentication response of the user."""
     authenticationResponse: JSON!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): RequestSudoModeWithPasskeyPayload! @isAuthenticated
 
   """Request a sudo mode grant for the current user using a password."""
@@ -1020,8 +1020,8 @@ type Mutation {
     """The password of the user."""
     password: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): RequestSudoModeWithPasswordPayload! @isAuthenticated
 
   """
@@ -1031,8 +1031,8 @@ type Mutation {
     """The 2FA token of the user."""
     twoFactorToken: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): RequestSudoModeWithAuthenticatorPayload! @isAuthenticated
 
   """Enable account 2FA with authenticator."""
@@ -1052,8 +1052,8 @@ type Mutation {
     """The 2FA token."""
     token: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): Verify2FAWithAuthenticatorPayload!
 
   """Verify Account 2FA with a recovery code."""
@@ -1061,8 +1061,8 @@ type Mutation {
     """The 2FA token."""
     token: String!
 
-    """The recaptcha token to verify the user request."""
-    recaptchaToken: String!
+    """The captcha token to verify the user request."""
+    captchaToken: String!
   ): Verify2FAWithRecoveryCodePayload!
 
   """Generate 2FA recovery codes for the current user."""

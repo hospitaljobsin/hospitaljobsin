@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c5dedc66f6a70acb53865dfc0c011817>>
+ * @generated SignedSource<<b1e814a3dcb0f8c29f0ac19a4ee9f3f4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,12 +10,12 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type PasskeyRegistrationMutation$variables = {
+  captchaToken: string;
   email: string;
   emailVerificationToken: string;
   fullName: string;
   passkeyNickname: string;
   passkeyRegistrationResponse: any;
-  recaptchaToken: string;
 };
 export type PasskeyRegistrationMutation$data = {
   readonly registerWithPasskey: {
@@ -45,34 +45,39 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "email"
+  "name": "captchaToken"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "emailVerificationToken"
+  "name": "email"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "fullName"
+  "name": "emailVerificationToken"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "passkeyNickname"
+  "name": "fullName"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "passkeyRegistrationResponse"
+  "name": "passkeyNickname"
 },
 v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "recaptchaToken"
+  "name": "passkeyRegistrationResponse"
 },
 v6 = [
+  {
+    "kind": "Variable",
+    "name": "captchaToken",
+    "variableName": "captchaToken"
+  },
   {
     "kind": "Variable",
     "name": "email",
@@ -97,11 +102,6 @@ v6 = [
     "kind": "Variable",
     "name": "passkeyRegistrationResponse",
     "variableName": "passkeyRegistrationResponse"
-  },
-  {
-    "kind": "Variable",
-    "name": "recaptchaToken",
-    "variableName": "recaptchaToken"
   }
 ],
 v7 = {
@@ -181,12 +181,12 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v0/*: any*/),
       (v1/*: any*/),
+      (v2/*: any*/),
+      (v5/*: any*/),
       (v4/*: any*/),
       (v3/*: any*/),
-      (v2/*: any*/),
-      (v5/*: any*/)
+      (v0/*: any*/)
     ],
     "kind": "Operation",
     "name": "PasskeyRegistrationMutation",
@@ -224,16 +224,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "78c3e813f37621d417c18483d89bd335",
+    "cacheID": "76a4a501328dc60fb8f184e6e0928702",
     "id": null,
     "metadata": {},
     "name": "PasskeyRegistrationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyRegistrationMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $passkeyRegistrationResponse: JSON!\n  $passkeyNickname: String!\n  $fullName: String!\n  $recaptchaToken: String!\n) {\n  registerWithPasskey(email: $email, emailVerificationToken: $emailVerificationToken, passkeyRegistrationResponse: $passkeyRegistrationResponse, passkeyNickname: $passkeyNickname, fullName: $fullName, recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on InvalidPasskeyRegistrationCredentialError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation PasskeyRegistrationMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $passkeyRegistrationResponse: JSON!\n  $passkeyNickname: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  registerWithPasskey(email: $email, emailVerificationToken: $emailVerificationToken, passkeyRegistrationResponse: $passkeyRegistrationResponse, passkeyNickname: $passkeyNickname, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on InvalidPasskeyRegistrationCredentialError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "88c5e5b6d7dc85b37af2e460500b4710";
+(node as any).hash = "453924ca33f662ef41ea20dd80d0b21a";
 
 export default node;

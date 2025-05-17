@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<95b3fc5b71a8cc5c597437da4ff54dfd>>
+ * @generated SignedSource<<150d8330da5455d91ed017e2a7564d8f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,8 +10,8 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type Step2VerificationFormRequestVerificationMutation$variables = {
+  captchaToken: string;
   email: string;
-  recaptchaToken: string;
 };
 export type Step2VerificationFormRequestVerificationMutation$data = {
   readonly requestEmailVerificationToken: {
@@ -43,30 +43,28 @@ export type Step2VerificationFormRequestVerificationMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "email"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "recaptchaToken"
-  }
-],
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "captchaToken"
+},
 v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "email"
+},
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "message",
   "storageKey": null
 },
-v2 = [
-  (v1/*: any*/)
-],
 v3 = [
-  (v1/*: any*/),
+  (v2/*: any*/)
+],
+v4 = [
+  (v2/*: any*/),
   {
     "alias": null,
     "args": null,
@@ -75,19 +73,19 @@ v3 = [
     "storageKey": null
   }
 ],
-v4 = [
+v5 = [
   {
     "alias": null,
     "args": [
       {
         "kind": "Variable",
-        "name": "email",
-        "variableName": "email"
+        "name": "captchaToken",
+        "variableName": "captchaToken"
       },
       {
         "kind": "Variable",
-        "name": "recaptchaToken",
-        "variableName": "recaptchaToken"
+        "name": "email",
+        "variableName": "email"
       }
     ],
     "concreteType": null,
@@ -104,31 +102,31 @@ v4 = [
       },
       {
         "kind": "InlineFragment",
-        "selections": (v2/*: any*/),
+        "selections": (v3/*: any*/),
         "type": "EmailInUseError",
         "abstractKey": null
       },
       {
         "kind": "InlineFragment",
-        "selections": (v2/*: any*/),
+        "selections": (v3/*: any*/),
         "type": "InvalidEmailError",
         "abstractKey": null
       },
       {
         "kind": "InlineFragment",
-        "selections": (v2/*: any*/),
+        "selections": (v3/*: any*/),
         "type": "InvalidRecaptchaTokenError",
         "abstractKey": null
       },
       {
         "kind": "InlineFragment",
-        "selections": (v3/*: any*/),
+        "selections": (v4/*: any*/),
         "type": "EmailVerificationTokenCooldownError",
         "abstractKey": null
       },
       {
         "kind": "InlineFragment",
-        "selections": (v3/*: any*/),
+        "selections": (v4/*: any*/),
         "type": "RequestEmailVerificationSuccess",
         "abstractKey": null
       }
@@ -138,32 +136,38 @@ v4 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "Step2VerificationFormRequestVerificationMutation",
-    "selections": (v4/*: any*/),
+    "selections": (v5/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "Step2VerificationFormRequestVerificationMutation",
-    "selections": (v4/*: any*/)
+    "selections": (v5/*: any*/)
   },
   "params": {
-    "cacheID": "838ca1770196c81ecbb66e3082b8eb19",
+    "cacheID": "af4d1f02dbd4b19e08d9245a9f12af0d",
     "id": null,
     "metadata": {},
     "name": "Step2VerificationFormRequestVerificationMutation",
     "operationKind": "mutation",
-    "text": "mutation Step2VerificationFormRequestVerificationMutation(\n  $email: String!\n  $recaptchaToken: String!\n) {\n  requestEmailVerificationToken(email: $email, recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on EmailVerificationTokenCooldownError {\n      message\n      remainingSeconds\n    }\n    ... on RequestEmailVerificationSuccess {\n      message\n      remainingSeconds\n    }\n  }\n}\n"
+    "text": "mutation Step2VerificationFormRequestVerificationMutation(\n  $email: String!\n  $captchaToken: String!\n) {\n  requestEmailVerificationToken(email: $email, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on EmailVerificationTokenCooldownError {\n      message\n      remainingSeconds\n    }\n    ... on RequestEmailVerificationSuccess {\n      message\n      remainingSeconds\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "176198149becad78fa9d18893dac7440";
+(node as any).hash = "2c022ab749682f757fe9a5932774cf59";
 
 export default node;

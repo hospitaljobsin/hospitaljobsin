@@ -19,12 +19,12 @@ const GeneratePasskeyRegistrationOptionsMutation = graphql`
   mutation PasskeyRegistrationOptionsMutation(
     $email: String!
     $fullName: String!
-    $recaptchaToken: String!
+    $captchaToken: String!
   ) {
     generatePasskeyRegistrationOptions(
       email: $email
       fullName: $fullName
-      recaptchaToken: $recaptchaToken
+      captchaToken: $captchaToken
     ) {
       __typename
       ... on EmailInUseError {
@@ -47,7 +47,7 @@ const RegisterWithPasskeyMutation = graphql`
     $passkeyRegistrationResponse: JSON!
 	$passkeyNickname: String!
     $fullName: String!
-    $recaptchaToken: String!
+    $captchaToken: String!
   ) {
     registerWithPasskey(
       email: $email
@@ -55,7 +55,7 @@ const RegisterWithPasskeyMutation = graphql`
       passkeyRegistrationResponse: $passkeyRegistrationResponse
 	  passkeyNickname: $passkeyNickname
       fullName: $fullName
-      recaptchaToken: $recaptchaToken
+      captchaToken: $captchaToken
     ) {
       __typename
       ... on EmailInUseError {
@@ -128,7 +128,7 @@ export default function PasskeyRegistration() {
 			variables: {
 				email,
 				fullName,
-				recaptchaToken: token,
+				captchaToken: token,
 			},
 			onCompleted(response) {
 				if (
@@ -159,7 +159,7 @@ export default function PasskeyRegistration() {
 					})
 						.then((registrationResponse) => {
 							executeRecaptcha("passkey_register")
-								.then((recaptchaToken) => {
+								.then((captchaToken) => {
 									commitRegister({
 										variables: {
 											email,
@@ -168,7 +168,7 @@ export default function PasskeyRegistration() {
 											passkeyRegistrationResponse:
 												JSON.stringify(registrationResponse),
 											passkeyNickname: values.nickname,
-											recaptchaToken: recaptchaToken,
+											captchaToken: captchaToken,
 										},
 										onError(error) {
 											console.error(error);

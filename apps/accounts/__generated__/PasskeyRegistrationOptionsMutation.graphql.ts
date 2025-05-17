@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b7aca6cefd67b69a234c92a44ccf5d9d>>
+ * @generated SignedSource<<f1e124b61fb9593a897a1037b5136db5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,9 +10,9 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type PasskeyRegistrationOptionsMutation$variables = {
+  captchaToken: string;
   email: string;
   fullName: string;
-  recaptchaToken: string;
 };
 export type PasskeyRegistrationOptionsMutation$data = {
   readonly generatePasskeyRegistrationOptions: {
@@ -36,24 +36,22 @@ export type PasskeyRegistrationOptionsMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "email"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "fullName"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "recaptchaToken"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "captchaToken"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "email"
+},
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "fullName"
+},
+v3 = [
   {
     "alias": null,
     "args": null,
@@ -62,10 +60,15 @@ v1 = [
     "storageKey": null
   }
 ],
-v2 = [
+v4 = [
   {
     "alias": null,
     "args": [
+      {
+        "kind": "Variable",
+        "name": "captchaToken",
+        "variableName": "captchaToken"
+      },
       {
         "kind": "Variable",
         "name": "email",
@@ -75,11 +78,6 @@ v2 = [
         "kind": "Variable",
         "name": "fullName",
         "variableName": "fullName"
-      },
-      {
-        "kind": "Variable",
-        "name": "recaptchaToken",
-        "variableName": "recaptchaToken"
       }
     ],
     "concreteType": null,
@@ -96,13 +94,13 @@ v2 = [
       },
       {
         "kind": "InlineFragment",
-        "selections": (v1/*: any*/),
+        "selections": (v3/*: any*/),
         "type": "EmailInUseError",
         "abstractKey": null
       },
       {
         "kind": "InlineFragment",
-        "selections": (v1/*: any*/),
+        "selections": (v3/*: any*/),
         "type": "InvalidRecaptchaTokenError",
         "abstractKey": null
       },
@@ -126,32 +124,40 @@ v2 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v2/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "PasskeyRegistrationOptionsMutation",
-    "selections": (v2/*: any*/),
+    "selections": (v4/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v2/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "PasskeyRegistrationOptionsMutation",
-    "selections": (v2/*: any*/)
+    "selections": (v4/*: any*/)
   },
   "params": {
-    "cacheID": "5d46d68afdc2500c00261deed66f1762",
+    "cacheID": "4d1ae4f29eadf8cb2858a9de91afe786",
     "id": null,
     "metadata": {},
     "name": "PasskeyRegistrationOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyRegistrationOptionsMutation(\n  $email: String!\n  $fullName: String!\n  $recaptchaToken: String!\n) {\n  generatePasskeyRegistrationOptions(email: $email, fullName: $fullName, recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on GeneratePasskeyRegistrationOptionsSuccess {\n      registrationOptions\n    }\n  }\n}\n"
+    "text": "mutation PasskeyRegistrationOptionsMutation(\n  $email: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  generatePasskeyRegistrationOptions(email: $email, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on GeneratePasskeyRegistrationOptionsSuccess {\n      registrationOptions\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d6cb1fa4e921364f53729fc6f046432d";
+(node as any).hash = "bb4ca2e6374affc04fb89d62e8a398f3";
 
 export default node;

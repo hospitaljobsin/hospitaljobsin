@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9f90b72cc82097a1061690ca4236a831>>
+ * @generated SignedSource<<8b184e7b3e6e7ef3032e53c064866eda>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type PasskeyAuthenticationGenerateOptionsMutation$variables = {
-  recaptchaToken: string;
+  captchaToken: string;
 };
 export type PasskeyAuthenticationGenerateOptionsMutation$data = {
   readonly generateReauthenticationOptions: {
@@ -35,7 +35,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "recaptchaToken"
+    "name": "captchaToken"
   }
 ],
 v1 = [
@@ -44,8 +44,8 @@ v1 = [
     "args": [
       {
         "kind": "Variable",
-        "name": "recaptchaToken",
-        "variableName": "recaptchaToken"
+        "name": "captchaToken",
+        "variableName": "captchaToken"
       }
     ],
     "concreteType": null,
@@ -110,16 +110,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "84bdea7010eb83292346ea27c8fd0cb8",
+    "cacheID": "cfcf8c3ff49ed026ae430999eb51035e",
     "id": null,
     "metadata": {},
     "name": "PasskeyAuthenticationGenerateOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyAuthenticationGenerateOptionsMutation(\n  $recaptchaToken: String!\n) {\n  generateReauthenticationOptions(recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on GenerateAuthenticationOptionsSuccess {\n      authenticationOptions\n    }\n  }\n}\n"
+    "text": "mutation PasskeyAuthenticationGenerateOptionsMutation(\n  $captchaToken: String!\n) {\n  generateReauthenticationOptions(captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on GenerateAuthenticationOptionsSuccess {\n      authenticationOptions\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "ab85d82334ab1f926f6252ff98dbaf4e";
+(node as any).hash = "607b36bb4035bf399026eb9edaee6b76";
 
 export default node;

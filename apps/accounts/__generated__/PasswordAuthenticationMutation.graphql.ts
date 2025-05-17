@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8f58d4ba1dfa405e499bb18353b2443b>>
+ * @generated SignedSource<<1460b95d0459a2cf426aa61789ba3f4f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,8 +10,8 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type PasswordAuthenticationMutation$variables = {
+  captchaToken: string;
   password: string;
-  recaptchaToken: string;
 };
 export type PasswordAuthenticationMutation$data = {
   readonly requestSudoModeWithPassword: {
@@ -38,38 +38,36 @@ export type PasswordAuthenticationMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "captchaToken"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "password"
+},
+v2 = [
   {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "password"
+    "kind": "Variable",
+    "name": "captchaToken",
+    "variableName": "captchaToken"
   },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "recaptchaToken"
-  }
-],
-v1 = [
   {
     "kind": "Variable",
     "name": "password",
     "variableName": "password"
-  },
-  {
-    "kind": "Variable",
-    "name": "recaptchaToken",
-    "variableName": "recaptchaToken"
   }
 ],
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v3 = [
+v4 = [
   {
     "alias": null,
     "args": null,
@@ -78,43 +76,46 @@ v3 = [
     "storageKey": null
   }
 ],
-v4 = {
-  "kind": "InlineFragment",
-  "selections": (v3/*: any*/),
-  "type": "InvalidCredentialsError",
-  "abstractKey": null
-},
 v5 = {
   "kind": "InlineFragment",
-  "selections": (v3/*: any*/),
-  "type": "InvalidRecaptchaTokenError",
+  "selections": (v4/*: any*/),
+  "type": "InvalidCredentialsError",
   "abstractKey": null
 },
 v6 = {
   "kind": "InlineFragment",
-  "selections": (v3/*: any*/),
+  "selections": (v4/*: any*/),
+  "type": "InvalidRecaptchaTokenError",
+  "abstractKey": null
+},
+v7 = {
+  "kind": "InlineFragment",
+  "selections": (v4/*: any*/),
   "type": "InvalidAuthenticationProviderError",
   "abstractKey": null
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "PasswordAuthenticationMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "requestSudoModeWithPassword",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v4/*: any*/),
+          (v3/*: any*/),
           (v5/*: any*/),
-          (v6/*: any*/)
+          (v6/*: any*/),
+          (v7/*: any*/)
         ],
         "storageKey": null
       }
@@ -124,22 +125,25 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "PasswordAuthenticationMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "requestSudoModeWithPassword",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v4/*: any*/),
+          (v3/*: any*/),
           (v5/*: any*/),
           (v6/*: any*/),
+          (v7/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -160,16 +164,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3fdab89b0b188e933165aeea78f29113",
+    "cacheID": "b5d6767cebd0dc214efacbb7a7bf4501",
     "id": null,
     "metadata": {},
     "name": "PasswordAuthenticationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasswordAuthenticationMutation(\n  $password: String!\n  $recaptchaToken: String!\n) {\n  requestSudoModeWithPassword(password: $password, recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on InvalidAuthenticationProviderError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation PasswordAuthenticationMutation(\n  $password: String!\n  $captchaToken: String!\n) {\n  requestSudoModeWithPassword(password: $password, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on InvalidAuthenticationProviderError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "66f3b51922b9a6846649a15bee7bbc05";
+(node as any).hash = "055c9d18fdd69cb39f07ce402ece49d3";
 
 export default node;

@@ -31,8 +31,8 @@ import { z } from "zod";
 import { useTurnstile } from "../TurnstileProvider";
 
 const LoginFormPasswordMutation = graphql`
-  mutation LoginFormPasswordMutation($email: String!, $password: String!, $recaptchaToken: String!) {
-    loginWithPassword(email: $email, password: $password, recaptchaToken: $recaptchaToken) {
+  mutation LoginFormPasswordMutation($email: String!, $password: String!, $captchaToken: String!) {
+    loginWithPassword(email: $email, password: $password, captchaToken: $captchaToken) {
       __typename
       ... on InvalidCredentialsError {
         message
@@ -54,8 +54,8 @@ const LoginFormPasswordMutation = graphql`
 `;
 
 const GenerateAuthenticationOptionsMutation = graphql`
-  mutation LoginFormGenerateAuthenticationOptionsMutation($recaptchaToken: String!) {
-    generateAuthenticationOptions(recaptchaToken: $recaptchaToken) {
+  mutation LoginFormGenerateAuthenticationOptionsMutation($captchaToken: String!) {
+    generateAuthenticationOptions(captchaToken: $captchaToken) {
       __typename
 	  ... on InvalidRecaptchaTokenError {
 		message
@@ -69,8 +69,8 @@ const GenerateAuthenticationOptionsMutation = graphql`
 `;
 
 const LoginFormPasskeyMutation = graphql`
-  mutation LoginFormPasskeyMutation($authenticationResponse: JSON!, $recaptchaToken: String!) {
-    loginWithPasskey(authenticationResponse: $authenticationResponse, recaptchaToken: $recaptchaToken) {
+  mutation LoginFormPasskeyMutation($authenticationResponse: JSON!, $captchaToken: String!) {
+    loginWithPasskey(authenticationResponse: $authenticationResponse, captchaToken: $captchaToken) {
       __typename
 	  ... on Account {
 		__typename
@@ -160,7 +160,7 @@ export default function LoginForm() {
 			variables: {
 				email: values.email,
 				password: values.password,
-				recaptchaToken: token,
+				captchaToken: token,
 			},
 			onCompleted(response) {
 				if (
@@ -229,7 +229,7 @@ export default function LoginForm() {
 		);
 		commitGenerateAuthenticationOptionsMutation({
 			variables: {
-				recaptchaToken: token,
+				captchaToken: token,
 			},
 			onCompleted(response) {
 				if (
@@ -252,13 +252,13 @@ export default function LoginForm() {
 					})
 						.then((authenticationResponse) => {
 							executeRecaptcha("login_passkey")
-								.then((recaptchaToken) => {
+								.then((captchaToken) => {
 									commitPasskeyLoginMutation({
 										variables: {
 											authenticationResponse: JSON.stringify(
 												authenticationResponse,
 											),
-											recaptchaToken: recaptchaToken,
+											captchaToken: captchaToken,
 										},
 										onError() {
 											addToast({

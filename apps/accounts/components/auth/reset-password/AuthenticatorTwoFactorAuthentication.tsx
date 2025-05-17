@@ -8,8 +8,8 @@ import { graphql, useMutation } from "react-relay";
 import { z } from "zod";
 
 const AuthenticatorTwoFactorAuthenticationResetPasswordMutation = graphql`
-  mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation($email: String!, $passwordResetToken: String!, $twoFactorToken: String!, $recaptchaToken: String!) {
-    verify2faPasswordResetWithAuthenticator(email: $email, passwordResetToken: $passwordResetToken, twoFactorToken: $twoFactorToken, recaptchaToken: $recaptchaToken) {
+  mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation($email: String!, $passwordResetToken: String!, $twoFactorToken: String!, $captchaToken: String!) {
+    verify2faPasswordResetWithAuthenticator(email: $email, passwordResetToken: $passwordResetToken, twoFactorToken: $twoFactorToken, captchaToken: $captchaToken) {
       __typename
       ... on PasswordResetToken {
         ...ResetPasswordViewFragment
@@ -82,7 +82,7 @@ export default function AuthenticatorTwoFactorAuthentication({
 				email: email,
 				passwordResetToken: resetToken,
 				twoFactorToken: values.token,
-				recaptchaToken: token,
+				captchaToken: token,
 			},
 			onCompleted(response) {
 				if (

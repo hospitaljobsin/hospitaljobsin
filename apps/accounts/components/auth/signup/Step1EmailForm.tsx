@@ -16,8 +16,8 @@ const step1Schema = z.object({
 });
 
 const RequestVerificationMutation = graphql`
-  mutation Step1EmailFormMutation($email: String!, $recaptchaToken: String!) {
-    requestEmailVerificationToken(email: $email, recaptchaToken: $recaptchaToken) {
+  mutation Step1EmailFormMutation($email: String!, $captchaToken: String!) {
+    requestEmailVerificationToken(email: $email, captchaToken: $captchaToken) {
       __typename
       ... on EmailInUseError {
         message
@@ -69,7 +69,7 @@ export default function Step1EmailForm() {
 
 		const token = await executeRecaptcha("email_verification");
 		commitRequestVerification({
-			variables: { email: data.email, recaptchaToken: token },
+			variables: { email: data.email, captchaToken: token },
 			onCompleted(response) {
 				if (
 					response.requestEmailVerificationToken.__typename ===

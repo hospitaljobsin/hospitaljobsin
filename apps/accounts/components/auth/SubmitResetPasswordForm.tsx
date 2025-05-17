@@ -21,8 +21,8 @@ import { z } from "zod";
 import { useTurnstile } from "../TurnstileProvider";
 
 const SubmitResetPasswordFormMutation = graphql`
-  mutation SubmitResetPasswordFormMutation($email: String!, $recaptchaToken: String!) {
-	requestPasswordReset(email: $email, recaptchaToken: $recaptchaToken) {
+  mutation SubmitResetPasswordFormMutation($email: String!, $captchaToken: String!) {
+	requestPasswordReset(email: $email, captchaToken: $captchaToken) {
 	  __typename
 	  ... on InvalidRecaptchaTokenError {
 		message 
@@ -64,7 +64,7 @@ export default function SubmitResetPasswordFrom() {
 		commitMutation({
 			variables: {
 				email: values.email,
-				recaptchaToken: token,
+				captchaToken: token,
 			},
 			onCompleted(response) {
 				if (

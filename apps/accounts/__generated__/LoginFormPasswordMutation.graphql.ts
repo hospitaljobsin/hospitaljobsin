@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9bda32758eb9b55ea8372b8a2bd83427>>
+ * @generated SignedSource<<96f1c26c6ed2cd300d549c9eef961adb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,9 +11,9 @@
 import { ConcreteRequest } from 'relay-runtime';
 export type AuthProvider = "OAUTH_GOOGLE" | "PASSWORD" | "WEBAUTHN_CREDENTIAL" | "%future added value";
 export type LoginFormPasswordMutation$variables = {
+  captchaToken: string;
   email: string;
   password: string;
-  recaptchaToken: string;
 };
 export type LoginFormPasswordMutation$data = {
   readonly loginWithPassword: {
@@ -41,24 +41,27 @@ export type LoginFormPasswordMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "captchaToken"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "email"
+},
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "password"
+},
+v3 = [
   {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "email"
+    "kind": "Variable",
+    "name": "captchaToken",
+    "variableName": "captchaToken"
   },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "password"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "recaptchaToken"
-  }
-],
-v1 = [
   {
     "kind": "Variable",
     "name": "email",
@@ -68,46 +71,41 @@ v1 = [
     "kind": "Variable",
     "name": "password",
     "variableName": "password"
-  },
-  {
-    "kind": "Variable",
-    "name": "recaptchaToken",
-    "variableName": "recaptchaToken"
   }
 ],
-v2 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v3 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "message",
   "storageKey": null
 },
-v4 = [
-  (v3/*: any*/)
+v6 = [
+  (v5/*: any*/)
 ],
-v5 = {
+v7 = {
   "kind": "InlineFragment",
-  "selections": (v4/*: any*/),
+  "selections": (v6/*: any*/),
   "type": "InvalidCredentialsError",
   "abstractKey": null
 },
-v6 = {
+v8 = {
   "kind": "InlineFragment",
-  "selections": (v4/*: any*/),
+  "selections": (v6/*: any*/),
   "type": "InvalidRecaptchaTokenError",
   "abstractKey": null
 },
-v7 = {
+v9 = {
   "kind": "InlineFragment",
   "selections": [
-    (v3/*: any*/),
+    (v5/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -119,32 +117,36 @@ v7 = {
   "type": "InvalidAuthenticationProviderError",
   "abstractKey": null
 },
-v8 = {
+v10 = {
   "kind": "InlineFragment",
-  "selections": (v4/*: any*/),
+  "selections": (v6/*: any*/),
   "type": "TwoFactorAuthenticationRequiredError",
   "abstractKey": null
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v2/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "LoginFormPasswordMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "loginWithPassword",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v5/*: any*/),
-          (v6/*: any*/),
+          (v4/*: any*/),
           (v7/*: any*/),
-          (v8/*: any*/)
+          (v8/*: any*/),
+          (v9/*: any*/),
+          (v10/*: any*/)
         ],
         "storageKey": null
       }
@@ -154,23 +156,27 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v2/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "LoginFormPasswordMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "loginWithPassword",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v5/*: any*/),
-          (v6/*: any*/),
+          (v4/*: any*/),
           (v7/*: any*/),
           (v8/*: any*/),
+          (v9/*: any*/),
+          (v10/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -191,16 +197,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8578a559724503cf3439aa6bf2b091d4",
+    "cacheID": "3a0a1bfd3e01dee0242c6a2c479a576f",
     "id": null,
     "metadata": {},
     "name": "LoginFormPasswordMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormPasswordMutation(\n  $email: String!\n  $password: String!\n  $recaptchaToken: String!\n) {\n  loginWithPassword(email: $email, password: $password, recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on InvalidAuthenticationProviderError {\n      message\n      availableProviders\n    }\n    ... on TwoFactorAuthenticationRequiredError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation LoginFormPasswordMutation(\n  $email: String!\n  $password: String!\n  $captchaToken: String!\n) {\n  loginWithPassword(email: $email, password: $password, captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on InvalidAuthenticationProviderError {\n      message\n      availableProviders\n    }\n    ... on TwoFactorAuthenticationRequiredError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "4ccdda839d8b3e6c751eac2ae898c01d";
+(node as any).hash = "e019b818735fea1839979579687b2b50";
 
 export default node;

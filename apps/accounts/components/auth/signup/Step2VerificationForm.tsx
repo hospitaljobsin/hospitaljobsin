@@ -22,12 +22,12 @@ const VerifyEmailMutation = graphql`
   mutation Step2VerificationFormMutation(
     $email: String!
     $emailVerificationToken: String!
-    $recaptchaToken: String!
+    $captchaToken: String!
   ) {
     verifyEmail(
       email: $email
       emailVerificationToken: $emailVerificationToken
-      recaptchaToken: $recaptchaToken
+      captchaToken: $captchaToken
     ) {
       __typename
       ... on EmailInUseError {
@@ -47,8 +47,8 @@ const VerifyEmailMutation = graphql`
 `;
 
 const RequestVerificationMutation = graphql`
-  mutation Step2VerificationFormRequestVerificationMutation($email: String!, $recaptchaToken: String!) {
-    requestEmailVerificationToken(email: $email, recaptchaToken: $recaptchaToken) {
+  mutation Step2VerificationFormRequestVerificationMutation($email: String!, $captchaToken: String!) {
+    requestEmailVerificationToken(email: $email, captchaToken: $captchaToken) {
       __typename
       ... on EmailInUseError {
         message
@@ -131,7 +131,7 @@ export default function Step2VerificationForm() {
 
 		const token = await executeRecaptcha("email_verification_resend");
 		commitResendVerification({
-			variables: { email, recaptchaToken: token },
+			variables: { email, captchaToken: token },
 			onCompleted(response) {
 				if (
 					response.requestEmailVerificationToken.__typename ===
@@ -186,7 +186,7 @@ export default function Step2VerificationForm() {
 			variables: {
 				email,
 				emailVerificationToken: data.emailVerificationToken,
-				recaptchaToken: token,
+				captchaToken: token,
 			},
 			onCompleted(response) {
 				if (response.verifyEmail.__typename === "EmailInUseError") {

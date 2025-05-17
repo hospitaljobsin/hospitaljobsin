@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<962a856b0ee52f07e518b14bf45e461e>>
+ * @generated SignedSource<<9a89f1d7a7ddb2e6039a6d9655e214ef>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,8 +10,8 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type SubmitResetPasswordFormMutation$variables = {
+  captchaToken: string;
   email: string;
-  recaptchaToken: string;
 };
 export type SubmitResetPasswordFormMutation$data = {
   readonly requestPasswordReset: {
@@ -33,38 +33,36 @@ export type SubmitResetPasswordFormMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "email"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "recaptchaToken"
-  }
-],
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "captchaToken"
+},
 v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "email"
+},
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "message",
   "storageKey": null
 },
-v2 = [
+v3 = [
   {
     "alias": null,
     "args": [
       {
         "kind": "Variable",
-        "name": "email",
-        "variableName": "email"
+        "name": "captchaToken",
+        "variableName": "captchaToken"
       },
       {
         "kind": "Variable",
-        "name": "recaptchaToken",
-        "variableName": "recaptchaToken"
+        "name": "email",
+        "variableName": "email"
       }
     ],
     "concreteType": null,
@@ -82,7 +80,7 @@ v2 = [
       {
         "kind": "InlineFragment",
         "selections": [
-          (v1/*: any*/)
+          (v2/*: any*/)
         ],
         "type": "InvalidRecaptchaTokenError",
         "abstractKey": null
@@ -90,7 +88,7 @@ v2 = [
       {
         "kind": "InlineFragment",
         "selections": [
-          (v1/*: any*/),
+          (v2/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -108,32 +106,38 @@ v2 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "SubmitResetPasswordFormMutation",
-    "selections": (v2/*: any*/),
+    "selections": (v3/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "SubmitResetPasswordFormMutation",
-    "selections": (v2/*: any*/)
+    "selections": (v3/*: any*/)
   },
   "params": {
-    "cacheID": "de4fede297c48090fbd116e9d18783d0",
+    "cacheID": "3ebaf79a618dd3b3043fd2b239ab0ea7",
     "id": null,
     "metadata": {},
     "name": "SubmitResetPasswordFormMutation",
     "operationKind": "mutation",
-    "text": "mutation SubmitResetPasswordFormMutation(\n  $email: String!\n  $recaptchaToken: String!\n) {\n  requestPasswordReset(email: $email, recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on PasswordResetTokenCooldownError {\n      message\n      remainingSeconds\n    }\n  }\n}\n"
+    "text": "mutation SubmitResetPasswordFormMutation(\n  $email: String!\n  $captchaToken: String!\n) {\n  requestPasswordReset(email: $email, captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on PasswordResetTokenCooldownError {\n      message\n      remainingSeconds\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "f8f60818798fdc68bba1913eb72c0f9c";
+(node as any).hash = "845e298eebf0e8429e5029187d005968";
 
 export default node;

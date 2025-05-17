@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9bcb871532f6377b1e2abcdb624e9945>>
+ * @generated SignedSource<<348a1892ea1495c0f07b9ab3c30388f3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type PasskeyTwoFactorAuthenticationGenerateOptionsMutation$variables = {
-  recaptchaToken: string;
+  captchaToken: string;
 };
 export type PasskeyTwoFactorAuthenticationGenerateOptionsMutation$data = {
   readonly generateAuthenticationOptions: {
@@ -35,7 +35,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "recaptchaToken"
+    "name": "captchaToken"
   }
 ],
 v1 = [
@@ -44,8 +44,8 @@ v1 = [
     "args": [
       {
         "kind": "Variable",
-        "name": "recaptchaToken",
-        "variableName": "recaptchaToken"
+        "name": "captchaToken",
+        "variableName": "captchaToken"
       }
     ],
     "concreteType": null,
@@ -110,16 +110,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "fb6df2b59723cc803ccd275fca24dfd1",
+    "cacheID": "422cc388d7b20cac275bdd072bf986e3",
     "id": null,
     "metadata": {},
     "name": "PasskeyTwoFactorAuthenticationGenerateOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation(\n  $recaptchaToken: String!\n) {\n  generateAuthenticationOptions(recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on GenerateAuthenticationOptionsSuccess {\n      authenticationOptions\n    }\n  }\n}\n"
+    "text": "mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation(\n  $captchaToken: String!\n) {\n  generateAuthenticationOptions(captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on GenerateAuthenticationOptionsSuccess {\n      authenticationOptions\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "06e694456d7c053db97612068241cb41";
+(node as any).hash = "40d234bce8500a6f05789054769f02e2";
 
 export default node;

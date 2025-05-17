@@ -12,8 +12,8 @@ import { graphql } from "relay-runtime";
 import { useTurnstile } from "../TurnstileProvider";
 
 const GenerateReauthenticationOptionsMutation = graphql`
-  mutation PasskeyAuthenticationGenerateOptionsMutation($recaptchaToken: String!) {
-    generateReauthenticationOptions(recaptchaToken: $recaptchaToken) {
+  mutation PasskeyAuthenticationGenerateOptionsMutation($captchaToken: String!) {
+    generateReauthenticationOptions(captchaToken: $captchaToken) {
       __typename
       ... on InvalidRecaptchaTokenError {
         message
@@ -27,8 +27,8 @@ const GenerateReauthenticationOptionsMutation = graphql`
 `;
 
 const PasskeyAuthenticationMutation = graphql`
-  mutation PasskeyAuthenticationMutation($authenticationResponse: JSON!, $recaptchaToken: String!) {
-    requestSudoModeWithPasskey(authenticationResponse: $authenticationResponse, recaptchaToken: $recaptchaToken) {
+  mutation PasskeyAuthenticationMutation($authenticationResponse: JSON!, $captchaToken: String!) {
+    requestSudoModeWithPasskey(authenticationResponse: $authenticationResponse, captchaToken: $captchaToken) {
       __typename
       ... on Account {
         __typename
@@ -88,7 +88,7 @@ export default function PasskeyAuthentication({
 		);
 		commitGenerateReauthenticationOptionsMutation({
 			variables: {
-				recaptchaToken: token,
+				captchaToken: token,
 			},
 			onCompleted(response) {
 				if (
@@ -112,13 +112,13 @@ export default function PasskeyAuthentication({
 					})
 						.then((authenticationResponse) => {
 							executeRecaptcha("sudo_authenticate_passkey")
-								.then((recaptchaToken) => {
+								.then((captchaToken) => {
 									commitPasskeyAuthenticateMutation({
 										variables: {
 											authenticationResponse: JSON.stringify(
 												authenticationResponse,
 											),
-											recaptchaToken: recaptchaToken,
+											captchaToken: captchaToken,
 										},
 										onCompleted(response) {
 											setIsPasskeysPromptActive(false);

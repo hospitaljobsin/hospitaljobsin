@@ -46,14 +46,14 @@ const RegisterWithPasswordMutation = graphql`
     $emailVerificationToken: String!
     $password: String!
     $fullName: String!
-    $recaptchaToken: String!
+    $captchaToken: String!
   ) {
     registerWithPassword(
       email: $email
       emailVerificationToken: $emailVerificationToken
       password: $password
       fullName: $fullName
-      recaptchaToken: $recaptchaToken
+      captchaToken: $captchaToken
     ) {
       __typename
       ... on EmailInUseError {
@@ -109,7 +109,7 @@ export default function PasswordRegistration() {
 				emailVerificationToken,
 				fullName,
 				password: data.password,
-				recaptchaToken: token,
+				captchaToken: token,
 			},
 			onCompleted(response) {
 				if (response.registerWithPassword.__typename === "EmailInUseError") {

@@ -23,8 +23,8 @@ import { graphql } from "relay-runtime";
 import { z } from "zod";
 
 const TwoFactorRecoveryCodeFormMutation = graphql`
-  mutation TwoFactorRecoveryCodeFormMutation($token: String!, $recaptchaToken: String!) {
-	verify2faWithRecoveryCode(token: $token, recaptchaToken: $recaptchaToken) {
+  mutation TwoFactorRecoveryCodeFormMutation($token: String!, $captchaToken: String!) {
+	verify2faWithRecoveryCode(token: $token, captchaToken: $captchaToken) {
 	  __typename
       ... on TwoFactorAuthenticationChallengeNotFoundError {
         message
@@ -73,11 +73,11 @@ export default function TwoFactorRecoveryCodeForm() {
 			console.log("Recaptcha not loaded");
 			return;
 		}
-		const recaptchaToken = await executeRecaptcha("2fa_challenge_verification");
+		const captchaToken = await executeRecaptcha("2fa_challenge_verification");
 		commitMutation({
 			variables: {
 				token: values.token,
-				recaptchaToken: recaptchaToken,
+				captchaToken: captchaToken,
 			},
 			onCompleted(response) {
 				if (

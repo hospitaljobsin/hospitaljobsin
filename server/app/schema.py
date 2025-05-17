@@ -11,7 +11,7 @@ from app.accounts.mutation import AccountMutation
 from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
 from app.auth.query import AuthQuery
-from app.config import AppSettings
+from app.config import AppSettings, get_settings
 from app.geocoding.query import GeocodingQuery
 from app.jobs.mutation import JobMutation
 from app.jobs.query import JobQuery
@@ -69,3 +69,6 @@ def create_schema(app_settings: AppSettings) -> Schema:
             auto_camel_case=True,
         ),
     )
+
+
+schema = create_schema(get_settings(AppSettings))

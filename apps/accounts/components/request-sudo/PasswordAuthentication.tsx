@@ -15,8 +15,8 @@ import { z } from "zod";
 import { useTurnstile } from "../TurnstileProvider";
 
 const PasswordAuthenticationMutation = graphql`
-  mutation PasswordAuthenticationMutation($password: String!, $recaptchaToken: String!) {
-    requestSudoModeWithPassword(password: $password, recaptchaToken: $recaptchaToken) {
+  mutation PasswordAuthenticationMutation($password: String!, $captchaToken: String!) {
+    requestSudoModeWithPassword(password: $password, captchaToken: $captchaToken) {
       __typename
 	  ... on Account {
 		__typename
@@ -82,7 +82,7 @@ export default function PasswordAuthentication({
 		commitPasswordLoginMutation({
 			variables: {
 				password: values.password,
-				recaptchaToken: token,
+				captchaToken: token,
 			},
 			onCompleted(response) {
 				if (

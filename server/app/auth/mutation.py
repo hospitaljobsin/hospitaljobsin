@@ -123,17 +123,17 @@ class AuthMutation:
                 description="The email to request an email verification token for.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
     ) -> RequestEmailVerificationTokenPayload:
         match await auth_service.request_email_verification_token(
             email=email,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
         ):
@@ -176,10 +176,10 @@ class AuthMutation:
                 description="The email verification token.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
@@ -187,7 +187,7 @@ class AuthMutation:
         match await auth_service.verify_email(
             email=email,
             email_verification_token=email_verification_token,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             request=info.context["request"],
         ):
             case Err(error):
@@ -235,10 +235,10 @@ class AuthMutation:
                 description="The full name of the new user.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
@@ -249,7 +249,7 @@ class AuthMutation:
             email_verification_token=email_verification_token,
             password=password,
             full_name=full_name,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
         ):
@@ -288,10 +288,10 @@ class AuthMutation:
                 description="The full name of the new user.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
@@ -300,7 +300,7 @@ class AuthMutation:
         match await auth_service.generate_passkey_registration_options(
             email=email,
             full_name=full_name,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             request=info.context["request"],
         ):
             case Err(error):
@@ -354,10 +354,10 @@ class AuthMutation:
                 description="The full name of the new user.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
@@ -369,7 +369,7 @@ class AuthMutation:
             passkey_registration_response=passkey_registration_response,
             passkey_nickname=passkey_nickname,
             full_name=full_name,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
         ):
@@ -396,17 +396,17 @@ class AuthMutation:
     async def generate_authentication_options(
         self,
         info: Info,
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
     ) -> GenerateAuthenticationOptionsPayload:
         """Generate authentication options."""
         match await auth_service.generate_authentication_options(
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             request=info.context["request"],
         ):
             case Err(error):
@@ -431,17 +431,17 @@ class AuthMutation:
     async def generate_reauthentication_options(
         self,
         info: AuthInfo,
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
     ) -> GenerateAuthenticationOptionsPayload:
         """Generate reauthentication options (for sudo mode requests)."""
         match await auth_service.generate_reauthentication_options(
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             request=info.context["request"],
             account=info.context["current_user"],
         ):
@@ -470,10 +470,10 @@ class AuthMutation:
                 description="The authentication response of the user.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
@@ -481,7 +481,7 @@ class AuthMutation:
         """Login a user with a passkey."""
         match await auth_service.login_with_passkey(
             authentication_response=authentication_response,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
         ):
@@ -518,10 +518,10 @@ class AuthMutation:
                 description="The password of the user.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
@@ -530,7 +530,7 @@ class AuthMutation:
         match await auth_service.login_with_password(
             email=email,
             password=password,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
         ):
@@ -590,10 +590,10 @@ class AuthMutation:
                 description="The email of the existing user.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
@@ -601,7 +601,7 @@ class AuthMutation:
         """Request a password reset."""
         match await auth_service.request_password_reset(
             email=email,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
         ):
@@ -645,10 +645,10 @@ class AuthMutation:
                 description="The 2FA token to verify password reset.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
     ) -> Verify2FAPasswordResetWithAuthenticatorPayload:
@@ -657,7 +657,7 @@ class AuthMutation:
             email=email,
             password_reset_token=password_reset_token,
             two_factor_token=two_factor_token,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             request=info.context["request"],
         ):
             case Err(error):
@@ -702,10 +702,10 @@ class AuthMutation:
                 description="The passkey authentication response to verify password reset.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
     ) -> Verify2FAPasswordResetWithPasskeyPayload:
@@ -715,7 +715,7 @@ class AuthMutation:
             password_reset_token=password_reset_token,
             authentication_response=authentication_response,
             request=info.context["request"],
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
         ):
             case Err(error):
                 match error:
@@ -1108,10 +1108,10 @@ class AuthMutation:
                 description="The authentication response of the user.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
@@ -1120,7 +1120,7 @@ class AuthMutation:
         match await auth_service.request_sudo_mode_with_passkey(
             request=info.context["request"],
             authentication_response=authentication_response,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
         ):
             case Err(error):
                 match error:
@@ -1156,10 +1156,10 @@ class AuthMutation:
                 description="The password of the user.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
@@ -1168,7 +1168,7 @@ class AuthMutation:
         match await auth_service.request_sudo_mode_with_password(
             request=info.context["request"],
             password=password,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             account=info.context["current_user"],
         ):
             case Err(error):
@@ -1209,10 +1209,10 @@ class AuthMutation:
                 description="The 2FA token of the user.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
         auth_service: Annotated[AuthService, Inject],
@@ -1221,7 +1221,7 @@ class AuthMutation:
         match await auth_service.request_sudo_mode_with_authenticator(
             request=info.context["request"],
             two_factor_token=two_factor_token,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             account=info.context["current_user"],
         ):
             case Err(error):
@@ -1360,10 +1360,10 @@ class AuthMutation:
                 description="The 2FA token.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
     ) -> Verify2FAWithAuthenticatorPayload:
@@ -1371,7 +1371,7 @@ class AuthMutation:
         match await auth_service.verify_2fa_with_authenticator(
             request=info.context["request"],
             token=token,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
         ):
             case Err(error):
@@ -1404,10 +1404,10 @@ class AuthMutation:
                 description="The 2FA token.",
             ),
         ],
-        recaptcha_token: Annotated[
+        captcha_token: Annotated[
             str,
             strawberry.argument(
-                description="The recaptcha token to verify the user request."
+                description="The captcha token to verify the user request."
             ),
         ],
     ) -> Verify2FAWithRecoveryCodePayload:
@@ -1415,7 +1415,7 @@ class AuthMutation:
         match await auth_service.verify_2fa_with_recovery_code(
             request=info.context["request"],
             token=token,
-            recaptcha_token=recaptcha_token,
+            captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
         ):
             case Err(error):

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<55eac975a56a097f1515252d0223d2f0>>
+ * @generated SignedSource<<2924a4bcd11c71fd010aa11112cf0555>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,9 +11,9 @@
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type AuthenticatorTwoFactorAuthenticationResetPasswordMutation$variables = {
+  captchaToken: string;
   email: string;
   passwordResetToken: string;
-  recaptchaToken: string;
   twoFactorToken: string;
 };
 export type AuthenticatorTwoFactorAuthenticationResetPasswordMutation$data = {
@@ -47,17 +47,17 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "email"
+  "name": "captchaToken"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "passwordResetToken"
+  "name": "email"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "recaptchaToken"
+  "name": "passwordResetToken"
 },
 v3 = {
   "defaultValue": null,
@@ -67,6 +67,11 @@ v3 = {
 v4 = [
   {
     "kind": "Variable",
+    "name": "captchaToken",
+    "variableName": "captchaToken"
+  },
+  {
+    "kind": "Variable",
     "name": "email",
     "variableName": "email"
   },
@@ -74,11 +79,6 @@ v4 = [
     "kind": "Variable",
     "name": "passwordResetToken",
     "variableName": "passwordResetToken"
-  },
-  {
-    "kind": "Variable",
-    "name": "recaptchaToken",
-    "variableName": "recaptchaToken"
   },
   {
     "kind": "Variable",
@@ -180,10 +180,10 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v0/*: any*/),
       (v1/*: any*/),
+      (v2/*: any*/),
       (v3/*: any*/),
-      (v2/*: any*/)
+      (v0/*: any*/)
     ],
     "kind": "Operation",
     "name": "AuthenticatorTwoFactorAuthenticationResetPasswordMutation",
@@ -244,16 +244,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8b3d01a8e65faacf95383ac095945765",
+    "cacheID": "150c0d9ea97e1b91bdfbe50f6fde12b3",
     "id": null,
     "metadata": {},
     "name": "AuthenticatorTwoFactorAuthenticationResetPasswordMutation",
     "operationKind": "mutation",
-    "text": "mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation(\n  $email: String!\n  $passwordResetToken: String!\n  $twoFactorToken: String!\n  $recaptchaToken: String!\n) {\n  verify2faPasswordResetWithAuthenticator(email: $email, passwordResetToken: $passwordResetToken, twoFactorToken: $twoFactorToken, recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on PasswordResetToken {\n      ...ResetPasswordViewFragment\n    }\n    ... on InvalidPasswordResetTokenError {\n      message\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment ResetPasswordViewFragment on PasswordResetToken {\n  id\n  needs2fa\n  ...TwoFactorAuthenticationResetPasswordFragment\n}\n\nfragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken {\n  twoFactorProviders\n  authProviders\n}\n"
+    "text": "mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation(\n  $email: String!\n  $passwordResetToken: String!\n  $twoFactorToken: String!\n  $captchaToken: String!\n) {\n  verify2faPasswordResetWithAuthenticator(email: $email, passwordResetToken: $passwordResetToken, twoFactorToken: $twoFactorToken, captchaToken: $captchaToken) {\n    __typename\n    ... on PasswordResetToken {\n      ...ResetPasswordViewFragment\n    }\n    ... on InvalidPasswordResetTokenError {\n      message\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment ResetPasswordViewFragment on PasswordResetToken {\n  id\n  needs2fa\n  ...TwoFactorAuthenticationResetPasswordFragment\n}\n\nfragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken {\n  twoFactorProviders\n  authProviders\n}\n"
   }
 };
 })();
 
-(node as any).hash = "3b7d63155c1417ffac1c81e25d17ff1b";
+(node as any).hash = "321dcd945eef8f3992caacdaa3ccaee4";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bac6e88355ddaaeb44904376334880f3>>
+ * @generated SignedSource<<a61ce9d11ebb6811911512f826cbf743>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,11 +10,11 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type PasswordRegistrationMutation$variables = {
+  captchaToken: string;
   email: string;
   emailVerificationToken: string;
   fullName: string;
   password: string;
-  recaptchaToken: string;
 };
 export type PasswordRegistrationMutation$data = {
   readonly registerWithPassword: {
@@ -44,29 +44,34 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "email"
+  "name": "captchaToken"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "emailVerificationToken"
+  "name": "email"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "fullName"
+  "name": "emailVerificationToken"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "password"
+  "name": "fullName"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "recaptchaToken"
+  "name": "password"
 },
 v5 = [
+  {
+    "kind": "Variable",
+    "name": "captchaToken",
+    "variableName": "captchaToken"
+  },
   {
     "kind": "Variable",
     "name": "email",
@@ -86,11 +91,6 @@ v5 = [
     "kind": "Variable",
     "name": "password",
     "variableName": "password"
-  },
-  {
-    "kind": "Variable",
-    "name": "recaptchaToken",
-    "variableName": "recaptchaToken"
   }
 ],
 v6 = {
@@ -169,11 +169,11 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v0/*: any*/),
       (v1/*: any*/),
-      (v3/*: any*/),
       (v2/*: any*/),
-      (v4/*: any*/)
+      (v4/*: any*/),
+      (v3/*: any*/),
+      (v0/*: any*/)
     ],
     "kind": "Operation",
     "name": "PasswordRegistrationMutation",
@@ -211,16 +211,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e21304aad5fac86983e170c717631c1a",
+    "cacheID": "f30936f9a6ded5f68b37333effd049c2",
     "id": null,
     "metadata": {},
     "name": "PasswordRegistrationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasswordRegistrationMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $password: String!\n  $fullName: String!\n  $recaptchaToken: String!\n) {\n  registerWithPassword(email: $email, emailVerificationToken: $emailVerificationToken, password: $password, fullName: $fullName, recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on PasswordNotStrongError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation PasswordRegistrationMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $password: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  registerWithPassword(email: $email, emailVerificationToken: $emailVerificationToken, password: $password, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on PasswordNotStrongError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "9e25f443409dc8ed4cb4c3795d0eb5bc";
+(node as any).hash = "ceeb2698d5a374c2ed67517d59b1d3c0";
 
 export default node;

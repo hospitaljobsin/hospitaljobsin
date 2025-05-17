@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<14a2388e166f71fcc0b0b64200774565>>
+ * @generated SignedSource<<30a6475161ec84990823dea8c0e8d9d4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ConcreteRequest } from 'relay-runtime';
 export type LoginFormPasskeyMutation$variables = {
   authenticationResponse: any;
-  recaptchaToken: string;
+  captchaToken: string;
 };
 export type LoginFormPasskeyMutation$data = {
   readonly loginWithPasskey: {
@@ -47,7 +47,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "recaptchaToken"
+    "name": "captchaToken"
   }
 ],
 v1 = [
@@ -58,8 +58,8 @@ v1 = [
   },
   {
     "kind": "Variable",
-    "name": "recaptchaToken",
-    "variableName": "recaptchaToken"
+    "name": "captchaToken",
+    "variableName": "captchaToken"
   }
 ],
 v2 = {
@@ -160,16 +160,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "53bbe1a44676cc93b926cfe4c1f04174",
+    "cacheID": "4c94e300b3392a9697c0544494b4d7ff",
     "id": null,
     "metadata": {},
     "name": "LoginFormPasskeyMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormPasskeyMutation(\n  $authenticationResponse: JSON!\n  $recaptchaToken: String!\n) {\n  loginWithPasskey(authenticationResponse: $authenticationResponse, recaptchaToken: $recaptchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidPasskeyAuthenticationCredentialError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on WebAuthnChallengeNotFoundError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation LoginFormPasskeyMutation(\n  $authenticationResponse: JSON!\n  $captchaToken: String!\n) {\n  loginWithPasskey(authenticationResponse: $authenticationResponse, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidPasskeyAuthenticationCredentialError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on WebAuthnChallengeNotFoundError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "742bff9f2526b0e8342e4f509f4dba04";
+(node as any).hash = "2a2466717aa089aa7e54624d6e139d93";
 
 export default node;
