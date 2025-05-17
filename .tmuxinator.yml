@@ -14,7 +14,7 @@ windows:
           - pnpm run dev
         - relay:
           - cd apps/seeker-portal
-          - pnpm run relay
+          - pnpm run relay --watch
 
   - recruiter_portal:
       layout: even-horizontal
@@ -24,7 +24,7 @@ windows:
           - pnpm run dev
         - relay:
           - cd apps/recruiter-portal
-          - pnpm run relay
+          - pnpm run relay --watch
 
   - accounts:
       layout: even-horizontal
@@ -34,7 +34,7 @@ windows:
           - pnpm run dev
         - relay:
           - cd apps/accounts
-          - pnpm run relay
+          - pnpm run relay --watch
 
   - docker:
       - docker compose up

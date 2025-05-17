@@ -42,6 +42,14 @@ jobs:
         working-directory: ./apps/recruiter-portal
         run: pnpm install --frozen-lockfile --shamefully-hoist
 
+      - name: Run Relay Compiler
+        working-directory: ./apps/recruiter-portal
+        run: pnpm run relay
+
+      - name: Check for uncommitted changes
+        working-directory: ./apps/recruiter-portal
+        run: ./scripts/check-git-status.sh
+
       - name: SST Deploy
         working-directory: ./apps/recruiter-portal
         run: npx sst deploy --stage production --print-logs

@@ -42,6 +42,14 @@ jobs:
         working-directory: ./apps/accounts
         run: pnpm install --frozen-lockfile --shamefully-hoist
 
+      - name: Run Relay Compiler
+        working-directory: ./apps/accounts
+        run: pnpm run relay
+
+      - name: Check for uncommitted changes
+        working-directory: ./apps/accounts
+        run: ./scripts/check-git-status.sh
+
       - name: SST Deploy
         working-directory: ./apps/accounts
         run: npx sst deploy --stage production --print-logs
