@@ -49,6 +49,8 @@ ARG NEXT_PUBLIC_ENVIRONMENT
 ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 # Add any other NEXT_PUBLIC variables your app needs
 
+RUN pnpm relay
+
 RUN pnpm build
 
 FROM node:24-alpine AS release

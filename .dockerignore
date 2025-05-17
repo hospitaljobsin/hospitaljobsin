@@ -5,7 +5,6 @@
 **/.next/
 **/coverage/
 **/test-results/
-**/__generated__/
 
 # Environment files and secrets
 **/.env
