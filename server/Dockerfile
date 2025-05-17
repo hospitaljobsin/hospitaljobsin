@@ -71,6 +71,7 @@ COPY --from=layer-build /opt/extensions /opt/extensions
 
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
 
 # Set the working directory
 WORKDIR /project
@@ -79,7 +80,9 @@ WORKDIR /project
 COPY . .
 
 # Install dependencies
-RUN uv sync --frozen
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen
+# RUN uv sync --frozen
 
 # Install the AWS Lambda Runtime Interface Client
 RUN uv pip install awslambdaric
