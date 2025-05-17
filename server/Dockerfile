@@ -89,7 +89,6 @@ COPY . .
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked
-# RUN uv sync --frozen
 
 # Install the AWS Lambda Runtime Interface Client
 RUN uv pip install awslambdaric
