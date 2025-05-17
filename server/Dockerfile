@@ -72,16 +72,23 @@ COPY --from=layer-build /opt/extensions /opt/extensions
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
+ENV UV_CACHE_DIR=/opt/uv-cache/
 
 # Set the working directory
 WORKDIR /project
 
+# Install dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project
+
 # Copy the application files
 COPY . .
 
-# Install dependencies
+# Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen
+    uv sync --locked
 # RUN uv sync --frozen
 
 # Install the AWS Lambda Runtime Interface Client
