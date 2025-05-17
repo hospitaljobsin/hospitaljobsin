@@ -1,19 +1,6 @@
 ARG PYTHON_BASE=3.13-slim
-# build stage
-FROM python:$PYTHON_BASE AS builder
 
-# install UV
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-
-WORKDIR /project
-
-# Copy the application files
-COPY . .
-
-# Install dependencies
-RUN uv sync --frozen
-
-# production stage
+# development stage
 FROM python:$PYTHON_BASE AS development
 
 # Install curl
@@ -21,15 +8,27 @@ RUN apt-get update && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /project/.venv/ /project/.venv
+# install UV
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /project
+
+# Install dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project
+
+# Copy the application files
+COPY . .
+
+# Sync the project
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked
 
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
 ENV PATH="/project/.venv/bin:$PATH"
-# set command/entrypoint, adapt to fit your needs
-COPY ./ ./project/
-
-WORKDIR /project
 
 EXPOSE 8000
 
