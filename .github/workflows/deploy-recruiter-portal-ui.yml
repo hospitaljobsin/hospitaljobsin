@@ -42,10 +42,6 @@ jobs:
         working-directory: ./apps/recruiter-portal
         run: pnpm install --frozen-lockfile --shamefully-hoist
 
-      - name: Create artifacts directory
-        working-directory: ./apps/recruiter-portal
-        run: mkdir -p ./__generated__
-
       - name: SST Deploy
         working-directory: ./apps/recruiter-portal
         run: npx sst deploy --stage production --print-logs

@@ -2,7 +2,6 @@
 	"src": "./",
 	"language": "typescript",
 	"schema": "../../schema/schema.graphql",
-	"eagerEsModules": true,
 	"artifactDirectory": "./__generated__",
 	"excludes": [
 		"**/node_modules/**",

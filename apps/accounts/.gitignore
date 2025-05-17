@@ -40,9 +40,6 @@ yarn-error.log*
 next-env.d.ts
 
 
-# relay
-__generated__
-
 # Playwright
 node_modules/
 /test-results/

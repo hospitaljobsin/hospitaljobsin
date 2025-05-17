@@ -27,7 +27,6 @@ const nextConfig: NextConfig = {
 		relay: {
 			src: "./",
 			language: "typescript",
-			eagerEsModules: true,
 			artifactDirectory: "__generated__",
 		},
 	},

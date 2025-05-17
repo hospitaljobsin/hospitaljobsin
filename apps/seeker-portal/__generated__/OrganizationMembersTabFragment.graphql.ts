@@ -1,0 +1,52 @@
+/**
+ * @generated SignedSource<<68cef143a501ce3daa7fefa7210e892c>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import { ReaderFragment } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
+export type OrganizationMembersTabFragment$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"OrganizationMembersListFragment">;
+  readonly " $fragmentType": "OrganizationMembersTabFragment";
+};
+export type OrganizationMembersTabFragment$key = {
+  readonly " $data"?: OrganizationMembersTabFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"OrganizationMembersTabFragment">;
+};
+
+const node: ReaderFragment = {
+  "argumentDefinitions": [
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "slug"
+    }
+  ],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "OrganizationMembersTabFragment",
+  "selections": [
+    {
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "slug",
+          "variableName": "slug"
+        }
+      ],
+      "kind": "FragmentSpread",
+      "name": "OrganizationMembersListFragment"
+    }
+  ],
+  "type": "Query",
+  "abstractKey": null
+};
+
+(node as any).hash = "7fd86a7a706973836d05584079acbf12";
+
+export default node;

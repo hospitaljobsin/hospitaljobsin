@@ -1,0 +1,62 @@
+/**
+ * @generated SignedSource<<54d393cff3a273293f757d71bb6777e0>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import { ReaderFragment } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
+export type OrganizationMembersViewClientComponentFragment$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"OrganizationMembersViewFragment">;
+  readonly " $fragmentType": "OrganizationMembersViewClientComponentFragment";
+};
+export type OrganizationMembersViewClientComponentFragment$key = {
+  readonly " $data"?: OrganizationMembersViewClientComponentFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"OrganizationMembersViewClientComponentFragment">;
+};
+
+const node: ReaderFragment = {
+  "argumentDefinitions": [
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "searchTerm"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "slug"
+    }
+  ],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "OrganizationMembersViewClientComponentFragment",
+  "selections": [
+    {
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "searchTerm",
+          "variableName": "searchTerm"
+        },
+        {
+          "kind": "Variable",
+          "name": "slug",
+          "variableName": "slug"
+        }
+      ],
+      "kind": "FragmentSpread",
+      "name": "OrganizationMembersViewFragment"
+    }
+  ],
+  "type": "Query",
+  "abstractKey": null
+};
+
+(node as any).hash = "ae9d0353a1691261ac61deed2d514465";
+
+export default node;

@@ -1,0 +1,74 @@
+/**
+ * @generated SignedSource<<b02d9a93783f18944ee5253fc9938f5f>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import { ConcreteRequest } from 'relay-runtime';
+export type NewOrganizationFormLogoPresignedUrlMutation$variables = Record<PropertyKey, never>;
+export type NewOrganizationFormLogoPresignedUrlMutation$data = {
+  readonly createOrganizationLogoPresignedUrl: {
+    readonly presignedUrl: string;
+  };
+};
+export type NewOrganizationFormLogoPresignedUrlMutation = {
+  response: NewOrganizationFormLogoPresignedUrlMutation$data;
+  variables: NewOrganizationFormLogoPresignedUrlMutation$variables;
+};
+
+const node: ConcreteRequest = (function(){
+var v0 = [
+  {
+    "alias": null,
+    "args": null,
+    "concreteType": "CreateOrganizationLogoPresignedURLPayload",
+    "kind": "LinkedField",
+    "name": "createOrganizationLogoPresignedUrl",
+    "plural": false,
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "presignedUrl",
+        "storageKey": null
+      }
+    ],
+    "storageKey": null
+  }
+];
+return {
+  "fragment": {
+    "argumentDefinitions": [],
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "NewOrganizationFormLogoPresignedUrlMutation",
+    "selections": (v0/*: any*/),
+    "type": "Mutation",
+    "abstractKey": null
+  },
+  "kind": "Request",
+  "operation": {
+    "argumentDefinitions": [],
+    "kind": "Operation",
+    "name": "NewOrganizationFormLogoPresignedUrlMutation",
+    "selections": (v0/*: any*/)
+  },
+  "params": {
+    "cacheID": "8cfd25091193069d5b42fb071cc8df1e",
+    "id": null,
+    "metadata": {},
+    "name": "NewOrganizationFormLogoPresignedUrlMutation",
+    "operationKind": "mutation",
+    "text": "mutation NewOrganizationFormLogoPresignedUrlMutation {\n  createOrganizationLogoPresignedUrl {\n    presignedUrl\n  }\n}\n"
+  }
+};
+})();
+
+(node as any).hash = "0782081a5faf06a424f5f4651b85a745";
+
+export default node;
