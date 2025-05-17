@@ -6,7 +6,7 @@
 		"node": ">=22"
 	},
 	"scripts": {
-		"build": "relay-compiler && next build --turbopack --experimental-build-mode compile",
+		"build": "next build --turbopack --experimental-build-mode compile",
 		"dev": "next dev -p 5000 --turbopack",
 		"lint": "next lint",
 		"package": "open-next build",
