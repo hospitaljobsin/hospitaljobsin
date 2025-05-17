@@ -24,7 +24,7 @@ const SubmitResetPasswordFormMutation = graphql`
   mutation SubmitResetPasswordFormMutation($email: String!, $captchaToken: String!) {
 	requestPasswordReset(email: $email, captchaToken: $captchaToken) {
 	  __typename
-	  ... on InvalidRecaptchaTokenError {
+	  ... on InvalidCaptchaTokenError {
 		message 
 	  }
 	  ... on PasswordResetTokenCooldownError {
@@ -69,7 +69,7 @@ export default function SubmitResetPasswordFrom() {
 			onCompleted(response) {
 				if (
 					response.requestPasswordReset.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");

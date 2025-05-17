@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<30a6475161ec84990823dea8c0e8d9d4>>
+ * @generated SignedSource<<1f93949ec4d21f32c2bcf8c5926868fb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,10 +18,10 @@ export type LoginFormPasskeyMutation$data = {
     readonly __typename: "Account";
     readonly __typename: "Account";
   } | {
-    readonly __typename: "InvalidPasskeyAuthenticationCredentialError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidPasskeyAuthenticationCredentialError";
     readonly message: string;
   } | {
     readonly __typename: "WebAuthnChallengeNotFoundError";
@@ -87,7 +87,7 @@ v4 = {
 v5 = {
   "kind": "InlineFragment",
   "selections": (v3/*: any*/),
-  "type": "InvalidRecaptchaTokenError",
+  "type": "InvalidCaptchaTokenError",
   "abstractKey": null
 },
 v6 = {
@@ -160,16 +160,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4c94e300b3392a9697c0544494b4d7ff",
+    "cacheID": "d4b10f4444843d0feb79a2bdad3ed3ef",
     "id": null,
     "metadata": {},
     "name": "LoginFormPasskeyMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormPasskeyMutation(\n  $authenticationResponse: JSON!\n  $captchaToken: String!\n) {\n  loginWithPasskey(authenticationResponse: $authenticationResponse, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidPasskeyAuthenticationCredentialError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on WebAuthnChallengeNotFoundError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation LoginFormPasskeyMutation(\n  $authenticationResponse: JSON!\n  $captchaToken: String!\n) {\n  loginWithPasskey(authenticationResponse: $authenticationResponse, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidPasskeyAuthenticationCredentialError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on WebAuthnChallengeNotFoundError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "2a2466717aa089aa7e54624d6e139d93";
+(node as any).hash = "2a8ef8b5d335a6ed092a6e39436f905a";
 
 export default node;

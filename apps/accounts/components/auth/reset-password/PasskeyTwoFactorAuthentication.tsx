@@ -18,7 +18,7 @@ const GenerateAuthenticationOptionsMutation = graphql`
   mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation($captchaToken: String!) {
     generateAuthenticationOptions(captchaToken: $captchaToken) {
       __typename
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
 
@@ -45,7 +45,7 @@ const PasskeyTwoFactorAuthenticationResetPasswordMutation = graphql`
       ... on TwoFactorAuthenticationNotEnabledError {
         message
       }
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
 	  ... on WebAuthnChallengeNotFoundError {
@@ -108,7 +108,7 @@ export default function PasskeyTwoFactorAuthentication({
 			onCompleted(response) {
 				if (
 					response.generateAuthenticationOptions.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					setIsPasskeysPromptActive(false);
@@ -141,7 +141,7 @@ export default function PasskeyTwoFactorAuthentication({
 											setIsPasskeysPromptActive(false);
 											if (
 												response.verify2faPasswordResetWithPasskey
-													.__typename === "InvalidRecaptchaTokenError"
+													.__typename === "InvalidCaptchaTokenError"
 											) {
 												// handle recaptcha failure
 												alert("Recaptcha failed. Please try again.");

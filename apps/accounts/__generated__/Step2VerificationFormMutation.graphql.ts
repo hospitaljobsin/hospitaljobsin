@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<27bbf8e05fb4755d6c244f33250e5398>>
+ * @generated SignedSource<<695de33bd7839a82a0b833d417c23980>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,10 +19,10 @@ export type Step2VerificationFormMutation$data = {
     readonly __typename: "EmailInUseError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidEmailVerificationTokenError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidEmailVerificationTokenError";
     readonly message: string;
   } | {
     readonly __typename: "VerifyEmailSuccess";
@@ -110,7 +110,7 @@ v4 = [
       {
         "kind": "InlineFragment",
         "selections": (v3/*: any*/),
-        "type": "InvalidRecaptchaTokenError",
+        "type": "InvalidCaptchaTokenError",
         "abstractKey": null
       },
       {
@@ -149,16 +149,16 @@ return {
     "selections": (v4/*: any*/)
   },
   "params": {
-    "cacheID": "26270ab8e526dcd5e96dcca5702a9e94",
+    "cacheID": "a0d4c1cfae30853b232ac6f73b359548",
     "id": null,
     "metadata": {},
     "name": "Step2VerificationFormMutation",
     "operationKind": "mutation",
-    "text": "mutation Step2VerificationFormMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $captchaToken: String!\n) {\n  verifyEmail(email: $email, emailVerificationToken: $emailVerificationToken, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on VerifyEmailSuccess {\n      message\n    }\n  }\n}\n"
+    "text": "mutation Step2VerificationFormMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $captchaToken: String!\n) {\n  verifyEmail(email: $email, emailVerificationToken: $emailVerificationToken, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on VerifyEmailSuccess {\n      message\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "1505dec47d3068a4078f41db0ec6e02b";
+(node as any).hash = "90c61bca7d6286a9b71c38b7b5e27c8b";
 
 export default node;

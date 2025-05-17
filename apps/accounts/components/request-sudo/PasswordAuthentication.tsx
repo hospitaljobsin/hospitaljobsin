@@ -24,7 +24,7 @@ const PasswordAuthenticationMutation = graphql`
       ... on InvalidCredentialsError {
         message
       }
-	  ... on InvalidRecaptchaTokenError {
+	  ... on InvalidCaptchaTokenError {
 		message
 	  }
 
@@ -95,7 +95,7 @@ export default function PasswordAuthentication({
 					onAuthEnd();
 				} else if (
 					response.requestSudoModeWithPassword.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");

@@ -30,7 +30,7 @@ const GeneratePasskeyRegistrationOptionsMutation = graphql`
       ... on EmailInUseError {
         message
       }
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
       ... on GeneratePasskeyRegistrationOptionsSuccess {
@@ -64,7 +64,7 @@ const RegisterWithPasskeyMutation = graphql`
       ... on InvalidEmailVerificationTokenError {
         message
       }
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
       ... on InvalidPasskeyRegistrationCredentialError {
@@ -133,7 +133,7 @@ export default function PasskeyRegistration() {
 			onCompleted(response) {
 				if (
 					response.generatePasskeyRegistrationOptions.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					setIsPasskeysPromptActive(false);
 					alert("Recaptcha failed. Please try again.");
@@ -196,7 +196,7 @@ export default function PasskeyRegistration() {
 												});
 											} else if (
 												response.registerWithPasskey.__typename ===
-												"InvalidRecaptchaTokenError"
+												"InvalidCaptchaTokenError"
 											) {
 												// handle recaptcha failure
 												alert("Recaptcha failed. Please try again.");

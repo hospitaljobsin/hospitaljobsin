@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<348a1892ea1495c0f07b9ab3c30388f3>>
+ * @generated SignedSource<<e798cad2ce8545cb271eab233ec14256>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,7 +17,7 @@ export type PasskeyTwoFactorAuthenticationGenerateOptionsMutation$data = {
     readonly __typename: "GenerateAuthenticationOptionsSuccess";
     readonly authenticationOptions: any;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
     // This will never be '%other', but we need some
@@ -71,7 +71,7 @@ v1 = [
             "storageKey": null
           }
         ],
-        "type": "InvalidRecaptchaTokenError",
+        "type": "InvalidCaptchaTokenError",
         "abstractKey": null
       },
       {
@@ -110,16 +110,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "422cc388d7b20cac275bdd072bf986e3",
+    "cacheID": "bdcf8d41f08a162a935513f5f17d4dd7",
     "id": null,
     "metadata": {},
     "name": "PasskeyTwoFactorAuthenticationGenerateOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation(\n  $captchaToken: String!\n) {\n  generateAuthenticationOptions(captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on GenerateAuthenticationOptionsSuccess {\n      authenticationOptions\n    }\n  }\n}\n"
+    "text": "mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation(\n  $captchaToken: String!\n) {\n  generateAuthenticationOptions(captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on GenerateAuthenticationOptionsSuccess {\n      authenticationOptions\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "40d234bce8500a6f05789054769f02e2";
+(node as any).hash = "439ee9c9c359679af149d1042ec8185c";
 
 export default node;

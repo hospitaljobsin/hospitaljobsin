@@ -29,7 +29,7 @@ const RequestVerificationMutation = graphql`
         message
         remainingSeconds
       }
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
       ... on RequestEmailVerificationSuccess {
@@ -82,7 +82,7 @@ export default function Step1EmailForm() {
 					});
 				} else if (
 					response.requestEmailVerificationToken.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");

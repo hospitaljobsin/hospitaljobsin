@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3570919d0f1263088d66f4cc95d3ccf2>>
+ * @generated SignedSource<<3616cc652f08998d146d3b0cf9ef2e14>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,10 +21,10 @@ export type TwoFactorAuthenticationMutation$data = {
     readonly __typename: "AuthenticatorNotEnabledError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidCredentialsError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidCredentialsError";
     readonly message: string;
   } | {
     // This will never be '%other', but we need some
@@ -85,7 +85,7 @@ v5 = {
 v6 = {
   "kind": "InlineFragment",
   "selections": (v4/*: any*/),
-  "type": "InvalidRecaptchaTokenError",
+  "type": "InvalidCaptchaTokenError",
   "abstractKey": null
 },
 v7 = {
@@ -164,16 +164,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d90a3ecb92197327ffe1725307be7e97",
+    "cacheID": "6b8a94f8ccfb71c700047be66d30c60a",
     "id": null,
     "metadata": {},
     "name": "TwoFactorAuthenticationMutation",
     "operationKind": "mutation",
-    "text": "mutation TwoFactorAuthenticationMutation(\n  $twoFactorToken: String!\n  $captchaToken: String!\n) {\n  requestSudoModeWithAuthenticator(twoFactorToken: $twoFactorToken, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation TwoFactorAuthenticationMutation(\n  $twoFactorToken: String!\n  $captchaToken: String!\n) {\n  requestSudoModeWithAuthenticator(twoFactorToken: $twoFactorToken, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "6401803ad3f38de8017638ba2078c67b";
+(node as any).hash = "3cbd0f792c7d3825c1a0bfc91b70028e";
 
 export default node;

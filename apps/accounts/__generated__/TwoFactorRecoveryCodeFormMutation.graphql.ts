@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<22d7e81bc905a934def08daf8ed01b4f>>
+ * @generated SignedSource<<0b906658d30d39a876e72d2538c31e00>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,10 +15,10 @@ export type TwoFactorRecoveryCodeFormMutation$variables = {
 };
 export type TwoFactorRecoveryCodeFormMutation$data = {
   readonly verify2faWithRecoveryCode: {
-    readonly __typename: "InvalidCredentialsError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidCredentialsError";
     readonly message: string;
   } | {
     readonly __typename: "TwoFactorAuthenticationChallengeNotFoundError";
@@ -85,7 +85,7 @@ v5 = {
 v6 = {
   "kind": "InlineFragment",
   "selections": (v4/*: any*/),
-  "type": "InvalidRecaptchaTokenError",
+  "type": "InvalidCaptchaTokenError",
   "abstractKey": null
 },
 v7 = {
@@ -172,16 +172,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e9c3515b35cb0c43fa1b2542d6b314b2",
+    "cacheID": "2bc958986ba79a96b18a261bc87e2275",
     "id": null,
     "metadata": {},
     "name": "TwoFactorRecoveryCodeFormMutation",
     "operationKind": "mutation",
-    "text": "mutation TwoFactorRecoveryCodeFormMutation(\n  $token: String!\n  $captchaToken: String!\n) {\n  verify2faWithRecoveryCode(token: $token, captchaToken: $captchaToken) {\n    __typename\n    ... on TwoFactorAuthenticationChallengeNotFoundError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on TwoFactorAuthenticationNotEnabledError {\n      message\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation TwoFactorRecoveryCodeFormMutation(\n  $token: String!\n  $captchaToken: String!\n) {\n  verify2faWithRecoveryCode(token: $token, captchaToken: $captchaToken) {\n    __typename\n    ... on TwoFactorAuthenticationChallengeNotFoundError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on TwoFactorAuthenticationNotEnabledError {\n      message\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "cd5b3d02129ca52cb330859562a5b094";
+(node as any).hash = "3e6ed90ab60883b2e8b5e7467a122829";
 
 export default node;

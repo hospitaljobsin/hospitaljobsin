@@ -17,13 +17,13 @@ from app.auth.exceptions import (
     EmailVerificationTokenCooldownError,
     InsufficientAuthProvidersError,
     InvalidAuthenticationProviderError,
+    InvalidCaptchaTokenError,
     InvalidCredentialsError,
     InvalidEmailError,
     InvalidEmailVerificationTokenError,
     InvalidPasskeyAuthenticationCredentialError,
     InvalidPasskeyRegistrationCredentialError,
     InvalidPasswordResetTokenError,
-    InvalidRecaptchaTokenError,
     PasswordNotStrongError,
     PasswordResetTokenCooldownError,
     SessionNotFoundError,
@@ -64,13 +64,13 @@ from .types import (
     GeneratePasskeyRegistrationOptionsSuccessType,
     InsufficientAuthProvidersErrorType,
     InvalidAuthenticationProviderErrorType,
+    InvalidCaptchaTokenErrorType,
     InvalidCredentialsErrorType,
     InvalidEmailErrorType,
     InvalidEmailVerificationTokenErrorType,
     InvalidPasskeyAuthenticationCredentialErrorType,
     InvalidPasskeyRegistrationCredentialErrorType,
     InvalidPasswordResetTokenErrorType,
-    InvalidRecaptchaTokenErrorType,
     LoginWithPasskeyPayload,
     LoginWithPasswordPayload,
     LogoutPayloadType,
@@ -143,8 +143,8 @@ class AuthMutation:
                 )
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case EmailVerificationTokenCooldownError() as err:
                         return EmailVerificationTokenCooldownErrorType(
                             remaining_seconds=err.remaining_seconds
@@ -192,8 +192,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case EmailInUseError():
                         return EmailInUseErrorType()
                     case InvalidEmailVerificationTokenError():
@@ -255,8 +255,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case EmailInUseError():
                         return EmailInUseErrorType()
                     case InvalidEmailVerificationTokenError():
@@ -305,8 +305,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case EmailInUseError():
                         return EmailInUseErrorType()
             case Ok(options):
@@ -375,8 +375,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case EmailInUseError():
                         return EmailInUseErrorType()
                     case InvalidEmailVerificationTokenError():
@@ -411,8 +411,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
             case Ok(options):
                 return GenerateAuthenticationOptionsSuccessType(
                     authentication_options=options_to_json(options)
@@ -447,8 +447,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
             case Ok(options):
                 return GenerateAuthenticationOptionsSuccessType(
                     authentication_options=options_to_json(options)
@@ -487,8 +487,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case InvalidPasskeyAuthenticationCredentialError():
                         return InvalidPasskeyAuthenticationCredentialErrorType()
                     case WebAuthnChallengeNotFoundError():
@@ -536,8 +536,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case InvalidCredentialsError():
                         return InvalidCredentialsErrorType()
                     case InvalidAuthenticationProviderError() as err:
@@ -607,8 +607,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case PasswordResetTokenCooldownError() as err:
                         return PasswordResetTokenCooldownErrorType(
                             remaining_seconds=err.remaining_seconds
@@ -668,8 +668,8 @@ class AuthMutation:
                         return InvalidCredentialsErrorType()
                     case AuthenticatorNotEnabledError():
                         return AuthenticatorNotEnabledErrorType()
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
             case Ok(reset_token):
                 return PasswordResetTokenType.marshal(reset_token)
             case _ as unreachable:
@@ -725,8 +725,8 @@ class AuthMutation:
                         return InvalidPasskeyAuthenticationCredentialErrorType()
                     case TwoFactorAuthenticationNotEnabledError():
                         return TwoFactorAuthenticationNotEnabledErrorType()
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case WebAuthnChallengeNotFoundError():
                         return WebAuthnChallengeNotFoundErrorType()
             case Ok(reset_token):
@@ -1124,8 +1124,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case InvalidPasskeyAuthenticationCredentialError():
                         return InvalidPasskeyAuthenticationCredentialErrorType()
                     case WebAuthnChallengeNotFoundError():
@@ -1173,8 +1173,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case InvalidCredentialsError():
                         return InvalidCredentialsErrorType()
                     case InvalidAuthenticationProviderError() as err:
@@ -1226,8 +1226,8 @@ class AuthMutation:
         ):
             case Err(error):
                 match error:
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
                     case InvalidCredentialsError():
                         return InvalidCredentialsErrorType()
                     case AuthenticatorNotEnabledError():
@@ -1382,8 +1382,8 @@ class AuthMutation:
                         return InvalidCredentialsErrorType()
                     case TwoFactorAuthenticationChallengeNotFoundError():
                         return TwoFactorAuthenticationChallengeNotFoundErrorType()
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
             case _ as unreachable:
@@ -1426,8 +1426,8 @@ class AuthMutation:
                         return InvalidCredentialsErrorType()
                     case TwoFactorAuthenticationChallengeNotFoundError():
                         return TwoFactorAuthenticationChallengeNotFoundErrorType()
-                    case InvalidRecaptchaTokenError():
-                        return InvalidRecaptchaTokenErrorType()
+                    case InvalidCaptchaTokenError():
+                        return InvalidCaptchaTokenErrorType()
             case Ok(account):
                 return AccountType.marshal(account)
             case _ as unreachable:

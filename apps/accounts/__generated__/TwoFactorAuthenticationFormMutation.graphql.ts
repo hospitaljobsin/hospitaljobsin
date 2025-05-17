@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6fa9923056cb9b1376920df0259b83a7>>
+ * @generated SignedSource<<37a536b91231eb4864aa4ce3b99ed0e0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,10 +21,10 @@ export type TwoFactorAuthenticationFormMutation$data = {
     readonly __typename: "AuthenticatorNotEnabledError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidCredentialsError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidCredentialsError";
     readonly message: string;
   } | {
     readonly __typename: "TwoFactorAuthenticationChallengeNotFoundError";
@@ -88,7 +88,7 @@ v5 = {
 v6 = {
   "kind": "InlineFragment",
   "selections": (v4/*: any*/),
-  "type": "InvalidRecaptchaTokenError",
+  "type": "InvalidCaptchaTokenError",
   "abstractKey": null
 },
 v7 = {
@@ -175,16 +175,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "14870971e38bb3f337a5d48a7be3b09b",
+    "cacheID": "896ea02981277b013d8ae2705422a91c",
     "id": null,
     "metadata": {},
     "name": "TwoFactorAuthenticationFormMutation",
     "operationKind": "mutation",
-    "text": "mutation TwoFactorAuthenticationFormMutation(\n  $token: String!\n  $captchaToken: String!\n) {\n  verify2faWithAuthenticator(token: $token, captchaToken: $captchaToken) {\n    __typename\n    ... on TwoFactorAuthenticationChallengeNotFoundError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on Account {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation TwoFactorAuthenticationFormMutation(\n  $token: String!\n  $captchaToken: String!\n) {\n  verify2faWithAuthenticator(token: $token, captchaToken: $captchaToken) {\n    __typename\n    ... on TwoFactorAuthenticationChallengeNotFoundError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on Account {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "92f58d6b8751abbf070788d66f37e21b";
+(node as any).hash = "b26efffba9bd42cd6a777eba6f7efbc0";
 
 export default node;

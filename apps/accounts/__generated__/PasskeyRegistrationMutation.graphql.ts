@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b1e814a3dcb0f8c29f0ac19a4ee9f3f4>>
+ * @generated SignedSource<<cb1f3412cfb3ab705932128fc04ddd3a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,13 +22,13 @@ export type PasskeyRegistrationMutation$data = {
     readonly __typename: "EmailInUseError";
     readonly message: string;
   } | {
+    readonly __typename: "InvalidCaptchaTokenError";
+    readonly message: string;
+  } | {
     readonly __typename: "InvalidEmailVerificationTokenError";
     readonly message: string;
   } | {
     readonly __typename: "InvalidPasskeyRegistrationCredentialError";
-    readonly message: string;
-  } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
     readonly message: string;
   } | {
     // This will never be '%other', but we need some
@@ -135,7 +135,7 @@ v10 = {
 v11 = {
   "kind": "InlineFragment",
   "selections": (v8/*: any*/),
-  "type": "InvalidRecaptchaTokenError",
+  "type": "InvalidCaptchaTokenError",
   "abstractKey": null
 },
 v12 = {
@@ -224,16 +224,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "76a4a501328dc60fb8f184e6e0928702",
+    "cacheID": "c5297b7b738797ba2294c4c1592783ae",
     "id": null,
     "metadata": {},
     "name": "PasskeyRegistrationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyRegistrationMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $passkeyRegistrationResponse: JSON!\n  $passkeyNickname: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  registerWithPasskey(email: $email, emailVerificationToken: $emailVerificationToken, passkeyRegistrationResponse: $passkeyRegistrationResponse, passkeyNickname: $passkeyNickname, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on InvalidPasskeyRegistrationCredentialError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation PasskeyRegistrationMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $passkeyRegistrationResponse: JSON!\n  $passkeyNickname: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  registerWithPasskey(email: $email, emailVerificationToken: $emailVerificationToken, passkeyRegistrationResponse: $passkeyRegistrationResponse, passkeyNickname: $passkeyNickname, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on InvalidPasskeyRegistrationCredentialError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "453924ca33f662ef41ea20dd80d0b21a";
+(node as any).hash = "134974b59fded512e2644ff64eb7de15";
 
 export default node;

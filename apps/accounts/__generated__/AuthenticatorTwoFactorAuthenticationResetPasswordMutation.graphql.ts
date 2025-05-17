@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2924a4bcd11c71fd010aa11112cf0555>>
+ * @generated SignedSource<<af274956340637824cbad770d101dbcb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,13 +21,13 @@ export type AuthenticatorTwoFactorAuthenticationResetPasswordMutation$data = {
     readonly __typename: "AuthenticatorNotEnabledError";
     readonly message: string;
   } | {
+    readonly __typename: "InvalidCaptchaTokenError";
+    readonly message: string;
+  } | {
     readonly __typename: "InvalidCredentialsError";
     readonly message: string;
   } | {
     readonly __typename: "InvalidPasswordResetTokenError";
-    readonly message: string;
-  } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
     readonly message: string;
   } | {
     readonly __typename: "PasswordResetToken";
@@ -123,7 +123,7 @@ v9 = {
 v10 = {
   "kind": "InlineFragment",
   "selections": (v6/*: any*/),
-  "type": "InvalidRecaptchaTokenError",
+  "type": "InvalidCaptchaTokenError",
   "abstractKey": null
 },
 v11 = {
@@ -244,16 +244,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "150c0d9ea97e1b91bdfbe50f6fde12b3",
+    "cacheID": "9b3a33d12df8512d51ce482bfe1c5382",
     "id": null,
     "metadata": {},
     "name": "AuthenticatorTwoFactorAuthenticationResetPasswordMutation",
     "operationKind": "mutation",
-    "text": "mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation(\n  $email: String!\n  $passwordResetToken: String!\n  $twoFactorToken: String!\n  $captchaToken: String!\n) {\n  verify2faPasswordResetWithAuthenticator(email: $email, passwordResetToken: $passwordResetToken, twoFactorToken: $twoFactorToken, captchaToken: $captchaToken) {\n    __typename\n    ... on PasswordResetToken {\n      ...ResetPasswordViewFragment\n    }\n    ... on InvalidPasswordResetTokenError {\n      message\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment ResetPasswordViewFragment on PasswordResetToken {\n  id\n  needs2fa\n  ...TwoFactorAuthenticationResetPasswordFragment\n}\n\nfragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken {\n  twoFactorProviders\n  authProviders\n}\n"
+    "text": "mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation(\n  $email: String!\n  $passwordResetToken: String!\n  $twoFactorToken: String!\n  $captchaToken: String!\n) {\n  verify2faPasswordResetWithAuthenticator(email: $email, passwordResetToken: $passwordResetToken, twoFactorToken: $twoFactorToken, captchaToken: $captchaToken) {\n    __typename\n    ... on PasswordResetToken {\n      ...ResetPasswordViewFragment\n    }\n    ... on InvalidPasswordResetTokenError {\n      message\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment ResetPasswordViewFragment on PasswordResetToken {\n  id\n  needs2fa\n  ...TwoFactorAuthenticationResetPasswordFragment\n}\n\nfragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken {\n  twoFactorProviders\n  authProviders\n}\n"
   }
 };
 })();
 
-(node as any).hash = "321dcd945eef8f3992caacdaa3ccaee4";
+(node as any).hash = "947606180dd40bf770c67d85b80d66e4";
 
 export default node;

@@ -20,7 +20,7 @@ const TwoFactorAuthenticationMutation = graphql`
       ... on InvalidCredentialsError {
         message
       }
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
 
@@ -91,7 +91,7 @@ export default function TwoFactorAuthentication({
 					onAuthEnd();
 				} else if (
 					response.requestSudoModeWithAuthenticator.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");

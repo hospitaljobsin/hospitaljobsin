@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9a89f1d7a7ddb2e6039a6d9655e214ef>>
+ * @generated SignedSource<<38c6097e4ef6c0b603baf4b6c43944dd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type SubmitResetPasswordFormMutation$variables = {
 };
 export type SubmitResetPasswordFormMutation$data = {
   readonly requestPasswordReset: {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
     readonly __typename: "PasswordResetTokenCooldownError";
@@ -82,7 +82,7 @@ v3 = [
         "selections": [
           (v2/*: any*/)
         ],
-        "type": "InvalidRecaptchaTokenError",
+        "type": "InvalidCaptchaTokenError",
         "abstractKey": null
       },
       {
@@ -128,16 +128,16 @@ return {
     "selections": (v3/*: any*/)
   },
   "params": {
-    "cacheID": "3ebaf79a618dd3b3043fd2b239ab0ea7",
+    "cacheID": "11cc647d59e16540825067b015dc9c51",
     "id": null,
     "metadata": {},
     "name": "SubmitResetPasswordFormMutation",
     "operationKind": "mutation",
-    "text": "mutation SubmitResetPasswordFormMutation(\n  $email: String!\n  $captchaToken: String!\n) {\n  requestPasswordReset(email: $email, captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on PasswordResetTokenCooldownError {\n      message\n      remainingSeconds\n    }\n  }\n}\n"
+    "text": "mutation SubmitResetPasswordFormMutation(\n  $email: String!\n  $captchaToken: String!\n) {\n  requestPasswordReset(email: $email, captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on PasswordResetTokenCooldownError {\n      message\n      remainingSeconds\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "845e298eebf0e8429e5029187d005968";
+(node as any).hash = "73a33e988205e0f7a37f67a7c6559052";
 
 export default node;

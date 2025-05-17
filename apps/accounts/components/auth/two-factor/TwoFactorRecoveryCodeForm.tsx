@@ -29,7 +29,7 @@ const TwoFactorRecoveryCodeFormMutation = graphql`
       ... on TwoFactorAuthenticationChallengeNotFoundError {
         message
       }
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
 
@@ -82,7 +82,7 @@ export default function TwoFactorRecoveryCodeForm() {
 			onCompleted(response) {
 				if (
 					response.verify2faWithRecoveryCode.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");

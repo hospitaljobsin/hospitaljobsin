@@ -62,7 +62,7 @@ const RegisterWithPasswordMutation = graphql`
       ... on InvalidEmailVerificationTokenError {
         message
       }
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
       ... on PasswordNotStrongError {
@@ -135,7 +135,7 @@ export default function PasswordRegistration() {
 					});
 				} else if (
 					response.registerWithPassword.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");

@@ -370,7 +370,7 @@ type Generate2FARecoveryCodesSuccess {
 }
 
 """The generate authentication options payload."""
-union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSuccess | InvalidRecaptchaTokenError
+union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSuccess | InvalidCaptchaTokenError
 
 """Generate authentication options success."""
 type GenerateAuthenticationOptionsSuccess {
@@ -400,7 +400,7 @@ type GeneratePasskeyCreationOptionsSuccess {
 }
 
 """The generate passkey registration options payload."""
-union GeneratePasskeyRegistrationOptionsPayload = GeneratePasskeyRegistrationOptionsSuccess | InvalidRecaptchaTokenError | EmailInUseError
+union GeneratePasskeyRegistrationOptionsPayload = GeneratePasskeyRegistrationOptionsSuccess | InvalidCaptchaTokenError | EmailInUseError
 
 """Generate passkey registration options success."""
 type GeneratePasskeyRegistrationOptionsSuccess {
@@ -427,6 +427,12 @@ type InvalidAuthenticationProviderError implements Error {
 
   """Available authentication providers for the account."""
   availableProviders: [AuthProvider!]!
+}
+
+"""Used when an invalid recaptcha token is provided."""
+type InvalidCaptchaTokenError implements Error {
+  """Human readable error message."""
+  message: String!
 }
 
 """Used when invalid credentials are provided."""
@@ -461,12 +467,6 @@ type InvalidPasskeyRegistrationCredentialError implements Error {
 
 """Used when an invalid password reset token is provided."""
 type InvalidPasswordResetTokenError implements Error {
-  """Human readable error message."""
-  message: String!
-}
-
-"""Used when an invalid recaptcha token is provided."""
-type InvalidRecaptchaTokenError implements Error {
   """Human readable error message."""
   message: String!
 }
@@ -778,10 +778,10 @@ input LanguageInput {
 }
 
 """The login with passkey payload."""
-union LoginWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
+union LoginWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidCaptchaTokenError | WebAuthnChallengeNotFoundError
 
 """The login with password payload."""
-union LoginWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidAuthenticationProviderError | TwoFactorAuthenticationRequiredError
+union LoginWithPasswordPayload = Account | InvalidCredentialsError | InvalidCaptchaTokenError | InvalidAuthenticationProviderError | TwoFactorAuthenticationRequiredError
 
 """The logout payload."""
 type LogoutPayload {
@@ -1792,10 +1792,10 @@ type Query {
 }
 
 """The register with passkey payload."""
-union RegisterWithPasskeyPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | InvalidPasskeyRegistrationCredentialError
+union RegisterWithPasskeyPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidCaptchaTokenError | InvalidPasskeyRegistrationCredentialError
 
 """The register with password payload."""
-union RegisterWithPasswordPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidRecaptchaTokenError | PasswordNotStrongError
+union RegisterWithPasswordPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidCaptchaTokenError | PasswordNotStrongError
 
 """The remove organization member payload."""
 union RemoveOrganizationMemberPayload = RemoveOrganizationMemberSuccess | OrganizationNotFoundError | OrganizationMemberNotFoundError | OrganizationAuthorizationError
@@ -1819,10 +1819,10 @@ type RequestEmailVerificationSuccess {
 }
 
 """The request email verification token payload."""
-union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError | InvalidRecaptchaTokenError | InvalidEmailError
+union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError | InvalidCaptchaTokenError | InvalidEmailError
 
 """The request password reset payload."""
-union RequestPasswordResetPayload = RequestPasswordResetSuccess | InvalidRecaptchaTokenError | PasswordResetTokenCooldownError
+union RequestPasswordResetPayload = RequestPasswordResetSuccess | InvalidCaptchaTokenError | PasswordResetTokenCooldownError
 
 """Request password reset success."""
 type RequestPasswordResetSuccess {
@@ -1831,13 +1831,13 @@ type RequestPasswordResetSuccess {
 }
 
 """The request sudo mode with authenticator app payload."""
-union RequestSudoModeWithAuthenticatorPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | AuthenticatorNotEnabledError
+union RequestSudoModeWithAuthenticatorPayload = Account | InvalidCredentialsError | InvalidCaptchaTokenError | AuthenticatorNotEnabledError
 
 """The request sudo mode with passkey payload."""
-union RequestSudoModeWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
+union RequestSudoModeWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidCaptchaTokenError | WebAuthnChallengeNotFoundError
 
 """The request sudo mode with password payload."""
-union RequestSudoModeWithPasswordPayload = Account | InvalidCredentialsError | InvalidRecaptchaTokenError | InvalidAuthenticationProviderError | TwoFactorAuthenticationRequiredError
+union RequestSudoModeWithPasswordPayload = Account | InvalidCredentialsError | InvalidCaptchaTokenError | InvalidAuthenticationProviderError | TwoFactorAuthenticationRequiredError
 
 """The reset password payload."""
 union ResetPasswordPayload = Account | InvalidPasswordResetTokenError | PasswordNotStrongError | TwoFactorAuthenticationChallengeNotFoundError
@@ -2006,19 +2006,19 @@ union UpdateProfilePayload = Account
 union UpdateWebAuthnCredentialPayload = WebAuthnCredential | WebAuthnCredentialNotFoundError
 
 """The verify 2FA password reset with authenticator payload."""
-union Verify2FAPasswordResetWithAuthenticatorPayload = PasswordResetToken | InvalidCredentialsError | AuthenticatorNotEnabledError | InvalidPasswordResetTokenError | InvalidRecaptchaTokenError
+union Verify2FAPasswordResetWithAuthenticatorPayload = PasswordResetToken | InvalidCredentialsError | AuthenticatorNotEnabledError | InvalidPasswordResetTokenError | InvalidCaptchaTokenError
 
 """The verify 2FA password reset with passkey payload."""
-union Verify2FAPasswordResetWithPasskeyPayload = PasswordResetToken | InvalidPasskeyAuthenticationCredentialError | TwoFactorAuthenticationNotEnabledError | InvalidPasswordResetTokenError | InvalidRecaptchaTokenError | WebAuthnChallengeNotFoundError
+union Verify2FAPasswordResetWithPasskeyPayload = PasswordResetToken | InvalidPasskeyAuthenticationCredentialError | TwoFactorAuthenticationNotEnabledError | InvalidPasswordResetTokenError | InvalidCaptchaTokenError | WebAuthnChallengeNotFoundError
 
 """The verify 2FA with authenticator payload."""
-union Verify2FAWithAuthenticatorPayload = Account | InvalidCredentialsError | AuthenticatorNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError
+union Verify2FAWithAuthenticatorPayload = Account | InvalidCredentialsError | AuthenticatorNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidCaptchaTokenError
 
 """The verify 2FA with recovery code payload."""
-union Verify2FAWithRecoveryCodePayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidRecaptchaTokenError
+union Verify2FAWithRecoveryCodePayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidCaptchaTokenError
 
 """The verify email payload."""
-union VerifyEmailPayload = VerifyEmailSuccess | InvalidRecaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
+union VerifyEmailPayload = VerifyEmailSuccess | InvalidCaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
 
 """Verify email success."""
 type VerifyEmailSuccess {

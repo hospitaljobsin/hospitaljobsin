@@ -36,7 +36,7 @@ const VerifyEmailMutation = graphql`
       ... on InvalidEmailVerificationTokenError {
         message
       }
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
       ... on VerifyEmailSuccess {
@@ -56,7 +56,7 @@ const RequestVerificationMutation = graphql`
       ... on InvalidEmailError {
         message
       }
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
       ... on EmailVerificationTokenCooldownError {
@@ -155,7 +155,7 @@ export default function Step2VerificationForm() {
 					});
 				} else if (
 					response.requestEmailVerificationToken.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
@@ -204,7 +204,7 @@ export default function Step2VerificationForm() {
 						message: response.verifyEmail.message,
 					});
 				} else if (
-					response.verifyEmail.__typename === "InvalidRecaptchaTokenError"
+					response.verifyEmail.__typename === "InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");

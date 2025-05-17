@@ -73,13 +73,13 @@ class InvalidEmailVerificationTokenErrorType(BaseErrorType):
 
 
 @strawberry.type(
-    name="InvalidRecaptchaTokenError",
+    name="InvalidCaptchaTokenError",
     description="Used when an invalid recaptcha token is provided.",
 )
-class InvalidRecaptchaTokenErrorType(BaseErrorType):
+class InvalidCaptchaTokenErrorType(BaseErrorType):
     message: str = strawberry.field(
         description="Human readable error message.",
-        default="Invalid recaptcha token provided.",
+        default="Invalid captcha token provided.",
     )
 
 
@@ -378,7 +378,7 @@ RequestEmailVerificationTokenPayload = Annotated[
     RequestEmailVerificationTokenSuccessType
     | EmailInUseErrorType
     | EmailVerificationTokenCooldownErrorType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | InvalidEmailErrorType,
     strawberry.union(
         name="RequestEmailVerificationTokenPayload",
@@ -388,7 +388,7 @@ RequestEmailVerificationTokenPayload = Annotated[
 
 VerifyEmailPayload = Annotated[
     VerifyEmailSuccessType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | InvalidEmailVerificationTokenErrorType
     | EmailInUseErrorType,
     strawberry.union(
@@ -401,7 +401,7 @@ RegisterWithPasswordPayload = Annotated[
     AccountType
     | EmailInUseErrorType
     | InvalidEmailVerificationTokenErrorType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | PasswordNotStrongErrorType,
     strawberry.union(
         name="RegisterWithPasswordPayload",
@@ -413,7 +413,7 @@ RegisterWithPasskeyPayload = Annotated[
     AccountType
     | EmailInUseErrorType
     | InvalidEmailVerificationTokenErrorType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | InvalidPasskeyRegistrationCredentialErrorType,
     strawberry.union(
         name="RegisterWithPasskeyPayload",
@@ -425,7 +425,7 @@ RegisterWithPasskeyPayload = Annotated[
 LoginWithPasskeyPayload = Annotated[
     AccountType
     | InvalidPasskeyAuthenticationCredentialErrorType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | WebAuthnChallengeNotFoundErrorType,
     strawberry.union(
         name="LoginWithPasskeyPayload",
@@ -458,7 +458,7 @@ class RequestPasswordResetSuccessType:
 
 RequestPasswordResetPayload = Annotated[
     RequestPasswordResetSuccessType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | PasswordResetTokenCooldownErrorType,
     strawberry.union(
         name="RequestPasswordResetPayload",
@@ -488,7 +488,7 @@ class GeneratePasskeyRegistrationOptionsSuccessType:
 
 GeneratePasskeyRegistrationOptionsPayload = Annotated[
     GeneratePasskeyRegistrationOptionsSuccessType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | EmailInUseErrorType,
     strawberry.union(
         name="GeneratePasskeyRegistrationOptionsPayload",
@@ -508,7 +508,7 @@ class GenerateAuthenticationOptionsSuccessType:
 
 
 GenerateAuthenticationOptionsPayload = Annotated[
-    GenerateAuthenticationOptionsSuccessType | InvalidRecaptchaTokenErrorType,
+    GenerateAuthenticationOptionsSuccessType | InvalidCaptchaTokenErrorType,
     strawberry.union(
         name="GenerateAuthenticationOptionsPayload",
         description="The generate authentication options payload.",
@@ -661,7 +661,7 @@ CreateWebAuthnCredentialPayload = Annotated[
 RequestSudoModeWithPasskeyPayload = Annotated[
     AccountType
     | InvalidPasskeyAuthenticationCredentialErrorType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | WebAuthnChallengeNotFoundErrorType,
     strawberry.union(
         name="RequestSudoModeWithPasskeyPayload",
@@ -791,7 +791,7 @@ Verify2FAWithAuthenticatorPayload = Annotated[
     | InvalidCredentialsErrorType
     | AuthenticatorNotEnabledErrorType
     | TwoFactorAuthenticationChallengeNotFoundErrorType
-    | InvalidRecaptchaTokenErrorType,
+    | InvalidCaptchaTokenErrorType,
     strawberry.union(
         name="Verify2FAWithAuthenticatorPayload",
         description="The verify 2FA with authenticator payload.",
@@ -803,7 +803,7 @@ Verify2FAWithRecoveryCodePayload = Annotated[
     | InvalidCredentialsErrorType
     | TwoFactorAuthenticationNotEnabledErrorType
     | TwoFactorAuthenticationChallengeNotFoundErrorType
-    | InvalidRecaptchaTokenErrorType,
+    | InvalidCaptchaTokenErrorType,
     strawberry.union(
         name="Verify2FAWithRecoveryCodePayload",
         description="The verify 2FA with recovery code payload.",
@@ -813,7 +813,7 @@ Verify2FAWithRecoveryCodePayload = Annotated[
 LoginWithPasswordPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | InvalidAuthenticationProviderErrorType
     | TwoFactorAuthenticationRequiredErrorType,
     strawberry.union(
@@ -828,7 +828,7 @@ Verify2FAPasswordResetWithAuthenticatorPayload = Annotated[
     | InvalidCredentialsErrorType
     | AuthenticatorNotEnabledErrorType
     | InvalidPasswordResetTokenErrorType
-    | InvalidRecaptchaTokenErrorType,
+    | InvalidCaptchaTokenErrorType,
     strawberry.union(
         name="Verify2FAPasswordResetWithAuthenticatorPayload",
         description="The verify 2FA password reset with authenticator payload.",
@@ -840,7 +840,7 @@ Verify2FAPasswordResetWithPasskeyPayload = Annotated[
     | InvalidPasskeyAuthenticationCredentialErrorType
     | TwoFactorAuthenticationNotEnabledErrorType
     | InvalidPasswordResetTokenErrorType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | WebAuthnChallengeNotFoundErrorType,
     strawberry.union(
         name="Verify2FAPasswordResetWithPasskeyPayload",
@@ -880,7 +880,7 @@ DeletePasswordPayload = Annotated[
 RequestSudoModeWithAuthenticatorPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | AuthenticatorNotEnabledErrorType,
     strawberry.union(
         name="RequestSudoModeWithAuthenticatorPayload",
@@ -891,7 +891,7 @@ RequestSudoModeWithAuthenticatorPayload = Annotated[
 RequestSudoModeWithPasswordPayload = Annotated[
     AccountType
     | InvalidCredentialsErrorType
-    | InvalidRecaptchaTokenErrorType
+    | InvalidCaptchaTokenErrorType
     | InvalidAuthenticationProviderErrorType
     | TwoFactorAuthenticationRequiredErrorType,
     strawberry.union(

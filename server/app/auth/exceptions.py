@@ -42,8 +42,8 @@ class InvalidEmailVerificationTokenError:
     """Raised when an invalid email verification token is provided."""
 
 
-class InvalidRecaptchaTokenError:
-    """Raised when an invalid recaptcha token is provided."""
+class InvalidCaptchaTokenError:
+    """Raised when an invalid captcha token is provided."""
 
 
 class PasswordNotStrongError:

@@ -29,7 +29,7 @@ const TwoFactorAuthenticationFormMutation = graphql`
       ... on TwoFactorAuthenticationChallengeNotFoundError {
         message
       }
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
 
@@ -87,7 +87,7 @@ export default function TwoFactorAuthenticationForm() {
 			onCompleted(response) {
 				if (
 					response.verify2faWithAuthenticator.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");

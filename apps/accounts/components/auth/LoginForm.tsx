@@ -37,7 +37,7 @@ const LoginFormPasswordMutation = graphql`
       ... on InvalidCredentialsError {
         message
       }
-	  ... on InvalidRecaptchaTokenError {
+	  ... on InvalidCaptchaTokenError {
 		message
 	  }
 
@@ -57,7 +57,7 @@ const GenerateAuthenticationOptionsMutation = graphql`
   mutation LoginFormGenerateAuthenticationOptionsMutation($captchaToken: String!) {
     generateAuthenticationOptions(captchaToken: $captchaToken) {
       __typename
-	  ... on InvalidRecaptchaTokenError {
+	  ... on InvalidCaptchaTokenError {
 		message
 	  }
 
@@ -78,7 +78,7 @@ const LoginFormPasskeyMutation = graphql`
       ... on InvalidPasskeyAuthenticationCredentialError {
         message
       }
-	  ... on InvalidRecaptchaTokenError {
+	  ... on InvalidCaptchaTokenError {
 		message
 	  }
 
@@ -169,7 +169,7 @@ export default function LoginForm() {
 					setError("email", { message: response.loginWithPassword.message });
 					setError("password", { message: response.loginWithPassword.message });
 				} else if (
-					response.loginWithPassword.__typename === "InvalidRecaptchaTokenError"
+					response.loginWithPassword.__typename === "InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
@@ -234,7 +234,7 @@ export default function LoginForm() {
 			onCompleted(response) {
 				if (
 					response.generateAuthenticationOptions.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					setIsPasskeysPromptActive(false);
@@ -272,7 +272,7 @@ export default function LoginForm() {
 											setIsPasskeysPromptActive(false);
 											if (
 												response.loginWithPasskey.__typename ===
-												"InvalidRecaptchaTokenError"
+												"InvalidCaptchaTokenError"
 											) {
 												// handle recaptcha failure
 												alert("Recaptcha failed. Please try again.");

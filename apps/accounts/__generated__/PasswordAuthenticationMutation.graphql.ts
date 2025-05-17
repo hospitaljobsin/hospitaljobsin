@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1460b95d0459a2cf426aa61789ba3f4f>>
+ * @generated SignedSource<<6dd40e46780c21e1bece959319920c4e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,10 +21,10 @@ export type PasswordAuthenticationMutation$data = {
     readonly __typename: "InvalidAuthenticationProviderError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidCredentialsError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidCredentialsError";
     readonly message: string;
   } | {
     // This will never be '%other', but we need some
@@ -85,7 +85,7 @@ v5 = {
 v6 = {
   "kind": "InlineFragment",
   "selections": (v4/*: any*/),
-  "type": "InvalidRecaptchaTokenError",
+  "type": "InvalidCaptchaTokenError",
   "abstractKey": null
 },
 v7 = {
@@ -164,16 +164,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b5d6767cebd0dc214efacbb7a7bf4501",
+    "cacheID": "46ce015f41db08738793b357ca2d3ab6",
     "id": null,
     "metadata": {},
     "name": "PasswordAuthenticationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasswordAuthenticationMutation(\n  $password: String!\n  $captchaToken: String!\n) {\n  requestSudoModeWithPassword(password: $password, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on InvalidAuthenticationProviderError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation PasswordAuthenticationMutation(\n  $password: String!\n  $captchaToken: String!\n) {\n  requestSudoModeWithPassword(password: $password, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on InvalidAuthenticationProviderError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "055c9d18fdd69cb39f07ce402ece49d3";
+(node as any).hash = "e8bac1a9c95bb385b97599003ae164af";
 
 export default node;

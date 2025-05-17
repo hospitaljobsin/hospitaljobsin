@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a61ce9d11ebb6811911512f826cbf743>>
+ * @generated SignedSource<<e2ebcea75abdb43a72ae4f21a4e84abb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,10 +21,10 @@ export type PasswordRegistrationMutation$data = {
     readonly __typename: "EmailInUseError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidEmailVerificationTokenError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidEmailVerificationTokenError";
     readonly message: string;
   } | {
     readonly __typename: "PasswordNotStrongError";
@@ -124,7 +124,7 @@ v9 = {
 v10 = {
   "kind": "InlineFragment",
   "selections": (v7/*: any*/),
-  "type": "InvalidRecaptchaTokenError",
+  "type": "InvalidCaptchaTokenError",
   "abstractKey": null
 },
 v11 = {
@@ -211,16 +211,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f30936f9a6ded5f68b37333effd049c2",
+    "cacheID": "26dd2a32ac6314aded016e9798e9be4f",
     "id": null,
     "metadata": {},
     "name": "PasswordRegistrationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasswordRegistrationMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $password: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  registerWithPassword(email: $email, emailVerificationToken: $emailVerificationToken, password: $password, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on PasswordNotStrongError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation PasswordRegistrationMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $password: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  registerWithPassword(email: $email, emailVerificationToken: $emailVerificationToken, password: $password, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on PasswordNotStrongError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "ceeb2698d5a374c2ed67517d59b1d3c0";
+(node as any).hash = "4fe2eabffb0f654cdc11422b52210b26";
 
 export default node;

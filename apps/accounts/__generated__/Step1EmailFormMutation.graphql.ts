@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3b6fcf7bb3c65bb7682dfe1c3faa9bdf>>
+ * @generated SignedSource<<580994585174d0d3148ac723187d7890>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,10 +22,10 @@ export type Step1EmailFormMutation$data = {
     readonly message: string;
     readonly remainingSeconds: number;
   } | {
-    readonly __typename: "InvalidEmailError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidEmailError";
     readonly message: string;
   } | {
     readonly __typename: "RequestEmailVerificationSuccess";
@@ -121,7 +121,7 @@ v5 = [
       {
         "kind": "InlineFragment",
         "selections": (v3/*: any*/),
-        "type": "InvalidRecaptchaTokenError",
+        "type": "InvalidCaptchaTokenError",
         "abstractKey": null
       },
       {
@@ -158,16 +158,16 @@ return {
     "selections": (v5/*: any*/)
   },
   "params": {
-    "cacheID": "317d3aac8b0c3c38a88a97b457cda514",
+    "cacheID": "e0909f8e99444d9710f8320a7f35d6fe",
     "id": null,
     "metadata": {},
     "name": "Step1EmailFormMutation",
     "operationKind": "mutation",
-    "text": "mutation Step1EmailFormMutation(\n  $email: String!\n  $captchaToken: String!\n) {\n  requestEmailVerificationToken(email: $email, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailError {\n      message\n    }\n    ... on EmailVerificationTokenCooldownError {\n      message\n      remainingSeconds\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on RequestEmailVerificationSuccess {\n      message\n      remainingSeconds\n    }\n  }\n}\n"
+    "text": "mutation Step1EmailFormMutation(\n  $email: String!\n  $captchaToken: String!\n) {\n  requestEmailVerificationToken(email: $email, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailError {\n      message\n    }\n    ... on EmailVerificationTokenCooldownError {\n      message\n      remainingSeconds\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on RequestEmailVerificationSuccess {\n      message\n      remainingSeconds\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "1e4931bc8a0330cd0d3b02910ce73540";
+(node as any).hash = "60a13c0c1e5d353bd6d0b4428277022c";
 
 export default node;

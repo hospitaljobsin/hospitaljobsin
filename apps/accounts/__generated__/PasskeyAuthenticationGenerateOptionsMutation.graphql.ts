@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8b184e7b3e6e7ef3032e53c064866eda>>
+ * @generated SignedSource<<731aff2f1b2d2fa6a2e32079a037dab5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,7 +17,7 @@ export type PasskeyAuthenticationGenerateOptionsMutation$data = {
     readonly __typename: "GenerateAuthenticationOptionsSuccess";
     readonly authenticationOptions: any;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
     // This will never be '%other', but we need some
@@ -71,7 +71,7 @@ v1 = [
             "storageKey": null
           }
         ],
-        "type": "InvalidRecaptchaTokenError",
+        "type": "InvalidCaptchaTokenError",
         "abstractKey": null
       },
       {
@@ -110,16 +110,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "cfcf8c3ff49ed026ae430999eb51035e",
+    "cacheID": "046a7a9359f9c48c64cb6b1a724e69e2",
     "id": null,
     "metadata": {},
     "name": "PasskeyAuthenticationGenerateOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyAuthenticationGenerateOptionsMutation(\n  $captchaToken: String!\n) {\n  generateReauthenticationOptions(captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on GenerateAuthenticationOptionsSuccess {\n      authenticationOptions\n    }\n  }\n}\n"
+    "text": "mutation PasskeyAuthenticationGenerateOptionsMutation(\n  $captchaToken: String!\n) {\n  generateReauthenticationOptions(captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on GenerateAuthenticationOptionsSuccess {\n      authenticationOptions\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "607b36bb4035bf399026eb9edaee6b76";
+(node as any).hash = "5bad14f59f9d01d8ef606eea5f3f8a54";
 
 export default node;

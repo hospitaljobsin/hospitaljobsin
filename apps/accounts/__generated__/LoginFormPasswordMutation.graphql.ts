@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<96f1c26c6ed2cd300d549c9eef961adb>>
+ * @generated SignedSource<<73ed5f96668a41273ed9c443185b5fb5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,10 +21,10 @@ export type LoginFormPasswordMutation$data = {
     readonly availableProviders: ReadonlyArray<AuthProvider>;
     readonly message: string;
   } | {
-    readonly __typename: "InvalidCredentialsError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidCredentialsError";
     readonly message: string;
   } | {
     readonly __typename: "TwoFactorAuthenticationRequiredError";
@@ -99,7 +99,7 @@ v7 = {
 v8 = {
   "kind": "InlineFragment",
   "selections": (v6/*: any*/),
-  "type": "InvalidRecaptchaTokenError",
+  "type": "InvalidCaptchaTokenError",
   "abstractKey": null
 },
 v9 = {
@@ -197,16 +197,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3a0a1bfd3e01dee0242c6a2c479a576f",
+    "cacheID": "77977c29bc97c6f660ab4a0563d4e194",
     "id": null,
     "metadata": {},
     "name": "LoginFormPasswordMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormPasswordMutation(\n  $email: String!\n  $password: String!\n  $captchaToken: String!\n) {\n  loginWithPassword(email: $email, password: $password, captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on InvalidAuthenticationProviderError {\n      message\n      availableProviders\n    }\n    ... on TwoFactorAuthenticationRequiredError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation LoginFormPasswordMutation(\n  $email: String!\n  $password: String!\n  $captchaToken: String!\n) {\n  loginWithPassword(email: $email, password: $password, captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on InvalidAuthenticationProviderError {\n      message\n      availableProviders\n    }\n    ... on TwoFactorAuthenticationRequiredError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "e019b818735fea1839979579687b2b50";
+(node as any).hash = "38d35f9b0f7e9f50896dc5ffc62f2ba5";
 
 export default node;

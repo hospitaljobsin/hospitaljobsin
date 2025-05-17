@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f1e124b61fb9593a897a1037b5136db5>>
+ * @generated SignedSource<<2aab0361e36993fda8d529ba44e7063c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,7 +22,7 @@ export type PasskeyRegistrationOptionsMutation$data = {
     readonly __typename: "GeneratePasskeyRegistrationOptionsSuccess";
     readonly registrationOptions: any;
   } | {
-    readonly __typename: "InvalidRecaptchaTokenError";
+    readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
   } | {
     // This will never be '%other', but we need some
@@ -101,7 +101,7 @@ v4 = [
       {
         "kind": "InlineFragment",
         "selections": (v3/*: any*/),
-        "type": "InvalidRecaptchaTokenError",
+        "type": "InvalidCaptchaTokenError",
         "abstractKey": null
       },
       {
@@ -148,16 +148,16 @@ return {
     "selections": (v4/*: any*/)
   },
   "params": {
-    "cacheID": "4d1ae4f29eadf8cb2858a9de91afe786",
+    "cacheID": "f9aab4025ac085d78283e334adfaa8da",
     "id": null,
     "metadata": {},
     "name": "PasskeyRegistrationOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyRegistrationOptionsMutation(\n  $email: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  generatePasskeyRegistrationOptions(email: $email, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidRecaptchaTokenError {\n      message\n    }\n    ... on GeneratePasskeyRegistrationOptionsSuccess {\n      registrationOptions\n    }\n  }\n}\n"
+    "text": "mutation PasskeyRegistrationOptionsMutation(\n  $email: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  generatePasskeyRegistrationOptions(email: $email, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on GeneratePasskeyRegistrationOptionsSuccess {\n      registrationOptions\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "bb4ca2e6374affc04fb89d62e8a398f3";
+(node as any).hash = "0992787673b5f876e749f66a46fbbdd7";
 
 export default node;

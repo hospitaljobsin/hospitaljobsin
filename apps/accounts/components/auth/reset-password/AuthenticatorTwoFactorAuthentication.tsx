@@ -23,7 +23,7 @@ const AuthenticatorTwoFactorAuthenticationResetPasswordMutation = graphql`
       ... on AuthenticatorNotEnabledError {
         message
       }
-	  ... on InvalidRecaptchaTokenError {
+	  ... on InvalidCaptchaTokenError {
 		message
 	  }
     }
@@ -87,7 +87,7 @@ export default function AuthenticatorTwoFactorAuthentication({
 			onCompleted(response) {
 				if (
 					response.verify2faPasswordResetWithAuthenticator.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					alert("Recaptcha token is invalid");
 					onAuthEnd();

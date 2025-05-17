@@ -15,7 +15,7 @@ const GenerateReauthenticationOptionsMutation = graphql`
   mutation PasskeyAuthenticationGenerateOptionsMutation($captchaToken: String!) {
     generateReauthenticationOptions(captchaToken: $captchaToken) {
       __typename
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
 
@@ -36,7 +36,7 @@ const PasskeyAuthenticationMutation = graphql`
       ... on InvalidPasskeyAuthenticationCredentialError {
         message
       }
-      ... on InvalidRecaptchaTokenError {
+      ... on InvalidCaptchaTokenError {
         message
       }
 
@@ -93,7 +93,7 @@ export default function PasskeyAuthentication({
 			onCompleted(response) {
 				if (
 					response.generateReauthenticationOptions.__typename ===
-					"InvalidRecaptchaTokenError"
+					"InvalidCaptchaTokenError"
 				) {
 					// handle recaptcha failure
 					setIsPasskeysPromptActive(false);
@@ -124,7 +124,7 @@ export default function PasskeyAuthentication({
 											setIsPasskeysPromptActive(false);
 											if (
 												response.requestSudoModeWithPasskey.__typename ===
-												"InvalidRecaptchaTokenError"
+												"InvalidCaptchaTokenError"
 											) {
 												// handle recaptcha failure
 												alert("Recaptcha failed. Please try again.");
