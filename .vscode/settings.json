@@ -22,23 +22,6 @@
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": "explicit"
 	},
-	"relay.projects": [
-		{
-			"name": "Accounts UI",
-			"rootDirectory": "${workspaceFolder}/apps/accounts",
-			"pathToConfig": "relay.config.js"
-		},
-		{
-			"name": "Seeker Portal UI",
-			"rootDirectory": "${workspaceFolder}/apps/seeker-portal",
-			"pathToConfig": "relay.config.js"
-		},
-		{
-			"name": "Recruiter Portal UI",
-			"rootDirectory": "${workspaceFolder}/apps/recruiter-portal",
-			"pathToConfig": "relay.config.js"
-		}
-	],
 	"terminal.integrated.env.linux": {
 		"PYTHONPATH": "${workspaceFolder}/server"
 	},
