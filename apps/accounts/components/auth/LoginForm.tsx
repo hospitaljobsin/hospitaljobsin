@@ -139,7 +139,7 @@ export default function LoginForm() {
 		reValidateMode: "onChange",
 	});
 
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 
 	function getOauth2ErrorMessage(errorCode: string): string {
 		switch (errorCode) {
@@ -151,11 +151,11 @@ export default function LoginForm() {
 	}
 
 	async function onSubmit(values: z.infer<typeof loginSchema>) {
-		if (!executeRecaptcha) {
+		if (!executeCaptcha) {
 			console.log("Recaptcha not loaded");
 			return;
 		}
-		const token = await executeRecaptcha("login_password");
+		const token = await executeCaptcha("login_password");
 		commitPasswordLoginMutation({
 			variables: {
 				email: values.email,
@@ -219,12 +219,12 @@ export default function LoginForm() {
 	}
 
 	async function handlePasskeyLogin() {
-		if (!executeRecaptcha) {
+		if (!executeCaptcha) {
 			console.log("Recaptcha not loaded");
 			return;
 		}
 		setIsPasskeysPromptActive(true);
-		const token = await executeRecaptcha(
+		const token = await executeCaptcha(
 			"passkey_generate_authentication_options",
 		);
 		commitGenerateAuthenticationOptionsMutation({
@@ -251,7 +251,7 @@ export default function LoginForm() {
 						optionsJSON: JSON.parse(authenticationOptions),
 					})
 						.then((authenticationResponse) => {
-							executeRecaptcha("login_passkey")
+							executeCaptcha("login_passkey")
 								.then((captchaToken) => {
 									commitPasskeyLoginMutation({
 										variables: {

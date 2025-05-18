@@ -90,7 +90,7 @@ export default function PasskeyRegistration() {
 	);
 	const email = SignupContext.useSelector((state) => state.context.email);
 	const fullName = SignupContext.useSelector((state) => state.context.fullName);
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 
 	const [commitRegister, isCommitRegisterInFlight] =
 		useMutation<PasskeyRegistrationMutation>(RegisterWithPasskeyMutation);
@@ -116,13 +116,11 @@ export default function PasskeyRegistration() {
 	const onSubmit = async (
 		values: z.infer<typeof passkeyRegistrationSchema>,
 	) => {
-		if (!executeRecaptcha) return;
+		if (!executeCaptcha) return;
 
 		setIsPasskeysPromptActive(true);
 
-		const token = await executeRecaptcha(
-			"passkey_generate_registration_options",
-		);
+		const token = await executeCaptcha("passkey_generate_registration_options");
 
 		commitGenerateRegistrationOptions({
 			variables: {
@@ -158,7 +156,7 @@ export default function PasskeyRegistration() {
 						optionsJSON: JSON.parse(registrationOptions),
 					})
 						.then((registrationResponse) => {
-							executeRecaptcha("passkey_register")
+							executeCaptcha("passkey_register")
 								.then((captchaToken) => {
 									commitRegister({
 										variables: {

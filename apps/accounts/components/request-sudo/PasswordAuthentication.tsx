@@ -67,18 +67,18 @@ export default function PasswordAuthentication({
 		resolver: zodResolver(passwordAuthenticationSchema),
 	});
 
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 
 	async function onSubmit(
 		values: z.infer<typeof passwordAuthenticationSchema>,
 	) {
 		onAuthStart();
-		if (!executeRecaptcha) {
+		if (!executeCaptcha) {
 			console.log("Recaptcha not loaded");
 			onAuthEnd();
 			return;
 		}
-		const token = await executeRecaptcha("login_password");
+		const token = await executeCaptcha("login_password");
 		commitPasswordLoginMutation({
 			variables: {
 				password: values.password,

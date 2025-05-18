@@ -46,7 +46,7 @@ export default function Step1EmailForm() {
 	const emailError = SignupContext.useSelector(
 		(state) => state.context.emailError,
 	);
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 	const { register, handleSubmit, formState, setError } = useForm({
 		resolver: zodResolver(step1Schema),
 		defaultValues: { email: email || "" },
@@ -65,9 +65,9 @@ export default function Step1EmailForm() {
 	);
 
 	const onSubmit = async (data: { email: string }) => {
-		if (!executeRecaptcha) return;
+		if (!executeCaptcha) return;
 
-		const token = await executeRecaptcha("email_verification");
+		const token = await executeCaptcha("email_verification");
 		commitRequestVerification({
 			variables: { email: data.email, captchaToken: token },
 			onCompleted(response) {

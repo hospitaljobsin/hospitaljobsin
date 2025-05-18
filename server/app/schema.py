@@ -71,4 +71,4 @@ def create_schema(app_settings: AppSettings) -> Schema:
     )
 
 
-schema = create_schema(get_settings(AppSettings))
+schema = create_schema(app_settings=get_settings(AppSettings))

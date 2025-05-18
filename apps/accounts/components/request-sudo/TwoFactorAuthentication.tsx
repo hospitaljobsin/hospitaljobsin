@@ -63,18 +63,18 @@ export default function TwoFactorAuthentication({
 		resolver: zodResolver(twoFactorAuthenticationSchema),
 	});
 
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 
 	async function onSubmit(
 		values: z.infer<typeof twoFactorAuthenticationSchema>,
 	) {
 		onAuthStart();
-		if (!executeRecaptcha) {
+		if (!executeCaptcha) {
 			console.log("Recaptcha not loaded");
 			onAuthEnd();
 			return;
 		}
-		const token = await executeRecaptcha("login_twoFactorToken");
+		const token = await executeCaptcha("login_twoFactorToken");
 		committwoFactorTokenLoginMutation({
 			variables: {
 				twoFactorToken: values.twoFactorToken,

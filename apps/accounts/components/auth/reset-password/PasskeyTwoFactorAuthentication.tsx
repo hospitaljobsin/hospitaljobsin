@@ -86,19 +86,19 @@ export default function PasskeyTwoFactorAuthentication({
 	] = useMutation<PasskeyTwoFactorAuthenticationGenerateOptionsMutation>(
 		GenerateAuthenticationOptionsMutation,
 	);
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 	const [isPasskeysPromptActive, setIsPasskeysPromptActive] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	async function handlePasskeyAuthentication() {
 		onAuthStart();
-		if (!executeRecaptcha) {
+		if (!executeCaptcha) {
 			console.log("Recaptcha not loaded");
 			onAuthEnd();
 			return;
 		}
 		setIsPasskeysPromptActive(true);
-		const token = await executeRecaptcha(
+		const token = await executeCaptcha(
 			"reset_password_passkey_generate_authentication_options",
 		);
 		commitGenerateReauthenticationOptionsMutation({
@@ -126,7 +126,7 @@ export default function PasskeyTwoFactorAuthentication({
 						optionsJSON: JSON.parse(authenticationOptions),
 					})
 						.then((authenticationResponse) => {
-							executeRecaptcha("password_reset_authenticate_passkey")
+							executeCaptcha("password_reset_authenticate_passkey")
 								.then((captchaToken) => {
 									commitPasskeyAuthenticateMutation({
 										variables: {

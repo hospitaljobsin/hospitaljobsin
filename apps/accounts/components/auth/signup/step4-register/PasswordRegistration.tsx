@@ -81,7 +81,7 @@ export default function PasswordRegistration() {
 	);
 	const email = SignupContext.useSelector((state) => state.context.email);
 	const fullName = SignupContext.useSelector((state) => state.context.fullName);
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 	const {
 		register,
 		handleSubmit,
@@ -100,9 +100,9 @@ export default function PasswordRegistration() {
 		useState(false);
 
 	const onSubmit = async (data: z.infer<typeof passwordRegistrationSchema>) => {
-		if (!executeRecaptcha) return;
+		if (!executeCaptcha) return;
 
-		const token = await executeRecaptcha("register");
+		const token = await executeCaptcha("register");
 		commitRegisterWithPassword({
 			variables: {
 				email,

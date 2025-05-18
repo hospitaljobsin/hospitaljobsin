@@ -67,15 +67,15 @@ export default function AuthenticatorTwoFactorAuthentication({
 		resolver: zodResolver(resetPassword2faSchema),
 	});
 
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 
 	async function onSubmit(values: z.infer<typeof resetPassword2faSchema>) {
-		if (!executeRecaptcha) {
+		if (!executeCaptcha) {
 			console.error("Recaptcha not loaded");
 			return;
 		}
 
-		const token = await executeRecaptcha("reset_password_2fa");
+		const token = await executeCaptcha("reset_password_2fa");
 		onAuthStart();
 		commitMutation({
 			variables: {

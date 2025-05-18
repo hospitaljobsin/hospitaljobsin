@@ -66,14 +66,14 @@ export default function TwoFactorRecoveryCodeForm() {
 		resolver: zodResolver(twoFactorRecoveryCodeForm),
 	});
 
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 
 	async function onSubmit(values: z.infer<typeof twoFactorRecoveryCodeForm>) {
-		if (!executeRecaptcha) {
+		if (!executeCaptcha) {
 			console.log("Recaptcha not loaded");
 			return;
 		}
-		const captchaToken = await executeRecaptcha("2fa_challenge_verification");
+		const captchaToken = await executeCaptcha("2fa_challenge_verification");
 		commitMutation({
 			variables: {
 				token: values.token,

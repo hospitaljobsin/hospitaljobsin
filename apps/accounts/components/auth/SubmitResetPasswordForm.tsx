@@ -53,14 +53,14 @@ export default function SubmitResetPasswordFrom() {
 		resolver: zodResolver(submitResetPasswordSchema),
 	});
 
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 
 	async function onSubmit(values: z.infer<typeof submitResetPasswordSchema>) {
-		if (!executeRecaptcha) {
+		if (!executeCaptcha) {
 			console.log("Recaptcha not loaded");
 			return;
 		}
-		const token = await executeRecaptcha("password_reset_request");
+		const token = await executeCaptcha("password_reset_request");
 		commitMutation({
 			variables: {
 				email: values.email,

@@ -5,9 +5,7 @@ import type { ReactNode } from "react";
 import { createContext, useContext, useRef, useState } from "react";
 
 type TurnstileContextType = {
-	executeRecaptcha:
-		| ((event: string) => Promise<string | undefined>)
-		| undefined;
+	executeCaptcha: ((event: string) => Promise<string | undefined>) | undefined;
 	token: string | null;
 };
 
@@ -49,7 +47,7 @@ export const TurnstileProvider = ({ children }: { children: ReactNode }) => {
 	return (
 		<TurnstileContext.Provider
 			value={{
-				executeRecaptcha: executeTurnstile,
+				executeCaptcha: executeTurnstile,
 				token,
 			}}
 		>

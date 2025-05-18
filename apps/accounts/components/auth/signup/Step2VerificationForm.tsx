@@ -83,7 +83,7 @@ export default function Step2VerificationForm() {
 	const cooldownSeconds = SignupContext.useSelector(
 		(state) => state.context.cooldownSeconds,
 	);
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 	const {
 		control,
 		handleSubmit,
@@ -127,9 +127,9 @@ export default function Step2VerificationForm() {
 	}
 
 	const handleResendVerification = async () => {
-		if (!executeRecaptcha) return;
+		if (!executeCaptcha) return;
 
-		const token = await executeRecaptcha("email_verification_resend");
+		const token = await executeCaptcha("email_verification_resend");
 		commitResendVerification({
 			variables: { email, captchaToken: token },
 			onCompleted(response) {
@@ -179,9 +179,9 @@ export default function Step2VerificationForm() {
 	};
 
 	const onSubmit = async (data: { emailVerificationToken: string }) => {
-		if (!executeRecaptcha) return;
+		if (!executeCaptcha) return;
 
-		const token = await executeRecaptcha("verify_email");
+		const token = await executeCaptcha("verify_email");
 		commitVerifyEmail({
 			variables: {
 				email,

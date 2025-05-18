@@ -73,17 +73,17 @@ export default function PasskeyAuthentication({
 	);
 
 	const [isPasskeysPromptActive, setIsPasskeysPromptActive] = useState(false);
-	const { executeRecaptcha } = useTurnstile();
+	const { executeCaptcha } = useTurnstile();
 
 	async function handlePasskeyAuthentication() {
 		onAuthStart();
-		if (!executeRecaptcha) {
+		if (!executeCaptcha) {
 			console.log("Recaptcha not loaded");
 			onAuthEnd();
 			return;
 		}
 		setIsPasskeysPromptActive(true);
-		const token = await executeRecaptcha(
+		const token = await executeCaptcha(
 			"passkey_generate_authentication_options",
 		);
 		commitGenerateReauthenticationOptionsMutation({
@@ -111,7 +111,7 @@ export default function PasskeyAuthentication({
 						optionsJSON: JSON.parse(authenticationOptions),
 					})
 						.then((authenticationResponse) => {
-							executeRecaptcha("sudo_authenticate_passkey")
+							executeCaptcha("sudo_authenticate_passkey")
 								.then((captchaToken) => {
 									commitPasskeyAuthenticateMutation({
 										variables: {
