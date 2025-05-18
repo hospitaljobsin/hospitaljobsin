@@ -148,26 +148,39 @@ export default function LandingView() {
 				</section>
 			</div>
 			{/* Testimonial/CTA Section */}
-			<section className="w-full bg-background-400 rounded-xl p-8 sm:p-12 flex flex-col items-center gap-8 mx-auto">
-				<div className="flex flex-col items-center text-center max-w-2xl gap-4">
-					<h2 className="text-2xl sm:text-3xl font-semibold">
-						Ready to transform your healthcare recruitment?
-					</h2>
-					<p className="text-foreground-600">
-						Join innovative hospitals using our platform to find and recruit top
-						medical talent more efficiently.
-					</p>
+			<section className="w-full bg-background-400 rounded-xl p-8 sm:p-12">
+				<div className="mx-auto max-w-5xl flex items-start justify-between gap-8 px-4">
+					<div className="w-52 h-52 hidden sm:block">
+						<img
+							src="/images/getting-started-image.png"
+							alt="Get Started"
+							loading="eager"
+							className="object-cover scale-200 object-bottom"
+							fetchPriority="high"
+						/>
+					</div>
+					<div className="flex flex-col items-end gap-8 max-w-xl">
+						<div className="flex flex-col items-end text-right w-full gap-4">
+							<h2 className="text-2xl sm:text-3xl font-semibold">
+								Ready to transform your healthcare recruitment?
+							</h2>
+							<p className="text-foreground-600">
+								Join innovative hospitals using our platform to find and recruit
+								top medical talent more efficiently.
+							</p>
+						</div>
+						<Button
+							variant="solid"
+							color="primary"
+							size="lg"
+							as={"a"}
+							href={links.dashboard}
+							className="font-medium"
+						>
+							Get Started Now
+						</Button>
+					</div>
 				</div>
-				<Button
-					variant="solid"
-					color="primary"
-					size="lg"
-					as={"a"}
-					href={links.dashboard}
-					className="font-medium"
-				>
-					Get Started Now
-				</Button>
 			</section>
 		</div>
 	);
