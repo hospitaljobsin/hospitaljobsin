@@ -36,7 +36,10 @@ export default function LandingHeader() {
 					<Link href={links.landing} className="font-medium text-inherit">
 						<Logo />
 					</Link>
-					<Link href={links.landing} className="font-medium text-inherit">
+					<Link
+						href={links.landing}
+						className="font-medium text-inherit hidden sm:block"
+					>
 						{APP_NAME}
 					</Link>
 				</NavbarBrand>
