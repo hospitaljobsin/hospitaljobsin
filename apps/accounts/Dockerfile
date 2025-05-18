@@ -15,7 +15,6 @@ WORKDIR /app
 
 COPY ./apps/accounts/package.json ./apps/accounts/pnpm-lock.yaml ./apps/accounts/.npmrc ./apps/accounts/
 COPY ./schema/ ./schema/
-COPY ./relay.config.json ./relay.config.json
 
 WORKDIR /app/apps/accounts
 
@@ -50,7 +49,7 @@ ARG NEXT_PUBLIC_ENVIRONMENT
 ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 # Add any other NEXT_PUBLIC variables your app needs
 
-RUN pnpm run relay
+RUN pnpm run relay relay.config.json
 
 RUN pnpm build
 

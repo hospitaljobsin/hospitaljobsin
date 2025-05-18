@@ -15,7 +15,6 @@ WORKDIR /app
 
 COPY ./apps/seeker-portal/package.json ./apps/seeker-portal/pnpm-lock.yaml ./apps/seeker-portal/.npmrc ./apps/seeker-portal/
 COPY ./schema/ ./schema/
-COPY ./relay.config.json ./relay.config.json
 
 WORKDIR /app/apps/seeker-portal
 
@@ -50,7 +49,7 @@ ARG NEXT_PUBLIC_ENVIRONMENT
 ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 # Add any other NEXT_PUBLIC variables your app needs
 
-RUN pnpm run relay
+RUN pnpm run relay relay.config.json
 
 RUN pnpm build
 

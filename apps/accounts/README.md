@@ -38,7 +38,7 @@ Create a `.env` file, referencing the template [here](./.env.example)
 ### 1. Start Relay Compiler
 To start the Relay compiler, run the following command:
 ```bash
-pnpm run relay --watch
+pnpm run relay --watch ../../relay.config.json
 ```
 
 ### 2. Run server
