@@ -1,4 +1,5 @@
 "use client";
+import { APP_NAME } from "@/lib/constants";
 import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import { Button, Card, CardBody } from "@heroui/react";
@@ -55,7 +56,7 @@ export default function LandingView() {
 								{/* Image container - sized and positioned to "pop out" */}
 								<div className="absolute left-[-7.5%] right-[-7.5%] bottom-0 top-[-25%] overflow-hidden">
 									<Image
-										src="/images/hero-image.png"
+										src="/images/hero-image.jpg"
 										alt="Hero Image"
 										fill
 										className="object-cover object-top"
@@ -88,7 +89,7 @@ export default function LandingView() {
 						</p>
 					</div>
 
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full -mt-4">
 						<FeatureCard
 							icon={<FileText className="w-10 h-10 text-primary" />}
 							title="Job Management"
@@ -111,7 +112,7 @@ export default function LandingView() {
 				<section className="w-full flex flex-col items-center gap-12">
 					<div className="text-center max-w-3xl">
 						<h2 className="text-3xl sm:text-4xl font-semibold mb-4">
-							Why Choose Hospital Jobs Recruiter?
+							Why Choose {APP_NAME}?
 						</h2>
 						<p className="text-lg text-foreground-600">
 							Our platform is designed specifically for healthcare recruitment
@@ -146,30 +147,29 @@ export default function LandingView() {
 						</CardBody>
 					</Card>
 				</section>
-
-				{/* Testimonial/CTA Section */}
-				<section className="w-full bg-background-100 rounded-xl p-8 sm:p-12 flex flex-col items-center gap-8">
-					<div className="flex flex-col items-center text-center max-w-2xl gap-4">
-						<h2 className="text-2xl sm:text-3xl font-semibold">
-							Ready to transform your healthcare recruitment?
-						</h2>
-						<p className="text-foreground-600">
-							Join innovative hospitals using our platform to find and recruit
-							top medical talent more efficiently.
-						</p>
-					</div>
-					<Button
-						variant="solid"
-						color="primary"
-						size="lg"
-						as={"a"}
-						href={links.dashboard}
-						className="font-medium"
-					>
-						Get Started Now
-					</Button>
-				</section>
 			</div>
+			{/* Testimonial/CTA Section */}
+			<section className="w-full bg-background-400 rounded-xl p-8 sm:p-12 flex flex-col items-center gap-8 mx-auto">
+				<div className="flex flex-col items-center text-center max-w-2xl gap-4">
+					<h2 className="text-2xl sm:text-3xl font-semibold">
+						Ready to transform your healthcare recruitment?
+					</h2>
+					<p className="text-foreground-600">
+						Join innovative hospitals using our platform to find and recruit top
+						medical talent more efficiently.
+					</p>
+				</div>
+				<Button
+					variant="solid"
+					color="primary"
+					size="lg"
+					as={"a"}
+					href={links.dashboard}
+					className="font-medium"
+				>
+					Get Started Now
+				</Button>
+			</section>
 		</div>
 	);
 }
