@@ -57,6 +57,7 @@ export default function LandingView() {
 									<img
 										src="/images/hero-image.png"
 										alt="Hero"
+										loading="eager"
 										className="object-cover object-top"
 										fetchPriority="high"
 										style={{
