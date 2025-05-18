@@ -4,7 +4,6 @@ import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import { Button, Card, CardBody } from "@heroui/react";
 import { Briefcase, CheckCircle, FileText, Shield, Users } from "lucide-react";
-import Image from "next/image";
 import BenefitItem from "./BenefitItem";
 import FeatureCard from "./FeatureCard";
 import LandingHeader from "./LandingHeader";
@@ -55,10 +54,9 @@ export default function LandingView() {
 							<div className="absolute inset-x-0 bottom-0 h-[100%] overflow-visible">
 								{/* Image container - sized and positioned to "pop out" */}
 								<div className="absolute left-[-7.5%] right-[-7.5%] bottom-0 top-[-25%] overflow-hidden">
-									<Image
-										src="/images/hero-image.jpg"
-										alt="Hero Image"
-										fill
+									<img
+										src="/images/hero-image.png"
+										alt="Hero"
 										className="object-cover object-top"
 										fetchPriority="high"
 										style={{
