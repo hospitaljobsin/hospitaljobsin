@@ -33,10 +33,10 @@ export default function LandingHeader() {
 					className="md:hidden"
 				/>
 				<NavbarBrand className="flex items-center gap-4">
-					<Link href={links.dashboard} className="font-medium text-inherit">
+					<Link href={links.landing} className="font-medium text-inherit">
 						<Logo />
 					</Link>
-					<Link href={links.dashboard} className="font-medium text-inherit">
+					<Link href={links.landing} className="font-medium text-inherit">
 						{APP_NAME}
 					</Link>
 				</NavbarBrand>
