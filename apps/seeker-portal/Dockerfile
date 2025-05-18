@@ -50,7 +50,7 @@ ARG NEXT_PUBLIC_ENVIRONMENT
 ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 # Add any other NEXT_PUBLIC variables your app needs
 
-RUN pnpm run relay /app/relay.config.json
+RUN pnpm run relay
 
 RUN pnpm build
 

@@ -44,7 +44,7 @@ jobs:
 
       - name: Run Relay Compiler
         working-directory: ./apps/recruiter-portal
-        run: pnpm run relay ../../relay.config.json
+        run: pnpm run relay 
 
       - name: Check for uncommitted changes
         working-directory: ./apps/recruiter-portal
