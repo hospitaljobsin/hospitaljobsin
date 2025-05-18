@@ -7,34 +7,19 @@ windows:
         - uv run scripts/run_server.py
 
   - seeker_portal:
-      layout: even-horizontal
-      panes:
-        - next-server:
-          - cd apps/seeker-portal
-          - pnpm run dev
-        - relay:
-          - cd apps/seeker-portal
-          - pnpm run relay --watch ../../relay.config.json --project seeker-portal
+        - cd apps/seeker-portal
+        - pnpm run dev
 
   - recruiter_portal:
-      layout: even-horizontal
-      panes:
-        - next-server:
-          - cd apps/recruiter-portal
-          - pnpm run dev
-        - relay:
-          - cd apps/recruiter-portal
-          - pnpm run relay --watch ../../relay.config.json --project recruiter-portal
+        - cd apps/recruiter-portal
+        - pnpm run dev
 
   - accounts:
-      layout: even-horizontal
-      panes:
-        - next-server:
-          - cd apps/accounts
-          - pnpm run dev
-        - relay:
-          - cd apps/accounts
-          - pnpm run relay --watch ../../relay.config.json --project accounts
+        - cd apps/accounts
+        - pnpm run dev
+
+  - relay-compiler:
+      - relay-compiler --watch
 
   - docker:
       - docker compose up
