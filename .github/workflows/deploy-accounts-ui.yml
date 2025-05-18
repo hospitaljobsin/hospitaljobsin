@@ -44,7 +44,7 @@ jobs:
 
       - name: Run Relay Compiler
         working-directory: ./apps/accounts
-        run: pnpm run relay ../../relay.config.json
+        run: pnpm run relay ../../relay.config.json --project accounts
 
       - name: Check for uncommitted changes
         working-directory: ./apps/accounts

@@ -11,7 +11,7 @@
 		"lint": "next lint",
 		"package": "open-next build",
 		"preinstall": "npx only-allow pnpm",
-		"relay": "relay-compiler ../../relay.config.json --project accounts",
+		"relay": "relay-compiler",
 		"start": "next start -p 5002"
 	},
 	"dependencies": {
