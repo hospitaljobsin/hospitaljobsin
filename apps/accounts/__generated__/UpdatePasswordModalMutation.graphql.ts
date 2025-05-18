@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<415363f4b77b4b5323d8ea6e9a061263>>
+ * @generated SignedSource<<3d027c3cc611d03afbf3a94242af387c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -169,12 +169,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5ba69a65199a48fb015f4baceb27edd5",
+    "cacheID": "8dcf1b73e657df06cda808cf87fd88da",
     "id": null,
     "metadata": {},
     "name": "UpdatePasswordModalMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdatePasswordModalMutation(\n  $newPassword: String!\n) {\n  updatePassword(newPassword: $newPassword) {\n    __typename\n    ... on Account {\n      id\n      ...PasswordFragment\n      ...UpdatePasswordModalFragment\n    }\n    ... on PasswordNotStrongError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment PasswordFragment on Account {\n  sudoModeExpiresAt\n  authProviders\n  ...UpdatePasswordModalFragment\n}\n\nfragment UpdatePasswordModalFragment on Account {\n  authProviders\n}\n"
+    "text": "mutation UpdatePasswordModalMutation($newPassword:String!){updatePassword(newPassword:$newPassword){__typename,...on Account{id,...PasswordFragment,...UpdatePasswordModalFragment},...on PasswordNotStrongError{message},...on Node{__isNode:__typename,id}}}fragment PasswordFragment on Account{sudoModeExpiresAt,authProviders,...UpdatePasswordModalFragment}fragment UpdatePasswordModalFragment on Account{authProviders}"
   }
 };
 })();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<73ed5f96668a41273ed9c443185b5fb5>>
+ * @generated SignedSource<<249115effd2b02310f3ae27448e20ec6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -197,12 +197,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "77977c29bc97c6f660ab4a0563d4e194",
+    "cacheID": "9b47b1e7b35698fe73bd41c21a8761c3",
     "id": null,
     "metadata": {},
     "name": "LoginFormPasswordMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormPasswordMutation(\n  $email: String!\n  $password: String!\n  $captchaToken: String!\n) {\n  loginWithPassword(email: $email, password: $password, captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on InvalidAuthenticationProviderError {\n      message\n      availableProviders\n    }\n    ... on TwoFactorAuthenticationRequiredError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation LoginFormPasswordMutation($email:String!,$password:String!,$captchaToken:String!){loginWithPassword(email:$email,password:$password,captchaToken:$captchaToken){__typename,...on InvalidCredentialsError{message},...on InvalidCaptchaTokenError{message},...on InvalidAuthenticationProviderError{message,availableProviders},...on TwoFactorAuthenticationRequiredError{message},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

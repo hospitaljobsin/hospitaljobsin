@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<63d95659b6eea432e51bab08272b4b09>>
+ * @generated SignedSource<<1050e8f65921e9960ed05541c2037dba>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -59,12 +59,12 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "aaebd5a6379619e715ccdd6de5e69e04",
+    "cacheID": "b7d893761b81d21f53742711790260d0",
     "id": null,
     "metadata": {},
     "name": "JobApplyFormResumePresignedUrlMutation",
     "operationKind": "mutation",
-    "text": "mutation JobApplyFormResumePresignedUrlMutation {\n  createJobApplicantResumePresignedUrl {\n    presignedUrl\n  }\n}\n"
+    "text": "mutation JobApplyFormResumePresignedUrlMutation{createJobApplicantResumePresignedUrl{presignedUrl}}"
   }
 };
 })();

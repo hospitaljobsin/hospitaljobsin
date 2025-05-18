@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a2a7705b15a7cb50182800ed7a3ea7f6>>
+ * @generated SignedSource<<a3e103a9e929b6d5eb0a1f32f8cfc219>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -216,12 +216,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3eae1ae6994f538b677f42050937f4fe",
+    "cacheID": "e54acae2133198628ba0862e1619c520",
     "id": null,
     "metadata": {},
     "name": "pageGeneralSettingsViewQuery",
     "operationKind": "query",
-    "text": "query pageGeneralSettingsViewQuery(\n  $slug: String!\n) {\n  ...GeneralSettingsViewClientComponentFragment_20J5Pl\n  ...pageGeneralSettingsMetadataFragment_20J5Pl\n}\n\nfragment DeleteOrganizationModalAccountFragment on Account {\n  id\n}\n\nfragment DeleteOrganizationModalFragment on Organization {\n  id\n  name\n}\n\nfragment GeneralSettingsViewClientComponentFragment_20J5Pl on Query {\n  ...GeneralSettingsViewFragment_20J5Pl\n}\n\nfragment GeneralSettingsViewFragment_20J5Pl on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      ...UpdateOrganizationFormFragment\n      ...DeleteOrganizationModalFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  viewer {\n    __typename\n    ... on Account {\n      sudoModeExpiresAt\n      ...DeleteOrganizationModalAccountFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment UpdateOrganizationFormFragment on Organization {\n  id\n  slug\n  name\n  website\n  logoUrl\n  description\n  location\n}\n\nfragment pageGeneralSettingsMetadataFragment_20J5Pl on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      name\n      description\n      logoUrl\n      isAdmin\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageGeneralSettingsViewQuery($slug:String!){...GeneralSettingsViewClientComponentFragment_20J5Pl,...pageGeneralSettingsMetadataFragment_20J5Pl}fragment DeleteOrganizationModalAccountFragment on Account{id}fragment DeleteOrganizationModalFragment on Organization{id,name}fragment GeneralSettingsViewClientComponentFragment_20J5Pl on Query{...GeneralSettingsViewFragment_20J5Pl}fragment GeneralSettingsViewFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{...UpdateOrganizationFormFragment,...DeleteOrganizationModalFragment},...on Node{__isNode:__typename,id}},viewer{__typename,...on Account{sudoModeExpiresAt,...DeleteOrganizationModalAccountFragment},...on Node{__isNode:__typename,id}}}fragment UpdateOrganizationFormFragment on Organization{id,slug,name,website,logoUrl,description,location}fragment pageGeneralSettingsMetadataFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isAdmin},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

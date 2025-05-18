@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9d98b8dd038e0d20359bac2e5f7ad604>>
+ * @generated SignedSource<<5156f41ac2da1eba62341e1b4e6a15bc>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -159,12 +159,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "192a69aee5e7dae40ae47ab4c63f0873",
+    "cacheID": "35d78980db6d8f29f97ba1e4006677e5",
     "id": null,
     "metadata": {},
     "name": "UpdateAccountDetailsFormMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdateAccountDetailsFormMutation(\n  $fullName: String!\n) {\n  updateAccount(fullName: $fullName) {\n    __typename\n    ... on Account {\n      ...UpdateAccountDetailsFormFragment\n      ...AccountDetailsFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment AccountDetailsFragment on Account {\n  fullName\n  email\n  avatarUrl(size: 120)\n}\n\nfragment UpdateAccountDetailsFormFragment on Account {\n  fullName\n  email\n  avatarUrl(size: 120)\n}\n"
+    "text": "mutation UpdateAccountDetailsFormMutation($fullName:String!){updateAccount(fullName:$fullName){__typename,...on Account{...UpdateAccountDetailsFormFragment,...AccountDetailsFragment},...on Node{__isNode:__typename,id}}}fragment AccountDetailsFragment on Account{fullName,email,avatarUrl(size:120)}fragment UpdateAccountDetailsFormFragment on Account{fullName,email,avatarUrl(size:120)}"
   }
 };
 })();

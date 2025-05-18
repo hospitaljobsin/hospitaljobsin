@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2aab0361e36993fda8d529ba44e7063c>>
+ * @generated SignedSource<<933d7514ecd75e38d0888818772ff9af>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -148,12 +148,12 @@ return {
     "selections": (v4/*: any*/)
   },
   "params": {
-    "cacheID": "f9aab4025ac085d78283e334adfaa8da",
+    "cacheID": "4f7d0cab5e1523e7992fd5583666784e",
     "id": null,
     "metadata": {},
     "name": "PasskeyRegistrationOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyRegistrationOptionsMutation(\n  $email: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  generatePasskeyRegistrationOptions(email: $email, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on GeneratePasskeyRegistrationOptionsSuccess {\n      registrationOptions\n    }\n  }\n}\n"
+    "text": "mutation PasskeyRegistrationOptionsMutation($email:String!,$fullName:String!,$captchaToken:String!){generatePasskeyRegistrationOptions(email:$email,fullName:$fullName,captchaToken:$captchaToken){__typename,...on EmailInUseError{message},...on InvalidCaptchaTokenError{message},...on GeneratePasskeyRegistrationOptionsSuccess{registrationOptions}}}"
   }
 };
 })();

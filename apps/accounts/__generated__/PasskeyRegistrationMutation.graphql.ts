@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cb1f3412cfb3ab705932128fc04ddd3a>>
+ * @generated SignedSource<<a6b8b33dad01dd30a859f261b2db6dc3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -224,12 +224,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c5297b7b738797ba2294c4c1592783ae",
+    "cacheID": "63ace3e72963ccdfa082a6a24c5cec59",
     "id": null,
     "metadata": {},
     "name": "PasskeyRegistrationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyRegistrationMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $passkeyRegistrationResponse: JSON!\n  $passkeyNickname: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  registerWithPasskey(email: $email, emailVerificationToken: $emailVerificationToken, passkeyRegistrationResponse: $passkeyRegistrationResponse, passkeyNickname: $passkeyNickname, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on InvalidPasskeyRegistrationCredentialError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation PasskeyRegistrationMutation($email:String!,$emailVerificationToken:String!,$passkeyRegistrationResponse:JSON!,$passkeyNickname:String!,$fullName:String!,$captchaToken:String!){registerWithPasskey(email:$email,emailVerificationToken:$emailVerificationToken,passkeyRegistrationResponse:$passkeyRegistrationResponse,passkeyNickname:$passkeyNickname,fullName:$fullName,captchaToken:$captchaToken){__typename,...on EmailInUseError{message},...on InvalidEmailVerificationTokenError{message},...on InvalidCaptchaTokenError{message},...on InvalidPasskeyRegistrationCredentialError{message},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e64a9c6692aa406279ce53f461c35a4d>>
+ * @generated SignedSource<<d672c286a43dfd2fdb0a1ed88ef70321>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -260,12 +260,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "29170dc215514300d842685f5542622e",
+    "cacheID": "a6f1b1e285835c4a88c9791813d93485",
     "id": null,
     "metadata": {},
     "name": "PasskeysControllerMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeysControllerMutation(\n  $nickname: String!\n  $passkeyRegistrationResponse: JSON!\n) {\n  createWebAuthnCredential(nickname: $nickname, passkeyRegistrationResponse: $passkeyRegistrationResponse) {\n    __typename\n    ... on InvalidPasskeyRegistrationCredentialError {\n      message\n    }\n    ... on CreateWebAuthnCredentialSuccess {\n      webAuthnCredentialEdge {\n        cursor\n        node {\n          id\n          ...PasskeyFragment\n        }\n      }\n    }\n  }\n}\n\nfragment DeletePasskeyModalFragment on WebAuthnCredential {\n  id\n}\n\nfragment PasskeyFragment on WebAuthnCredential {\n  id\n  nickname\n  createdAt\n  lastUsedAt\n  ...UpdatePasskeyModalFragment\n  ...DeletePasskeyModalFragment\n}\n\nfragment UpdatePasskeyModalFragment on WebAuthnCredential {\n  id\n  nickname\n}\n"
+    "text": "mutation PasskeysControllerMutation($nickname:String!,$passkeyRegistrationResponse:JSON!){createWebAuthnCredential(nickname:$nickname,passkeyRegistrationResponse:$passkeyRegistrationResponse){__typename,...on InvalidPasskeyRegistrationCredentialError{message},...on CreateWebAuthnCredentialSuccess{webAuthnCredentialEdge{cursor,node{id,...PasskeyFragment}}}}}fragment DeletePasskeyModalFragment on WebAuthnCredential{id}fragment PasskeyFragment on WebAuthnCredential{id,nickname,createdAt,lastUsedAt,...UpdatePasskeyModalFragment,...DeletePasskeyModalFragment}fragment UpdatePasskeyModalFragment on WebAuthnCredential{id,nickname}"
   }
 };
 })();

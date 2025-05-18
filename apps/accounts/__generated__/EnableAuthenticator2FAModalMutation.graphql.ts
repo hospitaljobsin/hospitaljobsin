@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a67514d05307ca8c1152c634c15739bb>>
+ * @generated SignedSource<<228d63ab7d582ddc10f4e59c749e5c94>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -209,12 +209,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5296ca8da9e09806ce1cebaf76183cb6",
+    "cacheID": "f3f090155853eea4edb24bbc3aa3ddef",
     "id": null,
     "metadata": {},
     "name": "EnableAuthenticator2FAModalMutation",
     "operationKind": "mutation",
-    "text": "mutation EnableAuthenticator2FAModalMutation(\n  $token: String!\n) {\n  enableAccount2faWithAuthenticator(token: $token) {\n    __typename\n    ... on EnableAccount2FAWithAuthenticatorSuccess {\n      account {\n        id\n        ...TwoFactorAuthenticationFragment\n      }\n      recoveryCodes\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on TwoFactorAuthenticationChallengeNotFoundError {\n      message\n    }\n  }\n}\n\nfragment TwoFactorAuthenticationFragment on Account {\n  has2faEnabled\n  sudoModeExpiresAt\n  twoFactorProviders\n}\n"
+    "text": "mutation EnableAuthenticator2FAModalMutation($token:String!){enableAccount2faWithAuthenticator(token:$token){__typename,...on EnableAccount2FAWithAuthenticatorSuccess{account{id,...TwoFactorAuthenticationFragment},recoveryCodes},...on InvalidCredentialsError{message},...on TwoFactorAuthenticationChallengeNotFoundError{message}}}fragment TwoFactorAuthenticationFragment on Account{has2faEnabled,sudoModeExpiresAt,twoFactorProviders}"
   }
 };
 })();

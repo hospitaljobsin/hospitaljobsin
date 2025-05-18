@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0f6ceddd0189981b5e101b4c3911b03e>>
+ * @generated SignedSource<<9fef249cec0c2f560a377f6cdfc8618d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -239,12 +239,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c247a5688bc2adf1c62c53970e2e634d",
+    "cacheID": "98395d8bd6bb770a498d4f4071009fbc",
     "id": null,
     "metadata": {},
     "name": "InviteMemberModalMutation",
     "operationKind": "mutation",
-    "text": "mutation InviteMemberModalMutation(\n  $organizationId: ID!\n  $email: String!\n) {\n  createOrganizationInvite(organizationId: $organizationId, email: $email) {\n    __typename\n    ... on OrganizationInvite {\n      id\n      ...InviteFragment\n    }\n    ... on InvalidEmailError {\n      __typename\n      message\n    }\n    ... on OrganizationNotFoundError {\n      __typename\n    }\n    ... on MemberAlreadyExistsError {\n      __typename\n      message\n    }\n    ... on OrganizationAuthorizationError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment DeleteInviteModalFragment on OrganizationInvite {\n  id\n  email\n}\n\nfragment InviteFragment on OrganizationInvite {\n  email\n  status\n  expiresAt\n  createdBy {\n    fullName\n    avatarUrl\n    id\n  }\n  createdAt\n  ...DeleteInviteModalFragment\n}\n"
+    "text": "mutation InviteMemberModalMutation($organizationId:ID!,$email:String!){createOrganizationInvite(organizationId:$organizationId,email:$email){__typename,...on OrganizationInvite{id,...InviteFragment},...on InvalidEmailError{__typename,message},...on OrganizationNotFoundError{__typename},...on MemberAlreadyExistsError{__typename,message},...on OrganizationAuthorizationError{__typename},...on Node{__isNode:__typename,id}}}fragment DeleteInviteModalFragment on OrganizationInvite{id,email}fragment InviteFragment on OrganizationInvite{email,status,expiresAt,createdBy{fullName,avatarUrl,id},createdAt,...DeleteInviteModalFragment}"
   }
 };
 })();

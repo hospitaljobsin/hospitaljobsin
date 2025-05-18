@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9094236bc90d45f5ecf57a12af923570>>
+ * @generated SignedSource<<8ff23b4c38987d00907421a3afd4fdec>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -212,12 +212,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "57970485c975985a935bb0e984316bc6",
+    "cacheID": "1966456840c5efa98f4efe53b249bde5",
     "id": null,
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",
-    "text": "query pageProfileQuery {\n  ...ProfileClientComponentFragment\n}\n\nfragment LanguagesFragment on Account {\n  profile {\n    __typename\n    ... on Profile {\n      __typename\n      languages {\n        name\n        proficiency\n      }\n    }\n    ... on ProfileNotFoundError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment PersonalDetailsFragment on Account {\n  profile {\n    __typename\n    ... on Profile {\n      __typename\n      address {\n        city\n        country\n        line1\n        line2\n        pincode\n        state\n      }\n      gender\n      dateOfBirth\n      maritalStatus\n      category\n    }\n    ... on ProfileNotFoundError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment ProfileClientComponentFragment on Query {\n  ...ProfileViewFragment\n}\n\nfragment ProfileViewFragment on Query {\n  viewer {\n    __typename\n    ... on Account {\n      ...UpdatePersonalDetailsFormFragment\n      ...PersonalDetailsFragment\n      ...LanguagesFragment\n      ...UpdateLanguagesFormFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment UpdateLanguagesFormFragment on Account {\n  profile {\n    __typename\n    ... on Profile {\n      __typename\n      languages {\n        name\n        proficiency\n      }\n    }\n    ... on ProfileNotFoundError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment UpdatePersonalDetailsFormFragment on Account {\n  profile {\n    __typename\n    ... on Profile {\n      __typename\n      address {\n        city\n        country\n        line1\n        line2\n        pincode\n        state\n      }\n      gender\n      dateOfBirth\n      maritalStatus\n      category\n    }\n    ... on ProfileNotFoundError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageProfileQuery{...ProfileClientComponentFragment}fragment LanguagesFragment on Account{profile{__typename,...on Profile{__typename,languages{name,proficiency}},...on ProfileNotFoundError{__typename},...on Node{__isNode:__typename,id}}}fragment PersonalDetailsFragment on Account{profile{__typename,...on Profile{__typename,address{city,country,line1,line2,pincode,state},gender,dateOfBirth,maritalStatus,category},...on ProfileNotFoundError{__typename},...on Node{__isNode:__typename,id}}}fragment ProfileClientComponentFragment on Query{...ProfileViewFragment}fragment ProfileViewFragment on Query{viewer{__typename,...on Account{...UpdatePersonalDetailsFormFragment,...PersonalDetailsFragment,...LanguagesFragment,...UpdateLanguagesFormFragment},...on Node{__isNode:__typename,id}}}fragment UpdateLanguagesFormFragment on Account{profile{__typename,...on Profile{__typename,languages{name,proficiency}},...on ProfileNotFoundError{__typename},...on Node{__isNode:__typename,id}}}fragment UpdatePersonalDetailsFormFragment on Account{profile{__typename,...on Profile{__typename,address{city,country,line1,line2,pincode,state},gender,dateOfBirth,maritalStatus,category},...on ProfileNotFoundError{__typename},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

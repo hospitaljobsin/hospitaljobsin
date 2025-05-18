@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<315c7d7210e30dfe5bd7617e779bc661>>
+ * @generated SignedSource<<e91a193b88c583f1e1eb4005377efb7a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -252,12 +252,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2ee5985986b8142b09447c2c750dbc4e",
+    "cacheID": "da5fe75d2a9c7853042c5da423e64aae",
     "id": null,
     "metadata": {},
     "name": "PasskeysListPaginationQuery",
     "operationKind": "query",
-    "text": "query PasskeysListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...PasskeysListInternalFragment_1G22uz\n    id\n  }\n}\n\nfragment DeletePasskeyModalFragment on WebAuthnCredential {\n  id\n}\n\nfragment PasskeyFragment on WebAuthnCredential {\n  id\n  nickname\n  createdAt\n  lastUsedAt\n  ...UpdatePasskeyModalFragment\n  ...DeletePasskeyModalFragment\n}\n\nfragment PasskeysListInternalFragment_1G22uz on Account {\n  webAuthnCredentials(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...PasskeyFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment UpdatePasskeyModalFragment on WebAuthnCredential {\n  id\n  nickname\n}\n"
+    "text": "query PasskeysListPaginationQuery($count:Int=10,$cursor:ID,$id:ID!){node(id:$id){__typename,...PasskeysListInternalFragment_1G22uz,id}}fragment DeletePasskeyModalFragment on WebAuthnCredential{id}fragment PasskeyFragment on WebAuthnCredential{id,nickname,createdAt,lastUsedAt,...UpdatePasskeyModalFragment,...DeletePasskeyModalFragment}fragment PasskeysListInternalFragment_1G22uz on Account{webAuthnCredentials(after:$cursor,first:$count){edges{node{id,...PasskeyFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}fragment UpdatePasskeyModalFragment on WebAuthnCredential{id,nickname}"
   }
 };
 })();

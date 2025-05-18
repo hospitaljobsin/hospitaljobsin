@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<af274956340637824cbad770d101dbcb>>
+ * @generated SignedSource<<95902619b64e853f936bbd2d72e0189f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -244,12 +244,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9b3a33d12df8512d51ce482bfe1c5382",
+    "cacheID": "7757796071d5cff7faf064c272efc0f7",
     "id": null,
     "metadata": {},
     "name": "AuthenticatorTwoFactorAuthenticationResetPasswordMutation",
     "operationKind": "mutation",
-    "text": "mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation(\n  $email: String!\n  $passwordResetToken: String!\n  $twoFactorToken: String!\n  $captchaToken: String!\n) {\n  verify2faPasswordResetWithAuthenticator(email: $email, passwordResetToken: $passwordResetToken, twoFactorToken: $twoFactorToken, captchaToken: $captchaToken) {\n    __typename\n    ... on PasswordResetToken {\n      ...ResetPasswordViewFragment\n    }\n    ... on InvalidPasswordResetTokenError {\n      message\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment ResetPasswordViewFragment on PasswordResetToken {\n  id\n  needs2fa\n  ...TwoFactorAuthenticationResetPasswordFragment\n}\n\nfragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken {\n  twoFactorProviders\n  authProviders\n}\n"
+    "text": "mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation($email:String!,$passwordResetToken:String!,$twoFactorToken:String!,$captchaToken:String!){verify2faPasswordResetWithAuthenticator(email:$email,passwordResetToken:$passwordResetToken,twoFactorToken:$twoFactorToken,captchaToken:$captchaToken){__typename,...on PasswordResetToken{...ResetPasswordViewFragment},...on InvalidPasswordResetTokenError{message},...on InvalidCredentialsError{message},...on AuthenticatorNotEnabledError{message},...on InvalidCaptchaTokenError{message},...on Node{__isNode:__typename,id}}}fragment ResetPasswordViewFragment on PasswordResetToken{id,needs2fa,...TwoFactorAuthenticationResetPasswordFragment}fragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken{twoFactorProviders,authProviders}"
   }
 };
 })();

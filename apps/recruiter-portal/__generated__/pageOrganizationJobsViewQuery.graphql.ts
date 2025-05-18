@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3c6c3da0ead7dadd15f3f5aafafa2ced>>
+ * @generated SignedSource<<075664eb6519a81941c531a859eea4cf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -368,12 +368,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "6a0470a7946df8a29d4cea5aa6211013",
+    "cacheID": "0a5f4e4e86fa3419cfe60444699265f3",
     "id": null,
     "metadata": {},
     "name": "pageOrganizationJobsViewQuery",
     "operationKind": "query",
-    "text": "query pageOrganizationJobsViewQuery(\n  $slug: String!\n  $searchTerm: String\n) {\n  ...pageOrganizationJobsMetadataFragment_20J5Pl\n  ...OrganizationJobsViewClientComponentFragment_113nns\n}\n\nfragment JobFragment on Job {\n  slug\n  title\n  skills\n  viewCount\n  createdAt\n  applicantCount {\n    applied\n    shortlisted\n    interviewed\n    onHold\n    offered\n  }\n  vacancies\n}\n\nfragment OrganizationJobsControllerFragment_20J5Pl on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      isAdmin\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment OrganizationJobsListFragment_113nns on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      ...OrganizationJobsListInternalFragment_1CW4ID\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment OrganizationJobsListInternalFragment_1CW4ID on Organization {\n  jobs(first: 10, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment OrganizationJobsTabFragment_113nns on Query {\n  ...OrganizationJobsListFragment_113nns\n  ...OrganizationJobsControllerFragment_20J5Pl\n}\n\nfragment OrganizationJobsViewClientComponentFragment_113nns on Query {\n  ...OrganizationJobsTabFragment_113nns\n}\n\nfragment pageOrganizationJobsMetadataFragment_20J5Pl on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      name\n      description\n      logoUrl\n      isMember\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageOrganizationJobsViewQuery($slug:String!,$searchTerm:String){...pageOrganizationJobsMetadataFragment_20J5Pl,...OrganizationJobsViewClientComponentFragment_113nns}fragment JobFragment on Job{slug,title,skills,viewCount,createdAt,applicantCount{applied,shortlisted,interviewed,onHold,offered},vacancies}fragment OrganizationJobsControllerFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{isAdmin},...on Node{__isNode:__typename,id}}}fragment OrganizationJobsListFragment_113nns on Query{organization(slug:$slug){__typename,...on Organization{...OrganizationJobsListInternalFragment_1CW4ID},...on Node{__isNode:__typename,id}}}fragment OrganizationJobsListInternalFragment_1CW4ID on Organization{jobs(first:10,searchTerm:$searchTerm){edges{node{id,...JobFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}fragment OrganizationJobsTabFragment_113nns on Query{...OrganizationJobsListFragment_113nns,...OrganizationJobsControllerFragment_20J5Pl}fragment OrganizationJobsViewClientComponentFragment_113nns on Query{...OrganizationJobsTabFragment_113nns}fragment pageOrganizationJobsMetadataFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isMember},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

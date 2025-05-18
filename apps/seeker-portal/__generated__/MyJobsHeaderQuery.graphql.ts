@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e7ca80344d9950cd7fcf5ba685363ccb>>
+ * @generated SignedSource<<7a71cd5bc504a80927ed69fd9ff139e9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -135,12 +135,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "63d6839542316b0a457ccd7c6eff75e8",
+    "cacheID": "566d47ef76709b840fc74a3f222a01e5",
     "id": null,
     "metadata": {},
     "name": "MyJobsHeaderQuery",
     "operationKind": "query",
-    "text": "query MyJobsHeaderQuery {\n  viewer {\n    __typename\n    ... on Account {\n      __typename\n      ...AuthNavigationFragment\n    }\n    ... on NotAuthenticatedError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment AuthNavigationFragment on Account {\n  __typename\n  fullName\n  avatarUrl\n}\n"
+    "text": "query MyJobsHeaderQuery{viewer{__typename,...on Account{__typename,...AuthNavigationFragment},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}}}fragment AuthNavigationFragment on Account{__typename,fullName,avatarUrl}"
   }
 };
 })();

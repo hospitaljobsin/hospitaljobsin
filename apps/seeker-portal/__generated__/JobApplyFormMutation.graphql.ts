@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<14abb0cb73999a08df75bdadd9ffa3d4>>
+ * @generated SignedSource<<6771196614ac567082f896e1ff031fd2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -371,12 +371,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "023a1b813f3908dce051de040e10b90f",
+    "cacheID": "cc14e58ab32eac5f58784f8efbc4006e",
     "id": null,
     "metadata": {},
     "name": "JobApplyFormMutation",
     "operationKind": "mutation",
-    "text": "mutation JobApplyFormMutation(\n  $jobId: ID!\n  $applicantFields: [ApplicantFieldInput!]!\n  $resumeUrl: String!\n) {\n  createJobApplication(jobId: $jobId, applicantFields: $applicantFields, resumeUrl: $resumeUrl) {\n    __typename\n    ... on CreateJobApplicantSuccess {\n      __typename\n      jobApplicant {\n        job {\n          ...JobDetailsInternalFragment\n          id\n        }\n        id\n      }\n    }\n    ... on JobNotFoundError {\n      __typename\n    }\n    ... on JobNotPublishedError {\n      __typename\n    }\n    ... on JobApplicantAlreadyExistsError {\n      __typename\n    }\n    ... on JobIsExternalError {\n      __typename\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  ...ShareJobFragment\n}\n\nfragment JobDetailsInternalFragment on Job {\n  ...JobControlsFragment\n  title\n  slug\n  description\n  type\n  workMode\n  location\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  isApplied\n  externalApplicationUrl\n  organization {\n    slug\n    name\n    description\n    logoUrl\n    id\n  }\n}\n\nfragment ShareJobFragment on Job {\n  slug\n  title\n  description\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n"
+    "text": "mutation JobApplyFormMutation($jobId:ID!,$applicantFields:[ApplicantFieldInput!]!,$resumeUrl:String!){createJobApplication(jobId:$jobId,applicantFields:$applicantFields,resumeUrl:$resumeUrl){__typename,...on CreateJobApplicantSuccess{__typename,jobApplicant{job{...JobDetailsInternalFragment,id},id}},...on JobNotFoundError{__typename},...on JobNotPublishedError{__typename},...on JobApplicantAlreadyExistsError{__typename},...on JobIsExternalError{__typename}}}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobDetailsInternalFragment on Job{...JobControlsFragment,title,slug,description,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,isApplied,externalApplicationUrl,organization{slug,name,description,logoUrl,id}}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
   }
 };
 })();

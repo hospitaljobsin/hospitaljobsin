@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d0f34c86c48b44fac19908af9d1b661a>>
+ * @generated SignedSource<<3ab5992688ff735d2781d453a950189e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -188,12 +188,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a981b53a057540857d156f2338a425f0",
+    "cacheID": "baf5712eaebddd74661e2366a4d1ea23",
     "id": null,
     "metadata": {},
     "name": "DeleteInviteModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeleteInviteModalMutation(\n  $inviteId: ID!\n  $organizationId: ID!\n) {\n  deleteOrganizationInvite(inviteId: $inviteId, organizationId: $organizationId) {\n    __typename\n    ... on OrganizationInviteEdge {\n      node {\n        id\n      }\n    }\n    ... on OrganizationNotFoundError {\n      __typename\n    }\n    ... on OrganizationInviteNotFoundError {\n      __typename\n    }\n    ... on OrganizationAuthorizationError {\n      __typename\n    }\n  }\n}\n"
+    "text": "mutation DeleteInviteModalMutation($inviteId:ID!,$organizationId:ID!){deleteOrganizationInvite(inviteId:$inviteId,organizationId:$organizationId){__typename,...on OrganizationInviteEdge{node{id}},...on OrganizationNotFoundError{__typename},...on OrganizationInviteNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}"
   }
 };
 })();

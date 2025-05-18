@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c43cf1fd9bdbf1677080089de8fc4e96>>
+ * @generated SignedSource<<a53586b0bde6e5e4dc1e44ae16cbbe6c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -138,12 +138,12 @@ const node: ConcreteRequest = {
     ]
   },
   "params": {
-    "cacheID": "487a9c92eaf4b513771c1f5f6e14a96b",
+    "cacheID": "fbaf15a2e39707fd3d0a4dcf8d668beb",
     "id": null,
     "metadata": {},
     "name": "pageAccountSettingsQuery",
     "operationKind": "query",
-    "text": "query pageAccountSettingsQuery {\n  ...AccountClientComponentFragment\n}\n\nfragment AccountClientComponentFragment on Query {\n  ...AccountSettingsViewFragment\n}\n\nfragment AccountDetailsFragment on Account {\n  fullName\n  email\n  avatarUrl(size: 120)\n}\n\nfragment AccountSettingsViewFragment on Query {\n  viewer {\n    __typename\n    ... on Account {\n      ...AccountDetailsFragment\n      ...UpdateAccountDetailsFormFragment\n      ...TwoFactorAuthenticationFragment\n      ...PasswordFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment PasswordFragment on Account {\n  sudoModeExpiresAt\n  authProviders\n  ...UpdatePasswordModalFragment\n}\n\nfragment TwoFactorAuthenticationFragment on Account {\n  has2faEnabled\n  sudoModeExpiresAt\n  twoFactorProviders\n}\n\nfragment UpdateAccountDetailsFormFragment on Account {\n  fullName\n  email\n  avatarUrl(size: 120)\n}\n\nfragment UpdatePasswordModalFragment on Account {\n  authProviders\n}\n"
+    "text": "query pageAccountSettingsQuery{...AccountClientComponentFragment}fragment AccountClientComponentFragment on Query{...AccountSettingsViewFragment}fragment AccountDetailsFragment on Account{fullName,email,avatarUrl(size:120)}fragment AccountSettingsViewFragment on Query{viewer{__typename,...on Account{...AccountDetailsFragment,...UpdateAccountDetailsFormFragment,...TwoFactorAuthenticationFragment,...PasswordFragment},...on Node{__isNode:__typename,id}}}fragment PasswordFragment on Account{sudoModeExpiresAt,authProviders,...UpdatePasswordModalFragment}fragment TwoFactorAuthenticationFragment on Account{has2faEnabled,sudoModeExpiresAt,twoFactorProviders}fragment UpdateAccountDetailsFormFragment on Account{fullName,email,avatarUrl(size:120)}fragment UpdatePasswordModalFragment on Account{authProviders}"
   }
 };
 

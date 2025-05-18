@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<eee76ab780e1defe30c9d400dd7a0ce5>>
+ * @generated SignedSource<<2eff8a419d5b41bf42371c99a04c6768>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -217,12 +217,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c7a3a9ee6c41684ed2e590a305d2028a",
+    "cacheID": "842072cd591289470663ad21651baad5",
     "id": null,
     "metadata": {},
     "name": "pagePasskeysSettingsQuery",
     "operationKind": "query",
-    "text": "query pagePasskeysSettingsQuery {\n  ...PasskeysClientComponentFragment\n}\n\nfragment DeletePasskeyModalFragment on WebAuthnCredential {\n  id\n}\n\nfragment PasskeyAccountMetadataFragment on Account {\n  sudoModeExpiresAt\n  authProviders\n}\n\nfragment PasskeyFragment on WebAuthnCredential {\n  id\n  nickname\n  createdAt\n  lastUsedAt\n  ...UpdatePasskeyModalFragment\n  ...DeletePasskeyModalFragment\n}\n\nfragment PasskeysClientComponentFragment on Query {\n  ...PasskeysSettingsViewFragment\n}\n\nfragment PasskeysControllerFragment on Account {\n  sudoModeExpiresAt\n}\n\nfragment PasskeysListFragment on Account {\n  ...PasskeyAccountMetadataFragment\n  ...PasskeysListInternalFragment\n  ...PasskeysControllerFragment\n}\n\nfragment PasskeysListInternalFragment on Account {\n  webAuthnCredentials(first: 10) {\n    edges {\n      node {\n        id\n        ...PasskeyFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment PasskeysSettingsViewFragment on Query {\n  viewer {\n    __typename\n    ... on Account {\n      ...PasskeysListFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment UpdatePasskeyModalFragment on WebAuthnCredential {\n  id\n  nickname\n}\n"
+    "text": "query pagePasskeysSettingsQuery{...PasskeysClientComponentFragment}fragment DeletePasskeyModalFragment on WebAuthnCredential{id}fragment PasskeyAccountMetadataFragment on Account{sudoModeExpiresAt,authProviders}fragment PasskeyFragment on WebAuthnCredential{id,nickname,createdAt,lastUsedAt,...UpdatePasskeyModalFragment,...DeletePasskeyModalFragment}fragment PasskeysClientComponentFragment on Query{...PasskeysSettingsViewFragment}fragment PasskeysControllerFragment on Account{sudoModeExpiresAt}fragment PasskeysListFragment on Account{...PasskeyAccountMetadataFragment,...PasskeysListInternalFragment,...PasskeysControllerFragment}fragment PasskeysListInternalFragment on Account{webAuthnCredentials(first:10){edges{node{id,...PasskeyFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}fragment PasskeysSettingsViewFragment on Query{viewer{__typename,...on Account{...PasskeysListFragment},...on Node{__isNode:__typename,id}}}fragment UpdatePasskeyModalFragment on WebAuthnCredential{id,nickname}"
   }
 };
 })();

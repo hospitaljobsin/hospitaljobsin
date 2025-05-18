@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2c6c29a2ea9b637943dcc722eaf075d0>>
+ * @generated SignedSource<<f27b901ab45728713fbc837e10280953>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -312,12 +312,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "0214d57fc686578ed04e58325318ec32",
+    "cacheID": "75f543bab3f9e67814ebbd9a70667498",
     "id": null,
     "metadata": {},
     "name": "SavedJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query SavedJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n) {\n  ...SavedJobsListInternalFragment_1G22uz\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  ...ShareJobFragment\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  location\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n\nfragment SavedJobsListInternalFragment_1G22uz on Query {\n  savedJobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment ShareJobFragment on Job {\n  slug\n  title\n  description\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n"
+    "text": "query SavedJobsListPaginationQuery($count:Int=10,$cursor:ID){...SavedJobsListInternalFragment_1G22uz}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobFragment on Job{...JobControlsFragment,slug,title,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,organization{name,logoUrl,slug,id}}fragment SavedJobsListInternalFragment_1G22uz on Query{savedJobs(after:$cursor,first:$count){edges{node{id,...JobFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}}}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
   }
 };
 })();

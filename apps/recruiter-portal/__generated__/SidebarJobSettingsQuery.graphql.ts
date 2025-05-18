@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3a9c9692877168d42eccb869b94bf313>>
+ * @generated SignedSource<<28bf7c7cc34d8408ae122310b57618ab>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -187,12 +187,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a61909bb2f0f129963411de08ea0f02b",
+    "cacheID": "44a8a53f911ec02b9b11e64c8defb910",
     "id": null,
     "metadata": {},
     "name": "SidebarJobSettingsQuery",
     "operationKind": "query",
-    "text": "query SidebarJobSettingsQuery(\n  $slug: String!\n  $jobSlug: String!\n) {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          externalApplicationUrl\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query SidebarJobSettingsQuery($slug:String!,$jobSlug:String!){organization(slug:$slug){__typename,...on Organization{job(slug:$jobSlug){__typename,...on Job{externalApplicationUrl},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

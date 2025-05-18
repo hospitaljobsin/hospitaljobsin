@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ea95d5af6d11ff42e610492f9365048b>>
+ * @generated SignedSource<<5df70b84a254af0425b556c28d974c4c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -160,12 +160,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8e98574a73cfd8b7610c53897f943a94",
+    "cacheID": "e99c4f7cfb617a6cae11eed76e958247",
     "id": null,
     "metadata": {},
     "name": "UpdatePasskeyModalMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdatePasskeyModalMutation(\n  $webAuthnCredentialId: ID!\n  $nickname: String!\n) {\n  updateWebAuthnCredential(webAuthnCredentialId: $webAuthnCredentialId, nickname: $nickname) {\n    __typename\n    ... on WebAuthnCredential {\n      id\n      nickname\n    }\n    ... on WebAuthnCredentialNotFoundError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation UpdatePasskeyModalMutation($webAuthnCredentialId:ID!,$nickname:String!){updateWebAuthnCredential(webAuthnCredentialId:$webAuthnCredentialId,nickname:$nickname){__typename,...on WebAuthnCredential{id,nickname},...on WebAuthnCredentialNotFoundError{message},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

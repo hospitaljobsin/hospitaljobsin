@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<37e8c7ee667d716e37b7251da444fea3>>
+ * @generated SignedSource<<b56078ca010ca8532eb130597338db1d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -160,12 +160,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9471c698619fc4fc6d2e258e10ebec1c",
+    "cacheID": "fd3e1e14e26e7579a5fe9caaa9276048",
     "id": null,
     "metadata": {},
     "name": "pageResetPasswordViewQuery",
     "operationKind": "query",
-    "text": "query pageResetPasswordViewQuery(\n  $resetToken: String!\n  $email: String!\n) {\n  ...pagePasswordResetTokenMetadataFragment_3hmrkP\n  ...ResetPasswordViewClientComponentFragment_3hmrkP\n}\n\nfragment ResetPasswordViewClientComponentFragment_3hmrkP on Query {\n  passwordResetToken(resetToken: $resetToken, email: $email) {\n    __typename\n    ... on PasswordResetToken {\n      ...ResetPasswordViewFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment ResetPasswordViewFragment on PasswordResetToken {\n  id\n  needs2fa\n  ...TwoFactorAuthenticationResetPasswordFragment\n}\n\nfragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken {\n  twoFactorProviders\n  authProviders\n}\n\nfragment pagePasswordResetTokenMetadataFragment_3hmrkP on Query {\n  passwordResetToken(resetToken: $resetToken, email: $email) {\n    __typename\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageResetPasswordViewQuery($resetToken:String!,$email:String!){...pagePasswordResetTokenMetadataFragment_3hmrkP,...ResetPasswordViewClientComponentFragment_3hmrkP}fragment ResetPasswordViewClientComponentFragment_3hmrkP on Query{passwordResetToken(resetToken:$resetToken,email:$email){__typename,...on PasswordResetToken{...ResetPasswordViewFragment},...on Node{__isNode:__typename,id}}}fragment ResetPasswordViewFragment on PasswordResetToken{id,needs2fa,...TwoFactorAuthenticationResetPasswordFragment}fragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken{twoFactorProviders,authProviders}fragment pagePasswordResetTokenMetadataFragment_3hmrkP on Query{passwordResetToken(resetToken:$resetToken,email:$email){__typename,...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

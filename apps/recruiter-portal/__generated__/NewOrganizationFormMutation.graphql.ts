@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b1f447b58ee397ebce8964fb49eaac92>>
+ * @generated SignedSource<<dde44a05bc507192d5e0f64cbfe6490a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -197,12 +197,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "16930473a18eb71df860e1621eedc7ee",
+    "cacheID": "06ae6473399c1a23f7017a3b863f46f4",
     "id": null,
     "metadata": {},
     "name": "NewOrganizationFormMutation",
     "operationKind": "mutation",
-    "text": "mutation NewOrganizationFormMutation(\n  $fullName: String!\n  $slug: String!\n  $website: String\n  $description: String\n  $logoUrl: String\n) {\n  createOrganization(fullName: $fullName, slug: $slug, website: $website, description: $description, logoUrl: $logoUrl) {\n    __typename\n    ... on Organization {\n      __typename\n      slug\n    }\n    ... on OrganizationSlugInUseError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation NewOrganizationFormMutation($fullName:String!,$slug:String!,$website:String,$description:String,$logoUrl:String){createOrganization(fullName:$fullName,slug:$slug,website:$website,description:$description,logoUrl:$logoUrl){__typename,...on Organization{__typename,slug},...on OrganizationSlugInUseError{message},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

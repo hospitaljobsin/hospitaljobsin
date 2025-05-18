@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5baf2874ca2805743073a7c01f1df626>>
+ * @generated SignedSource<<a76d4983be3d0cd3a036ac7e4796c539>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -420,12 +420,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b96306ff21ac5112c278084b2d2812c3",
+    "cacheID": "50f0ad02297f86ac365abaff52f694e0",
     "id": null,
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",
-    "text": "query pageJobDetailViewQuery(\n  $slug: String!\n  $jobSlug: String!\n) {\n  ...pageJobDetailMetadataFragment_4lHzkn\n  ...JobDetailViewClientComponentFragment_4lHzkn\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isActive\n  ...UnpublishJobModalFragment\n  ...PublishJobModalFragment\n}\n\nfragment JobDetailViewClientComponentFragment_4lHzkn on Query {\n  ...JobOverviewTabFragment_4lHzkn\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  slug\n  skills\n  minSalary\n  maxSalary\n  hasSalaryRange\n  minExperience\n  maxExperience\n  hasExperienceRange\n  currency\n  workMode\n  type\n  location\n  createdAt\n  updatedAt\n  isActive\n  externalApplicationUrl\n  applicationForm {\n    __typename\n    id\n  }\n  organization {\n    isAdmin\n    name\n    id\n  }\n  ...JobControlsFragment\n  ...JobStatisticsFragment\n}\n\nfragment JobOverviewTabFragment_4lHzkn on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          ...JobDetailsFragment\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobStatisticsFragment on Job {\n  viewCount\n  viewMetricPoints {\n    timestamp\n    count\n  }\n}\n\nfragment PublishJobModalFragment on Job {\n  id\n}\n\nfragment UnpublishJobModalFragment on Job {\n  id\n}\n\nfragment pageJobDetailMetadataFragment_4lHzkn on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      name\n      description\n      logoUrl\n      isMember\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          title\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageJobDetailViewQuery($slug:String!,$jobSlug:String!){...pageJobDetailMetadataFragment_4lHzkn,...JobDetailViewClientComponentFragment_4lHzkn}fragment JobControlsFragment on Job{id,isActive,...UnpublishJobModalFragment,...PublishJobModalFragment}fragment JobDetailViewClientComponentFragment_4lHzkn on Query{...JobOverviewTabFragment_4lHzkn}fragment JobDetailsFragment on Job{title,description,slug,skills,minSalary,maxSalary,hasSalaryRange,minExperience,maxExperience,hasExperienceRange,currency,workMode,type,location,createdAt,updatedAt,isActive,externalApplicationUrl,applicationForm{__typename,id},organization{isAdmin,name,id},...JobControlsFragment,...JobStatisticsFragment}fragment JobOverviewTabFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{job(slug:$jobSlug){__typename,...on Job{...JobDetailsFragment},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}fragment JobStatisticsFragment on Job{viewCount,viewMetricPoints{timestamp,count}}fragment PublishJobModalFragment on Job{id}fragment UnpublishJobModalFragment on Job{id}fragment pageJobDetailMetadataFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isMember,job(slug:$jobSlug){__typename,...on Job{title},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

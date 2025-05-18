@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1490a98617bd9815995bb9bb6cfddeeb>>
+ * @generated SignedSource<<7d74f2a0ada8feec1dea1f5c5a9ee38c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -166,12 +166,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "7881415f8ee8c9c8b023afc3e8d12160",
+    "cacheID": "c82fdc4e485a4a1bebdbbcb583539393",
     "id": null,
     "metadata": {},
     "name": "ConfirmResetPasswordFormMutation",
     "operationKind": "mutation",
-    "text": "mutation ConfirmResetPasswordFormMutation(\n  $email: String!\n  $passwordResetToken: String!\n  $newPassword: String!\n) {\n  resetPassword(email: $email, passwordResetToken: $passwordResetToken, newPassword: $newPassword) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidPasswordResetTokenError {\n      message\n    }\n    ... on PasswordNotStrongError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation ConfirmResetPasswordFormMutation($email:String!,$passwordResetToken:String!,$newPassword:String!){resetPassword(email:$email,passwordResetToken:$passwordResetToken,newPassword:$newPassword){__typename,...on Account{__typename},...on InvalidPasswordResetTokenError{message},...on PasswordNotStrongError{message},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

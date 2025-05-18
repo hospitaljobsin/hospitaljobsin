@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1f93949ec4d21f32c2bcf8c5926868fb>>
+ * @generated SignedSource<<0eb29d71d54821c7984596b3e5609e48>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -160,12 +160,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d4b10f4444843d0feb79a2bdad3ed3ef",
+    "cacheID": "4fda42b73a2f469a4541a6fe1f4c2492",
     "id": null,
     "metadata": {},
     "name": "LoginFormPasskeyMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormPasskeyMutation(\n  $authenticationResponse: JSON!\n  $captchaToken: String!\n) {\n  loginWithPasskey(authenticationResponse: $authenticationResponse, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidPasskeyAuthenticationCredentialError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on WebAuthnChallengeNotFoundError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation LoginFormPasskeyMutation($authenticationResponse:JSON!,$captchaToken:String!){loginWithPasskey(authenticationResponse:$authenticationResponse,captchaToken:$captchaToken){__typename,...on Account{__typename},...on InvalidPasskeyAuthenticationCredentialError{message},...on InvalidCaptchaTokenError{message},...on WebAuthnChallengeNotFoundError{message},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

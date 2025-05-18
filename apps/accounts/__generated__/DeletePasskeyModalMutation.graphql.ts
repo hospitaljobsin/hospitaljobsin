@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<55aa9bc2eaabda3a7ad2ec4457acf1b4>>
+ * @generated SignedSource<<01091c532ca01dbf1e494973dfc5c53f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -221,12 +221,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f6dc6213d5c47cc1fac7dcb4f64e89ab",
+    "cacheID": "f1fdc8f6f7c7d63b328ee74aa4850baf",
     "id": null,
     "metadata": {},
     "name": "DeletePasskeyModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeletePasskeyModalMutation(\n  $webAuthnCredentialId: ID!\n) {\n  deleteWebAuthnCredential(webAuthnCredentialId: $webAuthnCredentialId) {\n    __typename\n    ... on DeleteWebAuthnCredentialSuccess {\n      webAuthnCredentialEdge {\n        node {\n          id\n        }\n      }\n    }\n    ... on WebAuthnCredentialNotFoundError {\n      message\n    }\n    ... on InsufficientAuthProvidersError {\n      message\n    }\n  }\n}\n"
+    "text": "mutation DeletePasskeyModalMutation($webAuthnCredentialId:ID!){deleteWebAuthnCredential(webAuthnCredentialId:$webAuthnCredentialId){__typename,...on DeleteWebAuthnCredentialSuccess{webAuthnCredentialEdge{node{id}}},...on WebAuthnCredentialNotFoundError{message},...on InsufficientAuthProvidersError{message}}}"
   }
 };
 })();

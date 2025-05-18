@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dd8e0abada079422c0c80c5fa258ed01>>
+ * @generated SignedSource<<306350597a02685662696d2139c8c794>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -198,12 +198,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "0f444571f9065aa5d08b1e8b4bfec19a",
+    "cacheID": "613285f1b469ddd79680ac75e48511e7",
     "id": null,
     "metadata": {},
     "name": "pageDashboardQuery",
     "operationKind": "query",
-    "text": "query pageDashboardQuery {\n  ...DashboardClientComponentFragment\n}\n\nfragment DashboardClientComponentFragment on Query {\n  ...DashboardViewFragment\n}\n\nfragment DashboardViewFragment on Query {\n  ...OrganizationListFragment\n}\n\nfragment OrganizationFragment on Organization {\n  name\n  logoUrl\n  slug\n  description\n}\n\nfragment OrganizationListFragment on Query {\n  viewer {\n    __typename\n    ... on Account {\n      ...OrganizationListInternalFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment OrganizationListInternalFragment on Account {\n  organizations(first: 10) {\n    edges {\n      node {\n        id\n        ...OrganizationFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
+    "text": "query pageDashboardQuery{...DashboardClientComponentFragment}fragment DashboardClientComponentFragment on Query{...DashboardViewFragment}fragment DashboardViewFragment on Query{...OrganizationListFragment}fragment OrganizationFragment on Organization{name,logoUrl,slug,description}fragment OrganizationListFragment on Query{viewer{__typename,...on Account{...OrganizationListInternalFragment},...on Node{__isNode:__typename,id}}}fragment OrganizationListInternalFragment on Account{organizations(first:10){edges{node{id,...OrganizationFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}"
   }
 };
 })();

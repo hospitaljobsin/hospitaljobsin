@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9feba64d19393e242af9484602f0ff86>>
+ * @generated SignedSource<<d9b0757436021aac38b7b54eabfff15f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -351,12 +351,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4cb1cc52a1fcc08160c6906de55f65d8",
+    "cacheID": "9d77be6ba8ce59d490cc0d3892d67cd4",
     "id": null,
     "metadata": {},
     "name": "NewJobFormMutation",
     "operationKind": "mutation",
-    "text": "mutation NewJobFormMutation(\n  $title: String!\n  $description: String!\n  $skills: [String!]!\n  $location: String\n  $organizationId: ID!\n  $minSalary: Int\n  $maxSalary: Int\n  $minExperience: Int\n  $maxExperience: Int\n  $expiresAt: datetime\n  $workMode: WorkMode\n  $jobType: JobType\n  $vacancies: Int\n  $externalApplicationUrl: String\n) {\n  createJob(title: $title, description: $description, skills: $skills, location: $location, organizationId: $organizationId, minSalary: $minSalary, maxSalary: $maxSalary, minExperience: $minExperience, maxExperience: $maxExperience, expiresAt: $expiresAt, workMode: $workMode, jobType: $jobType, vacancies: $vacancies, externalApplicationUrl: $externalApplicationUrl) {\n    __typename\n    ... on CreateJobSuccess {\n      __typename\n      jobEdge {\n        node {\n          slug\n          id\n        }\n      }\n    }\n    ... on OrganizationNotFoundError {\n      __typename\n    }\n    ... on OrganizationAuthorizationError {\n      __typename\n    }\n  }\n}\n"
+    "text": "mutation NewJobFormMutation($title:String!,$description:String!,$skills:[String!]!,$location:String,$organizationId:ID!,$minSalary:Int,$maxSalary:Int,$minExperience:Int,$maxExperience:Int,$expiresAt:datetime,$workMode:WorkMode,$jobType:JobType,$vacancies:Int,$externalApplicationUrl:String){createJob(title:$title,description:$description,skills:$skills,location:$location,organizationId:$organizationId,minSalary:$minSalary,maxSalary:$maxSalary,minExperience:$minExperience,maxExperience:$maxExperience,expiresAt:$expiresAt,workMode:$workMode,jobType:$jobType,vacancies:$vacancies,externalApplicationUrl:$externalApplicationUrl){__typename,...on CreateJobSuccess{__typename,jobEdge{node{slug,id}}},...on OrganizationNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}"
   }
 };
 })();

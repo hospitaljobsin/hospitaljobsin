@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f2e4aee4ae692556bcf8c5943c051fd8>>
+ * @generated SignedSource<<dd94d91b4c40e46489b623b390c1e1c2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -339,12 +339,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2e02045d336ed66912e65e7e4a109b5d",
+    "cacheID": "e64478f2cf71ed1b992c4381d711a238",
     "id": null,
     "metadata": {},
     "name": "pageOrganizationInvitesViewQuery",
     "operationKind": "query",
-    "text": "query pageOrganizationInvitesViewQuery(\n  $slug: String!\n  $searchTerm: String\n) {\n  ...pageOrganizationInvitesMetadataFragment_20J5Pl\n  ...OrganizationInvitesViewClientComponentFragment_113nns\n}\n\nfragment DeleteInviteModalFragment on OrganizationInvite {\n  id\n  email\n}\n\nfragment DeleteInviteModalOrganizationFragment on Organization {\n  id\n}\n\nfragment InviteFragment on OrganizationInvite {\n  email\n  status\n  expiresAt\n  createdBy {\n    fullName\n    avatarUrl\n    id\n  }\n  createdAt\n  ...DeleteInviteModalFragment\n}\n\nfragment InviteMemberModalFragment on Organization {\n  id\n}\n\nfragment InviteOrganizationFragment on Organization {\n  ...DeleteInviteModalOrganizationFragment\n}\n\nfragment OrganizationInvitesControllerFragment_20J5Pl on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      ...InviteMemberModalFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment OrganizationInvitesListFragment_113nns on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      ...OrganizationInvitesListInternalFragment_1CW4ID\n      ...InviteOrganizationFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment OrganizationInvitesListInternalFragment_1CW4ID on Organization {\n  invites(first: 10, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...InviteFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment OrganizationInvitesViewClientComponentFragment_113nns on Query {\n  ...OrganizationInvitesViewFragment_113nns\n}\n\nfragment OrganizationInvitesViewFragment_113nns on Query {\n  ...OrganizationInvitesListFragment_113nns\n  ...OrganizationInvitesControllerFragment_20J5Pl\n}\n\nfragment pageOrganizationInvitesMetadataFragment_20J5Pl on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      name\n      description\n      logoUrl\n      isAdmin\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageOrganizationInvitesViewQuery($slug:String!,$searchTerm:String){...pageOrganizationInvitesMetadataFragment_20J5Pl,...OrganizationInvitesViewClientComponentFragment_113nns}fragment DeleteInviteModalFragment on OrganizationInvite{id,email}fragment DeleteInviteModalOrganizationFragment on Organization{id}fragment InviteFragment on OrganizationInvite{email,status,expiresAt,createdBy{fullName,avatarUrl,id},createdAt,...DeleteInviteModalFragment}fragment InviteMemberModalFragment on Organization{id}fragment InviteOrganizationFragment on Organization{...DeleteInviteModalOrganizationFragment}fragment OrganizationInvitesControllerFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{...InviteMemberModalFragment},...on Node{__isNode:__typename,id}}}fragment OrganizationInvitesListFragment_113nns on Query{organization(slug:$slug){__typename,...on Organization{...OrganizationInvitesListInternalFragment_1CW4ID,...InviteOrganizationFragment},...on Node{__isNode:__typename,id}}}fragment OrganizationInvitesListInternalFragment_1CW4ID on Organization{invites(first:10,searchTerm:$searchTerm){edges{node{id,...InviteFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}fragment OrganizationInvitesViewClientComponentFragment_113nns on Query{...OrganizationInvitesViewFragment_113nns}fragment OrganizationInvitesViewFragment_113nns on Query{...OrganizationInvitesListFragment_113nns,...OrganizationInvitesControllerFragment_20J5Pl}fragment pageOrganizationInvitesMetadataFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isAdmin},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

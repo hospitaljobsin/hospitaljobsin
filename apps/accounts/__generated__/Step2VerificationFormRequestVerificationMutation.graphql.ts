@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<67ea7e3a13e714eb97cfe8e200609289>>
+ * @generated SignedSource<<41dfbb488c3dfd5f26eec4e6aabf6f6b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -158,12 +158,12 @@ return {
     "selections": (v5/*: any*/)
   },
   "params": {
-    "cacheID": "f2cd95f18b5872fd366e338be6a8aab0",
+    "cacheID": "10c26258de62e48fe3a80a70170c31f1",
     "id": null,
     "metadata": {},
     "name": "Step2VerificationFormRequestVerificationMutation",
     "operationKind": "mutation",
-    "text": "mutation Step2VerificationFormRequestVerificationMutation(\n  $email: String!\n  $captchaToken: String!\n) {\n  requestEmailVerificationToken(email: $email, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on EmailVerificationTokenCooldownError {\n      message\n      remainingSeconds\n    }\n    ... on RequestEmailVerificationSuccess {\n      message\n      remainingSeconds\n    }\n  }\n}\n"
+    "text": "mutation Step2VerificationFormRequestVerificationMutation($email:String!,$captchaToken:String!){requestEmailVerificationToken(email:$email,captchaToken:$captchaToken){__typename,...on EmailInUseError{message},...on InvalidEmailError{message},...on InvalidCaptchaTokenError{message},...on EmailVerificationTokenCooldownError{message,remainingSeconds},...on RequestEmailVerificationSuccess{message,remainingSeconds}}}"
   }
 };
 })();

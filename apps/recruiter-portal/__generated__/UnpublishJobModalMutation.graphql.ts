@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5f46a15eb667f9d828e9cdd42af61c16>>
+ * @generated SignedSource<<42918377f79d12080eca4ce0c2156de7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -146,12 +146,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5e4dec64d6c31380035dd5d2856e0d37",
+    "cacheID": "3395666206e0157b2292a5d785ebc1fb",
     "id": null,
     "metadata": {},
     "name": "UnpublishJobModalMutation",
     "operationKind": "mutation",
-    "text": "mutation UnpublishJobModalMutation(\n  $jobId: ID!\n) {\n  unpublishJob(jobId: $jobId) {\n    __typename\n    ... on Job {\n      __typename\n      ...JobControlsFragment\n    }\n    ... on JobNotFoundError {\n      __typename\n    }\n    ... on OrganizationAuthorizationError {\n      __typename\n    }\n    ... on JobNotPublishedError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isActive\n  ...UnpublishJobModalFragment\n  ...PublishJobModalFragment\n}\n\nfragment PublishJobModalFragment on Job {\n  id\n}\n\nfragment UnpublishJobModalFragment on Job {\n  id\n}\n"
+    "text": "mutation UnpublishJobModalMutation($jobId:ID!){unpublishJob(jobId:$jobId){__typename,...on Job{__typename,...JobControlsFragment},...on JobNotFoundError{__typename},...on OrganizationAuthorizationError{__typename},...on JobNotPublishedError{__typename},...on Node{__isNode:__typename,id}}}fragment JobControlsFragment on Job{id,isActive,...UnpublishJobModalFragment,...PublishJobModalFragment}fragment PublishJobModalFragment on Job{id}fragment UnpublishJobModalFragment on Job{id}"
   }
 };
 })();

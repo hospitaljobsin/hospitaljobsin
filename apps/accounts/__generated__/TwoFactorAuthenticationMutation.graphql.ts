@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3616cc652f08998d146d3b0cf9ef2e14>>
+ * @generated SignedSource<<796b08638faae1b043f6b1352d579c4f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -164,12 +164,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "6b8a94f8ccfb71c700047be66d30c60a",
+    "cacheID": "f41a195fd7065de4476aae93444029b1",
     "id": null,
     "metadata": {},
     "name": "TwoFactorAuthenticationMutation",
     "operationKind": "mutation",
-    "text": "mutation TwoFactorAuthenticationMutation(\n  $twoFactorToken: String!\n  $captchaToken: String!\n) {\n  requestSudoModeWithAuthenticator(twoFactorToken: $twoFactorToken, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation TwoFactorAuthenticationMutation($twoFactorToken:String!,$captchaToken:String!){requestSudoModeWithAuthenticator(twoFactorToken:$twoFactorToken,captchaToken:$captchaToken){__typename,...on Account{__typename},...on InvalidCredentialsError{message},...on InvalidCaptchaTokenError{message},...on AuthenticatorNotEnabledError{message},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

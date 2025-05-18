@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<31a128211ec0e0277b8dfc0ef51ddb3d>>
+ * @generated SignedSource<<376fe0f15da74a3a5235939ad40c4917>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -255,12 +255,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d1a2ad577f247f799bee2dce0e223b79",
+    "cacheID": "22b4c681e2e460ffb8e1bd0b80418bc4",
     "id": null,
     "metadata": {},
     "name": "PasskeyTwoFactorAuthenticationResetPasswordMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyTwoFactorAuthenticationResetPasswordMutation(\n  $email: String!\n  $passwordResetToken: String!\n  $authenticationResponse: JSON!\n  $captchaToken: String!\n) {\n  verify2faPasswordResetWithPasskey(email: $email, passwordResetToken: $passwordResetToken, authenticationResponse: $authenticationResponse, captchaToken: $captchaToken) {\n    __typename\n    ... on PasswordResetToken {\n      ...ResetPasswordViewFragment\n    }\n    ... on InvalidPasswordResetTokenError {\n      message\n    }\n    ... on InvalidPasskeyAuthenticationCredentialError {\n      message\n    }\n    ... on TwoFactorAuthenticationNotEnabledError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on WebAuthnChallengeNotFoundError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment ResetPasswordViewFragment on PasswordResetToken {\n  id\n  needs2fa\n  ...TwoFactorAuthenticationResetPasswordFragment\n}\n\nfragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken {\n  twoFactorProviders\n  authProviders\n}\n"
+    "text": "mutation PasskeyTwoFactorAuthenticationResetPasswordMutation($email:String!,$passwordResetToken:String!,$authenticationResponse:JSON!,$captchaToken:String!){verify2faPasswordResetWithPasskey(email:$email,passwordResetToken:$passwordResetToken,authenticationResponse:$authenticationResponse,captchaToken:$captchaToken){__typename,...on PasswordResetToken{...ResetPasswordViewFragment},...on InvalidPasswordResetTokenError{message},...on InvalidPasskeyAuthenticationCredentialError{message},...on TwoFactorAuthenticationNotEnabledError{message},...on InvalidCaptchaTokenError{message},...on WebAuthnChallengeNotFoundError{message},...on Node{__isNode:__typename,id}}}fragment ResetPasswordViewFragment on PasswordResetToken{id,needs2fa,...TwoFactorAuthenticationResetPasswordFragment}fragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken{twoFactorProviders,authProviders}"
   }
 };
 })();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<313b046ee92a9a545e51ae63eb9c9f5b>>
+ * @generated SignedSource<<a82e052edd046a09e22785d26c8d4549>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -326,12 +326,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "43b58242d94d7b556d26e33f40d44f93",
+    "cacheID": "716eeb522a21fbe4bef0092f6eb7d355",
     "id": null,
     "metadata": {},
     "name": "ApplicantListPaginationQuery",
     "operationKind": "query",
-    "text": "query ApplicantListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $searchTerm: String = null\n  $showStatus: Boolean = true\n  $status: JobApplicantStatus = null\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...ApplicantListFragment_21IF2B\n    id\n  }\n}\n\nfragment ApplicantFragment_KpWpU on JobApplicant {\n  slug\n  status @include(if: $showStatus)\n  account {\n    fullName\n    avatarUrl\n    email\n    id\n  }\n}\n\nfragment ApplicantListFragment_21IF2B on Job {\n  applicants(after: $cursor, first: $count, searchTerm: $searchTerm, status: $status) {\n    edges {\n      node {\n        id\n        ...ApplicantFragment_KpWpU\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
+    "text": "query ApplicantListPaginationQuery($count:Int=10,$cursor:ID,$searchTerm:String=null,$showStatus:Boolean=true,$status:JobApplicantStatus=null,$id:ID!){node(id:$id){__typename,...ApplicantListFragment_21IF2B,id}}fragment ApplicantFragment_KpWpU on JobApplicant{slug,status@include(if:$showStatus),account{fullName,avatarUrl,email,id}}fragment ApplicantListFragment_21IF2B on Job{applicants(after:$cursor,first:$count,searchTerm:$searchTerm,status:$status){edges{node{id,...ApplicantFragment_KpWpU,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}"
   }
 };
 })();

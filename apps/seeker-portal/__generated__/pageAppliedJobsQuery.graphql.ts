@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e3594061c1c1d05dd8973bff7c9d108a>>
+ * @generated SignedSource<<145e7d49909dbd6f67b858f8abd82bf4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -318,12 +318,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "84d5e8d5d0585028ab004700552953af",
+    "cacheID": "ac7e591790abd06cd34b973f9d13c363",
     "id": null,
     "metadata": {},
     "name": "pageAppliedJobsQuery",
     "operationKind": "query",
-    "text": "query pageAppliedJobsQuery {\n  ...AppliedJobsClientComponentFragment\n}\n\nfragment AppliedJobsClientComponentFragment on Query {\n  ...AppliedJobsViewFragment\n}\n\nfragment AppliedJobsListFragment on Query {\n  ...AppliedJobsListInternalFragment\n  viewer {\n    __typename\n    ...JobControlsAuthFragment\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment AppliedJobsListInternalFragment on Query {\n  appliedJobs(first: 10) {\n    edges {\n      node {\n        id\n        job {\n          ...JobFragment\n          id\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment AppliedJobsViewFragment on Query {\n  ...AppliedJobsListFragment\n}\n\nfragment JobControlsAuthFragment on ViewerPayload {\n  __isViewerPayload: __typename\n  __typename\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  ...ShareJobFragment\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  location\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n\nfragment ShareJobFragment on Job {\n  slug\n  title\n  description\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n"
+    "text": "query pageAppliedJobsQuery{...AppliedJobsClientComponentFragment}fragment AppliedJobsClientComponentFragment on Query{...AppliedJobsViewFragment}fragment AppliedJobsListFragment on Query{...AppliedJobsListInternalFragment,viewer{__typename,...JobControlsAuthFragment,...on Node{__isNode:__typename,id}}}fragment AppliedJobsListInternalFragment on Query{appliedJobs(first:10){edges{node{id,job{...JobFragment,id},__typename},cursor},pageInfo{hasNextPage,endCursor}}}fragment AppliedJobsViewFragment on Query{...AppliedJobsListFragment}fragment JobControlsAuthFragment on ViewerPayload{__isViewerPayload:__typename,__typename}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobFragment on Job{...JobControlsFragment,slug,title,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,organization{name,logoUrl,slug,id}}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
   }
 };
 })();

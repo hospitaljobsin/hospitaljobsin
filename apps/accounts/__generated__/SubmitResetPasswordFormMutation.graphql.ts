@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<38c6097e4ef6c0b603baf4b6c43944dd>>
+ * @generated SignedSource<<a52678418d2de3668f259ab0d82acf64>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -128,12 +128,12 @@ return {
     "selections": (v3/*: any*/)
   },
   "params": {
-    "cacheID": "11cc647d59e16540825067b015dc9c51",
+    "cacheID": "a4963a1e951fe7cd5b463c9dd405d573",
     "id": null,
     "metadata": {},
     "name": "SubmitResetPasswordFormMutation",
     "operationKind": "mutation",
-    "text": "mutation SubmitResetPasswordFormMutation(\n  $email: String!\n  $captchaToken: String!\n) {\n  requestPasswordReset(email: $email, captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on PasswordResetTokenCooldownError {\n      message\n      remainingSeconds\n    }\n  }\n}\n"
+    "text": "mutation SubmitResetPasswordFormMutation($email:String!,$captchaToken:String!){requestPasswordReset(email:$email,captchaToken:$captchaToken){__typename,...on InvalidCaptchaTokenError{message},...on PasswordResetTokenCooldownError{message,remainingSeconds}}}"
   }
 };
 })();

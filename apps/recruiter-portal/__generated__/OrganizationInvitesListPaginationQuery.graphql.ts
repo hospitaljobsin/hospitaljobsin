@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<faf3430dbd0b0b18ca7f24684691a4c5>>
+ * @generated SignedSource<<6f4dc3af8952f7075b0b3ea21ac51efe>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -308,12 +308,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "84768e15f46aaf7040acc66d4f4d0b71",
+    "cacheID": "30f727d3bff187d14c2c514510cf2ada",
     "id": null,
     "metadata": {},
     "name": "OrganizationInvitesListPaginationQuery",
     "operationKind": "query",
-    "text": "query OrganizationInvitesListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $searchTerm: String = null\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...OrganizationInvitesListInternalFragment_1YZSDV\n    id\n  }\n}\n\nfragment DeleteInviteModalFragment on OrganizationInvite {\n  id\n  email\n}\n\nfragment InviteFragment on OrganizationInvite {\n  email\n  status\n  expiresAt\n  createdBy {\n    fullName\n    avatarUrl\n    id\n  }\n  createdAt\n  ...DeleteInviteModalFragment\n}\n\nfragment OrganizationInvitesListInternalFragment_1YZSDV on Organization {\n  invites(after: $cursor, first: $count, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...InviteFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
+    "text": "query OrganizationInvitesListPaginationQuery($count:Int=10,$cursor:ID,$searchTerm:String=null,$id:ID!){node(id:$id){__typename,...OrganizationInvitesListInternalFragment_1YZSDV,id}}fragment DeleteInviteModalFragment on OrganizationInvite{id,email}fragment InviteFragment on OrganizationInvite{email,status,expiresAt,createdBy{fullName,avatarUrl,id},createdAt,...DeleteInviteModalFragment}fragment OrganizationInvitesListInternalFragment_1YZSDV on Organization{invites(after:$cursor,first:$count,searchTerm:$searchTerm){edges{node{id,...InviteFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}"
   }
 };
 })();

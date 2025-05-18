@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cab28718aca1bcd94a69cc9ad30f1dd9>>
+ * @generated SignedSource<<f642cf6671c8f92fee0c02563a584b74>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -247,12 +247,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "bb2680d92ac1498da9a0d2e441e564a4",
+    "cacheID": "2b0b61df761a02eac871eaf7121121f4",
     "id": null,
     "metadata": {},
     "name": "OrganizationListPaginationQuery",
     "operationKind": "query",
-    "text": "query OrganizationListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...OrganizationListInternalFragment_1G22uz\n    id\n  }\n}\n\nfragment OrganizationFragment on Organization {\n  name\n  logoUrl\n  slug\n  description\n}\n\nfragment OrganizationListInternalFragment_1G22uz on Account {\n  organizations(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...OrganizationFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
+    "text": "query OrganizationListPaginationQuery($count:Int=10,$cursor:ID,$id:ID!){node(id:$id){__typename,...OrganizationListInternalFragment_1G22uz,id}}fragment OrganizationFragment on Organization{name,logoUrl,slug,description}fragment OrganizationListInternalFragment_1G22uz on Account{organizations(after:$cursor,first:$count){edges{node{id,...OrganizationFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}"
   }
 };
 })();

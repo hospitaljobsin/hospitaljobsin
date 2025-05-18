@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f6a6d5f425ad0f9364126605fb7e4715>>
+ * @generated SignedSource<<f19b0cfc14751903c56f25e5bd19d9e2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -86,12 +86,12 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "e5990cc07a965db8eb2fdc33bae1f8ac",
+    "cacheID": "a1ca9cc8373fc9ba69910594c7f12e2f",
     "id": null,
     "metadata": {},
     "name": "TwoFactorAuthenticationGenerate2FAChallengeMutation",
     "operationKind": "mutation",
-    "text": "mutation TwoFactorAuthenticationGenerate2FAChallengeMutation {\n  generateAuthenticator2faChallenge {\n    __typename\n    ... on GenerateAuthenticator2FAChallengeSuccess {\n      otpUri\n      secret\n    }\n  }\n}\n"
+    "text": "mutation TwoFactorAuthenticationGenerate2FAChallengeMutation{generateAuthenticator2faChallenge{__typename,...on GenerateAuthenticator2FAChallengeSuccess{otpUri,secret}}}"
   }
 };
 })();

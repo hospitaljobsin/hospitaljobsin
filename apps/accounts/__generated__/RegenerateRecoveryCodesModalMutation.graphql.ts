@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d1b14e98b9b7d07a2a0e4bbba06c5e3d>>
+ * @generated SignedSource<<899b81b7c8b838327e2152170f253340>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -95,12 +95,12 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "ff07616ea7d4fa187e8a29c5c801e824",
+    "cacheID": "3420d698bd61cc79b0a592c83389640c",
     "id": null,
     "metadata": {},
     "name": "RegenerateRecoveryCodesModalMutation",
     "operationKind": "mutation",
-    "text": "mutation RegenerateRecoveryCodesModalMutation {\n  generate2faRecoveryCodes {\n    __typename\n    ... on Generate2FARecoveryCodesSuccess {\n      recoveryCodes\n    }\n    ... on TwoFactorAuthenticationNotEnabledError {\n      message\n    }\n  }\n}\n"
+    "text": "mutation RegenerateRecoveryCodesModalMutation{generate2faRecoveryCodes{__typename,...on Generate2FARecoveryCodesSuccess{recoveryCodes},...on TwoFactorAuthenticationNotEnabledError{message}}}"
   }
 };
 })();

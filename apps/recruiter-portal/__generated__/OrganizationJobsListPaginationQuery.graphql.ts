@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b01256265ba8d2c87cdbf254846d4d24>>
+ * @generated SignedSource<<ba5be566668eb5b3903913f638bf4c4a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -330,12 +330,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a8ad4be2f1db40314dc84d630be20695",
+    "cacheID": "1ab8a0e7f435ff9cbca85be5caec2e2e",
     "id": null,
     "metadata": {},
     "name": "OrganizationJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query OrganizationJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $searchTerm: String = null\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...OrganizationJobsListInternalFragment_1YZSDV\n    id\n  }\n}\n\nfragment JobFragment on Job {\n  slug\n  title\n  skills\n  viewCount\n  createdAt\n  applicantCount {\n    applied\n    shortlisted\n    interviewed\n    onHold\n    offered\n  }\n  vacancies\n}\n\nfragment OrganizationJobsListInternalFragment_1YZSDV on Organization {\n  jobs(after: $cursor, first: $count, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
+    "text": "query OrganizationJobsListPaginationQuery($count:Int=10,$cursor:ID,$searchTerm:String=null,$id:ID!){node(id:$id){__typename,...OrganizationJobsListInternalFragment_1YZSDV,id}}fragment JobFragment on Job{slug,title,skills,viewCount,createdAt,applicantCount{applied,shortlisted,interviewed,onHold,offered},vacancies}fragment OrganizationJobsListInternalFragment_1YZSDV on Organization{jobs(after:$cursor,first:$count,searchTerm:$searchTerm){edges{node{id,...JobFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}"
   }
 };
 })();

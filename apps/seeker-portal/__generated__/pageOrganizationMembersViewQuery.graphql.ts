@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<700624e4345aa3364f979d3c4eb09e42>>
+ * @generated SignedSource<<d0a4cb2a28beeb6bd896eb6a4c6fd3ac>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -261,12 +261,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "0684c5c543c25fb8030a899a44492c84",
+    "cacheID": "3afc67c71c689fc69e63fc291efb6d1e",
     "id": null,
     "metadata": {},
     "name": "pageOrganizationMembersViewQuery",
     "operationKind": "query",
-    "text": "query pageOrganizationMembersViewQuery(\n  $slug: String!\n) {\n  ...pageOrganizationMembersMetadataFragment_20J5Pl\n  ...OrganizationMembersViewClientComponentFragment_20J5Pl\n}\n\nfragment MemberFragment on OrganizationMemberEdge {\n  role\n  node {\n    fullName\n    avatarUrl\n    id\n  }\n}\n\nfragment OrganizationMembersListFragment_20J5Pl on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      ...OrganizationMembersListInternalFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment OrganizationMembersListInternalFragment on Organization {\n  members(first: 10) {\n    edges {\n      node {\n        id\n        __typename\n      }\n      ...MemberFragment\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment OrganizationMembersTabFragment_20J5Pl on Query {\n  ...OrganizationMembersListFragment_20J5Pl\n}\n\nfragment OrganizationMembersViewClientComponentFragment_20J5Pl on Query {\n  ...OrganizationMembersTabFragment_20J5Pl\n}\n\nfragment pageOrganizationMembersMetadataFragment_20J5Pl on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      name\n      description\n      logoUrl\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageOrganizationMembersViewQuery($slug:String!){...pageOrganizationMembersMetadataFragment_20J5Pl,...OrganizationMembersViewClientComponentFragment_20J5Pl}fragment MemberFragment on OrganizationMemberEdge{role,node{fullName,avatarUrl,id}}fragment OrganizationMembersListFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{...OrganizationMembersListInternalFragment},...on Node{__isNode:__typename,id}}}fragment OrganizationMembersListInternalFragment on Organization{members(first:10){edges{node{id,__typename},...MemberFragment,cursor},pageInfo{hasNextPage,endCursor}},id}fragment OrganizationMembersTabFragment_20J5Pl on Query{...OrganizationMembersListFragment_20J5Pl}fragment OrganizationMembersViewClientComponentFragment_20J5Pl on Query{...OrganizationMembersTabFragment_20J5Pl}fragment pageOrganizationMembersMetadataFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

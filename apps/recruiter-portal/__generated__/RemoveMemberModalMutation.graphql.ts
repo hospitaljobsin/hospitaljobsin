@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<315d3c73ee5bbbed5381795c1db91d34>>
+ * @generated SignedSource<<4606af580c64c38a27cd1e17f3917360>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -253,12 +253,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2764e2ac644551f1de083f4fd2c9e754",
+    "cacheID": "336342981505b7bc3238782593824e19",
     "id": null,
     "metadata": {},
     "name": "RemoveMemberModalMutation",
     "operationKind": "mutation",
-    "text": "mutation RemoveMemberModalMutation(\n  $accountId: ID!\n  $organizationId: ID!\n) {\n  removeOrganizationMember(accountId: $accountId, organizationId: $organizationId) {\n    __typename\n    ... on RemoveOrganizationMemberSuccess {\n      organizationMemberEdge {\n        node {\n          id\n        }\n      }\n      organization {\n        id\n        ...MemberControlsOrganizationFragment\n      }\n    }\n    ... on OrganizationNotFoundError {\n      __typename\n    }\n    ... on OrganizationMemberNotFoundError {\n      __typename\n    }\n    ... on OrganizationAuthorizationError {\n      __typename\n    }\n  }\n}\n\nfragment DemoteMemberModalOrganizationFragment on Organization {\n  id\n}\n\nfragment MemberControlsOrganizationFragment on Organization {\n  ...RemoveMemberModalOrganizationFragment\n  ...DemoteMemberModalOrganizationFragment\n  ...PromoteMemberModalOrganizationFragment\n  adminCount\n}\n\nfragment PromoteMemberModalOrganizationFragment on Organization {\n  id\n}\n\nfragment RemoveMemberModalOrganizationFragment on Organization {\n  id\n}\n"
+    "text": "mutation RemoveMemberModalMutation($accountId:ID!,$organizationId:ID!){removeOrganizationMember(accountId:$accountId,organizationId:$organizationId){__typename,...on RemoveOrganizationMemberSuccess{organizationMemberEdge{node{id}},organization{id,...MemberControlsOrganizationFragment}},...on OrganizationNotFoundError{__typename},...on OrganizationMemberNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}fragment DemoteMemberModalOrganizationFragment on Organization{id}fragment MemberControlsOrganizationFragment on Organization{...RemoveMemberModalOrganizationFragment,...DemoteMemberModalOrganizationFragment,...PromoteMemberModalOrganizationFragment,adminCount}fragment PromoteMemberModalOrganizationFragment on Organization{id}fragment RemoveMemberModalOrganizationFragment on Organization{id}"
   }
 };
 })();

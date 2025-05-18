@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<491883cb484d45f959e0147a0a4ec9b9>>
+ * @generated SignedSource<<1608a21859ae3c48fc5e4250da5a3639>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -82,12 +82,12 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "714c3f2b900b72adb2c6061f40f8a750",
+    "cacheID": "45301f1eae91843e263067e06f6ca05c",
     "id": null,
     "metadata": {},
     "name": "InviteFormDeclineMutation",
     "operationKind": "mutation",
-    "text": "mutation InviteFormDeclineMutation(\n  $inviteToken: String!\n) {\n  declineOrganizationInvite(inviteToken: $inviteToken) {\n    __typename\n    ... on OrganizationInviteEdge {\n      __typename\n    }\n    ... on OrganizationInviteNotFoundError {\n      __typename\n    }\n  }\n}\n"
+    "text": "mutation InviteFormDeclineMutation($inviteToken:String!){declineOrganizationInvite(inviteToken:$inviteToken){__typename,...on OrganizationInviteEdge{__typename},...on OrganizationInviteNotFoundError{__typename}}}"
   }
 };
 })();

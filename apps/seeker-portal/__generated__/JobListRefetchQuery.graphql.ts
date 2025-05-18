@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3818af74f7f9c5bd438fa2c21766704c>>
+ * @generated SignedSource<<4b764ac7a9be3a4a0d2bbf49987e7614>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -359,12 +359,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "060b10409df7918fcc62f0e64d2fc0a5",
+    "cacheID": "be1dc1c695417e060f8c009ea33bd537",
     "id": null,
     "metadata": {},
     "name": "JobListRefetchQuery",
     "operationKind": "query",
-    "text": "query JobListRefetchQuery(\n  $coordinates: CoordinatesInput = null\n  $count: Int = 10\n  $cursor: ID\n  $proximityKm: Float = null\n  $searchTerm: String = null\n) {\n  ...JobListInternalFragment_4vMlA8\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  ...ShareJobFragment\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  location\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n\nfragment JobListInternalFragment_4vMlA8 on Query {\n  jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        ...JobControlsFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment ShareJobFragment on Job {\n  slug\n  title\n  description\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n"
+    "text": "query JobListRefetchQuery($coordinates:CoordinatesInput=null,$count:Int=10,$cursor:ID,$proximityKm:Float=null,$searchTerm:String=null){...JobListInternalFragment_4vMlA8}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobFragment on Job{...JobControlsFragment,slug,title,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,organization{name,logoUrl,slug,id}}fragment JobListInternalFragment_4vMlA8 on Query{jobs(after:$cursor,first:$count,searchTerm:$searchTerm,coordinates:$coordinates,proximityKm:$proximityKm){edges{node{id,...JobFragment,...JobControlsFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}}}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
   }
 };
 })();

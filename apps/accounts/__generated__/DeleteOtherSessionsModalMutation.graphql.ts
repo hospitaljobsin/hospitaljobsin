@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5c898248336736b9adca18c6ecca6a09>>
+ * @generated SignedSource<<e1b2918dfdc2e3f30eb8e64577d79102>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -97,12 +97,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9d586825c867606ec311dac68b581063",
+    "cacheID": "eb45a3b8070cdd7d075ae4e3a6e39601",
     "id": null,
     "metadata": {},
     "name": "DeleteOtherSessionsModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeleteOtherSessionsModalMutation {\n  deleteOtherSessions {\n    deletedSessionIds\n  }\n}\n"
+    "text": "mutation DeleteOtherSessionsModalMutation{deleteOtherSessions{deletedSessionIds}}"
   }
 };
 })();

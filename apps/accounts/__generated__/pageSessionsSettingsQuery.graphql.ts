@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dc31807a446a88628bdbc1bae2781747>>
+ * @generated SignedSource<<cd8339e8ab0771239d36436fdd9a2922>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -228,12 +228,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "18741de813a325f89d2edd6313c21f89",
+    "cacheID": "a5a28af5c38a421dce261ffcdcd03886",
     "id": null,
     "metadata": {},
     "name": "pageSessionsSettingsQuery",
     "operationKind": "query",
-    "text": "query pageSessionsSettingsQuery {\n  ...SessionsClientComponentFragment\n}\n\nfragment DeleteSessionModalFragment on Session {\n  id\n}\n\nfragment SessionAccountSudoFragment on Account {\n  sudoModeExpiresAt\n}\n\nfragment SessionFragment on Session {\n  id\n  userAgent\n  ipAddress\n  createdAt\n  ...DeleteSessionModalFragment\n}\n\nfragment SessionsClientComponentFragment on Query {\n  ...SessionsSettingsViewFragment\n}\n\nfragment SessionsControllerFragment on Account {\n  sudoModeExpiresAt\n}\n\nfragment SessionsListCurrentSessionFragment on Account {\n  currentSession {\n    ...SessionFragment\n    id\n  }\n}\n\nfragment SessionsListFragment on Account {\n  ...SessionsControllerFragment\n  ...SessionsListInternalFragment\n  ...SessionsListCurrentSessionFragment\n  ...SessionAccountSudoFragment\n}\n\nfragment SessionsListInternalFragment on Account {\n  sessions(first: 10) {\n    edges {\n      node {\n        id\n        ...SessionFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment SessionsSettingsViewFragment on Query {\n  viewer {\n    __typename\n    ... on Account {\n      ...SessionsListFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageSessionsSettingsQuery{...SessionsClientComponentFragment}fragment DeleteSessionModalFragment on Session{id}fragment SessionAccountSudoFragment on Account{sudoModeExpiresAt}fragment SessionFragment on Session{id,userAgent,ipAddress,createdAt,...DeleteSessionModalFragment}fragment SessionsClientComponentFragment on Query{...SessionsSettingsViewFragment}fragment SessionsControllerFragment on Account{sudoModeExpiresAt}fragment SessionsListCurrentSessionFragment on Account{currentSession{...SessionFragment,id}}fragment SessionsListFragment on Account{...SessionsControllerFragment,...SessionsListInternalFragment,...SessionsListCurrentSessionFragment,...SessionAccountSudoFragment}fragment SessionsListInternalFragment on Account{sessions(first:10){edges{node{id,...SessionFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}fragment SessionsSettingsViewFragment on Query{viewer{__typename,...on Account{...SessionsListFragment},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

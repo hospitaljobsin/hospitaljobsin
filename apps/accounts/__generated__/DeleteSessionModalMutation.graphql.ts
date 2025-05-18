@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b8c78f99a9391a65e288be7d08049dc6>>
+ * @generated SignedSource<<76ec1f7d97588089c35e8fd1d555b860>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -183,12 +183,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "71420155c4eec165c380fd08d16ca657",
+    "cacheID": "c29c50e6ffc19df4b6bd435c29f5ee9e",
     "id": null,
     "metadata": {},
     "name": "DeleteSessionModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeleteSessionModalMutation(\n  $sessionId: ID!\n) {\n  deleteSession(sessionId: $sessionId) {\n    __typename\n    ... on DeleteSessionSuccess {\n      sessionEdge {\n        node {\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "mutation DeleteSessionModalMutation($sessionId:ID!){deleteSession(sessionId:$sessionId){__typename,...on DeleteSessionSuccess{sessionEdge{node{id}}}}}"
   }
 };
 })();

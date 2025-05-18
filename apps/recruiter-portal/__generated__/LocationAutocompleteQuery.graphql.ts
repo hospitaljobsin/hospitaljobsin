@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1cfa7d9fee14c2c5ffa4c397f8a2b41d>>
+ * @generated SignedSource<<51d869be811581c9681b9673b5384d6d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -132,12 +132,12 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "4241a8ceffd82c5f8eb1cf9034e69e5b",
+    "cacheID": "b998c04df1f01198b85759d753754fad",
     "id": null,
     "metadata": {},
     "name": "LocationAutocompleteQuery",
     "operationKind": "query",
-    "text": "query LocationAutocompleteQuery(\n  $searchTerm: String!\n) {\n  searchLocations(searchTerm: $searchTerm) {\n    locations {\n      __typename\n      displayName\n      placeId\n      coordinates {\n        latitude\n        longitude\n      }\n    }\n  }\n}\n"
+    "text": "query LocationAutocompleteQuery($searchTerm:String!){searchLocations(searchTerm:$searchTerm){locations{__typename,displayName,placeId,coordinates{latitude,longitude}}}}"
   }
 };
 })();

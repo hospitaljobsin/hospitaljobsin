@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<297df00840285802859e320988fa76e8>>
+ * @generated SignedSource<<db3e5fdfe108a41c61b68dfde6234df1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -202,12 +202,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "67db4493bd5fa608b31d8e7db5035e78",
+    "cacheID": "18e76c3d0846ff86bf94f9e50322cb70",
     "id": null,
     "metadata": {},
     "name": "OrgDetailHeaderQuery",
     "operationKind": "query",
-    "text": "query OrgDetailHeaderQuery(\n  $slug: String!\n) {\n  viewer {\n    __typename\n    ... on Account {\n      ...AuthNavigationFragment\n    }\n    ... on NotAuthenticatedError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      name\n      slug\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment AuthNavigationFragment on Account {\n  __typename\n  fullName\n  avatarUrl\n}\n"
+    "text": "query OrgDetailHeaderQuery($slug:String!){viewer{__typename,...on Account{...AuthNavigationFragment},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}},organization(slug:$slug){__typename,...on Organization{name,slug},...on Node{__isNode:__typename,id}}}fragment AuthNavigationFragment on Account{__typename,fullName,avatarUrl}"
   }
 };
 })();

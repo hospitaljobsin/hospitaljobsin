@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bb3091069122640de33e66b2c4daf847>>
+ * @generated SignedSource<<31181b00c3e1fdd0a9c6254e4ca045fd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -244,12 +244,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ec9560f6105533f08454b7b0222f4903",
+    "cacheID": "9b57414d5d810a0834b6321fa62bc8d3",
     "id": null,
     "metadata": {},
     "name": "PromoteMemberModalMutation",
     "operationKind": "mutation",
-    "text": "mutation PromoteMemberModalMutation(\n  $accountId: ID!\n  $organizationId: ID!\n) {\n  promoteOrganizationMember(accountId: $accountId, organizationId: $organizationId) {\n    __typename\n    ... on PromoteOrganizationMemberSuccess {\n      organizationMemberEdge {\n        ...MemberFragment\n      }\n      organization {\n        id\n        ...MemberControlsOrganizationFragment\n      }\n    }\n    ... on OrganizationNotFoundError {\n      __typename\n    }\n    ... on OrganizationMemberNotFoundError {\n      __typename\n    }\n    ... on OrganizationAuthorizationError {\n      __typename\n    }\n  }\n}\n\nfragment DemoteMemberModalFragment on OrganizationMemberEdge {\n  node {\n    id\n  }\n}\n\nfragment DemoteMemberModalOrganizationFragment on Organization {\n  id\n}\n\nfragment MemberControlsFragment on OrganizationMemberEdge {\n  role\n  node {\n    fullName\n    id\n  }\n  ...RemoveMemberModalFragment\n  ...DemoteMemberModalFragment\n  ...PromoteMemberModalFragment\n}\n\nfragment MemberControlsOrganizationFragment on Organization {\n  ...RemoveMemberModalOrganizationFragment\n  ...DemoteMemberModalOrganizationFragment\n  ...PromoteMemberModalOrganizationFragment\n  adminCount\n}\n\nfragment MemberFragment on OrganizationMemberEdge {\n  role\n  createdAt\n  node {\n    fullName\n    avatarUrl\n    id\n  }\n  ...MemberControlsFragment\n}\n\nfragment PromoteMemberModalFragment on OrganizationMemberEdge {\n  node {\n    id\n  }\n}\n\nfragment PromoteMemberModalOrganizationFragment on Organization {\n  id\n}\n\nfragment RemoveMemberModalFragment on OrganizationMemberEdge {\n  node {\n    id\n  }\n}\n\nfragment RemoveMemberModalOrganizationFragment on Organization {\n  id\n}\n"
+    "text": "mutation PromoteMemberModalMutation($accountId:ID!,$organizationId:ID!){promoteOrganizationMember(accountId:$accountId,organizationId:$organizationId){__typename,...on PromoteOrganizationMemberSuccess{organizationMemberEdge{...MemberFragment},organization{id,...MemberControlsOrganizationFragment}},...on OrganizationNotFoundError{__typename},...on OrganizationMemberNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}fragment DemoteMemberModalFragment on OrganizationMemberEdge{node{id}}fragment DemoteMemberModalOrganizationFragment on Organization{id}fragment MemberControlsFragment on OrganizationMemberEdge{role,node{fullName,id},...RemoveMemberModalFragment,...DemoteMemberModalFragment,...PromoteMemberModalFragment}fragment MemberControlsOrganizationFragment on Organization{...RemoveMemberModalOrganizationFragment,...DemoteMemberModalOrganizationFragment,...PromoteMemberModalOrganizationFragment,adminCount}fragment MemberFragment on OrganizationMemberEdge{role,createdAt,node{fullName,avatarUrl,id},...MemberControlsFragment}fragment PromoteMemberModalFragment on OrganizationMemberEdge{node{id}}fragment PromoteMemberModalOrganizationFragment on Organization{id}fragment RemoveMemberModalFragment on OrganizationMemberEdge{node{id}}fragment RemoveMemberModalOrganizationFragment on Organization{id}"
   }
 };
 })();

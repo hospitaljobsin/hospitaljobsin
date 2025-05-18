@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<94df317f72109f56e2836372555b130b>>
+ * @generated SignedSource<<c8b7b058a3dbacd17788fc7be3c59e54>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -59,12 +59,12 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "eaaf821115b0b4d95a61f415a5c1d27d",
+    "cacheID": "e1a1d42b47907a4c6c5deff9de0b5cd9",
     "id": null,
     "metadata": {},
     "name": "LogoutModalMutation",
     "operationKind": "mutation",
-    "text": "mutation LogoutModalMutation {\n  logout {\n    __typename\n  }\n}\n"
+    "text": "mutation LogoutModalMutation{logout{__typename}}"
   }
 };
 })();

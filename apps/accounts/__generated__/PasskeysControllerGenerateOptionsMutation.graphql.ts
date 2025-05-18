@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cc95453890e9d04a246bc49737df275f>>
+ * @generated SignedSource<<9f203569c39368130bed14b6eaf39a31>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -86,12 +86,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9da99709923eaea58f8529c64fe6f759",
+    "cacheID": "f67d7015c3f0fc1b207ab8b1303459be",
     "id": null,
     "metadata": {},
     "name": "PasskeysControllerGenerateOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeysControllerGenerateOptionsMutation {\n  generateWebAuthnCredentialCreationOptions {\n    __typename\n    ... on GeneratePasskeyCreationOptionsSuccess {\n      registrationOptions\n    }\n  }\n}\n"
+    "text": "mutation PasskeysControllerGenerateOptionsMutation{generateWebAuthnCredentialCreationOptions{__typename,...on GeneratePasskeyCreationOptionsSuccess{registrationOptions}}}"
   }
 };
 })();

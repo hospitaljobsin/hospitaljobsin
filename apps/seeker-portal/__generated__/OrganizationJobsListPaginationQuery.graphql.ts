@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d4c8e7020cf1b89ba0bae89db491fb45>>
+ * @generated SignedSource<<51828b380e5ac319043c48b347025e4b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -382,12 +382,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "309e127094ebd4f88393a86628ce81ea",
+    "cacheID": "7c32434deb599c30d48fa57b83f8f0e7",
     "id": null,
     "metadata": {},
     "name": "OrganizationJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query OrganizationJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $isActive: Boolean = true\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...OrganizationJobsListInternalFragment_2Rqfqe\n    id\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  ...ShareJobFragment\n}\n\nfragment JobFragment_N8YyC on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  location\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  organization {\n    slug\n    id\n  }\n}\n\nfragment OrganizationJobsListInternalFragment_2Rqfqe on Organization {\n  jobs(after: $cursor, first: $count, isActive: $isActive) {\n    edges {\n      node {\n        id\n        ...JobFragment_N8YyC\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment ShareJobFragment on Job {\n  slug\n  title\n  description\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n"
+    "text": "query OrganizationJobsListPaginationQuery($count:Int=10,$cursor:ID,$isActive:Boolean=true,$id:ID!){node(id:$id){__typename,...OrganizationJobsListInternalFragment_2Rqfqe,id}}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobFragment_N8YyC on Job{...JobControlsFragment,slug,title,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,organization{slug,id}}fragment OrganizationJobsListInternalFragment_2Rqfqe on Organization{jobs(after:$cursor,first:$count,isActive:$isActive){edges{node{id,...JobFragment_N8YyC,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
   }
 };
 })();

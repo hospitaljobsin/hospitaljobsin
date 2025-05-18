@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6752c85fc201ee3ccd0fc705a0efdcd5>>
+ * @generated SignedSource<<64b634eccb1e24887751b16466cff2bb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -110,12 +110,12 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "18d3739f0e9c13039e1dc0bfc26c7ccf",
+    "cacheID": "68830faa3e9826b9fa2f619a60a5c93a",
     "id": null,
     "metadata": {},
     "name": "LoginFormGenerateAuthenticationOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormGenerateAuthenticationOptionsMutation(\n  $captchaToken: String!\n) {\n  generateAuthenticationOptions(captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on GenerateAuthenticationOptionsSuccess {\n      authenticationOptions\n    }\n  }\n}\n"
+    "text": "mutation LoginFormGenerateAuthenticationOptionsMutation($captchaToken:String!){generateAuthenticationOptions(captchaToken:$captchaToken){__typename,...on InvalidCaptchaTokenError{message},...on GenerateAuthenticationOptionsSuccess{authenticationOptions}}}"
   }
 };
 })();

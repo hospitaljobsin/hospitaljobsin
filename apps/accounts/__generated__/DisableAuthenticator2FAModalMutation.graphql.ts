@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<97246b80caefabcc652a21b238d74896>>
+ * @generated SignedSource<<e79812446a517bcc976cc16222b3270c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -155,12 +155,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "6064c360c236056772749c543b027137",
+    "cacheID": "830927f442c4227743a2ebf4310990ba",
     "id": null,
     "metadata": {},
     "name": "DisableAuthenticator2FAModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DisableAuthenticator2FAModalMutation {\n  disableAccount2faWithAuthenticator {\n    __typename\n    ... on Account {\n      id\n      ...TwoFactorAuthenticationFragment\n    }\n    ... on AuthenticatorNotEnabledError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment TwoFactorAuthenticationFragment on Account {\n  has2faEnabled\n  sudoModeExpiresAt\n  twoFactorProviders\n}\n"
+    "text": "mutation DisableAuthenticator2FAModalMutation{disableAccount2faWithAuthenticator{__typename,...on Account{id,...TwoFactorAuthenticationFragment},...on AuthenticatorNotEnabledError{message},...on Node{__isNode:__typename,id}}}fragment TwoFactorAuthenticationFragment on Account{has2faEnabled,sudoModeExpiresAt,twoFactorProviders}"
   }
 };
 })();

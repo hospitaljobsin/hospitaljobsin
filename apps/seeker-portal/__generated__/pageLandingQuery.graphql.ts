@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8ee6301cf90ec077e3b37e41885976c0>>
+ * @generated SignedSource<<e6506b77283781cff44b60b9caae731c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -363,12 +363,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f8d240769451a7ad593137010954c4bc",
+    "cacheID": "a159c250098c729c26c4bb15f97dd02a",
     "id": null,
     "metadata": {},
     "name": "pageLandingQuery",
     "operationKind": "query",
-    "text": "query pageLandingQuery(\n  $searchTerm: String\n  $coordinates: CoordinatesInput\n  $proximityKm: Float\n) {\n  ...LandingClientComponentFragment_3Qx6jN\n}\n\nfragment JobControlsAuthFragment on ViewerPayload {\n  __isViewerPayload: __typename\n  __typename\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  ...ShareJobFragment\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  location\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n\nfragment JobListFragment_3Qx6jN on Query {\n  ...JobListInternalFragment_3Qx6jN\n  viewer {\n    __typename\n    ...JobControlsAuthFragment\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobListInternalFragment_3Qx6jN on Query {\n  jobs(first: 10, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm) {\n    edges {\n      node {\n        id\n        ...JobFragment\n        ...JobControlsFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment LandingClientComponentFragment_3Qx6jN on Query {\n  ...LandingViewFragment_3Qx6jN\n}\n\nfragment LandingViewFragment_3Qx6jN on Query {\n  ...JobListFragment_3Qx6jN\n}\n\nfragment ShareJobFragment on Job {\n  slug\n  title\n  description\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n"
+    "text": "query pageLandingQuery($searchTerm:String,$coordinates:CoordinatesInput,$proximityKm:Float){...LandingClientComponentFragment_3Qx6jN}fragment JobControlsAuthFragment on ViewerPayload{__isViewerPayload:__typename,__typename}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobFragment on Job{...JobControlsFragment,slug,title,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,organization{name,logoUrl,slug,id}}fragment JobListFragment_3Qx6jN on Query{...JobListInternalFragment_3Qx6jN,viewer{__typename,...JobControlsAuthFragment,...on Node{__isNode:__typename,id}}}fragment JobListInternalFragment_3Qx6jN on Query{jobs(first:10,searchTerm:$searchTerm,coordinates:$coordinates,proximityKm:$proximityKm){edges{node{id,...JobFragment,...JobControlsFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}}}fragment LandingClientComponentFragment_3Qx6jN on Query{...LandingViewFragment_3Qx6jN}fragment LandingViewFragment_3Qx6jN on Query{...JobListFragment_3Qx6jN}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
   }
 };
 })();

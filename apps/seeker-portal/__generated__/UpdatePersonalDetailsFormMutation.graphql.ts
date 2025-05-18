@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<afd8a0fa06295fa7ac2083c877b221fa>>
+ * @generated SignedSource<<7e54369dc7178c0ed460388c2fd97b2d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -287,12 +287,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "510e4d403813156b36ad293e384054fa",
+    "cacheID": "498c8a428c2095f913eb2306ce089613",
     "id": null,
     "metadata": {},
     "name": "UpdatePersonalDetailsFormMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdatePersonalDetailsFormMutation(\n  $gender: GenderType\n  $dateOfBirth: Date\n  $address: AddressInput!\n  $maritalStatus: MaritalStatusType\n  $category: String\n) {\n  updateProfilePersonalDetails(address: $address, gender: $gender, dateOfBirth: $dateOfBirth, maritalStatus: $maritalStatus, category: $category) {\n    __typename\n    ... on Account {\n      ...UpdatePersonalDetailsFormFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment UpdatePersonalDetailsFormFragment on Account {\n  profile {\n    __typename\n    ... on Profile {\n      __typename\n      address {\n        city\n        country\n        line1\n        line2\n        pincode\n        state\n      }\n      gender\n      dateOfBirth\n      maritalStatus\n      category\n    }\n    ... on ProfileNotFoundError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation UpdatePersonalDetailsFormMutation($gender:GenderType,$dateOfBirth:Date,$address:AddressInput!,$maritalStatus:MaritalStatusType,$category:String){updateProfilePersonalDetails(address:$address,gender:$gender,dateOfBirth:$dateOfBirth,maritalStatus:$maritalStatus,category:$category){__typename,...on Account{...UpdatePersonalDetailsFormFragment},...on Node{__isNode:__typename,id}}}fragment UpdatePersonalDetailsFormFragment on Account{profile{__typename,...on Profile{__typename,address{city,country,line1,line2,pincode,state},gender,dateOfBirth,maritalStatus,category},...on ProfileNotFoundError{__typename},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

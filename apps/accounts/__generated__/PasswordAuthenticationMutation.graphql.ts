@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6dd40e46780c21e1bece959319920c4e>>
+ * @generated SignedSource<<2bdf00c34d2cb2ab17166aa16bb639db>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -164,12 +164,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "46ce015f41db08738793b357ca2d3ab6",
+    "cacheID": "3e21cc58a2d2a3a9acfecf05cdbfbcc0",
     "id": null,
     "metadata": {},
     "name": "PasswordAuthenticationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasswordAuthenticationMutation(\n  $password: String!\n  $captchaToken: String!\n) {\n  requestSudoModeWithPassword(password: $password, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on InvalidAuthenticationProviderError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation PasswordAuthenticationMutation($password:String!,$captchaToken:String!){requestSudoModeWithPassword(password:$password,captchaToken:$captchaToken){__typename,...on Account{__typename},...on InvalidCredentialsError{message},...on InvalidCaptchaTokenError{message},...on InvalidAuthenticationProviderError{message},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

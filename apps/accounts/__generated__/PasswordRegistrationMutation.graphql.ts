@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e2ebcea75abdb43a72ae4f21a4e84abb>>
+ * @generated SignedSource<<43694d5294ebc81b7927f1f0bb461dc8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -211,12 +211,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "26dd2a32ac6314aded016e9798e9be4f",
+    "cacheID": "154190a9a0904b8c58fff1c358a6bbdf",
     "id": null,
     "metadata": {},
     "name": "PasswordRegistrationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasswordRegistrationMutation(\n  $email: String!\n  $emailVerificationToken: String!\n  $password: String!\n  $fullName: String!\n  $captchaToken: String!\n) {\n  registerWithPassword(email: $email, emailVerificationToken: $emailVerificationToken, password: $password, fullName: $fullName, captchaToken: $captchaToken) {\n    __typename\n    ... on EmailInUseError {\n      message\n    }\n    ... on InvalidEmailVerificationTokenError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on PasswordNotStrongError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation PasswordRegistrationMutation($email:String!,$emailVerificationToken:String!,$password:String!,$fullName:String!,$captchaToken:String!){registerWithPassword(email:$email,emailVerificationToken:$emailVerificationToken,password:$password,fullName:$fullName,captchaToken:$captchaToken){__typename,...on EmailInUseError{message},...on InvalidEmailVerificationTokenError{message},...on InvalidCaptchaTokenError{message},...on PasswordNotStrongError{message},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

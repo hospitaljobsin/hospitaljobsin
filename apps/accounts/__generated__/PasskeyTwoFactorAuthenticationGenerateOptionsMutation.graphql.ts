@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e798cad2ce8545cb271eab233ec14256>>
+ * @generated SignedSource<<6513dfa01ec098765ceacf33722244f3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -110,12 +110,12 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "bdcf8d41f08a162a935513f5f17d4dd7",
+    "cacheID": "abfbc91d39966d26ab1d7a700ad8afcc",
     "id": null,
     "metadata": {},
     "name": "PasskeyTwoFactorAuthenticationGenerateOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation(\n  $captchaToken: String!\n) {\n  generateAuthenticationOptions(captchaToken: $captchaToken) {\n    __typename\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on GenerateAuthenticationOptionsSuccess {\n      authenticationOptions\n    }\n  }\n}\n"
+    "text": "mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation($captchaToken:String!){generateAuthenticationOptions(captchaToken:$captchaToken){__typename,...on InvalidCaptchaTokenError{message},...on GenerateAuthenticationOptionsSuccess{authenticationOptions}}}"
   }
 };
 })();

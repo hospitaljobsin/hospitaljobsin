@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<40ddc37a2b5933a40216e9fbb54852d4>>
+ * @generated SignedSource<<31669eeaa716f0f17f8d508d57eadefa>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -325,12 +325,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "69809b44ecaede90f8a41ab94c54d274",
+    "cacheID": "b70d0b2f87c2d4c3ad5b9a7111bcc411",
     "id": null,
     "metadata": {},
     "name": "JobControlsSaveMutation",
     "operationKind": "mutation",
-    "text": "mutation JobControlsSaveMutation(\n  $jobId: ID!\n) {\n  saveJob(jobId: $jobId) {\n    __typename\n    ... on SaveJobSuccess {\n      savedJobEdge {\n        node {\n          id\n          ...JobDetailsInternalFragment\n          ...JobControlsFragment\n        }\n      }\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  ...ShareJobFragment\n}\n\nfragment JobDetailsInternalFragment on Job {\n  ...JobControlsFragment\n  title\n  slug\n  description\n  type\n  workMode\n  location\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  isApplied\n  externalApplicationUrl\n  organization {\n    slug\n    name\n    description\n    logoUrl\n    id\n  }\n}\n\nfragment ShareJobFragment on Job {\n  slug\n  title\n  description\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n"
+    "text": "mutation JobControlsSaveMutation($jobId:ID!){saveJob(jobId:$jobId){__typename,...on SaveJobSuccess{savedJobEdge{node{id,...JobDetailsInternalFragment,...JobControlsFragment}}}}}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobDetailsInternalFragment on Job{...JobControlsFragment,title,slug,description,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,isApplied,externalApplicationUrl,organization{slug,name,description,logoUrl,id}}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
   }
 };
 })();

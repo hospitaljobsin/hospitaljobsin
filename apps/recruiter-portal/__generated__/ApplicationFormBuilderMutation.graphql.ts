@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<30f8b206f0f8e5f8c358b87ed17f9734>>
+ * @generated SignedSource<<047b5ecd74b838c8e6e924ca8e24252c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -435,12 +435,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "57ba73df17a44329b2b7de891bdf973d",
+    "cacheID": "b6b1f1cfd7db83b73eaffd9f7e2dbe8b",
     "id": null,
     "metadata": {},
     "name": "ApplicationFormBuilderMutation",
     "operationKind": "mutation",
-    "text": "mutation ApplicationFormBuilderMutation(\n  $jobId: ID!\n  $fields: [ApplicationFieldInput!]!\n) {\n  updateJobApplicationForm(jobId: $jobId, fields: $fields) {\n    __typename\n    ... on UpdateJobApplicationFormSuccess {\n      job {\n        ...JobDetailsFragment\n        id\n      }\n      jobApplicationForm {\n        fields {\n          fieldName\n          defaultValue\n          isRequired\n        }\n        id\n      }\n    }\n    ... on JobNotFoundError {\n      __typename\n    }\n    ... on OrganizationAuthorizationError {\n      __typename\n    }\n    ... on JobIsExternalError {\n      __typename\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isActive\n  ...UnpublishJobModalFragment\n  ...PublishJobModalFragment\n}\n\nfragment JobDetailsFragment on Job {\n  title\n  description\n  slug\n  skills\n  minSalary\n  maxSalary\n  hasSalaryRange\n  minExperience\n  maxExperience\n  hasExperienceRange\n  currency\n  workMode\n  type\n  location\n  createdAt\n  updatedAt\n  isActive\n  externalApplicationUrl\n  applicationForm {\n    __typename\n    id\n  }\n  organization {\n    isAdmin\n    name\n    id\n  }\n  ...JobControlsFragment\n  ...JobStatisticsFragment\n}\n\nfragment JobStatisticsFragment on Job {\n  viewCount\n  viewMetricPoints {\n    timestamp\n    count\n  }\n}\n\nfragment PublishJobModalFragment on Job {\n  id\n}\n\nfragment UnpublishJobModalFragment on Job {\n  id\n}\n"
+    "text": "mutation ApplicationFormBuilderMutation($jobId:ID!,$fields:[ApplicationFieldInput!]!){updateJobApplicationForm(jobId:$jobId,fields:$fields){__typename,...on UpdateJobApplicationFormSuccess{job{...JobDetailsFragment,id},jobApplicationForm{fields{fieldName,defaultValue,isRequired},id}},...on JobNotFoundError{__typename},...on OrganizationAuthorizationError{__typename},...on JobIsExternalError{__typename}}}fragment JobControlsFragment on Job{id,isActive,...UnpublishJobModalFragment,...PublishJobModalFragment}fragment JobDetailsFragment on Job{title,description,slug,skills,minSalary,maxSalary,hasSalaryRange,minExperience,maxExperience,hasExperienceRange,currency,workMode,type,location,createdAt,updatedAt,isActive,externalApplicationUrl,applicationForm{__typename,id},organization{isAdmin,name,id},...JobControlsFragment,...JobStatisticsFragment}fragment JobStatisticsFragment on Job{viewCount,viewMetricPoints{timestamp,count}}fragment PublishJobModalFragment on Job{id}fragment UnpublishJobModalFragment on Job{id}"
   }
 };
 })();

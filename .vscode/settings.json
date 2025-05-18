@@ -28,5 +28,6 @@
 	"terminal.integrated.env.windows": {
 		"PYTHONPATH": "${workspaceFolder}/server"
 	},
-	"tailwindCSS.experimental.classRegex": ["class:\\s*?[\"'`]([^\"'`]*).*?,"]
+	"tailwindCSS.experimental.classRegex": ["class:\\s*?[\"'`]([^\"'`]*).*?,"],
+	"relay.pathToConfig": "relay.config.json"
 }

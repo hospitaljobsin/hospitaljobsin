@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<92e897c343adf8096d740e1a515fca7b>>
+ * @generated SignedSource<<5d04d997a9053e13430423343071455b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -123,12 +123,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ec32aa3d6155d69e72e3f8bf2cadc857",
+    "cacheID": "78372d3f2e87a9fdb92ca4ef551b1d05",
     "id": null,
     "metadata": {},
     "name": "SidebarMembersQuery",
     "operationKind": "query",
-    "text": "query SidebarMembersQuery(\n  $slug: String!\n) {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      isAdmin\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query SidebarMembersQuery($slug:String!){organization(slug:$slug){__typename,...on Organization{isAdmin},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

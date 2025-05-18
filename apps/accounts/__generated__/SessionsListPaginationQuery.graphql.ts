@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f34db45ea4ec2519671d650cedcc58dc>>
+ * @generated SignedSource<<a6bb3a0ae5c78b389eaea1c98ea3f364>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -252,12 +252,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "6ebeb829a06b92ca6c9e76ea9c5ed6e6",
+    "cacheID": "078d0b2eca291f326b10980daa502944",
     "id": null,
     "metadata": {},
     "name": "SessionsListPaginationQuery",
     "operationKind": "query",
-    "text": "query SessionsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...SessionsListInternalFragment_1G22uz\n    id\n  }\n}\n\nfragment DeleteSessionModalFragment on Session {\n  id\n}\n\nfragment SessionFragment on Session {\n  id\n  userAgent\n  ipAddress\n  createdAt\n  ...DeleteSessionModalFragment\n}\n\nfragment SessionsListInternalFragment_1G22uz on Account {\n  sessions(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        ...SessionFragment\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
+    "text": "query SessionsListPaginationQuery($count:Int=10,$cursor:ID,$id:ID!){node(id:$id){__typename,...SessionsListInternalFragment_1G22uz,id}}fragment DeleteSessionModalFragment on Session{id}fragment SessionFragment on Session{id,userAgent,ipAddress,createdAt,...DeleteSessionModalFragment}fragment SessionsListInternalFragment_1G22uz on Account{sessions(after:$cursor,first:$count){edges{node{id,...SessionFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}"
   }
 };
 })();

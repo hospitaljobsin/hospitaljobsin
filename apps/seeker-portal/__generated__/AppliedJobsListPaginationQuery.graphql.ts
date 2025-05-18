@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<82aeeaffe28353690578b431ca1b1e5f>>
+ * @generated SignedSource<<21a209bae2178ba3886fe2b79521c773>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -324,12 +324,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "60fe90e7c8f07804cff3ea44ec67373a",
+    "cacheID": "3b2f2f31e2685dd106b16ed8c61e1dd8",
     "id": null,
     "metadata": {},
     "name": "AppliedJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query AppliedJobsListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n) {\n  ...AppliedJobsListInternalFragment_1G22uz\n}\n\nfragment AppliedJobsListInternalFragment_1G22uz on Query {\n  appliedJobs(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        job {\n          ...JobFragment\n          id\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  ...ShareJobFragment\n}\n\nfragment JobFragment on Job {\n  ...JobControlsFragment\n  slug\n  title\n  type\n  workMode\n  location\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n\nfragment ShareJobFragment on Job {\n  slug\n  title\n  description\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n"
+    "text": "query AppliedJobsListPaginationQuery($count:Int=10,$cursor:ID){...AppliedJobsListInternalFragment_1G22uz}fragment AppliedJobsListInternalFragment_1G22uz on Query{appliedJobs(after:$cursor,first:$count){edges{node{id,job{...JobFragment,id},__typename},cursor},pageInfo{hasNextPage,endCursor}}}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobFragment on Job{...JobControlsFragment,slug,title,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,organization{name,logoUrl,slug,id}}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
   }
 };
 })();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9215bcd0bbc128f5048f09ea341535ee>>
+ * @generated SignedSource<<425764ef4a80b0175c3ada52e791e9bf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -431,12 +431,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1d393bf17a72750dc6d237efd5f45720",
+    "cacheID": "37188fa42d8268ee239ba598da590f9f",
     "id": null,
     "metadata": {},
     "name": "pageJobApplicantsViewQuery",
     "operationKind": "query",
-    "text": "query pageJobApplicantsViewQuery(\n  $slug: String!\n  $jobSlug: String!\n  $searchTerm: String\n  $status: JobApplicantStatus\n  $showStatus: Boolean = true\n) {\n  ...pageJobApplicantsMetadataFragment_4lHzkn\n  ...JobApplicantsViewClientComponentFragment_2tIqbU\n}\n\nfragment ApplicantFragment_KpWpU on JobApplicant {\n  slug\n  status @include(if: $showStatus)\n  account {\n    fullName\n    avatarUrl\n    email\n    id\n  }\n}\n\nfragment ApplicantListFragment_4dh3bL on Job {\n  applicants(first: 10, searchTerm: $searchTerm, status: $status) {\n    edges {\n      node {\n        id\n        ...ApplicantFragment_KpWpU\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment ApplicantsTabFragment_2tIqbU on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          ...ApplicantListFragment_4dh3bL\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobApplicantsViewClientComponentFragment_2tIqbU on Query {\n  ...ApplicantsTabFragment_2tIqbU\n}\n\nfragment pageJobApplicantsMetadataFragment_4lHzkn on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      name\n      description\n      logoUrl\n      isMember\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          title\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageJobApplicantsViewQuery($slug:String!,$jobSlug:String!,$searchTerm:String,$status:JobApplicantStatus,$showStatus:Boolean=true){...pageJobApplicantsMetadataFragment_4lHzkn,...JobApplicantsViewClientComponentFragment_2tIqbU}fragment ApplicantFragment_KpWpU on JobApplicant{slug,status@include(if:$showStatus),account{fullName,avatarUrl,email,id}}fragment ApplicantListFragment_4dh3bL on Job{applicants(first:10,searchTerm:$searchTerm,status:$status){edges{node{id,...ApplicantFragment_KpWpU,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}fragment ApplicantsTabFragment_2tIqbU on Query{organization(slug:$slug){__typename,...on Organization{job(slug:$jobSlug){__typename,...on Job{...ApplicantListFragment_4dh3bL},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}fragment JobApplicantsViewClientComponentFragment_2tIqbU on Query{...ApplicantsTabFragment_2tIqbU}fragment pageJobApplicantsMetadataFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isMember,job(slug:$jobSlug){__typename,...on Job{title},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

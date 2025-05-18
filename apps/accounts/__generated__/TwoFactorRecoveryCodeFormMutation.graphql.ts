@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0b906658d30d39a876e72d2538c31e00>>
+ * @generated SignedSource<<8096563bee221f8b5af55046def8b0f2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -172,12 +172,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2bc958986ba79a96b18a261bc87e2275",
+    "cacheID": "7db547f61edc02d530266eae6813d576",
     "id": null,
     "metadata": {},
     "name": "TwoFactorRecoveryCodeFormMutation",
     "operationKind": "mutation",
-    "text": "mutation TwoFactorRecoveryCodeFormMutation(\n  $token: String!\n  $captchaToken: String!\n) {\n  verify2faWithRecoveryCode(token: $token, captchaToken: $captchaToken) {\n    __typename\n    ... on TwoFactorAuthenticationChallengeNotFoundError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on TwoFactorAuthenticationNotEnabledError {\n      message\n    }\n    ... on InvalidCredentialsError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation TwoFactorRecoveryCodeFormMutation($token:String!,$captchaToken:String!){verify2faWithRecoveryCode(token:$token,captchaToken:$captchaToken){__typename,...on TwoFactorAuthenticationChallengeNotFoundError{message},...on InvalidCaptchaTokenError{message},...on TwoFactorAuthenticationNotEnabledError{message},...on InvalidCredentialsError{message},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

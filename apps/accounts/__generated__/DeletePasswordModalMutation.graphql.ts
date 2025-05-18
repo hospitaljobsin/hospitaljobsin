@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7b5d16495384a42111997c07cd85ffe0>>
+ * @generated SignedSource<<fedb6fc2aef51c208072a24139c2a247>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -148,12 +148,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3241a50e9f4a7a3d88b19d64b72f88be",
+    "cacheID": "0da8d0b5530d364db2e5706dfd13114e",
     "id": null,
     "metadata": {},
     "name": "DeletePasswordModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeletePasswordModalMutation {\n  deletePassword {\n    __typename\n    ... on Account {\n      id\n      ...PasswordFragment\n    }\n    ... on InsufficientAuthProvidersError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment PasswordFragment on Account {\n  sudoModeExpiresAt\n  authProviders\n  ...UpdatePasswordModalFragment\n}\n\nfragment UpdatePasswordModalFragment on Account {\n  authProviders\n}\n"
+    "text": "mutation DeletePasswordModalMutation{deletePassword{__typename,...on Account{id,...PasswordFragment},...on InsufficientAuthProvidersError{message},...on Node{__isNode:__typename,id}}}fragment PasswordFragment on Account{sudoModeExpiresAt,authProviders,...UpdatePasswordModalFragment}fragment UpdatePasswordModalFragment on Account{authProviders}"
   }
 };
 })();

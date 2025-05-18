@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f122c0f50d4b59a2a22ee1e65dbf9a87>>
+ * @generated SignedSource<<d64a5e10e150b58e2f026dcaecc6541c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -208,12 +208,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2924a7f31cbdacff496642990b9e7fe5",
+    "cacheID": "f108ac0b85a507ed9ccd2dad4d57242f",
     "id": null,
     "metadata": {},
     "name": "pageOrganizationNewJobViewQuery",
     "operationKind": "query",
-    "text": "query pageOrganizationNewJobViewQuery(\n  $slug: String!\n) {\n  ...pageOrganizationNewJobMetadataFragment_20J5Pl\n  ...OrganizationNewJobViewClientComponentFragment_20J5Pl\n}\n\nfragment CancelNewJobModalOrganizationFragment on Organization {\n  __typename\n  slug\n}\n\nfragment NewJobFormAccountFragment on Account {\n  __typename\n  fullName\n  avatarUrl\n}\n\nfragment NewJobFormOrganizationFragment on Organization {\n  __typename\n  slug\n  id\n  ...CancelNewJobModalOrganizationFragment\n}\n\nfragment NewJobViewFragment_20J5Pl on Query {\n  viewer {\n    __typename\n    ... on Account {\n      ...NewJobFormAccountFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      ...NewJobFormOrganizationFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment OrganizationNewJobViewClientComponentFragment_20J5Pl on Query {\n  ...NewJobViewFragment_20J5Pl\n}\n\nfragment pageOrganizationNewJobMetadataFragment_20J5Pl on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      name\n      description\n      logoUrl\n      isAdmin\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageOrganizationNewJobViewQuery($slug:String!){...pageOrganizationNewJobMetadataFragment_20J5Pl,...OrganizationNewJobViewClientComponentFragment_20J5Pl}fragment CancelNewJobModalOrganizationFragment on Organization{__typename,slug}fragment NewJobFormAccountFragment on Account{__typename,fullName,avatarUrl}fragment NewJobFormOrganizationFragment on Organization{__typename,slug,id,...CancelNewJobModalOrganizationFragment}fragment NewJobViewFragment_20J5Pl on Query{viewer{__typename,...on Account{...NewJobFormAccountFragment},...on Node{__isNode:__typename,id}},organization(slug:$slug){__typename,...on Organization{...NewJobFormOrganizationFragment},...on Node{__isNode:__typename,id}}}fragment OrganizationNewJobViewClientComponentFragment_20J5Pl on Query{...NewJobViewFragment_20J5Pl}fragment pageOrganizationNewJobMetadataFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isAdmin},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

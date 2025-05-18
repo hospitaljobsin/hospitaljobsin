@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bd40e1c84232a06b654a85fe9a7c693f>>
+ * @generated SignedSource<<102f7c5e6a98d55684e6f8ccae68aaa6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -376,12 +376,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "dca51a1a819b7baa2f868900a9ad4bd0",
+    "cacheID": "f0b669d825877417a000e71bef25d0f5",
     "id": null,
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",
-    "text": "query pageJobDetailViewQuery(\n  $slug: String!\n  $jobSlug: String!\n) {\n  ...pageJobDetailMetadataFragment_4lHzkn\n  ...JobDetailViewClientComponentFragment_4lHzkn\n}\n\nfragment JobControlsAuthFragment on ViewerPayload {\n  __isViewerPayload: __typename\n  __typename\n}\n\nfragment JobControlsFragment on Job {\n  id\n  isSaved\n  ...ShareJobFragment\n}\n\nfragment JobDetailViewClientComponentFragment_4lHzkn on Query {\n  ...JobDetailViewFragment_4lHzkn\n}\n\nfragment JobDetailViewFragment_4lHzkn on Query {\n  ...JobDetailsFragment_4lHzkn\n}\n\nfragment JobDetailsFragment_4lHzkn on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          ...JobDetailsInternalFragment\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  viewer {\n    __typename\n    ...JobControlsAuthFragment\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobDetailsInternalFragment on Job {\n  ...JobControlsFragment\n  title\n  slug\n  description\n  type\n  workMode\n  location\n  skills\n  currency\n  hasSalaryRange\n  minSalary\n  maxSalary\n  hasExperienceRange\n  minExperience\n  maxExperience\n  createdAt\n  isApplied\n  externalApplicationUrl\n  organization {\n    slug\n    name\n    description\n    logoUrl\n    id\n  }\n}\n\nfragment ShareJobFragment on Job {\n  slug\n  title\n  description\n  organization {\n    name\n    logoUrl\n    slug\n    id\n  }\n}\n\nfragment pageJobDetailMetadataFragment_4lHzkn on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      logoUrl\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          title\n          description\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageJobDetailViewQuery($slug:String!,$jobSlug:String!){...pageJobDetailMetadataFragment_4lHzkn,...JobDetailViewClientComponentFragment_4lHzkn}fragment JobControlsAuthFragment on ViewerPayload{__isViewerPayload:__typename,__typename}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobDetailViewClientComponentFragment_4lHzkn on Query{...JobDetailViewFragment_4lHzkn}fragment JobDetailViewFragment_4lHzkn on Query{...JobDetailsFragment_4lHzkn}fragment JobDetailsFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{job(slug:$jobSlug){__typename,...on Job{...JobDetailsInternalFragment},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}},viewer{__typename,...JobControlsAuthFragment,...on Node{__isNode:__typename,id}}}fragment JobDetailsInternalFragment on Job{...JobControlsFragment,title,slug,description,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,isApplied,externalApplicationUrl,organization{slug,name,description,logoUrl,id}}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}fragment pageJobDetailMetadataFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{logoUrl,job(slug:$jobSlug){__typename,...on Job{title,description},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

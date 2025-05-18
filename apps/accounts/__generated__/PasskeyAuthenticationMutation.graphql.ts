@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e8282cc15cfb5f1aad39536744746417>>
+ * @generated SignedSource<<8a1ef2a6117230ee0e566c22ebf909b4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -160,12 +160,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a3f58636f4bb1a930137dfc7c2ba689e",
+    "cacheID": "fb5976d66a64a608c65cfcbe6ff6743e",
     "id": null,
     "metadata": {},
     "name": "PasskeyAuthenticationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyAuthenticationMutation(\n  $authenticationResponse: JSON!\n  $captchaToken: String!\n) {\n  requestSudoModeWithPasskey(authenticationResponse: $authenticationResponse, captchaToken: $captchaToken) {\n    __typename\n    ... on Account {\n      __typename\n    }\n    ... on InvalidPasskeyAuthenticationCredentialError {\n      message\n    }\n    ... on InvalidCaptchaTokenError {\n      message\n    }\n    ... on WebAuthnChallengeNotFoundError {\n      message\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation PasskeyAuthenticationMutation($authenticationResponse:JSON!,$captchaToken:String!){requestSudoModeWithPasskey(authenticationResponse:$authenticationResponse,captchaToken:$captchaToken){__typename,...on Account{__typename},...on InvalidPasskeyAuthenticationCredentialError{message},...on InvalidCaptchaTokenError{message},...on WebAuthnChallengeNotFoundError{message},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

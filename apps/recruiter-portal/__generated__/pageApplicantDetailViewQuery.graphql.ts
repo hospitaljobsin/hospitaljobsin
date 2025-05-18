@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<89567f4bfd8b83b9c053da90260fdfc6>>
+ * @generated SignedSource<<83349dfe5799da8ea7e2063203baa53c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -396,12 +396,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ec17c96e14f664919146b32f6ce357f0",
+    "cacheID": "2e8de82a7484419b72ce1c8eb50f9877",
     "id": null,
     "metadata": {},
     "name": "pageApplicantDetailViewQuery",
     "operationKind": "query",
-    "text": "query pageApplicantDetailViewQuery(\n  $slug: String!\n  $jobSlug: String!\n  $applicantSlug: String!\n) {\n  ...pageApplicantDetailMetadataFragment_VJkEr\n  ...ApplicantDetailViewClientComponentFragment_VJkEr\n}\n\nfragment ApplicantDetailViewClientComponentFragment_VJkEr on Query {\n  ...ApplicantDetailViewFragment_VJkEr\n}\n\nfragment ApplicantDetailViewFragment_VJkEr on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          jobApplicant(slug: $applicantSlug) {\n            __typename\n            ... on JobApplicant {\n              ...ApplicantDetailsFragment\n            }\n            ... on Node {\n              __isNode: __typename\n              id\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment ApplicantDetailsFragment on JobApplicant {\n  status\n  resumeUrl\n  applicantFields {\n    fieldName\n    fieldValue\n  }\n  account {\n    fullName\n    avatarUrl\n    email\n    profile {\n      __typename\n      ... on Profile {\n        address {\n          city\n          state\n        }\n      }\n      ... on ProfileNotFoundError {\n        __typename\n      }\n      ... on Node {\n        __isNode: __typename\n        id\n      }\n    }\n    id\n  }\n}\n\nfragment pageApplicantDetailMetadataFragment_VJkEr on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      isMember\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          __typename\n          jobApplicant(slug: $applicantSlug) {\n            __typename\n            ... on JobApplicant {\n              account {\n                fullName\n                avatarUrl\n                id\n              }\n            }\n            ... on Node {\n              __isNode: __typename\n              id\n            }\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageApplicantDetailViewQuery($slug:String!,$jobSlug:String!,$applicantSlug:String!){...pageApplicantDetailMetadataFragment_VJkEr,...ApplicantDetailViewClientComponentFragment_VJkEr}fragment ApplicantDetailViewClientComponentFragment_VJkEr on Query{...ApplicantDetailViewFragment_VJkEr}fragment ApplicantDetailViewFragment_VJkEr on Query{organization(slug:$slug){__typename,...on Organization{job(slug:$jobSlug){__typename,...on Job{jobApplicant(slug:$applicantSlug){__typename,...on JobApplicant{...ApplicantDetailsFragment},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}fragment ApplicantDetailsFragment on JobApplicant{status,resumeUrl,applicantFields{fieldName,fieldValue},account{fullName,avatarUrl,email,profile{__typename,...on Profile{address{city,state}},...on ProfileNotFoundError{__typename},...on Node{__isNode:__typename,id}},id}}fragment pageApplicantDetailMetadataFragment_VJkEr on Query{organization(slug:$slug){__typename,...on Organization{isMember,job(slug:$jobSlug){__typename,...on Job{__typename,jobApplicant(slug:$applicantSlug){__typename,...on JobApplicant{account{fullName,avatarUrl,id}},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

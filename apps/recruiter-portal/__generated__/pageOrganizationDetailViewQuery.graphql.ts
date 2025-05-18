@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3696624f71fc45927fb99eeda93981ed>>
+ * @generated SignedSource<<b7295d0c41f5b635e1d0baf1d8aa4c71>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -217,12 +217,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a34bbfc69d9e0a94b7a14481e54d1eff",
+    "cacheID": "5c1e4e176fb4f3bf370f58b0f4b20519",
     "id": null,
     "metadata": {},
     "name": "pageOrganizationDetailViewQuery",
     "operationKind": "query",
-    "text": "query pageOrganizationDetailViewQuery(\n  $slug: String!\n) {\n  ...pageOrganizationDetailMetadataFragment_20J5Pl\n  ...OrganizationDetailViewClientComponentFragment_20J5Pl\n}\n\nfragment OrganizationDetailViewClientComponentFragment_20J5Pl on Query {\n  ...OrganizationOverviewTabFragment_20J5Pl\n}\n\nfragment OrganizationDetailsFragment_20J5Pl on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      ...OrganizationDetailsInternalFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment OrganizationDetailsInternalFragment on Organization {\n  name\n  logoUrl\n  description\n  website\n  email\n  location\n  ...OrganizationStatisticsFragment\n}\n\nfragment OrganizationOverviewTabFragment_20J5Pl on Query {\n  ...OrganizationDetailsFragment_20J5Pl\n}\n\nfragment OrganizationStatisticsFragment on Organization {\n  totalViewCount\n  totalViewMetricPoints {\n    timestamp\n    count\n  }\n}\n\nfragment pageOrganizationDetailMetadataFragment_20J5Pl on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      name\n      description\n      logoUrl\n      isMember\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageOrganizationDetailViewQuery($slug:String!){...pageOrganizationDetailMetadataFragment_20J5Pl,...OrganizationDetailViewClientComponentFragment_20J5Pl}fragment OrganizationDetailViewClientComponentFragment_20J5Pl on Query{...OrganizationOverviewTabFragment_20J5Pl}fragment OrganizationDetailsFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{...OrganizationDetailsInternalFragment},...on Node{__isNode:__typename,id}}}fragment OrganizationDetailsInternalFragment on Organization{name,logoUrl,description,website,email,location,...OrganizationStatisticsFragment}fragment OrganizationOverviewTabFragment_20J5Pl on Query{...OrganizationDetailsFragment_20J5Pl}fragment OrganizationStatisticsFragment on Organization{totalViewCount,totalViewMetricPoints{timestamp,count}}fragment pageOrganizationDetailMetadataFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isMember},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

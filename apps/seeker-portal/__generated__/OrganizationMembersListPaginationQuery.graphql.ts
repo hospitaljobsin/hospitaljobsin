@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<051203f4958ccce201248de7cca33fd9>>
+ * @generated SignedSource<<3156e79ae288bc9271cea7084b04548b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -240,12 +240,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1888aeae140559cd6ce1b7db44c1fff6",
+    "cacheID": "a86b1cd1f2fea63331f9ebd5f0a14abb",
     "id": null,
     "metadata": {},
     "name": "OrganizationMembersListPaginationQuery",
     "operationKind": "query",
-    "text": "query OrganizationMembersListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...OrganizationMembersListInternalFragment_1G22uz\n    id\n  }\n}\n\nfragment MemberFragment on OrganizationMemberEdge {\n  role\n  node {\n    fullName\n    avatarUrl\n    id\n  }\n}\n\nfragment OrganizationMembersListInternalFragment_1G22uz on Organization {\n  members(after: $cursor, first: $count) {\n    edges {\n      node {\n        id\n        __typename\n      }\n      ...MemberFragment\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n"
+    "text": "query OrganizationMembersListPaginationQuery($count:Int=10,$cursor:ID,$id:ID!){node(id:$id){__typename,...OrganizationMembersListInternalFragment_1G22uz,id}}fragment MemberFragment on OrganizationMemberEdge{role,node{fullName,avatarUrl,id}}fragment OrganizationMembersListInternalFragment_1G22uz on Organization{members(after:$cursor,first:$count){edges{node{id,__typename},...MemberFragment,cursor},pageInfo{hasNextPage,endCursor}},id}"
   }
 };
 })();

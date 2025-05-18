@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c6640dc68034fc40f599b65afff0fa6d>>
+ * @generated SignedSource<<f828818ac56927a887c9d3e09c3b51eb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -361,12 +361,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d7bbb36fbce86645908cb827eda5b838",
+    "cacheID": "a7195034647f9fef08ceb14d3bd58fd5",
     "id": null,
     "metadata": {},
     "name": "pageJobSettingsViewQuery",
     "operationKind": "query",
-    "text": "query pageJobSettingsViewQuery(\n  $slug: String!\n  $jobSlug: String!\n) {\n  ...pageJobSettingsMetadataFragment_4lHzkn\n  ...JobSettingsViewClientComponentFragment_4lHzkn\n}\n\nfragment CancelEditJobModalJobFragment on Job {\n  __typename\n  slug\n  organization {\n    slug\n    id\n  }\n}\n\nfragment DeleteJobModalFragment on Job {\n  id\n  organization {\n    id\n  }\n}\n\nfragment JobEditFormFragment on Job {\n  id\n  title\n  description\n  minExperience\n  maxExperience\n  minSalary\n  maxSalary\n  vacancies\n  skills\n  type\n  workMode\n  expiresAt\n  location\n  ...CancelEditJobModalJobFragment\n}\n\nfragment JobSettingsGeneralTabFragment_4lHzkn on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          ...JobEditFormFragment\n          ...DeleteJobModalFragment\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  viewer {\n    __typename\n    ... on Account {\n      sudoModeExpiresAt\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment JobSettingsViewClientComponentFragment_4lHzkn on Query {\n  ...JobSettingsGeneralTabFragment_4lHzkn\n}\n\nfragment pageJobSettingsMetadataFragment_4lHzkn on Query {\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      name\n      description\n      logoUrl\n      isAdmin\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          title\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "query pageJobSettingsViewQuery($slug:String!,$jobSlug:String!){...pageJobSettingsMetadataFragment_4lHzkn,...JobSettingsViewClientComponentFragment_4lHzkn}fragment CancelEditJobModalJobFragment on Job{__typename,slug,organization{slug,id}}fragment DeleteJobModalFragment on Job{id,organization{id}}fragment JobEditFormFragment on Job{id,title,description,minExperience,maxExperience,minSalary,maxSalary,vacancies,skills,type,workMode,expiresAt,location,...CancelEditJobModalJobFragment}fragment JobSettingsGeneralTabFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{job(slug:$jobSlug){__typename,...on Job{...JobEditFormFragment,...DeleteJobModalFragment},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}},viewer{__typename,...on Account{sudoModeExpiresAt},...on Node{__isNode:__typename,id}}}fragment JobSettingsViewClientComponentFragment_4lHzkn on Query{...JobSettingsGeneralTabFragment_4lHzkn}fragment pageJobSettingsMetadataFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isAdmin,job(slug:$jobSlug){__typename,...on Job{title},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

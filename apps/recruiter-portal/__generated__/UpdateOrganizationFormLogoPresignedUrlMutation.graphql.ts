@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<adb35073add0d79c0236b48e21fc844a>>
+ * @generated SignedSource<<be0b13bf6367e4e7bf4a1527e5432c31>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -59,12 +59,12 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "e8f14846c1fcf55fa9caa501f72761b2",
+    "cacheID": "eacf1df433abd6d22600030433f68ef7",
     "id": null,
     "metadata": {},
     "name": "UpdateOrganizationFormLogoPresignedUrlMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdateOrganizationFormLogoPresignedUrlMutation {\n  createOrganizationLogoPresignedUrl {\n    presignedUrl\n  }\n}\n"
+    "text": "mutation UpdateOrganizationFormLogoPresignedUrlMutation{createOrganizationLogoPresignedUrl{presignedUrl}}"
   }
 };
 })();

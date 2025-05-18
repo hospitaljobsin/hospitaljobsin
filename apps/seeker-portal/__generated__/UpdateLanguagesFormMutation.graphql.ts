@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a5729c994bb9d852063402de70015b4a>>
+ * @generated SignedSource<<c615ec064a0f6c4a195cbd2fc574c5be>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -171,12 +171,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ba38f3d4cbc7b8b5ae4609b59bbe9779",
+    "cacheID": "067932887517968f3f246da69e0709de",
     "id": null,
     "metadata": {},
     "name": "UpdateLanguagesFormMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdateLanguagesFormMutation(\n  $languages: [LanguageInput!]!\n) {\n  updateProfileLanguages(languages: $languages) {\n    __typename\n    ... on Account {\n      ...UpdateLanguagesFormFragment\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment UpdateLanguagesFormFragment on Account {\n  profile {\n    __typename\n    ... on Profile {\n      __typename\n      languages {\n        name\n        proficiency\n      }\n    }\n    ... on ProfileNotFoundError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation UpdateLanguagesFormMutation($languages:[LanguageInput!]!){updateProfileLanguages(languages:$languages){__typename,...on Account{...UpdateLanguagesFormFragment},...on Node{__isNode:__typename,id}}}fragment UpdateLanguagesFormFragment on Account{profile{__typename,...on Profile{__typename,languages{name,proficiency}},...on ProfileNotFoundError{__typename},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

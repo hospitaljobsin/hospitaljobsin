@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1f5d154ac0322880977c550e95dcefa0>>
+ * @generated SignedSource<<b4ce83df6dc65e16a72675ac8f53b5de>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -122,12 +122,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "fa55425e24cd070f6b77a87ff90885b3",
+    "cacheID": "924c909ea5e2f27d6b53e87d4bc065cc",
     "id": null,
     "metadata": {},
     "name": "DeleteOrganizationModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeleteOrganizationModalMutation(\n  $organizationId: ID!\n) {\n  deleteOrganization(organizationId: $organizationId) {\n    __typename\n    ... on Organization {\n      id\n    }\n    ... on OrganizationNotFoundError {\n      __typename\n    }\n    ... on OrganizationAuthorizationError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation DeleteOrganizationModalMutation($organizationId:ID!){deleteOrganization(organizationId:$organizationId){__typename,...on Organization{id},...on OrganizationNotFoundError{__typename},...on OrganizationAuthorizationError{__typename},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0fc4a2cbb19dc5673e6e6c08f205de64>>
+ * @generated SignedSource<<9c60cdb347f5a55bb349283d8c38ed91>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -272,12 +272,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "7e32f2e781ab147bee700757f313664b",
+    "cacheID": "d437b76f35436cedd2a5b806acae18bc",
     "id": null,
     "metadata": {},
     "name": "UpdateOrganizationFormMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdateOrganizationFormMutation(\n  $organizationId: ID!\n  $name: String!\n  $slug: String!\n  $location: String\n  $website: String\n  $logoUrl: String\n  $description: String\n) {\n  updateOrganization(organizationId: $organizationId, name: $name, slug: $slug, location: $location, website: $website, logoUrl: $logoUrl, description: $description) {\n    __typename\n    ... on Organization {\n      id\n      slug\n      name\n      website\n      description\n      logoUrl\n      location\n    }\n    ... on OrganizationNotFoundError {\n      __typename\n    }\n    ... on OrganizationSlugInUseError {\n      __typename\n      message\n    }\n    ... on OrganizationAuthorizationError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation UpdateOrganizationFormMutation($organizationId:ID!,$name:String!,$slug:String!,$location:String,$website:String,$logoUrl:String,$description:String){updateOrganization(organizationId:$organizationId,name:$name,slug:$slug,location:$location,website:$website,logoUrl:$logoUrl,description:$description){__typename,...on Organization{id,slug,name,website,description,logoUrl,location},...on OrganizationNotFoundError{__typename},...on OrganizationSlugInUseError{__typename,message},...on OrganizationAuthorizationError{__typename},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

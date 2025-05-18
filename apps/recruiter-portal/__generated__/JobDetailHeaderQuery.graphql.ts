@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<be2c257daf62efa041a8afac037b62c2>>
+ * @generated SignedSource<<868be8114ea921921d88c618373c8c66>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -327,12 +327,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "81d3d99b61e4ec10d862fa295c452f75",
+    "cacheID": "1ccb87c50a7310f99ff214017dcd9397",
     "id": null,
     "metadata": {},
     "name": "JobDetailHeaderQuery",
     "operationKind": "query",
-    "text": "query JobDetailHeaderQuery(\n  $slug: String!\n  $jobSlug: String!\n) {\n  viewer {\n    __typename\n    ... on Account {\n      __typename\n      ...AuthNavigationFragment\n    }\n    ... on NotAuthenticatedError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n  organization(slug: $slug) {\n    __typename\n    ... on Organization {\n      slug\n      name\n      job(slug: $jobSlug) {\n        __typename\n        ... on Job {\n          ...JobTabsFragment\n          title\n          slug\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n\nfragment AuthNavigationFragment on Account {\n  __typename\n  fullName\n  avatarUrl\n}\n\nfragment JobTabsFragment on Job {\n  externalApplicationUrl\n  organization {\n    isAdmin\n    id\n  }\n}\n"
+    "text": "query JobDetailHeaderQuery($slug:String!,$jobSlug:String!){viewer{__typename,...on Account{__typename,...AuthNavigationFragment},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}},organization(slug:$slug){__typename,...on Organization{slug,name,job(slug:$jobSlug){__typename,...on Job{...JobTabsFragment,title,slug},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}fragment AuthNavigationFragment on Account{__typename,fullName,avatarUrl}fragment JobTabsFragment on Job{externalApplicationUrl,organization{isAdmin,id}}"
   }
 };
 })();

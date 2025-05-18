@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f113f315f73dae0b7516f2b59522552a>>
+ * @generated SignedSource<<94fe419bcab549d903491f27c2954939>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -122,12 +122,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b5a5b4c259174266b9df6083405118b0",
+    "cacheID": "9d50ce79ad343cbc12db75d868183086",
     "id": null,
     "metadata": {},
     "name": "DeleteJobModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeleteJobModalMutation(\n  $jobId: ID!\n) {\n  deleteJob(jobId: $jobId) {\n    __typename\n    ... on Job {\n      id\n    }\n    ... on JobNotFoundError {\n      __typename\n    }\n    ... on OrganizationAuthorizationError {\n      __typename\n    }\n    ... on Node {\n      __isNode: __typename\n      id\n    }\n  }\n}\n"
+    "text": "mutation DeleteJobModalMutation($jobId:ID!){deleteJob(jobId:$jobId){__typename,...on Job{id},...on JobNotFoundError{__typename},...on OrganizationAuthorizationError{__typename},...on Node{__isNode:__typename,id}}}"
   }
 };
 })();

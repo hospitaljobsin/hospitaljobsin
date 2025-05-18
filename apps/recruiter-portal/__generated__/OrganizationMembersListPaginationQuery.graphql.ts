@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2698c7a9ddaf3b4e34b281e680793fb2>>
+ * @generated SignedSource<<90b10354d7ad77b16bfd6e55a0dc52d2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -282,12 +282,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "166bc439310a2d05600f6ede42fa0225",
+    "cacheID": "8c3263de27b65cdb58504b91d8077a90",
     "id": null,
     "metadata": {},
     "name": "OrganizationMembersListPaginationQuery",
     "operationKind": "query",
-    "text": "query OrganizationMembersListPaginationQuery(\n  $count: Int = 10\n  $cursor: ID\n  $searchTerm: String = null\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...OrganizationMembersListInternalFragment_1YZSDV\n    id\n  }\n}\n\nfragment DemoteMemberModalFragment on OrganizationMemberEdge {\n  node {\n    id\n  }\n}\n\nfragment MemberControlsFragment on OrganizationMemberEdge {\n  role\n  node {\n    fullName\n    id\n  }\n  ...RemoveMemberModalFragment\n  ...DemoteMemberModalFragment\n  ...PromoteMemberModalFragment\n}\n\nfragment MemberFragment on OrganizationMemberEdge {\n  role\n  createdAt\n  node {\n    fullName\n    avatarUrl\n    id\n  }\n  ...MemberControlsFragment\n}\n\nfragment OrganizationMembersListInternalFragment_1YZSDV on Organization {\n  members(after: $cursor, first: $count, searchTerm: $searchTerm) {\n    edges {\n      node {\n        id\n        __typename\n      }\n      ...MemberFragment\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n  id\n}\n\nfragment PromoteMemberModalFragment on OrganizationMemberEdge {\n  node {\n    id\n  }\n}\n\nfragment RemoveMemberModalFragment on OrganizationMemberEdge {\n  node {\n    id\n  }\n}\n"
+    "text": "query OrganizationMembersListPaginationQuery($count:Int=10,$cursor:ID,$searchTerm:String=null,$id:ID!){node(id:$id){__typename,...OrganizationMembersListInternalFragment_1YZSDV,id}}fragment DemoteMemberModalFragment on OrganizationMemberEdge{node{id}}fragment MemberControlsFragment on OrganizationMemberEdge{role,node{fullName,id},...RemoveMemberModalFragment,...DemoteMemberModalFragment,...PromoteMemberModalFragment}fragment MemberFragment on OrganizationMemberEdge{role,createdAt,node{fullName,avatarUrl,id},...MemberControlsFragment}fragment OrganizationMembersListInternalFragment_1YZSDV on Organization{members(after:$cursor,first:$count,searchTerm:$searchTerm){edges{node{id,__typename},...MemberFragment,cursor},pageInfo{hasNextPage,endCursor}},id}fragment PromoteMemberModalFragment on OrganizationMemberEdge{node{id}}fragment RemoveMemberModalFragment on OrganizationMemberEdge{node{id}}"
   }
 };
 })();
