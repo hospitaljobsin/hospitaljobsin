@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d9b0757436021aac38b7b54eabfff15f>>
+ * @generated SignedSource<<fa688da9ee3a21fb33df81201c20c01f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -351,16 +351,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9d77be6ba8ce59d490cc0d3892d67cd4",
+    "cacheID": "58badfe46cf19624fcc6d866ac670c48",
     "id": null,
     "metadata": {},
     "name": "NewJobFormMutation",
     "operationKind": "mutation",
-    "text": "mutation NewJobFormMutation($title:String!,$description:String!,$skills:[String!]!,$location:String,$organizationId:ID!,$minSalary:Int,$maxSalary:Int,$minExperience:Int,$maxExperience:Int,$expiresAt:datetime,$workMode:WorkMode,$jobType:JobType,$vacancies:Int,$externalApplicationUrl:String){createJob(title:$title,description:$description,skills:$skills,location:$location,organizationId:$organizationId,minSalary:$minSalary,maxSalary:$maxSalary,minExperience:$minExperience,maxExperience:$maxExperience,expiresAt:$expiresAt,workMode:$workMode,jobType:$jobType,vacancies:$vacancies,externalApplicationUrl:$externalApplicationUrl){__typename,...on CreateJobSuccess{__typename,jobEdge{node{slug,id}}},...on OrganizationNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}"
+    "text": "mutation NewJobFormMutation($title:String!,$description:String!,$skills:[String!]!,$location:String,$organizationId:ID!,$minSalary:Int,$maxSalary:Int,$minExperience:Int,$maxExperience:Int,$expiresAt:DateTime,$workMode:WorkMode,$jobType:JobType,$vacancies:Int,$externalApplicationUrl:String){createJob(title:$title,description:$description,skills:$skills,location:$location,organizationId:$organizationId,minSalary:$minSalary,maxSalary:$maxSalary,minExperience:$minExperience,maxExperience:$maxExperience,expiresAt:$expiresAt,workMode:$workMode,jobType:$jobType,vacancies:$vacancies,externalApplicationUrl:$externalApplicationUrl){__typename,...on CreateJobSuccess{__typename,jobEdge{node{slug,id}}},...on OrganizationNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}"
   }
 };
 })();
 
-(node as any).hash = "f0af27c9e26b25fce2138ebed5442005";
+(node as any).hash = "de3b53eadf0fb965ce3a913e32fbc359";
 
 export default node;

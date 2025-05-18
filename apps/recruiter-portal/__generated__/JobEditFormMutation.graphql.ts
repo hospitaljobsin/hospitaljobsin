@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<df0544658d4726639aecb3548f6b62b9>>
+ * @generated SignedSource<<c4ab8baa55179d9a901dac8d0736acde>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -594,16 +594,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f507ac5bd1d4fbe34cfb6469346aaa5f",
+    "cacheID": "db61784e743c28212b93e77b99a85a61",
     "id": null,
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",
-    "text": "mutation JobEditFormMutation($title:String!,$description:String!,$skills:[String!]!,$location:String,$jobId:ID!,$minSalary:Int,$maxSalary:Int,$minExperience:Int,$maxExperience:Int,$expiresAt:datetime,$workMode:WorkMode,$jobType:JobType,$vacancies:Int){updateJob(title:$title,description:$description,skills:$skills,location:$location,jobId:$jobId,minSalary:$minSalary,maxSalary:$maxSalary,minExperience:$minExperience,maxExperience:$maxExperience,expiresAt:$expiresAt,workMode:$workMode,jobType:$jobType,vacancies:$vacancies){__typename,...on UpdateJobSuccess{__typename,job{slug,...JobTabsFragment,...JobControlsFragment,...JobDetailsFragment,...JobFragment,...JobEditFormFragment,id}},...on JobNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}fragment CancelEditJobModalJobFragment on Job{__typename,slug,organization{slug,id}}fragment JobControlsFragment on Job{id,isActive,...UnpublishJobModalFragment,...PublishJobModalFragment}fragment JobDetailsFragment on Job{title,description,slug,skills,minSalary,maxSalary,hasSalaryRange,minExperience,maxExperience,hasExperienceRange,currency,workMode,type,location,createdAt,updatedAt,isActive,externalApplicationUrl,applicationForm{__typename,id},organization{isAdmin,name,id},...JobControlsFragment,...JobStatisticsFragment}fragment JobEditFormFragment on Job{id,title,description,minExperience,maxExperience,minSalary,maxSalary,vacancies,skills,type,workMode,expiresAt,location,...CancelEditJobModalJobFragment}fragment JobFragment on Job{slug,title,skills,viewCount,createdAt,applicantCount{applied,shortlisted,interviewed,onHold,offered},vacancies}fragment JobStatisticsFragment on Job{viewCount,viewMetricPoints{timestamp,count}}fragment JobTabsFragment on Job{externalApplicationUrl,organization{isAdmin,id}}fragment PublishJobModalFragment on Job{id}fragment UnpublishJobModalFragment on Job{id}"
+    "text": "mutation JobEditFormMutation($title:String!,$description:String!,$skills:[String!]!,$location:String,$jobId:ID!,$minSalary:Int,$maxSalary:Int,$minExperience:Int,$maxExperience:Int,$expiresAt:DateTime,$workMode:WorkMode,$jobType:JobType,$vacancies:Int){updateJob(title:$title,description:$description,skills:$skills,location:$location,jobId:$jobId,minSalary:$minSalary,maxSalary:$maxSalary,minExperience:$minExperience,maxExperience:$maxExperience,expiresAt:$expiresAt,workMode:$workMode,jobType:$jobType,vacancies:$vacancies){__typename,...on UpdateJobSuccess{__typename,job{slug,...JobTabsFragment,...JobControlsFragment,...JobDetailsFragment,...JobFragment,...JobEditFormFragment,id}},...on JobNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}fragment CancelEditJobModalJobFragment on Job{__typename,slug,organization{slug,id}}fragment JobControlsFragment on Job{id,isActive,...UnpublishJobModalFragment,...PublishJobModalFragment}fragment JobDetailsFragment on Job{title,description,slug,skills,minSalary,maxSalary,hasSalaryRange,minExperience,maxExperience,hasExperienceRange,currency,workMode,type,location,createdAt,updatedAt,isActive,externalApplicationUrl,applicationForm{__typename,id},organization{isAdmin,name,id},...JobControlsFragment,...JobStatisticsFragment}fragment JobEditFormFragment on Job{id,title,description,minExperience,maxExperience,minSalary,maxSalary,vacancies,skills,type,workMode,expiresAt,location,...CancelEditJobModalJobFragment}fragment JobFragment on Job{slug,title,skills,viewCount,createdAt,applicantCount{applied,shortlisted,interviewed,onHold,offered},vacancies}fragment JobStatisticsFragment on Job{viewCount,viewMetricPoints{timestamp,count}}fragment JobTabsFragment on Job{externalApplicationUrl,organization{isAdmin,id}}fragment PublishJobModalFragment on Job{id}fragment UnpublishJobModalFragment on Job{id}"
   }
 };
 })();
 
-(node as any).hash = "7418f1b2c39e45adcd40f9e02e3bcd1e";
+(node as any).hash = "7bb7ee99692d1b4eb86fe205cd59b469";
 
 export default node;

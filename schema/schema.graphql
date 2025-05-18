@@ -17,7 +17,7 @@ type Account implements Node {
   email: String!
 
   """When the account was last updated."""
-  updatedAt: datetime
+  updatedAt: DateTime
 
   """The authentication providers supported by the account."""
   authProviders: [AuthProvider!]!
@@ -38,7 +38,7 @@ type Account implements Node {
   ): String!
 
   """When the user's sudo mode grant expires at."""
-  sudoModeExpiresAt: datetime
+  sudoModeExpiresAt: DateTime
 
   """The organizations the account is in."""
   organizations(
@@ -270,6 +270,9 @@ type CurrentJob {
 
 """Date (isoformat)"""
 scalar Date
+
+"""DateTime scalar represents an ISO 8601-encoded date and time string."""
+scalar DateTime
 
 """The decline organization invite payload."""
 union DeclineOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
@@ -539,13 +542,13 @@ type Job implements Node {
   isActive: Boolean!
 
   """When the job was last updated at."""
-  updatedAt: datetime!
+  updatedAt: DateTime!
 
   """The expiry time of the job."""
-  expiresAt: datetime
+  expiresAt: DateTime
 
   """When the job was created at."""
-  createdAt: datetime!
+  createdAt: DateTime!
 
   """The external application URL for the job."""
   externalApplicationUrl: String
@@ -578,10 +581,10 @@ type Job implements Node {
   """Viewer count for the job, filtered by time."""
   viewCount(
     """Start date for filtering the view count."""
-    startDate: datetime = null
+    startDate: DateTime = null
 
     """End date for filtering the view count."""
-    endDate: datetime = null
+    endDate: DateTime = null
   ): Int! @isAuthenticated
 
   """View metric points for the job, filtered by time."""
@@ -730,7 +733,7 @@ type JobIsExternalError implements Error {
 """A metric point belonging to a series of job metrics."""
 type JobMetricPoint {
   """The timestamp of the job metric point."""
-  timestamp: datetime!
+  timestamp: DateTime!
 
   """The count of the job metric point."""
   count: Int!
@@ -1116,7 +1119,7 @@ type Mutation {
     maxExperience: Int = null
 
     """The expiration date of the job."""
-    expiresAt: datetime = null
+    expiresAt: DateTime = null
 
     """The type of the job."""
     jobType: JobType = null
@@ -1161,7 +1164,7 @@ type Mutation {
     maxExperience: Int = null
 
     """The expiration date of the job."""
-    expiresAt: datetime = null
+    expiresAt: DateTime = null
 
     """The type of the job."""
     jobType: JobType = null
@@ -1400,10 +1403,10 @@ type Organization implements Node {
   """Total viewer count for the organization's jobs, filtered by time."""
   totalViewCount(
     """Start date for filtering the view count."""
-    startDate: datetime = null
+    startDate: DateTime = null
 
     """End date for filtering the view count."""
-    endDate: datetime = null
+    endDate: DateTime = null
   ): Int! @isAuthenticated
 
   """
@@ -1520,10 +1523,10 @@ type OrganizationInvite implements Node {
   status: InviteStatus!
 
   """When the invite was created."""
-  createdAt: datetime!
+  createdAt: DateTime!
 
   """When the invite expires."""
-  expiresAt: datetime
+  expiresAt: DateTime
 }
 
 type OrganizationInviteEdge {
@@ -1562,7 +1565,7 @@ type OrganizationMemberEdge {
   role: String!
 
   """When the user joined the organization."""
-  createdAt: datetime!
+  createdAt: DateTime!
 }
 
 """Used when the organization member is not found."""
@@ -1671,7 +1674,7 @@ type Profile implements Node {
   currentJob: CurrentJob
 
   """When the profile was created."""
-  createdAt: datetime!
+  createdAt: DateTime!
 }
 
 """Used when the profile is not found."""
@@ -1867,7 +1870,7 @@ type SavedJobEdge {
   node: Job!
 
   """When the job was saved at by the current user."""
-  savedAt: datetime!
+  savedAt: DateTime!
 }
 
 """Used when a saved job is not found."""
@@ -1906,7 +1909,7 @@ type Session implements Node {
   ipAddress: String!
 
   """When the session was created."""
-  createdAt: datetime!
+  createdAt: DateTime!
 }
 
 type SessionConnection {
@@ -2044,10 +2047,10 @@ type WebAuthnCredential implements Node {
   nickname: String!
 
   """When the webauthn credential was created."""
-  createdAt: datetime!
+  createdAt: DateTime!
 
   """When the webauthn credential was last used."""
-  lastUsedAt: datetime!
+  lastUsedAt: DateTime!
 }
 
 type WebAuthnCredentialConnection {
@@ -2078,5 +2081,3 @@ enum WorkMode {
   HYBRID
   OFFICE
 }
-
-scalar datetime

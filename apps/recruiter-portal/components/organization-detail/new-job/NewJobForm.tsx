@@ -54,7 +54,7 @@ mutation NewJobFormMutation(
 	$maxSalary: Int,  
 	$minExperience: Int, 
 	$maxExperience: Int,
-	$expiresAt: datetime,
+	$expiresAt: DateTime,
 	$workMode: WorkMode,
 	$jobType: JobType,
 	$vacancies: Int,
