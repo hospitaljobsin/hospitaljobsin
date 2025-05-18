@@ -3,9 +3,12 @@ import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import { Button, Card, CardBody } from "@heroui/react";
 import { Briefcase, CheckCircle, FileText, Shield, Users } from "lucide-react";
+import Image from "next/image";
 import BenefitItem from "./BenefitItem";
 import FeatureCard from "./FeatureCard";
 import LandingHeader from "./LandingHeader";
+
+// Photo by <a href="https://unsplash.com/@fotospk?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Fotos</a> on <a href="https://unsplash.com/photos/a-man-wearing-a-white-coat-and-stethoscope-QSNCO2oLtHY?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
 
 export default function LandingView() {
 	return (
@@ -49,11 +52,13 @@ export default function LandingView() {
 					</div>
 					<div className="flex-1 relative h-[300px] sm:h-[400px] w-full rounded-lg overflow-hidden shadow-xl bg-primary-300">
 						<div className="absolute inset-0 flex items-center justify-center bg-opacity-30 bg-primary-200">
-							<div className="flex flex-col items-center gap-4">
-								<Briefcase className="w-16 h-16 text-primary-700" />
-								<p className="text-lg font-medium text-primary-900">
-									Healthcare Recruitment Platform
-								</p>
+							<div className="relative w-full h-full">
+								<Image
+									src="/images/hero-image.png"
+									alt="Hero Image"
+									fill
+									className="rounded-md object-cover"
+								/>
 							</div>
 						</div>
 					</div>
