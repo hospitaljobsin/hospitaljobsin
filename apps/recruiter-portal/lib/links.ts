@@ -36,6 +36,10 @@ const links = {
 		returnTo
 			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}`
 			: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login`,
+	signup: (returnTo: string | undefined = undefined) =>
+		returnTo
+			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/signup?return_to=${returnTo}`
+			: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/signup`,
 	accountSettings: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/settings`,
 	accountSettingsRequestSudo: (returnTo: string | undefined = undefined) =>
 		returnTo
