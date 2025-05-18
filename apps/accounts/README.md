@@ -33,12 +33,6 @@ pnpm install
 2. Set Environment variables
 Create a `.env` file, referencing the template [here](./.env.example)
 
-3. Ensure Relay compiler is installed at the root of the project
-```bash
-# (cd to the project root)
-yarn add relay-compiler
-```
-
 ## Development commands
 
 ### 1. Start Relay Compiler
