@@ -21,6 +21,12 @@
 			"output": "apps/recruiter-portal/__generated__"
 		}
 	},
+	"excludes": [
+		"**/node_modules/**",
+		"**/__mocks__/**",
+		"**/__tests__/**",
+		"**/__generated__/**"
+	],
 	"featureFlags": {
 		"actor_change_support": {
 			"kind": "disabled"
