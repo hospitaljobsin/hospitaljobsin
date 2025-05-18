@@ -8,8 +8,6 @@ import BenefitItem from "./BenefitItem";
 import FeatureCard from "./FeatureCard";
 import LandingHeader from "./LandingHeader";
 
-// Photo by <a href="https://unsplash.com/@fotospk?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Fotos</a> on <a href="https://unsplash.com/photos/a-man-wearing-a-white-coat-and-stethoscope-QSNCO2oLtHY?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
-
 export default function LandingView() {
 	return (
 		<div className="flex flex-col items-center">
@@ -50,19 +48,23 @@ export default function LandingView() {
 							</Button>
 						</div>
 					</div>
-					<div className="flex-1 relative h-[320px] sm:h-[420px] w-full rounded-lg overflow-visible bg-primary-300">
-						<div className="absolute inset-0 flex items-center justify-center bg-opacity-30 bg-primary-200 rounded-lg">
-							<div className="relative w-[115%] h-[115%]">
-								<Image
-									src="/images/hero-image.png"
-									alt="Hero Image"
-									fill
-									className="rounded-md object-cover object-top"
-									style={{
-										filter: "drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3))",
-										transform: "scale(1.05)",
-									}}
-								/>
+					<div className="flex-1 relative h-[320px] sm:h-[420px] w-full rounded-4xl overflow-visible bg-primary-300">
+						<div className="absolute inset-0 bg-opacity-30 bg-primary-200 rounded-4xl">
+							{/* Container acts as a positioning reference */}
+							<div className="absolute inset-x-0 bottom-0 h-[100%] overflow-visible">
+								{/* Image container - sized and positioned to "pop out" */}
+								<div className="absolute left-[-7.5%] right-[-7.5%] bottom-0 top-[-25%] overflow-hidden">
+									<Image
+										src="/images/hero-image.png"
+										alt="Hero Image"
+										fill
+										className="object-cover object-top"
+										fetchPriority="high"
+										style={{
+											filter: "drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1))",
+										}}
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -152,8 +154,8 @@ export default function LandingView() {
 							Ready to transform your healthcare recruitment?
 						</h2>
 						<p className="text-foreground-600">
-							Join hundreds of hospitals already using our platform to find and
-							recruit top medical talent more efficiently.
+							Join innovative hospitals using our platform to find and recruit
+							top medical talent more efficiently.
 						</p>
 					</div>
 					<Button
