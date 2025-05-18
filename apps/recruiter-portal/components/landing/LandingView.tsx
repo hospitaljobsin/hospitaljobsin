@@ -50,14 +50,18 @@ export default function LandingView() {
 							</Button>
 						</div>
 					</div>
-					<div className="flex-1 relative h-[300px] sm:h-[400px] w-full rounded-lg overflow-hidden shadow-xl bg-primary-300">
-						<div className="absolute inset-0 flex items-center justify-center bg-opacity-30 bg-primary-200">
-							<div className="relative w-full h-full">
+					<div className="flex-1 relative h-[320px] sm:h-[420px] w-full rounded-lg overflow-visible bg-primary-300">
+						<div className="absolute inset-0 flex items-center justify-center bg-opacity-30 bg-primary-200 rounded-lg">
+							<div className="relative w-[115%] h-[115%]">
 								<Image
 									src="/images/hero-image.png"
 									alt="Hero Image"
 									fill
-									className="rounded-md object-cover"
+									className="rounded-md object-cover object-top"
+									style={{
+										filter: "drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3))",
+										transform: "scale(1.05)",
+									}}
 								/>
 							</div>
 						</div>
