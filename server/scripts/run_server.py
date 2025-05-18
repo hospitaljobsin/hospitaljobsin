@@ -1,9 +1,13 @@
 import uvicorn  # noqa: INP001
 from app.config import AppSettings, get_settings
+from app.core.instrumentation import initialize_instrumentation
 from app.logger import build_server_log_config, setup_logging
 
 if __name__ == "__main__":
     settings = get_settings(AppSettings)
+
+    initialize_instrumentation(settings=settings)
+
     # set up logging
     setup_logging(
         human_readable=settings.debug,
