@@ -15,6 +15,7 @@ WORKDIR /app
 
 COPY ./apps/recruiter-portal/package.json ./apps/recruiter-portal/pnpm-lock.yaml ./apps/recruiter-portal/.npmrc ./apps/recruiter-portal/
 COPY ./schema/ ./schema/
+COPY ./relay.config.json ./relay.config.json
 
 WORKDIR /app/apps/recruiter-portal
 
@@ -49,7 +50,7 @@ ARG NEXT_PUBLIC_ENVIRONMENT
 ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 # Add any other NEXT_PUBLIC variables your app needs
 
-RUN pnpm run relay relay.config.json
+RUN pnpm run relay ../../relay.config.json
 
 RUN pnpm build
 
