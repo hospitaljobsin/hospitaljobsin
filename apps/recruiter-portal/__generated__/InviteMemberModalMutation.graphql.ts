@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9fef249cec0c2f560a377f6cdfc8618d>>
+ * @generated SignedSource<<aebed7cc49ef24864a847986cba8a28d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type InviteMemberModalMutation$variables = {
   email: string;
   organizationId: string;

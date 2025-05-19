@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e5b17c860c516296b38d61f360f0707b>>
+ * @generated SignedSource<<a853fe245cdc1dfbf4ea26ca3facc75c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type OrganizationTabsFragment$data = {
   readonly isAdmin: boolean;
   readonly " $fragmentType": "OrganizationTabsFragment";

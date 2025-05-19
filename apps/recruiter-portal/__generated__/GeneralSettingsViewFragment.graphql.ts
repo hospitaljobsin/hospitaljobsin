@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7299f57f2e4a0e8f90b3ca9b29c70c77>>
+ * @generated SignedSource<<e6268385fb7e7d7366b51c5d802f0327>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type GeneralSettingsViewFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";

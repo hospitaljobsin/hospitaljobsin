@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<249115effd2b02310f3ae27448e20ec6>>
+ * @generated SignedSource<<ff53ca145772632845eecea8438563c5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type AuthProvider = "OAUTH_GOOGLE" | "PASSWORD" | "WEBAUTHN_CREDENTIAL" | "%future added value";
 export type LoginFormPasswordMutation$variables = {
   captchaToken: string;

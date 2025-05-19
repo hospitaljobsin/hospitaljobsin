@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8ff23b4c38987d00907421a3afd4fdec>>
+ * @generated SignedSource<<d5b4dc69577b110696f76ba86ea58752>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pageProfileQuery$variables = Record<PropertyKey, never>;
 export type pageProfileQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"ProfileClientComponentFragment">;

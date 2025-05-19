@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<128fc910b20d2c78ccdca22cd32a0135>>
+ * @generated SignedSource<<1bb1e02104178c4f5179fb3bfcf88944>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type AuthNavigationFragment$data = {
   readonly __typename: "Account";
   readonly avatarUrl: string;

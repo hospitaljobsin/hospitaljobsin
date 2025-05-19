@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7e54369dc7178c0ed460388c2fd97b2d>>
+ * @generated SignedSource<<f273baf6bcc81c8d5cdcc4bcfbe25482>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type GenderType = "FEMALE" | "MALE" | "OTHER" | "%future added value";
 export type MaritalStatusType = "MARRIED" | "SINGLE" | "%future added value";
 export type AddressInput = {

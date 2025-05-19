@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<272f25b52f585c6f908b2bfcb44b757e>>
+ * @generated SignedSource<<cc9e2a3238dc5ffba7a1c2d084a180a8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type OrganizationDetailsInternalFragment$data = {
   readonly description: string | null | undefined;
   readonly email: string | null | undefined;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d9294bd5841fec6c1ad891322b0d8580>>
+ * @generated SignedSource<<224efcd72729ca0e0ae7fc1a3a14ddd9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type ResetPasswordViewClientComponentFragment$data = {
   readonly passwordResetToken: {
     readonly __typename: "PasswordResetToken";

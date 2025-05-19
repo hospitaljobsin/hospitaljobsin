@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dd850c3191ab9ce344458cbe72608b00>>
+ * @generated SignedSource<<8e9c2cc1cd7699ecaa674e929478beb1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,9 +8,9 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import type { ReaderFragment } from 'relay-runtime';
 export type AuthProvider = "OAUTH_GOOGLE" | "PASSWORD" | "WEBAUTHN_CREDENTIAL" | "%future added value";
-import { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type UpdatePasswordModalFragment$data = {
   readonly authProviders: ReadonlyArray<AuthProvider>;
   readonly " $fragmentType": "UpdatePasswordModalFragment";

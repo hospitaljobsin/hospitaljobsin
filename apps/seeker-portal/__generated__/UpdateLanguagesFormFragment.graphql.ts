@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ada203163e120bb51252a98ff2fabbc1>>
+ * @generated SignedSource<<a9b4ad42277ad582cff28bef0df97fcf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type UpdateLanguagesFormFragment$data = {
   readonly profile: {
     readonly __typename: "Profile";

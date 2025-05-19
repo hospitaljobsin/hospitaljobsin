@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<75720444415b09320a10c6dd7301f745>>
+ * @generated SignedSource<<2199e557fd5523236dd516a00f0762e3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type MemberControlsOrganizationFragment$data = {
   readonly adminCount: number;
   readonly " $fragmentSpreads": FragmentRefs<"DemoteMemberModalOrganizationFragment" | "PromoteMemberModalOrganizationFragment" | "RemoveMemberModalOrganizationFragment">;

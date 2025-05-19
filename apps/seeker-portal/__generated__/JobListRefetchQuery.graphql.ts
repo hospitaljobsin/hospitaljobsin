@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4b764ac7a9be3a4a0d2bbf49987e7614>>
+ * @generated SignedSource<<895b4e0fbe8a4fb1c873cd68116fbc86>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type CoordinatesInput = {
   latitude: number;
   longitude: number;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<eeed61c3b58d78621926793dd05fec72>>
+ * @generated SignedSource<<82fc8de5494c877dd2a1d36b548b08f8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,9 +8,9 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import type { ReaderFragment } from 'relay-runtime';
 export type JobApplicantStatus = "APPLIED" | "INTERVIEWED" | "OFFERED" | "ONHOLD" | "SHORTLISTED" | "%future added value";
-import { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type ApplicantFragment$data = {
   readonly account: {
     readonly avatarUrl: string;

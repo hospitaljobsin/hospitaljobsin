@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d1f3f9cfcd510ed80f895963580e0833>>
+ * @generated SignedSource<<18f32307316693634d4bdcb04a1e0045>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type NewOrganizationFormLogoPresignedUrlMutation$variables = Record<PropertyKey, never>;
 export type NewOrganizationFormLogoPresignedUrlMutation$data = {
   readonly createOrganizationLogoPresignedUrl: {

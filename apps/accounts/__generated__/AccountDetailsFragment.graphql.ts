@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<72648158fe41dbf701443705c152a79a>>
+ * @generated SignedSource<<bdb26249f73a34e7ae5916d71e222b55>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type AccountDetailsFragment$data = {
   readonly avatarUrl: string;
   readonly email: string;

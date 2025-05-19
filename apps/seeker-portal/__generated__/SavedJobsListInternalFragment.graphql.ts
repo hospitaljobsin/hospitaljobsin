@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8a2899c7a51d167caefcfab896d96043>>
+ * @generated SignedSource<<22ab3e80be8b3a7684723745d7431800>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type SavedJobsListInternalFragment$data = {
   readonly savedJobs: {
     readonly edges: ReadonlyArray<{

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f1e827aea6b43d07895a13a442a357d8>>
+ * @generated SignedSource<<81b459e3d392550eb513be31671fca77>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type UpdateOrganizationFormFragment$data = {
   readonly description: string | null | undefined;
   readonly id: string;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<310944a2d1081d661a1ba6c33f36a032>>
+ * @generated SignedSource<<e300ab8db33f7556cabdaf79a85c8efc>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type ApplicationFormTabFragment$data = {
   readonly " $fragmentSpreads": FragmentRefs<"ApplicationFormBuilderFragment">;
   readonly " $fragmentType": "ApplicationFormTabFragment";

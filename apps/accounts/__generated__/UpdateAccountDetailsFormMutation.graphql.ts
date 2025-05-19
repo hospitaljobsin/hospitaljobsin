@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5156f41ac2da1eba62341e1b4e6a15bc>>
+ * @generated SignedSource<<50305b670e4a648445a80506f78b9c12>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type UpdateAccountDetailsFormMutation$variables = {
   fullName: string;
 };

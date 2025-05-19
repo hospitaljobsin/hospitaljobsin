@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8f97e707e5385c09f27e6ee38c5bc94b>>
+ * @generated SignedSource<<67222072e0c6210777a1dee0be84b124>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type JobFragment$data = {
   readonly applicantCount: {
     readonly applied: number;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e79812446a517bcc976cc16222b3270c>>
+ * @generated SignedSource<<ec89c63fa030f12d97f9cba3f56da44e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type DisableAuthenticator2FAModalMutation$variables = Record<PropertyKey, never>;
 export type DisableAuthenticator2FAModalMutation$data = {
   readonly disableAccount2faWithAuthenticator: {

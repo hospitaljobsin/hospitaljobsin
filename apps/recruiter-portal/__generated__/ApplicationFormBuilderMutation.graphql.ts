@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<047b5ecd74b838c8e6e924ca8e24252c>>
+ * @generated SignedSource<<dd034e585b5e00088ca454375d7bb0cf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type ApplicationFieldInput = {
   defaultValue?: string | null | undefined;
   fieldName: string;

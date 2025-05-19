@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2022e196be53868d6a16c8084eefa3ca>>
+ * @generated SignedSource<<a90b63792f853a05ff3986cedbfb084b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type DeleteOrganizationModalAccountFragment$data = {
   readonly id: string;
   readonly " $fragmentType": "DeleteOrganizationModalAccountFragment";

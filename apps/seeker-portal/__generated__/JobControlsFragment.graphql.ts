@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<564515b9a8586b037b444b83ba1534fc>>
+ * @generated SignedSource<<6b7638bebc3b5ee3b7e8fd311a6a2b45>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type JobControlsFragment$data = {
   readonly id: string;
   readonly isSaved: boolean;

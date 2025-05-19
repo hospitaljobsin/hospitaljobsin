@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d97090e6cb46576978fec97cbe5150dc>>
+ * @generated SignedSource<<55a0311d6e63653f84e77ebe1b6a67d4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type MemberAuthFragment$data = {
   readonly __typename: string;
   readonly " $fragmentType": "MemberAuthFragment";

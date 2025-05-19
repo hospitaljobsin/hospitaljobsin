@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3d027c3cc611d03afbf3a94242af387c>>
+ * @generated SignedSource<<26030c55573b581f03eb17d36de29045>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type UpdatePasswordModalMutation$variables = {
   newPassword: string;
 };

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dd94d91b4c40e46489b623b390c1e1c2>>
+ * @generated SignedSource<<78d03edfe1489c63bb15fc2030d7d3ee>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pageOrganizationInvitesViewQuery$variables = {
   searchTerm?: string | null | undefined;
   slug: string;

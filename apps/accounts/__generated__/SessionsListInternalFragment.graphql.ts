@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8e4b000ceb6cf5ce6c9ca5ef4b570b42>>
+ * @generated SignedSource<<351a58e9ca472f1ff72683e78412dbf1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type SessionsListInternalFragment$data = {
   readonly id: string;
   readonly sessions: {

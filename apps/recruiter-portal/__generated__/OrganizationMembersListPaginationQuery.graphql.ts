@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<90b10354d7ad77b16bfd6e55a0dc52d2>>
+ * @generated SignedSource<<e67c51bb9bae5b00af487bd20d27fa24>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type OrganizationMembersListPaginationQuery$variables = {
   count?: number | null | undefined;
   cursor?: string | null | undefined;

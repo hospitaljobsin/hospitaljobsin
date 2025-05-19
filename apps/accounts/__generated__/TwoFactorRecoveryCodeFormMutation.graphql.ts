@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8096563bee221f8b5af55046def8b0f2>>
+ * @generated SignedSource<<2da809ff61725f423d93a34bec4bf4d8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type TwoFactorRecoveryCodeFormMutation$variables = {
   captchaToken: string;
   token: string;

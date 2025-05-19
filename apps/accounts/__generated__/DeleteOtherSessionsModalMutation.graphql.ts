@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e1b2918dfdc2e3f30eb8e64577d79102>>
+ * @generated SignedSource<<335367d99e2aebd06cf755bd49019357>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type DeleteOtherSessionsModalMutation$variables = {
   connections: ReadonlyArray<string>;
 };

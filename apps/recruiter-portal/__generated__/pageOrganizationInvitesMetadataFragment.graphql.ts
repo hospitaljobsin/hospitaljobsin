@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<819fbab761df8010082f25c08e735112>>
+ * @generated SignedSource<<646cfe13fc25bca493b8ec39b0063118>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderInlineDataFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderInlineDataFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pageOrganizationInvitesMetadataFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";

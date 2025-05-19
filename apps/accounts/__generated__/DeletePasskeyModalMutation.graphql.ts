@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<01091c532ca01dbf1e494973dfc5c53f>>
+ * @generated SignedSource<<4fec86c2224dfbbf2ee6ae2c57025d00>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type DeletePasskeyModalMutation$variables = {
   connections: ReadonlyArray<string>;
   webAuthnCredentialId: string;

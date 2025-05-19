@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4767170fec50c70e5bf7b83c43c62bf6>>
+ * @generated SignedSource<<00c46803fa3b8026d46edaa22c259957>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,11 +8,11 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import type { ReaderFragment } from 'relay-runtime';
 export type Currency = "INR" | "%future added value";
 export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "%future added value";
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
-import { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type JobDetailsFragment$data = {
   readonly applicationForm: {
     readonly __typename: "JobApplicationForm";

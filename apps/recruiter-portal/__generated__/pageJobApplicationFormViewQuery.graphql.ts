@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bf0a9c4344a471c08e192f5bd25f6293>>
+ * @generated SignedSource<<8b6797bfe7c5afcd5dd37c861a2b7518>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pageJobApplicationFormViewQuery$variables = {
   jobSlug: string;
   slug: string;

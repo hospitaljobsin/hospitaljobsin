@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<28bf7c7cc34d8408ae122310b57618ab>>
+ * @generated SignedSource<<faa096eacffb835fb10e745dca22fecd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type SidebarJobSettingsQuery$variables = {
   jobSlug: string;
   slug: string;

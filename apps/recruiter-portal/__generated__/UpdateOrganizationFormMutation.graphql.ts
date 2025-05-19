@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9c60cdb347f5a55bb349283d8c38ed91>>
+ * @generated SignedSource<<60922d8152786918bece36bb3136cceb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type UpdateOrganizationFormMutation$variables = {
   description?: string | null | undefined;
   location?: string | null | undefined;

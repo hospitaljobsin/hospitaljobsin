@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fa688da9ee3a21fb33df81201c20c01f>>
+ * @generated SignedSource<<6c5a4e699a3e9c89ea7ad29dff038559>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "%future added value";
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 export type NewJobFormMutation$variables = {

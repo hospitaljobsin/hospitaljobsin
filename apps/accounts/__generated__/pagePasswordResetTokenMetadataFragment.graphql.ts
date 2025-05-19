@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a03492a984a587f3439fa480cee15d86>>
+ * @generated SignedSource<<446a05a9860135de2023e21c6d0a130a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderInlineDataFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderInlineDataFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pagePasswordResetTokenMetadataFragment$data = {
   readonly passwordResetToken: {
     readonly __typename: string;

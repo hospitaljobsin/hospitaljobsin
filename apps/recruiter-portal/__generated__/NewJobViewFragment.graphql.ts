@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<265a6b11c4732fc956263f81d0b89961>>
+ * @generated SignedSource<<d9e48a949a1d695af89b53de15a23455>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type NewJobViewFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";

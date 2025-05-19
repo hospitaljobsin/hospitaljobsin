@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a6bb3a0ae5c78b389eaea1c98ea3f364>>
+ * @generated SignedSource<<de60c7f5873895bed8e9e718646d8906>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type SessionsListPaginationQuery$variables = {
   count?: number | null | undefined;
   cursor?: string | null | undefined;

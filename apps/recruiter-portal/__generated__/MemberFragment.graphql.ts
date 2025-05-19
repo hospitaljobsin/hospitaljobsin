@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<74c4207b9d8c3bb2c1e5f245c9b11825>>
+ * @generated SignedSource<<bc85bc54b3b029bf1c2428a80c3e11d9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type MemberFragment$data = {
   readonly createdAt: any;
   readonly node: {

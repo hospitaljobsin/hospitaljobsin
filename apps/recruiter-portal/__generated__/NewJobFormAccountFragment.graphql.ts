@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b4c102a173aae51d3e2c2be19066c064>>
+ * @generated SignedSource<<b99677a91c4fe57b4bfff2ffa8b6b682>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type NewJobFormAccountFragment$data = {
   readonly __typename: "Account";
   readonly avatarUrl: string;

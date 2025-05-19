@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7ed6ef170b04ec8ddd381ff687956c25>>
+ * @generated SignedSource<<27b645c3e2d747c7b02a5174b8275f00>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type JobTabsFragment$data = {
   readonly externalApplicationUrl: string | null | undefined;
   readonly organization: {

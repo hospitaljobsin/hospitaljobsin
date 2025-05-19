@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5d04d997a9053e13430423343071455b>>
+ * @generated SignedSource<<c739e52442564ee39210fe2ecfe405ef>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type SidebarMembersQuery$variables = {
   slug: string;
 };

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a82e052edd046a09e22785d26c8d4549>>
+ * @generated SignedSource<<aa6dfee43a296216def64d1cb21d24bd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type JobApplicantStatus = "APPLIED" | "INTERVIEWED" | "OFFERED" | "ONHOLD" | "SHORTLISTED" | "%future added value";
 export type ApplicantListPaginationQuery$variables = {
   count?: number | null | undefined;

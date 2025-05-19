@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7d74f2a0ada8feec1dea1f5c5a9ee38c>>
+ * @generated SignedSource<<d2b2d1fd9de3ed36fd559fe7eedb8ec7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type ConfirmResetPasswordFormMutation$variables = {
   email: string;
   newPassword: string;

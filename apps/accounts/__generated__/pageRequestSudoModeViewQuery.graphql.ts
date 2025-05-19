@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5f338a0b308fe75cb876ec392520a81d>>
+ * @generated SignedSource<<263a54b2d64d0eb8c1e7240ec937e276>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pageRequestSudoModeViewQuery$variables = Record<PropertyKey, never>;
 export type pageRequestSudoModeViewQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"RequestSudoModeViewClientComponentFragment" | "pageRequestSudoModeInternalFragment">;

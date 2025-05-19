@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bcf0fa74a64e77f911ca270c8143cafc>>
+ * @generated SignedSource<<791e2162c4c6039f61d6f3ebddcfe666>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type PasskeysListInternalFragment$data = {
   readonly id: string;
   readonly webAuthnCredentials: {

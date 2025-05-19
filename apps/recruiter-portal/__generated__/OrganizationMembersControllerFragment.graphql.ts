@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<98a557a639c87289064c2e7dfd0fc792>>
+ * @generated SignedSource<<d85490261de13008ec84492b060c99fe>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type OrganizationMembersControllerFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7932ddbd31c01d0005072478ef937ea2>>
+ * @generated SignedSource<<0a025363da21597ecfc70d22f95d8049>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type InviteFormAcceptMutation$variables = {
   inviteToken: string;
 };

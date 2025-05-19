@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a3e103a9e929b6d5eb0a1f32f8cfc219>>
+ * @generated SignedSource<<c1577490236d02ba5730187d47e91989>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pageGeneralSettingsViewQuery$variables = {
   slug: string;
 };

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<251cc3d427d1921aab7005991b58d440>>
+ * @generated SignedSource<<ad8af1c4b98334f901c33b4ad4e71c58>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type DeleteInviteModalFragment$data = {
   readonly email: string;
   readonly id: string;

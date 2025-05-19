@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c8b7b058a3dbacd17788fc7be3c59e54>>
+ * @generated SignedSource<<eaf5b9d41aa6812add4bf6b0d7d9be3d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type LogoutModalMutation$variables = Record<PropertyKey, never>;
 export type LogoutModalMutation$data = {
   readonly logout: {

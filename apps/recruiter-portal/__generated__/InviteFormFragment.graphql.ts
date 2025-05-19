@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<670615c279e4e2057c412d6623c97f26>>
+ * @generated SignedSource<<47f3cdc95629c8a417805b3f9ac95e21>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type InviteFormFragment$data = {
   readonly organizationInvite: {
     readonly __typename: "OrganizationInvite";

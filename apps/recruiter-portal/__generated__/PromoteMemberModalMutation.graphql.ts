@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<31181b00c3e1fdd0a9c6254e4ca045fd>>
+ * @generated SignedSource<<3615d10f5001737d89d2a1377ee96273>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type PromoteMemberModalMutation$variables = {
   accountId: string;
   organizationId: string;

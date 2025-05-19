@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<69240979ece0a320deea6ef1a5683c27>>
+ * @generated SignedSource<<e403e108f3bd8586e355d3c9f73325f3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type OrganizationFragment$data = {
   readonly description: string | null | undefined;
   readonly logoUrl: string;

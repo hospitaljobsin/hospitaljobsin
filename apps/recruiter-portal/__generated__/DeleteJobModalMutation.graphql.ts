@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<94fe419bcab549d903491f27c2954939>>
+ * @generated SignedSource<<e99ce6a4d7ae99d764339e733a0f75fd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type DeleteJobModalMutation$variables = {
   jobId: string;
 };

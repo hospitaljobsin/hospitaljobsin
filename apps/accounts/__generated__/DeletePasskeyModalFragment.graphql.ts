@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<01de5b0bffc846e68da4ad80744a4624>>
+ * @generated SignedSource<<cd06f304609f9b462a7bcc48a96fda2f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type DeletePasskeyModalFragment$data = {
   readonly id: string;
   readonly " $fragmentType": "DeletePasskeyModalFragment";

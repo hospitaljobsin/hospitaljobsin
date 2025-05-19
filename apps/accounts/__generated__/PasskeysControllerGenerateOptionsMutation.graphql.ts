@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9f203569c39368130bed14b6eaf39a31>>
+ * @generated SignedSource<<b44ad0a2efa94d319193e2f19fa0f2c4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type PasskeysControllerGenerateOptionsMutation$variables = Record<PropertyKey, never>;
 export type PasskeysControllerGenerateOptionsMutation$data = {
   readonly generateWebAuthnCredentialCreationOptions: {

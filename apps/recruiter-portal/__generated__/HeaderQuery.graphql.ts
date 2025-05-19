@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3131b7b3f04cb417a1fe649a90ee31ff>>
+ * @generated SignedSource<<679da41a527898a65418b89a7342db50>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type HeaderQuery$variables = Record<PropertyKey, never>;
 export type HeaderQuery$data = {
   readonly viewer: {

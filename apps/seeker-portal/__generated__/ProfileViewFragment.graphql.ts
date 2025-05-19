@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<479787ead5be7bc1e1e3768938360006>>
+ * @generated SignedSource<<e5ea4085aa76c567403c3c2f84ab2c11>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type ProfileViewFragment$data = {
   readonly viewer: {
     readonly __typename: "Account";

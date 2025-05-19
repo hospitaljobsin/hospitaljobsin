@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9bbab7e1fc26a40ab331ca549d16d822>>
+ * @generated SignedSource<<66fa028087c5a90cd66e951ff3321899>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type ProfileClientComponentFragment$data = {
   readonly " $fragmentSpreads": FragmentRefs<"ProfileViewFragment">;
   readonly " $fragmentType": "ProfileClientComponentFragment";

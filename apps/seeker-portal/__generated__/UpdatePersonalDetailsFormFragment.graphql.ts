@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a7f4818dc01c875847a5ee1ed7b17c88>>
+ * @generated SignedSource<<3aa35eef085c6528619d5d0edd7d478a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,10 +8,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import type { ReaderFragment } from 'relay-runtime';
 export type GenderType = "FEMALE" | "MALE" | "OTHER" | "%future added value";
 export type MaritalStatusType = "MARRIED" | "SINGLE" | "%future added value";
-import { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type UpdatePersonalDetailsFormFragment$data = {
   readonly profile: {
     readonly __typename: "Profile";

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<145e7d49909dbd6f67b858f8abd82bf4>>
+ * @generated SignedSource<<fd3b12dbfd4365f427a6dc4df3888c9b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pageAppliedJobsQuery$variables = Record<PropertyKey, never>;
 export type pageAppliedJobsQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"AppliedJobsClientComponentFragment">;

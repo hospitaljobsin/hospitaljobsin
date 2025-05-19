@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8342753759472fab012b217ac180adb4>>
+ * @generated SignedSource<<8e60bc0c7fd5de032c736ae4cd57e26c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type OrgDetailHeaderQuery$variables = {
   slug: string;
 };

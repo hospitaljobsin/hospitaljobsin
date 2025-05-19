@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<306350597a02685662696d2139c8c794>>
+ * @generated SignedSource<<0bd63981c0146795f0ea4bf9db289412>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pageDashboardQuery$variables = Record<PropertyKey, never>;
 export type pageDashboardQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"DashboardClientComponentFragment">;

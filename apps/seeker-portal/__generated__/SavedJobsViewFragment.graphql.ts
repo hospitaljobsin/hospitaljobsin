@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f0361bcd1568b05aa8d23e2daad1156a>>
+ * @generated SignedSource<<9f3d3abe87e7ad80b1bed7673a1ba40e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type SavedJobsViewFragment$data = {
   readonly " $fragmentSpreads": FragmentRefs<"SavedJobsListFragment">;
   readonly " $fragmentType": "SavedJobsViewFragment";

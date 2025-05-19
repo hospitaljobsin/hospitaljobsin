@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5e7ac0fd69be583fabb20a2a685dd2cc>>
+ * @generated SignedSource<<278f13dfd6be2220ce3edb0ed0ba764c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,10 +8,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import type { ReaderFragment } from 'relay-runtime';
 export type AuthProvider = "OAUTH_GOOGLE" | "PASSWORD" | "WEBAUTHN_CREDENTIAL" | "%future added value";
 export type TwoFactorProvider = "AUTHENTICATOR" | "%future added value";
-import { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type RequestSudoViewFragment$data = {
   readonly viewer: {
     readonly __typename: "Account";

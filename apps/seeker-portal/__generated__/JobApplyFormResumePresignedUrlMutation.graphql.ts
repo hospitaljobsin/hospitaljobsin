@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1050e8f65921e9960ed05541c2037dba>>
+ * @generated SignedSource<<4d45881c7e53801e40e94b1bf4c145f9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type JobApplyFormResumePresignedUrlMutation$variables = Record<PropertyKey, never>;
 export type JobApplyFormResumePresignedUrlMutation$data = {
   readonly createJobApplicantResumePresignedUrl: {

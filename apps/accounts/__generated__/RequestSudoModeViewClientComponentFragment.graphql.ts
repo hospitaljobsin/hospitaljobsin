@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<20c80cc804965f69fb10c4e420f2bcbf>>
+ * @generated SignedSource<<35134c16d145eac3f8b55b376c569219>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type RequestSudoModeViewClientComponentFragment$data = {
   readonly " $fragmentSpreads": FragmentRefs<"RequestSudoViewFragment">;
   readonly " $fragmentType": "RequestSudoModeViewClientComponentFragment";

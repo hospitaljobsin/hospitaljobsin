@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bdae730ef87a00d3989707c7c7ba4582>>
+ * @generated SignedSource<<835dbf8e82439386cf74ee42651bd4ef>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type InviteMemberModalFragment$data = {
   readonly id: string;
   readonly " $fragmentType": "InviteMemberModalFragment";

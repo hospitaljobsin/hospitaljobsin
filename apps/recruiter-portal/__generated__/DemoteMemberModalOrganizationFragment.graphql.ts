@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<64420b1a9fbcedcb4ceb130fd6af2029>>
+ * @generated SignedSource<<c08d39ddded75dff777d391d80114988>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type DemoteMemberModalOrganizationFragment$data = {
   readonly id: string;
   readonly " $fragmentType": "DemoteMemberModalOrganizationFragment";

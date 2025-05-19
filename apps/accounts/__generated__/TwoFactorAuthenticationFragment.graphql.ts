@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<985884b7837b333b953ff88647da0e9a>>
+ * @generated SignedSource<<6eacd0c640a454bf3864c8aa5ac0a94e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,9 +8,9 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import type { ReaderFragment } from 'relay-runtime';
 export type TwoFactorProvider = "AUTHENTICATOR" | "%future added value";
-import { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type TwoFactorAuthenticationFragment$data = {
   readonly has2faEnabled: boolean;
   readonly sudoModeExpiresAt: any | null | undefined;

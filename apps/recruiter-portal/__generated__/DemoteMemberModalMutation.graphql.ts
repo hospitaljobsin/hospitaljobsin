@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<616e55bc1cbcca423eb2654d0240372b>>
+ * @generated SignedSource<<80e410108cec79772377bb610912c35f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type DemoteMemberModalMutation$variables = {
   accountId: string;
   connections: ReadonlyArray<string>;

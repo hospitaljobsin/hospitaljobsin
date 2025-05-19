@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b4ce83df6dc65e16a72675ac8f53b5de>>
+ * @generated SignedSource<<8c1f56c6b9651ede299ed9763e0fb07a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type DeleteOrganizationModalMutation$variables = {
   organizationId: string;
 };

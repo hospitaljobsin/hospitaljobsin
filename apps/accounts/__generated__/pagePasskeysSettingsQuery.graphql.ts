@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2eff8a419d5b41bf42371c99a04c6768>>
+ * @generated SignedSource<<5364879df554ecff876e0c5a35c0f429>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pagePasskeysSettingsQuery$variables = Record<PropertyKey, never>;
 export type pagePasskeysSettingsQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"PasskeysClientComponentFragment">;

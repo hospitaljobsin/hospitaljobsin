@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b56078ca010ca8532eb130597338db1d>>
+ * @generated SignedSource<<d412b4df87d54af23e8fd6ba7aba7d11>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pageResetPasswordViewQuery$variables = {
   email: string;
   resetToken: string;

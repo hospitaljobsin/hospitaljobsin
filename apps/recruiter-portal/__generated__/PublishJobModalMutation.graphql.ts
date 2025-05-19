@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<438640f6f0c49ffc1391b7a89c7ecdca>>
+ * @generated SignedSource<<10619fc879fd6eb2a55e3029cb4ca207>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type PublishJobModalMutation$variables = {
   jobId: string;
 };

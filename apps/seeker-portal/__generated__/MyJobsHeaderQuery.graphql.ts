@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7a71cd5bc504a80927ed69fd9ff139e9>>
+ * @generated SignedSource<<9d036e34277de534d072d4b1d4eadce5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type MyJobsHeaderQuery$variables = Record<PropertyKey, never>;
 export type MyJobsHeaderQuery$data = {
   readonly viewer: {

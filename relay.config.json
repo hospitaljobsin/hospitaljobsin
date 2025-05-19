@@ -8,17 +8,20 @@
 		"accounts": {
 			"schema": "schema/schema.graphql",
 			"language": "typescript",
-			"output": "apps/accounts/__generated__"
+			"output": "apps/accounts/__generated__",
+			"useImportTypeSyntax": true
 		},
 		"seeker-portal": {
 			"schema": "schema/schema.graphql",
 			"language": "typescript",
-			"output": "apps/seeker-portal/__generated__"
+			"output": "apps/seeker-portal/__generated__",
+			"useImportTypeSyntax": true
 		},
 		"recruiter-portal": {
 			"schema": "schema/schema.graphql",
 			"language": "typescript",
-			"output": "apps/recruiter-portal/__generated__"
+			"output": "apps/recruiter-portal/__generated__",
+			"useImportTypeSyntax": true
 		}
 	},
 	"excludes": [

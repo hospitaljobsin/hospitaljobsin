@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2208517c7fe86041dcae85bafd1e0531>>
+ * @generated SignedSource<<e7266ed98d2166bea9d7e0e82c3a7883>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type JobSettingsViewClientComponentFragment$data = {
   readonly " $fragmentSpreads": FragmentRefs<"JobSettingsGeneralTabFragment">;
   readonly " $fragmentType": "JobSettingsViewClientComponentFragment";

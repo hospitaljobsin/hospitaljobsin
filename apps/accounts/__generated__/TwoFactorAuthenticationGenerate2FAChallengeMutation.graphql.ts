@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f19b0cfc14751903c56f25e5bd19d9e2>>
+ * @generated SignedSource<<cba915649b030f3e9d66ccdbe888ff5a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type TwoFactorAuthenticationGenerate2FAChallengeMutation$variables = Record<PropertyKey, never>;
 export type TwoFactorAuthenticationGenerate2FAChallengeMutation$data = {
   readonly generateAuthenticator2faChallenge: {

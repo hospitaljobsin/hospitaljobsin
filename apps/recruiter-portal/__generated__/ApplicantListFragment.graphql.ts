@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7b051e36059f94b8d433f26bc2fe4b91>>
+ * @generated SignedSource<<2e279daa1b078d34231049fd6c4c7914>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type ApplicantListFragment$data = {
   readonly applicants: {
     readonly edges: ReadonlyArray<{

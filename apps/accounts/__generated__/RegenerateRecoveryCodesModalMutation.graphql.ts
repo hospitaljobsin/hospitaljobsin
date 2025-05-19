@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<899b81b7c8b838327e2152170f253340>>
+ * @generated SignedSource<<bd5ff4b93b25b2669d4da6c14bf600b1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type RegenerateRecoveryCodesModalMutation$variables = Record<PropertyKey, never>;
 export type RegenerateRecoveryCodesModalMutation$data = {
   readonly generate2faRecoveryCodes: {

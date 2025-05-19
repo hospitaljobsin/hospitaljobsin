@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<137bb03dce7988aa253382ac0f75ff05>>
+ * @generated SignedSource<<33f801cef0cc100331aa536c7dea7f2b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type DashboardClientComponentFragment$data = {
   readonly " $fragmentSpreads": FragmentRefs<"DashboardViewFragment">;
   readonly " $fragmentType": "DashboardClientComponentFragment";

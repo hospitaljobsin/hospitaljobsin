@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<228d63ab7d582ddc10f4e59c749e5c94>>
+ * @generated SignedSource<<bc7e691839ec1dd2873344f3762ee773>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type EnableAuthenticator2FAModalMutation$variables = {
   token: string;
 };

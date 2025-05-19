@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d91a515314f54a814ada62d467fcb12d>>
+ * @generated SignedSource<<22566f2911aeb27c6537eb0f54550012>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type JobApplyFormFragment$data = {
   readonly applicationForm: {
     readonly fields: ReadonlyArray<{

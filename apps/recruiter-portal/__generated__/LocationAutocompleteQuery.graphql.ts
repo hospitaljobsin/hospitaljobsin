@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<51d869be811581c9681b9673b5384d6d>>
+ * @generated SignedSource<<cd614d592faa5d7c3fcfc49febd78fcb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type LocationAutocompleteQuery$variables = {
   searchTerm: string;
 };

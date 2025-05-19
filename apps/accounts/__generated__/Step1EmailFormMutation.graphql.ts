@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<38aa52b4d157fc58fc38a7427b98cf9c>>
+ * @generated SignedSource<<12a02b23b1c125ed6c3d138fb3b76d65>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type Step1EmailFormMutation$variables = {
   captchaToken: string;
   email: string;

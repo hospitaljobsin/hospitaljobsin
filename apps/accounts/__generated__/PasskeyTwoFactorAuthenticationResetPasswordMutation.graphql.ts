@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<376fe0f15da74a3a5235939ad40c4917>>
+ * @generated SignedSource<<2257b2aa02d001776970c14cb40e7350>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type PasskeyTwoFactorAuthenticationResetPasswordMutation$variables = {
   authenticationResponse: any;
   captchaToken: string;

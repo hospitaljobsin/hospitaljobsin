@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fda8c76f0584782c5c843c95d02983fd>>
+ * @generated SignedSource<<daa3b1a241d81ae3ab54c1b089abe095>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type PublishJobModalFragment$data = {
   readonly id: string;
   readonly " $fragmentType": "PublishJobModalFragment";

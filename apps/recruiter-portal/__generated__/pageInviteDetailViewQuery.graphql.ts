@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<66d08426dc0fa7a9e7d99492f63da97a>>
+ * @generated SignedSource<<bfef610fb376c66f90d3877f73095d25>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pageInviteDetailViewQuery$variables = {
   inviteToken: string;
 };

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<887b5fec4ed86139a922bce712a41a32>>
+ * @generated SignedSource<<ae44b9a0ee5f8df7b07d3eec6e34e086>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type SessionsListFragment$data = {
   readonly " $fragmentSpreads": FragmentRefs<"SessionAccountSudoFragment" | "SessionsControllerFragment" | "SessionsListCurrentSessionFragment" | "SessionsListInternalFragment">;
   readonly " $fragmentType": "SessionsListFragment";

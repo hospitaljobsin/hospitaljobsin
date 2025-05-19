@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<06a9cbba9f5294ddf5728a31c2f40229>>
+ * @generated SignedSource<<80f42fb3cbe4e2c78f0aba4a97c0f685>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type OrganizationStatisticsFragment$data = {
   readonly totalViewCount: number;
   readonly totalViewMetricPoints: ReadonlyArray<{

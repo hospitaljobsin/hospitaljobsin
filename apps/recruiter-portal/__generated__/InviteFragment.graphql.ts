@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5ff0c6a8af0196707c7c42a85578f9d7>>
+ * @generated SignedSource<<f05f9acc195ede449a91de85078fc64a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,9 +8,9 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import type { ReaderFragment } from 'relay-runtime';
 export type InviteStatus = "ACCEPTED" | "DECLINED" | "PENDING" | "%future added value";
-import { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type InviteFragment$data = {
   readonly createdAt: any;
   readonly createdBy: {

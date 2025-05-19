@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<21a209bae2178ba3886fe2b79521c773>>
+ * @generated SignedSource<<c59fd4962aadeb395f96b46dc1362229>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type AppliedJobsListPaginationQuery$variables = {
   count?: number | null | undefined;
   cursor?: string | null | undefined;

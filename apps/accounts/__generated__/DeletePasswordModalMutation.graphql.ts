@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fedb6fc2aef51c208072a24139c2a247>>
+ * @generated SignedSource<<8562d97bfc46f5841b06959258998605>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type DeletePasswordModalMutation$variables = Record<PropertyKey, never>;
 export type DeletePasswordModalMutation$data = {
   readonly deletePassword: {

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<43694d5294ebc81b7927f1f0bb461dc8>>
+ * @generated SignedSource<<8acdc69dc66b29bc5b9594859fdb0c96>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type PasswordRegistrationMutation$variables = {
   captchaToken: string;
   email: string;

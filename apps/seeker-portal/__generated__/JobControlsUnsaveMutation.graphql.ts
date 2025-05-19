@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9504adff2bbd2c5c7a0512f3599865c2>>
+ * @generated SignedSource<<cdb40e85e7e70223f5068335de3f7ab9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type JobControlsUnsaveMutation$variables = {
   jobId: string;
 };

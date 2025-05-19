@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5df70b84a254af0425b556c28d974c4c>>
+ * @generated SignedSource<<6ade2629458ac01d01178b510bc29892>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import type { ConcreteRequest } from 'relay-runtime';
 export type UpdatePasskeyModalMutation$variables = {
   nickname: string;
   webAuthnCredentialId: string;

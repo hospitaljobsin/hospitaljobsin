@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c615ec064a0f6c4a195cbd2fc574c5be>>
+ * @generated SignedSource<<bfd2e0f8c70cc5fc6ac30236de40680f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type LanguageInput = {
   name: string;
   proficiency: string;

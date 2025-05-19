@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d672c286a43dfd2fdb0a1ed88ef70321>>
+ * @generated SignedSource<<cd676bac9404c1e0a1ee9ca7367e755f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type PasskeysControllerMutation$variables = {
   connections: ReadonlyArray<string>;
   nickname: string;

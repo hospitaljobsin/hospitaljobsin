@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<64e2f90327c2b90856e5e4115c2ccfed>>
+ * @generated SignedSource<<9b1b3406f6929adbf5fa7c07cb73fba5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type PasskeysClientComponentFragment$data = {
   readonly " $fragmentSpreads": FragmentRefs<"PasskeysSettingsViewFragment">;
   readonly " $fragmentType": "PasskeysClientComponentFragment";

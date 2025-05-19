@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0d8033cbedf2d42ba103d3d92fd06f7b>>
+ * @generated SignedSource<<78c0b52530a05277c1d212451f583315>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,9 +8,9 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import type { ReaderFragment } from 'relay-runtime';
 export type AuthProvider = "OAUTH_GOOGLE" | "PASSWORD" | "WEBAUTHN_CREDENTIAL" | "%future added value";
-import { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type PasskeyAccountMetadataFragment$data = {
   readonly authProviders: ReadonlyArray<AuthProvider>;
   readonly sudoModeExpiresAt: any | null | undefined;
