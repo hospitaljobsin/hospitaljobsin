@@ -29,5 +29,6 @@
 		"PYTHONPATH": "${workspaceFolder}/server"
 	},
 	"tailwindCSS.experimental.classRegex": ["class:\\s*?[\"'`]([^\"'`]*).*?,"],
-	"relay.pathToConfig": "relay.config.json"
+	"relay.pathToConfig": "relay.config.json",
+	"relay.pathToRelay": "/usr/lib/node_modules/relay-compiler/linux-x64/relay"
 }

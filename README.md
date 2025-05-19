@@ -43,9 +43,9 @@ To start all services in development, run the following command:
 tmuxinator start medical_jobs
 ```
 
-To ensure the Relay GraphQL LSP works properly, ensure `relay-compiler` is installed at the root of the project:
+To ensure the Relay GraphQL LSP (and compiler) work properly, ensure `relay-compiler` is installed globally:
 ```bash
-yarn add relay-compiler
+npm i -g relay-compiler
 ```
 
 ### Running E2E tests
