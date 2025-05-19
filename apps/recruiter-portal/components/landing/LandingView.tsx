@@ -1,6 +1,5 @@
 "use client";
 import { APP_NAME } from "@/lib/constants";
-import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import { Button, Card, CardBody } from "@heroui/react";
 import { Briefcase, CheckCircle, FileText, Shield, Users } from "lucide-react";
@@ -31,7 +30,7 @@ export default function LandingView() {
 								color="default"
 								size="lg"
 								as={"a"}
-								href={links.login(env.NEXT_PUBLIC_URL + links.dashboard)}
+								href={links.dashboard}
 								className="font-medium"
 							>
 								Get Started
