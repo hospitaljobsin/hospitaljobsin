@@ -37,15 +37,15 @@ This project has a proprietary license. Read the entire license [here](./README.
 Go through the setup guides of the services above, which covers installation of required dependencies,
 and other service specific setup tasks.
 
+To ensure the Relay GraphQL LSP (and compiler) work properly, ensure `relay-compiler` is installed globally:
+```bash
+npm i -g relay-compiler
+```
+
 To start all services in development, run the following command:
 
 ```bash
 tmuxinator start medical_jobs
-```
-
-To ensure the Relay GraphQL LSP (and compiler) work properly, ensure `relay-compiler` is installed globally:
-```bash
-npm i -g relay-compiler
 ```
 
 ### Running E2E tests
