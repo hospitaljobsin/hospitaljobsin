@@ -120,8 +120,9 @@ data "aws_ecr_authorization_token" "token" {
 
 resource "docker_image" "backend" {
   name = "${aws_ecr_repository.backend.repository_url}:latest"
-  builder {
+  build {
     context = "../server"
+    builder = "default"
 
     build_args = {
       AWS_DEFAULT_REGION : var.aws_region
