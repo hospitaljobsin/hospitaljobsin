@@ -1,5 +1,5 @@
 import json
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import AsyncIterator
 
 # Add import for loading persisted queries
 from pathlib import Path
@@ -18,7 +18,7 @@ class PersistedQueriesExtension(SchemaExtension):
         with Path.open(persisted_queries_path, "r") as f:
             self.cache = json.load(f)
 
-    async def on_operation(self) -> AsyncIterator[None] | Iterator[None]:
+    async def on_operation(self) -> AsyncIterator[None]:
         body = await self.execution_context.context.get("request").json()
         document_id = body.get("document_id")
         persisted_query = self.cache.get(document_id)
