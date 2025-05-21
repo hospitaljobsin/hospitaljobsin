@@ -5,8 +5,7 @@ from pathlib import Path
 from urllib.parse import parse_qs
 
 import structlog
-
-FILE_MAP_NAME = "query_map.json"
+from app.config import AppSettings, get_settings
 
 
 class QueryMap:
@@ -31,7 +30,7 @@ class QueryMap:
         return query_id
 
 
-query_map = QueryMap(Path(FILE_MAP_NAME))
+query_map = QueryMap(Path(get_settings(AppSettings).persisted_queries_path))
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
