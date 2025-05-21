@@ -120,7 +120,7 @@ data "aws_ecr_authorization_token" "token" {
 
 resource "docker_image" "backend" {
   name = "${aws_ecr_repository.backend.repository_url}:latest"
-  build {
+  builder {
     context = "../server"
 
     build_args = {
