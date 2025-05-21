@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<d2b2d1fd9de3ed36fd559fe7eedb8ec7>>
+ * @generated SignedSource<<ee3eafa5cd4cba2e2ae634ac6d8a6d80>>
+ * @relayHash c82fdc4e485a4a1bebdbbcb583539393
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID c82fdc4e485a4a1bebdbbcb583539393
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type ConfirmResetPasswordFormMutation$variables = {
@@ -166,12 +169,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c82fdc4e485a4a1bebdbbcb583539393",
-    "id": null,
+    "id": "c82fdc4e485a4a1bebdbbcb583539393",
     "metadata": {},
     "name": "ConfirmResetPasswordFormMutation",
     "operationKind": "mutation",
-    "text": "mutation ConfirmResetPasswordFormMutation($email:String!,$passwordResetToken:String!,$newPassword:String!){resetPassword(email:$email,passwordResetToken:$passwordResetToken,newPassword:$newPassword){__typename,...on Account{__typename},...on InvalidPasswordResetTokenError{message},...on PasswordNotStrongError{message},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<5c026947414f0e316f3a21df6a9366f2>>
+ * @generated SignedSource<<5738c47183986d450b7e09e4090df106>>
+ * @relayHash a4963a1e951fe7cd5b463c9dd405d573
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID a4963a1e951fe7cd5b463c9dd405d573
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type SubmitResetPasswordFormMutation$variables = {
@@ -128,12 +131,11 @@ return {
     "selections": (v3/*: any*/)
   },
   "params": {
-    "cacheID": "a4963a1e951fe7cd5b463c9dd405d573",
-    "id": null,
+    "id": "a4963a1e951fe7cd5b463c9dd405d573",
     "metadata": {},
     "name": "SubmitResetPasswordFormMutation",
     "operationKind": "mutation",
-    "text": "mutation SubmitResetPasswordFormMutation($email:String!,$captchaToken:String!){requestPasswordReset(email:$email,captchaToken:$captchaToken){__typename,...on InvalidCaptchaTokenError{message},...on PasswordResetTokenCooldownError{message,remainingSeconds}}}"
+    "text": null
   }
 };
 })();

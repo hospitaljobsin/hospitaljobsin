@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<60922d8152786918bece36bb3136cceb>>
+ * @generated SignedSource<<6d35fc946e9e60d3c37daa3ce4113a71>>
+ * @relayHash d437b76f35436cedd2a5b806acae18bc
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID d437b76f35436cedd2a5b806acae18bc
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type UpdateOrganizationFormMutation$variables = {
@@ -272,12 +275,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d437b76f35436cedd2a5b806acae18bc",
-    "id": null,
+    "id": "d437b76f35436cedd2a5b806acae18bc",
     "metadata": {},
     "name": "UpdateOrganizationFormMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdateOrganizationFormMutation($organizationId:ID!,$name:String!,$slug:String!,$location:String,$website:String,$logoUrl:String,$description:String){updateOrganization(organizationId:$organizationId,name:$name,slug:$slug,location:$location,website:$website,logoUrl:$logoUrl,description:$description){__typename,...on Organization{id,slug,name,website,description,logoUrl,location},...on OrganizationNotFoundError{__typename},...on OrganizationSlugInUseError{__typename,message},...on OrganizationAuthorizationError{__typename},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

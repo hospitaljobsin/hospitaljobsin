@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<cb41167a5f00c5c661b8fe895a1253c8>>
+ * @generated SignedSource<<8e048a5c7c55d418de01ac7ab84b918f>>
+ * @relayHash 18e76c3d0846ff86bf94f9e50322cb70
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 18e76c3d0846ff86bf94f9e50322cb70
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -202,12 +205,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "18e76c3d0846ff86bf94f9e50322cb70",
-    "id": null,
+    "id": "18e76c3d0846ff86bf94f9e50322cb70",
     "metadata": {},
     "name": "OrgDetailHeaderQuery",
     "operationKind": "query",
-    "text": "query OrgDetailHeaderQuery($slug:String!){viewer{__typename,...on Account{...AuthNavigationFragment},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}},organization(slug:$slug){__typename,...on Organization{name,slug},...on Node{__isNode:__typename,id}}}fragment AuthNavigationFragment on Account{__typename,fullName,avatarUrl}"
+    "text": null
   }
 };
 })();

@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<ec89c63fa030f12d97f9cba3f56da44e>>
+ * @generated SignedSource<<84bfd08d60b9bdfb9485f53868e01a64>>
+ * @relayHash 830927f442c4227743a2ebf4310990ba
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 830927f442c4227743a2ebf4310990ba
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -155,12 +158,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "830927f442c4227743a2ebf4310990ba",
-    "id": null,
+    "id": "830927f442c4227743a2ebf4310990ba",
     "metadata": {},
     "name": "DisableAuthenticator2FAModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DisableAuthenticator2FAModalMutation{disableAccount2faWithAuthenticator{__typename,...on Account{id,...TwoFactorAuthenticationFragment},...on AuthenticatorNotEnabledError{message},...on Node{__isNode:__typename,id}}}fragment TwoFactorAuthenticationFragment on Account{has2faEnabled,sudoModeExpiresAt,twoFactorProviders}"
+    "text": null
   }
 };
 })();

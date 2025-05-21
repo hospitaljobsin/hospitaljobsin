@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<6c5a4e699a3e9c89ea7ad29dff038559>>
+ * @generated SignedSource<<7a5fbe551e9e5eab5278c3161995a0e9>>
+ * @relayHash 58badfe46cf19624fcc6d866ac670c48
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 58badfe46cf19624fcc6d866ac670c48
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "%future added value";
@@ -351,12 +354,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "58badfe46cf19624fcc6d866ac670c48",
-    "id": null,
+    "id": "58badfe46cf19624fcc6d866ac670c48",
     "metadata": {},
     "name": "NewJobFormMutation",
     "operationKind": "mutation",
-    "text": "mutation NewJobFormMutation($title:String!,$description:String!,$skills:[String!]!,$location:String,$organizationId:ID!,$minSalary:Int,$maxSalary:Int,$minExperience:Int,$maxExperience:Int,$expiresAt:DateTime,$workMode:WorkMode,$jobType:JobType,$vacancies:Int,$externalApplicationUrl:String){createJob(title:$title,description:$description,skills:$skills,location:$location,organizationId:$organizationId,minSalary:$minSalary,maxSalary:$maxSalary,minExperience:$minExperience,maxExperience:$maxExperience,expiresAt:$expiresAt,workMode:$workMode,jobType:$jobType,vacancies:$vacancies,externalApplicationUrl:$externalApplicationUrl){__typename,...on CreateJobSuccess{__typename,jobEdge{node{slug,id}}},...on OrganizationNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}"
+    "text": null
   }
 };
 })();

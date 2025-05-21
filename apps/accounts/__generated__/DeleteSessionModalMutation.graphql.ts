@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<fd75f5eae88859af34cb16fcd3b4aaf1>>
+ * @generated SignedSource<<53d80847660c30c43a44db036abab583>>
+ * @relayHash c29c50e6ffc19df4b6bd435c29f5ee9e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID c29c50e6ffc19df4b6bd435c29f5ee9e
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type DeleteSessionModalMutation$variables = {
@@ -183,12 +186,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c29c50e6ffc19df4b6bd435c29f5ee9e",
-    "id": null,
+    "id": "c29c50e6ffc19df4b6bd435c29f5ee9e",
     "metadata": {},
     "name": "DeleteSessionModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeleteSessionModalMutation($sessionId:ID!){deleteSession(sessionId:$sessionId){__typename,...on DeleteSessionSuccess{sessionEdge{node{id}}}}}"
+    "text": null
   }
 };
 })();

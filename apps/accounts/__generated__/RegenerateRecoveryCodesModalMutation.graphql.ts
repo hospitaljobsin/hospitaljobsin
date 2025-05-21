@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<bd5ff4b93b25b2669d4da6c14bf600b1>>
+ * @generated SignedSource<<c46914f4e93175302059d315459649e1>>
+ * @relayHash 3420d698bd61cc79b0a592c83389640c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 3420d698bd61cc79b0a592c83389640c
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type RegenerateRecoveryCodesModalMutation$variables = Record<PropertyKey, never>;
@@ -95,12 +98,11 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "3420d698bd61cc79b0a592c83389640c",
-    "id": null,
+    "id": "3420d698bd61cc79b0a592c83389640c",
     "metadata": {},
     "name": "RegenerateRecoveryCodesModalMutation",
     "operationKind": "mutation",
-    "text": "mutation RegenerateRecoveryCodesModalMutation{generate2faRecoveryCodes{__typename,...on Generate2FARecoveryCodesSuccess{recoveryCodes},...on TwoFactorAuthenticationNotEnabledError{message}}}"
+    "text": null
   }
 };
 })();

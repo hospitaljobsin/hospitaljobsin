@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<c1577490236d02ba5730187d47e91989>>
+ * @generated SignedSource<<a566086923e77357ace4fb0c9eddbf44>>
+ * @relayHash e54acae2133198628ba0862e1619c520
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID e54acae2133198628ba0862e1619c520
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -216,12 +219,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e54acae2133198628ba0862e1619c520",
-    "id": null,
+    "id": "e54acae2133198628ba0862e1619c520",
     "metadata": {},
     "name": "pageGeneralSettingsViewQuery",
     "operationKind": "query",
-    "text": "query pageGeneralSettingsViewQuery($slug:String!){...GeneralSettingsViewClientComponentFragment_20J5Pl,...pageGeneralSettingsMetadataFragment_20J5Pl}fragment DeleteOrganizationModalAccountFragment on Account{id}fragment DeleteOrganizationModalFragment on Organization{id,name}fragment GeneralSettingsViewClientComponentFragment_20J5Pl on Query{...GeneralSettingsViewFragment_20J5Pl}fragment GeneralSettingsViewFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{...UpdateOrganizationFormFragment,...DeleteOrganizationModalFragment},...on Node{__isNode:__typename,id}},viewer{__typename,...on Account{sudoModeExpiresAt,...DeleteOrganizationModalAccountFragment},...on Node{__isNode:__typename,id}}}fragment UpdateOrganizationFormFragment on Organization{id,slug,name,website,logoUrl,description,location}fragment pageGeneralSettingsMetadataFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isAdmin},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

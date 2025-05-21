@@ -29,7 +29,7 @@ export async function networkFetch(
 		},
 		credentials: "include",
 		body: JSON.stringify({
-			query: request.text,
+			document_id: request.id,
 			variables,
 		}),
 	});

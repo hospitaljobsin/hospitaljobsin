@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<8c5e409059685e3d94a3fed379e6b023>>
+ * @generated SignedSource<<adfe54f1841ecbc2c42e5b95099c7a2b>>
+ * @relayHash f41a195fd7065de4476aae93444029b1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID f41a195fd7065de4476aae93444029b1
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type TwoFactorAuthenticationMutation$variables = {
@@ -164,12 +167,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f41a195fd7065de4476aae93444029b1",
-    "id": null,
+    "id": "f41a195fd7065de4476aae93444029b1",
     "metadata": {},
     "name": "TwoFactorAuthenticationMutation",
     "operationKind": "mutation",
-    "text": "mutation TwoFactorAuthenticationMutation($twoFactorToken:String!,$captchaToken:String!){requestSudoModeWithAuthenticator(twoFactorToken:$twoFactorToken,captchaToken:$captchaToken){__typename,...on Account{__typename},...on InvalidCredentialsError{message},...on InvalidCaptchaTokenError{message},...on AuthenticatorNotEnabledError{message},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

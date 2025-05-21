@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<2da809ff61725f423d93a34bec4bf4d8>>
+ * @generated SignedSource<<48ba299e5e7e8519924eb54a1045be48>>
+ * @relayHash 7db547f61edc02d530266eae6813d576
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 7db547f61edc02d530266eae6813d576
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type TwoFactorRecoveryCodeFormMutation$variables = {
@@ -172,12 +175,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "7db547f61edc02d530266eae6813d576",
-    "id": null,
+    "id": "7db547f61edc02d530266eae6813d576",
     "metadata": {},
     "name": "TwoFactorRecoveryCodeFormMutation",
     "operationKind": "mutation",
-    "text": "mutation TwoFactorRecoveryCodeFormMutation($token:String!,$captchaToken:String!){verify2faWithRecoveryCode(token:$token,captchaToken:$captchaToken){__typename,...on TwoFactorAuthenticationChallengeNotFoundError{message},...on InvalidCaptchaTokenError{message},...on TwoFactorAuthenticationNotEnabledError{message},...on InvalidCredentialsError{message},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

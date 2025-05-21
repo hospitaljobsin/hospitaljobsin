@@ -12,6 +12,7 @@ from app.accounts.query import AccountQuery
 from app.auth.mutation import AuthMutation
 from app.auth.query import AuthQuery
 from app.config import AppSettings, get_settings
+from app.core.schema.extensions import PersistedQueriesExtension
 from app.geocoding.query import GeocodingQuery
 from app.jobs.mutation import JobMutation
 from app.jobs.query import JobQuery
@@ -51,6 +52,9 @@ def create_schema(app_settings: AppSettings) -> Schema:
     extensions = [
         AioInjectExtension(
             container=create_container(),
+        ),
+        PersistedQueriesExtension(
+            persisted_queries_path=app_settings.persisted_queries_path
         ),
         ParserCache(maxsize=128),
         ValidationCache(maxsize=128),

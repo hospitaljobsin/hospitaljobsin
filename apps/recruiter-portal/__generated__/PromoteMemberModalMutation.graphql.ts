@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<3615d10f5001737d89d2a1377ee96273>>
+ * @generated SignedSource<<8c0bf59461881f517640a51f8d5270a5>>
+ * @relayHash 9b57414d5d810a0834b6321fa62bc8d3
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 9b57414d5d810a0834b6321fa62bc8d3
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -244,12 +247,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9b57414d5d810a0834b6321fa62bc8d3",
-    "id": null,
+    "id": "9b57414d5d810a0834b6321fa62bc8d3",
     "metadata": {},
     "name": "PromoteMemberModalMutation",
     "operationKind": "mutation",
-    "text": "mutation PromoteMemberModalMutation($accountId:ID!,$organizationId:ID!){promoteOrganizationMember(accountId:$accountId,organizationId:$organizationId){__typename,...on PromoteOrganizationMemberSuccess{organizationMemberEdge{...MemberFragment},organization{id,...MemberControlsOrganizationFragment}},...on OrganizationNotFoundError{__typename},...on OrganizationMemberNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}fragment DemoteMemberModalFragment on OrganizationMemberEdge{node{id}}fragment DemoteMemberModalOrganizationFragment on Organization{id}fragment MemberControlsFragment on OrganizationMemberEdge{role,node{fullName,id},...RemoveMemberModalFragment,...DemoteMemberModalFragment,...PromoteMemberModalFragment}fragment MemberControlsOrganizationFragment on Organization{...RemoveMemberModalOrganizationFragment,...DemoteMemberModalOrganizationFragment,...PromoteMemberModalOrganizationFragment,adminCount}fragment MemberFragment on OrganizationMemberEdge{role,createdAt,node{fullName,avatarUrl,id},...MemberControlsFragment}fragment PromoteMemberModalFragment on OrganizationMemberEdge{node{id}}fragment PromoteMemberModalOrganizationFragment on Organization{id}fragment RemoveMemberModalFragment on OrganizationMemberEdge{node{id}}fragment RemoveMemberModalOrganizationFragment on Organization{id}"
+    "text": null
   }
 };
 })();

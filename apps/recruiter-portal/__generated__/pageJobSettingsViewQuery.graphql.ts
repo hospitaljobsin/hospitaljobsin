@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<ac17b3ab7b570e53590402114d5e688b>>
+ * @generated SignedSource<<959a4d66a2cf54d3ab6036aaa82105c1>>
+ * @relayHash a7195034647f9fef08ceb14d3bd58fd5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID a7195034647f9fef08ceb14d3bd58fd5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -361,12 +364,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a7195034647f9fef08ceb14d3bd58fd5",
-    "id": null,
+    "id": "a7195034647f9fef08ceb14d3bd58fd5",
     "metadata": {},
     "name": "pageJobSettingsViewQuery",
     "operationKind": "query",
-    "text": "query pageJobSettingsViewQuery($slug:String!,$jobSlug:String!){...pageJobSettingsMetadataFragment_4lHzkn,...JobSettingsViewClientComponentFragment_4lHzkn}fragment CancelEditJobModalJobFragment on Job{__typename,slug,organization{slug,id}}fragment DeleteJobModalFragment on Job{id,organization{id}}fragment JobEditFormFragment on Job{id,title,description,minExperience,maxExperience,minSalary,maxSalary,vacancies,skills,type,workMode,expiresAt,location,...CancelEditJobModalJobFragment}fragment JobSettingsGeneralTabFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{job(slug:$jobSlug){__typename,...on Job{...JobEditFormFragment,...DeleteJobModalFragment},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}},viewer{__typename,...on Account{sudoModeExpiresAt},...on Node{__isNode:__typename,id}}}fragment JobSettingsViewClientComponentFragment_4lHzkn on Query{...JobSettingsGeneralTabFragment_4lHzkn}fragment pageJobSettingsMetadataFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isAdmin,job(slug:$jobSlug){__typename,...on Job{title},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

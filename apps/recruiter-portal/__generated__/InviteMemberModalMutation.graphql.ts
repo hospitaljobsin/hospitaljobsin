@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<aebed7cc49ef24864a847986cba8a28d>>
+ * @generated SignedSource<<baa77d429e6516e173ab275915e6d937>>
+ * @relayHash 98395d8bd6bb770a498d4f4071009fbc
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 98395d8bd6bb770a498d4f4071009fbc
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -239,12 +242,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "98395d8bd6bb770a498d4f4071009fbc",
-    "id": null,
+    "id": "98395d8bd6bb770a498d4f4071009fbc",
     "metadata": {},
     "name": "InviteMemberModalMutation",
     "operationKind": "mutation",
-    "text": "mutation InviteMemberModalMutation($organizationId:ID!,$email:String!){createOrganizationInvite(organizationId:$organizationId,email:$email){__typename,...on OrganizationInvite{id,...InviteFragment},...on InvalidEmailError{__typename,message},...on OrganizationNotFoundError{__typename},...on MemberAlreadyExistsError{__typename,message},...on OrganizationAuthorizationError{__typename},...on Node{__isNode:__typename,id}}}fragment DeleteInviteModalFragment on OrganizationInvite{id,email}fragment InviteFragment on OrganizationInvite{email,status,expiresAt,createdBy{fullName,avatarUrl,id},createdAt,...DeleteInviteModalFragment}"
+    "text": null
   }
 };
 })();

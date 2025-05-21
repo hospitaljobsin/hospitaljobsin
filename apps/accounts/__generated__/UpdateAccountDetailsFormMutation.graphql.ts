@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<50305b670e4a648445a80506f78b9c12>>
+ * @generated SignedSource<<943cc24b947014fb3ea5ba61282812f5>>
+ * @relayHash 35d78980db6d8f29f97ba1e4006677e5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 35d78980db6d8f29f97ba1e4006677e5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -159,12 +162,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "35d78980db6d8f29f97ba1e4006677e5",
-    "id": null,
+    "id": "35d78980db6d8f29f97ba1e4006677e5",
     "metadata": {},
     "name": "UpdateAccountDetailsFormMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdateAccountDetailsFormMutation($fullName:String!){updateAccount(fullName:$fullName){__typename,...on Account{...UpdateAccountDetailsFormFragment,...AccountDetailsFragment},...on Node{__isNode:__typename,id}}}fragment AccountDetailsFragment on Account{fullName,email,avatarUrl(size:120)}fragment UpdateAccountDetailsFormFragment on Account{fullName,email,avatarUrl(size:120)}"
+    "text": null
   }
 };
 })();

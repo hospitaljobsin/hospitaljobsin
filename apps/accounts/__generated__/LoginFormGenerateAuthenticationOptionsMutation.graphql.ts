@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<2e1f671f4cea9ceea524221041c09252>>
+ * @generated SignedSource<<f3d561e4587b03b3ea960c57d36c4a61>>
+ * @relayHash 68830faa3e9826b9fa2f619a60a5c93a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 68830faa3e9826b9fa2f619a60a5c93a
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type LoginFormGenerateAuthenticationOptionsMutation$variables = {
@@ -110,12 +113,11 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "68830faa3e9826b9fa2f619a60a5c93a",
-    "id": null,
+    "id": "68830faa3e9826b9fa2f619a60a5c93a",
     "metadata": {},
     "name": "LoginFormGenerateAuthenticationOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormGenerateAuthenticationOptionsMutation($captchaToken:String!){generateAuthenticationOptions(captchaToken:$captchaToken){__typename,...on InvalidCaptchaTokenError{message},...on GenerateAuthenticationOptionsSuccess{authenticationOptions}}}"
+    "text": null
   }
 };
 })();

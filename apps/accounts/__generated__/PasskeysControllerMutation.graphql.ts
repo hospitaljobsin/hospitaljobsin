@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<cd676bac9404c1e0a1ee9ca7367e755f>>
+ * @generated SignedSource<<314f702f35e43abae09b906dcbc61dfe>>
+ * @relayHash a6f1b1e285835c4a88c9791813d93485
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID a6f1b1e285835c4a88c9791813d93485
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -260,12 +263,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a6f1b1e285835c4a88c9791813d93485",
-    "id": null,
+    "id": "a6f1b1e285835c4a88c9791813d93485",
     "metadata": {},
     "name": "PasskeysControllerMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeysControllerMutation($nickname:String!,$passkeyRegistrationResponse:JSON!){createWebAuthnCredential(nickname:$nickname,passkeyRegistrationResponse:$passkeyRegistrationResponse){__typename,...on InvalidPasskeyRegistrationCredentialError{message},...on CreateWebAuthnCredentialSuccess{webAuthnCredentialEdge{cursor,node{id,...PasskeyFragment}}}}}fragment DeletePasskeyModalFragment on WebAuthnCredential{id}fragment PasskeyFragment on WebAuthnCredential{id,nickname,createdAt,lastUsedAt,...UpdatePasskeyModalFragment,...DeletePasskeyModalFragment}fragment UpdatePasskeyModalFragment on WebAuthnCredential{id,nickname}"
+    "text": null
   }
 };
 })();

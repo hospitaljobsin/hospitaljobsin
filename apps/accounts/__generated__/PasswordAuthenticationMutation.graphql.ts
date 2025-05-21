@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<5640f58e18da14d6f83f3ce3022c99fb>>
+ * @generated SignedSource<<69654c2418b607e0a2a447c34f7571d9>>
+ * @relayHash 3e21cc58a2d2a3a9acfecf05cdbfbcc0
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 3e21cc58a2d2a3a9acfecf05cdbfbcc0
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type PasswordAuthenticationMutation$variables = {
@@ -164,12 +167,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3e21cc58a2d2a3a9acfecf05cdbfbcc0",
-    "id": null,
+    "id": "3e21cc58a2d2a3a9acfecf05cdbfbcc0",
     "metadata": {},
     "name": "PasswordAuthenticationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasswordAuthenticationMutation($password:String!,$captchaToken:String!){requestSudoModeWithPassword(password:$password,captchaToken:$captchaToken){__typename,...on Account{__typename},...on InvalidCredentialsError{message},...on InvalidCaptchaTokenError{message},...on InvalidAuthenticationProviderError{message},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

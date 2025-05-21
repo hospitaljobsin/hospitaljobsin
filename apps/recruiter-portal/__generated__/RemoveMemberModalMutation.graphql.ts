@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<33984d163a3b8382ecbec1cc74c68cb2>>
+ * @generated SignedSource<<1a72cb3c8671eb2db524d9c20ba85e46>>
+ * @relayHash 336342981505b7bc3238782593824e19
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 336342981505b7bc3238782593824e19
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -253,12 +256,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "336342981505b7bc3238782593824e19",
-    "id": null,
+    "id": "336342981505b7bc3238782593824e19",
     "metadata": {},
     "name": "RemoveMemberModalMutation",
     "operationKind": "mutation",
-    "text": "mutation RemoveMemberModalMutation($accountId:ID!,$organizationId:ID!){removeOrganizationMember(accountId:$accountId,organizationId:$organizationId){__typename,...on RemoveOrganizationMemberSuccess{organizationMemberEdge{node{id}},organization{id,...MemberControlsOrganizationFragment}},...on OrganizationNotFoundError{__typename},...on OrganizationMemberNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}fragment DemoteMemberModalOrganizationFragment on Organization{id}fragment MemberControlsOrganizationFragment on Organization{...RemoveMemberModalOrganizationFragment,...DemoteMemberModalOrganizationFragment,...PromoteMemberModalOrganizationFragment,adminCount}fragment PromoteMemberModalOrganizationFragment on Organization{id}fragment RemoveMemberModalOrganizationFragment on Organization{id}"
+    "text": null
   }
 };
 })();

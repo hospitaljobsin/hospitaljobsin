@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<895b4e0fbe8a4fb1c873cd68116fbc86>>
+ * @generated SignedSource<<7f7ce415192432e1a8f034fafc34b8e2>>
+ * @relayHash be1dc1c695417e060f8c009ea33bd537
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID be1dc1c695417e060f8c009ea33bd537
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -359,12 +362,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "be1dc1c695417e060f8c009ea33bd537",
-    "id": null,
+    "id": "be1dc1c695417e060f8c009ea33bd537",
     "metadata": {},
     "name": "JobListRefetchQuery",
     "operationKind": "query",
-    "text": "query JobListRefetchQuery($coordinates:CoordinatesInput=null,$count:Int=10,$cursor:ID,$proximityKm:Float=null,$searchTerm:String=null){...JobListInternalFragment_4vMlA8}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobFragment on Job{...JobControlsFragment,slug,title,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,organization{name,logoUrl,slug,id}}fragment JobListInternalFragment_4vMlA8 on Query{jobs(after:$cursor,first:$count,searchTerm:$searchTerm,coordinates:$coordinates,proximityKm:$proximityKm){edges{node{id,...JobFragment,...JobControlsFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}}}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
+    "text": null
   }
 };
 })();

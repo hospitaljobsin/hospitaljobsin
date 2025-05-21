@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<18f32307316693634d4bdcb04a1e0045>>
+ * @generated SignedSource<<b2877402c76103bade3eb65e84fd036d>>
+ * @relayHash ae88f5a902d57fef7033d9c774a5dbe9
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID ae88f5a902d57fef7033d9c774a5dbe9
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type NewOrganizationFormLogoPresignedUrlMutation$variables = Record<PropertyKey, never>;
@@ -59,12 +62,11 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "ae88f5a902d57fef7033d9c774a5dbe9",
-    "id": null,
+    "id": "ae88f5a902d57fef7033d9c774a5dbe9",
     "metadata": {},
     "name": "NewOrganizationFormLogoPresignedUrlMutation",
     "operationKind": "mutation",
-    "text": "mutation NewOrganizationFormLogoPresignedUrlMutation{createOrganizationLogoPresignedUrl{presignedUrl}}"
+    "text": null
   }
 };
 })();

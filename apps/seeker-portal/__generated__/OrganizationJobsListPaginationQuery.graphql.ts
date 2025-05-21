@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<2fa445416c170095ae904431b46dd26f>>
+ * @generated SignedSource<<030ad53f14f214d8fc7b3f53809ee920>>
+ * @relayHash 7c32434deb599c30d48fa57b83f8f0e7
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 7c32434deb599c30d48fa57b83f8f0e7
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -382,12 +385,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "7c32434deb599c30d48fa57b83f8f0e7",
-    "id": null,
+    "id": "7c32434deb599c30d48fa57b83f8f0e7",
     "metadata": {},
     "name": "OrganizationJobsListPaginationQuery",
     "operationKind": "query",
-    "text": "query OrganizationJobsListPaginationQuery($count:Int=10,$cursor:ID,$isActive:Boolean=true,$id:ID!){node(id:$id){__typename,...OrganizationJobsListInternalFragment_2Rqfqe,id}}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobFragment_N8YyC on Job{...JobControlsFragment,slug,title,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,organization{slug,id}}fragment OrganizationJobsListInternalFragment_2Rqfqe on Organization{jobs(after:$cursor,first:$count,isActive:$isActive){edges{node{id,...JobFragment_N8YyC,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
+    "text": null
   }
 };
 })();

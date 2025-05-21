@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<c86f99776e7f0dcf5c2e1e4469e4275d>>
+ * @generated SignedSource<<e1e997810bf01229ad9af880e8e864ae>>
+ * @relayHash 4f7d0cab5e1523e7992fd5583666784e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 4f7d0cab5e1523e7992fd5583666784e
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type PasskeyRegistrationOptionsMutation$variables = {
@@ -148,12 +151,11 @@ return {
     "selections": (v4/*: any*/)
   },
   "params": {
-    "cacheID": "4f7d0cab5e1523e7992fd5583666784e",
-    "id": null,
+    "id": "4f7d0cab5e1523e7992fd5583666784e",
     "metadata": {},
     "name": "PasskeyRegistrationOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyRegistrationOptionsMutation($email:String!,$fullName:String!,$captchaToken:String!){generatePasskeyRegistrationOptions(email:$email,fullName:$fullName,captchaToken:$captchaToken){__typename,...on EmailInUseError{message},...on InvalidCaptchaTokenError{message},...on GeneratePasskeyRegistrationOptionsSuccess{registrationOptions}}}"
+    "text": null
   }
 };
 })();

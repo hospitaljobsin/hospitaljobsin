@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<8acdc69dc66b29bc5b9594859fdb0c96>>
+ * @generated SignedSource<<1aeef625181cddeb59cd4ad1cd0f26e9>>
+ * @relayHash 154190a9a0904b8c58fff1c358a6bbdf
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 154190a9a0904b8c58fff1c358a6bbdf
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type PasswordRegistrationMutation$variables = {
@@ -211,12 +214,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "154190a9a0904b8c58fff1c358a6bbdf",
-    "id": null,
+    "id": "154190a9a0904b8c58fff1c358a6bbdf",
     "metadata": {},
     "name": "PasswordRegistrationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasswordRegistrationMutation($email:String!,$emailVerificationToken:String!,$password:String!,$fullName:String!,$captchaToken:String!){registerWithPassword(email:$email,emailVerificationToken:$emailVerificationToken,password:$password,fullName:$fullName,captchaToken:$captchaToken){__typename,...on EmailInUseError{message},...on InvalidEmailVerificationTokenError{message},...on InvalidCaptchaTokenError{message},...on PasswordNotStrongError{message},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

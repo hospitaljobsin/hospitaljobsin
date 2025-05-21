@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<ba4298c2a18c9d521fccd4574b469866>>
+ * @generated SignedSource<<9809d93a7d2454e33bbf9d799613a78c>>
+ * @relayHash 5213283806a4de38c5f577ad0cf17f36
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 5213283806a4de38c5f577ad0cf17f36
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -306,12 +309,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5213283806a4de38c5f577ad0cf17f36",
-    "id": null,
+    "id": "5213283806a4de38c5f577ad0cf17f36",
     "metadata": {},
     "name": "pageSavedJobsQuery",
     "operationKind": "query",
-    "text": "query pageSavedJobsQuery{...SavedJobsClientComponentFragment}fragment JobControlsAuthFragment on ViewerPayload{__isViewerPayload:__typename,__typename}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobFragment on Job{...JobControlsFragment,slug,title,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,organization{name,logoUrl,slug,id}}fragment SavedJobsClientComponentFragment on Query{...SavedJobsViewFragment}fragment SavedJobsListFragment on Query{...SavedJobsListInternalFragment,viewer{__typename,...JobControlsAuthFragment,...on Node{__isNode:__typename,id}}}fragment SavedJobsListInternalFragment on Query{savedJobs(first:10){edges{node{id,...JobFragment,__typename},cursor},pageInfo{hasNextPage,endCursor}}}fragment SavedJobsViewFragment on Query{...SavedJobsListFragment}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
+    "text": null
   }
 };
 })();

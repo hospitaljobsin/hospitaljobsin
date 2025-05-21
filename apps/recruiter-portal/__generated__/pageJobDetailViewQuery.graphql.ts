@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<9ae635a3055033303576c6d769b4f770>>
+ * @generated SignedSource<<e8bd7a12de73f8e55cdc98319a291665>>
+ * @relayHash 50f0ad02297f86ac365abaff52f694e0
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 50f0ad02297f86ac365abaff52f694e0
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -420,12 +423,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "50f0ad02297f86ac365abaff52f694e0",
-    "id": null,
+    "id": "50f0ad02297f86ac365abaff52f694e0",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",
-    "text": "query pageJobDetailViewQuery($slug:String!,$jobSlug:String!){...pageJobDetailMetadataFragment_4lHzkn,...JobDetailViewClientComponentFragment_4lHzkn}fragment JobControlsFragment on Job{id,isActive,...UnpublishJobModalFragment,...PublishJobModalFragment}fragment JobDetailViewClientComponentFragment_4lHzkn on Query{...JobOverviewTabFragment_4lHzkn}fragment JobDetailsFragment on Job{title,description,slug,skills,minSalary,maxSalary,hasSalaryRange,minExperience,maxExperience,hasExperienceRange,currency,workMode,type,location,createdAt,updatedAt,isActive,externalApplicationUrl,applicationForm{__typename,id},organization{isAdmin,name,id},...JobControlsFragment,...JobStatisticsFragment}fragment JobOverviewTabFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{job(slug:$jobSlug){__typename,...on Job{...JobDetailsFragment},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}fragment JobStatisticsFragment on Job{viewCount,viewMetricPoints{timestamp,count}}fragment PublishJobModalFragment on Job{id}fragment UnpublishJobModalFragment on Job{id}fragment pageJobDetailMetadataFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isMember,job(slug:$jobSlug){__typename,...on Job{title},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

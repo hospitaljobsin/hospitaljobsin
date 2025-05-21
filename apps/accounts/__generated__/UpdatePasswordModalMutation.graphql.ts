@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<26030c55573b581f03eb17d36de29045>>
+ * @generated SignedSource<<4c19e5a76c43369a3a90f6f00bb7be27>>
+ * @relayHash 8dcf1b73e657df06cda808cf87fd88da
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 8dcf1b73e657df06cda808cf87fd88da
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -169,12 +172,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8dcf1b73e657df06cda808cf87fd88da",
-    "id": null,
+    "id": "8dcf1b73e657df06cda808cf87fd88da",
     "metadata": {},
     "name": "UpdatePasswordModalMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdatePasswordModalMutation($newPassword:String!){updatePassword(newPassword:$newPassword){__typename,...on Account{id,...PasswordFragment,...UpdatePasswordModalFragment},...on PasswordNotStrongError{message},...on Node{__isNode:__typename,id}}}fragment PasswordFragment on Account{sudoModeExpiresAt,authProviders,...UpdatePasswordModalFragment}fragment UpdatePasswordModalFragment on Account{authProviders}"
+    "text": null
   }
 };
 })();

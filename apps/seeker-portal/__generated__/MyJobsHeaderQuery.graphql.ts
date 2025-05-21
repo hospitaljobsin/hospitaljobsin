@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<9d036e34277de534d072d4b1d4eadce5>>
+ * @generated SignedSource<<a2fe7e415f7416b454cb4d64665f566c>>
+ * @relayHash 566d47ef76709b840fc74a3f222a01e5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 566d47ef76709b840fc74a3f222a01e5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -135,12 +138,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "566d47ef76709b840fc74a3f222a01e5",
-    "id": null,
+    "id": "566d47ef76709b840fc74a3f222a01e5",
     "metadata": {},
     "name": "MyJobsHeaderQuery",
     "operationKind": "query",
-    "text": "query MyJobsHeaderQuery{viewer{__typename,...on Account{__typename,...AuthNavigationFragment},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}}}fragment AuthNavigationFragment on Account{__typename,fullName,avatarUrl}"
+    "text": null
   }
 };
 })();

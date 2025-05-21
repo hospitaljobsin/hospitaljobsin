@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<cd193b65b6d2e54433d975bb9feb0a38>>
+ * @generated SignedSource<<5e20ea141674b4e3a349130b72f60314>>
+ * @relayHash fb5976d66a64a608c65cfcbe6ff6743e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID fb5976d66a64a608c65cfcbe6ff6743e
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type PasskeyAuthenticationMutation$variables = {
@@ -160,12 +163,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "fb5976d66a64a608c65cfcbe6ff6743e",
-    "id": null,
+    "id": "fb5976d66a64a608c65cfcbe6ff6743e",
     "metadata": {},
     "name": "PasskeyAuthenticationMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyAuthenticationMutation($authenticationResponse:JSON!,$captchaToken:String!){requestSudoModeWithPasskey(authenticationResponse:$authenticationResponse,captchaToken:$captchaToken){__typename,...on Account{__typename},...on InvalidPasskeyAuthenticationCredentialError{message},...on InvalidCaptchaTokenError{message},...on WebAuthnChallengeNotFoundError{message},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

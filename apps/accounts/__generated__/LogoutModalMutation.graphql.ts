@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<eaf5b9d41aa6812add4bf6b0d7d9be3d>>
+ * @generated SignedSource<<f699ee20d85e81e2fc741f7f9f5a6e14>>
+ * @relayHash e1a1d42b47907a4c6c5deff9de0b5cd9
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID e1a1d42b47907a4c6c5deff9de0b5cd9
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type LogoutModalMutation$variables = Record<PropertyKey, never>;
@@ -59,12 +62,11 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "e1a1d42b47907a4c6c5deff9de0b5cd9",
-    "id": null,
+    "id": "e1a1d42b47907a4c6c5deff9de0b5cd9",
     "metadata": {},
     "name": "LogoutModalMutation",
     "operationKind": "mutation",
-    "text": "mutation LogoutModalMutation{logout{__typename}}"
+    "text": null
   }
 };
 })();

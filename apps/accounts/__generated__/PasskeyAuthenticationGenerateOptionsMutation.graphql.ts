@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<3763b7a906f4219104f3d4048e55864d>>
+ * @generated SignedSource<<e14aae711fad18c27e925dd725317822>>
+ * @relayHash 5ac9c264f736153470f410990e142cf9
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 5ac9c264f736153470f410990e142cf9
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type PasskeyAuthenticationGenerateOptionsMutation$variables = {
@@ -110,12 +113,11 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "5ac9c264f736153470f410990e142cf9",
-    "id": null,
+    "id": "5ac9c264f736153470f410990e142cf9",
     "metadata": {},
     "name": "PasskeyAuthenticationGenerateOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyAuthenticationGenerateOptionsMutation($captchaToken:String!){generateReauthenticationOptions(captchaToken:$captchaToken){__typename,...on InvalidCaptchaTokenError{message},...on GenerateAuthenticationOptionsSuccess{authenticationOptions}}}"
+    "text": null
   }
 };
 })();

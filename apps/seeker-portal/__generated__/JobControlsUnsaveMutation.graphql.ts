@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<cdb40e85e7e70223f5068335de3f7ab9>>
+ * @generated SignedSource<<bd4538c15e03de87c507a7caf188f5e3>>
+ * @relayHash 82db27d8f0bd17d99db618f32ab2682d
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 82db27d8f0bd17d99db618f32ab2682d
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -325,12 +328,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "82db27d8f0bd17d99db618f32ab2682d",
-    "id": null,
+    "id": "82db27d8f0bd17d99db618f32ab2682d",
     "metadata": {},
     "name": "JobControlsUnsaveMutation",
     "operationKind": "mutation",
-    "text": "mutation JobControlsUnsaveMutation($jobId:ID!){unsaveJob(jobId:$jobId){__typename,...on UnsaveJobSuccess{savedJobEdge{node{id,...JobDetailsInternalFragment,...JobControlsFragment}}}}}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobDetailsInternalFragment on Job{...JobControlsFragment,title,slug,description,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,isApplied,externalApplicationUrl,organization{slug,name,description,logoUrl,id}}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
+    "text": null
   }
 };
 })();

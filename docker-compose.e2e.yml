@@ -35,6 +35,7 @@ services:
       SERVER_GEOCODER_DOMAIN: "localhost:8080"
       SERVER_GEOCODER_USER_AGENT: "medical-jobs-server"
       SERVER_SENTRY_DSN: ${SERVER_SENTRY_DSN}
+      SERVER_PERSISTED_QUERIES_PATH: "query_map.json"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8000/health/"]
       interval: 10s

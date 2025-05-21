@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<7e84f98eb4239d7bf3eca389b944aa9b>>
+ * @generated SignedSource<<2b7474e24dffddacf2262d345fa54ebd>>
+ * @relayHash 1ccb87c50a7310f99ff214017dcd9397
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 1ccb87c50a7310f99ff214017dcd9397
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -327,12 +330,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1ccb87c50a7310f99ff214017dcd9397",
-    "id": null,
+    "id": "1ccb87c50a7310f99ff214017dcd9397",
     "metadata": {},
     "name": "JobDetailHeaderQuery",
     "operationKind": "query",
-    "text": "query JobDetailHeaderQuery($slug:String!,$jobSlug:String!){viewer{__typename,...on Account{__typename,...AuthNavigationFragment},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}},organization(slug:$slug){__typename,...on Organization{slug,name,job(slug:$jobSlug){__typename,...on Job{...JobTabsFragment,title,slug},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}fragment AuthNavigationFragment on Account{__typename,fullName,avatarUrl}fragment JobTabsFragment on Job{externalApplicationUrl,organization{isAdmin,id}}"
+    "text": null
   }
 };
 })();

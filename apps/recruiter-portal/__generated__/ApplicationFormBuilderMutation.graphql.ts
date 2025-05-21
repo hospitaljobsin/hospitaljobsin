@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<dd034e585b5e00088ca454375d7bb0cf>>
+ * @generated SignedSource<<5e16570219402f6cff0e13aa69a36fa8>>
+ * @relayHash b6b1f1cfd7db83b73eaffd9f7e2dbe8b
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID b6b1f1cfd7db83b73eaffd9f7e2dbe8b
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -435,12 +438,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b6b1f1cfd7db83b73eaffd9f7e2dbe8b",
-    "id": null,
+    "id": "b6b1f1cfd7db83b73eaffd9f7e2dbe8b",
     "metadata": {},
     "name": "ApplicationFormBuilderMutation",
     "operationKind": "mutation",
-    "text": "mutation ApplicationFormBuilderMutation($jobId:ID!,$fields:[ApplicationFieldInput!]!){updateJobApplicationForm(jobId:$jobId,fields:$fields){__typename,...on UpdateJobApplicationFormSuccess{job{...JobDetailsFragment,id},jobApplicationForm{fields{fieldName,defaultValue,isRequired},id}},...on JobNotFoundError{__typename},...on OrganizationAuthorizationError{__typename},...on JobIsExternalError{__typename}}}fragment JobControlsFragment on Job{id,isActive,...UnpublishJobModalFragment,...PublishJobModalFragment}fragment JobDetailsFragment on Job{title,description,slug,skills,minSalary,maxSalary,hasSalaryRange,minExperience,maxExperience,hasExperienceRange,currency,workMode,type,location,createdAt,updatedAt,isActive,externalApplicationUrl,applicationForm{__typename,id},organization{isAdmin,name,id},...JobControlsFragment,...JobStatisticsFragment}fragment JobStatisticsFragment on Job{viewCount,viewMetricPoints{timestamp,count}}fragment PublishJobModalFragment on Job{id}fragment UnpublishJobModalFragment on Job{id}"
+    "text": null
   }
 };
 })();

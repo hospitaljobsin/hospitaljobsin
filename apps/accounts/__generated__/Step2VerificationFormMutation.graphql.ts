@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<519010feb01cb0d014ce7d9006a3be70>>
+ * @generated SignedSource<<febb82c2337a1d5248e62a7e72344d41>>
+ * @relayHash 50c668260f2e9c7ef3c812b3e06c7244
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 50c668260f2e9c7ef3c812b3e06c7244
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type Step2VerificationFormMutation$variables = {
@@ -149,12 +152,11 @@ return {
     "selections": (v4/*: any*/)
   },
   "params": {
-    "cacheID": "50c668260f2e9c7ef3c812b3e06c7244",
-    "id": null,
+    "id": "50c668260f2e9c7ef3c812b3e06c7244",
     "metadata": {},
     "name": "Step2VerificationFormMutation",
     "operationKind": "mutation",
-    "text": "mutation Step2VerificationFormMutation($email:String!,$emailVerificationToken:String!,$captchaToken:String!){verifyEmail(email:$email,emailVerificationToken:$emailVerificationToken,captchaToken:$captchaToken){__typename,...on EmailInUseError{message},...on InvalidEmailVerificationTokenError{message},...on InvalidCaptchaTokenError{message},...on VerifyEmailSuccess{message}}}"
+    "text": null
   }
 };
 })();

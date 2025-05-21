@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<e65dc974c1be9f0a4c87a41f577a9690>>
+ * @generated SignedSource<<edfe1f732fdf3069966a0ad9374aa70d>>
+ * @relayHash 7757796071d5cff7faf064c272efc0f7
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 7757796071d5cff7faf064c272efc0f7
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -244,12 +247,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "7757796071d5cff7faf064c272efc0f7",
-    "id": null,
+    "id": "7757796071d5cff7faf064c272efc0f7",
     "metadata": {},
     "name": "AuthenticatorTwoFactorAuthenticationResetPasswordMutation",
     "operationKind": "mutation",
-    "text": "mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation($email:String!,$passwordResetToken:String!,$twoFactorToken:String!,$captchaToken:String!){verify2faPasswordResetWithAuthenticator(email:$email,passwordResetToken:$passwordResetToken,twoFactorToken:$twoFactorToken,captchaToken:$captchaToken){__typename,...on PasswordResetToken{...ResetPasswordViewFragment},...on InvalidPasswordResetTokenError{message},...on InvalidCredentialsError{message},...on AuthenticatorNotEnabledError{message},...on InvalidCaptchaTokenError{message},...on Node{__isNode:__typename,id}}}fragment ResetPasswordViewFragment on PasswordResetToken{id,needs2fa,...TwoFactorAuthenticationResetPasswordFragment}fragment TwoFactorAuthenticationResetPasswordFragment on PasswordResetToken{twoFactorProviders,authProviders}"
+    "text": null
   }
 };
 })();

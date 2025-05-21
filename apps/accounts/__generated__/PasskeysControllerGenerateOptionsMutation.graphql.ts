@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<b44ad0a2efa94d319193e2f19fa0f2c4>>
+ * @generated SignedSource<<e58fe20f37137ff5aea806527a0606bb>>
+ * @relayHash f67d7015c3f0fc1b207ab8b1303459be
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID f67d7015c3f0fc1b207ab8b1303459be
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type PasskeysControllerGenerateOptionsMutation$variables = Record<PropertyKey, never>;
@@ -86,12 +89,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f67d7015c3f0fc1b207ab8b1303459be",
-    "id": null,
+    "id": "f67d7015c3f0fc1b207ab8b1303459be",
     "metadata": {},
     "name": "PasskeysControllerGenerateOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeysControllerGenerateOptionsMutation{generateWebAuthnCredentialCreationOptions{__typename,...on GeneratePasskeyCreationOptionsSuccess{registrationOptions}}}"
+    "text": null
   }
 };
 })();

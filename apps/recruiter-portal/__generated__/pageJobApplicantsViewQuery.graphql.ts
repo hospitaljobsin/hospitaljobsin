@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<922fb55928a306483f444d0e5ff3b86b>>
+ * @generated SignedSource<<de4dc68a57dcb453d3c64588592c3fff>>
+ * @relayHash 37188fa42d8268ee239ba598da590f9f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 37188fa42d8268ee239ba598da590f9f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -431,12 +434,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "37188fa42d8268ee239ba598da590f9f",
-    "id": null,
+    "id": "37188fa42d8268ee239ba598da590f9f",
     "metadata": {},
     "name": "pageJobApplicantsViewQuery",
     "operationKind": "query",
-    "text": "query pageJobApplicantsViewQuery($slug:String!,$jobSlug:String!,$searchTerm:String,$status:JobApplicantStatus,$showStatus:Boolean=true){...pageJobApplicantsMetadataFragment_4lHzkn,...JobApplicantsViewClientComponentFragment_2tIqbU}fragment ApplicantFragment_KpWpU on JobApplicant{slug,status@include(if:$showStatus),account{fullName,avatarUrl,email,id}}fragment ApplicantListFragment_4dh3bL on Job{applicants(first:10,searchTerm:$searchTerm,status:$status){edges{node{id,...ApplicantFragment_KpWpU,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}fragment ApplicantsTabFragment_2tIqbU on Query{organization(slug:$slug){__typename,...on Organization{job(slug:$jobSlug){__typename,...on Job{...ApplicantListFragment_4dh3bL},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}fragment JobApplicantsViewClientComponentFragment_2tIqbU on Query{...ApplicantsTabFragment_2tIqbU}fragment pageJobApplicantsMetadataFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl,isMember,job(slug:$jobSlug){__typename,...on Job{title},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

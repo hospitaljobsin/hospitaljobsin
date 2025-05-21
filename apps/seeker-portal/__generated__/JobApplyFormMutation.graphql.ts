@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<99c32aca057ab9cce98b1a0c1add3d3f>>
+ * @generated SignedSource<<aa754aca11360343c8d96e4111075468>>
+ * @relayHash cc14e58ab32eac5f58784f8efbc4006e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID cc14e58ab32eac5f58784f8efbc4006e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -371,12 +374,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "cc14e58ab32eac5f58784f8efbc4006e",
-    "id": null,
+    "id": "cc14e58ab32eac5f58784f8efbc4006e",
     "metadata": {},
     "name": "JobApplyFormMutation",
     "operationKind": "mutation",
-    "text": "mutation JobApplyFormMutation($jobId:ID!,$applicantFields:[ApplicantFieldInput!]!,$resumeUrl:String!){createJobApplication(jobId:$jobId,applicantFields:$applicantFields,resumeUrl:$resumeUrl){__typename,...on CreateJobApplicantSuccess{__typename,jobApplicant{job{...JobDetailsInternalFragment,id},id}},...on JobNotFoundError{__typename},...on JobNotPublishedError{__typename},...on JobApplicantAlreadyExistsError{__typename},...on JobIsExternalError{__typename}}}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobDetailsInternalFragment on Job{...JobControlsFragment,title,slug,description,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,isApplied,externalApplicationUrl,organization{slug,name,description,logoUrl,id}}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}"
+    "text": null
   }
 };
 })();

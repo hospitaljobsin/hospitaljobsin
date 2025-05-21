@@ -4,6 +4,7 @@ from collections.abc import Mapping
 from enum import StrEnum
 from functools import lru_cache
 from http import HTTPStatus
+from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Literal, TypeVar
 
 import httpx
@@ -132,6 +133,9 @@ class AppSettings(BaseSettings):
 
     # seeker portal config
     seeker_portal_base_url: str = "http://localhost:5000"
+
+    # persisted queries config
+    persisted_queries_path: Path = Path("query_map.json")
 
     model_config = SettingsConfigDict(
         env_file=".env",

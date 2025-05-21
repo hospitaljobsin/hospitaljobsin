@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<cba915649b030f3e9d66ccdbe888ff5a>>
+ * @generated SignedSource<<9e4893111c956246320af387d3396936>>
+ * @relayHash a1ca9cc8373fc9ba69910594c7f12e2f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID a1ca9cc8373fc9ba69910594c7f12e2f
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type TwoFactorAuthenticationGenerate2FAChallengeMutation$variables = Record<PropertyKey, never>;
@@ -86,12 +89,11 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "a1ca9cc8373fc9ba69910594c7f12e2f",
-    "id": null,
+    "id": "a1ca9cc8373fc9ba69910594c7f12e2f",
     "metadata": {},
     "name": "TwoFactorAuthenticationGenerate2FAChallengeMutation",
     "operationKind": "mutation",
-    "text": "mutation TwoFactorAuthenticationGenerate2FAChallengeMutation{generateAuthenticator2faChallenge{__typename,...on GenerateAuthenticator2FAChallengeSuccess{otpUri,secret}}}"
+    "text": null
   }
 };
 })();

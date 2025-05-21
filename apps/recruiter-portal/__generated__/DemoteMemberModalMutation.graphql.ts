@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<80e410108cec79772377bb610912c35f>>
+ * @generated SignedSource<<c4e0230dacb25bfab67307f690657ab7>>
+ * @relayHash 59dd9a65671496bdd704d970e16e1ba3
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 59dd9a65671496bdd704d970e16e1ba3
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -275,12 +278,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "59dd9a65671496bdd704d970e16e1ba3",
-    "id": null,
+    "id": "59dd9a65671496bdd704d970e16e1ba3",
     "metadata": {},
     "name": "DemoteMemberModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DemoteMemberModalMutation($accountId:ID!,$organizationId:ID!){demoteOrganizationMember(accountId:$accountId,organizationId:$organizationId){__typename,...on DemoteOrganizationMemberSuccess{organizationMemberEdge{...MemberFragment},organization{id,...MemberControlsOrganizationFragment}},...on OrganizationNotFoundError{__typename},...on OrganizationMemberNotFoundError{__typename},...on InsufficientOrganizationAdminsError{__typename},...on OrganizationAuthorizationError{__typename}}}fragment DemoteMemberModalFragment on OrganizationMemberEdge{node{id}}fragment DemoteMemberModalOrganizationFragment on Organization{id}fragment MemberControlsFragment on OrganizationMemberEdge{role,node{fullName,id},...RemoveMemberModalFragment,...DemoteMemberModalFragment,...PromoteMemberModalFragment}fragment MemberControlsOrganizationFragment on Organization{...RemoveMemberModalOrganizationFragment,...DemoteMemberModalOrganizationFragment,...PromoteMemberModalOrganizationFragment,adminCount}fragment MemberFragment on OrganizationMemberEdge{role,createdAt,node{fullName,avatarUrl,id},...MemberControlsFragment}fragment PromoteMemberModalFragment on OrganizationMemberEdge{node{id}}fragment PromoteMemberModalOrganizationFragment on Organization{id}fragment RemoveMemberModalFragment on OrganizationMemberEdge{node{id}}fragment RemoveMemberModalOrganizationFragment on Organization{id}"
+    "text": null
   }
 };
 })();

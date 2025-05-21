@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<6ade2629458ac01d01178b510bc29892>>
+ * @generated SignedSource<<9974d1b4e4b2b352c4819f4e0798eb26>>
+ * @relayHash e99c4f7cfb617a6cae11eed76e958247
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID e99c4f7cfb617a6cae11eed76e958247
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type UpdatePasskeyModalMutation$variables = {
@@ -160,12 +163,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e99c4f7cfb617a6cae11eed76e958247",
-    "id": null,
+    "id": "e99c4f7cfb617a6cae11eed76e958247",
     "metadata": {},
     "name": "UpdatePasskeyModalMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdatePasskeyModalMutation($webAuthnCredentialId:ID!,$nickname:String!){updateWebAuthnCredential(webAuthnCredentialId:$webAuthnCredentialId,nickname:$nickname){__typename,...on WebAuthnCredential{id,nickname},...on WebAuthnCredentialNotFoundError{message},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

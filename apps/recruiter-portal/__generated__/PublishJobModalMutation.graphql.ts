@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<10619fc879fd6eb2a55e3029cb4ca207>>
+ * @generated SignedSource<<882ff8c56fca1df4e1689be2b016ab8f>>
+ * @relayHash 4d5e853a08b00e30e5e0ac80e8a4ea7f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 4d5e853a08b00e30e5e0ac80e8a4ea7f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -143,12 +146,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4d5e853a08b00e30e5e0ac80e8a4ea7f",
-    "id": null,
+    "id": "4d5e853a08b00e30e5e0ac80e8a4ea7f",
     "metadata": {},
     "name": "PublishJobModalMutation",
     "operationKind": "mutation",
-    "text": "mutation PublishJobModalMutation($jobId:ID!){publishJob(jobId:$jobId){__typename,...on Job{__typename,...JobControlsFragment},...on JobNotFoundError{__typename},...on OrganizationAuthorizationError{__typename},...on Node{__isNode:__typename,id}}}fragment JobControlsFragment on Job{id,isActive,...UnpublishJobModalFragment,...PublishJobModalFragment}fragment PublishJobModalFragment on Job{id}fragment UnpublishJobModalFragment on Job{id}"
+    "text": null
   }
 };
 })();

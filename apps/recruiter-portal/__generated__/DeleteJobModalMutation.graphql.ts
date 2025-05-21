@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<e99ce6a4d7ae99d764339e733a0f75fd>>
+ * @generated SignedSource<<5b0bda5e09d69aeae8bb124d1e267517>>
+ * @relayHash 9d50ce79ad343cbc12db75d868183086
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 9d50ce79ad343cbc12db75d868183086
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type DeleteJobModalMutation$variables = {
@@ -122,12 +125,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9d50ce79ad343cbc12db75d868183086",
-    "id": null,
+    "id": "9d50ce79ad343cbc12db75d868183086",
     "metadata": {},
     "name": "DeleteJobModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeleteJobModalMutation($jobId:ID!){deleteJob(jobId:$jobId){__typename,...on Job{id},...on JobNotFoundError{__typename},...on OrganizationAuthorizationError{__typename},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

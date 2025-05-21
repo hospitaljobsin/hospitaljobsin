@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<f37734aa1c1b369818753a1b8acd4d66>>
+ * @generated SignedSource<<02aa331a28e42cc1872760405a042e3f>>
+ * @relayHash abfbc91d39966d26ab1d7a700ad8afcc
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID abfbc91d39966d26ab1d7a700ad8afcc
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type PasskeyTwoFactorAuthenticationGenerateOptionsMutation$variables = {
@@ -110,12 +113,11 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "abfbc91d39966d26ab1d7a700ad8afcc",
-    "id": null,
+    "id": "abfbc91d39966d26ab1d7a700ad8afcc",
     "metadata": {},
     "name": "PasskeyTwoFactorAuthenticationGenerateOptionsMutation",
     "operationKind": "mutation",
-    "text": "mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation($captchaToken:String!){generateAuthenticationOptions(captchaToken:$captchaToken){__typename,...on InvalidCaptchaTokenError{message},...on GenerateAuthenticationOptionsSuccess{authenticationOptions}}}"
+    "text": null
   }
 };
 })();

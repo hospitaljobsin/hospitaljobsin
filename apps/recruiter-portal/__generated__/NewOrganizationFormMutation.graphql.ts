@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<aa26221e4dda4de290adcc51ab58c472>>
+ * @generated SignedSource<<bc793f67e2c1564cacc94dc37e34b0b3>>
+ * @relayHash 06ae6473399c1a23f7017a3b863f46f4
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 06ae6473399c1a23f7017a3b863f46f4
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type NewOrganizationFormMutation$variables = {
@@ -197,12 +200,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "06ae6473399c1a23f7017a3b863f46f4",
-    "id": null,
+    "id": "06ae6473399c1a23f7017a3b863f46f4",
     "metadata": {},
     "name": "NewOrganizationFormMutation",
     "operationKind": "mutation",
-    "text": "mutation NewOrganizationFormMutation($fullName:String!,$slug:String!,$website:String,$description:String,$logoUrl:String){createOrganization(fullName:$fullName,slug:$slug,website:$website,description:$description,logoUrl:$logoUrl){__typename,...on Organization{__typename,slug},...on OrganizationSlugInUseError{message},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<88072fb45192a0121851ddbf74dffeb2>>
+ * @generated SignedSource<<9418bef9223492cd694c1dd88bcb62f8>>
+ * @relayHash 3395666206e0157b2292a5d785ebc1fb
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 3395666206e0157b2292a5d785ebc1fb
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -146,12 +149,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3395666206e0157b2292a5d785ebc1fb",
-    "id": null,
+    "id": "3395666206e0157b2292a5d785ebc1fb",
     "metadata": {},
     "name": "UnpublishJobModalMutation",
     "operationKind": "mutation",
-    "text": "mutation UnpublishJobModalMutation($jobId:ID!){unpublishJob(jobId:$jobId){__typename,...on Job{__typename,...JobControlsFragment},...on JobNotFoundError{__typename},...on OrganizationAuthorizationError{__typename},...on JobNotPublishedError{__typename},...on Node{__isNode:__typename,id}}}fragment JobControlsFragment on Job{id,isActive,...UnpublishJobModalFragment,...PublishJobModalFragment}fragment PublishJobModalFragment on Job{id}fragment UnpublishJobModalFragment on Job{id}"
+    "text": null
   }
 };
 })();

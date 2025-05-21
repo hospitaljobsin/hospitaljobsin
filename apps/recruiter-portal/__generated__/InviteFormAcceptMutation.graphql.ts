@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<0a025363da21597ecfc70d22f95d8049>>
+ * @generated SignedSource<<e4c4985d18587177edfcea11d44c9514>>
+ * @relayHash 52f6e4ee077884e0c25b1f36e27465aa
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 52f6e4ee077884e0c25b1f36e27465aa
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type InviteFormAcceptMutation$variables = {
@@ -82,12 +85,11 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "52f6e4ee077884e0c25b1f36e27465aa",
-    "id": null,
+    "id": "52f6e4ee077884e0c25b1f36e27465aa",
     "metadata": {},
     "name": "InviteFormAcceptMutation",
     "operationKind": "mutation",
-    "text": "mutation InviteFormAcceptMutation($inviteToken:String!){acceptOrganizationInvite(inviteToken:$inviteToken){__typename,...on OrganizationInviteEdge{__typename},...on OrganizationInviteNotFoundError{__typename}}}"
+    "text": null
   }
 };
 })();

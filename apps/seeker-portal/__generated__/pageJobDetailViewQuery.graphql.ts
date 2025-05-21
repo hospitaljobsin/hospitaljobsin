@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<b359c52ecb4e951241f27aaa70cf1513>>
+ * @generated SignedSource<<fed4527931b420cc735efcdcbbe69c4b>>
+ * @relayHash f0b669d825877417a000e71bef25d0f5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID f0b669d825877417a000e71bef25d0f5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -376,12 +379,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f0b669d825877417a000e71bef25d0f5",
-    "id": null,
+    "id": "f0b669d825877417a000e71bef25d0f5",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",
-    "text": "query pageJobDetailViewQuery($slug:String!,$jobSlug:String!){...pageJobDetailMetadataFragment_4lHzkn,...JobDetailViewClientComponentFragment_4lHzkn}fragment JobControlsAuthFragment on ViewerPayload{__isViewerPayload:__typename,__typename}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobDetailViewClientComponentFragment_4lHzkn on Query{...JobDetailViewFragment_4lHzkn}fragment JobDetailViewFragment_4lHzkn on Query{...JobDetailsFragment_4lHzkn}fragment JobDetailsFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{job(slug:$jobSlug){__typename,...on Job{...JobDetailsInternalFragment},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}},viewer{__typename,...JobControlsAuthFragment,...on Node{__isNode:__typename,id}}}fragment JobDetailsInternalFragment on Job{...JobControlsFragment,title,slug,description,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,isApplied,externalApplicationUrl,organization{slug,name,description,logoUrl,id}}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}fragment pageJobDetailMetadataFragment_4lHzkn on Query{organization(slug:$slug){__typename,...on Organization{logoUrl,job(slug:$jobSlug){__typename,...on Job{title,description},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

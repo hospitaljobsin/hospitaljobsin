@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<8c1f56c6b9651ede299ed9763e0fb07a>>
+ * @generated SignedSource<<d8b8a6d57da61b640417d2322f1bfd31>>
+ * @relayHash 924c909ea5e2f27d6b53e87d4bc065cc
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 924c909ea5e2f27d6b53e87d4bc065cc
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type DeleteOrganizationModalMutation$variables = {
@@ -122,12 +125,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "924c909ea5e2f27d6b53e87d4bc065cc",
-    "id": null,
+    "id": "924c909ea5e2f27d6b53e87d4bc065cc",
     "metadata": {},
     "name": "DeleteOrganizationModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeleteOrganizationModalMutation($organizationId:ID!){deleteOrganization(organizationId:$organizationId){__typename,...on Organization{id},...on OrganizationNotFoundError{__typename},...on OrganizationAuthorizationError{__typename},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

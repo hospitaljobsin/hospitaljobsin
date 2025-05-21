@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<c739e52442564ee39210fe2ecfe405ef>>
+ * @generated SignedSource<<a20860803995083913959ef441d88127>>
+ * @relayHash 78372d3f2e87a9fdb92ca4ef551b1d05
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 78372d3f2e87a9fdb92ca4ef551b1d05
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type SidebarMembersQuery$variables = {
@@ -123,12 +126,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "78372d3f2e87a9fdb92ca4ef551b1d05",
-    "id": null,
+    "id": "78372d3f2e87a9fdb92ca4ef551b1d05",
     "metadata": {},
     "name": "SidebarMembersQuery",
     "operationKind": "query",
-    "text": "query SidebarMembersQuery($slug:String!){organization(slug:$slug){__typename,...on Organization{isAdmin},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<0eaa701481da29642a48a92cdce5ec9f>>
+ * @generated SignedSource<<c614eaf77e1fe3c57bacd987fbacca97>>
+ * @relayHash baf5712eaebddd74661e2366a4d1ea23
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID baf5712eaebddd74661e2366a4d1ea23
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type DeleteInviteModalMutation$variables = {
@@ -188,12 +191,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "baf5712eaebddd74661e2366a4d1ea23",
-    "id": null,
+    "id": "baf5712eaebddd74661e2366a4d1ea23",
     "metadata": {},
     "name": "DeleteInviteModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeleteInviteModalMutation($inviteId:ID!,$organizationId:ID!){deleteOrganizationInvite(inviteId:$inviteId,organizationId:$organizationId){__typename,...on OrganizationInviteEdge{node{id}},...on OrganizationNotFoundError{__typename},...on OrganizationInviteNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}"
+    "text": null
   }
 };
 })();

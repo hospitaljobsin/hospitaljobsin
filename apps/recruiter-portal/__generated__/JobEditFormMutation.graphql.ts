@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<bb90853cbc3d3b499c5ebb51b1d32a68>>
+ * @generated SignedSource<<b8ed1b3adb896db96d5e1cd4a1a16d2f>>
+ * @relayHash db61784e743c28212b93e77b99a85a61
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID db61784e743c28212b93e77b99a85a61
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -594,12 +597,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "db61784e743c28212b93e77b99a85a61",
-    "id": null,
+    "id": "db61784e743c28212b93e77b99a85a61",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",
-    "text": "mutation JobEditFormMutation($title:String!,$description:String!,$skills:[String!]!,$location:String,$jobId:ID!,$minSalary:Int,$maxSalary:Int,$minExperience:Int,$maxExperience:Int,$expiresAt:DateTime,$workMode:WorkMode,$jobType:JobType,$vacancies:Int){updateJob(title:$title,description:$description,skills:$skills,location:$location,jobId:$jobId,minSalary:$minSalary,maxSalary:$maxSalary,minExperience:$minExperience,maxExperience:$maxExperience,expiresAt:$expiresAt,workMode:$workMode,jobType:$jobType,vacancies:$vacancies){__typename,...on UpdateJobSuccess{__typename,job{slug,...JobTabsFragment,...JobControlsFragment,...JobDetailsFragment,...JobFragment,...JobEditFormFragment,id}},...on JobNotFoundError{__typename},...on OrganizationAuthorizationError{__typename}}}fragment CancelEditJobModalJobFragment on Job{__typename,slug,organization{slug,id}}fragment JobControlsFragment on Job{id,isActive,...UnpublishJobModalFragment,...PublishJobModalFragment}fragment JobDetailsFragment on Job{title,description,slug,skills,minSalary,maxSalary,hasSalaryRange,minExperience,maxExperience,hasExperienceRange,currency,workMode,type,location,createdAt,updatedAt,isActive,externalApplicationUrl,applicationForm{__typename,id},organization{isAdmin,name,id},...JobControlsFragment,...JobStatisticsFragment}fragment JobEditFormFragment on Job{id,title,description,minExperience,maxExperience,minSalary,maxSalary,vacancies,skills,type,workMode,expiresAt,location,...CancelEditJobModalJobFragment}fragment JobFragment on Job{slug,title,skills,viewCount,createdAt,applicantCount{applied,shortlisted,interviewed,onHold,offered},vacancies}fragment JobStatisticsFragment on Job{viewCount,viewMetricPoints{timestamp,count}}fragment JobTabsFragment on Job{externalApplicationUrl,organization{isAdmin,id}}fragment PublishJobModalFragment on Job{id}fragment UnpublishJobModalFragment on Job{id}"
+    "text": null
   }
 };
 })();

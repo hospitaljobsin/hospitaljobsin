@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<4fea51e414b67cedfdcbc397e93f603c>>
+ * @generated SignedSource<<4ada751240d72929e44a051af51df242>>
+ * @relayHash 4784c27bbdd502e9d2371bede7171956
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 4784c27bbdd502e9d2371bede7171956
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -403,12 +406,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4784c27bbdd502e9d2371bede7171956",
-    "id": null,
+    "id": "4784c27bbdd502e9d2371bede7171956",
     "metadata": {},
     "name": "pageOrganizationDetailViewQuery",
     "operationKind": "query",
-    "text": "query pageOrganizationDetailViewQuery($slug:String!){...pageOrganizationDetailMetadataFragment_20J5Pl,...OrganizationDetailViewClientComponentFragment_20J5Pl}fragment JobControlsAuthFragment on ViewerPayload{__isViewerPayload:__typename,__typename}fragment JobControlsFragment on Job{id,isSaved,...ShareJobFragment}fragment JobFragment_N8YyC on Job{...JobControlsFragment,slug,title,type,workMode,location,skills,currency,hasSalaryRange,minSalary,maxSalary,hasExperienceRange,minExperience,maxExperience,createdAt,organization{slug,id}}fragment OrganizationDetailViewClientComponentFragment_20J5Pl on Query{...OrganizationOverviewTabFragment_20J5Pl}fragment OrganizationDetailsFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{...OrganizationDetailsInternalFragment},...on Node{__isNode:__typename,id}}}fragment OrganizationDetailsInternalFragment on Organization{name,logoUrl,description,website,email,location}fragment OrganizationJobsListFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{...OrganizationJobsListInternalFragment},...on Node{__isNode:__typename,id}},viewer{__typename,...JobControlsAuthFragment,...on Node{__isNode:__typename,id}}}fragment OrganizationJobsListInternalFragment on Organization{jobs(first:10,isActive:true){edges{node{id,...JobFragment_N8YyC,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}fragment OrganizationOverviewTabFragment_20J5Pl on Query{...OrganizationDetailsFragment_20J5Pl,...OrganizationJobsListFragment_20J5Pl}fragment ShareJobFragment on Job{slug,title,description,organization{name,logoUrl,slug,id}}fragment pageOrganizationDetailMetadataFragment_20J5Pl on Query{organization(slug:$slug){__typename,...on Organization{name,description,logoUrl},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

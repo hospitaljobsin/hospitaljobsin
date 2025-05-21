@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<aa6dfee43a296216def64d1cb21d24bd>>
+ * @generated SignedSource<<4baa01e7bea60f6ed41abe59177fab20>>
+ * @relayHash 716eeb522a21fbe4bef0092f6eb7d355
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 716eeb522a21fbe4bef0092f6eb7d355
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -326,12 +329,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "716eeb522a21fbe4bef0092f6eb7d355",
-    "id": null,
+    "id": "716eeb522a21fbe4bef0092f6eb7d355",
     "metadata": {},
     "name": "ApplicantListPaginationQuery",
     "operationKind": "query",
-    "text": "query ApplicantListPaginationQuery($count:Int=10,$cursor:ID,$searchTerm:String=null,$showStatus:Boolean=true,$status:JobApplicantStatus=null,$id:ID!){node(id:$id){__typename,...ApplicantListFragment_21IF2B,id}}fragment ApplicantFragment_KpWpU on JobApplicant{slug,status@include(if:$showStatus),account{fullName,avatarUrl,email,id}}fragment ApplicantListFragment_21IF2B on Job{applicants(after:$cursor,first:$count,searchTerm:$searchTerm,status:$status){edges{node{id,...ApplicantFragment_KpWpU,__typename},cursor},pageInfo{hasNextPage,endCursor}},id}"
+    "text": null
   }
 };
 })();

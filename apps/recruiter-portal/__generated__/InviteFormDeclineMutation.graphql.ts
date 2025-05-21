@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<8a0291ec2f5bfc0bc06acd5e540993f2>>
+ * @generated SignedSource<<119ebb3bebbd9014aafa39188d601df4>>
+ * @relayHash 45301f1eae91843e263067e06f6ca05c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 45301f1eae91843e263067e06f6ca05c
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type InviteFormDeclineMutation$variables = {
@@ -82,12 +85,11 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "45301f1eae91843e263067e06f6ca05c",
-    "id": null,
+    "id": "45301f1eae91843e263067e06f6ca05c",
     "metadata": {},
     "name": "InviteFormDeclineMutation",
     "operationKind": "mutation",
-    "text": "mutation InviteFormDeclineMutation($inviteToken:String!){declineOrganizationInvite(inviteToken:$inviteToken){__typename,...on OrganizationInviteEdge{__typename},...on OrganizationInviteNotFoundError{__typename}}}"
+    "text": null
   }
 };
 })();

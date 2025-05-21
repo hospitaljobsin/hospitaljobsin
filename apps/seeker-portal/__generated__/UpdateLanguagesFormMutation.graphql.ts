@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<bfd2e0f8c70cc5fc6ac30236de40680f>>
+ * @generated SignedSource<<62e8664ac173dfa5936dabde54f47eb2>>
+ * @relayHash 067932887517968f3f246da69e0709de
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 067932887517968f3f246da69e0709de
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -171,12 +174,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "067932887517968f3f246da69e0709de",
-    "id": null,
+    "id": "067932887517968f3f246da69e0709de",
     "metadata": {},
     "name": "UpdateLanguagesFormMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdateLanguagesFormMutation($languages:[LanguageInput!]!){updateProfileLanguages(languages:$languages){__typename,...on Account{...UpdateLanguagesFormFragment},...on Node{__isNode:__typename,id}}}fragment UpdateLanguagesFormFragment on Account{profile{__typename,...on Profile{__typename,languages{name,proficiency}},...on ProfileNotFoundError{__typename},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

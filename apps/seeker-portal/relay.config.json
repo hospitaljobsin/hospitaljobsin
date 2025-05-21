@@ -3,13 +3,13 @@
 	"language": "typescript",
 	"schema": "../../schema/schema.graphql",
 	"artifactDirectory": "./__generated__",
-	"excludes": [
-		"**/node_modules/**",
-		"**/__mocks__/**",
-		"**/__tests__/**",
-		"**/__generated__/**"
-	],
+	"excludes": ["**/node_modules/**", "**/__mocks__/**", "**/__tests__/**"],
 	"useImportTypeSyntax": true,
+	"persistConfig": {
+		"url": "http://localhost:2999",
+		"includeQueryText": false,
+		"concurrency": 1
+	},
 	"featureFlags": {
 		"actor_change_support": {
 			"kind": "disabled"

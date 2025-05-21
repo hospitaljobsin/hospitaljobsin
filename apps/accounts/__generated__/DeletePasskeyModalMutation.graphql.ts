@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<4fec86c2224dfbbf2ee6ae2c57025d00>>
+ * @generated SignedSource<<82dea1516b3e24001c355abd8285247b>>
+ * @relayHash f1fdc8f6f7c7d63b328ee74aa4850baf
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID f1fdc8f6f7c7d63b328ee74aa4850baf
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type DeletePasskeyModalMutation$variables = {
@@ -221,12 +224,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f1fdc8f6f7c7d63b328ee74aa4850baf",
-    "id": null,
+    "id": "f1fdc8f6f7c7d63b328ee74aa4850baf",
     "metadata": {},
     "name": "DeletePasskeyModalMutation",
     "operationKind": "mutation",
-    "text": "mutation DeletePasskeyModalMutation($webAuthnCredentialId:ID!){deleteWebAuthnCredential(webAuthnCredentialId:$webAuthnCredentialId){__typename,...on DeleteWebAuthnCredentialSuccess{webAuthnCredentialEdge{node{id}}},...on WebAuthnCredentialNotFoundError{message},...on InsufficientAuthProvidersError{message}}}"
+    "text": null
   }
 };
 })();

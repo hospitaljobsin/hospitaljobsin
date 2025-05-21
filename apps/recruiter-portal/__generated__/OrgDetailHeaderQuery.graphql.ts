@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<8e60bc0c7fd5de032c736ae4cd57e26c>>
+ * @generated SignedSource<<370774445719ab9b523199886fb44066>>
+ * @relayHash 254be99b06f0a5d481ffd99bc24f066f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 254be99b06f0a5d481ffd99bc24f066f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -231,12 +234,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "254be99b06f0a5d481ffd99bc24f066f",
-    "id": null,
+    "id": "254be99b06f0a5d481ffd99bc24f066f",
     "metadata": {},
     "name": "OrgDetailHeaderQuery",
     "operationKind": "query",
-    "text": "query OrgDetailHeaderQuery($slug:String!){viewer{__typename,...on Account{__typename,...AuthNavigationFragment},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}},organization(slug:$slug){__typename,...on Organization{...OrganizationTabsFragment,name,slug},...on Node{__isNode:__typename,id}}}fragment AuthNavigationFragment on Account{__typename,fullName,avatarUrl}fragment OrganizationTabsFragment on Organization{isAdmin}"
+    "text": null
   }
 };
 })();

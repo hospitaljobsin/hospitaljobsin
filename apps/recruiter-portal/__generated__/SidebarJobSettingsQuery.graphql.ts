@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<faa096eacffb835fb10e745dca22fecd>>
+ * @generated SignedSource<<18fedad69fcc05c60aaadf8bb9c06760>>
+ * @relayHash 44a8a53f911ec02b9b11e64c8defb910
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 44a8a53f911ec02b9b11e64c8defb910
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type SidebarJobSettingsQuery$variables = {
@@ -187,12 +190,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "44a8a53f911ec02b9b11e64c8defb910",
-    "id": null,
+    "id": "44a8a53f911ec02b9b11e64c8defb910",
     "metadata": {},
     "name": "SidebarJobSettingsQuery",
     "operationKind": "query",
-    "text": "query SidebarJobSettingsQuery($slug:String!,$jobSlug:String!){organization(slug:$slug){__typename,...on Organization{job(slug:$jobSlug){__typename,...on Job{externalApplicationUrl},...on Node{__isNode:__typename,id}}},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();

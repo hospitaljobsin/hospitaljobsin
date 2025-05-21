@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<bc7e691839ec1dd2873344f3762ee773>>
+ * @generated SignedSource<<88ff1574bfd40810c268bc96f9bd4369>>
+ * @relayHash f3f090155853eea4edb24bbc3aa3ddef
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID f3f090155853eea4edb24bbc3aa3ddef
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -209,12 +212,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f3f090155853eea4edb24bbc3aa3ddef",
-    "id": null,
+    "id": "f3f090155853eea4edb24bbc3aa3ddef",
     "metadata": {},
     "name": "EnableAuthenticator2FAModalMutation",
     "operationKind": "mutation",
-    "text": "mutation EnableAuthenticator2FAModalMutation($token:String!){enableAccount2faWithAuthenticator(token:$token){__typename,...on EnableAccount2FAWithAuthenticatorSuccess{account{id,...TwoFactorAuthenticationFragment},recoveryCodes},...on InvalidCredentialsError{message},...on TwoFactorAuthenticationChallengeNotFoundError{message}}}fragment TwoFactorAuthenticationFragment on Account{has2faEnabled,sudoModeExpiresAt,twoFactorProviders}"
+    "text": null
   }
 };
 })();

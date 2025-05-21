@@ -1,5 +1,6 @@
 /**
- * @generated SignedSource<<f273baf6bcc81c8d5cdcc4bcfbe25482>>
+ * @generated SignedSource<<fc38f31af243a6dbc44e374be84830f1>>
+ * @relayHash 498c8a428c2095f913eb2306ce089613
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -7,6 +8,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
+
+// @relayRequestID 498c8a428c2095f913eb2306ce089613
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -287,12 +290,11 @@ return {
     ]
   },
   "params": {
-    "cacheID": "498c8a428c2095f913eb2306ce089613",
-    "id": null,
+    "id": "498c8a428c2095f913eb2306ce089613",
     "metadata": {},
     "name": "UpdatePersonalDetailsFormMutation",
     "operationKind": "mutation",
-    "text": "mutation UpdatePersonalDetailsFormMutation($gender:GenderType,$dateOfBirth:Date,$address:AddressInput!,$maritalStatus:MaritalStatusType,$category:String){updateProfilePersonalDetails(address:$address,gender:$gender,dateOfBirth:$dateOfBirth,maritalStatus:$maritalStatus,category:$category){__typename,...on Account{...UpdatePersonalDetailsFormFragment},...on Node{__isNode:__typename,id}}}fragment UpdatePersonalDetailsFormFragment on Account{profile{__typename,...on Profile{__typename,address{city,country,line1,line2,pincode,state},gender,dateOfBirth,maritalStatus,category},...on ProfileNotFoundError{__typename},...on Node{__isNode:__typename,id}}}"
+    "text": null
   }
 };
 })();
