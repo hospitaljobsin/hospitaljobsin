@@ -20,7 +20,7 @@ class BaseNodeType(Generic[ModelType], relay.Node):
         raise NotImplementedError
 
 
-NodeType = TypeVar("NodeType", bound=BaseNodeType[Document])
+NodeType = TypeVar("NodeType", bound=BaseNodeType)
 
 
 @strawberry.type
@@ -31,7 +31,7 @@ class BaseEdgeType(Generic[NodeType, ModelType], relay.Edge[NodeType]):
         raise NotImplementedError
 
 
-EdgeType = TypeVar("EdgeType", bound=BaseEdgeType[BaseNodeType[Document], Document])
+EdgeType = TypeVar("EdgeType", bound=BaseEdgeType)
 
 
 @strawberry.type(name="Connection")
