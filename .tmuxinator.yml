@@ -3,8 +3,14 @@ root: ./
 
 windows:
   - server:
-        - cd server
-        - uv run scripts/run_server.py
+      layout: even-horizontal
+      panes:
+        -  dev:
+            - cd server
+            - uv run scripts/run_server.py
+        -  persist:
+            - cd server
+            - uv run scripts/run_persist_server.py
 
   - seeker_portal:
         - cd apps/seeker-portal
