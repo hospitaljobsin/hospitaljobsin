@@ -8,39 +8,39 @@ import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {
-	Accordion,
-	AccordionItem,
-	Button,
-	Card,
-	CardBody,
-	CardFooter,
-	Checkbox,
-	DatePicker,
-	Input,
-	Kbd,
-	Link,
-	NumberInput,
-	Radio,
-	RadioGroup,
-	addToast,
-	cn,
-	useDisclosure,
+    Accordion,
+    AccordionItem,
+    Button,
+    Card,
+    CardBody,
+    CardFooter,
+    Checkbox,
+    DatePicker,
+    Input,
+    Kbd,
+    Link,
+    NumberInput,
+    Radio,
+    RadioGroup,
+    addToast,
+    cn,
+    useDisclosure,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarDateTime } from "@internationalized/date";
 import type { Key } from "@react-types/shared";
 import {
-	BriefcaseBusiness,
-	IndianRupee,
-	MapPin,
-	TimerIcon,
+    BriefcaseBusiness,
+    IndianRupee,
+    MapPin,
+    TimerIcon,
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod";
+import { z } from "zod/v4";
 import CancelNewJobModal from "./CancelNewJobModal";
 
 const CreateJobMutation = graphql`

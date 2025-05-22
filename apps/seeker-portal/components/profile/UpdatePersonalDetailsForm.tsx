@@ -1,19 +1,19 @@
 import type { UpdatePersonalDetailsFormFragment$key } from "@/__generated__/UpdatePersonalDetailsFormFragment.graphql";
 import {
-	Button,
-	Card,
-	CardBody,
-	CardHeader,
-	DatePicker,
-	Input,
-	Select,
-	SelectItem,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    DatePicker,
+    Input,
+    Select,
+    SelectItem,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarDate, parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const UpdatePersonalDetailsFormMutation = graphql`
 mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $address: AddressInput!, $maritalStatus: MaritalStatusType, $category: String) {

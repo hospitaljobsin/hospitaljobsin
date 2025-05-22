@@ -2,20 +2,20 @@ import { useFragment, useMutation } from "react-relay";
 
 import type { UpdateAccountDetailsFormFragment$key } from "@/__generated__/UpdateAccountDetailsFormFragment.graphql";
 import {
-	Avatar,
-	Badge,
-	Button,
-	Card,
-	CardHeader,
-	Input,
-	Tooltip,
+    Avatar,
+    Badge,
+    Button,
+    Card,
+    CardHeader,
+    Input,
+    Tooltip,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { graphql } from "relay-runtime";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const UpdateAccountDetailsFormMutation = graphql`
 mutation UpdateAccountDetailsFormMutation($fullName: String!)  {

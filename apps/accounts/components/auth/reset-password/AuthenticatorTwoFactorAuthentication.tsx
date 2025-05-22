@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const AuthenticatorTwoFactorAuthenticationResetPasswordMutation = graphql`
   mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation($email: String!, $passwordResetToken: String!, $twoFactorToken: String!, $captchaToken: String!) {

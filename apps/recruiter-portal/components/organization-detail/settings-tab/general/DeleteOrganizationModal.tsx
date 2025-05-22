@@ -4,20 +4,20 @@ import type { DeleteOrganizationModalMutation } from "@/__generated__/DeleteOrga
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next/app";
 import {
-	Button,
-	Input,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	addToast,
+    Button,
+    Input,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    addToast,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { ConnectionHandler, graphql } from "relay-runtime";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const DeleteOrganizationModalFragment = graphql`
     fragment DeleteOrganizationModalFragment on Organization {

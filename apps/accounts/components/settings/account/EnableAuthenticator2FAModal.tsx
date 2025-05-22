@@ -1,16 +1,16 @@
 import type { EnableAuthenticator2FAModalMutation } from "@/__generated__/EnableAuthenticator2FAModalMutation.graphql";
 import {
-	Button,
-	Code,
-	Divider,
-	InputOtp,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	Tooltip,
-	addToast,
+    Button,
+    Code,
+    Divider,
+    InputOtp,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    Tooltip,
+    addToast,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Clipboard } from "lucide-react";
@@ -19,7 +19,7 @@ import { Controller, useForm } from "react-hook-form";
 import QRCode from "react-qr-code";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod";
+import { z } from "zod/v4";
 import SaveRecoveryCodesModal from "./SaveRecoveryCodesModal";
 
 const EnableAuthenticator2FAMutation = graphql`

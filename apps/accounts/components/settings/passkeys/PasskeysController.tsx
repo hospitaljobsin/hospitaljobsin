@@ -3,15 +3,15 @@ import type { PasskeysControllerGenerateOptionsMutation } from "@/__generated__/
 import type { PasskeysControllerMutation } from "@/__generated__/PasskeysControllerMutation.graphql";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import {
-	Button,
-	Input,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	addToast,
-	useDisclosure,
+    Button,
+    Input,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    addToast,
+    useDisclosure,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startRegistration } from "@simplewebauthn/browser";
@@ -19,7 +19,7 @@ import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const PasskeysControllerFragment = graphql`
   fragment PasskeysControllerFragment on Account {

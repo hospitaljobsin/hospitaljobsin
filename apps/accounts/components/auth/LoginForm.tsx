@@ -27,7 +27,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { useTurnstile } from "../TurnstileProvider";
 
 const LoginFormPasswordMutation = graphql`

@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const JobApplyFormFragment = graphql`
   fragment JobApplyFormFragment on Job {

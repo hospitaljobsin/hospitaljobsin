@@ -6,21 +6,21 @@ import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
 import { useRouter } from "@bprogress/next";
 import {
-	Button,
-	Card,
-	CardBody,
-	CardFooter,
-	CardHeader,
-	Divider,
-	Input,
-	Link,
+    Button,
+    Card,
+    CardBody,
+    CardFooter,
+    CardHeader,
+    Divider,
+    Input,
+    Link,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const TwoFactorAuthenticationFormMutation = graphql`
   mutation TwoFactorAuthenticationFormMutation($token: String!, $captchaToken: String!) {

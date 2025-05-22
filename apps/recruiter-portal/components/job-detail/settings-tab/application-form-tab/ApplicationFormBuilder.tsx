@@ -1,20 +1,20 @@
 import type { ApplicationFormBuilderFragment$key } from "@/__generated__/ApplicationFormBuilderFragment.graphql";
 import type { ApplicationFormBuilderMutation as ApplicationFormBuilderMutationType } from "@/__generated__/ApplicationFormBuilderMutation.graphql";
 import {
-	Button,
-	Card,
-	CardBody,
-	CardFooter,
-	Checkbox,
-	Input,
-	addToast,
+    Button,
+    Card,
+    CardBody,
+    CardFooter,
+    Checkbox,
+    Input,
+    addToast,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import invariant from "tiny-invariant";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const ApplicationFormBuilderFragment = graphql`
   fragment ApplicationFormBuilderFragment on Query @argumentDefinitions(

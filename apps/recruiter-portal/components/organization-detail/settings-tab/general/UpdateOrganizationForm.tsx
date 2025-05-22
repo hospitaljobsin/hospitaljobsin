@@ -5,19 +5,19 @@ import links from "@/lib/links";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next";
 import {
-	Button,
-	Card,
-	CardBody,
-	CardFooter,
-	Input,
-	addToast,
+    Button,
+    Card,
+    CardBody,
+    CardFooter,
+    Input,
+    addToast,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const UpdateOrganizationFormMutation = graphql`
 mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $description: String) {

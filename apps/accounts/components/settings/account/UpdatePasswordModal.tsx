@@ -1,13 +1,13 @@
 import type { UpdatePasswordModalFragment$key } from "@/__generated__/UpdatePasswordModalFragment.graphql";
 import type { UpdatePasswordModalMutation } from "@/__generated__/UpdatePasswordModalMutation.graphql";
 import {
-	Button,
-	Input,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
+    Button,
+    Input,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
@@ -15,7 +15,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const UpdatePasswordModalFragment = graphql`
   fragment UpdatePasswordModalFragment on Account {
