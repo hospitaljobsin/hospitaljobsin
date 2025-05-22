@@ -29,10 +29,15 @@ const nextConfig: NextConfig = {
 	},
 	images: {
 		remotePatterns: [
-			{
-				protocol: "https",
-				hostname: "**",
-			},
+		{
+			protocol: 'https',
+			hostname: 'gravatar.com',
+		},
+		{
+			protocol: 'https',
+			hostname: 'www.gravatar.com',
+		},
+		// Add more allowed domains if needed
 		],
 	},
 	async redirects() {
