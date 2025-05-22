@@ -42,4 +42,46 @@ test.describe("Account Settings Page", () => {
         // Wait for the form to close and the new name to appear
         await expect(page.getByText(newName)).toBeVisible();
     });
+
+    test("should disable delete password button", async ({ page }) => {
+        // delete password button should be disabled when the password is the only auth provider
+        await expect(page.getByRole('button', { name: /delete password/i })).toBeDisabled();
+    });
+
+    test("should allow user to update their password", async ({ page }) => {
+        // Click the Edit button
+        await page.getByRole('button', { name: /update password/i }).click();
+
+        // Fill new full name
+        const newPassword = `NewPassword123!`;
+        await page
+        .getByRole("textbox", { name: "New Password" }).first()
+        .fill(newPassword);
+        await page
+        .getByRole("textbox", { name: "Confirm New Password" })
+        .fill(newPassword);
+        await page.getByRole('button', { name: /update password/i }).click();
+
+        // TODO: Ensure password has changed- log out and log back in
+        const navAvatar = page.locator('img[src*="gravatar.com"]').first();
+
+        await navAvatar.click();
+
+        await page.getByText('Log Out').click();
+
+        await page.waitForURL('http://localhost:5002/auth/login');
+        // Wait for recaptcha to load
+        await waitForCaptcha({ page });
+
+        // login with the new password
+        await page.getByLabel("Email Address").fill(TESTER_EMAIL);
+        await page
+            .getByRole("textbox", { name: "Password Password" })
+            .fill(newPassword);
+        await page.getByRole("button", { name: "Log in" }).click();
+
+        await page.waitForURL("http://localhost:5000/");
+    });
+
+
 });

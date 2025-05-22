@@ -4,6 +4,17 @@ import { waitForCaptcha } from "./utils/captcha";
 
 const authFile = "playwright/.auth/user.json";
 
+// TODO: we need a separate user per parallel worker, as user attributes are being changed now, while testing
+// we need a dynamic way to acquire users
+
+// we also need to dynamically create the users with attributes on demand like:
+// - having only password
+// - having password + 2fa
+// - having only passkeys
+// - having only oauth2
+
+// this will help us to test all the scenarios
+
 setup("authenticate", async ({ page }) => {
 	// Navigate to login page
 	await page.goto("http://localhost:5002/auth/login");
