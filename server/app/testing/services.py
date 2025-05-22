@@ -84,6 +84,8 @@ class TestSetupService:
                 )
                 recovery_codes.append(code)
 
+        # TODO: set the session here
+
         return TestUserSchema(
             id=account.id,
             username=account.username,
