@@ -8,7 +8,7 @@ on:
       - 'apps/accounts/**'
       - '.github/workflows/deploy-accounts-ui.yml'
   workflow_run:
-    workflows: ["Backend Deploy"]
+    workflows: ["Deploy Backend"]
     types:
       - completed
 
