@@ -4,10 +4,9 @@ import { useFragment, usePaginationFragment } from "react-relay";
 import type { AppliedJobsListFragment$key } from "@/__generated__/AppliedJobsListFragment.graphql";
 
 import type { AppliedJobsListInternalFragment$key } from "@/__generated__/AppliedJobsListInternalFragment.graphql";
-import type { AppliedViewQuery } from "@/__generated__/AppliedViewQuery.graphql";
+import type { pageAppliedJobsQuery } from "@/__generated__/pageAppliedJobsQuery.graphql";
 import AppliedJobsListSkeleton from "@/components/landing/JobListSkeleton";
-import { Card, CardBody } from "@heroui/react";
-import Image from "next/image";
+import { BriefcaseBusiness } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
 
@@ -51,7 +50,7 @@ type Props = {
 export default function AppliedJobsList({ rootQuery }: Props) {
 	const root = useFragment(AppliedJobsListFragment, rootQuery);
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<
-		AppliedViewQuery,
+		pageAppliedJobsQuery,
 		AppliedJobsListInternalFragment$key
 	>(AppliedJobsListInternalFragment, root);
 
@@ -83,24 +82,15 @@ export default function AppliedJobsList({ rootQuery }: Props) {
 		!data.appliedJobs.pageInfo.hasNextPage
 	) {
 		return (
-			<Card className="p-6 space-y-6" fullWidth shadow="none">
-				<CardBody className="flex flex-col gap-8 w-full items-center">
-					<Image
-						src="/images/bookmark.svg" // Add an illustration asset here
-						alt="Not Found Illustration"
-						width={350}
-						height={350}
-					/>
-					<div className="w-full flex flex-col gap-4 items-center">
-						<h2 className="font-medium text-muted-foreground text-lg">
-							No applied jobs found
-						</h2>
-						<p className="text-muted-foreground text-md">
-							Your applied jobs will appear here
-						</p>
-					</div>
-				</CardBody>
-			</Card>
+			<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6 border-2 border-dashed border-foreground-300 rounded-md p-6 items-center justify-center">
+				<div className="flex flex-col gap-4 items-center text-foreground-600">
+					<BriefcaseBusiness size={48} />
+					<h2 className="text-lg font-medium">No applied jobs Yet</h2>
+					<p className="text-sm text-foreground-500 text-center">
+						Jobs you applied to will appear here.
+					</p>
+				</div>
+			</div>
 		);
 	}
 
