@@ -25,7 +25,7 @@ runs:
       id: diff
       shell: bash
       run: |
-        # If not a push event, default to no changes
+        # Default to no changes for non-push events
         if [[ "${{ github.event_name }}" != "push" ]]; then
           echo "::set-output name=changed::false"
           exit 0
@@ -34,20 +34,25 @@ runs:
         BEFORE=${{ github.event.before }}
         AFTER=${{ github.event.after }}
 
-        # Handle cases where BEFORE is missing (initial commit)
+        # If BEFORE commit is invalid, assume no changes
         if [[ -z "$BEFORE" ]] || ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
           echo "No valid before commit; assuming no changes"
           echo "::set-output name=changed::false"
           exit 0
         fi
 
-        echo "Diffing $BEFORE → $AFTER for paths: ${{ inputs.paths }}"
-        CHANGED_FILES=$(git diff --name-only "$BEFORE" "$AFTER" -- ${{ inputs.paths }} || true)
-        if [[ -n "$CHANGED_FILES" ]]; then
-          echo "Changes detected in files:"
-          echo "$CHANGED_FILES"
-          echo "::set-output name=changed::true"
-        else
-          echo "No changes detected in specified paths"
-          echo "::set-output name=changed::false"
-        fi
+        echo "Diffing $BEFORE → $AFTER for paths:"
+        echo "${{ inputs.paths }}"
+
+        # Check each path separately
+        IFS=$'\n'
+        for path in ${{ inputs.paths }}; do
+          if git diff --name-only "$BEFORE" "$AFTER" -- "$path" | grep -q .; then
+            echo "Detected changes in $path"
+            echo "::set-output name=changed::true"
+            exit 0
+          fi
+        done
+
+        echo "No changes detected in specified paths"
+        echo "::set-output name=changed::false"
