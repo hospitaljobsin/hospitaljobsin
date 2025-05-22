@@ -3,8 +3,7 @@ import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
 	RECOVERY_CODE_1,
-	TOTP_USER_SECRET,
-	TWO_FACTOR_TESTER_2_EMAIL
+	TOTP_USER_SECRET
 } from "@/tests/utils/constants";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
 import type { PlaywrightTestArgs } from "@playwright/test";
@@ -181,13 +180,14 @@ test.describe("Confirm Password Reset Page", () => {
 });
 
 test.describe("2FA Confirm Password Reset Page", () => {
+	const id = test.info().parallelIndex;
 	test.beforeEach(async ({ page, request }) => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
-		const emailAddress = TWO_FACTOR_TESTER_2_EMAIL;
+		const emailAddress =  `two-factor-${id}@gmail.com`;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -229,7 +229,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		// Check form elements
 		await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
 		await expect(page.getByLabel("Email Address")).toHaveValue(
-			TWO_FACTOR_TESTER_2_EMAIL,
+			 `two-factor-${id}@gmail.com`,
 		);
 		await expect(page.getByLabel("2FA Code")).toBeVisible();
 		await expect(
@@ -266,6 +266,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 	});
 
 	test("should successfully verify with recovery code", async ({ page }) => {
+		// TODO: fill this from recovery codes, from the test account in context
 		await page.getByLabel("2FA Code").fill(RECOVERY_CODE_1);
 		await page.getByRole("button", { name: "Verify Code" }).click();
 

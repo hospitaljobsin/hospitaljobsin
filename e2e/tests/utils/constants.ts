@@ -2,12 +2,6 @@ export const TOTP_USER_SECRET = "RW5SJG5SRCHL3YEBPUOOIB6W5VDOF4MA";
 
 export const NONEXISTENT_TESTER_EMAIL = "tester-nonexistent@gmail.com";
 
-export const WEBAUTHN_TESTER_EMAIL = "webauthn-tester@example.org";
-
-export const TWO_FACTOR_TESTER_1_EMAIL = "twofactor-tester@example.org";
-
-export const TWO_FACTOR_TESTER_2_EMAIL = "twofactor-tester2@example.org";
-
 export const RECOVERY_CODE_1 = "11111111";
 
 // cooldowns

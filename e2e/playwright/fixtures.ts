@@ -1,4 +1,5 @@
 import { createTestAccount } from '@/tests/utils/authentication';
+import { TOTP_USER_SECRET } from '@/tests/utils/constants';
 import { test as baseTest } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
@@ -28,7 +29,7 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
     // Make sure that accounts are unique, so that multiple team members
     // can run tests at the same time without interference.
     // const account = await acquireAccount(id);
-    await createTestAccount({
+    const account = await createTestAccount({
         email: `tester-${id}@gmail.com`,
         password: "Password123!",
         fullName: `Tester ${id}`,
@@ -36,8 +37,28 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
         enableSudoMode: true,
         authProviders: ["password"],
     })
+    
+    const webauthnAccount = await createTestAccount({
+        email: `tester-webauthn-${id}@gmail.com`,
+        password: null,
+        fullName: `Tester ${id}`,
+        twoFactorSecret: null,
+        enableSudoMode: true,
+        authProviders: ["webauthn_credential"],
+    })
+
+    const twoFactorAccount = await createTestAccount({
+        email: `two-factor-${id}@gmail.com`,
+        password: "Password123!",
+        fullName: `Tester ${id}`,
+        twoFactorSecret: TOTP_USER_SECRET,
+        enableSudoMode: true,
+        authProviders: ["password"],
+    })
 
     // End of authentication steps.
+
+    // TODO: can we store the test user accounts somewhere here?
 
     await page.context().storageState({ path: fileName });
     await page.close();

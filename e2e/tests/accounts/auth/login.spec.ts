@@ -1,9 +1,5 @@
 import { expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
-import {
-	TWO_FACTOR_TESTER_1_EMAIL,
-	WEBAUTHN_TESTER_EMAIL
-} from "@/tests/utils/constants";
 
 test.describe("Login Page", () => {
 	const id = test.info().parallelIndex;
@@ -172,7 +168,7 @@ test.describe("Login Page", () => {
 
 	test("should redirect on 2FA requirement", async ({ page }) => {
 		// Fill form with credentials that require 2FA
-		await page.getByLabel("Email Address").fill(TWO_FACTOR_TESTER_1_EMAIL);
+		await page.getByLabel("Email Address").fill( `two-factor-${id}@gmail.com`);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -345,7 +341,7 @@ test.describe("Login Page", () => {
 		page,
 	}) => {
 		// Fill form
-		await page.getByLabel("Email Address").fill(WEBAUTHN_TESTER_EMAIL);
+		await page.getByLabel("Email Address").fill( `tester-webauthn-${id}@gmail.com`);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");

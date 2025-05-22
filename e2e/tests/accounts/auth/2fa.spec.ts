@@ -2,11 +2,11 @@ import { expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
-	TOTP_USER_SECRET,
-	TWO_FACTOR_TESTER_1_EMAIL,
+	TOTP_USER_SECRET
 } from "@/tests/utils/constants";
 
 test.describe("2FA Page", () => {
+	const id = test.info().parallelIndex;
 	test.beforeEach(async ({ page }) => {
 		// Navigate to login page
 		await page.goto("http://localhost:5002/auth/login");
@@ -15,7 +15,7 @@ test.describe("2FA Page", () => {
 		await waitForCaptcha({ page });
 
 		// Fill form with credentials that require 2FA
-		await page.getByLabel("Email Address").fill(TWO_FACTOR_TESTER_1_EMAIL);
+		await page.getByLabel("Email Address").fill( `two-factor-${id}@gmail.com`);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
