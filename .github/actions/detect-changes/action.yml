@@ -1,17 +1,16 @@
-name: "Detect Paths Changed"
+name: "Detect Path Changed"
 
-description: "Composite action to detect changes to specified files between commits"
+description: "Composite action to detect changes to a specified file between commits"
 
 inputs:
-  paths:
-    description: "Newline-separated list of file globs to check for changes"
+  path:
+    description: "File path to check for changes between commits"
     required: true
-    default: |
-      server/query_map.json
+    default: "server/query_map.json"
 
 outputs:
   changed:
-    description: "'true' if any of the specified paths changed, otherwise 'false'"
+    description: "'true' if the specified file changed, otherwise 'false'"
 
 runs:
   using: "composite"
@@ -33,6 +32,7 @@ runs:
 
         BEFORE=${{ github.event.before }}
         AFTER=${{ github.event.after }}
+        TARGET_PATH="${{ inputs.path }}"
 
         # Handle missing or invalid BEFORE commit
         if [[ -z "$BEFORE" ]] || ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
@@ -41,18 +41,11 @@ runs:
           exit 0
         fi
 
-        echo "Diffing $BEFORE → $AFTER for paths:" 
-        echo "${{ inputs.paths }}"
-
-        # Loop through each path on the same line
-        IFS=$'\n'
-        for path in ${{ inputs.paths }}; do
-          if git diff --name-only "$BEFORE" "$AFTER" -- "$path" | grep -q .; then
-            echo "Detected changes in $path"
-            echo "::set-output name=changed::true"
-            exit 0
-          fi
-        done
-
-        echo "No changes detected in specified paths"
-        echo "::set-output name=changed::false"
+        echo "Diffing $BEFORE → $AFTER for file: $TARGET_PATH"
+        if git diff --name-only "$BEFORE" "$AFTER" -- "$TARGET_PATH" | grep -q .; then
+          echo "Detected changes in $TARGET_PATH"
+          echo "::set-output name=changed::true"
+        else
+          echo "No changes detected in $TARGET_PATH"
+          echo "::set-output name=changed::false"
+        fi

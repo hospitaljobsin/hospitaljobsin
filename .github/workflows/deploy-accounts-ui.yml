@@ -29,8 +29,7 @@ jobs:
         uses: ./.github/actions/detect-changes
         id: detect
         with:
-          paths: |
-            server/query_map.json
+          path: server/query_map.json
 
   build-and-push:
     needs: check
