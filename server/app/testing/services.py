@@ -116,7 +116,6 @@ class TestSetupService:
 
         return TestUserSchema(
             id=account.id,
-            username=account.username,
             email=account.email,
             is_active=account.is_active,
             two_factor_secret=account.two_factor_secret,

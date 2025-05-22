@@ -16,7 +16,6 @@ type WebAuthnCredential = {
 type TestAccount = {
     id: string;
     isActive: boolean;
-    username: string;
     fullName: string;
     password: string | null;
     email: string;
@@ -30,8 +29,7 @@ type TestAccount = {
     twoFactorProviders: TwoFactorProvider[];
 }
 
-export async function createTestAccount({username, fullName, password, email, twoFactorSecret, enableSudoMode, authProviders}: {
-    username: string;
+export async function createTestAccount({fullName, password, email, twoFactorSecret, enableSudoMode, authProviders}: {
     fullName: string;
     password: string | null;
     email: string;
@@ -45,7 +43,6 @@ export async function createTestAccount({username, fullName, password, email, tw
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            username,
             fullName,
             password,
             email,

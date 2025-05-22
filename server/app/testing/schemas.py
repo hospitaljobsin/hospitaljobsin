@@ -22,7 +22,6 @@ class BaseSchema(BaseModel):
 
 
 class CreateTestUserSchema(BaseSchema):
-    username: str
     password: str | None = None
     full_name: str
     email: str
@@ -44,7 +43,6 @@ class WebAuthnCredentialSchema(BaseSchema):
 
 class TestUserSchema(BaseSchema):
     id: str
-    username: str
     email: str
     is_active: bool
     two_factor_secret: str | None
