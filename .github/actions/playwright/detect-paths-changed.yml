@@ -1,0 +1,50 @@
+name: "Detect Paths Changed"
+
+description: "Composite action to detect changes to specified files between commits"
+
+inputs:
+  paths:
+    description: "Newline-separated list of file globs to check for changes"
+    required: true
+    default: |
+      server/query_map.json
+
+outputs:
+  changed:
+    description: "'true' if any of the specified paths changed, otherwise 'false'"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout full history
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Detect changes
+      id: diff
+      shell: bash
+      run: |
+        if [[ "${{ github.event_name }}" != "push" ]]; then
+          echo "::set-output name=changed::false"
+          exit 0
+        fi
+
+        BEFORE=${{ github.event.before }}
+        AFTER=${{ github.event.after }}
+
+        if [[ -z "$BEFORE" ]]; then
+          echo "No before commit; assuming no changes"
+          echo "::set-output name=changed::false"
+          exit 0
+        fi
+
+        CHANGED_FILES=$(git diff --name-only "$BEFORE" "$AFTER" -- ${{ inputs.paths }} || true)
+        if [[ -n "$CHANGED_FILES" ]]; then
+          echo "Changes detected in files:"
+          echo "$CHANGED_FILES"
+          echo "::set-output name=changed::true"
+        else
+          echo "No changes detected in specified paths"
+          echo "::set-output name=changed::false"
+        fi
