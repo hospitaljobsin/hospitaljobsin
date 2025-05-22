@@ -22,24 +22,37 @@ jobs:
     outputs:
       query_map_changed: ${{ steps.check.outputs.query_map_changed }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # ← ensures we have all commits
 
       - name: Detect server/query_map.json changes
         id: check
         run: |
-          # For non-push events (i.e. workflow_run), we want query_map_changed=false
+          # If this isn't a push, assume no query_map change
           if [[ "${{ github.event_name }}" != "push" ]]; then
             echo "::set-output name=query_map_changed::false"
             exit 0
           fi
 
-          # For push events, diff before→after and see if query_map.json was touched
-          echo "Diffing ${{ github.event.before }} → ${{ github.event.after }}"
-          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
-          echo "$FILES"
-          if echo "$FILES" | grep -qx 'server/query_map.json'; then
+          BEFORE=${{ github.event.before }}
+          AFTER=${{ github.event.after }}
+
+          # Handle initial commit or missing BEFORE
+          if ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            echo "Before commit ($BEFORE) not found; assuming no query_map change"
+            echo "::set-output name=query_map_changed::false"
+            exit 0
+          fi
+
+          echo "Diffing $BEFORE → $AFTER for server/query_map.json"
+          CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" -- 'server/query_map.json' || true)
+          if [[ -n "$CHANGED" ]]; then
+            echo "Found changes in server/query_map.json"
             echo "::set-output name=query_map_changed::true"
           else
+            echo "No changes in server/query_map.json"
             echo "::set-output name=query_map_changed::false"
           fi
 
