@@ -16,7 +16,6 @@
 
 and other packages from [package.json](./package.json) 💖
 
-
 ## Setup Guide
 
 ### Prerequisites
