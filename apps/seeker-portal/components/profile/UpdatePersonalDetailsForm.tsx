@@ -1,15 +1,15 @@
 import type { UpdatePersonalDetailsFormFragment$key } from "@/__generated__/UpdatePersonalDetailsFormFragment.graphql";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    DatePicker,
-    Input,
-    Select,
-    SelectItem,
+	Button,
+	Card,
+	CardBody,
+	CardHeader,
+	DatePicker,
+	Input,
+	Select,
+	SelectItem,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { CalendarDate, parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -83,7 +83,7 @@ export default function UpdatePersonalDetailsForm({
 		control,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		defaultValues:
 			data.profile.__typename === "Profile"
 				? {

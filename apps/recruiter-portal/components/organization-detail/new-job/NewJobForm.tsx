@@ -8,32 +8,32 @@ import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {
-    Accordion,
-    AccordionItem,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    Checkbox,
-    DatePicker,
-    Input,
-    Kbd,
-    Link,
-    NumberInput,
-    Radio,
-    RadioGroup,
-    addToast,
-    cn,
-    useDisclosure,
+	Accordion,
+	AccordionItem,
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	Checkbox,
+	DatePicker,
+	Input,
+	Kbd,
+	Link,
+	NumberInput,
+	Radio,
+	RadioGroup,
+	addToast,
+	cn,
+	useDisclosure,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { CalendarDateTime } from "@internationalized/date";
 import type { Key } from "@react-types/shared";
 import {
-    BriefcaseBusiness,
-    IndianRupee,
-    MapPin,
-    TimerIcon,
+	BriefcaseBusiness,
+	IndianRupee,
+	MapPin,
+	TimerIcon,
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -160,7 +160,7 @@ export default function NewJobForm({ account, organization }: Props) {
 		formState: { errors, isSubmitting, isDirty },
 		watch,
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		reValidateMode: "onChange",
 		defaultValues: {
 			title: "",

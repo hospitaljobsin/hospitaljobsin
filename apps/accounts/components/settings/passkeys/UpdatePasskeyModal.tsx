@@ -1,16 +1,16 @@
 import type { UpdatePasskeyModalFragment$key } from "@/__generated__/UpdatePasskeyModalFragment.graphql";
 import type { UpdatePasskeyModalMutation } from "@/__generated__/UpdatePasskeyModalMutation.graphql";
 import {
-    Button,
-    Input,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    addToast,
+	Button,
+	Input,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	addToast,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -65,7 +65,7 @@ export default function UpdatePasskeyModal({
 		handleSubmit,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof updatePasskeySchema>>({
-		resolver: zodResolver(updatePasskeySchema),
+		resolver: standardSchemaResolver(updatePasskeySchema),
 		defaultValues: {
 			nickname: data.nickname,
 		},

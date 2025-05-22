@@ -4,7 +4,7 @@ import type { PasswordAuthenticationMutation as PasswordAuthenticationMutationTy
 import links from "@/lib/links";
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -64,7 +64,7 @@ export default function PasswordAuthentication({
 		setError,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof passwordAuthenticationSchema>>({
-		resolver: zodResolver(passwordAuthenticationSchema),
+		resolver: standardSchemaResolver(passwordAuthenticationSchema),
 	});
 
 	const { executeCaptcha } = useTurnstile();

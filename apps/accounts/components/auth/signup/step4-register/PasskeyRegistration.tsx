@@ -5,7 +5,7 @@ import type { PasskeyRegistrationOptionsMutation } from "@/__generated__/Passkey
 import { useTurnstile } from "@/components/TurnstileProvider";
 import { getValidRedirectURL } from "@/lib/redirects";
 import { Alert, Button, Input, addToast } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -109,7 +109,7 @@ export default function PasskeyRegistration() {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm({
-		resolver: zodResolver(passkeyRegistrationSchema),
+		resolver: standardSchemaResolver(passkeyRegistrationSchema),
 		defaultValues: { nickname: "My Passkey" },
 	});
 

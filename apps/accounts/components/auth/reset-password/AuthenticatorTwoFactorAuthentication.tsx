@@ -1,7 +1,7 @@
 import type { AuthenticatorTwoFactorAuthenticationResetPasswordMutation as AuthenticatorTwoFactorAuthenticationResetPasswordMutationType } from "@/__generated__/AuthenticatorTwoFactorAuthenticationResetPasswordMutation.graphql";
 import { useTurnstile } from "@/components/TurnstileProvider";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
@@ -64,7 +64,7 @@ export default function AuthenticatorTwoFactorAuthentication({
 		setError,
 		register,
 	} = useForm<z.infer<typeof resetPassword2faSchema>>({
-		resolver: zodResolver(resetPassword2faSchema),
+		resolver: standardSchemaResolver(resetPassword2faSchema),
 	});
 
 	const { executeCaptcha } = useTurnstile();

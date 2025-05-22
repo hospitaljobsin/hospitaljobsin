@@ -1,6 +1,6 @@
 import type { UpdateLanguagesFormFragment$key } from "@/__generated__/UpdateLanguagesFormFragment.graphql";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -60,7 +60,7 @@ export default function UpdateLanguagesForm({
 		control,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		defaultValues:
 			data.profile.__typename === "Profile" && data.profile.languages.length > 0
 				? {

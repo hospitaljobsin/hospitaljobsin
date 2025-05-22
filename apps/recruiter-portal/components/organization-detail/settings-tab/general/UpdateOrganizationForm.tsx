@@ -5,14 +5,14 @@ import links from "@/lib/links";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    Input,
-    addToast,
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	Input,
+	addToast,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import Image from "next/image";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -105,7 +105,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		reset,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		defaultValues: {
 			name: data.name,
 			slug: data.slug,

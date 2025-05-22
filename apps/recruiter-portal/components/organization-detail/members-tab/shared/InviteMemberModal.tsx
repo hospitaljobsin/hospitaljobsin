@@ -1,22 +1,22 @@
 import type { InviteMemberModalFragment$key } from "@/__generated__/InviteMemberModalFragment.graphql";
 import type { InviteMemberModalMutation as InviteMemberModalMutationType } from "@/__generated__/InviteMemberModalMutation.graphql";
 import {
-    Button,
-    Input,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    addToast,
+	Button,
+	Input,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	addToast,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
 import {
-    ConnectionHandler,
-    graphql,
-    useFragment,
-    useMutation,
+	ConnectionHandler,
+	graphql,
+	useFragment,
+	useMutation,
 } from "react-relay";
 import { z } from "zod/v4";
 
@@ -74,7 +74,7 @@ export default function InviteMemberModal({
 		useMutation<InviteMemberModalMutationType>(InviteMemberModalMutation);
 
 	const { register, handleSubmit, formState, setError } = useForm({
-		resolver: zodResolver(inviteMemberSchema),
+		resolver: standardSchemaResolver(inviteMemberSchema),
 		defaultValues: { email: "" },
 	});
 

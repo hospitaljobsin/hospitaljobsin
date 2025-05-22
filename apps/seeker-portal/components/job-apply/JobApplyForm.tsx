@@ -5,7 +5,7 @@ import links from "@/lib/links";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next/app";
 import { Button, Card, CardFooter, Input, addToast } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -106,7 +106,7 @@ export default function JobApplyForm({
 		formState: { errors, isSubmitting },
 		setError,
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 	});
 
 	async function getPresignedUrl(): Promise<string | null> {

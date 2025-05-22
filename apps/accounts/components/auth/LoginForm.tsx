@@ -18,7 +18,7 @@ import {
 	Input,
 	addToast,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Google } from "@lobehub/icons";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { EyeIcon, EyeOffIcon, FingerprintIcon } from "lucide-react";
@@ -90,7 +90,7 @@ const LoginFormPasskeyMutation = graphql`
 `;
 
 const loginSchema = z.object({
-	email: z.string().min(1, "This field is required").email("Invalid email"),
+	email: z.email("Invalid email").min(1, "This field is required"),
 	password: z.string().min(1, "This field is required"),
 });
 
@@ -135,7 +135,7 @@ export default function LoginForm() {
 		clearErrors,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof loginSchema>>({
-		resolver: zodResolver(loginSchema),
+		resolver: standardSchemaResolver(loginSchema),
 		reValidateMode: "onChange",
 	});
 

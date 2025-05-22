@@ -5,7 +5,7 @@ import type { Step2VerificationFormRequestVerificationMutation as Step2Verificat
 import { useTurnstile } from "@/components/TurnstileProvider";
 import { timeFormat } from "@/lib/intl";
 import { Button, Input, Tooltip, addToast } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Edit3Icon } from "lucide-react";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -90,7 +90,7 @@ export default function Step2VerificationForm() {
 		formState: { errors, isSubmitting },
 		setError,
 	} = useForm({
-		resolver: zodResolver(step2Schema),
+		resolver: standardSchemaResolver(step2Schema),
 		defaultValues: { emailVerificationToken: emailVerificationToken || "" },
 	});
 

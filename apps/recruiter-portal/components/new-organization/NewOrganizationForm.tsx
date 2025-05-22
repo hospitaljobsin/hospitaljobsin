@@ -6,14 +6,14 @@ import links from "@/lib/links";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    Input,
-    Textarea,
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	Input,
+	Textarea,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
@@ -77,7 +77,7 @@ export default function NewOrganizationForm() {
 		register,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		defaultValues: {
 			fullName: "",
 			slug: "",

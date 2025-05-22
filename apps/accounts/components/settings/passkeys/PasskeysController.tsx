@@ -3,17 +3,17 @@ import type { PasskeysControllerGenerateOptionsMutation } from "@/__generated__/
 import type { PasskeysControllerMutation } from "@/__generated__/PasskeysControllerMutation.graphql";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import {
-    Button,
-    Input,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    addToast,
-    useDisclosure,
+	Button,
+	Input,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	addToast,
+	useDisclosure,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { startRegistration } from "@simplewebauthn/browser";
 import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -89,7 +89,7 @@ export default function PasskeysController({
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof createPasskeySchema>>({
-		resolver: zodResolver(createPasskeySchema),
+		resolver: standardSchemaResolver(createPasskeySchema),
 		defaultValues: {
 			nickname: "My Passkey",
 		},

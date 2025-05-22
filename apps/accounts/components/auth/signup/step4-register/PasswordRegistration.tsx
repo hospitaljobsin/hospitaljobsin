@@ -4,7 +4,7 @@ import type { PasswordRegistrationMutation as PasswordRegistrationMutationType }
 import { useTurnstile } from "@/components/TurnstileProvider";
 import { getValidRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -88,7 +88,7 @@ export default function PasswordRegistration() {
 		formState: { errors, isSubmitting },
 		setError,
 	} = useForm<z.infer<typeof passwordRegistrationSchema>>({
-		resolver: zodResolver(passwordRegistrationSchema),
+		resolver: standardSchemaResolver(passwordRegistrationSchema),
 		defaultValues: { password: "" },
 	});
 

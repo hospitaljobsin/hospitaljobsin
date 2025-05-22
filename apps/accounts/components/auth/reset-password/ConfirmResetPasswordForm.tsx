@@ -3,7 +3,7 @@
 import type { ConfirmResetPasswordFormMutation as ConfirmResetPasswordFormMutationType } from "@/__generated__/ConfirmResetPasswordFormMutation.graphql";
 import links from "@/lib/links";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -72,7 +72,7 @@ export default function ConfirmResetPasswordForm({
 		formState: { errors, isSubmitting },
 		setError,
 	} = useForm<z.infer<typeof confirmResetPasswordSchema>>({
-		resolver: zodResolver(confirmResetPasswordSchema),
+		resolver: standardSchemaResolver(confirmResetPasswordSchema),
 	});
 
 	function onSubmit(values: z.infer<typeof confirmResetPasswordSchema>) {

@@ -3,7 +3,7 @@
 import type { TwoFactorAuthenticationMutation as TwoFactorAuthenticationMutationType } from "@/__generated__/TwoFactorAuthenticationMutation.graphql";
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
@@ -60,7 +60,7 @@ export default function TwoFactorAuthentication({
 		setError,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof twoFactorAuthenticationSchema>>({
-		resolver: zodResolver(twoFactorAuthenticationSchema),
+		resolver: standardSchemaResolver(twoFactorAuthenticationSchema),
 	});
 
 	const { executeCaptcha } = useTurnstile();

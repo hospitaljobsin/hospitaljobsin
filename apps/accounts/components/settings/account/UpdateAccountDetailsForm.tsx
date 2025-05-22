@@ -2,15 +2,15 @@ import { useFragment, useMutation } from "react-relay";
 
 import type { UpdateAccountDetailsFormFragment$key } from "@/__generated__/UpdateAccountDetailsFormFragment.graphql";
 import {
-    Avatar,
-    Badge,
-    Button,
-    Card,
-    CardHeader,
-    Input,
-    Tooltip,
+	Avatar,
+	Badge,
+	Button,
+	Card,
+	CardHeader,
+	Input,
+	Tooltip,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
@@ -59,7 +59,7 @@ export default function UpdateAccountDetailsForm({
 		control,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		defaultValues: {
 			fullName: data.fullName,
 		},

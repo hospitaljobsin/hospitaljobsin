@@ -6,16 +6,16 @@ import links from "@/lib/links";
 import { getValidRedirectURL } from "@/lib/redirects";
 import { useRouter } from "@bprogress/next";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Divider,
-    Input,
-    Link,
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	CardHeader,
+	Divider,
+	Input,
+	Link,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
@@ -68,7 +68,7 @@ export default function TwoFactorAuthenticationForm() {
 		register,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof twoFactorAuthenticationForm>>({
-		resolver: zodResolver(twoFactorAuthenticationForm),
+		resolver: standardSchemaResolver(twoFactorAuthenticationForm),
 	});
 
 	const { executeCaptcha } = useTurnstile();

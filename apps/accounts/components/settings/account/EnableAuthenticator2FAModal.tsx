@@ -1,18 +1,18 @@
 import type { EnableAuthenticator2FAModalMutation } from "@/__generated__/EnableAuthenticator2FAModalMutation.graphql";
 import {
-    Button,
-    Code,
-    Divider,
-    InputOtp,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    Tooltip,
-    addToast,
+	Button,
+	Code,
+	Divider,
+	InputOtp,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	Tooltip,
+	addToast,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Clipboard } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -74,7 +74,7 @@ export default function EnableAuthenticator2FAModal({
 		setError,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		defaultValues: {
 			token: "",
 		},

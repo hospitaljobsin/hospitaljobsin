@@ -7,34 +7,34 @@ import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {
-    Accordion,
-    AccordionItem,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    DatePicker,
-    Input,
-    Kbd,
-    Link,
-    NumberInput,
-    Radio,
-    RadioGroup,
-    addToast,
-    cn,
-    useDisclosure,
+	Accordion,
+	AccordionItem,
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	DatePicker,
+	Input,
+	Kbd,
+	Link,
+	NumberInput,
+	Radio,
+	RadioGroup,
+	addToast,
+	cn,
+	useDisclosure,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import {
-    CalendarDateTime,
-    parseAbsoluteToLocal,
+	CalendarDateTime,
+	parseAbsoluteToLocal,
 } from "@internationalized/date";
 import type { Key } from "@react-types/shared";
 import {
-    BriefcaseBusiness,
-    IndianRupee,
-    MapPin,
-    TimerIcon,
+	BriefcaseBusiness,
+	IndianRupee,
+	MapPin,
+	TimerIcon,
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -154,7 +154,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 		control,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		reValidateMode: "onChange",
 		defaultValues: {
 			title: jobData.title,

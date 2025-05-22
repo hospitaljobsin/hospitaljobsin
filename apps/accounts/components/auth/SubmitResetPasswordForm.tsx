@@ -12,7 +12,7 @@ import {
 	Input,
 	Link,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
@@ -50,7 +50,7 @@ export default function SubmitResetPasswordFrom() {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof submitResetPasswordSchema>>({
-		resolver: zodResolver(submitResetPasswordSchema),
+		resolver: standardSchemaResolver(submitResetPasswordSchema),
 	});
 
 	const { executeCaptcha } = useTurnstile();

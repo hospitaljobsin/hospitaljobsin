@@ -3,7 +3,7 @@
 import type { Step1EmailFormMutation as Step1EmailFormMutationType } from "@/__generated__/Step1EmailFormMutation.graphql";
 import { useTurnstile } from "@/components/TurnstileProvider";
 import { Button, Input } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
@@ -48,7 +48,7 @@ export default function Step1EmailForm() {
 	);
 	const { executeCaptcha } = useTurnstile();
 	const { register, handleSubmit, formState, setError } = useForm({
-		resolver: zodResolver(step1Schema),
+		resolver: standardSchemaResolver(step1Schema),
 		defaultValues: { email: email || "" },
 	});
 

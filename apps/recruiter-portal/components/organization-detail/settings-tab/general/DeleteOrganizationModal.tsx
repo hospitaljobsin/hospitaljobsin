@@ -4,16 +4,16 @@ import type { DeleteOrganizationModalMutation } from "@/__generated__/DeleteOrga
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next/app";
 import {
-    Button,
-    Input,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    addToast,
+	Button,
+	Input,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	addToast,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { ConnectionHandler, graphql } from "relay-runtime";
@@ -82,7 +82,7 @@ export default function DeleteOrganizationModal({
 		setError,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		defaultValues: {
 			name: "",
 		},

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Input } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
 import z from "zod/v4";
 import SignupContext from "./SignupContext";
@@ -17,7 +17,7 @@ export default function Step3NameForm() {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm({
-		resolver: zodResolver(step3Schema),
+		resolver: standardSchemaResolver(step3Schema),
 		defaultValues: { password: "", fullName: "" },
 	});
 

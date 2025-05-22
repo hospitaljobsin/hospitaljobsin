@@ -1,15 +1,15 @@
 import type { ApplicationFormBuilderFragment$key } from "@/__generated__/ApplicationFormBuilderFragment.graphql";
 import type { ApplicationFormBuilderMutation as ApplicationFormBuilderMutationType } from "@/__generated__/ApplicationFormBuilderMutation.graphql";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    Checkbox,
-    Input,
-    addToast,
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	Checkbox,
+	Input,
+	addToast,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -112,7 +112,7 @@ export default function ApplicationFormBuilder({
 		reset,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		defaultValues: {
 			fields:
 				job.applicationForm != null

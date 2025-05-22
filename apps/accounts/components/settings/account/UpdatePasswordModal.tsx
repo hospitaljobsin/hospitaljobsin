@@ -1,15 +1,15 @@
 import type { UpdatePasswordModalFragment$key } from "@/__generated__/UpdatePasswordModalFragment.graphql";
 import type { UpdatePasswordModalMutation } from "@/__generated__/UpdatePasswordModalMutation.graphql";
 import {
-    Button,
-    Input,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
+	Button,
+	Input,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
 } from "@heroui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -86,7 +86,7 @@ export default function UpdatePasswordModal({
 		setError,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+		resolver: standardSchemaResolver(formSchema),
 		defaultValues: {
 			newPassword: "",
 			confirmNewPassword: "",
