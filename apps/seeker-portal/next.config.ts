@@ -33,9 +33,14 @@ const nextConfig: NextConfig = {
 	images: {
 		remotePatterns: [
 			{
-				protocol: "https",
-				hostname: "**",
+				protocol: 'https',
+				hostname: 'gravatar.com',
 			},
+			{
+				protocol: 'https',
+				hostname: 'www.gravatar.com',
+			},
+			// TODO: allow this only in dev/testing mode
 			{
 				protocol: "http",
 				hostname: "localhost",
