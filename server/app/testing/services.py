@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from fastapi import Request
 from webauthn.helpers.structs import AuthenticatorTransport
 
 from app.accounts.repositories import AccountRepo, ProfileRepo
@@ -7,6 +8,7 @@ from app.auth.documents import WebAuthnCredential
 from app.auth.repositories import (
     OauthCredentialRepo,
     RecoveryCodeRepo,
+    SessionRepo,
     WebAuthnCredentialRepo,
 )
 from app.testing.schemas import (
@@ -24,14 +26,21 @@ class TestSetupService:
         webauthn_credential_repo: WebAuthnCredentialRepo,
         recovery_code_repo: RecoveryCodeRepo,
         oauth_credential_repo: OauthCredentialRepo,
+        session_repo: SessionRepo,
     ) -> None:
         self._account_repo = account_repo
         self._profile_repo = profile_repo
         self._webauthn_credential_repo = webauthn_credential_repo
         self._recovery_code_repo = recovery_code_repo
         self._oauth_credential_repo = oauth_credential_repo
+        self._session_repo = session_repo
 
-    async def create_account(self, data: CreateTestUserSchema) -> TestUserSchema:
+    async def create_account(
+        self,
+        data: CreateTestUserSchema,
+        request: Request,
+        user_agent: str,
+    ) -> TestUserSchema:
         """Create an account for E2E testing."""
         if "password" in data.auth_providers and data.password is None:
             raise ValueError(
@@ -85,6 +94,19 @@ class TestSetupService:
                 recovery_codes.append(code)
 
         # TODO: set the session here
+        session_token = await self._session_repo.create(
+            ip_address=request.client.host,
+            user_agent=user_agent,
+            account=account,
+        )
+
+        self._set_user_session(
+            request=request,
+            value=session_token,
+        )
+
+        if data.enable_sudo_mode:
+            self._grant_sudo_mode(request)
 
         return TestUserSchema(
             id=account.id,
