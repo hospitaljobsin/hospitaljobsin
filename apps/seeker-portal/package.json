@@ -60,7 +60,7 @@
 		"@types/react-relay": "^18.2.1",
 		"@types/relay-runtime": "^19.0.1",
 		"babel-plugin-react-compiler": "19.1.0-rc.2",
-		"eslint": "^9.26.0",
+		"eslint": "^9.27.0",
 		"eslint-config-next": "^15.3.2",
 		"eslint-plugin-relay": "^2.0.0",
 		"postcss": "^8.5.3",
