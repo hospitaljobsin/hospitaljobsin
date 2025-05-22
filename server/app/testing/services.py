@@ -1,3 +1,5 @@
+from datetime import datetime
+from email.utils import format_datetime
 from uuid import uuid4
 
 from fastapi import Request
@@ -11,6 +13,7 @@ from app.auth.repositories import (
     SessionRepo,
     WebAuthnCredentialRepo,
 )
+from app.core.constants import SUDO_MODE_EXPIRES_IN
 from app.testing.schemas import (
     CreateTestUserSchema,
     TestUserSchema,
@@ -93,20 +96,23 @@ class TestSetupService:
                 )
                 recovery_codes.append(code)
 
-        # TODO: set the session here
+        # setup user session
         session_token = await self._session_repo.create(
             ip_address=request.client.host,
             user_agent=user_agent,
             account=account,
         )
 
-        self._set_user_session(
-            request=request,
-            value=session_token,
-        )
+        # set the session token
+        request.session["session_token"] = session_token
 
         if data.enable_sudo_mode:
-            self._grant_sudo_mode(request)
+            sudo_mode_expires_at = datetime.now(datetime.UTC) + datetime.timedelta(
+                seconds=SUDO_MODE_EXPIRES_IN
+            )
+            request.session["sudo_mode_expires_at"] = format_datetime(
+                sudo_mode_expires_at
+            )
 
         return TestUserSchema(
             id=account.id,
