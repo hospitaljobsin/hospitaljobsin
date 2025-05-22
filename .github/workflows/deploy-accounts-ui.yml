@@ -7,6 +7,10 @@ on:
     paths:
       - 'apps/accounts/**'
       - '.github/workflows/deploy-accounts-ui.yml'
+  workflow_run:
+    workflows: ["Backend Deploy"]
+    types:
+      - completed
 
 concurrency:
   group: ${{ github.workflow }}  # Ensures only one run of this workflow at a time
@@ -15,9 +19,27 @@ concurrency:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    # Only run the deploy steps if:
+    #  - we're in a workflow_run event (i.e. backend just deployed), OR
+    #  - it's a push, and there were NO server/queries changes
+    if: github.event_name == 'workflow_run' || (github.event_name == 'push' && needs.check.outputs.queries_changed == 'false')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Detect persisted queries changes
+        id: check
+        run: |
+          echo "Detecting changes in server/query_map.json between"
+          echo "  before: ${{ github.event.before }}"
+          echo "  after:  ${{ github.event.after }}"
+          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
+          echo "$FILES"
+          if echo "$FILES" | grep -qx 'server/query_map.json'; then
+            echo "::set-output name=query_map_changed::true"
+          else
+            echo "::set-output name=query_map_changed::false"
+          fi
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4

@@ -1,4 +1,4 @@
-name: Build and Push Backend Docker Image to AWS ECR
+name: Deploy Backend
 
 on:
   push:
@@ -8,6 +8,10 @@ on:
       - 'server/**'
       - '.github/workflows/deploy-backend.yml'
 
+concurrency:
+  group: ${{ github.workflow }}  # Ensures only one run of this workflow at a time
+  cancel-in-progress: false      # Waits instead of cancelling previous runs
+  
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
