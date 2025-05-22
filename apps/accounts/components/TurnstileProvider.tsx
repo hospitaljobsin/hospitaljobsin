@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { createContext, useContext, useRef, useState } from "react";
 
 type TurnstileContextType = {
-	executeCaptcha: ((event: string) => Promise<string | undefined>) | undefined;
+	executeCaptcha: ((event: string) => Promise<string>) | undefined;
 	token: string | null;
 };
 
@@ -21,11 +21,7 @@ export const TurnstileProvider = ({ children }: { children: ReactNode }) => {
 		undefined,
 	);
 
-	async function executeTurnstile(event: string): Promise<string | undefined> {
-		if (!turnstileRef.current) {
-			return undefined;
-		}
-
+	async function executeTurnstile(event: string): Promise<string> {
 		return new Promise((resolve) => {
 			pendingResolver.current = resolve;
 			turnstileRef.current?.execute(); // triggers Turnstile
@@ -47,7 +43,7 @@ export const TurnstileProvider = ({ children }: { children: ReactNode }) => {
 	return (
 		<TurnstileContext.Provider
 			value={{
-				executeCaptcha: executeTurnstile,
+				executeCaptcha: !turnstileRef.current ? undefined : executeTurnstile,
 				token,
 			}}
 		>
