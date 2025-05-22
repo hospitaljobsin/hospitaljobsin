@@ -26,6 +26,9 @@ from app.testing.routes import test_setup_router
 
 def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
     """Register routes for the app."""
+    if app_settings.is_testing:
+        # add E2E Setup API routes during testing
+        app.include_router(test_setup_router)
     app.include_router(
         create_graphql_router(app_settings=app_settings),
         prefix="/graphql",
@@ -33,9 +36,6 @@ def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
     app.include_router(health_router)
     app.include_router(auth_router)
     app.include_router(jobs_router)
-    if app_settings.is_testing:
-        # add E2E Setup API routes during testing
-        app.include_router(test_setup_router)
 
 
 def add_middleware(

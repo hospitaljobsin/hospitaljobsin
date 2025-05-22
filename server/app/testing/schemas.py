@@ -1,12 +1,18 @@
+from datetime import datetime
+
 from pydantic import BaseModel
+
+from app.core.constants import AuthProvider
 
 
 class CreateTestUserSchema(BaseModel):
     username: str
     password: str | None = None
+    full_name: str
     email: str
     two_factor_secret: str | None = None
     enable_sudo_mode: bool = True
+    auth_providers: list[AuthProvider]
 
 
 class WebAuthnCredentialSchema(BaseModel):
@@ -26,11 +32,11 @@ class TestUserSchema(BaseModel):
     email: str
     is_active: bool = True
     two_factor_secret: str | None = None
-    created_at: str
-    updated_at: str | None = None
+    created_at: datetime
+    updated_at: datetime | None = None
     profile: dict | None = None
     webauthn_credentials: list[WebAuthnCredentialSchema] = []
     recovery_codes: list[str] = []
-    auth_providers: list[str] = []
+    auth_providers: list[AuthProvider]
     has_2fa_enabled: bool = False
     two_factor_providers: list[str] = []
