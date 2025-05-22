@@ -90,7 +90,7 @@ const LoginFormPasskeyMutation = graphql`
 `;
 
 const loginSchema = z.object({
-	email: z.email("Invalid email").min(1, "This field is required"),
+	email: z.string().min(1, "This field is required").email(),
 	password: z.string().min(1, "This field is required"),
 });
 

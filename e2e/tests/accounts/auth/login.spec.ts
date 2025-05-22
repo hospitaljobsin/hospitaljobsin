@@ -57,11 +57,11 @@ test.describe("Login Page", () => {
 				.filter({ hasText: /^This field is required$/ })
 				.first(),
 		).toBeVisible();
-		await page
+		await expect(page
 			.locator("div")
 			.filter({ hasText: /^This field is required$/ })
 			.nth(2)
-			.click();
+		).toBeVisible();
 	});
 
 	test("should validate email format", async ({ page }) => {

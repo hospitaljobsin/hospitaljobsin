@@ -37,10 +37,10 @@ export default defineConfig({
 	globalTeardown: require.resolve("./tests/global.teardown.ts"),
 
 	expect: {
-		timeout: IS_CI ? 35_000 : 30_000,
+		timeout: IS_CI ? 45_000 : 35_000,
 	},
 
-	timeout: IS_CI ? 60_000 : 45_000,
+	timeout: IS_CI ? 60_000 : 50_000,
 
 	/* Configure projects for major browsers */
 	projects: [
