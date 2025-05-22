@@ -12,8 +12,8 @@ test_setup_router = APIRouter(prefix="/test-setup", tags=["test-setup"])
 
 
 @test_setup_router.post(
-    "/create-user",
-    description="Create an account for E2E testing",
+    "/create-account",
+    description="Create an account for E2E testing.",
     status_code=HTTPStatus.CREATED,
 )
 @inject
