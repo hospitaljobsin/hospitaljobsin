@@ -63,7 +63,7 @@ export default function AccountDetails({ rootQuery, onEditAccount }: Props) {
 						shape="circle"
 						showOutline={false}
 					>
-						<Avatar name={data.fullName} size="lg" src={data.avatarUrl} />
+						<Avatar name={data.fullName} size="lg" src={data.avatarUrl} data-testid="account-avatar" />
 					</Badge>
 					<div className="flex flex-col gap-2 w-full items-start justify-center">
 						<h1 className="w-full text-lg font-medium truncate max-w-64">
