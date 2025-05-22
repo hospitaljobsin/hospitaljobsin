@@ -7,14 +7,37 @@ on:
     paths:
       - 'apps/seeker-portal/**'
       - '.github/workflows/deploy-seeker-portal-ui.yml'
+  workflow_run:
+    workflows: ["Deploy Backend"]
+    types:
+      - completed
 
 concurrency:
   group: ${{ github.workflow }}  # Ensures only one run of this workflow at a time
   cancel-in-progress: false      # Waits instead of cancelling previous runs
 
 jobs:
-  build-and-push:
+  check:
     runs-on: ubuntu-latest
+    outputs:
+      query_map_changed: ${{ steps.detect.outputs.changed }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Detect persisted-query changes
+        uses: ./.github/actions/detect-changes
+        id: detect
+        with:
+          path: server/query_map.json
+
+  build-and-push:
+    needs: check
+    runs-on: ubuntu-latest
+    # Only deploy when:
+    #  • a backend workflow_run happened (so server is already up), OR
+    #  • a push happened and query_map.json did NOT change
+    if: github.event_name == 'workflow_run' || (github.event_name == 'push' && needs.check.outputs.query_map_changed == 'false')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
