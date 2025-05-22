@@ -22,7 +22,9 @@ jobs:
     outputs:
       query_map_changed: ${{ steps.detect.outputs.changed }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Detect persisted-query changes
         uses: ./.github/actions/detect-changes
         id: detect
