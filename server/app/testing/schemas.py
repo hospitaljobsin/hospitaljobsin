@@ -1,8 +1,9 @@
 from datetime import datetime
 
 from pydantic import BaseModel
+from webauthn.helpers.structs import AuthenticatorTransport
 
-from app.core.constants import AuthProvider
+from app.core.constants import AuthProvider, TwoFactorProvider
 
 
 class CreateTestUserSchema(BaseModel):
@@ -22,8 +23,8 @@ class WebAuthnCredentialSchema(BaseModel):
     device_type: str
     backed_up: bool
     nickname: str = "My Passkey"
-    transports: list[str] | None = None
-    last_used_at: str
+    transports: list[AuthenticatorTransport] | None = None
+    last_used_at: datetime
 
 
 class TestUserSchema(BaseModel):
@@ -31,12 +32,11 @@ class TestUserSchema(BaseModel):
     username: str
     email: str
     is_active: bool = True
-    two_factor_secret: str | None = None
+    two_factor_secret: str | None
     created_at: datetime
-    updated_at: datetime | None = None
-    profile: dict | None = None
-    webauthn_credentials: list[WebAuthnCredentialSchema] = []
-    recovery_codes: list[str] = []
+    updated_at: datetime | None
+    webauthn_credentials: list[WebAuthnCredentialSchema]
+    recovery_codes: list[str]
     auth_providers: list[AuthProvider]
-    has_2fa_enabled: bool = False
-    two_factor_providers: list[str] = []
+    has_2fa_enabled: bool
+    two_factor_providers: list[TwoFactorProvider]

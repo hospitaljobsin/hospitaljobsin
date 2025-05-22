@@ -96,6 +96,7 @@ from app.organizations.services import (
     OrganizationMemberService,
     OrganizationService,
 )
+from app.testing.services import TestSetupService
 
 settings_classes: list[type[BaseSettings]] = [
     AppSettings,
@@ -167,6 +168,10 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_s3_client))
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_captcha_verifier))
+    with container.sync_context() as ctx:
+        app_settings = ctx.resolve(AppSettings)
+    if app_settings.is_testing:
+        container.register(aioinject.Scoped(TestSetupService))
     container.register(aioinject.Scoped(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
     container.register(aioinject.Scoped(AuthService))
