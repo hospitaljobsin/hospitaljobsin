@@ -1,12 +1,13 @@
+import { expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
-	TESTER_EMAIL,
 	TWO_FACTOR_TESTER_1_EMAIL,
-	WEBAUTHN_TESTER_EMAIL,
+	WEBAUTHN_TESTER_EMAIL
 } from "@/tests/utils/constants";
-import { expect, test } from "@playwright/test";
 
 test.describe("Login Page", () => {
+	const id = test.info().parallelIndex;
+
 	test.beforeEach(async ({ page }) => {
 		// Navigate to login page
 		await page.goto("http://localhost:5002/auth/login");
@@ -115,7 +116,7 @@ test.describe("Login Page", () => {
 
 	test("should handle invalid credentials", async ({ page }) => {
 		// Fill form with invalid credentials
-		await page.getByLabel("Email Address").fill(TESTER_EMAIL);
+		await page.getByLabel("Email Address").fill(`tester-${id}@gmail.com`);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("invalidpassword");
@@ -160,7 +161,7 @@ test.describe("Login Page", () => {
 
 	test("should handle successful email-password login", async ({ page }) => {
 		// Fill form with valid credentials
-		await page.getByLabel("Email Address").fill(TESTER_EMAIL);
+		await page.getByLabel("Email Address").fill(`tester-${id}@gmail.com`);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -365,8 +366,9 @@ test.describe("Login Page", () => {
 });
 
 test.describe("Login Page Authentication Redirects", () => {
+    const id = test.info().parallelIndex;
 	test.use({
-		storageState: "playwright/.auth/user.json",
+		storageState: `playwright/.auth/${id}.json`,
 	});
 
 	test("should redirect to home page when already authenticated", async ({

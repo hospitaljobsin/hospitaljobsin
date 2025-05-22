@@ -1,10 +1,10 @@
+import { expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
-import { TESTER_EMAIL, TESTER_USERNAME } from "@/tests/utils/constants";
-import { expect, test } from "@playwright/test";
 
 test.describe("Account Settings Page", () => {
+    const id = test.info().parallelIndex;
 	test.use({
-		storageState: "playwright/.auth/user.json",
+		storageState: `playwright/.auth/${id}.json`,
 	});
 
     test.beforeEach(async ({ page }) => {
@@ -16,11 +16,11 @@ test.describe("Account Settings Page", () => {
 
     test("should display account settings page with all elements", async ({ page }) => {
         // Check for full name
-        const fullName = TESTER_USERNAME;
+        const fullName = `Tester ${id}`;
         await expect(page.getByText(fullName)).not.toBeNull();
 
         // Check for email
-        const email = TESTER_EMAIL;
+        const email = `tester-${id}@gmail.com`;
         await expect(page.getByText(email)).not.toBeNull();
 
         // Check for avatar (Gravatar image)
@@ -74,7 +74,7 @@ test.describe("Account Settings Page", () => {
         await waitForCaptcha({ page });
 
         // login with the new password
-        await page.getByLabel("Email Address").fill(TESTER_EMAIL);
+        await page.getByLabel("Email Address").fill(`tester-${id}@gmail.com`);
         await page
             .getByRole("textbox", { name: "Password Password" })
             .fill(newPassword);

@@ -1,14 +1,13 @@
+import { expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
 	NONEXISTENT_TESTER_EMAIL,
-	PASSWORD_RESET_TOKEN_COOLDOWN,
-	TESTER_EMAIL,
-	TESTER_EMAIL_2,
+	PASSWORD_RESET_TOKEN_COOLDOWN
 } from "@/tests/utils/constants";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
-import { expect, test } from "@playwright/test";
 
 test.describe("Request Password Reset Page", () => {
+	const id = test.info().parallelIndex;
 	test.beforeEach(async ({ page }) => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
@@ -71,7 +70,7 @@ test.describe("Request Password Reset Page", () => {
 		page,
 		request,
 	}) => {
-		const emailAddress = TESTER_EMAIL;
+		const emailAddress = `tester-${id}@gmail.com`;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -133,13 +132,18 @@ test.describe("Request Password Reset Page", () => {
 		await expect(page).toHaveURL(/\/auth\/login/);
 	});
 
+
+});
+
+test.describe("Request Password Reset Page Rate Limiting", () => {
+	const id = test.info().parallelIndex;
 	test("should handle cooldown on multiple password reset requests", async ({
 		page,
 		request,
 	}) => {
 		// increase timeout to incorporate cooldown
 		test.setTimeout(45_000);
-		const emailAddress = TESTER_EMAIL_2;
+		const emailAddress = `tester-${id}@gmail.com`;
 
 		// First password reset request
 
@@ -221,8 +225,9 @@ test.describe("Request Password Reset Page", () => {
 });
 
 test.describe("Request Password Reset Page Authentication Redirects", () => {
+    const id = test.info().parallelIndex;
 	test.use({
-		storageState: "playwright/.auth/user.json",
+		storageState: `playwright/.auth/${id}.json`,
 	});
 
 	test("should not redirect to home page when already authenticated", async ({

@@ -1,12 +1,6 @@
 export const TOTP_USER_SECRET = "RW5SJG5SRCHL3YEBPUOOIB6W5VDOF4MA";
 
-export const TESTER_EMAIL = "tester@example.org";
-
-export const TESTER_USERNAME = "Tester 1";
-
-export const TESTER_EMAIL_2 = "tester2@example.org";
-
-export const NONEXISTENT_TESTER_EMAIL = "nonexistent-tester@example.org";
+export const NONEXISTENT_TESTER_EMAIL = "tester-nonexistent@gmail.com";
 
 export const WEBAUTHN_TESTER_EMAIL = "webauthn-tester@example.org";
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
 from email.utils import format_datetime
 from uuid import uuid4
 
@@ -107,7 +107,7 @@ class TestSetupService:
         request.session["session_token"] = session_token
 
         if data.enable_sudo_mode:
-            sudo_mode_expires_at = datetime.now(datetime.UTC) + datetime.timedelta(
+            sudo_mode_expires_at = datetime.now(UTC) + timedelta(
                 seconds=SUDO_MODE_EXPIRES_IN
             )
             request.session["sudo_mode_expires_at"] = format_datetime(

@@ -1,14 +1,13 @@
+import { expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
 	RECOVERY_CODE_1,
-	TESTER_EMAIL,
 	TOTP_USER_SECRET,
-	TWO_FACTOR_TESTER_2_EMAIL,
+	TWO_FACTOR_TESTER_2_EMAIL
 } from "@/tests/utils/constants";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
 import type { PlaywrightTestArgs } from "@playwright/test";
-import { expect, test } from "@playwright/test";
 
 async function enterPassword({
 	page,
@@ -29,13 +28,14 @@ async function enterPassword({
 }
 
 test.describe("Confirm Password Reset Page", () => {
+	const id = test.info().parallelIndex;
 	test.beforeEach(async ({ page, request }) => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
-		const emailAddress = TESTER_EMAIL;
+		const emailAddress = `tester-${id}@gmail.com`;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -78,7 +78,7 @@ test.describe("Confirm Password Reset Page", () => {
 
 		// Check form elements
 		await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
-		await expect(page.getByLabel("Email Address")).toHaveValue(TESTER_EMAIL);
+		await expect(page.getByLabel("Email Address")).toHaveValue(`tester-${id}@gmail.com`);
 		await expect(
 			page.getByRole("textbox", { name: "New Password New Password" }),
 		).toBeVisible();
@@ -359,8 +359,9 @@ test.describe("Confirm Password Reset Page Not Found", () => {
 });
 
 test.describe("Confirm Password Reset Page Authentication Redirects", () => {
+    const id = test.info().parallelIndex;
 	test.use({
-		storageState: "playwright/.auth/user.json",
+		storageState: `playwright/.auth/${id}.json`,
 	});
 
 	test("should not redirect to home page when already authenticated", async ({
@@ -372,7 +373,7 @@ test.describe("Confirm Password Reset Page Authentication Redirects", () => {
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
-		const emailAddress = TESTER_EMAIL;
+		const emailAddress = `tester-${id}@gmail.com`;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 

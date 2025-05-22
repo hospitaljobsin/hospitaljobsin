@@ -1,10 +1,10 @@
+import { expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
 	TOTP_USER_SECRET,
 	TWO_FACTOR_TESTER_1_EMAIL,
 } from "@/tests/utils/constants";
-import { expect, test } from "@playwright/test";
 
 test.describe("2FA Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -116,8 +116,9 @@ test.describe("2FA Page 2FA Challenge Redirects", () => {
 });
 
 test.describe("2FA Page 2FA Authentication Redirects", () => {
+    const id = test.info().parallelIndex;
 	test.use({
-		storageState: "playwright/.auth/user.json",
+		storageState: `playwright/.auth/${id}.json`,
 	});
 
 	test("should redirect to home page when already authenticated", async ({

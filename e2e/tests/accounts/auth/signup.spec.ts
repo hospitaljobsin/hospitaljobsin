@@ -1,9 +1,9 @@
+import { expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { EMAIL_VERIFICATION_TOKEN_COOLDOWN } from "@/tests/utils/constants";
 import type { Email } from "@/tests/utils/mailcatcher";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
 import type { PlaywrightTestArgs } from "@playwright/test";
-import { expect, test } from "@playwright/test";
 
 async function findVerificationCode({
 	emailMessage,
@@ -527,8 +527,9 @@ test.describe("Sign Up Page", () => {
 });
 
 test.describe("Sign Up Page Authentication Redirects", () => {
+    const id = test.info().parallelIndex;
 	test.use({
-		storageState: "playwright/.auth/user.json",
+		storageState: `playwright/.auth/${id}.json`,
 	});
 
 	test("should redirect to home page when already authenticated", async ({

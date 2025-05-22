@@ -17,19 +17,6 @@ async def setup_test_database() -> None:
     ):
         # Create test data
         account_repo = AccountRepo()
-        await account_repo.create(
-            email="tester@example.org",
-            full_name="Tester 1",
-            auth_providers=["password"],
-            password="Password123!",
-        )
-
-        await account_repo.create(
-            email="tester2@example.org",
-            full_name="Tester 2",
-            auth_providers=["password"],
-            password="Password123!",
-        )
 
         webauthn_account = await account_repo.create(
             email="webauthn-tester@example.org",
