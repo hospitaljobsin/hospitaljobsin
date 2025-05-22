@@ -17,22 +17,24 @@ concurrency:
   cancel-in-progress: false      # Waits instead of cancelling previous runs
 
 jobs:
-  build-and-push:
+  check:
     runs-on: ubuntu-latest
-    # Only run the deploy steps if:
-    #  - we're in a workflow_run event (i.e. backend just deployed), OR
-    #  - it's a push, and there were NO server/queries changes
-    if: github.event_name == 'workflow_run' || (github.event_name == 'push' && needs.check.outputs.queries_changed == 'false')
+    outputs:
+      query_map_changed: ${{ steps.check.outputs.query_map_changed }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Detect persisted queries changes
+      - name: Detect server/query_map.json changes
         id: check
         run: |
-          echo "Detecting changes in server/query_map.json between"
-          echo "  before: ${{ github.event.before }}"
-          echo "  after:  ${{ github.event.after }}"
+          # For non-push events (i.e. workflow_run), we want query_map_changed=false
+          if [[ "${{ github.event_name }}" != "push" ]]; then
+            echo "::set-output name=query_map_changed::false"
+            exit 0
+          fi
+
+          # For push events, diff before→after and see if query_map.json was touched
+          echo "Diffing ${{ github.event.before }} → ${{ github.event.after }}"
           FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
           echo "$FILES"
           if echo "$FILES" | grep -qx 'server/query_map.json'; then
@@ -40,6 +42,17 @@ jobs:
           else
             echo "::set-output name=query_map_changed::false"
           fi
+
+  build-and-push:
+    needs: check
+    runs-on: ubuntu-latest
+    # Only deploy when:
+    #  • a backend workflow_run happened (so server is already up), OR
+    #  • a push happened and query_map.json did NOT change
+    if: github.event_name == 'workflow_run' || (github.event_name == 'push' && needs.check.outputs.query_map_changed == 'false')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
