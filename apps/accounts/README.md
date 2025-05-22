@@ -23,7 +23,7 @@ and other packages from [package.json](./package.json) 💖
 |-------------------------------------------------------|------------------------|--------------------------|
 | [Node.js](https://nodejs.org/en)                      | v20.18                 | Javascript Runtime       |
 | [PNPM](https://pnpm.io/)                              | 9.15                   | Package Manager          |
-| [Watchman](https://facebook.github.io/watchman/)      | 2024.10.28.00          | File Watching Service    |
+| [Watchman](https://facebook.github.io/watchman/)      | 20250413.093340.0      | File Watching Service    |
 
 1. Install dependencies
 ```bash
