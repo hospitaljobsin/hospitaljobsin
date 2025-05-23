@@ -1,19 +1,15 @@
-import { expect, test } from "@/playwright/fixtures";
+import { authTest, expect } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 
-test.describe("Account Settings Page", () => {
-	test.beforeAll(({testAccounts}) => {
-		test.use({storageState: testAccounts.storageStates.password})
-	});
-
-    test.beforeEach(async ({ page }) => {
+authTest.describe("Account Settings Page", () => {
+    authTest.beforeEach(async ({ page }) => {
         // Navigate to login page
         await page.goto("http://localhost:5002/settings");
         // Wait for recaptcha to load
         await waitForCaptcha({ page });
     });
 
-    test("should display account settings page with all elements", async ({ page, testAccounts }) => {
+    authTest("should display account settings page with all elements", async ({ page, testAccounts }) => {
         // Check for full name
         const fullName = testAccounts.passwordAccount.fullName;
         await expect(page.getByText(fullName)).not.toBeNull();
@@ -29,7 +25,7 @@ test.describe("Account Settings Page", () => {
         await expect(avatar).toBeVisible();
     });
 
-    test("should allow user to update their full name", async ({ page }) => {
+    authTest("should allow user to update their full name", async ({ page }) => {
         // Click the Edit button
         await page.getByRole('button', { name: /edit/i }).click();
 
@@ -42,12 +38,12 @@ test.describe("Account Settings Page", () => {
         await expect(page.getByText(newName)).toBeVisible();
     });
 
-    test("should disable delete password button", async ({ page }) => {
+    authTest("should disable delete password button", async ({ page }) => {
         // delete password button should be disabled when the password is the only auth provider
         await expect(page.getByRole('button', { name: /delete password/i })).toBeDisabled();
     });
 
-    test("should allow user to update their password", async ({ page, testAccounts }) => {
+    authTest("should allow user to update their password", async ({ page, testAccounts }) => {
         // Click the Edit button
         await page.getByRole('button', { name: /update password/i }).click();
 

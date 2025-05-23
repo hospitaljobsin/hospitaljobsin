@@ -1,4 +1,4 @@
-import { expect, test } from "@/playwright/fixtures";
+import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
 	NONEXISTENT_TESTER_EMAIL,
@@ -222,12 +222,8 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 	});
 });
 
-test.describe("Request Password Reset Page Authentication Redirects", () => {
-	test.beforeAll(({testAccounts}) => {
-		test.use({storageState: testAccounts.storageStates.password})
-	});
-
-	test("should not redirect to home page when already authenticated", async ({
+authTest.describe("Request Password Reset Page Authentication Redirects", () => {
+	authTest("should not redirect to home page when already authenticated", async ({
 		page,
 	}) => {
 		await page.goto("http://localhost:5002/auth/reset-password");

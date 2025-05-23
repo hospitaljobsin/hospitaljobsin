@@ -1,4 +1,4 @@
-import { expect, test } from "@/playwright/fixtures";
+import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { EMAIL_VERIFICATION_TOKEN_COOLDOWN } from "@/tests/utils/constants";
 import type { Email } from "@/tests/utils/mailcatcher";
@@ -526,12 +526,8 @@ test.describe("Sign Up Page", () => {
 	});
 });
 
-test.describe("Sign Up Page Authentication Redirects", () => {
-	test.beforeAll(({testAccounts}) => {
-		test.use({storageState: testAccounts.storageStates.password})
-	});
-
-	test("should redirect to home page when already authenticated", async ({
+authTest.describe("Sign Up Page Authentication Redirects", () => {
+	authTest("should redirect to home page when already authenticated", async ({
 		page,
 	}) => {
 		await page.goto("http://localhost:5002/auth/signup");

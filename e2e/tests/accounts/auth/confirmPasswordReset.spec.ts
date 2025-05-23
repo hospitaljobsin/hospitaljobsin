@@ -1,4 +1,4 @@
-import { expect, test } from "@/playwright/fixtures";
+import { authTest, expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
@@ -356,12 +356,8 @@ test.describe("Confirm Password Reset Page Not Found", () => {
 	});
 });
 
-test.describe("Confirm Password Reset Page Authentication Redirects", () => {
-	test.beforeAll(({testAccounts}) => {
-		test.use({storageState: testAccounts.storageStates.password})
-	});
-
-	test("should not redirect to home page when already authenticated", async ({
+authTest.describe("Confirm Password Reset Page Authentication Redirects", () => {
+	authTest("should not redirect to home page when already authenticated", async ({
 		page,
 		request, testAccounts
 	}) => {
