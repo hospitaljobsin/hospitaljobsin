@@ -1,4 +1,3 @@
-from app.accounts.repositories import AccountRepo
 from app.config import DatabaseSettings, get_settings
 from app.database import initialize_database
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -12,8 +11,9 @@ async def setup_test_database() -> None:
         database_url=str(settings.database_url),
         default_database_name=settings.default_database_name,
     ):
+        pass
         # Create test data
-        account_repo = AccountRepo()
+        # account_repo = AccountRepo()
 
         # webauthn_account = await account_repo.create(
         #     email="webauthn-tester@example.org",

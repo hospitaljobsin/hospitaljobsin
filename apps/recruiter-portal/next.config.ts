@@ -46,6 +46,10 @@ const nextConfig: NextConfig = {
 				protocol: 'https',
 				hostname: 'www.gravatar.com',
 			},
+			{
+				protocol: 'https',
+				hostname: 'api.dicebear.com',
+			},
 			// TODO: allow this only in dev/testing mode
 			{
 				protocol: "http",
