@@ -44,6 +44,7 @@ class WebAuthnCredentialSchema(BaseSchema):
 class TestUserSchema(BaseSchema):
     id: str
     email: str
+    full_name: str
     two_factor_secret: str | None
     created_at: datetime
     updated_at: datetime | None

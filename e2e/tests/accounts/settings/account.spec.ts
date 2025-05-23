@@ -17,7 +17,7 @@ authTest.describe("Account Settings Page", () => {
         await expect(page.getByText(email)).not.toBeNull();
 
         // Check for avatar (Gravatar image)
-        const avatar = page.locator('img[src*="gravatar.com"], [data-testid="account-avatar"]');
+        const avatar = page.getByTestId('account-avatar').getByRole('img', { name: fullName }).first();
 
         // Wait for it to be attached and visible
         await expect(avatar).toBeVisible();
@@ -55,14 +55,21 @@ authTest.describe("Account Settings Page", () => {
         .fill(newPassword);
         await page.getByRole('button', { name: /update password/i }).click();
 
-        // TODO: Ensure password has changed- log out and log back in
-        const navAvatar = page.locator('img[src*="gravatar.com"]').first();
+        // wait for modal to close here
+        await page.waitForSelector('section[role="dialog"][data-open="true"]', { state: 'detached' });
 
-        await navAvatar.click();
+        // Ensure password has changed- log out and log back in
+        const avatarButton = page.locator('button[aria-haspopup="true"]').last();
+        await expect(avatarButton).toBeVisible();
+        await avatarButton.click();
+
+        await expect(page.getByText("Signed in as")).toBeVisible();
 
         await page.getByText('Log Out').click();
 
-        await page.waitForURL('http://localhost:5002/auth/login');
+        // confirm logout
+        await page.getByRole('button', { name: 'Logout' }).click();
+        await page.waitForURL(/\/auth\/login/);
         // Wait for recaptcha to load
         await waitForCaptcha({ page });
 
@@ -73,7 +80,7 @@ authTest.describe("Account Settings Page", () => {
             .fill(newPassword);
         await page.getByRole("button", { name: "Log in" }).click();
 
-        await page.waitForURL("http://localhost:5000/");
+        await page.waitForURL("http://localhost:5002/settings");
     });
 
 

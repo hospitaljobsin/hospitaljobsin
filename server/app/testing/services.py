@@ -120,6 +120,7 @@ class TestSetupService:
         return TestUserSchema(
             id=str(account.id),
             email=account.email,
+            full_name=account.full_name,
             two_factor_secret=account.two_factor_secret,
             created_at=account.id.generation_time,
             updated_at=account.updated_at,

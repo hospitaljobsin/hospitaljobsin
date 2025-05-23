@@ -115,7 +115,9 @@ export default function UpdateAccountDetailsForm({
 							showOutline={false}
 						>
 							<Avatar
+								showFallback
 								name={data.fullName}
+								radius="full"
 								className="w-32 h-32"
 								src={data.avatarUrl}
 							/>
