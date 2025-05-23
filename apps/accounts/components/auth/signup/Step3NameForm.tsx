@@ -3,7 +3,7 @@
 import { Button, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
-import z from "zod/v4-mini";
+import { z } from "zod/v4-mini";
 import SignupContext from "./SignupContext";
 
 const step3Schema = z.object({
