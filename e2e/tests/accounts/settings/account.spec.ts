@@ -5,8 +5,6 @@ authTest.describe("Account Settings Page", () => {
     authTest.beforeEach(async ({ page }) => {
         // Navigate to login page
         await page.goto("http://localhost:5002/settings");
-        // Wait for recaptcha to load
-        await waitForCaptcha({ page });
     });
 
     authTest("should display account settings page with all elements", async ({ page, testAccounts }) => {

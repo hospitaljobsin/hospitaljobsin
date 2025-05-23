@@ -2,7 +2,7 @@ import { env } from "@/lib/env/client";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import { Turnstile } from "@marsidev/react-turnstile";
 import type { ReactNode } from "react";
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 type TurnstileContextType = {
 	executeCaptcha: ((event: string) => Promise<string>) | undefined;
@@ -15,16 +15,18 @@ const TurnstileContext = createContext<TurnstileContextType | undefined>(
 
 export const TurnstileProvider = ({ children }: { children: ReactNode }) => {
 	const [token, setToken] = useState<string | null>(null);
+	const [isReady, setIsReady] = useState(false);
 	const turnstileRef = useRef<TurnstileInstance>(null);
 
-	const pendingResolver = useRef<((token: string) => void) | undefined>(
-		undefined,
-	);
+	const pendingResolver = useRef<((token: string) => void) | undefined>(undefined);
 
 	async function executeTurnstile(event: string): Promise<string> {
+		if (!turnstileRef.current) {
+			throw new Error("Turnstile is not initialized");
+		}
 		return new Promise((resolve) => {
 			pendingResolver.current = resolve;
-			turnstileRef.current?.execute(); // triggers Turnstile
+			turnstileRef.current.execute();
 		});
 	}
 
@@ -34,16 +36,22 @@ export const TurnstileProvider = ({ children }: { children: ReactNode }) => {
 			pendingResolver.current(newToken);
 			pendingResolver.current = undefined;
 		}
-		// Reset Turnstile widget without blocking the promise resolution
 		setTimeout(() => {
 			turnstileRef.current?.reset();
 		}, 0);
 	};
 
+	// Set `isReady` to true when the ref becomes non-null
+	useEffect(() => {
+		if (turnstileRef.current && !isReady) {
+			setIsReady(true);
+		}
+	}, [turnstileRef.current]);
+
 	return (
 		<TurnstileContext.Provider
 			value={{
-				executeCaptcha: !turnstileRef.current ? undefined : executeTurnstile,
+				executeCaptcha: isReady ? executeTurnstile : undefined,
 				token,
 			}}
 		>

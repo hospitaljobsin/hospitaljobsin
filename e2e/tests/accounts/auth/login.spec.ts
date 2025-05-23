@@ -72,7 +72,7 @@ test.describe("Login Page", () => {
 		await expect(
 			page
 				.locator("div")
-				.filter({ hasText: /^Invalid email$/ })
+				.filter({ hasText: /^Invalid email address$/ })
 				.first(),
 		).toBeVisible();
 	});
