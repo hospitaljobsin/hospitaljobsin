@@ -14,10 +14,9 @@ import {
 	DropdownSection,
 	DropdownTrigger,
 	NavbarItem,
-	useDisclosure,
+	useDisclosure
 } from "@heroui/react";
 import { LogOutIcon } from "lucide-react";
-import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import LogoutModal from "./LogoutModal";
@@ -76,12 +75,12 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					<DrawerHeader>Navigation Menu</DrawerHeader>
 					<DrawerBody className="gap-4 flex flex-col items-center">
 						<div className="flex flex-row items-center gap-4 w-full">
-							<Image
+							<Avatar
 								src={data.avatarUrl}
-								alt={data.fullName}
-								width={25}
-								height={25}
-								className="rounded-full"
+								name={data.fullName}
+								showFallback
+								radius="full"
+								size="sm"
 							/>
 							<div className="flex flex-col gap-1 items-start">
 								<p className="text-tiny">Signed in as</p>
@@ -107,12 +106,12 @@ export default function AuthNavigation({ rootQuery }: Props) {
 				<Dropdown className="hidden md:block" placement="bottom-end">
 					<DropdownTrigger>
 						<Button disableRipple isIconOnly radius="sm" variant="light">
-							<Image
+							<Avatar
 								src={data.avatarUrl}
-								alt={data.fullName}
-								width={35}
-								height={35}
-								className="rounded-full"
+								name={data.fullName}
+								showFallback
+								radius="full"
+								size="sm"
 							/>
 						</Button>
 					</DropdownTrigger>
@@ -128,13 +127,13 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						<DropdownSection showDivider>
 							<DropdownItem key="account-info">
 								<div className="flex flex-row items-center gap-4 w-full">
-									<Image
-										src={data.avatarUrl}
-										alt={data.fullName}
-										width={25}
-										height={25}
-										className="rounded-full"
-									/>
+								<Avatar
+									src={data.avatarUrl}
+									name={data.fullName}
+									showFallback
+									radius="full"
+									size="sm"
+								/>
 									<div className="flex flex-col gap-1 items-start">
 										<p className="text-tiny">Signed in as</p>
 										<p className="truncate max-w-48 text-medium">
