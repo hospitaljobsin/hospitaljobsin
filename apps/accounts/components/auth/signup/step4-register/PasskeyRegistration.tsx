@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 import SignupContext from "../SignupContext";
 
 const GeneratePasskeyRegistrationOptionsMutation = graphql`
@@ -75,10 +75,7 @@ const RegisterWithPasskeyMutation = graphql`
 `;
 
 const passkeyRegistrationSchema = z.object({
-	nickname: z
-		.string()
-		.min(1, "This field is required")
-		.max(75, "Nickname cannot exceed 75 characters"),
+	nickname: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75, "Nickname cannot exceed 75 characters")),
 });
 
 export default function PasskeyRegistration() {
@@ -108,7 +105,7 @@ export default function PasskeyRegistration() {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
-	} = useForm({
+	} = useForm<z.infer<typeof passkeyRegistrationSchema>>({
 		resolver: standardSchemaResolver(passkeyRegistrationSchema),
 		defaultValues: { nickname: "My Passkey" },
 	});

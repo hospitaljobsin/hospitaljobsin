@@ -19,7 +19,7 @@ import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const PasskeysControllerFragment = graphql`
   fragment PasskeysControllerFragment on Account {
@@ -64,10 +64,7 @@ type Props = {
 };
 
 const createPasskeySchema = z.object({
-	nickname: z
-		.string()
-		.min(1, "This Field is required")
-		.max(75, "Nickname cannot exceed 75 characters"),
+	nickname: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75, "Nickname cannot exceed 75 characters")),
 });
 
 export default function PasskeysController({

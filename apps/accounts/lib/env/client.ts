@@ -3,11 +3,11 @@ import { z } from "zod/v4";
 
 export const env = createEnv({
 	client: {
-		NEXT_PUBLIC_URL: z.string().url(),
-		NEXT_PUBLIC_API_URL: z.string().url(),
+		NEXT_PUBLIC_URL: z.url(),
+		NEXT_PUBLIC_API_URL: z.url(),
 		NEXT_PUBLIC_CAPTCHA_SITE_KEY: z.string(),
-		NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: z.string().url(),
-		NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: z.string().url(),
+		NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: z.url(),
+		NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: z.url(),
 		NEXT_PUBLIC_SESSION_COOKIE_KEY: z.string(),
 		NEXT_PUBLIC_SENTRY_DSN: z.string(),
 		NEXT_PUBLIC_SENTRY_ORGANIZATION: z.string(),

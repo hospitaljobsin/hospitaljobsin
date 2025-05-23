@@ -115,7 +115,6 @@ test.describe("2FA Recovery Page", () => {
 	});
 
 	test("should successfully verify valid recovery code", async ({ page, testAccounts }) => {
-		// TODO: fill this from recovery codes, from the test account in context
 		await page.getByLabel("Recovery Code").fill(testAccounts.twoFactorAccount.recoveryCodes[0]);
 		await page.getByRole("button", { name: "Verify Code" }).click();
 

@@ -11,11 +11,11 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import z from "zod/v4";
+import z from "zod/v4-mini";
 import SignupContext from "./SignupContext";
 
 const step2Schema = z.object({
-	emailVerificationToken: z.string().min(1, "This field is required"),
+	emailVerificationToken:  z.string().check(z.minLength(1, "This field is required")),
 });
 
 const VerifyEmailMutation = graphql`
@@ -89,7 +89,7 @@ export default function Step2VerificationForm() {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		setError,
-	} = useForm({
+	} = useForm<z.infer<typeof step2Schema>>({
 		resolver: standardSchemaResolver(step2Schema),
 		defaultValues: { emailVerificationToken: emailVerificationToken || "" },
 	});
@@ -178,7 +178,7 @@ export default function Step2VerificationForm() {
 		});
 	};
 
-	const onSubmit = async (data: { emailVerificationToken: string }) => {
+	const onSubmit = async (data: z.infer<typeof step2Schema>) => {
 		if (!executeCaptcha) return;
 
 		const token = await executeCaptcha("verify_email");

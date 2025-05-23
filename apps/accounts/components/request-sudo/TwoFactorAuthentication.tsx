@@ -7,7 +7,7 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 import { useTurnstile } from "../TurnstileProvider";
 
 const TwoFactorAuthenticationMutation = graphql`
@@ -32,7 +32,7 @@ const TwoFactorAuthenticationMutation = graphql`
 `;
 
 const twoFactorAuthenticationSchema = z.object({
-	twoFactorToken: z.string().min(1, "This field is required"),
+	twoFactorToken: z.string().check(z.minLength(1, "This field is required")),
 });
 
 export default function TwoFactorAuthentication({

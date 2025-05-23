@@ -18,7 +18,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const CreateOrganizationMutation = graphql`
 mutation NewOrganizationFormMutation($fullName: String!, $slug: String!, $website: String, $description: String, $logoUrl: String) {
@@ -44,15 +44,10 @@ mutation NewOrganizationFormLogoPresignedUrlMutation {
 `;
 
 const formSchema = z.object({
-	fullName: z.string().min(1, "This field is required").max(75),
-	slug: z
-		.string()
-		.min(1, "This field is required")
-		.max(75)
-		.regex(/^[a-z0-9-]+$/, "Must be a valid slug")
-		.refine((value) => value === value.toLowerCase(), "Must be lowercase"),
-	website: z.union([z.string().url("Invalid URL").nullish(), z.literal("")]),
-	description: z.string().nullable(),
+	fullName: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75)),
+	slug: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75), z.regex(/^[a-z0-9-]+$/, "Must be a valid slug"), z.refine((value) => value === value.toLowerCase(), "Must be lowercase")),
+	website: z.union([z.nullish(z.string().check(z.url("Invalid URL"))), z.literal("")]),
+	description: z.nullable(z.string()),
 });
 
 export default function NewOrganizationForm() {

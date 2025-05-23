@@ -14,7 +14,7 @@ import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import invariant from "tiny-invariant";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const ApplicationFormBuilderFragment = graphql`
   fragment ApplicationFormBuilderFragment on Query @argumentDefinitions(
@@ -80,9 +80,9 @@ const ApplicationFormBuilderMutation = graphql`
 const formSchema = z.object({
 	fields: z.array(
 		z.object({
-			fieldName: z.string().min(1, "This field is required"),
-			defaultValue: z.string().nullable(),
-			isRequired: z.boolean().default(false),
+			fieldName: z.string().check(z.minLength(1, "This field is required")),,
+			defaultValue: z.nullable(z.string()),
+			isRequired: z.boolean(),
 		}),
 	),
 });

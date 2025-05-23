@@ -17,7 +17,7 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { ConnectionHandler, graphql } from "relay-runtime";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const DeleteOrganizationModalFragment = graphql`
     fragment DeleteOrganizationModalFragment on Organization {
@@ -51,7 +51,7 @@ const DeleteOrganizationMutation = graphql`
 `;
 
 const formSchema = z.object({
-	name: z.string().min(1, "This field is required"),
+	name: z.string().check(z.minLength(1, "This field is required")),
 });
 
 export default function DeleteOrganizationModal({

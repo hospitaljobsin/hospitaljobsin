@@ -20,7 +20,7 @@ import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const TwoFactorRecoveryCodeFormMutation = graphql`
   mutation TwoFactorRecoveryCodeFormMutation($token: String!, $captchaToken: String!) {
@@ -46,7 +46,7 @@ const TwoFactorRecoveryCodeFormMutation = graphql`
 `;
 
 const twoFactorRecoveryCodeForm = z.object({
-	token: z.string().min(1, "This field is required"),
+	token: z.string().check(z.minLength(1, "This field is required")),
 });
 
 export default function TwoFactorRecoveryCodeForm() {

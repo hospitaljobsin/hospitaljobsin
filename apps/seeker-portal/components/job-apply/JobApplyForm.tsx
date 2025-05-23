@@ -9,7 +9,7 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const JobApplyFormFragment = graphql`
   fragment JobApplyFormFragment on Job {
@@ -74,12 +74,13 @@ const CreateJobApplicantMutation = graphql`
 const formSchema = z.object({
 	applicantFields: z.array(
 		z.object({
-			fieldValue: z.string().min(1, "This field is required"),
+			fieldValue: z.string().check(
+				z.minLength(1, "This field is required"),),
 		}),
 	),
 	resume: z
 		.instanceof(File)
-		.refine((file) => file && file.size > 0, "Resume is required"),
+		.check(z.refine((file) => file && file.size > 0, "Resume is required")),
 });
 
 export default function JobApplyForm({

@@ -8,11 +8,11 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import z from "zod/v4";
+import z from "zod/v4-mini";
 import SignupContext from "./SignupContext";
 
 const step1Schema = z.object({
-	email: z.string().min(1, "This field is required").email("Invalid email"),
+	email:  z.string().check(z.minLength(1, "This field is required"), z.email()),
 });
 
 const RequestVerificationMutation = graphql`
@@ -47,7 +47,7 @@ export default function Step1EmailForm() {
 		(state) => state.context.emailError,
 	);
 	const { executeCaptcha } = useTurnstile();
-	const { register, handleSubmit, formState, setError } = useForm({
+	const { register, handleSubmit, formState, setError } = useForm<z.infer<typeof step1Schema>>({
 		resolver: standardSchemaResolver(step1Schema),
 		defaultValues: { email: email || "" },
 	});
@@ -64,7 +64,7 @@ export default function Step1EmailForm() {
 		RequestVerificationMutation,
 	);
 
-	const onSubmit = async (data: { email: string }) => {
+	const onSubmit = async (data: z.infer<typeof step1Schema>) => {
 		if (!executeCaptcha) return;
 
 		const token = await executeCaptcha("email_verification");

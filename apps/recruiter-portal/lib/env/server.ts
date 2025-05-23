@@ -9,7 +9,7 @@ export function createServerEnv(): Readonly<{
 	return createEnv({
 		server: {
 			JWE_SECRET_KEY: z.string(),
-			API_URL: z.string().url(),
+			API_URL: z.url(),
 		},
 		runtimeEnv: {
 			JWE_SECRET_KEY: process.env.JWE_SECRET_KEY,

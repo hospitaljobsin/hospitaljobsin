@@ -4,7 +4,7 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const UpdateLanguagesFormMutation = graphql`
 mutation UpdateLanguagesFormMutation($languages: [LanguageInput!]!) {
@@ -41,8 +41,8 @@ type Props = {
 const formSchema = z.object({
 	languages: z.array(
 		z.object({
-			name: z.string().min(1, "This field is required").max(75),
-			proficiency: z.string().min(1, "This field is required").max(75),
+			name: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75)),
+			proficiency: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75),)
 		}),
 	),
 });

@@ -17,7 +17,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const UpdateOrganizationFormMutation = graphql`
 mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $description: String) {
@@ -72,14 +72,14 @@ type Props = {
 };
 
 const formSchema = z.object({
-	name: z.string().min(1, { message: "Organization name is required" }),
-	slug: z.string().min(1, { message: "Slug is required" }),
-	website: z.string().url({ message: "Invalid URL" }).optional().nullable(),
+	name: z.string().check(z.minLength(1, { error: "Organization name is required" })),
+	slug: z.string().check(z.minLength(1, {error: "Slug is required"})),
+	website: z.nullable(z.optional(z.url({ error: "Invalid URL" }))),
 	description: z.union([
-		z.string().max(300).optional().nullable(),
+		z.nullable(z.optional(z.string().check(z.maxLength(300)))),
 		z.literal(""),
 	]),
-	location: z.string().nullable(),
+	location: z.nullable(z.string()),
 });
 
 export default function UpdateOrganizationForm({ rootQuery }: Props) {

@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const ConfirmResetPasswordFormMutation = graphql`
   mutation ConfirmResetPasswordFormMutation($email: String!, $passwordResetToken: String!, $newPassword: String!) {
@@ -32,27 +32,29 @@ const confirmResetPasswordSchema = z
 	.object({
 		password: z
 			.string()
-			.min(1, "This field is required")
-			.min(8, "Password must be at least 8 characters long.")
-			.refine((password) => /[a-z]/.test(password), {
+			.check(z.minLength(1, "This field is required"),
+				z.minLength(8, "Password must be at least 8 characters long."),
+			z.refine((password) => /[a-z]/.test(password), {
 				message: "Password must contain at least one lowercase letter.",
-			})
-			.refine((password) => /[A-Z]/.test(password), {
+			}),
+			z.refine((password) => /[A-Z]/.test(password), {
 				message: "Password must contain at least one uppercase letter.",
-			})
-			.refine((password) => /\d/.test(password), {
+			}),
+			z.refine((password) => /\d/.test(password), {
 				message: "Password must contain at least one number.",
-			})
-			.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
+			}),
+			z.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
 				message:
 					"Password must contain at least one special character (!@#$%^&*()-_=+).",
-			}),
-		confirmPassword: z.string().min(1, "This field is required"),
+			})
+		),
+		confirmPassword: z.string().check(z.minLength(1, "This field is required")),
 	})
-	.refine((data) => data.password === data.confirmPassword, {
+	.check(
+	z.refine((data) => data.password === data.confirmPassword, {
 		message: "Passwords don't match",
 		path: ["confirmPassword"],
-	});
+	}));
 
 export default function ConfirmResetPasswordForm({
 	email,

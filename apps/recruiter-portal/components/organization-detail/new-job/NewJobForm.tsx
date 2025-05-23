@@ -40,7 +40,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 import CancelNewJobModal from "./CancelNewJobModal";
 
 const CreateJobMutation = graphql`
@@ -115,22 +115,21 @@ fragment NewJobFormOrganizationFragment on Organization {
 `;
 
 const formSchema = z.object({
-	title: z.string().min(1, "This field is required").max(75),
-	description: z.string().min(1, "This field is required").max(2000),
-	vacancies: z.number().positive().nullable(),
+	title: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75)),
+	description: z.string().check(z.minLength(1, "This field is required"), z.maxLength(2000)),
+	vacancies: z.nullable(z.number().check(z.positive())),
 	skills: z.array(z.object({ value: z.string() })),
-	location: z.string().nullable(),
-	minSalary: z.number().positive().nullable(),
-	maxSalary: z.number().positive().nullable(),
-	minExperience: z.number().positive().nullable(),
-	maxExperience: z.number().positive().nullable(),
-	expiresAt: z.instanceof(CalendarDateTime).nullable(),
-	jobType: z
-		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])
-		.nullable(),
-	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE"]).nullable(),
-	isExternal: z.boolean().default(false),
-	externalApplicationUrl: z.string().url().nullable().optional(),
+	location: z.nullable(z.string()),
+	minSalary: z.nullable(z.number().check(z.positive())),
+	maxSalary: z.nullable(z.number().check(z.positive())),
+	minExperience: z.nullable(z.number().check(z.positive())),
+	maxExperience: z.nullable(z.number().check(z.positive())),
+	expiresAt: z.nullable(z.instanceof(CalendarDateTime)),
+	jobType: z.nullable(z
+		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])),
+	workMode: z.nullable(z.enum(["HYBRID", "OFFICE", "REMOTE"])),
+	isExternal: z.boolean(),
+	externalApplicationUrl: z.nullable(z.optional( z.url())),
 });
 
 type Props = {

@@ -17,7 +17,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 import { useTurnstile } from "../TurnstileProvider";
 
 const SubmitResetPasswordFormMutation = graphql`
@@ -36,7 +36,7 @@ const SubmitResetPasswordFormMutation = graphql`
 `;
 
 const submitResetPasswordSchema = z.object({
-	email: z.string().min(1, "This field is required").email("Invalid email"),
+	email:  z.string().check(z.minLength(1, "This field is required"), z.email()),
 });
 
 export default function SubmitResetPasswordFrom() {

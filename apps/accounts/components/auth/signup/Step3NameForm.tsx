@@ -3,11 +3,11 @@
 import { Button, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
-import z from "zod/v4";
+import z from "zod/v4-mini";
 import SignupContext from "./SignupContext";
 
 const step3Schema = z.object({
-	fullName: z.string().min(1, "This field is required"),
+	fullName: z.string().check(z.minLength(1, "This field is required")),
 });
 
 export default function Step3NameForm() {
@@ -16,12 +16,12 @@ export default function Step3NameForm() {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
-	} = useForm({
+	} = useForm<z.infer<typeof step3Schema>>({
 		resolver: standardSchemaResolver(step3Schema),
-		defaultValues: { password: "", fullName: "" },
+		defaultValues: { fullName: "" },
 	});
 
-	const onSubmit = async (data: { password: string; fullName: string }) => {
+	const onSubmit = async (data: z.infer<typeof step3Schema>) => {
 		send({
 			type: "SET_FULL_NAME",
 			fullName: data.fullName,

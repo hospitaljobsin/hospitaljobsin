@@ -18,7 +18,7 @@ import {
 	useFragment,
 	useMutation,
 } from "react-relay";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 type Props = {
 	isOpen: boolean;
@@ -28,7 +28,7 @@ type Props = {
 };
 
 const inviteMemberSchema = z.object({
-	email: z.string().min(1, "This field is required").email("Invalid email"),
+	email: z.string().check(z.minLength(1, "This field is required"), z.email("Invalid email address")),
 });
 
 const InviteMemberModalMutation = graphql`

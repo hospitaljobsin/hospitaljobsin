@@ -15,7 +15,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const UpdatePasswordModalFragment = graphql`
   fragment UpdatePasswordModalFragment on Account {
@@ -43,27 +43,29 @@ const formSchema = z
 	.object({
 		newPassword: z
 			.string()
-			.min(1, "This field is required")
-			.min(8, "Password must be at least 8 characters long.")
-			.refine((password) => /[a-z]/.test(password), {
+			.check(z.minLength(1, "This field is required"),
+				z.minLength(8, "Password must be at least 8 characters long."),
+			z.refine((password) => /[a-z]/.test(password), {
 				message: "Password must contain at least one lowercase letter.",
-			})
-			.refine((password) => /[A-Z]/.test(password), {
+			}),
+			z.refine((password) => /[A-Z]/.test(password), {
 				message: "Password must contain at least one uppercase letter.",
-			})
-			.refine((password) => /\d/.test(password), {
+			}),
+			z.refine((password) => /\d/.test(password), {
 				message: "Password must contain at least one number.",
-			})
-			.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
+			}),
+			z.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
 				message:
 					"Password must contain at least one special character (!@#$%^&*()-_=+).",
-			}),
-		confirmNewPassword: z.string().min(1, "This field is required"),
+			})
+		),
+		confirmNewPassword: z.string().check(z.minLength(1, "This field is required")),
 	})
-	.refine((data) => data.newPassword === data.confirmNewPassword, {
+	.check(
+	z.refine((data) => data.newPassword === data.confirmNewPassword, {
 		message: "Passwords don't match",
 		path: ["confirmNewPassword"],
-	});
+	}));
 
 export default function UpdatePasswordModal({
 	isOpen,

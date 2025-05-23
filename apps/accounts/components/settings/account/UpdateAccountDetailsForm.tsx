@@ -15,7 +15,7 @@ import { InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { graphql } from "relay-runtime";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const UpdateAccountDetailsFormMutation = graphql`
 mutation UpdateAccountDetailsFormMutation($fullName: String!)  {
@@ -42,7 +42,7 @@ type Props = {
 };
 
 const formSchema = z.object({
-	fullName: z.string().min(1, "This field is required").max(75),
+	fullName: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75, "This field must be at most 75 characters long")),
 });
 
 export default function UpdateAccountDetailsForm({

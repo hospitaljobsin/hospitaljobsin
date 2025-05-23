@@ -11,7 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 import { useTurnstile } from "../TurnstileProvider";
 
 const PasswordAuthenticationMutation = graphql`
@@ -36,7 +36,7 @@ const PasswordAuthenticationMutation = graphql`
 `;
 
 const passwordAuthenticationSchema = z.object({
-	password: z.string().min(1, "This field is required"),
+	password: z.string().check(z.minLength(1, "This field is required")),
 });
 
 export default function PasswordAuthentication({

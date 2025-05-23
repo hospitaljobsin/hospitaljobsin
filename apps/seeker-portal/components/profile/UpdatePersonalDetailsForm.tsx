@@ -13,7 +13,7 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { CalendarDate, parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
-import { z } from "zod/v4";
+import { z } from "zod/v4-mini";
 
 const UpdatePersonalDetailsFormMutation = graphql`
 mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $address: AddressInput!, $maritalStatus: MaritalStatusType, $category: String) {
@@ -55,18 +55,18 @@ type Props = {
 };
 
 const formSchema = z.object({
-	gender: z.enum(["MALE", "FEMALE", "OTHER"]).nullable(),
-	dateOfBirth: z.instanceof(CalendarDate).nullable(),
+	gender: z.nullable(z.enum(["MALE", "FEMALE", "OTHER"])),
+	dateOfBirth: z.nullable(z.instanceof(CalendarDate)),
 	address: z.object({
-		city: z.string().nullable(),
-		country: z.string().nullable(),
-		line1: z.string().nullable(),
-		line2: z.string().nullable(),
-		pincode: z.string().nullable(),
-		state: z.string().nullable(),
+		city: z.nullable(z.string()),
+		country: z.nullable(z.string()),
+		line1: z.nullable(z.string()),
+		line2: z.nullable(z.string()),
+		pincode: z.nullable(z.string()),
+		state: z.nullable(z.string()),
 	}),
-	maritalStatus: z.enum(["MARRIED", "SINGLE"]).nullable(),
-	category: z.union([z.string().max(25).nullable(), z.literal("")]),
+	maritalStatus: z.nullable(z.enum(["MARRIED", "SINGLE"])),
+	category: z.union([z.nullable(z.string().check(z.maxLength(25))), z.literal("")]),
 });
 
 export default function UpdatePersonalDetailsForm({
