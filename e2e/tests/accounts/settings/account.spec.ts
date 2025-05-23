@@ -2,9 +2,8 @@ import { expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 
 test.describe("Account Settings Page", () => {
-    const id = test.info().parallelIndex;
-	test.use({
-		storageState: `playwright/.auth/${id}.json`,
+	test.beforeAll(({testAccounts}) => {
+		test.use({storageState: testAccounts.storageStates.password})
 	});
 
     test.beforeEach(async ({ page }) => {
@@ -14,13 +13,13 @@ test.describe("Account Settings Page", () => {
         await waitForCaptcha({ page });
     });
 
-    test("should display account settings page with all elements", async ({ page }) => {
+    test("should display account settings page with all elements", async ({ page, testAccounts }) => {
         // Check for full name
-        const fullName = `Tester ${id}`;
+        const fullName = testAccounts.passwordAccount.fullName;
         await expect(page.getByText(fullName)).not.toBeNull();
 
         // Check for email
-        const email = `tester-${id}@gmail.com`;
+        const email = testAccounts.passwordAccount.email;
         await expect(page.getByText(email)).not.toBeNull();
 
         // Check for avatar (Gravatar image)
@@ -48,7 +47,7 @@ test.describe("Account Settings Page", () => {
         await expect(page.getByRole('button', { name: /delete password/i })).toBeDisabled();
     });
 
-    test("should allow user to update their password", async ({ page }) => {
+    test("should allow user to update their password", async ({ page, testAccounts }) => {
         // Click the Edit button
         await page.getByRole('button', { name: /update password/i }).click();
 
@@ -74,7 +73,7 @@ test.describe("Account Settings Page", () => {
         await waitForCaptcha({ page });
 
         // login with the new password
-        await page.getByLabel("Email Address").fill(`tester-${id}@gmail.com`);
+        await page.getByLabel("Email Address").fill(testAccounts.passwordAccount.email);
         await page
             .getByRole("textbox", { name: "Password Password" })
             .fill(newPassword);

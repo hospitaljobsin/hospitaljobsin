@@ -27,14 +27,13 @@ async function enterPassword({
 }
 
 test.describe("Confirm Password Reset Page", () => {
-	const id = test.info().parallelIndex;
-	test.beforeEach(async ({ page, request }) => {
+	test.beforeEach(async ({ page, request, testAccounts }) => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
-		const emailAddress = `tester-${id}@gmail.com`;
+		const emailAddress = testAccounts.passwordAccount.email;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -68,7 +67,7 @@ test.describe("Confirm Password Reset Page", () => {
 	});
 
 	test("should display confirm reset password form with all elements", async ({
-		page,
+		page, testAccounts
 	}) => {
 		// Check page title
 		await expect(page).toHaveTitle(/Password Reset/);
@@ -77,7 +76,7 @@ test.describe("Confirm Password Reset Page", () => {
 
 		// Check form elements
 		await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
-		await expect(page.getByLabel("Email Address")).toHaveValue(`tester-${id}@gmail.com`);
+		await expect(page.getByLabel("Email Address")).toHaveValue(testAccounts.passwordAccount.email);
 		await expect(
 			page.getByRole("textbox", { name: "New Password New Password" }),
 		).toBeVisible();
@@ -180,14 +179,13 @@ test.describe("Confirm Password Reset Page", () => {
 });
 
 test.describe("2FA Confirm Password Reset Page", () => {
-	const id = test.info().parallelIndex;
-	test.beforeEach(async ({ page, request }) => {
+	test.beforeEach(async ({ page, request, testAccounts }) => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
-		const emailAddress =  `two-factor-${id}@gmail.com`;
+		const emailAddress = testAccounts.twoFactorAccount.email;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -220,7 +218,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		await page.goto(resetLink);
 	});
 
-	test("should display 2FA form with all elements", async ({ page }) => {
+	test("should display 2FA form with all elements", async ({ page, testAccounts }) => {
 		// Check page title
 		await expect(page).toHaveTitle(/Password Reset/);
 
@@ -229,7 +227,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		// Check form elements
 		await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
 		await expect(page.getByLabel("Email Address")).toHaveValue(
-			 `two-factor-${id}@gmail.com`,
+			 testAccounts.twoFactorAccount.email,
 		);
 		await expect(page.getByLabel("2FA Code")).toBeVisible();
 		await expect(
@@ -360,21 +358,20 @@ test.describe("Confirm Password Reset Page Not Found", () => {
 });
 
 test.describe("Confirm Password Reset Page Authentication Redirects", () => {
-    const id = test.info().parallelIndex;
-	test.use({
-		storageState: `playwright/.auth/${id}.json`,
+	test.beforeAll(({testAccounts}) => {
+		test.use({storageState: testAccounts.storageStates.password})
 	});
 
 	test("should not redirect to home page when already authenticated", async ({
 		page,
-		request,
+		request, testAccounts
 	}) => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
-		const emailAddress = `tester-${id}@gmail.com`;
+		const emailAddress = testAccounts.passwordAccount.email;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 

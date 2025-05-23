@@ -527,9 +527,8 @@ test.describe("Sign Up Page", () => {
 });
 
 test.describe("Sign Up Page Authentication Redirects", () => {
-    const id = test.info().parallelIndex;
-	test.use({
-		storageState: `playwright/.auth/${id}.json`,
+	test.beforeAll(({testAccounts}) => {
+		test.use({storageState: testAccounts.storageStates.password})
 	});
 
 	test("should redirect to home page when already authenticated", async ({

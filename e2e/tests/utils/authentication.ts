@@ -13,7 +13,7 @@ type WebAuthnCredential = {
     lastUsedAt: string;
 }
 
-type TestAccount = {
+export type TestAccount = {
     id: string;
     isActive: boolean;
     fullName: string;
@@ -29,14 +29,16 @@ type TestAccount = {
     twoFactorProviders: TwoFactorProvider[];
 }
 
-export async function createTestAccount({fullName, password, email, twoFactorSecret, enableSudoMode, authProviders}: {
+export type CreateTestAccountData = {
     fullName: string;
     password: string | null;
     email: string;
     twoFactorSecret: string | null;
     enableSudoMode: boolean;
     authProviders: AuthProvider[];
-}): Promise<TestAccount> {
+};
+
+export async function createTestAccount({fullName, password, email, twoFactorSecret, enableSudoMode, authProviders}: CreateTestAccountData): Promise<TestAccount> {
     const res = await fetch('http://localhost:8000/test-setup/create-account', {
         method: 'POST',
         headers: {

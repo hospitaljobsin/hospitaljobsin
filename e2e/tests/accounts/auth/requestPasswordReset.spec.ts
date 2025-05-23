@@ -7,7 +7,6 @@ import {
 import { findLastEmail } from "@/tests/utils/mailcatcher";
 
 test.describe("Request Password Reset Page", () => {
-	const id = test.info().parallelIndex;
 	test.beforeEach(async ({ page }) => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
@@ -68,9 +67,9 @@ test.describe("Request Password Reset Page", () => {
 
 	test("should successfully send password reset email", async ({
 		page,
-		request,
+		request, testAccounts
 	}) => {
-		const emailAddress = `tester-${id}@gmail.com`;
+		const emailAddress = testAccounts.passwordAccount.email;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -139,11 +138,11 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 	const id = test.info().parallelIndex;
 	test("should handle cooldown on multiple password reset requests", async ({
 		page,
-		request,
+		request, testAccounts
 	}) => {
 		// increase timeout to incorporate cooldown
 		test.setTimeout(45_000);
-		const emailAddress = `tester-${id}@gmail.com`;
+		const emailAddress = testAccounts.passwordAccount.email;
 
 		// First password reset request
 
@@ -225,9 +224,8 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 });
 
 test.describe("Request Password Reset Page Authentication Redirects", () => {
-    const id = test.info().parallelIndex;
-	test.use({
-		storageState: `playwright/.auth/${id}.json`,
+	test.beforeAll(({testAccounts}) => {
+		test.use({storageState: testAccounts.storageStates.password})
 	});
 
 	test("should not redirect to home page when already authenticated", async ({

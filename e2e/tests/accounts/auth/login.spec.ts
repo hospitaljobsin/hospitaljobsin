@@ -2,7 +2,6 @@ import { expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 
 test.describe("Login Page", () => {
-	const id = test.info().parallelIndex;
 
 	test.beforeEach(async ({ page }) => {
 		// Navigate to login page
@@ -110,9 +109,9 @@ test.describe("Login Page", () => {
 		).toHaveAttribute("type", "password");
 	});
 
-	test("should handle invalid credentials", async ({ page }) => {
+	test("should handle invalid credentials", async ({ page, testAccounts }) => {
 		// Fill form with invalid credentials
-		await page.getByLabel("Email Address").fill(`tester-${id}@gmail.com`);
+		await page.getByLabel("Email Address").fill(testAccounts.passwordAccount.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("invalidpassword");
@@ -155,9 +154,9 @@ test.describe("Login Page", () => {
 		await expect(page).toHaveURL(/\/auth\/reset-password/);
 	});
 
-	test("should handle successful email-password login", async ({ page }) => {
+	test("should handle successful email-password login", async ({ page, testAccounts }) => {
 		// Fill form with valid credentials
-		await page.getByLabel("Email Address").fill(`tester-${id}@gmail.com`);
+		await page.getByLabel("Email Address").fill(testAccounts.passwordAccount.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -166,9 +165,9 @@ test.describe("Login Page", () => {
 		await page.waitForURL("http://localhost:5000/");
 	});
 
-	test("should redirect on 2FA requirement", async ({ page }) => {
+	test("should redirect on 2FA requirement", async ({ page, testAccounts }) => {
 		// Fill form with credentials that require 2FA
-		await page.getByLabel("Email Address").fill( `two-factor-${id}@gmail.com`);
+		await page.getByLabel("Email Address").fill( testAccounts.twoFactorAccount.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -338,10 +337,10 @@ test.describe("Login Page", () => {
 	});
 
 	test("should handle invalid authentication provider error", async ({
-		page,
+		page, testAccounts
 	}) => {
 		// Fill form
-		await page.getByLabel("Email Address").fill( `tester-webauthn-${id}@gmail.com`);
+		await page.getByLabel("Email Address").fill( testAccounts.webauthnAccount.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -362,9 +361,8 @@ test.describe("Login Page", () => {
 });
 
 test.describe("Login Page Authentication Redirects", () => {
-    const id = test.info().parallelIndex;
-	test.use({
-		storageState: `playwright/.auth/${id}.json`,
+	test.beforeAll(({testAccounts}) => {
+		test.use({storageState: testAccounts.storageStates.password})
 	});
 
 	test("should redirect to home page when already authenticated", async ({
