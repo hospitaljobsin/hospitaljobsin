@@ -2,7 +2,6 @@ import { expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
-	RECOVERY_CODE_1,
 	TOTP_USER_SECRET
 } from "@/tests/utils/constants";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
@@ -263,9 +262,9 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		await expect(page.getByText(/Reset Your Password/)).toBeVisible();
 	});
 
-	test("should successfully verify with recovery code", async ({ page }) => {
+	test("should successfully verify with recovery code", async ({ page, testAccounts }) => {
 		// TODO: fill this from recovery codes, from the test account in context
-		await page.getByLabel("2FA Code").fill(RECOVERY_CODE_1);
+		await page.getByLabel("2FA Code").fill(testAccounts.twoFactorAccount.recoveryCodes[0]);
 		await page.getByRole("button", { name: "Verify Code" }).click();
 
 		await expect(page.getByText(/Reset Your Password/)).toBeVisible();

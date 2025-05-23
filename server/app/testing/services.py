@@ -2,6 +2,7 @@ from datetime import UTC, datetime, timedelta
 from email.utils import format_datetime
 from uuid import uuid4
 
+from bson import ObjectId
 from fastapi import Request
 from webauthn.helpers.structs import AuthenticatorTransport
 
@@ -55,6 +56,9 @@ class TestSetupService:
             password=data.password,
             full_name=data.full_name,
             auth_providers=data.auth_providers,
+            account_id=ObjectId("60f1b9b3b3b3b3b3b3b3b3b3")
+            if "webauthn_credential" in data.auth_providers
+            else None,
         )
 
         webauthn_credentials: list[WebAuthnCredential] = []
@@ -115,11 +119,10 @@ class TestSetupService:
             )
 
         return TestUserSchema(
-            id=account.id,
+            id=str(account.id),
             email=account.email,
-            is_active=account.is_active,
             two_factor_secret=account.two_factor_secret,
-            created_at=account.created_at,
+            created_at=account.id.generation_time,
             updated_at=account.updated_at,
             auth_providers=account.auth_providers,
             recovery_codes=recovery_codes,
@@ -128,7 +131,7 @@ class TestSetupService:
                 WebAuthnCredentialSchema(
                     backed_up=webauthn_credential.backed_up,
                     credential_id=webauthn_credential.credential_id,
-                    public_key=webauthn_credential.credential_public_key,
+                    public_key=webauthn_credential.public_key,
                     device_type=webauthn_credential.device_type,
                     sign_count=webauthn_credential.sign_count,
                     nickname=webauthn_credential.nickname,

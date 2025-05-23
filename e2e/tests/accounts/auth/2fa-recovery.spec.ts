@@ -1,10 +1,12 @@
-import { expect, test } from "@/playwright/fixtures";
+import { authTest, expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
-	RECOVERY_CODE_1,
 	TOTP_USER_SECRET
 } from "@/tests/utils/constants";
+
+
+
 
 test.describe("2FA Recovery Page", () => {
 	test.beforeEach(async ({ page, testAccounts }) => {
@@ -112,9 +114,9 @@ test.describe("2FA Recovery Page", () => {
 		).toBeVisible();
 	});
 
-	test("should successfully verify valid recovery code", async ({ page }) => {
+	test("should successfully verify valid recovery code", async ({ page, testAccounts }) => {
 		// TODO: fill this from recovery codes, from the test account in context
-		await page.getByLabel("Recovery Code").fill(RECOVERY_CODE_1);
+		await page.getByLabel("Recovery Code").fill(testAccounts.twoFactorAccount.recoveryCodes[0]);
 		await page.getByRole("button", { name: "Verify Code" }).click();
 
 		// Should redirect to home page
@@ -134,12 +136,10 @@ test.describe("2FA Recovery Page 2FA Challenge Redirects", () => {
 	});
 });
 
-test.describe("2FA Recovery Page Authentication Redirects", () => {
-	test.beforeAll(({testAccounts}) => {
-		test.use({storageState: testAccounts.storageStates.password})
-	});
 
-	test("should redirect to home page when already authenticated", async ({
+
+authTest.describe("2FA Recovery Page Authentication Redirects", () => {
+	authTest("should redirect to home page when already authenticated", async ({
 		page
 	}) => {
 		await page.goto("http://localhost:5002/auth/signup");

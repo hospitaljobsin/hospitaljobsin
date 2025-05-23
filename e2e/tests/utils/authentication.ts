@@ -1,3 +1,5 @@
+import { APIRequestContext } from "@playwright/test";
+
 type AuthProvider = "password" | "webauthn_credential" | "oauth_google"
 
 type TwoFactorProvider = "authenticator"
@@ -15,7 +17,6 @@ type WebAuthnCredential = {
 
 export type TestAccount = {
     id: string;
-    isActive: boolean;
     fullName: string;
     password: string | null;
     email: string;
@@ -38,20 +39,19 @@ export type CreateTestAccountData = {
     authProviders: AuthProvider[];
 };
 
-export async function createTestAccount({fullName, password, email, twoFactorSecret, enableSudoMode, authProviders}: CreateTestAccountData): Promise<TestAccount> {
-    const res = await fetch('http://localhost:8000/test-setup/create-account', {
-        method: 'POST',
+export async function createTestAccount(context: APIRequestContext, {fullName, password, email, twoFactorSecret, enableSudoMode, authProviders}: CreateTestAccountData): Promise<TestAccount> {
+    const res = await context.post('http://localhost:8000/test-setup/create-account', {
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json',            
         },
-        body: JSON.stringify({
+        data: {
             fullName,
             password,
             email,
             twoFactorSecret,
             enableSudoMode,
             authProviders,
-        }),
+        }
     });
 
     if (!res.ok) {

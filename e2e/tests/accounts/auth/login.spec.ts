@@ -1,4 +1,4 @@
-import { expect, test } from "@/playwright/fixtures";
+import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 
 test.describe("Login Page", () => {
@@ -360,12 +360,8 @@ test.describe("Login Page", () => {
 	});
 });
 
-test.describe("Login Page Authentication Redirects", () => {
-	test.beforeAll(({testAccounts}) => {
-		test.use({storageState: testAccounts.storageStates.password})
-	});
-
-	test("should redirect to home page when already authenticated", async ({
+authTest.describe("Login Page Authentication Redirects", () => {
+	authTest("should redirect to home page when already authenticated", async ({
 		page,
 	}) => {
 		await page.goto("http://localhost:5002/auth/login");

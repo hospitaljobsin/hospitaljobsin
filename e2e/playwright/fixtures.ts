@@ -1,10 +1,10 @@
 import { createTestAccount, TestAccount } from '@/tests/utils/authentication';
 import { TOTP_USER_SECRET } from '@/tests/utils/constants';
-import { test as baseTest } from '@playwright/test';
+import { test as baseTest, BrowserContext, request } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
 
-export * from '@playwright/test';
+export { expect } from '@playwright/test';
 
 type WorkerFixtures = {
   testAccounts: {
@@ -38,18 +38,19 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
     };
 
     const createUserContext = async (
-      options: Parameters<typeof createTestAccount>[0],
+      options: Parameters<typeof createTestAccount>[1],
       storagePath: string,
       accountPath: string
     ): Promise<TestAccount> => {
+      console.log(`Creating user context for ${options.email}...`);
       if (fs.existsSync(storagePath) && fs.existsSync(accountPath)) {
         return JSON.parse(fs.readFileSync(accountPath, 'utf-8')) as TestAccount;
       }
-
-      const page = await browser.newPage({ storageState: undefined });
-      const user = await createTestAccount(options);
-      await page.context().storageState({ path: storagePath });
-      await page.close();
+      // Important: make sure we authenticate in a clean environment by unsetting storage state.
+      const context = await request.newContext({ storageState: undefined });
+      const user = await createTestAccount(context, options);
+      await context.storageState({ path: storagePath });
+      await context.dispose();
 
       fs.writeFileSync(accountPath, JSON.stringify(user, null, 2));
       return user;
@@ -89,4 +90,15 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
       storageStates,
     });
   }, { scope: 'worker' }],
+});
+
+
+export const authTest = test.extend<{}, { context: BrowserContext }>({
+  context: async ({ browser, testAccounts }, use) => {
+    const context = await browser.newContext({
+      storageState: testAccounts.storageStates.password,
+    });
+    await use(context);
+    await context.close();
+  },
 });
