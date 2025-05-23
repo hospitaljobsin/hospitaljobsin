@@ -53,10 +53,13 @@ authTest.describe("Account Settings Page", () => {
         await page
         .getByRole("textbox", { name: "Confirm New Password" })
         .fill(newPassword);
-        await page.getByRole('button', { name: /update password/i }).click();
+        // await page.getByRole('button', { name: /update password/i }).click();
 
-        // wait for modal to close here
-        await page.waitForSelector('section[role="dialog"][data-open="true"]', { state: 'detached' });
+        // Submit the form
+        await Promise.all([
+        page.waitForSelector('section[role="dialog"][data-open="true"]', { state: 'detached' }), // modal closes
+        page.getByRole('button', { name: /update password/i }).click(), // click submit
+        ]);
 
         // Ensure password has changed- log out and log back in
         const avatarButton = page.locator('button[aria-haspopup="true"]').last();
@@ -64,7 +67,7 @@ authTest.describe("Account Settings Page", () => {
         await avatarButton.click();
 
         // wait for the menu to open
-        await page.waitForSelector('div[role="dialog"][data-open="true"]');
+        await page.waitForSelector('div[role="dialog"][data-open="true"]', {state: "visible"});
 
         await expect(page.getByText("Signed in as")).toBeVisible();
         await expect(page.getByRole('menuitem', { name: 'Log Out' })).toBeVisible();
