@@ -135,7 +135,6 @@ test.describe("Request Password Reset Page", () => {
 });
 
 test.describe("Request Password Reset Page Rate Limiting", () => {
-	const id = test.info().parallelIndex;
 	test("should handle cooldown on multiple password reset requests", async ({
 		page,
 		request, testAccounts
