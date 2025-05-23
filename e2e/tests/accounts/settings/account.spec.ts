@@ -68,6 +68,8 @@ authTest.describe("Account Settings Page", () => {
 
         await page.getByRole('menuitem', { name: 'Log Out' }).click();
 
+        await expect(page.getByRole('dialog')).toContainText('Confirm Logout');
+
         // confirm logout
         await page.getByRole('button', { name: 'Logout' }).click();
         await page.waitForURL(/\/auth\/login/);
