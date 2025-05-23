@@ -66,7 +66,10 @@ authTest.describe("Account Settings Page", () => {
         await expect(page.getByText("Signed in as")).toBeVisible();
         await expect(page.getByRole('menuitem', { name: 'Log Out' })).toBeVisible();
 
-        await page.getByRole('menuitem', { name: 'Log Out' }).click();
+        await Promise.all([
+            page.waitForSelector('section[role="dialog"][data-open="true"]'), // or a better selector
+            page.getByRole('menuitem', { name: 'Log Out' }).click()
+        ]);
 
         await expect(page.getByRole('dialog')).toContainText('Confirm Logout');
 
