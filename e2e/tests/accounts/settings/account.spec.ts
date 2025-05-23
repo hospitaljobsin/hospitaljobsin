@@ -63,6 +63,9 @@ authTest.describe("Account Settings Page", () => {
         await expect(avatarButton).toBeVisible();
         await avatarButton.click();
 
+        // wait for the menu to open
+        await page.waitForSelector('div[role="dialog"][data-open="true"]');
+
         await expect(page.getByText("Signed in as")).toBeVisible();
         await expect(page.getByRole('menuitem', { name: 'Log Out' })).toBeVisible();
 
