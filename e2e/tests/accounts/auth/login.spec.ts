@@ -181,6 +181,7 @@ test.describe("Login Page", () => {
 		page,
 		context,
 		browserName,
+		testAccounts
 	}) => {
 		test.skip(browserName !== "chromium", "Only supported in Chromium");
 		test.setTimeout(30_000);
@@ -203,11 +204,12 @@ test.describe("Login Page", () => {
 			},
 		);
 
+		const webauthnCredential = testAccounts.webauthnAccount.webauthnCredentials[0];
 		// Register a mock credential
 		await client.send("WebAuthn.addCredential", {
 			authenticatorId,
 			credential: {
-				credentialId: "4KwTS6Y6Hzd7L6ijwZd2Mg==", // Base64-encoded mock credential ID
+				credentialId: webauthnCredential.credentialId, // Base64-encoded mock credential ID
 				isResidentCredential: true,
 				privateKey:
 					"MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgaXHR/cXGj5XEgk3jpoqK50mry/3gOFAyQwgXRNSz+ZyhRANCAAR9WkpjDhNVmt1JxiXmdtXFV9X46pefmf2zU5AzFPczSLtppVXd9i2gzKClvkenoESvvdOaF299W1Gp8TESeQpx", // Base64-encoded mock private key (COSE later if needed)

@@ -135,6 +135,13 @@ test.describe("Request Password Reset Page", () => {
 });
 
 test.describe("Request Password Reset Page Rate Limiting", () => {
+	test.beforeEach(async ({ page }) => {
+		// Navigate to reset password page
+		await page.goto("http://localhost:5002/auth/reset-password");
+		// Wait for recaptcha to load
+		await waitForCaptcha({ page });
+	});
+
 	test("should handle cooldown on multiple password reset requests", async ({
 		page,
 		request, testAccounts

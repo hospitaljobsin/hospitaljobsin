@@ -1,10 +1,9 @@
 import hashlib
-import urllib
 from collections.abc import Iterable
 from datetime import date, datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Annotated, Self
-from urllib.parse import urlencode
+from urllib.parse import quote_plus, urlencode
 
 import strawberry
 from aioinject import Inject
@@ -341,19 +340,35 @@ class AccountType(BaseNodeType[Account]):
         ] = 80,
     ) -> str:
         """Return the user's avatar URL."""
-        email_encoded = self.email.lower().encode("utf-8")
+        # email_encoded = self.email.lower().encode("utf-8")
 
-        # Generate the SHA256 hash of the email
+        # # Generate the SHA256 hash of the email
+        # email_hash = hashlib.sha256(email_encoded).hexdigest()
+
+        # seed_query_params = urlencode({"seed": urllib.parse.quote_plus(self.full_name)})
+        # # Construct the URL with encoded query parameters
+        # query_params = urlencode(
+        #     {
+        #         "d": f"https://api.dicebear.com/9.x/shapes/png/{seed_query_params}",
+        #         "s": size,
+        #     }
+        # )
+        # return f"https://www.gravatar.com/avatar/{email_hash}?{query_params}"
+        email_encoded = self.email.lower().encode("utf-8")
         email_hash = hashlib.sha256(email_encoded).hexdigest()
 
-        seed_query_params = urlencode({"seed": urllib.parse.quote_plus(self.full_name)})
-        # Construct the URL with encoded query parameters
+        # Use quote_plus only once on the full name
+        seed = quote_plus(self.full_name)
+        fallback_url = f"https://api.dicebear.com/9.x/shapes/png?seed={seed}"
+
+        # Do not double-encode
         query_params = urlencode(
             {
-                "d": f"https://api.dicebear.com/9.x/shapes/png/{seed_query_params}",
-                "s": size,
+                "d": fallback_url,
+                "s": str(size),
             }
         )
+
         return f"https://www.gravatar.com/avatar/{email_hash}?{query_params}"
 
     @strawberry.field(  # type: ignore[misc]
