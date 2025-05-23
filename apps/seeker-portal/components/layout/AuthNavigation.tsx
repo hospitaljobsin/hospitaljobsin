@@ -2,6 +2,7 @@
 import type { AuthNavigationFragment$key } from "@/__generated__/AuthNavigationFragment.graphql";
 import links from "@/lib/links";
 import {
+	Avatar,
 	Button,
 	Divider,
 	Drawer,
@@ -63,12 +64,12 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					variant="light"
 					onPress={onDrawerOpen}
 				>
-					<Image
+					<Avatar
 						src={data.avatarUrl}
-						alt={data.fullName}
-						width={35}
-						height={35}
-						className="rounded-full"
+						name={data.fullName}
+						showFallback
+						size="sm"
+						radius="full"
 					/>
 				</Button>
 			</NavbarItem>
