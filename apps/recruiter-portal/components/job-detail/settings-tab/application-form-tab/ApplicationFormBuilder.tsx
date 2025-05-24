@@ -80,7 +80,7 @@ const ApplicationFormBuilderMutation = graphql`
 const formSchema = z.object({
 	fields: z.array(
 		z.object({
-			fieldName: z.string().check(z.minLength(1, "This field is required")),,
+			fieldName: z.string().check(z.minLength(1, "This field is required")),
 			defaultValue: z.nullable(z.string()),
 			isRequired: z.boolean(),
 		}),
