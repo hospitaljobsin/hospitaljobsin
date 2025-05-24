@@ -31,7 +31,7 @@ class CreateTestUserSchema(BaseSchema):
 
 
 class WebAuthnCredentialSchema(BaseSchema):
-    credential_id: bytes
+    credential_id: str
     public_key: bytes
     sign_count: int
     device_type: str

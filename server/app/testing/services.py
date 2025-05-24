@@ -1,3 +1,4 @@
+import base64
 import secrets
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
@@ -130,7 +131,9 @@ class TestSetupService:
             webauthn_credentials=[
                 WebAuthnCredentialSchema(
                     backed_up=webauthn_credential.backed_up,
-                    credential_id=webauthn_credential.credential_id,
+                    credential_id=base64.b64encode(
+                        webauthn_credential.credential_id
+                    ).decode("utf-8"),
                     public_key=webauthn_credential.public_key,
                     device_type=webauthn_credential.device_type,
                     sign_count=webauthn_credential.sign_count,

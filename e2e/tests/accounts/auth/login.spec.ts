@@ -209,6 +209,7 @@ test.describe("Login Page", () => {
 		await client.send("WebAuthn.addCredential", {
 			authenticatorId,
 			credential: {
+				// credentialId: 'tayIRz9g9a2wEQEmc8zk+g==',
 				credentialId: webauthnCredential.credentialId, // Base64-encoded mock credential ID
 				isResidentCredential: true,
 				privateKey:
