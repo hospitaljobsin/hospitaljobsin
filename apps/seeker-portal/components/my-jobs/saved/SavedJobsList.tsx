@@ -1,14 +1,12 @@
-import Job from "@/components/landing/Job";
-import { useFragment, usePaginationFragment } from "react-relay";
-
-import type { SavedJobsListFragment$key } from "@/__generated__/SavedJobsListFragment.graphql";
-
-import type { SavedJobsListInternalFragment$key } from "@/__generated__/SavedJobsListInternalFragment.graphql";
-import type { pageSavedJobsQuery } from "@/__generated__/pageSavedJobsQuery.graphql";
-import SavedJobsListSkeleton from "@/components/landing/JobListSkeleton";
 import { BriefcaseBusiness } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { pageSavedJobsQuery } from "@/__generated__/pageSavedJobsQuery.graphql";
+import type { SavedJobsListFragment$key } from "@/__generated__/SavedJobsListFragment.graphql";
+import type { SavedJobsListInternalFragment$key } from "@/__generated__/SavedJobsListInternalFragment.graphql";
+import Job from "@/components/landing/Job";
+import SavedJobsListSkeleton from "@/components/landing/JobListSkeleton";
 
 const SavedJobsListFragment = graphql`
 fragment SavedJobsListFragment on Query {

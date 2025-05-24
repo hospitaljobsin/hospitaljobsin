@@ -1,8 +1,8 @@
 "use client";
-import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
 import { HomeIcon, UserIcon } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
+import links from "@/lib/links";
 
 export default function OrganizationTabs() {
 	const pathnname = usePathname();

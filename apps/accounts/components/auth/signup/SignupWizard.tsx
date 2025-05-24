@@ -1,7 +1,5 @@
 "use client";
 
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
 import {
 	Button,
 	Card,
@@ -14,6 +12,8 @@ import { Google } from "@lobehub/icons";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 import { getValidRedirectURL } from "../../../lib/redirects";
 import SignupContext from "./SignupContext";
 import Step1EmailForm from "./Step1EmailForm";

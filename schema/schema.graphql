@@ -2,2082 +2,3561 @@ directive @isAuthenticated on FIELD_DEFINITION
 
 directive @requiresSudoMode on FIELD_DEFINITION
 
-"""The accept organization invite payload."""
-union AcceptOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
+"""
+The accept organization invite payload.
+"""
+union AcceptOrganizationInvitePayload =
+	| OrganizationInviteEdge
+	| OrganizationInviteNotFoundError
 
-"""An account."""
+"""
+An account.
+"""
 type Account implements Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
 
-  """The full name of the account."""
-  fullName: String!
+	"""
+	The full name of the account.
+	"""
+	fullName: String!
 
-  """The email of the account."""
-  email: String!
+	"""
+	The email of the account.
+	"""
+	email: String!
 
-  """When the account was last updated."""
-  updatedAt: DateTime
+	"""
+	When the account was last updated.
+	"""
+	updatedAt: DateTime
 
-  """The authentication providers supported by the account."""
-  authProviders: [AuthProvider!]!
+	"""
+	The authentication providers supported by the account.
+	"""
+	authProviders: [AuthProvider!]!
 
-  """Available 2FA providers for the account."""
-  twoFactorProviders: [TwoFactorProvider!]!
+	"""
+	Available 2FA providers for the account.
+	"""
+	twoFactorProviders: [TwoFactorProvider!]!
 
-  """Whether the account has 2FA enabled."""
-  has2faEnabled: Boolean!
+	"""
+	Whether the account has 2FA enabled.
+	"""
+	has2faEnabled: Boolean!
 
-  """The account's profile."""
-  profile: ProfilePayload!
+	"""
+	The account's profile.
+	"""
+	profile: ProfilePayload!
 
-  """The account's avatar URL."""
-  avatarUrl(
-    """The size of the avatar."""
-    size: Int! = 80
-  ): String!
+	"""
+	The account's avatar URL.
+	"""
+	avatarUrl(
+		"""
+		The size of the avatar.
+		"""
+		size: Int! = 80
+	): String!
 
-  """When the user's sudo mode grant expires at."""
-  sudoModeExpiresAt: DateTime
+	"""
+	When the user's sudo mode grant expires at.
+	"""
+	sudoModeExpiresAt: DateTime
 
-  """The organizations the account is in."""
-  organizations(
-    """Returns items before the given cursor."""
-    before: ID = null
+	"""
+	The organizations the account is in.
+	"""
+	organizations(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
 
-    """Returns items after the given cursor."""
-    after: ID = null
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
 
-    """How many items to return after the cursor?"""
-    first: Int = null
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
 
-    """How many items to return before the cursor?"""
-    last: Int = null
-  ): OrganizationConnection!
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): OrganizationConnection!
 
-  """The session for the current user."""
-  currentSession: Session!
+	"""
+	The session for the current user.
+	"""
+	currentSession: Session!
 
-  """The sessions for the account."""
-  sessions(
-    """Returns items before the given cursor."""
-    before: ID = null
+	"""
+	The sessions for the account.
+	"""
+	sessions(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
 
-    """Returns items after the given cursor."""
-    after: ID = null
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
 
-    """How many items to return after the cursor?"""
-    first: Int = null
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
 
-    """How many items to return before the cursor?"""
-    last: Int = null
-  ): SessionConnection!
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): SessionConnection!
 
-  """The webauthn credentials for the account."""
-  webAuthnCredentials(
-    """Returns items before the given cursor."""
-    before: ID = null
+	"""
+	The webauthn credentials for the account.
+	"""
+	webAuthnCredentials(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
 
-    """Returns items after the given cursor."""
-    after: ID = null
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
 
-    """How many items to return after the cursor?"""
-    first: Int = null
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
 
-    """How many items to return before the cursor?"""
-    last: Int = null
-  ): WebAuthnCredentialConnection!
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): WebAuthnCredentialConnection!
 }
 
 type Address {
-  """Address line 1."""
-  line1: String
+	"""
+	Address line 1.
+	"""
+	line1: String
 
-  """Address line 2."""
-  line2: String
+	"""
+	Address line 2.
+	"""
+	line2: String
 
-  """City."""
-  city: String
+	"""
+	City.
+	"""
+	city: String
 
-  """State."""
-  state: String
+	"""
+	State.
+	"""
+	state: String
 
-  """Country."""
-  country: String
+	"""
+	Country.
+	"""
+	country: String
 
-  """Pincode."""
-  pincode: String
+	"""
+	Pincode.
+	"""
+	pincode: String
 }
 
 input AddressInput {
-  """Address line 1."""
-  line1: String
+	"""
+	Address line 1.
+	"""
+	line1: String
 
-  """Address line 2."""
-  line2: String
+	"""
+	Address line 2.
+	"""
+	line2: String
 
-  """City."""
-  city: String
+	"""
+	City.
+	"""
+	city: String
 
-  """State."""
-  state: String
+	"""
+	State.
+	"""
+	state: String
 
-  """Country."""
-  country: String
+	"""
+	Country.
+	"""
+	country: String
 
-  """Pincode."""
-  pincode: String
+	"""
+	Pincode.
+	"""
+	pincode: String
 }
 
-"""An applicant field belonging to a job applicant."""
+"""
+An applicant field belonging to a job applicant.
+"""
 type ApplicantField {
-  """The name of the field."""
-  fieldName: String!
+	"""
+	The name of the field.
+	"""
+	fieldName: String!
 
-  """The value of the field."""
-  fieldValue: String!
+	"""
+	The value of the field.
+	"""
+	fieldValue: String!
 }
 
-"""An applicant field belonging to a job applicant input."""
+"""
+An applicant field belonging to a job applicant input.
+"""
 input ApplicantFieldInput {
-  """The name of the field."""
-  fieldName: String!
+	"""
+	The name of the field.
+	"""
+	fieldName: String!
 
-  """The value of the field."""
-  fieldValue: String!
+	"""
+	The value of the field.
+	"""
+	fieldValue: String!
 }
 
-"""An application field belonging to a job application form."""
+"""
+An application field belonging to a job application form.
+"""
 type ApplicationField {
-  """The name of the field."""
-  fieldName: String!
+	"""
+	The name of the field.
+	"""
+	fieldName: String!
 
-  """The default value of the field."""
-  defaultValue: String
+	"""
+	The default value of the field.
+	"""
+	defaultValue: String
 
-  """Whether the field is required."""
-  isRequired: Boolean!
+	"""
+	Whether the field is required.
+	"""
+	isRequired: Boolean!
 }
 
-"""An application field belonging to a job application form input."""
+"""
+An application field belonging to a job application form input.
+"""
 input ApplicationFieldInput {
-  """The name of the field."""
-  fieldName: String!
+	"""
+	The name of the field.
+	"""
+	fieldName: String!
 
-  """The default value of the field."""
-  defaultValue: String
+	"""
+	The default value of the field.
+	"""
+	defaultValue: String
 
-  """Whether the field is required."""
-  isRequired: Boolean! = false
+	"""
+	Whether the field is required.
+	"""
+	isRequired: Boolean! = false
 }
 
-"""The authentication provider."""
+"""
+The authentication provider.
+"""
 enum AuthProvider {
-  PASSWORD
-  WEBAUTHN_CREDENTIAL
-  OAUTH_GOOGLE
+	PASSWORD
+	WEBAUTHN_CREDENTIAL
+	OAUTH_GOOGLE
 }
 
-"""Used when the authenticator 2FA method is not enabled."""
+"""
+Used when the authenticator 2FA method is not enabled.
+"""
 type AuthenticatorNotEnabledError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Geographic coordinates."""
+"""
+Geographic coordinates.
+"""
 type Coordinates {
-  """Longitude of the location."""
-  longitude: Float!
+	"""
+	Longitude of the location.
+	"""
+	longitude: Float!
 
-  """Latitude of the location."""
-  latitude: Float!
+	"""
+	Latitude of the location.
+	"""
+	latitude: Float!
 }
 
-"""Geographic coordinates input."""
+"""
+Geographic coordinates input.
+"""
 input CoordinatesInput {
-  """Longitude of the location."""
-  longitude: Float!
+	"""
+	Longitude of the location.
+	"""
+	longitude: Float!
 
-  """Latitude of the location."""
-  latitude: Float!
+	"""
+	Latitude of the location.
+	"""
+	latitude: Float!
 }
 
-"""The create job application payload."""
-union CreateJobApplicantPayload = CreateJobApplicantSuccess | JobNotFoundError | JobNotPublishedError | JobApplicantAlreadyExistsError | JobIsExternalError
+"""
+The create job application payload.
+"""
+union CreateJobApplicantPayload =
+	| CreateJobApplicantSuccess
+	| JobNotFoundError
+	| JobNotPublishedError
+	| JobApplicantAlreadyExistsError
+	| JobIsExternalError
 
 """
 The payload for creating a presigned URL for uploading the job applicant's resume.
 """
 type CreateJobApplicantResumePresignedURLPayload {
-  """The presigned URL for uploading the job applicant's resume."""
-  presignedUrl: String!
+	"""
+	The presigned URL for uploading the job applicant's resume.
+	"""
+	presignedUrl: String!
 }
 
-"""Used when a job application is created successfully."""
+"""
+Used when a job application is created successfully.
+"""
 type CreateJobApplicantSuccess {
-  """The created job application."""
-  jobApplicant: JobApplicant!
+	"""
+	The created job application.
+	"""
+	jobApplicant: JobApplicant!
 }
 
-"""The create job payload."""
-union CreateJobPayload = CreateJobSuccess | OrganizationNotFoundError | OrganizationAuthorizationError
+"""
+The create job payload.
+"""
+union CreateJobPayload =
+	| CreateJobSuccess
+	| OrganizationNotFoundError
+	| OrganizationAuthorizationError
 
-"""Used when the job is created successfully."""
+"""
+Used when the job is created successfully.
+"""
 type CreateJobSuccess {
-  """The edge of the created job."""
-  jobEdge: JobEdge!
+	"""
+	The edge of the created job.
+	"""
+	jobEdge: JobEdge!
 }
 
-"""The create organization invite payload."""
-union CreateOrganizationInvitePayload = OrganizationInvite | InvalidEmailError | OrganizationNotFoundError | MemberAlreadyExistsError | OrganizationAuthorizationError
+"""
+The create organization invite payload.
+"""
+union CreateOrganizationInvitePayload =
+	| OrganizationInvite
+	| InvalidEmailError
+	| OrganizationNotFoundError
+	| MemberAlreadyExistsError
+	| OrganizationAuthorizationError
 
 """
 The payload for creating a presigned URL for uploading the organization logo.
 """
 type CreateOrganizationLogoPresignedURLPayload {
-  """The presigned URL for uploading the organization logo."""
-  presignedUrl: String!
+	"""
+	The presigned URL for uploading the organization logo.
+	"""
+	presignedUrl: String!
 }
 
-"""The create organization payload."""
+"""
+The create organization payload.
+"""
 union CreateOrganizationPayload = Organization | OrganizationSlugInUseError
 
-"""The create webauthn credential payload."""
-union CreateWebAuthnCredentialPayload = CreateWebAuthnCredentialSuccess | InvalidPasskeyRegistrationCredentialError
+"""
+The create webauthn credential payload.
+"""
+union CreateWebAuthnCredentialPayload =
+	| CreateWebAuthnCredentialSuccess
+	| InvalidPasskeyRegistrationCredentialError
 
-"""Create webauthn credential success."""
+"""
+Create webauthn credential success.
+"""
 type CreateWebAuthnCredentialSuccess {
-  """The created webauthn credential edge."""
-  webAuthnCredentialEdge: WebAuthnCredentialEdge!
+	"""
+	The created webauthn credential edge.
+	"""
+	webAuthnCredentialEdge: WebAuthnCredentialEdge!
 }
 
-"""The currency of the amount."""
+"""
+The currency of the amount.
+"""
 enum Currency {
-  INR
+	INR
 }
 
-"""The current job details."""
+"""
+The current job details.
+"""
 type CurrentJob {
-  """The current job title."""
-  currentTitle: String!
+	"""
+	The current job title.
+	"""
+	currentTitle: String!
 
-  """The current organization."""
-  currentOrganization: String
+	"""
+	The current organization.
+	"""
+	currentOrganization: String
 
-  """The current salary."""
-  currentSalary: Float
+	"""
+	The current salary.
+	"""
+	currentSalary: Float
 }
 
-"""Date (isoformat)"""
+"""
+Date (isoformat)
+"""
 scalar Date
 
-"""DateTime scalar represents an ISO 8601-encoded date and time string."""
+"""
+DateTime scalar represents an ISO 8601-encoded date and time string.
+"""
 scalar DateTime
 
-"""The decline organization invite payload."""
-union DeclineOrganizationInvitePayload = OrganizationInviteEdge | OrganizationInviteNotFoundError
+"""
+The decline organization invite payload.
+"""
+union DeclineOrganizationInvitePayload =
+	| OrganizationInviteEdge
+	| OrganizationInviteNotFoundError
 
-"""The delete job payload."""
+"""
+The delete job payload.
+"""
 union DeleteJobPayload = Job | JobNotFoundError | OrganizationAuthorizationError
 
-"""The delete organization invite payload."""
-union DeleteOrganizationInvitePayload = OrganizationInviteEdge | OrganizationNotFoundError | OrganizationInviteNotFoundError | OrganizationAuthorizationError
+"""
+The delete organization invite payload.
+"""
+union DeleteOrganizationInvitePayload =
+	| OrganizationInviteEdge
+	| OrganizationNotFoundError
+	| OrganizationInviteNotFoundError
+	| OrganizationAuthorizationError
 
-"""The delete organization payload."""
-union DeleteOrganizationPayload = Organization | OrganizationNotFoundError | OrganizationAuthorizationError
+"""
+The delete organization payload.
+"""
+union DeleteOrganizationPayload =
+	| Organization
+	| OrganizationNotFoundError
+	| OrganizationAuthorizationError
 
-"""The delete other sessions payload."""
+"""
+The delete other sessions payload.
+"""
 type DeleteOtherSessionsPayload {
-  """Deleted session IDs."""
-  deletedSessionIds: [ID!]!
+	"""
+	Deleted session IDs.
+	"""
+	deletedSessionIds: [ID!]!
 }
 
-"""The delete password payload."""
+"""
+The delete password payload.
+"""
 union DeletePasswordPayload = Account | InsufficientAuthProvidersError
 
-"""The delete session payload."""
+"""
+The delete session payload.
+"""
 union DeleteSessionPayload = DeleteSessionSuccess | SessionNotFoundError
 
-"""Delete session success."""
+"""
+Delete session success.
+"""
 type DeleteSessionSuccess {
-  """The Deleted session edge."""
-  sessionEdge: SessionEdge!
+	"""
+	The Deleted session edge.
+	"""
+	sessionEdge: SessionEdge!
 }
 
-"""The delete webauthn credential payload."""
-union DeleteWebAuthnCredentialPayload = DeleteWebAuthnCredentialSuccess | WebAuthnCredentialNotFoundError | InsufficientAuthProvidersError
+"""
+The delete webauthn credential payload.
+"""
+union DeleteWebAuthnCredentialPayload =
+	| DeleteWebAuthnCredentialSuccess
+	| WebAuthnCredentialNotFoundError
+	| InsufficientAuthProvidersError
 
-"""Delete webauthn credential success."""
+"""
+Delete webauthn credential success.
+"""
 type DeleteWebAuthnCredentialSuccess {
-  """The Deleted webauthn credential edge."""
-  webAuthnCredentialEdge: WebAuthnCredentialEdge!
+	"""
+	The Deleted webauthn credential edge.
+	"""
+	webAuthnCredentialEdge: WebAuthnCredentialEdge!
 }
 
-"""The demote organization member payload."""
-union DemoteOrganizationMemberPayload = DemoteOrganizationMemberSuccess | OrganizationNotFoundError | OrganizationMemberNotFoundError | InsufficientOrganizationAdminsError | OrganizationAuthorizationError
+"""
+The demote organization member payload.
+"""
+union DemoteOrganizationMemberPayload =
+	| DemoteOrganizationMemberSuccess
+	| OrganizationNotFoundError
+	| OrganizationMemberNotFoundError
+	| InsufficientOrganizationAdminsError
+	| OrganizationAuthorizationError
 
-"""Demote organization member success."""
+"""
+Demote organization member success.
+"""
 type DemoteOrganizationMemberSuccess {
-  """The organization member edge."""
-  organizationMemberEdge: OrganizationMemberEdge!
+	"""
+	The organization member edge.
+	"""
+	organizationMemberEdge: OrganizationMemberEdge!
 
-  """The updated organization."""
-  organization: Organization!
+	"""
+	The updated organization.
+	"""
+	organization: Organization!
 }
 
-"""The disable account 2FA payload."""
-union DisableAccount2FAWithAuthenticatorPayload = Account | AuthenticatorNotEnabledError
+"""
+The disable account 2FA payload.
+"""
+union DisableAccount2FAWithAuthenticatorPayload =
+	| Account
+	| AuthenticatorNotEnabledError
 
-"""Used when the email address is in use."""
+"""
+Used when the email address is in use.
+"""
 type EmailInUseError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when the email verification token cooldown is active."""
+"""
+Used when the email verification token cooldown is active.
+"""
 type EmailVerificationTokenCooldownError implements Error {
-  """Human readable error message."""
-  message: String!
-  remainingSeconds: Int!
+	"""
+	Human readable error message.
+	"""
+	message: String!
+	remainingSeconds: Int!
 }
 
-"""Enable account 2FA with authenticator success."""
+"""
+Enable account 2FA with authenticator success.
+"""
 type EnableAccount2FAWithAuthenticatorSuccess {
-  """The account with 2FA enabled."""
-  account: Account!
+	"""
+	The account with 2FA enabled.
+	"""
+	account: Account!
 
-  """The recovery codes for the account."""
-  recoveryCodes: [String!]!
+	"""
+	The recovery codes for the account.
+	"""
+	recoveryCodes: [String!]!
 }
 
-"""Human readable error."""
+"""
+Human readable error.
+"""
 interface Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Gender type."""
+"""
+Gender type.
+"""
 enum GenderType {
-  MALE
-  FEMALE
-  OTHER
+	MALE
+	FEMALE
+	OTHER
 }
 
-"""The generate 2FA recovery codes payload."""
-union Generate2FARecoveryCodesPayload = Generate2FARecoveryCodesSuccess | TwoFactorAuthenticationNotEnabledError
+"""
+The generate 2FA recovery codes payload.
+"""
+union Generate2FARecoveryCodesPayload =
+	| Generate2FARecoveryCodesSuccess
+	| TwoFactorAuthenticationNotEnabledError
 
-"""Generate 2FA recovery codes success."""
+"""
+Generate 2FA recovery codes success.
+"""
 type Generate2FARecoveryCodesSuccess {
-  """The generated 2FA recovery codes."""
-  recoveryCodes: [String!]!
+	"""
+	The generated 2FA recovery codes.
+	"""
+	recoveryCodes: [String!]!
 }
 
-"""The generate authentication options payload."""
-union GenerateAuthenticationOptionsPayload = GenerateAuthenticationOptionsSuccess | InvalidCaptchaTokenError
+"""
+The generate authentication options payload.
+"""
+union GenerateAuthenticationOptionsPayload =
+	| GenerateAuthenticationOptionsSuccess
+	| InvalidCaptchaTokenError
 
-"""Generate authentication options success."""
+"""
+Generate authentication options success.
+"""
 type GenerateAuthenticationOptionsSuccess {
-  """Passkey authentication options."""
-  authenticationOptions: JSON!
+	"""
+	Passkey authentication options.
+	"""
+	authenticationOptions: JSON!
 }
 
-"""The generate authenticator 2FA challenge payload."""
-union GenerateAuthenticator2FAChallengePayload = GenerateAuthenticator2FAChallengeSuccess
+"""
+The generate authenticator 2FA challenge payload.
+"""
+union GenerateAuthenticator2FAChallengePayload =
+	| GenerateAuthenticator2FAChallengeSuccess
 
-"""Generate account 2FA Challenge success."""
+"""
+Generate account 2FA Challenge success.
+"""
 type GenerateAuthenticator2FAChallengeSuccess {
-  """The generated 2FA OTP URI."""
-  otpUri: String!
+	"""
+	The generated 2FA OTP URI.
+	"""
+	otpUri: String!
 
-  """The generated 2FA secret."""
-  secret: String!
+	"""
+	The generated 2FA secret.
+	"""
+	secret: String!
 }
 
-"""The generate passkey creation options payload."""
-union GeneratePasskeyCreationOptionsPayload = GeneratePasskeyCreationOptionsSuccess
+"""
+The generate passkey creation options payload.
+"""
+union GeneratePasskeyCreationOptionsPayload =
+	| GeneratePasskeyCreationOptionsSuccess
 
-"""Generate passkey creation options success."""
+"""
+Generate passkey creation options success.
+"""
 type GeneratePasskeyCreationOptionsSuccess {
-  """Passkey registration options for new passkey creation."""
-  registrationOptions: JSON!
+	"""
+	Passkey registration options for new passkey creation.
+	"""
+	registrationOptions: JSON!
 }
 
-"""The generate passkey registration options payload."""
-union GeneratePasskeyRegistrationOptionsPayload = GeneratePasskeyRegistrationOptionsSuccess | InvalidCaptchaTokenError | EmailInUseError
+"""
+The generate passkey registration options payload.
+"""
+union GeneratePasskeyRegistrationOptionsPayload =
+	| GeneratePasskeyRegistrationOptionsSuccess
+	| InvalidCaptchaTokenError
+	| EmailInUseError
 
-"""Generate passkey registration options success."""
+"""
+Generate passkey registration options success.
+"""
 type GeneratePasskeyRegistrationOptionsSuccess {
-  """Passkey registration options."""
-  registrationOptions: JSON!
+	"""
+	Passkey registration options.
+	"""
+	registrationOptions: JSON!
 }
 
-"""Used when at least one authentication provider must be enabled."""
+"""
+Used when at least one authentication provider must be enabled.
+"""
 type InsufficientAuthProvidersError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when there are not enough organization admins to remove an admin."""
+"""
+Used when there are not enough organization admins to remove an admin.
+"""
 type InsufficientOrganizationAdminsError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when an invalid authentication provider is used."""
+"""
+Used when an invalid authentication provider is used.
+"""
 type InvalidAuthenticationProviderError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 
-  """Available authentication providers for the account."""
-  availableProviders: [AuthProvider!]!
+	"""
+	Available authentication providers for the account.
+	"""
+	availableProviders: [AuthProvider!]!
 }
 
-"""Used when an invalid captcha token is provided."""
+"""
+Used when an invalid captcha token is provided.
+"""
 type InvalidCaptchaTokenError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when invalid credentials are provided."""
+"""
+Used when invalid credentials are provided.
+"""
 type InvalidCredentialsError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when an invalid email address is provided."""
+"""
+Used when an invalid email address is provided.
+"""
 type InvalidEmailError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when an invalid email verification token is provided."""
+"""
+Used when an invalid email verification token is provided.
+"""
 type InvalidEmailVerificationTokenError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when an invalid passkey authentication credential is provided."""
+"""
+Used when an invalid passkey authentication credential is provided.
+"""
 type InvalidPasskeyAuthenticationCredentialError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when an invalid passkey registration credential is provided."""
+"""
+Used when an invalid passkey registration credential is provided.
+"""
 type InvalidPasskeyRegistrationCredentialError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when an invalid password reset token is provided."""
+"""
+Used when an invalid password reset token is provided.
+"""
 type InvalidPasswordResetTokenError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
 type InviteConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
 
-  """A list of edges."""
-  edges: [OrganizationInviteEdge!]!
+	"""
+	A list of edges.
+	"""
+	edges: [OrganizationInviteEdge!]!
 }
 
-"""Invite status type."""
+"""
+Invite status type.
+"""
 enum InviteStatus {
-  PENDING
-  ACCEPTED
-  DECLINED
+	PENDING
+	ACCEPTED
+	DECLINED
 }
 
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
 """
-scalar JSON @specifiedBy(url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf")
+scalar JSON
+	@specifiedBy(
+		url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf"
+	)
 
-"""A job posting."""
+"""
+A job posting.
+"""
 type Job implements Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
 
-  """The title of the job."""
-  title: String!
+	"""
+	The title of the job.
+	"""
+	title: String!
 
-  """The slug of the job."""
-  slug: String!
+	"""
+	The slug of the job.
+	"""
+	slug: String!
 
-  """The description of the job."""
-  description: String
+	"""
+	The description of the job.
+	"""
+	description: String
 
-  """The number of vacancies for the job."""
-  vacancies: Int
+	"""
+	The number of vacancies for the job.
+	"""
+	vacancies: Int
 
-  """The type of the job."""
-  type: JobType
+	"""
+	The type of the job.
+	"""
+	type: JobType
 
-  """The work mode of the job."""
-  workMode: WorkMode
+	"""
+	The work mode of the job.
+	"""
+	workMode: WorkMode
 
-  """The location of the job."""
-  location: String
+	"""
+	The location of the job.
+	"""
+	location: String
 
-  """The skills required for the job."""
-  skills: [String!]!
+	"""
+	The skills required for the job.
+	"""
+	skills: [String!]!
 
-  """The currency of the salary."""
-  currency: Currency!
+	"""
+	The currency of the salary.
+	"""
+	currency: Currency!
 
-  """The minimum salary of the job."""
-  minSalary: Int
+	"""
+	The minimum salary of the job.
+	"""
+	minSalary: Int
 
-  """The maximum salary of the job."""
-  maxSalary: Int
+	"""
+	The maximum salary of the job.
+	"""
+	maxSalary: Int
 
-  """The minimum experience required for the job."""
-  minExperience: Int
+	"""
+	The minimum experience required for the job.
+	"""
+	minExperience: Int
 
-  """The maximum experience required for the job."""
-  maxExperience: Int
+	"""
+	The maximum experience required for the job.
+	"""
+	maxExperience: Int
 
-  """Whether the job is active."""
-  isActive: Boolean!
+	"""
+	Whether the job is active.
+	"""
+	isActive: Boolean!
 
-  """When the job was last updated at."""
-  updatedAt: DateTime!
+	"""
+	When the job was last updated at.
+	"""
+	updatedAt: DateTime!
 
-  """The expiry time of the job."""
-  expiresAt: DateTime
+	"""
+	The expiry time of the job.
+	"""
+	expiresAt: DateTime
 
-  """When the job was created at."""
-  createdAt: DateTime!
+	"""
+	When the job was created at.
+	"""
+	createdAt: DateTime!
 
-  """The external application URL for the job."""
-  externalApplicationUrl: String
+	"""
+	The external application URL for the job.
+	"""
+	externalApplicationUrl: String
 
-  """Whether the job has a salary range."""
-  hasSalaryRange: Boolean!
+	"""
+	Whether the job has a salary range.
+	"""
+	hasSalaryRange: Boolean!
 
-  """Whether the job has an experience range."""
-  hasExperienceRange: Boolean!
+	"""
+	Whether the job has an experience range.
+	"""
+	hasExperienceRange: Boolean!
 
-  """The applicants for the job."""
-  applicants(
-    """The search (query) term"""
-    searchTerm: String = null
-    status: JobApplicantStatus = null
+	"""
+	The applicants for the job.
+	"""
+	applicants(
+		"""
+		The search (query) term
+		"""
+		searchTerm: String = null
+		status: JobApplicantStatus = null
 
-    """Returns items before the given cursor."""
-    before: ID = null
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
 
-    """Returns items after the given cursor."""
-    after: ID = null
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
 
-    """How many items to return after the cursor?"""
-    first: Int = null
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
 
-    """How many items to return before the cursor?"""
-    last: Int = null
-  ): JobApplicantConnection!
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): JobApplicantConnection!
 
-  """Viewer count for the job, filtered by time."""
-  viewCount(
-    """Start date for filtering the view count."""
-    startDate: DateTime = null
+	"""
+	Viewer count for the job, filtered by time.
+	"""
+	viewCount(
+		"""
+		Start date for filtering the view count.
+		"""
+		startDate: DateTime = null
 
-    """End date for filtering the view count."""
-    endDate: DateTime = null
-  ): Int! @isAuthenticated
+		"""
+		End date for filtering the view count.
+		"""
+		endDate: DateTime = null
+	): Int! @isAuthenticated
 
-  """View metric points for the job, filtered by time."""
-  viewMetricPoints: [JobMetricPoint!]! @isAuthenticated
+	"""
+	View metric points for the job, filtered by time.
+	"""
+	viewMetricPoints: [JobMetricPoint!]! @isAuthenticated
 
-  """Whether the job is saved by the current user."""
-  isSaved: Boolean!
+	"""
+	Whether the job is saved by the current user.
+	"""
+	isSaved: Boolean!
 
-  """Whether the current user has applied to the job already."""
-  isApplied: Boolean!
+	"""
+	Whether the current user has applied to the job already.
+	"""
+	isApplied: Boolean!
 
-  """The number of applications for the job."""
-  applicantCount: JobApplicantCount @isAuthenticated
+	"""
+	The number of applications for the job.
+	"""
+	applicantCount: JobApplicantCount @isAuthenticated
 
-  """The custom application form for the job."""
-  applicationForm: JobApplicationForm
+	"""
+	The custom application form for the job.
+	"""
+	applicationForm: JobApplicationForm
 
-  """Get a job applicant by slug."""
-  jobApplicant(
-    """The slug of the job applicant."""
-    slug: String!
-  ): JobApplicantJobApplicantNotFoundError! @isAuthenticated
+	"""
+	Get a job applicant by slug.
+	"""
+	jobApplicant(
+		"""
+		The slug of the job applicant.
+		"""
+		slug: String!
+	): JobApplicantJobApplicantNotFoundError! @isAuthenticated
 
-  """The organization of the job."""
-  organization: Organization
+	"""
+	The organization of the job.
+	"""
+	organization: Organization
 }
 
-"""A job application for a posting."""
+"""
+A job application for a posting.
+"""
 type JobApplicant implements Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
 
-  """The status of the job application."""
-  status: JobApplicantStatus!
+	"""
+	The status of the job application.
+	"""
+	status: JobApplicantStatus!
 
-  """The slug of the job application."""
-  slug: String!
+	"""
+	The slug of the job application.
+	"""
+	slug: String!
 
-  """The fields of the job application."""
-  applicantFields: [ApplicantField!]!
+	"""
+	The fields of the job application.
+	"""
+	applicantFields: [ApplicantField!]!
 
-  """The URL of the resume."""
-  resumeUrl: String!
+	"""
+	The URL of the resume.
+	"""
+	resumeUrl: String!
 
-  """The account of the job applicant."""
-  account: Account
+	"""
+	The account of the job applicant.
+	"""
+	account: Account
 
-  """The job of the job applicant."""
-  job: Job
+	"""
+	The job of the job applicant.
+	"""
+	job: Job
 }
 
-"""Used when the job applicant already exists."""
+"""
+Used when the job applicant already exists.
+"""
 type JobApplicantAlreadyExistsError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
 type JobApplicantConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
 
-  """A list of edges."""
-  edges: [JobApplicantEdge!]!
+	"""
+	A list of edges.
+	"""
+	edges: [JobApplicantEdge!]!
 }
 
-"""Application count data of a job."""
+"""
+Application count data of a job.
+"""
 type JobApplicantCount {
-  """The number of applicants in applied status for the job."""
-  applied: Int!
+	"""
+	The number of applicants in applied status for the job.
+	"""
+	applied: Int!
 
-  """The number of applicants in shortlisted status for the job."""
-  shortlisted: Int!
+	"""
+	The number of applicants in shortlisted status for the job.
+	"""
+	shortlisted: Int!
 
-  """The number of applicants in interviewed status for the job."""
-  interviewed: Int!
+	"""
+	The number of applicants in interviewed status for the job.
+	"""
+	interviewed: Int!
 
-  """The number of applicants in onhold status for the job."""
-  onHold: Int!
+	"""
+	The number of applicants in onhold status for the job.
+	"""
+	onHold: Int!
 
-  """The number of applicants in offered status for the job."""
-  offered: Int!
+	"""
+	The number of applicants in offered status for the job.
+	"""
+	offered: Int!
 }
 
 type JobApplicantEdge {
-  """A cursor for use in pagination"""
-  cursor: String!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
 
-  """The item at the end of the edge"""
-  node: JobApplicant!
+	"""
+	The item at the end of the edge
+	"""
+	node: JobApplicant!
 }
 
-union JobApplicantJobApplicantNotFoundError = JobApplicant | JobApplicantNotFoundError
+union JobApplicantJobApplicantNotFoundError =
+	| JobApplicant
+	| JobApplicantNotFoundError
 
-"""Used when the job applicant is not found."""
+"""
+Used when the job applicant is not found.
+"""
 type JobApplicantNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""The status of the job application."""
+"""
+The status of the job application.
+"""
 enum JobApplicantStatus {
-  APPLIED
-  SHORTLISTED
-  INTERVIEWED
-  ONHOLD
-  OFFERED
+	APPLIED
+	SHORTLISTED
+	INTERVIEWED
+	ONHOLD
+	OFFERED
 }
 
-"""A custom application form belonging to a job posting."""
+"""
+A custom application form belonging to a job posting.
+"""
 type JobApplicationForm implements Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
 
-  """The fields of the application form."""
-  fields: [ApplicationField!]!
+	"""
+	The fields of the application form.
+	"""
+	fields: [ApplicationField!]!
 }
 
-"""Used when the job application form is not found."""
+"""
+Used when the job application form is not found.
+"""
 type JobApplicationFormNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
 type JobConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
 
-  """A list of edges."""
-  edges: [JobEdge!]!
+	"""
+	A list of edges.
+	"""
+	edges: [JobEdge!]!
 }
 
 type JobEdge {
-  """A cursor for use in pagination"""
-  cursor: String!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
 
-  """The item at the end of the edge"""
-  node: Job!
+	"""
+	The item at the end of the edge
+	"""
+	node: Job!
 }
 
-"""Used when the job is externally handled."""
+"""
+Used when the job is externally handled.
+"""
 type JobIsExternalError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""A metric point belonging to a series of job metrics."""
+"""
+A metric point belonging to a series of job metrics.
+"""
 type JobMetricPoint {
-  """The timestamp of the job metric point."""
-  timestamp: DateTime!
+	"""
+	The timestamp of the job metric point.
+	"""
+	timestamp: DateTime!
 
-  """The count of the job metric point."""
-  count: Int!
+	"""
+	The count of the job metric point.
+	"""
+	count: Int!
 }
 
-"""Used when the job is not found."""
+"""
+Used when the job is not found.
+"""
 type JobNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when the job is not yet published."""
+"""
+Used when the job is not yet published.
+"""
 type JobNotPublishedError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""The job payload."""
+"""
+The job payload.
+"""
 union JobPayload = Job | JobNotFoundError
 
-"""The type of job."""
+"""
+The type of job.
+"""
 enum JobType {
-  FULL_TIME
-  PART_TIME
-  INTERNSHIP
-  CONTRACT
+	FULL_TIME
+	PART_TIME
+	INTERNSHIP
+	CONTRACT
 }
 
-"""The language details."""
+"""
+The language details.
+"""
 type Language {
-  """The name of the language."""
-  name: String!
+	"""
+	The name of the language.
+	"""
+	name: String!
 
-  """The proficiency level of the language."""
-  proficiency: String!
+	"""
+	The proficiency level of the language.
+	"""
+	proficiency: String!
 }
 
-"""The language details input."""
+"""
+The language details input.
+"""
 input LanguageInput {
-  """The name of the language."""
-  name: String!
+	"""
+	The name of the language.
+	"""
+	name: String!
 
-  """The proficiency level of the language."""
-  proficiency: String!
+	"""
+	The proficiency level of the language.
+	"""
+	proficiency: String!
 }
 
-"""The login with passkey payload."""
-union LoginWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidCaptchaTokenError | WebAuthnChallengeNotFoundError
+"""
+The login with passkey payload.
+"""
+union LoginWithPasskeyPayload =
+	| Account
+	| InvalidPasskeyAuthenticationCredentialError
+	| InvalidCaptchaTokenError
+	| WebAuthnChallengeNotFoundError
 
-"""The login with password payload."""
-union LoginWithPasswordPayload = Account | InvalidCredentialsError | InvalidCaptchaTokenError | InvalidAuthenticationProviderError | TwoFactorAuthenticationRequiredError
+"""
+The login with password payload.
+"""
+union LoginWithPasswordPayload =
+	| Account
+	| InvalidCredentialsError
+	| InvalidCaptchaTokenError
+	| InvalidAuthenticationProviderError
+	| TwoFactorAuthenticationRequiredError
 
-"""The logout payload."""
+"""
+The logout payload.
+"""
 type LogoutPayload {
-  """Human readable success message."""
-  message: String!
+	"""
+	Human readable success message.
+	"""
+	message: String!
 }
 
-"""Marital status type."""
+"""
+Marital status type.
+"""
 enum MaritalStatusType {
-  MARRIED
-  SINGLE
+	MARRIED
+	SINGLE
 }
 
-"""Used when the user is already a member of the organization."""
+"""
+Used when the user is already a member of the organization.
+"""
 type MemberAlreadyExistsError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
 type Mutation {
-  """Request an email verification token."""
-  requestEmailVerificationToken(
-    """The email to request an email verification token for."""
-    email: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): RequestEmailVerificationTokenPayload!
-
-  """Verify an email."""
-  verifyEmail(
-    """The email to request an email verification token for."""
-    email: String!
-
-    """The email verification token."""
-    emailVerificationToken: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): VerifyEmailPayload!
-
-  """Register a new user with a password."""
-  registerWithPassword(
-    """The email of the new user."""
-    email: String!
-
-    """The email verification token."""
-    emailVerificationToken: String!
-
-    """The password of the new user."""
-    password: String!
-
-    """The full name of the new user."""
-    fullName: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): RegisterWithPasswordPayload!
-
-  """Generate registration options for registering via a passkey."""
-  generatePasskeyRegistrationOptions(
-    """The email of the new user."""
-    email: String!
-
-    """The full name of the new user."""
-    fullName: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): GeneratePasskeyRegistrationOptionsPayload!
-
-  """Register a new user with a passkey."""
-  registerWithPasskey(
-    """The email of the new user."""
-    email: String!
-
-    """The email verification token."""
-    emailVerificationToken: String!
-
-    """The passkey registration response of the new user."""
-    passkeyRegistrationResponse: JSON!
-
-    """The nickname of the passkey."""
-    passkeyNickname: String!
-
-    """The full name of the new user."""
-    fullName: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): RegisterWithPasskeyPayload!
-
-  """Generate authentication options."""
-  generateAuthenticationOptions(
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): GenerateAuthenticationOptionsPayload!
-
-  """Generate reauthentication options (for sudo mode requests)."""
-  generateReauthenticationOptions(
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): GenerateAuthenticationOptionsPayload!
-
-  """Log in a user with a passkey."""
-  loginWithPasskey(
-    """The authentication response of the user."""
-    authenticationResponse: JSON!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): LoginWithPasskeyPayload!
-
-  """Log in a user with email and password."""
-  loginWithPassword(
-    """The email of the user."""
-    email: String!
-
-    """The password of the user."""
-    password: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): LoginWithPasswordPayload!
-
-  """Log out the current user."""
-  logout: LogoutPayload! @isAuthenticated
-
-  """Request a password reset."""
-  requestPasswordReset(
-    """The email of the existing user."""
-    email: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): RequestPasswordResetPayload!
-
-  """Verify a 2FA challenge for password reset using an authenticator app."""
-  verify2faPasswordResetWithAuthenticator(
-    """The email of the existing user."""
-    email: String!
-
-    """The password reset token."""
-    passwordResetToken: String!
-
-    """The 2FA token to verify password reset."""
-    twoFactorToken: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): Verify2FAPasswordResetWithAuthenticatorPayload!
-
-  """Verify a 2FA challenge for password reset using a passkey."""
-  verify2faPasswordResetWithPasskey(
-    """The email of the existing user."""
-    email: String!
-
-    """The password reset token."""
-    passwordResetToken: String!
-
-    """The passkey authentication response to verify password reset."""
-    authenticationResponse: JSON!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): Verify2FAPasswordResetWithPasskeyPayload!
-
-  """Reset a user's password."""
-  resetPassword(
-    """The email of the existing user."""
-    email: String!
-
-    """The password reset token."""
-    passwordResetToken: String!
-
-    """The new password."""
-    newPassword: String!
-  ): ResetPasswordPayload!
-
-  """Update the current user's password."""
-  updatePassword(
-    """The new password."""
-    newPassword: String!
-  ): UpdatePasswordPayload! @isAuthenticated @requiresSudoMode
-
-  """Delete the current user's password."""
-  deletePassword: DeletePasswordPayload! @isAuthenticated @requiresSudoMode
-
-  """Delete other sessions of the viewer than the current one."""
-  deleteOtherSessions: DeleteOtherSessionsPayload! @isAuthenticated @requiresSudoMode
-
-  """Delete session by ID."""
-  deleteSession(
-    """The ID of the session to delete."""
-    sessionId: ID!
-  ): DeleteSessionPayload! @isAuthenticated @requiresSudoMode
-
-  """Delete webauthn credential by ID."""
-  deleteWebAuthnCredential(
-    """The ID of the Webauthn credential to delete."""
-    webAuthnCredentialId: ID!
-  ): DeleteWebAuthnCredentialPayload! @isAuthenticated @requiresSudoMode
-
-  """Delete webauthn credential by ID."""
-  updateWebAuthnCredential(
-    """The ID of the Webauthn credential to update."""
-    webAuthnCredentialId: ID!
-
-    """The nickname of the passkey."""
-    nickname: String!
-  ): UpdateWebAuthnCredentialPayload! @isAuthenticated
-
-  """Generate registration options for adding a webauthn credential."""
-  generateWebAuthnCredentialCreationOptions: GeneratePasskeyCreationOptionsPayload! @isAuthenticated @requiresSudoMode
-
-  """Create a new webauthn credential for the current user."""
-  createWebAuthnCredential(
-    """The passkey registration response."""
-    passkeyRegistrationResponse: JSON!
-
-    """The nickname of the passkey."""
-    nickname: String!
-  ): CreateWebAuthnCredentialPayload! @isAuthenticated @requiresSudoMode
-
-  """Request a sudo mode grant for the current user using a passkey."""
-  requestSudoModeWithPasskey(
-    """The authentication response of the user."""
-    authenticationResponse: JSON!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): RequestSudoModeWithPasskeyPayload! @isAuthenticated
-
-  """Request a sudo mode grant for the current user using a password."""
-  requestSudoModeWithPassword(
-    """The password of the user."""
-    password: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): RequestSudoModeWithPasswordPayload! @isAuthenticated
-
-  """
-  Request a sudo mode grant for the current user using an authenticator app.
-  """
-  requestSudoModeWithAuthenticator(
-    """The 2FA token of the user."""
-    twoFactorToken: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): RequestSudoModeWithAuthenticatorPayload! @isAuthenticated
-
-  """Enable account 2FA with authenticator."""
-  enableAccount2faWithAuthenticator(
-    """The 2FA token."""
-    token: String!
-  ): SetAccount2FAPayload! @isAuthenticated @requiresSudoMode
-
-  """Disable two factor authentication with authenticator app."""
-  disableAccount2faWithAuthenticator: DisableAccount2FAWithAuthenticatorPayload! @isAuthenticated @requiresSudoMode
-
-  """Generate an account 2FA challenge to setup an authenticator."""
-  generateAuthenticator2faChallenge: GenerateAuthenticator2FAChallengePayload! @isAuthenticated @requiresSudoMode
-
-  """Verify Account 2FA challenge with an authenticator."""
-  verify2faWithAuthenticator(
-    """The 2FA token."""
-    token: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): Verify2FAWithAuthenticatorPayload!
-
-  """Verify Account 2FA with a recovery code."""
-  verify2faWithRecoveryCode(
-    """The 2FA token."""
-    token: String!
-
-    """The captcha token to verify the user request."""
-    captchaToken: String!
-  ): Verify2FAWithRecoveryCodePayload!
-
-  """Generate 2FA recovery codes for the current user."""
-  generate2faRecoveryCodes: Generate2FARecoveryCodesPayload! @isAuthenticated @requiresSudoMode
-
-  """Save a job."""
-  saveJob(
-    """The ID of the job to save."""
-    jobId: ID!
-  ): SaveJobPayload! @isAuthenticated
-
-  """Save a job."""
-  unsaveJob(
-    """The ID of the job to unsave."""
-    jobId: ID!
-  ): UnsaveJobPayload! @isAuthenticated
-
-  """Create a new job."""
-  createJob(
-    """The ID of the organization to create the job under."""
-    organizationId: ID!
-
-    """The title of the job."""
-    title: String!
-
-    """The description of the job."""
-    description: String!
-
-    """The skills required for the job."""
-    skills: [String!]!
-
-    """The external application URL for the job."""
-    externalApplicationUrl: String = null
-
-    """The location of the job."""
-    location: String = null
-
-    """The number of vacancies for the job."""
-    vacancies: Int = null
-
-    """The minimum salary of the job."""
-    minSalary: Int = null
-
-    """The maximum salary of the job."""
-    maxSalary: Int = null
-
-    """The minimum experience of the job."""
-    minExperience: Int = null
-
-    """The maximum experience of the job."""
-    maxExperience: Int = null
-
-    """The expiration date of the job."""
-    expiresAt: DateTime = null
-
-    """The type of the job."""
-    jobType: JobType = null
-
-    """The work mode of the job."""
-    workMode: WorkMode = null
-
-    """The currency of the job."""
-    currency: String! = "INR"
-  ): CreateJobPayload! @isAuthenticated
-
-  """Update a job."""
-  updateJob(
-    """The ID of the job to update."""
-    jobId: ID!
-
-    """The title of the job."""
-    title: String!
-
-    """The description of the job."""
-    description: String!
-
-    """The skills required for the job."""
-    skills: [String!]!
-
-    """The location of the job."""
-    location: String = null
-
-    """The number of vacancies for the job."""
-    vacancies: Int = null
-
-    """The minimum salary of the job."""
-    minSalary: Int = null
-
-    """The maximum salary of the job."""
-    maxSalary: Int = null
-
-    """The minimum experience of the job."""
-    minExperience: Int = null
-
-    """The maximum experience of the job."""
-    maxExperience: Int = null
-
-    """The expiration date of the job."""
-    expiresAt: DateTime = null
-
-    """The type of the job."""
-    jobType: JobType = null
-
-    """The work mode of the job."""
-    workMode: WorkMode = null
-
-    """The currency of the job."""
-    currency: String! = "INR"
-  ): UpdateJobPayload! @isAuthenticated
-
-  """Update job application form."""
-  updateJobApplicationForm(
-    """The ID of the job to update the application form for."""
-    jobId: ID!
-
-    """The fields required for the job application form."""
-    fields: [ApplicationFieldInput!]!
-  ): UpdateJobApplicationFormPayload! @isAuthenticated
-
-  """Make a job active."""
-  publishJob(
-    """The ID of the job to activate."""
-    jobId: ID!
-  ): PublishJobPayload! @isAuthenticated
-
-  """Make a job inactive."""
-  unpublishJob(
-    """The ID of the job to activate."""
-    jobId: ID!
-  ): UnpublishJobPayload! @isAuthenticated
-
-  """Create a job applicant."""
-  createJobApplication(
-    """The ID of the job to apply for."""
-    jobId: ID!
-
-    """The fields required by the job's application form."""
-    applicantFields: [ApplicantFieldInput!]!
-
-    """The URL of the job applicant's resume."""
-    resumeUrl: String!
-  ): CreateJobApplicantPayload! @isAuthenticated
-
-  """Delete a job."""
-  deleteJob(
-    """The ID of the job to delete."""
-    jobId: ID!
-  ): DeleteJobPayload! @isAuthenticated @requiresSudoMode
-
-  """Create a presigned URL for a job applicant's resume."""
-  createJobApplicantResumePresignedUrl: CreateJobApplicantResumePresignedURLPayload! @isAuthenticated
-
-  """Update the current user's profile personal details."""
-  updateProfilePersonalDetails(
-    """The address of the user profile."""
-    address: AddressInput!
-
-    """The gender of the user profile."""
-    gender: GenderType = null
-
-    """The date of birth of the user profile."""
-    dateOfBirth: Date = null
-
-    """The marital status of the user profile."""
-    maritalStatus: MaritalStatusType = null
-
-    """The category of the user profile."""
-    category: String = null
-  ): UpdateProfilePayload! @isAuthenticated
-
-  """Update the current user's profile languages."""
-  updateProfileLanguages(
-    """The languages of the user profile."""
-    languages: [LanguageInput!]!
-  ): UpdateProfilePayload! @isAuthenticated
-
-  """Update the current user's account."""
-  updateAccount(
-    """The full name of the user account."""
-    fullName: String!
-  ): UpdateAccountPayload! @isAuthenticated
-
-  """Create an organization."""
-  createOrganization(
-    """The full name of the organization."""
-    fullName: String!
-
-    """The slug of the organization."""
-    slug: String!
-
-    """The website of the organization."""
-    website: String = null
-
-    """The description of the organization."""
-    description: String = null
-
-    """The logo URL of the organization."""
-    logoUrl: String = null
-  ): CreateOrganizationPayload! @isAuthenticated
-
-  """Create an organization logo presigned URL."""
-  createOrganizationLogoPresignedUrl: CreateOrganizationLogoPresignedURLPayload! @isAuthenticated
-
-  """Update an organization."""
-  updateOrganization(
-    """The ID of the organization to update."""
-    organizationId: ID!
-
-    """The name of the organization."""
-    name: String!
-
-    """The slug of the organization."""
-    slug: String!
-
-    """The location of the organization."""
-    location: String = null
-
-    """The website of the organization."""
-    website: String = null
-
-    """The description of the organization."""
-    description: String = null
-
-    """The logo URL of the organization."""
-    logoUrl: String = null
-  ): UpdateOrganizationPayload! @isAuthenticated
-
-  """Delete an organization."""
-  deleteOrganization(
-    """The ID of the organization to delete."""
-    organizationId: ID!
-  ): DeleteOrganizationPayload! @isAuthenticated
-
-  """Create an organization invite."""
-  createOrganizationInvite(
-    """The ID of the organization to create an invite for."""
-    organizationId: ID!
-
-    """The email address of the invite."""
-    email: String!
-  ): CreateOrganizationInvitePayload! @isAuthenticated
-
-  """Delete an organization invite."""
-  deleteOrganizationInvite(
-    """The ID of the organization to delete the invite from."""
-    organizationId: ID!
-
-    """The ID of the invite to delete."""
-    inviteId: ID!
-  ): DeleteOrganizationInvitePayload! @isAuthenticated
-
-  """Accept an organization invite."""
-  acceptOrganizationInvite(
-    """The token of the invite to accept."""
-    inviteToken: String!
-  ): AcceptOrganizationInvitePayload! @isAuthenticated
-
-  """Decline an organization invite."""
-  declineOrganizationInvite(
-    """The token of the invite to decline."""
-    inviteToken: String!
-  ): DeclineOrganizationInvitePayload! @isAuthenticated
-
-  """Remove an organization member."""
-  removeOrganizationMember(
-    """The ID of the organization to remove the member from."""
-    organizationId: ID!
-
-    """The ID of the account to remove from the organization."""
-    accountId: ID!
-  ): RemoveOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
-
-  """Promote an organization member."""
-  promoteOrganizationMember(
-    """The ID of the organization to promote the member from."""
-    organizationId: ID!
-
-    """The ID of the account to promote in the organization."""
-    accountId: ID!
-  ): PromoteOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
-
-  """Demote an organization member."""
-  demoteOrganizationMember(
-    """The ID of the organization to promote the member from."""
-    organizationId: ID!
-
-    """The ID of the account to promote in the organization."""
-    accountId: ID!
-  ): DemoteOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
+	"""
+	Request an email verification token.
+	"""
+	requestEmailVerificationToken(
+		"""
+		The email to request an email verification token for.
+		"""
+		email: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): RequestEmailVerificationTokenPayload!
+
+	"""
+	Verify an email.
+	"""
+	verifyEmail(
+		"""
+		The email to request an email verification token for.
+		"""
+		email: String!
+
+		"""
+		The email verification token.
+		"""
+		emailVerificationToken: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): VerifyEmailPayload!
+
+	"""
+	Register a new user with a password.
+	"""
+	registerWithPassword(
+		"""
+		The email of the new user.
+		"""
+		email: String!
+
+		"""
+		The email verification token.
+		"""
+		emailVerificationToken: String!
+
+		"""
+		The password of the new user.
+		"""
+		password: String!
+
+		"""
+		The full name of the new user.
+		"""
+		fullName: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): RegisterWithPasswordPayload!
+
+	"""
+	Generate registration options for registering via a passkey.
+	"""
+	generatePasskeyRegistrationOptions(
+		"""
+		The email of the new user.
+		"""
+		email: String!
+
+		"""
+		The full name of the new user.
+		"""
+		fullName: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): GeneratePasskeyRegistrationOptionsPayload!
+
+	"""
+	Register a new user with a passkey.
+	"""
+	registerWithPasskey(
+		"""
+		The email of the new user.
+		"""
+		email: String!
+
+		"""
+		The email verification token.
+		"""
+		emailVerificationToken: String!
+
+		"""
+		The passkey registration response of the new user.
+		"""
+		passkeyRegistrationResponse: JSON!
+
+		"""
+		The nickname of the passkey.
+		"""
+		passkeyNickname: String!
+
+		"""
+		The full name of the new user.
+		"""
+		fullName: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): RegisterWithPasskeyPayload!
+
+	"""
+	Generate authentication options.
+	"""
+	generateAuthenticationOptions(
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): GenerateAuthenticationOptionsPayload!
+
+	"""
+	Generate reauthentication options (for sudo mode requests).
+	"""
+	generateReauthenticationOptions(
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): GenerateAuthenticationOptionsPayload!
+
+	"""
+	Log in a user with a passkey.
+	"""
+	loginWithPasskey(
+		"""
+		The authentication response of the user.
+		"""
+		authenticationResponse: JSON!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): LoginWithPasskeyPayload!
+
+	"""
+	Log in a user with email and password.
+	"""
+	loginWithPassword(
+		"""
+		The email of the user.
+		"""
+		email: String!
+
+		"""
+		The password of the user.
+		"""
+		password: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): LoginWithPasswordPayload!
+
+	"""
+	Log out the current user.
+	"""
+	logout: LogoutPayload! @isAuthenticated
+
+	"""
+	Request a password reset.
+	"""
+	requestPasswordReset(
+		"""
+		The email of the existing user.
+		"""
+		email: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): RequestPasswordResetPayload!
+
+	"""
+	Verify a 2FA challenge for password reset using an authenticator app.
+	"""
+	verify2faPasswordResetWithAuthenticator(
+		"""
+		The email of the existing user.
+		"""
+		email: String!
+
+		"""
+		The password reset token.
+		"""
+		passwordResetToken: String!
+
+		"""
+		The 2FA token to verify password reset.
+		"""
+		twoFactorToken: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): Verify2FAPasswordResetWithAuthenticatorPayload!
+
+	"""
+	Verify a 2FA challenge for password reset using a passkey.
+	"""
+	verify2faPasswordResetWithPasskey(
+		"""
+		The email of the existing user.
+		"""
+		email: String!
+
+		"""
+		The password reset token.
+		"""
+		passwordResetToken: String!
+
+		"""
+		The passkey authentication response to verify password reset.
+		"""
+		authenticationResponse: JSON!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): Verify2FAPasswordResetWithPasskeyPayload!
+
+	"""
+	Reset a user's password.
+	"""
+	resetPassword(
+		"""
+		The email of the existing user.
+		"""
+		email: String!
+
+		"""
+		The password reset token.
+		"""
+		passwordResetToken: String!
+
+		"""
+		The new password.
+		"""
+		newPassword: String!
+	): ResetPasswordPayload!
+
+	"""
+	Update the current user's password.
+	"""
+	updatePassword(
+		"""
+		The new password.
+		"""
+		newPassword: String!
+	): UpdatePasswordPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Delete the current user's password.
+	"""
+	deletePassword: DeletePasswordPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Delete other sessions of the viewer than the current one.
+	"""
+	deleteOtherSessions: DeleteOtherSessionsPayload!
+		@isAuthenticated
+		@requiresSudoMode
+
+	"""
+	Delete session by ID.
+	"""
+	deleteSession(
+		"""
+		The ID of the session to delete.
+		"""
+		sessionId: ID!
+	): DeleteSessionPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Delete webauthn credential by ID.
+	"""
+	deleteWebAuthnCredential(
+		"""
+		The ID of the Webauthn credential to delete.
+		"""
+		webAuthnCredentialId: ID!
+	): DeleteWebAuthnCredentialPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Delete webauthn credential by ID.
+	"""
+	updateWebAuthnCredential(
+		"""
+		The ID of the Webauthn credential to update.
+		"""
+		webAuthnCredentialId: ID!
+
+		"""
+		The nickname of the passkey.
+		"""
+		nickname: String!
+	): UpdateWebAuthnCredentialPayload! @isAuthenticated
+
+	"""
+	Generate registration options for adding a webauthn credential.
+	"""
+	generateWebAuthnCredentialCreationOptions: GeneratePasskeyCreationOptionsPayload!
+		@isAuthenticated
+		@requiresSudoMode
+
+	"""
+	Create a new webauthn credential for the current user.
+	"""
+	createWebAuthnCredential(
+		"""
+		The passkey registration response.
+		"""
+		passkeyRegistrationResponse: JSON!
+
+		"""
+		The nickname of the passkey.
+		"""
+		nickname: String!
+	): CreateWebAuthnCredentialPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Request a sudo mode grant for the current user using a passkey.
+	"""
+	requestSudoModeWithPasskey(
+		"""
+		The authentication response of the user.
+		"""
+		authenticationResponse: JSON!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): RequestSudoModeWithPasskeyPayload! @isAuthenticated
+
+	"""
+	Request a sudo mode grant for the current user using a password.
+	"""
+	requestSudoModeWithPassword(
+		"""
+		The password of the user.
+		"""
+		password: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): RequestSudoModeWithPasswordPayload! @isAuthenticated
+
+	"""
+	Request a sudo mode grant for the current user using an authenticator app.
+	"""
+	requestSudoModeWithAuthenticator(
+		"""
+		The 2FA token of the user.
+		"""
+		twoFactorToken: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): RequestSudoModeWithAuthenticatorPayload! @isAuthenticated
+
+	"""
+	Enable account 2FA with authenticator.
+	"""
+	enableAccount2faWithAuthenticator(
+		"""
+		The 2FA token.
+		"""
+		token: String!
+	): SetAccount2FAPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Disable two factor authentication with authenticator app.
+	"""
+	disableAccount2faWithAuthenticator: DisableAccount2FAWithAuthenticatorPayload!
+		@isAuthenticated
+		@requiresSudoMode
+
+	"""
+	Generate an account 2FA challenge to setup an authenticator.
+	"""
+	generateAuthenticator2faChallenge: GenerateAuthenticator2FAChallengePayload!
+		@isAuthenticated
+		@requiresSudoMode
+
+	"""
+	Verify Account 2FA challenge with an authenticator.
+	"""
+	verify2faWithAuthenticator(
+		"""
+		The 2FA token.
+		"""
+		token: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): Verify2FAWithAuthenticatorPayload!
+
+	"""
+	Verify Account 2FA with a recovery code.
+	"""
+	verify2faWithRecoveryCode(
+		"""
+		The 2FA token.
+		"""
+		token: String!
+
+		"""
+		The captcha token to verify the user request.
+		"""
+		captchaToken: String!
+	): Verify2FAWithRecoveryCodePayload!
+
+	"""
+	Generate 2FA recovery codes for the current user.
+	"""
+	generate2faRecoveryCodes: Generate2FARecoveryCodesPayload!
+		@isAuthenticated
+		@requiresSudoMode
+
+	"""
+	Save a job.
+	"""
+	saveJob(
+		"""
+		The ID of the job to save.
+		"""
+		jobId: ID!
+	): SaveJobPayload! @isAuthenticated
+
+	"""
+	Save a job.
+	"""
+	unsaveJob(
+		"""
+		The ID of the job to unsave.
+		"""
+		jobId: ID!
+	): UnsaveJobPayload! @isAuthenticated
+
+	"""
+	Create a new job.
+	"""
+	createJob(
+		"""
+		The ID of the organization to create the job under.
+		"""
+		organizationId: ID!
+
+		"""
+		The title of the job.
+		"""
+		title: String!
+
+		"""
+		The description of the job.
+		"""
+		description: String!
+
+		"""
+		The skills required for the job.
+		"""
+		skills: [String!]!
+
+		"""
+		The external application URL for the job.
+		"""
+		externalApplicationUrl: String = null
+
+		"""
+		The location of the job.
+		"""
+		location: String = null
+
+		"""
+		The number of vacancies for the job.
+		"""
+		vacancies: Int = null
+
+		"""
+		The minimum salary of the job.
+		"""
+		minSalary: Int = null
+
+		"""
+		The maximum salary of the job.
+		"""
+		maxSalary: Int = null
+
+		"""
+		The minimum experience of the job.
+		"""
+		minExperience: Int = null
+
+		"""
+		The maximum experience of the job.
+		"""
+		maxExperience: Int = null
+
+		"""
+		The expiration date of the job.
+		"""
+		expiresAt: DateTime = null
+
+		"""
+		The type of the job.
+		"""
+		jobType: JobType = null
+
+		"""
+		The work mode of the job.
+		"""
+		workMode: WorkMode = null
+
+		"""
+		The currency of the job.
+		"""
+		currency: String! = "INR"
+	): CreateJobPayload! @isAuthenticated
+
+	"""
+	Update a job.
+	"""
+	updateJob(
+		"""
+		The ID of the job to update.
+		"""
+		jobId: ID!
+
+		"""
+		The title of the job.
+		"""
+		title: String!
+
+		"""
+		The description of the job.
+		"""
+		description: String!
+
+		"""
+		The skills required for the job.
+		"""
+		skills: [String!]!
+
+		"""
+		The location of the job.
+		"""
+		location: String = null
+
+		"""
+		The number of vacancies for the job.
+		"""
+		vacancies: Int = null
+
+		"""
+		The minimum salary of the job.
+		"""
+		minSalary: Int = null
+
+		"""
+		The maximum salary of the job.
+		"""
+		maxSalary: Int = null
+
+		"""
+		The minimum experience of the job.
+		"""
+		minExperience: Int = null
+
+		"""
+		The maximum experience of the job.
+		"""
+		maxExperience: Int = null
+
+		"""
+		The expiration date of the job.
+		"""
+		expiresAt: DateTime = null
+
+		"""
+		The type of the job.
+		"""
+		jobType: JobType = null
+
+		"""
+		The work mode of the job.
+		"""
+		workMode: WorkMode = null
+
+		"""
+		The currency of the job.
+		"""
+		currency: String! = "INR"
+	): UpdateJobPayload! @isAuthenticated
+
+	"""
+	Update job application form.
+	"""
+	updateJobApplicationForm(
+		"""
+		The ID of the job to update the application form for.
+		"""
+		jobId: ID!
+
+		"""
+		The fields required for the job application form.
+		"""
+		fields: [ApplicationFieldInput!]!
+	): UpdateJobApplicationFormPayload! @isAuthenticated
+
+	"""
+	Make a job active.
+	"""
+	publishJob(
+		"""
+		The ID of the job to activate.
+		"""
+		jobId: ID!
+	): PublishJobPayload! @isAuthenticated
+
+	"""
+	Make a job inactive.
+	"""
+	unpublishJob(
+		"""
+		The ID of the job to activate.
+		"""
+		jobId: ID!
+	): UnpublishJobPayload! @isAuthenticated
+
+	"""
+	Create a job applicant.
+	"""
+	createJobApplication(
+		"""
+		The ID of the job to apply for.
+		"""
+		jobId: ID!
+
+		"""
+		The fields required by the job's application form.
+		"""
+		applicantFields: [ApplicantFieldInput!]!
+
+		"""
+		The URL of the job applicant's resume.
+		"""
+		resumeUrl: String!
+	): CreateJobApplicantPayload! @isAuthenticated
+
+	"""
+	Delete a job.
+	"""
+	deleteJob(
+		"""
+		The ID of the job to delete.
+		"""
+		jobId: ID!
+	): DeleteJobPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Create a presigned URL for a job applicant's resume.
+	"""
+	createJobApplicantResumePresignedUrl: CreateJobApplicantResumePresignedURLPayload!
+		@isAuthenticated
+
+	"""
+	Update the current user's profile personal details.
+	"""
+	updateProfilePersonalDetails(
+		"""
+		The address of the user profile.
+		"""
+		address: AddressInput!
+
+		"""
+		The gender of the user profile.
+		"""
+		gender: GenderType = null
+
+		"""
+		The date of birth of the user profile.
+		"""
+		dateOfBirth: Date = null
+
+		"""
+		The marital status of the user profile.
+		"""
+		maritalStatus: MaritalStatusType = null
+
+		"""
+		The category of the user profile.
+		"""
+		category: String = null
+	): UpdateProfilePayload! @isAuthenticated
+
+	"""
+	Update the current user's profile languages.
+	"""
+	updateProfileLanguages(
+		"""
+		The languages of the user profile.
+		"""
+		languages: [LanguageInput!]!
+	): UpdateProfilePayload! @isAuthenticated
+
+	"""
+	Update the current user's account.
+	"""
+	updateAccount(
+		"""
+		The full name of the user account.
+		"""
+		fullName: String!
+	): UpdateAccountPayload! @isAuthenticated
+
+	"""
+	Create an organization.
+	"""
+	createOrganization(
+		"""
+		The full name of the organization.
+		"""
+		fullName: String!
+
+		"""
+		The slug of the organization.
+		"""
+		slug: String!
+
+		"""
+		The website of the organization.
+		"""
+		website: String = null
+
+		"""
+		The description of the organization.
+		"""
+		description: String = null
+
+		"""
+		The logo URL of the organization.
+		"""
+		logoUrl: String = null
+	): CreateOrganizationPayload! @isAuthenticated
+
+	"""
+	Create an organization logo presigned URL.
+	"""
+	createOrganizationLogoPresignedUrl: CreateOrganizationLogoPresignedURLPayload!
+		@isAuthenticated
+
+	"""
+	Update an organization.
+	"""
+	updateOrganization(
+		"""
+		The ID of the organization to update.
+		"""
+		organizationId: ID!
+
+		"""
+		The name of the organization.
+		"""
+		name: String!
+
+		"""
+		The slug of the organization.
+		"""
+		slug: String!
+
+		"""
+		The location of the organization.
+		"""
+		location: String = null
+
+		"""
+		The website of the organization.
+		"""
+		website: String = null
+
+		"""
+		The description of the organization.
+		"""
+		description: String = null
+
+		"""
+		The logo URL of the organization.
+		"""
+		logoUrl: String = null
+	): UpdateOrganizationPayload! @isAuthenticated
+
+	"""
+	Delete an organization.
+	"""
+	deleteOrganization(
+		"""
+		The ID of the organization to delete.
+		"""
+		organizationId: ID!
+	): DeleteOrganizationPayload! @isAuthenticated
+
+	"""
+	Create an organization invite.
+	"""
+	createOrganizationInvite(
+		"""
+		The ID of the organization to create an invite for.
+		"""
+		organizationId: ID!
+
+		"""
+		The email address of the invite.
+		"""
+		email: String!
+	): CreateOrganizationInvitePayload! @isAuthenticated
+
+	"""
+	Delete an organization invite.
+	"""
+	deleteOrganizationInvite(
+		"""
+		The ID of the organization to delete the invite from.
+		"""
+		organizationId: ID!
+
+		"""
+		The ID of the invite to delete.
+		"""
+		inviteId: ID!
+	): DeleteOrganizationInvitePayload! @isAuthenticated
+
+	"""
+	Accept an organization invite.
+	"""
+	acceptOrganizationInvite(
+		"""
+		The token of the invite to accept.
+		"""
+		inviteToken: String!
+	): AcceptOrganizationInvitePayload! @isAuthenticated
+
+	"""
+	Decline an organization invite.
+	"""
+	declineOrganizationInvite(
+		"""
+		The token of the invite to decline.
+		"""
+		inviteToken: String!
+	): DeclineOrganizationInvitePayload! @isAuthenticated
+
+	"""
+	Remove an organization member.
+	"""
+	removeOrganizationMember(
+		"""
+		The ID of the organization to remove the member from.
+		"""
+		organizationId: ID!
+
+		"""
+		The ID of the account to remove from the organization.
+		"""
+		accountId: ID!
+	): RemoveOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Promote an organization member.
+	"""
+	promoteOrganizationMember(
+		"""
+		The ID of the organization to promote the member from.
+		"""
+		organizationId: ID!
+
+		"""
+		The ID of the account to promote in the organization.
+		"""
+		accountId: ID!
+	): PromoteOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
+
+	"""
+	Demote an organization member.
+	"""
+	demoteOrganizationMember(
+		"""
+		The ID of the organization to promote the member from.
+		"""
+		organizationId: ID!
+
+		"""
+		The ID of the account to promote in the organization.
+		"""
+		accountId: ID!
+	): DemoteOrganizationMemberPayload! @isAuthenticated @requiresSudoMode
 }
 
-"""An object with a Globally Unique ID"""
+"""
+An object with a Globally Unique ID
+"""
 interface Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
 }
 
 type NotAuthenticatedError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""An organization owned by an account."""
+"""
+An organization owned by an account.
+"""
 type Organization implements Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
 
-  """The name of the organization."""
-  name: String!
+	"""
+	The name of the organization.
+	"""
+	name: String!
 
-  """The slug of the organization."""
-  slug: String!
+	"""
+	The slug of the organization.
+	"""
+	slug: String!
 
-  """The description of the organization."""
-  description: String
+	"""
+	The description of the organization.
+	"""
+	description: String
 
-  """The location of the organization."""
-  location: String
+	"""
+	The location of the organization.
+	"""
+	location: String
 
-  """The contact email of the organization."""
-  email: String
+	"""
+	The contact email of the organization.
+	"""
+	email: String
 
-  """The website of the organization."""
-  website: String
+	"""
+	The website of the organization.
+	"""
+	website: String
 
-  """The logo URL of the organization."""
-  logoUrl: String!
+	"""
+	The logo URL of the organization.
+	"""
+	logoUrl: String!
 
-  """Get job by slug."""
-  job(
-    """Slug of the job"""
-    slug: String!
-  ): JobPayload!
+	"""
+	Get job by slug.
+	"""
+	job(
+		"""
+		Slug of the job
+		"""
+		slug: String!
+	): JobPayload!
 
-  """Total viewer count for the organization's jobs, filtered by time."""
-  totalViewCount(
-    """Start date for filtering the view count."""
-    startDate: DateTime = null
+	"""
+	Total viewer count for the organization's jobs, filtered by time.
+	"""
+	totalViewCount(
+		"""
+		Start date for filtering the view count.
+		"""
+		startDate: DateTime = null
 
-    """End date for filtering the view count."""
-    endDate: DateTime = null
-  ): Int! @isAuthenticated
+		"""
+		End date for filtering the view count.
+		"""
+		endDate: DateTime = null
+	): Int! @isAuthenticated
 
-  """
-  Total view metric points for the organization's jobs, filtered by time.
-  """
-  totalViewMetricPoints: [JobMetricPoint!]! @isAuthenticated
+	"""
+	Total view metric points for the organization's jobs, filtered by time.
+	"""
+	totalViewMetricPoints: [JobMetricPoint!]! @isAuthenticated
 
-  """The number of admin members in the organization."""
-  adminCount: Int!
+	"""
+	The number of admin members in the organization.
+	"""
+	adminCount: Int!
 
-  """Whether the current user is an admin in this organization."""
-  isAdmin: Boolean!
+	"""
+	Whether the current user is an admin in this organization.
+	"""
+	isAdmin: Boolean!
 
-  """Whether the current user is an member in this organization."""
-  isMember: Boolean!
+	"""
+	Whether the current user is an member in this organization.
+	"""
+	isMember: Boolean!
 
-  """The invites created for the organization."""
-  invites(
-    """The search (query) term"""
-    searchTerm: String = null
+	"""
+	The invites created for the organization.
+	"""
+	invites(
+		"""
+		The search (query) term
+		"""
+		searchTerm: String = null
 
-    """Returns items before the given cursor."""
-    before: ID = null
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
 
-    """Returns items after the given cursor."""
-    after: ID = null
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
 
-    """How many items to return after the cursor?"""
-    first: Int = null
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
 
-    """How many items to return before the cursor?"""
-    last: Int = null
-  ): InviteConnection!
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): InviteConnection!
 
-  """The jobs posted in the organization."""
-  jobs(
-    """The search (query) term"""
-    searchTerm: String = null
+	"""
+	The jobs posted in the organization.
+	"""
+	jobs(
+		"""
+		The search (query) term
+		"""
+		searchTerm: String = null
 
-    """Whether only active jobs must be returned."""
-    isActive: Boolean = null
+		"""
+		Whether only active jobs must be returned.
+		"""
+		isActive: Boolean = null
 
-    """Returns items before the given cursor."""
-    before: ID = null
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
 
-    """Returns items after the given cursor."""
-    after: ID = null
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
 
-    """How many items to return after the cursor?"""
-    first: Int = null
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
 
-    """How many items to return before the cursor?"""
-    last: Int = null
-  ): JobConnection!
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): JobConnection!
 
-  """The members of the organization."""
-  members(
-    """The search (query) term"""
-    searchTerm: String = null
+	"""
+	The members of the organization.
+	"""
+	members(
+		"""
+		The search (query) term
+		"""
+		searchTerm: String = null
 
-    """Returns items before the given cursor."""
-    before: ID = null
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
 
-    """Returns items after the given cursor."""
-    after: ID = null
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
 
-    """How many items to return after the cursor?"""
-    first: Int = null
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
 
-    """How many items to return before the cursor?"""
-    last: Int = null
-  ): OrganizationMemberConnection!
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): OrganizationMemberConnection!
 }
 
 """
 Used when the user is not authorized to perform the action in the organization.
 """
 type OrganizationAuthorizationError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
 type OrganizationConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
 
-  """A list of edges."""
-  edges: [OrganizationEdge!]!
+	"""
+	A list of edges.
+	"""
+	edges: [OrganizationEdge!]!
 }
 
 type OrganizationEdge {
-  """A cursor for use in pagination"""
-  cursor: String!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
 
-  """The item at the end of the edge"""
-  node: Organization!
+	"""
+	The item at the end of the edge
+	"""
+	node: Organization!
 }
 
-"""An invite to an organization."""
+"""
+An invite to an organization.
+"""
 type OrganizationInvite implements Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
 
-  """The email address of the invite."""
-  email: String!
+	"""
+	The email address of the invite.
+	"""
+	email: String!
 
-  """The account that created this invite."""
-  createdBy: Account!
+	"""
+	The account that created this invite.
+	"""
+	createdBy: Account!
 
-  """The organization that the invite is for."""
-  organization: Organization!
+	"""
+	The organization that the invite is for.
+	"""
+	organization: Organization!
 
-  """The status of the invite."""
-  status: InviteStatus!
+	"""
+	The status of the invite.
+	"""
+	status: InviteStatus!
 
-  """When the invite was created."""
-  createdAt: DateTime!
+	"""
+	When the invite was created.
+	"""
+	createdAt: DateTime!
 
-  """When the invite expires."""
-  expiresAt: DateTime
+	"""
+	When the invite expires.
+	"""
+	expiresAt: DateTime
 }
 
 type OrganizationInviteEdge {
-  """A cursor for use in pagination"""
-  cursor: String!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
 
-  """The item at the end of the edge"""
-  node: OrganizationInvite!
+	"""
+	The item at the end of the edge
+	"""
+	node: OrganizationInvite!
 }
 
-"""Used when the organization invite is not found."""
+"""
+Used when the organization invite is not found.
+"""
 type OrganizationInviteNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""The organization invite payload."""
-union OrganizationInvitePayload = OrganizationInvite | OrganizationInviteNotFoundError
+"""
+The organization invite payload.
+"""
+union OrganizationInvitePayload =
+	| OrganizationInvite
+	| OrganizationInviteNotFoundError
 
 type OrganizationMemberConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
 
-  """A list of edges."""
-  edges: [OrganizationMemberEdge!]!
+	"""
+	A list of edges.
+	"""
+	edges: [OrganizationMemberEdge!]!
 }
 
 type OrganizationMemberEdge {
-  """A cursor for use in pagination"""
-  cursor: String!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
 
-  """The item at the end of the edge"""
-  node: Account!
+	"""
+	The item at the end of the edge
+	"""
+	node: Account!
 
-  """The role of the user in the organization."""
-  role: String!
+	"""
+	The role of the user in the organization.
+	"""
+	role: String!
 
-  """When the user joined the organization."""
-  createdAt: DateTime!
+	"""
+	When the user joined the organization.
+	"""
+	createdAt: DateTime!
 }
 
-"""Used when the organization member is not found."""
+"""
+Used when the organization member is not found.
+"""
 type OrganizationMemberNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when the organization is not found."""
+"""
+Used when the organization is not found.
+"""
 type OrganizationNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""The organization payload."""
+"""
+The organization payload.
+"""
 union OrganizationPayload = Organization | OrganizationNotFoundError
 
-"""Used when a organization with the slug already exists."""
+"""
+Used when a organization with the slug already exists.
+"""
 type OrganizationSlugInUseError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Information to aid in pagination."""
+"""
+Information to aid in pagination.
+"""
 type PageInfo {
-  """When paginating forwards, are there more items?"""
-  hasNextPage: Boolean!
+	"""
+	When paginating forwards, are there more items?
+	"""
+	hasNextPage: Boolean!
 
-  """When paginating backwards, are there more items?"""
-  hasPreviousPage: Boolean!
+	"""
+	When paginating backwards, are there more items?
+	"""
+	hasPreviousPage: Boolean!
 
-  """When paginating backwards, the cursor to continue."""
-  startCursor: String
+	"""
+	When paginating backwards, the cursor to continue.
+	"""
+	startCursor: String
 
-  """When paginating forwards, the cursor to continue."""
-  endCursor: String
+	"""
+	When paginating forwards, the cursor to continue.
+	"""
+	endCursor: String
 }
 
-"""Used when the password is not strong enough."""
+"""
+Used when the password is not strong enough.
+"""
 type PasswordNotStrongError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""A password reset token."""
+"""
+A password reset token.
+"""
 type PasswordResetToken implements Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
 
-  """Email address of the password reset token's account."""
-  email: String!
+	"""
+	Email address of the password reset token's account.
+	"""
+	email: String!
 
-  """Available 2FA providers for the password reset token's account."""
-  authProviders: [AuthProvider!]!
+	"""
+	Available 2FA providers for the password reset token's account.
+	"""
+	authProviders: [AuthProvider!]!
 
-  """Available 2FA providers for the password reset token's account."""
-  twoFactorProviders: [TwoFactorProvider!]!
+	"""
+	Available 2FA providers for the password reset token's account.
+	"""
+	twoFactorProviders: [TwoFactorProvider!]!
 
-  """Whether the password reset token needs 2FA to be used."""
-  needs2fa: Boolean!
+	"""
+	Whether the password reset token needs 2FA to be used.
+	"""
+	needs2fa: Boolean!
 }
 
-"""Used when the password reset token cooldown is active."""
+"""
+Used when the password reset token cooldown is active.
+"""
 type PasswordResetTokenCooldownError implements Error {
-  """Human readable error message."""
-  message: String!
-  remainingSeconds: Int!
+	"""
+	Human readable error message.
+	"""
+	message: String!
+	remainingSeconds: Int!
 }
 
-"""Used when the password reset token is not found."""
+"""
+Used when the password reset token is not found.
+"""
 type PasswordResetTokenNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""The password reset token payload."""
-union PasswordResetTokenPayload = PasswordResetToken | PasswordResetTokenNotFoundError
+"""
+The password reset token payload.
+"""
+union PasswordResetTokenPayload =
+	| PasswordResetToken
+	| PasswordResetTokenNotFoundError
 
-"""An account's profile."""
+"""
+An account's profile.
+"""
 type Profile implements Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
 
-  """The gender of the profile's user."""
-  gender: GenderType
+	"""
+	The gender of the profile's user.
+	"""
+	gender: GenderType
 
-  """The date of birth of the profile's user."""
-  dateOfBirth: Date
+	"""
+	The date of birth of the profile's user.
+	"""
+	dateOfBirth: Date
 
-  """The address of the profile's user."""
-  address: Address!
+	"""
+	The address of the profile's user.
+	"""
+	address: Address!
 
-  """The marital status of the profile's user."""
-  maritalStatus: MaritalStatusType
+	"""
+	The marital status of the profile's user.
+	"""
+	maritalStatus: MaritalStatusType
 
-  """The category of the profile's user."""
-  category: String
+	"""
+	The category of the profile's user.
+	"""
+	category: String
 
-  """The list of languages spoken by the profile's user."""
-  languages: [Language!]!
+	"""
+	The list of languages spoken by the profile's user.
+	"""
+	languages: [Language!]!
 
-  """Total job experience (in years) of the profile's user."""
-  totalJobExperience: Float
+	"""
+	Total job experience (in years) of the profile's user.
+	"""
+	totalJobExperience: Float
 
-  """The current job of the profile's user."""
-  currentJob: CurrentJob
+	"""
+	The current job of the profile's user.
+	"""
+	currentJob: CurrentJob
 
-  """When the profile was created."""
-  createdAt: DateTime!
+	"""
+	When the profile was created.
+	"""
+	createdAt: DateTime!
 }
 
-"""Used when the profile is not found."""
+"""
+Used when the profile is not found.
+"""
 type ProfileNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""The profile payload."""
+"""
+The profile payload.
+"""
 union ProfilePayload = Profile | ProfileNotFoundError
 
-"""The promote organization member payload."""
-union PromoteOrganizationMemberPayload = PromoteOrganizationMemberSuccess | OrganizationNotFoundError | OrganizationMemberNotFoundError | OrganizationAuthorizationError
+"""
+The promote organization member payload.
+"""
+union PromoteOrganizationMemberPayload =
+	| PromoteOrganizationMemberSuccess
+	| OrganizationNotFoundError
+	| OrganizationMemberNotFoundError
+	| OrganizationAuthorizationError
 
-"""Promote organization member success."""
+"""
+Promote organization member success.
+"""
 type PromoteOrganizationMemberSuccess {
-  """The organization member edge."""
-  organizationMemberEdge: OrganizationMemberEdge!
+	"""
+	The organization member edge.
+	"""
+	organizationMemberEdge: OrganizationMemberEdge!
 
-  """The updated organization."""
-  organization: Organization!
+	"""
+	The updated organization.
+	"""
+	organization: Organization!
 }
 
-"""The publish job payload."""
-union PublishJobPayload = Job | JobNotFoundError | OrganizationAuthorizationError | JobApplicationFormNotFoundError
+"""
+The publish job payload.
+"""
+union PublishJobPayload =
+	| Job
+	| JobNotFoundError
+	| OrganizationAuthorizationError
+	| JobApplicationFormNotFoundError
 
 type Query {
-  """Get the current user."""
-  viewer: ViewerPayload!
+	"""
+	Get the current user.
+	"""
+	viewer: ViewerPayload!
 
-  """Get a password reset token."""
-  passwordResetToken(
-    """Generated password reset token"""
-    resetToken: String!
+	"""
+	Get a password reset token.
+	"""
+	passwordResetToken(
+		"""
+		Generated password reset token
+		"""
+		resetToken: String!
 
-    """The email the password reset token belongs to."""
-    email: String!
-  ): PasswordResetTokenPayload!
-  node(
-    """The ID of the object."""
-    id: ID!
-  ): Node
+		"""
+		The email the password reset token belongs to.
+		"""
+		email: String!
+	): PasswordResetTokenPayload!
+	node(
+		"""
+		The ID of the object.
+		"""
+		id: ID!
+	): Node
 
-  """Get all active jobs available."""
-  jobs(
-    """The proximity in km to search for jobs"""
-    proximityKm: Float = null
+	"""
+	Get all active jobs available.
+	"""
+	jobs(
+		"""
+		The proximity in km to search for jobs
+		"""
+		proximityKm: Float = null
 
-    """The search (query) term"""
-    searchTerm: String = null
+		"""
+		The search (query) term
+		"""
+		searchTerm: String = null
 
-    """The location coordinates to search for jobs"""
-    coordinates: CoordinatesInput = null
+		"""
+		The location coordinates to search for jobs
+		"""
+		coordinates: CoordinatesInput = null
 
-    """Returns items before the given cursor."""
-    before: ID = null
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
 
-    """Returns items after the given cursor."""
-    after: ID = null
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
 
-    """How many items to return after the cursor?"""
-    first: Int = null
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
 
-    """How many items to return before the cursor?"""
-    last: Int = null
-  ): JobConnection!
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): JobConnection!
 
-  """Get all saved jobs for the current user."""
-  savedJobs(
-    """Returns items before the given cursor."""
-    before: ID = null
+	"""
+	Get all saved jobs for the current user.
+	"""
+	savedJobs(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
 
-    """Returns items after the given cursor."""
-    after: ID = null
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
 
-    """How many items to return after the cursor?"""
-    first: Int = null
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
 
-    """How many items to return before the cursor?"""
-    last: Int = null
-  ): SavedJobConnection! @isAuthenticated
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): SavedJobConnection! @isAuthenticated
 
-  """Get all applied jobs for the current user."""
-  appliedJobs(
-    """Returns items before the given cursor."""
-    before: ID = null
+	"""
+	Get all applied jobs for the current user.
+	"""
+	appliedJobs(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
 
-    """Returns items after the given cursor."""
-    after: ID = null
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
 
-    """How many items to return after the cursor?"""
-    first: Int = null
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
 
-    """How many items to return before the cursor?"""
-    last: Int = null
-  ): JobApplicantConnection! @isAuthenticated
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): JobApplicantConnection! @isAuthenticated
 
-  """Get organization by slug."""
-  organization(
-    """Slug of the organization"""
-    slug: String!
-  ): OrganizationPayload!
+	"""
+	Get organization by slug.
+	"""
+	organization(
+		"""
+		Slug of the organization
+		"""
+		slug: String!
+	): OrganizationPayload!
 
-  """Get a pending organization invite by token."""
-  organizationInvite(
-    """Token of the pending invite"""
-    inviteToken: String!
-  ): OrganizationInvitePayload! @isAuthenticated
+	"""
+	Get a pending organization invite by token.
+	"""
+	organizationInvite(
+		"""
+		Token of the pending invite
+		"""
+		inviteToken: String!
+	): OrganizationInvitePayload! @isAuthenticated
 
-  """Get available locations for the given search term."""
-  searchLocations(
-    """The search (query) term"""
-    searchTerm: String!
+	"""
+	Get available locations for the given search term.
+	"""
+	searchLocations(
+		"""
+		The search (query) term
+		"""
+		searchTerm: String!
 
-    """How many items to return"""
-    limit: Int! = 5
-  ): SearchLocationsPayload!
+		"""
+		How many items to return
+		"""
+		limit: Int! = 5
+	): SearchLocationsPayload!
 }
 
-"""The register with passkey payload."""
-union RegisterWithPasskeyPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidCaptchaTokenError | InvalidPasskeyRegistrationCredentialError
+"""
+The register with passkey payload.
+"""
+union RegisterWithPasskeyPayload =
+	| Account
+	| EmailInUseError
+	| InvalidEmailVerificationTokenError
+	| InvalidCaptchaTokenError
+	| InvalidPasskeyRegistrationCredentialError
 
-"""The register with password payload."""
-union RegisterWithPasswordPayload = Account | EmailInUseError | InvalidEmailVerificationTokenError | InvalidCaptchaTokenError | PasswordNotStrongError
+"""
+The register with password payload.
+"""
+union RegisterWithPasswordPayload =
+	| Account
+	| EmailInUseError
+	| InvalidEmailVerificationTokenError
+	| InvalidCaptchaTokenError
+	| PasswordNotStrongError
 
-"""The remove organization member payload."""
-union RemoveOrganizationMemberPayload = RemoveOrganizationMemberSuccess | OrganizationNotFoundError | OrganizationMemberNotFoundError | OrganizationAuthorizationError
+"""
+The remove organization member payload.
+"""
+union RemoveOrganizationMemberPayload =
+	| RemoveOrganizationMemberSuccess
+	| OrganizationNotFoundError
+	| OrganizationMemberNotFoundError
+	| OrganizationAuthorizationError
 
-"""Remove organization member success."""
+"""
+Remove organization member success.
+"""
 type RemoveOrganizationMemberSuccess {
-  """The organization member edge."""
-  organizationMemberEdge: OrganizationMemberEdge!
+	"""
+	The organization member edge.
+	"""
+	organizationMemberEdge: OrganizationMemberEdge!
 
-  """The updated organization."""
-  organization: Organization!
+	"""
+	The updated organization.
+	"""
+	organization: Organization!
 }
 
-"""Request email verification success."""
+"""
+Request email verification success.
+"""
 type RequestEmailVerificationSuccess {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 
-  """Remaining seconds before requesting another email verification token."""
-  remainingSeconds: Int!
+	"""
+	Remaining seconds before requesting another email verification token.
+	"""
+	remainingSeconds: Int!
 }
 
-"""The request email verification token payload."""
-union RequestEmailVerificationTokenPayload = RequestEmailVerificationSuccess | EmailInUseError | EmailVerificationTokenCooldownError | InvalidCaptchaTokenError | InvalidEmailError
+"""
+The request email verification token payload.
+"""
+union RequestEmailVerificationTokenPayload =
+	| RequestEmailVerificationSuccess
+	| EmailInUseError
+	| EmailVerificationTokenCooldownError
+	| InvalidCaptchaTokenError
+	| InvalidEmailError
 
-"""The request password reset payload."""
-union RequestPasswordResetPayload = RequestPasswordResetSuccess | InvalidCaptchaTokenError | PasswordResetTokenCooldownError
+"""
+The request password reset payload.
+"""
+union RequestPasswordResetPayload =
+	| RequestPasswordResetSuccess
+	| InvalidCaptchaTokenError
+	| PasswordResetTokenCooldownError
 
-"""Request password reset success."""
+"""
+Request password reset success.
+"""
 type RequestPasswordResetSuccess {
-  """Human readable success message."""
-  message: String!
+	"""
+	Human readable success message.
+	"""
+	message: String!
 }
 
-"""The request sudo mode with authenticator app payload."""
-union RequestSudoModeWithAuthenticatorPayload = Account | InvalidCredentialsError | InvalidCaptchaTokenError | AuthenticatorNotEnabledError
+"""
+The request sudo mode with authenticator app payload.
+"""
+union RequestSudoModeWithAuthenticatorPayload =
+	| Account
+	| InvalidCredentialsError
+	| InvalidCaptchaTokenError
+	| AuthenticatorNotEnabledError
 
-"""The request sudo mode with passkey payload."""
-union RequestSudoModeWithPasskeyPayload = Account | InvalidPasskeyAuthenticationCredentialError | InvalidCaptchaTokenError | WebAuthnChallengeNotFoundError
+"""
+The request sudo mode with passkey payload.
+"""
+union RequestSudoModeWithPasskeyPayload =
+	| Account
+	| InvalidPasskeyAuthenticationCredentialError
+	| InvalidCaptchaTokenError
+	| WebAuthnChallengeNotFoundError
 
-"""The request sudo mode with password payload."""
-union RequestSudoModeWithPasswordPayload = Account | InvalidCredentialsError | InvalidCaptchaTokenError | InvalidAuthenticationProviderError | TwoFactorAuthenticationRequiredError
+"""
+The request sudo mode with password payload.
+"""
+union RequestSudoModeWithPasswordPayload =
+	| Account
+	| InvalidCredentialsError
+	| InvalidCaptchaTokenError
+	| InvalidAuthenticationProviderError
+	| TwoFactorAuthenticationRequiredError
 
-"""The reset password payload."""
-union ResetPasswordPayload = Account | InvalidPasswordResetTokenError | PasswordNotStrongError | TwoFactorAuthenticationChallengeNotFoundError
+"""
+The reset password payload.
+"""
+union ResetPasswordPayload =
+	| Account
+	| InvalidPasswordResetTokenError
+	| PasswordNotStrongError
+	| TwoFactorAuthenticationChallengeNotFoundError
 
-"""The save job payload."""
+"""
+The save job payload.
+"""
 union SaveJobPayload = SaveJobSuccess | JobNotFoundError
 
-"""Save job success."""
+"""
+Save job success.
+"""
 type SaveJobSuccess {
-  """The edge of the saved job."""
-  savedJobEdge: SavedJobEdge!
+	"""
+	The edge of the saved job.
+	"""
+	savedJobEdge: SavedJobEdge!
 }
 
 type SavedJobConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
 
-  """A list of edges."""
-  edges: [SavedJobEdge!]!
+	"""
+	A list of edges.
+	"""
+	edges: [SavedJobEdge!]!
 }
 
 type SavedJobEdge {
-  """A cursor for use in pagination"""
-  cursor: String!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
 
-  """The item at the end of the edge"""
-  node: Job!
+	"""
+	The item at the end of the edge
+	"""
+	node: Job!
 
-  """When the job was saved at by the current user."""
-  savedAt: DateTime!
+	"""
+	When the job was saved at by the current user.
+	"""
+	savedAt: DateTime!
 }
 
-"""Used when a saved job is not found."""
+"""
+Used when a saved job is not found.
+"""
 type SavedJobNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Search location entity."""
+"""
+Search location entity.
+"""
 type SearchLocation {
-  """Place ID of the location"""
-  placeId: String!
+	"""
+	Place ID of the location
+	"""
+	placeId: String!
 
-  """Display name of the location"""
-  displayName: String!
+	"""
+	Display name of the location
+	"""
+	displayName: String!
 
-  """Coordinates of the location"""
-  coordinates: Coordinates!
+	"""
+	Coordinates of the location
+	"""
+	coordinates: Coordinates!
 }
 
-"""The payload for the search locations query."""
+"""
+The payload for the search locations query.
+"""
 type SearchLocationsPayload {
-  """List of search locations."""
-  locations: [SearchLocation!]!
+	"""
+	List of search locations.
+	"""
+	locations: [SearchLocation!]!
 }
 
-"""An account's session."""
+"""
+An account's session.
+"""
 type Session implements Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
 
-  """User agent of the session."""
-  userAgent: String!
+	"""
+	User agent of the session.
+	"""
+	userAgent: String!
 
-  """IP address of the session."""
-  ipAddress: String!
+	"""
+	IP address of the session.
+	"""
+	ipAddress: String!
 
-  """When the session was created."""
-  createdAt: DateTime!
+	"""
+	When the session was created.
+	"""
+	createdAt: DateTime!
 }
 
 type SessionConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
 
-  """A list of edges."""
-  edges: [SessionEdge!]!
+	"""
+	A list of edges.
+	"""
+	edges: [SessionEdge!]!
 }
 
 type SessionEdge {
-  """A cursor for use in pagination"""
-  cursor: String!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
 
-  """The item at the end of the edge"""
-  node: Session!
+	"""
+	The item at the end of the edge
+	"""
+	node: Session!
 }
 
-"""Used when the session is not found."""
+"""
+Used when the session is not found.
+"""
 type SessionNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""The enable account 2FA with authenticator payload."""
-union SetAccount2FAPayload = EnableAccount2FAWithAuthenticatorSuccess | InvalidCredentialsError | TwoFactorAuthenticationChallengeNotFoundError
+"""
+The enable account 2FA with authenticator payload.
+"""
+union SetAccount2FAPayload =
+	| EnableAccount2FAWithAuthenticatorSuccess
+	| InvalidCredentialsError
+	| TwoFactorAuthenticationChallengeNotFoundError
 
-"""Used when the 2FA challenge is not found."""
+"""
+Used when the 2FA challenge is not found.
+"""
 type TwoFactorAuthenticationChallengeNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when 2FA is not enabled for the account."""
+"""
+Used when 2FA is not enabled for the account.
+"""
 type TwoFactorAuthenticationNotEnabledError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""Used when 2FA is required."""
+"""
+Used when 2FA is required.
+"""
 type TwoFactorAuthenticationRequiredError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""The two factor provider provider."""
+"""
+The two factor provider provider.
+"""
 enum TwoFactorProvider {
-  AUTHENTICATOR
+	AUTHENTICATOR
 }
 
-"""The unpublish job payload."""
-union UnpublishJobPayload = Job | JobNotFoundError | OrganizationAuthorizationError | JobNotPublishedError
+"""
+The unpublish job payload.
+"""
+union UnpublishJobPayload =
+	| Job
+	| JobNotFoundError
+	| OrganizationAuthorizationError
+	| JobNotPublishedError
 
-"""The unsave job payload."""
+"""
+The unsave job payload.
+"""
 union UnsaveJobPayload = UnsaveJobSuccess | SavedJobNotFoundError
 
-"""Unsave job success."""
+"""
+Unsave job success.
+"""
 type UnsaveJobSuccess {
-  """The edge of the unsaved job."""
-  savedJobEdge: SavedJobEdge!
+	"""
+	The edge of the unsaved job.
+	"""
+	savedJobEdge: SavedJobEdge!
 }
 
-"""The update account payload."""
+"""
+The update account payload.
+"""
 union UpdateAccountPayload = Account
 
-"""The update job application form payload."""
-union UpdateJobApplicationFormPayload = UpdateJobApplicationFormSuccess | JobNotFoundError | OrganizationAuthorizationError | JobIsExternalError
+"""
+The update job application form payload.
+"""
+union UpdateJobApplicationFormPayload =
+	| UpdateJobApplicationFormSuccess
+	| JobNotFoundError
+	| OrganizationAuthorizationError
+	| JobIsExternalError
 
-"""Used when the job application form is updated successfully."""
+"""
+Used when the job application form is updated successfully.
+"""
 type UpdateJobApplicationFormSuccess {
-  """The updated job."""
-  job: Job!
+	"""
+	The updated job.
+	"""
+	job: Job!
 
-  """The updated job application form."""
-  jobApplicationForm: JobApplicationForm!
+	"""
+	The updated job application form.
+	"""
+	jobApplicationForm: JobApplicationForm!
 }
 
-"""The update job payload."""
-union UpdateJobPayload = UpdateJobSuccess | JobNotFoundError | OrganizationAuthorizationError
+"""
+The update job payload.
+"""
+union UpdateJobPayload =
+	| UpdateJobSuccess
+	| JobNotFoundError
+	| OrganizationAuthorizationError
 
-"""Used when the job is updated successfully."""
+"""
+Used when the job is updated successfully.
+"""
 type UpdateJobSuccess {
-  """The updated job."""
-  job: Job!
+	"""
+	The updated job.
+	"""
+	job: Job!
 }
 
-"""The update organization payload."""
-union UpdateOrganizationPayload = Organization | OrganizationSlugInUseError | OrganizationNotFoundError | OrganizationAuthorizationError
+"""
+The update organization payload.
+"""
+union UpdateOrganizationPayload =
+	| Organization
+	| OrganizationSlugInUseError
+	| OrganizationNotFoundError
+	| OrganizationAuthorizationError
 
-"""The update password payload."""
+"""
+The update password payload.
+"""
 union UpdatePasswordPayload = Account | PasswordNotStrongError
 
-"""The update profile payload."""
+"""
+The update profile payload.
+"""
 union UpdateProfilePayload = Account
 
-"""The update webauthn credential payload."""
-union UpdateWebAuthnCredentialPayload = WebAuthnCredential | WebAuthnCredentialNotFoundError
+"""
+The update webauthn credential payload.
+"""
+union UpdateWebAuthnCredentialPayload =
+	| WebAuthnCredential
+	| WebAuthnCredentialNotFoundError
 
-"""The verify 2FA password reset with authenticator payload."""
-union Verify2FAPasswordResetWithAuthenticatorPayload = PasswordResetToken | InvalidCredentialsError | AuthenticatorNotEnabledError | InvalidPasswordResetTokenError | InvalidCaptchaTokenError
+"""
+The verify 2FA password reset with authenticator payload.
+"""
+union Verify2FAPasswordResetWithAuthenticatorPayload =
+	| PasswordResetToken
+	| InvalidCredentialsError
+	| AuthenticatorNotEnabledError
+	| InvalidPasswordResetTokenError
+	| InvalidCaptchaTokenError
 
-"""The verify 2FA password reset with passkey payload."""
-union Verify2FAPasswordResetWithPasskeyPayload = PasswordResetToken | InvalidPasskeyAuthenticationCredentialError | TwoFactorAuthenticationNotEnabledError | InvalidPasswordResetTokenError | InvalidCaptchaTokenError | WebAuthnChallengeNotFoundError
+"""
+The verify 2FA password reset with passkey payload.
+"""
+union Verify2FAPasswordResetWithPasskeyPayload =
+	| PasswordResetToken
+	| InvalidPasskeyAuthenticationCredentialError
+	| TwoFactorAuthenticationNotEnabledError
+	| InvalidPasswordResetTokenError
+	| InvalidCaptchaTokenError
+	| WebAuthnChallengeNotFoundError
 
-"""The verify 2FA with authenticator payload."""
-union Verify2FAWithAuthenticatorPayload = Account | InvalidCredentialsError | AuthenticatorNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidCaptchaTokenError
+"""
+The verify 2FA with authenticator payload.
+"""
+union Verify2FAWithAuthenticatorPayload =
+	| Account
+	| InvalidCredentialsError
+	| AuthenticatorNotEnabledError
+	| TwoFactorAuthenticationChallengeNotFoundError
+	| InvalidCaptchaTokenError
 
-"""The verify 2FA with recovery code payload."""
-union Verify2FAWithRecoveryCodePayload = Account | InvalidCredentialsError | TwoFactorAuthenticationNotEnabledError | TwoFactorAuthenticationChallengeNotFoundError | InvalidCaptchaTokenError
+"""
+The verify 2FA with recovery code payload.
+"""
+union Verify2FAWithRecoveryCodePayload =
+	| Account
+	| InvalidCredentialsError
+	| TwoFactorAuthenticationNotEnabledError
+	| TwoFactorAuthenticationChallengeNotFoundError
+	| InvalidCaptchaTokenError
 
-"""The verify email payload."""
-union VerifyEmailPayload = VerifyEmailSuccess | InvalidCaptchaTokenError | InvalidEmailVerificationTokenError | EmailInUseError
+"""
+The verify email payload.
+"""
+union VerifyEmailPayload =
+	| VerifyEmailSuccess
+	| InvalidCaptchaTokenError
+	| InvalidEmailVerificationTokenError
+	| EmailInUseError
 
-"""Verify email success."""
+"""
+Verify email success.
+"""
 type VerifyEmailSuccess {
-  """Human readable success message."""
-  message: String!
+	"""
+	Human readable success message.
+	"""
+	message: String!
 }
 
-"""The viewer payload."""
+"""
+The viewer payload.
+"""
 union ViewerPayload = Account | NotAuthenticatedError
 
-"""Used when the WebAuthn challenge is not found."""
+"""
+Used when the WebAuthn challenge is not found.
+"""
 type WebAuthnChallengeNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""A WebAuthn Credential belonging to an account."""
+"""
+A WebAuthn Credential belonging to an account.
+"""
 type WebAuthnCredential implements Node {
-  """The Globally Unique ID of this object"""
-  id: ID!
+	"""
+	The Globally Unique ID of this object
+	"""
+	id: ID!
 
-  """Nickname of the webauthn credential."""
-  nickname: String!
+	"""
+	Nickname of the webauthn credential.
+	"""
+	nickname: String!
 
-  """When the webauthn credential was created."""
-  createdAt: DateTime!
+	"""
+	When the webauthn credential was created.
+	"""
+	createdAt: DateTime!
 
-  """When the webauthn credential was last used."""
-  lastUsedAt: DateTime!
+	"""
+	When the webauthn credential was last used.
+	"""
+	lastUsedAt: DateTime!
 }
 
 type WebAuthnCredentialConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
+	"""
+	Information to aid in pagination.
+	"""
+	pageInfo: PageInfo!
 
-  """A list of edges."""
-  edges: [WebAuthnCredentialEdge!]!
+	"""
+	A list of edges.
+	"""
+	edges: [WebAuthnCredentialEdge!]!
 }
 
 type WebAuthnCredentialEdge {
-  """A cursor for use in pagination"""
-  cursor: String!
+	"""
+	A cursor for use in pagination
+	"""
+	cursor: String!
 
-  """The item at the end of the edge"""
-  node: WebAuthnCredential!
+	"""
+	The item at the end of the edge
+	"""
+	node: WebAuthnCredential!
 }
 
-"""Used when the webauthn credential is not found."""
+"""
+Used when the webauthn credential is not found.
+"""
 type WebAuthnCredentialNotFoundError implements Error {
-  """Human readable error message."""
-  message: String!
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
-"""The work mode of the job."""
+"""
+The work mode of the job.
+"""
 enum WorkMode {
-  REMOTE
-  HYBRID
-  OFFICE
+	REMOTE
+	HYBRID
+	OFFICE
 }

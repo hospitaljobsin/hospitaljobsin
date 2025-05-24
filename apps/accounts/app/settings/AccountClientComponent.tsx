@@ -1,10 +1,10 @@
 "use client";
-import type { AccountClientComponentFragment$key } from "@/__generated__/AccountClientComponentFragment.graphql";
-import type { pageAccountSettingsQuery } from "@/__generated__/pageAccountSettingsQuery.graphql";
-import AccountSettingsView from "@/components/settings/account/AccountSettingsView";
 import type { PreloadedQuery } from "react-relay";
 import { useFragment, usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { AccountClientComponentFragment$key } from "@/__generated__/AccountClientComponentFragment.graphql";
+import type { pageAccountSettingsQuery } from "@/__generated__/pageAccountSettingsQuery.graphql";
+import AccountSettingsView from "@/components/settings/account/AccountSettingsView";
 import { AccountSettingsPageQuery } from "./page";
 
 const AccountClientComponentFragment = graphql`
@@ -15,7 +15,9 @@ const AccountClientComponentFragment = graphql`
 
 export default function AccountClientComponent({
 	queryReference,
-}: { queryReference: PreloadedQuery<pageAccountSettingsQuery> }) {
+}: {
+	queryReference: PreloadedQuery<pageAccountSettingsQuery>;
+}) {
 	const data = usePreloadedQuery(AccountSettingsPageQuery, queryReference);
 	const query = useFragment<AccountClientComponentFragment$key>(
 		AccountClientComponentFragment,

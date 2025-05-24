@@ -1,4 +1,3 @@
-
 import JobDetailHeaderClientComponent from "./JobDetailHeaderClientComponent";
 
 export default function JobRootLayout({
@@ -6,7 +5,6 @@ export default function JobRootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-
 	return (
 		<>
 			<JobDetailHeaderClientComponent />

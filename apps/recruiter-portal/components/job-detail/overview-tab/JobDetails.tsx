@@ -1,10 +1,3 @@
-import type {
-	JobDetailsFragment$key,
-	JobType,
-	WorkMode,
-} from "@/__generated__/JobDetailsFragment.graphql";
-import { dateFormat } from "@/lib/intl";
-import links from "@/lib/links";
 import {
 	Alert,
 	Button,
@@ -23,6 +16,13 @@ import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
 import { useParams } from "next/navigation";
 import { graphql, useFragment } from "react-relay";
 import { Markdown } from "tiptap-markdown";
+import type {
+	JobDetailsFragment$key,
+	JobType,
+	WorkMode,
+} from "@/__generated__/JobDetailsFragment.graphql";
+import { dateFormat } from "@/lib/intl";
+import links from "@/lib/links";
 import JobControls from "./JobControls";
 import JobStatistics from "./JobStatistics";
 
@@ -61,7 +61,9 @@ const JobDetailsFragment = graphql`
 
 export default function JobDetails({
 	rootQuery,
-}: { rootQuery: JobDetailsFragment$key }) {
+}: {
+	rootQuery: JobDetailsFragment$key;
+}) {
 	const params = useParams<{ slug: string; jobSlug: string }>();
 	const data = useFragment(JobDetailsFragment, rootQuery);
 

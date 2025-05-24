@@ -1,9 +1,10 @@
+import { fileURLToPath } from "node:url";
 import createMDX from "@next/mdx";
 import { withSentryConfig } from "@sentry/nextjs";
 import { createJiti } from "jiti";
 import type { NextConfig } from "next";
-import { fileURLToPath } from "node:url";
 import { env } from "./lib/env/client";
+
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
 // Import env here to validate during build. Using jiti we can import .ts files :)
@@ -39,16 +40,16 @@ const nextConfig: NextConfig = {
 	images: {
 		remotePatterns: [
 			{
-				protocol: 'https',
-				hostname: 'gravatar.com',
+				protocol: "https",
+				hostname: "gravatar.com",
 			},
 			{
-				protocol: 'https',
-				hostname: 'www.gravatar.com',
+				protocol: "https",
+				hostname: "www.gravatar.com",
 			},
 			{
-				protocol: 'https',
-				hostname: 'api.dicebear.com',
+				protocol: "https",
+				hostname: "api.dicebear.com",
 			},
 			// TODO: allow this only in dev/testing mode
 			{

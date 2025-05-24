@@ -1,10 +1,10 @@
-import type { UpdateLanguagesFormFragment$key } from "@/__generated__/UpdateLanguagesFormFragment.graphql";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
+import type { UpdateLanguagesFormFragment$key } from "@/__generated__/UpdateLanguagesFormFragment.graphql";
 
 const UpdateLanguagesFormMutation = graphql`
 mutation UpdateLanguagesFormMutation($languages: [LanguageInput!]!) {
@@ -41,8 +41,12 @@ type Props = {
 const formSchema = z.object({
 	languages: z.array(
 		z.object({
-			name: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75)),
-			proficiency: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75),)
+			name: z
+				.string()
+				.check(z.minLength(1, "This field is required"), z.maxLength(75)),
+			proficiency: z
+				.string()
+				.check(z.minLength(1, "This field is required"), z.maxLength(75)),
 		}),
 	),
 });

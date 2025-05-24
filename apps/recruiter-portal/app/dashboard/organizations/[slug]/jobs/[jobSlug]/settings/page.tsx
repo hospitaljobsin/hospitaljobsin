@@ -1,14 +1,14 @@
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import type { pageJobSettingsMetadataFragment$key } from "@/__generated__/pageJobSettingsMetadataFragment.graphql";
 import type JobSettingsViewQueryNode from "@/__generated__/pageJobSettingsViewQuery.graphql";
 import type { pageJobSettingsViewQuery } from "@/__generated__/pageJobSettingsViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { notFound } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import JobSettingsViewClientComponent from "./JobSettingsViewClientComponent";
 
 export const PageJobSettingsViewQuery = graphql`
-  query pageJobSettingsViewQuery($slug: String!, $jobSlug: String!) {	
+  query pageJobSettingsViewQuery($slug: String!, $jobSlug: String!) {
     ...pageJobSettingsMetadataFragment @arguments(slug: $slug, jobSlug: $jobSlug)
     ...JobSettingsViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }
@@ -33,7 +33,7 @@ const PageJobSettingsMetadataFragment = graphql`
 					... on Job {
 						title
 					}
-					
+
 					}
 			}
 		}

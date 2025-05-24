@@ -1,5 +1,11 @@
 "use client";
 
+import {
+	graphql,
+	useFragment,
+	usePreloadedQuery,
+	useRelayEnvironment,
+} from "react-relay";
 import type { OrganizationInvitesViewClientComponentFragment$key } from "@/__generated__/OrganizationInvitesViewClientComponentFragment.graphql";
 import type OrganizationInvitesViewQueryNode from "@/__generated__/pageOrganizationInvitesViewQuery.graphql";
 import type { pageOrganizationInvitesViewQuery } from "@/__generated__/pageOrganizationInvitesViewQuery.graphql";
@@ -7,12 +13,6 @@ import PageOrganizationInvitesViewQuery from "@/__generated__/pageOrganizationIn
 import OrganizationInvitesView from "@/components/organization-detail/members-tab/invites/OrganizationInvitesView";
 import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
-import {
-	graphql,
-	useFragment,
-	usePreloadedQuery,
-	useRelayEnvironment,
-} from "react-relay";
 
 const OrganizationInvitesViewClientComponentFragment = graphql`
  fragment OrganizationInvitesViewClientComponentFragment on Query @argumentDefinitions(

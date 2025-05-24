@@ -2,7 +2,9 @@ import SettingsSidebar from "@/components/organization-detail/settings-tab/Sideb
 
 export default function OrganizationSettingsLayout({
 	children,
-}: { children: React.ReactNode }) {
+}: {
+	children: React.ReactNode;
+}) {
 	return (
 		<>
 			<div className="relative w-full h-full">

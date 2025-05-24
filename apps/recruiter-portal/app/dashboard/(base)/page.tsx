@@ -1,9 +1,9 @@
 "use client";
-import type { pageDashboardQuery } from "@/__generated__/pageDashboardQuery.graphql";
-import DashboardViewSkeleton from "@/components/dashboard/DashboardViewSkeleton";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { pageDashboardQuery } from "@/__generated__/pageDashboardQuery.graphql";
+import DashboardViewSkeleton from "@/components/dashboard/DashboardViewSkeleton";
 import DashboardClientComponent from "./DashboardClientComponent";
 
 export const DashboardPageQuery = graphql`

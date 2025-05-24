@@ -1,14 +1,14 @@
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import type { pageJobApplicationFormMetadataFragment$key } from "@/__generated__/pageJobApplicationFormMetadataFragment.graphql";
 import type JobApplicationFormViewQueryNode from "@/__generated__/pageJobApplicationFormViewQuery.graphql";
 import type { pageJobApplicationFormViewQuery } from "@/__generated__/pageJobApplicationFormViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { notFound } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import JobApplicationFormViewClientComponent from "./JobApplicationFormViewClientComponent";
 
 export const PageJobApplicationFormViewQuery = graphql`
-  query pageJobApplicationFormViewQuery($slug: String! $jobSlug: String!) {	
+  query pageJobApplicationFormViewQuery($slug: String! $jobSlug: String!) {
     ...pageJobApplicationFormMetadataFragment @arguments(slug: $slug, jobSlug: $jobSlug)
     ...JobApplicationFormViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }
@@ -33,7 +33,7 @@ const PageJobApplicationFormMetadataFragment = graphql`
 				... on Job {
 					title
 				}
-				
+
 				}
 			}
 		}

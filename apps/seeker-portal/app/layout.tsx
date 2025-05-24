@@ -1,9 +1,10 @@
-import Footer from "@/components/layout/Footer";
-import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
+import Footer from "@/components/layout/Footer";
+import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import "./globals.css";
 import Providers from "./providers";
+
 const workSans = Work_Sans({
 	variable: "--font-work-sans",
 	subsets: ["latin"],

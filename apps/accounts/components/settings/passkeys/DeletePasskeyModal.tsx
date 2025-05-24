@@ -1,16 +1,16 @@
-import type { DeletePasskeyModalFragment$key } from "@/__generated__/DeletePasskeyModalFragment.graphql";
-import type { DeletePasskeyModalMutation } from "@/__generated__/DeletePasskeyModalMutation.graphql";
 import {
+	addToast,
 	Button,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { DeletePasskeyModalFragment$key } from "@/__generated__/DeletePasskeyModalFragment.graphql";
+import type { DeletePasskeyModalMutation } from "@/__generated__/DeletePasskeyModalMutation.graphql";
 
 const DeletePasskeyModalFragment = graphql`
   fragment DeletePasskeyModalFragment on WebAuthnCredential {

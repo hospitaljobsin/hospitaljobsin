@@ -1,17 +1,17 @@
-import type { PromoteMemberModalFragment$key } from "@/__generated__/PromoteMemberModalFragment.graphql";
-import type { PromoteMemberModalMutation } from "@/__generated__/PromoteMemberModalMutation.graphql";
-import type { PromoteMemberModalOrganizationFragment$key } from "@/__generated__/PromoteMemberModalOrganizationFragment.graphql";
 import {
+	addToast,
 	Button,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { useFragment, useMutation } from "react-relay";
 import { ConnectionHandler, graphql } from "relay-runtime";
+import type { PromoteMemberModalFragment$key } from "@/__generated__/PromoteMemberModalFragment.graphql";
+import type { PromoteMemberModalMutation } from "@/__generated__/PromoteMemberModalMutation.graphql";
+import type { PromoteMemberModalOrganizationFragment$key } from "@/__generated__/PromoteMemberModalOrganizationFragment.graphql";
 
 const PromoteMemberModalFragment = graphql`
     fragment PromoteMemberModalFragment on OrganizationMemberEdge {

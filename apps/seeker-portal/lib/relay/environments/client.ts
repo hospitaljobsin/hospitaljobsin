@@ -1,5 +1,4 @@
 "use client";
-import { env } from "@/lib/env/client";
 import type {
 	CacheConfig,
 	GraphQLResponse,
@@ -13,6 +12,7 @@ import {
 	RecordSource,
 	Store,
 } from "relay-runtime";
+import { env } from "@/lib/env/client";
 
 const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 

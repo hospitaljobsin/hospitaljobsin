@@ -1,8 +1,8 @@
 "use client";
-import type { AccountSettingsViewFragment$key } from "@/__generated__/AccountSettingsViewFragment.graphql";
 import { useState } from "react";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import type { AccountSettingsViewFragment$key } from "@/__generated__/AccountSettingsViewFragment.graphql";
 import AccountDetails from "./AccountDetails";
 import Password from "./Password";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
@@ -24,7 +24,9 @@ const AccountSettingsViewFragment = graphql`
 
 export default function AccountSettingsView({
 	query,
-}: { query: AccountSettingsViewFragment$key }) {
+}: {
+	query: AccountSettingsViewFragment$key;
+}) {
 	const [isEditingAccount, setIsEditingAccount] = useState(false);
 	const data = useFragment(AccountSettingsViewFragment, query);
 

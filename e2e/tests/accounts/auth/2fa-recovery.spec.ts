@@ -1,12 +1,7 @@
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
-import {
-	TOTP_USER_SECRET
-} from "@/tests/utils/constants";
-
-
-
+import { TOTP_USER_SECRET } from "@/tests/utils/constants";
 
 test.describe("2FA Recovery Page", () => {
 	test.beforeEach(async ({ page, twoFactorAuth }) => {
@@ -114,8 +109,13 @@ test.describe("2FA Recovery Page", () => {
 		).toBeVisible();
 	});
 
-	test("should successfully verify valid recovery code", async ({ page, twoFactorAuth }) => {
-		await page.getByLabel("Recovery Code").fill(twoFactorAuth.account.recoveryCodes[0]);
+	test("should successfully verify valid recovery code", async ({
+		page,
+		twoFactorAuth,
+	}) => {
+		await page
+			.getByLabel("Recovery Code")
+			.fill(twoFactorAuth.account.recoveryCodes[0]);
 		await page.getByRole("button", { name: "Verify Code" }).click();
 
 		// Should redirect to home page
@@ -135,13 +135,12 @@ test.describe("2FA Recovery Page 2FA Challenge Redirects", () => {
 	});
 });
 
-
-
 authTest.describe("2FA Recovery Page Authentication Redirects", () => {
-	authTest("should redirect to home page when already authenticated", async ({
-		page
-	}) => {
-		await page.goto("http://localhost:5002/auth/signup");
-		await page.waitForURL("http://localhost:5000/");
-	});
+	authTest(
+		"should redirect to home page when already authenticated",
+		async ({ page }) => {
+			await page.goto("http://localhost:5002/auth/signup");
+			await page.waitForURL("http://localhost:5000/");
+		},
+	);
 });

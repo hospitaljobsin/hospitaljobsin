@@ -1,13 +1,13 @@
 "use client";
-import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
-import { APP_NAME } from "@/lib/constants";
-import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import Link from "next/link";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
+import { APP_NAME } from "@/lib/constants";
+import links from "@/lib/links";
 import Logo from "../Logo";
 import AuthNavigation from "./AuthNavigation";
 
@@ -27,7 +27,9 @@ export const HeaderQuery = graphql`
 
 export default function Header({
 	queryReference,
-}: { queryReference: PreloadedQuery<HeaderQueryType> }) {
+}: {
+	queryReference: PreloadedQuery<HeaderQueryType>;
+}) {
 	const data = usePreloadedQuery<HeaderQueryType>(HeaderQuery, queryReference);
 	invariant(
 		data.viewer.__typename === "Account",

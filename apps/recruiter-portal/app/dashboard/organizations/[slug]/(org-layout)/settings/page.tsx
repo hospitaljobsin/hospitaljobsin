@@ -1,14 +1,14 @@
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import type { pageGeneralSettingsMetadataFragment$key } from "@/__generated__/pageGeneralSettingsMetadataFragment.graphql";
 import type GeneralSettingsViewQueryNode from "@/__generated__/pageGeneralSettingsViewQuery.graphql";
 import type { pageGeneralSettingsViewQuery } from "@/__generated__/pageGeneralSettingsViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { notFound } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import GeneralSettingsViewClientComponent from "./GeneralSettingsViewClientComponent";
 
 export const PageGeneralSettingsViewQuery = graphql`
-  query pageGeneralSettingsViewQuery($slug: String!) {	
+  query pageGeneralSettingsViewQuery($slug: String!) {
     ...GeneralSettingsViewClientComponentFragment @arguments(slug: $slug)
 	...pageGeneralSettingsMetadataFragment @arguments(slug: $slug)
   }
@@ -28,7 +28,7 @@ const PageGeneralSettingsMetadataFragment = graphql`
 		logoUrl
 		isAdmin
 	  }
-	 
+
 	}
   }
 `;

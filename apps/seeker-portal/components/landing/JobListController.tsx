@@ -1,8 +1,8 @@
-import type { CoordinatesInput } from "@/__generated__/LandingViewQuery.graphql";
-import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import { Card, CardBody, Input, Slider } from "@heroui/react";
 import { MapPin, Search } from "lucide-react";
 import { type FormEvent, useState } from "react";
+import type { CoordinatesInput } from "@/__generated__/LandingViewQuery.graphql";
+import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 
 interface JobListControllerProps {
 	coordinates: CoordinatesInput | null;

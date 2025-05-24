@@ -1,9 +1,7 @@
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
-import {
-	TOTP_USER_SECRET
-} from "@/tests/utils/constants";
+import { TOTP_USER_SECRET } from "@/tests/utils/constants";
 
 test.describe("2FA Page", () => {
 	test.beforeEach(async ({ page, twoFactorAuth }) => {
@@ -115,10 +113,11 @@ test.describe("2FA Page 2FA Challenge Redirects", () => {
 });
 
 authTest.describe("2FA Page 2FA Authentication Redirects", () => {
-	authTest("should redirect to home page when already authenticated", async ({
-		page,
-	}) => {
-		await page.goto("http://localhost:5002/auth/2fa");
-		await page.waitForURL("http://localhost:5000/");
-	});
+	authTest(
+		"should redirect to home page when already authenticated",
+		async ({ page }) => {
+			await page.goto("http://localhost:5002/auth/2fa");
+			await page.waitForURL("http://localhost:5000/");
+		},
+	);
 });

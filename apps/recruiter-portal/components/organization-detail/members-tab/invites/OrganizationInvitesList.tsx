@@ -1,11 +1,10 @@
+import { startTransition, useEffect, useRef } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
-
+import { graphql } from "relay-runtime";
+import invariant from "tiny-invariant";
 import type { OrganizationInvitesListFragment$key } from "@/__generated__/OrganizationInvitesListFragment.graphql";
 import type { OrganizationInvitesListInternalFragment$key } from "@/__generated__/OrganizationInvitesListInternalFragment.graphql";
 import type { pageOrganizationInvitesViewQuery } from "@/__generated__/pageOrganizationInvitesViewQuery.graphql";
-import { startTransition, useEffect, useRef } from "react";
-import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 import Invite from "./Invite";
 import OrganizationInvitesListSkeleton from "./OrganizationInvitesListSkeleton";
 

@@ -1,8 +1,8 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
-import type { JobOverviewTabFragment$key } from "@/__generated__/JobOverviewTabFragment.graphql";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import type { JobOverviewTabFragment$key } from "@/__generated__/JobOverviewTabFragment.graphql";
 import JobDetails from "./JobDetails";
 
 const JobOverviewTabFragment = graphql`
@@ -19,7 +19,7 @@ const JobOverviewTabFragment = graphql`
 			__typename
 			... on Job {
 				...JobDetailsFragment
-			}     
+			}
     	}
 			}
 		}

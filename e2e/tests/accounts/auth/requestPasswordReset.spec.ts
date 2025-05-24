@@ -2,7 +2,7 @@ import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import {
 	NONEXISTENT_TESTER_EMAIL,
-	PASSWORD_RESET_TOKEN_COOLDOWN
+	PASSWORD_RESET_TOKEN_COOLDOWN,
 } from "@/tests/utils/constants";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
 
@@ -67,7 +67,8 @@ test.describe("Request Password Reset Page", () => {
 
 	test("should successfully send password reset email", async ({
 		page,
-		request, passwordAuth
+		request,
+		passwordAuth,
 	}) => {
 		const emailAddress = passwordAuth.account.email;
 		await page.getByLabel("Email Address").fill(emailAddress);
@@ -130,8 +131,6 @@ test.describe("Request Password Reset Page", () => {
 		// Verify navigation
 		await expect(page).toHaveURL(/\/auth\/login/);
 	});
-
-
 });
 
 test.describe("Request Password Reset Page Rate Limiting", () => {
@@ -144,7 +143,8 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 
 	test("should handle cooldown on multiple password reset requests", async ({
 		page,
-		request, passwordAuth
+		request,
+		passwordAuth,
 	}) => {
 		// increase timeout to incorporate cooldown
 		test.setTimeout(45_000);
@@ -229,13 +229,19 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 	});
 });
 
-authTest.describe("Request Password Reset Page Authentication Redirects", () => {
-	authTest("should not redirect to home page when already authenticated", async ({
-		page,
-	}) => {
-		await page.goto("http://localhost:5002/auth/reset-password");
-		// ensure we are not redirected here
-		await expect(page).not.toHaveURL("http://localhost:5000/");
-		await expect(page).toHaveURL("http://localhost:5002/auth/reset-password");
-	});
-});
+authTest.describe(
+	"Request Password Reset Page Authentication Redirects",
+	() => {
+		authTest(
+			"should not redirect to home page when already authenticated",
+			async ({ page }) => {
+				await page.goto("http://localhost:5002/auth/reset-password");
+				// ensure we are not redirected here
+				await expect(page).not.toHaveURL("http://localhost:5000/");
+				await expect(page).toHaveURL(
+					"http://localhost:5002/auth/reset-password",
+				);
+			},
+		);
+	},
+);

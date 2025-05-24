@@ -1,9 +1,9 @@
-import type { OrganizationMembersControllerFragment$key } from "@/__generated__/OrganizationMembersControllerFragment.graphql";
 import { Button, Input, useDisclosure } from "@heroui/react";
 import { Search, UserPlus } from "lucide-react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import type { OrganizationMembersControllerFragment$key } from "@/__generated__/OrganizationMembersControllerFragment.graphql";
 import InviteMemberModal from "../shared/InviteMemberModal";
 
 interface OrganizationMembersControllerProps {

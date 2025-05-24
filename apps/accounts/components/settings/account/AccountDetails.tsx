@@ -1,6 +1,3 @@
-import { useFragment } from "react-relay";
-
-import type { AccountDetailsFragment$key } from "@/__generated__/AccountDetailsFragment.graphql";
 import {
 	Avatar,
 	Badge,
@@ -11,7 +8,9 @@ import {
 } from "@heroui/react";
 import { EditIcon, InfoIcon } from "lucide-react";
 import Link from "next/link";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { AccountDetailsFragment$key } from "@/__generated__/AccountDetailsFragment.graphql";
 
 const AccountDetailsFragment = graphql`
   fragment AccountDetailsFragment on Account {
@@ -63,7 +62,13 @@ export default function AccountDetails({ rootQuery, onEditAccount }: Props) {
 						shape="circle"
 						showOutline={false}
 					>
-						<Avatar showFallback name={data.fullName} size="lg" src={data.avatarUrl} data-testid="account-avatar" />
+						<Avatar
+							showFallback
+							name={data.fullName}
+							size="lg"
+							src={data.avatarUrl}
+							data-testid="account-avatar"
+						/>
 					</Badge>
 					<div className="flex flex-col gap-2 w-full items-start justify-center">
 						<h1 className="w-full text-lg font-medium truncate max-w-64">

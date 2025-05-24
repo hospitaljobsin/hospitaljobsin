@@ -1,50 +1,39 @@
-/**
- * @generated SignedSource<<245696a481de3a30da968fbf8756f70d>>
- * @lightSyntaxTransform
- * @nogrep
- */
-
-/* tslint:disable */
-/* eslint-disable */
-// @ts-nocheck
-
-import type { ReaderFragment } from 'relay-runtime';
-import type { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs, ReaderFragment } from "relay-runtime";
 export type OrganizationOverviewTabFragment$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"OrganizationDetailsFragment">;
-  readonly " $fragmentType": "OrganizationOverviewTabFragment";
+	readonly " $fragmentSpreads": FragmentRefs<"OrganizationDetailsFragment">;
+	readonly " $fragmentType": "OrganizationOverviewTabFragment";
 };
 export type OrganizationOverviewTabFragment$key = {
-  readonly " $data"?: OrganizationOverviewTabFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"OrganizationOverviewTabFragment">;
+	readonly " $data"?: OrganizationOverviewTabFragment$data;
+	readonly " $fragmentSpreads": FragmentRefs<"OrganizationOverviewTabFragment">;
 };
 
 const node: ReaderFragment = {
-  "argumentDefinitions": [
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "slug"
-    }
-  ],
-  "kind": "Fragment",
-  "metadata": null,
-  "name": "OrganizationOverviewTabFragment",
-  "selections": [
-    {
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "slug",
-          "variableName": "slug"
-        }
-      ],
-      "kind": "FragmentSpread",
-      "name": "OrganizationDetailsFragment"
-    }
-  ],
-  "type": "Query",
-  "abstractKey": null
+	argumentDefinitions: [
+		{
+			defaultValue: null,
+			kind: "LocalArgument",
+			name: "slug",
+		},
+	],
+	kind: "Fragment",
+	metadata: null,
+	name: "OrganizationOverviewTabFragment",
+	selections: [
+		{
+			args: [
+				{
+					kind: "Variable",
+					name: "slug",
+					variableName: "slug",
+				},
+			],
+			kind: "FragmentSpread",
+			name: "OrganizationDetailsFragment",
+		},
+	],
+	type: "Query",
+	abstractKey: null,
 };
 
 (node as any).hash = "a1667487376aa4bc2db5264ddb5b049c";

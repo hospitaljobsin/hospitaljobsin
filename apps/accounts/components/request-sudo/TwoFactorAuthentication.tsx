@@ -1,13 +1,13 @@
 "use client";
 
-import type { TwoFactorAuthenticationMutation as TwoFactorAuthenticationMutationType } from "@/__generated__/TwoFactorAuthenticationMutation.graphql";
-import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
+import type { TwoFactorAuthenticationMutation as TwoFactorAuthenticationMutationType } from "@/__generated__/TwoFactorAuthenticationMutation.graphql";
+import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { useTurnstile } from "../TurnstileProvider";
 
 const TwoFactorAuthenticationMutation = graphql`

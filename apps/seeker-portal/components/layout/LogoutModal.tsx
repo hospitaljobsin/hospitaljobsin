@@ -1,5 +1,3 @@
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
 import {
 	Button,
 	Modal,
@@ -9,6 +7,8 @@ import {
 	ModalHeader,
 } from "@heroui/react";
 import { graphql, useMutation } from "react-relay";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 
 type Props = {
 	isOpen: boolean;

@@ -1,5 +1,3 @@
-import type { CancelEditJobModalJobFragment$key } from "@/__generated__/CancelEditJobModalJobFragment.graphql";
-import links from "@/lib/links";
 import { useRouter } from "@bprogress/next/app";
 import {
 	Button,
@@ -10,6 +8,8 @@ import {
 	ModalHeader,
 } from "@heroui/react";
 import { graphql, useFragment } from "react-relay";
+import type { CancelEditJobModalJobFragment$key } from "@/__generated__/CancelEditJobModalJobFragment.graphql";
+import links from "@/lib/links";
 
 export const CancelEditJobModalJobFragment = graphql`
     fragment CancelEditJobModalJobFragment on Job {

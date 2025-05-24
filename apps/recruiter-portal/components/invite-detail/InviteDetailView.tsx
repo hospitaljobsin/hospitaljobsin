@@ -1,7 +1,7 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
-import type { InviteDetailViewFragment$key } from "@/__generated__/InviteDetailViewFragment.graphql";
 import { graphql, useFragment } from "react-relay";
+import type { InviteDetailViewFragment$key } from "@/__generated__/InviteDetailViewFragment.graphql";
 import InviteForm from "./InviteForm";
 
 const InviteDetailViewFragment = graphql`

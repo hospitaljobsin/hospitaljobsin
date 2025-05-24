@@ -1,7 +1,7 @@
 "use client";
+import { Link } from "@heroui/react";
 import { COMPANY_NAME } from "@/lib/constants";
 import links from "@/lib/links";
-import { Link } from "@heroui/react";
 
 export default function Footer() {
 	return (

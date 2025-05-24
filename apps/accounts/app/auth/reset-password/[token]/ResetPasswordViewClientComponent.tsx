@@ -1,12 +1,5 @@
 "use client";
 
-import type { ResetPasswordViewClientComponentFragment$key } from "@/__generated__/ResetPasswordViewClientComponentFragment.graphql";
-import type ResetPasswordViewQueryNode from "@/__generated__/pageResetPasswordViewQuery.graphql";
-import type { pageResetPasswordViewQuery } from "@/__generated__/pageResetPasswordViewQuery.graphql";
-import PageResetPasswordViewQuery from "@/__generated__/pageResetPasswordViewQuery.graphql";
-import ResetPasswordView from "@/components/auth/reset-password/ResetPasswordView";
-import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
-import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 import {
 	graphql,
 	useFragment,
@@ -14,6 +7,13 @@ import {
 	useRelayEnvironment,
 } from "react-relay";
 import invariant from "tiny-invariant";
+import type ResetPasswordViewQueryNode from "@/__generated__/pageResetPasswordViewQuery.graphql";
+import type { pageResetPasswordViewQuery } from "@/__generated__/pageResetPasswordViewQuery.graphql";
+import PageResetPasswordViewQuery from "@/__generated__/pageResetPasswordViewQuery.graphql";
+import type { ResetPasswordViewClientComponentFragment$key } from "@/__generated__/ResetPasswordViewClientComponentFragment.graphql";
+import ResetPasswordView from "@/components/auth/reset-password/ResetPasswordView";
+import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
+import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 
 const ResetPasswordViewClientComponentFragment = graphql`
  fragment ResetPasswordViewClientComponentFragment on Query  @argumentDefinitions(
@@ -24,12 +24,12 @@ const ResetPasswordViewClientComponentFragment = graphql`
 		type: "String!"
 	  }
     ) {
-    passwordResetToken(resetToken: $resetToken, email: $email) { 
+    passwordResetToken(resetToken: $resetToken, email: $email) {
         __typename
       ... on PasswordResetToken {
         ...ResetPasswordViewFragment
       }
-    } 
+    }
   }
 `;
 

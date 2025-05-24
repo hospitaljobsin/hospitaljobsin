@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { PreloadFetchPolicy, PreloadedQuery } from "react-relay";
+import type { PreloadedQuery, PreloadFetchPolicy } from "react-relay";
 import type {
 	ConcreteRequest,
 	IEnvironment,

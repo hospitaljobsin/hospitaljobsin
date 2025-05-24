@@ -1,11 +1,18 @@
-import type { AuthenticatorTwoFactorAuthenticationResetPasswordMutation as AuthenticatorTwoFactorAuthenticationResetPasswordMutationType } from "@/__generated__/AuthenticatorTwoFactorAuthenticationResetPasswordMutation.graphql";
-import { useTurnstile } from "@/components/TurnstileProvider";
-import { addToast, Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
+import {
+	addToast,
+	Button,
+	Card,
+	CardBody,
+	CardHeader,
+	Input,
+} from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
+import type { AuthenticatorTwoFactorAuthenticationResetPasswordMutation as AuthenticatorTwoFactorAuthenticationResetPasswordMutationType } from "@/__generated__/AuthenticatorTwoFactorAuthenticationResetPasswordMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
 
 const AuthenticatorTwoFactorAuthenticationResetPasswordMutation = graphql`
   mutation AuthenticatorTwoFactorAuthenticationResetPasswordMutation($email: String!, $passwordResetToken: String!, $twoFactorToken: String!, $captchaToken: String!) {
@@ -31,7 +38,7 @@ const AuthenticatorTwoFactorAuthenticationResetPasswordMutation = graphql`
 `;
 
 const resetPassword2faSchema = z.object({
-	token:  z.string().check(z.minLength(1, "This field is required")),
+	token: z.string().check(z.minLength(1, "This field is required")),
 });
 
 export default function AuthenticatorTwoFactorAuthentication({

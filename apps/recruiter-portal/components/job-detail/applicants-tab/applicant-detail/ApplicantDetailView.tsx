@@ -1,8 +1,8 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
-import type { ApplicantDetailViewFragment$key } from "@/__generated__/ApplicantDetailViewFragment.graphql";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import type { ApplicantDetailViewFragment$key } from "@/__generated__/ApplicantDetailViewFragment.graphql";
 import ApplicantDetails from "./ApplicantDetails";
 
 const ApplicantDetailViewFragment = graphql`
@@ -23,11 +23,11 @@ const ApplicantDetailViewFragment = graphql`
                                 ...ApplicantDetailsFragment
                             }
                         }
-                    }     
+                    }
                 }
             }
         }
-        
+
   }
 `;
 

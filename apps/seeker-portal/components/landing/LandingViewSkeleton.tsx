@@ -1,4 +1,4 @@
-"usw client"
+"usw client";
 import JobListControllerSkeleton from "./JobListControllerSkeleton";
 import JobListSkeleton from "./JobListSkeleton";
 

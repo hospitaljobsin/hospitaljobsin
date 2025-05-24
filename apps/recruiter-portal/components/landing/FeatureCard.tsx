@@ -4,7 +4,11 @@ export default function FeatureCard({
 	icon,
 	title,
 	description,
-}: { icon: React.ReactNode; title: string; description: string }) {
+}: {
+	icon: React.ReactNode;
+	title: string;
+	description: string;
+}) {
 	return (
 		<Card className="border-none shadow-md h-full">
 			<CardBody className="p-6 flex flex-col gap-4 items-center text-center">

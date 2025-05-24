@@ -1,10 +1,10 @@
+import { useState } from "react";
+import { graphql, useFragment } from "react-relay";
 import type {
 	AuthProvider,
 	TwoFactorAuthenticationResetPasswordFragment$key,
 	TwoFactorProvider,
 } from "@/__generated__/TwoFactorAuthenticationResetPasswordFragment.graphql";
-import { useState } from "react";
-import { graphql, useFragment } from "react-relay";
 import AuthenticatorTwoFactorAuthentication from "./AuthenticatorTwoFactorAuthentication";
 import PasskeyTwoFactorAuthentication from "./PasskeyTwoFactorAuthentication";
 

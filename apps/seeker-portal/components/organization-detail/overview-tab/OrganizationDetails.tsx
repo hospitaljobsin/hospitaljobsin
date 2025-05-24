@@ -1,10 +1,10 @@
-import type { OrganizationDetailsFragment$key } from "@/__generated__/OrganizationDetailsFragment.graphql";
-import type { OrganizationDetailsInternalFragment$key as OrganizationDetailsInternalFragmentType } from "@/__generated__/OrganizationDetailsInternalFragment.graphql";
 import { Button, Card, CardBody, CardHeader, Link } from "@heroui/react";
 import { Mail, MapPin } from "lucide-react";
 import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import type { OrganizationDetailsFragment$key } from "@/__generated__/OrganizationDetailsFragment.graphql";
+import type { OrganizationDetailsInternalFragment$key as OrganizationDetailsInternalFragmentType } from "@/__generated__/OrganizationDetailsInternalFragment.graphql";
 
 const OrganizationDetailsFragment = graphql`
   fragment OrganizationDetailsFragment on Query @argumentDefinitions(
@@ -17,7 +17,7 @@ const OrganizationDetailsFragment = graphql`
       ... on Organization {
         ...OrganizationDetailsInternalFragment
       }
-	 
+
     }
   }
 `;
@@ -34,7 +34,9 @@ const OrganizationDetailsInternalFragment = graphql`
 
 export default function OrganizationDetails({
 	rootQuery,
-}: { rootQuery: OrganizationDetailsFragment$key }) {
+}: {
+	rootQuery: OrganizationDetailsFragment$key;
+}) {
 	const root = useFragment(OrganizationDetailsFragment, rootQuery);
 	invariant(
 		root.organization.__typename === "Organization",

@@ -1,7 +1,5 @@
 "use client";
 
-import type { ConfirmResetPasswordFormMutation as ConfirmResetPasswordFormMutationType } from "@/__generated__/ConfirmResetPasswordFormMutation.graphql";
-import links from "@/lib/links";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
@@ -10,6 +8,8 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
+import type { ConfirmResetPasswordFormMutation as ConfirmResetPasswordFormMutationType } from "@/__generated__/ConfirmResetPasswordFormMutation.graphql";
+import links from "@/lib/links";
 
 const ConfirmResetPasswordFormMutation = graphql`
   mutation ConfirmResetPasswordFormMutation($email: String!, $passwordResetToken: String!, $newPassword: String!) {
@@ -30,10 +30,9 @@ const ConfirmResetPasswordFormMutation = graphql`
 
 const confirmResetPasswordSchema = z
 	.object({
-		password: z
-			.string()
-			.check(z.minLength(1, "This field is required"),
-				z.minLength(8, "Password must be at least 8 characters long."),
+		password: z.string().check(
+			z.minLength(1, "This field is required"),
+			z.minLength(8, "Password must be at least 8 characters long."),
 			z.refine((password) => /[a-z]/.test(password), {
 				message: "Password must contain at least one lowercase letter.",
 			}),
@@ -46,20 +45,24 @@ const confirmResetPasswordSchema = z
 			z.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
 				message:
 					"Password must contain at least one special character (!@#$%^&*()-_=+).",
-			})
+			}),
 		),
 		confirmPassword: z.string().check(z.minLength(1, "This field is required")),
 	})
 	.check(
-	z.refine((data) => data.password === data.confirmPassword, {
-		message: "Passwords don't match",
-		path: ["confirmPassword"],
-	}));
+		z.refine((data) => data.password === data.confirmPassword, {
+			message: "Passwords don't match",
+			path: ["confirmPassword"],
+		}),
+	);
 
 export default function ConfirmResetPasswordForm({
 	email,
 	resetToken,
-}: { email: string; resetToken: string }) {
+}: {
+	email: string;
+	resetToken: string;
+}) {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
 		useState(false);

@@ -1,13 +1,13 @@
-import type { InviteFormAcceptMutation as InviteFormAcceptMutationType } from "@/__generated__/InviteFormAcceptMutation.graphql";
-import type { InviteFormDeclineMutation as InviteFormDeclineMutationType } from "@/__generated__/InviteFormDeclineMutation.graphql";
-import type { InviteFormFragment$key } from "@/__generated__/InviteFormFragment.graphql";
-import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
-import { Button, Card, CardBody, CardHeader, addToast } from "@heroui/react";
+import { addToast, Button, Card, CardBody, CardHeader } from "@heroui/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { graphql, useFragment, useMutation } from "react-relay";
 import invariant from "tiny-invariant";
+import type { InviteFormAcceptMutation as InviteFormAcceptMutationType } from "@/__generated__/InviteFormAcceptMutation.graphql";
+import type { InviteFormDeclineMutation as InviteFormDeclineMutationType } from "@/__generated__/InviteFormDeclineMutation.graphql";
+import type { InviteFormFragment$key } from "@/__generated__/InviteFormFragment.graphql";
+import links from "@/lib/links";
 
 const InviteFormFragment = graphql`
   fragment InviteFormFragment on Query @argumentDefinitions(
@@ -29,7 +29,7 @@ const InviteFormFragment = graphql`
 			slug
         }
       }
-     
+
     }
   }
 `;
@@ -40,7 +40,7 @@ const InviteFormAcceptMutation = graphql`
 		__typename
 		... on OrganizationInviteEdge {
 			__typename
-			
+
 		}
 		... on OrganizationInviteNotFoundError {
 			__typename
@@ -55,7 +55,7 @@ const InviteFormDeclineMutation = graphql`
 		__typename
 		... on OrganizationInviteEdge {
 			__typename
-			
+
 		}
 		... on OrganizationInviteNotFoundError {
 			__typename
@@ -66,7 +66,9 @@ const InviteFormDeclineMutation = graphql`
 
 export default function InviteForm({
 	rootQuery,
-}: { rootQuery: InviteFormFragment$key }) {
+}: {
+	rootQuery: InviteFormFragment$key;
+}) {
 	const router = useRouter();
 	const token = useParams<{ token: string }>().token;
 	const data = useFragment(InviteFormFragment, rootQuery);

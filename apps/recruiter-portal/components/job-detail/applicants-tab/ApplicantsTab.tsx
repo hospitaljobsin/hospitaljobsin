@@ -1,10 +1,10 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
-import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
-import type { ApplicantsTabFragment$key } from "@/__generated__/ApplicantsTabFragment.graphql";
 import { useState } from "react";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
+import type { ApplicantsTabFragment$key } from "@/__generated__/ApplicantsTabFragment.graphql";
 import ApplicantList from "./ApplicantList";
 import ApplicantListController from "./ApplicantListController";
 
@@ -25,7 +25,7 @@ const ApplicantsTabFragment = graphql`
 					__typename
 					... on Job {
 						...ApplicantListFragment @arguments(searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
-					}     
+					}
 				}
 			}
 		}

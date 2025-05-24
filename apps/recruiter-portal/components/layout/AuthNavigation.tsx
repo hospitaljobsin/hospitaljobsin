@@ -1,6 +1,4 @@
 "use client";
-import type { AuthNavigationFragment$key } from "@/__generated__/AuthNavigationFragment.graphql";
-import links from "@/lib/links";
 import {
 	Avatar,
 	Button,
@@ -22,6 +20,8 @@ import { LogOutIcon, Settings } from "lucide-react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { AuthNavigationFragment$key } from "@/__generated__/AuthNavigationFragment.graphql";
+import links from "@/lib/links";
 import LogoutModal from "./LogoutModal";
 
 const AuthNavigationFragment = graphql`

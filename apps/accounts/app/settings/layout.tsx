@@ -1,10 +1,11 @@
-
 import SettingsSidebar from "@/components/settings/Sidebar";
 import HeaderClientComponent from "./HeaderClientComponent";
 
 export default function SettingsLayout({
 	children,
-}: { children: React.ReactNode }) {
+}: {
+	children: React.ReactNode;
+}) {
 	return (
 		<>
 			<HeaderClientComponent />

@@ -1,10 +1,10 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
-import type { JobSettingsGeneralTabFragment$key } from "@/__generated__/JobSettingsGeneralTabFragment.graphql";
-import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import { Button, Card, CardBody, Divider, useDisclosure } from "@heroui/react";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import type { JobSettingsGeneralTabFragment$key } from "@/__generated__/JobSettingsGeneralTabFragment.graphql";
+import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import DeleteJobModal from "./DeleteJobModal";
 import JobEditForm from "./JobEditForm";
 

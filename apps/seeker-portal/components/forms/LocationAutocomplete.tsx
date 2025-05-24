@@ -1,6 +1,5 @@
 "use client";
 
-import type { LocationAutocompleteQuery } from "@/__generated__/LocationAutocompleteQuery.graphql";
 import type { AutocompleteProps } from "@heroui/react";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import type { Key } from "react";
@@ -9,6 +8,7 @@ import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery, useQueryLoader } from "react-relay";
 import { graphql } from "relay-runtime";
 import { useDebounce } from "use-debounce";
+import type { LocationAutocompleteQuery } from "@/__generated__/LocationAutocompleteQuery.graphql";
 
 interface LocationAutocompleteProps
 	extends Omit<AutocompleteProps, "children" | "onChange"> {

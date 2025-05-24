@@ -1,11 +1,11 @@
 "use client";
-import type { ApplicantDetailsFragment$key } from "@/__generated__/ApplicantDetailsFragment.graphql";
-import PDFViewer from "@/components/pdf-viewer/PDFViewer";
 import { Card, CardBody, CardHeader, Chip, Divider, Link } from "@heroui/react";
 import { Mail, ShieldQuestion } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { graphql, useFragment } from "react-relay";
+import type { ApplicantDetailsFragment$key } from "@/__generated__/ApplicantDetailsFragment.graphql";
+import PDFViewer from "@/components/pdf-viewer/PDFViewer";
 
 const ApplicantDetailsFragment = graphql`
   fragment ApplicantDetailsFragment on JobApplicant {
@@ -39,7 +39,9 @@ const ApplicantDetailsFragment = graphql`
 
 export default function ApplicantDetails({
 	rootQuery,
-}: { rootQuery: ApplicantDetailsFragment$key }) {
+}: {
+	rootQuery: ApplicantDetailsFragment$key;
+}) {
 	const params = useParams<{ slug: string; jobSlug: string; id: string }>();
 	const data = useFragment(ApplicantDetailsFragment, rootQuery);
 

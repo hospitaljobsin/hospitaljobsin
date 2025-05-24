@@ -1,8 +1,8 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
-import type { OrganizationJobsTabFragment$key } from "@/__generated__/OrganizationJobsTabFragment.graphql";
 import { useState } from "react";
 import { graphql, useFragment } from "react-relay";
+import type { OrganizationJobsTabFragment$key } from "@/__generated__/OrganizationJobsTabFragment.graphql";
 import OrganizationJobsController from "./OrganizationJobsController";
 import OrganizationJobsList from "./OrganizationJobsList";
 

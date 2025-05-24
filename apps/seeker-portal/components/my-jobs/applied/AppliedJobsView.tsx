@@ -1,6 +1,6 @@
 "use client";
-import type { AppliedJobsViewFragment$key } from "@/__generated__/AppliedJobsViewFragment.graphql";
 import { graphql, useFragment } from "react-relay";
+import type { AppliedJobsViewFragment$key } from "@/__generated__/AppliedJobsViewFragment.graphql";
 import AppliedJobsList from "./AppliedJobsList";
 
 const AppliedJobsViewFragment = graphql`
@@ -11,7 +11,9 @@ const AppliedJobsViewFragment = graphql`
 
 export default function AppliedView({
 	query,
-}: { query: AppliedJobsViewFragment$key }) {
+}: {
+	query: AppliedJobsViewFragment$key;
+}) {
 	const data = useFragment(AppliedJobsViewFragment, query);
 
 	return (

@@ -1,9 +1,5 @@
 "use client";
 
-import type { TwoFactorRecoveryCodeFormMutation as TwoFactorRecoveryCodeFormMutationType } from "@/__generated__/TwoFactorRecoveryCodeFormMutation.graphql";
-import { useTurnstile } from "@/components/TurnstileProvider";
-import links from "@/lib/links";
-import { getValidRedirectURL } from "@/lib/redirects";
 import { useRouter } from "@bprogress/next";
 import {
 	Button,
@@ -21,6 +17,10 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
+import type { TwoFactorRecoveryCodeFormMutation as TwoFactorRecoveryCodeFormMutationType } from "@/__generated__/TwoFactorRecoveryCodeFormMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
+import links from "@/lib/links";
+import { getValidRedirectURL } from "@/lib/redirects";
 
 const TwoFactorRecoveryCodeFormMutation = graphql`
   mutation TwoFactorRecoveryCodeFormMutation($token: String!, $captchaToken: String!) {

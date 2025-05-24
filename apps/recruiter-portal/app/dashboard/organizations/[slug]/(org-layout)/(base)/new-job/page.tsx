@@ -1,14 +1,14 @@
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import type { pageOrganizationNewJobMetadataFragment$key } from "@/__generated__/pageOrganizationNewJobMetadataFragment.graphql";
 import type OrganizationNewJobViewQueryNode from "@/__generated__/pageOrganizationNewJobViewQuery.graphql";
 import type { pageOrganizationNewJobViewQuery } from "@/__generated__/pageOrganizationNewJobViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { notFound } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import OrganizationNewJobViewClientComponent from "./OrganizationNewJobViewClientComponent";
 
 export const PageOrganizationNewJobViewQuery = graphql`
-  query pageOrganizationNewJobViewQuery($slug: String!) {	
+  query pageOrganizationNewJobViewQuery($slug: String!) {
 	...pageOrganizationNewJobMetadataFragment @arguments(slug: $slug)
 	...OrganizationNewJobViewClientComponentFragment @arguments(slug: $slug)
   }
@@ -28,7 +28,7 @@ const PageOrganizationNewJobMetadataFragment = graphql`
 		logoUrl
 		isAdmin
 	  }
-	 
+
 	}
   }
 `;

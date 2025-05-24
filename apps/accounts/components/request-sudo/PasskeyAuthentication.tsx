@@ -1,14 +1,14 @@
-import type { PasskeyAuthenticationGenerateOptionsMutation } from "@/__generated__/PasskeyAuthenticationGenerateOptionsMutation.graphql";
-import type { PasskeyAuthenticationMutation as PasskeyAuthenticationMutationType } from "@/__generated__/PasskeyAuthenticationMutation.graphql";
-import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { useRouter } from "@bprogress/next";
-import { Button, addToast } from "@heroui/react";
+import { addToast, Button } from "@heroui/react";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { Fingerprint } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { PasskeyAuthenticationGenerateOptionsMutation } from "@/__generated__/PasskeyAuthenticationGenerateOptionsMutation.graphql";
+import type { PasskeyAuthenticationMutation as PasskeyAuthenticationMutationType } from "@/__generated__/PasskeyAuthenticationMutation.graphql";
+import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { useTurnstile } from "../TurnstileProvider";
 
 const GenerateReauthenticationOptionsMutation = graphql`

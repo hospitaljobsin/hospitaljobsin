@@ -113,7 +113,7 @@ services:
     ports:
       - "1080:1080"
       - "1025:1025"
-  
+
   test-mongodb:
     image: docker.io/bitnami/mongodb:8.0
     ports:

@@ -23,7 +23,7 @@ if [ -z "${MINIO_DEFAULT_BUCKETS}" ]; then
 else
   # Split the MINIO_DEFAULT_BUCKETS env var on commas into an array.
   IFS=',' read -ra BUCKET_PAIRS <<< "${MINIO_DEFAULT_BUCKETS}"
-  
+
   # Loop through each bucket:policy pair.
   for pair in "${BUCKET_PAIRS[@]}"; do
     # Split each pair by colon (":") to extract the bucket name.

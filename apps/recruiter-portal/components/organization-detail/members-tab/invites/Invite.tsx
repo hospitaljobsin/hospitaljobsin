@@ -1,12 +1,12 @@
 "use client";
-import type { InviteFragment$key } from "@/__generated__/InviteFragment.graphql";
-import type { InviteOrganizationFragment$key } from "@/__generated__/InviteOrganizationFragment.graphql";
-import { getRelativeTimeString } from "@/lib/intl";
 import { Button, Card, CardBody, Tooltip, useDisclosure } from "@heroui/react";
 import { Info, Mail, Timer, Trash } from "lucide-react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { InviteFragment$key } from "@/__generated__/InviteFragment.graphql";
+import type { InviteOrganizationFragment$key } from "@/__generated__/InviteOrganizationFragment.graphql";
+import { getRelativeTimeString } from "@/lib/intl";
 import DeleteInviteModal from "./DeleteInviteModal";
 
 export const InviteFragment = graphql`

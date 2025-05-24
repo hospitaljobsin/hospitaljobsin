@@ -1,9 +1,9 @@
 "use client";
 
-import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
 import { Cookie, Fingerprint, UserIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import links from "@/lib/links";
 
 export default function SettingsSidebar() {
 	const pathname = usePathname();

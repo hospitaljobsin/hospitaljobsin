@@ -52,7 +52,7 @@ updates:
 
   # Enable version updates for Docker images
   - package-ecosystem: "docker"
-    directories: 
+    directories:
       - "/server/"
       - "/apps/accounts/"
       - "/apps/seeker-portal/"

@@ -1,17 +1,17 @@
-import type { DemoteMemberModalFragment$key } from "@/__generated__/DemoteMemberModalFragment.graphql";
-import type { DemoteMemberModalMutation } from "@/__generated__/DemoteMemberModalMutation.graphql";
-import type { DemoteMemberModalOrganizationFragment$key } from "@/__generated__/DemoteMemberModalOrganizationFragment.graphql";
 import {
+	addToast,
 	Button,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { useFragment, useMutation } from "react-relay";
 import { ConnectionHandler, graphql } from "relay-runtime";
+import type { DemoteMemberModalFragment$key } from "@/__generated__/DemoteMemberModalFragment.graphql";
+import type { DemoteMemberModalMutation } from "@/__generated__/DemoteMemberModalMutation.graphql";
+import type { DemoteMemberModalOrganizationFragment$key } from "@/__generated__/DemoteMemberModalOrganizationFragment.graphql";
 
 const DemoteMemberModalFragment = graphql`
     fragment DemoteMemberModalFragment on OrganizationMemberEdge {

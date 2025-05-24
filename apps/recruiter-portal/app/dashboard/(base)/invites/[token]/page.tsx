@@ -1,15 +1,15 @@
+import { notFound, redirect } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import type { pageInviteDetailMetadataFragment$key } from "@/__generated__/pageInviteDetailMetadataFragment.graphql";
 import type InviteDetailViewQueryNode from "@/__generated__/pageInviteDetailViewQuery.graphql";
 import type { pageInviteDetailViewQuery } from "@/__generated__/pageInviteDetailViewQuery.graphql";
 import links from "@/lib/links";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { notFound, redirect } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import InviteDetailViewClientComponent from "./InviteDetailViewClientComponent";
 
 export const PageInviteDetailViewQuery = graphql`
-  query pageInviteDetailViewQuery($inviteToken: String!) {	
+  query pageInviteDetailViewQuery($inviteToken: String!) {
 	...pageInviteDetailMetadataFragment @arguments(inviteToken: $inviteToken)
 	...InviteDetailViewClientComponentFragment @arguments(inviteToken: $inviteToken)
   }
@@ -35,7 +35,7 @@ const PageInviteDetailMetadataFragment = graphql`
 		  slug
 		}
 	  }
-	 
+
 	}
   }
 `;

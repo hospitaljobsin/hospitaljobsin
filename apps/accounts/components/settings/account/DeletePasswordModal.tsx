@@ -1,15 +1,15 @@
-import type { DeletePasswordModalMutation } from "@/__generated__/DeletePasswordModalMutation.graphql";
 import {
+	addToast,
 	Button,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { DeletePasswordModalMutation } from "@/__generated__/DeletePasswordModalMutation.graphql";
 
 const DeletePasswordMutation = graphql`
   mutation DeletePasswordModalMutation {

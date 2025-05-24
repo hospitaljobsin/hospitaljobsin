@@ -1,5 +1,11 @@
 "use client";
 
+import {
+	graphql,
+	useFragment,
+	usePreloadedQuery,
+	useRelayEnvironment,
+} from "react-relay";
 import type { GeneralSettingsViewClientComponentFragment$key } from "@/__generated__/GeneralSettingsViewClientComponentFragment.graphql";
 import type GeneralSettingsViewQueryNode from "@/__generated__/pageGeneralSettingsViewQuery.graphql";
 import type { pageGeneralSettingsViewQuery } from "@/__generated__/pageGeneralSettingsViewQuery.graphql";
@@ -7,12 +13,6 @@ import PageGeneralSettingsViewQuery from "@/__generated__/pageGeneralSettingsVie
 import GeneralSettingsView from "@/components/organization-detail/settings-tab/general/GeneralSettingsView";
 import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
-import {
-	graphql,
-	useFragment,
-	usePreloadedQuery,
-	useRelayEnvironment,
-} from "react-relay";
 
 const GeneralSettingsClientViewComponentFragment = graphql`
  fragment GeneralSettingsViewClientComponentFragment on Query @argumentDefinitions(

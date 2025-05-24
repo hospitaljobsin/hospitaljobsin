@@ -1,70 +1,59 @@
-/**
- * @generated SignedSource<<fac141e936c53de38f6bd2e08e0434f1>>
- * @lightSyntaxTransform
- * @nogrep
- */
-
-/* tslint:disable */
-/* eslint-disable */
-// @ts-nocheck
-
-import type { ReaderFragment } from 'relay-runtime';
-import type { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs, ReaderFragment } from "relay-runtime";
 export type ApplicantDetailViewClientComponentFragment$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"ApplicantDetailViewFragment">;
-  readonly " $fragmentType": "ApplicantDetailViewClientComponentFragment";
+	readonly " $fragmentSpreads": FragmentRefs<"ApplicantDetailViewFragment">;
+	readonly " $fragmentType": "ApplicantDetailViewClientComponentFragment";
 };
 export type ApplicantDetailViewClientComponentFragment$key = {
-  readonly " $data"?: ApplicantDetailViewClientComponentFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"ApplicantDetailViewClientComponentFragment">;
+	readonly " $data"?: ApplicantDetailViewClientComponentFragment$data;
+	readonly " $fragmentSpreads": FragmentRefs<"ApplicantDetailViewClientComponentFragment">;
 };
 
 const node: ReaderFragment = {
-  "argumentDefinitions": [
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "applicantSlug"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "jobSlug"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "slug"
-    }
-  ],
-  "kind": "Fragment",
-  "metadata": null,
-  "name": "ApplicantDetailViewClientComponentFragment",
-  "selections": [
-    {
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "applicantSlug",
-          "variableName": "applicantSlug"
-        },
-        {
-          "kind": "Variable",
-          "name": "jobSlug",
-          "variableName": "jobSlug"
-        },
-        {
-          "kind": "Variable",
-          "name": "slug",
-          "variableName": "slug"
-        }
-      ],
-      "kind": "FragmentSpread",
-      "name": "ApplicantDetailViewFragment"
-    }
-  ],
-  "type": "Query",
-  "abstractKey": null
+	argumentDefinitions: [
+		{
+			defaultValue: null,
+			kind: "LocalArgument",
+			name: "applicantSlug",
+		},
+		{
+			defaultValue: null,
+			kind: "LocalArgument",
+			name: "jobSlug",
+		},
+		{
+			defaultValue: null,
+			kind: "LocalArgument",
+			name: "slug",
+		},
+	],
+	kind: "Fragment",
+	metadata: null,
+	name: "ApplicantDetailViewClientComponentFragment",
+	selections: [
+		{
+			args: [
+				{
+					kind: "Variable",
+					name: "applicantSlug",
+					variableName: "applicantSlug",
+				},
+				{
+					kind: "Variable",
+					name: "jobSlug",
+					variableName: "jobSlug",
+				},
+				{
+					kind: "Variable",
+					name: "slug",
+					variableName: "slug",
+				},
+			],
+			kind: "FragmentSpread",
+			name: "ApplicantDetailViewFragment",
+		},
+	],
+	type: "Query",
+	abstractKey: null,
 };
 
 (node as any).hash = "ffa20f7f16ffcb93e439276fc8733abd";

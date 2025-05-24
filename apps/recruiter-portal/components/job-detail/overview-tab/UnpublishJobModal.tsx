@@ -1,15 +1,15 @@
-import type { UnpublishJobModalFragment$key } from "@/__generated__/UnpublishJobModalFragment.graphql";
-import type { UnpublishJobModalMutation as UnpublishJobModalMutationType } from "@/__generated__/UnpublishJobModalMutation.graphql";
 import {
+	addToast,
 	Button,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { graphql, useFragment, useMutation } from "react-relay";
+import type { UnpublishJobModalFragment$key } from "@/__generated__/UnpublishJobModalFragment.graphql";
+import type { UnpublishJobModalMutation as UnpublishJobModalMutationType } from "@/__generated__/UnpublishJobModalMutation.graphql";
 
 type Props = {
 	isOpen: boolean;

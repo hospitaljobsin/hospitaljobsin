@@ -1,9 +1,6 @@
-import type { DeleteOrganizationModalAccountFragment$key } from "@/__generated__/DeleteOrganizationModalAccountFragment.graphql";
-import type { DeleteOrganizationModalFragment$key } from "@/__generated__/DeleteOrganizationModalFragment.graphql";
-import type { DeleteOrganizationModalMutation } from "@/__generated__/DeleteOrganizationModalMutation.graphql";
-import links from "@/lib/links";
 import { useRouter } from "@bprogress/next/app";
 import {
+	addToast,
 	Button,
 	Input,
 	Modal,
@@ -11,13 +8,16 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { ConnectionHandler, graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
+import type { DeleteOrganizationModalAccountFragment$key } from "@/__generated__/DeleteOrganizationModalAccountFragment.graphql";
+import type { DeleteOrganizationModalFragment$key } from "@/__generated__/DeleteOrganizationModalFragment.graphql";
+import type { DeleteOrganizationModalMutation } from "@/__generated__/DeleteOrganizationModalMutation.graphql";
+import links from "@/lib/links";
 
 const DeleteOrganizationModalFragment = graphql`
     fragment DeleteOrganizationModalFragment on Organization {

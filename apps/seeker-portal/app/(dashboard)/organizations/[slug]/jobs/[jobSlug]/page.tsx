@@ -1,15 +1,15 @@
-import type { pageJobDetailMetadataFragment$key } from "@/__generated__/pageJobDetailMetadataFragment.graphql";
-import type JobDetailViewQueryNode from "@/__generated__/pageJobDetailViewQuery.graphql";
-import type { pageJobDetailViewQuery } from "@/__generated__/pageJobDetailViewQuery.graphql";
-import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
+import type { pageJobDetailMetadataFragment$key } from "@/__generated__/pageJobDetailMetadataFragment.graphql";
+import type JobDetailViewQueryNode from "@/__generated__/pageJobDetailViewQuery.graphql";
+import type { pageJobDetailViewQuery } from "@/__generated__/pageJobDetailViewQuery.graphql";
+import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 
 export const PageJobDetailViewQuery = graphql`
-  query pageJobDetailViewQuery($slug: String!, $jobSlug: String!) {	
+  query pageJobDetailViewQuery($slug: String!, $jobSlug: String!) {
 	...pageJobDetailMetadataFragment @arguments(slug: $slug, jobSlug: $jobSlug)
     ...JobDetailViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }

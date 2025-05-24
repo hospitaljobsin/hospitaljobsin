@@ -1,5 +1,3 @@
-import type { ApplicantFragment$key } from "@/__generated__/ApplicantFragment.graphql";
-import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import { Card, CardHeader, Chip } from "@heroui/react";
 import { Mail } from "lucide-react";
@@ -7,6 +5,8 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { ApplicantFragment$key } from "@/__generated__/ApplicantFragment.graphql";
+import links from "@/lib/links";
 
 export const ApplicantFragment = graphql`
   fragment ApplicantFragment on JobApplicant @argumentDefinitions(

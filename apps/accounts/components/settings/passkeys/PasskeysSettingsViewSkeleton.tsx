@@ -1,6 +1,6 @@
 "use client";
-import { LEARN_MORE_ABOUT_PASSKEYS_LINK } from "@/lib/constants";
 import { Link } from "@heroui/react";
+import { LEARN_MORE_ABOUT_PASSKEYS_LINK } from "@/lib/constants";
 import PasskeysListSkeleton from "./PasskeysListSkeleton";
 
 export default function PasskeysSettingsViewSkeleton() {

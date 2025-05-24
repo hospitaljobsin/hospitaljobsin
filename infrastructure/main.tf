@@ -49,7 +49,7 @@ provider "aws" {
   s3_use_path_style = true
 }
 
-# Configure the MongoDB Atlas Provider 
+# Configure the MongoDB Atlas Provider
 provider "mongodbatlas" {}
 
 # Configure the GitHub Provider
@@ -113,6 +113,3 @@ module "core" {
   sentry_seeker_portal_ui_dsn    = module.sentry.sentry_seeker_portal_ui_dsn
   github_repository_name         = var.github_repository_name
 }
-
-
-

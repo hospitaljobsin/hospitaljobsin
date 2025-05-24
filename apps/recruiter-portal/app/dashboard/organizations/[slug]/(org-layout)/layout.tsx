@@ -5,7 +5,6 @@ export default function OrganizationRootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-
 	return (
 		<>
 			<OrgDetailHeaderClientComponent />

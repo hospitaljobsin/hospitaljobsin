@@ -1,8 +1,5 @@
-import type { PasskeysControllerFragment$key } from "@/__generated__/PasskeysControllerFragment.graphql";
-import type { PasskeysControllerGenerateOptionsMutation } from "@/__generated__/PasskeysControllerGenerateOptionsMutation.graphql";
-import type { PasskeysControllerMutation } from "@/__generated__/PasskeysControllerMutation.graphql";
-import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import {
+	addToast,
 	Button,
 	Input,
 	Modal,
@@ -10,7 +7,6 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 	useDisclosure,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
@@ -20,6 +16,10 @@ import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
+import type { PasskeysControllerFragment$key } from "@/__generated__/PasskeysControllerFragment.graphql";
+import type { PasskeysControllerGenerateOptionsMutation } from "@/__generated__/PasskeysControllerGenerateOptionsMutation.graphql";
+import type { PasskeysControllerMutation } from "@/__generated__/PasskeysControllerMutation.graphql";
+import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 
 const PasskeysControllerFragment = graphql`
   fragment PasskeysControllerFragment on Account {
@@ -64,7 +64,12 @@ type Props = {
 };
 
 const createPasskeySchema = z.object({
-	nickname: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75, "Nickname cannot exceed 75 characters")),
+	nickname: z
+		.string()
+		.check(
+			z.minLength(1, "This field is required"),
+			z.maxLength(75, "Nickname cannot exceed 75 characters"),
+		),
 });
 
 export default function PasskeysController({

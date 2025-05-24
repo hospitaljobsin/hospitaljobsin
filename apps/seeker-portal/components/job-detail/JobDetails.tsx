@@ -1,11 +1,3 @@
-import type { JobDetailsFragment$key } from "@/__generated__/JobDetailsFragment.graphql";
-import type {
-	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
-	JobType,
-	WorkMode,
-} from "@/__generated__/JobDetailsInternalFragment.graphql";
-import { dateFormat } from "@/lib/intl";
-import links from "@/lib/links";
 import {
 	Button,
 	Card,
@@ -25,6 +17,14 @@ import NextLink from "next/link";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
 import { Markdown } from "tiptap-markdown";
+import type { JobDetailsFragment$key } from "@/__generated__/JobDetailsFragment.graphql";
+import type {
+	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
+	JobType,
+	WorkMode,
+} from "@/__generated__/JobDetailsInternalFragment.graphql";
+import { dateFormat } from "@/lib/intl";
+import links from "@/lib/links";
 import JobControls from "./JobControls";
 
 const JobDetailsFragment = graphql`

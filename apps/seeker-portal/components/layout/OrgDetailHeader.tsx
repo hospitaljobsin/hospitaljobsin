@@ -1,7 +1,4 @@
 "use client";
-import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
 import {
 	Button,
 	Link,
@@ -14,6 +11,9 @@ import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 import Logo from "../Logo";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthDropdown from "./AuthNavigation";

@@ -1,14 +1,14 @@
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import type { pageOrganizationInvitesMetadataFragment$key } from "@/__generated__/pageOrganizationInvitesMetadataFragment.graphql";
 import type OrganizationInvitesViewQueryNode from "@/__generated__/pageOrganizationInvitesViewQuery.graphql";
 import type { pageOrganizationInvitesViewQuery } from "@/__generated__/pageOrganizationInvitesViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { notFound } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import OrganizationInvitesViewClientComponent from "./OrganizationInvitesViewClientComponent";
 
 export const PageOrganizationInvitesViewQuery = graphql`
-  query pageOrganizationInvitesViewQuery($slug: String!, $searchTerm: String) {	
+  query pageOrganizationInvitesViewQuery($slug: String!, $searchTerm: String) {
     ...pageOrganizationInvitesMetadataFragment @arguments(slug: $slug)
     ...OrganizationInvitesViewClientComponentFragment @arguments(slug: $slug, searchTerm: $searchTerm)
   }
@@ -28,7 +28,7 @@ const PageOrganizationInvitesMetadataFragment = graphql`
         logoUrl
 		isAdmin
       }
-     
+
     }
   }
 `;

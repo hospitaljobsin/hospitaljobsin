@@ -1,15 +1,15 @@
-import type { pageJobApplyMetadataFragment$key } from "@/__generated__/pageJobApplyMetadataFragment.graphql";
-import type JobApplyViewQueryNode from "@/__generated__/pageJobApplyViewQuery.graphql";
-import type { pageJobApplyViewQuery } from "@/__generated__/pageJobApplyViewQuery.graphql";
-import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
+import type { pageJobApplyMetadataFragment$key } from "@/__generated__/pageJobApplyMetadataFragment.graphql";
+import type JobApplyViewQueryNode from "@/__generated__/pageJobApplyViewQuery.graphql";
+import type { pageJobApplyViewQuery } from "@/__generated__/pageJobApplyViewQuery.graphql";
+import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import JobApplyViewClientComponent from "./JobApplyViewClientComponent";
 
 export const PageJobApplyViewQuery = graphql`
-  query pageJobApplyViewQuery($slug: String!, $jobSlug: String!) {	
+  query pageJobApplyViewQuery($slug: String!, $jobSlug: String!) {
     ...pageJobApplyMetadataFragment @arguments(slug: $slug, jobSlug: $jobSlug)
     ...JobApplyViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }
@@ -32,11 +32,11 @@ const PageJobApplyMetadataFragment = graphql`
 					isApplied
 					externalApplicationUrl
 				}
-				
+
 				}
 			}
 		}
-    
+
   }
 `;
 

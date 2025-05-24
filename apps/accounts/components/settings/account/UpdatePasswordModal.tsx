@@ -1,5 +1,3 @@
-import type { UpdatePasswordModalFragment$key } from "@/__generated__/UpdatePasswordModalFragment.graphql";
-import type { UpdatePasswordModalMutation } from "@/__generated__/UpdatePasswordModalMutation.graphql";
 import {
 	Button,
 	Input,
@@ -16,6 +14,8 @@ import { useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
+import type { UpdatePasswordModalFragment$key } from "@/__generated__/UpdatePasswordModalFragment.graphql";
+import type { UpdatePasswordModalMutation } from "@/__generated__/UpdatePasswordModalMutation.graphql";
 
 const UpdatePasswordModalFragment = graphql`
   fragment UpdatePasswordModalFragment on Account {
@@ -41,10 +41,9 @@ const UpdatePasswordMutation = graphql`
 
 const formSchema = z
 	.object({
-		newPassword: z
-			.string()
-			.check(z.minLength(1, "This field is required"),
-				z.minLength(8, "Password must be at least 8 characters long."),
+		newPassword: z.string().check(
+			z.minLength(1, "This field is required"),
+			z.minLength(8, "Password must be at least 8 characters long."),
 			z.refine((password) => /[a-z]/.test(password), {
 				message: "Password must contain at least one lowercase letter.",
 			}),
@@ -57,15 +56,18 @@ const formSchema = z
 			z.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
 				message:
 					"Password must contain at least one special character (!@#$%^&*()-_=+).",
-			})
+			}),
 		),
-		confirmNewPassword: z.string().check(z.minLength(1, "This field is required")),
+		confirmNewPassword: z
+			.string()
+			.check(z.minLength(1, "This field is required")),
 	})
 	.check(
-	z.refine((data) => data.newPassword === data.confirmNewPassword, {
-		message: "Passwords don't match",
-		path: ["confirmNewPassword"],
-	}));
+		z.refine((data) => data.newPassword === data.confirmNewPassword, {
+			message: "Passwords don't match",
+			path: ["confirmNewPassword"],
+		}),
+	);
 
 export default function UpdatePasswordModal({
 	isOpen,

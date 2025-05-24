@@ -27,7 +27,7 @@ class BaseLocationService:
 @asynccontextmanager
 async def create_nominatim_geocoder(
     settings: GeocoderSettings,
-) -> AsyncGenerator[Nominatim, None]:
+) -> AsyncGenerator[Nominatim]:
     """Create a geocoder instance."""
     async with Nominatim(
         domain=settings.geocoder_domain,

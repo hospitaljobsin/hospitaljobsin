@@ -1,7 +1,5 @@
 "use client";
 
-import type { SidebarJobSettingsQuery as SidebarJobSettingsQueryType } from "@/__generated__/SidebarJobSettingsQuery.graphql";
-import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
 import { FileText, Settings } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
@@ -9,6 +7,8 @@ import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import type { SidebarJobSettingsQuery as SidebarJobSettingsQueryType } from "@/__generated__/SidebarJobSettingsQuery.graphql";
+import links from "@/lib/links";
 
 export const SidebarJobSettingsQuery = graphql`
 	query SidebarJobSettingsQuery($slug: String!, $jobSlug: String!) {
@@ -28,7 +28,9 @@ export const SidebarJobSettingsQuery = graphql`
 
 export default function SettingsSidebar({
 	queryReference,
-}: { queryReference: PreloadedQuery<SidebarJobSettingsQueryType> }) {
+}: {
+	queryReference: PreloadedQuery<SidebarJobSettingsQueryType>;
+}) {
 	const pathname = usePathname();
 	const params = useParams<{ slug: string; jobSlug: string }>();
 	const data = usePreloadedQuery(SidebarJobSettingsQuery, queryReference);

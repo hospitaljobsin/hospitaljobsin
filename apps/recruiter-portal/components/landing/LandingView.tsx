@@ -1,8 +1,8 @@
 "use client";
-import { APP_NAME } from "@/lib/constants";
-import links from "@/lib/links";
 import { Button, Card, CardBody } from "@heroui/react";
 import { Briefcase, CheckCircle, FileText, Shield, Users } from "lucide-react";
+import { APP_NAME } from "@/lib/constants";
+import links from "@/lib/links";
 import BenefitItem from "./BenefitItem";
 import FeatureCard from "./FeatureCard";
 import LandingHeader from "./LandingHeader";

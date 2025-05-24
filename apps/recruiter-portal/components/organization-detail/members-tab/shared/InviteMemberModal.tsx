@@ -1,6 +1,5 @@
-import type { InviteMemberModalFragment$key } from "@/__generated__/InviteMemberModalFragment.graphql";
-import type { InviteMemberModalMutation as InviteMemberModalMutationType } from "@/__generated__/InviteMemberModalMutation.graphql";
 import {
+	addToast,
 	Button,
 	Input,
 	Modal,
@@ -8,7 +7,6 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useForm } from "react-hook-form";
@@ -19,6 +17,8 @@ import {
 	useMutation,
 } from "react-relay";
 import { z } from "zod/v4-mini";
+import type { InviteMemberModalFragment$key } from "@/__generated__/InviteMemberModalFragment.graphql";
+import type { InviteMemberModalMutation as InviteMemberModalMutationType } from "@/__generated__/InviteMemberModalMutation.graphql";
 
 type Props = {
 	isOpen: boolean;
@@ -28,7 +28,12 @@ type Props = {
 };
 
 const inviteMemberSchema = z.object({
-	email: z.string().check(z.minLength(1, "This field is required"), z.email("Invalid email address")),
+	email: z
+		.string()
+		.check(
+			z.minLength(1, "This field is required"),
+			z.email("Invalid email address"),
+		),
 });
 
 const InviteMemberModalMutation = graphql`
@@ -140,7 +145,8 @@ export default function InviteMemberModal({
 						color: "danger",
 					});
 				} else if (
-					response.createOrganizationInvite.__typename === "OrganizationAuthorizationError"
+					response.createOrganizationInvite.__typename ===
+					"OrganizationAuthorizationError"
 				) {
 					addToast({
 						description: "You are not authorized to perform this action.",

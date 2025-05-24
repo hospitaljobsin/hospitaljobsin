@@ -1,11 +1,11 @@
 "use client";
-import type { OrganizationTabsFragment$key } from "@/__generated__/OrganizationTabsFragment.graphql";
-import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
 import { BriefcaseBusiness, HomeIcon, Settings, UserIcon } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { OrganizationTabsFragment$key } from "@/__generated__/OrganizationTabsFragment.graphql";
+import links from "@/lib/links";
 
 const OrganizationTabsFragment = graphql`
 fragment OrganizationTabsFragment on Organization {
@@ -14,7 +14,9 @@ fragment OrganizationTabsFragment on Organization {
 
 export default function OrganizationTabs({
 	organization,
-}: { organization: OrganizationTabsFragment$key }) {
+}: {
+	organization: OrganizationTabsFragment$key;
+}) {
 	const pathname = usePathname();
 	const params = useParams<{ slug: string }>();
 	const data = useFragment(OrganizationTabsFragment, organization);

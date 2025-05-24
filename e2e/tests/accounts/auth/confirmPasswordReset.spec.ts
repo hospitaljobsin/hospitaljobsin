@@ -1,11 +1,9 @@
+import type { PlaywrightTestArgs } from "@playwright/test";
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
-import {
-	TOTP_USER_SECRET
-} from "@/tests/utils/constants";
+import { TOTP_USER_SECRET } from "@/tests/utils/constants";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
-import type { PlaywrightTestArgs } from "@playwright/test";
 
 async function enterPassword({
 	page,
@@ -66,7 +64,8 @@ test.describe("Confirm Password Reset Page", () => {
 	});
 
 	test("should display confirm reset password form with all elements", async ({
-		page, passwordAuth
+		page,
+		passwordAuth,
 	}) => {
 		// Check page title
 		await expect(page).toHaveTitle(/Password Reset/);
@@ -75,7 +74,9 @@ test.describe("Confirm Password Reset Page", () => {
 
 		// Check form elements
 		await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
-		await expect(page.getByLabel("Email Address")).toHaveValue(passwordAuth.account.email);
+		await expect(page.getByLabel("Email Address")).toHaveValue(
+			passwordAuth.account.email,
+		);
 		await expect(
 			page.getByRole("textbox", { name: "New Password New Password" }),
 		).toBeVisible();
@@ -217,7 +218,10 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		await page.goto(resetLink);
 	});
 
-	test("should display 2FA form with all elements", async ({ page, twoFactorAuth }) => {
+	test("should display 2FA form with all elements", async ({
+		page,
+		twoFactorAuth,
+	}) => {
 		// Check page title
 		await expect(page).toHaveTitle(/Password Reset/);
 
@@ -226,7 +230,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		// Check form elements
 		await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
 		await expect(page.getByLabel("Email Address")).toHaveValue(
-			 twoFactorAuth.account.email,
+			twoFactorAuth.account.email,
 		);
 		await expect(page.getByLabel("2FA Code")).toBeVisible();
 		await expect(
@@ -262,8 +266,13 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		await expect(page.getByText(/Reset Your Password/)).toBeVisible();
 	});
 
-	test("should successfully verify with recovery code", async ({ page, twoFactorAuth }) => {
-		await page.getByLabel("2FA Code").fill(twoFactorAuth.account.recoveryCodes[0]);
+	test("should successfully verify with recovery code", async ({
+		page,
+		twoFactorAuth,
+	}) => {
+		await page
+			.getByLabel("2FA Code")
+			.fill(twoFactorAuth.account.recoveryCodes[0]);
 		await page.getByRole("button", { name: "Verify Code" }).click();
 
 		await expect(page.getByText(/Reset Your Password/)).toBeVisible();
@@ -355,50 +364,56 @@ test.describe("Confirm Password Reset Page Not Found", () => {
 	});
 });
 
-authTest.describe("Confirm Password Reset Page Authentication Redirects", () => {
-	authTest("should not redirect to home page when already authenticated", async ({
-		page,
-		request,
-		passwordAuth,
-	}) => {
-		// Navigate to reset password page
-		await page.goto("http://localhost:5002/auth/reset-password");
-		// Wait for recaptcha to load
-		await waitForCaptcha({ page });
+authTest.describe(
+	"Confirm Password Reset Page Authentication Redirects",
+	() => {
+		authTest(
+			"should not redirect to home page when already authenticated",
+			async ({ page, request, passwordAuth }) => {
+				// Navigate to reset password page
+				await page.goto("http://localhost:5002/auth/reset-password");
+				// Wait for recaptcha to load
+				await waitForCaptcha({ page });
 
-		const emailAddress = passwordAuth.account.email;
-		await page.getByLabel("Email Address").fill(emailAddress);
-		await page.getByRole("button", { name: "Request Password Reset" }).click();
+				const emailAddress = passwordAuth.account.email;
+				await page.getByLabel("Email Address").fill(emailAddress);
+				await page
+					.getByRole("button", { name: "Request Password Reset" })
+					.click();
 
-		await expect(
-			page.getByText(
-				/If an account with that email exists, we will send you a password reset link. Please check your email inbox./,
-			),
-		).toBeVisible();
+				await expect(
+					page.getByText(
+						/If an account with that email exists, we will send you a password reset link. Please check your email inbox./,
+					),
+				).toBeVisible();
 
-		const emailMessage = await findLastEmail({
-			request,
-			timeout: 10_000,
-			filter: (e) =>
-				e.recipients.includes(`<${emailAddress}>`) &&
-				e.subject.includes("Password Reset Request"),
-		});
+				const emailMessage = await findLastEmail({
+					request,
+					timeout: 10_000,
+					filter: (e) =>
+						e.recipients.includes(`<${emailAddress}>`) &&
+						e.subject.includes("Password Reset Request"),
+				});
 
-		expect(emailMessage).not.toBeNull();
+				expect(emailMessage).not.toBeNull();
 
-		await page.goto(`http://localhost:1080/messages/${emailMessage.id}.html`);
+				await page.goto(
+					`http://localhost:1080/messages/${emailMessage.id}.html`,
+				);
 
-		// Extract the reset password link
-		const resetLink = await page.getAttribute(
-			'a[href*="reset-password"]',
-			"href",
+				// Extract the reset password link
+				const resetLink = await page.getAttribute(
+					'a[href*="reset-password"]',
+					"href",
+				);
+
+				expect(resetLink).not.toBeNull();
+
+				await page.goto(resetLink);
+				// ensure we are not redirected here
+				await expect(page).not.toHaveURL("http://localhost:5000/");
+				await expect(page).toHaveURL(resetLink);
+			},
 		);
-
-		expect(resetLink).not.toBeNull();
-
-		await page.goto(resetLink);
-		// ensure we are not redirected here
-		await expect(page).not.toHaveURL("http://localhost:5000/");
-		await expect(page).toHaveURL(resetLink);
-	});
-});
+	},
+);

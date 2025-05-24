@@ -1,13 +1,11 @@
-import type { ApplicationFormBuilderFragment$key } from "@/__generated__/ApplicationFormBuilderFragment.graphql";
-import type { ApplicationFormBuilderMutation as ApplicationFormBuilderMutationType } from "@/__generated__/ApplicationFormBuilderMutation.graphql";
 import {
+	addToast,
 	Button,
 	Card,
 	CardBody,
 	CardFooter,
 	Checkbox,
 	Input,
-	addToast,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Plus, Trash } from "lucide-react";
@@ -15,6 +13,8 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import invariant from "tiny-invariant";
 import { z } from "zod/v4-mini";
+import type { ApplicationFormBuilderFragment$key } from "@/__generated__/ApplicationFormBuilderFragment.graphql";
+import type { ApplicationFormBuilderMutation as ApplicationFormBuilderMutationType } from "@/__generated__/ApplicationFormBuilderMutation.graphql";
 
 const ApplicationFormBuilderFragment = graphql`
   fragment ApplicationFormBuilderFragment on Query @argumentDefinitions(
@@ -89,7 +89,9 @@ const formSchema = z.object({
 
 export default function ApplicationFormBuilder({
 	rootQuery,
-}: { rootQuery: ApplicationFormBuilderFragment$key }) {
+}: {
+	rootQuery: ApplicationFormBuilderFragment$key;
+}) {
 	const data = useFragment(ApplicationFormBuilderFragment, rootQuery);
 
 	invariant(

@@ -2,8 +2,9 @@ import MembersSidebarClientComponent from "./MembersSidebarClientComponent";
 
 export default function OrganizationMembersLayout({
 	children,
-}: { children: React.ReactNode }) {
-
+}: {
+	children: React.ReactNode;
+}) {
 	return (
 		<>
 			<div className="relative w-full h-full">

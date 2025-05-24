@@ -1,12 +1,12 @@
 "use client";
-import type { JobTabsFragment$key } from "@/__generated__/JobTabsFragment.graphql";
-import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
 import { HomeIcon, Settings, Users } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import type { JobTabsFragment$key } from "@/__generated__/JobTabsFragment.graphql";
+import links from "@/lib/links";
 
 const JobTabsFragment = graphql`
 fragment JobTabsFragment on Job {

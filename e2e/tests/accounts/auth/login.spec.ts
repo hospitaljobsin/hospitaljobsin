@@ -2,7 +2,6 @@ import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 
 test.describe("Login Page", () => {
-
 	test.beforeEach(async ({ page }) => {
 		// Navigate to login page
 		await page.goto("http://localhost:5002/auth/login");
@@ -53,10 +52,11 @@ test.describe("Login Page", () => {
 				.filter({ hasText: /^This field is required$/ })
 				.first(),
 		).toBeVisible();
-		await expect(page
-			.locator("div")
-			.filter({ hasText: /^This field is required$/ })
-			.nth(2)
+		await expect(
+			page
+				.locator("div")
+				.filter({ hasText: /^This field is required$/ })
+				.nth(2),
 		).toBeVisible();
 	});
 
@@ -154,7 +154,10 @@ test.describe("Login Page", () => {
 		await expect(page).toHaveURL(/\/auth\/reset-password/);
 	});
 
-	test("should handle successful email-password login", async ({ page, passwordAuth }) => {
+	test("should handle successful email-password login", async ({
+		page,
+		passwordAuth,
+	}) => {
 		// Fill form with valid credentials
 		await page.getByLabel("Email Address").fill(passwordAuth.account.email);
 		await page
@@ -165,9 +168,12 @@ test.describe("Login Page", () => {
 		await page.waitForURL("http://localhost:5000/");
 	});
 
-	test("should redirect on 2FA requirement", async ({ page, twoFactorAuth }) => {
+	test("should redirect on 2FA requirement", async ({
+		page,
+		twoFactorAuth,
+	}) => {
 		// Fill form with credentials that require 2FA
-		await page.getByLabel("Email Address").fill( twoFactorAuth.account.email);
+		await page.getByLabel("Email Address").fill(twoFactorAuth.account.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -181,7 +187,7 @@ test.describe("Login Page", () => {
 		page,
 		context,
 		browserName,
-		webauthnAuth
+		webauthnAuth,
 	}) => {
 		test.skip(browserName !== "chromium", "Only supported in Chromium");
 		test.setTimeout(30_000);
@@ -340,10 +346,11 @@ test.describe("Login Page", () => {
 	});
 
 	test("should handle invalid authentication provider error", async ({
-		page, webauthnAuth
+		page,
+		webauthnAuth,
 	}) => {
 		// Fill form
-		await page.getByLabel("Email Address").fill( webauthnAuth.account.email);
+		await page.getByLabel("Email Address").fill(webauthnAuth.account.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -364,10 +371,11 @@ test.describe("Login Page", () => {
 });
 
 authTest.describe("Login Page Authentication Redirects", () => {
-	authTest("should redirect to home page when already authenticated", async ({
-		page,
-	}) => {
-		await page.goto("http://localhost:5002/auth/login");
-		await page.waitForURL("http://localhost:5000/");
-	});
+	authTest(
+		"should redirect to home page when already authenticated",
+		async ({ page }) => {
+			await page.goto("http://localhost:5002/auth/login");
+			await page.waitForURL("http://localhost:5000/");
+		},
+	);
 });

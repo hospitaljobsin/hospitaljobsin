@@ -1,5 +1,5 @@
-import type { FullConfig } from "@playwright/test";
 import { execSync } from "node:child_process";
+import type { FullConfig } from "@playwright/test";
 
 async function globalSetup(config: FullConfig) {
 	console.log("🌱 Seeding test data...");

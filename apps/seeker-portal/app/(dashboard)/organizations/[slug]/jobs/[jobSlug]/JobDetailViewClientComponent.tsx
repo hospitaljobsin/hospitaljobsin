@@ -1,19 +1,18 @@
 "use client";
 
-import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
-import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 import {
 	graphql,
 	useFragment,
 	usePreloadedQuery,
 	useRelayEnvironment,
 } from "react-relay";
-
 import type { JobDetailViewClientComponentFragment$key } from "@/__generated__/JobDetailViewClientComponentFragment.graphql";
 import type JobDetailViewQueryNode from "@/__generated__/pageJobDetailViewQuery.graphql";
 import type { pageJobDetailViewQuery } from "@/__generated__/pageJobDetailViewQuery.graphql";
 import PageJobDetailViewQuery from "@/__generated__/pageJobDetailViewQuery.graphql";
 import JobDetailView from "@/components/job-detail/JobDetailView";
+import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
+import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 
 const JobDetailViewClientComponentFragment = graphql`
  fragment JobDetailViewClientComponentFragment on Query @argumentDefinitions(

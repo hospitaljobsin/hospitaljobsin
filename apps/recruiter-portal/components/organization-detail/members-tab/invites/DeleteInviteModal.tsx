@@ -1,17 +1,17 @@
-import type { DeleteInviteModalFragment$key } from "@/__generated__/DeleteInviteModalFragment.graphql";
-import type { DeleteInviteModalMutation } from "@/__generated__/DeleteInviteModalMutation.graphql";
-import type { DeleteInviteModalOrganizationFragment$key } from "@/__generated__/DeleteInviteModalOrganizationFragment.graphql";
 import {
+	addToast,
 	Button,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { DeleteInviteModalFragment$key } from "@/__generated__/DeleteInviteModalFragment.graphql";
+import type { DeleteInviteModalMutation } from "@/__generated__/DeleteInviteModalMutation.graphql";
+import type { DeleteInviteModalOrganizationFragment$key } from "@/__generated__/DeleteInviteModalOrganizationFragment.graphql";
 
 const DeleteInviteModalFragment = graphql`
     fragment DeleteInviteModalFragment on OrganizationInvite {

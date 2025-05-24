@@ -1,11 +1,11 @@
-import type { MemberAccountFragment$key } from "@/__generated__/MemberAccountFragment.graphql";
-import type { MemberFragment$key } from "@/__generated__/MemberFragment.graphql";
-import type { MemberOrganizationFragment$key } from "@/__generated__/MemberOrganizationFragment.graphql";
-import { dateFormat } from "@/lib/intl";
 import { Card, CardBody, Chip } from "@heroui/react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { MemberAccountFragment$key } from "@/__generated__/MemberAccountFragment.graphql";
+import type { MemberFragment$key } from "@/__generated__/MemberFragment.graphql";
+import type { MemberOrganizationFragment$key } from "@/__generated__/MemberOrganizationFragment.graphql";
+import { dateFormat } from "@/lib/intl";
 import MemberControls from "./member-controls/MemberControls";
 
 const MemberFragment = graphql`

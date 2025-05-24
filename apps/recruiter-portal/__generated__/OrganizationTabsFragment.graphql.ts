@@ -1,40 +1,29 @@
-/**
- * @generated SignedSource<<a853fe245cdc1dfbf4ea26ca3facc75c>>
- * @lightSyntaxTransform
- * @nogrep
- */
-
-/* tslint:disable */
-/* eslint-disable */
-// @ts-nocheck
-
-import type { ReaderFragment } from 'relay-runtime';
-import type { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs, ReaderFragment } from "relay-runtime";
 export type OrganizationTabsFragment$data = {
-  readonly isAdmin: boolean;
-  readonly " $fragmentType": "OrganizationTabsFragment";
+	readonly isAdmin: boolean;
+	readonly " $fragmentType": "OrganizationTabsFragment";
 };
 export type OrganizationTabsFragment$key = {
-  readonly " $data"?: OrganizationTabsFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"OrganizationTabsFragment">;
+	readonly " $data"?: OrganizationTabsFragment$data;
+	readonly " $fragmentSpreads": FragmentRefs<"OrganizationTabsFragment">;
 };
 
 const node: ReaderFragment = {
-  "argumentDefinitions": [],
-  "kind": "Fragment",
-  "metadata": null,
-  "name": "OrganizationTabsFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "isAdmin",
-      "storageKey": null
-    }
-  ],
-  "type": "Organization",
-  "abstractKey": null
+	argumentDefinitions: [],
+	kind: "Fragment",
+	metadata: null,
+	name: "OrganizationTabsFragment",
+	selections: [
+		{
+			alias: null,
+			args: null,
+			kind: "ScalarField",
+			name: "isAdmin",
+			storageKey: null,
+		},
+	],
+	type: "Organization",
+	abstractKey: null,
 };
 
 (node as any).hash = "ec8b337752662779f3e2d7a5c11608fb";

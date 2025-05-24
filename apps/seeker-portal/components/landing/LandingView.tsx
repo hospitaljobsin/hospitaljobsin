@@ -1,8 +1,8 @@
 "use client";
-import type { LandingViewFragment$key } from "@/__generated__/LandingViewFragment.graphql";
 import { Suspense, useState } from "react";
 import { graphql, useFragment } from "react-relay";
 import { useDebounce } from "use-debounce";
+import type { LandingViewFragment$key } from "@/__generated__/LandingViewFragment.graphql";
 import type { CoordinatesInput } from "../../__generated__/JobListRefetchQuery.graphql";
 import JobList from "./JobList";
 import JobListController from "./JobListController";
@@ -20,7 +20,9 @@ const LandingViewFragment = graphql`
 
 export default function LandingView({
 	query,
-}: { query: LandingViewFragment$key }) {
+}: {
+	query: LandingViewFragment$key;
+}) {
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 	const [coordinates, setCoordinates] = useState<CoordinatesInput | null>(null);
 

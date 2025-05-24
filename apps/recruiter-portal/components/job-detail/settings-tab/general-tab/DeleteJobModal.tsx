@@ -1,19 +1,19 @@
-import type { DeleteJobModalFragment$key } from "@/__generated__/DeleteJobModalFragment.graphql";
-import type { DeleteJobModalMutation } from "@/__generated__/DeleteJobModalMutation.graphql";
-import links from "@/lib/links";
 import { useRouter } from "@bprogress/next/app";
 import {
+	addToast,
 	Button,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { useParams } from "next/navigation";
 import { useFragment, useMutation } from "react-relay";
 import { ConnectionHandler, graphql } from "relay-runtime";
+import type { DeleteJobModalFragment$key } from "@/__generated__/DeleteJobModalFragment.graphql";
+import type { DeleteJobModalMutation } from "@/__generated__/DeleteJobModalMutation.graphql";
+import links from "@/lib/links";
 
 const DeleteJobModalFragment = graphql`
     fragment DeleteJobModalFragment on Job {

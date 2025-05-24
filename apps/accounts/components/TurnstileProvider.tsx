@@ -1,8 +1,8 @@
-import { env } from "@/lib/env/client";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import { Turnstile } from "@marsidev/react-turnstile";
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { env } from "@/lib/env/client";
 
 type TurnstileContextType = {
 	executeCaptcha: ((event: string) => Promise<string>) | undefined;
@@ -18,7 +18,9 @@ export const TurnstileProvider = ({ children }: { children: ReactNode }) => {
 	const [isReady, setIsReady] = useState(false);
 	const turnstileRef = useRef<TurnstileInstance>(null);
 
-	const pendingResolver = useRef<((token: string) => void) | undefined>(undefined);
+	const pendingResolver = useRef<((token: string) => void) | undefined>(
+		undefined,
+	);
 
 	async function executeTurnstile(event: string): Promise<string> {
 		if (!turnstileRef.current) {

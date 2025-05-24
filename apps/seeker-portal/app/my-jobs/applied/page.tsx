@@ -1,9 +1,9 @@
 "use client";
 
-import type { pageAppliedJobsQuery } from "@/__generated__/pageAppliedJobsQuery.graphql";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { pageAppliedJobsQuery } from "@/__generated__/pageAppliedJobsQuery.graphql";
 import AppliedJobsClientComponent from "./AppliedJobsClientComponent";
 
 export const AppliedJobsPageQuery = graphql`

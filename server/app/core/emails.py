@@ -12,7 +12,7 @@ from app.config import EmailSettings
 
 
 @asynccontextmanager
-async def create_smtp_client(settings: EmailSettings) -> AsyncGenerator[SMTP, None]:
+async def create_smtp_client(settings: EmailSettings) -> AsyncGenerator[SMTP]:
     """Create an SMTP client."""
     if settings.email_username and settings.email_password:
         smtp_client = SMTP(

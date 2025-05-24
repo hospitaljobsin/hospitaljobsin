@@ -1,246 +1,235 @@
-/**
- * @generated SignedSource<<370774445719ab9b523199886fb44066>>
- * @relayHash 254be99b06f0a5d481ffd99bc24f066f
- * @lightSyntaxTransform
- * @nogrep
- */
-
-/* tslint:disable */
-/* eslint-disable */
-// @ts-nocheck
-
-// @relayRequestID 254be99b06f0a5d481ffd99bc24f066f
-
-import type { ConcreteRequest } from 'relay-runtime';
-import type { FragmentRefs } from "relay-runtime";
+import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
 export type OrgDetailHeaderQuery$variables = {
-  slug: string;
+	slug: string;
 };
 export type OrgDetailHeaderQuery$data = {
-  readonly organization: {
-    readonly __typename: "Organization";
-    readonly name: string;
-    readonly slug: string;
-    readonly " $fragmentSpreads": FragmentRefs<"OrganizationTabsFragment">;
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
-  readonly viewer: {
-    readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment">;
-  } | {
-    readonly __typename: "NotAuthenticatedError";
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
+	readonly organization:
+		| {
+				readonly __typename: "Organization";
+				readonly name: string;
+				readonly slug: string;
+				readonly " $fragmentSpreads": FragmentRefs<"OrganizationTabsFragment">;
+		  }
+		| {
+				// This will never be '%other', but we need some
+				// value in case none of the concrete values match.
+				readonly __typename: "%other";
+		  };
+	readonly viewer:
+		| {
+				readonly __typename: "Account";
+				readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment">;
+		  }
+		| {
+				readonly __typename: "NotAuthenticatedError";
+		  }
+		| {
+				// This will never be '%other', but we need some
+				// value in case none of the concrete values match.
+				readonly __typename: "%other";
+		  };
 };
 export type OrgDetailHeaderQuery = {
-  response: OrgDetailHeaderQuery$data;
-  variables: OrgDetailHeaderQuery$variables;
+	response: OrgDetailHeaderQuery$data;
+	variables: OrgDetailHeaderQuery$variables;
 };
 
-const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "slug"
-  }
-],
-v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
-},
-v2 = [
-  {
-    "kind": "Variable",
-    "name": "slug",
-    "variableName": "slug"
-  }
-],
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "name",
-  "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "slug",
-  "storageKey": null
-},
-v5 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    }
-  ],
-  "type": "Node",
-  "abstractKey": "__isNode"
-};
-return {
-  "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "OrgDetailHeaderQuery",
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "viewer",
-        "plural": false,
-        "selections": [
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v1/*: any*/),
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "AuthNavigationFragment"
-              }
-            ],
-            "type": "Account",
-            "abstractKey": null
-          },
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v1/*: any*/)
-            ],
-            "type": "NotAuthenticatedError",
-            "abstractKey": null
-          }
-        ],
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": (v2/*: any*/),
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "organization",
-        "plural": false,
-        "selections": [
-          (v1/*: any*/),
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "OrganizationTabsFragment"
-              },
-              (v3/*: any*/),
-              (v4/*: any*/)
-            ],
-            "type": "Organization",
-            "abstractKey": null
-          }
-        ],
-        "storageKey": null
-      }
-    ],
-    "type": "Query",
-    "abstractKey": null
-  },
-  "kind": "Request",
-  "operation": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Operation",
-    "name": "OrgDetailHeaderQuery",
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "viewer",
-        "plural": false,
-        "selections": [
-          (v1/*: any*/),
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "fullName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "avatarUrl",
-                "storageKey": null
-              }
-            ],
-            "type": "Account",
-            "abstractKey": null
-          },
-          (v5/*: any*/)
-        ],
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": (v2/*: any*/),
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "organization",
-        "plural": false,
-        "selections": [
-          (v1/*: any*/),
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "isAdmin",
-                "storageKey": null
-              },
-              (v3/*: any*/),
-              (v4/*: any*/)
-            ],
-            "type": "Organization",
-            "abstractKey": null
-          },
-          (v5/*: any*/)
-        ],
-        "storageKey": null
-      }
-    ]
-  },
-  "params": {
-    "id": "254be99b06f0a5d481ffd99bc24f066f",
-    "metadata": {},
-    "name": "OrgDetailHeaderQuery",
-    "operationKind": "query",
-    "text": null
-  }
-};
+const node: ConcreteRequest = (() => {
+	var v0 = [
+			{
+				defaultValue: null,
+				kind: "LocalArgument",
+				name: "slug",
+			},
+		],
+		v1 = {
+			alias: null,
+			args: null,
+			kind: "ScalarField",
+			name: "__typename",
+			storageKey: null,
+		},
+		v2 = [
+			{
+				kind: "Variable",
+				name: "slug",
+				variableName: "slug",
+			},
+		],
+		v3 = {
+			alias: null,
+			args: null,
+			kind: "ScalarField",
+			name: "name",
+			storageKey: null,
+		},
+		v4 = {
+			alias: null,
+			args: null,
+			kind: "ScalarField",
+			name: "slug",
+			storageKey: null,
+		},
+		v5 = {
+			kind: "InlineFragment",
+			selections: [
+				{
+					alias: null,
+					args: null,
+					kind: "ScalarField",
+					name: "id",
+					storageKey: null,
+				},
+			],
+			type: "Node",
+			abstractKey: "__isNode",
+		};
+	return {
+		fragment: {
+			argumentDefinitions: v0 /*: any*/,
+			kind: "Fragment",
+			metadata: null,
+			name: "OrgDetailHeaderQuery",
+			selections: [
+				{
+					alias: null,
+					args: null,
+					concreteType: null,
+					kind: "LinkedField",
+					name: "viewer",
+					plural: false,
+					selections: [
+						{
+							kind: "InlineFragment",
+							selections: [
+								v1 /*: any*/,
+								{
+									args: null,
+									kind: "FragmentSpread",
+									name: "AuthNavigationFragment",
+								},
+							],
+							type: "Account",
+							abstractKey: null,
+						},
+						{
+							kind: "InlineFragment",
+							selections: [v1 /*: any*/],
+							type: "NotAuthenticatedError",
+							abstractKey: null,
+						},
+					],
+					storageKey: null,
+				},
+				{
+					alias: null,
+					args: v2 /*: any*/,
+					concreteType: null,
+					kind: "LinkedField",
+					name: "organization",
+					plural: false,
+					selections: [
+						v1 /*: any*/,
+						{
+							kind: "InlineFragment",
+							selections: [
+								{
+									args: null,
+									kind: "FragmentSpread",
+									name: "OrganizationTabsFragment",
+								},
+								v3 /*: any*/,
+								v4 /*: any*/,
+							],
+							type: "Organization",
+							abstractKey: null,
+						},
+					],
+					storageKey: null,
+				},
+			],
+			type: "Query",
+			abstractKey: null,
+		},
+		kind: "Request",
+		operation: {
+			argumentDefinitions: v0 /*: any*/,
+			kind: "Operation",
+			name: "OrgDetailHeaderQuery",
+			selections: [
+				{
+					alias: null,
+					args: null,
+					concreteType: null,
+					kind: "LinkedField",
+					name: "viewer",
+					plural: false,
+					selections: [
+						v1 /*: any*/,
+						{
+							kind: "InlineFragment",
+							selections: [
+								{
+									alias: null,
+									args: null,
+									kind: "ScalarField",
+									name: "fullName",
+									storageKey: null,
+								},
+								{
+									alias: null,
+									args: null,
+									kind: "ScalarField",
+									name: "avatarUrl",
+									storageKey: null,
+								},
+							],
+							type: "Account",
+							abstractKey: null,
+						},
+						v5 /*: any*/,
+					],
+					storageKey: null,
+				},
+				{
+					alias: null,
+					args: v2 /*: any*/,
+					concreteType: null,
+					kind: "LinkedField",
+					name: "organization",
+					plural: false,
+					selections: [
+						v1 /*: any*/,
+						{
+							kind: "InlineFragment",
+							selections: [
+								{
+									alias: null,
+									args: null,
+									kind: "ScalarField",
+									name: "isAdmin",
+									storageKey: null,
+								},
+								v3 /*: any*/,
+								v4 /*: any*/,
+							],
+							type: "Organization",
+							abstractKey: null,
+						},
+						v5 /*: any*/,
+					],
+					storageKey: null,
+				},
+			],
+		},
+		params: {
+			id: "254be99b06f0a5d481ffd99bc24f066f",
+			metadata: {},
+			name: "OrgDetailHeaderQuery",
+			operationKind: "query",
+			text: null,
+		},
+	};
 })();
 
 (node as any).hash = "6c16879d87289ee64c9b1dd39dedcebc";

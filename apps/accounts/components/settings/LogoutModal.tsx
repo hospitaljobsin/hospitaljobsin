@@ -1,4 +1,3 @@
-import links from "@/lib/links";
 import {
 	Button,
 	Modal,
@@ -9,6 +8,7 @@ import {
 } from "@heroui/react";
 import { usePathname } from "next/navigation";
 import { graphql, useMutation } from "react-relay";
+import links from "@/lib/links";
 
 type Props = {
 	isOpen: boolean;

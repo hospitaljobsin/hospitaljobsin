@@ -1,11 +1,11 @@
 "use client";
-import type { MyJobsHeaderQuery as MyJobsHeaderQueryType } from "@/__generated__/MyJobsHeaderQuery.graphql";
-import links from "@/lib/links";
 import { Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import type { MyJobsHeaderQuery as MyJobsHeaderQueryType } from "@/__generated__/MyJobsHeaderQuery.graphql";
+import links from "@/lib/links";
 import Logo from "../Logo";
 import MyJobsTabs from "../my-jobs/MyJobsTabs";
 import AuthNavigation from "./AuthNavigation";
@@ -26,7 +26,9 @@ export const MyJobsHeaderQuery = graphql`
 
 export default function MyJobsHeader({
 	queryReference,
-}: { queryReference: PreloadedQuery<MyJobsHeaderQueryType> }) {
+}: {
+	queryReference: PreloadedQuery<MyJobsHeaderQueryType>;
+}) {
 	const data = usePreloadedQuery(MyJobsHeaderQuery, queryReference);
 	invariant(
 		data.viewer.__typename === "Account",

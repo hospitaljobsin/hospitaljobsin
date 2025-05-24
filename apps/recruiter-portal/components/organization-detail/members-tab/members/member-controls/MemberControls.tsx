@@ -1,8 +1,4 @@
 "use client";
-import type { MemberControlsAccountFragment$key } from "@/__generated__/MemberControlsAccountFragment.graphql";
-import type { MemberControlsFragment$key } from "@/__generated__/MemberControlsFragment.graphql";
-import type { MemberControlsOrganizationFragment$key } from "@/__generated__/MemberControlsOrganizationFragment.graphql";
-import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import {
 	Button,
 	Dropdown,
@@ -14,6 +10,10 @@ import {
 import { EllipsisVertical, ShieldUser, UserMinus, UserX } from "lucide-react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { MemberControlsAccountFragment$key } from "@/__generated__/MemberControlsAccountFragment.graphql";
+import type { MemberControlsFragment$key } from "@/__generated__/MemberControlsFragment.graphql";
+import type { MemberControlsOrganizationFragment$key } from "@/__generated__/MemberControlsOrganizationFragment.graphql";
+import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import DemoteMemberModal from "./DemoteMemberModal";
 import PromoteMemberModal from "./PromoteMemberModal";
 import RemoveMemberModal from "./RemoveMemberModal";

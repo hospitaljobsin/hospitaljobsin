@@ -1,16 +1,15 @@
-import { useFragment, usePaginationFragment } from "react-relay";
-import Job from "./Job";
-
-import type { OrganizationJobsListFragment$key } from "@/__generated__/OrganizationJobsListFragment.graphql";
-import type { OrganizationJobsListInternalFragment$key } from "@/__generated__/OrganizationJobsListInternalFragment.graphql";
-import type { pageOrganizationJobsViewQuery } from "@/__generated__/pageOrganizationJobsViewQuery.graphql";
-import links from "@/lib/links";
 import { Button, Link } from "@heroui/react";
 import { BriefcaseBusiness, Plus } from "lucide-react";
 import { useParams } from "next/navigation";
 import { startTransition, useEffect, useRef } from "react";
+import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import type { OrganizationJobsListFragment$key } from "@/__generated__/OrganizationJobsListFragment.graphql";
+import type { OrganizationJobsListInternalFragment$key } from "@/__generated__/OrganizationJobsListInternalFragment.graphql";
+import type { pageOrganizationJobsViewQuery } from "@/__generated__/pageOrganizationJobsViewQuery.graphql";
+import links from "@/lib/links";
+import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
 
 const OrganizationJobsListFragment = graphql`

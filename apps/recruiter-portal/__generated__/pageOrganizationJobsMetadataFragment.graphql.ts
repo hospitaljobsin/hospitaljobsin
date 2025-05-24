@@ -1,37 +1,28 @@
-/**
- * @generated SignedSource<<77b51d21ca04b8b211db851be3befc1e>>
- * @lightSyntaxTransform
- * @nogrep
- */
-
-/* tslint:disable */
-/* eslint-disable */
-// @ts-nocheck
-
-import type { ReaderInlineDataFragment } from 'relay-runtime';
-import type { FragmentRefs } from "relay-runtime";
+import type { FragmentRefs, ReaderInlineDataFragment } from "relay-runtime";
 export type pageOrganizationJobsMetadataFragment$data = {
-  readonly organization: {
-    readonly __typename: "Organization";
-    readonly description: string | null | undefined;
-    readonly isMember: boolean;
-    readonly logoUrl: string;
-    readonly name: string;
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
-  readonly " $fragmentType": "pageOrganizationJobsMetadataFragment";
+	readonly organization:
+		| {
+				readonly __typename: "Organization";
+				readonly description: string | null | undefined;
+				readonly isMember: boolean;
+				readonly logoUrl: string;
+				readonly name: string;
+		  }
+		| {
+				// This will never be '%other', but we need some
+				// value in case none of the concrete values match.
+				readonly __typename: "%other";
+		  };
+	readonly " $fragmentType": "pageOrganizationJobsMetadataFragment";
 };
 export type pageOrganizationJobsMetadataFragment$key = {
-  readonly " $data"?: pageOrganizationJobsMetadataFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"pageOrganizationJobsMetadataFragment">;
+	readonly " $data"?: pageOrganizationJobsMetadataFragment$data;
+	readonly " $fragmentSpreads": FragmentRefs<"pageOrganizationJobsMetadataFragment">;
 };
 
 const node: ReaderInlineDataFragment = {
-  "kind": "InlineDataFragment",
-  "name": "pageOrganizationJobsMetadataFragment"
+	kind: "InlineDataFragment",
+	name: "pageOrganizationJobsMetadataFragment",
 };
 
 (node as any).hash = "653de66cf99b7d84c47497bcfd033a90";

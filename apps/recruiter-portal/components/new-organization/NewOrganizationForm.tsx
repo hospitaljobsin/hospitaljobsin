@@ -1,9 +1,4 @@
 "use client";
-import type { NewOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/NewOrganizationFormLogoPresignedUrlMutation.graphql";
-import type { NewOrganizationFormMutation } from "@/__generated__/NewOrganizationFormMutation.graphql";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
-import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next";
 import {
 	Button,
@@ -19,6 +14,11 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
+import type { NewOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/NewOrganizationFormLogoPresignedUrlMutation.graphql";
+import type { NewOrganizationFormMutation } from "@/__generated__/NewOrganizationFormMutation.graphql";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
+import { uploadFileToS3 } from "@/lib/presignedUrl";
 
 const CreateOrganizationMutation = graphql`
 mutation NewOrganizationFormMutation($fullName: String!, $slug: String!, $website: String, $description: String, $logoUrl: String) {
@@ -44,9 +44,19 @@ mutation NewOrganizationFormLogoPresignedUrlMutation {
 `;
 
 const formSchema = z.object({
-	fullName: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75)),
-	slug: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75), z.regex(/^[a-z0-9-]+$/, "Must be a valid slug"), z.refine((value) => value === value.toLowerCase(), "Must be lowercase")),
-	website: z.union([z.nullish(z.string().check(z.url("Invalid URL"))), z.literal("")]),
+	fullName: z
+		.string()
+		.check(z.minLength(1, "This field is required"), z.maxLength(75)),
+	slug: z.string().check(
+		z.minLength(1, "This field is required"),
+		z.maxLength(75),
+		z.regex(/^[a-z0-9-]+$/, "Must be a valid slug"),
+		z.refine((value) => value === value.toLowerCase(), "Must be lowercase"),
+	),
+	website: z.union([
+		z.nullish(z.string().check(z.url("Invalid URL"))),
+		z.literal(""),
+	]),
 	description: z.nullable(z.string()),
 });
 

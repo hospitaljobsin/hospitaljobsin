@@ -1,14 +1,14 @@
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import type { pageApplicantDetailMetadataFragment$key } from "@/__generated__/pageApplicantDetailMetadataFragment.graphql";
 import type ApplicantDetailViewQueryNode from "@/__generated__/pageApplicantDetailViewQuery.graphql";
 import type { pageApplicantDetailViewQuery } from "@/__generated__/pageApplicantDetailViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { notFound } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import ApplicantDetailViewClientComponent from "./ApplicantDetailViewClientComponent";
 
 export const PageApplicantDetailViewQuery = graphql`
-  query pageApplicantDetailViewQuery($slug: String!, $jobSlug: String!, $applicantSlug: String!) {	
+  query pageApplicantDetailViewQuery($slug: String!, $jobSlug: String!, $applicantSlug: String!) {
     ...pageApplicantDetailMetadataFragment @arguments(slug: $slug, jobSlug: $jobSlug, applicantSlug: $applicantSlug)
     ...ApplicantDetailViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug, applicantSlug: $applicantSlug)
   }
@@ -38,7 +38,7 @@ const PageApplicantDetailMetadataFragment = graphql`
 					}
 					}
 				}
-				
+
 				}
 			}
 		}

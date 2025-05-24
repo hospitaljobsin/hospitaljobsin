@@ -59,7 +59,7 @@ def rebuild_models() -> None:
 @asynccontextmanager
 async def initialize_database(
     database_url: str, default_database_name: str
-) -> AsyncGenerator[None, None]:
+) -> AsyncGenerator[None]:
     """Initialize the database."""
     client: AsyncIOMotorClient = AsyncIOMotorClient(
         database_url,

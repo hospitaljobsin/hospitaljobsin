@@ -1,6 +1,3 @@
-import { useFragment, useMutation } from "react-relay";
-
-import type { UpdateAccountDetailsFormFragment$key } from "@/__generated__/UpdateAccountDetailsFormFragment.graphql";
 import {
 	Avatar,
 	Badge,
@@ -14,8 +11,10 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
+import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
+import type { UpdateAccountDetailsFormFragment$key } from "@/__generated__/UpdateAccountDetailsFormFragment.graphql";
 
 const UpdateAccountDetailsFormMutation = graphql`
 mutation UpdateAccountDetailsFormMutation($fullName: String!)  {
@@ -42,7 +41,12 @@ type Props = {
 };
 
 const formSchema = z.object({
-	fullName: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75, "This field must be at most 75 characters long")),
+	fullName: z
+		.string()
+		.check(
+			z.minLength(1, "This field is required"),
+			z.maxLength(75, "This field must be at most 75 characters long"),
+		),
 });
 
 export default function UpdateAccountDetailsForm({
@@ -142,7 +146,7 @@ export default function UpdateAccountDetailsForm({
 							</div>
 							<Input
 								label="Email Address"
-								placeholder="Add your 
+								placeholder="Add your
 								email address"
 								value={data.email}
 								isDisabled

@@ -1,6 +1,6 @@
 "use client";
-import type { SavedJobsViewFragment$key } from "@/__generated__/SavedJobsViewFragment.graphql";
 import { graphql, useFragment } from "react-relay";
+import type { SavedJobsViewFragment$key } from "@/__generated__/SavedJobsViewFragment.graphql";
 import SavedJobsList from "./SavedJobsList";
 
 const SavedJobsViewFragment = graphql`
@@ -11,7 +11,9 @@ const SavedJobsViewFragment = graphql`
 
 export default function SavedView({
 	query,
-}: { query: SavedJobsViewFragment$key }) {
+}: {
+	query: SavedJobsViewFragment$key;
+}) {
 	const data = useFragment(SavedJobsViewFragment, query);
 
 	return (

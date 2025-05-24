@@ -1,6 +1,6 @@
-import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { Search } from "lucide-react";
+import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
 
 interface ApplicantListControllerProps {
 	searchTerm: string | null;

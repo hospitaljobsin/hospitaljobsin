@@ -1,7 +1,7 @@
 "use client";
-import type { SessionsSettingsViewFragment$key } from "@/__generated__/SessionsSettingsViewFragment.graphql";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import type { SessionsSettingsViewFragment$key } from "@/__generated__/SessionsSettingsViewFragment.graphql";
 import SessionsList from "./SessionsList";
 
 const SessionsSettingsViewFragment = graphql`
@@ -17,7 +17,9 @@ const SessionsSettingsViewFragment = graphql`
 
 export default function SessionsSettingsView({
 	query,
-}: { query: SessionsSettingsViewFragment$key }) {
+}: {
+	query: SessionsSettingsViewFragment$key;
+}) {
 	const data = useFragment(SessionsSettingsViewFragment, query);
 	invariant(
 		data.viewer.__typename === "Account",

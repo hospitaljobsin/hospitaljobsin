@@ -1,12 +1,11 @@
+import { UserRound } from "lucide-react";
+import { startTransition, useEffect, useRef } from "react";
 import { usePaginationFragment } from "react-relay";
-import Applicant from "./Applicant";
-
+import { graphql } from "relay-runtime";
 import type { ApplicantListFragment$key } from "@/__generated__/ApplicantListFragment.graphql";
 import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
 import type { pageJobApplicantsViewQuery } from "@/__generated__/pageJobApplicantsViewQuery.graphql";
-import { UserRound } from "lucide-react";
-import { startTransition, useEffect, useRef } from "react";
-import { graphql } from "relay-runtime";
+import Applicant from "./Applicant";
 import ApplicantListSkeleton from "./ApplicantListSkeleton";
 
 const ApplicantListFragment = graphql`

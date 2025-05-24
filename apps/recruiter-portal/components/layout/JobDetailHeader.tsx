@@ -1,14 +1,14 @@
 "use client";
-import type { JobDetailHeaderQuery as JobDetailHeaderQueryType } from "@/__generated__/JobDetailHeaderQuery.graphql";
-import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import Link from "next/link";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
-import Logo from "../Logo";
+import type { JobDetailHeaderQuery as JobDetailHeaderQueryType } from "@/__generated__/JobDetailHeaderQuery.graphql";
+import links from "@/lib/links";
 import JobTabs from "../job-detail/JobTabs";
+import Logo from "../Logo";
 import AuthNavigation from "./AuthNavigation";
 
 export const JobDetailHeaderQuery = graphql`

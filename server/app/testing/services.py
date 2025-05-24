@@ -62,10 +62,8 @@ class TestSetupService:
         webauthn_credentials: list[WebAuthnCredential] = []
         # create auth providers
         if "webauthn_credential" in data.auth_providers:
-            # FIXME: credential id is unique here
             webauthn_credential = await self._webauthn_credential_repo.create(
                 account_id=account.id,
-                # credential_id=b"\xe0\xac\x13K\xa6:\x1f7{/\xa8\xa3\xc1\x97v2",
                 credential_id=secrets.token_bytes(16),
                 credential_public_key=b"\x04}ZJc\x0e\x13U\x9a\xddI\xc6%\xe6v\xd5\xc5W\xd5\xf8\xea\x97\x9f\x99\xfd\xb3S\x903\x14\xf73H\xbbi\xa5U\xdd\xf6-\xa0\xcc\xa0\xa5\xbeG\xa7\xa0D\xaf\xbd\xd3\x9a\x17o}[Q\xa9\xf11\x12y\nq",
                 sign_count=0,

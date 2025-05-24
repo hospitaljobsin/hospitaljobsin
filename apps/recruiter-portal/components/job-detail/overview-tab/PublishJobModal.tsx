@@ -1,15 +1,15 @@
-import type { PublishJobModalFragment$key } from "@/__generated__/PublishJobModalFragment.graphql";
-import type { PublishJobModalMutation as PublishJobModalMutationType } from "@/__generated__/PublishJobModalMutation.graphql";
 import {
+	addToast,
 	Button,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { graphql, useFragment, useMutation } from "react-relay";
+import type { PublishJobModalFragment$key } from "@/__generated__/PublishJobModalFragment.graphql";
+import type { PublishJobModalMutation as PublishJobModalMutationType } from "@/__generated__/PublishJobModalMutation.graphql";
 
 type Props = {
 	isOpen: boolean;

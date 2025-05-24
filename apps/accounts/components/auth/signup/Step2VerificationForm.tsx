@@ -1,10 +1,6 @@
 "use client";
 
-import type { Step2VerificationFormMutation as Step2VerificationFormMutationType } from "@/__generated__/Step2VerificationFormMutation.graphql";
-import type { Step2VerificationFormRequestVerificationMutation as Step2VerificationFormRequestVerificationMutationType } from "@/__generated__/Step2VerificationFormRequestVerificationMutation.graphql";
-import { useTurnstile } from "@/components/TurnstileProvider";
-import { timeFormat } from "@/lib/intl";
-import { Button, Input, Tooltip, addToast } from "@heroui/react";
+import { addToast, Button, Input, Tooltip } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Edit3Icon } from "lucide-react";
 import { useEffect } from "react";
@@ -12,10 +8,16 @@ import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
+import type { Step2VerificationFormMutation as Step2VerificationFormMutationType } from "@/__generated__/Step2VerificationFormMutation.graphql";
+import type { Step2VerificationFormRequestVerificationMutation as Step2VerificationFormRequestVerificationMutationType } from "@/__generated__/Step2VerificationFormRequestVerificationMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
+import { timeFormat } from "@/lib/intl";
 import SignupContext from "./SignupContext";
 
 const step2Schema = z.object({
-	emailVerificationToken:  z.string().check(z.minLength(1, "This field is required")),
+	emailVerificationToken: z
+		.string()
+		.check(z.minLength(1, "This field is required")),
 });
 
 const VerifyEmailMutation = graphql`

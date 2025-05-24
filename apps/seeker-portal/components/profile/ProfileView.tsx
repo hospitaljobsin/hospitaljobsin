@@ -1,8 +1,8 @@
 "use client";
-import type { ProfileViewFragment$key } from "@/__generated__/ProfileViewFragment.graphql";
 import { useState } from "react";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import type { ProfileViewFragment$key } from "@/__generated__/ProfileViewFragment.graphql";
 import Languages from "./Languages";
 import ProfileDetails from "./PersonalDetails";
 import UpdateLanguagesForm from "./UpdateLanguagesForm";
@@ -24,7 +24,9 @@ const ProfileViewFragment = graphql`
 
 export default function ProfileView({
 	query,
-}: { query: ProfileViewFragment$key }) {
+}: {
+	query: ProfileViewFragment$key;
+}) {
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
 	const [isEditingLanguages, setIsEditingLanguages] = useState(false);
 	const data = useFragment(ProfileViewFragment, query);

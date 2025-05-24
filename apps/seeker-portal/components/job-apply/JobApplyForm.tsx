@@ -1,15 +1,15 @@
-import type { JobApplyFormFragment$key } from "@/__generated__/JobApplyFormFragment.graphql";
-import type { JobApplyFormMutation } from "@/__generated__/JobApplyFormMutation.graphql";
-import type { JobApplyFormResumePresignedUrlMutation } from "@/__generated__/JobApplyFormResumePresignedUrlMutation.graphql";
-import links from "@/lib/links";
-import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next/app";
-import { Button, Card, CardFooter, Input, addToast } from "@heroui/react";
+import { addToast, Button, Card, CardFooter, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
+import type { JobApplyFormFragment$key } from "@/__generated__/JobApplyFormFragment.graphql";
+import type { JobApplyFormMutation } from "@/__generated__/JobApplyFormMutation.graphql";
+import type { JobApplyFormResumePresignedUrlMutation } from "@/__generated__/JobApplyFormResumePresignedUrlMutation.graphql";
+import links from "@/lib/links";
+import { uploadFileToS3 } from "@/lib/presignedUrl";
 
 const JobApplyFormFragment = graphql`
   fragment JobApplyFormFragment on Job {
@@ -74,8 +74,7 @@ const CreateJobApplicantMutation = graphql`
 const formSchema = z.object({
 	applicantFields: z.array(
 		z.object({
-			fieldValue: z.string().check(
-				z.minLength(1, "This field is required"),),
+			fieldValue: z.string().check(z.minLength(1, "This field is required")),
 		}),
 	),
 	resume: z

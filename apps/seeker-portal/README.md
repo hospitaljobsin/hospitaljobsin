@@ -1,7 +1,6 @@
 # Hospital Jobs
 > *Job Seeker Platform UI for Hospital Jobs*
 
-
 ## Tech Stack
 - [TypeScript](https://www.typescriptlang.org/) - Programming Language
 - [React.js](https://react.dev) - UI library

@@ -1,7 +1,4 @@
 "use client";
-import { APP_NAME } from "@/lib/constants";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
 import {
 	Button,
 	Link as HeroLink,
@@ -15,6 +12,9 @@ import {
 } from "@heroui/react";
 import Link from "next/link";
 import { useState } from "react";
+import { APP_NAME } from "@/lib/constants";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 import Logo from "../Logo";
 
 export default function LandingHeader() {

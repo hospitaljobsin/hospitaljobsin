@@ -1,8 +1,8 @@
 "use client";
-import { APP_NAME } from "@/lib/constants";
-import links from "@/lib/links";
 import { Navbar, NavbarBrand } from "@heroui/react";
 import Link from "next/link";
+import { APP_NAME } from "@/lib/constants";
+import links from "@/lib/links";
 import Logo from "../Logo";
 
 export default function HeaderSkeleton() {

@@ -1,9 +1,9 @@
 "use client";
-import type { PasskeysSettingsViewFragment$key } from "@/__generated__/PasskeysSettingsViewFragment.graphql";
-import { LEARN_MORE_ABOUT_PASSKEYS_LINK } from "@/lib/constants";
 import { Link } from "@heroui/react";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import type { PasskeysSettingsViewFragment$key } from "@/__generated__/PasskeysSettingsViewFragment.graphql";
+import { LEARN_MORE_ABOUT_PASSKEYS_LINK } from "@/lib/constants";
 import PasskeysList from "./PasskeysList";
 
 const PasskeysSettingsViewFragment = graphql`

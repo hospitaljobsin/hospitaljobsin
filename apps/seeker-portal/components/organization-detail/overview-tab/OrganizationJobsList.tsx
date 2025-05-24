@@ -1,13 +1,12 @@
+import { Briefcase } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
-import Job from "../../landing/Job";
-
+import { graphql } from "relay-runtime";
+import invariant from "tiny-invariant";
 import type { OrganizationJobsListFragment$key } from "@/__generated__/OrganizationJobsListFragment.graphql";
 import type { OrganizationJobsListInternalFragment$key } from "@/__generated__/OrganizationJobsListInternalFragment.graphql";
 import type { pageOrganizationDetailViewQuery } from "@/__generated__/pageOrganizationDetailViewQuery.graphql";
-import { Briefcase } from "lucide-react";
-import { useEffect, useRef } from "react";
-import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
+import Job from "../../landing/Job";
 import JobListSkeleton from "../../landing/JobListSkeleton";
 
 const OrganizationJobsListFragment = graphql`

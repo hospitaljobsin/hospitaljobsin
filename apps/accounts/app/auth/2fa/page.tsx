@@ -1,6 +1,5 @@
-import TwoFactorAuthenticationForm from "@/components/auth/two-factor/TwoFactorAuthenticationForm";
-
 import type { Metadata } from "next";
+import TwoFactorAuthenticationForm from "@/components/auth/two-factor/TwoFactorAuthenticationForm";
 
 export const metadata: Metadata = {
 	title: "Two Factor Authentication",

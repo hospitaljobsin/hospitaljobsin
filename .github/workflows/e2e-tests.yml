@@ -49,9 +49,9 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          cache-dependency-path: e2e/pnpm-lock.yaml 
-  
-      - name: Install dependencies 
+          cache-dependency-path: e2e/pnpm-lock.yaml
+
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
         working-directory: e2e
 
@@ -65,14 +65,14 @@ jobs:
         run: |
           echo "Playwright version – ${{ steps.install-playwright.outputs.version }}"
           echo "Playwright cached – ${{ steps.install-playwright.outputs.cache-hit }}"
-  
+
       - name: Run Playwright tests
         run: pnpm run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
         working-directory: e2e
         env:
           CI: true
           DEBUG: pw:browser
-  
+
       - name: Upload Playwright Report and Traces
         uses: actions/upload-artifact@v4
         if: always()
@@ -82,5 +82,3 @@ jobs:
             e2e/playwright-report/
             e2e/test-results/**/*.zip
           retention-days: 30
-
-    

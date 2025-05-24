@@ -1,6 +1,3 @@
-import type { ShareJobFragment$key } from "@/__generated__/ShareJobFragment.graphql";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
 import {
 	Button,
 	Modal,
@@ -24,6 +21,9 @@ import {
 	XIcon,
 } from "react-share";
 import { graphql } from "relay-runtime";
+import type { ShareJobFragment$key } from "@/__generated__/ShareJobFragment.graphql";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 
 export const ShareJobFragment = graphql`
   fragment ShareJobFragment on Job {

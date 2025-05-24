@@ -1,10 +1,10 @@
-import type { PasskeysListFragment$key } from "@/__generated__/PasskeysListFragment.graphql";
-import type { PasskeysListInternalFragment$key } from "@/__generated__/PasskeysListInternalFragment.graphql";
-import type { PasskeysSettingsViewQuery } from "@/__generated__/PasskeysSettingsViewQuery.graphql";
 import { KeySquareIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { PasskeysListFragment$key } from "@/__generated__/PasskeysListFragment.graphql";
+import type { PasskeysListInternalFragment$key } from "@/__generated__/PasskeysListInternalFragment.graphql";
+import type { PasskeysSettingsViewQuery } from "@/__generated__/PasskeysSettingsViewQuery.graphql";
 import Passkey from "./Passkey";
 import PasskeysController from "./PasskeysController";
 import PasskeysListSkeleton from "./PasskeysListSkeleton";

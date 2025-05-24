@@ -1,12 +1,12 @@
 "use client";
-import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
-import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import Link from "next/link";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
+import links from "@/lib/links";
 import Logo from "../Logo";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthNavigation from "./AuthNavigation";

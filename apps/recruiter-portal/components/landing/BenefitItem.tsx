@@ -2,7 +2,11 @@ export default function BenefitItem({
 	icon,
 	title,
 	description,
-}: { icon: React.ReactNode; title: string; description: string }) {
+}: {
+	icon: React.ReactNode;
+	title: string;
+	description: string;
+}) {
 	return (
 		<div className="flex gap-4">
 			<div className="p-2 bg-primary-50 rounded-lg h-fit">{icon}</div>

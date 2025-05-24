@@ -1,10 +1,6 @@
 "use client";
 
-import type { PasskeyRegistrationMutation } from "@/__generated__/PasskeyRegistrationMutation.graphql";
-import type { PasskeyRegistrationOptionsMutation } from "@/__generated__/PasskeyRegistrationOptionsMutation.graphql";
-import { useTurnstile } from "@/components/TurnstileProvider";
-import { getValidRedirectURL } from "@/lib/redirects";
-import { Alert, Button, Input, addToast } from "@heroui/react";
+import { Alert, addToast, Button, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useSearchParams } from "next/navigation";
@@ -13,6 +9,10 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
+import type { PasskeyRegistrationMutation } from "@/__generated__/PasskeyRegistrationMutation.graphql";
+import type { PasskeyRegistrationOptionsMutation } from "@/__generated__/PasskeyRegistrationOptionsMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
+import { getValidRedirectURL } from "@/lib/redirects";
 import SignupContext from "../SignupContext";
 
 const GeneratePasskeyRegistrationOptionsMutation = graphql`
@@ -75,7 +75,12 @@ const RegisterWithPasskeyMutation = graphql`
 `;
 
 const passkeyRegistrationSchema = z.object({
-	nickname: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75, "Nickname cannot exceed 75 characters")),
+	nickname: z
+		.string()
+		.check(
+			z.minLength(1, "This field is required"),
+			z.maxLength(75, "Nickname cannot exceed 75 characters"),
+		),
 });
 
 export default function PasskeyRegistration() {

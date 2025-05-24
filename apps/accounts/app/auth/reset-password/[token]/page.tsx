@@ -1,15 +1,15 @@
-import type { pagePasswordResetTokenMetadataFragment$key } from "@/__generated__/pagePasswordResetTokenMetadataFragment.graphql";
-import type PasswordResetTokenViewQueryNode from "@/__generated__/pageResetPasswordViewQuery.graphql";
-import type { pageResetPasswordViewQuery } from "@/__generated__/pageResetPasswordViewQuery.graphql";
-import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
+import type { pagePasswordResetTokenMetadataFragment$key } from "@/__generated__/pagePasswordResetTokenMetadataFragment.graphql";
+import type PasswordResetTokenViewQueryNode from "@/__generated__/pageResetPasswordViewQuery.graphql";
+import type { pageResetPasswordViewQuery } from "@/__generated__/pageResetPasswordViewQuery.graphql";
+import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import ResetPasswordViewClientComponent from "./ResetPasswordViewClientComponent";
 
 export const PageResetPasswordViewQuery = graphql`
-  query pageResetPasswordViewQuery($resetToken: String!, $email: String!) {	
+  query pageResetPasswordViewQuery($resetToken: String!, $email: String!) {
 	...pagePasswordResetTokenMetadataFragment @arguments(resetToken: $resetToken, email: $email)
 	...ResetPasswordViewClientComponentFragment @arguments(resetToken: $resetToken, email: $email)
   }
@@ -25,7 +25,7 @@ const PagePasswordResetTokenMetadataFragment = graphql`
 	  }
     ) {
     passwordResetToken(resetToken: $resetToken, email: $email) {
-      __typename	 
+      __typename
     }
   }
 `;

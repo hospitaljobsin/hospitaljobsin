@@ -1,17 +1,17 @@
-import type { RemoveMemberModalFragment$key } from "@/__generated__/RemoveMemberModalFragment.graphql";
-import type { RemoveMemberModalMutation } from "@/__generated__/RemoveMemberModalMutation.graphql";
-import type { RemoveMemberModalOrganizationFragment$key } from "@/__generated__/RemoveMemberModalOrganizationFragment.graphql";
 import {
+	addToast,
 	Button,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { RemoveMemberModalFragment$key } from "@/__generated__/RemoveMemberModalFragment.graphql";
+import type { RemoveMemberModalMutation } from "@/__generated__/RemoveMemberModalMutation.graphql";
+import type { RemoveMemberModalOrganizationFragment$key } from "@/__generated__/RemoveMemberModalOrganizationFragment.graphql";
 
 const RemoveMemberModalFragment = graphql`
     fragment RemoveMemberModalFragment on OrganizationMemberEdge {
@@ -31,12 +31,12 @@ const DeleteMemberMutation = graphql`
   mutation RemoveMemberModalMutation($accountId: ID!, $organizationId: ID!, $connections: [ID!]!) {
     removeOrganizationMember(accountId: $accountId, organizationId: $organizationId) {
         __typename
-        ... on RemoveOrganizationMemberSuccess { 
+        ... on RemoveOrganizationMemberSuccess {
 			organizationMemberEdge {
             	node {
                 	id @deleteEdge(connections: $connections)
             	}
-       		} 
+       		}
 			organization {
 				id
 				...MemberControlsOrganizationFragment

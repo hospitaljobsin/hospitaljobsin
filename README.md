@@ -1,11 +1,13 @@
 # Hospital Jobs
 > *recruitment and job seeking for medical professionals*
 
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+
 ## Codebase Structure
 
 ![Service Flowchart](./.github/assets/service-flowchart.svg)
 
-<!-- 
+<!--
 relevant UML code:
 
 https://www.planttext.com?text=u-LoA2v9B2efpStXvShBJqbLK0eepIbE3SylobPmJ4xEByqhALPII2nM20Xtn501bS3K6PIQN5IQMP9Q15KHnCk5nVW0Jx0qa0P90orGqDMr0t4Lh1HAYrEBGM91MCGmX1nIyrB0FW00
@@ -28,18 +30,21 @@ This project has a proprietary license. Read the entire license [here](./README.
 ## Local development- Quickstart
 
 ### Prerequisites
-| Tool                                                       | Minimum Tested Version  | Description                 |
-|------------------------------------------------------------|-------------------------|-----------------------------|
-| [Docker Engine](https://docs.docker.com/engine/)           | 4.35                    | Container runtime           |
-| [TMUX](https://github.com/tmux/tmux)                       | 3.2a                    | Terminal Multiplexer        |
-| [Tmuxinator](https://github.com/tmuxinator/tmuxinator)     | 3.0                     | TMUX session manager        |
+| Tool                                                           | Minimum Tested Version  | Description                 |
+|----------------------------------------------------------------|-------------------------|-----------------------------|
+| [Docker Engine](https://docs.docker.com/engine/)               | 4.35                    | Container runtime           |
+| [TMUX](https://github.com/tmux/tmux)                           | 3.2a                    | Terminal Multiplexer        |
+| [Tmuxinator](https://github.com/tmuxinator/tmuxinator)         | 3.0                     | TMUX session manager        |
+| [Relay Compiler](https://www.npmjs.com/package/relay-compiler) | 19.0.0                  | GraphQL Codegen Toolkit     |
+| [Pre-Commit](https://pre-commit.com/)                          | 4.2.0                   | Git Hooks Framework         |
 
 Go through the setup guides of the services above, which covers installation of required dependencies,
 and other service specific setup tasks.
 
-To ensure the Relay GraphQL LSP (and compiler) work properly, ensure `relay-compiler` is installed globally:
+Run pre-commit install to set up the git hook scripts
+
 ```bash
-npm i -g relay-compiler
+pre-commit install
 ```
 
 To start all services in development, run the following command:

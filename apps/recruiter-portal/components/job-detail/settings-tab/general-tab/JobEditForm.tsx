@@ -1,18 +1,14 @@
 "use client";
-import type { JobEditFormFragment$key } from "@/__generated__/JobEditFormFragment.graphql";
-import type { JobEditFormMutation } from "@/__generated__/JobEditFormMutation.graphql";
-import { ChipsInput } from "@/components/forms/ChipsInput";
-import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
-import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
-import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import {
 	Accordion,
 	AccordionItem,
+	addToast,
 	Button,
 	Card,
 	CardBody,
 	CardFooter,
+	cn,
 	DatePicker,
 	Input,
 	Kbd,
@@ -20,8 +16,6 @@ import {
 	NumberInput,
 	Radio,
 	RadioGroup,
-	addToast,
-	cn,
 	useDisclosure,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
@@ -42,6 +36,12 @@ import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
+import type { JobEditFormFragment$key } from "@/__generated__/JobEditFormFragment.graphql";
+import type { JobEditFormMutation } from "@/__generated__/JobEditFormMutation.graphql";
+import { ChipsInput } from "@/components/forms/ChipsInput";
+import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
+import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
+import links from "@/lib/links";
 import CancelEditJobModal from "./CancelEditJobModal";
 
 const JobEditFormFragment = graphql`
@@ -64,14 +64,14 @@ const JobEditFormFragment = graphql`
 
 const UpdateJobMutation = graphql`
 mutation JobEditFormMutation(
-    $title: String!, 
-    $description: String!, 
-    $skills: [String!]!, 
+    $title: String!,
+    $description: String!,
+    $skills: [String!]!,
     $location: String,
-    $jobId: ID!, 
-    $minSalary: Int, 
-    $maxSalary: Int,  
-    $minExperience: Int, 
+    $jobId: ID!,
+    $minSalary: Int,
+    $maxSalary: Int,
+    $minExperience: Int,
     $maxExperience: Int,
     $expiresAt: DateTime,
     $workMode: WorkMode,
@@ -80,13 +80,13 @@ mutation JobEditFormMutation(
 ) {
     updateJob(
         title: $title,
-        description: $description, 
-        skills: $skills, 
-        location: $location, 
-        jobId: $jobId, 
-        minSalary: $minSalary, 
-        maxSalary: $maxSalary, 
-        minExperience: $minExperience, 
+        description: $description,
+        skills: $skills,
+        location: $location,
+        jobId: $jobId,
+        minSalary: $minSalary,
+        maxSalary: $maxSalary,
+        minExperience: $minExperience,
         maxExperience: $maxExperience,
         expiresAt: $expiresAt,
         workMode: $workMode,
@@ -118,8 +118,18 @@ mutation JobEditFormMutation(
 `;
 
 const formSchema = z.object({
-	title: z.string().check(z.minLength(1, "This field is required"), z.maxLength(75, "This field must be at most 75 characters long")),
-	description: z.string().check(z.minLength(1, "This field is required"), z.maxLength(2000, "This field must be at most 2000 characters long")),
+	title: z
+		.string()
+		.check(
+			z.minLength(1, "This field is required"),
+			z.maxLength(75, "This field must be at most 75 characters long"),
+		),
+	description: z
+		.string()
+		.check(
+			z.minLength(1, "This field is required"),
+			z.maxLength(2000, "This field must be at most 2000 characters long"),
+		),
 	vacancies: z.nullable(z.number().check(z.positive())),
 
 	skills: z.array(z.object({ value: z.string() })),
@@ -129,8 +139,9 @@ const formSchema = z.object({
 	minExperience: z.nullable(z.number().check(z.positive())),
 	maxExperience: z.nullable(z.number().check(z.positive())),
 	expiresAt: z.nullable(z.instanceof(CalendarDateTime)),
-	jobType: z.nullable(z
-		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])),
+	jobType: z.nullable(
+		z.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"]),
+	),
 	workMode: z.nullable(z.enum(["HYBRID", "OFFICE", "REMOTE"])),
 });
 

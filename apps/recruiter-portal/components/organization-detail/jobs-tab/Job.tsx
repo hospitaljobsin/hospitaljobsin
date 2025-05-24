@@ -1,12 +1,12 @@
-import type { JobFragment$key } from "@/__generated__/JobFragment.graphql";
-import { getRelativeTimeString } from "@/lib/intl";
-import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
 import { EyeIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { JobFragment$key } from "@/__generated__/JobFragment.graphql";
+import { getRelativeTimeString } from "@/lib/intl";
+import links from "@/lib/links";
 
 export const JobFragment = graphql`
   fragment JobFragment on Job {

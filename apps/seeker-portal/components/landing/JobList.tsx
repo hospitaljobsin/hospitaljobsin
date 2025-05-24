@@ -1,12 +1,12 @@
-import type { JobListFragment$key } from "@/__generated__/JobListFragment.graphql";
-import type { JobListInternalFragment$key } from "@/__generated__/JobListInternalFragment.graphql";
-import type { CoordinatesInput } from "@/__generated__/JobListRefetchQuery.graphql";
-import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
 import { Card, CardBody } from "@heroui/react";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { JobListFragment$key } from "@/__generated__/JobListFragment.graphql";
+import type { JobListInternalFragment$key } from "@/__generated__/JobListInternalFragment.graphql";
+import type { CoordinatesInput } from "@/__generated__/JobListRefetchQuery.graphql";
+import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
 import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
 
@@ -25,7 +25,7 @@ fragment JobListFragment on Query @argumentDefinitions(
 
 const JobListInternalFragment = graphql`
   fragment JobListInternalFragment on Query
-  @refetchable(queryName: "JobListRefetchQuery") 
+  @refetchable(queryName: "JobListRefetchQuery")
   @argumentDefinitions(
     cursor: { type: "ID" }
 	proximityKm: { type: "Float", defaultValue: null }

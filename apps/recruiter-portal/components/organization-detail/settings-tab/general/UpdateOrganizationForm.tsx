@@ -1,16 +1,11 @@
-import type { UpdateOrganizationFormFragment$key } from "@/__generated__/UpdateOrganizationFormFragment.graphql";
-import type { UpdateOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql";
-import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from "@/__generated__/UpdateOrganizationFormMutation.graphql";
-import links from "@/lib/links";
-import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next";
 import {
+	addToast,
 	Button,
 	Card,
 	CardBody,
 	CardFooter,
 	Input,
-	addToast,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import Image from "next/image";
@@ -18,6 +13,11 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
+import type { UpdateOrganizationFormFragment$key } from "@/__generated__/UpdateOrganizationFormFragment.graphql";
+import type { UpdateOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql";
+import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from "@/__generated__/UpdateOrganizationFormMutation.graphql";
+import links from "@/lib/links";
+import { uploadFileToS3 } from "@/lib/presignedUrl";
 
 const UpdateOrganizationFormMutation = graphql`
 mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $description: String) {
@@ -41,7 +41,7 @@ mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $s
         }
 
 		... on OrganizationAuthorizationError {
-			__typename			
+			__typename
 		}
 	}
 }
@@ -72,8 +72,10 @@ type Props = {
 };
 
 const formSchema = z.object({
-	name: z.string().check(z.minLength(1, { error: "Organization name is required" })),
-	slug: z.string().check(z.minLength(1, {error: "Slug is required"})),
+	name: z
+		.string()
+		.check(z.minLength(1, { error: "Organization name is required" })),
+	slug: z.string().check(z.minLength(1, { error: "Slug is required" })),
 	website: z.nullable(z.optional(z.url({ error: "Invalid URL" }))),
 	description: z.union([
 		z.nullable(z.optional(z.string().check(z.maxLength(300)))),

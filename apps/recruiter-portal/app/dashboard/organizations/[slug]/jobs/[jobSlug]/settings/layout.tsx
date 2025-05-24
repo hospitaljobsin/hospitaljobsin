@@ -1,10 +1,10 @@
-
 import SettingsSidebarClientComponent from "./SettingsSidebarClientComponent";
 
 export default function JobSettingsLayout({
 	children,
-}: { children: React.ReactNode }) {
-
+}: {
+	children: React.ReactNode;
+}) {
 	return (
 		<>
 			<div className="relative w-full h-full">

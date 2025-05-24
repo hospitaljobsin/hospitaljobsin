@@ -1,18 +1,14 @@
 "use client";
-import { TurnstileProvider } from "@/components/TurnstileProvider";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
-import { ThemeProvider } from "next-themes";
 import { useRouter } from "next/navigation";
+import { ThemeProvider } from "next-themes";
 import { useState } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
+import { TurnstileProvider } from "@/components/TurnstileProvider";
+import { getCurrentEnvironment } from "@/lib/relay/environments";
 
-export default function Providers({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export default function Providers({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
 	const [environment] = useState(() => {
 		return getCurrentEnvironment();

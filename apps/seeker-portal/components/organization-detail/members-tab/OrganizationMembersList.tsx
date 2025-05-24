@@ -1,11 +1,10 @@
+import { useEffect, useRef } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
-
+import { graphql } from "relay-runtime";
+import invariant from "tiny-invariant";
 import type { OrganizationMembersListFragment$key } from "@/__generated__/OrganizationMembersListFragment.graphql";
 import type { OrganizationMembersListInternalFragment$key } from "@/__generated__/OrganizationMembersListInternalFragment.graphql";
 import type { pageOrganizationDetailViewQuery } from "@/__generated__/pageOrganizationDetailViewQuery.graphql";
-import { useEffect, useRef } from "react";
-import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 import Member from "./Member";
 import OrganizationMembersListSkeleton from "./OrganizationMembersListSkeleton";
 

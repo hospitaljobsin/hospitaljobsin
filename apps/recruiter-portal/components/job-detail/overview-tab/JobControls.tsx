@@ -1,8 +1,8 @@
-import type { JobControlsFragment$key } from "@/__generated__/JobControlsFragment.graphql";
 import { Button, useDisclosure } from "@heroui/react";
 import { BookPlus, BookX } from "lucide-react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { JobControlsFragment$key } from "@/__generated__/JobControlsFragment.graphql";
 import PublishJobModal from "./PublishJobModal";
 import UnpublishJobModal from "./UnpublishJobModal";
 

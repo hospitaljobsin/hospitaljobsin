@@ -1,10 +1,10 @@
-import type { OrganizationFragment$key } from "@/__generated__/OrganizationFragment.graphql";
-import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import { Card, CardHeader } from "@heroui/react";
 import Image from "next/image";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { OrganizationFragment$key } from "@/__generated__/OrganizationFragment.graphql";
+import links from "@/lib/links";
 
 export const OrganizationFragment = graphql`
   fragment OrganizationFragment on Organization {

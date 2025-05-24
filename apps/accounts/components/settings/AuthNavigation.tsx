@@ -1,5 +1,4 @@
 "use client";
-import type { AuthNavigationFragment$key } from "@/__generated__/AuthNavigationFragment.graphql";
 import {
 	Avatar,
 	Button,
@@ -14,11 +13,12 @@ import {
 	DropdownSection,
 	DropdownTrigger,
 	NavbarItem,
-	useDisclosure
+	useDisclosure,
 } from "@heroui/react";
 import { LogOutIcon } from "lucide-react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { AuthNavigationFragment$key } from "@/__generated__/AuthNavigationFragment.graphql";
 import LogoutModal from "./LogoutModal";
 
 const AuthNavigationFragment = graphql`
@@ -127,13 +127,13 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						<DropdownSection showDivider>
 							<DropdownItem key="account-info">
 								<div className="flex flex-row items-center gap-4 w-full">
-								<Avatar
-									src={data.avatarUrl}
-									name={data.fullName}
-									showFallback
-									radius="full"
-									size="sm"
-								/>
+									<Avatar
+										src={data.avatarUrl}
+										name={data.fullName}
+										showFallback
+										radius="full"
+										size="sm"
+									/>
 									<div className="flex flex-col gap-1 items-start">
 										<p className="text-tiny">Signed in as</p>
 										<p className="truncate max-w-48 text-medium">

@@ -1,5 +1,3 @@
-import type { DeleteSessionModalFragment$key } from "@/__generated__/DeleteSessionModalFragment.graphql";
-import type { DeleteSessionModalMutation } from "@/__generated__/DeleteSessionModalMutation.graphql";
 import {
 	Button,
 	Modal,
@@ -10,6 +8,8 @@ import {
 } from "@heroui/react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { DeleteSessionModalFragment$key } from "@/__generated__/DeleteSessionModalFragment.graphql";
+import type { DeleteSessionModalMutation } from "@/__generated__/DeleteSessionModalMutation.graphql";
 
 const DeleteSessionModalFragment = graphql`
     fragment DeleteSessionModalFragment on Session {

@@ -30,6 +30,7 @@ def remove_color_message(
     `color_message`, but we don't need it. This processor
     removes the key from the event dict if it exists.
     """
+
     event_dict.pop("color_message", None)
     return event_dict
 

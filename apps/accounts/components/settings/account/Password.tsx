@@ -1,5 +1,3 @@
-import type { PasswordFragment$key } from "@/__generated__/PasswordFragment.graphql";
-import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import {
 	Button,
 	Card,
@@ -11,6 +9,8 @@ import {
 import { Edit, TrashIcon } from "lucide-react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { PasswordFragment$key } from "@/__generated__/PasswordFragment.graphql";
+import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import DeletePasswordModal from "./DeletePasswordModal";
 import UpdatePasswordModal from "./UpdatePasswordModal";
 
@@ -24,7 +24,9 @@ const PasswordFragment = graphql`
 
 export default function Password({
 	rootQuery,
-}: { rootQuery: PasswordFragment$key }) {
+}: {
+	rootQuery: PasswordFragment$key;
+}) {
 	const data = useFragment(PasswordFragment, rootQuery);
 	const {
 		isOpen: isUpdatePasswordOpen,

@@ -1,14 +1,9 @@
 "use client";
 
-import type { LoginFormGenerateAuthenticationOptionsMutation } from "@/__generated__/LoginFormGenerateAuthenticationOptionsMutation.graphql";
-import type { LoginFormPasskeyMutation as LoginFormPasskeyMutationType } from "@/__generated__/LoginFormPasskeyMutation.graphql";
-import type { LoginFormPasswordMutation as LoginFormPasswordMutationType } from "@/__generated__/LoginFormPasswordMutation.graphql";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
-import { getValidRedirectURL } from "@/lib/redirects";
 import { useRouter } from "@bprogress/next";
 import {
 	Alert,
+	addToast,
 	Button,
 	Card,
 	CardBody,
@@ -16,7 +11,6 @@ import {
 	CardHeader,
 	Divider,
 	Input,
-	addToast,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Google } from "@lobehub/icons";
@@ -28,6 +22,12 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
+import type { LoginFormGenerateAuthenticationOptionsMutation } from "@/__generated__/LoginFormGenerateAuthenticationOptionsMutation.graphql";
+import type { LoginFormPasskeyMutation as LoginFormPasskeyMutationType } from "@/__generated__/LoginFormPasskeyMutation.graphql";
+import type { LoginFormPasswordMutation as LoginFormPasswordMutationType } from "@/__generated__/LoginFormPasswordMutation.graphql";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
+import { getValidRedirectURL } from "@/lib/redirects";
 import { useTurnstile } from "../TurnstileProvider";
 
 const LoginFormPasswordMutation = graphql`
@@ -91,7 +91,7 @@ const LoginFormPasskeyMutation = graphql`
 
 const loginSchema = z.object({
 	email: z.string().check(z.minLength(1, "This field is required"), z.email()),
-	password:z.string().check(z.minLength(1, "This field is required")),
+	password: z.string().check(z.minLength(1, "This field is required")),
 });
 
 export default function LoginForm() {

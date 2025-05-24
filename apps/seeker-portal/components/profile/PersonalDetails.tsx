@@ -1,7 +1,7 @@
-import type { PersonalDetailsFragment$key } from "@/__generated__/PersonalDetailsFragment.graphql";
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { EditIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
+import type { PersonalDetailsFragment$key } from "@/__generated__/PersonalDetailsFragment.graphql";
 
 const PersonalDetailsFragment = graphql`
   fragment PersonalDetailsFragment on Account {

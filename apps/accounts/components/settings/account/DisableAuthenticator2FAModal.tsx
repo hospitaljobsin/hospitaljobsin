@@ -1,15 +1,15 @@
-import type { DisableAuthenticator2FAModalMutation } from "@/__generated__/DisableAuthenticator2FAModalMutation.graphql";
 import {
+	addToast,
 	Button,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	addToast,
 } from "@heroui/react";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { DisableAuthenticator2FAModalMutation } from "@/__generated__/DisableAuthenticator2FAModalMutation.graphql";
 
 const DisableAuthenticator2FAMutation = graphql`
   mutation DisableAuthenticator2FAModalMutation {

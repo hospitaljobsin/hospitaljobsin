@@ -1,5 +1,3 @@
-import type { OrganizationStatisticsFragment$key } from "@/__generated__/OrganizationStatisticsFragment.graphql";
-import { dateFormat, dateTimeFormat } from "@/lib/intl";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { EyeIcon } from "lucide-react";
 import React from "react";
@@ -15,6 +13,8 @@ import {
 	YAxis,
 } from "recharts";
 import { graphql } from "relay-runtime";
+import type { OrganizationStatisticsFragment$key } from "@/__generated__/OrganizationStatisticsFragment.graphql";
+import { dateFormat, dateTimeFormat } from "@/lib/intl";
 
 const OrganizationStatisticsFragment = graphql`
 fragment OrganizationStatisticsFragment on Organization {

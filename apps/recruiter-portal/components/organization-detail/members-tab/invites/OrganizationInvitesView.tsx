@@ -1,8 +1,8 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
-import type { OrganizationInvitesViewFragment$key } from "@/__generated__/OrganizationInvitesViewFragment.graphql";
 import { useState } from "react";
 import { graphql, useFragment } from "react-relay";
+import type { OrganizationInvitesViewFragment$key } from "@/__generated__/OrganizationInvitesViewFragment.graphql";
 import OrganizationInvitesController from "./OrganizationInvitesController";
 import OrganizationInvitesList from "./OrganizationInvitesList";
 

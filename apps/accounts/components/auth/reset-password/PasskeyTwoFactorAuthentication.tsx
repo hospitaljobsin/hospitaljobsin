@@ -1,18 +1,18 @@
-import type { PasskeyTwoFactorAuthenticationGenerateOptionsMutation } from "@/__generated__/PasskeyTwoFactorAuthenticationGenerateOptionsMutation.graphql";
-import type { PasskeyTwoFactorAuthenticationResetPasswordMutation as PasskeyTwoFactorAuthenticationResetPasswordMutationType } from "@/__generated__/PasskeyTwoFactorAuthenticationResetPasswordMutation.graphql";
-import { useTurnstile } from "@/components/TurnstileProvider";
 import {
+	addToast,
 	Button,
 	Card,
 	CardBody,
 	CardHeader,
 	Input,
-	addToast,
 } from "@heroui/react";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { Fingerprint } from "lucide-react";
 import { useState } from "react";
 import { graphql, useMutation } from "react-relay";
+import type { PasskeyTwoFactorAuthenticationGenerateOptionsMutation } from "@/__generated__/PasskeyTwoFactorAuthenticationGenerateOptionsMutation.graphql";
+import type { PasskeyTwoFactorAuthenticationResetPasswordMutation as PasskeyTwoFactorAuthenticationResetPasswordMutationType } from "@/__generated__/PasskeyTwoFactorAuthenticationResetPasswordMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
 
 const GenerateAuthenticationOptionsMutation = graphql`
   mutation PasskeyTwoFactorAuthenticationGenerateOptionsMutation($captchaToken: String!) {

@@ -1,4 +1,3 @@
-
 import HeaderClientComponent from "../../components/layout/HeaderClientComponent";
 
 export default function LandingLayout({

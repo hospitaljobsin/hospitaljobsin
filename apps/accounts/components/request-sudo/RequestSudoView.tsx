@@ -1,11 +1,5 @@
 "use client";
 
-import type {
-	AuthProvider,
-	RequestSudoViewFragment$key,
-	TwoFactorProvider,
-} from "@/__generated__/RequestSudoViewFragment.graphql";
-import { env } from "@/lib/env/client";
 import { useRouter } from "@bprogress/next";
 import {
 	Alert,
@@ -23,6 +17,12 @@ import { useEffect, useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import type {
+	AuthProvider,
+	RequestSudoViewFragment$key,
+	TwoFactorProvider,
+} from "@/__generated__/RequestSudoViewFragment.graphql";
+import { env } from "@/lib/env/client";
 import { getValidSudoModeRedirectURL } from "../../lib/redirects";
 import PasskeyAuthentication from "./PasskeyAuthentication";
 import PasswordAuthentication from "./PasswordAuthentication";
@@ -82,7 +82,9 @@ function getDefaultAuthMethod(
 
 export default function RequestSudoView({
 	rootQuery,
-}: { rootQuery: RequestSudoViewFragment$key }) {
+}: {
+	rootQuery: RequestSudoViewFragment$key;
+}) {
 	const data = useFragment(RequestSudoViewFragment, rootQuery);
 
 	invariant(data.viewer.__typename === "Account", "Account expected");

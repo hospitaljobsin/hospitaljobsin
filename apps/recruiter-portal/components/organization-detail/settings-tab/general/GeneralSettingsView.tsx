@@ -1,10 +1,10 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
-import type { GeneralSettingsViewFragment$key } from "@/__generated__/GeneralSettingsViewFragment.graphql";
-import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import { Button, Card, CardBody, Divider, useDisclosure } from "@heroui/react";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import type { GeneralSettingsViewFragment$key } from "@/__generated__/GeneralSettingsViewFragment.graphql";
+import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import DeleteOrganizationModal from "./DeleteOrganizationModal";
 import UpdateOrganizationForm from "./UpdateOrganizationForm";
 
@@ -29,7 +29,7 @@ const GeneralSettingsViewFragment = graphql`
 				...DeleteOrganizationModalAccountFragment
 			}
 		}
-        
+
   }
 `;
 

@@ -1,4 +1,3 @@
-import type { UpdatePersonalDetailsFormFragment$key } from "@/__generated__/UpdatePersonalDetailsFormFragment.graphql";
 import {
 	Button,
 	Card,
@@ -14,6 +13,7 @@ import { CalendarDate, parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
+import type { UpdatePersonalDetailsFormFragment$key } from "@/__generated__/UpdatePersonalDetailsFormFragment.graphql";
 
 const UpdatePersonalDetailsFormMutation = graphql`
 mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $address: AddressInput!, $maritalStatus: MaritalStatusType, $category: String) {
@@ -66,7 +66,10 @@ const formSchema = z.object({
 		state: z.nullable(z.string()),
 	}),
 	maritalStatus: z.nullable(z.enum(["MARRIED", "SINGLE"])),
-	category: z.union([z.nullable(z.string().check(z.maxLength(25))), z.literal("")]),
+	category: z.union([
+		z.nullable(z.string().check(z.maxLength(25))),
+		z.literal(""),
+	]),
 });
 
 export default function UpdatePersonalDetailsForm({

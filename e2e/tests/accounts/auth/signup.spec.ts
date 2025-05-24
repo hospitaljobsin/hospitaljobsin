@@ -1,9 +1,9 @@
+import type { PlaywrightTestArgs } from "@playwright/test";
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { EMAIL_VERIFICATION_TOKEN_COOLDOWN } from "@/tests/utils/constants";
 import type { Email } from "@/tests/utils/mailcatcher";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
-import type { PlaywrightTestArgs } from "@playwright/test";
 
 async function findVerificationCode({
 	emailMessage,
@@ -527,10 +527,11 @@ test.describe("Sign Up Page", () => {
 });
 
 authTest.describe("Sign Up Page Authentication Redirects", () => {
-	authTest("should redirect to home page when already authenticated", async ({
-		page,
-	}) => {
-		await page.goto("http://localhost:5002/auth/signup");
-		await page.waitForURL("http://localhost:5000/");
-	});
+	authTest(
+		"should redirect to home page when already authenticated",
+		async ({ page }) => {
+			await page.goto("http://localhost:5002/auth/signup");
+			await page.waitForURL("http://localhost:5000/");
+		},
+	);
 });

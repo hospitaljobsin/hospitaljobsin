@@ -1,14 +1,14 @@
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import type { pageJobApplicantsMetadataFragment$key } from "@/__generated__/pageJobApplicantsMetadataFragment.graphql";
 import type JobApplicantsViewQueryNode from "@/__generated__/pageJobApplicantsViewQuery.graphql";
 import type { pageJobApplicantsViewQuery } from "@/__generated__/pageJobApplicantsViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
-import { notFound } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import JobApplicantsViewClientComponent from "./JobApplicantsViewClientComponent";
 
 export const PageJobApplicantsViewQuery = graphql`
-  query pageJobApplicantsViewQuery($slug: String!, $jobSlug: String!, $searchTerm: String, $status: JobApplicantStatus, $showStatus: Boolean = true) {	
+  query pageJobApplicantsViewQuery($slug: String!, $jobSlug: String!, $searchTerm: String, $status: JobApplicantStatus, $showStatus: Boolean = true) {
     ...pageJobApplicantsMetadataFragment @arguments(slug: $slug, jobSlug: $jobSlug)
     ...JobApplicantsViewClientComponentFragment @arguments(slug: $slug, jobSlug: $jobSlug, searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
   }
@@ -33,11 +33,11 @@ const PageJobApplicantsMetadataFragment = graphql`
 			... on Job {
 				title
 			}
-			
+
 			}
 		}
 	}
-    
+
   }
 `;
 

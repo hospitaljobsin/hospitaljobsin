@@ -1,6 +1,5 @@
-import TwoFactorRecoveryCodeForm from "@/components/auth/two-factor/TwoFactorRecoveryCodeForm";
-
 import type { Metadata } from "next";
+import TwoFactorRecoveryCodeForm from "@/components/auth/two-factor/TwoFactorRecoveryCodeForm";
 
 export const metadata: Metadata = {
 	title: "Two Factor Recovery",

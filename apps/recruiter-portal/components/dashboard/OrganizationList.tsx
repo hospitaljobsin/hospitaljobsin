@@ -1,13 +1,13 @@
-import type { OrganizationListFragment$key } from "@/__generated__/OrganizationListFragment.graphql";
-import type { OrganizationListInternalFragment$key } from "@/__generated__/OrganizationListInternalFragment.graphql";
-import type { pageDashboardQuery } from "@/__generated__/pageDashboardQuery.graphql";
-import links from "@/lib/links";
 import { Button, Link } from "@heroui/react";
 import { Building, PlusIcon } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import type { OrganizationListFragment$key } from "@/__generated__/OrganizationListFragment.graphql";
+import type { OrganizationListInternalFragment$key } from "@/__generated__/OrganizationListInternalFragment.graphql";
+import type { pageDashboardQuery } from "@/__generated__/pageDashboardQuery.graphql";
+import links from "@/lib/links";
 import Organization from "./Organization";
 import OrganizationListSkeleton from "./OrganizationListSkeleton";
 

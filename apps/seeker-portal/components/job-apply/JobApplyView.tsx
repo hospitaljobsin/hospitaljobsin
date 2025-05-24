@@ -1,6 +1,6 @@
-import type { JobApplyViewFragment$key } from "@/__generated__/JobApplyViewFragment.graphql";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import type { JobApplyViewFragment$key } from "@/__generated__/JobApplyViewFragment.graphql";
 import JobApplyForm from "./JobApplyForm";
 
 const JobApplyViewFragment = graphql`
@@ -16,7 +16,7 @@ const JobApplyViewFragment = graphql`
             ... on Job {
               ...JobApplyFormFragment
             }
-          
+
           }
         }
       }

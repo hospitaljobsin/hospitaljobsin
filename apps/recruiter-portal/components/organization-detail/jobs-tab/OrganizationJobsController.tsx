@@ -1,11 +1,11 @@
-import type { OrganizationJobsControllerFragment$key } from "@/__generated__/OrganizationJobsControllerFragment.graphql";
-import links from "@/lib/links";
 import { Button, Input, Link } from "@heroui/react";
 import { BriefcaseBusiness, Search } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import type { OrganizationJobsControllerFragment$key } from "@/__generated__/OrganizationJobsControllerFragment.graphql";
+import links from "@/lib/links";
 
 interface OrganizationJobsControllerProps {
 	searchTerm: string | null;

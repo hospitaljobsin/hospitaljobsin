@@ -1,9 +1,9 @@
 "use client";
-import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
-import LandingViewSkeleton from "@/components/landing/LandingViewSkeleton";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
+import LandingViewSkeleton from "@/components/landing/LandingViewSkeleton";
 import LandingClientComponent from "./LandingClientComponent";
 
 export const LandingPageQuery = graphql`

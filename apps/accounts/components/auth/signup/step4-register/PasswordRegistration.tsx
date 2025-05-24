@@ -1,8 +1,5 @@
 "use client";
 
-import type { PasswordRegistrationMutation as PasswordRegistrationMutationType } from "@/__generated__/PasswordRegistrationMutation.graphql";
-import { useTurnstile } from "@/components/TurnstileProvider";
-import { getValidRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
@@ -12,14 +9,16 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
+import type { PasswordRegistrationMutation as PasswordRegistrationMutationType } from "@/__generated__/PasswordRegistrationMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
+import { getValidRedirectURL } from "@/lib/redirects";
 import SignupContext from "../SignupContext";
 
 const passwordRegistrationSchema = z
 	.object({
-		password: z
-			.string()
-			.check(z.minLength(1, "This field is required"),
-				z.minLength(8, "Password must be at least 8 characters long."),
+		password: z.string().check(
+			z.minLength(1, "This field is required"),
+			z.minLength(8, "Password must be at least 8 characters long."),
 			z.refine((password) => /[a-z]/.test(password), {
 				message: "Password must contain at least one lowercase letter.",
 			}),
@@ -32,15 +31,16 @@ const passwordRegistrationSchema = z
 			z.refine((password) => /[!@#$%^&*()\-_=+]/.test(password), {
 				message:
 					"Password must contain at least one special character (!@#$%^&*()-_=+).",
-			})
+			}),
 		),
 		confirmPassword: z.string().check(z.minLength(1, "This field is required")),
 	})
 	.check(
-	z.refine((data) => data.password === data.confirmPassword, {
-		message: "Passwords don't match",
-		path: ["confirmPassword"],
-	}));
+		z.refine((data) => data.password === data.confirmPassword, {
+			message: "Passwords don't match",
+			path: ["confirmPassword"],
+		}),
+	);
 
 const RegisterWithPasswordMutation = graphql`
   mutation PasswordRegistrationMutation(

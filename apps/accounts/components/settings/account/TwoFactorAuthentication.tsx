@@ -1,6 +1,3 @@
-import type { TwoFactorAuthenticationFragment$key } from "@/__generated__/TwoFactorAuthenticationFragment.graphql";
-import type { TwoFactorAuthenticationGenerate2FAChallengeMutation } from "@/__generated__/TwoFactorAuthenticationGenerate2FAChallengeMutation.graphql";
-import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import {
 	Button,
 	Card,
@@ -13,6 +10,9 @@ import { RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { TwoFactorAuthenticationFragment$key } from "@/__generated__/TwoFactorAuthenticationFragment.graphql";
+import type { TwoFactorAuthenticationGenerate2FAChallengeMutation } from "@/__generated__/TwoFactorAuthenticationGenerate2FAChallengeMutation.graphql";
+import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import DisableAuthenticator2FAModal from "./DisableAuthenticator2FAModal";
 import EnableAuthenticator2FAModal from "./EnableAuthenticator2FAModal";
 import RegenerateRecoveryCodesModal from "./RegenerateRecoveryCodesModal";
@@ -39,7 +39,9 @@ const Generate2FAChallengeMutation = graphql`
 
 export default function TwoFactorAuthentication({
 	rootQuery,
-}: { rootQuery: TwoFactorAuthenticationFragment$key }) {
+}: {
+	rootQuery: TwoFactorAuthenticationFragment$key;
+}) {
 	const data = useFragment(TwoFactorAuthenticationFragment, rootQuery);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<TwoFactorAuthenticationGenerate2FAChallengeMutation>(

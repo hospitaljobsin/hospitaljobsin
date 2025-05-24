@@ -1,10 +1,10 @@
 "use client";
-import type { LandingClientComponentFragment$key } from "@/__generated__/LandingClientComponentFragment.graphql";
-import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
-import LandingView from "@/components/landing/LandingView";
 import type { PreloadedQuery } from "react-relay";
 import { useFragment, usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
+import type { LandingClientComponentFragment$key } from "@/__generated__/LandingClientComponentFragment.graphql";
+import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
+import LandingView from "@/components/landing/LandingView";
 import { LandingPageQuery } from "./page";
 
 const LandingClientComponentFragment = graphql`
@@ -19,7 +19,9 @@ const LandingClientComponentFragment = graphql`
 
 export default function LandingClientComponent({
 	queryReference,
-}: { queryReference: PreloadedQuery<pageLandingQuery> }) {
+}: {
+	queryReference: PreloadedQuery<pageLandingQuery>;
+}) {
 	const data = usePreloadedQuery(LandingPageQuery, queryReference);
 	const query = useFragment<LandingClientComponentFragment$key>(
 		LandingClientComponentFragment,
