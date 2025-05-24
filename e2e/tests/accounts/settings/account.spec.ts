@@ -34,7 +34,7 @@ authTest.describe("Account Settings Page", () => {
 		await page.getByRole("button", { name: /edit/i }).click();
 
 		// Fill new full name
-		const newName = `Tester New`;
+		const newName = "Tester New";
 		await page.getByLabel("Full Name").fill(newName);
 		await page.getByRole("button", { name: /save changes/i }).click();
 
@@ -56,7 +56,7 @@ authTest.describe("Account Settings Page", () => {
 			await page.getByRole("button", { name: /update password/i }).click();
 
 			// Fill new full name
-			const newPassword = `NewPassword123!`;
+			const newPassword = "NewPassword123!";
 			await page
 				.getByRole("textbox", { name: "New Password" })
 				.first()
