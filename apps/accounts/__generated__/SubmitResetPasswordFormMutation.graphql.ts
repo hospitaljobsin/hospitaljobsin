@@ -38,7 +38,7 @@ export type SubmitResetPasswordFormMutation = {
 	variables: SubmitResetPasswordFormMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			defaultValue: null,
 			kind: "LocalArgument",

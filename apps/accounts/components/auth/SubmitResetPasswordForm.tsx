@@ -1,5 +1,7 @@
 "use client";
 
+import type { SubmitResetPasswordFormMutation as SubmitResetPasswordFormMutationType } from "@/__generated__/SubmitResetPasswordFormMutation.graphql";
+import links from "@/lib/links";
 import {
 	Button,
 	Card,
@@ -16,8 +18,6 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
-import type { SubmitResetPasswordFormMutation as SubmitResetPasswordFormMutationType } from "@/__generated__/SubmitResetPasswordFormMutation.graphql";
-import links from "@/lib/links";
 import { useTurnstile } from "../TurnstileProvider";
 
 const SubmitResetPasswordFormMutation = graphql`
