@@ -6,6 +6,9 @@ import path from 'path';
 
 export { expect } from '@playwright/test';
 
+// TODO: break the testAccounts fixture into separate fixtures for each account type
+// this ensures we don't unnecessarily create accounts that are not used in the test
+
 type WorkerFixtures = {
   testAccounts: {
     passwordAccount: TestAccount;
