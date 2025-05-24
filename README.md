@@ -2,7 +2,7 @@
 > *recruitment and job seeking for medical professionals*
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
-![check-runs](https://img.shields.io/github/check-runs/aryaniyaps/medical-job-board/main)
+[![check-runs](https://img.shields.io/github/check-runs/aryaniyaps/medical-job-board/main?logo=ticktick&logoColor=yellow)](https://github.com/aryaniyaps/medical-job-board/actions)
 
 ## Codebase Structure
 

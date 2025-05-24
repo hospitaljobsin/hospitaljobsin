@@ -7,8 +7,7 @@
 	"useImportTypeSyntax": true,
 	"persistConfig": {
 		"url": "http://localhost:2999",
-		"includeQueryText": false,
-		"concurrency": 1
+		"includeQueryText": false
 	},
 	"featureFlags": {
 		"actor_change_support": {
