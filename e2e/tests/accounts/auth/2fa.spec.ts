@@ -6,7 +6,7 @@ import {
 } from "@/tests/utils/constants";
 
 test.describe("2FA Page", () => {
-	test.beforeEach(async ({ page, testAccounts }) => {
+	test.beforeEach(async ({ page, twoFactorAuth }) => {
 		// Navigate to login page
 		await page.goto("http://localhost:5002/auth/login");
 
@@ -14,7 +14,7 @@ test.describe("2FA Page", () => {
 		await waitForCaptcha({ page });
 
 		// Fill form with credentials that require 2FA
-		await page.getByLabel("Email Address").fill(testAccounts.twoFactorAccount.email);
+		await page.getByLabel("Email Address").fill(twoFactorAuth.account.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");

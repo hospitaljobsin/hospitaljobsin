@@ -109,9 +109,9 @@ test.describe("Login Page", () => {
 		).toHaveAttribute("type", "password");
 	});
 
-	test("should handle invalid credentials", async ({ page, testAccounts }) => {
+	test("should handle invalid credentials", async ({ page, passwordAuth }) => {
 		// Fill form with invalid credentials
-		await page.getByLabel("Email Address").fill(testAccounts.passwordAccount.email);
+		await page.getByLabel("Email Address").fill(passwordAuth.account.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("invalidpassword");
@@ -154,9 +154,9 @@ test.describe("Login Page", () => {
 		await expect(page).toHaveURL(/\/auth\/reset-password/);
 	});
 
-	test("should handle successful email-password login", async ({ page, testAccounts }) => {
+	test("should handle successful email-password login", async ({ page, passwordAuth }) => {
 		// Fill form with valid credentials
-		await page.getByLabel("Email Address").fill(testAccounts.passwordAccount.email);
+		await page.getByLabel("Email Address").fill(passwordAuth.account.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -165,9 +165,9 @@ test.describe("Login Page", () => {
 		await page.waitForURL("http://localhost:5000/");
 	});
 
-	test("should redirect on 2FA requirement", async ({ page, testAccounts }) => {
+	test("should redirect on 2FA requirement", async ({ page, twoFactorAuth }) => {
 		// Fill form with credentials that require 2FA
-		await page.getByLabel("Email Address").fill( testAccounts.twoFactorAccount.email);
+		await page.getByLabel("Email Address").fill( twoFactorAuth.account.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -181,7 +181,7 @@ test.describe("Login Page", () => {
 		page,
 		context,
 		browserName,
-		testAccounts
+		webauthnAuth
 	}) => {
 		test.skip(browserName !== "chromium", "Only supported in Chromium");
 		test.setTimeout(30_000);
@@ -204,7 +204,7 @@ test.describe("Login Page", () => {
 			},
 		);
 
-		const webauthnCredential = testAccounts.webauthnAccount.webauthnCredentials[0];
+		const webauthnCredential = webauthnAuth.account.webauthnCredentials[0];
 		// Register a mock credential
 		await client.send("WebAuthn.addCredential", {
 			authenticatorId,
@@ -340,10 +340,10 @@ test.describe("Login Page", () => {
 	});
 
 	test("should handle invalid authentication provider error", async ({
-		page, testAccounts
+		page, webauthnAuth
 	}) => {
 		// Fill form
-		await page.getByLabel("Email Address").fill( testAccounts.webauthnAccount.email);
+		await page.getByLabel("Email Address").fill( webauthnAuth.account.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");

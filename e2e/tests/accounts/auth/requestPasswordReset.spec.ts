@@ -67,9 +67,9 @@ test.describe("Request Password Reset Page", () => {
 
 	test("should successfully send password reset email", async ({
 		page,
-		request, testAccounts
+		request, passwordAuth
 	}) => {
-		const emailAddress = testAccounts.passwordAccount.email;
+		const emailAddress = passwordAuth.account.email;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -144,11 +144,11 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 
 	test("should handle cooldown on multiple password reset requests", async ({
 		page,
-		request, testAccounts
+		request, passwordAuth
 	}) => {
 		// increase timeout to incorporate cooldown
 		test.setTimeout(45_000);
-		const emailAddress = testAccounts.passwordAccount.email;
+		const emailAddress = passwordAuth.account.email;
 
 		// First password reset request
 

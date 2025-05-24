@@ -9,7 +9,7 @@ import {
 
 
 test.describe("2FA Recovery Page", () => {
-	test.beforeEach(async ({ page, testAccounts }) => {
+	test.beforeEach(async ({ page, twoFactorAuth }) => {
 		// Navigate to login page
 		await page.goto("http://localhost:5002/auth/login");
 
@@ -17,7 +17,7 @@ test.describe("2FA Recovery Page", () => {
 		await waitForCaptcha({ page });
 
 		// Fill form with credentials that require 2FA
-		await page.getByLabel("Email Address").fill(testAccounts.twoFactorAccount.email);
+		await page.getByLabel("Email Address").fill(twoFactorAuth.account.email);
 		await page
 			.getByRole("textbox", { name: "Password Password" })
 			.fill("Password123!");
@@ -114,8 +114,8 @@ test.describe("2FA Recovery Page", () => {
 		).toBeVisible();
 	});
 
-	test("should successfully verify valid recovery code", async ({ page, testAccounts }) => {
-		await page.getByLabel("Recovery Code").fill(testAccounts.twoFactorAccount.recoveryCodes[0]);
+	test("should successfully verify valid recovery code", async ({ page, twoFactorAuth }) => {
+		await page.getByLabel("Recovery Code").fill(twoFactorAuth.account.recoveryCodes[0]);
 		await page.getByRole("button", { name: "Verify Code" }).click();
 
 		// Should redirect to home page

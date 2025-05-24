@@ -7,13 +7,13 @@ authTest.describe("Account Settings Page", () => {
         await page.goto("http://localhost:5002/settings");
     });
 
-    authTest("should display account settings page with all elements", async ({ page, testAccounts }) => {
+    authTest("should display account settings page with all elements", async ({ page, passwordAuth }) => {
         // Check for full name
-        const fullName = testAccounts.passwordAccount.fullName;
+        const fullName = passwordAuth.account.fullName;
         await expect(page.getByText(fullName)).not.toBeNull();
 
         // Check for email
-        const email = testAccounts.passwordAccount.email;
+        const email = passwordAuth.account.email;
         await expect(page.getByText(email)).not.toBeNull();
 
         // Check for avatar (Gravatar image)
@@ -41,7 +41,7 @@ authTest.describe("Account Settings Page", () => {
         await expect(page.getByRole('button', { name: /delete password/i })).toBeDisabled();
     });
 
-    authTest("should allow user to update their password", async ({ page, testAccounts }) => {
+    authTest("should allow user to update their password", async ({ page, passwordAuth }) => {
         // Click the Edit button
         await page.getByRole('button', { name: /update password/i }).click();
 
@@ -86,7 +86,7 @@ authTest.describe("Account Settings Page", () => {
         await waitForCaptcha({ page });
 
         // login with the new password
-        await page.getByLabel("Email Address").fill(testAccounts.passwordAccount.email);
+        await page.getByLabel("Email Address").fill(passwordAuth.account.email);
         await page
             .getByRole("textbox", { name: "Password Password" })
             .fill(newPassword);

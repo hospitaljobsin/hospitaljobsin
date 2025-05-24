@@ -26,13 +26,13 @@ async function enterPassword({
 }
 
 test.describe("Confirm Password Reset Page", () => {
-	test.beforeEach(async ({ page, request, testAccounts }) => {
+	test.beforeEach(async ({ page, request, passwordAuth }) => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
-		const emailAddress = testAccounts.passwordAccount.email;
+		const emailAddress = passwordAuth.account.email;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -66,7 +66,7 @@ test.describe("Confirm Password Reset Page", () => {
 	});
 
 	test("should display confirm reset password form with all elements", async ({
-		page, testAccounts
+		page, passwordAuth
 	}) => {
 		// Check page title
 		await expect(page).toHaveTitle(/Password Reset/);
@@ -75,7 +75,7 @@ test.describe("Confirm Password Reset Page", () => {
 
 		// Check form elements
 		await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
-		await expect(page.getByLabel("Email Address")).toHaveValue(testAccounts.passwordAccount.email);
+		await expect(page.getByLabel("Email Address")).toHaveValue(passwordAuth.account.email);
 		await expect(
 			page.getByRole("textbox", { name: "New Password New Password" }),
 		).toBeVisible();
@@ -178,13 +178,13 @@ test.describe("Confirm Password Reset Page", () => {
 });
 
 test.describe("2FA Confirm Password Reset Page", () => {
-	test.beforeEach(async ({ page, request, testAccounts }) => {
+	test.beforeEach(async ({ page, request, twoFactorAuth }) => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
-		const emailAddress = testAccounts.twoFactorAccount.email;
+		const emailAddress = twoFactorAuth.account.email;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
@@ -217,7 +217,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		await page.goto(resetLink);
 	});
 
-	test("should display 2FA form with all elements", async ({ page, testAccounts }) => {
+	test("should display 2FA form with all elements", async ({ page, twoFactorAuth }) => {
 		// Check page title
 		await expect(page).toHaveTitle(/Password Reset/);
 
@@ -226,7 +226,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		// Check form elements
 		await expect(page.getByLabel("Email Address")).toHaveAttribute("readonly");
 		await expect(page.getByLabel("Email Address")).toHaveValue(
-			 testAccounts.twoFactorAccount.email,
+			 twoFactorAuth.account.email,
 		);
 		await expect(page.getByLabel("2FA Code")).toBeVisible();
 		await expect(
@@ -262,8 +262,8 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		await expect(page.getByText(/Reset Your Password/)).toBeVisible();
 	});
 
-	test("should successfully verify with recovery code", async ({ page, testAccounts }) => {
-		await page.getByLabel("2FA Code").fill(testAccounts.twoFactorAccount.recoveryCodes[0]);
+	test("should successfully verify with recovery code", async ({ page, twoFactorAuth }) => {
+		await page.getByLabel("2FA Code").fill(twoFactorAuth.account.recoveryCodes[0]);
 		await page.getByRole("button", { name: "Verify Code" }).click();
 
 		await expect(page.getByText(/Reset Your Password/)).toBeVisible();
@@ -358,14 +358,15 @@ test.describe("Confirm Password Reset Page Not Found", () => {
 authTest.describe("Confirm Password Reset Page Authentication Redirects", () => {
 	authTest("should not redirect to home page when already authenticated", async ({
 		page,
-		request, testAccounts
+		request,
+		passwordAuth,
 	}) => {
 		// Navigate to reset password page
 		await page.goto("http://localhost:5002/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
-		const emailAddress = testAccounts.passwordAccount.email;
+		const emailAddress = passwordAuth.account.email;
 		await page.getByLabel("Email Address").fill(emailAddress);
 		await page.getByRole("button", { name: "Request Password Reset" }).click();
 
