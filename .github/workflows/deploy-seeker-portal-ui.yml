@@ -69,13 +69,9 @@ jobs:
         working-directory: ./apps/seeker-portal
         run: pnpm install --frozen-lockfile --shamefully-hoist
 
-      - name: Run Relay Compiler
+      - name: Validate Relay Compiler Artifacts
         working-directory: ./apps/seeker-portal
-        run: pnpm run relay ../../relay.config.json --project seeker-portal
-
-      - name: Check for uncommitted changes
-        working-directory: ./apps/seeker-portal
-        run: ./scripts/check-git-status.sh
+        run: pnpm run relay ../../relay.config.json --project seeker-portal --validate
 
       - name: SST Deploy
         working-directory: ./apps/seeker-portal
