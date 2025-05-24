@@ -1,4 +1,15 @@
-import type { FragmentRefs, ReaderInlineDataFragment } from "relay-runtime";
+/**
+ * @generated SignedSource<<ddce80e8db7f43a7e952c7d28cf05e13>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import type { ReaderInlineDataFragment } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type pageRequestSudoModeInternalFragment$data = {
 	readonly viewer:
 		| {

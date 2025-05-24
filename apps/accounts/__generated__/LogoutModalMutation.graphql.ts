@@ -23,7 +23,7 @@ export type LogoutModalMutation = {
 	variables: LogoutModalMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = [
 		{
 			alias: null,

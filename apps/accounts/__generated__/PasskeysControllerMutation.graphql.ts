@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<314f702f35e43abae09b906dcbc61dfe>>
+ * @relayHash a6f1b1e285835c4a88c9791813d93485
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID a6f1b1e285835c4a88c9791813d93485
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type PasskeysControllerMutation$variables = {
 	connections: ReadonlyArray<string>;
 	nickname: string;
@@ -31,7 +45,7 @@ export type PasskeysControllerMutation = {
 	variables: PasskeysControllerMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			defaultValue: null,
 			kind: "LocalArgument",

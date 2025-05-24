@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<4c19e5a76c43369a3a90f6f00bb7be27>>
+ * @relayHash 8dcf1b73e657df06cda808cf87fd88da
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID 8dcf1b73e657df06cda808cf87fd88da
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type UpdatePasswordModalMutation$variables = {
 	newPassword: string;
 };
@@ -26,7 +40,7 @@ export type UpdatePasswordModalMutation = {
 	variables: UpdatePasswordModalMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = [
 			{
 				defaultValue: null,

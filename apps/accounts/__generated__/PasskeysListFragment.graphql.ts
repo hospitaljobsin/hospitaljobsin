@@ -1,4 +1,15 @@
-import type { FragmentRefs, ReaderFragment } from "relay-runtime";
+/**
+ * @generated SignedSource<<ec09caf87c248e0662475da94bb0b32b>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import type { ReaderFragment } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type PasskeysListFragment$data = {
 	readonly " $fragmentSpreads": FragmentRefs<
 		| "PasskeyAccountMetadataFragment"

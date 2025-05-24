@@ -1,4 +1,15 @@
-import type { FragmentRefs, ReaderFragment } from "relay-runtime";
+/**
+ * @generated SignedSource<<92c4ecef15a82ec7ef1bb1b646eb017d>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import type { ReaderFragment } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type SessionsSettingsViewFragment$data = {
 	readonly viewer:
 		| {

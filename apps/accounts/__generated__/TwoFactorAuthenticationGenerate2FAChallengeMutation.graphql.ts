@@ -32,7 +32,7 @@ export type TwoFactorAuthenticationGenerate2FAChallengeMutation = {
 	variables: TwoFactorAuthenticationGenerate2FAChallengeMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = [
 		{
 			alias: null,

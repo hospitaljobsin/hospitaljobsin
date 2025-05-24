@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<84bfd08d60b9bdfb9485f53868e01a64>>
+ * @relayHash 830927f442c4227743a2ebf4310990ba
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID 830927f442c4227743a2ebf4310990ba
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type DisableAuthenticator2FAModalMutation$variables = Record<
 	PropertyKey,
 	never
@@ -25,7 +39,7 @@ export type DisableAuthenticator2FAModalMutation = {
 	variables: DisableAuthenticator2FAModalMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			alias: null,
 			args: null,

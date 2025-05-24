@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<edfe1f732fdf3069966a0ad9374aa70d>>
+ * @relayHash 7757796071d5cff7faf064c272efc0f7
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID 7757796071d5cff7faf064c272efc0f7
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type AuthenticatorTwoFactorAuthenticationResetPasswordMutation$variables =
 	{
 		captchaToken: string;
@@ -39,7 +53,7 @@ export type AuthenticatorTwoFactorAuthenticationResetPasswordMutation = {
 	variables: AuthenticatorTwoFactorAuthenticationResetPasswordMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			defaultValue: null,
 			kind: "LocalArgument",

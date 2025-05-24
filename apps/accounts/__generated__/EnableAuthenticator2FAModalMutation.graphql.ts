@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<88ff1574bfd40810c268bc96f9bd4369>>
+ * @relayHash f3f090155853eea4edb24bbc3aa3ddef
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID f3f090155853eea4edb24bbc3aa3ddef
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type EnableAuthenticator2FAModalMutation$variables = {
 	token: string;
 };
@@ -31,7 +45,7 @@ export type EnableAuthenticator2FAModalMutation = {
 	variables: EnableAuthenticator2FAModalMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = [
 			{
 				defaultValue: null,

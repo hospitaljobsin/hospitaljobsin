@@ -1,4 +1,15 @@
-import type { FragmentRefs, ReaderFragment } from "relay-runtime";
+/**
+ * @generated SignedSource<<351a58e9ca472f1ff72683e78412dbf1>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import type { ReaderFragment } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type SessionsListInternalFragment$data = {
 	readonly id: string;
 	readonly sessions: {
@@ -22,7 +33,7 @@ export type SessionsListInternalFragment$key = {
 
 import SessionsListPaginationQuery_graphql from "./SessionsListPaginationQuery.graphql";
 
-const node: ReaderFragment = (() => {
+const node: ReaderFragment = (function () {
 	var v0 = ["sessions"],
 		v1 = {
 			alias: null,

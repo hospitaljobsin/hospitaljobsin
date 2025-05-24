@@ -14,7 +14,6 @@ export type AuthProvider =
 	| "PASSWORD"
 	| "WEBAUTHN_CREDENTIAL"
 	| "%future added value";
-
 import type { FragmentRefs } from "relay-runtime";
 export type UpdatePasswordModalFragment$data = {
 	readonly authProviders: ReadonlyArray<AuthProvider>;

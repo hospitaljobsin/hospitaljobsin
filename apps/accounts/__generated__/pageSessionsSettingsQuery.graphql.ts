@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<eaf2452fe1d0d3b1dfc66f0d7c9980e5>>
+ * @relayHash a5a28af5c38a421dce261ffcdcd03886
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID a5a28af5c38a421dce261ffcdcd03886
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type pageSessionsSettingsQuery$variables = Record<PropertyKey, never>;
 export type pageSessionsSettingsQuery$data = {
 	readonly " $fragmentSpreads": FragmentRefs<"SessionsClientComponentFragment">;
@@ -8,7 +22,7 @@ export type pageSessionsSettingsQuery = {
 	variables: pageSessionsSettingsQuery$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			alias: null,
 			args: null,

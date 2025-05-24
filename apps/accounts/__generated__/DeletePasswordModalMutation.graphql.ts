@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<bcc4346feaaabf5e46797ff118ea04a4>>
+ * @relayHash 0da8d0b5530d364db2e5706dfd13114e
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID 0da8d0b5530d364db2e5706dfd13114e
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type DeletePasswordModalMutation$variables = Record<PropertyKey, never>;
 export type DeletePasswordModalMutation$data = {
 	readonly deletePassword:
@@ -22,7 +36,7 @@ export type DeletePasswordModalMutation = {
 	variables: DeletePasswordModalMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			alias: null,
 			args: null,

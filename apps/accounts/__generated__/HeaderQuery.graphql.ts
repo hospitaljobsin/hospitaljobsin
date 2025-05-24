@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<80fc042d614c58981b4f45dc953c0130>>
+ * @relayHash ec0625edbba09e4b07d899e93608d785
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID ec0625edbba09e4b07d899e93608d785
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type HeaderQuery$variables = Record<PropertyKey, never>;
 export type HeaderQuery$data = {
 	readonly viewer:
@@ -20,7 +34,7 @@ export type HeaderQuery = {
 	variables: HeaderQuery$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 		alias: null,
 		args: null,

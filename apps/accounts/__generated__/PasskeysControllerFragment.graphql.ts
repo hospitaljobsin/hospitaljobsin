@@ -1,4 +1,15 @@
-import type { FragmentRefs, ReaderFragment } from "relay-runtime";
+/**
+ * @generated SignedSource<<2e611a5a94b253032b38fd51bf83f1f9>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import type { ReaderFragment } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type PasskeysControllerFragment$data = {
 	readonly sudoModeExpiresAt: any | null | undefined;
 	readonly " $fragmentType": "PasskeysControllerFragment";

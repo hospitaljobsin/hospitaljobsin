@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<1e722a6d6adc61fa75d1f536b6d659f4>>
+ * @relayHash 20fd47bf624144aa893b1af2285611fd
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID 20fd47bf624144aa893b1af2285611fd
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type pageRequestSudoModeViewQuery$variables = Record<PropertyKey, never>;
 export type pageRequestSudoModeViewQuery$data = {
 	readonly " $fragmentSpreads": FragmentRefs<
@@ -11,7 +25,7 @@ export type pageRequestSudoModeViewQuery = {
 	variables: pageRequestSudoModeViewQuery$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			alias: null,
 			args: null,

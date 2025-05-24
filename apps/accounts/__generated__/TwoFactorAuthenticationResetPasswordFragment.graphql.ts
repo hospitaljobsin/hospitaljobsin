@@ -15,7 +15,6 @@ export type AuthProvider =
 	| "WEBAUTHN_CREDENTIAL"
 	| "%future added value";
 export type TwoFactorProvider = "AUTHENTICATOR" | "%future added value";
-
 import type { FragmentRefs } from "relay-runtime";
 export type TwoFactorAuthenticationResetPasswordFragment$data = {
 	readonly authProviders: ReadonlyArray<AuthProvider>;

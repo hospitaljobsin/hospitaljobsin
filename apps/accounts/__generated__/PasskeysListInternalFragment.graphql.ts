@@ -1,4 +1,15 @@
-import type { FragmentRefs, ReaderFragment } from "relay-runtime";
+/**
+ * @generated SignedSource<<791e2162c4c6039f61d6f3ebddcfe666>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import type { ReaderFragment } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type PasskeysListInternalFragment$data = {
 	readonly id: string;
 	readonly webAuthnCredentials: {
@@ -22,7 +33,7 @@ export type PasskeysListInternalFragment$key = {
 
 import PasskeysListPaginationQuery_graphql from "./PasskeysListPaginationQuery.graphql";
 
-const node: ReaderFragment = (() => {
+const node: ReaderFragment = (function () {
 	var v0 = ["webAuthnCredentials"],
 		v1 = {
 			alias: null,

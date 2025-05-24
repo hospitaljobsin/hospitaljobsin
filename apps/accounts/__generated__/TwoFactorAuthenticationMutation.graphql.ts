@@ -45,7 +45,7 @@ export type TwoFactorAuthenticationMutation = {
 	variables: TwoFactorAuthenticationMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			defaultValue: null,
 			kind: "LocalArgument",

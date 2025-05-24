@@ -37,7 +37,7 @@ export type RegenerateRecoveryCodesModalMutation = {
 	variables: RegenerateRecoveryCodesModalMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = [
 		{
 			alias: null,

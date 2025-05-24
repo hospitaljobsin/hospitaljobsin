@@ -26,7 +26,7 @@ export type PasskeysControllerGenerateOptionsMutation = {
 	variables: PasskeysControllerGenerateOptionsMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 		kind: "InlineFragment",
 		selections: [

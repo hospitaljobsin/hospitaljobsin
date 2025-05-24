@@ -36,7 +36,7 @@ export type PasskeyAuthenticationGenerateOptionsMutation = {
 	variables: PasskeyAuthenticationGenerateOptionsMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = [
 			{
 				defaultValue: null,

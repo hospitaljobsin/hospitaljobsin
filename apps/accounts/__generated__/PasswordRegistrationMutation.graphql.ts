@@ -48,7 +48,7 @@ export type PasswordRegistrationMutation = {
 	variables: PasswordRegistrationMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			defaultValue: null,
 			kind: "LocalArgument",

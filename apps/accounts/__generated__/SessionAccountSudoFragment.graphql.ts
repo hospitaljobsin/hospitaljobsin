@@ -1,4 +1,15 @@
-import type { FragmentRefs, ReaderFragment } from "relay-runtime";
+/**
+ * @generated SignedSource<<551d5e796b505bdc846389195a6e244d>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import type { ReaderFragment } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type SessionAccountSudoFragment$data = {
 	readonly sudoModeExpiresAt: any | null | undefined;
 	readonly " $fragmentType": "SessionAccountSudoFragment";

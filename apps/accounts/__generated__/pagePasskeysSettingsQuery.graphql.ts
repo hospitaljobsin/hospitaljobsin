@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<238e49fa09b707657ecd385a2cd4dd7d>>
+ * @relayHash 842072cd591289470663ad21651baad5
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID 842072cd591289470663ad21651baad5
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type pagePasskeysSettingsQuery$variables = Record<PropertyKey, never>;
 export type pagePasskeysSettingsQuery$data = {
 	readonly " $fragmentSpreads": FragmentRefs<"PasskeysClientComponentFragment">;
@@ -8,7 +22,7 @@ export type pagePasskeysSettingsQuery = {
 	variables: pagePasskeysSettingsQuery$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			alias: null,
 			args: null,

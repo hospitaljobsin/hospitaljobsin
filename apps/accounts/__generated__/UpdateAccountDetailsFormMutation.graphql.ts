@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<943cc24b947014fb3ea5ba61282812f5>>
+ * @relayHash 35d78980db6d8f29f97ba1e4006677e5
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID 35d78980db6d8f29f97ba1e4006677e5
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type UpdateAccountDetailsFormMutation$variables = {
 	fullName: string;
 };
@@ -21,7 +35,7 @@ export type UpdateAccountDetailsFormMutation = {
 	variables: UpdateAccountDetailsFormMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = [
 			{
 				defaultValue: null,

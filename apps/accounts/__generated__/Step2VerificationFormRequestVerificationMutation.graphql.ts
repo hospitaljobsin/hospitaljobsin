@@ -51,7 +51,7 @@ export type Step2VerificationFormRequestVerificationMutation = {
 	variables: Step2VerificationFormRequestVerificationMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			defaultValue: null,
 			kind: "LocalArgument",

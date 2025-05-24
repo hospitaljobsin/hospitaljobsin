@@ -49,7 +49,7 @@ export type PasskeyRegistrationMutation = {
 	variables: PasskeyRegistrationMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			defaultValue: null,
 			kind: "LocalArgument",

@@ -51,7 +51,7 @@ export type Step1EmailFormMutation = {
 	variables: Step1EmailFormMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			defaultValue: null,
 			kind: "LocalArgument",

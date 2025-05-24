@@ -25,7 +25,7 @@ export type DeleteOtherSessionsModalMutation = {
 	variables: DeleteOtherSessionsModalMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = [
 			{
 				defaultValue: null,

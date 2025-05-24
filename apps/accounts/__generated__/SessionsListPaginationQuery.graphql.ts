@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<2c807eb007e90d54c6f38fe23153ff22>>
+ * @relayHash 078d0b2eca291f326b10980daa502944
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID 078d0b2eca291f326b10980daa502944
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type SessionsListPaginationQuery$variables = {
 	count?: number | null | undefined;
 	cursor?: string | null | undefined;
@@ -17,7 +31,7 @@ export type SessionsListPaginationQuery = {
 	variables: SessionsListPaginationQuery$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = [
 			{
 				defaultValue: 10,

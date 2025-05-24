@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<8121cfdde00088bc5bb1e9afea12947b>>
+ * @relayHash fd3e1e14e26e7579a5fe9caaa9276048
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID fd3e1e14e26e7579a5fe9caaa9276048
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type pageResetPasswordViewQuery$variables = {
 	email: string;
 	resetToken: string;
@@ -14,7 +28,7 @@ export type pageResetPasswordViewQuery = {
 	variables: pageResetPasswordViewQuery$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = {
 			defaultValue: null,
 			kind: "LocalArgument",

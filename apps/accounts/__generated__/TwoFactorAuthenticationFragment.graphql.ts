@@ -10,7 +10,6 @@
 
 import type { ReaderFragment } from "relay-runtime";
 export type TwoFactorProvider = "AUTHENTICATOR" | "%future added value";
-
 import type { FragmentRefs } from "relay-runtime";
 export type TwoFactorAuthenticationFragment$data = {
 	readonly has2faEnabled: boolean;

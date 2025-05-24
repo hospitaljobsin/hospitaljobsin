@@ -1,4 +1,18 @@
-import type { ConcreteRequest, FragmentRefs } from "relay-runtime";
+/**
+ * @generated SignedSource<<79bf21d72afde3f3fbb9e26f3250afa8>>
+ * @relayHash fbaf15a2e39707fd3d0a4dcf8d668beb
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+// @relayRequestID fbaf15a2e39707fd3d0a4dcf8d668beb
+
+import type { ConcreteRequest } from "relay-runtime";
+import type { FragmentRefs } from "relay-runtime";
 export type pageAccountSettingsQuery$variables = Record<PropertyKey, never>;
 export type pageAccountSettingsQuery$data = {
 	readonly " $fragmentSpreads": FragmentRefs<"AccountClientComponentFragment">;

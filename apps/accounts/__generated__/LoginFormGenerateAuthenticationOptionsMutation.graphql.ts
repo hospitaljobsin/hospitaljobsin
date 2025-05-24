@@ -36,7 +36,7 @@ export type LoginFormGenerateAuthenticationOptionsMutation = {
 	variables: LoginFormGenerateAuthenticationOptionsMutation$variables;
 };
 
-const node: ConcreteRequest = (() => {
+const node: ConcreteRequest = (function () {
 	var v0 = [
 			{
 				defaultValue: null,
