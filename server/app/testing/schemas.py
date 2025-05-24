@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import Base64Bytes, BaseModel, ConfigDict
 from webauthn.helpers.structs import AuthenticatorTransport
 
 from app.core.constants import AuthProvider, TwoFactorProvider
@@ -31,7 +31,7 @@ class CreateTestUserSchema(BaseSchema):
 
 
 class WebAuthnCredentialSchema(BaseSchema):
-    credential_id: str
+    credential_id: Base64Bytes
     public_key: bytes
     sign_count: int
     device_type: str
