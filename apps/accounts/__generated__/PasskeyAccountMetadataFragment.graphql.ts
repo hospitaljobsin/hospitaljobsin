@@ -8,46 +8,42 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type { ReaderFragment } from "relay-runtime";
-export type AuthProvider =
-	| "OAUTH_GOOGLE"
-	| "PASSWORD"
-	| "WEBAUTHN_CREDENTIAL"
-	| "%future added value";
+import type { ReaderFragment } from 'relay-runtime';
+export type AuthProvider = "OAUTH_GOOGLE" | "PASSWORD" | "WEBAUTHN_CREDENTIAL" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type PasskeyAccountMetadataFragment$data = {
-	readonly authProviders: ReadonlyArray<AuthProvider>;
-	readonly sudoModeExpiresAt: any | null | undefined;
-	readonly " $fragmentType": "PasskeyAccountMetadataFragment";
+  readonly authProviders: ReadonlyArray<AuthProvider>;
+  readonly sudoModeExpiresAt: any | null | undefined;
+  readonly " $fragmentType": "PasskeyAccountMetadataFragment";
 };
 export type PasskeyAccountMetadataFragment$key = {
-	readonly " $data"?: PasskeyAccountMetadataFragment$data;
-	readonly " $fragmentSpreads": FragmentRefs<"PasskeyAccountMetadataFragment">;
+  readonly " $data"?: PasskeyAccountMetadataFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"PasskeyAccountMetadataFragment">;
 };
 
 const node: ReaderFragment = {
-	argumentDefinitions: [],
-	kind: "Fragment",
-	metadata: null,
-	name: "PasskeyAccountMetadataFragment",
-	selections: [
-		{
-			alias: null,
-			args: null,
-			kind: "ScalarField",
-			name: "sudoModeExpiresAt",
-			storageKey: null,
-		},
-		{
-			alias: null,
-			args: null,
-			kind: "ScalarField",
-			name: "authProviders",
-			storageKey: null,
-		},
-	],
-	type: "Account",
-	abstractKey: null,
+  "argumentDefinitions": [],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "PasskeyAccountMetadataFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "sudoModeExpiresAt",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "authProviders",
+      "storageKey": null
+    }
+  ],
+  "type": "Account",
+  "abstractKey": null
 };
 
 (node as any).hash = "4963f15812acad692b8b9e76fe598a4f";

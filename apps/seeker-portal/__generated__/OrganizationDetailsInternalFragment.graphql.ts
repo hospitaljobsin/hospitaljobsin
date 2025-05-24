@@ -1,69 +1,80 @@
-import type { FragmentRefs, ReaderFragment } from "relay-runtime";
+/**
+ * @generated SignedSource<<cc9e2a3238dc5ffba7a1c2d084a180a8>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import type { ReaderFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type OrganizationDetailsInternalFragment$data = {
-	readonly description: string | null | undefined;
-	readonly email: string | null | undefined;
-	readonly location: string | null | undefined;
-	readonly logoUrl: string;
-	readonly name: string;
-	readonly website: string | null | undefined;
-	readonly " $fragmentType": "OrganizationDetailsInternalFragment";
+  readonly description: string | null | undefined;
+  readonly email: string | null | undefined;
+  readonly location: string | null | undefined;
+  readonly logoUrl: string;
+  readonly name: string;
+  readonly website: string | null | undefined;
+  readonly " $fragmentType": "OrganizationDetailsInternalFragment";
 };
 export type OrganizationDetailsInternalFragment$key = {
-	readonly " $data"?: OrganizationDetailsInternalFragment$data;
-	readonly " $fragmentSpreads": FragmentRefs<"OrganizationDetailsInternalFragment">;
+  readonly " $data"?: OrganizationDetailsInternalFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"OrganizationDetailsInternalFragment">;
 };
 
 const node: ReaderFragment = {
-	argumentDefinitions: [],
-	kind: "Fragment",
-	metadata: null,
-	name: "OrganizationDetailsInternalFragment",
-	selections: [
-		{
-			alias: null,
-			args: null,
-			kind: "ScalarField",
-			name: "name",
-			storageKey: null,
-		},
-		{
-			alias: null,
-			args: null,
-			kind: "ScalarField",
-			name: "logoUrl",
-			storageKey: null,
-		},
-		{
-			alias: null,
-			args: null,
-			kind: "ScalarField",
-			name: "description",
-			storageKey: null,
-		},
-		{
-			alias: null,
-			args: null,
-			kind: "ScalarField",
-			name: "website",
-			storageKey: null,
-		},
-		{
-			alias: null,
-			args: null,
-			kind: "ScalarField",
-			name: "email",
-			storageKey: null,
-		},
-		{
-			alias: null,
-			args: null,
-			kind: "ScalarField",
-			name: "location",
-			storageKey: null,
-		},
-	],
-	type: "Organization",
-	abstractKey: null,
+  "argumentDefinitions": [],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "OrganizationDetailsInternalFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "name",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "logoUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "description",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "website",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "email",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "location",
+      "storageKey": null
+    }
+  ],
+  "type": "Organization",
+  "abstractKey": null
 };
 
 (node as any).hash = "f3001b77ac7ba4af02b80c9184d4951b";

@@ -1,38 +1,45 @@
-import type { FragmentRefs, ReaderInlineDataFragment } from "relay-runtime";
+/**
+ * @generated SignedSource<<adfbf5fb2f71270b44fa24bde4a25024>>
+ * @lightSyntaxTransform
+ * @nogrep
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import type { ReaderInlineDataFragment } from 'relay-runtime';
+import type { FragmentRefs } from "relay-runtime";
 export type pageJobSettingsMetadataFragment$data = {
-	readonly organization:
-		| {
-				readonly __typename: "Organization";
-				readonly description: string | null | undefined;
-				readonly isAdmin: boolean;
-				readonly job:
-					| {
-							readonly __typename: "Job";
-							readonly title: string;
-					  }
-					| {
-							// This will never be '%other', but we need some
-							// value in case none of the concrete values match.
-							readonly __typename: "%other";
-					  };
-				readonly logoUrl: string;
-				readonly name: string;
-		  }
-		| {
-				// This will never be '%other', but we need some
-				// value in case none of the concrete values match.
-				readonly __typename: "%other";
-		  };
-	readonly " $fragmentType": "pageJobSettingsMetadataFragment";
+  readonly organization: {
+    readonly __typename: "Organization";
+    readonly description: string | null | undefined;
+    readonly isAdmin: boolean;
+    readonly job: {
+      readonly __typename: "Job";
+      readonly title: string;
+    } | {
+      // This will never be '%other', but we need some
+      // value in case none of the concrete values match.
+      readonly __typename: "%other";
+    };
+    readonly logoUrl: string;
+    readonly name: string;
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
+  readonly " $fragmentType": "pageJobSettingsMetadataFragment";
 };
 export type pageJobSettingsMetadataFragment$key = {
-	readonly " $data"?: pageJobSettingsMetadataFragment$data;
-	readonly " $fragmentSpreads": FragmentRefs<"pageJobSettingsMetadataFragment">;
+  readonly " $data"?: pageJobSettingsMetadataFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"pageJobSettingsMetadataFragment">;
 };
 
 const node: ReaderInlineDataFragment = {
-	kind: "InlineDataFragment",
-	name: "pageJobSettingsMetadataFragment",
+  "kind": "InlineDataFragment",
+  "name": "pageJobSettingsMetadataFragment"
 };
 
 (node as any).hash = "28686c34429e07589ddb015cfc2aa0ff";
