@@ -37,7 +37,7 @@ jobs:
     # Only deploy when:
     #  • a backend workflow_run happened (so server is already up), OR
     #  • a push happened and query_map.json did NOT change
-    if: github.event_name == 'workflow_run' || (github.event_name == 'push' && needs.check.outputs.query_map_changed == 'false')
+    if: github.event_name == 'workflow_run' || (github.event_name == 'push' && needs.check.outputs.query_map_changed == false)
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
