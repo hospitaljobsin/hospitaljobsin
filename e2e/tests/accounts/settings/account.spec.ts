@@ -68,7 +68,6 @@ authTest.describe("Account Settings Page", () => {
 			await page
 				.getByRole("textbox", { name: "Confirm New Password" })
 				.fill(newPassword);
-			// await page.getByRole('button', { name: /update password/i }).click();
 
 			// Submit the form
 			await Promise.all([
@@ -133,11 +132,14 @@ authTest.describe("Two Factor Authentication", () => {
 				browserName === "webkit",
 				"Clipboard Permissions are not supported in WebKit",
 			);
+
+			await expect(page.getByRole("button", { name: /enable/i })).toBeVisible();
+
 			await Promise.all([
+				page.getByRole("button", { name: /enable/i }).click(),
 				page.waitForSelector('section[role="dialog"][data-open="true"]', {
 					state: "visible",
 				}),
-				page.getByRole("button", { name: /enable/i }).click(),
 			]);
 
 			await expect(
