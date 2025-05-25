@@ -148,3 +148,13 @@ export const authTest = test.extend<{}, { context: BrowserContext }>({
 		await context.close();
 	},
 });
+
+export const webauthnTest = test.extend<{}, { context: BrowserContext }>({
+	context: async ({ browser, webauthnAuth }, use) => {
+		const context = await browser.newContext({
+			storageState: webauthnAuth.storageState,
+		});
+		await use(context);
+		await context.close();
+	},
+});
