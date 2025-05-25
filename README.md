@@ -42,7 +42,7 @@ This project has a proprietary license. Read the entire license [here](./README.
 Go through the setup guides of the services above, which covers installation of required dependencies,
 and other service specific setup tasks.
 
-Run pre-commit install to set up the git hook scripts
+To set up the git hook scripts, run the following command:
 
 ```bash
 pre-commit install

@@ -20,10 +20,6 @@ WORKDIR /app/apps/accounts
 
 RUN pnpm install --frozen-lockfile --shamefully-hoist
 
-COPY ./apps/accounts/ ./
-
-RUN mkdir -p __generated__/
-
 ENV SKIP_ENV_VALIDATION=true
 
 # Add these lines for each NEXT_PUBLIC variable
@@ -49,7 +45,9 @@ ARG NEXT_PUBLIC_ENVIRONMENT
 ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 # Add any other NEXT_PUBLIC variables your app needs
 
-RUN pnpm run relay relay.config.json
+COPY ./apps/accounts/ ./
+
+RUN pnpm run relay relay.config.json --validate
 
 RUN pnpm build
 

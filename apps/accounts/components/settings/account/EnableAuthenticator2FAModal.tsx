@@ -1,5 +1,5 @@
+import type { EnableAuthenticator2FAModalMutation } from "@/__generated__/EnableAuthenticator2FAModalMutation.graphql";
 import {
-	addToast,
 	Button,
 	Code,
 	Divider,
@@ -10,6 +10,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 	Tooltip,
+	addToast,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Clipboard } from "lucide-react";
@@ -19,7 +20,6 @@ import QRCode from "react-qr-code";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
-import type { EnableAuthenticator2FAModalMutation } from "@/__generated__/EnableAuthenticator2FAModalMutation.graphql";
 import SaveRecoveryCodesModal from "./SaveRecoveryCodesModal";
 
 const EnableAuthenticator2FAMutation = graphql`
@@ -153,6 +153,7 @@ export default function EnableAuthenticator2FAModal({
 							className="sm:max-w-96 sm:min-w-64 max-w-64 min-w-48 h-auto"
 							value={otpUri}
 							viewBox="0 0 256 256"
+							data-testid="totp-qrcode"
 						/>
 						<div className="w-full flex flex-col gap-4">
 							<p className="text-small text-foreground-500">

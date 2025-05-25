@@ -1,5 +1,9 @@
 import { authTest, expect } from "@/playwright/fixtures";
+import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
+import { Jimp } from "jimp";
+import fs from "node:fs";
+import QrCode from "qrcode-reader";
 
 authTest.describe("Account Settings Page", () => {
 	authTest.beforeEach(async ({ page }) => {
@@ -114,4 +118,80 @@ authTest.describe("Account Settings Page", () => {
 			await page.waitForURL("http://localhost:5002/settings");
 		},
 	);
+
+	authTest(
+		"should allow user to enable 2FA authenticator",
+		async ({ page, context }) => {
+			await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+			// Click the enable 2fa button
+			await Promise.all([
+				// Wait for the modal to open
+				page.waitForSelector('section[role="dialog"][data-open="true"]'),
+				// Click the enable 2fa button
+				page
+					.getByRole("button", { name: /enable/i })
+					.click(),
+			]);
+
+			// we see a QR code and TOTP secret here
+			await page
+				.getByRole("button", { name: /copy secret to clipboard/i })
+				.click();
+
+			const copiedTotpSecret = await page.evaluate(() =>
+				navigator.clipboard.readText(),
+			);
+
+			const qrLocator = page.locator('[data-testid="totp-qrcode"]'); // Adjust selector if needed
+			await qrLocator.screenshot({
+				path: "playwright/screenshots/2fa-qrcode.png",
+			});
+
+			// Decode the QR code from the screenshot
+			const image = await Jimp.read(
+				fs.readFileSync("playwright/screenshots/2fa-qrcode.png"),
+			);
+
+			const qr = new QrCode();
+			let totpSecret = "";
+
+			qr.callback = (err, value) => {
+				if (err) {
+					throw new Error("❌ Failed to decode QR code:", err);
+				}
+				totpSecret = value.result;
+				console.log("✅ QR code content:", value.result);
+			};
+			qr.decode(image.bitmap);
+
+			expect(totpSecret).toEqual(copiedTotpSecret);
+
+			const otp = await generateValidOTP({ totp_secret: copiedTotpSecret });
+
+			await page.locator('input[name="token"]').fill(otp);
+
+			await page.getByRole("button", { name: /enable/i }).click();
+
+			// save recovery codes
+			await Promise.all([
+				// Wait for the modal to close
+				page.waitForSelector('section[role="dialog"][data-open="true"]', {
+					state: "detached",
+				}),
+				// Click the enable button
+				page
+					.getByRole("button", { name: /I've saved my recovery codes/i })
+					.click(),
+			]);
+
+			await expect(
+				page.getByRole("button", { name: /disable/i }),
+			).toBeVisible();
+		},
+	);
 });
+
+// TODO: test no sudo mode redirects to request sudo mode page
+
+// TODO: add new fixture to authenticate with two factor account
+// add 2fa disabling tests for that account
