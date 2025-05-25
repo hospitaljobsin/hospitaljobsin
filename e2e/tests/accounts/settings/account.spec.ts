@@ -121,12 +121,12 @@ authTest.describe("Account Settings Page", () => {
 
 	authTest(
 		"should allow user to enable 2FA authenticator",
-		async ({ page, context }) => {
-			await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-			// Click the enable 2fa button
+		async ({ page, clipboard }) => {
 			await Promise.all([
 				// Wait for the modal to open
-				page.waitForSelector('section[role="dialog"][data-open="true"]'),
+				page.waitForSelector('section[role="dialog"][data-open="true"]', {
+					state: "visible",
+				}),
 				// Click the enable 2fa button
 				page
 					.getByRole("button", { name: /enable/i })
@@ -138,9 +138,7 @@ authTest.describe("Account Settings Page", () => {
 				.getByRole("button", { name: /copy secret to clipboard/i })
 				.click();
 
-			const copiedTotpSecret = await page.evaluate(() =>
-				navigator.clipboard.readText(),
-			);
+			const copiedTotpSecret = await clipboard.getClipboardContent();
 
 			const qrLocator = page.locator('[data-testid="totp-qrcode"]'); // Adjust selector if needed
 			await qrLocator.screenshot({
