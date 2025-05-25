@@ -1,8 +1,8 @@
+import fs from "node:fs";
 import { authTest, expect } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { Jimp } from "jimp";
-import fs from "node:fs";
 import QrCode from "qrcode-reader";
 
 authTest.describe("Account Settings Page", () => {
@@ -121,7 +121,7 @@ authTest.describe("Account Settings Page", () => {
 
 	authTest(
 		"should allow user to enable 2FA authenticator",
-		async ({ page, clipboard }) => {
+		async ({ page, context }) => {
 			await page.getByRole("button", { name: /enable/i }).click();
 			await page.waitForSelector('section[role="dialog"][data-open="true"]', {
 				state: "visible",
@@ -130,12 +130,15 @@ authTest.describe("Account Settings Page", () => {
 			await expect(
 				page.getByText("Enable Two Factor Authentication"),
 			).toBeVisible();
+
 			// we see a QR code and TOTP secret here
 			await page
 				.getByRole("button", { name: /copy secret to clipboard/i })
 				.click();
 
-			const copiedTotpSecret = await clipboard.getClipboardContent();
+			const copiedTotpSecret = await page.evaluate(() =>
+				navigator.clipboard.readText(),
+			);
 
 			const qrLocator = page.locator('[data-testid="totp-qrcode"]'); // Adjust selector if needed
 			await qrLocator.screenshot({

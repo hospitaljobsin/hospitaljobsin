@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import {
 	type TestAccount,
 	createTestAccount,
@@ -8,9 +10,6 @@ import {
 	test as baseTest,
 	request,
 } from "@playwright/test";
-import fs from "node:fs";
-import path from "node:path";
-import { PlaywrightClipboard } from "playwright-clipboard";
 export { expect } from "@playwright/test";
 
 const createUserContext = async (
@@ -33,7 +32,6 @@ const createUserContext = async (
 };
 
 type WorkerFixtures = {
-	clipboard: PlaywrightClipboard;
 	passwordAuth: {
 		account: TestAccount;
 		storageState: string;
@@ -49,10 +47,6 @@ type WorkerFixtures = {
 };
 
 export const test = baseTest.extend<{}, WorkerFixtures>({
-	clipboard: async ({ page }, use) => {
-		const clipboard = new PlaywrightClipboard(page);
-		await use(clipboard);
-	},
 	passwordAuth: [
 		async ({ browser }, use) => {
 			const id = test.info().parallelIndex;

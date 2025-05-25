@@ -17,9 +17,6 @@ importers:
       otplib:
         specifier: ^12.0.1
         version: 12.0.1
-      playwright-clipboard:
-        specifier: ^1.0.0
-        version: 1.0.0(@playwright/test@1.51.1)
       qrcode-reader:
         specifier: ^1.0.4
         version: 1.0.4
@@ -316,12 +313,6 @@ packages:
   pixelmatch@5.3.0:
     resolution: {integrity: sha512-o8mkY4E/+LNUf6LzX96ht6k6CEDi65k9G2rjMtBe9Oo+VPKSvl+0GKHuH/AlG+GA5LPG/i5hrekkxUc3s2HU+Q==}
     hasBin: true
-
-  playwright-clipboard@1.0.0:
-    resolution: {integrity: sha512-gTybjiWdRjEBl2Az/AZNzMDnT7YcXxzYat9Cg4Q+imPM7fa4ow+MpbdggKG6vR00LxrWIYRPbQQAh6kJsZ0FSQ==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      '@playwright/test': ^1.49.0
 
   playwright-core@1.51.1:
     resolution: {integrity: sha512-/crRMj8+j/Nq5s8QcvegseuyeZPxpQCZb6HNk3Sos3BlZyAknRjoyJPFWkpNn8v0+P3WiwqFF8P+zQo4eqiNuw==}
@@ -771,10 +762,6 @@ snapshots:
   pixelmatch@5.3.0:
     dependencies:
       pngjs: 6.0.0
-
-  playwright-clipboard@1.0.0(@playwright/test@1.51.1):
-    dependencies:
-      '@playwright/test': 1.51.1
 
   playwright-core@1.51.1: {}
 
