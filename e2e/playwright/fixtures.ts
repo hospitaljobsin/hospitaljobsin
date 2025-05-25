@@ -44,6 +44,18 @@ type WorkerFixtures = {
 		account: TestAccount;
 		storageState: string;
 	};
+	passwordAuthSudoMode: {
+		account: TestAccount;
+		storageState: string;
+	};
+	webauthnAuthSudoMode: {
+		account: TestAccount;
+		storageState: string;
+	};
+	twoFactorAuthSudoMode: {
+		account: TestAccount;
+		storageState: string;
+	};
 };
 
 export const test = baseTest.extend<{}, WorkerFixtures>({
@@ -63,7 +75,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
-					enableSudoMode: true,
+					enableSudoMode: false,
 					authProviders: ["password"],
 				},
 				storageState,
@@ -93,7 +105,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 					password: null,
 					fullName: `Tester ${id}`,
 					twoFactorSecret: null,
-					enableSudoMode: true,
+					enableSudoMode: false,
 					authProviders: ["webauthn_credential"],
 				},
 				storageState,
@@ -123,6 +135,96 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 					password: "Password123!",
 					fullName: `Tester ${id}`,
 					twoFactorSecret: TOTP_USER_SECRET,
+					enableSudoMode: false,
+					authProviders: ["password"],
+				},
+				storageState,
+				accountFile,
+			);
+
+			await use({
+				account,
+				storageState,
+			});
+		},
+		{ scope: "worker" },
+	],
+	passwordAuthSudoMode: [
+		async ({ browser }, use) => {
+			const id = test.info().workerIndex;
+			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
+			fs.mkdirSync(baseDir, { recursive: true });
+
+			const storageState = path.join(baseDir, `password-sudo-${id}.json`);
+
+			const accountFile = path.join(baseDir, `password-sudo-${id}.user.json`);
+
+			const account = await createUserContext(
+				{
+					email: `tester-sudo-${id}@gmail.com`,
+					password: "Password123!",
+					fullName: `Tester ${id}`,
+					twoFactorSecret: null,
+					enableSudoMode: true,
+					authProviders: ["password"],
+				},
+				storageState,
+				accountFile,
+			);
+
+			await use({
+				account,
+				storageState,
+			});
+		},
+		{ scope: "worker" },
+	],
+	webauthnAuthSudoMode: [
+		async ({ browser }, use) => {
+			const id = test.info().workerIndex;
+			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
+			fs.mkdirSync(baseDir, { recursive: true });
+
+			const storageState = path.join(baseDir, `webauthn-sudo-${id}.json`);
+
+			const accountFile = path.join(baseDir, `webauthn-sudo-${id}.user.json`);
+
+			const account = await createUserContext(
+				{
+					email: `tester-webauthn-sudo-${id}@gmail.com`,
+					password: null,
+					fullName: `Tester ${id}`,
+					twoFactorSecret: null,
+					enableSudoMode: true,
+					authProviders: ["webauthn_credential"],
+				},
+				storageState,
+				accountFile,
+			);
+
+			await use({
+				account,
+				storageState,
+			});
+		},
+		{ scope: "worker" },
+	],
+	twoFactorAuthSudoMode: [
+		async ({ browser }, use) => {
+			const id = test.info().workerIndex;
+			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
+			fs.mkdirSync(baseDir, { recursive: true });
+
+			const storageState = path.join(baseDir, `2fa-sudo-${id}.json`);
+
+			const accountFile = path.join(baseDir, `2fa-sudo-${id}.user.json`);
+
+			const account = await createUserContext(
+				{
+					email: `two-factor-sudo-${id}@gmail.com`,
+					password: "Password123!",
+					fullName: `Tester ${id}`,
+					twoFactorSecret: TOTP_USER_SECRET,
 					enableSudoMode: true,
 					authProviders: ["password"],
 				},
@@ -149,10 +251,33 @@ export const authTest = test.extend<{}, { context: BrowserContext }>({
 	},
 });
 
+export const authSudoModeTest = test.extend<{}, { context: BrowserContext }>({
+	context: async ({ browser, passwordAuthSudoMode }, use) => {
+		const context = await browser.newContext({
+			storageState: passwordAuthSudoMode.storageState,
+		});
+		await use(context);
+		await context.close();
+	},
+});
+
 export const webauthnTest = test.extend<{}, { context: BrowserContext }>({
 	context: async ({ browser, webauthnAuth }, use) => {
 		const context = await browser.newContext({
 			storageState: webauthnAuth.storageState,
+		});
+		await use(context);
+		await context.close();
+	},
+});
+
+export const webauthnSudoModeTest = test.extend<
+	{},
+	{ context: BrowserContext }
+>({
+	context: async ({ browser, webauthnAuthSudoMode }, use) => {
+		const context = await browser.newContext({
+			storageState: webauthnAuthSudoMode.storageState,
 		});
 		await use(context);
 		await context.close();

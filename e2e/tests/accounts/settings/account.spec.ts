@@ -1,4 +1,9 @@
-import { authTest, expect, webauthnTest } from "@/playwright/fixtures";
+import {
+	authSudoModeTest,
+	authTest,
+	expect,
+	webauthnSudoModeTest,
+} from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { Jimp } from "jimp";
@@ -46,10 +51,26 @@ authTest.describe("Account Settings Page", () => {
 		await expect(page.getByText(newName)).toBeVisible();
 	});
 
-	authTest(
+	authTest("should disable delete password button", async ({ page }) => {
+		// delete password button should be disabled when the password is the only auth provider
+		await expect(
+			page.getByRole("button", { name: /delete password/i }),
+		).toBeDisabled();
+	});
+
+	// TODO: add tests to ensure that sudo mode buttons redirect to the sudo mode request page
+});
+
+authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
+	authSudoModeTest.beforeEach(async ({ page }) => {
+		// Navigate to settings page
+		await page.goto("http://localhost:5002/settings");
+	});
+
+	authSudoModeTest(
 		"should allow user to enable/disable 2FA authenticator",
 		async ({ page, browserName }) => {
-			await authTest.step("Enable 2FA Authenticator", async () => {
+			await authSudoModeTest.step("Enable 2FA Authenticator", async () => {
 				await expect(
 					page.getByRole("button", { name: /enable/i }),
 				).toBeVisible();
@@ -130,7 +151,7 @@ authTest.describe("Account Settings Page", () => {
 				).toBeVisible();
 			});
 
-			await authTest.step("Disable 2FA Authenticator", async () => {
+			await authSudoModeTest.step("Disable 2FA Authenticator", async () => {
 				await expect(
 					page.getByRole("button", { name: /disable/i }),
 				).toBeVisible();
@@ -163,14 +184,7 @@ authTest.describe("Account Settings Page", () => {
 		},
 	);
 
-	authTest("should disable delete password button", async ({ page }) => {
-		// delete password button should be disabled when the password is the only auth provider
-		await expect(
-			page.getByRole("button", { name: /delete password/i }),
-		).toBeDisabled();
-	});
-
-	authTest(
+	authSudoModeTest(
 		"should allow user to update their password",
 		async ({ page, passwordAuth }) => {
 			// Click the Edit button
@@ -238,118 +252,125 @@ authTest.describe("Account Settings Page", () => {
 
 // TODO: test no sudo mode redirects to request sudo mode page
 
-webauthnTest.describe("Account Settings Page- Webauthn Account", () => {
-	webauthnTest.beforeEach(async ({ page }) => {
-		// Navigate to settings page
-		await page.goto("http://localhost:5002/settings");
-	});
+webauthnSudoModeTest.describe(
+	"Account Settings Page- Webauthn Account (Sudo Mode)",
+	() => {
+		webauthnSudoModeTest.beforeEach(async ({ page }) => {
+			// Navigate to settings page
+			await page.goto("http://localhost:5002/settings");
+		});
 
-	webauthnTest(
-		"should allow user to set/ remove their password",
-		async ({ page, webauthnAuth }) => {
-			await webauthnTest.step("Set New Password", async () => {
-				// delete password button shouldn't be there when we have no password
-				await expect(
-					page.getByRole("button", { name: /delete password/i }),
-				).not.toBeVisible();
+		webauthnSudoModeTest(
+			"should allow user to set/ remove their password",
+			async ({ page, webauthnAuth }) => {
+				await webauthnSudoModeTest.step("Set New Password", async () => {
+					// delete password button shouldn't be there when we have no password
+					await expect(
+						page.getByRole("button", { name: /delete password/i }),
+					).not.toBeVisible();
 
-				await expect(
-					page.getByRole("button", { name: /set password/i }),
-				).toBeVisible();
+					await expect(
+						page.getByRole("button", { name: /set password/i }),
+					).toBeVisible();
 
-				// Click the set password button
-				await page.getByRole("button", { name: /set password/i }).click();
+					// Click the set password button
+					await page.getByRole("button", { name: /set password/i }).click();
 
-				// Fill new full name
-				const newPassword = "NewPassword123!";
-				await page
-					.getByRole("textbox", { name: "New Password" })
-					.first()
-					.fill(newPassword);
-				await page
-					.getByRole("textbox", { name: "Confirm New Password" })
-					.fill(newPassword);
+					// Fill new full name
+					const newPassword = "NewPassword123!";
+					await page
+						.getByRole("textbox", { name: "New Password" })
+						.first()
+						.fill(newPassword);
+					await page
+						.getByRole("textbox", { name: "Confirm New Password" })
+						.fill(newPassword);
 
-				// Submit the form
-				await Promise.all([
-					page.waitForSelector('section[role="dialog"][data-open="true"]', {
-						state: "detached",
-					}), // modal closes
-					page
-						.getByRole("button", { name: /set password/i })
-						.click(), // click submit
-				]);
+					// Submit the form
+					await Promise.all([
+						page.waitForSelector('section[role="dialog"][data-open="true"]', {
+							state: "detached",
+						}), // modal closes
+						page
+							.getByRole("button", { name: /set password/i })
+							.click(), // click submit
+					]);
 
-				// Ensure password has changed- log out and log back in
-				const avatarButton = page
-					.locator('button[aria-haspopup="true"]')
-					.last();
-				await expect(avatarButton).toBeVisible();
-				await avatarButton.click();
+					// Ensure password has changed- log out and log back in
+					const avatarButton = page
+						.locator('button[aria-haspopup="true"]')
+						.last();
+					await expect(avatarButton).toBeVisible();
+					await avatarButton.click();
 
-				// wait for the menu to open
-				await page.waitForSelector('div[role="dialog"][data-open="true"]', {
-					state: "visible",
+					// wait for the menu to open
+					await page.waitForSelector('div[role="dialog"][data-open="true"]', {
+						state: "visible",
+					});
+
+					await expect(page.getByText("Signed in as")).toBeVisible();
+					await expect(
+						page.getByRole("menuitem", { name: "Log Out" }),
+					).toBeVisible();
+
+					await Promise.all([
+						page.waitForSelector('section[role="dialog"][data-open="true"]'), // or a better selector
+						page.getByRole("menuitem", { name: "Log Out" }).click(),
+					]);
+
+					await expect(page.getByRole("dialog")).toContainText(
+						"Confirm Logout",
+					);
+
+					// confirm logout
+					await page.getByRole("button", { name: "Logout" }).click();
+					await page.waitForURL(/\/auth\/login/);
+					// Wait for recaptcha to load
+					await waitForCaptcha({ page });
+
+					// login with the new password
+					await page
+						.getByLabel("Email Address")
+						.fill(webauthnAuth.account.email);
+					await page
+						.getByRole("textbox", { name: "Password Password" })
+						.fill(newPassword);
+					await page.getByRole("button", { name: "Log in" }).click();
+
+					await page.waitForURL("http://localhost:5002/settings");
 				});
 
-				await expect(page.getByText("Signed in as")).toBeVisible();
-				await expect(
-					page.getByRole("menuitem", { name: "Log Out" }),
-				).toBeVisible();
+				await webauthnSudoModeTest.step("Delete New Password", async () => {
+					await expect(
+						page.getByRole("button", { name: /delete password/i }),
+					).toBeVisible();
 
-				await Promise.all([
-					page.waitForSelector('section[role="dialog"][data-open="true"]'), // or a better selector
-					page.getByRole("menuitem", { name: "Log Out" }).click(),
-				]);
+					await Promise.all([
+						page.getByRole("button", { name: /delete password/i }).click(),
+						page.waitForSelector('section[role="dialog"][data-open="true"]', {
+							state: "visible",
+						}),
+					]);
 
-				await expect(page.getByRole("dialog")).toContainText("Confirm Logout");
+					// Submit the form
+					await Promise.all([
+						page.waitForSelector('section[role="dialog"][data-open="true"]', {
+							state: "detached",
+						}), // modal closes
+						page
+							.getByRole("button", { name: /delete password/i })
+							.click(), // click submit
+					]);
 
-				// confirm logout
-				await page.getByRole("button", { name: "Logout" }).click();
-				await page.waitForURL(/\/auth\/login/);
-				// Wait for recaptcha to load
-				await waitForCaptcha({ page });
+					await expect(
+						page.getByRole("button", { name: /set password/i }),
+					).toBeVisible();
 
-				// login with the new password
-				await page.getByLabel("Email Address").fill(webauthnAuth.account.email);
-				await page
-					.getByRole("textbox", { name: "Password Password" })
-					.fill(newPassword);
-				await page.getByRole("button", { name: "Log in" }).click();
-
-				await page.waitForURL("http://localhost:5002/settings");
-			});
-
-			await webauthnTest.step("Delete New Password", async () => {
-				await expect(
-					page.getByRole("button", { name: /delete password/i }),
-				).toBeVisible();
-
-				await Promise.all([
-					page.getByRole("button", { name: /delete password/i }).click(),
-					page.waitForSelector('section[role="dialog"][data-open="true"]', {
-						state: "visible",
-					}),
-				]);
-
-				// Submit the form
-				await Promise.all([
-					page.waitForSelector('section[role="dialog"][data-open="true"]', {
-						state: "detached",
-					}), // modal closes
-					page
-						.getByRole("button", { name: /delete password/i })
-						.click(), // click submit
-				]);
-
-				await expect(
-					page.getByRole("button", { name: /set password/i }),
-				).toBeVisible();
-
-				await expect(
-					page.getByRole("button", { name: /delete password/i }),
-				).not.toBeVisible();
-			});
-		},
-	);
-});
+					await expect(
+						page.getByRole("button", { name: /delete password/i }),
+					).not.toBeVisible();
+				});
+			},
+		);
+	},
+);
