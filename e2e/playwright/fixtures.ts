@@ -12,6 +12,9 @@ import fs from "node:fs";
 import path from "node:path";
 export { expect } from "@playwright/test";
 
+// TODO: in the future, reuse the same test accounts for sudo mode enabled/disabled
+// there is no need to create separate accounts for sudo mode tests
+
 const createUserContext = async (
 	options: Parameters<typeof createTestAccount>[1],
 	storagePath: string,
