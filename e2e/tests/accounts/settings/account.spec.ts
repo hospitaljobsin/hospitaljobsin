@@ -122,17 +122,14 @@ authTest.describe("Account Settings Page", () => {
 	authTest(
 		"should allow user to enable 2FA authenticator",
 		async ({ page, clipboard }) => {
-			await Promise.all([
-				// Wait for the modal to open
-				page.waitForSelector('section[role="dialog"][data-open="true"]', {
-					state: "visible",
-				}),
-				// Click the enable 2fa button
-				page
-					.getByRole("button", { name: /enable/i })
-					.click(),
-			]);
+			await page.getByRole("button", { name: /enable/i }).click();
+			await page.waitForSelector('section[role="dialog"][data-open="true"]', {
+				state: "visible",
+			});
 
+			await expect(
+				page.getByText("Enable Two Factor Authentication"),
+			).toBeVisible();
 			// we see a QR code and TOTP secret here
 			await page
 				.getByRole("button", { name: /copy secret to clipboard/i })
