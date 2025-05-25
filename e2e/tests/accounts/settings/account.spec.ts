@@ -5,56 +5,15 @@ import { Jimp } from "jimp";
 import fs from "node:fs";
 import QrCode from "qrcode-reader";
 
-authTest.describe("Account Settings Page", () => {
+authTest.describe("Account Settings Page- 2FA", () => {
 	authTest.beforeEach(async ({ page }) => {
 		// Navigate to login page
 		await page.goto("http://localhost:5002/settings");
 	});
 
 	authTest(
-		"should display account settings page with all elements",
-		async ({ page, passwordAuth }) => {
-			// Check for full name
-			const fullName = passwordAuth.account.fullName;
-			expect(page.getByText(fullName)).not.toBeNull();
-
-			// Check for email
-			const email = passwordAuth.account.email;
-			expect(page.getByText(email)).not.toBeNull();
-
-			// Check for avatar (Gravatar image)
-			const avatar = page
-				.getByTestId("account-avatar")
-				.getByRole("img", { name: fullName })
-				.first();
-
-			// Wait for it to be attached and visible
-			await expect(avatar).toBeVisible();
-		},
-	);
-
-	authTest("should allow user to update their full name", async ({ page }) => {
-		// Click the Edit button
-		await page.getByRole("button", { name: /edit/i }).click();
-
-		// Fill new full name
-		const newName = "Tester New";
-		await page.getByLabel("Full Name").fill(newName);
-		await page.getByRole("button", { name: /save changes/i }).click();
-
-		// Wait for the form to close and the new name to appear
-		await expect(page.getByText(newName)).toBeVisible();
-	});
-
-	authTest(
 		"should allow user to enable 2FA authenticator",
 		async ({ page, browserName }) => {
-			// https://github.com/microsoft/playwright/issues/13037
-			authTest.skip(
-				browserName === "webkit",
-				"Clipboard Permissions are not supported in WebKit",
-			);
-
 			await expect(page.getByRole("button", { name: /enable/i })).toBeVisible();
 
 			await Promise.all([
@@ -73,14 +32,6 @@ authTest.describe("Account Settings Page", () => {
 			await qrLocator.screenshot({
 				path: "playwright/screenshots/2fa-qrcode.png",
 			});
-
-			await page
-				.getByRole("button", { name: /copy secret to clipboard/i })
-				.click();
-
-			const copiedTotpSecret = await page.evaluate(() =>
-				navigator.clipboard.readText(),
-			);
 
 			// Decode the QR code from the screenshot
 			const image = await Jimp.read(
@@ -104,9 +55,21 @@ authTest.describe("Account Settings Page", () => {
 
 			const totpSecret = totpSecretUrl.split("secret=")[1].split("&")[0];
 
-			expect(totpSecret).toEqual(copiedTotpSecret);
+			if (browserName !== "webkit") {
+				// we have navigation API permissions issues on webkit, so we cannot copy to clipboard
+				// https://github.com/microsoft/playwright/issues/13037
+				await page
+					.getByRole("button", { name: /copy secret to clipboard/i })
+					.click();
 
-			const otp = await generateValidOTP({ totp_secret: copiedTotpSecret });
+				const copiedTotpSecret = await page.evaluate(() =>
+					navigator.clipboard.readText(),
+				);
+
+				expect(totpSecret).toEqual(copiedTotpSecret);
+			}
+
+			const otp = await generateValidOTP({ totp_secret: totpSecret });
 
 			await page.locator('input[name="token"]').fill(otp);
 
@@ -163,6 +126,48 @@ authTest.describe("Account Settings Page", () => {
 			]);
 		},
 	);
+});
+
+authTest.describe("Account Settings Page", () => {
+	authTest.beforeEach(async ({ page }) => {
+		// Navigate to login page
+		await page.goto("http://localhost:5002/settings");
+	});
+
+	authTest(
+		"should display account settings page with all elements",
+		async ({ page, passwordAuth }) => {
+			// Check for full name
+			const fullName = passwordAuth.account.fullName;
+			expect(page.getByText(fullName)).not.toBeNull();
+
+			// Check for email
+			const email = passwordAuth.account.email;
+			expect(page.getByText(email)).not.toBeNull();
+
+			// Check for avatar (Gravatar image)
+			const avatar = page
+				.getByTestId("account-avatar")
+				.getByRole("img", { name: fullName })
+				.first();
+
+			// Wait for it to be attached and visible
+			await expect(avatar).toBeVisible();
+		},
+	);
+
+	authTest("should allow user to update their full name", async ({ page }) => {
+		// Click the Edit button
+		await page.getByRole("button", { name: /edit/i }).click();
+
+		// Fill new full name
+		const newName = "Tester New";
+		await page.getByLabel("Full Name").fill(newName);
+		await page.getByRole("button", { name: /save changes/i }).click();
+
+		// Wait for the form to close and the new name to appear
+		await expect(page.getByText(newName)).toBeVisible();
+	});
 
 	authTest("should disable delete password button", async ({ page }) => {
 		// delete password button should be disabled when the password is the only auth provider

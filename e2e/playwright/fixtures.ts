@@ -1,5 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
 import {
 	type TestAccount,
 	createTestAccount,
@@ -10,6 +8,8 @@ import {
 	test as baseTest,
 	request,
 } from "@playwright/test";
+import fs from "node:fs";
+import path from "node:path";
 export { expect } from "@playwright/test";
 
 const createUserContext = async (
@@ -49,7 +49,7 @@ type WorkerFixtures = {
 export const test = baseTest.extend<{}, WorkerFixtures>({
 	passwordAuth: [
 		async ({ browser }, use) => {
-			const id = test.info().parallelIndex;
+			const id = test.info().workerIndex;
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -79,7 +79,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	webauthnAuth: [
 		async ({ browser }, use) => {
-			const id = test.info().parallelIndex;
+			const id = test.info().workerIndex;
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
@@ -109,7 +109,7 @@ export const test = baseTest.extend<{}, WorkerFixtures>({
 	],
 	twoFactorAuth: [
 		async ({ browser }, use) => {
-			const id = test.info().parallelIndex;
+			const id = test.info().workerIndex;
 			const baseDir = path.resolve(test.info().project.outputDir, ".auth");
 			fs.mkdirSync(baseDir, { recursive: true });
 
