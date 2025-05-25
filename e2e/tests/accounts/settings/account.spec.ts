@@ -186,7 +186,7 @@ authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 
 	authSudoModeTest(
 		"should allow user to update their password",
-		async ({ page, passwordAuth }) => {
+		async ({ page, passwordAuthSudoMode }) => {
 			// Click the Edit button
 			await page.getByRole("button", { name: /update password/i }).click();
 
@@ -239,7 +239,9 @@ authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 			await waitForCaptcha({ page });
 
 			// login with the new password
-			await page.getByLabel("Email Address").fill(passwordAuth.account.email);
+			await page
+				.getByLabel("Email Address")
+				.fill(passwordAuthSudoMode.account.email);
 			await page
 				.getByRole("textbox", { name: "Password Password" })
 				.fill(newPassword);
@@ -249,8 +251,6 @@ authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 		},
 	);
 });
-
-// TODO: test no sudo mode redirects to request sudo mode page
 
 webauthnSudoModeTest.describe(
 	"Account Settings Page- Webauthn Account (Sudo Mode)",
@@ -262,7 +262,7 @@ webauthnSudoModeTest.describe(
 
 		webauthnSudoModeTest(
 			"should allow user to set/ remove their password",
-			async ({ page, webauthnAuth }) => {
+			async ({ page, webauthnAuthSudoMode }) => {
 				await webauthnSudoModeTest.step("Set New Password", async () => {
 					// delete password button shouldn't be there when we have no password
 					await expect(
@@ -331,7 +331,7 @@ webauthnSudoModeTest.describe(
 					// login with the new password
 					await page
 						.getByLabel("Email Address")
-						.fill(webauthnAuth.account.email);
+						.fill(webauthnAuthSudoMode.account.email);
 					await page
 						.getByRole("textbox", { name: "Password Password" })
 						.fill(newPassword);
