@@ -46,84 +46,6 @@ authTest.describe("Account Settings Page", () => {
 		await expect(page.getByText(newName)).toBeVisible();
 	});
 
-	authTest("should disable delete password button", async ({ page }) => {
-		// delete password button should be disabled when the password is the only auth provider
-		await expect(
-			page.getByRole("button", { name: /delete password/i }),
-		).toBeDisabled();
-	});
-
-	authTest(
-		"should allow user to update their password",
-		async ({ page, passwordAuth }) => {
-			// Click the Edit button
-			await page.getByRole("button", { name: /update password/i }).click();
-
-			// Fill new full name
-			const newPassword = "NewPassword123!";
-			await page
-				.getByRole("textbox", { name: "New Password" })
-				.first()
-				.fill(newPassword);
-			await page
-				.getByRole("textbox", { name: "Confirm New Password" })
-				.fill(newPassword);
-
-			// Submit the form
-			await Promise.all([
-				page.waitForSelector('section[role="dialog"][data-open="true"]', {
-					state: "detached",
-				}), // modal closes
-				page
-					.getByRole("button", { name: /update password/i })
-					.click(), // click submit
-			]);
-
-			// Ensure password has changed- log out and log back in
-			const avatarButton = page.locator('button[aria-haspopup="true"]').last();
-			await expect(avatarButton).toBeVisible();
-			await avatarButton.click();
-
-			// wait for the menu to open
-			await page.waitForSelector('div[role="dialog"][data-open="true"]', {
-				state: "visible",
-			});
-
-			await expect(page.getByText("Signed in as")).toBeVisible();
-			await expect(
-				page.getByRole("menuitem", { name: "Log Out" }),
-			).toBeVisible();
-
-			await Promise.all([
-				page.waitForSelector('section[role="dialog"][data-open="true"]'), // or a better selector
-				page.getByRole("menuitem", { name: "Log Out" }).click(),
-			]);
-
-			await expect(page.getByRole("dialog")).toContainText("Confirm Logout");
-
-			// confirm logout
-			await page.getByRole("button", { name: "Logout" }).click();
-			await page.waitForURL(/\/auth\/login/);
-			// Wait for recaptcha to load
-			await waitForCaptcha({ page });
-
-			// login with the new password
-			await page.getByLabel("Email Address").fill(passwordAuth.account.email);
-			await page
-				.getByRole("textbox", { name: "Password Password" })
-				.fill(newPassword);
-			await page.getByRole("button", { name: "Log in" }).click();
-
-			await page.waitForURL("http://localhost:5002/settings");
-		},
-	);
-});
-
-authTest.describe("Two Factor Authentication", () => {
-	authTest.beforeEach(async ({ page }) => {
-		// Navigate to login page
-		await page.goto("http://localhost:5002/settings");
-	});
 	authTest(
 		"should allow user to enable 2FA authenticator",
 		async ({ page, browserName }) => {
@@ -207,9 +129,117 @@ authTest.describe("Two Factor Authentication", () => {
 			).toBeVisible();
 		},
 	);
+
+	authTest(
+		"should allow user to disable 2FA authenticator",
+		async ({ page }) => {
+			await expect(
+				page.getByRole("button", { name: /disable/i }),
+			).toBeVisible();
+
+			await Promise.all([
+				page.getByRole("button", { name: /disable/i }).click(),
+				page.waitForSelector('section[role="dialog"][data-open="true"]', {
+					state: "visible",
+				}),
+			]);
+
+			await expect(
+				page.getByRole("heading", {
+					name: "Disable Two Factor Authentication",
+				}),
+			).toBeVisible();
+
+			// disable 2FA
+			await Promise.all([
+				// Wait for the modal to close
+				page.waitForSelector('section[role="dialog"][data-open="true"]', {
+					state: "detached",
+				}),
+				// Click the enable button
+				page
+					.getByRole("button", { name: /disable/i })
+					.click(),
+			]);
+		},
+	);
+
+	authTest("should disable delete password button", async ({ page }) => {
+		// delete password button should be disabled when the password is the only auth provider
+		await expect(
+			page.getByRole("button", { name: /delete password/i }),
+		).toBeDisabled();
+	});
+
+	authTest(
+		"should allow user to update their password",
+		async ({ page, passwordAuth }) => {
+			// Click the Edit button
+			await page.getByRole("button", { name: /update password/i }).click();
+
+			// Fill new full name
+			const newPassword = "NewPassword123!";
+			await page
+				.getByRole("textbox", { name: "New Password" })
+				.first()
+				.fill(newPassword);
+			await page
+				.getByRole("textbox", { name: "Confirm New Password" })
+				.fill(newPassword);
+
+			// Submit the form
+			await Promise.all([
+				page.waitForSelector('section[role="dialog"][data-open="true"]', {
+					state: "detached",
+				}), // modal closes
+				page
+					.getByRole("button", { name: /update password/i })
+					.click(), // click submit
+			]);
+
+			// Ensure password has changed- log out and log back in
+			const avatarButton = page.locator('button[aria-haspopup="true"]').last();
+			await expect(avatarButton).toBeVisible();
+			await avatarButton.click();
+
+			// wait for the menu to open
+			await page.waitForSelector('div[role="dialog"][data-open="true"]', {
+				state: "visible",
+			});
+
+			await expect(page.getByText("Signed in as")).toBeVisible();
+			await expect(
+				page.getByRole("menuitem", { name: "Log Out" }),
+			).toBeVisible();
+
+			await Promise.all([
+				page.waitForSelector('section[role="dialog"][data-open="true"]'), // or a better selector
+				page.getByRole("menuitem", { name: "Log Out" }).click(),
+			]);
+
+			await expect(page.getByRole("dialog")).toContainText("Confirm Logout");
+
+			// confirm logout
+			await page.getByRole("button", { name: "Logout" }).click();
+			await page.waitForURL(/\/auth\/login/);
+			// Wait for recaptcha to load
+			await waitForCaptcha({ page });
+
+			// login with the new password
+			await page.getByLabel("Email Address").fill(passwordAuth.account.email);
+			await page
+				.getByRole("textbox", { name: "Password Password" })
+				.fill(newPassword);
+			await page.getByRole("button", { name: "Log in" }).click();
+
+			await page.waitForURL("http://localhost:5002/settings");
+		},
+	);
 });
+
+// possible diagnosis: the password was changed before 2fa tests ran, so settings page threw up
 
 // TODO: test no sudo mode redirects to request sudo mode page
 
 // TODO: add new fixture to authenticate with two factor account
-// add 2fa disabling tests for that account
+// ensure 2fa cannot be disabled when its the only auth provider
