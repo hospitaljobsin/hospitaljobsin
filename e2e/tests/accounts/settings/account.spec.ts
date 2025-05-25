@@ -147,6 +147,11 @@ authTest.describe("Two Factor Authentication", () => {
 			).toBeVisible();
 
 			// we see a QR code and TOTP secret here
+			const qrLocator = page.locator('[data-testid="totp-qrcode"]'); // Adjust selector if needed
+			await qrLocator.screenshot({
+				path: "playwright/screenshots/2fa-qrcode.png",
+			});
+
 			await page
 				.getByRole("button", { name: /copy secret to clipboard/i })
 				.click();
@@ -154,11 +159,6 @@ authTest.describe("Two Factor Authentication", () => {
 			const copiedTotpSecret = await page.evaluate(() =>
 				navigator.clipboard.readText(),
 			);
-
-			const qrLocator = page.locator('[data-testid="totp-qrcode"]'); // Adjust selector if needed
-			await qrLocator.screenshot({
-				path: "playwright/screenshots/2fa-qrcode.png",
-			});
 
 			// Decode the QR code from the screenshot
 			const image = await Jimp.read(
