@@ -109,8 +109,10 @@ authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 
 				// we see a QR code and TOTP secret here
 				const qrLocator = page.locator('[data-testid="totp-qrcode"]'); // Adjust selector if needed
+				await expect(qrLocator).toBeVisible();
 				await qrLocator.screenshot({
 					path: "playwright/screenshots/2fa-qrcode.png",
+					scale: "css", // ensures full resolution capture
 				});
 
 				// Decode the QR code from the screenshot
