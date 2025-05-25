@@ -16,11 +16,11 @@ authTest.describe("Account Settings Page", () => {
 		async ({ page, passwordAuth }) => {
 			// Check for full name
 			const fullName = passwordAuth.account.fullName;
-			await expect(page.getByText(fullName)).not.toBeNull();
+			expect(page.getByText(fullName)).not.toBeNull();
 
 			// Check for email
 			const email = passwordAuth.account.email;
-			await expect(page.getByText(email)).not.toBeNull();
+			expect(page.getByText(email)).not.toBeNull();
 
 			// Check for avatar (Gravatar image)
 			const avatar = page
@@ -118,7 +118,13 @@ authTest.describe("Account Settings Page", () => {
 			await page.waitForURL("http://localhost:5002/settings");
 		},
 	);
+});
 
+authTest.describe("Two Factor Authentication", () => {
+	authTest.beforeEach(async ({ page }) => {
+		// Navigate to login page
+		await page.goto("http://localhost:5002/settings");
+	});
 	authTest(
 		"should allow user to enable 2FA authenticator",
 		async ({ page, context }) => {
