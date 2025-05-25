@@ -283,3 +283,13 @@ export const webauthnSudoModeTest = test.extend<
 		await context.close();
 	},
 });
+
+export const twoFactorTest = test.extend<{}, { context: BrowserContext }>({
+	context: async ({ browser, twoFactorAuth }, use) => {
+		const context = await browser.newContext({
+			storageState: twoFactorAuth.storageState,
+		});
+		await use(context);
+		await context.close();
+	},
+});

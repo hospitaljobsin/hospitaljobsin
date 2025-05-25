@@ -2,6 +2,7 @@ import {
 	authSudoModeTest,
 	authTest,
 	expect,
+	twoFactorTest,
 	webauthnSudoModeTest,
 } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
@@ -58,7 +59,27 @@ authTest.describe("Account Settings Page", () => {
 		).toBeDisabled();
 	});
 
-	// TODO: add tests to ensure that sudo mode buttons redirect to the sudo mode request page
+	// ensure that sudo mode buttons redirect to the sudo mode request page
+
+	authTest(
+		"update password button should redirect to request sudo mode",
+		async ({ page, passwordAuth }) => {
+			// Click the Update Password button
+			await page.getByRole("button", { name: /update password/i }).click();
+
+			await page.waitForURL(/request-sudo/);
+		},
+	);
+
+	authTest(
+		"enable 2fa authenticator should redirect to request sudo mode",
+		async ({ page, passwordAuth }) => {
+			// Click the Enable 2FA button
+			await page.getByRole("button", { name: /enable/i }).click();
+
+			await page.waitForURL(/request-sudo/);
+		},
+	);
 });
 
 authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
@@ -248,6 +269,23 @@ authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 			await page.getByRole("button", { name: "Log in" }).click();
 
 			await page.waitForURL("http://localhost:5002/settings");
+		},
+	);
+});
+
+twoFactorTest.describe("Account Settings Page- 2FA Account", () => {
+	twoFactorTest.beforeEach(async ({ page }) => {
+		// Navigate to settings page
+		await page.goto("http://localhost:5002/settings");
+	});
+
+	twoFactorTest(
+		"disabling 2FA should redirect to request sudo mode",
+		async ({ page, twoFactorAuth }) => {
+			// Click the Disable 2FA button
+			await page.getByRole("button", { name: /disable/i }).click();
+
+			await page.waitForURL(/request-sudo/);
 		},
 	);
 });
