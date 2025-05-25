@@ -127,12 +127,12 @@ authTest.describe("Two Factor Authentication", () => {
 	});
 	authTest(
 		"should allow user to enable 2FA authenticator",
-		async ({ page, context }) => {
+		async ({ page }) => {
 			await Promise.all([
-				page.getByRole("button", { name: /enable/i }).click(),
 				page.waitForSelector('section[role="dialog"][data-open="true"]', {
 					state: "visible",
 				}),
+				page.getByRole("button", { name: /enable/i }).click(),
 			]);
 
 			await expect(
