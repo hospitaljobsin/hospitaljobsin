@@ -1,8 +1,8 @@
-import fs from "node:fs";
 import { authTest, expect } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { Jimp } from "jimp";
+import fs from "node:fs";
 import QrCode from "qrcode-reader";
 
 authTest.describe("Account Settings Page", () => {
@@ -122,10 +122,12 @@ authTest.describe("Account Settings Page", () => {
 	authTest(
 		"should allow user to enable 2FA authenticator",
 		async ({ page, context }) => {
-			await page.getByRole("button", { name: /enable/i }).click();
-			await page.waitForSelector('section[role="dialog"][data-open="true"]', {
-				state: "visible",
-			});
+			await Promise.all([
+				page.getByRole("button", { name: /enable/i }).click(),
+				page.waitForSelector('section[role="dialog"][data-open="true"]', {
+					state: "visible",
+				}),
+			]);
 
 			await expect(
 				page.getByText("Enable Two Factor Authentication"),
