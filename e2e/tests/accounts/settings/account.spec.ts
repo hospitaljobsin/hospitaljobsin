@@ -127,7 +127,12 @@ authTest.describe("Two Factor Authentication", () => {
 	});
 	authTest(
 		"should allow user to enable 2FA authenticator",
-		async ({ page }) => {
+		async ({ page, browserName }) => {
+			// https://github.com/microsoft/playwright/issues/13037
+			authTest.skip(
+				browserName === "webkit",
+				"Clipboard Permissions are not supported in WebKit",
+			);
 			await Promise.all([
 				page.waitForSelector('section[role="dialog"][data-open="true"]', {
 					state: "visible",
@@ -159,16 +164,21 @@ authTest.describe("Two Factor Authentication", () => {
 			);
 
 			const qr = new QrCode();
-			let totpSecret = "";
+			let totpSecretUrl = "";
 
-			qr.callback = (err, value) => {
+			qr.callback = (
+				err: ErrorOptions | undefined,
+				value: { result: string },
+			) => {
 				if (err) {
 					throw new Error("❌ Failed to decode QR code:", err);
 				}
-				totpSecret = value.result;
+				totpSecretUrl = value.result;
 				console.log("✅ QR code content:", value.result);
 			};
 			qr.decode(image.bitmap);
+
+			const totpSecret = totpSecretUrl.split("secret=")[1].split("&")[0];
 
 			expect(totpSecret).toEqual(copiedTotpSecret);
 
