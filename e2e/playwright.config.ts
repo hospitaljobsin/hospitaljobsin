@@ -11,7 +11,7 @@ import { defineConfig, devices } from "@playwright/test";
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const IS_CI = true;
+const IS_CI = process.env.CI;
 
 export default defineConfig({
 	testDir: "./tests/",
