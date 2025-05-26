@@ -119,7 +119,7 @@ data "aws_ecr_authorization_token" "token" {
 }
 
 # FIXME: we need to wait until this issue is resolved
-# https://github.com/kreuzwerker/terraform-provider-docker/issues/417
+# https://github.com/kreuzwerker/terraform-provider-docker/issues/737
 # to enable docker BuildX builds
 # resource "docker_image" "backend" {
 #   name = "${aws_ecr_repository.backend.repository_url}:latest"
