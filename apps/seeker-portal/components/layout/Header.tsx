@@ -1,4 +1,8 @@
 "use client";
+import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
+import { APP_NAME } from "@/lib/constants";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 import {
 	Button,
 	Link,
@@ -10,10 +14,6 @@ import {
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
-import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
-import { APP_NAME } from "@/lib/constants";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
 import Logo from "../Logo";
 import AuthNavigation from "./AuthNavigation";
 
@@ -64,7 +64,6 @@ export default function Header({
 			<NavbarContent justify="end">
 				{data.viewer.__typename === "Account" ? (
 					<>
-						{" "}
 						<NavbarItem className="hidden md:block">
 							<Link
 								href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
