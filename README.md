@@ -54,6 +54,7 @@ To start all services in development, run the following command:
 tmuxinator start medical_jobs
 ```
 
+
 ### Running E2E tests
 1. Stop the currently running services:
     ```bash
