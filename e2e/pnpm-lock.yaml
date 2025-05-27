@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@playwright/test':
-        specifier: 1.52.0
+        specifier: ^1.52.0
         version: 1.52.0
       jimp:
         specifier: ^1.6.0
