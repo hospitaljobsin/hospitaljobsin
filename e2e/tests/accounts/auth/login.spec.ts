@@ -389,44 +389,26 @@ test.describe("Login Page", () => {
 		expect(googlePage.url()).toMatch(/^https:\/\/accounts\.google\.com\//);
 	});
 
-	// test("full Google-login redirect flow + button wiring", async ({
-	// 	context,
-	// 	request,
-	// }) => {
-	// 	// bump timeouts if needed
-	// 	test.setTimeout(60_000);
+	test("should redirect successfully to Google Oauth API on Google login", async ({
+		page,
+		browserName,
+	}) => {
+		test.skip(
+			browserName === "webkit",
+			"WebKit cancels redirects because of content policies",
+		);
+		const redirectTo = "http://localhost:5000/";
+		const apiPath = `http://localhost:8000/auth/signin/google?redirect_uri=${encodeURIComponent(
+			redirectTo,
+		)}`;
+		await Promise.all([
+			page.waitForURL(apiPath),
+			page.getByRole("button", { name: "Sign in with Google" }).click(),
+		]);
+		// await page.getByRole("button", { name: "Sign in with Google" }).click();
 
-	// 	// 1) Build the redirect URI and API path exactly as your <Button> does
-	// 	const redirectTo = "http://localhost:5000/";
-	// 	const apiPath = `http://localhost:8000/auth/signin/google?redirect_uri=${encodeURIComponent(redirectTo)}`;
-
-	// 	// --- Part A: API‐only check (no redirects followed) ---
-	// 	const apiResponse = await request.get(apiPath, { maxRedirects: 0 });
-	// 	expect(apiResponse.status(), "backend should 302 → Google").toBe(302);
-	// 	const location = apiResponse.headers()["location"]!;
-	// 	expect(location, "Location header should point at Google Accounts").toMatch(
-	// 		/^https:\/\/accounts\.google\.com\//,
-	// 	);
-
-	// 	// --- Part B: Inspect the button href on a fresh page ---
-	// 	const uiPage = await context.newPage();
-	// 	await uiPage.goto(redirectTo, { waitUntil: "domcontentloaded" });
-
-	// 	// Grab the href attribute of the "Sign in with Google" link
-	// 	const href = await uiPage
-	// 		.getByRole("button", { name: "Sign in with Google" })
-	// 		.getAttribute("href");
-
-	// 	expect(href, "Button href should match the API path").toBe(apiPath);
-
-	// 	// --- Part C (optional): actually follow the redirect yourself ---
-	// 	// This sidesteps WebKit’s policy check entirely.
-	// 	const googlePage = await context.newPage();
-	// 	await googlePage.goto(location, { waitUntil: "load", timeout: 60_000 });
-	// 	expect(googlePage.url(), "finally landed on Google Accounts").toMatch(
-	// 		/^https:\/\/accounts\.google\.com\//,
-	// 	);
-	// });
+		// await page.waitForURL("https://accounts.google.com/**");
+	});
 });
 
 authTest.describe("Login Page Authentication Redirects", () => {
