@@ -363,30 +363,19 @@ test.describe("Login Page", () => {
 
 	test("should redirect successfully to Google accounts page on Google login", async ({
 		page,
-		context,
-		request,
+		browserName,
 	}) => {
-		// 1) Build your redirect-URI and API path exactly as in the UI
-		const redirectTo = "http://localhost:5000/";
-		const apiPath = `http://localhost:8000/auth/signin/google?redirect_uri=${encodeURIComponent(
-			redirectTo,
-		)}`;
+		test.skip(
+			browserName === "webkit",
+			"Webkit cancels navigation due to content policies",
+		);
+		await Promise.all([
+			page.waitForURL("https://accounts.google.com/**"),
+			page.getByRole("button", { name: "Sign in with Google" }).click(),
+		]);
+		// await page.getByRole("button", { name: "Sign in with Google" }).click();
 
-		// 2) Call the endpoint directly **without following redirects**
-		const apiResponse = await request.get(apiPath, {
-			maxRedirects: 0, // <— disable automatic redirect following
-			timeout: 60_000, // bump if your server is slow
-		});
-
-		// 3) Now you’ll see the original 302
-		expect(apiResponse.status()).toBe(302);
-		const location = apiResponse.headers()["location"]!;
-		expect(location).toMatch(/^https:\/\/accounts\.google\.com\//);
-
-		// 4) If you want to drive the browser into Google’s page:
-		const googlePage = await context.newPage();
-		await googlePage.goto(location, { waitUntil: "load", timeout: 60_000 });
-		expect(googlePage.url()).toMatch(/^https:\/\/accounts\.google\.com\//);
+		// await page.waitForURL("https://accounts.google.com/**");
 	});
 });
 
