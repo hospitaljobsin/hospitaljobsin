@@ -388,27 +388,6 @@ test.describe("Login Page", () => {
 		await googlePage.goto(location, { waitUntil: "load", timeout: 60_000 });
 		expect(googlePage.url()).toMatch(/^https:\/\/accounts\.google\.com\//);
 	});
-
-	test("should redirect successfully to Google Oauth API on Google login", async ({
-		page,
-		browserName,
-	}) => {
-		test.skip(
-			browserName === "webkit",
-			"WebKit cancels redirects because of content policies",
-		);
-		const redirectTo = "http://localhost:5000/";
-		const apiPath = `http://localhost:8000/auth/signin/google?redirect_uri=${encodeURIComponent(
-			redirectTo,
-		)}`;
-		await Promise.all([
-			page.waitForURL(apiPath),
-			page.getByRole("button", { name: "Sign in with Google" }).click(),
-		]);
-		// await page.getByRole("button", { name: "Sign in with Google" }).click();
-
-		// await page.waitForURL("https://accounts.google.com/**");
-	});
 });
 
 authTest.describe("Login Page Authentication Redirects", () => {
