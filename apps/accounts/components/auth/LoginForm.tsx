@@ -1,9 +1,14 @@
 "use client";
 
+import type { LoginFormGenerateAuthenticationOptionsMutation } from "@/__generated__/LoginFormGenerateAuthenticationOptionsMutation.graphql";
+import type { LoginFormPasskeyMutation as LoginFormPasskeyMutationType } from "@/__generated__/LoginFormPasskeyMutation.graphql";
+import type { LoginFormPasswordMutation as LoginFormPasswordMutationType } from "@/__generated__/LoginFormPasswordMutation.graphql";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
+import { getValidRedirectURL } from "@/lib/redirects";
 import { useRouter } from "@bprogress/next";
 import {
 	Alert,
-	addToast,
 	Button,
 	Card,
 	CardBody,
@@ -11,6 +16,7 @@ import {
 	CardHeader,
 	Divider,
 	Input,
+	addToast,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Google } from "@lobehub/icons";
@@ -22,12 +28,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
-import type { LoginFormGenerateAuthenticationOptionsMutation } from "@/__generated__/LoginFormGenerateAuthenticationOptionsMutation.graphql";
-import type { LoginFormPasskeyMutation as LoginFormPasskeyMutationType } from "@/__generated__/LoginFormPasskeyMutation.graphql";
-import type { LoginFormPasswordMutation as LoginFormPasswordMutationType } from "@/__generated__/LoginFormPasswordMutation.graphql";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
-import { getValidRedirectURL } from "@/lib/redirects";
 import { useTurnstile } from "../TurnstileProvider";
 
 const LoginFormPasswordMutation = graphql`
@@ -436,6 +436,9 @@ export default function LoginForm() {
 
 						<Button
 							fullWidth
+							as="a"
+							href={`${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(redirectTo)}`}
+							target="_self"
 							variant="bordered"
 							startContent={<Google.Color size={20} />}
 							isDisabled={
@@ -444,9 +447,6 @@ export default function LoginForm() {
 								isGenerateAuthenticationOptionsMutationInFlight ||
 								isPasskeysPromptActive
 							}
-							onPress={() => {
-								window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/signin/google?redirect_uri=${encodeURIComponent(redirectTo)}`;
-							}}
 						>
 							Sign in with Google
 						</Button>
