@@ -1,9 +1,9 @@
-import type { PlaywrightTestArgs } from "@playwright/test";
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { EMAIL_VERIFICATION_TOKEN_COOLDOWN } from "@/tests/utils/constants";
 import type { Email } from "@/tests/utils/mailcatcher";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
+import type { PlaywrightTestArgs } from "@playwright/test";
 
 async function findVerificationCode({
 	emailMessage,
@@ -120,7 +120,12 @@ test.describe("Sign Up Page", () => {
 
 	test("should redirect successfully to Google accounts page on Google signup", async ({
 		page,
+		browserName,
 	}) => {
+		test.skip(
+			browserName === "webkit",
+			"Webkit cancels navigation due to content policies",
+		);
 		await page.getByRole("button", { name: "Sign up with Google" }).click();
 
 		await page.waitForURL("https://accounts.google.com/**");
