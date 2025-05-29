@@ -180,13 +180,13 @@ resource "aws_lambda_function" "backend" {
     variables = {
       SERVER_DEBUG                                = "false"
       SERVER_ENVIRONMENT                          = "production"
-      SERVER_DATABASE_URL                         = "${mongodbatlas_advanced_cluster.this.connection_strings.0.standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DATABASE_URL                         = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
       SERVER_DEFAULT_DATABASE_NAME                = var.mongodb_database_name
       SERVER_HOST                                 = "0.0.0.0"
       SERVER_PORT                                 = "8000"
       SERVER_LOG_LEVEL                            = "INFO"
       SERVER_CORS_ALLOW_ORIGINS                   = "[\"https://${var.domain_name}\", \"https://recruiter.${var.domain_name}\", \"https://accounts.${var.domain_name}\"]"
-      SERVER_SESSION_COOKIE_DOMAIN                = "${var.domain_name}"
+      SERVER_SESSION_COOKIE_DOMAIN                = var.domain_name
       SERVER_EMAIl_PROVIDER                       = "aws_ses"
       SERVER_EMAIL_FROM                           = aws_ses_email_identity.this.email
       SERVER_S3_BUCKET_NAME                       = aws_s3_bucket.this.bucket

@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-SUPPORT_EMAIL = "support@example.com"
+SUPPORT_EMAIL = "support@hospitaljobs.in"
 
 APP_NAME = "Hospital Jobs"
 

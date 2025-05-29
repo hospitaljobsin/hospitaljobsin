@@ -62,13 +62,6 @@ variable "cloudflare_acount_id" {
   description = "Cloudflare account ID."
 }
 
-
-variable "support_email" {
-  type        = string
-  description = "Support email for IAP."
-}
-
-
 variable "google_oauth_client_id" {
   type        = string
   description = "Google OAuth client ID."
