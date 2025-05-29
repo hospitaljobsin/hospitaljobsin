@@ -118,15 +118,13 @@ data "aws_ecr_authorization_token" "token" {
   registry_id = aws_ecr_repository.backend.registry_id
 }
 
-# FIXME: we need to wait until this issue is resolved
-# https://github.com/kreuzwerker/terraform-provider-docker/issues/737
-# to enable docker BuildX builds
+
 resource "docker_image" "backend" {
   name = "${aws_ecr_repository.backend.repository_url}:latest"
   build {
-    context = abspath("${path.root}/../server")
+    context    = abspath("${path.root}/../server")
     dockerfile = "${abspath("${path.root}/../server")}/Dockerfile"
-    builder = "default"
+    builder    = "default"
 
     build_args = {
       AWS_DEFAULT_REGION : var.aws_region
