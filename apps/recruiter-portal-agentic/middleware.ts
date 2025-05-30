@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { ORG_SUBDOMAIN_HEADER_NAME } from "./lib/constants";
 import { env } from "./lib/env/client";
 import links from "./lib/links";
 import { unsign } from "./lib/session";
@@ -53,15 +54,25 @@ export async function middleware(request: NextRequest) {
 	}
 
 	if (!isAuthenticated) {
-		console.log("Unauthenticated user. Redirecting to login.");
 		return getAuthenticationResponse(request);
 	}
 
 	if (subdomain) {
+		if (subdomain === "recruiter") {
+			// TODO: only allow the /new route here
+			// avoid all other routes here.
+			// (OR) create a separate recruiter.hospitaljobs.in subdomain app like accounts.hospitaljobs.in
+		}
 		console.log("Authenticated request from subdomain:", subdomain);
-		// Optionally: add subdomain to request headers for downstream use
-		request.headers.set("x-org-subdomain", subdomain);
-		return response;
+		// TODO: if we have the /new route, redirect to it the recruiter subdomain
+		const requestHeaders = new Headers(request.headers);
+		requestHeaders.set(ORG_SUBDOMAIN_HEADER_NAME, subdomain);
+		return NextResponse.next({
+			request: {
+				// New request headers
+				headers: requestHeaders,
+			},
+		});
 	} else {
 		// TODO: this wont happen actually -> hospitaljobs.in points to seeker portal
 		console.log(

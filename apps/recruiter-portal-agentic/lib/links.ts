@@ -1,10 +1,14 @@
 import { env } from "./env/client";
 
+const protocol =
+	env.NEXT_PUBLIC_ENVIRONMENT === "production" ? "https" : "http";
+
 const links = {
 	landing: "/",
 	dashboard: "/dashboard",
 	createOrganization: "/dashboard/new-organization",
-	organizationDetail: (slug: string) => `/dashboard/organizations/${slug}`,
+	organizationDetail: (slug: string) =>
+		`${protocol}://${slug}.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
 	organizationJobDetail: (organizationSlug: string, jobSlug: string) =>
 		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}`,
 	organizationDetailMembers: (slug: string) =>

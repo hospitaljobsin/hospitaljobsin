@@ -1,13 +1,16 @@
-"use client";
-
 import ChatInterface from "@/components/ChatInterface";
 import HeaderClientComponent from "@/components/layout/HeaderClientComponent";
+import { ORG_SUBDOMAIN_HEADER_NAME } from "@/lib/constants";
+import { headers } from "next/headers";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const headersList = await headers();
+	const organizationSlug = headersList.get(ORG_SUBDOMAIN_HEADER_NAME);
+	console.log("Organization Slug:", organizationSlug);
 	return (
 		<div className="flex flex-col h-full w-full">
 			<HeaderClientComponent />
