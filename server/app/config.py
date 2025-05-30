@@ -163,6 +163,16 @@ class AppSettings(BaseSettings):
         return self._is_environment(Environment.production)
 
 
+class AgentSettings(BaseSettings):
+    google_api_key: str
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+
 class DatabaseSettings(BaseSettings):
     # database config
 

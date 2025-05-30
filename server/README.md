@@ -51,3 +51,8 @@ After following the setup guide, the server can be run independently locally usi
 ```bash
 uv run scripts/run_server.py
 ```
+
+### 3. Run Langgraph Development Server
+```bash
+uv run langgraph dev --allow-blocking --port 8123
+```
