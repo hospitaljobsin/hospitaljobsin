@@ -4,18 +4,20 @@ import {
 	Dropdown,
 	DropdownItem,
 	DropdownMenu,
+	DropdownSection,
 	DropdownTrigger,
 	Navbar,
 	NavbarBrand,
 	NavbarContent,
 } from "@heroui/react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import AuthNavigation from "./AuthNavigation";
+import HeaderOrganizationList from "./HeaderOrganizationList";
 
 export const HeaderQuery = graphql`
   query HeaderQuery($organizationSlug: String!) {
@@ -23,6 +25,7 @@ export const HeaderQuery = graphql`
       ... on Account {
         __typename
         ...AuthNavigationFragment
+		...HeaderOrganizationListFragment
       }
       ... on NotAuthenticatedError {
         __typename
@@ -79,36 +82,16 @@ export default function Header({
 							base: "gap-4",
 						}}
 					>
-						<DropdownItem
-							key="autoscaling"
-							description="ACME scales apps based on demand and load"
-						>
-							Autoscaling
-						</DropdownItem>
-						<DropdownItem
-							key="usage_metrics"
-							description="Real-time metrics to debug issues"
-						>
-							Usage Metrics
-						</DropdownItem>
-						<DropdownItem
-							key="production_ready"
-							description="ACME runs on ACME, join us at web scale"
-						>
-							Production Ready
-						</DropdownItem>
-						<DropdownItem
-							key="99_uptime"
-							description="High availability and uptime guarantees"
-						>
-							+99% Uptime
-						</DropdownItem>
-						<DropdownItem
-							key="supreme_support"
-							description="Support team ready to respond"
-						>
-							+Supreme Support
-						</DropdownItem>
+						<HeaderOrganizationList account={data.viewer} />
+						<DropdownSection>
+							<DropdownItem
+								key="new_organization"
+								description="Create or join an organization"
+								startContent={<PlusIcon />}
+							>
+								New organization
+							</DropdownItem>
+						</DropdownSection>
 					</DropdownMenu>
 				</Dropdown>
 			</NavbarBrand>

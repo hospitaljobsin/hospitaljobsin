@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0d70332f12da7b0467c66b08db38d3a3>>
- * @relayHash 60a3db52708c73c8e71604a146f8c51a
+ * @generated SignedSource<<dad4288f4e890527bfc8a4f68e2866da>>
+ * @relayHash 459e2df1bcfd435a13ff55e17c074f41
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,169 +9,107 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 60a3db52708c73c8e71604a146f8c51a
+// @relayRequestID 459e2df1bcfd435a13ff55e17c074f41
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type HeaderQuery$variables = {
-  organizationSlug: string;
+export type HeaderOrganizationListPaginationQuery$variables = {
+  count?: number | null | undefined;
+  cursor?: string | null | undefined;
+  id: string;
 };
-export type HeaderQuery$data = {
-  readonly organization: {
-    readonly __typename: "Organization";
-    readonly logoUrl: string;
-    readonly name: string;
-    readonly slug: string;
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
-  readonly viewer: {
-    readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "HeaderOrganizationListFragment">;
-  } | {
-    readonly __typename: "NotAuthenticatedError";
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
+export type HeaderOrganizationListPaginationQuery$data = {
+  readonly node: {
+    readonly " $fragmentSpreads": FragmentRefs<"HeaderOrganizationListFragment">;
+  } | null | undefined;
 };
-export type HeaderQuery = {
-  response: HeaderQuery$data;
-  variables: HeaderQuery$variables;
+export type HeaderOrganizationListPaginationQuery = {
+  response: HeaderOrganizationListPaginationQuery$data;
+  variables: HeaderOrganizationListPaginationQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
+    "defaultValue": 10,
+    "kind": "LocalArgument",
+    "name": "count"
+  },
+  {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "organizationSlug"
+    "name": "cursor"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "id"
   }
 ],
-v1 = {
+v1 = [
+  {
+    "kind": "Variable",
+    "name": "id",
+    "variableName": "id"
+  }
+],
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v2 = [
-  {
-    "kind": "Variable",
-    "name": "slug",
-    "variableName": "organizationSlug"
-  }
-],
 v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "name",
-  "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "slug",
-  "storageKey": null
-},
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "logoUrl",
-  "storageKey": null
-},
-v6 = {
-  "kind": "InlineFragment",
-  "selections": [
-    (v3/*: any*/),
-    (v4/*: any*/),
-    (v5/*: any*/)
-  ],
-  "type": "Organization",
-  "abstractKey": null
-},
-v7 = [
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 10
-  }
-],
-v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v9 = {
-  "kind": "InlineFragment",
-  "selections": [
-    (v8/*: any*/)
-  ],
-  "type": "Node",
-  "abstractKey": "__isNode"
-};
+v4 = [
+  {
+    "kind": "Variable",
+    "name": "after",
+    "variableName": "cursor"
+  },
+  {
+    "kind": "Variable",
+    "name": "first",
+    "variableName": "count"
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "HeaderQuery",
+    "name": "HeaderOrganizationListPaginationQuery",
     "selections": [
       {
         "alias": null,
-        "args": null,
+        "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "viewer",
+        "name": "node",
         "plural": false,
         "selections": [
           {
-            "kind": "InlineFragment",
-            "selections": [
-              (v1/*: any*/),
+            "args": [
               {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "AuthNavigationFragment"
+                "kind": "Variable",
+                "name": "count",
+                "variableName": "count"
               },
               {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "HeaderOrganizationListFragment"
+                "kind": "Variable",
+                "name": "cursor",
+                "variableName": "cursor"
               }
             ],
-            "type": "Account",
-            "abstractKey": null
-          },
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v1/*: any*/)
-            ],
-            "type": "NotAuthenticatedError",
-            "abstractKey": null
+            "kind": "FragmentSpread",
+            "name": "HeaderOrganizationListFragment"
           }
-        ],
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": (v2/*: any*/),
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "organization",
-        "plural": false,
-        "selections": [
-          (v1/*: any*/),
-          (v6/*: any*/)
         ],
         "storageKey": null
       }
@@ -183,37 +121,24 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "HeaderQuery",
+    "name": "HeaderOrganizationListPaginationQuery",
     "selections": [
       {
         "alias": null,
-        "args": null,
+        "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "viewer",
+        "name": "node",
         "plural": false,
         "selections": [
-          (v1/*: any*/),
+          (v2/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "fullName",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "avatarUrl",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": (v7/*: any*/),
+                "args": (v4/*: any*/),
                 "concreteType": "OrganizationConnection",
                 "kind": "LinkedField",
                 "name": "organizations",
@@ -235,11 +160,29 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v8/*: any*/),
                           (v3/*: any*/),
-                          (v5/*: any*/),
-                          (v4/*: any*/),
-                          (v1/*: any*/)
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "name",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "logoUrl",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "slug",
+                            "storageKey": null
+                          },
+                          (v2/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -279,52 +222,36 @@ return {
                     "storageKey": null
                   }
                 ],
-                "storageKey": "organizations(first:10)"
+                "storageKey": null
               },
               {
                 "alias": null,
-                "args": (v7/*: any*/),
+                "args": (v4/*: any*/),
                 "filters": null,
                 "handle": "connection",
                 "key": "HeaderOrganizationListFragment_organizations",
                 "kind": "LinkedHandle",
                 "name": "organizations"
-              },
-              (v8/*: any*/)
+              }
             ],
             "type": "Account",
             "abstractKey": null
-          },
-          (v9/*: any*/)
-        ],
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": (v2/*: any*/),
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "organization",
-        "plural": false,
-        "selections": [
-          (v1/*: any*/),
-          (v6/*: any*/),
-          (v9/*: any*/)
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "60a3db52708c73c8e71604a146f8c51a",
+    "id": "459e2df1bcfd435a13ff55e17c074f41",
     "metadata": {},
-    "name": "HeaderQuery",
+    "name": "HeaderOrganizationListPaginationQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "54b622a43d5283e04051f81e54763cc9";
+(node as any).hash = "56f6661f9e3a3ef7999a9526f2527b27";
 
 export default node;
