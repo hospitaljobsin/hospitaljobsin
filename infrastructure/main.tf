@@ -99,14 +99,12 @@ module "core" {
   aws_region                     = var.aws_region
   cloudflare_acount_id           = var.cloudflare_acount_id
   domain_name                    = var.domain_name
-  github_repository_full_name    = var.github_repository_full_name
   google_oauth_client_id         = var.google_oauth_client_id
   google_oauth_client_secret     = var.google_oauth_client_secret
   mongodb_atlas_org_id           = var.mongodb_atlas_org_id
   mongodb_atlas_region           = var.mongodb_atlas_region
   mongodb_database_name          = var.mongodb_database_name
   resource_prefix                = var.resource_prefix
-  support_email                  = var.support_email
   sentry_backend_dsn             = module.sentry.sentry_backend_dsn
   sentry_accounts_ui_dsn         = module.sentry.sentry_accounts_ui_dsn
   sentry_recruiter_portal_ui_dsn = module.sentry.sentry_recruiter_portal_ui_dsn

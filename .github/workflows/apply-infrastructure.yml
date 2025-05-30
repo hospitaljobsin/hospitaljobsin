@@ -26,7 +26,6 @@ env:
   TF_VAR_google_oauth_client_id: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
   TF_VAR_google_oauth_client_secret: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
   TF_VAR_mongodb_atlas_org_id: ${{vars.MONGODB_ATLAS_ORG_ID}}
-  TF_VAR_support_email: ${{ vars.SUPPORT_EMAIL }}
 
 concurrency:
   group: ${{ github.workflow }}  # Ensures only one run of this workflow at a time
@@ -49,7 +48,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.9.3
+          terraform_version: 1.12.1
 
       - name: Terraform Init
         id: init

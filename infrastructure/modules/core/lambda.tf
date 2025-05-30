@@ -118,51 +118,49 @@ data "aws_ecr_authorization_token" "token" {
   registry_id = aws_ecr_repository.backend.registry_id
 }
 
-# FIXME: we need to wait until this issue is resolved
-# https://github.com/kreuzwerker/terraform-provider-docker/issues/737
-# to enable docker BuildX builds
-# resource "docker_image" "backend" {
-#   name = "${aws_ecr_repository.backend.repository_url}:latest"
-#   build {
-#     context = "${path.root}/../server/"
-#     dockerfile = "Dockerfile"
-#     builder = "default"
 
-#     build_args = {
-#       AWS_DEFAULT_REGION : var.aws_region
-#       AWS_ACCESS_KEY_ID : aws_iam_access_key.github_actions.id
-#       AWS_SECRET_ACCESS_KEY : aws_iam_access_key.github_actions.secret
-#     }
+resource "docker_image" "backend" {
+  name = "${aws_ecr_repository.backend.repository_url}:latest"
+  build {
+    context    = abspath("${path.root}/../server")
+    dockerfile = "${abspath("${path.root}/../server")}/Dockerfile"
+    builder    = "default"
 
-#     auth_config {
-#       host_name      = data.aws_ecr_authorization_token.token.proxy_endpoint
-#       server_address = data.aws_ecr_authorization_token.token.proxy_endpoint
-#       user_name      = data.aws_ecr_authorization_token.token.user_name
-#       password       = data.aws_ecr_authorization_token.token.password
-#     }
-#   }
+    build_args = {
+      AWS_DEFAULT_REGION : var.aws_region
+      AWS_ACCESS_KEY_ID : aws_iam_access_key.github_actions.id
+      AWS_SECRET_ACCESS_KEY : aws_iam_access_key.github_actions.secret
+    }
 
-#   triggers = {
-#     # Change this value to manually trigger a rebuild
-#     manual_rebuild_version = "1.0.0"
-#   }
-# }
+    auth_config {
+      host_name      = data.aws_ecr_authorization_token.token.proxy_endpoint
+      server_address = data.aws_ecr_authorization_token.token.proxy_endpoint
+      user_name      = data.aws_ecr_authorization_token.token.user_name
+      password       = data.aws_ecr_authorization_token.token.password
+    }
+  }
+
+  triggers = {
+    # Change this value to manually trigger a rebuild
+    manual_rebuild_version = "1.0.0"
+  }
+}
 
 # push image to ecr repo
-# resource "docker_registry_image" "backend" {
-#   name          = docker_image.backend.name
-#   keep_remotely = true
+resource "docker_registry_image" "backend" {
+  name          = docker_image.backend.name
+  keep_remotely = true
 
-#   auth_config {
-#     address  = data.aws_ecr_authorization_token.token.proxy_endpoint
-#     username = data.aws_ecr_authorization_token.token.user_name
-#     password = data.aws_ecr_authorization_token.token.password
-#   }
-# }
+  auth_config {
+    address  = data.aws_ecr_authorization_token.token.proxy_endpoint
+    username = data.aws_ecr_authorization_token.token.user_name
+    password = data.aws_ecr_authorization_token.token.password
+  }
+}
 
 # Lambda Function in Private Subnets
 resource "aws_lambda_function" "backend" {
-  # depends_on    = [docker_registry_image.backend]
+  depends_on    = [docker_registry_image.backend]
   function_name = "${var.resource_prefix}-backend-lambda"
 
 
@@ -182,13 +180,13 @@ resource "aws_lambda_function" "backend" {
     variables = {
       SERVER_DEBUG                                = "false"
       SERVER_ENVIRONMENT                          = "production"
-      SERVER_DATABASE_URL                         = "${mongodbatlas_advanced_cluster.this.connection_strings.0.standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DATABASE_URL                         = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
       SERVER_DEFAULT_DATABASE_NAME                = var.mongodb_database_name
       SERVER_HOST                                 = "0.0.0.0"
       SERVER_PORT                                 = "8000"
       SERVER_LOG_LEVEL                            = "INFO"
       SERVER_CORS_ALLOW_ORIGINS                   = "[\"https://${var.domain_name}\", \"https://recruiter.${var.domain_name}\", \"https://accounts.${var.domain_name}\"]"
-      SERVER_SESSION_COOKIE_DOMAIN                = "${var.domain_name}"
+      SERVER_SESSION_COOKIE_DOMAIN                = var.domain_name
       SERVER_EMAIl_PROVIDER                       = "aws_ses"
       SERVER_EMAIL_FROM                           = aws_ses_email_identity.this.email
       SERVER_S3_BUCKET_NAME                       = aws_s3_bucket.this.bucket

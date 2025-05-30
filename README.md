@@ -36,6 +36,7 @@ This project has a proprietary license. Read the entire license [here](./README.
 | [Docker Engine](https://docs.docker.com/engine/)               | 4.35                    | Container runtime           |
 | [TMUX](https://github.com/tmux/tmux)                           | 3.2a                    | Terminal Multiplexer        |
 | [Tmuxinator](https://github.com/tmuxinator/tmuxinator)         | 3.0                     | TMUX session manager        |
+| [Terraform](https://github.com/hashicorp/terraform)            | v1.12.1                 | Infrastructure as Code tool |
 | [Relay Compiler](https://www.npmjs.com/package/relay-compiler) | 19.0.0                  | GraphQL Codegen Toolkit     |
 | [Pre-Commit](https://pre-commit.com/)                          | 4.2.0                   | Git Hooks Framework         |
 
@@ -213,7 +214,6 @@ GitHub Actions Variables:
 - `TERRAFORM_AWS_REGION`
 - `CLOUDFLARE_ACCOUNT_ID`
 - `MONGODB_ATLAS_ORG_ID`
-- `SUPPORT_EMAIL`
 
 GitHub Actions Secrets:
 - `TERRAFORM_AWS_ACCESS_KEY_ID`
