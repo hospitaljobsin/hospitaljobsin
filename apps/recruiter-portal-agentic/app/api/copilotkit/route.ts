@@ -1,24 +1,23 @@
-import { NextRequest } from "next/server";
+import { env } from "@/lib/env/client";
 import {
 	CopilotRuntime,
 	copilotRuntimeNextJSAppRouterEndpoint,
 	ExperimentalEmptyAdapter,
 	langGraphPlatformEndpoint,
 } from "@copilotkit/runtime";
+import { NextRequest } from "next/server";
 
 const serviceAdapter = new ExperimentalEmptyAdapter();
 
 const runtime = new CopilotRuntime({
 	remoteEndpoints: [
 		langGraphPlatformEndpoint({
-			deploymentUrl: process.env.LANGGRAPH_DEPLOYMENT_URL || "",
-			langsmithApiKey: process.env.LANGSMITH_API_KEY || "", // only used in LangGraph Platform deployments
+			deploymentUrl: env.NEXT_PUBLIC_LANGGRAPH_DEPLOYMENT_URL,
+			// langsmithApiKey: process.env.LANGSMITH_API_KEY || "", // only used in LangGraph Platform deployments
 			agents: [
 				{
-					name: process.env.NEXT_PUBLIC_COPILOTKIT_AGENT_NAME || "",
-					description:
-						process.env.NEXT_PUBLIC_COPILOTKIT_AGENT_DESCRIPTION ||
-						"A helpful LLM agent.",
+					name: env.NEXT_PUBLIC_COPILOTKIT_AGENT_NAME,
+					description: "A helpful LLM agent.",
 				},
 			],
 		}),
