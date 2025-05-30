@@ -11,13 +11,16 @@ windows:
         -  persist:
             - cd server
             - uv run scripts/run_persist_server.py
+  -  langgraph_agent:
+        - cd server
+        - uv run langgraph dev --allow-blocking --port 8123
 
   - seeker_portal:
         - cd apps/seeker-portal
         - pnpm run dev
 
   - recruiter_portal:
-        - cd apps/recruiter-portal
+        - cd apps/recruiter-portal-agentic
         - pnpm run dev
 
   - accounts:
