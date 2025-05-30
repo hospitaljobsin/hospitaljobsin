@@ -126,13 +126,13 @@ class AppSettings(BaseSettings):
     root_path: str = ""
 
     # accounts config
-    accounts_base_url: str = "http://localhost:5002"
+    accounts_base_url: str = "http://localtest.me:5002"
 
     # recruiter portal config
-    recruiter_portal_base_url: str = "http://localhost:5001"
+    recruiter_portal_base_url: str = "http://localtest.me:5001"
 
     # seeker portal config
-    seeker_portal_base_url: str = "http://localhost:5000"
+    seeker_portal_base_url: str = "http://localtest.me:5000"
 
     # persisted queries config
     persisted_queries_path: Path = Path("query_map.json")

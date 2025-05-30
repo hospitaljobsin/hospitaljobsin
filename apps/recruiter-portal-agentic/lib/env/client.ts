@@ -15,6 +15,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_COPILOTKIT_AGENT_NAME: z.string(),
 		NEXT_PUBLIC_COPILOTKIT_RUNTIME_URL: z.string(),
 		NEXT_PUBLIC_LANGGRAPH_DEPLOYMENT_URL: z.string(),
+		NEXT_PUBLIC_ROOT_DOMAIN: z.string(),
 	},
 	// For Next.js >= 13.4.4, you only need to destructure client variables:
 	runtimeEnv: {
@@ -35,6 +36,7 @@ export const env = createEnv({
 			process.env.NEXT_PUBLIC_COPILOTKIT_RUNTIME_URL,
 		NEXT_PUBLIC_LANGGRAPH_DEPLOYMENT_URL:
 			process.env.NEXT_PUBLIC_LANGGRAPH_DEPLOYMENT_URL,
+		NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

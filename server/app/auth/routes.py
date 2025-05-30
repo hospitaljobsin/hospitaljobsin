@@ -32,12 +32,12 @@ async def oauth2_signin_google(
     request.session["user_agent"] = user_agent
     request.session["redirect_uri"] = redirect_uri
 
-    redirect_uri = request.url_for("oauth2_signin_callback_google")
+    oauth_redirect_uri = request.url_for("oauth2_signin_callback_google")
 
     # ask Google to select an account every time
     return await oauth_client.google.authorize_redirect(
         request,
-        redirect_uri,
+        oauth_redirect_uri,
         prompt="select_account",
     )
 
@@ -94,11 +94,11 @@ async def oauth2_request_sudo_mode_google(
     """Signin with Google OAuth2."""
     request.session["redirect_uri"] = redirect_uri
 
-    redirect_uri = request.url_for("oauth2_request_sudo_mode_callback_google")
+    oauth_redirect_uri = request.url_for("oauth2_request_sudo_mode_callback_google")
 
     # set prompt=consent to force Google to ask for consent every time
     return await oauth_client.google.authorize_redirect(
-        request, redirect_uri, prompt="consent"
+        request, oauth_redirect_uri, prompt="consent"
     )
 
 
