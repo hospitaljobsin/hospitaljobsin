@@ -121,6 +121,8 @@ class AppSettings(BaseSettings):
         ),
     ]
 
+    cors_allow_origin_regex: str | None = None
+
     openapi_url: str | None = None
 
     root_path: str = ""

@@ -15,8 +15,8 @@ function extractSubdomain(request: NextRequest): string | null {
 	const hostname = host.split(":")[0];
 
 	// Local development support (e.g., org1.localhost:3000)
-	if (hostname.includes("localhost") || hostname.includes("127.0.0.1")) {
-		const match = hostname.match(/^([^.]+)\.localhost/);
+	if (hostname.includes("localtest.me")) {
+		const match = hostname.match(/^([^.]+)\.localtest.me/);
 		return match?.[1] ?? null;
 	}
 
