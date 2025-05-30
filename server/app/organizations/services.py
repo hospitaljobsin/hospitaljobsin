@@ -12,7 +12,10 @@ from app.accounts.documents import Account
 from app.accounts.repositories import AccountRepo
 from app.auth.exceptions import InvalidEmailError
 from app.config import AppSettings, AWSSettings
-from app.core.constants import ORGANIZATION_INVITE_EXPIRES_IN
+from app.core.constants import (
+    ORGANIZATION_INVITE_EXPIRES_IN,
+    RESERVED_ORGANIZATION_NAMES,
+)
 from app.core.emails import BaseEmailSender
 from app.jobs.exceptions import OrganizationNotFoundError
 from app.organizations.documents import (
@@ -220,6 +223,8 @@ class OrganizationService:
         website: str | None = None,
         logo_url: str | None = None,
     ) -> Result[Organization, OrganizationSlugInUseError]:
+        if slug in RESERVED_ORGANIZATION_NAMES:
+            return Err(OrganizationSlugInUseError())
         existing_organization = await self._organization_repo.get_by_slug(
             organization_slug=slug,
         )
