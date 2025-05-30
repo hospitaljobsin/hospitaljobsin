@@ -10,10 +10,10 @@ export default async function DashboardLayout({
 }>) {
 	const headersList = await headers();
 	const organizationSlug = headersList.get(ORG_SUBDOMAIN_HEADER_NAME);
-	console.log("Organization Slug:", organizationSlug);
+
 	return (
 		<div className="flex flex-col h-full w-full">
-			<HeaderClientComponent />
+			<HeaderClientComponent organizationSlug={organizationSlug} />
 			<div className="w-full mx-auto grow">
 				<div className="w-full px-5 max-w-5xl mx-auto">{children}</div>
 			</div>

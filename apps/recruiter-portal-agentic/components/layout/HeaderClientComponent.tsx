@@ -5,12 +5,14 @@ import HeaderSkeleton from "@/components/layout/HeaderSkeleton";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 
-export default function HeaderClientComponent() {
+export default function HeaderClientComponent({
+	organizationSlug,
+}: { organizationSlug: string }) {
 	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<HeaderQueryType>(
 		environment,
 		HeaderQuery,
-		{},
+		{ organizationSlug: organizationSlug },
 		{ fetchPolicy: "store-or-network" },
 	);
 

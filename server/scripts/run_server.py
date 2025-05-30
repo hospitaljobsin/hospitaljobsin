@@ -23,6 +23,7 @@ if __name__ == "__main__":
         date_header=False,
         reload=settings.debug,
         access_log=settings.debug,
+        reload_includes=["*.json", "*.py"],
         log_config=build_server_log_config(
             log_level=settings.log_level,
             human_readable=settings.debug,

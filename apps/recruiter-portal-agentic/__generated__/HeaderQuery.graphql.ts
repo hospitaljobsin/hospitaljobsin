@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<80fc042d614c58981b4f45dc953c0130>>
- * @relayHash ec0625edbba09e4b07d899e93608d785
+ * @generated SignedSource<<a322843f6ccd4c7a3b1054cc5ddd285d>>
+ * @relayHash 284aa96534f68fd749aa1fff5addb52a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,24 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ec0625edbba09e4b07d899e93608d785
+// @relayRequestID 284aa96534f68fd749aa1fff5addb52a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type HeaderQuery$variables = Record<PropertyKey, never>;
+export type HeaderQuery$variables = {
+  organizationSlug: string;
+};
 export type HeaderQuery$data = {
+  readonly organization: {
+    readonly __typename: "Organization";
+    readonly logoUrl: string;
+    readonly name: string;
+    readonly slug: string;
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
   readonly viewer: {
     readonly __typename: "Account";
     readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment">;
@@ -32,16 +44,72 @@ export type HeaderQuery = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = {
+var v0 = [
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "organizationSlug"
+  }
+],
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
+},
+v2 = [
+  {
+    "kind": "Variable",
+    "name": "slug",
+    "variableName": "organizationSlug"
+  }
+],
+v3 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "name",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "slug",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "logoUrl",
+      "storageKey": null
+    }
+  ],
+  "type": "Organization",
+  "abstractKey": null
+},
+v4 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    }
+  ],
+  "type": "Node",
+  "abstractKey": "__isNode"
 };
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "HeaderQuery",
@@ -57,7 +125,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v0/*: any*/),
+              (v1/*: any*/),
               {
                 "args": null,
                 "kind": "FragmentSpread",
@@ -70,11 +138,24 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v0/*: any*/)
+              (v1/*: any*/)
             ],
             "type": "NotAuthenticatedError",
             "abstractKey": null
           }
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "organization",
+        "plural": false,
+        "selections": [
+          (v1/*: any*/),
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
@@ -84,7 +165,7 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "HeaderQuery",
     "selections": [
@@ -96,7 +177,7 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
+          (v1/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -118,27 +199,28 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              }
-            ],
-            "type": "Node",
-            "abstractKey": "__isNode"
-          }
+          (v4/*: any*/)
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": (v2/*: any*/),
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "organization",
+        "plural": false,
+        "selections": [
+          (v1/*: any*/),
+          (v3/*: any*/),
+          (v4/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "ec0625edbba09e4b07d899e93608d785",
+    "id": "284aa96534f68fd749aa1fff5addb52a",
     "metadata": {},
     "name": "HeaderQuery",
     "operationKind": "query",
@@ -147,6 +229,6 @@ return {
 };
 })();
 
-(node as any).hash = "ba1866bd7228bf3690b047bea67dc286";
+(node as any).hash = "8cb01af60fd8953f76974c2815507b87";
 
 export default node;
