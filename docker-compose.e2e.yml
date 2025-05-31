@@ -1,7 +1,6 @@
 services:
-  caddy:
+  test-caddy:
     image: caddy:latest
-    container_name: caddy
     restart: unless-stopped
     ports:
       - "80:80"
@@ -13,10 +12,11 @@ services:
       - test_caddy_data:/data
       - ./Caddyfile:/etc/caddy/Caddyfile
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:80/"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
+      test: ["CMD", "curl", "-f", "http://localtest.me" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
 
   test-server:
     build:
