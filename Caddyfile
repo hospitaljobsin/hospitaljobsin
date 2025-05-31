@@ -1,0 +1,30 @@
+
+{
+    auto_https off
+}
+
+# Reverse proxy for main site
+http://localtest.me {
+    reverse_proxy http://host.docker.internal:5000
+}
+
+# Reverse proxy for API
+http://api.localtest.me {
+    reverse_proxy http://host.docker.internal:8000
+}
+
+# Reverse proxy for accounts service
+http://accounts.localtest.me {
+    reverse_proxy http://host.docker.internal:5002
+}
+
+
+# Reverse proxy for recruiter site
+http://recruiter.localtest.me {
+    reverse_proxy http://host.docker.internal:5001
+}
+
+# Wildcard: any subdomain of localtest.me
+http://*.localtest.me {
+    reverse_proxy http://host.docker.internal:5001
+}

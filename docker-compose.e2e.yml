@@ -1,4 +1,23 @@
 services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      # - "443:443"
+    expose:
+      - 80 # http
+      # - 443 # https
+    volumes:
+      - caddy_data:/data
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:80/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
   test-server:
     build:
       context: ./server
@@ -13,7 +32,7 @@ services:
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '8000'
       SERVER_LOG_LEVEL: 'INFO'
-      SERVER_CORS_ALLOW_ORIGINS: '["http://localhost:5000", "http://127.0.0.1:5000", "http://localhost:5001", "http://127.0.0.1:5001", "http://localhost:5002", "http://127.0.0.1:5002"]'
+      SERVER_CORS_ALLOW_ORIGINS: '["http://localtest.me", "http://127.0.0.1:5000", "http://recruiter.localtest.me", "http://127.0.0.1:5001", "http://accounts.localtest.me", "http://127.0.0.1:5002"]'
       SERVER_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       SERVER_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       SERVER_EMAIL_HOST: 'mailcatcher'
@@ -23,12 +42,12 @@ services:
       SERVER_EMAIL_FROM: 'noreply@example.com'
       SERVER_CAPTCHA_SECRET_KEY: "1x0000000000000000000000000000000AA"
       SERVER_S3_BUCKET_NAME: "medicaljobs"
-      SERVER_ACCOUNTS_BASE_URL: "http://localhost:5002"
-      SERVER_SEEKER_PORTAL_BASE_URL: "http://localhost:5001"
-      SERVER_RECRUITER_PORTAL_BASE_URL: "http://localhost:5000"
+      SERVER_ACCOUNTS_BASE_URL: "http://accounts.localtest.me"
+      SERVER_SEEKER_PORTAL_BASE_URL: "http://localtest.me"
+      SERVER_RECRUITER_PORTAL_BASE_URL: "http://recruiter.localtest.me"
       SERVER_RP_ID: 'localhost'
       SERVER_RP_NAME: 'Starter'
-      SERVER_RP_EXPECTED_ORIGIN: 'http://localhost:5002'
+      SERVER_RP_EXPECTED_ORIGIN: 'http://accounts.localtest.me'
       SERVER_JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
       SERVER_EMAIL_VERIFICATION_TOKEN_COOLDOWN: 20
       SERVER_PASSWORD_RESET_TOKEN_COOLDOWN: 20
@@ -51,10 +70,10 @@ services:
       dockerfile: apps/accounts/Dockerfile
       args:
         - NEXT_PUBLIC_API_URL=http://localhost:8000
-        - NEXT_PUBLIC_URL=http://localhost:5002
+        - NEXT_PUBLIC_URL=http://accounts.localtest.me
         - NEXT_PUBLIC_CAPTCHA_SITE_KEY=1x00000000000000000000AA
-        - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://localhost:5001
-        - NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL=http://localhost:5000
+        - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://recruiter.localtest.me
+        - NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL=http://localtest.me
         - NEXT_PUBLIC_SESSION_COOKIE_KEY=user_session
         - NEXT_PUBLIC_SENTRY_DSN=${ACCOUNTS_UI_SENTRY_DSN}
         - NEXT_PUBLIC_SENTRY_ORGANIZATION=vnadi
@@ -69,7 +88,7 @@ services:
         NODE_ENV: test
         CI: ${CI}
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:5002/api/health/"]
+      test: ["CMD", "curl", "--fail", "http://accounts.localtest.me/api/health/"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -83,9 +102,9 @@ services:
       dockerfile: apps/seeker-portal/Dockerfile
       args:
         - NEXT_PUBLIC_API_URL=http://localhost:8000
-        - NEXT_PUBLIC_URL=http://localhost:5000
-        - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://localhost:5001
-        - NEXT_PUBLIC_ACCOUNTS_BASE_URL=http://localhost:5002
+        - NEXT_PUBLIC_URL=http://localtest.me
+        - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://recruiter.localtest.me
+        - NEXT_PUBLIC_ACCOUNTS_BASE_URL=http://accounts.localtest.me
         - NEXT_PUBLIC_SESSION_COOKIE_KEY=user_session
         - NEXT_PUBLIC_SENTRY_DSN=${SEEKER_PORTAL_UI_SENTRY_DSN}
         - NEXT_PUBLIC_SENTRY_ORGANIZATION=vnadi
@@ -100,7 +119,7 @@ services:
         NODE_ENV: test
         CI: ${CI}
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:5000/api/health/"]
+      test: ["CMD", "curl", "--fail", "http://localtest.me/api/health/"]
       interval: 10s
       timeout: 5s
       retries: 10

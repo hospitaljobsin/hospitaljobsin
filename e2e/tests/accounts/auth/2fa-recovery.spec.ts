@@ -6,7 +6,7 @@ import { TOTP_USER_SECRET } from "@/tests/utils/constants";
 test.describe("2FA Recovery Page", () => {
 	test.beforeEach(async ({ page, twoFactorAuth }) => {
 		// Navigate to login page
-		await page.goto("http://localhost:5002/auth/login");
+		await page.goto("http://accounts.localtest.me/auth/login");
 
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
@@ -19,10 +19,10 @@ test.describe("2FA Recovery Page", () => {
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		// Should redirect to 2FA page
-		await page.waitForURL("http://localhost:5002/auth/2fa");
+		await page.waitForURL("http://accounts.localtest.me/auth/2fa");
 
 		// go to 2fa recovery page
-		await page.goto("http://localhost:5002/auth/2fa/recovery");
+		await page.goto("http://accounts.localtest.me/auth/2fa/recovery");
 
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
@@ -119,7 +119,7 @@ test.describe("2FA Recovery Page", () => {
 		await page.getByRole("button", { name: "Verify Code" }).click();
 
 		// Should redirect to home page
-		await page.waitForURL("http://localhost:5000/");
+		await page.waitForURL("http://localtest.me/");
 	});
 });
 
@@ -128,10 +128,10 @@ test.describe("2FA Recovery Page 2FA Challenge Redirects", () => {
 		page,
 	}) => {
 		// Navigate to 2FA page
-		await page.goto("http://localhost:5002/auth/2fa/recovery");
+		await page.goto("http://accounts.localtest.me/auth/2fa/recovery");
 
 		// expect to redirect to login page
-		await page.waitForURL("http://localhost:5002/auth/login");
+		await page.waitForURL("http://accounts.localtest.me/auth/login");
 	});
 });
 
@@ -139,8 +139,8 @@ authTest.describe("2FA Recovery Page Authentication Redirects", () => {
 	authTest(
 		"should redirect to home page when already authenticated",
 		async ({ page }) => {
-			await page.goto("http://localhost:5002/auth/signup");
-			await page.waitForURL("http://localhost:5000/");
+			await page.goto("http://accounts.localtest.me/auth/signup");
+			await page.waitForURL("http://localtest.me/");
 		},
 	);
 });

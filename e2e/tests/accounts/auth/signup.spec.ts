@@ -28,7 +28,7 @@ async function findVerificationCode({
 test.describe("Sign Up Page", () => {
 	test.beforeEach(async ({ page }) => {
 		// Navigate to login page
-		await page.goto("http://localhost:5002/auth/signup");
+		await page.goto("http://accounts.localtest.me/auth/signup");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 	});
@@ -246,7 +246,7 @@ test.describe("Sign Up Page", () => {
 				password: "Password123!",
 				confirmPassword: "Password123!",
 			});
-			await page.waitForURL("http://localhost:5000/");
+			await page.waitForURL("http://localtest.me/");
 		});
 	});
 
@@ -375,7 +375,7 @@ test.describe("Sign Up Page", () => {
 			});
 			expect(result2.credentials).toHaveLength(1);
 
-			await page.waitForURL("http://localhost:5000/");
+			await page.waitForURL("http://localtest.me/");
 		});
 	});
 
@@ -479,7 +479,7 @@ test.describe("Sign Up Page", () => {
 		expect(firstEmail).not.toBeNull();
 
 		// Navigate to signup page
-		await page.goto("http://localhost:5002/auth/signup");
+		await page.goto("http://accounts.localtest.me/auth/signup");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
@@ -507,7 +507,7 @@ test.describe("Sign Up Page", () => {
 
 		// Navigate to reset password page
 		// Navigate to signup page
-		await page.goto("http://localhost:5002/auth/signup");
+		await page.goto("http://accounts.localtest.me/auth/signup");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
@@ -535,8 +535,8 @@ authTest.describe("Sign Up Page Authentication Redirects", () => {
 	authTest(
 		"should redirect to home page when already authenticated",
 		async ({ page }) => {
-			await page.goto("http://localhost:5002/auth/signup");
-			await page.waitForURL("http://localhost:5000/");
+			await page.goto("http://accounts.localtest.me/auth/signup");
+			await page.waitForURL("http://localtest.me/");
 		},
 	);
 });

@@ -1,9 +1,9 @@
-import type { PlaywrightTestArgs } from "@playwright/test";
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 import { TOTP_USER_SECRET } from "@/tests/utils/constants";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
+import type { PlaywrightTestArgs } from "@playwright/test";
 
 async function enterPassword({
 	page,
@@ -26,7 +26,7 @@ async function enterPassword({
 test.describe("Confirm Password Reset Page", () => {
 	test.beforeEach(async ({ page, request, passwordAuth }) => {
 		// Navigate to reset password page
-		await page.goto("http://localhost:5002/auth/reset-password");
+		await page.goto("http://accounts.localtest.me/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
@@ -123,7 +123,7 @@ test.describe("Confirm Password Reset Page", () => {
 			.fill("Password123!");
 		await page.getByRole("button", { name: "Reset Password" }).click();
 
-		await page.waitForURL("http://localhost:5000/");
+		await page.waitForURL("http://localtest.me/");
 	});
 
 	test("should handle invalid password", async ({ page }) => {
@@ -181,7 +181,7 @@ test.describe("Confirm Password Reset Page", () => {
 test.describe("2FA Confirm Password Reset Page", () => {
 	test.beforeEach(async ({ page, request, twoFactorAuth }) => {
 		// Navigate to reset password page
-		await page.goto("http://localhost:5002/auth/reset-password");
+		await page.goto("http://accounts.localtest.me/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
@@ -294,7 +294,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 			.fill("Password123!");
 		await page.getByRole("button", { name: "Reset Password" }).click();
 
-		await page.waitForURL("http://localhost:5000/");
+		await page.waitForURL("http://localtest.me/");
 	});
 
 	test("should handle invalid password", async ({ page }) => {
@@ -358,7 +358,9 @@ test.describe("2FA Confirm Password Reset Page", () => {
 
 test.describe("Confirm Password Reset Page Not Found", () => {
 	test("should handle invalid password reset link", async ({ page }) => {
-		await page.goto("http://localhost:5002/auth/reset-password/invalid-token");
+		await page.goto(
+			"http://accounts.localtest.me/auth/reset-password/invalid-token",
+		);
 
 		await expect(page.getByText(/404 Not Found/)).toBeVisible();
 	});
@@ -371,7 +373,7 @@ authTest.describe(
 			"should not redirect to home page when already authenticated",
 			async ({ page, request, passwordAuth }) => {
 				// Navigate to reset password page
-				await page.goto("http://localhost:5002/auth/reset-password");
+				await page.goto("http://accounts.localtest.me/auth/reset-password");
 				// Wait for recaptcha to load
 				await waitForCaptcha({ page });
 
@@ -411,7 +413,7 @@ authTest.describe(
 
 				await page.goto(resetLink);
 				// ensure we are not redirected here
-				await expect(page).not.toHaveURL("http://localhost:5000/");
+				await expect(page).not.toHaveURL("http://localtest.me/");
 				await expect(page).toHaveURL(resetLink);
 			},
 		);

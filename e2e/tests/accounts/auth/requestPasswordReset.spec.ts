@@ -9,7 +9,7 @@ import { findLastEmail } from "@/tests/utils/mailcatcher";
 test.describe("Request Password Reset Page", () => {
 	test.beforeEach(async ({ page }) => {
 		// Navigate to reset password page
-		await page.goto("http://localhost:5002/auth/reset-password");
+		await page.goto("http://accounts.localtest.me/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 	});
@@ -136,7 +136,7 @@ test.describe("Request Password Reset Page", () => {
 test.describe("Request Password Reset Page Rate Limiting", () => {
 	test.beforeEach(async ({ page }) => {
 		// Navigate to reset password page
-		await page.goto("http://localhost:5002/auth/reset-password");
+		await page.goto("http://accounts.localtest.me/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 	});
@@ -172,7 +172,7 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		expect(firstEmail).not.toBeNull();
 
 		// Navigate to reset password page
-		await page.goto("http://localhost:5002/auth/reset-password");
+		await page.goto("http://accounts.localtest.me/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
@@ -202,7 +202,7 @@ test.describe("Request Password Reset Page Rate Limiting", () => {
 		await page.waitForTimeout(PASSWORD_RESET_TOKEN_COOLDOWN);
 
 		// Navigate to reset password page
-		await page.goto("http://localhost:5002/auth/reset-password");
+		await page.goto("http://accounts.localtest.me/auth/reset-password");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
@@ -235,11 +235,11 @@ authTest.describe(
 		authTest(
 			"should not redirect to home page when already authenticated",
 			async ({ page }) => {
-				await page.goto("http://localhost:5002/auth/reset-password");
+				await page.goto("http://accounts.localtest.me/auth/reset-password");
 				// ensure we are not redirected here
-				await expect(page).not.toHaveURL("http://localhost:5000/");
+				await expect(page).not.toHaveURL("http://localtest.me/");
 				await expect(page).toHaveURL(
-					"http://localhost:5002/auth/reset-password",
+					"http://accounts.localtest.me/auth/reset-password",
 				);
 			},
 		);

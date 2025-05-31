@@ -14,7 +14,7 @@ import QrCode from "qrcode-reader";
 authTest.describe("Account Settings Page", () => {
 	authTest.beforeEach(async ({ page }) => {
 		// Navigate to settings page
-		await page.goto("http://localhost:5002/settings");
+		await page.goto("http://accounts.localtest.me/settings");
 	});
 
 	authTest(
@@ -85,7 +85,7 @@ authTest.describe("Account Settings Page", () => {
 authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 	authSudoModeTest.beforeEach(async ({ page }) => {
 		// Navigate to settings page
-		await page.goto("http://localhost:5002/settings");
+		await page.goto("http://accounts.localtest.me/settings");
 	});
 
 	authSudoModeTest(
@@ -270,7 +270,7 @@ authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 				.fill(newPassword);
 			await page.getByRole("button", { name: "Log in" }).click();
 
-			await page.waitForURL("http://localhost:5002/settings");
+			await page.waitForURL("http://accounts.localtest.me/settings");
 		},
 	);
 });
@@ -278,7 +278,7 @@ authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 twoFactorTest.describe("Account Settings Page- 2FA Account", () => {
 	twoFactorTest.beforeEach(async ({ page }) => {
 		// Navigate to settings page
-		await page.goto("http://localhost:5002/settings");
+		await page.goto("http://accounts.localtest.me/settings");
 	});
 
 	twoFactorTest(
@@ -297,7 +297,7 @@ webauthnSudoModeTest.describe(
 	() => {
 		webauthnSudoModeTest.beforeEach(async ({ page }) => {
 			// Navigate to settings page
-			await page.goto("http://localhost:5002/settings");
+			await page.goto("http://accounts.localtest.me/settings");
 		});
 
 		webauthnSudoModeTest(
@@ -377,7 +377,7 @@ webauthnSudoModeTest.describe(
 						.fill(newPassword);
 					await page.getByRole("button", { name: "Log in" }).click();
 
-					await page.waitForURL("http://localhost:5002/settings");
+					await page.waitForURL("http://accounts.localtest.me/settings");
 				});
 
 				await webauthnSudoModeTest.step("Delete New Password", async () => {

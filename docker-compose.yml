@@ -1,4 +1,18 @@
 services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      # - "443:443"
+    expose:
+      - 80 # http
+      # - 443 # https
+    volumes:
+      - caddy_data:/data
+      - ./Caddyfile:/etc/caddy/Caddyfile
+
   mongodb:
     image: docker.io/bitnami/mongodb:8.0
     ports:
@@ -58,4 +72,6 @@ volumes:
   minio_data:
     driver: local
   nominatim_data:
+    driver: local
+  caddy_data:
     driver: local

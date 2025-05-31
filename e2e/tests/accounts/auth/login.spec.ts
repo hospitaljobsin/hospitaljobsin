@@ -4,7 +4,7 @@ import { waitForCaptcha } from "@/tests/utils/captcha";
 test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
 		// Navigate to login page
-		await page.goto("http://localhost:5002/auth/login");
+		await page.goto("http://accounts.localtest.me/auth/login");
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 	});
@@ -165,7 +165,7 @@ test.describe("Login Page", () => {
 			.fill("Password123!");
 		await page.getByRole("button", { name: "Log in" }).click();
 
-		await page.waitForURL("http://localhost:5000/");
+		await page.waitForURL("http://localtest.me/");
 	});
 
 	test("should redirect on 2FA requirement", async ({
@@ -180,7 +180,7 @@ test.describe("Login Page", () => {
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		// Should redirect to 2FA page
-		await page.waitForURL("http://localhost:5002/auth/2fa");
+		await page.waitForURL("http://accounts.localtest.me/auth/2fa");
 	});
 
 	test("should handle successful passkey login", async ({
@@ -266,7 +266,7 @@ test.describe("Login Page", () => {
 		});
 
 		// Ensure redirection happens after successful authentication
-		await page.waitForURL("http://localhost:5000/");
+		await page.waitForURL("http://localtest.me/");
 	});
 
 	test("should handle invalid passkey login", async ({
@@ -336,7 +336,7 @@ test.describe("Login Page", () => {
 		test.setTimeout(30_000);
 		// Navigate to login page with OAuth2 error
 		await page.goto(
-			"http://localhost:5002/auth/login?oauth2_error=unverified_email",
+			"http://accounts.localtest.me/auth/login?oauth2_error=unverified_email",
 		);
 
 		// Check error message is displayed
@@ -383,8 +383,8 @@ authTest.describe("Login Page Authentication Redirects", () => {
 	authTest(
 		"should redirect to home page when already authenticated",
 		async ({ page }) => {
-			await page.goto("http://localhost:5002/auth/login");
-			await page.waitForURL("http://localhost:5000/");
+			await page.goto("http://accounts.localtest.me/auth/login");
+			await page.waitForURL("http://localtest.me/");
 		},
 	);
 });
