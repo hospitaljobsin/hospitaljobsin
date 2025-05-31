@@ -78,3 +78,9 @@ variable "sentry_organization_slug" {
   type        = string
   default     = "vnadi"
 }
+
+variable "google_gemini_api_key" {
+  type        = string
+  description = "Google Gemini API key."
+  sensitive   = true
+}

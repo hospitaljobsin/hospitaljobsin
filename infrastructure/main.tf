@@ -102,6 +102,7 @@ module "core" {
   domain_name                    = var.domain_name
   google_oauth_client_id         = var.google_oauth_client_id
   google_oauth_client_secret     = var.google_oauth_client_secret
+  google_gemini_api_key          = var.google_gemini_api_key
   mongodb_atlas_org_id           = var.mongodb_atlas_org_id
   mongodb_atlas_region           = var.mongodb_atlas_region
   mongodb_database_name          = var.mongodb_database_name

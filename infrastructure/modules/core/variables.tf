@@ -56,6 +56,12 @@ variable "google_oauth_client_secret" {
   sensitive   = true
 }
 
+variable "google_gemini_api_key" {
+  type        = string
+  description = "Google Gemini API key."
+  sensitive   = true
+}
+
 
 variable "sentry_backend_dsn" {
   type        = string
