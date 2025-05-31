@@ -15,7 +15,7 @@ from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Command
 
-from app.config import AgentSettings, get_settings
+from app.config import SecretSettings, get_settings
 
 
 class AgentState(CopilotKitState):
@@ -70,7 +70,7 @@ async def chat_node(
     # 1. Define the model
     model = ChatGoogleGenerativeAI(
         model="gemini-2.0-flash",
-        google_api_key=get_settings(AgentSettings).google_api_key,
+        google_api_key=get_settings(SecretSettings).google_api_key.get_secret_value(),
     )
 
     # 2. Bind the tools to the model
