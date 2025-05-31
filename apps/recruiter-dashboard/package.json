@@ -6,6 +6,9 @@
 		"dev": "next dev -H 0.0.0.0 -p 5001 --turbopack",
 		"build": "next build",
 		"start": "next start -H 0.0.0.0 -p 5001",
+		"package": "open-next build",
+		"preinstall": "npx only-allow pnpm",
+		"relay": "relay-compiler",
 		"lint": "next lint"
 	},
 	"dependencies": {
