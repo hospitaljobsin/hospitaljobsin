@@ -10,7 +10,7 @@ services:
       - 80 # http
       # - 443 # https
     volumes:
-      - caddy_data:/data
+      - test_caddy_data:/data
       - ./Caddyfile:/etc/caddy/Caddyfile
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:80/"]
@@ -163,4 +163,6 @@ services:
 
 volumes:
   test_mongodb_data:
+    driver: local
+  test_caddy_data:
     driver: local
