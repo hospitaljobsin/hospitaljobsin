@@ -62,9 +62,14 @@ def add_middleware(
     auth_settings: AuthSettings,
 ) -> None:
     """Register middleware for the app."""
+    import re
+
+    compiled_regex = re.compile(app_settings.cors_allow_origin_regex)
+    print("regex match test:")
+    print(compiled_regex.fullmatch("https://aryan.hospitaljobs.in"))
     app.add_middleware(
         CORSMiddleware,
-        # allow_origins=app_settings.cors_allow_origins,
+        allow_origins=app_settings.cors_allow_origins,
         allow_origin_regex=app_settings.cors_allow_origin_regex,
         allow_credentials=True,
         allow_headers=["*"],
