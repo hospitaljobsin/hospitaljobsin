@@ -35,6 +35,7 @@ services:
       SERVER_CORS_ALLOW_ORIGINS: '["http://localtest.me", "http://127.0.0.1:5000", "http://recruiter.localtest.me", "http://127.0.0.1:5001", "http://accounts.localtest.me", "http://127.0.0.1:5002"]'
       SERVER_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       SERVER_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      SERVER_GOOGLE_API_KEY: XXXXXXXXXXXXX
       SERVER_EMAIL_HOST: 'mailcatcher'
       SERVER_EMAIL_PORT: '1025'
       SERVER_EMAIL_USERNAME: ''
