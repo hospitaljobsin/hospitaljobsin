@@ -56,3 +56,10 @@ resource "github_actions_secret" "server_sentry_dsn" {
   repository      = data.github_repository.this.name
   plaintext_value = var.sentry_backend_dsn
 }
+
+
+resource "github_actions_secret" "recruiter_dashboard_sentry_dsn" {
+  repository      = data.github_repository.this.name
+  secret_name     = "RECRUITER_DASHBOARD_SENTRY_DSN"
+  plaintext_value = var.sentry_recruiter_dashboard_ui_dsn
+}

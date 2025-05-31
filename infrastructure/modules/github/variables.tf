@@ -72,16 +72,44 @@ variable "sentry_accounts_ui_dsn" {
   sensitive   = true
 }
 
+variable "sentry_accounts_ui_project" {
+  type        = string
+  description = "The Sentry accounts UI project."
+}
+
 variable "sentry_seeker_portal_ui_dsn" {
   type        = string
   description = "The Sentry DSN for the seeker portal UI."
   sensitive   = true
 }
 
+variable "sentry_seeker_portal_ui_project" {
+  type        = string
+  description = "The Sentry seeker portal UI project."
+}
+
+
 variable "sentry_recruiter_portal_ui_dsn" {
   type        = string
   description = "The Sentry DSN for the recruiter portal UI."
   sensitive   = true
+}
+
+variable "sentry_recruiter_portal_ui_project" {
+  type        = string
+  description = "The Sentry recruiter portal UI project."
+}
+
+
+variable "sentry_recruiter_dashboard_ui_dsn" {
+  type        = string
+  description = "The Sentry DSN for the recruiter dashboard UI."
+  sensitive   = true
+}
+
+variable "sentry_recruiter_dashboard_ui_project" {
+  type        = string
+  description = "The Sentry recruiter dashboard UI project."
 }
 
 
@@ -100,6 +128,7 @@ variable "sst_recruiter_portal_base_url" {
   description = "The base URL for the recruiter portal."
   type        = string
 }
+
 
 variable "sst_seeker_portal_base_url" {
   description = "The base URL for the seeker portal."

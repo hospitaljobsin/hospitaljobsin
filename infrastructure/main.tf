@@ -56,35 +56,40 @@ provider "mongodbatlas" {}
 provider "github" {}
 
 module "github" {
-  source                           = "./modules/github"
-  github_organization_name         = var.github_organization_name
-  aws_backend_function_name        = module.core.aws_lambda_backend_function_name
-  aws_backend_image_name           = module.core.aws_lambda_backend_image
-  aws_region                       = var.aws_region
-  github_repository_full_name      = var.github_repository_full_name
-  sentry_accounts_ui_dsn           = module.sentry.sentry_accounts_ui_dsn
-  sentry_seeker_portal_ui_dsn      = module.sentry.sentry_seeker_portal_ui_dsn
-  sentry_recruiter_portal_ui_dsn   = module.sentry.sentry_recruiter_portal_ui_dsn
-  sst_api_url                      = module.core.sst_api_url
-  sst_vpc_id                       = module.core.sst_vpc_id
-  sst_accounts_domain              = module.core.sst_accounts_domain
-  sst_seeker_portal_domain         = module.core.sst_seeker_portal_domain
-  sst_recruiter_portal_domain      = module.core.sst_recruiter_portal_domain
-  sst_recruiter_dashboard_domain   = module.core.sst_recruiter_dashboard_domain
-  sst_accounts_secret_id           = module.core.sst_accounts_secret_id
-  sst_seeker_portal_secret_id      = module.core.sst_seeker_portal_secret_id
-  deployment_aws_access_key_id     = module.core.aws_access_key_id
-  deployment_aws_secret_access_key = module.core.aws_secret_access_key
-  sentry_backend_dsn               = module.sentry.sentry_backend_dsn
-  sst_accounts_base_url            = module.core.sst_accounts_base_url
-  sst_seeker_portal_base_url       = module.core.sst_seeker_portal_base_url
-  sst_recruiter_portal_base_url    = module.core.sst_recruiter_portal_base_url
-  sst_captcha_site_key             = module.core.sst_captcha_site_key
-  sentry_organization              = module.sentry.sentry_organization
-  sst_recruiter_portal_secret_id   = module.core.sst_recruiter_portal_secret_id
-  sst_vpc_private_subnets          = module.core.sst_vpc_private_subnets
-  sst_vpc_security_groups          = module.core.sst_vpc_security_groups
-  domain_name                      = var.domain_name
+  source                                = "./modules/github"
+  github_organization_name              = var.github_organization_name
+  aws_backend_function_name             = module.core.aws_lambda_backend_function_name
+  aws_backend_image_name                = module.core.aws_lambda_backend_image
+  aws_region                            = var.aws_region
+  github_repository_full_name           = var.github_repository_full_name
+  sentry_accounts_ui_dsn                = module.sentry.sentry_accounts_ui_dsn
+  sentry_seeker_portal_ui_dsn           = module.sentry.sentry_seeker_portal_ui_dsn
+  sentry_recruiter_portal_ui_dsn        = module.sentry.sentry_recruiter_portal_ui_dsn
+  sentry_recruiter_dashboard_ui_dsn     = module.sentry.sentry_recruiter_dashboard_ui_dsn
+  sst_api_url                           = module.core.sst_api_url
+  sst_vpc_id                            = module.core.sst_vpc_id
+  sst_accounts_domain                   = module.core.sst_accounts_domain
+  sst_seeker_portal_domain              = module.core.sst_seeker_portal_domain
+  sst_recruiter_portal_domain           = module.core.sst_recruiter_portal_domain
+  sst_recruiter_dashboard_domain        = module.core.sst_recruiter_dashboard_domain
+  sst_accounts_secret_id                = module.core.sst_accounts_secret_id
+  sst_seeker_portal_secret_id           = module.core.sst_seeker_portal_secret_id
+  deployment_aws_access_key_id          = module.core.aws_access_key_id
+  deployment_aws_secret_access_key      = module.core.aws_secret_access_key
+  sentry_backend_dsn                    = module.sentry.sentry_backend_dsn
+  sst_accounts_base_url                 = module.core.sst_accounts_base_url
+  sst_seeker_portal_base_url            = module.core.sst_seeker_portal_base_url
+  sst_recruiter_portal_base_url         = module.core.sst_recruiter_portal_base_url
+  sst_captcha_site_key                  = module.core.sst_captcha_site_key
+  sentry_organization                   = module.sentry.sentry_organization
+  sst_recruiter_portal_secret_id        = module.core.sst_recruiter_portal_secret_id
+  sst_vpc_private_subnets               = module.core.sst_vpc_private_subnets
+  sst_vpc_security_groups               = module.core.sst_vpc_security_groups
+  domain_name                           = var.domain_name
+  sentry_accounts_ui_project            = module.sentry.accounts_sentry_project
+  sentry_recruiter_portal_ui_project    = module.sentry.recruiter_portal_sentry_project
+  sentry_recruiter_dashboard_ui_project = module.sentry.recruiter_dashboard_sentry_project
+  sentry_seeker_portal_ui_project       = module.sentry.seeker_portal_sentry_project
 }
 
 

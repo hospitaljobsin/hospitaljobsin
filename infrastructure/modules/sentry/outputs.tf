@@ -18,9 +18,18 @@ output "sentry_recruiter_portal_ui_dsn" {
 }
 
 
+output "sentry_recruiter_dashboard_ui_dsn" {
+  value = sentry_key.recruiter_dashboard_ui.dsn["public"]
+}
+
 output "recruiter_portal_sentry_project" {
   value = sentry_project.recruiter_portal_ui.id
 }
+
+output "recruiter_dashboard_sentry_project" {
+  value = sentry_project.recruiter_dashboard_ui.id
+}
+
 
 output "seeker_portal_sentry_project" {
   value = sentry_project.seeker_portal_ui.id

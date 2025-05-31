@@ -89,6 +89,11 @@ output "sst_recruiter_portal_base_url" {
   value = "https://recruiter.${var.domain_name}"
 }
 
+
+output "sst_recruiter_dashboard_base_url" {
+  value = "https://*.${var.domain_name}"
+}
+
 output "sst_seeker_portal_base_url" {
   value = "https://${var.domain_name}"
 }

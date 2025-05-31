@@ -98,19 +98,24 @@ resource "github_actions_variable" "sst_vpc_security_groups" {
 resource "github_actions_variable" "recruiter_portal_sentry_project" {
   repository    = data.github_repository.this.name
   variable_name = "RECRUITER_PORTAL_SENTRY_PROJECT"
-  value         = var.sentry_recruiter_portal_ui_dsn
+  value         = var.sentry_recruiter_portal_ui_project
+}
+resource "github_actions_variable" "recruiter_dashboard_sentry_project" {
+  repository    = data.github_repository.this.name
+  variable_name = "RECRUITER_DASHBOARD_SENTRY_PROJECT"
+  value         = var.sentry_recruiter_dashboard_ui_project
 }
 
 resource "github_actions_variable" "seeker_portal_sentry_project" {
   repository    = data.github_repository.this.name
   variable_name = "SEEKER_PORTAL_SENTRY_PROJECT"
-  value         = var.sentry_seeker_portal_ui_dsn
+  value         = var.sentry_seeker_portal_ui_project
 }
 
 resource "github_actions_variable" "accounts_sentry_project" {
   repository    = data.github_repository.this.name
   variable_name = "ACCOUNTS_SENTRY_PROJECT"
-  value         = var.sentry_accounts_ui_dsn
+  value         = var.sentry_accounts_ui_project
 }
 
 

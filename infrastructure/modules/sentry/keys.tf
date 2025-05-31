@@ -27,3 +27,10 @@ resource "sentry_key" "recruiter_portal_ui" {
   project = sentry_project.recruiter_portal_ui.id
   name    = "Recruiter Portal UI Key"
 }
+
+resource "sentry_key" "recruiter_dashboard_ui" {
+  organization = data.sentry_organization.main.id
+
+  project = sentry_project.recruiter_dashboard_ui.id
+  name    = "Recruiter Dashboard UI Key"
+}
