@@ -88,6 +88,7 @@ jobs:
             NEXT_PUBLIC_ROOT_DOMAIN: ${{vars.PUBLIC_ROOT_DOMAIN}}
             NEXT_PUBLIC_LANGGRAPH_DEPLOYMENT_URL: ${{ vars.SST_LANGGRAPH_DEPLOYMENT_URL }}
             NEXT_PUBLIC_COPILOTKIT_RUNTIME_URL: /api/copilotkit
+            NEXT_PUBLIC_COPILOTKIT_AGENT_NAME: sample_agent
             API_URL: ${{ vars.SST_API_URL }}
             AWS_SECRET_ID: ${{ secrets.SST_RECRUITER_PORTAL_SECRET_ID }}
             SKIP_ENV_VALIDATION: true
