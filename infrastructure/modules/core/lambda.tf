@@ -114,53 +114,53 @@ resource "aws_iam_role_policy_attachment" "lambda_custom_policy_attachment" {
 
 
 # get authorization credentials to push to ecr
-data "aws_ecr_authorization_token" "token" {
-  registry_id = aws_ecr_repository.backend.registry_id
-}
+# data "aws_ecr_authorization_token" "token" {
+#   registry_id = aws_ecr_repository.backend.registry_id
+# }
 
 
-resource "docker_image" "backend" {
-  name = "${aws_ecr_repository.backend.repository_url}:latest"
-  build {
-    context    = abspath("${path.root}/../server")
-    dockerfile = "${abspath("${path.root}/../server")}/Dockerfile"
-    builder    = "default"
+# resource "docker_image" "backend" {
+#   name = "${aws_ecr_repository.backend.repository_url}:latest"
+#   build {
+#     context    = abspath("${path.root}/../server")
+#     dockerfile = "${abspath("${path.root}/../server")}/Dockerfile"
+#     builder    = "default"
 
-    build_args = {
-      AWS_DEFAULT_REGION : var.aws_region
-      AWS_ACCESS_KEY_ID : aws_iam_access_key.github_actions.id
-      AWS_SECRET_ACCESS_KEY : aws_iam_access_key.github_actions.secret
-    }
+#     build_args = {
+#       AWS_DEFAULT_REGION : var.aws_region
+#       AWS_ACCESS_KEY_ID : aws_iam_access_key.github_actions.id
+#       AWS_SECRET_ACCESS_KEY : aws_iam_access_key.github_actions.secret
+#     }
 
-    auth_config {
-      host_name      = data.aws_ecr_authorization_token.token.proxy_endpoint
-      server_address = data.aws_ecr_authorization_token.token.proxy_endpoint
-      user_name      = data.aws_ecr_authorization_token.token.user_name
-      password       = data.aws_ecr_authorization_token.token.password
-    }
-  }
+#     auth_config {
+#       host_name      = data.aws_ecr_authorization_token.token.proxy_endpoint
+#       server_address = data.aws_ecr_authorization_token.token.proxy_endpoint
+#       user_name      = data.aws_ecr_authorization_token.token.user_name
+#       password       = data.aws_ecr_authorization_token.token.password
+#     }
+#   }
 
-  triggers = {
-    # Change this value to manually trigger a rebuild
-    manual_rebuild_version = "1.0.0"
-  }
-}
+#   triggers = {
+#     # Change this value to manually trigger a rebuild
+#     manual_rebuild_version = "1.0.0"
+#   }
+# }
 
 # push image to ecr repo
-resource "docker_registry_image" "backend" {
-  name          = docker_image.backend.name
-  keep_remotely = true
+# resource "docker_registry_image" "backend" {
+#   name          = docker_image.backend.name
+#   keep_remotely = true
 
-  auth_config {
-    address  = data.aws_ecr_authorization_token.token.proxy_endpoint
-    username = data.aws_ecr_authorization_token.token.user_name
-    password = data.aws_ecr_authorization_token.token.password
-  }
-}
+#   auth_config {
+#     address  = data.aws_ecr_authorization_token.token.proxy_endpoint
+#     username = data.aws_ecr_authorization_token.token.user_name
+#     password = data.aws_ecr_authorization_token.token.password
+#   }
+# }
 
 # Lambda Function in Private Subnets
 resource "aws_lambda_function" "backend" {
-  depends_on    = [docker_registry_image.backend]
+  # depends_on    = [docker_registry_image.backend]
   function_name = "${var.resource_prefix}-backend-lambda"
 
 
