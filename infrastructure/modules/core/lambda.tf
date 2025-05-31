@@ -162,7 +162,8 @@ resource "aws_iam_role_policy_attachment" "lambda_custom_policy_attachment" {
 
 # Escape every '.' in the domain_name to '\.'; Terraform needs "\\." to emit a literal "\."
 locals {
-  escaped_domain = replace(var.domain_name, ".", "\\\\.")
+  # “\\.” in HCL ⇒ produces a single “\.” in the rendered value
+  escaped_domain = replace(var.domain_name, ".", "\\.")
 }
 resource "aws_lambda_function" "backend" {
   # depends_on    = [docker_registry_image.backend]
