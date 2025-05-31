@@ -13,10 +13,14 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localtest.me" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      test-server:
+        condition: service_healthy
+      test-accounts-ui:
+        condition: service_healthy
 
   test-server:
     build:
