@@ -64,7 +64,7 @@ def add_middleware(
     """Register middleware for the app."""
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=app_settings.cors_allow_origins,
+        # allow_origins=app_settings.cors_allow_origins,
         allow_origin_regex=app_settings.cors_allow_origin_regex,
         allow_credentials=True,
         allow_headers=["*"],
