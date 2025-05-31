@@ -86,7 +86,7 @@ resource "sentry_organization_code_mapping" "seeker_portal_ui" {
 resource "sentry_project" "recruiter_portal_ui" {
   organization = sentry_team.main.organization
   teams        = [sentry_team.main.id]
-  name         = "Hospital Jobs Recruiter Portal UI"
+  name         = "Hospital Jobs Recruiter Portal Core UI"
   platform     = "javascript-nextjs"
 
   client_security = {
@@ -111,5 +111,38 @@ resource "sentry_organization_code_mapping" "recruiter_portal_ui" {
 
   default_branch = "main"
   stack_root     = "/"
-  source_root    = "apps/recruiter-portal/"
+  source_root    = "apps/recruiter-portal-core/"
+}
+
+
+
+resource "sentry_project" "recruiter_dashboard_ui" {
+  organization = sentry_team.main.organization
+  teams        = [sentry_team.main.id]
+  name         = "Hospital Jobs Recruiter Dashboard UI"
+  platform     = "javascript-nextjs"
+
+  client_security = {
+    allowed_domains = [
+      "https://*.${var.domain_name}",
+      "http://*.localtest.me",
+    ]
+  }
+}
+
+resource "sentry_project_spike_protection" "recruiter_dashboard_ui" {
+  organization = sentry_project.recruiter_dashboard_ui.organization
+  project      = sentry_project.recruiter_dashboard_ui.id
+  enabled      = true
+}
+
+resource "sentry_organization_code_mapping" "recruiter_dashboard_ui" {
+  organization   = data.sentry_organization.main.id
+  integration_id = data.sentry_organization_integration.github.id
+  repository_id  = sentry_organization_repository.github.id
+  project_id     = sentry_project.recruiter_dashboard_ui.internal_id
+
+  default_branch = "main"
+  stack_root     = "/"
+  source_root    = "apps/recruiter-dashboard/"
 }
