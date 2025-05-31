@@ -1,6 +1,6 @@
 # Create an IAM user for GitHub Actions
 resource "aws_iam_user" "github_actions" {
-  name = "github-actions-ecr-user-${var.github_repository_name}"
+  name = "github-actions-ecr-user-medical-job-board"
   path = "/system/"
 
   tags = {

@@ -3,6 +3,12 @@ variable "github_repository_full_name" {
   description = "GitHub repository name."
 }
 
+variable "github_organization_name" {
+  type        = string
+  description = "GitHub organization name."
+
+}
+
 variable "aws_backend_function_name" {
   type        = string
   description = "The name of the AWS Lambda function for the backend."

@@ -9,6 +9,11 @@ terraform {
   }
 }
 
+provider "github" {
+  owner = var.github_organization_name
+
+}
+
 
 data "github_repository" "this" {
   full_name = var.github_repository_full_name

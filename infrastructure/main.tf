@@ -57,6 +57,7 @@ provider "github" {}
 
 module "github" {
   source                           = "./modules/github"
+  github_organization_name         = var.github_organization_name
   aws_backend_function_name        = module.core.aws_lambda_backend_function_name
   aws_backend_image_name           = module.core.aws_lambda_backend_image
   aws_region                       = var.aws_region
@@ -97,7 +98,7 @@ module "core" {
   source                         = "./modules/core"
   app_name                       = var.app_name
   aws_region                     = var.aws_region
-  cloudflare_acount_id           = var.cloudflare_acount_id
+  cloudflare_account_id          = var.cloudflare_account_id
   domain_name                    = var.domain_name
   google_oauth_client_id         = var.google_oauth_client_id
   google_oauth_client_secret     = var.google_oauth_client_secret
