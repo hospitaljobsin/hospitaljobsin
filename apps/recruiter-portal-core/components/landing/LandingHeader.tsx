@@ -1,4 +1,7 @@
 "use client";
+import { APP_NAME } from "@/lib/constants";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 import {
 	Button,
 	Link as HeroLink,
@@ -12,9 +15,6 @@ import {
 } from "@heroui/react";
 import Link from "next/link";
 import { useState } from "react";
-import { APP_NAME } from "@/lib/constants";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
 import Logo from "../Logo";
 
 export default function LandingHeader() {
@@ -80,7 +80,7 @@ export default function LandingHeader() {
 						as={Link}
 						color="primary"
 						variant="solid"
-						href={links.signup(env.NEXT_PUBLIC_URL + links.dashboard)}
+						href={links.signup(env.NEXT_PUBLIC_URL + links.createOrganization)}
 						className="font-medium"
 					>
 						Sign Up

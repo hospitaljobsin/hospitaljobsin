@@ -70,6 +70,7 @@ module "github" {
   sst_accounts_domain              = module.core.sst_accounts_domain
   sst_seeker_portal_domain         = module.core.sst_seeker_portal_domain
   sst_recruiter_portal_domain      = module.core.sst_recruiter_portal_domain
+  sst_recruiter_dashboard_domain   = module.core.sst_recruiter_dashboard_domain
   sst_accounts_secret_id           = module.core.sst_accounts_secret_id
   sst_seeker_portal_secret_id      = module.core.sst_seeker_portal_secret_id
   deployment_aws_access_key_id     = module.core.aws_access_key_id
@@ -83,6 +84,7 @@ module "github" {
   sst_recruiter_portal_secret_id   = module.core.sst_recruiter_portal_secret_id
   sst_vpc_private_subnets          = module.core.sst_vpc_private_subnets
   sst_vpc_security_groups          = module.core.sst_vpc_security_groups
+  domain_name                      = var.domain_name
 }
 
 

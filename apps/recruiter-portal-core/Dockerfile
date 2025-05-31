@@ -62,6 +62,6 @@ COPY --from=base /app/apps/recruiter-portal/node_modules ./node_modules
 COPY --from=base /app/apps/recruiter-portal/package.json ./package.json
 COPY --from=base /app/apps/recruiter-portal/.next ./.next
 
-EXPOSE 5001
+EXPOSE 5003
 
 CMD ["pnpm", "start"]

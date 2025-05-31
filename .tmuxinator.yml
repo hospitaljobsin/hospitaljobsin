@@ -19,8 +19,12 @@ windows:
         - cd apps/seeker-portal
         - pnpm run dev
 
+  - recruiter_portal_core:
+        - cd apps/recruiter-portal-core
+        - pnpm run dev
+
   - recruiter_portal:
-        - cd apps/recruiter-portal-agentic
+        - cd apps/recruiter-dashboard
         - pnpm run dev
 
   - accounts:

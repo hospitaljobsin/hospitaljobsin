@@ -65,6 +65,10 @@ output "sst_recruiter_portal_domain" {
   value = "recruiter.${var.domain_name}"
 }
 
+output "sst_recruiter_dashboard_domain" {
+  value = "*.${var.domain_name}"
+}
+
 output "sst_recruiter_portal_secret_id" {
   value     = aws_secretsmanager_secret.recruiter_portal.id
   sensitive = true

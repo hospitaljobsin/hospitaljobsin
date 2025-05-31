@@ -1,8 +1,8 @@
 "use client";
-import { Button, Card, CardBody } from "@heroui/react";
-import { Briefcase, CheckCircle, FileText, Shield, Users } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
+import { Button, Card, CardBody } from "@heroui/react";
+import { Briefcase, CheckCircle, FileText, Shield, Users } from "lucide-react";
 import BenefitItem from "./BenefitItem";
 import FeatureCard from "./FeatureCard";
 import LandingHeader from "./LandingHeader";
@@ -30,7 +30,7 @@ export default function LandingView() {
 								color="default"
 								size="lg"
 								as={"a"}
-								href={links.dashboard}
+								href={links.createOrganization}
 								className="font-medium"
 							>
 								Get Started
@@ -173,7 +173,7 @@ export default function LandingView() {
 							color="primary"
 							size="lg"
 							as={"a"}
-							href={links.dashboard}
+							href={links.createOrganization}
 							className="font-medium"
 						>
 							Get Started Now

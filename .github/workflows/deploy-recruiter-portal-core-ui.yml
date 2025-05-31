@@ -1,0 +1,94 @@
+name: Build and Deploy Recruiter Portal Core UI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/recruiter-portal-core/**'
+      - '.github/workflows/deploy-recruiter-portal-core-ui.yml'
+  workflow_run:
+    workflows: ["Deploy Backend"]
+    types:
+      - completed
+
+concurrency:
+  group: ${{ github.workflow }}  # Ensures only one run of this workflow at a time
+  cancel-in-progress: false      # Waits instead of cancelling previous runs
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      query_map_changed: ${{ steps.detect.outputs.changed }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Detect persisted-query changes
+        uses: ./.github/actions/detect-changes
+        id: detect
+        with:
+          path: server/query_map.json
+
+  build-and-push:
+    needs: check
+    runs-on: ubuntu-latest
+    # Only deploy when:
+    #  • a backend workflow_run happened (so server is already up), OR
+    #  • a push happened and query_map.json did NOT change
+    if: github.event_name == 'workflow_run' || (github.event_name == 'push' && needs.check.outputs.query_map_changed == false)
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.DEPLOYMENT_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: apps/recruiter-portal-core/pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: ./apps/recruiter-portal-core
+        run: pnpm install --frozen-lockfile --shamefully-hoist
+
+      - name: Validate Relay Compiler Artifacts
+        working-directory: ./apps/recruiter-portal-core
+        run: pnpm run relay ../../relay.config.json --project recruiter-portal-core --validate
+
+      - name: SST Deploy
+        working-directory: ./apps/recruiter-portal-core
+        run: npx sst deploy --stage production --print-logs
+        env:
+            SST_VPC_PRIVATE_SUBNETS: ${{ vars.SST_VPC_PRIVATE_SUBNETS }}
+            SST_VPC_SECURITY_GROUPS: ${{ vars.SST_VPC_SECURITY_GROUPS }}
+            SST_RECRUITER_PORTAL_DOMAIN: ${{vars.SST_RECRUITER_PORTAL_DOMAIN }}
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            NEXT_PUBLIC_API_URL: ${{ vars.SST_API_URL }}
+            NEXT_PUBLIC_URL: ${{ vars.SST_RECRUITER_PORTAL_BASE_URL }}
+            NEXT_PUBLIC_ACCOUNTS_BASE_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
+            NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL}}
+            NEXT_PUBLIC_SESSION_COOKIE_KEY: user_session
+            NEXT_PUBLIC_ENVIRONMENT: production
+            NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.RECRUITER_PORTAL_SENTRY_DSN }}
+            NEXT_PUBLIC_SENTRY_ORGANIZATION: ${{ vars.SENTRY_ORGANIZATION }}
+            NEXT_PUBLIC_SENTRY_PROJECT: ${{vars.RECRUITER_PORTAL_SENTRY_PROJECT}}
+            NEXT_PUBLIC_ROOT_DOMAIN: ${{vars.PUBLIC_ROOT_DOMAIN}}
+            API_URL: ${{ vars.SST_API_URL }}
+            AWS_SECRET_ID: ${{ secrets.SST_RECRUITER_PORTAL_SECRET_ID }}
+            SKIP_ENV_VALIDATION: true
+            NODE_ENV: production
+
+
+# TODO: wait for relevant tests to pass before building and pushing

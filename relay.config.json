@@ -2,8 +2,8 @@
 	"sources": {
 		"apps/accounts": "accounts",
 		"apps/seeker-portal": "seeker-portal",
-		"apps/recruiter-portal": "recruiter-portal",
-		"apps/recruiter-portal-agentic": "recruiter-portal-agentic"
+		"apps/recruiter-portal-core": "recruiter-portal-core",
+		"apps/recruiter-dashboard": "recruiter-dashboard"
 	},
 	"projects": {
 		"accounts": {
@@ -28,10 +28,10 @@
 				"concurrency": 1
 			}
 		},
-		"recruiter-portal": {
+		"recruiter-portal-core": {
 			"schema": "schema/schema.graphql",
 			"language": "typescript",
-			"output": "apps/recruiter-portal/__generated__",
+			"output": "apps/recruiter-portal-core/__generated__",
 			"useImportTypeSyntax": true,
 			"persist": {
 				"url": "http://localhost:2999",
@@ -39,10 +39,10 @@
 				"concurrency": 1
 			}
 		},
-		"recruiter-portal-agentic": {
+		"recruiter-dashboard": {
 			"schema": "schema/schema.graphql",
 			"language": "typescript",
-			"output": "apps/recruiter-portal-agentic/__generated__",
+			"output": "apps/recruiter-dashboard/__generated__",
 			"useImportTypeSyntax": true,
 			"persist": {
 				"url": "http://localhost:2999",

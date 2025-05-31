@@ -1,13 +1,13 @@
-import { useRouter } from "@bprogress/next";
-import { addToast, Button, Card, CardBody, CardHeader } from "@heroui/react";
-import Image from "next/image";
-import { useParams } from "next/navigation";
-import { graphql, useFragment, useMutation } from "react-relay";
-import invariant from "tiny-invariant";
 import type { InviteFormAcceptMutation as InviteFormAcceptMutationType } from "@/__generated__/InviteFormAcceptMutation.graphql";
 import type { InviteFormDeclineMutation as InviteFormDeclineMutationType } from "@/__generated__/InviteFormDeclineMutation.graphql";
 import type { InviteFormFragment$key } from "@/__generated__/InviteFormFragment.graphql";
 import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
+import { Button, Card, CardBody, CardHeader, addToast } from "@heroui/react";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import { graphql, useFragment, useMutation } from "react-relay";
+import invariant from "tiny-invariant";
 
 const InviteFormFragment = graphql`
   fragment InviteFormFragment on Query @argumentDefinitions(
@@ -121,7 +121,7 @@ export default function InviteForm({
 					"OrganizationInviteEdge"
 				) {
 					// Handle successful declination of the invite
-					router.replace(links.dashboard);
+					router.replace(links.createOrganization);
 				} else if (
 					response.declineOrganizationInvite.__typename ===
 					"OrganizationInviteNotFoundError"

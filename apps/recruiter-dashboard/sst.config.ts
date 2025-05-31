@@ -5,7 +5,7 @@ const { env } = await import("./lib/env/client");
 export default $config({
 	app(input) {
 		return {
-			name: "recruiter-portal-core",
+			name: "recruiter-dashboard",
 			removal: input?.stage === "production" ? "retain" : "remove",
 			protect: ["production"].includes(input?.stage),
 			home: "aws",
@@ -14,9 +14,9 @@ export default $config({
 	async run() {
 		// const privateSubnets = process.env.SST_VPC_PRIVATE_SUBNETS?.split(",") || [];
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
-		new sst.aws.Nextjs("recruiter-portal-core-ui", {
+		new sst.aws.Nextjs("recruiter-dashboard-ui", {
 			buildCommand: "pnpm run package",
-			domain: process.env.SST_RECRUITER_PORTAL_DOMAIN,
+			domain: process.env.SST_RECRUITER_DASHBOARD_DOMAIN,
 			environment: {
 				NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL,
 				NEXT_PUBLIC_URL: env.NEXT_PUBLIC_URL,

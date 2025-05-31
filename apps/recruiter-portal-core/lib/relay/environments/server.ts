@@ -1,3 +1,5 @@
+import { getEnv } from "@/lib/env/server";
+import links from "@/lib/links";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import type {
@@ -6,8 +8,6 @@ import type {
 	Variables,
 } from "relay-runtime";
 import { Environment, Network, RecordSource, Store } from "relay-runtime";
-import { getEnv } from "@/lib/env/server";
-import links from "@/lib/links";
 
 export async function networkFetch(
 	request: RequestParameters,
@@ -41,7 +41,7 @@ export async function networkFetch(
 			switch (err.extensions?.code) {
 				// when an AuthenticationError is thrown in a resolver
 				case "UNAUTHENTICATED":
-					redirect(links.login(links.dashboard));
+					redirect(links.login(links.createOrganization));
 					break;
 				case "REQUIRES_SUDO_MODE":
 					redirect(links.accountSettingsRequestSudo());

@@ -7,12 +7,12 @@
 	},
 	"scripts": {
 		"build": "next build --turbopack --experimental-build-mode compile",
-		"dev": "next dev -p 5001 --turbopack",
+		"dev": "next dev -p 5003 --turbopack",
 		"lint": "next lint",
 		"package": "open-next build",
 		"preinstall": "npx only-allow pnpm",
 		"relay": "relay-compiler",
-		"start": "next start -p 5001"
+		"start": "next start -p 5003"
 	},
 	"dependencies": {
 		"@bprogress/next": "^3.2.12",

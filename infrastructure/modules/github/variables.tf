@@ -1,3 +1,8 @@
+variable "domain_name" {
+  type        = string
+  description = "Domain name"
+}
+
 variable "github_repository_full_name" {
   type        = string
   description = "GitHub repository name."
@@ -51,6 +56,10 @@ variable "sst_recruiter_portal_domain" {
   description = "The domain for the recruiter portal."
 }
 
+variable "sst_recruiter_dashboard_domain" {
+  type        = string
+  description = "The domain for the recruiter dashboard."
+}
 variable "sentry_backend_dsn" {
   type        = string
   description = "The Sentry DSN for the backend."

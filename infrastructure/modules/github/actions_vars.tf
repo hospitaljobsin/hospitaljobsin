@@ -52,6 +52,12 @@ resource "github_actions_variable" "sst_recruiter_portal_domain" {
   value         = var.sst_recruiter_portal_domain
 }
 
+resource "github_actions_variable" "sst_recruiter_dashboard_domain" {
+  repository    = data.github_repository.this.name
+  variable_name = "SST_RECRUITER_DASHBOARD_DOMAIN"
+  value         = var.sst_recruiter_dashboard_domain
+}
+
 resource "github_actions_variable" "sst_captcha_site_key" {
   repository    = data.github_repository.this.name
   variable_name = "SST_CAPTCHA_SITE_KEY"
@@ -112,4 +118,11 @@ resource "github_actions_variable" "sentry_organization" {
   repository    = data.github_repository.this.name
   variable_name = "SENTRY_ORGANIZATION"
   value         = var.sentry_organization
+}
+
+
+resource "github_actions_variable" "public_root_domain" {
+  repository    = data.github_repository.this.name
+  variable_name = "PUBLIC_ROOT_DOMAIN"
+  value         = var.domain_name
 }

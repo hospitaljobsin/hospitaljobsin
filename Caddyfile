@@ -21,7 +21,7 @@ http://accounts.localtest.me {
 
 # Reverse proxy for recruiter site
 http://recruiter.localtest.me {
-    reverse_proxy http://host.docker.internal:5001
+    reverse_proxy http://host.docker.internal:5003
 }
 
 # Wildcard: any subdomain of localtest.me
