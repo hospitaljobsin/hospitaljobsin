@@ -2,22 +2,19 @@
 import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
 import {
 	Dropdown,
-	DropdownItem,
-	DropdownMenu,
-	DropdownSection,
 	DropdownTrigger,
 	Navbar,
 	NavbarBrand,
 	NavbarContent,
 } from "@heroui/react";
-import { ChevronDown, PlusIcon } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import AuthNavigation from "./AuthNavigation";
-import HeaderOrganizationList from "./HeaderOrganizationList";
+import HeaderOrganizationList from "./HeaderDropdownMenu";
 
 export const HeaderQuery = graphql`
   query HeaderQuery($organizationSlug: String!) {
@@ -25,7 +22,7 @@ export const HeaderQuery = graphql`
       ... on Account {
         __typename
         ...AuthNavigationFragment
-		...HeaderOrganizationListFragment
+		...HeaderDropdownMenuFragment
       }
       ... on NotAuthenticatedError {
         __typename
@@ -76,23 +73,7 @@ export default function Header({
 						</div>
 					</DropdownTrigger>
 
-					<DropdownMenu
-						aria-label="ACME features"
-						itemClasses={{
-							base: "gap-4",
-						}}
-					>
-						<HeaderOrganizationList account={data.viewer} />
-						<DropdownSection>
-							<DropdownItem
-								key="new_organization"
-								description="Create or join an organization"
-								startContent={<PlusIcon />}
-							>
-								New organization
-							</DropdownItem>
-						</DropdownSection>
-					</DropdownMenu>
+					<HeaderOrganizationList account={data.viewer} />
 				</Dropdown>
 			</NavbarBrand>
 

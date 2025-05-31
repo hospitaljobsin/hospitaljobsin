@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0d70332f12da7b0467c66b08db38d3a3>>
- * @relayHash 60a3db52708c73c8e71604a146f8c51a
+ * @generated SignedSource<<67303b484f2f8f82f5345ac1dcaa8ab5>>
+ * @relayHash e63f59e029a0568db4ba85f93d79e61b
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 60a3db52708c73c8e71604a146f8c51a
+// @relayRequestID e63f59e029a0568db4ba85f93d79e61b
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -29,7 +29,7 @@ export type HeaderQuery$data = {
   };
   readonly viewer: {
     readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "HeaderOrganizationListFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "HeaderDropdownMenuFragment">;
   } | {
     readonly __typename: "NotAuthenticatedError";
   } | {
@@ -145,7 +145,7 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "HeaderOrganizationListFragment"
+                "name": "HeaderDropdownMenuFragment"
               }
             ],
             "type": "Account",
@@ -286,7 +286,7 @@ return {
                 "args": (v7/*: any*/),
                 "filters": null,
                 "handle": "connection",
-                "key": "HeaderOrganizationListFragment_organizations",
+                "key": "HeaderDropdownMenuFragment_organizations",
                 "kind": "LinkedHandle",
                 "name": "organizations"
               },
@@ -316,7 +316,7 @@ return {
     ]
   },
   "params": {
-    "id": "60a3db52708c73c8e71604a146f8c51a",
+    "id": "e63f59e029a0568db4ba85f93d79e61b",
     "metadata": {},
     "name": "HeaderQuery",
     "operationKind": "query",
@@ -325,6 +325,6 @@ return {
 };
 })();
 
-(node as any).hash = "54b622a43d5283e04051f81e54763cc9";
+(node as any).hash = "9fae268e12289c9bf3de84f69c3ddcbb";
 
 export default node;

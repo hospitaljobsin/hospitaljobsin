@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b936c4606ebbdd676b4ddd901da774d2>>
+ * @generated SignedSource<<b0689b7d582b82d83530b5358c535227>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type HeaderOrganizationListFragment$data = {
+export type HeaderDropdownMenuFragment$data = {
   readonly id: string;
   readonly organizations: {
     readonly edges: ReadonlyArray<{
@@ -25,14 +25,14 @@ export type HeaderOrganizationListFragment$data = {
       readonly hasNextPage: boolean;
     };
   };
-  readonly " $fragmentType": "HeaderOrganizationListFragment";
+  readonly " $fragmentType": "HeaderDropdownMenuFragment";
 };
-export type HeaderOrganizationListFragment$key = {
-  readonly " $data"?: HeaderOrganizationListFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"HeaderOrganizationListFragment">;
+export type HeaderDropdownMenuFragment$key = {
+  readonly " $data"?: HeaderDropdownMenuFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"HeaderDropdownMenuFragment">;
 };
 
-import HeaderOrganizationListPaginationQuery_graphql from './HeaderOrganizationListPaginationQuery.graphql';
+import HeaderDropdownMenuPaginationQuery_graphql from './HeaderDropdownMenuPaginationQuery.graphql';
 
 const node: ReaderFragment = (function(){
 var v0 = [
@@ -80,21 +80,21 @@ return {
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": HeaderOrganizationListPaginationQuery_graphql,
+      "operation": HeaderDropdownMenuPaginationQuery_graphql,
       "identifierInfo": {
         "identifierField": "id",
         "identifierQueryVariableName": "id"
       }
     }
   },
-  "name": "HeaderOrganizationListFragment",
+  "name": "HeaderDropdownMenuFragment",
   "selections": [
     {
       "alias": "organizations",
       "args": null,
       "concreteType": "OrganizationConnection",
       "kind": "LinkedField",
-      "name": "__HeaderOrganizationListFragment_organizations_connection",
+      "name": "__HeaderDropdownMenuFragment_organizations_connection",
       "plural": false,
       "selections": [
         {
@@ -190,6 +190,6 @@ return {
 };
 })();
 
-(node as any).hash = "56f6661f9e3a3ef7999a9526f2527b27";
+(node as any).hash = "7282649140b278881c80b408b2ff83cb";
 
 export default node;
