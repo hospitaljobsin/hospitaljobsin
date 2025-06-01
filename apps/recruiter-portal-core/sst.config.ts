@@ -16,15 +16,14 @@ export default $config({
 		// const privateSubnets = process.env.SST_VPC_PRIVATE_SUBNETS?.split(",") || [];
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
 
-		// const router = sst.aws.Router.get("SharedRouter", "E5DM38XV8XOAR");
+		const router = sst.aws.Router.get("SharedRouter", "E5DM38XV8XOAR");
 
 		new sst.aws.Nextjs("recruiter-portal-ui", {
 			buildCommand: "pnpm run package",
-			domain: process.env.SST_RECRUITER_PORTAL_DOMAIN,
-			// router: {
-			// 	instance: router,
-			// 	domain: process.env.SST_RECRUITER_PORTAL_DOMAIN,
-			// },
+			router: {
+				instance: router,
+				domain: process.env.SST_RECRUITER_PORTAL_DOMAIN,
+			},
 			environment: {
 				NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL,
 				NEXT_PUBLIC_URL: env.NEXT_PUBLIC_URL,
