@@ -57,15 +57,13 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          cache-dependency-path: apps/seeker-portal/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        working-directory: ./apps/seeker-portal
-        run: pnpm install --frozen-lockfile --shamefully-hoist
+        run: pnpm install --filter seeker-portal --frozen-lockfile --shamefully-hoist
 
       - name: Validate Relay Compiler Artifacts
-        working-directory: ./apps/seeker-portal
-        run: pnpm run relay ../../relay.config.json --project seeker-portal --validate
+        run: pnpm --filter seeker-portal run relay ../../relay.config.json --project seeker-portal --validate
 
       - name: SST Deploy
         working-directory: ./apps/seeker-portal
