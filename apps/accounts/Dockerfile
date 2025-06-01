@@ -13,12 +13,14 @@ ENV PATH=$PATH:$PNPM_HOME
 
 WORKDIR /app
 
-COPY ./apps/accounts/package.json ./apps/accounts/pnpm-lock.yaml ./apps/accounts/.npmrc ./apps/accounts/
+COPY ./apps/accounts/package.json ./apps/accounts/.npmrc ./apps/accounts/
 COPY ./schema/ ./schema/
+# Copy root-level workspace config and lockfiles
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 
-WORKDIR /app/apps/accounts
+RUN pnpm install --filter accounts --frozen-lockfile --shamefully-hoist
 
-RUN pnpm install --frozen-lockfile --shamefully-hoist
+# WORKDIR /app/apps/accounts
 
 ENV SKIP_ENV_VALIDATION=true
 
@@ -45,11 +47,11 @@ ARG NEXT_PUBLIC_ENVIRONMENT
 ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 # Add any other NEXT_PUBLIC variables your app needs
 
-COPY ./apps/accounts/ ./
+COPY ./apps/accounts/ ./apps/accounts/
 
-RUN pnpm run relay relay.config.json --validate
+RUN pnpm --filter accounts run relay --validate
 
-RUN pnpm build
+RUN pnpm --filter accounts build
 
 FROM node:24-alpine AS release
 WORKDIR /app
@@ -58,10 +60,16 @@ RUN corepack enable
 # add curl
 RUN apk --no-cache add curl
 
-COPY --from=base /app/apps/accounts/node_modules ./node_modules
-COPY --from=base /app/apps/accounts/package.json ./package.json
-COPY --from=base /app/apps/accounts/.next ./.next
+# Copy full monorepo-level node_modules
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=base /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=base /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=base /app/package.json ./package.json
+
+# Copy app-specific output and files
+COPY --from=base /app/apps/accounts/.next ./apps/accounts/.next
+COPY --from=base /app/apps/accounts/package.json ./apps/accounts/package.json
 
 EXPOSE 5002
 
-CMD ["pnpm", "start"]
+CMD ["pnpm", "--filter", "accounts", "start"]

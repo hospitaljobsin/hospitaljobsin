@@ -65,6 +65,7 @@ jobs:
       - name: Validate Relay Compiler Artifacts
         run: pnpm --filter recruiter-dashboard run relay ../../relay.config.json --project recruiter-dashboard --validate
 
+      # TODO: use pnpm workspace config while building with sst
       - name: SST Deploy
         working-directory: ./apps/recruiter-dashboard
         run: npx sst deploy --stage production --print-logs

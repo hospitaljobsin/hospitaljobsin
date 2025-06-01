@@ -13,12 +13,14 @@ ENV PATH=$PATH:$PNPM_HOME
 
 WORKDIR /app
 
-COPY ./apps/seeker-portal/package.json ./apps/seeker-portal/pnpm-lock.yaml ./apps/seeker-portal/.npmrc ./apps/seeker-portal/
+COPY ./apps/seeker-portal/package.json ./apps/seeker-portal/.npmrc ./apps/seeker-portal/
 COPY ./schema/ ./schema/
+# Copy root-level workspace config and lockfiles
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 
-WORKDIR /app/apps/seeker-portal
+# WORKDIR /app/apps/seeker-portal
 
-RUN pnpm install --frozen-lockfile --shamefully-hoist
+RUN pnpm install --filter seeker-portal  --frozen-lockfile --shamefully-hoist
 
 ENV SKIP_ENV_VALIDATION=true
 
@@ -45,11 +47,11 @@ ARG NEXT_PUBLIC_ENVIRONMENT
 ENV NEXT_PUBLIC_ENVIRONMENT=$NEXT_PUBLIC_ENVIRONMENT
 # Add any other NEXT_PUBLIC variables your app needs
 
-COPY ./apps/seeker-portal/ ./
+COPY ./apps/seeker-portal/ ./apps/seeker-portal/
 
-RUN pnpm run relay relay.config.json --validate
+RUN pnpm --filter seeker-portal run relay --validate
 
-RUN pnpm build
+RUN pnpm --filter seeker-portal build
 
 FROM node:24-alpine AS release
 WORKDIR /app
@@ -58,10 +60,16 @@ RUN corepack enable
 # add curl
 RUN apk --no-cache add curl
 
-COPY --from=base /app/apps/seeker-portal/node_modules ./node_modules
-COPY --from=base /app/apps/seeker-portal/package.json ./package.json
-COPY --from=base /app/apps/seeker-portal/.next ./.next
+# Copy full monorepo-level node_modules
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=base /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=base /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=base /app/package.json ./package.json
+
+# Copy app-specific output and files
+COPY --from=base /app/apps/seeker-portal/.next ./apps/seeker-portal/.next
+COPY --from=base /app/apps/seeker-portal/package.json ./apps/seeker-portal/package.json
 
 EXPOSE 5000
 
-CMD ["pnpm", "start"]
+CMD ["pnpm", "--filter", "seeker-portal", "start"]

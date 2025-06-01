@@ -13,12 +13,14 @@ ENV PATH=$PATH:$PNPM_HOME
 
 WORKDIR /app
 
-COPY ./apps/recruiter-portal/package.json ./apps/recruiter-portal/pnpm-lock.yaml ./apps/recruiter-portal/.npmrc ./apps/recruiter-portal/
+COPY ./apps/recruiter-portal-core/package.json ./apps/recruiter-portal-core/.npmrc  ./apps/recruiter-portal-core/
 COPY ./schema/ ./schema/
+# Copy root-level workspace config and lockfiles
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 
-WORKDIR /app/apps/recruiter-portal
+# WORKDIR /app/apps/recruiter-portal-core
 
-RUN pnpm install --frozen-lockfile --shamefully-hoist
+RUN pnpm install --filter recruiter-portal-core --frozen-lockfile --shamefully-hoist
 
 ENV SKIP_ENV_VALIDATION=true
 
@@ -47,11 +49,11 @@ ARG NEXT_PUBLIC_ROOT_DOMAIN
 ENV NEXT_PUBLIC_ROOT_DOMAIN=$NEXT_PUBLIC_ROOT_DOMAIN
 # Add any other NEXT_PUBLIC variables your app needs
 
-COPY ./apps/recruiter-portal/ ./
+COPY ./apps/recruiter-portal-core/ ./apps/recruiter-portal-core/
 
-RUN pnpm run relay relay.config.json --validate
+RUN pnpm --filter recruiter-portal-core run relay --validate
 
-RUN pnpm build
+RUN pnpm --filter recruiter-portal-core build
 
 FROM node:24-alpine AS release
 WORKDIR /app
@@ -60,10 +62,16 @@ RUN corepack enable
 # add curl
 RUN apk --no-cache add curl
 
-COPY --from=base /app/apps/recruiter-portal/node_modules ./node_modules
-COPY --from=base /app/apps/recruiter-portal/package.json ./package.json
-COPY --from=base /app/apps/recruiter-portal/.next ./.next
+# Copy full monorepo-level node_modules
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=base /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=base /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=base /app/package.json ./package.json
+
+# Copy app-specific output and files
+COPY --from=base /app/apps/recruiter-portal-core/.next ./apps/recruiter-portal-core/.next
+COPY --from=base /app/apps/recruiter-portal-core/package.json ./apps/recruiter-portal-core/package.json
 
 EXPOSE 5003
 
-CMD ["pnpm", "start"]
+CMD ["pnpm", "--filter", "recruiter-portal-core", "start"]

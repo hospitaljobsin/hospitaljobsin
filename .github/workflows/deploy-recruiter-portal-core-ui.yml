@@ -65,6 +65,7 @@ jobs:
       - name: Validate Relay Compiler Artifacts
         run: pnpm --filter recruiter-portal-core run relay ../../relay.config.json --project recruiter-portal-core --validate
 
+      # TODO: use pnpm workspace config while building with sst
       - name: SST Deploy
         working-directory: ./apps/recruiter-portal-core
         run: npx sst deploy --stage production --print-logs
