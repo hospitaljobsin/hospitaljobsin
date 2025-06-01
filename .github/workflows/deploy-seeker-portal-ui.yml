@@ -69,7 +69,7 @@ jobs:
 
       - name: SST Deploy
         working-directory: ./apps/seeker-portal
-        run: npx sst refresh --stage production --print-logs
+        run: npx sst deploy --stage production --print-logs
         env:
             SST_VPC_PRIVATE_SUBNETS: ${{ vars.SST_VPC_PRIVATE_SUBNETS }}
             SST_VPC_SECURITY_GROUPS: ${{ vars.SST_VPC_SECURITY_GROUPS }}
