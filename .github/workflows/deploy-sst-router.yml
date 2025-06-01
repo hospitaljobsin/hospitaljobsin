@@ -30,7 +30,7 @@ jobs:
           node-version: 24
 
       - name: SST Deploy
-        working-directory: ./sst-deploy
+        working-directory: ./sst-router
         run: npx sst deploy --stage production --print-logs
         env:
             NODE_ENV: production

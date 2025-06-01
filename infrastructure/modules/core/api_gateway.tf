@@ -102,6 +102,10 @@ resource "aws_api_gateway_method" "proxy" {
   http_method   = "ANY"
   authorization = "NONE"
 
+  request_parameters = {
+    "method.request.header.Origin" = false
+  }
+
 }
 
 resource "aws_api_gateway_integration" "lambda" {
