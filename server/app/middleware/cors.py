@@ -7,9 +7,13 @@ import typing
 from starlette.datastructures import Headers, MutableHeaders
 from starlette.responses import PlainTextResponse, Response
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
+from structlog import get_logger
 
 ALL_METHODS = ("DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT")
 SAFELISTED_HEADERS = {"Accept", "Accept-Language", "Content-Language", "Content-Type"}
+
+
+logger = get_logger(__name__)
 
 
 class CORSMiddleware:
@@ -95,11 +99,11 @@ class CORSMiddleware:
     def is_allowed_origin(self, origin: str) -> bool:
         if self.allow_all_origins:
             return True
-        print("CORS: Checking if origin is allowed:", origin)
+        logger.info("CORS: Checking if origin is allowed:", origin)
         if self.allow_origin_regex is not None and self.allow_origin_regex.fullmatch(
             origin
         ):
-            print("CORS: Origin matched regex")
+            logger.info("CORS: Origin matched regex")
             return True
 
         return origin in self.allow_origins
@@ -113,9 +117,9 @@ class CORSMiddleware:
         failures = []
 
         if self.is_allowed_origin(origin=requested_origin):
-            print("CORS: Origin is allowed:", requested_origin)
+            logger.info("CORS: Origin is allowed:", requested_origin)
             if self.preflight_explicit_allow_origin:
-                print("CORS: Setting explicit allow origin")
+                logger.info("CORS: Setting explicit allow origin")
                 # The "else" case is already accounted for in self.preflight_headers
                 # and the value would be "*".
                 headers["Access-Control-Allow-Origin"] = requested_origin
@@ -139,12 +143,12 @@ class CORSMiddleware:
         # the browser to enforce the CORS policy, but its more informative
         # if we do.
         if failures:
-            print("CORS: Disallowed CORS request:", failures)
+            logger.info("CORS: Disallowed CORS request:", failures)
             failure_text = "Disallowed CORS " + ", ".join(failures)
             return PlainTextResponse(failure_text, status_code=400, headers=headers)
 
-        print("CORS: Preflight response OK")
-        print("Final headers:", headers)
+        logger.info("CORS: Preflight response OK")
+        logger.info("Final headers:", headers)
         return PlainTextResponse("OK", status_code=200, headers=headers)
 
     async def simple_response(
@@ -180,6 +184,6 @@ class CORSMiddleware:
 
     @staticmethod
     def allow_explicit_origin(headers: MutableHeaders, origin: str) -> None:
-        print("CORS: Allowing explicit origin:", origin)
+        logger.info("CORS: Allowing explicit origin:", origin)
         headers["Access-Control-Allow-Origin"] = origin
         headers.add_vary_header("Origin")
