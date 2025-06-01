@@ -82,7 +82,10 @@ class CORSMiddleware:
         headers = Headers(scope=scope)
         origin = headers.get("origin")
 
+        logger.info(f"CORS: Received request with method {method} and origin {origin}")
+
         if origin is None:
+            logger.info("CORS: No origin header found, skipping CORS processing")
             await self.app(scope, receive, send)
             return
 
