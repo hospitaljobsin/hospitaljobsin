@@ -29,4 +29,5 @@ def initialize_instrumentation(settings: AppSettings) -> None:
                 async_execution=True,
             ),
         ],
+        _experiments={"enable_logs": True},
     )

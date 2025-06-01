@@ -4,10 +4,10 @@ import functools
 import re
 import typing
 
+from sentry_sdk import logger
 from starlette.datastructures import Headers, MutableHeaders
 from starlette.responses import PlainTextResponse, Response
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
-from structlog import get_logger
 
 ALL_METHODS = ("DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT")
 SAFELISTED_HEADERS = {"Accept", "Accept-Language", "Content-Language", "Content-Type"}
@@ -25,7 +25,6 @@ class CORSMiddleware:
         expose_headers: typing.Sequence[str] = (),
         max_age: int = 600,
     ) -> None:
-        self.logger = get_logger(__name__)
         if "*" in allow_methods:
             allow_methods = ALL_METHODS
 
@@ -97,11 +96,11 @@ class CORSMiddleware:
     def is_allowed_origin(self, origin: str) -> bool:
         if self.allow_all_origins:
             return True
-        self.logger.info(f"CORS: Checking if origin is allowed: {origin}")
+        logger.info(f"CORS: Checking if origin is allowed: {origin}")
         if self.allow_origin_regex is not None and self.allow_origin_regex.fullmatch(
             origin
         ):
-            self.logger.info("CORS: Origin matched regex")
+            logger.info("CORS: Origin matched regex")
             return True
 
         return origin in self.allow_origins
@@ -115,9 +114,9 @@ class CORSMiddleware:
         failures = []
 
         if self.is_allowed_origin(origin=requested_origin):
-            self.logger.info(f"CORS: Origin is allowed: {requested_origin}")
+            logger.info(f"CORS: Origin is allowed: {requested_origin}")
             if self.preflight_explicit_allow_origin:
-                self.logger.info("CORS: Setting explicit allow origin")
+                logger.info("CORS: Setting explicit allow origin")
                 # The "else" case is already accounted for in self.preflight_headers
                 # and the value would be "*".
                 headers["Access-Control-Allow-Origin"] = requested_origin
@@ -141,12 +140,12 @@ class CORSMiddleware:
         # the browser to enforce the CORS policy, but its more informative
         # if we do.
         if failures:
-            self.logger.info(f"CORS: Disallowed CORS request: {failures}")
+            logger.info(f"CORS: Disallowed CORS request: {failures}")
             failure_text = "Disallowed CORS " + ", ".join(failures)
             return PlainTextResponse(failure_text, status_code=400, headers=headers)
 
-        self.logger.info("CORS: Preflight response OK")
-        self.logger.info(f"Final headers: {headers}")
+        logger.info("CORS: Preflight response OK")
+        logger.info(f"Final headers: {headers}")
         return PlainTextResponse("OK", status_code=200, headers=headers)
 
     async def simple_response(
