@@ -193,7 +193,7 @@ resource "aws_lambda_function" "backend" {
       SERVER_LOG_LEVEL                            = "INFO"
       SERVER_CORS_ALLOW_ORIGINS                   = "[]"
       SERVER_CORS_ALLOW_ORIGIN_REGEX              = "https://.*\\.${local.escaped_domain}"
-      SERVER_SESSION_COOKIE_DOMAIN                = var.domain_name
+      SERVER_SESSION_COOKIE_DOMAIN                = ".${var.domain_name}"
       SERVER_EMAIl_PROVIDER                       = "aws_ses"
       SERVER_EMAIL_FROM                           = aws_ses_email_identity.this.email
       SERVER_S3_BUCKET_NAME                       = aws_s3_bucket.this.bucket
