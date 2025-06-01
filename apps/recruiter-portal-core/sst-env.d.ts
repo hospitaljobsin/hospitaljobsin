@@ -4,16 +4,7 @@
 /* deno-fmt-ignore-file */
 
 declare module "sst" {
-	export interface Resource {
-		SharedRouter: {
-			type: "sst.aws.Router";
-			url: string;
-		};
-		"recruiter-portal-ui": {
-			type: "sst.aws.Nextjs";
-			url: string;
-		};
-	}
+	export interface Resource {}
 }
 /// <reference path="sst-env.d.ts" />
 
