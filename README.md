@@ -14,14 +14,15 @@ relevant UML code:
 https://www.planttext.com?text=u-LoA2v9B2efpStXvShBJqbLK0eepIbE3SylobPmJ4xEByqhALPII2nM20Xtn501bS3K6PIQN5IQMP9Q15KHnCk5nVW0Jx0qa0P90orGqDMr0t4Lh1HAYrEBGM91MCGmX1nIyrB0FW00
 -->
 
-| Service                 | Directory                                         | Description                      |
-|-------------------------|---------------------------------------------------|----------------------------------|
-| Hospital Jobs Accounts  | [apps/accounts](./apps/accounts)                  | Authentication/ Accounts UI      |
-| Hospital Jobs Recruiter | [apps/recruitment-portal](./apps/recruiter-portal)| Recruitment platform UI          |
-| Hospital Jobs           | [apps/seeker-portal](./apps/seeker-portal)        | Job Seeker platform UI           |
-| Hospital Jobs API       | [server](./server)                                | GraphQL API Server               |
-| E2E Test Suite          | [e2e](./e2e)                                      | Playwright End-To-End Tests      |
-| Infrastructure          | [infrastructure](./infrastructure)                | Terraform Infrastructure as Code |
+| Service                             | Directory                                                   | Description                      |
+|-------------------------------------|-------------------------------------------------------------|----------------------------------|
+| Hospital Jobs Accounts              | [apps/accounts](./apps/accounts)                            | Authentication/ Accounts UI      |
+| Hospital Jobs Recruiter Portal Core | [apps/recruitment-portal-core](./apps/recruiter-portal-core)| Recruitment platform UI          |
+| Hospital Jobs Recruiter Dashboard   | [apps/recruitment-dashboard](./apps/recruiter-dashboard)    | Recruitment platform UI          |
+| Hospital Jobs                       | [apps/seeker-portal](./apps/seeker-portal)                  | Job Seeker platform UI           |
+| Hospital Jobs API                   | [server](./server)                                          | GraphQL API Server               |
+| E2E Test Suite                      | [e2e](./e2e)                                                | Playwright End-To-End Tests      |
+| Infrastructure           b          | [infrastructure](./infrastructure)                          | Terraform Infrastructure as Code |
 
 
 ## License
