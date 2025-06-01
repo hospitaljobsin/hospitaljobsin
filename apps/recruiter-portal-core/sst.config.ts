@@ -7,13 +7,15 @@ export default $config({
 		return {
 			name: "recruiter-portal",
 			removal: input?.stage === "production" ? "retain" : "remove",
-			protect: ["production"].includes(input?.stage),
+			protect: false,
 			home: "aws",
 		};
 	},
+
 	async run() {
 		// const privateSubnets = process.env.SST_VPC_PRIVATE_SUBNETS?.split(",") || [];
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
+
 		const router = sst.aws.Router.get("SharedRouter", "E2IRBGNRAX42P5");
 
 		new sst.aws.Nextjs("recruiter-portal-ui", {

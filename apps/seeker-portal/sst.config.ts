@@ -11,9 +11,11 @@ export default $config({
 			home: "aws",
 		};
 	},
+
 	async run() {
 		// const privateSubnets = process.env.SST_VPC_PRIVATE_SUBNETS?.split(",") || [];
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
+
 		const router = sst.aws.Router.get("SharedRouter", "E2IRBGNRAX42P5");
 
 		new sst.aws.Nextjs("seeker-portal-ui", {
