@@ -101,6 +101,7 @@ resource "aws_api_gateway_method" "proxy" {
   resource_id   = aws_api_gateway_resource.proxy.id
   http_method   = "ANY"
   authorization = "NONE"
+
 }
 
 resource "aws_api_gateway_integration" "lambda" {
@@ -111,6 +112,7 @@ resource "aws_api_gateway_integration" "lambda" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.backend.invoke_arn
+
 }
 
 
@@ -128,3 +130,69 @@ resource "aws_api_gateway_base_path_mapping" "api" {
   stage_name  = aws_api_gateway_stage.production.stage_name
   domain_name = aws_api_gateway_domain_name.custom.domain_name
 }
+
+
+# data "aws_cloudfront_cache_policy" "disabled" {
+#   name = "Managed-CachingDisabled"
+# }
+
+# resource "aws_cloudfront_origin_request_policy" "api_policy" {
+#   name = "forward-origin-and-cookies"
+
+#   cookies_config {
+#     cookie_behavior = "all" # Or "whitelist" and list names below
+#   }
+
+#   headers_config {
+#     header_behavior = "allViewer"
+#     # headers {
+#     #   items = ["*"]
+#     # }
+#   }
+
+#   query_strings_config {
+#     query_string_behavior = "all"
+#   }
+# }
+
+
+# resource "aws_cloudfront_distribution" "api" {
+#   enabled             = true
+#   default_root_object = ""
+#   aliases             = ["api.${var.domain_name}"]
+
+#   origin {
+#     domain_name = aws_api_gateway_domain_name.custom.cloudfront_domain_name
+#     origin_id   = "api-gateway-origin"
+
+#     custom_origin_config {
+#       origin_protocol_policy = "https-only"
+#       http_port              = 80
+#       https_port             = 443
+#       origin_ssl_protocols   = ["TLSv1.2"]
+#     }
+#   }
+
+#   default_cache_behavior {
+#     allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+#     cached_methods   = ["GET", "HEAD"]
+#     target_origin_id = "api-gateway-origin"
+
+#     viewer_protocol_policy   = "redirect-to-https"
+#     origin_request_policy_id = aws_cloudfront_origin_request_policy.api_policy.id
+#     cache_policy_id          = data.aws_cloudfront_cache_policy.disabled.id
+#   }
+
+#   viewer_certificate {
+#     acm_certificate_arn      = aws_acm_certificate_validation.api_cert.certificate_arn
+#     ssl_support_method       = "sni-only"
+#     minimum_protocol_version = "TLSv1.2_2019"
+#   }
+
+#   restrictions {
+#     geo_restriction {
+#       restriction_type = "none"
+#     }
+#   }
+
+# }

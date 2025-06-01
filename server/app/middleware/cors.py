@@ -14,6 +14,11 @@ SAFELISTED_HEADERS = {"Accept", "Accept-Language", "Content-Language", "Content-
 
 
 # ISSUE TRACKED DOWN: client is sending Origin: None from wildcard subdomains alone.
+# This is because Cloudfront is in front of the API now.
+
+
+# Actually from Route53, the API has a separate cloudfront distribution on top.
+# we probably need to configure that.
 class CORSMiddleware:
     def __init__(
         self,
@@ -149,7 +154,6 @@ class CORSMiddleware:
             return PlainTextResponse(failure_text, status_code=400, headers=headers)
 
         logger.info("CORS: Preflight response OK")
-        logger.info(f"Final headers: {headers}")
         return PlainTextResponse("OK", status_code=200, headers=headers)
 
     async def simple_response(

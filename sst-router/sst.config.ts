@@ -15,8 +15,14 @@ export default $config({
 				name: "hospitaljobs.in",
 				aliases: ["*.hospitaljobs.in"],
 			},
+			transform: {
+				cdn(args, opts, name) {
+					args.defaultCacheBehavior = {
+						...args.defaultCacheBehavior,
+						viewerProtocolPolicy: "redirect-to-https",
+					};
+				},
+			},
 		});
-
-		console.log(router.distributionID);
 	},
 });
