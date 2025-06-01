@@ -10,7 +10,7 @@ export default $config({
 		};
 	},
 	async run() {
-		const router = new sst.aws.Router("SharedRouter", {
+		new sst.aws.Router("SharedRouter", {
 			domain: {
 				name: "hospitaljobs.in",
 				aliases: ["*.hospitaljobs.in"],
