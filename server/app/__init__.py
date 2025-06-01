@@ -67,15 +67,7 @@ def add_middleware(
     compiled_regex = re.compile(app_settings.cors_allow_origin_regex)
     print("regex match test:")
     print(compiled_regex.fullmatch("https://aryan.hospitaljobs.in"))
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=app_settings.cors_allow_origins,
-        allow_origin_regex=app_settings.cors_allow_origin_regex,
-        allow_credentials=True,
-        allow_headers=["*"],
-        allow_methods=["*"],
-        expose_headers=["*"],
-    )
+
     app.add_middleware(
         CorrelationIdMiddleware,
         header_name="X-Request-ID",
@@ -93,6 +85,15 @@ def add_middleware(
     app.add_middleware(
         AioInjectMiddleware,
         container=create_container(),
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=app_settings.cors_allow_origins,
+        allow_origin_regex=app_settings.cors_allow_origin_regex,
+        allow_credentials=True,
+        allow_headers=["*"],
+        allow_methods=["*"],
+        expose_headers=["*"],
     )
 
 
