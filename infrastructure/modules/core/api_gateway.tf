@@ -103,7 +103,7 @@ resource "aws_api_gateway_method" "proxy" {
   authorization = "NONE"
 
   request_parameters = {
-    "method.request.header.Origin" = false
+    "method.request.header.Origin" = true
   }
 
 }

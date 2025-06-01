@@ -3,7 +3,7 @@ import http.client
 conn = http.client.HTTPSConnection("api.hospitaljobs.in")
 
 headers = {
-    "Origin": "https://abc.hospitaljobs.in",
+    "Origin": "https://ssss.hospitaljobs.in",
     "Access-Control-Request-Method": "POST",
     "Access-Control-Request-Headers": "Content-Type,Authorization",
 }

@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'sst-router/**'
+      - '.github/workflows/deploy-sst-router.yml'
 
 concurrency:
   group: ${{ github.workflow }}  # Ensures only one run of this workflow at a time
