@@ -13,6 +13,7 @@ ALL_METHODS = ("DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT")
 SAFELISTED_HEADERS = {"Accept", "Accept-Language", "Content-Language", "Content-Type"}
 
 
+# ISSUE TRACKED DOWN: client is sending Origin: None from wildcard subdomains alone.
 class CORSMiddleware:
     def __init__(
         self,
