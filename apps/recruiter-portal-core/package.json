@@ -1,5 +1,5 @@
 {
-	"name": "recruiter-portal",
+	"name": "recruiter-portal-core",
 	"version": "0.1.0",
 	"private": true,
 	"engines": {

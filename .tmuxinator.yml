@@ -16,20 +16,16 @@ windows:
         - uv run langgraph dev --allow-blocking --port 8123
 
   - seeker_portal:
-        - cd apps/seeker-portal
-        - pnpm run dev
+      - pnpm --filter seeker-portal dev
 
   - recruiter_portal_core:
-        - cd apps/recruiter-portal-core
-        - pnpm run dev
+      - pnpm --filter recruiter-portal-core dev
 
   - recruiter_portal:
-        - cd apps/recruiter-dashboard
-        - pnpm run dev
+      - pnpm --filter recruiter-dashboard dev
 
   - accounts:
-        - cd apps/accounts
-        - pnpm run dev
+      - pnpm --filter accounts dev
 
   - relay-compiler:
       - relay-compiler --watch
