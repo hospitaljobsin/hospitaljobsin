@@ -7,7 +7,7 @@ export default $config({
 		return {
 			name: "recruiter-portal",
 			removal: input?.stage === "production" ? "retain" : "remove",
-			protect: false,
+			protect:  ["production"].includes(input?.stage),
 			home: "aws",
 		};
 	},
