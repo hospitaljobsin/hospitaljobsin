@@ -14,8 +14,8 @@ resource "aws_api_gateway_deployment" "this" {
 
   triggers = {
     redeployment = sha1(jsonencode([
-      aws_api_gateway_integration.lambda.id,
-      aws_api_gateway_method.proxy.id,
+      aws_api_gateway_integration.lambda,
+      aws_api_gateway_method.proxy,
     ]))
   }
 
@@ -103,7 +103,13 @@ resource "aws_api_gateway_method" "proxy" {
   authorization = "NONE"
 
   request_parameters = {
-    "method.request.header.Origin" = true
+    "method.request.header.Origin"        = true
+    "method.request.header.Authorization" = true
+    "method.request.header.Cookie"        = true
+    "method.request.header.Content-Type"  = true
+
+    "method.request.header.Access-Control-Request-Headers" = false
+    "method.request.header.Access-Control-Request-Method"  = false
   }
 
 }
