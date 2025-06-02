@@ -2,31 +2,14 @@ version: 2
 updates:
   # Enable version updates for accounts
   - package-ecosystem: "npm"
-    directory: "/apps/accounts/"
-    # Check the npm registry for updates every week
+    directory: "/" # root of the monorepo where pnpm-lock.yaml lives
     schedule:
       interval: "weekly"
-
-  # Enable version updates for seeker-portal
-  - package-ecosystem: "npm"
-    directory: "/apps/seeker-portal/"
-    # Check the npm registry for updates every week
-    schedule:
-      interval: "weekly"
-
-  # Enable version updates for recruiter-portal
-  - package-ecosystem: "npm"
-    directory: "/apps/recruiter-portal/"
-    # Check the npm registry for updates every week
-    schedule:
-      interval: "weekly"
-
-  # Enable version updates for e2e tests
-  - package-ecosystem: "npm"
-    directory: "/e2e/"
-    # Check the npm registry for updates every week
-    schedule:
-      interval: "weekly"
+    # Optional but recommended for monorepos
+    groups:
+      javascript-dependencies:
+        patterns:
+          - "*"
 
   # Enable version updates for server
   - package-ecosystem: "uv"
