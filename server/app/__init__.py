@@ -6,6 +6,7 @@ from asgi_correlation_id import CorrelationIdMiddleware
 from copilotkit import CopilotKitRemoteEndpoint, LangGraphAgent
 from copilotkit.integrations.fastapi import add_fastapi_endpoint
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from structlog import get_logger
 
 from app.agent import graph
@@ -22,7 +23,7 @@ from app.database import initialize_database
 from app.graphql_app import create_graphql_router
 from app.health.routes import health_router
 from app.jobs.routes import jobs_router
-from fastapi.middleware.cors import CORSMiddleware
+
 from app.middleware import SessionMiddleware
 from app.testing.routes import test_setup_router
 
