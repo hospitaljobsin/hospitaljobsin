@@ -9,21 +9,41 @@ export function getValidRedirectURL(redirectTo: string | null): string {
 	// return the absolute URL, which is needed for Oauth2 redirects
 	if (redirectTo.startsWith("/")) return `${env.NEXT_PUBLIC_URL}${redirectTo}`;
 
-	return redirectTo.startsWith(env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL) ||
-		redirectTo.startsWith(env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL)
-		? redirectTo
-		: links.seekerLanding;
+	try {
+		const url = new URL(redirectTo);
+
+		const rootDomain = env.NEXT_PUBLIC_ROOT_DOMAIN;
+		const isSubdomain =
+			url.hostname === rootDomain || url.hostname.endsWith(`.${rootDomain}`);
+
+		if (isSubdomain) {
+			return redirectTo;
+		}
+	} catch {
+		// invalid URL, fall back
+	}
+
+	return links.seekerLanding;
 }
 
 export function getValidSudoModeRedirectURL(redirectTo: string | null): string {
 	if (!redirectTo) return links.settings;
 
 	// only allow relative URLs or recruiter portal URLs
-	if (
-		redirectTo.startsWith("/") ||
-		redirectTo.startsWith(env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL)
-	)
-		return redirectTo;
+	if (redirectTo.startsWith("/")) return redirectTo;
+
+	try {
+		const url = new URL(redirectTo);
+
+		const rootDomain = env.NEXT_PUBLIC_ROOT_DOMAIN;
+		const isSubdomain = url.hostname.endsWith(`.${rootDomain}`);
+
+		if (isSubdomain) {
+			return redirectTo;
+		}
+	} catch {
+		// invalid URL, fall back
+	}
 
 	return links.settings;
 }

@@ -21,7 +21,7 @@ windows:
   - recruiter_portal_core:
       - pnpm --filter recruiter-portal-core dev
 
-  - recruiter_portal:
+  - recruiter_dashboard:
       - pnpm --filter recruiter-dashboard dev
 
   - accounts:

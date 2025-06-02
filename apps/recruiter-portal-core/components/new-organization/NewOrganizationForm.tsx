@@ -1,4 +1,9 @@
 "use client";
+import type { NewOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/NewOrganizationFormLogoPresignedUrlMutation.graphql";
+import type { NewOrganizationFormMutation } from "@/__generated__/NewOrganizationFormMutation.graphql";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
+import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next";
 import {
 	Button,
@@ -14,11 +19,6 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
-import type { NewOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/NewOrganizationFormLogoPresignedUrlMutation.graphql";
-import type { NewOrganizationFormMutation } from "@/__generated__/NewOrganizationFormMutation.graphql";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
-import { uploadFileToS3 } from "@/lib/presignedUrl";
 
 const CreateOrganizationMutation = graphql`
 mutation NewOrganizationFormMutation($fullName: String!, $slug: String!, $website: String, $description: String, $logoUrl: String) {
@@ -174,12 +174,12 @@ export default function NewOrganizationForm() {
 						label="Organization Slug"
 						labelPlacement="outside"
 						placeholder="my-company"
-						description={
-							<p>
-								A unique name for your organization used in URLs (like{" "}
-								{env.NEXT_PUBLIC_URL.split("//")[1]}/<b>my-company</b>)
-							</p>
+						endContent={
+							<span className="text-default-400 text-md">
+								.{env.NEXT_PUBLIC_URL.split("//")[1]}
+							</span>
 						}
+						description={<p>A unique subdomain for your organization</p>}
 						errorMessage={errors.slug?.message}
 						isInvalid={!!errors.slug}
 						isRequired
