@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0f85829fc1f39e64451f7e74e97a2c86>>
- * @relayHash aee9be3fdc9cf4f130a43ce9fbed1333
+ * @generated SignedSource<<add10625ce4e6b1e25eb22c597dda3ad>>
+ * @relayHash 1ab8a0e7f435ff9cbca85be5caec2e2e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,146 +9,125 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID aee9be3fdc9cf4f130a43ce9fbed1333
+// @relayRequestID 1ab8a0e7f435ff9cbca85be5caec2e2e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageDashboardViewQuery$variables = {
+export type OrganizationJobsListPaginationQuery$variables = {
+  count?: number | null | undefined;
+  cursor?: string | null | undefined;
+  id: string;
   searchTerm?: string | null | undefined;
-  slug: string;
 };
-export type pageDashboardViewQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"DashboardClientComponentFragment" | "pageDashboardMetadataFragment">;
+export type OrganizationJobsListPaginationQuery$data = {
+  readonly node: {
+    readonly " $fragmentSpreads": FragmentRefs<"OrganizationJobsListInternalFragment">;
+  } | null | undefined;
 };
-export type pageDashboardViewQuery = {
-  response: pageDashboardViewQuery$data;
-  variables: pageDashboardViewQuery$variables;
+export type OrganizationJobsListPaginationQuery = {
+  response: OrganizationJobsListPaginationQuery$data;
+  variables: OrganizationJobsListPaginationQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
 var v0 = {
-  "defaultValue": null,
+  "defaultValue": 10,
   "kind": "LocalArgument",
-  "name": "searchTerm"
+  "name": "count"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "slug"
+  "name": "cursor"
 },
 v2 = {
-  "kind": "Variable",
-  "name": "slug",
-  "variableName": "slug"
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "id"
 },
-v3 = [
-  (v2/*: any*/)
+v3 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "searchTerm"
+},
+v4 = [
+  {
+    "kind": "Variable",
+    "name": "id",
+    "variableName": "id"
+  }
 ],
-v4 = {
+v5 = {
+  "kind": "Variable",
+  "name": "searchTerm",
+  "variableName": "searchTerm"
+},
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "name",
-  "storageKey": null
-},
-v6 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "description",
-  "storageKey": null
-},
 v7 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "logoUrl",
-  "storageKey": null
-},
-v8 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "isMember",
-  "storageKey": null
-},
-v9 = {
-  "kind": "Variable",
-  "name": "searchTerm",
-  "variableName": "searchTerm"
-},
-v10 = [
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 10
-  },
-  (v9/*: any*/)
-],
-v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-};
+},
+v8 = [
+  {
+    "kind": "Variable",
+    "name": "after",
+    "variableName": "cursor"
+  },
+  {
+    "kind": "Variable",
+    "name": "first",
+    "variableName": "count"
+  },
+  (v5/*: any*/)
+];
 return {
   "fragment": {
     "argumentDefinitions": [
       (v0/*: any*/),
-      (v1/*: any*/)
+      (v1/*: any*/),
+      (v2/*: any*/),
+      (v3/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageDashboardViewQuery",
+    "name": "OrganizationJobsListPaginationQuery",
     "selections": [
       {
-        "kind": "InlineDataFragmentSpread",
-        "name": "pageDashboardMetadataFragment",
+        "alias": null,
+        "args": (v4/*: any*/),
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
+        "plural": false,
         "selections": [
           {
-            "alias": null,
-            "args": (v3/*: any*/),
-            "concreteType": null,
-            "kind": "LinkedField",
-            "name": "organization",
-            "plural": false,
-            "selections": [
-              (v4/*: any*/),
+            "args": [
               {
-                "kind": "InlineFragment",
-                "selections": [
-                  (v5/*: any*/),
-                  (v6/*: any*/),
-                  (v7/*: any*/),
-                  (v8/*: any*/)
-                ],
-                "type": "Organization",
-                "abstractKey": null
-              }
+                "kind": "Variable",
+                "name": "count",
+                "variableName": "count"
+              },
+              {
+                "kind": "Variable",
+                "name": "cursor",
+                "variableName": "cursor"
+              },
+              (v5/*: any*/)
             ],
-            "storageKey": null
+            "kind": "FragmentSpread",
+            "name": "OrganizationJobsListInternalFragment"
           }
         ],
-        "args": (v3/*: any*/),
-        "argumentDefinitions": [
-          (v1/*: any*/)
-        ]
-      },
-      {
-        "args": [
-          (v9/*: any*/),
-          (v2/*: any*/)
-        ],
-        "kind": "FragmentSpread",
-        "name": "DashboardClientComponentFragment"
+        "storageKey": null
       }
     ],
     "type": "Query",
@@ -157,31 +136,30 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
+      (v0/*: any*/),
       (v1/*: any*/),
-      (v0/*: any*/)
+      (v3/*: any*/),
+      (v2/*: any*/)
     ],
     "kind": "Operation",
-    "name": "pageDashboardViewQuery",
+    "name": "OrganizationJobsListPaginationQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v4/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "organization",
+        "name": "node",
         "plural": false,
         "selections": [
-          (v4/*: any*/),
+          (v6/*: any*/),
+          (v7/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v5/*: any*/),
-              (v6/*: any*/),
-              (v7/*: any*/),
-              (v8/*: any*/),
               {
                 "alias": null,
-                "args": (v10/*: any*/),
+                "args": (v8/*: any*/),
                 "concreteType": "JobConnection",
                 "kind": "LinkedField",
                 "name": "jobs",
@@ -203,7 +181,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v11/*: any*/),
+                          (v7/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -292,7 +270,7 @@ return {
                             "name": "vacancies",
                             "storageKey": null
                           },
-                          (v4/*: any*/)
+                          (v6/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -336,7 +314,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v10/*: any*/),
+                "args": (v8/*: any*/),
                 "filters": [
                   "searchTerm"
                 ],
@@ -344,26 +322,10 @@ return {
                 "key": "OrganizationJobsListInternalFragment_jobs",
                 "kind": "LinkedHandle",
                 "name": "jobs"
-              },
-              (v11/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "isAdmin",
-                "storageKey": null
               }
             ],
             "type": "Organization",
             "abstractKey": null
-          },
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v11/*: any*/)
-            ],
-            "type": "Node",
-            "abstractKey": "__isNode"
           }
         ],
         "storageKey": null
@@ -371,15 +333,15 @@ return {
     ]
   },
   "params": {
-    "id": "aee9be3fdc9cf4f130a43ce9fbed1333",
+    "id": "1ab8a0e7f435ff9cbca85be5caec2e2e",
     "metadata": {},
-    "name": "pageDashboardViewQuery",
+    "name": "OrganizationJobsListPaginationQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "5290c94106d1bcb19c61ce570cd575fb";
+(node as any).hash = "b8c54d46c2d5ba62662866356b02272d";
 
 export default node;

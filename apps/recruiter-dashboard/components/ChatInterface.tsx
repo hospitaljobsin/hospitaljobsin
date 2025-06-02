@@ -41,7 +41,7 @@ export default function ChatInterface({
 
 	return (
 		<div className="w-full mx-auto bg-background-400">
-			<div className="w-full bg-background-400 bottom-0 fixed p-8 px-5">
+			<div className="w-full bg-background-400 bottom-0 fixed p-8 px-5 border-t border-gray-300">
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
 					className="mx-auto max-w-5xl"

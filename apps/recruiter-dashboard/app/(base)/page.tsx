@@ -8,10 +8,12 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { graphql, readInlineData } from "relay-runtime";
 import invariant from "tiny-invariant";
+import DashboardClientComponent from "./DashboardClientComponent";
 
 export const PageDashboardViewQuery = graphql`
-  query pageDashboardViewQuery($slug: String!) {
+  query pageDashboardViewQuery($slug: String!, $searchTerm: String) {
 	...pageDashboardMetadataFragment @arguments(slug: $slug)
+	...DashboardClientComponentFragment @arguments(slug: $slug, searchTerm: $searchTerm)
   }
 `;
 
@@ -98,5 +100,5 @@ export default async function DashboardPage() {
 		notFound();
 	}
 
-	return <>dashboard</>;
+	return <DashboardClientComponent preloadedQuery={preloadedQuery} />;
 }
