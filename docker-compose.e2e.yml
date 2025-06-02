@@ -12,7 +12,7 @@ services:
       - test_caddy_data:/data
       - ./Caddyfile:/etc/caddy/Caddyfile
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:80", "-H", "Host: localtest.me" ]
+      test: ["CMD", "wget", "-qO-", "--header='Host: localtest.me'", "http://localhost:80"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -62,7 +62,7 @@ services:
       SERVER_SENTRY_DSN: ${SERVER_SENTRY_DSN}
       SERVER_PERSISTED_QUERIES_PATH: "query_map.json"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "--header='Host: localtest.me'", "http://localhost:80"]
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/health/"]
       interval: 10s
       timeout: 5s
       retries: 10
