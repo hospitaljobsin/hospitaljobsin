@@ -3,7 +3,7 @@
 @plugin './hero.ts';
 @plugin "@tailwindcss/typography";
 
-@source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx,mts,mjs}';
 @custom-variant dark (&:is(.dark *));
 /* @custom-variant dark (&:where(.dark, .dark *)); */
 
