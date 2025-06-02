@@ -22,7 +22,8 @@ from app.database import initialize_database
 from app.graphql_app import create_graphql_router
 from app.health.routes import health_router
 from app.jobs.routes import jobs_router
-from app.middleware import CORSMiddleware, SessionMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+from app.middleware import SessionMiddleware
 from app.testing.routes import test_setup_router
 
 
@@ -61,12 +62,6 @@ def add_middleware(
     auth_settings: AuthSettings,
 ) -> None:
     """Register middleware for the app."""
-    import re
-
-    compiled_regex = re.compile(app_settings.cors_allow_origin_regex)
-    print("regex match test:")
-    print(compiled_regex.fullmatch("https://aryan.hospitaljobs.in"))
-
     app.add_middleware(
         CorrelationIdMiddleware,
         header_name="X-Request-ID",

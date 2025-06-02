@@ -36,7 +36,8 @@ services:
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '8000'
       SERVER_LOG_LEVEL: 'INFO'
-      SERVER_CORS_ALLOW_ORIGINS: '["http://localtest.me", "http://127.0.0.1:5000", "http://recruiter.localtest.me", "http://127.0.0.1:5001", "http://accounts.localtest.me", "http://127.0.0.1:5002"]'
+      SERVER_CORS_ALLOW_ORIGINS: '["http://localtest.me", "http://recruiter.localtest.me",  "http://accounts.localtest.me"]'
+      SERVER_CORS_ALLOW_ORIGIN_REGEX: 'http://.*\.localtest\.me'
       SERVER_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       SERVER_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       SERVER_GOOGLE_API_KEY: XXXXXXXXXXXXX
