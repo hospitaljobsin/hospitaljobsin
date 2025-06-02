@@ -51,11 +51,10 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          cache-dependency-path: e2e/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        working-directory: e2e
+        run: pnpm --filter e2e install --frozen-lockfile
 
       - name: Install Playwright
         id: install-playwright
@@ -69,7 +68,7 @@ jobs:
           echo "Playwright cached – ${{ steps.install-playwright.outputs.cache-hit }}"
 
       - name: Run Playwright tests
-        run: pnpm run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
+        run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
         working-directory: e2e
         env:
           CI: true
