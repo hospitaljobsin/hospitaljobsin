@@ -9,13 +9,13 @@ export default function OrganizationSkeleton() {
 			as="div"
 			disableRipple
 			shadow="none"
-			isHoverable
+			isHoverable={false}
 		>
 			<CardHeader>
 				<div className="flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center">
-					<div className="flex items-center gap-4">
-						<Skeleton className="flex rounded-full w-12 h-12" />
-						<div className="flex flex-col gap-2 items-start">
+					<div className="flex items-center gap-4 w-full">
+						<Skeleton className="flex rounded-md w-18 h-18" />
+						<div className="flex flex-col gap-2 items-start w-full">
 							<Skeleton className="flex rounded-lg w-2/5 h-8" />
 							<Skeleton className="flex rounded-lg w-4/5 h-12" />
 						</div>
