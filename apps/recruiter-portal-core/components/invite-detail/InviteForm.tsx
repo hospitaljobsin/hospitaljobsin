@@ -121,7 +121,7 @@ export default function InviteForm({
 					"OrganizationInviteEdge"
 				) {
 					// Handle successful declination of the invite
-					router.replace(links.createOrganization);
+					router.replace(links.selectOrganization);
 				} else if (
 					response.declineOrganizationInvite.__typename ===
 					"OrganizationInviteNotFoundError"

@@ -6,6 +6,7 @@ const protocol =
 const links = {
 	landing: "/",
 	createOrganization: "/new",
+	selectOrganization: "/select",
 	login: (returnTo: string | undefined = undefined) =>
 		returnTo
 			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}`

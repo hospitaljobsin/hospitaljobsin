@@ -26,7 +26,7 @@ function getAuthenticationResponse(request: NextRequest): NextResponse {
 
 function getAnonymousResponse(request: NextRequest): NextResponse {
 	const redirectURL = request.nextUrl.clone();
-	redirectURL.pathname = links.createOrganization;
+	redirectURL.pathname = links.selectOrganization;
 	return NextResponse.redirect(redirectURL);
 }
 

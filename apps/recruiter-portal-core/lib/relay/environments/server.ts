@@ -41,7 +41,7 @@ export async function networkFetch(
 			switch (err.extensions?.code) {
 				// when an AuthenticationError is thrown in a resolver
 				case "UNAUTHENTICATED":
-					redirect(links.login(links.createOrganization));
+					redirect(links.login(links.selectOrganization));
 					break;
 				case "REQUIRES_SUDO_MODE":
 					redirect(links.accountSettingsRequestSudo());
