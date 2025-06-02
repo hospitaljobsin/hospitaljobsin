@@ -58,6 +58,14 @@ export default $config({
 					resources: ["*"], // TODO: restrict to the secret ARN
 				},
 			],
+			transform: {
+				cdn(args, opts, name) {
+					args.defaultCacheBehavior = {
+						...args.defaultCacheBehavior,
+						viewerProtocolPolicy: "redirect-to-https",
+					};
+				},
+			},
 		});
 	},
 });
