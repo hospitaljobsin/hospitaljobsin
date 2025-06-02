@@ -1,7 +1,9 @@
 "use client";
 import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
 import { APP_NAME } from "@/lib/constants";
+import links from "@/lib/links";
 import { Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import Link from "next/link";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -36,8 +38,18 @@ export default function Header({
 	return (
 		<Navbar maxWidth="lg" isBordered>
 			<NavbarBrand className="flex items-center gap-4">
-				<Logo />
-				<h2 className="font-medium text-inherit">{APP_NAME}</h2>
+				<Link
+					href={links.selectOrganization}
+					className="font-medium text-inherit"
+				>
+					<Logo />
+				</Link>
+				<Link
+					href={links.selectOrganization}
+					className="font-medium text-inherit"
+				>
+					{APP_NAME}
+				</Link>
 			</NavbarBrand>
 
 			<NavbarContent justify="end">
