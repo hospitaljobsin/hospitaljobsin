@@ -2348,6 +2348,31 @@ type Organization implements Node {
 	logoUrl: String!
 
 	"""
+	The job applicants for jobs in this organization.
+	"""
+	applicants(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
+
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
+
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
+
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): JobApplicantConnection!
+
+	"""
 	Get job by slug.
 	"""
 	job(

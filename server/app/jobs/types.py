@@ -29,13 +29,13 @@ from app.jobs.documents import (
     SavedJob,
 )
 from app.jobs.repositories import JobApplicantRepo, JobMetricRepo
-from app.organizations.types import (
-    OrganizationAuthorizationErrorType,
-    OrganizationNotFoundErrorType,
-)
 
 if TYPE_CHECKING:
-    from app.organizations.types import OrganizationType
+    from app.organizations.types import (
+        OrganizationAuthorizationErrorType,
+        OrganizationNotFoundErrorType,
+        OrganizationType,
+    )
 
 
 @strawberry.enum(
@@ -848,8 +848,12 @@ class CreateJobSuccessType:
 
 CreateJobPayload = Annotated[
     CreateJobSuccessType
-    | OrganizationNotFoundErrorType
-    | OrganizationAuthorizationErrorType,
+    | Annotated[
+        "OrganizationNotFoundErrorType", strawberry.lazy("app.organizations.types")
+    ]
+    | Annotated[
+        "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
+    ],
     strawberry.union(
         name="CreateJobPayload",
         description="The create job payload.",
@@ -873,7 +877,9 @@ class UpdateJobApplicationFormSuccessType:
 UpdateJobApplicationFormPayload = Annotated[
     UpdateJobApplicationFormSuccessType
     | JobNotFoundErrorType
-    | OrganizationAuthorizationErrorType
+    | Annotated[
+        "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
+    ]
     | JobIsExternalErrorType,
     strawberry.union(
         name="UpdateJobApplicationFormPayload",
@@ -902,7 +908,9 @@ class JobApplicationFormNotFoundErrorType(BaseErrorType):
 PublishJobPayload = Annotated[
     JobType
     | JobNotFoundErrorType
-    | OrganizationAuthorizationErrorType
+    | Annotated[
+        "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
+    ]
     | JobApplicationFormNotFoundErrorType,
     strawberry.union(
         name="PublishJobPayload",
@@ -925,7 +933,9 @@ class JobNotPublishedErrorType(BaseErrorType):
 UnpublishJobPayload = Annotated[
     JobType
     | JobNotFoundErrorType
-    | OrganizationAuthorizationErrorType
+    | Annotated[
+        "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
+    ]
     | JobNotPublishedErrorType,
     strawberry.union(
         name="UnpublishJobPayload",
@@ -945,7 +955,11 @@ class UpdateJobSuccessType:
 
 
 UpdateJobPayload = Annotated[
-    UpdateJobSuccessType | JobNotFoundErrorType | OrganizationAuthorizationErrorType,
+    UpdateJobSuccessType
+    | JobNotFoundErrorType
+    | Annotated[
+        "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
+    ],
     strawberry.union(
         name="UpdateJobPayload",
         description="The update job payload.",
@@ -988,7 +1002,11 @@ CreateJobApplicantPayload = Annotated[
 
 
 DeleteJobPayload = Annotated[
-    JobType | JobNotFoundErrorType | OrganizationAuthorizationErrorType,
+    JobType
+    | JobNotFoundErrorType
+    | Annotated[
+        "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
+    ],
     strawberry.union(
         name="DeleteJobPayload",
         description="The delete job payload.",

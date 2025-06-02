@@ -73,7 +73,7 @@ export async function generateMetadata() {
 		title: data.organization.name,
 		description: data.organization.description,
 		openGraph: {
-			images: [data.organization.logoUrl || "/default-image.img"],
+			images: [data.organization.logoUrl],
 		},
 	};
 }

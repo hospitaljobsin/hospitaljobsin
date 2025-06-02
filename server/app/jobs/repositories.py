@@ -266,6 +266,17 @@ class JobRepo:
         """Delete a job."""
         await job.delete()
 
+    async def get_all_job_ids_by_organization_id(
+        self, organization_id: ObjectId
+    ) -> list[ObjectId]:
+        """Get all job IDs for a given organization ID."""
+        jobs = (
+            await Job.find(Job.organization.id == organization_id)
+            .project(Job.id)
+            .to_list()
+        )
+        return [job.id for job in jobs]
+
 
 class SavedJobRepo:
     async def get(self, account_id: ObjectId, job_id: ObjectId) -> SavedJob | None:
@@ -424,6 +435,7 @@ class JobApplicantRepo:
         """Create a new job applicant."""
         application = JobApplicant(
             job=job,
+            organization=job.organization,
             account=account,
             account_full_name=account.full_name,
             status="applied",
@@ -446,7 +458,7 @@ class JobApplicantRepo:
         """Get a paginated result of job applicants for the given job."""
         paginator: Paginator[JobApplicant, ObjectId] = Paginator(
             reverse=True,
-            document_cls=SavedJob,
+            document_cls=JobApplicant,
             paginate_by="job.id",
         )
 
@@ -530,6 +542,64 @@ class JobApplicantRepo:
             fetch_links=True,
             nesting_depth=1,
         ).sort(-JobApplicant.id)
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
+    async def get_all_by_job_ids_paginated(
+        self,
+        job_ids: list[ObjectId],
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[JobApplicant, ObjectId]:
+        """Get a paginated result of job applicants for the given job IDs."""
+        paginator: Paginator[JobApplicant, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=JobApplicant,
+            paginate_by="id",
+        )
+
+        search_criteria = JobApplicant.find(
+            In(JobApplicant.job.id, job_ids),
+            fetch_links=True,
+            nesting_depth=1,
+        )
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
+    async def get_all_by_organization_id_paginated(
+        self,
+        organization_id: ObjectId,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[JobApplicant, ObjectId]:
+        """Get a paginated result of job applicants for the given organization IDs."""
+        paginator: Paginator[JobApplicant, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=JobApplicant,
+            paginate_by="id",
+        )
+
+        search_criteria = JobApplicant.find(
+            JobApplicant.organization.id == organization_id,
+            fetch_links=True,
+            nesting_depth=1,
+        )
 
         return await paginator.paginate(
             search_criteria=search_criteria,

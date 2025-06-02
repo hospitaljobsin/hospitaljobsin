@@ -9,6 +9,7 @@ from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from strawberry import relay
 from strawberry.permission import PermissionExtension
+from strawberry.types import Info
 
 from app.accounts.types import AccountType
 from app.auth.permissions import IsAuthenticated
@@ -19,8 +20,8 @@ from app.base.types import (
     BaseErrorType,
     BaseNodeType,
 )
-from app.context import Info
-from app.jobs.repositories import JobMetricRepo, JobRepo
+from app.jobs.repositories import JobApplicantRepo, JobMetricRepo, JobRepo
+from app.jobs.types import JobApplicantConnectionType
 from app.organizations.documents import (
     Organization,
     OrganizationInvite,
@@ -33,7 +34,12 @@ from app.organizations.repositories import (
 from app.organizations.services import OrganizationMemberService
 
 if TYPE_CHECKING:
-    from app.jobs.types import JobConnectionType, JobMetricPointType, JobPayloadType
+    from app.jobs.types import (
+        JobApplicantConnectionType,
+        JobConnectionType,
+        JobMetricPointType,
+        JobPayloadType,
+    )
 
 
 @strawberry.enum(
@@ -157,6 +163,49 @@ class OrganizationType(BaseNodeType[Organization]):
     logo_url: str = strawberry.field(
         description="The logo URL of the organization.",
     )
+
+    @strawberry.field(
+        description="The job applicants for jobs in this organization.",
+    )
+    @inject
+    async def applicants(
+        self,
+        job_applicant_repo: Annotated[JobApplicantRepo, Inject],
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
+    ) -> Annotated["JobApplicantConnectionType", strawberry.lazy("app.jobs.types")]:
+        from app.jobs.types import JobApplicantConnectionType
+
+        result = await job_applicant_repo.get_all_by_organization_id_paginated(
+            organization_id=ObjectId(self.id),
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
+            first=first,
+            last=last,
+        )
+        return JobApplicantConnectionType.marshal(result)
 
     @classmethod
     def marshal(cls, organization: Organization) -> Self:

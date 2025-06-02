@@ -117,6 +117,7 @@ class JobApplicant(Document):
     )
     resume_url: str
     job: Link[Job]
+    organization: Link[Organization]
     slug: Annotated[str, Indexed()]
     status: JobApplicantStatus
     applicant_fields: list[ApplicantField]
