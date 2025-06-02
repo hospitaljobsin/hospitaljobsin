@@ -15,10 +15,7 @@ function getAuthenticationResponse(
 	const pathname = request.nextUrl.pathname;
 	const search = request.nextUrl.search;
 
-	const returnTo = `${protocol}://${host}${pathname}${search}`;
-
-	console.log("Redirecting to login for unauthenticated request:", returnTo);
-	console.log(request.nextUrl);
+	const returnTo = `${protocol}//${host}${pathname}${search}`;
 
 	redirectURL.searchParams.set("return_to", returnTo);
 	return NextResponse.redirect(redirectURL);

@@ -1,6 +1,6 @@
 import type { OrganizationListFragment$key } from "@/__generated__/OrganizationListFragment.graphql";
 import type { OrganizationListInternalFragment$key } from "@/__generated__/OrganizationListInternalFragment.graphql";
-import type { pageDashboardQuery } from "@/__generated__/pageDashboardQuery.graphql";
+import type { pageSelectQuery } from "@/__generated__/pageSelectQuery.graphql";
 import links from "@/lib/links";
 import { Button, Link } from "@heroui/react";
 import { Building, PlusIcon } from "lucide-react";
@@ -54,7 +54,7 @@ export default function OrganizationList({ rootQuery }: Props) {
 	invariant(root.viewer.__typename === "Account", "Expected Account type");
 
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<
-		pageDashboardQuery,
+		pageSelectQuery,
 		OrganizationListInternalFragment$key
 	>(OrganizationListInternalFragment, root.viewer);
 

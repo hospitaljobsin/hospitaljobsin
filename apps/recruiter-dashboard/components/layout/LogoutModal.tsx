@@ -33,7 +33,6 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			onCompleted(response, errors) {
 				if (!errors) {
 					// Redirect to login page
-					// TODO: add the wildcard subdomain here
 					window.location.href = links.login(
 						links.organizationDetail(organizationSlug),
 					);
