@@ -23,7 +23,7 @@ and other packages from [package.json](./package.json) 💖
 | [PNPM](https://pnpm.io/)                              | 9.15                   | Package Manager          |
 | [Watchman](https://facebook.github.io/watchman/)      | 20250413.093340.0      | File Watching Service    |
 
-1. Install dependencies
+1. Install dependencies (Globally via PNPM workspaces)
 ```bash
 pnpm install
 ```
@@ -36,7 +36,7 @@ Create a `.env` file, referencing the template [here](./.env.example)
 ### 1. Start Relay Compiler
 To start the Relay compiler, run the following command:
 ```bash
-pnpm run relay --watch ../../relay.config.json --project seeker-portal
+pnpm run relay --watch
 ```
 
 ### 2. Run server
