@@ -63,7 +63,7 @@ jobs:
         run: pnpm install --filter recruiter-dashboard --frozen-lockfile --shamefully-hoist
 
       - name: Validate Relay Compiler Artifacts
-        run: pnpm --filter recruiter-dashboard run relay ../../relay.config.json --project recruiter-dashboard --validate
+        run: pnpm --filter recruiter-dashboard run relay --validate
 
       # TODO: use pnpm workspace config while building with sst
       - name: SST Deploy

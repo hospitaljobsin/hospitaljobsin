@@ -65,7 +65,7 @@ jobs:
         run: pnpm install --filter accounts --frozen-lockfile --shamefully-hoist
 
       - name: Validate Relay Compiler Artifacts
-        run: pnpm --filter accounts run relay ../../relay.config.json --project accounts --validate
+        run: pnpm --filter accounts run relay --validate
 
       # TODO: use pnpm workspace config while building with sst
       - name: SST Deploy

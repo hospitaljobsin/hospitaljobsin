@@ -63,7 +63,7 @@ jobs:
         run: pnpm install --filter seeker-portal --frozen-lockfile --shamefully-hoist
 
       - name: Validate Relay Compiler Artifacts
-        run: pnpm --filter seeker-portal run relay ../../relay.config.json --project seeker-portal --validate
+        run: pnpm --filter seeker-portal run relay --validate
 
       # TODO: use pnpm workspace config while building with sst
       - name: SST Deploy
