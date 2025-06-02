@@ -1,3 +1,4 @@
+import links from "@/lib/links";
 import {
 	Button,
 	Modal,
@@ -7,8 +8,7 @@ import {
 	ModalHeader,
 } from "@heroui/react";
 import { graphql, useMutation } from "react-relay";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
+import { useOrganization } from "../OrganizationProvider";
 
 type Props = {
 	isOpen: boolean;
@@ -25,6 +25,7 @@ const LogoutModalMutation = graphql`
 
 export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 	const [commitMutation, isMutationInFlight] = useMutation(LogoutModalMutation);
+	const { organizationSlug } = useOrganization();
 
 	async function handleLogout() {
 		commitMutation({
@@ -32,7 +33,10 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			onCompleted(response, errors) {
 				if (!errors) {
 					// Redirect to login page
-					window.location.href = links.login(env.NEXT_PUBLIC_URL);
+					// TODO: add the wildcard subdomain here
+					window.location.href = links.login(
+						links.organizationDetail(organizationSlug),
+					);
 				}
 			},
 		});

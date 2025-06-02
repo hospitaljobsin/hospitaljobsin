@@ -1,4 +1,5 @@
 "use client";
+import { OrganizationProvider } from "@/components/OrganizationProvider";
 import { env } from "@/lib/env/client";
 import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
@@ -9,7 +10,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function Providers({
+	children,
+	organizationSlug,
+}: { children: React.ReactNode; organizationSlug: string }) {
 	const router = useRouter();
 	const [environment] = useState(() => {
 		return getCurrentEnvironment();
@@ -32,7 +36,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 							options={{ showSpinner: false }}
 							shallowRouting
 						>
-							{children}
+							<OrganizationProvider organizationSlug={organizationSlug}>
+								{children}
+							</OrganizationProvider>
 						</ProgressProvider>
 					</CopilotKit>
 				</RelayEnvironmentProvider>

@@ -4,10 +4,10 @@ import Header, { HeaderQuery } from "@/components/layout/Header";
 import HeaderSkeleton from "@/components/layout/HeaderSkeleton";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
+import { useOrganization } from "../OrganizationProvider";
 
-export default function HeaderClientComponent({
-	organizationSlug,
-}: { organizationSlug: string }) {
+export default function HeaderClientComponent() {
+	const { organizationSlug } = useOrganization();
 	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<HeaderQueryType>(
 		environment,

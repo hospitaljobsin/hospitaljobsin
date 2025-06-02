@@ -4,9 +4,22 @@ import { env } from "./lib/env/client";
 import links from "./lib/links";
 import { unsign } from "./lib/session";
 
-function getAuthenticationResponse(request: NextRequest): NextResponse {
+function getAuthenticationResponse(
+	request: NextRequest,
+	host: string,
+): NextResponse {
+	const protocol = request.nextUrl.protocol;
 	const redirectURL = new URL(links.login());
-	const returnTo = request.url;
+
+	// Construct the returnTo URL using desired protocol and host, and preserving pathname + search
+	const pathname = request.nextUrl.pathname;
+	const search = request.nextUrl.search;
+
+	const returnTo = `${protocol}://${host}${pathname}${search}`;
+
+	console.log("Redirecting to login for unauthenticated request:", returnTo);
+	console.log(request.nextUrl);
+
 	redirectURL.searchParams.set("return_to", returnTo);
 	return NextResponse.redirect(redirectURL);
 }
@@ -35,6 +48,7 @@ function extractSubdomain(request: NextRequest): string | null {
 }
 
 export async function middleware(request: NextRequest) {
+	const host = request.headers.get("host") || "";
 	const subdomain = extractSubdomain(request);
 	const response = NextResponse.next();
 	const sessionCookie = request.cookies.get(env.NEXT_PUBLIC_SESSION_COOKIE_KEY);
@@ -53,15 +67,10 @@ export async function middleware(request: NextRequest) {
 		}
 	}
 
-	if (!isAuthenticated) {
-		return getAuthenticationResponse(request);
-	}
-
 	if (subdomain) {
-		if (subdomain === "recruiter") {
-			// TODO: only allow the /new route here
-			// avoid all other routes here.
-			// (OR) create a separate recruiter.hospitaljobs.in subdomain app like accounts.hospitaljobs.in
+		if (!isAuthenticated) {
+			console.log(request);
+			return getAuthenticationResponse(request, host);
 		}
 		console.log("Authenticated request from subdomain:", subdomain);
 		// TODO: if we have the /new route, redirect to it the recruiter subdomain
@@ -73,16 +82,9 @@ export async function middleware(request: NextRequest) {
 				headers: requestHeaders,
 			},
 		});
-	} else {
-		// TODO: this wont happen actually -> hospitaljobs.in points to seeker portal
-		console.log(
-			"Authenticated but no subdomain. Redirecting to org selection/dashboard.",
-		);
-		// This can be based on session: e.g., payload.default_org_slug
-		return response;
-		// const fallbackURL = new URL(links.orgPickerOrDefaultDashboard(), request.url);
-		// return NextResponse.redirect(fallbackURL);
 	}
+
+	return response;
 }
 
 export const config = {
