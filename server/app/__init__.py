@@ -23,7 +23,6 @@ from app.database import initialize_database
 from app.graphql_app import create_graphql_router
 from app.health.routes import health_router
 from app.jobs.routes import jobs_router
-
 from app.middleware import SessionMiddleware
 from app.testing.routes import test_setup_router
 
