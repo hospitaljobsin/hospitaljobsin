@@ -2,6 +2,7 @@ import ChatInterface from "@/components/ChatInterface";
 import HeaderClientComponent from "@/components/layout/HeaderClientComponent";
 import { ORG_SUBDOMAIN_HEADER_NAME } from "@/lib/constants";
 import { headers } from "next/headers";
+import invariant from "tiny-invariant";
 
 export default async function DashboardLayout({
 	children,
@@ -10,6 +11,8 @@ export default async function DashboardLayout({
 }>) {
 	const headersList = await headers();
 	const organizationSlug = headersList.get(ORG_SUBDOMAIN_HEADER_NAME);
+
+	invariant(organizationSlug, "Organization slug is required in headers");
 
 	return (
 		<div className="flex flex-col h-full w-full">

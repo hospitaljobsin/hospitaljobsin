@@ -6,7 +6,7 @@ const protocol =
 const links = {
 	landing: "/",
 	dashboard: "/dashboard",
-	createOrganization: "/dashboard/new-organization",
+	createOrganization: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/new`,
 	organizationDetail: (slug: string) =>
 		`${protocol}://${slug}.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
 	organizationJobDetail: (organizationSlug: string, jobSlug: string) =>

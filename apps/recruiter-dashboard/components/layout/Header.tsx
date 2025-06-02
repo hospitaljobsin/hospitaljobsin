@@ -58,7 +58,7 @@ export default function Header({
 			<NavbarBrand>
 				<Dropdown placement="bottom-end">
 					<DropdownTrigger>
-						<div className="flex items-center gap-4">
+						<div className="flex items-center gap-4 cursor-pointer">
 							<div className="relative h-8 w-8">
 								<Image
 									src={data.organization.logoUrl}

@@ -1,24 +1,102 @@
-"use client";
+import type { pageDashboardMetadataFragment$key } from "@/__generated__/pageDashboardMetadataFragment.graphql";
+import type DashboardViewQueryNode from "@/__generated__/pageDashboardViewQuery.graphql";
+import type { pageDashboardViewQuery } from "@/__generated__/pageDashboardViewQuery.graphql";
+import { ORG_SUBDOMAIN_HEADER_NAME } from "@/lib/constants";
+import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import { headers } from "next/headers";
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
+import invariant from "tiny-invariant";
 
-export default function CopilotKitPage() {
-	// 🪁 Frontend Actions: https://docs.copilotkit.ai/guides/frontend-actions
-	// useCopilotAction({
-	// 	name: "setThemeColor",
-	// 	parameters: [
-	// 		{
-	// 			name: "themeColor",
-	// 			description: "The theme color to set. Make sure to pick nice colors.",
-	// 			required: true,
-	// 		},
-	// 	],
-	// 	handler({ themeColor }) {
-	// 		// setThemeColor(themeColor);
-	// 	},
-	// });
+export const PageDashboardViewQuery = graphql`
+  query pageDashboardViewQuery($slug: String!) {
+	...pageDashboardMetadataFragment @arguments(slug: $slug)
+  }
+`;
 
-	return (
-		<main className="flex flex-col items-center justify-center w-full h-full">
-			main content
-		</main>
+const PageDashboardMetadataFragment = graphql`
+ fragment pageDashboardMetadataFragment on Query @inline @argumentDefinitions(
+	  slug: {
+		type: "String!",
+	  }
+	) {
+	organization(slug: $slug) {
+	  __typename
+	  ... on Organization {
+		name
+		description
+		logoUrl
+		isMember
+	  }
+
+	}
+  }
+`;
+
+// Function to load and cache the query result
+const loadOrganization = cache(async (slug: string) => {
+	return await loadSerializableQuery<
+		typeof DashboardViewQueryNode,
+		pageDashboardViewQuery
+	>(PageDashboardViewQuery, {
+		slug: slug,
+	});
+});
+
+export async function generateMetadata() {
+	const headersList = await headers();
+	const organizationSlug = headersList.get(ORG_SUBDOMAIN_HEADER_NAME);
+	invariant(organizationSlug, "Organization slug is required in headers");
+	const preloadedQuery = await loadOrganization(organizationSlug);
+
+	const data = readInlineData<pageDashboardMetadataFragment$key>(
+		PageDashboardMetadataFragment,
+		preloadedQuery.data,
 	);
+
+	if (
+		data.organization.__typename !== "Organization" ||
+		!data.organization.isMember
+	) {
+		// If the organization is not found or the user is not a member, return a not found metadata
+		return {
+			title: "Organization Not found",
+			description: "The organization you are looking for does not exist",
+			openGraph: {
+				images: ["/default-image.img"],
+			},
+		};
+	}
+
+	return {
+		title: data.organization.name,
+		description: data.organization.description,
+		openGraph: {
+			images: [data.organization.logoUrl || "/default-image.img"],
+		},
+	};
+}
+
+export default async function DashboardPage() {
+	const headersList = await headers();
+	const organizationSlug = headersList.get(ORG_SUBDOMAIN_HEADER_NAME);
+
+	invariant(organizationSlug, "Organization slug is required in headers");
+
+	const preloadedQuery = await loadOrganization(organizationSlug);
+
+	const data = readInlineData<pageDashboardMetadataFragment$key>(
+		PageDashboardMetadataFragment,
+		preloadedQuery.data,
+	);
+
+	if (
+		data.organization.__typename !== "Organization" ||
+		!data.organization.isMember
+	) {
+		notFound();
+	}
+
+	return <>dashboard</>;
 }

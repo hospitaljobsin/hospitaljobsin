@@ -1,5 +1,5 @@
 import type { HeaderDropdownMenuFragment$key } from "@/__generated__/HeaderDropdownMenuFragment.graphql";
-import type { pageDashboardQuery } from "@/__generated__/pageDashboardQuery.graphql";
+import type { HeaderQuery } from "@/__generated__/HeaderQuery.graphql";
 import links from "@/lib/links";
 import { DropdownItem, DropdownMenu, DropdownSection } from "@heroui/react";
 import { PlusIcon } from "lucide-react";
@@ -40,7 +40,7 @@ type Props = {
 export default function HeaderDropdownMenu({ account }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<
-		pageDashboardQuery,
+		HeaderQuery,
 		HeaderDropdownMenuFragment$key
 	>(HeaderDropdownMenuFragment, account);
 
@@ -111,6 +111,8 @@ export default function HeaderDropdownMenu({ account }: Props) {
 				<DropdownItem
 					key="new_organization"
 					description="Create or join an organization"
+					href={links.createOrganization}
+					target="_blank"
 					startContent={<PlusIcon />}
 				>
 					New organization
