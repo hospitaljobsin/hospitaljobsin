@@ -2,9 +2,9 @@
 import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
 import Header, { HeaderQuery } from "@/components/layout/Header";
 import HeaderSkeleton from "@/components/layout/HeaderSkeleton";
+import useOrganization from "@/lib/hooks/useOrganization";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
-import { useOrganization } from "../OrganizationProvider";
 
 export default function HeaderClientComponent() {
 	const { organizationSlug } = useOrganization();

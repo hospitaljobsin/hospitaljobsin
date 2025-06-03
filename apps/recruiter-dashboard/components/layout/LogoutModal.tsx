@@ -1,3 +1,4 @@
+import useOrganization from "@/lib/hooks/useOrganization";
 import links from "@/lib/links";
 import {
 	Button,
@@ -8,7 +9,6 @@ import {
 	ModalHeader,
 } from "@heroui/react";
 import { graphql, useMutation } from "react-relay";
-import { useOrganization } from "../OrganizationProvider";
 
 type Props = {
 	isOpen: boolean;

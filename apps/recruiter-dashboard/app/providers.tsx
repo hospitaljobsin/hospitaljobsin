@@ -1,19 +1,20 @@
 "use client";
-import { OrganizationProvider } from "@/components/OrganizationProvider";
+import { HeadersProvider } from "@/components/HeadersProvider";
 import { env } from "@/lib/env/client";
 import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
 import { CopilotKit } from "@copilotkit/react-core";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { ThemeProvider } from "next-themes";
+import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
 
 export default function Providers({
 	children,
-	organizationSlug,
-}: { children: React.ReactNode; organizationSlug: string }) {
+	headersPromise,
+}: { children: React.ReactNode; headersPromise: Promise<ReadonlyHeaders> }) {
 	const router = useRouter();
 	const [environment] = useState(() => {
 		return getCurrentEnvironment();
@@ -36,9 +37,9 @@ export default function Providers({
 							options={{ showSpinner: false }}
 							shallowRouting
 						>
-							<OrganizationProvider organizationSlug={organizationSlug}>
+							<HeadersProvider headersPromise={headersPromise}>
 								{children}
-							</OrganizationProvider>
+							</HeadersProvider>
 						</ProgressProvider>
 					</CopilotKit>
 				</RelayEnvironmentProvider>

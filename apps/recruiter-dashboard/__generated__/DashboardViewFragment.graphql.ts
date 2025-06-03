@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<07b3160be7f2b92e35d3e7290360f7bf>>
+ * @generated SignedSource<<a2a4924751ef715c31b86fd2e4b20338>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,6 +11,15 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type DashboardViewFragment$data = {
+  readonly organization: {
+    readonly __typename: "Organization";
+    readonly isMember: boolean;
+    readonly name: string;
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
   readonly " $fragmentSpreads": FragmentRefs<"OrganizationJobsControllerFragment" | "OrganizationJobsListFragment">;
   readonly " $fragmentType": "DashboardViewFragment";
 };
@@ -24,7 +33,10 @@ var v0 = {
   "kind": "Variable",
   "name": "slug",
   "variableName": "slug"
-};
+},
+v1 = [
+  (v0/*: any*/)
+];
 return {
   "argumentDefinitions": [
     {
@@ -43,6 +55,45 @@ return {
   "name": "DashboardViewFragment",
   "selections": [
     {
+      "alias": null,
+      "args": (v1/*: any*/),
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "organization",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "__typename",
+          "storageKey": null
+        },
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "name",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "isMember",
+              "storageKey": null
+            }
+          ],
+          "type": "Organization",
+          "abstractKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
       "args": [
         {
           "kind": "Variable",
@@ -55,9 +106,7 @@ return {
       "name": "OrganizationJobsListFragment"
     },
     {
-      "args": [
-        (v0/*: any*/)
-      ],
+      "args": (v1/*: any*/),
       "kind": "FragmentSpread",
       "name": "OrganizationJobsControllerFragment"
     }
@@ -67,6 +116,6 @@ return {
 };
 })();
 
-(node as any).hash = "d965412bb16b0c4bd62e82bb450df22e";
+(node as any).hash = "5ec3aff1b6b1638856f6e17e28aa7f2e";
 
 export default node;
