@@ -12,6 +12,12 @@ services:
     volumes:
       - caddy_data:/data
       - ./Caddyfile:/etc/caddy/Caddyfile
+    environment:
+      - SEEKER_PORTAL_HOST=host.docker.internal
+      - ACCOUNTS_HOST=host.docker.internal
+      - SERVER_HOST=host.docker.internal
+      - RECRUITER_PORTAL_CORE_HOST=host.docker.internal
+      - RECRUITER_DASHBOARD_HOST=host.docker.internal
 
   mongodb:
     image: docker.io/bitnami/mongodb:8.0

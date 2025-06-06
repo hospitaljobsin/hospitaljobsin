@@ -5,26 +5,26 @@
 
 # Reverse proxy for main site
 http://localtest.me {
-    reverse_proxy http://host.docker.internal:5000
+    reverse_proxy http://{$SEEKER_PORTAL_HOST}:5000
 }
 
 # Reverse proxy for API
 http://api.localtest.me {
-    reverse_proxy http://host.docker.internal:8000
+    reverse_proxy http://{$SERVER_HOST}:8000
 }
 
 # Reverse proxy for accounts service
 http://accounts.localtest.me {
-    reverse_proxy http://host.docker.internal:5002
+    reverse_proxy http://{$ACCOUNTS_HOST}:5002
 }
 
 
 # Reverse proxy for recruiter site
 http://recruiter.localtest.me {
-    reverse_proxy http://host.docker.internal:5003
+    reverse_proxy http://{$RECRUITER_PORTAL_CORE_HOST}:5003
 }
 
 # Wildcard: any subdomain of localtest.me
 http://*.localtest.me {
-    reverse_proxy http://host.docker.internal:5001
+    reverse_proxy http://{$RECRUITER_DASHBOARD_HOST}:5001
 }

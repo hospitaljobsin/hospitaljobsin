@@ -11,6 +11,12 @@ services:
     volumes:
       - test_caddy_data:/data
       - ./Caddyfile:/etc/caddy/Caddyfile
+    environment:
+      - SEEKER_PORTAL_HOST=test-seeker-portal-ui
+      - ACCOUNTS_HOST=test-accounts-ui
+      - SERVER_HOST=test-server
+      - RECRUITER_PORTAL_CORE_HOST=test-recruiter-portal-core
+      - RECRUITER_DASHBOARD_HOST=test-recruiter-dashboard
     healthcheck:
       test: ["CMD", "wget", "-qO-", "--header='Host: localtest.me'", "http://localhost:80"]
       interval: 10s
@@ -36,7 +42,7 @@ services:
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '8000'
       SERVER_LOG_LEVEL: 'INFO'
-      SERVER_CORS_ALLOW_ORIGINS: '["http://localtest.me", "http://recruiter.localtest.me",  "http://accounts.localtest.me"]'
+      SERVER_CORS_ALLOW_ORIGINS: '["http://localtest.me"]'
       SERVER_CORS_ALLOW_ORIGIN_REGEX: 'http://.*\.localtest\.me'
       SERVER_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       SERVER_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
