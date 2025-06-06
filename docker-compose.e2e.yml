@@ -61,6 +61,7 @@ services:
       SERVER_GEOCODER_USER_AGENT: "medical-jobs-server"
       SERVER_SENTRY_DSN: ${SERVER_SENTRY_DSN}
       SERVER_PERSISTED_QUERIES_PATH: "query_map.json"
+      SERVER_SESSION_COOKIE_DOMAIN: '.localtest.me'
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8000/health/"]
       interval: 10s
@@ -75,7 +76,7 @@ services:
       context: .
       dockerfile: apps/accounts/Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=http://localhost:8000
+        - NEXT_PUBLIC_API_URL=http://api.localtest.me
         - NEXT_PUBLIC_URL=http://accounts.localtest.me
         - NEXT_PUBLIC_CAPTCHA_SITE_KEY=1x00000000000000000000AA
         - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://recruiter.localtest.me
@@ -107,7 +108,7 @@ services:
       context: .
       dockerfile: apps/seeker-portal/Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=http://localhost:8000
+        - NEXT_PUBLIC_API_URL=http://api.localtest.me
         - NEXT_PUBLIC_URL=http://localtest.me
         - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=http://recruiter.localtest.me
         - NEXT_PUBLIC_ACCOUNTS_BASE_URL=http://accounts.localtest.me

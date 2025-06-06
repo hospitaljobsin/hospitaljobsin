@@ -1,8 +1,15 @@
-from collections.abc import Callable
+from collections.abc import Mapping
 from functools import lru_cache
-from typing import assert_never
+from typing import Any, assert_never
 
 import aioinject
+from aioinject import Scope
+from aioinject.extensions import ProviderExtension
+from aioinject.extensions.providers import (
+    CacheDirective,
+    ProviderInfo,
+    ResolveDirective,
+)
 from pydantic_settings import BaseSettings
 
 from app.accounts.dataloaders import (
@@ -109,13 +116,38 @@ settings_classes: list[type[BaseSettings]] = [
 ]
 
 
-def create_settings_factory(
-    settings_cls: type[TSettings],
-) -> Callable[[], TSettings]:
-    def settings_factory() -> TSettings:
-        return get_settings(settings_cls)
+class SettingsProvider(aioinject.Provider[TSettings]):
+    def __init__(self, settings_cls: type[TSettings]) -> None:
+        self.implementation = settings_cls
 
-    return settings_factory
+    def provide(
+        self,
+        kwargs: dict[str, Any],  # noqa: ARG002
+    ) -> TSettings:
+        return self.implementation()
+
+
+class SettingsProviderExtension(
+    ProviderExtension[SettingsProvider[TSettings]],
+):
+    def supports_provider(self, provider: object) -> bool:
+        return isinstance(provider, SettingsProvider)
+
+    def extract(
+        self,
+        provider: SettingsProvider[TSettings],
+        type_context: Mapping[str, type[object]],  # noqa: ARG002
+    ) -> ProviderInfo[TSettings]:
+        return ProviderInfo(
+            interface=provider.implementation,
+            type_=provider.implementation,
+            dependencies=(),
+            scope=Scope.lifetime,
+            compilation_directives=(
+                ResolveDirective(is_async=False, is_context_manager=False),
+                CacheDirective(),
+            ),
+        )
 
 
 def register_email_sender(container: aioinject.Container) -> None:
@@ -152,13 +184,9 @@ def register_location_service(container: aioinject.Container) -> None:
 
 @lru_cache
 def create_container() -> aioinject.Container:
-    container = aioinject.Container()
+    container = aioinject.Container(extensions=[SettingsProviderExtension()])
     for settings_cls in settings_classes:
-        container.register(
-            aioinject.Singleton(
-                create_settings_factory(settings_cls=settings_cls), settings_cls
-            )
-        )
+        container.register(SettingsProvider(settings_cls))
     container.register(aioinject.Singleton(create_jinja2_environment))
     register_email_sender(container)
     register_location_service(container)
