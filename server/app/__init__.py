@@ -77,10 +77,6 @@ def add_middleware(
     )
 
     app.add_middleware(
-        AioInjectMiddleware,
-        container=create_container(),
-    )
-    app.add_middleware(
         CORSMiddleware,
         allow_origins=app_settings.cors_allow_origins,
         allow_origin_regex=app_settings.cors_allow_origin_regex,
@@ -89,11 +85,14 @@ def add_middleware(
         allow_methods=["*"],
         expose_headers=["*"],
     )
+    app.add_middleware(
+        AioInjectMiddleware,
+        container=create_container(),
+    )
 
 
 @asynccontextmanager
 async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None]:
-    """Initialize the database when the app starts."""
     logger = get_logger(__name__)
     logger.debug("Initializing application secrets")
     # load secrets during startup

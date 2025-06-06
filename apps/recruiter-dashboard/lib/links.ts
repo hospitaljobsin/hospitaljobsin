@@ -17,8 +17,7 @@ const links = {
 		`/dashboard/organizations/${slug}/members/invites`,
 	organizationDetailJobs: (slug: string) =>
 		`/dashboard/organizations/${slug}/jobs`,
-	organizationCreateJob: (slug: string) =>
-		`/dashboard/organizations/${slug}/new-job`,
+	organizationCreateJob: "/new-job",
 	organizationDetailSettings: (slug: string) =>
 		`/dashboard/organizations/${slug}/settings`,
 	jobDetailSettingsApplicationForm: (

@@ -122,7 +122,7 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 					<h3 className="font-medium text-lg">No jobs found</h3>
 					<Button
 						as={Link}
-						href={links.organizationCreateJob(slug)}
+						href={links.organizationCreateJob}
 						color="primary"
 						startContent={<Plus size={25} />}
 						className="w-full sm:w-auto"

@@ -2,13 +2,13 @@ from typing import Annotated
 
 from aioinject import Injected
 from aioinject.ext.fastapi import inject
-from fastapi import Depends, Header, Request, Response
+from fastapi import Header, Request, Response
 from strawberry.fastapi import GraphQLRouter
 
-from app.auth.dependencies import get_session_token
 from app.auth.repositories import SessionRepo
 from app.auth.services import AuthService
 from app.config import AppSettings
+from app.core.constants import SESSION_TOKEN_KEY
 
 from .context import AuthContext, BaseContext, Context
 from .dataloaders import Dataloaders
@@ -19,18 +19,13 @@ from .schema import schema
 async def get_context(
     request: Request,
     response: Response,
-    session_token: Annotated[
-        str | None,
-        Depends(
-            dependency=get_session_token,
-        ),
-    ],
     session_repo: Injected[SessionRepo],
     auth_service: Injected[AuthService],
     dataloaders: Injected[Dataloaders],
     user_agent: Annotated[str | None, Header()] = "unknown",
 ) -> BaseContext:
     """Get the context for the GraphQL request."""
+    session_token = request.session.get(SESSION_TOKEN_KEY)
     if session_token:
         session = await session_repo.get(token=session_token, fetch_account=True)
         if session is not None:

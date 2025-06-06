@@ -60,7 +60,7 @@ export default function OrganizationJobsController(
 			{data.organization.isAdmin && (
 				<Button
 					as={Link}
-					href={links.organizationCreateJob(slug)}
+					href={links.organizationCreateJob}
 					color="primary"
 					startContent={<BriefcaseBusiness size={25} />}
 					className="w-full sm:w-auto"

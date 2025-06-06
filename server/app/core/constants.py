@@ -37,6 +37,9 @@ SUDO_MODE_EXPIRES_IN = 60 * 15  # 15 minutes
 # Two-factor authentication
 TWO_FACTOR_AUTHENTICATION_CHALLENGE_EXPIRES_IN = 60 * 5  # 5 minutes
 
+# session tokens
+SESSION_TOKEN_KEY = "session_token"  # noqa: S105
+
 
 # Auth Providers
 AuthProvider = Literal["password", "webauthn_credential", "oauth_google"]
