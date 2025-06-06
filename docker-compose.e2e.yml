@@ -86,6 +86,7 @@ services:
         - NEXT_PUBLIC_SENTRY_ORGANIZATION=vnadi
         - NEXT_PUBLIC_SENTRY_PROJECT=hospital-jobs-accounts-ui
         - NEXT_PUBLIC_ENVIRONMENT=testing
+        - NEXT_PUBLIC_ROOT_DOMAIN: localtest.me
     ports:
       - "5002:5002"
     environment:
