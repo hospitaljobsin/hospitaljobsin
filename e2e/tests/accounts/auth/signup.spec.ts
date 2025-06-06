@@ -223,9 +223,7 @@ test.describe("Sign Up Page", () => {
 		page: PlaywrightTestArgs["page"];
 	}) {
 		await page.getByRole("tab", { name: "Password" }).click();
-		await page
-			.getByRole("textbox", { name: "Password Password" })
-			.fill(password);
+		await page.getByRole("textbox", { name: "Password" }).fill(password);
 		await page
 			.getByRole("textbox", { name: "Confirm Password Confirm" })
 			.fill(confirmPassword);

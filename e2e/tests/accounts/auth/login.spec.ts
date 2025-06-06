@@ -17,9 +17,7 @@ test.describe("Login Page", () => {
 
 		// Check form elements
 		await expect(page.getByLabel("Email Address")).toBeVisible();
-		await expect(
-			page.getByRole("textbox", { name: "Password Password" }),
-		).toBeVisible();
+		await expect(page.getByRole("textbox", { name: "Password" })).toBeVisible();
 		await expect(page.getByRole("button", { name: "Log in" })).toBeVisible();
 		await expect(
 			page.getByRole("button", { name: "Sign in with passkey" }),
@@ -63,9 +61,7 @@ test.describe("Login Page", () => {
 	test("should validate email format", async ({ page }) => {
 		// Enter invalid email
 		await page.getByLabel("Email Address").fill("invalid-email");
-		await page
-			.getByRole("textbox", { name: "Password Password" })
-			.fill("password123");
+		await page.getByRole("textbox", { name: "Password" }).fill("password123");
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		// Check validation message
@@ -79,13 +75,11 @@ test.describe("Login Page", () => {
 
 	test("should toggle password visibility", async ({ page }) => {
 		// Fill password field
-		await page
-			.getByRole("textbox", { name: "Password Password" })
-			.fill("password123");
+		await page.getByRole("textbox", { name: "Password" }).fill("password123");
 
 		// Initially password should be hidden (type="password")
 		await expect(
-			page.getByRole("textbox", { name: "Password Password" }),
+			page.getByRole("textbox", { name: "Password" }),
 		).toHaveAttribute("type", "password");
 
 		// Click the eye icon to show password
@@ -95,7 +89,7 @@ test.describe("Login Page", () => {
 
 		// Password should now be visible (type="text")
 		await expect(
-			page.getByRole("textbox", { name: "Password Password" }),
+			page.getByRole("textbox", { name: "Password" }),
 		).toHaveAttribute("type", "text");
 
 		// Click again to hide
@@ -105,7 +99,7 @@ test.describe("Login Page", () => {
 
 		// Password should be hidden again
 		await expect(
-			page.getByRole("textbox", { name: "Password Password" }),
+			page.getByRole("textbox", { name: "Password" }),
 		).toHaveAttribute("type", "password");
 	});
 
@@ -113,7 +107,7 @@ test.describe("Login Page", () => {
 		// Fill form with invalid credentials
 		await page.getByLabel("Email Address").fill(passwordAuth.account.email);
 		await page
-			.getByRole("textbox", { name: "Password Password" })
+			.getByRole("textbox", { name: "Password" })
 			.fill("invalidpassword");
 
 		// Click the login button
@@ -160,9 +154,7 @@ test.describe("Login Page", () => {
 	}) => {
 		// Fill form with valid credentials
 		await page.getByLabel("Email Address").fill(passwordAuth.account.email);
-		await page
-			.getByRole("textbox", { name: "Password Password" })
-			.fill("Password123!");
+		await page.getByRole("textbox", { name: "Password" }).fill("Password123!");
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		await page.waitForURL("http://localtest.me/");
@@ -174,9 +166,7 @@ test.describe("Login Page", () => {
 	}) => {
 		// Fill form with credentials that require 2FA
 		await page.getByLabel("Email Address").fill(twoFactorAuth.account.email);
-		await page
-			.getByRole("textbox", { name: "Password Password" })
-			.fill("Password123!");
+		await page.getByRole("textbox", { name: "Password" }).fill("Password123!");
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		// Should redirect to 2FA page
@@ -351,9 +341,7 @@ test.describe("Login Page", () => {
 	}) => {
 		// Fill form
 		await page.getByLabel("Email Address").fill(webauthnAuth.account.email);
-		await page
-			.getByRole("textbox", { name: "Password Password" })
-			.fill("Password123!");
+		await page.getByRole("textbox", { name: "Password" }).fill("Password123!");
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		// Check toast message

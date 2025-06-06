@@ -265,9 +265,7 @@ authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 			await page
 				.getByLabel("Email Address")
 				.fill(passwordAuthSudoMode.account.email);
-			await page
-				.getByRole("textbox", { name: "Password Password" })
-				.fill(newPassword);
+			await page.getByRole("textbox", { name: "Password" }).fill(newPassword);
 			await page.getByRole("button", { name: "Log in" }).click();
 
 			await page.waitForURL("http://accounts.localtest.me/settings");
@@ -373,7 +371,7 @@ webauthnSudoModeTest.describe(
 						.getByLabel("Email Address")
 						.fill(webauthnAuthSudoMode.account.email);
 					await page
-						.getByRole("textbox", { name: "Password Password" })
+						.getByRole("textbox", { name: "Password" })
 						.fill(newPassword);
 					await page.getByRole("button", { name: "Log in" }).click();
 

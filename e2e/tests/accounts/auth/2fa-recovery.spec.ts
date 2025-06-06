@@ -13,9 +13,7 @@ test.describe("2FA Recovery Page", () => {
 
 		// Fill form with credentials that require 2FA
 		await page.getByLabel("Email Address").fill(twoFactorAuth.account.email);
-		await page
-			.getByRole("textbox", { name: "Password Password" })
-			.fill("Password123!");
+		await page.getByRole("textbox", { name: "Password" }).fill("Password123!");
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		// Should redirect to 2FA page
