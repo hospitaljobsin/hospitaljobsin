@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "aioinject>=0.35.3",
+    "aioinject>=1.1.0",
     "asgi-correlation-id>=4.3.4",
     "fastapi>=0.115.5",
     "pydantic>=2.10.2",
