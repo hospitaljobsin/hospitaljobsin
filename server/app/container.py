@@ -119,8 +119,7 @@ def create_settings_factory(
 
 
 def register_email_sender(container: aioinject.Container) -> None:
-    with container.sync_context() as ctx:
-        email_settings = ctx.resolve(EmailSettings)
+    email_settings = get_settings(EmailSettings)
 
     match email_settings.email_provider:
         case "smtp":
@@ -134,8 +133,7 @@ def register_email_sender(container: aioinject.Container) -> None:
 
 
 def register_location_service(container: aioinject.Container) -> None:
-    with container.sync_context() as ctx:
-        geocoder_settings = ctx.resolve(GeocoderSettings)
+    geocoder_settings = get_settings(GeocoderSettings)
 
     match geocoder_settings.geocoding_provider:
         case "nominatim":
@@ -168,8 +166,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_s3_client))
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_captcha_verifier))
-    with container.sync_context() as ctx:
-        app_settings = ctx.resolve(AppSettings)
+    app_settings = get_settings(AppSettings)
     if app_settings.is_testing:
         container.register(aioinject.Scoped(TestSetupService))
     container.register(aioinject.Scoped(JobRepo))
