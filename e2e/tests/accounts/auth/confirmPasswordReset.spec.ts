@@ -51,7 +51,9 @@ test.describe("Confirm Password Reset Page", () => {
 
 		expect(emailMessage).not.toBeNull();
 
-		await page.goto(`http://localhost:1080/messages/${emailMessage.id}.html`);
+		await page.goto(
+			`${env.MAILCATCHER_BASE_URL}/messages/${emailMessage.id}.html`,
+		);
 
 		// Extract the reset password link
 		const resetLink = await page.getAttribute(
@@ -206,7 +208,9 @@ test.describe("2FA Confirm Password Reset Page", () => {
 
 		expect(emailMessage).not.toBeNull();
 
-		await page.goto(`http://localhost:1080/messages/${emailMessage.id}.html`);
+		await page.goto(
+			`${env.MAILCATCHER_BASE_URL}/messages/${emailMessage.id}.html`,
+		);
 
 		// Extract the reset password link
 		const resetLink = await page.getAttribute(
@@ -401,7 +405,7 @@ authTest.describe(
 				expect(emailMessage).not.toBeNull();
 
 				await page.goto(
-					`http://localhost:1080/messages/${emailMessage.id}.html`,
+					`${env.MAILCATCHER_BASE_URL}/messages/${emailMessage.id}.html`,
 				);
 
 				// Extract the reset password link

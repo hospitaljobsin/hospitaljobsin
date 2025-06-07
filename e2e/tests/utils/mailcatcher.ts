@@ -1,3 +1,4 @@
+import { env } from "@/lib/env";
 import type { APIRequestContext } from "@playwright/test";
 
 export type Email = {
@@ -13,7 +14,9 @@ async function findEmail({
 	request: APIRequestContext;
 	filter?: (email: Email) => boolean;
 }): Promise<Email | null> {
-	const response = await request.get("http://localhost:1080/messages");
+	const response = await request.get(
+		`http://${env.MAILCATCHER_BASE_URL}/messages`,
+	);
 
 	let emails: Email[] = await response.json();
 

@@ -6,6 +6,7 @@ export const env = createEnv({
 		API_BASE_URL: z.url(),
 		ACCOUNTS_UI_BASE_URL: z.url(),
 		SEEKER_PORTAL_BASE_URL: z.url(),
+		MAILCATCHER_BASE_URL: z.url(),
 	},
 
 	/**
