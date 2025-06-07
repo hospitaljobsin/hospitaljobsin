@@ -57,7 +57,7 @@ services:
       SERVER_ACCOUNTS_BASE_URL: "http://accounts.localtest.me"
       SERVER_SEEKER_PORTAL_BASE_URL: "http://localtest.me"
       SERVER_RECRUITER_PORTAL_BASE_URL: "http://recruiter.localtest.me"
-      SERVER_RP_ID: 'localhost'
+      SERVER_RP_ID: 'localtest.me'
       SERVER_RP_NAME: 'Starter'
       SERVER_RP_EXPECTED_ORIGIN: 'http://accounts.localtest.me'
       SERVER_JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
