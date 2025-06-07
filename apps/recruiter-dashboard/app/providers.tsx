@@ -1,5 +1,6 @@
 "use client";
 import { HeadersProvider } from "@/components/HeadersProvider";
+import { MessageViewerProvider } from "@/components/MessageViewerProvider";
 import { env } from "@/lib/env/client";
 import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
@@ -38,7 +39,7 @@ export default function Providers({
 							shallowRouting
 						>
 							<HeadersProvider headersPromise={headersPromise}>
-								{children}
+								<MessageViewerProvider> {children}</MessageViewerProvider>
 							</HeadersProvider>
 						</ProgressProvider>
 					</CopilotKit>

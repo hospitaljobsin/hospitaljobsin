@@ -54,32 +54,35 @@ export default function Header({
 		"Expected 'Organization' node type",
 	);
 	return (
-		<Navbar maxWidth="lg" isBordered>
-			<NavbarBrand>
-				<Dropdown placement="bottom-end">
-					<DropdownTrigger>
-						<div className="flex items-center gap-4 cursor-pointer">
-							<div className="relative h-8 w-8">
-								<Image
-									src={data.organization.logoUrl}
-									alt="Organization Logo"
-									fill
-									className="rounded-md object-cover"
-									sizes="20vw"
-								/>
+		<>
+			<title>{data.organization.name}</title>
+			<Navbar maxWidth="lg" isBordered>
+				<NavbarBrand>
+					<Dropdown placement="bottom-end">
+						<DropdownTrigger>
+							<div className="flex items-center gap-4 cursor-pointer">
+								<div className="relative h-8 w-8">
+									<Image
+										src={data.organization.logoUrl}
+										alt="Organization Logo"
+										fill
+										className="rounded-md object-cover"
+										sizes="20vw"
+									/>
+								</div>
+								{data.organization.name}
+								<ChevronDown />
 							</div>
-							{data.organization.name}
-							<ChevronDown />
-						</div>
-					</DropdownTrigger>
+						</DropdownTrigger>
 
-					<HeaderOrganizationList account={data.viewer} />
-				</Dropdown>
-			</NavbarBrand>
+						<HeaderOrganizationList account={data.viewer} />
+					</Dropdown>
+				</NavbarBrand>
 
-			<NavbarContent justify="end">
-				<AuthNavigation rootQuery={data.viewer} />
-			</NavbarContent>
-		</Navbar>
+				<NavbarContent justify="end">
+					<AuthNavigation rootQuery={data.viewer} />
+				</NavbarContent>
+			</Navbar>
+		</>
 	);
 }

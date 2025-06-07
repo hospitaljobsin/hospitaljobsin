@@ -50,16 +50,13 @@ export default function DashboardView(props: {
 	}
 
 	return (
-		<>
-			<title>{query.organization.name}</title>
-			<div className="py-8 w-full h-full flex flex-col items-center gap-12">
-				<OrganizationJobsController
-					searchTerm={searchTerm}
-					setSearchTerm={setSearchTerm}
-					rootQuery={query}
-				/>
-				<OrganizationJobsList rootQuery={query} searchTerm={searchTerm} />
-			</div>
-		</>
+		<div className="py-8 w-full h-full flex flex-col items-center gap-12">
+			<OrganizationJobsController
+				searchTerm={searchTerm}
+				setSearchTerm={setSearchTerm}
+				rootQuery={query}
+			/>
+			<OrganizationJobsList rootQuery={query} searchTerm={searchTerm} />
+		</div>
 	);
 }

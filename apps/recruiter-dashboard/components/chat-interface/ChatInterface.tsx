@@ -4,9 +4,15 @@ import { useCopilotChat } from "@copilotkit/react-core";
 import { Role, TextMessage } from "@copilotkit/runtime-client-gql";
 import { Button, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Sparkles, StopCircleIcon } from "lucide-react";
+import {
+	ChevronLeft,
+	ChevronRight,
+	Sparkles,
+	StopCircleIcon,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4-mini";
+import { useMessageViewer } from "../MessageViewerProvider";
 
 const chatSchema = z.object({
 	message: z.string().check(z.minLength(1)),
@@ -15,6 +21,7 @@ const chatSchema = z.object({
 export default function ChatInterface({
 	placeholder,
 }: { placeholder: string }) {
+	const { setShowMessageViewer, showMessageViewer } = useMessageViewer();
 	const {
 		visibleMessages,
 		appendMessage,
@@ -24,8 +31,6 @@ export default function ChatInterface({
 		stopGeneration,
 		isLoading,
 	} = useCopilotChat();
-
-	// TODO: get a showMessages variable from a context (provider) and conditionally show the messages screen here
 
 	const form = useForm<z.infer<typeof chatSchema>>({
 		resolver: standardSchemaResolver(chatSchema),
@@ -40,8 +45,32 @@ export default function ChatInterface({
 	};
 
 	return (
-		<div className="w-full mx-auto bg-background-400">
-			<div className="w-full bg-background-400 bottom-0 fixed p-8 px-5 border-t border-gray-300">
+		<div className="w-full mx-auto bottom-0 shrink sticky">
+			<div className="w-full relative">
+				<div className="absolute top-0 left-0 right-0 -mt-6 mx-auto max-w-5xl flex justify-start">
+					<Button
+						variant="shadow"
+						startContent={
+							showMessageViewer ? (
+								<ChevronLeft size={20} className="text-foreground-400" />
+							) : (
+								<ChevronRight size={20} className="text-foreground-400" />
+							)
+						}
+						onPress={() => {
+							setShowMessageViewer((status) => !status);
+						}}
+					>
+						{showMessageViewer ? (
+							<p>back to dashboard</p>
+						) : (
+							<p>view messages</p>
+						)}
+					</Button>
+				</div>
+			</div>
+
+			<div className="w-full bg-background-400 p-8 px-5 border-t border-gray-300">
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
 					className="mx-auto max-w-5xl"

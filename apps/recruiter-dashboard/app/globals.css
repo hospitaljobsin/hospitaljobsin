@@ -14,7 +14,8 @@
 
 @layer base {
 	html,
-	body {
+	body,
+	div[data-overlay-container] {
 		@apply h-full;
 		@apply w-full;
 		@apply bg-background-600;
