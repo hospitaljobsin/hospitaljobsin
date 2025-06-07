@@ -14,11 +14,9 @@ async function enterPassword({
 	confirmPassword: string;
 	page: PlaywrightTestArgs["page"];
 }) {
+	await page.getByRole("textbox", { name: "New Password" }).fill(password);
 	await page
-		.getByRole("textbox", { name: "New Password New Password" })
-		.fill(password);
-	await page
-		.getByRole("textbox", { name: "Confirm New Password Confirm" })
+		.getByRole("textbox", { name: "Confirm New Password" })
 		.fill(confirmPassword);
 	await page.getByRole("button", { name: "Reset Password" }).click();
 }
@@ -78,10 +76,10 @@ test.describe("Confirm Password Reset Page", () => {
 			passwordAuth.account.email,
 		);
 		await expect(
-			page.getByRole("textbox", { name: "New Password New Password" }),
+			page.getByRole("textbox", { name: "New Password" }),
 		).toBeVisible();
 		await expect(
-			page.getByRole("textbox", { name: "Confirm New Password Confirm" }),
+			page.getByRole("textbox", { name: "Confirm New Password" }),
 		).toBeVisible();
 		await expect(
 			page.getByRole("button", { name: "Reset Password" }),
@@ -116,10 +114,10 @@ test.describe("Confirm Password Reset Page", () => {
 
 	test("should successfully reset password", async ({ page, request }) => {
 		await page
-			.getByRole("textbox", { name: "New Password New Password" })
+			.getByRole("textbox", { name: "New Password" })
 			.fill("Password123!");
 		await page
-			.getByRole("textbox", { name: "Confirm New Password Confirm" })
+			.getByRole("textbox", { name: "Confirm New Password" })
 			.fill("Password123!");
 		await page.getByRole("button", { name: "Reset Password" }).click();
 
@@ -287,10 +285,10 @@ test.describe("2FA Confirm Password Reset Page", () => {
 		await expect(page.getByText(/Reset Your Password/)).toBeVisible();
 
 		await page
-			.getByRole("textbox", { name: "New Password New Password" })
+			.getByRole("textbox", { name: "New Password" })
 			.fill("Password123!");
 		await page
-			.getByRole("textbox", { name: "Confirm New Password Confirm" })
+			.getByRole("textbox", { name: "Confirm New Password" })
 			.fill("Password123!");
 		await page.getByRole("button", { name: "Reset Password" }).click();
 
