@@ -14,9 +14,7 @@ async function findEmail({
 	request: APIRequestContext;
 	filter?: (email: Email) => boolean;
 }): Promise<Email | null> {
-	const response = await request.get(
-		`http://${env.MAILCATCHER_BASE_URL}/messages`,
-	);
+	const response = await request.get(`${env.MAILCATCHER_BASE_URL}/messages`);
 
 	let emails: Email[] = await response.json();
 

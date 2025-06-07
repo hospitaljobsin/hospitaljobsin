@@ -15,7 +15,7 @@ async function findVerificationCode({
 }): Promise<string> {
 	const emailPage = await context.newPage();
 	await emailPage.goto(
-		`http://${env.MAILCATCHER_BASE_URL}/messages/${emailMessage.id}.html`,
+		`${env.MAILCATCHER_BASE_URL}/messages/${emailMessage.id}.html`,
 	);
 
 	const verificationCode = await emailPage.evaluate(() => {
