@@ -6,6 +6,8 @@ import { TOTP_USER_SECRET } from "@/tests/utils/constants";
 import { findLastEmail } from "@/tests/utils/mailcatcher";
 import type { PlaywrightTestArgs } from "@playwright/test";
 
+// TODO: increase test timeout here. the delay is happening because of cloudflare errors
+
 async function enterPassword({
 	page,
 	password,
