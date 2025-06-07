@@ -216,7 +216,7 @@ authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 			// Fill new full name
 			const newPassword = "NewPassword123!";
 			await page
-				.getByRole("textbox", { name: "New Password" })
+				.getByRole("textbox", { name: "New Password", exact: true })
 				.first()
 				.fill(newPassword);
 			await page
@@ -317,7 +317,7 @@ webauthnSudoModeTest.describe(
 					// Fill new full name
 					const newPassword = "NewPassword123!";
 					await page
-						.getByRole("textbox", { name: "New Password" })
+						.getByRole("textbox", { name: "New Password", exact: true })
 						.first()
 						.fill(newPassword);
 					await page

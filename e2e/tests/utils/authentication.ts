@@ -51,7 +51,7 @@ export async function createTestAccount(
 	}: CreateTestAccountData,
 ): Promise<TestAccount> {
 	const res = await context.post(
-		"http://localhost:8000/test-setup/create-account",
+		"http://api.localtest.me/test-setup/create-account",
 		{
 			headers: {
 				"Content-Type": "application/json",
@@ -66,6 +66,8 @@ export async function createTestAccount(
 			},
 		},
 	);
+
+	console.log("response status:", res);
 
 	if (!res.ok) {
 		throw new Error(`Failed to create test account: ${res.statusText}`);
