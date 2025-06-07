@@ -1,3 +1,4 @@
+import { env } from "@/lib/env";
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
@@ -6,7 +7,7 @@ import { TOTP_USER_SECRET } from "@/tests/utils/constants";
 test.describe("2FA Page", () => {
 	test.beforeEach(async ({ page, twoFactorAuth }) => {
 		// Navigate to login page
-		await page.goto("http://accounts.localtest.me/auth/login");
+		await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/login`);
 
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
@@ -17,7 +18,7 @@ test.describe("2FA Page", () => {
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		// Should redirect to 2FA page
-		await page.waitForURL("http://accounts.localtest.me/auth/2fa");
+		await page.waitForURL(`${env.ACCOUNTS_UI_BASE_URL}/auth/2fa`);
 
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
@@ -94,7 +95,7 @@ test.describe("2FA Page", () => {
 		await page.getByRole("button", { name: "Verify Code" }).click();
 
 		// Should redirect to home page
-		await page.waitForURL("http://localtest.me/");
+		await page.waitForURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
 	});
 });
 
@@ -103,10 +104,10 @@ test.describe("2FA Page 2FA Challenge Redirects", () => {
 		page,
 	}) => {
 		// Navigate to 2FA page
-		await page.goto("http://accounts.localtest.me/auth/2fa");
+		await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/2fa`);
 
 		// expect to redirect to login page
-		await page.waitForURL("http://accounts.localtest.me/auth/login");
+		await page.waitForURL(`${env.ACCOUNTS_UI_BASE_URL}/auth/login`);
 	});
 });
 
@@ -114,8 +115,8 @@ authTest.describe("2FA Page 2FA Authentication Redirects", () => {
 	authTest(
 		"should redirect to home page when already authenticated",
 		async ({ page }) => {
-			await page.goto("http://accounts.localtest.me/auth/2fa");
-			await page.waitForURL("http://localtest.me/");
+			await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/2fa`);
+			await page.waitForURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
 		},
 	);
 });

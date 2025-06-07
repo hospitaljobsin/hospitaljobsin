@@ -1,3 +1,4 @@
+import { env } from "@/lib/env";
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { generateValidOTP } from "@/tests/utils/authenticator";
 import { waitForCaptcha } from "@/tests/utils/captcha";
@@ -26,7 +27,7 @@ async function enterPassword({
 test.describe("Confirm Password Reset Page", () => {
 	test.beforeEach(async ({ page, request, passwordAuth }) => {
 		// Navigate to reset password page
-		await page.goto("http://accounts.localtest.me/auth/reset-password");
+		await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/reset-password`);
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
@@ -123,7 +124,7 @@ test.describe("Confirm Password Reset Page", () => {
 			.fill("Password123!");
 		await page.getByRole("button", { name: "Reset Password" }).click();
 
-		await page.waitForURL("http://localtest.me/");
+		await page.waitForURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
 	});
 
 	test("should handle invalid password", async ({ page }) => {
@@ -181,7 +182,7 @@ test.describe("Confirm Password Reset Page", () => {
 test.describe("2FA Confirm Password Reset Page", () => {
 	test.beforeEach(async ({ page, request, twoFactorAuth }) => {
 		// Navigate to reset password page
-		await page.goto("http://accounts.localtest.me/auth/reset-password");
+		await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/reset-password`);
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 
@@ -294,7 +295,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 			.fill("Password123!");
 		await page.getByRole("button", { name: "Reset Password" }).click();
 
-		await page.waitForURL("http://localtest.me/");
+		await page.waitForURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
 	});
 
 	test("should handle invalid password", async ({ page }) => {
@@ -359,7 +360,7 @@ test.describe("2FA Confirm Password Reset Page", () => {
 test.describe("Confirm Password Reset Page Not Found", () => {
 	test("should handle invalid password reset link", async ({ page }) => {
 		await page.goto(
-			"http://accounts.localtest.me/auth/reset-password/invalid-token",
+			`${env.ACCOUNTS_UI_BASE_URL}/auth/reset-password/invalid-token`,
 		);
 
 		await expect(page.getByText(/404 Not Found/)).toBeVisible();
@@ -373,7 +374,7 @@ authTest.describe(
 			"should not redirect to home page when already authenticated",
 			async ({ page, request, passwordAuth }) => {
 				// Navigate to reset password page
-				await page.goto("http://accounts.localtest.me/auth/reset-password");
+				await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/reset-password`);
 				// Wait for recaptcha to load
 				await waitForCaptcha({ page });
 
@@ -413,7 +414,7 @@ authTest.describe(
 
 				await page.goto(resetLink);
 				// ensure we are not redirected here
-				await expect(page).not.toHaveURL("http://localtest.me/");
+				await expect(page).not.toHaveURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
 				await expect(page).toHaveURL(resetLink);
 			},
 		);

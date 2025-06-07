@@ -17,8 +17,10 @@
 	},
 	"dependencies": {
 		"@playwright/test": "^1.52.0",
+		"@t3-oss/env-core": "^0.13.6",
 		"jimp": "^1.6.0",
 		"otplib": "^12.0.1",
-		"qrcode-reader": "^1.0.4"
+		"qrcode-reader": "^1.0.4",
+		"zod": "^3.25.56"
 	}
 }

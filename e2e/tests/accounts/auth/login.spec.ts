@@ -1,10 +1,11 @@
+import { env } from "@/lib/env";
 import { authTest, expect, test } from "@/playwright/fixtures";
 import { waitForCaptcha } from "@/tests/utils/captcha";
 
 test.describe("Login Page", () => {
 	test.beforeEach(async ({ page }) => {
 		// Navigate to login page
-		await page.goto("http://accounts.localtest.me/auth/login");
+		await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/login`);
 		// Wait for recaptcha to load
 		await waitForCaptcha({ page });
 	});
@@ -157,7 +158,7 @@ test.describe("Login Page", () => {
 		await page.getByRole("textbox", { name: "Password" }).fill("Password123!");
 		await page.getByRole("button", { name: "Log in" }).click();
 
-		await page.waitForURL("http://localtest.me/");
+		await page.waitForURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
 	});
 
 	test("should redirect on 2FA requirement", async ({
@@ -170,7 +171,7 @@ test.describe("Login Page", () => {
 		await page.getByRole("button", { name: "Log in" }).click();
 
 		// Should redirect to 2FA page
-		await page.waitForURL("http://accounts.localtest.me/auth/2fa");
+		await page.waitForURL(`${env.ACCOUNTS_UI_BASE_URL}/auth/2fa`);
 	});
 
 	test("should handle successful passkey login", async ({
@@ -256,7 +257,7 @@ test.describe("Login Page", () => {
 		});
 
 		// Ensure redirection happens after successful authentication
-		await page.waitForURL("http://localtest.me/");
+		await page.waitForURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
 	});
 
 	test("should handle invalid passkey login", async ({
@@ -326,7 +327,7 @@ test.describe("Login Page", () => {
 		test.setTimeout(30_000);
 		// Navigate to login page with OAuth2 error
 		await page.goto(
-			"http://accounts.localtest.me/auth/login?oauth2_error=unverified_email",
+			`${env.ACCOUNTS_UI_BASE_URL}/auth/login?oauth2_error=unverified_email`,
 		);
 
 		// Check error message is displayed
@@ -371,8 +372,8 @@ authTest.describe("Login Page Authentication Redirects", () => {
 	authTest(
 		"should redirect to home page when already authenticated",
 		async ({ page }) => {
-			await page.goto("http://accounts.localtest.me/auth/login");
-			await page.waitForURL("http://localtest.me/");
+			await page.goto(`${env.ACCOUNTS_UI_BASE_URL}/auth/login`);
+			await page.waitForURL(`${env.SEEKER_PORTAL_BASE_URL}/`);
 		},
 	);
 });

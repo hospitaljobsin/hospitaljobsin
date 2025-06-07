@@ -1,3 +1,4 @@
+import { env } from "@/lib/env";
 import type { APIRequestContext } from "@playwright/test";
 
 type AuthProvider = "password" | "webauthn_credential" | "oauth_google";
@@ -51,7 +52,7 @@ export async function createTestAccount(
 	}: CreateTestAccountData,
 ): Promise<TestAccount> {
 	const res = await context.post(
-		"http://api.localtest.me/test-setup/create-account",
+		`${env.API_BASE_URL}/test-setup/create-account`,
 		{
 			headers: {
 				"Content-Type": "application/json",

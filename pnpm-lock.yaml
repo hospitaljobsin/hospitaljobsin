@@ -680,6 +680,9 @@ importers:
       '@playwright/test':
         specifier: ^1.52.0
         version: 1.52.0
+      '@t3-oss/env-core':
+        specifier: ^0.13.6
+        version: 0.13.6(typescript@5.8.3)(zod@3.25.56)
       jimp:
         specifier: ^1.6.0
         version: 1.6.0
@@ -689,6 +692,9 @@ importers:
       qrcode-reader:
         specifier: ^1.0.4
         version: 1.0.4
+      zod:
+        specifier: ^3.25.56
+        version: 3.25.56
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
@@ -11370,6 +11376,9 @@ packages:
   zod@3.25.46:
     resolution: {integrity: sha512-IqRxcHEIjqLd4LNS/zKffB3Jzg3NwqJxQQ0Ns7pdrvgGkwQsEBdEQcOHaBVqvvZArShRzI39+aMST3FBGmTrLQ==}
 
+  zod@3.25.56:
+    resolution: {integrity: sha512-rd6eEF3BTNvQnR2e2wwolfTmUTnp70aUTqr0oaGbHifzC3BKJsoV+Gat8vxUMR1hwOKBs6El+qWehrHbCpW6SQ==}
+
   zustand@3.7.2:
     resolution: {integrity: sha512-PIJDIZKtokhof+9+60cpockVOq05sJzHCriyvaLBmEJixseQ1a5Kdov6fWZfWOu5SK9c+FhH1jU0tntLxRJYMA==}
     engines: {node: '>=12.7.0'}
@@ -15765,7 +15774,7 @@ snapshots:
     dependencies:
       '@jimp/types': 1.6.0
       '@jimp/utils': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-blur@1.6.0':
     dependencies:
@@ -15775,7 +15784,7 @@ snapshots:
   '@jimp/plugin-circle@1.6.0':
     dependencies:
       '@jimp/types': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-color@1.6.0':
     dependencies:
@@ -15783,7 +15792,7 @@ snapshots:
       '@jimp/types': 1.6.0
       '@jimp/utils': 1.6.0
       tinycolor2: 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-contain@1.6.0':
     dependencies:
@@ -15792,7 +15801,7 @@ snapshots:
       '@jimp/plugin-resize': 1.6.0
       '@jimp/types': 1.6.0
       '@jimp/utils': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-cover@1.6.0':
     dependencies:
@@ -15800,20 +15809,20 @@ snapshots:
       '@jimp/plugin-crop': 1.6.0
       '@jimp/plugin-resize': 1.6.0
       '@jimp/types': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-crop@1.6.0':
     dependencies:
       '@jimp/core': 1.6.0
       '@jimp/types': 1.6.0
       '@jimp/utils': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-displace@1.6.0':
     dependencies:
       '@jimp/types': 1.6.0
       '@jimp/utils': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-dither@1.6.0':
     dependencies:
@@ -15823,12 +15832,12 @@ snapshots:
     dependencies:
       '@jimp/types': 1.6.0
       '@jimp/utils': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-flip@1.6.0':
     dependencies:
       '@jimp/types': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-hash@1.6.0':
     dependencies:
@@ -15846,7 +15855,7 @@ snapshots:
   '@jimp/plugin-mask@1.6.0':
     dependencies:
       '@jimp/types': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-print@1.6.0':
     dependencies:
@@ -15859,18 +15868,18 @@ snapshots:
       parse-bmfont-binary: 1.0.6
       parse-bmfont-xml: 1.1.6
       simple-xml-to-json: 1.2.3
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-quantize@1.6.0':
     dependencies:
       image-q: 4.0.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-resize@1.6.0':
     dependencies:
       '@jimp/core': 1.6.0
       '@jimp/types': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-rotate@1.6.0':
     dependencies:
@@ -15879,7 +15888,7 @@ snapshots:
       '@jimp/plugin-resize': 1.6.0
       '@jimp/types': 1.6.0
       '@jimp/utils': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/plugin-threshold@1.6.0':
     dependencies:
@@ -15888,11 +15897,11 @@ snapshots:
       '@jimp/plugin-hash': 1.6.0
       '@jimp/types': 1.6.0
       '@jimp/utils': 1.6.0
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/types@1.6.0':
     dependencies:
-      zod: 3.25.46
+      zod: 3.25.56
 
   '@jimp/utils@1.6.0':
     dependencies:
@@ -19237,6 +19246,11 @@ snapshots:
       typescript: 5.8.3
       zod: 3.25.46
 
+  '@t3-oss/env-core@0.13.6(typescript@5.8.3)(zod@3.25.56)':
+    optionalDependencies:
+      typescript: 5.8.3
+      zod: 3.25.56
+
   '@t3-oss/env-nextjs@0.13.6(typescript@5.8.3)(zod@3.25.46)':
     dependencies:
       '@t3-oss/env-core': 0.13.6(typescript@5.8.3)(zod@3.25.46)
@@ -22222,7 +22236,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.9.0)
+      retry-axios: 2.6.0(axios@1.9.0(debug@4.4.1))
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -25141,7 +25155,7 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
-  retry-axios@2.6.0(axios@1.9.0):
+  retry-axios@2.6.0(axios@1.9.0(debug@4.4.1)):
     dependencies:
       axios: 1.9.0(debug@4.4.1)
 
@@ -26417,6 +26431,8 @@ snapshots:
   zod@3.24.2: {}
 
   zod@3.25.46: {}
+
+  zod@3.25.56: {}
 
   zustand@3.7.2(react@19.1.0):
     optionalDependencies:
