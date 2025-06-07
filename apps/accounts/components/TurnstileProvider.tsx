@@ -1,8 +1,13 @@
+import { env } from "@/lib/env/client";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
-import { Turnstile } from "@marsidev/react-turnstile";
+import {
+	DEFAULT_SCRIPT_ID,
+	SCRIPT_URL,
+	Turnstile,
+} from "@marsidev/react-turnstile";
+import Script from "next/script";
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { env } from "@/lib/env/client";
 
 type TurnstileContextType = {
 	executeCaptcha: ((event: string) => Promise<string>) | undefined;
@@ -57,6 +62,11 @@ export const TurnstileProvider = ({ children }: { children: ReactNode }) => {
 				token,
 			}}
 		>
+			<Script
+				id={DEFAULT_SCRIPT_ID}
+				src={SCRIPT_URL}
+				strategy="beforeInteractive"
+			/>
 			<Turnstile
 				as="aside"
 				ref={turnstileRef}
@@ -67,11 +77,7 @@ export const TurnstileProvider = ({ children }: { children: ReactNode }) => {
 					size: "invisible",
 					appearance: "execute",
 				}}
-				scriptOptions={{
-					nonce: "turnstile-nonce",
-					async: true,
-					defer: true,
-				}}
+				injectScript={false}
 			/>
 			{children}
 		</TurnstileContext.Provider>
