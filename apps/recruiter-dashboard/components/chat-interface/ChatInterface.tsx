@@ -50,6 +50,7 @@ export default function ChatInterface({
 				<div className="absolute top-0 left-0 right-0 -mt-6 mx-auto max-w-5xl flex justify-start">
 					<Button
 						variant="shadow"
+						isDisabled={isLoading}
 						startContent={
 							showMessageViewer ? (
 								<ChevronLeft size={20} className="text-foreground-400" />
