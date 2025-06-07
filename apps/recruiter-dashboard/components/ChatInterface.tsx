@@ -2,9 +2,9 @@
 
 import { useCopilotChat } from "@copilotkit/react-core";
 import { Role, TextMessage } from "@copilotkit/runtime-client-gql";
-import { Input } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Sparkles } from "lucide-react";
+import { Sparkles, StopCircleIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4-mini";
 
@@ -55,6 +55,19 @@ export default function ChatInterface({
 						placeholder={placeholder}
 						size="lg"
 						{...form.register("message")}
+						endContent={
+							<Button
+								type="button"
+								variant="light"
+								color="default"
+								isIconOnly
+								size="sm"
+								onPress={stopGeneration}
+								isDisabled={!isLoading}
+							>
+								<StopCircleIcon className="text-foreground-400" />
+							</Button>
+						}
 					/>
 					<input
 						type="submit"
