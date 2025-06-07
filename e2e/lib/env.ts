@@ -1,32 +1,23 @@
 import { createEnv } from "@t3-oss/env-core";
-import { z } from "zod/v4-mini";
+import "dotenv/config";
+import { z } from "zod";
 
 export const env = createEnv({
 	server: {
-		API_BASE_URL: z.url(),
-		ACCOUNTS_UI_BASE_URL: z.url(),
-		SEEKER_PORTAL_BASE_URL: z.url(),
-		MAILCATCHER_BASE_URL: z.url(),
+		API_BASE_URL: z.string().url(),
+		ACCOUNTS_UI_BASE_URL: z.string().url(),
+		SEEKER_PORTAL_BASE_URL: z.string().url(),
+		MAILCATCHER_BASE_URL: z.string().url(),
 	},
 
 	/**
 	 * What object holds the environment variables at runtime. This is usually
 	 * `process.env` or `import.meta.env`.
 	 */
-	runtimeEnv: process.env,
-
-	/**
-	 * By default, this library will feed the environment variables directly to
-	 * the Zod validator.
-	 *
-	 * This means that if you have an empty string for a value that is supposed
-	 * to be a number (e.g. `PORT=` in a ".env" file), Zod will incorrectly flag
-	 * it as a type mismatch violation. Additionally, if you have an empty string
-	 * for a value that is supposed to be a string with a default value (e.g.
-	 * `DOMAIN=` in an ".env" file), the default value will never be applied.
-	 *
-	 * In order to solve these issues, we recommend that all new projects
-	 * explicitly specify this option as true.
-	 */
-	emptyStringAsUndefined: true,
+	runtimeEnvStrict: {
+		API_BASE_URL: process.env.API_BASE_URL,
+		ACCOUNTS_UI_BASE_URL: process.env.ACCOUNTS_UI_BASE_URL,
+		SEEKER_PORTAL_BASE_URL: process.env.SEEKER_PORTAL_BASE_URL,
+		MAILCATCHER_BASE_URL: process.env.MAILCATCHER_BASE_URL,
+	},
 });
