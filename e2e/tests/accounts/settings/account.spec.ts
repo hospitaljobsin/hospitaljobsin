@@ -138,19 +138,12 @@ authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 
 				const totpSecret = totpSecretUrl.split("secret=")[1].split("&")[0];
 
-				if (browserName !== "webkit") {
-					// we have navigation API permissions issues on webkit, so we cannot copy to clipboard
-					// https://github.com/microsoft/playwright/issues/13037
-					await page
-						.getByRole("button", { name: /copy secret to clipboard/i })
-						.click();
+				const copiedTotpSecret = await page
+					.getByRole("button", { name: /copy secret to clipboard/i })
+					.locator("xpath=preceding-sibling::code")
+					.textContent();
 
-					const copiedTotpSecret = await page.evaluate(() =>
-						navigator.clipboard.readText(),
-					);
-
-					expect(totpSecret).toEqual(copiedTotpSecret);
-				}
+				expect(totpSecret).toEqual(copiedTotpSecret);
 
 				const otp = await generateValidOTP({ totp_secret: totpSecret });
 
@@ -237,12 +230,13 @@ authSudoModeTest.describe("Account Settings Page (Sudo Mode)", () => {
 			// Ensure password has changed- log out and log back in
 			const avatarButton = page.locator('button[aria-haspopup="true"]').last();
 			await expect(avatarButton).toBeVisible();
-			await avatarButton.click();
 
-			// wait for the menu to open
-			await page.waitForSelector('div[role="dialog"][data-open="true"]', {
-				state: "visible",
-			});
+			await Promise.all([
+				page.waitForSelector('div[role="dialog"][data-open="true"]', {
+					state: "visible",
+				}),
+				avatarButton.click(),
+			]);
 
 			await expect(page.getByText("Signed in as")).toBeVisible();
 			await expect(

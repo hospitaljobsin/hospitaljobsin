@@ -51,6 +51,11 @@ export default defineConfig({
 					// chromium-specific permissions
 					permissions: ["clipboard-read", "clipboard-write"],
 				},
+				launchOptions: {
+					args: [
+						"--unsafely-treat-insecure-origin-as-secure=http://accounts.localtest.me",
+					],
+				},
 			},
 		},
 
