@@ -59,9 +59,9 @@ export default defineConfig({
 			name: "firefox",
 			use: {
 				...devices["Desktop Firefox"],
-				contextOptions: {
-					ignoreHTTPSErrors: true,
-				},
+				// contextOptions: {
+				// 	ignoreHTTPSErrors: true,
+				// },
 				launchOptions: {
 					firefoxUserPrefs: {
 						"dom.events.testing.asyncClipboard": true,
@@ -70,6 +70,7 @@ export default defineConfig({
 						"dom.events.asyncClipboard.writeText": true,
 						"permissions.default.clipboard-read": 1,
 						"permissions.default.clipboard-write": 1,
+						"security.enterprise_roots.enabled": true, // Enable for testing with self-signed certificates
 					},
 				},
 			},
@@ -79,9 +80,9 @@ export default defineConfig({
 			name: "webkit",
 			use: {
 				...devices["Desktop Safari"],
-				contextOptions: {
-					ignoreHTTPSErrors: true,
-				},
+				// contextOptions: {
+				// 	ignoreHTTPSErrors: true,
+				// },
 			},
 		},
 
