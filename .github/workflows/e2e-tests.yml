@@ -57,6 +57,8 @@ jobs:
           mkcert -cert-file ./localtest.me.pem -key-file ./localtest.me-key.pem "localtest.me" "*.localtest.me"
 
       - run: docker compose -f docker-compose.e2e.yml up --build -d --wait --remove-orphans
+        with:
+          working-directory: .
 
       - uses: pnpm/action-setup@v4
         with:
@@ -88,9 +90,9 @@ jobs:
         env:
           CI: true
           DEBUG: pw:browser
-          API_BASE_URL: http://api.localtest.me
-          ACCOUNTS_UI_BASE_URL: http://accounts.localtest.me
-          SEEKER_PORTAL_BASE_URL: http://localtest.me
+          API_BASE_URL: https://api.localtest.me
+          ACCOUNTS_UI_BASE_URL: https://accounts.localtest.me
+          SEEKER_PORTAL_BASE_URL: https://localtest.me
           MAILCATCHER_BASE_URL: http://localhost:1080
 
       - name: Upload Playwright Report and Traces
