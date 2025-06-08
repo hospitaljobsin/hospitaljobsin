@@ -41,6 +41,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Playwright
+        id: install-playwright
+        uses: ./.github/actions/playwright
+        with:
+          working-directory: e2e
+
+      - name: Debug Playwright cache
+        run: |
+          echo "Playwright version – ${{ steps.install-playwright.outputs.version }}"
+          echo "Playwright cached – ${{ steps.install-playwright.outputs.cache-hit }}"
+
       - name: Install MKCert
         run: |
           sudo apt update
@@ -71,16 +82,7 @@ jobs:
       - name: Install dependencies
         run: pnpm --filter e2e install --frozen-lockfile
 
-      - name: Install Playwright
-        id: install-playwright
-        uses: ./.github/actions/playwright
-        with:
-          working-directory: e2e
 
-      - name: Debug Playwright cache
-        run: |
-          echo "Playwright version – ${{ steps.install-playwright.outputs.version }}"
-          echo "Playwright cached – ${{ steps.install-playwright.outputs.cache-hit }}"
 
       - name: Run Playwright tests
         run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4

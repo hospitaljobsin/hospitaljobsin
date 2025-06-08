@@ -50,7 +50,11 @@ export default defineConfig({
 				contextOptions: {
 					// chromium-specific permissions
 					permissions: ["clipboard-read", "clipboard-write"],
-					ignoreHTTPSErrors: true,
+				},
+				launchOptions: {
+					args: [
+						"--unsafely-treat-insecure-origin-as-secure=http://accounts.localtest.me",
+					],
 				},
 			},
 		},
@@ -59,9 +63,6 @@ export default defineConfig({
 			name: "firefox",
 			use: {
 				...devices["Desktop Firefox"],
-				contextOptions: {
-					ignoreHTTPSErrors: true,
-				},
 				launchOptions: {
 					firefoxUserPrefs: {
 						"dom.events.testing.asyncClipboard": true,
