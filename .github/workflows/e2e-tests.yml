@@ -87,7 +87,6 @@ jobs:
         working-directory: e2e
         env:
           CI: true
-          NODE_OPTIONS: --use-system-ca
           DEBUG: pw:browser
           API_BASE_URL: http://api.localtest.me
           ACCOUNTS_UI_BASE_URL: http://accounts.localtest.me
