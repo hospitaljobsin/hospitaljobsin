@@ -57,8 +57,6 @@ jobs:
           mkcert -cert-file ./localtest.me.pem -key-file ./localtest.me-key.pem "localtest.me" "*.localtest.me"
 
       - run: docker compose -f docker-compose.e2e.yml up --build -d --wait --remove-orphans
-        with:
-          working-directory: .
 
       - uses: pnpm/action-setup@v4
         with:
