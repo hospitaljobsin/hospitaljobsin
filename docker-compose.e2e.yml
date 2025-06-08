@@ -20,7 +20,7 @@ services:
       - RECRUITER_PORTAL_CORE_HOST=test-recruiter-portal-core
       - RECRUITER_DASHBOARD_HOST=test-recruiter-dashboard
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "--header='Host: localtest.me'", "http://localhost:80"]
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:2019/config/"]
       interval: 10s
       timeout: 5s
       retries: 10
