@@ -59,9 +59,9 @@ export default defineConfig({
 			name: "firefox",
 			use: {
 				...devices["Desktop Firefox"],
-				// contextOptions: {
-				// 	ignoreHTTPSErrors: true,
-				// },
+				contextOptions: {
+					ignoreHTTPSErrors: true,
+				},
 				launchOptions: {
 					firefoxUserPrefs: {
 						"dom.events.testing.asyncClipboard": true,
@@ -80,9 +80,9 @@ export default defineConfig({
 			name: "webkit",
 			use: {
 				...devices["Desktop Safari"],
-				// contextOptions: {
-				// 	ignoreHTTPSErrors: true,
-				// },
+				contextOptions: {
+					ignoreHTTPSErrors: true,
+				},
 			},
 		},
 
