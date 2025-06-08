@@ -22,7 +22,7 @@ https://www.planttext.com?text=u-LoA2v9B2efpStXvShBJqbLK0eepIbE3SylobPmJ4xEByqhA
 | Hospital Jobs                       | [apps/seeker-portal](./apps/seeker-portal)                  | Job Seeker platform UI           |
 | Hospital Jobs API                   | [server](./server)                                          | GraphQL API Server               |
 | E2E Test Suite                      | [e2e](./e2e)                                                | Playwright End-To-End Tests      |
-| Infrastructure           b          | [infrastructure](./infrastructure)                          | Terraform Infrastructure as Code |
+| Infrastructure                      | [infrastructure](./infrastructure)                          | Terraform Infrastructure as Code |
 
 
 ## License
