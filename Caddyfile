@@ -1,29 +1,29 @@
 {
-    auto_https off
+    local_certs
 }
 
 # Reverse proxy for main site
-http://localtest.me {
+https://localtest.me {
     reverse_proxy http://{$SEEKER_PORTAL_HOST}:5000
 }
 
 # Reverse proxy for API
-http://api.localtest.me {
+https://api.localtest.me {
     reverse_proxy http://{$SERVER_HOST}:8000
 }
 
 # Reverse proxy for accounts service
-http://accounts.localtest.me {
+https://accounts.localtest.me {
     reverse_proxy http://{$ACCOUNTS_HOST}:5002
 }
 
 
 # Reverse proxy for recruiter site
-http://recruiter.localtest.me {
+https://recruiter.localtest.me {
     reverse_proxy http://{$RECRUITER_PORTAL_CORE_HOST}:5003
 }
 
 # Wildcard: any subdomain of localtest.me
-http://*.localtest.me {
+https://*.localtest.me {
     reverse_proxy http://{$RECRUITER_DASHBOARD_HOST}:5001
 }

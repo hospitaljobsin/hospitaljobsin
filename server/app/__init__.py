@@ -72,7 +72,7 @@ def add_middleware(
         session_cookie=auth_settings.session_user_cookie_name,
         path="/",
         same_site="lax",
-        secure=app_settings.is_production,
+        secure=auth_settings.session_cookie_secure,
         domain=auth_settings.session_cookie_domain,
     )
 

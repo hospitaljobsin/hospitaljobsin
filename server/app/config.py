@@ -340,6 +340,8 @@ class AWSSettings(BaseSettings):
 class AuthSettings(BaseSettings):
     session_user_cookie_name: str = "user_session"
 
+    session_cookie_secure: bool = True
+
     session_cookie_domain: str | None = None
     # webauthn config
 

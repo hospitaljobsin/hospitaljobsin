@@ -5,10 +5,10 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
-      # - "443:443"
+      - "443:443"
     expose:
       - 80 # http
-      # - 443 # https
+      - 443 # https
     volumes:
       - caddy_data:/data
       - ./Caddyfile:/etc/caddy/Caddyfile
