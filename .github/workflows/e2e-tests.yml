@@ -51,6 +51,9 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
+      - name: Install dependencies
+        run: pnpm --filter e2e install --frozen-lockfile
+
       - name: Install Playwright
         id: install-playwright
         uses: ./.github/actions/playwright
@@ -78,10 +81,6 @@ jobs:
           mkcert -cert-file ./localtest.me.pem -key-file ./localtest.me-key.pem "localtest.me" "*.localtest.me"
 
       - run: docker compose -f docker-compose.e2e.yml up --build -d --wait --remove-orphans
-
-      - name: Install dependencies
-        run: pnpm --filter e2e install --frozen-lockfile
-
 
 
       - name: Run Playwright tests
