@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"test": "npx playwright test"
+		"test": "NODE_OPTIONS=--use-system-ca npx playwright test"
 	},
 	"keywords": [],
 	"author": "",
