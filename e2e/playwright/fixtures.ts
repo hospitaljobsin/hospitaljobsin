@@ -28,7 +28,6 @@ const createUserContext = async (
 	const context = await request.newContext({ storageState: undefined });
 	const user = await createTestAccount(context, options);
 	const result = await context.storageState({ path: storagePath });
-	console.log("resulting storage state:", result);
 	await context.dispose();
 
 	fs.writeFileSync(accountPath, JSON.stringify(user, null, 2));

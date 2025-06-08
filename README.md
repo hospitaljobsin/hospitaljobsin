@@ -46,37 +46,53 @@ This project has a proprietary license. Read the entire license [here](./README.
 Go through the setup guides of the services above, which covers installation of required dependencies,
 and other service specific setup tasks.
 
+#### 1. Setup Pre-Commit
+
 To set up the git hook scripts, run the following command:
 
 ```bash
 pre-commit install
 ```
 
-To setup local certificates, run the following command:
+#### 2. Setup Locally Trusted SSL Certificates
+
+First, create a directory for your certificates and run mkcert to generate them:
 ```bash
 mkcd certs
 mkcert -install
 mkcert -cert-file ./localtest.me.pem -key-file ./localtest.me-key.pem "localtest.me" "*.localtest.me"
 ```
 
-you’ll have generated a local certificate and key in WSL, signed by a self-signed Root CA. However, Windows Chrome/Edge/Firefox won't trust this certificate until the corresponding Root CA is imported into Windows' trust store.
+This will generate:
 
-Open the CA Root directory with File explorer:
+- A certificate: `localtest.me.pem`
+
+- A private key: `localtest.me-key.pem`
+
+These are signed by a locally installed Root Certificate Authority (CA).
+
+> ⚠️ Note: While this certificate is trusted within WSL and some development tools, browsers on Windows (Chrome, Edge, Firefox) won’t trust it until the Root CA is added to Windows’ trust store.
+
+To make Windows-based browsers trust the generated certificate:
+
+Open the mkcert CA root directory in Windows File Explorer:
 ```bash
 cd "$(mkcert -CAROOT)"
 explorer.exe .
 ```
-
-- Double click the rootCA.pem file (might need to convert to a CRT extension on Windows)
-- You'll see a certificate information window. Click “Install Certificate...”
+- Locate the rootCA.pem file (you may need to rename it to rootCA.crt for compatibility).
+- Double-click the file to open the Certificate Information window.
+- Click "Install Certificate…".
 - Choose “Local Machine” (requires admin access) or “Current User”.
 - Select:
 	- Place all certificates in the following store
 	- Click Browse
 	- Choose Trusted Root Certification Authorities
-- Finish the wizard
-- Restart Browser(s)
+- Complete the wizard by clicking Next → Finish.
+- Restart your browser(s) for the changes to take effect.
 
+
+#### 3. Run Development Services
 To start all services in development, run the following command:
 
 ```bash

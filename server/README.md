@@ -38,6 +38,29 @@ uv sync -p 3.12 --frozen
 2. Set Environment variables
 Create a `.env` file, referencing the template [here](./.env.example)
 
+3. Setup Google Oauth2 Client
+
+- [Go to the google cloud console](https://console.cloud.google.com/)
+- Create/ select a new project
+- Configure the Oauth consent screen
+- Go to "APIs & Services" > "Credentials", and create new Oauth 2.0 Credentials
+- While creating the credentials, fill in the following information:
+	- **Client config:**
+		- *Authorized Javascript origins:*
+			- https://accounts.localtest.me
+		- *Authorized Redirect URIs:*
+			- https://api.localtest.me/auth/callback/signin/google
+			- https://api.localtest.me/auth/callback/request_sudo_mode/google
+
+	- **Project Branding config:**
+		- *App name:* Hospital Jobs Dev
+		- *App Domain:*
+			- *Application home page:* https://localtest.me
+			- *Application privacy policy link:* https://localtest.me/privacy
+			- *Application terms of service link:* https://localtest.me/terms
+		- *Authorized domains:*
+			- localtest.me
+
 ## Development commands
 
 ### 1. Generate GraphQL Schema

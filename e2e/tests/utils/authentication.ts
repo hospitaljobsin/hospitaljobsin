@@ -68,8 +68,6 @@ export async function createTestAccount(
 		},
 	);
 
-	console.log("response status:", res);
-
 	if (!res.ok) {
 		throw new Error(`Failed to create test account: ${res.statusText}`);
 	}
