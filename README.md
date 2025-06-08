@@ -80,7 +80,7 @@ Open the mkcert CA root directory in Windows File Explorer:
 cd "$(mkcert -CAROOT)"
 explorer.exe .
 ```
-- Locate the rootCA.pem file (you may need to rename it to rootCA.crt for compatibility).
+- Locate the `rootCA.pem` file (you may need to rename it to `rootCA.crt` for compatibility).
 - Double-click the file to open the Certificate Information window.
 - Click "Install Certificate…".
 - Choose “Local Machine” (requires admin access) or “Current User”.
