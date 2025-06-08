@@ -32,15 +32,16 @@ This project has a proprietary license. Read the entire license [here](./README.
 ## Local development- Quickstart
 
 ### Prerequisites
-| Tool                                                           | Minimum Tested Version  | Description                 |
-|----------------------------------------------------------------|-------------------------|-----------------------------|
-| [Docker Engine](https://docs.docker.com/engine/)               | 4.35                    | Container runtime           |
-| [TMUX](https://github.com/tmux/tmux)                           | 3.2a                    | Terminal Multiplexer        |
-| [Tmuxinator](https://github.com/tmuxinator/tmuxinator)         | 3.0                     | TMUX session manager        |
-| [Terraform](https://github.com/hashicorp/terraform)            | v1.12.1                 | Infrastructure as Code tool |
-| [Watchman](https://facebook.github.io/watchman/)               | 20250525.093350.0       | File watching service       |
-| [Relay Compiler](https://www.npmjs.com/package/relay-compiler) | 19.0.0                  | GraphQL Codegen Toolkit     |
-| [Pre-Commit](https://pre-commit.com/)                          | 4.2.0                   | Git Hooks Framework         |
+| Tool                                                           | Minimum Tested Version  | Description                           |
+|----------------------------------------------------------------|-------------------------|---------------------------------------|
+| [Docker Engine](https://docs.docker.com/engine/)               | 4.35                    | Container runtime                     |
+| [TMUX](https://github.com/tmux/tmux)                           | 3.2a                    | Terminal Multiplexer                  |
+| [Tmuxinator](https://github.com/tmuxinator/tmuxinator)         | 3.0                     | TMUX session manager                  |
+| [Terraform](https://github.com/hashicorp/terraform)            | v1.12.1                 | Infrastructure as Code tool           |
+| [Watchman](https://facebook.github.io/watchman/)               | 20250525.093350.0       | File watching service                 |
+| [Relay Compiler](https://www.npmjs.com/package/relay-compiler) | 19.0.0                  | GraphQL Codegen Toolkit               |
+| [Pre-Commit](https://pre-commit.com/)                          | 4.2.0                   | Git Hooks Framework                   |
+| [MKCert](https://mkcert.dev/)                                  | 1.4.4                   | Locally trusted certificate generator |
 
 Go through the setup guides of the services above, which covers installation of required dependencies,
 and other service specific setup tasks.
@@ -57,6 +58,24 @@ mkcd certs
 mkcert -install
 mkcert -cert-file ./localtest.me.pem -key-file ./localtest.me-key.pem "localtest.me" "*.localtest.me"
 ```
+
+you’ll have generated a local certificate and key in WSL, signed by a self-signed Root CA. However, Windows Chrome/Edge/Firefox won't trust this certificate until the corresponding Root CA is imported into Windows' trust store.
+
+Open the CA Root directory with File explorer:
+```bash
+cd "$(mkcert -CAROOT)"
+explorer.exe .
+```
+
+- Double click the rootCA.pem file (might need to convert to a CRT extension on Windows)
+- You'll see a certificate information window. Click “Install Certificate...”
+- Choose “Local Machine” (requires admin access) or “Current User”.
+- Select:
+	- Place all certificates in the following store
+	- Click Browse
+	- Choose Trusted Root Certification Authorities
+- Finish the wizard
+- Restart Browser(s)
 
 To start all services in development, run the following command:
 
