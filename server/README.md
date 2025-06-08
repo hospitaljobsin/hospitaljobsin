@@ -30,15 +30,15 @@ The generated GraphQL Schema can be read [here](../schema/schema.graphql)
 | [Python](https://python.org)          | 3.12                    | Language           |
 | [UV](https://docs.astral.sh/uv/)      | 0.4                     | Package Manager    |
 
-1. Install dependencies
+#### 1. Install dependencies
 ```bash
 uv sync -p 3.12 --frozen
 ```
 
-2. Set Environment variables
+#### 2. Set Environment variables
 Create a `.env` file, referencing the template [here](./.env.example)
 
-3. Setup Google Oauth2 Client
+#### 3. Setup Google Oauth2 Client
 
 - [Go to the google cloud console](https://console.cloud.google.com/)
 - Create/ select a new project
