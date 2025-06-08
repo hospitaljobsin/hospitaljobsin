@@ -14,7 +14,7 @@ const MessageViewerContext = createContext<
 export const MessageViewerProvider = ({
 	children,
 }: { children: ReactNode }) => {
-	const [showMessageViewer, setShowMessageViewer] = useState(true);
+	const [showMessageViewer, setShowMessageViewer] = useState(false);
 
 	return (
 		<MessageViewerContext.Provider
