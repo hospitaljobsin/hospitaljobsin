@@ -3,3 +3,5 @@ volume/
 node_modules/
 .DS_Store
 relay.sh
+certs/
+certs
