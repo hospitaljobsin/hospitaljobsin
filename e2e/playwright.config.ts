@@ -50,11 +50,7 @@ export default defineConfig({
 				contextOptions: {
 					// chromium-specific permissions
 					permissions: ["clipboard-read", "clipboard-write"],
-				},
-				launchOptions: {
-					args: [
-						"--unsafely-treat-insecure-origin-as-secure=http://accounts.localtest.me",
-					],
+					ignoreHTTPSErrors: true,
 				},
 			},
 		},
@@ -63,6 +59,9 @@ export default defineConfig({
 			name: "firefox",
 			use: {
 				...devices["Desktop Firefox"],
+				contextOptions: {
+					ignoreHTTPSErrors: true,
+				},
 				launchOptions: {
 					firefoxUserPrefs: {
 						"dom.events.testing.asyncClipboard": true,
@@ -78,7 +77,12 @@ export default defineConfig({
 
 		{
 			name: "webkit",
-			use: { ...devices["Desktop Safari"] },
+			use: {
+				...devices["Desktop Safari"],
+				contextOptions: {
+					ignoreHTTPSErrors: true,
+				},
+			},
 		},
 
 		/* Test against mobile viewports. */
