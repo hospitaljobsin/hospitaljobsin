@@ -51,6 +51,13 @@ To set up the git hook scripts, run the following command:
 pre-commit install
 ```
 
+To setup local certificates, run the following command:
+```bash
+mkcd certs
+mkcert -install
+mkcert -cert-file ./localtest.me.pem -key-file ./localtest.me-key.pem "localtest.me" "*.localtest.me"
+```
+
 To start all services in development, run the following command:
 
 ```bash

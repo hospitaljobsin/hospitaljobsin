@@ -11,6 +11,8 @@ services:
     volumes:
       - test_caddy_data:/data
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./certs/localtest.me.pem:/etc/caddy/certs/localtest.me.pem:ro
+      - ./certs/localtest.me-key.pem:/etc/caddy/certs/localtest.me-key.pem:ro
     environment:
       - SEEKER_PORTAL_HOST=test-seeker-portal-ui
       - ACCOUNTS_HOST=test-accounts-ui

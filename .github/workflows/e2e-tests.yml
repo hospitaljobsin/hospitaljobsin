@@ -67,11 +67,27 @@ jobs:
           echo "Playwright version – ${{ steps.install-playwright.outputs.version }}"
           echo "Playwright cached – ${{ steps.install-playwright.outputs.cache-hit }}"
 
+      - name: Install MKCert
+        run: |
+          sudo apt update
+          sudo apt install -y libnss3-tools
+          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+          chmod +x mkcert-v*-linux-amd64
+          sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+
+      - name: Create local CA
+        run: |
+          mkdir certs
+          cd certs
+          mkcert -install
+          mkcert -cert-file ./localtest.me.pem -key-file ./localtest.me-key.pem "localtest.me" "*.localtest.me"
+
       - name: Run Playwright tests
         run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
         working-directory: e2e
         env:
           CI: true
+          NODE_OPTIONS: --use-system-ca
           DEBUG: pw:browser
           API_BASE_URL: http://api.localtest.me
           ACCOUNTS_UI_BASE_URL: http://accounts.localtest.me
