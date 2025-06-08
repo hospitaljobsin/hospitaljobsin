@@ -41,6 +41,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install MKCert
+        run: |
+          sudo apt update
+          sudo apt install -y libnss3-tools
+          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+          chmod +x mkcert-v*-linux-amd64
+          sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+
+      - name: Create local CA
+        run: |
+          mkdir certs
+          cd certs
+          mkcert -install
+          mkcert -cert-file ./localtest.me.pem -key-file ./localtest.me-key.pem "localtest.me" "*.localtest.me"
+
       - run: docker compose -f docker-compose.e2e.yml up --build -d --wait --remove-orphans
 
       - uses: pnpm/action-setup@v4
@@ -66,21 +81,6 @@ jobs:
         run: |
           echo "Playwright version – ${{ steps.install-playwright.outputs.version }}"
           echo "Playwright cached – ${{ steps.install-playwright.outputs.cache-hit }}"
-
-      - name: Install MKCert
-        run: |
-          sudo apt update
-          sudo apt install -y libnss3-tools
-          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
-          chmod +x mkcert-v*-linux-amd64
-          sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
-
-      - name: Create local CA
-        run: |
-          mkdir certs
-          cd certs
-          mkcert -install
-          mkcert -cert-file ./localtest.me.pem -key-file ./localtest.me-key.pem "localtest.me" "*.localtest.me"
 
       - name: Run Playwright tests
         run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
