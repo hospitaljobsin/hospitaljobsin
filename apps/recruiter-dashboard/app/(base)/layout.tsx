@@ -3,7 +3,6 @@
 import { useMessageViewer } from "@/components/MessageViewerProvider";
 import ChatInterface from "@/components/chat-interface/ChatInterface";
 import HeaderClientComponent from "@/components/layout/HeaderClientComponent";
-import { ChatContextProvider } from "@/components/message-viewer/ChatContext";
 import MessageViewer from "@/components/message-viewer/MessageViewer";
 import { Suggestions } from "@/components/message-viewer/Suggestions";
 import { useCopilotChatLogic } from "@/lib/hooks/useCopilotChatLogic";
@@ -71,30 +70,22 @@ export default function DashboardLayout({
 								transition={{ duration: 0.3, ease: "easeInOut" }}
 								className="absolute inset-0 w-full h-full"
 							>
-								{/*  TODO: add ChatContextProvider here */}
-								<ChatContextProvider
-									icons={undefined}
-									labels={undefined}
-									open={true}
-									setOpen={() => {}}
+								<MessageViewer
+									messages={visibleMessages}
+									inProgress={isLoading}
+									onRegenerate={handleRegenerate}
+									onCopy={handleCopy}
+									// onThumbsUp={onThumbsUp}
+									// onThumbsDown={onThumbsDown}
+									// markdownTagRenderers={markdownTagRenderers}
 								>
-									<MessageViewer
-										messages={visibleMessages}
-										inProgress={isLoading}
-										onRegenerate={handleRegenerate}
-										onCopy={handleCopy}
-										// onThumbsUp={onThumbsUp}
-										// onThumbsDown={onThumbsDown}
-										// markdownTagRenderers={markdownTagRenderers}
-									>
-										{currentSuggestions.length > 0 && (
-											<Suggestions
-												onSuggestionClick={handleSendMessage}
-												suggestions={currentSuggestions}
-											/>
-										)}
-									</MessageViewer>
-								</ChatContextProvider>
+									{currentSuggestions.length > 0 && (
+										<Suggestions
+											onSuggestionClick={handleSendMessage}
+											suggestions={currentSuggestions}
+										/>
+									)}
+								</MessageViewer>
 							</motion.div>
 						) : (
 							<motion.div

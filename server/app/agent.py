@@ -80,7 +80,7 @@ class State(CopilotKitState):
 
 
 async def get_job_outline_from_messages(state: State) -> str | None:
-    """Extract job outline from messages."""
+    """Extract job outline from messages (the initial user prompt)."""
     # won't it be enough to extract the outline with the most recent user message?
     return None
 

@@ -10,8 +10,6 @@ import {
 	TextMessage,
 } from "@copilotkit/runtime-client-gql";
 import { motion } from "motion/react";
-import { useMemo } from "react";
-import { useChatContext } from "./ChatContext";
 import { AssistantMessage } from "./messages/AssistantMessage";
 import { RenderActionExecutionMessage } from "./messages/RenderActionExecutionMessage";
 import { RenderAgentStateMessage } from "./messages/RenderAgentStateMessage";
@@ -31,11 +29,7 @@ export default function MessageViewer({
 	onThumbsDown,
 	markdownTagRenderers,
 }: MessagesProps) {
-	const context = useChatContext();
-	const initialMessages = useMemo(
-		() => makeInitialMessages(context.labels.initial),
-		[context.labels.initial],
-	);
+	const initialMessages = makeInitialMessages("");
 
 	messages = [...initialMessages, ...messages];
 

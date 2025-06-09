@@ -8,12 +8,10 @@ import {
 	ThumbsUpIcon,
 } from "lucide-react";
 import { useState } from "react";
-import { useChatContext } from "../ChatContext";
 import { Markdown } from "../Markdown";
 import type { AssistantMessageProps } from "../props";
 
 export const AssistantMessage = (props: AssistantMessageProps) => {
-	const { labels } = useChatContext();
 	const {
 		message,
 		isLoading,
@@ -87,8 +85,8 @@ export const AssistantMessage = (props: AssistantMessageProps) => {
 								<Button
 									isIconOnly
 									onPress={handleRegenerate}
-									aria-label={labels.regenerateResponse}
-									title={labels.regenerateResponse}
+									aria-label="Regenerate response"
+									title="Regenerate response"
 									size="sm"
 									variant="light"
 									className="text-foreground-600"
@@ -98,8 +96,8 @@ export const AssistantMessage = (props: AssistantMessageProps) => {
 								<Button
 									isIconOnly
 									onPress={handleCopy}
-									aria-label={labels.copyToClipboard}
-									title={labels.copyToClipboard}
+									aria-label="Copy to clipboard"
+									title="Copy to clipboard"
 									size="sm"
 									variant="light"
 									className="text-foreground-600"
@@ -110,8 +108,8 @@ export const AssistantMessage = (props: AssistantMessageProps) => {
 									<Button
 										isIconOnly
 										onPress={handleThumbsUp}
-										aria-label={labels.thumbsUp}
-										title={labels.thumbsUp}
+										aria-label="Thumbs up"
+										title="Thumbs up"
 										size="sm"
 										variant="light"
 										className="text-foreground-600"
@@ -123,8 +121,8 @@ export const AssistantMessage = (props: AssistantMessageProps) => {
 									<Button
 										isIconOnly
 										onPress={handleThumbsDown}
-										aria-label={labels.thumbsDown}
-										title={labels.thumbsDown}
+										aria-label="Thumbs down"
+										title="Thumbs down"
 										size="sm"
 										variant="light"
 										className="text-foreground-600"
