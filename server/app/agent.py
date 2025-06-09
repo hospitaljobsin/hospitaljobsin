@@ -101,6 +101,8 @@ async def generate_initial_outline(state: State) -> State:
 async def generate_initial_draft(state: State) -> State:
     initial_outline = state.get("initial_outline")
     if initial_outline is None:
+        # TODO: instead of an interrupt here, it would be better if we emitted a message to the user,
+        # and then tried to extract the outline from the user input again (using get_job_outline_from_messages).
         extracted_outline = interrupt(
             "Please provide a job outline to generate the draft."
         )
