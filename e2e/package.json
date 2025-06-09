@@ -12,12 +12,12 @@
 	"packageManager": "pnpm@10.11.0",
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@types/node": "^22.15.18",
+		"@types/node": "^22.15.30",
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {
 		"@playwright/test": "^1.52.0",
-		"@t3-oss/env-core": "^0.13.6",
+		"@t3-oss/env-core": "^0.13.7",
 		"dotenv": "^16.5.0",
 		"jimp": "^1.6.0",
 		"otplib": "^12.0.1",
