@@ -12,13 +12,17 @@ import {
 	useCopilotMessagesContext,
 } from "@copilotkit/react-core";
 import {
+	ActionExecutionMessage,
+	AgentStateMessage,
 	ImageMessage,
 	type Message,
+	ResultMessage,
 	Role,
 	TextMessage,
 } from "@copilotkit/runtime-client-gql";
 import { randomId } from "@copilotkit/shared";
 import { useEffect, useRef, useState } from "react";
+import { LOCALSTORAGE_COPILOTKIT_MESSAGES_KEY } from "../constants";
 
 const SUGGESTIONS_DEBOUNCE_TIMEOUT = 1000;
 
@@ -111,6 +115,71 @@ export const useCopilotChatLogic = (
 	const generalContext = useCopilotContext();
 	const messagesContext = useCopilotMessagesContext();
 	const context = { ...generalContext, ...messagesContext };
+
+	// save to local storage when messages change
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		if (messagesContext.messages.length !== 0) {
+			localStorage.setItem(
+				LOCALSTORAGE_COPILOTKIT_MESSAGES_KEY,
+				JSON.stringify(messagesContext.messages),
+			);
+		}
+	}, [JSON.stringify(messagesContext.messages)]);
+
+	// initially load from local storage
+	useEffect(() => {
+		const messages = localStorage.getItem(LOCALSTORAGE_COPILOTKIT_MESSAGES_KEY);
+		if (messages) {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const parsedMessages = JSON.parse(messages).map((message: any) => {
+				if (message.type === "TextMessage") {
+					return new TextMessage({
+						id: message.id,
+						role: message.role,
+						content: message.content,
+						createdAt: message.createdAt,
+					});
+				}
+
+				if (message.type === "AgentStateMessage") {
+					return new AgentStateMessage({
+						id: message.id,
+						role: message.role,
+						content: message.content,
+						createdAt: message.createdAt,
+						state: message.state,
+						agentName: message.agentName,
+						running: message.running,
+						threadId: message.threadId,
+						nodeName: message.nodeName,
+						runId: message.runId,
+						active: message.active,
+					});
+				}
+				if (message.type === "ActionExecutionMessage") {
+					return new ActionExecutionMessage({
+						id: message.id,
+						name: message.name,
+						scope: message.scope,
+						arguments: message.arguments,
+						createdAt: message.createdAt,
+					});
+				}
+				if (message.type === "ResultMessage") {
+					return new ResultMessage({
+						id: message.id,
+						actionExecutionId: message.actionExecutionId,
+						actionName: message.actionName,
+						result: message.result,
+						createdAt: message.createdAt,
+					});
+				}
+				throw new Error(`Unknown message type: ${message.type}`);
+			});
+			setMessages(parsedMessages);
+		}
+	}, []);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {

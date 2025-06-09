@@ -75,12 +75,13 @@ export default function MessageViewer({
 
 	return (
 		<motion.div
+			ref={messagesContainerRef}
 			key="message-viewer"
 			initial={{ y: "100%", opacity: 0 }}
 			animate={{ y: 0, opacity: 1 }}
 			exit={{ y: "100%", opacity: 0 }}
 			transition={{ duration: 0.3, ease: "easeInOut" }}
-			className="w-full px-5 max-w-5xl mx-auto h-full flex flex-col gap-8 py-8 overflow-y-auto"
+			className="w-full px-5 max-w-5xl mx-auto h-full flex flex-col gap-12 py-8 overflow-y-auto"
 		>
 			{messages.map((message, index) => {
 				const isCurrentMessage = index === messages.length - 1;
@@ -167,7 +168,7 @@ export default function MessageViewer({
 				}
 			})}
 			{interrupt}
-			<footer className="copilotKitMessagesFooter" ref={messagesEndRef}>
+			<footer className="flex p-0 mt-0 mb-2 mx-auto" ref={messagesEndRef}>
 				{children}
 			</footer>
 		</motion.div>

@@ -65,7 +65,7 @@ export default function DashboardLayout({
 						{showMessageViewer ? (
 							<motion.div
 								key="message-viewer"
-								initial={{ y: "100%", opacity: 0 }}
+								initial={false}
 								animate={{ y: 0, opacity: 1 }}
 								exit={{ y: "100%", opacity: 0 }}
 								transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -99,7 +99,7 @@ export default function DashboardLayout({
 						) : (
 							<motion.div
 								key="dashboard-children"
-								initial={{ y: -50, opacity: 0 }}
+								initial={false}
 								animate={{ y: 0, opacity: 1 }}
 								exit={{ y: -50, opacity: 0 }}
 								transition={{ duration: 0.3, ease: "easeInOut" }}

@@ -4,31 +4,80 @@ The main entry point for the agent.
 It defines the workflow graph, state, tools, nodes and edges.
 """
 
-from typing import Literal
+from typing import Literal, TypedDict
 
 from copilotkit import CopilotKitState
 from langchain.tools import tool
 from langchain_core.messages import AIMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import ToolNode
-from langgraph.types import Command
+from langgraph.types import Command, interrupt
 
 from app.config import SecretSettings, get_settings
 
+# TODO: we need separate nodes for actions.
+# create_job, update_job cannot be defined as tools, as they require human intervention and multiple steps inbetween.
+
+# here is an example list of nodes we need for creating a job:
+# workflow.add_node("chat_node", chat_node)
+# workflow.add_node("outline_node", outline_node)
+# workflow.add_node("draft_node", draft_node)
+# workflow.add_node("modify_node", modify_node)
+# workflow.add_node("confirm_node", confirm_node)
+# workflow.add_node("create_job_node", create_job_node)
+
+# workflow.set_entry_point("chat_node")
+
+# workflow.add_edge("chat_node", "outline_node")
+# workflow.add_edge("outline_node", "draft_node")
+# workflow.add_edge("draft_node", "modify_node")
+# workflow.add_edge("modify_node", "confirm_node")
+# workflow.add_edge("confirm_node", "modify_node")  # loop if not confirmed
+# workflow.add_edge("confirm_node", "create_job_node")
+# workflow.add_edge("create_job_node", END)
+
+# TODO: we need separate langgraph "agents" for the separate assistants on each page
+# ex: one for the dashboard page -> which handles job creation, data crunching etc
+# ex: one for the job detail page
+# ex: one for the job applicants view page
+# ex: one for the job applicant detail page
+
+# In the frontend, we will lock to a particular agent by passing in the agent name like this:
+# <CopilotKit runtimeUrl="<copilot-runtime-url>" agent="<the-name-of-the-agent>">
+#   {/* Your application components */}
+# </CopilotKit>
+
+# TODO: we need separate agents for separate tasks. this way we can divide context into smaller chunks
+# https://docs.copilotkit.ai/coagents/multi-agent-flows
+
+# therefore, we will have one separate agent for creating a new job, one for updating an existing job, etc
+
+# TODO: we also need to maintain separate "threads" for each page, and switch between them dynamically.
+# the thread IDs should ideally be stored in the backend.
+
+# threads are completely independent of agents, no need to confuse between the two.
+
+
+def get_chat_model() -> ChatGoogleGenerativeAI:
+    """Get the chat model to use for the agent."""
+    return ChatGoogleGenerativeAI(
+        model="gemini-2.0-flash",
+        google_api_key=get_settings(SecretSettings).google_api_key.get_secret_value(),
+    )
+
+
+class NewJobDraft(TypedDict):
+    title: str
+    job_description: str
+
 
 class AgentState(CopilotKitState):
-    """
-    Here we define the state of the agent.
-
-    In this instance, we're inheriting from CopilotKitState, which will bring in
-    the CopilotKitState fields. We're also adding a custom field, `language`,
-    which will be used to set the language of the agent.
-    """
-
-    proverbs: list[str] = []
-    # your_custom_agent_state: str = ""
+    initial_job_outline: str | None
+    new_job_draft: NewJobDraft | None
+    confirmed: bool
 
 
 @tool
@@ -51,6 +100,74 @@ tools = [
 ]
 
 
+async def outline_node(state: AgentState, config: RunnableConfig):
+    if not state.get("initial_job_outline"):
+        return interrupt("Please provide an initial job outline.")
+    return Command(goto="draft_node")
+
+
+async def draft_node(state: AgentState, config: RunnableConfig):
+    model = get_chat_model()
+
+    system = SystemMessage(
+        content="You are drafting a job based on the user's outline."
+    )
+    outline = state["initial_job_outline"]
+    messages = [
+        system,
+        *state["messages"],
+        AIMessage(content=f"Here's the outline: {outline}. Please draft the job."),
+    ]
+
+    response = await model.ainvoke(messages, config)
+
+    # Simulate extracting title + description from response
+    draft = {"title": "Software Engineer", "job_description": response.content}
+
+    return Command(
+        goto="modify_node", update={"new_job_draft": draft, "messages": [response]}
+    )
+
+
+async def modify_node(state: AgentState, config: RunnableConfig):
+    if state.get("confirmed"):
+        return Command(goto="create_job_node")
+
+    model = get_chat_model()
+
+    system = SystemMessage(
+        content="Here is the current job draft. Ask the user for modifications."
+    )
+    draft = state["new_job_draft"]
+    messages = [
+        system,
+        *state["messages"],
+        AIMessage(content=f"Current draft:\n\n{draft['job_description']}"),
+    ]
+
+    response = await model.ainvoke(messages, config)
+
+    return Command(goto="confirm_node", update={"messages": [response]})
+
+
+async def confirm_node(state: AgentState, config: RunnableConfig):
+    # Assume last message contains confirmation intent (yes/no)
+    last_msg = state["messages"][-1].content.lower()
+
+    if "yes" in last_msg or "confirm" in last_msg:
+        return Command(goto="create_job_node", update={"confirmed": True})
+    else:
+        return Command(goto="modify_node")
+
+
+async def create_job_node(state: AgentState, config: RunnableConfig):
+    job = state["new_job_draft"]
+    print(f"✅ Job created: {job['title']}")
+    return Command(
+        goto=END, update={"messages": [AIMessage(content="Job created successfully.")]}
+    )
+
+
 async def chat_node(
     state: AgentState, config: RunnableConfig
 ) -> Command[Literal["tool_node", "__end__"]]:
@@ -67,11 +184,12 @@ async def chat_node(
     For more about the ReAct design pattern, see:
     https://www.perplexity.ai/search/react-agents-NcXLQhreS0WDzpVaS4m9Cg
     """
+    # if not state.get("initial_job_outline"):
+    #     state["initial_job_outline"] = interrupt(
+    #         "Please provide an initial job outline."
+    #     )
     # 1. Define the model
-    model = ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash",
-        google_api_key=get_settings(SecretSettings).google_api_key.get_secret_value(),
-    )
+    model = get_chat_model()
 
     # 2. Bind the tools to the model
     model_with_tools = model.bind_tools(
@@ -124,5 +242,19 @@ workflow.add_node("tool_node", ToolNode(tools=tools))
 workflow.add_edge("tool_node", "chat_node")
 workflow.set_entry_point("chat_node")
 
+
+workflow.add_node("outline_node", outline_node)
+workflow.add_node("draft_node", draft_node)
+workflow.add_node("modify_node", modify_node)
+workflow.add_node("confirm_node", confirm_node)
+workflow.add_node("create_job_node", create_job_node)
+workflow.add_edge("chat_node", "outline_node")
+workflow.add_edge("outline_node", "draft_node")
+workflow.add_edge("draft_node", "modify_node")
+workflow.add_edge("modify_node", "confirm_node")
+workflow.add_edge("confirm_node", "modify_node")  # loop if not confirmed
+workflow.add_edge("confirm_node", "create_job_node")
+workflow.add_edge("create_job_node", END)
+
 # Compile the workflow graph
-graph = workflow.compile()
+graph = workflow.compile(checkpointer=MemorySaver())
