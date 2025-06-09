@@ -9,7 +9,6 @@ import {
 	Role,
 	TextMessage,
 } from "@copilotkit/runtime-client-gql";
-import { motion } from "motion/react";
 import { AssistantMessage } from "./messages/AssistantMessage";
 import { RenderActionExecutionMessage } from "./messages/RenderActionExecutionMessage";
 import { RenderAgentStateMessage } from "./messages/RenderAgentStateMessage";
@@ -78,27 +77,18 @@ export default function MessageViewer({
 
 	if (messages.length === 0) {
 		return (
-			<motion.div
-				key="message-viewer"
-				initial={{ y: "100%", opacity: 0 }}
-				animate={{ y: 0, opacity: 1 }}
-				exit={{ y: "100%", opacity: 0 }}
-				transition={{ duration: 0.3, ease: "easeInOut" }}
+			<div
+				ref={messagesContainerRef}
 				className="w-full max-w-5xl mx-auto h-full flex flex-col items-center justify-center gap-8 pb-16 overflow-y-auto"
 			>
 				no messages
-			</motion.div>
+			</div>
 		);
 	}
 
 	return (
-		<motion.div
+		<div
 			ref={messagesContainerRef}
-			key="message-viewer"
-			initial={{ y: "100%", opacity: 0 }}
-			animate={{ y: 0, opacity: 1 }}
-			exit={{ y: "100%", opacity: 0 }}
-			transition={{ duration: 0.3, ease: "easeInOut" }}
 			className="w-full px-5 max-w-5xl mx-auto h-full flex flex-col gap-12 py-8 overflow-y-auto"
 		>
 			{messages.map((message, index) => {
@@ -189,7 +179,7 @@ export default function MessageViewer({
 			<footer className="flex p-0 mt-0 mb-2 mx-auto" ref={messagesEndRef}>
 				{children}
 			</footer>
-		</motion.div>
+		</div>
 	);
 }
 
