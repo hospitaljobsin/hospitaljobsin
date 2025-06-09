@@ -12,6 +12,8 @@ services:
     volumes:
       - caddy_data:/data
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./certs/localtest.me.pem:/etc/caddy/certs/localtest.me.pem:ro
+      - ./certs/localtest.me-key.pem:/etc/caddy/certs/localtest.me-key.pem:ro
     environment:
       - SEEKER_PORTAL_HOST=host.docker.internal
       - ACCOUNTS_HOST=host.docker.internal

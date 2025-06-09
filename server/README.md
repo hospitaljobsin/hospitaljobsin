@@ -35,10 +35,7 @@ The generated GraphQL Schema can be read [here](../schema/schema.graphql)
 uv sync -p 3.12 --frozen
 ```
 
-#### 2. Set Environment variables
-Create a `.env` file, referencing the template [here](./.env.example)
-
-#### 3. Setup Google Oauth2 Client
+#### 2. Setup Google Oauth2 Client
 
 - [Go to the google cloud console](https://console.cloud.google.com/)
 - Create/ select a new project
@@ -60,6 +57,10 @@ Create a `.env` file, referencing the template [here](./.env.example)
 			- *Application terms of service link:* https://localtest.me/terms
 		- *Authorized domains:*
 			- localtest.me
+
+
+#### 3. Set Environment variables
+Create a `.env` file, referencing the template [here](./.env.example)
 
 ## Development commands
 

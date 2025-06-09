@@ -39,7 +39,10 @@ export default function ChatInterface({
 		},
 	});
 
+	const isEmpty = visibleMessages.length === 0;
+
 	const onSubmit = (data: z.infer<typeof chatSchema>) => {
+		setShowMessageViewer(true);
 		appendMessage(new TextMessage({ content: data.message, role: Role.User }));
 		form.reset();
 	};
@@ -50,6 +53,7 @@ export default function ChatInterface({
 				<div className="absolute top-0 left-0 right-0 -mt-6 mx-auto max-w-5xl flex justify-start">
 					<Button
 						variant="shadow"
+						hidden={isEmpty}
 						isDisabled={isLoading}
 						startContent={
 							showMessageViewer ? (
