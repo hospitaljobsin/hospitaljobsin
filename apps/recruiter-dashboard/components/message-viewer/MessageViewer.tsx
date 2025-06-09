@@ -1,5 +1,8 @@
 import useScrollToBottom from "@/lib/hooks/useScrollToBottom";
-import { useLangGraphInterruptRender } from "@copilotkit/react-core";
+import {
+	useLangGraphInterrupt,
+	useLangGraphInterruptRender,
+} from "@copilotkit/react-core";
 import {
 	type Message,
 	ResultMessage,
@@ -53,6 +56,27 @@ export default function MessageViewer({
 			}
 		}
 	}
+
+	useLangGraphInterrupt({
+		render: ({ event, resolve }) => (
+			<div>
+				<p>{event.value}</p>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						resolve((e.target as HTMLFormElement).response.value);
+					}}
+				>
+					<input
+						type="text"
+						name="response"
+						placeholder="Enter your response"
+					/>
+					<button type="submit">Submit</button>
+				</form>
+			</div>
+		),
+	});
 
 	const { messagesContainerRef, messagesEndRef } = useScrollToBottom(messages);
 

@@ -4,17 +4,12 @@ The main entry point for the agent.
 It defines the workflow graph, state, tools, nodes and edges.
 """
 
-from typing import Literal, TypedDict
+from typing import Literal
 
 from copilotkit import CopilotKitState
-from langchain.tools import tool
-from langchain_core.messages import AIMessage, SystemMessage
-from langchain_core.runnables import RunnableConfig
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, StateGraph
-from langgraph.prebuilt import ToolNode
-from langgraph.types import Command, interrupt
+from langgraph.types import interrupt
 
 from app.config import SecretSettings, get_settings
 
@@ -38,6 +33,8 @@ from app.config import SecretSettings, get_settings
 # workflow.add_edge("confirm_node", "modify_node")  # loop if not confirmed
 # workflow.add_edge("confirm_node", "create_job_node")
 # workflow.add_edge("create_job_node", END)
+
+# TODO: now, we need to figure out how to route intelligently to the right node based on the user's intent.
 
 # TODO: we need separate langgraph "agents" for the separate assistants on each page
 # ex: one for the dashboard page -> which handles job creation, data crunching etc
@@ -73,192 +70,102 @@ def get_chat_model() -> ChatGoogleGenerativeAI:
     )
 
 
-class NewJobDraft(TypedDict):
-    title: str
-    job_description: str
+# Shared state schema
 
 
-class AgentState(CopilotKitState):
-    initial_job_outline: str | None
-    new_job_draft: NewJobDraft | None
-    confirmed: bool
+class State(CopilotKitState):
+    draft: str | None
+    user_feedback: Literal["accept", "modify"] | None
+    initial_outline: str | None
 
 
-@tool
-def get_weather(location: str):
-    """
-    Get the weather for a given location.
-    """
-    return f"The weather for {location} is 70 degrees."
+async def get_job_outline_from_messages(state: State) -> str | None:
+    """Extract job outline from messages."""
+    # won't it be enough to extract the outline with the most recent user message?
+    return None
 
 
-# @tool
-# def your_tool_here(your_arg: str):
-#     """Your tool description here."""
-#     print(f"Your tool logic here")
-#     return "Your tool response here."
-
-tools = [
-    get_weather
-    # your_tool_here
-]
+# Define nodes
 
 
-async def outline_node(state: AgentState, config: RunnableConfig):
-    if not state.get("initial_job_outline"):
-        return interrupt("Please provide an initial job outline.")
-    return Command(goto="draft_node")
+async def generate_initial_outline(state: State) -> State:
+    initial_outline = state.get("initial_outline")
+    if initial_outline is None:
+        initial_outline = await get_job_outline_from_messages(state)
+    state["initial_outline"] = initial_outline
+    return state
 
 
-async def draft_node(state: AgentState, config: RunnableConfig):
-    model = get_chat_model()
-
-    system = SystemMessage(
-        content="You are drafting a job based on the user's outline."
-    )
-    outline = state["initial_job_outline"]
-    messages = [
-        system,
-        *state["messages"],
-        AIMessage(content=f"Here's the outline: {outline}. Please draft the job."),
-    ]
-
-    response = await model.ainvoke(messages, config)
-
-    # Simulate extracting title + description from response
-    draft = {"title": "Software Engineer", "job_description": response.content}
-
-    return Command(
-        goto="modify_node", update={"new_job_draft": draft, "messages": [response]}
-    )
+async def generate_initial_draft(state: State) -> State:
+    initial_outline = state.get("initial_outline")
+    if initial_outline is None:
+        extracted_outline = interrupt(
+            "Please provide a job outline to generate the draft."
+        )
+        state["initial_outline"] = extracted_outline
+    print("Generating initial draft...")
+    # TODO: Use the chat model to generate a draft based on the initial outline
+    state["draft"] = "This is a first draft."
+    return state
 
 
-async def modify_node(state: AgentState, config: RunnableConfig):
-    if state.get("confirmed"):
-        return Command(goto="create_job_node")
-
-    model = get_chat_model()
-
-    system = SystemMessage(
-        content="Here is the current job draft. Ask the user for modifications."
-    )
-    draft = state["new_job_draft"]
-    messages = [
-        system,
-        *state["messages"],
-        AIMessage(content=f"Current draft:\n\n{draft['job_description']}"),
-    ]
-
-    response = await model.ainvoke(messages, config)
-
-    return Command(goto="confirm_node", update={"messages": [response]})
+def get_user_feedback(state: State) -> State:
+    print("Requesting user feedback...")
+    user_feedback = None
+    while user_feedback not in ["accept", "modify"]:
+        user_feedback = interrupt(
+            "Please review the draft and provide feedback: "
+            f"{state['draft']}\nType 'accept' to save or 'modify' to change."
+        )
+    print(f"User feedback received: {user_feedback}")
+    state["user_feedback"] = user_feedback  # or "modify"
+    return state
 
 
-async def confirm_node(state: AgentState, config: RunnableConfig):
-    # Assume last message contains confirmation intent (yes/no)
-    last_msg = state["messages"][-1].content.lower()
-
-    if "yes" in last_msg or "confirm" in last_msg:
-        return Command(goto="create_job_node", update={"confirmed": True})
-    else:
-        return Command(goto="modify_node")
+def save_draft(state: State) -> State:
+    print(f"Saving draft: {state['draft']}")
+    # reset state for next iteration
+    state["draft"] = None
+    state["user_feedback"] = None
+    return state
 
 
-async def create_job_node(state: AgentState, config: RunnableConfig):
-    job = state["new_job_draft"]
-    print(f"✅ Job created: {job['title']}")
-    return Command(
-        goto=END, update={"messages": [AIMessage(content="Job created successfully.")]}
-    )
+async def modify_draft(state: State) -> State:
+    user_modifications = interrupt("Please enter your modifications to the draft: ")
+    print(f"Modifying draft: {state['draft']}")
+    # reset state for next iteration
+    state["draft"] = "New modified draft."
+    return state
 
 
-async def chat_node(
-    state: AgentState, config: RunnableConfig
-) -> Command[Literal["tool_node", "__end__"]]:
-    """
-    Chat node based on the ReAct design pattern.
+# Build the graph
+workflow = StateGraph(State)
 
-    It handles:
+workflow.add_node("generate_initial_outline", generate_initial_outline)
+workflow.add_node("generate_draft", generate_initial_draft)
+workflow.add_node("get_user_feedback", get_user_feedback)
+workflow.add_node("save_draft", save_draft)
+workflow.add_node("modify_draft", modify_draft)
 
-    - The model to use (and binds in CopilotKit actions and the tools defined above)
-    - The system prompt
-    - Getting a response from the model
-    - Handling tool calls
+workflow.set_entry_point("generate_initial_outline")
 
-    For more about the ReAct design pattern, see:
-    https://www.perplexity.ai/search/react-agents-NcXLQhreS0WDzpVaS4m9Cg
-    """
-    # if not state.get("initial_job_outline"):
-    #     state["initial_job_outline"] = interrupt(
-    #         "Please provide an initial job outline."
-    #     )
-    # 1. Define the model
-    model = get_chat_model()
+# Conditional transition based on feedback
+workflow.add_conditional_edges(
+    "get_user_feedback",
+    lambda state: state["user_feedback"],
+    {
+        "accept": "save_draft",
+        "modify": "modify_draft",
+    },
+)
 
-    # 2. Bind the tools to the model
-    model_with_tools = model.bind_tools(
-        [
-            *state["copilotkit"]["actions"],
-            get_weather,
-            # your_tool_here
-        ],
-        # 2.1 Disable parallel tool calls to avoid race conditions,
-        #     enable this for faster performance if you want to manage
-        #     the complexity of running tool calls in parallel.
-        # parallel_tool_calls=False,
-    )
+workflow.add_edge("save_draft", END)
 
-    # 3. Define the system message by which the chat model will be run
-    system_message = SystemMessage(
-        content=f"You are a helpful assistant. Talk in {state.get('language', 'english')}."
-    )
+workflow.add_edge("generate_initial_outline", "generate_draft")
 
-    # 4. Run the model to generate a response
-    response = await model_with_tools.ainvoke(
-        [
-            system_message,
-            *state["messages"],
-        ],
-        config,
-    )
+# Transition from draft to feedback
+workflow.add_edge("generate_draft", "get_user_feedback")
+workflow.add_edge("modify_draft", "get_user_feedback")
 
-    # 5. Check for tool calls in the response and handle them. We ignore
-    #    CopilotKit actions, as they are handled by CopilotKit.
-    if isinstance(response, AIMessage) and response.tool_calls:
-        actions = state["copilotkit"]["actions"]
-
-        # 5.1 Check for any non-copilotkit actions in the response and
-        #     if there are none, go to the tool node.
-        if not any(
-            action.get("name") == response.tool_calls[0].get("name")
-            for action in actions
-        ):
-            return Command(goto="tool_node", update={"messages": response})
-
-    # 6. We've handled all tool calls, so we can end the graph.
-    return Command(goto=END, update={"messages": response})
-
-
-# Define the workflow graph
-workflow = StateGraph(AgentState)
-workflow.add_node("chat_node", chat_node)
-workflow.add_node("tool_node", ToolNode(tools=tools))
-workflow.add_edge("tool_node", "chat_node")
-workflow.set_entry_point("chat_node")
-
-
-workflow.add_node("outline_node", outline_node)
-workflow.add_node("draft_node", draft_node)
-workflow.add_node("modify_node", modify_node)
-workflow.add_node("confirm_node", confirm_node)
-workflow.add_node("create_job_node", create_job_node)
-workflow.add_edge("chat_node", "outline_node")
-workflow.add_edge("outline_node", "draft_node")
-workflow.add_edge("draft_node", "modify_node")
-workflow.add_edge("modify_node", "confirm_node")
-workflow.add_edge("confirm_node", "modify_node")  # loop if not confirmed
-workflow.add_edge("confirm_node", "create_job_node")
-workflow.add_edge("create_job_node", END)
-
-# Compile the workflow graph
-graph = workflow.compile(checkpointer=MemorySaver())
+# Compile the graph
+graph = workflow.compile()
