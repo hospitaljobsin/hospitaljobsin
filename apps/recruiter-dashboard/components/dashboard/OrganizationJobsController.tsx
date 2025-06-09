@@ -1,11 +1,12 @@
 import type { OrganizationJobsControllerFragment$key } from "@/__generated__/OrganizationJobsControllerFragment.graphql";
-import links from "@/lib/links";
-import { Button, Input, Link } from "@heroui/react";
+import { useCopilotChatLogic } from "@/lib/hooks/useCopilotChatLogic";
+import { CREATE_NEW_JOB_PROMPT } from "@/lib/prompts";
+import { Button, Input } from "@heroui/react";
 import { BriefcaseBusiness, Search } from "lucide-react";
-import { useParams } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import { useMessageViewer } from "../MessageViewerProvider";
 
 interface OrganizationJobsControllerProps {
 	searchTerm: string | null;
@@ -30,7 +31,8 @@ const OrganizationJobsControllerFragment = graphql`
 export default function OrganizationJobsController(
 	props: OrganizationJobsControllerProps,
 ) {
-	const { slug } = useParams<{ slug: string }>();
+	const { sendMessage, isLoading } = useCopilotChatLogic();
+	const { setShowMessageViewer } = useMessageViewer();
 	const data = useFragment(OrganizationJobsControllerFragment, props.rootQuery);
 	invariant(
 		data.organization.__typename === "Organization",
@@ -59,8 +61,11 @@ export default function OrganizationJobsController(
 			/>
 			{data.organization.isAdmin && (
 				<Button
-					as={Link}
-					href={links.organizationCreateJob}
+					isDisabled={isLoading}
+					onPress={async () => {
+						setShowMessageViewer(true);
+						await sendMessage(CREATE_NEW_JOB_PROMPT);
+					}}
 					color="primary"
 					startContent={<BriefcaseBusiness size={25} />}
 					className="w-full sm:w-auto"

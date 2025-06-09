@@ -1,14 +1,15 @@
 import type { OrganizationJobsListFragment$key } from "@/__generated__/OrganizationJobsListFragment.graphql";
 import type { OrganizationJobsListInternalFragment$key } from "@/__generated__/OrganizationJobsListInternalFragment.graphql";
 import type { pageDashboardViewQuery } from "@/__generated__/pageDashboardViewQuery.graphql";
-import links from "@/lib/links";
-import { Button, Link } from "@heroui/react";
+import { useCopilotChatLogic } from "@/lib/hooks/useCopilotChatLogic";
+import { CREATE_NEW_JOB_PROMPT } from "@/lib/prompts";
+import { Button } from "@heroui/react";
 import { BriefcaseBusiness, Plus } from "lucide-react";
-import { useParams } from "next/navigation";
 import { startTransition, useEffect, useRef } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import { useMessageViewer } from "../MessageViewerProvider";
 import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
 
@@ -57,7 +58,8 @@ type Props = {
 };
 
 export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
-	const { slug } = useParams<{ slug: string }>();
+	const { sendMessage, isLoading } = useCopilotChatLogic();
+	const { setShowMessageViewer } = useMessageViewer();
 	const root = useFragment(OrganizationJobsListFragment, rootQuery);
 	invariant(
 		root.organization.__typename === "Organization",
@@ -121,8 +123,11 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 				<div className="flex flex-col items-center gap-4">
 					<h3 className="font-medium text-lg">No jobs found</h3>
 					<Button
-						as={Link}
-						href={links.organizationCreateJob}
+						isDisabled={isLoading}
+						onPress={async () => {
+							setShowMessageViewer(true);
+							await sendMessage(CREATE_NEW_JOB_PROMPT);
+						}}
 						color="primary"
 						startContent={<Plus size={25} />}
 						className="w-full sm:w-auto"

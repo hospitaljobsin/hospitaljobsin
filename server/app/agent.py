@@ -7,6 +7,8 @@ It defines the workflow graph, state, tools, nodes and edges.
 from typing import Literal
 
 from copilotkit import CopilotKitState
+from copilotkit.langchain import copilotkit_exit
+from langchain_core.runnables import RunnableConfig
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import END, StateGraph
 from langgraph.types import interrupt
@@ -122,11 +124,9 @@ def get_user_feedback(state: State) -> State:
     return state
 
 
-def save_draft(state: State) -> State:
+async def save_draft(state: State, config: RunnableConfig) -> State:
     print(f"Saving draft: {state['draft']}")
-    # reset state for next iteration
-    state["draft"] = None
-    state["user_feedback"] = None
+    await copilotkit_exit(config)
     return state
 
 
