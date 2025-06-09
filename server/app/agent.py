@@ -53,6 +53,10 @@ from app.config import SecretSettings, get_settings
 # TODO: we need separate agents for separate tasks. this way we can divide context into smaller chunks
 # https://docs.copilotkit.ai/coagents/multi-agent-flows
 
+# TODO: but I think a separate agent for EACH task is overkill, as we will have a lot of agents.
+# we need to utlize subgraphs instead. Each subgraph has its own state and can be used to handle a specific task.
+# refer https://langchain-ai.github.io/langgraph/concepts/subgraphs/
+
 # therefore, we will have one separate agent for creating a new job, one for updating an existing job, etc
 
 # TODO: we also need to maintain separate "threads" for each page, and switch between them dynamically.
