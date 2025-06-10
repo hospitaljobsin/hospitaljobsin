@@ -116,13 +116,6 @@ def create_itinerary(
     }
 
 
-# Configure LLM
-llm_config = LLMConfig(
-    api_type="google",
-    model="gemini-2.0-flash-lite",
-    api_key=get_settings(SecretSettings).google_api_key.get_secret_value(),
-)
-
 wf = Workflow()
 
 SYSTEM_MESSAGE = """You are a professional travel agent who creates detailed, personalized day-by-day travel itineraries for any destination.
@@ -169,7 +162,11 @@ def hitl_workflow(ui: UI, params: dict[str, Any]) -> str:
     )
 
     # Create the travel agent
-    with llm_config:
+    with LLMConfig(
+        api_type="google",
+        model="gemini-2.0-flash-lite",
+        api_key=get_settings(SecretSettings).google_api_key.get_secret_value(),
+    ):
         travel_agent = ConversableAgent(
             name="travel_agent", system_message=SYSTEM_MESSAGE
         )
