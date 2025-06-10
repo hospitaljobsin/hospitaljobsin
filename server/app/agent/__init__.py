@@ -7,6 +7,12 @@ from fastagency.runtimes.ag2 import Workflow
 
 from app.config import SecretSettings, get_settings
 
+# FIXME: we are getting this error with Gemini:
+# oogle.genai.errors.ClientError: 400 INVALID_ARGUMENT. {'error': {'code': 40│99
+# 0, 'message': 'Please ensure that the number of function response parts is e│
+# qual to the number of function call parts of the function call turn.', 'stat│
+# us': 'INVALID_ARGUMENT'}}
+
 # Mock user database
 MEMBER_DATABASE = {
     "P12345": {
@@ -155,6 +161,7 @@ To get started, could you please share your membership ID? This will help me tai
     name="hitl_workflow", description="A simple travel itenarary generator workflow"
 )
 def hitl_workflow(ui: UI, params: dict[str, Any]) -> str:
+    print("Travel workflow called...")
     initial_message = ui.text_input(
         sender="Workflow",
         recipient="User",
@@ -164,7 +171,7 @@ def hitl_workflow(ui: UI, params: dict[str, Any]) -> str:
     # Create the travel agent
     with LLMConfig(
         api_type="google",
-        model="gemini-2.0-flash-lite",
+        model="gemini-2.0-flash",
         api_key=get_settings(SecretSettings).google_api_key.get_secret_value(),
     ):
         travel_agent = ConversableAgent(

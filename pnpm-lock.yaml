@@ -287,6 +287,9 @@ importers:
       require-in-the-middle:
         specifier: ^7.5.2
         version: 7.5.2
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
       sst:
         specifier: ^3.17.0
         version: 3.17.0

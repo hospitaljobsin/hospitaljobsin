@@ -28,9 +28,9 @@ export default function ChatInterface({
 
 	const isEmpty = visibleMessages.length === 0;
 
-	const onSubmit = (data: z.infer<typeof chatSchema>) => {
+	const onSubmit = async (data: z.infer<typeof chatSchema>) => {
 		setShowMessageViewer(true);
-		sendMessage(data.message);
+		await sendMessage(data.message);
 		form.reset();
 	};
 
