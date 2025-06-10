@@ -2,6 +2,11 @@
 
 @plugin './hero.ts';
 @plugin "@tailwindcss/typography";
+@plugin 'tailwind-scrollbar' {
+	nocompatible: true;
+	preferredStrategy: "pseudoelements";
+}
+
 @config "../tailwind.config.js";
 
 @source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';

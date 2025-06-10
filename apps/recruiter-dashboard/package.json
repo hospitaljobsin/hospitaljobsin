@@ -76,6 +76,7 @@
 		"postcss": "^8.5.4",
 		"react-relay": "^19.0.0",
 		"relay-compiler": "^19.0.0",
+		"tailwind-scrollbar": "^4.0.2",
 		"tailwindcss": "^4",
 		"tw-animate-css": "^1.3.2",
 		"typescript": "^5"

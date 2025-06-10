@@ -92,7 +92,7 @@ export default function MessageViewer({
 	return (
 		<div
 			ref={messagesContainerRef}
-			className="w-full px-5 max-w-5xl mx-auto h-full flex flex-col gap-12 py-8 overflow-y-auto"
+			className="w-full px-5 max-w-5xl mx-auto h-full flex flex-col gap-12 py-8 overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-w-2.5 scrollbar-thumb-[hsl(var(--heroui-foreground-300))] scrollbar-track-transparent"
 		>
 			{messages.map((message, index) => {
 				const isCurrentMessage = index === messages.length - 1;
