@@ -3,17 +3,19 @@
 
 ## Tech Stack
 - [Python](https://python.org) - Programming Language
-- [FastAPI](https://fastapi.tiangolo.com/) - Web framework
-- [Pydantic](https://docs.pydantic.dev/) - Data validation library
-- [Uvicorn](https://www.uvicorn.org/) - ASGI server
+- [FastAPI](https://fastapi.tiangolo.com/) - Web Framework
+- [Pydantic](https://docs.pydantic.dev/) - Data Validation Library
+- [Uvicorn](https://www.uvicorn.org/) - ASGI Server
 - [Beanie](https://beanie-odm.dev/) - MongoDB ODM
-- [Strawberry GraphQL](https://strawberry.rocks/) - GraphQL library
+- [Strawberry GraphQL](https://strawberry.rocks/) - GraphQL Library
 - [Result](https://github.com/rustedpy/result) - Error handling
-- [Aioinject](https://github.com/thirvondukr/aioinject) - Async DI library
-- [Authlib](https://authlib.org/) - OAuth2 client library
-- [Py_WebAuthn](https://duo-labs.github.io/py_webauthn/) - WebAuthn library
+- [Aioinject](https://github.com/thirvondukr/aioinject) - Async DI Library
+- [Authlib](https://authlib.org/) - OAuth2 client Library
+- [PyWebAuthn](https://duo-labs.github.io/py_webauthn/) - WebAuthn Library
 - [Structlog](https://www.structlog.org/) - Structured logging
 - [MongoDB](https://www.mongodb.com/) - Database
+- [AG2AI](https://ag2.ai/) - Agentic Framework
+- [CopilotKit](https://www.copilotkit.ai/) - AI Copilot Framework
 
 and other packages from [pyproject.toml](./pyproject.toml) 💖
 
@@ -74,9 +76,4 @@ uv run strawberry export-schema app.schema:schema > ../schema/schema.graphql
 After following the setup guide, the server can be run independently locally using the following command:
 ```bash
 uv run scripts/run_server.py
-```
-
-### 3. Run Langgraph Development Server
-```bash
-uv run langgraph dev --allow-blocking --port 8123
 ```
