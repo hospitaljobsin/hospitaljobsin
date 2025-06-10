@@ -44,7 +44,7 @@ export default function ChatInterface({
 
 	return (
 		<div className="w-full mx-auto bottom-0 shrink sticky">
-			<div className="w-full bg-background-400 p-6 px-5 border-t border-gray-300">
+			<div className="w-full bg-background-400 py-6 px-5 border-t border-gray-300">
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
 					className="mx-auto max-w-5xl flex items-center gap-4"
@@ -52,6 +52,7 @@ export default function ChatInterface({
 					<Button
 						title={showMessageViewer ? "back to dashboard" : "view messages"}
 						variant="faded"
+						size="lg"
 						isDisabled={isLoading || isEmpty}
 						isIconOnly
 						onPress={() => {
@@ -59,9 +60,9 @@ export default function ChatInterface({
 						}}
 					>
 						{showMessageViewer ? (
-							<ChevronDown size={20} className="text-foreground-400" />
+							<ChevronDown size={28} className="text-foreground-400" />
 						) : (
-							<ChevronUp size={20} className="text-foreground-400" />
+							<ChevronUp size={28} className="text-foreground-400" />
 						)}
 					</Button>
 					<Input
