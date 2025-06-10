@@ -1,7 +1,6 @@
 "use client";
 
-import { useCopilotChat } from "@copilotkit/react-core";
-import { Role, TextMessage } from "@copilotkit/runtime-client-gql";
+import { useCopilotChatLogic } from "@/lib/hooks/useCopilotChatLogic";
 import { Button, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { ChevronDown, ChevronUp, StopCircleIcon } from "lucide-react";
@@ -17,15 +16,8 @@ export default function ChatInterface({
 	placeholder,
 }: { placeholder: string }) {
 	const { setShowMessageViewer, showMessageViewer } = useMessageViewer();
-	const {
-		visibleMessages,
-		appendMessage,
-		setMessages,
-		deleteMessage,
-		reloadMessages,
-		stopGeneration,
-		isLoading,
-	} = useCopilotChat();
+	const { visibleMessages, sendMessage, stopGeneration, isLoading } =
+		useCopilotChatLogic();
 
 	const form = useForm<z.infer<typeof chatSchema>>({
 		resolver: standardSchemaResolver(chatSchema),
@@ -38,7 +30,7 @@ export default function ChatInterface({
 
 	const onSubmit = (data: z.infer<typeof chatSchema>) => {
 		setShowMessageViewer(true);
-		appendMessage(new TextMessage({ content: data.message, role: Role.User }));
+		sendMessage(data.message);
 		form.reset();
 	};
 
