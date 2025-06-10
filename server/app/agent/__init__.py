@@ -13,6 +13,9 @@ from app.config import SecretSettings, get_settings
 # qual to the number of function call parts of the function call turn.', 'stat│
 # us': 'INVALID_ARGUMENT'}}
 
+# We might have to switch to a paid account to resolve it:
+# https://www.googlecloudcommunity.com/gc/AI-ML/Gemini-s-safety-config-400-error-from-today/m-p/712366
+
 # Mock user database
 MEMBER_DATABASE = {
     "P12345": {
