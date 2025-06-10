@@ -11,9 +11,6 @@ windows:
         -  persist:
             - cd server
             - uv run scripts/run_persist_server.py
-  -  langgraph_agent:
-        - cd server
-        - uv run langgraph dev --allow-blocking --port 8123
 
   - seeker_portal:
       - pnpm --filter seeker-portal dev

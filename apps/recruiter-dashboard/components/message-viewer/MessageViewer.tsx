@@ -50,6 +50,8 @@ export default function MessageViewer({
 		}
 	}
 
+	// TODO: remove these LangGraph interrupts, we are transitioning to AG-UI
+
 	useLangGraphInterrupt({
 		render: ({ event, resolve }) => (
 			<div>
@@ -73,6 +75,7 @@ export default function MessageViewer({
 
 	const { messagesContainerRef, messagesEndRef } = useScrollToBottom(messages);
 
+	// TODO: remove these LangGraph interrupts, we are transitioning to AG-UI
 	const interrupt = useLangGraphInterruptRender();
 
 	if (messages.length === 0) {

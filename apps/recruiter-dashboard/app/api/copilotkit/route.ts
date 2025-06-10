@@ -1,27 +1,22 @@
 import { env } from "@/lib/env/client";
 import {
 	CopilotRuntime,
-	copilotRuntimeNextJSAppRouterEndpoint,
 	ExperimentalEmptyAdapter,
-	langGraphPlatformEndpoint,
+	copilotRuntimeNextJSAppRouterEndpoint,
 } from "@copilotkit/runtime";
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
+import { CustomHttpAgent } from "./custom-http-agent";
 
 const serviceAdapter = new ExperimentalEmptyAdapter();
 
+const agenticChatAgent = new CustomHttpAgent({
+	url: `${env.NEXT_PUBLIC_API_URL}/fastagency/awp`,
+});
+
 const runtime = new CopilotRuntime({
-	remoteEndpoints: [
-		langGraphPlatformEndpoint({
-			deploymentUrl: env.NEXT_PUBLIC_LANGGRAPH_DEPLOYMENT_URL,
-			// langsmithApiKey: process.env.LANGSMITH_API_KEY || "", // only used in LangGraph Platform deployments
-			agents: [
-				{
-					name: env.NEXT_PUBLIC_COPILOTKIT_AGENT_NAME,
-					description: "A helpful LLM agent.",
-				},
-			],
-		}),
-	],
+	agents: {
+		agenticChatAgent: agenticChatAgent,
+	},
 });
 
 export const POST = async (req: NextRequest) => {

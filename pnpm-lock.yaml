@@ -170,6 +170,18 @@ importers:
 
   apps/recruiter-dashboard:
     dependencies:
+      '@agentwire/client':
+        specifier: ^0.0.27
+        version: 0.0.27
+      '@agentwire/core':
+        specifier: ^0.0.27
+        version: 0.0.27
+      '@agentwire/encoder':
+        specifier: ^0.0.27
+        version: 0.0.27
+      '@agentwire/proto':
+        specifier: ^0.0.27
+        version: 0.0.27
       '@bprogress/next':
         specifier: ^3.2.12
         version: 3.2.12(next@15.3.3(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-react-compiler@19.1.0-rc.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -754,6 +766,18 @@ packages:
 
   '@ag-ui/proto@0.0.28':
     resolution: {integrity: sha512-jgvUT81n4K5TldkrpVxM5eLRNOq5tV5BKNi079NGCDnK1mc2ElORsHcCd6fjAOpUPpfirS8RuQr9MvoMXE42aQ==}
+
+  '@agentwire/client@0.0.27':
+    resolution: {integrity: sha512-kmyYEtO7gRlySHkgdWu1aMfuAiIm6cxP6LvelpV+4+P4tSvwJBu2P+YDSyjeGBGLyWbJ4hDJ8+qRdP7Va/y4Tw==}
+
+  '@agentwire/core@0.0.27':
+    resolution: {integrity: sha512-chL5egQCXLC0MU9GsW1AymdoM865t9efCs8LNP8vLMmKc8QnWe0IB0pT1pRAnvt9AHECHzhmv6oOZpZRXLeO6A==}
+
+  '@agentwire/encoder@0.0.27':
+    resolution: {integrity: sha512-0eAAOpHtQXp9+xuu7sBqe2CSS37O8WNh8mCHsUbFUlwdhZGo2l2BPD0PloaJRIsvhRj0JsGS0WsiVX3Y6wMQLA==}
+
+  '@agentwire/proto@0.0.27':
+    resolution: {integrity: sha512-mBTcCmU3kIs1RbcD3I3uykLFPjd9ZGJDHJCoba1I3xJTMXzTa3+r72cQt6XMTKWN2GOQfOCiJ8VllFZrcOUhZg==}
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -11466,6 +11490,33 @@ snapshots:
   '@ag-ui/proto@0.0.28':
     dependencies:
       '@ag-ui/core': 0.0.28
+      '@bufbuild/protobuf': 2.5.1
+
+  '@agentwire/client@0.0.27':
+    dependencies:
+      '@agentwire/core': 0.0.27
+      '@agentwire/encoder': 0.0.27
+      '@agentwire/proto': 0.0.27
+      '@types/uuid': 10.0.0
+      fast-json-patch: 3.1.1
+      rxjs: 7.8.1
+      untruncate-json: 0.0.1
+      uuid: 11.1.0
+      zod: 3.25.56
+
+  '@agentwire/core@0.0.27':
+    dependencies:
+      rxjs: 7.8.1
+      zod: 3.25.56
+
+  '@agentwire/encoder@0.0.27':
+    dependencies:
+      '@agentwire/core': 0.0.27
+      '@agentwire/proto': 0.0.27
+
+  '@agentwire/proto@0.0.27':
+    dependencies:
+      '@agentwire/core': 0.0.27
       '@bufbuild/protobuf': 2.5.1
 
   '@alloc/quick-lru@5.2.0': {}

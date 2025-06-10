@@ -36,12 +36,9 @@ dependencies = [
     "sentry-sdk[fastapi,pymongo]>=2.27.0",
     "python-jose[cryptography]==3.4.0",
     "cryptography==44.0.3",
-    "langchain>=0.3.25",
-    "langchain-google-genai>=2.1.5",
-    "langchain-community>=0.3.24",
     "copilotkit>=0.1.46",
-    "langchain-core>=0.3.63",
-    "langgraph-cli[inmem]>=0.2.10",
+    "fastagency[copilotkit,fastapi]>=0.9.1.post0",
+    "ag2[gemini]>=0.9.1.post0",
 ]
 
 [tool.uv]
