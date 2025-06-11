@@ -1,17 +1,51 @@
 research_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
-  expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
-  agent: researcher
+    Research the {healthcare_role} position thoroughly:
+    1. Current market salary ranges and compensation trends
+    2. Required certifications, licenses, and qualifications
+    3. Typical responsibilities and daily duties
+    4. Skills and experience requirements
+    5. Industry demand and job market trends
+    6. Competitive landscape and what top employers offer
 
-reporting_task:
-  description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Focus on accurate, current information from reliable healthcare industry sources.
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+     Comprehensive research report covering salary ranges, requirements, responsibilities, and market insights for the healthcare role
+  agent: healthcare_research_specialist
+
+job_posting_creation_task:
+  description: >
+    Create a complete, professional job posting for the {healthcare_role} position:
+    1. Compelling job title and engaging summary
+    2. Clear role overview and mission alignment
+    3. Detailed responsibilities and daily duties
+    4. Required qualifications (education, certifications, experience)
+    5. Preferred qualifications and skills
+    6. Compensation and benefits information
+    7. Company culture and growth opportunities
+    8. Application instructions and next steps
+
+    Use the research findings to ensure accuracy and competitiveness.
+  expected_output: >
+    Complete, professional job posting ready for publication with all necessary sections and compelling content
+  agent: job_description_writer
+  context:
+    - research_task
+
+compliance_review_task:
+  description: >
+    Review the job posting for compliance and best practices:
+    1. Legal compliance and equal opportunity language
+    2. Healthcare industry regulatory requirements
+    3. Bias-free and inclusive language
+    4. ADA compliance considerations
+    5. Institutional policy alignment
+    6. Professional tone and clarity
+
+    Provide specific recommendations for any needed improvements.
+  expected_output: >
+    Final approved job posting with compliance verification and any recommended improvements
+  agent: compliance_reviewer
+  output_file: healthcare_job_posting.md
+  context:
+    - job_posting_creation_task

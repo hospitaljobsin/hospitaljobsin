@@ -1,13 +1,17 @@
-from crewai import Agent, Crew, Process, Task
-from crewai.project import CrewBase, agent, crew, task
-from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
+
+from crewai import Agent, Crew, Process, Task
+from crewai.agents.agent_builder.base_agent import BaseAgent
+from crewai.project import CrewBase, agent, crew, task
+from crewai_tools import SerperDevTool
+
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
+
 @CrewBase
-class CreateJobCrew():
+class CreateJobCrew:
     """CreateJobCrew crew"""
 
     agents: List[BaseAgent]
@@ -20,17 +24,25 @@ class CreateJobCrew():
     # If you would like to add tools to your agents, you can learn more about it here:
     # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
-    def researcher(self) -> Agent:
+    def healthcare_research_specialist(self) -> Agent:
         return Agent(
-            config=self.agents_config['researcher'], # type: ignore[index]
-            verbose=True
+            config=self.agents_config["healthcare_research_specialist"],  # type: ignore[index]
+            verbose=True,
+            tools=[SerperDevTool()],
         )
 
     @agent
-    def reporting_analyst(self) -> Agent:
+    def job_description_writer(self) -> Agent:
         return Agent(
-            config=self.agents_config['reporting_analyst'], # type: ignore[index]
-            verbose=True
+            config=self.agents_config["job_description_writer"],  # type: ignore[index]
+            verbose=True,
+        )
+
+    @agent
+    def compliance_reviewer(self) -> Agent:
+        return Agent(
+            config=self.agents_config["compliance_reviewer"],  # type: ignore[index]
+            verbose=True,
         )
 
     # To learn more about structured task outputs,
@@ -39,14 +51,19 @@ class CreateJobCrew():
     @task
     def research_task(self) -> Task:
         return Task(
-            config=self.tasks_config['research_task'], # type: ignore[index]
+            config=self.tasks_config["research_task"],  # type: ignore[index]
         )
 
     @task
-    def reporting_task(self) -> Task:
+    def job_posting_creation_task(self) -> Task:
         return Task(
-            config=self.tasks_config['reporting_task'], # type: ignore[index]
-            output_file='report.md'
+            config=self.tasks_config["job_posting_creation_task"],  # type: ignore[index]
+        )
+
+    @task
+    def compliance_review_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["compliance_review_task"],  # type: ignore[index]
         )
 
     @crew
@@ -56,8 +73,8 @@ class CreateJobCrew():
         # https://docs.crewai.com/concepts/knowledge#what-is-knowledge
 
         return Crew(
-            agents=self.agents, # Automatically created by the @agent decorator
-            tasks=self.tasks, # Automatically created by the @task decorator
+            agents=self.agents,  # Automatically created by the @agent decorator
+            tasks=self.tasks,  # Automatically created by the @task decorator
             process=Process.sequential,
             verbose=True,
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
