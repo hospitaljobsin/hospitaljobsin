@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import sys
 import warnings
-from datetime import datetime
 
 from create_job_crew.crew import CreateJobCrew
 
@@ -58,7 +57,9 @@ def test():
     """
     Test the crew execution and returns the results.
     """
-    inputs = {"topic": "AI LLMs", "current_year": str(datetime.now().year)}
+    inputs = {
+        "healthcare_role": "Radiologic Technologist",
+    }
 
     try:
         CreateJobCrew().crew().test(
