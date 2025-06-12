@@ -887,11 +887,13 @@ UpdateJobApplicationFormPayload = Annotated[
     ),
 ]
 
-JobPayloadType = strawberry.union(
-    "JobPayload",
-    types=(JobType, JobNotFoundErrorType),
-    description="The job payload.",
-)
+JobPayload = Annotated[
+    JobType | JobNotFoundErrorType,
+    strawberry.union(
+        name="JobPayload",
+        description="The job payload.",
+    ),
+]
 
 
 @strawberry.type(

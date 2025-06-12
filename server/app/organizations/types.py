@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Annotated, Self
+from typing import Annotated, Self
 
 import strawberry
 from aioinject import Inject, Injected
@@ -21,7 +21,12 @@ from app.base.types import (
     BaseNodeType,
 )
 from app.jobs.repositories import JobApplicantRepo, JobMetricRepo, JobRepo
-from app.jobs.types import JobApplicantConnectionType
+from app.jobs.types import (
+    JobApplicantConnectionType,
+    JobConnectionType,
+    JobMetricPointType,
+    JobPayload,
+)
 from app.organizations.documents import (
     Organization,
     OrganizationInvite,
@@ -32,14 +37,6 @@ from app.organizations.repositories import (
     OrganizationMemberRepo,
 )
 from app.organizations.services import OrganizationMemberService
-
-if TYPE_CHECKING:
-    from app.jobs.types import (
-        JobApplicantConnectionType,
-        JobConnectionType,
-        JobMetricPointType,
-        JobPayloadType,
-    )
 
 
 @strawberry.enum(
@@ -195,9 +192,7 @@ class OrganizationType(BaseNodeType[Organization]):
                 description="How many items to return before the cursor?",
             ),
         ] = None,
-    ) -> Annotated["JobApplicantConnectionType", strawberry.lazy("app.jobs.types")]:
-        from app.jobs.types import JobApplicantConnectionType
-
+    ) -> JobApplicantConnectionType:
         result = await job_applicant_repo.get_all_by_organization_id_paginated(
             organization_id=ObjectId(self.id),
             after=(after.node_id if after else None),
@@ -250,7 +245,7 @@ class OrganizationType(BaseNodeType[Organization]):
                 description="Slug of the job",
             ),
         ],
-    ) -> Annotated["JobPayloadType", strawberry.lazy("app.jobs.types")]:
+    ) -> JobPayload:
         from app.jobs.types import JobNotFoundErrorType, JobType
 
         result = await info.context["loaders"].job_by_slug.load((self.id, slug))
@@ -311,9 +306,7 @@ class OrganizationType(BaseNodeType[Organization]):
     async def total_view_metric_points(
         self,
         job_metric_repo: Injected[JobMetricRepo],
-    ) -> list[Annotated["JobMetricPointType", strawberry.lazy("app.jobs.types")]]:
-        from app.jobs.types import JobMetricPointType
-
+    ) -> list[JobMetricPointType]:
         metric_points = await job_metric_repo.get_organization_metric_points(
             organization_id=ObjectId(self.id),
             event_type="view",
@@ -466,10 +459,8 @@ class OrganizationType(BaseNodeType[Organization]):
                 description="How many items to return before the cursor?",
             ),
         ] = None,
-    ) -> Annotated["JobConnectionType", strawberry.lazy("app.jobs.types")]:
+    ) -> JobConnectionType:
         """Return a paginated connection of jobs for the organization."""
-        from app.jobs.types import JobConnectionType
-
         paginated_jobs = await job_repo.get_all_by_organization_id(
             organization_id=ObjectId(self.id),
             search_term=search_term,
