@@ -17,7 +17,7 @@ WORKDIR /project
 ENV HNSWLIB_NO_NATIVE=1
 
 # Install dependencies
-RUN --mount=type=cache,target=/root/.cache/uv \
+RUN export HNSWLIB_NO_NATIVE=1 && --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-install-project
@@ -82,7 +82,7 @@ WORKDIR /project
 ENV HNSWLIB_NO_NATIVE=1
 
 # Install dependencies
-RUN --mount=type=cache,target=/root/.cache/uv \
+RUN export HNSWLIB_NO_NATIVE=1 && --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-install-project
