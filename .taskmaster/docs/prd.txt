@@ -1,47 +1,165 @@
 <context>
+
 # Overview
-[Provide a high-level overview of your product here. Explain what problem it solves, who it's for, and why it's valuable.]
+
+The **Healthcare Job Portal** is a two-sided marketplace connecting healthcare professionals (job seekers) with healthcare institutions (recruiters). The platform streamlines the recruitment process by enabling seekers to browse and apply to jobs easily while empowering recruiters with a powerful dashboard to post, manage, and analyze job listings.
+
+**Problem Solved:**
+Recruiting for healthcare roles is slow, fragmented, and often offline. Our portal digitizes and accelerates this process.
+
+**Target Users:**
+- **Job Seekers**: Nurses, doctors, technicians, and other healthcare professionals.
+- **Recruiters**: HR managers or agency personnel hiring for hospitals, clinics, or care facilities.
+
+**Value Proposition:**
+- Simplifies job search for seekers
+- Streamlines candidate sourcing and tracking for recruiters
+- Enables data-driven hiring and transparency
 
 # Core Features
-[List and describe the main features of your product. For each feature, include:
-- What it does
-- Why it's important
-- How it works at a high level]
+
+#### 1. Job Listing and Search
+- **What it does**: Allows seekers to browse, filter, and apply to job listings.
+- **Why it’s important**: It’s the central activity for job seekers.
+- **How it works**: Search queries are sent via GraphQL to the Python backend, which queries MongoDB.
+
+#### 2. Recruiter Dashboard
+- **What it does**: Enables recruiters to post jobs, view applicants, and manage job listings.
+- **Why it’s important**: Powers job distribution and candidate management.
+- **How it works**: Recruiter logs in via the accounts UI, selects their organization, and is redirected to a React-based dashboard fetching organization-specific data.
+
+#### 3. Authentication & Account Management
+- **What it does**: Handles login, signup, password resets, and account settings.
+- **Why it’s important**: Required for access control and personalized experience.
+- **How it works**: A shared accounts UI interacts with the backend via Relay, supporting both seekers and recruiters.
+
+#### 4. Organization Management
+- **What it does**: Allows recruiters to manage multiple hiring organizations.
+- **Why it’s important**: Some recruiters may work for multiple facilities.
+- **How it works**: Recruiters select the organization context, which controls access to respective dashboards.
+
+#### 5. Applications Management
+- **What it does**: Enables job seekers to track applications; recruiters to shortlist, reject, or contact applicants.
+- **Why it’s important**: Critical to closing the hiring loop.
+- **How it works**: GraphQL mutations and queries update the status in the backend.
 
 # User Experience
-[Describe the user journey and experience. Include:
-- User personas
-- Key user flows
-- UI/UX considerations]
-</context>
+
+#### User Personas
+- **Seeker Sarah**: A nurse looking for shifts in her city.
+- **Recruiter Ravi**: A hiring manager at a hospital managing multiple job postings.
+- **Admin Arjun**: Oversees accounts and ensures the system runs securely.
+
+#### Key User Flows
+- **Job Search Flow**: Seeker logs in → Searches jobs → Applies → Tracks status
+- **Recruiter Flow**: Logs in → Selects organization → Views dashboard → Posts job → Reviews applicants
+- **Account Flow**: Logs in via shared accounts portal → Updates settings or recovers password
+
+#### UI/UX Considerations
+- Mobile-friendly UI for seekers
+- Dashboard-style analytics and filtering for recruiters
+- Minimal navigation friction between portals
+- Shared theming and design system across portals for consistency
+
 <PRD>
+
 # Technical Architecture
-[Outline the technical implementation details:
-- System components
-- Data models
-- APIs and integrations
-- Infrastructure requirements]
+
+#### System Components
+- Python GraphQL API Server: Main application logic and data processing
+- Next.js Portals:
+  - Seeker Portal
+  - Recruiter Portal (Org selection + redirect)
+  - Recruiter Dashboard
+  - Accounts UI (shared between seeker/recruiter)
+- Relay GraphQL Client in all frontends
+- MongoDB Atlas: Primary datastore
+- AWS Infrastructure: Managed via Terraform
+
+#### Data Models
+- User: base class with seeker/recruiter roles
+- Job: linked to an Organization and posted by a recruiter
+- Application: links a seeker to a job
+- Organization: owned/managed by recruiters
+- Session/Auth Tokens: stored for login sessions
+
+#### APIs and Integrations
+- GraphQL API with Relay-compatible schema
+- MongoDB queries and aggregations
+- (Optional future) Email service for application status updates
+- Terraform IaC integrates AWS services like EC2, S3, Cognito, etc.
+
+#### Infrastructure Requirements
+- AWS VPC for isolation
+- EC2 or container-based deployment
+- Load balancer for frontend routing
+- CI/CD pipelines via GitHub Actions
+- Secrets and config via AWS Secrets Manager
 
 # Development Roadmap
-[Break down the development process into phases:
-- MVP requirements
-- Future enhancements
-- Do not think about timelines whatsoever -- all that matters is scope and detailing exactly what needs to be build in each phase so it can later be cut up into tasks]
+
+#### Phase 1: MVP
+- Shared authentication (Accounts UI)
+- Seeker portal:
+  - Job listings (read-only)
+  - Apply to job
+  - View application status
+- Recruiter portal:
+  - Login → Organization selection → Redirect to dashboard
+- Basic recruiter dashboard:
+  - Post job
+  - View applicants
+- Backend GraphQL API with all core models
+
+#### Phase 2: Enhancements
+- Application filtering & tagging (recruiter side)
+- Email notifications (application received/status updated)
+- Resume upload & parsing (for seeker)
+- Interview scheduling tools (calendar sync)
+- Role-based access control
+- Admin tools for user/organization management
+
+#### Phase 3: Advanced Features
+- AI recommendations for seekers/recruiters
+- Analytics (e.g., job engagement, seeker activity)
+- Subscription/paywall support for premium recruiter tools
+- Support chat or messaging system
 
 # Logical Dependency Chain
-[Define the logical order of development:
-- Which features need to be built first (foundation)
-- Getting as quickly as possible to something usable/visible front end that works
-- Properly pacing and scoping each feature so it is atomic but can also be built upon and improved as development approaches]
+
+1. Authentication system (Accounts UI + GraphQL auth APIs) → Foundation for all portals
+2. Data models & core backend APIs (User, Job, Application, Org) → Needed before frontends can function
+3. Seeker portal → First usable UI → job listing and apply
+4. Recruiter org selection + dashboard v1 → Enables job posting and applicant view
+5. UI enhancements, dashboard filters, application management
+6. Optional features (notifications, resume uploads)
 
 # Risks and Mitigations
-[Identify potential risks and how they'll be addressed:
-- Technical challenges
-- Figuring out the MVP that we can build upon
-- Resource constraints]
+
+#### Technical Challenges
+- Relay client schema requirements → handled by strict GraphQL server contracts
+- MongoDB schema consistency → Enforce validation via Pydantic or server-side checks
+
+#### MVP Scope Clarity
+- Mitigation: Strictly define Phase 1 goals and ship read-only job board with apply flow first
+
+#### Frontend Complexity
+- Mitigation: Shared components across Next.js apps, centralized design system
+
+#### Resource Constraints
+- Use Terraform to minimize ops overhead
+- Start with minimal infrastructure footprint and scale as needed
 
 # Appendix
-[Include any additional information:
-- Research findings
-- Technical specifications]
-</PRD>
+
+#### Research Findings
+- Healthcare job seekers prioritize ease of search and application
+- Recruiters need visibility into candidate quality and pipeline stages
+- Most platforms lack clear multi-org support for recruiters
+
+#### Technical Specs
+- Python 3.12
+- Graphene/Strawberry for GraphQL API
+- Next.js 14
+- Relay for client-side GraphQL
+- Terraform modules for VPC, EC2, MongoDB, S3, IAM
