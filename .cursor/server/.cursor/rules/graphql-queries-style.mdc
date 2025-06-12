@@ -6,6 +6,7 @@ alwaysApply: false
 - Rely on Strawberry GraphQL for creating the GraphQL query fields in Python.
 - Make use of service or repository layers to fetch data inside fields. Don't access the database/ any other service directly.
 - Access services/ repositories via aioinject.
+- Make use of dataloaders to access data wherever relevant to avoid N+1 queries. The dataloaders are stored in the `info.context["loaders"]` field.
 - Ensure relevant permissions are added to the created fields (like IsAuthenticated(), RequiresSudoMode())
 - Use the Python match statement to handle all the results returned by services. Ensure that you call assert_never on the default case to satisfy type checkers.
 example:
