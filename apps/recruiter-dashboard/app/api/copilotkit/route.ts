@@ -2,20 +2,29 @@ import { env } from "@/lib/env/client";
 import { getEnv } from "@/lib/env/server";
 import {
 	CopilotRuntime,
-	GoogleGenerativeAIAdapter,
+	LangChainAdapter,
 	copilotRuntimeNextJSAppRouterEndpoint,
 } from "@copilotkit/runtime";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { ChatGoogle } from "@langchain/google-webauth";
 import type { NextRequest } from "next/server";
 
-let _serviceAdapter: GoogleGenerativeAIAdapter | null = null;
+let _serviceAdapter: LangChainAdapter | null = null;
 
 async function getServiceAdapter() {
 	if (!_serviceAdapter) {
 		const env = await getEnv();
-		const genAI = new GoogleGenerativeAI(env.GOOGLE_API_KEY);
-		_serviceAdapter = new GoogleGenerativeAIAdapter({
+		const genai = new ChatGoogle({
 			model: env.GOOGLE_GEMINI_MODEL,
+			apiKey: env.GOOGLE_API_KEY,
+			maxReasoningTokens: 10,
+			apiVersion: "v1beta",
+			platformType: "gai",
+		});
+
+		_serviceAdapter = new LangChainAdapter({
+			chainFn: async ({ messages, tools }) => {
+				return genai.bindTools(tools).stream(messages);
+			},
 		});
 	}
 	return _serviceAdapter;

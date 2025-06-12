@@ -29,7 +29,6 @@ export default function Providers({
 					<CopilotKit
 						runtimeUrl={env.NEXT_PUBLIC_COPILOTKIT_RUNTIME_URL}
 						// publicApiKey={publicApiKey}
-						agent={env.NEXT_PUBLIC_COPILOTKIT_AGENT_NAME}
 					>
 						<ProgressProvider
 							height="4px"
