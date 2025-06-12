@@ -162,4 +162,4 @@ Recruiting for healthcare roles is slow, fragmented, and often offline. Our port
 - Graphene/Strawberry for GraphQL API
 - Next.js 14
 - Relay for client-side GraphQL
-- Terraform modules for VPC, EC2, MongoDB, S3, IAM
+- Terraform v1.12 for IaC
