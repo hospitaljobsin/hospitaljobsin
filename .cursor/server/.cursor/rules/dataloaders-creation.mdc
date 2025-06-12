@@ -1,0 +1,8 @@
+---
+description:
+globs: **/dataloaders.py
+alwaysApply: false
+---
+- While defining dataloaders, make use of repository methods to batch-load data. Do not access the database directly.
+- Make use of the `create_dataloader` function in [dataloaders.py](mdc:server/app/core/dataloaders.py) to reuse the core dataloading logic.
+- Create separate, uniquely named type aliases for each data loader. This is essential to reference the dataloaders via the aioinject dependency injection library.

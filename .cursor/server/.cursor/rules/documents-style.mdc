@@ -1,0 +1,12 @@
+---
+description:
+globs: **/documents.py
+alwaysApply: false
+---
+- Use the Beanie ODM to define MongoDB collections.
+- Ensure the fields that will be used to access documents frequently are indexed.
+- Make use of constraints (like the unique constraint) wherever relevant.
+- Add Beanie `Link`s to add references to other collections.
+
+- After adding/ updating `Links`, make sure to edit the reference forwarding logic in [__init__.py](mdc:server/app/database/__init__.py) to ensure
+  that the references will be loaded correctly when Beanie intializes. This is to prevent circular imports.

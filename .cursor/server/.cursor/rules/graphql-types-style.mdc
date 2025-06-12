@@ -1,0 +1,9 @@
+---
+description:
+globs: **/types.py
+alwaysApply: false
+---
+- In case of circular import errors, make use of the `strawberry.lazy` function to fix it.
+- Add a classmethod called `marshal` on every @strawberry.type class that converts the given document/data into an instance of the class itself.
+- Add a classmethod called `to_document` on every @strawberry.input class that converts the current input class into an instance of a Beanie document.
+- Reuse the `BaseConnectionType` and `BaseEdgeType` classes at [types.py](mdc:server/app/base/types.py) when defining Connection types.
