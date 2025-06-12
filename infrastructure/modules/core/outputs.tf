@@ -80,6 +80,11 @@ output "recruiter_portal_sentry_dsn" {
 }
 
 
+output "sst_recruiter_dashboard_secret_id" {
+  value     = aws_secretsmanager_secret.recruiter_dashboard.id
+  sensitive = true
+}
+
 
 output "sst_captcha_site_key" {
   value = cloudflare_turnstile_widget.example.id

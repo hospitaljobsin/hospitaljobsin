@@ -170,18 +170,6 @@ importers:
 
   apps/recruiter-dashboard:
     dependencies:
-      '@agentwire/client':
-        specifier: ^0.0.27
-        version: 0.0.27
-      '@agentwire/core':
-        specifier: ^0.0.27
-        version: 0.0.27
-      '@agentwire/encoder':
-        specifier: ^0.0.27
-        version: 0.0.27
-      '@agentwire/proto':
-        specifier: ^0.0.27
-        version: 0.0.27
       '@bprogress/next':
         specifier: ^3.2.12
         version: 3.2.12(next@15.3.3(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-react-compiler@19.1.0-rc.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -200,6 +188,9 @@ importers:
       '@copilotkit/shared':
         specifier: ^1.8.14
         version: 1.8.14
+      '@google/generative-ai':
+        specifier: ^0.24.1
+        version: 0.24.1
       '@heroui/react':
         specifier: 2.8.0-beta.4
         version: 2.8.0-beta.4(@types/react@19.1.6)(framer-motion@12.16.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.8)
@@ -772,18 +763,6 @@ packages:
 
   '@ag-ui/proto@0.0.28':
     resolution: {integrity: sha512-jgvUT81n4K5TldkrpVxM5eLRNOq5tV5BKNi079NGCDnK1mc2ElORsHcCd6fjAOpUPpfirS8RuQr9MvoMXE42aQ==}
-
-  '@agentwire/client@0.0.27':
-    resolution: {integrity: sha512-kmyYEtO7gRlySHkgdWu1aMfuAiIm6cxP6LvelpV+4+P4tSvwJBu2P+YDSyjeGBGLyWbJ4hDJ8+qRdP7Va/y4Tw==}
-
-  '@agentwire/core@0.0.27':
-    resolution: {integrity: sha512-chL5egQCXLC0MU9GsW1AymdoM865t9efCs8LNP8vLMmKc8QnWe0IB0pT1pRAnvt9AHECHzhmv6oOZpZRXLeO6A==}
-
-  '@agentwire/encoder@0.0.27':
-    resolution: {integrity: sha512-0eAAOpHtQXp9+xuu7sBqe2CSS37O8WNh8mCHsUbFUlwdhZGo2l2BPD0PloaJRIsvhRj0JsGS0WsiVX3Y6wMQLA==}
-
-  '@agentwire/proto@0.0.27':
-    resolution: {integrity: sha512-mBTcCmU3kIs1RbcD3I3uykLFPjd9ZGJDHJCoba1I3xJTMXzTa3+r72cQt6XMTKWN2GOQfOCiJ8VllFZrcOUhZg==}
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -1750,6 +1729,10 @@ packages:
     peerDependencies:
       react: ^16 || ^17 || ^18 || ^19
       react-dom: ^16 || ^17 || ^18 || ^19
+
+  '@google/generative-ai@0.24.1':
+    resolution: {integrity: sha512-MqO+MLfM6kjxcKoy0p1wRzG3b4ZZXtPI+z2IE26UogS2Cm/XHO+7gGRBh6gcJsOiIVoH93UwKvW4HdgiOZCy9Q==}
+    engines: {node: '>=18.0.0'}
 
   '@graphql-tools/executor@1.4.7':
     resolution: {integrity: sha512-U0nK9jzJRP9/9Izf1+0Gggd6K6RNRsheFo1gC/VWzfnsr0qjcOSS9qTjY0OTC5iTPt4tQ+W5Zpw/uc7mebI6aA==}
@@ -11512,33 +11495,6 @@ snapshots:
       '@ag-ui/core': 0.0.28
       '@bufbuild/protobuf': 2.5.1
 
-  '@agentwire/client@0.0.27':
-    dependencies:
-      '@agentwire/core': 0.0.27
-      '@agentwire/encoder': 0.0.27
-      '@agentwire/proto': 0.0.27
-      '@types/uuid': 10.0.0
-      fast-json-patch: 3.1.1
-      rxjs: 7.8.1
-      untruncate-json: 0.0.1
-      uuid: 11.1.0
-      zod: 3.25.56
-
-  '@agentwire/core@0.0.27':
-    dependencies:
-      rxjs: 7.8.1
-      zod: 3.25.56
-
-  '@agentwire/encoder@0.0.27':
-    dependencies:
-      '@agentwire/core': 0.0.27
-      '@agentwire/proto': 0.0.27
-
-  '@agentwire/proto@0.0.27':
-    dependencies:
-      '@agentwire/core': 0.0.27
-      '@bufbuild/protobuf': 2.5.1
-
   '@alloc/quick-lru@5.2.0': {}
 
   '@ampproject/remapping@2.3.0':
@@ -13437,6 +13393,8 @@ snapshots:
       giscus: 1.6.0
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
+
+  '@google/generative-ai@0.24.1': {}
 
   '@graphql-tools/executor@1.4.7(graphql@16.11.0)':
     dependencies:

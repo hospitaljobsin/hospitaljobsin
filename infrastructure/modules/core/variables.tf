@@ -85,3 +85,10 @@ variable "sentry_recruiter_portal_ui_dsn" {
   type        = string
   description = "Sentry DSN for the recruiter portal UI."
 }
+
+
+variable "serper_api_key" {
+  type        = string
+  description = "Serper API key."
+  sensitive   = true
+}

@@ -83,6 +83,7 @@ module "github" {
   sst_captcha_site_key                  = module.core.sst_captcha_site_key
   sentry_organization                   = module.sentry.sentry_organization
   sst_recruiter_portal_secret_id        = module.core.sst_recruiter_portal_secret_id
+  sst_recruiter_dashboard_secret_id     = module.core.sst_recruiter_dashboard_secret_id
   sst_vpc_private_subnets               = module.core.sst_vpc_private_subnets
   sst_vpc_security_groups               = module.core.sst_vpc_security_groups
   domain_name                           = var.domain_name
@@ -119,4 +120,5 @@ module "core" {
   sentry_recruiter_portal_ui_dsn = module.sentry.sentry_recruiter_portal_ui_dsn
   sentry_seeker_portal_ui_dsn    = module.sentry.sentry_seeker_portal_ui_dsn
   github_repository_name         = var.github_repository_name
+  serper_api_key                 = var.serper_api_key
 }

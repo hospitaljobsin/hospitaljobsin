@@ -44,6 +44,12 @@ resource "github_actions_secret" "sst_recruiter_portal_secret_id" {
   plaintext_value = var.sst_recruiter_portal_secret_id
 }
 
+resource "github_actions_secret" "sst_recruiter_dashboard_secret_id" {
+  repository      = data.github_repository.this.name
+  secret_name     = "SST_RECRUITER_DASHBOARD_SECRET_ID"
+  plaintext_value = var.sst_recruiter_dashboard_secret_id
+}
+
 resource "github_actions_secret" "recruiter_portal_sentry_dsn" {
   repository      = data.github_repository.this.name
   secret_name     = "RECRUITER_PORTAL_SENTRY_DSN"

@@ -84,3 +84,10 @@ variable "google_gemini_api_key" {
   description = "Google Gemini API key."
   sensitive   = true
 }
+
+
+variable "serper_api_key" {
+  type        = string
+  description = "Serper API key."
+  sensitive   = true
+}

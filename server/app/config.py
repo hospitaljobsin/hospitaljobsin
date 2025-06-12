@@ -200,6 +200,8 @@ class SentrySettings(BaseSettings):
 class SecretSettings(BaseSettings):
     google_api_key: SecretStr
 
+    serper_api_key: SecretStr
+
     captcha_secret_key: SecretStr
 
     jwe_secret_key: SecretStr
@@ -330,6 +332,15 @@ class AWSSettings(BaseSettings):
 
     aws_access_key_id: str | None = None
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+
+class LLMSettings(BaseSettings):
+    google_gemini_model: str
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="server_",

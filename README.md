@@ -245,9 +245,13 @@ Follow these steps to deploy the project to the cloud:
 - [Install the Sentry GitHub Integration](https://docs.sentry.io/organization/integrations/source-code-mgmt/github/#installing-github) (repository linking is automated)
 - [Create a Sentry Authentication Token](https://docs.sentry.io/organization/integrations/integration-platform/internal-integration/#auth-tokens) (via an internal integration)
 
-### 7. Terraform Setup
+### 7. Serper Setup
+- Go to the [Serper Dashboard](https://serper.dev/dashboard)
+- Create an API key
 
-#### 7.1 Prerequisites:
+### 8. Terraform Setup
+
+#### 8.1 Prerequisites:
 - Create an S3 bucket that will act as the terraform state backend
 
 Terraform deployments are automated via GitHub Actions CI/CD.
@@ -270,6 +274,7 @@ GitHub Actions Secrets:
 - `GOOGLE_OAUTH_CLIENT_SECRET`
 - `GOOGLE_GEMINI_API_KEY`
 - `SENTRY_AUTH_TOKEN`
+- `SERPER_API_KEY`
 
 
 

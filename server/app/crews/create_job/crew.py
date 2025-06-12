@@ -1,8 +1,9 @@
-from typing import List
+import os
 
-from crewai import Agent, Crew, Process, Task
+from app.config import LLMSettings, SecretSettings, get_settings
+from crewai import LLM, Agent, Crew, Process, Task
 from crewai.agents.agent_builder.base_agent import BaseAgent
-from crewai.project import CrewBase, agent, crew, task
+from crewai.project import CrewBase, agent, before_kickoff, crew, llm, task
 from crewai_tools import SerperDevTool
 
 # If you want to run a snippet of code before or after the crew starts,
@@ -14,8 +15,8 @@ from crewai_tools import SerperDevTool
 class CreateJobCrew:
     """CreateJobCrew crew"""
 
-    agents: List[BaseAgent]
-    tasks: List[Task]
+    agents: list[BaseAgent]
+    tasks: list[Task]
 
     # Learn more about YAML configuration files here:
     # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
@@ -23,6 +24,15 @@ class CreateJobCrew:
 
     # If you would like to add tools to your agents, you can learn more about it here:
     # https://docs.crewai.com/concepts/agents#agent-tools
+
+    @before_kickoff
+    def prepare_environment(self, inputs):
+        # Preprocess or modify inputs
+        os.environ["SERPER_API_KEY"] = get_settings(
+            SecretSettings
+        ).serper_api_key.get_secret_value()
+        return inputs
+
     @agent
     def healthcare_research_specialist(self) -> Agent:
         return Agent(
@@ -64,6 +74,14 @@ class CreateJobCrew:
     def compliance_review_task(self) -> Task:
         return Task(
             config=self.tasks_config["compliance_review_task"],  # type: ignore[index]
+        )
+
+    @llm
+    def gemini_llm(self) -> LLM:
+        return LLM(
+            model=get_settings(LLMSettings).google_gemini_model,
+            api_key=get_settings(SecretSettings).google_api_key.get_secret_value(),
+            temperature=0.2,
         )
 
     @crew

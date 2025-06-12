@@ -169,6 +169,12 @@ variable "sst_recruiter_portal_secret_id" {
   sensitive   = true
 }
 
+variable "sst_recruiter_dashboard_secret_id" {
+  description = "The secret ID for the recruiter dashboard."
+  type        = string
+  sensitive   = true
+}
+
 
 variable "deployment_aws_access_key_id" {
   description = "The AWS Access Key ID for deployment."

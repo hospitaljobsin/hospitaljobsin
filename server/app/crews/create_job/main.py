@@ -2,7 +2,7 @@
 import sys
 import warnings
 
-from create_job_crew.crew import CreateJobCrew
+from .crew import CreateJobCrew
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 

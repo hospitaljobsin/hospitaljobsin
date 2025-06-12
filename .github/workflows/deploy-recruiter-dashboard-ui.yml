@@ -86,7 +86,8 @@ jobs:
             NEXT_PUBLIC_COPILOTKIT_RUNTIME_URL: /api/copilotkit
             NEXT_PUBLIC_COPILOTKIT_AGENT_NAME: agenticChatAgent
             API_URL: ${{ vars.SST_API_URL }}
-            AWS_SECRET_ID: ${{ secrets.SST_RECRUITER_PORTAL_SECRET_ID }}
+            AWS_SECRET_ID: ${{ secrets.SST_RECRUITER_DASHBOARD_SECRET_ID }}
+            GOOGLE_GEMINI_MODEL: "gemini-2.5-flash-preview-04-17"
             SKIP_ENV_VALIDATION: true
             NODE_ENV: production
 

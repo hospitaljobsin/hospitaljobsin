@@ -12,16 +12,13 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
-		"@agentwire/client": "^0.0.27",
-		"@agentwire/core": "^0.0.27",
-		"@agentwire/encoder": "^0.0.27",
-		"@agentwire/proto": "^0.0.27",
 		"@bprogress/next": "^3.2.12",
 		"@copilotkit/react-core": "^1.8.13",
 		"@copilotkit/react-ui": "^1.8.13",
 		"@copilotkit/runtime": "^1.8.13",
 		"@copilotkit/runtime-client-gql": "^1.8.13",
 		"@copilotkit/shared": "^1.8.14",
+		"@google/generative-ai": "^0.24.1",
 		"@heroui/react": "2.8.0-beta.4",
 		"@heroui/theme": "2.4.16-beta.2",
 		"@hookform/resolvers": "^5.0.1",
