@@ -158,8 +158,8 @@ Recruiting for healthcare roles is slow, fragmented, and often offline. Our port
 - Most platforms lack clear multi-org support for recruiters
 
 #### Technical Specs
-- Python 3.12
-- Graphene/Strawberry for GraphQL API
-- Next.js 14
-- Relay for client-side GraphQL
+- Python 3.13
+- Strawberry GraphQL for GraphQL API
+- Next.js 15
+- Relay 19 for client-side GraphQL
 - Terraform v1.12 for IaC
