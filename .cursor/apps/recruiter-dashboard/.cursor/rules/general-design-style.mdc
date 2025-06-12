@@ -1,7 +1,0 @@
----
-description: Emphasizes the design choices (and libraries) to use while designing frontend UIs
-globs:
-alwaysApply: false
----
-- Use the HeroUI react component library to design frontend UIs.
-- Avoid using shadows on components (such as cards, buttons). Only use it to showcase depth (like in navbar dropdowns).

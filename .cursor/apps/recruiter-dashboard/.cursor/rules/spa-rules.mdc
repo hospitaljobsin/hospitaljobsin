@@ -1,0 +1,7 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+- The Recruiter Dashboard is an SPA-only application.
+- There must strictly be no server-side rendering or React Server Components.
