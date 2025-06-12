@@ -5,7 +5,7 @@ FROM python:$PYTHON_BASE AS development
 
 # Install curl
 RUN apt-get update && \
-    apt-get install -y curl && \
+    apt-get install -y build-essential curl && \
     rm -rf /var/lib/apt/lists/*
 
 
@@ -14,13 +14,11 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /project
 
-ENV HNSWLIB_NO_NATIVE=1
-
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    export HNSWLIB_NO_NATIVE=1 && uv sync --locked --no-install-project
+    uv sync --locked --no-install-project
 
 # Copy the application files
 COPY . .
@@ -65,6 +63,10 @@ RUN unzip layer.zip -d /opt && \
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
+RUN apt-get update && \
+    apt-get install -y build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 
@@ -79,13 +81,11 @@ ENV UV_CACHE_DIR=/opt/uv-cache/
 # Set the working directory
 WORKDIR /project
 
-ENV HNSWLIB_NO_NATIVE=1
-
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    export HNSWLIB_NO_NATIVE=1 && uv sync --locked --no-install-project
+    uv sync --locked --no-install-project
 
 # Copy the application files
 COPY . .
