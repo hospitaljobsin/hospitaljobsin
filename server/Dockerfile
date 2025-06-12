@@ -14,6 +14,8 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /project
 
+ENV HNSWLIB_NO_NATIVE=1
+
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
@@ -76,6 +78,8 @@ ENV UV_CACHE_DIR=/opt/uv-cache/
 
 # Set the working directory
 WORKDIR /project
+
+ENV HNSWLIB_NO_NATIVE=1
 
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
