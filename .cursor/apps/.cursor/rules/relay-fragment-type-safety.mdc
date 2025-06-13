@@ -1,6 +1,6 @@
 ---
 description: Enforces type safety while fetching data using relay.
-globs:
+globs: **/*.ts, **/*.tsx
 alwaysApply: false
 ---
 # Relay Fragment Type Safety Guide
