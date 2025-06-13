@@ -11,8 +11,9 @@ import {
 	DropdownMenu,
 	DropdownTrigger,
 } from "@heroui/react";
-import { ArrowLeftRight, ChevronDown, Menu } from "lucide-react";
+import { ArrowLeftRight, ChevronDown, Menu, SettingsIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
@@ -67,18 +68,10 @@ export default function Sidebar({ queryReference }: Props) {
 
 	// Example navigation items (customize as needed)
 	const navItems = [
-		{ label: "Dashboard", href: links.dashboard },
-		{
-			label: "Jobs",
-			href: links.organizationDetailJobs(data.organization.slug),
-		},
-		{
-			label: "Members",
-			href: links.organizationDetailMembers(data.organization.slug),
-		},
 		{
 			label: "Settings",
-			href: links.organizationDetailSettings(data.organization.slug),
+			href: links.organizationDetailSettings,
+			icon: <SettingsIcon />,
 		},
 	];
 
@@ -108,8 +101,8 @@ export default function Sidebar({ queryReference }: Props) {
 				{/* Organization switcher (desktop) */}
 				<div className="flex items-center gap-4 mb-6">
 					<Dropdown placement="bottom-end">
-						<DropdownTrigger>
-							<div className="flex items-center gap-4 cursor-pointer">
+						<div className="flex items-center gap-4 cursor-pointer">
+							<Link href={links.dashboard} className="flex items-center gap-4">
 								<div className="relative h-8 w-8">
 									<Image
 										src={data.organization.logoUrl}
@@ -120,9 +113,12 @@ export default function Sidebar({ queryReference }: Props) {
 									/>
 								</div>
 								<span className="text-md">{data.organization.name}</span>
+							</Link>
+							<DropdownTrigger>
 								<ChevronDown strokeWidth={1} />
-							</div>
-						</DropdownTrigger>
+							</DropdownTrigger>
+						</div>
+
 						<DropdownMenu
 							variant="light"
 							aria-label="Navigation Menu"
@@ -138,14 +134,14 @@ export default function Sidebar({ queryReference }: Props) {
 					</Dropdown>
 				</div>
 				{/* Navigation links */}
-				<nav className="flex flex-col gap-2">
+				<nav className="flex flex-col gap-2 w-full">
 					{navItems.map((item) => (
 						<a
 							key={item.href}
 							href={item.href}
-							className="px-3 py-2 rounded-md text-foreground-900 hover:bg-background transition-colors"
+							className="py-2 rounded-md text-foreground-900 hover:bg-background transition-colors flex items-center gap-2"
 						>
-							{item.label}
+							{item.icon} {item.label}
 						</a>
 					))}
 				</nav>
@@ -192,10 +188,10 @@ export default function Sidebar({ queryReference }: Props) {
 								<a
 									key={item.href}
 									href={item.href}
-									className="px-3 py-2 rounded-md text-foreground-900 hover:bg-background-700 transition-colors"
+									className="px-3 py-2 rounded-md text-foreground-900 hover:bg-background-700 transition-colors flex items-center gap-2"
 									onClick={() => setMobileOpen(false)}
 								>
-									{item.label}
+									{item.icon} {item.label}
 								</a>
 							))}
 						</nav>

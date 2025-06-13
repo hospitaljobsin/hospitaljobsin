@@ -51,15 +51,14 @@ export default function DashboardView(props: {
 	}
 
 	return (
-		<div className="py-8 w-full h-full flex flex-col items-center gap-12 relative">
+		<div className="w-full h-full flex flex-col items-center gap-12 relative py-8 pl-6">
 			<OrganizationJobsController
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
 				rootQuery={query}
 			/>
-			<div className="flex-1 min-h-0 w-full overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-w-2.5 scrollbar-thumb-[hsl(var(--heroui-foreground-300))] scrollbar-track-transparent">
-				<OrganizationJobsList rootQuery={query} searchTerm={searchTerm} />
-			</div>
+
+			<OrganizationJobsList rootQuery={query} searchTerm={searchTerm} />
 		</div>
 	);
 }

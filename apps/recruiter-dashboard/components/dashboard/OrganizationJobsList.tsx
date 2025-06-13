@@ -116,7 +116,7 @@ export default function OrganizationJobsList({ rootQuery, searchTerm }: Props) {
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (
-			<div className="w-full flex flex-col items-center justify-center gap-8 py-12 px-6 border-dashed border-foreground-300 border-2 rounded-lg">
+			<div className="w-full flex flex-col items-center justify-center gap-8 border-dashed border-foreground-300 border-2 rounded-lg">
 				<div className="p-4 rounded-full bg-primary/10">
 					<BriefcaseBusiness className="w-8 h-8 text-primary" />
 				</div>

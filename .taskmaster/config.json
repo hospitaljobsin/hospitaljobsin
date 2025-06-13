@@ -7,8 +7,8 @@
 			"temperature": 0.2
 		},
 		"research": {
-			"provider": "google",
-			"modelId": "gemini-2.5-flash-preview-04-17",
+			"provider": "perplexity",
+			"modelId": "sonar",
 			"maxTokens": 8700,
 			"temperature": 0.1
 		},

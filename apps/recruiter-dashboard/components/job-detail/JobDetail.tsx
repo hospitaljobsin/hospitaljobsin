@@ -62,7 +62,7 @@ export default function JobDetail({ job }: Props) {
 	const data = useFragment(JobDetailFragment, job);
 
 	return (
-		<Card fullWidth className="p-4 sm:p-8 space-y-8" shadow="none">
+		<Card className="p-4 sm:p-8 space-y-8" shadow="none">
 			<CardHeader className="flex flex-col gap-4 w-full items-start">
 				<div className="flex items-center gap-4 w-full">
 					{data.organization?.logoUrl && (

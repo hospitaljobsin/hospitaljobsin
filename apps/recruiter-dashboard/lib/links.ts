@@ -4,8 +4,8 @@ const protocol =
 	env.NEXT_PUBLIC_ENVIRONMENT === "production" ? "https" : "http";
 
 const links = {
-	landing: "/",
-	dashboard: "/dashboard",
+	landing: env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL,
+	dashboard: "/",
 	createOrganization: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/new`,
 	organizationDetail: (slug: string) =>
 		`${protocol}://${slug}.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
@@ -17,8 +17,7 @@ const links = {
 	organizationDetailJobs: (slug: string) =>
 		`/dashboard/organizations/${slug}/jobs`,
 	organizationCreateJob: "/new-job",
-	organizationDetailSettings: (slug: string) =>
-		`/dashboard/organizations/${slug}/settings`,
+	organizationDetailSettings: "/settings",
 	jobDetailSettingsApplicationForm: (
 		organizationSlug: string,
 		jobSlug: string,

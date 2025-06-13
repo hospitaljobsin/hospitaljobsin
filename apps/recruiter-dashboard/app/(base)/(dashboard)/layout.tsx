@@ -92,7 +92,7 @@ export default function DashboardLayout({
 								animate={{ y: 0, opacity: 1 }}
 								exit={{ y: -50, opacity: 0 }}
 								transition={{ duration: 0.3, ease: "easeInOut" }}
-								className="w-full px-5 max-w-5xl mx-auto h-full"
+								className="w-full px-5 max-w-5xl mx-auto h-full overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-w-2.5 scrollbar-thumb-[hsl(var(--heroui-foreground-300))] scrollbar-track-transparent"
 							>
 								{children}
 							</motion.div>

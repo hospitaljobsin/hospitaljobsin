@@ -43,5 +43,9 @@ export default function JobDetailView({
 	const job = data.organization.job;
 	invariant(job.__typename === "Job", "Expected job to be of type Job");
 
-	return <JobDetail job={job} />;
+	return (
+		<div className="p-8 w-full h-full overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-w-2.5 scrollbar-thumb-[hsl(var(--heroui-foreground-300))] scrollbar-track-transparent">
+			<JobDetail job={job} />
+		</div>
+	);
 }
