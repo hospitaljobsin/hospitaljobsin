@@ -1,6 +1,6 @@
 ---
-description:
-globs:
+description: Enforces that the persisted query map shouldn't be edited manually.
+globs: **/query_map.json
 alwaysApply: true
 ---
 - Do not edit the [query_map.json](mdc:server/query_map.json) file. It is saved in an automated way when frontend clients fire requests to a persisting server.
