@@ -1,5 +1,5 @@
 ---
-description:
+description: Enforces rules to be followed while creating/ updating services.
 globs: **/services.py
 alwaysApply: false
 ---
