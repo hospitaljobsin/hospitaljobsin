@@ -1,0 +1,9 @@
+---
+description: Rules for UI development and styling using Hero UI and Tailwind CSS, emphasizing responsive design and a mobile-first approach.
+globs:
+alwaysApply: false
+---
+- Use Hero UI, and Tailwind for components and styling.
+- Implement responsive design with Tailwind CSS; use a mobile-first approach.
+- Prefer to use shadow="none" on components at all times, except for when we need to showcase depth (like in a navbar popup)
+- The design theme is generally flat, light colored theme (white with a green shade as the primary color)

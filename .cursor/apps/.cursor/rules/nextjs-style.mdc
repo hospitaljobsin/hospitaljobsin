@@ -1,0 +1,12 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+- Use Next.js to build the frontends
+- Make sure to use client side components wherever possible. Use RSC and Server Side Rendering only when SEO is required
+- Use typescript for type safety
+- Use environment variables (parsed by the `@t3-oss/env-nextjs` library) for configuration
+- Follow Next.js naming conventions for special files
+- Follow Next.js docs for Data Fetching, Rendering, and Routing.
+- Implement proper error boundaries

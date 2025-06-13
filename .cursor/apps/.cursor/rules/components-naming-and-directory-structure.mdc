@@ -1,0 +1,25 @@
+---
+description: Rules for naming components and structuring directories within the /components and /app folder, including conventions for lowercase names with dashes.
+globs:
+alwaysApply: false
+---
+- Favor named default exports for components.
+- Use lowercase with dashes for directories (e.g., components/auth-wizard).
+- Use pascal case for the component file names (eg: components/<dir>/ExampleComponent.tsx)
+- Define custom hooks in a separate lib/hooks/ directory, except for context hooks that can be defined alongside the provider.
+- Ensure that components used in the app directory are placed under the components/ directory in each project.
+
+For example:
+/app/page-1/page.tsx has components in:
+/components/page-1/ directory.
+
+- Use /components/shared/ directory for shared components.
+- For RSC pages, to aid with relay data fetching, define the relevant ClientComponents for the pages in the app directory itself.
+
+For example:
+
+/app/rsc-page-1/
+    page.tsx
+    Page1ClientComponent.tsx
+
+- Define other client components used in layouts (like HeaderClientComponent) in the app directory itself.

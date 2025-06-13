@@ -9,6 +9,7 @@ alwaysApply: false
 - The GraphQL API mostly returns unions on fields. Query for the `__typename` field as well and switch between the response types.
 - Use type narrowing inside components when a certain type for a field is expected to be present, using tiny-invariant.
 - Re-run the relay compiler after changing queries/ fragments.
+- Ensure that the fragments, queries and mutation names follow Relay's conventions (with respect to the file names).
 
 For React Server Components (RSCs):
 - Define a top level query at the page level. Include a separate fragment if needed for metadata generation.
@@ -174,7 +175,7 @@ For React Server Components (RSCs):
 
 For Client Components:
 - Ensure you use loadQuery and usePreloadedQuery APIs wherever possible, avoiding useLazyLoadQuery unless it is strictly needed
-- Utilize caching wherever possible (set fetchPolicy: "store-or-network")
+- Utilize relay client's caching capabilities wherever possible (set fetchPolicy: "store-or-network")
 - Wrap components that take in the queryReference (returned by loadQuery) with Suspense to avoid runtime errors.
   Example:
 
