@@ -1,0 +1,57 @@
+---
+description: Enforces type safety while fetching data using relay.
+globs:
+alwaysApply: false
+---
+# Relay Fragment Type Safety Guide
+
+When using Relay fragments in React components, always ensure that the prop type for the fragment key matches the fragment being used. This prevents type errors and ensures that the data shape is correct throughout your component tree.
+
+## Key Points
+- **Fragment Key Types:** Use the generated `<FragmentName>$key` type for the prop that receives the fragment key.
+- **Component Props:** The prop type for a fragment key must match the fragment actually spread in the component.
+- **No Cross-Fragment Casting:** Do not cast between different fragment key types (e.g., `JobFragment$key` vs `JobDetailFragment$key`).
+- **Type Narrowing:** When dealing with unions, use runtime checks (e.g., `invariant`) to narrow the type before passing the fragment key to a component.
+
+## Example from recruiter-dashboard
+
+**JobDetail.tsx**
+```typescript
+import type { JobDetailFragment$key } from "@/__generated__/JobDetailFragment.graphql";
+
+// ...
+type Props = {
+  job: JobDetailFragment$key;
+};
+
+export default function JobDetail({ job }: Props) {
+  const data = useFragment(JobDetailFragment, job);
+  // ...
+}
+```
+
+**JobDetailView.tsx**
+```typescript
+import type { JobDetailViewFragment$key } from "@/__generated__/JobDetailViewFragment.graphql";
+import { useFragment } from "react-relay";
+import invariant from "tiny-invariant";
+import JobDetail from "./JobDetail";
+
+export default function JobDetailView({ preloadedQuery }: { preloadedQuery: PreloadedQuery<pageJobDetailQuery> }) {
+  const rootData = usePreloadedQuery(PageJobDetailQuery, preloadedQuery);
+  const data = useFragment<JobDetailViewFragment$key>(JobDetailViewFragment, rootData);
+  invariant(data.organization.__typename === "Organization", "Expected organization to be of type Organization");
+  invariant(data.organization.job.__typename === "Job", "Expected job to be of type Job");
+  const job = data.organization.job;
+  return <JobDetail job={job} />;
+}
+```
+
+## Why This Matters
+- **Type Safety:** Prevents runtime errors and ensures the component receives the correct data shape.
+- **Maintainability:** Makes it easier to refactor fragments and components without introducing subtle bugs.
+- **Relay Compliance:** Aligns with Relay's best practices for fragment colocation and type generation.
+
+## References
+- [JobDetail.tsx](mdc:apps/recruiter-dashboard/components/job-detail/JobDetail.tsx)
+- [JobDetailView.tsx](mdc:apps/recruiter-dashboard/components/job-detail/JobDetailView.tsx)
