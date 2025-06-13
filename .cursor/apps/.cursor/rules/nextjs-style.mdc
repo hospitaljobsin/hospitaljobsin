@@ -10,3 +10,4 @@ alwaysApply: true
 - Follow Next.js naming conventions for special files
 - Use relay for data fetching throughout the application.
 - Implement proper error boundaries
+- Avoid hardcoding links within the application. Use the links map in lib/links.ts instead, and use that to route within the application.

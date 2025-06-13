@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<3c3dca65277eef4dff15d3c248a25313>>
- * @relayHash c98c285f152154cc0d8c795a09e50485
+ * @generated SignedSource<<adc67d2b8128ae53568c0a5284d9c754>>
+ * @relayHash cbe6bd869f926aeeed0b7f6ae7a2ba8e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c98c285f152154cc0d8c795a09e50485
+// @relayRequestID cbe6bd869f926aeeed0b7f6ae7a2ba8e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -44,15 +44,30 @@ v2 = {
   "storageKey": null
 },
 v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "slug",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "description",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v6 = {
   "kind": "InlineFragment",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    }
+    (v5/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -132,13 +147,7 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "slug",
-                        "storageKey": null
-                      },
+                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -146,6 +155,7 @@ return {
                         "name": "title",
                         "storageKey": null
                       },
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -219,12 +229,117 @@ return {
                         "kind": "ScalarField",
                         "name": "vacancies",
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "type",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "workMode",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "location",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "currency",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "minSalary",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "maxSalary",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "hasSalaryRange",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "minExperience",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "maxExperience",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "hasExperienceRange",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "externalApplicationUrl",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "Organization",
+                        "kind": "LinkedField",
+                        "name": "organization",
+                        "plural": false,
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "name",
+                            "storageKey": null
+                          },
+                          (v3/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "logoUrl",
+                            "storageKey": null
+                          },
+                          (v4/*: any*/),
+                          (v5/*: any*/)
+                        ],
+                        "storageKey": null
                       }
                     ],
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v3/*: any*/)
+                  (v6/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -232,14 +347,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v3/*: any*/)
+          (v6/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "c98c285f152154cc0d8c795a09e50485",
+    "id": "cbe6bd869f926aeeed0b7f6ae7a2ba8e",
     "metadata": {},
     "name": "pageJobDetailQuery",
     "operationKind": "query",

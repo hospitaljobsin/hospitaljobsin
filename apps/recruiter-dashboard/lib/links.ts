@@ -9,8 +9,7 @@ const links = {
 	createOrganization: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/new`,
 	organizationDetail: (slug: string) =>
 		`${protocol}://${slug}.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
-	organizationJobDetail: (organizationSlug: string, jobSlug: string) =>
-		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}`,
+	organizationJobDetail: (jobSlug: string) => `/jobs/${jobSlug}`,
 	organizationDetailMembers: (slug: string) =>
 		`/dashboard/organizations/${slug}/members`,
 	organizationDetailMemberInvites: (slug: string) =>

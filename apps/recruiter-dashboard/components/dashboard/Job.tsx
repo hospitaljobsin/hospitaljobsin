@@ -4,7 +4,6 @@ import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
 import { EyeIcon } from "lucide-react";
-import { useParams } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 
@@ -32,7 +31,6 @@ type Props = {
 
 export default function Job({ job }: Props) {
 	const router = useRouter();
-	const orgSlug = useParams<{ slug: string }>().slug;
 	const data = useFragment(JobFragment, job);
 
 	return (
@@ -43,7 +41,7 @@ export default function Job({ job }: Props) {
 			as="div"
 			disableRipple
 			onPress={() => {
-				router.push(links.organizationJobDetail(orgSlug, data.slug));
+				router.push(links.organizationJobDetail(data.slug));
 			}}
 			shadow="none"
 		>
