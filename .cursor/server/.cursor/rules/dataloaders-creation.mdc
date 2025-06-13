@@ -1,5 +1,5 @@
 ---
-description:
+description: Enforces rules to follow while creating GraphQL dataloaders for optimized data fetching
 globs: **/dataloaders.py
 alwaysApply: false
 ---
