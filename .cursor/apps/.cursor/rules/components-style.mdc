@@ -1,6 +1,6 @@
 ---
 description: Rules for UI development and styling using Hero UI and Tailwind CSS, emphasizing responsive design and a mobile-first approach.
-globs:
+globs: **/*.ts, **/*.tsx, **/*.css
 alwaysApply: false
 ---
 - Use Hero UI, and Tailwind for components and styling.
