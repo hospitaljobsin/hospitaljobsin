@@ -1,5 +1,5 @@
 ---
-description:
+description: Enforces rules to follow when creating/ updating GraphQL mutations.
 globs: **/mutation.py
 alwaysApply: false
 ---
