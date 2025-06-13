@@ -1,6 +1,6 @@
 ---
 description: Rules for naming components and structuring directories within the /components and /app folder, including conventions for lowercase names with dashes.
-globs:
+globs: **/*.ts, **/*.tsx
 alwaysApply: false
 ---
 - Favor named default exports for components.
