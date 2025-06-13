@@ -1,5 +1,5 @@
 ---
-description:
+description: Enforces rules to be followed when creating @strawberry.type or @strawberry.input classes.
 globs: **/types.py
 alwaysApply: false
 ---
