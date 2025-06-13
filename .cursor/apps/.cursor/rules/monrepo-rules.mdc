@@ -1,5 +1,5 @@
 ---
-description:
+description: Rules to follow when adding packages to frontend projects
 globs:
 alwaysApply: true
 ---
