@@ -1,5 +1,5 @@
 ---
-description:
+description: Enforces rules to follow when creating/ updating GraphQL fields that can be queried.
 globs: **/query.py,**/types.py
 alwaysApply: false
 ---
