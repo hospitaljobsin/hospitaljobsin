@@ -1,8 +1,9 @@
 ---
-description:
+description: Enforces rules to be followed while loading settings/ configuration.
 globs: **/*.py
 alwaysApply: false
 ---
+- Do not load the env vars directly from the os module. Use pydantic settings classes instead.
 - Do not load the `SecretSettings` class at the top level in any file.
 - The secret settings must always be lazily loaded (inside functions or methods inside classes).
 (This is because, it relies on the AWS Secrets and Parameters extension to be loaded, which doesn't happen when the python modules are initially imported.)
