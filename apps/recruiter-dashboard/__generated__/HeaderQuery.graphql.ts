@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<811d8d577991a8908a40eccae01b1378>>
- * @relayHash b6989c71b38323fe878dba2f38d3bde1
+ * @generated SignedSource<<b5425fab698c9da46ec201bbdeaa2b00>>
+ * @relayHash 0ab20a1429cf8b182926486709704cc4
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b6989c71b38323fe878dba2f38d3bde1
+// @relayRequestID 0ab20a1429cf8b182926486709704cc4
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -293,7 +293,7 @@ return {
                 "args": (v7/*: any*/),
                 "filters": null,
                 "handle": "connection",
-                "key": "HeaderDropdownMenuFragment_organizations",
+                "key": "OrganizationSwitcherListFragment_organizations",
                 "kind": "LinkedHandle",
                 "name": "organizations"
               },
@@ -323,7 +323,7 @@ return {
     ]
   },
   "params": {
-    "id": "b6989c71b38323fe878dba2f38d3bde1",
+    "id": "0ab20a1429cf8b182926486709704cc4",
     "metadata": {},
     "name": "HeaderQuery",
     "operationKind": "query",

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f08b52dd605d727fc9ad8a746254a2eb>>
- * @relayHash abc961753cdd5d9d1f41d2a4b3a5d289
+ * @generated SignedSource<<c3fad46f08295bc98893ce286360f2a4>>
+ * @relayHash 1e72a822c24091326e490c13923fd759
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID abc961753cdd5d9d1f41d2a4b3a5d289
+// @relayRequestID 1e72a822c24091326e490c13923fd759
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -29,7 +29,7 @@ export type SidebarQuery$data = {
   };
   readonly viewer: {
     readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "HeaderDropdownMenuFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "HeaderDropdownMenuFragment" | "OrganizationSwitcherListFragment">;
   } | {
     readonly __typename: "NotAuthenticatedError";
   } | {
@@ -146,6 +146,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "HeaderDropdownMenuFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "OrganizationSwitcherListFragment"
               }
             ],
             "type": "Account",
@@ -293,7 +298,7 @@ return {
                 "args": (v7/*: any*/),
                 "filters": null,
                 "handle": "connection",
-                "key": "HeaderDropdownMenuFragment_organizations",
+                "key": "OrganizationSwitcherListFragment_organizations",
                 "kind": "LinkedHandle",
                 "name": "organizations"
               },
@@ -323,7 +328,7 @@ return {
     ]
   },
   "params": {
-    "id": "abc961753cdd5d9d1f41d2a4b3a5d289",
+    "id": "1e72a822c24091326e490c13923fd759",
     "metadata": {},
     "name": "SidebarQuery",
     "operationKind": "query",
@@ -332,6 +337,6 @@ return {
 };
 })();
 
-(node as any).hash = "8046dfae4e46b48da37131e6b764df45";
+(node as any).hash = "68e56cb0f590ecaf685afa920545c1dd";
 
 export default node;

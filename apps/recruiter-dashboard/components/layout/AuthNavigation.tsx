@@ -33,10 +33,9 @@ const AuthNavigationFragment = graphql`
 
 type Props = {
 	rootQuery: AuthNavigationFragment$key;
-	isMobile?: boolean;
 };
 
-export default function AuthNavigation({ rootQuery, isMobile = true }: Props) {
+export default function AuthNavigation({ rootQuery }: Props) {
 	const data = useFragment(AuthNavigationFragment, rootQuery);
 	const {
 		isOpen: isLogoutModalOpen,
@@ -123,40 +122,28 @@ export default function AuthNavigation({ rootQuery, isMobile = true }: Props) {
 			<div className="hidden md:block">
 				<Dropdown className="hidden md:block" placement="bottom-end">
 					<DropdownTrigger>
-						{isMobile ? (
-							<Button disableRipple isIconOnly radius="sm" variant="light">
-								<Avatar
-									src={data.avatarUrl}
-									name={data.fullName}
-									showFallback
-									size="sm"
-									radius="full"
-								/>
-							</Button>
-						) : (
-							<Button
-								disableRipple
-								radius="sm"
-								variant="light"
-								className="flex items-center gap-3 px-2 py-4"
-							>
-								<Avatar
-									src={data.avatarUrl}
-									name={data.fullName}
-									showFallback
-									size="sm"
-									radius="full"
-								/>
-								<div className="flex flex-col items-start min-w-0">
-									<span className="truncate max-w-[160px] text-sm">
-										{data.fullName}
-									</span>
-									<span className="truncate max-w-[160px] text-xs text-foreground-500">
-										{data.email}
-									</span>
-								</div>
-							</Button>
-						)}
+						<Button
+							disableRipple
+							radius="sm"
+							variant="light"
+							className="flex items-center gap-3 px-2 py-4"
+						>
+							<Avatar
+								src={data.avatarUrl}
+								name={data.fullName}
+								showFallback
+								size="sm"
+								radius="full"
+							/>
+							<div className="flex flex-col items-start min-w-0">
+								<span className="truncate max-w-[160px] text-sm">
+									{data.fullName}
+								</span>
+								<span className="truncate max-w-[160px] text-xs text-foreground-500">
+									{data.email}
+								</span>
+							</div>
+						</Button>
 					</DropdownTrigger>
 
 					<DropdownMenu

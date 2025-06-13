@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<ffd462e4a007d81345bed7b52c5b9208>>
- * @relayHash 347192db68c7d06d7babfd13705fdcff
+ * @generated SignedSource<<a1e9b503653ffdbb5789697e0016a2f7>>
+ * @relayHash ad9abc22adff9dbd4a197d0ccaf5b7da
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,23 +9,23 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 347192db68c7d06d7babfd13705fdcff
+// @relayRequestID ad9abc22adff9dbd4a197d0ccaf5b7da
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type HeaderDropdownMenuPaginationQuery$variables = {
+export type OrganizationSwitcherListPaginationQuery$variables = {
   count?: number | null | undefined;
   cursor?: string | null | undefined;
   id: string;
 };
-export type HeaderDropdownMenuPaginationQuery$data = {
+export type OrganizationSwitcherListPaginationQuery$data = {
   readonly node: {
-    readonly " $fragmentSpreads": FragmentRefs<"HeaderDropdownMenuFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"OrganizationSwitcherListFragment">;
   } | null | undefined;
 };
-export type HeaderDropdownMenuPaginationQuery = {
-  response: HeaderDropdownMenuPaginationQuery$data;
-  variables: HeaderDropdownMenuPaginationQuery$variables;
+export type OrganizationSwitcherListPaginationQuery = {
+  response: OrganizationSwitcherListPaginationQuery$data;
+  variables: OrganizationSwitcherListPaginationQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -84,7 +84,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "HeaderDropdownMenuPaginationQuery",
+    "name": "OrganizationSwitcherListPaginationQuery",
     "selections": [
       {
         "alias": null,
@@ -108,7 +108,7 @@ return {
               }
             ],
             "kind": "FragmentSpread",
-            "name": "HeaderDropdownMenuFragment"
+            "name": "OrganizationSwitcherListFragment"
           }
         ],
         "storageKey": null
@@ -121,7 +121,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "HeaderDropdownMenuPaginationQuery",
+    "name": "OrganizationSwitcherListPaginationQuery",
     "selections": [
       {
         "alias": null,
@@ -229,7 +229,7 @@ return {
                 "args": (v4/*: any*/),
                 "filters": null,
                 "handle": "connection",
-                "key": "HeaderDropdownMenuFragment_organizations",
+                "key": "OrganizationSwitcherListFragment_organizations",
                 "kind": "LinkedHandle",
                 "name": "organizations"
               }
@@ -243,15 +243,15 @@ return {
     ]
   },
   "params": {
-    "id": "347192db68c7d06d7babfd13705fdcff",
+    "id": "ad9abc22adff9dbd4a197d0ccaf5b7da",
     "metadata": {},
-    "name": "HeaderDropdownMenuPaginationQuery",
+    "name": "OrganizationSwitcherListPaginationQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "7282649140b278881c80b408b2ff83cb";
+(node as any).hash = "27980f31455850403b0b06d0e16ffeab";
 
 export default node;

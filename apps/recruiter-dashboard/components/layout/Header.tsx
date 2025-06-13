@@ -80,7 +80,7 @@ export default function Header({
 				</NavbarBrand>
 
 				<NavbarContent justify="end">
-					<AuthNavigation rootQuery={data.viewer} isMobile={false} />
+					<AuthNavigation rootQuery={data.viewer} />
 				</NavbarContent>
 			</Navbar>
 		</>

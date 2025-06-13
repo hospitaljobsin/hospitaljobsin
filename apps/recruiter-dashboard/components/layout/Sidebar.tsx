@@ -7,6 +7,8 @@ import {
 	DrawerContent,
 	DrawerHeader,
 	Dropdown,
+	DropdownItem,
+	DropdownMenu,
 	DropdownTrigger,
 } from "@heroui/react";
 import { ChevronDown, Menu } from "lucide-react";
@@ -17,7 +19,8 @@ import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import AuthNavigation from "./AuthNavigation";
-import HeaderOrganizationList from "./HeaderDropdownMenu";
+import HeaderDropdownMenu from "./HeaderDropdownMenu";
+import OrganizationSwitcherList from "./OrganizationSwitcherList";
 
 export const SidebarQuery = graphql`
   query SidebarQuery($organizationSlug: String!) {
@@ -26,6 +29,7 @@ export const SidebarQuery = graphql`
         __typename
         ...AuthNavigationFragment
         ...HeaderDropdownMenuFragment
+        ...OrganizationSwitcherListFragment
       }
       ... on NotAuthenticatedError {
         __typename
@@ -97,11 +101,11 @@ export default function Sidebar({ queryReference }: Props) {
 					</div>
 					<span className="text-md">{data.organization.name}</span>
 				</div>
-				<AuthNavigation rootQuery={data.viewer} isMobile={true} />
+				<AuthNavigation rootQuery={data.viewer} />
 			</div>
 			{/* Sidebar for desktop */}
 			<aside className="hidden md:flex flex-col w-64 min-w-64 h-full bg-background-900 border-r border-foreground-300 px-4 py-6 gap-8">
-				{/* Organization switcher */}
+				{/* Organization switcher (desktop) */}
 				<div className="flex items-center gap-4 mb-6">
 					<Dropdown placement="bottom-end">
 						<DropdownTrigger>
@@ -119,7 +123,18 @@ export default function Sidebar({ queryReference }: Props) {
 								<ChevronDown strokeWidth={1} />
 							</div>
 						</DropdownTrigger>
-						<HeaderOrganizationList account={data.viewer} />
+						<DropdownMenu
+							variant="light"
+							aria-label="Navigation Menu"
+							itemClasses={{
+								base: "gap-4",
+							}}
+							className="hidden md:block"
+						>
+							<DropdownItem key="organization_switcher">
+								<HeaderDropdownMenu account={data.viewer} />
+							</DropdownItem>
+						</DropdownMenu>
 					</Dropdown>
 				</div>
 				{/* Navigation links */}
@@ -128,14 +143,14 @@ export default function Sidebar({ queryReference }: Props) {
 						<a
 							key={item.href}
 							href={item.href}
-							className="px-3 py-2 rounded-md text-foreground-900 hover:bg-background-700 font-medium transition-colors"
+							className="px-3 py-2 rounded-md text-foreground-900 hover:bg-background transition-colors"
 						>
 							{item.label}
 						</a>
 					))}
 				</nav>
 				<div className="mt-auto">
-					<AuthNavigation rootQuery={data.viewer} isMobile={false} />
+					<AuthNavigation rootQuery={data.viewer} />
 				</div>
 			</aside>
 			{/* Mobile drawer using HeroUI Drawer */}
@@ -157,22 +172,28 @@ export default function Sidebar({ queryReference }: Props) {
 						</div>
 						<span className="text-md">{data.organization.name}</span>
 					</DrawerHeader>
+					<p className="px-4 pb-6 text-foreground-500">Switch organization</p>
+					{/* Organization switcher for mobile */}
+					<div className="px-4 pb-2">
+						<OrganizationSwitcherList
+							account={data.viewer}
+							currentSlug={data.organization.slug}
+							onSwitch={() => setMobileOpen(false)}
+						/>
+					</div>
 					<DrawerBody className="flex flex-col gap-8 px-4 py-6 h-full">
 						<nav className="flex flex-col gap-2">
 							{navItems.map((item) => (
 								<a
 									key={item.href}
 									href={item.href}
-									className="px-3 py-2 rounded-md text-foreground-900 hover:bg-background-700 font-medium transition-colors"
+									className="px-3 py-2 rounded-md text-foreground-900 hover:bg-background-700 transition-colors"
 									onClick={() => setMobileOpen(false)}
 								>
 									{item.label}
 								</a>
 							))}
 						</nav>
-						<div className="mt-auto">
-							<AuthNavigation rootQuery={data.viewer} isMobile={true} />
-						</div>
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
