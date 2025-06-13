@@ -1,6 +1,6 @@
 ---
 description: Emphasizes how data fetching must take place
-globs:
+globs: **/*.ts, **/*.tsx
 alwaysApply: false
 ---
 - Make use of the Relay GraphQL client for data fetching, including generated typescript types wherever possible.
