@@ -1,5 +1,5 @@
 ---
-description:
+description: Enforces rules to follow while creating MongoDB collections using the Beanie ODM
 globs: **/documents.py
 alwaysApply: false
 ---
