@@ -35,7 +35,7 @@ export default function ChatInterface({
 	};
 
 	return (
-		<div className="w-full mx-auto bottom-0 shrink sticky">
+		<div className="w-full mx-auto bottom-0 shrink sticky z-50">
 			<div className="w-full bg-background-400 py-6 px-5 border-t border-gray-300">
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}

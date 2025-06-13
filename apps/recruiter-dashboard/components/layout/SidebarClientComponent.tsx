@@ -1,24 +1,24 @@
 "use client";
-import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
-import Header, { HeaderQuery } from "@/components/layout/Header";
-import HeaderSkeleton from "@/components/layout/HeaderSkeleton";
+import type { SidebarQuery as SidebarQueryType } from "@/__generated__/SidebarQuery.graphql";
 import useOrganization from "@/lib/hooks/useOrganization";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
+import HeaderSkeleton from "./HeaderSkeleton";
+import Sidebar, { SidebarQuery } from "./Sidebar";
 
-export default function HeaderClientComponent() {
+export default function SidebarClientComponent() {
 	const { organizationSlug } = useOrganization();
 	const environment = useRelayEnvironment();
-	const queryReference = loadQuery<HeaderQueryType>(
+	const queryReference = loadQuery<SidebarQueryType>(
 		environment,
-		HeaderQuery,
+		SidebarQuery,
 		{ organizationSlug: organizationSlug },
 		{ fetchPolicy: "store-or-network" },
 	);
 
 	return (
 		<Suspense fallback={<HeaderSkeleton />}>
-			<Header queryReference={queryReference} />
+			<Sidebar queryReference={queryReference} />
 		</Suspense>
 	);
 }

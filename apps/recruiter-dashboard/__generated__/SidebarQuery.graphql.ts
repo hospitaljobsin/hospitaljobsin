@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<811d8d577991a8908a40eccae01b1378>>
- * @relayHash b6989c71b38323fe878dba2f38d3bde1
+ * @generated SignedSource<<f08b52dd605d727fc9ad8a746254a2eb>>
+ * @relayHash abc961753cdd5d9d1f41d2a4b3a5d289
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,14 +9,14 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b6989c71b38323fe878dba2f38d3bde1
+// @relayRequestID abc961753cdd5d9d1f41d2a4b3a5d289
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type HeaderQuery$variables = {
+export type SidebarQuery$variables = {
   organizationSlug: string;
 };
-export type HeaderQuery$data = {
+export type SidebarQuery$data = {
   readonly organization: {
     readonly __typename: "Organization";
     readonly logoUrl: string;
@@ -38,9 +38,9 @@ export type HeaderQuery$data = {
     readonly __typename: "%other";
   };
 };
-export type HeaderQuery = {
-  response: HeaderQuery$data;
-  variables: HeaderQuery$variables;
+export type SidebarQuery = {
+  response: SidebarQuery$data;
+  variables: SidebarQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -123,7 +123,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "HeaderQuery",
+    "name": "SidebarQuery",
     "selections": [
       {
         "alias": null,
@@ -183,7 +183,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "HeaderQuery",
+    "name": "SidebarQuery",
     "selections": [
       {
         "alias": null,
@@ -323,15 +323,15 @@ return {
     ]
   },
   "params": {
-    "id": "b6989c71b38323fe878dba2f38d3bde1",
+    "id": "abc961753cdd5d9d1f41d2a4b3a5d289",
     "metadata": {},
-    "name": "HeaderQuery",
+    "name": "SidebarQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "9fae268e12289c9bf3de84f69c3ddcbb";
+(node as any).hash = "8046dfae4e46b48da37131e6b764df45";
 
 export default node;

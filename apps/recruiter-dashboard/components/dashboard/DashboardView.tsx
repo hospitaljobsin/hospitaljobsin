@@ -1,13 +1,14 @@
 "use client";
 import type { DashboardViewFragment$key } from "@/__generated__/DashboardViewFragment.graphql";
 import type { pageDashboardViewQuery as PageDashboardViewQueryType } from "@/__generated__/pageDashboardViewQuery.graphql";
-import { PageDashboardViewQuery } from "@/app/(base)/page";
+import { PageDashboardViewQuery } from "@/app/(base)/(dashboard)/page";
 import { useState } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { graphql, useFragment, usePreloadedQuery } from "react-relay";
 import invariant from "tiny-invariant";
 import OrganizationJobsController from "./OrganizationJobsController";
 import OrganizationJobsList from "./OrganizationJobsList";
+// Chat/Message imports
 
 const DashboardViewFragment = graphql`
  fragment DashboardViewFragment on Query @argumentDefinitions(
@@ -50,7 +51,7 @@ export default function DashboardView(props: {
 	}
 
 	return (
-		<div className="py-8 w-full h-full flex flex-col items-center gap-12">
+		<div className="py-8 w-full h-full flex flex-col items-center gap-12 relative">
 			<OrganizationJobsController
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}

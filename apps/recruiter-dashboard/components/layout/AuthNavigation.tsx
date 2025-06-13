@@ -15,7 +15,6 @@ import {
 	DropdownSection,
 	DropdownTrigger,
 	Link,
-	NavbarItem,
 	useDisclosure,
 } from "@heroui/react";
 import { LogOutIcon, Settings } from "lucide-react";
@@ -27,15 +26,17 @@ const AuthNavigationFragment = graphql`
   fragment AuthNavigationFragment on Account {
         __typename
         fullName
-		avatarUrl
+        avatarUrl
+        email
   }
 `;
 
 type Props = {
 	rootQuery: AuthNavigationFragment$key;
+	isMobile?: boolean;
 };
 
-export default function AuthNavigation({ rootQuery }: Props) {
+export default function AuthNavigation({ rootQuery, isMobile = true }: Props) {
 	const data = useFragment(AuthNavigationFragment, rootQuery);
 	const {
 		isOpen: isLogoutModalOpen,
@@ -50,7 +51,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 
 	return (
 		<>
-			<NavbarItem className="block md:hidden">
+			<div className="block md:hidden">
 				<Button
 					disableRipple
 					isIconOnly
@@ -66,7 +67,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						radius="full"
 					/>
 				</Button>
-			</NavbarItem>
+			</div>
 			<Drawer
 				isOpen={isDrawerOpen}
 				onClose={onDrawerOpenChange}
@@ -85,8 +86,10 @@ export default function AuthNavigation({ rootQuery }: Props) {
 								radius="full"
 							/>
 							<div className="flex flex-col gap-1 items-start">
-								<p className="text-tiny">Signed in as</p>
 								<p className="truncate max-w-48 text-medium">{data.fullName}</p>
+								<span className="truncate max-w-48 text-xs text-foreground-500">
+									{data.email}
+								</span>
 							</div>
 						</div>
 
@@ -117,18 +120,43 @@ export default function AuthNavigation({ rootQuery }: Props) {
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
-			<NavbarItem className="hidden md:block">
+			<div className="hidden md:block">
 				<Dropdown className="hidden md:block" placement="bottom-end">
 					<DropdownTrigger>
-						<Button disableRipple isIconOnly radius="sm" variant="light">
-							<Avatar
-								src={data.avatarUrl}
-								name={data.fullName}
-								showFallback
-								size="sm"
-								radius="full"
-							/>
-						</Button>
+						{isMobile ? (
+							<Button disableRipple isIconOnly radius="sm" variant="light">
+								<Avatar
+									src={data.avatarUrl}
+									name={data.fullName}
+									showFallback
+									size="sm"
+									radius="full"
+								/>
+							</Button>
+						) : (
+							<Button
+								disableRipple
+								radius="sm"
+								variant="light"
+								className="flex items-center gap-3 px-2 py-4"
+							>
+								<Avatar
+									src={data.avatarUrl}
+									name={data.fullName}
+									showFallback
+									size="sm"
+									radius="full"
+								/>
+								<div className="flex flex-col items-start min-w-0">
+									<span className="truncate max-w-[160px] text-sm">
+										{data.fullName}
+									</span>
+									<span className="truncate max-w-[160px] text-xs text-foreground-500">
+										{data.email}
+									</span>
+								</div>
+							</Button>
+						)}
 					</DropdownTrigger>
 
 					<DropdownMenu
@@ -150,9 +178,11 @@ export default function AuthNavigation({ rootQuery }: Props) {
 										radius="full"
 									/>
 									<div className="flex flex-col gap-1 items-start">
-										<p className="text-tiny">Signed in as</p>
 										<p className="truncate max-w-48 text-medium">
 											{data.fullName}
+										</p>
+										<p className="truncate max-w-48 text-xs text-foreground-500">
+											{data.email}
 										</p>
 									</div>
 								</div>
@@ -181,7 +211,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 						</DropdownSection>
 					</DropdownMenu>
 				</Dropdown>
-			</NavbarItem>
+			</div>
 			<LogoutModal
 				onOpenChange={onLogoutModalOpenChange}
 				isOpen={isLogoutModalOpen}
