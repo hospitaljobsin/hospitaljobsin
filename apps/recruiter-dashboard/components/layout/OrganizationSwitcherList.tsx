@@ -73,17 +73,21 @@ export default function OrganizationSwitcherList({
 		return () => observer.disconnect();
 	}, [data.organizations.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
-	const items = data.organizations.edges.map((edge) => ({
-		id: edge.node.id,
-		name: edge.node.name,
-		logoUrl: edge.node.logoUrl,
-		slug: edge.node.slug,
-	}));
+	// Filter out the current organization
+	const items = data.organizations.edges
+		.map((edge) => ({
+			id: edge.node.id,
+			name: edge.node.name,
+			logoUrl: edge.node.logoUrl,
+			slug: edge.node.slug,
+		}))
+		.filter((item) => item.slug !== currentSlug);
+
+	const hasOtherOrganizations = items.length > 0;
 
 	return (
 		<div className="flex flex-col gap-2">
 			{items.map((item, idx) => {
-				const isCurrent = item.slug === currentSlug;
 				const isLast = idx === items.length - 1;
 				return (
 					<a
@@ -91,7 +95,7 @@ export default function OrganizationSwitcherList({
 						href={links.organizationDetail(item.slug)}
 						className={clsx(
 							"flex items-center gap-3 px-3 py-2 rounded-md font-medium",
-							isCurrent ? "bg-background-600" : "hover:bg-background-700",
+							"hover:bg-background-700",
 						)}
 						onClick={onSwitch}
 					>
@@ -111,7 +115,8 @@ export default function OrganizationSwitcherList({
 				);
 			})}
 			{isLoadingNext ? <HeaderOrganizationListSkeleton /> : null}
-			<Divider />
+			{/* Only show divider if there are other organizations */}
+			{hasOtherOrganizations ? <Divider /> : null}
 			<a
 				href={links.createOrganization}
 				target="_blank"

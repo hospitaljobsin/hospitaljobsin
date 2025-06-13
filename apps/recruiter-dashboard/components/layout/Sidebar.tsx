@@ -11,7 +11,7 @@ import {
 	DropdownMenu,
 	DropdownTrigger,
 } from "@heroui/react";
-import { ChevronDown, Menu } from "lucide-react";
+import { ArrowLeftRight, ChevronDown, Menu } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import type { PreloadedQuery } from "react-relay";
@@ -170,9 +170,14 @@ export default function Sidebar({ queryReference }: Props) {
 								sizes="20vw"
 							/>
 						</div>
-						<span className="text-md">{data.organization.name}</span>
+						<span className="text-md font-normal">
+							{data.organization.name}
+						</span>
 					</DrawerHeader>
-					<p className="px-4 pb-6 text-foreground-500">Switch organization</p>
+					<div className="w-full flex items-center gap-2 justify-start px-4 pb-6 text-foreground-500">
+						<ArrowLeftRight size={14} />
+						<p className="text-sm">Switch organization</p>
+					</div>
 					{/* Organization switcher for mobile */}
 					<div className="px-4 pb-2">
 						<OrganizationSwitcherList
