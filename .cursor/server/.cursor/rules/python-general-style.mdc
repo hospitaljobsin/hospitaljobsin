@@ -1,5 +1,5 @@
 ---
-description:
+description: Enforces general style to be followed while writing Python code.
 globs: **/*.py
 alwaysApply: false
 ---
