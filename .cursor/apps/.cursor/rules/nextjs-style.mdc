@@ -1,6 +1,6 @@
 ---
-description:
-globs:
+description: Rules for adhering to Next.js conventions, including data fetching, rendering, routing.
+globs: **/*.ts, **/*.tsx
 alwaysApply: true
 ---
 - Use Next.js to build the frontends
@@ -8,5 +8,5 @@ alwaysApply: true
 - Use typescript for type safety
 - Use environment variables (parsed by the `@t3-oss/env-nextjs` library) for configuration
 - Follow Next.js naming conventions for special files
-- Follow Next.js docs for Data Fetching, Rendering, and Routing.
+- Use relay for data fetching throughout the application.
 - Implement proper error boundaries
