@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<12a6f3554dc59dfb0be0927c3a50fa93>>
+ * @generated SignedSource<<63e9ec65ccc224115a96ea4ae19a4b81>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,6 +15,7 @@ export type JobDetailViewFragment$data = {
     readonly __typename: "Organization";
     readonly job: {
       readonly __typename: "Job";
+      readonly title: string;
       readonly " $fragmentSpreads": FragmentRefs<"JobDetailFragment">;
     } | {
       // This will never be '%other', but we need some
@@ -95,6 +96,13 @@ return {
                   "kind": "InlineFragment",
                   "selections": [
                     {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "title",
+                      "storageKey": null
+                    },
+                    {
                       "args": null,
                       "kind": "FragmentSpread",
                       "name": "JobDetailFragment"
@@ -119,6 +127,6 @@ return {
 };
 })();
 
-(node as any).hash = "470bdc0d89b9c23796fb8b265d804aa0";
+(node as any).hash = "5f5abb49bd2f26d0c533e9a41eadbfab";
 
 export default node;

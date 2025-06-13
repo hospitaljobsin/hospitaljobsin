@@ -10,10 +10,18 @@ import {
 	DropdownItem,
 	DropdownMenu,
 	DropdownTrigger,
+	Tab,
+	Tabs,
 } from "@heroui/react";
-import { ArrowLeftRight, ChevronDown, Menu, SettingsIcon } from "lucide-react";
+import {
+	ArrowLeftRight,
+	BriefcaseBusiness,
+	ChevronDown,
+	Menu,
+	SettingsIcon,
+} from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
@@ -65,9 +73,22 @@ export default function Sidebar({ queryReference }: Props) {
 		"Expected 'Organization' node type",
 	);
 	const [mobileOpen, setMobileOpen] = useState(false);
+	const pathname = usePathname();
+
+	function getSelectedKey(pathname: string) {
+		if (pathname.startsWith(links.organizationJobDetail(""))) {
+			return links.dashboard;
+		}
+		return pathname;
+	}
 
 	// Example navigation items (customize as needed)
 	const navItems = [
+		{
+			label: "My Jobs",
+			href: links.dashboard,
+			icon: <BriefcaseBusiness />,
+		},
 		{
 			label: "Settings",
 			href: links.organizationDetailSettings,
@@ -80,7 +101,11 @@ export default function Sidebar({ queryReference }: Props) {
 			{/* Mobile top bar */}
 			<div className="md:hidden flex items-center justify-between px-4 py-2 border-b border-foreground-300">
 				<div className="flex items-center gap-2">
-					<button onClick={() => setMobileOpen(true)} aria-label="Open sidebar">
+					<button
+						type="button"
+						onClick={() => setMobileOpen(true)}
+						aria-label="Open sidebar"
+					>
 						<Menu className="w-6 h-6" />
 					</button>
 					<div className="relative h-8 w-8">
@@ -101,8 +126,8 @@ export default function Sidebar({ queryReference }: Props) {
 				{/* Organization switcher (desktop) */}
 				<div className="flex items-center gap-4 mb-6">
 					<Dropdown placement="bottom-end">
-						<div className="flex items-center gap-4 cursor-pointer">
-							<Link href={links.dashboard} className="flex items-center gap-4">
+						<DropdownTrigger>
+							<div className="flex items-center gap-4 cursor-pointer">
 								<div className="relative h-8 w-8">
 									<Image
 										src={data.organization.logoUrl}
@@ -113,11 +138,10 @@ export default function Sidebar({ queryReference }: Props) {
 									/>
 								</div>
 								<span className="text-md">{data.organization.name}</span>
-							</Link>
-							<DropdownTrigger>
+
 								<ChevronDown strokeWidth={1} />
-							</DropdownTrigger>
-						</div>
+							</div>
+						</DropdownTrigger>
 
 						<DropdownMenu
 							variant="light"
@@ -133,18 +157,35 @@ export default function Sidebar({ queryReference }: Props) {
 						</DropdownMenu>
 					</Dropdown>
 				</div>
-				{/* Navigation links */}
-				<nav className="flex flex-col gap-2 w-full">
+				{/* Navigation links as vertical tabs */}
+				<Tabs
+					aria-label="Sidebar Navigation"
+					isVertical
+					variant="light"
+					selectedKey={getSelectedKey(pathname)}
+					classNames={{
+						tabWrapper: "w-full",
+						base: "w-full",
+						tabContent: "w-full",
+						tabList: "w-full",
+						panel: "h-full",
+						tab: "py-5",
+						cursor: "shadow-none",
+					}}
+				>
 					{navItems.map((item) => (
-						<a
+						<Tab
 							key={item.href}
 							href={item.href}
-							className="py-2 rounded-md text-foreground-900 hover:bg-background transition-colors flex items-center gap-2"
-						>
-							{item.icon} {item.label}
-						</a>
+							title={
+								<div className="flex items-center gap-2">
+									{item.icon}
+									<span>{item.label}</span>
+								</div>
+							}
+						/>
 					))}
-				</nav>
+				</Tabs>
 				<div className="mt-auto">
 					<AuthNavigation rootQuery={data.viewer} />
 				</div>
@@ -183,18 +224,35 @@ export default function Sidebar({ queryReference }: Props) {
 						/>
 					</div>
 					<DrawerBody className="flex flex-col gap-8 px-4 py-6 h-full">
-						<nav className="flex flex-col gap-2">
+						{/* Navigation links as horizontal tabs for mobile */}
+						<Tabs
+							aria-label="Sidebar Navigation"
+							variant="light"
+							selectedKey={getSelectedKey(pathname)}
+							classNames={{
+								tabWrapper: "w-full",
+								base: "w-full",
+								tabContent: "w-full",
+								tabList: "w-full",
+								panel: "h-full",
+								tab: "py-5",
+								cursor: "shadow-none",
+							}}
+							isVertical
+						>
 							{navItems.map((item) => (
-								<a
+								<Tab
 									key={item.href}
 									href={item.href}
-									className="px-3 py-2 rounded-md text-foreground-900 hover:bg-background-700 transition-colors flex items-center gap-2"
-									onClick={() => setMobileOpen(false)}
-								>
-									{item.icon} {item.label}
-								</a>
+									title={
+										<div className="flex items-center gap-2">
+											{item.icon}
+											<span>{item.label}</span>
+										</div>
+									}
+								/>
 							))}
-						</nav>
+						</Tabs>
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
