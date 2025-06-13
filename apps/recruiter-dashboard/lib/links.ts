@@ -18,11 +18,8 @@ const links = {
 		`/dashboard/organizations/${slug}/jobs`,
 	organizationCreateJob: "/new-job",
 	organizationDetailSettings: "/settings",
-	jobDetailSettingsApplicationForm: (
-		organizationSlug: string,
-		jobSlug: string,
-	) =>
-		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/settings/application-form`,
+	jobDetailSettingsApplicationForm: (jobSlug: string) =>
+		`/jobs/${jobSlug}/settings/application-form`,
 	jobDetailSettings: (organizationSlug: string, jobSlug: string) =>
 		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/settings`,
 	jobDetailApplicants: (organizationSlug: string, jobSlug: string) =>

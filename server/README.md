@@ -14,8 +14,7 @@
 - [PyWebAuthn](https://duo-labs.github.io/py_webauthn/) - WebAuthn Library
 - [Structlog](https://www.structlog.org/) - Structured logging
 - [MongoDB](https://www.mongodb.com/) - Database
-- [AG2AI](https://ag2.ai/) - Agentic Framework
-- [CopilotKit](https://www.copilotkit.ai/) - AI Copilot Framework
+- [CrewAI](https://crewai.com/) - Agentic Framework
 
 and other packages from [pyproject.toml](./pyproject.toml) 💖
 

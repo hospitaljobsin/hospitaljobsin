@@ -83,8 +83,6 @@ jobs:
             NEXT_PUBLIC_SENTRY_ORGANIZATION: ${{ vars.SENTRY_ORGANIZATION }}
             NEXT_PUBLIC_SENTRY_PROJECT: ${{vars.RECRUITER_DASHBOARD_SENTRY_PROJECT}}
             NEXT_PUBLIC_ROOT_DOMAIN: ${{vars.PUBLIC_ROOT_DOMAIN}}
-            NEXT_PUBLIC_COPILOTKIT_RUNTIME_URL: /api/copilotkit
-            NEXT_PUBLIC_COPILOTKIT_AGENT_NAME: agenticChatAgent
             API_URL: ${{ vars.SST_API_URL }}
             AWS_SECRET_ID: ${{ secrets.SST_RECRUITER_DASHBOARD_SECRET_ID }}
             GOOGLE_GEMINI_MODEL: "gemini-2.5-flash-preview-04-17"

@@ -2,6 +2,7 @@
 import { pageJobDetailQuery } from "@/__generated__/pageJobDetailQuery.graphql";
 import JobDetailView from "@/components/job-detail/JobDetailView";
 import useOrganization from "@/lib/hooks/useOrganization";
+import { Spinner } from "@heroui/react";
 import { useParams } from "next/navigation";
 import { Suspense } from "react";
 import { graphql, loadQuery, useRelayEnvironment } from "react-relay";
@@ -25,7 +26,11 @@ export default function JobDetailPage() {
 
 	return (
 		<Suspense
-			fallback={<div className="p-8 text-center">Loading job details...</div>}
+			fallback={
+				<div className="w-full h-full flex items-center justify-center">
+					<Spinner size="lg" />
+				</div>
+			}
 		>
 			<JobDetailView preloadedQuery={preloadedQuery} />
 		</Suspense>

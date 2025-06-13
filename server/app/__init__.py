@@ -3,9 +3,6 @@ from contextlib import asynccontextmanager
 
 from aioinject.ext.fastapi import AioInjectMiddleware
 from asgi_correlation_id import CorrelationIdMiddleware
-from copilotkit import CopilotKitRemoteEndpoint
-from copilotkit.crewai import CrewAIAgent
-from copilotkit.integrations.fastapi import add_fastapi_endpoint
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from structlog import get_logger
@@ -37,18 +34,6 @@ def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
         create_graphql_router(app_settings=app_settings),
         prefix="/graphql",
     )
-
-    sdk = CopilotKitRemoteEndpoint(
-        agents=[
-            CrewAIAgent(
-                name="create_job_crew",
-                description="Job Posting creation agent",
-                crew=CreateJobCrew(),
-            ),
-        ],
-    )
-
-    add_fastapi_endpoint(app, sdk, "/copilotkit")
     app.include_router(health_router)
     app.include_router(auth_router)
     app.include_router(jobs_router)

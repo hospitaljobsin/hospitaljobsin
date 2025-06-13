@@ -27,6 +27,7 @@ class CreateJobCrew:
 
     @before_kickoff
     def prepare_environment(self, inputs):
+        print("before kickoff...")
         # Preprocess or modify inputs
         os.environ["SERPER_API_KEY"] = get_settings(
             SecretSettings
@@ -95,5 +96,6 @@ class CreateJobCrew:
             tasks=self.tasks,  # Automatically created by the @task decorator
             process=Process.sequential,
             verbose=True,
+            chat_llm=self.gemini_llm(),
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )
