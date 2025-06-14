@@ -66,7 +66,7 @@ export default function JobDetailHeader({
 				<BreadcrumbItem isCurrent>{data.organization.job.title}</BreadcrumbItem>
 			</Breadcrumbs>
 
-			<div className="w-full flex flex-col bg-background border-b border-gray-300">
+			<div className="w-full flex flex-col border-b border-foreground-300">
 				<div className="w-full flex items-center justify-between">
 					<JobTabs job={data.organization.job} />
 				</div>

@@ -10,12 +10,8 @@ const links = {
 	organizationDetail: (slug: string) =>
 		`${protocol}://${slug}.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
 	organizationJobDetail: (jobSlug: string) => `/jobs/${jobSlug}`,
-	organizationDetailMembers: (slug: string) =>
-		`/dashboard/organizations/${slug}/members`,
-	organizationDetailMemberInvites: (slug: string) =>
-		`/dashboard/organizations/${slug}/members/invites`,
-	organizationDetailJobs: (slug: string) =>
-		`/dashboard/organizations/${slug}/jobs`,
+	organizationDetailMembers: "/settings/members",
+	organizationDetailMemberInvites: "/settings/invites",
 	organizationCreateJob: "/new-job",
 	organizationDetailSettings: "/settings",
 	jobDetailSettingsApplicationForm: (jobSlug: string) =>

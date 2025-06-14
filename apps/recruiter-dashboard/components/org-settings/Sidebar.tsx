@@ -2,8 +2,26 @@
 
 import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
-import { Settings } from "lucide-react";
+import { Mail, Settings, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
+
+const items = [
+	{
+		icon: Settings,
+		label: "General",
+		href: links.organizationDetailSettings,
+	},
+	{
+		icon: Users,
+		label: "Members",
+		href: links.organizationDetailMembers,
+	},
+	{
+		icon: Mail,
+		label: "Invites",
+		href: links.organizationDetailMemberInvites,
+	},
+];
 
 export default function OrgSettingsSidebar() {
 	const pathname = usePathname();
@@ -25,16 +43,18 @@ export default function OrgSettingsSidebar() {
 						cursor: "shadow-none",
 					}}
 				>
-					<Tab
-						key={links.organizationDetailSettings}
-						href={links.organizationDetailSettings}
-						title={
-							<div className="flex items-center space-x-4">
-								<Settings size={20} />
-								<span>General</span>
-							</div>
-						}
-					/>
+					{items.map((item) => (
+						<Tab
+							key={item.href}
+							href={item.href}
+							title={
+								<div className="flex items-center space-x-4">
+									<item.icon size={20} />
+									<span>{item.label}</span>
+								</div>
+							}
+						/>
+					))}
 				</Tabs>
 			</div>
 			<div className="w-full md:hidden p-4 bg-background-700 flex justify-start">
@@ -48,16 +68,18 @@ export default function OrgSettingsSidebar() {
 						cursor: "shadow-none",
 					}}
 				>
-					<Tab
-						key={links.organizationDetailSettings}
-						href={links.organizationDetailSettings}
-						title={
-							<div className="flex items-center space-x-4">
-								<Settings size={16} />
-								<span>General</span>
-							</div>
-						}
-					/>
+					{items.map((item) => (
+						<Tab
+							key={item.href}
+							href={item.href}
+							title={
+								<div className="flex items-center space-x-4">
+									<item.icon size={16} />
+									<span>{item.label}</span>
+								</div>
+							}
+						/>
+					))}
 				</Tabs>
 			</div>
 		</>

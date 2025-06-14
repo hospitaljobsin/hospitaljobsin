@@ -12,7 +12,7 @@ export const PageOrganizationGeneralSettingsQuery = graphql`
   }
 `;
 
-export default function DashboardPage() {
+export default function OrganizationGeneralSettingsPage() {
 	const environment = useRelayEnvironment();
 	const { organizationSlug } = useOrganization();
 

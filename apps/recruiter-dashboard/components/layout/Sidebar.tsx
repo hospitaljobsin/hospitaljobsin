@@ -59,6 +59,19 @@ type Props = {
 	queryReference: PreloadedQuery<SidebarQueryType>;
 };
 
+const navItems = [
+	{
+		label: "My Jobs",
+		href: links.dashboard,
+		icon: <BriefcaseBusiness />,
+	},
+	{
+		label: "Settings",
+		href: links.organizationDetailSettings,
+		icon: <SettingsIcon />,
+	},
+];
+
 export default function Sidebar({ queryReference }: Props) {
 	const data = usePreloadedQuery<SidebarQueryType>(
 		SidebarQuery,
@@ -79,22 +92,12 @@ export default function Sidebar({ queryReference }: Props) {
 		if (pathname.startsWith(links.organizationJobDetail(""))) {
 			return links.dashboard;
 		}
+
+		if (pathname.startsWith(links.organizationDetailSettings)) {
+			return links.organizationDetailSettings;
+		}
 		return pathname;
 	}
-
-	// Example navigation items (customize as needed)
-	const navItems = [
-		{
-			label: "My Jobs",
-			href: links.dashboard,
-			icon: <BriefcaseBusiness />,
-		},
-		{
-			label: "Settings",
-			href: links.organizationDetailSettings,
-			icon: <SettingsIcon />,
-		},
-	];
 
 	return (
 		<>
