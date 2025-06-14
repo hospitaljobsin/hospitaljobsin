@@ -266,17 +266,6 @@ class JobRepo:
         """Delete a job."""
         await job.delete()
 
-    async def get_all_job_ids_by_organization_id(
-        self, organization_id: ObjectId
-    ) -> list[ObjectId]:
-        """Get all job IDs for a given organization ID."""
-        jobs = (
-            await Job.find(Job.organization.id == organization_id)
-            .project(Job.id)
-            .to_list()
-        )
-        return [job.id for job in jobs]
-
 
 class SavedJobRepo:
     async def get(self, account_id: ObjectId, job_id: ObjectId) -> SavedJob | None:
