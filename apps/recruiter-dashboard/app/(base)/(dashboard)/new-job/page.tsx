@@ -32,7 +32,7 @@ const CreateJobPage: FC = () => {
 	return (
 		<Suspense
 			fallback={
-				<div className="flex justify-center items-center min-h-[200px]">
+				<div className="flex justify-center items-center w-full h-full">
 					<Spinner size="lg" />
 				</div>
 			}

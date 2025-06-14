@@ -2,7 +2,6 @@ import type { NewJobContentFragment$key } from "@/__generated__/NewJobContentFra
 import PageNewJobQuery, {
 	type pageNewJobQuery,
 } from "@/__generated__/pageNewJobQuery.graphql";
-import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import { Button, Card, CardBody, Input, Spinner } from "@heroui/react";
 import { useRouter } from "next/navigation";
@@ -54,6 +53,25 @@ export const NewJobContentFragment = graphql`
 	}
 `;
 
+// MOCK: Replace this with real API integration when backend is ready
+const MOCK_JOB_DATA = {
+	title: "ICU Nurse",
+	description:
+		"We are seeking a dedicated ICU nurse to join our hospital team. Responsibilities include patient care in the ICU, monitoring vital signs, and collaborating with physicians.",
+	vacancies: 3,
+	skills: ["Critical Care", "Patient Monitoring", "Teamwork"],
+	location: "New Delhi, India",
+	minSalary: 40000,
+	maxSalary: 60000,
+	minExperience: 2,
+	maxExperience: 5,
+	expiresAt: null,
+	jobType: "FULL_TIME",
+	workMode: "OFFICE",
+};
+
+const MOCK_MODE = true; // Set to false when backend is ready
+
 export default function NewJobContent({
 	initialQueryRef,
 }: { initialQueryRef: PreloadedQuery<pageNewJobQuery> }) {
@@ -82,6 +100,7 @@ export default function NewJobContent({
 
 	// Polling effect
 	useEffect(() => {
+		if (MOCK_MODE) return; // Skip polling in mock mode
 		if (!kickoffId) return;
 		setPolling(true);
 		setApiError(null);
@@ -96,11 +115,7 @@ export default function NewJobContent({
 				const status: JobStatusResponse = await res.json();
 				if (cancelled) return;
 				setJobStatus(status);
-				if (
-					status.status === "done" ||
-					status.status === "error" ||
-					status.status === "failed"
-				) {
+				if (status.status === "done" || status.status === "failed") {
 					setPolling(false);
 					return;
 				}
@@ -158,15 +173,24 @@ export default function NewJobContent({
 		setApiError(null);
 		setKickoffId(null);
 		setJobStatus(null);
+		// MOCK: Simulate backend job generation
+		setTimeout(() => {
+			setJobStatus({
+				status: "done",
+				data: MOCK_JOB_DATA,
+				error: undefined,
+			});
+			setKickoffId("mock-kickoff-id");
+		}, 1000);
+		reset();
+		// Uncomment below for real API integration
+		/*
 		try {
-			const res = await fetch(
-				`${env.NEXT_PUBLIC_API_URL}/api/ai/generate-job`,
-				{
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ outline: data.outline }),
-				},
-			);
+			const res = await fetch(links.aiGenerateJob, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ outline: data.outline }),
+			});
 			if (!res.ok) throw new Error("Failed to start job generation");
 			const json: KickoffResponse = await res.json();
 			setKickoffId(json.kickoff_id);
@@ -174,7 +198,23 @@ export default function NewJobContent({
 		} catch (err) {
 			setApiError("Error starting job generation");
 		}
+		*/
 	};
+
+	// If job creation is done and data exists, show only the form and nothing else
+	if (jobStatus && jobStatus.status === "done" && jobStatus.data) {
+		return (
+			<div className="w-full h-full flex justify-center items-start pl-6">
+				<JobCreationForm
+					defaultValues={mapAIToFormDefaults(jobStatus.data)}
+					organization={orgData.organization}
+					onSuccess={(slug: string) =>
+						router.push(links.organizationJobDetail(slug))
+					}
+				/>
+			</div>
+		);
+	}
 
 	return (
 		<div className="max-w-2xl mx-auto py-10 px-4">
@@ -237,23 +277,14 @@ export default function NewJobContent({
 
 				{selected === "scratch" && kickoffId && (
 					<div className="mt-4 flex flex-col items-center gap-4">
-						{polling && <Spinner size="lg" label="Generating job with AI..." />}
+						{!MOCK_MODE && polling && (
+							<Spinner size="lg" label="Generating job with AI..." />
+						)}
 						{jobStatus && (
 							<div className="text-center">
 								<div className="font-medium mb-2">
 									Status: {jobStatus.status}
 								</div>
-								{jobStatus.status === "done" && jobStatus.data && (
-									<div className="mt-2">
-										<JobCreationForm
-											defaultValues={mapAIToFormDefaults(jobStatus.data)}
-											organization={orgData.organization}
-											onSuccess={(slug: string) =>
-												router.push(links.organizationJobDetail(slug))
-											}
-										/>
-									</div>
-								)}
 								{jobStatus.status === "failed" && (
 									<>
 										<div className="p-4 bg-red-50 border border-red-200 rounded text-red-800">

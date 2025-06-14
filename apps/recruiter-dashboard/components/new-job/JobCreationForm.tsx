@@ -1,9 +1,30 @@
 import type { JobCreationFormFragment$key } from "@/__generated__/JobCreationFormFragment.graphql";
 import type { JobCreationFormMutation } from "@/__generated__/JobCreationFormMutation.graphql";
 import { ChipsInput } from "@/components/forms/ChipsInput";
+import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
-import { Button, Card, CardBody, CardFooter, Input } from "@heroui/react";
+import {
+	Accordion,
+	AccordionItem,
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	DatePicker,
+	Input,
+	NumberInput,
+	Radio,
+	RadioGroup,
+} from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Key } from "@react-types/shared";
+import {
+	BriefcaseBusiness,
+	IndianRupee,
+	MapPin,
+	TimerIcon,
+} from "lucide-react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";
@@ -103,6 +124,9 @@ export default function JobCreationForm({
 		resolver: zodResolver(jobFormSchema),
 		defaultValues,
 	});
+	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<
+		Iterable<Key>
+	>(new Set([]));
 
 	const onSubmit = (formData: JobFormValues) => {
 		commitCreateJob({
@@ -136,7 +160,7 @@ export default function JobCreationForm({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full mt-6">
-			<Card shadow="none" className="p-6 gap-12 flex flex-col">
+			<Card shadow="none" className="p-6 gap-12 flex flex-col" fullWidth>
 				<CardBody className="flex flex-col gap-12 overflow-y-hidden">
 					<Input
 						{...register("title")}
@@ -189,23 +213,204 @@ export default function JobCreationForm({
 						control={control}
 						name="vacancies"
 						render={({ field }) => (
-							<Input
-								type="number"
+							<NumberInput
 								label="Vacancies"
 								placeholder="Enter vacancies"
 								labelPlacement="outside"
-								value={
-									field.value !== null && field.value !== undefined
-										? String(field.value)
-										: ""
-								}
-								onChange={(e) => field.onChange(Number(e.target.value))}
+								value={field.value || 0}
+								onValueChange={field.onChange}
 								errorMessage={errors.vacancies?.message}
 								isInvalid={!!errors.vacancies}
 							/>
 						)}
 					/>
-					{/* Add other fields (location, salary, experience, jobType, workMode, etc.) as in JobEditForm */}
+					<div className="w-full flex flex-col sm:flex-row gap-12 items-start justify-start">
+						<Controller
+							control={control}
+							name="jobType"
+							render={({ field }) => (
+								<RadioGroup
+									label="Select Job Type"
+									value={field.value}
+									onValueChange={field.onChange}
+									className="flex-1 w-full"
+								>
+									<Radio value="CONTRACT">Contract</Radio>
+									<Radio value="FULL_TIME">Full Time</Radio>
+									<Radio value="INTERNSHIP">Internship</Radio>
+									<Radio value="PART_TIME">Part Time</Radio>
+								</RadioGroup>
+							)}
+						/>
+						<Controller
+							control={control}
+							name="workMode"
+							render={({ field }) => (
+								<RadioGroup
+									label="Select Work Mode"
+									value={field.value}
+									onValueChange={field.onChange}
+									className="flex-1 w-full"
+								>
+									<Radio value="HYBRID">Hybrid</Radio>
+									<Radio value="OFFICE">Office</Radio>
+									<Radio value="REMOTE">Remote</Radio>
+								</RadioGroup>
+							)}
+						/>
+					</div>
+					<Accordion
+						selectionMode="multiple"
+						variant="light"
+						keepContentMounted
+						fullWidth
+						itemClasses={{ base: "pb-8" }}
+						selectedKeys={accordionSelectedKeys}
+						onSelectionChange={setAccordionSelectedKeys}
+					>
+						<AccordionItem
+							key="salary-range"
+							aria-label="Salary range"
+							title="Salary range"
+							startContent={<IndianRupee size={20} />}
+						>
+							<div className="w-full flex gap-6 items-start">
+								<Controller
+									control={control}
+									name="minSalary"
+									render={({ field }) => (
+										<NumberInput
+											label="Minimum Salary"
+											placeholder="Enter minimum salary"
+											formatOptions={{
+												style: "currency",
+												currency: "INR",
+												currencyDisplay: "code",
+												currencySign: "accounting",
+											}}
+											value={field.value || 0}
+											onValueChange={field.onChange}
+											errorMessage={errors.minSalary?.message}
+											isInvalid={!!errors.minSalary}
+										/>
+									)}
+								/>
+								<Controller
+									control={control}
+									name="maxSalary"
+									render={({ field }) => (
+										<NumberInput
+											label="Maximum Salary"
+											placeholder="Enter maximum salary"
+											formatOptions={{
+												style: "currency",
+												currency: "INR",
+												currencyDisplay: "code",
+												currencySign: "accounting",
+											}}
+											value={field.value || 0}
+											onValueChange={field.onChange}
+											errorMessage={errors.maxSalary?.message}
+											isInvalid={!!errors.maxSalary}
+										/>
+									)}
+								/>
+							</div>
+						</AccordionItem>
+						<AccordionItem
+							key="experience-range"
+							aria-label="Experience range"
+							title="Experience range"
+							startContent={<BriefcaseBusiness size={20} />}
+						>
+							<div className="w-full flex gap-6 items-start">
+								<Controller
+									control={control}
+									name="minExperience"
+									render={({ field }) => (
+										<NumberInput
+											label="Minimum Experience"
+											placeholder="Enter minimum experience"
+											formatOptions={{
+												style: "unit",
+												unit: "year",
+												unitDisplay: "long",
+											}}
+											value={field.value || 0}
+											onValueChange={field.onChange}
+											errorMessage={errors.minExperience?.message}
+											isInvalid={!!errors.minExperience}
+										/>
+									)}
+								/>
+								<Controller
+									control={control}
+									name="maxExperience"
+									render={({ field }) => (
+										<NumberInput
+											label="Maximum Experience"
+											placeholder="Enter maximum experience"
+											formatOptions={{
+												style: "unit",
+												unit: "year",
+												unitDisplay: "long",
+											}}
+											value={field.value || 0}
+											onValueChange={field.onChange}
+											errorMessage={errors.maxExperience?.message}
+											isInvalid={!!errors.maxExperience}
+										/>
+									)}
+								/>
+							</div>
+						</AccordionItem>
+						<AccordionItem
+							key="expires-at"
+							aria-label="Posting expires at"
+							title="Posting expires at"
+							startContent={<TimerIcon size={20} />}
+						>
+							<Controller
+								control={control}
+								name="expiresAt"
+								render={({ field }) => (
+									<DatePicker
+										showMonthAndYearPickers
+										selectorButtonPlacement="start"
+										granularity="hour"
+										errorMessage={errors.expiresAt?.message}
+										isInvalid={!!errors.expiresAt}
+										value={field.value ?? undefined}
+										onChange={field.onChange}
+									/>
+								)}
+							/>
+						</AccordionItem>
+						<AccordionItem
+							key="address"
+							aria-label="Address"
+							title="Address"
+							startContent={<MapPin size={20} />}
+						>
+							<div className="flex flex-col gap-4">
+								<Controller
+									name="location"
+									control={control}
+									render={({ field }) => (
+										<LocationAutocomplete
+											label="Location"
+											placeholder="Add job location"
+											value={field.value ?? ""}
+											onChange={(value) => field.onChange(value.displayName)}
+											onValueChange={field.onChange}
+											errorMessage={errors.location?.message}
+											isInvalid={!!errors.location}
+										/>
+									)}
+								/>
+							</div>
+						</AccordionItem>
+					</Accordion>
 				</CardBody>
 				<CardFooter>
 					<Button
