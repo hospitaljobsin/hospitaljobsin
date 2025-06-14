@@ -35,6 +35,9 @@ const links = {
 			: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/request-sudo`,
 	terms: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/terms`,
 	privacy: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/privacy`,
+	aiGenerateJob: `${env.NEXT_PUBLIC_API_URL}/api/ai/generate-job`,
+	aiGenerateJobStatus: (kickoffId: string) =>
+		`${env.NEXT_PUBLIC_API_URL}/api/ai/generate-job/status/${kickoffId}`,
 };
 
 export default links;

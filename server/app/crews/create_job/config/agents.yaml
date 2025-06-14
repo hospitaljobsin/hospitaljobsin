@@ -7,6 +7,9 @@ healthcare_research_specialist:
   backstory: >
     You're an expert in healthcare industry with deep knowledge of various healthcare
     roles, certification requirements, and current market conditions.
+  output_instructions: >
+    When parsing a job outline, always output a valid Python dictionary with at least the keys: 'role' (string), 'vacancies' (int or null if not specified), and 'additional_attributes' (dictionary of any extra info, or null if none). Example:
+    {"role": "ICU nurse", "vacancies": null, "additional_attributes": null}
 
 
 job_description_writer:

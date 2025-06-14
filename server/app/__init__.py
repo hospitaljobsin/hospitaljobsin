@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from structlog import get_logger
 
+from app.ai.routes import ai_router
 from app.auth.routes import auth_router
 from app.config import (
     AppSettings,
@@ -37,6 +38,7 @@ def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
     app.include_router(health_router)
     app.include_router(auth_router)
     app.include_router(jobs_router)
+    app.include_router(ai_router)
 
 
 def add_middleware(

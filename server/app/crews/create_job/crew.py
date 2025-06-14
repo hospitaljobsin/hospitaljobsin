@@ -1,5 +1,6 @@
 import os
 
+from app.ai.models import JobOutlineParsed, JobResultData
 from app.config import LLMSettings, SecretSettings, get_settings
 from crewai import LLM, Agent, Crew, Process, Task
 from crewai.agents.agent_builder.base_agent import BaseAgent
@@ -60,6 +61,13 @@ class CreateJobCrew:
     # task dependencies, and task callbacks, check out the documentation:
     # https://docs.crewai.com/concepts/tasks#overview-of-a-task
     @task
+    def parse_outline_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["parse_outline_task"],  # type: ignore[index]
+            output_pydantic=JobOutlineParsed,
+        )
+
+    @task
     def research_task(self) -> Task:
         return Task(
             config=self.tasks_config["research_task"],  # type: ignore[index]
@@ -75,6 +83,14 @@ class CreateJobCrew:
     def compliance_review_task(self) -> Task:
         return Task(
             config=self.tasks_config["compliance_review_task"],  # type: ignore[index]
+            output_pydantic=JobResultData,
+        )
+
+    @task
+    def final_output_formatting_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["final_output_formatting_task"],  # type: ignore[index]
+            output_pydantic=JobResultData,
         )
 
     @llm

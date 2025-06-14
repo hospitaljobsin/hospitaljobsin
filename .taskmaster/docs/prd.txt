@@ -1,165 +1,81 @@
-<context>
+# Product Requirements Document (PRD): Recruiter Dashboard – Create Job Page
 
-# Overview
+## Overview
 
-The **Healthcare Job Portal** is a two-sided marketplace connecting healthcare professionals (job seekers) with healthcare institutions (recruiters). The platform streamlines the recruitment process by enabling seekers to browse and apply to jobs easily while empowering recruiters with a powerful dashboard to post, manage, and analyze job listings.
+Add a new “Create Job” page to the recruiter-dashboard app, allowing users to either:
+- Create a new job from scratch (with AI assistance)
+- Import and edit an existing job (placeholder for now)
 
-**Problem Solved:**
-Recruiting for healthcare roles is slow, fragmented, and often offline. Our portal digitizes and accelerates this process.
+## User Stories
 
-**Target Users:**
-- **Job Seekers**: Nurses, doctors, technicians, and other healthcare professionals.
-- **Recruiters**: HR managers or agency personnel hiring for hospitals, clinics, or care facilities.
+### 1. Create Job from Scratch
+- As a recruiter, I can navigate to the “Create Job” page.
+- I see two options: “Create from Scratch” and “Import Existing Job.”
+- If I choose “Create from Scratch,” I am prompted to enter a one-line outline/summary of the job I want to create.
+- Upon submitting the outline, the frontend sends it to a FastAPI backend endpoint.
+- The backend starts a CrewAI crew in the background to generate a full job posting based on the outline.
+- The backend immediately returns a `kickoff_id` to the frontend.
+- The frontend uses this `kickoff_id` to poll a separate REST endpoint for updates on the crew execution status and results.
+- The crew must:
+  - Intelligently parse the outline to extract structured job attributes (e.g., “ICU nurse posting with 5 vacancies” → role: ICU nurse, vacancies: 5).
+  - Generate the job description using three different agents, as set up in `crews/create_job_crew`.
+  - Output a Pydantic object that matches the current GraphQL `CreateJobInput` type.
+- When the job is generated, the backend sends the job data (JSON) to the frontend via the polling endpoint.
+- The frontend displays a job creation form, pre-filled with the generated job data.
+- I can edit any field in the form and click “Update Job” to save it.
+- The form submission triggers an existing GraphQL mutation to save the job to the database.
 
-**Value Proposition:**
-- Simplifies job search for seekers
-- Streamlines candidate sourcing and tracking for recruiters
-- Enables data-driven hiring and transparency
+### 2. Import Existing Job
+- If I choose “Import Existing Job,” I see a placeholder screen (to be implemented in the future).
 
-# Core Features
+## Functional Requirements
 
-#### 1. Job Listing and Search
-- **What it does**: Allows seekers to browse, filter, and apply to job listings.
-- **Why it’s important**: It’s the central activity for job seekers.
-- **How it works**: Search queries are sent via GraphQL to the Python backend, which queries MongoDB.
+### Frontend
+- Add a new page: `/create-job`
+- Display two options: “Create from Scratch” and “Import Existing Job”
+- For “Create from Scratch”:
+  - Prompt for a one-line job outline
+  - Send outline to FastAPI endpoint (e.g., `POST /api/ai/generate-job`)
+  - Receive a `kickoff_id` in the response
+  - Poll a separate REST endpoint (e.g., `GET /api/ai/generate-job/status/{kickoff_id}`) for updates/results
+  - Show loading state while waiting for job generation
+  - When job data is received, display a job creation form pre-filled with the generated data
+  - Allow user to edit fields and submit via “Update Job” button
+  - On submit, call existing GraphQL mutation to save the job
+- For “Import Existing Job”:
+  - Show a placeholder screen
 
-#### 2. Recruiter Dashboard
-- **What it does**: Enables recruiters to post jobs, view applicants, and manage job listings.
-- **Why it’s important**: Powers job distribution and candidate management.
-- **How it works**: Recruiter logs in via the accounts UI, selects their organization, and is redirected to a React-based dashboard fetching organization-specific data.
+### Backend
+- FastAPI endpoint to receive job outline and start CrewAI crew
+  - Endpoint: `POST /api/ai/generate-job`
+  - Accepts: `{ outline: string }`
+  - Starts CrewAI crew in the background to generate job posting
+  - Immediately returns a `kickoff_id` to the client
+  - Expose a polling endpoint: `GET /api/ai/generate-job/status/{kickoff_id}`
+    - Returns the current status and, when ready, the generated job data (as a Pydantic object matching the GraphQL `CreateJobInput` type)
+  - The crew must:
+    - Parse the outline to extract structured job attributes (e.g., role, vacancies, etc.)
+    - Generate the job description using three different agents (as in `crews/create_job_crew`)
+    - Output a Pydantic object that matches the current GraphQL `CreateJobInput` type
 
-#### 3. Authentication & Account Management
-- **What it does**: Handles login, signup, password resets, and account settings.
-- **Why it’s important**: Required for access control and personalized experience.
-- **How it works**: A shared accounts UI interacts with the backend via Relay, supporting both seekers and recruiters.
+### Integration
+- The frontend must handle asynchronous job generation using the `kickoff_id` and polling endpoint
+- The backend must notify the frontend of job readiness via the polling endpoint
+- The job creation form must use the existing GraphQL mutation for saving jobs
 
-#### 4. Organization Management
-- **What it does**: Allows recruiters to manage multiple hiring organizations.
-- **Why it’s important**: Some recruiters may work for multiple facilities.
-- **How it works**: Recruiters select the organization context, which controls access to respective dashboards.
+## Non-Functional Requirements
+- Use TypeScript, Next.js, React, Relay, and TailwindCSS on the frontend
+- Use FastAPI, CrewAI, and Python on the backend
+- Ensure responsive design and good UX for loading/error states
+- Placeholder for “Import Existing Job” (no backend logic yet)
 
-#### 5. Applications Management
-- **What it does**: Enables job seekers to track applications; recruiters to shortlist, reject, or contact applicants.
-- **Why it’s important**: Critical to closing the hiring loop.
-- **How it works**: GraphQL mutations and queries update the status in the backend.
+## Out of Scope
+- Actual implementation of the “Import Existing Job” feature (just a placeholder for now)
+- Changes to the existing GraphQL mutation
 
-# User Experience
-
-#### User Personas
-- **Seeker Sarah**: A nurse looking for shifts in her city.
-- **Recruiter Ravi**: A hiring manager at a hospital managing multiple job postings.
-- **Admin Arjun**: Oversees accounts and ensures the system runs securely.
-
-#### Key User Flows
-- **Job Search Flow**: Seeker logs in → Searches jobs → Applies → Tracks status
-- **Recruiter Flow**: Logs in → Selects organization → Views dashboard → Posts job → Reviews applicants
-- **Account Flow**: Logs in via shared accounts portal → Updates settings or recovers password
-
-#### UI/UX Considerations
-- Mobile-friendly UI for seekers
-- Dashboard-style analytics and filtering for recruiters
-- Minimal navigation friction between portals
-- Shared theming and design system across portals for consistency
-
-<PRD>
-
-# Technical Architecture
-
-#### System Components
-- Python GraphQL API Server: Main application logic and data processing
-- Next.js Portals:
-  - Seeker Portal
-  - Recruiter Portal (Org selection + redirect)
-  - Recruiter Dashboard
-  - Accounts UI (shared between seeker/recruiter)
-- Relay GraphQL Client in all frontends
-- MongoDB Atlas: Primary datastore
-- AWS Infrastructure: Managed via Terraform
-
-#### Data Models
-- User: base class with seeker/recruiter roles
-- Job: linked to an Organization and posted by a recruiter
-- Application: links a seeker to a job
-- Organization: owned/managed by recruiters
-- Session/Auth Tokens: stored for login sessions
-
-#### APIs and Integrations
-- GraphQL API with Relay-compatible schema
-- MongoDB queries and aggregations
-- (Optional future) Email service for application status updates
-- Terraform IaC integrates AWS services like EC2, S3, Cognito, etc.
-
-#### Infrastructure Requirements
-- AWS VPC for isolation
-- EC2 or container-based deployment
-- Load balancer for frontend routing
-- CI/CD pipelines via GitHub Actions
-- Secrets and config via AWS Secrets Manager
-
-# Development Roadmap
-
-#### Phase 1: MVP
-- Shared authentication (Accounts UI)
-- Seeker portal:
-  - Job listings (read-only)
-  - Apply to job
-  - View application status
-- Recruiter portal:
-  - Login → Organization selection → Redirect to dashboard
-- Basic recruiter dashboard:
-  - Post job
-  - View applicants
-- Backend GraphQL API with all core models
-
-#### Phase 2: Enhancements
-- Application filtering & tagging (recruiter side)
-- Email notifications (application received/status updated)
-- Resume upload & parsing (for seeker)
-- Interview scheduling tools (calendar sync)
-- Role-based access control
-- Admin tools for user/organization management
-
-#### Phase 3: Advanced Features
-- AI recommendations for seekers/recruiters
-- Analytics (e.g., job engagement, seeker activity)
-- Subscription/paywall support for premium recruiter tools
-- Support chat or messaging system
-
-# Logical Dependency Chain
-
-1. Authentication system (Accounts UI + GraphQL auth APIs) → Foundation for all portals
-2. Data models & core backend APIs (User, Job, Application, Org) → Needed before frontends can function
-3. Seeker portal → First usable UI → job listing and apply
-4. Recruiter org selection + dashboard v1 → Enables job posting and applicant view
-5. UI enhancements, dashboard filters, application management
-6. Optional features (notifications, resume uploads)
-
-# Risks and Mitigations
-
-#### Technical Challenges
-- Relay client schema requirements → handled by strict GraphQL server contracts
-- MongoDB schema consistency → Enforce validation via Pydantic or server-side checks
-
-#### MVP Scope Clarity
-- Mitigation: Strictly define Phase 1 goals and ship read-only job board with apply flow first
-
-#### Frontend Complexity
-- Mitigation: Shared components across Next.js apps, centralized design system
-
-#### Resource Constraints
-- Use Terraform to minimize ops overhead
-- Start with minimal infrastructure footprint and scale as needed
-
-# Appendix
-
-#### Research Findings
-- Healthcare job seekers prioritize ease of search and application
-- Recruiters need visibility into candidate quality and pipeline stages
-- Most platforms lack clear multi-org support for recruiters
-
-#### Technical Specs
-- Python 3.13
-- Strawberry GraphQL for GraphQL API
-- Next.js 15
-- Relay 19 for client-side GraphQL
-- Terraform v1.12 for IaC
+## Acceptance Criteria
+- Recruiter can create a job from scratch using AI assistance and save it after editing
+- CrewAI crew parses the outline and generates a Pydantic object matching the GraphQL `CreateJobInput` type
+- Job description is generated using three agents as in `crews/create_job_crew`
+- Recruiter can see a placeholder for importing an existing job
+- All backend and frontend integration points work as described, including polling with `kickoff_id`
