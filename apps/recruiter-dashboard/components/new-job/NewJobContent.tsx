@@ -2,6 +2,7 @@ import type { NewJobContentFragment$key } from "@/__generated__/NewJobContentFra
 import PageNewJobQuery, {
 	type pageNewJobQuery,
 } from "@/__generated__/pageNewJobQuery.graphql";
+import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import { Button, Card, CardBody, Input, Spinner } from "@heroui/react";
 import { useRouter } from "next/navigation";
@@ -158,11 +159,14 @@ export default function NewJobContent({
 		setKickoffId(null);
 		setJobStatus(null);
 		try {
-			const res = await fetch(links.aiGenerateJob, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ outline: data.outline }),
-			});
+			const res = await fetch(
+				`${env.NEXT_PUBLIC_API_URL}/api/ai/generate-job`,
+				{
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ outline: data.outline }),
+				},
+			);
 			if (!res.ok) throw new Error("Failed to start job generation");
 			const json: KickoffResponse = await res.json();
 			setKickoffId(json.kickoff_id);
