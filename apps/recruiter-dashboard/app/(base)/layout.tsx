@@ -11,7 +11,7 @@ export default function DashboardLayout({
 		<div className="flex flex-col h-full w-full">
 			<div className="flex flex-1 h-full w-full mx-auto flex-col md:flex-row">
 				<SidebarClientComponent />
-				<div className="flex-1 min-w-0 h-full overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-w-2.5 scrollbar-thumb-[hsl(var(--heroui-foreground-300))] scrollbar-track-transparent pr-4">
+				<div className="flex-1 min-w-0 h-full w-full overflow-y-auto pr-4">
 					{children}
 				</div>
 			</div>

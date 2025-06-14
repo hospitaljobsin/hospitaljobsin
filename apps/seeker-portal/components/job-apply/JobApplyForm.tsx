@@ -1,15 +1,16 @@
-import { useRouter } from "@bprogress/next/app";
-import { addToast, Button, Card, CardFooter, Input } from "@heroui/react";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import Image from "next/image";
-import { useForm } from "react-hook-form";
-import { graphql, useFragment, useMutation } from "react-relay";
-import { z } from "zod/v4-mini";
 import type { JobApplyFormFragment$key } from "@/__generated__/JobApplyFormFragment.graphql";
 import type { JobApplyFormMutation } from "@/__generated__/JobApplyFormMutation.graphql";
 import type { JobApplyFormResumePresignedUrlMutation } from "@/__generated__/JobApplyFormResumePresignedUrlMutation.graphql";
 import links from "@/lib/links";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
+import { useRouter } from "@bprogress/next/app";
+import { Button, Card, Input, addToast } from "@heroui/react";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import Image from "next/image";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { graphql, useFragment, useMutation } from "react-relay";
+import { z } from "zod/v4-mini";
 
 const JobApplyFormFragment = graphql`
   fragment JobApplyFormFragment on Job {
@@ -105,9 +106,19 @@ export default function JobApplyForm({
 		setValue,
 		formState: { errors, isSubmitting },
 		setError,
+		getValues,
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 	});
+
+	const [currentStep, setCurrentStep] = useState(0);
+	const [reviewMode, setReviewMode] = useState(false);
+	const totalQuestions = data.applicationForm?.fields.length || 0;
+	const totalSteps = 1 + totalQuestions + 1; // 1 for resume, N for questions, 1 for review
+
+	// Helper for progress
+	const progressPercent =
+		((reviewMode ? totalSteps : currentStep + 1) / totalSteps) * 100;
 
 	async function getPresignedUrl(): Promise<string | null> {
 		return new Promise((resolve, reject) => {
@@ -175,54 +186,159 @@ export default function JobApplyForm({
 				</div>
 				{data.organization.name}
 			</div>
+			{/* Progress Bar */}
+			<div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
+				<div
+					className="h-full bg-primary transition-all duration-300"
+					style={{ width: `${progressPercent}%` }}
+				/>
+			</div>
 			<Card className="p-6" shadow="none">
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-					<Input
-						type="file"
-						label="Resume"
-						labelPlacement="outside"
-						accept="application/pdf"
-						required
-						onChange={(e) => {
-							if (e.target.files && e.target.files.length > 0) {
-								setValue("resume", e.target.files[0]);
-							}
-						}}
-						errorMessage={errors.resume?.message}
-						isInvalid={!!errors.resume}
-					/>
-					<div className="flex flex-col gap-6">
-						<h2 className="text-sm">Screening Questions</h2>
-						{data.applicationForm?.fields.map((field, index) => (
+					{/* Stepper Logic */}
+					{!reviewMode && currentStep === 0 && (
+						<div className="flex flex-col gap-6">
+							<h2 className="text-md font-medium">Step 1: Upload Resume</h2>
 							<Input
-								type="text"
-								key={field.fieldName}
-								label={field.fieldName}
+								type="file"
+								label="Resume"
 								labelPlacement="outside"
-								isRequired={
-									data.applicationForm?.fields[index].isRequired || false
-								}
-								defaultValue={
-									data.applicationForm?.fields[index].defaultValue || ""
-								}
-								errorMessage={
-									errors.applicantFields?.[index]?.fieldValue?.message
-								}
-								isInvalid={!!errors.applicantFields?.[index]?.fieldValue}
-								{...register(`applicantFields.${index}.fieldValue`)}
+								accept="application/pdf"
+								required
+								onChange={(e) => {
+									if (e.target.files && e.target.files.length > 0) {
+										setValue("resume", e.target.files[0]);
+									}
+								}}
+								errorMessage={errors.resume?.message}
+								isInvalid={!!errors.resume}
 							/>
-						))}
-					</div>
-					<CardFooter className="w-full justify-end">
-						<Button
-							type="submit"
-							color="primary"
-							disabled={isSubmitting}
-							className="w-full sm:w-auto"
-						>
-							Submit Application
-						</Button>
-					</CardFooter>
+							<div className="flex justify-end gap-2">
+								<Button
+									type="button"
+									color="primary"
+									onPress={() => setCurrentStep(1)}
+									className="w-full sm:w-auto"
+								>
+									Next
+								</Button>
+							</div>
+						</div>
+					)}
+
+					{!reviewMode && currentStep > 0 && currentStep <= totalQuestions && (
+						<div className="flex flex-col gap-6">
+							<h2 className="text-md font-medium">
+								Step {currentStep + 1}: Screening Question {currentStep}
+							</h2>
+							{data.applicationForm?.fields[currentStep - 1] && (
+								<Input
+									type="text"
+									key={data.applicationForm.fields[currentStep - 1].fieldName}
+									label={data.applicationForm.fields[currentStep - 1].fieldName}
+									labelPlacement="outside"
+									isRequired={
+										data.applicationForm.fields[currentStep - 1].isRequired ||
+										false
+									}
+									defaultValue={
+										data.applicationForm.fields[currentStep - 1].defaultValue ||
+										""
+									}
+									errorMessage={
+										errors.applicantFields?.[currentStep - 1]?.fieldValue
+											?.message
+									}
+									isInvalid={
+										!!errors.applicantFields?.[currentStep - 1]?.fieldValue
+									}
+									{...register(`applicantFields.${currentStep - 1}.fieldValue`)}
+									autoFocus
+								/>
+							)}
+							<div className="flex justify-between gap-2">
+								<Button
+									type="button"
+									color="secondary"
+									onPress={() => setCurrentStep((s) => s - 1)}
+									className="w-full sm:w-auto"
+									isDisabled={currentStep === 0}
+								>
+									Back
+								</Button>
+								{currentStep < totalQuestions ? (
+									<Button
+										type="button"
+										color="primary"
+										onPress={() => setCurrentStep((s) => s + 1)}
+										className="w-full sm:w-auto"
+										isDisabled={
+											data.applicationForm.fields[currentStep - 1].isRequired &&
+											!getValues(
+												`applicantFields.${currentStep - 1}.fieldValue`,
+											)
+										}
+									>
+										Next
+									</Button>
+								) : (
+									<Button
+										type="button"
+										color="primary"
+										onPress={() => setReviewMode(true)}
+										className="w-full sm:w-auto"
+									>
+										Review
+									</Button>
+								)}
+							</div>
+						</div>
+					)}
+
+					{reviewMode && (
+						<div className="flex flex-col gap-6">
+							<h2 className="text-sm font-semibold">Review Your Application</h2>
+							<div className="flex flex-col gap-2">
+								<div>
+									<span className="font-medium">Resume:</span>{" "}
+									{/* Show file name if available */}
+									{typeof window !== "undefined" &&
+										(getValues("resume")?.name || "Not uploaded")}
+								</div>
+								{data.applicationForm?.fields.map((field, idx) => (
+									<div key={field.fieldName} className="flex flex-col">
+										<span className="font-medium">{field.fieldName}:</span>
+										<span className="text-foreground-400">
+											{getValues(`applicantFields.${idx}.fieldValue`) || (
+												<span className="italic text-gray-400">No answer</span>
+											)}
+										</span>
+									</div>
+								))}
+							</div>
+							<div className="flex justify-between gap-2">
+								<Button
+									type="button"
+									color="secondary"
+									onPress={() => {
+										setReviewMode(false);
+										setCurrentStep(totalQuestions);
+									}}
+									className="w-full sm:w-auto"
+								>
+									Back
+								</Button>
+								<Button
+									type="submit"
+									color="primary"
+									isDisabled={isSubmitting}
+									className="w-full sm:w-auto"
+								>
+									Submit Application
+								</Button>
+							</div>
+						</div>
+					)}
 				</form>
 			</Card>
 		</div>

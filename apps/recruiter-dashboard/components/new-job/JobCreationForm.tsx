@@ -146,10 +146,7 @@ export default function JobCreationForm({
 				workMode: formData.workMode ?? undefined,
 			},
 			onCompleted(response) {
-				if (
-					response.createJob?.__typename === "CreateJobSuccess" &&
-					response.createJob.jobEdge?.node?.slug
-				) {
+				if (response.createJob.__typename === "CreateJobSuccess") {
 					onSuccess(response.createJob.jobEdge.node.slug);
 				} else {
 					// TODO: handle errors
@@ -159,7 +156,10 @@ export default function JobCreationForm({
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full mt-6">
+		<form
+			onSubmit={handleSubmit(onSubmit)}
+			className="space-y-6 w-full mt-6 mb-16"
+		>
 			<Card shadow="none" className="p-6 gap-12 flex flex-col" fullWidth>
 				<CardBody className="flex flex-col gap-12 overflow-y-hidden">
 					<Input
