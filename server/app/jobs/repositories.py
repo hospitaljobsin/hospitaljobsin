@@ -121,7 +121,7 @@ class JobRepo:
         job.work_mode = work_mode
         job.skills = skills
         job.currency = currency
-        job.slug = await self.generate_slug(title, job.organization.id)
+        job.slug = await self.generate_slug(title, job.organization.ref.id)
         return await job.save(link_rule=WriteRules.DO_NOTHING)
 
     async def get(self, job_id: ObjectId) -> Job | None:

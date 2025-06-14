@@ -8,9 +8,9 @@ export default function JobRootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<div className="h-full flex flex-col">
+		<div className="h-full flex flex-col w-full">
 			<JobDetailHeaderClientComponent />
-			<div className="w-full mx-auto bg-background-600 max-w-7xl flex-1">
+			<div className="w-full bg-background-600 max-w-7xl flex-1">
 				{children}
 			</div>
 		</div>

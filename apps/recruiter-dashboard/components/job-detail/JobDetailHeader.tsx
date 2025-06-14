@@ -60,8 +60,8 @@ export default function JobDetailHeader({
 	);
 
 	return (
-		<div className="py-8 w-full max-w-7xl mx-auto">
-			<Breadcrumbs className="mb-6">
+		<div className="pt-8 w-full max-w-7xl">
+			<Breadcrumbs className="mb-6 pl-6">
 				<BreadcrumbItem href={links.dashboard}>Jobs</BreadcrumbItem>
 				<BreadcrumbItem isCurrent>{data.organization.job.title}</BreadcrumbItem>
 			</Breadcrumbs>

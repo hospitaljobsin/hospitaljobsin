@@ -60,7 +60,7 @@ export default function ApplicantsTab(props: {
 	invariant(query.organization.job.__typename === "Job", "Expected 'job' type");
 
 	return (
-		<div className="w-full h-full flex flex-col items-center gap-12">
+		<div className="pt-8 pl-6 w-full h-full flex flex-col items-center gap-12">
 			<ApplicantListController
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}

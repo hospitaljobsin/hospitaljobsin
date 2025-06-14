@@ -52,7 +52,7 @@ export default function JobOverviewTab(props: {
 	);
 
 	return (
-		<div className="w-full h-full flex flex-col items-center gap-12">
+		<div className="pt-8 pl-6 w-full h-full flex flex-col items-center gap-12">
 			<JobDetails rootQuery={query.organization.job} />
 		</div>
 	);
