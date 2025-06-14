@@ -28,6 +28,15 @@ class Organization(Document):
         slug_hash = hashlib.sha256(self.slug.encode("utf-8")).hexdigest()
         return f"https://api.dicebear.com/9.x/identicon/png?seed={slug_hash}"
 
+    @logo_url.setter
+    def logo_url(self, value: str | None) -> None:
+        """Set the internal logo URL."""
+        self.internal_logo_url = value
+
+    @property
+    def has_default_logo(self) -> bool:
+        return self.internal_logo_url is None
+
     class Settings:
         name = "organizations"
 
