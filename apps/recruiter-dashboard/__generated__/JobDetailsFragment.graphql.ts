@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<782111ce455d5578ebc50a81ba4ecd15>>
+ * @generated SignedSource<<00c46803fa3b8026d46edaa22c259957>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,9 +13,10 @@ export type Currency = "INR" | "%future added value";
 export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "%future added value";
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
-export type JobDetailFragment$data = {
+export type JobDetailsFragment$data = {
   readonly applicationForm: {
     readonly __typename: "JobApplicationForm";
+    readonly id: string;
   } | null | undefined;
   readonly createdAt: any;
   readonly currency: Currency;
@@ -23,6 +24,7 @@ export type JobDetailFragment$data = {
   readonly externalApplicationUrl: string | null | undefined;
   readonly hasExperienceRange: boolean;
   readonly hasSalaryRange: boolean;
+  readonly isActive: boolean;
   readonly location: string | null | undefined;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
@@ -30,35 +32,28 @@ export type JobDetailFragment$data = {
   readonly minSalary: number | null | undefined;
   readonly organization: {
     readonly isAdmin: boolean;
+    readonly name: string;
   };
   readonly skills: ReadonlyArray<string>;
   readonly slug: string;
   readonly title: string;
   readonly type: JobType | null | undefined;
-  readonly vacancies: number | null | undefined;
-  readonly viewCount: number;
+  readonly updatedAt: any;
   readonly workMode: WorkMode | null | undefined;
-  readonly " $fragmentSpreads": FragmentRefs<"JobStatisticsFragment">;
-  readonly " $fragmentType": "JobDetailFragment";
+  readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobStatisticsFragment">;
+  readonly " $fragmentType": "JobDetailsFragment";
 };
-export type JobDetailFragment$key = {
-  readonly " $data"?: JobDetailFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"JobDetailFragment">;
+export type JobDetailsFragment$key = {
+  readonly " $data"?: JobDetailsFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"JobDetailsFragment">;
 };
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "JobDetailFragment",
+  "name": "JobDetailsFragment",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "slug",
-      "storageKey": null
-    },
     {
       "alias": null,
       "args": null,
@@ -77,56 +72,14 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
+      "name": "slug",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "skills",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "viewCount",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "createdAt",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "vacancies",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "type",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "workMode",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "location",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "currency",
       "storageKey": null
     },
     {
@@ -175,6 +128,55 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
+      "name": "currency",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "workMode",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "type",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "location",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "createdAt",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "updatedAt",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "isActive",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "externalApplicationUrl",
       "storageKey": null
     },
@@ -191,6 +193,13 @@ const node: ReaderFragment = {
           "args": null,
           "kind": "ScalarField",
           "name": "__typename",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "id",
           "storageKey": null
         }
       ],
@@ -212,11 +221,23 @@ const node: ReaderFragment = {
             "kind": "ScalarField",
             "name": "isAdmin",
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "name",
+            "storageKey": null
           }
         ],
         "storageKey": null
       },
       "action": "THROW"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "JobControlsFragment"
     },
     {
       "args": null,
@@ -228,6 +249,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "f3563422a5e1f4afc33b7eadaf52c2ad";
+(node as any).hash = "1203a907e8b1cfb2c2ab3375fd16001d";
 
 export default node;

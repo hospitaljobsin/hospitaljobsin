@@ -1,8 +1,8 @@
 import type {
-	JobDetailFragment$key,
+	JobDetailsFragment$key,
 	JobType,
 	WorkMode,
-} from "@/__generated__/JobDetailFragment.graphql";
+} from "@/__generated__/JobDetailsFragment.graphql";
 import { dateFormat } from "@/lib/intl";
 import links from "@/lib/links";
 import {
@@ -12,55 +12,58 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
+	Chip,
 	Divider,
+	Link,
 } from "@heroui/react";
 import Heading from "@tiptap/extension-heading";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
-import Link from "next/link";
-import { useFragment } from "react-relay";
-import { graphql } from "relay-runtime";
+import { useParams } from "next/navigation";
+import { graphql, useFragment } from "react-relay";
 import { Markdown } from "tiptap-markdown";
 import JobControls from "./JobControls";
 import JobStatistics from "./JobStatistics";
 
-export const JobDetailFragment = graphql`
-  fragment JobDetailFragment on Job {
-    slug
+const JobDetailsFragment = graphql`
+  fragment JobDetailsFragment on Job {
     title
     description
+    slug
     skills
-    viewCount
-    createdAt
-    vacancies
-    type
-    workMode
-    location
-    currency
     minSalary
     maxSalary
-    hasSalaryRange
+	hasSalaryRange
     minExperience
     maxExperience
-    hasExperienceRange
-    externalApplicationUrl
-	applicationForm {
-		__typename
-	}
-	organization @required(action: THROW) {
-		isAdmin
-	}
-	...JobStatisticsFragment
+	hasExperienceRange
+	currency
+	workMode
+	type
+    location
+    createdAt
+    updatedAt
+    isActive
+	externalApplicationUrl
+    applicationForm {
+      __typename
+      id
+    }
+    organization @required(action: THROW) {
+      isAdmin
+      name
+    }
+	  ...JobControlsFragment
+	  ...JobStatisticsFragment
   }
 `;
 
-type Props = {
-	job: JobDetailFragment$key;
-};
-
-export default function JobDetail({ job }: Props) {
-	const data = useFragment(JobDetailFragment, job);
+export default function JobDetails({
+	rootQuery,
+}: { rootQuery: JobDetailsFragment$key }) {
+	const params = useParams<{ slug: string; jobSlug: string }>();
+	const data = useFragment(JobDetailsFragment, rootQuery);
 
 	const editor = useEditor({
 		extensions: [
@@ -82,6 +85,7 @@ export default function JobDetail({ job }: Props) {
 		editable: false, // Disable editing to make it a viewer
 		content: data.description,
 	});
+
 	const showApplicationFormWarning =
 		data.organization.isAdmin &&
 		data.externalApplicationUrl === null &&
@@ -90,6 +94,7 @@ export default function JobDetail({ job }: Props) {
 	const showJobControls =
 		(data.organization.isAdmin && data.applicationForm !== null) ||
 		(data.organization.isAdmin && data.externalApplicationUrl !== null);
+
 	function formatExperienceRange({
 		hasExperienceRange,
 		minExperience,
@@ -164,88 +169,6 @@ export default function JobDetail({ job }: Props) {
 
 	return (
 		<div className="w-full flex flex-col gap-6">
-			{/* Job Title and Skills */}
-			{/* <Card className="p-4 sm:p-8 space-y-8" shadow="none">
-				<CardHeader className="flex flex-col gap-4 w-full items-start">
-					<h4 className="text-xl font-semibold text-balance">{data.title}</h4></CardHeader>
-					<CardBody>
-					<div className="flex flex-wrap gap-2 sm:gap-3 w-full justify-start mt-2">
-						{data.skills.map((skill) => (
-							<Chip variant="flat" key={skill}>
-								{skill}
-							</Chip>
-						))}
-					</div>
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full pt-4 border-t border-t-foreground-100 mt-4">
-						<div className="flex flex-col gap-2">
-							<span className="text-foreground-500 text-xs">Job Type</span>
-							<span className="font-medium flex items-center gap-2">
-								<BriefcaseIcon size={16} />
-								{data.type?.replace(/_/g, " ") || "-"}
-							</span>
-						</div>
-						{data.workMode && (
-						<div className="flex flex-col gap-2">
-							<span className="text-foreground-500 text-xs">Work Mode</span>
-							<span className="font-medium">
-								{data.workMode.charAt(0) +
-									data.workMode.slice(1).toLowerCase() || "-"}
-							</span>
-						</div>)}
-						<div className="flex flex-col gap-2">
-							<span className="text-foreground-500 text-xs">Location</span>
-							<span className="font-medium flex items-center gap-2">
-								<MapPinIcon size={16} />
-								{data.location || "-"}
-							</span>
-						</div>
-						<div className="flex flex-col gap-2">
-							<span className="text-foreground-500 text-xs">Vacancies</span>
-							<span className="font-medium">{data.vacancies ?? "-"}</span>
-						</div>
-						<div className="flex flex-col gap-2">
-							<span className="text-foreground-500 text-xs">Salary</span>
-							<span className="font-medium">
-								{data.hasSalaryRange && data.minSalary != null && data.maxSalary != null
-									? `${data.currency || ""} ${data.minSalary} - ${data.maxSalary}`
-									: data.minSalary != null
-										? `${data.currency || ""} ${data.minSalary}`
-										: "-"}
-							</span>
-						</div>
-						<div className="flex flex-col gap-2">
-							<span className="text-foreground-500 text-xs">Experience</span>
-							<span className="font-medium">
-								{data.hasExperienceRange &&
-								data.minExperience &&
-								data.maxExperience
-									? `${data.minExperience} - ${data.maxExperience} years`
-									: data.minExperience
-										? `${data.minExperience} years`
-										: "-"}
-							</span>
-						</div>
-						{data.externalApplicationUrl && (
-							<div className="flex flex-col gap-2 col-span-full">
-								<span className="text-foreground-500 text-xs">
-									External Application
-								</span>
-								<a
-									href={data.externalApplicationUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="font-medium flex items-center gap-2 text-primary-600 hover:underline"
-								>
-									<LinkIcon size={16} />
-									Apply on external site
-								</a>
-							</div>
-						)}
-					</div>
-				</CardBody>
-
-			</Card> */}
-
 			<Card fullWidth className="p-6" shadow="none">
 				<CardHeader>
 					<div className="flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center">
@@ -311,22 +234,26 @@ export default function JobDetail({ job }: Props) {
 					}
 				/>
 			) : null}
-
-			{/* Job Views Graph Card */}
 			<JobStatistics job={data} />
-
 			{/* Job Description */}
-			{data.description && (
-				<Card className="p-6" fullWidth shadow="none">
-					<CardHeader>
-						<h3 className="font-medium text-foreground-500">About the Job</h3>
-					</CardHeader>
-					<Divider />
-					<CardBody className="w-full">
-						<EditorContent editor={editor} className="w-full" />
-					</CardBody>
-				</Card>
-			)}
+			<Card className="p-6" fullWidth shadow="none">
+				<CardHeader>
+					<h3 className="font-medium text-foreground-500">About the Job</h3>
+				</CardHeader>
+				<Divider />
+				<CardBody className="w-full">
+					<EditorContent editor={editor} className="w-full" />
+				</CardBody>
+				<CardFooter>
+					<div className="flex flex-wrap gap-4 mt-2 w-full">
+						{data.skills.map((skill) => (
+							<Chip variant="flat" key={skill}>
+								{skill}
+							</Chip>
+						))}
+					</div>
+				</CardFooter>
+			</Card>
 		</div>
 	);
 }

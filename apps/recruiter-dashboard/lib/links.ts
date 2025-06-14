@@ -20,16 +20,10 @@ const links = {
 	organizationDetailSettings: "/settings",
 	jobDetailSettingsApplicationForm: (jobSlug: string) =>
 		`/jobs/${jobSlug}/settings/application-form`,
-	jobDetailSettings: (organizationSlug: string, jobSlug: string) =>
-		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/settings`,
-	jobDetailApplicants: (organizationSlug: string, jobSlug: string) =>
-		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/applicants`,
-	applicantDetail: (
-		organizationSlug: string,
-		jobSlug: string,
-		applicantSlug: string,
-	) =>
-		`/dashboard/organizations/${organizationSlug}/jobs/${jobSlug}/applicants/${applicantSlug}`,
+	jobDetailSettings: (jobSlug: string) => `/jobs/${jobSlug}/settings`,
+	jobDetailApplicants: (jobSlug: string) => `/jobs/${jobSlug}/applicants`,
+	applicantDetail: (jobSlug: string, applicantSlug: string) =>
+		`/jobs/${jobSlug}/applicants/${applicantSlug}`,
 	login: (returnTo: string | undefined = undefined) =>
 		returnTo
 			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/auth/login?return_to=${returnTo}`

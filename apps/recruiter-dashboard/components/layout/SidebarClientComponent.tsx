@@ -3,7 +3,6 @@ import type { SidebarQuery as SidebarQueryType } from "@/__generated__/SidebarQu
 import useOrganization from "@/lib/hooks/useOrganization";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
-import HeaderSkeleton from "./HeaderSkeleton";
 import Sidebar, { SidebarQuery } from "./Sidebar";
 
 export default function SidebarClientComponent() {
@@ -17,7 +16,7 @@ export default function SidebarClientComponent() {
 	);
 
 	return (
-		<Suspense fallback={<HeaderSkeleton />}>
+		<Suspense>
 			<Sidebar queryReference={queryReference} />
 		</Suspense>
 	);

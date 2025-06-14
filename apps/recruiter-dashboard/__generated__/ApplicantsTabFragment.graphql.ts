@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<63e9ec65ccc224115a96ea4ae19a4b81>>
+ * @generated SignedSource<<b3082576f0f53da085780adaf41600fe>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,13 +10,12 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type JobDetailViewFragment$data = {
+export type ApplicantsTabFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
     readonly job: {
       readonly __typename: "Job";
-      readonly title: string;
-      readonly " $fragmentSpreads": FragmentRefs<"JobDetailFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"ApplicantListFragment">;
     } | {
       // This will never be '%other', but we need some
       // value in case none of the concrete values match.
@@ -27,11 +26,11 @@ export type JobDetailViewFragment$data = {
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
-  readonly " $fragmentType": "JobDetailViewFragment";
+  readonly " $fragmentType": "ApplicantsTabFragment";
 };
-export type JobDetailViewFragment$key = {
-  readonly " $data"?: JobDetailViewFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"JobDetailViewFragment">;
+export type ApplicantsTabFragment$key = {
+  readonly " $data"?: ApplicantsTabFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"ApplicantsTabFragment">;
 };
 
 const node: ReaderFragment = (function(){
@@ -52,12 +51,27 @@ return {
     {
       "defaultValue": null,
       "kind": "LocalArgument",
-      "name": "orgSlug"
+      "name": "searchTerm"
+    },
+    {
+      "defaultValue": true,
+      "kind": "LocalArgument",
+      "name": "showStatus"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "slug"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "status"
     }
   ],
   "kind": "Fragment",
   "metadata": null,
-  "name": "JobDetailViewFragment",
+  "name": "ApplicantsTabFragment",
   "selections": [
     {
       "alias": null,
@@ -65,7 +79,7 @@ return {
         {
           "kind": "Variable",
           "name": "slug",
-          "variableName": "orgSlug"
+          "variableName": "slug"
         }
       ],
       "concreteType": null,
@@ -96,16 +110,25 @@ return {
                   "kind": "InlineFragment",
                   "selections": [
                     {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "title",
-                      "storageKey": null
-                    },
-                    {
-                      "args": null,
+                      "args": [
+                        {
+                          "kind": "Variable",
+                          "name": "searchTerm",
+                          "variableName": "searchTerm"
+                        },
+                        {
+                          "kind": "Variable",
+                          "name": "showStatus",
+                          "variableName": "showStatus"
+                        },
+                        {
+                          "kind": "Variable",
+                          "name": "status",
+                          "variableName": "status"
+                        }
+                      ],
                       "kind": "FragmentSpread",
-                      "name": "JobDetailFragment"
+                      "name": "ApplicantListFragment"
                     }
                   ],
                   "type": "Job",
@@ -127,6 +150,6 @@ return {
 };
 })();
 
-(node as any).hash = "5f5abb49bd2f26d0c533e9a41eadbfab";
+(node as any).hash = "67606c2a5034b0bd630db66188237b42";
 
 export default node;

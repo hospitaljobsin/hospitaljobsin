@@ -1,25 +1,25 @@
 "use client";
-import type { pageJobDetailQuery } from "@/__generated__/pageJobDetailQuery.graphql";
-import JobOverviewTab from "@/components/job-detail/overview-tab/JobOverviewTab";
+import type { pageJobApplicationFormSettingsQuery } from "@/__generated__/pageJobApplicationFormSettingsQuery.graphql";
+import ApplicationFormTab from "@/components/job-detail/settings-tab/application-form-tab/ApplicationFormTab";
 import useOrganization from "@/lib/hooks/useOrganization";
 import { Spinner } from "@heroui/react";
 import { useParams } from "next/navigation";
 import { Suspense } from "react";
 import { graphql, loadQuery, useRelayEnvironment } from "react-relay";
 
-export const JobDetailQuery = graphql`
-  query pageJobDetailQuery($orgSlug: String!, $jobSlug: String!) {
-    ...JobOverviewTabFragment @arguments(slug: $orgSlug, jobSlug: $jobSlug)
+export const JobApplicationFormSettingsQuery = graphql`
+  query pageJobApplicationFormSettingsQuery($orgSlug: String!, $jobSlug: String!) {
+    ...ApplicationFormTabFragment @arguments(slug: $orgSlug, jobSlug: $jobSlug)
   }
 `;
 
-export default function JobDetailPage() {
+export default function JobApplicationFormSettingsPage() {
 	const { slug } = useParams<{ slug: string }>();
 	const { organizationSlug } = useOrganization();
 	const relayEnvironment = useRelayEnvironment();
-	const preloadedQuery = loadQuery<pageJobDetailQuery>(
+	const preloadedQuery = loadQuery<pageJobApplicationFormSettingsQuery>(
 		relayEnvironment,
-		JobDetailQuery,
+		JobApplicationFormSettingsQuery,
 		{ orgSlug: organizationSlug, jobSlug: slug },
 		{ fetchPolicy: "store-and-network" },
 	);
@@ -32,7 +32,7 @@ export default function JobDetailPage() {
 				</div>
 			}
 		>
-			<JobOverviewTab initialQueryRef={preloadedQuery} />
+			<ApplicationFormTab initialQueryRef={preloadedQuery} />
 		</Suspense>
 	);
 }
