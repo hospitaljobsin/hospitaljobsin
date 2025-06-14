@@ -17,7 +17,7 @@
 	"dependencies": {
 		"@bprogress/next": "^3.2.12",
 		"@heroui/react": "2.8.0-beta.6",
-		"@heroui/theme": "2.4.17",
+		"@heroui/theme": "2.4.16-beta.2",
 		"@hookform/resolvers": "^5.1.1",
 		"@internationalized/date": "^3.8.2",
 		"@lobehub/icons": "^2.4.0",
