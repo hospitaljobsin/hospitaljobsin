@@ -4,10 +4,6 @@
 	"gender": "ENUM",
 	"marital_status": "ENUM",
 	"category": "string",
-	"contact": {
-		"email": "ayesha.kumar@example.com",
-		"phone": "+91-9876543210"
-	},
 	"address": "Bandra West, Mumbai, Maharashtra, India",
 	"locations_open_to_work": ["Mumbai", "Pune", "Hyderabad"],
 	"open_to_relocation_anywhere": false,

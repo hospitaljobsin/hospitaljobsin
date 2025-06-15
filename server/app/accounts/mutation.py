@@ -13,7 +13,6 @@ from app.context import AuthInfo
 
 from .types import (
     AccountType,
-    ContactInputType,
     GenderTypeEnum,
     LanguageInputType,
     MaritalStatusTypeEnum,
@@ -40,12 +39,6 @@ class AccountMutation:
         self,
         info: AuthInfo,
         profile_service: Annotated[ProfileService, Inject],
-        contact: Annotated[
-            ContactInputType,
-            strawberry.argument(
-                description="The contact details of the user profile.",
-            ),
-        ],
         address: Annotated[
             str,
             strawberry.argument(
@@ -80,7 +73,6 @@ class AccountMutation:
         """Update the current user's profile personal details."""
         match await profile_service.update_personal_details(
             account=info.context["current_user"],
-            contact=contact.to_document(),
             gender=gender,
             date_of_birth=date_of_birth,
             marital_status=marital_status,

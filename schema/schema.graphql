@@ -256,26 +256,6 @@ type Certification {
 	expiresAt: Date
 }
 
-type Contact {
-	email: String!
-	phone: String!
-}
-
-"""
-The contact details input.
-"""
-input ContactInput {
-	"""
-	The email address.
-	"""
-	email: String!
-
-	"""
-	The phone number.
-	"""
-	phone: String!
-}
-
 """
 Geographic coordinates.
 """
@@ -2039,11 +2019,6 @@ type Mutation {
 	"""
 	updateProfilePersonalDetails(
 		"""
-		The contact details of the user profile.
-		"""
-		contact: ContactInput!
-
-		"""
 		The address of the user profile.
 		"""
 		address: String!
@@ -2796,11 +2771,6 @@ type Profile implements Node {
 	The date of birth of the profile's user.
 	"""
 	dateOfBirth: Date
-
-	"""
-	The contact details of the profile's user.
-	"""
-	contact: Contact!
 
 	"""
 	The address of the profile's user.

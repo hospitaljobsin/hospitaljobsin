@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3cdf25d2d64ad021e6faa8f0f7a73237>>
+ * @generated SignedSource<<17e25c830d3558bc2ffdb366c8c7ec41>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,10 +15,6 @@ import type { FragmentRefs } from "relay-runtime";
 export type UpdatePersonalDetailsFormFragment$data = {
   readonly address: string;
   readonly category: string | null | undefined;
-  readonly contact: {
-    readonly email: string;
-    readonly phone: string;
-  };
   readonly dateOfBirth: any | null | undefined;
   readonly gender: GenderType | null | undefined;
   readonly maritalStatus: MaritalStatusType | null | undefined;
@@ -35,31 +31,6 @@ const node: ReaderFragment = {
   "metadata": null,
   "name": "UpdatePersonalDetailsFormFragment",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": "Contact",
-      "kind": "LinkedField",
-      "name": "contact",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "email",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "phone",
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
-    },
     {
       "alias": null,
       "args": null,
@@ -100,6 +71,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "98d06ad1c3c65079961dc0635dd94351";
+(node as any).hash = "ee29dab765e5e6aef268e5f255d4a58b";
 
 export default node;

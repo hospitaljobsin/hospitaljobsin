@@ -27,12 +27,6 @@ LanguageProficiencyEnum = Literal["NATIVE", "PROFESSIONAL", "BASIC"]
 LicenseVerificationStatusEnum = Literal["pending", "verified", "rejected"]
 
 
-# CONTACT
-class Contact(BaseModel):
-    email: str
-    phone: str
-
-
 # EDUCATION
 class Education(BaseModel):
     degree: str
@@ -107,7 +101,6 @@ class Profile(Document):
     # personal details
     gender: GenderEnum | None
     date_of_birth: date | None
-    contact: Contact
     address: str
     marital_status: MaritalStatusEnum | None
     category: str | None

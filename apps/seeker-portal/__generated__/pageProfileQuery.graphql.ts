@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0a110af600233ee22a88cba56df5c333>>
- * @relayHash b0aa5bf425348fc5e57f8c158fc7ab46
+ * @generated SignedSource<<e17293c398fdfe5a5aa50dcdfa93cf05>>
+ * @relayHash fd98d24c265b06d2e2ef3084e68a68d1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b0aa5bf425348fc5e57f8c158fc7ab46
+// @relayRequestID fd98d24c265b06d2e2ef3084e68a68d1
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -79,31 +79,6 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Contact",
-                    "kind": "LinkedField",
-                    "name": "contact",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "email",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "phone",
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  },
                   {
                     "alias": null,
                     "args": null,
@@ -201,7 +176,7 @@ return {
     ]
   },
   "params": {
-    "id": "b0aa5bf425348fc5e57f8c158fc7ab46",
+    "id": "fd98d24c265b06d2e2ef3084e68a68d1",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",

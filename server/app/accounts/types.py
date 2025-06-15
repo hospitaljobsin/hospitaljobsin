@@ -12,7 +12,7 @@ from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from strawberry import relay
 
-from app.accounts.documents import Account, Contact, Language, Profile
+from app.accounts.documents import Account, Language, Profile
 from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
 from app.base.types import (
     BaseNodeType,
@@ -116,9 +116,6 @@ class ProfileType(BaseNodeType[Profile]):
     date_of_birth: date | None = strawberry.field(
         description="The date of birth of the profile's user.",
     )
-    contact: "ContactType" = strawberry.field(
-        description="The contact details of the profile's user.",
-    )
     address: str = strawberry.field(
         description="The address of the profile's user.",
     )
@@ -169,7 +166,6 @@ class ProfileType(BaseNodeType[Profile]):
             id=str(model.id),
             gender=GenderTypeEnum[model.gender] if model.gender else None,
             date_of_birth=model.date_of_birth,
-            contact=ContactType.marshal(model.contact),
             address=model.address,
             marital_status=MaritalStatusTypeEnum[model.marital_status]
             if model.marital_status is not None
@@ -563,16 +559,6 @@ SaveJobPayload = Annotated[
 ]
 
 
-@strawberry.type(name="Contact")
-class ContactType:
-    email: str
-    phone: str
-
-    @classmethod
-    def marshal(cls, contact) -> "ContactType":
-        return cls(email=contact.email, phone=contact.phone)
-
-
 @strawberry.type(name="Education")
 class EducationType:
     degree: str
@@ -696,23 +682,3 @@ class CertificationType:
             created_at=cert.created_at,
             expires_at=cert.expires_at,
         )
-
-
-@strawberry.input(
-    name="ContactInput",
-    description="The contact details input.",
-)
-class ContactInputType:
-    email: str = strawberry.field(description="The email address.")
-    phone: str = strawberry.field(description="The phone number.")
-
-    def to_document(self) -> Contact:
-        return Contact(email=self.email, phone=self.phone)
-
-
-def _none_or_marshal_list(items, marshal_fn):
-    return [marshal_fn(i) for i in items] if items else []
-
-
-def _none_or_marshal(item, marshal_fn):
-    return marshal_fn(item) if item else None

@@ -2,7 +2,7 @@ from datetime import date
 
 from result import Ok
 
-from app.accounts.documents import Account, Contact, Language
+from app.accounts.documents import Account, Language
 from app.accounts.repositories import AccountRepo, ProfileRepo
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
@@ -43,7 +43,6 @@ class ProfileService:
     async def update_personal_details(
         self,
         account: Account,
-        contact: Contact,
         gender: str | None,
         date_of_birth: date | None,
         address: str,
@@ -59,7 +58,6 @@ class ProfileService:
 
         profile = await self._profile_repo.update(
             profile=existing_profile,
-            contact=contact,
             gender=gender,
             date_of_birth=date_of_birth,
             marital_status=marital_status,

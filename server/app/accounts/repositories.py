@@ -17,7 +17,6 @@ from app.core.constants import (
 from .documents import (
     Account,
     Certification,
-    Contact,
     Education,
     EmailVerificationToken,
     Language,
@@ -192,7 +191,6 @@ class ProfileRepo:
             account=account,
             gender=None,
             date_of_birth=None,
-            contact=Contact(email="", phone=""),
             address="",
             marital_status=None,
             category=None,
@@ -218,7 +216,6 @@ class ProfileRepo:
         *,
         gender: str | None = None,
         date_of_birth: date | None = None,
-        contact: Contact | None = None,
         address: str | None = None,
         marital_status: str | None = None,
         category: str | None = None,
@@ -238,8 +235,6 @@ class ProfileRepo:
             profile.gender = gender
         if date_of_birth is not None:
             profile.date_of_birth = date_of_birth
-        if contact is not None:
-            profile.contact = contact
         if address is not None:
             profile.address = address
         if marital_status is not None:

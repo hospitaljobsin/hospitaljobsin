@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<d9b3c7560cdbc7853823e356e968c330>>
- * @relayHash bd072b54b06a9e11de41669b580faa5e
+ * @generated SignedSource<<6458d74fb27f59dfdf05f65907d1ec3f>>
+ * @relayHash 97ef96c46746c45290e9df9d8843ac5e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,20 +9,15 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID bd072b54b06a9e11de41669b580faa5e
+// @relayRequestID 97ef96c46746c45290e9df9d8843ac5e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type GenderType = "FEMALE" | "MALE" | "OTHER" | "%future added value";
 export type MaritalStatusType = "MARRIED" | "SINGLE" | "%future added value";
-export type ContactInput = {
-  email: string;
-  phone: string;
-};
 export type UpdatePersonalDetailsFormMutation$variables = {
   address: string;
   category?: string | null | undefined;
-  contact: ContactInput;
   dateOfBirth?: any | null | undefined;
   gender?: GenderType | null | undefined;
   maritalStatus?: MaritalStatusType | null | undefined;
@@ -53,24 +48,19 @@ v1 = {
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "contact"
+  "name": "dateOfBirth"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "dateOfBirth"
+  "name": "gender"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "gender"
-},
-v5 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
   "name": "maritalStatus"
 },
-v6 = [
+v5 = [
   {
     "kind": "Variable",
     "name": "address",
@@ -80,11 +70,6 @@ v6 = [
     "kind": "Variable",
     "name": "category",
     "variableName": "category"
-  },
-  {
-    "kind": "Variable",
-    "name": "contact",
-    "variableName": "contact"
   },
   {
     "kind": "Variable",
@@ -102,7 +87,7 @@ v6 = [
     "variableName": "maritalStatus"
   }
 ],
-v7 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -116,8 +101,7 @@ return {
       (v1/*: any*/),
       (v2/*: any*/),
       (v3/*: any*/),
-      (v4/*: any*/),
-      (v5/*: any*/)
+      (v4/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -125,7 +109,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v6/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateProfilePersonalDetails",
@@ -164,11 +148,10 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v2/*: any*/),
-      (v4/*: any*/),
       (v3/*: any*/),
+      (v2/*: any*/),
       (v0/*: any*/),
-      (v5/*: any*/),
+      (v4/*: any*/),
       (v1/*: any*/)
     ],
     "kind": "Operation",
@@ -176,7 +159,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v6/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateProfilePersonalDetails",
@@ -200,31 +183,6 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Contact",
-                    "kind": "LinkedField",
-                    "name": "contact",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "email",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "phone",
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  },
                   {
                     "alias": null,
                     "args": null,
@@ -260,7 +218,7 @@ return {
                     "name": "category",
                     "storageKey": null
                   },
-                  (v7/*: any*/)
+                  (v6/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -271,7 +229,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v7/*: any*/)
+              (v6/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -282,7 +240,7 @@ return {
     ]
   },
   "params": {
-    "id": "bd072b54b06a9e11de41669b580faa5e",
+    "id": "97ef96c46746c45290e9df9d8843ac5e",
     "metadata": {},
     "name": "UpdatePersonalDetailsFormMutation",
     "operationKind": "mutation",
@@ -291,6 +249,6 @@ return {
 };
 })();
 
-(node as any).hash = "9073ce835d196c87743f88c67ca09960";
+(node as any).hash = "c14475c4a97e5b9bb41570c46d1c2b6e";
 
 export default node;

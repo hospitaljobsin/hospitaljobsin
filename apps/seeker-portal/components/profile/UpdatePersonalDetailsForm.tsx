@@ -14,10 +14,11 @@ import { CalendarDate, parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
+import LocationAutocomplete from "../forms/LocationAutocomplete";
 
 const UpdatePersonalDetailsFormMutation = graphql`
-mutation UpdatePersonalDetailsFormMutation($contact: ContactInput!, $gender: GenderType, $dateOfBirth: Date, $address: String!, $maritalStatus: MaritalStatusType, $category: String) {
-	updateProfilePersonalDetails(contact: $contact, gender: $gender, dateOfBirth: $dateOfBirth, address: $address, maritalStatus: $maritalStatus, category: $category) {
+mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $address: String!, $maritalStatus: MaritalStatusType, $category: String) {
+	updateProfilePersonalDetails(gender: $gender, dateOfBirth: $dateOfBirth, address: $address, maritalStatus: $maritalStatus, category: $category) {
 		...on Account {
 			profile {
 				... on Profile {
@@ -30,10 +31,6 @@ mutation UpdatePersonalDetailsFormMutation($contact: ContactInput!, $gender: Gen
 `;
 const UpdatePersonalDetailsFormFragment = graphql`
   fragment UpdatePersonalDetailsFormFragment on  Profile {
-        contact {
-          email
-          phone
-        }
         address
         gender
         dateOfBirth
@@ -48,10 +45,6 @@ type Props = {
 };
 
 const formSchema = z.object({
-	contact: z.object({
-		email: z.email("Invalid email"),
-		phone: z.string().check(z.minLength(5, "Phone is required")),
-	}),
 	gender: z.union([
 		z.literal("MALE"),
 		z.literal("FEMALE"),
@@ -75,33 +68,17 @@ export default function UpdatePersonalDetailsForm({
 	);
 	const data = useFragment(UpdatePersonalDetailsFormFragment, rootQuery);
 
-	let defaultValues: z.infer<typeof formSchema>;
-	if (data.__typename === "Profile") {
-		defaultValues = {
-			contact: {
-				email: String(data.contact?.email ?? ""),
-				phone: String(data.contact?.phone ?? ""),
-			},
-			address: String(data.address ?? ""),
-			category: data.category ?? null,
-			gender: ["MALE", "FEMALE", "OTHER"].includes(data.gender)
-				? (data.gender as "MALE" | "FEMALE" | "OTHER")
-				: null,
-			maritalStatus: ["MARRIED", "SINGLE"].includes(data.maritalStatus)
-				? (data.maritalStatus as "MARRIED" | "SINGLE")
-				: null,
-			dateOfBirth: data.dateOfBirth ? parseDate(data.dateOfBirth) : null,
-		};
-	} else {
-		defaultValues = {
-			contact: { email: "", phone: "" },
-			address: "",
-			category: null,
-			gender: null,
-			maritalStatus: null,
-			dateOfBirth: null,
-		};
-	}
+	const defaultValues: z.infer<typeof formSchema> = {
+		address: String(data.address ?? ""),
+		category: data.category ?? null,
+		gender: ["MALE", "FEMALE", "OTHER"].includes(data.gender ?? "")
+			? (data.gender as "MALE" | "FEMALE" | "OTHER")
+			: null,
+		maritalStatus: ["MARRIED", "SINGLE"].includes(data.maritalStatus ?? "")
+			? (data.maritalStatus as "MARRIED" | "SINGLE")
+			: null,
+		dateOfBirth: data.dateOfBirth ? parseDate(data.dateOfBirth) : null,
+	};
 
 	const {
 		handleSubmit,
@@ -112,13 +89,11 @@ export default function UpdatePersonalDetailsForm({
 		defaultValues,
 	});
 
+	console.log("errors: ", errors);
+
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		commitMutation({
 			variables: {
-				contact: {
-					email: formData.contact.email,
-					phone: formData.contact.phone,
-				},
 				gender: formData.gender || null,
 				dateOfBirth: formData.dateOfBirth
 					? formData.dateOfBirth.toString()
@@ -179,7 +154,9 @@ export default function UpdatePersonalDetailsForm({
 										showMonthAndYearPickers
 										label="Date of Birth"
 										{...field}
-										value={field.value ?? undefined}
+										// TypeScript type workaround: CalendarDate is a DateValue at runtime, but types are incompatible
+										// eslint-disable-next-line @typescript-eslint/no-explicit-any
+										value={field.value as any}
 										onChange={field.onChange}
 										errorMessage={errors.dateOfBirth?.message}
 										isInvalid={!!errors.dateOfBirth}
@@ -190,21 +167,25 @@ export default function UpdatePersonalDetailsForm({
 					</div>
 					<div className="flex flex-col gap-4">
 						<p className="text-xs text-foreground-500 px-2">Address</p>
-
 						<div className="flex gap-8 mb-12">
 							<div className="flex flex-col w-full gap-8">
 								<Controller
 									name="address"
 									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="Address"
-											placeholder="Enter your address"
-											errorMessage={errors.address?.message}
-											isInvalid={!!errors.address}
-										/>
-									)}
+									render={({ field }) => {
+										return (
+											<LocationAutocomplete
+												value={field.value || ""}
+												onValueChange={field.onChange}
+												onChange={(location) => {
+													field.onChange(location.displayName);
+												}}
+												placeholder="Enter your address"
+												errorMessage={errors.address?.message}
+												isInvalid={!!errors.address}
+											/>
+										);
+									}}
 								/>
 							</div>
 						</div>
