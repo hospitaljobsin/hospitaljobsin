@@ -1,6 +1,7 @@
 import type { ApplicationFormBuilderFragment$key } from "@/__generated__/ApplicationFormBuilderFragment.graphql";
 import type { ApplicationFormBuilderMutation as ApplicationFormBuilderMutationType } from "@/__generated__/ApplicationFormBuilderMutation.graphql";
 import {
+	Alert,
 	Button,
 	Card,
 	CardBody,
@@ -198,6 +199,10 @@ export default function ApplicationFormBuilder({
 			<h2 className="text-foreground-400 font-medium text-lg">
 				Update Screening Questions
 			</h2>
+			<Alert color="warning" variant="flat">
+				Don't ask for information that are already available in the job seeker
+				profile.
+			</Alert>
 			<Card fullWidth className="p-6 space-y-6" shadow="none">
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 					<CardBody className="space-y-6 w-full">

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<478102bfa046af6232cace8024369a3f>>
- * @relayHash 9513185caf0f9dc4648612f9e19531d9
+ * @generated SignedSource<<14ef574870d26499a8095203d09908de>>
+ * @relayHash 5602fa9a17277619f7cf3fcfb620bf98
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9513185caf0f9dc4648612f9e19531d9
+// @relayRequestID 5602fa9a17277619f7cf3fcfb620bf98
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -190,6 +190,83 @@ return {
                           {
                             "alias": null,
                             "args": null,
+                            "kind": "ScalarField",
+                            "name": "vacancies",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "type",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "workMode",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "location",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "currency",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "minSalary",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "maxSalary",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "minExperience",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "maxExperience",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "isActive",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "expiresAt",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
                             "concreteType": "JobApplicantCount",
                             "kind": "LinkedField",
                             "name": "applicantCount",
@@ -237,7 +314,14 @@ return {
                             "alias": null,
                             "args": null,
                             "kind": "ScalarField",
-                            "name": "vacancies",
+                            "name": "hasSalaryRange",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "hasExperienceRange",
                             "storageKey": null
                           },
                           (v4/*: any*/)
@@ -319,7 +403,7 @@ return {
     ]
   },
   "params": {
-    "id": "9513185caf0f9dc4648612f9e19531d9",
+    "id": "5602fa9a17277619f7cf3fcfb620bf98",
     "metadata": {},
     "name": "pageDashboardViewQuery",
     "operationKind": "query",

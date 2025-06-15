@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f7f034c0f8ee5f708f28bc759e07e9a7>>
- * @relayHash f781192d946963aead622b6fc724ff15
+ * @generated SignedSource<<e8297da16f31021c9279f35fbbf5aa71>>
+ * @relayHash 9a72bdd17078c41a5dda86967822d873
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f781192d946963aead622b6fc724ff15
+// @relayRequestID 9a72bdd17078c41a5dda86967822d873
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -526,6 +526,20 @@ return {
                   {
                     "alias": null,
                     "args": null,
+                    "kind": "ScalarField",
+                    "name": "vacancies",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "expiresAt",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
                     "concreteType": "JobApplicantCount",
                     "kind": "LinkedField",
                     "name": "applicantCount",
@@ -569,20 +583,6 @@ return {
                     ],
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "vacancies",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "expiresAt",
-                    "storageKey": null
-                  },
                   (v14/*: any*/)
                 ],
                 "storageKey": null
@@ -597,7 +597,7 @@ return {
     ]
   },
   "params": {
-    "id": "f781192d946963aead622b6fc724ff15",
+    "id": "9a72bdd17078c41a5dda86967822d873",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",

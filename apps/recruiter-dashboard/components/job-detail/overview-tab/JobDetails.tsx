@@ -19,7 +19,7 @@ import {
 import Heading from "@tiptap/extension-heading";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
+import { Briefcase, Clock, Globe, IndianRupee, MapPin } from "lucide-react";
 import { useParams } from "next/navigation";
 import { graphql, useFragment } from "react-relay";
 import { Markdown } from "tiptap-markdown";
@@ -192,7 +192,12 @@ export default function JobDetails({
 				</CardBody>
 				<CardFooter className="flex flex-col sm:flex-row justify-between items-end sm:items-center w-full gap-6">
 					<div className="flex sm:flex-row flex-wrap gap-8 items-start sm:items-center text-foreground-600 w-full">
-						{data.type && <p>{jobType(data.type)}</p>}
+						{data.type && (
+							<p className="flex items-center gap-2">
+								<Clock size={14} />
+								{jobType(data.type)}
+							</p>
+						)}
 
 						{data.location && (
 							<div className="flex items-center gap-2">
