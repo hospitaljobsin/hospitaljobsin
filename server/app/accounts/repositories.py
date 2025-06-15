@@ -8,7 +8,6 @@ from beanie.operators import In
 from bson import ObjectId
 from passlib.hash import argon2
 
-from app.base.models import Address
 from app.core.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
     EMAIL_VERIFICATION_TOKEN_LENGTH,
@@ -17,10 +16,16 @@ from app.core.constants import (
 
 from .documents import (
     Account,
-    CurrentJob,
+    Certification,
+    Contact,
+    Education,
     EmailVerificationToken,
     Language,
+    License,
     Profile,
+    SalaryExpectations,
+    Skill,
+    WorkExperience,
 )
 
 
@@ -184,56 +189,85 @@ class ProfileRepo:
     async def create(self, account: Account) -> Profile:
         """Create a new profile."""
         profile = Profile(
+            account=account,
             gender=None,
             date_of_birth=None,
-            address=Address(
-                city=None,
-                state=None,
-                country=None,
-                pincode=None,
-                line1=None,
-                line2=None,
-            ),
+            contact=Contact(email="", phone=""),
+            address="",
             marital_status=None,
             category=None,
+            locations_open_to_work=[],
+            open_to_relocation_anywhere=False,
+            education=[],
+            licenses=[],
             languages=[],
-            current_job=None,
-            total_job_experience=None,
+            job_preferences=[],
+            work_experience=[],
+            skills=[],
+            salary_expectations=None,
+            certifications=[],
         )
-
+        await profile.insert()
         account.profile = profile
-
-        await account.save(
-            link_rule=WriteRules.WRITE,
-        )
-
+        await account.save()
         return profile
 
     async def update(
         self,
         profile: Profile,
-        address: Address,
-        languages: list[Language],
+        *,
         gender: str | None = None,
         date_of_birth: date | None = None,
+        contact: Contact | None = None,
+        address: str | None = None,
         marital_status: str | None = None,
         category: str | None = None,
-        current_job: CurrentJob | None = None,
-        total_job_experience: float | None = None,
+        locations_open_to_work: list[str] | None = None,
+        open_to_relocation_anywhere: bool | None = None,
+        education: list[Education] | None = None,
+        licenses: list[License] | None = None,
+        languages: list[Language] | None = None,
+        job_preferences: list[str] | None = None,
+        work_experience: list[WorkExperience] | None = None,
+        skills: list[Skill] | None = None,
+        salary_expectations: SalaryExpectations | None = None,
+        certifications: list[Certification] | None = None,
     ) -> Profile:
-        """Update a profile."""
-        profile.gender = gender
-        profile.date_of_birth = date_of_birth
-        profile.address = address
-        profile.marital_status = marital_status
-        profile.languages = languages
-        profile.category = category
-        profile.current_job = current_job
-        profile.total_job_experience = total_job_experience
-
-        return await profile.save(
-            link_rule=WriteRules.WRITE,
-        )
+        """Update a profile with new fields."""
+        if gender is not None:
+            profile.gender = gender
+        if date_of_birth is not None:
+            profile.date_of_birth = date_of_birth
+        if contact is not None:
+            profile.contact = contact
+        if address is not None:
+            profile.address = address
+        if marital_status is not None:
+            profile.marital_status = marital_status
+        if category is not None:
+            profile.category = category
+        if locations_open_to_work is not None:
+            profile.locations_open_to_work = locations_open_to_work
+        if open_to_relocation_anywhere is not None:
+            profile.open_to_relocation_anywhere = open_to_relocation_anywhere
+        if education is not None:
+            profile.education = education
+        if licenses is not None:
+            profile.licenses = licenses
+        if languages is not None:
+            profile.languages = languages
+        if job_preferences is not None:
+            profile.job_preferences = job_preferences
+        if work_experience is not None:
+            profile.work_experience = work_experience
+        if skills is not None:
+            profile.skills = skills
+        if salary_expectations is not None:
+            profile.salary_expectations = salary_expectations
+        if certifications is not None:
+            profile.certifications = certifications
+        profile.updated_at = datetime.now(UTC)
+        return await profile.save(link_rule=WriteRules.WRITE)
 
     async def get(self, profile_id: str) -> Profile | None:
         """Get profile by ID."""
@@ -253,8 +287,16 @@ class ProfileRepo:
 
     async def get_by_account(self, account: Account) -> Profile | None:
         """Get profile by account ID."""
+        if account.profile is None:
+            return None
+        # If already loaded as a Profile instance
+        if isinstance(account.profile, Profile):
+            return account.profile
+        # If it's a Link, fetch the Profile document
         await account.fetch_link(Account.profile)
-        return account.profile
+        if isinstance(account.profile, Profile):
+            return account.profile
+        return None
 
     async def delete(self, profile: Profile) -> None:
         """Delete a profile by ID."""
