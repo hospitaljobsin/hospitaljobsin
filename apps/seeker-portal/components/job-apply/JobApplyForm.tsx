@@ -25,7 +25,7 @@ const JobApplyFormFragment = graphql`
     id
     slug
     title
-    applicationForm {
+    applicationForm @required(action: THROW) {
       fields {
         fieldName
         defaultValue
@@ -92,8 +92,15 @@ export default function JobApplyForm({
 		setValue,
 		formState: { errors, isSubmitting },
 		getValues,
+		watch,
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
+		defaultValues: {
+			applicantFields:
+				data.applicationForm?.fields.map((field) => ({
+					fieldValue: field.defaultValue || "",
+				})) || [],
+		},
 	});
 
 	const [currentStep, setCurrentStep] = useState(0);
@@ -104,6 +111,8 @@ export default function JobApplyForm({
 	// Helper for progress
 	const progressPercent =
 		((reviewMode ? totalSteps : currentStep + 1) / totalSteps) * 100;
+
+	const currentFieldValue = watch(`applicantFields.${currentStep}.fieldValue`);
 
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [pendingSubmitValues, setPendingSubmitValues] = useState<z.infer<
@@ -158,8 +167,7 @@ export default function JobApplyForm({
 									<Textarea
 										key={data.applicationForm.fields[currentStep].fieldName}
 										isRequired={
-											data.applicationForm.fields[currentStep].isRequired ||
-											false
+											data.applicationForm.fields[currentStep].isRequired
 										}
 										defaultValue={
 											data.applicationForm.fields[currentStep].defaultValue ||
@@ -195,7 +203,7 @@ export default function JobApplyForm({
 										onPress={() => setCurrentStep((s) => s + 1)}
 										isDisabled={
 											data.applicationForm.fields[currentStep].isRequired &&
-											!getValues(`applicantFields.${currentStep}.fieldValue`)
+											(!currentFieldValue || !currentFieldValue.trim())
 										}
 									>
 										Next

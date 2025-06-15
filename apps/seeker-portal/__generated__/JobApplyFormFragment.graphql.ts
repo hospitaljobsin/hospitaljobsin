@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<22566f2911aeb27c6537eb0f54550012>>
+ * @generated SignedSource<<437d0afa93ff01af451098948e24862f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,7 +17,7 @@ export type JobApplyFormFragment$data = {
       readonly fieldName: string;
       readonly isRequired: boolean;
     }>;
-  } | null | undefined;
+  };
   readonly id: string;
   readonly organization: {
     readonly logoUrl: string;
@@ -63,47 +63,51 @@ return {
       "storageKey": null
     },
     {
-      "alias": null,
-      "args": null,
-      "concreteType": "JobApplicationForm",
-      "kind": "LinkedField",
-      "name": "applicationForm",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "ApplicationField",
-          "kind": "LinkedField",
-          "name": "fields",
-          "plural": true,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "fieldName",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "defaultValue",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "isRequired",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
+      "kind": "RequiredField",
+      "field": {
+        "alias": null,
+        "args": null,
+        "concreteType": "JobApplicationForm",
+        "kind": "LinkedField",
+        "name": "applicationForm",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "ApplicationField",
+            "kind": "LinkedField",
+            "name": "fields",
+            "plural": true,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fieldName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "defaultValue",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "isRequired",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      },
+      "action": "THROW"
     },
     {
       "kind": "RequiredField",
@@ -141,6 +145,6 @@ return {
 };
 })();
 
-(node as any).hash = "b2c75f14ad29290db348a649764b0306";
+(node as any).hash = "9f7c71fd6adcc70d82a8f561285afdb8";
 
 export default node;
