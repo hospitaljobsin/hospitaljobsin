@@ -2,7 +2,18 @@ import type { JobApplyFormFragment$key } from "@/__generated__/JobApplyFormFragm
 import type { JobApplyFormMutation } from "@/__generated__/JobApplyFormMutation.graphql";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next/app";
-import { Button, Card, Progress, Textarea, addToast } from "@heroui/react";
+import {
+	Button,
+	Card,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	Progress,
+	Textarea,
+	addToast,
+} from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -94,7 +105,12 @@ export default function JobApplyForm({
 	const progressPercent =
 		((reviewMode ? totalSteps : currentStep + 1) / totalSteps) * 100;
 
-	async function onSubmit(values: z.infer<typeof formSchema>) {
+	const [showConfirmModal, setShowConfirmModal] = useState(false);
+	const [pendingSubmitValues, setPendingSubmitValues] = useState<z.infer<
+		typeof formSchema
+	> | null>(null);
+
+	async function onSubmitConfirmed(values: z.infer<typeof formSchema>) {
 		commitMutation({
 			variables: {
 				jobId: data.id,
@@ -119,10 +135,15 @@ export default function JobApplyForm({
 		});
 	}
 
+	function handleFormSubmit(values: z.infer<typeof formSchema>) {
+		setPendingSubmitValues(values);
+		setShowConfirmModal(true);
+	}
+
 	return (
 		<div className="w-full flex flex-col gap-6">
 			<Card className="p-6" shadow="none">
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
+				<form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-12">
 					{/* Stepper Logic */}
 					{!reviewMode && currentStep < totalQuestions && (
 						<div className="flex flex-col gap-6">
@@ -196,11 +217,13 @@ export default function JobApplyForm({
 
 					{reviewMode && (
 						<div className="flex flex-col gap-6">
-							<h2 className="text-sm font-semibold">Review Your Application</h2>
-							<div className="flex flex-col gap-2">
+							<h2 className="text-sm text-foreground-600">
+								Review Your Application
+							</h2>
+							<div className="flex flex-col gap-4">
 								{data.applicationForm?.fields.map((field, idx) => (
-									<div key={field.fieldName} className="flex flex-col">
-										<span className="font-medium">{field.fieldName}:</span>
+									<div key={field.fieldName} className="flex flex-col gap-2">
+										<span className="text-md">{field.fieldName}</span>
 										<span className="text-foreground-400">
 											{getValues(`applicantFields.${idx}.fieldValue`) || (
 												<span className="italic text-gray-400">No answer</span>
@@ -209,25 +232,27 @@ export default function JobApplyForm({
 									</div>
 								))}
 							</div>
-							<div className="flex justify-between gap-2">
+							<div className="flex flex-col justify-between gap-6 w-full">
+								<Button
+									type="submit"
+									color="primary"
+									fullWidth
+									size="lg"
+									isDisabled={isSubmitting}
+								>
+									Submit Application
+								</Button>
 								<Button
 									type="button"
-									color="secondary"
+									variant="flat"
+									size="lg"
+									fullWidth
 									onPress={() => {
 										setReviewMode(false);
 										setCurrentStep(totalQuestions - 1);
 									}}
-									className="w-full sm:w-auto"
 								>
-									Back
-								</Button>
-								<Button
-									type="submit"
-									color="primary"
-									isDisabled={isSubmitting}
-									className="w-full sm:w-auto"
-								>
-									Submit Application
+									Go Back
 								</Button>
 							</div>
 						</div>
@@ -235,13 +260,59 @@ export default function JobApplyForm({
 				</form>
 			</Card>
 			{/* Progress Bar */}
-			<Progress
-				value={progressPercent}
-				minValue={0}
-				maxValue={100}
-				aria-label="Application progress"
-				className="w-full mb-2"
-			/>
+			{reviewMode ? null : (
+				<Progress
+					value={progressPercent}
+					minValue={0}
+					maxValue={100}
+					aria-label="Application progress"
+					className="w-full mb-2"
+				/>
+			)}
+			<Modal
+				isOpen={showConfirmModal}
+				onClose={() => {
+					setShowConfirmModal(false);
+					setPendingSubmitValues(null);
+				}}
+				size="md"
+			>
+				<ModalContent>
+					<ModalHeader>Confirm Submission</ModalHeader>
+					<ModalBody>
+						<p>
+							Are you sure you want to submit your job application? You won't be
+							able to undo this.
+						</p>
+					</ModalBody>
+					<ModalFooter className="flex gap-4 items-center w-full flex-row">
+						<Button
+							variant="flat"
+							onPress={() => {
+								setShowConfirmModal(false);
+								setPendingSubmitValues(null);
+							}}
+							fullWidth
+						>
+							Cancel
+						</Button>
+						<Button
+							color="primary"
+							isLoading={isMutationInFlight}
+							onPress={() => {
+								if (pendingSubmitValues) {
+									onSubmitConfirmed(pendingSubmitValues);
+									setShowConfirmModal(false);
+									setPendingSubmitValues(null);
+								}
+							}}
+							fullWidth
+						>
+							Confirm
+						</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
 		</div>
 	);
 }

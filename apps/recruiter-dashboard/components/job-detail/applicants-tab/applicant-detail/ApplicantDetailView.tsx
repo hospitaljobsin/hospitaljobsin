@@ -60,7 +60,7 @@ export default function ApplicantDetailView(props: {
 	);
 
 	return (
-		<div className="w-full h-full flex flex-col items-center gap-12">
+		<div className="pl-6 py-6 w-full h-full flex flex-col items-center gap-12">
 			<ApplicantDetails rootQuery={query.organization.job.jobApplicant} />
 		</div>
 	);
