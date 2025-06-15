@@ -12,7 +12,7 @@ from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from strawberry import relay
 
-from app.accounts.documents import Account, Language, Profile
+from app.accounts.documents import Account, Education, Language, Profile
 from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
 from app.base.types import (
     BaseNodeType,
@@ -82,7 +82,7 @@ class LanguageType:
     )
 
     @classmethod
-    def marshal(cls, language) -> "LanguageType":
+    def marshal(cls, language: Language) -> Self:
         return cls(name=language.name, proficiency=language.proficiency)
 
 
@@ -101,7 +101,26 @@ class LanguageInputType:
     def to_document(self) -> Language:
         return Language(
             name=self.name,
-            proficiency=self.proficiency,
+            proficiency=self.proficiency.value,
+        )
+
+
+@strawberry.input(
+    name="EducationInput",
+    description="The education details input.",
+)
+class EducationInputType:
+    degree: str = strawberry.field(description="The degree obtained.")
+    institution: str = strawberry.field(description="The institution attended.")
+    year_completed: int = strawberry.field(
+        description="The year the degree was completed."
+    )
+
+    def to_document(self):
+        return Education(
+            degree=self.degree,
+            institution=self.institution,
+            year_completed=self.year_completed,
         )
 
 

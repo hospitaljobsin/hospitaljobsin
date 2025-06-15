@@ -510,6 +510,26 @@ type Education {
 }
 
 """
+The education details input.
+"""
+input EducationInput {
+	"""
+	The degree obtained.
+	"""
+	degree: String!
+
+	"""
+	The institution attended.
+	"""
+	institution: String!
+
+	"""
+	The year the degree was completed.
+	"""
+	yearCompleted: Int!
+}
+
+"""
 Used when the email address is in use.
 """
 type EmailInUseError implements Error {
@@ -2077,6 +2097,16 @@ type Mutation {
 		Whether the user is open to relocation anywhere.
 		"""
 		openToRelocationAnywhere: Boolean!
+	): UpdateProfilePayload! @isAuthenticated
+
+	"""
+	Update the current user's profile education.
+	"""
+	updateProfileEducation(
+		"""
+		The education history of the user profile.
+		"""
+		education: [EducationInput!]!
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""

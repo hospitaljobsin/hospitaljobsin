@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<19df92fdc7bdcdf2da819ba0d6b488ee>>
+ * @generated SignedSource<<8491805fe6c4bba9e8aedd880165bf8c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,7 +14,7 @@ export type ProfileViewFragment$data = {
   readonly viewer: {
     readonly __typename: "Account";
     readonly profile: {
-      readonly " $fragmentSpreads": FragmentRefs<"LanguagesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "UpdateLanguagesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"EducationFragment" | "LanguagesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment">;
     };
   } | {
     // This will never be '%other', but we need some
@@ -91,6 +91,16 @@ const node: ReaderFragment = {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "LocationPreferencesFragment"
+                  },
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "UpdateEducationFormFragment"
+                  },
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "EducationFragment"
                   }
                 ],
                 "storageKey": null
@@ -109,6 +119,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "32c12186d40c485201d74d77e4a08ea7";
+(node as any).hash = "1d606e6afd65f3578be11135b3163dec";
 
 export default node;

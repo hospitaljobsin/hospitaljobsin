@@ -1,5 +1,13 @@
 import type { UpdateLanguagesFormFragment$key } from "@/__generated__/UpdateLanguagesFormFragment.graphql";
-import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
+import {
+	Button,
+	Card,
+	CardBody,
+	CardHeader,
+	Input,
+	Select,
+	SelectItem,
+} from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
@@ -35,15 +43,19 @@ type Props = {
 	onSaveChanges: () => void;
 };
 
+const LANGUAGE_PROFICIENCY_OPTIONS = [
+	{ key: "NATIVE", label: "Native" },
+	{ key: "PROFESSIONAL", label: "Professional" },
+	{ key: "BASIC", label: "Basic" },
+];
+
 const formSchema = z.object({
 	languages: z.array(
 		z.object({
 			name: z
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(75)),
-			proficiency: z
-				.string()
-				.check(z.minLength(1, "This field is required"), z.maxLength(75)),
+			proficiency: z.enum(["NATIVE", "PROFESSIONAL", "BASIC"]),
 		}),
 	),
 });
@@ -67,11 +79,16 @@ export default function UpdateLanguagesForm({
 				? {
 						languages: data.languages.map((language) => ({
 							name: language.name,
-							proficiency: language.proficiency,
+							proficiency:
+								language.proficiency === "NATIVE"
+									? "NATIVE"
+									: language.proficiency === "PROFESSIONAL"
+										? "PROFESSIONAL"
+										: "BASIC",
 						})),
 					}
 				: {
-						languages: [{ name: "", proficiency: "" }],
+						languages: [{ name: "", proficiency: "BASIC" }],
 					},
 	});
 
@@ -128,22 +145,38 @@ export default function UpdateLanguagesForm({
 									<Controller
 										name={`languages.${index}.proficiency`}
 										control={control}
-										defaultValue=""
+										defaultValue="BASIC"
 										render={({ field }) => (
-											<Input
+											<Select
 												{...field}
 												fullWidth
 												label="Proficiency"
-												placeholder="Add language proficiency"
+												placeholder="Select proficiency"
+												selectionMode="single"
+												selectedKeys={[field.value ?? "BASIC"]}
+												defaultSelectedKeys={[field.value ?? "BASIC"]}
+												onSelectionChange={(keys) => {
+													// keys is a Set
+													const value = Array.from(keys)[0] as
+														| "NATIVE"
+														| "PROFESSIONAL"
+														| "BASIC";
+													field.onChange(value);
+												}}
 												errorMessage={
 													errors.languages?.[index]?.proficiency?.message
 												}
 												isInvalid={!!errors.languages?.[index]?.proficiency}
-											/>
+											>
+												{LANGUAGE_PROFICIENCY_OPTIONS.map((option) => (
+													<SelectItem key={option.key}>
+														{option.label}
+													</SelectItem>
+												))}
+											</Select>
 										)}
 									/>
 								</div>
-
 								<Button
 									type="button"
 									isIconOnly
@@ -162,7 +195,7 @@ export default function UpdateLanguagesForm({
 							onPress={() =>
 								append({
 									name: "",
-									proficiency: "",
+									proficiency: "BASIC",
 								})
 							}
 						>

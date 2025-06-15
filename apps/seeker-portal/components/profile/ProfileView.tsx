@@ -3,9 +3,11 @@ import type { ProfileViewFragment$key } from "@/__generated__/ProfileViewFragmen
 import { useState } from "react";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import Education from "./Education";
 import Languages from "./Languages";
 import LocationPreferences from "./LocationPreferences";
 import ProfileDetails from "./PersonalDetails";
+import UpdateEducationForm from "./UpdateEducationForm";
 import UpdateLanguagesForm from "./UpdateLanguagesForm";
 import UpdateLocationPreferencesForm from "./UpdateLocationPreferencesForm";
 import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
@@ -22,6 +24,8 @@ const ProfileViewFragment = graphql`
 			...UpdateLanguagesFormFragment
 			...UpdateLocationPreferencesFormFragment
 			...LocationPreferencesFragment
+			...UpdateEducationFormFragment
+			...EducationFragment
 		}
       }
     }
@@ -37,6 +41,7 @@ export default function ProfileView({
 	const [isEditingLanguages, setIsEditingLanguages] = useState(false);
 	const [isEditingLocationPreferences, setIsEditingLocationPreferences] =
 		useState(false);
+	const [isEditingEducation, setIsEditingEducation] = useState(false);
 	const data = useFragment(ProfileViewFragment, query);
 	invariant(
 		data.viewer.__typename === "Account",
@@ -72,6 +77,21 @@ export default function ProfileView({
 					rootQuery={data.viewer.profile}
 					onEditProfile={() => {
 						setIsEditingLanguages(true);
+					}}
+				/>
+			)}
+			{isEditingEducation ? (
+				<UpdateEducationForm
+					rootQuery={data.viewer.profile}
+					onSaveChanges={() => {
+						setIsEditingEducation(false);
+					}}
+				/>
+			) : (
+				<Education
+					rootQuery={data.viewer.profile}
+					onEditProfile={() => {
+						setIsEditingEducation(true);
 					}}
 				/>
 			)}

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e17293c398fdfe5a5aa50dcdfa93cf05>>
- * @relayHash fd98d24c265b06d2e2ef3084e68a68d1
+ * @generated SignedSource<<ac10556441672d0c1c96f9e060525088>>
+ * @relayHash 77385d992a4bc6abea6f540d4765c433
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID fd98d24c265b06d2e2ef3084e68a68d1
+// @relayRequestID 77385d992a4bc6abea6f540d4765c433
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -154,6 +154,38 @@ return {
                     "name": "openToRelocationAnywhere",
                     "storageKey": null
                   },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Education",
+                    "kind": "LinkedField",
+                    "name": "education",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "degree",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "institution",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "yearCompleted",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
                   (v1/*: any*/)
                 ],
                 "storageKey": null
@@ -176,7 +208,7 @@ return {
     ]
   },
   "params": {
-    "id": "fd98d24c265b06d2e2ef3084e68a68d1",
+    "id": "77385d992a4bc6abea6f540d4765c433",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",

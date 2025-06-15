@@ -2,7 +2,7 @@ from datetime import date
 
 from result import Ok
 
-from app.accounts.documents import Account, Language
+from app.accounts.documents import Account, Education, Language
 from app.accounts.repositories import AccountRepo, ProfileRepo
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
@@ -105,4 +105,21 @@ class ProfileService:
             open_to_relocation_anywhere=open_to_relocation_anywhere,
         )
         account.profile = profile
+        return Ok(account)
+
+    async def update_education(
+        self,
+        account: Account,
+        education: list[Education],
+    ) -> Ok[Account]:
+        existing_profile = await self._profile_repo.get_by_account(account)
+        if existing_profile is None:
+            existing_profile = await self._profile_repo.create(account)
+
+        profile = await self._profile_repo.update(
+            profile=existing_profile,
+            education=education,
+        )
+
+        # Do not assign profile to account.profile to avoid Link[Profile] type issues
         return Ok(account)

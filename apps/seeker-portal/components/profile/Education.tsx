@@ -1,0 +1,69 @@
+import type { EducationFragment$key } from "@/__generated__/EducationFragment.graphql";
+import { Button, Card, CardBody, CardHeader } from "@heroui/react";
+import { EditIcon } from "lucide-react";
+import { graphql, useFragment } from "react-relay";
+
+const EducationFragment = graphql`
+  fragment EducationFragment on Profile {
+    __typename
+    education {
+      degree
+      institution
+      yearCompleted
+    }
+  }
+`;
+
+type Props = {
+	rootQuery: EducationFragment$key;
+	onEditProfile: () => void;
+};
+
+export default function Education({ rootQuery, onEditProfile }: Props) {
+	const data = useFragment(EducationFragment, rootQuery);
+
+	return (
+		<div className="space-y-12">
+			<Card className="p-6 space-y-6" shadow="none">
+				<CardHeader className="flex gap-6 w-full items-center justify-between">
+					<h1 className="w-full text-lg font-medium">Education</h1>
+					<Button
+						startContent={<EditIcon size={24} />}
+						onPress={onEditProfile}
+						variant="light"
+					>
+						Edit
+					</Button>
+				</CardHeader>
+				<CardBody className="flex flex-col gap-10">
+					{data.education.length < 1 ? (
+						<h2 className="w-full text-foreground-500">
+							Add your education history
+						</h2>
+					) : (
+						<div className="flex flex-col gap-8 w-full">
+							{data.education.map((edu, idx) => (
+								<div
+									className="flex gap-4 flex-col items-center w-full"
+									key={`${edu.degree}-${edu.institution}-${edu.yearCompleted}-${idx}`}
+								>
+									<h3 className="w-full text-foreground-500 text-lg font-medium">
+										{edu.degree}
+									</h3>
+									<div className="w-full flex gap-2 text-foreground-500">
+										<p>Institution:</p>
+										<p className="italic">{edu.institution}</p>
+									</div>
+									<div className="w-full flex gap-2 text-foreground-500">
+										<p>Year Completed:</p>
+										<p className="italic">{edu.yearCompleted}</p>
+									</div>
+								</div>
+							))}
+						</div>
+					)}
+				</CardBody>
+			</Card>
+		</div>
+	);
+}

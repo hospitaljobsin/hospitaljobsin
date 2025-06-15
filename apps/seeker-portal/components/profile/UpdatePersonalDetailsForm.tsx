@@ -89,8 +89,6 @@ export default function UpdatePersonalDetailsForm({
 		defaultValues,
 	});
 
-	console.log("errors: ", errors);
-
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		commitMutation({
 			variables: {

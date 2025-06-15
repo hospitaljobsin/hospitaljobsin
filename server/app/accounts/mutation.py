@@ -13,6 +13,7 @@ from app.context import AuthInfo
 
 from .types import (
     AccountType,
+    EducationInputType,
     GenderTypeEnum,
     LanguageInputType,
     MaritalStatusTypeEnum,
@@ -73,9 +74,9 @@ class AccountMutation:
         """Update the current user's profile personal details."""
         match await profile_service.update_personal_details(
             account=info.context["current_user"],
-            gender=gender,
+            gender=gender.value if gender is not None else None,
             date_of_birth=date_of_birth,
-            marital_status=marital_status,
+            marital_status=marital_status.value if marital_status is not None else None,
             category=category,
             address=address,
         ):
@@ -182,6 +183,39 @@ class AccountMutation:
             account=info.context["current_user"],
             locations_open_to_work=locations_open_to_work,
             open_to_relocation_anywhere=open_to_relocation_anywhere,
+        ):
+            case Ok(account):
+                return AccountType.marshal_with_profile(account)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Update the current user's profile education.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_profile_education(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+        education: Annotated[
+            list[EducationInputType],
+            strawberry.argument(
+                description="The education history of the user profile.",
+            ),
+        ],
+    ) -> UpdateProfilePayload:
+        """Update the current user's profile education."""
+        match await profile_service.update_education(
+            account=info.context["current_user"],
+            education=[edu.to_document() for edu in education],
         ):
             case Ok(account):
                 return AccountType.marshal_with_profile(account)
