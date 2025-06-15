@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dcd6ab816ef59abea0abaa0091f5dbe7>>
- * @relayHash c7ad31e841efec1ec902790cc2993dae
+ * @generated SignedSource<<a3e63b17c5c85b9440ca1a72ce0eff5d>>
+ * @relayHash 02d07fe36aa233a1cabffdbaff2e67bb
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,14 +9,15 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c7ad31e841efec1ec902790cc2993dae
+// @relayRequestID 02d07fe36aa233a1cabffdbaff2e67bb
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type EducationInput = {
+  completedAt?: any | null | undefined;
   degree: string;
   institution: string;
-  yearCompleted: number;
+  startedAt: any;
 };
 export type UpdateEducationFormMutation$variables = {
   education: ReadonlyArray<EducationInput>;
@@ -160,7 +161,14 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "yearCompleted",
+                        "name": "startedAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "completedAt",
                         "storageKey": null
                       }
                     ],
@@ -188,7 +196,7 @@ return {
     ]
   },
   "params": {
-    "id": "c7ad31e841efec1ec902790cc2993dae",
+    "id": "02d07fe36aa233a1cabffdbaff2e67bb",
     "metadata": {},
     "name": "UpdateEducationFormMutation",
     "operationKind": "mutation",

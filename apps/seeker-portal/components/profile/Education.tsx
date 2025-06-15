@@ -9,7 +9,8 @@ const EducationFragment = graphql`
     education {
       degree
       institution
-      yearCompleted
+      startedAt
+      completedAt
     }
   }
 `;
@@ -45,7 +46,7 @@ export default function Education({ rootQuery, onEditProfile }: Props) {
 							{data.education.map((edu, idx) => (
 								<div
 									className="flex gap-4 flex-col items-center w-full"
-									key={`${edu.degree}-${edu.institution}-${edu.yearCompleted}-${idx}`}
+									key={`${edu.degree}-${edu.institution}-${edu.startedAt}-${edu.completedAt}-${idx}`}
 								>
 									<h3 className="w-full text-foreground-500 text-lg font-medium">
 										{edu.degree}
@@ -55,8 +56,22 @@ export default function Education({ rootQuery, onEditProfile }: Props) {
 										<p className="italic">{edu.institution}</p>
 									</div>
 									<div className="w-full flex gap-2 text-foreground-500">
-										<p>Year Completed:</p>
-										<p className="italic">{edu.yearCompleted}</p>
+										<p>Duration:</p>
+										<p className="italic">
+											{edu.startedAt
+												? new Date(edu.startedAt).toLocaleString("default", {
+														month: "short",
+														year: "numeric",
+													})
+												: "N/A"}
+											{" - "}
+											{edu.completedAt
+												? new Date(edu.completedAt).toLocaleString("default", {
+														month: "short",
+														year: "numeric",
+													})
+												: "Present"}
+										</p>
 									</div>
 								</div>
 							))}

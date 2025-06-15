@@ -506,7 +506,8 @@ union DisableAccount2FAWithAuthenticatorPayload =
 type Education {
 	degree: String!
 	institution: String!
-	yearCompleted: Int!
+	startedAt: Date!
+	completedAt: Date
 }
 
 """
@@ -524,9 +525,14 @@ input EducationInput {
 	institution: String!
 
 	"""
-	The year the degree was completed.
+	When the degree was started.
 	"""
-	yearCompleted: Int!
+	startedAt: Date!
+
+	"""
+	When the degree was completed.
+	"""
+	completedAt: Date
 }
 
 """

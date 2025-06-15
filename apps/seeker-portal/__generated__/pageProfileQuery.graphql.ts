@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<ac10556441672d0c1c96f9e060525088>>
- * @relayHash 77385d992a4bc6abea6f540d4765c433
+ * @generated SignedSource<<6983690e5051c8b04b52c228ac8874cd>>
+ * @relayHash 9285e096f7f43770f5318b6429ca258f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 77385d992a4bc6abea6f540d4765c433
+// @relayRequestID 9285e096f7f43770f5318b6429ca258f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -180,7 +180,14 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "yearCompleted",
+                        "name": "startedAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "completedAt",
                         "storageKey": null
                       }
                     ],
@@ -208,7 +215,7 @@ return {
     ]
   },
   "params": {
-    "id": "77385d992a4bc6abea6f540d4765c433",
+    "id": "9285e096f7f43770f5318b6429ca258f",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",

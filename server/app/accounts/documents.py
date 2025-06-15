@@ -31,7 +31,8 @@ LicenseVerificationStatusEnum = Literal["pending", "verified", "rejected"]
 class Education(BaseModel):
     degree: str
     institution: str
-    year_completed: int
+    started_at: date
+    completed_at: date | None = None
 
 
 # LICENSE

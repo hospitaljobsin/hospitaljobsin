@@ -51,7 +51,9 @@ const formSchema = z.object({
 		z.literal("OTHER"),
 		z.null(),
 	]),
-	dateOfBirth: z.nullable(z.instanceof(CalendarDate)),
+	dateOfBirth: z.nullable(
+		z.custom<CalendarDate>((data) => data instanceof CalendarDate),
+	),
 	address: z.string().check(z.minLength(3, "Address is required")),
 	maritalStatus: z.union([z.literal("MARRIED"), z.literal("SINGLE"), z.null()]),
 	category: z.nullable(

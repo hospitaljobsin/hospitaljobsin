@@ -112,15 +112,17 @@ class LanguageInputType:
 class EducationInputType:
     degree: str = strawberry.field(description="The degree obtained.")
     institution: str = strawberry.field(description="The institution attended.")
-    year_completed: int = strawberry.field(
-        description="The year the degree was completed."
+    started_at: date = strawberry.field(description="When the degree was started.")
+    completed_at: date | None = strawberry.field(
+        description="When the degree was completed."
     )
 
     def to_document(self):
         return Education(
             degree=self.degree,
             institution=self.institution,
-            year_completed=self.year_completed,
+            started_at=self.started_at,
+            completed_at=self.completed_at,
         )
 
 
@@ -582,14 +584,16 @@ SaveJobPayload = Annotated[
 class EducationType:
     degree: str
     institution: str
-    year_completed: int
+    started_at: date
+    completed_at: date | None
 
     @classmethod
     def marshal(cls, edu) -> "EducationType":
         return cls(
             degree=edu.degree,
             institution=edu.institution,
-            year_completed=edu.year_completed,
+            started_at=edu.started_at,
+            completed_at=edu.completed_at,
         )
 
 

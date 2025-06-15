@@ -2,8 +2,16 @@
 // input EducationInput { degree: String!, institution: String!, yearCompleted: Int! }
 // You must add this input type and the updateProfileEducation mutation on the backend for this to work.
 import type { UpdateEducationFormFragment$key } from "@/__generated__/UpdateEducationFormFragment.graphql";
-import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
+import {
+	Button,
+	Card,
+	CardBody,
+	CardHeader,
+	DatePicker,
+	Input,
+} from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { CalendarDate, parseDate } from "@internationalized/date";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -29,7 +37,8 @@ const UpdateEducationFormFragment = graphql`
     education {
       degree
       institution
-      yearCompleted
+      startedAt
+      completedAt
     }
   }
 `;
@@ -48,12 +57,10 @@ const formSchema = z.object({
 			institution: z
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
-			yearCompleted: z
-				.string()
-				.check(
-					z.minLength(4, "Enter a valid year"),
-					z.maxLength(4, "Enter a valid year"),
-				),
+			startedAt: z.custom<CalendarDate>((data) => data instanceof CalendarDate),
+			completedAt: z.custom<CalendarDate>(
+				(data) => data instanceof CalendarDate,
+			),
 		}),
 	),
 });
@@ -75,14 +82,24 @@ export default function UpdateEducationForm({
 		defaultValues:
 			data.education.length > 0
 				? {
-						education: data.education.map((edu) => ({
-							degree: edu.degree,
-							institution: edu.institution,
-							yearCompleted: String(edu.yearCompleted),
-						})),
+						education: data.education.map((edu) => {
+							return {
+								degree: edu.degree,
+								institution: edu.institution,
+								startedAt: parseDate(edu.startedAt),
+								completedAt: parseDate(edu.completedAt),
+							};
+						}),
 					}
 				: {
-						education: [{ degree: "", institution: "", yearCompleted: "" }],
+						education: [
+							{
+								degree: "",
+								institution: "",
+								startedAt: undefined,
+								completedAt: undefined,
+							},
+						],
 					},
 	});
 
@@ -95,8 +112,10 @@ export default function UpdateEducationForm({
 		commitMutation({
 			variables: {
 				education: formData.education.map((edu) => ({
-					...edu,
-					yearCompleted: Number.parseInt(edu.yearCompleted, 10),
+					degree: edu.degree,
+					institution: edu.institution,
+					startedAt: edu.startedAt.toString(),
+					completedAt: edu.completedAt.toString(),
 				})),
 			},
 		});
@@ -129,7 +148,8 @@ export default function UpdateEducationForm({
 										append({
 											degree: "",
 											institution: "",
-											yearCompleted: "",
+											startedAt: undefined,
+											completedAt: undefined,
 										})
 									}
 								>
@@ -141,7 +161,7 @@ export default function UpdateEducationForm({
 								{fields.map((item, index) => (
 									<div
 										key={`field-${item.degree}-${item.institution}-${index}`}
-										className="flex gap-8 items-start w-full"
+										className="flex flex-col gap-8 items-end w-full"
 									>
 										<div className="w-full space-y-4">
 											<Controller
@@ -181,37 +201,59 @@ export default function UpdateEducationForm({
 												)}
 											/>
 										</div>
-										<div className="w-full space-y-4">
+										<div className="w-full flex gap-4 flex-col sm:flex-row">
+											<div className="flex gap-2 w-full">
+												<Controller
+													control={control}
+													name={`education.${index}.startedAt`}
+													render={({ field }) => {
+														return (
+															<DatePicker
+																label="Start Date"
+																showMonthAndYearPickers
+																selectorButtonPlacement="start"
+																errorMessage={
+																	errors.education?.[index]?.startedAt?.message
+																}
+																isInvalid={
+																	!!errors.education?.[index]?.startedAt
+																}
+																value={field.value ?? undefined}
+																onChange={field.onChange}
+															/>
+														);
+													}}
+												/>
+											</div>
 											<Controller
-												name={`education.${index}.yearCompleted`}
 												control={control}
-												defaultValue=""
-												render={({ field }) => (
-													<Input
-														{...field}
-														fullWidth
-														label="Year Completed"
-														placeholder="e.g. 2022"
-														errorMessage={
-															errors.education?.[index]?.yearCompleted?.message
-														}
-														isInvalid={
-															!!errors.education?.[index]?.yearCompleted
-														}
-														type="number"
-														min={1900}
-														max={2100}
-													/>
-												)}
+												name={`education.${index}.completedAt`}
+												render={({ field }) => {
+													return (
+														<DatePicker
+															label="End Date"
+															showMonthAndYearPickers
+															selectorButtonPlacement="start"
+															errorMessage={
+																errors.education?.[index]?.completedAt?.message
+															}
+															isInvalid={
+																!!errors.education?.[index]?.completedAt
+															}
+															value={field.value ?? undefined}
+															onChange={field.onChange}
+														/>
+													);
+												}}
 											/>
 										</div>
 										<Button
 											type="button"
-											isIconOnly
 											variant="bordered"
+											startContent={<Trash size={18} />}
 											onPress={() => remove(index)}
 										>
-											<Trash size={18} />
+											Delete Education
 										</Button>
 									</div>
 								))}
@@ -223,7 +265,15 @@ export default function UpdateEducationForm({
 										append({
 											degree: "",
 											institution: "",
-											yearCompleted: "",
+											startedMonth: String(new Date().getMonth() + 1).padStart(
+												2,
+												"0",
+											),
+											startedYear: String(new Date().getFullYear()),
+											completedMonth: String(
+												new Date().getMonth() + 1,
+											).padStart(2, "0"),
+											completedYear: String(new Date().getFullYear()),
 										})
 									}
 								>
