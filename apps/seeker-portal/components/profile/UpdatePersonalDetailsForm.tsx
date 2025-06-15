@@ -1,3 +1,4 @@
+import type { UpdatePersonalDetailsFormFragment$key } from "@/__generated__/UpdatePersonalDetailsFormFragment.graphql";
 import {
 	Button,
 	Card,
@@ -13,40 +14,32 @@ import { CalendarDate, parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
-import type { UpdatePersonalDetailsFormFragment$key } from "@/__generated__/UpdatePersonalDetailsFormFragment.graphql";
 
 const UpdatePersonalDetailsFormMutation = graphql`
-mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $address: AddressInput!, $maritalStatus: MaritalStatusType, $category: String) {
-	updateProfilePersonalDetails(address: $address, gender: $gender, dateOfBirth: $dateOfBirth, maritalStatus: $maritalStatus, category: $category) {
+mutation UpdatePersonalDetailsFormMutation($contact: ContactInput!, $gender: GenderType, $dateOfBirth: Date, $address: String!, $maritalStatus: MaritalStatusType, $category: String) {
+	updateProfilePersonalDetails(contact: $contact, gender: $gender, dateOfBirth: $dateOfBirth, address: $address, maritalStatus: $maritalStatus, category: $category) {
 		...on Account {
-			...UpdatePersonalDetailsFormFragment
+			profile {
+				... on Profile {
+					...UpdatePersonalDetailsFormFragment
+				}
+			}
 		}
 	}
 }
 `;
 const UpdatePersonalDetailsFormFragment = graphql`
-  fragment UpdatePersonalDetailsFormFragment on Account {
-    profile {
-      ... on Profile {
-        __typename
-		address {
-			city
-			country
-			line1
-			line2
-			pincode
-			state
-		}
-		gender
-		dateOfBirth
-		maritalStatus
-		category
+  fragment UpdatePersonalDetailsFormFragment on  Profile {
+        contact {
+          email
+          phone
+        }
+        address
+        gender
+        dateOfBirth
+        maritalStatus
+        category
       }
-      ... on ProfileNotFoundError {
-        __typename
-      }
-    }
-  }
 `;
 
 type Props = {
@@ -55,21 +48,22 @@ type Props = {
 };
 
 const formSchema = z.object({
-	gender: z.nullable(z.enum(["MALE", "FEMALE", "OTHER"])),
-	dateOfBirth: z.nullable(z.instanceof(CalendarDate)),
-	address: z.object({
-		city: z.nullable(z.string()),
-		country: z.nullable(z.string()),
-		line1: z.nullable(z.string()),
-		line2: z.nullable(z.string()),
-		pincode: z.nullable(z.string()),
-		state: z.nullable(z.string()),
+	contact: z.object({
+		email: z.email("Invalid email"),
+		phone: z.string().check(z.minLength(5, "Phone is required")),
 	}),
-	maritalStatus: z.nullable(z.enum(["MARRIED", "SINGLE"])),
-	category: z.union([
-		z.nullable(z.string().check(z.maxLength(25))),
-		z.literal(""),
+	gender: z.union([
+		z.literal("MALE"),
+		z.literal("FEMALE"),
+		z.literal("OTHER"),
+		z.null(),
 	]),
+	dateOfBirth: z.nullable(z.instanceof(CalendarDate)),
+	address: z.string().check(z.minLength(3, "Address is required")),
+	maritalStatus: z.union([z.literal("MARRIED"), z.literal("SINGLE"), z.null()]),
+	category: z.nullable(
+		z.string().check(z.maxLength(25, "Category is too long")),
+	),
 });
 
 export default function UpdatePersonalDetailsForm({
@@ -81,63 +75,57 @@ export default function UpdatePersonalDetailsForm({
 	);
 	const data = useFragment(UpdatePersonalDetailsFormFragment, rootQuery);
 
+	let defaultValues: z.infer<typeof formSchema>;
+	if (data.__typename === "Profile") {
+		defaultValues = {
+			contact: {
+				email: String(data.contact?.email ?? ""),
+				phone: String(data.contact?.phone ?? ""),
+			},
+			address: String(data.address ?? ""),
+			category: data.category ?? null,
+			gender: ["MALE", "FEMALE", "OTHER"].includes(data.gender)
+				? (data.gender as "MALE" | "FEMALE" | "OTHER")
+				: null,
+			maritalStatus: ["MARRIED", "SINGLE"].includes(data.maritalStatus)
+				? (data.maritalStatus as "MARRIED" | "SINGLE")
+				: null,
+			dateOfBirth: data.dateOfBirth ? parseDate(data.dateOfBirth) : null,
+		};
+	} else {
+		defaultValues = {
+			contact: { email: "", phone: "" },
+			address: "",
+			category: null,
+			gender: null,
+			maritalStatus: null,
+			dateOfBirth: null,
+		};
+	}
+
 	const {
 		handleSubmit,
 		control,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
-		defaultValues:
-			data.profile.__typename === "Profile"
-				? {
-						address: {
-							city: data.profile.address?.city ?? null,
-							country: data.profile.address?.country ?? null,
-							line1: data.profile.address?.line1 ?? null,
-							line2: data.profile.address?.line2 ?? null,
-							pincode: data.profile.address?.pincode ?? null,
-							state: data.profile.address?.state ?? null,
-						},
-						category: data.profile.category ?? null,
-						gender: data.profile.gender ?? null,
-						maritalStatus: data.profile.maritalStatus ?? null,
-						dateOfBirth: data.profile.dateOfBirth
-							? parseDate(data.profile.dateOfBirth)
-							: null,
-					}
-				: {
-						address: {
-							city: null,
-							country: null,
-							line1: null,
-							line2: null,
-							pincode: null,
-							state: null,
-						},
-						category: null,
-						gender: "MALE",
-						maritalStatus: null,
-						dateOfBirth: null,
-					},
+		defaultValues,
 	});
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		commitMutation({
 			variables: {
+				contact: {
+					email: formData.contact.email,
+					phone: formData.contact.phone,
+				},
 				gender: formData.gender || null,
 				dateOfBirth: formData.dateOfBirth
 					? formData.dateOfBirth.toString()
 					: null,
 				category: formData.category || null,
 				maritalStatus: formData.maritalStatus || null,
-				address: {
-					city: formData.address.city || null,
-					country: formData.address.country || null,
-					line1: formData.address.line1 || null,
-					line2: formData.address.line2 || null,
-					pincode: formData.address.pincode || null,
-					state: formData.address.state || null,
-				},
+				address: formData.address,
 			},
 		});
 		onSaveChanges();
@@ -206,88 +194,15 @@ export default function UpdatePersonalDetailsForm({
 						<div className="flex gap-8 mb-12">
 							<div className="flex flex-col w-full gap-8">
 								<Controller
-									name="address.city"
+									name="address"
 									control={control}
 									render={({ field }) => (
 										<Input
 											{...field}
-											label="City"
-											placeholder="Add your city"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.city?.message}
-											isInvalid={!!errors.address?.city}
-										/>
-									)}
-								/>
-								<Controller
-									name="address.country"
-									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="Country"
-											placeholder="Add your country"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.country?.message}
-											isInvalid={!!errors.address?.country}
-										/>
-									)}
-								/>
-								<Controller
-									name="address.pincode"
-									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="Pincode"
-											placeholder="Add your pincode"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.pincode?.message}
-											isInvalid={!!errors.address?.pincode}
-										/>
-									)}
-								/>
-							</div>
-							<div className="flex flex-col w-full gap-8">
-								<Controller
-									name="address.line1"
-									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="Line 1"
-											placeholder="Add line 1"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.line1?.message}
-											isInvalid={!!errors.address?.line1}
-										/>
-									)}
-								/>
-								<Controller
-									name="address.line2"
-									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="Line 2"
-											placeholder="Add line 2"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.line2?.message}
-											isInvalid={!!errors.address?.line2}
-										/>
-									)}
-								/>
-								<Controller
-									name="address.state"
-									control={control}
-									render={({ field }) => (
-										<Input
-											{...field}
-											label="State"
-											placeholder="Add your state"
-											value={field.value ?? ""}
-											errorMessage={errors.address?.state?.message}
-											isInvalid={!!errors.address?.state}
+											label="Address"
+											placeholder="Enter your address"
+											errorMessage={errors.address?.message}
+											isInvalid={!!errors.address}
 										/>
 									)}
 								/>

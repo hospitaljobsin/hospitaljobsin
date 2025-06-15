@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3aa35eef085c6528619d5d0edd7d478a>>
+ * @generated SignedSource<<3cdf25d2d64ad021e6faa8f0f7a73237>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,27 +13,15 @@ export type GenderType = "FEMALE" | "MALE" | "OTHER" | "%future added value";
 export type MaritalStatusType = "MARRIED" | "SINGLE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type UpdatePersonalDetailsFormFragment$data = {
-  readonly profile: {
-    readonly __typename: "Profile";
-    readonly address: {
-      readonly city: string | null | undefined;
-      readonly country: string | null | undefined;
-      readonly line1: string | null | undefined;
-      readonly line2: string | null | undefined;
-      readonly pincode: string | null | undefined;
-      readonly state: string | null | undefined;
-    };
-    readonly category: string | null | undefined;
-    readonly dateOfBirth: any | null | undefined;
-    readonly gender: GenderType | null | undefined;
-    readonly maritalStatus: MaritalStatusType | null | undefined;
-  } | {
-    readonly __typename: "ProfileNotFoundError";
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
+  readonly address: string;
+  readonly category: string | null | undefined;
+  readonly contact: {
+    readonly email: string;
+    readonly phone: string;
   };
+  readonly dateOfBirth: any | null | undefined;
+  readonly gender: GenderType | null | undefined;
+  readonly maritalStatus: MaritalStatusType | null | undefined;
   readonly " $fragmentType": "UpdatePersonalDetailsFormFragment";
 };
 export type UpdatePersonalDetailsFormFragment$key = {
@@ -41,15 +29,7 @@ export type UpdatePersonalDetailsFormFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"UpdatePersonalDetailsFormFragment">;
 };
 
-const node: ReaderFragment = (function(){
-var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
-};
-return {
+const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -58,117 +38,68 @@ return {
     {
       "alias": null,
       "args": null,
-      "concreteType": null,
+      "concreteType": "Contact",
       "kind": "LinkedField",
-      "name": "profile",
+      "name": "contact",
       "plural": false,
       "selections": [
         {
-          "kind": "InlineFragment",
-          "selections": [
-            (v0/*: any*/),
-            {
-              "alias": null,
-              "args": null,
-              "concreteType": "Address",
-              "kind": "LinkedField",
-              "name": "address",
-              "plural": false,
-              "selections": [
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "city",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "country",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "line1",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "line2",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "pincode",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "state",
-                  "storageKey": null
-                }
-              ],
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "gender",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "dateOfBirth",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "maritalStatus",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "category",
-              "storageKey": null
-            }
-          ],
-          "type": "Profile",
-          "abstractKey": null
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "email",
+          "storageKey": null
         },
         {
-          "kind": "InlineFragment",
-          "selections": [
-            (v0/*: any*/)
-          ],
-          "type": "ProfileNotFoundError",
-          "abstractKey": null
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "phone",
+          "storageKey": null
         }
       ],
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "address",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "gender",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "dateOfBirth",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "maritalStatus",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "category",
+      "storageKey": null
     }
   ],
-  "type": "Account",
+  "type": "Profile",
   "abstractKey": null
 };
-})();
 
-(node as any).hash = "f7ade31f5d97209699cf0d82c71e6d1f";
+(node as any).hash = "98d06ad1c3c65079961dc0635dd94351";
 
 export default node;

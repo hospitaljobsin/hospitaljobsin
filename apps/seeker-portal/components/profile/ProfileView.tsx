@@ -1,11 +1,13 @@
 "use client";
+import type { ProfileViewFragment$key } from "@/__generated__/ProfileViewFragment.graphql";
 import { useState } from "react";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
-import type { ProfileViewFragment$key } from "@/__generated__/ProfileViewFragment.graphql";
 import Languages from "./Languages";
+import LocationPreferences from "./LocationPreferences";
 import ProfileDetails from "./PersonalDetails";
 import UpdateLanguagesForm from "./UpdateLanguagesForm";
+import UpdateLocationPreferencesForm from "./UpdateLocationPreferencesForm";
 import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
 
 const ProfileViewFragment = graphql`
@@ -13,10 +15,14 @@ const ProfileViewFragment = graphql`
     viewer {
       __typename
       ... on Account {
-		...UpdatePersonalDetailsFormFragment
-        ...PersonalDetailsFragment
-		...LanguagesFragment
-		...UpdateLanguagesFormFragment
+		profile @required(action: THROW) {
+			...UpdatePersonalDetailsFormFragment
+			...PersonalDetailsFragment
+			...LanguagesFragment
+			...UpdateLanguagesFormFragment
+			...UpdateLocationPreferencesFormFragment
+			...LocationPreferencesFragment
+		}
       }
     }
   }
@@ -29,6 +35,8 @@ export default function ProfileView({
 }) {
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
 	const [isEditingLanguages, setIsEditingLanguages] = useState(false);
+	const [isEditingLocationPreferences, setIsEditingLocationPreferences] =
+		useState(false);
 	const data = useFragment(ProfileViewFragment, query);
 	invariant(
 		data.viewer.__typename === "Account",
@@ -39,14 +47,14 @@ export default function ProfileView({
 		<div className="w-full h-full space-y-16">
 			{isEditingProfile ? (
 				<UpdateProfileDetailsForm
-					rootQuery={data.viewer}
+					rootQuery={data.viewer.profile}
 					onSaveChanges={() => {
 						setIsEditingProfile(false);
 					}}
 				/>
 			) : (
 				<ProfileDetails
-					rootQuery={data.viewer}
+					rootQuery={data.viewer.profile}
 					onEditProfile={() => {
 						setIsEditingProfile(true);
 					}}
@@ -54,16 +62,31 @@ export default function ProfileView({
 			)}
 			{isEditingLanguages ? (
 				<UpdateLanguagesForm
-					rootQuery={data.viewer}
+					rootQuery={data.viewer.profile}
 					onSaveChanges={() => {
 						setIsEditingLanguages(false);
 					}}
 				/>
 			) : (
 				<Languages
-					rootQuery={data.viewer}
+					rootQuery={data.viewer.profile}
 					onEditProfile={() => {
 						setIsEditingLanguages(true);
+					}}
+				/>
+			)}
+			{isEditingLocationPreferences ? (
+				<UpdateLocationPreferencesForm
+					rootQuery={data.viewer.profile}
+					onSaveChanges={() => {
+						setIsEditingLocationPreferences(false);
+					}}
+				/>
+			) : (
+				<LocationPreferences
+					rootQuery={data.viewer.profile}
+					onEditProfile={() => {
+						setIsEditingLocationPreferences(true);
 					}}
 				/>
 			)}

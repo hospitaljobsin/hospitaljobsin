@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e8fd35ef00eff54327fbcc40aa922b21>>
- * @relayHash 42887969fd47f0a024bb1b2ba85523b1
+ * @generated SignedSource<<c4e76f78c8c5c0c6f142d044b6d726a4>>
+ * @relayHash 19935c9c22aee001a47a8f0654324840
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 42887969fd47f0a024bb1b2ba85523b1
+// @relayRequestID 19935c9c22aee001a47a8f0654324840
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -225,45 +225,19 @@ return {
                                   {
                                     "alias": null,
                                     "args": null,
-                                    "concreteType": null,
+                                    "concreteType": "Profile",
                                     "kind": "LinkedField",
                                     "name": "profile",
                                     "plural": false,
                                     "selections": [
-                                      (v4/*: any*/),
                                       {
-                                        "kind": "InlineFragment",
-                                        "selections": [
-                                          {
-                                            "alias": null,
-                                            "args": null,
-                                            "concreteType": "Address",
-                                            "kind": "LinkedField",
-                                            "name": "address",
-                                            "plural": false,
-                                            "selections": [
-                                              {
-                                                "alias": null,
-                                                "args": null,
-                                                "kind": "ScalarField",
-                                                "name": "city",
-                                                "storageKey": null
-                                              },
-                                              {
-                                                "alias": null,
-                                                "args": null,
-                                                "kind": "ScalarField",
-                                                "name": "state",
-                                                "storageKey": null
-                                              }
-                                            ],
-                                            "storageKey": null
-                                          }
-                                        ],
-                                        "type": "Profile",
-                                        "abstractKey": null
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "address",
+                                        "storageKey": null
                                       },
-                                      (v6/*: any*/)
+                                      (v5/*: any*/)
                                     ],
                                     "storageKey": null
                                   },
@@ -298,7 +272,7 @@ return {
     ]
   },
   "params": {
-    "id": "42887969fd47f0a024bb1b2ba85523b1",
+    "id": "19935c9c22aee001a47a8f0654324840",
     "metadata": {},
     "name": "pageJobApplicantDetailQuery",
     "operationKind": "query",

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0afacd7de1a80b257ec1bfdb315f746e>>
- * @relayHash 271ed4a7c914d0c112ef0d598c98f33d
+ * @generated SignedSource<<d1355fd153d0cb1ae717ba2fc90ef45a>>
+ * @relayHash 57501af966ca94c0c9eace04d2eb5906
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 271ed4a7c914d0c112ef0d598c98f33d
+// @relayRequestID 57501af966ca94c0c9eace04d2eb5906
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -19,7 +19,9 @@ export type UpdateLocationPreferencesFormMutation$variables = {
 };
 export type UpdateLocationPreferencesFormMutation$data = {
   readonly updateProfileLocationPreferences: {
-    readonly " $fragmentSpreads": FragmentRefs<"UpdateLocationPreferencesFormFragment">;
+    readonly profile?: {
+      readonly " $fragmentSpreads": FragmentRefs<"LocationPreferencesFragment" | "UpdateLocationPreferencesFormFragment">;
+    } | null | undefined;
   };
 };
 export type UpdateLocationPreferencesFormMutation = {
@@ -56,22 +58,8 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
+  "name": "id",
   "storageKey": null
-},
-v3 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    }
-  ],
-  "type": "Node",
-  "abstractKey": "__isNode"
 };
 return {
   "fragment": {
@@ -89,9 +77,32 @@ return {
         "plural": false,
         "selections": [
           {
-            "args": null,
-            "kind": "FragmentSpread",
-            "name": "UpdateLocationPreferencesFormFragment"
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "UpdateLocationPreferencesFormFragment"
+                  },
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "LocationPreferencesFragment"
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "type": "Account",
+            "abstractKey": null
           }
         ],
         "storageKey": null
@@ -114,41 +125,39 @@ return {
         "name": "updateProfileLocationPreferences",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "__typename",
+            "storageKey": null
+          },
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
                 "args": null,
-                "concreteType": null,
+                "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
                 "plural": false,
                 "selections": [
-                  (v2/*: any*/),
                   {
-                    "kind": "InlineFragment",
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "locationsOpenToWork",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "openToRelocationAnywhere",
-                        "storageKey": null
-                      }
-                    ],
-                    "type": "Profile",
-                    "abstractKey": null
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "locationsOpenToWork",
+                    "storageKey": null
                   },
-                  (v3/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "openToRelocationAnywhere",
+                    "storageKey": null
+                  },
+                  (v2/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -156,14 +165,21 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v3/*: any*/)
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v2/*: any*/)
+            ],
+            "type": "Node",
+            "abstractKey": "__isNode"
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "271ed4a7c914d0c112ef0d598c98f33d",
+    "id": "57501af966ca94c0c9eace04d2eb5906",
     "metadata": {},
     "name": "UpdateLocationPreferencesFormMutation",
     "operationKind": "mutation",
@@ -172,6 +188,6 @@ return {
 };
 })();
 
-(node as any).hash = "13402cc4c688d4da933db0a9a66cfcf5";
+(node as any).hash = "5f785214d107b4d841491f52a38dafea";
 
 export default node;

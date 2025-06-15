@@ -51,7 +51,7 @@ type Account implements Node {
 	"""
 	The account's profile.
 	"""
-	profile: ProfilePayload!
+	profile: Profile
 
 	"""
 	The account's avatar URL.
@@ -159,70 +159,6 @@ type AccountProfileNotFoundError implements Error {
 	message: String!
 }
 
-type Address {
-	"""
-	Address line 1.
-	"""
-	line1: String
-
-	"""
-	Address line 2.
-	"""
-	line2: String
-
-	"""
-	City.
-	"""
-	city: String
-
-	"""
-	State.
-	"""
-	state: String
-
-	"""
-	Country.
-	"""
-	country: String
-
-	"""
-	Pincode.
-	"""
-	pincode: String
-}
-
-input AddressInput {
-	"""
-	Address line 1.
-	"""
-	line1: String
-
-	"""
-	Address line 2.
-	"""
-	line2: String
-
-	"""
-	City.
-	"""
-	city: String
-
-	"""
-	State.
-	"""
-	state: String
-
-	"""
-	Country.
-	"""
-	country: String
-
-	"""
-	Pincode.
-	"""
-	pincode: String
-}
-
 """
 An applicant field belonging to a job applicant.
 """
@@ -310,6 +246,34 @@ type AuthenticatorNotEnabledError implements Error {
 	Human readable error message.
 	"""
 	message: String!
+}
+
+type Certification {
+	name: String!
+	issuer: String!
+	certificationUrl: String!
+	createdAt: Date!
+	expiresAt: Date
+}
+
+type Contact {
+	email: String!
+	phone: String!
+}
+
+"""
+The contact details input.
+"""
+input ContactInput {
+	"""
+	The email address.
+	"""
+	email: String!
+
+	"""
+	The phone number.
+	"""
+	phone: String!
 }
 
 """
@@ -441,26 +405,6 @@ enum Currency {
 }
 
 """
-The current job details.
-"""
-type CurrentJob {
-	"""
-	The current job title.
-	"""
-	currentTitle: String!
-
-	"""
-	The current organization.
-	"""
-	currentOrganization: String
-
-	"""
-	The current salary.
-	"""
-	currentSalary: Float
-}
-
-"""
 Date (isoformat)
 """
 scalar Date
@@ -578,6 +522,12 @@ The disable account 2FA payload.
 union DisableAccount2FAWithAuthenticatorPayload =
 	| Account
 	| AuthenticatorNotEnabledError
+
+type Education {
+	degree: String!
+	institution: String!
+	yearCompleted: Int!
+}
 
 """
 Used when the email address is in use.
@@ -1313,7 +1263,36 @@ input LanguageInput {
 	"""
 	The proficiency level of the language.
 	"""
-	proficiency: String!
+	proficiency: LanguageProficiency!
+}
+
+"""
+Language proficiency level.
+"""
+enum LanguageProficiency {
+	NATIVE
+	PROFESSIONAL
+	BASIC
+}
+
+type License {
+	name: String!
+	issuer: String!
+	licenseNumber: String!
+	issuedAt: Date!
+	expiresAt: Date!
+	verificationStatus: LicenseVerificationStatus!
+	verifiedAt: Date
+	verificationNotes: String
+}
+
+"""
+License verification status.
+"""
+enum LicenseVerificationStatus {
+	PENDING
+	VERIFIED
+	REJECTED
 }
 
 """
@@ -2060,9 +2039,14 @@ type Mutation {
 	"""
 	updateProfilePersonalDetails(
 		"""
+		The contact details of the user profile.
+		"""
+		contact: ContactInput!
+
+		"""
 		The address of the user profile.
 		"""
-		address: AddressInput!
+		address: String!
 
 		"""
 		The gender of the user profile.
@@ -2104,6 +2088,21 @@ type Mutation {
 		"""
 		fullName: String!
 	): UpdateAccountPayload! @isAuthenticated
+
+	"""
+	Update the current user's profile location preferences.
+	"""
+	updateProfileLocationPreferences(
+		"""
+		Locations the user is open to work in.
+		"""
+		locationsOpenToWork: [String!]!
+
+		"""
+		Whether the user is open to relocation anywhere.
+		"""
+		openToRelocationAnywhere: Boolean!
+	): UpdateProfilePayload! @isAuthenticated
 
 	"""
 	Create an organization.
@@ -2799,9 +2798,14 @@ type Profile implements Node {
 	dateOfBirth: Date
 
 	"""
+	The contact details of the profile's user.
+	"""
+	contact: Contact!
+
+	"""
 	The address of the profile's user.
 	"""
-	address: Address!
+	address: String!
 
 	"""
 	The marital status of the profile's user.
@@ -2814,40 +2818,60 @@ type Profile implements Node {
 	category: String
 
 	"""
+	Locations the user is open to work in.
+	"""
+	locationsOpenToWork: [String!]!
+
+	"""
+	Whether the user is open to relocation anywhere.
+	"""
+	openToRelocationAnywhere: Boolean!
+
+	"""
+	The user's education history.
+	"""
+	education: [Education!]!
+
+	"""
+	The user's licenses.
+	"""
+	licenses: [License!]!
+
+	"""
 	The list of languages spoken by the profile's user.
 	"""
 	languages: [Language!]!
 
 	"""
-	Total job experience (in years) of the profile's user.
+	The user's job preferences.
 	"""
-	totalJobExperience: Float
+	jobPreferences: [String!]!
 
 	"""
-	The current job of the profile's user.
+	The user's work experience.
 	"""
-	currentJob: CurrentJob
+	workExperience: [WorkExperience!]!
 
 	"""
-	When the profile was created.
+	The user's skills.
 	"""
-	createdAt: DateTime!
+	skills: [Skill!]!
+
+	"""
+	The user's salary expectations.
+	"""
+	salaryExpectations: SalaryExpectations
+
+	"""
+	The user's certifications.
+	"""
+	certifications: [Certification!]!
+
+	"""
+	When the profile was last updated.
+	"""
+	updatedAt: DateTime!
 }
-
-"""
-Used when the profile is not found.
-"""
-type ProfileNotFoundError implements Error {
-	"""
-	Human readable error message.
-	"""
-	message: String!
-}
-
-"""
-The profile payload.
-"""
-union ProfilePayload = Profile | ProfileNotFoundError
 
 """
 The promote organization member payload.
@@ -3159,6 +3183,11 @@ union ResetPasswordPayload =
 	| PasswordNotStrongError
 	| TwoFactorAuthenticationChallengeNotFoundError
 
+type SalaryExpectations {
+	preferredMonthlySalaryInr: Int!
+	negotiable: Boolean!
+}
+
 """
 The save job payload.
 """
@@ -3309,6 +3338,19 @@ union SetAccount2FAPayload =
 	| EnableAccount2FAWithAuthenticatorSuccess
 	| InvalidCredentialsError
 	| TwoFactorAuthenticationChallengeNotFoundError
+
+type Skill {
+	skill: String!
+	yoeTotal: Float!
+	experiences: [SkillExperience!]!
+}
+
+type SkillExperience {
+	organization: String!
+	title: String!
+	startDate: Date!
+	endDate: Date
+}
 
 """
 Used when the 2FA challenge is not found.
@@ -3576,6 +3618,15 @@ type WebAuthnCredentialNotFoundError implements Error {
 	Human readable error message.
 	"""
 	message: String!
+}
+
+type WorkExperience {
+	title: String!
+	organization: String!
+	startDate: Date!
+	endDate: Date
+	employmentType: String!
+	departmentExperience: [String!]!
 }
 
 """

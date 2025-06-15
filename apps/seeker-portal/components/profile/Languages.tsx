@@ -1,23 +1,18 @@
+import type { LanguagesFragment$key } from "@/__generated__/LanguagesFragment.graphql";
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { EditIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
-import type { LanguagesFragment$key } from "@/__generated__/LanguagesFragment.graphql";
 
+// TODO: define the fragments on Profile instead
+// that should solve partial updates of profiles on account type
 const LanguagesFragment = graphql`
-  fragment LanguagesFragment on Account {
-    profile {
-      ... on Profile {
+  fragment LanguagesFragment on Profile {
         __typename
         languages {
             name
             proficiency
         }
       }
-      ... on ProfileNotFoundError {
-        __typename
-      }
-    }
-  }
 `;
 
 type Props = {
@@ -27,8 +22,6 @@ type Props = {
 
 export default function Languages({ rootQuery, onEditProfile }: Props) {
 	const data = useFragment(LanguagesFragment, rootQuery);
-
-	const profileNotFound = data.profile.__typename !== "Profile";
 
 	return (
 		<div className="space-y-12">
@@ -44,11 +37,11 @@ export default function Languages({ rootQuery, onEditProfile }: Props) {
 					</Button>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
-					{profileNotFound || data.profile.languages.length < 1 ? (
+					{data.languages.length < 1 ? (
 						<h2 className="w-full text-foreground-500">Add your languages</h2>
 					) : (
 						<div className="flex flex-col gap-8 w-full">
-							{data.profile.languages.map((language) => (
+							{data.languages.map((language) => (
 								<div
 									className="flex gap-4 flex-col items-center w-full"
 									key={`${language.name}-${language.proficiency}`}

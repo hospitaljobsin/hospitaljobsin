@@ -1,36 +1,33 @@
+import type { UpdateLanguagesFormFragment$key } from "@/__generated__/UpdateLanguagesFormFragment.graphql";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
-import type { UpdateLanguagesFormFragment$key } from "@/__generated__/UpdateLanguagesFormFragment.graphql";
 
 const UpdateLanguagesFormMutation = graphql`
 mutation UpdateLanguagesFormMutation($languages: [LanguageInput!]!) {
 	updateProfileLanguages(languages: $languages) {
 		...on Account {
-			...UpdateLanguagesFormFragment
+			profile {
+				... on Profile {
+					...UpdateLanguagesFormFragment
+				}
+			}
 		}
 	}
 }
 `;
 
 const UpdateLanguagesFormFragment = graphql`
-  fragment UpdateLanguagesFormFragment on Account {
-    profile {
-      ... on Profile {
+  fragment UpdateLanguagesFormFragment on Profile {
         __typename
 		languages {
 			name
 			proficiency
 		}
       }
-      ... on ProfileNotFoundError {
-        __typename
-      }
-    }
-  }
 `;
 
 type Props = {
@@ -66,9 +63,9 @@ export default function UpdateLanguagesForm({
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues:
-			data.profile.__typename === "Profile" && data.profile.languages.length > 0
+			data.languages.length > 0
 				? {
-						languages: data.profile.languages.map((language) => ({
+						languages: data.languages.map((language) => ({
 							name: language.name,
 							proficiency: language.proficiency,
 						})),

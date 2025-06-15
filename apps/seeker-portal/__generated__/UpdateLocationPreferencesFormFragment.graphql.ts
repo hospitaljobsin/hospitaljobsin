@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<17cca957d13e0d45d7a82f1db5b01612>>
+ * @generated SignedSource<<baeb0bf2d841d5cdfa7ba4d8204c4cf5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,10 +11,8 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type UpdateLocationPreferencesFormFragment$data = {
-  readonly profile: {
-    readonly locationsOpenToWork?: ReadonlyArray<string>;
-    readonly openToRelocationAnywhere?: boolean;
-  };
+  readonly locationsOpenToWork: ReadonlyArray<string>;
+  readonly openToRelocationAnywhere: boolean;
   readonly " $fragmentType": "UpdateLocationPreferencesFormFragment";
 };
 export type UpdateLocationPreferencesFormFragment$key = {
@@ -31,40 +29,22 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
-      "concreteType": null,
-      "kind": "LinkedField",
-      "name": "profile",
-      "plural": false,
-      "selections": [
-        {
-          "kind": "InlineFragment",
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "locationsOpenToWork",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "openToRelocationAnywhere",
-              "storageKey": null
-            }
-          ],
-          "type": "Profile",
-          "abstractKey": null
-        }
-      ],
+      "kind": "ScalarField",
+      "name": "locationsOpenToWork",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "openToRelocationAnywhere",
       "storageKey": null
     }
   ],
-  "type": "Account",
+  "type": "Profile",
   "abstractKey": null
 };
 
-(node as any).hash = "4220c4aba192180452936599079d397c";
+(node as any).hash = "40f047ff56876ff0a4ba85243a625d8b";
 
 export default node;

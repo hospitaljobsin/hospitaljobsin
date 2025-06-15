@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<62e8664ac173dfa5936dabde54f47eb2>>
- * @relayHash 067932887517968f3f246da69e0709de
+ * @generated SignedSource<<847a142522d82073d22f314201b6e51c>>
+ * @relayHash d0b01c6194ab0adea7804ea95631e446
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,20 +9,23 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 067932887517968f3f246da69e0709de
+// @relayRequestID d0b01c6194ab0adea7804ea95631e446
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
+export type LanguageProficiency = "BASIC" | "NATIVE" | "PROFESSIONAL" | "%future added value";
 export type LanguageInput = {
   name: string;
-  proficiency: string;
+  proficiency: LanguageProficiency;
 };
 export type UpdateLanguagesFormMutation$variables = {
   languages: ReadonlyArray<LanguageInput>;
 };
 export type UpdateLanguagesFormMutation$data = {
   readonly updateProfileLanguages: {
-    readonly " $fragmentSpreads": FragmentRefs<"UpdateLanguagesFormFragment">;
+    readonly profile?: {
+      readonly " $fragmentSpreads": FragmentRefs<"UpdateLanguagesFormFragment">;
+    } | null | undefined;
   };
 };
 export type UpdateLanguagesFormMutation = {
@@ -53,18 +56,11 @@ v2 = {
   "storageKey": null
 },
 v3 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    }
-  ],
-  "type": "Node",
-  "abstractKey": "__isNode"
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -85,9 +81,20 @@ return {
             "kind": "InlineFragment",
             "selections": [
               {
+                "alias": null,
                 "args": null,
-                "kind": "FragmentSpread",
-                "name": "UpdateLanguagesFormFragment"
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "UpdateLanguagesFormFragment"
+                  }
+                ],
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -121,43 +128,36 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "concreteType": null,
+                "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
                 "plural": false,
                 "selections": [
                   (v2/*: any*/),
                   {
-                    "kind": "InlineFragment",
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Language",
+                    "kind": "LinkedField",
+                    "name": "languages",
+                    "plural": true,
                     "selections": [
                       {
                         "alias": null,
                         "args": null,
-                        "concreteType": "Language",
-                        "kind": "LinkedField",
-                        "name": "languages",
-                        "plural": true,
-                        "selections": [
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "name",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "proficiency",
-                            "storageKey": null
-                          }
-                        ],
+                        "kind": "ScalarField",
+                        "name": "name",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "proficiency",
                         "storageKey": null
                       }
                     ],
-                    "type": "Profile",
-                    "abstractKey": null
+                    "storageKey": null
                   },
                   (v3/*: any*/)
                 ],
@@ -167,14 +167,21 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v3/*: any*/)
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v3/*: any*/)
+            ],
+            "type": "Node",
+            "abstractKey": "__isNode"
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "067932887517968f3f246da69e0709de",
+    "id": "d0b01c6194ab0adea7804ea95631e446",
     "metadata": {},
     "name": "UpdateLanguagesFormMutation",
     "operationKind": "mutation",
@@ -183,6 +190,6 @@ return {
 };
 })();
 
-(node as any).hash = "da6c3043258ebacfa0c95c67d38df201";
+(node as any).hash = "35c7aac4a6f64f1f9b28585bd673b155";
 
 export default node;

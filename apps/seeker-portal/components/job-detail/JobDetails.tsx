@@ -1,3 +1,11 @@
+import type { JobDetailsFragment$key } from "@/__generated__/JobDetailsFragment.graphql";
+import type {
+	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
+	JobType,
+	WorkMode,
+} from "@/__generated__/JobDetailsInternalFragment.graphql";
+import { dateFormat } from "@/lib/intl";
+import links from "@/lib/links";
 import {
 	Button,
 	Card,
@@ -11,20 +19,12 @@ import {
 import Heading from "@tiptap/extension-heading";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
+import { Briefcase, Clock, Globe, IndianRupee, MapPin } from "lucide-react";
 import Image from "next/image";
 import NextLink from "next/link";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
 import { Markdown } from "tiptap-markdown";
-import type { JobDetailsFragment$key } from "@/__generated__/JobDetailsFragment.graphql";
-import type {
-	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
-	JobType,
-	WorkMode,
-} from "@/__generated__/JobDetailsInternalFragment.graphql";
-import { dateFormat } from "@/lib/intl";
-import links from "@/lib/links";
 import JobControls from "./JobControls";
 
 const JobDetailsFragment = graphql`
@@ -238,7 +238,12 @@ export default function JobDetails({
 				</CardBody>
 				<CardFooter className="flex flex-col sm:flex-row justify-between items-end sm:items-center w-full gap-6">
 					<div className="flex sm:flex-row flex-wrap gap-8 items-start sm:items-center text-foreground-600 w-full">
-						{data.type && <p>{jobType(data.type)}</p>}
+						{data.type && (
+							<div className="flex items-center gap-2">
+								<Clock size={16} />
+								{jobType(data.type)}
+							</div>
+						)}
 
 						{data.location && (
 							<div className="flex items-center gap-2">

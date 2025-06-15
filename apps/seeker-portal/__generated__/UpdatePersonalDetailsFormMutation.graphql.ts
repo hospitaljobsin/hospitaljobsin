@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<fc38f31af243a6dbc44e374be84830f1>>
- * @relayHash 498c8a428c2095f913eb2306ce089613
+ * @generated SignedSource<<d9b3c7560cdbc7853823e356e968c330>>
+ * @relayHash bd072b54b06a9e11de41669b580faa5e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,30 +9,29 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 498c8a428c2095f913eb2306ce089613
+// @relayRequestID bd072b54b06a9e11de41669b580faa5e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type GenderType = "FEMALE" | "MALE" | "OTHER" | "%future added value";
 export type MaritalStatusType = "MARRIED" | "SINGLE" | "%future added value";
-export type AddressInput = {
-  city?: string | null | undefined;
-  country?: string | null | undefined;
-  line1?: string | null | undefined;
-  line2?: string | null | undefined;
-  pincode?: string | null | undefined;
-  state?: string | null | undefined;
+export type ContactInput = {
+  email: string;
+  phone: string;
 };
 export type UpdatePersonalDetailsFormMutation$variables = {
-  address: AddressInput;
+  address: string;
   category?: string | null | undefined;
+  contact: ContactInput;
   dateOfBirth?: any | null | undefined;
   gender?: GenderType | null | undefined;
   maritalStatus?: MaritalStatusType | null | undefined;
 };
 export type UpdatePersonalDetailsFormMutation$data = {
   readonly updateProfilePersonalDetails: {
-    readonly " $fragmentSpreads": FragmentRefs<"UpdatePersonalDetailsFormFragment">;
+    readonly profile?: {
+      readonly " $fragmentSpreads": FragmentRefs<"UpdatePersonalDetailsFormFragment">;
+    } | null | undefined;
   };
 };
 export type UpdatePersonalDetailsFormMutation = {
@@ -54,19 +53,24 @@ v1 = {
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "dateOfBirth"
+  "name": "contact"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "gender"
+  "name": "dateOfBirth"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "gender"
+},
+v5 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "maritalStatus"
 },
-v5 = [
+v6 = [
   {
     "kind": "Variable",
     "name": "address",
@@ -76,6 +80,11 @@ v5 = [
     "kind": "Variable",
     "name": "category",
     "variableName": "category"
+  },
+  {
+    "kind": "Variable",
+    "name": "contact",
+    "variableName": "contact"
   },
   {
     "kind": "Variable",
@@ -93,26 +102,12 @@ v5 = [
     "variableName": "maritalStatus"
   }
 ],
-v6 = {
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
+  "name": "id",
   "storageKey": null
-},
-v7 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    }
-  ],
-  "type": "Node",
-  "abstractKey": "__isNode"
 };
 return {
   "fragment": {
@@ -121,7 +116,8 @@ return {
       (v1/*: any*/),
       (v2/*: any*/),
       (v3/*: any*/),
-      (v4/*: any*/)
+      (v4/*: any*/),
+      (v5/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -129,7 +125,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v5/*: any*/),
+        "args": (v6/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateProfilePersonalDetails",
@@ -139,9 +135,20 @@ return {
             "kind": "InlineFragment",
             "selections": [
               {
+                "alias": null,
                 "args": null,
-                "kind": "FragmentSpread",
-                "name": "UpdatePersonalDetailsFormFragment"
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "UpdatePersonalDetailsFormFragment"
+                  }
+                ],
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -157,10 +164,11 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v3/*: any*/),
       (v2/*: any*/),
-      (v0/*: any*/),
       (v4/*: any*/),
+      (v3/*: any*/),
+      (v0/*: any*/),
+      (v5/*: any*/),
       (v1/*: any*/)
     ],
     "kind": "Operation",
@@ -168,112 +176,89 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v5/*: any*/),
+        "args": (v6/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateProfilePersonalDetails",
         "plural": false,
         "selections": [
-          (v6/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "__typename",
+            "storageKey": null
+          },
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
                 "args": null,
-                "concreteType": null,
+                "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
                 "plural": false,
                 "selections": [
-                  (v6/*: any*/),
                   {
-                    "kind": "InlineFragment",
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Contact",
+                    "kind": "LinkedField",
+                    "name": "contact",
+                    "plural": false,
                     "selections": [
                       {
                         "alias": null,
                         "args": null,
-                        "concreteType": "Address",
-                        "kind": "LinkedField",
-                        "name": "address",
-                        "plural": false,
-                        "selections": [
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "city",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "country",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "line1",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "line2",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "pincode",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "state",
-                            "storageKey": null
-                          }
-                        ],
+                        "kind": "ScalarField",
+                        "name": "email",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "gender",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "dateOfBirth",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "maritalStatus",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "category",
+                        "name": "phone",
                         "storageKey": null
                       }
                     ],
-                    "type": "Profile",
-                    "abstractKey": null
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "address",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "gender",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "dateOfBirth",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "maritalStatus",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "category",
+                    "storageKey": null
                   },
                   (v7/*: any*/)
                 ],
@@ -283,14 +268,21 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v7/*: any*/)
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v7/*: any*/)
+            ],
+            "type": "Node",
+            "abstractKey": "__isNode"
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "498c8a428c2095f913eb2306ce089613",
+    "id": "bd072b54b06a9e11de41669b580faa5e",
     "metadata": {},
     "name": "UpdatePersonalDetailsFormMutation",
     "operationKind": "mutation",
@@ -299,6 +291,6 @@ return {
 };
 })();
 
-(node as any).hash = "e50a4e07c6a72abb97481461cd4b632d";
+(node as any).hash = "9073ce835d196c87743f88c67ca09960";
 
 export default node;
