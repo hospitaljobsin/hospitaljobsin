@@ -140,12 +140,12 @@ export default function Job({ job }: Props) {
 	const totalApplicants =
 		applied + shortlisted + interviewed + onHold + offered;
 	const pipeline = [
-		{ label: "Shortlisted", value: shortlisted, color: "bg-primary-100" },
-		{ label: "Interviewed", value: interviewed, color: "bg-primary-200" },
-		{ label: "On Hold", value: onHold, color: "bg-yellow-300" },
-		{ label: "Offered", value: offered, color: "bg-primary-400" },
+		{ label: "Shortlisted", value: shortlisted, color: "bg-primary-200" },
+		{ label: "Interviewed", value: interviewed, color: "bg-primary-300" },
+		{ label: "On Hold", value: onHold, color: "bg-primary-400" },
+		{ label: "Offered", value: offered, color: "bg-primary-600" },
 	];
-	const pipelineSum = pipeline.reduce((sum, s) => sum + s.value, 0);
+
 	// For the bar, show proportion of each stage out of total applicants
 
 	return (
