@@ -116,96 +116,121 @@ export default function UpdateEducationForm({
 				<CardBody>
 					{/* Dynamic Array of education */}
 					<div className="w-full space-y-12 items-center">
-						{fields.map((item, index) => (
-							<div
-								key={`field-${item.degree}-${item.institution}-${index}`}
-								className="flex gap-8 items-start w-full"
-							>
-								<div className="w-full space-y-4">
-									<Controller
-										name={`education.${index}.degree`}
-										control={control}
-										defaultValue=""
-										render={({ field }) => (
-											<Input
-												{...field}
-												fullWidth
-												label="Degree"
-												placeholder="Add degree"
-												errorMessage={
-													errors.education?.[index]?.degree?.message
-												}
-												isInvalid={!!errors.education?.[index]?.degree}
-											/>
-										)}
-									/>
-								</div>
-								<div className="w-full space-y-4">
-									<Controller
-										name={`education.${index}.institution`}
-										control={control}
-										defaultValue=""
-										render={({ field }) => (
-											<Input
-												{...field}
-												fullWidth
-												label="Institution"
-												placeholder="Add institution"
-												errorMessage={
-													errors.education?.[index]?.institution?.message
-												}
-												isInvalid={!!errors.education?.[index]?.institution}
-											/>
-										)}
-									/>
-								</div>
-								<div className="w-full space-y-4">
-									<Controller
-										name={`education.${index}.yearCompleted`}
-										control={control}
-										defaultValue=""
-										render={({ field }) => (
-											<Input
-												{...field}
-												fullWidth
-												label="Year Completed"
-												placeholder="e.g. 2022"
-												errorMessage={
-													errors.education?.[index]?.yearCompleted?.message
-												}
-												isInvalid={!!errors.education?.[index]?.yearCompleted}
-												type="number"
-												min={1900}
-												max={2100}
-											/>
-										)}
-									/>
-								</div>
+						{fields.length === 0 ? (
+							<div className="flex flex-col items-center gap-4">
+								<p className="text-gray-500">
+									No education entries. Add your education history.
+								</p>
 								<Button
 									type="button"
-									isIconOnly
 									variant="bordered"
-									onPress={() => remove(index)}
-									isDisabled={fields.length <= 1}
+									startContent={<Plus size={18} />}
+									onPress={() =>
+										append({
+											degree: "",
+											institution: "",
+											yearCompleted: "",
+										})
+									}
 								>
-									<Trash size={18} />
+									Add Education
 								</Button>
 							</div>
-						))}
-						<Button
-							type="button"
-							variant="bordered"
-							startContent={<Plus size={18} />}
-							onPress={() =>
-								append({
-									degree: "",
-									institution: "",
-									yearCompleted: "",
-								})
-							}
-						>
-							Education
-						</Button>
+						) : (
+							<>
+								{fields.map((item, index) => (
+									<div
+										key={`field-${item.degree}-${item.institution}-${index}`}
+										className="flex gap-8 items-start w-full"
+									>
+										<div className="w-full space-y-4">
+											<Controller
+												name={`education.${index}.degree`}
+												control={control}
+												defaultValue=""
+												render={({ field }) => (
+													<Input
+														{...field}
+														fullWidth
+														label="Degree"
+														placeholder="Add degree"
+														errorMessage={
+															errors.education?.[index]?.degree?.message
+														}
+														isInvalid={!!errors.education?.[index]?.degree}
+													/>
+												)}
+											/>
+										</div>
+										<div className="w-full space-y-4">
+											<Controller
+												name={`education.${index}.institution`}
+												control={control}
+												defaultValue=""
+												render={({ field }) => (
+													<Input
+														{...field}
+														fullWidth
+														label="Institution"
+														placeholder="Add institution"
+														errorMessage={
+															errors.education?.[index]?.institution?.message
+														}
+														isInvalid={!!errors.education?.[index]?.institution}
+													/>
+												)}
+											/>
+										</div>
+										<div className="w-full space-y-4">
+											<Controller
+												name={`education.${index}.yearCompleted`}
+												control={control}
+												defaultValue=""
+												render={({ field }) => (
+													<Input
+														{...field}
+														fullWidth
+														label="Year Completed"
+														placeholder="e.g. 2022"
+														errorMessage={
+															errors.education?.[index]?.yearCompleted?.message
+														}
+														isInvalid={
+															!!errors.education?.[index]?.yearCompleted
+														}
+														type="number"
+														min={1900}
+														max={2100}
+													/>
+												)}
+											/>
+										</div>
+										<Button
+											type="button"
+											isIconOnly
+											variant="bordered"
+											onPress={() => remove(index)}
+										>
+											<Trash size={18} />
+										</Button>
+									</div>
+								))}
+								<Button
+									type="button"
+									variant="bordered"
+									startContent={<Plus size={18} />}
+									onPress={() =>
+										append({
+											degree: "",
+											institution: "",
+											yearCompleted: "",
+										})
+									}
+								>
+									Add Education
+								</Button>
+							</>
+						)}
 					</div>
 				</CardBody>
 			</Card>
