@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<aa754aca11360343c8d96e4111075468>>
- * @relayHash cc14e58ab32eac5f58784f8efbc4006e
+ * @generated SignedSource<<dfed21e897768547d8cc450cd17bea26>>
+ * @relayHash 303a573be81e4b2625f17c3c854aac12
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID cc14e58ab32eac5f58784f8efbc4006e
+// @relayRequestID 303a573be81e4b2625f17c3c854aac12
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -20,7 +20,6 @@ export type ApplicantFieldInput = {
 export type JobApplyFormMutation$variables = {
   applicantFields: ReadonlyArray<ApplicantFieldInput>;
   jobId: string;
-  resumeUrl: string;
 };
 export type JobApplyFormMutation$data = {
   readonly createJobApplication: {
@@ -65,12 +64,7 @@ v1 = {
   "kind": "LocalArgument",
   "name": "jobId"
 },
-v2 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "resumeUrl"
-},
-v3 = [
+v2 = [
   {
     "kind": "Variable",
     "name": "applicantFields",
@@ -80,35 +74,30 @@ v3 = [
     "kind": "Variable",
     "name": "jobId",
     "variableName": "jobId"
-  },
-  {
-    "kind": "Variable",
-    "name": "resumeUrl",
-    "variableName": "resumeUrl"
   }
 ],
-v4 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v5 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v6 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v7 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -119,8 +108,7 @@ return {
   "fragment": {
     "argumentDefinitions": [
       (v0/*: any*/),
-      (v1/*: any*/),
-      (v2/*: any*/)
+      (v1/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -128,13 +116,13 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "createJobApplication",
         "plural": false,
         "selections": [
-          (v4/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -180,21 +168,20 @@ return {
   "operation": {
     "argumentDefinitions": [
       (v1/*: any*/),
-      (v0/*: any*/),
-      (v2/*: any*/)
+      (v0/*: any*/)
     ],
     "kind": "Operation",
     "name": "JobApplyFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "createJobApplication",
         "plural": false,
         "selections": [
-          (v4/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -214,7 +201,7 @@ return {
                     "name": "job",
                     "plural": false,
                     "selections": [
-                      (v5/*: any*/),
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -222,7 +209,7 @@ return {
                         "name": "isSaved",
                         "storageKey": null
                       },
-                      (v6/*: any*/),
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -230,7 +217,7 @@ return {
                         "name": "title",
                         "storageKey": null
                       },
-                      (v7/*: any*/),
+                      (v6/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -253,9 +240,9 @@ return {
                             "name": "logoUrl",
                             "storageKey": null
                           },
-                          (v6/*: any*/),
                           (v5/*: any*/),
-                          (v7/*: any*/)
+                          (v4/*: any*/),
+                          (v6/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -360,7 +347,7 @@ return {
                     ],
                     "storageKey": null
                   },
-                  (v5/*: any*/)
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -374,7 +361,7 @@ return {
     ]
   },
   "params": {
-    "id": "cc14e58ab32eac5f58784f8efbc4006e",
+    "id": "303a573be81e4b2625f17c3c854aac12",
     "metadata": {},
     "name": "JobApplyFormMutation",
     "operationKind": "mutation",
@@ -383,6 +370,6 @@ return {
 };
 })();
 
-(node as any).hash = "81a941318511897117b177a2b1461995";
+(node as any).hash = "a75df60db71882069b53c8acabb74ace";
 
 export default node;

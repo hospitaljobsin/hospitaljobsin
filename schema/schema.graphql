@@ -149,6 +149,16 @@ type Account implements Node {
 	): WebAuthnCredentialConnection!
 }
 
+"""
+Used when the account profile is not found.
+"""
+type AccountProfileNotFoundError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
 type Address {
 	"""
 	Address line 1.
@@ -341,6 +351,7 @@ union CreateJobApplicantPayload =
 	| JobNotPublishedError
 	| JobApplicantAlreadyExistsError
 	| JobIsExternalError
+	| AccountProfileNotFoundError
 
 """
 The payload for creating a presigned URL for uploading the job applicant's resume.
@@ -1065,11 +1076,6 @@ type JobApplicant implements Node {
 	The fields of the job application.
 	"""
 	applicantFields: [ApplicantField!]!
-
-	"""
-	The URL of the resume.
-	"""
-	resumeUrl: String!
 
 	"""
 	The account of the job applicant.
@@ -2031,11 +2037,6 @@ type Mutation {
 		The fields required by the job's application form.
 		"""
 		applicantFields: [ApplicantFieldInput!]!
-
-		"""
-		The URL of the job applicant's resume.
-		"""
-		resumeUrl: String!
 	): CreateJobApplicantPayload! @isAuthenticated
 
 	"""

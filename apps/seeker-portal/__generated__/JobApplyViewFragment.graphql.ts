@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9754d70683aa7521f2aadeec934de0c6>>
+ * @generated SignedSource<<585d46916b46d8d2552da4f917d2875f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type JobApplyViewFragment$data = {
     readonly __typename: "Organization";
     readonly job: {
       readonly __typename: "Job";
-      readonly " $fragmentSpreads": FragmentRefs<"JobApplyFormFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"JobApplicationDetailsFragment" | "JobApplyFormFragment">;
     } | {
       // This will never be '%other', but we need some
       // value in case none of the concrete values match.
@@ -98,6 +98,11 @@ return {
                       "args": null,
                       "kind": "FragmentSpread",
                       "name": "JobApplyFormFragment"
+                    },
+                    {
+                      "args": null,
+                      "kind": "FragmentSpread",
+                      "name": "JobApplicationDetailsFragment"
                     }
                   ],
                   "type": "Job",
@@ -119,6 +124,6 @@ return {
 };
 })();
 
-(node as any).hash = "bc4029d97982d63ae85689f91e2c1b09";
+(node as any).hash = "ab6a859494fb84fd11d5aa9984ef932f";
 
 export default node;

@@ -11,6 +11,7 @@ from strawberry.permission import PermissionExtension
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.context import AuthInfo
 from app.jobs.exceptions import (
+    AccountProfileNotFoundError,
     JobApplicantAlreadyExistsError,
     JobApplicationFormNotFoundError,
     JobIsExternalError,
@@ -34,6 +35,7 @@ from app.organizations.types import (
 )
 
 from .types import (
+    AccountProfileNotFoundErrorType,
     ApplicantFieldInputType,
     ApplicationFieldInputType,
     CreateJobApplicantPayload,
@@ -593,12 +595,6 @@ class JobMutation:
                 description="The fields required by the job's application form.",
             ),
         ],
-        resume_url: Annotated[
-            str,
-            strawberry.argument(
-                description="The URL of the job applicant's resume.",
-            ),
-        ],
     ) -> CreateJobApplicantPayload:
         """Create a job applicant."""
         match await job_application_service.create(
@@ -607,7 +603,6 @@ class JobMutation:
             applicant_fields=[
                 ApplicantFieldInputType.to_document(field) for field in applicant_fields
             ],
-            resume_url=resume_url,
         ):
             case Err(error):
                 match error:
@@ -619,6 +614,8 @@ class JobMutation:
                         return JobApplicantAlreadyExistsErrorType()
                     case JobIsExternalError():
                         return JobIsExternalErrorType()
+                    case AccountProfileNotFoundError():
+                        return AccountProfileNotFoundErrorType()
             case Ok(job_application):
                 return CreateJobApplicantSuccessType(
                     job_applicant=JobApplicantType.marshal_with_links(job_application)

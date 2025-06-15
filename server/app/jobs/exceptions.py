@@ -28,3 +28,7 @@ class JobApplicantAlreadyExistsError:
 
 class JobIsExternalError:
     """Raised when a job is external."""
+
+
+class AccountProfileNotFoundError:
+    """Raised when an account profile is not found."""

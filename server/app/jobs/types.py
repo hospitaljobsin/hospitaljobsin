@@ -208,10 +208,6 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
         description="The fields of the job application.",
     )
 
-    resume_url: str = strawberry.field(
-        description="The URL of the resume.",
-    )
-
     _account: Private[Account | ObjectId]
 
     _job: Private[Job | ObjectId]
@@ -259,7 +255,6 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
                 ApplicantFieldType.marshal(field)
                 for field in job_applicant.applicant_fields
             ],
-            resume_url=job_applicant.resume_url,
         )
 
     @classmethod
@@ -275,7 +270,6 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
                 ApplicantFieldType.marshal(field)
                 for field in job_applicant.applicant_fields
             ],
-            resume_url=job_applicant.resume_url,
         )
 
     @classmethod
@@ -990,12 +984,24 @@ class JobApplicantAlreadyExistsErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="AccountProfileNotFoundError",
+    description="Used when the account profile is not found.",
+)
+class AccountProfileNotFoundErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Account profile not found!",
+    )
+
+
 CreateJobApplicantPayload = Annotated[
     CreateJobApplicantSuccessType
     | JobNotFoundErrorType
     | JobNotPublishedErrorType
     | JobApplicantAlreadyExistsErrorType
-    | JobIsExternalErrorType,
+    | JobIsExternalErrorType
+    | AccountProfileNotFoundErrorType,
     strawberry.union(
         name="CreateJobApplicantPayload",
         description="The create job application payload.",

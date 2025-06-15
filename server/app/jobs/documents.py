@@ -115,7 +115,6 @@ class JobApplicant(Document):
     account_full_name: (
         str  # denormalized from the account document for full-text search
     )
-    resume_url: str
     job: Link[Job]
     organization: Link[Organization]
     slug: Annotated[str, Indexed()]

@@ -1,6 +1,7 @@
+import type { JobApplyViewFragment$key } from "@/__generated__/JobApplyViewFragment.graphql";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
-import type { JobApplyViewFragment$key } from "@/__generated__/JobApplyViewFragment.graphql";
+import JobApplicationDetails from "./JobApplicationDetails";
 import JobApplyForm from "./JobApplyForm";
 
 const JobApplyViewFragment = graphql`
@@ -15,6 +16,7 @@ const JobApplyViewFragment = graphql`
             __typename
             ... on Job {
               ...JobApplyFormFragment
+              ...JobApplicationDetailsFragment
             }
 
           }
@@ -41,6 +43,7 @@ export default function JobApplyView(props: {
 
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-6">
+			<JobApplicationDetails job={query.organization.job} />
 			<JobApplyForm rootQuery={query.organization.job} />
 		</div>
 	);

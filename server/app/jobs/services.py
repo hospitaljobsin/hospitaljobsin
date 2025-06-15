@@ -21,6 +21,7 @@ from app.jobs.documents import (
     SavedJob,
 )
 from app.jobs.exceptions import (
+    AccountProfileNotFoundError,
     JobApplicantAlreadyExistsError,
     JobApplicationFormNotFoundError,
     JobIsExternalError,
@@ -410,13 +411,13 @@ class JobApplicantService:
         account: Account,
         job_id: str,
         applicant_fields: list[ApplicantField],
-        resume_url: str,
     ) -> Result[
         JobApplicant,
         JobNotFoundError
         | JobNotPublishedError
         | JobApplicantAlreadyExistsError
-        | JobIsExternalError,
+        | JobIsExternalError
+        | AccountProfileNotFoundError,
     ]:
         """Create a job application."""
         try:
@@ -433,6 +434,9 @@ class JobApplicantService:
         if existing_job.external_application_url is not None:
             return Err(JobIsExternalError())
 
+        if account.profile is None:
+            return Err(AccountProfileNotFoundError())
+
         # check if user has already applied here
         existing_job_application = await self._job_application_repo.get(
             account_id=account.id, job_id=existing_job.id
@@ -445,7 +449,6 @@ class JobApplicantService:
             job=existing_job,
             account=account,
             applicant_fields=applicant_fields,
-            resume_url=resume_url,
         )
 
         return Ok(job_application)

@@ -1,12 +1,9 @@
 import type { JobApplyFormFragment$key } from "@/__generated__/JobApplyFormFragment.graphql";
 import type { JobApplyFormMutation } from "@/__generated__/JobApplyFormMutation.graphql";
-import type { JobApplyFormResumePresignedUrlMutation } from "@/__generated__/JobApplyFormResumePresignedUrlMutation.graphql";
 import links from "@/lib/links";
-import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next/app";
-import { Button, Card, Input, addToast } from "@heroui/react";
+import { Button, Card, Progress, Textarea, addToast } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -32,45 +29,33 @@ const JobApplyFormFragment = graphql`
   }
 `;
 
-const CreateJobApplicantResumePresignedUrlMutation = graphql`
-mutation JobApplyFormResumePresignedUrlMutation {
-	createJobApplicantResumePresignedUrl {
-		presignedUrl
-	}
-}
-`;
-
 const CreateJobApplicantMutation = graphql`
-  mutation JobApplyFormMutation($jobId: ID!, $applicantFields: [ApplicantFieldInput!]!, $resumeUrl: String!) {
-    createJobApplication(jobId: $jobId, applicantFields: $applicantFields, resumeUrl: $resumeUrl) {
+  mutation JobApplyFormMutation($jobId: ID!, $applicantFields: [ApplicantFieldInput!]!) {
+    createJobApplication(jobId: $jobId, applicantFields: $applicantFields) {
       __typename
       ... on CreateJobApplicantSuccess {
         __typename
-		jobApplicant {
-			job {
-				...JobDetailsInternalFragment
-			}
-		}
+        jobApplicant {
+          job {
+            ...JobDetailsInternalFragment
+          }
+        }
       }
-
       ... on JobNotFoundError {
         __typename
       }
-
       ... on JobNotPublishedError {
         __typename
       }
-
       ... on JobApplicantAlreadyExistsError {
         __typename
       }
-
-	  ... on JobIsExternalError {
-		__typename
-	  }
+      ... on JobIsExternalError {
+        __typename
+      }
     }
   }
-    `;
+`;
 
 const formSchema = z.object({
 	applicantFields: z.array(
@@ -78,9 +63,6 @@ const formSchema = z.object({
 			fieldValue: z.string().check(z.minLength(1, "This field is required")),
 		}),
 	),
-	resume: z
-		.instanceof(File)
-		.check(z.refine((file) => file && file.size > 0, "Resume is required")),
 });
 
 export default function JobApplyForm({
@@ -93,19 +75,11 @@ export default function JobApplyForm({
 	const [commitMutation, isMutationInFlight] =
 		useMutation<JobApplyFormMutation>(CreateJobApplicantMutation);
 
-	const [
-		commitCreateJobApplicantResumePresignedUrlMutation,
-		isCreateJobApplicantResumePresignedUrlMutationInflight,
-	] = useMutation<JobApplyFormResumePresignedUrlMutation>(
-		CreateJobApplicantResumePresignedUrlMutation,
-	);
-
 	const {
 		handleSubmit,
 		register,
 		setValue,
 		formState: { errors, isSubmitting },
-		setError,
 		getValues,
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
@@ -114,37 +88,13 @@ export default function JobApplyForm({
 	const [currentStep, setCurrentStep] = useState(0);
 	const [reviewMode, setReviewMode] = useState(false);
 	const totalQuestions = data.applicationForm?.fields.length || 0;
-	const totalSteps = 1 + totalQuestions + 1; // 1 for resume, N for questions, 1 for review
+	const totalSteps = totalQuestions + 1; // N for questions, 1 for review
 
 	// Helper for progress
 	const progressPercent =
 		((reviewMode ? totalSteps : currentStep + 1) / totalSteps) * 100;
 
-	async function getPresignedUrl(): Promise<string | null> {
-		return new Promise((resolve, reject) => {
-			commitCreateJobApplicantResumePresignedUrlMutation({
-				variables: {},
-				onCompleted: (response) => {
-					resolve(
-						response.createJobApplicantResumePresignedUrl?.presignedUrl || null,
-					);
-				},
-				onError: (error) => {
-					console.error("Error fetching presigned URL:", error);
-					reject(error);
-				},
-			});
-		});
-	}
-
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		const presignedUrl = await getPresignedUrl();
-		if (!presignedUrl) {
-			setError("resume", { message: "Could not get upload URL. Try again." });
-			return;
-		}
-		await uploadFileToS3(presignedUrl, values.resume);
-		const resumeUrlResult = presignedUrl.split("?")[0];
 		commitMutation({
 			variables: {
 				jobId: data.id,
@@ -152,7 +102,6 @@ export default function JobApplyForm({
 					fieldName: data.applicationForm?.fields[index].fieldName || "",
 					fieldValue: field.fieldValue,
 				})),
-				resumeUrl: resumeUrlResult,
 			},
 			onCompleted(response) {
 				if (
@@ -172,111 +121,60 @@ export default function JobApplyForm({
 
 	return (
 		<div className="w-full flex flex-col gap-6">
-			<h2 className="text-lg font-medium mt-1 text-foreground-400">
-				Apply for {data.title}
-			</h2>
-			<div className="w-full flex items-center gap-4 text-foreground-400">
-				<div className="relative w-8 h-8">
-					<Image
-						src={data.organization.logoUrl}
-						alt={data.organization.name}
-						fill
-						className="object-cover rounded-full"
-					/>
-				</div>
-				{data.organization.name}
-			</div>
-			{/* Progress Bar */}
-			<div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
-				<div
-					className="h-full bg-primary transition-all duration-300"
-					style={{ width: `${progressPercent}%` }}
-				/>
-			</div>
 			<Card className="p-6" shadow="none">
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
 					{/* Stepper Logic */}
-					{!reviewMode && currentStep === 0 && (
+					{!reviewMode && currentStep < totalQuestions && (
 						<div className="flex flex-col gap-6">
-							<h2 className="text-md font-medium">Step 1: Upload Resume</h2>
-							<Input
-								type="file"
-								label="Resume"
-								labelPlacement="outside"
-								accept="application/pdf"
-								required
-								onChange={(e) => {
-									if (e.target.files && e.target.files.length > 0) {
-										setValue("resume", e.target.files[0]);
-									}
-								}}
-								errorMessage={errors.resume?.message}
-								isInvalid={!!errors.resume}
-							/>
-							<div className="flex justify-end gap-2">
-								<Button
-									type="button"
-									color="primary"
-									onPress={() => setCurrentStep(1)}
-									className="w-full sm:w-auto"
-								>
-									Next
-								</Button>
-							</div>
-						</div>
-					)}
-
-					{!reviewMode && currentStep > 0 && currentStep <= totalQuestions && (
-						<div className="flex flex-col gap-6">
-							<h2 className="text-md font-medium">
-								Step {currentStep + 1}: Screening Question {currentStep}
+							<h2 className="text-sm text-foreground-600">
+								Screening Question {currentStep + 1} of {totalQuestions}
 							</h2>
-							{data.applicationForm?.fields[currentStep - 1] && (
-								<Input
-									type="text"
-									key={data.applicationForm.fields[currentStep - 1].fieldName}
-									label={data.applicationForm.fields[currentStep - 1].fieldName}
-									labelPlacement="outside"
-									isRequired={
-										data.applicationForm.fields[currentStep - 1].isRequired ||
-										false
-									}
-									defaultValue={
-										data.applicationForm.fields[currentStep - 1].defaultValue ||
-										""
-									}
-									errorMessage={
-										errors.applicantFields?.[currentStep - 1]?.fieldValue
-											?.message
-									}
-									isInvalid={
-										!!errors.applicantFields?.[currentStep - 1]?.fieldValue
-									}
-									{...register(`applicantFields.${currentStep - 1}.fieldValue`)}
-									autoFocus
-								/>
+							{data.applicationForm?.fields[currentStep] && (
+								<div className="flex flex-col w-full gap-4">
+									<h2 className="text-lg">
+										{data.applicationForm.fields[currentStep].fieldName}
+									</h2>
+									<Textarea
+										key={data.applicationForm.fields[currentStep].fieldName}
+										isRequired={
+											data.applicationForm.fields[currentStep].isRequired ||
+											false
+										}
+										defaultValue={
+											data.applicationForm.fields[currentStep].defaultValue ||
+											""
+										}
+										errorMessage={
+											errors.applicantFields?.[currentStep]?.fieldValue?.message
+										}
+										isInvalid={
+											!!errors.applicantFields?.[currentStep]?.fieldValue
+										}
+										{...register(`applicantFields.${currentStep}.fieldValue`)}
+										autoFocus
+									/>
+								</div>
 							)}
-							<div className="flex justify-between gap-2">
+							<div className="flex justify-between gap-12 w-full">
 								<Button
 									type="button"
-									color="secondary"
+									variant="bordered"
+									fullWidth
 									onPress={() => setCurrentStep((s) => s - 1)}
-									className="w-full sm:w-auto"
 									isDisabled={currentStep === 0}
 								>
 									Back
 								</Button>
-								{currentStep < totalQuestions ? (
+								{currentStep < totalQuestions - 1 ? (
 									<Button
 										type="button"
+										fullWidth
+										variant="flat"
 										color="primary"
 										onPress={() => setCurrentStep((s) => s + 1)}
-										className="w-full sm:w-auto"
 										isDisabled={
-											data.applicationForm.fields[currentStep - 1].isRequired &&
-											!getValues(
-												`applicantFields.${currentStep - 1}.fieldValue`,
-											)
+											data.applicationForm.fields[currentStep].isRequired &&
+											!getValues(`applicantFields.${currentStep}.fieldValue`)
 										}
 									>
 										Next
@@ -284,9 +182,10 @@ export default function JobApplyForm({
 								) : (
 									<Button
 										type="button"
+										fullWidth
+										variant="flat"
 										color="primary"
 										onPress={() => setReviewMode(true)}
-										className="w-full sm:w-auto"
 									>
 										Review
 									</Button>
@@ -299,12 +198,6 @@ export default function JobApplyForm({
 						<div className="flex flex-col gap-6">
 							<h2 className="text-sm font-semibold">Review Your Application</h2>
 							<div className="flex flex-col gap-2">
-								<div>
-									<span className="font-medium">Resume:</span>{" "}
-									{/* Show file name if available */}
-									{typeof window !== "undefined" &&
-										(getValues("resume")?.name || "Not uploaded")}
-								</div>
 								{data.applicationForm?.fields.map((field, idx) => (
 									<div key={field.fieldName} className="flex flex-col">
 										<span className="font-medium">{field.fieldName}:</span>
@@ -322,7 +215,7 @@ export default function JobApplyForm({
 									color="secondary"
 									onPress={() => {
 										setReviewMode(false);
-										setCurrentStep(totalQuestions);
+										setCurrentStep(totalQuestions - 1);
 									}}
 									className="w-full sm:w-auto"
 								>
@@ -341,6 +234,14 @@ export default function JobApplyForm({
 					)}
 				</form>
 			</Card>
+			{/* Progress Bar */}
+			<Progress
+				value={progressPercent}
+				minValue={0}
+				maxValue={100}
+				aria-label="Application progress"
+				className="w-full mb-2"
+			/>
 		</div>
 	);
 }

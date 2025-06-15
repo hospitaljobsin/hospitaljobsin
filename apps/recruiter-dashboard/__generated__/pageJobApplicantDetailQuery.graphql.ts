@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0d199fd3349c4815e572eca3dfa57724>>
- * @relayHash 8c8d2f1ed59f7f8beb8f1ab1c3f37e6e
+ * @generated SignedSource<<e8fd35ef00eff54327fbcc40aa922b21>>
+ * @relayHash 42887969fd47f0a024bb1b2ba85523b1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 8c8d2f1ed59f7f8beb8f1ab1c3f37e6e
+// @relayRequestID 42887969fd47f0a024bb1b2ba85523b1
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -171,13 +171,6 @@ return {
                               {
                                 "alias": null,
                                 "args": null,
-                                "kind": "ScalarField",
-                                "name": "resumeUrl",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
                                 "concreteType": "ApplicantField",
                                 "kind": "LinkedField",
                                 "name": "applicantFields",
@@ -305,7 +298,7 @@ return {
     ]
   },
   "params": {
-    "id": "8c8d2f1ed59f7f8beb8f1ab1c3f37e6e",
+    "id": "42887969fd47f0a024bb1b2ba85523b1",
     "metadata": {},
     "name": "pageJobApplicantDetailQuery",
     "operationKind": "query",
