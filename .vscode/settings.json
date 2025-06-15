@@ -12,7 +12,7 @@
 	"ruff.nativeServer": true,
 	"python.languageServer": "Pylance",
 	"python.analysis.typeCheckingMode": "standard",
-	"python.defaultInterpreterPath": "${workspaceFolder}/server/.venv",
+	"python.defaultInterpreterPath": "${workspaceFolder}/server/.venv/bin/python",
 	"python.testing.pytestEnabled": true,
 	"python.testing.pytestArgs": [""],
 	"python.terminal.activateEnvironment": false,
