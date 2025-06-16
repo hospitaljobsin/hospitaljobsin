@@ -63,21 +63,6 @@ class WorkExperience(BaseModel):
     skills: list[str]
 
 
-# SKILL EXPERIENCE
-class SkillExperience(BaseModel):
-    organization: str
-    title: str
-    started_at: date
-    completed_at: date | None = None
-
-
-# SKILL
-class Skill(BaseModel):
-    skill: str
-    yoe_total: float
-    experiences: list[SkillExperience]
-
-
 # SALARY EXPECTATIONS
 class SalaryExpectations(BaseModel):
     preferred_monthly_salary_inr: int
@@ -112,7 +97,6 @@ class Profile(Document):
     languages: list[Language]
     job_preferences: list[str]
     work_experience: list[WorkExperience]
-    skills: list[Skill]
     salary_expectations: SalaryExpectations | None
     certifications: list[Certification]
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

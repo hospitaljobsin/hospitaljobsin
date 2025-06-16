@@ -19,6 +19,67 @@
 			"year_completed": 2016
 		}
 	],
+	"languages": [
+		{
+			"name": "English",
+			"proficiency": "NATIVE"
+		},
+		{
+			"name": "Hindi",
+			"proficiency": "PROFESSIONAL"
+		},
+		{
+			"name": "Marathi",
+			"proficiency": "NATIVE"
+		}
+	],
+	"work_experience": [
+		{
+			"title": "Resident Doctor",
+			"organization": "AIIMS Delhi",
+			"start_date": "2013-07-01",
+			"end_date": null, // end-date = null indicates current job
+			"employment_type": "residency",
+			"department_experience": [
+				"Internal Medicine",
+				"ICU",
+				"Emergency",
+				"Pulmonology"
+			]
+		},
+		{
+			"title": "Consultant Physician",
+			"organization": "Apollo Hospitals, Navi Mumbai",
+			"start_date": "2016-07-15",
+			"end_date": "2020-12-31",
+			"employment_type": "full_time",
+			"skills": ["Internal Medicine", "ICU"]
+		},
+		{
+			"title": "Part-time Medical Officer",
+			"organization": "TeleHealth Services Pvt Ltd",
+			"start_date": "2021-01-10",
+			"end_date": "2022-06-30",
+			"employment_type": "part_time",
+			"skills": ["General Practice", "Telemedicine"]
+		},
+		{
+			"title": "Locum Consultant",
+			"organization": "Lilavati Hospital, Mumbai",
+			"start_date": "2022-07-01",
+			"end_date": "2023-02-28",
+			"employment_type": "locum",
+			"skills": ["Cardiology Support", "COVID-19 Ward"]
+		},
+		{
+			"title": "Contract Consultant",
+			"organization": "Jaslok Hospital",
+			"start_date": "2023-03-01",
+			"end_date": "2024-06-01",
+			"employment_type": "contract",
+			"skills": ["Internal Medicine", "Preventive Health Checkup"]
+		}
+	],
 	"licenses": [
 		{
 			"name": "MCI Registration",
@@ -41,173 +102,13 @@
 			"verification_notes": null
 		}
 	],
-	"languages": [
-		{
-			"name": "English",
-			"proficiency": "NATIVE"
-		},
-		{
-			"name": "Hindi",
-			"proficiency": "PROFESSIONAL"
-		},
-		{
-			"name": "Marathi",
-			"proficiency": "NATIVE"
-		}
-	],
+
 	"job_preferences": [
 		"Full-time hospital position",
 		"Internal medicine",
 		"Teaching hospital"
 	],
-	"work_experience": [
-		{
-			"title": "Resident Doctor",
-			"organization": "AIIMS Delhi",
-			"start_date": "2013-07-01",
-			"end_date": null, // end-date = null indicates current job
-			"employment_type": "residency",
-			"department_experience": [
-				"Internal Medicine",
-				"ICU",
-				"Emergency",
-				"Pulmonology"
-			]
-		},
-		{
-			"title": "Consultant Physician",
-			"organization": "Apollo Hospitals, Navi Mumbai",
-			"start_date": "2016-07-15",
-			"end_date": "2020-12-31",
-			"employment_type": "full_time",
-			"department_experience": ["Internal Medicine", "ICU"]
-		},
-		{
-			"title": "Part-time Medical Officer",
-			"organization": "TeleHealth Services Pvt Ltd",
-			"start_date": "2021-01-10",
-			"end_date": "2022-06-30",
-			"employment_type": "part_time",
-			"department_experience": ["General Practice", "Telemedicine"]
-		},
-		{
-			"title": "Locum Consultant",
-			"organization": "Lilavati Hospital, Mumbai",
-			"start_date": "2022-07-01",
-			"end_date": "2023-02-28",
-			"employment_type": "locum",
-			"department_experience": ["Cardiology Support", "COVID-19 Ward"]
-		},
-		{
-			"title": "Contract Consultant",
-			"organization": "Jaslok Hospital",
-			"start_date": "2023-03-01",
-			"end_date": "2024-06-01",
-			"employment_type": "contract",
-			"department_experience": [
-				"Internal Medicine",
-				"Preventive Health Checkup"
-			]
-		}
-	],
-	"skills": [
-		{
-			"skill": "Critical care",
-			"yoe_total": 7.5,
-			"experiences": [
-				{
-					"organization": "Apollo Hospitals, Navi Mumbai",
-					"title": "Consultant Physician",
-					"start_date": "2016-07-15",
-					"end_date": "2020-12-31"
-				},
-				{
-					"organization": "AIIMS Delhi",
-					"title": "Resident Doctor",
-					"start_date": "2013-07-01",
-					"end_date": "2016-06-30"
-				}
-			]
-		},
-		{
-			"skill": "Ventilator management",
-			"yoe_total": 3.0,
-			"experiences": [
-				{
-					"organization": "AIIMS Delhi",
-					"title": "Resident Doctor",
-					"start_date": "2013-07-01",
-					"end_date": "2016-06-30"
-				}
-			]
-		},
-		{
-			"skill": "Ultrasound-guided aspiration",
-			"yoe_total": 1.25,
-			"experiences": [
-				{
-					"organization": "Jaslok Hospital",
-					"title": "Contract Consultant",
-					"start_date": "2023-03-01",
-					"end_date": "2024-06-01"
-				}
-			]
-		},
-		{
-			"skill": "Ward management",
-			"yoe_total": 4.5,
-			"experiences": [
-				{
-					"organization": "Apollo Hospitals, Navi Mumbai",
-					"title": "Consultant Physician",
-					"start_date": "2016-07-15",
-					"end_date": "2020-12-31"
-				}
-			]
-		},
-		{
-			"skill": "Diabetes management",
-			"yoe_total": 4.5,
-			"experiences": [
-				{
-					"organization": "Apollo Hospitals, Navi Mumbai",
-					"title": "Consultant Physician",
-					"start_date": "2016-07-15",
-					"end_date": "2020-12-31"
-				}
-			]
-		},
-		{
-			"skill": "ECG interpretation",
-			"yoe_total": 6.5,
-			"experiences": [
-				{
-					"organization": "AIIMS Delhi",
-					"title": "Resident Doctor",
-					"start_date": "2013-07-01",
-					"end_date": "2016-06-30"
-				},
-				{
-					"organization": "Apollo Hospitals, Navi Mumbai",
-					"title": "Consultant Physician",
-					"start_date": "2016-07-15",
-					"end_date": "2020-12-31"
-				}
-			]
-		},
-		{
-			"skill": "Central line placement",
-			"yoe_total": 3.0,
-			"experiences": [
-				{
-					"organization": "AIIMS Delhi",
-					"title": "Resident Doctor",
-					"start_date": "2013-07-01",
-					"end_date": "2016-06-30"
-				}
-			]
-		}
-	],
+
 	"salary_expectations": {
 		"preferred_monthly_salary_inr": 180000,
 		"negotiable": true

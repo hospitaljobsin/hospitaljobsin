@@ -20,8 +20,6 @@ from app.accounts.documents import (
     License,
     Profile,
     SalaryExpectations,
-    Skill,
-    SkillExperience,
     WorkExperience,
 )
 from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
@@ -217,9 +215,6 @@ class ProfileType(BaseNodeType[Profile]):
     work_experience: list["WorkExperienceType"] = strawberry.field(
         description="The user's work experience.",
     )
-    skills: list["SkillType"] = strawberry.field(
-        description="The user's skills.",
-    )
     salary_expectations: Optional["SalaryExpectationsType"] = strawberry.field(
         description="The user's salary expectations.",
     )
@@ -251,7 +246,6 @@ class ProfileType(BaseNodeType[Profile]):
             work_experience=[
                 WorkExperienceType.marshal(exp) for exp in model.work_experience
             ],
-            skills=[SkillType.marshal(skill) for skill in model.skills],
             salary_expectations=SalaryExpectationsType.marshal(
                 model.salary_expectations
             )
@@ -692,38 +686,6 @@ class WorkExperienceType:
             if exp.employment_type
             else None,
             skills=exp.skills,
-        )
-
-
-@strawberry.type(name="SkillExperience")
-class SkillExperienceType:
-    organization: str
-    title: str
-    started_at: date
-    completed_at: date | None
-
-    @classmethod
-    def marshal(cls, exp: SkillExperience) -> Self:
-        return cls(
-            organization=exp.organization,
-            title=exp.title,
-            started_at=exp.started_at,
-            completed_at=exp.completed_at,
-        )
-
-
-@strawberry.type(name="Skill")
-class SkillType:
-    skill: str
-    yoe_total: float
-    experiences: list[SkillExperienceType]
-
-    @classmethod
-    def marshal(cls, skill: Skill) -> Self:
-        return cls(
-            skill=skill.skill,
-            yoe_total=skill.yoe_total,
-            experiences=[SkillExperienceType.marshal(e) for e in skill.experiences],
         )
 
 
