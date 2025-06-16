@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<31c421940e736914b0e828a3d0052512>>
+ * @generated SignedSource<<a9b3a94fdc87a1e03dfcc66650f8bd52>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,7 +14,7 @@ export type ProfileViewFragment$data = {
   readonly viewer: {
     readonly __typename: "Account";
     readonly profile: {
-      readonly " $fragmentSpreads": FragmentRefs<"CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateWorkExperienceFormFragment" | "WorkExperienceFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LicensesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLicensesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateWorkExperienceFormFragment" | "WorkExperienceFragment">;
     };
   } | {
     // This will never be '%other', but we need some
@@ -121,6 +121,16 @@ const node: ReaderFragment = {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "UpdateCertificationsFormFragment"
+                  },
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "LicensesFragment"
+                  },
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "UpdateLicensesFormFragment"
                   }
                 ],
                 "storageKey": null
@@ -139,6 +149,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "f9093b56e6a53e379a7f19584f19dac7";
+(node as any).hash = "27ea45d5fdf47e61db8ede925bf9043b";
 
 export default node;

@@ -17,6 +17,7 @@ from .types import (
     EducationInputType,
     GenderTypeEnum,
     LanguageInputType,
+    LicenseInputType,
     MaritalStatusTypeEnum,
     UpdateAccountPayload,
     UpdateProfilePayload,
@@ -284,6 +285,39 @@ class AccountMutation:
         match await profile_service.update_certifications(
             account=info.context["current_user"],
             certifications=[cert.to_document() for cert in certifications],
+        ):
+            case Ok(account):
+                return AccountType.marshal_with_profile(account)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Update the current user's profile licenses.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_profile_licenses(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+        licenses: Annotated[
+            list[LicenseInputType],
+            strawberry.argument(
+                description="The licenses of the user profile.",
+            ),
+        ],
+    ) -> UpdateProfilePayload:
+        """Update the current user's profile licenses."""
+        match await profile_service.update_licenses(
+            account=info.context["current_user"],
+            licenses=[lic.to_document() for lic in licenses],
         ):
             case Ok(account):
                 return AccountType.marshal_with_profile(account)

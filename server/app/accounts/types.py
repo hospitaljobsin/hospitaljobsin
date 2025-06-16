@@ -746,3 +746,38 @@ class CertificationType:
             created_at=cert.created_at,
             expires_at=cert.expires_at,
         )
+
+
+@strawberry.input(
+    name="LicenseInput",
+    description="The license details input.",
+)
+class LicenseInputType:
+    name: str = strawberry.field(description="The name of the license.")
+    issuer: str = strawberry.field(description="The issuer of the license.")
+    license_number: str = strawberry.field(description="The license number.")
+    issued_at: date = strawberry.field(description="When the license was issued.")
+    expires_at: date = strawberry.field(description="When the license expires.")
+    verification_status: LicenseVerificationStatusEnum = strawberry.field(
+        description="The verification status of the license."
+    )
+    verified_at: date | None = strawberry.field(
+        description="When the license was verified.", default=None
+    )
+    verification_notes: str | None = strawberry.field(
+        description="Verification notes for the license.", default=None
+    )
+
+    def to_document(self):
+        from app.accounts.documents import License
+
+        return License(
+            name=self.name,
+            issuer=self.issuer,
+            license_number=self.license_number,
+            issued_at=self.issued_at,
+            expires_at=self.expires_at,
+            verification_status=self.verification_status.value,
+            verified_at=self.verified_at,
+            verification_notes=self.verification_notes,
+        )

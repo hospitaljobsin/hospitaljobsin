@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c03c9a18228affe082d3747f8fd3c965>>
- * @relayHash d9b3ab67277ec2872733fc3e263d450f
+ * @generated SignedSource<<dba3bd4edd55d11a3b409497b875a5a1>>
+ * @relayHash 9ca73f792df8c0912681355ee3ed8b86
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d9b3ab67277ec2872733fc3e263d450f
+// @relayRequestID 9ca73f792df8c0912681355ee3ed8b86
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -52,6 +52,20 @@ v3 = {
   "storageKey": null
 },
 v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "issuer",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "expiresAt",
+  "storageKey": null
+},
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -246,13 +260,7 @@ return {
                     "plural": true,
                     "selections": [
                       (v1/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "issuer",
-                        "storageKey": null
-                      },
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -267,17 +275,60 @@ return {
                         "name": "createdAt",
                         "storageKey": null
                       },
+                      (v5/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "License",
+                    "kind": "LinkedField",
+                    "name": "licenses",
+                    "plural": true,
+                    "selections": [
+                      (v1/*: any*/),
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "expiresAt",
+                        "name": "licenseNumber",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "issuedAt",
+                        "storageKey": null
+                      },
+                      (v5/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "verificationStatus",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "verifiedAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "verificationNotes",
                         "storageKey": null
                       }
                     ],
                     "storageKey": null
                   },
-                  (v4/*: any*/)
+                  (v6/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -288,7 +339,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/)
+              (v6/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -299,7 +350,7 @@ return {
     ]
   },
   "params": {
-    "id": "d9b3ab67277ec2872733fc3e263d450f",
+    "id": "9ca73f792df8c0912681355ee3ed8b86",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",
