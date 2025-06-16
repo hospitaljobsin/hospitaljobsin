@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<847a142522d82073d22f314201b6e51c>>
- * @relayHash d0b01c6194ab0adea7804ea95631e446
+ * @generated SignedSource<<a7cbb90d686403c96917d540578ecad2>>
+ * @relayHash 629ffcac4a4a0bff004b6d06e15cf095
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,28 +9,32 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d0b01c6194ab0adea7804ea95631e446
+// @relayRequestID 629ffcac4a4a0bff004b6d06e15cf095
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type LanguageProficiency = "BASIC" | "NATIVE" | "PROFESSIONAL" | "%future added value";
-export type LanguageInput = {
-  name: string;
-  proficiency: LanguageProficiency;
+export type EmploymentType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "OTHER" | "PART_TIME" | "TEMPORARY" | "VOLUNTEER" | "%future added value";
+export type WorkExperienceInput = {
+  completedAt?: any | null | undefined;
+  employmentType?: EmploymentType | null | undefined;
+  organization: string;
+  skills: ReadonlyArray<string>;
+  startedAt: any;
+  title: string;
 };
-export type UpdateLanguagesFormMutation$variables = {
-  languages: ReadonlyArray<LanguageInput>;
+export type UpdateWorkExperienceFormMutation$variables = {
+  workExperience: ReadonlyArray<WorkExperienceInput>;
 };
-export type UpdateLanguagesFormMutation$data = {
-  readonly updateProfileLanguages: {
+export type UpdateWorkExperienceFormMutation$data = {
+  readonly updateProfileExperience: {
     readonly profile?: {
-      readonly " $fragmentSpreads": FragmentRefs<"UpdateLanguagesFormFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"UpdateWorkExperienceFormFragment">;
     } | null | undefined;
   };
 };
-export type UpdateLanguagesFormMutation = {
-  response: UpdateLanguagesFormMutation$data;
-  variables: UpdateLanguagesFormMutation$variables;
+export type UpdateWorkExperienceFormMutation = {
+  response: UpdateWorkExperienceFormMutation$data;
+  variables: UpdateWorkExperienceFormMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -38,14 +42,14 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "languages"
+    "name": "workExperience"
   }
 ],
 v1 = [
   {
     "kind": "Variable",
-    "name": "languages",
-    "variableName": "languages"
+    "name": "workExperience",
+    "variableName": "workExperience"
   }
 ],
 v2 = {
@@ -67,14 +71,14 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "UpdateLanguagesFormMutation",
+    "name": "UpdateWorkExperienceFormMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "updateProfileLanguages",
+        "name": "updateProfileExperience",
         "plural": false,
         "selections": [
           {
@@ -91,7 +95,7 @@ return {
                   {
                     "args": null,
                     "kind": "FragmentSpread",
-                    "name": "UpdateLanguagesFormFragment"
+                    "name": "UpdateWorkExperienceFormFragment"
                   }
                 ],
                 "storageKey": null
@@ -111,14 +115,14 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "UpdateLanguagesFormMutation",
+    "name": "UpdateWorkExperienceFormMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "updateProfileLanguages",
+        "name": "updateProfileExperience",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -137,23 +141,51 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "Language",
+                    "concreteType": "WorkExperience",
                     "kind": "LinkedField",
-                    "name": "languages",
+                    "name": "workExperience",
                     "plural": true,
                     "selections": [
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "name",
+                        "name": "title",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "proficiency",
+                        "name": "organization",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "startedAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "completedAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "employmentType",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "skills",
                         "storageKey": null
                       }
                     ],
@@ -181,15 +213,15 @@ return {
     ]
   },
   "params": {
-    "id": "d0b01c6194ab0adea7804ea95631e446",
+    "id": "629ffcac4a4a0bff004b6d06e15cf095",
     "metadata": {},
-    "name": "UpdateLanguagesFormMutation",
+    "name": "UpdateWorkExperienceFormMutation",
     "operationKind": "mutation",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "35c7aac4a6f64f1f9b28585bd673b155";
+(node as any).hash = "816042179ed6e6ab50f0ccd7518d9aa1";
 
 export default node;

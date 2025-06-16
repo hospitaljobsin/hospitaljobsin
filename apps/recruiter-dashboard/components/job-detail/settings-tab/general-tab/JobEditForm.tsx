@@ -127,7 +127,9 @@ const formSchema = z.object({
 	maxSalary: z.number().positive().nullable(),
 	minExperience: z.number().positive().nullable(),
 	maxExperience: z.number().positive().nullable(),
-	expiresAt: z.instanceof(CalendarDateTime).nullable(),
+	expiresAt: z
+		.custom<CalendarDateTime>((data) => data instanceof CalendarDateTime)
+		.nullable(),
 	jobType: z
 		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])
 		.nullable(),

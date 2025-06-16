@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a1b3b70c3d3f550573ea94214767d645>>
+ * @generated SignedSource<<484f3c10db46418a6afcf98d0465a591>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,19 +11,11 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type LanguagesFragment$data = {
-  readonly profile: {
-    readonly __typename: "Profile";
-    readonly languages: ReadonlyArray<{
-      readonly name: string;
-      readonly proficiency: string;
-    }>;
-  } | {
-    readonly __typename: "ProfileNotFoundError";
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
+  readonly __typename: "Profile";
+  readonly languages: ReadonlyArray<{
+    readonly name: string;
+    readonly proficiency: string;
+  }>;
   readonly " $fragmentType": "LanguagesFragment";
 };
 export type LanguagesFragment$key = {
@@ -31,15 +23,7 @@ export type LanguagesFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"LanguagesFragment">;
 };
 
-const node: ReaderFragment = (function(){
-var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
-};
-return {
+const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -48,61 +32,40 @@ return {
     {
       "alias": null,
       "args": null,
-      "concreteType": null,
+      "kind": "ScalarField",
+      "name": "__typename",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "Language",
       "kind": "LinkedField",
-      "name": "profile",
-      "plural": false,
+      "name": "languages",
+      "plural": true,
       "selections": [
         {
-          "kind": "InlineFragment",
-          "selections": [
-            (v0/*: any*/),
-            {
-              "alias": null,
-              "args": null,
-              "concreteType": "Language",
-              "kind": "LinkedField",
-              "name": "languages",
-              "plural": true,
-              "selections": [
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "name",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "proficiency",
-                  "storageKey": null
-                }
-              ],
-              "storageKey": null
-            }
-          ],
-          "type": "Profile",
-          "abstractKey": null
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "name",
+          "storageKey": null
         },
         {
-          "kind": "InlineFragment",
-          "selections": [
-            (v0/*: any*/)
-          ],
-          "type": "ProfileNotFoundError",
-          "abstractKey": null
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "proficiency",
+          "storageKey": null
         }
       ],
       "storageKey": null
     }
   ],
-  "type": "Account",
+  "type": "Profile",
   "abstractKey": null
 };
-})();
 
-(node as any).hash = "fa5e2159bf4a187486301865970b81d8";
+(node as any).hash = "fd31fea74a659a4a01fb69c01b0b98cd";
 
 export default node;

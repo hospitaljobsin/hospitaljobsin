@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a87bb48557ffe0cd7c283d421575890b>>
- * @relayHash d891b6880e620842050601ac822aaf7b
+ * @generated SignedSource<<bccfe5368fee25e5b65aa6d4e033ee3d>>
+ * @relayHash db4cecb34ce3ddc7b7ac15c95220b24b
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,74 +9,61 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d891b6880e620842050601ac822aaf7b
+// @relayRequestID db4cecb34ce3ddc7b7ac15c95220b24b
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type GenderType = "FEMALE" | "MALE" | "OTHER" | "%future added value";
-export type MaritalStatusType = "MARRIED" | "SINGLE" | "%future added value";
-export type UpdatePersonalDetailsFormMutation$variables = {
-  category?: string | null | undefined;
-  dateOfBirth?: any | null | undefined;
-  gender?: GenderType | null | undefined;
-  maritalStatus?: MaritalStatusType | null | undefined;
+export type UpdateLocationPreferencesFormMutation$variables = {
+  address: string;
+  locationsOpenToWork: ReadonlyArray<string>;
+  openToRelocationAnywhere: boolean;
 };
-export type UpdatePersonalDetailsFormMutation$data = {
-  readonly updateProfilePersonalDetails: {
+export type UpdateLocationPreferencesFormMutation$data = {
+  readonly updateProfileLocationPreferences: {
     readonly profile?: {
-      readonly " $fragmentSpreads": FragmentRefs<"UpdatePersonalDetailsFormFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"LocationPreferencesFragment" | "UpdateLocationPreferencesFormFragment">;
     } | null | undefined;
   };
 };
-export type UpdatePersonalDetailsFormMutation = {
-  response: UpdatePersonalDetailsFormMutation$data;
-  variables: UpdatePersonalDetailsFormMutation$variables;
+export type UpdateLocationPreferencesFormMutation = {
+  response: UpdateLocationPreferencesFormMutation$data;
+  variables: UpdateLocationPreferencesFormMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "category"
+  "name": "address"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "dateOfBirth"
+  "name": "locationsOpenToWork"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "gender"
+  "name": "openToRelocationAnywhere"
 },
-v3 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "maritalStatus"
-},
-v4 = [
+v3 = [
   {
     "kind": "Variable",
-    "name": "category",
-    "variableName": "category"
+    "name": "address",
+    "variableName": "address"
   },
   {
     "kind": "Variable",
-    "name": "dateOfBirth",
-    "variableName": "dateOfBirth"
+    "name": "locationsOpenToWork",
+    "variableName": "locationsOpenToWork"
   },
   {
     "kind": "Variable",
-    "name": "gender",
-    "variableName": "gender"
-  },
-  {
-    "kind": "Variable",
-    "name": "maritalStatus",
-    "variableName": "maritalStatus"
+    "name": "openToRelocationAnywhere",
+    "variableName": "openToRelocationAnywhere"
   }
 ],
-v5 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -88,19 +75,18 @@ return {
     "argumentDefinitions": [
       (v0/*: any*/),
       (v1/*: any*/),
-      (v2/*: any*/),
-      (v3/*: any*/)
+      (v2/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "UpdatePersonalDetailsFormMutation",
+    "name": "UpdateLocationPreferencesFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "updateProfilePersonalDetails",
+        "name": "updateProfileLocationPreferences",
         "plural": false,
         "selections": [
           {
@@ -117,7 +103,12 @@ return {
                   {
                     "args": null,
                     "kind": "FragmentSpread",
-                    "name": "UpdatePersonalDetailsFormFragment"
+                    "name": "UpdateLocationPreferencesFormFragment"
+                  },
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "LocationPreferencesFragment"
                   }
                 ],
                 "storageKey": null
@@ -136,20 +127,19 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v2/*: any*/),
       (v1/*: any*/),
-      (v3/*: any*/),
+      (v2/*: any*/),
       (v0/*: any*/)
     ],
     "kind": "Operation",
-    "name": "UpdatePersonalDetailsFormMutation",
+    "name": "UpdateLocationPreferencesFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "updateProfilePersonalDetails",
+        "name": "updateProfileLocationPreferences",
         "plural": false,
         "selections": [
           {
@@ -174,31 +164,24 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "gender",
+                    "name": "locationsOpenToWork",
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "dateOfBirth",
+                    "name": "openToRelocationAnywhere",
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "maritalStatus",
+                    "name": "address",
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "category",
-                    "storageKey": null
-                  },
-                  (v5/*: any*/)
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -209,7 +192,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v5/*: any*/)
+              (v4/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -220,15 +203,15 @@ return {
     ]
   },
   "params": {
-    "id": "d891b6880e620842050601ac822aaf7b",
+    "id": "db4cecb34ce3ddc7b7ac15c95220b24b",
     "metadata": {},
-    "name": "UpdatePersonalDetailsFormMutation",
+    "name": "UpdateLocationPreferencesFormMutation",
     "operationKind": "mutation",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "d80e1adf0da3a99d2c28e52a3ae3d285";
+(node as any).hash = "8841b759bf8973de1ed31c8b3a6bb22b";
 
 export default node;

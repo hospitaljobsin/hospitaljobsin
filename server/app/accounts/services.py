@@ -2,9 +2,8 @@ from datetime import date
 
 from result import Ok
 
-from app.accounts.documents import Account, Language
+from app.accounts.documents import Account, Education, Language, WorkExperience
 from app.accounts.repositories import AccountRepo, ProfileRepo
-from app.base.models import Address
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
 
@@ -46,13 +45,15 @@ class ProfileService:
         account: Account,
         gender: str | None,
         date_of_birth: date | None,
-        address: Address,
         marital_status: str | None,
         category: str | None,
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
             existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
 
         await self._profile_repo.update(
             profile=existing_profile,
@@ -60,8 +61,6 @@ class ProfileService:
             date_of_birth=date_of_birth,
             marital_status=marital_status,
             category=category,
-            languages=existing_profile.languages,
-            address=address,
         )
 
         return Ok(account)
@@ -72,18 +71,96 @@ class ProfileService:
         languages: list[Language],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
-        existing_profile = account.profile
         if existing_profile is None:
             existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
 
         await self._profile_repo.update(
             profile=existing_profile,
-            gender=existing_profile.gender,
-            date_of_birth=existing_profile.date_of_birth,
-            marital_status=existing_profile.marital_status,
-            category=existing_profile.category,
             languages=languages,
-            address=existing_profile.address,
+        )
+
+        return Ok(account)
+
+    async def update_location_preferences(
+        self,
+        *,
+        account: Account,
+        locations_open_to_work: list[str],
+        open_to_relocation_anywhere: bool,
+        address: str,
+    ) -> Ok[Account]:
+        """Update the user's location preferences, including address."""
+        existing_profile = await self._profile_repo.get_by_account(account)
+        if existing_profile is None:
+            existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
+
+        await self._profile_repo.update(
+            profile=existing_profile,
+            locations_open_to_work=locations_open_to_work,
+            open_to_relocation_anywhere=open_to_relocation_anywhere,
+            address=address,
+        )
+        return Ok(account)
+
+    async def update_education(
+        self,
+        account: Account,
+        education: list[Education],
+    ) -> Ok[Account]:
+        existing_profile = await self._profile_repo.get_by_account(account)
+        if existing_profile is None:
+            existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
+
+        await self._profile_repo.update(
+            profile=existing_profile,
+            education=education,
+        )
+
+        return Ok(account)
+
+    async def update_experience(
+        self,
+        account: Account,
+        work_experience: list[WorkExperience],
+    ) -> Ok[Account]:
+        existing_profile = await self._profile_repo.get_by_account(account)
+        if existing_profile is None:
+            existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
+
+        await self._profile_repo.update(
+            profile=existing_profile,
+            work_experience=work_experience,
+        )
+
+        return Ok(account)
+
+    async def update_certifications(
+        self,
+        account: Account,
+        certifications: list,
+    ) -> Ok[Account]:
+        existing_profile = await self._profile_repo.get_by_account(account)
+        if existing_profile is None:
+            existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
+
+        await self._profile_repo.update(
+            profile=existing_profile,
+            certifications=certifications,
         )
 
         return Ok(account)

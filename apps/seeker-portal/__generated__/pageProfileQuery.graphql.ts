@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<7eec464e3866f67182fe73db6c36c231>>
- * @relayHash 1966456840c5efa98f4efe53b249bde5
+ * @generated SignedSource<<c03c9a18228affe082d3747f8fd3c965>>
+ * @relayHash d9b3ab67277ec2872733fc3e263d450f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 1966456840c5efa98f4efe53b249bde5
+// @relayRequestID d9b3ab67277ec2872733fc3e263d450f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -31,18 +31,32 @@ var v0 = {
   "storageKey": null
 },
 v1 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    }
-  ],
-  "type": "Node",
-  "abstractKey": "__isNode"
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "name",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "startedAt",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "completedAt",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -81,126 +95,189 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "concreteType": null,
+                "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "gender",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "dateOfBirth",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "maritalStatus",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "category",
+                    "storageKey": null
+                  },
                   (v0/*: any*/),
                   {
-                    "kind": "InlineFragment",
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Language",
+                    "kind": "LinkedField",
+                    "name": "languages",
+                    "plural": true,
+                    "selections": [
+                      (v1/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "proficiency",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "locationsOpenToWork",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "openToRelocationAnywhere",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "address",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Education",
+                    "kind": "LinkedField",
+                    "name": "education",
+                    "plural": true,
                     "selections": [
                       {
                         "alias": null,
                         "args": null,
-                        "concreteType": "Address",
-                        "kind": "LinkedField",
-                        "name": "address",
-                        "plural": false,
-                        "selections": [
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "city",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "country",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "line1",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "line2",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "pincode",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "state",
-                            "storageKey": null
-                          }
-                        ],
+                        "kind": "ScalarField",
+                        "name": "degree",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "gender",
+                        "name": "institution",
+                        "storageKey": null
+                      },
+                      (v2/*: any*/),
+                      (v3/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "WorkExperience",
+                    "kind": "LinkedField",
+                    "name": "workExperience",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "title",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "dateOfBirth",
+                        "name": "organization",
+                        "storageKey": null
+                      },
+                      (v2/*: any*/),
+                      (v3/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "employmentType",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "maritalStatus",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "category",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "Language",
-                        "kind": "LinkedField",
-                        "name": "languages",
-                        "plural": true,
-                        "selections": [
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "name",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "proficiency",
-                            "storageKey": null
-                          }
-                        ],
+                        "name": "skills",
                         "storageKey": null
                       }
                     ],
-                    "type": "Profile",
-                    "abstractKey": null
+                    "storageKey": null
                   },
-                  (v1/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Certification",
+                    "kind": "LinkedField",
+                    "name": "certifications",
+                    "plural": true,
+                    "selections": [
+                      (v1/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "issuer",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "certificationUrl",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "createdAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "expiresAt",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -208,14 +285,21 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v1/*: any*/)
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v4/*: any*/)
+            ],
+            "type": "Node",
+            "abstractKey": "__isNode"
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "1966456840c5efa98f4efe53b249bde5",
+    "id": "d9b3ab67277ec2872733fc3e263d450f",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",

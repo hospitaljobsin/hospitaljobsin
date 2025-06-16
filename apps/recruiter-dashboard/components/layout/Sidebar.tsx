@@ -1,5 +1,6 @@
 "use client";
 import type { SidebarQuery as SidebarQueryType } from "@/__generated__/SidebarQuery.graphql";
+import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
 import {
 	Drawer,
@@ -104,7 +105,9 @@ export default function Sidebar({ queryReference }: Props) {
 
 	return (
 		<>
-			<title>{data.organization.name}</title>
+			<title>
+				{data.organization.name} | {APP_NAME}
+			</title>
 			{/* Mobile top bar */}
 			<div className="md:hidden flex items-center justify-between px-4 py-2 border-b border-foreground-300">
 				<div className="flex items-center gap-2">

@@ -1,4 +1,4 @@
-export const APP_NAME = "Hospital Jobs Dashboard";
+export const APP_NAME = "Hospital Jobs Recruiter";
 
 export const COMPANY_NAME = "Vnadi digital future systems";
 

@@ -5,7 +5,7 @@ import type {
 } from "@/__generated__/JobDetailsInternalFragment.graphql";
 import links from "@/lib/links";
 import { Card, CardBody, CardHeader, Chip, Divider, Link } from "@heroui/react";
-import { Briefcase, Globe, MapPin } from "lucide-react";
+import { Briefcase, Clock, Globe, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useMemo } from "react";
 import { graphql, useFragment } from "react-relay";
@@ -133,7 +133,12 @@ export default function JobApplicationDetails({
 			<Divider className="my-4" />
 			<CardBody className="flex flex-col gap-3">
 				<div className="flex flex-wrap gap-4 text-foreground-600 text-sm items-center">
-					{data.type && <span>{jobType(data.type)}</span>}
+					{data.type && (
+						<span className="flex items-center gap-1">
+							<Clock size={16} />
+							{jobType(data.type)}
+						</span>
+					)}
 					{data.location && (
 						<span className="flex items-center gap-1">
 							<MapPin size={16} />

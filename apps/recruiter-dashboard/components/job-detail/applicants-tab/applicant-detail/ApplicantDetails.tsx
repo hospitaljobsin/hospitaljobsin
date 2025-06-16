@@ -17,18 +17,8 @@ const ApplicantDetailsFragment = graphql`
         avatarUrl
         email
 
-		profile {
-			__typename
-			... on Profile {
-				address {
-					city
-					state
-				}
-			}
-
-			... on ProfileNotFoundError {
-				__typename
-			}
+		profile @required(action: THROW) {
+			address
 		}
     }
   }

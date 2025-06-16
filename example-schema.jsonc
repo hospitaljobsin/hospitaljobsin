@@ -1,0 +1,132 @@
+{
+	"account": "DBRef<Account ID>",
+	"date_of_birth": "1988-07-12",
+	"gender": "ENUM",
+	"marital_status": "ENUM",
+	"category": "string",
+	"address": "Bandra West, Mumbai, Maharashtra, India",
+	"locations_open_to_work": ["Mumbai", "Pune", "Hyderabad"],
+	"open_to_relocation_anywhere": false,
+	"education": [
+		{
+			"degree": "MBBS",
+			"institution": "Grant Medical College",
+			"year_completed": 2012
+		},
+		{
+			"degree": "MD Internal Medicine",
+			"institution": "AIIMS Delhi",
+			"year_completed": 2016
+		}
+	],
+	"languages": [
+		{
+			"name": "English",
+			"proficiency": "NATIVE"
+		},
+		{
+			"name": "Hindi",
+			"proficiency": "PROFESSIONAL"
+		},
+		{
+			"name": "Marathi",
+			"proficiency": "NATIVE"
+		}
+	],
+	"work_experience": [
+		{
+			"title": "Resident Doctor",
+			"organization": "AIIMS Delhi",
+			"start_date": "2013-07-01",
+			"end_date": null, // end-date = null indicates current job
+			"employment_type": "residency",
+			"department_experience": [
+				"Internal Medicine",
+				"ICU",
+				"Emergency",
+				"Pulmonology"
+			]
+		},
+		{
+			"title": "Consultant Physician",
+			"organization": "Apollo Hospitals, Navi Mumbai",
+			"start_date": "2016-07-15",
+			"end_date": "2020-12-31",
+			"employment_type": "full_time",
+			"skills": ["Internal Medicine", "ICU"]
+		},
+		{
+			"title": "Part-time Medical Officer",
+			"organization": "TeleHealth Services Pvt Ltd",
+			"start_date": "2021-01-10",
+			"end_date": "2022-06-30",
+			"employment_type": "part_time",
+			"skills": ["General Practice", "Telemedicine"]
+		},
+		{
+			"title": "Locum Consultant",
+			"organization": "Lilavati Hospital, Mumbai",
+			"start_date": "2022-07-01",
+			"end_date": "2023-02-28",
+			"employment_type": "locum",
+			"skills": ["Cardiology Support", "COVID-19 Ward"]
+		},
+		{
+			"title": "Contract Consultant",
+			"organization": "Jaslok Hospital",
+			"start_date": "2023-03-01",
+			"end_date": "2024-06-01",
+			"employment_type": "contract",
+			"skills": ["Internal Medicine", "Preventive Health Checkup"]
+		}
+	],
+	"certifications": [
+		{
+			"name": "ACLS",
+			"issuer": "American Heart Association",
+			"certification_url": "https://www.americanheart.org/en/get-involved/certification/acls.html",
+			"created_at": "2022-01-01",
+			"expires_at": "2025-01-01"
+		},
+		{
+			"name": "BLS",
+			"issuer": "American Heart Association",
+			"certification_url": "https://www.americanheart.org/en/get-involved/certification/bls.html",
+			"created_at": "2022-01-01",
+			"expires_at": null
+		}
+	],
+	"licenses": [
+		{
+			"name": "MCI Registration",
+			"issuer": "Medical Council of India",
+			"license_number": "MCI/123456",
+			"issued_at": "2015-01-01",
+			"expires_at": "2025-01-01",
+			"verification_status": "verified", // "pending", "verified", "rejected"
+			"verified_at": "2023-06-15",
+			"verification_notes": "Verified manually by admin"
+		},
+		{
+			"name": "Delhi Medical Council License",
+			"license_number": "DL789012",
+			"issuer": "Delhi Medical Council",
+			"issued_at": "2017-05-01",
+			"expires_at": "2027-05-01",
+			"verification_status": "pending",
+			"verified_at": null,
+			"verification_notes": null
+		}
+	],
+
+	"job_preferences": [
+		"Full-time hospital position",
+		"Internal medicine",
+		"Teaching hospital"
+	],
+
+	"salary_expectations": {
+		"preferred_monthly_salary_inr": 180000,
+		"negotiable": true
+	}
+}

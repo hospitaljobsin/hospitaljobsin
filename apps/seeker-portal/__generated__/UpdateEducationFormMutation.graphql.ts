@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<847a142522d82073d22f314201b6e51c>>
- * @relayHash d0b01c6194ab0adea7804ea95631e446
+ * @generated SignedSource<<a3e63b17c5c85b9440ca1a72ce0eff5d>>
+ * @relayHash 02d07fe36aa233a1cabffdbaff2e67bb
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,28 +9,29 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d0b01c6194ab0adea7804ea95631e446
+// @relayRequestID 02d07fe36aa233a1cabffdbaff2e67bb
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type LanguageProficiency = "BASIC" | "NATIVE" | "PROFESSIONAL" | "%future added value";
-export type LanguageInput = {
-  name: string;
-  proficiency: LanguageProficiency;
+export type EducationInput = {
+  completedAt?: any | null | undefined;
+  degree: string;
+  institution: string;
+  startedAt: any;
 };
-export type UpdateLanguagesFormMutation$variables = {
-  languages: ReadonlyArray<LanguageInput>;
+export type UpdateEducationFormMutation$variables = {
+  education: ReadonlyArray<EducationInput>;
 };
-export type UpdateLanguagesFormMutation$data = {
-  readonly updateProfileLanguages: {
+export type UpdateEducationFormMutation$data = {
+  readonly updateProfileEducation: {
     readonly profile?: {
-      readonly " $fragmentSpreads": FragmentRefs<"UpdateLanguagesFormFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"UpdateEducationFormFragment">;
     } | null | undefined;
   };
 };
-export type UpdateLanguagesFormMutation = {
-  response: UpdateLanguagesFormMutation$data;
-  variables: UpdateLanguagesFormMutation$variables;
+export type UpdateEducationFormMutation = {
+  response: UpdateEducationFormMutation$data;
+  variables: UpdateEducationFormMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -38,14 +39,14 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "languages"
+    "name": "education"
   }
 ],
 v1 = [
   {
     "kind": "Variable",
-    "name": "languages",
-    "variableName": "languages"
+    "name": "education",
+    "variableName": "education"
   }
 ],
 v2 = {
@@ -67,14 +68,14 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "UpdateLanguagesFormMutation",
+    "name": "UpdateEducationFormMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "updateProfileLanguages",
+        "name": "updateProfileEducation",
         "plural": false,
         "selections": [
           {
@@ -91,7 +92,7 @@ return {
                   {
                     "args": null,
                     "kind": "FragmentSpread",
-                    "name": "UpdateLanguagesFormFragment"
+                    "name": "UpdateEducationFormFragment"
                   }
                 ],
                 "storageKey": null
@@ -111,14 +112,14 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "UpdateLanguagesFormMutation",
+    "name": "UpdateEducationFormMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "updateProfileLanguages",
+        "name": "updateProfileEducation",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -137,23 +138,37 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "Language",
+                    "concreteType": "Education",
                     "kind": "LinkedField",
-                    "name": "languages",
+                    "name": "education",
                     "plural": true,
                     "selections": [
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "name",
+                        "name": "degree",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "proficiency",
+                        "name": "institution",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "startedAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "completedAt",
                         "storageKey": null
                       }
                     ],
@@ -181,15 +196,15 @@ return {
     ]
   },
   "params": {
-    "id": "d0b01c6194ab0adea7804ea95631e446",
+    "id": "02d07fe36aa233a1cabffdbaff2e67bb",
     "metadata": {},
-    "name": "UpdateLanguagesFormMutation",
+    "name": "UpdateEducationFormMutation",
     "operationKind": "mutation",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "35c7aac4a6f64f1f9b28585bd673b155";
+(node as any).hash = "85ad469fc5fc1384ea5419b84db56e8d";
 
 export default node;

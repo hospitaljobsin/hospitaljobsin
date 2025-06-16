@@ -6,7 +6,6 @@ from beanie import BackLink, Document, Indexed, Link
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
-from app.base.models import Address
 from app.core.constants import (
     AuthProvider,
     TwoFactorProvider,
@@ -21,37 +20,86 @@ if TYPE_CHECKING:
     )
 
 
-# Current Job Schema
-class CurrentJob(BaseModel):
-    current_title: str
-    current_organization: str | None = None
-    current_salary: float | None = None  # Salary as a numeric value
+# ENUMS
+GenderEnum = Literal["MALE", "FEMALE", "OTHER"]
+MaritalStatusEnum = Literal["MARRIED", "SINGLE"]
+LanguageProficiencyEnum = Literal["NATIVE", "PROFESSIONAL", "BASIC"]
+LicenseVerificationStatusEnum = Literal["pending", "verified", "rejected"]
 
 
-# Links Schema
+# EDUCATION
+class Education(BaseModel):
+    degree: str
+    institution: str
+    started_at: date
+    completed_at: date | None = None
+
+
+# LICENSE
+class License(BaseModel):
+    name: str
+    issuer: str
+    license_number: str
+    issued_at: date
+    expires_at: date
+    verification_status: LicenseVerificationStatusEnum
+    verified_at: date | None = None
+    verification_notes: str | None = None
+
+
+# LANGUAGE (update to use enum)
 class Language(BaseModel):
     name: str
-    proficiency: str
+    proficiency: LanguageProficiencyEnum
+
+
+# WORK EXPERIENCE
+class WorkExperience(BaseModel):
+    title: str
+    organization: str
+    started_at: date
+    completed_at: date | None = None
+    employment_type: str | None = None
+    skills: list[str]
+
+
+# SALARY EXPECTATIONS
+class SalaryExpectations(BaseModel):
+    preferred_monthly_salary_inr: int
+    negotiable: bool
+
+
+# CERTIFICATION
+class Certification(BaseModel):
+    name: str
+    issuer: str
+    certification_url: str
+    created_at: date
+    expires_at: date | None = None
 
 
 # Main Job Seeker Profile Document
+# AKA Reusable Resume
 class Profile(Document):
-    # personal edetails
-    gender: Literal["MALE", "FEMALE", "OTHER"] | None
-    date_of_birth: date | None
-    address: Address
-    marital_status: Literal["MARRIED", "SINGLE"] | None
-    category: str | None
-    languages: list[Language]
-
-    # employment details
-    total_job_experience: float | None  # Total experience in years
-    current_job: CurrentJob | None
-
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     account: BackLink["Account"] = Field(  # type: ignore[call-overload]
         original_field="profile",
     )
+    # personal details
+    gender: GenderEnum | None
+    date_of_birth: date | None
+    address: str
+    marital_status: MaritalStatusEnum | None
+    category: str | None
+    locations_open_to_work: list[str]
+    open_to_relocation_anywhere: bool
+    education: list[Education]
+    licenses: list[License]
+    languages: list[Language]
+    job_preferences: list[str]
+    work_experience: list[WorkExperience]
+    salary_expectations: SalaryExpectations | None
+    certifications: list[Certification]
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     class Settings:
         name = "profiles"  # MongoDB collection name

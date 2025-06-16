@@ -3,7 +3,7 @@ import urllib
 from collections.abc import Iterable
 from datetime import date, datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Annotated, Self
+from typing import TYPE_CHECKING, Annotated, Optional, Self
 from urllib.parse import urlencode
 
 import strawberry
@@ -12,11 +12,18 @@ from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from strawberry import relay
 
-from app.accounts.documents import Account, CurrentJob, Language, Profile
+from app.accounts.documents import (
+    Account,
+    Certification,
+    Education,
+    Language,
+    License,
+    Profile,
+    SalaryExpectations,
+    WorkExperience,
+)
 from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
 from app.base.types import (
-    AddressType,
-    BaseErrorType,
     BaseNodeType,
     NotAuthenticatedErrorType,
 )
@@ -31,17 +38,6 @@ if TYPE_CHECKING:
     )
     from app.organizations.types import (
         OrganizationConnectionType,
-    )
-
-
-@strawberry.type(
-    name="ProfileNotFoundError",
-    description="Used when the profile is not found.",
-)
-class ProfileNotFoundErrorType(BaseErrorType):
-    message: str = strawberry.field(
-        default="Profile not found!",
-        description="Human readable error message.",
     )
 
 
@@ -64,25 +60,39 @@ class MaritalStatusTypeEnum(Enum):
     SINGLE = "SINGLE"
 
 
+@strawberry.enum(
+    name="LanguageProficiency",
+    description="Language proficiency level.",
+)
+class LanguageProficiencyEnum(Enum):
+    NATIVE = "NATIVE"
+    PROFESSIONAL = "PROFESSIONAL"
+    BASIC = "BASIC"
+
+
+@strawberry.enum(
+    name="LicenseVerificationStatus",
+    description="License verification status.",
+)
+class LicenseVerificationStatusEnum(Enum):
+    PENDING = "pending"
+    VERIFIED = "verified"
+    REJECTED = "rejected"
+
+
 @strawberry.type(
     name="Language",
     description="The language details.",
 )
 class LanguageType:
-    name: str = strawberry.field(
-        description="The name of the language.",
-    )
-
+    name: str = strawberry.field(description="The name of the language.")
     proficiency: str = strawberry.field(
-        description="The proficiency level of the language.",
+        description="The proficiency level of the language."
     )
 
     @classmethod
     def marshal(cls, language: Language) -> Self:
-        return cls(
-            name=language.name,
-            proficiency=language.proficiency,
-        )
+        return cls(name=language.name, proficiency=language.proficiency)
 
 
 @strawberry.input(
@@ -93,38 +103,101 @@ class LanguageInputType:
     name: str = strawberry.field(
         description="The name of the language.",
     )
-    proficiency: str = strawberry.field(
+    proficiency: LanguageProficiencyEnum = strawberry.field(
         description="The proficiency level of the language.",
     )
 
     def to_document(self) -> Language:
         return Language(
             name=self.name,
-            proficiency=self.proficiency,
+            proficiency=self.proficiency.value,
         )
 
 
-@strawberry.type(
-    name="CurrentJob",
-    description="The current job details.",
+@strawberry.input(
+    name="CertificationInput",
+    description="The certification details input.",
 )
-class CurrentJobType:
-    current_title: str = strawberry.field(
-        description="The current job title.",
+class CertificationInputType:
+    name: str = strawberry.field(description="The name of the certification.")
+    issuer: str = strawberry.field(description="The issuer of the certification.")
+    certification_url: str = strawberry.field(
+        description="The URL of the certification."
     )
-    current_organization: str | None = strawberry.field(
-        description="The current organization.",
+    created_at: date = strawberry.field(
+        description="When the certification was obtained."
     )
-    current_salary: float | None = strawberry.field(
-        description="The current salary.",
+    expires_at: date | None = strawberry.field(
+        description="When the certification expires.", default=None
     )
 
-    @classmethod
-    def marshal(cls, current_job: CurrentJob) -> Self:
-        return cls(
-            current_title=current_job.current_title,
-            current_organization=current_job.current_organization,
-            current_salary=current_job.current_salary,
+    def to_document(self):
+        return Certification(
+            name=self.name,
+            issuer=self.issuer,
+            certification_url=self.certification_url,
+            created_at=self.created_at,
+            expires_at=self.expires_at,
+        )
+
+
+@strawberry.input(
+    name="EducationInput",
+    description="The education details input.",
+)
+class EducationInputType:
+    degree: str = strawberry.field(description="The degree obtained.")
+    institution: str = strawberry.field(description="The institution attended.")
+    started_at: date = strawberry.field(description="When the degree was started.")
+    completed_at: date | None = strawberry.field(
+        description="When the degree was completed."
+    )
+
+    def to_document(self) -> Education:
+        return Education(
+            degree=self.degree,
+            institution=self.institution,
+            started_at=self.started_at,
+            completed_at=self.completed_at,
+        )
+
+
+@strawberry.enum(name="EmploymentType", description="Type of employment.")
+class EmploymentTypeEnum(Enum):
+    FULL_TIME = "FULL_TIME"
+    PART_TIME = "PART_TIME"
+    CONTRACT = "CONTRACT"
+    INTERNSHIP = "INTERNSHIP"
+    TEMPORARY = "TEMPORARY"
+    VOLUNTEER = "VOLUNTEER"
+    OTHER = "OTHER"
+
+
+@strawberry.input(
+    name="WorkExperienceInput",
+    description="The work experience details input.",
+)
+class WorkExperienceInputType:
+    title: str = strawberry.field(description="The job title.")
+    organization: str = strawberry.field(description="The organization name.")
+    started_at: date = strawberry.field(description="When the job started.")
+    completed_at: date | None = strawberry.field(description="When the job ended.")
+    employment_type: EmploymentTypeEnum | None = strawberry.field(
+        description="Type of employment.",
+        default=None,
+    )
+    skills: list[str] = strawberry.field(description="Skills used in this job.")
+
+    def to_document(self) -> WorkExperience:
+        return WorkExperience(
+            title=self.title,
+            organization=self.organization,
+            started_at=self.started_at,
+            completed_at=self.completed_at,
+            employment_type=self.employment_type.value
+            if self.employment_type
+            else None,
+            skills=self.skills,
         )
 
 
@@ -133,14 +206,13 @@ class CurrentJobType:
     description="An account's profile.",
 )
 class ProfileType(BaseNodeType[Profile]):
-    # personal details
     gender: GenderTypeEnum | None = strawberry.field(
         description="The gender of the profile's user.",
     )
     date_of_birth: date | None = strawberry.field(
         description="The date of birth of the profile's user.",
     )
-    address: AddressType = strawberry.field(
+    address: str = strawberry.field(
         description="The address of the profile's user.",
     )
     marital_status: MaritalStatusTypeEnum | None = strawberry.field(
@@ -149,46 +221,67 @@ class ProfileType(BaseNodeType[Profile]):
     category: str | None = strawberry.field(
         description="The category of the profile's user.",
     )
-    languages: list[LanguageType] = strawberry.field(
+    locations_open_to_work: list[str] = strawberry.field(
+        description="Locations the user is open to work in.",
+    )
+    open_to_relocation_anywhere: bool = strawberry.field(
+        description="Whether the user is open to relocation anywhere.",
+    )
+    education: list["EducationType"] = strawberry.field(
+        description="The user's education history.",
+    )
+    licenses: list["LicenseType"] = strawberry.field(
+        description="The user's licenses.",
+    )
+    languages: list["LanguageType"] = strawberry.field(
         description="The list of languages spoken by the profile's user.",
     )
-
-    # employment details
-    total_job_experience: float | None = strawberry.field(
-        description="Total job experience (in years) of the profile's user.",
+    job_preferences: list[str] = strawberry.field(
+        description="The user's job preferences.",
     )
-    current_job: CurrentJobType | None = strawberry.field(
-        description="The current job of the profile's user.",
+    work_experience: list["WorkExperienceType"] = strawberry.field(
+        description="The user's work experience.",
     )
-
-    created_at: datetime = strawberry.field(
-        description="When the profile was created.",
+    salary_expectations: Optional["SalaryExpectationsType"] = strawberry.field(
+        description="The user's salary expectations.",
+    )
+    certifications: list["CertificationType"] = strawberry.field(
+        description="The user's certifications.",
+    )
+    updated_at: datetime = strawberry.field(
+        description="When the profile was last updated.",
     )
 
     @classmethod
-    def marshal(cls, profile: Profile) -> Self:
+    def marshal(cls, model: Profile) -> Self:
         """Marshal into a node instance."""
         return cls(
-            id=str(profile.id),
-            gender=GenderTypeEnum[profile.gender]
-            if profile.gender is not None
+            id=str(model.id),
+            gender=GenderTypeEnum[model.gender] if model.gender else None,
+            date_of_birth=model.date_of_birth,
+            address=model.address,
+            marital_status=MaritalStatusTypeEnum[model.marital_status]
+            if model.marital_status is not None
             else None,
-            date_of_birth=profile.date_of_birth,
-            address=AddressType.marshal(profile.address)
-            if profile.address is not None
-            else None,
-            marital_status=MaritalStatusTypeEnum[profile.marital_status]
-            if profile.marital_status is not None
-            else None,
-            category=profile.category,
-            languages=[
-                LanguageType.marshal(language) for language in profile.languages
+            category=model.category,
+            locations_open_to_work=model.locations_open_to_work,
+            open_to_relocation_anywhere=model.open_to_relocation_anywhere,
+            education=[EducationType.marshal(edu) for edu in model.education],
+            licenses=[LicenseType.marshal(lic) for lic in model.licenses],
+            languages=[LanguageType.marshal(language) for language in model.languages],
+            job_preferences=model.job_preferences,
+            work_experience=[
+                WorkExperienceType.marshal(exp) for exp in model.work_experience
             ],
-            total_job_experience=profile.total_job_experience,
-            current_job=CurrentJobType.marshal(profile.current_job)
-            if profile.current_job is not None
+            salary_expectations=SalaryExpectationsType.marshal(
+                model.salary_expectations
+            )
+            if model.salary_expectations is not None
             else None,
-            created_at=profile.id.generation_time,
+            certifications=[
+                CertificationType.marshal(cert) for cert in model.certifications
+            ],
+            updated_at=model.updated_at,
         )
 
     @classmethod
@@ -204,15 +297,6 @@ class ProfileType(BaseNodeType[Profile]):
             cls.marshal(account) if account is not None else account
             for account in accounts
         ]
-
-
-ProfilePayload = Annotated[
-    ProfileType | ProfileNotFoundErrorType,
-    strawberry.union(
-        name="ProfilePayload",
-        description="The profile payload.",
-    ),
-]
 
 
 @strawberry.enum(
@@ -314,18 +398,18 @@ class AccountType(BaseNodeType[Account]):
         ]
 
     @strawberry.field(  # type: ignore[misc]
-        graphql_type=ProfilePayload,
+        graphql_type=ProfileType | None,
         description="The account's profile.",
     )
     @inject
-    async def profile(self, info: Info) -> ProfilePayload:
+    async def profile(self, info: Info) -> ProfileType | None:
         if self.profile_ref is None:
-            return ProfileNotFoundErrorType()
+            return None
         if isinstance(self.profile_ref, Profile):
             return ProfileType.marshal(self.profile_ref)
         result = await info.context["loaders"].profile_by_id.load(str(self.profile_ref))
         if result is None:
-            return ProfileNotFoundErrorType()
+            return None
         return ProfileType.marshal(result)
 
     @strawberry.field(  # type: ignore[misc]
@@ -565,3 +649,100 @@ SaveJobPayload = Annotated[
         description="The save job payload.",
     ),
 ]
+
+
+@strawberry.type(name="Education")
+class EducationType:
+    degree: str
+    institution: str
+    started_at: date
+    completed_at: date | None
+
+    @classmethod
+    def marshal(cls, edu: Education) -> Self:
+        return cls(
+            degree=edu.degree,
+            institution=edu.institution,
+            started_at=edu.started_at,
+            completed_at=edu.completed_at,
+        )
+
+
+@strawberry.type(name="License")
+class LicenseType:
+    name: str
+    issuer: str
+    license_number: str
+    issued_at: date
+    expires_at: date
+    verification_status: LicenseVerificationStatusEnum
+    verified_at: date | None
+    verification_notes: str | None
+
+    @classmethod
+    def marshal(cls, lic: License) -> Self:
+        return cls(
+            name=lic.name,
+            issuer=lic.issuer,
+            license_number=lic.license_number,
+            issued_at=lic.issued_at,
+            expires_at=lic.expires_at,
+            verification_status=LicenseVerificationStatusEnum(lic.verification_status),
+            verified_at=lic.verified_at,
+            verification_notes=lic.verification_notes,
+        )
+
+
+@strawberry.type(name="WorkExperience")
+class WorkExperienceType:
+    title: str
+    organization: str
+    started_at: date
+    completed_at: date | None
+    employment_type: EmploymentTypeEnum | None
+    skills: list[str]
+
+    @classmethod
+    def marshal(cls, exp: WorkExperience) -> Self:
+        return cls(
+            title=exp.title,
+            organization=exp.organization,
+            started_at=exp.started_at,
+            completed_at=exp.completed_at,
+            employment_type=EmploymentTypeEnum(exp.employment_type)
+            if exp.employment_type
+            else None,
+            skills=exp.skills,
+        )
+
+
+@strawberry.type(name="SalaryExpectations")
+class SalaryExpectationsType:
+    preferred_monthly_salary_inr: int
+    negotiable: bool
+
+    @classmethod
+    def marshal(cls, se: SalaryExpectations) -> Self:
+        return cls(
+            preferred_monthly_salary_inr=se.preferred_monthly_salary_inr,
+            negotiable=se.negotiable,
+        )
+
+
+@strawberry.type(name="Certification")
+class CertificationType:
+    name: str
+    issuer: str
+    certification_url: str
+    created_at: date
+    expires_at: date | None
+
+    @classmethod
+    def marshal(cls, cert: Certification) -> Self:
+        return cls(
+            name=cert.name,
+            issuer=cert.issuer,
+            certification_url=cert.certification_url,
+            created_at=cert.created_at,
+            expires_at=cert.expires_at,
+        )

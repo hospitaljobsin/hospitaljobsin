@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1f0174b9b695534312dfa387c452baef>>
+ * @generated SignedSource<<99a6dded0e67265cb1f909df7bc79d93>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,18 +17,7 @@ export type ApplicantDetailsFragment$data = {
     readonly email: string;
     readonly fullName: string;
     readonly profile: {
-      readonly __typename: "Profile";
-      readonly address: {
-        readonly city: string | null | undefined;
-        readonly state: string | null | undefined;
-      };
-    } | {
-      readonly __typename: "ProfileNotFoundError";
-      readonly __typename: "ProfileNotFoundError";
-    } | {
-      // This will never be '%other', but we need some
-      // value in case none of the concrete values match.
-      readonly __typename: "%other";
+      readonly address: string;
     };
   };
   readonly applicantFields: ReadonlyArray<{
@@ -113,54 +102,26 @@ const node: ReaderFragment = {
             "storageKey": null
           },
           {
-            "alias": null,
-            "args": null,
-            "concreteType": null,
-            "kind": "LinkedField",
-            "name": "profile",
-            "plural": false,
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "__typename",
-                "storageKey": null
-              },
-              {
-                "kind": "InlineFragment",
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Address",
-                    "kind": "LinkedField",
-                    "name": "address",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "city",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "state",
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  }
-                ],
-                "type": "Profile",
-                "abstractKey": null
-              }
-            ],
-            "storageKey": null
+            "kind": "RequiredField",
+            "field": {
+              "alias": null,
+              "args": null,
+              "concreteType": "Profile",
+              "kind": "LinkedField",
+              "name": "profile",
+              "plural": false,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "address",
+                  "storageKey": null
+                }
+              ],
+              "storageKey": null
+            },
+            "action": "THROW"
           }
         ],
         "storageKey": null
@@ -172,6 +133,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "64507250c7459b1b0408f8760904bc85";
+(node as any).hash = "63d9fe5f6e7f73db562c9c456413d98a";
 
 export default node;
