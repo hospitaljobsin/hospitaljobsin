@@ -59,8 +59,8 @@ class WorkExperience(BaseModel):
     organization: str
     started_at: date
     completed_at: date | None = None
-    employment_type: str
-    department_experience: list[str]
+    employment_type: str | None = None
+    skills: list[str]
 
 
 # SKILL EXPERIENCE

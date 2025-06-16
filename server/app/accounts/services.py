@@ -2,7 +2,7 @@ from datetime import date
 
 from result import Ok
 
-from app.accounts.documents import Account, Education, Language
+from app.accounts.documents import Account, Education, Language, WorkExperience
 from app.accounts.repositories import AccountRepo, ProfileRepo
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
@@ -51,12 +51,12 @@ class ProfileService:
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
-            await self._profile_repo.create(account)
-            existing_profile = await self._profile_repo.get_by_account(account)
-        if existing_profile is None:
-            raise Exception("Failed to create or fetch Profile for account.")
+            existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
 
-        profile = await self._profile_repo.update(
+        await self._profile_repo.update(
             profile=existing_profile,
             gender=gender,
             date_of_birth=date_of_birth,
@@ -64,8 +64,6 @@ class ProfileService:
             category=category,
             address=address,
         )
-
-        account.profile = profile
 
         return Ok(account)
 
@@ -75,16 +73,16 @@ class ProfileService:
         languages: list[Language],
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
-        existing_profile = account.profile
         if existing_profile is None:
             existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
 
-        profile = await self._profile_repo.update(
+        await self._profile_repo.update(
             profile=existing_profile,
             languages=languages,
         )
-
-        account.profile = profile
 
         return Ok(account)
 
@@ -98,13 +96,15 @@ class ProfileService:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
             existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
 
-        profile = await self._profile_repo.update(
+        await self._profile_repo.update(
             profile=existing_profile,
             locations_open_to_work=locations_open_to_work,
             open_to_relocation_anywhere=open_to_relocation_anywhere,
         )
-        account.profile = profile
         return Ok(account)
 
     async def update_education(
@@ -115,11 +115,32 @@ class ProfileService:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
             existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
 
-        profile = await self._profile_repo.update(
+        await self._profile_repo.update(
             profile=existing_profile,
             education=education,
         )
 
-        # Do not assign profile to account.profile to avoid Link[Profile] type issues
+        return Ok(account)
+
+    async def update_experience(
+        self,
+        account: Account,
+        work_experience: list[WorkExperience],
+    ) -> Ok[Account]:
+        existing_profile = await self._profile_repo.get_by_account(account)
+        if existing_profile is None:
+            existing_profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(
+                account=account, profile=existing_profile
+            )
+
+        await self._profile_repo.update(
+            profile=existing_profile,
+            work_experience=work_experience,
+        )
+
         return Ok(account)

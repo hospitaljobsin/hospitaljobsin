@@ -11,6 +11,8 @@ import UpdateEducationForm from "./UpdateEducationForm";
 import UpdateLanguagesForm from "./UpdateLanguagesForm";
 import UpdateLocationPreferencesForm from "./UpdateLocationPreferencesForm";
 import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
+import UpdateWorkExperienceForm from "./UpdateWorkExperienceForm";
+import WorkExperience from "./WorkExperience";
 
 const ProfileViewFragment = graphql`
   fragment ProfileViewFragment on Query {
@@ -26,6 +28,8 @@ const ProfileViewFragment = graphql`
 			...LocationPreferencesFragment
 			...UpdateEducationFormFragment
 			...EducationFragment
+			...UpdateWorkExperienceFormFragment
+			...WorkExperienceFragment
 		}
       }
     }
@@ -42,6 +46,7 @@ export default function ProfileView({
 	const [isEditingLocationPreferences, setIsEditingLocationPreferences] =
 		useState(false);
 	const [isEditingEducation, setIsEditingEducation] = useState(false);
+	const [isEditingWorkExperience, setIsEditingWorkExperience] = useState(false);
 	const data = useFragment(ProfileViewFragment, query);
 	invariant(
 		data.viewer.__typename === "Account",
@@ -65,18 +70,19 @@ export default function ProfileView({
 					}}
 				/>
 			)}
-			{isEditingLanguages ? (
-				<UpdateLanguagesForm
+
+			{isEditingWorkExperience ? (
+				<UpdateWorkExperienceForm
 					rootQuery={data.viewer.profile}
 					onSaveChanges={() => {
-						setIsEditingLanguages(false);
+						setIsEditingWorkExperience(false);
 					}}
 				/>
 			) : (
-				<Languages
+				<WorkExperience
 					rootQuery={data.viewer.profile}
 					onEditProfile={() => {
-						setIsEditingLanguages(true);
+						setIsEditingWorkExperience(true);
 					}}
 				/>
 			)}
@@ -107,6 +113,21 @@ export default function ProfileView({
 					rootQuery={data.viewer.profile}
 					onEditProfile={() => {
 						setIsEditingLocationPreferences(true);
+					}}
+				/>
+			)}
+			{isEditingLanguages ? (
+				<UpdateLanguagesForm
+					rootQuery={data.viewer.profile}
+					onSaveChanges={() => {
+						setIsEditingLanguages(false);
+					}}
+				/>
+			) : (
+				<Languages
+					rootQuery={data.viewer.profile}
+					onEditProfile={() => {
+						setIsEditingLanguages(true);
 					}}
 				/>
 			)}

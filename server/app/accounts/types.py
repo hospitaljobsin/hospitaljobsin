@@ -137,6 +137,45 @@ class EducationInputType:
         )
 
 
+@strawberry.enum(name="EmploymentType", description="Type of employment.")
+class EmploymentTypeEnum(Enum):
+    FULL_TIME = "FULL_TIME"
+    PART_TIME = "PART_TIME"
+    CONTRACT = "CONTRACT"
+    INTERNSHIP = "INTERNSHIP"
+    TEMPORARY = "TEMPORARY"
+    VOLUNTEER = "VOLUNTEER"
+    OTHER = "OTHER"
+
+
+@strawberry.input(
+    name="WorkExperienceInput",
+    description="The work experience details input.",
+)
+class WorkExperienceInputType:
+    title: str = strawberry.field(description="The job title.")
+    organization: str = strawberry.field(description="The organization name.")
+    started_at: date = strawberry.field(description="When the job started.")
+    completed_at: date | None = strawberry.field(description="When the job ended.")
+    employment_type: EmploymentTypeEnum | None = strawberry.field(
+        description="Type of employment.",
+        default=None,
+    )
+    skills: list[str] = strawberry.field(description="Skills used in this job.")
+
+    def to_document(self) -> WorkExperience:
+        return WorkExperience(
+            title=self.title,
+            organization=self.organization,
+            started_at=self.started_at,
+            completed_at=self.completed_at,
+            employment_type=self.employment_type.value
+            if self.employment_type
+            else None,
+            skills=self.skills,
+        )
+
+
 @strawberry.type(
     name="Profile",
     description="An account's profile.",
@@ -639,8 +678,8 @@ class WorkExperienceType:
     organization: str
     started_at: date
     completed_at: date | None
-    employment_type: str
-    department_experience: list[str]
+    employment_type: EmploymentTypeEnum | None
+    skills: list[str]
 
     @classmethod
     def marshal(cls, exp: WorkExperience) -> Self:
@@ -649,8 +688,10 @@ class WorkExperienceType:
             organization=exp.organization,
             started_at=exp.started_at,
             completed_at=exp.completed_at,
-            employment_type=exp.employment_type,
-            department_experience=exp.department_experience,
+            employment_type=EmploymentTypeEnum(exp.employment_type)
+            if exp.employment_type
+            else None,
+            skills=exp.skills,
         )
 
 

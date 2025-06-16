@@ -99,6 +99,11 @@ class AccountRepo:
         account.full_name = full_name
         return await account.save()
 
+    async def update_profile(self, account: Account, profile: Profile) -> Account:
+        """Update the given account's profile."""
+        account.profile = profile  # type: ignore[assignment]
+        return await account.save()
+
     async def update_auth_providers(
         self,
         account: Account,

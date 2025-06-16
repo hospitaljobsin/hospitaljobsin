@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6983690e5051c8b04b52c228ac8874cd>>
- * @relayHash 9285e096f7f43770f5318b6429ca258f
+ * @generated SignedSource<<2cc66cc2c7300f6f3ac8e6918c5ceaa2>>
+ * @relayHash f62b22ce536e14da520093b82c25c9d0
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9285e096f7f43770f5318b6429ca258f
+// @relayRequestID f62b22ce536e14da520093b82c25c9d0
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -31,6 +31,20 @@ var v0 = {
   "storageKey": null
 },
 v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "startedAt",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "completedAt",
+  "storageKey": null
+},
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -176,24 +190,53 @@ return {
                         "name": "institution",
                         "storageKey": null
                       },
+                      (v1/*: any*/),
+                      (v2/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "WorkExperience",
+                    "kind": "LinkedField",
+                    "name": "workExperience",
+                    "plural": true,
+                    "selections": [
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "startedAt",
+                        "name": "title",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "completedAt",
+                        "name": "organization",
+                        "storageKey": null
+                      },
+                      (v1/*: any*/),
+                      (v2/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "employmentType",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "skills",
                         "storageKey": null
                       }
                     ],
                     "storageKey": null
                   },
-                  (v1/*: any*/)
+                  (v3/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -204,7 +247,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v1/*: any*/)
+              (v3/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -215,7 +258,7 @@ return {
     ]
   },
   "params": {
-    "id": "9285e096f7f43770f5318b6429ca258f",
+    "id": "f62b22ce536e14da520093b82c25c9d0",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",

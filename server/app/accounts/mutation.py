@@ -19,6 +19,7 @@ from .types import (
     MaritalStatusTypeEnum,
     UpdateAccountPayload,
     UpdateProfilePayload,
+    WorkExperienceInputType,
 )
 
 
@@ -216,6 +217,39 @@ class AccountMutation:
         match await profile_service.update_education(
             account=info.context["current_user"],
             education=[edu.to_document() for edu in education],
+        ):
+            case Ok(account):
+                return AccountType.marshal_with_profile(account)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Update the current user's profile work experience.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_profile_experience(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+        work_experience: Annotated[
+            list[WorkExperienceInputType],
+            strawberry.argument(
+                description="The work experience history of the user profile.",
+            ),
+        ],
+    ) -> UpdateProfilePayload:
+        """Update the current user's profile work experience."""
+        match await profile_service.update_experience(
+            account=info.context["current_user"],
+            work_experience=[exp.to_document() for exp in work_experience],
         ):
             case Ok(account):
                 return AccountType.marshal_with_profile(account)

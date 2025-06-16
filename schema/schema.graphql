@@ -2116,6 +2116,16 @@ type Mutation {
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
+	Update the current user's profile work experience.
+	"""
+	updateProfileExperience(
+		"""
+		The work experience history of the user profile.
+		"""
+		workExperience: [WorkExperienceInput!]!
+	): UpdateProfilePayload! @isAuthenticated
+
+	"""
 	Create an organization.
 	"""
 	createOrganization(
@@ -3354,8 +3364,8 @@ type Skill {
 type SkillExperience {
 	organization: String!
 	title: String!
-	startDate: Date!
-	endDate: Date
+	startedAt: Date!
+	completedAt: Date
 }
 
 """
@@ -3629,10 +3639,45 @@ type WebAuthnCredentialNotFoundError implements Error {
 type WorkExperience {
 	title: String!
 	organization: String!
-	startDate: Date!
-	endDate: Date
+	startedAt: Date!
+	completedAt: Date
 	employmentType: String!
-	departmentExperience: [String!]!
+	skills: [String!]!
+}
+
+"""
+The work experience details input.
+"""
+input WorkExperienceInput {
+	"""
+	The job title.
+	"""
+	title: String!
+
+	"""
+	The organization name.
+	"""
+	organization: String!
+
+	"""
+	When the job started.
+	"""
+	startedAt: Date!
+
+	"""
+	When the job ended.
+	"""
+	completedAt: Date
+
+	"""
+	Type of employment.
+	"""
+	employmentType: String!
+
+	"""
+	Skills used in this job.
+	"""
+	skills: [String!]!
 }
 
 """
