@@ -1,5 +1,4 @@
 import uuid
-from datetime import datetime
 
 from pydantic import BaseModel, Field
 
@@ -25,42 +24,38 @@ class KickoffResponse(BaseModel):
 
 
 class JobResultData(BaseModel):
-    organizationId: str = Field(
-        ..., description="The ID of the organization to create the job under."
-    )
-    title: str = Field(..., description="The title of the job.")
-    description: str = Field(..., description="The description of the job.")
-    skills: list[str] = Field(..., description="The skills required for the job.")
-    externalApplicationUrl: str | None = Field(
-        None, description="The external application URL for the job."
-    )
-    location: str | None = Field(None, description="The location of the job.")
-    vacancies: int | None = Field(
-        None, description="The number of vacancies for the job."
-    )
-    minSalary: int | None = Field(None, description="The minimum salary of the job.")
-    maxSalary: int | None = Field(None, description="The maximum salary of the job.")
-    minExperience: int | None = Field(
-        None, description="The minimum experience required for the job."
-    )
-    maxExperience: int | None = Field(
-        None, description="The maximum experience required for the job."
-    )
-    expiresAt: datetime | None = Field(
-        None, description="The expiration date of the job posting."
-    )
-    jobType: str | None = Field(
-        None, description="The type of the job (e.g., full-time, part-time, contract)."
-    )
-    workMode: str | None = Field(
-        None, description="The work mode of the job (e.g., onsite, remote, hybrid)."
-    )
-    currency: str = Field(
-        default="INR", description="The currency for the job's salary (default: INR)."
-    )
+    """Data model for job generation results."""
+
+    title: str
+    description: str
+    requirements: list[str]
+    responsibilities: list[str]
+    location: str
+    salary_range: str
+    employment_type: str
+    benefits: list[str]
 
 
 class JobStatusResponse(BaseModel):
     kickoff_id: uuid.UUID
     status: str
     result: JobResultData | None = None
+
+
+class ProfileMatch(BaseModel):
+    """Data model for a matched profile."""
+
+    profile_id: str
+    score: float
+    match_reasons: list[str]
+
+
+class FilterJobResultData(BaseModel):
+    """Data model for filter job results."""
+
+    matches: list[ProfileMatch]
+    total_matches: int = Field(..., description="Total number of matches found")
+    query: str = Field(..., description="Original query used for filtering")
+    execution_time: float = Field(
+        ..., description="Time taken to execute the filter in seconds"
+    )

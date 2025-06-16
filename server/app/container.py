@@ -104,6 +104,7 @@ from app.organizations.services import (
     OrganizationService,
 )
 from app.testing.services import TestSetupService
+from app.crews.filter_job.service import FilterJobService
 
 settings_classes: list[type[BaseSettings]] = [
     AppSettings,
@@ -239,4 +240,5 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_job_applicant_by_id_dataloader))
     container.register(aioinject.Scoped(create_job_applicant_by_slug_dataloader))
     container.register(aioinject.Scoped(create_dataloaders))
+    container.register(aioinject.Scoped(FilterJobService))
     return container

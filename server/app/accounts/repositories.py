@@ -296,3 +296,81 @@ class ProfileRepo:
     async def delete(self, profile: Profile) -> None:
         """Delete a profile by ID."""
         await profile.delete()
+
+    async def filter_profiles(
+        self,
+        *,
+        gender: str | None = None,
+        marital_status: str | None = None,
+        category: str | None = None,
+        min_age: int | None = None,
+        max_age: int | None = None,
+        locations: list[str] | None = None,
+        open_to_relocation: bool | None = None,
+        min_experience_years: int | None = None,
+        languages: list[str] | None = None,
+        min_salary: int | None = None,
+        max_salary: int | None = None,
+        job_preferences: list[str] | None = None,
+        limit: int = 10,
+    ) -> list[Profile]:
+        """Filter profiles based on given criteria."""
+        query = {}
+
+        # Basic filters
+        if gender:
+            query["gender"] = gender
+        if marital_status:
+            query["marital_status"] = marital_status
+        if category:
+            query["category"] = category
+
+        # Age filter
+        if min_age or max_age:
+            age_query = {}
+            if min_age:
+                max_date = date.today().replace(year=date.today().year - min_age)
+                age_query["$lte"] = max_date
+            if max_age:
+                min_date = date.today().replace(year=date.today().year - max_age - 1)
+                age_query["$gte"] = min_date
+            if age_query:
+                query["date_of_birth"] = age_query
+
+        # Location filters
+        if locations:
+            query["locations_open_to_work"] = {"$in": locations}
+        if open_to_relocation is not None:
+            query["open_to_relocation_anywhere"] = open_to_relocation
+
+        # Experience filter
+        if min_experience_years:
+            min_date = date.today().replace(
+                year=date.today().year - min_experience_years
+            )
+            query["work_experience.started_at"] = {"$lte": min_date}
+
+        # Language filter
+        if languages:
+            query["languages.name"] = {"$in": languages}
+
+        # Salary filter
+        if min_salary or max_salary:
+            salary_query = {}
+            if min_salary:
+                salary_query["$gte"] = min_salary
+            if max_salary:
+                salary_query["$lte"] = max_salary
+            if salary_query:
+                query["salary_expectations.preferred_monthly_salary_inr"] = salary_query
+
+        # Job preferences filter
+        if job_preferences:
+            query["job_preferences"] = {"$in": job_preferences}
+
+        # Execute query with limit
+        return await Profile.find(query).limit(limit).to_list()
+
+    async def get_profiles_by_ids(self, profile_ids: list[ObjectId]) -> list[Profile]:
+        """Get multiple profiles by IDs."""
+        return await Profile.find(In(Profile.id, profile_ids)).to_list()

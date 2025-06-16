@@ -2,7 +2,7 @@ import uuid
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 
-from .background import run_crewai_task, store
+from .background import job_task_store, run_crewai_task
 from .models import JobOutlineInput, JobStatusResponse, KickoffResponse
 
 ai_router = APIRouter()
@@ -11,7 +11,7 @@ ai_router = APIRouter()
 @ai_router.post("/api/ai/generate-job", response_model=KickoffResponse)
 def generate_job(data: JobOutlineInput, background_tasks: BackgroundTasks):
     kickoff_id = uuid.uuid4()
-    store.add_task(kickoff_id)
+    job_task_store.add_task(kickoff_id)
     background_tasks.add_task(run_crewai_task, kickoff_id, data.outline)
     return KickoffResponse(kickoff_id=kickoff_id)
 
@@ -20,7 +20,7 @@ def generate_job(data: JobOutlineInput, background_tasks: BackgroundTasks):
     "/api/ai/generate-job/status/{kickoff_id}", response_model=JobStatusResponse
 )
 def get_job_status(kickoff_id: uuid.UUID):
-    task = store.get_task(kickoff_id)
+    task = job_task_store.get_task(kickoff_id)
     if not task:
         raise HTTPException(status_code=404, detail="kickoff_id not found")
     return JobStatusResponse(
