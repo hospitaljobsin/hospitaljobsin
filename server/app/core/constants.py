@@ -10,6 +10,8 @@ APP_NAME = "Hospital Jobs"
 
 MAX_PAGINATION_LIMIT = 100
 
+DEFAULT_PAGINATION_LIMIT = 10
+
 # user sessions
 
 USER_SESSION_EXPIRES_IN = 60 * 60 * 24 * 30  # 30 days

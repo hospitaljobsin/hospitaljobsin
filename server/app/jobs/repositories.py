@@ -11,7 +11,11 @@ from bson import ObjectId
 
 from app.accounts.documents import Account
 from app.base.models import GeoObject
-from app.core.constants import JobApplicantStatus, JobMetricEventType
+from app.core.constants import (
+    DEFAULT_PAGINATION_LIMIT,
+    JobApplicantStatus,
+    JobMetricEventType,
+)
 from app.crews.filter_job.services import AgenticProfileFilterService
 from app.database.paginator import PaginatedResult, Paginator
 from app.geocoding.models import Coordinates
@@ -450,10 +454,11 @@ class JobApplicantRepo:
     ) -> PaginatedResult[JobApplicant, ObjectId]:
         """Get a paginated result of job applicants for the given job."""
         if search_term:
+            # TODO: getting max_results and filtering here should probably be done after validating pagination arguments
             filtered_result = (
                 await self._agentic_profile_filter_service.filter_profiles(
                     query=search_term,
-                    max_results=10,
+                    max_results=first or last or DEFAULT_PAGINATION_LIMIT,
                 )
             )
 
