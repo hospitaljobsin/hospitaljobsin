@@ -14,11 +14,10 @@ import { CalendarDate, parseDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
-import LocationAutocomplete from "../forms/LocationAutocomplete";
 
 const UpdatePersonalDetailsFormMutation = graphql`
-mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $address: String!, $maritalStatus: MaritalStatusType, $category: String) {
-	updateProfilePersonalDetails(gender: $gender, dateOfBirth: $dateOfBirth, address: $address, maritalStatus: $maritalStatus, category: $category) {
+mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $maritalStatus: MaritalStatusType, $category: String) {
+	updateProfilePersonalDetails(gender: $gender, dateOfBirth: $dateOfBirth, maritalStatus: $maritalStatus, category: $category) {
 		...on Account {
 			profile {
 				... on Profile {
@@ -31,12 +30,11 @@ mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Da
 `;
 const UpdatePersonalDetailsFormFragment = graphql`
   fragment UpdatePersonalDetailsFormFragment on  Profile {
-        address
-        gender
-        dateOfBirth
-        maritalStatus
-        category
-      }
+    gender
+    dateOfBirth
+    maritalStatus
+    category
+  }
 `;
 
 type Props = {
@@ -54,7 +52,6 @@ const formSchema = z.object({
 	dateOfBirth: z.nullable(
 		z.custom<CalendarDate>((data) => data instanceof CalendarDate),
 	),
-	address: z.string().check(z.minLength(3, "Address is required")),
 	maritalStatus: z.union([z.literal("MARRIED"), z.literal("SINGLE"), z.null()]),
 	category: z.nullable(
 		z.string().check(z.maxLength(25, "Category is too long")),
@@ -71,7 +68,6 @@ export default function UpdatePersonalDetailsForm({
 	const data = useFragment(UpdatePersonalDetailsFormFragment, rootQuery);
 
 	const defaultValues: z.infer<typeof formSchema> = {
-		address: String(data.address ?? ""),
 		category: data.category ?? null,
 		gender: ["MALE", "FEMALE", "OTHER"].includes(data.gender ?? "")
 			? (data.gender as "MALE" | "FEMALE" | "OTHER")
@@ -100,7 +96,6 @@ export default function UpdatePersonalDetailsForm({
 					: null,
 				category: formData.category || null,
 				maritalStatus: formData.maritalStatus || null,
-				address: formData.address,
 			},
 		});
 		onSaveChanges();
@@ -163,71 +158,46 @@ export default function UpdatePersonalDetailsForm({
 							}}
 						/>
 					</div>
-					<div className="flex flex-col gap-4">
-						<p className="text-xs text-foreground-500 px-2">Address</p>
-						<div className="flex gap-8 mb-12">
-							<div className="flex flex-col w-full gap-8">
-								<Controller
-									name="address"
-									control={control}
-									render={({ field }) => {
-										return (
-											<LocationAutocomplete
-												value={field.value || ""}
-												onValueChange={field.onChange}
-												onChange={(location) => {
-													field.onChange(location.displayName);
-												}}
-												placeholder="Enter your address"
-												errorMessage={errors.address?.message}
-												isInvalid={!!errors.address}
-											/>
-										);
-									}}
+					<div className="mb-12">
+						<Controller
+							name="maritalStatus"
+							control={control}
+							render={({ field }) => (
+								<Select
+									{...field}
+									fullWidth
+									label="Marital Status"
+									placeholder="Add your marital status"
+									selectionMode="single"
+									value={field.value ?? ""}
+									selectedKeys={[field.value ?? ""]}
+									defaultSelectedKeys={[field.value ?? ""]}
+									onSelectionChange={field.onChange}
+									errorMessage={errors.maritalStatus?.message}
+									isInvalid={!!errors.maritalStatus}
+								>
+									<SelectItem key={"SINGLE"}>Single</SelectItem>
+									<SelectItem key={"MARRIED"}>Married</SelectItem>
+								</Select>
+							)}
+						/>
+					</div>
+					<div className="mb-12">
+						<Controller
+							name="category"
+							control={control}
+							defaultValue=""
+							render={({ field }) => (
+								<Input
+									{...field}
+									label="Category"
+									placeholder="Add your category"
+									value={field.value ?? ""}
+									errorMessage={errors.category?.message}
+									isInvalid={!!errors.category}
 								/>
-							</div>
-						</div>
-						<div className="mb-12">
-							<Controller
-								name="maritalStatus"
-								control={control}
-								render={({ field }) => (
-									<Select
-										{...field}
-										fullWidth
-										label="Marital Status"
-										placeholder="Add your marital status"
-										selectionMode="single"
-										value={field.value ?? ""}
-										selectedKeys={[field.value ?? ""]}
-										defaultSelectedKeys={[field.value ?? ""]}
-										onSelectionChange={field.onChange}
-										errorMessage={errors.maritalStatus?.message}
-										isInvalid={!!errors.maritalStatus}
-									>
-										<SelectItem key={"SINGLE"}>Single</SelectItem>
-										<SelectItem key={"MARRIED"}>Married</SelectItem>
-									</Select>
-								)}
-							/>
-						</div>
-						<div className="mb-12">
-							<Controller
-								name="category"
-								control={control}
-								defaultValue=""
-								render={({ field }) => (
-									<Input
-										{...field}
-										label="Category"
-										placeholder="Add your category"
-										value={field.value ?? ""}
-										errorMessage={errors.category?.message}
-										isInvalid={!!errors.category}
-									/>
-								)}
-							/>
-						</div>
+							)}
+						/>
 					</div>
 				</CardBody>
 			</Card>

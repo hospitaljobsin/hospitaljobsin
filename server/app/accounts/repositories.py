@@ -23,7 +23,6 @@ from .documents import (
     License,
     Profile,
     SalaryExpectations,
-    Skill,
     WorkExperience,
 )
 
@@ -206,7 +205,6 @@ class ProfileRepo:
             languages=[],
             job_preferences=[],
             work_experience=[],
-            skills=[],
             salary_expectations=None,
             certifications=[],
         )
@@ -231,7 +229,6 @@ class ProfileRepo:
         languages: list[Language] | None = None,
         job_preferences: list[str] | None = None,
         work_experience: list[WorkExperience] | None = None,
-        skills: list[Skill] | None = None,
         salary_expectations: SalaryExpectations | None = None,
         certifications: list[Certification] | None = None,
     ) -> Profile:
@@ -260,8 +257,6 @@ class ProfileRepo:
             profile.job_preferences = job_preferences
         if work_experience is not None:
             profile.work_experience = work_experience
-        if skills is not None:
-            profile.skills = skills
         if salary_expectations is not None:
             profile.salary_expectations = salary_expectations
         if certifications is not None:

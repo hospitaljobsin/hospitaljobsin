@@ -5,7 +5,6 @@ import { graphql, useFragment } from "react-relay";
 
 const PersonalDetailsFragment = graphql`
   fragment PersonalDetailsFragment on Profile {
-		address
 		gender
 		dateOfBirth
 		maritalStatus
@@ -53,14 +52,6 @@ export default function PersonalDetails({ rootQuery, onEditProfile }: Props) {
 							<h2 className="w-full text-foreground-500">
 								{String(data.dateOfBirth)}
 							</h2>
-						)}
-					</div>
-					<div className="flex flex-col gap-6 w-full items-center justify-start">
-						<h1 className="w-full text-lg font-medium">Address</h1>
-						{!data.address ? (
-							<h2 className="w-full text-foreground-500">Add your address</h2>
-						) : (
-							<h2 className="w-full text-foreground-500">{data.address}</h2>
 						)}
 					</div>
 					<div className="flex flex-col gap-6 w-full items-center justify-start">

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<17e25c830d3558bc2ffdb366c8c7ec41>>
+ * @generated SignedSource<<fdf0813786fd126683b77562c3d5ee80>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,6 @@ export type GenderType = "FEMALE" | "MALE" | "OTHER" | "%future added value";
 export type MaritalStatusType = "MARRIED" | "SINGLE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type UpdatePersonalDetailsFormFragment$data = {
-  readonly address: string;
   readonly category: string | null | undefined;
   readonly dateOfBirth: any | null | undefined;
   readonly gender: GenderType | null | undefined;
@@ -31,13 +30,6 @@ const node: ReaderFragment = {
   "metadata": null,
   "name": "UpdatePersonalDetailsFormFragment",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "address",
-      "storageKey": null
-    },
     {
       "alias": null,
       "args": null,
@@ -71,6 +63,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "ee29dab765e5e6aef268e5f255d4a58b";
+(node as any).hash = "0fef2ec2c8fcd288d1e28da5b4ed21d6";
 
 export default node;

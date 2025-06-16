@@ -45,7 +45,6 @@ class ProfileService:
         account: Account,
         gender: str | None,
         date_of_birth: date | None,
-        address: str,
         marital_status: str | None,
         category: str | None,
     ) -> Ok[Account]:
@@ -62,7 +61,6 @@ class ProfileService:
             date_of_birth=date_of_birth,
             marital_status=marital_status,
             category=category,
-            address=address,
         )
 
         return Ok(account)
@@ -92,7 +90,9 @@ class ProfileService:
         account: Account,
         locations_open_to_work: list[str],
         open_to_relocation_anywhere: bool,
+        address: str,
     ) -> Ok[Account]:
+        """Update the user's location preferences, including address."""
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
             existing_profile = await self._profile_repo.create(account)
@@ -104,6 +104,7 @@ class ProfileService:
             profile=existing_profile,
             locations_open_to_work=locations_open_to_work,
             open_to_relocation_anywhere=open_to_relocation_anywhere,
+            address=address,
         )
         return Ok(account)
 

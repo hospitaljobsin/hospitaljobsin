@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f926b14d355cdb511efcc088e1f4968f>>
+ * @generated SignedSource<<e84f2c1e96cbf5704e657f894744054d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,13 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
+export type EmploymentType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "OTHER" | "PART_TIME" | "TEMPORARY" | "VOLUNTEER" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type UpdateWorkExperienceFormFragment$data = {
   readonly __typename: "Profile";
   readonly workExperience: ReadonlyArray<{
     readonly completedAt: any | null | undefined;
-    readonly employmentType: string;
+    readonly employmentType: EmploymentType | null | undefined;
     readonly organization: string;
     readonly skills: ReadonlyArray<string>;
     readonly startedAt: any;

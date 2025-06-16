@@ -14,6 +14,7 @@ const LocationPreferencesFragment = graphql`
   fragment LocationPreferencesFragment on Profile {
         locationsOpenToWork
         openToRelocationAnywhere
+        address
   }
 `;
 type Props = {
@@ -43,6 +44,14 @@ export default function LocationPreferences({
 					</Button>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-8">
+					<div className="flex flex-col gap-6 w-full items-center justify-start">
+						<h1 className="w-full font-medium">Current Address</h1>
+						{!data.address ? (
+							<h2 className="w-full text-foreground-500">Add your address</h2>
+						) : (
+							<h2 className="w-full text-foreground-500">{data.address}</h2>
+						)}
+					</div>
 					<div className="flex items-center gap-4">
 						<Switch
 							defaultSelected={openToRelocation}
@@ -69,6 +78,7 @@ export default function LocationPreferences({
 							</div>
 						)}
 					</div>
+
 					{!openToRelocation && locations.length === 0 && (
 						<div className="text-foreground-500 text-sm">
 							No location preferences set.

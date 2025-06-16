@@ -41,12 +41,6 @@ class AccountMutation:
         self,
         info: AuthInfo,
         profile_service: Annotated[ProfileService, Inject],
-        address: Annotated[
-            str,
-            strawberry.argument(
-                description="The address of the user profile.",
-            ),
-        ],
         gender: Annotated[
             GenderTypeEnum | None,
             strawberry.argument(
@@ -79,7 +73,6 @@ class AccountMutation:
             date_of_birth=date_of_birth,
             marital_status=marital_status.value if marital_status is not None else None,
             category=category,
-            address=address,
         ):
             case Ok(account):
                 return AccountType.marshal_with_profile(account)
@@ -178,12 +171,19 @@ class AccountMutation:
                 description="Whether the user is open to relocation anywhere."
             ),
         ],
+        address: Annotated[
+            str,
+            strawberry.argument(
+                description="The address of the user profile (now part of location preferences).",
+            ),
+        ],
     ) -> UpdateProfilePayload:
-        """Update the current user's profile location preferences."""
+        """Update the current user's profile location preferences, including address."""
         match await profile_service.update_location_preferences(
             account=info.context["current_user"],
             locations_open_to_work=locations_open_to_work,
             open_to_relocation_anywhere=open_to_relocation_anywhere,
+            address=address,
         ):
             case Ok(account):
                 return AccountType.marshal_with_profile(account)

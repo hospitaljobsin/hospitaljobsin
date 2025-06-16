@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<58b7c59dca3d4813d12d755890e504f5>>
+ * @generated SignedSource<<a7cbb90d686403c96917d540578ecad2>>
  * @relayHash 629ffcac4a4a0bff004b6d06e15cf095
  * @lightSyntaxTransform
  * @nogrep
@@ -13,9 +13,10 @@
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
+export type EmploymentType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "OTHER" | "PART_TIME" | "TEMPORARY" | "VOLUNTEER" | "%future added value";
 export type WorkExperienceInput = {
   completedAt?: any | null | undefined;
-  employmentType: string;
+  employmentType?: EmploymentType | null | undefined;
   organization: string;
   skills: ReadonlyArray<string>;
   startedAt: any;

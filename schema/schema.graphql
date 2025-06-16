@@ -557,6 +557,19 @@ type EmailVerificationTokenCooldownError implements Error {
 }
 
 """
+Type of employment.
+"""
+enum EmploymentType {
+	FULL_TIME
+	PART_TIME
+	CONTRACT
+	INTERNSHIP
+	TEMPORARY
+	VOLUNTEER
+	OTHER
+}
+
+"""
 Enable account 2FA with authenticator success.
 """
 type EnableAccount2FAWithAuthenticatorSuccess {
@@ -2045,11 +2058,6 @@ type Mutation {
 	"""
 	updateProfilePersonalDetails(
 		"""
-		The address of the user profile.
-		"""
-		address: String!
-
-		"""
 		The gender of the user profile.
 		"""
 		gender: GenderType = null
@@ -2103,6 +2111,11 @@ type Mutation {
 		Whether the user is open to relocation anywhere.
 		"""
 		openToRelocationAnywhere: Boolean!
+
+		"""
+		The address of the user profile (now part of location preferences).
+		"""
+		address: String!
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
@@ -2869,11 +2882,6 @@ type Profile implements Node {
 	workExperience: [WorkExperience!]!
 
 	"""
-	The user's skills.
-	"""
-	skills: [Skill!]!
-
-	"""
 	The user's salary expectations.
 	"""
 	salaryExpectations: SalaryExpectations
@@ -3355,19 +3363,6 @@ union SetAccount2FAPayload =
 	| InvalidCredentialsError
 	| TwoFactorAuthenticationChallengeNotFoundError
 
-type Skill {
-	skill: String!
-	yoeTotal: Float!
-	experiences: [SkillExperience!]!
-}
-
-type SkillExperience {
-	organization: String!
-	title: String!
-	startedAt: Date!
-	completedAt: Date
-}
-
 """
 Used when the 2FA challenge is not found.
 """
@@ -3641,7 +3636,7 @@ type WorkExperience {
 	organization: String!
 	startedAt: Date!
 	completedAt: Date
-	employmentType: String!
+	employmentType: EmploymentType
 	skills: [String!]!
 }
 
@@ -3672,7 +3667,7 @@ input WorkExperienceInput {
 	"""
 	Type of employment.
 	"""
-	employmentType: String!
+	employmentType: EmploymentType = null
 
 	"""
 	Skills used in this job.
