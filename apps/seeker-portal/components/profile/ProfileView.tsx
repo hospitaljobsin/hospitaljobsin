@@ -6,11 +6,14 @@ import invariant from "tiny-invariant";
 import Certifications from "./Certifications";
 import Education from "./Education";
 import Languages from "./Languages";
+import Licenses from "./Licenses";
 import LocationPreferences from "./LocationPreferences";
 import ProfileDetails from "./PersonalDetails";
+import ProfileBanner from "./ProfileBanner";
 import UpdateCertificationsForm from "./UpdateCertificationsForm";
 import UpdateEducationForm from "./UpdateEducationForm";
 import UpdateLanguagesForm from "./UpdateLanguagesForm";
+import UpdateLicensesForm from "./UpdateLicensesForm";
 import UpdateLocationPreferencesForm from "./UpdateLocationPreferencesForm";
 import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
 import UpdateWorkExperienceForm from "./UpdateWorkExperienceForm";
@@ -21,6 +24,7 @@ const ProfileViewFragment = graphql`
     viewer {
       __typename
       ... on Account {
+		...ProfileBannerFragment
 		profile @required(action: THROW) {
 			...UpdatePersonalDetailsFormFragment
 			...PersonalDetailsFragment
@@ -34,6 +38,8 @@ const ProfileViewFragment = graphql`
 			...WorkExperienceFragment
 			...CertificationsFragment
 			...UpdateCertificationsFormFragment
+            ...LicensesFragment
+            ...UpdateLicensesFormFragment
 		}
       }
     }
@@ -52,6 +58,7 @@ export default function ProfileView({
 	const [isEditingEducation, setIsEditingEducation] = useState(false);
 	const [isEditingWorkExperience, setIsEditingWorkExperience] = useState(false);
 	const [isEditingCertifications, setIsEditingCertifications] = useState(false);
+	const [isEditingLicenses, setIsEditingLicenses] = useState(false);
 	const data = useFragment(ProfileViewFragment, query);
 	invariant(
 		data.viewer.__typename === "Account",
@@ -60,6 +67,7 @@ export default function ProfileView({
 
 	return (
 		<div className="w-full h-full space-y-16">
+			<ProfileBanner account={data.viewer} />
 			{isEditingProfile ? (
 				<UpdateProfileDetailsForm
 					rootQuery={data.viewer.profile}
@@ -118,6 +126,21 @@ export default function ProfileView({
 					rootQuery={data.viewer.profile}
 					onEditProfile={() => {
 						setIsEditingCertifications(true);
+					}}
+				/>
+			)}
+			{isEditingLicenses ? (
+				<UpdateLicensesForm
+					rootQuery={data.viewer.profile}
+					onSaveChanges={() => {
+						setIsEditingLicenses(false);
+					}}
+				/>
+			) : (
+				<Licenses
+					rootQuery={data.viewer.profile}
+					onEditProfile={() => {
+						setIsEditingLicenses(true);
 					}}
 				/>
 			)}

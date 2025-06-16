@@ -6,7 +6,7 @@ export default function LandingLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<div className="w-full h-full flex flex-col">
+		<div className="w-full h-full flex flex-col bg-primary-400">
 			<HeaderClientComponent variant="hero" />
 			<div className="w-full mx-auto bg-background-600 h-full">{children}</div>
 		</div>

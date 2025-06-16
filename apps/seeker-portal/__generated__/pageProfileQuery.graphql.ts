@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c03c9a18228affe082d3747f8fd3c965>>
- * @relayHash d9b3ab67277ec2872733fc3e263d450f
+ * @generated SignedSource<<5c243f5549dd8befcaf5a7f9ddf315be>>
+ * @relayHash b548be97d7b1acbe9cf67d409970b329
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d9b3ab67277ec2872733fc3e263d450f
+// @relayRequestID b548be97d7b1acbe9cf67d409970b329
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -34,28 +34,42 @@ v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "name",
+  "name": "id",
   "storageKey": null
 },
 v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "startedAt",
+  "name": "name",
   "storageKey": null
 },
 v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "completedAt",
+  "name": "startedAt",
   "storageKey": null
 },
 v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "completedAt",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "issuer",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "expiresAt",
   "storageKey": null
 };
 return {
@@ -95,11 +109,33 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
+                  (v1/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -137,7 +173,7 @@ return {
                     "name": "languages",
                     "plural": true,
                     "selections": [
-                      (v1/*: any*/),
+                      (v2/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -191,8 +227,8 @@ return {
                         "name": "institution",
                         "storageKey": null
                       },
-                      (v2/*: any*/),
-                      (v3/*: any*/)
+                      (v3/*: any*/),
+                      (v4/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -218,8 +254,8 @@ return {
                         "name": "organization",
                         "storageKey": null
                       },
-                      (v2/*: any*/),
                       (v3/*: any*/),
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -245,14 +281,8 @@ return {
                     "name": "certifications",
                     "plural": true,
                     "selections": [
-                      (v1/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "issuer",
-                        "storageKey": null
-                      },
+                      (v2/*: any*/),
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -267,17 +297,52 @@ return {
                         "name": "createdAt",
                         "storageKey": null
                       },
+                      (v6/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "License",
+                    "kind": "LinkedField",
+                    "name": "licenses",
+                    "plural": true,
+                    "selections": [
+                      (v2/*: any*/),
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "expiresAt",
+                        "name": "licenseNumber",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "issuedAt",
+                        "storageKey": null
+                      },
+                      (v6/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "verificationStatus",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "verifiedAt",
                         "storageKey": null
                       }
                     ],
                     "storageKey": null
-                  },
-                  (v4/*: any*/)
+                  }
                 ],
                 "storageKey": null
               }
@@ -288,7 +353,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v4/*: any*/)
+              (v1/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -299,7 +364,7 @@ return {
     ]
   },
   "params": {
-    "id": "d9b3ab67277ec2872733fc3e263d450f",
+    "id": "b548be97d7b1acbe9cf67d409970b329",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",

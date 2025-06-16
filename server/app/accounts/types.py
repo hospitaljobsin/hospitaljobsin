@@ -705,10 +705,9 @@ class LicenseType:
     issuer: str
     license_number: str
     issued_at: date
-    expires_at: date
+    expires_at: date | None
     verification_status: LicenseVerificationStatusEnum
     verified_at: date | None
-    verification_notes: str | None
 
     @classmethod
     def marshal(cls, lic: License) -> Self:
@@ -720,7 +719,6 @@ class LicenseType:
             expires_at=lic.expires_at,
             verification_status=LicenseVerificationStatusEnum(lic.verification_status),
             verified_at=lic.verified_at,
-            verification_notes=lic.verification_notes,
         )
 
 
@@ -776,4 +774,30 @@ class CertificationType:
             certification_url=cert.certification_url,
             created_at=cert.created_at,
             expires_at=cert.expires_at,
+        )
+
+
+@strawberry.input(
+    name="LicenseInput",
+    description="The license details input.",
+)
+class LicenseInputType:
+    name: str = strawberry.field(description="The name of the license.")
+    issuer: str = strawberry.field(description="The issuer of the license.")
+    license_number: str = strawberry.field(description="The license number.")
+    issued_at: date = strawberry.field(description="When the license was issued.")
+    expires_at: date | None = strawberry.field(
+        description="When the license expires.", default=None
+    )
+
+    def to_document(self):
+        return License(
+            name=self.name,
+            issuer=self.issuer,
+            license_number=self.license_number,
+            issued_at=self.issued_at,
+            expires_at=self.expires_at,
+            verification_status=self.verification_status.value,
+            verified_at=self.verified_at,
+            verification_notes=self.verification_notes,
         )

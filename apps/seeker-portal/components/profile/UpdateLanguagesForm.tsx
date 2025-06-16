@@ -9,7 +9,7 @@ import {
 	SelectItem,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Plus, Trash } from "lucide-react";
+import { LanguagesIcon, Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
@@ -114,7 +114,10 @@ export default function UpdateLanguagesForm({
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader>
-					<h1 className="text-lg font-medium">Editing Languages</h1>
+					<div className="flex items-center gap-2 text-foreground-400">
+						<LanguagesIcon />
+						<h1 className="w-full text-sm font-medium">Editing Languages</h1>
+					</div>
 				</CardHeader>
 				<CardBody>
 					{/* Dynamic Array of languages */}

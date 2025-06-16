@@ -11,6 +11,7 @@ import {
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { CalendarDate, parseDate } from "@internationalized/date";
+import { UserIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
@@ -110,7 +111,12 @@ export default function UpdatePersonalDetailsForm({
 			{/* Personal Details */}
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader>
-					<h1 className="text-lg font-medium">Editing Personal Details</h1>
+					<div className="flex items-center gap-2 text-foreground-400">
+						<UserIcon />
+						<h1 className="w-full text-sm font-medium">
+							Editing Personal Details
+						</h1>
+					</div>
 				</CardHeader>
 				<CardBody>
 					<div className="mb-12">

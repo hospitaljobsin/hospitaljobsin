@@ -43,13 +43,14 @@ export default function Header({
 		<Navbar
 			maxWidth="lg"
 			isBordered={variant !== "hero"}
+			position={variant === "hero" ? "static" : "sticky"}
 			classNames={{
 				base:
 					variant === "hero"
-						? "bg-primary-400 text-primary-foreground"
-						: "bg-white",
+						? "bg-transparent text-primary-foreground"
+						: "bg-background-600",
 			}}
-			isBlurred={variant !== "hero"}
+			isBlurred={false}
 		>
 			<NavbarBrand className="flex items-center gap-4">
 				<Link

@@ -1,4 +1,4 @@
-import type { UpdateCertificationsFormFragment$key } from "@/__generated__/UpdateCertificationsFormFragment.graphql";
+import type { UpdateLicensesFormFragment$key } from "@/__generated__/UpdateLicensesFormFragment.graphql";
 import {
 	Button,
 	Card,
@@ -9,18 +9,18 @@ import {
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { CalendarDate, parseDate } from "@internationalized/date";
-import { Plus, ShieldCheckIcon, Trash } from "lucide-react";
+import { IdCardIcon, Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
 
-const UpdateCertificationsFormMutation = graphql`
-mutation UpdateCertificationsFormMutation($certifications: [CertificationInput!]!) {
-  updateProfileCertifications(certifications: $certifications) {
+const UpdateLicensesFormMutation = graphql`
+mutation UpdateLicensesFormMutation($licenses: [LicenseInput!]!) {
+  updateProfileLicenses(licenses: $licenses) {
     ...on Account {
       profile {
         ... on Profile {
-          ...UpdateCertificationsFormFragment
+          ...UpdateLicensesFormFragment
         }
       }
     }
@@ -28,26 +28,26 @@ mutation UpdateCertificationsFormMutation($certifications: [CertificationInput!]
 }
 `;
 
-const UpdateCertificationsFormFragment = graphql`
-  fragment UpdateCertificationsFormFragment on Profile {
+const UpdateLicensesFormFragment = graphql`
+  fragment UpdateLicensesFormFragment on Profile {
     __typename
-    certifications {
+    licenses {
       name
       issuer
-      certificationUrl
-      createdAt
+      licenseNumber
+      issuedAt
       expiresAt
     }
   }
 `;
 
 type Props = {
-	rootQuery: UpdateCertificationsFormFragment$key;
+	rootQuery: UpdateLicensesFormFragment$key;
 	onSaveChanges: () => void;
 };
 
 const formSchema = z.object({
-	certifications: z.array(
+	licenses: z.array(
 		z.object({
 			name: z
 				.string()
@@ -55,8 +55,10 @@ const formSchema = z.object({
 			issuer: z
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
-			certificationUrl: z.url("Must be a valid URL"),
-			createdAt: z.custom<CalendarDate>((data) => data instanceof CalendarDate),
+			licenseNumber: z
+				.string()
+				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
+			issuedAt: z.custom<CalendarDate>((data) => data instanceof CalendarDate),
 			expiresAt: z.nullable(
 				z.custom<CalendarDate>((data) => data instanceof CalendarDate),
 			),
@@ -64,14 +66,14 @@ const formSchema = z.object({
 	),
 });
 
-export default function UpdateCertificationsForm({
+export default function UpdateLicensesForm({
 	rootQuery,
 	onSaveChanges,
 }: Props) {
 	const [commitMutation, isMutationInFlight] = useMutation(
-		UpdateCertificationsFormMutation,
+		UpdateLicensesFormMutation,
 	);
-	const data = useFragment(UpdateCertificationsFormFragment, rootQuery);
+	const data = useFragment(UpdateLicensesFormFragment, rootQuery);
 	const {
 		handleSubmit,
 		control,
@@ -79,23 +81,23 @@ export default function UpdateCertificationsForm({
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues:
-			data.certifications.length > 0
+			data.licenses.length > 0
 				? {
-						certifications: data.certifications.map((cert) => ({
-							name: cert.name,
-							issuer: cert.issuer,
-							certificationUrl: cert.certificationUrl,
-							createdAt: parseDate(cert.createdAt),
-							expiresAt: cert.expiresAt ? parseDate(cert.expiresAt) : null,
+						licenses: data.licenses.map((lic) => ({
+							name: lic.name,
+							issuer: lic.issuer,
+							licenseNumber: lic.licenseNumber,
+							issuedAt: parseDate(lic.issuedAt),
+							expiresAt: lic.expiresAt ? parseDate(lic.expiresAt) : null,
 						})),
 					}
 				: {
-						certifications: [
+						licenses: [
 							{
 								name: "",
 								issuer: "",
-								certificationUrl: "",
-								createdAt: undefined,
+								licenseNumber: "",
+								issuedAt: undefined,
 								expiresAt: undefined,
 							},
 						],
@@ -104,16 +106,18 @@ export default function UpdateCertificationsForm({
 
 	const { fields, append, remove } = useFieldArray({
 		control: control,
-		name: "certifications",
+		name: "licenses",
 	});
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
 		commitMutation({
 			variables: {
-				certifications: formData.certifications.map((cert) => ({
-					...cert,
-					createdAt: cert.createdAt.toString(),
-					expiresAt: cert.expiresAt ? cert.expiresAt.toString() : null,
+				licenses: formData.licenses.map((lic) => ({
+					name: lic.name,
+					issuer: lic.issuer,
+					licenseNumber: lic.licenseNumber,
+					issuedAt: lic.issuedAt.toString(),
+					expiresAt: lic.expiresAt ? lic.expiresAt.toString() : null,
 				})),
 			},
 		});
@@ -129,19 +133,17 @@ export default function UpdateCertificationsForm({
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader>
 					<div className="flex items-center gap-2 text-foreground-400">
-						<ShieldCheckIcon />
-						<h1 className="w-full text-sm font-medium">
-							Editing Certifications
-						</h1>
+						<IdCardIcon />
+						<h1 className="w-full text-sm font-medium">Editing Licenses</h1>
 					</div>
 				</CardHeader>
 				<CardBody className="w-full flex flex-col">
-					{/* Dynamic Array of certifications */}
+					{/* Dynamic Array of licenses */}
 					<div className="w-full space-y-12 items-center">
 						{fields.length === 0 ? (
 							<div className="flex flex-col items-center gap-4">
 								<p className="text-gray-500">
-									No certification entries. Add your certifications.
+									No license entries. Add your licenses.
 								</p>
 								<Button
 									type="button"
@@ -151,13 +153,13 @@ export default function UpdateCertificationsForm({
 										append({
 											name: "",
 											issuer: "",
-											certificationUrl: "",
-											createdAt: undefined,
-											expiresAt: undefined,
+											licenseNumber: "",
+											issuedAt: undefined,
+											expiresAt: null,
 										})
 									}
 								>
-									Add Certification
+									Add License
 								</Button>
 							</div>
 						) : (
@@ -169,7 +171,7 @@ export default function UpdateCertificationsForm({
 									>
 										<div className="w-full space-y-4">
 											<Controller
-												name={`certifications.${index}.name`}
+												name={`licenses.${index}.name`}
 												control={control}
 												defaultValue=""
 												render={({ field }) => (
@@ -177,18 +179,18 @@ export default function UpdateCertificationsForm({
 														{...field}
 														fullWidth
 														label="Name"
-														placeholder="Certification name"
+														placeholder="License name"
 														errorMessage={
-															errors.certifications?.[index]?.name?.message
+															errors.licenses?.[index]?.name?.message
 														}
-														isInvalid={!!errors.certifications?.[index]?.name}
+														isInvalid={!!errors.licenses?.[index]?.name}
 													/>
 												)}
 											/>
 										</div>
 										<div className="w-full space-y-4">
 											<Controller
-												name={`certifications.${index}.issuer`}
+												name={`licenses.${index}.issuer`}
 												control={control}
 												defaultValue=""
 												render={({ field }) => (
@@ -196,90 +198,77 @@ export default function UpdateCertificationsForm({
 														{...field}
 														fullWidth
 														label="Issuer"
-														placeholder="Certification issuer"
+														placeholder="License issuer"
 														errorMessage={
-															errors.certifications?.[index]?.issuer?.message
+															errors.licenses?.[index]?.issuer?.message
 														}
-														isInvalid={!!errors.certifications?.[index]?.issuer}
+														isInvalid={!!errors.licenses?.[index]?.issuer}
 													/>
 												)}
 											/>
 										</div>
 										<div className="w-full space-y-4">
 											<Controller
-												name={`certifications.${index}.certificationUrl`}
+												name={`licenses.${index}.licenseNumber`}
 												control={control}
 												defaultValue=""
 												render={({ field }) => (
 													<Input
 														{...field}
 														fullWidth
-														label="Certification URL"
-														placeholder="https://..."
+														label="License Number"
+														placeholder="License number"
 														errorMessage={
-															errors.certifications?.[index]?.certificationUrl
-																?.message
+															errors.licenses?.[index]?.licenseNumber?.message
 														}
 														isInvalid={
-															!!errors.certifications?.[index]?.certificationUrl
+															!!errors.licenses?.[index]?.licenseNumber
 														}
 													/>
 												)}
 											/>
 										</div>
-										<div className="w-full space-y-4 flex flex-col sm:flex-row gap-6">
+										<div className="w-full space-y-4">
 											<Controller
+												name={`licenses.${index}.issuedAt`}
 												control={control}
-												name={`certifications.${index}.createdAt`}
-												render={({ field }) => {
-													return (
-														<DatePicker
-															label="Issued At"
-															showMonthAndYearPickers
-															selectorButtonPlacement="start"
-															errorMessage={
-																errors.certifications?.[index]?.createdAt
-																	?.message
-															}
-															isInvalid={
-																!!errors.certifications?.[index]?.createdAt
-															}
-															value={field.value ?? undefined}
-															onChange={field.onChange}
-														/>
-													);
-												}}
+												defaultValue={undefined}
+												render={({ field }) => (
+													<DatePicker
+														{...field}
+														label="Issued At"
+														errorMessage={
+															errors.licenses?.[index]?.issuedAt?.message
+														}
+														isInvalid={!!errors.licenses?.[index]?.issuedAt}
+													/>
+												)}
 											/>
+										</div>
+										<div className="w-full space-y-4">
 											<Controller
+												name={`licenses.${index}.expiresAt`}
 												control={control}
-												name={`certifications.${index}.expiresAt`}
-												render={({ field }) => {
-													return (
-														<DatePicker
-															label="Expires At"
-															showMonthAndYearPickers
-															selectorButtonPlacement="start"
-															errorMessage={
-																errors.certifications?.[index]?.expiresAt
-																	?.message
-															}
-															isInvalid={
-																!!errors.certifications?.[index]?.expiresAt
-															}
-															value={field.value ?? undefined}
-															onChange={field.onChange}
-														/>
-													);
-												}}
+												defaultValue={undefined}
+												render={({ field }) => (
+													<DatePicker
+														{...field}
+														label="Expires At"
+														errorMessage={
+															errors.licenses?.[index]?.expiresAt?.message
+														}
+														isInvalid={!!errors.licenses?.[index]?.expiresAt}
+													/>
+												)}
 											/>
 										</div>
 										<Button
 											type="button"
 											variant="bordered"
-											onPress={() => remove(index)}
 											startContent={<Trash size={18} />}
+											onPress={() => remove(index)}
 										>
-											Delete Certification
+											Delete License
 										</Button>
 									</div>
 								))}
@@ -291,30 +280,24 @@ export default function UpdateCertificationsForm({
 										append({
 											name: "",
 											issuer: "",
-											certificationUrl: "",
-											createdAt: undefined,
+											licenseNumber: "",
+											issuedAt: undefined,
 											expiresAt: undefined,
 										})
 									}
 								>
-									Add Certification
+									Add License
 								</Button>
 							</>
 						)}
 					</div>
 				</CardBody>
 			</Card>
-
-			<div className="mt-4 flex justify-end gap-6">
-				<Button
-					type="button"
-					variant="light"
-					onPress={handleCancel}
-					isLoading={isMutationInFlight || isSubmitting}
-				>
+			<div className="flex gap-4 justify-end">
+				<Button type="button" variant="light" onPress={handleCancel}>
 					Cancel
 				</Button>
-				<Button type="submit" isLoading={isMutationInFlight || isSubmitting}>
+				<Button type="submit" isLoading={isSubmitting || isMutationInFlight}>
 					Save Changes
 				</Button>
 			</div>

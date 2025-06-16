@@ -1329,10 +1329,39 @@ type License {
 	issuer: String!
 	licenseNumber: String!
 	issuedAt: Date!
-	expiresAt: Date!
+	expiresAt: Date
 	verificationStatus: LicenseVerificationStatus!
 	verifiedAt: Date
-	verificationNotes: String
+}
+
+"""
+The license details input.
+"""
+input LicenseInput {
+	"""
+	The name of the license.
+	"""
+	name: String!
+
+	"""
+	The issuer of the license.
+	"""
+	issuer: String!
+
+	"""
+	The license number.
+	"""
+	licenseNumber: String!
+
+	"""
+	When the license was issued.
+	"""
+	issuedAt: Date!
+
+	"""
+	When the license expires.
+	"""
+	expiresAt: Date = null
 }
 
 """
@@ -2176,6 +2205,16 @@ type Mutation {
 		The certifications of the user profile.
 		"""
 		certifications: [CertificationInput!]!
+	): UpdateProfilePayload! @isAuthenticated
+
+	"""
+	Update the current user's profile licenses.
+	"""
+	updateProfileLicenses(
+		"""
+		The licenses of the user profile.
+		"""
+		licenses: [LicenseInput!]!
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
