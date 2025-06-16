@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6917bb5f7fe63d3fec829b9e4f825c0e>>
- * @relayHash a86c699100e127d13a6f935b6d673d9f
+ * @generated SignedSource<<c03c9a18228affe082d3747f8fd3c965>>
+ * @relayHash d9b3ab67277ec2872733fc3e263d450f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a86c699100e127d13a6f935b6d673d9f
+// @relayRequestID d9b3ab67277ec2872733fc3e263d450f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -34,17 +34,24 @@ v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "startedAt",
+  "name": "name",
   "storageKey": null
 },
 v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "completedAt",
+  "name": "startedAt",
   "storageKey": null
 },
 v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "completedAt",
+  "storageKey": null
+},
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -130,13 +137,7 @@ return {
                     "name": "languages",
                     "plural": true,
                     "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "name",
-                        "storageKey": null
-                      },
+                      (v1/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -190,8 +191,8 @@ return {
                         "name": "institution",
                         "storageKey": null
                       },
-                      (v1/*: any*/),
-                      (v2/*: any*/)
+                      (v2/*: any*/),
+                      (v3/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -217,8 +218,8 @@ return {
                         "name": "organization",
                         "storageKey": null
                       },
-                      (v1/*: any*/),
                       (v2/*: any*/),
+                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -236,7 +237,47 @@ return {
                     ],
                     "storageKey": null
                   },
-                  (v3/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Certification",
+                    "kind": "LinkedField",
+                    "name": "certifications",
+                    "plural": true,
+                    "selections": [
+                      (v1/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "issuer",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "certificationUrl",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "createdAt",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "expiresAt",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -247,7 +288,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/)
+              (v4/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -258,7 +299,7 @@ return {
     ]
   },
   "params": {
-    "id": "a86c699100e127d13a6f935b6d673d9f",
+    "id": "d9b3ab67277ec2872733fc3e263d450f",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",

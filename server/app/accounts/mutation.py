@@ -13,6 +13,7 @@ from app.context import AuthInfo
 
 from .types import (
     AccountType,
+    CertificationInputType,
     EducationInputType,
     GenderTypeEnum,
     LanguageInputType,
@@ -250,6 +251,39 @@ class AccountMutation:
         match await profile_service.update_experience(
             account=info.context["current_user"],
             work_experience=[exp.to_document() for exp in work_experience],
+        ):
+            case Ok(account):
+                return AccountType.marshal_with_profile(account)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Update the current user's profile certifications.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_profile_certifications(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+        certifications: Annotated[
+            list[CertificationInputType],
+            strawberry.argument(
+                description="The certifications of the user profile.",
+            ),
+        ],
+    ) -> UpdateProfilePayload:
+        """Update the current user's profile certifications."""
+        match await profile_service.update_certifications(
+            account=info.context["current_user"],
+            certifications=[cert.to_document() for cert in certifications],
         ):
             case Ok(account):
                 return AccountType.marshal_with_profile(account)

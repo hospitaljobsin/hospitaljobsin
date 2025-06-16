@@ -257,6 +257,36 @@ type Certification {
 }
 
 """
+The certification details input.
+"""
+input CertificationInput {
+	"""
+	The name of the certification.
+	"""
+	name: String!
+
+	"""
+	The issuer of the certification.
+	"""
+	issuer: String!
+
+	"""
+	The URL of the certification.
+	"""
+	certificationUrl: String!
+
+	"""
+	When the certification was obtained.
+	"""
+	createdAt: Date!
+
+	"""
+	When the certification expires.
+	"""
+	expiresAt: Date = null
+}
+
+"""
 Geographic coordinates.
 """
 type Coordinates {
@@ -2136,6 +2166,16 @@ type Mutation {
 		The work experience history of the user profile.
 		"""
 		workExperience: [WorkExperienceInput!]!
+	): UpdateProfilePayload! @isAuthenticated
+
+	"""
+	Update the current user's profile certifications.
+	"""
+	updateProfileCertifications(
+		"""
+		The certifications of the user profile.
+		"""
+		certifications: [CertificationInput!]!
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""

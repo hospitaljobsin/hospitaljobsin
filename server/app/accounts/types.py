@@ -115,6 +115,33 @@ class LanguageInputType:
 
 
 @strawberry.input(
+    name="CertificationInput",
+    description="The certification details input.",
+)
+class CertificationInputType:
+    name: str = strawberry.field(description="The name of the certification.")
+    issuer: str = strawberry.field(description="The issuer of the certification.")
+    certification_url: str = strawberry.field(
+        description="The URL of the certification."
+    )
+    created_at: date = strawberry.field(
+        description="When the certification was obtained."
+    )
+    expires_at: date | None = strawberry.field(
+        description="When the certification expires.", default=None
+    )
+
+    def to_document(self):
+        return Certification(
+            name=self.name,
+            issuer=self.issuer,
+            certification_url=self.certification_url,
+            created_at=self.created_at,
+            expires_at=self.expires_at,
+        )
+
+
+@strawberry.input(
     name="EducationInput",
     description="The education details input.",
 )
