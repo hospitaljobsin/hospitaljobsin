@@ -360,19 +360,15 @@ export default function UpdateWorkExperienceForm({
 						)}
 					</div>
 				</CardBody>
-				<div className="flex gap-4 justify-end">
-					<Button type="button" variant="light" onPress={handleCancel}>
-						Cancel
-					</Button>
-					<Button
-						type="submit"
-						color="primary"
-						isLoading={isSubmitting || isMutationInFlight}
-					>
-						Save Changes
-					</Button>
-				</div>
 			</Card>
+			<div className="flex gap-4 justify-end">
+				<Button type="button" variant="light" onPress={handleCancel}>
+					Cancel
+				</Button>
+				<Button type="submit" isLoading={isSubmitting || isMutationInFlight}>
+					Save Changes
+				</Button>
+			</div>
 		</form>
 	);
 }
