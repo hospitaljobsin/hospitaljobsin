@@ -1,6 +1,14 @@
 import type { UpdateCertificationsFormFragment$key } from "@/__generated__/UpdateCertificationsFormFragment.graphql";
-import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
+import {
+	Button,
+	Card,
+	CardBody,
+	CardHeader,
+	DatePicker,
+	Input,
+} from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { CalendarDate, parseDate } from "@internationalized/date";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -48,8 +56,10 @@ const formSchema = z.object({
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
 			certificationUrl: z.url("Must be a valid URL"),
-			createdAt: z.string().check(z.minLength(1, "Required")),
-			expiresAt: z.nullable(z.string()),
+			createdAt: z.custom<CalendarDate>((data) => data instanceof CalendarDate),
+			expiresAt: z.nullable(
+				z.custom<CalendarDate>((data) => data instanceof CalendarDate),
+			),
 		}),
 	),
 });
@@ -75,8 +85,8 @@ export default function UpdateCertificationsForm({
 							name: cert.name,
 							issuer: cert.issuer,
 							certificationUrl: cert.certificationUrl,
-							createdAt: cert.createdAt,
-							expiresAt: cert.expiresAt || "",
+							createdAt: parseDate(cert.createdAt),
+							expiresAt: cert.expiresAt ? parseDate(cert.expiresAt) : null,
 						})),
 					}
 				: {
@@ -85,8 +95,8 @@ export default function UpdateCertificationsForm({
 								name: "",
 								issuer: "",
 								certificationUrl: "",
-								createdAt: "",
-								expiresAt: "",
+								createdAt: undefined,
+								expiresAt: undefined,
 							},
 						],
 					},
@@ -102,7 +112,8 @@ export default function UpdateCertificationsForm({
 			variables: {
 				certifications: formData.certifications.map((cert) => ({
 					...cert,
-					expiresAt: cert.expiresAt || null,
+					createdAt: cert.createdAt.toString(),
+					expiresAt: cert.expiresAt ? cert.expiresAt.toString() : null,
 				})),
 			},
 		});
@@ -119,7 +130,7 @@ export default function UpdateCertificationsForm({
 				<CardHeader>
 					<h1 className="text-lg font-medium">Editing Certifications</h1>
 				</CardHeader>
-				<CardBody>
+				<CardBody className="w-full flex flex-col">
 					{/* Dynamic Array of certifications */}
 					<div className="w-full space-y-12 items-center">
 						{fields.length === 0 ? (
@@ -136,8 +147,8 @@ export default function UpdateCertificationsForm({
 											name: "",
 											issuer: "",
 											certificationUrl: "",
-											createdAt: "",
-											expiresAt: "",
+											createdAt: undefined,
+											expiresAt: undefined,
 										})
 									}
 								>
@@ -149,7 +160,7 @@ export default function UpdateCertificationsForm({
 								{fields.map((item, index) => (
 									<div
 										key={`field-${item.name}-${index}`}
-										className="flex gap-8 items-start w-full"
+										className="flex gap-8 items-end w-full flex-col"
 									>
 										<div className="w-full space-y-4">
 											<Controller
@@ -211,55 +222,59 @@ export default function UpdateCertificationsForm({
 												)}
 											/>
 										</div>
-										<div className="w-full space-y-4">
+										<div className="w-full space-y-4 flex flex-col sm:flex-row gap-6">
 											<Controller
+												control={control}
 												name={`certifications.${index}.createdAt`}
-												control={control}
-												defaultValue=""
-												render={({ field }) => (
-													<Input
-														{...field}
-														fullWidth
-														label="Issued At"
-														placeholder="YYYY-MM-DD"
-														errorMessage={
-															errors.certifications?.[index]?.createdAt?.message
-														}
-														isInvalid={
-															!!errors.certifications?.[index]?.createdAt
-														}
-													/>
-												)}
+												render={({ field }) => {
+													return (
+														<DatePicker
+															label="Issued At"
+															showMonthAndYearPickers
+															selectorButtonPlacement="start"
+															errorMessage={
+																errors.certifications?.[index]?.createdAt
+																	?.message
+															}
+															isInvalid={
+																!!errors.certifications?.[index]?.createdAt
+															}
+															value={field.value ?? undefined}
+															onChange={field.onChange}
+														/>
+													);
+												}}
 											/>
-										</div>
-										<div className="w-full space-y-4">
 											<Controller
-												name={`certifications.${index}.expiresAt`}
 												control={control}
-												defaultValue=""
-												render={({ field }) => (
-													<Input
-														{...field}
-														fullWidth
-														label="Expires At (optional)"
-														placeholder="YYYY-MM-DD"
-														errorMessage={
-															errors.certifications?.[index]?.expiresAt?.message
-														}
-														isInvalid={
-															!!errors.certifications?.[index]?.expiresAt
-														}
-													/>
-												)}
+												name={`certifications.${index}.expiresAt`}
+												render={({ field }) => {
+													return (
+														<DatePicker
+															label="Expires At"
+															showMonthAndYearPickers
+															selectorButtonPlacement="start"
+															errorMessage={
+																errors.certifications?.[index]?.expiresAt
+																	?.message
+															}
+															isInvalid={
+																!!errors.certifications?.[index]?.expiresAt
+															}
+															value={field.value ?? undefined}
+															onChange={field.onChange}
+														/>
+													);
+												}}
 											/>
 										</div>
 										<Button
 											type="button"
-											isIconOnly
 											variant="bordered"
 											onPress={() => remove(index)}
+											startContent={<Trash size={18} />}
 										>
-											<Trash size={18} />
+											Delete Certification
 										</Button>
 									</div>
 								))}
@@ -272,8 +287,8 @@ export default function UpdateCertificationsForm({
 											name: "",
 											issuer: "",
 											certificationUrl: "",
-											createdAt: "",
-											expiresAt: "",
+											createdAt: undefined,
+											expiresAt: undefined,
 										})
 									}
 								>
