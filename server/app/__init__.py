@@ -18,12 +18,16 @@ from app.config import (
 )
 from app.container import create_container
 from app.crews.create_job.crew import CreateJobCrew
+from app.crews.filter_job.crew import FilterJobCrew
 from app.database import initialize_database
 from app.graphql_app import create_graphql_router
 from app.health.routes import health_router
 from app.jobs.routes import jobs_router
 from app.middleware import SessionMiddleware
 from app.testing.routes import test_setup_router
+from app.routes import auth, jobs, organizations, profiles, filter_job
+from app.middleware import auth_middleware
+from app.ai.background import job_task_store
 
 
 def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
@@ -39,6 +43,11 @@ def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
     app.include_router(auth_router)
     app.include_router(jobs_router)
     app.include_router(ai_router)
+    app.include_router(auth.router)
+    app.include_router(jobs.router)
+    app.include_router(organizations.router)
+    app.include_router(profiles.router)
+    app.include_router(filter_job.router)
 
 
 def add_middleware(
@@ -74,6 +83,7 @@ def add_middleware(
         AioInjectMiddleware,
         container=create_container(),
     )
+    app.middleware("http")(auth_middleware)
 
 
 @asynccontextmanager
@@ -89,6 +99,8 @@ async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None]:
         default_database_name=database_settings.default_database_name,
     ) as _:
         yield
+    # Shutdown
+    job_task_store.clear()
 
 
 def create_app() -> FastAPI:

@@ -1,0 +1,67 @@
+parse_query_task:
+  description: >
+    Parse the provided natural language query: `{query}` into structured filter criteria.
+    Extract and organize the following information:
+    1. Personal details (gender, age, marital status, etc.)
+    2. Location preferences and relocation status
+    3. Education and qualifications
+    4. Work experience requirements
+    5. Language proficiency
+    6. Salary expectations
+    7. Certifications and licenses
+    8. Job preferences and skills
+
+    Output a valid Python dictionary matching the FilterCriteria Pydantic model.
+  expected_output: >
+    Dictionary with structured filter criteria matching the FilterCriteria model.
+  agent: query_parser
+
+apply_filters_task:
+  description: >
+    Convert the parsed filter criteria into MongoDB queries and apply them to profiles:
+    1. Construct efficient MongoDB queries for each filter criterion
+    2. Handle nested fields (education, licenses, languages, etc.)
+    3. Apply array operations where needed
+    4. Combine filters with appropriate logical operators
+    5. Execute the query and return matching profiles
+
+    Use the Profile document schema to ensure correct field paths and types.
+  expected_output: >
+    List of profiles matching the filter criteria.
+  agent: filter_applier
+  context:
+    - parse_query_task
+
+semantic_matching_task:
+  description: >
+    Perform deep semantic analysis on the filtered profiles:
+    1. Analyze education and qualifications for contextual relevance
+    2. Evaluate work experience for skill matches and role progression
+    3. Assess language proficiency and cultural fit
+    4. Consider certification relevance and recency
+    5. Identify implicit requirements from the original query
+    6. Apply semantic similarity scoring where appropriate
+
+    Focus on understanding the intent behind requirements and finding nuanced matches.
+  expected_output: >
+    Enhanced list of profiles with semantic match scores and reasoning.
+  agent: semantic_matcher
+  context:
+    - apply_filters_task
+
+rank_profiles_task:
+  description: >
+    Score and rank the semantically matched profiles:
+    1. Calculate overall relevance score based on all criteria
+    2. Weight different factors appropriately (experience, skills, location, etc.)
+    3. Consider both explicit and implicit requirements
+    4. Account for profile completeness and quality
+    5. Generate clear match reasons for each profile
+    6. Return top 10 most relevant profiles
+
+    Ensure the ranking reflects the true value of each match.
+  expected_output: >
+    List of ProfileMatch objects containing the top 10 profiles with scores and match reasons.
+  agent: profile_ranker
+  context:
+    - semantic_matching_task
