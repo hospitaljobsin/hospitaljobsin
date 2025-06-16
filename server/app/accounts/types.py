@@ -29,7 +29,6 @@ from app.base.types import (
 )
 from app.context import AuthInfo, Info
 from app.organizations.repositories import OrganizationRepo
-from app.crews.filter_job.service import FilterJobService
 
 if TYPE_CHECKING:
     from app.auth.types import (
@@ -298,36 +297,6 @@ class ProfileType(BaseNodeType[Profile]):
             cls.marshal(account) if account is not None else account
             for account in accounts
         ]
-
-    @strawberry.field(  # type: ignore[misc]
-        description="Filter profiles based on natural language query.",
-    )
-    @inject
-    async def filter_profiles(
-        self,
-        info: Info,
-        filter_job_service: Annotated[
-            FilterJobService,
-            Inject,
-        ],
-        query: Annotated[
-            str,
-            strawberry.argument(
-                description="Natural language query for filtering profiles.",
-            ),
-        ],
-        max_results: Annotated[
-            int | None,
-            strawberry.argument(
-                description="Maximum number of results to return.",
-            ),
-        ] = 10,
-    ) -> FilterJobResultData:
-        """Filter profiles based on natural language query."""
-        return await filter_job_service.filter_profiles(
-            query=query,
-            max_results=max_results,
-        )
 
 
 @strawberry.enum(

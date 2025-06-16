@@ -1,26 +1,12 @@
-from datetime import date, datetime
-from typing import Any, Dict, List, Optional
-
-from beanie import Document
-from crewai import Agent, Crew, Process, Task
-from crewai.agents.agent_builder.base_agent import BaseAgent
-from pydantic import BaseModel, Field
-
-from app.accounts.documents import (
-    Certification,
-    Education,
-    Language,
-    License,
-    Profile,
-    SalaryExpectations,
-    WorkExperience,
-)
-from app.config import LLMSettings, SecretSettings, get_settings
-from app.accounts.repositories import ProfileRepo
-from .tools.query_parser_tool import QueryParserTool
-from .tools.profile_analyzer_tool import ProfileAnalyzerTool
-from app.ai.models import ProfileMatch, FilterJobResultData
 import time
+
+from app.accounts.repositories import ProfileRepo
+from app.ai.models import FilterJobResultData, ProfileMatch
+from crewai import Agent, Task
+from pydantic import BaseModel
+
+from .tools.profile_analyzer_tool import ProfileAnalyzerTool
+from .tools.query_parser_tool import QueryParserTool
 
 
 class FilterCriteria(BaseModel):
@@ -31,32 +17,24 @@ class FilterCriteria(BaseModel):
     category: str | None = None
     min_age: int | None = None
     max_age: int | None = None
-    locations: List[str] | None = None
+    locations: list[str] | None = None
     open_to_relocation: bool | None = None
     min_experience_years: int | None = None
-    languages: List[str] | None = None
+    languages: list[str] | None = None
     min_salary: int | None = None
     max_salary: int | None = None
-    job_preferences: List[str] | None = None
-
-
-class ProfileMatch(BaseModel):
-    """Represents a matched profile with score and reasons."""
-
-    profile_id: str
-    score: float
-    match_reasons: List[str]
+    job_preferences: list[str] | None = None
 
 
 class FilterJobCrew:
     """Crew for filtering and matching job profiles based on natural language queries."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.query_parser = QueryParserTool()
         self.profile_analyzer = ProfileAnalyzerTool()
         self.profile_repo = ProfileRepo()
 
-    def create_agents(self) -> List[Agent]:
+    def create_agents(self) -> list[Agent]:
         """Create the agents for the filter job crew."""
         query_parser_agent = Agent(
             role="Query Parser",
@@ -76,7 +54,7 @@ class FilterJobCrew:
 
         return [query_parser_agent, profile_analyzer_agent]
 
-    def create_tasks(self, query: str, max_results: int = 10) -> List[Task]:
+    def create_tasks(self, query: str, max_results: int = 10) -> list[Task]:
         """Create the tasks for the filter job crew."""
         parse_query_task = Task(
             description=f"Parse the following query into structured requirements: {query}",

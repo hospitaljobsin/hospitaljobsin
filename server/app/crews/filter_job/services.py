@@ -2,7 +2,7 @@ from app.ai.models import FilterJobResultData
 from app.crews.filter_job.crew import FilterJobCrew
 
 
-class FilterJobService:
+class AgenticProfileFilterService:
     """Service for filtering job profiles using AI crew."""
 
     def __init__(self) -> None:

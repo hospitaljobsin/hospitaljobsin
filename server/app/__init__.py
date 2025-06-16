@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from structlog import get_logger
 
+from app.ai.background import job_task_store
 from app.ai.routes import ai_router
 from app.auth.routes import auth_router
 from app.config import (
@@ -23,11 +24,9 @@ from app.database import initialize_database
 from app.graphql_app import create_graphql_router
 from app.health.routes import health_router
 from app.jobs.routes import jobs_router
-from app.middleware import SessionMiddleware
+from app.middleware import SessionMiddleware, auth_middleware
+from app.routes import auth, filter_job, jobs, organizations, profiles
 from app.testing.routes import test_setup_router
-from app.routes import auth, jobs, organizations, profiles, filter_job
-from app.middleware import auth_middleware
-from app.ai.background import job_task_store
 
 
 def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
@@ -99,8 +98,6 @@ async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None]:
         default_database_name=database_settings.default_database_name,
     ) as _:
         yield
-    # Shutdown
-    job_task_store.clear()
 
 
 def create_app() -> FastAPI:

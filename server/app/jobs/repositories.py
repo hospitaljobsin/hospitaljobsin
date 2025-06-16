@@ -12,6 +12,7 @@ from bson import ObjectId
 from app.accounts.documents import Account
 from app.base.models import GeoObject
 from app.core.constants import JobApplicantStatus, JobMetricEventType
+from app.crews.filter_job.services import AgenticProfileFilterService
 from app.database.paginator import PaginatedResult, Paginator
 from app.geocoding.models import Coordinates
 from app.organizations.documents import Organization
@@ -344,6 +345,11 @@ class SavedJobRepo:
 
 
 class JobApplicantRepo:
+    def __init__(
+        self, agentic_profile_filter_service: AgenticProfileFilterService
+    ) -> None:
+        self._agentic_profile_filter_service = agentic_profile_filter_service
+
     async def update_all(self, account: Account, full_name: str) -> None:
         """Update all job applicants for the given account."""
         await JobApplicant.find(JobApplicant.account.id == account.id).update(
@@ -443,27 +449,61 @@ class JobApplicantRepo:
         after: str | None = None,
     ) -> PaginatedResult[JobApplicant, ObjectId]:
         """Get a paginated result of job applicants for the given job."""
-        paginator: Paginator[JobApplicant, ObjectId] = Paginator(
-            reverse=True,
-            document_cls=JobApplicant,
-            paginate_by="job.id",
-        )
-
-        search_criteria = JobApplicant.find(
-            JobApplicant.job.id == job_id,
-            fetch_links=True,
-            nesting_depth=1,
-        ).sort(-JobApplicant.id)
-
         if search_term:
+            filtered_result = (
+                await self._agentic_profile_filter_service.filter_profiles(
+                    query=search_term,
+                    max_results=10,
+                )
+            )
+
+            profile_ids = [
+                ObjectId(profile.profile_id) for profile in filtered_result.matches
+            ]
+
+            pipeline = [
+                {"$match": {"job.$id": job_id}},  # assuming DBRef
+                {
+                    "$lookup": {
+                        "from": "accounts",  # account collection name
+                        "localField": "account.$id",
+                        "foreignField": "_id",
+                        "as": "account_doc",
+                    }
+                },
+                {"$unwind": "$account_doc"},
+                {
+                    "$lookup": {
+                        "from": "profiles",
+                        "localField": "account_doc.profile.$id",
+                        "foreignField": "_id",
+                        "as": "profile_doc",
+                    }
+                },
+                {"$unwind": "$profile_doc"},
+                {"$match": {"profile_doc._id": {"$in": profile_ids}}},
+            ]
+
+            search_criteria = JobApplicant.aggregate(
+                aggregation_pipeline=pipeline,
+                projection_model=JobApplicant,
+            )
+            paginator: Paginator[JobApplicant, ObjectId] = Paginator(
+                reverse=True,
+                document_cls=JobApplicant,
+                paginate_by="job.ref.id",
+            )
+        else:
             search_criteria = JobApplicant.find(
-                And(
-                    JobApplicant.job.id == job_id,
-                    {"$text": {"$search": search_term}},
-                ),
+                JobApplicant.job.id == job_id,
                 fetch_links=True,
                 nesting_depth=1,
             ).sort(-JobApplicant.id)
+            paginator: Paginator[JobApplicant, ObjectId] = Paginator(
+                reverse=True,
+                document_cls=JobApplicant,
+                paginate_by="job.id",
+            )
 
         if status:
             search_criteria = search_criteria.find(

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Annotated, Any, Self
 import strawberry
 from aioinject import Inject, Injected
 from aioinject.ext.strawberry import inject
+from beanie import Link
 from bson import ObjectId
 from strawberry import Private, relay
 from strawberry.permission import PermissionExtension
@@ -243,27 +244,16 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
         return JobType.marshal(self._job)
 
     @classmethod
-    def marshal_with_links(cls, job_applicant: JobApplicant) -> Self:
-        """Marshal into a node instance."""
-        return cls(
-            id=str(job_applicant.id),
-            _account=job_applicant.account,
-            _job=job_applicant.job,
-            slug=job_applicant.slug,
-            status=JobApplicantStatusEnum[job_applicant.status.upper()],
-            applicant_fields=[
-                ApplicantFieldType.marshal(field)
-                for field in job_applicant.applicant_fields
-            ],
-        )
-
-    @classmethod
     def marshal(cls, job_applicant: JobApplicant) -> Self:
         """Marshal into a node instance."""
         return cls(
             id=str(job_applicant.id),
-            _account=job_applicant.account.ref.id,
-            _job=job_applicant.job.ref.id,
+            _account=job_applicant.account.ref.id
+            if isinstance(job_applicant.account, Link)
+            else job_applicant.account,
+            _job=job_applicant.job.ref.id
+            if isinstance(job_applicant.job, Link)
+            else job_applicant.job,
             slug=job_applicant.slug,
             status=JobApplicantStatusEnum[job_applicant.status.upper()],
             applicant_fields=[
@@ -295,7 +285,7 @@ class JobApplicantEdgeType(BaseEdgeType[JobApplicantType, JobApplicant]):
     def marshal(cls, job_applicant: JobApplicant) -> Self:
         """Marshal into a edge instance."""
         return cls(
-            node=JobApplicantType.marshal_with_links(job_applicant),
+            node=JobApplicantType.marshal(job_applicant),
             cursor=relay.to_base64(JobApplicantType, job_applicant.id),
         )
 
@@ -522,7 +512,7 @@ class JobType(BaseNodeType[Job]):
         ] = None,
     ) -> JobApplicantConnectionType:
         """Return a paginated connection of invites for the organization."""
-        paginated_invites = await job_applicant_repo.get_all_by_job_id(
+        paginated_applicants = await job_applicant_repo.get_all_by_job_id(
             job_id=ObjectId(self.id),
             search_term=search_term,
             status=status.value.lower() if status else None,
@@ -532,7 +522,7 @@ class JobType(BaseNodeType[Job]):
             last=last,
         )
 
-        return JobApplicantConnectionType.marshal(paginated_invites)
+        return JobApplicantConnectionType.marshal(paginated_applicants)
 
     @strawberry.field(  # type: ignore[misc]
         description="Viewer count for the job, filtered by time.",
