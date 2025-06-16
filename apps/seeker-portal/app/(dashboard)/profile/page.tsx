@@ -1,8 +1,8 @@
 "use client";
+import type { pageProfileQuery } from "@/__generated__/pageProfileQuery.graphql";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
-import type { pageProfileQuery } from "@/__generated__/pageProfileQuery.graphql";
 import ProfileClientComponent from "./ProfileClientComponent";
 
 export const ProfilePageQuery = graphql`

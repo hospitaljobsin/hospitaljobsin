@@ -1,4 +1,5 @@
 import type { EducationFragment$key } from "@/__generated__/EducationFragment.graphql";
+import { monthYearFormat } from "@/lib/intl";
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { BookIcon, EditIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
@@ -51,31 +52,26 @@ export default function Education({ rootQuery, onEditProfile }: Props) {
 									className="flex gap-4 flex-col items-center w-full"
 									key={`${edu.degree}-${edu.institution}-${edu.startedAt}-${edu.completedAt}-${idx}`}
 								>
-									<h3 className="w-full text-foreground-500 text-lg font-medium">
-										{edu.degree}
+									<h3 className="w-full text-lg font-medium">
+										{edu.institution}
 									</h3>
+									<h3 className="w-full text-md">{edu.degree}</h3>
 									<div className="w-full flex gap-2 text-foreground-500">
-										<p>Institution:</p>
-										<p className="italic">{edu.institution}</p>
-									</div>
-									<div className="w-full flex gap-2 text-foreground-500">
-										<p>Duration:</p>
-										<p className="italic">
+										<p className="text-sm">
 											{edu.startedAt
-												? new Date(edu.startedAt).toLocaleString("default", {
-														month: "short",
-														year: "numeric",
-													})
+												? monthYearFormat.format(new Date(edu.startedAt))
 												: "N/A"}
 											{" - "}
 											{edu.completedAt
-												? new Date(edu.completedAt).toLocaleString("default", {
-														month: "short",
-														year: "numeric",
-													})
+												? monthYearFormat.format(new Date(edu.completedAt))
 												: "Present"}
 										</p>
 									</div>
+									{idx < data.education.length - 1 && (
+										<div className="w-full">
+											<hr className="border-foreground-200" />
+										</div>
+									)}
 								</div>
 							))}
 						</div>

@@ -35,9 +35,12 @@ export default function ProfileBanner({ account }: Props) {
 				</div>
 			</div>
 			<CardBody className="pt-14 pb-6 px-6">
-				<div className="flex items-start justify-between w-full">
+				<div className="flex flex-col sm:flex-row gap-6 items-start justify-between w-full">
 					<div className="flex flex-col gap-2">
-						<h1 className="text-2xl font-medium">{data.fullName}'s</h1>
+						<h1 className="text-2xl font-medium">
+							{data.fullName}
+							<span className="text-lg text-foreground-500 ml-1">'s</span>
+						</h1>
 						<div className="flex flex-col gap-4">
 							<p className="text-sm">
 								Reusable job profile, used across all applications.

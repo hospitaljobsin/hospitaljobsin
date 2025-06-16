@@ -1,5 +1,6 @@
 import type { CertificationsFragment$key } from "@/__generated__/CertificationsFragment.graphql";
-import { Button, Card, CardBody, CardHeader } from "@heroui/react";
+import { monthYearFormat } from "@/lib/intl";
+import { Button, Card, CardBody, CardHeader, Link } from "@heroui/react";
 import { EditIcon, ShieldCheckIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
@@ -47,37 +48,43 @@ export default function Certifications({ rootQuery, onEditProfile }: Props) {
 						</h2>
 					) : (
 						<div className="flex flex-col gap-8 w-full">
-							{data.certifications.map((cert) => (
+							{data.certifications.map((cert, idx) => (
 								<div
-									className="flex gap-4 flex-col items-center w-full"
+									className="flex flex-col gap-12 w-full"
 									key={`${cert.name}-${cert.issuer}-${cert.certificationUrl}`}
 								>
-									<h3 className="w-full text-foreground-500 text-lg font-medium">
-										{cert.name}
-									</h3>
-									<div className="w-full flex gap-2 text-foreground-500">
-										<p>Issuer:</p>
-										<p className="italic">{cert.issuer}</p>
-									</div>
-									<div className="w-full flex gap-2 text-foreground-500">
-										<p>URL:</p>
-										<a
+									<div className="flex gap-4 flex-col items-start w-full">
+										<h3 className="w-full text-lg font-medium">{cert.name}</h3>
+										<p className="text-medium text-foreground-500">
+											{cert.issuer}
+										</p>
+										<Link
 											href={cert.certificationUrl}
-											target="_blank"
-											rel="noopener noreferrer"
-											className="text-blue-600 underline"
+											isExternal
+											showAnchorIcon
 										>
-											{cert.certificationUrl}
-										</a>
+											Show Certificate
+										</Link>
+										<div className="w-full flex items-center gap-6">
+											<div className="flex gap-2 text-foreground-500 items-center">
+												<p>Issued</p>
+												<p>
+													{monthYearFormat.format(new Date(cert.createdAt))}
+												</p>
+											</div>
+											{cert.expiresAt && (
+												<div className="flex gap-2 text-foreground-500 items-center">
+													<p>Expires</p>
+													<p>
+														{monthYearFormat.format(new Date(cert.expiresAt))}
+													</p>
+												</div>
+											)}
+										</div>
 									</div>
-									<div className="w-full flex gap-2 text-foreground-500">
-										<p>Issued:</p>
-										<p>{cert.createdAt}</p>
-									</div>
-									{cert.expiresAt && (
-										<div className="w-full flex gap-2 text-foreground-500">
-											<p>Expires:</p>
-											<p>{cert.expiresAt}</p>
+									{idx < data.certifications.length - 1 && (
+										<div className="w-full">
+											<hr className="border-foreground-200" />
 										</div>
 									)}
 								</div>
