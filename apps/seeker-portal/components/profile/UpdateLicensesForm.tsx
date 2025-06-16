@@ -6,12 +6,10 @@ import {
 	CardHeader,
 	DatePicker,
 	Input,
-	Select,
-	SelectItem,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { CalendarDate, parseDate } from "@internationalized/date";
-import { Plus, Trash } from "lucide-react";
+import { IdCardIcon, Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
@@ -39,9 +37,6 @@ const UpdateLicensesFormFragment = graphql`
       licenseNumber
       issuedAt
       expiresAt
-      verificationStatus
-      verifiedAt
-      verificationNotes
     }
   }
 `;
@@ -64,14 +59,9 @@ const formSchema = z.object({
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
 			issuedAt: z.custom<CalendarDate>((data) => data instanceof CalendarDate),
-			expiresAt: z.custom<CalendarDate>((data) => data instanceof CalendarDate),
-			verificationStatus: z
-				.string()
-				.check(z.minLength(1, "This field is required")),
-			verifiedAt: z.nullable(
+			expiresAt: z.nullable(
 				z.custom<CalendarDate>((data) => data instanceof CalendarDate),
 			),
-			verificationNotes: z.nullable(z.string()),
 		}),
 	),
 });
@@ -98,10 +88,7 @@ export default function UpdateLicensesForm({
 							issuer: lic.issuer,
 							licenseNumber: lic.licenseNumber,
 							issuedAt: parseDate(lic.issuedAt),
-							expiresAt: parseDate(lic.expiresAt),
-							verificationStatus: lic.verificationStatus,
-							verifiedAt: lic.verifiedAt ? parseDate(lic.verifiedAt) : null,
-							verificationNotes: lic.verificationNotes ?? null,
+							expiresAt: lic.expiresAt ? parseDate(lic.expiresAt) : null,
 						})),
 					}
 				: {
@@ -112,9 +99,6 @@ export default function UpdateLicensesForm({
 								licenseNumber: "",
 								issuedAt: undefined,
 								expiresAt: undefined,
-								verificationStatus: "pending",
-								verifiedAt: undefined,
-								verificationNotes: undefined,
 							},
 						],
 					},
@@ -129,10 +113,11 @@ export default function UpdateLicensesForm({
 		commitMutation({
 			variables: {
 				licenses: formData.licenses.map((lic) => ({
-					...lic,
+					name: lic.name,
+					issuer: lic.issuer,
+					licenseNumber: lic.licenseNumber,
 					issuedAt: lic.issuedAt.toString(),
-					expiresAt: lic.expiresAt.toString(),
-					verifiedAt: lic.verifiedAt ? lic.verifiedAt.toString() : null,
+					expiresAt: lic.expiresAt ? lic.expiresAt.toString() : null,
 				})),
 			},
 		});
@@ -147,7 +132,10 @@ export default function UpdateLicensesForm({
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader>
-					<h1 className="text-lg font-medium">Editing Licenses</h1>
+					<div className="flex items-center gap-2 text-foreground-400">
+						<IdCardIcon />
+						<h1 className="w-full text-sm font-medium">Editing Licenses</h1>
+					</div>
 				</CardHeader>
 				<CardBody className="w-full flex flex-col">
 					{/* Dynamic Array of licenses */}
@@ -167,10 +155,7 @@ export default function UpdateLicensesForm({
 											issuer: "",
 											licenseNumber: "",
 											issuedAt: undefined,
-											expiresAt: undefined,
-											verificationStatus: "pending",
-											verifiedAt: undefined,
-											verificationNotes: undefined,
+											expiresAt: null,
 										})
 									}
 								>
@@ -277,69 +262,6 @@ export default function UpdateLicensesForm({
 												)}
 											/>
 										</div>
-										<div className="w-full space-y-4">
-											<Controller
-												name={`licenses.${index}.verificationStatus`}
-												control={control}
-												defaultValue="pending"
-												render={({ field }) => (
-													<Select
-														{...field}
-														label="Verification Status"
-														errorMessage={
-															errors.licenses?.[index]?.verificationStatus
-																?.message
-														}
-														isInvalid={
-															!!errors.licenses?.[index]?.verificationStatus
-														}
-													>
-														<SelectItem key="pending">Pending</SelectItem>
-														<SelectItem key="verified">Verified</SelectItem>
-														<SelectItem key="rejected">Rejected</SelectItem>
-													</Select>
-												)}
-											/>
-										</div>
-										<div className="w-full space-y-4">
-											<Controller
-												name={`licenses.${index}.verifiedAt`}
-												control={control}
-												defaultValue={undefined}
-												render={({ field }) => (
-													<DatePicker
-														{...field}
-														label="Verified At"
-														errorMessage={
-															errors.licenses?.[index]?.verifiedAt?.message
-														}
-														isInvalid={!!errors.licenses?.[index]?.verifiedAt}
-													/>
-												)}
-											/>
-										</div>
-										<div className="w-full space-y-4">
-											<Controller
-												name={`licenses.${index}.verificationNotes`}
-												control={control}
-												defaultValue={undefined}
-												render={({ field }) => (
-													<Input
-														{...field}
-														fullWidth
-														label="Verification Notes"
-														placeholder="Notes"
-														errorMessage={
-															errors.licenses?.[index]?.verificationNotes
-																?.message
-														}
-														isInvalid={
-															!!errors.licenses?.[index]?.verificationNotes
-														}
-													/>
-												)}
-											/>
-										</div>
 										<Button
 											type="button"
 											variant="bordered"
@@ -361,9 +283,6 @@ export default function UpdateLicensesForm({
 											licenseNumber: "",
 											issuedAt: undefined,
 											expiresAt: undefined,
-											verificationStatus: "pending",
-											verifiedAt: undefined,
-											verificationNotes: undefined,
 										})
 									}
 								>

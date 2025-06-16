@@ -1,6 +1,6 @@
 import type { CertificationsFragment$key } from "@/__generated__/CertificationsFragment.graphql";
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
-import { EditIcon } from "lucide-react";
+import { EditIcon, ShieldCheckIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const CertificationsFragment = graphql`
@@ -28,7 +28,10 @@ export default function Certifications({ rootQuery, onEditProfile }: Props) {
 		<div className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader className="flex gap-6 w-full items-center justify-between">
-					<h1 className="w-full text-lg font-medium">Certifications</h1>
+					<div className="flex items-center gap-2 text-foreground-400">
+						<ShieldCheckIcon />
+						<h1 className="w-full text-sm font-medium">Certifications</h1>
+					</div>
 					<Button
 						startContent={<EditIcon size={24} />}
 						onPress={onEditProfile}

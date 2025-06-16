@@ -48,9 +48,9 @@ export default function Header({
 				base:
 					variant === "hero"
 						? "bg-transparent text-primary-foreground"
-						: "bg-transparent",
+						: "bg-background-600",
 			}}
-			isBlurred={variant !== "hero"}
+			isBlurred={false}
 		>
 			<NavbarBrand className="flex items-center gap-4">
 				<Link

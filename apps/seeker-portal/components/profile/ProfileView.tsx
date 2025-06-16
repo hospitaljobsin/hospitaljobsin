@@ -9,6 +9,7 @@ import Languages from "./Languages";
 import Licenses from "./Licenses";
 import LocationPreferences from "./LocationPreferences";
 import ProfileDetails from "./PersonalDetails";
+import ProfileBanner from "./ProfileBanner";
 import UpdateCertificationsForm from "./UpdateCertificationsForm";
 import UpdateEducationForm from "./UpdateEducationForm";
 import UpdateLanguagesForm from "./UpdateLanguagesForm";
@@ -23,6 +24,7 @@ const ProfileViewFragment = graphql`
     viewer {
       __typename
       ... on Account {
+		...ProfileBannerFragment
 		profile @required(action: THROW) {
 			...UpdatePersonalDetailsFormFragment
 			...PersonalDetailsFragment
@@ -65,6 +67,7 @@ export default function ProfileView({
 
 	return (
 		<div className="w-full h-full space-y-16">
+			<ProfileBanner account={data.viewer} />
 			{isEditingProfile ? (
 				<UpdateProfileDetailsForm
 					rootQuery={data.viewer.profile}

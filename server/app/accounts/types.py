@@ -674,10 +674,9 @@ class LicenseType:
     issuer: str
     license_number: str
     issued_at: date
-    expires_at: date
+    expires_at: date | None
     verification_status: LicenseVerificationStatusEnum
     verified_at: date | None
-    verification_notes: str | None
 
     @classmethod
     def marshal(cls, lic: License) -> Self:
@@ -689,7 +688,6 @@ class LicenseType:
             expires_at=lic.expires_at,
             verification_status=LicenseVerificationStatusEnum(lic.verification_status),
             verified_at=lic.verified_at,
-            verification_notes=lic.verification_notes,
         )
 
 
@@ -757,20 +755,11 @@ class LicenseInputType:
     issuer: str = strawberry.field(description="The issuer of the license.")
     license_number: str = strawberry.field(description="The license number.")
     issued_at: date = strawberry.field(description="When the license was issued.")
-    expires_at: date = strawberry.field(description="When the license expires.")
-    verification_status: LicenseVerificationStatusEnum = strawberry.field(
-        description="The verification status of the license."
-    )
-    verified_at: date | None = strawberry.field(
-        description="When the license was verified.", default=None
-    )
-    verification_notes: str | None = strawberry.field(
-        description="Verification notes for the license.", default=None
+    expires_at: date | None = strawberry.field(
+        description="When the license expires.", default=None
     )
 
     def to_document(self):
-        from app.accounts.documents import License
-
         return License(
             name=self.name,
             issuer=self.issuer,

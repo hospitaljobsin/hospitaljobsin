@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dba3bd4edd55d11a3b409497b875a5a1>>
- * @relayHash 9ca73f792df8c0912681355ee3ed8b86
+ * @generated SignedSource<<5c243f5549dd8befcaf5a7f9ddf315be>>
+ * @relayHash b548be97d7b1acbe9cf67d409970b329
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9ca73f792df8c0912681355ee3ed8b86
+// @relayRequestID b548be97d7b1acbe9cf67d409970b329
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -34,42 +34,42 @@ v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "name",
+  "name": "id",
   "storageKey": null
 },
 v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "startedAt",
+  "name": "name",
   "storageKey": null
 },
 v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "completedAt",
+  "name": "startedAt",
   "storageKey": null
 },
 v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "issuer",
+  "name": "completedAt",
   "storageKey": null
 },
 v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "expiresAt",
+  "name": "issuer",
   "storageKey": null
 },
 v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "expiresAt",
   "storageKey": null
 };
 return {
@@ -109,11 +109,33 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": "Profile",
                 "kind": "LinkedField",
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
+                  (v1/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -151,7 +173,7 @@ return {
                     "name": "languages",
                     "plural": true,
                     "selections": [
-                      (v1/*: any*/),
+                      (v2/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -205,8 +227,8 @@ return {
                         "name": "institution",
                         "storageKey": null
                       },
-                      (v2/*: any*/),
-                      (v3/*: any*/)
+                      (v3/*: any*/),
+                      (v4/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -232,8 +254,8 @@ return {
                         "name": "organization",
                         "storageKey": null
                       },
-                      (v2/*: any*/),
                       (v3/*: any*/),
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -259,8 +281,8 @@ return {
                     "name": "certifications",
                     "plural": true,
                     "selections": [
-                      (v1/*: any*/),
-                      (v4/*: any*/),
+                      (v2/*: any*/),
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -275,7 +297,7 @@ return {
                         "name": "createdAt",
                         "storageKey": null
                       },
-                      (v5/*: any*/)
+                      (v6/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -287,8 +309,8 @@ return {
                     "name": "licenses",
                     "plural": true,
                     "selections": [
-                      (v1/*: any*/),
-                      (v4/*: any*/),
+                      (v2/*: any*/),
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -303,7 +325,7 @@ return {
                         "name": "issuedAt",
                         "storageKey": null
                       },
-                      (v5/*: any*/),
+                      (v6/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -317,18 +339,10 @@ return {
                         "kind": "ScalarField",
                         "name": "verifiedAt",
                         "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "verificationNotes",
-                        "storageKey": null
                       }
                     ],
                     "storageKey": null
-                  },
-                  (v6/*: any*/)
+                  }
                 ],
                 "storageKey": null
               }
@@ -339,7 +353,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v6/*: any*/)
+              (v1/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -350,7 +364,7 @@ return {
     ]
   },
   "params": {
-    "id": "9ca73f792df8c0912681355ee3ed8b86",
+    "id": "b548be97d7b1acbe9cf67d409970b329",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",

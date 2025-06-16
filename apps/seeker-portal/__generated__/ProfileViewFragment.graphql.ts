@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a9b3a94fdc87a1e03dfcc66650f8bd52>>
+ * @generated SignedSource<<1ac13bd63e58130993d6dc638ecaf50e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type ProfileViewFragment$data = {
     readonly profile: {
       readonly " $fragmentSpreads": FragmentRefs<"CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LicensesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLicensesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateWorkExperienceFormFragment" | "WorkExperienceFragment">;
     };
+    readonly " $fragmentSpreads": FragmentRefs<"ProfileBannerFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -52,6 +53,11 @@ const node: ReaderFragment = {
         {
           "kind": "InlineFragment",
           "selections": [
+            {
+              "args": null,
+              "kind": "FragmentSpread",
+              "name": "ProfileBannerFragment"
+            },
             {
               "kind": "RequiredField",
               "field": {
@@ -149,6 +155,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "27ea45d5fdf47e61db8ede925bf9043b";
+(node as any).hash = "871babf41c8c410e2205cd5a879fe1be";
 
 export default node;

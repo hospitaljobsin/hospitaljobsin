@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<ec1ec92c826dc51eeb556d772dcb9d8c>>
- * @relayHash 0bd5f4e6ceff029b18f83e0512930cd2
+ * @generated SignedSource<<6f6b72cb15bf57d165fc74445c683256>>
+ * @relayHash 4a81170d302e1be1bc2774d5d88a65aa
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,20 +9,16 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 0bd5f4e6ceff029b18f83e0512930cd2
+// @relayRequestID 4a81170d302e1be1bc2774d5d88a65aa
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type LicenseVerificationStatus = "PENDING" | "REJECTED" | "VERIFIED" | "%future added value";
 export type LicenseInput = {
-  expiresAt: any;
+  expiresAt?: any | null | undefined;
   issuedAt: any;
   issuer: string;
   licenseNumber: string;
   name: string;
-  verificationNotes?: string | null | undefined;
-  verificationStatus: LicenseVerificationStatus;
-  verifiedAt?: any | null | undefined;
 };
 export type UpdateLicensesFormMutation$variables = {
   licenses: ReadonlyArray<LicenseInput>;
@@ -182,27 +178,6 @@ return {
                         "kind": "ScalarField",
                         "name": "expiresAt",
                         "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "verificationStatus",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "verifiedAt",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "verificationNotes",
-                        "storageKey": null
                       }
                     ],
                     "storageKey": null
@@ -229,7 +204,7 @@ return {
     ]
   },
   "params": {
-    "id": "0bd5f4e6ceff029b18f83e0512930cd2",
+    "id": "4a81170d302e1be1bc2774d5d88a65aa",
     "metadata": {},
     "name": "UpdateLicensesFormMutation",
     "operationKind": "mutation",

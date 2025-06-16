@@ -1,6 +1,6 @@
 import type { WorkExperienceFragment$key } from "@/__generated__/WorkExperienceFragment.graphql";
 import { Button, Card, CardBody, CardHeader, Chip } from "@heroui/react";
-import { EditIcon } from "lucide-react";
+import { BriefcaseIcon, EditIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const WorkExperienceFragment = graphql`
@@ -29,7 +29,10 @@ export default function WorkExperience({ rootQuery, onEditProfile }: Props) {
 		<div className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader className="flex gap-6 w-full items-center justify-between">
-					<h1 className="w-full text-lg font-medium">Work Experience</h1>
+					<div className="flex items-center gap-2 text-foreground-400">
+						<BriefcaseIcon />
+						<h1 className="w-full text-sm font-medium">Work Experience</h1>
+					</div>
 					<Button
 						startContent={<EditIcon size={24} />}
 						onPress={onEditProfile}

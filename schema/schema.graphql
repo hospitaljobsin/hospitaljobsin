@@ -1329,10 +1329,9 @@ type License {
 	issuer: String!
 	licenseNumber: String!
 	issuedAt: Date!
-	expiresAt: Date!
+	expiresAt: Date
 	verificationStatus: LicenseVerificationStatus!
 	verifiedAt: Date
-	verificationNotes: String
 }
 
 """
@@ -1362,22 +1361,7 @@ input LicenseInput {
 	"""
 	When the license expires.
 	"""
-	expiresAt: Date!
-
-	"""
-	The verification status of the license.
-	"""
-	verificationStatus: LicenseVerificationStatus!
-
-	"""
-	When the license was verified.
-	"""
-	verifiedAt: Date = null
-
-	"""
-	Verification notes for the license.
-	"""
-	verificationNotes: String = null
+	expiresAt: Date = null
 }
 
 """

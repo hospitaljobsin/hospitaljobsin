@@ -1,6 +1,6 @@
 import type { LicensesFragment$key } from "@/__generated__/LicensesFragment.graphql";
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
-import { EditIcon } from "lucide-react";
+import { EditIcon, IdCardIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const LicensesFragment = graphql`
@@ -14,7 +14,6 @@ const LicensesFragment = graphql`
       expiresAt
       verificationStatus
       verifiedAt
-      verificationNotes
     }
   }
 `;
@@ -31,7 +30,10 @@ export default function Licenses({ rootQuery, onEditProfile }: Props) {
 		<div className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader className="flex gap-6 w-full items-center justify-between">
-					<h1 className="w-full text-lg font-medium">Licenses</h1>
+					<div className="flex items-center gap-2 text-foreground-400">
+						<IdCardIcon />
+						<h1 className="w-full text-sm font-medium">Licenses</h1>
+					</div>
 					<Button
 						startContent={<EditIcon size={24} />}
 						onPress={onEditProfile}
@@ -77,12 +79,6 @@ export default function Licenses({ rootQuery, onEditProfile }: Props) {
 										<div className="w-full flex gap-2 text-foreground-500">
 											<p>Verified At:</p>
 											<p>{lic.verifiedAt}</p>
-										</div>
-									)}
-									{lic.verificationNotes && (
-										<div className="w-full flex gap-2 text-foreground-500">
-											<p>Notes:</p>
-											<p>{lic.verificationNotes}</p>
 										</div>
 									)}
 								</div>

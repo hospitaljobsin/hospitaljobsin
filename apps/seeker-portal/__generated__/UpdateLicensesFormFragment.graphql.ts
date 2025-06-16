@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<484dde5bb94baa825ffc5eb335869b2d>>
+ * @generated SignedSource<<d2347d8282c8eaa0fd7c128f5864e0b2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,19 +9,15 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
-export type LicenseVerificationStatus = "PENDING" | "REJECTED" | "VERIFIED" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type UpdateLicensesFormFragment$data = {
   readonly __typename: "Profile";
   readonly licenses: ReadonlyArray<{
-    readonly expiresAt: any;
+    readonly expiresAt: any | null | undefined;
     readonly issuedAt: any;
     readonly issuer: string;
     readonly licenseNumber: string;
     readonly name: string;
-    readonly verificationNotes: string | null | undefined;
-    readonly verificationStatus: LicenseVerificationStatus;
-    readonly verifiedAt: any | null | undefined;
   }>;
   readonly " $fragmentType": "UpdateLicensesFormFragment";
 };
@@ -85,27 +81,6 @@ const node: ReaderFragment = {
           "kind": "ScalarField",
           "name": "expiresAt",
           "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "verificationStatus",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "verifiedAt",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "verificationNotes",
-          "storageKey": null
         }
       ],
       "storageKey": null
@@ -115,6 +90,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "d9a39502c7a8737369fa478bc7f98d94";
+(node as any).hash = "ac8f5a4bea15ffc72831fb3081150417";
 
 export default node;
