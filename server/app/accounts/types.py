@@ -12,7 +12,18 @@ from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from strawberry import relay
 
-from app.accounts.documents import Account, Education, Language, Profile
+from app.accounts.documents import (
+    Account,
+    Certification,
+    Education,
+    Language,
+    License,
+    Profile,
+    SalaryExpectations,
+    Skill,
+    SkillExperience,
+    WorkExperience,
+)
 from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
 from app.base.types import (
     BaseNodeType,
@@ -117,7 +128,7 @@ class EducationInputType:
         description="When the degree was completed."
     )
 
-    def to_document(self):
+    def to_document(self) -> Education:
         return Education(
             degree=self.degree,
             institution=self.institution,
@@ -588,7 +599,7 @@ class EducationType:
     completed_at: date | None
 
     @classmethod
-    def marshal(cls, edu) -> "EducationType":
+    def marshal(cls, edu: Education) -> Self:
         return cls(
             degree=edu.degree,
             institution=edu.institution,
@@ -609,7 +620,7 @@ class LicenseType:
     verification_notes: str | None
 
     @classmethod
-    def marshal(cls, lic) -> "LicenseType":
+    def marshal(cls, lic: License) -> Self:
         return cls(
             name=lic.name,
             issuer=lic.issuer,
@@ -626,18 +637,18 @@ class LicenseType:
 class WorkExperienceType:
     title: str
     organization: str
-    start_date: date
-    end_date: date | None
+    started_at: date
+    completed_at: date | None
     employment_type: str
     department_experience: list[str]
 
     @classmethod
-    def marshal(cls, exp) -> "WorkExperienceType":
+    def marshal(cls, exp: WorkExperience) -> Self:
         return cls(
             title=exp.title,
             organization=exp.organization,
-            start_date=exp.start_date,
-            end_date=exp.end_date,
+            started_at=exp.started_at,
+            completed_at=exp.completed_at,
             employment_type=exp.employment_type,
             department_experience=exp.department_experience,
         )
@@ -647,16 +658,16 @@ class WorkExperienceType:
 class SkillExperienceType:
     organization: str
     title: str
-    start_date: date
-    end_date: date | None
+    started_at: date
+    completed_at: date | None
 
     @classmethod
-    def marshal(cls, exp) -> "SkillExperienceType":
+    def marshal(cls, exp: SkillExperience) -> Self:
         return cls(
             organization=exp.organization,
             title=exp.title,
-            start_date=exp.start_date,
-            end_date=exp.end_date,
+            started_at=exp.started_at,
+            completed_at=exp.completed_at,
         )
 
 
@@ -667,7 +678,7 @@ class SkillType:
     experiences: list[SkillExperienceType]
 
     @classmethod
-    def marshal(cls, skill) -> "SkillType":
+    def marshal(cls, skill: Skill) -> Self:
         return cls(
             skill=skill.skill,
             yoe_total=skill.yoe_total,
@@ -681,7 +692,7 @@ class SalaryExpectationsType:
     negotiable: bool
 
     @classmethod
-    def marshal(cls, se) -> "SalaryExpectationsType":
+    def marshal(cls, se: SalaryExpectations) -> Self:
         return cls(
             preferred_monthly_salary_inr=se.preferred_monthly_salary_inr,
             negotiable=se.negotiable,
@@ -697,7 +708,7 @@ class CertificationType:
     expires_at: date | None
 
     @classmethod
-    def marshal(cls, cert) -> "CertificationType":
+    def marshal(cls, cert: Certification) -> Self:
         return cls(
             name=cert.name,
             issuer=cert.issuer,

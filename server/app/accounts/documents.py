@@ -57,8 +57,8 @@ class Language(BaseModel):
 class WorkExperience(BaseModel):
     title: str
     organization: str
-    start_date: date
-    end_date: date | None = None
+    started_at: date
+    completed_at: date | None = None
     employment_type: str
     department_experience: list[str]
 
@@ -67,8 +67,8 @@ class WorkExperience(BaseModel):
 class SkillExperience(BaseModel):
     organization: str
     title: str
-    start_date: date
-    end_date: date | None = None
+    started_at: date
+    completed_at: date | None = None
 
 
 # SKILL

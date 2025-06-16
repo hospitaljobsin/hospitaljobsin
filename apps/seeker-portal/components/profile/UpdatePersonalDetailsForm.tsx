@@ -154,8 +154,6 @@ export default function UpdatePersonalDetailsForm({
 										showMonthAndYearPickers
 										label="Date of Birth"
 										{...field}
-										// TypeScript type workaround: CalendarDate is a DateValue at runtime, but types are incompatible
-										// eslint-disable-next-line @typescript-eslint/no-explicit-any
 										value={field.value as any}
 										onChange={field.onChange}
 										errorMessage={errors.dateOfBirth?.message}
