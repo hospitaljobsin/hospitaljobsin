@@ -455,6 +455,7 @@ class JobApplicantRepo:
         """Get a paginated result of job applicants for the given job."""
         if search_term:
             # TODO: getting max_results and filtering here should probably be done after validating pagination arguments
+            # this could probably be passed in as a callback to the paginator class (like a hook maybe)
             filtered_result = (
                 await self._agentic_profile_filter_service.filter_profiles(
                     query=search_term,
