@@ -106,6 +106,21 @@ export default function ProfileView({
 					}}
 				/>
 			)}
+			{isEditingCertifications ? (
+				<UpdateCertificationsForm
+					rootQuery={data.viewer.profile}
+					onSaveChanges={() => {
+						setIsEditingCertifications(false);
+					}}
+				/>
+			) : (
+				<Certifications
+					rootQuery={data.viewer.profile}
+					onEditProfile={() => {
+						setIsEditingCertifications(true);
+					}}
+				/>
+			)}
 			{isEditingLocationPreferences ? (
 				<UpdateLocationPreferencesForm
 					rootQuery={data.viewer.profile}
@@ -133,21 +148,6 @@ export default function ProfileView({
 					rootQuery={data.viewer.profile}
 					onEditProfile={() => {
 						setIsEditingLanguages(true);
-					}}
-				/>
-			)}
-			{isEditingCertifications ? (
-				<UpdateCertificationsForm
-					rootQuery={data.viewer.profile}
-					onSaveChanges={() => {
-						setIsEditingCertifications(false);
-					}}
-				/>
-			) : (
-				<Certifications
-					rootQuery={data.viewer.profile}
-					onEditProfile={() => {
-						setIsEditingCertifications(true);
 					}}
 				/>
 			)}
