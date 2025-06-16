@@ -80,6 +80,22 @@
 			"skills": ["Internal Medicine", "Preventive Health Checkup"]
 		}
 	],
+	"certifications": [
+		{
+			"name": "ACLS",
+			"issuer": "American Heart Association",
+			"certification_url": "https://www.americanheart.org/en/get-involved/certification/acls.html",
+			"created_at": "2022-01-01",
+			"expires_at": "2025-01-01"
+		},
+		{
+			"name": "BLS",
+			"issuer": "American Heart Association",
+			"certification_url": "https://www.americanheart.org/en/get-involved/certification/bls.html",
+			"created_at": "2022-01-01",
+			"expires_at": null
+		}
+	],
 	"licenses": [
 		{
 			"name": "MCI Registration",
@@ -112,21 +128,5 @@
 	"salary_expectations": {
 		"preferred_monthly_salary_inr": 180000,
 		"negotiable": true
-	},
-	"certifications": [
-		{
-			"name": "ACLS",
-			"issuer": "American Heart Association",
-			"certification_url": "https://www.americanheart.org/en/get-involved/certification/acls.html",
-			"created_at": "2022-01-01",
-			"expires_at": "2025-01-01"
-		},
-		{
-			"name": "BLS",
-			"issuer": "American Heart Association",
-			"certification_url": "https://www.americanheart.org/en/get-involved/certification/bls.html",
-			"created_at": "2022-01-01",
-			"expires_at": null
-		}
-	]
+	}
 }
