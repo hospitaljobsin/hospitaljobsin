@@ -7,7 +7,7 @@ import {
 	Chip,
 	Switch,
 } from "@heroui/react";
-import { EditIcon } from "lucide-react";
+import { EditIcon, MapPinHouseIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const LocationPreferencesFragment = graphql`
@@ -34,7 +34,10 @@ export default function LocationPreferences({
 		<div className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader className="flex gap-6 w-full items-center justify-between">
-					<h1 className="w-full text-lg font-medium">Location Preferences</h1>
+					<div className="flex items-center gap-2 text-foreground-400">
+						<MapPinHouseIcon />
+						<h1 className="w-full text-sm font-medium">Location Preferences</h1>
+					</div>
 					<Button
 						startContent={<EditIcon size={24} />}
 						onPress={onEditProfile}

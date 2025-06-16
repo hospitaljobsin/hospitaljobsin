@@ -1,6 +1,6 @@
 import type { LanguagesFragment$key } from "@/__generated__/LanguagesFragment.graphql";
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
-import { EditIcon } from "lucide-react";
+import { EditIcon, LanguagesIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 // TODO: define the fragments on Profile instead
@@ -27,7 +27,10 @@ export default function Languages({ rootQuery, onEditProfile }: Props) {
 		<div className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader className="flex gap-6 w-full items-center justify-between">
-					<h1 className="w-full text-lg font-medium">Languages</h1>
+					<div className="flex items-center gap-2 text-foreground-400">
+						<LanguagesIcon />
+						<h1 className="w-full text-sm font-medium">Languages</h1>
+					</div>
 					<Button
 						startContent={<EditIcon size={24} />}
 						onPress={onEditProfile}

@@ -8,6 +8,7 @@ import {
 	Switch,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { MapPinHouseIcon } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -114,7 +115,12 @@ export default function UpdateLocationPreferencesForm({
 		<form className="space-y-12" onSubmit={handleSubmit(onSubmit)}>
 			<Card className="p-6 space-y-6" shadow="none">
 				<CardHeader>
-					<h1 className="text-lg font-medium">Editing Location Preferences</h1>
+					<div className="flex items-center gap-2 text-foreground-400">
+						<MapPinHouseIcon />
+						<h1 className="w-full text-sm font-medium">
+							Editing Location Preferences
+						</h1>
+					</div>
 				</CardHeader>
 				<CardBody className="w-full flex flex-col gap-8">
 					<div className="mb-12">
