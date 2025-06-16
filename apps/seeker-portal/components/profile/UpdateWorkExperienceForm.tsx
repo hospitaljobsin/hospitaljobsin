@@ -87,7 +87,7 @@ const formSchema = z.object({
 			),
 			skills: z.array(z.object({ value: z.string() })),
 			startedAt: z.custom<CalendarDate | null>(
-				(data) => data === null || data instanceof CalendarDate,
+				(data) => data instanceof CalendarDate,
 			),
 			completedAt: z.custom<CalendarDate | null>(
 				(data) => data === null || data instanceof CalendarDate,
@@ -108,7 +108,7 @@ export default function UpdateWorkExperienceForm({
 	const defaultWorkExperience = {
 		title: "",
 		organization: "",
-		employmentType: undefined,
+		employmentType: null,
 		skills: [],
 		startedAt: null,
 		completedAt: null,
