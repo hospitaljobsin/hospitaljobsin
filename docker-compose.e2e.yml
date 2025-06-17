@@ -40,7 +40,7 @@ services:
     environment:
       SERVER_DEBUG: 'true'
       SERVER_ENVIRONMENT: 'testing'
-      SERVER_DATABASE_URL: 'mongodb://user:pass@test-mongodb:27017/medical_jobs_tests'
+      SERVER_DATABASE_URL: 'mongodb://user:pass@test-mongodb:27017/?directConnection=true'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '8000'
       SERVER_LOG_LEVEL: 'INFO'
@@ -153,16 +153,13 @@ services:
       - "1025:1025"
 
   test-mongodb:
-    image: docker.io/bitnami/mongodb:8.0
+    image: mongodb/mongodb-atlas-local:8.0.1
     ports:
       - "27017:27017"
     environment:
-      - MONGODB_USERNAME=user
-      - MONGODB_PASSWORD=pass
-      - MONGODB_DATABASE=medical_jobs_tests
-      - MONGODB_ROOT_PASSWORD=rootpass
-    volumes:
-      - "test_mongodb_data:/bitnami/mongodb"
+      - MONGODB_INITDB_ROOT_USERNAME=user
+      - MONGODB_INITDB_ROOT_PASSWORD=pass
+      - RUNNER_LOG_FILE=/dev/stderr
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
