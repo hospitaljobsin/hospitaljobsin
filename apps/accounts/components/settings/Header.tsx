@@ -37,7 +37,7 @@ export default function Header({
 }) {
 	const data = usePreloadedQuery(HeaderQuery, queryReference);
 	return (
-		<Navbar maxWidth="lg" isBordered>
+		<Navbar maxWidth="lg" isBordered className="bg-background-600">
 			<NavbarBrand>
 				<Link href={links.settings} className="font-medium text-inherit">
 					{APP_NAME}

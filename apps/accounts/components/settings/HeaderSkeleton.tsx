@@ -1,12 +1,12 @@
 "use client";
-import { Navbar, NavbarBrand } from "@heroui/react";
-import Link from "next/link";
 import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
+import { Navbar, NavbarBrand } from "@heroui/react";
+import Link from "next/link";
 
 export default function HeaderSkeleton() {
 	return (
-		<Navbar maxWidth="lg" isBordered>
+		<Navbar maxWidth="lg" isBordered className="bg-background-600">
 			<NavbarBrand>
 				<Link href={links.settings} className="font-medium text-inherit">
 					{APP_NAME}
