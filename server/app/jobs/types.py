@@ -371,7 +371,7 @@ class JobType(BaseNodeType[Job]):
     slug: str = strawberry.field(
         description="The slug of the job.",
     )
-    description: str | None = strawberry.field(
+    description: str = strawberry.field(
         description="The description of the job.",
     )
     vacancies: int | None = strawberry.field(

@@ -21,17 +21,29 @@ services:
       - RECRUITER_PORTAL_CORE_HOST=host.docker.internal
       - RECRUITER_DASHBOARD_HOST=host.docker.internal
 
+  # mongodb:
+  #   image: docker.io/bitnami/mongodb:8.0
+  #   ports:
+  #     - "27017:27017"
+  #   environment:
+  #     - MONGODB_USERNAME=user
+  #     - MONGODB_PASSWORD=pass
+  #     - MONGODB_DATABASE=medical_jobs
+  #     - MONGODB_ROOT_PASSWORD=rootpass
+  #   volumes:
+  #     - "mongodb_data:/bitnami/mongodb"
+
   mongodb:
-    image: docker.io/bitnami/mongodb:8.0
+    image: mongodb/mongodb-atlas-local:8.0.1
     ports:
       - "27017:27017"
     environment:
-      - MONGODB_USERNAME=user
-      - MONGODB_PASSWORD=pass
-      - MONGODB_DATABASE=medical_jobs
-      - MONGODB_ROOT_PASSWORD=rootpass
-    volumes:
-      - "mongodb_data:/bitnami/mongodb"
+      - MONGODB_INITDB_ROOT_USERNAME=user
+      - MONGODB_INITDB_ROOT_PASSWORD=pass
+      - RUNNER_LOG_FILE=/dev/stderr
+      # - MONGODB_DATABASE=medical_jobs
+    # volumes:
+      # - ./init-mongo:/docker-entrypoint-initdb.d
 
   mailcatcher:
     image: schickling/mailcatcher:latest

@@ -12,17 +12,23 @@ from beanie import (
 )
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
+from pymongo.operations import SearchIndexModel
 
 from app.accounts.documents import Account
 from app.base.models import GeoObject
-from app.core.constants import JobApplicantStatus, JobMetricEventType
+from app.core.constants import (
+    JobApplicantStatus,
+    JobMetricEventType,
+)
 from app.organizations.documents import Organization
 
 
 class Job(Document):
     title: str
     slug: Annotated[str, Indexed()]
-    description: str | None = None
+    description: str
+    # the vector embedding search index is created separately as Beanie doesn't directly support it
+    embedding: list[float] | None = None
     type: Literal["full_time", "part_time", "internship", "contract"] | None = None
     work_mode: Literal["remote", "hybrid", "office"] | None = None
 
@@ -51,7 +57,7 @@ class Job(Document):
 
     class Settings:
         name = "jobs"
-        indexes: ClassVar[list[IndexModel]] = [
+        indexes: ClassVar[list[IndexModel | SearchIndexModel]] = [
             IndexModel(
                 [
                     ("title", pymongo.TEXT),

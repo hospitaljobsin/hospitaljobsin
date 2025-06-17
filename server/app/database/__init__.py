@@ -1,11 +1,9 @@
-import urllib
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from shlex import quote
-from urllib.parse import urlparse, urlunparse
 
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo.operations import SearchIndexModel
 from structlog import get_logger
 
 from app.accounts.documents import Account, EmailVerificationToken, Profile
@@ -19,6 +17,7 @@ from app.auth.documents import (
     WebAuthnChallenge,
     WebAuthnCredential,
 )
+from app.core.constants import JOB_EMBEDDING_DIMENSIONS
 from app.jobs.documents import (
     Job,
     JobApplicant,
@@ -54,6 +53,32 @@ def rebuild_models() -> None:
     RecoveryCode.model_rebuild()
 
     TemporaryTwoFactorChallenge.model_rebuild()
+
+
+async def create_search_indexes(
+    client: AsyncIOMotorClient, default_database_name: str
+) -> None:
+    """Create search indexes for the database."""
+    await (
+        client.get_default_database(default=default_database_name)
+        .get_collection(str(Job.get_settings().name))
+        .create_search_index(
+            model=SearchIndexModel(
+                definition={
+                    "fields": [
+                        {
+                            "type": "vector",
+                            "path": "embedding",
+                            "similarity": "dotProduct",
+                            "numDimensions": JOB_EMBEDDING_DIMENSIONS,
+                        },
+                    ]
+                },
+                name="job_embedding_vector_index",
+                type="vectorSearch",
+            )
+        )
+    )
 
 
 @asynccontextmanager
@@ -93,6 +118,7 @@ async def initialize_database(
                 OrganizationInvite,
             ],
         )
+        await create_search_indexes(client, default_database_name)
         yield
     finally:
         client.close()

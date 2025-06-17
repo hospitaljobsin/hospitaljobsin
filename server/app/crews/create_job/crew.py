@@ -1,7 +1,7 @@
 import os
 
-from app.ai.models import JobOutlineParsed, JobResultData
 from app.config import LLMSettings, SecretSettings, get_settings
+from app.crews.filter_job.models import JobOutlineParsed, JobResultData
 from crewai import LLM, Agent, Crew, Process, Task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai.project import CrewBase, agent, before_kickoff, crew, llm, task

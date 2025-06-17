@@ -57,6 +57,7 @@ from app.core.emails import (
     SMTPEmailSender,
     create_smtp_client,
 )
+from app.core.genai_client import create_google_genai_client
 from app.core.geocoding import (
     AWSLocationService,
     BaseLocationService,
@@ -67,6 +68,7 @@ from app.core.oauth import create_oauth_client
 from app.core.templates import create_jinja2_environment
 from app.crews.filter_job.services import AgenticProfileFilterService
 from app.dataloaders import create_dataloaders
+from app.embeddings.services import EmbeddingsService
 from app.jobs.dataloaders import (
     create_applicant_count_by_job_id_dataloader,
     create_job_applicant_by_id_dataloader,
@@ -195,6 +197,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_s3_client))
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_captcha_verifier))
+    container.register(aioinject.Singleton(create_google_genai_client))
     app_settings = get_settings(AppSettings)
     if app_settings.is_testing:
         container.register(aioinject.Scoped(TestSetupService))
@@ -241,4 +244,5 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_job_applicant_by_slug_dataloader))
     container.register(aioinject.Scoped(create_dataloaders))
     container.register(aioinject.Scoped(AgenticProfileFilterService))
+    container.register(aioinject.Scoped(EmbeddingsService))
     return container

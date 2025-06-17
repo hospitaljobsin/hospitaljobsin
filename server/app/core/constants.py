@@ -71,3 +71,9 @@ RESERVED_ORGANIZATION_NAMES = [
     "accounts",
     "legal",
 ]
+
+
+# Embeddings
+# Gemini text-embedding-004
+# https://ai.google.dev/gemini-api/docs/models#text-embedding
+JOB_EMBEDDING_DIMENSIONS = 768
