@@ -7,8 +7,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from structlog import get_logger
 
-from app.ai.background import job_task_store
-from app.ai.routes import ai_router
 from app.auth.routes import auth_router
 from app.config import (
     AppSettings,
@@ -18,14 +16,11 @@ from app.config import (
     get_settings,
 )
 from app.container import create_container
-from app.crews.create_job.crew import CreateJobCrew
-from app.crews.filter_job.crew import FilterJobCrew
 from app.database import initialize_database
 from app.graphql_app import create_graphql_router
 from app.health.routes import health_router
 from app.jobs.routes import jobs_router
 from app.middleware import SessionMiddleware, auth_middleware
-from app.routes import auth, filter_job, jobs, organizations, profiles
 from app.testing.routes import test_setup_router
 
 
@@ -41,12 +36,6 @@ def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
     app.include_router(health_router)
     app.include_router(auth_router)
     app.include_router(jobs_router)
-    app.include_router(ai_router)
-    app.include_router(auth.router)
-    app.include_router(jobs.router)
-    app.include_router(organizations.router)
-    app.include_router(profiles.router)
-    app.include_router(filter_job.router)
 
 
 def add_middleware(

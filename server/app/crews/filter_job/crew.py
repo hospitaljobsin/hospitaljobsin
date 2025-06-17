@@ -1,7 +1,7 @@
 import time
 
 from app.accounts.repositories import ProfileRepo
-from app.ai.models import FilterJobResultData, ProfileMatch
+from app.crews.filter_job.models import FilterJobResultData, ProfileMatch
 from crewai import Agent, Task
 from pydantic import BaseModel
 

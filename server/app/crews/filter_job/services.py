@@ -1,5 +1,5 @@
-from app.ai.models import FilterJobResultData
 from app.crews.filter_job.crew import FilterJobCrew
+from app.crews.filter_job.models import FilterJobResultData
 
 
 class AgenticProfileFilterService:
