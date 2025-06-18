@@ -1,12 +1,13 @@
 import type { RelatedJobsListFragment$key } from "@/__generated__/RelatedJobsListFragment.graphql";
 import type { RelatedJobsListInternalFragment$key } from "@/__generated__/RelatedJobsListInternalFragment.graphql";
 import type { pageJobDetailViewQuery } from "@/__generated__/pageJobDetailViewQuery.graphql";
-import JobListSkeleton from "@/components/landing/JobListSkeleton";
+import { SearchIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import RelatedJob from "./RelatedJob";
+import RelatedJobsListSkeleton from "./RelatedJobsListSkeleton";
 const RelatedJobsListFragment = graphql`
   fragment RelatedJobsListFragment on Query @argumentDefinitions(
 	slug: { type: "String!"}
@@ -99,15 +100,15 @@ export default function RelatedJobsList({
 
 	return (
 		<div className="h-full flex flex-col gap-4 shrink w-full lg:w-auto">
-			<h2 className="text-base font-medium text-foreground-600">
-				Related Jobs
+			<h2 className="font-medium text-foreground-600 flex items-center gap-2">
+				<SearchIcon size={16} /> Related Jobs
 			</h2>
 			<div className="h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
 				{data.relatedJobs.edges.map((jobEdge) => (
 					<RelatedJob job={jobEdge.node} key={jobEdge.node.id} />
 				))}
 				<div ref={observerRef} className="h-10" />
-				{isLoadingNext && <JobListSkeleton />}
+				{isLoadingNext && <RelatedJobsListSkeleton />}
 			</div>
 		</div>
 	);
