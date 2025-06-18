@@ -1,9 +1,10 @@
+import type { JobDetailViewFragment$key } from "@/__generated__/JobDetailViewFragment.graphql";
+import { env } from "@/lib/env/client";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { graphql, useFragment } from "react-relay";
-import type { JobDetailViewFragment$key } from "@/__generated__/JobDetailViewFragment.graphql";
-import { env } from "@/lib/env/client";
 import JobDetails from "./JobDetails";
+import RelatedJobsList from "./RelatedJobsList";
 
 const JobDetailViewFragment = graphql`
  fragment JobDetailViewFragment on Query @argumentDefinitions(
@@ -11,6 +12,7 @@ const JobDetailViewFragment = graphql`
 	jobSlug: { type: "String!"}
     ) {
 		...JobDetailsFragment @arguments(slug: $slug, jobSlug: $jobSlug)
+		...RelatedJobsListFragment @arguments(slug: $slug, jobSlug: $jobSlug)
   }
 `;
 
@@ -33,8 +35,9 @@ export default function JobDetailView(props: {
 	}, [slug, jobSlug]);
 
 	return (
-		<div className="py-8 w-full h-full flex flex-col items-center gap-6">
+		<div className="py-8 w-full h-full flex flex-col sm:flex-row items-start gap-6">
 			<JobDetails rootQuery={query} />
+			<RelatedJobsList rootQuery={query} />
 		</div>
 	);
 }

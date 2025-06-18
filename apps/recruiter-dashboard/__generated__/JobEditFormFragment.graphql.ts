@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b013c70461b2c8671b3880a134e4090a>>
+ * @generated SignedSource<<68d76dfb76a963e0c674567adb7ef28b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,7 @@ export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "%
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type JobEditFormFragment$data = {
-  readonly description: string | null | undefined;
+  readonly description: string;
   readonly expiresAt: any | null | undefined;
   readonly id: string;
   readonly location: string | null | undefined;

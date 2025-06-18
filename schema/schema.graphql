@@ -878,7 +878,7 @@ type Job implements Node {
 	"""
 	The description of the job.
 	"""
-	description: String
+	description: String!
 
 	"""
 	The number of vacancies for the job.
@@ -964,6 +964,31 @@ type Job implements Node {
 	Whether the job has an experience range.
 	"""
 	hasExperienceRange: Boolean!
+
+	"""
+	The related jobs for the job.
+	"""
+	relatedJobs(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
+
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
+
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
+
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): JobConnection!
 
 	"""
 	The applicants for the job.

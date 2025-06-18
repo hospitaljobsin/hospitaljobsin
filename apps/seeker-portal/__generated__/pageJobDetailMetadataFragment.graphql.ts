@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6f93e7b4f179eba77a1dee40d0dbd7f6>>
+ * @generated SignedSource<<ecdb95cb20161f56be92dbcbdcc734e5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type pageJobDetailMetadataFragment$data = {
     readonly __typename: "Organization";
     readonly job: {
       readonly __typename: "Job";
-      readonly description: string | null | undefined;
+      readonly description: string;
       readonly title: string;
     } | {
       // This will never be '%other', but we need some

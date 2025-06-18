@@ -41,7 +41,7 @@ export default function Header({
 	const data = usePreloadedQuery(HeaderQuery, queryReference);
 	return (
 		<Navbar
-			maxWidth="lg"
+			maxWidth="xl"
 			isBordered={variant !== "hero"}
 			position={variant === "hero" ? "static" : "sticky"}
 			classNames={{

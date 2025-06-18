@@ -9,7 +9,7 @@ export default function MyJobsLayout({
 		<div className="w-full h-full flex flex-col">
 			<MyJobsHeaderClientComponent />
 			<div className="w-full mx-auto bg-background-600 h-full">
-				<div className="w-full px-5 max-w-5xl mx-auto h-full">{children}</div>
+				<div className="w-full px-5 max-w-7xl mx-auto h-full">{children}</div>
 			</div>
 		</div>
 	);

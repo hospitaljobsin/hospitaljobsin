@@ -1,7 +1,7 @@
 "use client";
-import { Link, Navbar, NavbarBrand } from "@heroui/react";
 import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
+import { Link, Navbar, NavbarBrand } from "@heroui/react";
 import Logo from "../Logo";
 
 export default function HeaderSkeleton({
@@ -11,7 +11,7 @@ export default function HeaderSkeleton({
 }) {
 	return (
 		<Navbar
-			maxWidth="lg"
+			maxWidth="xl"
 			isBordered={variant !== "hero"}
 			classNames={{
 				base:

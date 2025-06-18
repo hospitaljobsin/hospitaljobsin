@@ -29,7 +29,7 @@ from app.jobs.documents import (
     JobApplicationForm,
     SavedJob,
 )
-from app.jobs.repositories import JobApplicantRepo, JobMetricRepo
+from app.jobs.repositories import JobApplicantRepo, JobMetricRepo, JobRepo
 
 if TYPE_CHECKING:
     from app.organizations.types import (
@@ -431,6 +431,8 @@ class JobType(BaseNodeType[Job]):
 
     organization_id: strawberry.Private[str]
 
+    embedding: strawberry.Private[list[float]]
+
     @classmethod
     def marshal(cls, job: Job) -> Self:
         """Marshal into a node instance."""
@@ -455,6 +457,7 @@ class JobType(BaseNodeType[Job]):
             is_active=job.is_active,
             external_application_url=job.external_application_url,
             organization_id=str(job.organization.ref.id),
+            embedding=job.embedding,
         )
 
     @strawberry.field(  # type: ignore[misc]
@@ -468,6 +471,52 @@ class JobType(BaseNodeType[Job]):
     )
     def has_experience_range(self) -> bool:
         return self.min_experience is not None and self.max_experience is not None
+
+    @strawberry.field(  # type: ignore[misc]
+        description="The related jobs for the job.",
+    )
+    @inject
+    async def related_jobs(
+        self,
+        job_repo: Annotated[
+            JobRepo,
+            Inject,
+        ],
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
+    ) -> "JobConnectionType":
+        """Return a paginated connection of related jobs for the job."""
+        paginated_jobs = await job_repo.get_all_related(
+            job_embedding=self.embedding,
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
+            first=first,
+            last=last,
+        )
+
+        return JobConnectionType.marshal(paginated_jobs)
 
     @strawberry.field(  # type: ignore[misc]
         description="The applicants for the job.",

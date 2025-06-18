@@ -56,7 +56,7 @@ export default function OrgDetailHeader({
 
 	return (
 		<div className="w-full flex flex-col bg-background border-b border-gray-300">
-			<Navbar maxWidth="lg">
+			<Navbar maxWidth="xl">
 				<NavbarBrand className="flex items-center gap-4">
 					<Link href={links.landing} className="font-medium text-inherit">
 						<Logo />
@@ -98,7 +98,7 @@ export default function OrgDetailHeader({
 					)}
 				</NavbarContent>
 			</Navbar>
-			<div className="w-full max-w-5xl mx-auto flex items-center justify-between">
+			<div className="w-full max-w-7xl mx-auto flex items-center justify-between">
 				<OrganizationTabs />
 			</div>
 		</div>

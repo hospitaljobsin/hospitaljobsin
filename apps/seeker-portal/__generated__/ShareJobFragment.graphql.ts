@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ad0daf495ba965a56abee0bfac9ce437>>
+ * @generated SignedSource<<d113bb7bc90252bcad0a203583af078f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type ShareJobFragment$data = {
-  readonly description: string | null | undefined;
+  readonly description: string;
   readonly organization: {
     readonly logoUrl: string;
     readonly name: string;

@@ -368,6 +368,57 @@ class JobRepo:
             after=ObjectId(after) if after else None,
         )
 
+    async def get_all_related(
+        self,
+        job_embedding: list[float],
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[Job, ObjectId]:
+        """Get a paginated result of all jobs related to a given job."""
+        # TODO: get only active jobs here
+        pipeline = [
+            {
+                "$vectorSearch": {
+                    "index": "job_embedding_vector_index",
+                    "path": "embedding",
+                    "queryVector": job_embedding,
+                    "numCandidates": 50,
+                    "limit": 10,
+                }
+            },
+            ## We are extracting 'vectorSearchScore' here
+            ## columns with 1 are included, columns with 0 are excluded
+            # {
+            #     "$project": {
+            #         "_id": 1,
+            #         "title": 1,
+            #         "plot": 1,
+            #         "year": 1,
+            #         "search_score": {"$meta": "vectorSearchScore"},
+            #     }
+            # },
+        ]
+        paginator: Paginator[Job, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=Job,
+            paginate_by="id",
+        )
+
+        search_criteria = Job.aggregate(
+            aggregation_pipeline=pipeline,
+            projection_model=Job,
+        )
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
     async def delete(self, job: Job) -> None:
         """Delete a job."""
         await job.delete()

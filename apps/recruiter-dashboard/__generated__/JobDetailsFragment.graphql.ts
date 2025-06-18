@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<00c46803fa3b8026d46edaa22c259957>>
+ * @generated SignedSource<<194c48ba8f16911dade311643b197bd9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,7 +20,7 @@ export type JobDetailsFragment$data = {
   } | null | undefined;
   readonly createdAt: any;
   readonly currency: Currency;
-  readonly description: string | null | undefined;
+  readonly description: string;
   readonly externalApplicationUrl: string | null | undefined;
   readonly hasExperienceRange: boolean;
   readonly hasSalaryRange: boolean;

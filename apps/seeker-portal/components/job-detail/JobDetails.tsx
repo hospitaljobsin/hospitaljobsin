@@ -197,7 +197,7 @@ export default function JobDetails({
 	);
 
 	return (
-		<div className="w-full flex flex-col gap-6">
+		<div className="w-full flex flex-col gap-6 flex-1">
 			{/* Job Title and Company */}
 			<Card fullWidth className="p-6" shadow="none">
 				<CardHeader>

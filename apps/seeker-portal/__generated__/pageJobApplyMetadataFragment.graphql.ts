@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<53bc5b468c83d7031a592484b04e9e0d>>
+ * @generated SignedSource<<71937073c6952a5bd14ac772996821bb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type pageJobApplyMetadataFragment$data = {
     readonly __typename: "Organization";
     readonly job: {
       readonly __typename: "Job";
-      readonly description: string | null | undefined;
+      readonly description: string;
       readonly externalApplicationUrl: string | null | undefined;
       readonly isApplied: boolean;
       readonly title: string;

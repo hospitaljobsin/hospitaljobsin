@@ -1,9 +1,9 @@
 "use client";
+import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
+import LandingViewSkeleton from "@/components/landing/LandingViewSkeleton";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
-import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
-import LandingViewSkeleton from "@/components/landing/LandingViewSkeleton";
 import LandingClientComponent from "./LandingClientComponent";
 
 export const LandingPageQuery = graphql`
@@ -31,7 +31,7 @@ export default function Landing() {
 				</div>
 			</div>
 
-			<div className="py-4 sm:py-8 flex flex-col gap-4 sm:gap-8 max-w-5xl px-4 sm:px-5 mx-auto">
+			<div className="py-4 sm:py-8 flex flex-col gap-4 sm:gap-8 max-w-7xl px-4 sm:px-5 mx-auto">
 				<Suspense fallback={<LandingViewSkeleton />}>
 					<LandingClientComponent queryReference={queryReference} />
 				</Suspense>
