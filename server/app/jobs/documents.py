@@ -28,7 +28,7 @@ class Job(Document):
     slug: Annotated[str, Indexed()]
     description: str
     # the vector embedding search index is created separately as Beanie doesn't directly support it
-    embedding: list[float] | None = None
+    embedding: list[float]
     type: Literal["full_time", "part_time", "internship", "contract"] | None = None
     work_mode: Literal["remote", "hybrid", "office"] | None = None
 

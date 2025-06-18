@@ -18,6 +18,7 @@ from app.core.constants import (
 )
 from app.crews.filter_job.services import AgenticProfileFilterService
 from app.database.paginator import PaginatedResult, Paginator
+from app.embeddings.services import EmbeddingsService
 from app.geocoding.models import Coordinates
 from app.organizations.documents import Organization
 
@@ -34,6 +35,9 @@ from .documents import (
 
 
 class JobRepo:
+    def __init__(self, embeddings_service: EmbeddingsService) -> None:
+        self._embeddings_service = embeddings_service
+
     async def generate_slug(self, title: str, organization_id: ObjectId) -> str:
         """Generate a slug from the job title."""
         slug = title.lower().replace(" ", "-")
@@ -43,6 +47,33 @@ class JobRepo:
                 suffix = secrets.token_urlsafe(8)
             slug = f"{slug}-{suffix}"
         return slug
+
+    @staticmethod
+    def format_job_for_embedding(
+        title: str,
+        description: str,
+        skills: list[str],
+        location: str | None,
+        geo: GeoObject | None,
+        min_salary: int | None,
+        max_salary: int | None,
+        min_experience: int | None,
+        max_experience: int | None,
+        job_type: str | None,
+        work_mode: str | None,
+        currency: str,
+    ) -> str:
+        return (
+            f"Title: {title}\n"
+            f"Description: {description}\n"
+            f"Skills: {', '.join(skills) if skills else 'N/A'}\n"
+            f"Location: {location or 'N/A'}\n"
+            f"Geo: {geo if geo else 'N/A'}\n"
+            f"Salary: {min_salary or 'N/A'} - {max_salary or 'N/A'} {currency}\n"
+            f"Experience: {min_experience or 'N/A'} - {max_experience or 'N/A'} years\n"
+            f"Type: {job_type or 'N/A'}\n"
+            f"Work Mode: {work_mode or 'N/A'}"
+        )
 
     async def create(
         self,
@@ -66,9 +97,26 @@ class JobRepo:
         currency: Literal["INR"] = "INR",
     ) -> Job:
         """Create a new job."""
+        embedding = await self._embeddings_service.generate_embeddings(
+            text=self.format_job_for_embedding(
+                title=title,
+                description=description,
+                skills=skills,
+                location=location,
+                geo=geo,
+                min_salary=min_salary,
+                max_salary=max_salary,
+                min_experience=min_experience,
+                max_experience=max_experience,
+                job_type=job_type,
+                work_mode=work_mode,
+                currency=currency,
+            )
+        )
         job = Job(
             title=title,
             description=description,
+            embedding=embedding,
             vacancies=vacancies,
             location=location,
             geo=geo,
@@ -112,6 +160,23 @@ class JobRepo:
         currency: Literal["INR"] = "INR",
     ) -> Job:
         """Update a job."""
+        # Store original values for embedding-relevant fields
+        orig = {
+            "title": job.title,
+            "description": job.description,
+            "skills": list(job.skills) if job.skills else [],
+            "location": job.location,
+            "geo": job.geo,
+            "min_salary": job.min_salary,
+            "max_salary": job.max_salary,
+            "min_experience": job.min_experience,
+            "max_experience": job.max_experience,
+            "job_type": job.type,
+            "work_mode": job.work_mode,
+            "currency": job.currency,
+        }
+
+        # Update fields
         job.title = title
         job.description = description
         job.vacancies = vacancies
@@ -127,6 +192,42 @@ class JobRepo:
         job.skills = skills
         job.currency = currency
         job.slug = await self.generate_slug(title, job.organization.ref.id)
+
+        # Check if any embedding-relevant field has changed
+        changed = (
+            orig["title"] != title
+            or orig["description"] != description
+            or orig["skills"] != skills
+            or orig["location"] != location
+            or orig["geo"] != geo
+            or orig["min_salary"] != min_salary
+            or orig["max_salary"] != max_salary
+            or orig["min_experience"] != min_experience
+            or orig["max_experience"] != max_experience
+            or orig["job_type"] != job_type
+            or orig["work_mode"] != work_mode
+            or orig["currency"] != currency
+        )
+
+        if changed:
+            job.embedding = await self._embeddings_service.generate_embeddings(
+                text=self.format_job_for_embedding(
+                    title=title,
+                    description=description,
+                    skills=skills,
+                    location=location,
+                    geo=geo,
+                    min_salary=min_salary,
+                    max_salary=max_salary,
+                    min_experience=min_experience,
+                    max_experience=max_experience,
+                    job_type=job_type,
+                    work_mode=work_mode,
+                    currency=currency,
+                )
+            )
+        # else: keep the existing embedding
+
         return await job.save(link_rule=WriteRules.DO_NOTHING)
 
     async def get(self, job_id: ObjectId) -> Job | None:

@@ -3,7 +3,7 @@ import { env } from "./lib/env/client";
 import links from "./lib/links";
 import { unsign } from "./lib/session";
 
-const AUTHENTICATED_ROUTES = [/^\/dashboard(?:\/.*)?$/];
+const AUTHENTICATED_ROUTES: RegExp[] = [/^\/new$/, /^\/select$/];
 
 const ANONYMOUS_ROUTES: RegExp[] = [/^\/$/];
 

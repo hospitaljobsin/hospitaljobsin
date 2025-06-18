@@ -1,13 +1,19 @@
 import asyncio
-from datetime import datetime, UTC, timedelta
+from datetime import UTC, datetime, timedelta
 
-from app.config import DatabaseSettings, get_settings
-from app.jobs.documents import Job
-from app.organizations.documents import Organization
+from app.config import DatabaseSettings, SecretSettings, get_settings
+from app.core.genai_client import create_google_genai_client
 from app.database import initialize_database
+from app.embeddings.services import EmbeddingsService
+from app.jobs.documents import Job
+from app.jobs.repositories import JobRepo
+from app.organizations.documents import Organization
 
 
 async def insert_healthcare_jobs():
+    embeddings_service = EmbeddingsService(
+        genai_client=create_google_genai_client(settings=get_settings(SecretSettings))
+    )
     # Find the organization with slug "aryan"
     async with initialize_database(
         str(get_settings(DatabaseSettings).database_url),
@@ -23,8 +29,6 @@ async def insert_healthcare_jobs():
                 title="Senior Cardiologist",
                 slug="senior-cardiologist",
                 description="""
-# Senior Cardiologist
-
 We are seeking an **experienced Cardiologist** to join our cardiac care team at a leading hospital in Mumbai. This is a unique opportunity to work with a multidisciplinary team and make a significant impact on patient care.
 
 ## Responsibilities
@@ -72,8 +76,6 @@ Mumbai, Maharashtra
                 title="Telemedicine Physician",
                 slug="telemedicine-physician",
                 description="""
-# Telemedicine Physician
-
 Join our **growing telemedicine team** to provide virtual healthcare services to patients across India. This role is ideal for physicians who are passionate about digital health and want to make healthcare more accessible.
 
 ## Responsibilities
@@ -121,8 +123,6 @@ Remote (Work from anywhere)
                 title="Pediatric Nurse Practitioner",
                 slug="pediatric-nurse-practitioner",
                 description="""
-# Pediatric Nurse Practitioner
-
 We are seeking a **Pediatric Nurse Practitioner** to provide comprehensive care to children from birth through adolescence. This role is perfect for compassionate professionals dedicated to child health and development.
 
 ## Responsibilities
@@ -169,8 +169,6 @@ Delhi, NCR (Hybrid)
                 title="Medical Laboratory Technician",
                 slug="medical-laboratory-technician",
                 description="""
-# Medical Laboratory Technician
-
 Join our **state-of-the-art medical laboratory team** and play a crucial role in patient diagnosis and treatment. This position offers hands-on experience with advanced laboratory equipment and technologies.
 
 ## Responsibilities
@@ -217,8 +215,6 @@ Bangalore, Karnataka
                 title="Mental Health Counselor",
                 slug="mental-health-counselor",
                 description="""
-# Mental Health Counselor
-
 We're looking for a **compassionate Mental Health Counselor** to provide therapy and support services to individuals and groups. This role is vital in promoting mental wellness and resilience in our community.
 
 ## Responsibilities
@@ -265,8 +261,6 @@ Hyderabad, Telangana (Hybrid)
                 title="Healthcare IT Specialist",
                 slug="healthcare-it-specialist",
                 description="""
-# Healthcare IT Specialist
-
 Join our **IT team** to support and optimize healthcare technology systems in a dynamic environment. This role is ideal for tech-savvy professionals passionate about improving healthcare delivery through technology.
 
 ## Responsibilities
@@ -313,8 +307,6 @@ Pune, Maharashtra (Hybrid)
                 title="Physical Therapist",
                 slug="physical-therapist",
                 description="""
-# Physical Therapist
-
 We are seeking a **Physical Therapist** to help patients recover from injuries, surgeries, and chronic conditions. This role is essential for improving patient mobility and quality of life.
 
 ## Responsibilities
@@ -361,8 +353,6 @@ Chennai, Tamil Nadu
                 title="Medical Billing Specialist",
                 slug="medical-billing-specialist",
                 description="""
-# Medical Billing Specialist
-
 Join our **finance team** to handle medical billing and insurance claims in a fast-paced healthcare environment. This position is crucial for ensuring accurate and timely reimbursement for services rendered.
 
 ## Responsibilities
@@ -409,8 +399,6 @@ Remote (Work from anywhere)
                 title="Emergency Room Nurse",
                 slug="emergency-room-nurse",
                 description="""
-# Emergency Room Nurse
-
 We are seeking **experienced ER Nurses** to provide critical care in our emergency department. This is a high-impact role for professionals who thrive in fast-paced, challenging environments.
 
 ## Responsibilities
@@ -457,8 +445,6 @@ Kolkata, West Bengal
                 title="Healthcare Administrator",
                 slug="healthcare-administrator",
                 description="""
-# Healthcare Administrator
-
 Join our **management team** to oversee healthcare operations and ensure the smooth functioning of our facility. This leadership role is ideal for professionals with a passion for healthcare management and organizational excellence.
 
 ## Responsibilities
@@ -502,6 +488,24 @@ Ahmedabad, Gujarat
                 organization=org,
             ),
         ]
+
+        for job in jobs:
+            job.embedding = await embeddings_service.generate_embeddings(
+                JobRepo.format_job_for_embedding(
+                    title=job.title,
+                    description=job.description,
+                    skills=job.skills,
+                    location=job.location,
+                    geo=job.geo,
+                    min_salary=job.min_salary,
+                    max_salary=job.max_salary,
+                    min_experience=job.min_experience,
+                    max_experience=job.max_experience,
+                    job_type=job.type,
+                    work_mode=job.work_mode,
+                    currency=job.currency,
+                )
+            )
 
         await Job.insert_many(jobs)
         print("Inserted 10 healthcare jobs under organization 'aryan'.")
