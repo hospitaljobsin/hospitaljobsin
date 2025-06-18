@@ -13,6 +13,7 @@ from app.accounts.documents import Account
 from app.base.models import GeoObject
 from app.core.constants import (
     DEFAULT_PAGINATION_LIMIT,
+    RELATED_JOBS_SIMILARITY_THRESHOLD,
     JobApplicantStatus,
     JobMetricEventType,
 )
@@ -370,6 +371,7 @@ class JobRepo:
 
     async def get_all_related(
         self,
+        job_id: ObjectId,
         job_embedding: list[float],
         first: int | None = None,
         last: int | None = None,
@@ -377,28 +379,25 @@ class JobRepo:
         after: str | None = None,
     ) -> PaginatedResult[Job, ObjectId]:
         """Get a paginated result of all jobs related to a given job."""
-        # TODO: get only active jobs here
         pipeline = [
             {
                 "$vectorSearch": {
                     "index": "job_embedding_vector_index",
                     "path": "embedding",
                     "queryVector": job_embedding,
-                    "numCandidates": 50,
-                    "limit": 10,
+                    "numCandidates": 100,  # higher is better for quality filtering
+                    "limit": 50,
                 }
             },
-            ## We are extracting 'vectorSearchScore' here
-            ## columns with 1 are included, columns with 0 are excluded
-            # {
-            #     "$project": {
-            #         "_id": 1,
-            #         "title": 1,
-            #         "plot": 1,
-            #         "year": 1,
-            #         "search_score": {"$meta": "vectorSearchScore"},
-            #     }
-            # },
+            {
+                "$match": {
+                    "_id": {"$ne": job_id},
+                    "is_active": True,  # also exclude inactive jobs here
+                }
+            },
+            {"$addFields": {"search_score": {"$meta": "vectorSearchScore"}}},
+            {"$match": {"search_score": {"$gte": RELATED_JOBS_SIMILARITY_THRESHOLD}}},
+            {"$sort": {"search_score": -1}},
         ]
         paginator: Paginator[Job, ObjectId] = Paginator(
             reverse=True,

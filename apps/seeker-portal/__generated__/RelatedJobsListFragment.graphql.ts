@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d7e23ee2315ce7791d89b212f9c26b84>>
+ * @generated SignedSource<<8c279c9c107d1f355a1ba655f87f4482>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,10 +25,6 @@ export type RelatedJobsListFragment$data = {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
     readonly __typename: "%other";
-  };
-  readonly viewer: {
-    readonly __typename: string;
-    readonly " $fragmentSpreads": FragmentRefs<"JobControlsAuthFragment">;
   };
   readonly " $fragmentType": "RelatedJobsListFragment";
 };
@@ -116,23 +112,6 @@ return {
         }
       ],
       "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": null,
-      "kind": "LinkedField",
-      "name": "viewer",
-      "plural": false,
-      "selections": [
-        (v0/*: any*/),
-        {
-          "args": null,
-          "kind": "FragmentSpread",
-          "name": "JobControlsAuthFragment"
-        }
-      ],
-      "storageKey": null
     }
   ],
   "type": "Query",
@@ -140,6 +119,6 @@ return {
 };
 })();
 
-(node as any).hash = "f7e6e553424d6e2761d6bfd695145297";
+(node as any).hash = "92b09c3628cedba7ec13259c748ac258";
 
 export default node;

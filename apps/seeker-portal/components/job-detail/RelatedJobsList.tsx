@@ -1,14 +1,12 @@
 import type { RelatedJobsListFragment$key } from "@/__generated__/RelatedJobsListFragment.graphql";
 import type { RelatedJobsListInternalFragment$key } from "@/__generated__/RelatedJobsListInternalFragment.graphql";
 import type { pageJobDetailViewQuery } from "@/__generated__/pageJobDetailViewQuery.graphql";
-import Job from "@/components/landing/Job";
 import JobListSkeleton from "@/components/landing/JobListSkeleton";
-import { Card, CardBody } from "@heroui/react";
-import { Search } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
+import RelatedJob from "./RelatedJob";
 const RelatedJobsListFragment = graphql`
   fragment RelatedJobsListFragment on Query @argumentDefinitions(
 	slug: { type: "String!"}
@@ -24,10 +22,7 @@ const RelatedJobsListFragment = graphql`
 				}
 			}
 		}
-	}	viewer {
-		__typename
-		...JobControlsAuthFragment
-	  }
+	}
   }
 `;
 
@@ -43,7 +38,7 @@ const RelatedJobsListInternalFragment = graphql`
       edges {
         node {
           id
-          ...JobFragment
+          ...RelatedJobFragment
         }
       }
       pageInfo {
@@ -99,42 +94,21 @@ export default function RelatedJobsList({
 		data.relatedJobs.edges.length === 0 &&
 		!data.relatedJobs.pageInfo.hasNextPage
 	) {
-		return (
-			<Card
-				className="p-6"
-				fullWidth
-				shadow="none"
-				style={{ background: "transparent" }}
-			>
-				<CardBody className="flex flex-col gap-6 w-full items-center">
-					<div className="flex flex-col items-center">
-						{/* Simple monochrome icon (e.g., magnifying glass) */}
-						<Search className="text-foreground-800" size={35} />
-					</div>
-					<div className="w-full flex flex-col gap-2 items-center">
-						<h2 className="font-medium text-muted-foreground text-base">
-							No jobs found
-						</h2>
-						<p className="text-muted-foreground text-sm text-center max-w-xs">
-							Try adjusting your search or filters to see more results.
-						</p>
-					</div>
-				</CardBody>
-			</Card>
-		);
+		return null;
 	}
 
 	return (
-		<div className="h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6 shrink">
-			{data.relatedJobs.edges.map((jobEdge) => (
-				<Job
-					job={jobEdge.node}
-					key={jobEdge.node.id}
-					authQueryRef={root.viewer}
-				/>
-			))}
-			<div ref={observerRef} className="h-10" />
-			{isLoadingNext && <JobListSkeleton />}
+		<div className="h-full flex flex-col gap-4 shrink w-full lg:w-auto">
+			<h2 className="text-base font-medium text-foreground-600">
+				Related Jobs
+			</h2>
+			<div className="h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
+				{data.relatedJobs.edges.map((jobEdge) => (
+					<RelatedJob job={jobEdge.node} key={jobEdge.node.id} />
+				))}
+				<div ref={observerRef} className="h-10" />
+				{isLoadingNext && <JobListSkeleton />}
+			</div>
 		</div>
 	);
 }

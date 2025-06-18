@@ -77,3 +77,5 @@ RESERVED_ORGANIZATION_NAMES = [
 # Gemini text-embedding-004
 # https://ai.google.dev/gemini-api/docs/models#text-embedding
 JOB_EMBEDDING_DIMENSIONS = 768
+
+RELATED_JOBS_SIMILARITY_THRESHOLD = 0.85

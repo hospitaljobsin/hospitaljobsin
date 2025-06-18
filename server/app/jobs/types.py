@@ -509,6 +509,7 @@ class JobType(BaseNodeType[Job]):
     ) -> "JobConnectionType":
         """Return a paginated connection of related jobs for the job."""
         paginated_jobs = await job_repo.get_all_related(
+            job_id=ObjectId(self.id),
             job_embedding=self.embedding,
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),

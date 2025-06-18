@@ -35,7 +35,7 @@ export default function JobDetailView(props: {
 	}, [slug, jobSlug]);
 
 	return (
-		<div className="py-8 w-full h-full flex flex-col sm:flex-row items-start gap-6">
+		<div className="py-8 w-full h-full flex flex-col lg:flex-row items-start gap-6">
 			<JobDetails rootQuery={query} />
 			<RelatedJobsList rootQuery={query} />
 		</div>

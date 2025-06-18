@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e0474fe8e1a6c69bf69066aab30af83e>>
+ * @generated SignedSource<<052c61d9de023a25efd60b1b2b518b2a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,7 @@ export type RelatedJobsListInternalFragment$data = {
     readonly edges: ReadonlyArray<{
       readonly node: {
         readonly id: string;
-        readonly " $fragmentSpreads": FragmentRefs<"JobFragment">;
+        readonly " $fragmentSpreads": FragmentRefs<"RelatedJobFragment">;
       };
     }>;
     readonly pageInfo: {
@@ -115,7 +115,7 @@ return {
                 {
                   "args": null,
                   "kind": "FragmentSpread",
-                  "name": "JobFragment"
+                  "name": "RelatedJobFragment"
                 },
                 {
                   "alias": null,
@@ -172,6 +172,6 @@ return {
 };
 })();
 
-(node as any).hash = "bdf520f8dad282eb6e8332e98c35a6b6";
+(node as any).hash = "e9f177a5006181373682a08a968e082e";
 
 export default node;
