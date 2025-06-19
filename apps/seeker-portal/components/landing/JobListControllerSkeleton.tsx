@@ -47,7 +47,7 @@ export default function JobListControllerSkeleton() {
 									minValue={0}
 									maxValue={100}
 									value={1}
-									className="max-w-md"
+									className="w-full"
 									showOutline
 									formatOptions={{ style: "unit", unit: "kilometer" }}
 									isDisabled
