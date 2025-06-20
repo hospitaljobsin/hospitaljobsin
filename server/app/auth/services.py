@@ -733,6 +733,7 @@ class AuthService:
                 password=None,
                 auth_providers=["oauth_google"],
             )
+            await self._profile_repo.create(account=account)
             # create an oauth credential for the user
             await self._oauth_credential_repo.create(
                 account_id=account.id,
