@@ -13,6 +13,7 @@ from app.context import AuthInfo
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     JobApplicantAlreadyExistsError,
+    JobApplicantsNotFoundError,
     JobApplicationFormNotFoundError,
     JobIsExternalError,
     JobNotFoundError,
@@ -45,6 +46,8 @@ from .types import (
     CreateJobSuccessType,
     DeleteJobPayload,
     JobApplicantAlreadyExistsErrorType,
+    JobApplicantsNotFoundErrorType,
+    JobApplicantStatusEnum,
     JobApplicantType,
     JobApplicationFormNotFoundErrorType,
     JobApplicationFormType,
@@ -62,6 +65,8 @@ from .types import (
     UnpublishJobPayload,
     UnsaveJobPayload,
     UnsaveJobSuccess,
+    UpdateJobApplicantsStatusPayload,
+    UpdateJobApplicantsStatusSuccessType,
     UpdateJobApplicationFormPayload,
     UpdateJobApplicationFormSuccessType,
     UpdateJobPayload,
@@ -619,6 +624,73 @@ class JobMutation:
             case Ok(job_application):
                 return CreateJobApplicantSuccessType(
                     job_applicant=JobApplicantType.marshal(job_application)
+                )
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateJobApplicantsStatusPayload,
+        description="Bulk update status of job applicants.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_job_applicants_status(
+        self,
+        info: AuthInfo,
+        job_application_service: Annotated[JobApplicantService, Inject],
+        *,
+        job_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the job to apply for.",
+            ),
+        ],
+        job_applicant_ids: Annotated[
+            list[relay.GlobalID],
+            strawberry.argument(
+                description="The IDs of the job applicants to update the status of.",
+            ),
+        ],
+        status: Annotated[
+            JobApplicantStatusEnum,
+            strawberry.argument(
+                description="The status to update the job applicants to.",
+            ),
+        ],
+    ) -> UpdateJobApplicantsStatusPayload:
+        """Bulk update status of job applicants."""
+        match await job_application_service.bulk_update_status(
+            account=info.context["current_user"],
+            job_id=job_id.node_id,
+            job_applicant_ids=[
+                job_applicant_id.node_id for job_applicant_id in job_applicant_ids
+            ],
+            status=status.value,
+        ):
+            case Err(error):
+                match error:
+                    case JobNotFoundError():
+                        return JobNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+                    case JobIsExternalError():
+                        return JobIsExternalErrorType()
+                    case JobApplicantsNotFoundError() as err:
+                        return JobApplicantsNotFoundErrorType(
+                            not_found_ids=err.not_found_ids,
+                        )
+            case Ok(job_applicants):
+                return UpdateJobApplicantsStatusSuccessType(
+                    job_applicants=[
+                        JobApplicantType.marshal(job_applicant)
+                        for job_applicant in job_applicants
+                    ]
                 )
             case _ as unreachable:
                 assert_never(unreachable)

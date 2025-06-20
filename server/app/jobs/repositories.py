@@ -593,6 +593,21 @@ class JobApplicantRepo:
         )
         return await application.insert(link_rule=WriteRules.DO_NOTHING)
 
+    async def bulk_update(
+        self,
+        job_applicant_ids: list[ObjectId],
+        status: JobApplicantStatus,
+    ) -> list[JobApplicant]:
+        """Bulk update the status of job applicants and return updated documents."""
+        await JobApplicant.find(In(JobApplicant.id, job_applicant_ids)).update(
+            Set({JobApplicant.status: status})
+        )
+        return await JobApplicant.find(
+            In(JobApplicant.id, job_applicant_ids),
+            fetch_links=True,
+            nesting_depth=1,
+        ).to_list()
+
     async def get_all_by_job_id(
         self,
         job_id: ObjectId,

@@ -10,6 +10,7 @@ from types_aiobotocore_s3 import S3Client
 from app.accounts.documents import Account
 from app.base.models import GeoObject
 from app.config import AWSSettings
+from app.core.constants import JobApplicantStatus
 from app.core.geocoding import BaseLocationService
 from app.jobs.documents import (
     ApplicantField,
@@ -23,6 +24,7 @@ from app.jobs.documents import (
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     JobApplicantAlreadyExistsError,
+    JobApplicantsNotFoundError,
     JobApplicationFormNotFoundError,
     JobIsExternalError,
     JobNotFoundError,
@@ -395,14 +397,14 @@ class JobApplicantService:
     def __init__(
         self,
         job_repo: JobRepo,
-        job_application_repo: JobApplicantRepo,
+        job_applicant_repo: JobApplicantRepo,
         organization_member_service: OrganizationMemberService,
         s3_client: S3Client,
         aws_settings: AWSSettings,
     ) -> None:
         self._job_repo = job_repo
         self._organization_member_service = organization_member_service
-        self._job_application_repo = job_application_repo
+        self._job_applicant_repo = job_applicant_repo
         self._s3_client = s3_client
         self._aws_settings = aws_settings
 
@@ -438,20 +440,97 @@ class JobApplicantService:
             return Err(AccountProfileNotFoundError())
 
         # check if user has already applied here
-        existing_job_application = await self._job_application_repo.get(
+        existing_job_application = await self._job_applicant_repo.get(
             account_id=account.id, job_id=existing_job.id
         )
 
         if existing_job_application is not None:
             return Err(JobApplicantAlreadyExistsError())
 
-        job_application = await self._job_application_repo.create(
+        job_application = await self._job_applicant_repo.create(
             job=existing_job,
             account=account,
             applicant_fields=applicant_fields,
         )
 
         return Ok(job_application)
+
+    async def bulk_update_status(
+        self,
+        account: Account,
+        job_id: str,
+        job_applicant_ids: list[str],
+        status: JobApplicantStatus,
+    ) -> Result[
+        list[JobApplicant],
+        JobNotFoundError
+        | OrganizationAuthorizationError
+        | JobIsExternalError
+        | JobApplicantsNotFoundError,
+    ]:
+        """Bulk update status for job applicants."""
+        try:
+            job_id_obj = ObjectId(job_id)
+        except InvalidId:
+            return Err(JobNotFoundError())
+
+        existing_job = await self._job_repo.get(job_id=job_id_obj)
+        if existing_job is None:
+            return Err(JobNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=existing_job.organization.ref.id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        if existing_job.external_application_url is not None:
+            return Err(JobIsExternalError())
+
+        applicant_object_ids: list[ObjectId] = []
+        invalid_format_ids: list[str] = []
+        for id_str in job_applicant_ids:
+            if not ObjectId.is_valid(id_str):
+                invalid_format_ids.append(id_str)
+            else:
+                applicant_object_ids.append(ObjectId(id_str))
+
+        if invalid_format_ids:
+            return Err(
+                JobApplicantsNotFoundError(
+                    not_found_ids=invalid_format_ids,
+                )
+            )
+
+        # Check if all applicants exist
+        existing_applicants = await self._job_applicant_repo.get_many_by_ids(
+            applicant_object_ids
+        )
+
+        found_applicants = [app for app in existing_applicants if app]
+
+        if len(found_applicants) != len(applicant_object_ids):
+            found_ids = {app.id for app in found_applicants}
+            not_found_ids = [
+                str(id_obj)
+                for id_obj in applicant_object_ids
+                if id_obj not in found_ids
+            ]
+            return Err(JobApplicantsNotFoundError(not_found_ids=not_found_ids))
+
+        # Verify that all applicants belong to the specified job
+        for applicant in found_applicants:
+            if applicant.job.ref.id != job_id_obj:
+                # This indicates a client-side error, trying to update an applicant
+                # from a different job.
+                return Err(OrganizationAuthorizationError())
+
+        job_applications = await self._job_applicant_repo.bulk_update(
+            job_applicant_ids=applicant_object_ids,
+            status=status,
+        )
+
+        return Ok(job_applications)
 
     async def create_resume_presigned_url(self) -> str:
         """Create a presigned URL for uploading a resume."""

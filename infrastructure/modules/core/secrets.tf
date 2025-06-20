@@ -74,7 +74,6 @@ resource "aws_secretsmanager_secret_version" "recruiter_dashboard" {
   secret_id = aws_secretsmanager_secret.recruiter_dashboard.id
   secret_string = jsonencode({
     jwe_secret_key = random_bytes.jwe_secret.hex,
-    google_api_key = var.google_gemini_api_key,
   })
 
   depends_on = [random_bytes.jwe_secret, ]

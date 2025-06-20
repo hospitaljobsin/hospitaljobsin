@@ -32,3 +32,10 @@ class JobIsExternalError:
 
 class AccountProfileNotFoundError:
     """Raised when an account profile is not found."""
+
+
+class JobApplicantsNotFoundError:
+    """Raised when one or more job applicants were not found."""
+
+    def __init__(self, not_found_ids: list[str]) -> None:
+        self.not_found_ids = not_found_ids

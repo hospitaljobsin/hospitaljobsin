@@ -39,7 +39,6 @@ export default $config({
 				NEXT_PUBLIC_ROOT_DOMAIN: env.NEXT_PUBLIC_ROOT_DOMAIN,
 				AWS_SECRET_ID: process.env.AWS_SECRET_ID,
 				API_URL: process.env.API_URL,
-				GOOGLE_GEMINI_MODEL: process.env.GOOGLE_GEMINI_MODEL,
 			},
 			// uncomment the following block after the VPC is properly setup using endpoints
 			// (right now, the API can be accessed from the public internet only)

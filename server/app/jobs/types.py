@@ -853,6 +853,17 @@ class JobIsExternalErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="JobApplicantsNotFoundError",
+    description="Used when one or more job applicants were not found.",
+)
+class JobApplicantsNotFoundErrorType(BaseErrorType):
+    message: str = "One or more job applicants were not found."
+    not_found_ids: list[str] = strawberry.field(
+        description="List of job applicant IDs that could not be found."
+    )
+
+
 SaveJobPayload = Annotated[
     SaveJobSuccess | JobNotFoundErrorType,
     strawberry.union(
@@ -1045,6 +1056,31 @@ CreateJobApplicantPayload = Annotated[
     strawberry.union(
         name="CreateJobApplicantPayload",
         description="The create job application payload.",
+    ),
+]
+
+
+@strawberry.type(
+    name="UpdateJobApplicantsStatusSuccess",
+    description="Used when the status of job applicants are updated successfully.",
+)
+class UpdateJobApplicantsStatusSuccessType:
+    job_applicants: list[JobApplicantType] = strawberry.field(
+        description="The updated job applicants.",
+    )
+
+
+UpdateJobApplicantsStatusPayload = Annotated[
+    UpdateJobApplicantsStatusSuccessType
+    | JobNotFoundErrorType
+    | JobIsExternalErrorType
+    | JobApplicantsNotFoundErrorType
+    | Annotated[
+        "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
+    ],
+    strawberry.union(
+        name="UpdateJobApplicantsStatusPayload",
+        description="The update job applicants status payload.",
     ),
 ]
 
