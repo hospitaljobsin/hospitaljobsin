@@ -288,11 +288,15 @@ class JobRepo:
             paginate_by="id",
         )
 
-        search_criteria = Job.find(Job.is_active == True)  # noqa: E712
+        search_criteria = Job.find(
+            Job.is_active == True,  # noqa: E712
+            Job.expires_at > datetime.now(UTC),
+        )
 
         if search_term:
             search_criteria = Job.find(
                 Job.is_active == True,  # noqa: E712
+                Job.expires_at > datetime.now(UTC),
                 {"$text": {"$search": search_term}},
             )
 
@@ -393,6 +397,7 @@ class JobRepo:
                 "$match": {
                     "_id": {"$ne": job_id},
                     "is_active": True,  # also exclude inactive jobs here
+                    "expires_at": {"$gt": datetime.now(UTC)},
                 }
             },
             {"$addFields": {"search_score": {"$meta": "vectorSearchScore"}}},

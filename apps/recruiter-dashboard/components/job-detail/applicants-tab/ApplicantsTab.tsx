@@ -140,10 +140,10 @@ export default function ApplicantsTab(props: {
 			{selectedCount > 0 ? (
 				<Card
 					fullWidth
-					className="flex flex-row justify-between items-center p-6 w-full"
+					className="flex flex-row justify-between items-center px-6 py-4 w-full"
 					shadow="none"
 				>
-					<p className="text-md font-medium">
+					<p className="text-md">
 						{selectedCount} applicant
 						{selectedCount > 1 ? "s" : ""} selected
 					</p>
@@ -152,6 +152,7 @@ export default function ApplicantsTab(props: {
 							<Button
 								variant="flat"
 								color="primary"
+								size="sm"
 								endContent={<ChevronDown />}
 								isLoading={isInFlight}
 							>
