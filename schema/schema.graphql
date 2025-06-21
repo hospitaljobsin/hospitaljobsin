@@ -3031,6 +3031,11 @@ type Profile implements Node {
 	When the profile was last updated.
 	"""
 	updatedAt: DateTime!
+
+	"""
+	Whether the profile is complete.
+	"""
+	isComplete: Boolean!
 }
 
 """

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<80fc042d614c58981b4f45dc953c0130>>
- * @relayHash ec0625edbba09e4b07d899e93608d785
+ * @generated SignedSource<<a5165e6e90f18e75fc9afebcd3b7e4ff>>
+ * @relayHash e6c4f5b90e783bce2ec2fe93ceb93b89
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ec0625edbba09e4b07d899e93608d785
+// @relayRequestID e6c4f5b90e783bce2ec2fe93ceb93b89
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -17,7 +17,7 @@ export type HeaderQuery$variables = Record<PropertyKey, never>;
 export type HeaderQuery$data = {
   readonly viewer: {
     readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "IncompleteProfileBannerFragment">;
   } | {
     readonly __typename: "NotAuthenticatedError";
   } | {
@@ -37,6 +37,13 @@ var v0 = {
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
+  "storageKey": null
+},
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 };
 return {
@@ -62,6 +69,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "AuthNavigationFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "IncompleteProfileBannerFragment"
               }
             ],
             "type": "Account",
@@ -113,6 +125,25 @@ return {
                 "kind": "ScalarField",
                 "name": "avatarUrl",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  (v1/*: any*/)
+                ],
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -121,13 +152,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              }
+              (v1/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -138,7 +163,7 @@ return {
     ]
   },
   "params": {
-    "id": "ec0625edbba09e4b07d899e93608d785",
+    "id": "e6c4f5b90e783bce2ec2fe93ceb93b89",
     "metadata": {},
     "name": "HeaderQuery",
     "operationKind": "query",
@@ -147,6 +172,6 @@ return {
 };
 })();
 
-(node as any).hash = "ba1866bd7228bf3690b047bea67dc286";
+(node as any).hash = "9be64ba5115fa9886ad5e4d4731f609e";
 
 export default node;

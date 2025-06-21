@@ -252,6 +252,10 @@ class ProfileType(BaseNodeType[Profile]):
         description="When the profile was last updated.",
     )
 
+    is_complete: bool = strawberry.field(
+        description="Whether the profile is complete.",
+    )
+
     @classmethod
     def marshal(cls, model: Profile) -> Self:
         """Marshal into a node instance."""
@@ -282,6 +286,7 @@ class ProfileType(BaseNodeType[Profile]):
                 CertificationType.marshal(cert) for cert in model.certifications
             ],
             updated_at=model.updated_at,
+            is_complete=model.is_complete,
         )
 
     @classmethod

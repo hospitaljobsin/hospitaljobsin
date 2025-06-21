@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1ac13bd63e58130993d6dc638ecaf50e>>
+ * @generated SignedSource<<bf7a3921981c051be12cba9941b172f0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,6 +14,15 @@ export type ProfileViewFragment$data = {
   readonly viewer: {
     readonly __typename: "Account";
     readonly profile: {
+      readonly address: string;
+      readonly dateOfBirth: any | null | undefined;
+      readonly education: ReadonlyArray<{
+        readonly __typename: "Education";
+      }>;
+      readonly locationsOpenToWork: ReadonlyArray<string>;
+      readonly workExperience: ReadonlyArray<{
+        readonly __typename: "WorkExperience";
+      }>;
       readonly " $fragmentSpreads": FragmentRefs<"CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LicensesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLicensesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateWorkExperienceFormFragment" | "WorkExperienceFragment">;
     };
     readonly " $fragmentSpreads": FragmentRefs<"ProfileBannerFragment">;
@@ -29,7 +38,18 @@ export type ProfileViewFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"ProfileViewFragment">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v1 = [
+  (v0/*: any*/)
+];
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -43,13 +63,7 @@ const node: ReaderFragment = {
       "name": "viewer",
       "plural": false,
       "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "__typename",
-          "storageKey": null
-        },
+        (v0/*: any*/),
         {
           "kind": "InlineFragment",
           "selections": [
@@ -68,6 +82,47 @@ const node: ReaderFragment = {
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "dateOfBirth",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "address",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "WorkExperience",
+                    "kind": "LinkedField",
+                    "name": "workExperience",
+                    "plural": true,
+                    "selections": (v1/*: any*/),
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Education",
+                    "kind": "LinkedField",
+                    "name": "education",
+                    "plural": true,
+                    "selections": (v1/*: any*/),
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "locationsOpenToWork",
+                    "storageKey": null
+                  },
                   {
                     "args": null,
                     "kind": "FragmentSpread",
@@ -154,7 +209,8 @@ const node: ReaderFragment = {
   "type": "Query",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "871babf41c8c410e2205cd5a879fe1be";
+(node as any).hash = "f84857f4249065624e4a0b3c827538e6";
 
 export default node;

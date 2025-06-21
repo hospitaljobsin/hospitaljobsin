@@ -104,6 +104,19 @@ class Profile(Document):
     class Settings:
         name = "profiles"  # MongoDB collection name
 
+    @property
+    def is_complete(self) -> bool:
+        """Checks if the profile has the minimum required information to apply for a job."""
+        return all(
+            [
+                self.date_of_birth,
+                self.address,
+                self.work_experience,
+                self.education,
+                self.locations_open_to_work,
+            ]
+        )
+
 
 class Account(Document):
     full_name: str
