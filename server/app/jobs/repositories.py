@@ -9,7 +9,7 @@ from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.operators import And, In, NearSphere, Set
 from bson import ObjectId
 
-from app.accounts.documents import Account
+from app.accounts.documents import Account, BaseProfile
 from app.base.models import GeoObject
 from app.core.constants import (
     DEFAULT_PAGINATION_LIMIT,
@@ -592,6 +592,22 @@ class JobApplicantRepo:
             organization=job.organization,
             account=account,
             account_full_name=account.full_name,
+            profile_snapshot=BaseProfile(
+                address=account.profile.address,
+                date_of_birth=account.profile.date_of_birth,
+                gender=account.profile.gender,
+                marital_status=account.profile.marital_status,
+                category=account.profile.category,
+                locations_open_to_work=account.profile.locations_open_to_work,
+                open_to_relocation_anywhere=account.profile.open_to_relocation_anywhere,
+                education=account.profile.education,
+                licenses=account.profile.licenses,
+                languages=account.profile.languages,
+                job_preferences=account.profile.job_preferences,
+                work_experience=account.profile.work_experience,
+                salary_expectations=account.profile.salary_expectations,
+                certifications=account.profile.certifications,
+            ),
             status="applied",
             applicant_fields=applicant_fields,
             slug=self.generate_slug(),

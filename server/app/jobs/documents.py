@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 from pymongo import IndexModel
 from pymongo.operations import SearchIndexModel
 
-from app.accounts.documents import Account
+from app.accounts.documents import Account, BaseProfile
 from app.base.models import GeoObject
 from app.core.constants import (
     JobApplicantStatus,
@@ -118,6 +118,7 @@ class ApplicantField(BaseModel):
 
 
 class JobApplicant(Document):
+    profile_snapshot: BaseProfile
     account: Link[Account]
     account_full_name: (
         str  # denormalized from the account document for full-text search
