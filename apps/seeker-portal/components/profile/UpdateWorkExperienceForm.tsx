@@ -23,10 +23,9 @@ const UpdateWorkExperienceFormMutation = graphql`
 mutation UpdateWorkExperienceFormMutation($workExperience: [WorkExperienceInput!]!) {
   updateProfileExperience(workExperience: $workExperience) {
     ...on Account {
+		...IncompleteProfileBannerFragment
       profile {
-        ... on Profile {
           ...UpdateWorkExperienceFormFragment
-        }
       }
     }
   }

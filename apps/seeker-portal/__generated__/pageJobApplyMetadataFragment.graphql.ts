@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<71937073c6952a5bd14ac772996821bb>>
+ * @generated SignedSource<<a96bf8d926ee0113f052b9acb803ccca>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -30,6 +30,16 @@ export type pageJobApplyMetadataFragment$data = {
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
+  readonly viewer: {
+    readonly __typename: "Account";
+    readonly profile: {
+      readonly isComplete: boolean;
+    } | null | undefined;
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
   readonly " $fragmentType": "pageJobApplyMetadataFragment";
 };
 export type pageJobApplyMetadataFragment$key = {
@@ -42,6 +52,6 @@ const node: ReaderInlineDataFragment = {
   "name": "pageJobApplyMetadataFragment"
 };
 
-(node as any).hash = "6f37835661638374270f407e30e99144";
+(node as any).hash = "89b5eb6b30dd467cd330f286856a4e62";
 
 export default node;

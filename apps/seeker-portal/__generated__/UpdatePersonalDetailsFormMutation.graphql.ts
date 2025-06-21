@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a87bb48557ffe0cd7c283d421575890b>>
- * @relayHash d891b6880e620842050601ac822aaf7b
+ * @generated SignedSource<<aab92781551fca04abb4ec9312897897>>
+ * @relayHash 20f47e349664e708b7cdff8ca22c48dc
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d891b6880e620842050601ac822aaf7b
+// @relayRequestID 20f47e349664e708b7cdff8ca22c48dc
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -26,6 +26,7 @@ export type UpdatePersonalDetailsFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdatePersonalDetailsFormFragment">;
     } | null | undefined;
+    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
   };
 };
 export type UpdatePersonalDetailsFormMutation = {
@@ -107,6 +108,11 @@ return {
             "kind": "InlineFragment",
             "selections": [
               {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "IncompleteProfileBannerFragment"
+              },
+              {
                 "alias": null,
                 "args": null,
                 "concreteType": "Profile",
@@ -162,6 +168,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              (v5/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -170,6 +177,14 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  (v5/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -197,8 +212,7 @@ return {
                     "kind": "ScalarField",
                     "name": "category",
                     "storageKey": null
-                  },
-                  (v5/*: any*/)
+                  }
                 ],
                 "storageKey": null
               }
@@ -220,7 +234,7 @@ return {
     ]
   },
   "params": {
-    "id": "d891b6880e620842050601ac822aaf7b",
+    "id": "20f47e349664e708b7cdff8ca22c48dc",
     "metadata": {},
     "name": "UpdatePersonalDetailsFormMutation",
     "operationKind": "mutation",
@@ -229,6 +243,6 @@ return {
 };
 })();
 
-(node as any).hash = "d80e1adf0da3a99d2c28e52a3ae3d285";
+(node as any).hash = "e3b2c9c1e01053ecf50fc378c952e0d8";
 
 export default node;

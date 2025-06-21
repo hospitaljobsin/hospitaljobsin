@@ -78,12 +78,7 @@ class Certification(BaseModel):
     expires_at: date | None = None
 
 
-# Main Job Seeker Profile Document
-# AKA Reusable Resume
-class Profile(Document):
-    account: BackLink["Account"] = Field(  # type: ignore[call-overload]
-        original_field="profile",
-    )
+class BaseProfile(BaseModel):
     # personal details
     gender: GenderEnum | None
     date_of_birth: date | None
@@ -99,10 +94,32 @@ class Profile(Document):
     work_experience: list[WorkExperience]
     salary_expectations: SalaryExpectations | None
     certifications: list[Certification]
+
+
+# Main Job Seeker Profile Document
+# AKA Reusable Resume
+class Profile(BaseProfile, Document):
+    account: BackLink["Account"] = Field(  # type: ignore[call-overload]
+        original_field="profile",
+    )
+
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     class Settings:
         name = "profiles"  # MongoDB collection name
+
+    @property
+    def is_complete(self) -> bool:
+        """Checks if the profile has the minimum required information to apply for a job."""
+        return all(
+            [
+                self.date_of_birth,
+                self.address,
+                self.work_experience,
+                self.education,
+                (self.locations_open_to_work or self.open_to_relocation_anywhere),
+            ]
+        )
 
 
 class Account(Document):

@@ -16,6 +16,7 @@ import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import Logo from "../Logo";
 import AuthNavigation from "./AuthNavigation";
+import IncompleteProfileBanner from "./IncompleteProfileBanner";
 
 export const HeaderQuery = graphql`
   query HeaderQuery {
@@ -23,6 +24,7 @@ export const HeaderQuery = graphql`
       ... on Account {
         __typename
         ...AuthNavigationFragment
+		...IncompleteProfileBannerFragment
       }
       ... on NotAuthenticatedError {
         __typename
@@ -40,73 +42,78 @@ export default function Header({
 }) {
 	const data = usePreloadedQuery(HeaderQuery, queryReference);
 	return (
-		<Navbar
-			maxWidth="xl"
-			isBordered={variant !== "hero"}
-			position={variant === "hero" ? "static" : "sticky"}
-			classNames={{
-				base:
-					variant === "hero"
-						? "bg-transparent text-primary-foreground"
-						: "bg-background-600",
-			}}
-			isBlurred={false}
-		>
-			<NavbarBrand className="flex items-center gap-4">
-				<Link
-					href={links.landing}
-					className="font-medium text-inherit flex items-center gap-4"
-				>
-					<Logo />
-					{APP_NAME}
-				</Link>
-			</NavbarBrand>
+		<div className="w-full flex flex-col">
+			{data.viewer.__typename === "Account" && (
+				<IncompleteProfileBanner account={data.viewer} />
+			)}
+			<Navbar
+				maxWidth="xl"
+				isBordered={variant !== "hero"}
+				position={variant === "hero" ? "static" : "sticky"}
+				classNames={{
+					base:
+						variant === "hero"
+							? "bg-transparent text-primary-foreground"
+							: "bg-background-600",
+				}}
+				isBlurred={false}
+			>
+				<NavbarBrand className="flex items-center gap-4">
+					<Link
+						href={links.landing}
+						className="font-medium text-inherit flex items-center gap-4"
+					>
+						<Logo />
+						{APP_NAME}
+					</Link>
+				</NavbarBrand>
 
-			<NavbarContent justify="end">
-				{data.viewer.__typename === "Account" ? (
-					<>
-						<NavbarItem className="hidden md:block">
-							<Link
-								href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
-								isExternal
-								color="foreground"
-								showAnchorIcon
-								className={
-									variant === "hero"
-										? "text-primary-foreground"
-										: "text-foreground"
-								}
-							>
-								for recruiters
-							</Link>
-						</NavbarItem>
-						<AuthNavigation rootQuery={data.viewer} />
-					</>
-				) : (
-					<>
-						<NavbarItem>
-							<Button
-								as={Link}
-								color="default"
-								href={links.login(env.NEXT_PUBLIC_URL)}
-							>
-								Log In
-							</Button>
-						</NavbarItem>
-						<NavbarItem>
-							<Button
-								as={Link}
-								href={links.recruiterLanding}
-								isExternal
-								color="default"
-								variant="flat"
-							>
-								For recruiters
-							</Button>
-						</NavbarItem>
-					</>
-				)}
-			</NavbarContent>
-		</Navbar>
+				<NavbarContent justify="end">
+					{data.viewer.__typename === "Account" ? (
+						<>
+							<NavbarItem className="hidden md:block">
+								<Link
+									href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
+									isExternal
+									color="foreground"
+									showAnchorIcon
+									className={
+										variant === "hero"
+											? "text-primary-foreground"
+											: "text-foreground"
+									}
+								>
+									for recruiters
+								</Link>
+							</NavbarItem>
+							<AuthNavigation rootQuery={data.viewer} />
+						</>
+					) : (
+						<>
+							<NavbarItem>
+								<Button
+									as={Link}
+									color="default"
+									href={links.login(env.NEXT_PUBLIC_URL)}
+								>
+									Log In
+								</Button>
+							</NavbarItem>
+							<NavbarItem>
+								<Button
+									as={Link}
+									href={links.recruiterLanding}
+									isExternal
+									color="default"
+									variant="flat"
+								>
+									For recruiters
+								</Button>
+							</NavbarItem>
+						</>
+					)}
+				</NavbarContent>
+			</Navbar>
+		</div>
 	);
 }

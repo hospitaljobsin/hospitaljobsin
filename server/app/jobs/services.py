@@ -8,6 +8,7 @@ from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
 from app.accounts.documents import Account
+from app.accounts.exceptions import AccountProfileIncompleteError
 from app.base.models import GeoObject
 from app.config import AWSSettings
 from app.core.constants import JobApplicantStatus
@@ -419,7 +420,8 @@ class JobApplicantService:
         | JobNotPublishedError
         | JobApplicantAlreadyExistsError
         | JobIsExternalError
-        | AccountProfileNotFoundError,
+        | AccountProfileNotFoundError
+        | AccountProfileIncompleteError,
     ]:
         """Create a job application."""
         try:
@@ -436,8 +438,13 @@ class JobApplicantService:
         if existing_job.external_application_url is not None:
             return Err(JobIsExternalError())
 
+        await account.fetch_link(Account.profile)
+
         if account.profile is None:
             return Err(AccountProfileNotFoundError())
+
+        if not account.profile.is_complete:
+            return Err(AccountProfileIncompleteError())
 
         # check if user has already applied here
         existing_job_application = await self._job_applicant_repo.get(

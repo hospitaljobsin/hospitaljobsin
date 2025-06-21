@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9a115f7a213e538dd4229e87590193f6>>
+ * @generated SignedSource<<fcc2751f6bf70b6ab095b5943141e029>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,12 +17,16 @@ export type ApplicantDetailViewFragment$data = {
       readonly __typename: "Job";
       readonly jobApplicant: {
         readonly __typename: "JobApplicant";
+        readonly profileSnapshot: {
+          readonly " $fragmentSpreads": FragmentRefs<"ProfileSnapshotViewFragment">;
+        };
         readonly " $fragmentSpreads": FragmentRefs<"ApplicantDetailsFragment">;
       } | {
         // This will never be '%other', but we need some
         // value in case none of the concrete values match.
         readonly __typename: "%other";
       };
+      readonly " $fragmentSpreads": FragmentRefs<"ApplicantDetails_job">;
     } | {
       // This will never be '%other', but we need some
       // value in case none of the concrete values match.
@@ -107,6 +111,11 @@ return {
                   "kind": "InlineFragment",
                   "selections": [
                     {
+                      "args": null,
+                      "kind": "FragmentSpread",
+                      "name": "ApplicantDetails_job"
+                    },
+                    {
                       "alias": null,
                       "args": [
                         {
@@ -128,6 +137,22 @@ return {
                               "args": null,
                               "kind": "FragmentSpread",
                               "name": "ApplicantDetailsFragment"
+                            },
+                            {
+                              "alias": null,
+                              "args": null,
+                              "concreteType": "ProfileSnapshot",
+                              "kind": "LinkedField",
+                              "name": "profileSnapshot",
+                              "plural": false,
+                              "selections": [
+                                {
+                                  "args": null,
+                                  "kind": "FragmentSpread",
+                                  "name": "ProfileSnapshotViewFragment"
+                                }
+                              ],
+                              "storageKey": null
                             }
                           ],
                           "type": "JobApplicant",
@@ -156,6 +181,6 @@ return {
 };
 })();
 
-(node as any).hash = "114b6534f726833be7d6874dad4dbfb8";
+(node as any).hash = "38a01e056d2099d117c1cbcc09179081";
 
 export default node;

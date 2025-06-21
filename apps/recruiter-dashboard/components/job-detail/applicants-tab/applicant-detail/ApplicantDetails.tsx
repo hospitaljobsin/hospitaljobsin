@@ -1,33 +1,48 @@
 "use client";
 import type { ApplicantDetailsFragment$key } from "@/__generated__/ApplicantDetailsFragment.graphql";
-import { Card, CardBody, CardHeader, Chip, Divider, Link } from "@heroui/react";
+import type { ApplicantDetails_job$key } from "@/__generated__/ApplicantDetails_job.graphql";
+import { Card, CardBody, CardHeader, Divider, Link } from "@heroui/react";
 import { Mail, ShieldQuestion } from "lucide-react";
 import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
+import ApplicantStatusUpdater from "./ApplicantStatusUpdater";
 
 const ApplicantDetailsFragment = graphql`
   fragment ApplicantDetailsFragment on JobApplicant {
-	status
-	applicantFields {
-			fieldName
-			fieldValue
-		}
-    account @required(action: THROW) {
-        fullName
-        avatarUrl
-        email
-
-		profile @required(action: THROW) {
-			address
-		}
+    id
+    status
+    applicantFields {
+      fieldName
+      fieldValue
     }
+    account @required(action: THROW) {
+      fullName
+      avatarUrl
+      email
+
+      profile @required(action: THROW) {
+        address
+      }
+    }
+  }
+`;
+
+const ApplicantDetailsJobFragment = graphql`
+  fragment ApplicantDetails_job on Job {
+    id
+    ...ApplicantStatusUpdater_job
   }
 `;
 
 export default function ApplicantDetails({
 	rootQuery,
-}: { rootQuery: ApplicantDetailsFragment$key }) {
+	job,
+}: {
+	rootQuery: ApplicantDetailsFragment$key;
+	job: ApplicantDetails_job$key;
+}) {
 	const data = useFragment(ApplicantDetailsFragment, rootQuery);
+	const jobData = useFragment(ApplicantDetailsJobFragment, job);
 
 	return (
 		<div className="w-full flex flex-col gap-6">
@@ -53,7 +68,11 @@ export default function ApplicantDetails({
 							</div>
 						</div>
 					</div>
-					<Chip color="primary">{data.status}</Chip>
+					<ApplicantStatusUpdater
+						currentStatus={data.status}
+						job={jobData}
+						applicantId={data.id}
+					/>
 				</CardHeader>
 			</Card>
 
@@ -61,9 +80,7 @@ export default function ApplicantDetails({
 			{data.applicantFields && data.applicantFields.length > 0 && (
 				<Card fullWidth shadow="none" className="p-6 space-y-6">
 					<CardHeader>
-						<h3 className="text-medium font-medium text-foreground-600">
-							Screening Questions
-						</h3>
+						<h3 className="text-sm text-foreground-500">Screening Questions</h3>
 					</CardHeader>
 					<Divider />
 					<CardBody>

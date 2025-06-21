@@ -27,11 +27,10 @@ const UpdateLocationPreferencesMutation = graphql`
   mutation UpdateLocationPreferencesFormMutation($locationsOpenToWork: [String!]!, $openToRelocationAnywhere: Boolean!, $address: String!) {
     updateProfileLocationPreferences(locationsOpenToWork: $locationsOpenToWork, openToRelocationAnywhere: $openToRelocationAnywhere, address: $address) {
       ... on Account {
+		...IncompleteProfileBannerFragment
         profile {
-          ... on Profile {
             ...UpdateLocationPreferencesFormFragment
             ...LocationPreferencesFragment
-          }
         }
       }
     }

@@ -31,6 +31,7 @@ export default function ApplicantListController(
 	return (
 		<div className="w-full flex flex-col sm:flex-row items-center gap-8">
 			<Input
+				size="lg"
 				classNames={{
 					inputWrapper: "bg-background shadow-none",
 				}}

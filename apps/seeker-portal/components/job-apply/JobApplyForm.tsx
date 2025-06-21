@@ -64,6 +64,9 @@ const CreateJobApplicantMutation = graphql`
       ... on JobIsExternalError {
         __typename
       }
+	  ... on AccountProfileIncompleteError {
+		__typename
+	  }
     }
   }
 `;

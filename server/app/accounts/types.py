@@ -201,11 +201,11 @@ class WorkExperienceInputType:
         )
 
 
-@strawberry.type(
-    name="Profile",
-    description="An account's profile.",
+@strawberry.interface(
+    name="BaseProfile",
+    description="A base profile belonging to a user.",
 )
-class ProfileType(BaseNodeType[Profile]):
+class BaseProfileType:
     gender: GenderTypeEnum | None = strawberry.field(
         description="The gender of the profile's user.",
     )
@@ -248,8 +248,19 @@ class ProfileType(BaseNodeType[Profile]):
     certifications: list["CertificationType"] = strawberry.field(
         description="The user's certifications.",
     )
+
+
+@strawberry.type(
+    name="Profile",
+    description="An account's profile.",
+)
+class ProfileType(BaseProfileType, BaseNodeType[Profile]):
     updated_at: datetime = strawberry.field(
         description="When the profile was last updated.",
+    )
+
+    is_complete: bool = strawberry.field(
+        description="Whether the profile is complete.",
     )
 
     @classmethod
@@ -282,6 +293,7 @@ class ProfileType(BaseNodeType[Profile]):
                 CertificationType.marshal(cert) for cert in model.certifications
             ],
             updated_at=model.updated_at,
+            is_complete=model.is_complete,
         )
 
     @classmethod

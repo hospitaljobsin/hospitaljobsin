@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<4baa01e7bea60f6ed41abe59177fab20>>
- * @relayHash 716eeb522a21fbe4bef0092f6eb7d355
+ * @generated SignedSource<<64419fb5a15b31f69191cf18929eaaf9>>
+ * @relayHash abcc9a5f16f553f3d92f3a618002adbd
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 716eeb522a21fbe4bef0092f6eb7d355
+// @relayRequestID abcc9a5f16f553f3d92f3a618002adbd
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -214,6 +214,39 @@ return {
                           {
                             "alias": null,
                             "args": null,
+                            "concreteType": "Account",
+                            "kind": "LinkedField",
+                            "name": "account",
+                            "plural": false,
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "email",
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "fullName",
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "avatarUrl",
+                                "storageKey": null
+                              },
+                              (v10/*: any*/)
+                            ],
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
                             "kind": "ScalarField",
                             "name": "slug",
                             "storageKey": null
@@ -231,39 +264,6 @@ return {
                                 "storageKey": null
                               }
                             ]
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "concreteType": "Account",
-                            "kind": "LinkedField",
-                            "name": "account",
-                            "plural": false,
-                            "selections": [
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "fullName",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "avatarUrl",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "email",
-                                "storageKey": null
-                              },
-                              (v10/*: any*/)
-                            ],
-                            "storageKey": null
                           },
                           (v9/*: any*/)
                         ],
@@ -329,7 +329,7 @@ return {
     ]
   },
   "params": {
-    "id": "716eeb522a21fbe4bef0092f6eb7d355",
+    "id": "abcc9a5f16f553f3d92f3a618002adbd",
     "metadata": {},
     "name": "ApplicantListPaginationQuery",
     "operationKind": "query",
@@ -338,6 +338,6 @@ return {
 };
 })();
 
-(node as any).hash = "c6dcda356daa0d31b0fe126462e1c951";
+(node as any).hash = "841552fcb1e8552c24c980a09eb28e93";
 
 export default node;

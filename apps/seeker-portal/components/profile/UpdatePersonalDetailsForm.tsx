@@ -20,10 +20,9 @@ const UpdatePersonalDetailsFormMutation = graphql`
 mutation UpdatePersonalDetailsFormMutation($gender: GenderType, $dateOfBirth: Date, $maritalStatus: MaritalStatusType, $category: String) {
 	updateProfilePersonalDetails(gender: $gender, dateOfBirth: $dateOfBirth, maritalStatus: $maritalStatus, category: $category) {
 		...on Account {
+			...IncompleteProfileBannerFragment
 			profile {
-				... on Profile {
 					...UpdatePersonalDetailsFormFragment
-				}
 			}
 		}
 	}

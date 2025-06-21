@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c4e76f78c8c5c0c6f142d044b6d726a4>>
- * @relayHash 19935c9c22aee001a47a8f0654324840
+ * @generated SignedSource<<1bd8aee02eef2ab7cd37d124a7e95770>>
+ * @relayHash 54a15dd53c88a0ee4fda175eaf5fb642
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 19935c9c22aee001a47a8f0654324840
+// @relayRequestID 54a15dd53c88a0ee4fda175eaf5fb642
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -62,6 +62,48 @@ v5 = {
   "storageKey": null
 },
 v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "address",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "startedAt",
+  "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "completedAt",
+  "storageKey": null
+},
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "name",
+  "storageKey": null
+},
+v10 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "issuer",
+  "storageKey": null
+},
+v11 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "expiresAt",
+  "storageKey": null
+},
+v12 = {
   "kind": "InlineFragment",
   "selections": [
     (v5/*: any*/)
@@ -143,6 +185,7 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": [
@@ -161,6 +204,7 @@ return {
                           {
                             "kind": "InlineFragment",
                             "selections": [
+                              (v5/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -230,13 +274,7 @@ return {
                                     "name": "profile",
                                     "plural": false,
                                     "selections": [
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "address",
-                                        "storageKey": null
-                                      },
+                                      (v6/*: any*/),
                                       (v5/*: any*/)
                                     ],
                                     "storageKey": null
@@ -244,12 +282,255 @@ return {
                                   (v5/*: any*/)
                                 ],
                                 "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "concreteType": "ProfileSnapshot",
+                                "kind": "LinkedField",
+                                "name": "profileSnapshot",
+                                "plural": false,
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "gender",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "dateOfBirth",
+                                    "storageKey": null
+                                  },
+                                  (v6/*: any*/),
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "maritalStatus",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "category",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "locationsOpenToWork",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "openToRelocationAnywhere",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "Education",
+                                    "kind": "LinkedField",
+                                    "name": "education",
+                                    "plural": true,
+                                    "selections": [
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "degree",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "institution",
+                                        "storageKey": null
+                                      },
+                                      (v7/*: any*/),
+                                      (v8/*: any*/)
+                                    ],
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "License",
+                                    "kind": "LinkedField",
+                                    "name": "licenses",
+                                    "plural": true,
+                                    "selections": [
+                                      (v9/*: any*/),
+                                      (v10/*: any*/),
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "licenseNumber",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "issuedAt",
+                                        "storageKey": null
+                                      },
+                                      (v11/*: any*/),
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "verificationStatus",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "verifiedAt",
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "Language",
+                                    "kind": "LinkedField",
+                                    "name": "languages",
+                                    "plural": true,
+                                    "selections": [
+                                      (v9/*: any*/),
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "proficiency",
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "jobPreferences",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "WorkExperience",
+                                    "kind": "LinkedField",
+                                    "name": "workExperience",
+                                    "plural": true,
+                                    "selections": [
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "title",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "organization",
+                                        "storageKey": null
+                                      },
+                                      (v7/*: any*/),
+                                      (v8/*: any*/),
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "employmentType",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "skills",
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "SalaryExpectations",
+                                    "kind": "LinkedField",
+                                    "name": "salaryExpectations",
+                                    "plural": false,
+                                    "selections": [
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "preferredMonthlySalaryInr",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "negotiable",
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "Certification",
+                                    "kind": "LinkedField",
+                                    "name": "certifications",
+                                    "plural": true,
+                                    "selections": [
+                                      (v9/*: any*/),
+                                      (v10/*: any*/),
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "certificationUrl",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "createdAt",
+                                        "storageKey": null
+                                      },
+                                      (v11/*: any*/)
+                                    ],
+                                    "storageKey": null
+                                  }
+                                ],
+                                "storageKey": null
                               }
                             ],
                             "type": "JobApplicant",
                             "abstractKey": null
                           },
-                          (v6/*: any*/)
+                          (v12/*: any*/)
                         ],
                         "storageKey": null
                       }
@@ -257,7 +538,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v6/*: any*/)
+                  (v12/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -265,14 +546,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v6/*: any*/)
+          (v12/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "19935c9c22aee001a47a8f0654324840",
+    "id": "54a15dd53c88a0ee4fda175eaf5fb642",
     "metadata": {},
     "name": "pageJobApplicantDetailQuery",
     "operationKind": "query",

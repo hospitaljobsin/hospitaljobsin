@@ -10,6 +10,7 @@ import Licenses from "./Licenses";
 import LocationPreferences from "./LocationPreferences";
 import ProfileDetails from "./PersonalDetails";
 import ProfileBanner from "./ProfileBanner";
+import ProfileCompletionMeter from "./ProfileCompletionMeter";
 import UpdateCertificationsForm from "./UpdateCertificationsForm";
 import UpdateEducationForm from "./UpdateEducationForm";
 import UpdateLanguagesForm from "./UpdateLanguagesForm";
@@ -24,23 +25,34 @@ const ProfileViewFragment = graphql`
     viewer {
       __typename
       ... on Account {
-		...ProfileBannerFragment
-		profile @required(action: THROW) {
-			...UpdatePersonalDetailsFormFragment
-			...PersonalDetailsFragment
-			...LanguagesFragment
-			...UpdateLanguagesFormFragment
-			...UpdateLocationPreferencesFormFragment
-			...LocationPreferencesFragment
-			...UpdateEducationFormFragment
-			...EducationFragment
-			...UpdateWorkExperienceFormFragment
-			...WorkExperienceFragment
-			...CertificationsFragment
-			...UpdateCertificationsFormFragment
-            ...LicensesFragment
-            ...UpdateLicensesFormFragment
-		}
+        ...ProfileBannerFragment
+        profile @required(action: THROW) {
+          dateOfBirth
+          address
+          workExperience {
+            __typename
+          }
+          education {
+            __typename
+          }
+          locationsOpenToWork
+		  openToRelocationAnywhere
+		  address
+          ...UpdatePersonalDetailsFormFragment
+          ...PersonalDetailsFragment
+          ...LanguagesFragment
+          ...UpdateLanguagesFormFragment
+          ...UpdateLocationPreferencesFormFragment
+          ...LocationPreferencesFragment
+          ...UpdateEducationFormFragment
+          ...EducationFragment
+          ...UpdateWorkExperienceFormFragment
+          ...WorkExperienceFragment
+          ...CertificationsFragment
+          ...UpdateCertificationsFormFragment
+          ...LicensesFragment
+          ...UpdateLicensesFormFragment
+        }
       }
     }
   }
@@ -65,9 +77,21 @@ export default function ProfileView({
 		"Expected 'Account' node type",
 	);
 
+	const completionStatus = {
+		personalDetails: !!data.viewer.profile.dateOfBirth,
+		workExperience: data.viewer.profile.workExperience.length > 0,
+		education: data.viewer.profile.education.length > 0,
+		locationPreferences: !!(
+			data.viewer.profile.address &&
+			(data.viewer.profile.locationsOpenToWork.length > 0 ||
+				data.viewer.profile.openToRelocationAnywhere)
+		),
+	};
+
 	return (
 		<div className="w-full h-full space-y-16">
 			<ProfileBanner account={data.viewer} />
+			<ProfileCompletionMeter status={completionStatus} />
 			{isEditingProfile ? (
 				<UpdateProfileDetailsForm
 					rootQuery={data.viewer.profile}

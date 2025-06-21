@@ -11,6 +11,7 @@ import {
 } from "react-relay";
 import invariant from "tiny-invariant";
 import ApplicantDetails from "./ApplicantDetails";
+import ProfileSnapshotView from "./ProfileSnapshotView";
 
 const ApplicantDetailViewFragment = graphql`
  fragment ApplicantDetailViewFragment on Query @argumentDefinitions(
@@ -24,10 +25,14 @@ const ApplicantDetailViewFragment = graphql`
                 job(slug: $jobSlug) {
                     __typename
                     ... on Job {
+                        ...ApplicantDetails_job
                         jobApplicant(slug: $applicantSlug) {
                             __typename
                             ... on JobApplicant {
                                 ...ApplicantDetailsFragment
+                                profileSnapshot {
+                                    ...ProfileSnapshotViewFragment
+                                }
                             }
                         }
                     }
@@ -60,8 +65,14 @@ export default function ApplicantDetailView(props: {
 	);
 
 	return (
-		<div className="pl-6 py-6 w-full h-full flex flex-col items-center gap-12">
-			<ApplicantDetails rootQuery={query.organization.job.jobApplicant} />
+		<div className="pl-6 py-6 w-full h-full flex flex-col items-start gap-12">
+			<ApplicantDetails
+				job={query.organization.job}
+				rootQuery={query.organization.job.jobApplicant}
+			/>
+			<ProfileSnapshotView
+				profileSnapshot={query.organization.job.jobApplicant.profileSnapshot}
+			/>
 		</div>
 	);
 }

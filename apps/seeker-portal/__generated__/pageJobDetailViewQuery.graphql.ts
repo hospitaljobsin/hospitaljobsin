@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<06ce7eee76fdc0b3353feb28fda56c81>>
- * @relayHash 703165e2aac723fcd91608bfcaed4cbf
+ * @generated SignedSource<<bf3dd1b0095cd35fcaa9589393f4dc0d>>
+ * @relayHash b786b75ffdc014f44379977c9fdef44f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 703165e2aac723fcd91608bfcaed4cbf
+// @relayRequestID b786b75ffdc014f44379977c9fdef44f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -498,6 +498,32 @@ return {
             "kind": "TypeDiscriminator",
             "abstractKey": "__isViewerPayload"
           },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  (v11/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "type": "Account",
+            "abstractKey": null
+          },
           (v27/*: any*/)
         ],
         "storageKey": null
@@ -505,7 +531,7 @@ return {
     ]
   },
   "params": {
-    "id": "703165e2aac723fcd91608bfcaed4cbf",
+    "id": "b786b75ffdc014f44379977c9fdef44f",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",

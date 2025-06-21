@@ -21,10 +21,9 @@ const UpdateEducationFormMutation = graphql`
 mutation UpdateEducationFormMutation($education: [EducationInput!]!) {
   updateProfileEducation(education: $education) {
     ...on Account {
-      profile {
-        ... on Profile {
+		...IncompleteProfileBannerFragment
+      profile  {
           ...UpdateEducationFormFragment
-        }
       }
     }
   }

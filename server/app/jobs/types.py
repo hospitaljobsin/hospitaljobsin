@@ -11,8 +11,19 @@ from bson import ObjectId
 from strawberry import Private, relay
 from strawberry.permission import PermissionExtension
 
-from app.accounts.documents import Account
-from app.accounts.types import AccountType
+from app.accounts.documents import Account, BaseProfile
+from app.accounts.types import (
+    AccountType,
+    BaseProfileType,
+    CertificationType,
+    EducationType,
+    GenderTypeEnum,
+    LanguageType,
+    LicenseType,
+    MaritalStatusTypeEnum,
+    SalaryExpectationsType,
+    WorkExperienceType,
+)
 from app.auth.permissions import IsAuthenticated
 from app.base.types import (
     BaseConnectionType,
@@ -195,6 +206,42 @@ class JobApplicantStatusEnum(Enum):
 
 
 @strawberry.type(
+    name="ProfileSnapshot",
+    description="A snapshot of the job applicant's profile.",
+)
+class ProfileSnapshotType(BaseProfileType):
+    @classmethod
+    def marshal(cls, model: BaseProfile) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            gender=GenderTypeEnum[model.gender] if model.gender else None,
+            date_of_birth=model.date_of_birth,
+            address=model.address,
+            marital_status=MaritalStatusTypeEnum[model.marital_status]
+            if model.marital_status is not None
+            else None,
+            category=model.category,
+            locations_open_to_work=model.locations_open_to_work,
+            open_to_relocation_anywhere=model.open_to_relocation_anywhere,
+            education=[EducationType.marshal(edu) for edu in model.education],
+            licenses=[LicenseType.marshal(lic) for lic in model.licenses],
+            languages=[LanguageType.marshal(language) for language in model.languages],
+            job_preferences=model.job_preferences,
+            work_experience=[
+                WorkExperienceType.marshal(exp) for exp in model.work_experience
+            ],
+            salary_expectations=SalaryExpectationsType.marshal(
+                model.salary_expectations
+            )
+            if model.salary_expectations is not None
+            else None,
+            certifications=[
+                CertificationType.marshal(cert) for cert in model.certifications
+            ],
+        )
+
+
+@strawberry.type(
     name="JobApplicant",
     description="A job application for a posting.",
 )
@@ -208,6 +255,8 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
     applicant_fields: list[ApplicantFieldType] = strawberry.field(
         description="The fields of the job application.",
     )
+
+    profile_snapshot: ProfileSnapshotType
 
     _account: Private[Account | ObjectId]
 
@@ -256,6 +305,9 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
             else job_applicant.job,
             slug=job_applicant.slug,
             status=JobApplicantStatusEnum[job_applicant.status.upper()],
+            profile_snapshot=ProfileSnapshotType.marshal(
+                job_applicant.profile_snapshot
+            ),
             applicant_fields=[
                 ApplicantFieldType.marshal(field)
                 for field in job_applicant.applicant_fields
@@ -1046,13 +1098,25 @@ class AccountProfileNotFoundErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="AccountProfileIncompleteError",
+    description="Used when the account profile is incomplete.",
+)
+class AccountProfileIncompleteErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Account profile is incomplete!",
+    )
+
+
 CreateJobApplicantPayload = Annotated[
     CreateJobApplicantSuccessType
     | JobNotFoundErrorType
     | JobNotPublishedErrorType
     | JobApplicantAlreadyExistsErrorType
     | JobIsExternalErrorType
-    | AccountProfileNotFoundErrorType,
+    | AccountProfileNotFoundErrorType
+    | AccountProfileIncompleteErrorType,
     strawberry.union(
         name="CreateJobApplicantPayload",
         description="The create job application payload.",
