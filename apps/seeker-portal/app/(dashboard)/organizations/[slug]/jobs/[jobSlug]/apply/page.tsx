@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import type { pageJobApplyMetadataFragment$key } from "@/__generated__/pageJobApplyMetadataFragment.graphql";
 import type JobApplyViewQueryNode from "@/__generated__/pageJobApplyViewQuery.graphql";
 import type { pageJobApplyViewQuery } from "@/__generated__/pageJobApplyViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import JobApplyViewClientComponent from "./JobApplyViewClientComponent";
 
 export const PageJobApplyViewQuery = graphql`
@@ -20,6 +20,14 @@ const PageJobApplyMetadataFragment = graphql`
 	slug: { type: "String!"}
 	jobSlug: { type: "String!"}
     ) {
+		viewer {
+			__typename
+			... on Account {
+				profile {
+					isComplete
+				}
+			}
+		}
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
@@ -77,7 +85,9 @@ export async function generateMetadata({
 	if (
 		data.organization.job.__typename !== "Job" ||
 		data.organization.job.isApplied ||
-		data.organization.job.externalApplicationUrl !== null
+		data.organization.job.externalApplicationUrl !== null ||
+		data.viewer.__typename !== "Account" ||
+		!data.viewer.profile?.isComplete
 	) {
 		return {
 			title: "Job Not found",
@@ -118,7 +128,9 @@ export default async function JobApplyPage({
 		data.organization.__typename !== "Organization" ||
 		data.organization.job.__typename !== "Job" ||
 		data.organization.job.isApplied ||
-		data.organization.job.externalApplicationUrl !== null
+		data.organization.job.externalApplicationUrl !== null ||
+		data.viewer.__typename !== "Account" ||
+		!data.viewer.profile?.isComplete
 	) {
 		notFound();
 	}

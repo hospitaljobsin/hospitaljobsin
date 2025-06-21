@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<af3840777338fa886e5166b4defdc2d6>>
+ * @generated SignedSource<<df2b5d4c8bcac3b1a2cc74c45baa54a3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -28,6 +28,9 @@ export type JobDetailsFragment$data = {
   };
   readonly viewer: {
     readonly __typename: string;
+    readonly profile?: {
+      readonly isComplete: boolean;
+    };
     readonly " $fragmentSpreads": FragmentRefs<"JobControlsAuthFragment">;
   };
   readonly " $fragmentType": "JobDetailsFragment";
@@ -130,6 +133,35 @@ return {
           "args": null,
           "kind": "FragmentSpread",
           "name": "JobControlsAuthFragment"
+        },
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "kind": "RequiredField",
+              "field": {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              "action": "THROW"
+            }
+          ],
+          "type": "Account",
+          "abstractKey": null
         }
       ],
       "storageKey": null
@@ -140,6 +172,6 @@ return {
 };
 })();
 
-(node as any).hash = "9707872952474a570adac08705444b22";
+(node as any).hash = "2fbf7ad20686abaa29ec0c3c3f531db9";
 
 export default node;

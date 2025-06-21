@@ -15,6 +15,7 @@ import {
 	Chip,
 	Divider,
 	Link,
+	Tooltip,
 } from "@heroui/react";
 import Heading from "@tiptap/extension-heading";
 import { EditorContent, useEditor } from "@tiptap/react";
@@ -46,6 +47,11 @@ const JobDetailsFragment = graphql`
 	viewer {
 		__typename
 		...JobControlsAuthFragment
+		... on Account {
+			profile @required(action: THROW) {
+				isComplete
+			}
+		}
 	  }
   }
 `;
@@ -100,6 +106,9 @@ export default function JobDetails({
 		JobDetailsInternalFragment,
 		root.organization.job,
 	);
+
+	const isProfileIncomplete =
+		root.viewer.__typename === "Account" && !root.viewer.profile?.isComplete;
 
 	const editor = useEditor({
 		extensions: [
@@ -215,6 +224,35 @@ export default function JobDetails({
 							>
 								{data.isApplied ? "Applied" : "Apply now"}
 							</Button>
+						) : isProfileIncomplete && !data.isApplied ? (
+							<Tooltip
+								showArrow
+								content={
+									<div className="px-1 py-2">
+										<div className="text-sm">
+											<Link href={links.profile} size="sm">
+												Complete your profile
+											</Link>{" "}
+											to apply for this job
+										</div>
+									</div>
+								}
+							>
+								<span>
+									<Button
+										as={Link}
+										href={links.jobDetailApply(
+											data.organization.slug,
+											data.slug,
+										)}
+										size="lg"
+										className="w-full sm:w-auto"
+										isDisabled
+									>
+										Apply now
+									</Button>
+								</span>
+							</Tooltip>
 						) : (
 							<Button
 								as={Link}
