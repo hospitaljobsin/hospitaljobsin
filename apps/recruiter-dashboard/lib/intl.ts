@@ -1,3 +1,8 @@
+export const monthYearFormat = new Intl.DateTimeFormat("en-US", {
+	month: "long",
+	year: "numeric",
+});
+
 export const dateFormat = new Intl.DateTimeFormat("en-US", {
 	dateStyle: "long",
 });

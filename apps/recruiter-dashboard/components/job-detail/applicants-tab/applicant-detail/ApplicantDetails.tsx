@@ -45,7 +45,7 @@ export default function ApplicantDetails({
 	const jobData = useFragment(ApplicantDetailsJobFragment, job);
 
 	return (
-		<div className="w-full flex flex-col gap-6">
+		<div className="w-full flex flex-col gap-12">
 			{/* Applicant Header Card */}
 			<Card fullWidth className="p-6 " shadow="none">
 				<CardHeader className="w-full flex flex-row gap-6 justify-between">
