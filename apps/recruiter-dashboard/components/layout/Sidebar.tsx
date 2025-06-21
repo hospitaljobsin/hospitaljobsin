@@ -105,9 +105,7 @@ export default function Sidebar({ queryReference }: Props) {
 
 	return (
 		<>
-			<title>
-				{data.organization.name} | {APP_NAME}
-			</title>
+			<title>{`${data.organization.name} | ${APP_NAME}`}</title>
 			{/* Mobile top bar */}
 			<div className="md:hidden flex items-center justify-between px-4 py-2 border-b border-foreground-300">
 				<div className="flex items-center gap-2">

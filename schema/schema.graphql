@@ -1202,6 +1202,18 @@ enum JobApplicantStatus {
 }
 
 """
+Used when one or more job applicants were not found.
+"""
+type JobApplicantsNotFoundError implements Error {
+	message: String!
+
+	"""
+	List of job applicant IDs that could not be found.
+	"""
+	notFoundIds: [String!]!
+}
+
+"""
 A custom application form belonging to a job posting.
 """
 type JobApplicationForm implements Node {
@@ -2120,6 +2132,26 @@ type Mutation {
 		"""
 		applicantFields: [ApplicantFieldInput!]!
 	): CreateJobApplicantPayload! @isAuthenticated
+
+	"""
+	Bulk update status of job applicants.
+	"""
+	updateJobApplicantsStatus(
+		"""
+		The ID of the job to apply for.
+		"""
+		jobId: ID!
+
+		"""
+		The IDs of the job applicants to update the status of.
+		"""
+		jobApplicantIds: [ID!]!
+
+		"""
+		The status to update the job applicants to.
+		"""
+		status: JobApplicantStatus!
+	): UpdateJobApplicantsStatusPayload! @isAuthenticated
 
 	"""
 	Delete a job.
@@ -3532,6 +3564,26 @@ type UnsaveJobSuccess {
 The update account payload.
 """
 union UpdateAccountPayload = Account
+
+"""
+The update job applicants status payload.
+"""
+union UpdateJobApplicantsStatusPayload =
+	| UpdateJobApplicantsStatusSuccess
+	| JobNotFoundError
+	| JobIsExternalError
+	| JobApplicantsNotFoundError
+	| OrganizationAuthorizationError
+
+"""
+Used when the status of job applicants are updated successfully.
+"""
+type UpdateJobApplicantsStatusSuccess {
+	"""
+	The updated job applicants.
+	"""
+	jobApplicants: [JobApplicant!]!
+}
 
 """
 The update job application form payload.

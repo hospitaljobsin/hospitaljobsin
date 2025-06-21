@@ -1,50 +1,85 @@
+"use client";
+
 import { usePaginationFragment } from "react-relay";
-import Applicant from "./Applicant";
 
 import type { ApplicantListFragment$key } from "@/__generated__/ApplicantListFragment.graphql";
 import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
 import type { pageJobDetailApplicantsQuery } from "@/__generated__/pageJobDetailApplicantsQuery.graphql";
+import links from "@/lib/links";
+import {
+	Chip,
+	Table,
+	TableBody,
+	TableCell,
+	TableColumn,
+	TableHeader,
+	TableRow,
+	User,
+} from "@heroui/react";
+import type { Selection } from "@react-types/shared";
 import { UserRound } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { startTransition, useEffect, useRef } from "react";
-import { graphql } from "relay-runtime";
+import { graphql } from "react-relay";
 import ApplicantListSkeleton from "./ApplicantListSkeleton";
 
 const ApplicantListFragment = graphql`
-  fragment ApplicantListFragment on Job
-  @argumentDefinitions(
-	cursor: { type: "ID" }
-	count: { type: "Int", defaultValue: 10 }
-	searchTerm: { type: "String", defaultValue: null }
-	status: { type: "JobApplicantStatus", defaultValue: null }
-	showStatus: { type: "Boolean", defaultValue: true }
-  )
-  @refetchable(queryName: "ApplicantListPaginationQuery") {
-	applicants(after: $cursor, first: $count, searchTerm: $searchTerm, status: $status)
-	  @connection(key: "ApplicantListFragment_applicants", filters: ["status", "searchTerm"]) {
-	  edges {
-		node {
-		  id
-		  ...ApplicantFragment @arguments(showStatus: $showStatus)
+	fragment ApplicantListFragment on Job
+	@argumentDefinitions(
+		cursor: { type: "ID" }
+		count: { type: "Int", defaultValue: 10 }
+		searchTerm: { type: "String", defaultValue: null }
+		status: { type: "JobApplicantStatus", defaultValue: null }
+		showStatus: { type: "Boolean", defaultValue: true }
+	)
+	@refetchable(queryName: "ApplicantListPaginationQuery") {
+		id
+		applicants(
+			after: $cursor
+			first: $count
+			searchTerm: $searchTerm
+			status: $status
+		) @connection(key: "ApplicantListFragment_applicants", filters: ["status", "searchTerm"]) {
+			edges {
+				node {
+					id
+					account @required(action: THROW) {
+						email
+						fullName
+						avatarUrl
+					}
+					slug
+					status @include(if: $showStatus)
+				}
+			}
+			pageInfo {
+				hasNextPage
+			}
 		}
-	  }
-	  pageInfo {
-		hasNextPage
-	  }
 	}
-  }
 `;
 
 type Props = {
 	rootQuery: ApplicantListFragment$key;
 	searchTerm: string | null;
 	status: JobApplicantStatus | null;
+	selectedKeys: Selection;
+	setSelectedKeys: (keys: Selection) => void;
+	allKeys: Set<string>;
+	isAllSelected: boolean;
 };
 
 export default function ApplicantList({
 	rootQuery,
 	searchTerm,
 	status,
+	selectedKeys,
+	setSelectedKeys,
+	allKeys,
+	isAllSelected,
 }: Props) {
+	const router = useRouter();
+	const params = useParams<{ slug: string }>();
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
 		pageJobDetailApplicantsQuery,
 		ApplicantListFragment$key
@@ -115,11 +150,56 @@ export default function ApplicantList({
 	}
 
 	return (
-		<div className="w-full flex flex-col gap-8 pb-6">
-			{data.applicants.edges.map((jobEdge) => (
-				<Applicant applicant={jobEdge.node} key={jobEdge.node.id} />
-			))}
-			<div ref={observerRef} className="h-10" />
+		<div className="flex flex-col gap-4 w-full">
+			<Table
+				aria-label="Applicants table"
+				shadow="none"
+				hideHeader
+				selectionMode="multiple"
+				fullWidth
+				selectedKeys={selectedKeys}
+				onSelectionChange={setSelectedKeys}
+				onRowAction={(key) => {
+					const applicant = data.applicants.edges.find(
+						(edge) => edge.node.id === key,
+					)?.node;
+					if (applicant) {
+						router.push(
+							links.applicantDetail(
+								params.slug,
+								encodeURIComponent(applicant.slug),
+							),
+						);
+					}
+				}}
+			>
+				<TableHeader className="w-full">
+					<TableColumn>Applicant</TableColumn>
+					<TableColumn>Status</TableColumn>
+				</TableHeader>
+				<TableBody
+					className="w-full"
+					items={data.applicants.edges.map((edge) => edge.node)}
+					isLoading={isLoadingNext}
+					loadingContent={<ApplicantListSkeleton />}
+				>
+					{(applicant) => (
+						<TableRow key={applicant.id} className="cursor-pointer w-full">
+							<TableCell>
+								<User
+									avatarProps={{ src: applicant.account.avatarUrl }}
+									name={applicant.account.fullName}
+									description={applicant.account.email}
+								/>
+							</TableCell>
+							<TableCell>
+								{applicant.status && <Chip>{applicant.status}</Chip>}
+							</TableCell>
+						</TableRow>
+					)}
+				</TableBody>
+			</Table>
+			<div ref={observerRef} />
 			{isLoadingNext && <ApplicantListSkeleton />}
 		</div>
 	);

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<99a6dded0e67265cb1f909df7bc79d93>>
+ * @generated SignedSource<<edea30c7014ed35c204bdfe3269b2581>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,6 +24,7 @@ export type ApplicantDetailsFragment$data = {
     readonly fieldName: string;
     readonly fieldValue: string;
   }>;
+  readonly id: string;
   readonly status: JobApplicantStatus;
   readonly " $fragmentType": "ApplicantDetailsFragment";
 };
@@ -38,6 +39,13 @@ const node: ReaderFragment = {
   "metadata": null,
   "name": "ApplicantDetailsFragment",
   "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    },
     {
       "alias": null,
       "args": null,
@@ -133,6 +141,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "63d9fe5f6e7f73db562c9c456413d98a";
+(node as any).hash = "0cfc163165839ed6c6dde5755288fecb";
 
 export default node;

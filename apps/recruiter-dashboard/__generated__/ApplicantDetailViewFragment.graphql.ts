@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9a115f7a213e538dd4229e87590193f6>>
+ * @generated SignedSource<<06841f72f171d997ea0046be6e75cd6f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -23,6 +23,7 @@ export type ApplicantDetailViewFragment$data = {
         // value in case none of the concrete values match.
         readonly __typename: "%other";
       };
+      readonly " $fragmentSpreads": FragmentRefs<"ApplicantDetails_job">;
     } | {
       // This will never be '%other', but we need some
       // value in case none of the concrete values match.
@@ -107,6 +108,11 @@ return {
                   "kind": "InlineFragment",
                   "selections": [
                     {
+                      "args": null,
+                      "kind": "FragmentSpread",
+                      "name": "ApplicantDetails_job"
+                    },
+                    {
                       "alias": null,
                       "args": [
                         {
@@ -156,6 +162,6 @@ return {
 };
 })();
 
-(node as any).hash = "114b6534f726833be7d6874dad4dbfb8";
+(node as any).hash = "02f21c45d895c56eed054b95f74161b0";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2e279daa1b078d34231049fd6c4c7914>>
+ * @generated SignedSource<<9813436f6b377122c668d343e8a2996f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,13 +9,20 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
+export type JobApplicantStatus = "APPLIED" | "INTERVIEWED" | "OFFERED" | "ONHOLD" | "SHORTLISTED" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type ApplicantListFragment$data = {
   readonly applicants: {
     readonly edges: ReadonlyArray<{
       readonly node: {
+        readonly account: {
+          readonly avatarUrl: string;
+          readonly email: string;
+          readonly fullName: string;
+        };
         readonly id: string;
-        readonly " $fragmentSpreads": FragmentRefs<"ApplicantFragment">;
+        readonly slug: string;
+        readonly status?: JobApplicantStatus;
       };
     }>;
     readonly pageInfo: {
@@ -102,6 +109,7 @@ return {
   },
   "name": "ApplicantListFragment",
   "selections": [
+    (v1/*: any*/),
     {
       "alias": "applicants",
       "args": [
@@ -139,15 +147,61 @@ return {
               "selections": [
                 (v1/*: any*/),
                 {
-                  "args": [
+                  "kind": "RequiredField",
+                  "field": {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Account",
+                    "kind": "LinkedField",
+                    "name": "account",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "email",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "fullName",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "avatarUrl",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  "action": "THROW"
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "slug",
+                  "storageKey": null
+                },
+                {
+                  "condition": "showStatus",
+                  "kind": "Condition",
+                  "passingValue": true,
+                  "selections": [
                     {
-                      "kind": "Variable",
-                      "name": "showStatus",
-                      "variableName": "showStatus"
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "status",
+                      "storageKey": null
                     }
-                  ],
-                  "kind": "FragmentSpread",
-                  "name": "ApplicantFragment"
+                  ]
                 },
                 {
                   "alias": null,
@@ -196,14 +250,13 @@ return {
         }
       ],
       "storageKey": null
-    },
-    (v1/*: any*/)
+    }
   ],
   "type": "Job",
   "abstractKey": null
 };
 })();
 
-(node as any).hash = "c6dcda356daa0d31b0fe126462e1c951";
+(node as any).hash = "841552fcb1e8552c24c980a09eb28e93";
 
 export default node;

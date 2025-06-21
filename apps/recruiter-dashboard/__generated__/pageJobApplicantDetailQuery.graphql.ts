@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c4e76f78c8c5c0c6f142d044b6d726a4>>
- * @relayHash 19935c9c22aee001a47a8f0654324840
+ * @generated SignedSource<<c1f9774bc7524f216fabfa994734918d>>
+ * @relayHash ea66abd0f9a7de8b8d2d13f3d175318a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 19935c9c22aee001a47a8f0654324840
+// @relayRequestID ea66abd0f9a7de8b8d2d13f3d175318a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -143,6 +143,7 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": [
@@ -161,6 +162,7 @@ return {
                           {
                             "kind": "InlineFragment",
                             "selections": [
+                              (v5/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -272,7 +274,7 @@ return {
     ]
   },
   "params": {
-    "id": "19935c9c22aee001a47a8f0654324840",
+    "id": "ea66abd0f9a7de8b8d2d13f3d175318a",
     "metadata": {},
     "name": "pageJobApplicantDetailQuery",
     "operationKind": "query",

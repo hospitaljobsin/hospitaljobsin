@@ -671,7 +671,7 @@ class JobMutation:
             job_applicant_ids=[
                 job_applicant_id.node_id for job_applicant_id in job_applicant_ids
             ],
-            status=status.value,
+            status=status.value.lower(),
         ):
             case Err(error):
                 match error:

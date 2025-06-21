@@ -24,6 +24,7 @@ const ApplicantDetailViewFragment = graphql`
                 job(slug: $jobSlug) {
                     __typename
                     ... on Job {
+                        ...ApplicantDetails_job
                         jobApplicant(slug: $applicantSlug) {
                             __typename
                             ... on JobApplicant {
@@ -61,7 +62,10 @@ export default function ApplicantDetailView(props: {
 
 	return (
 		<div className="pl-6 py-6 w-full h-full flex flex-col items-center gap-12">
-			<ApplicantDetails rootQuery={query.organization.job.jobApplicant} />
+			<ApplicantDetails
+				job={query.organization.job}
+				rootQuery={query.organization.job.jobApplicant}
+			/>
 		</div>
 	);
 }

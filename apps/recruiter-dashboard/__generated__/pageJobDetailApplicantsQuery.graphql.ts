@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<4660335ac2c28419f6fdf62bc2ed769b>>
- * @relayHash 66423592002f9b3515a3b2f95d33f53d
+ * @generated SignedSource<<9f4acf9f4dc933d0fde6e2ad82f3d03b>>
+ * @relayHash d7cd5d5c02fe50ca7300a211284343b8
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 66423592002f9b3515a3b2f95d33f53d
+// @relayRequestID d7cd5d5c02fe50ca7300a211284343b8
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -77,7 +77,14 @@ v8 = {
   "name": "__typename",
   "storageKey": null
 },
-v9 = [
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v10 = [
   {
     "kind": "Literal",
     "name": "first",
@@ -86,17 +93,10 @@ v9 = [
   (v5/*: any*/),
   (v7/*: any*/)
 ],
-v10 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
 v11 = {
   "kind": "InlineFragment",
   "selections": [
-    (v10/*: any*/)
+    (v9/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -181,9 +181,10 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      (v9/*: any*/),
                       {
                         "alias": null,
-                        "args": (v9/*: any*/),
+                        "args": (v10/*: any*/),
                         "concreteType": "JobApplicantConnection",
                         "kind": "LinkedField",
                         "name": "applicants",
@@ -205,7 +206,40 @@ return {
                                 "name": "node",
                                 "plural": false,
                                 "selections": [
-                                  (v10/*: any*/),
+                                  (v9/*: any*/),
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "Account",
+                                    "kind": "LinkedField",
+                                    "name": "account",
+                                    "plural": false,
+                                    "selections": [
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "email",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "fullName",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "avatarUrl",
+                                        "storageKey": null
+                                      },
+                                      (v9/*: any*/)
+                                    ],
+                                    "storageKey": null
+                                  },
                                   {
                                     "alias": null,
                                     "args": null,
@@ -226,39 +260,6 @@ return {
                                         "storageKey": null
                                       }
                                     ]
-                                  },
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "concreteType": "Account",
-                                    "kind": "LinkedField",
-                                    "name": "account",
-                                    "plural": false,
-                                    "selections": [
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "fullName",
-                                        "storageKey": null
-                                      },
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "avatarUrl",
-                                        "storageKey": null
-                                      },
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "email",
-                                        "storageKey": null
-                                      },
-                                      (v10/*: any*/)
-                                    ],
-                                    "storageKey": null
                                   },
                                   (v8/*: any*/)
                                 ],
@@ -304,7 +305,7 @@ return {
                       },
                       {
                         "alias": null,
-                        "args": (v9/*: any*/),
+                        "args": (v10/*: any*/),
                         "filters": [
                           "status",
                           "searchTerm"
@@ -313,8 +314,7 @@ return {
                         "key": "ApplicantListFragment_applicants",
                         "kind": "LinkedHandle",
                         "name": "applicants"
-                      },
-                      (v10/*: any*/)
+                      }
                     ],
                     "type": "Job",
                     "abstractKey": null
@@ -334,7 +334,7 @@ return {
     ]
   },
   "params": {
-    "id": "66423592002f9b3515a3b2f95d33f53d",
+    "id": "d7cd5d5c02fe50ca7300a211284343b8",
     "metadata": {},
     "name": "pageJobDetailApplicantsQuery",
     "operationKind": "query",
