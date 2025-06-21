@@ -150,6 +150,16 @@ type Account implements Node {
 }
 
 """
+Used when the account profile is incomplete.
+"""
+type AccountProfileIncompleteError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
+"""
 Used when the account profile is not found.
 """
 type AccountProfileNotFoundError implements Error {
@@ -326,6 +336,7 @@ union CreateJobApplicantPayload =
 	| JobApplicantAlreadyExistsError
 	| JobIsExternalError
 	| AccountProfileNotFoundError
+	| AccountProfileIncompleteError
 
 """
 The payload for creating a presigned URL for uploading the job applicant's resume.

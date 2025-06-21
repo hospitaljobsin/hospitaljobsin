@@ -8,6 +8,7 @@ from result import Err, Ok
 from strawberry import relay
 from strawberry.permission import PermissionExtension
 
+from app.accounts.exceptions import AccountProfileIncompleteError
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.context import AuthInfo
 from app.jobs.exceptions import (
@@ -36,6 +37,7 @@ from app.organizations.types import (
 )
 
 from .types import (
+    AccountProfileIncompleteErrorType,
     AccountProfileNotFoundErrorType,
     ApplicantFieldInputType,
     ApplicationFieldInputType,
@@ -621,6 +623,8 @@ class JobMutation:
                         return JobIsExternalErrorType()
                     case AccountProfileNotFoundError():
                         return AccountProfileNotFoundErrorType()
+                    case AccountProfileIncompleteError():
+                        return AccountProfileIncompleteErrorType()
             case Ok(job_application):
                 return CreateJobApplicantSuccessType(
                     job_applicant=JobApplicantType.marshal(job_application)

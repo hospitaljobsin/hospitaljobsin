@@ -1046,13 +1046,25 @@ class AccountProfileNotFoundErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="AccountProfileIncompleteError",
+    description="Used when the account profile is incomplete.",
+)
+class AccountProfileIncompleteErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Account profile is incomplete!",
+    )
+
+
 CreateJobApplicantPayload = Annotated[
     CreateJobApplicantSuccessType
     | JobNotFoundErrorType
     | JobNotPublishedErrorType
     | JobApplicantAlreadyExistsErrorType
     | JobIsExternalErrorType
-    | AccountProfileNotFoundErrorType,
+    | AccountProfileNotFoundErrorType
+    | AccountProfileIncompleteErrorType,
     strawberry.union(
         name="CreateJobApplicantPayload",
         description="The create job application payload.",
