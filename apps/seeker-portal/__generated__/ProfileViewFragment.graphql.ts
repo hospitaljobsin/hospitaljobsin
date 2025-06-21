@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bf7a3921981c051be12cba9941b172f0>>
+ * @generated SignedSource<<e281e908f320a8c74b18857b8b718e2d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,6 +20,7 @@ export type ProfileViewFragment$data = {
         readonly __typename: "Education";
       }>;
       readonly locationsOpenToWork: ReadonlyArray<string>;
+      readonly openToRelocationAnywhere: boolean;
       readonly workExperience: ReadonlyArray<{
         readonly __typename: "WorkExperience";
       }>;
@@ -124,6 +125,13 @@ return {
                     "storageKey": null
                   },
                   {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "openToRelocationAnywhere",
+                    "storageKey": null
+                  },
+                  {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "UpdatePersonalDetailsFormFragment"
@@ -211,6 +219,6 @@ return {
 };
 })();
 
-(node as any).hash = "f84857f4249065624e4a0b3c827538e6";
+(node as any).hash = "42620935c82ebdf65ff514da274b9488";
 
 export default node;

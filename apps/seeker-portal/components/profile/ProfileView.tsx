@@ -36,6 +36,8 @@ const ProfileViewFragment = graphql`
             __typename
           }
           locationsOpenToWork
+		  openToRelocationAnywhere
+		  address
           ...UpdatePersonalDetailsFormFragment
           ...PersonalDetailsFragment
           ...LanguagesFragment
@@ -76,12 +78,14 @@ export default function ProfileView({
 	);
 
 	const completionStatus = {
-		personalDetails: !!(
-			data.viewer.profile.dateOfBirth && data.viewer.profile.address
-		),
+		personalDetails: !!data.viewer.profile.dateOfBirth,
 		workExperience: data.viewer.profile.workExperience.length > 0,
 		education: data.viewer.profile.education.length > 0,
-		locationPreferences: data.viewer.profile.locationsOpenToWork.length > 0,
+		locationPreferences: !!(
+			data.viewer.profile.address &&
+			(data.viewer.profile.locationsOpenToWork.length > 0 ||
+				data.viewer.profile.openToRelocationAnywhere)
+		),
 	};
 
 	return (
