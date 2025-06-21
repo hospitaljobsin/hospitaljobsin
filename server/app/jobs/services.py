@@ -438,6 +438,8 @@ class JobApplicantService:
         if existing_job.external_application_url is not None:
             return Err(JobIsExternalError())
 
+        await account.fetch_link(Account.profile)
+
         if account.profile is None:
             return Err(AccountProfileNotFoundError())
 

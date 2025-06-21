@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<06841f72f171d997ea0046be6e75cd6f>>
+ * @generated SignedSource<<fcc2751f6bf70b6ab095b5943141e029>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,6 +17,9 @@ export type ApplicantDetailViewFragment$data = {
       readonly __typename: "Job";
       readonly jobApplicant: {
         readonly __typename: "JobApplicant";
+        readonly profileSnapshot: {
+          readonly " $fragmentSpreads": FragmentRefs<"ProfileSnapshotViewFragment">;
+        };
         readonly " $fragmentSpreads": FragmentRefs<"ApplicantDetailsFragment">;
       } | {
         // This will never be '%other', but we need some
@@ -134,6 +137,22 @@ return {
                               "args": null,
                               "kind": "FragmentSpread",
                               "name": "ApplicantDetailsFragment"
+                            },
+                            {
+                              "alias": null,
+                              "args": null,
+                              "concreteType": "ProfileSnapshot",
+                              "kind": "LinkedField",
+                              "name": "profileSnapshot",
+                              "plural": false,
+                              "selections": [
+                                {
+                                  "args": null,
+                                  "kind": "FragmentSpread",
+                                  "name": "ProfileSnapshotViewFragment"
+                                }
+                              ],
+                              "storageKey": null
                             }
                           ],
                           "type": "JobApplicant",
@@ -162,6 +181,6 @@ return {
 };
 })();
 
-(node as any).hash = "02f21c45d895c56eed054b95f74161b0";
+(node as any).hash = "38a01e056d2099d117c1cbcc09179081";
 
 export default node;

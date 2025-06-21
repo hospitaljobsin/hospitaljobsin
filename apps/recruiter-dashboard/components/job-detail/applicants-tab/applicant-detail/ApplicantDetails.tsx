@@ -80,9 +80,7 @@ export default function ApplicantDetails({
 			{data.applicantFields && data.applicantFields.length > 0 && (
 				<Card fullWidth shadow="none" className="p-6 space-y-6">
 					<CardHeader>
-						<h3 className="text-medium font-medium text-foreground-600">
-							Screening Questions
-						</h3>
+						<h3 className="text-sm text-foreground-500">Screening Questions</h3>
 					</CardHeader>
 					<Divider />
 					<CardBody>
