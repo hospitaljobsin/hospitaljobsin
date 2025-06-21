@@ -14,6 +14,7 @@ import Link from "next/link";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
+import Logo from "../Logo";
 import AuthDropdown from "./AuthNavigation";
 
 export const HeaderQuery = graphql`
@@ -38,8 +39,12 @@ export default function Header({
 	const data = usePreloadedQuery(HeaderQuery, queryReference);
 	return (
 		<Navbar maxWidth="lg" isBordered className="bg-background-600">
-			<NavbarBrand>
-				<Link href={links.settings} className="font-medium text-inherit">
+			<NavbarBrand className="flex items-center gap-4">
+				<Link
+					href={links.settings}
+					className="font-medium text-inherit flex items-center gap-4"
+				>
+					<Logo />
 					{APP_NAME}
 				</Link>
 			</NavbarBrand>
