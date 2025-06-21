@@ -10,6 +10,7 @@ import {
 	NavbarBrand,
 	NavbarContent,
 	NavbarItem,
+	cn,
 } from "@heroui/react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
@@ -58,7 +59,12 @@ export default function Header({
 				}}
 				isBlurred={false}
 			>
-				<NavbarBrand className="flex items-center gap-4">
+				<NavbarBrand
+					className={cn(
+						"flex items-center gap-4",
+						variant === "hero" ? "" : "text-foreground-500",
+					)}
+				>
 					<Link
 						href={links.landing}
 						className="font-medium text-inherit flex items-center gap-4"

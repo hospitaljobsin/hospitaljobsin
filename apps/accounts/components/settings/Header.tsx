@@ -39,7 +39,7 @@ export default function Header({
 	const data = usePreloadedQuery(HeaderQuery, queryReference);
 	return (
 		<Navbar maxWidth="lg" isBordered className="bg-background-600">
-			<NavbarBrand className="flex items-center gap-4">
+			<NavbarBrand className="flex items-center gap-4 text-foreground-500">
 				<Link
 					href={links.settings}
 					className="font-medium text-inherit flex items-center gap-4"

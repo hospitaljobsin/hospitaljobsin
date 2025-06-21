@@ -37,7 +37,7 @@ export default function Header({
 	);
 	return (
 		<Navbar maxWidth="lg" isBordered>
-			<NavbarBrand className="flex items-center gap-4">
+			<NavbarBrand className="flex items-center gap-4 text-foreground-500">
 				<Link
 					href={links.selectOrganization}
 					className="font-medium text-inherit"
