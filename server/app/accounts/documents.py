@@ -113,7 +113,7 @@ class Profile(Document):
                 self.address,
                 self.work_experience,
                 self.education,
-                self.locations_open_to_work,
+                (self.locations_open_to_work or self.open_to_relocation_anywhere),
             ]
         )
 
