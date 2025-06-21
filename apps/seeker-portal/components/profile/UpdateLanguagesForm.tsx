@@ -18,10 +18,9 @@ const UpdateLanguagesFormMutation = graphql`
 mutation UpdateLanguagesFormMutation($languages: [LanguageInput!]!) {
 	updateProfileLanguages(languages: $languages) {
 		...on Account {
+			...IncompleteProfileBannerFragment
 			profile {
-				... on Profile {
 					...UpdateLanguagesFormFragment
-				}
 			}
 		}
 	}

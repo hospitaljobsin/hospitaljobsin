@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<585d46916b46d8d2552da4f917d2875f>>
+ * @generated SignedSource<<d57666b82e58ce76454e7951bec2e196>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,12 +15,20 @@ export type JobApplyViewFragment$data = {
     readonly __typename: "Organization";
     readonly job: {
       readonly __typename: "Job";
-      readonly " $fragmentSpreads": FragmentRefs<"JobApplicationDetailsFragment" | "JobApplyFormFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"JobApplicationDetailsFragment" | "JobApplyFormFragment" | "JobDetailsInternalFragment">;
     } | {
       // This will never be '%other', but we need some
       // value in case none of the concrete values match.
       readonly __typename: "%other";
     };
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
+  readonly viewer: {
+    readonly __typename: "Account";
+    readonly " $fragmentSpreads": FragmentRefs<"ProfileReviewFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -103,6 +111,11 @@ return {
                       "args": null,
                       "kind": "FragmentSpread",
                       "name": "JobApplicationDetailsFragment"
+                    },
+                    {
+                      "args": null,
+                      "kind": "FragmentSpread",
+                      "name": "JobDetailsInternalFragment"
                     }
                   ],
                   "type": "Job",
@@ -117,6 +130,30 @@ return {
         }
       ],
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "viewer",
+      "plural": false,
+      "selections": [
+        (v0/*: any*/),
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "args": null,
+              "kind": "FragmentSpread",
+              "name": "ProfileReviewFragment"
+            }
+          ],
+          "type": "Account",
+          "abstractKey": null
+        }
+      ],
+      "storageKey": null
     }
   ],
   "type": "Query",
@@ -124,6 +161,6 @@ return {
 };
 })();
 
-(node as any).hash = "ab6a859494fb84fd11d5aa9984ef932f";
+(node as any).hash = "e2ed8a7eac2230176a3794b6800cf17e";
 
 export default node;

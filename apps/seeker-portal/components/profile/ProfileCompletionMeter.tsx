@@ -16,7 +16,7 @@ export default function ProfileCompletionMeter({
 	status: CompletionStatus;
 }) {
 	const sections = [
-		{ name: "Personal Details", isComplete: status.personalDetails },
+		{ name: "Date of Birth", isComplete: status.personalDetails },
 		{ name: "Work Experience", isComplete: status.workExperience },
 		{ name: "Education", isComplete: status.education },
 		{ name: "Location Preferences", isComplete: status.locationPreferences },

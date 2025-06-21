@@ -8,6 +8,7 @@ import { graphql } from "relay-runtime";
 
 const IncompleteProfileBannerFragment = graphql`
 fragment IncompleteProfileBannerFragment on Account {
+	id
 	profile @required(action: THROW) {
 		isComplete
 	}

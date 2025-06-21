@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a7cbb90d686403c96917d540578ecad2>>
- * @relayHash 629ffcac4a4a0bff004b6d06e15cf095
+ * @generated SignedSource<<d3c2d41053b4c97067b79c472d4a275f>>
+ * @relayHash 44785db63aa96e2cf17eb21d698fefee
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 629ffcac4a4a0bff004b6d06e15cf095
+// @relayRequestID 44785db63aa96e2cf17eb21d698fefee
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -30,6 +30,7 @@ export type UpdateWorkExperienceFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"UpdateWorkExperienceFormFragment">;
     } | null | undefined;
+    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
   };
 };
 export type UpdateWorkExperienceFormMutation = {
@@ -85,6 +86,11 @@ return {
             "kind": "InlineFragment",
             "selections": [
               {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "IncompleteProfileBannerFragment"
+              },
+              {
                 "alias": null,
                 "args": null,
                 "concreteType": "Profile",
@@ -129,6 +135,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -137,6 +144,14 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  (v3/*: any*/),
                   (v2/*: any*/),
                   {
                     "alias": null,
@@ -190,8 +205,7 @@ return {
                       }
                     ],
                     "storageKey": null
-                  },
-                  (v3/*: any*/)
+                  }
                 ],
                 "storageKey": null
               }
@@ -213,7 +227,7 @@ return {
     ]
   },
   "params": {
-    "id": "629ffcac4a4a0bff004b6d06e15cf095",
+    "id": "44785db63aa96e2cf17eb21d698fefee",
     "metadata": {},
     "name": "UpdateWorkExperienceFormMutation",
     "operationKind": "mutation",
@@ -222,6 +236,6 @@ return {
 };
 })();
 
-(node as any).hash = "816042179ed6e6ab50f0ccd7518d9aa1";
+(node as any).hash = "b27ef5f864afebf6549e3bcde5853b90";
 
 export default node;

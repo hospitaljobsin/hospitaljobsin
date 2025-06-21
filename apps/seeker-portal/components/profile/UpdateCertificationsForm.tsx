@@ -18,10 +18,9 @@ const UpdateCertificationsFormMutation = graphql`
 mutation UpdateCertificationsFormMutation($certifications: [CertificationInput!]!) {
   updateProfileCertifications(certifications: $certifications) {
     ...on Account {
+		...IncompleteProfileBannerFragment
       profile {
-        ... on Profile {
           ...UpdateCertificationsFormFragment
-        }
       }
     }
   }

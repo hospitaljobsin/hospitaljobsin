@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<bccfe5368fee25e5b65aa6d4e033ee3d>>
- * @relayHash db4cecb34ce3ddc7b7ac15c95220b24b
+ * @generated SignedSource<<8644bb03d46d474e9fa0ee58ef9796f3>>
+ * @relayHash 53fbcf44d9ab26b5026cb4a62d7c49b6
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID db4cecb34ce3ddc7b7ac15c95220b24b
+// @relayRequestID 53fbcf44d9ab26b5026cb4a62d7c49b6
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -23,6 +23,7 @@ export type UpdateLocationPreferencesFormMutation$data = {
     readonly profile?: {
       readonly " $fragmentSpreads": FragmentRefs<"LocationPreferencesFragment" | "UpdateLocationPreferencesFormFragment">;
     } | null | undefined;
+    readonly " $fragmentSpreads": FragmentRefs<"IncompleteProfileBannerFragment">;
   };
 };
 export type UpdateLocationPreferencesFormMutation = {
@@ -93,6 +94,11 @@ return {
             "kind": "InlineFragment",
             "selections": [
               {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "IncompleteProfileBannerFragment"
+              },
+              {
                 "alias": null,
                 "args": null,
                 "concreteType": "Profile",
@@ -152,6 +158,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -160,6 +167,14 @@ return {
                 "name": "profile",
                 "plural": false,
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -180,8 +195,7 @@ return {
                     "kind": "ScalarField",
                     "name": "address",
                     "storageKey": null
-                  },
-                  (v4/*: any*/)
+                  }
                 ],
                 "storageKey": null
               }
@@ -203,7 +217,7 @@ return {
     ]
   },
   "params": {
-    "id": "db4cecb34ce3ddc7b7ac15c95220b24b",
+    "id": "53fbcf44d9ab26b5026cb4a62d7c49b6",
     "metadata": {},
     "name": "UpdateLocationPreferencesFormMutation",
     "operationKind": "mutation",
@@ -212,6 +226,6 @@ return {
 };
 })();
 
-(node as any).hash = "8841b759bf8973de1ed31c8b3a6bb22b";
+(node as any).hash = "46fb4a252497e08fe4462524fdc6c693";
 
 export default node;

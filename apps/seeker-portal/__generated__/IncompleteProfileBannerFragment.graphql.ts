@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0518422d23ee7717de915e419ad56db2>>
+ * @generated SignedSource<<daf73ea501c4887c7e6cf61e92b5502f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,6 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type IncompleteProfileBannerFragment$data = {
+  readonly id: string;
   readonly profile: {
     readonly isComplete: boolean;
   };
@@ -27,6 +28,13 @@ const node: ReaderFragment = {
   "metadata": null,
   "name": "IncompleteProfileBannerFragment",
   "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    },
     {
       "kind": "RequiredField",
       "field": {
@@ -54,6 +62,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "6cdb0384ce6b02ddabff187d448e756e";
+(node as any).hash = "d778e2517dc084a9ad88bf399de2090f";
 
 export default node;

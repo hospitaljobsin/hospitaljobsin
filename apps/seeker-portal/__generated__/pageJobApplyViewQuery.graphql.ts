@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<d08d581d91109d5ea6e94ae73a820a3a>>
- * @relayHash a03b4ff4ed777f982ddacdb41ba32bb4
+ * @generated SignedSource<<bda68ca6d1239b4e4a639ce4907a10ea>>
+ * @relayHash 92a9a7252e440959f1425f865033ad83
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a03b4ff4ed777f982ddacdb41ba32bb4
+// @relayRequestID 92a9a7252e440959f1425f865033ad83
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -366,7 +366,8 @@ return {
                           },
                           (v7/*: any*/),
                           (v16/*: any*/),
-                          (v14/*: any*/)
+                          (v14/*: any*/),
+                          (v10/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -446,6 +447,20 @@ return {
                         "kind": "ScalarField",
                         "name": "maxExperience",
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "isSaved",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "createdAt",
+                        "storageKey": null
                       }
                     ],
                     "type": "Job",
@@ -466,7 +481,7 @@ return {
     ]
   },
   "params": {
-    "id": "a03b4ff4ed777f982ddacdb41ba32bb4",
+    "id": "92a9a7252e440959f1425f865033ad83",
     "metadata": {},
     "name": "pageJobApplyViewQuery",
     "operationKind": "query",

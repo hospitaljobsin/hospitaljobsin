@@ -3,6 +3,7 @@ import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
 import JobApplicationDetails from "./JobApplicationDetails";
 import JobApplyForm from "./JobApplyForm";
+import ProfilePreview from "./ProfileReview";
 
 const JobApplyViewFragment = graphql`
  fragment JobApplyViewFragment on Query @argumentDefinitions(
@@ -17,12 +18,18 @@ const JobApplyViewFragment = graphql`
             ... on Job {
               ...JobApplyFormFragment
               ...JobApplicationDetailsFragment
+              ...JobDetailsInternalFragment
             }
 
           }
         }
       }
-
+      viewer {
+        __typename
+        ... on Account {
+          ...ProfileReviewFragment
+        }
+      }
   }
 `;
 
@@ -40,10 +47,13 @@ export default function JobApplyView(props: {
 		query.organization.job.__typename === "Job",
 		"Expected 'Job' node type",
 	);
+	invariant(query.viewer, "Viewer is required");
+	invariant(query.viewer.__typename === "Account", "Viewer must be an Account");
 
 	return (
 		<div className="py-8 w-full h-full flex flex-col items-center gap-6">
 			<JobApplicationDetails job={query.organization.job} />
+			<ProfilePreview account={query.viewer} />
 			<JobApplyForm rootQuery={query.organization.job} />
 		</div>
 	);
