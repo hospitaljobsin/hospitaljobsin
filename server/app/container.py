@@ -201,6 +201,7 @@ def create_container() -> aioinject.Container:
     app_settings = get_settings(AppSettings)
     if app_settings.is_testing:
         container.register(aioinject.Scoped(TestSetupService))
+    container.register(aioinject.Scoped(EmbeddingsService))
     container.register(aioinject.Scoped(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
     container.register(aioinject.Scoped(AuthService))
@@ -224,7 +225,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(RecoveryCodeRepo))
     container.register(aioinject.Singleton(TemporaryTwoFactorChallengeRepo))
     container.register(aioinject.Singleton(OrganizationInviteRepo))
-    container.register(aioinject.Singleton(JobApplicantRepo))
+    container.register(aioinject.Scoped(JobApplicantRepo))
     container.register(aioinject.Singleton(JobApplicationFormRepo))
     container.register(aioinject.Scoped(JobApplicationFormService))
     container.register(aioinject.Scoped(OrganizationInviteService))
@@ -244,5 +245,5 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_job_applicant_by_slug_dataloader))
     container.register(aioinject.Scoped(create_dataloaders))
     container.register(aioinject.Scoped(AgenticProfileFilterService))
-    container.register(aioinject.Scoped(EmbeddingsService))
+
     return container
