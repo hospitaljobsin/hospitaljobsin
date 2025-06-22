@@ -2,8 +2,12 @@
 
 import type { ProfessionalSummaryFragment$key } from "@/__generated__/ProfessionalSummaryFragment.graphql";
 import { Button, Card, CardBody, CardHeader } from "@heroui/react";
+import Heading from "@tiptap/extension-heading";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import { EditIcon, ScrollIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
+import { Markdown } from "tiptap-markdown";
 
 const ProfessionalSummaryFragment = graphql`
   fragment ProfessionalSummaryFragment on Profile {
@@ -21,6 +25,27 @@ export default function ProfessionalSummary({
 	onEditProfile,
 }: Props) {
 	const data = useFragment(ProfessionalSummaryFragment, rootQuery);
+
+	const editor = useEditor({
+		extensions: [
+			StarterKit.configure({
+				heading: false, // Disable default heading
+			}),
+			Heading.configure({
+				levels: [1, 2, 3], // Allow only H1, H2, and H3
+			}),
+			Markdown,
+		],
+		immediatelyRender: false,
+		editorProps: {
+			attributes: {
+				class:
+					"prose prose-foreground prose-sm w-full min-w-full whitespace-pre-wrap",
+			},
+		},
+		editable: false, // Disable editing to make it a viewer
+		content: data.professionalSummary,
+	});
 
 	return (
 		<div className="space-y-12">
@@ -51,7 +76,7 @@ export default function ProfessionalSummary({
 							</div>
 						) : (
 							<h2 className="w-full text-foreground-500">
-								{data.professionalSummary}
+								<EditorContent editor={editor} className="w-full" />
 							</h2>
 						)}
 					</div>
