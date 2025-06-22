@@ -1,7 +1,7 @@
 "use client";
 
 import type { ApplicantListFragment$data } from "@/__generated__/ApplicantListFragment.graphql";
-import { Badge, Button, Card, User } from "@heroui/react";
+import { Button, Card, Chip, User } from "@heroui/react";
 import { useState } from "react";
 
 type Applicant = ApplicantListFragment$data["applicants"]["edges"][0]["node"];
@@ -29,7 +29,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 	};
 
 	return (
-		<Card>
+		<Card fullWidth className="p-6" shadow="none">
 			<div className="flex justify-between items-start">
 				<User
 					avatarProps={{ src: applicant.account.avatarUrl }}
@@ -37,9 +37,9 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 					description={applicant.account.email}
 				/>
 				{applicant.aiInsight?.matchType && (
-					<Badge color={getBadgeColor(applicant.aiInsight.matchType)}>
-						{applicant.aiInsight.matchType}
-					</Badge>
+					<Chip color={getBadgeColor(applicant.aiInsight.matchType)}>
+						{applicant.aiInsight.matchType} match
+					</Chip>
 				)}
 			</div>
 			{applicant.aiInsight?.summary && (

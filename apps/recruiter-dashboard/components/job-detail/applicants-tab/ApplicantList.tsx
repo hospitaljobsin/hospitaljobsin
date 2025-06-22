@@ -159,7 +159,7 @@ export default function ApplicantList({
 
 	if (searchTerm) {
 		return (
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+			<div className="flex flex-col gap-4 w-full">
 				{data.applicants.edges.map((edge) => (
 					<button
 						type="button"
