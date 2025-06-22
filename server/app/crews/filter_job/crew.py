@@ -1,11 +1,17 @@
 import time
 
-from app.accounts.documents import Profile
 from app.accounts.repositories import ProfileRepo
+from app.config import SecretSettings, get_settings
+from app.core.genai_client import create_google_genai_client
 from app.crews.filter_job.models import FilterJobResultData, ProfileMatch
+from app.embeddings.services import EmbeddingsService
+from app.jobs.documents import JobApplicant
+from beanie import PydanticObjectId
+from beanie.operators import In
 from crewai import Agent, Task
 from pydantic import BaseModel
 
+from .tools.job_applicant_vector_search_tool import JobApplicantVectorSearchTool
 from .tools.profile_analyzer_tool import ProfileAnalyzerTool
 from .tools.query_parser_tool import QueryParserTool
 
@@ -31,8 +37,15 @@ class FilterJobCrew:
     """Crew for filtering and matching job profiles based on natural language queries."""
 
     def __init__(self) -> None:
+        secret_settings = get_settings(SecretSettings)
+        genai_client = create_google_genai_client(settings=secret_settings)
+        embedding_service = EmbeddingsService(genai_client=genai_client)
+
         self.query_parser = QueryParserTool()
         self.profile_analyzer = ProfileAnalyzerTool()
+        self.vector_search = JobApplicantVectorSearchTool(
+            embedding_service=embedding_service,
+        )
         self.profile_repo = ProfileRepo()
 
     def create_agents(self) -> list[Agent]:
@@ -47,9 +60,9 @@ class FilterJobCrew:
 
         profile_analyzer_agent = Agent(
             role="Profile Analyzer",
-            goal="Analyze profiles against requirements using both structured filters and LLM analysis",
+            goal="First, use the vector search tool to find relevant applicants. Then, analyze their profiles against requirements using both structured filters and LLM analysis.",
             backstory="Expert at matching profiles to job requirements using multiple analysis methods",
-            tools=[self.profile_analyzer],
+            tools=[self.profile_analyzer, self.vector_search],
             verbose=True,
         )
 
@@ -64,7 +77,7 @@ class FilterJobCrew:
         )
 
         analyze_profiles_task = Task(
-            description="Analyze profiles against the parsed requirements",
+            description="Use the vector search tool to find applicant profiles, then analyze them against the parsed requirements.",
             agent=self.create_agents()[1],
             expected_output="A list of dictionaries, where each dictionary represents a profile analysis.",
         )
@@ -72,24 +85,42 @@ class FilterJobCrew:
         return [parse_query_task, analyze_profiles_task]
 
     async def run(
-        self, query: str, profiles: list[Profile], max_results: int = 10
+        self, job_id: str, query: str, max_results: int = 10
     ) -> FilterJobResultData:
         """Run the filter job crew."""
         start_time = time.time()
+
+        applicant_results = await self.vector_search._arun(
+            job_id=job_id,
+            query=query,
+        )
+        if not applicant_results:
+            return FilterJobResultData(
+                matches=[],
+                total_matches=0,
+                query=query,
+                execution_time=time.time() - start_time,
+            )
+
+        applicant_ids = [PydanticObjectId(res["id"]) for res in applicant_results]
+        applicants = await JobApplicant.find(
+            In(JobApplicant.id, applicant_ids)  # type: ignore[arg-type]
+        ).to_list()
 
         # Parse query
         parse_result = await self.query_parser._arun(query)
 
         # Analyze each profile
         matches = []
-        for profile in profiles:
+        for applicant in applicants:
+            profile = applicant.profile_snapshot
             analysis = await self.profile_analyzer._arun(
                 profile=profile, query_context=parse_result
             )
 
             matches.append(
                 ProfileMatch(
-                    profile_id=str(profile.id),
+                    profile_id=str(applicant.id),
                     score=analysis["score"],
                     match_reasons=analysis["matchReasons"],
                     mismatched_fields=analysis["mismatchedFields"],

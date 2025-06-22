@@ -11,7 +11,8 @@ class AgenticProfileFilterService:
     async def filter_profiles(
         self,
         query: str,
-        max_results: int | None = 10,
+        job_id: str,
+        max_results: int = 10,
     ) -> FilterJobResultData:
         """Filter profiles based on natural language query."""
-        return await self._crew.run(query=query, max_results=max_results)
+        return await self._crew.run(query=query, job_id=job_id, max_results=max_results)

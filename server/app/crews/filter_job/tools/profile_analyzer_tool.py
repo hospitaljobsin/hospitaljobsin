@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any
 
-from app.accounts.documents import Profile
+from app.accounts.documents import BaseProfile
 from crewai.tools import BaseTool
 from pydantic import BaseModel, Field
 
@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 class ProfileAnalyzerToolInput(BaseModel):
     """Input schema for ProfileAnalyzerTool."""
 
-    profile: Profile = Field(..., description="Profile to analyze")
+    profile: BaseProfile = Field(..., description="Profile to analyze")
     query_context: dict[str, Any] = Field(
         ..., description="Context from the parsed query"
     )
@@ -21,13 +21,13 @@ class ProfileAnalyzerTool(BaseTool):
     args_schema: type[BaseModel] = ProfileAnalyzerToolInput
 
     async def _run(
-        self, profile: Profile, query_context: dict[str, Any]
+        self, profile: BaseProfile, query_context: dict[str, Any]
     ) -> dict[str, Any]:
         """Synchronous wrapper for _arun."""
         return await self._arun(profile, query_context)
 
     async def _arun(
-        self, profile: Profile, query_context: dict[str, Any]
+        self, profile: BaseProfile, query_context: dict[str, Any]
     ) -> dict[str, Any]:
         """Analyze a profile against job requirements."""
         structured_filters = query_context.get("structured_filters", {})
@@ -74,7 +74,7 @@ class ProfileAnalyzerTool(BaseTool):
         return analysis
 
     def _apply_structured_filters(
-        self, profile: Profile, filters: dict[str, Any]
+        self, profile: BaseProfile, filters: dict[str, Any]
     ) -> dict[str, Any]:
         """Apply structured filters to the profile."""
         analysis = {"score": 0.0, "matches": [], "mismatches": []}
@@ -128,7 +128,7 @@ class ProfileAnalyzerTool(BaseTool):
 
         return analysis
 
-    def _apply_llm_analysis(self, profile: Profile, query: str) -> dict[str, Any]:
+    def _apply_llm_analysis(self, profile: BaseProfile, query: str) -> dict[str, Any]:
         """Apply LLM-based analysis to the profile."""
         # This would typically use an LLM to analyze the profile against the query
         # For now, we'll use a simple scoring based on profile completeness
@@ -202,7 +202,9 @@ class ProfileAnalyzerTool(BaseTool):
 
         return total_years >= requirements["min_years"]
 
-    def _matches_location(self, profile: Profile, requirements: dict[str, Any]) -> bool:
+    def _matches_location(
+        self, profile: BaseProfile, requirements: dict[str, Any]
+    ) -> bool:
         """Check if location matches requirements."""
         if not requirements.get("locations"):
             return True
@@ -211,7 +213,9 @@ class ProfileAnalyzerTool(BaseTool):
             loc in profile.locations_open_to_work for loc in requirements["locations"]
         )
 
-    def _matches_salary(self, profile: Profile, requirements: dict[str, Any]) -> bool:
+    def _matches_salary(
+        self, profile: BaseProfile, requirements: dict[str, Any]
+    ) -> bool:
         """Check if salary expectations match requirements."""
         if not requirements.get("min_salary") or not profile.salary_expectations:
             return True

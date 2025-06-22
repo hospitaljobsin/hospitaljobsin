@@ -1,0 +1,83 @@
+Of course. I've updated the PRD to explicitly mention the use of the `RETRIEVAL_QUERY` task type for generating search query embeddings. This is a crucial detail for ensuring the search works correctly.
+
+***
+
+## PRD: Scalable Applicant Filtering with RAG and Vector Search
+
+### 1. **Background & Problem Statement**
+
+The current applicant filtering mechanism in the `JobRepository.get_all_by_job_id` method is not scalable. When a recruiter performs a search on a job's applicants, the system fetches *all* applicant profiles for that job from the database into memory. These profiles are then passed to an AI crew (`FilterJobCrew`) for semantic filtering.
+
+This approach has significant performance bottlenecks and scaling limitations:
+- **High Memory Usage:** Loading all applicants for a popular job can consume a large amount of server memory.
+- **Slow Processing:** The AI crew has to process a potentially massive list of profiles, leading to slow response times.
+- **Scalability Ceiling:** The system will fail or become unacceptably slow for jobs with thousands of applicants.
+
+### 2. **Goal & Objective**
+
+The primary goal is to re-architect the applicant filtering process to be highly scalable and efficient. We will achieve this by replacing the current "fetch-all-then-filter" pattern with a Retrieval-Augmented Generation (RAG) approach. This involves leveraging database-level vector search to retrieve only the most relevant applicants *before* any in-memory processing.
+
+### 3. **User Stories**
+
+- **As a recruiter,** I want to search for candidates within a job posting and get relevant results instantly, even if there are thousands of applicants, so I can identify top talent quickly and efficiently.
+- **As a developer,** I want to implement a scalable search solution using vector search to minimize server load and ensure the application remains performant as the number of users and applicants grows.
+
+### 4. **Requirements**
+
+#### 4.1. **Vector Search Tool for `FilterJobCrew`**
+
+A new tool, `JobApplicantVectorSearchTool`, will be created and made available to the `FilterJobCrew`. This tool will be the core of the new RAG-based approach.
+
+- **Tool Name:** `JobApplicantVectorSearchTool`
+- **Location:** `server/app/crews/filter_job/tools.py`
+- **Inputs:**
+    - `job_id: str`: The ID of the job to search within.
+    - `query: str`: The natural language search query from the recruiter.
+- **Functionality:**
+    1.  The tool will accept the `query` and generate a vector embedding for it using the existing embedding service (`server/app/embeddings/services.py`). It is crucial to use the **`TaskType.RETRIEVAL_QUERY`** enum when generating the embedding for the search query to ensure it is optimized for similarity search against the stored document embeddings.
+    2.  It will then perform a vector similarity search (e.g., cosine similarity) against the `JobApplicant` collection in MongoDB.
+    3.  The search must be scoped to applicants belonging to the specified `job_id`.
+    4.  The search will be performed on the `JobApplicant.profile_embedding` field.
+    5.  It should return a limited number of the top matching `JobApplicant` documents (e.g., top 25) to keep the result set manageable.
+- **Output:** A list of `JobApplicant` documents that are most relevant to the search query.
+
+#### 4.2. **Vector Index (Completed)**
+
+A vector search index has already been configured on the `job_applicants` collection to support this feature.
+
+- **Collection:** `job_applicants`
+- **Field:** `profile_embedding`
+- **Index Type:** Vector Search Index
+- **Status:** This infrastructure requirement is **complete** and available across all environments.
+
+#### 4.3. **Update `FilterJobCrew`**
+
+The `FilterJobCrew` will be updated to leverage the new tool.
+
+- **Current Behavior:** Receives a list of all profiles.
+- **New Behavior:**
+    - The crew will no longer receive a pre-fetched list of all profiles.
+    - The crew's primary agent will be instructed to use the `JobApplicantVectorSearchTool` as the first step to source relevant candidate profiles based on the user's query and the `job_id`.
+    - The agent will then analyze the smaller, more relevant set of profiles returned by the tool to generate insights and final matches.
+
+#### 4.4. **Refactor `JobRepository.get_all_by_job_id`**
+
+The logic within the `if search_term:` block of this method must be completely refactored.
+
+- **Remove Old Logic:** The existing code that fetches all applicants and their profiles must be removed.
+- **Implement New Logic:**
+    1.  Instantiate the `FilterJobCrew`.
+    2.  Invoke the crew with the `search_term` and `job_id`. The crew will handle the entire RAG process internally using its new tool.
+    3.  The result from the crew should be a list of matched `JobApplicant` documents, with the `ai_insight_data` attached to each, similar to the current implementation.
+    4.  The method will wrap the final list of matched applicants into a `PaginatedResult` object and return it. Since the RAG process returns a curated list, full pagination may not be necessary; returning a single page of results is acceptable.
+
+### 5. **Out of Scope**
+
+- **Embedding Generation:** This project assumes that the `JobApplicant.profile_embedding` field is already being populated correctly for all new and existing applicants.
+- **Frontend Changes:** No changes to the UI are part of this project. The API response structure will remain consistent.
+
+### 6. **Success Metrics**
+
+- **Performance:** A >90% reduction in response time for applicant searches on jobs with over 1,000 applicants.
+- **Scalability:** The server's memory usage should remain relatively flat during a search, regardless of the total number of applicants for a job.
+- **Relevance:** The relevance of search results should be equal to or better than the previous implementation, confirmed via qualitative review.
