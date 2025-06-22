@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9813436f6b377122c668d343e8a2996f>>
+ * @generated SignedSource<<a07418dc7d32f7e77d2f5f7743330faa>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
+export type AIApplicantMatchType = "CLOSE" | "LOW" | "PERFECT" | "%future added value";
 export type JobApplicantStatus = "APPLIED" | "INTERVIEWED" | "OFFERED" | "ONHOLD" | "SHORTLISTED" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type ApplicantListFragment$data = {
@@ -20,6 +21,13 @@ export type ApplicantListFragment$data = {
           readonly email: string;
           readonly fullName: string;
         };
+        readonly aiInsight: {
+          readonly matchReasons: ReadonlyArray<string>;
+          readonly matchType: AIApplicantMatchType;
+          readonly mismatchedFields: ReadonlyArray<string>;
+          readonly score: number;
+          readonly summary: string;
+        } | null | undefined;
         readonly id: string;
         readonly slug: string;
         readonly status?: JobApplicantStatus;
@@ -206,6 +214,52 @@ return {
                 {
                   "alias": null,
                   "args": null,
+                  "concreteType": "AIApplicantInsight",
+                  "kind": "LinkedField",
+                  "name": "aiInsight",
+                  "plural": false,
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "matchType",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "score",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "summary",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "matchReasons",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "mismatchedFields",
+                      "storageKey": null
+                    }
+                  ],
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
                   "kind": "ScalarField",
                   "name": "__typename",
                   "storageKey": null
@@ -257,6 +311,6 @@ return {
 };
 })();
 
-(node as any).hash = "841552fcb1e8552c24c980a09eb28e93";
+(node as any).hash = "76d7fc341465d6d7471347fa59bdc24d";
 
 export default node;

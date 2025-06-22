@@ -1,0 +1,133 @@
+{
+	"meta": {
+		"generatedAt": "2025-06-22T08:26:32.541Z",
+		"tasksAnalyzed": 15,
+		"totalTasks": 15,
+		"analysisCount": 15,
+		"thresholdScore": 5,
+		"projectName": "Taskmaster",
+		"usedResearch": true
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 14,
+			"taskTitle": "Define Backend GraphQL Types for AI Insights",
+			"complexityScore": 3,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Break this task into subtasks for: 1. Defining the `AIApplicantMatchType(graphene.Enum)` with specified values. 2. Defining the `AIApplicantInsight(graphene.ObjectType)` with specified fields. 3. Adding the `ai_insight` field to `JobApplicantType` and implementing its `resolve_ai_insight` resolver.",
+			"reasoning": "Low complexity as it's primarily schema definition in Python/Graphene with clear specifications. The three main steps in details map directly to subtasks."
+		},
+		{
+			"taskId": 15,
+			"taskTitle": "Enhance CrewAI `ProfileAnalyzerTool` Output Structure",
+			"complexityScore": 5,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Break this task into subtasks for: 1. Modifying the `ProfileAnalyzerTool`'s `_run` method to return the specified structured dictionary. 2. Ensuring the `filter_job/crew.py` correctly processes this new structured output from the tool. 3. Implementing unit tests for the `ProfileAnalyzerTool` to verify the new output structure and content, including edge cases.",
+			"reasoning": "Medium-low complexity. Involves changing the output contract of an AI tool and ensuring its consumer (the crew) adapts. Testing is crucial for AI component changes."
+		},
+		{
+			"taskId": 16,
+			"taskTitle": "Modify `Job.applicants` GraphQL Resolver for AI Search (Initial Setup)",
+			"complexityScore": 3,
+			"recommendedSubtasks": 2,
+			"expansionPrompt": "Break this task into subtasks for: 1. Updating the `JobType.resolve_applicants` signature to include `searchTerm=None` and implementing the `if searchTerm:` conditional block. 2. Adding tests to verify the `searchTerm` is received and the correct code path is taken, while also ensuring existing status filtering remains functional when `searchTerm` is not provided.",
+			"reasoning": "Low complexity, involves adding a parameter and a conditional branch to an existing resolver. Key is ensuring no regressions to existing functionality."
+		},
+		{
+			"taskId": 17,
+			"taskTitle": "Implement CrewAI Invocation in `Job.applicants` Resolver",
+			"complexityScore": 6,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Break this task into subtasks for: 1. Implementing the initialization and retrieval of the `filter_job` crew within the resolver's AI search path. 2. Preparing the input dictionary for the crew, including `job_id`, `search_query`, and `applicant_profiles_data`. 3. Calling the crew's `run` method with the prepared inputs and storing the returned `List[ProfileMatch]`. 4. Setting up mocking for the `filter_job` crew's `run` method for effective unit testing of the resolver logic.",
+			"reasoning": "Medium complexity due to CrewAI integration, data preparation for the AI call, and handling its results. Mocking is essential for reliable testing of this integration point."
+		},
+		{
+			"taskId": 18,
+			"taskTitle": "Integrate AI Insights into `JobApplicantType` in Resolver",
+			"complexityScore": 5,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Break this task into subtasks for: 1. Extracting `applicant_ids` from AI results and fetching corresponding `JobApplicant` objects from the database efficiently. 2. Creating an efficient lookup map for `JobApplicant` instances by ID. 3. Iterating through AI results, and for each result, instantiating an `AIApplicantInsight` object using the data. 4. Attaching the created `AIApplicantInsight` object to the respective `JobApplicant` instance (e.g., via a temporary attribute like `ai_insight_data`) so it's available to the `resolve_ai_insight` resolver.",
+			"reasoning": "Medium complexity involving database queries, data mapping between AI results and Django models, and careful object manipulation to link insights correctly."
+		},
+		{
+			"taskId": 19,
+			"taskTitle": "Update Frontend GraphQL Queries for AI Insights",
+			"complexityScore": 2,
+			"recommendedSubtasks": 2,
+			"expansionPrompt": "Break this task into subtasks for: 1. Modifying the `ApplicantsTabFragment_job` GraphQL fragment in `ApplicantsTab.tsx` to include the `aiInsight` field and its subfields (`matchType`, `score`, `summary`, `matchReasons`, `mismatchedFields`). 2. Verifying and ensuring that the component using this fragment correctly passes the `searchTerm` variable to the GraphQL query.",
+			"reasoning": "Low complexity, involves a small modification to a GraphQL query and ensuring variable propagation. Primarily a frontend definition change."
+		},
+		{
+			"taskId": 20,
+			"taskTitle": "Redesign `ApplicantListController` - AI Search Input",
+			"complexityScore": 2,
+			"recommendedSubtasks": 2,
+			"expansionPrompt": "Break this task into subtasks for: 1. Updating the search `Input` component in `ApplicantListController.tsx` with the new placeholder text 'e.g., a nurse with 5 years of experience in cardiology' and adding a visible label 'AI-Powered Search'. 2. Ensuring the component's state for this input (e.g., `searchTerm`) is correctly wired to the GraphQL query variables used by `ApplicantsTabFragment`.",
+			"reasoning": "Low complexity, involving straightforward UI updates (label, placeholder) and ensuring state is correctly passed to the GraphQL query."
+		},
+		{
+			"taskId": 21,
+			"taskTitle": "Implement Advanced Filters UI in `ApplicantListController`",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break this task into subtasks for: 1. Implementing the collapsible section UI for 'Advanced Filters' in `ApplicantListController.tsx`, including the toggle button and visibility state. 2. Integrating and configuring a range slider component for the 'Experience' filter. 3. Adding a text input component for the 'Location' filter. 4. Integrating and configuring a multi-select dropdown component (e.g., `react-select`) for the 'Skills' filter. 5. Implementing state management for all new filter controls and their values within `ApplicantListController.tsx`.",
+			"reasoning": "Medium complexity due to building a new UI section with multiple interactive filter controls (slider, multi-select) and managing their individual states. May involve integrating third-party libraries."
+		},
+		{
+			"taskId": 22,
+			"taskTitle": "Implement Logic to Translate Structured Filters to NL Query",
+			"complexityScore": 5,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Break this task into subtasks for: 1. Creating the `buildAIQueryFromAdvancedFilters()` function in `ApplicantListController.tsx`. 2. Implementing the logic within this function to convert selected experience range, location input, and selected skills into coherent natural language phrases. 3. Developing the logic to combine these phrases into a single, well-formed natural language query string. 4. Defining and implementing the strategy for how this generated query string is combined with (or replaces) the text from the main AI search input to form the final `searchTerm` passed to GraphQL.",
+			"reasoning": "Medium complexity due to the need to develop robust logic for translating structured filter inputs into a coherent natural language query, handling various combinations and edge cases."
+		},
+		{
+			"taskId": 23,
+			"taskTitle": "Create `ApplicantCard.tsx` Component - Basic Structure & AI Summary",
+			"complexityScore": 3,
+			"recommendedSubtasks": 2,
+			"expansionPrompt": "Break this task into subtasks for: 1. Defining the `ApplicantCardProps` (accepting `applicant` data and optional `aiInsight`) and creating the basic structure of the `ApplicantCard.tsx` component to render essential applicant information (name, title, etc.). 2. Implementing the conditional rendering of the AI-generated summary from `aiInsight.summary` within the card, ensuring it's clearly displayed if present.",
+			"reasoning": "Low complexity, involves creating a new presentational React component with basic props and conditional rendering for the AI summary."
+		},
+		{
+			"taskId": 24,
+			"taskTitle": "Implement `matchType` Badge and Detailed Insights Toggle in `ApplicantCard.tsx`",
+			"complexityScore": 3,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Break this task into subtasks for: 1. Implementing the display of a prominent badge within `ApplicantCard.tsx` based on `aiInsight.matchType`, including appropriate styling for different match types (`PERFECT`, `CLOSE`, `LOW`). 2. Adding a button or link (e.g., 'See Why'/'Hide Details') to the card. 3. Implementing the local component state (e.g., `showDetails`) and logic to toggle this state when the button is clicked, changing the button text accordingly.",
+			"reasoning": "Low complexity, involves adding a visual badge, a button, and simple local state management for toggling visibility within the `ApplicantCard` component."
+		},
+		{
+			"taskId": 25,
+			"taskTitle": "Implement Modal/Expandable View for Full AI Match Reasons",
+			"complexityScore": 4,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Break this task into subtasks for: 1. Implementing the conditional rendering of the `matchReasons` list within `ApplicantCard.tsx` (e.g., as `<ul><li>...</li></ul>`) when `showDetails` is true and `aiInsight` is present. 2. Implementing the conditional rendering of the `mismatchedFields` list, ensuring it only displays if the array is not empty and `showDetails` is true. 3. Styling the expandable section containing these details for readability and clarity, considering whether it's an inline expansion or a modal.",
+			"reasoning": "Medium-low complexity. Involves conditional rendering of potentially multiple lists of data and ensuring it's presented clearly. Styling for this detailed view is important."
+		},
+		{
+			"taskId": 26,
+			"taskTitle": "Integrate `ApplicantCard.tsx` into `ApplicantList.tsx`",
+			"complexityScore": 2,
+			"recommendedSubtasks": 2,
+			"expansionPrompt": "Break this task into subtasks for: 1. Importing the `ApplicantCard` component into `ApplicantList.tsx` and modifying the rendering logic to iterate over the applicant data (e.g., `edges.map(edge => edge.node)`). 2. For each applicant node, rendering an `ApplicantCard` component and ensuring all necessary props (`key`, `applicant={node}`, `aiInsight={node.aiInsight}`) are correctly passed to it.",
+			"reasoning": "Low complexity, primarily involves replacing existing rendering logic with the new `ApplicantCard` component and ensuring correct prop passing."
+		},
+		{
+			"taskId": 27,
+			"taskTitle": "Ensure Responsiveness of New UI Elements",
+			"complexityScore": 5,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Break this task into subtasks for: 1. Reviewing and adjusting CSS for the 'Advanced Filters' section in `ApplicantListController.tsx` (including its controls like slider, inputs) to ensure it's responsive and usable on various screen sizes (desktop, tablet, mobile). 2. Reviewing and adjusting CSS for the `ApplicantCard.tsx` component, including the AI summary, badge, and overall layout, for responsiveness across different viewports. 3. Ensuring the expanded/modal view for detailed AI match reasons within `ApplicantCard.tsx` is responsive and user-friendly on smaller screens.",
+			"reasoning": "Medium complexity. Achieving good responsiveness across multiple new UI components and their states requires careful CSS work (media queries, flexbox/grid) and thorough testing on various screen sizes."
+		},
+		{
+			"taskId": 28,
+			"taskTitle": "Backend Performance Optimization for AI Filtering",
+			"complexityScore": 8,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break this task into subtasks for: 1. Profiling the `Job.applicants` resolver when `searchTerm` is used, under realistic load conditions, to identify performance bottlenecks in CrewAI execution, database queries, or data processing. 2. Investigating and implementing specific optimizations for CrewAI tool or agent logic if they are identified as bottlenecks. 3. Analyzing and optimizing database queries involved in fetching `JobApplicant` data and any related data needed for AI processing. 4. Exploring and, if beneficial, implementing caching strategies for CrewAI results (e.g., based on job ID and search term) with appropriate invalidation mechanisms. 5. Investigating the feasibility and potentially implementing asynchronous execution for CrewAI calls to improve initial response time, possibly loading AI insights progressively.",
+			"reasoning": "High complexity. Performance optimization is often investigative and can involve deep dives into different parts of the system (AI, database, application code). The potential solutions (caching, async execution) can be complex to implement correctly and safely."
+		}
+	]
+}

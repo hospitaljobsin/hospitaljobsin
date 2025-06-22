@@ -241,11 +241,73 @@ class ProfileSnapshotType(BaseProfileType):
         )
 
 
+@strawberry.enum(
+    name="AIApplicantMatchType",
+    description="The match type of the AI-powered applicant insight.",
+)
+class AIApplicantMatchType(Enum):
+    PERFECT = "PERFECT"
+    CLOSE = "CLOSE"
+    LOW = "LOW"
+
+
+@strawberry.type(
+    name="AIApplicantInsight",
+    description="AI-powered insights for a job applicant.",
+)
+class AIApplicantInsight:
+    match_type: Annotated[
+        AIApplicantMatchType,
+        strawberry.field(
+            name="matchType",
+            description="The type of match.",
+        ),
+    ]
+    score: Annotated[
+        float,
+        strawberry.field(
+            description="The match score, from 0 to 100.",
+        ),
+    ]
+    summary: Annotated[
+        str,
+        strawberry.field(
+            description="A one-sentence summary of the match.",
+        ),
+    ]
+    match_reasons: Annotated[
+        list[str],
+        strawberry.field(
+            name="matchReasons",
+            description="A list of reasons for the match.",
+        ),
+    ]
+    mismatched_fields: Annotated[
+        list[str],
+        strawberry.field(
+            name="mismatchedFields",
+            description="A list of fields that do not match the job requirements.",
+        ),
+    ]
+
+    @classmethod
+    def marshal(cls, data: dict[str, Any]) -> "AIApplicantInsight":
+        return AIApplicantInsight(
+            match_type=AIApplicantMatchType(data["match_type"]),
+            score=data["score"],
+            summary=data["summary"],
+            match_reasons=data["match_reasons"],
+            mismatched_fields=data["mismatched_fields"],
+        )
+
+
 @strawberry.type(
     name="JobApplicant",
     description="A job application for a posting.",
 )
 class JobApplicantType(BaseNodeType[JobApplicant]):
+    ai_insight: AIApplicantInsight | None
+
     status: JobApplicantStatusEnum = strawberry.field(
         description="The status of the job application.",
     )
@@ -312,6 +374,9 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
                 ApplicantFieldType.marshal(field)
                 for field in job_applicant.applicant_fields
             ],
+            ai_insight=AIApplicantInsight.marshal(job_applicant.ai_insight_data)
+            if job_applicant.ai_insight_data
+            else None,
         )
 
     @classmethod

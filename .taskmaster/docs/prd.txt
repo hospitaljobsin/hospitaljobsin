@@ -1,81 +1,106 @@
-# Product Requirements Document (PRD): Recruiter Dashboard – Create Job Page
+# PRD: Agentic AI Applicant Filtering & Insights
 
-## Overview
+## 1. Overview
 
-Add a new “Create Job” page to the recruiter-dashboard app, allowing users to either:
-- Create a new job from scratch (with AI assistance)
-- Import and edit an existing job (placeholder for now)
+This document outlines the requirements for enhancing the applicant filtering system within the Recruiter Dashboard. The core of this initiative is to fully integrate our agentic AI (CrewAI) capabilities into the applicant search process, providing recruiters with powerful, insightful, and user-friendly tools to find the best candidates. This involves significant updates to both the backend GraphQL API and the frontend UI/UX on the job detail page's "Applicants" tab.
 
-## User Stories
+## 2. Problem Statement
 
-### 1. Create Job from Scratch
-- As a recruiter, I can navigate to the “Create Job” page.
-- I see two options: “Create from Scratch” and “Import Existing Job.”
-- If I choose “Create from Scratch,” I am prompted to enter a one-line outline/summary of the job I want to create.
-- Upon submitting the outline, the frontend sends it to a FastAPI backend endpoint.
-- The backend starts a CrewAI crew in the background to generate a full job posting based on the outline.
-- The backend immediately returns a `kickoff_id` to the frontend.
-- The frontend uses this `kickoff_id` to poll a separate REST endpoint for updates on the crew execution status and results.
-- The crew must:
-  - Intelligently parse the outline to extract structured job attributes (e.g., “ICU nurse posting with 5 vacancies” → role: ICU nurse, vacancies: 5).
-  - Generate the job description using three different agents, as set up in `crews/create_job_crew`.
-  - Output a Pydantic object that matches the current GraphQL `CreateJobInput` type.
-- When the job is generated, the backend sends the job data (JSON) to the frontend via the polling endpoint.
-- The frontend displays a job creation form, pre-filled with the generated job data.
-- I can edit any field in the form and click “Update Job” to save it.
-- The form submission triggers an existing GraphQL mutation to save the job to the database.
+The current applicant filtering system has several major shortcomings:
 
-### 2. Import Existing Job
-- If I choose “Import Existing Job,” I see a placeholder screen (to be implemented in the future).
+- **Underutilized AI:** We have a sophisticated CrewAI-based job filtering crew that can parse natural language, analyze profiles, and provide detailed matching reasons. However, this crew is not currently integrated into the application's API layer. The existing "Find an applicant..." search bar performs a basic database text search, which does not leverage our AI capabilities.
+- **Poor User Experience:** The current filtering UI is limited to a single text input and a status dropdown. This is unintuitive for complex searches and fails to guide the recruiter on what's possible.
+- **Lack of Actionable Insights:** The current view only shows applicant data. It does not provide any context or reasoning as to *why* a candidate might be a good fit for a role, forcing recruiters to manually sift through every profile. This is time-consuming and inefficient.
+- **Missed Opportunity:** We are not showcasing our advanced AI capabilities, which is a key differentiator for our platform.
 
-## Functional Requirements
+## 3. Goals and Objectives
 
-### Frontend
-- Add a new page: `/create-job`
-- Display two options: “Create from Scratch” and “Import Existing Job”
-- For “Create from Scratch”:
-  - Prompt for a one-line job outline
-  - Send outline to FastAPI endpoint (e.g., `POST /api/ai/generate-job`)
-  - Receive a `kickoff_id` in the response
-  - Poll a separate REST endpoint (e.g., `GET /api/ai/generate-job/status/{kickoff_id}`) for updates/results
-  - Show loading state while waiting for job generation
-  - When job data is received, display a job creation form pre-filled with the generated data
-  - Allow user to edit fields and submit via “Update Job” button
-  - On submit, call existing GraphQL mutation to save the job
-- For “Import Existing Job”:
-  - Show a placeholder screen
+### Goals
 
-### Backend
-- FastAPI endpoint to receive job outline and start CrewAI crew
-  - Endpoint: `POST /api/ai/generate-job`
-  - Accepts: `{ outline: string }`
-  - Starts CrewAI crew in the background to generate job posting
-  - Immediately returns a `kickoff_id` to the client
-  - Expose a polling endpoint: `GET /api/ai/generate-job/status/{kickoff_id}`
-    - Returns the current status and, when ready, the generated job data (as a Pydantic object matching the GraphQL `CreateJobInput` type)
-  - The crew must:
-    - Parse the outline to extract structured job attributes (e.g., role, vacancies, etc.)
-    - Generate the job description using three different agents (as in `crews/create_job_crew`)
-    - Output a Pydantic object that matches the current GraphQL `CreateJobInput` type
+- To provide recruiters with a best-in-class, AI-powered applicant filtering experience.
+- To significantly reduce the time and effort required for recruiters to identify qualified candidates.
+- To showcase the power and sophistication of our agentic AI platform.
 
-### Integration
-- The frontend must handle asynchronous job generation using the `kickoff_id` and polling endpoint
-- The backend must notify the frontend of job readiness via the polling endpoint
-- The job creation form must use the existing GraphQL mutation for saving jobs
+### Objectives
 
-## Non-Functional Requirements
-- Use TypeScript, Next.js, React, Relay, and TailwindCSS on the frontend
-- Use FastAPI, CrewAI, and Python on the backend
-- Ensure responsive design and good UX for loading/error states
-- Placeholder for “Import Existing Job” (no backend logic yet)
+- **Backend:**
+    - Integrate the existing `filter_job` CrewAI crew into the `Job.applicants` GraphQL resolver.
+    - Expose AI-generated insights (match score, match type, and detailed reasons) through the GraphQL API.
+    - Ensure the AI filtering process is performant and returns results in a timely manner.
+- **Frontend:**
+    - Redesign the filtering interface to be more intuitive and powerful, offering both structured filters and natural language search.
+    - Create a new UI component on the applicant card to clearly display AI-generated insights.
+    - Ensure the new UI is responsive and provides a seamless user experience.
 
-## Out of Scope
-- Actual implementation of the “Import Existing Job” feature (just a placeholder for now)
-- Changes to the existing GraphQL mutation
+## 4. Requirements
 
-## Acceptance Criteria
-- Recruiter can create a job from scratch using AI assistance and save it after editing
-- CrewAI crew parses the outline and generates a Pydantic object matching the GraphQL `CreateJobInput` type
-- Job description is generated using three agents as in `crews/create_job_crew`
-- Recruiter can see a placeholder for importing an existing job
-- All backend and frontend integration points work as described, including polling with `kickoff_id`
+### 4.1. Backend Requirements
+
+1.  **Integrate CrewAI with GraphQL Resolver:**
+    - The `Job.applicants` resolver in `server/app/jobs/types.py` must be modified.
+    - When the `searchTerm` argument is provided, the resolver must invoke the `filter_job` crew's `run` method.
+    - The crew's output (`List[ProfileMatch]`) must be used to enrich the `JobApplicant` data.
+
+2.  **Create New GraphQL Types for AI Insights:**
+    - A new `AIApplicantInsight` object type shall be created in `server/app/jobs/types.py`.
+    - It must contain the following fields:
+        - `matchType: AIApplicantMatchType!` (Enum: `PERFECT`, `CLOSE`, `LOW`)
+        - `score: Float!` (A score from 0 to 100)
+        - `summary: String!` (A one-sentence summary of the match)
+        - `matchReasons: [String!]!` (Detailed breakdown of why the applicant matches)
+        - `mismatchedFields: [String!]!` (Fields that do not meet the criteria, if any)
+    - The `JobApplicantType` will be updated to include an optional field: `aiInsight: AIApplicantInsight`. This field will only be populated when a `searchTerm` is used.
+
+3.  **Enhance CrewAI Output:**
+    - The `ProfileAnalyzerTool` within the `filter_job` crew must be updated.
+    - Its output must be more structured to populate the new `AIApplicantInsight` type, including a summary and identifying mismatched fields, not just `match_reasons`.
+
+### 4.2. Frontend Requirements
+
+1.  **Redesign Filter Controller (`ApplicantListController.tsx`):**
+    - The existing single `Input` will be enhanced. It should be clearly labeled as "AI-Powered Search (e.g., 'a nurse with 5 years of experience in cardiology')".
+    - Add a new "Advanced Filters" section (collapsible) that includes structured controls:
+        - **Experience:** A range slider (e.g., 2-10 years).
+        - **Location:** A text input with autocomplete for cities.
+        - **Skills:** A multi-select dropdown with common skills for the role.
+    - When structured filters are used, they should be translated into the natural language query for the AI.
+
+2.  **Update Applicant Card UI (`ApplicantList.tsx`):**
+    - Each applicant card in the list must be redesigned to display the AI insights.
+    - A prominent badge indicating the `matchType` (`Perfect Match`, `Close Match`) must be displayed.
+    - The `summary` from the AI insight should be visible directly on the card.
+    - An expandable "See why" or "Details" button will reveal a modal or an expanded section showing the full `matchReasons` and `mismatchedFields`.
+
+3.  **Update GraphQL Queries:**
+    - The `ApplicantsTabFragment` will be updated to query the new `aiInsight` field on the `JobApplicant` node.
+
+## 5. Technical Implementation Plan
+
+- **Backend:**
+    1.  Create `AIApplicantMatchType` enum and `AIApplicantInsight` type in `server/app/jobs/types.py`.
+    2.  Add `aiInsight: AIApplicantInsight` to `JobApplicantType`.
+    3.  Modify `filter_job/crew.py` and `filter_job/tools/profile_analyzer_tool.py` to produce the richer insight data.
+    4.  Refactor the `JobType.applicants` resolver. When `searchTerm` is present, it will:
+        a. Call the `filter_job` crew.
+        b. Get the list of `ProfileMatch` results.
+        c. Fetch the corresponding `JobApplicant` documents.
+        d. Combine the data, constructing the `AIApplicantInsight` for each applicant and attaching it to the `JobApplicantType` object before returning.
+
+- **Frontend:**
+    1.  Refactor `apps/recruiter-dashboard/components/job-detail/applicants-tab/ApplicantListController.tsx` to include the new advanced filter controls.
+    2.  Create a new component, e.g., `ApplicantCard.tsx`, to encapsulate the logic for displaying an applicant and their AI insights.
+    3.  Update `ApplicantList.tsx` to use the new `ApplicantCard` component.
+    4.  Update the Relay fragment in `ApplicantsTab.tsx` to fetch `aiInsight { ... }`.
+    5.  Implement the modal or expandable view for detailed insights.
+
+## 6. Success Metrics
+
+- **Adoption:** Percentage of applicant searches that use the new AI-powered filters vs. basic status filtering.
+- **User Satisfaction:** Positive feedback from recruiters via surveys or direct communication.
+- **Efficiency Gains:** Reduction in average time from job posting to shortlisting candidates, as reported by recruiters.
+
+## 7. Out of Scope
+
+- Saving filter presets for individual users or organizations.
+- Proactive notifications about new matching candidates.
+- A/B testing different UI layouts for the insights.

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<64419fb5a15b31f69191cf18929eaaf9>>
- * @relayHash abcc9a5f16f553f3d92f3a618002adbd
+ * @generated SignedSource<<e887c82c4e878dcd4a8c42ef18e50a69>>
+ * @relayHash 2a26865e01b69578f8589ccfc5883901
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID abcc9a5f16f553f3d92f3a618002adbd
+// @relayRequestID 2a26865e01b69578f8589ccfc5883901
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -265,6 +265,52 @@ return {
                               }
                             ]
                           },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "AIApplicantInsight",
+                            "kind": "LinkedField",
+                            "name": "aiInsight",
+                            "plural": false,
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "matchType",
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "score",
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "summary",
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "matchReasons",
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "mismatchedFields",
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          },
                           (v9/*: any*/)
                         ],
                         "storageKey": null
@@ -329,7 +375,7 @@ return {
     ]
   },
   "params": {
-    "id": "abcc9a5f16f553f3d92f3a618002adbd",
+    "id": "2a26865e01b69578f8589ccfc5883901",
     "metadata": {},
     "name": "ApplicantListPaginationQuery",
     "operationKind": "query",
@@ -338,6 +384,6 @@ return {
 };
 })();
 
-(node as any).hash = "841552fcb1e8552c24c980a09eb28e93";
+(node as any).hash = "76d7fc341465d6d7471347fa59bdc24d";
 
 export default node;

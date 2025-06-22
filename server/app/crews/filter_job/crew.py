@@ -1,5 +1,6 @@
 import time
 
+from app.accounts.documents import Profile
 from app.accounts.repositories import ProfileRepo
 from app.crews.filter_job.models import FilterJobResultData, ProfileMatch
 from crewai import Agent, Task
@@ -59,42 +60,29 @@ class FilterJobCrew:
         parse_query_task = Task(
             description=f"Parse the following query into structured requirements: {query}",
             agent=self.create_agents()[0],
+            expected_output="A JSON object containing structured filters and the original query.",
         )
 
         analyze_profiles_task = Task(
             description="Analyze profiles against the parsed requirements",
             agent=self.create_agents()[1],
+            expected_output="A list of dictionaries, where each dictionary represents a profile analysis.",
         )
 
         return [parse_query_task, analyze_profiles_task]
 
-    async def run(self, query: str, max_results: int = 10) -> FilterJobResultData:
+    async def run(
+        self, query: str, profiles: list[Profile], max_results: int = 10
+    ) -> FilterJobResultData:
         """Run the filter job crew."""
         start_time = time.time()
 
         # Parse query
         parse_result = await self.query_parser._arun(query)
-        structured_filters = parse_result["structured_filters"]
-
-        # Get initial filtered profiles using structured filters
-        filtered_profiles = await self.profile_repo.filter_profiles(
-            locations=structured_filters.get("location_requirements", {}).get(
-                "locations", []
-            ),
-            min_experience_years=structured_filters.get(
-                "experience_requirements", {}
-            ).get("min_years"),
-            min_salary=structured_filters.get("salary_requirements", {}).get(
-                "min_salary"
-            ),
-            max_salary=structured_filters.get("salary_requirements", {}).get(
-                "max_salary"
-            ),
-        )
 
         # Analyze each profile
         matches = []
-        for profile in filtered_profiles:
+        for profile in profiles:
             analysis = await self.profile_analyzer._arun(
                 profile=profile, query_context=parse_result
             )
@@ -102,8 +90,11 @@ class FilterJobCrew:
             matches.append(
                 ProfileMatch(
                     profile_id=str(profile.id),
-                    score=analysis["total_score"],
-                    match_reasons=analysis["match_reasons"],
+                    score=analysis["score"],
+                    match_reasons=analysis["matchReasons"],
+                    mismatched_fields=analysis["mismatchedFields"],
+                    summary=analysis["summary"],
+                    match_type=analysis["matchType"],
                 )
             )
 

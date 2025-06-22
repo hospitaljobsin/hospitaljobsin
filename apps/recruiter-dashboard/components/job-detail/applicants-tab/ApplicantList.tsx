@@ -21,6 +21,7 @@ import { UserRound } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { startTransition, useEffect, useRef } from "react";
 import { graphql } from "react-relay";
+import ApplicantCard from "./ApplicantCard";
 import ApplicantListSkeleton from "./ApplicantListSkeleton";
 
 const ApplicantListFragment = graphql`
@@ -50,6 +51,13 @@ const ApplicantListFragment = graphql`
 					}
 					slug
 					status @include(if: $showStatus)
+					aiInsight {
+						matchType
+						score
+						summary
+						matchReasons
+						mismatchedFields
+					}
 				}
 			}
 			pageInfo {
@@ -145,6 +153,30 @@ export default function ApplicantList({
 				<div className="flex flex-col items-center gap-4">
 					<h3 className="font-medium text-lg">No applicants found</h3>
 				</div>
+			</div>
+		);
+	}
+
+	if (searchTerm) {
+		return (
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+				{data.applicants.edges.map((edge) => (
+					<button
+						type="button"
+						key={edge.node.id}
+						className="cursor-pointer text-left"
+						onClick={() => {
+							router.push(
+								links.applicantDetail(
+									params.slug,
+									encodeURIComponent(edge.node.slug),
+								),
+							);
+						}}
+					>
+						<ApplicantCard applicant={edge.node} />
+					</button>
+				))}
 			</div>
 		);
 	}

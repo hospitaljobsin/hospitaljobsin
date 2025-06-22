@@ -20,9 +20,11 @@ class ProfileAnalyzerTool(BaseTool):
     description: str = "Analyzes a profile against job requirements using both structured filters and LLM analysis"
     args_schema: type[BaseModel] = ProfileAnalyzerToolInput
 
-    def _run(self, profile: Profile, query_context: dict[str, Any]) -> dict[str, Any]:
+    async def _run(
+        self, profile: Profile, query_context: dict[str, Any]
+    ) -> dict[str, Any]:
         """Synchronous wrapper for _arun."""
-        return self._arun(profile, query_context)
+        return await self._arun(profile, query_context)
 
     async def _arun(
         self, profile: Profile, query_context: dict[str, Any]
@@ -31,40 +33,43 @@ class ProfileAnalyzerTool(BaseTool):
         structured_filters = query_context.get("structured_filters", {})
         original_query = query_context.get("original_query", "")
 
-        # Initialize analysis results
-        analysis = {
-            "structured_score": 0.0,
-            "llm_score": 0.0,
-            "total_score": 0.0,
-            "matches": [],
-            "mismatches": [],
-            "match_reasons": [],
-        }
-
         # Apply structured filters
         structured_analysis = self._apply_structured_filters(
             profile, structured_filters
         )
-        analysis["structured_score"] = structured_analysis["score"]
-        analysis["matches"].extend(structured_analysis["matches"])
-        analysis["mismatches"].extend(structured_analysis["mismatches"])
+        structured_score = structured_analysis["score"]
+        matches = structured_analysis["matches"]
+        mismatches = structured_analysis["mismatches"]
 
         # Apply LLM analysis
         llm_analysis = self._apply_llm_analysis(profile, original_query)
-        analysis["llm_score"] = llm_analysis["score"]
-        analysis["matches"].extend(llm_analysis["matches"])
-        analysis["mismatches"].extend(llm_analysis["mismatches"])
+        llm_score = llm_analysis["score"]
+        matches.extend(llm_analysis["matches"])
+        mismatches.extend(llm_analysis["mismatches"])
 
         # Calculate total score (70% structured, 30% LLM)
-        analysis["total_score"] = (0.7 * analysis["structured_score"]) + (
-            0.3 * analysis["llm_score"]
-        )
+        score = (0.7 * structured_score) + (0.3 * llm_score)
+        score = min(score * 100, 100)  # Scale to 0-100
 
-        # Generate match reasons
-        if analysis["matches"]:
-            analysis["match_reasons"] = [
-                f"Strong match in {match}" for match in analysis["matches"][:3]
-            ]
+        # Determine match type and summary
+        if score >= 90:
+            match_type = "PERFECT"
+            summary = "Perfect match: Candidate meets all key requirements."
+        elif score >= 60:
+            match_type = "CLOSE"
+            summary = "Close match: Candidate meets most requirements."
+        else:
+            match_type = "LOW"
+            summary = "Low match: Candidate meets some, but not all, key requirements."
+
+        # Generate final analysis aligned with AIApplicantInsight
+        analysis = {
+            "matchType": match_type,
+            "score": score,
+            "summary": summary,
+            "matchReasons": matches,
+            "mismatchedFields": mismatches,
+        }
 
         return analysis
 

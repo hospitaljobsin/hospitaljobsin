@@ -45,9 +45,12 @@ class JobStatusResponse(BaseModel):
 class ProfileMatch(BaseModel):
     """Data model for a matched profile."""
 
-    profile_id: str
-    score: float
-    match_reasons: list[str]
+    profile_id: str = Field(..., description="The ID of the matched profile")
+    score: float = Field(..., description="The match score")
+    summary: str = Field(..., description="A one-sentence summary of the match.")
+    match_reasons: list[str] = Field(..., description="Reasons for the match")
+    mismatched_fields: list[str] = Field(..., description="Fields that do not match")
+    match_type: str = Field(..., description="The type of match")
 
 
 class FilterJobResultData(BaseModel):

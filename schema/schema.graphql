@@ -3,6 +3,26 @@ directive @isAuthenticated on FIELD_DEFINITION
 directive @requiresSudoMode on FIELD_DEFINITION
 
 """
+AI-powered insights for a job applicant.
+"""
+type AIApplicantInsight {
+	matchType: AIApplicantMatchType!
+	score: Float!
+	summary: String!
+	matchReasons: [String!]!
+	mismatchedFields: [String!]!
+}
+
+"""
+The match type of the AI-powered applicant insight.
+"""
+enum AIApplicantMatchType {
+	PERFECT
+	CLOSE
+	LOW
+}
+
+"""
 The accept organization invite payload.
 """
 union AcceptOrganizationInvitePayload =
@@ -1171,6 +1191,7 @@ type JobApplicant implements Node {
 	The Globally Unique ID of this object
 	"""
 	id: ID!
+	aiInsight: AIApplicantInsight
 
 	"""
 	The status of the job application.

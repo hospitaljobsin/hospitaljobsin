@@ -1,5 +1,5 @@
 from datetime import UTC, datetime
-from typing import Annotated, ClassVar, Literal
+from typing import Annotated, Any, ClassVar, Literal
 
 import pymongo
 from beanie import (
@@ -146,6 +146,18 @@ class JobApplicant(Document):
                 default_language="english",
             ),
         ]
+
+    def __init__(self, **data: Any) -> None:
+        super().__init__(**data)
+        self.__ai_insight_data: dict[str, Any] | None = None
+
+    @property
+    def ai_insight_data(self) -> dict[str, Any] | None:
+        return self.__ai_insight_data
+
+    @ai_insight_data.setter
+    def ai_insight_data(self, value: dict[str, Any] | None) -> None:
+        self.__ai_insight_data = value
 
 
 class JobMetricMetadata(BaseModel):

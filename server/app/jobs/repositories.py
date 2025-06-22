@@ -8,15 +8,16 @@ import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.operators import And, In, NearSphere, Set
 from bson import ObjectId
+from strawberry.relay import PageInfo
 
 from app.accounts.documents import Account, BaseProfile
 from app.base.models import GeoObject
 from app.core.constants import (
-    DEFAULT_PAGINATION_LIMIT,
     RELATED_JOBS_SIMILARITY_THRESHOLD,
     JobApplicantStatus,
     JobMetricEventType,
 )
+from app.crews.filter_job.crew import FilterJobCrew
 from app.crews.filter_job.services import AgenticProfileFilterService
 from app.database.paginator import PaginatedResult, Paginator
 from app.embeddings.services import EmbeddingsService
@@ -639,52 +640,67 @@ class JobApplicantRepo:
         before: str | None = None,
         after: str | None = None,
     ) -> PaginatedResult[JobApplicant, ObjectId]:
-        """Get a paginated result of job applicants for the given job."""
+        """Return all applicants for a job."""
         if search_term:
-            # TODO: getting max_results and filtering here should probably be done after validating pagination arguments
-            # this could probably be passed in as a callback to the paginator class (like a hook maybe)
-            filtered_result = (
-                await self._agentic_profile_filter_service.filter_profiles(
-                    query=search_term,
-                    max_results=first or last or DEFAULT_PAGINATION_LIMIT,
+            # Get all applicants for the job without pagination
+            all_applicants_cursor = JobApplicant.find(
+                JobApplicant.job.id == job_id,
+                fetch_links=True,
+                nesting_depth=2,
+            )
+            all_applicants = await all_applicants_cursor.to_list()
+            print("all_applicants", all_applicants)
+
+            profiles = [applicant.account.profile for applicant in all_applicants]
+            print("profiles", profiles)
+
+            if not profiles:
+                return PaginatedResult(
+                    entities=[],
+                    page_info=PageInfo(
+                        has_next_page=False,
+                        has_previous_page=False,
+                        start_cursor=None,
+                        end_cursor=None,
+                    ),
                 )
-            )
 
-            profile_ids = [
-                ObjectId(profile.profile_id) for profile in filtered_result.matches
-            ]
+            # Run the crew
+            crew = FilterJobCrew()
+            crew_result = await crew.run(query=search_term, profiles=profiles)
+            matched_profile_ids = {
+                PydanticObjectId(match.profile_id) for match in crew_result.matches
+            }
 
-            pipeline = [
-                {"$match": {"job.$id": job_id}},  # assuming DBRef
-                {
-                    "$lookup": {
-                        "from": "accounts",  # account collection name
-                        "localField": "account.$id",
-                        "foreignField": "_id",
-                        "as": "account_doc",
-                    }
-                },
-                {"$unwind": "$account_doc"},
-                {
-                    "$lookup": {
-                        "from": "profiles",
-                        "localField": "account_doc.profile.$id",
-                        "foreignField": "_id",
-                        "as": "profile_doc",
-                    }
-                },
-                {"$unwind": "$profile_doc"},
-                {"$match": {"profile_doc._id": {"$in": profile_ids}}},
-            ]
+            # Filter and attach insights
+            matched_applicants = []
+            for applicant in all_applicants:
+                if applicant.account.profile.id in matched_profile_ids:
+                    # Find the specific match to attach its insight data
+                    match_data = next(
+                        (
+                            m
+                            for m in crew_result.matches
+                            if PydanticObjectId(m.profile_id)
+                            == applicant.account.profile.id
+                        ),
+                        None,
+                    )
+                    if match_data:
+                        # Attach the insight data to the applicant document
+                        # This assumes the document has a field to hold this temporary data
+                        applicant.ai_insight_data = match_data.dict()  # type: ignore
+                    matched_applicants.append(applicant)
 
-            search_criteria = JobApplicant.aggregate(
-                aggregation_pipeline=pipeline,
-                projection_model=JobApplicant,
-            )
-            paginator: Paginator[JobApplicant, ObjectId] = Paginator(
-                reverse=True,
-                document_cls=JobApplicant,
-                paginate_by="job.ref.id",
+            # Manually create a paginator result for the matched applicants
+            return PaginatedResult(
+                entities=matched_applicants,
+                page_info=PageInfo(
+                    has_next_page=False,
+                    has_previous_page=False,
+                    start_cursor=None,
+                    end_cursor=None,
+                ),
             )
         else:
             search_criteria = JobApplicant.find(
@@ -711,6 +727,15 @@ class JobApplicantRepo:
             last=last,
             before=ObjectId(before) if before else None,
             after=ObjectId(after) if after else None,
+        )
+
+    async def get_by_slug(
+        self, job_id: PydanticObjectId, slug: str
+    ) -> JobApplicant | None:
+        """Return a job applicant by slug."""
+        return await JobApplicant.find_one(
+            JobApplicant.slug == slug,
+            JobApplicant.id == job_id,
         )
 
     async def get_many_by_ids(
