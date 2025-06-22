@@ -11,7 +11,7 @@ class EmbeddingsService:
     ) -> list[float]:
         """Generate embeddings for a text."""
         response = self._genai_client.models.embed_content(
-            model="text-embedding-005",
+            model="gemini-embedding-exp-03-07",
             contents=text,
             config=EmbedContentConfig(task_type=task_type),
         )

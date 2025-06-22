@@ -2364,7 +2364,7 @@ type Mutation {
 		"""
 		The work experience history of the user profile.
 		"""
-		workExperience: [WorkExperienceInputType!]!
+		workExperience: [WorkExperienceInput!]!
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
@@ -4009,13 +4009,39 @@ type WorkExperience {
 	skills: [String!]!
 }
 
-input WorkExperienceInputType {
-	id: ID
-	company: String!
-	position: String!
-	startDate: Date!
-	endDate: Date
-	description: String
+"""
+The work experience details input.
+"""
+input WorkExperienceInput {
+	"""
+	The job title.
+	"""
+	title: String!
+
+	"""
+	The organization name.
+	"""
+	organization: String!
+
+	"""
+	When the job started.
+	"""
+	startedAt: Date!
+
+	"""
+	When the job ended.
+	"""
+	completedAt: Date
+
+	"""
+	Type of employment.
+	"""
+	employmentType: EmploymentType = null
+
+	"""
+	Skills used in this job.
+	"""
+	skills: [String!]!
 }
 
 """

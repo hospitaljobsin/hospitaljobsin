@@ -31,7 +31,7 @@ resource "sentry_project" "accounts_ui" {
   client_security = {
     allowed_domains = [
       "https://accounts.${var.domain_name}",
-      "http://accounts.localtest.me",
+      "https://accounts.localtest.me",
     ]
   }
 }
@@ -61,7 +61,7 @@ resource "sentry_project" "seeker_portal_ui" {
   client_security = {
     allowed_domains = [
       "https://${var.domain_name}",
-      "http://localtest.me",
+      "https://localtest.me",
     ]
   }
 }
@@ -92,7 +92,7 @@ resource "sentry_project" "recruiter_portal_ui" {
   client_security = {
     allowed_domains = [
       "https://recruiter.${var.domain_name}",
-      "http://recruiter.localtest.me",
+      "https://recruiter.localtest.me",
     ]
   }
 }
@@ -125,7 +125,7 @@ resource "sentry_project" "recruiter_dashboard_ui" {
   client_security = {
     allowed_domains = [
       "https://*.${var.domain_name}",
-      "http://*.localtest.me",
+      "https://*.localtest.me",
     ]
   }
 }
