@@ -1,7 +1,7 @@
 import { APP_NAME } from "@/lib/constants";
 
 export default function Logo({
-	size = 35,
+	size = 24,
 	...props
 }: React.SVGProps<SVGSVGElement> & { size?: number }) {
 	return (
