@@ -9,6 +9,7 @@ import Languages from "./Languages";
 import Licenses from "./Licenses";
 import LocationPreferences from "./LocationPreferences";
 import ProfileDetails from "./PersonalDetails";
+import ProfessionalSummary from "./ProfessionalSummary";
 import ProfileBanner from "./ProfileBanner";
 import ProfileCompletionMeter from "./ProfileCompletionMeter";
 import UpdateCertificationsForm from "./UpdateCertificationsForm";
@@ -17,6 +18,7 @@ import UpdateLanguagesForm from "./UpdateLanguagesForm";
 import UpdateLicensesForm from "./UpdateLicensesForm";
 import UpdateLocationPreferencesForm from "./UpdateLocationPreferencesForm";
 import UpdateProfileDetailsForm from "./UpdatePersonalDetailsForm";
+import UpdateProfessionalSummaryForm from "./UpdateProfessionalSummaryForm";
 import UpdateWorkExperienceForm from "./UpdateWorkExperienceForm";
 import WorkExperience from "./WorkExperience";
 
@@ -38,6 +40,7 @@ const ProfileViewFragment = graphql`
           locationsOpenToWork
 		  openToRelocationAnywhere
 		  address
+		  professionalSummary
           ...UpdatePersonalDetailsFormFragment
           ...PersonalDetailsFragment
           ...LanguagesFragment
@@ -52,6 +55,8 @@ const ProfileViewFragment = graphql`
           ...UpdateCertificationsFormFragment
           ...LicensesFragment
           ...UpdateLicensesFormFragment
+		  ...ProfessionalSummaryFragment
+		  ...UpdateProfessionalSummaryFormFragment
         }
       }
     }
@@ -71,6 +76,8 @@ export default function ProfileView({
 	const [isEditingWorkExperience, setIsEditingWorkExperience] = useState(false);
 	const [isEditingCertifications, setIsEditingCertifications] = useState(false);
 	const [isEditingLicenses, setIsEditingLicenses] = useState(false);
+	const [isEditingProfessionalSummary, setIsEditingProfessionalSummary] =
+		useState(false);
 	const data = useFragment(ProfileViewFragment, query);
 	invariant(
 		data.viewer.__typename === "Account",
@@ -86,6 +93,7 @@ export default function ProfileView({
 			(data.viewer.profile.locationsOpenToWork.length > 0 ||
 				data.viewer.profile.openToRelocationAnywhere)
 		),
+		professionalSummary: !!data.viewer.profile.professionalSummary,
 	};
 
 	return (
@@ -104,6 +112,22 @@ export default function ProfileView({
 					rootQuery={data.viewer.profile}
 					onEditProfile={() => {
 						setIsEditingProfile(true);
+					}}
+				/>
+			)}
+
+			{isEditingProfessionalSummary ? (
+				<UpdateProfessionalSummaryForm
+					rootQuery={data.viewer.profile}
+					onSaveChanges={() => {
+						setIsEditingProfessionalSummary(false);
+					}}
+				/>
+			) : (
+				<ProfessionalSummary
+					rootQuery={data.viewer.profile}
+					onEditProfile={() => {
+						setIsEditingProfessionalSummary(true);
 					}}
 				/>
 			)}

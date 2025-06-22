@@ -80,12 +80,12 @@ class Certification(BaseModel):
 
 class BaseProfile(BaseModel):
     # personal details
-    gender: GenderEnum | None
-    date_of_birth: date | None
-    address: str
-    marital_status: MaritalStatusEnum | None
-    category: str | None
-    locations_open_to_work: list[str]
+    gender: GenderEnum | None = None
+    date_of_birth: date | None = None
+    address: str | None = None
+    marital_status: MaritalStatusEnum | None = None
+    category: str | None = None
+    locations_open_to_work: list[str] = []
     open_to_relocation_anywhere: bool
     education: list[Education]
     licenses: list[License]
@@ -94,6 +94,7 @@ class BaseProfile(BaseModel):
     work_experience: list[WorkExperience]
     salary_expectations: SalaryExpectations | None
     certifications: list[Certification]
+    professional_summary: str | None = None
 
 
 # Main Job Seeker Profile Document
@@ -119,6 +120,7 @@ class Profile(BaseProfile, Document):
                 self.work_experience,
                 self.education,
                 (self.locations_open_to_work or self.open_to_relocation_anywhere),
+                self.professional_summary,
             ]
         )
 

@@ -351,6 +351,11 @@ interface BaseProfile {
 	The user's certifications.
 	"""
 	certifications: [Certification!]!
+
+	"""
+	The user's professional summary.
+	"""
+	professionalSummary: String
 }
 
 type Certification {
@@ -2359,7 +2364,7 @@ type Mutation {
 		"""
 		The work experience history of the user profile.
 		"""
-		workExperience: [WorkExperienceInput!]!
+		workExperience: [WorkExperienceInputType!]!
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
@@ -2380,6 +2385,16 @@ type Mutation {
 		The licenses of the user profile.
 		"""
 		licenses: [LicenseInput!]!
+	): UpdateProfilePayload! @isAuthenticated
+
+	"""
+	Update the current user's profile education.
+	"""
+	updateProfileProfessionalSummary(
+		"""
+		The professional summary of the user profile.
+		"""
+		professionalSummary: String!
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
@@ -3131,6 +3146,11 @@ type Profile implements BaseProfile & Node {
 	certifications: [Certification!]!
 
 	"""
+	The user's professional summary.
+	"""
+	professionalSummary: String
+
+	"""
 	The Globally Unique ID of this object
 	"""
 	id: ID!
@@ -3219,6 +3239,11 @@ type ProfileSnapshot implements BaseProfile {
 	The user's certifications.
 	"""
 	certifications: [Certification!]!
+
+	"""
+	The user's professional summary.
+	"""
+	professionalSummary: String
 }
 
 """
@@ -3984,39 +4009,13 @@ type WorkExperience {
 	skills: [String!]!
 }
 
-"""
-The work experience details input.
-"""
-input WorkExperienceInput {
-	"""
-	The job title.
-	"""
-	title: String!
-
-	"""
-	The organization name.
-	"""
-	organization: String!
-
-	"""
-	When the job started.
-	"""
-	startedAt: Date!
-
-	"""
-	When the job ended.
-	"""
-	completedAt: Date
-
-	"""
-	Type of employment.
-	"""
-	employmentType: EmploymentType = null
-
-	"""
-	Skills used in this job.
-	"""
-	skills: [String!]!
+input WorkExperienceInputType {
+	id: ID
+	company: String!
+	position: String!
+	startDate: Date!
+	endDate: Date
+	description: String
 }
 
 """

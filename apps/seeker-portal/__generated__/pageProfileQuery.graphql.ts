@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<81e36cece6373c7f939e5b92ff3f7e2b>>
- * @relayHash 2357ec8d48dbeb510a400bf08565e374
+ * @generated SignedSource<<ce21ff0676c9ab1cffab2b25da33acea>>
+ * @relayHash c0a85094035e8942358a7b51867a0d5f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 2357ec8d48dbeb510a400bf08565e374
+// @relayRequestID c0a85094035e8942358a7b51867a0d5f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -238,6 +238,13 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
+                    "name": "professionalSummary",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "gender",
                     "storageKey": null
                   },
@@ -366,7 +373,7 @@ return {
     ]
   },
   "params": {
-    "id": "2357ec8d48dbeb510a400bf08565e374",
+    "id": "c0a85094035e8942358a7b51867a0d5f",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",

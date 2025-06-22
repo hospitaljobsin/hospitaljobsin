@@ -323,3 +323,36 @@ class AccountMutation:
                 return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateProfilePayload,
+        description="Update the current user's profile education.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_profile_professional_summary(
+        self,
+        info: AuthInfo,
+        profile_service: Annotated[ProfileService, Inject],
+        professional_summary: Annotated[
+            str,
+            strawberry.argument(
+                description="The professional summary of the user profile.",
+            ),
+        ],
+    ) -> UpdateProfilePayload:
+        """Update the current user's profile professional summary."""
+        match await profile_service.update_professional_summary(
+            account=info.context["current_user"],
+            professional_summary=professional_summary,
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
+            case _ as unreachable:
+                assert_never(unreachable)

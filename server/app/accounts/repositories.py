@@ -206,6 +206,7 @@ class ProfileRepo:
             work_experience=[],
             salary_expectations=None,
             certifications=[],
+            professional_summary=None,
         )
         await profile.insert()
         account.profile = profile
@@ -230,6 +231,7 @@ class ProfileRepo:
         work_experience: list[WorkExperience] | None = None,
         salary_expectations: SalaryExpectations | None = None,
         certifications: list[Certification] | None = None,
+        professional_summary: str | None = None,
     ) -> Profile:
         """Update a profile with new fields."""
         if gender is not None:
@@ -260,6 +262,8 @@ class ProfileRepo:
             profile.salary_expectations = salary_expectations
         if certifications is not None:
             profile.certifications = certifications
+        if professional_summary is not None:
+            profile.professional_summary = professional_summary
         profile.updated_at = datetime.now(UTC)
         return await profile.save(link_rule=WriteRules.WRITE)
 

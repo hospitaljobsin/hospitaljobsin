@@ -238,6 +238,7 @@ class ProfileSnapshotType(BaseProfileType):
             certifications=[
                 CertificationType.marshal(cert) for cert in model.certifications
             ],
+            professional_summary=model.professional_summary,
         )
 
 

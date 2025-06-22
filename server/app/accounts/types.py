@@ -249,6 +249,9 @@ class BaseProfileType:
     certifications: list["CertificationType"] = strawberry.field(
         description="The user's certifications.",
     )
+    professional_summary: str | None = strawberry.field(
+        description="The user's professional summary.",
+    )
 
 
 @strawberry.type(
@@ -295,6 +298,7 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
             ],
             updated_at=model.updated_at,
             is_complete=model.is_complete,
+            professional_summary=model.professional_summary,
         )
 
     @classmethod
