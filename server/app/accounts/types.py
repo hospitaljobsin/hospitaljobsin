@@ -9,6 +9,7 @@ from urllib.parse import urlencode
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
+from beanie import Link
 from bson import ObjectId
 from strawberry import relay
 
@@ -372,27 +373,9 @@ class AccountType(BaseNodeType[Account]):
                 for provider in account.two_factor_providers
             ],
             has_2fa_enabled=account.has_2fa_enabled,
-            profile_ref=account.profile.ref.id if account.profile is not None else None,
-        )
-
-    @classmethod
-    def marshal_with_profile(cls, account: Account) -> Self:
-        """Marshal into a node instance."""
-        return cls(
-            id=str(account.id),
-            full_name=account.full_name,
-            email=account.email,
-            updated_at=account.updated_at,
-            auth_providers=[
-                AuthProviderEnum[provider.upper()]
-                for provider in account.auth_providers
-            ],
-            two_factor_providers=[
-                TwoFactorProviderEnum[provider.upper()]
-                for provider in account.two_factor_providers
-            ],
-            has_2fa_enabled=account.has_2fa_enabled,
-            profile_ref=account.profile,
+            profile_ref=account.profile.ref.id
+            if isinstance(account.profile, Link)
+            else account.profile,
         )
 
     @classmethod

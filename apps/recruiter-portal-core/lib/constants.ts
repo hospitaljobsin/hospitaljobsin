@@ -1,4 +1,4 @@
-export const APP_NAME = "Hospital Jobs Recruiter";
+export const APP_NAME = "Recruiter";
 
 export const COMPANY_NAME = "Hospital Jobs IN";
 
