@@ -43,14 +43,19 @@ export default function Header({
 }) {
 	const data = usePreloadedQuery(HeaderQuery, queryReference);
 	return (
-		<div className="w-full flex flex-col">
+		<div
+			className={cn(
+				"w-full flex flex-col",
+				variant !== "hero" && "sticky top-0 z-50",
+			)}
+		>
 			{data.viewer.__typename === "Account" && (
 				<IncompleteProfileBanner account={data.viewer} />
 			)}
 			<Navbar
 				maxWidth="xl"
 				isBordered={variant !== "hero"}
-				position={variant === "hero" ? "static" : "sticky"}
+				position="static"
 				classNames={{
 					base:
 						variant === "hero"

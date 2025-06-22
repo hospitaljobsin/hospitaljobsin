@@ -4,8 +4,8 @@ const links = {
 	landing: "/",
 	recruiterLanding: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/`,
 	profile: "/profile",
-	savedJobs: "/my-jobs/saved",
-	appliedJobs: "/my-jobs/applied",
+	savedJobs: "/saved",
+	appliedJobs: "/applied",
 	jobDetail: (slug: string, jobSlug: string) =>
 		`/organizations/${slug}/jobs/${jobSlug}`,
 	jobDetailApply: (slug: string, jobSlug: string) =>

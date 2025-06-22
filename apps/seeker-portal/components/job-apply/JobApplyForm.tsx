@@ -237,7 +237,9 @@ export default function JobApplyForm({
 										<span className="text-md">{field.fieldName}</span>
 										<span className="text-foreground-400">
 											{getValues(`applicantFields.${idx}.fieldValue`) || (
-												<span className="italic text-gray-400">No answer</span>
+												<span className="italic text-foreground-400">
+													No answer
+												</span>
 											)}
 										</span>
 									</div>

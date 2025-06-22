@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a2fe7e415f7416b454cb4d64665f566c>>
- * @relayHash 566d47ef76709b840fc74a3f222a01e5
+ * @generated SignedSource<<c8b2aa7871c2e8c0a0e46bd2a0fb2965>>
+ * @relayHash 7c2fcc636da26f51f2841174b2cfaee8
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 566d47ef76709b840fc74a3f222a01e5
+// @relayRequestID 7c2fcc636da26f51f2841174b2cfaee8
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -17,7 +17,7 @@ export type MyJobsHeaderQuery$variables = Record<PropertyKey, never>;
 export type MyJobsHeaderQuery$data = {
   readonly viewer: {
     readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "IncompleteProfileBannerFragment">;
   } | {
     readonly __typename: "NotAuthenticatedError";
   } | {
@@ -37,6 +37,13 @@ var v0 = {
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
+  "storageKey": null
+},
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
   "storageKey": null
 };
 return {
@@ -62,6 +69,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "AuthNavigationFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "IncompleteProfileBannerFragment"
               }
             ],
             "type": "Account",
@@ -113,6 +125,26 @@ return {
                 "kind": "ScalarField",
                 "name": "avatarUrl",
                 "storageKey": null
+              },
+              (v1/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  (v1/*: any*/)
+                ],
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -121,13 +153,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              }
+              (v1/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -138,7 +164,7 @@ return {
     ]
   },
   "params": {
-    "id": "566d47ef76709b840fc74a3f222a01e5",
+    "id": "7c2fcc636da26f51f2841174b2cfaee8",
     "metadata": {},
     "name": "MyJobsHeaderQuery",
     "operationKind": "query",
@@ -147,6 +173,6 @@ return {
 };
 })();
 
-(node as any).hash = "382ec0438610806baf31a09a7a320dd5";
+(node as any).hash = "a5d8e2711471691d5f732c69c80c1819";
 
 export default node;

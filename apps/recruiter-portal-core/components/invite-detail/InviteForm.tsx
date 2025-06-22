@@ -159,13 +159,13 @@ export default function InviteForm({
 								/>
 							</div>
 							<div className="flex flex-col gap-3 items-center justify-center w-full">
-								<h4 className="text-lg w-full text-center text-gray-700">
+								<h4 className="text-lg w-full text-center text-foreground-700">
 									<span className="font-medium">
 										{data.organizationInvite.createdBy.fullName}
 									</span>{" "}
 									invited you to join
 								</h4>
-								<h2 className="text-2xl font-medium w-full text-center text-gray-900">
+								<h2 className="text-2xl font-medium w-full text-center text-foreground-900">
 									{data.organizationInvite.organization.name}
 								</h2>
 							</div>

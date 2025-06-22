@@ -55,7 +55,7 @@ export default function OrgDetailHeader({
 	);
 
 	return (
-		<div className="w-full flex flex-col bg-background border-b border-gray-300">
+		<div className="w-full flex flex-col bg-background border-b border-foreground-300">
 			<Navbar maxWidth="xl">
 				<NavbarBrand className="flex items-center gap-4">
 					<Link href={links.landing} className="font-medium text-inherit">

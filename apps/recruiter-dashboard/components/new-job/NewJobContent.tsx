@@ -235,7 +235,7 @@ export default function NewJobContent({
 						>
 							<CardBody>
 								<h2 className="text-lg font-medium mb-2">{opt.title}</h2>
-								<p className="text-gray-600">{opt.description}</p>
+								<p className="text-foreground-600">{opt.description}</p>
 							</CardBody>
 						</Card>
 					))}
@@ -250,7 +250,7 @@ export default function NewJobContent({
 								autoComplete="off"
 							>
 								<label htmlFor="job-outline-input" className="block">
-									<span className="block text-sm font-medium text-gray-700 mb-1">
+									<span className="block text-sm font-medium text-foreground-700 mb-1">
 										Job Outline
 									</span>
 									<Input

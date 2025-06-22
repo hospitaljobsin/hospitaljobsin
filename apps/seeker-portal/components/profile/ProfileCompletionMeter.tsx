@@ -32,7 +32,7 @@ export default function ProfileCompletionMeter({
 		<Card className="p-6" shadow="none">
 			<CardHeader className="flex flex-col gap-2 w-full items-start">
 				<h3 className="text-lg font-medium">Complete Your Profile</h3>
-				<p className="text-sm text-gray-500 dark:text-gray-400">
+				<p className="text-sm text-foreground-500 dark:text-foreground-400">
 					Complete the following sections to be able to apply for jobs.
 				</p>
 			</CardHeader>

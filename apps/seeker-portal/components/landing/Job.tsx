@@ -1,9 +1,3 @@
-import { useRouter } from "@bprogress/next";
-import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
-import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
-import Image from "next/image";
-import { useFragment } from "react-relay";
-import { graphql } from "relay-runtime";
 import type { JobControlsAuthFragment$key } from "@/__generated__/JobControlsAuthFragment.graphql";
 import type { JobType } from "@/__generated__/JobDetailsInternalFragment.graphql";
 import type {
@@ -12,6 +6,12 @@ import type {
 } from "@/__generated__/JobFragment.graphql";
 import { dateFormat } from "@/lib/intl";
 import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
+import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
+import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
+import Image from "next/image";
+import { useFragment } from "react-relay";
+import { graphql } from "relay-runtime";
 import JobControls from "../job-detail/JobControls";
 
 export const JobFragment = graphql`
@@ -138,7 +138,9 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			as="div"
 			disableRipple
 			onPress={() => {
-				router.push(links.jobDetail(data.organization.slug, data.slug));
+				router.push(links.jobDetail(data.organization.slug, data.slug), {
+					scroll: true,
+				});
 			}}
 			shadow="none"
 		>

@@ -139,7 +139,7 @@ export default function UpdateEducationForm({
 					<div className="w-full space-y-12 items-center">
 						{fields.length === 0 ? (
 							<div className="flex flex-col items-center gap-4">
-								<p className="text-gray-500">
+								<p className="text-foreground-500">
 									No education entries. Add your education history.
 								</p>
 								<Button
