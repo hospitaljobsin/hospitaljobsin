@@ -614,7 +614,7 @@ class JobApplicantRepo:
             f"Work Experience: {work_experience_str or 'N/A'}\\n"
             f"Job Preferences: {skills_str or 'N/A'}\\n"
             f"Languages: {languages_str or 'N/A'}\\n"
-            f"Salary Expectations: {self.format_profile_salary_expectations(profile.salary_expectations) if profile.salary_expectations else 'N/A'}\\n"
+            f"Salary Expectations: {JobApplicantRepo.format_profile_salary_expectations(profile.salary_expectations) if profile.salary_expectations else 'N/A'}\\n"
             f"Certifications: {certifications_str or 'N/A'}"
         )
 
