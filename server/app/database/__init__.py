@@ -17,7 +17,10 @@ from app.auth.documents import (
     WebAuthnChallenge,
     WebAuthnCredential,
 )
-from app.core.constants import JOB_EMBEDDING_DIMENSIONS
+from app.core.constants import (
+    JOB_APPLICANT_EMBEDDING_DIMENSIONS,
+    JOB_EMBEDDING_DIMENSIONS,
+)
 from app.jobs.documents import (
     Job,
     JobApplicant,
@@ -77,6 +80,26 @@ async def create_search_indexes(
                     ]
                 },
                 name="job_embedding_vector_index",
+                type="vectorSearch",
+            )
+        )
+    )
+    await (
+        client.get_default_database(default=default_database_name)
+        .get_collection(str(JobApplicant.get_settings().name))
+        .create_search_index(
+            model=SearchIndexModel(
+                definition={
+                    "fields": [
+                        {
+                            "type": "vector",
+                            "path": "profile_embedding",
+                            "similarity": "dotProduct",
+                            "numDimensions": JOB_APPLICANT_EMBEDDING_DIMENSIONS,
+                        },
+                    ]
+                },
+                name="job_applicant_embedding_vector_index",
                 type="vectorSearch",
             )
         )

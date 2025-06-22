@@ -119,6 +119,7 @@ class ApplicantField(BaseModel):
 
 class JobApplicant(Document):
     profile_snapshot: BaseProfile
+    profile_embedding: list[float] | None = None
     account: Link[Account]
     account_full_name: (
         str  # denormalized from the account document for full-text search

@@ -10,7 +10,7 @@ from beanie.operators import And, In, NearSphere, Set
 from bson import ObjectId
 from strawberry.relay import PageInfo
 
-from app.accounts.documents import Account, BaseProfile
+from app.accounts.documents import Account, BaseProfile, SalaryExpectations
 from app.base.models import GeoObject
 from app.core.constants import (
     RELATED_JOBS_SIMILARITY_THRESHOLD,
@@ -507,9 +507,12 @@ class SavedJobRepo:
 
 class JobApplicantRepo:
     def __init__(
-        self, agentic_profile_filter_service: AgenticProfileFilterService
+        self,
+        agentic_profile_filter_service: AgenticProfileFilterService,
+        embeddings_service: EmbeddingsService,
     ) -> None:
         self._agentic_profile_filter_service = agentic_profile_filter_service
+        self._embeddings_service = embeddings_service
 
     async def update_all(self, account: Account, full_name: str) -> None:
         """Update all job applicants for the given account."""
@@ -581,6 +584,40 @@ class JobApplicantRepo:
         """Generate a unique slug for the job applicant."""
         return uuid.uuid4().hex
 
+    @staticmethod
+    def format_profile_salary_expectations(
+        salary_expectations: SalaryExpectations,
+    ) -> str:
+        return f"Preferred Monthly Salary: {salary_expectations.preferred_monthly_salary_inr} INR, Negotiable: {'Yes' if salary_expectations.negotiable else 'No'}"
+
+    @staticmethod
+    def format_profile_snapshot_for_embedding(profile: BaseProfile) -> str:
+        education_str = ", ".join(
+            [f"{edu.degree} at {edu.institution}" for edu in profile.education]
+        )
+        work_experience_str = ", ".join(
+            [f"{exp.title} at {exp.organization}" for exp in profile.work_experience]
+        )
+        skills_str = ", ".join(profile.job_preferences)
+        languages_str = ", ".join([lang.name for lang in profile.languages])
+        locations_str = ", ".join(profile.locations_open_to_work)
+        certifications_str = ", ".join([cert.name for cert in profile.certifications])
+        return (
+            f"Gender: {profile.gender or 'N/A'}\\n"
+            f"Date of Birth: {profile.date_of_birth or 'N/A'}\\n"
+            f"Address: {profile.address or 'N/A'}\\n"
+            f"Marital Status: {profile.marital_status or 'N/A'}\\n"
+            f"Category: {profile.category or 'N/A'}\\n"
+            f"Open to work in: {locations_str or 'N/A'}\\n"
+            f"Open to relocate anywhere: {'Yes' if profile.open_to_relocation_anywhere else 'No'}\\n"
+            f"Education: {education_str or 'N/A'}\\n"
+            f"Work Experience: {work_experience_str or 'N/A'}\\n"
+            f"Job Preferences: {skills_str or 'N/A'}\\n"
+            f"Languages: {languages_str or 'N/A'}\\n"
+            f"Salary Expectations: {self.format_profile_salary_expectations(profile.salary_expectations) if profile.salary_expectations else 'N/A'}\\n"
+            f"Certifications: {certifications_str or 'N/A'}"
+        )
+
     async def create(
         self,
         account: Account,
@@ -608,6 +645,10 @@ class JobApplicantRepo:
                 work_experience=account.profile.work_experience,
                 salary_expectations=account.profile.salary_expectations,
                 certifications=account.profile.certifications,
+            ),
+            profile_embedding=await self._embeddings_service.generate_embeddings(
+                text=self.format_profile_snapshot_for_embedding(account.profile),
+                task_type="RETRIEVAL_QUERY",
             ),
             status="applied",
             applicant_fields=applicant_fields,
