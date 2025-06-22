@@ -77,7 +77,7 @@ class AccountMutation:
             category=category,
         ):
             case Ok(account):
-                return AccountType.marshal_with_profile(account)
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
 
@@ -110,7 +110,7 @@ class AccountMutation:
             languages=[language.to_document() for language in languages],
         ):
             case Ok(account):
-                return AccountType.marshal_with_profile(account)
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
 
@@ -188,7 +188,7 @@ class AccountMutation:
             address=address,
         ):
             case Ok(account):
-                return AccountType.marshal_with_profile(account)
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
 
@@ -221,7 +221,7 @@ class AccountMutation:
             education=[edu.to_document() for edu in education],
         ):
             case Ok(account):
-                return AccountType.marshal_with_profile(account)
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
 
@@ -254,7 +254,7 @@ class AccountMutation:
             work_experience=[exp.to_document() for exp in work_experience],
         ):
             case Ok(account):
-                return AccountType.marshal_with_profile(account)
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
 
@@ -287,7 +287,7 @@ class AccountMutation:
             certifications=[cert.to_document() for cert in certifications],
         ):
             case Ok(account):
-                return AccountType.marshal_with_profile(account)
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
 
@@ -320,6 +320,6 @@ class AccountMutation:
             licenses=[lic.to_document() for lic in licenses],
         ):
             case Ok(account):
-                return AccountType.marshal_with_profile(account)
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)

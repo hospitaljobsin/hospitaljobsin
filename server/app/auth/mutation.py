@@ -264,7 +264,7 @@ class AuthMutation:
                     case PasswordNotStrongError():
                         return PasswordNotStrongErrorType()
             case Ok(account):
-                return AccountType.marshal_with_profile(account)
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
 
@@ -384,7 +384,7 @@ class AuthMutation:
                     case InvalidPasskeyRegistrationCredentialError():
                         return InvalidPasskeyRegistrationCredentialErrorType()
             case Ok(account):
-                return AccountType.marshal_with_profile(account)
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
 
