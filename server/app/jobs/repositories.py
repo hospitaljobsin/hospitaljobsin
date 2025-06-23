@@ -16,7 +16,6 @@ from app.core.constants import (
     JobApplicantStatus,
     JobMetricEventType,
 )
-from app.crews.filter_job.services import AgenticProfileFilterService
 from app.database.paginator import PaginatedResult, Paginator
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.models import Coordinates
@@ -506,10 +505,8 @@ class SavedJobRepo:
 class JobApplicantRepo:
     def __init__(
         self,
-        agentic_profile_filter_service: AgenticProfileFilterService,
         embeddings_service: EmbeddingsService,
     ) -> None:
-        self._agentic_profile_filter_service = agentic_profile_filter_service
         self._embeddings_service = embeddings_service
 
     async def update_all(self, account: Account, full_name: str) -> None:
@@ -672,7 +669,6 @@ class JobApplicantRepo:
     async def get_all_by_job_id(
         self,
         job_id: ObjectId,
-        search_term: str | None = None,
         status: JobApplicantStatus | None = None,
         first: int | None = None,
         last: int | None = None,
@@ -680,44 +676,6 @@ class JobApplicantRepo:
         after: str | None = None,
     ) -> PaginatedResult[JobApplicant, ObjectId]:
         """Return all applicants for a job."""
-        if search_term:
-            # TODO: getting max_results and filtering here should probably be done after validating pagination arguments
-            # this could probably be passed in as a callback to the paginator class (like a hook maybe)
-            filtered_result = (
-                await self._agentic_profile_filter_service.filter_profiles(
-                    query=search_term,
-                    job_id=str(job_id),
-                    status=status,
-                )
-            )
-
-            # FIXME: why can't we get the applicants directly with AI insights here?? it'll be much more efficient
-            applicant_ids = [
-                ObjectId(profile.applicant_id) for profile in filtered_result.matches
-            ]
-
-            pipeline = [
-                {"$match": {"job.$id": job_id}},  # assuming DBRef
-                {"$match": {"_id": {"$in": applicant_ids}}},
-            ]
-
-            search_criteria = JobApplicant.aggregate(
-                aggregation_pipeline=pipeline,
-                projection_model=JobApplicant,
-            )
-
-            paginator: Paginator[JobApplicant, ObjectId] = Paginator(
-                reverse=True,
-                document_cls=JobApplicant,
-                paginate_by="job.ref.id",
-            )
-            return await paginator.paginate(
-                search_criteria=search_criteria,
-                first=first,
-                last=last,
-                before=ObjectId(before) if before else None,
-                after=ObjectId(after) if after else None,
-            )
         search_criteria = JobApplicant.find(
             JobApplicant.job.id == job_id,
             fetch_links=True,
@@ -726,14 +684,13 @@ class JobApplicantRepo:
         paginator: Paginator[JobApplicant, ObjectId] = Paginator(
             reverse=True,
             document_cls=JobApplicant,
-            paginate_by="job.id",
+            paginate_by="id",
         )
+
+        search_criteria = JobApplicant.find(JobApplicant.job.id == job_id)
+
         if status:
-            search_criteria = search_criteria.find(
-                JobApplicant.status == status,
-                fetch_links=True,
-                nesting_depth=1,
-            )
+            search_criteria = search_criteria.find(JobApplicant.status == status)
 
         return await paginator.paginate(
             search_criteria=search_criteria,

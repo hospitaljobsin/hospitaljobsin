@@ -1,16 +1,14 @@
-import time
-
 from app.accounts.repositories import ProfileRepo
 from app.config import SecretSettings, get_settings
 from app.core.constants import JobApplicantStatus
 from app.core.genai_client import create_google_genai_client
-from app.crews.filter_job.models import FilterJobResultData, ProfileMatch
 from app.embeddings.services import EmbeddingsService
+from app.jobs.documents import JobApplicant
 from crewai import Agent, Task
 from pydantic import BaseModel
 
+from .tools.batch_profile_analyzer_tool import BatchProfileAnalyzerTool
 from .tools.job_applicant_vector_search_tool import JobApplicantVectorSearchTool
-from .tools.profile_analyzer_tool import ProfileAnalyzerTool
 from .tools.query_parser_tool import QueryParserTool
 
 
@@ -40,7 +38,7 @@ class FilterJobCrew:
         embedding_service = EmbeddingsService(genai_client=genai_client)
 
         self.query_parser = QueryParserTool()
-        self.profile_analyzer = ProfileAnalyzerTool()
+        self.batch_profile_analyzer = BatchProfileAnalyzerTool()
         self.vector_search = JobApplicantVectorSearchTool(
             embedding_service=embedding_service,
         )
@@ -60,7 +58,7 @@ class FilterJobCrew:
             role="Profile Analyzer",
             goal="First, use the vector search tool to find relevant applicants. Then, analyze their profiles against requirements using both structured filters and LLM analysis.",
             backstory="Expert at matching profiles to job requirements using multiple analysis methods",
-            tools=[self.profile_analyzer, self.vector_search],
+            tools=[self.batch_profile_analyzer, self.vector_search],
             verbose=True,
         )
 
@@ -86,58 +84,30 @@ class FilterJobCrew:
         self,
         job_id: str,
         query: str,
-        max_results: int = 10,
         status: JobApplicantStatus | None = None,
-    ) -> FilterJobResultData:
+    ) -> list[JobApplicant]:
         """Run the filter job crew."""
-        start_time = time.time()
-
         applicants = await self.vector_search._arun(
             job_id=job_id,
             query=query,
             status=status,
         )
         if not applicants:
-            return FilterJobResultData(
-                matches=[],
-                total_matches=0,
-                query=query,
-                execution_time=time.time() - start_time,
-            )
+            return []
 
         # Parse query
         parse_result = await self.query_parser._arun(query)
 
-        # Analyze each profile
-        matches = []
-        for applicant in applicants:
-            profile = applicant.profile_snapshot
-            analysis = await self.profile_analyzer._arun(
-                profile=profile, query_context=parse_result
-            )
-
-            matches.append(
-                ProfileMatch(
-                    applicant_id=str(applicant.id),
-                    score=analysis["score"],
-                    match_reasons=analysis["matchReasons"],
-                    mismatched_fields=analysis["mismatchedFields"],
-                    summary=analysis["summary"],
-                    match_type=analysis["matchType"],
-                )
-            )
-
-        # Sort by score and get top results
-        matches.sort(key=lambda x: x.score, reverse=True)
-        top_matches = matches[:max_results]
-
-        execution_time = time.time() - start_time
-
-        print("matches:", matches)
-
-        return FilterJobResultData(
-            matches=[match.dict() for match in top_matches],
-            total_matches=len(matches),
-            query=query,
-            execution_time=execution_time,
+        # Analyze all profiles in a batch
+        profiles = [applicant.profile_snapshot for applicant in applicants]
+        analyses = await self.batch_profile_analyzer._arun(
+            profiles=profiles, query_context=parse_result
         )
+
+        # Enrich applicants with AI insights
+        for i, applicant in enumerate(applicants):
+            analysis_data = analyses[i]
+
+            applicant.ai_insight_data = analysis_data
+
+        return applicants

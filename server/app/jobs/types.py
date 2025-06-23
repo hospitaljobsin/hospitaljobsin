@@ -32,6 +32,7 @@ from app.base.types import (
     BaseNodeType,
 )
 from app.context import Info
+from app.crews.filter_job.services import AgenticProfileFilterService
 from app.jobs.documents import (
     ApplicantField,
     ApplicationField,
@@ -256,7 +257,7 @@ class AIApplicantMatchType(Enum):
     name="AIApplicantInsight",
     description="AI-powered insights for a job applicant.",
 )
-class AIApplicantInsight:
+class AIApplicantInsightType:
     match_type: Annotated[
         AIApplicantMatchType,
         strawberry.field(
@@ -292,13 +293,13 @@ class AIApplicantInsight:
     ]
 
     @classmethod
-    def marshal(cls, data: dict[str, Any]) -> "AIApplicantInsight":
-        return AIApplicantInsight(
-            match_type=AIApplicantMatchType(data["match_type"]),
+    def marshal(cls, data: dict[str, Any]) -> Self:
+        return cls(
+            match_type=AIApplicantMatchType(data["matchType"]),
             score=data["score"],
             summary=data["summary"],
-            match_reasons=data["match_reasons"],
-            mismatched_fields=data["mismatched_fields"],
+            match_reasons=data["matchReasons"],
+            mismatched_fields=data["mismatchedFields"],
         )
 
 
@@ -307,7 +308,7 @@ class AIApplicantInsight:
     description="A job application for a posting.",
 )
 class JobApplicantType(BaseNodeType[JobApplicant]):
-    ai_insight: AIApplicantInsight | None
+    ai_insight: AIApplicantInsightType | None
 
     status: JobApplicantStatusEnum = strawberry.field(
         description="The status of the job application.",
@@ -375,7 +376,7 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
                 ApplicantFieldType.marshal(field)
                 for field in job_applicant.applicant_fields
             ],
-            ai_insight=AIApplicantInsight.marshal(job_applicant.ai_insight_data)
+            ai_insight=AIApplicantInsightType.marshal(job_applicant.ai_insight_data)
             if job_applicant.ai_insight_data
             else None,
         )
@@ -647,6 +648,10 @@ class JobType(BaseNodeType[Job]):
             JobApplicantRepo,
             Inject,
         ],
+        agentic_profile_filter_service: Annotated[
+            AgenticProfileFilterService,
+            Inject,
+        ],
         search_term: Annotated[
             str | None,
             strawberry.argument(
@@ -680,15 +685,25 @@ class JobType(BaseNodeType[Job]):
         ] = None,
     ) -> JobApplicantConnectionType:
         """Return a paginated connection of invites for the organization."""
-        paginated_applicants = await job_applicant_repo.get_all_by_job_id(
-            job_id=ObjectId(self.id),
-            search_term=search_term,
-            status=status.value.lower() if status else None,
-            after=(after.node_id if after else None),
-            before=(before.node_id if before else None),
-            first=first,
-            last=last,
-        )
+        if search_term is not None:
+            paginated_applicants = await agentic_profile_filter_service.filter_profiles(
+                query=search_term,
+                job_id=str(self.id),
+                status=status,
+                after=(after.node_id if after else None),
+                before=(before.node_id if before else None),
+                first=first,
+                last=last,
+            )
+        else:
+            paginated_applicants = await job_applicant_repo.get_all_by_job_id(
+                job_id=ObjectId(self.id),
+                status=status.value.lower() if status else None,
+                after=(after.node_id if after else None),
+                before=(before.node_id if before else None),
+                first=first,
+                last=last,
+            )
 
         return JobApplicantConnectionType.marshal(paginated_applicants)
 

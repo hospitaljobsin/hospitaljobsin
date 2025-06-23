@@ -1,9 +1,9 @@
 {
 	"meta": {
-		"generatedAt": "2025-06-22T08:26:32.541Z",
-		"tasksAnalyzed": 15,
-		"totalTasks": 15,
-		"analysisCount": 15,
+		"generatedAt": "2025-06-23T06:43:56.348Z",
+		"tasksAnalyzed": 9,
+		"totalTasks": 9,
+		"analysisCount": 24,
 		"thresholdScore": 5,
 		"projectName": "Taskmaster",
 		"usedResearch": true
@@ -128,6 +128,78 @@
 			"recommendedSubtasks": 5,
 			"expansionPrompt": "Break this task into subtasks for: 1. Profiling the `Job.applicants` resolver when `searchTerm` is used, under realistic load conditions, to identify performance bottlenecks in CrewAI execution, database queries, or data processing. 2. Investigating and implementing specific optimizations for CrewAI tool or agent logic if they are identified as bottlenecks. 3. Analyzing and optimizing database queries involved in fetching `JobApplicant` data and any related data needed for AI processing. 4. Exploring and, if beneficial, implementing caching strategies for CrewAI results (e.g., based on job ID and search term) with appropriate invalidation mechanisms. 5. Investigating the feasibility and potentially implementing asynchronous execution for CrewAI calls to improve initial response time, possibly loading AI insights progressively.",
 			"reasoning": "High complexity. Performance optimization is often investigative and can involve deep dives into different parts of the system (AI, database, application code). The potential solutions (caching, async execution) can be complex to implement correctly and safely."
+		},
+		{
+			"taskId": 2,
+			"taskTitle": "Implement `BatchProfileAnalyzerTool` - Core Logic",
+			"complexityScore": 6,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Break down the implementation of `BatchProfileAnalyzerTool`'s core logic into subtasks covering: 1. Defining `ProfileData` (as Pydantic model or dict structure) and `AIApplicantInsight` data models. 2. Implementing the prompt construction logic that takes `List[ProfileData]` and creates a single, well-structured prompt for batch analysis. 3. Implementing the LLM API call mechanism and parsing the LLM's response to extract individual insights, mapping them to `List[AIApplicantInsight]`. 4. Implementing basic error handling for the LLM API call (e.g., network errors, API errors).",
+			"reasoning": "Involves LLM interaction, careful prompt engineering for batching, response parsing, and data model definition. Moderately complex due to the specifics of LLM communication and data structuring, but limited to a single call and basic error handling for this initial task."
+		},
+		{
+			"taskId": 3,
+			"taskTitle": "Enhance `BatchProfileAnalyzerTool` - Chunking and Advanced Error Handling",
+			"complexityScore": 7,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Break down the enhancement of `BatchProfileAnalyzerTool` into subtasks for: 1. Implementing the profile list chunking mechanism, including logic to split `List[ProfileData]` based on a configurable threshold and process each chunk. 2. Implementing a robust retry mechanism (e.g., exponential backoff) for LLM API calls within each chunk. 3. Implementing logic to aggregate results from multiple chunk processing calls. 4. Defining and implementing strategies for handling partial failures (e.g., if one chunk fails after retries, how to report/return results for successful chunks).",
+			"reasoning": "Chunking logic adds iterative processing and result aggregation. Advanced error handling, including retries and partial failure strategies, significantly increases complexity beyond basic error checks."
+		},
+		{
+			"taskId": 4,
+			"taskTitle": "Refactor `FilterJobCrew`: Initial Fetch and Batch Analysis Integration",
+			"complexityScore": 5,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Break down the refactoring of `FilterJobCrew` for initial fetch and batch analysis into subtasks: 1. Modify `FilterJobCrew.run()` to use `JobApplicantVectorSearchTool` for initial candidate sourcing (obtaining IDs or basic profiles). 2. Implement logic within `FilterJobCrew.run()` to fetch full `JobApplicant` documents from the database based on the sourced candidates. 3. Integrate an instance of `BatchProfileAnalyzerTool` into `FilterJobCrew`, pass the fetched `JobApplicant` data (or relevant parts) to it, and retrieve the `List[AIApplicantInsight]`.",
+			"reasoning": "This is primarily an integration task involving coordinating data flow between an existing tool, database access, and the new `BatchProfileAnalyzerTool`. Complexity lies in orchestrating these steps and ensuring correct data handoff."
+		},
+		{
+			"taskId": 5,
+			"taskTitle": "Refactor `FilterJobCrew`: Enrichment and In-Memory Filtering",
+			"complexityScore": 6,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Break down the `FilterJobCrew` refactoring for enrichment and in-memory filtering into subtasks: 1. Implement logic within `FilterJobCrew.run()` to map the `List[AIApplicantInsight]` (received from `BatchProfileAnalyzerTool`) back to their corresponding `JobApplicant` objects, populating an `ai_insight` field. Ensure correct matching. 2. Implement or adapt the RAG-based filtering logic to operate directly on the in-memory list of enriched `JobApplicant` objects, using existing criteria/methods if applicable. 3. Ensure the `FilterJobCrew.run()` method returns the final `List[JobApplicant]` (filtered and enriched).",
+			"reasoning": "Enrichment requires careful data mapping. Implementing or adapting RAG filtering to work efficiently in memory on a potentially large list of objects can be intricate. The complexity depends on the sophistication of the RAG logic."
+		},
+		{
+			"taskId": 6,
+			"taskTitle": "Update `AgenticProfileFilterService.filter_profiles` for Pagination",
+			"complexityScore": 7,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Break down the task to update `AgenticProfileFilterService.filter_profiles` for pagination into subtasks: 1. Modify the method signature of `filter_profiles` to accept `first: Optional[int]`, `last: Optional[int]`, `before: Optional[ObjectId]`, `after: Optional[ObjectId]`. 2. Implement the core cursor-based pagination logic that takes a `List[JobApplicant]` and applies these arguments using `ObjectId` for cursors. 3. Implement the calculation of `has_next_page`, `has_previous_page`, `start_cursor`, and `end_cursor`. 4. Construct and return the `PaginatedResult[JobApplicant, ObjectId]` object, ensuring all fields are correctly populated based on the pagination logic and input list.",
+			"reasoning": "Correctly implementing cursor-based pagination is often subtle and error-prone, especially handling all edge cases (empty list, first page, last page, middle pages, requests exceeding available items) and accurately generating cursor/page info."
+		},
+		{
+			"taskId": 7,
+			"taskTitle": "Integrate Refactored `FilterJobCrew` into `AgenticProfileFilterService`",
+			"complexityScore": 4,
+			"recommendedSubtasks": 2,
+			"expansionPrompt": "Break down the integration of `FilterJobCrew` into `AgenticProfileFilterService` into subtasks: 1. Modify `AgenticProfileFilterService.filter_profiles` to instantiate and call the refactored `FilterJobCrew.run()` method, passing necessary parameters (e.g., job criteria) to get the full list of filtered and enriched `JobApplicant` objects. 2. Pass the list of `JobApplicant` objects obtained from the crew to the pagination logic (implemented in Task 6) within the same `filter_profiles` method, and return the resulting `PaginatedResult`.",
+			"reasoning": "This is an integration task, connecting the output of the refactored crew with the new pagination logic. Complexity is relatively low if the individual components are well-defined, focusing on correct data flow and method calls."
+		},
+		{
+			"taskId": 8,
+			"taskTitle": "Refactor `JobApplicantRepo` to Use Paginated Full Objects",
+			"complexityScore": 4,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Break down the refactoring of `JobApplicantRepo` into subtasks: 1. Identify all methods in `JobApplicantRepo` (e.g., `get_filtered_applicants_paginated`) that currently call `AgenticProfileFilterService.filter_profiles` and then perform a secondary database query for full `JobApplicant` documents. 2. Modify these identified repository methods to call the updated `AgenticProfileFilterService.filter_profiles` (from Task 7) which now returns `PaginatedResult[JobApplicant, ObjectId]`. 3. Update these methods to directly use the `items` (list of `JobApplicant` objects) and pagination info from this result, removing the subsequent redundant database query for these applicants.",
+			"reasoning": "This refactoring aims to simplify data fetching by removing redundant DB calls. The complexity lies in correctly identifying affected repository methods and ensuring they correctly consume the new paginated structure from the service without regressions."
+		},
+		{
+			"taskId": 9,
+			"taskTitle": "Comprehensive End-to-End Integration Testing",
+			"complexityScore": 8,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break down the comprehensive end-to-end integration testing into subtasks: 1. Define and implement test data setup in a test database, including diverse applicant profiles and job criteria. 2. Implement robust mocking strategies for external dependencies, primarily the LLM API, to simulate various responses (success, errors, delays). 3. Develop test cases for successful end-to-end flows, covering scenarios with and without pagination, and varying numbers of results. 4. Develop test cases for error handling propagation (e.g., LLM failures from `BatchProfileAnalyzerTool` being handled gracefully) and edge cases (e.g., no applicants found, criteria matching no one). 5. Implement assertions to validate data consistency (e.g., `ai_insight` correctly attached), correctness of pagination cursors, page information, and adherence to acceptance criteria F-01 to F-04.",
+			"reasoning": "E2E testing for a multi-component system involving DB interaction, external API calls (mocked), and complex data transformations is inherently complex. It requires careful test design, environment setup, and validation of the entire flow."
+		},
+		{
+			"taskId": 10,
+			"taskTitle": "Performance Profiling and Monitoring Setup",
+			"complexityScore": 7,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Break down the performance profiling and monitoring setup into subtasks: 1. Establish baseline performance metrics of the old system (if data exists) or define clear performance goals for the refactored system (latency, DB queries, LLM calls per request). 2. Configure and use profiling tools (e.g., cProfile, APM tools) to measure the end-to-end latency and resource usage of API endpoints utilizing the refactored filtering logic under simulated load. 3. Implement specific logging or integrate with APM to track key metrics: number of database queries, number of LLM API calls, and processing time for distinct stages of the filtering process per request. 4. Analyze collected performance data, compare new metrics against baselines/goals (e.g., >50% latency reduction, N to 1 LLM calls), document findings, and identify any remaining bottlenecks.",
+			"reasoning": "Requires specialized tools and methodologies for profiling and load testing. Setting up meaningful monitoring and interpreting performance data to identify bottlenecks or confirm improvements can be challenging and time-consuming."
 		}
 	]
 }

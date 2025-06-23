@@ -1,0 +1,73 @@
+# PRD- Making RAG efficient
+
+## 1. Overview
+
+The current agentic profile filtering mechanism in `JobApplicantRepo` is inefficient. It uses `AgenticProfileFilterService` to fetch a list of applicant IDs based on a RAG search, and then performs a second database query to retrieve the full `JobApplicant` documents. Furthermore, the underlying `FilterJobCrew` processes each applicant profile individually, leading to an N+1 problem where the AI analysis is run for each profile separately.
+
+This proposal outlines a plan to refactor the filtering process to be more performant and streamlined.
+
+## 2. Problem Statement
+
+The current implementation suffers from three main inefficiencies:
+
+1.  **Redundant Database Queries**: The `filter_profiles` method returns only applicant IDs, forcing the repository to perform a second query to fetch the full documents. This is a classic "double fetch" problem.
+2.  **Inefficient Profile Analysis (N+1 Problem)**: The `FilterJobCrew` iterates through each sourced applicant and runs the `ProfileAnalyzerTool` individually. This is slow and costly, especially with a large number of applicants.
+3.  **Ineffective Pagination**: Pagination is handled in the repository *after* the expensive filtering and secondary fetch have already occurred. The filtering service itself should handle pagination to limit the scope of work from the beginning.
+
+## 3. Goals and Objectives
+
+-   **Goal**: Significantly improve the performance and reduce the latency of the agentic profile filtering feature.
+-   **Objective 1**: Eliminate the second database fetch by returning fully populated `JobApplicant` objects directly from the filtering service.
+-   **Objective 2**: Implement batch processing for profile analysis to run the AI analyzer only once for all sourced profiles.
+-   **Objective 3**: Integrate pagination controls (`first`, `last`, `before`, `after`) into the `AgenticProfileFilterService` to ensure only the required data is processed and returned.
+-   **Objective 4**: Attach the AI-generated insights to each `JobApplicant` object returned by the service, making the data immediately available to the caller.
+
+## 4. Proposed Solution
+
+The `AgenticProfileFilterService` and its underlying `FilterJobCrew` will be refactored to perform the following steps in a more efficient sequence:
+
+1.  **Initial Fetch**: The service will first source all potentially relevant `JobApplicant` documents for the given job.
+2.  **Batch Analysis**: A new or updated tool will be created to analyze all sourced profiles in a single batch call to the AI model. This tool will take a list of profiles and return a list of corresponding AI insights.
+3.  **Enrich and Filter**: The service will then enrich the `JobApplicant` documents with the AI insights. The RAG-based filtering will happen on this enriched dataset in memory.
+4.  **Paginate and Return**: The final, filtered, and enriched list of `JobApplicant` objects will be paginated according to the requested parameters and returned to the repository.
+
+### 4.1. Attach AI insights to the applicant documents.
+
+We already have a pydantic model to represent the AI insights, which will be attached to the `JobApplicant` document.
+
+### 4.2. Refactored Service and Crew
+
+-   **`AgenticProfileFilterService.filter_profiles`**:
+    -   The method signature will be updated to accept pagination arguments: `first`, `last`, `before`, `after`.
+    -   It will return a `PaginatedResult[JobApplicant, ObjectId]`.
+-   **`FilterJobCrew`**:
+    -   A new tool, `BatchProfileAnalyzerTool`, will be created to replace the single `ProfileAnalyzerTool`. This tool will accept a list of profiles.
+    -   The `run` method will be updated to orchestrate the new flow: fetch all, analyze in batch, filter, and then return the full objects ready for pagination. The pagination logic itself will be handled by the service that calls the crew.
+
+## 5. Functional Requirements
+
+| ID      | User Story                                                                                                             | Acceptance Criteria                                                                                                                                                                                                                           |
+| :------ | :--------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F-01    | As a developer, I want to call `filter_profiles` with pagination arguments so that I can efficiently retrieve a page of results. | - The `filter_profiles` method in `AgenticProfileFilterService` must accept `first`, `last`, `before`, `after`. <br> - The method must return a `PaginatedResult` containing `JobApplicant` objects.                                           |
+| F-02    | As a system, I want to analyze all candidate profiles in a single batch to reduce AI operational costs and latency.      | - A `BatchProfileAnalyzerTool` must be implemented that takes a list of profiles and returns a list of insights. <br> - The `FilterJobCrew` must call this tool only once per `filter_profiles` request.                                             |
+| F-03    | As a developer, I want the returned `JobApplicant` objects to include AI-generated insights.                             | - A `AIApplicantInsight` model must be defined. <br> - Each `JobApplicant` returned from `filter_profiles` must have an `ai_insight` attribute populated with the analysis results.                                                              |
+| F-04    | As a system, I want to eliminate the need for a second database lookup in the repository layer.                          | - The call to `filter_profiles` in `JobApplicantRepo` should be the final step. <br> - The repository should no longer have logic to fetch applicants by ID after the filter service call; it should directly use the paginated result. |
+
+## 6. Out of Scope
+
+-   Changes to the frontend or GraphQL schema to display the AI insights. This PRD focuses solely on the backend service and repository layer optimization.
+-   Changes to the vector search implementation (`JobApplicantVectorSearchTool`). The initial sourcing of candidates will remain the same.
+-   Adding new packages/ libraries to the backend
+
+## 7. Risks and Mitigation
+
+-   **Risk**: Batch processing with the LLM might hit rate limits or have a large payload.
+    -   **Mitigation**: Implement chunking within the `BatchProfileAnalyzerTool` if the number of profiles is very large. The prompt for batch analysis must be carefully engineered to be efficient.
+-   **Risk**: The refactoring is complex and might introduce regressions.
+    -   **Mitigation**: A comprehensive suite of unit and integration tests will be required to cover the new logic, including tests for pagination, batch analysis, and data consistency.
+
+## 8. Success Metrics
+
+-   **Primary Metric**: A significant reduction (targeted >50%) in the end-to-end latency of the API endpoint that uses this filtering logic.
+-   **Secondary Metric**: Reduction in the number of database queries per request, measurable through logging or APM tools.
+-   **Cost Metric**: Reduction in the number of LLM API calls, from N calls to 1 call per user request.

@@ -1,4 +1,5 @@
 import uuid
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -61,4 +62,19 @@ class FilterJobResultData(BaseModel):
     query: str = Field(..., description="Original query used for filtering")
     execution_time: float = Field(
         ..., description="Time taken to execute the filter in seconds"
+    )
+
+
+AIApplicantMatchType = Literal["PERFECT", "CLOSE", "LOW"]
+
+
+class AIApplicantInsight(BaseModel):
+    match_type: AIApplicantMatchType = Field(..., description="The type of match.")
+    score: float = Field(..., description="The match score, from 0 to 100.")
+    summary: str = Field(..., description="A one-sentence summary of the match.")
+    match_reasons: list[str] = Field(
+        ..., description="A list of reasons for the match."
+    )
+    mismatched_fields: list[str] = Field(
+        ..., description="A list of fields that do not match the job requirements."
     )
