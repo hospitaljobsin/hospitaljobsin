@@ -119,7 +119,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 							</span>
 						}
 						description={
-							<span className="flex items-center gap-1 text-sm text-foreground-500">
+							<span className="flex items-start justify-start w-full gap-1 text-sm text-foreground-500">
 								{data.profileSnapshot.headline}
 							</span>
 						}
