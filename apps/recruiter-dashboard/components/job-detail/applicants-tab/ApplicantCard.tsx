@@ -11,6 +11,15 @@ import {
 	Chip,
 	User,
 } from "@heroui/react";
+import {
+	CheckCircle2,
+	ChevronDown,
+	ChevronUp,
+	Info,
+	Mail,
+	Star,
+	XCircle,
+} from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFragment } from "react-relay";
@@ -69,16 +78,18 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 	return (
 		<Card
 			fullWidth
-			className="p-6 cursor-pointer"
+			className="p-6 cursor-pointer group space-y-4"
 			shadow="none"
 			isPressable
 			onPress={() => {
 				router.push(links.applicantDetail(slug, data.slug));
 			}}
 		>
-			<CardHeader className="flex justify-start gap-4 items-center">
+			<CardHeader className="flex items-center gap-6 justify-start">
 				<Checkbox
+					size="lg"
 					isSelected={isSelected}
+					aria-label={isSelected ? "Deselect applicant" : "Select applicant"}
 					onClick={(e) => {
 						e.stopPropagation();
 					}}
@@ -91,67 +102,148 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 							);
 					}}
 				/>
-				<div className="flex justify-between items-start w-full">
-					<div className="flex items-center gap-4 justify-between w-full">
-						<User
-							avatarProps={{ src: data.account.avatarUrl }}
-							name={data.account.fullName}
-							description={data.account.email}
-						/>
-						<Chip>{data.status}</Chip>
-					</div>
+				<div className="w-full items-center flex gap-6 justify-between flex-1">
+					<User
+						classNames={{
+							base: "flex gap-6",
+							wrapper: "flex gap-2",
+						}}
+						avatarProps={{
+							src: data.account.avatarUrl,
+							size: "lg",
+						}}
+						name={
+							<span className="font-medium text-lg text-foreground-900">
+								{data.account.fullName}
+							</span>
+						}
+						description={
+							<span className="flex items-center gap-1 text-sm text-foreground-500">
+								<Mail size={14} className="inline-block mr-1" />
+								{data.account.email}
+							</span>
+						}
+					/>
+					<Chip
+						variant="flat"
+						color={
+							data.status === "APPLIED"
+								? "default"
+								: data.status === "SHORTLISTED"
+									? "primary"
+									: data.status === "INTERVIEWED"
+										? "warning"
+										: data.status === "OFFERED"
+											? "success"
+											: data.status === "ONHOLD"
+												? "secondary"
+												: "default"
+						}
+						className="text-xs px-2 py-1 font-medium capitalize"
+						startContent={
+							data.status === "OFFERED" ? (
+								<CheckCircle2 size={14} className="text-success-600" />
+							) : data.status === "ONHOLD" ? (
+								<Info size={14} className="text-secondary-600" />
+							) : data.status === "INTERVIEWED" ? (
+								<Info size={14} className="text-warning-600" />
+							) : data.status === "SHORTLISTED" ? (
+								<Star size={14} className="text-primary-600" />
+							) : data.status === "APPLIED" ? (
+								<Info size={14} className="text-foreground-400" />
+							) : null
+						}
+					>
+						{data.status}
+					</Chip>
 				</div>
 			</CardHeader>
-			<CardBody>
+			<CardBody className="flex flex-col gap-6">
 				{data.aiInsight && (
-					<div className="flex items-center gap-4">
-						{data.aiInsight?.score && <p>{data.aiInsight.score} %</p>}
-						{data.aiInsight?.matchType && (
-							<Chip color={getBadgeColor(data.aiInsight.matchType)}>
+					<div className="flex flex-wrap items-center gap-6">
+						{typeof data.aiInsight.score === "number" && (
+							<div className="flex items-center gap-1 text-lg font-semibold text-primary-700 bg-primary-50 px-3 py-1 rounded-full">
+								<Star size={16} className="text-primary-500" />
+								<span>{data.aiInsight.score} %</span>
+							</div>
+						)}
+						{data.aiInsight.matchType && (
+							<Chip
+								color={getBadgeColor(data.aiInsight.matchType)}
+								variant="flat"
+								className="text-xs px-2 py-1 font-medium capitalize"
+								startContent={
+									data.aiInsight.matchType === "PERFECT" ? (
+										<CheckCircle2 size={14} className="text-success-600" />
+									) : data.aiInsight.matchType === "CLOSE" ? (
+										<Info size={14} className="text-warning-600" />
+									) : data.aiInsight.matchType === "LOW" ? (
+										<XCircle size={14} className="text-danger-600" />
+									) : null
+								}
+							>
 								{data.aiInsight.matchType} match
 							</Chip>
 						)}
 					</div>
 				)}
 				{data.aiInsight?.summary && (
-					<div className="mt-4 p-4 bg-primary-50 rounded-lg">
-						<p className="text-sm font-semibold text-primary-700">AI Summary</p>
-						<p className="text-sm text-foreground-600">
+					<div className="p-4 bg-primary-50 rounded-lg border border-primary-100 space-y-4">
+						<div className="flex items-center gap-2">
+							<Info size={16} className="text-primary-500" />
+							<p className="text-sm font-semibold text-primary-700">
+								AI Summary
+							</p>
+						</div>
+						<p className="text-sm text-foreground-600 leading-relaxed">
 							{data.aiInsight.summary}
 						</p>
 						<Button
 							variant="light"
 							size="sm"
-							onClick={(e) => {
-								e.stopPropagation();
+							onPress={() => {
 								setShowDetails(!showDetails);
 							}}
-							className="mt-2"
+							className="flex items-center gap-1 text-primary-700 hover:text-primary-900"
+							aria-label={
+								showDetails ? "Hide match details" : "Show match details"
+							}
 						>
 							{showDetails ? "Hide Details" : "See Why"}
+							{showDetails ? (
+								<ChevronUp size={16} />
+							) : (
+								<ChevronDown size={16} />
+							)}
 						</Button>
 					</div>
 				)}
 				{showDetails && data.aiInsight && (
 					<div className="mt-2 space-y-2 text-sm">
-						<div>
-							<p className="font-semibold text-success-600">Match Reasons:</p>
-							<ul className="list-disc list-inside">
-								{data.aiInsight.matchReasons.map((reason: string) => (
-									<li key={reason}>{reason}</li>
-								))}
-							</ul>
-						</div>
-						<div>
-							<p className="font-semibold text-danger-600">
-								Mismatched Fields:
-							</p>
-							<ul className="list-disc list-inside">
-								{data.aiInsight.mismatchedFields.map((field: string) => (
-									<li key={field}>{field}</li>
-								))}
-							</ul>
-						</div>
+						{data.aiInsight.matchReasons?.length > 0 && (
+							<div className="flex flex-col items-start gap-6">
+								<p className="font-semibold text-success-600 flex items-center gap-2">
+									<CheckCircle2 size={14} /> Match Reasons:
+								</p>
+								<ul className="list-disc list-inside ml-4 space-y-4">
+									{data.aiInsight.matchReasons.map((reason: string) => (
+										<li key={reason}>{reason}</li>
+									))}
+								</ul>
+							</div>
+						)}
+						{data.aiInsight.mismatchedFields?.length > 0 && (
+							<div className="flex flex-col items-start gap-6">
+								<p className="font-semibold text-danger-600 flex items-center gap-2">
+									<XCircle size={14} /> Mismatched Fields:
+								</p>
+								<ul className="list-disc list-inside ml-4 space-y-4">
+									{data.aiInsight.mismatchedFields.map((field: string) => (
+										<li key={field}>{field}</li>
+									))}
+								</ul>
+							</div>
+						)}
 					</div>
 				)}
 			</CardBody>

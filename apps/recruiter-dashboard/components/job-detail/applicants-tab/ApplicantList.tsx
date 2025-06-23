@@ -121,7 +121,7 @@ export default function ApplicantList({
 	}
 
 	return (
-		<div className="flex flex-col gap-4 w-full">
+		<div className="flex flex-col gap-4 w-full mb-16">
 			{data.applicants.edges.map((edge) => (
 				<ApplicantCard applicant={edge.node} key={edge.node.id} />
 			))}
