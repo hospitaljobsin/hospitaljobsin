@@ -16,7 +16,6 @@ import {
 	ChevronDown,
 	ChevronUp,
 	Info,
-	Mail,
 	Star,
 	XCircle,
 } from "lucide-react";
@@ -34,12 +33,14 @@ const ApplicantCardFragment = graphql`
 	fragment ApplicantCardFragment on JobApplicant @argumentDefinitions(showStatus: { type: "Boolean", defaultValue: true }) {
 		id
 		account @required(action: THROW) {
-			email
 			fullName
 			avatarUrl
 		}
 		slug
 		status @include(if: $showStatus)
+		profileSnapshot {
+			headline
+		}
 		aiInsight {
 			matchType
 			score
@@ -119,38 +120,25 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 						}
 						description={
 							<span className="flex items-center gap-1 text-sm text-foreground-500">
-								<Mail size={14} className="inline-block mr-1" />
-								{data.account.email}
+								{data.profileSnapshot.headline}
 							</span>
 						}
 					/>
 					<Chip
 						variant="flat"
-						color={
-							data.status === "APPLIED"
-								? "default"
-								: data.status === "SHORTLISTED"
-									? "primary"
-									: data.status === "INTERVIEWED"
-										? "warning"
-										: data.status === "OFFERED"
-											? "success"
-											: data.status === "ONHOLD"
-												? "secondary"
-												: "default"
-						}
+						color="default"
 						className="text-xs px-2 py-1 font-medium capitalize"
 						startContent={
 							data.status === "OFFERED" ? (
-								<CheckCircle2 size={14} className="text-success-600" />
+								<CheckCircle2 size={14} />
 							) : data.status === "ONHOLD" ? (
-								<Info size={14} className="text-secondary-600" />
+								<Info size={14} />
 							) : data.status === "INTERVIEWED" ? (
-								<Info size={14} className="text-warning-600" />
+								<Info size={14} />
 							) : data.status === "SHORTLISTED" ? (
-								<Star size={14} className="text-primary-600" />
+								<Star size={14} />
 							) : data.status === "APPLIED" ? (
-								<Info size={14} className="text-foreground-400" />
+								<Info size={14} />
 							) : null
 						}
 					>
@@ -158,8 +146,8 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 					</Chip>
 				</div>
 			</CardHeader>
-			<CardBody className="flex flex-col gap-6">
-				{data.aiInsight && (
+			{data.aiInsight && (
+				<CardBody className="flex flex-col gap-6">
 					<div className="p-4 bg-primary-50 rounded-lg flex border border-primary-100 space-y-4 items-start flex-col sm:flex-row">
 						<div className="w-full flex flex-col gap-4 items-start">
 							<div className="flex items-center gap-2">
@@ -217,36 +205,37 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 							)}
 						</div>
 					</div>
-				)}
-				{showDetails && data.aiInsight && (
-					<div className="mt-2 space-y-2 text-sm">
-						{data.aiInsight.matchReasons?.length > 0 && (
-							<div className="flex flex-col items-start gap-6">
-								<p className="font-semibold text-success-600 flex items-center gap-2">
-									<CheckCircle2 size={14} /> Match Reasons:
-								</p>
-								<ul className="list-disc list-inside ml-4 space-y-4">
-									{data.aiInsight.matchReasons.map((reason: string) => (
-										<li key={reason}>{reason}</li>
-									))}
-								</ul>
-							</div>
-						)}
-						{data.aiInsight.mismatchedFields?.length > 0 && (
-							<div className="flex flex-col items-start gap-6">
-								<p className="font-semibold text-danger-600 flex items-center gap-2">
-									<XCircle size={14} /> Mismatched Fields:
-								</p>
-								<ul className="list-disc list-inside ml-4 space-y-4">
-									{data.aiInsight.mismatchedFields.map((field: string) => (
-										<li key={field}>{field}</li>
-									))}
-								</ul>
-							</div>
-						)}
-					</div>
-				)}
-			</CardBody>
+
+					{showDetails && data.aiInsight && (
+						<div className="mt-2 space-y-2 text-sm">
+							{data.aiInsight.matchReasons?.length > 0 && (
+								<div className="flex flex-col items-start gap-6">
+									<p className="font-semibold text-success-600 flex items-center gap-2">
+										<CheckCircle2 size={14} /> Match Reasons:
+									</p>
+									<ul className="list-disc list-inside ml-4 space-y-4">
+										{data.aiInsight.matchReasons.map((reason: string) => (
+											<li key={reason}>{reason}</li>
+										))}
+									</ul>
+								</div>
+							)}
+							{data.aiInsight.mismatchedFields?.length > 0 && (
+								<div className="flex flex-col items-start gap-6">
+									<p className="font-semibold text-danger-600 flex items-center gap-2">
+										<XCircle size={14} /> Mismatched Fields:
+									</p>
+									<ul className="list-disc list-inside ml-4 space-y-4">
+										{data.aiInsight.mismatchedFields.map((field: string) => (
+											<li key={field}>{field}</li>
+										))}
+									</ul>
+								</div>
+							)}
+						</div>
+					)}
+				</CardBody>
+			)}
 		</Card>
 	);
 }

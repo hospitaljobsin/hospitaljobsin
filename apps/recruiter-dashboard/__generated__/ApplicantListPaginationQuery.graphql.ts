@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6d7579fc7dce8108bd28a9b3837e2b7a>>
- * @relayHash 3e2db8d1933714bb9db8a9f0b870b638
+ * @generated SignedSource<<78d02bbf9cfd006e293f726f188da78a>>
+ * @relayHash 4cc9e00522c4a826e160b898c8e3ae20
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 3e2db8d1933714bb9db8a9f0b870b638
+// @relayRequestID 4cc9e00522c4a826e160b898c8e3ae20
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -223,13 +223,6 @@ return {
                                 "alias": null,
                                 "args": null,
                                 "kind": "ScalarField",
-                                "name": "email",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
                                 "name": "fullName",
                                 "storageKey": null
                               },
@@ -264,6 +257,24 @@ return {
                                 "storageKey": null
                               }
                             ]
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "ProfileSnapshot",
+                            "kind": "LinkedField",
+                            "name": "profileSnapshot",
+                            "plural": false,
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "headline",
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
                           },
                           {
                             "alias": null,
@@ -375,7 +386,7 @@ return {
     ]
   },
   "params": {
-    "id": "3e2db8d1933714bb9db8a9f0b870b638",
+    "id": "4cc9e00522c4a826e160b898c8e3ae20",
     "metadata": {},
     "name": "ApplicantListPaginationQuery",
     "operationKind": "query",

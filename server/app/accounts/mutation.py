@@ -326,7 +326,7 @@ class AccountMutation:
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateProfilePayload,
-        description="Update the current user's profile education.",
+        description="Update the current user's profile about me.",
         extensions=[
             PermissionExtension(
                 permissions=[
@@ -336,7 +336,7 @@ class AccountMutation:
         ],
     )
     @inject
-    async def update_profile_professional_summary(
+    async def update_profile_about_me(
         self,
         info: AuthInfo,
         profile_service: Annotated[ProfileService, Inject],
@@ -346,8 +346,14 @@ class AccountMutation:
                 description="The professional summary of the user profile.",
             ),
         ],
+        headline: Annotated[
+            str,
+            strawberry.argument(
+                description="The headline of the user profile.",
+            ),
+        ],
     ) -> UpdateProfilePayload:
-        """Update the current user's profile professional summary."""
+        """Update the current user's profile about me."""
         match await profile_service.update_professional_summary(
             account=info.context["current_user"],
             professional_summary=professional_summary,

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6997f89de7537f4b5a50187ecfde6bcd>>
- * @relayHash 4954ec084c09fd445fa170c3763f73c0
+ * @generated SignedSource<<710d17b039e23cb3b3b4ea382e89c64b>>
+ * @relayHash f2b2b930cb8eb83c9fa1b73909fd9640
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 4954ec084c09fd445fa170c3763f73c0
+// @relayRequestID f2b2b930cb8eb83c9fa1b73909fd9640
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -219,13 +219,6 @@ return {
                                         "alias": null,
                                         "args": null,
                                         "kind": "ScalarField",
-                                        "name": "email",
-                                        "storageKey": null
-                                      },
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
                                         "name": "fullName",
                                         "storageKey": null
                                       },
@@ -260,6 +253,24 @@ return {
                                         "storageKey": null
                                       }
                                     ]
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "ProfileSnapshot",
+                                    "kind": "LinkedField",
+                                    "name": "profileSnapshot",
+                                    "plural": false,
+                                    "selections": [
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "headline",
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
                                   },
                                   {
                                     "alias": null,
@@ -380,7 +391,7 @@ return {
     ]
   },
   "params": {
-    "id": "4954ec084c09fd445fa170c3763f73c0",
+    "id": "f2b2b930cb8eb83c9fa1b73909fd9640",
     "metadata": {},
     "name": "pageJobDetailApplicantsQuery",
     "operationKind": "query",

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<90aab276f4c5a1eea4c7b3972e693c4d>>
+ * @generated SignedSource<<316a7438684d338d129192120bf82d71>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,13 +19,14 @@ export type ProfileViewFragment$data = {
       readonly education: ReadonlyArray<{
         readonly __typename: "Education";
       }>;
+      readonly headline: string | null | undefined;
       readonly locationsOpenToWork: ReadonlyArray<string>;
       readonly openToRelocationAnywhere: boolean;
       readonly professionalSummary: string | null | undefined;
       readonly workExperience: ReadonlyArray<{
         readonly __typename: "WorkExperience";
       }>;
-      readonly " $fragmentSpreads": FragmentRefs<"CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LicensesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "ProfessionalSummaryFragment" | "UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLicensesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateProfessionalSummaryFormFragment" | "UpdateWorkExperienceFormFragment" | "WorkExperienceFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"AboutMeFragment" | "CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LicensesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "UpdateAboutMeFormFragment" | "UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLicensesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateWorkExperienceFormFragment" | "WorkExperienceFragment">;
     };
     readonly " $fragmentSpreads": FragmentRefs<"ProfileBannerFragment">;
   } | {
@@ -140,6 +141,13 @@ return {
                     "storageKey": null
                   },
                   {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "headline",
+                    "storageKey": null
+                  },
+                  {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "UpdatePersonalDetailsFormFragment"
@@ -212,12 +220,12 @@ return {
                   {
                     "args": null,
                     "kind": "FragmentSpread",
-                    "name": "ProfessionalSummaryFragment"
+                    "name": "AboutMeFragment"
                   },
                   {
                     "args": null,
                     "kind": "FragmentSpread",
-                    "name": "UpdateProfessionalSummaryFormFragment"
+                    "name": "UpdateAboutMeFormFragment"
                   }
                 ],
                 "storageKey": null
@@ -237,6 +245,6 @@ return {
 };
 })();
 
-(node as any).hash = "bdcb55f2ca018e00f41c594a97cc8d63";
+(node as any).hash = "41bf3f2a4acc3043f590cee99e3479c7";
 
 export default node;

@@ -8,7 +8,7 @@ type CompletionStatus = {
 	workExperience: boolean;
 	education: boolean;
 	locationPreferences: boolean;
-	professionalSummary: boolean;
+	aboutMe: boolean;
 };
 
 export default function ProfileCompletionMeter({
@@ -17,8 +17,8 @@ export default function ProfileCompletionMeter({
 	status: CompletionStatus;
 }) {
 	const sections = [
+		{ name: "About Me", isComplete: status.aboutMe },
 		{ name: "Date of Birth", isComplete: status.personalDetails },
-		{ name: "Professional Summary", isComplete: status.professionalSummary },
 		{ name: "Work Experience", isComplete: status.workExperience },
 		{ name: "Education", isComplete: status.education },
 		{ name: "Location Preferences", isComplete: status.locationPreferences },

@@ -95,6 +95,7 @@ class BaseProfile(BaseModel):
     salary_expectations: SalaryExpectations | None
     certifications: list[Certification]
     professional_summary: str | None = None
+    headline: str | None = None
 
 
 # Main Job Seeker Profile Document
@@ -121,6 +122,7 @@ class Profile(BaseProfile, Document):
                 self.education,
                 (self.locations_open_to_work or self.open_to_relocation_anywhere),
                 self.professional_summary,
+                self.headline,
             ]
         )
 

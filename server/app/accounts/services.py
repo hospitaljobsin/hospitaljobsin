@@ -184,10 +184,11 @@ class ProfileService:
 
         return Ok(account)
 
-    async def update_professional_summary(
+    async def update_about_me(
         self,
         account: Account,
-        professional_summary: str,
+        professional_summary: str | None,
+        headline: str | None,
     ) -> Ok[Account]:
         existing_profile = await self._profile_repo.get_by_account(account)
         if existing_profile is None:
@@ -199,6 +200,7 @@ class ProfileService:
         await self._profile_repo.update(
             profile=existing_profile,
             professional_summary=professional_summary,
+            headline=headline,
         )
 
         return Ok(account)

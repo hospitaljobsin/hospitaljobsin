@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<001e3f63eef71fe05e58fb5a1abf6880>>
+ * @generated SignedSource<<1c8eb243eba285044423c2b593a1d6da>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,6 @@ import type { FragmentRefs } from "relay-runtime";
 export type ApplicantCardFragment$data = {
   readonly account: {
     readonly avatarUrl: string;
-    readonly email: string;
     readonly fullName: string;
   };
   readonly aiInsight: {
@@ -26,6 +25,9 @@ export type ApplicantCardFragment$data = {
     readonly summary: string;
   } | null | undefined;
   readonly id: string;
+  readonly profileSnapshot: {
+    readonly headline: string | null | undefined;
+  };
   readonly slug: string;
   readonly status?: JobApplicantStatus;
   readonly " $fragmentType": "ApplicantCardFragment";
@@ -68,13 +70,6 @@ const node: ReaderFragment = {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
-            "name": "email",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
             "name": "fullName",
             "storageKey": null
           },
@@ -110,6 +105,24 @@ const node: ReaderFragment = {
           "storageKey": null
         }
       ]
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "ProfileSnapshot",
+      "kind": "LinkedField",
+      "name": "profileSnapshot",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "headline",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
     },
     {
       "alias": null,
@@ -162,6 +175,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "1df7178eeeb92c4444bb361817bc711f";
+(node as any).hash = "6bfbd0127319c563e9488e9cd548bbe0";
 
 export default node;

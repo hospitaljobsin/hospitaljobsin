@@ -232,6 +232,7 @@ class ProfileRepo:
         salary_expectations: SalaryExpectations | None = None,
         certifications: list[Certification] | None = None,
         professional_summary: str | None = None,
+        headline: str | None = None,
     ) -> Profile:
         """Update a profile with new fields."""
         if gender is not None:
@@ -264,6 +265,8 @@ class ProfileRepo:
             profile.certifications = certifications
         if professional_summary is not None:
             profile.professional_summary = professional_summary
+        if headline is not None:
+            profile.headline = headline
         profile.updated_at = datetime.now(UTC)
         return await profile.save(link_rule=WriteRules.WRITE)
 

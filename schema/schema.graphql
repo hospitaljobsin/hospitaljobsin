@@ -356,6 +356,11 @@ interface BaseProfile {
 	The user's professional summary.
 	"""
 	professionalSummary: String
+
+	"""
+	The user's headline.
+	"""
+	headline: String
 }
 
 type Certification {
@@ -2388,13 +2393,18 @@ type Mutation {
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
-	Update the current user's profile education.
+	Update the current user's profile about me.
 	"""
-	updateProfileProfessionalSummary(
+	updateProfileAboutMe(
 		"""
 		The professional summary of the user profile.
 		"""
 		professionalSummary: String!
+
+		"""
+		The headline of the user profile.
+		"""
+		headline: String!
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
@@ -3151,6 +3161,11 @@ type Profile implements BaseProfile & Node {
 	professionalSummary: String
 
 	"""
+	The user's headline.
+	"""
+	headline: String
+
+	"""
 	The Globally Unique ID of this object
 	"""
 	id: ID!
@@ -3244,6 +3259,11 @@ type ProfileSnapshot implements BaseProfile {
 	The user's professional summary.
 	"""
 	professionalSummary: String
+
+	"""
+	The user's headline.
+	"""
+	headline: String
 }
 
 """

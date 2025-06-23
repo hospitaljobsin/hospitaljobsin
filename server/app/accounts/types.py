@@ -252,6 +252,9 @@ class BaseProfileType:
     professional_summary: str | None = strawberry.field(
         description="The user's professional summary.",
     )
+    headline: str | None = strawberry.field(
+        description="The user's headline.",
+    )
 
 
 @strawberry.type(
@@ -299,6 +302,7 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
             updated_at=model.updated_at,
             is_complete=model.is_complete,
             professional_summary=model.professional_summary,
+            headline=model.headline,
         )
 
     @classmethod

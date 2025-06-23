@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1b03b866bca437735a6212e39e8937a7>>
+ * @generated SignedSource<<6af244a7e3e33a9458152524475e8402>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,20 +10,21 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type UpdateProfessionalSummaryFormFragment$data = {
+export type AboutMeFragment$data = {
+  readonly headline: string | null | undefined;
   readonly professionalSummary: string | null | undefined;
-  readonly " $fragmentType": "UpdateProfessionalSummaryFormFragment";
+  readonly " $fragmentType": "AboutMeFragment";
 };
-export type UpdateProfessionalSummaryFormFragment$key = {
-  readonly " $data"?: UpdateProfessionalSummaryFormFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"UpdateProfessionalSummaryFormFragment">;
+export type AboutMeFragment$key = {
+  readonly " $data"?: AboutMeFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"AboutMeFragment">;
 };
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "UpdateProfessionalSummaryFormFragment",
+  "name": "AboutMeFragment",
   "selections": [
     {
       "alias": null,
@@ -31,12 +32,19 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "professionalSummary",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "headline",
+      "storageKey": null
     }
   ],
   "type": "Profile",
   "abstractKey": null
 };
 
-(node as any).hash = "208c9312d1c38b3bc8468aef709ce553";
+(node as any).hash = "71ff58b9e3c0eccc3fe0773250dcb9e6";
 
 export default node;
