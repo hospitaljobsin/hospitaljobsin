@@ -48,9 +48,15 @@ from app.organizations.services import OrganizationMemberService
 
 
 class SavedJobService:
-    def __init__(self, saved_job_repo: SavedJobRepo, job_repo: JobRepo) -> None:
+    def __init__(
+        self,
+        saved_job_repo: SavedJobRepo,
+        job_repo: JobRepo,
+        job_metric_repo: JobMetricRepo,
+    ) -> None:
         self._saved_job_repo = saved_job_repo
         self._job_repo = job_repo
+        self._job_metric_repo = job_metric_repo
 
     async def save_job(
         self, account_id: ObjectId, job_id: str
@@ -67,6 +73,14 @@ class SavedJobService:
             job=job,
         )
 
+        # log the job application metric
+        await self._job_metric_repo.create(
+            job_id=job.id,
+            organization_id=job.organization.ref.id,
+            event_type="save",
+            account_id=account_id,
+        )
+
         return Ok(result)
 
     async def unsave_job(
@@ -76,10 +90,23 @@ class SavedJobService:
             job_id = ObjectId(job_id)
         except InvalidId:
             return Err(SavedJobNotFoundError())
-        saved_job = await self._saved_job_repo.get(account_id=account_id, job_id=job_id)
+
+        job = await self._job_repo.get(job_id=job_id)
+        if job is None:
+            return Err(SavedJobNotFoundError())
+
+        saved_job = await self._saved_job_repo.get(account_id=account_id, job_id=job.id)
         if saved_job is None:
             return Err(SavedJobNotFoundError())
         await self._saved_job_repo.delete(saved_job)
+
+        # log the job application metric
+        await self._job_metric_repo.create(
+            job_id=job.id,
+            organization_id=job.organization.ref.id,
+            event_type="unsave",
+            account_id=account_id,
+        )
 
         return Ok(saved_job)
 
@@ -399,6 +426,7 @@ class JobApplicantService:
         self,
         job_repo: JobRepo,
         job_applicant_repo: JobApplicantRepo,
+        job_metric_repo: JobMetricRepo,
         organization_member_service: OrganizationMemberService,
         s3_client: S3Client,
         aws_settings: AWSSettings,
@@ -406,6 +434,7 @@ class JobApplicantService:
         self._job_repo = job_repo
         self._organization_member_service = organization_member_service
         self._job_applicant_repo = job_applicant_repo
+        self._job_metric_repo = job_metric_repo
         self._s3_client = s3_client
         self._aws_settings = aws_settings
 
@@ -458,6 +487,14 @@ class JobApplicantService:
             job=existing_job,
             account=account,
             applicant_fields=applicant_fields,
+        )
+
+        # log the job application metric
+        await self._job_metric_repo.create(
+            job_id=existing_job.id,
+            organization_id=existing_job.organization.ref.id,
+            event_type="apply",
+            account_id=account.id,
         )
 
         return Ok(job_application)

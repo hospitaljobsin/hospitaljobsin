@@ -21,6 +21,7 @@ from app.graphql_app import create_graphql_router
 from app.health.routes import health_router
 from app.jobs.routes import jobs_router
 from app.middleware import SessionMiddleware
+from app.middleware.fingerprints import FingerprintMiddleware
 from app.testing.routes import test_setup_router
 
 
@@ -47,6 +48,14 @@ def add_middleware(
     app.add_middleware(
         CorrelationIdMiddleware,
         header_name="X-Request-ID",
+    )
+
+    app.add_middleware(
+        FingerprintMiddleware,
+        path="/",
+        same_site="lax",
+        secure=auth_settings.session_cookie_secure,
+        domain=auth_settings.session_cookie_domain,
     )
 
     app.add_middleware(

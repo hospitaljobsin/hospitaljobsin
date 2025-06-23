@@ -875,6 +875,7 @@ class JobMetricRepo:
         job_id: ObjectId,
         organization_id: ObjectId,
         event_type: JobMetricEventType,
+        account_id: ObjectId | None = None,
     ) -> JobMetric:
         """Create a new job metric."""
         job_metric = JobMetric(
@@ -883,6 +884,7 @@ class JobMetricRepo:
                 job_id=job_id,
                 organization_id=organization_id,
                 event_type=event_type,
+                account_id=account_id,
             ),
         )
         return await job_metric.insert(link_rule=WriteRules.DO_NOTHING)

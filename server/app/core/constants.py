@@ -58,7 +58,7 @@ JobApplicantStatus = Literal[
 
 
 # Job metrics
-JobMetricEventType = Literal["view", "impression"]
+JobMetricEventType = Literal["view", "impression", "save", "unsave", "apply"]
 
 # Organization names
 # (subdomains which are in use/ might be needed in the future)

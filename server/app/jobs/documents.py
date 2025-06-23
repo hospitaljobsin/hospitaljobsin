@@ -162,6 +162,7 @@ class JobApplicant(Document):
 
 
 class JobMetricMetadata(BaseModel):
+    account_id: PydanticObjectId | None = None
     job_id: PydanticObjectId
     organization_id: PydanticObjectId
     event_type: JobMetricEventType
