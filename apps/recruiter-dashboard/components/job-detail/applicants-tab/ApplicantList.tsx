@@ -5,9 +5,7 @@ import { usePaginationFragment } from "react-relay";
 import type { ApplicantListFragment$key } from "@/__generated__/ApplicantListFragment.graphql";
 import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
 import type { pageJobDetailApplicantsQuery } from "@/__generated__/pageJobDetailApplicantsQuery.graphql";
-import links from "@/lib/links";
 import { UserRound } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
 import { startTransition, useEffect, useRef } from "react";
 import { graphql } from "react-relay";
 import ApplicantCard from "./ApplicantCard";
@@ -53,8 +51,6 @@ export default function ApplicantList({
 	searchTerm,
 	status,
 }: Props) {
-	const router = useRouter();
-	const params = useParams<{ slug: string }>();
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
 		pageJobDetailApplicantsQuery,
 		ApplicantListFragment$key
@@ -127,21 +123,7 @@ export default function ApplicantList({
 	return (
 		<div className="flex flex-col gap-4 w-full">
 			{data.applicants.edges.map((edge) => (
-				<button
-					type="button"
-					key={edge.node.id}
-					className="cursor-pointer text-left"
-					onClick={() => {
-						router.push(
-							links.applicantDetail(
-								params.slug,
-								encodeURIComponent(edge.node.slug),
-							),
-						);
-					}}
-				>
-					<ApplicantCard applicant={edge.node} />
-				</button>
+				<ApplicantCard applicant={edge.node} key={edge.node.id} />
 			))}
 		</div>
 	);
