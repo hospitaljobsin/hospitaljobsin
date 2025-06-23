@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a07418dc7d32f7e77d2f5f7743330faa>>
+ * @generated SignedSource<<c63948bf58ac7168ae06ae312f795e12>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,28 +9,13 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
-export type AIApplicantMatchType = "CLOSE" | "LOW" | "PERFECT" | "%future added value";
-export type JobApplicantStatus = "APPLIED" | "INTERVIEWED" | "OFFERED" | "ONHOLD" | "SHORTLISTED" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type ApplicantListFragment$data = {
   readonly applicants: {
     readonly edges: ReadonlyArray<{
       readonly node: {
-        readonly account: {
-          readonly avatarUrl: string;
-          readonly email: string;
-          readonly fullName: string;
-        };
-        readonly aiInsight: {
-          readonly matchReasons: ReadonlyArray<string>;
-          readonly matchType: AIApplicantMatchType;
-          readonly mismatchedFields: ReadonlyArray<string>;
-          readonly score: number;
-          readonly summary: string;
-        } | null | undefined;
         readonly id: string;
-        readonly slug: string;
-        readonly status?: JobApplicantStatus;
+        readonly " $fragmentSpreads": FragmentRefs<"ApplicantCardFragment">;
       };
     }>;
     readonly pageInfo: {
@@ -155,107 +140,15 @@ return {
               "selections": [
                 (v1/*: any*/),
                 {
-                  "kind": "RequiredField",
-                  "field": {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Account",
-                    "kind": "LinkedField",
-                    "name": "account",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "email",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "fullName",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "avatarUrl",
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  },
-                  "action": "THROW"
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "slug",
-                  "storageKey": null
-                },
-                {
-                  "condition": "showStatus",
-                  "kind": "Condition",
-                  "passingValue": true,
-                  "selections": [
+                  "args": [
                     {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "status",
-                      "storageKey": null
-                    }
-                  ]
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "concreteType": "AIApplicantInsight",
-                  "kind": "LinkedField",
-                  "name": "aiInsight",
-                  "plural": false,
-                  "selections": [
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "matchType",
-                      "storageKey": null
-                    },
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "score",
-                      "storageKey": null
-                    },
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "summary",
-                      "storageKey": null
-                    },
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "matchReasons",
-                      "storageKey": null
-                    },
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "mismatchedFields",
-                      "storageKey": null
+                      "kind": "Variable",
+                      "name": "showStatus",
+                      "variableName": "showStatus"
                     }
                   ],
-                  "storageKey": null
+                  "kind": "FragmentSpread",
+                  "name": "ApplicantCardFragment"
                 },
                 {
                   "alias": null,
@@ -311,6 +204,6 @@ return {
 };
 })();
 
-(node as any).hash = "76d7fc341465d6d7471347fa59bdc24d";
+(node as any).hash = "10fc0378582c36bf652b2075b9205cb1";
 
 export default node;

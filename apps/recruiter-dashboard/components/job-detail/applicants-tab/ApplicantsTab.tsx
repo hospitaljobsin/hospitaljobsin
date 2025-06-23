@@ -4,62 +4,17 @@ import type { ApplicantsTabFragment$key } from "@/__generated__/ApplicantsTabFra
 import PageJobDetailApplicantsQuery, {
 	type pageJobDetailApplicantsQuery,
 } from "@/__generated__/pageJobDetailApplicantsQuery.graphql";
-import {
-	Button,
-	Card,
-	Dropdown,
-	DropdownItem,
-	DropdownMenu,
-	DropdownTrigger,
-} from "@heroui/react";
-import type { Selection } from "@react-types/shared";
-import { ChevronDown } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
 	type PreloadedQuery,
 	graphql,
 	useFragment,
-	useMutation,
 	usePreloadedQuery,
 } from "react-relay";
 import invariant from "tiny-invariant";
 import ApplicantList from "./ApplicantList";
 import ApplicantListController from "./ApplicantListController";
-
-export const JOB_APPLICANT_STATUSES = [
-	"APPLIED",
-	"INTERVIEWED",
-	"OFFERED",
-	"ONHOLD",
-	"SHORTLISTED",
-] as JobApplicantStatus[];
-
-const updateJobApplicantsStatusMutation = graphql`
-	mutation ApplicantsTabUpdateStatusMutation(
-		$jobId: ID!
-		$applicantIds: [ID!]!
-		$status: JobApplicantStatus!
-	) {
-		updateJobApplicantsStatus(
-			jobId: $jobId
-			jobApplicantIds: $applicantIds
-			status: $status
-		) {
-			... on UpdateJobApplicantsStatusSuccess {
-				jobApplicants {
-					id
-					slug
-					status
-					account {
-						email
-						fullName
-						avatarUrl
-					}
-				}
-			}
-		}
-	}
-`;
+import { ApplicantSelectionProvider } from "./ApplicantSelectionProvider";
 
 const ApplicantsTabFragment = graphql`
 	fragment ApplicantsTabFragment on Query
@@ -77,6 +32,7 @@ const ApplicantsTabFragment = graphql`
 					__typename
 					... on Job {
 						id
+						...ApplicantListControllerFragment
 						...ApplicantListFragment
 							@arguments(
 								searchTerm: $searchTerm
@@ -112,94 +68,22 @@ export default function ApplicantsTab(props: {
 		"Expected 'job' type",
 	);
 
-	const [commitMutation, isInFlight] = useMutation(
-		updateJobApplicantsStatusMutation,
-	);
-
-	const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
-
-	const allKeys = useMemo(
-		() =>
-			new Set(
-				query.organization.job.applicants?.edges.map((edge) => edge.node.id) ??
-					[],
-			),
-		[query.organization.job.applicants?.edges],
-	);
-
-	const selectedCount =
-		selectedKeys === "all" ? allKeys.size : selectedKeys.size;
-
-	const isAllSelected =
-		selectedKeys !== "all" &&
-		selectedKeys.size === allKeys.size &&
-		selectedKeys.size > 0;
-
 	return (
-		<div className="pt-8 pl-6 w-full h-full flex flex-col items-center gap-12">
-			{selectedCount > 0 ? (
-				<Card
-					fullWidth
-					className="flex flex-row justify-between items-center px-6 py-4 w-full"
-					shadow="none"
-				>
-					<p className="text-md">
-						{selectedCount} applicant
-						{selectedCount > 1 ? "s" : ""} selected
-					</p>
-					<Dropdown>
-						<DropdownTrigger>
-							<Button
-								variant="flat"
-								color="primary"
-								size="sm"
-								endContent={<ChevronDown />}
-								isLoading={isInFlight}
-							>
-								Change Status
-							</Button>
-						</DropdownTrigger>
-						<DropdownMenu
-							aria-label="Change applicant status"
-							onAction={(key) => {
-								commitMutation({
-									variables: {
-										jobId: query.organization.job.id,
-										applicantIds:
-											selectedKeys === "all"
-												? Array.from(allKeys)
-												: Array.from(selectedKeys as Set<string>),
-										status: key as JobApplicantStatus,
-									},
-									onCompleted: () => {
-										setSelectedKeys(new Set());
-									},
-								});
-							}}
-						>
-							{JOB_APPLICANT_STATUSES.map((status) => (
-								<DropdownItem key={status}>{status}</DropdownItem>
-							))}
-						</DropdownMenu>
-					</Dropdown>
-				</Card>
-			) : (
+		<ApplicantSelectionProvider>
+			<div className="pt-8 pl-6 w-full h-full flex flex-col items-center gap-12">
 				<ApplicantListController
+					job={query.organization.job}
 					searchTerm={searchTerm}
 					setSearchTerm={setSearchTerm}
 					status={status}
 					setStatus={setStatus}
 				/>
-			)}
-			<ApplicantList
-				rootQuery={query.organization.job}
-				searchTerm={searchTerm}
-				status={status}
-				selectedKeys={selectedKeys}
-				setSelectedKeys={setSelectedKeys}
-				allKeys={allKeys}
-				isAllSelected={isAllSelected}
-			/>
-		</div>
+				<ApplicantList
+					rootQuery={query.organization.job}
+					searchTerm={searchTerm}
+					status={status}
+				/>
+			</div>
+		</ApplicantSelectionProvider>
 	);
 }

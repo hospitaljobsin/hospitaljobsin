@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9e7885ef8444052e0988dccb1de884f7>>
+ * @generated SignedSource<<64f73bc1260c77e3d0c489d07ea156dc>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,7 @@ export type ApplicantsTabFragment$data = {
     readonly job: {
       readonly __typename: "Job";
       readonly id: string;
-      readonly " $fragmentSpreads": FragmentRefs<"ApplicantListFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"ApplicantListControllerFragment" | "ApplicantListFragment">;
     } | {
       // This will never be '%other', but we need some
       // value in case none of the concrete values match.
@@ -118,6 +118,11 @@ return {
                       "storageKey": null
                     },
                     {
+                      "args": null,
+                      "kind": "FragmentSpread",
+                      "name": "ApplicantListControllerFragment"
+                    },
+                    {
                       "args": [
                         {
                           "kind": "Variable",
@@ -158,6 +163,6 @@ return {
 };
 })();
 
-(node as any).hash = "c657bb37e0cf0dfe2cb78c49b1d60f61";
+(node as any).hash = "98e25956b57aac12209567f2b3c3a875";
 
 export default node;

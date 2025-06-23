@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<71fc18bd8c27509da432e313b919e420>>
- * @relayHash 6a4c4e39b06f8c67c0d584150ef0c941
+ * @generated SignedSource<<95a5f7040e398b322eb1cb690d72c2b9>>
+ * @relayHash 70a26afecf3b9436d4bb95bd4ce1628d
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,16 +9,16 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 6a4c4e39b06f8c67c0d584150ef0c941
+// @relayRequestID 70a26afecf3b9436d4bb95bd4ce1628d
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type JobApplicantStatus = "APPLIED" | "INTERVIEWED" | "OFFERED" | "ONHOLD" | "SHORTLISTED" | "%future added value";
-export type ApplicantsTabUpdateStatusMutation$variables = {
+export type ApplicantListControllerMutation$variables = {
   applicantIds: ReadonlyArray<string>;
   jobId: string;
   status: JobApplicantStatus;
 };
-export type ApplicantsTabUpdateStatusMutation$data = {
+export type ApplicantListControllerMutation$data = {
   readonly updateJobApplicantsStatus: {
     readonly jobApplicants?: ReadonlyArray<{
       readonly account: {
@@ -32,9 +32,9 @@ export type ApplicantsTabUpdateStatusMutation$data = {
     }>;
   };
 };
-export type ApplicantsTabUpdateStatusMutation = {
-  response: ApplicantsTabUpdateStatusMutation$data;
-  variables: ApplicantsTabUpdateStatusMutation$variables;
+export type ApplicantListControllerMutation = {
+  response: ApplicantListControllerMutation$data;
+  variables: ApplicantListControllerMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -121,7 +121,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "ApplicantsTabUpdateStatusMutation",
+    "name": "ApplicantListControllerMutation",
     "selections": [
       {
         "alias": null,
@@ -181,7 +181,7 @@ return {
       (v2/*: any*/)
     ],
     "kind": "Operation",
-    "name": "ApplicantsTabUpdateStatusMutation",
+    "name": "ApplicantListControllerMutation",
     "selections": [
       {
         "alias": null,
@@ -240,15 +240,15 @@ return {
     ]
   },
   "params": {
-    "id": "6a4c4e39b06f8c67c0d584150ef0c941",
+    "id": "70a26afecf3b9436d4bb95bd4ce1628d",
     "metadata": {},
-    "name": "ApplicantsTabUpdateStatusMutation",
+    "name": "ApplicantListControllerMutation",
     "operationKind": "mutation",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "756ec58f97d91b0e8a988e29cc27bcff";
+(node as any).hash = "8f90d139147e186d866031dc7e161994";
 
 export default node;

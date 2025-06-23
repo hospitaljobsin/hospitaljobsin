@@ -1,16 +1,37 @@
 "use client";
 
-import type { ApplicantListFragment$data } from "@/__generated__/ApplicantListFragment.graphql";
+import type { ApplicantCardFragment$key } from "@/__generated__/ApplicantCardFragment.graphql";
 import { Button, Card, Chip, User } from "@heroui/react";
 import { useState } from "react";
-
-type Applicant = ApplicantListFragment$data["applicants"]["edges"][0]["node"];
+import { useFragment } from "react-relay";
+import { graphql } from "relay-runtime";
 
 type ApplicantCardProps = {
-	applicant: Applicant;
+	applicant: ApplicantCardFragment$key;
 };
 
+const ApplicantCardFragment = graphql`
+	fragment ApplicantCardFragment on JobApplicant @argumentDefinitions(showStatus: { type: "Boolean", defaultValue: true }) {
+		id
+		account @required(action: THROW) {
+			email
+			fullName
+			avatarUrl
+		}
+		slug
+		status @include(if: $showStatus)
+		aiInsight {
+			matchType
+			score
+			summary
+			matchReasons
+			mismatchedFields
+		}
+	}
+`;
+
 export default function ApplicantCard({ applicant }: ApplicantCardProps) {
+	const data = useFragment(ApplicantCardFragment, applicant);
 	const [showDetails, setShowDetails] = useState(false);
 
 	const getBadgeColor = (
@@ -32,21 +53,24 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 		<Card fullWidth className="p-6" shadow="none">
 			<div className="flex justify-between items-start">
 				<User
-					avatarProps={{ src: applicant.account.avatarUrl }}
-					name={applicant.account.fullName}
-					description={applicant.account.email}
+					avatarProps={{ src: data.account.avatarUrl }}
+					name={data.account.fullName}
+					description={data.account.email}
 				/>
-				{applicant.aiInsight?.matchType && (
-					<Chip color={getBadgeColor(applicant.aiInsight.matchType)}>
-						{applicant.aiInsight.matchType} match
-					</Chip>
-				)}
+				<div className="flex items-center gap-4">
+					{data.aiInsight?.score && <p>{data.aiInsight.score} %</p>}
+					{data.aiInsight?.matchType && (
+						<Chip color={getBadgeColor(data.aiInsight.matchType)}>
+							{data.aiInsight.matchType} match
+						</Chip>
+					)}
+				</div>
 			</div>
-			{applicant.aiInsight?.summary && (
+			{data.aiInsight?.summary && (
 				<div className="mt-4 p-4 bg-primary-50 rounded-lg">
 					<p className="text-sm font-semibold text-primary-700">AI Summary</p>
 					<p className="text-sm text-foreground-600">
-						{applicant.aiInsight.summary}
+						{data.aiInsight.summary}
 					</p>
 					<Button
 						variant="light"
@@ -61,12 +85,12 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 					</Button>
 				</div>
 			)}
-			{showDetails && applicant.aiInsight && (
+			{showDetails && data.aiInsight && (
 				<div className="mt-2 space-y-2 text-sm">
 					<div>
 						<p className="font-semibold text-success-600">Match Reasons:</p>
 						<ul className="list-disc list-inside">
-							{applicant.aiInsight.matchReasons.map((reason: string) => (
+							{data.aiInsight.matchReasons.map((reason: string) => (
 								<li key={reason}>{reason}</li>
 							))}
 						</ul>
@@ -74,7 +98,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 					<div>
 						<p className="font-semibold text-danger-600">Mismatched Fields:</p>
 						<ul className="list-disc list-inside">
-							{applicant.aiInsight.mismatchedFields.map((field: string) => (
+							{data.aiInsight.mismatchedFields.map((field: string) => (
 								<li key={field}>{field}</li>
 							))}
 						</ul>
