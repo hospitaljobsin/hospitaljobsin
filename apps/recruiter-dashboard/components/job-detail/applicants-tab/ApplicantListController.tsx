@@ -12,7 +12,7 @@ import {
 	Select,
 	SelectItem,
 } from "@heroui/react";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Sparkles } from "lucide-react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { useApplicantSelection } from "./ApplicantSelectionProvider";
@@ -141,18 +141,17 @@ export default function ApplicantListController(
 		<div className="w-full flex flex-col sm:flex-row items-center gap-8">
 			<Input
 				size="lg"
-				label="AI-Powered Search"
 				classNames={{
 					inputWrapper: "bg-background shadow-none",
 				}}
 				startContent={
-					<Search
+					<Sparkles
 						size={20}
 						className="text-2xl text-default-400 pointer-events-none flex-shrink-0 mr-4"
 					/>
 				}
 				isClearable
-				placeholder="e.g., 'a nurse with 5 years of experience in cardiology'"
+				placeholder="e.g., 'candidates with 5 years of experience in cardiology'"
 				variant="bordered"
 				value={props.searchTerm || ""}
 				onValueChange={(value) => props.setSearchTerm(value)}

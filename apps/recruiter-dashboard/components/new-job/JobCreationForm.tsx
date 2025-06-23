@@ -10,6 +10,7 @@ import {
 	Card,
 	CardBody,
 	CardFooter,
+	CardHeader,
 	DatePicker,
 	Input,
 	NumberInput,
@@ -30,7 +31,6 @@ import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";
 
-// --- Job Creation Form Schema (reuse from JobEditForm) ---
 const jobFormSchema = z.object({
 	title: z.string().min(1, "This field is required").max(75),
 	description: z.string().min(1, "This field is required").max(2000),
@@ -107,11 +107,9 @@ const CreateJobMutation = graphql`
 `;
 
 export default function JobCreationForm({
-	defaultValues,
 	organization,
 	onSuccess,
 }: {
-	defaultValues: JobFormValues;
 	organization: JobCreationFormFragment$key;
 	onSuccess: (slug: string) => void;
 }) {
@@ -125,7 +123,20 @@ export default function JobCreationForm({
 		formState: { errors, isSubmitting },
 	} = useForm<JobFormValues>({
 		resolver: zodResolver(jobFormSchema),
-		defaultValues,
+		defaultValues: {
+			description: "",
+			expiresAt: null,
+			jobType: undefined,
+			workMode: undefined,
+			minSalary: undefined,
+			maxSalary: undefined,
+			minExperience: undefined,
+			maxExperience: undefined,
+			location: "",
+			skills: [],
+			title: "",
+			vacancies: 1,
+		},
 	});
 	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<
 		Iterable<Key>
@@ -163,7 +174,10 @@ export default function JobCreationForm({
 			onSubmit={handleSubmit(onSubmit)}
 			className="space-y-6 w-full mt-6 mb-16"
 		>
-			<Card shadow="none" className="p-6 gap-12 flex flex-col" fullWidth>
+			<Card shadow="none" className="p-6 gap-8 flex flex-col" fullWidth>
+				<CardHeader className="text-lg text-foreground-600">
+					Create new job
+				</CardHeader>
 				<CardBody className="flex flex-col gap-12 overflow-y-hidden">
 					<Input
 						{...register("title")}

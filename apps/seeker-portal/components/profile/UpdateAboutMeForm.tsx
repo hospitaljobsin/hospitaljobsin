@@ -32,8 +32,8 @@ const UpdateAboutMeFormMutation = graphql`
 `;
 
 const formSchema = z.object({
-	professionalSummary: z.string().min(1, "Summary is required"),
-	headline: z.string().min(1, "Headline is required"),
+	professionalSummary: z.string(),
+	headline: z.string(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -103,7 +103,7 @@ export default function UpdateAboutMeForm({
 										"text-danger": errors.professionalSummary,
 									})}
 								>
-									Professional Summary <p className="text-danger">*</p>
+									Professional Summary
 								</h2>
 								<MarkdownEditor
 									initialValue={field.value}
