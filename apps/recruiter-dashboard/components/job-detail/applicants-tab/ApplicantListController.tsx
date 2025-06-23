@@ -1,4 +1,5 @@
 import type { ApplicantListControllerFragment$key } from "@/__generated__/ApplicantListControllerFragment.graphql";
+import type { ApplicantListControllerMutation as ApplicantListControllerMutationType } from "@/__generated__/ApplicantListControllerMutation.graphql";
 import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
 import {
 	Button,
@@ -15,7 +16,6 @@ import { ChevronDown, Search } from "lucide-react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { useApplicantSelection } from "./ApplicantSelectionProvider";
-import type { ApplicantListControllerMutation as ApplicantListControllerMutationType } from "./__generated__/ApplicantListControllerMutation.graphql";
 
 const applicantStatus = [
 	{ key: "ALL", label: "All" },
@@ -164,7 +164,7 @@ export default function ApplicantListController(
 				label="Status"
 				color="primary"
 				size="sm"
-				className="max-w-xs"
+				className="w-full sm:max-w-xs"
 				onChange={handleSelectionChange}
 				selectedKeys={props.status ? [props.status] : ["ALL"]}
 			>

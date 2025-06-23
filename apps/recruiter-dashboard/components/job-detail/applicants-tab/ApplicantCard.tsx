@@ -102,10 +102,10 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 							);
 					}}
 				/>
-				<div className="w-full items-center flex gap-6 justify-between flex-1">
+				<div className="w-full sm:items-center flex gap-6 justify-between flex-1 flex-col sm:flex-row">
 					<User
 						classNames={{
-							base: "flex gap-6",
+							base: "flex gap-6 w-full justify-start",
 							wrapper: "flex gap-2",
 						}}
 						avatarProps={{
@@ -160,62 +160,62 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 			</CardHeader>
 			<CardBody className="flex flex-col gap-6">
 				{data.aiInsight && (
-					<div className="flex flex-wrap items-center gap-6">
-						{typeof data.aiInsight.score === "number" && (
-							<div className="flex items-center gap-1 text-lg font-semibold text-primary-700 bg-primary-50 px-3 py-1 rounded-full">
-								<Star size={16} className="text-primary-500" />
-								<span>{data.aiInsight.score} %</span>
+					<div className="p-4 bg-primary-50 rounded-lg flex border border-primary-100 space-y-4 items-start flex-col sm:flex-row">
+						<div className="w-full flex flex-col gap-4 items-start">
+							<div className="flex items-center gap-2">
+								<Info size={16} className="text-primary-500" />
+								<p className="text-sm font-semibold text-primary-700">
+									AI Summary
+								</p>
 							</div>
-						)}
-						{data.aiInsight.matchType && (
-							<Chip
-								color={getBadgeColor(data.aiInsight.matchType)}
-								variant="flat"
-								className="text-xs px-2 py-1 font-medium capitalize"
-								startContent={
-									data.aiInsight.matchType === "PERFECT" ? (
-										<CheckCircle2 size={14} className="text-success-600" />
-									) : data.aiInsight.matchType === "CLOSE" ? (
-										<Info size={14} className="text-warning-600" />
-									) : data.aiInsight.matchType === "LOW" ? (
-										<XCircle size={14} className="text-danger-600" />
-									) : null
+							<p className="text-sm text-foreground-600 leading-relaxed">
+								{data.aiInsight.summary}
+							</p>
+							<Button
+								variant="light"
+								size="sm"
+								onPress={() => {
+									setShowDetails(!showDetails);
+								}}
+								className="flex items-center gap-1 text-primary-700 hover:text-primary-900"
+								aria-label={
+									showDetails ? "Hide match details" : "Show match details"
 								}
 							>
-								{data.aiInsight.matchType} match
-							</Chip>
-						)}
-					</div>
-				)}
-				{data.aiInsight?.summary && (
-					<div className="p-4 bg-primary-50 rounded-lg border border-primary-100 space-y-4">
-						<div className="flex items-center gap-2">
-							<Info size={16} className="text-primary-500" />
-							<p className="text-sm font-semibold text-primary-700">
-								AI Summary
-							</p>
+								{showDetails ? "Hide Details" : "See Why"}
+								{showDetails ? (
+									<ChevronUp size={16} />
+								) : (
+									<ChevronDown size={16} />
+								)}
+							</Button>
 						</div>
-						<p className="text-sm text-foreground-600 leading-relaxed">
-							{data.aiInsight.summary}
-						</p>
-						<Button
-							variant="light"
-							size="sm"
-							onPress={() => {
-								setShowDetails(!showDetails);
-							}}
-							className="flex items-center gap-1 text-primary-700 hover:text-primary-900"
-							aria-label={
-								showDetails ? "Hide match details" : "Show match details"
-							}
-						>
-							{showDetails ? "Hide Details" : "See Why"}
-							{showDetails ? (
-								<ChevronUp size={16} />
-							) : (
-								<ChevronDown size={16} />
+						<div className="flex items-center gap-6">
+							{typeof data.aiInsight.score === "number" && (
+								<div className="flex items-center gap-2 text-lg font-semibold text-primary-700 bg-primary-50 rounded-full">
+									<Star size={16} className="text-primary-500" />
+									<span>{data.aiInsight.score}%</span>
+								</div>
 							)}
-						</Button>
+							{data.aiInsight.matchType && (
+								<Chip
+									color={getBadgeColor(data.aiInsight.matchType)}
+									variant="flat"
+									className="text-xs px-2 py-1 font-medium capitalize"
+									startContent={
+										data.aiInsight.matchType === "PERFECT" ? (
+											<CheckCircle2 size={14} className="text-success-600" />
+										) : data.aiInsight.matchType === "CLOSE" ? (
+											<Info size={14} className="text-warning-600" />
+										) : data.aiInsight.matchType === "LOW" ? (
+											<XCircle size={14} className="text-danger-600" />
+										) : null
+									}
+								>
+									{data.aiInsight.matchType} match
+								</Chip>
+							)}
+						</div>
 					</div>
 				)}
 				{showDetails && data.aiInsight && (
