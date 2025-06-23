@@ -15,14 +15,13 @@ const ApplicantDetailsFragment = graphql`
       fieldName
       fieldValue
     }
+	profileSnapshot {
+		headline
+	}
     account @required(action: THROW) {
       fullName
       avatarUrl
       email
-
-      profile @required(action: THROW) {
-        address
-      }
     }
   }
 `;
@@ -60,12 +59,9 @@ export default function ApplicantDetails({
 						</div>
 						<div className="flex flex-col gap-4">
 							<h2 className="text-xl font-medium">{data.account.fullName}</h2>
-							<div className="flex items-center gap-2 text-foreground-600">
-								<Mail size={20} />
-								<Link href={`mailto:${data.account.email}`} color="foreground">
-									{data.account.email}
-								</Link>
-							</div>
+							<h3 className="text-foreground-600 text-medium">
+								{data.profileSnapshot.headline}
+							</h3>
 						</div>
 					</div>
 					<ApplicantStatusUpdater
@@ -74,6 +70,17 @@ export default function ApplicantDetails({
 						applicantId={data.id}
 					/>
 				</CardHeader>
+				<CardBody>
+					<div className="flex items-center gap-2 text-foreground-600">
+						<Mail size={16} />
+						<Link
+							href={`mailto:${data.account.email}`}
+							className="text-foreground-600 text-sm"
+						>
+							{data.account.email}
+						</Link>
+					</div>
+				</CardBody>
 			</Card>
 
 			{/* Application Fields */}

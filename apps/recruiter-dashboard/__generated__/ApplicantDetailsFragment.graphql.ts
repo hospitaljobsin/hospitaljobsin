@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<edea30c7014ed35c204bdfe3269b2581>>
+ * @generated SignedSource<<3dec7ec5764ea09bf063cab60dc56523>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,15 +16,15 @@ export type ApplicantDetailsFragment$data = {
     readonly avatarUrl: string;
     readonly email: string;
     readonly fullName: string;
-    readonly profile: {
-      readonly address: string;
-    };
   };
   readonly applicantFields: ReadonlyArray<{
     readonly fieldName: string;
     readonly fieldValue: string;
   }>;
   readonly id: string;
+  readonly profileSnapshot: {
+    readonly headline: string | null | undefined;
+  };
   readonly status: JobApplicantStatus;
   readonly " $fragmentType": "ApplicantDetailsFragment";
 };
@@ -79,6 +79,24 @@ const node: ReaderFragment = {
       "storageKey": null
     },
     {
+      "alias": null,
+      "args": null,
+      "concreteType": "ProfileSnapshot",
+      "kind": "LinkedField",
+      "name": "profileSnapshot",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "headline",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
       "kind": "RequiredField",
       "field": {
         "alias": null,
@@ -108,28 +126,6 @@ const node: ReaderFragment = {
             "kind": "ScalarField",
             "name": "email",
             "storageKey": null
-          },
-          {
-            "kind": "RequiredField",
-            "field": {
-              "alias": null,
-              "args": null,
-              "concreteType": "Profile",
-              "kind": "LinkedField",
-              "name": "profile",
-              "plural": false,
-              "selections": [
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "address",
-                  "storageKey": null
-                }
-              ],
-              "storageKey": null
-            },
-            "action": "THROW"
           }
         ],
         "storageKey": null
@@ -141,6 +137,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "0cfc163165839ed6c6dde5755288fecb";
+(node as any).hash = "5a13aa821e60836404f5661f872dc627";
 
 export default node;
