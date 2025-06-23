@@ -690,6 +690,8 @@ class JobApplicantRepo:
                     status=status,
                 )
             )
+
+            # FIXME: why can't we get the applicants directly with AI insights here?? it'll be much more efficient
             applicant_ids = [
                 ObjectId(profile.applicant_id) for profile in filtered_result.matches
             ]
