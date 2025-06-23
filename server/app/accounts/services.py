@@ -90,7 +90,7 @@ class ProfileService:
         account: Account,
         locations_open_to_work: list[str],
         open_to_relocation_anywhere: bool,
-        address: str,
+        address: str | None,
     ) -> Ok[Account]:
         """Update the user's location preferences, including address."""
         existing_profile = await self._profile_repo.get_by_account(account)

@@ -7,6 +7,7 @@ from beanie import PydanticObjectId, WriteRules
 from beanie.operators import In
 from bson import ObjectId
 from passlib.hash import argon2
+from strawberry import UNSET
 
 from app.core.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
@@ -19,8 +20,10 @@ from .documents import (
     Certification,
     Education,
     EmailVerificationToken,
+    Gender,
     Language,
     License,
+    MaritalStatus,
     Profile,
     SalaryExpectations,
     WorkExperience,
@@ -192,6 +195,7 @@ class ProfileRepo:
     async def create(self, account: Account) -> Profile:
         """Create a new profile."""
         profile = Profile(
+            account=account,
             gender=None,
             date_of_birth=None,
             address="",
@@ -207,6 +211,7 @@ class ProfileRepo:
             salary_expectations=None,
             certifications=[],
             professional_summary=None,
+            headline=None,
         )
         await profile.insert()
         account.profile = profile
@@ -217,55 +222,55 @@ class ProfileRepo:
         self,
         profile: Profile,
         *,
-        gender: str | None = None,
-        date_of_birth: date | None = None,
-        address: str | None = None,
-        marital_status: str | None = None,
-        category: str | None = None,
-        locations_open_to_work: list[str] | None = None,
-        open_to_relocation_anywhere: bool | None = None,
-        education: list[Education] | None = None,
-        licenses: list[License] | None = None,
-        languages: list[Language] | None = None,
-        job_preferences: list[str] | None = None,
-        work_experience: list[WorkExperience] | None = None,
-        salary_expectations: SalaryExpectations | None = None,
-        certifications: list[Certification] | None = None,
-        professional_summary: str | None = None,
-        headline: str | None = None,
+        gender: Gender | None = UNSET,
+        date_of_birth: date | None = UNSET,
+        address: str | None = UNSET,
+        marital_status: MaritalStatus | None = UNSET,
+        category: str | None = UNSET,
+        locations_open_to_work: list[str] = UNSET,
+        open_to_relocation_anywhere: bool = UNSET,
+        education: list[Education] = UNSET,
+        licenses: list[License] = UNSET,
+        languages: list[Language] = UNSET,
+        job_preferences: list[str] = UNSET,
+        work_experience: list[WorkExperience] = UNSET,
+        salary_expectations: SalaryExpectations = UNSET,
+        certifications: list[Certification] = UNSET,
+        professional_summary: str | None = UNSET,
+        headline: str | None = UNSET,
     ) -> Profile:
         """Update a profile with new fields."""
-        if gender is not None:
+        if gender is not UNSET:
             profile.gender = gender
-        if date_of_birth is not None:
+        if date_of_birth is not UNSET:
             profile.date_of_birth = date_of_birth
-        if address is not None:
+        if address is not UNSET:
             profile.address = address
-        if marital_status is not None:
+        if marital_status is not UNSET:
             profile.marital_status = marital_status
-        if category is not None:
+        if category is not UNSET:
             profile.category = category
-        if locations_open_to_work is not None:
+        if locations_open_to_work is not UNSET:
             profile.locations_open_to_work = locations_open_to_work
-        if open_to_relocation_anywhere is not None:
+        if open_to_relocation_anywhere is not UNSET:
             profile.open_to_relocation_anywhere = open_to_relocation_anywhere
-        if education is not None:
+        if education is not UNSET:
             profile.education = education
-        if licenses is not None:
+        if licenses is not UNSET:
             profile.licenses = licenses
-        if languages is not None:
+        if languages is not UNSET:
             profile.languages = languages
-        if job_preferences is not None:
+        if job_preferences is not UNSET:
             profile.job_preferences = job_preferences
-        if work_experience is not None:
+        if work_experience is not UNSET:
             profile.work_experience = work_experience
-        if salary_expectations is not None:
+        if salary_expectations is not UNSET:
             profile.salary_expectations = salary_expectations
-        if certifications is not None:
+        if certifications is not UNSET:
             profile.certifications = certifications
-        if professional_summary is not None:
+        if professional_summary is not UNSET:
             profile.professional_summary = professional_summary
-        if headline is not None:
+        if headline is not UNSET:
             profile.headline = headline
         profile.updated_at = datetime.now(UTC)
         return await profile.save(link_rule=WriteRules.WRITE)

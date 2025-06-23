@@ -204,7 +204,7 @@ export default function Sidebar({ queryReference }: Props) {
 				onClose={() => setMobileOpen(false)}
 				placement="left"
 			>
-				<DrawerContent className="p-0 bg-background h-full">
+				<DrawerContent className="p-0 bg-background-600 h-full">
 					<DrawerHeader className="flex items-center gap-4 mb-6 border-b border-foreground-300 px-4 py-4">
 						<div className="relative h-8 w-8">
 							<Image

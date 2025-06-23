@@ -48,25 +48,25 @@ class AccountMutation:
             strawberry.argument(
                 description="The gender of the user profile.",
             ),
-        ] = None,
+        ] = strawberry.UNSET,
         date_of_birth: Annotated[
             date | None,
             strawberry.argument(
                 description="The date of birth of the user profile.",
             ),
-        ] = None,
+        ] = strawberry.UNSET,
         marital_status: Annotated[
             MaritalStatusTypeEnum | None,
             strawberry.argument(
                 description="The marital status of the user profile.",
             ),
-        ] = None,
+        ] = strawberry.UNSET,
         category: Annotated[
             str | None,
             strawberry.argument(
                 description="The category of the user profile.",
             ),
-        ] = None,
+        ] = strawberry.UNSET,
     ) -> UpdateProfilePayload:
         """Update the current user's profile personal details."""
         match await profile_service.update_personal_details(
@@ -174,11 +174,11 @@ class AccountMutation:
             ),
         ],
         address: Annotated[
-            str,
+            str | None,
             strawberry.argument(
                 description="The address of the user profile (now part of location preferences).",
             ),
-        ],
+        ] = strawberry.UNSET,
     ) -> UpdateProfilePayload:
         """Update the current user's profile location preferences, including address."""
         match await profile_service.update_location_preferences(
@@ -341,22 +341,23 @@ class AccountMutation:
         info: AuthInfo,
         profile_service: Annotated[ProfileService, Inject],
         professional_summary: Annotated[
-            str,
+            str | None,
             strawberry.argument(
                 description="The professional summary of the user profile.",
             ),
-        ],
+        ] = strawberry.UNSET,
         headline: Annotated[
-            str,
+            str | None,
             strawberry.argument(
                 description="The headline of the user profile.",
             ),
-        ],
+        ] = strawberry.UNSET,
     ) -> UpdateProfilePayload:
         """Update the current user's profile about me."""
-        match await profile_service.update_professional_summary(
+        match await profile_service.update_about_me(
             account=info.context["current_user"],
             professional_summary=professional_summary,
+            headline=headline,
         ):
             case Ok(account):
                 return AccountType.marshal(account)

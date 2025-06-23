@@ -21,8 +21,8 @@ if TYPE_CHECKING:
 
 
 # ENUMS
-GenderEnum = Literal["MALE", "FEMALE", "OTHER"]
-MaritalStatusEnum = Literal["MARRIED", "SINGLE"]
+Gender = Literal["MALE", "FEMALE", "OTHER"]
+MaritalStatus = Literal["MARRIED", "SINGLE"]
 LanguageProficiencyEnum = Literal["NATIVE", "PROFESSIONAL", "BASIC"]
 LicenseVerificationStatusEnum = Literal["pending", "verified", "rejected"]
 
@@ -80,10 +80,10 @@ class Certification(BaseModel):
 
 class BaseProfile(BaseModel):
     # personal details
-    gender: GenderEnum | None = None
+    gender: Gender | None = None
     date_of_birth: date | None = None
     address: str | None = None
-    marital_status: MaritalStatusEnum | None = None
+    marital_status: MaritalStatus | None = None
     category: str | None = None
     locations_open_to_work: list[str] = []
     open_to_relocation_anywhere: bool
