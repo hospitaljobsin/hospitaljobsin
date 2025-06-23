@@ -2,7 +2,15 @@
 
 import type { ApplicantCardFragment$key } from "@/__generated__/ApplicantCardFragment.graphql";
 import links from "@/lib/links";
-import { Button, Card, Checkbox, Chip, User } from "@heroui/react";
+import {
+	Button,
+	Card,
+	CardBody,
+	CardHeader,
+	Checkbox,
+	Chip,
+	User,
+} from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFragment } from "react-relay";
@@ -68,7 +76,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 				router.push(links.applicantDetail(slug, data.slug));
 			}}
 		>
-			<div className="flex justify-start gap-4 items-center">
+			<CardHeader className="flex justify-start gap-4 items-center">
 				<Checkbox
 					isSelected={isSelected}
 					onClick={(e) => {
@@ -84,7 +92,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 					}}
 				/>
 				<div className="flex justify-between items-start w-full">
-					<div className="flex items-center gap-4 justify-start">
+					<div className="flex items-center gap-4 justify-between w-full">
 						<User
 							avatarProps={{ src: data.account.avatarUrl }}
 							name={data.account.fullName}
@@ -92,6 +100,10 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 						/>
 						<Chip>{data.status}</Chip>
 					</div>
+				</div>
+			</CardHeader>
+			<CardBody>
+				{data.aiInsight && (
 					<div className="flex items-center gap-4">
 						{data.aiInsight?.score && <p>{data.aiInsight.score} %</p>}
 						{data.aiInsight?.matchType && (
@@ -100,47 +112,49 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 							</Chip>
 						)}
 					</div>
-				</div>
-			</div>
-			{data.aiInsight?.summary && (
-				<div className="mt-4 p-4 bg-primary-50 rounded-lg">
-					<p className="text-sm font-semibold text-primary-700">AI Summary</p>
-					<p className="text-sm text-foreground-600">
-						{data.aiInsight.summary}
-					</p>
-					<Button
-						variant="light"
-						size="sm"
-						onClick={(e) => {
-							e.stopPropagation();
-							setShowDetails(!showDetails);
-						}}
-						className="mt-2"
-					>
-						{showDetails ? "Hide Details" : "See Why"}
-					</Button>
-				</div>
-			)}
-			{showDetails && data.aiInsight && (
-				<div className="mt-2 space-y-2 text-sm">
-					<div>
-						<p className="font-semibold text-success-600">Match Reasons:</p>
-						<ul className="list-disc list-inside">
-							{data.aiInsight.matchReasons.map((reason: string) => (
-								<li key={reason}>{reason}</li>
-							))}
-						</ul>
+				)}
+				{data.aiInsight?.summary && (
+					<div className="mt-4 p-4 bg-primary-50 rounded-lg">
+						<p className="text-sm font-semibold text-primary-700">AI Summary</p>
+						<p className="text-sm text-foreground-600">
+							{data.aiInsight.summary}
+						</p>
+						<Button
+							variant="light"
+							size="sm"
+							onClick={(e) => {
+								e.stopPropagation();
+								setShowDetails(!showDetails);
+							}}
+							className="mt-2"
+						>
+							{showDetails ? "Hide Details" : "See Why"}
+						</Button>
 					</div>
-					<div>
-						<p className="font-semibold text-danger-600">Mismatched Fields:</p>
-						<ul className="list-disc list-inside">
-							{data.aiInsight.mismatchedFields.map((field: string) => (
-								<li key={field}>{field}</li>
-							))}
-						</ul>
+				)}
+				{showDetails && data.aiInsight && (
+					<div className="mt-2 space-y-2 text-sm">
+						<div>
+							<p className="font-semibold text-success-600">Match Reasons:</p>
+							<ul className="list-disc list-inside">
+								{data.aiInsight.matchReasons.map((reason: string) => (
+									<li key={reason}>{reason}</li>
+								))}
+							</ul>
+						</div>
+						<div>
+							<p className="font-semibold text-danger-600">
+								Mismatched Fields:
+							</p>
+							<ul className="list-disc list-inside">
+								{data.aiInsight.mismatchedFields.map((field: string) => (
+									<li key={field}>{field}</li>
+								))}
+							</ul>
+						</div>
 					</div>
-				</div>
-			)}
+				)}
+			</CardBody>
 		</Card>
 	);
 }
