@@ -45,7 +45,7 @@ class JobStatusResponse(BaseModel):
 class ProfileMatch(BaseModel):
     """Data model for a matched profile."""
 
-    profile_id: str = Field(..., description="The ID of the matched profile")
+    applicant_id: str = Field(..., description="The ID of the matched job applicant")
     score: float = Field(..., description="The match score")
     summary: str = Field(..., description="A one-sentence summary of the match.")
     match_reasons: list[str] = Field(..., description="Reasons for the match")

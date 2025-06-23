@@ -1,5 +1,9 @@
 from typing import Any
 
+from app.core.constants import (
+    RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD,
+    JobApplicantStatus,
+)
 from app.embeddings.services import EmbeddingsService
 from app.jobs.documents import JobApplicant
 from bson import ObjectId
@@ -28,7 +32,8 @@ class JobApplicantVectorSearchTool(BaseTool):
         self,
         job_id: str,
         query: str,
-    ) -> list[dict[str, Any]]:
+        status: JobApplicantStatus | None = None,
+    ) -> list[JobApplicant]:
         """Run the tool to find relevant job applicants."""
         query_embedding = await self.embedding_service.generate_embeddings(
             text=query,
@@ -44,21 +49,32 @@ class JobApplicantVectorSearchTool(BaseTool):
                     "queryVector": query_embedding,
                     "numCandidates": top_n * 4,
                     "limit": top_n,
-                    "filter": {"job": ObjectId(job_id)},
-                }
-            },
-            {
-                "$project": {
-                    "id": {"$toString": "$_id"},
-                    "slug": 1,
-                    "status": 1,
-                    "account_full_name": 1,
-                    "score": {"$meta": "vectorSearchScore"},
                 }
             },
         ]
 
-        results = await JobApplicant.aggregate(pipeline).to_list()
+        if status is not None:
+            pipeline.append({"$match": {"job.$id": ObjectId(job_id), "status": status}})
+        else:
+            pipeline.append({"$match": {"job.$id": ObjectId(job_id)}})
+        pipeline.extend(
+            [
+                {"$addFields": {"search_score": {"$meta": "vectorSearchScore"}}},
+                {
+                    "$match": {
+                        "search_score": {
+                            "$gte": RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD
+                        }
+                    }
+                },
+                {"$sort": {"search_score": -1}},
+            ]
+        )
+
+        results = await JobApplicant.aggregate(
+            pipeline, projection_model=JobApplicant
+        ).to_list()
+        print("results:", results)
         return results
 
     def _run(

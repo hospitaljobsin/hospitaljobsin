@@ -2,12 +2,10 @@ import time
 
 from app.accounts.repositories import ProfileRepo
 from app.config import SecretSettings, get_settings
+from app.core.constants import JobApplicantStatus
 from app.core.genai_client import create_google_genai_client
 from app.crews.filter_job.models import FilterJobResultData, ProfileMatch
 from app.embeddings.services import EmbeddingsService
-from app.jobs.documents import JobApplicant
-from beanie import PydanticObjectId
-from beanie.operators import In
 from crewai import Agent, Task
 from pydantic import BaseModel
 
@@ -85,27 +83,27 @@ class FilterJobCrew:
         return [parse_query_task, analyze_profiles_task]
 
     async def run(
-        self, job_id: str, query: str, max_results: int = 10
+        self,
+        job_id: str,
+        query: str,
+        max_results: int = 10,
+        status: JobApplicantStatus | None = None,
     ) -> FilterJobResultData:
         """Run the filter job crew."""
         start_time = time.time()
 
-        applicant_results = await self.vector_search._arun(
+        applicants = await self.vector_search._arun(
             job_id=job_id,
             query=query,
+            status=status,
         )
-        if not applicant_results:
+        if not applicants:
             return FilterJobResultData(
                 matches=[],
                 total_matches=0,
                 query=query,
                 execution_time=time.time() - start_time,
             )
-
-        applicant_ids = [PydanticObjectId(res["id"]) for res in applicant_results]
-        applicants = await JobApplicant.find(
-            In(JobApplicant.id, applicant_ids)  # type: ignore[arg-type]
-        ).to_list()
 
         # Parse query
         parse_result = await self.query_parser._arun(query)
@@ -120,7 +118,7 @@ class FilterJobCrew:
 
             matches.append(
                 ProfileMatch(
-                    profile_id=str(applicant.id),
+                    applicant_id=str(applicant.id),
                     score=analysis["score"],
                     match_reasons=analysis["matchReasons"],
                     mismatched_fields=analysis["mismatchedFields"],
@@ -134,6 +132,8 @@ class FilterJobCrew:
         top_matches = matches[:max_results]
 
         execution_time = time.time() - start_time
+
+        print("matches:", matches)
 
         return FilterJobResultData(
             matches=[match.dict() for match in top_matches],

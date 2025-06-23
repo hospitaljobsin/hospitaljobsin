@@ -687,33 +687,16 @@ class JobApplicantRepo:
                 await self._agentic_profile_filter_service.filter_profiles(
                     query=search_term,
                     job_id=str(job_id),
+                    status=status,
                 )
             )
-            profile_ids = [
-                ObjectId(profile.profile_id) for profile in filtered_result.matches
+            applicant_ids = [
+                ObjectId(profile.applicant_id) for profile in filtered_result.matches
             ]
 
             pipeline = [
                 {"$match": {"job.$id": job_id}},  # assuming DBRef
-                {
-                    "$lookup": {
-                        "from": "accounts",  # account collection name
-                        "localField": "account.$id",
-                        "foreignField": "_id",
-                        "as": "account_doc",
-                    }
-                },
-                {"$unwind": "$account_doc"},
-                {
-                    "$lookup": {
-                        "from": "profiles",
-                        "localField": "account_doc.profile.$id",
-                        "foreignField": "_id",
-                        "as": "profile_doc",
-                    }
-                },
-                {"$unwind": "$profile_doc"},
-                {"$match": {"profile_doc._id": {"$in": profile_ids}}},
+                {"$match": {"_id": {"$in": applicant_ids}}},
             ]
 
             search_criteria = JobApplicant.aggregate(
@@ -726,17 +709,23 @@ class JobApplicantRepo:
                 document_cls=JobApplicant,
                 paginate_by="job.ref.id",
             )
-        else:
-            search_criteria = JobApplicant.find(
-                JobApplicant.job.id == job_id,
-                fetch_links=True,
-                nesting_depth=1,
-            ).sort(-JobApplicant.id)
-            paginator: Paginator[JobApplicant, ObjectId] = Paginator(
-                reverse=True,
-                document_cls=JobApplicant,
-                paginate_by="job.id",
+            return await paginator.paginate(
+                search_criteria=search_criteria,
+                first=first,
+                last=last,
+                before=ObjectId(before) if before else None,
+                after=ObjectId(after) if after else None,
             )
+        search_criteria = JobApplicant.find(
+            JobApplicant.job.id == job_id,
+            fetch_links=True,
+            nesting_depth=1,
+        ).sort(-JobApplicant.id)
+        paginator: Paginator[JobApplicant, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=JobApplicant,
+            paginate_by="job.id",
+        )
         if status:
             search_criteria = search_criteria.find(
                 JobApplicant.status == status,
