@@ -176,6 +176,7 @@ class BaseJobMetric(UnionDoc):
 
 class CoreJobMetricMetadata(BaseModel):
     account_id: PydanticObjectId
+    fingerprint_id: str
     job_id: PydanticObjectId
     organization_id: PydanticObjectId
     event_type: CoreJobMetricEventType

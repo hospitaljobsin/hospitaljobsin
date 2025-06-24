@@ -879,6 +879,7 @@ class JobMetricRepo:
         organization_id: ObjectId,
         event_type: CoreJobMetricEventType,
         account_id: ObjectId,
+        fingerprint_id: str,
     ) -> CoreJobMetric:
         """Create a new core job metric."""
         job_metric = CoreJobMetric(
@@ -888,6 +889,7 @@ class JobMetricRepo:
                 organization_id=organization_id,
                 event_type=event_type,
                 account_id=account_id,
+                fingerprint_id=fingerprint_id,
             ),
         )
         return await job_metric.insert(link_rule=WriteRules.DO_NOTHING)

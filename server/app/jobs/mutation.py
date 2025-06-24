@@ -106,6 +106,7 @@ class JobMutation:
         match await saved_job_service.save_job(
             account_id=info.context["current_user"].id,
             job_id=job_id.node_id,
+            request=info.context["request"],
         ):
             case Err(error):
                 match error:
@@ -147,6 +148,7 @@ class JobMutation:
         match await saved_job_service.unsave_job(
             account_id=info.context["current_user"].id,
             job_id=job_id.node_id,
+            request=info.context["request"],
         ):
             case Err(error):
                 match error:
@@ -610,6 +612,7 @@ class JobMutation:
             applicant_fields=[
                 ApplicantFieldInputType.to_document(field) for field in applicant_fields
             ],
+            request=info.context["request"],
         ):
             case Err(error):
                 match error:

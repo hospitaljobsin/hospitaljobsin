@@ -60,7 +60,10 @@ class SavedJobService:
         self._job_metric_repo = job_metric_repo
 
     async def save_job(
-        self, account_id: ObjectId, job_id: str
+        self,
+        account_id: ObjectId,
+        job_id: str,
+        request: Request,
     ) -> Result[SavedJob, JobNotFoundError]:
         try:
             job_id = ObjectId(job_id)
@@ -80,12 +83,16 @@ class SavedJobService:
             organization_id=job.organization.ref.id,
             event_type="save",
             account_id=account_id,
+            fingerprint_id=request.state.fingerprint,
         )
 
         return Ok(result)
 
     async def unsave_job(
-        self, account_id: ObjectId, job_id: str
+        self,
+        account_id: ObjectId,
+        job_id: str,
+        request: Request,
     ) -> Result[SavedJob, SavedJobNotFoundError]:
         try:
             job_id = ObjectId(job_id)
@@ -107,6 +114,7 @@ class SavedJobService:
             organization_id=job.organization.ref.id,
             event_type="unsave",
             account_id=account_id,
+            fingerprint_id=request.state.fingerprint,
         )
 
         return Ok(saved_job)
@@ -481,6 +489,7 @@ class JobApplicantService:
         account: Account,
         job_id: str,
         applicant_fields: list[ApplicantField],
+        request: Request,
     ) -> Result[
         JobApplicant,
         JobNotFoundError
@@ -533,6 +542,7 @@ class JobApplicantService:
             organization_id=existing_job.organization.ref.id,
             event_type="apply",
             account_id=account.id,
+            fingerprint_id=request.state.fingerprint,
         )
 
         return Ok(job_application)
