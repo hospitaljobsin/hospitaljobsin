@@ -176,7 +176,7 @@ export default function NewOrganizationForm() {
 						placeholder="my-company"
 						endContent={
 							<span className="text-default-400 text-md">
-								.{env.NEXT_PUBLIC_URL.split("//")[1]}
+								.{env.NEXT_PUBLIC_ROOT_DOMAIN}
 							</span>
 						}
 						description={<p>A unique subdomain for your organization</p>}

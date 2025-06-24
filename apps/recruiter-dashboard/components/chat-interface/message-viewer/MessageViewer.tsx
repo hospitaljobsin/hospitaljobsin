@@ -82,7 +82,7 @@ export default function MessageViewer({
 		return (
 			<div
 				ref={messagesContainerRef}
-				className="w-full max-w-5xl mx-auto h-full flex flex-col items-center justify-center gap-8 pb-16 overflow-y-auto flex-1"
+				className="w-full max-w-5xl mx-auto h-full flex flex-col items-center justify-center gap-8 pb-16 overflow-y-auto flex-1 text-foreground-500"
 			>
 				no messages
 			</div>
