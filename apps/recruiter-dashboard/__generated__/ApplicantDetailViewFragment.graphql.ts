@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fcc2751f6bf70b6ab095b5943141e029>>
+ * @generated SignedSource<<e4b4f63adb2804c23b0dbbc643e67fd0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,7 +20,7 @@ export type ApplicantDetailViewFragment$data = {
         readonly profileSnapshot: {
           readonly " $fragmentSpreads": FragmentRefs<"ProfileSnapshotViewFragment">;
         };
-        readonly " $fragmentSpreads": FragmentRefs<"ApplicantDetailsFragment">;
+        readonly " $fragmentSpreads": FragmentRefs<"ApplicantChatFragment" | "ApplicantDetailsFragment">;
       } | {
         // This will never be '%other', but we need some
         // value in case none of the concrete values match.
@@ -139,6 +139,11 @@ return {
                               "name": "ApplicantDetailsFragment"
                             },
                             {
+                              "args": null,
+                              "kind": "FragmentSpread",
+                              "name": "ApplicantChatFragment"
+                            },
+                            {
                               "alias": null,
                               "args": null,
                               "concreteType": "ProfileSnapshot",
@@ -181,6 +186,6 @@ return {
 };
 })();
 
-(node as any).hash = "38a01e056d2099d117c1cbcc09179081";
+(node as any).hash = "38ee67447ff655aa763044ad6184c360";
 
 export default node;
