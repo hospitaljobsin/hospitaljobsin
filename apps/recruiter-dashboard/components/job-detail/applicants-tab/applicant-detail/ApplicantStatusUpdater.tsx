@@ -122,7 +122,7 @@ export default function ApplicantStatusUpdater({
 	};
 
 	return (
-		<div className="w-48">
+		<div className="w-full">
 			<Select
 				defaultSelectedKeys={[currentStatus]}
 				onSelectionChange={(keys) =>

@@ -63,8 +63,8 @@ export default function ApplicantDetails({
 		<div className="w-full flex flex-col gap-12">
 			{/* Applicant Header Card */}
 			<Card fullWidth className="p-6 " shadow="none">
-				<CardHeader className="w-full flex flex-row gap-6 justify-between">
-					<div className="flex gap-6 items-center">
+				<CardHeader className="w-full flex flex-col sm:flex-row gap-6 justify-between">
+					<div className="flex gap-6 sm:items-center w-full flex-col sm:flex-row">
 						<div className="relative h-20 w-20">
 							<Image
 								src={data.account.avatarUrl}
@@ -73,7 +73,7 @@ export default function ApplicantDetails({
 								className="rounded-full object-cover"
 							/>
 						</div>
-						<div className="flex flex-col gap-4">
+						<div className="flex flex-col gap-4 flex-1">
 							<h2 className="text-xl font-medium">{data.account.fullName}</h2>
 							<h3 className="text-foreground-600 text-medium">
 								{data.profileSnapshot.headline}
