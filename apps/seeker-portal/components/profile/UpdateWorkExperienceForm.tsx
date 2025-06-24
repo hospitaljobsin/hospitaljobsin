@@ -414,7 +414,8 @@ export default function UpdateWorkExperienceForm({
 												name={`workExperience.${index}.completedAt`}
 												control={control}
 												render={({ field }) => {
-													const isCurrentRole = value[index].isCurrentRole;
+													const isCurrentRole =
+														value[index]?.isCurrentRole || false;
 													return (
 														<MonthYearPicker
 															label="End Date"

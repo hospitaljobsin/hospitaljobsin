@@ -1,18 +1,15 @@
 import type { UpdateCertificationsFormFragment$key } from "@/__generated__/UpdateCertificationsFormFragment.graphql";
-import {
-	Button,
-	Card,
-	CardBody,
-	CardHeader,
-	DatePicker,
-	Input,
-} from "@heroui/react";
+import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { CalendarDate, parseDate } from "@internationalized/date";
 import { Plus, ShieldCheckIcon, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
+import {
+	MonthYearPicker,
+	parseMonthYear,
+	toDateString,
+} from "../forms/MonthYearPicker";
 
 const UpdateCertificationsFormMutation = graphql`
 mutation UpdateCertificationsFormMutation($certifications: [CertificationInput!]!) {
@@ -55,9 +52,26 @@ const formSchema = z.object({
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
 			certificationUrl: z.url("Must be a valid URL"),
-			createdAt: z.custom<CalendarDate>((data) => data instanceof CalendarDate),
+			createdAt: z.custom<{ month: number; year: number }>((data) => {
+				return (
+					data &&
+					typeof data === "object" &&
+					data !== null &&
+					typeof data.month === "number" &&
+					typeof data.year === "number"
+				);
+			}, "Issued At is required and must be a valid month/year"),
 			expiresAt: z.nullable(
-				z.custom<CalendarDate>((data) => data instanceof CalendarDate),
+				z.custom<{ month: number; year: number }>((data) => {
+					if (data === null) return true;
+					return (
+						data &&
+						typeof data === "object" &&
+						data !== null &&
+						typeof data.month === "number" &&
+						typeof data.year === "number"
+					);
+				}, "Expires At must be a valid month/year or null"),
 			),
 		}),
 	),
@@ -80,13 +94,22 @@ export default function UpdateCertificationsForm({
 		defaultValues:
 			data.certifications.length > 0
 				? {
-						certifications: data.certifications.map((cert) => ({
-							name: cert.name,
-							issuer: cert.issuer,
-							certificationUrl: cert.certificationUrl,
-							createdAt: parseDate(cert.createdAt),
-							expiresAt: cert.expiresAt ? parseDate(cert.expiresAt) : null,
-						})),
+						certifications: data.certifications.map((cert) => {
+							const created = parseMonthYear(cert.createdAt) || {
+								month: 1,
+								year: 2000,
+							};
+							const expires = cert.expiresAt
+								? parseMonthYear(cert.expiresAt)
+								: null;
+							return {
+								name: cert.name,
+								issuer: cert.issuer,
+								certificationUrl: cert.certificationUrl,
+								createdAt: created,
+								expiresAt: expires,
+							};
+						}),
 					}
 				: {
 						certifications: [
@@ -94,8 +117,8 @@ export default function UpdateCertificationsForm({
 								name: "",
 								issuer: "",
 								certificationUrl: "",
-								createdAt: undefined,
-								expiresAt: undefined,
+								createdAt: { month: 1, year: new Date().getFullYear() },
+								expiresAt: null,
 							},
 						],
 					},
@@ -111,8 +134,8 @@ export default function UpdateCertificationsForm({
 			variables: {
 				certifications: formData.certifications.map((cert) => ({
 					...cert,
-					createdAt: cert.createdAt.toString(),
-					expiresAt: cert.expiresAt ? cert.expiresAt.toString() : null,
+					createdAt: toDateString(cert.createdAt),
+					expiresAt: cert.expiresAt ? toDateString(cert.expiresAt) : null,
 				})),
 			},
 		});
@@ -151,8 +174,8 @@ export default function UpdateCertificationsForm({
 											name: "",
 											issuer: "",
 											certificationUrl: "",
-											createdAt: undefined,
-											expiresAt: undefined,
+											createdAt: { month: 1, year: 2000 },
+											expiresAt: null,
 										})
 									}
 								>
@@ -230,46 +253,36 @@ export default function UpdateCertificationsForm({
 											<Controller
 												control={control}
 												name={`certifications.${index}.createdAt`}
-												render={({ field }) => {
-													return (
-														<DatePicker
-															label="Issued At"
-															showMonthAndYearPickers
-															selectorButtonPlacement="start"
-															errorMessage={
-																errors.certifications?.[index]?.createdAt
-																	?.message
-															}
-															isInvalid={
-																!!errors.certifications?.[index]?.createdAt
-															}
-															value={field.value ?? undefined}
-															onChange={field.onChange}
-														/>
-													);
-												}}
+												render={({ field }) => (
+													<MonthYearPicker
+														label="Issued At"
+														value={field.value}
+														onChange={field.onChange}
+														errorMessage={
+															errors.certifications?.[index]?.createdAt?.message
+														}
+														isInvalid={
+															!!errors.certifications?.[index]?.createdAt
+														}
+													/>
+												)}
 											/>
 											<Controller
 												control={control}
 												name={`certifications.${index}.expiresAt`}
-												render={({ field }) => {
-													return (
-														<DatePicker
-															label="Expires At"
-															showMonthAndYearPickers
-															selectorButtonPlacement="start"
-															errorMessage={
-																errors.certifications?.[index]?.expiresAt
-																	?.message
-															}
-															isInvalid={
-																!!errors.certifications?.[index]?.expiresAt
-															}
-															value={field.value ?? undefined}
-															onChange={field.onChange}
-														/>
-													);
-												}}
+												render={({ field }) => (
+													<MonthYearPicker
+														label="Expires At"
+														value={field.value}
+														onChange={field.onChange}
+														errorMessage={
+															errors.certifications?.[index]?.expiresAt?.message
+														}
+														isInvalid={
+															!!errors.certifications?.[index]?.expiresAt
+														}
+													/>
+												)}
 											/>
 										</div>
 										<Button
@@ -291,8 +304,8 @@ export default function UpdateCertificationsForm({
 											name: "",
 											issuer: "",
 											certificationUrl: "",
-											createdAt: undefined,
-											expiresAt: undefined,
+											createdAt: { month: 1, year: 2000 },
+											expiresAt: null,
 										})
 									}
 								>
