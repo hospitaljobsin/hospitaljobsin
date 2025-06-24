@@ -1,4 +1,5 @@
 import type { LicensesFragment$key } from "@/__generated__/LicensesFragment.graphql";
+import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { IdCardIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
@@ -24,6 +25,11 @@ type Props = {
 
 export default function Licenses({ rootQuery }: Props) {
 	const data = useFragment(LicensesFragment, rootQuery);
+
+	useCopilotReadable({
+		description: "The current applicant's licenses",
+		value: data.licenses,
+	});
 
 	return (
 		<div className="space-y-12">

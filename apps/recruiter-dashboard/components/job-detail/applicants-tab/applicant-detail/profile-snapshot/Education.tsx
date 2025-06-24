@@ -1,5 +1,6 @@
 import type { EducationFragment$key } from "@/__generated__/EducationFragment.graphql";
 import { monthYearFormat } from "@/lib/intl";
+import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { BookIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
@@ -22,6 +23,11 @@ type Props = {
 
 export default function Education({ rootQuery }: Props) {
 	const data = useFragment(EducationFragment, rootQuery);
+
+	useCopilotReadable({
+		description: "The current applicant's education",
+		value: data.education,
+	});
 
 	return (
 		<div className="space-y-12">

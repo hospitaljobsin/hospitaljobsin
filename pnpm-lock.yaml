@@ -182,6 +182,12 @@ importers:
       '@copilotkit/runtime':
         specifier: ^1.9.1
         version: 1.9.1(@ag-ui/client@0.0.28)(@ag-ui/core@0.0.28)(@ag-ui/encoder@0.0.28)(@ag-ui/proto@0.0.28)(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/client-bedrock-agent-runtime@3.835.0)(@aws-sdk/client-bedrock-runtime@3.835.0)(@aws-sdk/client-dynamodb@3.828.0)(@aws-sdk/client-kendra@3.835.0)(@aws-sdk/client-lambda@3.828.0)(@aws-sdk/client-s3@3.828.0)(@aws-sdk/credential-provider-node@3.835.0)(@browserbasehq/sdk@2.6.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.53.0)(deepmerge@4.3.1)(dotenv@16.5.0)(openai@4.104.0(ws@8.18.2)(zod@3.25.64))(zod@3.25.64))(@ibm-cloud/watsonx-ai@1.6.8)(@smithy/protocol-http@3.3.0)(@smithy/signature-v4@2.3.0)(@smithy/util-utf8@2.3.0)(axios@1.10.0)(fast-xml-parser@4.4.1)(google-auth-library@8.9.0)(ibm-cloud-sdk-core@5.4.0)(ignore@5.3.2)(jsonwebtoken@9.0.2)(lodash@4.17.21)(playwright@1.53.0)(react@19.1.0)(weaviate-client@3.6.2)(ws@8.18.2)
+      '@copilotkit/runtime-client-gql':
+        specifier: ^1.9.1
+        version: 1.9.1(graphql@16.11.0)(react@19.1.0)
+      '@copilotkit/shared':
+        specifier: ^1.9.1
+        version: 1.9.1
       '@heroui/react':
         specifier: 2.8.0-beta.7
         version: 2.8.0-beta.7(@types/react@19.1.8)(framer-motion@12.18.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.10)
@@ -22489,7 +22495,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.10.0(debug@4.4.1))
+      retry-axios: 2.6.0(axios@1.10.0)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -25449,7 +25455,7 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
-  retry-axios@2.6.0(axios@1.10.0(debug@4.4.1)):
+  retry-axios@2.6.0(axios@1.10.0):
     dependencies:
       axios: 1.10.0(debug@4.4.1)
 

@@ -1,5 +1,6 @@
 import type { CertificationsFragment$key } from "@/__generated__/CertificationsFragment.graphql";
 import { monthYearFormat } from "@/lib/intl";
+import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader, Link } from "@heroui/react";
 import { ShieldCheckIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
@@ -23,6 +24,11 @@ type Props = {
 
 export default function Certifications({ rootQuery }: Props) {
 	const data = useFragment(CertificationsFragment, rootQuery);
+
+	useCopilotReadable({
+		description: "The current applicant's certifications",
+		value: data.certifications,
+	});
 
 	return (
 		<div className="space-y-12">

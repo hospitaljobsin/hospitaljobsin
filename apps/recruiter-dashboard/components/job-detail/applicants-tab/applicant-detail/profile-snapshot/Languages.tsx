@@ -1,4 +1,5 @@
 import type { LanguagesFragment$key } from "@/__generated__/LanguagesFragment.graphql";
+import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { LanguagesIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
@@ -21,6 +22,11 @@ type Props = {
 
 export default function Languages({ rootQuery }: Props) {
 	const data = useFragment(LanguagesFragment, rootQuery);
+
+	useCopilotReadable({
+		description: "The current applicant's languages",
+		value: data.languages,
+	});
 
 	return (
 		<div className="space-y-12">

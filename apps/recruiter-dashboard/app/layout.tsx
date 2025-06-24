@@ -1,3 +1,4 @@
+import "@copilotkit/react-ui/styles.css";
 import { Work_Sans } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";

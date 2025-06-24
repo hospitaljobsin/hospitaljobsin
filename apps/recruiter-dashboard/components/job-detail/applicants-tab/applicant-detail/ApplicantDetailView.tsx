@@ -3,6 +3,7 @@ import type { ApplicantDetailViewFragment$key } from "@/__generated__/ApplicantD
 import PageJobApplicantDetailQuery, {
 	type pageJobApplicantDetailQuery,
 } from "@/__generated__/pageJobApplicantDetailQuery.graphql";
+import ChatInterface from "@/components/chat-interface/ChatInterface";
 import {
 	type PreloadedQuery,
 	graphql,
@@ -65,14 +66,19 @@ export default function ApplicantDetailView(props: {
 	);
 
 	return (
-		<div className="pl-6 py-6 w-full h-full flex flex-col items-start gap-12">
-			<ApplicantDetails
-				job={query.organization.job}
-				rootQuery={query.organization.job.jobApplicant}
-			/>
-			<ProfileSnapshotView
-				profileSnapshot={query.organization.job.jobApplicant.profileSnapshot}
-			/>
+		<div className="flex flex-row h-full">
+			<div className="pl-6 py-6 w-full h-full flex flex-col items-start gap-12 overflow-y-auto pr-6">
+				<ApplicantDetails
+					job={query.organization.job}
+					rootQuery={query.organization.job.jobApplicant}
+				/>
+				<ProfileSnapshotView
+					profileSnapshot={query.organization.job.jobApplicant.profileSnapshot}
+				/>
+			</div>
+			<div className="sticky top-0 h-screen min-w-[420px] max-w-[440px] w-full flex flex-col border-l border-foreground-300">
+				<ChatInterface placeholder="Ask me anything about the applicant" />
+			</div>
 		</div>
 	);
 }

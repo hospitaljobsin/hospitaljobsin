@@ -1,4 +1,5 @@
 import type { LocationPreferencesFragment$key } from "@/__generated__/LocationPreferencesFragment.graphql";
+import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { MapPinHouseIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
@@ -16,6 +17,11 @@ type Props = {
 
 export default function LocationPreferences({ rootQuery }: Props) {
 	const data = useFragment(LocationPreferencesFragment, rootQuery);
+
+	useCopilotReadable({
+		description: "The current applicant's location preferences",
+		value: data,
+	});
 	const locations = data.locationsOpenToWork || [];
 	const openToRelocation = data.openToRelocationAnywhere;
 

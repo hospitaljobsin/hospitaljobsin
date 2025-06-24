@@ -1,4 +1,5 @@
 import type { PersonalDetailsFragment$key } from "@/__generated__/PersonalDetailsFragment.graphql";
+import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { UserIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
@@ -29,6 +30,11 @@ type Props = {
 
 export default function PersonalDetails({ rootQuery }: Props) {
 	const data = useFragment(PersonalDetailsFragment, rootQuery);
+
+	useCopilotReadable({
+		description: "The current applicant's personal details",
+		value: data,
+	});
 
 	return (
 		<div className="w-full">

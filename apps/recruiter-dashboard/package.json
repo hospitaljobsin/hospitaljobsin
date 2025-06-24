@@ -16,6 +16,8 @@
 		"@copilotkit/react-core": "^1.9.1",
 		"@copilotkit/react-ui": "^1.9.1",
 		"@copilotkit/runtime": "^1.9.1",
+		"@copilotkit/runtime-client-gql": "^1.9.1",
+		"@copilotkit/shared": "^1.9.1",
 		"@heroui/react": "2.8.0-beta.7",
 		"@heroui/theme": "2.4.17-beta.0",
 		"@hookform/resolvers": "^5.1.1",

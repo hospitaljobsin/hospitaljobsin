@@ -1,5 +1,6 @@
 import type { WorkExperienceFragment$key } from "@/__generated__/WorkExperienceFragment.graphql";
 import { monthYearFormat } from "@/lib/intl";
+import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { differenceInMonths, parseISO } from "date-fns";
 import { BriefcaseIcon, ClockIcon, PickaxeIcon } from "lucide-react";
@@ -47,6 +48,11 @@ function employmentTypeLabel(type: string | null | undefined) {
 
 export default function WorkExperience({ rootQuery }: Props) {
 	const data = useFragment(WorkExperienceFragment, rootQuery);
+
+	useCopilotReadable({
+		description: "The current applicant's work experiences",
+		value: data.workExperience,
+	});
 
 	return (
 		<div className="space-y-12">

@@ -1,6 +1,7 @@
 "use client";
 import type { ApplicantDetailsFragment$key } from "@/__generated__/ApplicantDetailsFragment.graphql";
 import type { ApplicantDetails_job$key } from "@/__generated__/ApplicantDetails_job.graphql";
+import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader, Divider, Link } from "@heroui/react";
 import { Mail, ShieldQuestion } from "lucide-react";
 import Image from "next/image";
@@ -42,6 +43,16 @@ export default function ApplicantDetails({
 }) {
 	const data = useFragment(ApplicantDetailsFragment, rootQuery);
 	const jobData = useFragment(ApplicantDetailsJobFragment, job);
+
+	useCopilotReadable({
+		description: "The current applicant's full name",
+		value: data.account.fullName,
+	});
+
+	useCopilotReadable({
+		description: "The current applicant's headline",
+		value: data.profileSnapshot.headline,
+	});
 
 	return (
 		<div className="w-full flex flex-col gap-12">
@@ -108,8 +119,6 @@ export default function ApplicantDetails({
 					</CardBody>
 				</Card>
 			)}
-
-			{/* TODO: show job seeker profile here */}
 		</div>
 	);
 }
