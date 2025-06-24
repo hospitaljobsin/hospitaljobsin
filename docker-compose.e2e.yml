@@ -153,7 +153,7 @@ services:
       - "1025:1025"
 
   test-mongodb:
-    image: mongodb/mongodb-atlas-local:8.0.1
+    image: mongodb/mongodb-atlas-local:8.0.100
     ports:
       - "27017:27017"
     environment:
