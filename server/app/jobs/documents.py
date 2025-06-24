@@ -9,6 +9,7 @@ from beanie import (
     Link,
     PydanticObjectId,
     TimeSeriesConfig,
+    UnionDoc,
 )
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
@@ -17,8 +18,9 @@ from pymongo.operations import SearchIndexModel
 from app.accounts.documents import Account, BaseProfile
 from app.base.models import GeoObject
 from app.core.constants import (
+    CoreJobMetricEventType,
+    ImpressionJobMetricEventType,
     JobApplicantStatus,
-    JobMetricEventType,
 )
 from app.organizations.documents import Organization
 
@@ -161,21 +163,46 @@ class JobApplicant(Document):
         self.__ai_insight_data = value
 
 
-class JobMetricMetadata(BaseModel):
-    account_id: PydanticObjectId | None = None
-    job_id: PydanticObjectId
-    organization_id: PydanticObjectId
-    event_type: JobMetricEventType
-
-
-class JobMetric(Document):
-    timestamp: datetime = Field(default_factory=datetime.now)
-    metadata: JobMetricMetadata
-
+class BaseJobMetric(UnionDoc):
     class Settings:
         name = "job_metrics"
+        class_id = "_class_id"  # _class_id is the default beanie internal field used to filter children Documents
         timeseries = TimeSeriesConfig(
             time_field="timestamp",  #  Required
             meta_field="metadata",  #  Optional
             granularity=Granularity.minutes,  #  Optional
         )
+
+
+class CoreJobMetricMetadata(BaseModel):
+    account_id: PydanticObjectId
+    job_id: PydanticObjectId
+    organization_id: PydanticObjectId
+    event_type: CoreJobMetricEventType
+
+
+class CoreJobMetric(Document):
+    timestamp: datetime = Field(default_factory=datetime.now)
+    metadata: CoreJobMetricMetadata
+
+    class Settings:
+        name = "CoreJobMetric"
+        union_doc = BaseJobMetric
+
+
+class ImpressionJobMetricMetadata(BaseModel):
+    account_id: PydanticObjectId | None = None
+    fingerprint_id: str
+    impression_id: str
+    job_id: PydanticObjectId
+    organization_id: PydanticObjectId
+    event_type: ImpressionJobMetricEventType
+
+
+class ImpressionJobMetric(Document):
+    timestamp: datetime = Field(default_factory=datetime.now)
+    metadata: ImpressionJobMetricMetadata
+
+    class Settings:
+        name = "ImpressionJobMetric"
+        union_doc = BaseJobMetric

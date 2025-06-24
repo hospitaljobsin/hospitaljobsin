@@ -1,7 +1,6 @@
 import type { JobDetailViewFragment$key } from "@/__generated__/JobDetailViewFragment.graphql";
-import { env } from "@/lib/env/client";
+import useJobImpressionTracker from "@/lib/hooks/useJobImpressionTracker";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
 import { graphql, useFragment } from "react-relay";
 import JobDetails from "./JobDetails";
 import RelatedJobsList from "./RelatedJobsList";
@@ -24,15 +23,7 @@ export default function JobDetailView(props: {
 	const jobSlug = decodeURIComponent(params.jobSlug);
 	const query = useFragment(JobDetailViewFragment, props.rootQuery);
 
-	useEffect(() => {
-		if (slug) {
-			// register a user view for the job
-			fetch(
-				`${env.NEXT_PUBLIC_API_URL}/organizations/${slug}/jobs/${jobSlug}/log_view`,
-				{ method: "POST" },
-			);
-		}
-	}, [slug, jobSlug]);
+	useJobImpressionTracker(slug, jobSlug);
 
 	return (
 		<div className="py-8 w-full h-full flex flex-col lg:flex-row items-start gap-6">

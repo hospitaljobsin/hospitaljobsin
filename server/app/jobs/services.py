@@ -4,6 +4,7 @@ from typing import Literal
 
 from bson import ObjectId
 from bson.errors import InvalidId
+from fastapi import Request
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
@@ -16,10 +17,10 @@ from app.core.geocoding import BaseLocationService
 from app.jobs.documents import (
     ApplicantField,
     ApplicationField,
+    ImpressionJobMetric,
     Job,
     JobApplicant,
     JobApplicationForm,
-    JobMetric,
     SavedJob,
 )
 from app.jobs.exceptions import (
@@ -74,7 +75,7 @@ class SavedJobService:
         )
 
         # log the job application metric
-        await self._job_metric_repo.create(
+        await self._job_metric_repo.create_core_metric(
             job_id=job.id,
             organization_id=job.organization.ref.id,
             event_type="save",
@@ -101,7 +102,7 @@ class SavedJobService:
         await self._saved_job_repo.delete(saved_job)
 
         # log the job application metric
-        await self._job_metric_repo.create(
+        await self._job_metric_repo.create_core_metric(
             job_id=job.id,
             organization_id=job.organization.ref.id,
             event_type="unsave",
@@ -128,10 +129,15 @@ class JobService:
         self._job_metric_repo = job_metric_repo
         self._location_service = location_service
 
-    async def log_view(
-        self, slug: str, organization_slug: str
-    ) -> Result[JobMetric, JobNotFoundError]:
-        """Log a job view."""
+    async def log_view_start(
+        self,
+        request: Request,
+        slug: str,
+        organization_slug: str,
+        impression_id: uuid.UUID,
+        account_id: ObjectId | None = None,
+    ) -> Result[ImpressionJobMetric, JobNotFoundError]:
+        """Log a job view start."""
         organization = await self._organization_repo.get_by_slug(organization_slug)
         if organization is None:
             return Err(JobNotFoundError())
@@ -141,10 +147,42 @@ class JobService:
         if existing_job is None:
             return Err(JobNotFoundError())
 
-        metric = await self._job_metric_repo.create(
+        metric = await self._job_metric_repo.create_impression_metric(
             job_id=existing_job.id,
             organization_id=existing_job.organization.ref.id,
-            event_type="view",
+            event_type="view_start",
+            account_id=account_id,
+            fingerprint_id=request.state.fingerprint,
+            impression_id=str(impression_id),
+        )
+
+        return Ok(metric)
+
+    async def log_view_end(
+        self,
+        request: Request,
+        slug: str,
+        organization_slug: str,
+        impression_id: uuid.UUID,
+        account_id: ObjectId | None = None,
+    ) -> Result[ImpressionJobMetric, JobNotFoundError]:
+        """Log a job view end."""
+        organization = await self._organization_repo.get_by_slug(organization_slug)
+        if organization is None:
+            return Err(JobNotFoundError())
+        existing_job = await self._job_repo.get_by_slug(
+            slug=slug, organization_id=organization.id
+        )
+        if existing_job is None:
+            return Err(JobNotFoundError())
+
+        metric = await self._job_metric_repo.create_impression_metric(
+            job_id=existing_job.id,
+            organization_id=existing_job.organization.ref.id,
+            event_type="view_end",
+            account_id=account_id,
+            fingerprint_id=request.state.fingerprint,
+            impression_id=str(impression_id),
         )
 
         return Ok(metric)
@@ -490,7 +528,7 @@ class JobApplicantService:
         )
 
         # log the job application metric
-        await self._job_metric_repo.create(
+        await self._job_metric_repo.create_core_metric(
             job_id=existing_job.id,
             organization_id=existing_job.organization.ref.id,
             event_type="apply",

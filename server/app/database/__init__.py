@@ -22,10 +22,12 @@ from app.core.constants import (
     JOB_EMBEDDING_DIMENSIONS,
 )
 from app.jobs.documents import (
+    BaseJobMetric,
+    CoreJobMetric,
+    ImpressionJobMetric,
     Job,
     JobApplicant,
     JobApplicationForm,
-    JobMetric,
     SavedJob,
 )
 from app.organizations.documents import (
@@ -125,7 +127,9 @@ async def initialize_database(
                 Job,
                 JobApplicant,
                 JobApplicationForm,
-                JobMetric,
+                CoreJobMetric,
+                ImpressionJobMetric,
+                BaseJobMetric,
                 Account,
                 Profile,
                 SavedJob,
