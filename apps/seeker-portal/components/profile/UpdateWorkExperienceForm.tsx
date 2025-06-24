@@ -1,23 +1,23 @@
 import type { UpdateWorkExperienceFormFragment$key } from "@/__generated__/UpdateWorkExperienceFormFragment.graphql";
-import type { DateValue } from "@heroui/react";
 import {
 	Button,
 	Card,
 	CardBody,
 	CardHeader,
-	DatePicker,
+	Checkbox,
 	Input,
 	Kbd,
 	Select,
 	SelectItem,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { CalendarDate, parseDate } from "@internationalized/date";
 import { BriefcaseIcon, Plus, Trash } from "lucide-react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
 import { ChipsInput } from "../forms/ChipsInput";
+import type { MonthYearValue } from "../forms/MonthYearPicker";
+import { MonthYearPicker } from "../forms/MonthYearPicker";
 
 const UpdateWorkExperienceFormMutation = graphql`
 mutation UpdateWorkExperienceFormMutation($workExperience: [WorkExperienceInput!]!) {
@@ -46,6 +46,37 @@ const UpdateWorkExperienceFormFragment = graphql`
   }
 `;
 
+type EmploymentType =
+	| ""
+	| "FULL_TIME"
+	| "PART_TIME"
+	| "CONTRACT"
+	| "INTERNSHIP"
+	| "TEMPORARY"
+	| "VOLUNTEER"
+	| "OTHER";
+
+type WorkExperienceFormType = {
+	workExperience: Array<{
+		title: string;
+		organization: string;
+		employmentType: EmploymentType;
+		skills: { value: string }[];
+		startedAt: MonthYearValue;
+		completedAt: MonthYearValue;
+		isCurrentRole?: boolean;
+	}>;
+};
+
+type WorkExperienceFragmentItem = {
+	title: string;
+	organization: string;
+	employmentType: string | null | undefined;
+	skills: readonly string[];
+	startedAt: string | null;
+	completedAt: string | null;
+};
+
 type Props = {
 	rootQuery: UpdateWorkExperienceFormFragment$key;
 	onSaveChanges: () => void;
@@ -61,6 +92,23 @@ const EMPLOYMENT_TYPE_OPTIONS = [
 	{ value: "OTHER", label: "Other" },
 ];
 
+const allowedEmploymentTypes: EmploymentType[] = [
+	"",
+	"FULL_TIME",
+	"PART_TIME",
+	"CONTRACT",
+	"INTERNSHIP",
+	"TEMPORARY",
+	"VOLUNTEER",
+	"OTHER",
+];
+
+function toEmploymentType(val: string | null | undefined): EmploymentType {
+	return allowedEmploymentTypes.includes(val as EmploymentType)
+		? (val as EmploymentType)
+		: "";
+}
+
 const formSchema = z.object({
 	workExperience: z.array(
 		z.object({
@@ -70,30 +118,56 @@ const formSchema = z.object({
 			organization: z
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
-			employmentType: z.nullable(
-				z.union([
-					z.enum([
-						"FULL_TIME",
-						"PART_TIME",
-						"CONTRACT",
-						"INTERNSHIP",
-						"TEMPORARY",
-						"VOLUNTEER",
-						"OTHER",
-					]),
-					z.literal(""),
-				]),
-			),
+			employmentType: z.enum([
+				"FULL_TIME",
+				"PART_TIME",
+				"CONTRACT",
+				"INTERNSHIP",
+				"TEMPORARY",
+				"VOLUNTEER",
+				"OTHER",
+				"",
+			]),
 			skills: z.array(z.object({ value: z.string() })),
-			startedAt: z.custom<CalendarDate | null>(
-				(data) => data instanceof CalendarDate,
-			),
-			completedAt: z.custom<CalendarDate | null>(
-				(data) => data === null || data instanceof CalendarDate,
-			),
+			startedAt: z.custom<MonthYearValue>((data) => {
+				if (data === null) return true;
+				if (
+					typeof data === "object" &&
+					data !== null &&
+					typeof data.month === "number" &&
+					typeof data.year === "number"
+				)
+					return true;
+				return false;
+			}),
+			completedAt: z.custom<MonthYearValue>((data) => {
+				if (data === null) return true;
+				if (
+					typeof data === "object" &&
+					data !== null &&
+					typeof data.month === "number" &&
+					typeof data.year === "number"
+				)
+					return true;
+				return false;
+			}),
+			isCurrentRole: z.boolean(),
 		}),
 	),
 });
+
+function parseMonthYear(dateStr: string | null | undefined): MonthYearValue {
+	if (!dateStr) return null;
+	const d = new Date(dateStr);
+	if (Number.isNaN(d.getTime())) return null;
+	return { month: d.getMonth() + 1, year: d.getFullYear() };
+}
+
+function toDateString(val: MonthYearValue): string | null {
+	if (!val || typeof val.month !== "number" || typeof val.year !== "number")
+		return null;
+	return `${val.year}-${String(val.month).padStart(2, "0")}-01`;
+}
 
 export default function UpdateWorkExperienceForm({
 	rootQuery,
@@ -104,30 +178,31 @@ export default function UpdateWorkExperienceForm({
 	);
 	const data = useFragment(UpdateWorkExperienceFormFragment, rootQuery);
 
-	const defaultWorkExperience = {
-		title: "",
-		organization: "",
-		employmentType: null,
-		skills: [],
-		startedAt: null,
-		completedAt: null,
-	};
+	const defaultWorkExperience: WorkExperienceFormType["workExperience"][number] =
+		{
+			title: "",
+			organization: "",
+			employmentType: "",
+			skills: [],
+			startedAt: null,
+			completedAt: null,
+			isCurrentRole: true,
+		};
 
-	const defaultValues =
+	const defaultValues: WorkExperienceFormType =
 		data.workExperience.length > 0
 			? {
-					workExperience: data.workExperience.map((exp) => ({
-						title: exp.title,
-						organization: exp.organization,
-						employmentType: exp.employmentType,
-						skills: exp.skills.map((skill) => ({ value: skill })),
-						startedAt: exp.startedAt
-							? (parseDate(exp.startedAt) as DateValue)
-							: null,
-						completedAt: exp.completedAt
-							? (parseDate(exp.completedAt) as DateValue)
-							: null,
-					})),
+					workExperience: data.workExperience.map(
+						(exp: WorkExperienceFragmentItem) => ({
+							title: exp.title,
+							organization: exp.organization,
+							employmentType: toEmploymentType(exp.employmentType),
+							skills: exp.skills.map((skill: string) => ({ value: skill })),
+							startedAt: parseMonthYear(exp.startedAt),
+							completedAt: parseMonthYear(exp.completedAt),
+							isCurrentRole: !exp.completedAt,
+						}),
+					),
 				}
 			: {
 					workExperience: [{ ...defaultWorkExperience }],
@@ -137,17 +212,23 @@ export default function UpdateWorkExperienceForm({
 		handleSubmit,
 		control,
 		formState: { errors, isSubmitting },
-	} = useForm<z.infer<typeof formSchema>>({
+		watch,
+	} = useForm<WorkExperienceFormType>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues,
 	});
 
-	const { fields, append, remove } = useFieldArray({
+	const value = useWatch({
+		control,
+		name: "workExperience",
+	});
+
+	const { fields, append, remove } = useFieldArray<WorkExperienceFormType>({
 		control: control,
 		name: "workExperience",
 	});
 
-	function onSubmit(formData: z.infer<typeof formSchema>) {
+	function onSubmit(formData: WorkExperienceFormType) {
 		commitMutation({
 			variables: {
 				workExperience: formData.workExperience.map((exp) => ({
@@ -155,8 +236,8 @@ export default function UpdateWorkExperienceForm({
 					organization: exp.organization,
 					employmentType: exp.employmentType || null,
 					skills: exp.skills.flatMap((skill) => skill.value),
-					startedAt: exp.startedAt ? exp.startedAt.toString() : null,
-					completedAt: exp.completedAt ? exp.completedAt.toString() : null,
+					startedAt: toDateString(exp.startedAt),
+					completedAt: exp.isCurrentRole ? null : toDateString(exp.completedAt),
 				})),
 			},
 		});
@@ -199,7 +280,7 @@ export default function UpdateWorkExperienceForm({
 							<>
 								{fields.map((item, index) => (
 									<div
-										key={`field-${item.title}-${item.organization}-${index}`}
+										key={item.id}
 										className="flex flex-col gap-8 items-end w-full"
 									>
 										<div className="w-full space-y-4">
@@ -247,22 +328,21 @@ export default function UpdateWorkExperienceForm({
 											<Controller
 												name={`workExperience.${index}.employmentType`}
 												control={control}
-												defaultValue={undefined}
+												defaultValue={""}
 												render={({ field }) => (
 													<Select
 														{...field}
 														label="Employment Type"
 														placeholder="Select employment type"
 														selectionMode="single"
-														selectedKeys={field.value ? [field.value] : []}
+														selectedKeys={field.value ? [field.value] : [""]}
 														defaultSelectedKeys={
-															field.value ? [field.value] : []
+															field.value ? [field.value] : [""]
 														}
 														onSelectionChange={(keys) => {
-															const value = Array.from(keys)[0] as
-																| string
-																| undefined;
-															console.log("value changed:", value);
+															const value = Array.from(
+																keys,
+															)[0] as EmploymentType;
 															field.onChange(value);
 														}}
 														errorMessage={
@@ -284,8 +364,8 @@ export default function UpdateWorkExperienceForm({
 										</div>
 										<div className="w-full space-y-4">
 											<ChipsInput<
-												z.infer<typeof formSchema>,
-												`workExperience.${index}.skills`
+												WorkExperienceFormType,
+												`workExperience.${number}.skills`
 											>
 												name={`workExperience.${index}.skills`}
 												control={control}
@@ -305,41 +385,61 @@ export default function UpdateWorkExperienceForm({
 												}}
 											/>
 										</div>
+										<div className="w-full flex gap-4 items-center">
+											<Controller
+												name={`workExperience.${index}.isCurrentRole`}
+												control={control}
+												render={({ field }) => (
+													<Checkbox
+														isSelected={field.value}
+														onValueChange={field.onChange}
+														aria-label="I am currently working in this role"
+														className="mb-2"
+													>
+														I am currently working in this role
+													</Checkbox>
+												)}
+											/>
+										</div>
 										<div className="w-full flex gap-4">
 											<Controller
 												name={`workExperience.${index}.startedAt`}
 												control={control}
 												render={({ field }) => (
-													<DatePicker
-														{...field}
+													<MonthYearPicker
 														label="Start Date"
+														value={field.value}
+														onChange={field.onChange}
 														errorMessage={
 															errors.workExperience?.[index]?.startedAt?.message
 														}
 														isInvalid={
 															!!errors.workExperience?.[index]?.startedAt
 														}
-														value={field.value as DateValue | null}
 													/>
 												)}
 											/>
 											<Controller
 												name={`workExperience.${index}.completedAt`}
 												control={control}
-												render={({ field }) => (
-													<DatePicker
-														{...field}
-														label="End Date"
-														errorMessage={
-															errors.workExperience?.[index]?.completedAt
-																?.message
-														}
-														isInvalid={
-															!!errors.workExperience?.[index]?.completedAt
-														}
-														value={field.value as DateValue | null}
-													/>
-												)}
+												render={({ field }) => {
+													const isCurrentRole = value[index].isCurrentRole;
+													return (
+														<MonthYearPicker
+															label="End Date"
+															value={isCurrentRole ? null : field.value}
+															onChange={field.onChange}
+															isDisabled={isCurrentRole}
+															errorMessage={
+																errors.workExperience?.[index]?.completedAt
+																	?.message
+															}
+															isInvalid={
+																!!errors.workExperience?.[index]?.completedAt
+															}
+														/>
+													);
+												}}
 											/>
 										</div>
 										<Button
