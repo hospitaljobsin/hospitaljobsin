@@ -14,8 +14,7 @@ from app.base.models import GeoObject
 from app.config import AWSSettings
 from app.core.constants import JobApplicantStatus
 from app.core.geocoding import BaseLocationService
-from app.database.paginator import PaginatedResult
-from app.jobs.agents import JobApplicantFileringAgent, SupportDependencies
+from app.jobs.agents import JobApplicantAnalyzerAgent
 from app.jobs.documents import (
     ApplicantField,
     ApplicationField,
@@ -476,7 +475,7 @@ class JobApplicantService:
         job_applicant_repo: JobApplicantRepo,
         job_metric_repo: JobMetricRepo,
         organization_member_service: OrganizationMemberService,
-        job_applicant_filtering_agent: JobApplicantFileringAgent,
+        job_applicant_analyzer_agent: JobApplicantAnalyzerAgent,
         s3_client: S3Client,
         aws_settings: AWSSettings,
     ) -> None:
@@ -486,7 +485,7 @@ class JobApplicantService:
         self._job_metric_repo = job_metric_repo
         self._s3_client = s3_client
         self._aws_settings = aws_settings
-        self._job_applicant_filtering_agent = job_applicant_filtering_agent
+        self._job_applicant_analyzer_agent = job_applicant_analyzer_agent
 
     async def create(
         self,
@@ -639,28 +638,3 @@ class JobApplicantService:
             ExpiresIn=3600,
             HttpMethod="PUT",
         )
-
-    async def get_all_by_job_id(
-        self,
-        job_id: ObjectId,
-        search_query: str,
-        status: JobApplicantStatus | None = None,
-        first: int | None = None,
-        last: int | None = None,
-        before: str | None = None,
-        after: str | None = None,
-    ) -> PaginatedResult[JobApplicant, ObjectId]:
-        """Return all applicants for a job."""
-        existing_job = await self._job_repo.get(job_id=job_id)
-        if existing_job is None:
-            raise RuntimeError
-        result = await self._job_applicant_filtering_agent.run(
-            search_query,
-            deps=SupportDependencies(
-                job=existing_job,
-                job_applicant_repo=self._job_applicant_repo,
-                status=status,
-            ),
-        )
-
-        return result.paginated_result

@@ -1,5 +1,5 @@
 import type { LocationPreferencesFragment$key } from "@/__generated__/LocationPreferencesFragment.graphql";
-import { Card, CardBody, CardHeader, Checkbox } from "@heroui/react";
+import { Card, CardBody, CardHeader } from "@heroui/react";
 import { MapPinHouseIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
@@ -40,12 +40,11 @@ export default function LocationPreferences({ rootQuery }: Props) {
 						)}
 					</div>
 					<div className="flex items-center gap-4">
-						<Checkbox
-							defaultSelected={openToRelocation}
-							isSelected={openToRelocation}
-							isDisabled
-						/>
-						<span>Open to relocation anywhere</span>
+						{openToRelocation ? (
+							<span>Open to relocation anywhere</span>
+						) : (
+							<span>Not open to relocation anywhere</span>
+						)}
 					</div>
 					<div className="mt-4 flex flex-col w-full gap-4">
 						<div className="block mb-2 font-medium">

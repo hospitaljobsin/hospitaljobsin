@@ -1,60 +1,70 @@
-from dataclasses import dataclass
-
-from beanie import PydanticObjectId
-from bson import ObjectId
 from pydantic import BaseModel, Field
-from pydantic_ai import Agent, RunContext
+from pydantic_ai import Agent
 from pydantic_ai.models.gemini import GeminiModel
 from pydantic_ai.providers.google_gla import GoogleGLAProvider
 
 from app.config import SecretSettings
-from app.core.constants import JobApplicantStatus
-from app.database.paginator import PaginatedResult
-from app.jobs.documents import Job, JobApplicant
-from app.jobs.repositories import JobApplicantRepo
+
+# TODO: include screening questions here?
 
 
-@dataclass
-class SupportDependencies:
-    job: Job
-    job_applicant_repo: JobApplicantRepo
-    status: JobApplicantStatus | None = None
+class MatchField(BaseModel):
+    match: bool = Field(
+        description="Whether the job applicant's field matches the job's field."
+    )
+    reason: str = Field(description="The reason for the match/ mismatch.")
 
 
-class JobApplicantFilteringOutput(BaseModel):
-    paginated_result: PaginatedResult[JobApplicant, PydanticObjectId] = Field(
-        description="The list of job applicants that are most similar to the query."
+class MatchFields(BaseModel):
+    education: MatchField
+    experience: MatchField
+    skills: MatchField
+    certifications: MatchField
+    location: MatchField
+    salary: MatchField
+    job_type: MatchField
+    languages: MatchField
+    work_mode: MatchField
+    currency: MatchField
+    relocation: MatchField
+    visa_sponsorship: MatchField
+    visa_status: MatchField
+    visa_type: MatchField
+
+
+class JobApplicantAnalysis(BaseModel):
+    score: float = Field(
+        description="The score of the job applicant with respect to the job. A value between 0 and 1."
+    )
+    reason: str = Field(
+        description="The reason for the score. Should summarize the match quality across all relevant fields."
+    )
+    fields: MatchFields = Field(
+        description="A breakdown of whether the applicant matches the job across various criteria."
+    )
+    insights: list[str] = Field(
+        default_factory=list,
+        description="Additional insights, strengths, or standout factors about the applicant.",
+    )
+    risk_flags: list[str] = Field(
+        default_factory=list,
+        description="Potential risks or red flags in the applicant’s profile (e.g., job hopping, mismatched dates, lack of core skill).",
     )
 
 
-type JobApplicantFileringAgent = Agent[SupportDependencies, JobApplicantFilteringOutput]
+type JobApplicantAnalyzerAgent = Agent[None, JobApplicantAnalysis]
 
 
-def create_job_applicant_filtering_agent(
+def create_job_applicant_analyzer_agent(
     settings: SecretSettings,
-) -> JobApplicantFileringAgent:
-    job_applicant_filtering_agent = Agent(
+) -> JobApplicantAnalyzerAgent:
+    return Agent(
         model=GeminiModel(
             "gemini-2.5-flash-lite-preview-06-17",
             provider=GoogleGLAProvider(
                 api_key=settings.google_api_key.get_secret_value(),
             ),
         ),
-        deps_type=SupportDependencies,
-        output_type=JobApplicantFilteringOutput,
-        system_prompt="You are a job applicant filtering agent. You are given a job description and a list of job applicants. You need to filter the list of job applicants to find the best candidates for the job.",
+        output_type=JobApplicantAnalysis,
+        system_prompt="You are a job applicant analyzer agent. You are given a job and a job applicant. You need to analyze the job applicant and provide a detailed analysis of the job applicant's profile with respect to the job.",
     )
-
-    @job_applicant_filtering_agent.tool
-    async def job_applicants_vector_search(
-        ctx: RunContext[SupportDependencies], query: str, top_k: int = 10
-    ) -> PaginatedResult[JobApplicant, ObjectId]:
-        """Return the top k job applicants that are most similar to the query."""
-        return await ctx.deps.job_applicant_repo.vector_search(
-            job_id=ctx.deps.job.id,
-            query=query,
-            top_k=top_k,
-            status=ctx.deps.status,
-        )
-
-    return job_applicant_filtering_agent

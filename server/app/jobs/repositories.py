@@ -833,8 +833,11 @@ class JobApplicantRepo:
         self,
         job_id: ObjectId,
         query: str,
-        top_k: int,
         status: JobApplicantStatus | None = None,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
     ) -> PaginatedResult[JobApplicant, ObjectId]:
         query_embedding = await self._embeddings_service.generate_embeddings(
             text=query,
@@ -846,8 +849,8 @@ class JobApplicantRepo:
                     "index": "job_applicant_embedding_vector_index",
                     "path": "profile_embedding",
                     "queryVector": query_embedding,
-                    "numCandidates": top_k * 4,
-                    "limit": top_k,
+                    "numCandidates": (first or last) * 4,  # type: ignore
+                    "limit": (first or last),
                 }
             },
         ]
@@ -882,8 +885,10 @@ class JobApplicantRepo:
 
         return await paginator.paginate(
             search_criteria=search_criteria,
-            first=top_k,
-            last=None,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
         )
 
 

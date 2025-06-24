@@ -32,7 +32,6 @@ from app.base.types import (
     BaseNodeType,
 )
 from app.context import Info
-from app.crews.filter_job.services import AgenticProfileFilterService
 from app.jobs.documents import (
     ApplicantAIInsight,
     ApplicantField,
@@ -43,6 +42,7 @@ from app.jobs.documents import (
     SavedJob,
 )
 from app.jobs.repositories import JobApplicantRepo, JobMetricRepo, JobRepo
+from app.jobs.services import JobApplicantService
 
 if TYPE_CHECKING:
     from app.organizations.types import (
@@ -650,8 +650,8 @@ class JobType(BaseNodeType[Job]):
             JobApplicantRepo,
             Inject,
         ],
-        agentic_profile_filter_service: Annotated[
-            AgenticProfileFilterService,
+        job_applicant_service: Annotated[
+            JobApplicantService,
             Inject,
         ],
         search_term: Annotated[
@@ -688,10 +688,10 @@ class JobType(BaseNodeType[Job]):
     ) -> JobApplicantConnectionType:
         """Return a paginated connection of invites for the organization."""
         if search_term is not None:
-            paginated_applicants = await agentic_profile_filter_service.filter_profiles(
+            paginated_applicants = await job_applicant_repo.vector_search(
+                job_id=ObjectId(self.id),
                 query=search_term,
-                job_id=str(self.id),
-                status=status,
+                status=status.value.lower() if status else None,
                 after=(after.node_id if after else None),
                 before=(before.node_id if before else None),
                 first=first,
