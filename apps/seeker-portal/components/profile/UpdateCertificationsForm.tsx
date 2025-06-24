@@ -88,6 +88,7 @@ export default function UpdateCertificationsForm({
 	const {
 		handleSubmit,
 		control,
+		setError,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
@@ -130,6 +131,42 @@ export default function UpdateCertificationsForm({
 	});
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
+		let hasValidationErrors = false;
+		for (let index = 0; index < formData.certifications.length; index++) {
+			const exp = formData.certifications[index];
+			if (
+				exp.createdAt &&
+				(exp.createdAt.year > new Date().getFullYear() ||
+					(exp.createdAt.year === new Date().getFullYear() &&
+						exp.createdAt.month > new Date().getMonth() + 1))
+			) {
+				setError(
+					`certifications.${index}.createdAt`,
+					{
+						message: "Start date cannot be in the future",
+					},
+					{ shouldFocus: true },
+				);
+				hasValidationErrors = true;
+			}
+
+			if (exp.createdAt && exp.expiresAt) {
+				if (exp.createdAt.year > exp.expiresAt.year) {
+					setError(
+						`certifications.${index}.expiresAt`,
+						{
+							message: "Start date cannot be after expiry date",
+						},
+						{ shouldFocus: true },
+					);
+					hasValidationErrors = true;
+				}
+			}
+		}
+
+		if (hasValidationErrors) {
+			return;
+		}
 		commitMutation({
 			variables: {
 				certifications: formData.certifications.map((cert) => ({
