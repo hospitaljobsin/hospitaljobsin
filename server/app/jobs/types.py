@@ -737,9 +737,9 @@ class JobType(BaseNodeType[Job]):
             ),
         ] = None,
     ) -> int:
-        return await job_metric_repo.get_count(
+        return await job_metric_repo.get_impression_count(
             job_id=ObjectId(self.id),
-            event_type="view",
+            event_type="view_start",
             start_date=start_date,
             end_date=end_date,
         )
@@ -760,9 +760,9 @@ class JobType(BaseNodeType[Job]):
         self,
         job_metric_repo: Injected[JobMetricRepo],
     ) -> list[JobMetricPointType]:
-        metric_points = await job_metric_repo.get_metric_points(
+        metric_points = await job_metric_repo.get_impression_metric_points(
             job_id=ObjectId(self.id),
-            event_type="view",
+            event_type="view_start",
         )
         return [JobMetricPointType.marshal(point) for point in metric_points]
 

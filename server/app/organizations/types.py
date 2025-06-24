@@ -284,9 +284,9 @@ class OrganizationType(BaseNodeType[Organization]):
             ),
         ] = None,
     ) -> int:
-        return await job_metric_repo.get_organization_count(
+        return await job_metric_repo.get_organization_impression_count(
             organization_id=ObjectId(self.id),
-            event_type="view",
+            event_type="view_start",
             start_date=start_date,
             end_date=end_date,
         )
@@ -307,9 +307,9 @@ class OrganizationType(BaseNodeType[Organization]):
         self,
         job_metric_repo: Injected[JobMetricRepo],
     ) -> list[JobMetricPointType]:
-        metric_points = await job_metric_repo.get_organization_metric_points(
+        metric_points = await job_metric_repo.get_organization_impression_metric_points(
             organization_id=ObjectId(self.id),
-            event_type="view",
+            event_type="view_start",
         )
         return [JobMetricPointType.marshal(point) for point in metric_points]
 

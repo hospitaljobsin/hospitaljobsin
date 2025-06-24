@@ -981,48 +981,48 @@ class JobMetricRepo:
 
         return await job_metric.insert(link_rule=WriteRules.DO_NOTHING)
 
-    async def get_count(
+    async def get_impression_count(
         self,
         job_id: ObjectId,
-        event_type: CoreJobMetricEventType,
+        event_type: ImpressionJobMetricEventType,
         start_date: datetime | None = None,
         end_date: datetime | None = None,
     ) -> int:
         """Get the count of job metrics for a given job ID and event type."""
         expressions = [
-            CoreJobMetric.metadata.job_id == job_id,
-            CoreJobMetric.metadata.event_type == event_type,
+            ImpressionJobMetric.metadata.job_id == job_id,
+            ImpressionJobMetric.metadata.event_type == event_type,
         ]
 
         if start_date:
-            expressions.append(CoreJobMetric.timestamp >= start_date)
+            expressions.append(ImpressionJobMetric.timestamp >= start_date)
         if end_date:
-            expressions.append(CoreJobMetric.timestamp <= end_date)
+            expressions.append(ImpressionJobMetric.timestamp <= end_date)
 
-        return await CoreJobMetric.find(And(*expressions)).count()
+        return await ImpressionJobMetric.find(And(*expressions)).count()
 
-    async def get_organization_count(
+    async def get_organization_impression_count(
         self,
         organization_id: ObjectId,
-        event_type: CoreJobMetricEventType,
+        event_type: ImpressionJobMetricEventType,
         start_date: datetime | None = None,
         end_date: datetime | None = None,
     ) -> int:
         """Get the count of job metrics for a given organization ID and event type."""
         expressions = [
-            CoreJobMetric.metadata.organization_id == organization_id,
-            CoreJobMetric.metadata.event_type == event_type,
+            ImpressionJobMetric.metadata.organization_id == organization_id,
+            ImpressionJobMetric.metadata.event_type == event_type,
         ]
 
         if start_date:
-            expressions.append(CoreJobMetric.timestamp >= start_date)
+            expressions.append(ImpressionJobMetric.timestamp >= start_date)
         if end_date:
-            expressions.append(CoreJobMetric.timestamp <= end_date)
+            expressions.append(ImpressionJobMetric.timestamp <= end_date)
 
-        return await CoreJobMetric.find(And(*expressions)).count()
+        return await ImpressionJobMetric.find(And(*expressions)).count()
 
-    async def get_organization_metric_points(
-        self, organization_id: ObjectId, event_type: CoreJobMetricEventType
+    async def get_organization_impression_metric_points(
+        self, organization_id: ObjectId, event_type: ImpressionJobMetricEventType
     ) -> list[dict[str, Any]]:
         pipeline = [
             {
@@ -1041,10 +1041,10 @@ class JobMetricRepo:
             {"$project": {"timestamp": "$_id", "count": 1, "_id": 0}},
         ]
 
-        return await CoreJobMetric.aggregate(pipeline).to_list()
+        return await ImpressionJobMetric.aggregate(pipeline).to_list()
 
-    async def get_metric_points(
-        self, job_id: ObjectId, event_type: CoreJobMetricEventType
+    async def get_impression_metric_points(
+        self, job_id: ObjectId, event_type: ImpressionJobMetricEventType
     ) -> list[dict[str, Any]]:
         pipeline = [
             {"$match": {"metadata.job_id": job_id, "metadata.event_type": event_type}},
@@ -1058,4 +1058,4 @@ class JobMetricRepo:
             {"$project": {"timestamp": "$_id", "count": 1, "_id": 0}},
         ]
 
-        return await CoreJobMetric.aggregate(pipeline).to_list()
+        return await ImpressionJobMetric.aggregate(pipeline).to_list()
