@@ -134,7 +134,6 @@ const formSchema = z.object({
 			]),
 			skills: z.array(z.object({ value: z.string() })),
 			startedAt: z.custom<MonthYearValue>((data) => {
-				if (data === null) return true;
 				if (
 					typeof data === "object" &&
 					data !== null &&
@@ -223,42 +222,44 @@ export default function UpdateWorkExperienceForm({
 		let hasValidationErrors = false;
 		for (let index = 0; index < formData.workExperience.length; index++) {
 			const exp = formData.workExperience[index];
+
+			if (
+				exp.startedAt &&
+				(exp.startedAt.year > new Date().getFullYear() ||
+					(exp.startedAt.year === new Date().getFullYear() &&
+						exp.startedAt.month > new Date().getMonth() + 1))
+			) {
+				setError(
+					`workExperience.${index}.startedAt`,
+					{
+						message: "Start date cannot be in the future",
+					},
+					{ shouldFocus: true },
+				);
+				hasValidationErrors = true;
+			}
+
+			if (
+				exp.completedAt &&
+				(exp.completedAt.year > new Date().getFullYear() ||
+					(exp.completedAt.year === new Date().getFullYear() &&
+						exp.completedAt.month > new Date().getMonth() + 1))
+			) {
+				setError(
+					`workExperience.${index}.completedAt`,
+					{
+						message: "End date cannot be in the future",
+					},
+					{ shouldFocus: true },
+				);
+				hasValidationErrors = true;
+			}
 			if (exp.startedAt && exp.completedAt) {
 				if (exp.startedAt.year > exp.completedAt.year) {
 					setError(
 						`workExperience.${index}.completedAt`,
 						{
 							message: "Start date cannot be after end date",
-						},
-						{ shouldFocus: true },
-					);
-					hasValidationErrors = true;
-				}
-
-				if (
-					exp.startedAt.year > new Date().getFullYear() ||
-					(exp.startedAt.year === new Date().getFullYear() &&
-						exp.startedAt.month > new Date().getMonth() + 1)
-				) {
-					setError(
-						`workExperience.${index}.startedAt`,
-						{
-							message: "Start date cannot be in the future",
-						},
-						{ shouldFocus: true },
-					);
-					hasValidationErrors = true;
-				}
-
-				if (
-					exp.completedAt.year > new Date().getFullYear() ||
-					(exp.completedAt.year === new Date().getFullYear() &&
-						exp.completedAt.month > new Date().getMonth() + 1)
-				) {
-					setError(
-						`workExperience.${index}.completedAt`,
-						{
-							message: "End date cannot be in the future",
 						},
 						{ shouldFocus: true },
 					);

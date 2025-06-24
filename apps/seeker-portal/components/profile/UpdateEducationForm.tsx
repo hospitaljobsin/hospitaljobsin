@@ -86,6 +86,7 @@ export default function UpdateEducationForm({
 	const {
 		handleSubmit,
 		control,
+		setError,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
@@ -119,6 +120,42 @@ export default function UpdateEducationForm({
 	});
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
+		let hasValidationErrors = false;
+		for (let index = 0; index < formData.education.length; index++) {
+			const exp = formData.education[index];
+			if (
+				exp.startedAt &&
+				(exp.startedAt.year > new Date().getFullYear() ||
+					(exp.startedAt.year === new Date().getFullYear() &&
+						exp.startedAt.month > new Date().getMonth() + 1))
+			) {
+				setError(
+					`education.${index}.startedAt`,
+					{
+						message: "Start date cannot be in the future",
+					},
+					{ shouldFocus: true },
+				);
+				hasValidationErrors = true;
+			}
+
+			if (exp.startedAt && exp.completedAt) {
+				if (exp.startedAt.year > exp.completedAt.year) {
+					setError(
+						`education.${index}.completedAt`,
+						{
+							message: "Start date cannot be after end date",
+						},
+						{ shouldFocus: true },
+					);
+					hasValidationErrors = true;
+				}
+			}
+		}
+
+		if (hasValidationErrors) {
+			return;
+		}
 		commitMutation({
 			variables: {
 				education: formData.education.map((edu) => ({
