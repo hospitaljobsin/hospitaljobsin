@@ -2,20 +2,17 @@
 // input EducationInput { degree: String!, institution: String!, yearCompleted: Int! }
 // You must add this input type and the updateProfileEducation mutation on the backend for this to work.
 import type { UpdateEducationFormFragment$key } from "@/__generated__/UpdateEducationFormFragment.graphql";
-import {
-	Button,
-	Card,
-	CardBody,
-	CardHeader,
-	DatePicker,
-	Input,
-} from "@heroui/react";
+import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { CalendarDate, parseDate } from "@internationalized/date";
 import { BookIcon, Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
+import {
+	MonthYearPicker,
+	parseMonthYear,
+	toDateString,
+} from "../forms/MonthYearPicker";
 
 const UpdateEducationFormMutation = graphql`
 mutation UpdateEducationFormMutation($education: [EducationInput!]!) {
@@ -56,10 +53,24 @@ const formSchema = z.object({
 			institution: z
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
-			startedAt: z.custom<CalendarDate>((data) => data instanceof CalendarDate),
-			completedAt: z.custom<CalendarDate>(
-				(data) => data instanceof CalendarDate,
-			),
+			startedAt: z.custom<{ month: number; year: number }>((data) => {
+				return (
+					data &&
+					typeof data === "object" &&
+					data !== null &&
+					typeof data.month === "number" &&
+					typeof data.year === "number"
+				);
+			}, "Start date is required and must be a valid month/year"),
+			completedAt: z.custom<{ month: number; year: number }>((data) => {
+				return (
+					data &&
+					typeof data === "object" &&
+					data !== null &&
+					typeof data.month === "number" &&
+					typeof data.year === "number"
+				);
+			}, "End date is required and must be a valid month/year"),
 		}),
 	),
 });
@@ -85,8 +96,8 @@ export default function UpdateEducationForm({
 							return {
 								degree: edu.degree,
 								institution: edu.institution,
-								startedAt: parseDate(edu.startedAt),
-								completedAt: parseDate(edu.completedAt),
+								startedAt: parseMonthYear(edu.startedAt),
+								completedAt: parseMonthYear(edu.completedAt),
 							};
 						}),
 					}
@@ -95,8 +106,8 @@ export default function UpdateEducationForm({
 							{
 								degree: "",
 								institution: "",
-								startedAt: undefined,
-								completedAt: undefined,
+								startedAt: { month: 1, year: 2000 },
+								completedAt: { month: 1, year: 2000 },
 							},
 						],
 					},
@@ -113,8 +124,8 @@ export default function UpdateEducationForm({
 				education: formData.education.map((edu) => ({
 					degree: edu.degree,
 					institution: edu.institution,
-					startedAt: edu.startedAt.toString(),
-					completedAt: edu.completedAt.toString(),
+					startedAt: toDateString(edu.startedAt),
+					completedAt: toDateString(edu.completedAt),
 				})),
 			},
 		});
@@ -150,8 +161,8 @@ export default function UpdateEducationForm({
 										append({
 											degree: "",
 											institution: "",
-											startedAt: undefined,
-											completedAt: undefined,
+											startedAt: { month: 1, year: 2000 },
+											completedAt: { month: 1, year: 2000 },
 										})
 									}
 								>
@@ -208,45 +219,33 @@ export default function UpdateEducationForm({
 												<Controller
 													control={control}
 													name={`education.${index}.startedAt`}
-													render={({ field }) => {
-														return (
-															<DatePicker
-																label="Start Date"
-																showMonthAndYearPickers
-																selectorButtonPlacement="start"
-																errorMessage={
-																	errors.education?.[index]?.startedAt?.message
-																}
-																isInvalid={
-																	!!errors.education?.[index]?.startedAt
-																}
-																value={field.value ?? undefined}
-																onChange={field.onChange}
-															/>
-														);
-													}}
+													render={({ field }) => (
+														<MonthYearPicker
+															label="Start Date"
+															value={field.value}
+															onChange={field.onChange}
+															errorMessage={
+																errors.education?.[index]?.startedAt?.message
+															}
+															isInvalid={!!errors.education?.[index]?.startedAt}
+														/>
+													)}
 												/>
 											</div>
 											<Controller
 												control={control}
 												name={`education.${index}.completedAt`}
-												render={({ field }) => {
-													return (
-														<DatePicker
-															label="End Date"
-															showMonthAndYearPickers
-															selectorButtonPlacement="start"
-															errorMessage={
-																errors.education?.[index]?.completedAt?.message
-															}
-															isInvalid={
-																!!errors.education?.[index]?.completedAt
-															}
-															value={field.value ?? undefined}
-															onChange={field.onChange}
-														/>
-													);
-												}}
+												render={({ field }) => (
+													<MonthYearPicker
+														label="End Date"
+														value={field.value}
+														onChange={field.onChange}
+														errorMessage={
+															errors.education?.[index]?.completedAt?.message
+														}
+														isInvalid={!!errors.education?.[index]?.completedAt}
+													/>
+												)}
 											/>
 										</div>
 										<Button
@@ -267,15 +266,8 @@ export default function UpdateEducationForm({
 										append({
 											degree: "",
 											institution: "",
-											startedMonth: String(new Date().getMonth() + 1).padStart(
-												2,
-												"0",
-											),
-											startedYear: String(new Date().getFullYear()),
-											completedMonth: String(
-												new Date().getMonth() + 1,
-											).padStart(2, "0"),
-											completedYear: String(new Date().getFullYear()),
+											startedAt: { month: 1, year: 2000 },
+											completedAt: { month: 1, year: 2000 },
 										})
 									}
 								>

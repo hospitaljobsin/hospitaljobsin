@@ -1,6 +1,21 @@
 import { Select, SelectItem } from "@heroui/react";
 import React from "react";
 
+export function parseMonthYear(
+	dateStr: string | null | undefined,
+): MonthYearValue {
+	if (!dateStr) return null;
+	const d = new Date(dateStr);
+	if (Number.isNaN(d.getTime())) return null;
+	return { month: d.getMonth() + 1, year: d.getFullYear() };
+}
+
+export function toDateString(val: MonthYearValue): string | null {
+	if (!val || typeof val.month !== "number" || typeof val.year !== "number")
+		return null;
+	return `${val.year}-${String(val.month).padStart(2, "0")}-01`;
+}
+
 const MONTHS = [
 	{ value: 1, label: "January" },
 	{ value: 2, label: "February" },

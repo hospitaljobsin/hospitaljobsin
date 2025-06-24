@@ -17,7 +17,11 @@ import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
 import { ChipsInput } from "../forms/ChipsInput";
 import type { MonthYearValue } from "../forms/MonthYearPicker";
-import { MonthYearPicker } from "../forms/MonthYearPicker";
+import {
+	MonthYearPicker,
+	parseMonthYear,
+	toDateString,
+} from "../forms/MonthYearPicker";
 
 const UpdateWorkExperienceFormMutation = graphql`
 mutation UpdateWorkExperienceFormMutation($workExperience: [WorkExperienceInput!]!) {
@@ -155,19 +159,6 @@ const formSchema = z.object({
 		}),
 	),
 });
-
-function parseMonthYear(dateStr: string | null | undefined): MonthYearValue {
-	if (!dateStr) return null;
-	const d = new Date(dateStr);
-	if (Number.isNaN(d.getTime())) return null;
-	return { month: d.getMonth() + 1, year: d.getFullYear() };
-}
-
-function toDateString(val: MonthYearValue): string | null {
-	if (!val || typeof val.month !== "number" || typeof val.year !== "number")
-		return null;
-	return `${val.year}-${String(val.month).padStart(2, "0")}-01`;
-}
 
 export default function UpdateWorkExperienceForm({
 	rootQuery,
@@ -401,7 +392,7 @@ export default function UpdateWorkExperienceForm({
 												)}
 											/>
 										</div>
-										<div className="w-full flex gap-4">
+										<div className="w-full flex flex-col sm:flex-row gap-4">
 											<Controller
 												name={`workExperience.${index}.startedAt`}
 												control={control}
