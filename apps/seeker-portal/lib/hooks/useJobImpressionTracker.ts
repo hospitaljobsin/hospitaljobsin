@@ -13,11 +13,18 @@ export const useImpressionTracker = (slug?: string, jobSlug?: string) => {
 			if (hasStartedRef.current) return;
 			hasStartedRef.current = true;
 
-			navigator.sendBeacon?.(
+			fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/organizations/${slug}/jobs/${jobSlug}/log_view_start`,
-				new Blob([JSON.stringify({ impression_id: impressionIdRef.current })], {
-					type: "application/json",
-				}),
+				{
+					method: "POST",
+					body: JSON.stringify({ impression_id: impressionIdRef.current }),
+					keepalive: true, // <== important!
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+				},
 			);
 		};
 
@@ -25,11 +32,18 @@ export const useImpressionTracker = (slug?: string, jobSlug?: string) => {
 			if (!hasStartedRef.current || hasEndedRef.current) return;
 			hasEndedRef.current = true;
 
-			navigator.sendBeacon?.(
+			fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/organizations/${slug}/jobs/${jobSlug}/log_view_end`,
-				new Blob([JSON.stringify({ impression_id: impressionIdRef.current })], {
-					type: "application/json",
-				}),
+				{
+					method: "POST",
+					body: JSON.stringify({ impression_id: impressionIdRef.current }),
+					keepalive: true, // <== important!
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+				},
 			);
 		};
 
