@@ -40,8 +40,7 @@ class License(BaseModel):
     name: str
     issuer: str
     license_number: str
-    issued_at: date
-    expires_at: date
+    registration_year: int
     verification_status: LicenseVerificationStatusEnum
     verified_at: date | None = None
     verification_notes: str | None = None

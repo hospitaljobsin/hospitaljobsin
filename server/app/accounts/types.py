@@ -676,8 +676,7 @@ class LicenseType:
     name: str
     issuer: str
     license_number: str
-    issued_at: date
-    expires_at: date | None
+    registration_year: int
     verification_status: LicenseVerificationStatusEnum
     verified_at: date | None
 
@@ -687,8 +686,7 @@ class LicenseType:
             name=lic.name,
             issuer=lic.issuer,
             license_number=lic.license_number,
-            issued_at=lic.issued_at,
-            expires_at=lic.expires_at,
+            registration_year=lic.registration_year,
             verification_status=LicenseVerificationStatusEnum(lic.verification_status),
             verified_at=lic.verified_at,
         )
@@ -757,9 +755,8 @@ class LicenseInputType:
     name: str = strawberry.field(description="The name of the license.")
     issuer: str = strawberry.field(description="The issuer of the license.")
     license_number: str = strawberry.field(description="The license number.")
-    issued_at: date = strawberry.field(description="When the license was issued.")
-    expires_at: date | None = strawberry.field(
-        description="When the license expires.", default=None
+    registration_year: date = strawberry.field(
+        description="The year when the license was issued."
     )
 
     def to_document(self):
@@ -767,9 +764,8 @@ class LicenseInputType:
             name=self.name,
             issuer=self.issuer,
             license_number=self.license_number,
-            issued_at=self.issued_at,
-            expires_at=self.expires_at,
-            verification_status=self.verification_status.value,
-            verified_at=self.verified_at,
-            verification_notes=self.verification_notes,
+            registration_year=self.registration_year,
+            verification_status="pending",
+            verified_at=None,
+            verification_notes=None,
         )

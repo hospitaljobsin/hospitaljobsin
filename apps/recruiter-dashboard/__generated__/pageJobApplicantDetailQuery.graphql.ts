@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<cba286a169103c0dfde687e0c8f56f20>>
- * @relayHash df46f2c734b843a2ddcce06fd411c42a
+ * @generated SignedSource<<30602b7e0eb50970ab51af0472e8c9af>>
+ * @relayHash b4d0e9648d8bff36eea05548bdff98ba
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID df46f2c734b843a2ddcce06fd411c42a
+// @relayRequestID b4d0e9648d8bff36eea05548bdff98ba
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -79,24 +79,17 @@ v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "expiresAt",
+  "name": "startedAt",
   "storageKey": null
 },
 v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "startedAt",
-  "storageKey": null
-},
-v10 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "completedAt",
   "storageKey": null
 },
-v11 = {
+v10 = {
   "kind": "InlineFragment",
   "selections": [
     (v5/*: any*/)
@@ -270,7 +263,13 @@ return {
                                         "name": "createdAt",
                                         "storageKey": null
                                       },
-                                      (v8/*: any*/)
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "expiresAt",
+                                        "storageKey": null
+                                      }
                                     ],
                                     "storageKey": null
                                   },
@@ -296,8 +295,8 @@ return {
                                         "name": "institution",
                                         "storageKey": null
                                       },
-                                      (v9/*: any*/),
-                                      (v10/*: any*/)
+                                      (v8/*: any*/),
+                                      (v9/*: any*/)
                                     ],
                                     "storageKey": null
                                   },
@@ -341,10 +340,9 @@ return {
                                         "alias": null,
                                         "args": null,
                                         "kind": "ScalarField",
-                                        "name": "issuedAt",
+                                        "name": "registrationYear",
                                         "storageKey": null
                                       },
-                                      (v8/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -433,8 +431,8 @@ return {
                                         "name": "organization",
                                         "storageKey": null
                                       },
+                                      (v8/*: any*/),
                                       (v9/*: any*/),
-                                      (v10/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -492,7 +490,7 @@ return {
                             "type": "JobApplicant",
                             "abstractKey": null
                           },
-                          (v11/*: any*/)
+                          (v10/*: any*/)
                         ],
                         "storageKey": null
                       }
@@ -500,7 +498,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v11/*: any*/)
+                  (v10/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -508,14 +506,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v11/*: any*/)
+          (v10/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "df46f2c734b843a2ddcce06fd411c42a",
+    "id": "b4d0e9648d8bff36eea05548bdff98ba",
     "metadata": {},
     "name": "pageJobApplicantDetailQuery",
     "operationKind": "query",

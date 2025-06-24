@@ -1483,8 +1483,7 @@ type License {
 	name: String!
 	issuer: String!
 	licenseNumber: String!
-	issuedAt: Date!
-	expiresAt: Date
+	registrationYear: Int!
 	verificationStatus: LicenseVerificationStatus!
 	verifiedAt: Date
 }
@@ -1509,14 +1508,9 @@ input LicenseInput {
 	licenseNumber: String!
 
 	"""
-	When the license was issued.
+	The year when the license was issued.
 	"""
-	issuedAt: Date!
-
-	"""
-	When the license expires.
-	"""
-	expiresAt: Date = null
+	registrationYear: Date!
 }
 
 """
@@ -2294,22 +2288,22 @@ type Mutation {
 		"""
 		The gender of the user profile.
 		"""
-		gender: GenderType = null
+		gender: GenderType
 
 		"""
 		The date of birth of the user profile.
 		"""
-		dateOfBirth: Date = null
+		dateOfBirth: Date
 
 		"""
 		The marital status of the user profile.
 		"""
-		maritalStatus: MaritalStatusType = null
+		maritalStatus: MaritalStatusType
 
 		"""
 		The category of the user profile.
 		"""
-		category: String = null
+		category: String
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
@@ -2349,7 +2343,7 @@ type Mutation {
 		"""
 		The address of the user profile (now part of location preferences).
 		"""
-		address: String!
+		address: String
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
@@ -2399,12 +2393,12 @@ type Mutation {
 		"""
 		The professional summary of the user profile.
 		"""
-		professionalSummary: String!
+		professionalSummary: String
 
 		"""
 		The headline of the user profile.
 		"""
-		headline: String!
+		headline: String
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""

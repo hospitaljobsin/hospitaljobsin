@@ -11,8 +11,7 @@ const LicensesFragment = graphql`
       name
       issuer
       licenseNumber
-      issuedAt
-      expiresAt
+      registrationYear
       verificationStatus
       verifiedAt
     }
@@ -62,12 +61,8 @@ export default function Licenses({ rootQuery }: Props) {
 										<p className="italic">{lic.licenseNumber}</p>
 									</div>
 									<div className="w-full flex gap-2 text-foreground-500">
-										<p>Issued:</p>
-										<p>{lic.issuedAt}</p>
-									</div>
-									<div className="w-full flex gap-2 text-foreground-500">
-										<p>Expires:</p>
-										<p>{lic.expiresAt}</p>
+										<p>Registration Year:</p>
+										<p>{lic.registrationYear}</p>
 									</div>
 									<div className="w-full flex gap-2 text-foreground-500">
 										<p>Verification Status:</p>

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8d5f24e42154bc9d18cb47e8eef83d72>>
+ * @generated SignedSource<<2b6aa9d505cc8e5db3475102ee532377>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,11 +14,10 @@ import type { FragmentRefs } from "relay-runtime";
 export type LicensesFragment$data = {
   readonly __typename: "Profile";
   readonly licenses: ReadonlyArray<{
-    readonly expiresAt: any | null | undefined;
-    readonly issuedAt: any;
     readonly issuer: string;
     readonly licenseNumber: string;
     readonly name: string;
+    readonly registrationYear: number;
     readonly verificationStatus: LicenseVerificationStatus;
     readonly verifiedAt: any | null | undefined;
   }>;
@@ -75,14 +74,7 @@ const node: ReaderFragment = {
           "alias": null,
           "args": null,
           "kind": "ScalarField",
-          "name": "issuedAt",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "expiresAt",
+          "name": "registrationYear",
           "storageKey": null
         },
         {
@@ -107,6 +99,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "146de7168caa4f627f60fe35f3d12bad";
+(node as any).hash = "e3ba46900300b23734351d4261040d06";
 
 export default node;

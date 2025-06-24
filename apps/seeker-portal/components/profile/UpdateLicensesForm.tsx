@@ -1,14 +1,7 @@
 import type { UpdateLicensesFormFragment$key } from "@/__generated__/UpdateLicensesFormFragment.graphql";
-import {
-	Button,
-	Card,
-	CardBody,
-	CardHeader,
-	DatePicker,
-	Input,
-} from "@heroui/react";
+import { YearPicker } from "@/components/forms/YearPicker";
+import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { CalendarDate, parseDate } from "@internationalized/date";
 import { IdCardIcon, Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -34,8 +27,7 @@ const UpdateLicensesFormFragment = graphql`
       name
       issuer
       licenseNumber
-      issuedAt
-      expiresAt
+	  registrationYear
     }
   }
 `;
@@ -57,10 +49,15 @@ const formSchema = z.object({
 			licenseNumber: z
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
-			issuedAt: z.custom<CalendarDate>((data) => data instanceof CalendarDate),
-			expiresAt: z.nullable(
-				z.custom<CalendarDate>((data) => data instanceof CalendarDate),
-			),
+			registrationYear: z
+				.number()
+				.check(
+					z.minimum(1900, "Invalid Registration Year"),
+					z.maximum(
+						new Date().getFullYear(),
+						"Registration Year cannot be in the future",
+					),
+				),
 		}),
 	),
 });
@@ -86,8 +83,7 @@ export default function UpdateLicensesForm({
 							name: lic.name,
 							issuer: lic.issuer,
 							licenseNumber: lic.licenseNumber,
-							issuedAt: parseDate(lic.issuedAt),
-							expiresAt: lic.expiresAt ? parseDate(lic.expiresAt) : null,
+							registrationYear: lic.registrationYear,
 						})),
 					}
 				: {
@@ -96,8 +92,7 @@ export default function UpdateLicensesForm({
 								name: "",
 								issuer: "",
 								licenseNumber: "",
-								issuedAt: undefined,
-								expiresAt: undefined,
+								registrationYear: new Date().getFullYear(),
 							},
 						],
 					},
@@ -115,8 +110,7 @@ export default function UpdateLicensesForm({
 					name: lic.name,
 					issuer: lic.issuer,
 					licenseNumber: lic.licenseNumber,
-					issuedAt: lic.issuedAt.toString(),
-					expiresAt: lic.expiresAt ? lic.expiresAt.toString() : null,
+					registrationYear: lic.registrationYear,
 				})),
 			},
 		});
@@ -153,8 +147,7 @@ export default function UpdateLicensesForm({
 											name: "",
 											issuer: "",
 											licenseNumber: "",
-											issuedAt: undefined,
-											expiresAt: null,
+											registrationYear: new Date().getFullYear(),
 										})
 									}
 								>
@@ -229,38 +222,25 @@ export default function UpdateLicensesForm({
 										</div>
 										<div className="w-full space-y-4">
 											<Controller
-												name={`licenses.${index}.issuedAt`}
+												name={`licenses.${index}.registrationYear`}
 												control={control}
 												defaultValue={undefined}
 												render={({ field }) => (
-													<DatePicker
+													<YearPicker
 														{...field}
-														label="Issued At"
+														label="Registration Year"
 														errorMessage={
-															errors.licenses?.[index]?.issuedAt?.message
+															errors.licenses?.[index]?.registrationYear
+																?.message
 														}
-														isInvalid={!!errors.licenses?.[index]?.issuedAt}
+														isInvalid={
+															!!errors.licenses?.[index]?.registrationYear
+														}
 													/>
 												)}
 											/>
 										</div>
-										<div className="w-full space-y-4">
-											<Controller
-												name={`licenses.${index}.expiresAt`}
-												control={control}
-												defaultValue={undefined}
-												render={({ field }) => (
-													<DatePicker
-														{...field}
-														label="Expires At"
-														errorMessage={
-															errors.licenses?.[index]?.expiresAt?.message
-														}
-														isInvalid={!!errors.licenses?.[index]?.expiresAt}
-													/>
-												)}
-											/>
-										</div>
+
 										<Button
 											type="button"
 											variant="bordered"
@@ -280,8 +260,7 @@ export default function UpdateLicensesForm({
 											name: "",
 											issuer: "",
 											licenseNumber: "",
-											issuedAt: undefined,
-											expiresAt: undefined,
+											registrationYear: new Date().getFullYear(),
 										})
 									}
 								>

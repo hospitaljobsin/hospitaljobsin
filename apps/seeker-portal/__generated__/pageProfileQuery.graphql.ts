@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<fdb24c9b665a42c3bc7e90b38f2ba10b>>
- * @relayHash 157c0e1e5a81bc55f2fe0e2f36cefaf0
+ * @generated SignedSource<<37a8083735739de7326f2d1b6375260d>>
+ * @relayHash c8621b2ec71d4ae4b3346b131c0e2975
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 157c0e1e5a81bc55f2fe0e2f36cefaf0
+// @relayRequestID c8621b2ec71d4ae4b3346b131c0e2975
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -63,13 +63,6 @@ v5 = {
   "args": null,
   "kind": "ScalarField",
   "name": "issuer",
-  "storageKey": null
-},
-v6 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "expiresAt",
   "storageKey": null
 };
 return {
@@ -313,7 +306,13 @@ return {
                         "name": "createdAt",
                         "storageKey": null
                       },
-                      (v6/*: any*/)
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "expiresAt",
+                        "storageKey": null
+                      }
                     ],
                     "storageKey": null
                   },
@@ -338,10 +337,9 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "issuedAt",
+                        "name": "registrationYear",
                         "storageKey": null
                       },
-                      (v6/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -380,7 +378,7 @@ return {
     ]
   },
   "params": {
-    "id": "157c0e1e5a81bc55f2fe0e2f36cefaf0",
+    "id": "c8621b2ec71d4ae4b3346b131c0e2975",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",

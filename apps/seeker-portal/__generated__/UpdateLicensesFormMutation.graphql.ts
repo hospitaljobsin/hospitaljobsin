@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c08ed56718347de35bb5a3b30acca143>>
- * @relayHash d0ef1a743f88611b5ec6c944a701b0ab
+ * @generated SignedSource<<29ed440c7bc1d1fd796d5ea444c9992b>>
+ * @relayHash 45850f0965a6630581cff5631c6fa302
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,16 +9,15 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d0ef1a743f88611b5ec6c944a701b0ab
+// @relayRequestID 45850f0965a6630581cff5631c6fa302
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type LicenseInput = {
-  expiresAt?: any | null | undefined;
-  issuedAt: any;
   issuer: string;
   licenseNumber: string;
   name: string;
+  registrationYear: any;
 };
 export type UpdateLicensesFormMutation$variables = {
   licenses: ReadonlyArray<LicenseInput>;
@@ -184,14 +183,7 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "issuedAt",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "expiresAt",
+                        "name": "registrationYear",
                         "storageKey": null
                       }
                     ],
@@ -218,7 +210,7 @@ return {
     ]
   },
   "params": {
-    "id": "d0ef1a743f88611b5ec6c944a701b0ab",
+    "id": "45850f0965a6630581cff5631c6fa302",
     "metadata": {},
     "name": "UpdateLicensesFormMutation",
     "operationKind": "mutation",
