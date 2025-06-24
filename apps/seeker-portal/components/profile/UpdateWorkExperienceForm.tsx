@@ -203,7 +203,7 @@ export default function UpdateWorkExperienceForm({
 		handleSubmit,
 		control,
 		formState: { errors, isSubmitting },
-		watch,
+		setError,
 	} = useForm<WorkExperienceFormType>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues,
@@ -220,6 +220,57 @@ export default function UpdateWorkExperienceForm({
 	});
 
 	function onSubmit(formData: WorkExperienceFormType) {
+		let hasValidationErrors = false;
+		for (let index = 0; index < formData.workExperience.length; index++) {
+			const exp = formData.workExperience[index];
+			if (exp.startedAt && exp.completedAt) {
+				if (exp.startedAt.year > exp.completedAt.year) {
+					setError(
+						`workExperience.${index}.completedAt`,
+						{
+							message: "Start date cannot be after end date",
+						},
+						{ shouldFocus: true },
+					);
+					hasValidationErrors = true;
+				}
+
+				if (
+					exp.startedAt.year > new Date().getFullYear() ||
+					(exp.startedAt.year === new Date().getFullYear() &&
+						exp.startedAt.month > new Date().getMonth() + 1)
+				) {
+					setError(
+						`workExperience.${index}.startedAt`,
+						{
+							message: "Start date cannot be in the future",
+						},
+						{ shouldFocus: true },
+					);
+					hasValidationErrors = true;
+				}
+
+				if (
+					exp.completedAt.year > new Date().getFullYear() ||
+					(exp.completedAt.year === new Date().getFullYear() &&
+						exp.completedAt.month > new Date().getMonth() + 1)
+				) {
+					setError(
+						`workExperience.${index}.completedAt`,
+						{
+							message: "End date cannot be in the future",
+						},
+						{ shouldFocus: true },
+					);
+					hasValidationErrors = true;
+				}
+			}
+		}
+
+		if (hasValidationErrors) {
+			return;
+		}
+
 		commitMutation({
 			variables: {
 				workExperience: formData.workExperience.map((exp) => ({
