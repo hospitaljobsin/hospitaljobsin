@@ -119,6 +119,18 @@ class ApplicantField(BaseModel):
     field_value: str
 
 
+class ApplicantAIInsight(BaseModel):
+    match_type: Literal["PERFECT", "CLOSE", "LOW"] = Field(
+        ..., description="The type of match."
+    )
+    score: int = Field(..., description="The match score, from 0 to 100.")
+    summary: str = Field(..., description="A one-sentence summary of the match.")
+    match_reasons: list[str] = Field(..., description="The reasons for the match.")
+    mismatched_fields: list[str] = Field(
+        ..., description="The fields that did not match."
+    )
+
+
 class JobApplicant(Document):
     profile_snapshot: BaseProfile
     profile_embedding: list[float] | None = None
@@ -152,14 +164,14 @@ class JobApplicant(Document):
 
     def __init__(self, **data: Any) -> None:
         super().__init__(**data)
-        self.__ai_insight_data: dict[str, Any] | None = None
+        self.__ai_insight_data: ApplicantAIInsight | None = None
 
     @property
-    def ai_insight_data(self) -> dict[str, Any] | None:
+    def ai_insight_data(self) -> ApplicantAIInsight | None:
         return self.__ai_insight_data
 
     @ai_insight_data.setter
-    def ai_insight_data(self, value: dict[str, Any] | None) -> None:
+    def ai_insight_data(self, value: ApplicantAIInsight | None) -> None:
         self.__ai_insight_data = value
 
 

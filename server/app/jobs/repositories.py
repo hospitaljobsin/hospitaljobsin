@@ -12,6 +12,7 @@ from bson import ObjectId
 from app.accounts.documents import Account, BaseProfile, SalaryExpectations
 from app.base.models import GeoObject
 from app.core.constants import (
+    RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD,
     RELATED_JOBS_SIMILARITY_THRESHOLD,
     CoreJobMetricEventType,
     ImpressionJobMetricEventType,
@@ -826,6 +827,63 @@ class JobApplicantRepo:
             last=last,
             before=ObjectId(before) if before else None,
             after=ObjectId(after) if after else None,
+        )
+
+    async def vector_search(
+        self,
+        job_id: ObjectId,
+        query: str,
+        top_k: int,
+        status: JobApplicantStatus | None = None,
+    ) -> PaginatedResult[JobApplicant, ObjectId]:
+        query_embedding = await self._embeddings_service.generate_embeddings(
+            text=query,
+            task_type="RETRIEVAL_QUERY",
+        )
+        pipeline = [
+            {
+                "$vectorSearch": {
+                    "index": "job_applicant_embedding_vector_index",
+                    "path": "profile_embedding",
+                    "queryVector": query_embedding,
+                    "numCandidates": top_k * 4,
+                    "limit": top_k,
+                }
+            },
+        ]
+
+        if status is not None:
+            pipeline.append({"$match": {"job.$id": ObjectId(job_id), "status": status}})
+        else:
+            pipeline.append({"$match": {"job.$id": ObjectId(job_id)}})
+        pipeline.extend(
+            [
+                {"$addFields": {"search_score": {"$meta": "vectorSearchScore"}}},
+                {
+                    "$match": {
+                        "search_score": {
+                            "$gte": RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD
+                        }
+                    }
+                },
+                {"$sort": {"search_score": -1}},
+            ]
+        )
+
+        search_criteria = JobApplicant.aggregate(
+            pipeline, projection_model=JobApplicant
+        )
+
+        paginator: Paginator[JobApplicant, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=JobApplicant,
+            paginate_by="id",
+        )
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=top_k,
+            last=None,
         )
 
 

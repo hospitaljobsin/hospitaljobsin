@@ -69,6 +69,9 @@ from app.core.templates import create_jinja2_environment
 from app.crews.filter_job.services import AgenticProfileFilterService
 from app.dataloaders import create_dataloaders
 from app.embeddings.services import EmbeddingsService
+from app.jobs.agents import (
+    create_job_applicant_filtering_agent,
+)
 from app.jobs.dataloaders import (
     create_applicant_count_by_job_id_dataloader,
     create_job_applicant_by_id_dataloader,
@@ -245,5 +248,6 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_job_applicant_by_slug_dataloader))
     container.register(aioinject.Scoped(create_dataloaders))
     container.register(aioinject.Scoped(AgenticProfileFilterService))
+    container.register(aioinject.Singleton(create_job_applicant_filtering_agent))
 
     return container

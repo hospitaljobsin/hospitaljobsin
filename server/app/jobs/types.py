@@ -34,6 +34,7 @@ from app.base.types import (
 from app.context import Info
 from app.crews.filter_job.services import AgenticProfileFilterService
 from app.jobs.documents import (
+    ApplicantAIInsight,
     ApplicantField,
     ApplicationField,
     Job,
@@ -294,13 +295,13 @@ class AIApplicantInsightType:
     ]
 
     @classmethod
-    def marshal(cls, data: dict[str, Any]) -> Self:
+    def marshal(cls, data: ApplicantAIInsight) -> Self:
         return cls(
-            match_type=AIApplicantMatchType(data["matchType"]),
-            score=data["score"],
-            summary=data["summary"],
-            match_reasons=data["matchReasons"],
-            mismatched_fields=data["mismatchedFields"],
+            match_type=AIApplicantMatchType(data.match_type),
+            score=data.score,
+            summary=data.summary,
+            match_reasons=data.match_reasons,
+            mismatched_fields=data.mismatched_fields,
         )
 
 
