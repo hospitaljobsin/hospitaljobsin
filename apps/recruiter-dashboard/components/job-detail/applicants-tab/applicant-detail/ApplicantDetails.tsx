@@ -54,6 +54,11 @@ export default function ApplicantDetails({
 		value: data.profileSnapshot.headline,
 	});
 
+	useCopilotReadable({
+		description: "The current applicant's answered screening questions",
+		value: data.applicantFields,
+	});
+
 	return (
 		<div className="w-full flex flex-col gap-12">
 			{/* Applicant Header Card */}

@@ -1,0 +1,84 @@
+Here’s the updated PRD with the explicit requirement to use motion/react (Framer Motion) for all animations and transitions:
+
+---
+
+# PRD: Responsive ChatInterface as Mobile Popup (CopilotKit Headless, Framer Motion Animations)
+
+## Overview
+
+Transform the existing ChatInterface in ApplicantDetailView so that:
+- On desktop/tablet: It remains a sidebar as currently implemented.
+- On mobile: It becomes a floating action button (FAB) or similar trigger, which opens the chat as a fullscreen modal/popup overlay.
+- The implementation must use CopilotKit in fully headless mode, allowing for a custom UI/UX.
+- All animations and transitions must use motion/react (Framer Motion).
+- The solution must be reusable for other pages/components if needed.
+
+## Goals
+
+- Provide an optimal chat experience for both desktop and mobile users.
+- Ensure the chat does not take up screen real estate on mobile until explicitly opened.
+- Maintain accessibility and usability standards.
+- Keep the UI/UX consistent with the rest of the application and use the existing design system (HeroUI, Tailwind, etc.).
+- Use Framer Motion for all animated transitions.
+
+## Requirements
+
+### Functional
+
+1. **Responsive Layout**
+   - On screens ≥ md: ChatInterface remains a sticky sidebar as currently implemented.
+   - On screens < md: ChatInterface is hidden by default; a floating button (FAB) is shown instead.
+   - Tapping the FAB opens the ChatInterface in a fullscreen modal/popup overlay.
+   - The modal can be closed via a close button or swipe-down gesture (if feasible).
+
+2. **CopilotKit Integration**
+   - Continue using CopilotKit in fully headless mode.
+   - Ensure all chat logic, state, and context are preserved between sidebar and modal modes.
+   - The UI for the chat modal is fully custom, matching the app’s style.
+
+3. **Accessibility**
+   - Modal must be accessible (focus trap, ARIA roles, keyboard navigation).
+   - FAB must be accessible and screen-reader friendly.
+
+4. **Reusability**
+   - The responsive ChatInterface should be implemented as a reusable component or hook, so it can be used elsewhere.
+
+5. **Animation & UX**
+   - All modal open/close and FAB transitions must use motion/react (Framer Motion).
+   - Smooth, performant transitions for opening/closing the modal and FAB appearance/disappearance.
+   - Prevent background scrolling when modal is open.
+
+### Non-Functional
+
+- Must use Tailwind CSS for styling.
+- Must use HeroUI and lucide-react for UI elements/icons.
+- No hardcoded breakpoints; use Tailwind’s responsive utilities.
+- No server-side rendering for the chat modal (SPA only).
+- No impact on existing desktop experience.
+
+## Out of Scope
+
+- Changes to CopilotKit’s backend or business logic.
+- Non-mobile breakpoints (focus is on mobile < md).
+- Non-React/Next.js environments.
+
+## Deliverables
+
+- Updated ChatInterface component (or wrapper) with responsive logic.
+- New FAB and modal components as needed, with all animations handled by motion/react.
+- Updated ApplicantDetailView to use the new responsive chat.
+- Unit tests for the new components and logic.
+- Documentation/comments for reusability.
+
+## Acceptance Criteria
+
+- On desktop, chat appears as sidebar as before.
+- On mobile, chat is hidden until FAB is tapped, then appears fullscreen.
+- Modal is accessible and can be closed.
+- All modal and FAB transitions use Framer Motion (motion/react).
+- No regression in chat functionality or layout.
+- Code is modular, reusable, and follows project conventions.
+
+---
+
+Let me know if you want this PRD saved to your project or want to proceed with task breakdown!
