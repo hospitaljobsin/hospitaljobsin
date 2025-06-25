@@ -38,6 +38,35 @@ export default $config({
 				AWS_SECRET_ID: process.env.AWS_SECRET_ID,
 				API_URL: process.env.API_URL,
 			},
+			assets: {
+				textEncoding: "utf-8",
+				versionedFilesCacheHeader: "public,max-age=31536000,immutable",
+				nonVersionedFilesCacheHeader:
+					"public,max-age=0,s-maxage=86400,stale-while-revalidate=8640",
+				fileOptions: [
+					{
+						// Cache JS/CSS chunks forever
+						files: [
+							"**/*.js",
+							"**/*.css",
+							"**/*.woff2",
+							"**/*.ttf",
+							"**/*.eot",
+						],
+						cacheControl: "public,max-age=31536000,immutable",
+					},
+					// {
+					// 	// Disable cache for source maps (optional)
+					// 	files: ["**/*.map"],
+					// 	cacheControl: "no-store",
+					// },
+					// {
+					// 	// Custom control for images or zip files (optional)
+					// 	files: ["**/*.zip"],
+					// 	cacheControl: "private,no-cache,no-store,must-revalidate",
+					// },
+				],
+			},
 			// uncomment the following block after the VPC is properly setup using endpoints
 			// (right now, the API can be accessed from the public internet only)
 			// vpc: {
