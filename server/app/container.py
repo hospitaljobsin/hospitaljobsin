@@ -1,10 +1,13 @@
-from collections.abc import Mapping
+import contextlib
+from collections.abc import AsyncIterator, Mapping
 from functools import lru_cache
 from typing import Any, assert_never
 
 import aioinject
+import sentry_sdk
 from aioinject import Scope
-from aioinject.extensions import ProviderExtension
+from aioinject.context import ProviderRecord
+from aioinject.extensions import OnResolveContextExtension, ProviderExtension
 from aioinject.extensions.providers import (
     CacheDirective,
     ProviderInfo,
@@ -155,6 +158,20 @@ class SettingsProviderExtension(
         )
 
 
+class SentryInstrumentation(OnResolveContextExtension):
+    def __init__(self, *, enabled: bool = True) -> None:
+        self.enabled = enabled
+
+    @contextlib.asynccontextmanager
+    async def on_resolve_context(
+        self, provider: ProviderRecord[Any]
+    ) -> AsyncIterator[None]:
+        with sentry_sdk.start_span(
+            op="di.provide", description=f"{provider.info.interface}"
+        ):
+            yield
+
+
 def register_email_sender(container: aioinject.Container) -> None:
     email_settings = get_settings(EmailSettings)
 
@@ -189,7 +206,9 @@ def register_location_service(container: aioinject.Container) -> None:
 
 @lru_cache
 def create_container() -> aioinject.Container:
-    container = aioinject.Container(extensions=[SettingsProviderExtension()])
+    container = aioinject.Container(
+        extensions=[SettingsProviderExtension(), SentryInstrumentation()]
+    )
     for settings_cls in settings_classes:
         container.register(SettingsProvider(settings_cls))
     container.register(aioinject.Singleton(create_jinja2_environment))
