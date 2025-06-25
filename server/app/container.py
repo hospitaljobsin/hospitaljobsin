@@ -199,7 +199,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_s3_client))
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_captcha_verifier))
-    container.register(aioinject.Transient(create_google_genai_client))
+    container.register(aioinject.Singleton(create_google_genai_client))
     app_settings = get_settings(AppSettings)
     if app_settings.is_testing:
         container.register(aioinject.Scoped(TestSetupService))
