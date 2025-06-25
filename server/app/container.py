@@ -203,7 +203,7 @@ def create_container() -> aioinject.Container:
     app_settings = get_settings(AppSettings)
     if app_settings.is_testing:
         container.register(aioinject.Scoped(TestSetupService))
-    container.register(aioinject.Transient(EmbeddingsService))
+    container.register(aioinject.Singleton(EmbeddingsService))
     container.register(aioinject.Transient(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
     container.register(aioinject.Scoped(AuthService))
