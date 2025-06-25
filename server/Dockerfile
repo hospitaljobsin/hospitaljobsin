@@ -5,7 +5,7 @@ FROM python:$PYTHON_BASE AS development
 
 # Install curl
 RUN apt-get update && \
-    apt-get install -y build-essential curl && \
+    apt-get install -y build-essential curl git && \
     rm -rf /var/lib/apt/lists/*
 
 
@@ -64,7 +64,7 @@ RUN unzip layer.zip -d /opt && \
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
 
 RUN apt-get update && \
-    apt-get install -y build-essential && \
+    apt-get install -y build-essential git && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
