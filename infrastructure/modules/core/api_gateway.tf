@@ -3,17 +3,6 @@ resource "aws_apigatewayv2_api" "this" {
   description   = "API Gateway for ${var.app_name} backend"
   protocol_type = "HTTP"
 
-  cors_configuration {
-    allow_credentials = true
-    allow_origins = [
-      "https://${var.domain_name}",
-      "https://*.${var.domain_name}",
-    ]
-    allow_methods  = ["*"]
-    allow_headers  = ["*"]
-    expose_headers = ["*"]
-  }
-
   lifecycle {
     create_before_destroy = true
   }
