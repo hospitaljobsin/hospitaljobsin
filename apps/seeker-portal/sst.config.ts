@@ -57,6 +57,14 @@ export default $config({
 					resources: ["*"], // TODO: restrict to the secret ARN
 				},
 			],
+			// transform: {
+			// 	server(args, opts, name) {
+			// 		args.concurrency = {
+			// 			provisioned: 1,
+			// 			reserved: 25,
+			// 		};
+			// 	},
+			// },
 		});
 	},
 });

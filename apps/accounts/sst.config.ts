@@ -66,6 +66,12 @@ export default $config({
 						viewerProtocolPolicy: "redirect-to-https",
 					};
 				},
+				// 	server(args, opts, name) {
+				// 		args.concurrency = {
+				// 			provisioned: 1,
+				// 			reserved: 25,
+				// 		};
+				// 	},
 			},
 		});
 	},
