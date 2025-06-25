@@ -1253,3 +1253,14 @@ class CreateJobApplicantResumePresignedURLPayloadType:
     presigned_url: str = strawberry.field(
         description="The presigned URL for uploading the job applicant's resume.",
     )
+
+
+@strawberry.type(
+    name="LogJobViewPayload",
+    description="The payload for logging a job view.",
+)
+class LogJobViewPayloadType:
+    status: str = strawberry.field(
+        description="The status of the job view log.",
+        default="OK",
+    )

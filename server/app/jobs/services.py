@@ -141,17 +141,13 @@ class JobService:
     async def log_view_start(
         self,
         request: Request,
-        slug: str,
-        organization_slug: str,
-        impression_id: uuid.UUID,
+        job_id: ObjectId,
+        impression_id: str,
         account_id: ObjectId | None = None,
     ) -> Result[ImpressionJobMetric, JobNotFoundError]:
         """Log a job view start."""
-        organization = await self._organization_repo.get_by_slug(organization_slug)
-        if organization is None:
-            return Err(JobNotFoundError())
-        existing_job = await self._job_repo.get_by_slug(
-            slug=slug, organization_id=organization.id
+        existing_job = await self._job_repo.get(
+            job_id=job_id,
         )
         if existing_job is None:
             return Err(JobNotFoundError())
@@ -162,7 +158,7 @@ class JobService:
             event_type="view_start",
             account_id=account_id,
             fingerprint_id=request.state.fingerprint,
-            impression_id=str(impression_id),
+            impression_id=impression_id,
         )
 
         return Ok(metric)
@@ -170,17 +166,13 @@ class JobService:
     async def log_view_end(
         self,
         request: Request,
-        slug: str,
-        organization_slug: str,
-        impression_id: uuid.UUID,
+        job_id: ObjectId,
+        impression_id: str,
         account_id: ObjectId | None = None,
     ) -> Result[ImpressionJobMetric, JobNotFoundError]:
         """Log a job view end."""
-        organization = await self._organization_repo.get_by_slug(organization_slug)
-        if organization is None:
-            return Err(JobNotFoundError())
-        existing_job = await self._job_repo.get_by_slug(
-            slug=slug, organization_id=organization.id
+        existing_job = await self._job_repo.get(
+            job_id=job_id,
         )
         if existing_job is None:
             return Err(JobNotFoundError())
@@ -191,7 +183,7 @@ class JobService:
             event_type="view_end",
             account_id=account_id,
             fingerprint_id=request.state.fingerprint,
-            impression_id=str(impression_id),
+            impression_id=impression_id,
         )
 
         return Ok(metric)

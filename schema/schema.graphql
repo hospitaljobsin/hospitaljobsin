@@ -1523,6 +1523,16 @@ enum LicenseVerificationStatus {
 }
 
 """
+The payload for logging a job view.
+"""
+type LogJobViewPayload {
+	"""
+	The status of the job view log.
+	"""
+	status: String!
+}
+
+"""
 The login with passkey payload.
 """
 union LoginWithPasskeyPayload =
@@ -2280,6 +2290,36 @@ type Mutation {
 	"""
 	createJobApplicantResumePresignedUrl: CreateJobApplicantResumePresignedURLPayload!
 		@isAuthenticated
+
+	"""
+	Log a job view start.
+	"""
+	logJobViewStart(
+		"""
+		The ID of the impression to log the view start for.
+		"""
+		impressionId: String!
+
+		"""
+		The ID of the job to log the view start for.
+		"""
+		jobId: ID!
+	): LogJobViewPayload! @isAuthenticated
+
+	"""
+	Log a job view end.
+	"""
+	logJobViewEnd(
+		"""
+		The ID of the impression to log the view start for.
+		"""
+		impressionId: String!
+
+		"""
+		The ID of the job to log the view start for.
+		"""
+		jobId: ID!
+	): LogJobViewPayload! @isAuthenticated
 
 	"""
 	Update the current user's profile personal details.

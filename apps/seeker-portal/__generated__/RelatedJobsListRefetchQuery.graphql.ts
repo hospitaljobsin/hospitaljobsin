@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<7d387a81853746c43b7d1bf52ab17ff4>>
- * @relayHash 4ce3d10e81c24b2aa1b92f3ca4b3d7b4
+ * @generated SignedSource<<589c74e509183fe57b94258612208cda>>
+ * @relayHash f4d6bf1ffe8426c05fae9ba0f638d2af
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,23 +9,23 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 4ce3d10e81c24b2aa1b92f3ca4b3d7b4
+// @relayRequestID f4d6bf1ffe8426c05fae9ba0f638d2af
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type RelatedJobsListInternalRefetchQuery$variables = {
+export type RelatedJobsListRefetchQuery$variables = {
   count?: number | null | undefined;
   cursor?: string | null | undefined;
   id: string;
 };
-export type RelatedJobsListInternalRefetchQuery$data = {
+export type RelatedJobsListRefetchQuery$data = {
   readonly node: {
-    readonly " $fragmentSpreads": FragmentRefs<"RelatedJobsListInternalFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"RelatedJobsListFragment">;
   } | null | undefined;
 };
-export type RelatedJobsListInternalRefetchQuery = {
-  response: RelatedJobsListInternalRefetchQuery$data;
-  variables: RelatedJobsListInternalRefetchQuery$variables;
+export type RelatedJobsListRefetchQuery = {
+  response: RelatedJobsListRefetchQuery$data;
+  variables: RelatedJobsListRefetchQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -91,7 +91,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "RelatedJobsListInternalRefetchQuery",
+    "name": "RelatedJobsListRefetchQuery",
     "selections": [
       {
         "alias": null,
@@ -115,7 +115,7 @@ return {
               }
             ],
             "kind": "FragmentSpread",
-            "name": "RelatedJobsListInternalFragment"
+            "name": "RelatedJobsListFragment"
           }
         ],
         "storageKey": null
@@ -128,7 +128,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "RelatedJobsListInternalRefetchQuery",
+    "name": "RelatedJobsListRefetchQuery",
     "selections": [
       {
         "alias": null,
@@ -341,7 +341,7 @@ return {
                 "args": (v4/*: any*/),
                 "filters": null,
                 "handle": "connection",
-                "key": "RelatedJobsListInternalFragment_relatedJobs",
+                "key": "RelatedJobsListFragment_relatedJobs",
                 "kind": "LinkedHandle",
                 "name": "relatedJobs"
               }
@@ -355,15 +355,15 @@ return {
     ]
   },
   "params": {
-    "id": "4ce3d10e81c24b2aa1b92f3ca4b3d7b4",
+    "id": "f4d6bf1ffe8426c05fae9ba0f638d2af",
     "metadata": {},
-    "name": "RelatedJobsListInternalRefetchQuery",
+    "name": "RelatedJobsListRefetchQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "e9f177a5006181373682a08a968e082e";
+(node as any).hash = "ab1d6165778639a062e0d284fab6efa3";
 
 export default node;

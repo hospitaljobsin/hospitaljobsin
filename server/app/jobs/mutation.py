@@ -4,13 +4,14 @@ from typing import Annotated, assert_never
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
+from bson import ObjectId
 from result import Err, Ok
 from strawberry import relay
 from strawberry.permission import PermissionExtension
 
 from app.accounts.exceptions import AccountProfileIncompleteError
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
-from app.context import AuthInfo
+from app.context import AuthInfo, Info
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     JobApplicantAlreadyExistsError,
@@ -59,6 +60,7 @@ from .types import (
     JobNotPublishedErrorType,
     JobType,
     JobTypeEnum,
+    LogJobViewPayloadType,
     PublishJobPayload,
     SavedJobEdgeType,
     SavedJobNotFoundErrorType,
@@ -762,3 +764,83 @@ class JobMutation:
         """Create a job applicant resume presigned url."""
         result = await job_applicant_service.create_resume_presigned_url()
         return CreateJobApplicantResumePresignedURLPayloadType(presigned_url=result)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=LogJobViewPayloadType,
+        description="Log a job view start.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def log_job_view_start(
+        self,
+        info: Info,
+        job_service: Annotated[JobService, Inject],
+        impression_id: Annotated[
+            str,
+            strawberry.argument(
+                description="The ID of the impression to log the view start for.",
+            ),
+        ],
+        job_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the job to log the view start for.",
+            ),
+        ],
+    ) -> LogJobViewPayloadType:
+        """Log a job view start."""
+        await job_service.log_view_start(
+            request=info.context["request"],
+            job_id=ObjectId(job_id.node_id),
+            impression_id=impression_id,
+            account_id=info.context["current_user"].id
+            if info.context["current_user"]
+            else None,
+        )
+        return LogJobViewPayloadType()
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=LogJobViewPayloadType,
+        description="Log a job view end.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def log_job_view_end(
+        self,
+        info: Info,
+        job_service: Annotated[JobService, Inject],
+        impression_id: Annotated[
+            str,
+            strawberry.argument(
+                description="The ID of the impression to log the view start for.",
+            ),
+        ],
+        job_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the job to log the view start for.",
+            ),
+        ],
+    ) -> LogJobViewPayloadType:
+        """Log a job view end."""
+        await job_service.log_view_end(
+            request=info.context["request"],
+            job_id=ObjectId(job_id.node_id),
+            impression_id=impression_id,
+            account_id=info.context["current_user"].id
+            if info.context["current_user"]
+            else None,
+        )
+        return LogJobViewPayloadType()

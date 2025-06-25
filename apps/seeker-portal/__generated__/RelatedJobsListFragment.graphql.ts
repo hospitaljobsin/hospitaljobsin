@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8c279c9c107d1f355a1ba655f87f4482>>
+ * @generated SignedSource<<7052bf33880c6a3f9f20f8649b8c38ae>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,20 +11,17 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type RelatedJobsListFragment$data = {
-  readonly organization: {
-    readonly __typename: "Organization";
-    readonly job: {
-      readonly __typename: "Job";
-      readonly " $fragmentSpreads": FragmentRefs<"RelatedJobsListInternalFragment">;
-    } | {
-      // This will never be '%other', but we need some
-      // value in case none of the concrete values match.
-      readonly __typename: "%other";
+  readonly id: string;
+  readonly relatedJobs: {
+    readonly edges: ReadonlyArray<{
+      readonly node: {
+        readonly id: string;
+        readonly " $fragmentSpreads": FragmentRefs<"RelatedJobFragment">;
+      };
+    }>;
+    readonly pageInfo: {
+      readonly hasNextPage: boolean;
     };
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
   };
   readonly " $fragmentType": "RelatedJobsListFragment";
 };
@@ -33,92 +30,148 @@ export type RelatedJobsListFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"RelatedJobsListFragment">;
 };
 
+import RelatedJobsListRefetchQuery_graphql from './RelatedJobsListRefetchQuery.graphql';
+
 const node: ReaderFragment = (function(){
-var v0 = {
+var v0 = [
+  "relatedJobs"
+],
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
+  "name": "id",
   "storageKey": null
 };
 return {
   "argumentDefinitions": [
     {
-      "defaultValue": null,
+      "defaultValue": 10,
       "kind": "LocalArgument",
-      "name": "jobSlug"
+      "name": "count"
     },
     {
       "defaultValue": null,
       "kind": "LocalArgument",
-      "name": "slug"
+      "name": "cursor"
     }
   ],
   "kind": "Fragment",
-  "metadata": null,
+  "metadata": {
+    "connection": [
+      {
+        "count": "count",
+        "cursor": "cursor",
+        "direction": "forward",
+        "path": (v0/*: any*/)
+      }
+    ],
+    "refetch": {
+      "connection": {
+        "forward": {
+          "count": "count",
+          "cursor": "cursor"
+        },
+        "backward": null,
+        "path": (v0/*: any*/)
+      },
+      "fragmentPathInResult": [
+        "node"
+      ],
+      "operation": RelatedJobsListRefetchQuery_graphql,
+      "identifierInfo": {
+        "identifierField": "id",
+        "identifierQueryVariableName": "id"
+      }
+    }
+  },
   "name": "RelatedJobsListFragment",
   "selections": [
     {
-      "alias": null,
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "slug",
-          "variableName": "slug"
-        }
-      ],
-      "concreteType": null,
+      "alias": "relatedJobs",
+      "args": null,
+      "concreteType": "JobConnection",
       "kind": "LinkedField",
-      "name": "organization",
+      "name": "__RelatedJobsListFragment_relatedJobs_connection",
       "plural": false,
       "selections": [
-        (v0/*: any*/),
         {
-          "kind": "InlineFragment",
+          "alias": null,
+          "args": null,
+          "concreteType": "JobEdge",
+          "kind": "LinkedField",
+          "name": "edges",
+          "plural": true,
           "selections": [
             {
               "alias": null,
-              "args": [
-                {
-                  "kind": "Variable",
-                  "name": "slug",
-                  "variableName": "jobSlug"
-                }
-              ],
-              "concreteType": null,
+              "args": null,
+              "concreteType": "Job",
               "kind": "LinkedField",
-              "name": "job",
+              "name": "node",
               "plural": false,
               "selections": [
-                (v0/*: any*/),
+                (v1/*: any*/),
                 {
-                  "kind": "InlineFragment",
-                  "selections": [
-                    {
-                      "args": null,
-                      "kind": "FragmentSpread",
-                      "name": "RelatedJobsListInternalFragment"
-                    }
-                  ],
-                  "type": "Job",
-                  "abstractKey": null
+                  "args": null,
+                  "kind": "FragmentSpread",
+                  "name": "RelatedJobFragment"
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "__typename",
+                  "storageKey": null
                 }
               ],
               "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "cursor",
+              "storageKey": null
             }
           ],
-          "type": "Organization",
-          "abstractKey": null
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "PageInfo",
+          "kind": "LinkedField",
+          "name": "pageInfo",
+          "plural": false,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "hasNextPage",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "endCursor",
+              "storageKey": null
+            }
+          ],
+          "storageKey": null
         }
       ],
       "storageKey": null
-    }
+    },
+    (v1/*: any*/)
   ],
-  "type": "Query",
+  "type": "Job",
   "abstractKey": null
 };
 })();
 
-(node as any).hash = "92b09c3628cedba7ec13259c748ac258";
+(node as any).hash = "ab1d6165778639a062e0d284fab6efa3";
 
 export default node;

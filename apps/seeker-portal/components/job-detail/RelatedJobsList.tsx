@@ -1,41 +1,21 @@
 import type { RelatedJobsListFragment$key } from "@/__generated__/RelatedJobsListFragment.graphql";
-import type { RelatedJobsListInternalFragment$key } from "@/__generated__/RelatedJobsListInternalFragment.graphql";
 import type { pageJobDetailViewQuery } from "@/__generated__/pageJobDetailViewQuery.graphql";
 import { SearchIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { useFragment, usePaginationFragment } from "react-relay";
+import { usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 import RelatedJob from "./RelatedJob";
 import RelatedJobsListSkeleton from "./RelatedJobsListSkeleton";
-const RelatedJobsListFragment = graphql`
-  fragment RelatedJobsListFragment on Query @argumentDefinitions(
-	slug: { type: "String!"}
-	jobSlug: { type: "String!"}
-    ) {
-		organization(slug: $slug) {
-		__typename
-		... on Organization {
-			job(slug: $jobSlug) {
-				__typename
-				... on Job {
-					...RelatedJobsListInternalFragment
-				}
-			}
-		}
-	}
-  }
-`;
 
-const RelatedJobsListInternalFragment = graphql`
-  fragment RelatedJobsListInternalFragment on Job
-  @refetchable(queryName: "RelatedJobsListInternalRefetchQuery")
+const RelatedJobsListFragment = graphql`
+  fragment RelatedJobsListFragment on Job
+  @refetchable(queryName: "RelatedJobsListRefetchQuery")
   @argumentDefinitions(
     cursor: { type: "ID" }
     count: { type: "Int", defaultValue: 10 }
   ){
     relatedJobs(after: $cursor, first: $count)
-      @connection(key: "RelatedJobsListInternalFragment_relatedJobs") {
+      @connection(key: "RelatedJobsListFragment_relatedJobs") {
       edges {
         node {
           id
@@ -50,23 +30,14 @@ const RelatedJobsListInternalFragment = graphql`
 `;
 
 export default function RelatedJobsList({
-	rootQuery,
+	job,
 }: {
-	rootQuery: RelatedJobsListFragment$key;
+	job: RelatedJobsListFragment$key;
 }) {
-	const root = useFragment(RelatedJobsListFragment, rootQuery);
-	invariant(
-		root.organization.__typename === "Organization",
-		"Expected 'Organization' node type.",
-	);
-	invariant(
-		root.organization.job.__typename === "Job",
-		"Expected 'Job' node type.",
-	);
 	const { data, loadNext, isLoadingNext } = usePaginationFragment<
 		pageJobDetailViewQuery,
-		RelatedJobsListInternalFragment$key
-	>(RelatedJobsListInternalFragment, root.organization.job);
+		RelatedJobsListFragment$key
+	>(RelatedJobsListFragment, job);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 

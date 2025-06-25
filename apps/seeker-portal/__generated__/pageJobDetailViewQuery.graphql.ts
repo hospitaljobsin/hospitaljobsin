@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<bf3dd1b0095cd35fcaa9589393f4dc0d>>
- * @relayHash b786b75ffdc014f44379977c9fdef44f
+ * @generated SignedSource<<0d61d0f2e46cf49da6e53c51cde9a868>>
+ * @relayHash 216a14f7b8874bd499ee730e546dbd0e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b786b75ffdc014f44379977c9fdef44f
+// @relayRequestID 216a14f7b8874bd499ee730e546dbd0e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -465,7 +465,7 @@ return {
                         "args": (v26/*: any*/),
                         "filters": null,
                         "handle": "connection",
-                        "key": "RelatedJobsListInternalFragment_relatedJobs",
+                        "key": "RelatedJobsListFragment_relatedJobs",
                         "kind": "LinkedHandle",
                         "name": "relatedJobs"
                       }
@@ -531,7 +531,7 @@ return {
     ]
   },
   "params": {
-    "id": "b786b75ffdc014f44379977c9fdef44f",
+    "id": "216a14f7b8874bd499ee730e546dbd0e",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",

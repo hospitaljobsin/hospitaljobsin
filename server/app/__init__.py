@@ -19,7 +19,6 @@ from app.container import create_container
 from app.database import initialize_database
 from app.graphql_app import create_graphql_router
 from app.health.routes import health_router
-from app.jobs.routes import jobs_router
 from app.middleware import SessionMiddleware
 from app.middleware.fingerprints import FingerprintMiddleware
 from app.testing.routes import test_setup_router
@@ -36,7 +35,6 @@ def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
     )
     app.include_router(health_router)
     app.include_router(auth_router)
-    app.include_router(jobs_router)
 
 
 def add_middleware(
