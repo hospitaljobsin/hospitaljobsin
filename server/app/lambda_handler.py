@@ -16,4 +16,4 @@ setup_logging(
 )
 
 app = create_app()
-handler = Mangum(app, lifespan="auto")
+handler = Mangum(app, lifespan="on")
