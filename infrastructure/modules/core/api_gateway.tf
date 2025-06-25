@@ -3,6 +3,17 @@ resource "aws_apigatewayv2_api" "this" {
   description   = "API Gateway for ${var.app_name} backend"
   protocol_type = "HTTP"
 
+  cors_configuration {
+    allow_credentials = true
+    allow_origins = [
+      "https://${var.domain_name}",
+      "https://*.${var.domain_name}",
+    ]
+    allow_methods  = ["*"]
+    allow_headers  = ["*"]
+    expose_headers = ["*"]
+  }
+
   lifecycle {
     create_before_destroy = true
   }
@@ -59,16 +70,16 @@ resource "aws_apigatewayv2_integration" "lambda" {
   #   "method.request.header.Access-Control-Request-Method"  = false
   # }
 
-  request_parameters = {
-    "overwrite:header.Origin" = "$request.header.Origin"
-    # "overwrite:header.Authorization" = "$request.header.Authorization"
-    # "overwrite:header.Cookie"        = "$request.header.Cookie"
-    # "overwrite:header.Content-Type"  = "$request.header.Content-Type"
+  # request_parameters = {
+  #   # "overwrite:header.Origin" = "$request.header.Origin"
+  #   # "overwrite:header.Authorization" = "$request.header.Authorization"
+  #   # "overwrite:header.Cookie"        = "$request.header.Cookie"
+  #   # "overwrite:header.Content-Type"  = "$request.header.Content-Type"
 
-    # TODO: maybe need to uncomment the next line alone
-    # "overwrite:header.Access-Control-Request-Headers" = "$request.header.Access-Control-Request-Headers"
-    # "overwrite:header.Access-Control-Request-Method"  = "$request.header.Access-Control-Request-Method"
-  }
+  #   # TODO: maybe need to uncomment the next line alone
+  #   # "overwrite:header.Access-Control-Request-Headers" = "$request.header.Access-Control-Request-Headers"
+  #   # "overwrite:header.Access-Control-Request-Method"  = "$request.header.Access-Control-Request-Method"
+  # }
 }
 
 resource "aws_apigatewayv2_route" "lambda" {
