@@ -39,15 +39,23 @@ resource "aws_apigatewayv2_integration" "lambda" {
   integration_uri           = aws_lambda_function.backend.invoke_arn
   passthrough_behavior      = "WHEN_NO_MATCH"
 
-  request_parameters = {
-    "method.request.header.Origin"        = true
-    "method.request.header.Authorization" = true
-    "method.request.header.Cookie"        = true
-    "method.request.header.Content-Type"  = true
+  # request_parameters = {
+  #   "method.request.header.Origin"        = true
+  #   "method.request.header.Authorization" = true
+  #   "method.request.header.Cookie"        = true
+  #   "method.request.header.Content-Type"  = true
 
-    "method.request.header.Access-Control-Request-Headers" = false
-    "method.request.header.Access-Control-Request-Method"  = false
-  }
+  #   "method.request.header.Access-Control-Request-Headers" = false
+  #   "method.request.header.Access-Control-Request-Method"  = false
+  # }
+}
+
+resource "aws_apigatewayv2_route" "lambda" {
+  api_id = aws_apigatewayv2_api.this.id
+  # route_key = "ANY /example/{proxy+}"
+  route_key = "ANY /{proxy+}"
+
+  target = "integrations/${aws_apigatewayv2_integration.lambda.id}"
 }
 
 # Domain name mapping
