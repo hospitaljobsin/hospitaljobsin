@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<24f0e77d8e16dd6494f6769ebcca02ce>>
+ * @generated SignedSource<<ac01c4778c01cbfc51b718d0eb70e0f9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,9 +9,31 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
+export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "%future added value";
+export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type ApplicantDetails_job$data = {
+  readonly applicantCount: {
+    readonly applied: number;
+    readonly interviewed: number;
+    readonly offered: number;
+    readonly onHold: number;
+    readonly shortlisted: number;
+  } | null | undefined;
+  readonly description: string;
+  readonly hasExperienceRange: boolean;
+  readonly hasSalaryRange: boolean;
   readonly id: string;
+  readonly location: string | null | undefined;
+  readonly maxExperience: number | null | undefined;
+  readonly maxSalary: number | null | undefined;
+  readonly minExperience: number | null | undefined;
+  readonly minSalary: number | null | undefined;
+  readonly skills: ReadonlyArray<string>;
+  readonly title: string;
+  readonly type: JobType | null | undefined;
+  readonly vacancies: number | null | undefined;
+  readonly workMode: WorkMode | null | undefined;
   readonly " $fragmentSpreads": FragmentRefs<"ApplicantStatusUpdater_job">;
   readonly " $fragmentType": "ApplicantDetails_job";
 };
@@ -34,6 +56,143 @@ const node: ReaderFragment = {
       "storageKey": null
     },
     {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "title",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "description",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasExperienceRange",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasSalaryRange",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "minExperience",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "maxExperience",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "minSalary",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "maxSalary",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "location",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "skills",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "type",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "workMode",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "vacancies",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "JobApplicantCount",
+      "kind": "LinkedField",
+      "name": "applicantCount",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "applied",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "interviewed",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "offered",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "onHold",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "shortlisted",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
       "args": null,
       "kind": "FragmentSpread",
       "name": "ApplicantStatusUpdater_job"
@@ -43,6 +202,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "d4367eb3130e81691464560aa5ee28ca";
+(node as any).hash = "09dda0668a338719d694617611fb3533";
 
 export default node;

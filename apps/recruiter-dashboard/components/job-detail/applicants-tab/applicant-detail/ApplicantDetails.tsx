@@ -30,6 +30,26 @@ const ApplicantDetailsFragment = graphql`
 const ApplicantDetailsJobFragment = graphql`
   fragment ApplicantDetails_job on Job {
     id
+	title
+	description
+	hasExperienceRange
+	hasSalaryRange
+	minExperience
+	maxExperience
+	minSalary
+	maxSalary
+	location
+	skills
+	type
+	workMode
+	vacancies
+	applicantCount {
+		applied
+		interviewed
+		offered
+		onHold
+		shortlisted
+	}
     ...ApplicantStatusUpdater_job
   }
 `;
@@ -45,6 +65,11 @@ export default function ApplicantDetails({
 	const jobData = useFragment(ApplicantDetailsJobFragment, job);
 
 	useCopilotReadable({
+		description: "The job the current applicant applied to",
+		value: jobData,
+	});
+
+	useCopilotReadable({
 		description: "The current applicant's full name",
 		value: data.account.fullName,
 	});
@@ -52,6 +77,11 @@ export default function ApplicantDetails({
 	useCopilotReadable({
 		description: "The current applicant's headline",
 		value: data.profileSnapshot.headline,
+	});
+
+	useCopilotReadable({
+		description: "The current applicant's status",
+		value: data.status,
 	});
 
 	useCopilotReadable({
