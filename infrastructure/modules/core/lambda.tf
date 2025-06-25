@@ -220,11 +220,11 @@ resource "aws_lambda_function" "backend" {
 }
 
 # uncomment to remove provisioned concurrency
-resource "aws_lambda_provisioned_concurrency_config" "backend" {
-  function_name                     = aws_lambda_function.backend.function_name
-  provisioned_concurrent_executions = 1
-  qualifier                         = aws_lambda_function.backend.version
-}
+# resource "aws_lambda_provisioned_concurrency_config" "backend" {
+#   function_name                     = aws_lambda_function.backend.function_name
+#   provisioned_concurrent_executions = 1
+#   qualifier                         = aws_lambda_function.backend.version
+# }
 
 # Security Group for Lambda in Private Subnets
 resource "aws_security_group" "lambda" {
