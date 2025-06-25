@@ -12,6 +12,16 @@ resource "aws_apigatewayv2_deployment" "this" {
   api_id      = aws_apigatewayv2_api.this.id
   description = "Deployment for ${var.app_name} backend"
 
+  depends_on = [aws_apigatewayv2_route.lambda]
+
+
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_apigatewayv2_route.lambda,
+      aws_apigatewayv2_integration.lambda,
+    ]))
+  }
+
   lifecycle {
     create_before_destroy = true
   }
@@ -32,12 +42,12 @@ resource "aws_apigatewayv2_integration" "lambda" {
   api_id           = aws_apigatewayv2_api.this.id
   integration_type = "AWS_PROXY"
 
-  connection_type           = "INTERNET"
-  content_handling_strategy = "CONVERT_TO_TEXT"
-  description               = "Lambda backend"
-  integration_method        = "POST"
-  integration_uri           = aws_lambda_function.backend.invoke_arn
-  passthrough_behavior      = "WHEN_NO_MATCH"
+  connection_type = "INTERNET"
+  # content_handling_strategy = "CONVERT_TO_TEXT"
+  description          = "Lambda backend"
+  integration_method   = "POST"
+  integration_uri      = aws_lambda_function.backend.invoke_arn
+  passthrough_behavior = "WHEN_NO_MATCH"
 
   # request_parameters = {
   #   "method.request.header.Origin"        = true
