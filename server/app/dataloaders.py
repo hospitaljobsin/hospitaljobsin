@@ -20,9 +20,9 @@ from app.organizations.dataloaders import (
 @dataclasses.dataclass(slots=True, kw_only=True)
 class Dataloaders:
     job_by_id: JobByIdLoader
+    job_by_slug: JobBySlugLoader
     job_applicant_by_id: JobApplicantByIdLoader
     job_applicant_by_slug: JobApplicantBySlugLoader
-    job_by_slug: JobBySlugLoader
     job_application_form_by_id: JobApplicationFormByIdLoader
     saved_job_by_id: SavedJobByIdLoader
     organization_by_id: OrganizationByIdLoader

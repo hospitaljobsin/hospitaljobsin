@@ -93,6 +93,7 @@ def transform_valid_object_id_str_tuple(
 type JobBySlugLoader = DataLoader[tuple[str, str], Job | None]
 
 
+# TODO: maybe because of this loader its erroring?
 async def create_job_by_slug_dataloader(
     job_repo: JobRepo,
 ) -> JobBySlugLoader:

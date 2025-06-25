@@ -1,8 +1,8 @@
-from google import genai
+from google.genai import Client
 
 from app.config import SecretSettings
 
 
-def create_google_genai_client(settings: SecretSettings) -> genai.Client:
+def create_google_genai_client(settings: SecretSettings) -> Client:
     """Create a Google GenAI client."""
-    return genai.Client(api_key=settings.google_api_key.get_secret_value())
+    return Client(api_key=settings.google_api_key.get_secret_value())

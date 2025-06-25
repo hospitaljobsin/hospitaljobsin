@@ -1,9 +1,9 @@
-from google import genai
+from google.genai import Client
 from google.genai.types import EmbedContentConfig
 
 
 class EmbeddingsService:
-    def __init__(self, genai_client: genai.Client) -> None:
+    def __init__(self, genai_client: Client) -> None:
         self._genai_client = genai_client
 
     async def generate_embeddings(
