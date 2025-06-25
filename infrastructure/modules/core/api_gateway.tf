@@ -1,30 +1,72 @@
-resource "aws_api_gateway_rest_api" "this" {
-  name        = "${var.resource_prefix}-api-gateway"
-  description = "API Gateway for ${var.app_name} backend"
-}
-
-
-# Deployment of API Gateway
-resource "aws_api_gateway_deployment" "this" {
-  depends_on = [
-    aws_api_gateway_integration.lambda,
-  ]
-
-  rest_api_id = aws_api_gateway_rest_api.this.id
-
-  triggers = {
-    redeployment = sha1(jsonencode([
-      aws_api_gateway_integration.lambda,
-      aws_api_gateway_method.proxy,
-    ]))
-  }
+resource "aws_apigatewayv2_api" "this" {
+  name          = "${var.resource_prefix}-api-gateway"
+  description   = "API Gateway for ${var.app_name} backend"
+  protocol_type = "HTTP"
 
   lifecycle {
     create_before_destroy = true
   }
 }
 
+resource "aws_apigatewayv2_deployment" "this" {
+  api_id      = aws_apigatewayv2_api.this.id
+  description = "Deployment for ${var.app_name} backend"
 
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_apigatewayv2_stage" "production" {
+  api_id        = aws_apigatewayv2_api.this.id
+  deployment_id = aws_apigatewayv2_deployment.this.id
+  name          = "production"
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_gateway.arn
+    format          = "$context.requestId $context.identity.sourceIp $context.identity.caller $context.identity.user $context.requestTime $context.httpMethod $context.resourcePath $context.status $context.protocol $context.responseLength"
+  }
+}
+
+resource "aws_apigatewayv2_integration" "lambda" {
+  api_id           = aws_apigatewayv2_api.this.id
+  integration_type = "AWS_PROXY"
+
+  connection_type           = "INTERNET"
+  content_handling_strategy = "CONVERT_TO_TEXT"
+  description               = "Lambda backend"
+  integration_method        = "POST"
+  integration_uri           = aws_lambda_function.backend.invoke_arn
+  passthrough_behavior      = "WHEN_NO_MATCH"
+
+  request_parameters = {
+    "method.request.header.Origin"        = true
+    "method.request.header.Authorization" = true
+    "method.request.header.Cookie"        = true
+    "method.request.header.Content-Type"  = true
+
+    "method.request.header.Access-Control-Request-Headers" = false
+    "method.request.header.Access-Control-Request-Method"  = false
+  }
+}
+
+# Domain name mapping
+
+resource "aws_apigatewayv2_domain_name" "custom" {
+  domain_name = "api.${var.domain_name}"
+
+  domain_name_configuration {
+    certificate_arn = aws_acm_certificate_validation.api_cert.certificate_arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
+}
+
+resource "aws_apigatewayv2_api_mapping" "api" {
+  api_id      = aws_apigatewayv2_api.this.id
+  domain_name = aws_apigatewayv2_domain_name.custom.id
+  stage       = aws_apigatewayv2_stage.production.id
+}
 
 
 resource "aws_api_gateway_account" "this" {
@@ -73,136 +115,29 @@ resource "aws_iam_role_policy" "cloudwatch" {
 }
 
 
-resource "aws_api_gateway_stage" "production" {
-  rest_api_id   = aws_api_gateway_rest_api.this.id
-  deployment_id = aws_api_gateway_deployment.this.id
-  stage_name    = "production"
-
-  access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.api_gateway.arn
-    format          = "$context.requestId $context.identity.sourceIp $context.identity.caller $context.identity.user $context.requestTime $context.httpMethod $context.resourcePath $context.status $context.protocol $context.responseLength"
-  }
-
-  # Define the stage variable here
-  # variables = {
-  #   lambda_alias = "your_lambda_alias" # Replace with the actual alias you want to use
-  # }
-}
-
-resource "aws_api_gateway_resource" "proxy" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  parent_id   = aws_api_gateway_rest_api.this.root_resource_id
-  path_part   = "{proxy+}"
-}
-
-# Main API Method for ANY requests
-resource "aws_api_gateway_method" "proxy" {
-  rest_api_id   = aws_api_gateway_rest_api.this.id
-  resource_id   = aws_api_gateway_resource.proxy.id
-  http_method   = "ANY"
-  authorization = "NONE"
-
-  request_parameters = {
-    "method.request.header.Origin"        = true
-    "method.request.header.Authorization" = true
-    "method.request.header.Cookie"        = true
-    "method.request.header.Content-Type"  = true
-
-    "method.request.header.Access-Control-Request-Headers" = false
-    "method.request.header.Access-Control-Request-Method"  = false
-  }
-
-}
-
-resource "aws_api_gateway_integration" "lambda" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  resource_id = aws_api_gateway_method.proxy.resource_id
-  http_method = aws_api_gateway_method.proxy.http_method
-
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.backend.invoke_arn
-
-}
-
-
-
-
-# Domain name mapping
-
-resource "aws_api_gateway_domain_name" "custom" {
-  domain_name     = "api.${var.domain_name}"
-  certificate_arn = aws_acm_certificate_validation.api_cert.certificate_arn
-}
-
-resource "aws_api_gateway_base_path_mapping" "api" {
-  api_id      = aws_api_gateway_rest_api.this.id
-  stage_name  = aws_api_gateway_stage.production.stage_name
-  domain_name = aws_api_gateway_domain_name.custom.domain_name
-}
-
-
-# data "aws_cloudfront_cache_policy" "disabled" {
-#   name = "Managed-CachingDisabled"
+# # TODO: create a resource for this
+# resource "aws_api_gateway_resource" "proxy" {
+#   rest_api_id = aws_api_gateway_rest_api.this.id
+#   parent_id   = aws_api_gateway_rest_api.this.root_resource_id
+#   path_part   = "{proxy+}"
 # }
 
-# resource "aws_cloudfront_origin_request_policy" "api_policy" {
-#   name = "forward-origin-and-cookies"
+# # TODO: create a resource for this
+# # Main API Method for ANY requests
+# resource "aws_api_gateway_method" "proxy" {
+#   rest_api_id   = aws_api_gateway_rest_api.this.id
+#   resource_id   = aws_api_gateway_resource.proxy.id
+#   http_method   = "ANY"
+#   authorization = "NONE"
 
-#   cookies_config {
-#     cookie_behavior = "all" # Or "whitelist" and list names below
-#   }
+#   request_parameters = {
+#     "method.request.header.Origin"        = true
+#     "method.request.header.Authorization" = true
+#     "method.request.header.Cookie"        = true
+#     "method.request.header.Content-Type"  = true
 
-#   headers_config {
-#     header_behavior = "allViewer"
-#     # headers {
-#     #   items = ["*"]
-#     # }
-#   }
-
-#   query_strings_config {
-#     query_string_behavior = "all"
-#   }
-# }
-
-
-# resource "aws_cloudfront_distribution" "api" {
-#   enabled             = true
-#   default_root_object = ""
-#   aliases             = ["api.${var.domain_name}"]
-
-#   origin {
-#     domain_name = aws_api_gateway_domain_name.custom.cloudfront_domain_name
-#     origin_id   = "api-gateway-origin"
-
-#     custom_origin_config {
-#       origin_protocol_policy = "https-only"
-#       http_port              = 80
-#       https_port             = 443
-#       origin_ssl_protocols   = ["TLSv1.2"]
-#     }
-#   }
-
-#   default_cache_behavior {
-#     allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
-#     cached_methods   = ["GET", "HEAD"]
-#     target_origin_id = "api-gateway-origin"
-
-#     viewer_protocol_policy   = "redirect-to-https"
-#     origin_request_policy_id = aws_cloudfront_origin_request_policy.api_policy.id
-#     cache_policy_id          = data.aws_cloudfront_cache_policy.disabled.id
-#   }
-
-#   viewer_certificate {
-#     acm_certificate_arn      = aws_acm_certificate_validation.api_cert.certificate_arn
-#     ssl_support_method       = "sni-only"
-#     minimum_protocol_version = "TLSv1.2_2019"
-#   }
-
-#   restrictions {
-#     geo_restriction {
-#       restriction_type = "none"
-#     }
+#     "method.request.header.Access-Control-Request-Headers" = false
+#     "method.request.header.Access-Control-Request-Method"  = false
 #   }
 
 # }
