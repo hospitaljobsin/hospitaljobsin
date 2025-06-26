@@ -1,6 +1,7 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
+import sentry_sdk
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.operations import SearchIndexModel
@@ -113,41 +114,42 @@ async def initialize_database(
     database_url: str, default_database_name: str
 ) -> AsyncGenerator[None]:
     """Initialize the database."""
-    client: AsyncIOMotorClient = AsyncIOMotorClient(
-        database_url,
-        connectTimeoutMS=1000,
-        socketTimeoutMS=1000,
-        serverSelectionTimeoutMS=1000,
-    )
-    try:
-        rebuild_models()
-        await init_beanie(
-            database=client.get_default_database(default=default_database_name),
-            document_models=[
-                Job,
-                JobApplicant,
-                JobApplicationForm,
-                CoreJobMetric,
-                ImpressionJobMetric,
-                BaseJobMetric,
-                Account,
-                Profile,
-                SavedJob,
-                Session,
-                EmailVerificationToken,
-                PasswordResetToken,
-                Organization,
-                OrganizationMember,
-                WebAuthnCredential,
-                WebAuthnChallenge,
-                OAuthCredential,
-                TwoFactorAuthenticationChallenge,
-                RecoveryCode,
-                TemporaryTwoFactorChallenge,
-                OrganizationInvite,
-            ],
+    with sentry_sdk.start_span(op="db.init", name="Initialize Database"):
+        client: AsyncIOMotorClient = AsyncIOMotorClient(
+            database_url,
+            connectTimeoutMS=1000,
+            socketTimeoutMS=1000,
+            serverSelectionTimeoutMS=1000,
         )
-        await create_search_indexes(client, default_database_name)
-        yield
-    finally:
-        client.close()
+        try:
+            rebuild_models()
+            await init_beanie(
+                database=client.get_default_database(default=default_database_name),
+                document_models=[
+                    Job,
+                    JobApplicant,
+                    JobApplicationForm,
+                    CoreJobMetric,
+                    ImpressionJobMetric,
+                    BaseJobMetric,
+                    Account,
+                    Profile,
+                    SavedJob,
+                    Session,
+                    EmailVerificationToken,
+                    PasswordResetToken,
+                    Organization,
+                    OrganizationMember,
+                    WebAuthnCredential,
+                    WebAuthnChallenge,
+                    OAuthCredential,
+                    TwoFactorAuthenticationChallenge,
+                    RecoveryCode,
+                    TemporaryTwoFactorChallenge,
+                    OrganizationInvite,
+                ],
+            )
+            await create_search_indexes(client, default_database_name)
+            yield
+        finally:
+            client.close()
