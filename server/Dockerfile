@@ -107,6 +107,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ENV PYTHONPATH="/var/task:$PYTHONPATH"
 # ENV PATH="/var/task/.venv/bin:$PATH"
 
+ENV AWS_LWA_READINESS_CHECK_PATH = "/health/"
+ENV PORT = "8000"
+
 # ENTRYPOINT [ "python", "-m", "awslambdaric" ]
 
 # Set the Lambda handler
