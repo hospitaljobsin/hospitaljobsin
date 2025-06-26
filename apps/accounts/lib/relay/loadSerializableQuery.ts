@@ -4,11 +4,7 @@ import type {
 	OperationType,
 	VariablesOf,
 } from "relay-runtime";
-import {
-	createOperationDescriptor,
-	fetchQuery,
-	getRequest,
-} from "relay-runtime";
+import { createOperationDescriptor, getRequest } from "relay-runtime";
 import { getCurrentEnvironment } from "./environments";
 import { networkFetch } from "./environments/server";
 import type { SerializablePreloadedQuery } from "./serializablePreloadedQuery";
@@ -33,24 +29,19 @@ export default async function loadSerializableQuery<
 
 	const graphQLResponse = await networkFetch(request.params, variables);
 
+	const operationDescriptor = createOperationDescriptor(request, variables);
+
 	// hydrate relay store with the response
 	if ("data" in graphQLResponse && graphQLResponse.data) {
-		environment.commitPayload(
-			createOperationDescriptor(request, variables),
-			graphQLResponse.data,
-		);
+		environment.commitPayload(operationDescriptor, graphQLResponse.data);
 	}
 
-	// load fragment data (snapshot) from relay store (will fetch from cache)
-	// this is necessary to fetch data on the server using (inline) fragments
-	// for metadata generation
-	const data = await fetchQuery<TQuery>(environment, taggedNode, variables, {
-		networkCacheConfig: { force: false },
-		fetchPolicy: "store-or-network",
-	}).toPromise();
+	// ✅ Look up the data from the store instead of refetching
+	const snapshot = environment.lookup(operationDescriptor.fragment);
+	const data = snapshot.data;
 
 	if (!data) {
-		throw new Error("Failed to fetch query data");
+		throw new Error("Failed to read query data from the store");
 	}
 
 	return {
