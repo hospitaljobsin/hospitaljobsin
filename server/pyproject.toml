@@ -30,7 +30,6 @@ dependencies = [
     "webauthn>=2.5.1",
     "pyotp>=2.9.0",
     "geopy>=2.4.1",
-    "mangum>=0.19.0",
     "nanoid>=2.0.0",
     "tenacity>=9.1.2",
     "sentry-sdk[fastapi,pymongo]>=2.27.0",

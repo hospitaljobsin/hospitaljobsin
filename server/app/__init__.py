@@ -82,29 +82,15 @@ def add_middleware(
 
 
 @asynccontextmanager
-async def app_lifespan(app: FastAPI) -> AsyncGenerator[None]:
-    with sentry_sdk.start_transaction(
-        name="App Lifespan", op="lifespan"
-    ) as transaction:
-        # FIXME: shift to https://github.com/awslabs/aws-lambda-web-adapter
-        # we need to manually keep track of resource initialization here
-        # because Mangum runs the application lifespan on every request.
-        # ref: https://github.com/Kludex/mangum/issues/342
-        # if not app.state.has_initialized:
+async def app_lifespan(_app: FastAPI) -> AsyncGenerator[None]:
+    with sentry_sdk.start_transaction(name="App Lifespan", op="lifespan"):
         logger = get_logger(__name__)
-        # logger.debug("Initializing application secrets")
-        # # load secrets during startup
-        # with sentry_sdk.start_span(op="settings.get", description="SecretSettings"):
-        #     get_settings(SecretSettings)
         database_settings = get_settings(DatabaseSettings)
         logger.debug("Initializing database connection")
         await initialize_database(
             database_url=str(database_settings.database_url),
             default_database_name=database_settings.default_database_name,
         )
-        # we need to manually keep track of resource initialization here
-        # because Mangum runs the application lifespan on every request.
-        # app.state.has_initialized = True
         yield
 
 
@@ -118,10 +104,6 @@ def create_app() -> FastAPI:
         root_path=app_settings.root_path,
         lifespan=app_lifespan,
     )
-    # we need to manually keep track of resource initialization here
-    # because Mangum runs the application lifespan on every request.
-    # ref: https://github.com/Kludex/mangum/issues/342
-    # app.state.has_initialized = False
     add_routes(app, app_settings=app_settings)
     add_middleware(
         app,
