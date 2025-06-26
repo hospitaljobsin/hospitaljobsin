@@ -1,4 +1,6 @@
 "use client";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 import type {
 	CacheConfig,
 	GraphQLResponse,
@@ -12,7 +14,6 @@ import {
 	RecordSource,
 	Store,
 } from "relay-runtime";
-import { env } from "@/lib/env/client";
 
 const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 
@@ -43,7 +44,7 @@ export async function networkFetch(
 				// Apollo Server sets code to UNAUTHENTICATED
 				// when an AuthenticationError is thrown in a resolver
 				case "UNAUTHENTICATED":
-					window.location.href = "/auth/login";
+					window.location.href = links.login();
 			}
 		}
 		console.error(json.errors);
