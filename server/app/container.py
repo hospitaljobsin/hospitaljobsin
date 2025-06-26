@@ -7,13 +7,18 @@ import aioinject
 import sentry_sdk
 from aioinject import Scope
 from aioinject.context import ProviderRecord
-from aioinject.extensions import OnResolveContextExtension, ProviderExtension
+from aioinject.extensions import (
+    LifespanExtension,
+    OnResolveContextExtension,
+    ProviderExtension,
+)
 from aioinject.extensions.providers import (
     CacheDirective,
     ProviderInfo,
     ResolveDirective,
 )
 from pydantic_settings import BaseSettings
+from structlog import get_logger
 
 from app.accounts.dataloaders import (
     create_account_by_id_dataloader,
@@ -69,6 +74,7 @@ from app.core.geocoding import (
 )
 from app.core.oauth import create_oauth_client
 from app.core.templates import create_jinja2_environment
+from app.database import initialize_database
 from app.dataloaders import create_dataloaders
 from app.embeddings.services import EmbeddingsService
 from app.jobs.agents import (
@@ -172,6 +178,22 @@ class SentryInstrumentation(OnResolveContextExtension):
             yield
 
 
+class MyLifespanExtension(LifespanExtension):
+    @contextlib.asynccontextmanager
+    async def lifespan(
+        self,
+        container: aioinject.Container,  # noqa: ARG002
+    ) -> AsyncIterator[None]:
+        logger = get_logger(__name__)
+        database_settings = get_settings(DatabaseSettings)
+        logger.debug("Initializing database connection")
+        async with initialize_database(
+            database_url=str(database_settings.database_url),
+            default_database_name=database_settings.default_database_name,
+        ) as _:
+            yield None
+
+
 def register_email_sender(container: aioinject.Container) -> None:
     email_settings = get_settings(EmailSettings)
 
@@ -207,7 +229,11 @@ def register_location_service(container: aioinject.Container) -> None:
 @lru_cache
 def create_container() -> aioinject.Container:
     container = aioinject.Container(
-        extensions=[SettingsProviderExtension(), SentryInstrumentation()]
+        extensions=[
+            MyLifespanExtension(),
+            SettingsProviderExtension(),
+            SentryInstrumentation(),
+        ]
     )
     for settings_cls in settings_classes:
         container.register(SettingsProvider(settings_cls))
