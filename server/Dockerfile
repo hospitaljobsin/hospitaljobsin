@@ -18,14 +18,14 @@ WORKDIR /project
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project
+    uv sync --no-sync --no-cache --no-install-project
 
 # Copy the application files
 COPY . .
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked
+    uv sync --no-sync --no-cache
 
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
@@ -88,14 +88,14 @@ WORKDIR /var/task
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project
+    uv sync --no-sync --no-cache --no-install-project
 
 # Copy the application files
 COPY . .
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked
+    uv sync --no-sync --no-cache
 
 # Install the AWS Lambda Runtime Interface Client
 # RUN uv pip install awslambdaric
