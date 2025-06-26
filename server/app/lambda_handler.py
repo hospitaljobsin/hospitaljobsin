@@ -17,6 +17,7 @@ setup_logging(
 
 # TODO: probably init database outside, over here??
 # but then we won't get access to secret settings, which is fine for now ig..
+# But for now, we cannot even see the lifespan logs...
 
 app = create_app()
 handler = Mangum(app, lifespan="on")
