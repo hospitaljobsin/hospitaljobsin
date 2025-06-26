@@ -75,6 +75,10 @@ COPY --from=layer-build /opt /opt
 # include the AWS lambda web adapter
 COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
 
+ENV READINESS_CHECK_PATH = "/health/"
+ENV PORT=8000
+
+ENV RUST_BACKTRACE=full
 
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
@@ -107,10 +111,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ENV PYTHONPATH="/var/task:$PYTHONPATH"
 # ENV PATH="/var/task/.venv/bin:$PATH"
 
-ENV READINESS_CHECK_PATH = "/health/"
-ENV PORT=8000
 
-ENV RUST_BACKTRACE=full
 
 # EXPOSE 8000
 
