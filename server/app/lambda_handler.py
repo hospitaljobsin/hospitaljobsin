@@ -17,11 +17,11 @@ initialize_instrumentation(settings=settings)
 logging.config.dictConfig(
     build_server_log_config(
         log_level=settings.log_level,
-        human_readable=settings.debug,
+        human_readable=not settings.is_production,
     )
 )
 setup_logging(
-    human_readable=settings.debug,
+    human_readable=not settings.is_production,
 )
 
 # TODO: probably init database outside, over here??
