@@ -1,11 +1,11 @@
 "use client";
+import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
-import { useRouter } from "next/navigation";
 import { ThemeProvider } from "next-themes";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
@@ -24,6 +24,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 						nonce="progressbar-nonce"
 						options={{ showSpinner: false }}
 						shallowRouting
+						disableSameURL
+						shouldCompareComplexProps
 					>
 						{children}
 					</ProgressProvider>
