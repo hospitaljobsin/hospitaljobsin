@@ -79,7 +79,7 @@ COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
-# ENV UV_CACHE_DIR=/opt/uv-cache/
+ENV UV_CACHE_DIR=/tmp/uv-cache
 
 # Set the working directory
 WORKDIR /var/task
