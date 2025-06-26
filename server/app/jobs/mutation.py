@@ -768,13 +768,6 @@ class JobMutation:
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LogJobViewPayloadType,
         description="Log a job view start.",
-        extensions=[
-            PermissionExtension(
-                permissions=[
-                    IsAuthenticated(),
-                ],
-            )
-        ],
     )
     @inject
     async def log_job_view_start(
@@ -808,13 +801,6 @@ class JobMutation:
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=LogJobViewPayloadType,
         description="Log a job view end.",
-        extensions=[
-            PermissionExtension(
-                permissions=[
-                    IsAuthenticated(),
-                ],
-            )
-        ],
     )
     @inject
     async def log_job_view_end(
