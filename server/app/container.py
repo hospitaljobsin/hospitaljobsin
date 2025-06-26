@@ -187,11 +187,11 @@ class MyLifespanExtension(LifespanExtension):
         logger = get_logger(__name__)
         database_settings = get_settings(DatabaseSettings)
         logger.debug("Initializing database connection")
-        async with initialize_database(
+        await initialize_database(
             database_url=str(database_settings.database_url),
             default_database_name=database_settings.default_database_name,
-        ) as _:
-            yield None
+        )
+        yield None
 
 
 def register_email_sender(container: aioinject.Container) -> None:
@@ -230,7 +230,7 @@ def register_location_service(container: aioinject.Container) -> None:
 def create_container() -> aioinject.Container:
     container = aioinject.Container(
         extensions=[
-            MyLifespanExtension(),
+            # MyLifespanExtension(),
             SettingsProviderExtension(),
             SentryInstrumentation(),
         ]

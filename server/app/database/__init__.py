@@ -109,10 +109,7 @@ async def create_search_indexes(
     )
 
 
-@asynccontextmanager
-async def initialize_database(
-    database_url: str, default_database_name: str
-) -> AsyncGenerator[None]:
+async def initialize_database(database_url: str, default_database_name: str) -> None:
     """Initialize the database."""
     with sentry_sdk.start_span(op="db.init", name="Initialize Database"):
         client: AsyncIOMotorClient = AsyncIOMotorClient(
@@ -121,35 +118,31 @@ async def initialize_database(
             socketTimeoutMS=1000,
             serverSelectionTimeoutMS=1000,
         )
-        try:
-            rebuild_models()
-            await init_beanie(
-                database=client.get_default_database(default=default_database_name),
-                document_models=[
-                    Job,
-                    JobApplicant,
-                    JobApplicationForm,
-                    CoreJobMetric,
-                    ImpressionJobMetric,
-                    BaseJobMetric,
-                    Account,
-                    Profile,
-                    SavedJob,
-                    Session,
-                    EmailVerificationToken,
-                    PasswordResetToken,
-                    Organization,
-                    OrganizationMember,
-                    WebAuthnCredential,
-                    WebAuthnChallenge,
-                    OAuthCredential,
-                    TwoFactorAuthenticationChallenge,
-                    RecoveryCode,
-                    TemporaryTwoFactorChallenge,
-                    OrganizationInvite,
-                ],
-            )
-            await create_search_indexes(client, default_database_name)
-            yield
-        finally:
-            client.close()
+        rebuild_models()
+        await init_beanie(
+            database=client.get_default_database(default=default_database_name),
+            document_models=[
+                Job,
+                JobApplicant,
+                JobApplicationForm,
+                CoreJobMetric,
+                ImpressionJobMetric,
+                BaseJobMetric,
+                Account,
+                Profile,
+                SavedJob,
+                Session,
+                EmailVerificationToken,
+                PasswordResetToken,
+                Organization,
+                OrganizationMember,
+                WebAuthnCredential,
+                WebAuthnChallenge,
+                OAuthCredential,
+                TwoFactorAuthenticationChallenge,
+                RecoveryCode,
+                TemporaryTwoFactorChallenge,
+                OrganizationInvite,
+            ],
+        )
+        await create_search_indexes(client, default_database_name)
