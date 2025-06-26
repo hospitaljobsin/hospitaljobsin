@@ -108,7 +108,7 @@ ENV PYTHONPATH="/var/task:$PYTHONPATH"
 # ENV PATH="/var/task/.venv/bin:$PATH"
 
 ENV READINESS_CHECK_PATH = "/health/"
-ENV PORT = "8000"
+ENV PORT =8000
 
 # ENTRYPOINT [ "python", "-m", "awslambdaric" ]
 
