@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<78d02bbf9cfd006e293f726f188da78a>>
- * @relayHash 4cc9e00522c4a826e160b898c8e3ae20
+ * @generated SignedSource<<547d8e32f64b0960ffba74f5662bbef8>>
+ * @relayHash f2dad6e2e261b77c583e48f98ff12d82
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 4cc9e00522c4a826e160b898c8e3ae20
+// @relayRequestID f2dad6e2e261b77c583e48f98ff12d82
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -245,20 +245,6 @@ return {
                             "storageKey": null
                           },
                           {
-                            "condition": "showStatus",
-                            "kind": "Condition",
-                            "passingValue": true,
-                            "selections": [
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "status",
-                                "storageKey": null
-                              }
-                            ]
-                          },
-                          {
                             "alias": null,
                             "args": null,
                             "concreteType": "ProfileSnapshot",
@@ -279,50 +265,104 @@ return {
                           {
                             "alias": null,
                             "args": null,
-                            "concreteType": "AIApplicantInsight",
+                            "concreteType": null,
                             "kind": "LinkedField",
-                            "name": "aiInsight",
+                            "name": "analysis",
                             "plural": false,
+                            "selections": [
+                              (v9/*: any*/),
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "overallScore",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "overallSummary",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "strengths",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "riskFlags",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "FieldAnalysis",
+                                    "kind": "LinkedField",
+                                    "name": "analysedFields",
+                                    "plural": true,
+                                    "selections": [
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "analysis",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "criterion",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "score",
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "createdAt",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "JobApplicantAnalysis",
+                                "abstractKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          },
+                          (v9/*: any*/),
+                          {
+                            "condition": "showStatus",
+                            "kind": "Condition",
+                            "passingValue": true,
                             "selections": [
                               {
                                 "alias": null,
                                 "args": null,
                                 "kind": "ScalarField",
-                                "name": "matchType",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "score",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "summary",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "matchReasons",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "mismatchedFields",
+                                "name": "status",
                                 "storageKey": null
                               }
-                            ],
-                            "storageKey": null
-                          },
-                          (v9/*: any*/)
+                            ]
+                          }
                         ],
                         "storageKey": null
                       },
@@ -386,7 +426,7 @@ return {
     ]
   },
   "params": {
-    "id": "4cc9e00522c4a826e160b898c8e3ae20",
+    "id": "f2dad6e2e261b77c583e48f98ff12d82",
     "metadata": {},
     "name": "ApplicantListPaginationQuery",
     "operationKind": "query",

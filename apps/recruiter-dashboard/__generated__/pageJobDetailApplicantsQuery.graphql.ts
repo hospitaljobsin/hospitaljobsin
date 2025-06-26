@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<710d17b039e23cb3b3b4ea382e89c64b>>
- * @relayHash f2b2b930cb8eb83c9fa1b73909fd9640
+ * @generated SignedSource<<c1c90f7d299a8d75c12bd7cec160aac0>>
+ * @relayHash 40f1849cde7848bac694ec5025c0ba6c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f2b2b930cb8eb83c9fa1b73909fd9640
+// @relayRequestID 40f1849cde7848bac694ec5025c0ba6c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -241,20 +241,6 @@ return {
                                     "storageKey": null
                                   },
                                   {
-                                    "condition": "showStatus",
-                                    "kind": "Condition",
-                                    "passingValue": true,
-                                    "selections": [
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "status",
-                                        "storageKey": null
-                                      }
-                                    ]
-                                  },
-                                  {
                                     "alias": null,
                                     "args": null,
                                     "concreteType": "ProfileSnapshot",
@@ -275,50 +261,104 @@ return {
                                   {
                                     "alias": null,
                                     "args": null,
-                                    "concreteType": "AIApplicantInsight",
+                                    "concreteType": null,
                                     "kind": "LinkedField",
-                                    "name": "aiInsight",
+                                    "name": "analysis",
                                     "plural": false,
+                                    "selections": [
+                                      (v8/*: any*/),
+                                      {
+                                        "kind": "InlineFragment",
+                                        "selections": [
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "kind": "ScalarField",
+                                            "name": "overallScore",
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "kind": "ScalarField",
+                                            "name": "overallSummary",
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "kind": "ScalarField",
+                                            "name": "strengths",
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "kind": "ScalarField",
+                                            "name": "riskFlags",
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "analysedFields",
+                                            "plural": true,
+                                            "selections": [
+                                              {
+                                                "alias": null,
+                                                "args": null,
+                                                "kind": "ScalarField",
+                                                "name": "analysis",
+                                                "storageKey": null
+                                              },
+                                              {
+                                                "alias": null,
+                                                "args": null,
+                                                "kind": "ScalarField",
+                                                "name": "criterion",
+                                                "storageKey": null
+                                              },
+                                              {
+                                                "alias": null,
+                                                "args": null,
+                                                "kind": "ScalarField",
+                                                "name": "score",
+                                                "storageKey": null
+                                              }
+                                            ],
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "kind": "ScalarField",
+                                            "name": "createdAt",
+                                            "storageKey": null
+                                          }
+                                        ],
+                                        "type": "JobApplicantAnalysis",
+                                        "abstractKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
+                                  },
+                                  (v8/*: any*/),
+                                  {
+                                    "condition": "showStatus",
+                                    "kind": "Condition",
+                                    "passingValue": true,
                                     "selections": [
                                       {
                                         "alias": null,
                                         "args": null,
                                         "kind": "ScalarField",
-                                        "name": "matchType",
-                                        "storageKey": null
-                                      },
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "score",
-                                        "storageKey": null
-                                      },
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "summary",
-                                        "storageKey": null
-                                      },
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "matchReasons",
-                                        "storageKey": null
-                                      },
-                                      {
-                                        "alias": null,
-                                        "args": null,
-                                        "kind": "ScalarField",
-                                        "name": "mismatchedFields",
+                                        "name": "status",
                                         "storageKey": null
                                       }
-                                    ],
-                                    "storageKey": null
-                                  },
-                                  (v8/*: any*/)
+                                    ]
+                                  }
                                 ],
                                 "storageKey": null
                               },
@@ -391,7 +431,7 @@ return {
     ]
   },
   "params": {
-    "id": "f2b2b930cb8eb83c9fa1b73909fd9640",
+    "id": "40f1849cde7848bac694ec5025c0ba6c",
     "metadata": {},
     "name": "pageJobDetailApplicantsQuery",
     "operationKind": "query",

@@ -62,6 +62,8 @@ CoreJobMetricEventType = Literal["impression", "save", "unsave", "apply"]
 
 ImpressionJobMetricEventType = Literal["view_start", "view_end"]
 
+JobApplicantAnalysisStatus = Literal["pending", "complete", "failed"]
+
 # Organization names
 # (subdomains which are in use/ might be needed in the future)
 RESERVED_ORGANIZATION_NAMES = [

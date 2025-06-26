@@ -41,12 +41,26 @@ const ApplicantCardFragment = graphql`
 		profileSnapshot {
 			headline
 		}
-		aiInsight {
-			matchType
-			score
-			summary
-			matchReasons
-			mismatchedFields
+		analysis {
+			__typename
+			... on JobApplicantAnalysisPending {
+				__typename
+			}
+			... on JobApplicantAnalysisFailed {
+				__typename
+			}
+			... on JobApplicantAnalysis {
+				overallScore
+				overallSummary
+				strengths
+				riskFlags
+				analysedFields {
+					analysis
+					criterion
+					score
+				}
+				createdAt
+			}
 		}
 	}
 `;
@@ -60,21 +74,6 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 	const { selectedApplicants, setSelectedApplicants } = useApplicantSelection();
 
 	const isSelected = selectedApplicants.has(data.id);
-
-	const getBadgeColor = (
-		matchType: "PERFECT" | "CLOSE" | "LOW" | "%future added value",
-	) => {
-		switch (matchType) {
-			case "PERFECT":
-				return "success";
-			case "CLOSE":
-				return "warning";
-			case "LOW":
-				return "danger";
-			default:
-				return "default";
-		}
-	};
 
 	return (
 		<Card
@@ -146,94 +145,118 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 					</Chip>
 				</div>
 			</CardHeader>
-			{data.aiInsight && (
+			{data.analysis && (
 				<CardBody className="flex flex-col gap-6">
 					<div className="p-4 bg-primary-50 rounded-lg flex border border-primary-100 space-y-4 items-start flex-col sm:flex-row">
 						<div className="w-full flex flex-col gap-4 items-start">
 							<div className="flex items-center gap-2">
 								<Info size={16} className="text-primary-500" />
 								<p className="text-sm font-semibold text-primary-700">
-									AI Summary
+									AI Analysis
 								</p>
 							</div>
-							<p className="text-sm text-foreground-600 leading-relaxed">
-								{data.aiInsight.summary}
-							</p>
-							<Button
-								variant="light"
-								size="sm"
-								onPress={() => {
-									setShowDetails(!showDetails);
-								}}
-								className="flex items-center gap-1 text-primary-700 hover:text-primary-900"
-								aria-label={
-									showDetails ? "Hide match details" : "Show match details"
-								}
-							>
-								{showDetails ? "Hide Details" : "See Why"}
-								{showDetails ? (
-									<ChevronUp size={16} />
-								) : (
-									<ChevronDown size={16} />
-								)}
-							</Button>
+							{data.analysis.__typename === "JobApplicantAnalysisPending" && (
+								<p className="text-sm text-foreground-600 leading-relaxed">
+									Analysis is pending. Please check back later.
+								</p>
+							)}
+							{data.analysis.__typename === "JobApplicantAnalysisFailed" && (
+								<p className="text-sm text-danger-600 leading-relaxed">
+									Analysis failed. Unable to generate insights for this
+									applicant.
+								</p>
+							)}
+							{data.analysis.__typename === "JobApplicantAnalysis" && (
+								<>
+									<p className="text-sm text-foreground-600 leading-relaxed">
+										{data.analysis.overallSummary}
+									</p>
+									<Button
+										variant="light"
+										size="sm"
+										onPress={() => {
+											setShowDetails(!showDetails);
+										}}
+										className="flex items-center gap-1 text-primary-700 hover:text-primary-900"
+										aria-label={
+											showDetails
+												? "Hide analysis details"
+												: "Show analysis details"
+										}
+									>
+										{showDetails ? "Hide Details" : "See Why"}
+										{showDetails ? (
+											<ChevronUp size={16} />
+										) : (
+											<ChevronDown size={16} />
+										)}
+									</Button>
+								</>
+							)}
 						</div>
 						<div className="flex items-center gap-6">
-							{typeof data.aiInsight.score === "number" && (
-								<div className="flex items-center gap-2 text-lg font-semibold text-primary-700 bg-primary-50 rounded-full">
-									<Star size={16} className="text-primary-500" />
-									<span>{data.aiInsight.score}%</span>
-								</div>
-							)}
-							{data.aiInsight.matchType && (
-								<Chip
-									color={getBadgeColor(data.aiInsight.matchType)}
-									variant="flat"
-									className="text-xs px-2 py-1 font-medium capitalize"
-									startContent={
-										data.aiInsight.matchType === "PERFECT" ? (
-											<CheckCircle2 size={14} className="text-success-600" />
-										) : data.aiInsight.matchType === "CLOSE" ? (
-											<Info size={14} className="text-warning-600" />
-										) : data.aiInsight.matchType === "LOW" ? (
-											<XCircle size={14} className="text-danger-600" />
-										) : null
-									}
-								>
-									{data.aiInsight.matchType} match
-								</Chip>
-							)}
+							{data.analysis.__typename === "JobApplicantAnalysis" &&
+								typeof data.analysis.overallScore === "number" && (
+									<div className="flex items-center gap-2 text-lg font-semibold text-primary-700 bg-primary-50 rounded-full">
+										<Star size={16} className="text-primary-500" />
+										<span>{data.analysis.overallScore}%</span>
+									</div>
+								)}
 						</div>
 					</div>
 
-					{showDetails && data.aiInsight && (
-						<div className="mt-2 space-y-2 text-sm">
-							{data.aiInsight.matchReasons?.length > 0 && (
-								<div className="flex flex-col items-start gap-6">
-									<p className="font-semibold text-success-600 flex items-center gap-2">
-										<CheckCircle2 size={14} /> Match Reasons:
+					{showDetails &&
+						data.analysis.__typename === "JobApplicantAnalysis" && (
+							<div className="mt-2 space-y-4 text-sm w-full">
+								{Array.isArray(data.analysis.strengths) &&
+									data.analysis.strengths.length > 0 && (
+										<div className="flex flex-col items-start gap-2">
+											<p className="font-semibold text-success-600 flex items-center gap-2">
+												<CheckCircle2 size={14} /> Strengths:
+											</p>
+											<ul className="list-disc list-inside ml-4 space-y-1">
+												{data.analysis.strengths.map((strength: string) => (
+													<li key={strength}>{strength}</li>
+												))}
+											</ul>
+										</div>
+									)}
+								{Array.isArray(data.analysis.riskFlags) &&
+									data.analysis.riskFlags.length > 0 && (
+										<div className="flex flex-col items-start gap-2">
+											<p className="font-semibold text-danger-600 flex items-center gap-2">
+												<XCircle size={14} /> Risk Flags:
+											</p>
+											<ul className="list-disc list-inside ml-4 space-y-1">
+												{data.analysis.riskFlags.map((flag: string) => (
+													<li key={flag}>{flag}</li>
+												))}
+											</ul>
+										</div>
+									)}
+								{data.analysis.analysedFields?.length > 0 && (
+									<div className="flex flex-col items-start gap-2">
+										<p className="font-semibold text-primary-700 flex items-center gap-2">
+											<Info size={14} /> Analysed Fields:
+										</p>
+										<ul className="list-disc list-inside ml-4 space-y-1">
+											{data.analysis.analysedFields.map((field) => (
+												<li key={field.criterion}>
+													<strong>{field.criterion}:</strong> {field.analysis} (
+													<span className="font-semibold">{field.score}%</span>)
+												</li>
+											))}
+										</ul>
+									</div>
+								)}
+								{data.analysis.createdAt && (
+									<p className="text-xs text-foreground-400 mt-2">
+										Analysed on:{" "}
+										{new Date(data.analysis.createdAt).toLocaleString()}
 									</p>
-									<ul className="list-disc list-inside ml-4 space-y-4">
-										{data.aiInsight.matchReasons.map((reason: string) => (
-											<li key={reason}>{reason}</li>
-										))}
-									</ul>
-								</div>
-							)}
-							{data.aiInsight.mismatchedFields?.length > 0 && (
-								<div className="flex flex-col items-start gap-6">
-									<p className="font-semibold text-danger-600 flex items-center gap-2">
-										<XCircle size={14} /> Mismatched Fields:
-									</p>
-									<ul className="list-disc list-inside ml-4 space-y-4">
-										{data.aiInsight.mismatchedFields.map((field: string) => (
-											<li key={field}>{field}</li>
-										))}
-									</ul>
-								</div>
-							)}
-						</div>
-					)}
+								)}
+							</div>
+						)}
 				</CardBody>
 			)}
 		</Card>

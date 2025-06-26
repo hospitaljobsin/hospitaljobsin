@@ -32,12 +32,14 @@ from app.base.types import (
     BaseNodeType,
 )
 from app.context import Info
+from app.core.constants import JobApplicantAnalysisStatus
+from app.jobs.agents import FieldAnalysis
 from app.jobs.documents import (
-    ApplicantAIInsight,
     ApplicantField,
     ApplicationField,
     Job,
     JobApplicant,
+    JobApplicantAnalysis,
     JobApplicationForm,
     SavedJob,
 )
@@ -245,64 +247,96 @@ class ProfileSnapshotType(BaseProfileType):
         )
 
 
-@strawberry.enum(
-    name="AIApplicantMatchType",
-    description="The match type of the AI-powered applicant insight.",
+@strawberry.type(
+    name="FieldAnalysis",
+    description="An analysis of a field for a job applicant.",
 )
-class AIApplicantMatchType(Enum):
-    PERFECT = "PERFECT"
-    CLOSE = "CLOSE"
-    LOW = "LOW"
+class FieldAnalysisType:
+    criterion: str = strawberry.field(
+        description="The criterion of the field.",
+    )
+    analysis: str = strawberry.field(
+        description="The analysis of the field.",
+    )
+    score: float = strawberry.field(
+        description="The score of the field.",
+    )
+
+    @classmethod
+    def marshal(cls, field_analysis: FieldAnalysis) -> Self:
+        return cls(
+            criterion=field_analysis.criterion,
+            analysis=field_analysis.analysis,
+            score=field_analysis.score,
+        )
 
 
 @strawberry.type(
-    name="AIApplicantInsight",
-    description="AI-powered insights for a job applicant.",
+    name="JobApplicantAnalysis",
+    description="AI Analysis for a job applicant.",
 )
-class AIApplicantInsightType:
-    match_type: Annotated[
-        AIApplicantMatchType,
-        strawberry.field(
-            name="matchType",
-            description="The type of match.",
-        ),
-    ]
-    score: Annotated[
-        float,
-        strawberry.field(
-            description="The match score, from 0 to 100.",
-        ),
-    ]
-    summary: Annotated[
-        str,
-        strawberry.field(
-            description="A one-sentence summary of the match.",
-        ),
-    ]
-    match_reasons: Annotated[
-        list[str],
-        strawberry.field(
-            name="matchReasons",
-            description="A list of reasons for the match.",
-        ),
-    ]
-    mismatched_fields: Annotated[
-        list[str],
-        strawberry.field(
-            name="mismatchedFields",
-            description="A list of fields that do not match the job requirements.",
-        ),
-    ]
+class JobApplicantAnalysisType:
+    analysed_fields: list[FieldAnalysisType] = strawberry.field(
+        description="List of healthcare-specific match analyses",
+    )
+    overall_score: float | None = strawberry.field(
+        description="Final score for the applicant's match to the job (0-1), synthesized after all field analyses.",
+    )
+    overall_summary: str | None = strawberry.field(
+        default=None,
+        description="Summary reason for the overall match score, synthesized after all field analyses.",
+    )
+    strengths: list[str] | None = strawberry.field(
+        default=None,
+        description="List of strengths or standout factors identified in the match analysis.",
+    )
+    risk_flags: list[str] | None = strawberry.field(
+        default=None,
+        description="List of potential risks or red flags identified in the match analysis.",
+    )
+    created_at: datetime = strawberry.field(
+        description="When the analysis was created.",
+    )
 
     @classmethod
-    def marshal(cls, data: ApplicantAIInsight) -> Self:
+    def marshal(cls, data: JobApplicantAnalysis) -> Self:
         return cls(
-            match_type=AIApplicantMatchType(data.match_type),
-            score=data.score,
-            summary=data.summary,
-            match_reasons=data.match_reasons,
-            mismatched_fields=data.mismatched_fields,
+            analysed_fields=[
+                FieldAnalysisType.marshal(field) for field in data.analysed_fields
+            ],
+            overall_score=data.overall_score,
+            overall_summary=data.overall_summary,
+            strengths=data.strengths,
+            risk_flags=data.risk_flags,
+            created_at=data.created_at,
         )
+
+
+@strawberry.type(name="JobApplicantAnalysisPending")
+class JobApplicantAnalysisPendingType:
+    status: str = strawberry.field(
+        description="The status of the job applicant analysis.",
+        default="pending",
+    )
+
+
+@strawberry.type(name="JobApplicantAnalysisFailed")
+class JobApplicantAnalysisFailedType:
+    status: str = strawberry.field(
+        description="The status of the job applicant analysis.",
+        default="failed",
+    )
+
+
+JobApplicantAnalysisPayload = Annotated[
+    JobApplicantAnalysisType
+    | JobApplicantAnalysisPendingType
+    | JobApplicantAnalysisFailedType,
+    strawberry.union(
+        name="JobApplicantAnalysisPayload",
+        description="The payload for the job applicant analysis.",
+    ),
+]
 
 
 @strawberry.type(
@@ -310,8 +344,6 @@ class AIApplicantInsightType:
     description="A job application for a posting.",
 )
 class JobApplicantType(BaseNodeType[JobApplicant]):
-    ai_insight: AIApplicantInsightType | None
-
     status: JobApplicantStatusEnum = strawberry.field(
         description="The status of the job application.",
     )
@@ -327,6 +359,21 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
     _account: Private[Account | ObjectId]
 
     _job: Private[Job | ObjectId]
+
+    _analysis_status: Private[JobApplicantAnalysisStatus]
+
+    _analysis: Private[JobApplicantAnalysis | None]
+
+    @strawberry.field(  # type: ignore[misc]
+        description="The AI analysis of the job applicant.",
+    )
+    @inject
+    async def analysis(self) -> JobApplicantAnalysisPayload:
+        if self._analysis is not None:
+            return JobApplicantAnalysisType.marshal(self._analysis)
+        if self._analysis_status == "pending":
+            return JobApplicantAnalysisPendingType()
+        return JobApplicantAnalysisFailedType()
 
     @strawberry.field(  # type: ignore[misc]
         description="The account of the job applicant.",
@@ -378,9 +425,8 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
                 ApplicantFieldType.marshal(field)
                 for field in job_applicant.applicant_fields
             ],
-            ai_insight=AIApplicantInsightType.marshal(job_applicant.ai_insight_data)
-            if job_applicant.ai_insight_data
-            else None,
+            _analysis_status=job_applicant.analysis_status,
+            _analysis=job_applicant.analysis,
         )
 
     @classmethod

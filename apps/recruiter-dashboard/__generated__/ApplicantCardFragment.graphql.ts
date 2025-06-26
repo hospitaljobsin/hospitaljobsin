@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1c8eb243eba285044423c2b593a1d6da>>
+ * @generated SignedSource<<00221daf9d06585ae7a33d804820a4cd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,6 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
-export type AIApplicantMatchType = "CLOSE" | "LOW" | "PERFECT" | "%future added value";
 export type JobApplicantStatus = "APPLIED" | "INTERVIEWED" | "OFFERED" | "ONHOLD" | "SHORTLISTED" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type ApplicantCardFragment$data = {
@@ -17,13 +16,29 @@ export type ApplicantCardFragment$data = {
     readonly avatarUrl: string;
     readonly fullName: string;
   };
-  readonly aiInsight: {
-    readonly matchReasons: ReadonlyArray<string>;
-    readonly matchType: AIApplicantMatchType;
-    readonly mismatchedFields: ReadonlyArray<string>;
-    readonly score: number;
-    readonly summary: string;
-  } | null | undefined;
+  readonly analysis: {
+    readonly __typename: "JobApplicantAnalysis";
+    readonly analysedFields: ReadonlyArray<{
+      readonly analysis: string;
+      readonly criterion: string;
+      readonly score: number;
+    }>;
+    readonly createdAt: any;
+    readonly overallScore: number | null | undefined;
+    readonly overallSummary: string | null | undefined;
+    readonly riskFlags: ReadonlyArray<string> | null | undefined;
+    readonly strengths: ReadonlyArray<string> | null | undefined;
+  } | {
+    readonly __typename: "JobApplicantAnalysisFailed";
+    readonly __typename: "JobApplicantAnalysisFailed";
+  } | {
+    readonly __typename: "JobApplicantAnalysisPending";
+    readonly __typename: "JobApplicantAnalysisPending";
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
   readonly id: string;
   readonly profileSnapshot: {
     readonly headline: string | null | undefined;
@@ -93,20 +108,6 @@ const node: ReaderFragment = {
       "storageKey": null
     },
     {
-      "condition": "showStatus",
-      "kind": "Condition",
-      "passingValue": true,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "status",
-          "storageKey": null
-        }
-      ]
-    },
-    {
       "alias": null,
       "args": null,
       "concreteType": "ProfileSnapshot",
@@ -127,54 +128,114 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
-      "concreteType": "AIApplicantInsight",
+      "concreteType": null,
       "kind": "LinkedField",
-      "name": "aiInsight",
+      "name": "analysis",
       "plural": false,
       "selections": [
         {
           "alias": null,
           "args": null,
           "kind": "ScalarField",
-          "name": "matchType",
+          "name": "__typename",
           "storageKey": null
         },
         {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "score",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "summary",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "matchReasons",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "mismatchedFields",
-          "storageKey": null
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "overallScore",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "overallSummary",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "strengths",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "riskFlags",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "concreteType": "FieldAnalysis",
+              "kind": "LinkedField",
+              "name": "analysedFields",
+              "plural": true,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "analysis",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "criterion",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "score",
+                  "storageKey": null
+                }
+              ],
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "createdAt",
+              "storageKey": null
+            }
+          ],
+          "type": "JobApplicantAnalysis",
+          "abstractKey": null
         }
       ],
       "storageKey": null
+    },
+    {
+      "condition": "showStatus",
+      "kind": "Condition",
+      "passingValue": true,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "status",
+          "storageKey": null
+        }
+      ]
     }
   ],
   "type": "JobApplicant",
   "abstractKey": null
 };
 
-(node as any).hash = "6bfbd0127319c563e9488e9cd548bbe0";
+(node as any).hash = "f8fffdaaacaca82671655bdba7e12407";
 
 export default node;

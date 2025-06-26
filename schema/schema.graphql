@@ -3,26 +3,6 @@ directive @isAuthenticated on FIELD_DEFINITION
 directive @requiresSudoMode on FIELD_DEFINITION
 
 """
-AI-powered insights for a job applicant.
-"""
-type AIApplicantInsight {
-	matchType: AIApplicantMatchType!
-	score: Float!
-	summary: String!
-	matchReasons: [String!]!
-	mismatchedFields: [String!]!
-}
-
-"""
-The match type of the AI-powered applicant insight.
-"""
-enum AIApplicantMatchType {
-	PERFECT
-	CLOSE
-	LOW
-}
-
-"""
 The accept organization invite payload.
 """
 union AcceptOrganizationInvitePayload =
@@ -741,6 +721,26 @@ interface Error {
 }
 
 """
+An analysis of a field for a job applicant.
+"""
+type FieldAnalysis {
+	"""
+	The criterion of the field.
+	"""
+	criterion: String!
+
+	"""
+	The analysis of the field.
+	"""
+	analysis: String!
+
+	"""
+	The score of the field.
+	"""
+	score: Float!
+}
+
+"""
 Gender type.
 """
 enum GenderType {
@@ -1201,7 +1201,6 @@ type JobApplicant implements Node {
 	The Globally Unique ID of this object
 	"""
 	id: ID!
-	aiInsight: AIApplicantInsight
 
 	"""
 	The status of the job application.
@@ -1218,6 +1217,11 @@ type JobApplicant implements Node {
 	"""
 	applicantFields: [ApplicantField!]!
 	profileSnapshot: ProfileSnapshot!
+
+	"""
+	The AI analysis of the job applicant.
+	"""
+	analysis: JobApplicantAnalysisPayload!
 
 	"""
 	The account of the job applicant.
@@ -1238,6 +1242,63 @@ type JobApplicantAlreadyExistsError implements Error {
 	Human readable error message.
 	"""
 	message: String!
+}
+
+"""
+AI Analysis for a job applicant.
+"""
+type JobApplicantAnalysis {
+	"""
+	List of healthcare-specific match analyses
+	"""
+	analysedFields: [FieldAnalysis!]!
+
+	"""
+	Final score for the applicant's match to the job (0-1), synthesized after all field analyses.
+	"""
+	overallScore: Float
+
+	"""
+	Summary reason for the overall match score, synthesized after all field analyses.
+	"""
+	overallSummary: String
+
+	"""
+	List of strengths or standout factors identified in the match analysis.
+	"""
+	strengths: [String!]
+
+	"""
+	List of potential risks or red flags identified in the match analysis.
+	"""
+	riskFlags: [String!]
+
+	"""
+	When the analysis was created.
+	"""
+	createdAt: DateTime!
+}
+
+type JobApplicantAnalysisFailed {
+	"""
+	The status of the job applicant analysis.
+	"""
+	status: String!
+}
+
+"""
+The payload for the job applicant analysis.
+"""
+union JobApplicantAnalysisPayload =
+	| JobApplicantAnalysis
+	| JobApplicantAnalysisPending
+	| JobApplicantAnalysisFailed
+
+type JobApplicantAnalysisPending {
+	"""
+	The status of the job applicant analysis.
+	"""
+	status: String!
 }
 
 type JobApplicantConnection {

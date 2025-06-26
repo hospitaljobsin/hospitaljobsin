@@ -1,5 +1,5 @@
 from datetime import UTC, datetime
-from typing import Annotated, Any, ClassVar, Literal
+from typing import Annotated, ClassVar, Literal
 
 import pymongo
 from beanie import (
@@ -20,6 +20,7 @@ from app.base.models import GeoObject
 from app.core.constants import (
     CoreJobMetricEventType,
     ImpressionJobMetricEventType,
+    JobApplicantAnalysisStatus,
     JobApplicantStatus,
 )
 from app.jobs.agents import FieldAnalysis
@@ -130,25 +131,12 @@ class ApplicantField(BaseModel):
         return self.model_dump_json()
 
 
-class ApplicantAIInsight(BaseModel):
-    match_type: Literal["PERFECT", "CLOSE", "LOW"] = Field(
-        ..., description="The type of match."
-    )
-    score: int = Field(..., description="The match score, from 0 to 100.")
-    summary: str = Field(..., description="A one-sentence summary of the match.")
-    match_reasons: list[str] = Field(..., description="The reasons for the match.")
-    mismatched_fields: list[str] = Field(
-        ..., description="The fields that did not match."
-    )
-
-
 class JobApplicantAnalysis(BaseModel):
     """
     Stores the AI-generated analytical summary for how well a job applicant's profile matches a specific healthcare job description, with a created_at timestamp for persistence.
     """
 
-    analysed_fields: list[FieldAnalysis] | None = Field(
-        default=None,
+    analysed_fields: list[FieldAnalysis] = Field(
         description="List of healthcare-specific match analyses, one per criterion (e.g., 'Medical License', 'Specialization', etc.).",
     )
     overall_score: float | None = Field(
@@ -193,7 +181,7 @@ class JobApplicant(Document):
         default=None,
         description="AI-generated match analysis for this applicant and job.",
     )
-    analysis_status: Literal["pending", "complete", "failed"] = Field(
+    analysis_status: JobApplicantAnalysisStatus = Field(
         default="pending",
         description="Status of the analysis process for this applicant ('pending', 'complete', or 'failed').",
     )
@@ -222,18 +210,6 @@ class JobApplicant(Document):
                 name="analysis_status_index",
             ),
         ]
-
-    def __init__(self, **data: Any) -> None:
-        super().__init__(**data)
-        self.__ai_insight_data: ApplicantAIInsight | None = None
-
-    @property
-    def ai_insight_data(self) -> ApplicantAIInsight | None:
-        return self.__ai_insight_data
-
-    @ai_insight_data.setter
-    def ai_insight_data(self, value: ApplicantAIInsight | None) -> None:
-        self.__ai_insight_data = value
 
 
 class BaseJobMetric(UnionDoc):
