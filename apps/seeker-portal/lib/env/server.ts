@@ -1,6 +1,6 @@
+import { loadSecrets } from "@/lib/secrets";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod/v4-mini";
-import { loadSecrets } from "@/lib/secrets";
 
 export function createServerEnv(): Readonly<{
 	JWE_SECRET_KEY: string;
@@ -19,10 +19,10 @@ export function createServerEnv(): Readonly<{
 	});
 }
 
-let _env: ReturnType<typeof createServerEnv>;
+let _env: ReturnType<typeof createServerEnv> | null = null;
 
 export async function getEnv() {
-	if (!_env) {
+	if (_env === null) {
 		await loadSecrets();
 		_env = createServerEnv();
 	}
