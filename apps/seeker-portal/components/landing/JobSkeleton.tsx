@@ -9,7 +9,7 @@ import {
 
 export default function JobSkeleton() {
 	return (
-		<Card isHoverable fullWidth className="p-4 sm:p-6" shadow="none">
+		<Card isHoverable={false} fullWidth className="p-4 sm:p-6" shadow="none">
 			<CardHeader>
 				<div className="flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center">
 					<div className="flex items-center gap-4 w-full">
