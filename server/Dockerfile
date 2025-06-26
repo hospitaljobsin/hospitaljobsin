@@ -108,6 +108,10 @@ ENV PYTHONPATH="/var/task:$PYTHONPATH"
 # ENV PATH="/var/task/.venv/bin:$PATH"
 
 ENV READINESS_CHECK_PATH = "/health/"
+ENV AWS_LWA_PORT=8000
+
+
+# EXPOSE 8000
 
 # ENTRYPOINT [ "python", "-m", "awslambdaric" ]
 
