@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import type { pageJobDetailMetadataFragment$key } from "@/__generated__/pageJobDetailMetadataFragment.graphql";
 import type JobDetailViewQueryNode from "@/__generated__/pageJobDetailViewQuery.graphql";
 import type { pageJobDetailViewQuery } from "@/__generated__/pageJobDetailViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
 
 export const PageJobDetailViewQuery = graphql`
@@ -36,7 +36,9 @@ const PageJobDetailMetadataFragment = graphql`
   }
 `;
 
+// FIXME: this won't memoize...
 const loadJob = cache(async (slug: string, jobSlug: string) => {
+	console.log("loading job...");
 	return await loadSerializableQuery<
 		typeof JobDetailViewQueryNode,
 		pageJobDetailViewQuery
@@ -55,6 +57,7 @@ export async function generateMetadata({
 	const slug = decodeURIComponent(pathParams.slug);
 	const jobSlug = decodeURIComponent(pathParams.jobSlug);
 
+	console.log("generating metadata for job", slug, jobSlug);
 	const preloadedQuery = await loadJob(slug, jobSlug);
 
 	const data = readInlineData<pageJobDetailMetadataFragment$key>(
@@ -97,6 +100,7 @@ export default async function JobDetailPage({
 	const slug = decodeURIComponent(pathParams.slug);
 	const jobSlug = decodeURIComponent(pathParams.jobSlug);
 
+	console.log("rendering page...");
 	const preloadedQuery = await loadJob(slug, jobSlug);
 
 	const data = readInlineData<pageJobDetailMetadataFragment$key>(
