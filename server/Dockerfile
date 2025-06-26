@@ -81,6 +81,9 @@ ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
 ENV UV_CACHE_DIR=/tmp/uv-cache
 
+ENV VIRTUAL_ENV=/tmp/.venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 # Set the working directory
 WORKDIR /var/task
 
