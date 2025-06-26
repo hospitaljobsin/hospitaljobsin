@@ -1,18 +1,18 @@
 "use client";
 
+import type { RequestSudoModeViewClientComponentFragment$key } from "@/__generated__/RequestSudoModeViewClientComponentFragment.graphql";
+import type RequestSudoModeViewQueryNode from "@/__generated__/pageRequestSudoModeViewQuery.graphql";
+import type { pageRequestSudoModeViewQuery } from "@/__generated__/pageRequestSudoModeViewQuery.graphql";
+import PageRequestSudoModeViewQuery from "@/__generated__/pageRequestSudoModeViewQuery.graphql";
+import RequestSudoView from "@/components/request-sudo/RequestSudoView";
+import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
+import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 import {
 	graphql,
 	useFragment,
 	usePreloadedQuery,
 	useRelayEnvironment,
 } from "react-relay";
-import type RequestSudoModeViewQueryNode from "@/__generated__/pageRequestSudoModeViewQuery.graphql";
-import type { pageRequestSudoModeViewQuery } from "@/__generated__/pageRequestSudoModeViewQuery.graphql";
-import PageRequestSudoModeViewQuery from "@/__generated__/pageRequestSudoModeViewQuery.graphql";
-import type { RequestSudoModeViewClientComponentFragment$key } from "@/__generated__/RequestSudoModeViewClientComponentFragment.graphql";
-import RequestSudoView from "@/components/request-sudo/RequestSudoView";
-import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
-import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 
 const RequestSudoModeViewClientComponentFragment = graphql`
  fragment RequestSudoModeViewClientComponentFragment on Query {
@@ -30,7 +30,7 @@ export default function RequestSudoModeViewClientComponent(props: {
 	const queryRef = useSerializablePreloadedQuery<
 		typeof RequestSudoModeViewQueryNode,
 		pageRequestSudoModeViewQuery
-	>(environment, props.preloadedQuery);
+	>(environment, props.preloadedQuery, "store-or-network");
 
 	const data = usePreloadedQuery(PageRequestSudoModeViewQuery, queryRef);
 

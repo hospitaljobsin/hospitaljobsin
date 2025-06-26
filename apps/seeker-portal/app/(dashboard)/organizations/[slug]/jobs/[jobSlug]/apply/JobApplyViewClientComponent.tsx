@@ -1,11 +1,5 @@
 "use client";
 
-import {
-	graphql,
-	useFragment,
-	usePreloadedQuery,
-	useRelayEnvironment,
-} from "react-relay";
 import type { JobApplyViewClientComponentFragment$key } from "@/__generated__/JobApplyViewClientComponentFragment.graphql";
 import type JobApplyViewQueryNode from "@/__generated__/pageJobApplyViewQuery.graphql";
 import type { pageJobApplyViewQuery } from "@/__generated__/pageJobApplyViewQuery.graphql";
@@ -13,6 +7,12 @@ import PageJobApplyViewQuery from "@/__generated__/pageJobApplyViewQuery.graphql
 import JobApplyView from "@/components/job-apply/JobApplyView";
 import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
+import {
+	graphql,
+	useFragment,
+	usePreloadedQuery,
+	useRelayEnvironment,
+} from "react-relay";
 
 const JobApplyViewClientComponentFragment = graphql`
  fragment JobApplyViewClientComponentFragment on Query @argumentDefinitions(
@@ -33,7 +33,7 @@ export default function JobApplyViewClientComponent(props: {
 	const queryRef = useSerializablePreloadedQuery<
 		typeof JobApplyViewQueryNode,
 		pageJobApplyViewQuery
-	>(environment, props.preloadedQuery);
+	>(environment, props.preloadedQuery, "store-or-network");
 
 	const data = usePreloadedQuery(PageJobApplyViewQuery, queryRef);
 
