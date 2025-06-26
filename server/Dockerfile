@@ -101,8 +101,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # RUN uv pip install awslambdaric
 
 # Set environment variables for Python
-ENV PYTHONPATH="/var/task"
-ENV PATH="/var/task/.venv/bin:$PATH"
+# FIXME: setup venv correctly for lambda
+# ENV PYTHONPATH="/var/task"
+# ENV PATH="/var/task/.venv/bin:$PATH"
 
 # ENTRYPOINT [ "python", "-m", "awslambdaric" ]
 
