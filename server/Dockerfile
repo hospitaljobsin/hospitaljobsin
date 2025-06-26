@@ -18,14 +18,14 @@ WORKDIR /project
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --no-sync --no-cache --no-install-project
+    uv sync --locked --no-install-project
 
 # Copy the application files
 COPY . .
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --no-sync --no-cache
+    uv sync --locked
 
 # Set environment variables for Python
 ENV PYTHONPATH="/project"
@@ -79,7 +79,7 @@ COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
-ENV UV_CACHE_DIR=/opt/uv-cache/
+# ENV UV_CACHE_DIR=/opt/uv-cache/
 
 # Set the working directory
 WORKDIR /var/task
@@ -88,14 +88,14 @@ WORKDIR /var/task
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --no-sync --no-cache --no-install-project
+    uv sync --locked --no-install-project
 
 # Copy the application files
 COPY . .
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --no-sync --no-cache
+    uv sync --locked
 
 # Install the AWS Lambda Runtime Interface Client
 # RUN uv pip install awslambdaric
