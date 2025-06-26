@@ -75,6 +75,7 @@ COPY --from=layer-build /opt /opt
 # include the AWS lambda web adapter
 COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
 
+# this errors out for some reason
 # ENV READINESS_CHECK_PATH = "/health/"
 ENV PORT=8000
 
@@ -103,19 +104,12 @@ COPY . .
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen
 
-# Install the AWS Lambda Runtime Interface Client
-# RUN uv pip install awslambdaric
 
 # Set environment variables for Python
 # FIXME: setup venv correctly for lambda
 ENV PYTHONPATH="/var/task:$PYTHONPATH"
 # ENV PATH="/var/task/.venv/bin:$PATH"
 
-
-
-# EXPOSE 8000
-
-# ENTRYPOINT [ "python", "-m", "awslambdaric" ]
 
 # Set the Lambda handler
 CMD ["python", "scripts/run_server.py"]
