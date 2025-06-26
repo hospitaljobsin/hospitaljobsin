@@ -9,8 +9,6 @@ from app.logger import build_server_log_config, setup_logging
 
 settings = get_settings(AppSettings)
 
-# setup instrumentation
-initialize_instrumentation(settings=settings)
 
 # set up logging
 # Apply the logging config
@@ -23,6 +21,11 @@ logging.config.dictConfig(
 setup_logging(
     human_readable=not settings.is_production,
 )
+
+# setup instrumentation
+initialize_instrumentation(settings=settings)
+
+# FIXME: tracked down the issue- lifespan is executing on every call, which takes around 1s every time (because of DB initialization)
 
 # TODO: probably init database outside, over here??
 # but then we won't get access to secret settings, which is fine for now ig..
