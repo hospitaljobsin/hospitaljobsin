@@ -15,5 +15,8 @@ setup_logging(
     human_readable=settings.debug,
 )
 
+# TODO: probably init database outside, over here??
+# but then we won't get access to secret settings, which is fine for now ig..
+
 app = create_app()
 handler = Mangum(app, lifespan="on")
