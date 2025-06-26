@@ -92,10 +92,10 @@ async def app_lifespan(app: FastAPI) -> AsyncGenerator[None]:
         # ref: https://github.com/Kludex/mangum/issues/342
         if not app.state.has_initialized:
             logger = get_logger(__name__)
-            logger.debug("Initializing application secrets")
-            # load secrets during startup
-            with sentry_sdk.start_span(op="settings.get", description="SecretSettings"):
-                get_settings(SecretSettings)
+            # logger.debug("Initializing application secrets")
+            # # load secrets during startup
+            # with sentry_sdk.start_span(op="settings.get", description="SecretSettings"):
+            #     get_settings(SecretSettings)
             database_settings = get_settings(DatabaseSettings)
             logger.debug("Initializing database connection")
             await initialize_database(
