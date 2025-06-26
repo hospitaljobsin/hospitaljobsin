@@ -212,6 +212,7 @@ resource "aws_lambda_function" "backend" {
       SERVER_GOOGLE_GEMINI_MODEL                  = "gemini/gemini-2.5-flash-preview-04-17"
 
       AWS_SECRETS_MANAGER_SECRET_ID = aws_secretsmanager_secret.backend.id
+      AWS_LWA_PORT                  = 8080
     }
   }
 
