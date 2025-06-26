@@ -107,7 +107,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Set environment variables for Python
 # FIXME: setup venv correctly for lambda
-# ENV PYTHONPATH="/var/task"
+ENV PYTHONPATH="/var/task"
 # ENV PATH="/var/task/.venv/bin:$PATH"
 
 # ENTRYPOINT [ "python", "-m", "awslambdaric" ]
