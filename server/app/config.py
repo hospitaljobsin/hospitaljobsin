@@ -444,7 +444,7 @@ TSettings = TypeVar("TSettings", bound=BaseSettings)
 
 
 def get_settings(cls: type[TSettings]) -> TSettings:
-    with sentry_sdk.start_span(op="settings.get", name="Get Settings"):
+    with sentry_sdk.start_span(op="settings.get", description=str(cls)):
         return cls()
 
 
