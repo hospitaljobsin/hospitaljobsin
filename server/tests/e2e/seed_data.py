@@ -7,11 +7,10 @@ async def setup_test_database() -> None:
     """Seed test database with e2e fixtures."""
     # Initialize Beanie with test database
     settings = get_settings(DatabaseSettings)
-    async with initialize_database(
+    await initialize_database(
         database_url=str(settings.database_url),
         default_database_name=settings.default_database_name,
-    ):
-        pass
+    )
 
 
 async def teardown_test_database() -> None:

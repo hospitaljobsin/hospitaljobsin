@@ -7,15 +7,14 @@ from app.database import initialize_database
 
 
 async def insert_missing_profiles():
-    async with initialize_database(
+    await initialize_database(
         str(get_settings(DatabaseSettings).database_url),
         get_settings(DatabaseSettings).default_database_name,
-    ):
-        accounts = await Account.find_all().to_list()
-        count_created = 0
-        for account in accounts:
-            if account.profile is None:
-                await ProfileRepo().create(account=account)
+    )
+    accounts = await Account.find_all().to_list()
+    for account in accounts:
+        if account.profile is None:
+            await ProfileRepo().create(account=account)
 
 
 if __name__ == "__main__":

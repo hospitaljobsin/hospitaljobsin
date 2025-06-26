@@ -21,30 +21,30 @@ async def re_embed_docs():
     embeddings_service = EmbeddingsService(
         genai_client=create_google_genai_client(settings=get_settings(SecretSettings))
     )
-    async with initialize_database(
+    await initialize_database(
         str(get_settings(DatabaseSettings).database_url),
         get_settings(DatabaseSettings).default_database_name,
-    ):
-        jobs = await Job.find_all().to_list()
-        for job in jobs:
-            job.embedding = await embeddings_service.generate_embeddings(
-                text=JobRepo.format_job_for_embedding(
-                    title=job.title,
-                    description=job.description,
-                    skills=job.skills,
-                    location=job.location,
-                    geo=job.geo,
-                    min_salary=job.min_salary,
-                    max_salary=job.max_salary,
-                    min_experience=job.min_experience,
-                    max_experience=job.max_experience,
-                    job_type=job.type,
-                    work_mode=job.work_mode,
-                    currency=job.currency,
-                ),
-                task_type="SEMANTIC_SIMILARITY",
-            )
-            await job.save()
+    )
+    jobs = await Job.find_all().to_list()
+    for job in jobs:
+        job.embedding = await embeddings_service.generate_embeddings(
+            text=JobRepo.format_job_for_embedding(
+                title=job.title,
+                description=job.description,
+                skills=job.skills,
+                location=job.location,
+                geo=job.geo,
+                min_salary=job.min_salary,
+                max_salary=job.max_salary,
+                min_experience=job.min_experience,
+                max_experience=job.max_experience,
+                job_type=job.type,
+                work_mode=job.work_mode,
+                currency=job.currency,
+            ),
+            task_type="SEMANTIC_SIMILARITY",
+        )
+        await job.save()
 
 
 if __name__ == "__main__":

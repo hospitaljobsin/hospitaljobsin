@@ -15,20 +15,20 @@ async def insert_healthcare_jobs():
         genai_client=create_google_genai_client(settings=get_settings(SecretSettings))
     )
     # Find the organization with slug "aryan"
-    async with initialize_database(
+    await initialize_database(
         str(get_settings(DatabaseSettings).database_url),
         get_settings(DatabaseSettings).default_database_name,
-    ):
-        org = await Organization.find_one({"slug": "aryan"})
-        if not org:
-            print("Organization with slug 'aryan' not found.")
-            return
+    )
+    org = await Organization.find_one({"slug": "aryan"})
+    if not org:
+        print("Organization with slug 'aryan' not found.")
+        return
 
-        jobs = [
-            Job(
-                title="Senior Cardiologist",
-                slug="senior-cardiologist",
-                description="""
+    jobs = [
+        Job(
+            title="Senior Cardiologist",
+            slug="senior-cardiologist",
+            description="""
 We are seeking an **experienced Cardiologist** to join our cardiac care team at a leading hospital in Mumbai. This is a unique opportunity to work with a multidisciplinary team and make a significant impact on patient care.
 
 ## Responsibilities
@@ -51,31 +51,31 @@ We are seeking an **experienced Cardiologist** to join our cardiac care team at 
 
 Mumbai, Maharashtra
 """,
-                type="full_time",
-                work_mode="office",
-                location="Mumbai, Maharashtra",
-                geo=None,
-                skills=[
-                    "cardiology",
-                    "echocardiography",
-                    "patient care",
-                    "medical leadership",
-                ],
-                currency="INR",
-                min_salary=2500000,
-                max_salary=3500000,
-                min_experience=8,
-                max_experience=15,
-                vacancies=1,
-                updated_at=datetime.now(UTC),
-                expires_at=datetime.now(UTC) + timedelta(days=30),
-                is_active=True,
-                organization=org,
-            ),
-            Job(
-                title="Telemedicine Physician",
-                slug="telemedicine-physician",
-                description="""
+            type="full_time",
+            work_mode="office",
+            location="Mumbai, Maharashtra",
+            geo=None,
+            skills=[
+                "cardiology",
+                "echocardiography",
+                "patient care",
+                "medical leadership",
+            ],
+            currency="INR",
+            min_salary=2500000,
+            max_salary=3500000,
+            min_experience=8,
+            max_experience=15,
+            vacancies=1,
+            updated_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(days=30),
+            is_active=True,
+            organization=org,
+        ),
+        Job(
+            title="Telemedicine Physician",
+            slug="telemedicine-physician",
+            description="""
 Join our **growing telemedicine team** to provide virtual healthcare services to patients across India. This role is ideal for physicians who are passionate about digital health and want to make healthcare more accessible.
 
 ## Responsibilities
@@ -98,31 +98,31 @@ Join our **growing telemedicine team** to provide virtual healthcare services to
 
 Remote (Work from anywhere)
 """,
-                type="full_time",
-                work_mode="remote",
-                location="Remote",
-                geo=None,
-                skills=[
-                    "telemedicine",
-                    "primary care",
-                    "digital health",
-                    "patient communication",
-                ],
-                currency="INR",
-                min_salary=1200000,
-                max_salary=1800000,
-                min_experience=3,
-                max_experience=8,
-                vacancies=2,
-                updated_at=datetime.now(UTC),
-                expires_at=datetime.now(UTC) + timedelta(days=45),
-                is_active=True,
-                organization=org,
-            ),
-            Job(
-                title="Pediatric Nurse Practitioner",
-                slug="pediatric-nurse-practitioner",
-                description="""
+            type="full_time",
+            work_mode="remote",
+            location="Remote",
+            geo=None,
+            skills=[
+                "telemedicine",
+                "primary care",
+                "digital health",
+                "patient communication",
+            ],
+            currency="INR",
+            min_salary=1200000,
+            max_salary=1800000,
+            min_experience=3,
+            max_experience=8,
+            vacancies=2,
+            updated_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(days=45),
+            is_active=True,
+            organization=org,
+        ),
+        Job(
+            title="Pediatric Nurse Practitioner",
+            slug="pediatric-nurse-practitioner",
+            description="""
 We are seeking a **Pediatric Nurse Practitioner** to provide comprehensive care to children from birth through adolescence. This role is perfect for compassionate professionals dedicated to child health and development.
 
 ## Responsibilities
@@ -144,31 +144,31 @@ We are seeking a **Pediatric Nurse Practitioner** to provide comprehensive care 
 
 Delhi, NCR (Hybrid)
 """,
-                type="full_time",
-                work_mode="hybrid",
-                location="Delhi, NCR",
-                geo=None,
-                skills=[
-                    "pediatrics",
-                    "nursing",
-                    "child development",
-                    "patient education",
-                ],
-                currency="INR",
-                min_salary=800000,
-                max_salary=1200000,
-                min_experience=2,
-                max_experience=5,
-                vacancies=1,
-                updated_at=datetime.now(UTC),
-                expires_at=datetime.now(UTC) + timedelta(days=60),
-                is_active=True,
-                organization=org,
-            ),
-            Job(
-                title="Medical Laboratory Technician",
-                slug="medical-laboratory-technician",
-                description="""
+            type="full_time",
+            work_mode="hybrid",
+            location="Delhi, NCR",
+            geo=None,
+            skills=[
+                "pediatrics",
+                "nursing",
+                "child development",
+                "patient education",
+            ],
+            currency="INR",
+            min_salary=800000,
+            max_salary=1200000,
+            min_experience=2,
+            max_experience=5,
+            vacancies=1,
+            updated_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(days=60),
+            is_active=True,
+            organization=org,
+        ),
+        Job(
+            title="Medical Laboratory Technician",
+            slug="medical-laboratory-technician",
+            description="""
 Join our **state-of-the-art medical laboratory team** and play a crucial role in patient diagnosis and treatment. This position offers hands-on experience with advanced laboratory equipment and technologies.
 
 ## Responsibilities
@@ -190,31 +190,31 @@ Join our **state-of-the-art medical laboratory team** and play a crucial role in
 
 Bangalore, Karnataka
 """,
-                type="full_time",
-                work_mode="office",
-                location="Bangalore, Karnataka",
-                geo=None,
-                skills=[
-                    "laboratory testing",
-                    "medical equipment",
-                    "quality control",
-                    "data analysis",
-                ],
-                currency="INR",
-                min_salary=400000,
-                max_salary=600000,
-                min_experience=1,
-                max_experience=3,
-                vacancies=2,
-                updated_at=datetime.now(UTC),
-                expires_at=datetime.now(UTC) + timedelta(days=30),
-                is_active=True,
-                organization=org,
-            ),
-            Job(
-                title="Mental Health Counselor",
-                slug="mental-health-counselor",
-                description="""
+            type="full_time",
+            work_mode="office",
+            location="Bangalore, Karnataka",
+            geo=None,
+            skills=[
+                "laboratory testing",
+                "medical equipment",
+                "quality control",
+                "data analysis",
+            ],
+            currency="INR",
+            min_salary=400000,
+            max_salary=600000,
+            min_experience=1,
+            max_experience=3,
+            vacancies=2,
+            updated_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(days=30),
+            is_active=True,
+            organization=org,
+        ),
+        Job(
+            title="Mental Health Counselor",
+            slug="mental-health-counselor",
+            description="""
 We're looking for a **compassionate Mental Health Counselor** to provide therapy and support services to individuals and groups. This role is vital in promoting mental wellness and resilience in our community.
 
 ## Responsibilities
@@ -236,31 +236,31 @@ We're looking for a **compassionate Mental Health Counselor** to provide therapy
 
 Hyderabad, Telangana (Hybrid)
 """,
-                type="part_time",
-                work_mode="hybrid",
-                location="Hyderabad, Telangana",
-                geo=None,
-                skills=[
-                    "counseling",
-                    "mental health",
-                    "therapy",
-                    "crisis intervention",
-                ],
-                currency="INR",
-                min_salary=600000,
-                max_salary=900000,
-                min_experience=2,
-                max_experience=5,
-                vacancies=1,
-                updated_at=datetime.now(UTC),
-                expires_at=datetime.now(UTC) + timedelta(days=45),
-                is_active=True,
-                organization=org,
-            ),
-            Job(
-                title="Healthcare IT Specialist",
-                slug="healthcare-it-specialist",
-                description="""
+            type="part_time",
+            work_mode="hybrid",
+            location="Hyderabad, Telangana",
+            geo=None,
+            skills=[
+                "counseling",
+                "mental health",
+                "therapy",
+                "crisis intervention",
+            ],
+            currency="INR",
+            min_salary=600000,
+            max_salary=900000,
+            min_experience=2,
+            max_experience=5,
+            vacancies=1,
+            updated_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(days=45),
+            is_active=True,
+            organization=org,
+        ),
+        Job(
+            title="Healthcare IT Specialist",
+            slug="healthcare-it-specialist",
+            description="""
 Join our **IT team** to support and optimize healthcare technology systems in a dynamic environment. This role is ideal for tech-savvy professionals passionate about improving healthcare delivery through technology.
 
 ## Responsibilities
@@ -282,31 +282,31 @@ Join our **IT team** to support and optimize healthcare technology systems in a 
 
 Pune, Maharashtra (Hybrid)
 """,
-                type="full_time",
-                work_mode="hybrid",
-                location="Pune, Maharashtra",
-                geo=None,
-                skills=[
-                    "healthcare IT",
-                    "EHR systems",
-                    "HIPAA compliance",
-                    "technical support",
-                ],
-                currency="INR",
-                min_salary=800000,
-                max_salary=1200000,
-                min_experience=3,
-                max_experience=6,
-                vacancies=1,
-                updated_at=datetime.now(UTC),
-                expires_at=datetime.now(UTC) + timedelta(days=30),
-                is_active=True,
-                organization=org,
-            ),
-            Job(
-                title="Physical Therapist",
-                slug="physical-therapist",
-                description="""
+            type="full_time",
+            work_mode="hybrid",
+            location="Pune, Maharashtra",
+            geo=None,
+            skills=[
+                "healthcare IT",
+                "EHR systems",
+                "HIPAA compliance",
+                "technical support",
+            ],
+            currency="INR",
+            min_salary=800000,
+            max_salary=1200000,
+            min_experience=3,
+            max_experience=6,
+            vacancies=1,
+            updated_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(days=30),
+            is_active=True,
+            organization=org,
+        ),
+        Job(
+            title="Physical Therapist",
+            slug="physical-therapist",
+            description="""
 We are seeking a **Physical Therapist** to help patients recover from injuries, surgeries, and chronic conditions. This role is essential for improving patient mobility and quality of life.
 
 ## Responsibilities
@@ -328,31 +328,31 @@ We are seeking a **Physical Therapist** to help patients recover from injuries, 
 
 Chennai, Tamil Nadu
 """,
-                type="full_time",
-                work_mode="office",
-                location="Chennai, Tamil Nadu",
-                geo=None,
-                skills=[
-                    "physical therapy",
-                    "rehabilitation",
-                    "patient care",
-                    "therapeutic exercises",
-                ],
-                currency="INR",
-                min_salary=700000,
-                max_salary=1000000,
-                min_experience=2,
-                max_experience=5,
-                vacancies=1,
-                updated_at=datetime.now(UTC),
-                expires_at=datetime.now(UTC) + timedelta(days=60),
-                is_active=True,
-                organization=org,
-            ),
-            Job(
-                title="Medical Billing Specialist",
-                slug="medical-billing-specialist",
-                description="""
+            type="full_time",
+            work_mode="office",
+            location="Chennai, Tamil Nadu",
+            geo=None,
+            skills=[
+                "physical therapy",
+                "rehabilitation",
+                "patient care",
+                "therapeutic exercises",
+            ],
+            currency="INR",
+            min_salary=700000,
+            max_salary=1000000,
+            min_experience=2,
+            max_experience=5,
+            vacancies=1,
+            updated_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(days=60),
+            is_active=True,
+            organization=org,
+        ),
+        Job(
+            title="Medical Billing Specialist",
+            slug="medical-billing-specialist",
+            description="""
 Join our **finance team** to handle medical billing and insurance claims in a fast-paced healthcare environment. This position is crucial for ensuring accurate and timely reimbursement for services rendered.
 
 ## Responsibilities
@@ -374,31 +374,31 @@ Join our **finance team** to handle medical billing and insurance claims in a fa
 
 Remote (Work from anywhere)
 """,
-                type="full_time",
-                work_mode="remote",
-                location="Remote",
-                geo=None,
-                skills=[
-                    "medical billing",
-                    "insurance claims",
-                    "healthcare finance",
-                    "patient billing",
-                ],
-                currency="INR",
-                min_salary=400000,
-                max_salary=600000,
-                min_experience=1,
-                max_experience=3,
-                vacancies=2,
-                updated_at=datetime.now(UTC),
-                expires_at=datetime.now(UTC) + timedelta(days=45),
-                is_active=True,
-                organization=org,
-            ),
-            Job(
-                title="Emergency Room Nurse",
-                slug="emergency-room-nurse",
-                description="""
+            type="full_time",
+            work_mode="remote",
+            location="Remote",
+            geo=None,
+            skills=[
+                "medical billing",
+                "insurance claims",
+                "healthcare finance",
+                "patient billing",
+            ],
+            currency="INR",
+            min_salary=400000,
+            max_salary=600000,
+            min_experience=1,
+            max_experience=3,
+            vacancies=2,
+            updated_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(days=45),
+            is_active=True,
+            organization=org,
+        ),
+        Job(
+            title="Emergency Room Nurse",
+            slug="emergency-room-nurse",
+            description="""
 We are seeking **experienced ER Nurses** to provide critical care in our emergency department. This is a high-impact role for professionals who thrive in fast-paced, challenging environments.
 
 ## Responsibilities
@@ -420,31 +420,31 @@ We are seeking **experienced ER Nurses** to provide critical care in our emergen
 
 Kolkata, West Bengal
 """,
-                type="full_time",
-                work_mode="office",
-                location="Kolkata, West Bengal",
-                geo=None,
-                skills=[
-                    "emergency care",
-                    "triage",
-                    "critical care",
-                    "patient assessment",
-                ],
-                currency="INR",
-                min_salary=600000,
-                max_salary=900000,
-                min_experience=2,
-                max_experience=5,
-                vacancies=3,
-                updated_at=datetime.now(UTC),
-                expires_at=datetime.now(UTC) + timedelta(days=30),
-                is_active=True,
-                organization=org,
-            ),
-            Job(
-                title="Healthcare Administrator",
-                slug="healthcare-administrator",
-                description="""
+            type="full_time",
+            work_mode="office",
+            location="Kolkata, West Bengal",
+            geo=None,
+            skills=[
+                "emergency care",
+                "triage",
+                "critical care",
+                "patient assessment",
+            ],
+            currency="INR",
+            min_salary=600000,
+            max_salary=900000,
+            min_experience=2,
+            max_experience=5,
+            vacancies=3,
+            updated_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(days=30),
+            is_active=True,
+            organization=org,
+        ),
+        Job(
+            title="Healthcare Administrator",
+            slug="healthcare-administrator",
+            description="""
 Join our **management team** to oversee healthcare operations and ensure the smooth functioning of our facility. This leadership role is ideal for professionals with a passion for healthcare management and organizational excellence.
 
 ## Responsibilities
@@ -466,49 +466,49 @@ Join our **management team** to oversee healthcare operations and ensure the smo
 
 Ahmedabad, Gujarat
 """,
-                type="full_time",
-                work_mode="office",
-                location="Ahmedabad, Gujarat",
-                geo=None,
-                skills=[
-                    "healthcare management",
-                    "operations",
-                    "budgeting",
-                    "regulatory compliance",
-                ],
-                currency="INR",
-                min_salary=1000000,
-                max_salary=1500000,
-                min_experience=5,
-                max_experience=10,
-                vacancies=1,
-                updated_at=datetime.now(UTC),
-                expires_at=datetime.now(UTC) + timedelta(days=60),
-                is_active=True,
-                organization=org,
-            ),
-        ]
+            type="full_time",
+            work_mode="office",
+            location="Ahmedabad, Gujarat",
+            geo=None,
+            skills=[
+                "healthcare management",
+                "operations",
+                "budgeting",
+                "regulatory compliance",
+            ],
+            currency="INR",
+            min_salary=1000000,
+            max_salary=1500000,
+            min_experience=5,
+            max_experience=10,
+            vacancies=1,
+            updated_at=datetime.now(UTC),
+            expires_at=datetime.now(UTC) + timedelta(days=60),
+            is_active=True,
+            organization=org,
+        ),
+    ]
 
-        for job in jobs:
-            job.embedding = await embeddings_service.generate_embeddings(
-                JobRepo.format_job_for_embedding(
-                    title=job.title,
-                    description=job.description,
-                    skills=job.skills,
-                    location=job.location,
-                    geo=job.geo,
-                    min_salary=job.min_salary,
-                    max_salary=job.max_salary,
-                    min_experience=job.min_experience,
-                    max_experience=job.max_experience,
-                    job_type=job.type,
-                    work_mode=job.work_mode,
-                    currency=job.currency,
-                )
+    for job in jobs:
+        job.embedding = await embeddings_service.generate_embeddings(
+            JobRepo.format_job_for_embedding(
+                title=job.title,
+                description=job.description,
+                skills=job.skills,
+                location=job.location,
+                geo=job.geo,
+                min_salary=job.min_salary,
+                max_salary=job.max_salary,
+                min_experience=job.min_experience,
+                max_experience=job.max_experience,
+                job_type=job.type,
+                work_mode=job.work_mode,
+                currency=job.currency,
             )
+        )
 
-        await Job.insert_many(jobs)
-        print("Inserted 10 healthcare jobs under organization 'aryan'.")
+    await Job.insert_many(jobs)
+    print("Inserted 10 healthcare jobs under organization 'aryan'.")
 
 
 # Run the async function

@@ -166,7 +166,7 @@ class SettingsProviderExtension(
 
 class SentryInstrumentation(OnResolveContextExtension):
     def __init__(self, *, enabled: bool = True) -> None:
-        self.enabled = enabled
+        self.enabled: bool = enabled
 
     @contextlib.asynccontextmanager
     async def on_resolve_context(
