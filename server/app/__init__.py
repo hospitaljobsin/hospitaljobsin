@@ -86,6 +86,7 @@ async def app_lifespan(app: FastAPI) -> AsyncGenerator[None]:
     with sentry_sdk.start_transaction(
         name="App Lifespan", op="lifespan"
     ) as transaction:
+        # FIXME: shift to https://github.com/awslabs/aws-lambda-web-adapter
         # we need to manually keep track of resource initialization here
         # because Mangum runs the application lifespan on every request.
         # ref: https://github.com/Kludex/mangum/issues/342

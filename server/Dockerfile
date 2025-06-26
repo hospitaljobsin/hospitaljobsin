@@ -72,6 +72,9 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 COPY --from=layer-build /opt /opt
 
+# include the AWS lambda web adapter
+COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
+
 
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
@@ -79,7 +82,7 @@ ENV UV_LINK_MODE=copy
 ENV UV_CACHE_DIR=/opt/uv-cache/
 
 # Set the working directory
-WORKDIR /project
+WORKDIR /var/task
 
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -95,13 +98,13 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked
 
 # Install the AWS Lambda Runtime Interface Client
-RUN uv pip install awslambdaric
+# RUN uv pip install awslambdaric
 
 # Set environment variables for Python
-ENV PYTHONPATH="/project"
-ENV PATH="/project/.venv/bin:$PATH"
+ENV PYTHONPATH="/var/task"
+ENV PATH="/var/task/.venv/bin:$PATH"
 
-ENTRYPOINT [ "python", "-m", "awslambdaric" ]
+# ENTRYPOINT [ "python", "-m", "awslambdaric" ]
 
 # Set the Lambda handler
-CMD ["app.lambda_handler.handler"]
+CMD ["uv", "run", "scripts/run_server.py"]
