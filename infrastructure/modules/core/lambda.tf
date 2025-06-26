@@ -189,7 +189,7 @@ resource "aws_lambda_function" "backend" {
       SERVER_DATABASE_URL                         = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
       SERVER_DEFAULT_DATABASE_NAME                = var.mongodb_database_name
       SERVER_HOST                                 = "0.0.0.0"
-      SERVER_PORT                                 = "8080"
+      SERVER_PORT                                 = "8000"
       SERVER_LOG_LEVEL                            = "DEBUG"
       SERVER_CORS_ALLOW_ORIGINS                   = "[\"https://${var.domain_name}\", \"https://recruiter.${var.domain_name}\", \"https://accounts.${var.domain_name}\"]"
       SERVER_CORS_ALLOW_ORIGIN_REGEX              = "https://.*\\.${local.escaped_domain}"
