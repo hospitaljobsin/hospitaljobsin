@@ -94,6 +94,7 @@ from app.jobs.repositories import (
     SavedJobRepo,
 )
 from app.jobs.services import (
+    JobApplicantAnalysisService,
     JobApplicantService,
     JobApplicationFormService,
     JobService,
@@ -272,5 +273,5 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_job_applicant_by_slug_dataloader))
     container.register(aioinject.Scoped(create_dataloaders))
     container.register(aioinject.Singleton(create_job_applicant_analyzer_agent))
-
+    container.register(aioinject.Singleton(JobApplicantAnalysisService))
     return container

@@ -1,0 +1,107 @@
+# PRD: Job Applicant Analysis & Scoring Agent
+
+## Overview
+
+Implement a Pydantic AI agent that analyzes and scores job applicants for a given job. The agent will take as input a job, a job applicant profile, and applicant fields (screening questions), and return a structured `JobApplicantAnalysis` object. This analysis will be stored on the `JobApplicant` document in the database at creation time.
+
+---
+
+## Goals
+
+- Automate the analysis and scoring of job applicants using a Pydantic AI agent.
+- Ensure the analysis is structured, comprehensive, and easily storable/retrievable.
+- Integrate the analysis into the job applicant creation workflow.
+
+---
+
+## Requirements
+
+### 1. Agent Input & Output
+
+- **Input:**
+  - `job`: The job posting MongoDB Beanie Document.
+  - `profile`: The profile MongoDB Beanie Document (which is present on the account.profile field).
+  - `applicant_fields`: Screening questions and answers (custom fields per job).
+
+- **Output:**
+  - A `JobApplicantAnalysis` object (see below for structure).
+
+### 2. JobApplicantAnalysis Structure
+
+- **Edit the existing `JobApplicantAnalysis` model** to include any additional fields required for a comprehensive analysis.
+- The structure must be:
+  - **Strictly typed and nested** for easy parsing and validation.
+  - **Comprehensive**: Should cover all relevant aspects of applicant-job fit, including but not limited to:
+    - Education
+    - Work Experience
+    - Skills
+    - Certifications
+    - Location
+    - Salary
+    - Job type
+    - Languages
+    - Work mode
+    - Currency
+    - Relocation
+    - Visa sponsorship/status/type
+    - Screening question responses (new)
+    - Any other relevant fields as needed (refer the Profile MongoDB beanie document for all relevant fields)
+  - **Stepwise Reasoning**: The agent should be prompted to analyze each field/criterion step by step, providing reasoning for each, and only at the end, synthesize an overall score and summary.
+  - **Score**: A final score (0-1 float) and summary reason, generated only after all stepwise analysis is complete.
+  - **Insights**: List of strengths or standout factors.
+  - **Risk Flags**: List of potential risks or red flags.
+
+### 3. JobApplicant Document Changes
+
+- Add a new field to the `JobApplicant` document:
+  - `analysis: JobApplicantAnalysis`
+- Ensure this field is indexed and queryable.
+
+### 4. Service Layer Integration
+
+- In the `JobApplicantService.create` method:
+  - After validating and preparing the job applicant data, invoke the agent with the job, profile, and applicant fields.
+  - Store the returned `JobApplicantAnalysis` object in the new `analysis` field of the `JobApplicant` document.
+  - Ensure robust error handling: if the agent fails, log the error and handle gracefully (e.g., allow creation but mark analysis as failed/null, or retry).
+
+### 5. Agent Prompting
+
+- The agent’s system prompt must:
+  - Clearly instruct the agent to analyze each field/criterion step by step.
+  - Instruct the agent **not to provide an overall score or summary until all stepwise analysis is complete**.
+  - Only after all fields are analyzed, synthesize the overall score and summary.
+  - Emphasize accuracy and avoidance of hallucination or random scoring.
+
+### 6. Extensibility
+
+- The design should allow for easy addition of new analysis fields in the future.
+- The agent’s prompt and output schema should be easy to update as requirements evolve.
+
+---
+
+## Non-Goals
+
+- No UI changes are required at this stage.
+- No real-time or streaming analysis; analysis is performed synchronously at applicant creation.
+- Do not attempt to fix existing linter errors, especially related to Beanie.
+
+---
+
+## Acceptance Criteria
+
+- [ ] The `JobApplicantAnalysis` model is updated to include all relevant fields for the final output.
+- [ ] The `JobApplicant` document has a new `analysis` field of type `JobApplicantAnalysis`.
+- [ ] The agent is implemented and returns a structured `JobApplicantAnalysis` object.
+- [ ] The agent is invoked in the `JobApplicantService.create` method, and the analysis is stored in the database.
+- [ ] The agent’s prompt enforces stepwise reasoning and only requests the final score at the end.
+- [ ] Error handling is robust and does not block applicant creation if the agent fails.
+- [ ] The solution is extensible for future analysis fields.
+
+---
+
+## Notes
+
+- Use the existing `JobApplicantAnalysis` as a base, but expand as needed.
+- Ensure all fields are well-documented and validated.
+- Consider edge cases (e.g., missing data, ambiguous answers).
+- Follow all project coding, error handling, and documentation standards.

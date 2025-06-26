@@ -125,6 +125,10 @@ class Profile(BaseProfile, Document):
             ]
         )
 
+    def __str__(self) -> str:
+        """LLM friendly text representation of a job."""
+        return self.model_dump_json(exclude={"embedding", "account", "updated_at"})
+
 
 class Account(Document):
     full_name: str

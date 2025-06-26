@@ -21,6 +21,7 @@ from app.core.constants import (
 from app.database.paginator import PaginatedResult, Paginator
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.models import Coordinates
+from app.jobs.agents import JobApplicantAnalysisOutput
 from app.organizations.documents import Organization
 
 from .documents import (
@@ -32,6 +33,7 @@ from .documents import (
     ImpressionJobMetricMetadata,
     Job,
     JobApplicant,
+    JobApplicantAnalysis,
     JobApplicationForm,
     SavedJob,
 )
@@ -652,8 +654,30 @@ class JobApplicantRepo:
             status="applied",
             applicant_fields=applicant_fields,
             slug=self.generate_slug(),
+            analysis_status="pending",
         )
         return await application.insert(link_rule=WriteRules.DO_NOTHING)
+
+    async def update_analysis(
+        self,
+        job_applicant: JobApplicant,
+        analysis: JobApplicantAnalysisOutput | None,
+    ) -> JobApplicant:
+        """Update the analysis for a job applicant."""
+        if analysis is not None:
+            job_applicant.analysis = JobApplicantAnalysis(
+                analysed_fields=analysis.analysed_fields,
+                overall_score=analysis.overall_score,
+                overall_summary=analysis.overall_summary,
+                strengths=analysis.strengths,
+                risk_flags=analysis.risk_flags,
+                created_at=datetime.now(UTC),
+            )
+            job_applicant.analysis_status = "complete"
+        else:
+            job_applicant.analysis_status = "failed"
+        await job_applicant.save()
+        return job_applicant
 
     async def bulk_update(
         self,

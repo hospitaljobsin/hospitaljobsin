@@ -1,3 +1,4 @@
+import logging
 import uuid
 from datetime import datetime
 from typing import Literal
@@ -8,13 +9,16 @@ from fastapi import Request
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
-from app.accounts.documents import Account
+from app.accounts.documents import Account, Profile
 from app.accounts.exceptions import AccountProfileIncompleteError
 from app.base.models import GeoObject
 from app.config import AWSSettings
 from app.core.constants import JobApplicantStatus
 from app.core.geocoding import BaseLocationService
-from app.jobs.agents import JobApplicantAnalyzerAgent
+from app.jobs.agents import (
+    JobApplicantAnalysisOutput,
+    JobApplicantAnalyzerAgent,
+)
 from app.jobs.documents import (
     ApplicantField,
     ApplicationField,
@@ -460,6 +464,40 @@ class JobApplicationFormService:
         return Ok((existing_application_form, existing_job))
 
 
+class JobApplicantAnalysisService:
+    def __init__(
+        self,
+        job_applicant_analyzer_agent: JobApplicantAnalyzerAgent,
+        job_applicant_repo: JobApplicantRepo,
+    ) -> None:
+        self._job_applicant_analyzer_agent = job_applicant_analyzer_agent
+        self._job_applicant_repo = job_applicant_repo
+
+    async def analyse_job_applicant(
+        self,
+        job_application: JobApplicant,
+        job: Job,
+        profile: Profile,
+        applicant_fields: list[ApplicantField],
+    ) -> None:
+        print("analyse_job_applicant")
+        analysis: JobApplicantAnalysisOutput | None = None
+        try:
+            result = await self._job_applicant_analyzer_agent.run(
+                user_prompt=f"Job: {job!s}\nProfile: {profile!s}\nApplicant Fields: {[str(field) for field in applicant_fields]}"
+            )
+            print("result: ", result)
+            analysis = result.output
+        except Exception as e:
+            print("error: ", e)
+            logging.exception("Job applicant analysis agent failed: %s", e)
+            analysis = None
+        await self._job_applicant_repo.update_analysis(
+            job_applicant=job_application,
+            analysis=analysis,
+        )
+
+
 class JobApplicantService:
     def __init__(
         self,
@@ -470,6 +508,7 @@ class JobApplicantService:
         job_applicant_analyzer_agent: JobApplicantAnalyzerAgent,
         s3_client: S3Client,
         aws_settings: AWSSettings,
+        job_applicant_analysis_service: JobApplicantAnalysisService,
     ) -> None:
         self._job_repo = job_repo
         self._organization_member_service = organization_member_service
@@ -478,6 +517,7 @@ class JobApplicantService:
         self._s3_client = s3_client
         self._aws_settings = aws_settings
         self._job_applicant_analyzer_agent = job_applicant_analyzer_agent
+        self._job_applicant_analysis_service = job_applicant_analysis_service
 
     async def create(
         self,
@@ -496,10 +536,10 @@ class JobApplicantService:
     ]:
         """Create a job application."""
         try:
-            job_id = ObjectId(job_id)
+            job_id_obj = ObjectId(job_id)
         except InvalidId:
             return Err(JobNotFoundError())
-        existing_job = await self._job_repo.get(job_id=job_id)
+        existing_job = await self._job_repo.get(job_id=job_id_obj)
         if existing_job is None:
             return Err(JobNotFoundError())
 
@@ -530,6 +570,14 @@ class JobApplicantService:
             account=account,
             applicant_fields=applicant_fields,
         )
+        # --- AGENT INTEGRATION ---
+        await self._job_applicant_analysis_service.analyse_job_applicant(
+            job_application=job_application,
+            job=existing_job,
+            profile=account.profile,
+            applicant_fields=applicant_fields,
+        )
+        # --- END AGENT INTEGRATION ---
 
         # log the job application metric
         await self._job_metric_repo.create_core_metric(

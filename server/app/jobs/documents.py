@@ -22,6 +22,7 @@ from app.core.constants import (
     ImpressionJobMetricEventType,
     JobApplicantStatus,
 )
+from app.jobs.agents import FieldAnalysis
 from app.organizations.documents import Organization
 
 
@@ -83,6 +84,12 @@ class Job(Document):
             ),
         ]
 
+    def __str__(self) -> str:
+        """LLM friendly text representation of a job."""
+        return self.model_dump_json(
+            exclude={"organization", "embedding", "external_application_url", "slug"}
+        )
+
 
 class SavedJob(Document):
     account: Link[Account]
@@ -118,6 +125,10 @@ class ApplicantField(BaseModel):
     field_name: str
     field_value: str
 
+    def __str__(self) -> str:
+        """LLM friendly text representation of an applicant field."""
+        return self.model_dump_json()
+
 
 class ApplicantAIInsight(BaseModel):
     match_type: Literal["PERFECT", "CLOSE", "LOW"] = Field(
@@ -129,6 +140,40 @@ class ApplicantAIInsight(BaseModel):
     mismatched_fields: list[str] = Field(
         ..., description="The fields that did not match."
     )
+
+
+class JobApplicantAnalysis(BaseModel):
+    """
+    Stores the AI-generated analytical summary for how well a job applicant's profile matches a specific healthcare job description, with a created_at timestamp for persistence.
+    """
+
+    analysed_fields: list[FieldAnalysis] | None = Field(
+        default=None,
+        description="List of healthcare-specific match analyses, one per criterion (e.g., 'Medical License', 'Specialization', etc.).",
+    )
+    overall_score: float | None = Field(
+        default=None,
+        description="Final score for the applicant's match to the job (0-1), synthesized after all field analyses.",
+        ge=0.0,
+        le=1.0,
+    )
+    overall_summary: str | None = Field(
+        default=None,
+        description="Summary reason for the overall match score, synthesized after all field analyses.",
+    )
+    strengths: list[str] | None = Field(
+        default=None,
+        description="List of strengths or standout factors identified in the match analysis.",
+    )
+    risk_flags: list[str] | None = Field(
+        default=None,
+        description="List of potential risks or red flags identified in the match analysis.",
+    )
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        description="Timestamp when this analysis was created.",
+    )
+    model_config = {"extra": "ignore"}
 
 
 class JobApplicant(Document):
@@ -144,6 +189,14 @@ class JobApplicant(Document):
     status: JobApplicantStatus
     applicant_fields: list[ApplicantField]
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    analysis: JobApplicantAnalysis | None = Field(
+        default=None,
+        description="AI-generated match analysis for this applicant and job.",
+    )
+    analysis_status: Literal["pending", "complete", "failed"] = Field(
+        default="pending",
+        description="Status of the analysis process for this applicant ('pending', 'complete', or 'failed').",
+    )
 
     class Settings:
         name = "job_applicants"
@@ -159,6 +212,14 @@ class JobApplicant(Document):
                 ],
                 name="account_full_name_text_index",
                 default_language="english",
+            ),
+            IndexModel(
+                ["analysis.overall_score"],
+                name="analysis_overall_score_index",
+            ),
+            IndexModel(
+                ["analysis_status"],
+                name="analysis_status_index",
             ),
         ]
 
