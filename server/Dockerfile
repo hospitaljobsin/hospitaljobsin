@@ -84,9 +84,6 @@ ENV UV_CACHE_DIR=/tmp/uv-cache
 # Set the working directory
 WORKDIR /var/task
 
-# ENV VIRTUAL_ENV=/tmp/venv
-# ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
@@ -107,7 +104,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Set environment variables for Python
 # FIXME: setup venv correctly for lambda
-ENV PYTHONPATH="/var/task"
+ENV PYTHONPATH="/var/task:$PYTHONPATH"
 # ENV PATH="/var/task/.venv/bin:$PATH"
 
 # ENTRYPOINT [ "python", "-m", "awslambdaric" ]
