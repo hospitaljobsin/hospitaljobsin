@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Literal, TypeVar
 
 import httpx
-import sentry_sdk
 from pydantic import Field, SecretStr, UrlConstraints
 from pydantic_core import MultiHostUrl
 from pydantic_settings import (
@@ -444,8 +443,7 @@ TSettings = TypeVar("TSettings", bound=BaseSettings)
 
 
 def get_settings(cls: type[TSettings]) -> TSettings:
-    with sentry_sdk.start_span(op="settings.get", description=str(cls)):
-        return cls()
+    return cls()
 
 
 if not TYPE_CHECKING:  # pragma: no cover
