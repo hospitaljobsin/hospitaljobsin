@@ -75,7 +75,7 @@ COPY --from=layer-build /opt /opt
 # include the AWS lambda web adapter
 COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
 
-ENV READINESS_CHECK_PATH = "/health/"
+# ENV READINESS_CHECK_PATH = "/health/"
 ENV PORT=8000
 
 ENV RUST_BACKTRACE=full
