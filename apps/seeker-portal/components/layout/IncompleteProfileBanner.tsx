@@ -25,11 +25,21 @@ export default function IncompleteProfileBanner({
 	if (data.profile.isComplete || pathName === links.profile) return null;
 	return (
 		<div className="w-full bg-primary-300 py-4">
-			<div className="max-w-7xl mx-auto px-5 flex items-center justify-between gap-6 text-shadow-primary-foreground">
+			<div className="max-w-7xl mx-auto px-5 flex items-center justify-between gap-6 text-shadow-primary-foreground text-xs sm:text-base">
 				<p>Please complete your profile to apply for jobs.</p>
 				<Button
 					variant="solid"
-					className="min-w-36"
+					size="sm"
+					className="min-w-36 text-xs sm:hidden"
+					color="primary"
+					as={Link}
+					href={links.profile}
+				>
+					Complete Profile
+				</Button>
+				<Button
+					variant="solid"
+					className="min-w-36 hidden sm:flex"
 					color="primary"
 					as={Link}
 					href={links.profile}
