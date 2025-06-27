@@ -88,6 +88,7 @@ services:
       dockerfile: apps/accounts/Dockerfile
       args:
         - NEXT_PUBLIC_API_URL=https://api.localtest.me
+        - NEXT_PUBLIC_INTERNAL_API_URL=http://test-server:8000
         - NEXT_PUBLIC_URL=https://accounts.localtest.me
         - NEXT_PUBLIC_CAPTCHA_SITE_KEY=1x00000000000000000000AA
         - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=https://recruiter.localtest.me
@@ -103,7 +104,6 @@ services:
     environment:
         HOST: 0.0.0.0
         JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
-        API_URL: http://test-server:8000
         NODE_ENV: test
         CI: ${CI}
     healthcheck:
@@ -121,6 +121,7 @@ services:
       dockerfile: apps/seeker-portal/Dockerfile
       args:
         - NEXT_PUBLIC_API_URL=https://api.localtest.me
+        - NEXT_PUBLIC_INTERNAL_API_URL=http://test-server:8000
         - NEXT_PUBLIC_URL=https://localtest.me
         - NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL=https://recruiter.localtest.me
         - NEXT_PUBLIC_ACCOUNTS_BASE_URL=https://accounts.localtest.me
@@ -134,7 +135,6 @@ services:
     environment:
         HOST: 0.0.0.0
         JWE_SECRET_KEY: "ca07d5f965a534ffb07d1699e30385a6"
-        API_URL: http://test-server:8000
         NODE_ENV: test
         CI: ${CI}
     healthcheck:

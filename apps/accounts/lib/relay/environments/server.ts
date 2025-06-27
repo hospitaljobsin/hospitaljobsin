@@ -1,3 +1,5 @@
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import type {
@@ -6,8 +8,6 @@ import type {
 	Variables,
 } from "relay-runtime";
 import { Environment, Network, RecordSource, Store } from "relay-runtime";
-import { getEnv } from "@/lib/env/server";
-import links from "@/lib/links";
 
 export async function networkFetch(
 	request: RequestParameters,
@@ -16,9 +16,7 @@ export async function networkFetch(
 	const { cookies } = await import("next/headers");
 	const serverCookie = await cookies();
 
-	const env = await getEnv();
-
-	const resp = await fetch(`${env.API_URL}/graphql`, {
+	const resp = await fetch(`${env.NEXT_PUBLIC_INTERNAL_API_URL}/graphql`, {
 		method: "POST",
 		headers: {
 			Accept: "application/json",

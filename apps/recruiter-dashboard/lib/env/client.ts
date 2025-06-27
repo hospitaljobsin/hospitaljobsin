@@ -4,6 +4,7 @@ import { z } from "zod/v4-mini";
 export const env = createEnv({
 	client: {
 		NEXT_PUBLIC_URL: z.url(),
+		NEXT_PUBLIC_INTERNAL_API_URL: z.url(),
 		NEXT_PUBLIC_API_URL: z.url(),
 		NEXT_PUBLIC_ACCOUNTS_BASE_URL: z.url(),
 		NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: z.url(),
@@ -18,6 +19,7 @@ export const env = createEnv({
 	// For Next.js >= 13.4.4, you only need to destructure client variables:
 	runtimeEnv: {
 		NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
+		NEXT_PUBLIC_INTERNAL_API_URL: process.env.NEXT_PUBLIC_INTERNAL_API_URL,
 		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
 		NEXT_PUBLIC_ACCOUNTS_BASE_URL: process.env.NEXT_PUBLIC_ACCOUNTS_BASE_URL,
 		NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL:

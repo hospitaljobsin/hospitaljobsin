@@ -75,6 +75,7 @@ jobs:
             SST_ACCOUNTS_DOMAIN: ${{vars.SST_ACCOUNTS_DOMAIN }}
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             NEXT_PUBLIC_API_URL: ${{ vars.SST_API_URL }}
+            NEXT_PUBLIC_INTERNAL_API_URL: ${{ vars.SST_API_URL }}
             NEXT_PUBLIC_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
             NEXT_PUBLIC_CAPTCHA_SITE_KEY: ${{ vars.SST_CAPTCHA_SITE_KEY }}
             NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL: ${{ vars.SST_RECRUITER_PORTAL_BASE_URL }}
@@ -85,7 +86,6 @@ jobs:
             NEXT_PUBLIC_SENTRY_ORGANIZATION: ${{ vars.SENTRY_ORGANIZATION }}
             NEXT_PUBLIC_SENTRY_PROJECT: ${{vars.ACCOUNTS_SENTRY_PROJECT}}
             NEXT_PUBLIC_ROOT_DOMAIN: ${{ vars.PUBLIC_ROOT_DOMAIN }}
-            API_URL: ${{ vars.SST_API_URL }}
             AWS_SECRET_ID: ${{ secrets.SST_ACCOUNTS_SECRET_ID }}
             SKIP_ENV_VALIDATION: true
             NODE_ENV: production

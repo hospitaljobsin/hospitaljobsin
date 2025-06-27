@@ -36,7 +36,7 @@ export default $config({
 				NEXT_PUBLIC_SENTRY_PROJECT: env.NEXT_PUBLIC_SENTRY_PROJECT,
 				NEXT_PUBLIC_ENVIRONMENT: env.NEXT_PUBLIC_ENVIRONMENT,
 				AWS_SECRET_ID: process.env.AWS_SECRET_ID,
-				API_URL: process.env.API_URL,
+				NEXT_PUBLIC_INTERNAL_API_URL: env.NEXT_PUBLIC_INTERNAL_API_URL,
 			},
 			assets: {
 				textEncoding: "utf-8",
