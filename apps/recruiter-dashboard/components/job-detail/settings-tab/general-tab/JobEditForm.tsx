@@ -208,7 +208,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 			// show confirmation modal
 			onOpen();
 		} else {
-			router.push(links.organizationJobDetail(jobData.slug));
+			router.push(links.jobDetailAnalytics(jobData.slug));
 		}
 	}
 

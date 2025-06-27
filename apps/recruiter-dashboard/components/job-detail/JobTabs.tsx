@@ -61,15 +61,7 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 					}
 				}}
 			>
-				<Tab
-					key={links.organizationJobDetail(params.slug)}
-					title={
-						<div className="flex items-center space-x-2">
-							<HomeIcon />
-							<span>Overview</span>
-						</div>
-					}
-				/>
+				{" "}
 				{data.externalApplicationUrl === null && (
 					<Tab
 						key={links.jobDetailApplicants(params.slug)}
@@ -81,6 +73,15 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 						}
 					/>
 				)}
+				<Tab
+					key={links.jobDetailAnalytics(params.slug)}
+					title={
+						<div className="flex items-center space-x-2">
+							<HomeIcon />
+							<span>Analytics</span>
+						</div>
+					}
+				/>
 				{organization.isAdmin && (
 					<Tab
 						key={links.jobDetailSettings(params.slug)}

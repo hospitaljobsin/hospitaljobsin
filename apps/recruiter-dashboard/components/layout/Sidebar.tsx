@@ -93,7 +93,7 @@ export default function Sidebar({ queryReference }: Props) {
 
 	function getSelectedKey(pathname: string) {
 		if (
-			pathname.startsWith(links.organizationJobDetail("")) ||
+			pathname.startsWith(links.jobDetailApplicants("")) ||
 			pathname === links.organizationCreateJob
 		) {
 			return links.dashboard;

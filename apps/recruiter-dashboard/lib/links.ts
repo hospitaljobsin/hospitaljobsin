@@ -9,7 +9,7 @@ const links = {
 	createOrganization: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/new`,
 	organizationDetail: (slug: string) =>
 		`${protocol}://${slug}.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
-	organizationJobDetail: (jobSlug: string) => `/jobs/${jobSlug}`,
+	jobDetailAnalytics: (jobSlug: string) => `/jobs/${jobSlug}/analytics`,
 	organizationDetailMembers: "/settings/members",
 	organizationDetailMemberInvites: "/settings/invites",
 	organizationCreateJob: "/new-job",
@@ -17,7 +17,7 @@ const links = {
 	jobDetailSettingsApplicationForm: (jobSlug: string) =>
 		`/jobs/${jobSlug}/settings/application-form`,
 	jobDetailSettings: (jobSlug: string) => `/jobs/${jobSlug}/settings`,
-	jobDetailApplicants: (jobSlug: string) => `/jobs/${jobSlug}/applicants`,
+	jobDetailApplicants: (jobSlug: string) => `/jobs/${jobSlug}`,
 	applicantDetail: (jobSlug: string, applicantSlug: string) =>
 		`/jobs/${jobSlug}/applicants/${applicantSlug}`,
 	login: (returnTo: string | undefined = undefined) =>

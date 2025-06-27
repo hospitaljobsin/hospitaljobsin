@@ -44,7 +44,7 @@ export default function NewJobContent({
 			<JobCreationForm
 				organization={orgData.organization}
 				onSuccess={(slug: string) =>
-					router.push(links.organizationJobDetail(slug))
+					router.push(links.jobDetailAnalytics(slug))
 				}
 			/>
 		</div>

@@ -156,7 +156,7 @@ export default function Job({ job }: Props) {
 			as="div"
 			disableRipple
 			onPress={() => {
-				router.push(links.organizationJobDetail(data.slug));
+				router.push(links.jobDetailApplicants(data.slug));
 			}}
 			shadow="none"
 		>

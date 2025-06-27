@@ -1,25 +1,25 @@
 "use client";
-import type { pageJobDetailQuery } from "@/__generated__/pageJobDetailQuery.graphql";
-import JobOverviewTab from "@/components/job-detail/overview-tab/JobOverviewTab";
+import type { pageJobDetailApplicantsQuery } from "@/__generated__/pageJobDetailApplicantsQuery.graphql";
+import ApplicantsTab from "@/components/job-detail/applicants-tab/ApplicantsTab";
 import useOrganization from "@/lib/hooks/useOrganization";
 import { Spinner } from "@heroui/react";
 import { useParams } from "next/navigation";
 import { Suspense } from "react";
 import { graphql, loadQuery, useRelayEnvironment } from "react-relay";
 
-export const JobDetailQuery = graphql`
-  query pageJobDetailQuery($orgSlug: String!, $jobSlug: String!) {
-    ...JobOverviewTabFragment @arguments(slug: $orgSlug, jobSlug: $jobSlug)
+export const JobDetailApplicantsQuery = graphql`
+  query pageJobDetailApplicantsQuery($orgSlug: String!, $jobSlug: String!, $searchTerm: String, $status: JobApplicantStatus, $showStatus: Boolean = true) {
+    ...ApplicantsTabFragment @arguments(slug: $orgSlug, jobSlug: $jobSlug, searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
   }
 `;
 
-export default function JobDetailPage() {
+export default function JobDetailApplicantsPage() {
 	const { slug } = useParams<{ slug: string }>();
 	const { organizationSlug } = useOrganization();
 	const relayEnvironment = useRelayEnvironment();
-	const preloadedQuery = loadQuery<pageJobDetailQuery>(
+	const preloadedQuery = loadQuery<pageJobDetailApplicantsQuery>(
 		relayEnvironment,
-		JobDetailQuery,
+		JobDetailApplicantsQuery,
 		{ orgSlug: organizationSlug, jobSlug: slug },
 		{ fetchPolicy: "store-and-network" },
 	);
@@ -32,7 +32,7 @@ export default function JobDetailPage() {
 				</div>
 			}
 		>
-			<JobOverviewTab initialQueryRef={preloadedQuery} />
+			<ApplicantsTab initialQueryRef={preloadedQuery} />
 		</Suspense>
 	);
 }
