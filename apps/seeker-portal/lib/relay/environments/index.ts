@@ -1,6 +1,5 @@
 import type { Environment } from "react-relay";
 import { createClientEnvironment } from "./client";
-import { createServerEnvironment } from "./server";
 
 const IS_SERVER = typeof window === typeof undefined;
 
@@ -9,6 +8,7 @@ let _clientEnvironment: null | Environment = null;
 export function getCurrentEnvironment() {
 	console.log("getting a new environment");
 	if (IS_SERVER) {
+		const { createServerEnvironment } = require("./server");
 		return createServerEnvironment();
 	}
 

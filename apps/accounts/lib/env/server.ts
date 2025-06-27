@@ -1,8 +1,9 @@
+"use server";
 import { loadSecrets } from "@/lib/secrets";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod/v4-mini";
 
-export function createServerEnv(): Readonly<{
+function createServerEnv(): Readonly<{
 	JWE_SECRET_KEY: string;
 	API_URL: string;
 }> {
