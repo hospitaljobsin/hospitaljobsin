@@ -13,7 +13,9 @@ export default function SidebarClientComponent() {
 		environment,
 		SidebarQuery,
 		{ organizationSlug: organizationSlug },
-		{ fetchPolicy: "store-or-network" },
+		{
+			fetchPolicy: "store-or-network",
+		},
 	);
 
 	return (

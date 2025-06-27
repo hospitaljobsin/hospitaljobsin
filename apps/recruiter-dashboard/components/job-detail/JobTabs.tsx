@@ -1,6 +1,7 @@
 "use client";
 import type { JobTabsFragment$key } from "@/__generated__/JobTabsFragment.graphql";
 import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
 import { Tab, Tabs } from "@heroui/react";
 import { HomeIcon, Settings, Users } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
@@ -23,6 +24,8 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 		applicantSlug?: string;
 	}>();
 	const data = useFragment(JobTabsFragment, job);
+
+	const router = useRouter();
 
 	const organization = data.organization;
 	invariant(organization, "Expected 'Organization' node type");
@@ -52,10 +55,14 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 					tab: "py-6",
 				}}
 				selectedKey={getSelectedKey(pathname)}
+				onSelectionChange={(key) => {
+					if (typeof key === "string") {
+						router.push(key);
+					}
+				}}
 			>
 				<Tab
 					key={links.organizationJobDetail(params.slug)}
-					href={links.organizationJobDetail(params.slug)}
 					title={
 						<div className="flex items-center space-x-2">
 							<HomeIcon />
@@ -66,7 +73,6 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 				{data.externalApplicationUrl === null && (
 					<Tab
 						key={links.jobDetailApplicants(params.slug)}
-						href={links.jobDetailApplicants(params.slug)}
 						title={
 							<div className="flex items-center space-x-2">
 								<Users />
@@ -78,7 +84,6 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 				{organization.isAdmin && (
 					<Tab
 						key={links.jobDetailSettings(params.slug)}
-						href={links.jobDetailSettings(params.slug)}
 						title={
 							<div className="flex items-center space-x-2">
 								<Settings />
