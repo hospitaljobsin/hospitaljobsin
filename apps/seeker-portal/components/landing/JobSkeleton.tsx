@@ -12,7 +12,7 @@ export default function JobSkeleton() {
 		<Card
 			isHoverable={false}
 			fullWidth
-			className="p-3 sm:p-6 rounded-xl border border-default-200 bg-white transition focus:ring-2 focus:ring-primary-200"
+			className="p-3 sm:p-6 rounded-xl border border-default-200 bg-background"
 			shadow="none"
 		>
 			<CardHeader>
