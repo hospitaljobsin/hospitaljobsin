@@ -70,7 +70,10 @@ function createNetwork() {
 	return network;
 }
 
+// FIXME: a new server environment is creating for gen metadata and the view hierarchy
+// we need to be able to get a single server environment to optimize queries
 export const createServerEnvironment = cache(() => {
+	console.log("creating a server environment");
 	return new Environment({
 		network: createNetwork(),
 		store: new Store(RecordSource.create()),
