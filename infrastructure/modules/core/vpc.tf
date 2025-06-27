@@ -97,11 +97,11 @@ resource "aws_route_table_association" "private" {
 }
 
 
-resource "aws_eip" "nat" {
-  tags = {
-    Name = "${var.resource_prefix}-eip"
-  }
-}
+# resource "aws_eip" "nat" {
+#   tags = {
+#     Name = "${var.resource_prefix}-eip"
+#   }
+# }
 
 # resource "aws_nat_gateway" "this" {
 #   allocation_id = aws_eip.nat.id
