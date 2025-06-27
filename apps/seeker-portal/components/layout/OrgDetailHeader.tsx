@@ -63,7 +63,7 @@ export default function OrgDetailHeader({
 					</Link>
 					<Link
 						href={links.organizationDetail(data.organization.slug)}
-						className="font-medium text-inherit"
+						className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1"
 					>
 						{data.organization.name}
 					</Link>

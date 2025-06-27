@@ -46,7 +46,12 @@ export default function MyJobsHeader({
 					<Link href={links.landing} className="font-medium text-inherit">
 						<Logo />
 					</Link>
-					My Jobs
+					<Link
+						href={links.landing}
+						className="font-medium text-inherit sm:flex items-center gap-4 hidden"
+					>
+						My Jobs
+					</Link>
 				</NavbarBrand>
 
 				<NavbarContent justify="end">

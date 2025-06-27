@@ -24,9 +24,16 @@ export default function Landing() {
 	return (
 		<>
 			<div className="bg-primary-400 relative">
-				<div className="pt-20 sm:pt-28 pb-20 sm:pb-48 px-4 sm:px-5 w-full h-full flex flex-col gap-4 sm:gap-8 text-center max-w-xl sm:max-w-7xl mx-auto">
+				{/* Desktop/Tablet Hero */}
+				<div className="hidden sm:flex pt-20 sm:pt-28 pb-20 sm:pb-48 px-4 sm:px-5 w-full h-full flex-col gap-4 sm:gap-8 text-center max-w-xl sm:max-w-7xl mx-auto">
 					<h1 className="text-4xl sm:text-6xl font-medium tracking-tighter text-balance text-primary-foreground z-10">
 						Connecting Healthcare Heroes with Their Next Opportunity
+					</h1>
+				</div>
+				{/* Mobile Hero (minimal) */}
+				<div className="flex sm:hidden pt-6 pb-4 px-4 w-full flex-col items-center text-center">
+					<h1 className="text-xl font-medium text-primary-foreground z-10">
+						Find your next healthcare job
 					</h1>
 				</div>
 			</div>
