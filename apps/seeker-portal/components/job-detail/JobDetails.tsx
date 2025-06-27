@@ -240,7 +240,7 @@ export default function JobDetails({
 									</div>
 								}
 							>
-								<span>
+								<span className="w-full sm:w-auto">
 									<Button
 										as={Link}
 										href={links.jobDetailApply(
