@@ -109,7 +109,7 @@ export default function RelatedJob({ job }: Props) {
 				<div className="flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center">
 					<div className="flex items-center gap-4">
 						{data.organization.logoUrl && (
-							<div className="relative h-8 w-8">
+							<div className="relative aspect-square h-8 w-8">
 								<Image
 									src={data.organization.logoUrl || ""}
 									alt={data.organization?.name || ""}

@@ -99,7 +99,7 @@ export default function OrganizationSwitcherList({
 						)}
 						onClick={onSwitch}
 					>
-						<div className="relative h-8 w-8">
+						<div className="relative aspect-square h-8 w-8">
 							<Image
 								src={item.logoUrl}
 								alt="Organization Logo"

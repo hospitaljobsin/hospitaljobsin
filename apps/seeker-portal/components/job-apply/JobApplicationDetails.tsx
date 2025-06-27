@@ -112,7 +112,7 @@ export default function JobApplicationDetails({
 				<h3 className="text-base text-foreground-600">Applying for</h3>
 				<h2 className="text-2xl font-medium">{data.title}</h2>
 				<div className="w-full flex items-center gap-4">
-					<div className="relative h-6 w-6">
+					<div className="relative aspect-square h-6 w-6">
 						<Image
 							src={data.organization.logoUrl}
 							alt={data.organization.name}

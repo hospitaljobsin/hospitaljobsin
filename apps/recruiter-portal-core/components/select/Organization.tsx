@@ -38,7 +38,7 @@ export default function Organization({ organization }: Props) {
 			<CardHeader>
 				<div className="flex flex-col sm:flex-row w-full justify-between gap-6 items-start sm:items-center">
 					<div className="flex items-center gap-4">
-						<div className="relative h-14 w-14">
+						<div className="relative aspect-square h-14 w-14">
 							<Image
 								src={data.logoUrl || ""}
 								alt={data.name}

@@ -95,7 +95,7 @@ export default function ApplicantDetails({
 			<Card fullWidth className="p-6 " shadow="none">
 				<CardHeader className="w-full flex flex-col sm:flex-row gap-6 justify-between">
 					<div className="flex gap-6 sm:items-center w-full flex-col sm:flex-row">
-						<div className="relative h-20 w-20">
+						<div className="relative aspect-square h-20 w-20">
 							<Image
 								src={data.account.avatarUrl}
 								alt={data.account.fullName}

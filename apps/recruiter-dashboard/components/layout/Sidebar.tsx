@@ -116,7 +116,7 @@ export default function Sidebar({ queryReference }: Props) {
 					>
 						<Menu className="w-6 h-6" />
 					</button>
-					<div className="relative h-8 w-8">
+					<div className="relative aspect-square h-8 w-8">
 						<Image
 							src={data.organization.logoUrl}
 							alt="Organization Logo"
@@ -136,7 +136,7 @@ export default function Sidebar({ queryReference }: Props) {
 					<Dropdown placement="bottom-end">
 						<DropdownTrigger>
 							<div className="flex items-center gap-4 cursor-pointer">
-								<div className="relative h-8 w-8">
+								<div className="relative aspect-square h-8 w-8">
 									<Image
 										src={data.organization.logoUrl}
 										alt="Organization Logo"
@@ -206,7 +206,7 @@ export default function Sidebar({ queryReference }: Props) {
 			>
 				<DrawerContent className="p-0 bg-background-600 h-full">
 					<DrawerHeader className="flex items-center gap-4 mb-6 border-b border-foreground-300 px-4 py-4">
-						<div className="relative h-8 w-8">
+						<div className="relative aspect-square h-8 w-8">
 							<Image
 								src={data.organization.logoUrl}
 								alt="Organization Logo"

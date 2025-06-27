@@ -61,7 +61,7 @@ export default function Header({
 					<Dropdown placement="bottom-end">
 						<DropdownTrigger>
 							<div className="flex items-center gap-4 cursor-pointer">
-								<div className="relative h-8 w-8">
+								<div className="relative aspect-square h-8 w-8">
 									<Image
 										src={data.organization.logoUrl}
 										alt="Organization Logo"

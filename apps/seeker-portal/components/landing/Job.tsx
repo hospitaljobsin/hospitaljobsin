@@ -148,7 +148,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 				<div className="flex flex-col sm:flex-row w-full justify-between gap-4 sm:gap-6 items-start sm:items-center">
 					<div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
 						{data.organization.logoUrl && (
-							<div className="relative h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0">
+							<div className="relative aspect-square h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0">
 								<Image
 									src={data.organization.logoUrl || ""}
 									alt={data.organization?.name || ""}

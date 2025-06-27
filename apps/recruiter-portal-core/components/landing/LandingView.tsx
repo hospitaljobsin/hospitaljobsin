@@ -47,7 +47,7 @@ export default function LandingView() {
 							</Button>
 						</div>
 					</div>
-					<div className="flex-1 relative h-[320px] sm:h-[420px] w-full rounded-4xl overflow-visible bg-primary-300">
+					<div className="flex-1 relative sm:h-[420px] h-[320px]  w-full rounded-4xl overflow-visible bg-primary-300">
 						<div className="absolute inset-0 bg-opacity-30 bg-primary-200 rounded-4xl">
 							{/* Container acts as a positioning reference */}
 							<div className="absolute inset-x-0 bottom-0 h-[100%] overflow-visible">

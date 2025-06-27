@@ -1,3 +1,6 @@
+import type { ShareJobFragment$key } from "@/__generated__/ShareJobFragment.graphql";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 import {
 	Button,
 	Modal,
@@ -21,9 +24,6 @@ import {
 	XIcon,
 } from "react-share";
 import { graphql } from "relay-runtime";
-import type { ShareJobFragment$key } from "@/__generated__/ShareJobFragment.graphql";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
 
 export const ShareJobFragment = graphql`
   fragment ShareJobFragment on Job {
@@ -87,7 +87,7 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 				<ModalContent>
 					<ModalHeader className="flex w-full justify-between items-center gap-4 py-6 px-8">
 						<div className="flex items-center gap-8">
-							<div className="relative h-14 w-14">
+							<div className="relative aspect-square h-14 w-14">
 								<Image
 									alt={data.organization.name}
 									src={data.organization.logoUrl}
