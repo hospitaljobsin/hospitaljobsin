@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ec10e289396270fc678f27560efff6ea>>
+ * @generated SignedSource<<dc1cbdc0be51992fe08c98e2deedf90e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type JobOverviewTabFragment$data = {
+export type JobAnalyticsTabFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
     readonly job: {
@@ -26,11 +26,11 @@ export type JobOverviewTabFragment$data = {
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
-  readonly " $fragmentType": "JobOverviewTabFragment";
+  readonly " $fragmentType": "JobAnalyticsTabFragment";
 };
-export type JobOverviewTabFragment$key = {
-  readonly " $data"?: JobOverviewTabFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"JobOverviewTabFragment">;
+export type JobAnalyticsTabFragment$key = {
+  readonly " $data"?: JobAnalyticsTabFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"JobAnalyticsTabFragment">;
 };
 
 const node: ReaderFragment = (function(){
@@ -56,7 +56,7 @@ return {
   ],
   "kind": "Fragment",
   "metadata": null,
-  "name": "JobOverviewTabFragment",
+  "name": "JobAnalyticsTabFragment",
   "selections": [
     {
       "alias": null,
@@ -119,6 +119,6 @@ return {
 };
 })();
 
-(node as any).hash = "6c47ac5ae66fc44161aea7401a355f5f";
+(node as any).hash = "f2dd5e3cf1cf092c51cea4830d4af941";
 
 export default node;

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<789ad1fff72390059978213a8f501cbf>>
- * @relayHash cfcbb02dfb9903b09bce1d6a907c48cc
+ * @generated SignedSource<<541ef5b241df59e778492a7c0744603c>>
+ * @relayHash deba9df0739bcf65c7da8adb0e1c3f26
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID cfcbb02dfb9903b09bce1d6a907c48cc
+// @relayRequestID deba9df0739bcf65c7da8adb0e1c3f26
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -18,7 +18,7 @@ export type pageJobDetailQuery$variables = {
   orgSlug: string;
 };
 export type pageJobDetailQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"JobOverviewTabFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"JobAnalyticsTabFragment">;
 };
 export type pageJobDetailQuery = {
   response: pageJobDetailQuery$data;
@@ -83,7 +83,7 @@ return {
           (v2/*: any*/)
         ],
         "kind": "FragmentSpread",
-        "name": "JobOverviewTabFragment"
+        "name": "JobAnalyticsTabFragment"
       }
     ],
     "type": "Query",
@@ -135,13 +135,6 @@ return {
                         "args": null,
                         "kind": "ScalarField",
                         "name": "title",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "description",
                         "storageKey": null
                       },
                       {
@@ -347,7 +340,7 @@ return {
     ]
   },
   "params": {
-    "id": "cfcbb02dfb9903b09bce1d6a907c48cc",
+    "id": "deba9df0739bcf65c7da8adb0e1c3f26",
     "metadata": {},
     "name": "pageJobDetailQuery",
     "operationKind": "query",
@@ -356,6 +349,6 @@ return {
 };
 })();
 
-(node as any).hash = "83ad674464bea006fef461ace9ee2d60";
+(node as any).hash = "4ac74736aff2149bc93793f70d4ccd79";
 
 export default node;

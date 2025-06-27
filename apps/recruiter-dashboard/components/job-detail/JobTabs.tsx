@@ -3,7 +3,7 @@ import type { JobTabsFragment$key } from "@/__generated__/JobTabsFragment.graphq
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import { Tab, Tabs } from "@heroui/react";
-import { ChartNoAxesCombinedIcon, Settings, Users } from "lucide-react";
+import { ChartNoAxesCombinedIcon, SquarePenIcon, Users } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -87,8 +87,8 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 						key={links.jobDetailSettings(params.slug)}
 						title={
 							<div className="flex items-center space-x-2">
-								<Settings />
-								<span>Job Settings</span>
+								<SquarePenIcon />
+								<span>Edit Job</span>
 							</div>
 						}
 					/>

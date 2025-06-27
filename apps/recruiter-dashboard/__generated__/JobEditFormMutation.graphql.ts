@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e8297da16f31021c9279f35fbbf5aa71>>
- * @relayHash 9a72bdd17078c41a5dda86967822d873
+ * @generated SignedSource<<a20741fbed44870100be8cb270de2bd1>>
+ * @relayHash e1d71ed984b08d07444f9071c53485ea
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9a72bdd17078c41a5dda86967822d873
+// @relayRequestID e1d71ed984b08d07444f9071c53485ea
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -384,13 +384,6 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "description",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
                     "name": "skills",
                     "storageKey": null
                   },
@@ -583,6 +576,13 @@ return {
                     ],
                     "storageKey": null
                   },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "description",
+                    "storageKey": null
+                  },
                   (v14/*: any*/)
                 ],
                 "storageKey": null
@@ -597,7 +597,7 @@ return {
     ]
   },
   "params": {
-    "id": "9a72bdd17078c41a5dda86967822d873",
+    "id": "e1d71ed984b08d07444f9071c53485ea",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",

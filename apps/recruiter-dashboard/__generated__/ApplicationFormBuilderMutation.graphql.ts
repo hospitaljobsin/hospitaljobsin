@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<5e16570219402f6cff0e13aa69a36fa8>>
- * @relayHash b6b1f1cfd7db83b73eaffd9f7e2dbe8b
+ * @generated SignedSource<<41cc5fd58f528867d51f4e8adefa3236>>
+ * @relayHash 2d5ed601840ad97131987b813bba7ebe
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b6b1f1cfd7db83b73eaffd9f7e2dbe8b
+// @relayRequestID 2d5ed601840ad97131987b813bba7ebe
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -225,13 +225,6 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "description",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
                     "name": "slug",
                     "storageKey": null
                   },
@@ -438,7 +431,7 @@ return {
     ]
   },
   "params": {
-    "id": "b6b1f1cfd7db83b73eaffd9f7e2dbe8b",
+    "id": "2d5ed601840ad97131987b813bba7ebe",
     "metadata": {},
     "name": "ApplicationFormBuilderMutation",
     "operationKind": "mutation",

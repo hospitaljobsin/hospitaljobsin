@@ -1,5 +1,5 @@
 "use client";
-import type { JobOverviewTabFragment$key } from "@/__generated__/JobOverviewTabFragment.graphql";
+import type { JobAnalyticsTabFragment$key } from "@/__generated__/JobAnalyticsTabFragment.graphql";
 import PageJobDetailQuery, {
 	type pageJobDetailQuery,
 } from "@/__generated__/pageJobDetailQuery.graphql";
@@ -12,8 +12,8 @@ import {
 import invariant from "tiny-invariant";
 import JobDetails from "./JobDetails";
 
-const JobOverviewTabFragment = graphql`
- fragment JobOverviewTabFragment on Query @argumentDefinitions(
+const JobAnalyticsTabFragment = graphql`
+ fragment JobAnalyticsTabFragment on Query @argumentDefinitions(
       slug: {
         type: "String!",
       }
@@ -34,12 +34,12 @@ const JobOverviewTabFragment = graphql`
   }
 `;
 
-export default function JobOverviewTab(props: {
+export default function JobAnalyticsTab(props: {
 	initialQueryRef: PreloadedQuery<pageJobDetailQuery>;
 }) {
 	const data = usePreloadedQuery(PageJobDetailQuery, props.initialQueryRef);
-	const query = useFragment<JobOverviewTabFragment$key>(
-		JobOverviewTabFragment,
+	const query = useFragment<JobAnalyticsTabFragment$key>(
+		JobAnalyticsTabFragment,
 		data,
 	);
 	invariant(

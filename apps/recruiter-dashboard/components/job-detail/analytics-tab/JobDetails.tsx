@@ -12,24 +12,16 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
-	Chip,
-	Divider,
 	Link,
 } from "@heroui/react";
-import Heading from "@tiptap/extension-heading";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
 import { Briefcase, Clock, Globe, IndianRupee, MapPin } from "lucide-react";
-import { useParams } from "next/navigation";
 import { graphql, useFragment } from "react-relay";
-import { Markdown } from "tiptap-markdown";
 import JobControls from "./JobControls";
 import JobStatistics from "./JobStatistics";
 
 const JobDetailsFragment = graphql`
   fragment JobDetailsFragment on Job {
     title
-    description
     slug
     skills
     minSalary
@@ -62,29 +54,7 @@ const JobDetailsFragment = graphql`
 export default function JobDetails({
 	rootQuery,
 }: { rootQuery: JobDetailsFragment$key }) {
-	const params = useParams<{ slug: string; jobSlug: string }>();
 	const data = useFragment(JobDetailsFragment, rootQuery);
-
-	const editor = useEditor({
-		extensions: [
-			StarterKit.configure({
-				heading: false, // Disable default heading
-			}),
-			Heading.configure({
-				levels: [1, 2, 3], // Allow only H1, H2, and H3
-			}),
-			Markdown,
-		],
-		immediatelyRender: false,
-		editorProps: {
-			attributes: {
-				class:
-					"prose prose-foreground prose-sm w-full min-w-full whitespace-pre-wrap",
-			},
-		},
-		editable: false, // Disable editing to make it a viewer
-		content: data.description,
-	});
 
 	const showApplicationFormWarning =
 		data.organization.isAdmin &&
@@ -240,25 +210,6 @@ export default function JobDetails({
 				/>
 			) : null}
 			<JobStatistics job={data} />
-			{/* Job Description */}
-			<Card className="p-6" fullWidth shadow="none">
-				<CardHeader>
-					<h3 className="font-medium text-foreground-500">About the Job</h3>
-				</CardHeader>
-				<Divider />
-				<CardBody className="w-full">
-					<EditorContent editor={editor} className="w-full" />
-				</CardBody>
-				<CardFooter>
-					<div className="flex flex-wrap gap-4 mt-2 w-full">
-						{data.skills.map((skill) => (
-							<Chip variant="flat" key={skill}>
-								{skill}
-							</Chip>
-						))}
-					</div>
-				</CardFooter>
-			</Card>
 		</div>
 	);
 }

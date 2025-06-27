@@ -1,6 +1,6 @@
 "use client";
 import type { pageJobDetailQuery } from "@/__generated__/pageJobDetailQuery.graphql";
-import JobOverviewTab from "@/components/job-detail/overview-tab/JobOverviewTab";
+import JobOverviewTab from "@/components/job-detail/analytics-tab/JobAnalyticsTab";
 import useOrganization from "@/lib/hooks/useOrganization";
 import { Spinner } from "@heroui/react";
 import { useParams } from "next/navigation";
@@ -9,7 +9,7 @@ import { graphql, loadQuery, useRelayEnvironment } from "react-relay";
 
 export const JobDetailQuery = graphql`
   query pageJobDetailQuery($orgSlug: String!, $jobSlug: String!) {
-    ...JobOverviewTabFragment @arguments(slug: $orgSlug, jobSlug: $jobSlug)
+    ...JobAnalyticsTabFragment @arguments(slug: $orgSlug, jobSlug: $jobSlug)
   }
 `;
 
