@@ -1,6 +1,7 @@
 "use client";
 
 import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
 import { Tab, Tabs } from "@heroui/react";
 import { Mail, Settings, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -25,6 +26,7 @@ const items = [
 
 export default function OrgSettingsSidebar() {
 	const pathname = usePathname();
+	const router = useRouter();
 	return (
 		<>
 			<div className="w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky top-0 self-stretch max-h-screen">
@@ -33,6 +35,11 @@ export default function OrgSettingsSidebar() {
 					isVertical
 					variant="light"
 					selectedKey={pathname}
+					onSelectionChange={(key) => {
+						if (typeof key === "string") {
+							router.push(key);
+						}
+					}}
 					classNames={{
 						tabWrapper: "w-full",
 						base: "w-full",
@@ -46,7 +53,6 @@ export default function OrgSettingsSidebar() {
 					{items.map((item) => (
 						<Tab
 							key={item.href}
-							href={item.href}
 							title={
 								<div className="flex items-center space-x-4">
 									<item.icon size={20} />
@@ -62,6 +68,11 @@ export default function OrgSettingsSidebar() {
 					aria-label="Settings Navigation"
 					variant="light"
 					selectedKey={pathname}
+					onSelectionChange={(key) => {
+						if (typeof key === "string") {
+							router.push(key);
+						}
+					}}
 					classNames={{
 						base: "w-full overflow-x-auto",
 						tabList: "gap-4",
@@ -71,7 +82,6 @@ export default function OrgSettingsSidebar() {
 					{items.map((item) => (
 						<Tab
 							key={item.href}
-							href={item.href}
 							title={
 								<div className="flex items-center space-x-4">
 									<item.icon size={16} />
