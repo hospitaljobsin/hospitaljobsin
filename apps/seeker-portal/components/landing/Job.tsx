@@ -133,7 +133,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 	return (
 		<Card
 			fullWidth
-			className="p-3 sm:p-6 cursor-pointer rounded-xl border border-default-200 bg-background"
+			className="p-3 sm:p-6 cursor-pointer rounded-xl bg-background"
 			isPressable
 			as="div"
 			disableRipple
