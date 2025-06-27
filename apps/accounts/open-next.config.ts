@@ -7,6 +7,7 @@ const config = {
 			incrementalCache: "s3-lite",
 			queue: "sqs-lite",
 		},
+		minify: true, // This will minify the output
 	},
 } satisfies OpenNextConfig;
 
