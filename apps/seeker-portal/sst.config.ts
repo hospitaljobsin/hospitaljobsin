@@ -22,6 +22,7 @@ export default $config({
 			buildCommand: "pnpm run package",
 			router: {
 				instance: router,
+				domain: process.env.SST_SEEKER_PORTAL_DOMAIN,
 			},
 			environment: {
 				NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL,
