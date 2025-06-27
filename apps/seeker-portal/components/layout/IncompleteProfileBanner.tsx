@@ -24,7 +24,7 @@ export default function IncompleteProfileBanner({
 	const data = useFragment(IncompleteProfileBannerFragment, account);
 	if (data.profile.isComplete || pathName === links.profile) return null;
 	return (
-		<div className="w-full bg-primary-300 py-4">
+		<div className="w-full bg-primary-300/25 py-4">
 			<div className="max-w-7xl mx-auto px-5 flex items-center justify-between gap-6 text-shadow-primary-foreground text-xs sm:text-base">
 				<p>Please complete your profile to apply for jobs.</p>
 				<Button

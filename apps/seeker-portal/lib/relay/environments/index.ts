@@ -7,7 +7,6 @@ const IS_SERVER = typeof window === typeof undefined;
 let _clientEnvironment: null | Environment = null;
 
 export function getCurrentEnvironment() {
-	console.log("IS_SERVER", IS_SERVER);
 	console.log("getting a new environment");
 	if (IS_SERVER) {
 		return createServerEnvironment();
