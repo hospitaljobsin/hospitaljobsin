@@ -305,7 +305,7 @@ export default function JobDetails({
 							</div>
 						)}
 					</div>
-					<div className="w-full flex justify-between items-center gap-4">
+					<div className="w-full sm:w-auto flex justify-end items-center gap-4">
 						<p className="text-foreground-500 text-xs block sm:hidden w-full">
 							{formattedCreatedAt}
 						</p>
