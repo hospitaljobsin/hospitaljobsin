@@ -199,7 +199,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 								typeof data.analysis.overallScore === "number" && (
 									<div className="flex items-center gap-2 text-lg font-semibold text-primary-700 bg-primary-50 rounded-full">
 										<Star size={16} className="text-primary-500" />
-										<span>{data.analysis.overallScore}%</span>
+										<span>{data.analysis.overallScore * 100}%</span>
 									</div>
 								)}
 						</div>
