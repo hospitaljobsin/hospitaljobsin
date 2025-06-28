@@ -14,6 +14,7 @@ export default $config({
 			domain: {
 				name: "hospitaljobs.in",
 				aliases: ["*.hospitaljobs.in"],
+				redirects: ["www.hospitaljobs.in"],
 			},
 			transform: {
 				cdn(args, opts, name) {
