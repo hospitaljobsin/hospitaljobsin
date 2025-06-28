@@ -23,7 +23,7 @@
 		"@lobehub/icons": "^2.4.0",
 		"@marsidev/react-turnstile": "^1.1.0",
 		"@opennextjs/aws": "^3.6.5",
-		"@sentry/nextjs": "^9.29.0",
+		"@sentry/nextjs": "^9.33.0",
 		"@simplewebauthn/browser": "^13.1.0",
 		"@t3-oss/env-nextjs": "^0.13.8",
 		"@tailwindcss/typography": "^0.5.16",
