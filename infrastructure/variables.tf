@@ -76,7 +76,7 @@ variable "google_oauth_client_secret" {
 variable "sentry_organization_slug" {
   description = "The slug of the Sentry organization."
   type        = string
-  default     = "vnadi"
+  default     = "hospitaljobsin"
 }
 
 variable "google_gemini_api_key" {
