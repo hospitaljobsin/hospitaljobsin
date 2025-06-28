@@ -13,7 +13,6 @@ import {
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 import Logo from "../Logo";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthDropdown from "./AuthNavigation";
@@ -45,14 +44,10 @@ export default function OrgDetailHeader({
 	queryReference: PreloadedQuery<OrgDetailHeaderQueryType>;
 }) {
 	const data = usePreloadedQuery(OrgDetailHeaderQuery, queryReference);
-	invariant(
-		data.viewer.__typename === "Account",
-		"Expected 'Account' node type.",
-	);
-	invariant(
-		data.organization.__typename === "Organization",
-		"Expected 'Organization' node type.",
-	);
+
+	if (data.organization.__typename !== "Organization") {
+		return null;
+	}
 
 	return (
 		<div className="w-full flex flex-col bg-background border-b border-foreground-300 sticky top-0 z-50">
