@@ -8,8 +8,11 @@ import { Select, SelectItem, addToast } from "@heroui/react";
 import { graphql, useFragment, useMutation } from "react-relay";
 
 const ApplicantStatusUpdaterJobFragment = graphql`
-	fragment ApplicantStatusUpdater_job on Job {
+	fragment ApplicantStatusUpdater_job on JobApplicant {
 		id
+		job @required(action: THROW) {
+			id
+		}
 	}
 `;
 
@@ -57,22 +60,20 @@ const statuses: JobApplicantStatus[] = [
 
 export default function ApplicantStatusUpdater({
 	currentStatus,
-	job,
-	applicantId,
+	applicant,
 }: {
 	currentStatus: JobApplicantStatus;
-	job: ApplicantStatusUpdater_job$key;
-	applicantId: string;
+	applicant: ApplicantStatusUpdater_job$key;
 }) {
-	const jobData = useFragment(ApplicantStatusUpdaterJobFragment, job);
+	const data = useFragment(ApplicantStatusUpdaterJobFragment, applicant);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<ApplicantStatusUpdaterMutation>(UpdateStatusMutation);
 
 	const handleStatusChange = (status: JobApplicantStatus) => {
 		commitMutation({
 			variables: {
-				jobId: jobData.id,
-				applicantIds: [applicantId],
+				jobId: data.job.id,
+				applicantIds: [data.id],
 				status,
 			},
 			onCompleted: (response, errors) => {

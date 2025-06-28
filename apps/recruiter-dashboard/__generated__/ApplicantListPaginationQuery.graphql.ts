@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<547d8e32f64b0960ffba74f5662bbef8>>
- * @relayHash f2dad6e2e261b77c583e48f98ff12d82
+ * @generated SignedSource<<c862019a26a3469a65f805c2bb777004>>
+ * @relayHash 6c70726713428f769af630168bb22edb
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f2dad6e2e261b77c583e48f98ff12d82
+// @relayRequestID 6c70726713428f769af630168bb22edb
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -19,7 +19,6 @@ export type ApplicantListPaginationQuery$variables = {
   cursor?: string | null | undefined;
   id: string;
   searchTerm?: string | null | undefined;
-  showStatus?: boolean | null | undefined;
   status?: JobApplicantStatus | null | undefined;
 };
 export type ApplicantListPaginationQuery$data = {
@@ -54,47 +53,42 @@ v3 = {
   "name": "searchTerm"
 },
 v4 = {
-  "defaultValue": true,
-  "kind": "LocalArgument",
-  "name": "showStatus"
-},
-v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
   "name": "status"
 },
-v6 = [
+v5 = [
   {
     "kind": "Variable",
     "name": "id",
     "variableName": "id"
   }
 ],
-v7 = {
+v6 = {
   "kind": "Variable",
   "name": "searchTerm",
   "variableName": "searchTerm"
 },
-v8 = {
+v7 = {
   "kind": "Variable",
   "name": "status",
   "variableName": "status"
 },
-v9 = {
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v10 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v11 = [
+v10 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -105,8 +99,8 @@ v11 = [
     "name": "first",
     "variableName": "count"
   },
-  (v7/*: any*/),
-  (v8/*: any*/)
+  (v6/*: any*/),
+  (v7/*: any*/)
 ];
 return {
   "fragment": {
@@ -115,8 +109,7 @@ return {
       (v1/*: any*/),
       (v2/*: any*/),
       (v3/*: any*/),
-      (v4/*: any*/),
-      (v5/*: any*/)
+      (v4/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -124,7 +117,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v6/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
@@ -142,13 +135,8 @@ return {
                 "name": "cursor",
                 "variableName": "cursor"
               },
-              (v7/*: any*/),
-              {
-                "kind": "Variable",
-                "name": "showStatus",
-                "variableName": "showStatus"
-              },
-              (v8/*: any*/)
+              (v6/*: any*/),
+              (v7/*: any*/)
             ],
             "kind": "FragmentSpread",
             "name": "ApplicantListFragment"
@@ -167,7 +155,6 @@ return {
       (v1/*: any*/),
       (v3/*: any*/),
       (v4/*: any*/),
-      (v5/*: any*/),
       (v2/*: any*/)
     ],
     "kind": "Operation",
@@ -175,20 +162,20 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v6/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
+          (v8/*: any*/),
           (v9/*: any*/),
-          (v10/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
-                "args": (v11/*: any*/),
+                "args": (v10/*: any*/),
                 "concreteType": "JobApplicantConnection",
                 "kind": "LinkedField",
                 "name": "applicants",
@@ -210,7 +197,19 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v10/*: any*/),
+                          (v9/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "Job",
+                            "kind": "LinkedField",
+                            "name": "job",
+                            "plural": false,
+                            "selections": [
+                              (v9/*: any*/)
+                            ],
+                            "storageKey": null
+                          },
                           {
                             "alias": null,
                             "args": null,
@@ -233,7 +232,7 @@ return {
                                 "name": "avatarUrl",
                                 "storageKey": null
                               },
-                              (v10/*: any*/)
+                              (v9/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -242,6 +241,13 @@ return {
                             "args": null,
                             "kind": "ScalarField",
                             "name": "slug",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "status",
                             "storageKey": null
                           },
                           {
@@ -270,7 +276,7 @@ return {
                             "name": "analysis",
                             "plural": false,
                             "selections": [
-                              (v9/*: any*/),
+                              (v8/*: any*/),
                               {
                                 "kind": "InlineFragment",
                                 "selections": [
@@ -348,21 +354,7 @@ return {
                             ],
                             "storageKey": null
                           },
-                          (v9/*: any*/),
-                          {
-                            "condition": "showStatus",
-                            "kind": "Condition",
-                            "passingValue": true,
-                            "selections": [
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "status",
-                                "storageKey": null
-                              }
-                            ]
-                          }
+                          (v8/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -406,9 +398,8 @@ return {
               },
               {
                 "alias": null,
-                "args": (v11/*: any*/),
+                "args": (v10/*: any*/),
                 "filters": [
-                  "status",
                   "searchTerm"
                 ],
                 "handle": "connection",
@@ -426,7 +417,7 @@ return {
     ]
   },
   "params": {
-    "id": "f2dad6e2e261b77c583e48f98ff12d82",
+    "id": "6c70726713428f769af630168bb22edb",
     "metadata": {},
     "name": "ApplicantListPaginationQuery",
     "operationKind": "query",
@@ -435,6 +426,6 @@ return {
 };
 })();
 
-(node as any).hash = "10fc0378582c36bf652b2075b9205cb1";
+(node as any).hash = "2a1f62aac102748bdd872a36eb1a13b5";
 
 export default node;

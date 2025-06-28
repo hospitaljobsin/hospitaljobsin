@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<00221daf9d06585ae7a33d804820a4cd>>
+ * @generated SignedSource<<15db1156e1eb63cea66684b0c8f9b19c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -44,7 +44,8 @@ export type ApplicantCardFragment$data = {
     readonly headline: string | null | undefined;
   };
   readonly slug: string;
-  readonly status?: JobApplicantStatus;
+  readonly status: JobApplicantStatus;
+  readonly " $fragmentSpreads": FragmentRefs<"ApplicantStatusUpdater_job">;
   readonly " $fragmentType": "ApplicantCardFragment";
 };
 export type ApplicantCardFragment$key = {
@@ -53,13 +54,7 @@ export type ApplicantCardFragment$key = {
 };
 
 const node: ReaderFragment = {
-  "argumentDefinitions": [
-    {
-      "defaultValue": true,
-      "kind": "LocalArgument",
-      "name": "showStatus"
-    }
-  ],
+  "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
   "name": "ApplicantCardFragment",
@@ -105,6 +100,13 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "ScalarField",
       "name": "slug",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "status",
       "storageKey": null
     },
     {
@@ -218,24 +220,15 @@ const node: ReaderFragment = {
       "storageKey": null
     },
     {
-      "condition": "showStatus",
-      "kind": "Condition",
-      "passingValue": true,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "status",
-          "storageKey": null
-        }
-      ]
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "ApplicantStatusUpdater_job"
     }
   ],
   "type": "JobApplicant",
   "abstractKey": null
 };
 
-(node as any).hash = "f8fffdaaacaca82671655bdba7e12407";
+(node as any).hash = "b687dcf7c4fb98d9e2fc3b38e3a99621";
 
 export default node;

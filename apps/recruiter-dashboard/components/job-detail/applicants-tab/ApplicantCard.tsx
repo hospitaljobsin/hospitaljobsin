@@ -8,7 +8,6 @@ import {
 	CardBody,
 	CardHeader,
 	Checkbox,
-	Chip,
 	User,
 } from "@heroui/react";
 import {
@@ -24,20 +23,22 @@ import { useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import { useApplicantSelection } from "./ApplicantSelectionProvider";
+import ApplicantStatusUpdater from "./shared/ApplicantStatusUpdater";
 
 type ApplicantCardProps = {
 	applicant: ApplicantCardFragment$key;
 };
 
 const ApplicantCardFragment = graphql`
-	fragment ApplicantCardFragment on JobApplicant @argumentDefinitions(showStatus: { type: "Boolean", defaultValue: true }) {
+	fragment ApplicantCardFragment on JobApplicant {
 		id
+		...ApplicantStatusUpdater_job
 		account @required(action: THROW) {
 			fullName
 			avatarUrl
 		}
 		slug
-		status @include(if: $showStatus)
+		status
 		profileSnapshot {
 			headline
 		}
@@ -81,7 +82,8 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 			className="p-6 cursor-pointer group space-y-4"
 			shadow="none"
 			isPressable
-			onPress={() => {
+			as="div"
+			onClick={() => {
 				router.push(links.applicantDetail(slug, data.slug));
 			}}
 		>
@@ -123,26 +125,10 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 							</span>
 						}
 					/>
-					<Chip
-						variant="flat"
-						color="default"
-						className="text-xs px-2 py-1 font-medium capitalize"
-						startContent={
-							data.status === "OFFERED" ? (
-								<CheckCircle2 size={14} />
-							) : data.status === "ONHOLD" ? (
-								<Info size={14} />
-							) : data.status === "INTERVIEWED" ? (
-								<Info size={14} />
-							) : data.status === "SHORTLISTED" ? (
-								<Star size={14} />
-							) : data.status === "APPLIED" ? (
-								<Info size={14} />
-							) : null
-						}
-					>
-						{data.status}
-					</Chip>
+					<ApplicantStatusUpdater
+						currentStatus={data.status}
+						applicant={data}
+					/>
 				</div>
 			</CardHeader>
 			{data.analysis && (
@@ -199,7 +185,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 								typeof data.analysis.overallScore === "number" && (
 									<div className="flex items-center gap-2 text-lg font-semibold text-primary-700 bg-primary-50 rounded-full">
 										<Star size={16} className="text-primary-500" />
-										<span>{data.analysis.overallScore * 100}%</span>
+										<span>{data.analysis.overallScore}%</span>
 									</div>
 								)}
 						</div>

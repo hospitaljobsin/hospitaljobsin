@@ -8,8 +8,8 @@ import { Suspense } from "react";
 import { graphql, loadQuery, useRelayEnvironment } from "react-relay";
 
 export const JobDetailApplicantsQuery = graphql`
-  query pageJobDetailApplicantsQuery($orgSlug: String!, $jobSlug: String!, $searchTerm: String, $status: JobApplicantStatus, $showStatus: Boolean = true) {
-    ...ApplicantsTabFragment @arguments(slug: $orgSlug, jobSlug: $jobSlug, searchTerm: $searchTerm, status: $status, showStatus: $showStatus)
+  query pageJobDetailApplicantsQuery($orgSlug: String!, $jobSlug: String!, $searchTerm: String, $status: JobApplicantStatus) {
+    ...ApplicantsTabFragment @arguments(slug: $orgSlug, jobSlug: $jobSlug, searchTerm: $searchTerm, status: $status)
   }
 `;
 

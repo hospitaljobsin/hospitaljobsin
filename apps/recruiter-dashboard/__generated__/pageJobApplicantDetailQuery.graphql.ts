@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<40a19095c57da4871e261142acc93f46>>
- * @relayHash f11a4365ca069c8ddad8cf797f11b342
+ * @generated SignedSource<<a2d9246a700f9c8216eea4f6a4100d66>>
+ * @relayHash 7fba834824391c61cd2f27d36b5b2931
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f11a4365ca069c8ddad8cf797f11b342
+// @relayRequestID 7fba834824391c61cd2f27d36b5b2931
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -103,11 +103,12 @@ v11 = {
   "name": "completedAt",
   "storageKey": null
 },
-v12 = {
+v12 = [
+  (v5/*: any*/)
+],
+v13 = {
   "kind": "InlineFragment",
-  "selections": [
-    (v5/*: any*/)
-  ],
+  "selections": (v12/*: any*/),
   "type": "Node",
   "abstractKey": "__isNode"
 };
@@ -612,12 +613,22 @@ return {
                                   (v5/*: any*/)
                                 ],
                                 "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "concreteType": "Job",
+                                "kind": "LinkedField",
+                                "name": "job",
+                                "plural": false,
+                                "selections": (v12/*: any*/),
+                                "storageKey": null
                               }
                             ],
                             "type": "JobApplicant",
                             "abstractKey": null
                           },
-                          (v12/*: any*/)
+                          (v13/*: any*/)
                         ],
                         "storageKey": null
                       }
@@ -625,7 +636,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v12/*: any*/)
+                  (v13/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -633,14 +644,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v12/*: any*/)
+          (v13/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "f11a4365ca069c8ddad8cf797f11b342",
+    "id": "7fba834824391c61cd2f27d36b5b2931",
     "metadata": {},
     "name": "pageJobApplicantDetailQuery",
     "operationKind": "query",

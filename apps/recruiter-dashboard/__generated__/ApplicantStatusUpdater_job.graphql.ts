@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cbf8e6fa873cace6ec8ad55917642ee1>>
+ * @generated SignedSource<<0790d812ea1daea50e9b382527c56ac2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,9 @@ import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type ApplicantStatusUpdater_job$data = {
   readonly id: string;
+  readonly job: {
+    readonly id: string;
+  };
   readonly " $fragmentType": "ApplicantStatusUpdater_job";
 };
 export type ApplicantStatusUpdater_job$key = {
@@ -19,24 +22,43 @@ export type ApplicantStatusUpdater_job$key = {
   readonly " $fragmentSpreads": FragmentRefs<"ApplicantStatusUpdater_job">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
   "name": "ApplicantStatusUpdater_job",
   "selections": [
+    (v0/*: any*/),
     {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
+      "kind": "RequiredField",
+      "field": {
+        "alias": null,
+        "args": null,
+        "concreteType": "Job",
+        "kind": "LinkedField",
+        "name": "job",
+        "plural": false,
+        "selections": [
+          (v0/*: any*/)
+        ],
+        "storageKey": null
+      },
+      "action": "THROW"
     }
   ],
-  "type": "Job",
+  "type": "JobApplicant",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "4cded3f126313a2ee21a1ff3b10d3939";
+(node as any).hash = "c51502cf2b365eeb42a0e6ac157c05dd";
 
 export default node;

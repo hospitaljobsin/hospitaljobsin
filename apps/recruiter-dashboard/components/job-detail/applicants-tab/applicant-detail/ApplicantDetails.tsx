@@ -6,7 +6,7 @@ import { Card, CardBody, CardHeader, Divider, Link } from "@heroui/react";
 import { Mail, ShieldQuestion } from "lucide-react";
 import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
-import ApplicantStatusUpdater from "./ApplicantStatusUpdater";
+import ApplicantStatusUpdater from "../shared/ApplicantStatusUpdater";
 
 const ApplicantDetailsFragment = graphql`
   fragment ApplicantDetailsFragment on JobApplicant {
@@ -24,6 +24,7 @@ const ApplicantDetailsFragment = graphql`
       avatarUrl
       email
     }
+	...ApplicantStatusUpdater_job
   }
 `;
 
@@ -50,7 +51,7 @@ const ApplicantDetailsJobFragment = graphql`
 		onHold
 		shortlisted
 	}
-    ...ApplicantStatusUpdater_job
+
   }
 `;
 
@@ -112,8 +113,7 @@ export default function ApplicantDetails({
 					</div>
 					<ApplicantStatusUpdater
 						currentStatus={data.status}
-						job={jobData}
-						applicantId={data.id}
+						applicant={data}
 					/>
 				</CardHeader>
 				<CardBody>

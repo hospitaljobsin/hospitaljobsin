@@ -23,7 +23,6 @@ const ApplicantsTabFragment = graphql`
 		jobSlug: { type: "String!" }
 		searchTerm: { type: "String", defaultValue: null }
 		status: { type: "JobApplicantStatus", defaultValue: null }
-		showStatus: { type: "Boolean", defaultValue: true }
 	) {
 		organization(slug: $slug) {
 			__typename
@@ -37,7 +36,6 @@ const ApplicantsTabFragment = graphql`
 							@arguments(
 								searchTerm: $searchTerm
 								status: $status
-								showStatus: $showStatus
 							)
 					}
 				}

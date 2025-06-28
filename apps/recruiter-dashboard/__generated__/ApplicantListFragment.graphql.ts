@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c63948bf58ac7168ae06ae312f795e12>>
+ * @generated SignedSource<<dc327fc81f5d034dcccaa88a0d418654>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -61,11 +61,6 @@ return {
       "name": "searchTerm"
     },
     {
-      "defaultValue": true,
-      "kind": "LocalArgument",
-      "name": "showStatus"
-    },
-    {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "status"
@@ -110,11 +105,6 @@ return {
           "kind": "Variable",
           "name": "searchTerm",
           "variableName": "searchTerm"
-        },
-        {
-          "kind": "Variable",
-          "name": "status",
-          "variableName": "status"
         }
       ],
       "concreteType": "JobApplicantConnection",
@@ -140,13 +130,7 @@ return {
               "selections": [
                 (v1/*: any*/),
                 {
-                  "args": [
-                    {
-                      "kind": "Variable",
-                      "name": "showStatus",
-                      "variableName": "showStatus"
-                    }
-                  ],
+                  "args": null,
                   "kind": "FragmentSpread",
                   "name": "ApplicantCardFragment"
                 },
@@ -204,6 +188,6 @@ return {
 };
 })();
 
-(node as any).hash = "10fc0378582c36bf652b2075b9205cb1";
+(node as any).hash = "2a1f62aac102748bdd872a36eb1a13b5";
 
 export default node;

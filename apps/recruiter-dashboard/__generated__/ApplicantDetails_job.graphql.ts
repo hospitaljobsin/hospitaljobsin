@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ac01c4778c01cbfc51b718d0eb70e0f9>>
+ * @generated SignedSource<<af26755520f8ed5e011945824bb07e7a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -34,7 +34,6 @@ export type ApplicantDetails_job$data = {
   readonly type: JobType | null | undefined;
   readonly vacancies: number | null | undefined;
   readonly workMode: WorkMode | null | undefined;
-  readonly " $fragmentSpreads": FragmentRefs<"ApplicantStatusUpdater_job">;
   readonly " $fragmentType": "ApplicantDetails_job";
 };
 export type ApplicantDetails_job$key = {
@@ -191,17 +190,12 @@ const node: ReaderFragment = {
         }
       ],
       "storageKey": null
-    },
-    {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "ApplicantStatusUpdater_job"
     }
   ],
   "type": "Job",
   "abstractKey": null
 };
 
-(node as any).hash = "09dda0668a338719d694617611fb3533";
+(node as any).hash = "6f0d408ae942d4fa87ff781094456856";
 
 export default node;
