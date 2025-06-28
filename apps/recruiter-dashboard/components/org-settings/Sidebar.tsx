@@ -1,10 +1,13 @@
 "use client";
 
+import type { SidebarOrgSettingsQuery as SidebarOrgSettingsQueryType } from "@/__generated__/SidebarOrgSettingsQuery.graphql";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import { Tab, Tabs } from "@heroui/react";
 import { Mail, Settings, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { type PreloadedQuery, usePreloadedQuery } from "react-relay";
+import { graphql } from "relay-runtime";
 
 const items = [
 	{
@@ -24,9 +27,32 @@ const items = [
 	},
 ];
 
-export default function OrgSettingsSidebar() {
+export const SidebarOrgSettingsQuery = graphql`
+	query SidebarOrgSettingsQuery($slug: String!) {
+		organization(slug: $slug) {
+			__typename
+			... on Organization {
+				isAdmin
+			}
+		}
+
+	}
+`;
+
+export default function OrgSettingsSidebar({
+	queryReference,
+}: { queryReference: PreloadedQuery<SidebarOrgSettingsQueryType> }) {
 	const pathname = usePathname();
 	const router = useRouter();
+	const data = usePreloadedQuery(SidebarOrgSettingsQuery, queryReference);
+
+	if (
+		data.organization.__typename !== "Organization" ||
+		!data.organization.isAdmin
+	) {
+		return null;
+	}
+
 	return (
 		<>
 			<div className="w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky top-0 self-stretch max-h-screen">

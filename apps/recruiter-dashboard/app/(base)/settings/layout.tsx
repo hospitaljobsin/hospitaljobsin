@@ -1,4 +1,4 @@
-import SettingsSidebar from "@/components/org-settings/Sidebar";
+import SidebarClientComponent from "@/components/org-settings/SidebarClientComponent";
 
 export default function OrganizationSettingsLayout({
 	children,
@@ -11,7 +11,7 @@ export default function OrganizationSettingsLayout({
 				<div className="relative w-full max-w-7xl">
 					<div className="flex flex-col md:flex-row min-h-screen bg-background-600">
 						{/* Sidebar will now grow to fill the height */}
-						<SettingsSidebar />
+						<SidebarClientComponent />
 						<div className="flex-1 px-4 py-6 md:pl-12 bg-background-600">
 							{children}
 						</div>
