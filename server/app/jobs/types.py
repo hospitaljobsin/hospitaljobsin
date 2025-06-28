@@ -33,7 +33,7 @@ from app.base.types import (
 )
 from app.context import Info
 from app.core.constants import JobApplicantAnalysisStatus
-from app.jobs.agents import FieldAnalysis
+from app.jobs.agents import AnalysedFields, FieldAnalysis
 from app.jobs.documents import (
     ApplicantField,
     ApplicationField,
@@ -272,11 +272,95 @@ class FieldAnalysisType:
 
 
 @strawberry.type(
+    name="AnalysedFields",
+    description="The analysed fields of a job applicant.",
+)
+class AnalysedFieldsType:
+    gender: FieldAnalysisType | None = None
+    date_of_birth: FieldAnalysisType | None = None
+    address: FieldAnalysisType | None = None
+    marital_status: FieldAnalysisType | None = None
+    category: FieldAnalysisType | None = None
+    locations_open_to_work: FieldAnalysisType | None = None
+    open_to_relocation_anywhere: FieldAnalysisType | None = None
+    education: FieldAnalysisType | None = None
+    licenses: FieldAnalysisType | None = None
+    languages: FieldAnalysisType | None = None
+    job_preferences: FieldAnalysisType | None = None
+    work_experience: FieldAnalysisType | None = None
+    salary_expectations: FieldAnalysisType | None = None
+    certifications: FieldAnalysisType | None = None
+    professional_summary: FieldAnalysisType | None = None
+    headline: FieldAnalysisType | None = None
+
+    @classmethod
+    def marshal(cls, analysed_fields: AnalysedFields) -> Self:
+        return cls(
+            gender=FieldAnalysisType.marshal(analysed_fields.gender)
+            if analysed_fields.gender
+            else None,
+            date_of_birth=FieldAnalysisType.marshal(analysed_fields.date_of_birth)
+            if analysed_fields.date_of_birth
+            else None,
+            address=FieldAnalysisType.marshal(analysed_fields.address)
+            if analysed_fields.address
+            else None,
+            marital_status=FieldAnalysisType.marshal(analysed_fields.marital_status)
+            if analysed_fields.marital_status
+            else None,
+            category=FieldAnalysisType.marshal(analysed_fields.category)
+            if analysed_fields.category
+            else None,
+            locations_open_to_work=FieldAnalysisType.marshal(
+                analysed_fields.locations_open_to_work
+            )
+            if analysed_fields.locations_open_to_work
+            else None,
+            open_to_relocation_anywhere=FieldAnalysisType.marshal(
+                analysed_fields.open_to_relocation_anywhere
+            )
+            if analysed_fields.open_to_relocation_anywhere
+            else None,
+            education=FieldAnalysisType.marshal(analysed_fields.education)
+            if analysed_fields.education
+            else None,
+            licenses=FieldAnalysisType.marshal(analysed_fields.licenses)
+            if analysed_fields.licenses
+            else None,
+            languages=FieldAnalysisType.marshal(analysed_fields.languages)
+            if analysed_fields.languages
+            else None,
+            job_preferences=FieldAnalysisType.marshal(analysed_fields.job_preferences)
+            if analysed_fields.job_preferences
+            else None,
+            work_experience=FieldAnalysisType.marshal(analysed_fields.work_experience)
+            if analysed_fields.work_experience
+            else None,
+            salary_expectations=FieldAnalysisType.marshal(
+                analysed_fields.salary_expectations
+            )
+            if analysed_fields.salary_expectations
+            else None,
+            certifications=FieldAnalysisType.marshal(analysed_fields.certifications)
+            if analysed_fields.certifications
+            else None,
+            professional_summary=FieldAnalysisType.marshal(
+                analysed_fields.professional_summary
+            )
+            if analysed_fields.professional_summary
+            else None,
+            headline=FieldAnalysisType.marshal(analysed_fields.headline)
+            if analysed_fields.headline
+            else None,
+        )
+
+
+@strawberry.type(
     name="JobApplicantAnalysis",
     description="AI Analysis for a job applicant.",
 )
 class JobApplicantAnalysisType:
-    analysed_fields: list[FieldAnalysisType] = strawberry.field(
+    analysed_fields: AnalysedFieldsType = strawberry.field(
         description="List of healthcare-specific match analyses",
     )
     overall_score: float | None = strawberry.field(
@@ -301,9 +385,7 @@ class JobApplicantAnalysisType:
     @classmethod
     def marshal(cls, data: JobApplicantAnalysis) -> Self:
         return cls(
-            analysed_fields=[
-                FieldAnalysisType.marshal(field) for field in data.analysed_fields
-            ],
+            analysed_fields=AnalysedFieldsType.marshal(data.analysed_fields),
             overall_score=data.overall_score,
             overall_summary=data.overall_summary,
             strengths=data.strengths,

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<15db1156e1eb63cea66684b0c8f9b19c>>
+ * @generated SignedSource<<73f830bb2718db41d863c2b2b5f116a4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,11 +18,6 @@ export type ApplicantCardFragment$data = {
   };
   readonly analysis: {
     readonly __typename: "JobApplicantAnalysis";
-    readonly analysedFields: ReadonlyArray<{
-      readonly analysis: string;
-      readonly criterion: string;
-      readonly score: number;
-    }>;
     readonly createdAt: any;
     readonly overallScore: number | null | undefined;
     readonly overallSummary: string | null | undefined;
@@ -176,38 +171,6 @@ const node: ReaderFragment = {
             {
               "alias": null,
               "args": null,
-              "concreteType": "FieldAnalysis",
-              "kind": "LinkedField",
-              "name": "analysedFields",
-              "plural": true,
-              "selections": [
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "analysis",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "criterion",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "score",
-                  "storageKey": null
-                }
-              ],
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
               "kind": "ScalarField",
               "name": "createdAt",
               "storageKey": null
@@ -229,6 +192,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "b687dcf7c4fb98d9e2fc3b38e3a99621";
+(node as any).hash = "4f42fb57df6cfff6e1df8cd42cbfcaf1";
 
 export default node;

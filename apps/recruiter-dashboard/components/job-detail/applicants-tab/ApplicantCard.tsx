@@ -55,11 +55,6 @@ const ApplicantCardFragment = graphql`
 				overallSummary
 				strengths
 				riskFlags
-				analysedFields {
-					analysis
-					criterion
-					score
-				}
 				createdAt
 			}
 		}
@@ -76,6 +71,8 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 
 	const isSelected = selectedApplicants.has(data.id);
 
+	const atleastOneSelected = selectedApplicants.size > 0;
+
 	return (
 		<Card
 			fullWidth
@@ -83,7 +80,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 			shadow="none"
 			isPressable
 			as="div"
-			onClick={() => {
+			onPress={() => {
 				router.push(links.applicantDetail(slug, data.slug));
 			}}
 		>
@@ -125,10 +122,12 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 							</span>
 						}
 					/>
-					<ApplicantStatusUpdater
-						currentStatus={data.status}
-						applicant={data}
-					/>
+					{!atleastOneSelected && (
+						<ApplicantStatusUpdater
+							currentStatus={data.status}
+							applicant={data}
+						/>
+					)}
 				</div>
 			</CardHeader>
 			{data.analysis && (
@@ -185,7 +184,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 								typeof data.analysis.overallScore === "number" && (
 									<div className="flex items-center gap-2 text-lg font-semibold text-primary-700 bg-primary-50 rounded-full">
 										<Star size={16} className="text-primary-500" />
-										<span>{data.analysis.overallScore}%</span>
+										<span>{data.analysis.overallScore * 100}%</span>
 									</div>
 								)}
 						</div>
@@ -220,21 +219,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 											</ul>
 										</div>
 									)}
-								{data.analysis.analysedFields?.length > 0 && (
-									<div className="flex flex-col items-start gap-2">
-										<p className="font-semibold text-primary-700 flex items-center gap-2">
-											<Info size={14} /> Analysed Fields:
-										</p>
-										<ul className="list-disc list-inside ml-4 space-y-1">
-											{data.analysis.analysedFields.map((field) => (
-												<li key={field.criterion}>
-													<strong>{field.criterion}:</strong> {field.analysis} (
-													<span className="font-semibold">{field.score}%</span>)
-												</li>
-											))}
-										</ul>
-									</div>
-								)}
+
 								{data.analysis.createdAt && (
 									<p className="text-xs text-foreground-400 mt-2">
 										Analysed on:{" "}

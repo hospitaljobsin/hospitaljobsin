@@ -170,6 +170,28 @@ type AccountProfileNotFoundError implements Error {
 }
 
 """
+The analysed fields of a job applicant.
+"""
+type AnalysedFields {
+	gender: FieldAnalysis
+	dateOfBirth: FieldAnalysis
+	address: FieldAnalysis
+	maritalStatus: FieldAnalysis
+	category: FieldAnalysis
+	locationsOpenToWork: FieldAnalysis
+	openToRelocationAnywhere: FieldAnalysis
+	education: FieldAnalysis
+	licenses: FieldAnalysis
+	languages: FieldAnalysis
+	jobPreferences: FieldAnalysis
+	workExperience: FieldAnalysis
+	salaryExpectations: FieldAnalysis
+	certifications: FieldAnalysis
+	professionalSummary: FieldAnalysis
+	headline: FieldAnalysis
+}
+
+"""
 An applicant field belonging to a job applicant.
 """
 type ApplicantField {
@@ -1251,7 +1273,7 @@ type JobApplicantAnalysis {
 	"""
 	List of healthcare-specific match analyses
 	"""
-	analysedFields: [FieldAnalysis!]!
+	analysedFields: AnalysedFields!
 
 	"""
 	Final score for the applicant's match to the job (0-1), synthesized after all field analyses.
@@ -2365,7 +2387,7 @@ type Mutation {
 		The ID of the job to log the view start for.
 		"""
 		jobId: ID!
-	): LogJobViewPayload! @isAuthenticated
+	): LogJobViewPayload!
 
 	"""
 	Log a job view end.
@@ -2380,7 +2402,7 @@ type Mutation {
 		The ID of the job to log the view start for.
 		"""
 		jobId: ID!
-	): LogJobViewPayload! @isAuthenticated
+	): LogJobViewPayload!
 
 	"""
 	Update the current user's profile personal details.

@@ -480,16 +480,13 @@ class JobApplicantAnalysisService:
         profile: Profile,
         applicant_fields: list[ApplicantField],
     ) -> None:
-        print("analyse_job_applicant")
         analysis: JobApplicantAnalysisOutput | None = None
         try:
             result = await self._job_applicant_analyzer_agent.run(
                 user_prompt=f"Job: {job!s}\nProfile: {profile!s}\nApplicant Fields: {[str(field) for field in applicant_fields]}"
             )
-            print("result: ", result)
             analysis = result.output
         except Exception as e:
-            print("error: ", e)
             logging.exception("Job applicant analysis agent failed: %s", e)
             analysis = None
         await self._job_applicant_repo.update_analysis(

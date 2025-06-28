@@ -23,7 +23,7 @@ from app.core.constants import (
     JobApplicantAnalysisStatus,
     JobApplicantStatus,
 )
-from app.jobs.agents import FieldAnalysis
+from app.jobs.agents import AnalysedFields
 from app.organizations.documents import Organization
 
 
@@ -132,34 +132,21 @@ class ApplicantField(BaseModel):
 
 
 class JobApplicantAnalysis(BaseModel):
-    """
-    Stores the AI-generated analytical summary for how well a job applicant's profile matches a specific healthcare job description, with a created_at timestamp for persistence.
-    """
-
-    analysed_fields: list[FieldAnalysis] = Field(
-        description="List of healthcare-specific match analyses, one per criterion (e.g., 'Medical License', 'Specialization', etc.).",
-    )
+    analysed_fields: AnalysedFields
     overall_score: float | None = Field(
         default=None,
-        description="Final score for the applicant's match to the job (0-1), synthesized after all field analyses.",
         ge=0.0,
         le=1.0,
     )
-    overall_summary: str | None = Field(
-        default=None,
-        description="Summary reason for the overall match score, synthesized after all field analyses.",
-    )
+    overall_summary: str
     strengths: list[str] | None = Field(
         default=None,
-        description="List of strengths or standout factors identified in the match analysis.",
     )
     risk_flags: list[str] | None = Field(
         default=None,
-        description="List of potential risks or red flags identified in the match analysis.",
     )
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
-        description="Timestamp when this analysis was created.",
     )
     model_config = {"extra": "ignore"}
 

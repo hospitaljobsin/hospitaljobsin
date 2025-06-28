@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<75c13a179af7f72f60ff182fddb7631b>>
- * @relayHash dc6dc7bad1cf276f2d64ede78c769436
+ * @generated SignedSource<<c9aa5db0f173a95d50495503f6884d96>>
+ * @relayHash c2eccf930ce99e578719d065a9f8662f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID dc6dc7bad1cf276f2d64ede78c769436
+// @relayRequestID c2eccf930ce99e578719d065a9f8662f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -306,38 +306,6 @@ return {
                                           {
                                             "alias": null,
                                             "args": null,
-                                            "concreteType": "FieldAnalysis",
-                                            "kind": "LinkedField",
-                                            "name": "analysedFields",
-                                            "plural": true,
-                                            "selections": [
-                                              {
-                                                "alias": null,
-                                                "args": null,
-                                                "kind": "ScalarField",
-                                                "name": "analysis",
-                                                "storageKey": null
-                                              },
-                                              {
-                                                "alias": null,
-                                                "args": null,
-                                                "kind": "ScalarField",
-                                                "name": "criterion",
-                                                "storageKey": null
-                                              },
-                                              {
-                                                "alias": null,
-                                                "args": null,
-                                                "kind": "ScalarField",
-                                                "name": "score",
-                                                "storageKey": null
-                                              }
-                                            ],
-                                            "storageKey": null
-                                          },
-                                          {
-                                            "alias": null,
-                                            "args": null,
                                             "kind": "ScalarField",
                                             "name": "createdAt",
                                             "storageKey": null
@@ -421,7 +389,7 @@ return {
     ]
   },
   "params": {
-    "id": "dc6dc7bad1cf276f2d64ede78c769436",
+    "id": "c2eccf930ce99e578719d065a9f8662f",
     "metadata": {},
     "name": "pageJobDetailApplicantsQuery",
     "operationKind": "query",
