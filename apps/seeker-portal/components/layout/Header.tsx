@@ -115,7 +115,7 @@ export default function Header({
 									Log In
 								</Button>
 							</NavbarItem>
-							<NavbarItem className="hidden sm:block">
+							<NavbarItem>
 								<Button
 									as={Link}
 									href={links.recruiterLanding}
