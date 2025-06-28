@@ -1,34 +1,24 @@
 import { useFragment, usePaginationFragment } from "react-relay";
 
+import type { OrganizationMembersListAccountFragment$key } from "@/__generated__/OrganizationMembersListAccountFragment.graphql";
 import type { OrganizationMembersListFragment$key } from "@/__generated__/OrganizationMembersListFragment.graphql";
 import type { OrganizationMembersListInternalFragment$key } from "@/__generated__/OrganizationMembersListInternalFragment.graphql";
-import type { pageOrganizationMembersViewQuery } from "@/__generated__/pageOrganizationMembersViewQuery.graphql";
+import type { pageOrganizationMemberSettingsQuery } from "@/__generated__/pageOrganizationMemberSettingsQuery.graphql";
 import { startTransition, useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 import Member from "./Member";
 import OrganizationMembersListSkeleton from "./OrganizationMembersListSkeleton";
 
+const OrganizationMembersListAccountFragment = graphql`
+fragment OrganizationMembersListAccountFragment on Account {
+	...MemberAccountFragment
+}
+`;
+
 const OrganizationMembersListFragment = graphql`
-fragment OrganizationMembersListFragment on Query @argumentDefinitions(
-      slug: {
-        type: "String!",
-      }
-	  searchTerm: { type: "String", defaultValue: null }
-    )  {
-        organization(slug: $slug) {
-            __typename
-            ... on Organization {
-            ...OrganizationMembersListInternalFragment @arguments(searchTerm: $searchTerm)
-			...MemberOrganizationFragment
-            }
-        }
-		viewer {
-			__typename
-			... on Account {
-				...MemberAccountFragment
-			}
-		}
+fragment OrganizationMembersListFragment on Organization @argumentDefinitions(searchTerm: { type: "String", defaultValue: null }) {
+	...OrganizationMembersListInternalFragment @arguments(searchTerm: $searchTerm)
+	...MemberOrganizationFragment
 }
 `;
 
@@ -57,29 +47,30 @@ const OrganizationMembersListInternalFragment = graphql`
 `;
 
 type Props = {
-	rootQuery: OrganizationMembersListFragment$key;
+	organization: OrganizationMembersListFragment$key;
+	account: OrganizationMembersListAccountFragment$key;
 	searchTerm: string | null;
 };
 
 export default function OrganizationMembersList({
-	rootQuery,
+	organization,
+	account,
 	searchTerm,
 }: Props) {
-	const root = useFragment(OrganizationMembersListFragment, rootQuery);
-	const organization = root.organization;
-	invariant(
-		organization.__typename === "Organization",
-		"Expected 'Organization' node type",
+	const organizationData = useFragment(
+		OrganizationMembersListInternalFragment,
+		organization,
 	);
 
-	const account = root.viewer;
-
-	invariant(account.__typename === "Account", "Expected 'Account' node type");
+	const accountData = useFragment(
+		OrganizationMembersListAccountFragment,
+		account,
+	);
 
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
-		pageOrganizationMembersViewQuery,
+		pageOrganizationMemberSettingsQuery,
 		OrganizationMembersListInternalFragment$key
-	>(OrganizationMembersListInternalFragment, organization);
+	>(OrganizationMembersListInternalFragment, organizationData);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -140,10 +131,10 @@ export default function OrganizationMembersList({
 			{data.members.edges.map((memberEdge) => (
 				<Member
 					member={memberEdge}
-					organization={organization}
+					organization={organizationData}
 					key={memberEdge.node.id}
 					membersConnectionId={data.members.__id}
-					account={account}
+					account={accountData}
 				/>
 			))}
 			<div ref={observerRef} className="h-10" />

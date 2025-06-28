@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<bd4b7ffb1ba1c360ad8fe29449f58044>>
- * @relayHash 06edaa0065b661a4afc687b2d8c362da
+ * @generated SignedSource<<52be4e160a6c629d93d6b609a90631f5>>
+ * @relayHash 2a76f6eed4e0e954181e975e6e539beb
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 06edaa0065b661a4afc687b2d8c362da
+// @relayRequestID 2a76f6eed4e0e954181e975e6e539beb
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -53,21 +53,21 @@ v4 = {
   "name": "__typename",
   "storageKey": null
 },
-v5 = [
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v6 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 10
   },
   (v2/*: any*/)
-],
-v6 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-};
+];
 return {
   "fragment": {
     "argumentDefinitions": [
@@ -113,9 +113,10 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              (v5/*: any*/),
               {
                 "alias": null,
-                "args": (v5/*: any*/),
+                "args": (v6/*: any*/),
                 "concreteType": "InviteConnection",
                 "kind": "LinkedField",
                 "name": "invites",
@@ -137,7 +138,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v6/*: any*/),
+                          (v5/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -181,7 +182,7 @@ return {
                                 "name": "avatarUrl",
                                 "storageKey": null
                               },
-                              (v6/*: any*/)
+                              (v5/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -248,7 +249,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v5/*: any*/),
+                "args": (v6/*: any*/),
                 "filters": [
                   "searchTerm"
                 ],
@@ -256,8 +257,7 @@ return {
                 "key": "OrganizationInvitesListInternalFragment_invites",
                 "kind": "LinkedHandle",
                 "name": "invites"
-              },
-              (v6/*: any*/)
+              }
             ],
             "type": "Organization",
             "abstractKey": null
@@ -265,7 +265,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v6/*: any*/)
+              (v5/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -276,7 +276,7 @@ return {
     ]
   },
   "params": {
-    "id": "06edaa0065b661a4afc687b2d8c362da",
+    "id": "2a76f6eed4e0e954181e975e6e539beb",
     "metadata": {},
     "name": "pageOrganizationInviteSettingsQuery",
     "operationKind": "query",

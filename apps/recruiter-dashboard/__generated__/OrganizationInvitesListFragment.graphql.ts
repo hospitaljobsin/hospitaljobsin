@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<78a7a677ca4480fe27a6c85939d12496>>
+ * @generated SignedSource<<ad130254845c0e094a2f409e3674cf07>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,14 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type OrganizationInvitesListFragment$data = {
-  readonly organization: {
-    readonly __typename: "Organization";
-    readonly " $fragmentSpreads": FragmentRefs<"InviteOrganizationFragment" | "OrganizationInvitesListInternalFragment">;
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
+  readonly " $fragmentSpreads": FragmentRefs<"InviteOrganizationFragment" | "OrganizationInvitesListInternalFragment">;
   readonly " $fragmentType": "OrganizationInvitesListFragment";
 };
 export type OrganizationInvitesListFragment$key = {
@@ -32,11 +25,6 @@ const node: ReaderFragment = {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "searchTerm"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "slug"
     }
   ],
   "kind": "Fragment",
@@ -44,57 +32,26 @@ const node: ReaderFragment = {
   "name": "OrganizationInvitesListFragment",
   "selections": [
     {
-      "alias": null,
       "args": [
         {
           "kind": "Variable",
-          "name": "slug",
-          "variableName": "slug"
+          "name": "searchTerm",
+          "variableName": "searchTerm"
         }
       ],
-      "concreteType": null,
-      "kind": "LinkedField",
-      "name": "organization",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "__typename",
-          "storageKey": null
-        },
-        {
-          "kind": "InlineFragment",
-          "selections": [
-            {
-              "args": [
-                {
-                  "kind": "Variable",
-                  "name": "searchTerm",
-                  "variableName": "searchTerm"
-                }
-              ],
-              "kind": "FragmentSpread",
-              "name": "OrganizationInvitesListInternalFragment"
-            },
-            {
-              "args": null,
-              "kind": "FragmentSpread",
-              "name": "InviteOrganizationFragment"
-            }
-          ],
-          "type": "Organization",
-          "abstractKey": null
-        }
-      ],
-      "storageKey": null
+      "kind": "FragmentSpread",
+      "name": "OrganizationInvitesListInternalFragment"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "InviteOrganizationFragment"
     }
   ],
-  "type": "Query",
+  "type": "Organization",
   "abstractKey": null
 };
 
-(node as any).hash = "59068a66908d3bb5f4c44d400dc22fce";
+(node as any).hash = "2cbaba43a90d774f93173637a45766b9";
 
 export default node;

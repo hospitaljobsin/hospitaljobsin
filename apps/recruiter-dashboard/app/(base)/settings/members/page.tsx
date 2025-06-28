@@ -7,8 +7,8 @@ import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 
 export const PageOrganizationMemberSettingsQuery = graphql`
-  query pageOrganizationMemberSettingsQuery($slug: String!) {
-	...MemberSettingsTabFragment @arguments(slug: $slug)
+  query pageOrganizationMemberSettingsQuery($slug: String!, $searchTerm: String) {
+	...MemberSettingsTabFragment @arguments(slug: $slug, searchTerm: $searchTerm)
   }
 `;
 

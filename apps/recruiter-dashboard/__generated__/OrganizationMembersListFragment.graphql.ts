@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8d3e9e6492071e17ac2052fa5119adc3>>
+ * @generated SignedSource<<48807d705f71a75161cbaab87eb8bb56>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,22 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type OrganizationMembersListFragment$data = {
-  readonly organization: {
-    readonly __typename: "Organization";
-    readonly " $fragmentSpreads": FragmentRefs<"MemberOrganizationFragment" | "OrganizationMembersListInternalFragment">;
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
-  readonly viewer: {
-    readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"MemberAccountFragment">;
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
+  readonly " $fragmentSpreads": FragmentRefs<"MemberOrganizationFragment" | "OrganizationMembersListInternalFragment">;
   readonly " $fragmentType": "OrganizationMembersListFragment";
 };
 export type OrganizationMembersListFragment$key = {
@@ -34,25 +19,12 @@ export type OrganizationMembersListFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"OrganizationMembersListFragment">;
 };
 
-const node: ReaderFragment = (function(){
-var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
-};
-return {
+const node: ReaderFragment = {
   "argumentDefinitions": [
     {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "searchTerm"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "slug"
     }
   ],
   "kind": "Fragment",
@@ -60,76 +32,26 @@ return {
   "name": "OrganizationMembersListFragment",
   "selections": [
     {
-      "alias": null,
       "args": [
         {
           "kind": "Variable",
-          "name": "slug",
-          "variableName": "slug"
+          "name": "searchTerm",
+          "variableName": "searchTerm"
         }
       ],
-      "concreteType": null,
-      "kind": "LinkedField",
-      "name": "organization",
-      "plural": false,
-      "selections": [
-        (v0/*: any*/),
-        {
-          "kind": "InlineFragment",
-          "selections": [
-            {
-              "args": [
-                {
-                  "kind": "Variable",
-                  "name": "searchTerm",
-                  "variableName": "searchTerm"
-                }
-              ],
-              "kind": "FragmentSpread",
-              "name": "OrganizationMembersListInternalFragment"
-            },
-            {
-              "args": null,
-              "kind": "FragmentSpread",
-              "name": "MemberOrganizationFragment"
-            }
-          ],
-          "type": "Organization",
-          "abstractKey": null
-        }
-      ],
-      "storageKey": null
+      "kind": "FragmentSpread",
+      "name": "OrganizationMembersListInternalFragment"
     },
     {
-      "alias": null,
       "args": null,
-      "concreteType": null,
-      "kind": "LinkedField",
-      "name": "viewer",
-      "plural": false,
-      "selections": [
-        (v0/*: any*/),
-        {
-          "kind": "InlineFragment",
-          "selections": [
-            {
-              "args": null,
-              "kind": "FragmentSpread",
-              "name": "MemberAccountFragment"
-            }
-          ],
-          "type": "Account",
-          "abstractKey": null
-        }
-      ],
-      "storageKey": null
+      "kind": "FragmentSpread",
+      "name": "MemberOrganizationFragment"
     }
   ],
-  "type": "Query",
+  "type": "Organization",
   "abstractKey": null
 };
-})();
 
-(node as any).hash = "9f2b78e9d4d9c9db8d1f9d7e56338a64";
+(node as any).hash = "d21ce1a785b2c0e45f17fd4685906481";
 
 export default node;

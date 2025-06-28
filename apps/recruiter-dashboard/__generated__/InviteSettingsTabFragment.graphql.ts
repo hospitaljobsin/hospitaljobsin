@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5b6ea4489761088b62f28d1419e17023>>
+ * @generated SignedSource<<c01dc8448f8f56c3d153af7300c63aa5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,14 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type InviteSettingsTabFragment$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"OrganizationInvitesControllerFragment" | "OrganizationInvitesListFragment">;
+  readonly organization: {
+    readonly __typename: "Organization";
+    readonly " $fragmentSpreads": FragmentRefs<"OrganizationInvitesControllerFragment" | "OrganizationInvitesListFragment">;
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
   readonly " $fragmentType": "InviteSettingsTabFragment";
 };
 export type InviteSettingsTabFragment$key = {
@@ -19,13 +26,7 @@ export type InviteSettingsTabFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"InviteSettingsTabFragment">;
 };
 
-const node: ReaderFragment = (function(){
-var v0 = {
-  "kind": "Variable",
-  "name": "slug",
-  "variableName": "slug"
-};
-return {
+const node: ReaderFragment = {
   "argumentDefinitions": [
     {
       "defaultValue": null,
@@ -43,30 +44,57 @@ return {
   "name": "InviteSettingsTabFragment",
   "selections": [
     {
+      "alias": null,
       "args": [
         {
           "kind": "Variable",
-          "name": "searchTerm",
-          "variableName": "searchTerm"
+          "name": "slug",
+          "variableName": "slug"
+        }
+      ],
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "organization",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "__typename",
+          "storageKey": null
         },
-        (v0/*: any*/)
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "args": null,
+              "kind": "FragmentSpread",
+              "name": "OrganizationInvitesControllerFragment"
+            },
+            {
+              "args": [
+                {
+                  "kind": "Variable",
+                  "name": "searchTerm",
+                  "variableName": "searchTerm"
+                }
+              ],
+              "kind": "FragmentSpread",
+              "name": "OrganizationInvitesListFragment"
+            }
+          ],
+          "type": "Organization",
+          "abstractKey": null
+        }
       ],
-      "kind": "FragmentSpread",
-      "name": "OrganizationInvitesListFragment"
-    },
-    {
-      "args": [
-        (v0/*: any*/)
-      ],
-      "kind": "FragmentSpread",
-      "name": "OrganizationInvitesControllerFragment"
+      "storageKey": null
     }
   ],
   "type": "Query",
   "abstractKey": null
 };
-})();
 
-(node as any).hash = "5f4a943d46f06c3c5366a24a002057e9";
+(node as any).hash = "0a3b920d159eba7aa23423e43a5be5bf";
 
 export default node;

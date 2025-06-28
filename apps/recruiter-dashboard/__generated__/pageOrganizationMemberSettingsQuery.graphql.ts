@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<22a321e9e342d4e1af8aa2c210cda42d>>
- * @relayHash 32270cd77f3bcf24e0e59043684d0aac
+ * @generated SignedSource<<5f69c23dbcd31f8ea368f2999d07aa17>>
+ * @relayHash 39ce2596d84ec7c6efcfd47c8b6ba568
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,11 +9,12 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 32270cd77f3bcf24e0e59043684d0aac
+// @relayRequestID 39ce2596d84ec7c6efcfd47c8b6ba568
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type pageOrganizationMemberSettingsQuery$variables = {
+  searchTerm?: string | null | undefined;
   slug: string;
 };
 export type pageOrganizationMemberSettingsQuery$data = {
@@ -25,58 +26,71 @@ export type pageOrganizationMemberSettingsQuery = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "slug"
-  }
-],
-v1 = [
-  {
-    "kind": "Variable",
-    "name": "slug",
-    "variableName": "slug"
-  }
-],
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "searchTerm"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "slug"
+},
 v2 = {
+  "kind": "Variable",
+  "name": "searchTerm",
+  "variableName": "searchTerm"
+},
+v3 = {
+  "kind": "Variable",
+  "name": "slug",
+  "variableName": "slug"
+},
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v3 = [
+v5 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 10
-  }
+  },
+  (v2/*: any*/)
 ],
-v4 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v5 = {
+v7 = {
   "kind": "InlineFragment",
   "selections": [
-    (v4/*: any*/)
+    (v6/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "pageOrganizationMemberSettingsQuery",
     "selections": [
       {
-        "args": (v1/*: any*/),
+        "args": [
+          (v2/*: any*/),
+          (v3/*: any*/)
+        ],
         "kind": "FragmentSpread",
         "name": "MemberSettingsTabFragment"
       }
@@ -86,25 +100,30 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "pageOrganizationMemberSettingsQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": [
+          (v3/*: any*/)
+        ],
         "concreteType": null,
         "kind": "LinkedField",
         "name": "organization",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v4/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
-                "args": (v3/*: any*/),
+                "args": (v5/*: any*/),
                 "concreteType": "OrganizationMemberConnection",
                 "kind": "LinkedField",
                 "name": "members",
@@ -126,7 +145,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v4/*: any*/),
+                          (v6/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -141,7 +160,7 @@ return {
                             "name": "avatarUrl",
                             "storageKey": null
                           },
-                          (v2/*: any*/)
+                          (v4/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -207,11 +226,11 @@ return {
                     ]
                   }
                 ],
-                "storageKey": "members(first:10)"
+                "storageKey": null
               },
               {
                 "alias": null,
-                "args": (v3/*: any*/),
+                "args": (v5/*: any*/),
                 "filters": [
                   "searchTerm"
                 ],
@@ -220,7 +239,7 @@ return {
                 "kind": "LinkedHandle",
                 "name": "members"
               },
-              (v4/*: any*/),
+              (v6/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -239,7 +258,7 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v5/*: any*/)
+          (v7/*: any*/)
         ],
         "storageKey": null
       },
@@ -251,7 +270,7 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v4/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -266,14 +285,14 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v5/*: any*/)
+          (v7/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "32270cd77f3bcf24e0e59043684d0aac",
+    "id": "39ce2596d84ec7c6efcfd47c8b6ba568",
     "metadata": {},
     "name": "pageOrganizationMemberSettingsQuery",
     "operationKind": "query",
@@ -282,6 +301,6 @@ return {
 };
 })();
 
-(node as any).hash = "580afa09c4ea28ba8a3bfa6f35d3c3c3";
+(node as any).hash = "21517bea27969af9eafbfdf79bc7f258";
 
 export default node;

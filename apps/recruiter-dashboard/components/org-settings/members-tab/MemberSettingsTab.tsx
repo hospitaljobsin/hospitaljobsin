@@ -4,6 +4,7 @@ import type { MemberSettingsTabFragment$key } from "@/__generated__/MemberSettin
 import PageOrganizationMemberSettingsQuery, {
 	type pageOrganizationMemberSettingsQuery,
 } from "@/__generated__/pageOrganizationMemberSettingsQuery.graphql";
+import NotFoundView from "@/components/NotFoundView";
 import { useState } from "react";
 import {
 	type PreloadedQuery,
@@ -11,6 +12,7 @@ import {
 	useFragment,
 	usePreloadedQuery,
 } from "react-relay";
+import invariant from "tiny-invariant";
 import OrganizationMembersController from "./OrganizationMembersController";
 import OrganizationMembersList from "./OrganizationMembersList";
 
@@ -24,8 +26,19 @@ const MemberSettingsTabFragment = graphql`
 		defaultValue: null
 	  }
     ) {
-        ...OrganizationMembersListFragment @arguments(slug: $slug, searchTerm: $searchTerm)
-		...OrganizationMembersControllerFragment @arguments(slug: $slug)
+		organization(slug: $slug) {
+			__typename
+			... on Organization {
+				...OrganizationMembersListFragment @arguments(searchTerm: $searchTerm)
+				...OrganizationMembersControllerFragment
+			}
+		}
+		viewer {
+			__typename
+			... on Account {
+				...OrganizationMembersListAccountFragment
+			}
+		}
   }
 `;
 
@@ -42,14 +55,27 @@ export default function MemberSettingsTab(props: {
 		data,
 	);
 
+	if (query.organization.__typename !== "Organization") {
+		return <NotFoundView />;
+	}
+
+	invariant(
+		query.viewer.__typename === "Account",
+		"Expected 'Account' node type",
+	);
+
 	return (
 		<div className="w-full h-full flex flex-col items-center gap-12">
 			<OrganizationMembersController
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
-				rootQuery={query}
+				organization={query.organization}
 			/>
-			<OrganizationMembersList rootQuery={query} searchTerm={searchTerm} />
+			<OrganizationMembersList
+				organization={query.organization}
+				account={query.viewer}
+				searchTerm={searchTerm}
+			/>
 		</div>
 	);
 }

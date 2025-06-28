@@ -3,28 +3,18 @@ import { Button, Input, useDisclosure } from "@heroui/react";
 import { Search, UserPlus } from "lucide-react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 import InviteMemberModal from "../shared/InviteMemberModal";
 
 interface OrganizationMembersControllerProps {
 	searchTerm: string | null;
 	setSearchTerm: (searchTerm: string | null) => void;
-	rootQuery: OrganizationMembersControllerFragment$key;
+	organization: OrganizationMembersControllerFragment$key;
 }
 
 const OrganizationMembersControllerFragment = graphql`
-fragment OrganizationMembersControllerFragment on Query @argumentDefinitions(
-      slug: {
-        type: "String!",
-      }
-    )  {
-        organization(slug: $slug) {
-            __typename
-            ... on Organization {
-				isAdmin
+fragment OrganizationMembersControllerFragment on Organization {
+			isAdmin
             ...InviteMemberModalFragment
-            }
-        }
     }
 `;
 
@@ -34,15 +24,10 @@ export default function OrganizationMembersController(
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 	const data = useFragment(
 		OrganizationMembersControllerFragment,
-		props.rootQuery,
+		props.organization,
 	);
 
-	invariant(
-		data.organization.__typename === "Organization",
-		"Expected 'Organization' node type",
-	);
-
-	const isAdmin = data.organization.isAdmin;
+	const isAdmin = data.isAdmin;
 
 	function handleOpenModal() {
 		if (isAdmin) {
@@ -85,7 +70,7 @@ export default function OrganizationMembersController(
 			<InviteMemberModal
 				onOpenChange={onOpenChange}
 				isOpen={isOpen}
-				organization={data.organization}
+				organization={data}
 				onClose={onClose}
 			/>
 		</>

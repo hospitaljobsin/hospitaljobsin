@@ -6,25 +6,14 @@ import type { pageOrganizationInviteSettingsQuery } from "@/__generated__/pageOr
 import { BriefcaseBusiness } from "lucide-react";
 import { startTransition, useEffect, useRef } from "react";
 import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 import Invite from "./Invite";
 import OrganizationInvitesListSkeleton from "./OrganizationInvitesListSkeleton";
 
 const OrganizationInvitesListFragment = graphql`
-fragment OrganizationInvitesListFragment on Query @argumentDefinitions(
-      slug: {
-        type: "String!",
-      }
-	  searchTerm: { type: "String", defaultValue: null }
-    )  {
-        organization(slug: $slug) {
-            __typename
-            ... on Organization {
-            ...OrganizationInvitesListInternalFragment @arguments(searchTerm: $searchTerm)
-			...InviteOrganizationFragment
-            }
-        }
-}
+fragment OrganizationInvitesListFragment on Organization @argumentDefinitions(searchTerm: { type: "String", defaultValue: null }) {
+	...OrganizationInvitesListInternalFragment @arguments(searchTerm: $searchTerm)
+	...InviteOrganizationFragment
+	}
 `;
 
 const OrganizationInvitesListInternalFragment = graphql`
@@ -53,23 +42,20 @@ const OrganizationInvitesListInternalFragment = graphql`
 `;
 
 type Props = {
-	rootQuery: OrganizationInvitesListFragment$key;
+	organization: OrganizationInvitesListFragment$key;
 	searchTerm: string | null;
 };
 
 export default function OrganizationInvitesList({
-	rootQuery,
+	organization,
 	searchTerm,
 }: Props) {
-	const root = useFragment(OrganizationInvitesListFragment, rootQuery);
-	invariant(
-		root.organization.__typename === "Organization",
-		"Expected 'Organization' node type",
-	);
+	const root = useFragment(OrganizationInvitesListFragment, organization);
+
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
 		pageOrganizationInviteSettingsQuery,
 		OrganizationInvitesListInternalFragment$key
-	>(OrganizationInvitesListInternalFragment, root.organization);
+	>(OrganizationInvitesListInternalFragment, root);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -134,7 +120,7 @@ export default function OrganizationInvitesList({
 				<Invite
 					invite={inviteEdge.node}
 					key={inviteEdge.node.id}
-					organization={root.organization}
+					organization={root}
 					invitesConnectionId={data.invites.__id}
 				/>
 			))}

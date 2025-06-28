@@ -3,6 +3,7 @@ import type { InviteSettingsTabFragment$key } from "@/__generated__/InviteSettin
 import PageOrganizationInviteSettingsQuery, {
 	type pageOrganizationInviteSettingsQuery,
 } from "@/__generated__/pageOrganizationInviteSettingsQuery.graphql";
+import NotFoundView from "@/components/NotFoundView";
 import { useState } from "react";
 import {
 	type PreloadedQuery,
@@ -23,8 +24,13 @@ const InviteSettingsTabFragment = graphql`
         defaultValue: null
       }
     ) {
-        ...OrganizationInvitesListFragment @arguments(slug: $slug, searchTerm: $searchTerm)
-        ...OrganizationInvitesControllerFragment @arguments(slug: $slug)
+		organization(slug: $slug) {
+            __typename
+            ... on Organization {
+            ...OrganizationInvitesControllerFragment
+			...OrganizationInvitesListFragment @arguments(searchTerm: $searchTerm)
+            }
+        }
   }
 `;
 
@@ -41,14 +47,21 @@ export default function InviteSettingsTab(props: {
 		data,
 	);
 
+	if (query.organization.__typename !== "Organization") {
+		return <NotFoundView />;
+	}
+
 	return (
 		<div className="w-full h-full flex flex-col items-center gap-12">
 			<OrganizationInvitesController
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
-				rootQuery={query}
+				organization={query.organization}
 			/>
-			<OrganizationInvitesList rootQuery={query} searchTerm={searchTerm} />
+			<OrganizationInvitesList
+				organization={query.organization}
+				searchTerm={searchTerm}
+			/>
 		</div>
 	);
 }
