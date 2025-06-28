@@ -252,9 +252,6 @@ class ProfileSnapshotType(BaseProfileType):
     description="An analysis of a field for a job applicant.",
 )
 class FieldAnalysisType:
-    criterion: str = strawberry.field(
-        description="The criterion of the field.",
-    )
     analysis: str = strawberry.field(
         description="The analysis of the field.",
     )
@@ -265,7 +262,6 @@ class FieldAnalysisType:
     @classmethod
     def marshal(cls, field_analysis: FieldAnalysis) -> Self:
         return cls(
-            criterion=field_analysis.criterion,
             analysis=field_analysis.analysis,
             score=field_analysis.score,
         )

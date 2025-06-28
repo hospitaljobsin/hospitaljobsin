@@ -747,11 +747,6 @@ An analysis of a field for a job applicant.
 """
 type FieldAnalysis {
 	"""
-	The criterion of the field.
-	"""
-	criterion: String!
-
-	"""
 	The analysis of the field.
 	"""
 	analysis: String!

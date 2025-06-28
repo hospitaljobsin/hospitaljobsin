@@ -210,7 +210,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 									data.analysis.riskFlags.length > 0 && (
 										<div className="flex flex-col items-start gap-2">
 											<p className="font-semibold text-danger-600 flex items-center gap-2">
-												<XCircle size={14} /> Risk Flags:
+												<XCircle size={14} /> Potential Risks:
 											</p>
 											<ul className="list-disc list-inside ml-4 space-y-1">
 												{data.analysis.riskFlags.map((flag: string) => (
