@@ -107,6 +107,8 @@ export default function JobDetails({
 		root.organization.job,
 	);
 
+	const isAuthenticated = root.viewer.__typename === "Account";
+
 	const isProfileIncomplete =
 		root.viewer.__typename === "Account" && !root.viewer.profile?.isComplete;
 
@@ -258,7 +260,13 @@ export default function JobDetails({
 						) : (
 							<Button
 								as={Link}
-								href={links.jobDetailApply(data.organization.slug, data.slug)}
+								href={
+									isAuthenticated
+										? links.jobDetailApply(data.organization.slug, data.slug)
+										: links.login(
+												links.jobDetailApply(data.organization.slug, data.slug),
+											)
+								}
 								size="lg"
 								className="w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3"
 								isDisabled={data.isApplied}
