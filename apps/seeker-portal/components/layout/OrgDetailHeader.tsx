@@ -56,14 +56,14 @@ export default function OrgDetailHeader({
 					{data.organization.__typename === "Organization" ? (
 						<Link
 							href={links.organizationDetail(data.organization.slug)}
-							className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1"
+							className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1 hidden sm:block"
 						>
 							{data.organization.name}
 						</Link>
 					) : (
 						<Link
 							href={links.landing}
-							className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1"
+							className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1 hidden sm:block"
 						>
 							{APP_NAME}
 						</Link>
