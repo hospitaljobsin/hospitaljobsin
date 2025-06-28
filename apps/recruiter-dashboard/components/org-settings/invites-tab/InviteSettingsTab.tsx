@@ -27,6 +27,7 @@ const InviteSettingsTabFragment = graphql`
 		organization(slug: $slug) {
             __typename
             ... on Organization {
+				isAdmin
             ...OrganizationInvitesControllerFragment
 			...OrganizationInvitesListFragment @arguments(searchTerm: $searchTerm)
             }
@@ -47,7 +48,10 @@ export default function InviteSettingsTab(props: {
 		data,
 	);
 
-	if (query.organization.__typename !== "Organization") {
+	if (
+		query.organization.__typename !== "Organization" ||
+		!query.organization.isAdmin
+	) {
 		return <NotFoundView />;
 	}
 

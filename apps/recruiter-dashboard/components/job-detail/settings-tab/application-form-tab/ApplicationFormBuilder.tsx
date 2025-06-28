@@ -28,6 +28,7 @@ const ApplicationFormBuilderFragment = graphql`
 		organization(slug: $slug) {
 		__typename
 		... on Organization {
+			isAdmin
 			job(slug: $jobSlug) {
 				__typename
 				... on Job {
@@ -94,7 +95,10 @@ export default function ApplicationFormBuilder({
 }: { rootQuery: ApplicationFormBuilderFragment$key }) {
 	const data = useFragment(ApplicationFormBuilderFragment, rootQuery);
 
-	if (data.organization.__typename !== "Organization") {
+	if (
+		data.organization.__typename !== "Organization" ||
+		!data.organization.isAdmin
+	) {
 		return <NotFoundView />;
 	}
 

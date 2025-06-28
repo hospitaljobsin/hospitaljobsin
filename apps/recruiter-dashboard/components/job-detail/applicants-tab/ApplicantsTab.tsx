@@ -28,6 +28,7 @@ const ApplicantsTabFragment = graphql`
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
+				isMember
 				job(slug: $jobSlug) {
 					__typename
 					... on Job {
@@ -58,7 +59,10 @@ export default function ApplicantsTab(props: {
 		ApplicantsTabFragment,
 		data,
 	);
-	if (query.organization.__typename !== "Organization") {
+	if (
+		query.organization.__typename !== "Organization" ||
+		!query.organization.isMember
+	) {
 		return <NotFoundView />;
 	}
 

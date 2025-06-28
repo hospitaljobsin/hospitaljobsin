@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fa540e7eb728326adca61f9929af2622>>
+ * @generated SignedSource<<99e4727f0d60ff5946618ed056205c1f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import type { FragmentRefs } from "relay-runtime";
 export type NewJobContentFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly isAdmin: boolean;
     readonly " $fragmentSpreads": FragmentRefs<"JobCreationFormFragment">;
   } | {
     // This will never be '%other', but we need some
@@ -63,6 +64,13 @@ const node: ReaderFragment = {
           "kind": "InlineFragment",
           "selections": [
             {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "isAdmin",
+              "storageKey": null
+            },
+            {
               "args": null,
               "kind": "FragmentSpread",
               "name": "JobCreationFormFragment"
@@ -79,6 +87,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "9b427b69c2b083d137c0ed074b076655";
+(node as any).hash = "db90e68e1f68c5f953c96f1326cccba5";
 
 export default node;

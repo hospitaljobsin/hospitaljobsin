@@ -23,12 +23,13 @@ const JobAnalyticsTabFragment = graphql`
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
+				isMember
 				job(slug: $jobSlug) {
-			__typename
-			... on Job {
-				...JobDetailsFragment
-			}
-    	}
+					__typename
+					... on Job {
+						...JobDetailsFragment
+					}
+				}
 			}
 		}
 
@@ -44,7 +45,10 @@ export default function JobAnalyticsTab(props: {
 		data,
 	);
 
-	if (query.organization.__typename !== "Organization") {
+	if (
+		query.organization.__typename !== "Organization" ||
+		!query.organization.isMember
+	) {
 		return <NotFoundView />;
 	}
 

@@ -26,6 +26,7 @@ const GeneralSettingsTabFragment = graphql`
         organization(slug: $slug) {
             __typename
             ... on Organization {
+				isAdmin
                 ...UpdateOrganizationFormFragment
 				...DeleteOrganizationModalFragment
             }
@@ -56,7 +57,10 @@ export default function GeneralSettingsTab({
 		rootQuery,
 	);
 
-	if (data.organization.__typename !== "Organization") {
+	if (
+		data.organization.__typename !== "Organization" ||
+		!data.organization.isAdmin
+	) {
 		return <NotFoundView />;
 	}
 

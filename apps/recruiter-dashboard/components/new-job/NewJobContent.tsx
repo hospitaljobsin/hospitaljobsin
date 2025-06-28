@@ -18,6 +18,7 @@ export const NewJobContentFragment = graphql`
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
+				isAdmin
 				...JobCreationFormFragment
 			}
 		}
@@ -34,7 +35,10 @@ export default function NewJobContent({
 		data,
 	);
 
-	if (orgData.organization.__typename !== "Organization") {
+	if (
+		orgData.organization.__typename !== "Organization" ||
+		!orgData.organization.isAdmin
+	) {
 		return <NotFoundView />;
 	}
 

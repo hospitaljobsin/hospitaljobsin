@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<714e438a3f6c22477ed0190781376e80>>
- * @relayHash 55e5a50805697f55a68cf24faf88450c
+ * @generated SignedSource<<254ce068bdbc12762f6d105b6554200a>>
+ * @relayHash 86c782f635e010b898aeea5d05b75968
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 55e5a50805697f55a68cf24faf88450c
+// @relayRequestID 86c782f635e010b898aeea5d05b75968
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -119,6 +119,13 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "isAdmin",
+                "storageKey": null
+              },
               {
                 "alias": null,
                 "args": [
@@ -282,7 +289,7 @@ return {
     ]
   },
   "params": {
-    "id": "55e5a50805697f55a68cf24faf88450c",
+    "id": "86c782f635e010b898aeea5d05b75968",
     "metadata": {},
     "name": "pageJobGeneralSettingsQuery",
     "operationKind": "query",

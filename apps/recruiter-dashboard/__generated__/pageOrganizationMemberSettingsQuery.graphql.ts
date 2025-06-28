@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<5f69c23dbcd31f8ea368f2999d07aa17>>
- * @relayHash 39ce2596d84ec7c6efcfd47c8b6ba568
+ * @generated SignedSource<<011fd4f1464667b8ce3f80676f2c21d6>>
+ * @relayHash 6b5e6003b704e70cd5beffeb476cd952
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 39ce2596d84ec7c6efcfd47c8b6ba568
+// @relayRequestID 6b5e6003b704e70cd5beffeb476cd952
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -121,6 +121,13 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "isMember",
+                "storageKey": null
+              },
               {
                 "alias": null,
                 "args": (v5/*: any*/),
@@ -292,7 +299,7 @@ return {
     ]
   },
   "params": {
-    "id": "39ce2596d84ec7c6efcfd47c8b6ba568",
+    "id": "6b5e6003b704e70cd5beffeb476cd952",
     "metadata": {},
     "name": "pageOrganizationMemberSettingsQuery",
     "operationKind": "query",

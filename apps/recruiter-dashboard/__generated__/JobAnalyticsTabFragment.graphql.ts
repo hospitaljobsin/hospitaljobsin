@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dc1cbdc0be51992fe08c98e2deedf90e>>
+ * @generated SignedSource<<aa6480a32eddc33e5e91e55cdc285ae5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import type { FragmentRefs } from "relay-runtime";
 export type JobAnalyticsTabFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly isMember: boolean;
     readonly job: {
       readonly __typename: "Job";
       readonly " $fragmentSpreads": FragmentRefs<"JobDetailsFragment">;
@@ -78,6 +79,13 @@ return {
           "selections": [
             {
               "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "isMember",
+              "storageKey": null
+            },
+            {
+              "alias": null,
               "args": [
                 {
                   "kind": "Variable",
@@ -119,6 +127,6 @@ return {
 };
 })();
 
-(node as any).hash = "f2dd5e3cf1cf092c51cea4830d4af941";
+(node as any).hash = "45e4f17d7d2e1140dc267aed0884cc7f";
 
 export default node;

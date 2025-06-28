@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5a46f15fded8df4d9f89ce49ec5815f7>>
+ * @generated SignedSource<<f0fea8886fe533c258b77a83650995c4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import type { FragmentRefs } from "relay-runtime";
 export type JobSettingsGeneralTabFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly isAdmin: boolean;
     readonly job: {
       readonly __typename: "Job";
       readonly " $fragmentSpreads": FragmentRefs<"DeleteJobModalFragment" | "JobEditFormFragment">;
@@ -84,6 +85,13 @@ return {
         {
           "kind": "InlineFragment",
           "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "isAdmin",
+              "storageKey": null
+            },
             {
               "alias": null,
               "args": [
@@ -158,6 +166,6 @@ return {
 };
 })();
 
-(node as any).hash = "9d4e35856bda026d4eb8eb4d3f776cee";
+(node as any).hash = "5a8d26cbe98c02dd3432a359c65f58f1";
 
 export default node;

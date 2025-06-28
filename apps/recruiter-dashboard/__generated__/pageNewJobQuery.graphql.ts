@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<009b0536635a567a422fd421002374bf>>
- * @relayHash 576a741c4b05b525102dcb7cf405eb8d
+ * @generated SignedSource<<c3445f8a5a4ea6653cfbe20720aae12f>>
+ * @relayHash abf4e0e743bea839c944b251111d1e3e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 576a741c4b05b525102dcb7cf405eb8d
+// @relayRequestID abf4e0e743bea839c944b251111d1e3e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -39,15 +39,13 @@ v1 = [
     "variableName": "slug"
   }
 ],
-v2 = [
-  {
-    "alias": null,
-    "args": null,
-    "kind": "ScalarField",
-    "name": "id",
-    "storageKey": null
-  }
-];
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -87,13 +85,24 @@ return {
           },
           {
             "kind": "InlineFragment",
-            "selections": (v2/*: any*/),
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "isAdmin",
+                "storageKey": null
+              },
+              (v2/*: any*/)
+            ],
             "type": "Organization",
             "abstractKey": null
           },
           {
             "kind": "InlineFragment",
-            "selections": (v2/*: any*/),
+            "selections": [
+              (v2/*: any*/)
+            ],
             "type": "Node",
             "abstractKey": "__isNode"
           }
@@ -103,7 +112,7 @@ return {
     ]
   },
   "params": {
-    "id": "576a741c4b05b525102dcb7cf405eb8d",
+    "id": "abf4e0e743bea839c944b251111d1e3e",
     "metadata": {},
     "name": "pageNewJobQuery",
     "operationKind": "query",

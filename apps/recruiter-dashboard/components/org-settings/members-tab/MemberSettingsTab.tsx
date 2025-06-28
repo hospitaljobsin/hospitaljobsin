@@ -29,6 +29,7 @@ const MemberSettingsTabFragment = graphql`
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
+				isMember
 				...OrganizationMembersListFragment @arguments(searchTerm: $searchTerm)
 				...OrganizationMembersControllerFragment
 			}
@@ -55,7 +56,10 @@ export default function MemberSettingsTab(props: {
 		data,
 	);
 
-	if (query.organization.__typename !== "Organization") {
+	if (
+		query.organization.__typename !== "Organization" ||
+		!query.organization.isMember
+	) {
 		return <NotFoundView />;
 	}
 

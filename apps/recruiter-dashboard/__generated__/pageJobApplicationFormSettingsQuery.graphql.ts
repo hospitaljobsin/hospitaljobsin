@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<83b8f696c5e0945aaeec00d32cb21c24>>
- * @relayHash e4ee2b5156af42dbf1d0cdab4f8e692e
+ * @generated SignedSource<<df23dd37d322bd8417e45ec79415e7dc>>
+ * @relayHash 2bdbc51e3253946624c9c7a100350d8f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID e4ee2b5156af42dbf1d0cdab4f8e692e
+// @relayRequestID 2bdbc51e3253946624c9c7a100350d8f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -114,6 +114,13 @@ return {
             "selections": [
               {
                 "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "isAdmin",
+                "storageKey": null
+              },
+              {
+                "alias": null,
                 "args": [
                   {
                     "kind": "Variable",
@@ -194,7 +201,7 @@ return {
     ]
   },
   "params": {
-    "id": "e4ee2b5156af42dbf1d0cdab4f8e692e",
+    "id": "2bdbc51e3253946624c9c7a100350d8f",
     "metadata": {},
     "name": "pageJobApplicationFormSettingsQuery",
     "operationKind": "query",

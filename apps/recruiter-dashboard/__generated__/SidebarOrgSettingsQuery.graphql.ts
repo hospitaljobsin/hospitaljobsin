@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<603c69cdb3a67d7b52b17169ec95022d>>
- * @relayHash c76ac79467250329c0c9072dbf0f5e50
+ * @generated SignedSource<<b7d78711b23f187822db86dc24552080>>
+ * @relayHash 8b82afa97171a548d781c59cfaa155af
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c76ac79467250329c0c9072dbf0f5e50
+// @relayRequestID 8b82afa97171a548d781c59cfaa155af
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type SidebarOrgSettingsQuery$variables = {
@@ -18,7 +18,7 @@ export type SidebarOrgSettingsQuery$variables = {
 export type SidebarOrgSettingsQuery$data = {
   readonly organization: {
     readonly __typename: "Organization";
-    readonly isAdmin: boolean;
+    readonly isMember: boolean;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -59,7 +59,7 @@ v3 = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "isAdmin",
+      "name": "isMember",
       "storageKey": null
     }
   ],
@@ -126,7 +126,7 @@ return {
     ]
   },
   "params": {
-    "id": "c76ac79467250329c0c9072dbf0f5e50",
+    "id": "8b82afa97171a548d781c59cfaa155af",
     "metadata": {},
     "name": "SidebarOrgSettingsQuery",
     "operationKind": "query",
@@ -135,6 +135,6 @@ return {
 };
 })();
 
-(node as any).hash = "27965dc3354fec1c46ec9c6dc54f6fd7";
+(node as any).hash = "7b49501baca4f619f1e77241c8c71bfc";
 
 export default node;

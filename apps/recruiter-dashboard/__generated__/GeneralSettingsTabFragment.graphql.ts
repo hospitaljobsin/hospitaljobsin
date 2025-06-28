@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d983d499e2f392f73cb140c3b6a0a2c2>>
+ * @generated SignedSource<<a6751de20db381341a5071ab20d7eecd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import type { FragmentRefs } from "relay-runtime";
 export type GeneralSettingsTabFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly isAdmin: boolean;
     readonly " $fragmentSpreads": FragmentRefs<"DeleteOrganizationModalFragment" | "UpdateOrganizationFormFragment">;
   } | {
     // This will never be '%other', but we need some
@@ -74,6 +75,13 @@ return {
           "kind": "InlineFragment",
           "selections": [
             {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "isAdmin",
+              "storageKey": null
+            },
+            {
               "args": null,
               "kind": "FragmentSpread",
               "name": "UpdateOrganizationFormFragment"
@@ -127,6 +135,6 @@ return {
 };
 })();
 
-(node as any).hash = "5fa3d0f41fa63e86f796402085d6d80a";
+(node as any).hash = "35db19f8d7419f241419c12b26e0849d";
 
 export default node;

@@ -32,7 +32,7 @@ export const SidebarOrgSettingsQuery = graphql`
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
-				isAdmin
+				isMember
 			}
 		}
 
@@ -48,7 +48,7 @@ export default function OrgSettingsSidebar({
 
 	if (
 		data.organization.__typename !== "Organization" ||
-		!data.organization.isAdmin
+		!data.organization.isMember
 	) {
 		return null;
 	}

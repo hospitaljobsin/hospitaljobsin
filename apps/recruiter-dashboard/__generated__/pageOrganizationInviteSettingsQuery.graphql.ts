@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<52be4e160a6c629d93d6b609a90631f5>>
- * @relayHash 2a76f6eed4e0e954181e975e6e539beb
+ * @generated SignedSource<<ff804537516f57a31a9910ff4de5828c>>
+ * @relayHash 009be481fadd42cc342ec19fc1fb4af3
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 2a76f6eed4e0e954181e975e6e539beb
+// @relayRequestID 009be481fadd42cc342ec19fc1fb4af3
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -113,6 +113,13 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "isAdmin",
+                "storageKey": null
+              },
               (v5/*: any*/),
               {
                 "alias": null,
@@ -276,7 +283,7 @@ return {
     ]
   },
   "params": {
-    "id": "2a76f6eed4e0e954181e975e6e539beb",
+    "id": "009be481fadd42cc342ec19fc1fb4af3",
     "metadata": {},
     "name": "pageOrganizationInviteSettingsQuery",
     "operationKind": "query",

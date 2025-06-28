@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<18fedad69fcc05c60aaadf8bb9c06760>>
- * @relayHash 44a8a53f911ec02b9b11e64c8defb910
+ * @generated SignedSource<<06b4a739edfb531b2acb0f3623f1ad28>>
+ * @relayHash 27e65f929ad5df057da2ac7b858b6ad4
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 44a8a53f911ec02b9b11e64c8defb910
+// @relayRequestID 27e65f929ad5df057da2ac7b858b6ad4
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type SidebarJobSettingsQuery$variables = {
@@ -19,6 +19,7 @@ export type SidebarJobSettingsQuery$variables = {
 export type SidebarJobSettingsQuery$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly isAdmin: boolean;
     readonly job: {
       readonly __typename: "Job";
       readonly externalApplicationUrl: string | null | undefined;
@@ -63,14 +64,21 @@ v3 = {
   "name": "__typename",
   "storageKey": null
 },
-v4 = [
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isAdmin",
+  "storageKey": null
+},
+v5 = [
   {
     "kind": "Variable",
     "name": "slug",
     "variableName": "jobSlug"
   }
 ],
-v5 = {
+v6 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -84,7 +92,7 @@ v5 = {
   "type": "Job",
   "abstractKey": null
 },
-v6 = {
+v7 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -120,16 +128,17 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              (v4/*: any*/),
               {
                 "alias": null,
-                "args": (v4/*: any*/),
+                "args": (v5/*: any*/),
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "job",
                 "plural": false,
                 "selections": [
                   (v3/*: any*/),
-                  (v5/*: any*/)
+                  (v6/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -165,17 +174,18 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
+              (v4/*: any*/),
               {
                 "alias": null,
-                "args": (v4/*: any*/),
+                "args": (v5/*: any*/),
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "job",
                 "plural": false,
                 "selections": [
                   (v3/*: any*/),
-                  (v5/*: any*/),
-                  (v6/*: any*/)
+                  (v6/*: any*/),
+                  (v7/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -183,14 +193,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v6/*: any*/)
+          (v7/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "44a8a53f911ec02b9b11e64c8defb910",
+    "id": "27e65f929ad5df057da2ac7b858b6ad4",
     "metadata": {},
     "name": "SidebarJobSettingsQuery",
     "operationKind": "query",
@@ -199,6 +209,6 @@ return {
 };
 })();
 
-(node as any).hash = "1f94da413443daec64c526ba9a290e17";
+(node as any).hash = "be763d3cb072f3de8bdad587026a0cd6";
 
 export default node;

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<d470fa3e195128534a86c082271736b9>>
- * @relayHash ef504bb4a213734395b6739771d6f8f7
+ * @generated SignedSource<<5f3977f03729fb57fef39020f21eb86c>>
+ * @relayHash eb28c1a2490ce0300b3d39554934b427
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ef504bb4a213734395b6739771d6f8f7
+// @relayRequestID eb28c1a2490ce0300b3d39554934b427
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -20,6 +20,7 @@ export type JobDetailHeaderQuery$variables = {
 export type JobDetailHeaderQuery$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly isMember: boolean;
     readonly job: {
       readonly __typename: "Job";
       readonly slug: string;
@@ -82,41 +83,48 @@ v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "slug",
+  "name": "isMember",
   "storageKey": null
 },
 v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "slug",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "name",
   "storageKey": null
 },
-v6 = [
+v7 = [
   {
     "kind": "Variable",
     "name": "slug",
     "variableName": "jobSlug"
   }
 ],
-v7 = {
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "title",
   "storageKey": null
 },
-v8 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v9 = {
+v10 = {
   "kind": "InlineFragment",
   "selections": [
-    (v8/*: any*/)
+    (v9/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -177,9 +185,10 @@ return {
             "selections": [
               (v4/*: any*/),
               (v5/*: any*/),
+              (v6/*: any*/),
               {
                 "alias": null,
-                "args": (v6/*: any*/),
+                "args": (v7/*: any*/),
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "job",
@@ -194,8 +203,8 @@ return {
                         "kind": "FragmentSpread",
                         "name": "JobTabsFragment"
                       },
-                      (v7/*: any*/),
-                      (v4/*: any*/)
+                      (v8/*: any*/),
+                      (v5/*: any*/)
                     ],
                     "type": "Job",
                     "abstractKey": null
@@ -260,7 +269,7 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v9/*: any*/)
+          (v10/*: any*/)
         ],
         "storageKey": null
       },
@@ -278,9 +287,10 @@ return {
             "selections": [
               (v4/*: any*/),
               (v5/*: any*/),
+              (v6/*: any*/),
               {
                 "alias": null,
-                "args": (v6/*: any*/),
+                "args": (v7/*: any*/),
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "job",
@@ -312,17 +322,17 @@ return {
                             "name": "isAdmin",
                             "storageKey": null
                           },
-                          (v8/*: any*/)
+                          (v9/*: any*/)
                         ],
                         "storageKey": null
                       },
-                      (v7/*: any*/),
-                      (v4/*: any*/)
+                      (v8/*: any*/),
+                      (v5/*: any*/)
                     ],
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v9/*: any*/)
+                  (v10/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -330,14 +340,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v9/*: any*/)
+          (v10/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "ef504bb4a213734395b6739771d6f8f7",
+    "id": "eb28c1a2490ce0300b3d39554934b427",
     "metadata": {},
     "name": "JobDetailHeaderQuery",
     "operationKind": "query",
@@ -346,6 +356,6 @@ return {
 };
 })();
 
-(node as any).hash = "dc74876539120e4c0ceebcf33b1c1f91";
+(node as any).hash = "c97a871ee900bc0dc78470593ab8ee03";
 
 export default node;

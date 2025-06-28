@@ -22,6 +22,7 @@ export const JobDetailHeaderQuery = graphql`
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
+				isMember
 				slug
 				name
 				job(slug: $jobSlug) {
@@ -51,6 +52,7 @@ export default function JobDetailHeader({
 
 	if (
 		data.organization.__typename !== "Organization" ||
+		!data.organization.isMember ||
 		data.organization.job.__typename !== "Job"
 	) {
 		return null;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<93fe72863f6cfc7a4cdf6870601a42b8>>
+ * @generated SignedSource<<a8d7bbccc8b4b9228b1ebcb21912554d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import type { FragmentRefs } from "relay-runtime";
 export type ApplicantsTabFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly isMember: boolean;
     readonly job: {
       readonly __typename: "Job";
       readonly id: string;
@@ -89,6 +90,13 @@ return {
           "selections": [
             {
               "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "isMember",
+              "storageKey": null
+            },
+            {
+              "alias": null,
               "args": [
                 {
                   "kind": "Variable",
@@ -153,6 +161,6 @@ return {
 };
 })();
 
-(node as any).hash = "7e144ce7b52656748c80fe1328348a1b";
+(node as any).hash = "fdbc9064c9f402c7b5e416bab29cc3f7";
 
 export default node;

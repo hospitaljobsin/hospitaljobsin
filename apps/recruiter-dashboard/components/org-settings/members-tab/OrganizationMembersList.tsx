@@ -58,7 +58,7 @@ export default function OrganizationMembersList({
 	searchTerm,
 }: Props) {
 	const organizationData = useFragment(
-		OrganizationMembersListInternalFragment,
+		OrganizationMembersListFragment,
 		organization,
 	);
 

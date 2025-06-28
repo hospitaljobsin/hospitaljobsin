@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f738b9edbf63347f93c5437712ce4ce8>>
+ * @generated SignedSource<<2fb1f2294c11f6fcca9cbc6dcd197a8b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import type { FragmentRefs } from "relay-runtime";
 export type ApplicationFormBuilderFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly isAdmin: boolean;
     readonly job: {
       readonly __typename: "Job";
       readonly applicationForm: {
@@ -83,6 +84,13 @@ return {
         {
           "kind": "InlineFragment",
           "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "isAdmin",
+              "storageKey": null
+            },
             {
               "alias": null,
               "args": [
@@ -171,6 +179,6 @@ return {
 };
 })();
 
-(node as any).hash = "8b66ef8f10f829d6747e4aecd17292a2";
+(node as any).hash = "74d940ec152b77ec93ea344caa9e3220";
 
 export default node;

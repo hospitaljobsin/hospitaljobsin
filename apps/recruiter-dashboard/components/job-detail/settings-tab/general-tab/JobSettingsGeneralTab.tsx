@@ -27,6 +27,7 @@ const JobSettingsGeneralTabFragment = graphql`
 		organization(slug: $slug) {
 		__typename
 		... on Organization {
+			isAdmin
 			job(slug: $jobSlug) {
 				__typename
 				... on Job {
@@ -58,7 +59,10 @@ export default function JobSettingsGeneralTab(props: {
 		data,
 	);
 
-	if (query.organization.__typename !== "Organization") {
+	if (
+		query.organization.__typename !== "Organization" ||
+		!query.organization.isAdmin
+	) {
 		return <NotFoundView />;
 	}
 

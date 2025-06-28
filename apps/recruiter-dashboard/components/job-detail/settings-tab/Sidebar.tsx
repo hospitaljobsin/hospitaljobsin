@@ -15,6 +15,7 @@ export const SidebarJobSettingsQuery = graphql`
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
+				isAdmin
 				job(slug: $jobSlug) {
 					__typename
 					... on Job {
@@ -36,6 +37,7 @@ export default function SettingsSidebar({
 
 	if (
 		data.organization.__typename !== "Organization" ||
+		!data.organization.isAdmin ||
 		data.organization.job.__typename !== "Job"
 	) {
 		return null;
