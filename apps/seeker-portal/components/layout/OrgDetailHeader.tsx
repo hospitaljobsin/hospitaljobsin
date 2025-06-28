@@ -1,5 +1,6 @@
 "use client";
 import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
+import { APP_NAME } from "@/lib/constants";
 import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import {
@@ -45,23 +46,28 @@ export default function OrgDetailHeader({
 }) {
 	const data = usePreloadedQuery(OrgDetailHeaderQuery, queryReference);
 
-	if (data.organization.__typename !== "Organization") {
-		return null;
-	}
-
 	return (
-		<div className="w-full flex flex-col bg-background border-b border-foreground-300 sticky top-0 z-50">
+		<div className="w-full flex flex-col bg-background-600 border-b border-foreground-300 sticky top-0 z-50">
 			<Navbar maxWidth="xl">
 				<NavbarBrand className="flex items-center gap-4 text-foreground-500">
 					<Link href={links.landing} className="font-medium text-inherit">
 						<Logo />
 					</Link>
-					<Link
-						href={links.organizationDetail(data.organization.slug)}
-						className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1"
-					>
-						{data.organization.name}
-					</Link>
+					{data.organization.__typename === "Organization" ? (
+						<Link
+							href={links.organizationDetail(data.organization.slug)}
+							className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1"
+						>
+							{data.organization.name}
+						</Link>
+					) : (
+						<Link
+							href={links.landing}
+							className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1"
+						>
+							{APP_NAME}
+						</Link>
+					)}
 				</NavbarBrand>
 
 				<NavbarContent justify="end">
@@ -93,9 +99,11 @@ export default function OrgDetailHeader({
 					)}
 				</NavbarContent>
 			</Navbar>
-			<div className="w-full max-w-7xl mx-auto flex items-center justify-between">
-				<OrganizationTabs />
-			</div>
+			{data.organization.__typename === "Organization" && (
+				<div className="w-full max-w-7xl mx-auto flex items-center justify-between">
+					<OrganizationTabs />
+				</div>
+			)}
 		</div>
 	);
 }

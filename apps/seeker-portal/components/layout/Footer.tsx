@@ -9,7 +9,7 @@ export default function Footer() {
 			<div className="flex items-center gap-2 w-full max-w-7xl mx-auto px-4">
 				<div className="flex w-full gap-6 justify-between items-center">
 					<div className="w-full flex items-center gap-4">
-						<p className="text-sm text-foreground-500">
+						<p className="text-xs text-foreground-500">
 							© {new Date().getFullYear()} {COMPANY_NAME}.
 						</p>
 					</div>
@@ -18,7 +18,7 @@ export default function Footer() {
 							href={links.terms}
 							color="foreground"
 							size="sm"
-							className="text-foreground-500"
+							className="text-foreground-500 text-xs"
 							isExternal
 						>
 							Terms
@@ -27,7 +27,7 @@ export default function Footer() {
 							href={links.privacy}
 							color="foreground"
 							size="sm"
-							className="text-foreground-500"
+							className="text-foreground-500 text-xs"
 							isExternal
 						>
 							Privacy
