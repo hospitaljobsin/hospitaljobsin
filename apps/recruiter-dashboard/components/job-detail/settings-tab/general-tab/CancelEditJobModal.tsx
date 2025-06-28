@@ -35,7 +35,7 @@ export default function CancelEditJobModal({
 	const data = useFragment(CancelEditJobModalJobFragment, job);
 
 	function handleDiscardChanges() {
-		router.push(links.jobDetailAnalytics(data.slug));
+		router.push(links.jobDetailApplicants(data.slug));
 	}
 
 	return (
