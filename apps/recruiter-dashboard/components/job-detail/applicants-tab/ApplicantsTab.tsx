@@ -4,6 +4,8 @@ import type { ApplicantsTabFragment$key } from "@/__generated__/ApplicantsTabFra
 import PageJobDetailApplicantsQuery, {
 	type pageJobDetailApplicantsQuery,
 } from "@/__generated__/pageJobDetailApplicantsQuery.graphql";
+import JobNotFoundView from "@/components/JobNotFoundView";
+import NotFoundView from "@/components/NotFoundView";
 import { useState } from "react";
 import {
 	type PreloadedQuery,
@@ -11,7 +13,6 @@ import {
 	useFragment,
 	usePreloadedQuery,
 } from "react-relay";
-import invariant from "tiny-invariant";
 import ApplicantList from "./ApplicantList";
 import ApplicantListController from "./ApplicantListController";
 import { ApplicantSelectionProvider } from "./ApplicantSelectionProvider";
@@ -57,14 +58,13 @@ export default function ApplicantsTab(props: {
 		ApplicantsTabFragment,
 		data,
 	);
-	invariant(
-		query.organization?.__typename === "Organization",
-		"Expected 'organization' type",
-	);
-	invariant(
-		query.organization.job?.__typename === "Job",
-		"Expected 'job' type",
-	);
+	if (query.organization.__typename !== "Organization") {
+		return <NotFoundView />;
+	}
+
+	if (query.organization.job.__typename !== "Job") {
+		return <JobNotFoundView />;
+	}
 
 	return (
 		<ApplicantSelectionProvider>

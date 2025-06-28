@@ -5,6 +5,7 @@ const protocol =
 
 const links = {
 	landing: env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL,
+	recruiterPortalSelect: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/select`,
 	dashboard: "/",
 	createOrganization: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/new`,
 	organizationDetail: (slug: string) =>

@@ -10,7 +10,7 @@ import {
 	useFragment,
 	usePreloadedQuery,
 } from "react-relay";
-import invariant from "tiny-invariant";
+import NotFoundView from "../NotFoundView";
 import JobCreationForm from "./JobCreationForm";
 
 export const NewJobContentFragment = graphql`
@@ -34,10 +34,9 @@ export default function NewJobContent({
 		data,
 	);
 
-	invariant(
-		orgData.organization.__typename === "Organization",
-		"Organization not found",
-	);
+	if (orgData.organization.__typename !== "Organization") {
+		return <NotFoundView />;
+	}
 
 	return (
 		<div className="w-full h-full flex justify-center items-start pl-6">

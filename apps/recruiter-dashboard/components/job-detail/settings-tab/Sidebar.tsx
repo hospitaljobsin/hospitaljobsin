@@ -9,7 +9,6 @@ import { useParams, usePathname } from "next/navigation";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 
 export const SidebarJobSettingsQuery = graphql`
 	query SidebarJobSettingsQuery($slug: String!, $jobSlug: String!) {
@@ -35,11 +34,12 @@ export default function SettingsSidebar({
 	const params = useParams<{ slug: string }>();
 	const data = usePreloadedQuery(SidebarJobSettingsQuery, queryReference);
 
-	invariant(
-		data.organization.__typename === "Organization",
-		"Expected 'Organization' type.",
-	);
-	invariant(data.organization.job.__typename === "Job", "Expected 'Job' type.");
+	if (
+		data.organization.__typename !== "Organization" ||
+		data.organization.job.__typename !== "Job"
+	) {
+		return null;
+	}
 
 	return (
 		<>

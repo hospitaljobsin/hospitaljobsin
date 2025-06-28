@@ -7,14 +7,13 @@ import { ChartNoAxesCombinedIcon, SquarePenIcon, Users } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 
 const JobTabsFragment = graphql`
 fragment JobTabsFragment on Job {
 	externalApplicationUrl
-  organization {
-    isAdmin
-  }
+	organization @required(action: THROW) {
+		isAdmin
+	}
 }`;
 
 export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
@@ -26,9 +25,6 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 	const data = useFragment(JobTabsFragment, job);
 
 	const router = useRouter();
-
-	const organization = data.organization;
-	invariant(organization, "Expected 'Organization' node type");
 
 	function getSelectedKey(pathname: string) {
 		if (pathname === links.jobDetailSettingsApplicationForm(params.slug)) {
@@ -82,7 +78,7 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 						</div>
 					}
 				/>
-				{organization.isAdmin && (
+				{data.organization.isAdmin && (
 					<Tab
 						key={links.jobDetailSettings(params.slug)}
 						title={

@@ -5,7 +5,7 @@ import { PageDashboardViewQuery } from "@/app/(base)/(dashboard)/page";
 import { useState } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { graphql, useFragment, usePreloadedQuery } from "react-relay";
-import invariant from "tiny-invariant";
+import NotFoundView from "../NotFoundView";
 import OrganizationJobsController from "./OrganizationJobsController";
 import OrganizationJobsList from "./OrganizationJobsList";
 // Chat/Message imports
@@ -39,15 +39,13 @@ export default function DashboardView(props: {
 	);
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 
-	invariant(
-		query.organization.__typename === "Organization",
-		"Expected organization data",
-	);
-
-	if (!query.organization.isMember) {
+	if (
+		query.organization.__typename !== "Organization" ||
+		!query.organization.isMember
+	) {
 		// If the user is not a member of the organization, we can redirect or show an error.
 		// For now, we will just return null to avoid rendering the component.
-		return null;
+		return <NotFoundView />;
 	}
 
 	return (

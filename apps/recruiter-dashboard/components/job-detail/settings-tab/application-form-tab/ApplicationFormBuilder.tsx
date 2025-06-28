@@ -1,5 +1,7 @@
 import type { ApplicationFormBuilderFragment$key } from "@/__generated__/ApplicationFormBuilderFragment.graphql";
 import type { ApplicationFormBuilderMutation as ApplicationFormBuilderMutationType } from "@/__generated__/ApplicationFormBuilderMutation.graphql";
+import JobNotFoundView from "@/components/JobNotFoundView";
+import NotFoundView from "@/components/NotFoundView";
 import {
 	Alert,
 	Button,
@@ -14,7 +16,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
-import invariant from "tiny-invariant";
 import { z } from "zod";
 
 const ApplicationFormBuilderFragment = graphql`
@@ -93,13 +94,15 @@ export default function ApplicationFormBuilder({
 }: { rootQuery: ApplicationFormBuilderFragment$key }) {
 	const data = useFragment(ApplicationFormBuilderFragment, rootQuery);
 
-	invariant(
-		data.organization.__typename === "Organization",
-		"Expected 'Organization' node type",
-	);
+	if (data.organization.__typename !== "Organization") {
+		return <NotFoundView />;
+	}
 
 	const job = data.organization.job;
-	invariant(job.__typename === "Job", "Expected 'Job' node type");
+
+	if (job.__typename !== "Job") {
+		return <JobNotFoundView />;
+	}
 
 	const [commitMutation, isMutationInflight] =
 		useMutation<ApplicationFormBuilderMutationType>(

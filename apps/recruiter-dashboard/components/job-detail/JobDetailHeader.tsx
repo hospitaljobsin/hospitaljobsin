@@ -49,15 +49,12 @@ export default function JobDetailHeader({
 		"Expected 'Account' node type",
 	);
 
-	invariant(
-		data.organization.__typename === "Organization",
-		"Expected 'Organization' node type",
-	);
-
-	invariant(
-		data.organization.job.__typename === "Job",
-		"Expected 'Job' node type",
-	);
+	if (
+		data.organization.__typename !== "Organization" ||
+		data.organization.job.__typename !== "Job"
+	) {
+		return null;
+	}
 
 	return (
 		<div className="pt-8 w-full max-w-7xl">

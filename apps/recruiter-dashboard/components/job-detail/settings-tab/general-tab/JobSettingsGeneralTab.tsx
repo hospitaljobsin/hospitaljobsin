@@ -3,6 +3,8 @@ import type { JobSettingsGeneralTabFragment$key } from "@/__generated__/JobSetti
 import PageJobGeneralSettingsQuery, {
 	type pageJobGeneralSettingsQuery,
 } from "@/__generated__/pageJobGeneralSettingsQuery.graphql";
+import JobNotFoundView from "@/components/JobNotFoundView";
+import NotFoundView from "@/components/NotFoundView";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import { Button, Card, CardBody, Divider, useDisclosure } from "@heroui/react";
 import {
@@ -55,14 +57,14 @@ export default function JobSettingsGeneralTab(props: {
 		JobSettingsGeneralTabFragment,
 		data,
 	);
-	invariant(
-		query.organization.__typename === "Organization",
-		"Expected 'Organization' node type",
-	);
-	invariant(
-		query.organization.job.__typename === "Job",
-		"Expected 'Job' node type",
-	);
+
+	if (query.organization.__typename !== "Organization") {
+		return <NotFoundView />;
+	}
+
+	if (query.organization.job.__typename !== "Job") {
+		return <JobNotFoundView />;
+	}
 	const viewer = query.viewer;
 	invariant(viewer.__typename === "Account", "Expected 'Account' node type");
 

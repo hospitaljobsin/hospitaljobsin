@@ -83,10 +83,7 @@ export default function Sidebar({ queryReference }: Props) {
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",
 	);
-	invariant(
-		data.organization.__typename === "Organization",
-		"Expected 'Organization' node type",
-	);
+
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const pathname = usePathname();
 	const router = useRouter();
@@ -103,6 +100,10 @@ export default function Sidebar({ queryReference }: Props) {
 			return links.organizationDetailSettings;
 		}
 		return pathname;
+	}
+
+	if (data.organization.__typename !== "Organization") {
+		return null;
 	}
 
 	return (

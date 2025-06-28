@@ -3,13 +3,15 @@ import type { ApplicantDetailViewFragment$key } from "@/__generated__/ApplicantD
 import PageJobApplicantDetailQuery, {
 	type pageJobApplicantDetailQuery,
 } from "@/__generated__/pageJobApplicantDetailQuery.graphql";
+import ApplicantNotFoundView from "@/components/ApplicantNotFoundView";
+import JobNotFoundView from "@/components/JobNotFoundView";
+import NotFoundView from "@/components/NotFoundView";
 import {
 	type PreloadedQuery,
 	graphql,
 	useFragment,
 	usePreloadedQuery,
 } from "react-relay";
-import invariant from "tiny-invariant";
 import ApplicantChat from "./ApplicantChat";
 import ApplicantDetails from "./ApplicantDetails";
 import ProfileSnapshotView from "./ProfileSnapshotView";
@@ -56,15 +58,18 @@ export default function ApplicantDetailView(props: {
 		ApplicantDetailViewFragment,
 		data,
 	);
-	invariant(
-		query.organization.__typename === "Organization",
-		"`Organization` node type expected.",
-	);
-	invariant(
-		query.organization.job.__typename === "Job" &&
-			query.organization.job.jobApplicant.__typename === "JobApplicant",
-		"`Job` and `JobApplicant` node type expected.",
-	);
+
+	if (query.organization.__typename !== "Organization") {
+		return <NotFoundView />;
+	}
+
+	if (query.organization.job.__typename !== "Job") {
+		return <JobNotFoundView />;
+	}
+
+	if (query.organization.job.jobApplicant.__typename !== "JobApplicant") {
+		return <ApplicantNotFoundView slug={query.organization.job.slug} />;
+	}
 
 	return (
 		<div className="flex flex-row h-full">

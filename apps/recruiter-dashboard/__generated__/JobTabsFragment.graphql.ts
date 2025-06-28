@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<27b645c3e2d747c7b02a5174b8275f00>>
+ * @generated SignedSource<<e8b3a674410f60197685de051aff6119>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,7 +14,7 @@ export type JobTabsFragment$data = {
   readonly externalApplicationUrl: string | null | undefined;
   readonly organization: {
     readonly isAdmin: boolean;
-  } | null | undefined;
+  };
   readonly " $fragmentType": "JobTabsFragment";
 };
 export type JobTabsFragment$key = {
@@ -36,28 +36,32 @@ const node: ReaderFragment = {
       "storageKey": null
     },
     {
-      "alias": null,
-      "args": null,
-      "concreteType": "Organization",
-      "kind": "LinkedField",
-      "name": "organization",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "isAdmin",
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
+      "kind": "RequiredField",
+      "field": {
+        "alias": null,
+        "args": null,
+        "concreteType": "Organization",
+        "kind": "LinkedField",
+        "name": "organization",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "isAdmin",
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      },
+      "action": "THROW"
     }
   ],
   "type": "Job",
   "abstractKey": null
 };
 
-(node as any).hash = "5109ac7f0c2adf266ce403a1aea261dc";
+(node as any).hash = "afeebd7241165773a37fb98eed510ae3";
 
 export default node;

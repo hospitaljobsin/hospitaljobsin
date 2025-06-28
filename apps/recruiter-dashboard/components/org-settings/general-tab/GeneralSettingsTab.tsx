@@ -4,6 +4,7 @@ import type { GeneralSettingsTabFragment$key } from "@/__generated__/GeneralSett
 import PageOrganizationGeneralSettingsQuery, {
 	type pageOrganizationGeneralSettingsQuery,
 } from "@/__generated__/pageOrganizationGeneralSettingsQuery.graphql";
+import NotFoundView from "@/components/NotFoundView";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import { Button, Card, CardBody, Divider, useDisclosure } from "@heroui/react";
 import {
@@ -54,10 +55,10 @@ export default function GeneralSettingsTab({
 		GeneralSettingsTabFragment,
 		rootQuery,
 	);
-	invariant(
-		data.organization.__typename === "Organization",
-		"Expected 'Organization' node type",
-	);
+
+	if (data.organization.__typename !== "Organization") {
+		return <NotFoundView />;
+	}
 
 	invariant(
 		data.viewer.__typename === "Account",

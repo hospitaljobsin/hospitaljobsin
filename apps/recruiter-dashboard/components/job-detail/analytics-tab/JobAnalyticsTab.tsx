@@ -3,13 +3,14 @@ import type { JobAnalyticsTabFragment$key } from "@/__generated__/JobAnalyticsTa
 import PageJobDetailQuery, {
 	type pageJobDetailQuery,
 } from "@/__generated__/pageJobDetailQuery.graphql";
+import JobNotFoundView from "@/components/JobNotFoundView";
+import NotFoundView from "@/components/NotFoundView";
 import {
 	type PreloadedQuery,
 	graphql,
 	useFragment,
 	usePreloadedQuery,
 } from "react-relay";
-import invariant from "tiny-invariant";
 import JobDetails from "./JobDetails";
 
 const JobAnalyticsTabFragment = graphql`
@@ -42,14 +43,14 @@ export default function JobAnalyticsTab(props: {
 		JobAnalyticsTabFragment,
 		data,
 	);
-	invariant(
-		query.organization.__typename === "Organization",
-		"`Organization` node type expected.",
-	);
-	invariant(
-		query.organization.job.__typename === "Job",
-		"`Job` node type expected.",
-	);
+
+	if (query.organization.__typename !== "Organization") {
+		return <NotFoundView />;
+	}
+
+	if (query.organization.job.__typename !== "Job") {
+		return <JobNotFoundView />;
+	}
 
 	return (
 		<div className="pt-8 pl-6 pb-16 w-full h-full flex flex-col items-center gap-12">
