@@ -22,8 +22,8 @@ async def insert_missing_analysis():
     print(job_applicants)
     for job_applicant in job_applicants:
         print(job_applicant.analysis)
-        if job_applicant.analysis is not None:
-            continue
+        # if job_applicant.analysis is not None:
+        #     continue
         await analysis_service.analyse_job_applicant(
             job_application=job_applicant,
             job=job_applicant.job,
