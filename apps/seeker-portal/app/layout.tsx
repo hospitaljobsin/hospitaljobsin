@@ -10,6 +10,8 @@ const workSans = Work_Sans({
 	subsets: ["latin"],
 });
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
 	title: {
 		template: `%s | ${APP_NAME}`,
