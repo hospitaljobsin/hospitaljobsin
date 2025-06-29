@@ -24,6 +24,7 @@
 		"@marsidev/react-turnstile": "^1.1.0",
 		"@opennextjs/aws": "^3.6.5",
 		"@sentry/nextjs": "^9.33.0",
+		"@sentry/node": "^9.33.0",
 		"@sentry/profiling-node": "^9.33.0",
 		"@simplewebauthn/browser": "^13.1.0",
 		"@t3-oss/env-nextjs": "^0.13.8",
