@@ -2,8 +2,9 @@ import type { OrganizationListFragment$key } from "@/__generated__/OrganizationL
 import type { OrganizationListInternalFragment$key } from "@/__generated__/OrganizationListInternalFragment.graphql";
 import type { pageSelectQuery } from "@/__generated__/pageSelectQuery.graphql";
 import links from "@/lib/links";
-import { Button, Link } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { Building, PlusIcon } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useRef, useTransition } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";

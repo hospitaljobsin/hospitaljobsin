@@ -1,5 +1,9 @@
 "use client";
 
+import type { TwoFactorAuthenticationFormMutation as TwoFactorAuthenticationFormMutationType } from "@/__generated__/TwoFactorAuthenticationFormMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
+import links from "@/lib/links";
+import { getValidRedirectURL } from "@/lib/redirects";
 import { useRouter } from "@bprogress/next";
 import {
 	Button,
@@ -9,18 +13,14 @@ import {
 	CardHeader,
 	Divider,
 	Input,
-	Link,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
-import type { TwoFactorAuthenticationFormMutation as TwoFactorAuthenticationFormMutationType } from "@/__generated__/TwoFactorAuthenticationFormMutation.graphql";
-import { useTurnstile } from "@/components/TurnstileProvider";
-import links from "@/lib/links";
-import { getValidRedirectURL } from "@/lib/redirects";
 
 const TwoFactorAuthenticationFormMutation = graphql`
   mutation TwoFactorAuthenticationFormMutation($token: String!, $captchaToken: String!) {

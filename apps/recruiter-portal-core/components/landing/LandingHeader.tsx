@@ -4,7 +4,6 @@ import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import {
 	Button,
-	Link as HeroLink,
 	Navbar,
 	NavbarBrand,
 	NavbarContent,
@@ -47,19 +46,19 @@ export default function LandingHeader() {
 
 			<NavbarContent className="hidden md:flex gap-6" justify="center">
 				<NavbarItem>
-					<HeroLink href="#features" color="foreground" className="font-medium">
+					<Link href="#features" color="foreground" className="font-medium">
 						Features
-					</HeroLink>
+					</Link>
 				</NavbarItem>
 				<NavbarItem>
-					<HeroLink href="#" color="foreground" className="font-medium">
+					<Link href="#" color="foreground" className="font-medium">
 						Pricing
-					</HeroLink>
+					</Link>
 				</NavbarItem>
 				<NavbarItem>
-					<HeroLink href="#" color="foreground" className="font-medium">
+					<Link href="#" color="foreground" className="font-medium">
 						Support
-					</HeroLink>
+					</Link>
 				</NavbarItem>
 			</NavbarContent>
 
@@ -90,37 +89,34 @@ export default function LandingHeader() {
 
 			<NavbarMenu>
 				<NavbarMenuItem>
-					<HeroLink
+					<Link
 						href="#features"
 						color="foreground"
 						className="w-full"
-						size="lg"
 						onClick={() => setIsMenuOpen(false)}
 					>
 						Features
-					</HeroLink>
+					</Link>
 				</NavbarMenuItem>
 				<NavbarMenuItem>
-					<HeroLink
+					<Link
 						href="#"
 						color="foreground"
 						className="w-full"
-						size="lg"
 						onClick={() => setIsMenuOpen(false)}
 					>
 						Pricing
-					</HeroLink>
+					</Link>
 				</NavbarMenuItem>
 				<NavbarMenuItem>
-					<HeroLink
+					<Link
 						href="#"
 						color="foreground"
 						className="w-full"
-						size="lg"
 						onClick={() => setIsMenuOpen(false)}
 					>
 						Support
-					</HeroLink>
+					</Link>
 				</NavbarMenuItem>
 				<NavbarMenuItem>
 					<Button

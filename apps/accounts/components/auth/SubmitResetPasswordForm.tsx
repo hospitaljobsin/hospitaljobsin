@@ -10,9 +10,9 @@ import {
 	CardHeader,
 	Divider,
 	Input,
-	Link,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";

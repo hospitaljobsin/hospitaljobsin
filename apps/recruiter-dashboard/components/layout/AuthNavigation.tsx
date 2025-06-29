@@ -14,10 +14,10 @@ import {
 	DropdownMenu,
 	DropdownSection,
 	DropdownTrigger,
-	Link,
 	useDisclosure,
 } from "@heroui/react";
 import { LogOutIcon, Settings } from "lucide-react";
+import Link from "next/link";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import LogoutModal from "./LogoutModal";
@@ -100,7 +100,8 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							startContent={<Settings className="h-4 w-4" />}
 							href={links.accountSettings}
 							as={Link}
-							isExternal
+							target="_blank"
+							rel="noopener noreferrer"
 							fullWidth
 						>
 							Account
@@ -180,7 +181,8 @@ export default function AuthNavigation({ rootQuery }: Props) {
 								<Link
 									color="foreground"
 									href={links.accountSettings}
-									isExternal
+									target="_blank"
+									rel="noopener noreferrer"
 									className="w-full gap-4 items-center text-small"
 								>
 									<Settings className="h-4 w-4" /> Account

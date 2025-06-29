@@ -1,5 +1,11 @@
 "use client";
 
+import type {
+	AuthProvider,
+	RequestSudoViewFragment$key,
+	TwoFactorProvider,
+} from "@/__generated__/RequestSudoViewFragment.graphql";
+import { env } from "@/lib/env/client";
 import { useRouter } from "@bprogress/next";
 import {
 	Alert,
@@ -9,20 +15,14 @@ import {
 	CardFooter,
 	CardHeader,
 	Divider,
-	Link,
 } from "@heroui/react";
 import { Google } from "@lobehub/icons";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
-import type {
-	AuthProvider,
-	RequestSudoViewFragment$key,
-	TwoFactorProvider,
-} from "@/__generated__/RequestSudoViewFragment.graphql";
-import { env } from "@/lib/env/client";
 import { getValidSudoModeRedirectURL } from "../../lib/redirects";
 import PasskeyAuthentication from "./PasskeyAuthentication";
 import PasswordAuthentication from "./PasswordAuthentication";
@@ -106,7 +106,7 @@ export default function RequestSudoView({
 			setOauth2ErrorMessage(oauth2Error);
 			const url = new URL(window.location.href);
 			url.searchParams.delete("oauth2_error");
-			router.replace(url.toString(), undefined, { showProgress: false });
+			router.replace(url.toString(), { showProgress: false });
 		}
 	}, [oauth2Error, router]);
 

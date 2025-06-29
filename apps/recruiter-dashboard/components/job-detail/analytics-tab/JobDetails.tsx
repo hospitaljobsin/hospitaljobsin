@@ -12,9 +12,9 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
-	Link,
 } from "@heroui/react";
 import { Briefcase, Clock, Globe, IndianRupee, MapPin } from "lucide-react";
+import Link from "next/link";
 import { graphql, useFragment } from "react-relay";
 import JobControls from "./JobControls";
 import JobStatistics from "./JobStatistics";

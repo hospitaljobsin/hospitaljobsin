@@ -5,12 +5,12 @@ import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import {
 	Button,
-	Link,
 	Navbar,
 	NavbarBrand,
 	NavbarContent,
 	NavbarItem,
 } from "@heroui/react";
+import Link from "next/link";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -88,7 +88,8 @@ export default function OrgDetailHeader({
 								<Button
 									as={Link}
 									href={links.recruiterLanding}
-									isExternal
+									target="_blank"
+									rel="noopener noreferrer"
 									color="default"
 									variant="flat"
 								>

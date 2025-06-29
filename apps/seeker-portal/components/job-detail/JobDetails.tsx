@@ -14,15 +14,21 @@ import {
 	CardHeader,
 	Chip,
 	Divider,
-	Link,
 	Tooltip,
 } from "@heroui/react";
 import Heading from "@tiptap/extension-heading";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { Briefcase, Clock, Globe, IndianRupee, MapPin } from "lucide-react";
+import {
+	Briefcase,
+	Clock,
+	ExternalLinkIcon,
+	Globe,
+	IndianRupee,
+	MapPin,
+} from "lucide-react";
 import Image from "next/image";
-import NextLink from "next/link";
+import Link from "next/link";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
 import { Markdown } from "tiptap-markdown";
@@ -222,9 +228,10 @@ export default function JobDetails({
 								href={data.externalApplicationUrl}
 								size="lg"
 								className="w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3"
-								showAnchorIcon
-								isExternal
+								target="_blank"
+								rel="noopener noreferrer"
 								isDisabled={data.isApplied}
+								startContent={<ExternalLinkIcon size={16} />}
 							>
 								{data.isApplied ? "Applied" : "Apply now"}
 							</Button>
@@ -234,10 +241,8 @@ export default function JobDetails({
 								content={
 									<div className="px-1 py-2">
 										<div className="text-sm">
-											<Link href={links.profile} size="sm">
-												Complete your profile
-											</Link>{" "}
-											to apply for this job
+											<Link href={links.profile}>Complete your profile</Link> to
+											apply for this job
 										</div>
 									</div>
 								}
@@ -339,14 +344,13 @@ export default function JobDetails({
 
 					<div className="w-full flex flex-col gap-1 sm:gap-2">
 						<Link
-							as={NextLink}
 							color="foreground"
-							isExternal
-							showAnchorIcon
+							target="_blank"
+							rel="noopener noreferrer"
 							href={links.organizationDetail(data.organization.slug)}
-							className="text-base sm:text-lg font-medium"
+							className="text-base sm:text-lg font-medium flex items-center gap-2"
 						>
-							{data.organization.name}
+							{data.organization.name} <ExternalLinkIcon size={16} />
 						</Link>
 						<p className="text-xs sm:text-base text-default-500 leading-tight">
 							{data.organization.description}
