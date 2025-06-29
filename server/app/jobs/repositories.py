@@ -731,6 +731,8 @@ class JobApplicantRepo:
             )
             filters = result.output
 
+            print("filters: ", filters)
+
             pipeline = []
 
             if filters.query is not None:
@@ -776,10 +778,10 @@ class JobApplicantRepo:
             if filters.location is not None:
                 # Geospatial filtering: geocode string locations if needed, then use $nearSphere
                 # TODO: Allow user to specify distance (currently hardcoded to 50km)
-                GEO_DISTANCE_METERS = 50000
+                GEO_DISTANCE_METERS = 50_000
 
-                geocoded_points = []
-                location_names = []
+                geocoded_points: list[GeoObject] = []
+                location_names: list[str] = []
                 # Geocode if needed
                 if isinstance(filters.location, str):
                     location_names.append(filters.location)
@@ -807,9 +809,12 @@ class JobApplicantRepo:
                             {
                                 "$match": {
                                     "profile_snapshot.locations_open_to_work.geo": {
-                                        "$nearSphere": {
-                                            "$geometry": geocoded_points[0],
-                                            "$maxDistance": GEO_DISTANCE_METERS,
+                                        "$geoWithin": {
+                                            "$centerSphere": [
+                                                geocoded_points[0].coordinates,
+                                                GEO_DISTANCE_METERS
+                                                / 6378137,  # meters to radians
+                                            ]
                                         }
                                     }
                                 }
@@ -822,9 +827,12 @@ class JobApplicantRepo:
                                     "$or": [
                                         {
                                             "profile_snapshot.locations_open_to_work.geo": {
-                                                "$nearSphere": {
-                                                    "$geometry": geo,
-                                                    "$maxDistance": GEO_DISTANCE_METERS,
+                                                "$geoWithin": {
+                                                    "$centerSphere": [
+                                                        geo.coordinates,
+                                                        GEO_DISTANCE_METERS
+                                                        / 6378137,  # meters to radians
+                                                    ]
                                                 }
                                             }
                                         }
