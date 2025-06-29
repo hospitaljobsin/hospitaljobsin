@@ -21,6 +21,7 @@ import { graphql } from "relay-runtime";
 import { useApplicantSelection } from "./ApplicantSelectionProvider";
 
 const applicantStatus = [
+	{ key: "ALL", label: "All" },
 	{ key: "APPLIED", label: "Applied" },
 	{ key: "SHORTLISTED", label: "Shortlisted" },
 	{ key: "INTERVIEWED", label: "Interviewed" },
@@ -128,9 +129,11 @@ export default function ApplicantListController(
 							});
 						}}
 					>
-						{applicantStatus.map((status) => (
-							<DropdownItem key={status.key}>{status.label}</DropdownItem>
-						))}
+						{applicantStatus
+							.filter((status) => status.key !== ("ALL" as JobApplicantStatus))
+							.map((status) => (
+								<DropdownItem key={status.key}>{status.label}</DropdownItem>
+							))}
 					</DropdownMenu>
 				</Dropdown>
 			</Card>
