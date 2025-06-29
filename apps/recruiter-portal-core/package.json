@@ -6,7 +6,7 @@
 		"node": ">=22"
 	},
 	"scripts": {
-		"build": "next build --turbopack --experimental-build-mode compile",
+		"build": "next build",
 		"dev": "next dev -H 0.0.0.0 -p 5003 --turbopack",
 		"lint": "next lint",
 		"package": "open-next build",

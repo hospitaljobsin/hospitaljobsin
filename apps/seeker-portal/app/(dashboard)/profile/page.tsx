@@ -11,8 +11,6 @@ export const ProfilePageQuery = graphql`
 	}
 `;
 
-export const dynamic = "force-dynamic";
-
 export default function Profile() {
 	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<pageProfileQuery>(
