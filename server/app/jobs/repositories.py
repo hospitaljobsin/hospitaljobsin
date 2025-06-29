@@ -23,6 +23,7 @@ from app.database.paginator import PaginatedResult, Paginator
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.models import Coordinates
 from app.jobs.agents.applicant_analysis import JobApplicantAnalysisOutput
+from app.jobs.agents.applicant_query_parser import ApplicantQueryParserAgent
 from app.organizations.documents import Organization
 
 from .documents import (
@@ -518,8 +519,10 @@ class JobApplicantRepo:
     def __init__(
         self,
         embeddings_service: EmbeddingsService,
+        applicant_query_parser_agent: ApplicantQueryParserAgent,
     ) -> None:
         self._embeddings_service = embeddings_service
+        self._applicant_query_parser_agent = applicant_query_parser_agent
 
     async def update_all(self, account: Account, full_name: str) -> None:
         """Update all job applicants for the given account."""
@@ -703,6 +706,7 @@ class JobApplicantRepo:
     async def get_all_by_job_id(
         self,
         job_id: ObjectId,
+        natural_language_query: str | None = None,
         status: JobApplicantStatus | None = None,
         first: int | None = None,
         last: int | None = None,
@@ -711,15 +715,144 @@ class JobApplicantRepo:
         sort_by: JobApplicantsSortBy = JobApplicantsSortBy.OVERALL_SCORE,
     ) -> PaginatedResult[JobApplicant, ObjectId]:
         """Return all applicants for a job."""
-        search_criteria = JobApplicant.find(
-            JobApplicant.job.id == job_id,
-            fetch_links=True,
-            nesting_depth=1,
-        )
         paginator: Paginator[JobApplicant, ObjectId] = Paginator(
             reverse=True,
             document_cls=JobApplicant,
             paginate_by="id",
+        )
+        if natural_language_query is not None:
+            result = await self._applicant_query_parser_agent.run(
+                user_prompt=natural_language_query
+            )
+            filters = result.output
+
+            pipeline = []
+
+            if filters.query is not None:
+                query_embedding = await self._embeddings_service.generate_embeddings(
+                    text=filters.query,
+                    task_type="RETRIEVAL_QUERY",
+                )
+
+                pipeline.append(
+                    {
+                        "$vectorSearch": {
+                            "index": "job_applicant_embedding_vector_index",
+                            "path": "profile_embedding",
+                            "queryVector": query_embedding,
+                            "numCandidates": (first or last) * 4,  # type: ignore
+                            "limit": (first or last),
+                        }
+                    }
+                )
+
+            # === Add structured filters from ApplicantQueryFilters ===
+            # 1. min_experience / max_experience (TODO if no denormalized field)
+            if filters.min_experience is not None or filters.max_experience is not None:
+                # TODO: Add support for experience filtering if a denormalized field exists
+                pass
+
+            # 2. location
+            if filters.location is not None:
+                if isinstance(filters.location, str):
+                    pipeline.append(
+                        {
+                            "$match": {
+                                "profile_snapshot.locations_open_to_work": filters.location
+                            }
+                        }
+                    )
+                else:
+                    pipeline.append(
+                        {
+                            "$match": {
+                                "profile_snapshot.locations_open_to_work": {
+                                    "$in": filters.location
+                                }
+                            }
+                        }
+                    )
+
+            # 3. open_to_relocation_anywhere
+            if filters.open_to_relocation_anywhere is not None:
+                pipeline.append(
+                    {
+                        "$match": {
+                            "profile_snapshot.open_to_relocation_anywhere": filters.open_to_relocation_anywhere
+                        }
+                    }
+                )
+
+            # 4. gender
+            if filters.gender is not None:
+                pipeline.append({"$match": {"profile_snapshot.gender": filters.gender}})
+
+            # 5. min_age / max_age (convert to date_of_birth range)
+
+            today = datetime.now(tz=UTC).date()
+            dob_query = {}
+            if filters.min_age is not None:
+                max_dob = today.replace(year=today.year - filters.min_age)
+                dob_query["$lte"] = max_dob
+            if filters.max_age is not None:
+                min_dob = today.replace(year=today.year - filters.max_age - 1)
+                dob_query["$gte"] = min_dob
+            if dob_query:
+                pipeline.append(
+                    {"$match": {"profile_snapshot.date_of_birth": dob_query}}
+                )
+
+            # 6. marital_status
+            if filters.marital_status is not None:
+                pipeline.append(
+                    {
+                        "$match": {
+                            "profile_snapshot.marital_status": filters.marital_status
+                        }
+                    }
+                )
+
+            # 7. category
+            if filters.category is not None:
+                pipeline.append(
+                    {"$match": {"profile_snapshot.category": filters.category}}
+                )
+
+            if status is not None:
+                pipeline.append(
+                    {"$match": {"job.$id": ObjectId(job_id), "status": status}}
+                )
+            else:
+                pipeline.append({"$match": {"job.$id": ObjectId(job_id)}})
+            pipeline.extend(
+                [
+                    {"$addFields": {"search_score": {"$meta": "vectorSearchScore"}}},
+                    {
+                        "$match": {
+                            "search_score": {
+                                "$gte": RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD
+                            }
+                        }
+                    },
+                    {"$sort": {"search_score": -1}},
+                ]
+            )
+
+            search_criteria = JobApplicant.aggregate(
+                pipeline, projection_model=JobApplicant
+            )
+
+            return await paginator.paginate(
+                search_criteria=search_criteria,
+                first=first,
+                last=last,
+                before=ObjectId(before) if before else None,
+                after=ObjectId(after) if after else None,
+            )
+        search_criteria = JobApplicant.find(
+            JobApplicant.job.id == job_id,
+            fetch_links=True,
+            nesting_depth=1,
         )
 
         if status:
@@ -854,68 +987,6 @@ class JobApplicantRepo:
             JobApplicant.organization.id == organization_id,
             fetch_links=True,
             nesting_depth=1,
-        )
-
-        return await paginator.paginate(
-            search_criteria=search_criteria,
-            first=first,
-            last=last,
-            before=ObjectId(before) if before else None,
-            after=ObjectId(after) if after else None,
-        )
-
-    async def vector_search(
-        self,
-        job_id: ObjectId,
-        query: str,
-        status: JobApplicantStatus | None = None,
-        first: int | None = None,
-        last: int | None = None,
-        before: str | None = None,
-        after: str | None = None,
-    ) -> PaginatedResult[JobApplicant, ObjectId]:
-        query_embedding = await self._embeddings_service.generate_embeddings(
-            text=query,
-            task_type="RETRIEVAL_QUERY",
-        )
-        pipeline = [
-            {
-                "$vectorSearch": {
-                    "index": "job_applicant_embedding_vector_index",
-                    "path": "profile_embedding",
-                    "queryVector": query_embedding,
-                    "numCandidates": (first or last) * 4,  # type: ignore
-                    "limit": (first or last),
-                }
-            },
-        ]
-
-        if status is not None:
-            pipeline.append({"$match": {"job.$id": ObjectId(job_id), "status": status}})
-        else:
-            pipeline.append({"$match": {"job.$id": ObjectId(job_id)}})
-        pipeline.extend(
-            [
-                {"$addFields": {"search_score": {"$meta": "vectorSearchScore"}}},
-                {
-                    "$match": {
-                        "search_score": {
-                            "$gte": RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD
-                        }
-                    }
-                },
-                {"$sort": {"search_score": -1}},
-            ]
-        )
-
-        search_criteria = JobApplicant.aggregate(
-            pipeline, projection_model=JobApplicant
-        )
-
-        paginator: Paginator[JobApplicant, ObjectId] = Paginator(
-            reverse=True,
-            document_cls=JobApplicant,
-            paginate_by="id",
         )
 
         return await paginator.paginate(

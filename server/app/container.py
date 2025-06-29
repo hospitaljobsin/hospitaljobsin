@@ -77,6 +77,7 @@ from app.embeddings.services import EmbeddingsService
 from app.jobs.agents.applicant_analysis import (
     create_job_applicant_analyzer_agent,
 )
+from app.jobs.agents.applicant_query_parser import create_applicant_query_parser_agent
 from app.jobs.dataloaders import (
     create_applicant_count_by_job_id_dataloader,
     create_job_applicant_by_id_dataloader,
@@ -273,5 +274,6 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_job_applicant_by_slug_dataloader))
     container.register(aioinject.Scoped(create_dataloaders))
     container.register(aioinject.Singleton(create_job_applicant_analyzer_agent))
+    container.register(aioinject.Singleton(create_applicant_query_parser_agent))
     container.register(aioinject.Singleton(JobApplicantAnalysisService))
     return container

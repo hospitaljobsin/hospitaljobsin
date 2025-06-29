@@ -49,7 +49,6 @@ from app.jobs.repositories import (
     JobMetricRepo,
     JobRepo,
 )
-from app.jobs.services import JobApplicantService
 
 if TYPE_CHECKING:
     from app.organizations.types import (
@@ -788,10 +787,6 @@ class JobType(BaseNodeType[Job]):
             JobApplicantRepo,
             Inject,
         ],
-        job_applicant_service: Annotated[
-            JobApplicantService,
-            Inject,
-        ],
         search_term: Annotated[
             str | None,
             strawberry.argument(
@@ -831,26 +826,16 @@ class JobType(BaseNodeType[Job]):
         ] = JobApplicantsSortByEnum.OVERALL_SCORE,
     ) -> JobApplicantConnectionType:
         """Return a paginated connection of invites for the organization."""
-        if search_term is not None:
-            paginated_applicants = await job_applicant_repo.vector_search(
-                job_id=ObjectId(self.id),
-                query=search_term,
-                status=status.value.lower() if status else None,
-                after=(after.node_id if after else None),
-                before=(before.node_id if before else None),
-                first=first,
-                last=last,
-            )
-        else:
-            paginated_applicants = await job_applicant_repo.get_all_by_job_id(
-                job_id=ObjectId(self.id),
-                status=status.value.lower() if status else None,
-                after=(after.node_id if after else None),
-                before=(before.node_id if before else None),
-                first=first,
-                last=last,
-                sort_by=JobApplicantsSortBy(sort_by.value),
-            )
+        paginated_applicants = await job_applicant_repo.get_all_by_job_id(
+            job_id=ObjectId(self.id),
+            natural_language_query=search_term,
+            status=status.value.lower() if status else None,
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
+            first=first,
+            last=last,
+            sort_by=JobApplicantsSortBy(sort_by.value),
+        )
 
         return JobApplicantConnectionType.marshal(paginated_applicants)
 
