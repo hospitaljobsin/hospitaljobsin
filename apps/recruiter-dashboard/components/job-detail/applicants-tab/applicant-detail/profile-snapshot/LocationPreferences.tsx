@@ -3,7 +3,7 @@ import type {
 	LocationPreferencesFragment$key,
 } from "@/__generated__/LocationPreferencesFragment.graphql";
 import { useCopilotReadable } from "@copilotkit/react-core";
-import { Card, CardBody, CardHeader } from "@heroui/react";
+import { Alert, Card, CardBody, CardHeader } from "@heroui/react";
 import { MapPinHouseIcon, SparklesIcon, StarIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
@@ -79,12 +79,14 @@ export default function LocationPreferences({ rootQuery }: Props) {
 							<h2 className="w-full text-foreground-500">{data.address}</h2>
 						)}
 						{analysis?.address && (
-							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
-								<div className="flex items-center gap-4 text-medium">
-									<SparklesIcon size={18} /> {analysis.address.score}%
-								</div>
-								<p>{analysis.address.analysis}</p>
-							</div>
+							<Alert
+								icon={<SparklesIcon size={18} />}
+								hideIconWrapper
+								color="success"
+								description={analysis.address.analysis}
+								variant="flat"
+								radius="md"
+							/>
 						)}
 					</div>
 					<div className="flex items-start flex-col gap-4">
@@ -99,13 +101,14 @@ export default function LocationPreferences({ rootQuery }: Props) {
 							</span>
 						)}
 						{analysis?.openToRelocationAnywhere && (
-							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
-								<div className="flex items-center gap-4 text-medium">
-									<SparklesIcon size={18} />{" "}
-									{analysis.openToRelocationAnywhere.score}%
-								</div>
-								<p>{analysis.openToRelocationAnywhere.analysis}</p>
-							</div>
+							<Alert
+								icon={<SparklesIcon size={18} />}
+								hideIconWrapper
+								color="success"
+								description={analysis.openToRelocationAnywhere.analysis}
+								variant="flat"
+								radius="md"
+							/>
 						)}
 					</div>
 					<div className="mt-4 flex flex-col w-full gap-4">
@@ -122,13 +125,14 @@ export default function LocationPreferences({ rootQuery }: Props) {
 							</div>
 						)}
 						{analysis?.locationsOpenToWork && (
-							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
-								<div className="flex items-center gap-4 text-medium">
-									<SparklesIcon size={18} />{" "}
-									{analysis.locationsOpenToWork.score}%
-								</div>
-								<p>{analysis.locationsOpenToWork.analysis}</p>
-							</div>
+							<Alert
+								icon={<SparklesIcon size={18} />}
+								hideIconWrapper
+								color="success"
+								description={analysis.locationsOpenToWork.analysis}
+								variant="flat"
+								radius="md"
+							/>
 						)}
 					</div>
 

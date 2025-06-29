@@ -3,7 +3,7 @@ import type {
 	PersonalDetailsFragment$key,
 } from "@/__generated__/PersonalDetailsFragment.graphql";
 import { useCopilotReadable } from "@copilotkit/react-core";
-import { Card, CardBody, CardHeader } from "@heroui/react";
+import { Alert, Card, CardBody, CardHeader } from "@heroui/react";
 import { SparklesIcon, StarIcon, UserIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
@@ -86,7 +86,7 @@ export default function PersonalDetails({ rootQuery }: Props) {
 						)}
 					</div>
 				</CardHeader>
-				<CardBody className="grid grid-cols-1 gap-10 md:grid-cols-2">
+				<CardBody className="flex flex-col gap-12">
 					<div className="flex flex-col gap-2">
 						<h1 className="w-full text-lg font-medium">Gender</h1>
 						{!data.gender ? (
@@ -96,12 +96,14 @@ export default function PersonalDetails({ rootQuery }: Props) {
 						)}
 
 						{analysis?.gender && (
-							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
-								<div className="flex items-center gap-4 text-medium">
-									<SparklesIcon size={18} /> {analysis.gender.score}%
-								</div>
-								<p>{analysis.gender.analysis}</p>
-							</div>
+							<Alert
+								icon={<SparklesIcon size={18} />}
+								hideIconWrapper
+								color="success"
+								description={analysis.gender.analysis}
+								variant="flat"
+								radius="md"
+							/>
 						)}
 					</div>
 					<div className="flex flex-col gap-2">
@@ -117,12 +119,14 @@ export default function PersonalDetails({ rootQuery }: Props) {
 						)}
 
 						{analysis?.dateOfBirth && (
-							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
-								<div className="flex items-center gap-4 text-medium">
-									<SparklesIcon size={18} /> {analysis.dateOfBirth.score}%
-								</div>
-								<p>{analysis.dateOfBirth.analysis}</p>
-							</div>
+							<Alert
+								icon={<SparklesIcon size={18} />}
+								hideIconWrapper
+								color="success"
+								description={analysis.dateOfBirth.analysis}
+								variant="flat"
+								radius="md"
+							/>
 						)}
 					</div>
 					<div className="flex flex-col gap-2">
@@ -137,12 +141,14 @@ export default function PersonalDetails({ rootQuery }: Props) {
 							</h2>
 						)}
 						{analysis?.maritalStatus && (
-							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
-								<div className="flex items-center gap-4 text-medium">
-									<SparklesIcon size={18} /> {analysis.maritalStatus.score}%
-								</div>
-								<p>{analysis.maritalStatus.analysis}</p>
-							</div>
+							<Alert
+								icon={<SparklesIcon size={18} />}
+								hideIconWrapper
+								color="success"
+								description={analysis.maritalStatus.analysis}
+								variant="flat"
+								radius="md"
+							/>
 						)}
 					</div>
 					<div className="flex flex-col gap-2">
@@ -155,12 +161,14 @@ export default function PersonalDetails({ rootQuery }: Props) {
 							<h2 className="w-full text-foreground-500">{data.category}</h2>
 						)}
 						{analysis?.category && (
-							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
-								<div className="flex items-center gap-4 text-medium">
-									<SparklesIcon size={18} /> {analysis.category.score}%
-								</div>
-								<p>{analysis.category.analysis}</p>
-							</div>
+							<Alert
+								icon={<SparklesIcon size={18} />}
+								hideIconWrapper
+								color="success"
+								description={analysis.category.analysis}
+								variant="flat"
+								radius="md"
+							/>
 						)}
 					</div>
 					<div className="flex flex-col gap-2">
@@ -173,12 +181,14 @@ export default function PersonalDetails({ rootQuery }: Props) {
 							<h2 className="w-full text-foreground-500">{data.address}</h2>
 						)}
 						{analysis?.address && (
-							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
-								<div className="flex items-center gap-4 text-medium">
-									<SparklesIcon size={18} /> {analysis.address.score}%
-								</div>
-								<p>{analysis.address.analysis}</p>
-							</div>
+							<Alert
+								icon={<SparklesIcon size={18} />}
+								hideIconWrapper
+								color="success"
+								description={analysis.address.analysis}
+								variant="flat"
+								radius="md"
+							/>
 						)}
 					</div>
 				</CardBody>

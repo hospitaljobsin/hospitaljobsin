@@ -1,7 +1,7 @@
 import type { CertificationsFragment$key } from "@/__generated__/CertificationsFragment.graphql";
 import { monthYearFormat } from "@/lib/intl";
 import { useCopilotReadable } from "@copilotkit/react-core";
-import { Card, CardBody, CardHeader, Link } from "@heroui/react";
+import { Alert, Card, CardBody, CardHeader, Link } from "@heroui/react";
 import { ShieldCheckIcon, SparklesIcon, StarIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
@@ -109,12 +109,14 @@ export default function Certifications({ rootQuery }: Props) {
 						</div>
 					)}
 					{analysis && (
-						<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
-							<div className="flex items-center gap-4 text-medium">
-								<SparklesIcon size={18} /> {analysis.score}%
-							</div>
-							<p>{analysis.analysis}</p>
-						</div>
+						<Alert
+							icon={<SparklesIcon size={18} />}
+							hideIconWrapper
+							color="success"
+							description={analysis.analysis}
+							variant="flat"
+							radius="md"
+						/>
 					)}
 				</CardBody>
 			</Card>
