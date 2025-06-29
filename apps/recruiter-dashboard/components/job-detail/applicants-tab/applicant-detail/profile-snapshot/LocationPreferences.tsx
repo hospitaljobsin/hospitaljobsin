@@ -80,6 +80,7 @@ export default function LocationPreferences({ rootQuery }: Props) {
 								<p>{analysis.openToRelocationAnywhere.analysis}</p>
 							</div>
 						)}
+						<div className="block mb-2 font-medium">Relocation Preferences</div>
 						{data.openToRelocationAnywhere ? (
 							<span>Open to relocation anywhere</span>
 						) : (
