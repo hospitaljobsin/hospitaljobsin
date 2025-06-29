@@ -196,6 +196,10 @@ class JobApplicant(Document):
                 ["analysis_status"],
                 name="analysis_status_index",
             ),
+            IndexModel(
+                [("profile_snapshot.locations_open_to_work.geo", pymongo.GEOSPHERE)],
+                name="locations_open_to_work_geo_2dsphere_index",
+            ),
         ]
 
 

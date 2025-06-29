@@ -19,6 +19,7 @@ from app.core.constants import (
     ImpressionJobMetricEventType,
     JobApplicantStatus,
 )
+from app.core.geocoding import BaseLocationService
 from app.database.paginator import PaginatedResult, Paginator
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.models import Coordinates
@@ -520,9 +521,11 @@ class JobApplicantRepo:
         self,
         embeddings_service: EmbeddingsService,
         applicant_query_parser_agent: ApplicantQueryParserAgent,
+        location_service: BaseLocationService,
     ) -> None:
         self._embeddings_service = embeddings_service
         self._applicant_query_parser_agent = applicant_query_parser_agent
+        self._location_service = location_service
 
     async def update_all(self, account: Account, full_name: str) -> None:
         """Update all job applicants for the given account."""
@@ -771,25 +774,65 @@ class JobApplicantRepo:
 
             # 2. location
             if filters.location is not None:
-                # TODO: add geospatial filtering by modifying the profile fields, as well as geocoding each provided location
+                # Geospatial filtering: geocode string locations if needed, then use $nearSphere
+                # TODO: Allow user to specify distance (currently hardcoded to 50km)
+                GEO_DISTANCE_METERS = 50000
+
+                geocoded_points = []
+                location_names = []
+                # Geocode if needed
                 if isinstance(filters.location, str):
-                    pipeline.append(
-                        {
-                            "$match": {
-                                "profile_snapshot.locations_open_to_work": filters.location
-                            }
-                        }
-                    )
-                else:
-                    pipeline.append(
-                        {
-                            "$match": {
-                                "profile_snapshot.locations_open_to_work": {
-                                    "$in": filters.location
+                    location_names.append(filters.location)
+                elif isinstance(filters.location, list) and all(
+                    isinstance(loc, str) for loc in filters.location
+                ):
+                    location_names.extend(filters.location)
+                if location_names:
+                    for name in location_names:
+                        geo_result = await self._location_service.geocode(name)
+                        if geo_result is not None:
+                            geocoded_points.append(
+                                GeoObject(
+                                    type="Point",
+                                    coordinates=(
+                                        geo_result.longitude,
+                                        geo_result.latitude,
+                                    ),
+                                )
+                            )
+                # Apply geo query if we have geocoded points
+                if geocoded_points:
+                    if len(geocoded_points) == 1:
+                        pipeline.append(
+                            {
+                                "$match": {
+                                    "profile_snapshot.locations_open_to_work.geo": {
+                                        "$nearSphere": {
+                                            "$geometry": geocoded_points[0],
+                                            "$maxDistance": GEO_DISTANCE_METERS,
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    )
+                        )
+                    else:
+                        pipeline.append(
+                            {
+                                "$match": {
+                                    "$or": [
+                                        {
+                                            "profile_snapshot.locations_open_to_work.geo": {
+                                                "$nearSphere": {
+                                                    "$geometry": geo,
+                                                    "$maxDistance": GEO_DISTANCE_METERS,
+                                                }
+                                            }
+                                        }
+                                        for geo in geocoded_points
+                                    ]
+                                }
+                            }
+                        )
 
             # 3. open_to_relocation_anywhere
             if filters.open_to_relocation_anywhere is not None:
