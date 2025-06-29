@@ -2,6 +2,7 @@ import type {
 	LocationPreferencesFragment$data,
 	LocationPreferencesFragment$key,
 } from "@/__generated__/LocationPreferencesFragment.graphql";
+import { getAnalysisColor } from "@/lib/colors";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Alert, Card, CardBody, CardHeader } from "@heroui/react";
 import { MapPinHouseIcon, SparklesIcon, StarIcon } from "lucide-react";
@@ -82,7 +83,7 @@ export default function LocationPreferences({ rootQuery }: Props) {
 							<Alert
 								icon={<SparklesIcon size={18} />}
 								hideIconWrapper
-								color="success"
+								color={getAnalysisColor(analysis.address.score)}
 								description={analysis.address.analysis}
 								variant="flat"
 								radius="md"
@@ -104,7 +105,9 @@ export default function LocationPreferences({ rootQuery }: Props) {
 							<Alert
 								icon={<SparklesIcon size={18} />}
 								hideIconWrapper
-								color="success"
+								color={getAnalysisColor(
+									analysis.openToRelocationAnywhere.score,
+								)}
 								description={analysis.openToRelocationAnywhere.analysis}
 								variant="flat"
 								radius="md"
@@ -128,7 +131,7 @@ export default function LocationPreferences({ rootQuery }: Props) {
 							<Alert
 								icon={<SparklesIcon size={18} />}
 								hideIconWrapper
-								color="success"
+								color={getAnalysisColor(analysis.locationsOpenToWork.score)}
 								description={analysis.locationsOpenToWork.analysis}
 								variant="flat"
 								radius="md"

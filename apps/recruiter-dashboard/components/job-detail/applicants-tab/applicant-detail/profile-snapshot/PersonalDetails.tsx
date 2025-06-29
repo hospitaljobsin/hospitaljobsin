@@ -2,6 +2,7 @@ import type {
 	PersonalDetailsFragment$data,
 	PersonalDetailsFragment$key,
 } from "@/__generated__/PersonalDetailsFragment.graphql";
+import { getAnalysisColor } from "@/lib/colors";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Alert, Card, CardBody, CardHeader } from "@heroui/react";
 import { SparklesIcon, StarIcon, UserIcon } from "lucide-react";
@@ -99,7 +100,7 @@ export default function PersonalDetails({ rootQuery }: Props) {
 							<Alert
 								icon={<SparklesIcon size={18} />}
 								hideIconWrapper
-								color="success"
+								color={getAnalysisColor(analysis.gender.score)}
 								description={analysis.gender.analysis}
 								variant="flat"
 								radius="md"
@@ -122,7 +123,7 @@ export default function PersonalDetails({ rootQuery }: Props) {
 							<Alert
 								icon={<SparklesIcon size={18} />}
 								hideIconWrapper
-								color="success"
+								color={getAnalysisColor(analysis.dateOfBirth.score)}
 								description={analysis.dateOfBirth.analysis}
 								variant="flat"
 								radius="md"
@@ -144,7 +145,7 @@ export default function PersonalDetails({ rootQuery }: Props) {
 							<Alert
 								icon={<SparklesIcon size={18} />}
 								hideIconWrapper
-								color="success"
+								color={getAnalysisColor(analysis.maritalStatus.score)}
 								description={analysis.maritalStatus.analysis}
 								variant="flat"
 								radius="md"
@@ -164,7 +165,7 @@ export default function PersonalDetails({ rootQuery }: Props) {
 							<Alert
 								icon={<SparklesIcon size={18} />}
 								hideIconWrapper
-								color="success"
+								color={getAnalysisColor(analysis.category.score)}
 								description={analysis.category.analysis}
 								variant="flat"
 								radius="md"
@@ -184,7 +185,7 @@ export default function PersonalDetails({ rootQuery }: Props) {
 							<Alert
 								icon={<SparklesIcon size={18} />}
 								hideIconWrapper
-								color="success"
+								color={getAnalysisColor(analysis.address.score)}
 								description={analysis.address.analysis}
 								variant="flat"
 								radius="md"

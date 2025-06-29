@@ -2,6 +2,7 @@ import type {
 	AboutMeFragment$data,
 	AboutMeFragment$key,
 } from "@/__generated__/AboutMeFragment.graphql";
+import { getAnalysisColor } from "@/lib/colors";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Alert, Card, CardBody, CardHeader } from "@heroui/react";
 import Heading from "@tiptap/extension-heading";
@@ -102,7 +103,7 @@ export default function AboutMe({ rootQuery }: Props) {
 							<Alert
 								icon={<SparklesIcon size={18} />}
 								hideIconWrapper
-								color="success"
+								color={getAnalysisColor(analysis.headline.score)}
 								description={analysis.headline.analysis}
 								variant="flat"
 								radius="md"
@@ -124,7 +125,7 @@ export default function AboutMe({ rootQuery }: Props) {
 							<Alert
 								icon={<SparklesIcon size={18} />}
 								hideIconWrapper
-								color="success"
+								color={getAnalysisColor(analysis.professionalSummary.score)}
 								description={analysis.professionalSummary.analysis}
 								variant="flat"
 								radius="md"

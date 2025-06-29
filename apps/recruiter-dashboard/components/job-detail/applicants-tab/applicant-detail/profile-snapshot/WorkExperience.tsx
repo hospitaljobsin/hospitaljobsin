@@ -1,4 +1,5 @@
 import type { WorkExperienceFragment$key } from "@/__generated__/WorkExperienceFragment.graphql";
+import { getAnalysisColor } from "@/lib/colors";
 import { monthYearFormat } from "@/lib/intl";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Alert, Card, CardBody, CardHeader } from "@heroui/react";
@@ -160,7 +161,7 @@ export default function WorkExperience({ rootQuery }: Props) {
 						<Alert
 							icon={<SparklesIcon size={18} />}
 							hideIconWrapper
-							color="success"
+							color={getAnalysisColor(analysis.score)}
 							description={analysis.analysis}
 							variant="flat"
 							radius="md"

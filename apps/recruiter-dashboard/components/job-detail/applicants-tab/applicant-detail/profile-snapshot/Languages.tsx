@@ -1,4 +1,5 @@
 import type { LanguagesFragment$key } from "@/__generated__/LanguagesFragment.graphql";
+import { getAnalysisColor } from "@/lib/colors";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Alert, Card, CardBody, CardHeader } from "@heroui/react";
 import { LanguagesIcon, SparklesIcon, StarIcon } from "lucide-react";
@@ -81,7 +82,7 @@ export default function Languages({ rootQuery }: Props) {
 						<Alert
 							icon={<SparklesIcon size={18} />}
 							hideIconWrapper
-							color="success"
+							color={getAnalysisColor(analysis.score)}
 							description={analysis.analysis}
 							variant="flat"
 							radius="md"
