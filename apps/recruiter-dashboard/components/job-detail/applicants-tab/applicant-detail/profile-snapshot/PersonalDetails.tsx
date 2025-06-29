@@ -172,26 +172,6 @@ export default function PersonalDetails({ rootQuery }: Props) {
 							/>
 						)}
 					</div>
-					<div className="flex flex-col gap-2">
-						<h1 className="w-full text-lg font-medium">Address</h1>
-						{!data.address ? (
-							<h2 className="w-full text-foreground-500">
-								No address provided
-							</h2>
-						) : (
-							<h2 className="w-full text-foreground-500">{data.address}</h2>
-						)}
-						{analysis?.address && (
-							<Alert
-								icon={<SparklesIcon size={18} />}
-								hideIconWrapper
-								color={getAnalysisColor(analysis.address.score)}
-								description={analysis.address.analysis}
-								variant="flat"
-								radius="md"
-							/>
-						)}
-					</div>
 				</CardBody>
 			</Card>
 		</div>

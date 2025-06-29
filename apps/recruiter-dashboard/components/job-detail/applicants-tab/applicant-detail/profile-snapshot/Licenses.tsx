@@ -1,4 +1,5 @@
 import type { LicensesFragment$key } from "@/__generated__/LicensesFragment.graphql";
+import { getAnalysisColor } from "@/lib/colors";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Alert, Card, CardBody, CardHeader } from "@heroui/react";
 import { IdCardIcon, SparklesIcon, StarIcon } from "lucide-react";
@@ -103,7 +104,7 @@ export default function Licenses({ rootQuery }: Props) {
 						<Alert
 							icon={<SparklesIcon size={18} />}
 							hideIconWrapper
-							color="success"
+							color={getAnalysisColor(analysis.score)}
 							description={analysis.analysis}
 							variant="flat"
 							radius="md"
