@@ -106,7 +106,6 @@ export default function ApplicantListController(
 					<DropdownTrigger>
 						<Button
 							variant="flat"
-							color="primary"
 							size="sm"
 							endContent={<ChevronDown />}
 							isLoading={isInFlight}
