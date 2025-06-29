@@ -28,6 +28,7 @@ const ApplicantDetailViewFragment = graphql`
                 job(slug: $jobSlug) {
                     __typename
                     ... on Job {
+						slug
                         ...ApplicantDetails_job
                         jobApplicant(slug: $applicantSlug) {
                             __typename

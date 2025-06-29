@@ -282,7 +282,7 @@ class ProfileType(BaseProfileType, BaseNodeType[Profile]):
             if model.marital_status is not None
             else None,
             category=model.category,
-            locations_open_to_work=model.locations_open_to_work,
+            locations_open_to_work=[loc.name for loc in model.locations_open_to_work],
             open_to_relocation_anywhere=model.open_to_relocation_anywhere,
             education=[EducationType.marshal(edu) for edu in model.education],
             licenses=[LicenseType.marshal(lic) for lic in model.licenses],

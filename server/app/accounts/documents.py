@@ -6,6 +6,7 @@ from beanie import BackLink, Document, Indexed, Link
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
+from app.base.models import GeoObject
 from app.core.constants import (
     AuthProvider,
     TwoFactorProvider,
@@ -77,6 +78,11 @@ class Certification(BaseModel):
     expires_at: date | None = None
 
 
+class Location(BaseModel):
+    name: str
+    geo: GeoObject
+
+
 class BaseProfile(BaseModel):
     # personal details
     gender: Gender | None = None
@@ -84,7 +90,7 @@ class BaseProfile(BaseModel):
     address: str | None = None
     marital_status: MaritalStatus | None = None
     category: str | None = None
-    locations_open_to_work: list[str] = []
+    locations_open_to_work: list[Location] = []
     open_to_relocation_anywhere: bool
     education: list[Education]
     licenses: list[License]

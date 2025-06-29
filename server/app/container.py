@@ -196,7 +196,7 @@ def register_location_service(container: aioinject.Container) -> None:
 
     match geocoder_settings.geocoding_provider:
         case "nominatim":
-            container.register(aioinject.Scoped(create_nominatim_geocoder))
+            container.register(aioinject.Singleton(create_nominatim_geocoder))
             container.register(
                 aioinject.Scoped(NominatimLocationService, BaseLocationService)
             )
