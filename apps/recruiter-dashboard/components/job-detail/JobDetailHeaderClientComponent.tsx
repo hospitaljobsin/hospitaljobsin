@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import JobDetailHeader, { JobDetailHeaderQuery } from "./JobDetailHeader";
+import JobDetailHeaderSkeleton from "./JobDetailHeaderSkeleton";
 
 export default function JobDetailHeaderClientComponent() {
 	const params = useParams<{ slug: string }>();
@@ -22,7 +23,7 @@ export default function JobDetailHeaderClientComponent() {
 	);
 
 	return (
-		<Suspense>
+		<Suspense fallback={<JobDetailHeaderSkeleton />}>
 			<JobDetailHeader queryReference={queryReference} />
 		</Suspense>
 	);
