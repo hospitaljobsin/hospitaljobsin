@@ -16,7 +16,7 @@ class FieldAnalysis(BaseModel):
 
     analysis: str = Field(
         ...,
-        description="Detailed explanation of how the applicant matches this criterion for the given job.",
+        description="Short, concise, and actionable insight about how the applicant matches this criterion for the given job. Avoid detailed paragraphs; provide only brief, recruiter-relevant points.",
     )
     score: float = Field(
         ...,
@@ -125,6 +125,7 @@ def create_job_applicant_analyzer_agent(
             "You are a job applicant analyzer agent. You are given a job description and a job applicant profile. "
             "Your task is to analyze how well the applicant matches the job, step by step, field by field, focusing on each field in the applicant's profile. "
             "For each profile field (gender, date_of_birth, address, marital_status, category, locations_open_to_work, open_to_relocation_anywhere, education, licenses, languages, job_preferences, work_experience, salary_expectations, certifications, professional_summary, headline), output a FieldAnalysis object (with 'analysis' and 'score') or null if not applicable, as a field on the AnalysedFields object. "
+            "For the 'analysis' field, provide only short, concise, and actionable insights that are directly relevant to the recruiter—avoid detailed paragraphs or verbose explanations. Each analysis should be a brief point or sentence that helps the recruiter quickly understand the applicant's fit for the job. "
             "After all field analyses, synthesize: (a) an overall_summary, (b) a list of strengths, (c) a list of risk_flags and (d) an overall_score (0-1). "
             "Do not copy or store raw profile fields; only output the structured JobApplicantAnalysis object. "
             "Be accurate, avoid hallucination, and remember the analysis is about the match between the profile and the job, not the profile in isolation. "

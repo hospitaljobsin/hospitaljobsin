@@ -3,20 +3,11 @@ import asyncio
 from app.config import DatabaseSettings, get_settings
 from app.container import create_container
 from app.database import initialize_database
-from app.jobs.documents import ApplicationField, JobApplicant
+from app.jobs.documents import JobApplicant
 from app.jobs.services import JobApplicantAnalysisService
 
-# Arbitrary list of application questions
-DEFAULT_FIELDS = [
-    ApplicationField(
-        field_name="Why are you interested in this job?", is_required=True
-    ),
-    ApplicationField(field_name="Describe your relevant experience.", is_required=True),
-    ApplicationField(field_name="When can you start?", is_required=False),
-]
 
-
-async def insert_missing_job_application_forms():
+async def insert_missing_analysis():
     await initialize_database(
         str(get_settings(DatabaseSettings).database_url),
         get_settings(DatabaseSettings).default_database_name,
@@ -42,4 +33,4 @@ async def insert_missing_job_application_forms():
 
 
 if __name__ == "__main__":
-    asyncio.run(insert_missing_job_application_forms())
+    asyncio.run(insert_missing_analysis())
