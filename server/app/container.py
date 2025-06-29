@@ -74,7 +74,7 @@ from app.core.oauth import create_oauth_client
 from app.core.templates import create_jinja2_environment
 from app.dataloaders import create_dataloaders
 from app.embeddings.services import EmbeddingsService
-from app.jobs.agents import (
+from app.jobs.agents.applicant_analysis import (
     create_job_applicant_analyzer_agent,
 )
 from app.jobs.dataloaders import (

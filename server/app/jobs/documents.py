@@ -23,7 +23,7 @@ from app.core.constants import (
     JobApplicantAnalysisStatus,
     JobApplicantStatus,
 )
-from app.jobs.agents import AnalysedFields
+from app.jobs.agents.applicant_analysis import AnalysedFields
 from app.organizations.documents import Organization
 
 

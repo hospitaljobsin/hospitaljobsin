@@ -15,7 +15,7 @@ from app.base.models import GeoObject
 from app.config import AWSSettings
 from app.core.constants import JobApplicantStatus
 from app.core.geocoding import BaseLocationService
-from app.jobs.agents import (
+from app.jobs.agents.applicant_analysis import (
     JobApplicantAnalysisOutput,
     JobApplicantAnalyzerAgent,
 )

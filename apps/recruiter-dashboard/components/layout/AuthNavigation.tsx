@@ -183,7 +183,7 @@ export default function AuthNavigation({ rootQuery }: Props) {
 									href={links.accountSettings}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="w-full gap-4 items-center text-small"
+									className="w-full gap-4 items-center text-small flex"
 								>
 									<Settings className="h-4 w-4" /> Account
 								</Link>

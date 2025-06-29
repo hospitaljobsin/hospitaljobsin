@@ -22,7 +22,7 @@ from app.core.constants import (
 from app.database.paginator import PaginatedResult, Paginator
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.models import Coordinates
-from app.jobs.agents import JobApplicantAnalysisOutput
+from app.jobs.agents.applicant_analysis import JobApplicantAnalysisOutput
 from app.organizations.documents import Organization
 
 from .documents import (

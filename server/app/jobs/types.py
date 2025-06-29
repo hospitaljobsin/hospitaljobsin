@@ -33,7 +33,7 @@ from app.base.types import (
 )
 from app.context import Info
 from app.core.constants import JobApplicantAnalysisStatus
-from app.jobs.agents import AnalysedFields, FieldAnalysis
+from app.jobs.agents.applicant_analysis import AnalysedFields, FieldAnalysis
 from app.jobs.documents import (
     ApplicantField,
     ApplicationField,
