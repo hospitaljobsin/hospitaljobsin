@@ -122,7 +122,7 @@ def create_job_applicant_analyzer_agent(
         ),
         output_type=JobApplicantAnalysisOutput,
         system_prompt=(
-            "You are a job applicant analyzer agent. You are given a job description and a job applicant profile. "
+            "You are a Senior Healthcare Recruiter. You are given a job description and a job applicant profile. "
             "Your task is to analyze how well the applicant matches the job, step by step, field by field, focusing on each field in the applicant's profile. "
             "Think step by step for each field: first, consider the job's requirements and the applicant's information, then reason about the match, and finally produce a short, concise, and actionable insight for the recruiter. Then score the field. "
             "For each profile field (gender, date_of_birth, address, marital_status, category, locations_open_to_work, open_to_relocation_anywhere, education, licenses, languages, job_preferences, work_experience, salary_expectations, certifications, professional_summary, headline), output a FieldAnalysis object (with 'analysis' and 'score') or null if not applicable, as a field on the AnalysedFields object. "
