@@ -21,7 +21,6 @@ import { graphql } from "relay-runtime";
 import { useApplicantSelection } from "./ApplicantSelectionProvider";
 
 const applicantStatus = [
-	{ key: "ALL", label: "All" },
 	{ key: "APPLIED", label: "Applied" },
 	{ key: "SHORTLISTED", label: "Shortlisted" },
 	{ key: "INTERVIEWED", label: "Interviewed" },
