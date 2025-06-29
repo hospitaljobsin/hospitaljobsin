@@ -749,9 +749,24 @@ class JobApplicantRepo:
                 )
 
             # === Add structured filters from ApplicantQueryFilters ===
-            # 1. min_experience / max_experience (TODO if no denormalized field)
+            # 1. min_experience / max_experience (add $expr $function filter if needed)
             if filters.min_experience is not None or filters.max_experience is not None:
-                # TODO: Add support for experience filtering if a denormalized field exists
+                # TODO: This is not indexed and should be denormalized for performance
+                # expr = {
+                #     "$function": {
+                #         "body": "function(work_experience) {\n  if (!work_experience || work_experience.length === 0) return 0;\n  work_experience = work_experience.map(function(exp) {\n    var start = new Date(exp.started_at);\n    var end = exp.completed_at ? new Date(exp.completed_at) : new Date();\n    return [start, end];\n  });\n  work_experience.sort(function(a, b) { return a[0] - b[0]; });\n  var merged = [];\n  for (var i = 0; i < work_experience.length; i++) {\n    var start = work_experience[i][0];\n    var end = work_experience[i][1];\n    if (merged.length === 0 || start > merged[merged.length-1][1]) {\n      merged.push([start, end]);\n    } else {\n      merged[merged.length-1][1] = new Date(Math.max(merged[merged.length-1][1], end));\n    }\n  }\n  var totalDays = 0;\n  for (var i = 0; i < merged.length; i++) {\n    totalDays += (merged[i][1] - merged[i][0]) / (1000 * 60 * 60 * 24);\n  }\n  return Math.round((totalDays / 365.25) * 100) / 100;\n}",
+                #         "args": ["$profile_snapshot.work_experience"],
+                #         "lang": "js",
+                #     }
+                # }
+                # exp_query = {}
+                # if filters.min_experience is not None:
+                #     exp_query["$gte"] = filters.min_experience
+                # if filters.max_experience is not None:
+                #     exp_query["$lte"] = filters.max_experience
+                # pipeline.append(
+                #     {"$match": {"$expr": {**exp_query, "$function": expr["$function"]}}}
+                # )
                 pass
 
             # 2. location
@@ -840,6 +855,13 @@ class JobApplicantRepo:
                     {"$sort": {"search_score": -1}},
                 ]
             )
+
+            # Add sorting to the pipeline based on sort_by
+            match sort_by:
+                case JobApplicantsSortBy.OVERALL_SCORE:
+                    pipeline.append({"$sort": {"overall_score": -1}})
+                case JobApplicantsSortBy.CREATED_AT:
+                    pipeline.append({"$sort": {"_id": -1}})
 
             search_criteria = JobApplicant.aggregate(
                 pipeline, projection_model=JobApplicant
