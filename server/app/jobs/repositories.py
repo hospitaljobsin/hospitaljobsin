@@ -721,6 +721,8 @@ class JobApplicantRepo:
             paginate_by="id",
         )
         if natural_language_query is not None:
+            # TODO: enable caching of agentic results and embeddings, this will save a lot of money
+            # when we have to paginate with the same filters
             result = await self._applicant_query_parser_agent.run(
                 user_prompt=natural_language_query
             )
@@ -754,6 +756,7 @@ class JobApplicantRepo:
 
             # 2. location
             if filters.location is not None:
+                # TODO: add geospatial filtering by modifying the profile fields, as well as geocoding each provided location
                 if isinstance(filters.location, str):
                     pipeline.append(
                         {
