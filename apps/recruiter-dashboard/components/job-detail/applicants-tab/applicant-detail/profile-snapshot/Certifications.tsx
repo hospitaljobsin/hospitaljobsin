@@ -2,7 +2,7 @@ import type { CertificationsFragment$key } from "@/__generated__/CertificationsF
 import { monthYearFormat } from "@/lib/intl";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader, Link } from "@heroui/react";
-import { ShieldCheckIcon, SparklesIcon } from "lucide-react";
+import { ShieldCheckIcon, SparklesIcon, StarIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const CertificationsFragment = graphql`
@@ -52,17 +52,15 @@ export default function Certifications({ rootQuery }: Props) {
 					<div className="flex items-center gap-2 text-foreground-400">
 						<ShieldCheckIcon />
 						<h1 className="w-full text-sm font-medium">Certifications</h1>
+						{analysis && (
+							<span className="text-primary-600 text-sm flex items-center gap-2">
+								<StarIcon size={16} />
+								{analysis.score}%
+							</span>
+						)}
 					</div>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
-					{analysis && (
-						<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
-							<div className="flex items-center gap-4 text-medium">
-								<SparklesIcon size={18} /> {analysis.score}%
-							</div>
-							<p>{analysis.analysis}</p>
-						</div>
-					)}
 					{data.certifications.length < 1 ? (
 						<h2 className="w-full text-foreground-500">No certifications</h2>
 					) : (
@@ -108,6 +106,14 @@ export default function Certifications({ rootQuery }: Props) {
 									)}
 								</div>
 							))}
+						</div>
+					)}
+					{analysis && (
+						<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+							<div className="flex items-center gap-4 text-medium">
+								<SparklesIcon size={18} /> {analysis.score}%
+							</div>
+							<p>{analysis.analysis}</p>
 						</div>
 					)}
 				</CardBody>

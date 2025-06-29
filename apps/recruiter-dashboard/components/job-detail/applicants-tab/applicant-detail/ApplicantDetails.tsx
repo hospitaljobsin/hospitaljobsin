@@ -137,17 +137,17 @@ export default function ApplicantDetails({
 					</CardHeader>
 					<Divider />
 					<CardBody>
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<div className="flex flex-col gap-12">
 							{data.applicantFields.map((field, index) => (
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 								<div key={index} className="flex flex-col gap-4">
 									<div className="w-full flex items-center gap-2">
 										<ShieldQuestion className="text-foreground-500" size={20} />
-										<h4 className="text-foreground-500 font-medium">
+										<h4 className="text-foreground-800 font-medium">
 											{field.fieldName}
 										</h4>
 									</div>
-									<p className="text-foreground">{field.fieldValue}</p>
+									<p className="text-foreground-600">{field.fieldValue}</p>
 								</div>
 							))}
 						</div>

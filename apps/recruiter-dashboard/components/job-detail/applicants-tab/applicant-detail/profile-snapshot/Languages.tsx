@@ -1,7 +1,7 @@
 import type { LanguagesFragment$key } from "@/__generated__/LanguagesFragment.graphql";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
-import { LanguagesIcon, SparklesIcon } from "lucide-react";
+import { LanguagesIcon, SparklesIcon, StarIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const LanguagesFragment = graphql`
@@ -47,18 +47,16 @@ export default function Languages({ rootQuery }: Props) {
 				<CardHeader className="flex gap-6 w-full items-center justify-between">
 					<div className="flex items-center gap-2 text-foreground-400">
 						<LanguagesIcon />
-						<h1 className="w-full text-sm font-medium">Languages</h1>
+						<h1 className="w-full text-sm font-medium">Languages</h1>{" "}
+						{analysis && (
+							<span className="text-primary-600 text-sm flex items-center gap-2">
+								<StarIcon size={16} />
+								{analysis.score}%
+							</span>
+						)}
 					</div>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
-					{analysis && (
-						<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
-							<div className="flex items-center gap-4 text-medium">
-								<SparklesIcon size={18} /> {analysis.score}%
-							</div>
-							<p>{analysis.analysis}</p>
-						</div>
-					)}
 					{data.languages.length < 1 ? (
 						<h2 className="w-full text-foreground-500">No languages</h2>
 					) : (
@@ -77,6 +75,14 @@ export default function Languages({ rootQuery }: Props) {
 									</div>
 								</div>
 							))}
+						</div>
+					)}
+					{analysis && (
+						<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+							<div className="flex items-center gap-4 text-medium">
+								<SparklesIcon size={18} /> {analysis.score}%
+							</div>
+							<p>{analysis.analysis}</p>
 						</div>
 					)}
 				</CardBody>

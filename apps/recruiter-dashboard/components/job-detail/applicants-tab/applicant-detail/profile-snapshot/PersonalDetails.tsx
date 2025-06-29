@@ -1,7 +1,10 @@
-import type { PersonalDetailsFragment$key } from "@/__generated__/PersonalDetailsFragment.graphql";
+import type {
+	PersonalDetailsFragment$data,
+	PersonalDetailsFragment$key,
+} from "@/__generated__/PersonalDetailsFragment.graphql";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
-import { SparklesIcon, UserIcon } from "lucide-react";
+import { SparklesIcon, StarIcon, UserIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const PersonalDetailsFragment = graphql`
@@ -56,6 +59,18 @@ export default function PersonalDetails({ rootQuery }: Props) {
 		value: data,
 	});
 
+	function calculateScore(
+		analysis: PersonalDetailsFragment$data["analysis"]["analysedFields"],
+	) {
+		const score =
+			analysis.gender.score +
+			analysis.dateOfBirth.score +
+			analysis.maritalStatus.score +
+			analysis.category.score +
+			analysis.address.score;
+		return Math.round((score / 5) * 100 * 10) / 10;
+	}
+
 	return (
 		<div className="w-full">
 			<Card className="w-full p-6 space-y-6" shadow="none">
@@ -63,6 +78,12 @@ export default function PersonalDetails({ rootQuery }: Props) {
 					<div className="flex items-center gap-2 text-foreground-400">
 						<UserIcon />
 						<h1 className="w-full text-sm font-medium">Personal Details</h1>
+						{analysis && (
+							<span className="text-primary-600 text-sm flex items-center gap-2">
+								<StarIcon size={16} />
+								{calculateScore(analysis)}%
+							</span>
+						)}
 					</div>
 				</CardHeader>
 				<CardBody className="grid grid-cols-1 gap-10 md:grid-cols-2">
