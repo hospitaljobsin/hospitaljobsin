@@ -2,18 +2,28 @@ import type { CertificationsFragment$key } from "@/__generated__/CertificationsF
 import { monthYearFormat } from "@/lib/intl";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader, Link } from "@heroui/react";
-import { ShieldCheckIcon } from "lucide-react";
+import { ShieldCheckIcon, SparklesIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const CertificationsFragment = graphql`
-  fragment CertificationsFragment on ProfileSnapshot {
-    __typename
+  fragment CertificationsFragment on JobApplicant {
+	profileSnapshot {
+	__typename
     certifications {
       name
       issuer
       certificationUrl
       createdAt
       expiresAt
+    }
+	}
+    analysis {
+      __typename
+      ... on JobApplicantAnalysis {
+        analysedFields {
+          certifications { analysis score }
+        }
+      }
     }
   }
 `;
@@ -23,7 +33,12 @@ type Props = {
 };
 
 export default function Certifications({ rootQuery }: Props) {
-	const data = useFragment(CertificationsFragment, rootQuery);
+	const query = useFragment(CertificationsFragment, rootQuery);
+	const data = query.profileSnapshot;
+	const analysis =
+		query.analysis?.__typename === "JobApplicantAnalysis"
+			? query.analysis.analysedFields?.certifications
+			: undefined;
 
 	useCopilotReadable({
 		description: "The current applicant's certifications",
@@ -40,6 +55,14 @@ export default function Certifications({ rootQuery }: Props) {
 					</div>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
+					{analysis && (
+						<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+							<div className="flex items-center gap-4 text-medium">
+								<SparklesIcon size={18} /> {analysis.score}%
+							</div>
+							<p>{analysis.analysis}</p>
+						</div>
+					)}
 					{data.certifications.length < 1 ? (
 						<h2 className="w-full text-foreground-500">No certifications</h2>
 					) : (

@@ -3,11 +3,17 @@ import { monthYearFormat } from "@/lib/intl";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { differenceInMonths, parseISO } from "date-fns";
-import { BriefcaseIcon, ClockIcon, PickaxeIcon } from "lucide-react";
+import {
+	BriefcaseIcon,
+	ClockIcon,
+	PickaxeIcon,
+	SparklesIcon,
+} from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const WorkExperienceFragment = graphql`
-  fragment WorkExperienceFragment on ProfileSnapshot {
+  fragment WorkExperienceFragment on JobApplicant {
+	profileSnapshot {
     __typename
     workExperience {
       title
@@ -18,6 +24,15 @@ const WorkExperienceFragment = graphql`
 	  skills
     }
   }
+  analysis {
+    __typename
+    ... on JobApplicantAnalysis {
+      analysedFields {
+        workExperience { analysis score }
+      }
+    }
+  }
+}
 `;
 
 type Props = {
@@ -47,7 +62,12 @@ function employmentTypeLabel(type: string | null | undefined) {
 }
 
 export default function WorkExperience({ rootQuery }: Props) {
-	const data = useFragment(WorkExperienceFragment, rootQuery);
+	const query = useFragment(WorkExperienceFragment, rootQuery);
+	const data = query.profileSnapshot;
+	const analysis =
+		query.analysis?.__typename === "JobApplicantAnalysis"
+			? query.analysis.analysedFields?.workExperience
+			: undefined;
 
 	useCopilotReadable({
 		description: "The current applicant's work experiences",
@@ -64,6 +84,14 @@ export default function WorkExperience({ rootQuery }: Props) {
 					</div>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
+					{analysis && (
+						<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+							<div className="flex items-center gap-4 text-medium">
+								<SparklesIcon size={18} /> {analysis.score}%
+							</div>
+							<p>{analysis.analysis}</p>
+						</div>
+					)}
 					{data.workExperience.length < 1 ? (
 						<h2 className="w-full text-foreground-500">
 							Add your work experience

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a69dcfd437553f7dbd1ac1b119316f80>>
+ * @generated SignedSource<<12121f2dd33200566d6ccf1772442bba>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -61,10 +61,10 @@ const node: ReaderFragment = {
       "name": "WorkExperienceFragment"
     }
   ],
-  "type": "ProfileSnapshot",
+  "type": "JobApplicant",
   "abstractKey": null
 };
 
-(node as any).hash = "0120e4b2a6ca627022cd47c21d9583bc";
+(node as any).hash = "4815e0c6899362c43a0e93da1bd439bc";
 
 export default node;

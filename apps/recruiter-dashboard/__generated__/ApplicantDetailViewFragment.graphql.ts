@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e4b4f63adb2804c23b0dbbc643e67fd0>>
+ * @generated SignedSource<<234481145b0cb5eb73d115c7f15ad2cb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,10 +17,7 @@ export type ApplicantDetailViewFragment$data = {
       readonly __typename: "Job";
       readonly jobApplicant: {
         readonly __typename: "JobApplicant";
-        readonly profileSnapshot: {
-          readonly " $fragmentSpreads": FragmentRefs<"ProfileSnapshotViewFragment">;
-        };
-        readonly " $fragmentSpreads": FragmentRefs<"ApplicantChatFragment" | "ApplicantDetailsFragment">;
+        readonly " $fragmentSpreads": FragmentRefs<"ApplicantChatFragment" | "ApplicantDetailsFragment" | "ProfileSnapshotViewFragment">;
       } | {
         // This will never be '%other', but we need some
         // value in case none of the concrete values match.
@@ -144,20 +141,9 @@ return {
                               "name": "ApplicantChatFragment"
                             },
                             {
-                              "alias": null,
                               "args": null,
-                              "concreteType": "ProfileSnapshot",
-                              "kind": "LinkedField",
-                              "name": "profileSnapshot",
-                              "plural": false,
-                              "selections": [
-                                {
-                                  "args": null,
-                                  "kind": "FragmentSpread",
-                                  "name": "ProfileSnapshotViewFragment"
-                                }
-                              ],
-                              "storageKey": null
+                              "kind": "FragmentSpread",
+                              "name": "ProfileSnapshotViewFragment"
                             }
                           ],
                           "type": "JobApplicant",
@@ -186,6 +172,6 @@ return {
 };
 })();
 
-(node as any).hash = "38ee67447ff655aa763044ad6184c360";
+(node as any).hash = "f9ce4609656f433b97ccf416360e7ecc";
 
 export default node;

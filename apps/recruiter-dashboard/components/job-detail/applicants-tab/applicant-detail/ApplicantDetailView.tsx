@@ -34,9 +34,7 @@ const ApplicantDetailViewFragment = graphql`
                             ... on JobApplicant {
                                 ...ApplicantDetailsFragment
 								...ApplicantChatFragment
-                                profileSnapshot {
-                                    ...ProfileSnapshotViewFragment
-                                }
+                                ...ProfileSnapshotViewFragment
                             }
                         }
                     }
@@ -79,7 +77,7 @@ export default function ApplicantDetailView(props: {
 					rootQuery={query.organization.job.jobApplicant}
 				/>
 				<ProfileSnapshotView
-					profileSnapshot={query.organization.job.jobApplicant.profileSnapshot}
+					jobApplicant={query.organization.job.jobApplicant}
 				/>
 			</div>
 			<ApplicantChat applicant={query.organization.job.jobApplicant} />

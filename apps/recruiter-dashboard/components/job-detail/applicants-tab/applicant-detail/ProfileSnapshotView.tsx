@@ -10,7 +10,7 @@ import PersonalDetails from "./profile-snapshot/PersonalDetails";
 import WorkExperience from "./profile-snapshot/WorkExperience";
 
 const ProfileSnapshotViewFragment = graphql`
-	fragment ProfileSnapshotViewFragment on ProfileSnapshot {
+	fragment ProfileSnapshotViewFragment on JobApplicant {
 		...CertificationsFragment
 		...EducationFragment
 		...LanguagesFragment
@@ -22,9 +22,9 @@ const ProfileSnapshotViewFragment = graphql`
 `;
 
 export default function ProfileSnapshotView(props: {
-	profileSnapshot: ProfileSnapshotViewFragment$key;
+	jobApplicant: ProfileSnapshotViewFragment$key;
 }) {
-	const data = useFragment(ProfileSnapshotViewFragment, props.profileSnapshot);
+	const data = useFragment(ProfileSnapshotViewFragment, props.jobApplicant);
 
 	return (
 		<div className="w-full h-full space-y-16">

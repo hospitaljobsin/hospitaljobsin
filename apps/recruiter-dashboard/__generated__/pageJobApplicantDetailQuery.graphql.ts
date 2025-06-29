@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a2d9246a700f9c8216eea4f6a4100d66>>
- * @relayHash 7fba834824391c61cd2f27d36b5b2931
+ * @generated SignedSource<<1c8d24c8af846204e459bac19a95eaff>>
+ * @relayHash 9b326a590af62ce9cbafc9af4c754da4
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 7fba834824391c61cd2f27d36b5b2931
+// @relayRequestID 9b326a590af62ce9cbafc9af4c754da4
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -106,7 +106,23 @@ v11 = {
 v12 = [
   (v5/*: any*/)
 ],
-v13 = {
+v13 = [
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "analysis",
+    "storageKey": null
+  },
+  {
+    "alias": null,
+    "args": null,
+    "kind": "ScalarField",
+    "name": "score",
+    "storageKey": null
+  }
+],
+v14 = {
   "kind": "InlineFragment",
   "selections": (v12/*: any*/),
   "type": "Node",
@@ -623,12 +639,162 @@ return {
                                 "plural": false,
                                 "selections": (v12/*: any*/),
                                 "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "concreteType": null,
+                                "kind": "LinkedField",
+                                "name": "analysis",
+                                "plural": false,
+                                "selections": [
+                                  (v4/*: any*/),
+                                  {
+                                    "kind": "InlineFragment",
+                                    "selections": [
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "concreteType": "AnalysedFields",
+                                        "kind": "LinkedField",
+                                        "name": "analysedFields",
+                                        "plural": false,
+                                        "selections": [
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "certifications",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "education",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "languages",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "licenses",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "locationsOpenToWork",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "openToRelocationAnywhere",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "address",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "gender",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "dateOfBirth",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "maritalStatus",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "category",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "workExperience",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          }
+                                        ],
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "type": "JobApplicantAnalysis",
+                                    "abstractKey": null
+                                  }
+                                ],
+                                "storageKey": null
                               }
                             ],
                             "type": "JobApplicant",
                             "abstractKey": null
                           },
-                          (v13/*: any*/)
+                          (v14/*: any*/)
                         ],
                         "storageKey": null
                       }
@@ -636,7 +802,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v13/*: any*/)
+                  (v14/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -644,14 +810,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v13/*: any*/)
+          (v14/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "7fba834824391c61cd2f27d36b5b2931",
+    "id": "9b326a590af62ce9cbafc9af4c754da4",
     "metadata": {},
     "name": "pageJobApplicantDetailQuery",
     "operationKind": "query",

@@ -2,17 +2,27 @@ import type { EducationFragment$key } from "@/__generated__/EducationFragment.gr
 import { monthYearFormat } from "@/lib/intl";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
-import { BookIcon } from "lucide-react";
+import { BookIcon, SparklesIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const EducationFragment = graphql`
-  fragment EducationFragment on ProfileSnapshot {
+  fragment EducationFragment on JobApplicant {
+	profileSnapshot {
     __typename
     education {
       degree
       institution
       startedAt
       completedAt
+    }
+}
+    analysis {
+      __typename
+      ... on JobApplicantAnalysis {
+        analysedFields {
+          education { analysis score }
+        }
+      }
     }
   }
 `;
@@ -22,7 +32,12 @@ type Props = {
 };
 
 export default function Education({ rootQuery }: Props) {
-	const data = useFragment(EducationFragment, rootQuery);
+	const query = useFragment(EducationFragment, rootQuery);
+	const data = query.profileSnapshot;
+	const analysis =
+		query.analysis?.__typename === "JobApplicantAnalysis"
+			? query.analysis.analysedFields?.education
+			: undefined;
 
 	useCopilotReadable({
 		description: "The current applicant's education",
@@ -39,6 +54,14 @@ export default function Education({ rootQuery }: Props) {
 					</div>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
+					{analysis && (
+						<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+							<div className="flex items-center gap-4 text-medium">
+								<SparklesIcon size={18} /> {analysis.score}%
+							</div>
+							<p>{analysis.analysis}</p>
+						</div>
+					)}
 					{data.education.length < 1 ? (
 						<h2 className="w-full text-foreground-500">No education history</h2>
 					) : (

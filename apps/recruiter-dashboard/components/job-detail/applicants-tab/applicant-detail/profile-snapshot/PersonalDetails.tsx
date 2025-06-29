@@ -1,16 +1,31 @@
 import type { PersonalDetailsFragment$key } from "@/__generated__/PersonalDetailsFragment.graphql";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
-import { UserIcon } from "lucide-react";
+import { SparklesIcon, UserIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const PersonalDetailsFragment = graphql`
-  fragment PersonalDetailsFragment on ProfileSnapshot {
+  fragment PersonalDetailsFragment on JobApplicant {
+	profileSnapshot {
 		gender
 		dateOfBirth
 		maritalStatus
 		category
-      }
+		address
+	}
+	analysis {
+		__typename
+		... on JobApplicantAnalysis {
+			analysedFields {
+				gender { analysis score }
+				dateOfBirth { analysis score }
+				maritalStatus { analysis score }
+				category { analysis score }
+				address { analysis score }
+			}
+		}
+	}
+}
 `;
 
 function calculateAge(dateOfBirth: string | Date): string {
@@ -29,7 +44,12 @@ type Props = {
 };
 
 export default function PersonalDetails({ rootQuery }: Props) {
-	const data = useFragment(PersonalDetailsFragment, rootQuery);
+	const query = useFragment(PersonalDetailsFragment, rootQuery);
+	const data = query.profileSnapshot;
+	const analysis =
+		query.analysis?.__typename === "JobApplicantAnalysis"
+			? query.analysis.analysedFields
+			: undefined;
 
 	useCopilotReadable({
 		description: "The current applicant's personal details",
@@ -53,6 +73,15 @@ export default function PersonalDetails({ rootQuery }: Props) {
 						) : (
 							<h2 className="w-full text-foreground-500">{data.gender}</h2>
 						)}
+
+						{analysis?.gender && (
+							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+								<div className="flex items-center gap-4 text-medium">
+									<SparklesIcon size={18} /> {analysis.gender.score}%
+								</div>
+								<p>{analysis.gender.analysis}</p>
+							</div>
+						)}
 					</div>
 					<div className="flex flex-col gap-2">
 						<h1 className="w-full text-lg font-medium">Age</h1>
@@ -64,6 +93,15 @@ export default function PersonalDetails({ rootQuery }: Props) {
 							<h2 className="w-full text-foreground-500">
 								{calculateAge(data.dateOfBirth as string)}
 							</h2>
+						)}
+
+						{analysis?.dateOfBirth && (
+							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+								<div className="flex items-center gap-4 text-medium">
+									<SparklesIcon size={18} /> {analysis.dateOfBirth.score}%
+								</div>
+								<p>{analysis.dateOfBirth.analysis}</p>
+							</div>
 						)}
 					</div>
 					<div className="flex flex-col gap-2">
@@ -77,6 +115,14 @@ export default function PersonalDetails({ rootQuery }: Props) {
 								{data.maritalStatus}
 							</h2>
 						)}
+						{analysis?.maritalStatus && (
+							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+								<div className="flex items-center gap-4 text-medium">
+									<SparklesIcon size={18} /> {analysis.maritalStatus.score}%
+								</div>
+								<p>{analysis.maritalStatus.analysis}</p>
+							</div>
+						)}
 					</div>
 					<div className="flex flex-col gap-2">
 						<h1 className="w-full text-lg font-medium">Category</h1>
@@ -86,6 +132,32 @@ export default function PersonalDetails({ rootQuery }: Props) {
 							</h2>
 						) : (
 							<h2 className="w-full text-foreground-500">{data.category}</h2>
+						)}
+						{analysis?.category && (
+							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+								<div className="flex items-center gap-4 text-medium">
+									<SparklesIcon size={18} /> {analysis.category.score}%
+								</div>
+								<p>{analysis.category.analysis}</p>
+							</div>
+						)}
+					</div>
+					<div className="flex flex-col gap-2">
+						<h1 className="w-full text-lg font-medium">Address</h1>
+						{!data.address ? (
+							<h2 className="w-full text-foreground-500">
+								No address provided
+							</h2>
+						) : (
+							<h2 className="w-full text-foreground-500">{data.address}</h2>
+						)}
+						{analysis?.address && (
+							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+								<div className="flex items-center gap-4 text-medium">
+									<SparklesIcon size={18} /> {analysis.address.score}%
+								</div>
+								<p>{analysis.address.analysis}</p>
+							</div>
 						)}
 					</div>
 				</CardBody>

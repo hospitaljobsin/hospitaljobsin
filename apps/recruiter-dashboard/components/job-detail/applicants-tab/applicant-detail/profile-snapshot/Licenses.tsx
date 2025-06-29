@@ -1,11 +1,12 @@
 import type { LicensesFragment$key } from "@/__generated__/LicensesFragment.graphql";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
-import { IdCardIcon } from "lucide-react";
+import { IdCardIcon, SparklesIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const LicensesFragment = graphql`
-  fragment LicensesFragment on ProfileSnapshot {
+  fragment LicensesFragment on JobApplicant {
+	profileSnapshot {
     __typename
     licenses {
       name
@@ -16,6 +17,15 @@ const LicensesFragment = graphql`
       verifiedAt
     }
   }
+  analysis {
+    __typename
+    ... on JobApplicantAnalysis {
+      analysedFields {
+        licenses { analysis score }
+      }
+    }
+  }
+}
 `;
 
 type Props = {
@@ -23,7 +33,12 @@ type Props = {
 };
 
 export default function Licenses({ rootQuery }: Props) {
-	const data = useFragment(LicensesFragment, rootQuery);
+	const query = useFragment(LicensesFragment, rootQuery);
+	const data = query.profileSnapshot;
+	const analysis =
+		query.analysis?.__typename === "JobApplicantAnalysis"
+			? query.analysis.analysedFields?.licenses
+			: undefined;
 
 	useCopilotReadable({
 		description: "The current applicant's licenses",
@@ -40,6 +55,14 @@ export default function Licenses({ rootQuery }: Props) {
 					</div>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
+					{analysis && (
+						<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+							<div className="flex items-center gap-4 text-medium">
+								<SparklesIcon size={18} /> {analysis.score}%
+							</div>
+							<p>{analysis.analysis}</p>
+						</div>
+					)}
 					{data.licenses.length < 1 ? (
 						<h2 className="w-full text-foreground-500">No licenses</h2>
 					) : (

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4eedf122a6f4da98d7ed8bc8cee49894>>
+ * @generated SignedSource<<ca510112d4108ef12cea4a525bf5eee2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,11 +11,26 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type LanguagesFragment$data = {
-  readonly __typename: "ProfileSnapshot";
-  readonly languages: ReadonlyArray<{
-    readonly name: string;
-    readonly proficiency: string;
-  }>;
+  readonly analysis: {
+    readonly __typename: "JobApplicantAnalysis";
+    readonly analysedFields: {
+      readonly languages: {
+        readonly analysis: string;
+        readonly score: number;
+      } | null | undefined;
+    };
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
+  readonly profileSnapshot: {
+    readonly __typename: "ProfileSnapshot";
+    readonly languages: ReadonlyArray<{
+      readonly name: string;
+      readonly proficiency: string;
+    }>;
+  };
   readonly " $fragmentType": "LanguagesFragment";
 };
 export type LanguagesFragment$key = {
@@ -23,7 +38,15 @@ export type LanguagesFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"LanguagesFragment">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -32,40 +55,101 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
-      "kind": "ScalarField",
-      "name": "__typename",
+      "concreteType": "ProfileSnapshot",
+      "kind": "LinkedField",
+      "name": "profileSnapshot",
+      "plural": false,
+      "selections": [
+        (v0/*: any*/),
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "Language",
+          "kind": "LinkedField",
+          "name": "languages",
+          "plural": true,
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "name",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "proficiency",
+              "storageKey": null
+            }
+          ],
+          "storageKey": null
+        }
+      ],
       "storageKey": null
     },
     {
       "alias": null,
       "args": null,
-      "concreteType": "Language",
+      "concreteType": null,
       "kind": "LinkedField",
-      "name": "languages",
-      "plural": true,
+      "name": "analysis",
+      "plural": false,
       "selections": [
+        (v0/*: any*/),
         {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "name",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "proficiency",
-          "storageKey": null
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "concreteType": "AnalysedFields",
+              "kind": "LinkedField",
+              "name": "analysedFields",
+              "plural": false,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "FieldAnalysis",
+                  "kind": "LinkedField",
+                  "name": "languages",
+                  "plural": false,
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "analysis",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "score",
+                      "storageKey": null
+                    }
+                  ],
+                  "storageKey": null
+                }
+              ],
+              "storageKey": null
+            }
+          ],
+          "type": "JobApplicantAnalysis",
+          "abstractKey": null
         }
       ],
       "storageKey": null
     }
   ],
-  "type": "ProfileSnapshot",
+  "type": "JobApplicant",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "c507d7bca8f8629cfd950ff7a7e1957b";
+(node as any).hash = "6e5b1bd3a22518f3b296a838262ef4ac";
 
 export default node;

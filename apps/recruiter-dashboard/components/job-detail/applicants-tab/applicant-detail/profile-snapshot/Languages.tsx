@@ -1,19 +1,27 @@
 import type { LanguagesFragment$key } from "@/__generated__/LanguagesFragment.graphql";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
-import { LanguagesIcon } from "lucide-react";
+import { LanguagesIcon, SparklesIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
-// TODO: define the fragments on Profile instead
-// that should solve partial updates of profiles on account type
 const LanguagesFragment = graphql`
-  fragment LanguagesFragment on ProfileSnapshot {
+  fragment LanguagesFragment on JobApplicant {
+	profileSnapshot {
         __typename
         languages {
             name
             proficiency
         }
       }
+    analysis {
+      __typename
+      ... on JobApplicantAnalysis {
+        analysedFields {
+          languages { analysis score }
+        }
+      }
+    }
+	}
 `;
 
 type Props = {
@@ -21,7 +29,12 @@ type Props = {
 };
 
 export default function Languages({ rootQuery }: Props) {
-	const data = useFragment(LanguagesFragment, rootQuery);
+	const query = useFragment(LanguagesFragment, rootQuery);
+	const data = query.profileSnapshot;
+	const analysis =
+		query.analysis?.__typename === "JobApplicantAnalysis"
+			? query.analysis.analysedFields?.languages
+			: undefined;
 
 	useCopilotReadable({
 		description: "The current applicant's languages",
@@ -38,6 +51,14 @@ export default function Languages({ rootQuery }: Props) {
 					</div>
 				</CardHeader>
 				<CardBody className="flex flex-col gap-10">
+					{analysis && (
+						<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+							<div className="flex items-center gap-4 text-medium">
+								<SparklesIcon size={18} /> {analysis.score}%
+							</div>
+							<p>{analysis.analysis}</p>
+						</div>
+					)}
 					{data.languages.length < 1 ? (
 						<h2 className="w-full text-foreground-500">No languages</h2>
 					) : (

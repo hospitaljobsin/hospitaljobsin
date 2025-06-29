@@ -1,14 +1,26 @@
 import type { LocationPreferencesFragment$key } from "@/__generated__/LocationPreferencesFragment.graphql";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader } from "@heroui/react";
-import { MapPinHouseIcon } from "lucide-react";
+import { MapPinHouseIcon, SparklesIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const LocationPreferencesFragment = graphql`
-  fragment LocationPreferencesFragment on ProfileSnapshot {
+  fragment LocationPreferencesFragment on JobApplicant {
+	profileSnapshot {
         locationsOpenToWork
         openToRelocationAnywhere
         address
+	}
+    analysis {
+      __typename
+      ... on JobApplicantAnalysis {
+        analysedFields {
+          locationsOpenToWork { analysis score }
+          openToRelocationAnywhere { analysis score }
+          address { analysis score }
+        }
+      }
+    }
   }
 `;
 type Props = {
@@ -16,7 +28,12 @@ type Props = {
 };
 
 export default function LocationPreferences({ rootQuery }: Props) {
-	const data = useFragment(LocationPreferencesFragment, rootQuery);
+	const query = useFragment(LocationPreferencesFragment, rootQuery);
+	const data = query.profileSnapshot;
+	const analysis =
+		query.analysis?.__typename === "JobApplicantAnalysis"
+			? query.analysis.analysedFields
+			: undefined;
 
 	useCopilotReadable({
 		description: "The current applicant's location preferences",
@@ -36,6 +53,14 @@ export default function LocationPreferences({ rootQuery }: Props) {
 				</CardHeader>
 				<CardBody className="flex flex-col gap-8">
 					<div className="flex flex-col gap-6 w-full items-center justify-start">
+						{analysis?.address && (
+							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+								<div className="flex items-center gap-4 text-medium">
+									<SparklesIcon size={18} /> {analysis.address.score}%
+								</div>
+								<p>{analysis.address.analysis}</p>
+							</div>
+						)}
 						<h1 className="w-full font-medium">Current Address</h1>
 						{!data.address ? (
 							<h2 className="w-full text-foreground-500">
@@ -45,19 +70,39 @@ export default function LocationPreferences({ rootQuery }: Props) {
 							<h2 className="w-full text-foreground-500">{data.address}</h2>
 						)}
 					</div>
-					<div className="flex items-center gap-4">
-						{openToRelocation ? (
+					<div className="flex items-start flex-col gap-4">
+						{analysis?.openToRelocationAnywhere && (
+							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+								<div className="flex items-center gap-4 text-medium">
+									<SparklesIcon size={18} />{" "}
+									{analysis.openToRelocationAnywhere.score}%
+								</div>
+								<p>{analysis.openToRelocationAnywhere.analysis}</p>
+							</div>
+						)}
+						{data.openToRelocationAnywhere ? (
 							<span>Open to relocation anywhere</span>
 						) : (
 							<span>Not open to relocation anywhere</span>
 						)}
 					</div>
 					<div className="mt-4 flex flex-col w-full gap-4">
+						{analysis?.locationsOpenToWork && (
+							<div className="text-xs text-primary-600 mb-2 flex flex-col items-start gap-4 border border-foreground-200 rounded-md p-4 bg-primary-100">
+								<div className="flex items-center gap-4 text-medium">
+									<SparklesIcon size={18} />{" "}
+									{analysis.locationsOpenToWork.score}%
+								</div>
+								<p>{analysis.locationsOpenToWork.analysis}</p>
+							</div>
+						)}
 						<div className="block mb-2 font-medium">
 							Preferred work locations
 						</div>
-						{locations.length > 0 ? (
-							<div className="text-foreground-500">{locations.join(", ")}</div>
+						{data.locationsOpenToWork && data.locationsOpenToWork.length > 0 ? (
+							<div className="text-foreground-500">
+								{data.locationsOpenToWork.join(", ")}
+							</div>
 						) : (
 							<div className="text-foreground-500 text-sm">
 								No locations set.
@@ -65,11 +110,13 @@ export default function LocationPreferences({ rootQuery }: Props) {
 						)}
 					</div>
 
-					{!openToRelocation && locations.length === 0 && (
-						<div className="text-foreground-500 text-sm">
-							No location preferences set.
-						</div>
-					)}
+					{!data.openToRelocationAnywhere &&
+						(!data.locationsOpenToWork ||
+							data.locationsOpenToWork.length === 0) && (
+							<div className="text-foreground-500 text-sm">
+								No location preferences set.
+							</div>
+						)}
 				</CardBody>
 			</Card>
 		</div>
