@@ -55,7 +55,7 @@ export default function Certifications({ rootQuery }: Props) {
 						{analysis && (
 							<span className="text-primary-600 text-sm flex items-center gap-2">
 								<StarIcon size={16} />
-								{analysis.score}%
+								{Math.round(analysis.score * 100)}%
 							</span>
 						)}
 					</div>
