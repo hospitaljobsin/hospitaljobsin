@@ -1152,6 +1152,11 @@ type Job implements Node {
 		How many items to return before the cursor?
 		"""
 		last: Int = null
+
+		"""
+		The sort by field.
+		"""
+		sortBy: JobApplicantsSortBy! = OVERALL_SCORE
 	): JobApplicantConnection!
 
 	"""
@@ -1225,6 +1230,11 @@ type JobApplicant implements Node {
 	status: JobApplicantStatus!
 
 	"""
+	Final score for the applicant's match to the job (0-1), synthesized after all field analyses.
+	"""
+	overallScore: Float!
+
+	"""
 	The slug of the job application.
 	"""
 	slug: String!
@@ -1269,11 +1279,6 @@ type JobApplicantAnalysis {
 	List of healthcare-specific match analyses
 	"""
 	analysedFields: AnalysedFields!
-
-	"""
-	Final score for the applicant's match to the job (0-1), synthesized after all field analyses.
-	"""
-	overallScore: Float
 
 	"""
 	Summary reason for the overall match score, synthesized after all field analyses.
@@ -1407,6 +1412,14 @@ type JobApplicantsNotFoundError implements Error {
 	List of job applicant IDs that could not be found.
 	"""
 	notFoundIds: [String!]!
+}
+
+"""
+The type of job applicants sort by.
+"""
+enum JobApplicantsSortBy {
+	OVERALL_SCORE
+	CREATED_AT
 }
 
 """

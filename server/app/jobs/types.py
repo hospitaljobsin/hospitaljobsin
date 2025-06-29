@@ -43,7 +43,12 @@ from app.jobs.documents import (
     JobApplicationForm,
     SavedJob,
 )
-from app.jobs.repositories import JobApplicantRepo, JobMetricRepo, JobRepo
+from app.jobs.repositories import (
+    JobApplicantRepo,
+    JobApplicantsSortBy,
+    JobMetricRepo,
+    JobRepo,
+)
 from app.jobs.services import JobApplicantService
 
 if TYPE_CHECKING:
@@ -52,6 +57,15 @@ if TYPE_CHECKING:
         OrganizationNotFoundErrorType,
         OrganizationType,
     )
+
+
+@strawberry.enum(
+    name="JobApplicantsSortBy",
+    description="The type of job applicants sort by.",
+)
+class JobApplicantsSortByEnum(Enum):
+    OVERALL_SCORE = "overall_score"
+    CREATED_AT = "created_at"
 
 
 @strawberry.enum(
@@ -359,9 +373,6 @@ class JobApplicantAnalysisType:
     analysed_fields: AnalysedFieldsType = strawberry.field(
         description="List of healthcare-specific match analyses",
     )
-    overall_score: float | None = strawberry.field(
-        description="Final score for the applicant's match to the job (0-1), synthesized after all field analyses.",
-    )
     overall_summary: str | None = strawberry.field(
         default=None,
         description="Summary reason for the overall match score, synthesized after all field analyses.",
@@ -382,7 +393,6 @@ class JobApplicantAnalysisType:
     def marshal(cls, data: JobApplicantAnalysis) -> Self:
         return cls(
             analysed_fields=AnalysedFieldsType.marshal(data.analysed_fields),
-            overall_score=data.overall_score,
             overall_summary=data.overall_summary,
             strengths=data.strengths,
             risk_flags=data.risk_flags,
@@ -424,6 +434,9 @@ JobApplicantAnalysisPayload = Annotated[
 class JobApplicantType(BaseNodeType[JobApplicant]):
     status: JobApplicantStatusEnum = strawberry.field(
         description="The status of the job application.",
+    )
+    overall_score: float = strawberry.field(
+        description="Final score for the applicant's match to the job (0-1), synthesized after all field analyses.",
     )
     slug: str = strawberry.field(
         description="The slug of the job application.",
@@ -496,6 +509,7 @@ class JobApplicantType(BaseNodeType[JobApplicant]):
             else job_applicant.job,
             slug=job_applicant.slug,
             status=JobApplicantStatusEnum[job_applicant.status.upper()],
+            overall_score=job_applicant.overall_score,
             profile_snapshot=ProfileSnapshotType.marshal(
                 job_applicant.profile_snapshot
             ),
@@ -809,6 +823,12 @@ class JobType(BaseNodeType[Job]):
                 description="How many items to return before the cursor?",
             ),
         ] = None,
+        sort_by: Annotated[
+            JobApplicantsSortByEnum,
+            strawberry.argument(
+                description="The sort by field.",
+            ),
+        ] = JobApplicantsSortByEnum.OVERALL_SCORE,
     ) -> JobApplicantConnectionType:
         """Return a paginated connection of invites for the organization."""
         if search_term is not None:
@@ -829,6 +849,7 @@ class JobType(BaseNodeType[Job]):
                 before=(before.node_id if before else None),
                 first=first,
                 last=last,
+                sort_by=JobApplicantsSortBy(sort_by.value),
             )
 
         return JobApplicantConnectionType.marshal(paginated_applicants)

@@ -1,5 +1,8 @@
 "use client";
-import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
+import type {
+	JobApplicantStatus,
+	JobApplicantsSortBy,
+} from "@/__generated__/ApplicantListPaginationQuery.graphql";
 import type { ApplicantsTabFragment$key } from "@/__generated__/ApplicantsTabFragment.graphql";
 import PageJobDetailApplicantsQuery, {
 	type pageJobDetailApplicantsQuery,
@@ -24,6 +27,7 @@ const ApplicantsTabFragment = graphql`
 		jobSlug: { type: "String!" }
 		searchTerm: { type: "String", defaultValue: null }
 		status: { type: "JobApplicantStatus", defaultValue: null }
+		sortBy: { type: "JobApplicantsSortBy", defaultValue: OVERALL_SCORE }
 	) {
 		organization(slug: $slug) {
 			__typename
@@ -38,6 +42,7 @@ const ApplicantsTabFragment = graphql`
 							@arguments(
 								searchTerm: $searchTerm
 								status: $status
+								sortBy: $sortBy
 							)
 					}
 				}
@@ -51,6 +56,7 @@ export default function ApplicantsTab(props: {
 }) {
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 	const [status, setStatus] = useState<JobApplicantStatus | null>(null);
+	const [sortBy, setSortBy] = useState<JobApplicantsSortBy>("OVERALL_SCORE");
 	const data = usePreloadedQuery(
 		PageJobDetailApplicantsQuery,
 		props.initialQueryRef,
@@ -79,11 +85,14 @@ export default function ApplicantsTab(props: {
 					setSearchTerm={setSearchTerm}
 					status={status}
 					setStatus={setStatus}
+					sortBy={sortBy}
+					setSortBy={setSortBy}
 				/>
 				<ApplicantList
 					rootQuery={query.organization.job}
 					searchTerm={searchTerm}
 					status={status}
+					sortBy={sortBy}
 				/>
 			</div>
 		</ApplicantSelectionProvider>

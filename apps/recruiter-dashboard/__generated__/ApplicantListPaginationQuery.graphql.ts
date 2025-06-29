@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1d3e226be7497b24ed476f6b3663cecd>>
- * @relayHash 30734fc8ef701002670c1ae2ad278496
+ * @generated SignedSource<<8305c817443edcf18877f3723e547bad>>
+ * @relayHash 790651a2d163c4f97faf5406b1b1f249
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,16 +9,18 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 30734fc8ef701002670c1ae2ad278496
+// @relayRequestID 790651a2d163c4f97faf5406b1b1f249
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobApplicantStatus = "APPLIED" | "INTERVIEWED" | "OFFERED" | "ONHOLD" | "SHORTLISTED" | "%future added value";
+export type JobApplicantsSortBy = "CREATED_AT" | "OVERALL_SCORE" | "%future added value";
 export type ApplicantListPaginationQuery$variables = {
   count?: number | null | undefined;
   cursor?: string | null | undefined;
   id: string;
   searchTerm?: string | null | undefined;
+  sortBy?: JobApplicantsSortBy | null | undefined;
   status?: JobApplicantStatus | null | undefined;
 };
 export type ApplicantListPaginationQuery$data = {
@@ -53,42 +55,52 @@ v3 = {
   "name": "searchTerm"
 },
 v4 = {
+  "defaultValue": "OVERALL_SCORE",
+  "kind": "LocalArgument",
+  "name": "sortBy"
+},
+v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
   "name": "status"
 },
-v5 = [
+v6 = [
   {
     "kind": "Variable",
     "name": "id",
     "variableName": "id"
   }
 ],
-v6 = {
+v7 = {
   "kind": "Variable",
   "name": "searchTerm",
   "variableName": "searchTerm"
 },
-v7 = {
+v8 = {
+  "kind": "Variable",
+  "name": "sortBy",
+  "variableName": "sortBy"
+},
+v9 = {
   "kind": "Variable",
   "name": "status",
   "variableName": "status"
 },
-v8 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v9 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v10 = [
+v12 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -99,8 +111,9 @@ v10 = [
     "name": "first",
     "variableName": "count"
   },
-  (v6/*: any*/),
-  (v7/*: any*/)
+  (v7/*: any*/),
+  (v8/*: any*/),
+  (v9/*: any*/)
 ];
 return {
   "fragment": {
@@ -109,7 +122,8 @@ return {
       (v1/*: any*/),
       (v2/*: any*/),
       (v3/*: any*/),
-      (v4/*: any*/)
+      (v4/*: any*/),
+      (v5/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -117,7 +131,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v5/*: any*/),
+        "args": (v6/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
@@ -135,8 +149,9 @@ return {
                 "name": "cursor",
                 "variableName": "cursor"
               },
-              (v6/*: any*/),
-              (v7/*: any*/)
+              (v7/*: any*/),
+              (v8/*: any*/),
+              (v9/*: any*/)
             ],
             "kind": "FragmentSpread",
             "name": "ApplicantListFragment"
@@ -155,6 +170,7 @@ return {
       (v1/*: any*/),
       (v3/*: any*/),
       (v4/*: any*/),
+      (v5/*: any*/),
       (v2/*: any*/)
     ],
     "kind": "Operation",
@@ -162,20 +178,20 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v5/*: any*/),
+        "args": (v6/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v8/*: any*/),
-          (v9/*: any*/),
+          (v10/*: any*/),
+          (v11/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
-                "args": (v10/*: any*/),
+                "args": (v12/*: any*/),
                 "concreteType": "JobApplicantConnection",
                 "kind": "LinkedField",
                 "name": "applicants",
@@ -197,7 +213,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v9/*: any*/),
+                          (v11/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -206,7 +222,7 @@ return {
                             "name": "job",
                             "plural": false,
                             "selections": [
-                              (v9/*: any*/)
+                              (v11/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -232,7 +248,7 @@ return {
                                 "name": "avatarUrl",
                                 "storageKey": null
                               },
-                              (v9/*: any*/)
+                              (v11/*: any*/)
                             ],
                             "storageKey": null
                           },
@@ -271,22 +287,22 @@ return {
                           {
                             "alias": null,
                             "args": null,
+                            "kind": "ScalarField",
+                            "name": "overallScore",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
                             "concreteType": null,
                             "kind": "LinkedField",
                             "name": "analysis",
                             "plural": false,
                             "selections": [
-                              (v8/*: any*/),
+                              (v10/*: any*/),
                               {
                                 "kind": "InlineFragment",
                                 "selections": [
-                                  {
-                                    "alias": null,
-                                    "args": null,
-                                    "kind": "ScalarField",
-                                    "name": "overallScore",
-                                    "storageKey": null
-                                  },
                                   {
                                     "alias": null,
                                     "args": null,
@@ -322,7 +338,7 @@ return {
                             ],
                             "storageKey": null
                           },
-                          (v8/*: any*/)
+                          (v10/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -366,9 +382,10 @@ return {
               },
               {
                 "alias": null,
-                "args": (v10/*: any*/),
+                "args": (v12/*: any*/),
                 "filters": [
-                  "searchTerm"
+                  "searchTerm",
+                  "sortBy"
                 ],
                 "handle": "connection",
                 "key": "ApplicantListFragment_applicants",
@@ -385,7 +402,7 @@ return {
     ]
   },
   "params": {
-    "id": "30734fc8ef701002670c1ae2ad278496",
+    "id": "790651a2d163c4f97faf5406b1b1f249",
     "metadata": {},
     "name": "ApplicantListPaginationQuery",
     "operationKind": "query",
@@ -394,6 +411,6 @@ return {
 };
 })();
 
-(node as any).hash = "2a1f62aac102748bdd872a36eb1a13b5";
+(node as any).hash = "85c75c14322c1aed1a356c72ec94f2d1";
 
 export default node;

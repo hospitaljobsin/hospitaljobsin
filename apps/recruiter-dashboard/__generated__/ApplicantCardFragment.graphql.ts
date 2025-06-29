@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<73f830bb2718db41d863c2b2b5f116a4>>
+ * @generated SignedSource<<49c8d442f42ab6ff646c75b1ea080f1e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,7 +19,6 @@ export type ApplicantCardFragment$data = {
   readonly analysis: {
     readonly __typename: "JobApplicantAnalysis";
     readonly createdAt: any;
-    readonly overallScore: number | null | undefined;
     readonly overallSummary: string | null | undefined;
     readonly riskFlags: ReadonlyArray<string> | null | undefined;
     readonly strengths: ReadonlyArray<string> | null | undefined;
@@ -35,6 +34,7 @@ export type ApplicantCardFragment$data = {
     readonly __typename: "%other";
   };
   readonly id: string;
+  readonly overallScore: number;
   readonly profileSnapshot: {
     readonly headline: string | null | undefined;
   };
@@ -125,6 +125,13 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
+      "kind": "ScalarField",
+      "name": "overallScore",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
       "concreteType": null,
       "kind": "LinkedField",
       "name": "analysis",
@@ -140,13 +147,6 @@ const node: ReaderFragment = {
         {
           "kind": "InlineFragment",
           "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "overallScore",
-              "storageKey": null
-            },
             {
               "alias": null,
               "args": null,
@@ -192,6 +192,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "4f42fb57df6cfff6e1df8cd42cbfcaf1";
+(node as any).hash = "f0bd5426d8d05d66834f6342519bd82b";
 
 export default node;

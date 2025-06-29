@@ -1,6 +1,9 @@
 import type { ApplicantListControllerFragment$key } from "@/__generated__/ApplicantListControllerFragment.graphql";
 import type { ApplicantListControllerMutation as ApplicantListControllerMutationType } from "@/__generated__/ApplicantListControllerMutation.graphql";
-import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
+import type {
+	JobApplicantStatus,
+	JobApplicantsSortBy,
+} from "@/__generated__/ApplicantListPaginationQuery.graphql";
 import {
 	Button,
 	Card,
@@ -73,6 +76,8 @@ interface ApplicantListControllerProps {
 	status: JobApplicantStatus | null;
 	setStatus: (status: JobApplicantStatus | null) => void;
 	job: ApplicantListControllerFragment$key;
+	sortBy: JobApplicantsSortBy | null;
+	setSortBy: (sortBy: JobApplicantsSortBy) => void;
 }
 
 export default function ApplicantListController(
@@ -91,7 +96,9 @@ export default function ApplicantListController(
 		}
 		props.setStatus(e.target.value as JobApplicantStatus);
 	};
-
+	const handleSortByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		props.setSortBy(e.target.value as JobApplicantsSortBy);
+	};
 	if (selectedApplicants.size > 0)
 		return (
 			<Card
@@ -158,18 +165,28 @@ export default function ApplicantListController(
 				onClear={() => props.setSearchTerm(null)}
 				fullWidth
 			/>
-			{/* TODO: add sorting controls here */}
 			<Select
 				label="Status"
-				color="primary"
 				size="sm"
-				className="w-full sm:max-w-xs"
+				variant="bordered"
+				className="bg-background w-sm sm:max-w-xs"
 				onChange={handleSelectionChange}
 				selectedKeys={props.status ? [props.status] : ["ALL"]}
 			>
 				{applicantStatus.map((status) => (
 					<SelectItem key={status.key}>{status.label}</SelectItem>
 				))}
+			</Select>
+			<Select
+				label="Sort By"
+				size="sm"
+				variant="bordered"
+				className="w-sm sm:max-w-xs bg-background"
+				onChange={handleSortByChange}
+				selectedKeys={props.sortBy ? [props.sortBy] : ["OVERALL_SCORE"]}
+			>
+				<SelectItem key="OVERALL_SCORE">Relevance</SelectItem>
+				<SelectItem key="CREATED_AT">Newest First</SelectItem>
 			</Select>
 		</div>
 	);

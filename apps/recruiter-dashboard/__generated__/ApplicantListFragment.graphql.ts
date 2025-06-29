@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dc327fc81f5d034dcccaa88a0d418654>>
+ * @generated SignedSource<<f5654778d0374f3ccd76c86585c509da>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -61,6 +61,11 @@ return {
       "name": "searchTerm"
     },
     {
+      "defaultValue": "OVERALL_SCORE",
+      "kind": "LocalArgument",
+      "name": "sortBy"
+    },
+    {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "status"
@@ -105,6 +110,11 @@ return {
           "kind": "Variable",
           "name": "searchTerm",
           "variableName": "searchTerm"
+        },
+        {
+          "kind": "Variable",
+          "name": "sortBy",
+          "variableName": "sortBy"
         }
       ],
       "concreteType": "JobApplicantConnection",
@@ -188,6 +198,6 @@ return {
 };
 })();
 
-(node as any).hash = "2a1f62aac102748bdd872a36eb1a13b5";
+(node as any).hash = "85c75c14322c1aed1a356c72ec94f2d1";
 
 export default node;

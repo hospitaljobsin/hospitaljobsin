@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f282c0bf452eeccfb6430a8ce7944d70>>
- * @relayHash 38124cf09971dac08ec60935d3f6fbb7
+ * @generated SignedSource<<9aff8fb5f8394638f81d8f1d2f4b10a5>>
+ * @relayHash 60d1f3f8a4df87581383e0709bc9c481
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 38124cf09971dac08ec60935d3f6fbb7
+// @relayRequestID 60d1f3f8a4df87581383e0709bc9c481
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -85,6 +85,11 @@ v9 = [
     "value": 10
   },
   (v4/*: any*/),
+  {
+    "kind": "Literal",
+    "name": "sortBy",
+    "value": "OVERALL_SCORE"
+  },
   (v6/*: any*/)
 ],
 v10 = [
@@ -273,6 +278,13 @@ return {
                                   {
                                     "alias": null,
                                     "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "overallScore",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
                                     "concreteType": null,
                                     "kind": "LinkedField",
                                     "name": "analysis",
@@ -282,13 +294,6 @@ return {
                                       {
                                         "kind": "InlineFragment",
                                         "selections": [
-                                          {
-                                            "alias": null,
-                                            "args": null,
-                                            "kind": "ScalarField",
-                                            "name": "overallScore",
-                                            "storageKey": null
-                                          },
                                           {
                                             "alias": null,
                                             "args": null,
@@ -370,7 +375,8 @@ return {
                         "alias": null,
                         "args": (v9/*: any*/),
                         "filters": [
-                          "searchTerm"
+                          "searchTerm",
+                          "sortBy"
                         ],
                         "handle": "connection",
                         "key": "ApplicantListFragment_applicants",
@@ -396,7 +402,7 @@ return {
     ]
   },
   "params": {
-    "id": "38124cf09971dac08ec60935d3f6fbb7",
+    "id": "60d1f3f8a4df87581383e0709bc9c481",
     "metadata": {},
     "name": "pageJobDetailApplicantsQuery",
     "operationKind": "query",

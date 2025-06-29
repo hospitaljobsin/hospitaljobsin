@@ -99,8 +99,7 @@ class JobApplicantAnalysisOutput(BaseModel):
         default=None,
         description="List of potential risks or red flags identified in the match analysis.",
     )
-    overall_score: float | None = Field(
-        default=None,
+    overall_score: float = Field(
         description="Final score for the applicant's match to the job (0-1), synthesized after all field analyses.",
         ge=0.0,
         le=1.0,

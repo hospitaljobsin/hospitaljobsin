@@ -2,6 +2,7 @@ import secrets
 import uuid
 from collections import defaultdict
 from datetime import UTC, datetime
+from enum import Enum
 from typing import Any, Literal, get_args
 
 import pymongo
@@ -508,6 +509,11 @@ class SavedJobRepo:
         await saved_job.delete(link_rule=DeleteRules.DO_NOTHING)
 
 
+class JobApplicantsSortBy(Enum):
+    OVERALL_SCORE = "overall_score"
+    CREATED_AT = "created_at"
+
+
 class JobApplicantRepo:
     def __init__(
         self,
@@ -667,12 +673,12 @@ class JobApplicantRepo:
         if analysis is not None:
             job_applicant.analysis = JobApplicantAnalysis(
                 analysed_fields=analysis.analysed_fields,
-                overall_score=analysis.overall_score,
                 overall_summary=analysis.overall_summary,
                 strengths=analysis.strengths,
                 risk_flags=analysis.risk_flags,
                 created_at=datetime.now(UTC),
             )
+            job_applicant.overall_score = analysis.overall_score
             job_applicant.analysis_status = "complete"
         else:
             job_applicant.analysis_status = "failed"
@@ -702,23 +708,28 @@ class JobApplicantRepo:
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
+        sort_by: JobApplicantsSortBy = JobApplicantsSortBy.OVERALL_SCORE,
     ) -> PaginatedResult[JobApplicant, ObjectId]:
         """Return all applicants for a job."""
         search_criteria = JobApplicant.find(
             JobApplicant.job.id == job_id,
             fetch_links=True,
             nesting_depth=1,
-        ).sort(-JobApplicant.id)
+        )
         paginator: Paginator[JobApplicant, ObjectId] = Paginator(
             reverse=True,
             document_cls=JobApplicant,
             paginate_by="id",
         )
 
-        search_criteria = JobApplicant.find(JobApplicant.job.id == job_id)
-
         if status:
             search_criteria = search_criteria.find(JobApplicant.status == status)
+
+        match sort_by:
+            case JobApplicantsSortBy.OVERALL_SCORE:
+                search_criteria = search_criteria.sort(-JobApplicant.overall_score)
+            case JobApplicantsSortBy.CREATED_AT:
+                search_criteria = search_criteria.sort(-JobApplicant.id)
 
         return await paginator.paginate(
             search_criteria=search_criteria,

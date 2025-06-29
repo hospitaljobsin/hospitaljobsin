@@ -42,6 +42,7 @@ const ApplicantCardFragment = graphql`
 		profileSnapshot {
 			headline
 		}
+		overallScore
 		analysis {
 			__typename
 			... on JobApplicantAnalysisPending {
@@ -51,7 +52,6 @@ const ApplicantCardFragment = graphql`
 				__typename
 			}
 			... on JobApplicantAnalysis {
-				overallScore
 				overallSummary
 				strengths
 				riskFlags
@@ -180,13 +180,12 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 							)}
 						</div>
 						<div className="flex items-center gap-6">
-							{data.analysis.__typename === "JobApplicantAnalysis" &&
-								typeof data.analysis.overallScore === "number" && (
-									<div className="flex items-center gap-2 text-lg font-semibold text-primary-700 bg-primary-50 rounded-full">
-										<Star size={16} className="text-primary-500" />
-										<span>{data.analysis.overallScore * 100}%</span>
-									</div>
-								)}
+							{data.analysis.__typename === "JobApplicantAnalysis" && (
+								<div className="flex items-center gap-2 text-lg font-semibold text-primary-700 bg-primary-50 rounded-full">
+									<Star size={16} className="text-primary-500" />
+									<span>{data.overallScore * 100}%</span>
+								</div>
+							)}
 						</div>
 					</div>
 

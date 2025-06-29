@@ -3,7 +3,10 @@
 import { usePaginationFragment } from "react-relay";
 
 import type { ApplicantListFragment$key } from "@/__generated__/ApplicantListFragment.graphql";
-import type { JobApplicantStatus } from "@/__generated__/ApplicantListPaginationQuery.graphql";
+import type {
+	JobApplicantStatus,
+	JobApplicantsSortBy,
+} from "@/__generated__/ApplicantListPaginationQuery.graphql";
 import type { pageJobDetailApplicantsQuery } from "@/__generated__/pageJobDetailApplicantsQuery.graphql";
 import { UserRound } from "lucide-react";
 import { startTransition, useEffect, useRef } from "react";
@@ -17,6 +20,7 @@ const ApplicantListFragment = graphql`
 		count: { type: "Int", defaultValue: 10 }
 		searchTerm: { type: "String", defaultValue: null }
 		status: { type: "JobApplicantStatus", defaultValue: null }
+		sortBy: { type: "JobApplicantsSortBy", defaultValue: OVERALL_SCORE }
 	)
 	@refetchable(queryName: "ApplicantListPaginationQuery") {
 		id
@@ -25,7 +29,8 @@ const ApplicantListFragment = graphql`
 			first: $count
 			searchTerm: $searchTerm
 			status: $status
-		) @connection(key: "ApplicantListFragment_applicants", filters: ["searchTerm"]) {
+			sortBy: $sortBy
+		) @connection(key: "ApplicantListFragment_applicants", filters: ["searchTerm", "sortBy"]) {
 			edges {
 				node {
 					id
@@ -43,6 +48,7 @@ type Props = {
 	rootQuery: ApplicantListFragment$key;
 	searchTerm: string | null;
 	status: JobApplicantStatus | null;
+	sortBy: JobApplicantsSortBy | null;
 };
 
 export default function ApplicantList({

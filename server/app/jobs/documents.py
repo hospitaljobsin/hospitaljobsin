@@ -133,11 +133,6 @@ class ApplicantField(BaseModel):
 
 class JobApplicantAnalysis(BaseModel):
     analysed_fields: AnalysedFields
-    overall_score: float | None = Field(
-        default=None,
-        ge=0.0,
-        le=1.0,
-    )
     overall_summary: str
     strengths: list[str] | None = Field(
         default=None,
@@ -167,6 +162,11 @@ class JobApplicant(Document):
     analysis: JobApplicantAnalysis | None = Field(
         default=None,
         description="AI-generated match analysis for this applicant and job.",
+    )
+    overall_score: float = Field(
+        default=0.0,
+        ge=0.0,
+        le=1.0,
     )
     analysis_status: JobApplicantAnalysisStatus = Field(
         default="pending",
