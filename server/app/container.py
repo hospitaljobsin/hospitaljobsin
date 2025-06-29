@@ -202,7 +202,7 @@ def register_location_service(container: aioinject.Container) -> None:
         case "aws_location":
             container.register(aioinject.Scoped(create_location_service_client))
             container.register(
-                aioinject.Singleton(AWSLocationService, BaseLocationService)
+                aioinject.Scoped(AWSLocationService, BaseLocationService)
             )
         case _ as unreachable:
             assert_never(unreachable)
@@ -225,7 +225,7 @@ def create_container() -> aioinject.Container:
     if app_settings.is_testing:
         container.register(aioinject.Scoped(TestSetupService))
     container.register(aioinject.Singleton(create_aioboto3_session))
-    container.register(aioinject.Singleton(create_s3_client))
+    container.register(aioinject.Scoped(create_s3_client))
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_captcha_verifier))
     container.register(aioinject.Singleton(create_google_genai_client))
