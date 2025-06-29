@@ -29,14 +29,6 @@ const applicantStatus = [
 	{ key: "OFFERED", label: "Offered" },
 ] as { key: JobApplicantStatus; label: string }[];
 
-export const JOB_APPLICANT_STATUSES = [
-	"APPLIED",
-	"INTERVIEWED",
-	"OFFERED",
-	"ONHOLD",
-	"SHORTLISTED",
-] as JobApplicantStatus[];
-
 const UpdateJobApplicantsStatusMutation = graphql`
 	mutation ApplicantListControllerMutation(
 		$jobId: ID!
@@ -137,8 +129,8 @@ export default function ApplicantListController(
 							});
 						}}
 					>
-						{JOB_APPLICANT_STATUSES.map((status) => (
-							<DropdownItem key={status}>{status}</DropdownItem>
+						{applicantStatus.map((status) => (
+							<DropdownItem key={status.key}>{status.label}</DropdownItem>
 						))}
 					</DropdownMenu>
 				</Dropdown>

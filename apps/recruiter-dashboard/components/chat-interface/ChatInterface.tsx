@@ -4,6 +4,7 @@ import { useCopilotChatLogic } from "@/lib/hooks/useCopilotChatLogic";
 import { Button, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { StopCircleIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4-mini";
 import MessageViewer from "./message-viewer/MessageViewer";
@@ -14,7 +15,11 @@ const chatSchema = z.object({
 
 export default function ChatInterface({
 	placeholder,
-}: { placeholder: string }) {
+	emptyMessagesPlaceholder,
+}: {
+	placeholder: string;
+	emptyMessagesPlaceholder: ReactNode;
+}) {
 	const { visibleMessages, sendMessage, stopGeneration, isLoading } =
 		useCopilotChatLogic();
 
