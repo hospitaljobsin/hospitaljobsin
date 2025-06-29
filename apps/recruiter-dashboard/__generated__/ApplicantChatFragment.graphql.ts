@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ba6a26a0daff7dc527d18e0c9deae379>>
+ * @generated SignedSource<<0f0ab4264c3e73c0938c28beb516ee92>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,15 @@ import type { FragmentRefs } from "relay-runtime";
 export type ApplicantChatFragment$data = {
   readonly account: {
     readonly fullName: string;
+  };
+  readonly analysis: {
+    readonly __typename: "JobApplicantAnalysis";
+    readonly riskFlags: ReadonlyArray<string> | null | undefined;
+    readonly strengths: ReadonlyArray<string> | null | undefined;
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
   };
   readonly " $fragmentType": "ApplicantChatFragment";
 };
@@ -48,12 +57,51 @@ const node: ReaderFragment = {
         "storageKey": null
       },
       "action": "THROW"
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "analysis",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "__typename",
+          "storageKey": null
+        },
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "strengths",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "riskFlags",
+              "storageKey": null
+            }
+          ],
+          "type": "JobApplicantAnalysis",
+          "abstractKey": null
+        }
+      ],
+      "storageKey": null
     }
   ],
   "type": "JobApplicant",
   "abstractKey": null
 };
 
-(node as any).hash = "976cbea2b7987f379d8e8362213cd9c5";
+(node as any).hash = "fa517b2a7c6c453fe45c04fba3bb649d";
 
 export default node;

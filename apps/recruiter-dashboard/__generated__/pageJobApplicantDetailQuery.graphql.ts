@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1c8d24c8af846204e459bac19a95eaff>>
- * @relayHash 9b326a590af62ce9cbafc9af4c754da4
+ * @generated SignedSource<<35627143176f1ecb11c45b3b7bd2d16a>>
+ * @relayHash fa4d88973b5c21f465dd203f46f6cad5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9b326a590af62ce9cbafc9af4c754da4
+// @relayRequestID fa4d88973b5c21f465dd203f46f6cad5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -394,6 +394,13 @@ return {
                                     "name": "headline",
                                     "storageKey": null
                                   },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "professionalSummary",
+                                    "storageKey": null
+                                  },
                                   (v4/*: any*/),
                                   {
                                     "alias": null,
@@ -655,11 +662,45 @@ return {
                                       {
                                         "alias": null,
                                         "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "strengths",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "kind": "ScalarField",
+                                        "name": "riskFlags",
+                                        "storageKey": null
+                                      },
+                                      {
+                                        "alias": null,
+                                        "args": null,
                                         "concreteType": "AnalysedFields",
                                         "kind": "LinkedField",
                                         "name": "analysedFields",
                                         "plural": false,
                                         "selections": [
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "professionalSummary",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "headline",
+                                            "plural": false,
+                                            "selections": (v13/*: any*/),
+                                            "storageKey": null
+                                          },
                                           {
                                             "alias": null,
                                             "args": null,
@@ -817,7 +858,7 @@ return {
     ]
   },
   "params": {
-    "id": "9b326a590af62ce9cbafc9af4c754da4",
+    "id": "fa4d88973b5c21f465dd203f46f6cad5",
     "metadata": {},
     "name": "pageJobApplicantDetailQuery",
     "operationKind": "query",

@@ -34,6 +34,8 @@ export interface MessagesProps {
 	inProgress: boolean;
 	children?: React.ReactNode;
 
+	emptyMessagesPlaceholder?: ReactNode;
+
 	/**
 	 * Callback function to regenerate the assistant's response
 	 */

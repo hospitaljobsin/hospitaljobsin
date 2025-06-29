@@ -11,6 +11,13 @@ const ApplicantChatFragment = graphql`
     account @required(action: THROW) {
       fullName
     }
+    analysis {
+      __typename
+      ... on JobApplicantAnalysis {
+        strengths
+        riskFlags
+      }
+    }
   }
 `;
 
@@ -19,6 +26,10 @@ export default function ApplicantChat({
 }: { applicant: ApplicantChatFragment$key }) {
 	const [showChatPopup, setShowChatPopup] = useState(false);
 	const data = useFragment(ApplicantChatFragment, applicant);
+	const analysis =
+		data.analysis && data.analysis.__typename === "JobApplicantAnalysis"
+			? data.analysis
+			: undefined;
 	return (
 		<>
 			<div className="sticky top-0 h-screen min-w-[420px] max-w-[440px] w-full xl:flex flex-col border-l border-foreground-300 hidden">

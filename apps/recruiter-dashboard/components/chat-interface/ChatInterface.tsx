@@ -18,7 +18,7 @@ export default function ChatInterface({
 	emptyMessagesPlaceholder,
 }: {
 	placeholder: string;
-	emptyMessagesPlaceholder: ReactNode;
+	emptyMessagesPlaceholder?: ReactNode;
 }) {
 	const { visibleMessages, sendMessage, stopGeneration, isLoading } =
 		useCopilotChatLogic();
@@ -38,7 +38,17 @@ export default function ChatInterface({
 	return (
 		<div className="flex flex-col h-full w-full">
 			<div className="flex-1 min-h-0 overflow-y-auto">
-				<MessageViewer messages={visibleMessages} inProgress={isLoading} />
+				<MessageViewer
+					messages={visibleMessages}
+					inProgress={isLoading}
+					emptyMessagesPlaceholder={
+						emptyMessagesPlaceholder || (
+							<div className="w-full h-full flex items-center justify-center flex-1 text-foreground-500">
+								No messages
+							</div>
+						)
+					}
+				/>
 			</div>
 			<div className="w-full bg-background-400 py-6 px-5 border-t border-gray-300 sticky bottom-0">
 				<form

@@ -84,9 +84,9 @@ export default function AboutMe({ rootQuery, onEditProfile }: Props) {
 								</p>
 							</div>
 						) : (
-							<h2 className="w-full text-foreground-500">
+							<div className="w-full text-foreground-500">
 								<EditorContent editor={editor} className="w-full" />
-							</h2>
+							</div>
 						)}
 					</div>
 				</CardBody>
