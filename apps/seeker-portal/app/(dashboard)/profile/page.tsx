@@ -19,7 +19,7 @@ export default function Profile() {
 		environment,
 		ProfilePageQuery,
 		{},
-		{ fetchPolicy: "store-or-network" },
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 	return (
 		<div className="py-8 w-full h-full flex flex-col gap-8">

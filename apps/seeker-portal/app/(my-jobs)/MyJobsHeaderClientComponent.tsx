@@ -1,11 +1,11 @@
 "use client";
 
-import { Suspense } from "react";
-import { loadQuery, useRelayEnvironment } from "react-relay";
 import type { MyJobsHeaderQuery as MyJobsHeaderQueryType } from "@/__generated__/MyJobsHeaderQuery.graphql";
 import MyJobsHeader, {
 	MyJobsHeaderQuery,
 } from "@/components/layout/MyJobsHeader";
+import { Suspense } from "react";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 
 export default function MyJobsHeaderClientComponent() {
 	const environment = useRelayEnvironment();
@@ -13,7 +13,7 @@ export default function MyJobsHeaderClientComponent() {
 		environment,
 		MyJobsHeaderQuery,
 		{},
-		{ fetchPolicy: "store-or-network" },
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 	return (
 		<Suspense>

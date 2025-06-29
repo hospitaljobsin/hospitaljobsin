@@ -24,6 +24,7 @@ export default function OrganizationMemberSettingsPage() {
 		{
 			slug: organizationSlug,
 		},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
 	return <MemberSettingsTab initialQueryRef={initialQueryRef} />;

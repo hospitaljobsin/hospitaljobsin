@@ -106,7 +106,10 @@ export default function LocationAutocomplete({
 			startTransition(() => {
 				loadQuery(
 					{ searchTerm: debouncedLocation },
-					{ fetchPolicy: "store-or-network" },
+					{
+						fetchPolicy: "store-or-network",
+						networkCacheConfig: { force: false },
+					},
 				);
 			});
 		} else {

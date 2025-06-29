@@ -24,6 +24,7 @@ export default function DashboardPage() {
 		{
 			slug: organizationSlug,
 		},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
 	return <DashboardView initialQueryRef={initialQueryRef} />;

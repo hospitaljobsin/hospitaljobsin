@@ -3,6 +3,7 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
 import { env } from "./lib/env/client";
 
 Sentry.init({
@@ -13,4 +14,10 @@ Sentry.init({
 
 	// Setting this option to true will print useful information to the console while you're setting up Sentry.
 	debug: false,
+	profileSessionSampleRate: 1.0,
+	profileLifecycle: "trace",
+	integrations: [
+		nodeProfilingIntegration(),
+		Sentry.anrIntegration({ captureStackTrace: true }),
+	],
 });

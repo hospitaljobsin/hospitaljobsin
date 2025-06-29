@@ -24,7 +24,7 @@ export default function JobApplicantDetailPage() {
 		relayEnvironment,
 		JobApplicantDetailQuery,
 		{ orgSlug: organizationSlug, jobSlug: slug, applicantSlug: applicantSlug },
-		{ fetchPolicy: "store-and-network" },
+		{ fetchPolicy: "store-and-network", networkCacheConfig: { force: false } },
 	);
 
 	return (

@@ -1,9 +1,9 @@
 "use client";
+import type { pageAccountSettingsQuery } from "@/__generated__/pageAccountSettingsQuery.graphql";
+import AccountSettingsViewSkeleton from "@/components/settings/account/AccountSettingsViewSkeleton";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
-import type { pageAccountSettingsQuery } from "@/__generated__/pageAccountSettingsQuery.graphql";
-import AccountSettingsViewSkeleton from "@/components/settings/account/AccountSettingsViewSkeleton";
 import AccountClientComponent from "./AccountClientComponent";
 
 export const AccountSettingsPageQuery = graphql`
@@ -18,7 +18,7 @@ export default function AccountSettingsPage() {
 		environment,
 		AccountSettingsPageQuery,
 		{},
-		{ fetchPolicy: "store-or-network" },
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
 	return (

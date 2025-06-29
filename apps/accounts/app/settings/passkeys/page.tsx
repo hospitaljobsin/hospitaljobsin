@@ -1,9 +1,9 @@
 "use client";
+import type { pagePasskeysSettingsQuery } from "@/__generated__/pagePasskeysSettingsQuery.graphql";
+import PasskeysSettingsViewSkeleton from "@/components/settings/passkeys/PasskeysSettingsViewSkeleton";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
-import type { pagePasskeysSettingsQuery } from "@/__generated__/pagePasskeysSettingsQuery.graphql";
-import PasskeysSettingsViewSkeleton from "@/components/settings/passkeys/PasskeysSettingsViewSkeleton";
 import PasskeysClientComponent from "./PasskeysClientComponent";
 
 export const PasskeysSettingsPageQuery = graphql`
@@ -18,7 +18,7 @@ export default function PasskeysSettingsPage() {
 		environment,
 		PasskeysSettingsPageQuery,
 		{},
-		{ fetchPolicy: "store-or-network" },
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
 	return (

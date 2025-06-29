@@ -15,6 +15,7 @@ export default function SidebarClientComponent() {
 		{ organizationSlug: organizationSlug },
 		{
 			fetchPolicy: "store-or-network",
+			networkCacheConfig: { force: false },
 		},
 	);
 

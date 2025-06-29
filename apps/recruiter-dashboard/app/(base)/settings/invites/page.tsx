@@ -24,6 +24,7 @@ export default function OrganizationInviteSettingsPage() {
 		{
 			slug: organizationSlug,
 		},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
 	return <InviteSettingsTab initialQueryRef={initialQueryRef} />;

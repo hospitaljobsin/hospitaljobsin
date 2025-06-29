@@ -17,17 +17,14 @@ const CreateJobPage: FC = () => {
 	const environment = useRelayEnvironment();
 	const { organizationSlug } = useOrganization();
 
-	if (!organizationSlug) {
-		return (
-			<div className="text-danger text-center py-8">
-				Organization not found.
-			</div>
-		);
-	}
-
-	const orgQueryRef = loadQuery<pageNewJobQuery>(environment, PageNewJobQuery, {
-		slug: organizationSlug,
-	});
+	const orgQueryRef = loadQuery<pageNewJobQuery>(
+		environment,
+		PageNewJobQuery,
+		{
+			slug: organizationSlug,
+		},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
+	);
 
 	return (
 		<Suspense

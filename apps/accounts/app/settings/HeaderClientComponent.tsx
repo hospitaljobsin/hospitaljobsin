@@ -15,6 +15,7 @@ export default function HeaderClientComponent() {
 		},
 		{
 			fetchPolicy: "store-or-network",
+			networkCacheConfig: { force: false },
 		},
 	);
 	return (

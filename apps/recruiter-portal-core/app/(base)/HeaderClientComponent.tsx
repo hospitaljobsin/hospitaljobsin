@@ -1,9 +1,9 @@
 "use client";
-import { Suspense } from "react";
-import { loadQuery, useRelayEnvironment } from "react-relay";
 import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
 import Header, { HeaderQuery } from "@/components/layout/Header";
 import HeaderSkeleton from "@/components/layout/HeaderSkeleton";
+import { Suspense } from "react";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 
 export default function HeaderClientComponent() {
 	const environment = useRelayEnvironment();
@@ -11,7 +11,7 @@ export default function HeaderClientComponent() {
 		environment,
 		HeaderQuery,
 		{},
-		{ fetchPolicy: "store-or-network" },
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
 	return (

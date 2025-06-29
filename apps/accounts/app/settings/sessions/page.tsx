@@ -1,9 +1,9 @@
 "use client";
+import type { pageSessionsSettingsQuery } from "@/__generated__/pageSessionsSettingsQuery.graphql";
+import SessionsSettingsViewSkeleton from "@/components/settings/sessions/SessionsSettingsViewSkeleton";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
-import type { pageSessionsSettingsQuery } from "@/__generated__/pageSessionsSettingsQuery.graphql";
-import SessionsSettingsViewSkeleton from "@/components/settings/sessions/SessionsSettingsViewSkeleton";
 import SessionsClientComponent from "./SessionsClientComponent";
 
 export const SessionsSettingsPageQuery = graphql`
@@ -18,7 +18,7 @@ export default function SessionsSettingsPage() {
 		environment,
 		SessionsSettingsPageQuery,
 		{},
-		{ fetchPolicy: "store-or-network" },
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
 	return (

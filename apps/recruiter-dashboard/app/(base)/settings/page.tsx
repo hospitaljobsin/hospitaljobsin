@@ -24,6 +24,7 @@ export default function OrganizationGeneralSettingsPage() {
 		{
 			slug: organizationSlug,
 		},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
 	return <GeneralSettingsTab initialQueryRef={initialQueryRef} />;

@@ -18,7 +18,7 @@ export default function JobDetailHeaderClientComponent() {
 			slug: organizationSlug,
 			jobSlug: slug,
 		},
-		{ fetchPolicy: "store-or-network" },
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
 	return (

@@ -18,7 +18,7 @@ export default function SelectPage() {
 		environment,
 		SelectPageQuery,
 		{},
-		{ fetchPolicy: "store-or-network" },
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
 	return (

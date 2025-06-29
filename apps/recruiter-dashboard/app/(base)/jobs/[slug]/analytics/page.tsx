@@ -21,7 +21,7 @@ export default function JobDetailPage() {
 		relayEnvironment,
 		JobDetailQuery,
 		{ orgSlug: organizationSlug, jobSlug: slug },
-		{ fetchPolicy: "store-and-network" },
+		{ fetchPolicy: "store-and-network", networkCacheConfig: { force: false } },
 	);
 
 	return (
