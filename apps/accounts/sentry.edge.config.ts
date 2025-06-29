@@ -17,8 +17,5 @@ Sentry.init({
 	debug: false,
 	profileSessionSampleRate: 1.0,
 	profileLifecycle: "trace",
-	integrations: [
-		nodeProfilingIntegration(),
-		Sentry.anrIntegration({ captureStackTrace: true }),
-	],
+	integrations: [nodeProfilingIntegration()],
 });
