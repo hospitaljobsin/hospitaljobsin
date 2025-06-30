@@ -126,6 +126,8 @@ module "core" {
   sentry_seeker_portal_ui_dsn    = module.sentry.sentry_seeker_portal_ui_dsn
   github_repository_name         = var.github_repository_name
   serper_api_key                 = var.serper_api_key
+  redis_password                 = module.redis.redis_password
+  redis_endpoint                 = module.redis.public_endpoint
 }
 
 module "redis" {

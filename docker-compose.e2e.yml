@@ -73,7 +73,9 @@ services:
       SERVER_SESSION_COOKIE_DOMAIN: '.localtest.me'
       SERVER_SESSION_COOKIE_SECURE: True
       SERVER_SERPER_API_KEY: "XXXXXXXXXXXXXX"
-      SERVER_REDIS_URL: "redis://test-redis:6379/0"
+      SERVER_REDIS_HOST: "test-redis"
+      SERVER_REDIS_PORT: 6379
+      SERVER_REDIS_SSL: false
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8000/health/"]
       interval: 10s

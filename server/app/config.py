@@ -187,7 +187,13 @@ class DatabaseSettings(BaseSettings):
 
 
 class RedisSettings(BaseSettings):
-    redis_url: str
+    redis_host: str
+
+    redis_port: int
+
+    redis_username: str | None = None
+
+    redis_ssl: bool
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -220,6 +226,10 @@ class SecretSettings(BaseSettings):
     google_client_id: str
 
     google_client_secret: SecretStr
+
+    # redis config
+
+    redis_password: SecretStr | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",

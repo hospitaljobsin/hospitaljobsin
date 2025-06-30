@@ -92,3 +92,15 @@ variable "serper_api_key" {
   description = "Serper API key."
   sensitive   = true
 }
+
+variable "redis_password" {
+  type        = string
+  description = "Redis password."
+  sensitive   = true
+}
+
+
+variable "redis_endpoint" {
+  type        = string
+  description = "Redis endpoint."
+}
