@@ -623,7 +623,7 @@ class JobApplicantRepo:
         )
         skills_str = ", ".join(profile.job_preferences)
         languages_str = ", ".join([lang.name for lang in profile.languages])
-        locations_str = ", ".join(profile.locations_open_to_work)
+        locations_str = ", ".join([loc.name for loc in profile.locations_open_to_work])
         certifications_str = ", ".join([cert.name for cert in profile.certifications])
         return (
             f"Gender: {profile.gender or 'N/A'}\\n"

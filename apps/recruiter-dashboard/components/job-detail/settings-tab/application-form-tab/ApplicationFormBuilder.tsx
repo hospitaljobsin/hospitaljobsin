@@ -206,9 +206,9 @@ export default function ApplicationFormBuilder({
 			<h2 className="text-foreground-400 font-medium text-lg">
 				Update Screening Questions
 			</h2>
-			<Alert color="warning" variant="flat">
-				Don't ask for information that are already available in the job seeker
-				profile.
+			<Alert color="warning" variant="flat" hideIconWrapper>
+				Don't ask for information that's already available in job seeker
+				profiles.
 			</Alert>
 			<Card fullWidth className="p-6 space-y-6" shadow="none">
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

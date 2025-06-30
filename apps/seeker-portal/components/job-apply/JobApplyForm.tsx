@@ -121,6 +121,7 @@ export default function JobApplyForm({
 	const [pendingSubmitValues, setPendingSubmitValues] = useState<z.infer<
 		typeof formSchema
 	> | null>(null);
+	const [showDirectApplyModal, setShowDirectApplyModal] = useState(false);
 
 	async function onSubmitConfirmed(values: z.infer<typeof formSchema>) {
 		commitMutation({
@@ -150,6 +151,33 @@ export default function JobApplyForm({
 	function handleFormSubmit(values: z.infer<typeof formSchema>) {
 		setPendingSubmitValues(values);
 		setShowConfirmModal(true);
+	}
+
+	function handleDirectApply() {
+		setShowDirectApplyModal(true);
+	}
+
+	function onDirectApplyConfirmed() {
+		commitMutation({
+			variables: {
+				jobId: data.id,
+				applicantFields: [],
+			},
+			onCompleted(response) {
+				if (
+					response.createJobApplication.__typename ===
+					"CreateJobApplicantSuccess"
+				) {
+					router.push(links.jobDetail(data.organization.slug, data.slug));
+				} else {
+					addToast({
+						description: "An unexpected error occurred. Please try again.",
+						color: "danger",
+					});
+				}
+			},
+		});
+		setShowDirectApplyModal(false);
 	}
 
 	return (
@@ -291,8 +319,17 @@ export default function JobApplyForm({
 
 			{!data.applicationForm && (
 				<div className="flex flex-col gap-4">
-					{/* TODO: add direct apply button here */}
-					<p>This job doesn't have screening questions. Consider</p>
+					{/* direct apply button, without applicant fields */}
+					<Button
+						type="button"
+						color="primary"
+						fullWidth
+						size="lg"
+						isDisabled={isSubmitting}
+						onPress={handleDirectApply}
+					>
+						Submit Application
+					</Button>
 				</div>
 			)}
 			<Modal
@@ -332,6 +369,39 @@ export default function JobApplyForm({
 									setPendingSubmitValues(null);
 								}
 							}}
+							fullWidth
+						>
+							Confirm
+						</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
+			{/* Direct Apply Confirmation Modal */}
+			<Modal
+				isOpen={showDirectApplyModal}
+				onClose={() => setShowDirectApplyModal(false)}
+				size="md"
+			>
+				<ModalContent className="p-6">
+					<ModalHeader>Confirm Submission</ModalHeader>
+					<ModalBody>
+						<p>
+							Are you sure you want to submit your job application? You won't be
+							able to undo this.
+						</p>
+					</ModalBody>
+					<ModalFooter className="flex gap-4 items-center w-full flex-row">
+						<Button
+							variant="flat"
+							onPress={() => setShowDirectApplyModal(false)}
+							fullWidth
+						>
+							Cancel
+						</Button>
+						<Button
+							color="primary"
+							isLoading={isMutationInFlight}
+							onPress={onDirectApplyConfirmed}
 							fullWidth
 						>
 							Confirm

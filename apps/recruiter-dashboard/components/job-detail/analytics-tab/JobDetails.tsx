@@ -4,17 +4,8 @@ import type {
 	WorkMode,
 } from "@/__generated__/JobDetailsFragment.graphql";
 import { dateFormat } from "@/lib/intl";
-import links from "@/lib/links";
-import {
-	Alert,
-	Button,
-	Card,
-	CardBody,
-	CardFooter,
-	CardHeader,
-} from "@heroui/react";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { Briefcase, Clock, Globe, IndianRupee, MapPin } from "lucide-react";
-import Link from "next/link";
 import { graphql, useFragment } from "react-relay";
 import JobStatistics from "./JobStatistics";
 
@@ -53,11 +44,6 @@ export default function JobDetails({
 	rootQuery,
 }: { rootQuery: JobDetailsFragment$key }) {
 	const data = useFragment(JobDetailsFragment, rootQuery);
-
-	const showApplicationFormWarning =
-		data.organization.isAdmin &&
-		data.externalApplicationUrl === null &&
-		!data.applicationForm;
 
 	function formatExperienceRange({
 		hasExperienceRange,
@@ -181,24 +167,7 @@ export default function JobDetails({
 				</CardFooter>
 			</Card>
 			{/* Application Form Card */}
-			{showApplicationFormWarning ? (
-				<Alert
-					color="warning"
-					title="Consider adding screening questions"
-					description="Screening questions help you filter candidates and get more relevant applications. You can add them now or later in job settings."
-					variant="flat"
-					endContent={
-						<Button
-							variant="flat"
-							color="warning"
-							as={Link}
-							href={links.jobDetailSettingsApplicationForm(data.slug)}
-						>
-							Add screening questions
-						</Button>
-					}
-				/>
-			) : null}
+
 			<JobStatistics job={data} />
 		</div>
 	);
