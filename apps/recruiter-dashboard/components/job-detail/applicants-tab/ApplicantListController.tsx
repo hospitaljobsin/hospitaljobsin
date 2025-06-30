@@ -87,7 +87,7 @@ export default function ApplicantListController(
 		);
 	const handleSelectionChange = (keys: SharedSelection) => {
 		startTransition(() => {
-			if (keys.currentKey === "ALL" || keys.currentKey === "") {
+			if (keys.currentKey === "") {
 				props.setStatus("ALL");
 				return;
 			}
@@ -96,7 +96,7 @@ export default function ApplicantListController(
 	};
 	const handleSortByChange = (keys: SharedSelection) => {
 		startTransition(() => {
-			if (keys.currentKey === "OVERALL_SCORE" || keys.currentKey === "") {
+			if (keys.currentKey === "") {
 				props.setSortBy("OVERALL_SCORE");
 				return;
 			}
@@ -189,7 +189,7 @@ export default function ApplicantListController(
 				variant="bordered"
 				className="bg-background w-full sm:w-sm sm:max-w-xs"
 				onSelectionChange={handleSelectionChange}
-				selectedKeys={[props.status]}
+				selectedKeys={props.status ? [props.status] : ["ALL"]}
 			>
 				{applicantStatus.map((status) => (
 					<SelectItem key={status.key}>{status.label}</SelectItem>

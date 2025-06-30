@@ -106,7 +106,7 @@ export default function ApplicantList({
 						sortBy: sortBy,
 					},
 					{
-						fetchPolicy: "store-or-network",
+						fetchPolicy: "store-and-network",
 						onComplete: () => {
 							if (onLoadingChange) setTimeout(() => onLoadingChange(false), 0);
 						},
