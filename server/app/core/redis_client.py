@@ -15,4 +15,5 @@ def create_redis_client(
         else None,
         decode_responses=True,
         ssl=settings.redis_ssl,
+        ssl_cert_reqs="none",
     )

@@ -166,7 +166,7 @@ locals {
   escaped_domain = replace(var.domain_name, ".", "\\.")
   redis_parts    = split(":", var.redis_endpoint)
   redis_host     = element(local.redis_parts, 0)
-  redis_port     = element(local.redis_parts, 1)
+  redis_port     = tonumber(element(local.redis_parts, 1))
 }
 resource "aws_lambda_function" "backend" {
   # depends_on    = [docker_registry_image.backend]
@@ -187,7 +187,7 @@ resource "aws_lambda_function" "backend" {
 
   environment {
     variables = {
-      SERVER_DEBUG                                = "false"
+      SERVER_DEBUG                                = "False"
       SERVER_ENVIRONMENT                          = "production"
       SERVER_DATABASE_URL                         = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
       SERVER_DEFAULT_DATABASE_NAME                = var.mongodb_database_name
@@ -216,7 +216,7 @@ resource "aws_lambda_function" "backend" {
       SERVER_REDIS_HOST                           = local.redis_host
       SERVER_REDIS_PORT                           = local.redis_port
       SERVER_REDIS_USERNAME                       = "default"
-      SERVER_REDIS_SSL                            = "true"
+      SERVER_REDIS_SSL                            = "True"
 
       AWS_SECRETS_MANAGER_SECRET_ID = aws_secretsmanager_secret.backend.id
     }
