@@ -14,7 +14,9 @@
 - [PyWebAuthn](https://duo-labs.github.io/py_webauthn/) - WebAuthn Library
 - [Structlog](https://www.structlog.org/) - Structured logging
 - [MongoDB](https://www.mongodb.com/) - Database
-- [CrewAI](https://crewai.com/) - Agentic Framework
+- [Redis](https://redis.io/) - Cache/ Secondary Database
+- [Pydantic AI](https://ai.pydantic.dev/) - Agentic AI Framework
+- [Gemini 2.5 Flash](https://ai.google.dev/gemini-2.5-flash) - AI Model
 
 and other packages from [pyproject.toml](./pyproject.toml) 💖
 
