@@ -167,7 +167,10 @@ export default function ApplicantListController(
 				variant="bordered"
 				value={props.searchTerm || ""}
 				onValueChange={(value) => props.setSearchTerm(value)}
-				onClear={() => props.setSearchTerm(null)}
+				onClear={() => {
+					// we need to wait for the debounce to complete
+					setTimeout(() => props.setSearchTerm(null), 0);
+				}}
 				fullWidth
 			/>
 			<Select
