@@ -224,6 +224,23 @@ class ProfileRepo:
         await account.save()
         return profile
 
+    def _calculate_total_work_experience(self, profile: Profile) -> float:
+        return sum(
+            [
+                (
+                    (
+                        work_experience.completed_at - work_experience.started_at
+                    ).total_seconds()
+                    if work_experience.completed_at
+                    else (
+                        datetime.now(UTC).date() - work_experience.started_at
+                    ).total_seconds()
+                )
+                / (365 * 24 * 60 * 60)
+                for work_experience in profile.work_experience
+            ]
+        )
+
     async def update(
         self,
         profile: Profile,
@@ -292,6 +309,9 @@ class ProfileRepo:
             profile.job_preferences = job_preferences
         if work_experience is not UNSET:
             profile.work_experience = work_experience
+            profile.total_work_experience_years = self._calculate_total_work_experience(
+                profile
+            )
         if salary_expectations is not UNSET:
             profile.salary_expectations = salary_expectations
         if certifications is not UNSET:

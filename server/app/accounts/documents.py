@@ -97,6 +97,7 @@ class BaseProfile(BaseModel):
     languages: list[Language]
     job_preferences: list[str]
     work_experience: list[WorkExperience]
+    total_work_experience_years: float = 0.0
     salary_expectations: SalaryExpectations | None
     certifications: list[Certification]
     professional_summary: str | None = None

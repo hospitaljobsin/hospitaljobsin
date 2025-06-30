@@ -38,10 +38,11 @@ class ApplicantQueryFilters(BaseModel):
         ...,
         description="A string for vector search, capturing implicit requirements (degrees, institutions, employers, certifications, languages, licenses, skills, etc.).",
     )
-    min_experience: int | None = Field(
-        default=None, description="Minimum years of experience required, if specified."
+    min_total_work_experience_years: int | None = Field(
+        default=None,
+        description="Minimum years of total work experience required, if specified.",
     )
-    max_experience: int | None = Field(
+    max_total_work_experience_years: int | None = Field(
         default=None, description="Maximum years of experience allowed, if specified."
     )
     location: LocationWithRadius | list[LocationWithRadius] | None = Field(
@@ -67,6 +68,11 @@ class ApplicantQueryFilters(BaseModel):
     category: str | None = Field(
         default=None, description="Reservation/diversity category, if specified."
     )
+
+    # TODO: add fields to determine:
+    # -additional_rag_needed: bool
+    # - rag_instructions: str
+    # We need to figure out how to handle pagination with RAG tho, cause its on the fly and results might change for the same query/ filters
 
 
 type ApplicantQueryParserAgent = Agent[None, ApplicantQueryFilters]
