@@ -13,7 +13,6 @@ from app.config import (
     AppSettings,
     AuthSettings,
     DatabaseSettings,
-    SecretSettings,
     get_settings,
 )
 from app.container import create_container

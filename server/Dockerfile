@@ -78,6 +78,8 @@ COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt
 # this errors out for some reason
 # ENV READINESS_CHECK_PATH = "/health/"
 ENV PORT=8000
+ENV AWS_LWA_ASYNC_INIT=true
+ENV AWS_LWA_ENABLE_COMPRESSION=true
 
 ENV RUST_BACKTRACE=full
 
