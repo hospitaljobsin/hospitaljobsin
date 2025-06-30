@@ -730,6 +730,7 @@ class JobApplicantRepo:
             query_embedding = await self._embeddings_service.generate_embeddings(
                 text=filters.query,
                 task_type="RETRIEVAL_QUERY",
+                use_cache=True,
             )
 
             pipeline.append(
@@ -747,6 +748,9 @@ class JobApplicantRepo:
         # === Add structured filters from ApplicantQueryFilters ===
         # 1. min_experience / max_experience (add $expr $function filter if needed)
         if filters.min_experience is not None or filters.max_experience is not None:
+            # TODO: we should probably store experience in a queryable manner, by passing the data to the LLM
+            # this should be done alongside the profile analysis step.
+
             # TODO: This is not indexed and should be denormalized for performance
             # expr = {
             #     "$function": {
