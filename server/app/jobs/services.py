@@ -550,6 +550,10 @@ class JobApplicantService:
         if existing_job_application is not None:
             return Err(JobApplicantAlreadyExistsError())
 
+        # TODO: validate applicant fields (screening questions here)
+        # if the job doesn't have any, its okay to be an empty array.
+        # otherwise, the questions must match that on the job (maybe tag each question with an ID??)
+
         job_application = await self._job_applicant_repo.create(
             job=existing_job,
             account=account,
