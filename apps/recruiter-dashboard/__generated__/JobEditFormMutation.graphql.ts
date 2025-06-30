@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a20741fbed44870100be8cb270de2bd1>>
- * @relayHash e1d71ed984b08d07444f9071c53485ea
+ * @generated SignedSource<<27608fa8a0b9c3c5063e262f82e54320>>
+ * @relayHash 614809fb46749a23904133ba66f83656
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID e1d71ed984b08d07444f9071c53485ea
+// @relayRequestID 614809fb46749a23904133ba66f83656
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -338,39 +338,50 @@ return {
                     "name": "externalApplicationUrl",
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Organization",
-                    "kind": "LinkedField",
-                    "name": "organization",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "isAdmin",
-                        "storageKey": null
-                      },
-                      (v16/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "name",
-                        "storageKey": null
-                      },
-                      (v15/*: any*/)
-                    ],
-                    "storageKey": null
-                  },
                   (v16/*: any*/),
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
                     "name": "isActive",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "JobApplicationForm",
+                    "kind": "LinkedField",
+                    "name": "applicationForm",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "ApplicationField",
+                        "kind": "LinkedField",
+                        "name": "fields",
+                        "plural": true,
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "fieldName",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "isRequired",
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      },
+                      (v16/*: any*/),
+                      (v14/*: any*/)
+                    ],
                     "storageKey": null
                   },
                   {
@@ -474,13 +485,27 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "JobApplicationForm",
+                    "concreteType": "Organization",
                     "kind": "LinkedField",
-                    "name": "applicationForm",
+                    "name": "organization",
                     "plural": false,
                     "selections": [
-                      (v14/*: any*/),
-                      (v16/*: any*/)
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "isAdmin",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "name",
+                        "storageKey": null
+                      },
+                      (v16/*: any*/),
+                      (v15/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -597,7 +622,7 @@ return {
     ]
   },
   "params": {
-    "id": "e1d71ed984b08d07444f9071c53485ea",
+    "id": "614809fb46749a23904133ba66f83656",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",

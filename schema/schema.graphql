@@ -1437,16 +1437,6 @@ type JobApplicationForm implements Node {
 	fields: [ApplicationField!]!
 }
 
-"""
-Used when the job application form is not found.
-"""
-type JobApplicationFormNotFoundError implements Error {
-	"""
-	Human readable error message.
-	"""
-	message: String!
-}
-
 type JobConnection {
 	"""
 	Information to aid in pagination.
@@ -3422,7 +3412,6 @@ union PublishJobPayload =
 	| Job
 	| JobNotFoundError
 	| OrganizationAuthorizationError
-	| JobApplicationFormNotFoundError
 
 type Query {
 	"""

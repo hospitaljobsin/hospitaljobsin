@@ -16,7 +16,6 @@ from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     JobApplicantAlreadyExistsError,
     JobApplicantsNotFoundError,
-    JobApplicationFormNotFoundError,
     JobIsExternalError,
     JobNotFoundError,
     JobNotPublishedError,
@@ -52,7 +51,6 @@ from .types import (
     JobApplicantsNotFoundErrorType,
     JobApplicantStatusEnum,
     JobApplicantType,
-    JobApplicationFormNotFoundErrorType,
     JobApplicationFormType,
     JobEdgeType,
     JobIsExternalErrorType,
@@ -528,8 +526,6 @@ class JobMutation:
                         return JobNotFoundErrorType()
                     case OrganizationAuthorizationError():
                         return OrganizationAuthorizationErrorType()
-                    case JobApplicationFormNotFoundError():
-                        return JobApplicationFormNotFoundErrorType()
             case Ok(job):
                 return JobType.marshal(job)
             case _ as unreachable:

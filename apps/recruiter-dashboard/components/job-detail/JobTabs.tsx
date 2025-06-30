@@ -11,9 +11,6 @@ import { graphql } from "relay-runtime";
 const JobTabsFragment = graphql`
 fragment JobTabsFragment on Job {
 	externalApplicationUrl
-	organization @required(action: THROW) {
-		isAdmin
-	}
 }`;
 
 export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
@@ -78,17 +75,15 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 						</div>
 					}
 				/>
-				{data.organization.isAdmin && (
-					<Tab
-						key={links.jobDetailSettings(params.slug)}
-						title={
-							<div className="flex items-center space-x-2">
-								<SquarePenIcon />
-								<span>Edit Job</span>
-							</div>
-						}
-					/>
-				)}
+				<Tab
+					key={links.jobDetailSettings(params.slug)}
+					title={
+						<div className="flex items-center space-x-2">
+							<SquarePenIcon />
+							<span>Edit Job</span>
+						</div>
+					}
+				/>
 			</Tabs>
 		</div>
 	);

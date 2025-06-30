@@ -1222,8 +1222,7 @@ PublishJobPayload = Annotated[
     | JobNotFoundErrorType
     | Annotated[
         "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
-    ]
-    | JobApplicationFormNotFoundErrorType,
+    ],
     strawberry.union(
         name="PublishJobPayload",
         description="The publish job payload.",

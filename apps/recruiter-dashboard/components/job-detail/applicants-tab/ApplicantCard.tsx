@@ -14,7 +14,7 @@ import {
 	CheckCircle2,
 	ChevronDown,
 	ChevronUp,
-	Info,
+	SparklesIcon,
 	Star,
 	XCircle,
 } from "lucide-react";
@@ -135,7 +135,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 					<div className="p-4 bg-primary-50 rounded-lg flex border border-primary-100 space-y-4 items-start flex-col sm:flex-row">
 						<div className="w-full flex flex-col gap-4 items-start">
 							<div className="flex items-center gap-2">
-								<Info size={16} className="text-primary-500" />
+								<SparklesIcon size={16} className="text-primary-500" />
 								<p className="text-sm font-semibold text-primary-700">
 									AI Analysis
 								</p>

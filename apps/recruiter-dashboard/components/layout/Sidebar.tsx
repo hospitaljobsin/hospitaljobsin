@@ -63,7 +63,7 @@ type Props = {
 
 const navItems = [
 	{
-		label: "My Jobs",
+		label: "Posted Jobs",
 		href: links.dashboard,
 		icon: <BriefcaseBusiness />,
 	},

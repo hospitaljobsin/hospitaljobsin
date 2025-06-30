@@ -50,7 +50,7 @@ export default function JobControls({ job }: Props) {
 				<Button
 					onPress={handleUnpublishJob}
 					startContent={<BookX size={20} />}
-					className="w-full sm:w-auto"
+					className="w-auto"
 				>
 					Unpublish job
 				</Button>
@@ -59,7 +59,7 @@ export default function JobControls({ job }: Props) {
 					color="primary"
 					onPress={handlePublishJob}
 					startContent={<BookPlus size={20} />}
-					className="w-full sm:w-auto"
+					className="w-auto"
 				>
 					Publish job
 				</Button>

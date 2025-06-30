@@ -32,7 +32,6 @@ from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     JobApplicantAlreadyExistsError,
     JobApplicantsNotFoundError,
-    JobApplicationFormNotFoundError,
     JobIsExternalError,
     JobNotFoundError,
     JobNotPublishedError,
@@ -326,9 +325,7 @@ class JobService:
         job_id: str,
     ) -> Result[
         Job,
-        JobNotFoundError
-        | OrganizationAuthorizationError
-        | JobApplicationFormNotFoundError,
+        JobNotFoundError | OrganizationAuthorizationError,
     ]:
         try:
             job_id = ObjectId(job_id)
@@ -343,15 +340,6 @@ class JobService:
             organization_id=existing_job.organization.ref.id,
         ):
             return Err(OrganizationAuthorizationError())
-
-        if (
-            existing_job.external_application_url is None
-            and await self._job_application_form_repo.get_by_job_id(
-                job_id=existing_job.id
-            )
-            is None
-        ):
-            return Err(JobApplicationFormNotFoundError())
 
         existing_job = await self._job_repo.update_active(existing_job, is_active=True)
 

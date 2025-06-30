@@ -1,6 +1,7 @@
 import type { PublishJobModalFragment$key } from "@/__generated__/PublishJobModalFragment.graphql";
 import type { PublishJobModalMutation as PublishJobModalMutationType } from "@/__generated__/PublishJobModalMutation.graphql";
 import {
+	Alert,
 	Button,
 	Modal,
 	ModalBody,
@@ -41,6 +42,12 @@ mutation PublishJobModalMutation($jobId: ID!) {
 const PublishJobModalFragment = graphql`
 fragment PublishJobModalFragment on Job {
     id
+    applicationForm {
+        fields {
+            fieldName
+            isRequired
+        }
+    }
 }`;
 
 export default function PublishJobModal({
@@ -53,6 +60,9 @@ export default function PublishJobModal({
 	const [commitPublishMutation, isPublishMutationInFlight] =
 		useMutation<PublishJobModalMutationType>(PublishJobModalMutation);
 
+	const hasScreeningQuestions =
+		data.applicationForm?.fields && data.applicationForm.fields.length > 0;
+
 	async function handlePublishJob() {
 		commitPublishMutation({
 			variables: {
@@ -61,7 +71,10 @@ export default function PublishJobModal({
 			onCompleted(response) {
 				onClose();
 				if (response.publishJob.__typename === "Job") {
-					// Handle success
+					addToast({
+						description: "Job published successfully!",
+						color: "success",
+					});
 				} else if (response.publishJob.__typename === "JobNotFoundError") {
 					addToast({
 						description: "An unexpected error occurred. Please try again.",
@@ -91,9 +104,29 @@ export default function PublishJobModal({
 		>
 			<ModalContent className="p-4 sm:p-6">
 				<ModalHeader className="flex flex-col gap-1">Publish job</ModalHeader>
-				<ModalBody>
-					Are you sure you want to publish this job? It will make it publicly
-					visible to all job seekers.
+				<ModalBody className="space-y-4">
+					<p>
+						Are you sure you want to publish this job? It will make it publicly
+						visible to all job seekers.
+					</p>
+
+					{!hasScreeningQuestions && (
+						<Alert
+							color="warning"
+							variant="flat"
+							hideIconWrapper
+							description="This job doesn't have screening questions. Consider adding them to filter candidates and get more relevant applications."
+						/>
+					)}
+
+					{hasScreeningQuestions && (
+						<Alert
+							color="success"
+							variant="flat"
+							hideIconWrapper
+							description={`This job has ${data.applicationForm?.fields.length} screening question${data.applicationForm?.fields.length === 1 ? "" : "s"}.`}
+						/>
+					)}
 				</ModalBody>
 				<ModalFooter className="flex justify-end gap-4">
 					<Button variant="light" onPress={onClose}>

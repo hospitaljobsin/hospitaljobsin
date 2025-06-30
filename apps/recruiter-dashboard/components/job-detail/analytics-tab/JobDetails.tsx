@@ -16,7 +16,6 @@ import {
 import { Briefcase, Clock, Globe, IndianRupee, MapPin } from "lucide-react";
 import Link from "next/link";
 import { graphql, useFragment } from "react-relay";
-import JobControls from "./JobControls";
 import JobStatistics from "./JobStatistics";
 
 const JobDetailsFragment = graphql`
@@ -46,7 +45,6 @@ const JobDetailsFragment = graphql`
       isAdmin
       name
     }
-	  ...JobControlsFragment
 	  ...JobStatisticsFragment
   }
 `;
@@ -60,10 +58,6 @@ export default function JobDetails({
 		data.organization.isAdmin &&
 		data.externalApplicationUrl === null &&
 		!data.applicationForm;
-
-	const showJobControls =
-		(data.organization.isAdmin && data.applicationForm !== null) ||
-		(data.organization.isAdmin && data.externalApplicationUrl !== null);
 
 	function formatExperienceRange({
 		hasExperienceRange,
@@ -145,11 +139,6 @@ export default function JobDetails({
 						<h4 className="text-xl font-medium text-pretty w-full">
 							{data.title}
 						</h4>
-						{data.organization.isAdmin && (
-							<div className="items-center gap-4 flex justify-end flex-col sm:flex-row w-full">
-								{showJobControls ? <JobControls job={data} /> : null}
-							</div>
-						)}
 					</div>
 				</CardHeader>
 				<CardBody className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 w-full">
@@ -195,7 +184,8 @@ export default function JobDetails({
 			{showApplicationFormWarning ? (
 				<Alert
 					color="warning"
-					title="You need to set up screening questions before publishing this job"
+					title="Consider adding screening questions"
+					description="Screening questions help you filter candidates and get more relevant applications. You can add them now or later in job settings."
 					variant="flat"
 					endContent={
 						<Button
@@ -204,7 +194,7 @@ export default function JobDetails({
 							as={Link}
 							href={links.jobDetailSettingsApplicationForm(data.slug)}
 						>
-							Set up screening questions
+							Add screening questions
 						</Button>
 					}
 				/>

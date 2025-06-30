@@ -966,6 +966,11 @@ class JobApplicantRepo:
                     limit=pagination_limit,
                     sort_by=sort_by,
                 )
+
+                # TODO: execute the pipeline here itself, cache the result in redis
+                # then pass the entire cache here.
+                # we need a different kind of paginator- an in memory paginator here
+                # or this could be done more efficiently by storing the keys in redis itself?
                 return JobApplicant.aggregate(pipeline, projection_model=JobApplicant)
 
             # TODO: store the results in the cache before paginating initially, maybe via a hook?

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<9418bef9223492cd694c1dd88bcb62f8>>
- * @relayHash 3395666206e0157b2292a5d785ebc1fb
+ * @generated SignedSource<<390e51602bb6fa762df1b9b223e3ec90>>
+ * @relayHash ba35206f93b720cceee0536086ebc9fd
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 3395666206e0157b2292a5d785ebc1fb
+// @relayRequestID ba35206f93b720cceee0536086ebc9fd
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -130,6 +130,43 @@ return {
                 "kind": "ScalarField",
                 "name": "isActive",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "JobApplicationForm",
+                "kind": "LinkedField",
+                "name": "applicationForm",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "ApplicationField",
+                    "kind": "LinkedField",
+                    "name": "fields",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "fieldName",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "isRequired",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  (v3/*: any*/)
+                ],
+                "storageKey": null
               }
             ],
             "type": "Job",
@@ -149,7 +186,7 @@ return {
     ]
   },
   "params": {
-    "id": "3395666206e0157b2292a5d785ebc1fb",
+    "id": "ba35206f93b720cceee0536086ebc9fd",
     "metadata": {},
     "name": "UnpublishJobModalMutation",
     "operationKind": "mutation",

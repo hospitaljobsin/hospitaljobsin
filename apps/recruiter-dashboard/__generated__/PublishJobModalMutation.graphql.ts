@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<882ff8c56fca1df4e1689be2b016ab8f>>
- * @relayHash 4d5e853a08b00e30e5e0ac80e8a4ea7f
+ * @generated SignedSource<<35837776e9c94d480b3d324e3b4edf33>>
+ * @relayHash a73bd24682baf4cf4ae185148e8c4220
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 4d5e853a08b00e30e5e0ac80e8a4ea7f
+// @relayRequestID a73bd24682baf4cf4ae185148e8c4220
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -127,6 +127,43 @@ return {
                 "kind": "ScalarField",
                 "name": "isActive",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "JobApplicationForm",
+                "kind": "LinkedField",
+                "name": "applicationForm",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "ApplicationField",
+                    "kind": "LinkedField",
+                    "name": "fields",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "fieldName",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "isRequired",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  (v3/*: any*/)
+                ],
+                "storageKey": null
               }
             ],
             "type": "Job",
@@ -146,7 +183,7 @@ return {
     ]
   },
   "params": {
-    "id": "4d5e853a08b00e30e5e0ac80e8a4ea7f",
+    "id": "a73bd24682baf4cf4ae185148e8c4220",
     "metadata": {},
     "name": "PublishJobModalMutation",
     "operationKind": "mutation",

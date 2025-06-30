@@ -7,6 +7,7 @@ import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 import JobTabs from "../job-detail/JobTabs";
+import JobControls from "../job-detail/analytics-tab/JobControls";
 
 export const JobDetailHeaderQuery = graphql`
 	query JobDetailHeaderQuery($slug: String!, $jobSlug: String!) {
@@ -23,12 +24,14 @@ export const JobDetailHeaderQuery = graphql`
 			__typename
 			... on Organization {
 				isMember
+				isAdmin
 				slug
 				name
 				job(slug: $jobSlug) {
 					__typename
 					... on Job {
 						...JobTabsFragment
+						...JobControlsFragment
 						title
 						slug
 					}
@@ -60,10 +63,18 @@ export default function JobDetailHeader({
 
 	return (
 		<div className="pt-8 w-full max-w-7xl">
-			<Breadcrumbs className="mb-6 pl-6">
-				<BreadcrumbItem href={links.dashboard}>Jobs</BreadcrumbItem>
-				<BreadcrumbItem isCurrent>{data.organization.job.title}</BreadcrumbItem>
-			</Breadcrumbs>
+			<div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4 mb-6 px-6">
+				<Breadcrumbs>
+					<BreadcrumbItem href={links.dashboard}>Jobs</BreadcrumbItem>
+					<BreadcrumbItem isCurrent>
+						{data.organization.job.title}
+					</BreadcrumbItem>
+				</Breadcrumbs>
+
+				{data.organization.isAdmin && (
+					<JobControls job={data.organization.job} />
+				)}
+			</div>
 
 			<div className="w-full flex flex-col border-b border-foreground-300">
 				<div className="w-full flex items-center justify-between">

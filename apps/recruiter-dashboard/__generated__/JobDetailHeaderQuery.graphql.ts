@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<5f3977f03729fb57fef39020f21eb86c>>
- * @relayHash eb28c1a2490ce0300b3d39554934b427
+ * @generated SignedSource<<8ca6269480490ba09c0c890832f7d746>>
+ * @relayHash 172336fd4ed51c04f8c5c094baa05f8f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID eb28c1a2490ce0300b3d39554934b427
+// @relayRequestID 172336fd4ed51c04f8c5c094baa05f8f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -20,12 +20,13 @@ export type JobDetailHeaderQuery$variables = {
 export type JobDetailHeaderQuery$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly isAdmin: boolean;
     readonly isMember: boolean;
     readonly job: {
       readonly __typename: "Job";
       readonly slug: string;
       readonly title: string;
-      readonly " $fragmentSpreads": FragmentRefs<"JobTabsFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobTabsFragment">;
     } | {
       // This will never be '%other', but we need some
       // value in case none of the concrete values match.
@@ -90,41 +91,48 @@ v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "slug",
+  "name": "isAdmin",
   "storageKey": null
 },
 v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "slug",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "name",
   "storageKey": null
 },
-v7 = [
+v8 = [
   {
     "kind": "Variable",
     "name": "slug",
     "variableName": "jobSlug"
   }
 ],
-v8 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "title",
   "storageKey": null
 },
-v9 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v10 = {
+v11 = {
   "kind": "InlineFragment",
   "selections": [
-    (v9/*: any*/)
+    (v10/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -186,9 +194,10 @@ return {
               (v4/*: any*/),
               (v5/*: any*/),
               (v6/*: any*/),
+              (v7/*: any*/),
               {
                 "alias": null,
-                "args": (v7/*: any*/),
+                "args": (v8/*: any*/),
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "job",
@@ -203,8 +212,13 @@ return {
                         "kind": "FragmentSpread",
                         "name": "JobTabsFragment"
                       },
-                      (v8/*: any*/),
-                      (v5/*: any*/)
+                      {
+                        "args": null,
+                        "kind": "FragmentSpread",
+                        "name": "JobControlsFragment"
+                      },
+                      (v9/*: any*/),
+                      (v6/*: any*/)
                     ],
                     "type": "Job",
                     "abstractKey": null
@@ -269,7 +283,7 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v10/*: any*/)
+          (v11/*: any*/)
         ],
         "storageKey": null
       },
@@ -288,9 +302,10 @@ return {
               (v4/*: any*/),
               (v5/*: any*/),
               (v6/*: any*/),
+              (v7/*: any*/),
               {
                 "alias": null,
-                "args": (v7/*: any*/),
+                "args": (v8/*: any*/),
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "job",
@@ -307,32 +322,58 @@ return {
                         "name": "externalApplicationUrl",
                         "storageKey": null
                       },
+                      (v10/*: any*/),
                       {
                         "alias": null,
                         "args": null,
-                        "concreteType": "Organization",
+                        "kind": "ScalarField",
+                        "name": "isActive",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "JobApplicationForm",
                         "kind": "LinkedField",
-                        "name": "organization",
+                        "name": "applicationForm",
                         "plural": false,
                         "selections": [
                           {
                             "alias": null,
                             "args": null,
-                            "kind": "ScalarField",
-                            "name": "isAdmin",
+                            "concreteType": "ApplicationField",
+                            "kind": "LinkedField",
+                            "name": "fields",
+                            "plural": true,
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "fieldName",
+                                "storageKey": null
+                              },
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "isRequired",
+                                "storageKey": null
+                              }
+                            ],
                             "storageKey": null
                           },
-                          (v9/*: any*/)
+                          (v10/*: any*/)
                         ],
                         "storageKey": null
                       },
-                      (v8/*: any*/),
-                      (v5/*: any*/)
+                      (v9/*: any*/),
+                      (v6/*: any*/)
                     ],
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v10/*: any*/)
+                  (v11/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -340,14 +381,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v10/*: any*/)
+          (v11/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "eb28c1a2490ce0300b3d39554934b427",
+    "id": "172336fd4ed51c04f8c5c094baa05f8f",
     "metadata": {},
     "name": "JobDetailHeaderQuery",
     "operationKind": "query",
@@ -356,6 +397,6 @@ return {
 };
 })();
 
-(node as any).hash = "c97a871ee900bc0dc78470593ab8ee03";
+(node as any).hash = "1978d1b4c647761a654c53bc80c6b344";
 
 export default node;

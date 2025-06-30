@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e8b3a674410f60197685de051aff6119>>
+ * @generated SignedSource<<f0df30f83527965c50a7a90030bfbada>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,9 +12,6 @@ import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobTabsFragment$data = {
   readonly externalApplicationUrl: string | null | undefined;
-  readonly organization: {
-    readonly isAdmin: boolean;
-  };
   readonly " $fragmentType": "JobTabsFragment";
 };
 export type JobTabsFragment$key = {
@@ -34,34 +31,12 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "externalApplicationUrl",
       "storageKey": null
-    },
-    {
-      "kind": "RequiredField",
-      "field": {
-        "alias": null,
-        "args": null,
-        "concreteType": "Organization",
-        "kind": "LinkedField",
-        "name": "organization",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "isAdmin",
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
-      },
-      "action": "THROW"
     }
   ],
   "type": "Job",
   "abstractKey": null
 };
 
-(node as any).hash = "afeebd7241165773a37fb98eed510ae3";
+(node as any).hash = "839a97b4a1be3d5f01bff41a964a3614";
 
 export default node;
