@@ -928,6 +928,8 @@ class JobApplicantRepo:
                 pipeline, projection_model=JobApplicant
             )
 
+            # TODO: remove the default sorting the paginator applies,
+            # because we have already sorted here
             return await paginator.paginate(
                 search_criteria=search_criteria,
                 first=first,
@@ -950,6 +952,8 @@ class JobApplicantRepo:
             case JobApplicantsSortBy.CREATED_AT:
                 search_criteria = search_criteria.sort(-JobApplicant.id)
 
+        # TODO: remove the default sorting the paginator applies,
+        # because we have already sorted here
         return await paginator.paginate(
             search_criteria=search_criteria,
             first=first,
