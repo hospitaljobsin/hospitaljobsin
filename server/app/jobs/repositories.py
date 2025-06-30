@@ -1,3 +1,4 @@
+import hashlib
 import secrets
 import uuid
 from collections import defaultdict
@@ -719,7 +720,7 @@ class JobApplicantRepo:
         self,
         natural_language_query: str,
     ) -> str:
-        return f"job_applicant_natural_language_query_pipeline:{natural_language_query}"
+        return f"applicant_nlq:{hashlib.sha256(natural_language_query.encode('utf-8')).hexdigest()}"
 
     async def _get_natural_language_query_filters(
         self,

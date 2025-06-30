@@ -14,8 +14,8 @@ class EmbeddingsService:
     def _generate_embedding_cache_key(
         self, text: str, task_type: str, model: str
     ) -> str:
-        key_string = f"semantic-embedding:{text}-{task_type}-{model}"
-        return hashlib.sha256(key_string.encode("utf-8")).hexdigest()
+        key_string = f"{text}-{task_type}-{model}"
+        return f"embedding:{hashlib.sha256(key_string.encode('utf-8')).hexdigest()}"
 
     async def _get_embedding_from_cache(
         self, text: str, task_type: str, model: str
