@@ -70,7 +70,7 @@ class ApplicantQueryFilters(BaseModel):
     )
 
     # TODO: add fields to determine:
-    # -additional_rag_needed: bool
+    # - additional_rag_needed: bool
     # - rag_instructions: str
     # We need to figure out how to handle pagination with RAG tho, cause its on the fly and results might change for the same query/ filters
 

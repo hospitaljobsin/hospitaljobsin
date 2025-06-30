@@ -932,6 +932,7 @@ class JobApplicantRepo:
         self,
         job_id: ObjectId,
         natural_language_query: str | None = None,
+        search_session_id: str | None = None,
         status: JobApplicantStatus | None = None,
         first: int | None = None,
         last: int | None = None,
@@ -947,6 +948,12 @@ class JobApplicantRepo:
             # we add ordering in the pipeline/ search criteria, so we don't need to apply ordering here
             apply_ordering=False,
         )
+
+        if search_session_id is not None:
+            # TODO: retrieve cached results and paginate on it
+            # get the IDs from the cache and fetch from MongoDB directly
+            pass
+
         if natural_language_query is not None:
 
             async def get_search_criteria(
@@ -960,6 +967,9 @@ class JobApplicantRepo:
                     sort_by=sort_by,
                 )
                 return JobApplicant.aggregate(pipeline, projection_model=JobApplicant)
+
+            # TODO: store the results in the cache before paginating initially, maybe via a hook?
+            # but anyways, we need to load upper-limit documents in memory (like 100 worst case)
 
             return await paginator.paginate(
                 search_criteria=get_search_criteria,
