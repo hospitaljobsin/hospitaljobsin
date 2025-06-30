@@ -143,6 +143,7 @@ export default function JobApplyForm({
 						description: "An unexpected error occurred. Please try again.",
 						color: "danger",
 					});
+					setShowConfirmModal(false);
 				}
 			},
 		});
@@ -168,16 +169,17 @@ export default function JobApplyForm({
 					response.createJobApplication.__typename ===
 					"CreateJobApplicantSuccess"
 				) {
+					setShowDirectApplyModal(false);
 					router.push(links.jobDetail(data.organization.slug, data.slug));
 				} else {
 					addToast({
 						description: "An unexpected error occurred. Please try again.",
 						color: "danger",
 					});
+					setShowDirectApplyModal(false);
 				}
 			},
 		});
-		setShowDirectApplyModal(false);
 	}
 
 	return (
