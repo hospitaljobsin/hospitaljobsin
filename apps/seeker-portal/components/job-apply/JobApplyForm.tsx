@@ -367,7 +367,6 @@ export default function JobApplyForm({
 							onPress={() => {
 								if (pendingSubmitValues) {
 									onSubmitConfirmed(pendingSubmitValues);
-									setShowConfirmModal(false);
 									setPendingSubmitValues(null);
 								}
 							}}
