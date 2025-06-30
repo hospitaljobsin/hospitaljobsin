@@ -7,6 +7,17 @@ from app.accounts.documents import Gender, MaritalStatus
 from app.config import SecretSettings
 
 
+class LocationWithRadius(BaseModel):
+    location: str = Field(
+        ...,
+        description="The location to search for, as a string. This can be a city, state, country, or a combination of these.",
+    )
+    radius: int = Field(
+        default=50000,  # 50km
+        description="The radius in meters to search within the location.",
+    )
+
+
 class ApplicantQueryFilters(BaseModel):
     """
     Represents parsed filters from a recruiter-style free-text query for applicant search.
@@ -33,9 +44,9 @@ class ApplicantQueryFilters(BaseModel):
     max_experience: int | None = Field(
         default=None, description="Maximum years of experience allowed, if specified."
     )
-    location: str | list[str] | None = Field(
+    location: LocationWithRadius | list[LocationWithRadius] | None = Field(
         default=None,
-        description="Location(s) specified to narrow down applicants—i.e., where the applicant must be willing to work or relocate (not just any location mentioned in the query).",
+        description="Location(s) along with radius, specified to narrow down applicants—i.e., where the applicant must be willing to work or relocate (not just any location mentioned in the query).",
     )
     open_to_relocation_anywhere: bool | None = Field(
         default=None,

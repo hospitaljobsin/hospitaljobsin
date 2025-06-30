@@ -25,7 +25,10 @@ from app.database.paginator import PaginatedResult, Paginator
 from app.embeddings.services import EmbeddingsService
 from app.geocoding.models import Coordinates
 from app.jobs.agents.applicant_analysis import JobApplicantAnalysisOutput
-from app.jobs.agents.applicant_query_parser import ApplicantQueryParserAgent
+from app.jobs.agents.applicant_query_parser import (
+    ApplicantQueryParserAgent,
+    LocationWithRadius,
+)
 from app.organizations.documents import Organization
 
 from .documents import (
@@ -771,44 +774,43 @@ class JobApplicantRepo:
 
         # 2. location
         if filters.location is not None:
-            # Geospatial filtering: geocode string locations if needed, then use $nearSphere
-            # TODO: Allow user to specify distance (currently hardcoded to 50km)
-            GEO_DISTANCE_METERS = 50_000
-
-            geocoded_points: list[GeoObject] = []
-            location_names: list[str] = []
+            geocoded_points: list[tuple[GeoObject, int]] = []
+            location_names: list[LocationWithRadius] = []
             # Geocode if needed
-            if isinstance(filters.location, str):
+            if isinstance(filters.location, LocationWithRadius):
                 location_names.append(filters.location)
             elif isinstance(filters.location, list) and all(
-                isinstance(loc, str) for loc in filters.location
+                isinstance(loc, LocationWithRadius) for loc in filters.location
             ):
                 location_names.extend(filters.location)
             if location_names:
                 for name in location_names:
-                    geo_result = await self._location_service.geocode(name)
+                    geo_result = await self._location_service.geocode(name.location)
                     if geo_result is not None:
                         geocoded_points.append(
-                            GeoObject(
-                                type="Point",
-                                coordinates=(
-                                    geo_result.longitude,
-                                    geo_result.latitude,
+                            (
+                                GeoObject(
+                                    type="Point",
+                                    coordinates=(
+                                        geo_result.longitude,
+                                        geo_result.latitude,
+                                    ),
                                 ),
+                                name.radius,
                             )
                         )
             # Apply geo query if we have geocoded points
             if geocoded_points:
                 if len(geocoded_points) == 1:
+                    geo, radius = geocoded_points[0]
                     pipeline.append(
                         {
                             "$match": {
                                 "profile_snapshot.locations_open_to_work.geo": {
                                     "$geoWithin": {
                                         "$centerSphere": [
-                                            geocoded_points[0].coordinates,
-                                            GEO_DISTANCE_METERS
-                                            / 6378137,  # meters to radians
+                                            geo.coordinates,
+                                            radius / 6378137,  # meters to radians
                                         ]
                                     }
                                 }
@@ -825,13 +827,13 @@ class JobApplicantRepo:
                                             "$geoWithin": {
                                                 "$centerSphere": [
                                                     geo.coordinates,
-                                                    GEO_DISTANCE_METERS
+                                                    radius
                                                     / 6378137,  # meters to radians
                                                 ]
                                             }
                                         }
                                     }
-                                    for geo in geocoded_points
+                                    for (geo, radius) in geocoded_points
                                 ]
                             }
                         }
