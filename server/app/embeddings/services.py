@@ -1,32 +1,36 @@
 import hashlib
+import json
 
 from google.genai import Client
 from google.genai.types import EmbedContentConfig
+from redis.asyncio import Redis
 
 
 class EmbeddingsService:
-    def __init__(self, genai_client: Client) -> None:
+    def __init__(self, genai_client: Client, redis_client: Redis) -> None:
         self._genai_client = genai_client
-        # TODO: use a proper cache instead of in-memory cache
-        self._cache: dict[str, list[float]] = {}
+        self._redis_client = redis_client
 
     def _generate_embedding_cache_key(
         self, text: str, task_type: str, model: str
     ) -> str:
-        key_string = f"{text}-{task_type}-{model}"
+        key_string = f"semantic-embedding:{text}-{task_type}-{model}"
         return hashlib.sha256(key_string.encode("utf-8")).hexdigest()
 
     async def _get_embedding_from_cache(
         self, text: str, task_type: str, model: str
     ) -> list[float] | None:
         cache_key = self._generate_embedding_cache_key(text, task_type, model)
-        return self._cache.get(cache_key)
+        embedding = await self._redis_client.get(cache_key)
+        if embedding is None:
+            return None
+        return json.loads(embedding)
 
     async def _set_embedding_in_cache(
         self, text: str, task_type: str, model: str, embedding: list[float]
     ) -> None:
         cache_key = self._generate_embedding_cache_key(text, task_type, model)
-        self._cache[cache_key] = embedding
+        await self._redis_client.set(cache_key, json.dumps(embedding))
 
     async def generate_embeddings(
         self,

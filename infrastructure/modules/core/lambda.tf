@@ -160,10 +160,13 @@ resource "aws_iam_role_policy_attachment" "lambda_custom_policy_attachment" {
 
 # Lambda Function in Private Subnets
 
-# Escape every '.' in the domain_name to '\.'; Terraform needs "\\." to emit a literal "\."
+# Escape every '.' in the domain_name to '\.'; Terraform needs "\\." to emit a literal "\\."
 locals {
-  # “\\.” in HCL ⇒ produces a single “\.” in the rendered value
+  # "\\\." in HCL ⇒ produces a single "\." in the rendered value
   escaped_domain = replace(var.domain_name, ".", "\\.")
+  redis_parts    = split(":", var.redis_endpoint)
+  redis_host     = element(local.redis_parts, 0)
+  redis_port     = element(local.redis_parts, 1)
 }
 resource "aws_lambda_function" "backend" {
   # depends_on    = [docker_registry_image.backend]
@@ -210,6 +213,10 @@ resource "aws_lambda_function" "backend" {
       SERVER_SENTRY_DSN                           = var.sentry_backend_dsn
       SERVER_PERSISTED_QUERIES_PATH               = "query_map.json"
       SERVER_GOOGLE_GEMINI_MODEL                  = "gemini/gemini-2.5-flash-preview-04-17"
+      SERVER_REDIS_HOST                           = local.redis_host
+      SERVER_REDIS_PORT                           = local.redis_port
+      SERVER_REDIS_USERNAME                       = "default"
+      SERVER_REDIS_SSL                            = "true"
 
       AWS_SECRETS_MANAGER_SECRET_ID = aws_secretsmanager_secret.backend.id
     }

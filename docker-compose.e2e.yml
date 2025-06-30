@@ -73,6 +73,9 @@ services:
       SERVER_SESSION_COOKIE_DOMAIN: '.localtest.me'
       SERVER_SESSION_COOKIE_SECURE: True
       SERVER_SERPER_API_KEY: "XXXXXXXXXXXXXX"
+      SERVER_REDIS_HOST: "test-redis"
+      SERVER_REDIS_PORT: 6379
+      SERVER_REDIS_SSL: false
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8000/health/"]
       interval: 10s
@@ -165,6 +168,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+  test-redis:
+    image: docker.io/bitnami/redis:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes # Or set a password with REDIS_PASSWORD
+    ports:
+      - "6379:6379"
+    volumes:
+      - test_redis_data:/bitnami/redis/data
 
   # playwright:
   #   image: mcr.microsoft.com/playwright:v1.51.0-noble
@@ -181,4 +192,6 @@ volumes:
   test_mongodb_data:
     driver: local
   test_caddy_data:
+    driver: local
+  test_redis_data:
     driver: local

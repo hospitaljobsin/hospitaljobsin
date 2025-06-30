@@ -186,6 +186,22 @@ class DatabaseSettings(BaseSettings):
     )
 
 
+class RedisSettings(BaseSettings):
+    redis_host: str
+
+    redis_port: int
+
+    redis_username: str | None = None
+
+    redis_ssl: bool
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+
 class SentrySettings(BaseSettings):
     # sentry dsn
     sentry_dsn: str
@@ -210,6 +226,10 @@ class SecretSettings(BaseSettings):
     google_client_id: str
 
     google_client_secret: SecretStr
+
+    # redis config
+
+    redis_password: SecretStr | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",

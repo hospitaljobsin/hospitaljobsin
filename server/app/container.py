@@ -46,6 +46,7 @@ from app.config import (
     DatabaseSettings,
     EmailSettings,
     GeocoderSettings,
+    RedisSettings,
     SecretSettings,
     TSettings,
     get_settings,
@@ -71,6 +72,7 @@ from app.core.geocoding import (
     create_nominatim_geocoder,
 )
 from app.core.oauth import create_oauth_client
+from app.core.redis_client import create_redis_client
 from app.core.templates import create_jinja2_environment
 from app.dataloaders import create_dataloaders
 from app.embeddings.services import EmbeddingsService
@@ -126,6 +128,7 @@ settings_classes: list[type[BaseSettings]] = [
     AWSSettings,
     AuthSettings,
     GeocoderSettings,
+    RedisSettings,
 ]
 
 
@@ -230,6 +233,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_captcha_verifier))
     container.register(aioinject.Singleton(create_google_genai_client))
+    container.register(aioinject.Singleton(create_redis_client))
     container.register(aioinject.Singleton(EmbeddingsService))
     container.register(aioinject.Singleton(JobApplicantRepo))
     container.register(aioinject.Singleton(JobRepo))
