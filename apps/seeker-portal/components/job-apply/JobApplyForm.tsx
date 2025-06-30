@@ -25,7 +25,7 @@ const JobApplyFormFragment = graphql`
     id
     slug
     title
-    applicationForm @required(action: THROW) {
+    applicationForm {
       fields {
         fieldName
         defaultValue
@@ -154,126 +154,132 @@ export default function JobApplyForm({
 
 	return (
 		<div className="w-full flex flex-col gap-6">
-			<Card className="p-6" shadow="none">
-				<form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-12">
-					{/* Stepper Logic */}
-					{!reviewMode && currentStep < totalQuestions && (
-						<div className="flex flex-col gap-6">
-							<h2 className="text-sm text-foreground-600">
-								Screening Question {currentStep + 1} of {totalQuestions}
-							</h2>
-							{data.applicationForm?.fields[currentStep] && (
-								<div className="flex flex-col w-full gap-4">
-									<h2 className="text-lg">
-										{data.applicationForm.fields[currentStep].fieldName}
-									</h2>
-									<Textarea
-										key={data.applicationForm.fields[currentStep].fieldName}
-										isRequired={
-											data.applicationForm.fields[currentStep].isRequired
-										}
-										defaultValue={
-											data.applicationForm.fields[currentStep].defaultValue ||
-											""
-										}
-										errorMessage={
-											errors.applicantFields?.[currentStep]?.fieldValue?.message
-										}
-										isInvalid={
-											!!errors.applicantFields?.[currentStep]?.fieldValue
-										}
-										{...register(`applicantFields.${currentStep}.fieldValue`)}
-										autoFocus
-									/>
-								</div>
-							)}
-							<div className="flex justify-between gap-12 w-full">
-								<Button
-									type="button"
-									variant="bordered"
-									fullWidth
-									onPress={() => setCurrentStep((s) => s - 1)}
-									isDisabled={currentStep === 0}
-								>
-									Back
-								</Button>
-								{currentStep < totalQuestions - 1 ? (
-									<Button
-										type="button"
-										fullWidth
-										variant="flat"
-										color="primary"
-										onPress={() => setCurrentStep((s) => s + 1)}
-										isDisabled={
-											data.applicationForm.fields[currentStep].isRequired &&
-											(!currentFieldValue || !currentFieldValue.trim())
-										}
-									>
-										Next
-									</Button>
-								) : (
-									<Button
-										type="button"
-										fullWidth
-										variant="flat"
-										color="primary"
-										onPress={() => setReviewMode(true)}
-									>
-										Review
-									</Button>
-								)}
-							</div>
-						</div>
-					)}
-
-					{reviewMode && (
-						<div className="flex flex-col gap-6">
-							<h2 className="text-sm text-foreground-600">
-								Review Your Application
-							</h2>
-							<div className="flex flex-col gap-4">
-								{data.applicationForm?.fields.map((field, idx) => (
-									<div key={field.fieldName} className="flex flex-col gap-2">
-										<span className="text-md">{field.fieldName}</span>
-										<span className="text-foreground-400">
-											{getValues(`applicantFields.${idx}.fieldValue`) || (
-												<span className="italic text-foreground-400">
-													No answer
-												</span>
-											)}
-										</span>
+			{data.applicationForm && (
+				<Card className="p-6" shadow="none">
+					<form
+						onSubmit={handleSubmit(handleFormSubmit)}
+						className="space-y-12"
+					>
+						{/* Stepper Logic */}
+						{!reviewMode && currentStep < totalQuestions && (
+							<div className="flex flex-col gap-6">
+								<h2 className="text-sm text-foreground-600">
+									Screening Question {currentStep + 1} of {totalQuestions}
+								</h2>
+								{data.applicationForm?.fields[currentStep] && (
+									<div className="flex flex-col w-full gap-4">
+										<h2 className="text-lg">
+											{data.applicationForm.fields[currentStep].fieldName}
+										</h2>
+										<Textarea
+											key={data.applicationForm.fields[currentStep].fieldName}
+											isRequired={
+												data.applicationForm.fields[currentStep].isRequired
+											}
+											defaultValue={
+												data.applicationForm.fields[currentStep].defaultValue ||
+												""
+											}
+											errorMessage={
+												errors.applicantFields?.[currentStep]?.fieldValue
+													?.message
+											}
+											isInvalid={
+												!!errors.applicantFields?.[currentStep]?.fieldValue
+											}
+											{...register(`applicantFields.${currentStep}.fieldValue`)}
+											autoFocus
+										/>
 									</div>
-								))}
+								)}
+								<div className="flex justify-between gap-12 w-full">
+									<Button
+										type="button"
+										variant="bordered"
+										fullWidth
+										onPress={() => setCurrentStep((s) => s - 1)}
+										isDisabled={currentStep === 0}
+									>
+										Back
+									</Button>
+									{currentStep < totalQuestions - 1 ? (
+										<Button
+											type="button"
+											fullWidth
+											variant="flat"
+											color="primary"
+											onPress={() => setCurrentStep((s) => s + 1)}
+											isDisabled={
+												data.applicationForm.fields[currentStep].isRequired &&
+												(!currentFieldValue || !currentFieldValue.trim())
+											}
+										>
+											Next
+										</Button>
+									) : (
+										<Button
+											type="button"
+											fullWidth
+											variant="flat"
+											color="primary"
+											onPress={() => setReviewMode(true)}
+										>
+											Review
+										</Button>
+									)}
+								</div>
 							</div>
-							<div className="flex flex-col justify-between gap-6 w-full">
-								<Button
-									type="submit"
-									color="primary"
-									fullWidth
-									size="lg"
-									isDisabled={isSubmitting}
-								>
-									Submit Application
-								</Button>
-								<Button
-									type="button"
-									variant="flat"
-									size="lg"
-									fullWidth
-									onPress={() => {
-										setReviewMode(false);
-										setCurrentStep(totalQuestions - 1);
-									}}
-								>
-									Go Back
-								</Button>
+						)}
+
+						{reviewMode && (
+							<div className="flex flex-col gap-6">
+								<h2 className="text-sm text-foreground-600">
+									Review Your Application
+								</h2>
+								<div className="flex flex-col gap-4">
+									{data.applicationForm?.fields.map((field, idx) => (
+										<div key={field.fieldName} className="flex flex-col gap-2">
+											<span className="text-md">{field.fieldName}</span>
+											<span className="text-foreground-400">
+												{getValues(`applicantFields.${idx}.fieldValue`) || (
+													<span className="italic text-foreground-400">
+														No answer
+													</span>
+												)}
+											</span>
+										</div>
+									))}
+								</div>
+								<div className="flex flex-col justify-between gap-6 w-full">
+									<Button
+										type="submit"
+										color="primary"
+										fullWidth
+										size="lg"
+										isDisabled={isSubmitting}
+									>
+										Submit Application
+									</Button>
+									<Button
+										type="button"
+										variant="flat"
+										size="lg"
+										fullWidth
+										onPress={() => {
+											setReviewMode(false);
+											setCurrentStep(totalQuestions - 1);
+										}}
+									>
+										Go Back
+									</Button>
+								</div>
 							</div>
-						</div>
-					)}
-				</form>
-			</Card>
+						)}
+					</form>
+				</Card>
+			)}
 			{/* Progress Bar */}
-			{reviewMode ? null : (
+			{reviewMode || !data.applicationForm ? null : (
 				<Progress
 					value={progressPercent}
 					minValue={0}
@@ -281,6 +287,13 @@ export default function JobApplyForm({
 					aria-label="Application progress"
 					className="w-full mb-2"
 				/>
+			)}
+
+			{!data.applicationForm && (
+				<div className="flex flex-col gap-4">
+					{/* TODO: add direct apply button here */}
+					<p>This job doesn't have screening questions. Consider</p>
+				</div>
 			)}
 			<Modal
 				isOpen={showConfirmModal}
