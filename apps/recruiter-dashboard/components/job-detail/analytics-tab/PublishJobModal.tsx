@@ -1,5 +1,6 @@
 import type { PublishJobModalFragment$key } from "@/__generated__/PublishJobModalFragment.graphql";
 import type { PublishJobModalMutation as PublishJobModalMutationType } from "@/__generated__/PublishJobModalMutation.graphql";
+import links from "@/lib/links";
 import {
 	Alert,
 	Button,
@@ -10,6 +11,7 @@ import {
 	ModalHeader,
 	addToast,
 } from "@heroui/react";
+import Link from "next/link";
 import { graphql, useFragment, useMutation } from "react-relay";
 
 type Props = {
@@ -42,6 +44,7 @@ mutation PublishJobModalMutation($jobId: ID!) {
 const PublishJobModalFragment = graphql`
 fragment PublishJobModalFragment on Job {
     id
+	slug
     applicationForm {
         fields {
             fieldName
@@ -115,7 +118,20 @@ export default function PublishJobModal({
 							color="warning"
 							variant="flat"
 							hideIconWrapper
-							description="This job doesn't have screening questions. Consider adding them to filter candidates and get more relevant applications."
+							description={
+								<p>
+									This job doesn't have screening questions. Consider{" "}
+									<Link
+										href={links.jobDetailSettingsApplicationForm(data.slug)}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="underline"
+									>
+										adding them
+									</Link>{" "}
+									to get more relevant applications.
+								</p>
+							}
 						/>
 					)}
 

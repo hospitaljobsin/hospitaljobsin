@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8ca6269480490ba09c0c890832f7d746>>
- * @relayHash 172336fd4ed51c04f8c5c094baa05f8f
+ * @generated SignedSource<<6b0f5b60868fc4df447b095965ff083b>>
+ * @relayHash 094ecbfbc86597c477e9e509046e785c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 172336fd4ed51c04f8c5c094baa05f8f
+// @relayRequestID 094ecbfbc86597c477e9e509046e785c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -330,6 +330,7 @@ return {
                         "name": "isActive",
                         "storageKey": null
                       },
+                      (v6/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -367,8 +368,7 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v9/*: any*/),
-                      (v6/*: any*/)
+                      (v9/*: any*/)
                     ],
                     "type": "Job",
                     "abstractKey": null
@@ -388,7 +388,7 @@ return {
     ]
   },
   "params": {
-    "id": "172336fd4ed51c04f8c5c094baa05f8f",
+    "id": "094ecbfbc86597c477e9e509046e785c",
     "metadata": {},
     "name": "JobDetailHeaderQuery",
     "operationKind": "query",
