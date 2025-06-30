@@ -24,19 +24,17 @@ resource "mongodbatlas_advanced_cluster" "this" {
   cluster_type = "REPLICASET"
 
   replication_specs {
-    region_configs {
-      electable_specs {
-        instance_size = "M0"
-      }
 
-      provider_name         = "TENANT"
+    region_configs {
+      provider_name         = "FLEX"
       backing_provider_name = "AWS"
-      priority              = 7
       region_name           = var.mongodb_atlas_region
+      priority              = 7
     }
   }
 
   termination_protection_enabled = true
+  backup_enabled                 = true # must be enabled in order to use cloud_backup_schedule resource
 }
 
 
@@ -52,6 +50,37 @@ resource "mongodbatlas_database_user" "user" {
     database_name = var.mongodb_database_name # The database name and collection name need not exist in the cluster before creating the user.
   }
 }
+
+# Flexible backups are only supported on M10+ clusters
+# resource "mongodbatlas_cloud_backup_schedule" "this" {
+#   project_id   = mongodbatlas_advanced_cluster.this.project_id
+#   cluster_name = mongodbatlas_advanced_cluster.this.name
+
+#   reference_hour_of_day    = 3
+#   reference_minute_of_hour = 45
+#   restore_window_days      = 4
+
+#   // This will now add the desired policy items to the existing mongodbatlas_cloud_backup_schedule resource
+#   policy_item_daily {
+#     frequency_interval = 1
+#     retention_unit     = "days"
+#     retention_value    = 14
+#   }
+
+#   copy_settings {
+#     cloud_provider = "AWS"
+#     frequencies = ["HOURLY",
+#       "DAILY",
+#       "WEEKLY",
+#       "MONTHLY",
+#       "YEARLY",
+#     "ON_DEMAND"]
+#     region_name        = var.mongodb_atlas_region
+#     zone_id            = mongodbatlas_advanced_cluster.this.replication_specs.*.zone_id[0]
+#     should_copy_oplogs = false
+#   }
+
+# }
 
 
 # these resources are not available for tenant/ flex deployments

@@ -123,6 +123,7 @@ Follow these steps to deploy the project to the cloud:
 
 ### 1. MongoDB Atlas Setup
 - [Install the MongoDB Atlas CLI](https://www.mongodb.com/docs/atlas/cli/current/install-atlas-cli/)
+- Setup Payment Method
 - Copy the MongoDB Organization ID from the dashboard and store it in environment variables
 - Run the follow commands to generate API keys:
     ```bash
