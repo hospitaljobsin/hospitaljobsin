@@ -725,6 +725,8 @@ class JobApplicantRepo:
         self,
         natural_language_query: str,
     ) -> ApplicantQueryFilters:
+        # remove leading and trailing whitespace
+        natural_language_query = natural_language_query.strip()
         cache_key = self._generate_natural_language_query_cache_key(
             natural_language_query
         )

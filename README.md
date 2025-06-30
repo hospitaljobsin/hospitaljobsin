@@ -249,9 +249,17 @@ Follow these steps to deploy the project to the cloud:
 - Go to the [Serper Dashboard](https://serper.dev/dashboard)
 - Create an API key
 
-### 8. Terraform Setup
 
-#### 8.1 Prerequisites:
+### 8. Redis Cloud Setup
+- Go to the [Redis Cloud Console](https://console.redis.io)
+- Configure a payment method
+- Enable programmatic access to the cloud console (Under Access Management > API Keys)
+- Create an API key (AKA Secret Key)
+- Copy the Account Key (AKA Access Key) and API Key (AKA Secret Key)
+
+### 9. Terraform Setup
+
+#### 9.1 Prerequisites:
 - Create an S3 bucket that will act as the terraform state backend
 
 Terraform deployments are automated via GitHub Actions CI/CD.
@@ -275,6 +283,8 @@ GitHub Actions Secrets:
 - `GOOGLE_GEMINI_API_KEY`
 - `SENTRY_AUTH_TOKEN`
 - `SERPER_API_KEY`
+- `REDISCLOUD_SECRET_KEY`
+- `REDISCLOUD_ACCESS_KEY`
 
 
 

@@ -36,6 +36,11 @@ terraform {
       source  = "jianyuan/sentry"
       version = "0.14.5"
     }
+
+    rediscloud = {
+      source  = "RedisLabs/rediscloud"
+      version = "2.1.4"
+    }
   }
 
   backend "s3" {
@@ -121,4 +126,10 @@ module "core" {
   sentry_seeker_portal_ui_dsn    = module.sentry.sentry_seeker_portal_ui_dsn
   github_repository_name         = var.github_repository_name
   serper_api_key                 = var.serper_api_key
+}
+
+module "redis" {
+  source          = "./modules/redis"
+  aws_region      = var.aws_region
+  resource_prefix = var.resource_prefix
 }
