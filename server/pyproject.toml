@@ -37,6 +37,7 @@ dependencies = [
     "cryptography==44.0.3",
     "google-genai>=1.20.0",
     "pydantic-ai-slim[vertexai]>=0.3.2",
+    "redis[hiredis]>=6.2.0",
 ]
 
 [tool.uv]

@@ -10,6 +10,8 @@ from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.odm.queries.aggregation import AggregationQuery
 from beanie.operators import And, In, NearSphere, Set
 from bson import ObjectId
+from pydantic import ValidationError
+from redis.asyncio import Redis
 
 from app.accounts.documents import Account, BaseProfile, SalaryExpectations
 from app.base.models import GeoObject
@@ -26,6 +28,7 @@ from app.embeddings.services import EmbeddingsService
 from app.geocoding.models import Coordinates
 from app.jobs.agents.applicant_analysis import JobApplicantAnalysisOutput
 from app.jobs.agents.applicant_query_parser import (
+    ApplicantQueryFilters,
     ApplicantQueryParserAgent,
     LocationWithRadius,
 )
@@ -526,10 +529,12 @@ class JobApplicantRepo:
         embeddings_service: EmbeddingsService,
         applicant_query_parser_agent: ApplicantQueryParserAgent,
         location_service: BaseLocationService,
+        redis_client: Redis,
     ) -> None:
         self._embeddings_service = embeddings_service
         self._applicant_query_parser_agent = applicant_query_parser_agent
         self._location_service = location_service
+        self._redis_client = redis_client
 
     async def update_all(self, account: Account, full_name: str) -> None:
         """Update all job applicants for the given account."""
@@ -710,6 +715,35 @@ class JobApplicantRepo:
             nesting_depth=1,
         ).to_list()
 
+    def _generate_natural_language_query_cache_key(
+        self,
+        natural_language_query: str,
+    ) -> str:
+        return f"job_applicant_natural_language_query_pipeline:{natural_language_query}"
+
+    async def _get_natural_language_query_filters(
+        self,
+        natural_language_query: str,
+    ) -> ApplicantQueryFilters:
+        cache_key = self._generate_natural_language_query_cache_key(
+            natural_language_query
+        )
+        cached_result = await self._redis_client.get(cache_key)
+        if cached_result is not None:
+            try:
+                return ApplicantQueryFilters.model_validate_json(cached_result)
+            except ValidationError:
+                # invalid/ outdated query filters were cached, run agent again
+                pass
+        result = await self._applicant_query_parser_agent.run(
+            user_prompt=natural_language_query
+        )
+        await self._redis_client.set(
+            cache_key,
+            result.output.model_dump_json(),
+        )
+        return result.output
+
     async def _build_natural_language_query_pipeline(
         self,
         natural_language_query: str,
@@ -718,12 +752,7 @@ class JobApplicantRepo:
         limit: int,
         sort_by: JobApplicantsSortBy,
     ) -> list[dict]:
-        # TODO: enable caching of agentic results and embeddings, this will save a lot of money
-        # when we have to paginate with the same filters
-        result = await self._applicant_query_parser_agent.run(
-            user_prompt=natural_language_query
-        )
-        filters = result.output
+        filters = await self._get_natural_language_query_filters(natural_language_query)
 
         pipeline: list[dict] = []
 

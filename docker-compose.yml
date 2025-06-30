@@ -30,6 +30,15 @@ services:
       - MONGODB_INITDB_ROOT_PASSWORD=pass
       - RUNNER_LOG_FILE=/dev/stderr
 
+  redis:
+    image: docker.io/bitnami/redis:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes # Or set a password with REDIS_PASSWORD
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/bitnami/redis/data
+
   mailcatcher:
     image: schickling/mailcatcher:latest
     ports:
@@ -79,4 +88,6 @@ volumes:
   nominatim_data:
     driver: local
   caddy_data:
+    driver: local
+  redis_data:
     driver: local

@@ -186,6 +186,16 @@ class DatabaseSettings(BaseSettings):
     )
 
 
+class RedisSettings(BaseSettings):
+    redis_url: str
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+
 class SentrySettings(BaseSettings):
     # sentry dsn
     sentry_dsn: str
