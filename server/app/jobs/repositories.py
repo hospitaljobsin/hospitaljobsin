@@ -7,6 +7,7 @@ from typing import Any, Literal, get_args
 
 import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
+from beanie.odm.queries.aggregation import AggregationQuery
 from beanie.operators import And, In, NearSphere, Set
 from bson import ObjectId
 
@@ -913,25 +914,25 @@ class JobApplicantRepo:
             reverse=True,
             document_cls=JobApplicant,
             paginate_by="id",
+            # we add ordering in the pipeline/ search criteria, so we don't need to apply ordering here
+            apply_ordering=False,
         )
         if natural_language_query is not None:
-            pipeline = await self._build_natural_language_query_pipeline(
-                natural_language_query=natural_language_query,
-                job_id=job_id,
-                status=status,
-                # TODO: validate the first and last first. maybe using hooks on the paginator, we can build the pipeline later?
-                limit=(first or last or 10),
-                sort_by=sort_by,
-            )
 
-            search_criteria = JobApplicant.aggregate(
-                pipeline, projection_model=JobApplicant
-            )
+            async def get_search_criteria(
+                pagination_limit: int,
+            ) -> AggregationQuery[JobApplicant]:
+                pipeline = await self._build_natural_language_query_pipeline(
+                    natural_language_query=natural_language_query,
+                    job_id=job_id,
+                    status=status,
+                    limit=pagination_limit,
+                    sort_by=sort_by,
+                )
+                return JobApplicant.aggregate(pipeline, projection_model=JobApplicant)
 
-            # TODO: remove the default sorting the paginator applies,
-            # because we have already sorted here
             return await paginator.paginate(
-                search_criteria=search_criteria,
+                search_criteria=get_search_criteria,
                 first=first,
                 last=last,
                 before=ObjectId(before) if before else None,
@@ -952,8 +953,6 @@ class JobApplicantRepo:
             case JobApplicantsSortBy.CREATED_AT:
                 search_criteria = search_criteria.sort(-JobApplicant.id)
 
-        # TODO: remove the default sorting the paginator applies,
-        # because we have already sorted here
         return await paginator.paginate(
             search_criteria=search_criteria,
             first=first,

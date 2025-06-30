@@ -1,6 +1,7 @@
 import operator
-from collections.abc import Sequence
+from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
+from inspect import isawaitable
 from typing import Generic, TypeVar
 
 from beanie import Document
@@ -34,12 +35,14 @@ class Paginator(Generic[ModelType, CursorType]):
         self,
         *,
         document_cls: type[ModelType],
-        reverse: bool = False,
         paginate_by: str,
+        reverse: bool = False,
+        apply_ordering: bool = True,
     ) -> None:
         self._document_cls = document_cls
         self._reverse = reverse
         self._paginate_by = paginate_by
+        self._apply_ordering = apply_ordering
 
     @staticmethod
     def __validate_arguments(  # noqa: C901
@@ -96,6 +99,9 @@ class Paginator(Generic[ModelType, CursorType]):
         last: int | None,
     ) -> FindMany[ModelType] | AggregationQuery[ModelType]:
         """Apply ordering on the search criteria."""
+        if not self._apply_ordering:
+            return search_criteria
+
         if (self._reverse and last is None) or (last is not None and not self._reverse):
             if isinstance(search_criteria, AggregationQuery):
                 search_criteria.aggregation_pipeline.append(
@@ -158,7 +164,15 @@ class Paginator(Generic[ModelType, CursorType]):
     async def paginate(
         self,
         *,
-        search_criteria: FindMany[ModelType] | AggregationQuery[ModelType],
+        search_criteria: FindMany[ModelType]
+        | AggregationQuery[ModelType]
+        | Callable[
+            [int],
+            FindMany[ModelType]
+            | AggregationQuery[ModelType]
+            | Awaitable[FindMany[ModelType]]
+            | Awaitable[AggregationQuery[ModelType]],
+        ],
         last: int | None = None,
         first: int | None = None,
         before: CursorType | None = None,
@@ -172,21 +186,33 @@ class Paginator(Generic[ModelType, CursorType]):
             after=after,
         )
 
-        search_criteria = self.__apply_ordering(
-            search_criteria=search_criteria, last=last
+        resolved_search_criteria: FindMany[ModelType] | AggregationQuery[ModelType]
+
+        if callable(search_criteria):
+            temp_search_criteria = search_criteria(pagination_limit)
+            if isawaitable(temp_search_criteria):
+                temp_search_criteria = await temp_search_criteria
+            resolved_search_criteria = temp_search_criteria
+        else:
+            resolved_search_criteria = search_criteria
+
+        resolved_search_criteria = self.__apply_ordering(
+            search_criteria=resolved_search_criteria, last=last
         )
-        search_criteria = self.__apply_filters(
-            search_criteria=search_criteria, before=before, after=after
+        resolved_search_criteria = self.__apply_filters(
+            search_criteria=resolved_search_criteria, before=before, after=after
         )
 
-        if isinstance(search_criteria, AggregationQuery):
-            search_criteria.aggregation_pipeline.append(
+        if isinstance(resolved_search_criteria, AggregationQuery):
+            resolved_search_criteria.aggregation_pipeline.append(
                 {"$limit": pagination_limit + 1}
             )
         else:
-            search_criteria = search_criteria.limit(pagination_limit + 1)
+            resolved_search_criteria = resolved_search_criteria.limit(
+                pagination_limit + 1
+            )
 
-        results = await search_criteria.to_list()
+        results = await resolved_search_criteria.to_list()
         entities = results[:pagination_limit]
 
         if last is not None:
