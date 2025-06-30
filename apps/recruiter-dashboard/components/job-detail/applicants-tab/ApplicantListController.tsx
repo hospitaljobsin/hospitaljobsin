@@ -14,6 +14,7 @@ import {
 	Input,
 	Select,
 	SelectItem,
+	Spinner,
 } from "@heroui/react";
 import { ChevronDown, Sparkles } from "lucide-react";
 import { useFragment, useMutation } from "react-relay";
@@ -70,6 +71,7 @@ interface ApplicantListControllerProps {
 	job: ApplicantListControllerFragment$key;
 	sortBy: JobApplicantsSortBy | null;
 	setSortBy: (sortBy: JobApplicantsSortBy) => void;
+	isLoading: boolean;
 }
 
 export default function ApplicantListController(
@@ -149,6 +151,16 @@ export default function ApplicantListController(
 						size={20}
 						className="text-2xl text-default-400 pointer-events-none flex-shrink-0 mr-4"
 					/>
+				}
+				endContent={
+					props.isLoading ? (
+						<Spinner
+							size="sm"
+							variant="simple"
+							className="mt-2"
+							color="primary"
+						/>
+					) : null
 				}
 				isClearable
 				placeholder="e.g., 'candidates with 5 years of experience in cardiology'"

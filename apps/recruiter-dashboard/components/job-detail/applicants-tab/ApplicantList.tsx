@@ -49,12 +49,15 @@ type Props = {
 	searchTerm: string | null;
 	status: JobApplicantStatus | null;
 	sortBy: JobApplicantsSortBy | null;
+	onLoadingChange?: (isLoading: boolean) => void;
 };
 
 export default function ApplicantList({
 	rootQuery,
 	searchTerm,
 	status,
+	sortBy,
+	onLoadingChange,
 }: Props) {
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
 		pageJobDetailApplicantsQuery,
@@ -93,6 +96,7 @@ export default function ApplicantList({
 			hasMountedRef.current = true;
 			return;
 		}
+		if (onLoadingChange) onLoadingChange(true);
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
 				refetch(
@@ -100,13 +104,21 @@ export default function ApplicantList({
 						searchTerm: searchTerm,
 						status: status,
 					},
-					{ fetchPolicy: "store-or-network" },
+					{
+						fetchPolicy: "store-or-network",
+						onComplete: () => {
+							if (onLoadingChange) onLoadingChange(false);
+						},
+					},
 				);
 			});
 		}, 300); // Adjust debounce delay as needed
 
-		return () => clearTimeout(debounceTimeout);
-	}, [refetch, searchTerm, status]);
+		return () => {
+			clearTimeout(debounceTimeout);
+			if (onLoadingChange) onLoadingChange(false);
+		};
+	}, [refetch, searchTerm, status, onLoadingChange]);
 
 	if (
 		data.applicants.edges.length === 0 &&

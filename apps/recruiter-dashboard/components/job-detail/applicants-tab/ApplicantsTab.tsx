@@ -57,6 +57,7 @@ export default function ApplicantsTab(props: {
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 	const [status, setStatus] = useState<JobApplicantStatus | null>(null);
 	const [sortBy, setSortBy] = useState<JobApplicantsSortBy>("OVERALL_SCORE");
+	const [isLoading, setIsLoading] = useState(false);
 	const data = usePreloadedQuery(
 		PageJobDetailApplicantsQuery,
 		props.initialQueryRef,
@@ -87,12 +88,14 @@ export default function ApplicantsTab(props: {
 					setStatus={setStatus}
 					sortBy={sortBy}
 					setSortBy={setSortBy}
+					isLoading={isLoading}
 				/>
 				<ApplicantList
 					rootQuery={query.organization.job}
 					searchTerm={searchTerm}
 					status={status}
 					sortBy={sortBy}
+					onLoadingChange={setIsLoading}
 				/>
 			</div>
 		</ApplicantSelectionProvider>
