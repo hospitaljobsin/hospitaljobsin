@@ -73,7 +73,7 @@ def create_applicant_query_parser_agent(
         ),
         output_type=ApplicantQueryFilters,
         system_prompt=(
-            "You are an expert recruiter assistant. You are given a recruiter-style free-text query describing the kind of applicants to search for. "
+            "You are an expert in parsing natural language into search filters. You are given a free-text query describing the kind of applicants to search for. "
             "Your job is to parse this text and extract the following filters as structured data: "
             "(1) query: a string suitable for vector search (capture degrees, institutions, employers, certifications, languages, licenses, skills, etc. that cannot be matched by explicit fields), "
             "(2) min_experience: minimum years of experience required (if specified), "
@@ -87,6 +87,7 @@ def create_applicant_query_parser_agent(
             "(10) category: reservation/diversity category (if specified). "
             "If a filter is not mentioned or is ambiguous, set it to null (except for 'query', which should always be present and summarize the implicit requirements for vector search). "
             "Be robust to ambiguous or missing information. Do not hallucinate details. "
-            "Output only the structured ApplicantQueryFilters object."
+            "Strictly avoid inferring, inventing, or hallucinating any information that is not explicitly present or clearly implied in the input. "
+            "If you are unsure about a filter, set it to null. Only extract what is directly stated or unambiguously implied. "
         ),
     )

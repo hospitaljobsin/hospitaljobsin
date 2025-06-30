@@ -1,7 +1,7 @@
 import secrets
 import uuid
 from collections import defaultdict
-from datetime import UTC, datetime
+from datetime import UTC, datetime, time
 from enum import Enum
 from typing import Any, Literal, get_args
 
@@ -706,6 +706,197 @@ class JobApplicantRepo:
             nesting_depth=1,
         ).to_list()
 
+    async def _build_natural_language_query_pipeline(
+        self,
+        natural_language_query: str,
+        job_id: ObjectId,
+        status: JobApplicantStatus | None,
+        limit: int,
+        sort_by: JobApplicantsSortBy,
+    ) -> list[dict]:
+        # TODO: enable caching of agentic results and embeddings, this will save a lot of money
+        # when we have to paginate with the same filters
+        result = await self._applicant_query_parser_agent.run(
+            user_prompt=natural_language_query
+        )
+        filters = result.output
+
+        print("filters: ", filters)
+
+        pipeline: list[dict] = []
+
+        if filters.query is not None:
+            query_embedding = await self._embeddings_service.generate_embeddings(
+                text=filters.query,
+                task_type="RETRIEVAL_QUERY",
+            )
+
+            pipeline.append(
+                {
+                    "$vectorSearch": {
+                        "index": "job_applicant_embedding_vector_index",
+                        "path": "profile_embedding",
+                        "queryVector": query_embedding,
+                        "numCandidates": limit * 4,
+                        "limit": limit,
+                    }
+                }
+            )
+
+        # === Add structured filters from ApplicantQueryFilters ===
+        # 1. min_experience / max_experience (add $expr $function filter if needed)
+        if filters.min_experience is not None or filters.max_experience is not None:
+            # TODO: This is not indexed and should be denormalized for performance
+            # expr = {
+            #     "$function": {
+            #         "body": "function(work_experience) {\n  if (!work_experience || work_experience.length === 0) return 0;\n  work_experience = work_experience.map(function(exp) {\n    var start = new Date(exp.started_at);\n    var end = exp.completed_at ? new Date(exp.completed_at) : new Date();\n    return [start, end];\n  });\n  work_experience.sort(function(a, b) { return a[0] - b[0]; });\n  var merged = [];\n  for (var i = 0; i < work_experience.length; i++) {\n    var start = work_experience[i][0];\n    var end = work_experience[i][1];\n    if (merged.length === 0 || start > merged[merged.length-1][1]) {\n      merged.push([start, end]);\n    } else {\n      merged[merged.length-1][1] = new Date(Math.max(merged[merged.length-1][1], end));\n    }\n  }\n  var totalDays = 0;\n  for (var i = 0; i < merged.length; i++) {\n    totalDays += (merged[i][1] - merged[i][0]) / (1000 * 60 * 60 * 24);\n  }\n  return Math.round((totalDays / 365.25) * 100) / 100;\n}",
+            #         "args": ["$profile_snapshot.work_experience"],
+            #         "lang": "js",
+            #     }
+            # }
+            # exp_query = {}
+            # if filters.min_experience is not None:
+            #     exp_query["$gte"] = filters.min_experience
+            # if filters.max_experience is not None:
+            #     exp_query["$lte"] = filters.max_experience
+            # pipeline.append(
+            #     {"$match": {"$expr": {**exp_query, "$function": expr["$function"]}}}
+            # )
+            pass
+
+        # 2. location
+        if filters.location is not None:
+            # Geospatial filtering: geocode string locations if needed, then use $nearSphere
+            # TODO: Allow user to specify distance (currently hardcoded to 50km)
+            GEO_DISTANCE_METERS = 50_000
+
+            geocoded_points: list[GeoObject] = []
+            location_names: list[str] = []
+            # Geocode if needed
+            if isinstance(filters.location, str):
+                location_names.append(filters.location)
+            elif isinstance(filters.location, list) and all(
+                isinstance(loc, str) for loc in filters.location
+            ):
+                location_names.extend(filters.location)
+            if location_names:
+                for name in location_names:
+                    geo_result = await self._location_service.geocode(name)
+                    if geo_result is not None:
+                        geocoded_points.append(
+                            GeoObject(
+                                type="Point",
+                                coordinates=(
+                                    geo_result.longitude,
+                                    geo_result.latitude,
+                                ),
+                            )
+                        )
+            # Apply geo query if we have geocoded points
+            if geocoded_points:
+                if len(geocoded_points) == 1:
+                    pipeline.append(
+                        {
+                            "$match": {
+                                "profile_snapshot.locations_open_to_work.geo": {
+                                    "$geoWithin": {
+                                        "$centerSphere": [
+                                            geocoded_points[0].coordinates,
+                                            GEO_DISTANCE_METERS
+                                            / 6378137,  # meters to radians
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    )
+                else:
+                    pipeline.append(
+                        {
+                            "$match": {
+                                "$or": [
+                                    {
+                                        "profile_snapshot.locations_open_to_work.geo": {
+                                            "$geoWithin": {
+                                                "$centerSphere": [
+                                                    geo.coordinates,
+                                                    GEO_DISTANCE_METERS
+                                                    / 6378137,  # meters to radians
+                                                ]
+                                            }
+                                        }
+                                    }
+                                    for geo in geocoded_points
+                                ]
+                            }
+                        }
+                    )
+
+        # 3. open_to_relocation_anywhere
+        if filters.open_to_relocation_anywhere is not None:
+            pipeline.append(
+                {
+                    "$match": {
+                        "profile_snapshot.open_to_relocation_anywhere": filters.open_to_relocation_anywhere
+                    }
+                }
+            )
+
+        # 4. gender
+        if filters.gender is not None:
+            pipeline.append({"$match": {"profile_snapshot.gender": filters.gender}})
+
+        # 5. min_age / max_age (convert to date_of_birth range)
+        today = datetime.now(tz=UTC).date()
+        dob_query = {}
+        if filters.min_age is not None:
+            max_dob = today.replace(year=today.year - filters.min_age)
+            max_dob_dt = datetime.combine(max_dob, time.min, tzinfo=UTC)
+            dob_query["$lte"] = max_dob_dt
+        if filters.max_age is not None:
+            min_dob = today.replace(year=today.year - filters.max_age - 1)
+            min_dob_dt = datetime.combine(min_dob, time.min, tzinfo=UTC)
+            dob_query["$gte"] = min_dob_dt
+        if dob_query:
+            pipeline.append({"$match": {"profile_snapshot.date_of_birth": dob_query}})
+
+        # 6. marital_status
+        if filters.marital_status is not None:
+            pipeline.append(
+                {"$match": {"profile_snapshot.marital_status": filters.marital_status}}
+            )
+
+        # 7. category
+        if filters.category is not None:
+            pipeline.append({"$match": {"profile_snapshot.category": filters.category}})
+
+        if status is not None:
+            pipeline.append({"$match": {"job.$id": ObjectId(job_id), "status": status}})
+        else:
+            pipeline.append({"$match": {"job.$id": ObjectId(job_id)}})
+        pipeline.extend(
+            [
+                {"$addFields": {"search_score": {"$meta": "vectorSearchScore"}}},
+                {
+                    "$match": {
+                        "search_score": {
+                            "$gte": RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD
+                        }
+                    }
+                },
+                {"$sort": {"search_score": -1}},
+            ]
+        )
+
+        # Add sorting to the pipeline based on sort_by
+        match sort_by:
+            case JobApplicantsSortBy.OVERALL_SCORE:
+                pipeline.append({"$sort": {"overall_score": -1}})
+            case JobApplicantsSortBy.CREATED_AT:
+                pipeline.append({"$sort": {"_id": -1}})
+
+        return pipeline
+
     async def get_all_by_job_id(
         self,
         job_id: ObjectId,
@@ -724,195 +915,14 @@ class JobApplicantRepo:
             paginate_by="id",
         )
         if natural_language_query is not None:
-            # TODO: enable caching of agentic results and embeddings, this will save a lot of money
-            # when we have to paginate with the same filters
-            result = await self._applicant_query_parser_agent.run(
-                user_prompt=natural_language_query
+            pipeline = await self._build_natural_language_query_pipeline(
+                natural_language_query=natural_language_query,
+                job_id=job_id,
+                status=status,
+                # TODO: validate the first and last first. maybe using hooks on the paginator, we can build the pipeline later?
+                limit=(first or last or 10),
+                sort_by=sort_by,
             )
-            filters = result.output
-
-            print("filters: ", filters)
-
-            pipeline = []
-
-            if filters.query is not None:
-                query_embedding = await self._embeddings_service.generate_embeddings(
-                    text=filters.query,
-                    task_type="RETRIEVAL_QUERY",
-                )
-
-                pipeline.append(
-                    {
-                        "$vectorSearch": {
-                            "index": "job_applicant_embedding_vector_index",
-                            "path": "profile_embedding",
-                            "queryVector": query_embedding,
-                            "numCandidates": (first or last) * 4,  # type: ignore
-                            "limit": (first or last),
-                        }
-                    }
-                )
-
-            # === Add structured filters from ApplicantQueryFilters ===
-            # 1. min_experience / max_experience (add $expr $function filter if needed)
-            if filters.min_experience is not None or filters.max_experience is not None:
-                # TODO: This is not indexed and should be denormalized for performance
-                # expr = {
-                #     "$function": {
-                #         "body": "function(work_experience) {\n  if (!work_experience || work_experience.length === 0) return 0;\n  work_experience = work_experience.map(function(exp) {\n    var start = new Date(exp.started_at);\n    var end = exp.completed_at ? new Date(exp.completed_at) : new Date();\n    return [start, end];\n  });\n  work_experience.sort(function(a, b) { return a[0] - b[0]; });\n  var merged = [];\n  for (var i = 0; i < work_experience.length; i++) {\n    var start = work_experience[i][0];\n    var end = work_experience[i][1];\n    if (merged.length === 0 || start > merged[merged.length-1][1]) {\n      merged.push([start, end]);\n    } else {\n      merged[merged.length-1][1] = new Date(Math.max(merged[merged.length-1][1], end));\n    }\n  }\n  var totalDays = 0;\n  for (var i = 0; i < merged.length; i++) {\n    totalDays += (merged[i][1] - merged[i][0]) / (1000 * 60 * 60 * 24);\n  }\n  return Math.round((totalDays / 365.25) * 100) / 100;\n}",
-                #         "args": ["$profile_snapshot.work_experience"],
-                #         "lang": "js",
-                #     }
-                # }
-                # exp_query = {}
-                # if filters.min_experience is not None:
-                #     exp_query["$gte"] = filters.min_experience
-                # if filters.max_experience is not None:
-                #     exp_query["$lte"] = filters.max_experience
-                # pipeline.append(
-                #     {"$match": {"$expr": {**exp_query, "$function": expr["$function"]}}}
-                # )
-                pass
-
-            # 2. location
-            if filters.location is not None:
-                # Geospatial filtering: geocode string locations if needed, then use $nearSphere
-                # TODO: Allow user to specify distance (currently hardcoded to 50km)
-                GEO_DISTANCE_METERS = 50_000
-
-                geocoded_points: list[GeoObject] = []
-                location_names: list[str] = []
-                # Geocode if needed
-                if isinstance(filters.location, str):
-                    location_names.append(filters.location)
-                elif isinstance(filters.location, list) and all(
-                    isinstance(loc, str) for loc in filters.location
-                ):
-                    location_names.extend(filters.location)
-                if location_names:
-                    for name in location_names:
-                        geo_result = await self._location_service.geocode(name)
-                        if geo_result is not None:
-                            geocoded_points.append(
-                                GeoObject(
-                                    type="Point",
-                                    coordinates=(
-                                        geo_result.longitude,
-                                        geo_result.latitude,
-                                    ),
-                                )
-                            )
-                # Apply geo query if we have geocoded points
-                if geocoded_points:
-                    if len(geocoded_points) == 1:
-                        pipeline.append(
-                            {
-                                "$match": {
-                                    "profile_snapshot.locations_open_to_work.geo": {
-                                        "$geoWithin": {
-                                            "$centerSphere": [
-                                                geocoded_points[0].coordinates,
-                                                GEO_DISTANCE_METERS
-                                                / 6378137,  # meters to radians
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        )
-                    else:
-                        pipeline.append(
-                            {
-                                "$match": {
-                                    "$or": [
-                                        {
-                                            "profile_snapshot.locations_open_to_work.geo": {
-                                                "$geoWithin": {
-                                                    "$centerSphere": [
-                                                        geo.coordinates,
-                                                        GEO_DISTANCE_METERS
-                                                        / 6378137,  # meters to radians
-                                                    ]
-                                                }
-                                            }
-                                        }
-                                        for geo in geocoded_points
-                                    ]
-                                }
-                            }
-                        )
-
-            # 3. open_to_relocation_anywhere
-            if filters.open_to_relocation_anywhere is not None:
-                pipeline.append(
-                    {
-                        "$match": {
-                            "profile_snapshot.open_to_relocation_anywhere": filters.open_to_relocation_anywhere
-                        }
-                    }
-                )
-
-            # 4. gender
-            if filters.gender is not None:
-                pipeline.append({"$match": {"profile_snapshot.gender": filters.gender}})
-
-            # 5. min_age / max_age (convert to date_of_birth range)
-
-            today = datetime.now(tz=UTC).date()
-            dob_query = {}
-            if filters.min_age is not None:
-                max_dob = today.replace(year=today.year - filters.min_age)
-                dob_query["$lte"] = max_dob
-            if filters.max_age is not None:
-                min_dob = today.replace(year=today.year - filters.max_age - 1)
-                dob_query["$gte"] = min_dob
-            if dob_query:
-                pipeline.append(
-                    {"$match": {"profile_snapshot.date_of_birth": dob_query}}
-                )
-
-            # 6. marital_status
-            if filters.marital_status is not None:
-                pipeline.append(
-                    {
-                        "$match": {
-                            "profile_snapshot.marital_status": filters.marital_status
-                        }
-                    }
-                )
-
-            # 7. category
-            if filters.category is not None:
-                pipeline.append(
-                    {"$match": {"profile_snapshot.category": filters.category}}
-                )
-
-            if status is not None:
-                pipeline.append(
-                    {"$match": {"job.$id": ObjectId(job_id), "status": status}}
-                )
-            else:
-                pipeline.append({"$match": {"job.$id": ObjectId(job_id)}})
-            pipeline.extend(
-                [
-                    {"$addFields": {"search_score": {"$meta": "vectorSearchScore"}}},
-                    {
-                        "$match": {
-                            "search_score": {
-                                "$gte": RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD
-                            }
-                        }
-                    },
-                    {"$sort": {"search_score": -1}},
-                ]
-            )
-
-            # Add sorting to the pipeline based on sort_by
-            match sort_by:
-                case JobApplicantsSortBy.OVERALL_SCORE:
-                    pipeline.append({"$sort": {"overall_score": -1}})
-                case JobApplicantsSortBy.CREATED_AT:
-                    pipeline.append({"$sort": {"_id": -1}})
 
             search_criteria = JobApplicant.aggregate(
                 pipeline, projection_model=JobApplicant
