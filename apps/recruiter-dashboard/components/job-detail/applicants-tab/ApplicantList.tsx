@@ -112,7 +112,7 @@ export default function ApplicantList({
 					},
 				);
 			});
-		}, 300); // Adjust debounce delay as needed
+		}, 600); // Adjust debounce delay as needed
 
 		return () => {
 			clearTimeout(debounceTimeout);
