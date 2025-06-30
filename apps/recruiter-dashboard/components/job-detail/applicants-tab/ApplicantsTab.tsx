@@ -55,7 +55,7 @@ export default function ApplicantsTab(props: {
 	initialQueryRef: PreloadedQuery<pageJobDetailApplicantsQuery>;
 }) {
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
-	const [status, setStatus] = useState<JobApplicantStatus | null>(null);
+	const [status, setStatus] = useState<JobApplicantStatus | "ALL">("ALL");
 	const [sortBy, setSortBy] = useState<JobApplicantsSortBy>("OVERALL_SCORE");
 	const [isLoading, setIsLoading] = useState(false);
 	const data = usePreloadedQuery(

@@ -14,9 +14,11 @@ import {
 	Input,
 	Select,
 	SelectItem,
+	type SharedSelection,
 	Spinner,
 } from "@heroui/react";
 import { ChevronDown, Sparkles } from "lucide-react";
+import { startTransition } from "react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { useApplicantSelection } from "./ApplicantSelectionProvider";
@@ -66,8 +68,8 @@ const ApplicantListControllerFragment = graphql`
 interface ApplicantListControllerProps {
 	searchTerm: string | null;
 	setSearchTerm: (searchTerm: string | null) => void;
-	status: JobApplicantStatus | null;
-	setStatus: (status: JobApplicantStatus | null) => void;
+	status: JobApplicantStatus | "ALL";
+	setStatus: (status: JobApplicantStatus | "ALL") => void;
 	job: ApplicantListControllerFragment$key;
 	sortBy: JobApplicantsSortBy | null;
 	setSortBy: (sortBy: JobApplicantsSortBy) => void;
@@ -83,15 +85,23 @@ export default function ApplicantListController(
 		useMutation<ApplicantListControllerMutationType>(
 			UpdateJobApplicantsStatusMutation,
 		);
-	const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		if (e.target.value === "ALL") {
-			props.setStatus(null);
-			return;
-		}
-		props.setStatus(e.target.value as JobApplicantStatus);
+	const handleSelectionChange = (keys: SharedSelection) => {
+		startTransition(() => {
+			if (keys.currentKey === "ALL" || keys.currentKey === "") {
+				props.setStatus("ALL");
+				return;
+			}
+			props.setStatus(keys.currentKey as JobApplicantStatus);
+		});
 	};
-	const handleSortByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		props.setSortBy(e.target.value as JobApplicantsSortBy);
+	const handleSortByChange = (keys: SharedSelection) => {
+		startTransition(() => {
+			if (keys.currentKey === "OVERALL_SCORE" || keys.currentKey === "") {
+				props.setSortBy("OVERALL_SCORE");
+				return;
+			}
+			props.setSortBy(keys.currentKey as JobApplicantsSortBy);
+		});
 	};
 	if (selectedApplicants.size > 0)
 		return (
@@ -178,8 +188,8 @@ export default function ApplicantListController(
 				size="sm"
 				variant="bordered"
 				className="bg-background w-full sm:w-sm sm:max-w-xs"
-				onChange={handleSelectionChange}
-				selectedKeys={props.status ? [props.status] : ["ALL"]}
+				onSelectionChange={handleSelectionChange}
+				selectedKeys={[props.status]}
 			>
 				{applicantStatus.map((status) => (
 					<SelectItem key={status.key}>{status.label}</SelectItem>
@@ -190,7 +200,7 @@ export default function ApplicantListController(
 				size="sm"
 				variant="bordered"
 				className="w-full sm:w-sm sm:max-w-xs bg-background"
-				onChange={handleSortByChange}
+				onSelectionChange={handleSortByChange}
 				selectedKeys={props.sortBy ? [props.sortBy] : ["OVERALL_SCORE"]}
 			>
 				<SelectItem key="OVERALL_SCORE">Relevance</SelectItem>

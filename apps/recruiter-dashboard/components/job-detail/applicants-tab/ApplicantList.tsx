@@ -47,7 +47,7 @@ const ApplicantListFragment = graphql`
 type Props = {
 	rootQuery: ApplicantListFragment$key;
 	searchTerm: string | null;
-	status: JobApplicantStatus | null;
+	status: JobApplicantStatus | "ALL";
 	sortBy: JobApplicantsSortBy;
 	onLoadingChange?: (isLoading: boolean) => void;
 };
@@ -102,13 +102,13 @@ export default function ApplicantList({
 				refetch(
 					{
 						searchTerm: searchTerm,
-						status: status,
+						status: status === "ALL" ? null : status,
 						sortBy: sortBy,
 					},
 					{
 						fetchPolicy: "store-or-network",
 						onComplete: () => {
-							if (onLoadingChange) onLoadingChange(false);
+							if (onLoadingChange) setTimeout(() => onLoadingChange(false), 0);
 						},
 					},
 				);

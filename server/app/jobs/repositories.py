@@ -725,8 +725,6 @@ class JobApplicantRepo:
         )
         filters = result.output
 
-        print("filters: ", filters)
-
         pipeline: list[dict] = []
 
         if filters.query is not None:
