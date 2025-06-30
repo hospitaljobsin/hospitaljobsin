@@ -48,7 +48,7 @@ type Props = {
 	rootQuery: ApplicantListFragment$key;
 	searchTerm: string | null;
 	status: JobApplicantStatus | null;
-	sortBy: JobApplicantsSortBy | null;
+	sortBy: JobApplicantsSortBy;
 	onLoadingChange?: (isLoading: boolean) => void;
 };
 
@@ -103,6 +103,7 @@ export default function ApplicantList({
 					{
 						searchTerm: searchTerm,
 						status: status,
+						sortBy: sortBy,
 					},
 					{
 						fetchPolicy: "store-or-network",
@@ -118,7 +119,7 @@ export default function ApplicantList({
 			clearTimeout(debounceTimeout);
 			if (onLoadingChange) onLoadingChange(false);
 		};
-	}, [refetch, searchTerm, status, onLoadingChange]);
+	}, [refetch, searchTerm, status, sortBy, onLoadingChange]);
 
 	if (
 		data.applicants.edges.length === 0 &&

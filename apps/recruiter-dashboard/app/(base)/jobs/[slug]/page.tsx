@@ -8,8 +8,8 @@ import { Suspense } from "react";
 import { graphql, loadQuery, useRelayEnvironment } from "react-relay";
 
 export const JobDetailApplicantsQuery = graphql`
-  query pageJobDetailApplicantsQuery($orgSlug: String!, $jobSlug: String!, $searchTerm: String, $status: JobApplicantStatus) {
-    ...ApplicantsTabFragment @arguments(slug: $orgSlug, jobSlug: $jobSlug, searchTerm: $searchTerm, status: $status)
+  query pageJobDetailApplicantsQuery($orgSlug: String!, $jobSlug: String!, $searchTerm: String, $status: JobApplicantStatus, $sortBy: JobApplicantsSortBy!) {
+    ...ApplicantsTabFragment @arguments(slug: $orgSlug, jobSlug: $jobSlug, searchTerm: $searchTerm, status: $status, sortBy: $sortBy)
   }
 `;
 
@@ -20,7 +20,7 @@ export default function JobDetailApplicantsPage() {
 	const preloadedQuery = loadQuery<pageJobDetailApplicantsQuery>(
 		relayEnvironment,
 		JobDetailApplicantsQuery,
-		{ orgSlug: organizationSlug, jobSlug: slug },
+		{ orgSlug: organizationSlug, jobSlug: slug, sortBy: "OVERALL_SCORE" },
 		{ fetchPolicy: "store-and-network", networkCacheConfig: { force: false } },
 	);
 

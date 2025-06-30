@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<9aff8fb5f8394638f81d8f1d2f4b10a5>>
- * @relayHash 60d1f3f8a4df87581383e0709bc9c481
+ * @generated SignedSource<<dd65222aa95f4bafe2d9949883d1e97c>>
+ * @relayHash f17b20bfcc61a83a6cc79f62b2593234
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,15 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 60d1f3f8a4df87581383e0709bc9c481
+// @relayRequestID f17b20bfcc61a83a6cc79f62b2593234
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobApplicantStatus = "APPLIED" | "INTERVIEWED" | "OFFERED" | "ONHOLD" | "SHORTLISTED" | "%future added value";
+export type JobApplicantsSortBy = "CREATED_AT" | "OVERALL_SCORE" | "%future added value";
 export type pageJobDetailApplicantsQuery$variables = {
   jobSlug: string;
   orgSlug: string;
   searchTerm?: string | null | undefined;
+  sortBy: JobApplicantsSortBy;
   status?: JobApplicantStatus | null | undefined;
 };
 export type pageJobDetailApplicantsQuery$data = {
@@ -47,57 +49,63 @@ v2 = {
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "status"
+  "name": "sortBy"
 },
 v4 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "status"
+},
+v5 = {
   "kind": "Variable",
   "name": "searchTerm",
   "variableName": "searchTerm"
 },
-v5 = {
+v6 = {
   "kind": "Variable",
   "name": "slug",
   "variableName": "orgSlug"
 },
-v6 = {
+v7 = {
+  "kind": "Variable",
+  "name": "sortBy",
+  "variableName": "sortBy"
+},
+v8 = {
   "kind": "Variable",
   "name": "status",
   "variableName": "status"
 },
-v7 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v8 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v9 = [
+v11 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 10
   },
-  (v4/*: any*/),
-  {
-    "kind": "Literal",
-    "name": "sortBy",
-    "value": "OVERALL_SCORE"
-  },
-  (v6/*: any*/)
-],
-v10 = [
+  (v5/*: any*/),
+  (v7/*: any*/),
   (v8/*: any*/)
 ],
-v11 = {
+v12 = [
+  (v10/*: any*/)
+],
+v13 = {
   "kind": "InlineFragment",
-  "selections": (v10/*: any*/),
+  "selections": (v12/*: any*/),
   "type": "Node",
   "abstractKey": "__isNode"
 };
@@ -107,7 +115,8 @@ return {
       (v0/*: any*/),
       (v1/*: any*/),
       (v2/*: any*/),
-      (v3/*: any*/)
+      (v3/*: any*/),
+      (v4/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -120,9 +129,10 @@ return {
             "name": "jobSlug",
             "variableName": "jobSlug"
           },
-          (v4/*: any*/),
           (v5/*: any*/),
-          (v6/*: any*/)
+          (v6/*: any*/),
+          (v7/*: any*/),
+          (v8/*: any*/)
         ],
         "kind": "FragmentSpread",
         "name": "ApplicantsTabFragment"
@@ -137,6 +147,7 @@ return {
       (v1/*: any*/),
       (v0/*: any*/),
       (v2/*: any*/),
+      (v4/*: any*/),
       (v3/*: any*/)
     ],
     "kind": "Operation",
@@ -145,14 +156,14 @@ return {
       {
         "alias": null,
         "args": [
-          (v5/*: any*/)
+          (v6/*: any*/)
         ],
         "concreteType": null,
         "kind": "LinkedField",
         "name": "organization",
         "plural": false,
         "selections": [
-          (v7/*: any*/),
+          (v9/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -177,14 +188,14 @@ return {
                 "name": "job",
                 "plural": false,
                 "selections": [
-                  (v7/*: any*/),
+                  (v9/*: any*/),
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v8/*: any*/),
+                      (v10/*: any*/),
                       {
                         "alias": null,
-                        "args": (v9/*: any*/),
+                        "args": (v11/*: any*/),
                         "concreteType": "JobApplicantConnection",
                         "kind": "LinkedField",
                         "name": "applicants",
@@ -206,7 +217,7 @@ return {
                                 "name": "node",
                                 "plural": false,
                                 "selections": [
-                                  (v8/*: any*/),
+                                  (v10/*: any*/),
                                   {
                                     "alias": null,
                                     "args": null,
@@ -214,7 +225,7 @@ return {
                                     "kind": "LinkedField",
                                     "name": "job",
                                     "plural": false,
-                                    "selections": (v10/*: any*/),
+                                    "selections": (v12/*: any*/),
                                     "storageKey": null
                                   },
                                   {
@@ -239,7 +250,7 @@ return {
                                         "name": "avatarUrl",
                                         "storageKey": null
                                       },
-                                      (v8/*: any*/)
+                                      (v10/*: any*/)
                                     ],
                                     "storageKey": null
                                   },
@@ -290,7 +301,7 @@ return {
                                     "name": "analysis",
                                     "plural": false,
                                     "selections": [
-                                      (v7/*: any*/),
+                                      (v9/*: any*/),
                                       {
                                         "kind": "InlineFragment",
                                         "selections": [
@@ -329,7 +340,7 @@ return {
                                     ],
                                     "storageKey": null
                                   },
-                                  (v7/*: any*/)
+                                  (v9/*: any*/)
                                 ],
                                 "storageKey": null
                               },
@@ -373,7 +384,7 @@ return {
                       },
                       {
                         "alias": null,
-                        "args": (v9/*: any*/),
+                        "args": (v11/*: any*/),
                         "filters": [
                           "searchTerm",
                           "sortBy"
@@ -387,7 +398,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v11/*: any*/)
+                  (v13/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -395,14 +406,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v11/*: any*/)
+          (v13/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "60d1f3f8a4df87581383e0709bc9c481",
+    "id": "f17b20bfcc61a83a6cc79f62b2593234",
     "metadata": {},
     "name": "pageJobDetailApplicantsQuery",
     "operationKind": "query",
@@ -411,6 +422,6 @@ return {
 };
 })();
 
-(node as any).hash = "ca8a8b1943e539b33329477772827890";
+(node as any).hash = "939d5239dc473b5dfb30724a6bd3dc99";
 
 export default node;
