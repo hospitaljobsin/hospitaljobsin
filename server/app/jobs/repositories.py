@@ -199,6 +199,8 @@ class JobRepo:
         }
 
         # Update fields
+        if job.title != title:
+            job.slug = await self.generate_slug(title, job.organization.ref.id)
         job.title = title
         job.description = description
         job.vacancies = vacancies
@@ -213,7 +215,6 @@ class JobRepo:
         job.work_mode = work_mode
         job.skills = skills
         job.currency = currency
-        job.slug = await self.generate_slug(title, job.organization.ref.id)
 
         # Check if any embedding-relevant field has changed
         changed = (
