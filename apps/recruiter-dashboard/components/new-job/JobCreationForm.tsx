@@ -18,7 +18,8 @@ import {
 	RadioGroup,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarDateTime } from "@internationalized/date";
+import type { CalendarIdentifier } from "@internationalized/date";
+import { CalendarDateTime, createCalendar } from "@internationalized/date";
 import type { Key } from "@react-types/shared";
 import {
 	BriefcaseBusiness,
@@ -26,7 +27,7 @@ import {
 	MapPin,
 	TimerIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";
@@ -41,9 +42,7 @@ const jobFormSchema = z.object({
 	maxSalary: z.number().positive().nullable(),
 	minExperience: z.number().positive().nullable(),
 	maxExperience: z.number().positive().nullable(),
-	expiresAt: z
-		.custom<CalendarDateTime>((data) => data instanceof CalendarDateTime)
-		.nullable(),
+	expiresAt: z.instanceof(CalendarDateTime).nullable(),
 	jobType: z
 		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])
 		.nullable(),
@@ -142,6 +141,34 @@ export default function JobCreationForm({
 		Iterable<Key>
 	>(new Set([]));
 
+	// Update accordions when errors change
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		const newOpenAccordions = new Set<Key>([...accordionSelectedKeys]);
+
+		if (errors.location) {
+			newOpenAccordions.add("address");
+		}
+		if (errors.minSalary || errors.maxSalary) {
+			newOpenAccordions.add("salary-range");
+		}
+		if (errors.minExperience || errors.maxExperience) {
+			newOpenAccordions.add("experience-range");
+		}
+		if (errors.expiresAt) {
+			newOpenAccordions.add("expires-at");
+		}
+
+		setAccordionSelectedKeys(newOpenAccordions);
+	}, [
+		errors.location,
+		errors.minSalary,
+		errors.maxSalary,
+		errors.minExperience,
+		errors.maxExperience,
+		errors.expiresAt,
+	]);
+
 	const onSubmit = (formData: JobFormValues) => {
 		commitCreateJob({
 			variables: {
@@ -155,7 +182,9 @@ export default function JobCreationForm({
 				maxSalary: formData.maxSalary ?? undefined,
 				minExperience: formData.minExperience ?? undefined,
 				maxExperience: formData.maxExperience ?? undefined,
-				expiresAt: formData.expiresAt ?? undefined,
+				expiresAt: formData.expiresAt
+					? formData.expiresAt.toString()
+					: undefined,
 				jobType: formData.jobType ?? undefined,
 				workMode: formData.workMode ?? undefined,
 			},
@@ -398,7 +427,53 @@ export default function JobCreationForm({
 										errorMessage={errors.expiresAt?.message}
 										isInvalid={!!errors.expiresAt}
 										value={field.value ?? undefined}
-										onChange={field.onChange}
+										onChange={(val: unknown) => {
+											if (val instanceof CalendarDateTime || val == null) {
+												field.onChange(val);
+											} else if (
+												typeof val === "object" &&
+												val !== null &&
+												"calendar" in val &&
+												"era" in val &&
+												"year" in val &&
+												"month" in val &&
+												"day" in val &&
+												"hour" in val &&
+												"minute" in val &&
+												"second" in val &&
+												"millisecond" in val
+											) {
+												const v = val as {
+													calendar?: { identifier: string };
+													era: string;
+													year: number;
+													month: number;
+													day: number;
+													hour: number;
+													minute: number;
+													second: number;
+													millisecond: number;
+												};
+												field.onChange(
+													new CalendarDateTime(
+														createCalendar(
+															(v.calendar?.identifier ??
+																"gregory") as CalendarIdentifier,
+														),
+														v.era,
+														v.year,
+														v.month,
+														v.day,
+														v.hour,
+														v.minute,
+														v.second,
+														v.millisecond,
+													),
+												);
+											} else {
+												field.onChange(null);
+											}
+										}}
 									/>
 								)}
 							/>

@@ -28,6 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	CalendarDateTime,
 	parseAbsoluteToLocal,
+	toCalendarDateTime,
 } from "@internationalized/date";
 import type { Key } from "@react-types/shared";
 import {
@@ -128,7 +129,11 @@ const formSchema = z.object({
 	minExperience: z.number().positive().nullable(),
 	maxExperience: z.number().positive().nullable(),
 	expiresAt: z
-		.custom<CalendarDateTime>((data) => data instanceof CalendarDateTime)
+		.custom<CalendarDateTime>((data) => {
+			console.log(data);
+			console.log(typeof data, data instanceof CalendarDateTime);
+			return data instanceof CalendarDateTime;
+		})
 		.nullable(),
 	jobType: z
 		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])
@@ -170,7 +175,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 			minExperience: jobData.minExperience,
 			maxExperience: jobData.maxExperience,
 			expiresAt: jobData.expiresAt
-				? parseAbsoluteToLocal(jobData.expiresAt)
+				? toCalendarDateTime(parseAbsoluteToLocal(jobData.expiresAt))
 				: null,
 			jobType: jobData.type ? jobData.type.toString() : null,
 			workMode: jobData.workMode ? jobData.workMode.toString() : null,
@@ -201,7 +206,14 @@ export default function JobEditForm({ rootQuery }: Props) {
 		}
 
 		setAccordionSelectedKeys(newOpenAccordions);
-	}, [errors]);
+	}, [
+		errors.location,
+		errors.minSalary,
+		errors.maxSalary,
+		errors.minExperience,
+		errors.maxExperience,
+		errors.expiresAt,
+	]);
 
 	function handleCancel() {
 		if (isDirty) {
@@ -524,12 +536,12 @@ export default function JobEditForm({ rootQuery }: Props) {
 									render={({ field }) => {
 										return (
 											<DatePicker
+												fullWidth
 												showMonthAndYearPickers
-												selectorButtonPlacement="start"
-												granularity="hour"
 												errorMessage={errors.expiresAt?.message}
 												isInvalid={!!errors.expiresAt}
-												value={field.value ?? undefined}
+												{...field}
+												value={field.value as any}
 												onChange={field.onChange}
 											/>
 										);

@@ -74,13 +74,10 @@ export default function Header({
 						href={links.landing}
 						className="font-medium text-inherit flex items-center gap-4"
 					>
-						<Logo />
-					</Link>
-					<Link
-						href={links.landing}
-						className="font-medium text-inherit sm:flex items-center gap-4 hidden"
-					>
-						{APP_NAME}
+						<Logo />{" "}
+						<span className="font-medium text-inherit sm:flex items-center gap-4 hidden">
+							{APP_NAME}
+						</span>
 					</Link>
 				</NavbarBrand>
 
