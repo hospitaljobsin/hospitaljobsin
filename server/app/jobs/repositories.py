@@ -693,6 +693,8 @@ class JobApplicantRepo:
                 work_experience=account.profile.work_experience,
                 salary_expectations=account.profile.salary_expectations,
                 certifications=account.profile.certifications,
+                professional_summary=account.profile.professional_summary,
+                headline=account.profile.headline,
             ),
             profile_embedding=await self._embeddings_service.generate_embeddings(
                 text=self.format_profile_snapshot_for_embedding(account.profile),
