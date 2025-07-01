@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<14ef574870d26499a8095203d09908de>>
- * @relayHash 5602fa9a17277619f7cf3fcfb620bf98
+ * @generated SignedSource<<303356a9febf87d2682e4ea4dd937aec>>
+ * @relayHash a94da0e211b817d55daa758d21047fc7
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,13 +9,15 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 5602fa9a17277619f7cf3fcfb620bf98
+// @relayRequestID a94da0e211b817d55daa758d21047fc7
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
+export type JobSortBy = "ALPHABETICAL" | "CREATED_AT" | "UPDATED_AT" | "%future added value";
 export type pageDashboardViewQuery$variables = {
   searchTerm?: string | null | undefined;
   slug: string;
+  sortBy: JobSortBy;
 };
 export type pageDashboardViewQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"DashboardViewFragment">;
@@ -37,31 +39,42 @@ v1 = {
   "name": "slug"
 },
 v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "sortBy"
+},
+v3 = {
   "kind": "Variable",
   "name": "searchTerm",
   "variableName": "searchTerm"
 },
-v3 = {
+v4 = {
   "kind": "Variable",
   "name": "slug",
   "variableName": "slug"
 },
-v4 = {
+v5 = {
+  "kind": "Variable",
+  "name": "sortBy",
+  "variableName": "sortBy"
+},
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v5 = [
+v7 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 10
   },
-  (v2/*: any*/)
+  (v3/*: any*/),
+  (v5/*: any*/)
 ],
-v6 = {
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -72,7 +85,8 @@ return {
   "fragment": {
     "argumentDefinitions": [
       (v0/*: any*/),
-      (v1/*: any*/)
+      (v1/*: any*/),
+      (v2/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -80,8 +94,9 @@ return {
     "selections": [
       {
         "args": [
-          (v2/*: any*/),
-          (v3/*: any*/)
+          (v3/*: any*/),
+          (v4/*: any*/),
+          (v5/*: any*/)
         ],
         "kind": "FragmentSpread",
         "name": "DashboardViewFragment"
@@ -94,7 +109,8 @@ return {
   "operation": {
     "argumentDefinitions": [
       (v1/*: any*/),
-      (v0/*: any*/)
+      (v0/*: any*/),
+      (v2/*: any*/)
     ],
     "kind": "Operation",
     "name": "pageDashboardViewQuery",
@@ -102,14 +118,14 @@ return {
       {
         "alias": null,
         "args": [
-          (v3/*: any*/)
+          (v4/*: any*/)
         ],
         "concreteType": null,
         "kind": "LinkedField",
         "name": "organization",
         "plural": false,
         "selections": [
-          (v4/*: any*/),
+          (v6/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -129,7 +145,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v5/*: any*/),
+                "args": (v7/*: any*/),
                 "concreteType": "JobConnection",
                 "kind": "LinkedField",
                 "name": "jobs",
@@ -151,7 +167,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v6/*: any*/),
+                          (v8/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -324,7 +340,7 @@ return {
                             "name": "hasExperienceRange",
                             "storageKey": null
                           },
-                          (v4/*: any*/)
+                          (v6/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -368,16 +384,17 @@ return {
               },
               {
                 "alias": null,
-                "args": (v5/*: any*/),
+                "args": (v7/*: any*/),
                 "filters": [
-                  "searchTerm"
+                  "searchTerm",
+                  "sortBy"
                 ],
                 "handle": "connection",
                 "key": "OrganizationJobsListInternalFragment_jobs",
                 "kind": "LinkedHandle",
                 "name": "jobs"
               },
-              (v6/*: any*/),
+              (v8/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -392,7 +409,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v6/*: any*/)
+              (v8/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -403,7 +420,7 @@ return {
     ]
   },
   "params": {
-    "id": "5602fa9a17277619f7cf3fcfb620bf98",
+    "id": "a94da0e211b817d55daa758d21047fc7",
     "metadata": {},
     "name": "pageDashboardViewQuery",
     "operationKind": "query",
@@ -412,6 +429,6 @@ return {
 };
 })();
 
-(node as any).hash = "8fe64d29e123cfcf6ecf0d82d345c8cb";
+(node as any).hash = "2baf712dc12f851f98881fbf4e8b2cb1";
 
 export default node;

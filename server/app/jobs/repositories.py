@@ -50,6 +50,12 @@ from .documents import (
 )
 
 
+class JobSortBy(Enum):
+    CREATED_AT = "created_at"
+    UPDATED_AT = "updated_at"
+    ALPHABETICAL = "alphabetical"
+
+
 class JobRepo:
     def __init__(self, embeddings_service: EmbeddingsService) -> None:
         self._embeddings_service = embeddings_service
@@ -358,6 +364,7 @@ class JobRepo:
     async def get_all_by_organization_id(
         self,
         organization_id: ObjectId,
+        sort_by: JobSortBy,
         search_term: str | None = None,
         is_active: bool | None = None,
         first: int | None = None,
@@ -370,6 +377,8 @@ class JobRepo:
             reverse=True,
             document_cls=Job,
             paginate_by="id",
+            # we apply our own ordering in the query, so this isn't needed!
+            apply_ordering=False,
         )
 
         search_criteria = Job.find(Job.organization.id == organization_id)
@@ -379,6 +388,15 @@ class JobRepo:
 
         if search_term:
             search_criteria = search_criteria.find({"$text": {"$search": search_term}})
+
+        # Apply sorting
+        match sort_by:
+            case JobSortBy.CREATED_AT:
+                search_criteria = search_criteria.sort(-Job.id)
+            case JobSortBy.UPDATED_AT:
+                search_criteria = search_criteria.sort(-Job.updated_at)
+            case JobSortBy.ALPHABETICAL:
+                search_criteria = search_criteria.sort(+Job.title)
 
         return await paginator.paginate(
             search_criteria=search_criteria,

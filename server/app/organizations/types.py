@@ -20,12 +20,13 @@ from app.base.types import (
     BaseErrorType,
     BaseNodeType,
 )
-from app.jobs.repositories import JobApplicantRepo, JobMetricRepo, JobRepo
+from app.jobs.repositories import JobApplicantRepo, JobMetricRepo, JobRepo, JobSortBy
 from app.jobs.types import (
     JobApplicantConnectionType,
     JobConnectionType,
     JobMetricPointType,
     JobPayload,
+    JobSortByEnum,
 )
 from app.organizations.documents import (
     Organization,
@@ -459,12 +460,19 @@ class OrganizationType(BaseNodeType[Organization]):
                 description="How many items to return before the cursor?",
             ),
         ] = None,
+        sort_by: Annotated[
+            JobSortByEnum,
+            strawberry.argument(
+                description="The field to sort jobs by.",
+            ),
+        ] = JobSortByEnum.CREATED_AT,
     ) -> JobConnectionType:
         """Return a paginated connection of jobs for the organization."""
         paginated_jobs = await job_repo.get_all_by_organization_id(
             organization_id=ObjectId(self.id),
             search_term=search_term,
             is_active=is_active,
+            sort_by=JobSortBy(sort_by.value) if sort_by else None,
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
             first=first,

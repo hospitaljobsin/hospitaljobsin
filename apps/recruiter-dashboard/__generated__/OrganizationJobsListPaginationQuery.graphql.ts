@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a5ba24ac33a53f54ebcd18e52c81f67d>>
- * @relayHash 5e11c121618d1aeb0bd21e4784867c35
+ * @generated SignedSource<<5bfbb72dd26f9b50f47a3cc405e15124>>
+ * @relayHash d7a995c77aa475d87189f3fffd9925de
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,15 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 5e11c121618d1aeb0bd21e4784867c35
+// @relayRequestID d7a995c77aa475d87189f3fffd9925de
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
+export type JobSortBy = "ALPHABETICAL" | "CREATED_AT" | "UPDATED_AT" | "%future added value";
 export type OrganizationJobsListPaginationQuery$variables = {
   count?: number | null | undefined;
   cursor?: string | null | undefined;
   id: string;
   searchTerm?: string | null | undefined;
+  sortBy?: JobSortBy | null | undefined;
 };
 export type OrganizationJobsListPaginationQuery$data = {
   readonly node: {
@@ -50,33 +52,43 @@ v3 = {
   "kind": "LocalArgument",
   "name": "searchTerm"
 },
-v4 = [
+v4 = {
+  "defaultValue": "CREATED_AT",
+  "kind": "LocalArgument",
+  "name": "sortBy"
+},
+v5 = [
   {
     "kind": "Variable",
     "name": "id",
     "variableName": "id"
   }
 ],
-v5 = {
+v6 = {
   "kind": "Variable",
   "name": "searchTerm",
   "variableName": "searchTerm"
 },
-v6 = {
+v7 = {
+  "kind": "Variable",
+  "name": "sortBy",
+  "variableName": "sortBy"
+},
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v7 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v8 = [
+v10 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -87,7 +99,8 @@ v8 = [
     "name": "first",
     "variableName": "count"
   },
-  (v5/*: any*/)
+  (v6/*: any*/),
+  (v7/*: any*/)
 ];
 return {
   "fragment": {
@@ -95,7 +108,8 @@ return {
       (v0/*: any*/),
       (v1/*: any*/),
       (v2/*: any*/),
-      (v3/*: any*/)
+      (v3/*: any*/),
+      (v4/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -103,7 +117,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
@@ -121,7 +135,8 @@ return {
                 "name": "cursor",
                 "variableName": "cursor"
               },
-              (v5/*: any*/)
+              (v6/*: any*/),
+              (v7/*: any*/)
             ],
             "kind": "FragmentSpread",
             "name": "OrganizationJobsListInternalFragment"
@@ -139,6 +154,7 @@ return {
       (v0/*: any*/),
       (v1/*: any*/),
       (v3/*: any*/),
+      (v4/*: any*/),
       (v2/*: any*/)
     ],
     "kind": "Operation",
@@ -146,20 +162,20 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v6/*: any*/),
-          (v7/*: any*/),
+          (v8/*: any*/),
+          (v9/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
-                "args": (v8/*: any*/),
+                "args": (v10/*: any*/),
                 "concreteType": "JobConnection",
                 "kind": "LinkedField",
                 "name": "jobs",
@@ -181,7 +197,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v7/*: any*/),
+                          (v9/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -354,7 +370,7 @@ return {
                             "name": "hasExperienceRange",
                             "storageKey": null
                           },
-                          (v6/*: any*/)
+                          (v8/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -398,9 +414,10 @@ return {
               },
               {
                 "alias": null,
-                "args": (v8/*: any*/),
+                "args": (v10/*: any*/),
                 "filters": [
-                  "searchTerm"
+                  "searchTerm",
+                  "sortBy"
                 ],
                 "handle": "connection",
                 "key": "OrganizationJobsListInternalFragment_jobs",
@@ -417,7 +434,7 @@ return {
     ]
   },
   "params": {
-    "id": "5e11c121618d1aeb0bd21e4784867c35",
+    "id": "d7a995c77aa475d87189f3fffd9925de",
     "metadata": {},
     "name": "OrganizationJobsListPaginationQuery",
     "operationKind": "query",
@@ -426,6 +443,6 @@ return {
 };
 })();
 
-(node as any).hash = "b8c54d46c2d5ba62662866356b02272d";
+(node as any).hash = "2167858c18b72e4165c14fa4ef5df2d3";
 
 export default node;

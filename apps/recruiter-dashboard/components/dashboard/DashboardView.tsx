@@ -6,7 +6,9 @@ import { useState } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { graphql, useFragment, usePreloadedQuery } from "react-relay";
 import NotFoundView from "../NotFoundView";
-import OrganizationJobsController from "./OrganizationJobsController";
+import OrganizationJobsController, {
+	JobSortBy,
+} from "./OrganizationJobsController";
 import OrganizationJobsList from "./OrganizationJobsList";
 // Chat/Message imports
 
@@ -16,6 +18,7 @@ const DashboardViewFragment = graphql`
         type: "String!",
       }
 	  searchTerm: { type: "String", defaultValue: null }
+	  sortBy: { type: "JobSortBy!", defaultValue: CREATED_AT }
     ) {
 		organization(slug: $slug) {
 			__typename
@@ -24,7 +27,7 @@ const DashboardViewFragment = graphql`
 				isMember
 			}
 		}
-        ...OrganizationJobsListFragment @arguments(slug: $slug, searchTerm: $searchTerm)
+        ...OrganizationJobsListFragment @arguments(slug: $slug, searchTerm: $searchTerm, sortBy: $sortBy)
 		...OrganizationJobsControllerFragment @arguments(slug: $slug)
   }
 `;
@@ -37,6 +40,7 @@ export default function DashboardView(props: {
 		DashboardViewFragment,
 		data,
 	);
+	const [sortBy, setSortBy] = useState<JobSortBy>(JobSortBy.CREATED_AT);
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 
 	if (
@@ -52,13 +56,19 @@ export default function DashboardView(props: {
 		<div className="w-full h-full flex flex-col relative">
 			<div className="sticky top-0 z-10 px-6 pt-8 pb-4">
 				<OrganizationJobsController
+					sortBy={sortBy}
+					setSortBy={setSortBy}
 					searchTerm={searchTerm}
 					setSearchTerm={setSearchTerm}
 					rootQuery={query}
 				/>
 			</div>
 			<div className="flex-1 min-h-0 overflow-y-auto px-6 py-8 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-w-2.5 scrollbar-thumb-[hsl(var(--heroui-foreground-300))] scrollbar-track-transparent">
-				<OrganizationJobsList rootQuery={query} searchTerm={searchTerm} />
+				<OrganizationJobsList
+					rootQuery={query}
+					searchTerm={searchTerm}
+					sortBy={sortBy}
+				/>
 			</div>
 		</div>
 	);

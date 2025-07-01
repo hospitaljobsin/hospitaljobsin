@@ -7,8 +7,8 @@ import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
 
 export const PageDashboardViewQuery = graphql`
-  query pageDashboardViewQuery($slug: String!, $searchTerm: String) {
-	...DashboardViewFragment @arguments(slug: $slug, searchTerm: $searchTerm)
+  query pageDashboardViewQuery($slug: String!, $searchTerm: String, $sortBy: JobSortBy!) {
+	...DashboardViewFragment @arguments(slug: $slug, searchTerm: $searchTerm, sortBy: $sortBy)
   }
 `;
 
@@ -23,6 +23,7 @@ export default function DashboardPage() {
 		PageDashboardViewQuery,
 		{
 			slug: organizationSlug,
+			sortBy: "CREATED_AT",
 		},
 		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);

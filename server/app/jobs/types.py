@@ -68,6 +68,16 @@ class JobApplicantsSortByEnum(Enum):
 
 
 @strawberry.enum(
+    name="JobSortBy",
+    description="The type of job sort by.",
+)
+class JobSortByEnum(Enum):
+    CREATED_AT = "created_at"
+    UPDATED_AT = "updated_at"
+    ALPHABETICAL = "alphabetical"
+
+
+@strawberry.enum(
     name="JobType",
     description="The type of job.",
 )
