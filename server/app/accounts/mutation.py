@@ -7,7 +7,7 @@ from aioinject.ext.strawberry import inject
 from result import Ok
 from strawberry.permission import PermissionExtension
 
-from app.accounts.services import AccountService, ProfileService
+from app.accounts.services import AccountService, ProfileParserService, ProfileService
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo
 
@@ -19,6 +19,8 @@ from .types import (
     LanguageInputType,
     LicenseInputType,
     MaritalStatusTypeEnum,
+    ParsedProfileType,
+    ParseProfileDocumentPayload,
     UpdateAccountPayload,
     UpdateProfilePayload,
     WorkExperienceInputType,
@@ -361,5 +363,37 @@ class AccountMutation:
         ):
             case Ok(account):
                 return AccountType.marshal(account)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=ParseProfileDocumentPayload,
+        description="Parse a profile document into structured data.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def parse_profile_document(
+        self,
+        info: AuthInfo,
+        profile_parser_service: Annotated[ProfileParserService, Inject],
+        document: Annotated[
+            str,
+            strawberry.argument(
+                description="The document to parse.",
+            ),
+        ],
+    ) -> ParseProfileDocumentPayload:
+        """Parse a profile document into structured data."""
+        match await profile_parser_service.parse_profile_document(
+            document=document,
+        ):
+            case Ok(profile):
+                return ParsedProfileType.marshal(profile)
             case _ as unreachable:
                 assert_never(unreachable)

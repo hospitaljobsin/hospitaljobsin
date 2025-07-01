@@ -2,7 +2,14 @@ from datetime import date
 
 from result import Ok
 
-from app.accounts.documents import Account, Education, Language, WorkExperience
+from app.accounts.agents.profile_parser import ProfileParserAgent
+from app.accounts.documents import (
+    Account,
+    BaseProfile,
+    Education,
+    Language,
+    WorkExperience,
+)
 from app.accounts.repositories import AccountRepo, ProfileRepo
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
@@ -204,3 +211,37 @@ class ProfileService:
         )
 
         return Ok(account)
+
+
+class ProfileParserService:
+    def __init__(self, profile_parser_agent: ProfileParserAgent) -> None:
+        self._profile_parser_agent = profile_parser_agent
+
+    async def parse_profile_document(self, document: str) -> Ok[BaseProfile]:
+        """Parse a profile document into structured data."""
+        # TODO: run OCR on the document
+        ocr_text = document
+        result = await self._profile_parser_agent.run(f"OCR text:\n{ocr_text}")
+
+        profile_output = result.output
+        return Ok(
+            BaseProfile(
+                address=profile_output.address,
+                date_of_birth=profile_output.date_of_birth,
+                gender=profile_output.gender,
+                marital_status=profile_output.marital_status,
+                category=profile_output.category,
+                locations_open_to_work=profile_output.locations_open_to_work,
+                open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere,
+                education=profile_output.education,
+                licenses=profile_output.licenses,
+                languages=profile_output.languages,
+                job_preferences=profile_output.job_preferences,
+                work_experience=profile_output.work_experience,
+                total_work_experience_years=profile_output.total_work_experience_years,
+                salary_expectations=profile_output.salary_expectations,
+                certifications=profile_output.certifications,
+                professional_summary=profile_output.professional_summary,
+                headline=profile_output.headline,
+            )
+        )

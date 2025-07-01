@@ -15,6 +15,7 @@ from strawberry import relay
 
 from app.accounts.documents import (
     Account,
+    BaseProfile,
     Certification,
     Education,
     Language,
@@ -255,6 +256,44 @@ class BaseProfileType:
     headline: str | None = strawberry.field(
         description="The user's headline.",
     )
+
+
+@strawberry.type(
+    name="ParsedProfile",
+    description="A parsed profile.",
+)
+class ParsedProfileType(BaseProfileType):
+    @classmethod
+    def marshal(cls, model: BaseProfile) -> Self:
+        """Marshal into a node instance."""
+        return cls(
+            gender=GenderTypeEnum[model.gender] if model.gender else None,
+            date_of_birth=model.date_of_birth,
+            address=model.address,
+            marital_status=MaritalStatusTypeEnum[model.marital_status]
+            if model.marital_status is not None
+            else None,
+            category=model.category,
+            locations_open_to_work=[loc.name for loc in model.locations_open_to_work],
+            open_to_relocation_anywhere=model.open_to_relocation_anywhere,
+            education=[EducationType.marshal(edu) for edu in model.education],
+            licenses=[LicenseType.marshal(lic) for lic in model.licenses],
+            languages=[LanguageType.marshal(language) for language in model.languages],
+            job_preferences=model.job_preferences,
+            work_experience=[
+                WorkExperienceType.marshal(exp) for exp in model.work_experience
+            ],
+            salary_expectations=SalaryExpectationsType.marshal(
+                model.salary_expectations
+            )
+            if model.salary_expectations is not None
+            else None,
+            certifications=[
+                CertificationType.marshal(cert) for cert in model.certifications
+            ],
+            professional_summary=model.professional_summary,
+            headline=model.headline,
+        )
 
 
 @strawberry.type(
@@ -633,6 +672,14 @@ UpdateProfilePayload = Annotated[
     strawberry.union(
         name="UpdateProfilePayload",
         description="The update profile payload.",
+    ),
+]
+
+ParseProfileDocumentPayload = Annotated[
+    ParsedProfileType,
+    strawberry.union(
+        name="ParseProfileDocumentPayload",
+        description="The parse profile document payload.",
     ),
 ]
 

@@ -28,7 +28,7 @@ from app.accounts.repositories import (
     EmailVerificationTokenRepo,
     ProfileRepo,
 )
-from app.accounts.services import AccountService, ProfileService
+from app.accounts.services import AccountService, ProfileParserService, ProfileService
 from app.auth.repositories import (
     OauthCredentialRepo,
     PasswordResetTokenRepo,
@@ -282,4 +282,5 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_applicant_query_parser_agent))
     container.register(aioinject.Singleton(create_profile_parser_agent))
     container.register(aioinject.Singleton(JobApplicantAnalysisService))
+    container.register(aioinject.Singleton(ProfileParserService))
     return container
