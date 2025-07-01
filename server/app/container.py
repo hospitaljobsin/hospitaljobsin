@@ -18,6 +18,7 @@ from aioinject.extensions.providers import (
 )
 from pydantic_settings import BaseSettings
 
+from app.accounts.agents.profile_parser import create_profile_parser_agent
 from app.accounts.dataloaders import (
     create_account_by_id_dataloader,
     create_profile_by_id_dataloader,
@@ -279,5 +280,6 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_dataloaders))
     container.register(aioinject.Singleton(create_job_applicant_analyzer_agent))
     container.register(aioinject.Singleton(create_applicant_query_parser_agent))
+    container.register(aioinject.Singleton(create_profile_parser_agent))
     container.register(aioinject.Singleton(JobApplicantAnalysisService))
     return container
