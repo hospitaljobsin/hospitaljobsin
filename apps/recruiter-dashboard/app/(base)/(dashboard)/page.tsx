@@ -23,7 +23,7 @@ export default function DashboardPage() {
 		PageDashboardViewQuery,
 		{
 			slug: organizationSlug,
-			sortBy: "CREATED_AT",
+			sortBy: "LAST_APPLICANT_APPLIED_AT",
 		},
 		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);

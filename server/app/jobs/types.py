@@ -75,6 +75,7 @@ class JobSortByEnum(Enum):
     CREATED_AT = "created_at"
     UPDATED_AT = "updated_at"
     ALPHABETICAL = "alphabetical"
+    LAST_APPLICANT_APPLIED_AT = "last_applicant_applied_at"
 
 
 @strawberry.enum(

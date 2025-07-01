@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<303356a9febf87d2682e4ea4dd937aec>>
+ * @generated SignedSource<<82bfdeaad0931f8eceb73956794d1710>>
  * @relayHash a94da0e211b817d55daa758d21047fc7
  * @lightSyntaxTransform
  * @nogrep
@@ -13,7 +13,7 @@
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type JobSortBy = "ALPHABETICAL" | "CREATED_AT" | "UPDATED_AT" | "%future added value";
+export type JobSortBy = "ALPHABETICAL" | "CREATED_AT" | "LAST_APPLICANT_APPLIED_AT" | "UPDATED_AT" | "%future added value";
 export type pageDashboardViewQuery$variables = {
   searchTerm?: string | null | undefined;
   slug: string;

@@ -40,7 +40,9 @@ export default function DashboardView(props: {
 		DashboardViewFragment,
 		data,
 	);
-	const [sortBy, setSortBy] = useState<JobSortBy>(JobSortBy.CREATED_AT);
+	const [sortBy, setSortBy] = useState<JobSortBy>(
+		JobSortBy.LAST_APPLICANT_APPLIED_AT,
+	);
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 
 	if (

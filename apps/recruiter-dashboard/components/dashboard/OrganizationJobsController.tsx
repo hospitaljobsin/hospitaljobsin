@@ -41,10 +41,12 @@ export enum JobSortBy {
 	CREATED_AT = "CREATED_AT",
 	UPDATED_AT = "UPDATED_AT",
 	ALPHABETICAL = "ALPHABETICAL",
+	LAST_APPLICANT_APPLIED_AT = "LAST_APPLICANT_APPLIED_AT",
 }
 
 const SORT_OPTIONS = [
-	{ value: JobSortBy.CREATED_AT, label: "Newest" },
+	{ value: JobSortBy.LAST_APPLICANT_APPLIED_AT, label: "Latest Applications" },
+	{ value: JobSortBy.CREATED_AT, label: "Newest First" },
 	{ value: JobSortBy.UPDATED_AT, label: "Recently Updated" },
 	{ value: JobSortBy.ALPHABETICAL, label: "Alphabetical" },
 ];
@@ -61,7 +63,7 @@ export default function OrganizationJobsController(
 	const handleSortByChange = (keys: SharedSelection) => {
 		startTransition(() => {
 			if (keys.currentKey === "") {
-				props.setSortBy(JobSortBy.CREATED_AT);
+				props.setSortBy(JobSortBy.LAST_APPLICANT_APPLIED_AT);
 				return;
 			}
 			props.setSortBy(keys.currentKey as JobSortBy);

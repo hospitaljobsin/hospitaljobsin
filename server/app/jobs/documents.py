@@ -58,6 +58,8 @@ class Job(Document):
 
     external_application_url: str | None = None
 
+    last_applicant_applied_at: datetime | None = None
+
     organization: Link[Organization]
 
     class Settings:

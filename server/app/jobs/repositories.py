@@ -54,6 +54,7 @@ class JobSortBy(Enum):
     CREATED_AT = "created_at"
     UPDATED_AT = "updated_at"
     ALPHABETICAL = "alphabetical"
+    LAST_APPLICANT_APPLIED_AT = "last_applicant_applied_at"
 
 
 class JobRepo:
@@ -398,6 +399,10 @@ class JobRepo:
                 search_criteria = search_criteria.sort(-Job.updated_at)
             case JobSortBy.ALPHABETICAL:
                 search_criteria = search_criteria.sort(+Job.title)
+            case JobSortBy.LAST_APPLICANT_APPLIED_AT:
+                search_criteria = search_criteria.sort(
+                    [-Job.last_applicant_applied_at, -Job.id]
+                )
 
         return await paginator.paginate(
             search_criteria=search_criteria,
@@ -667,6 +672,7 @@ class JobApplicantRepo:
         applicant_fields: list[ApplicantField],
     ) -> JobApplicant:
         """Create a new job applicant."""
+        job.last_applicant_applied_at = datetime.now(UTC)
         application = JobApplicant(
             job=job,
             organization=job.organization,
@@ -697,7 +703,7 @@ class JobApplicantRepo:
             slug=self.generate_slug(),
             analysis_status="pending",
         )
-        return await application.insert(link_rule=WriteRules.DO_NOTHING)
+        return await application.insert(link_rule=WriteRules.WRITE)
 
     async def update_analysis(
         self,

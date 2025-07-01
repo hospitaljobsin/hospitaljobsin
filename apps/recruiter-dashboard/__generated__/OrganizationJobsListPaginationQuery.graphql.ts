@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5bfbb72dd26f9b50f47a3cc405e15124>>
+ * @generated SignedSource<<7b840b6891c48152580100b5164eadaf>>
  * @relayHash d7a995c77aa475d87189f3fffd9925de
  * @lightSyntaxTransform
  * @nogrep
@@ -13,7 +13,7 @@
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type JobSortBy = "ALPHABETICAL" | "CREATED_AT" | "UPDATED_AT" | "%future added value";
+export type JobSortBy = "ALPHABETICAL" | "CREATED_AT" | "LAST_APPLICANT_APPLIED_AT" | "UPDATED_AT" | "%future added value";
 export type OrganizationJobsListPaginationQuery$variables = {
   count?: number | null | undefined;
   cursor?: string | null | undefined;
