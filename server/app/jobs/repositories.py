@@ -470,6 +470,8 @@ class JobRepo:
 
     async def delete(self, job: Job) -> None:
         """Delete a job."""
+        await SavedJob.find(SavedJob.job.id == job.id).delete()
+        await JobApplicant.find(JobApplicant.job.id == job.id).delete()
         await job.delete()
 
 
@@ -541,7 +543,11 @@ class SavedJobRepo:
         )
 
         if saved_job is None:
-            saved_job = await SavedJob(account=account_id, job=job).save()
+            saved_job = await SavedJob(
+                account=account_id,
+                job=job,
+                organization=job.organization,
+            ).save()
         return saved_job
 
     async def delete(self, saved_job: SavedJob) -> None:

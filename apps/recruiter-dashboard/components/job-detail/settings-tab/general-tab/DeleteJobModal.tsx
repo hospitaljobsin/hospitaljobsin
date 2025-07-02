@@ -84,7 +84,7 @@ export default function DeleteJobModal({
 				onClose();
 				if (response.deleteJob.__typename === "Job") {
 					// handle success
-					router.push(links.organizationDetailJobs(params.slug));
+					router.push(links.dashboard);
 				} else if (response.deleteJob.__typename === "JobNotFoundError") {
 					addToast({
 						description: "An unexpected error occurred. Please try again.",

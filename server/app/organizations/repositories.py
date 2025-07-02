@@ -12,6 +12,7 @@ from app.core.constants import (
     ORGANIZATION_INVITE_EXPIRES_IN,
 )
 from app.database.paginator import PaginatedResult, Paginator
+from app.jobs.documents import Job, JobApplicant, SavedJob
 
 from .documents import Organization, OrganizationInvite, OrganizationMember
 
@@ -102,6 +103,17 @@ class OrganizationRepo:
 
     async def delete(self, organization: Organization) -> None:
         """Delete an organization."""
+        await OrganizationMember.find(
+            OrganizationMember.organization.id == organization.id
+        ).delete()
+        await OrganizationInvite.find(
+            OrganizationInvite.organization.id == organization.id
+        ).delete()
+        await Job.find(Job.organization.id == organization.id).delete()
+        await SavedJob.find(SavedJob.organization.id == organization.id).delete()
+        await JobApplicant.find(
+            JobApplicant.organization.id == organization.id
+        ).delete()
         await organization.delete()
 
     async def get_all_by_account_id(

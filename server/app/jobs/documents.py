@@ -97,6 +97,7 @@ class Job(Document):
 class SavedJob(Document):
     account: Link[Account]
     job: Link[Job]
+    organization: Link[Organization]
 
     class Settings:
         name = "saved_jobs"
