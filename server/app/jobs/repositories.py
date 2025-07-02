@@ -9,7 +9,7 @@ from typing import Any, Literal, get_args
 import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.odm.queries.aggregation import AggregationQuery
-from beanie.operators import And, In, NearSphere, Set
+from beanie.operators import And, In, NearSphere, Or, Set
 from bson import ObjectId
 from pydantic import ValidationError
 from redis.asyncio import Redis
@@ -313,13 +313,19 @@ class JobRepo:
 
         search_criteria = Job.find(
             Job.is_active == True,  # noqa: E712
-            Job.expires_at > datetime.now(UTC),
+            Or(
+                Job.expires_at == None,
+                Job.expires_at > datetime.now(UTC),
+            ),
         )
 
         if search_term:
             search_criteria = Job.find(
                 Job.is_active == True,  # noqa: E712
-                Job.expires_at > datetime.now(UTC),
+                Or(
+                    Job.expires_at == None,
+                    Job.expires_at > datetime.now(UTC),
+                ),
                 {"$text": {"$search": search_term}},
             )
 
