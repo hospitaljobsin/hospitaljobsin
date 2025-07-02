@@ -372,6 +372,8 @@ export default function JobEditForm({ rootQuery }: Props) {
 											value={field.value}
 											onValueChange={field.onChange}
 											className="flex-1 w-full"
+											errorMessage={errors.jobType?.message}
+											isInvalid={!!errors.jobType}
 										>
 											<Radio value="CONTRACT">Contract</Radio>
 											<Radio value="FULL_TIME">Full Time</Radio>
@@ -392,6 +394,8 @@ export default function JobEditForm({ rootQuery }: Props) {
 											value={field.value}
 											onValueChange={field.onChange}
 											className="flex-1 w-full"
+											errorMessage={errors.workMode?.message}
+											isInvalid={!!errors.workMode}
 										>
 											<Radio value="HYBRID">Hybrid</Radio>
 											<Radio value="OFFICE">Office</Radio>
