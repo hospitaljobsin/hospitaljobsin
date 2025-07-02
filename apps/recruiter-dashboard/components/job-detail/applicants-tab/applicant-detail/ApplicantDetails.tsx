@@ -101,6 +101,7 @@ export default function ApplicantDetails({
 								src={data.account.avatarUrl}
 								alt={data.account.fullName}
 								fill
+								unoptimized
 								className="rounded-full object-cover"
 							/>
 						</div>
