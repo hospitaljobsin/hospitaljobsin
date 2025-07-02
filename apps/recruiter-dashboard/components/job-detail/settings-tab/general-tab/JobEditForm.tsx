@@ -137,10 +137,10 @@ const formSchema = z.object({
 	vacancies: z.number().positive().nullable(),
 	skills: z.array(z.object({ value: z.string() })),
 	location: z.string().nullable(),
-	minSalary: z.number().positive().nullable(),
-	maxSalary: z.number().positive().nullable(),
-	minExperience: z.number().positive().nullable(),
-	maxExperience: z.number().positive().nullable(),
+	minSalary: z.number().positive().nullable().optional(),
+	maxSalary: z.number().positive().nullable().optional(),
+	minExperience: z.number().positive().nullable().optional(),
+	maxExperience: z.number().positive().nullable().optional(),
 	expiresAt: z
 		.custom<CalendarDateTime>((data) => {
 			console.log(data);
@@ -185,10 +185,10 @@ export default function JobEditForm({ rootQuery }: Props) {
 				value: skill,
 			})),
 			location: jobData.location,
-			minSalary: jobData.minSalary,
-			maxSalary: jobData.maxSalary,
-			minExperience: jobData.minExperience,
-			maxExperience: jobData.maxExperience,
+			minSalary: jobData.minSalary ?? null,
+			maxSalary: jobData.maxSalary ?? null,
+			minExperience: jobData.minExperience ?? null,
+			maxExperience: jobData.maxExperience ?? null,
 			expiresAt: jobData.expiresAt
 				? toCalendarDateTime(parseAbsoluteToLocal(jobData.expiresAt))
 				: null,
@@ -506,11 +506,16 @@ export default function JobEditForm({ rootQuery }: Props) {
 														currencyDisplay: "code",
 														currencySign: "accounting",
 													}}
-													value={field.value || 0}
+													value={field.value as number | undefined}
 													onValueChange={(value) => {
-														field.onChange(value);
+														if (Number.isNaN(value)) {
+															field.onChange(undefined);
+														} else {
+															field.onChange(value);
+														}
 													}}
 													step={10000}
+													isClearable
 												/>
 											);
 										}}
@@ -531,11 +536,16 @@ export default function JobEditForm({ rootQuery }: Props) {
 														currencyDisplay: "code",
 														currencySign: "accounting",
 													}}
-													value={field.value || 0}
+													value={field.value as number | undefined}
 													onValueChange={(value) => {
-														field.onChange(value);
+														if (Number.isNaN(value)) {
+															field.onChange(undefined);
+														} else {
+															field.onChange(value);
+														}
 													}}
 													step={10000}
+													isClearable
 												/>
 											);
 										}}
@@ -564,10 +574,16 @@ export default function JobEditForm({ rootQuery }: Props) {
 														unit: "year",
 														unitDisplay: "long",
 													}}
-													value={field.value || 0}
+													value={field.value as number | undefined}
 													onValueChange={(value) => {
-														field.onChange(value);
+														console.log(value);
+														if (Number.isNaN(value)) {
+															field.onChange(undefined);
+														} else {
+															field.onChange(value);
+														}
 													}}
+													isClearable
 												/>
 											);
 										}}
@@ -587,10 +603,15 @@ export default function JobEditForm({ rootQuery }: Props) {
 														unit: "year",
 														unitDisplay: "long",
 													}}
-													value={field.value || 0}
+													value={field.value as number | undefined}
 													onValueChange={(value) => {
-														field.onChange(value);
+														if (Number.isNaN(value)) {
+															field.onChange(undefined);
+														} else {
+															field.onChange(value);
+														}
 													}}
+													isClearable
 												/>
 											);
 										}}

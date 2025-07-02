@@ -120,6 +120,7 @@ export default function JobCreationForm({
 		register,
 		control,
 		setError,
+		setValue,
 		formState: { errors, isSubmitting },
 	} = useForm<JobFormValues>({
 		resolver: zodResolver(jobFormSchema),
@@ -128,10 +129,10 @@ export default function JobCreationForm({
 			expiresAt: null,
 			jobType: undefined,
 			workMode: undefined,
-			minSalary: undefined,
-			maxSalary: undefined,
-			minExperience: undefined,
-			maxExperience: undefined,
+			minSalary: null,
+			maxSalary: null,
+			minExperience: null,
+			maxExperience: null,
 			location: "",
 			skills: [],
 			title: "",
@@ -288,8 +289,14 @@ export default function JobCreationForm({
 								label="Vacancies"
 								placeholder="Enter vacancies"
 								labelPlacement="outside"
-								value={field.value || 0}
-								onValueChange={field.onChange}
+								value={field.value as number | undefined}
+								onValueChange={(value) => {
+									if (Number.isNaN(value)) {
+										field.onChange(undefined);
+									} else {
+										field.onChange(value);
+									}
+								}}
 								errorMessage={errors.vacancies?.message}
 								isInvalid={!!errors.vacancies}
 							/>
@@ -354,42 +361,60 @@ export default function JobCreationForm({
 									control={control}
 									name="minSalary"
 									render={({ field }) => (
-										<NumberInput
-											label="Minimum Salary"
-											placeholder="Enter minimum salary"
-											formatOptions={{
-												style: "currency",
-												currency: "INR",
-												currencyDisplay: "code",
-												currencySign: "accounting",
-											}}
-											value={field.value || 0}
-											onValueChange={field.onChange}
-											errorMessage={errors.minSalary?.message}
-											isInvalid={!!errors.minSalary}
-											step={10000}
-										/>
+										<div className="flex flex-col gap-2 flex-1">
+											<NumberInput
+												label="Minimum Salary"
+												placeholder="Enter minimum salary"
+												formatOptions={{
+													style: "currency",
+													currency: "INR",
+													currencyDisplay: "code",
+													currencySign: "accounting",
+												}}
+												value={field.value as number | undefined}
+												onValueChange={(value) => {
+													if (Number.isNaN(value)) {
+														field.onChange(undefined);
+													} else {
+														field.onChange(value);
+													}
+												}}
+												errorMessage={errors.minSalary?.message}
+												isInvalid={!!errors.minSalary}
+												step={10000}
+												isClearable
+											/>
+										</div>
 									)}
 								/>
 								<Controller
 									control={control}
 									name="maxSalary"
 									render={({ field }) => (
-										<NumberInput
-											label="Maximum Salary"
-											placeholder="Enter maximum salary"
-											formatOptions={{
-												style: "currency",
-												currency: "INR",
-												currencyDisplay: "code",
-												currencySign: "accounting",
-											}}
-											value={field.value || 0}
-											onValueChange={field.onChange}
-											errorMessage={errors.maxSalary?.message}
-											isInvalid={!!errors.maxSalary}
-											step={10000}
-										/>
+										<div className="flex flex-col gap-2 flex-1">
+											<NumberInput
+												label="Maximum Salary"
+												placeholder="Enter maximum salary"
+												formatOptions={{
+													style: "currency",
+													currency: "INR",
+													currencyDisplay: "code",
+													currencySign: "accounting",
+												}}
+												value={field.value as number | undefined}
+												onValueChange={(value) => {
+													if (Number.isNaN(value)) {
+														field.onChange(undefined);
+													} else {
+														field.onChange(value);
+													}
+												}}
+												errorMessage={errors.maxSalary?.message}
+												isInvalid={!!errors.maxSalary}
+												step={10000}
+												isClearable
+											/>
+										</div>
 									)}
 								/>
 							</div>
@@ -405,38 +430,56 @@ export default function JobCreationForm({
 									control={control}
 									name="minExperience"
 									render={({ field }) => (
-										<NumberInput
-											label="Minimum Experience"
-											placeholder="Enter minimum experience"
-											formatOptions={{
-												style: "unit",
-												unit: "year",
-												unitDisplay: "long",
-											}}
-											value={field.value || 0}
-											onValueChange={field.onChange}
-											errorMessage={errors.minExperience?.message}
-											isInvalid={!!errors.minExperience}
-										/>
+										<div className="flex flex-col gap-2 flex-1">
+											<NumberInput
+												label="Minimum Experience"
+												placeholder="Enter minimum experience"
+												formatOptions={{
+													style: "unit",
+													unit: "year",
+													unitDisplay: "long",
+												}}
+												value={field.value as number | undefined}
+												onValueChange={(value) => {
+													if (Number.isNaN(value)) {
+														field.onChange(undefined);
+													} else {
+														field.onChange(value);
+													}
+												}}
+												errorMessage={errors.minExperience?.message}
+												isInvalid={!!errors.minExperience}
+												isClearable
+											/>
+										</div>
 									)}
 								/>
 								<Controller
 									control={control}
 									name="maxExperience"
 									render={({ field }) => (
-										<NumberInput
-											label="Maximum Experience"
-											placeholder="Enter maximum experience"
-											formatOptions={{
-												style: "unit",
-												unit: "year",
-												unitDisplay: "long",
-											}}
-											value={field.value || 0}
-											onValueChange={field.onChange}
-											errorMessage={errors.maxExperience?.message}
-											isInvalid={!!errors.maxExperience}
-										/>
+										<div className="flex flex-col gap-2 flex-1">
+											<NumberInput
+												label="Maximum Experience"
+												placeholder="Enter maximum experience"
+												formatOptions={{
+													style: "unit",
+													unit: "year",
+													unitDisplay: "long",
+												}}
+												value={field.value as number | undefined}
+												onValueChange={(value) => {
+													if (Number.isNaN(value)) {
+														field.onChange(undefined);
+													} else {
+														field.onChange(value);
+													}
+												}}
+												errorMessage={errors.maxExperience?.message}
+												isInvalid={!!errors.maxExperience}
+												isClearable
+											/>
+										</div>
 									)}
 								/>
 							</div>
