@@ -367,6 +367,7 @@ export default function JobCreationForm({
 											onValueChange={field.onChange}
 											errorMessage={errors.minSalary?.message}
 											isInvalid={!!errors.minSalary}
+											step={10000}
 										/>
 									)}
 								/>
@@ -387,6 +388,7 @@ export default function JobCreationForm({
 											onValueChange={field.onChange}
 											errorMessage={errors.maxSalary?.message}
 											isInvalid={!!errors.maxSalary}
+											step={10000}
 										/>
 									)}
 								/>

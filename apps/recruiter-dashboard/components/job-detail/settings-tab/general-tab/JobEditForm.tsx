@@ -439,6 +439,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 													onValueChange={(value) => {
 														field.onChange(value);
 													}}
+													step={10000}
 												/>
 											);
 										}}
@@ -463,6 +464,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 													onValueChange={(value) => {
 														field.onChange(value);
 													}}
+													step={10000}
 												/>
 											);
 										}}
