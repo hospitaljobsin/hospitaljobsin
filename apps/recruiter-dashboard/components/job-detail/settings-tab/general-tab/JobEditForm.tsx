@@ -230,6 +230,23 @@ export default function JobEditForm({ rootQuery }: Props) {
 		errors.expiresAt,
 	]);
 
+	useEffect(() => {
+		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+			if (isDirty) {
+				e.preventDefault();
+				return;
+			}
+		};
+		if (isDirty) {
+			window.addEventListener("beforeunload", handleBeforeUnload);
+		} else {
+			window.removeEventListener("beforeunload", handleBeforeUnload);
+		}
+		return () => {
+			window.removeEventListener("beforeunload", handleBeforeUnload);
+		};
+	}, [isDirty]);
+
 	function handleCancel() {
 		if (isDirty) {
 			// show confirmation modal

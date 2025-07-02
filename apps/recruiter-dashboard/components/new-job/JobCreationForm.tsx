@@ -121,7 +121,7 @@ export default function JobCreationForm({
 		control,
 		setError,
 		setValue,
-		formState: { errors, isSubmitting },
+		formState: { errors, isSubmitting, isDirty },
 	} = useForm<JobFormValues>({
 		resolver: zodResolver(jobFormSchema),
 		defaultValues: {
@@ -170,6 +170,24 @@ export default function JobCreationForm({
 		errors.maxExperience,
 		errors.expiresAt,
 	]);
+
+	// Warn user if form is dirty and they try to leave the page
+	useEffect(() => {
+		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+			if (isDirty) {
+				e.preventDefault();
+				return;
+			}
+		};
+		if (isDirty) {
+			window.addEventListener("beforeunload", handleBeforeUnload);
+		} else {
+			window.removeEventListener("beforeunload", handleBeforeUnload);
+		}
+		return () => {
+			window.removeEventListener("beforeunload", handleBeforeUnload);
+		};
+	}, [isDirty]);
 
 	const onSubmit = (formData: JobFormValues) => {
 		let hasValidationErrors = false;
