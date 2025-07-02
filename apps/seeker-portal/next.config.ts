@@ -32,6 +32,8 @@ const nextConfig: NextConfig = {
 		ignoreDuringBuilds: true,
 	},
 	images: {
+		loader: "default",
+		unoptimized: true,
 		remotePatterns: [
 			{
 				protocol: "https",

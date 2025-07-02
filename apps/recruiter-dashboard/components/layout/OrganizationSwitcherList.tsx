@@ -104,7 +104,6 @@ export default function OrganizationSwitcherList({
 								src={item.logoUrl}
 								alt="Organization Logo"
 								fill
-								unoptimized
 								className="rounded-md object-cover"
 								sizes="20vw"
 							/>

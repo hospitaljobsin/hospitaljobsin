@@ -29,6 +29,8 @@ resource "aws_s3_bucket_public_access_block" "block_public_access" {
 resource "aws_s3_bucket_policy" "my_bucket_policy" {
   bucket = aws_s3_bucket.this.bucket
 
+  depends_on = [aws_s3_bucket_public_access_block.block_public_access]
+
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
