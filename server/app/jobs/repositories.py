@@ -407,7 +407,7 @@ class JobRepo:
                 search_criteria = search_criteria.sort(+Job.title)
             case JobSortBy.LAST_APPLICANT_APPLIED_AT:
                 search_criteria = search_criteria.sort(
-                    [-Job.last_applicant_applied_at, -Job.id]
+                    [-Job.last_applicant_applied_at, -Job.is_active, -Job.id]
                 )
 
         return await paginator.paginate(
