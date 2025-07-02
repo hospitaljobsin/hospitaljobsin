@@ -20,7 +20,7 @@ export default $config({
 				cdn(args, opts, name) {
 					args.defaultCacheBehavior = {
 						...args.defaultCacheBehavior,
-						cachePolicyId: "658327ea-f89d-4fab-a63d-7e88639e58f6", // managed-caching-optimized
+						// cachePolicyId: "658327ea-f89d-4fab-a63d-7e88639e58f6", // managed-caching-optimized
 						viewerProtocolPolicy: "redirect-to-https",
 					};
 				},
