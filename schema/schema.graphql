@@ -2533,6 +2533,16 @@ type Mutation {
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
+	Parse a profile document into structured data.
+	"""
+	parseProfileDocument(
+		"""
+		The document to parse.
+		"""
+		document: String!
+	): ParseProfileDocumentPayload! @isAuthenticated
+
+	"""
 	Create an organization.
 	"""
 	createOrganization(
@@ -3145,6 +3155,96 @@ type PageInfo {
 	When paginating forwards, the cursor to continue.
 	"""
 	endCursor: String
+}
+
+"""
+The parse profile document payload.
+"""
+union ParseProfileDocumentPayload = ParsedProfile
+
+"""
+A parsed profile.
+"""
+type ParsedProfile implements BaseProfile {
+	"""
+	The gender of the profile's user.
+	"""
+	gender: GenderType
+
+	"""
+	The date of birth of the profile's user.
+	"""
+	dateOfBirth: Date
+
+	"""
+	The address of the profile's user.
+	"""
+	address: String!
+
+	"""
+	The marital status of the profile's user.
+	"""
+	maritalStatus: MaritalStatusType
+
+	"""
+	The category of the profile's user.
+	"""
+	category: String
+
+	"""
+	Locations the user is open to work in.
+	"""
+	locationsOpenToWork: [String!]!
+
+	"""
+	Whether the user is open to relocation anywhere.
+	"""
+	openToRelocationAnywhere: Boolean!
+
+	"""
+	The user's education history.
+	"""
+	education: [Education!]!
+
+	"""
+	The user's licenses.
+	"""
+	licenses: [License!]!
+
+	"""
+	The list of languages spoken by the profile's user.
+	"""
+	languages: [Language!]!
+
+	"""
+	The user's job preferences.
+	"""
+	jobPreferences: [String!]!
+
+	"""
+	The user's work experience.
+	"""
+	workExperience: [WorkExperience!]!
+
+	"""
+	The user's salary expectations.
+	"""
+	salaryExpectations: SalaryExpectations
+
+	"""
+	The user's certifications.
+	"""
+	certifications: [Certification!]!
+
+	"""
+	The user's professional summary.
+	"""
+	professionalSummary: String
+
+	"""
+	The user's headline.
+	"""
+	headline: String
 }
 
 """

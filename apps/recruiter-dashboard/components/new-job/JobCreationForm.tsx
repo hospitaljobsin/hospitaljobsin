@@ -119,6 +119,7 @@ export default function JobCreationForm({
 		handleSubmit,
 		register,
 		control,
+		setError,
 		formState: { errors, isSubmitting },
 	} = useForm<JobFormValues>({
 		resolver: zodResolver(jobFormSchema),
@@ -170,6 +171,30 @@ export default function JobCreationForm({
 	]);
 
 	const onSubmit = (formData: JobFormValues) => {
+		let hasValidationErrors = false;
+		if (
+			formData.minSalary != null &&
+			formData.maxSalary != null &&
+			formData.maxSalary < formData.minSalary
+		) {
+			setError("maxSalary", {
+				message: "Maximum salary cannot be less than minimum salary.",
+			});
+			hasValidationErrors = true;
+		}
+		if (
+			formData.minExperience != null &&
+			formData.maxExperience != null &&
+			formData.maxExperience < formData.minExperience
+		) {
+			setError("maxExperience", {
+				message: "Maximum experience cannot be less than minimum experience.",
+			});
+			hasValidationErrors = true;
+		}
+		if (hasValidationErrors) {
+			return;
+		}
 		commitCreateJob({
 			variables: {
 				organizationId: data.id,
@@ -280,6 +305,8 @@ export default function JobCreationForm({
 									value={field.value}
 									onValueChange={field.onChange}
 									className="flex-1 w-full"
+									errorMessage={errors.jobType?.message}
+									isInvalid={!!errors.jobType}
 								>
 									<Radio value="CONTRACT">Contract</Radio>
 									<Radio value="FULL_TIME">Full Time</Radio>
@@ -297,6 +324,8 @@ export default function JobCreationForm({
 									value={field.value}
 									onValueChange={field.onChange}
 									className="flex-1 w-full"
+									errorMessage={errors.workMode?.message}
+									isInvalid={!!errors.workMode}
 								>
 									<Radio value="HYBRID">Hybrid</Radio>
 									<Radio value="OFFICE">Office</Radio>
@@ -338,6 +367,7 @@ export default function JobCreationForm({
 											onValueChange={field.onChange}
 											errorMessage={errors.minSalary?.message}
 											isInvalid={!!errors.minSalary}
+											step={10000}
 										/>
 									)}
 								/>
@@ -358,6 +388,7 @@ export default function JobCreationForm({
 											onValueChange={field.onChange}
 											errorMessage={errors.maxSalary?.message}
 											isInvalid={!!errors.maxSalary}
+											step={10000}
 										/>
 									)}
 								/>
