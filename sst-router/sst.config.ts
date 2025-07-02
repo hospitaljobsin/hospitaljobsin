@@ -29,8 +29,8 @@ export default $config({
 					args.comment =
 						"Custom cache policy for Next.js App Router + next/image";
 					args.minTtl = 0;
-					args.maxTtl = 0;
 					args.defaultTtl = 0;
+					args.maxTtl = 1; // Must be > 0 to not disable caching completely
 					args.parametersInCacheKeyAndForwardedToOrigin = {
 						enableAcceptEncodingGzip: true,
 						enableAcceptEncodingBrotli: true,
