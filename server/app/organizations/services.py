@@ -250,13 +250,14 @@ class OrganizationService:
 
         return Ok(organization)
 
-    async def create_logo_presigned_url(self) -> str:
+    async def create_logo_presigned_url(self, content_type: str) -> str:
         """Create a presigned URL for uploading an organization logo."""
         return await self._s3_client.generate_presigned_url(
             "put_object",
             Params={
                 "Bucket": self._aws_settings.s3_bucket_name,
                 "Key": f"org-logos/{uuid.uuid4()}",
+                "ContentType": content_type,
             },
             ExpiresIn=3600,
             HttpMethod="PUT",

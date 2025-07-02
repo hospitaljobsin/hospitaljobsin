@@ -2565,8 +2565,12 @@ type Mutation {
 	"""
 	Create an organization logo presigned URL.
 	"""
-	createOrganizationLogoPresignedUrl: CreateOrganizationLogoPresignedURLPayload!
-		@isAuthenticated
+	createOrganizationLogoPresignedUrl(
+		"""
+		The content type of the file.
+		"""
+		contentType: String!
+	): CreateOrganizationLogoPresignedURLPayload! @isAuthenticated
 
 	"""
 	Update an organization.

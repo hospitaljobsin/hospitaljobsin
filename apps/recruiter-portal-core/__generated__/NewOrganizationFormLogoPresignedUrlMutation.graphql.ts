@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<b2877402c76103bade3eb65e84fd036d>>
- * @relayHash ae88f5a902d57fef7033d9c774a5dbe9
+ * @generated SignedSource<<16cc80cbdcdabbaf3dd028952395b8f8>>
+ * @relayHash 29eab4413c02445765c0f7c89de8df34
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,10 +9,12 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ae88f5a902d57fef7033d9c774a5dbe9
+// @relayRequestID 29eab4413c02445765c0f7c89de8df34
 
 import type { ConcreteRequest } from 'relay-runtime';
-export type NewOrganizationFormLogoPresignedUrlMutation$variables = Record<PropertyKey, never>;
+export type NewOrganizationFormLogoPresignedUrlMutation$variables = {
+  contentType: string;
+};
 export type NewOrganizationFormLogoPresignedUrlMutation$data = {
   readonly createOrganizationLogoPresignedUrl: {
     readonly presignedUrl: string;
@@ -26,8 +28,21 @@ export type NewOrganizationFormLogoPresignedUrlMutation = {
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "contentType"
+  }
+],
+v1 = [
+  {
     "alias": null,
-    "args": null,
+    "args": [
+      {
+        "kind": "Variable",
+        "name": "contentType",
+        "variableName": "contentType"
+      }
+    ],
     "concreteType": "CreateOrganizationLogoPresignedURLPayload",
     "kind": "LinkedField",
     "name": "createOrganizationLogoPresignedUrl",
@@ -46,23 +61,23 @@ var v0 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "NewOrganizationFormLogoPresignedUrlMutation",
-    "selections": (v0/*: any*/),
+    "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "NewOrganizationFormLogoPresignedUrlMutation",
-    "selections": (v0/*: any*/)
+    "selections": (v1/*: any*/)
   },
   "params": {
-    "id": "ae88f5a902d57fef7033d9c774a5dbe9",
+    "id": "29eab4413c02445765c0f7c89de8df34",
     "metadata": {},
     "name": "NewOrganizationFormLogoPresignedUrlMutation",
     "operationKind": "mutation",
@@ -71,6 +86,6 @@ return {
 };
 })();
 
-(node as any).hash = "0782081a5faf06a424f5f4651b85a745";
+(node as any).hash = "05e8b71e4325252afa94ed14abb97626";
 
 export default node;

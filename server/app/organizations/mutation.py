@@ -126,9 +126,14 @@ class OrganizationMutation:
     async def create_organization_logo_presigned_url(
         self,
         organization_service: Annotated[OrganizationService, Inject],
+        content_type: Annotated[
+            str, strawberry.argument(description="The content type of the file.")
+        ],
     ) -> CreateOrganizationLogoPresignedURLPayloadType:
         """Create an organization logo presigned url."""
-        result = await organization_service.create_logo_presigned_url()
+        result = await organization_service.create_logo_presigned_url(
+            content_type=content_type
+        )
         return CreateOrganizationLogoPresignedURLPayloadType(presigned_url=result)
 
     @strawberry.mutation(  # type: ignore[misc]

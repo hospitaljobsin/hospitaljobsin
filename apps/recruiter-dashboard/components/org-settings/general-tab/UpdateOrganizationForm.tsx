@@ -48,8 +48,8 @@ mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $s
 `;
 
 const CreateOrganizationLogoPresignedUrlMutation = graphql`
-mutation UpdateOrganizationFormLogoPresignedUrlMutation {
-	createOrganizationLogoPresignedUrl {
+mutation UpdateOrganizationFormLogoPresignedUrlMutation($contentType: String!) {
+	createOrganizationLogoPresignedUrl(contentType: $contentType) {
 		presignedUrl
 	}
 }
@@ -123,10 +123,12 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		}
 	}
 
-	function getPresignedUrl(): Promise<string | null> {
+	function getPresignedUrl(logo: File): Promise<string | null> {
 		return new Promise((resolve, reject) => {
 			commitCreateOrganizationLogoPresignedUrlMutation({
-				variables: {},
+				variables: {
+					contentType: logo.type,
+				},
 				onCompleted: (response) => {
 					resolve(
 						response.createOrganizationLogoPresignedUrl?.presignedUrl || null,
@@ -143,7 +145,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 	async function onSubmit(formData: z.infer<typeof formSchema>) {
 		let logoUrlResult: string | null = data.logoUrl || null;
 		if (selectedLogo) {
-			const presignedUrl = await getPresignedUrl();
+			const presignedUrl = await getPresignedUrl(selectedLogo);
 			if (presignedUrl) {
 				await uploadFileToS3(presignedUrl, selectedLogo);
 				// Extract the URL from the presignedUrl
