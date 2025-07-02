@@ -24,6 +24,37 @@ export default $config({
 						viewerProtocolPolicy: "redirect-to-https",
 					};
 				},
+				cachePolicy(args, opts, name) {
+					args.name = "NextJsAppRouterPolicy";
+					args.comment =
+						"Custom cache policy for Next.js App Router + next/image";
+					args.minTtl = 0;
+					args.maxTtl = 0;
+					args.defaultTtl = 0;
+					args.parametersInCacheKeyAndForwardedToOrigin = {
+						enableAcceptEncodingGzip: true,
+						enableAcceptEncodingBrotli: true,
+						headersConfig: {
+							headerBehavior: "whitelist",
+							headers: {
+								items: [
+									"RSC",
+									"Next-Router-Prefetch",
+									"Next-Router-State-Tree",
+								],
+							},
+						},
+						cookiesConfig: {
+							cookieBehavior: "all",
+						},
+						queryStringsConfig: {
+							queryStringBehavior: "whitelist",
+							queryStrings: {
+								items: ["q", "w", "url"],
+							},
+						},
+					};
+				},
 			},
 		});
 	},
