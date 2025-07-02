@@ -180,7 +180,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 		defaultValues: {
 			title: jobData.title,
 			description: jobData.description ?? "",
-			vacancies: jobData.vacancies,
+			vacancies: jobData.vacancies ?? null,
 			skills: jobData.skills.map((skill) => ({
 				value: skill,
 			})),
@@ -271,7 +271,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 				jobId: jobData.id,
 				title: formData.title,
 				description: formData.description,
-				vacancies: formData.vacancies,
+				vacancies: formData.vacancies ?? undefined,
 				skills: formData.skills.flatMap((skill) => skill.value),
 				location: formData.location,
 				minSalary: formData.minSalary,
@@ -296,7 +296,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 					reset({
 						title: response.updateJob.job.title,
 						description: response.updateJob.job.description ?? "",
-						vacancies: response.updateJob.job.vacancies,
+						vacancies: response.updateJob.job.vacancies ?? null,
 						skills: response.updateJob.job.skills.map((skill) => ({
 							value: skill,
 						})),
@@ -419,10 +419,17 @@ export default function JobEditForm({ rootQuery }: Props) {
 										label="Vacancies"
 										placeholder="Enter vacancies"
 										labelPlacement="outside"
-										value={field.value || 0}
+										minValue={0}
+										value={field.value as number | undefined}
 										onValueChange={(value) => {
-											field.onChange(value);
+											if (Number.isNaN(value)) {
+												field.onChange(undefined);
+											} else {
+												field.onChange(value);
+											}
 										}}
+										isClearable
+										hideStepper
 									/>
 								);
 							}}

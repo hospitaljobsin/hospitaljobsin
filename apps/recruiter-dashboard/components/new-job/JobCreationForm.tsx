@@ -35,7 +35,7 @@ import { z } from "zod";
 const jobFormSchema = z.object({
 	title: z.string().min(1, "This field is required").max(75),
 	description: z.string().min(1, "This field is required").max(2000),
-	vacancies: z.number().positive().nullable(),
+	vacancies: z.number().positive().nullable().optional(),
 	skills: z.array(z.object({ value: z.string() })),
 	location: z.string().nullable(),
 	minSalary: z.number().positive().nullable(),
@@ -136,7 +136,7 @@ export default function JobCreationForm({
 			location: "",
 			skills: [],
 			title: "",
-			vacancies: 1,
+			vacancies: null,
 		},
 	});
 	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<
@@ -289,6 +289,8 @@ export default function JobCreationForm({
 								label="Vacancies"
 								placeholder="Enter vacancies"
 								labelPlacement="outside"
+								size="lg"
+								minValue={0}
 								value={field.value as number | undefined}
 								onValueChange={(value) => {
 									if (Number.isNaN(value)) {
@@ -299,6 +301,8 @@ export default function JobCreationForm({
 								}}
 								errorMessage={errors.vacancies?.message}
 								isInvalid={!!errors.vacancies}
+								isClearable
+								hideStepper
 							/>
 						)}
 					/>
