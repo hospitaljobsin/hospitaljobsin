@@ -415,7 +415,7 @@ class OrganizationInviteService:
             context={
                 "invited_by_name": account.full_name,
                 "organization_name": existing_organization.name,
-                "invite_link": f"{self._app_settings.recruiter_portal_base_url}/dashboard/invites/{invite_token}",
+                "invite_link": f"{self._app_settings.recruiter_portal_base_url}/invites/{invite_token}",
                 "organization_logo_url": existing_organization.logo_url,
                 "invite_expires_in": naturaldelta(
                     timedelta(seconds=ORGANIZATION_INVITE_EXPIRES_IN)

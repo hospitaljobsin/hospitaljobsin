@@ -52,7 +52,7 @@ class SessionRepo:
             ip_address=ip_address,
         )
 
-        await session.save(link_rule=WriteRules.WRITE)
+        await session.save(link_rule=WriteRules.DO_NOTHING)
         return session_token
 
     @staticmethod
