@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<de493eadbcfa2b47ba4ec0b8c02453c1>>
- * @relayHash 05ff86371307ecc50d932b2425a5eb1f
+ * @generated SignedSource<<9be7bcfae9c7b410bf02ebc0100403c1>>
+ * @relayHash 0ce4f7f16bd36eabd99e37b123ea1a70
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 05ff86371307ecc50d932b2425a5eb1f
+// @relayRequestID 0ce4f7f16bd36eabd99e37b123ea1a70
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -41,7 +41,20 @@ export type JobEditFormMutation$data = {
     readonly __typename: "UpdateJobSuccess";
     readonly __typename: "UpdateJobSuccess";
     readonly job: {
+      readonly description: string;
+      readonly expiresAt: any | null | undefined;
+      readonly id: string;
+      readonly location: string | null | undefined;
+      readonly maxExperience: number | null | undefined;
+      readonly maxSalary: number | null | undefined;
+      readonly minExperience: number | null | undefined;
+      readonly minSalary: number | null | undefined;
+      readonly skills: ReadonlyArray<string>;
       readonly slug: string;
+      readonly title: string;
+      readonly type: JobType | null | undefined;
+      readonly vacancies: number | null | undefined;
+      readonly workMode: WorkMode | null | undefined;
       readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobDetailsFragment" | "JobEditFormFragment" | "JobFragment" | "JobTabsFragment">;
     };
   } | {
@@ -199,14 +212,98 @@ v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "slug",
+  "name": "id",
   "storageKey": null
 },
 v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "slug",
+  "storageKey": null
+},
+v17 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "title",
+  "storageKey": null
+},
+v18 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "description",
+  "storageKey": null
+},
+v19 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "minExperience",
+  "storageKey": null
+},
+v20 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "maxExperience",
+  "storageKey": null
+},
+v21 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "minSalary",
+  "storageKey": null
+},
+v22 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "maxSalary",
+  "storageKey": null
+},
+v23 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "vacancies",
+  "storageKey": null
+},
+v24 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "skills",
+  "storageKey": null
+},
+v25 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "type",
+  "storageKey": null
+},
+v26 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "workMode",
+  "storageKey": null
+},
+v27 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "expiresAt",
+  "storageKey": null
+},
+v28 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "location",
   "storageKey": null
 };
 return {
@@ -251,6 +348,19 @@ return {
                 "plural": false,
                 "selections": [
                   (v15/*: any*/),
+                  (v16/*: any*/),
+                  (v17/*: any*/),
+                  (v18/*: any*/),
+                  (v19/*: any*/),
+                  (v20/*: any*/),
+                  (v21/*: any*/),
+                  (v22/*: any*/),
+                  (v23/*: any*/),
+                  (v24/*: any*/),
+                  (v25/*: any*/),
+                  (v26/*: any*/),
+                  (v27/*: any*/),
+                  (v28/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
@@ -331,6 +441,19 @@ return {
                 "plural": false,
                 "selections": [
                   (v15/*: any*/),
+                  (v16/*: any*/),
+                  (v17/*: any*/),
+                  (v18/*: any*/),
+                  (v19/*: any*/),
+                  (v20/*: any*/),
+                  (v21/*: any*/),
+                  (v22/*: any*/),
+                  (v23/*: any*/),
+                  (v24/*: any*/),
+                  (v25/*: any*/),
+                  (v26/*: any*/),
+                  (v27/*: any*/),
+                  (v28/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -338,7 +461,6 @@ return {
                     "name": "externalApplicationUrl",
                     "storageKey": null
                   },
-                  (v16/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -379,7 +501,7 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v16/*: any*/),
+                      (v15/*: any*/),
                       (v14/*: any*/)
                     ],
                     "storageKey": null
@@ -388,49 +510,7 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "title",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "skills",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "minSalary",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "maxSalary",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
                     "name": "hasSalaryRange",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "minExperience",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "maxExperience",
                     "storageKey": null
                   },
                   {
@@ -445,27 +525,6 @@ return {
                     "args": null,
                     "kind": "ScalarField",
                     "name": "currency",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "workMode",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "type",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "location",
                     "storageKey": null
                   },
                   {
@@ -504,8 +563,8 @@ return {
                         "name": "name",
                         "storageKey": null
                       },
-                      (v16/*: any*/),
-                      (v15/*: any*/)
+                      (v15/*: any*/),
+                      (v16/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -539,20 +598,6 @@ return {
                         "storageKey": null
                       }
                     ],
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "vacancies",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "expiresAt",
                     "storageKey": null
                   },
                   {
@@ -601,13 +646,6 @@ return {
                     ],
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "description",
-                    "storageKey": null
-                  },
                   (v14/*: any*/)
                 ],
                 "storageKey": null
@@ -622,7 +660,7 @@ return {
     ]
   },
   "params": {
-    "id": "05ff86371307ecc50d932b2425a5eb1f",
+    "id": "0ce4f7f16bd36eabd99e37b123ea1a70",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",
@@ -631,6 +669,6 @@ return {
 };
 })();
 
-(node as any).hash = "7bb7ee99692d1b4eb86fe205cd59b469";
+(node as any).hash = "528d842ae910cdde1dc3416f10fc203b";
 
 export default node;

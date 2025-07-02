@@ -98,7 +98,20 @@ mutation JobEditFormMutation(
         ...on UpdateJobSuccess {
             __typename
             job {
-                slug
+				id
+				slug
+				title
+				description
+				minExperience
+				maxExperience
+				minSalary
+				maxSalary
+				vacancies
+				skills
+				type
+				workMode
+				expiresAt
+				location
 				...JobTabsFragment
 				...JobControlsFragment
 				...JobDetailsFragment
@@ -159,6 +172,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 		register,
 		control,
 		setError,
+		reset,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -247,6 +261,11 @@ export default function JobEditForm({ rootQuery }: Props) {
 			});
 			hasValidationErrors = true;
 		}
+
+		if (hasValidationErrors) {
+			return;
+		}
+
 		commitMutation({
 			variables: {
 				jobId: jobData.id,
@@ -271,7 +290,33 @@ export default function JobEditForm({ rootQuery }: Props) {
 					});
 				} else if (response.updateJob.__typename === "UpdateJobSuccess") {
 					// handle success
-					router.push(links.jobDetailSettings(response.updateJob.job.slug));
+					if (response.updateJob.job.slug !== jobData.slug) {
+						router.push(links.jobDetailSettings(response.updateJob.job.slug));
+					}
+					reset({
+						title: response.updateJob.job.title,
+						description: response.updateJob.job.description ?? "",
+						vacancies: response.updateJob.job.vacancies,
+						skills: response.updateJob.job.skills.map((skill) => ({
+							value: skill,
+						})),
+						location: response.updateJob.job.location,
+						minSalary: response.updateJob.job.minSalary,
+						maxSalary: response.updateJob.job.maxSalary,
+						minExperience: response.updateJob.job.minExperience,
+						maxExperience: response.updateJob.job.maxExperience,
+						expiresAt: response.updateJob.job.expiresAt
+							? toCalendarDateTime(
+									parseAbsoluteToLocal(response.updateJob.job.expiresAt),
+								)
+							: null,
+						jobType: response.updateJob.job.type
+							? response.updateJob.job.type.toString()
+							: null,
+						workMode: response.updateJob.job.workMode
+							? response.updateJob.job.workMode.toString()
+							: null,
+					});
 				} else if (
 					response.updateJob.__typename === "OrganizationAuthorizationError"
 				) {
