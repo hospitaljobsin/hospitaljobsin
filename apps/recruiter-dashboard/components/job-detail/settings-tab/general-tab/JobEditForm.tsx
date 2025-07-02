@@ -158,6 +158,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 		handleSubmit,
 		register,
 		control,
+		setError,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -225,6 +226,27 @@ export default function JobEditForm({ rootQuery }: Props) {
 	}
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
+		let hasValidationErrors = false;
+		if (
+			formData.minSalary != null &&
+			formData.maxSalary != null &&
+			formData.maxSalary < formData.minSalary
+		) {
+			setError("maxSalary", {
+				message: "Maximum salary cannot be less than minimum salary.",
+			});
+			hasValidationErrors = true;
+		}
+		if (
+			formData.minExperience != null &&
+			formData.maxExperience != null &&
+			formData.maxExperience < formData.minExperience
+		) {
+			setError("maxExperience", {
+				message: "Maximum experience cannot be less than minimum experience.",
+			});
+			hasValidationErrors = true;
+		}
 		commitMutation({
 			variables: {
 				jobId: jobData.id,
