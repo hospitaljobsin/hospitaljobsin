@@ -190,7 +190,7 @@ export default function RequestSudoView({
 						size="lg"
 						startContent={<Google.Color size={20} />}
 						onPress={() => {
-							window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/request_sudo_mode/google?redirect_uri=${encodeURIComponent(`${env.NEXT_PUBLIC_URL}${redirectTo}`)}`;
+							window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/request_sudo_mode/google?redirect_uri=${encodeURIComponent(`${redirectTo}`)}`;
 						}}
 					>
 						Authenticate with Google
