@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<11934947653cc28bdd242fe41892fe90>>
+ * @generated SignedSource<<fc11eb17a52d940d7d5a68c4d8649e9b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,6 +19,7 @@ export type PublishJobModalFragment$data = {
   } | null | undefined;
   readonly id: string;
   readonly slug: string;
+  readonly vacancies: number | null | undefined;
   readonly " $fragmentType": "PublishJobModalFragment";
 };
 export type PublishJobModalFragment$key = {
@@ -44,6 +45,13 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "ScalarField",
       "name": "slug",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "vacancies",
       "storageKey": null
     },
     {
@@ -87,6 +95,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "0107fca759ab222b4bca0c03ae1d1e78";
+(node as any).hash = "1026d48f073728a57babb7f775bf8590";
 
 export default node;

@@ -856,6 +856,16 @@ type GeneratePasskeyRegistrationOptionsSuccess {
 }
 
 """
+Used when a job has insufficient active vacancies.
+"""
+type InsufficientActiveVacanciesError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
+"""
 Used when at least one authentication provider must be enabled.
 """
 type InsufficientAuthProvidersError implements Error {
@@ -3530,6 +3540,7 @@ The publish job payload.
 union PublishJobPayload =
 	| Job
 	| JobNotFoundError
+	| InsufficientActiveVacanciesError
 	| OrganizationAuthorizationError
 
 type Query {

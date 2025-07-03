@@ -168,6 +168,7 @@ class JobRepo:
         job: Job,
         title: str,
         description: str,
+        is_active: bool,
         location: str | None = None,
         geo: GeoObject | None = None,
         vacancies: int | None = None,
@@ -216,7 +217,7 @@ class JobRepo:
         job.work_mode = work_mode
         job.skills = skills
         job.currency = currency
-
+        job.is_active = is_active
         # Check if any embedding-relevant field has changed
         changed = (
             orig["title"] != title

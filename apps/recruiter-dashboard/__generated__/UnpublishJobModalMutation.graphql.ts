@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<886eb838ced65aad69f58f729e35e11b>>
- * @relayHash 48d7406561058ba66635a1ec40d7ea4e
+ * @generated SignedSource<<b24e18d3efac041c4b27c3703e57e470>>
+ * @relayHash b27c251c966dc6d9e3e327d86aa33071
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 48d7406561058ba66635a1ec40d7ea4e
+// @relayRequestID b27c251c966dc6d9e3e327d86aa33071
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -141,6 +141,13 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "vacancies",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": "JobApplicationForm",
                 "kind": "LinkedField",
                 "name": "applicationForm",
@@ -193,7 +200,7 @@ return {
     ]
   },
   "params": {
-    "id": "48d7406561058ba66635a1ec40d7ea4e",
+    "id": "b27c251c966dc6d9e3e327d86aa33071",
     "metadata": {},
     "name": "UnpublishJobModalMutation",
     "operationKind": "mutation",

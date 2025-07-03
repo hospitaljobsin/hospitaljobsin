@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<254ce068bdbc12762f6d105b6554200a>>
- * @relayHash 86c782f635e010b898aeea5d05b75968
+ * @generated SignedSource<<6748e5a6afb2ed349e48a956d4e5e6e1>>
+ * @relayHash a90392fa809ed661ecaea48f37f3ed01
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 86c782f635e010b898aeea5d05b75968
+// @relayRequestID a90392fa809ed661ecaea48f37f3ed01
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -55,18 +55,12 @@ v4 = {
   "name": "id",
   "storageKey": null
 },
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "slug",
-  "storageKey": null
-},
+v5 = [
+  (v4/*: any*/)
+],
 v6 = {
   "kind": "InlineFragment",
-  "selections": [
-    (v4/*: any*/)
-  ],
+  "selections": (v5/*: any*/),
   "type": "Node",
   "abstractKey": "__isNode"
 };
@@ -145,7 +139,13 @@ return {
                     "kind": "InlineFragment",
                     "selections": [
                       (v4/*: any*/),
-                      (v5/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "slug",
+                        "storageKey": null
+                      },
                       {
                         "alias": null,
                         "args": null,
@@ -227,6 +227,13 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
+                        "name": "isActive",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
                         "name": "location",
                         "storageKey": null
                       },
@@ -237,10 +244,7 @@ return {
                         "kind": "LinkedField",
                         "name": "organization",
                         "plural": false,
-                        "selections": [
-                          (v5/*: any*/),
-                          (v4/*: any*/)
-                        ],
+                        "selections": (v5/*: any*/),
                         "storageKey": null
                       }
                     ],
@@ -289,7 +293,7 @@ return {
     ]
   },
   "params": {
-    "id": "86c782f635e010b898aeea5d05b75968",
+    "id": "a90392fa809ed661ecaea48f37f3ed01",
     "metadata": {},
     "name": "pageJobGeneralSettingsQuery",
     "operationKind": "query",

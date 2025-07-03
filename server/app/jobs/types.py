@@ -1228,9 +1228,21 @@ class JobApplicationFormNotFoundErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="InsufficientActiveVacanciesError",
+    description="Used when a job has insufficient active vacancies.",
+)
+class InsufficientActiveVacanciesErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Job has insufficient active vacancies!",
+    )
+
+
 PublishJobPayload = Annotated[
     JobType
     | JobNotFoundErrorType
+    | InsufficientActiveVacanciesErrorType
     | Annotated[
         "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
     ],

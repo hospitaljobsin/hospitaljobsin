@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<68d76dfb76a963e0c674567adb7ef28b>>
+ * @generated SignedSource<<eb8d76fc956510fe0f85bdd2036a86c3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type JobEditFormFragment$data = {
   readonly description: string;
   readonly expiresAt: any | null | undefined;
   readonly id: string;
+  readonly isActive: boolean;
   readonly location: string | null | undefined;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
@@ -27,7 +28,6 @@ export type JobEditFormFragment$data = {
   readonly type: JobType | null | undefined;
   readonly vacancies: number | null | undefined;
   readonly workMode: WorkMode | null | undefined;
-  readonly " $fragmentSpreads": FragmentRefs<"CancelEditJobModalJobFragment">;
   readonly " $fragmentType": "JobEditFormFragment";
 };
 export type JobEditFormFragment$key = {
@@ -136,19 +136,21 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "location",
+      "name": "isActive",
       "storageKey": null
     },
     {
+      "alias": null,
       "args": null,
-      "kind": "FragmentSpread",
-      "name": "CancelEditJobModalJobFragment"
+      "kind": "ScalarField",
+      "name": "location",
+      "storageKey": null
     }
   ],
   "type": "Job",
   "abstractKey": null
 };
 
-(node as any).hash = "be44cbe8000cb5700259fc44e65affb0";
+(node as any).hash = "ad6a5c6e29b275b738bd78ce2dd87c1d";
 
 export default node;

@@ -17,6 +17,11 @@ import {
 	Input,
 	Kbd,
 	Link,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
 	NumberInput,
 	Radio,
 	RadioGroup,
@@ -38,6 +43,7 @@ import {
 	TimerIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import type { SubmitHandler } from "react-hook-form";
 import { Controller, useForm } from "react-hook-form";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -59,8 +65,8 @@ const JobEditFormFragment = graphql`
 	type
 	workMode
 	expiresAt
+	isActive
 	location
-	...CancelEditJobModalJobFragment
 }`;
 
 const UpdateJobMutation = graphql`
@@ -111,6 +117,7 @@ mutation JobEditFormMutation(
 				type
 				workMode
 				expiresAt
+				isActive
 				location
 				...JobTabsFragment
 				...JobControlsFragment
@@ -134,7 +141,7 @@ mutation JobEditFormMutation(
 const formSchema = z.object({
 	title: z.string().min(1, "This field is required").max(75),
 	description: z.string().min(1, "This field is required").max(2000),
-	vacancies: z.number().positive().nullable(),
+	vacancies: z.number().nonnegative().nullable(),
 	skills: z.array(z.object({ value: z.string() })),
 	location: z.string().nullable(),
 	minSalary: z.number().positive().nullable().optional(),
@@ -158,6 +165,10 @@ type Props = {
 	rootQuery: JobEditFormFragment$key;
 };
 
+// Helper types for jobType and workMode
+type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME";
+type WorkMode = "HYBRID" | "OFFICE" | "REMOTE";
+
 export default function JobEditForm({ rootQuery }: Props) {
 	const router = useRouter();
 	const { isOpen, onOpenChange, onOpen } = useDisclosure();
@@ -176,6 +187,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
+		mode: "onChange",
 		reValidateMode: "onChange",
 		defaultValues: {
 			title: jobData.title,
@@ -192,8 +204,18 @@ export default function JobEditForm({ rootQuery }: Props) {
 			expiresAt: jobData.expiresAt
 				? toCalendarDateTime(parseAbsoluteToLocal(jobData.expiresAt))
 				: null,
-			jobType: jobData.type ? jobData.type.toString() : null,
-			workMode: jobData.workMode ? jobData.workMode.toString() : null,
+			jobType:
+				jobData.type &&
+				["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"].includes(
+					jobData.type,
+				)
+					? (jobData.type as JobType)
+					: null,
+			workMode:
+				jobData.workMode &&
+				["HYBRID", "OFFICE", "REMOTE"].includes(jobData.workMode)
+					? (jobData.workMode as WorkMode)
+					: null,
 		},
 	});
 
@@ -247,6 +269,11 @@ export default function JobEditForm({ rootQuery }: Props) {
 		};
 	}, [isDirty]);
 
+	const [showVacancyZeroModal, setShowVacancyZeroModal] = useState(false);
+	const [pendingFormData, setPendingFormData] = useState<z.infer<
+		typeof formSchema
+	> | null>(null);
+
 	function handleCancel() {
 		if (isDirty) {
 			// show confirmation modal
@@ -256,33 +283,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 		}
 	}
 
-	function onSubmit(formData: z.infer<typeof formSchema>) {
-		let hasValidationErrors = false;
-		if (
-			formData.minSalary != null &&
-			formData.maxSalary != null &&
-			formData.maxSalary < formData.minSalary
-		) {
-			setError("maxSalary", {
-				message: "Maximum salary cannot be less than minimum salary.",
-			});
-			hasValidationErrors = true;
-		}
-		if (
-			formData.minExperience != null &&
-			formData.maxExperience != null &&
-			formData.maxExperience < formData.minExperience
-		) {
-			setError("maxExperience", {
-				message: "Maximum experience cannot be less than minimum experience.",
-			});
-			hasValidationErrors = true;
-		}
-
-		if (hasValidationErrors) {
-			return;
-		}
-
+	function proceedWithUpdate(formData: z.infer<typeof formSchema>) {
 		commitMutation({
 			variables: {
 				jobId: jobData.id,
@@ -350,6 +351,43 @@ export default function JobEditForm({ rootQuery }: Props) {
 			},
 		});
 	}
+
+	const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = (formData) => {
+		let hasValidationErrors = false;
+		if (
+			formData.minSalary != null &&
+			formData.maxSalary != null &&
+			formData.maxSalary < formData.minSalary
+		) {
+			setError("maxSalary", {
+				message: "Maximum salary cannot be less than minimum salary.",
+			});
+			hasValidationErrors = true;
+		}
+		if (
+			formData.minExperience != null &&
+			formData.maxExperience != null &&
+			formData.maxExperience < formData.minExperience
+		) {
+			setError("maxExperience", {
+				message: "Maximum experience cannot be less than minimum experience.",
+			});
+			hasValidationErrors = true;
+		}
+
+		// Custom check: if job is active and vacancies is exactly 0, show modal and prevent update
+		if (jobData.isActive && formData.vacancies === 0) {
+			setPendingFormData(formData);
+			setShowVacancyZeroModal(true);
+			return;
+		}
+
+		if (hasValidationErrors) {
+			return;
+		}
+
+		proceedWithUpdate(formData);
+	};
 
 	return (
 		<>
@@ -718,8 +756,59 @@ export default function JobEditForm({ rootQuery }: Props) {
 			<CancelEditJobModal
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
-				job={jobData}
+				onCancel={() => {
+					reset();
+				}}
 			/>
+			{/* Vacancy Zero Modal */}
+			<Modal
+				isOpen={showVacancyZeroModal}
+				onOpenChange={setShowVacancyZeroModal}
+				placement="center"
+				hideCloseButton
+			>
+				<ModalContent>
+					{(onClose) => (
+						<>
+							<ModalHeader>Unpublish Warning</ModalHeader>
+							<ModalBody>
+								<p>
+									This job will automatically be unpublished as vacancies are
+									zero.
+									<br className="my-2" />
+									To keep this job published, either clear the field or add at
+									least 1 vacancy before updating the job.
+								</p>
+							</ModalBody>
+							<ModalFooter>
+								<Button
+									color="default"
+									variant="flat"
+									onPress={() => {
+										setShowVacancyZeroModal(false);
+										onClose();
+									}}
+								>
+									Cancel
+								</Button>
+								<Button
+									color="danger"
+									onPress={() => {
+										setShowVacancyZeroModal(false);
+										onClose();
+										if (pendingFormData) {
+											proceedWithUpdate(pendingFormData);
+											setPendingFormData(null);
+										}
+									}}
+								>
+									Continue
+								</Button>
+							</ModalFooter>
+						</>
+					)}
+				</ModalContent>
+			</Modal>
 		</>
 	);
 }

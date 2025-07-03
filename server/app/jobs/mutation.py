@@ -14,6 +14,7 @@ from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.context import AuthInfo, Info
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
+    InsufficientActiveVacanciesError,
     JobApplicantAlreadyExistsError,
     JobApplicantsNotFoundError,
     JobIsExternalError,
@@ -47,6 +48,7 @@ from .types import (
     CreateJobPayload,
     CreateJobSuccessType,
     DeleteJobPayload,
+    InsufficientActiveVacanciesErrorType,
     JobApplicantAlreadyExistsErrorType,
     JobApplicantsNotFoundErrorType,
     JobApplicantStatusEnum,
@@ -526,6 +528,8 @@ class JobMutation:
                         return JobNotFoundErrorType()
                     case OrganizationAuthorizationError():
                         return OrganizationAuthorizationErrorType()
+                    case InsufficientActiveVacanciesError():
+                        return InsufficientActiveVacanciesErrorType()
             case Ok(job):
                 return JobType.marshal(job)
             case _ as unreachable:

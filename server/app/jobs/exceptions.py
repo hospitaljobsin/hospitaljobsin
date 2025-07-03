@@ -39,3 +39,7 @@ class JobApplicantsNotFoundError:
 
     def __init__(self, not_found_ids: list[str]) -> None:
         self.not_found_ids = not_found_ids
+
+
+class InsufficientActiveVacanciesError:
+    """Raised when a job has insufficient active vacancies."""

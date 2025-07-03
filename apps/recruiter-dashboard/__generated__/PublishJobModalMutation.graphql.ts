@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<5ca3343c296e57a6d105db5598859d62>>
- * @relayHash 5e49cb0ee180923d78157582d2a8d6a8
+ * @generated SignedSource<<b980f23112662b1c728cbd49351fe6d2>>
+ * @relayHash 2390d88661f8c05830a95f52f0d5ca7b
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 5e49cb0ee180923d78157582d2a8d6a8
+// @relayRequestID 2390d88661f8c05830a95f52f0d5ca7b
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -18,6 +18,9 @@ export type PublishJobModalMutation$variables = {
 };
 export type PublishJobModalMutation$data = {
   readonly publishJob: {
+    readonly __typename: "InsufficientActiveVacanciesError";
+    readonly __typename: "InsufficientActiveVacanciesError";
+  } | {
     readonly __typename: "Job";
     readonly __typename: "Job";
     readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment">;
@@ -138,6 +141,13 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "vacancies",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": "JobApplicationForm",
                 "kind": "LinkedField",
                 "name": "applicationForm",
@@ -190,7 +200,7 @@ return {
     ]
   },
   "params": {
-    "id": "5e49cb0ee180923d78157582d2a8d6a8",
+    "id": "2390d88661f8c05830a95f52f0d5ca7b",
     "metadata": {},
     "name": "PublishJobModalMutation",
     "operationKind": "mutation",
@@ -199,6 +209,6 @@ return {
 };
 })();
 
-(node as any).hash = "e5f307bb99808e5fe12dfde6ccc01f5a";
+(node as any).hash = "1c633f028cf4e4ca2511a7b1edf95275";
 
 export default node;

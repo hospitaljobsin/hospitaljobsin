@@ -31,6 +31,7 @@ from app.jobs.documents import (
 )
 from app.jobs.exceptions import (
     AccountProfileNotFoundError,
+    InsufficientActiveVacanciesError,
     JobApplicantAlreadyExistsError,
     JobApplicantsNotFoundError,
     JobIsExternalError,
@@ -301,6 +302,11 @@ class JobService:
                     coordinates=(result.longitude, result.latitude),
                 )
 
+        is_active = existing_job.is_active
+        if vacancies is not None and vacancies == 0:
+            # unpublish job automatically if no vacancies are present
+            is_active = False
+
         job = await self._job_repo.update(
             job=existing_job,
             title=title,
@@ -317,6 +323,7 @@ class JobService:
             work_mode=work_mode,
             skills=skills,
             currency=currency,
+            is_active=is_active,
         )
 
         return Ok(job)
@@ -327,7 +334,9 @@ class JobService:
         job_id: str,
     ) -> Result[
         Job,
-        JobNotFoundError | OrganizationAuthorizationError,
+        JobNotFoundError
+        | OrganizationAuthorizationError
+        | InsufficientActiveVacanciesError,
     ]:
         try:
             job_id = ObjectId(job_id)
@@ -336,6 +345,9 @@ class JobService:
         existing_job = await self._job_repo.get(job_id=job_id)
         if existing_job is None:
             return Err(JobNotFoundError())
+
+        if existing_job.vacancies is not None and existing_job.vacancies == 0:
+            return Err(InsufficientActiveVacanciesError())
 
         if not await self._organization_member_service.is_admin(
             account_id=account.id,

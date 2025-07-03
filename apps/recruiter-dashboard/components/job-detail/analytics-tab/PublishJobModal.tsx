@@ -37,6 +37,10 @@ mutation PublishJobModalMutation($jobId: ID!) {
     ... on OrganizationAuthorizationError {
         __typename
     }
+
+    ... on InsufficientActiveVacanciesError {
+        __typename
+    }
   }
 }
 `;
@@ -45,6 +49,7 @@ const PublishJobModalFragment = graphql`
 fragment PublishJobModalFragment on Job {
     id
 	slug
+    vacancies
     applicationForm {
         fields {
             fieldName
@@ -66,6 +71,46 @@ export default function PublishJobModal({
 	const hasScreeningQuestions =
 		data.applicationForm?.fields && data.applicationForm.fields.length > 0;
 
+	const isVacanciesZero = data.vacancies === 0;
+
+	if (isVacanciesZero) {
+		return (
+			<Modal
+				isDismissable={false}
+				isKeyboardDismissDisabled={true}
+				isOpen={isOpen}
+				onOpenChange={onOpenChange}
+				placement="center"
+				hideCloseButton
+				size="xl"
+			>
+				<ModalContent className="p-4 sm:p-6">
+					<ModalHeader className="flex flex-col gap-1">
+						Cannot Publish Job
+					</ModalHeader>
+					<ModalBody className="space-y-4">
+						<Alert
+							color="danger"
+							variant="flat"
+							hideIconWrapper
+							description={
+								<p>
+									This job has <b>0 vacancies</b>. Please remove the vacancies
+									field or add atleast one vacancy to publish this job.
+								</p>
+							}
+						/>
+					</ModalBody>
+					<ModalFooter className="flex justify-end gap-4">
+						<Button variant="light" onPress={onClose}>
+							Cancel
+						</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
+		);
+	}
+
 	async function handlePublishJob() {
 		commitPublishMutation({
 			variables: {
@@ -78,7 +123,10 @@ export default function PublishJobModal({
 						description: "Job published successfully!",
 						color: "success",
 					});
-				} else if (response.publishJob.__typename === "JobNotFoundError") {
+				} else if (
+					response.publishJob.__typename === "JobNotFoundError" ||
+					response.publishJob.__typename === "InsufficientActiveVacanciesError"
+				) {
 					addToast({
 						description: "An unexpected error occurred. Please try again.",
 						color: "danger",
