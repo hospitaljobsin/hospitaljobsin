@@ -31,7 +31,7 @@ container = create_container()
 logger = get_logger(__name__)
 
 
-async def initialize_handler():
+async def initialize_handler() -> None:
     database_settings = get_settings(DatabaseSettings)
     await initialize_database(
         database_url=str(database_settings.database_url),
@@ -39,8 +39,11 @@ async def initialize_handler():
     )
 
 
+# 🟢 Create a persistent event loop and use it both for init and handler
+loop = asyncio.get_event_loop()
+
 # ✅ run once per cold start
-asyncio.run(initialize_handler())
+loop.run_until_complete(initialize_handler())
 
 
 @event_source(data_class=SQSEvent)
@@ -49,7 +52,7 @@ def lambda_handler(
     event: list[JobApplicantAnalysisEventBody], context: LambdaContext
 ) -> str:
     """Lambda handler for the job applicant analysis event."""
-    return asyncio.run(process_job_applicant_analysis_event(event))
+    return loop.run_until_complete(process_job_applicant_analysis_event(event))
 
 
 async def process_job_applicant_analysis_event(
