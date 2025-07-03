@@ -1,7 +1,8 @@
 "use client";
 import links from "@/lib/links";
-import { Button } from "@heroui/react";
+import { Button, Card, CardBody } from "@heroui/react";
 import { motion } from "framer-motion";
+import { BotIcon, BrainCircuitIcon, SearchIcon } from "lucide-react";
 import LandingHeader from "./LandingHeader";
 
 export default function LandingView() {
@@ -13,12 +14,11 @@ export default function LandingView() {
 				<div className="max-w-7xl mx-auto py-16 sm:py-24 flex flex-col md:flex-row items-center gap-8">
 					<div className="flex-1 flex flex-col items-start gap-6">
 						<h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-							Streamline Your Healthcare Recruitment
+							Hire Smarter. Faster. Easier.
 						</h1>
 						<p className="text-lg opacity-90">
-							Find the perfect healthcare professionals for your hospital with
-							our powerful recruitment platform. Post jobs, manage applications,
-							and hire exceptional talent all in one place.
+							Say goodbye to traditional job boards and say to an intelligent,
+							intuitive, and tailor-made healthcare hiring experience.
 						</p>
 						<div className="flex flex-row gap-4 flex-wrap">
 							<Button
@@ -141,14 +141,48 @@ export default function LandingView() {
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
 								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
-									AI For Recruitment, Deeply Integrated
+									AI-Powered Hiring, Built for Healthcare
 								</h2>
-								<p className="text-lg text-foreground-700 dark:text-foreground-200">
-									Our recruitment dashboard is powered by advanced AI,
-									automating repetitive HR tasks and surfacing the most
-									important clinical and credential information—so you can focus
-									on hiring the best medical talent for your hospital or clinic.
-								</p>
+								<h3>Make better hiring decisions with real intelligence</h3>
+								<div className="w-full flex flex-col md:flex-row gap-6 mt-4">
+									{/* AI Applicant Analysis Card */}
+									<Card className="flex-1 min-w-[220px]" shadow="sm">
+										<CardBody className="flex flex-col items-start gap-3 p-6">
+											<BrainCircuitIcon />
+											<h3 className="text-xl font-semibold">
+												AI Applicant Analysis
+											</h3>
+											<p className="text-base text-foreground-600 dark:text-foreground-200">
+												Get detailed insights, match ratings, and summary
+												reports for every candidate.
+											</p>
+										</CardBody>
+									</Card>
+									{/* Natural Language Search Card */}
+									<Card className="flex-1 min-w-[220px]" shadow="sm">
+										<CardBody className="flex flex-col items-start gap-3 p-6">
+											<SearchIcon />
+											<h3 className="text-xl font-semibold">
+												Natural Language Search
+											</h3>
+											<p className="text-base text-foreground-600 dark:text-foreground-200">
+												Skip the filters. Just type "nurses with ICU experience
+												near Chennai" and get instant, accurate results.
+											</p>
+										</CardBody>
+									</Card>
+									{/* AI Assistant Card */}
+									<Card className="flex-1 min-w-[220px]" shadow="sm">
+										<CardBody className="flex flex-col items-start gap-3 p-6">
+											<BotIcon />
+											<h3 className="text-xl font-semibold">AI Assistant</h3>
+											<p className="text-base text-foreground-600 dark:text-foreground-200">
+												Your personal recruitment co-pilot to guide you through
+												every applicant's profile and status.
+											</p>
+										</CardBody>
+									</Card>
+								</div>
 							</div>
 							<div className="flex-1 flex justify-center md:justify-end">
 								<img
@@ -171,13 +205,22 @@ export default function LandingView() {
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
 								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
-									AI-Powered Clinical Insights
+									Built Specifically for Healthcare
 								</h2>
-								<p className="text-lg text-foreground-700 dark:text-foreground-200">
-									Every healthcare candidate profile comes with instant,
-									actionable AI insights—helping HR and medical leadership make
-									confident, data-driven hiring decisions in seconds, not hours.
-								</p>
+								<h3>Because your needs are different</h3>
+								<ul className="text-lg text-foreground-700 dark:text-foreground-200 space-y-3 list-disc list-inside">
+									<li>
+										Post Full-time, Part-time, and Locum positions with ease.
+									</li>
+									<li>
+										Search and sort candidates by location, distance, or
+										specialty.
+									</li>
+									<li>
+										Tailored tools to manage multiple departments or branches
+										under one account.
+									</li>
+								</ul>
 							</div>
 							<div className="flex-1 flex justify-center md:justify-end">
 								<img
@@ -200,14 +243,21 @@ export default function LandingView() {
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
 								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
-									Filter candidates stress-free using Natural Language
+									Your Own Branded Subdomain
 								</h2>
-								<p className="text-lg text-foreground-700 dark:text-foreground-200">
-									No more endless filters. Just type what you need—our
-									healthcare AI understands and finds the perfect doctors,
-									nurses, and specialists for your hospital or clinic,
-									instantly.
-								</p>
+								<h3>A professional home for your organization</h3>
+								<ul className="text-lg text-foreground-700 dark:text-foreground-200 space-y-3 list-disc list-inside">
+									<li>
+										Every organization gets its own unique domain: ✅ example:
+										yourhospital.hospitaljobs.in
+									</li>
+									<li>Customize your organization's profile.</li>
+									<li>Invite unlimited team members.</li>
+									<li>
+										Control access: promote admins, invite recruiters, and
+										manage permissions with ease
+									</li>
+								</ul>
 							</div>
 							<div className="flex-1 flex justify-center md:justify-start">
 								<img
@@ -230,14 +280,20 @@ export default function LandingView() {
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
 								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
-									Integrated AI Chat with Profiles
+									Security First. Peace of Mind Always.
 								</h2>
-								<p className="text-lg text-foreground-700 dark:text-foreground-200">
-									Ask anything about your healthcare candidates—instantly. Your
-									AI chat assistant delivers answers, clinical insights, and
-									summaries, right when you need them for your hospital or
-									clinic.
-								</p>
+								<h3>Data you can trust. Accounts you can control.</h3>
+								<ul className="text-lg text-foreground-700 dark:text-foreground-200 space-y-3 list-disc list-inside">
+									<li>
+										Two-factor authentication (2FA) and modern passkey support
+										keep your accounts protected with the latest security
+										standards
+									</li>
+									<li>
+										Secure authentication options including Google login for
+										seamless and trusted access to your platform
+									</li>
+								</ul>
 							</div>
 							<div className="flex-1 flex justify-center md:justify-end">
 								<img
