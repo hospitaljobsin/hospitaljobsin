@@ -538,7 +538,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 															field.onChange(value);
 														}
 													}}
-													step={10000}
+													step={1000}
 													isClearable
 												/>
 											);
@@ -568,7 +568,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 															field.onChange(value);
 														}
 													}}
-													step={10000}
+													step={1000}
 													isClearable
 												/>
 											);

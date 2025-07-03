@@ -415,7 +415,7 @@ export default function JobCreationForm({
 												}}
 												errorMessage={errors.minSalary?.message}
 												isInvalid={!!errors.minSalary}
-												step={10000}
+												step={1000}
 												isClearable
 											/>
 										</div>
@@ -445,7 +445,7 @@ export default function JobCreationForm({
 												}}
 												errorMessage={errors.maxSalary?.message}
 												isInvalid={!!errors.maxSalary}
-												step={10000}
+												step={1000}
 												isClearable
 											/>
 										</div>
