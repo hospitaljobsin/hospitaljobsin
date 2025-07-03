@@ -169,7 +169,6 @@ export default function JobApplyForm({
 					response.createJobApplication.__typename ===
 					"CreateJobApplicantSuccess"
 				) {
-					setShowDirectApplyModal(false);
 					router.push(links.jobDetail(data.organization.slug, data.slug));
 				} else {
 					addToast({
