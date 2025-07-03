@@ -299,6 +299,7 @@ resource "aws_lambda_function" "backend" {
       SERVER_REDIS_PORT                           = local.redis_port
       SERVER_REDIS_USERNAME                       = "default"
       SERVER_REDIS_SSL                            = "True"
+      SERVER_SQS_QUEUE_URL                        = aws_sqs_queue.this.url
 
       AWS_SECRETS_MANAGER_SECRET_ID = aws_secretsmanager_secret.backend.id
     }
@@ -372,6 +373,7 @@ resource "aws_lambda_function" "worker" {
       SERVER_REDIS_PORT                           = local.redis_port
       SERVER_REDIS_USERNAME                       = "default"
       SERVER_REDIS_SSL                            = "True"
+      SERVER_SQS_QUEUE_URL                        = aws_sqs_queue.this.url
 
       AWS_SECRETS_MANAGER_SECRET_ID = aws_secretsmanager_secret.backend.id
     }

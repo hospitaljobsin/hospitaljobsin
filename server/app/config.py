@@ -346,6 +346,8 @@ class AWSSettings(BaseSettings):
 
     s3_bucket_name: str
 
+    sqs_queue_url: str
+
     aws_endpoint_url: str | None = None
 
     aws_secret_access_key: SecretStr | None = None

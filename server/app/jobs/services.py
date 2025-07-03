@@ -8,11 +8,12 @@ from bson.errors import InvalidId
 from fastapi import Request
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
+from types_aiobotocore_sqs import SQSClient
 
 from app.accounts.documents import Account
 from app.accounts.exceptions import AccountProfileIncompleteError
 from app.base.models import GeoObject
-from app.config import AWSSettings
+from app.config import AppSettings, AWSSettings
 from app.core.constants import JobApplicantStatus
 from app.core.geocoding import BaseLocationService
 from app.jobs.agents.applicant_analysis import (
@@ -38,6 +39,7 @@ from app.jobs.exceptions import (
     OrganizationNotFoundError,
     SavedJobNotFoundError,
 )
+from app.jobs.models import JobApplicantAnalysisEventBody
 from app.jobs.repositories import (
     JobApplicantRepo,
     JobApplicationFormRepo,
@@ -490,7 +492,9 @@ class JobApplicantService:
         organization_member_service: OrganizationMemberService,
         job_applicant_analyzer_agent: JobApplicantAnalyzerAgent,
         s3_client: S3Client,
+        sqs_client: SQSClient,
         aws_settings: AWSSettings,
+        settings: AppSettings,
         job_applicant_analysis_service: JobApplicantAnalysisService,
     ) -> None:
         self._job_repo = job_repo
@@ -498,7 +502,9 @@ class JobApplicantService:
         self._job_applicant_repo = job_applicant_repo
         self._job_metric_repo = job_metric_repo
         self._s3_client = s3_client
+        self._sqs_client = sqs_client
         self._aws_settings = aws_settings
+        self._settings = settings
         self._job_applicant_analyzer_agent = job_applicant_analyzer_agent
         self._job_applicant_analysis_service = job_applicant_analysis_service
 
@@ -558,10 +564,19 @@ class JobApplicantService:
             applicant_fields=applicant_fields,
         )
         # --- AGENT INTEGRATION ---
-        await self._job_applicant_analysis_service.analyse_job_applicant(
-            job_application=job_application,
-            job=existing_job,
-        )
+        if self._settings.is_production:
+            await self._sqs_client.send_message(
+                QueueUrl=self._aws_settings.sqs_queue_url,
+                MessageBody=JobApplicantAnalysisEventBody(
+                    account_id=str(account.id),
+                    job_id=str(existing_job.id),
+                ).model_dump_json(),
+            )
+        else:
+            await self._job_applicant_analysis_service.analyse_job_applicant(
+                job_application=job_application,
+                job=existing_job,
+            )
         # --- END AGENT INTEGRATION ---
 
         # log the job application metric

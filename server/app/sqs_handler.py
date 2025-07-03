@@ -2,18 +2,29 @@ from aws_lambda_powertools.utilities.data_classes import SQSEvent, event_source
 from aws_lambda_powertools.utilities.parser import envelopes, event_parser
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from bson import ObjectId
-from pydantic import BaseModel
+from structlog import get_logger
 
+from app.config import AppSettings, get_settings
 from app.container import create_container
+from app.core.instrumentation import initialize_instrumentation
+from app.jobs.models import JobApplicantAnalysisEventBody
 from app.jobs.repositories import JobApplicantRepo
 from app.jobs.services import JobApplicantAnalysisService
+from app.logger import setup_logging
 
+settings = get_settings(AppSettings)
+
+initialize_instrumentation(settings=settings)
+
+# set up logging
+setup_logging(
+    human_readable=settings.debug,
+)
+
+# initialize container outside lambda handler to avoid re-initialization on each invocation
 container = create_container()
 
-
-class JobApplicantAnalysisEventBody(BaseModel):
-    account_id: str
-    job_id: str
+logger = get_logger(__name__)
 
 
 @event_source(data_class=SQSEvent)
@@ -33,7 +44,10 @@ async def lambda_handler(
         )
 
         if job_applicant is None:
-            # TODO: throw error here???
+            logger.warning(
+                "Job applicant not found while analysing job applicant",
+                extra={"account_id": record.account_id, "job_id": record.job_id},
+            )
             continue
 
         await job_applicant_analysis_service.analyse_job_applicant(

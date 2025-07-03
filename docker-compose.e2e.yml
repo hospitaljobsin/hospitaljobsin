@@ -76,6 +76,7 @@ services:
       SERVER_REDIS_HOST: "test-redis"
       SERVER_REDIS_PORT: 6379
       SERVER_REDIS_SSL: false
+      SERVER_SQS_QUEUE_URL: ""
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8000/health/"]
       interval: 10s
