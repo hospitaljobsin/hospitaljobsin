@@ -93,7 +93,10 @@ export default function OrganizationJobsController(
 			/>
 			<Select
 				label="Sort By"
-				className="bg-background w-full sm:w-sm sm:max-w-xs"
+				className="w-full sm:w-sm sm:max-w-xs"
+				classNames={{
+					trigger: "bg-background",
+				}}
 				aria-label="Sort by"
 				selectedKeys={props.sortBy ? [props.sortBy] : ["CREATED_AT"]}
 				onSelectionChange={handleSortByChange}

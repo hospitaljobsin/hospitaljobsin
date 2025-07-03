@@ -187,7 +187,10 @@ export default function ApplicantListController(
 				label="Status"
 				size="sm"
 				variant="bordered"
-				className="bg-background w-full sm:w-sm sm:max-w-xs"
+				className="w-full sm:w-sm sm:max-w-xs"
+				classNames={{
+					trigger: "bg-background",
+				}}
 				onSelectionChange={handleSelectionChange}
 				selectedKeys={props.status ? [props.status] : ["ALL"]}
 			>
@@ -199,7 +202,10 @@ export default function ApplicantListController(
 				label="Sort By"
 				size="sm"
 				variant="bordered"
-				className="w-full sm:w-sm sm:max-w-xs bg-background"
+				className="w-full sm:w-sm sm:max-w-xs"
+				classNames={{
+					trigger: "bg-background",
+				}}
 				onSelectionChange={handleSortByChange}
 				selectedKeys={props.sortBy ? [props.sortBy] : ["OVERALL_SCORE"]}
 			>
