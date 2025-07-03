@@ -490,6 +490,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 											}
 										}}
 										isClearable
+										onClear={() => {
+											field.onChange(null);
+										}}
 										hideStepper
 									/>
 								);
@@ -584,6 +587,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 													}}
 													step={1000}
 													isClearable
+													onClear={() => {
+														field.onChange(null);
+													}}
 												/>
 											);
 										}}
@@ -614,6 +620,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 													}}
 													step={1000}
 													isClearable
+													onClear={() => {
+														field.onChange(null);
+													}}
 												/>
 											);
 										}}
@@ -651,6 +660,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 														}
 													}}
 													isClearable
+													onClear={() => {
+														field.onChange(null);
+													}}
 												/>
 											);
 										}}
@@ -679,6 +691,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 														}
 													}}
 													isClearable
+													onClear={() => {
+														field.onChange(null);
+													}}
 												/>
 											);
 										}}

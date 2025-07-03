@@ -332,6 +332,9 @@ export default function JobCreationForm({
 								errorMessage={errors.vacancies?.message}
 								isInvalid={!!errors.vacancies}
 								isClearable
+								onClear={() => {
+									field.onChange(null);
+								}}
 								hideStepper
 							/>
 						)}
@@ -417,6 +420,9 @@ export default function JobCreationForm({
 												isInvalid={!!errors.minSalary}
 												step={1000}
 												isClearable
+												onClear={() => {
+													field.onChange(null);
+												}}
 											/>
 										</div>
 									)}
@@ -447,6 +453,9 @@ export default function JobCreationForm({
 												isInvalid={!!errors.maxSalary}
 												step={1000}
 												isClearable
+												onClear={() => {
+													field.onChange(null);
+												}}
 											/>
 										</div>
 									)}
@@ -484,6 +493,9 @@ export default function JobCreationForm({
 												errorMessage={errors.minExperience?.message}
 												isInvalid={!!errors.minExperience}
 												isClearable
+												onClear={() => {
+													field.onChange(null);
+												}}
 											/>
 										</div>
 									)}
@@ -512,6 +524,9 @@ export default function JobCreationForm({
 												errorMessage={errors.maxExperience?.message}
 												isInvalid={!!errors.maxExperience}
 												isClearable
+												onClear={() => {
+													field.onChange(null);
+												}}
 											/>
 										</div>
 									)}
