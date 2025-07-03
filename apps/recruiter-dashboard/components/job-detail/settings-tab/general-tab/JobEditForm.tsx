@@ -532,8 +532,8 @@ export default function JobEditForm({ rootQuery }: Props) {
 													}}
 													value={field.value as number | undefined}
 													onValueChange={(value) => {
-														if (Number.isNaN(value)) {
-															field.onChange(undefined);
+														if (Number.isNaN(value) || value === undefined) {
+															field.onChange(null);
 														} else {
 															field.onChange(value);
 														}
@@ -562,8 +562,8 @@ export default function JobEditForm({ rootQuery }: Props) {
 													}}
 													value={field.value as number | undefined}
 													onValueChange={(value) => {
-														if (Number.isNaN(value)) {
-															field.onChange(undefined);
+														if (Number.isNaN(value) || value === undefined) {
+															field.onChange(null);
 														} else {
 															field.onChange(value);
 														}
@@ -600,9 +600,8 @@ export default function JobEditForm({ rootQuery }: Props) {
 													}}
 													value={field.value as number | undefined}
 													onValueChange={(value) => {
-														console.log(value);
-														if (Number.isNaN(value)) {
-															field.onChange(undefined);
+														if (Number.isNaN(value) || value === undefined) {
+															field.onChange(null);
 														} else {
 															field.onChange(value);
 														}
@@ -629,8 +628,8 @@ export default function JobEditForm({ rootQuery }: Props) {
 													}}
 													value={field.value as number | undefined}
 													onValueChange={(value) => {
-														if (Number.isNaN(value)) {
-															field.onChange(undefined);
+														if (Number.isNaN(value) || value === undefined) {
+															field.onChange(null);
 														} else {
 															field.onChange(value);
 														}
