@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 import structlog
@@ -5,6 +6,7 @@ from asgi_correlation_id import correlation_id
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer
 from structlog.types import EventDict, Processor, WrappedLogger
+from structlog_sentry import SentryProcessor
 
 
 def add_correlation_id(
@@ -53,6 +55,7 @@ def build_shared_processors(*, human_readable: bool) -> list[Processor]:
         structlog.stdlib.PositionalArgumentsFormatter(),  # Add positional arguments
         structlog.processors.StackInfoRenderer(),  # Add stack information
         structlog.stdlib.ExtraAdder(),  # Add extra attributes
+        SentryProcessor(event_level=logging.ERROR),
     ]
 
     if not human_readable:
