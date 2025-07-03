@@ -127,10 +127,7 @@ export default function LocationAutocomplete({
 
 	const handleSelectionChange = (selectedKey: Key | null) => {
 		if (!selectedKey) {
-			if (onClear) {
-				onClear();
-			}
-
+			// Do nothing on blur or deselection
 			return;
 		}
 		const selected = suggestions.find((item) => item.placeId === selectedKey);
@@ -171,6 +168,7 @@ export default function LocationAutocomplete({
 				onSelectionChange={handleSelectionChange}
 				onKeyDown={preventFormSubmission}
 				isClearable
+				onClear={onClear}
 			>
 				{suggestions.map((suggestion) => (
 					<AutocompleteItem key={suggestion.placeId}>

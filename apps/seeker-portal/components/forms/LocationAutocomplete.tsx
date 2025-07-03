@@ -28,19 +28,19 @@ type SearchLocation = {
 };
 
 const SearchLocationsQuery = graphql`
-    query LocationAutocompleteQuery($searchTerm: String!) {
-        searchLocations(searchTerm: $searchTerm) {
-            locations {
-                __typename
-                displayName
-                placeId
+	query LocationAutocompleteQuery($searchTerm: String!) {
+		searchLocations(searchTerm: $searchTerm) {
+			locations {
+				__typename
+				displayName
+				placeId
 				coordinates {
 					latitude
 					longitude
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 `;
 
 // Separate component to handle data fetching using the query reference
@@ -127,10 +127,7 @@ export default function LocationAutocomplete({
 
 	const handleSelectionChange = (selectedKey: Key | null) => {
 		if (!selectedKey) {
-			if (onClear) {
-				onClear();
-			}
-
+			// Do nothing on blur or deselection
 			return;
 		}
 		const selected = suggestions.find((item) => item.placeId === selectedKey);
@@ -171,6 +168,7 @@ export default function LocationAutocomplete({
 				onSelectionChange={handleSelectionChange}
 				onKeyDown={preventFormSubmission}
 				isClearable
+				onClear={onClear}
 			>
 				{suggestions.map((suggestion) => (
 					<AutocompleteItem key={suggestion.placeId}>
