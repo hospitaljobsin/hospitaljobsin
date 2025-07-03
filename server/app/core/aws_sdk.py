@@ -5,6 +5,7 @@ import aioboto3
 from types_aiobotocore_location import LocationServiceClient
 from types_aiobotocore_s3 import S3Client
 from types_aiobotocore_ses import SESClient
+from types_aiobotocore_sqs import SQSClient
 
 from app.config import AWSSettings
 
@@ -46,3 +47,12 @@ async def create_location_service_client(
     """Create a location service client."""
     async with session.client("location") as location_client:
         yield location_client
+
+
+@contextlib.asynccontextmanager
+async def create_sqs_client(
+    session: aioboto3.Session,
+) -> AsyncGenerator[SQSClient]:
+    """Create an SQS client."""
+    async with session.client("sqs") as sqs_client:
+        yield sqs_client

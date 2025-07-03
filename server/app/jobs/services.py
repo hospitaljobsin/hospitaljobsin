@@ -9,7 +9,7 @@ from fastapi import Request
 from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
-from app.accounts.documents import Account, Profile
+from app.accounts.documents import Account
 from app.accounts.exceptions import AccountProfileIncompleteError
 from app.base.models import GeoObject
 from app.config import AWSSettings
@@ -465,13 +465,11 @@ class JobApplicantAnalysisService:
         self,
         job_application: JobApplicant,
         job: Job,
-        profile: Profile,
-        applicant_fields: list[ApplicantField],
     ) -> None:
         analysis: JobApplicantAnalysisOutput | None = None
         try:
             result = await self._job_applicant_analyzer_agent.run(
-                user_prompt=f"Job: {job!s}\nProfile: {profile!s}\nApplicant Fields: {[str(field) for field in applicant_fields]}"
+                user_prompt=f"Job: {job!s}\nProfile: {job_application.profile_snapshot!s}\nApplicant Fields: {[str(field) for field in job_application.applicant_fields]}"
             )
             analysis = result.output
         except Exception as e:
@@ -563,8 +561,6 @@ class JobApplicantService:
         await self._job_applicant_analysis_service.analyse_job_applicant(
             job_application=job_application,
             job=existing_job,
-            profile=account.profile,
-            applicant_fields=applicant_fields,
         )
         # --- END AGENT INTEGRATION ---
 

@@ -45,8 +45,6 @@ async def insert_missing_analysis():
         await analysis_service.analyse_job_applicant(
             job_application=job_applicant,
             job=job_applicant.job,
-            profile=job_applicant.account.profile,
-            applicant_fields=job_applicant.applicant_fields,
         )
 
 

@@ -103,6 +103,10 @@ class BaseProfile(BaseModel):
     professional_summary: str | None = None
     headline: str | None = None
 
+    def __str__(self) -> str:
+        """LLM friendly text representation of a job."""
+        return self.model_dump_json()
+
 
 # Main Job Seeker Profile Document
 # AKA Reusable Resume
