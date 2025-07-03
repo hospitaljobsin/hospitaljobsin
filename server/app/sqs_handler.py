@@ -7,9 +7,10 @@ from aws_lambda_powertools.utilities.typing import LambdaContext
 from bson import ObjectId
 from structlog import get_logger
 
-from app.config import AppSettings, get_settings
+from app.config import AppSettings, DatabaseSettings, get_settings
 from app.container import create_container
 from app.core.instrumentation import initialize_instrumentation
+from app.database import initialize_database
 from app.jobs.models import JobApplicantAnalysisEventBody
 from app.jobs.repositories import JobApplicantRepo
 from app.jobs.services import JobApplicantAnalysisService
@@ -28,6 +29,18 @@ setup_logging(
 container = create_container()
 
 logger = get_logger(__name__)
+
+
+async def initialize_handler():
+    database_settings = get_settings(DatabaseSettings)
+    await initialize_database(
+        database_url=str(database_settings.database_url),
+        default_database_name=database_settings.default_database_name,
+    )
+
+
+# ✅ run once per cold start
+asyncio.run(initialize_handler())
 
 
 @event_source(data_class=SQSEvent)
