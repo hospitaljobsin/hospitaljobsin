@@ -10,7 +10,7 @@ export default function LandingView() {
 			<LandingHeader />
 			{/* Hero Section */}
 			<div className="w-full bg-primary-400 text-primary-foreground pt-4 sm:pt-8">
-				<div className="max-w-7xl mx-auto px-4 sm:px-5 py-16 sm:py-24 flex flex-col md:flex-row items-center gap-8">
+				<div className="max-w-7xl mx-auto py-16 sm:py-24 flex flex-col md:flex-row items-center gap-8">
 					<div className="flex-1 flex flex-col items-start gap-6">
 						<h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
 							Streamline Your Healthcare Recruitment
@@ -66,96 +66,88 @@ export default function LandingView() {
 				</div>
 			</div>
 
+			{/* Credential Validation Feature Section */}
+			<section className="w-full bg-transparent py-16 sm:py-24 flex justify-center border-b border-background-200">
+				<motion.div
+					className="max-w-5xl w-full mx-auto"
+					initial={{ opacity: 0, y: 40 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, amount: 0.4 }}
+					transition={{ duration: 0.7, ease: "easeOut" }}
+				>
+					<div className="flex flex-col items-center gap-8 text-center bg-white dark:bg-background-800 rounded-3xl border border-background-200 py-12 px-6 sm:px-12">
+						<div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900 mb-2">
+							<svg
+								width="40"
+								height="40"
+								fill="none"
+								viewBox="0 0 40 40"
+								aria-hidden="true"
+							>
+								<circle
+									cx="20"
+									cy="20"
+									r="18"
+									stroke="#00a925"
+									strokeWidth="3"
+									fill="#e6f5e9"
+								/>
+								<path
+									d="M14 21l4 4 8-8"
+									stroke="#00a925"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								/>
+							</svg>
+						</div>
+						<h2 className="text-3xl sm:text-4xl font-bold text-green-900 dark:text-green-200 mb-2">
+							Verified Medical Credentials
+						</h2>
+						<p className="text-lg text-green-800 dark:text-green-100 max-w-2xl mx-auto opacity-90">
+							We validate credentials of medical professionals, allowing HR to
+							smoothly shortlist candidates from a pool of verified candidates.
+						</p>
+					</div>
+				</motion.div>
+			</section>
+
 			{/* Features Section */}
 			<section className="w-full bg-primary-100 dark:bg-background-300 py-16 sm:pt-24 border-b border-background-200">
-				<div className="w-full mx-auto px-4 sm:px-5 flex flex-col gap-12 ">
-					<h2 className="text-3xl sm:text-4xl font-bold text-center text-primary-700 dark:text-primary-300 mb-4">
-						Revolutionize Your Recruitment with AI
+				<div className="w-full mx-auto flex flex-col gap-12 ">
+					<h2 className="text-4xl sm:text-5xl font-extrabold text-center text-primary-700 dark:text-primary-300 mb-4 tracking-tight">
+						Revolutionize Healthcare Recruitment with AI
 					</h2>
+					<p className="text-lg text-center text-primary-600 dark:text-primary-200 max-w-2xl mx-auto opacity-90">
+						Find, attract, and hire the best doctors, nurses, and allied health
+						professionals with next-gen healthcare AI tools, beautiful
+						workflows, and instant clinical insights.
+					</p>
 				</div>
 			</section>
 			<section
 				id="features"
 				className="w-full bg-white dark:bg-background-300 pt-16 sm:pt-24 border-b border-background-200"
 			>
-				<div className="w-full mx-auto px-4 sm:px-5 flex flex-col gap-12 ">
+				<div className="w-full mx-auto flex flex-col gap-12 ">
 					{/* Deep AI Integration Section */}
 					<motion.section
-						className="w-full py-20 bg-background-50 dark:bg-background-900"
+						className="w-full py-20 bg-background-50 dark:bg-background-900 rounded-3xl border border-background-200"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
 						transition={{ duration: 0.7, ease: "easeOut" }}
 					>
-						<div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
-							{/* Custom Animated SVG */}
-							<div className="flex-1 flex justify-center md:justify-start">
-								<motion.svg
-									width="320"
-									height="220"
-									viewBox="0 0 320 220"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-									className="drop-shadow-xl"
-									initial={{ rotate: -8, scale: 0.95 }}
-									animate={{ rotate: [-8, 8, -8], scale: [0.95, 1.05, 0.95] }}
-									transition={{
-										duration: 6,
-										repeat: Number.POSITIVE_INFINITY,
-										ease: "easeInOut",
-									}}
-								>
-									<title>3D AI Dashboard Animation</title>
-									<defs>
-										<radialGradient id="ai1" cx="50%" cy="50%" r="50%">
-											<stop offset="0%" stopColor="#00a925" stopOpacity="0.7" />
-											<stop
-												offset="100%"
-												stopColor="#4db866"
-												stopOpacity="0.2"
-											/>
-										</radialGradient>
-									</defs>
-									<ellipse cx="160" cy="200" rx="120" ry="18" fill="#9ad7a7" />
-									<g filter="url(#blur1)">
-										<circle cx="160" cy="110" r="60" fill="url(#ai1)" />
-									</g>
-									<rect
-										x="90"
-										y="60"
-										width="140"
-										height="60"
-										rx="28"
-										fill="#e6f5e9"
-										fillOpacity="0.7"
-									/>
-									<rect
-										x="120"
-										y="80"
-										width="80"
-										height="20"
-										rx="10"
-										fill="#00a925"
-										fillOpacity="0.8"
-									/>
-									<animateTransform
-										attributeName="transform"
-										type="skewY"
-										values="-2;2;-2"
-										dur="4s"
-										repeatCount="indefinite"
-									/>
-								</motion.svg>
-							</div>
-							{/* Text */}
+						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
 								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
-									Deeply Integrated AI
+									Healthcare AI, Deeply Integrated
 								</h2>
 								<p className="text-lg text-foreground-700 dark:text-foreground-200">
-									Our dashboard is powered by advanced AI, automating repetitive
-									tasks and surfacing the most important information—so you can
-									focus on what matters: hiring the best talent.
+									Our dashboard is powered by advanced healthcare AI, automating
+									repetitive HR tasks and surfacing the most important clinical
+									and credential information—so you can focus on hiring the best
+									medical talent for your hospital or clinic.
 								</p>
 								<Button
 									variant="solid"
@@ -165,97 +157,36 @@ export default function LandingView() {
 									href={links.createOrganization}
 									className="font-medium mt-2"
 								>
-									Try AI Dashboard
+									Try Healthcare AI Dashboard
 								</Button>
+							</div>
+							<div className="flex-1 flex justify-center md:justify-end">
+								<img
+									src="/images/hero-ai-hiring.jpg"
+									alt="AI Dashboard"
+									className="rounded-2xl shadow-2xl w-full max-w-md object-cover"
+								/>
 							</div>
 						</div>
 					</motion.section>
 
 					{/* AI-Powered Insights Section */}
 					<motion.section
-						className="w-full py-20 bg-primary-50 dark:bg-primary-900"
+						className="w-full py-20 bg-primary-50 dark:bg-primary-900 rounded-3xl border border-background-200"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
 						transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
 					>
-						<div className="max-w-6xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
-							{/* Custom Animated SVG */}
-							<div className="flex-1 flex justify-center md:justify-end">
-								<motion.svg
-									width="320"
-									height="220"
-									viewBox="0 0 320 220"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-									className="drop-shadow-xl"
-									initial={{ scale: 0.92 }}
-									animate={{ scale: [0.92, 1.08, 0.92] }}
-									transition={{
-										duration: 7,
-										repeat: Number.POSITIVE_INFINITY,
-										ease: "easeInOut",
-									}}
-								>
-									<title>3D AI Insights Animation</title>
-									<defs>
-										<linearGradient id="insight1" x1="0" y1="0" x2="1" y2="1">
-											<stop offset="0%" stopColor="#00a925" stopOpacity="0.7" />
-											<stop
-												offset="100%"
-												stopColor="#4db866"
-												stopOpacity="0.2"
-											/>
-										</linearGradient>
-									</defs>
-									<ellipse cx="160" cy="200" rx="120" ry="18" fill="#9ad7a7" />
-									<rect
-										x="80"
-										y="60"
-										width="160"
-										height="80"
-										rx="32"
-										fill="url(#insight1)"
-									/>
-									<circle
-										cx="160"
-										cy="100"
-										r="36"
-										fill="#e6f5e9"
-										fillOpacity="0.7"
-									/>
-									<rect
-										x="130"
-										y="90"
-										width="60"
-										height="20"
-										rx="8"
-										fill="#00a925"
-									/>
-									<motion.circle
-										cx="160"
-										cy="100"
-										r="12"
-										fill="#4db866"
-										animate={{ cy: [100, 120, 100] }}
-										transition={{
-											duration: 2.5,
-											repeat: Number.POSITIVE_INFINITY,
-											repeatType: "reverse",
-											ease: "easeInOut",
-										}}
-									/>
-								</motion.svg>
-							</div>
-							{/* Text */}
+						<div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
 								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
-									AI-Powered Actionable Insights
+									AI-Powered Clinical Insights
 								</h2>
 								<p className="text-lg text-foreground-700 dark:text-foreground-200">
-									Every applicant profile comes with instant, actionable AI
-									insights—helping HR make confident, data-driven decisions in
-									seconds, not hours.
+									Every healthcare candidate profile comes with instant,
+									actionable AI insights—helping HR and medical leadership make
+									confident, data-driven hiring decisions in seconds, not hours.
 								</p>
 								<Button
 									variant="solid"
@@ -265,92 +196,37 @@ export default function LandingView() {
 									href={links.createOrganization}
 									className="font-medium mt-2"
 								>
-									See AI Insights
+									See Healthcare AI Insights
 								</Button>
+							</div>
+							<div className="flex-1 flex justify-center md:justify-end">
+								<img
+									src="/images/hero-insights.jpg"
+									alt="AI Insights"
+									className="rounded-2xl shadow-2xl w-full max-w-md object-cover"
+								/>
 							</div>
 						</div>
 					</motion.section>
 
 					{/* Natural Language Search Section */}
 					<motion.section
-						className="w-full py-20 bg-background-100 dark:bg-background-800"
+						className="w-full py-20 bg-background-100 dark:bg-background-800 rounded-3xl border border-background-200"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
 						transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
 					>
-						<div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
-							{/* Custom Animated SVG */}
-							<div className="flex-1 flex justify-center md:justify-start">
-								<motion.svg
-									width="320"
-									height="220"
-									viewBox="0 0 320 220"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-									className="drop-shadow-xl"
-									initial={{ x: 0 }}
-									animate={{ x: [0, 12, -12, 0] }}
-									transition={{
-										duration: 8,
-										repeat: Number.POSITIVE_INFINITY,
-										ease: "easeInOut",
-									}}
-								>
-									<title>3D Natural Language Search Animation</title>
-									<defs>
-										<radialGradient id="search1" cx="50%" cy="50%" r="50%">
-											<stop offset="0%" stopColor="#00a925" stopOpacity="0.5" />
-											<stop
-												offset="100%"
-												stopColor="#4db866"
-												stopOpacity="0.1"
-											/>
-										</radialGradient>
-									</defs>
-									<ellipse cx="160" cy="200" rx="120" ry="18" fill="#9ad7a7" />
-									<rect
-										x="90"
-										y="70"
-										width="140"
-										height="60"
-										rx="24"
-										fill="#e6f5e9"
-										fillOpacity="0.7"
-									/>
-									<rect
-										x="110"
-										y="90"
-										width="100"
-										height="20"
-										rx="8"
-										fill="#00a925"
-										fillOpacity="0.8"
-									/>
-									<circle cx="160" cy="110" r="40" fill="url(#search1)" />
-									<motion.circle
-										cx="160"
-										cy="110"
-										r="14"
-										fill="#00a925"
-										animate={{ r: [14, 22, 14] }}
-										transition={{
-											duration: 2.8,
-											repeat: Number.POSITIVE_INFINITY,
-											repeatType: "reverse",
-											ease: "easeInOut",
-										}}
-									/>
-								</motion.svg>
-							</div>
-							{/* Text */}
+						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
 								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
-									AI Natural Language Search
+									AI Natural Language Search for Healthcare
 								</h2>
 								<p className="text-lg text-foreground-700 dark:text-foreground-200">
-									No more endless filters. Just type what you need—our AI
-									understands and finds the perfect candidates, instantly.
+									No more endless filters. Just type what you need—our
+									healthcare AI understands and finds the perfect doctors,
+									nurses, and specialists for your hospital or clinic,
+									instantly.
 								</p>
 								<Button
 									variant="solid"
@@ -360,93 +236,37 @@ export default function LandingView() {
 									href={links.createOrganization}
 									className="font-medium mt-2"
 								>
-									Try AI Search
+									Try Healthcare AI Search
 								</Button>
+							</div>
+							<div className="flex-1 flex justify-center md:justify-start">
+								<img
+									src="/images/hero-candidate-search.jpg"
+									alt="AI Search"
+									className="rounded-2xl shadow-2xl w-full max-w-md object-cover"
+								/>
 							</div>
 						</div>
 					</motion.section>
 
 					{/* AI Chat Assistant Section */}
 					<motion.section
-						className="w-full py-20 bg-primary-100 dark:bg-primary-800"
+						className="w-full py-20 bg-primary-100 dark:bg-primary-800 rounded-3xl border border-background-200"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
 						transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
 					>
-						<div className="max-w-6xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
-							{/* Custom Animated SVG */}
-							<div className="flex-1 flex justify-center md:justify-end">
-								<motion.svg
-									width="320"
-									height="220"
-									viewBox="0 0 320 220"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-									className="drop-shadow-xl"
-									initial={{ scale: 1, rotate: 0 }}
-									animate={{ scale: [1, 1.08, 1], rotate: [0, 6, -6, 0] }}
-									transition={{
-										duration: 7,
-										repeat: Number.POSITIVE_INFINITY,
-										ease: "easeInOut",
-									}}
-								>
-									<title>3D AI Chat Assistant Animation</title>
-									<defs>
-										<radialGradient id="chat1" cx="50%" cy="50%" r="50%">
-											<stop offset="0%" stopColor="#00a925" stopOpacity="0.6" />
-											<stop
-												offset="100%"
-												stopColor="#4db866"
-												stopOpacity="0.1"
-											/>
-										</radialGradient>
-									</defs>
-									<ellipse cx="160" cy="200" rx="120" ry="18" fill="#9ad7a7" />
-									<rect
-										x="100"
-										y="80"
-										width="120"
-										height="60"
-										rx="20"
-										fill="#e6f5e9"
-										fillOpacity="0.7"
-									/>
-									<rect
-										x="120"
-										y="100"
-										width="80"
-										height="20"
-										rx="8"
-										fill="#00a925"
-										fillOpacity="0.8"
-									/>
-									<circle cx="160" cy="110" r="36" fill="url(#chat1)" />
-									<motion.circle
-										cx="160"
-										cy="110"
-										r="12"
-										fill="#00a925"
-										animate={{ cy: [110, 130, 110] }}
-										transition={{
-											duration: 2.2,
-											repeat: Number.POSITIVE_INFINITY,
-											repeatType: "reverse",
-											ease: "easeInOut",
-										}}
-									/>
-								</motion.svg>
-							</div>
-							{/* Text */}
+						<div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
 								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
-									AI Chat Assistant
+									Healthcare AI Chat Assistant
 								</h2>
 								<p className="text-lg text-foreground-700 dark:text-foreground-200">
-									Ask anything about your applicants—instantly. Your AI chat
-									assistant delivers answers, insights, and summaries, right
-									when you need them.
+									Ask anything about your healthcare candidates—instantly. Your
+									AI chat assistant delivers answers, clinical insights, and
+									summaries, right when you need them for your hospital or
+									clinic.
 								</p>
 								<Button
 									variant="solid"
@@ -456,8 +276,15 @@ export default function LandingView() {
 									href={links.createOrganization}
 									className="font-medium mt-2"
 								>
-									Chat with AI
+									Chat with Healthcare AI
 								</Button>
+							</div>
+							<div className="flex-1 flex justify-center md:justify-end">
+								<img
+									src="/images/hero-collaboration.jpg"
+									alt="AI Chat Assistant"
+									className="rounded-2xl shadow-2xl w-full max-w-md object-cover"
+								/>
 							</div>
 						</div>
 					</motion.section>
@@ -466,7 +293,7 @@ export default function LandingView() {
 
 			{/* New: Healthcare Network Feature Section */}
 			<section className="w-full bg-white py-16 sm:py-24 flex justify-center">
-				<div className="max-w-5xl w-full mx-auto px-4 sm:px-5 flex flex-col items-center gap-8 text-center">
+				<div className="max-w-5xl w-full mx-auto flex flex-col items-center gap-8 text-center">
 					<div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary-100 dark:bg-background-600 mb-2">
 						<svg
 							width="40"
@@ -501,8 +328,8 @@ export default function LandingView() {
 				</div>
 			</section>
 
-			<section className="w-full bg-background-400 rounded-xl p-8 sm:p-12">
-				<div className="mx-auto max-w-7xl flex items-start justify-between gap-8 px-4">
+			<section className="w-full bg-background-400 rounded-xl sm:p-12">
+				<div className="mx-auto max-w-7xl flex items-start justify-between gap-8">
 					<div className="w-52 h-52 hidden sm:block">
 						<img
 							src="/images/getting-started-image.png"
