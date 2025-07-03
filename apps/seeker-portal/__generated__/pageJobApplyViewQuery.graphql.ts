@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<bda68ca6d1239b4e4a639ce4907a10ea>>
- * @relayHash 92a9a7252e440959f1425f865033ad83
+ * @generated SignedSource<<00d173ea3f21b14dfea6628d4cf7689e>>
+ * @relayHash a1a5bb578d0c28f01cf56d415a923a27
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 92a9a7252e440959f1425f865033ad83
+// @relayRequestID a1a5bb578d0c28f01cf56d415a923a27
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -461,6 +461,13 @@ return {
                         "kind": "ScalarField",
                         "name": "createdAt",
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "vacancies",
+                        "storageKey": null
                       }
                     ],
                     "type": "Job",
@@ -481,7 +488,7 @@ return {
     ]
   },
   "params": {
-    "id": "92a9a7252e440959f1425f865033ad83",
+    "id": "a1a5bb578d0c28f01cf56d415a923a27",
     "metadata": {},
     "name": "pageJobApplyViewQuery",
     "operationKind": "query",

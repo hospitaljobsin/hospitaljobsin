@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<d5a4e496a907ef2d8e30841a4c4efe5e>>
- * @relayHash b70d0b2f87c2d4c3ad5b9a7111bcc411
+ * @generated SignedSource<<65bc56b632ff44eddba3b4d2ac676311>>
+ * @relayHash 9c44fb435c4417ad69aa855f872460ea
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b70d0b2f87c2d4c3ad5b9a7111bcc411
+// @relayRequestID 9c44fb435c4417ad69aa855f872460ea
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -311,6 +311,13 @@ return {
                         "kind": "ScalarField",
                         "name": "externalApplicationUrl",
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "vacancies",
+                        "storageKey": null
                       }
                     ],
                     "storageKey": null
@@ -328,7 +335,7 @@ return {
     ]
   },
   "params": {
-    "id": "b70d0b2f87c2d4c3ad5b9a7111bcc411",
+    "id": "9c44fb435c4417ad69aa855f872460ea",
     "metadata": {},
     "name": "JobControlsSaveMutation",
     "operationKind": "mutation",

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<07ca7cc1920e45a22221a096bf52c47b>>
+ * @generated SignedSource<<1b31c6986f6ba8161e9d5a238b885379>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -36,6 +36,7 @@ export type JobDetailsInternalFragment$data = {
   readonly slug: string;
   readonly title: string;
   readonly type: JobType | null | undefined;
+  readonly vacancies: number | null | undefined;
   readonly workMode: WorkMode | null | undefined;
   readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment">;
   readonly " $fragmentType": "JobDetailsInternalFragment";
@@ -179,6 +180,13 @@ return {
       "storageKey": null
     },
     {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "vacancies",
+      "storageKey": null
+    },
+    {
       "kind": "RequiredField",
       "field": {
         "alias": null,
@@ -215,6 +223,6 @@ return {
 };
 })();
 
-(node as any).hash = "e0102f557b172be2147a3e6959be7ecf";
+(node as any).hash = "95f7c223ba40911ee400ad53757d0f98";
 
 export default node;

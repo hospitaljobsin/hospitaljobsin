@@ -26,6 +26,7 @@ import {
 	Globe,
 	IndianRupee,
 	MapPin,
+	Users,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -82,6 +83,7 @@ const JobDetailsInternalFragment = graphql`
     createdAt
 	isApplied
 	externalApplicationUrl
+	vacancies
     organization @required(action: THROW) {
       slug
       name
@@ -315,6 +317,15 @@ export default function JobDetails({
 						{data.workMode && (
 							<div className="flex items-center gap-2 text-sm sm:text-base">
 								<Globe size={16} /> {workMode(data.workMode)}
+							</div>
+						)}
+						{typeof data.vacancies === "number" && (
+							<div className="flex items-center gap-2 text-sm sm:text-base font-medium text-foreground-500">
+								<Users size={16} />
+								<span>
+									{data.vacancies}{" "}
+									{data.vacancies === 1 ? "Vacancy" : "Vacancies"}
+								</span>
 							</div>
 						)}
 					</div>

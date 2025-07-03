@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0d61d0f2e46cf49da6e53c51cde9a868>>
- * @relayHash 216a14f7b8874bd499ee730e546dbd0e
+ * @generated SignedSource<<32e0f98fd39468162d338b3fc43aa3f9>>
+ * @relayHash 4d03ee584a9d7d9e9bef725045b422cb
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 216a14f7b8874bd499ee730e546dbd0e
+// @relayRequestID 4d03ee584a9d7d9e9bef725045b422cb
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -365,6 +365,13 @@ return {
                       },
                       {
                         "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "vacancies",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
                         "args": (v26/*: any*/),
                         "concreteType": "JobConnection",
                         "kind": "LinkedField",
@@ -531,7 +538,7 @@ return {
     ]
   },
   "params": {
-    "id": "216a14f7b8874bd499ee730e546dbd0e",
+    "id": "4d03ee584a9d7d9e9bef725045b422cb",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",

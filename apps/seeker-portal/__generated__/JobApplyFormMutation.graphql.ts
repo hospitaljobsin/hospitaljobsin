@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<08c48e6202a17aa8ab418d653fc52aa1>>
- * @relayHash da284545b53b11bf7bdc6143bfefe1ff
+ * @generated SignedSource<<d22c6d05a1ee62fb895fdb8ff786d137>>
+ * @relayHash 274c85c0a122a5f6bf94ab3115b24dc7
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID da284545b53b11bf7bdc6143bfefe1ff
+// @relayRequestID 274c85c0a122a5f6bf94ab3115b24dc7
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -346,6 +346,13 @@ return {
                         "kind": "ScalarField",
                         "name": "externalApplicationUrl",
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "vacancies",
+                        "storageKey": null
                       }
                     ],
                     "storageKey": null
@@ -364,7 +371,7 @@ return {
     ]
   },
   "params": {
-    "id": "da284545b53b11bf7bdc6143bfefe1ff",
+    "id": "274c85c0a122a5f6bf94ab3115b24dc7",
     "metadata": {},
     "name": "JobApplyFormMutation",
     "operationKind": "mutation",

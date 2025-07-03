@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<bd4538c15e03de87c507a7caf188f5e3>>
- * @relayHash 82db27d8f0bd17d99db618f32ab2682d
+ * @generated SignedSource<<f47b581b122f723336b84cf0d4fb4412>>
+ * @relayHash 7c0bc7a23c25f5b6480afc586c893d65
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 82db27d8f0bd17d99db618f32ab2682d
+// @relayRequestID 7c0bc7a23c25f5b6480afc586c893d65
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -311,6 +311,13 @@ return {
                         "kind": "ScalarField",
                         "name": "externalApplicationUrl",
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "vacancies",
+                        "storageKey": null
                       }
                     ],
                     "storageKey": null
@@ -328,7 +335,7 @@ return {
     ]
   },
   "params": {
-    "id": "82db27d8f0bd17d99db618f32ab2682d",
+    "id": "7c0bc7a23c25f5b6480afc586c893d65",
     "metadata": {},
     "name": "JobControlsUnsaveMutation",
     "operationKind": "mutation",
