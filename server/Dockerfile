@@ -154,7 +154,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 
 # Install the AWS Lambda Runtime Interface Client
-RUN uv pip install awslambdaric
+RUN uv pip install awslambdaric --system
 
 
 # Set environment variables for Python
