@@ -74,6 +74,8 @@ RESERVED_ORGANIZATION_NAMES = [
     "settings",
     "accounts",
     "legal",
+    "blog",
+    "docs",
 ]
 
 
