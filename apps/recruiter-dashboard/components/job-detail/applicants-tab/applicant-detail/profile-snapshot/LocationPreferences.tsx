@@ -48,9 +48,9 @@ export default function LocationPreferences({ rootQuery }: Props) {
 		analysis: LocationPreferencesFragment$data["analysis"]["analysedFields"],
 	) {
 		const score =
-			analysis.locationsOpenToWork.score +
-			analysis.openToRelocationAnywhere.score +
-			analysis.address.score;
+			(analysis.locationsOpenToWork?.score ?? 0) +
+			(analysis.openToRelocationAnywhere?.score ?? 0) +
+			(analysis.address?.score ?? 0);
 		return Math.round((score / 3) * 100 * 10) / 10;
 	}
 

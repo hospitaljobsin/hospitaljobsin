@@ -70,7 +70,9 @@ export default function AboutMe({ rootQuery }: Props) {
 	function calculateScore(
 		analysis: AboutMeFragment$data["analysis"]["analysedFields"],
 	) {
-		const score = analysis.professionalSummary.score + analysis.headline.score;
+		const score =
+			(analysis.professionalSummary?.score ?? 0) +
+			(analysis.headline?.score ?? 0);
 		return Math.round((score / 2) * 100 * 10) / 10;
 	}
 

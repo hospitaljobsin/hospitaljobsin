@@ -64,11 +64,12 @@ export default function PersonalDetails({ rootQuery }: Props) {
 		analysis: PersonalDetailsFragment$data["analysis"]["analysedFields"],
 	) {
 		const score =
-			analysis.gender.score +
-			analysis.dateOfBirth.score +
-			analysis.maritalStatus.score +
-			analysis.category.score +
-			analysis.address.score;
+			(analysis.gender?.score ?? 0) +
+			(analysis.dateOfBirth?.score ?? 0) +
+			(analysis.maritalStatus?.score ?? 0) +
+			(analysis.category?.score ?? 0) +
+			(analysis.address?.score ?? 0);
+		0;
 		return Math.round((score / 5) * 100 * 10) / 10;
 	}
 
