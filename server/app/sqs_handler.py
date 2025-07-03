@@ -34,7 +34,7 @@ logger = get_logger(__name__)
 @event_parser(model=JobApplicantAnalysisEventBody, envelope=envelopes.SqsEnvelope)
 def lambda_handler(
     event: list[JobApplicantAnalysisEventBody], context: LambdaContext
-) -> dict:
+) -> str:
     """Lambda handler for the job applicant analysis event."""
     return asyncio.run(process_job_applicant_analysis_event(event))
 
