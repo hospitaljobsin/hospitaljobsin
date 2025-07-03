@@ -13,6 +13,7 @@ import {
 	CardHeader,
 	DatePicker,
 	Input,
+	Kbd,
 	NumberInput,
 	Radio,
 	RadioGroup,
@@ -297,7 +298,18 @@ export default function JobCreationForm({
 						delimiters={[",", "Enter"]}
 						control={control}
 						chipProps={{ variant: "flat" }}
-						inputProps={{ placeholder: "Enter skills..." }}
+						inputProps={{
+							placeholder: "Enter skills...",
+							description: (
+								<p className="mt-2">
+									Separate skills with commas or Enter{" "}
+									<Kbd
+										keys={["enter"]}
+										classNames={{ base: "p-0 px-2 shadow-none" }}
+									/>
+								</p>
+							),
+						}}
 					/>
 					<Controller
 						control={control}
