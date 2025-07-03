@@ -1,7 +1,7 @@
 ARG PYTHON_BASE=3.13-slim
 
 # development stage
-FROM python:$PYTHON_BASE AS development
+FROM python:$PYTHON_BASE AS development-server
 
 # Install curl
 RUN apt-get update && \
@@ -61,7 +61,7 @@ RUN curl $(aws lambda get-layer-version-by-arn --arn arn:aws:lambda:us-east-1:17
 RUN unzip layer.zip -d /opt && \
     rm layer.zip
 
-FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production
+FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production-server
 
 RUN apt-get update && \
     apt-get install -y build-essential git && \
@@ -115,3 +115,49 @@ ENV PYTHONPATH="/var/task:$PYTHONPATH"
 
 # Set the Lambda handler
 CMD ["python", "scripts/run_server.py"]
+
+
+FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS sqs-handler
+
+RUN apt-get update && \
+    apt-get install -y build-essential git && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+
+COPY --from=layer-build /opt /opt
+
+
+ENV PYTHONUNBUFFERED=1
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+ENV UV_CACHE_DIR=/tmp/uv-cache
+
+# Set the working directory
+WORKDIR /var/task
+
+# Install dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv export --format=requirements-txt --frozen -o requirements.txt && \
+    uv pip install -r requirements.txt --system && \
+    rm requirements.txt
+
+# Copy the application files
+COPY . .
+
+# Sync the project
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen
+
+
+# Set environment variables for Python
+# FIXME: setup venv correctly for lambda
+ENV PYTHONPATH="/var/task:$PYTHONPATH"
+# ENV PATH="/var/task/.venv/bin:$PATH"
+
+
+# Set the Lambda handler
+CMD ["python", "app.sqs_handler.lambda_handler"]

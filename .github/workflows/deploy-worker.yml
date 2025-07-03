@@ -1,4 +1,4 @@
-name: Deploy Backend
+name: Deploy Worker
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'server/**'
-      - '.github/workflows/deploy-backend.yml'
+      - '.github/workflows/deploy-worker.yml'
 
 concurrency:
   group: ${{ github.workflow }}  # Ensures only one run of this workflow at a time
@@ -38,11 +38,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYMENT_AWS_SECRET_ACCESS_KEY }}
         with:
           context: ./server
-          target: production-server
+          target: sqs-handler
           push: true
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_BACKEND_IMAGE_NAME }}:latest
-            ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_BACKEND_IMAGE_NAME }}:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_WORKER_IMAGE_NAME }}:latest
+            ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_WORKER_IMAGE_NAME }}:${{ github.sha }}
           build-args: |
             AWS_DEFAULT_REGION=${{ env.AWS_DEFAULT_REGION }}
             AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
@@ -51,9 +51,9 @@ jobs:
       - name: Update AWS Lambda function
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_NAME: ${{ vars.AWS_BACKEND_IMAGE_NAME }}
+          IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
           IMAGE_TAG: ${{ github.sha }}
-        run: aws lambda update-function-code --function-name ${{ vars.AWS_BACKEND_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+        run: aws lambda update-function-code --function-name ${{ vars.AWS_WORKER_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
 
 
 

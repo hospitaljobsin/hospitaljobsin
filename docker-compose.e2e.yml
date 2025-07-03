@@ -34,7 +34,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-      target: development
+      target: development-server
     ports:
       - "8000:8000"
     environment:
