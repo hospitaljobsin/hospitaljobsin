@@ -85,6 +85,16 @@ resource "aws_iam_policy" "lambda_custom_policy" {
           # "${aws_secretsmanager_secret.backend.arn}/*"
           "*"
         ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "sqs:SendMessage"
+        ],
+        Resource = [
+          aws_sqs_queue.this.arn,
+          "${aws_sqs_queue.this.arn}/*"
+        ]
       }
     ]
   })
