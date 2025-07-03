@@ -31,6 +31,13 @@ type Props = {
 	rootQuery: LocationPreferencesFragment$key;
 };
 
+type AnalysedFieldsType = NonNullable<
+	Extract<
+		LocationPreferencesFragment$data["analysis"],
+		{ __typename: "JobApplicantAnalysis" }
+	>
+>["analysedFields"];
+
 export default function LocationPreferences({ rootQuery }: Props) {
 	const query = useFragment(LocationPreferencesFragment, rootQuery);
 	const data = query.profileSnapshot;
@@ -44,9 +51,7 @@ export default function LocationPreferences({ rootQuery }: Props) {
 		value: data,
 	});
 
-	function calculateScore(
-		analysis: LocationPreferencesFragment$data["analysis"]["analysedFields"],
-	) {
+	function calculateScore(analysis: AnalysedFieldsType) {
 		const score =
 			(analysis.locationsOpenToWork?.score ?? 0) +
 			(analysis.openToRelocationAnywhere?.score ?? 0) +

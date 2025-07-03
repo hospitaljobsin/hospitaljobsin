@@ -47,6 +47,13 @@ type Props = {
 	rootQuery: PersonalDetailsFragment$key;
 };
 
+type AnalysedFieldsType = NonNullable<
+	Extract<
+		PersonalDetailsFragment$data["analysis"],
+		{ __typename: "JobApplicantAnalysis" }
+	>
+>["analysedFields"];
+
 export default function PersonalDetails({ rootQuery }: Props) {
 	const query = useFragment(PersonalDetailsFragment, rootQuery);
 	const data = query.profileSnapshot;
@@ -60,9 +67,7 @@ export default function PersonalDetails({ rootQuery }: Props) {
 		value: data,
 	});
 
-	function calculateScore(
-		analysis: PersonalDetailsFragment$data["analysis"]["analysedFields"],
-	) {
+	function calculateScore(analysis: AnalysedFieldsType) {
 		const score =
 			(analysis.gender?.score ?? 0) +
 			(analysis.dateOfBirth?.score ?? 0) +
