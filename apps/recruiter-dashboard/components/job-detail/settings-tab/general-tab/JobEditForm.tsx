@@ -184,6 +184,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 		control,
 		setError,
 		reset,
+		setValue,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -483,7 +484,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 										value={field.value as number | undefined}
 										onValueChange={(value) => {
 											if (Number.isNaN(value)) {
-												field.onChange(undefined);
+												field.onChange(null);
 											} else {
 												field.onChange(value);
 											}

@@ -324,7 +324,7 @@ export default function JobCreationForm({
 								value={field.value as number | undefined}
 								onValueChange={(value) => {
 									if (Number.isNaN(value)) {
-										field.onChange(undefined);
+										field.onChange(null);
 									} else {
 										field.onChange(value);
 									}

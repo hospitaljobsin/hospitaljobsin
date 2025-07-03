@@ -1,6 +1,7 @@
 import type { UpdateOrganizationFormFragment$key } from "@/__generated__/UpdateOrganizationFormFragment.graphql";
 import type { UpdateOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql";
 import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from "@/__generated__/UpdateOrganizationFormMutation.graphql";
+import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next";
@@ -238,6 +239,11 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 										placeholder="Add slug"
 										errorMessage={errors.slug?.message}
 										isInvalid={!!errors.slug}
+										endContent={
+											<span className="text-default-400 text-md">
+												.{env.NEXT_PUBLIC_ROOT_DOMAIN}
+											</span>
+										}
 									/>
 								)}
 							/>
