@@ -1,3 +1,5 @@
+import asyncio
+
 from aws_lambda_powertools.utilities.data_classes import SQSEvent, event_source
 from aws_lambda_powertools.utilities.parser import envelopes, event_parser
 from aws_lambda_powertools.utilities.typing import LambdaContext
@@ -29,10 +31,17 @@ logger = get_logger(__name__)
 
 @event_source(data_class=SQSEvent)
 @event_parser(model=JobApplicantAnalysisEventBody, envelope=envelopes.SqsEnvelope)
-async def lambda_handler(
+def lambda_handler(
     event: list[JobApplicantAnalysisEventBody], context: LambdaContext
 ) -> dict:
     """Lambda handler for the job applicant analysis event."""
+    return asyncio.run(process_job_applicant_analysis_event(event))
+
+
+async def process_job_applicant_analysis_event(
+    event: list[JobApplicantAnalysisEventBody],
+) -> dict:
+    """Process the job applicant analysis event."""
     async with container.context() as ctx:
         job_applicant_analysis_service = await ctx.resolve(JobApplicantAnalysisService)
         job_applicant_repo = await ctx.resolve(JobApplicantRepo)
