@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 from aws_lambda_powertools.utilities.data_classes import SQSEvent, event_source
 from aws_lambda_powertools.utilities.parser import envelopes, event_parser
@@ -40,7 +41,7 @@ def lambda_handler(
 
 async def process_job_applicant_analysis_event(
     event: list[JobApplicantAnalysisEventBody],
-) -> dict:
+) -> str:
     """Process the job applicant analysis event."""
     async with container.context() as ctx:
         job_applicant_analysis_service = await ctx.resolve(JobApplicantAnalysisService)
@@ -64,4 +65,4 @@ async def process_job_applicant_analysis_event(
             job_application=job_applicant,
         )
 
-    return {"status": "ok"}
+    return json.dumps({"status": "ok"})
