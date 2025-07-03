@@ -334,6 +334,11 @@ export default function JobEditForm({ rootQuery }: Props) {
 							? response.updateJob.job.workMode.toString()
 							: null,
 					});
+
+					addToast({
+						color: "success",
+						title: "Job updated successfully.",
+					});
 				} else if (
 					response.updateJob.__typename === "OrganizationAuthorizationError"
 				) {
