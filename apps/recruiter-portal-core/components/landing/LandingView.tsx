@@ -9,7 +9,7 @@ export default function LandingView() {
 		<div className="flex flex-col items-center">
 			<LandingHeader />
 			{/* Hero Section */}
-			<div className="w-full bg-gradient-to-br from-primary-400 to-primary-600 text-primary-foreground pt-4 sm:pt-8">
+			<div className="w-full bg-primary-400 text-primary-foreground pt-4 sm:pt-8">
 				<div className="max-w-7xl mx-auto px-4 sm:px-5 py-16 sm:py-24 flex flex-col md:flex-row items-center gap-8">
 					<div className="flex-1 flex flex-col items-start gap-6">
 						<h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
@@ -67,14 +67,18 @@ export default function LandingView() {
 			</div>
 
 			{/* Features Section */}
+			<section className="w-full bg-primary-100 dark:bg-background-300 py-16 sm:pt-24 border-b border-background-200">
+				<div className="w-full mx-auto px-4 sm:px-5 flex flex-col gap-12 ">
+					<h2 className="text-3xl sm:text-4xl font-bold text-center text-primary-700 dark:text-primary-300 mb-4">
+						Revolutionize Your Recruitment with AI
+					</h2>
+				</div>
+			</section>
 			<section
 				id="features"
 				className="w-full bg-white dark:bg-background-300 pt-16 sm:pt-24 border-b border-background-200"
 			>
-				<div className="w-full mx-auto px-4 sm:px-5 flex flex-col gap-12">
-					<h2 className="text-3xl sm:text-4xl font-bold text-center text-primary-700 dark:text-primary-300 mb-4">
-						Revolutionize Your Recruitment with AI
-					</h2>
+				<div className="w-full mx-auto px-4 sm:px-5 flex flex-col gap-12 ">
 					{/* Deep AI Integration Section */}
 					<motion.section
 						className="w-full py-20 bg-background-50 dark:bg-background-900"
