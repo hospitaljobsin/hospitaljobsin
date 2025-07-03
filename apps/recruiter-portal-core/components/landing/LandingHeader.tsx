@@ -21,7 +21,7 @@ export default function LandingHeader() {
 
 	return (
 		<Navbar
-			maxWidth="lg"
+			maxWidth="xl"
 			className="w-full"
 			isMenuOpen={isMenuOpen}
 			onMenuOpenChange={setIsMenuOpen}

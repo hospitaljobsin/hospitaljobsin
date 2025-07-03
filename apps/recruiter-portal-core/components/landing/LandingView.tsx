@@ -1,20 +1,16 @@
 "use client";
-import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
-import { Button, Card, CardBody } from "@heroui/react";
-import { Briefcase, CheckCircle, FileText, Shield, Users } from "lucide-react";
-import BenefitItem from "./BenefitItem";
-import FeatureCard from "./FeatureCard";
+import { Button } from "@heroui/react";
+import { motion } from "framer-motion";
 import LandingHeader from "./LandingHeader";
 
 export default function LandingView() {
 	return (
 		<div className="flex flex-col items-center">
 			<LandingHeader />
-
 			{/* Hero Section */}
 			<div className="w-full bg-gradient-to-br from-primary-400 to-primary-600 text-primary-foreground pt-4 sm:pt-8">
-				<div className="max-w-5xl mx-auto px-4 sm:px-5 py-16 sm:py-24 flex flex-col md:flex-row items-center gap-8">
+				<div className="max-w-7xl mx-auto px-4 sm:px-5 py-16 sm:py-24 flex flex-col md:flex-row items-center gap-8">
 					<div className="flex-1 flex flex-col items-start gap-6">
 						<h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
 							Streamline Your Healthcare Recruitment
@@ -70,85 +66,401 @@ export default function LandingView() {
 				</div>
 			</div>
 
-			{/* Main Content */}
-			<div className="py-8 sm:py-16 flex flex-col items-center gap-16 sm:gap-24 max-w-5xl px-4 sm:px-5 mx-auto w-full">
-				{/* Features Section */}
-				<section
-					id="features"
-					className="w-full flex flex-col items-center gap-12"
-				>
-					<div className="text-center max-w-3xl">
-						<h2 className="text-3xl sm:text-4xl font-semibold mb-4">
-							Powerful Recruitment Tools
-						</h2>
-						<p className="text-lg text-foreground-600">
-							Everything you need to streamline your healthcare recruitment
-							process and find the best candidates.
-						</p>
-					</div>
-
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full -mt-4">
-						<FeatureCard
-							icon={<FileText className="w-10 h-10 text-primary" />}
-							title="Job Management"
-							description="Create and publish detailed job listings with specialized healthcare fields and requirements."
-						/>
-						<FeatureCard
-							icon={<Users className="w-10 h-10 text-primary" />}
-							title="Applicant Tracking"
-							description="Review applications, track candidate status, and manage interviews all in one unified dashboard."
-						/>
-						<FeatureCard
-							icon={<CheckCircle className="w-10 h-10 text-primary" />}
-							title="Screening Tools"
-							description="Custom screening questions and resume parsing to quickly identify qualified candidates."
-						/>
-					</div>
-				</section>
-
-				{/* Benefits Section */}
-				<section className="w-full flex flex-col items-center gap-12">
-					<div className="text-center max-w-3xl">
-						<h2 className="text-3xl sm:text-4xl font-semibold mb-4">
-							Why Choose {APP_NAME}?
-						</h2>
-						<p className="text-lg text-foreground-600">
-							Our platform is designed specifically for healthcare recruitment
-							challenges.
-						</p>
-					</div>
-
-					<Card className="w-full border-none shadow-md">
-						<CardBody className="gap-8 md:gap-10 p-8">
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-								<BenefitItem
-									icon={<Briefcase className="h-5 w-5" />}
-									title="Healthcare Focused"
-									description="Tools and features designed specifically for medical job recruitment."
-								/>
-								<BenefitItem
-									icon={<Shield className="h-5 w-5" />}
-									title="Compliance Ready"
-									description="Built with healthcare compliance and regulations in mind."
-								/>
-								<BenefitItem
-									icon={<Users className="h-5 w-5" />}
-									title="Talent Pool Access"
-									description="Connect with a dedicated network of healthcare professionals."
-								/>
-								<BenefitItem
-									icon={<CheckCircle className="h-5 w-5" />}
-									title="Time Saving"
-									description="Reduce time-to-hire with our streamlined recruitment workflow."
-								/>
+			{/* Features Section */}
+			<section
+				id="features"
+				className="w-full bg-white dark:bg-background-300 pt-16 sm:pt-24 border-b border-background-200"
+			>
+				<div className="w-full mx-auto px-4 sm:px-5 flex flex-col gap-12">
+					<h2 className="text-3xl sm:text-4xl font-bold text-center text-primary-700 dark:text-primary-300 mb-4">
+						Revolutionize Your Recruitment with AI
+					</h2>
+					{/* Deep AI Integration Section */}
+					<motion.section
+						className="w-full py-20 bg-background-50 dark:bg-background-900"
+						initial={{ opacity: 0, y: 40 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, amount: 0.4 }}
+						transition={{ duration: 0.7, ease: "easeOut" }}
+					>
+						<div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
+							{/* Custom Animated SVG */}
+							<div className="flex-1 flex justify-center md:justify-start">
+								<motion.svg
+									width="320"
+									height="220"
+									viewBox="0 0 320 220"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+									className="drop-shadow-xl"
+									initial={{ rotate: -8, scale: 0.95 }}
+									animate={{ rotate: [-8, 8, -8], scale: [0.95, 1.05, 0.95] }}
+									transition={{
+										duration: 6,
+										repeat: Number.POSITIVE_INFINITY,
+										ease: "easeInOut",
+									}}
+								>
+									<title>3D AI Dashboard Animation</title>
+									<defs>
+										<radialGradient id="ai1" cx="50%" cy="50%" r="50%">
+											<stop offset="0%" stopColor="#00a925" stopOpacity="0.7" />
+											<stop
+												offset="100%"
+												stopColor="#4db866"
+												stopOpacity="0.2"
+											/>
+										</radialGradient>
+									</defs>
+									<ellipse cx="160" cy="200" rx="120" ry="18" fill="#9ad7a7" />
+									<g filter="url(#blur1)">
+										<circle cx="160" cy="110" r="60" fill="url(#ai1)" />
+									</g>
+									<rect
+										x="90"
+										y="60"
+										width="140"
+										height="60"
+										rx="28"
+										fill="#e6f5e9"
+										fillOpacity="0.7"
+									/>
+									<rect
+										x="120"
+										y="80"
+										width="80"
+										height="20"
+										rx="10"
+										fill="#00a925"
+										fillOpacity="0.8"
+									/>
+									<animateTransform
+										attributeName="transform"
+										type="skewY"
+										values="-2;2;-2"
+										dur="4s"
+										repeatCount="indefinite"
+									/>
+								</motion.svg>
 							</div>
-						</CardBody>
-					</Card>
-				</section>
-			</div>
-			{/* Testimonial/CTA Section */}
+							{/* Text */}
+							<div className="flex-1 flex flex-col items-start gap-6">
+								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
+									Deeply Integrated AI
+								</h2>
+								<p className="text-lg text-foreground-700 dark:text-foreground-200">
+									Our dashboard is powered by advanced AI, automating repetitive
+									tasks and surfacing the most important information—so you can
+									focus on what matters: hiring the best talent.
+								</p>
+								<Button
+									variant="solid"
+									color="primary"
+									size="lg"
+									as={"a"}
+									href={links.createOrganization}
+									className="font-medium mt-2"
+								>
+									Try AI Dashboard
+								</Button>
+							</div>
+						</div>
+					</motion.section>
+
+					{/* AI-Powered Insights Section */}
+					<motion.section
+						className="w-full py-20 bg-primary-50 dark:bg-primary-900"
+						initial={{ opacity: 0, y: 40 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, amount: 0.4 }}
+						transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+					>
+						<div className="max-w-6xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
+							{/* Custom Animated SVG */}
+							<div className="flex-1 flex justify-center md:justify-end">
+								<motion.svg
+									width="320"
+									height="220"
+									viewBox="0 0 320 220"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+									className="drop-shadow-xl"
+									initial={{ scale: 0.92 }}
+									animate={{ scale: [0.92, 1.08, 0.92] }}
+									transition={{
+										duration: 7,
+										repeat: Number.POSITIVE_INFINITY,
+										ease: "easeInOut",
+									}}
+								>
+									<title>3D AI Insights Animation</title>
+									<defs>
+										<linearGradient id="insight1" x1="0" y1="0" x2="1" y2="1">
+											<stop offset="0%" stopColor="#00a925" stopOpacity="0.7" />
+											<stop
+												offset="100%"
+												stopColor="#4db866"
+												stopOpacity="0.2"
+											/>
+										</linearGradient>
+									</defs>
+									<ellipse cx="160" cy="200" rx="120" ry="18" fill="#9ad7a7" />
+									<rect
+										x="80"
+										y="60"
+										width="160"
+										height="80"
+										rx="32"
+										fill="url(#insight1)"
+									/>
+									<circle
+										cx="160"
+										cy="100"
+										r="36"
+										fill="#e6f5e9"
+										fillOpacity="0.7"
+									/>
+									<rect
+										x="130"
+										y="90"
+										width="60"
+										height="20"
+										rx="8"
+										fill="#00a925"
+									/>
+									<motion.circle
+										cx="160"
+										cy="100"
+										r="12"
+										fill="#4db866"
+										animate={{ cy: [100, 120, 100] }}
+										transition={{
+											duration: 2.5,
+											repeat: Number.POSITIVE_INFINITY,
+											repeatType: "reverse",
+											ease: "easeInOut",
+										}}
+									/>
+								</motion.svg>
+							</div>
+							{/* Text */}
+							<div className="flex-1 flex flex-col items-start gap-6">
+								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
+									AI-Powered Actionable Insights
+								</h2>
+								<p className="text-lg text-foreground-700 dark:text-foreground-200">
+									Every applicant profile comes with instant, actionable AI
+									insights—helping HR make confident, data-driven decisions in
+									seconds, not hours.
+								</p>
+								<Button
+									variant="solid"
+									color="default"
+									size="lg"
+									as={"a"}
+									href={links.createOrganization}
+									className="font-medium mt-2"
+								>
+									See AI Insights
+								</Button>
+							</div>
+						</div>
+					</motion.section>
+
+					{/* Natural Language Search Section */}
+					<motion.section
+						className="w-full py-20 bg-background-100 dark:bg-background-800"
+						initial={{ opacity: 0, y: 40 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, amount: 0.4 }}
+						transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+					>
+						<div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
+							{/* Custom Animated SVG */}
+							<div className="flex-1 flex justify-center md:justify-start">
+								<motion.svg
+									width="320"
+									height="220"
+									viewBox="0 0 320 220"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+									className="drop-shadow-xl"
+									initial={{ x: 0 }}
+									animate={{ x: [0, 12, -12, 0] }}
+									transition={{
+										duration: 8,
+										repeat: Number.POSITIVE_INFINITY,
+										ease: "easeInOut",
+									}}
+								>
+									<title>3D Natural Language Search Animation</title>
+									<defs>
+										<radialGradient id="search1" cx="50%" cy="50%" r="50%">
+											<stop offset="0%" stopColor="#00a925" stopOpacity="0.5" />
+											<stop
+												offset="100%"
+												stopColor="#4db866"
+												stopOpacity="0.1"
+											/>
+										</radialGradient>
+									</defs>
+									<ellipse cx="160" cy="200" rx="120" ry="18" fill="#9ad7a7" />
+									<rect
+										x="90"
+										y="70"
+										width="140"
+										height="60"
+										rx="24"
+										fill="#e6f5e9"
+										fillOpacity="0.7"
+									/>
+									<rect
+										x="110"
+										y="90"
+										width="100"
+										height="20"
+										rx="8"
+										fill="#00a925"
+										fillOpacity="0.8"
+									/>
+									<circle cx="160" cy="110" r="40" fill="url(#search1)" />
+									<motion.circle
+										cx="160"
+										cy="110"
+										r="14"
+										fill="#00a925"
+										animate={{ r: [14, 22, 14] }}
+										transition={{
+											duration: 2.8,
+											repeat: Number.POSITIVE_INFINITY,
+											repeatType: "reverse",
+											ease: "easeInOut",
+										}}
+									/>
+								</motion.svg>
+							</div>
+							{/* Text */}
+							<div className="flex-1 flex flex-col items-start gap-6">
+								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
+									AI Natural Language Search
+								</h2>
+								<p className="text-lg text-foreground-700 dark:text-foreground-200">
+									No more endless filters. Just type what you need—our AI
+									understands and finds the perfect candidates, instantly.
+								</p>
+								<Button
+									variant="solid"
+									color="primary"
+									size="lg"
+									as={"a"}
+									href={links.createOrganization}
+									className="font-medium mt-2"
+								>
+									Try AI Search
+								</Button>
+							</div>
+						</div>
+					</motion.section>
+
+					{/* AI Chat Assistant Section */}
+					<motion.section
+						className="w-full py-20 bg-primary-100 dark:bg-primary-800"
+						initial={{ opacity: 0, y: 40 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, amount: 0.4 }}
+						transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
+					>
+						<div className="max-w-6xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
+							{/* Custom Animated SVG */}
+							<div className="flex-1 flex justify-center md:justify-end">
+								<motion.svg
+									width="320"
+									height="220"
+									viewBox="0 0 320 220"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+									className="drop-shadow-xl"
+									initial={{ scale: 1, rotate: 0 }}
+									animate={{ scale: [1, 1.08, 1], rotate: [0, 6, -6, 0] }}
+									transition={{
+										duration: 7,
+										repeat: Number.POSITIVE_INFINITY,
+										ease: "easeInOut",
+									}}
+								>
+									<title>3D AI Chat Assistant Animation</title>
+									<defs>
+										<radialGradient id="chat1" cx="50%" cy="50%" r="50%">
+											<stop offset="0%" stopColor="#00a925" stopOpacity="0.6" />
+											<stop
+												offset="100%"
+												stopColor="#4db866"
+												stopOpacity="0.1"
+											/>
+										</radialGradient>
+									</defs>
+									<ellipse cx="160" cy="200" rx="120" ry="18" fill="#9ad7a7" />
+									<rect
+										x="100"
+										y="80"
+										width="120"
+										height="60"
+										rx="20"
+										fill="#e6f5e9"
+										fillOpacity="0.7"
+									/>
+									<rect
+										x="120"
+										y="100"
+										width="80"
+										height="20"
+										rx="8"
+										fill="#00a925"
+										fillOpacity="0.8"
+									/>
+									<circle cx="160" cy="110" r="36" fill="url(#chat1)" />
+									<motion.circle
+										cx="160"
+										cy="110"
+										r="12"
+										fill="#00a925"
+										animate={{ cy: [110, 130, 110] }}
+										transition={{
+											duration: 2.2,
+											repeat: Number.POSITIVE_INFINITY,
+											repeatType: "reverse",
+											ease: "easeInOut",
+										}}
+									/>
+								</motion.svg>
+							</div>
+							{/* Text */}
+							<div className="flex-1 flex flex-col items-start gap-6">
+								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
+									AI Chat Assistant
+								</h2>
+								<p className="text-lg text-foreground-700 dark:text-foreground-200">
+									Ask anything about your applicants—instantly. Your AI chat
+									assistant delivers answers, insights, and summaries, right
+									when you need them.
+								</p>
+								<Button
+									variant="solid"
+									color="default"
+									size="lg"
+									as={"a"}
+									href={links.createOrganization}
+									className="font-medium mt-2"
+								>
+									Chat with AI
+								</Button>
+							</div>
+						</div>
+					</motion.section>
+				</div>
+			</section>
 			<section className="w-full bg-background-400 rounded-xl p-8 sm:p-12">
-				<div className="mx-auto max-w-5xl flex items-start justify-between gap-8 px-4">
+				<div className="mx-auto max-w-7xl flex items-start justify-between gap-8 px-4">
 					<div className="w-52 h-52 hidden sm:block">
 						<img
 							src="/images/getting-started-image.png"
