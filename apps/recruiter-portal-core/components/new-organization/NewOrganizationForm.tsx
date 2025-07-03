@@ -173,7 +173,7 @@ export default function NewOrganizationForm() {
 					/>
 					<Input
 						{...register("slug")}
-						label="Organization Slug"
+						label="Subdomain"
 						labelPlacement="outside"
 						placeholder="my-company"
 						endContent={

@@ -235,8 +235,8 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 									<Input
 										{...field}
 										fullWidth
-										label="Slug"
-										placeholder="Add slug"
+										label="Subdomain"
+										placeholder="Add subdomain"
 										errorMessage={errors.slug?.message}
 										isInvalid={!!errors.slug}
 										endContent={
