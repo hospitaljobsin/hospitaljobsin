@@ -1,4 +1,6 @@
 import sentry_sdk
+from sentry_sdk.integrations import Integration
+from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 from sentry_sdk.integrations.strawberry import StrawberryIntegration
 from structlog import get_logger
 
@@ -9,6 +11,15 @@ def initialize_instrumentation(settings: AppSettings) -> None:
     """Initialize Sentry for error tracking and performance monitoring."""
     logger = get_logger(__name__)
     logger.debug("Initializing Sentry for error tracking and performance monitoring.")
+    integrations: list[Integration] = [
+        StrawberryIntegration(
+            # Set async_execution to True if you have
+            # at least one async resolver
+            async_execution=True,
+        )
+    ]
+    if settings.is_production:
+        integrations.append(AwsLambdaIntegration(timeout_warning=True))
     sentry_sdk.init(
         dsn=get_settings(SentrySettings).sentry_dsn,
         environment=settings.environment,
@@ -22,12 +33,6 @@ def initialize_instrumentation(settings: AppSettings) -> None:
         # Profiles will be automatically collected while
         # there is an active span.
         profile_lifecycle="trace",
-        integrations=[
-            StrawberryIntegration(
-                # Set async_execution to True if you have
-                # at least one async resolver
-                async_execution=True,
-            ),
-        ],
+        integrations=integrations,
         _experiments={"enable_logs": True},
     )
