@@ -22,6 +22,17 @@ output "aws_lambda_backend_image" {
 }
 
 
+output "aws_lambda_worker_function_name" {
+  # TODO: change this
+  # value = aws_lambda_function.worker.function_name
+  value = "${var.resource_prefix}-worker-lambda"
+}
+
+output "aws_lambda_worker_image" {
+  value = aws_ecr_repository.worker.name
+}
+
+
 # SST variables and secrets
 
 output "sst_api_url" {

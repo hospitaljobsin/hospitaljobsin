@@ -65,6 +65,8 @@ module "github" {
   github_organization_name              = var.github_organization_name
   aws_backend_function_name             = module.core.aws_lambda_backend_function_name
   aws_backend_image_name                = module.core.aws_lambda_backend_image
+  aws_worker_function_name              = module.core.aws_lambda_worker_function_name
+  aws_worker_image_name                 = module.core.aws_lambda_worker_image
   aws_region                            = var.aws_region
   github_repository_full_name           = var.github_repository_full_name
   sentry_accounts_ui_dsn                = module.sentry.sentry_accounts_ui_dsn

@@ -188,3 +188,14 @@ variable "deployment_aws_secret_access_key" {
   type        = string
   sensitive   = true
 }
+
+
+variable "aws_worker_function_name" {
+  description = "The name of the AWS Lambda function for the worker."
+  type        = string
+}
+
+variable "aws_worker_image_name" {
+  description = "The name of the AWS ECR image for the worker."
+  type        = string
+}

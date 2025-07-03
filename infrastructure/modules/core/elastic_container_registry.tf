@@ -4,7 +4,6 @@ resource "aws_ecr_repository" "backend" {
 }
 
 
-
 # Permission to ECR for Lambda to pull the image
 resource "aws_ecr_repository_policy" "lambda_ecr_policy" {
   repository = aws_ecr_repository.backend.name
@@ -30,6 +29,56 @@ resource "aws_ecr_repository_policy" "lambda_ecr_policy" {
 
 resource "aws_ecr_lifecycle_policy" "lambda" {
   repository = aws_ecr_repository.backend.name
+
+  policy = <<EOF
+{
+    "rules": [
+        {
+            "rulePriority": 1,
+            "description": "Keep last 25 images",
+            "selection": {
+                "tagStatus": "any",
+                "countType": "imageCountMoreThan",
+                "countNumber": 25
+            },
+            "action": {
+                "type": "expire"
+            }
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_ecr_repository" "worker" {
+  name = "${var.resource_prefix}-worker"
+}
+
+# Permission to ECR for Lambda to pull the image
+resource "aws_ecr_repository_policy" "lambda_ecr_policy_worker" {
+  repository = aws_ecr_repository.worker.name
+
+  policy = jsonencode({
+    Version = "2008-10-17",
+    Statement = [
+      {
+        Sid    = "AllowLambdaPull",
+        Effect = "Allow",
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        },
+        Action = [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage"
+        ]
+      }
+    ]
+  })
+}
+
+
+resource "aws_ecr_lifecycle_policy" "lambda_worker" {
+  repository = aws_ecr_repository.worker.name
 
   policy = <<EOF
 {

@@ -13,6 +13,21 @@ resource "github_actions_variable" "aws_lambda_backend_image" {
 }
 
 
+resource "github_actions_variable" "aws_worker_function_name" {
+  repository    = data.github_repository.this.name
+  variable_name = "AWS_WORKER_FUNCTION_NAME"
+  value         = var.aws_worker_function_name
+}
+
+# Store the worker ECR image name as a variable in GitHub Actions
+resource "github_actions_variable" "aws_lambda_worker_image" {
+  repository    = data.github_repository.this.name
+  variable_name = "AWS_WORKER_IMAGE_NAME"
+  value         = var.aws_worker_image_name
+}
+
+
+
 resource "github_actions_variable" "aws_region" {
   repository    = data.github_repository.this.name
   variable_name = "AWS_REGION"
