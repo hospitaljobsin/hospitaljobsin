@@ -23,9 +23,7 @@ output "aws_lambda_backend_image" {
 
 
 output "aws_lambda_worker_function_name" {
-  # TODO: change this
-  # value = aws_lambda_function.worker.function_name
-  value = "${var.resource_prefix}-worker-lambda"
+  value = aws_lambda_function.worker.function_name
 }
 
 output "aws_lambda_worker_image" {
