@@ -102,7 +102,7 @@ export default function LandingView() {
 							</svg>
 						</div>
 						<h2 className="text-3xl sm:text-4xl font-bold text-green-900 dark:text-green-200 mb-2">
-							Verified Medical Credentials
+							Verified Medical Professionals
 						</h2>
 						<p className="text-lg text-green-800 dark:text-green-100 max-w-2xl mx-auto opacity-90">
 							We validate credentials of medical professionals, allowing HR to
@@ -141,24 +141,14 @@ export default function LandingView() {
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
 								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
-									Healthcare AI, Deeply Integrated
+									AI For Recruitment, Deeply Integrated
 								</h2>
 								<p className="text-lg text-foreground-700 dark:text-foreground-200">
-									Our dashboard is powered by advanced healthcare AI, automating
-									repetitive HR tasks and surfacing the most important clinical
-									and credential information—so you can focus on hiring the best
-									medical talent for your hospital or clinic.
+									Our recruitment dashboard is powered by advanced AI,
+									automating repetitive HR tasks and surfacing the most
+									important clinical and credential information—so you can focus
+									on hiring the best medical talent for your hospital or clinic.
 								</p>
-								<Button
-									variant="solid"
-									color="primary"
-									size="lg"
-									as={"a"}
-									href={links.createOrganization}
-									className="font-medium mt-2"
-								>
-									Try Healthcare AI Dashboard
-								</Button>
 							</div>
 							<div className="flex-1 flex justify-center md:justify-end">
 								<img
@@ -188,16 +178,6 @@ export default function LandingView() {
 									actionable AI insights—helping HR and medical leadership make
 									confident, data-driven hiring decisions in seconds, not hours.
 								</p>
-								<Button
-									variant="solid"
-									color="default"
-									size="lg"
-									as={"a"}
-									href={links.createOrganization}
-									className="font-medium mt-2"
-								>
-									See Healthcare AI Insights
-								</Button>
 							</div>
 							<div className="flex-1 flex justify-center md:justify-end">
 								<img
@@ -220,7 +200,7 @@ export default function LandingView() {
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
 								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
-									AI Natural Language Search for Healthcare
+									Filter candidates stress-free using Natural Language
 								</h2>
 								<p className="text-lg text-foreground-700 dark:text-foreground-200">
 									No more endless filters. Just type what you need—our
@@ -228,16 +208,6 @@ export default function LandingView() {
 									nurses, and specialists for your hospital or clinic,
 									instantly.
 								</p>
-								<Button
-									variant="solid"
-									color="primary"
-									size="lg"
-									as={"a"}
-									href={links.createOrganization}
-									className="font-medium mt-2"
-								>
-									Try Healthcare AI Search
-								</Button>
 							</div>
 							<div className="flex-1 flex justify-center md:justify-start">
 								<img
@@ -260,7 +230,7 @@ export default function LandingView() {
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
 								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
-									Healthcare AI Chat Assistant
+									Integrated AI Chat with Profiles
 								</h2>
 								<p className="text-lg text-foreground-700 dark:text-foreground-200">
 									Ask anything about your healthcare candidates—instantly. Your
@@ -268,16 +238,6 @@ export default function LandingView() {
 									summaries, right when you need them for your hospital or
 									clinic.
 								</p>
-								<Button
-									variant="solid"
-									color="default"
-									size="lg"
-									as={"a"}
-									href={links.createOrganization}
-									className="font-medium mt-2"
-								>
-									Chat with Healthcare AI
-								</Button>
 							</div>
 							<div className="flex-1 flex justify-center md:justify-end">
 								<img
