@@ -17,6 +17,23 @@ resource "aws_iam_role" "lambda_exec_role" {
 }
 
 
+resource "aws_iam_role" "lambda_worker_exec_role" {
+  name = "lambda_worker_exec_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
 # Custom policy to allow access to S3, Textract, and Bedrock
 resource "aws_iam_policy" "lambda_custom_policy" {
   name        = "lambda_exec_custom_policy"
@@ -73,10 +90,53 @@ resource "aws_iam_policy" "lambda_custom_policy" {
   })
 }
 
+
+resource "aws_iam_policy" "lambda_custom_policy_worker" {
+  name        = "lambda_exec_custom_policy_worker"
+  description = "Custom policy for Lambda to access SQS"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes"
+        ],
+        Resource = [
+          aws_sqs_queue.this.arn,
+          "${aws_sqs_queue.this.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
 # Add this inline policy to your lambda role
 resource "aws_iam_role_policy" "lambda_mongodb_aws_auth" {
   name = "mongodb_aws_auth"
   role = aws_iam_role.lambda_exec_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "sts:AssumeRole",
+          "sts:GetCallerIdentity"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda_worker_mongodb_aws_auth" {
+  name = "mongodb_aws_auth_worker"
+  role = aws_iam_role.lambda_worker_exec_role.id
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -109,6 +169,28 @@ resource "aws_iam_role_policy_attachment" "lambda_vpc_access_policy" {
 resource "aws_iam_role_policy_attachment" "lambda_custom_policy_attachment" {
   role       = aws_iam_role.lambda_exec_role.name
   policy_arn = aws_iam_policy.lambda_custom_policy.arn
+}
+
+
+resource "aws_iam_role_policy_attachment" "lambda_worker_exec_policy" {
+  role       = aws_iam_role.lambda_worker_exec_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_worker_vpc_access_policy" {
+  role       = aws_iam_role.lambda_worker_exec_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+# Attach the custom policy to allow access to S3, Textract, and Bedrock
+
+resource "aws_iam_role_policy_attachment" "lambda_worker_custom_policy_attachment" {
+  role       = aws_iam_role.lambda_worker_exec_role.name
+  policy_arn = aws_iam_policy.lambda_custom_policy.arn
+}
+resource "aws_iam_role_policy_attachment" "lambda_worker_custom_sqs_policy_attachment" {
+  role       = aws_iam_role.lambda_worker_exec_role.name
+  policy_arn = aws_iam_policy.lambda_custom_policy_worker.arn
 }
 
 
@@ -226,12 +308,19 @@ resource "aws_lambda_function" "backend" {
   timeout     = 60
 }
 
+# uncomment to remove provisioned concurrency
+# resource "aws_lambda_provisioned_concurrency_config" "backend" {
+#   function_name                     = aws_lambda_function.backend.function_name
+#   provisioned_concurrent_executions = 1
+#   qualifier                         = aws_lambda_function.backend.version
+# }
+
 resource "aws_lambda_function" "worker" {
   # depends_on    = [docker_registry_image.backend]
   function_name = "${var.resource_prefix}-worker-lambda"
 
 
-  role         = aws_iam_role.lambda_exec_role.arn
+  role         = aws_iam_role.lambda_worker_exec_role.arn
   package_type = "Image"
   image_uri    = "${aws_ecr_repository.worker.repository_url}:latest"
 
@@ -292,12 +381,17 @@ resource "aws_lambda_function" "worker" {
   timeout     = 60
 }
 
-# uncomment to remove provisioned concurrency
-# resource "aws_lambda_provisioned_concurrency_config" "backend" {
-#   function_name                     = aws_lambda_function.backend.function_name
-#   provisioned_concurrent_executions = 1
-#   qualifier                         = aws_lambda_function.backend.version
-# }
+resource "aws_lambda_event_source_mapping" "worker" {
+  event_source_arn = aws_sqs_queue.this.arn
+  function_name    = aws_lambda_function.worker.arn
+  batch_size       = 10
+
+  scaling_config {
+    maximum_concurrency = 25
+  }
+}
+
+
 
 # Security Group for Lambda in Private Subnets
 resource "aws_security_group" "lambda" {
