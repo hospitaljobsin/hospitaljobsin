@@ -53,9 +53,6 @@ dev-dependencies = [
     "types-aiobotocore-location>=2.21.1",
 ]
 
-[tool.uv.sources]
-aioinject = { git = "https://github.com/notypecheck/aioinject", rev = "main" }
-
 [tool.pyright]
 include = ["app", "tests"]
 exclude = ["^.venv/"]

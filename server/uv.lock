@@ -93,9 +93,13 @@ wheels = [
 [[package]]
 name = "aioinject"
 version = "1.4.3"
-source = { git = "https://github.com/notypecheck/aioinject?rev=main#6767c561c66983a0d1e6b3ea6b8b7ce9701af65d" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e8/99/eee82bb49da67d16ef053e7527f0499b5a0968807d5fe732247e58faba70/aioinject-1.4.3.tar.gz", hash = "sha256:50521cc6e1145b70c59b1dd0c0940ea23f9dd5e37aeae50717f51dd2a9ac31ec", size = 46986, upload-time = "2025-07-02T21:13:03.35Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/83/94/1d1bd3b836cbfe9aaaf9b96dde11b3a203347f0a3074a2e558a6fa7a6492/aioinject-1.4.3-py3-none-any.whl", hash = "sha256:3c59b7d88e464b3d0e9bc81101659ae8fba603bd87b7aeb5a7b24e0e87c948c9", size = 31942, upload-time = "2025-07-02T21:13:01.878Z" },
 ]
 
 [[package]]
@@ -1470,7 +1474,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "aioboto3", specifier = ">=13.4.0" },
-    { name = "aioinject", git = "https://github.com/notypecheck/aioinject?rev=main" },
+    { name = "aioinject", specifier = "==1.4.3" },
     { name = "aiosmtplib", specifier = ">=3.0.2" },
     { name = "asgi-correlation-id", specifier = ">=4.3.4" },
     { name = "authlib", specifier = ">=1.4.0" },
