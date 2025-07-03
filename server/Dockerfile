@@ -153,11 +153,17 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen
 
 
+# Install the AWS Lambda Runtime Interface Client
+RUN uv pip install awslambdaric
+
+
 # Set environment variables for Python
 # FIXME: setup venv correctly for lambda
 ENV PYTHONPATH="/var/task:$PYTHONPATH"
 # ENV PATH="/var/task/.venv/bin:$PATH"
 
 
+ENTRYPOINT [ "python", "-m", "awslambdaric" ]
+
 # Set the Lambda handler
-CMD ["python", "app.sqs_handler.lambda_handler"]
+CMD ["app.sqs_handler.lambda_handler"]
