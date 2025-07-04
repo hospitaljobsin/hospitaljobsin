@@ -37,74 +37,60 @@ export default function FilterSidebar({
 			shadow="none"
 		>
 			<CardBody className="flex flex-col gap-4">
-				<div>
-					<label
-						htmlFor="minExperience"
-						className="block text-sm font-medium mb-1"
-					>
-						Minimum Experience (years)
-					</label>
-					<Slider
-						id="minExperience"
-						minValue={0}
-						maxValue={30}
-						step={1}
-						value={values.minExperience ?? 0}
-						onChange={(val) => {
-							const v = Array.isArray(val) ? val[0] : val;
-							onChange({ ...values, minExperience: v });
-						}}
-						showTooltip
-						className="w-full"
-					/>
-					<div className="flex justify-between text-xs mt-1">
-						<span>{values.minExperience ?? 0} yr</span>
-						<Button
-							size="sm"
-							variant="ghost"
-							onPress={() => onChange({ ...values, minExperience: null })}
-							disabled={values.minExperience === null}
-						>
-							Clear
-						</Button>
-					</div>
-				</div>
-				<div>
-					<label htmlFor="salary" className="block text-sm font-medium mb-1">
-						Salary (₹/month)
-					</label>
-					<Slider
-						id="salary"
-						minValue={0}
-						maxValue={500000}
-						step={1000}
-						value={[values.minSalary ?? 0, values.maxSalary ?? 500000]}
-						onChange={(val) => {
-							const [min, max] = Array.isArray(val) ? val : [val, val];
-							onChange({
-								...values,
-								minSalary: min,
-								maxSalary: max,
-							});
-						}}
-						showTooltip
-						className="w-full"
-					/>
-					<div className="flex justify-between text-xs mt-1">
-						<span>₹{values.minSalary ?? 0}</span>
-						<Button
-							size="sm"
-							variant="ghost"
-							onPress={() =>
-								onChange({ ...values, minSalary: null, maxSalary: null })
-							}
-							disabled={values.minSalary === null && values.maxSalary === null}
-						>
-							Clear
-						</Button>
-						<span>₹{values.maxSalary ?? 500000}</span>
-					</div>
-				</div>
+				<Slider
+					id="minExperience"
+					label="Experience"
+					formatOptions={{
+						style: "unit",
+						unit: "year",
+					}}
+					minValue={0}
+					maxValue={30}
+					step={1}
+					value={values.minExperience ?? 0}
+					onChange={(val) => {
+						const v = Array.isArray(val) ? val[0] : val;
+						onChange({ ...values, minExperience: v });
+					}}
+					showTooltip
+					className="w-full"
+				/>
+				<Button
+					size="sm"
+					variant="ghost"
+					onPress={() => onChange({ ...values, minExperience: null })}
+					disabled={values.minExperience === null}
+				>
+					Clear
+				</Button>
+				<Slider
+					id="salary"
+					label="Salary"
+					minValue={0}
+					maxValue={500000}
+					step={1000}
+					value={[values.minSalary ?? 0, values.maxSalary ?? 500000]}
+					onChange={(val) => {
+						const [min, max] = Array.isArray(val) ? val : [val, val];
+						onChange({
+							...values,
+							minSalary: min,
+							maxSalary: max,
+						});
+					}}
+					showTooltip
+					className="w-full"
+				/>
+				<Button
+					size="sm"
+					variant="ghost"
+					onPress={() =>
+						onChange({ ...values, minSalary: null, maxSalary: null })
+					}
+					disabled={values.minSalary === null && values.maxSalary === null}
+				>
+					Clear
+				</Button>
 				<div>
 					<label
 						htmlFor="coordinates"
