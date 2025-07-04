@@ -47,6 +47,8 @@ class Job(Document):
     min_salary: int | None = None
     max_salary: int | None = None
 
+    is_salary_negotiable: bool = False
+
     min_experience: int | None = None
     max_experience: int | None = None
 

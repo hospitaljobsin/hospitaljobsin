@@ -236,6 +236,12 @@ class JobMutation:
                 description="The maximum salary of the job.",
             ),
         ] = None,
+        is_salary_negotiable: Annotated[
+            bool,
+            strawberry.argument(
+                description="Whether the salary is negotiable.",
+            ),
+        ] = False,
         min_experience: Annotated[
             int | None,
             strawberry.argument(
@@ -283,6 +289,7 @@ class JobMutation:
             location=location,
             min_salary=min_salary,
             max_salary=max_salary,
+            is_salary_negotiable=is_salary_negotiable,
             min_experience=min_experience,
             max_experience=max_experience,
             expires_at=expires_at,
@@ -370,6 +377,12 @@ class JobMutation:
                 description="The maximum salary of the job.",
             ),
         ] = None,
+        is_salary_negotiable: Annotated[
+            bool,
+            strawberry.argument(
+                description="Whether the salary is negotiable.",
+            ),
+        ] = False,
         min_experience: Annotated[
             int | None,
             strawberry.argument(
@@ -417,6 +430,7 @@ class JobMutation:
             location=location,
             min_salary=min_salary,
             max_salary=max_salary,
+            is_salary_negotiable=is_salary_negotiable,
             min_experience=min_experience,
             max_experience=max_experience,
             expires_at=expires_at,

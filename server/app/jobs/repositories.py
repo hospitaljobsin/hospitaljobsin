@@ -127,6 +127,7 @@ class JobRepo:
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
+        is_salary_negotiable: bool = False,
         min_experience: int | None = None,
         max_experience: int | None = None,
         expires_at: datetime | None = None,
@@ -161,6 +162,7 @@ class JobRepo:
             geo=geo,
             min_salary=min_salary,
             max_salary=max_salary,
+            is_salary_negotiable=is_salary_negotiable,
             min_experience=min_experience,
             max_experience=max_experience,
             expires_at=expires_at,
@@ -190,6 +192,7 @@ class JobRepo:
         vacancies: int | None = None,
         min_salary: int | None = None,
         max_salary: int | None = None,
+        is_salary_negotiable: bool = False,
         min_experience: int | None = None,
         max_experience: int | None = None,
         expires_at: datetime | None = None,
@@ -225,6 +228,7 @@ class JobRepo:
         job.geo = geo
         job.min_salary = min_salary
         job.max_salary = max_salary
+        job.is_salary_negotiable = is_salary_negotiable
         job.min_experience = min_experience
         job.max_experience = max_experience
         job.expires_at = expires_at

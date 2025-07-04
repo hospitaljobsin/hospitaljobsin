@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<037d6f43e8212ab7140e4e39e1f5f79d>>
+ * @generated SignedSource<<94481674d74e1923d554d970041241f1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,6 +17,7 @@ export type JobEditFormFragment$data = {
   readonly expiresAt: any | null | undefined;
   readonly id: string;
   readonly isActive: boolean;
+  readonly isSalaryNegotiable: boolean;
   readonly location: string | null | undefined;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
@@ -101,6 +102,13 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
+      "name": "isSalaryNegotiable",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "vacancies",
       "storageKey": null
     },
@@ -151,6 +159,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "ad6a5c6e29b275b738bd78ce2dd87c1d";
+(node as any).hash = "d1c8fec964a3adf5cbb2a02a6f5214a7";
 
 export default node;

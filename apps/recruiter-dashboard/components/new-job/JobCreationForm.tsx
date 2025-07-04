@@ -17,6 +17,7 @@ import {
 	NumberInput,
 	Radio,
 	RadioGroup,
+	Switch,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CalendarIdentifier } from "@internationalized/date";
@@ -48,6 +49,7 @@ const jobFormSchema = z.object({
 		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME", "LOCUM"])
 		.nullable(),
 	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE"]).nullable(),
+	isSalaryNegotiable: z.boolean(),
 });
 
 type JobFormValues = z.infer<typeof jobFormSchema>;
@@ -71,7 +73,8 @@ const CreateJobMutation = graphql`
     $expiresAt: DateTime,
     $jobType: JobType,
     $workMode: WorkMode,
-    $vacancies: Int
+    $vacancies: Int,
+	$isSalaryNegotiable: Boolean!
   ) {
     createJob(
       organizationId: $organizationId,
@@ -86,7 +89,8 @@ const CreateJobMutation = graphql`
       expiresAt: $expiresAt,
       jobType: $jobType,
       workMode: $workMode,
-      vacancies: $vacancies
+      vacancies: $vacancies,
+      isSalaryNegotiable: $isSalaryNegotiable
     ) {
       __typename
       ... on CreateJobSuccess {
@@ -121,7 +125,6 @@ export default function JobCreationForm({
 		register,
 		control,
 		setError,
-		setValue,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<JobFormValues>({
 		resolver: zodResolver(jobFormSchema),
@@ -138,6 +141,7 @@ export default function JobCreationForm({
 			skills: [],
 			title: "",
 			vacancies: null,
+			isSalaryNegotiable: false,
 		},
 	});
 	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<
@@ -232,6 +236,7 @@ export default function JobCreationForm({
 					: undefined,
 				jobType: formData.jobType ?? undefined,
 				workMode: formData.workMode ?? undefined,
+				isSalaryNegotiable: formData.isSalaryNegotiable,
 			},
 			onCompleted(response) {
 				if (response.createJob.__typename === "CreateJobSuccess") {
@@ -393,6 +398,9 @@ export default function JobCreationForm({
 							aria-label="Salary range"
 							title="Salary range"
 							startContent={<IndianRupee size={20} />}
+							classNames={{
+								content: "flex flex-col gap-6",
+							}}
 						>
 							<div className="w-full flex gap-6 items-start">
 								<Controller
@@ -462,6 +470,21 @@ export default function JobCreationForm({
 									)}
 								/>
 							</div>
+							<Controller
+								control={control}
+								name="isSalaryNegotiable"
+								render={({ field }) => (
+									<div className="flex items-center gap-3 mt-4">
+										<Switch
+											isSelected={field.value}
+											onChange={field.onChange}
+											name="isSalaryNegotiable"
+											aria-label="Salary is negotiable"
+										/>
+										<span className="text-sm">Salary is negotiable</span>
+									</div>
+								)}
+							/>
 						</AccordionItem>
 						<AccordionItem
 							key="experience-range"

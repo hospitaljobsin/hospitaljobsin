@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6748e5a6afb2ed349e48a956d4e5e6e1>>
- * @relayHash a90392fa809ed661ecaea48f37f3ed01
+ * @generated SignedSource<<7ba463bbc1731c1e84c08b2d3fe8dcf0>>
+ * @relayHash c1bf42e0f84d988d75465fc7713f86e8
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a90392fa809ed661ecaea48f37f3ed01
+// @relayRequestID c1bf42e0f84d988d75465fc7713f86e8
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -192,6 +192,13 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
+                        "name": "isSalaryNegotiable",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
                         "name": "vacancies",
                         "storageKey": null
                       },
@@ -293,7 +300,7 @@ return {
     ]
   },
   "params": {
-    "id": "a90392fa809ed661ecaea48f37f3ed01",
+    "id": "c1bf42e0f84d988d75465fc7713f86e8",
     "metadata": {},
     "name": "pageJobGeneralSettingsQuery",
     "operationKind": "query",

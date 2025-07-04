@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<883dfc4333d17dd493c9d1aef79d9709>>
- * @relayHash 68af7ca8232795a89022f126b9bd16c0
+ * @generated SignedSource<<2feb1a5433ba0560ee33712d09f51e38>>
+ * @relayHash 427daacb449bd2c78d862e443f0619a3
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 68af7ca8232795a89022f126b9bd16c0
+// @relayRequestID 427daacb449bd2c78d862e443f0619a3
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -18,6 +18,7 @@ export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 export type JobEditFormMutation$variables = {
   description: string;
   expiresAt?: any | null | undefined;
+  isSalaryNegotiable: boolean;
   jobId: string;
   jobType?: JobType | null | undefined;
   location?: string | null | undefined;
@@ -45,6 +46,7 @@ export type JobEditFormMutation$data = {
       readonly expiresAt: any | null | undefined;
       readonly id: string;
       readonly isActive: boolean;
+      readonly isSalaryNegotiable: boolean;
       readonly location: string | null | undefined;
       readonly maxExperience: number | null | undefined;
       readonly maxSalary: number | null | undefined;
@@ -83,59 +85,64 @@ v1 = {
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "jobId"
+  "name": "isSalaryNegotiable"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "jobType"
+  "name": "jobId"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "location"
+  "name": "jobType"
 },
 v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxExperience"
+  "name": "location"
 },
 v6 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxSalary"
+  "name": "maxExperience"
 },
 v7 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minExperience"
+  "name": "maxSalary"
 },
 v8 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minSalary"
+  "name": "minExperience"
 },
 v9 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "skills"
+  "name": "minSalary"
 },
 v10 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "title"
+  "name": "skills"
 },
 v11 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "vacancies"
+  "name": "title"
 },
 v12 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "vacancies"
+},
+v13 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "workMode"
 },
-v13 = [
+v14 = [
   {
     "kind": "Variable",
     "name": "description",
@@ -145,6 +152,11 @@ v13 = [
     "kind": "Variable",
     "name": "expiresAt",
     "variableName": "expiresAt"
+  },
+  {
+    "kind": "Variable",
+    "name": "isSalaryNegotiable",
+    "variableName": "isSalaryNegotiable"
   },
   {
     "kind": "Variable",
@@ -202,112 +214,119 @@ v13 = [
     "variableName": "workMode"
   }
 ],
-v14 = {
+v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v15 = {
+v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v16 = {
+v17 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v17 = {
+v18 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "title",
   "storageKey": null
 },
-v18 = {
+v19 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "description",
   "storageKey": null
 },
-v19 = {
+v20 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "minExperience",
   "storageKey": null
 },
-v20 = {
+v21 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "maxExperience",
   "storageKey": null
 },
-v21 = {
+v22 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "minSalary",
   "storageKey": null
 },
-v22 = {
+v23 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "maxSalary",
   "storageKey": null
 },
-v23 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "vacancies",
-  "storageKey": null
-},
 v24 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "skills",
+  "name": "isSalaryNegotiable",
   "storageKey": null
 },
 v25 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "type",
+  "name": "vacancies",
   "storageKey": null
 },
 v26 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "workMode",
+  "name": "skills",
   "storageKey": null
 },
 v27 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "expiresAt",
+  "name": "type",
   "storageKey": null
 },
 v28 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "isActive",
+  "name": "workMode",
   "storageKey": null
 },
 v29 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "expiresAt",
+  "storageKey": null
+},
+v30 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isActive",
+  "storageKey": null
+},
+v31 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -329,7 +348,8 @@ return {
       (v9/*: any*/),
       (v10/*: any*/),
       (v11/*: any*/),
-      (v12/*: any*/)
+      (v12/*: any*/),
+      (v13/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -337,13 +357,13 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v13/*: any*/),
+        "args": (v14/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateJob",
         "plural": false,
         "selections": [
-          (v14/*: any*/),
+          (v15/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -355,7 +375,6 @@ return {
                 "name": "job",
                 "plural": false,
                 "selections": [
-                  (v15/*: any*/),
                   (v16/*: any*/),
                   (v17/*: any*/),
                   (v18/*: any*/),
@@ -370,6 +389,8 @@ return {
                   (v27/*: any*/),
                   (v28/*: any*/),
                   (v29/*: any*/),
+                  (v30/*: any*/),
+                  (v31/*: any*/),
                   {
                     "args": null,
                     "kind": "FragmentSpread",
@@ -412,32 +433,33 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v10/*: any*/),
+      (v11/*: any*/),
       (v0/*: any*/),
+      (v10/*: any*/),
+      (v5/*: any*/),
+      (v3/*: any*/),
       (v9/*: any*/),
-      (v4/*: any*/),
-      (v2/*: any*/),
+      (v7/*: any*/),
       (v8/*: any*/),
       (v6/*: any*/),
-      (v7/*: any*/),
-      (v5/*: any*/),
       (v1/*: any*/),
+      (v13/*: any*/),
+      (v4/*: any*/),
       (v12/*: any*/),
-      (v3/*: any*/),
-      (v11/*: any*/)
+      (v2/*: any*/)
     ],
     "kind": "Operation",
     "name": "JobEditFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v13/*: any*/),
+        "args": (v14/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateJob",
         "plural": false,
         "selections": [
-          (v14/*: any*/),
+          (v15/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -449,7 +471,6 @@ return {
                 "name": "job",
                 "plural": false,
                 "selections": [
-                  (v15/*: any*/),
                   (v16/*: any*/),
                   (v17/*: any*/),
                   (v18/*: any*/),
@@ -464,6 +485,8 @@ return {
                   (v27/*: any*/),
                   (v28/*: any*/),
                   (v29/*: any*/),
+                  (v30/*: any*/),
+                  (v31/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -504,8 +527,8 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v15/*: any*/),
-                      (v14/*: any*/)
+                      (v16/*: any*/),
+                      (v15/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -566,7 +589,7 @@ return {
                         "name": "name",
                         "storageKey": null
                       },
-                      (v15/*: any*/)
+                      (v16/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -661,7 +684,7 @@ return {
     ]
   },
   "params": {
-    "id": "68af7ca8232795a89022f126b9bd16c0",
+    "id": "427daacb449bd2c78d862e443f0619a3",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",
@@ -670,6 +693,6 @@ return {
 };
 })();
 
-(node as any).hash = "71f0dc2310e6ec3fe832aed3ff89ec86";
+(node as any).hash = "acc51e239c32af078927eca89cdb5591";
 
 export default node;

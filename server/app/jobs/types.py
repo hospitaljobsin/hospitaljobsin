@@ -697,6 +697,10 @@ class JobType(BaseNodeType[Job]):
         description="The maximum salary of the job.",
     )
 
+    is_salary_negotiable: bool = strawberry.field(
+        description="Whether the salary is negotiable.",
+    )
+
     min_experience: int | None = strawberry.field(
         description="The minimum experience required for the job.",
     )
@@ -744,6 +748,7 @@ class JobType(BaseNodeType[Job]):
             currency=CurrencyEnum[job.currency.upper()],
             min_salary=job.min_salary,
             max_salary=job.max_salary,
+            is_salary_negotiable=job.is_salary_negotiable,
             min_experience=job.min_experience,
             max_experience=job.max_experience,
             updated_at=job.updated_at,

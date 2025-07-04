@@ -25,6 +25,7 @@ import {
 	NumberInput,
 	Radio,
 	RadioGroup,
+	Switch,
 	addToast,
 	cn,
 	useDisclosure,
@@ -60,6 +61,7 @@ const JobEditFormFragment = graphql`
 	maxExperience
 	minSalary
 	maxSalary
+	isSalaryNegotiable
 	vacancies
 	skills
 	type
@@ -83,7 +85,8 @@ mutation JobEditFormMutation(
     $expiresAt: DateTime,
     $workMode: WorkMode,
     $jobType: JobType,
-    $vacancies: Int
+    $vacancies: Int,
+    $isSalaryNegotiable: Boolean!
 ) {
     updateJob(
         title: $title,
@@ -98,7 +101,8 @@ mutation JobEditFormMutation(
         expiresAt: $expiresAt,
         workMode: $workMode,
         jobType: $jobType,
-        vacancies: $vacancies
+        vacancies: $vacancies,
+        isSalaryNegotiable: $isSalaryNegotiable
     ) {
         __typename
         ...on UpdateJobSuccess {
@@ -112,6 +116,7 @@ mutation JobEditFormMutation(
 				maxExperience
 				minSalary
 				maxSalary
+				isSalaryNegotiable
 				vacancies
 				skills
 				type
@@ -159,6 +164,7 @@ const formSchema = z.object({
 		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME", "LOCUM"])
 		.nullable(),
 	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE"]).nullable(),
+	isSalaryNegotiable: z.boolean(),
 });
 
 type Props = {
@@ -217,6 +223,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 				["HYBRID", "OFFICE", "REMOTE"].includes(jobData.workMode)
 					? (jobData.workMode as WorkMode)
 					: null,
+			isSalaryNegotiable: jobData.isSalaryNegotiable ?? false,
 		},
 	});
 
@@ -300,6 +307,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 				expiresAt: formData.expiresAt ? formData.expiresAt.toString() : null,
 				jobType: formData.jobType,
 				workMode: formData.workMode,
+				isSalaryNegotiable: !!formData.isSalaryNegotiable,
 			},
 			onCompleted(response) {
 				if (response.updateJob.__typename === "JobNotFoundError") {
@@ -335,6 +343,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 						workMode: response.updateJob.job.workMode
 							? response.updateJob.job.workMode.toString()
 							: null,
+						isSalaryNegotiable: response.updateJob.job.isSalaryNegotiable,
 					});
 
 					addToast({
@@ -560,6 +569,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 								aria-label="Salary range"
 								title="Salary range"
 								startContent={<IndianRupee size={20} />}
+								classNames={{
+									content: "flex flex-col gap-6",
+								}}
 							>
 								<div className="w-full flex gap-6 items-start">
 									<Controller
@@ -629,6 +641,21 @@ export default function JobEditForm({ rootQuery }: Props) {
 										}}
 									/>
 								</div>
+								<Controller
+									control={control}
+									name="isSalaryNegotiable"
+									render={({ field }) => (
+										<div className="flex items-center gap-3 mt-4">
+											<Switch
+												isSelected={field.value}
+												onChange={field.onChange}
+												name="isSalaryNegotiable"
+												aria-label="Salary is negotiable"
+											/>
+											<span className="text-sm">Salary is negotiable</span>
+										</div>
+									)}
+								/>
 							</AccordionItem>
 							<AccordionItem
 								key="experience-range"

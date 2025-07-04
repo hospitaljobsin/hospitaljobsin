@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<38688fc964747162aea87aa969b3bdbe>>
- * @relayHash 9da4d6f4879bd51cdc2314f2cf8c9e9e
+ * @generated SignedSource<<bae690f94a96653a8192499b329ab977>>
+ * @relayHash 5ccfcdaae8bc0e2037cfd3a6db91025d
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9da4d6f4879bd51cdc2314f2cf8c9e9e
+// @relayRequestID 5ccfcdaae8bc0e2037cfd3a6db91025d
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
@@ -17,6 +17,7 @@ export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 export type JobCreationFormMutation$variables = {
   description: string;
   expiresAt?: any | null | undefined;
+  isSalaryNegotiable: boolean;
   jobType?: JobType | null | undefined;
   location?: string | null | undefined;
   maxExperience?: number | null | undefined;
@@ -68,59 +69,64 @@ v1 = {
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "jobType"
+  "name": "isSalaryNegotiable"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "location"
+  "name": "jobType"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxExperience"
+  "name": "location"
 },
 v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxSalary"
+  "name": "maxExperience"
 },
 v6 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minExperience"
+  "name": "maxSalary"
 },
 v7 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minSalary"
+  "name": "minExperience"
 },
 v8 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "organizationId"
+  "name": "minSalary"
 },
 v9 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "skills"
+  "name": "organizationId"
 },
 v10 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "title"
+  "name": "skills"
 },
 v11 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "vacancies"
+  "name": "title"
 },
 v12 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "vacancies"
+},
+v13 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "workMode"
 },
-v13 = [
+v14 = [
   {
     "kind": "Variable",
     "name": "description",
@@ -130,6 +136,11 @@ v13 = [
     "kind": "Variable",
     "name": "expiresAt",
     "variableName": "expiresAt"
+  },
+  {
+    "kind": "Variable",
+    "name": "isSalaryNegotiable",
+    "variableName": "isSalaryNegotiable"
   },
   {
     "kind": "Variable",
@@ -187,14 +198,14 @@ v13 = [
     "variableName": "workMode"
   }
 ],
-v14 = {
+v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v15 = {
+v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -216,7 +227,8 @@ return {
       (v9/*: any*/),
       (v10/*: any*/),
       (v11/*: any*/),
-      (v12/*: any*/)
+      (v12/*: any*/),
+      (v13/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -224,13 +236,13 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v13/*: any*/),
+        "args": (v14/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "createJob",
         "plural": false,
         "selections": [
-          (v14/*: any*/),
+          (v15/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -250,7 +262,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v15/*: any*/)
+                      (v16/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -271,32 +283,33 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v8/*: any*/),
-      (v10/*: any*/),
-      (v0/*: any*/),
       (v9/*: any*/),
-      (v3/*: any*/),
+      (v11/*: any*/),
+      (v0/*: any*/),
+      (v10/*: any*/),
+      (v4/*: any*/),
+      (v8/*: any*/),
+      (v6/*: any*/),
       (v7/*: any*/),
       (v5/*: any*/),
-      (v6/*: any*/),
-      (v4/*: any*/),
       (v1/*: any*/),
-      (v2/*: any*/),
+      (v3/*: any*/),
+      (v13/*: any*/),
       (v12/*: any*/),
-      (v11/*: any*/)
+      (v2/*: any*/)
     ],
     "kind": "Operation",
     "name": "JobCreationFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v13/*: any*/),
+        "args": (v14/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "createJob",
         "plural": false,
         "selections": [
-          (v14/*: any*/),
+          (v15/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -316,7 +329,7 @@ return {
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v15/*: any*/),
+                      (v16/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -340,7 +353,7 @@ return {
     ]
   },
   "params": {
-    "id": "9da4d6f4879bd51cdc2314f2cf8c9e9e",
+    "id": "5ccfcdaae8bc0e2037cfd3a6db91025d",
     "metadata": {},
     "name": "JobCreationFormMutation",
     "operationKind": "mutation",
@@ -349,6 +362,6 @@ return {
 };
 })();
 
-(node as any).hash = "f00682af49363914166d3e89d29d5350";
+(node as any).hash = "ce52e4c8b318c2323c1f436357e86868";
 
 export default node;
