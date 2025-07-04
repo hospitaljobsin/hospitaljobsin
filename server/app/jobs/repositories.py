@@ -58,6 +58,22 @@ class JobSortBy(Enum):
     LAST_APPLICANT_APPLIED_AT = "last_applicant_applied_at"
 
 
+class JobWorkMode(Enum):
+    REMOTE = "remote"
+    HYBRID = "hybrid"
+    OFFICE = "office"
+    ANY = "any"
+
+
+class JobType(Enum):
+    FULL_TIME = "full_time"
+    PART_TIME = "part_time"
+    INTERNSHIP = "internship"
+    CONTRACT = "contract"
+    LOCUM = "locum"
+    ANY = "any"
+
+
 class JobRepo:
     def __init__(self, embeddings_service: EmbeddingsService) -> None:
         self._embeddings_service = embeddings_service
@@ -296,6 +312,8 @@ class JobRepo:
 
     async def get_all_active(
         self,
+        work_mode: JobWorkMode,
+        job_type: JobType,
         search_term: str | None = None,
         coordinates: Coordinates | None = None,
         proximity_km: float | None = None,
@@ -336,6 +354,30 @@ class JobRepo:
             filters.append(Job.min_salary >= min_salary)
         if max_salary is not None:
             filters.append(Job.max_salary <= max_salary)
+
+        match work_mode:
+            case JobWorkMode.REMOTE:
+                filters.append(Job.work_mode == JobWorkMode.REMOTE)
+            case JobWorkMode.HYBRID:
+                filters.append(Job.work_mode == JobWorkMode.HYBRID)
+            case JobWorkMode.OFFICE:
+                filters.append(Job.work_mode == JobWorkMode.OFFICE)
+            case JobWorkMode.ANY:
+                pass
+
+        match job_type:
+            case JobType.FULL_TIME:
+                filters.append(Job.type == JobType.FULL_TIME)
+            case JobType.PART_TIME:
+                filters.append(Job.type == JobType.PART_TIME)
+            case JobType.INTERNSHIP:
+                filters.append(Job.type == JobType.INTERNSHIP)
+            case JobType.CONTRACT:
+                filters.append(Job.type == JobType.CONTRACT)
+            case JobType.LOCUM:
+                filters.append(Job.type == JobType.LOCUM)
+            case JobType.ANY:
+                pass
 
         search_criteria = Job.find(*filters)
 

@@ -3,14 +3,15 @@ import pageSearchQuery, {
 	type pageSearchQuery as pageSearchQueryType,
 } from "@/__generated__/pageSearchQuery.graphql";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
+import { useEffect } from "react";
 import {
 	type PreloadedQuery,
 	graphql,
 	useFragment,
 	usePreloadedQuery,
 } from "react-relay";
-import JobList from "../landing/JobList";
 import FilterSidebar from "./FilterSidebar";
+import SearchJobsList from "./SearchJobsList";
 
 export const SearchPageContentFragment = graphql`
   fragment SearchPageContent_query on Query
@@ -44,6 +45,31 @@ const FILTER_DEFAULTS = {
 	locationName: "",
 	coordinates: "",
 	proximityKm: 50,
+	workMode: "ANY",
+	jobType: "ANY",
+};
+
+// Valid enum values for validation
+const VALID_WORK_MODES = ["ANY", "HYBRID", "OFFICE", "REMOTE"] as const;
+const VALID_JOB_TYPES = [
+	"ANY",
+	"CONTRACT",
+	"FULL_TIME",
+	"INTERNSHIP",
+	"LOCUM",
+	"PART_TIME",
+] as const;
+
+type ValidWorkMode = (typeof VALID_WORK_MODES)[number];
+type ValidJobType = (typeof VALID_JOB_TYPES)[number];
+
+// Function to validate enum values and return null if invalid
+const validateEnum = <T extends string>(
+	value: string | null | undefined,
+	validValues: readonly T[],
+): T | null => {
+	if (!value) return null;
+	return validValues.includes(value as T) ? (value as T) : null;
 };
 
 export default function SearchPageContent({
@@ -65,9 +91,35 @@ export default function SearchPageContent({
 			locationName: parseAsString.withDefault(FILTER_DEFAULTS.locationName),
 			coordinates: parseAsString.withDefault(FILTER_DEFAULTS.coordinates),
 			proximityKm: parseAsInteger.withDefault(FILTER_DEFAULTS.proximityKm),
+			workMode: parseAsString.withDefault(FILTER_DEFAULTS.workMode),
+			jobType: parseAsString.withDefault(FILTER_DEFAULTS.jobType),
 		},
 		{ shallow: false },
 	);
+
+	console.log(filters);
+
+	// Validate workMode and jobType in useEffect to avoid render-time state updates
+	useEffect(() => {
+		const validatedWorkMode = validateEnum(filters.workMode, VALID_WORK_MODES);
+		const validatedJobType = validateEnum(filters.jobType, VALID_JOB_TYPES);
+
+		// Update filters if validation failed (clear invalid values)
+		if (
+			validatedWorkMode !== filters.workMode ||
+			validatedJobType !== filters.jobType
+		) {
+			setFilters({
+				...filters,
+				workMode: validatedWorkMode || FILTER_DEFAULTS.workMode,
+				jobType: validatedJobType || FILTER_DEFAULTS.jobType,
+			});
+		}
+	}, [filters.workMode, filters.jobType, filters, setFilters]);
+
+	// Get validated values for use in render
+	const validatedWorkMode = validateEnum(filters.workMode, VALID_WORK_MODES);
+	const validatedJobType = validateEnum(filters.jobType, VALID_JOB_TYPES);
 
 	// When passing to FilterSidebar and JobList, treat undefined as null
 	const sidebarFilters = {
@@ -95,7 +147,7 @@ export default function SearchPageContent({
 				<FilterSidebar values={sidebarFilters} onChange={setFilters} />
 			</div>
 			<div className="flex-1">
-				<JobList
+				<SearchJobsList
 					rootQuery={data}
 					searchTerm={filters.speciality || null}
 					coordinates={parseCoordinates(filters.coordinates)}
@@ -104,6 +156,8 @@ export default function SearchPageContent({
 					maxExperience={filters.maxExperience ?? null}
 					minSalary={filters.minSalary ?? null}
 					maxSalary={filters.maxSalary ?? null}
+					workMode={validatedWorkMode || FILTER_DEFAULTS.workMode}
+					jobType={validatedJobType || FILTER_DEFAULTS.jobType}
 				/>
 			</div>
 		</div>

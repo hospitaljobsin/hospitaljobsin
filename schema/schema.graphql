@@ -1543,6 +1543,28 @@ enum JobType {
 }
 
 """
+The filter for the type of the job.
+"""
+enum JobTypeFilter {
+	FULL_TIME
+	PART_TIME
+	INTERNSHIP
+	CONTRACT
+	LOCUM
+	ANY
+}
+
+"""
+The filter for the work mode of the job.
+"""
+enum JobWorkModeFilter {
+	REMOTE
+	HYBRID
+	OFFICE
+	ANY
+}
+
+"""
 The language details.
 """
 type Language {
@@ -3634,6 +3656,16 @@ type Query {
 		How many items to return before the cursor?
 		"""
 		last: Int = null
+
+		"""
+		The work mode to filter jobs by.
+		"""
+		workMode: JobWorkModeFilter! = ANY
+
+		"""
+		The type of job to filter jobs by.
+		"""
+		jobType: JobTypeFilter! = ANY
 	): JobConnection!
 
 	"""

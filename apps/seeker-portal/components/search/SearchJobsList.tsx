@@ -1,22 +1,33 @@
 import type { JobListFragment$key } from "@/__generated__/JobListFragment.graphql";
 import type { JobListInternalFragment$key } from "@/__generated__/JobListInternalFragment.graphql";
-import type { CoordinatesInput } from "@/__generated__/JobListRefetchQuery.graphql";
+import type {
+	CoordinatesInput,
+	JobListRefetchQuery$variables,
+	JobTypeFilter,
+	JobWorkModeFilter,
+} from "@/__generated__/JobListRefetchQuery.graphql";
 import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
+import Job from "@/components/landing/Job";
+import JobListSkeleton from "@/components/landing/JobListSkeleton";
 import { Card, CardBody } from "@heroui/react";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import Job from "./Job";
-import JobListSkeleton from "./JobListSkeleton";
 
 const JobListFragment = graphql`
 fragment JobListFragment on Query @argumentDefinitions(
 	proximityKm: { type: "Float", defaultValue: null }
 	searchTerm: { type: "String", defaultValue: null }
 	coordinates: { type: "CoordinatesInput", defaultValue: null }
+	minExperience: { type: "Int", defaultValue: null }
+	maxExperience: { type: "Int", defaultValue: null }
+	minSalary: { type: "Int", defaultValue: null }
+	maxSalary: { type: "Int", defaultValue: null }
+	workMode: { type: "JobWorkModeFilter", defaultValue: ANY }
+	jobType: { type: "JobTypeFilter", defaultValue: ANY }
 ) {
-	...JobListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
+	...JobListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, maxExperience: $maxExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
 	viewer {
 		...JobControlsAuthFragment
 	}
@@ -32,9 +43,15 @@ const JobListInternalFragment = graphql`
     searchTerm: { type: "String", defaultValue: null }
 	coordinates: { type: "CoordinatesInput", defaultValue: null }
     count: { type: "Int", defaultValue: 10 }
+	minExperience: { type: "Int", defaultValue: null }
+	maxExperience: { type: "Int", defaultValue: null }
+	minSalary: { type: "Int", defaultValue: null }
+	maxSalary: { type: "Int", defaultValue: null }
+	workMode: { type: "JobWorkModeFilter", defaultValue: ANY }
+	jobType: { type: "JobTypeFilter", defaultValue: ANY }
   ){
-    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
-      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm"]) {
+    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, maxExperience: $maxExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
+      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm", "minExperience", "maxExperience", "minSalary", "maxSalary", "workMode", "jobType"]) {
       edges {
         node {
           id
@@ -54,13 +71,25 @@ type Props = {
 	searchTerm: string | null;
 	coordinates: CoordinatesInput | null;
 	proximityKm: number | null;
+	minExperience?: number | null;
+	maxExperience?: number | null;
+	minSalary?: number | null;
+	maxSalary?: number | null;
+	workMode?: string;
+	jobType?: string;
 };
 
-export default function JobList({
+export default function SearchJobsList({
 	rootQuery,
 	searchTerm,
 	coordinates,
 	proximityKm,
+	minExperience,
+	maxExperience,
+	minSalary,
+	maxSalary,
+	workMode,
+	jobType,
 }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(JobListFragment, rootQuery);
@@ -70,7 +99,6 @@ export default function JobList({
 	>(JobListInternalFragment, root);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
-
 	const hasMountedRef = useRef(false);
 
 	useEffect(() => {
@@ -94,28 +122,46 @@ export default function JobList({
 		return () => observer.disconnect();
 	}, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
-	// Debounced search term refetch
+	// Debounced filter refetch for all filters
 	useEffect(() => {
 		if (!hasMountedRef.current) {
-			// don't refetch on first render
 			hasMountedRef.current = true;
 			return;
 		}
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
-				refetch(
-					{
-						searchTerm,
-						coordinates,
-						proximityKm,
-					},
-					{ fetchPolicy: "network-only" }, // Use network-only to ensure fresh data when parameters change to null
-				);
+				// Only include defined variables
+				const refetchVars: JobListRefetchQuery$variables = {
+					searchTerm,
+					coordinates,
+					proximityKm,
+				};
+				if (typeof minExperience !== "undefined")
+					refetchVars.minExperience = minExperience;
+				if (typeof maxExperience !== "undefined")
+					refetchVars.maxExperience = maxExperience;
+				if (typeof minSalary !== "undefined") refetchVars.minSalary = minSalary;
+				if (typeof maxSalary !== "undefined") refetchVars.maxSalary = maxSalary;
+				if (typeof workMode !== "undefined")
+					refetchVars.workMode = workMode as JobWorkModeFilter;
+				if (typeof jobType !== "undefined")
+					refetchVars.jobType = jobType as JobTypeFilter;
+				refetch(refetchVars, { fetchPolicy: "network-only" });
 			});
-		}, 300); // Adjust debounce delay as needed
-
+		}, 300);
 		return () => clearTimeout(debounceTimeout);
-	}, [refetch, searchTerm, coordinates, proximityKm]); // Dependencies correctly tracked
+	}, [
+		refetch,
+		searchTerm,
+		coordinates,
+		proximityKm,
+		minExperience,
+		maxExperience,
+		minSalary,
+		maxSalary,
+		workMode,
+		jobType,
+	]);
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (

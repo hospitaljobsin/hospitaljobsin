@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<647bd66a3c44b857d36b8ee1731c15d4>>
+ * @generated SignedSource<<9977c6a105dd4a464f5fe3019bc43cc7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -53,6 +53,11 @@ return {
       "name": "cursor"
     },
     {
+      "defaultValue": "ANY",
+      "kind": "LocalArgument",
+      "name": "jobType"
+    },
+    {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "maxExperience"
@@ -81,6 +86,11 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "searchTerm"
+    },
+    {
+      "defaultValue": "ANY",
+      "kind": "LocalArgument",
+      "name": "workMode"
     }
   ],
   "kind": "Fragment",
@@ -118,6 +128,11 @@ return {
         },
         {
           "kind": "Variable",
+          "name": "jobType",
+          "variableName": "jobType"
+        },
+        {
+          "kind": "Variable",
           "name": "maxExperience",
           "variableName": "maxExperience"
         },
@@ -145,6 +160,11 @@ return {
           "kind": "Variable",
           "name": "searchTerm",
           "variableName": "searchTerm"
+        },
+        {
+          "kind": "Variable",
+          "name": "workMode",
+          "variableName": "workMode"
         }
       ],
       "concreteType": "JobConnection",
@@ -239,6 +259,6 @@ return {
 };
 })();
 
-(node as any).hash = "8023fb8b12c278a30ebd92672a66a616";
+(node as any).hash = "38c4b851b248b5eaa08ac462b93d2692";
 
 export default node;

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<cc8118fbe5bb2fa45e7bf833c4da9030>>
- * @relayHash c1d452e151050a8bcdcee81ebe485add
+ * @generated SignedSource<<0a4adfd7294cd7aa69fc5c3276af0bf2>>
+ * @relayHash f7d69125bb010a70bc77b58267839f26
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c1d452e151050a8bcdcee81ebe485add
+// @relayRequestID f7d69125bb010a70bc77b58267839f26
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -107,6 +107,11 @@ v13 = [
     "name": "first",
     "value": 10
   },
+  {
+    "kind": "Literal",
+    "name": "jobType",
+    "value": "ANY"
+  },
   (v8/*: any*/),
   (v9/*: any*/),
   (v10/*: any*/),
@@ -116,6 +121,11 @@ v13 = [
     "kind": "Variable",
     "name": "searchTerm",
     "variableName": "speciality"
+  },
+  {
+    "kind": "Literal",
+    "name": "workMode",
+    "value": "ANY"
   }
 ],
 v14 = {
@@ -399,7 +409,9 @@ return {
           "minExperience",
           "maxExperience",
           "minSalary",
-          "maxSalary"
+          "maxSalary",
+          "workMode",
+          "jobType"
         ],
         "handle": "connection",
         "key": "JobListFragment_jobs",
@@ -433,7 +445,7 @@ return {
     ]
   },
   "params": {
-    "id": "c1d452e151050a8bcdcee81ebe485add",
+    "id": "f7d69125bb010a70bc77b58267839f26",
     "metadata": {},
     "name": "pageSearchQuery",
     "operationKind": "query",

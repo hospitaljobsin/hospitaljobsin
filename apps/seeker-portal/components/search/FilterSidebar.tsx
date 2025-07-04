@@ -1,4 +1,11 @@
-import { Button, Card, CardBody, Slider } from "@heroui/react";
+import {
+	Button,
+	Card,
+	CardBody,
+	Radio,
+	RadioGroup,
+	Slider,
+} from "@heroui/react";
 import { useState } from "react";
 import LocationAutocomplete from "../forms/LocationAutocomplete";
 
@@ -10,6 +17,8 @@ export type FilterValues = {
 	locationName: string;
 	coordinates: string;
 	proximityKm: number;
+	workMode: string;
+	jobType: string;
 };
 
 export type FilterSidebarProps = {
@@ -152,6 +161,36 @@ export default function FilterSidebar({
 					<div className="text-xs text-muted-foreground mt-1">
 						{values.proximityKm} km
 					</div>
+				</div>
+				<div>
+					<label className="block text-sm font-medium mb-1">Work Mode</label>
+					<RadioGroup
+						value={values.workMode}
+						onValueChange={(value) => onChange({ ...values, workMode: value })}
+						className="w-full"
+						orientation="horizontal"
+					>
+						<Radio value="ANY">Any</Radio>
+						<Radio value="REMOTE">Remote</Radio>
+						<Radio value="HYBRID">Hybrid</Radio>
+						<Radio value="OFFICE">Office</Radio>
+					</RadioGroup>
+				</div>
+				<div>
+					<label className="block text-sm font-medium mb-1">Job Type</label>
+					<RadioGroup
+						value={values.jobType}
+						onValueChange={(value) => onChange({ ...values, jobType: value })}
+						className="w-full"
+						orientation="horizontal"
+					>
+						<Radio value="ANY">Any</Radio>
+						<Radio value="FULL_TIME">Full Time</Radio>
+						<Radio value="PART_TIME">Part Time</Radio>
+						<Radio value="INTERNSHIP">Internship</Radio>
+						<Radio value="CONTRACT">Contract</Radio>
+						<Radio value="LOCUM">Locum</Radio>
+					</RadioGroup>
 				</div>
 			</CardBody>
 		</Card>

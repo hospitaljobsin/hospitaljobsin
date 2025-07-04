@@ -10,11 +10,13 @@ from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo
 from app.geocoding.types import CoordinatesInputType
 
-from .repositories import JobApplicantRepo, JobRepo, SavedJobRepo
+from .repositories import JobApplicantRepo, JobRepo, JobType, JobWorkMode, SavedJobRepo
 from .types import (
     JobApplicantConnectionType,
     JobConnectionType,
     SavedJobConnectionType,
+    JobWorkModeFilterEnum,
+    JobTypeFilterEnum,
 )
 
 
@@ -100,6 +102,18 @@ class JobQuery:
                 description="How many items to return before the cursor?",
             ),
         ] = None,
+        work_mode: Annotated[
+            JobWorkModeFilterEnum,
+            strawberry.argument(
+                description="The work mode to filter jobs by.",
+            ),
+        ] = JobWorkModeFilterEnum.ANY,
+        job_type: Annotated[
+            JobTypeFilterEnum,
+            strawberry.argument(
+                description="The type of job to filter jobs by.",
+            ),
+        ] = JobTypeFilterEnum.ANY,
     ) -> JobConnectionType:
         paginated_result = await job_repo.get_all_active(
             search_term=search_term,
@@ -116,6 +130,8 @@ class JobQuery:
             last=last,
             after=(after.node_id if after else None),
             before=(before.node_id if before else None),
+            work_mode=JobWorkMode(work_mode.value.lower()),
+            job_type=JobType(job_type.value.lower()),
         )
 
         return JobConnectionType.marshal(

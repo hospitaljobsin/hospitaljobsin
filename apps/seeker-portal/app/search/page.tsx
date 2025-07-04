@@ -67,6 +67,8 @@ export default function SearchPage() {
 		salary: salary ? Number.parseInt(salary) : null,
 		coordinates: parseCoordinates(coordinates),
 		first: 10,
+		workMode: "ANY",
+		jobType: "ANY",
 	};
 
 	const preloadedQuery = loadQuery(environment, searchPageQuery, variables);

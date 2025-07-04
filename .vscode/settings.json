@@ -10,7 +10,7 @@
 	},
 	"editor.defaultFormatter": "biomejs.biome",
 	"ruff.nativeServer": true,
-	"python.languageServer": "Pylance",
+	"python.languageServer": "None",
 	"python.analysis.typeCheckingMode": "standard",
 	"python.defaultInterpreterPath": "${workspaceFolder}/server/.venv/bin/python",
 	"python.testing.pytestEnabled": true,

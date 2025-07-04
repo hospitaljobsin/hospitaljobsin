@@ -79,6 +79,30 @@ class JobSortByEnum(Enum):
 
 
 @strawberry.enum(
+    name="JobWorkModeFilter",
+    description="The filter for the work mode of the job.",
+)
+class JobWorkModeFilterEnum(Enum):
+    REMOTE = "remote"
+    HYBRID = "hybrid"
+    OFFICE = "office"
+    ANY = "any"
+
+
+@strawberry.enum(
+    name="JobTypeFilter",
+    description="The filter for the type of the job.",
+)
+class JobTypeFilterEnum(Enum):
+    FULL_TIME = "full_time"
+    PART_TIME = "part_time"
+    INTERNSHIP = "internship"
+    CONTRACT = "contract"
+    LOCUM = "locum"
+    ANY = "any"
+
+
+@strawberry.enum(
     name="JobType",
     description="The type of job.",
 )
