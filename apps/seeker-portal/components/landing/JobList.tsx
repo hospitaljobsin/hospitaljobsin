@@ -1,6 +1,5 @@
 import type { JobListFragment$key } from "@/__generated__/JobListFragment.graphql";
 import type { JobListInternalFragment$key } from "@/__generated__/JobListInternalFragment.graphql";
-import type { CoordinatesInput } from "@/__generated__/JobListRefetchQuery.graphql";
 import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
 import { Card, CardBody } from "@heroui/react";
 import { Search } from "lucide-react";
@@ -51,17 +50,9 @@ const JobListInternalFragment = graphql`
 
 type Props = {
 	rootQuery: JobListFragment$key;
-	searchTerm: string | null;
-	coordinates: CoordinatesInput | null;
-	proximityKm: number | null;
 };
 
-export default function JobList({
-	rootQuery,
-	searchTerm,
-	coordinates,
-	proximityKm,
-}: Props) {
+export default function JobList({ rootQuery }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(JobListFragment, rootQuery);
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
@@ -93,29 +84,6 @@ export default function JobList({
 		observer.observe(observerRef.current);
 		return () => observer.disconnect();
 	}, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
-
-	// Debounced search term refetch
-	useEffect(() => {
-		if (!hasMountedRef.current) {
-			// don't refetch on first render
-			hasMountedRef.current = true;
-			return;
-		}
-		const debounceTimeout = setTimeout(() => {
-			startTransition(() => {
-				refetch(
-					{
-						searchTerm,
-						coordinates,
-						proximityKm,
-					},
-					{ fetchPolicy: "network-only" }, // Use network-only to ensure fresh data when parameters change to null
-				);
-			});
-		}, 300); // Adjust debounce delay as needed
-
-		return () => clearTimeout(debounceTimeout);
-	}, [refetch, searchTerm, coordinates, proximityKm]); // Dependencies correctly tracked
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (

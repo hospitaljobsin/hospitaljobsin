@@ -1,12 +1,11 @@
 "use client";
-import { Suspense, useState } from "react";
-import { graphql, useFragment } from "react-relay";
-import { useDebounce } from "use-debounce";
 import type { LandingViewFragment$key } from "@/__generated__/LandingViewFragment.graphql";
-import type { CoordinatesInput } from "../../__generated__/JobListRefetchQuery.graphql";
+import { Suspense } from "react";
+import { useFragment } from "react-relay";
+import { graphql } from "relay-runtime";
 import JobList from "./JobList";
-import JobListController from "./JobListController";
 import JobListSkeleton from "./JobListSkeleton";
+import { LandingSearchController } from "./LandingSearchController";
 
 const LandingViewFragment = graphql`
   fragment LandingViewFragment on Query   @argumentDefinitions(
@@ -23,34 +22,13 @@ export default function LandingView({
 }: {
 	query: LandingViewFragment$key;
 }) {
-	const [searchTerm, setSearchTerm] = useState<string | null>(null);
-	const [coordinates, setCoordinates] = useState<CoordinatesInput | null>(null);
-
-	const [proximityKm, setProximityKm] = useState<number | null>(null);
-
-	const [debouncedSearchTerm] = useDebounce(searchTerm, 1000);
-	const [debouncedCoordinates] = useDebounce(coordinates, 1000);
-	const [debouncedProximityKm] = useDebounce(proximityKm, 1000);
-
 	const data = useFragment(LandingViewFragment, query);
-
 	return (
-		<div className="w-full h-full flex flex-col mt-4 sm:-mt-20 gap-4 sm:gap-8">
-			<JobListController
-				searchTerm={searchTerm}
-				setSearchTerm={setSearchTerm}
-				coordinates={coordinates}
-				setCoordinates={setCoordinates}
-				proximityKm={proximityKm}
-				setProximityKm={setProximityKm}
-			/>
+		<div className="w-full h-full flex flex-col gap-4 sm:gap-8 items-center justify-center">
+			<LandingSearchController />
+			Trending Jobs
 			<Suspense fallback={<JobListSkeleton />}>
-				<JobList
-					searchTerm={debouncedSearchTerm}
-					rootQuery={data}
-					coordinates={debouncedCoordinates}
-					proximityKm={debouncedProximityKm}
-				/>
+				<JobList rootQuery={data} />
 			</Suspense>
 		</div>
 	);

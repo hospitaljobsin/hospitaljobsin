@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5470efad72eb40eb642573fc4e71feb9>>
+ * @generated SignedSource<<f7b70c4466025a1e33a9346e847b8e1d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type JobListInternalFragment$data = {
+export type SearchJobsListInternalFragment$data = {
   readonly jobs: {
     readonly edges: ReadonlyArray<{
       readonly node: {
@@ -22,14 +22,14 @@ export type JobListInternalFragment$data = {
       readonly hasNextPage: boolean;
     };
   };
-  readonly " $fragmentType": "JobListInternalFragment";
+  readonly " $fragmentType": "SearchJobsListInternalFragment";
 };
-export type JobListInternalFragment$key = {
-  readonly " $data"?: JobListInternalFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"JobListInternalFragment">;
+export type SearchJobsListInternalFragment$key = {
+  readonly " $data"?: SearchJobsListInternalFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"SearchJobsListInternalFragment">;
 };
 
-import JobListRefetchQuery_graphql from './JobListRefetchQuery.graphql';
+import SearchJobsListRefetchQuery_graphql from './SearchJobsListRefetchQuery.graphql';
 
 const node: ReaderFragment = (function(){
 var v0 = [
@@ -53,6 +53,31 @@ return {
       "name": "cursor"
     },
     {
+      "defaultValue": "ANY",
+      "kind": "LocalArgument",
+      "name": "jobType"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "maxExperience"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "maxSalary"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "minExperience"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "minSalary"
+    },
+    {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "proximityKm"
@@ -61,6 +86,11 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "searchTerm"
+    },
+    {
+      "defaultValue": "ANY",
+      "kind": "LocalArgument",
+      "name": "workMode"
     }
   ],
   "kind": "Fragment",
@@ -83,10 +113,10 @@ return {
         "path": (v0/*: any*/)
       },
       "fragmentPathInResult": [],
-      "operation": JobListRefetchQuery_graphql
+      "operation": SearchJobsListRefetchQuery_graphql
     }
   },
-  "name": "JobListInternalFragment",
+  "name": "SearchJobsListInternalFragment",
   "selections": [
     {
       "alias": "jobs",
@@ -98,6 +128,31 @@ return {
         },
         {
           "kind": "Variable",
+          "name": "jobType",
+          "variableName": "jobType"
+        },
+        {
+          "kind": "Variable",
+          "name": "maxExperience",
+          "variableName": "maxExperience"
+        },
+        {
+          "kind": "Variable",
+          "name": "maxSalary",
+          "variableName": "maxSalary"
+        },
+        {
+          "kind": "Variable",
+          "name": "minExperience",
+          "variableName": "minExperience"
+        },
+        {
+          "kind": "Variable",
+          "name": "minSalary",
+          "variableName": "minSalary"
+        },
+        {
+          "kind": "Variable",
           "name": "proximityKm",
           "variableName": "proximityKm"
         },
@@ -105,6 +160,11 @@ return {
           "kind": "Variable",
           "name": "searchTerm",
           "variableName": "searchTerm"
+        },
+        {
+          "kind": "Variable",
+          "name": "workMode",
+          "variableName": "workMode"
         }
       ],
       "concreteType": "JobConnection",
@@ -199,6 +259,6 @@ return {
 };
 })();
 
-(node as any).hash = "31b36d35767a47445074efcb26869bcb";
+(node as any).hash = "42789323062456a04081500fc107e782";
 
 export default node;

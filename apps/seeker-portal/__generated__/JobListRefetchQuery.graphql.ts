@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<fd2882a1ab62ce61a29fe92ef9f104fc>>
- * @relayHash 84a175bb8f72e21f580d22d6118f49a4
+ * @generated SignedSource<<7f7ce415192432e1a8f034fafc34b8e2>>
+ * @relayHash be1dc1c695417e060f8c009ea33bd537
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 84a175bb8f72e21f580d22d6118f49a4
+// @relayRequestID be1dc1c695417e060f8c009ea33bd537
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type JobTypeFilter = "ANY" | "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
-export type JobWorkModeFilter = "ANY" | "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 export type CoordinatesInput = {
   latitude: number;
   longitude: number;
@@ -23,14 +21,8 @@ export type JobListRefetchQuery$variables = {
   coordinates?: CoordinatesInput | null | undefined;
   count?: number | null | undefined;
   cursor?: string | null | undefined;
-  jobType?: JobTypeFilter | null | undefined;
-  maxExperience?: number | null | undefined;
-  maxSalary?: number | null | undefined;
-  minExperience?: number | null | undefined;
-  minSalary?: number | null | undefined;
   proximityKm?: number | null | undefined;
   searchTerm?: string | null | undefined;
-  workMode?: JobWorkModeFilter | null | undefined;
 };
 export type JobListRefetchQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"JobListInternalFragment">;
@@ -58,31 +50,6 @@ var v0 = [
     "name": "cursor"
   },
   {
-    "defaultValue": "ANY",
-    "kind": "LocalArgument",
-    "name": "jobType"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "maxExperience"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "maxSalary"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "minExperience"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "minSalary"
-  },
-  {
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "proximityKm"
@@ -91,11 +58,6 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "searchTerm"
-  },
-  {
-    "defaultValue": "ANY",
-    "kind": "LocalArgument",
-    "name": "workMode"
   }
 ],
 v1 = {
@@ -105,45 +67,15 @@ v1 = {
 },
 v2 = {
   "kind": "Variable",
-  "name": "jobType",
-  "variableName": "jobType"
-},
-v3 = {
-  "kind": "Variable",
-  "name": "maxExperience",
-  "variableName": "maxExperience"
-},
-v4 = {
-  "kind": "Variable",
-  "name": "maxSalary",
-  "variableName": "maxSalary"
-},
-v5 = {
-  "kind": "Variable",
-  "name": "minExperience",
-  "variableName": "minExperience"
-},
-v6 = {
-  "kind": "Variable",
-  "name": "minSalary",
-  "variableName": "minSalary"
-},
-v7 = {
-  "kind": "Variable",
   "name": "proximityKm",
   "variableName": "proximityKm"
 },
-v8 = {
+v3 = {
   "kind": "Variable",
   "name": "searchTerm",
   "variableName": "searchTerm"
 },
-v9 = {
-  "kind": "Variable",
-  "name": "workMode",
-  "variableName": "workMode"
-},
-v10 = [
+v4 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -156,22 +88,16 @@ v10 = [
     "variableName": "count"
   },
   (v2/*: any*/),
-  (v3/*: any*/),
-  (v4/*: any*/),
-  (v5/*: any*/),
-  (v6/*: any*/),
-  (v7/*: any*/),
-  (v8/*: any*/),
-  (v9/*: any*/)
+  (v3/*: any*/)
 ],
-v11 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v12 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -199,13 +125,7 @@ return {
             "variableName": "cursor"
           },
           (v2/*: any*/),
-          (v3/*: any*/),
-          (v4/*: any*/),
-          (v5/*: any*/),
-          (v6/*: any*/),
-          (v7/*: any*/),
-          (v8/*: any*/),
-          (v9/*: any*/)
+          (v3/*: any*/)
         ],
         "kind": "FragmentSpread",
         "name": "JobListInternalFragment"
@@ -222,7 +142,7 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v10/*: any*/),
+        "args": (v4/*: any*/),
         "concreteType": "JobConnection",
         "kind": "LinkedField",
         "name": "jobs",
@@ -244,7 +164,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v11/*: any*/),
+                  (v5/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -252,7 +172,7 @@ return {
                     "name": "isSaved",
                     "storageKey": null
                   },
-                  (v12/*: any*/),
+                  (v6/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -289,8 +209,8 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
-                      (v12/*: any*/),
-                      (v11/*: any*/)
+                      (v6/*: any*/),
+                      (v5/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -428,17 +348,11 @@ return {
       },
       {
         "alias": null,
-        "args": (v10/*: any*/),
+        "args": (v4/*: any*/),
         "filters": [
           "searchTerm",
           "coordinates",
-          "proximityKm",
-          "minExperience",
-          "maxExperience",
-          "minSalary",
-          "maxSalary",
-          "workMode",
-          "jobType"
+          "proximityKm"
         ],
         "handle": "connection",
         "key": "JobListFragment_jobs",
@@ -448,7 +362,7 @@ return {
     ]
   },
   "params": {
-    "id": "84a175bb8f72e21f580d22d6118f49a4",
+    "id": "be1dc1c695417e060f8c009ea33bd537",
     "metadata": {},
     "name": "JobListRefetchQuery",
     "operationKind": "query",
@@ -457,6 +371,6 @@ return {
 };
 })();
 
-(node as any).hash = "38c4b851b248b5eaa08ac462b93d2692";
+(node as any).hash = "31b36d35767a47445074efcb26869bcb";
 
 export default node;

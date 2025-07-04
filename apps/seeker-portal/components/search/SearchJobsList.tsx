@@ -16,7 +16,7 @@ import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 
 const JobListFragment = graphql`
-fragment JobListFragment on Query @argumentDefinitions(
+fragment SearchJobsListFragment on Query @argumentDefinitions(
 	proximityKm: { type: "Float", defaultValue: null }
 	searchTerm: { type: "String", defaultValue: null }
 	coordinates: { type: "CoordinatesInput", defaultValue: null }
@@ -27,7 +27,7 @@ fragment JobListFragment on Query @argumentDefinitions(
 	workMode: { type: "JobWorkModeFilter", defaultValue: ANY }
 	jobType: { type: "JobTypeFilter", defaultValue: ANY }
 ) {
-	...JobListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, maxExperience: $maxExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
+	...SearchJobsListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, maxExperience: $maxExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
 	viewer {
 		...JobControlsAuthFragment
 	}
@@ -35,8 +35,8 @@ fragment JobListFragment on Query @argumentDefinitions(
 `;
 
 const JobListInternalFragment = graphql`
-  fragment JobListInternalFragment on Query
-  @refetchable(queryName: "JobListRefetchQuery")
+  fragment SearchJobsListInternalFragment on Query
+  @refetchable(queryName: "SearchJobsListRefetchQuery")
   @argumentDefinitions(
     cursor: { type: "ID" }
 	proximityKm: { type: "Float", defaultValue: null }

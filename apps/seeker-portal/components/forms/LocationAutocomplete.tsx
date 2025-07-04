@@ -18,7 +18,7 @@ interface LocationAutocompleteProps
 	onClear?: () => void;
 }
 
-type SearchLocation = {
+export type SearchLocation = {
 	displayName: string;
 	placeId: string;
 	coordinates: {

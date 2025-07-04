@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7f39047e0942a0d3e8c32802d7fdb3df>>
+ * @generated SignedSource<<ac9e288f4780ee46f125a3ee660cd597>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -30,31 +30,6 @@ const node: ReaderFragment = {
       "name": "coordinates"
     },
     {
-      "defaultValue": "ANY",
-      "kind": "LocalArgument",
-      "name": "jobType"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "maxExperience"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "maxSalary"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "minExperience"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "minSalary"
-    },
-    {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "proximityKm"
@@ -63,11 +38,6 @@ const node: ReaderFragment = {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "searchTerm"
-    },
-    {
-      "defaultValue": "ANY",
-      "kind": "LocalArgument",
-      "name": "workMode"
     }
   ],
   "kind": "Fragment",
@@ -83,31 +53,6 @@ const node: ReaderFragment = {
         },
         {
           "kind": "Variable",
-          "name": "jobType",
-          "variableName": "jobType"
-        },
-        {
-          "kind": "Variable",
-          "name": "maxExperience",
-          "variableName": "maxExperience"
-        },
-        {
-          "kind": "Variable",
-          "name": "maxSalary",
-          "variableName": "maxSalary"
-        },
-        {
-          "kind": "Variable",
-          "name": "minExperience",
-          "variableName": "minExperience"
-        },
-        {
-          "kind": "Variable",
-          "name": "minSalary",
-          "variableName": "minSalary"
-        },
-        {
-          "kind": "Variable",
           "name": "proximityKm",
           "variableName": "proximityKm"
         },
@@ -115,11 +60,6 @@ const node: ReaderFragment = {
           "kind": "Variable",
           "name": "searchTerm",
           "variableName": "searchTerm"
-        },
-        {
-          "kind": "Variable",
-          "name": "workMode",
-          "variableName": "workMode"
         }
       ],
       "kind": "FragmentSpread",
@@ -146,6 +86,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "9dcdd5a2444977e0fc830a22bf424c98";
+(node as any).hash = "0a472104d2d388e24b6cde5d056a9c28";
 
 export default node;

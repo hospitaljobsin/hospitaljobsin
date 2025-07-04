@@ -1,3 +1,4 @@
+import { FILTER_DEFAULTS } from "@/lib/constants";
 import {
 	Button,
 	Card,
@@ -6,7 +7,7 @@ import {
 	RadioGroup,
 	Slider,
 } from "@heroui/react";
-import { RotateCw } from "lucide-react";
+import { EraserIcon } from "lucide-react";
 import { useState } from "react";
 import LocationAutocomplete from "../forms/LocationAutocomplete";
 
@@ -43,7 +44,6 @@ export default function FilterSidebar({
 	values,
 	onChange,
 }: FilterSidebarProps) {
-	console.log("location", values.locationName);
 	// Use local state for location input value to prevent search params from updating while typing
 	const [locationInput, setLocationInput] = useState(values.locationName);
 
@@ -190,23 +190,13 @@ export default function FilterSidebar({
 					className="w-full mt-2"
 					variant="solid"
 					size="md"
-					startContent={<RotateCw size={18} />}
+					startContent={<EraserIcon size={18} />}
 					onPress={() => {
 						setLocationInput("");
-						onChange({
-							speciality: "",
-							minExperience: null,
-							minSalary: null,
-							maxSalary: null,
-							locationName: "",
-							coordinates: "",
-							proximityKm: 50,
-							workMode: "ANY",
-							jobType: "ANY",
-						});
+						onChange(FILTER_DEFAULTS);
 					}}
 				>
-					Reset All Filters
+					Clear Filters
 				</Button>
 			</CardBody>
 		</Card>

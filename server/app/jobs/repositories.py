@@ -2,14 +2,14 @@ import hashlib
 import secrets
 import uuid
 from collections import defaultdict
-from datetime import UTC, datetime, time
+from datetime import UTC, datetime, time, timedelta
 from enum import Enum
 from typing import Any, Literal, get_args
 
 import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.odm.queries.aggregation import AggregationQuery
-from beanie.operators import And, In, NearSphere, Or, Set
+from beanie.operators import And, In, Or, Set
 from bson import ObjectId
 from pydantic import ValidationError
 from redis.asyncio import Redis
@@ -385,15 +385,72 @@ class JobRepo:
         if coordinates:
             proximity_km = proximity_km or 1.0  # Default to 1 km if not provided
             max_distance_meters = proximity_km * 1000.0
-            search_criteria = search_criteria.find(
-                NearSphere(
-                    Job.geo,
-                    coordinates.longitude,
-                    coordinates.latitude,
-                    max_distance=max_distance_meters,
-                    min_distance=0.0,
-                )
-            )
+            # $geoWithin expects radius in radians (meters / Earth's radius)
+            earth_radius_m = 6378137.0
+            radius_radians = max_distance_meters / earth_radius_m
+            geo_within_filter = {
+                "$geoWithin": {
+                    "$centerSphere": [
+                        [coordinates.longitude, coordinates.latitude],
+                        radius_radians,
+                    ]
+                }
+            }
+            search_criteria = search_criteria.find({"geo": geo_within_filter})
+
+        return await paginator.paginate(
+            search_criteria=search_criteria,
+            first=first,
+            last=last,
+            before=ObjectId(before) if before else None,
+            after=ObjectId(after) if after else None,
+        )
+
+    async def get_all_trending(
+        self,
+        first: int | None = None,
+        last: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+    ) -> PaginatedResult[Job, ObjectId]:
+        """Get a paginated result of the trending jobs."""
+        paginator: Paginator[Job, ObjectId] = Paginator(
+            reverse=True,
+            document_cls=Job,
+            paginate_by="id",
+        )
+
+        seven_days_ago = datetime.now(UTC) - timedelta(days=7)
+
+        pipeline = [
+            {
+                "$match": {
+                    "metadata.event_type": CoreJobMetricEventType.VIEW,
+                    "timestamp": {"$gte": seven_days_ago},
+                }
+            },
+            {"$group": {"_id": "$metadata.job_id", "views": {"$sum": 1}}},
+            {"$sort": {"views": -1}},
+            {
+                "$lookup": {
+                    "from": "jobs",
+                    "localField": "_id",
+                    "foreignField": "_id",
+                    "as": "job",
+                }
+            },
+            {"$unwind": "$job"},
+            {
+                "$replaceRoot": {
+                    "newRoot": {"$mergeObjects": ["$job", {"views": "$views"}]}
+                }
+            },
+        ]
+
+        search_criteria = Job.aggregate(
+            aggregation_pipeline=pipeline,
+            projection_model=Job,
+        )
 
         return await paginator.paginate(
             search_criteria=search_criteria,

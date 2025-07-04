@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<64f5ecda622e5eb19ab918203bf6b425>>
+ * @generated SignedSource<<728572ec39f2197efc574f4ff24a38e1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,13 +10,16 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type SearchPageContent_query$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"SearchJobsListFragment">;
-  readonly " $fragmentType": "SearchPageContent_query";
+export type SearchJobsListFragment$data = {
+  readonly viewer: {
+    readonly " $fragmentSpreads": FragmentRefs<"JobControlsAuthFragment">;
+  };
+  readonly " $fragmentSpreads": FragmentRefs<"SearchJobsListInternalFragment">;
+  readonly " $fragmentType": "SearchJobsListFragment";
 };
-export type SearchPageContent_query$key = {
-  readonly " $data"?: SearchPageContent_query$data;
-  readonly " $fragmentSpreads": FragmentRefs<"SearchPageContent_query">;
+export type SearchJobsListFragment$key = {
+  readonly " $data"?: SearchJobsListFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"SearchJobsListFragment">;
 };
 
 const node: ReaderFragment = {
@@ -25,6 +28,11 @@ const node: ReaderFragment = {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "coordinates"
+    },
+    {
+      "defaultValue": "ANY",
+      "kind": "LocalArgument",
+      "name": "jobType"
     },
     {
       "defaultValue": null,
@@ -54,12 +62,17 @@ const node: ReaderFragment = {
     {
       "defaultValue": null,
       "kind": "LocalArgument",
-      "name": "speciality"
+      "name": "searchTerm"
+    },
+    {
+      "defaultValue": "ANY",
+      "kind": "LocalArgument",
+      "name": "workMode"
     }
   ],
   "kind": "Fragment",
   "metadata": null,
-  "name": "SearchPageContent_query",
+  "name": "SearchJobsListFragment",
   "selections": [
     {
       "args": [
@@ -67,6 +80,11 @@ const node: ReaderFragment = {
           "kind": "Variable",
           "name": "coordinates",
           "variableName": "coordinates"
+        },
+        {
+          "kind": "Variable",
+          "name": "jobType",
+          "variableName": "jobType"
         },
         {
           "kind": "Variable",
@@ -96,17 +114,38 @@ const node: ReaderFragment = {
         {
           "kind": "Variable",
           "name": "searchTerm",
-          "variableName": "speciality"
+          "variableName": "searchTerm"
+        },
+        {
+          "kind": "Variable",
+          "name": "workMode",
+          "variableName": "workMode"
         }
       ],
       "kind": "FragmentSpread",
-      "name": "SearchJobsListFragment"
+      "name": "SearchJobsListInternalFragment"
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "viewer",
+      "plural": false,
+      "selections": [
+        {
+          "args": null,
+          "kind": "FragmentSpread",
+          "name": "JobControlsAuthFragment"
+        }
+      ],
+      "storageKey": null
     }
   ],
   "type": "Query",
   "abstractKey": null
 };
 
-(node as any).hash = "4332bbd83a62615292a03f31005619f0";
+(node as any).hash = "c8be04c4d243896a53790bc4026d0dfd";
 
 export default node;

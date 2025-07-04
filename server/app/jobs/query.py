@@ -14,9 +14,9 @@ from .repositories import JobApplicantRepo, JobRepo, JobType, JobWorkMode, Saved
 from .types import (
     JobApplicantConnectionType,
     JobConnectionType,
-    SavedJobConnectionType,
-    JobWorkModeFilterEnum,
     JobTypeFilterEnum,
+    JobWorkModeFilterEnum,
+    SavedJobConnectionType,
 )
 
 
@@ -132,6 +132,50 @@ class JobQuery:
             before=(before.node_id if before else None),
             work_mode=JobWorkMode(work_mode.value.lower()),
             job_type=JobType(job_type.value.lower()),
+        )
+
+        return JobConnectionType.marshal(
+            paginated_result=paginated_result,
+        )
+
+    @strawberry.field(  # type: ignore[misc]
+        graphql_type=JobConnectionType,
+        description="Get the trending jobs.",
+    )
+    @inject
+    async def trending_jobs(
+        self,
+        job_repo: Annotated[JobRepo, Inject],
+        before: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items before the given cursor.",
+            ),
+        ] = None,
+        after: Annotated[
+            relay.GlobalID | None,
+            strawberry.argument(
+                description="Returns items after the given cursor.",
+            ),
+        ] = None,
+        first: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return after the cursor?",
+            ),
+        ] = None,
+        last: Annotated[
+            int | None,
+            strawberry.argument(
+                description="How many items to return before the cursor?",
+            ),
+        ] = None,
+    ) -> JobConnectionType:
+        paginated_result = await job_repo.get_all_trending(
+            first=first,
+            last=last,
+            after=(after.node_id if after else None),
+            before=(before.node_id if before else None),
         )
 
         return JobConnectionType.marshal(

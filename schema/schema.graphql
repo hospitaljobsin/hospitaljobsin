@@ -3669,6 +3669,31 @@ type Query {
 	): JobConnection!
 
 	"""
+	Get the trending jobs.
+	"""
+	trendingJobs(
+		"""
+		Returns items before the given cursor.
+		"""
+		before: ID = null
+
+		"""
+		Returns items after the given cursor.
+		"""
+		after: ID = null
+
+		"""
+		How many items to return after the cursor?
+		"""
+		first: Int = null
+
+		"""
+		How many items to return before the cursor?
+		"""
+		last: Int = null
+	): JobConnection!
+
+	"""
 	Get all saved jobs for the current user.
 	"""
 	savedJobs(

@@ -2,6 +2,7 @@ import type { SearchPageContent_query$key } from "@/__generated__/SearchPageCont
 import pageSearchQuery, {
 	type pageSearchQuery as pageSearchQueryType,
 } from "@/__generated__/pageSearchQuery.graphql";
+import { FILTER_DEFAULTS } from "@/lib/constants";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { useEffect } from "react";
 import {
@@ -24,7 +25,7 @@ export const SearchPageContentFragment = graphql`
     coordinates: { type: "CoordinatesInput" }
     proximityKm: { type: "Float" }
   ) {
-    ...JobListFragment @arguments(
+    ...SearchJobsListFragment @arguments(
       searchTerm: $speciality
       coordinates: $coordinates
       proximityKm: $proximityKm
@@ -35,19 +36,6 @@ export const SearchPageContentFragment = graphql`
     )
   }
 `;
-
-const FILTER_DEFAULTS = {
-	speciality: "",
-	minExperience: null,
-	maxExperience: null,
-	minSalary: null,
-	maxSalary: null,
-	locationName: "",
-	coordinates: "",
-	proximityKm: 50,
-	workMode: "ANY",
-	jobType: "ANY",
-};
 
 // Valid enum values for validation
 const VALID_WORK_MODES = ["ANY", "HYBRID", "OFFICE", "REMOTE"] as const;

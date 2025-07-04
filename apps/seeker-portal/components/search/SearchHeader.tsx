@@ -49,7 +49,7 @@ export default function SearchHeader({
 		speciality: parseAsString.withDefault(""),
 	});
 
-	const [searchTerm, setSearchTerm] = useState("");
+	const [searchTerm, setSearchTerm] = useState(filters.speciality);
 	const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
 
 	// Update filters when debouncedSearchTerm changes
@@ -103,6 +103,8 @@ export default function SearchHeader({
 								inputWrapper: "bg-background",
 							}}
 							autoComplete="off"
+							isClearable
+							onClear={() => setSearchTerm("")}
 						/>
 					</NavbarItem>
 					{data.viewer.__typename === "Account" ? (
