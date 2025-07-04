@@ -52,65 +52,52 @@ export default function FilterSidebar({
 			shadow="none"
 		>
 			<CardBody className="flex flex-col gap-4">
-				<div>
-					<label
-						htmlFor="coordinates"
-						className="block text-sm font-medium mb-1"
-					>
-						Location
-					</label>
-					<LocationAutocomplete
-						id="coordinates"
-						value={locationInput}
-						onChange={(val) => {
-							setLocationInput(val.displayName);
+				<LocationAutocomplete
+					id="coordinates"
+					label="Location"
+					value={locationInput}
+					onChange={(val) => {
+						setLocationInput(val.displayName);
+						onChange({
+							...values,
+							locationName: val.displayName,
+							coordinates: `${val.coordinates.latitude},${val.coordinates.longitude}`,
+						});
+					}}
+					onValueChange={(val) => {
+						setLocationInput(val);
+					}}
+					onClear={() => {
+						setLocationInput("");
+						onChange({ ...values, locationName: "", coordinates: "" });
+					}}
+					onBlur={() => {
+						if (locationInput !== values.locationName) {
+							setLocationInput(values.locationName);
+						}
+					}}
+				/>
+				{values.locationName && (
+					<Slider
+						id="proximityKm"
+						label="Proximity"
+						formatOptions={{
+							style: "unit",
+							unit: "kilometer",
+						}}
+						minValue={1}
+						maxValue={200}
+						step={1}
+						value={values.proximityKm}
+						onChange={(val) =>
 							onChange({
 								...values,
-								locationName: val.displayName,
-								coordinates: `${val.coordinates.latitude},${val.coordinates.longitude}`,
-							});
-						}}
-						onValueChange={(val) => {
-							setLocationInput(val);
-						}}
-						onClear={() => {
-							setLocationInput("");
-							onChange({ ...values, locationName: "", coordinates: "" });
-						}}
-						onBlur={() => {
-							if (locationInput !== values.locationName) {
-								setLocationInput(values.locationName);
-							}
-						}}
+								proximityKm: Array.isArray(val) ? val[0] : val,
+							})
+						}
+						showTooltip
+						className="w-full"
 					/>
-				</div>
-				{values.locationName && (
-					<div>
-						<label
-							htmlFor="proximityKm"
-							className="block text-sm font-medium mb-1"
-						>
-							Proximity (km)
-						</label>
-						<Slider
-							id="proximityKm"
-							minValue={1}
-							maxValue={200}
-							step={1}
-							value={values.proximityKm}
-							onChange={(val) =>
-								onChange({
-									...values,
-									proximityKm: Array.isArray(val) ? val[0] : val,
-								})
-							}
-							showTooltip
-							className="w-full"
-						/>
-						<div className="text-xs text-muted-foreground mt-1">
-							{values.proximityKm} km
-						</div>
-					</div>
 				)}
 				<Slider
 					id="minExperience"
