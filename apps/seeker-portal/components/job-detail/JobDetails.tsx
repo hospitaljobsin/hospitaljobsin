@@ -84,6 +84,7 @@ const JobDetailsInternalFragment = graphql`
 	isApplied
 	externalApplicationUrl
 	vacancies
+    isSalaryNegotiable
     organization @required(action: THROW) {
       slug
       name
@@ -204,18 +205,28 @@ export default function JobDetails({
 		return "Not specified";
 	}
 
-	const salaryRange = data.hasSalaryRange ? (
-		<div className="flex items-center gap-2 text-md sm:text-xl text-foreground-500">
-			{currencyIcon(data.currency)}
-			{`${data.minSalary} - ${data.maxSalary}`}{" "}
-			<p className="text-sm">/ month</p>
-		</div>
-	) : (
-		<div className="flex items-center gap-2 text-sm sm:text-base text-foreground-500">
-			{currencyIcon(data.currency)}
-			{"Not disclosed"}
-		</div>
-	);
+	const salaryRange =
+		data.hasSalaryRange && data.minSalary && data.maxSalary ? (
+			<div className="flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500">
+				<div className="w-full flex items-center flex-wrap gap-2">
+					{currencyIcon(data.currency)}
+					{`${data.minSalary} - ${data.maxSalary}`}{" "}
+					<p className="text-xs sm:text-sm">/ month</p>
+				</div>
+				{data.isSalaryNegotiable && (
+					<Chip size="sm" color="primary" className="ml-2">
+						Negotiable
+					</Chip>
+				)}
+			</div>
+		) : (
+			<div className="flex items-center gap-2 text-sm sm:text-base text-foreground-500">
+				{currencyIcon(data.currency)}
+				<Chip size="sm" color="primary">
+					Negotiable
+				</Chip>
+			</div>
+		);
 
 	return (
 		<div className="w-full flex flex-col gap-6 flex-1">

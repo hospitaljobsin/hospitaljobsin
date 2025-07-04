@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fb6f6b322391388eae2dd5f4a022e3c1>>
+ * @generated SignedSource<<7591f43fb6733c6c960254714e5b3668>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,6 +21,7 @@ export type JobDetailsInternalFragment$data = {
   readonly hasExperienceRange: boolean;
   readonly hasSalaryRange: boolean;
   readonly isApplied: boolean;
+  readonly isSalaryNegotiable: boolean;
   readonly location: string | null | undefined;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
@@ -187,6 +188,13 @@ return {
       "storageKey": null
     },
     {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "isSalaryNegotiable",
+      "storageKey": null
+    },
+    {
       "kind": "RequiredField",
       "field": {
         "alias": null,
@@ -223,6 +231,6 @@ return {
 };
 })();
 
-(node as any).hash = "95f7c223ba40911ee400ad53757d0f98";
+(node as any).hash = "c09cdb3a8567fcf9815af80d2556e946";
 
 export default node;

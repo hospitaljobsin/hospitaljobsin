@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<32e0f98fd39468162d338b3fc43aa3f9>>
- * @relayHash 4d03ee584a9d7d9e9bef725045b422cb
+ * @generated SignedSource<<560ce373602c8cdab19125796fb8265f>>
+ * @relayHash c2f09fae137fea4778907b966ba5fd05
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 4d03ee584a9d7d9e9bef725045b422cb
+// @relayRequestID c2f09fae137fea4778907b966ba5fd05
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -372,6 +372,13 @@ return {
                       },
                       {
                         "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "isSalaryNegotiable",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
                         "args": (v26/*: any*/),
                         "concreteType": "JobConnection",
                         "kind": "LinkedField",
@@ -538,7 +545,7 @@ return {
     ]
   },
   "params": {
-    "id": "4d03ee584a9d7d9e9bef725045b422cb",
+    "id": "c2f09fae137fea4778907b966ba5fd05",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",

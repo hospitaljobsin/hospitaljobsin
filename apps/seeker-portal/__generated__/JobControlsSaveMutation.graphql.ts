@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<65bc56b632ff44eddba3b4d2ac676311>>
- * @relayHash 9c44fb435c4417ad69aa855f872460ea
+ * @generated SignedSource<<4a0a04e9889ad550b6fb888f5e69993f>>
+ * @relayHash 8fb4ff357774207fa36148f81b283ce3
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9c44fb435c4417ad69aa855f872460ea
+// @relayRequestID 8fb4ff357774207fa36148f81b283ce3
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -318,6 +318,13 @@ return {
                         "kind": "ScalarField",
                         "name": "vacancies",
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "isSalaryNegotiable",
+                        "storageKey": null
                       }
                     ],
                     "storageKey": null
@@ -335,7 +342,7 @@ return {
     ]
   },
   "params": {
-    "id": "9c44fb435c4417ad69aa855f872460ea",
+    "id": "8fb4ff357774207fa36148f81b283ce3",
     "metadata": {},
     "name": "JobControlsSaveMutation",
     "operationKind": "mutation",
