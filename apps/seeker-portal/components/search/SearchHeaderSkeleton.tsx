@@ -40,6 +40,7 @@ export default function SearchHeaderSkeleton() {
 						placeholder="Search speciality (e.g. Cardiology)"
 						fullWidth
 						variant="bordered"
+						className="hidden lg:block"
 						classNames={{
 							inputWrapper: "bg-background",
 						}}

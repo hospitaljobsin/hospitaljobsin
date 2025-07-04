@@ -2,8 +2,17 @@ import type { SearchPageContent_query$key } from "@/__generated__/SearchPageCont
 import pageSearchQuery, {
 	type pageSearchQuery as pageSearchQueryType,
 } from "@/__generated__/pageSearchQuery.graphql";
+import type { Filters } from "@/app/search/page";
 import { FILTER_DEFAULTS } from "@/lib/constants";
-import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
+import {
+	Button,
+	Drawer,
+	DrawerBody,
+	DrawerContent,
+	DrawerHeader,
+	useDisclosure,
+} from "@heroui/react";
+import { FilterIcon } from "lucide-react";
 import { Suspense, useEffect } from "react";
 import {
 	type PreloadedQuery,
@@ -60,50 +69,38 @@ const validateEnum = <T extends string>(
 
 export default function SearchPageContent({
 	queryRef,
-}: { queryRef: PreloadedQuery<pageSearchQueryType> }) {
+	filters,
+	setFilters,
+}: {
+	queryRef: PreloadedQuery<pageSearchQueryType>;
+	filters: Filters;
+	setFilters: (filters: Filters) => void;
+}) {
 	const query = usePreloadedQuery(pageSearchQuery, queryRef);
 	const data = useFragment<SearchPageContent_query$key>(
 		SearchPageContentFragment,
 		query,
 	);
 
-	const [filters, setFilters] = useQueryStates(
-		{
-			speciality: parseAsString.withDefault(FILTER_DEFAULTS.speciality),
-			minExperience: parseAsInteger,
-			maxExperience: parseAsInteger,
-			minSalary: parseAsInteger,
-			maxSalary: parseAsInteger,
-			locationName: parseAsString.withDefault(FILTER_DEFAULTS.locationName),
-			coordinates: parseAsString.withDefault(FILTER_DEFAULTS.coordinates),
-			proximityKm: parseAsInteger.withDefault(FILTER_DEFAULTS.proximityKm),
-			workMode: parseAsString.withDefault(FILTER_DEFAULTS.workMode),
-			jobType: parseAsString.withDefault(FILTER_DEFAULTS.jobType),
-		},
-		{ shallow: false },
-	);
+	// Fix: Only validate and update workMode/jobType if actually needed, and only depend on those fields
+	const { workMode, jobType } = filters;
 
-	// Validate workMode and jobType in useEffect to avoid render-time state updates
 	useEffect(() => {
-		const validatedWorkMode = validateEnum(filters.workMode, VALID_WORK_MODES);
-		const validatedJobType = validateEnum(filters.jobType, VALID_JOB_TYPES);
+		const validatedWorkMode = validateEnum(workMode, VALID_WORK_MODES);
+		const validatedJobType = validateEnum(jobType, VALID_JOB_TYPES);
 
-		// Update filters if validation failed (clear invalid values)
-		if (
-			validatedWorkMode !== filters.workMode ||
-			validatedJobType !== filters.jobType
-		) {
+		if (validatedWorkMode !== workMode || validatedJobType !== jobType) {
 			setFilters({
 				...filters,
 				workMode: validatedWorkMode || FILTER_DEFAULTS.workMode,
 				jobType: validatedJobType || FILTER_DEFAULTS.jobType,
 			});
 		}
-	}, [filters.workMode, filters.jobType, filters, setFilters]);
+	}, [workMode, jobType, setFilters]);
 
 	// Get validated values for use in render
-	const validatedWorkMode = validateEnum(filters.workMode, VALID_WORK_MODES);
-	const validatedJobType = validateEnum(filters.jobType, VALID_JOB_TYPES);
+	const validatedWorkMode = validateEnum(workMode, VALID_WORK_MODES);
+	const validatedJobType = validateEnum(jobType, VALID_JOB_TYPES);
 
 	// When passing to FilterSidebar and JobList, treat undefined as null
 	const sidebarFilters = {
@@ -125,10 +122,57 @@ export default function SearchPageContent({
 	// Debounced filter update: update key to force JobList remount/refetch
 	// (Optional: If you want to debounce, you can use a useEffect with a timeout)
 
+	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
 	return (
-		<div className="flex w-full gap-8 mx-auto max-w-7xl py-6 px-4">
-			<div className="sticky top-20 self-start">
-				<FilterSidebar values={sidebarFilters} onChange={setFilters} />
+		<div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 mx-auto max-w-7xl py-6 px-4 bg-background-600">
+			{/* Mobile filter button */}
+			<div className="block lg:hidden mb-4">
+				<Button
+					variant="solid"
+					startContent={<FilterIcon size={18} />}
+					onPress={onOpen}
+					fullWidth
+				>
+					Show Filters
+				</Button>
+				<Drawer
+					isOpen={isOpen}
+					onClose={onOpenChange}
+					classNames={{
+						body: "px-0",
+						wrapper: "lg:hidden",
+						backdrop: "lg:hidden",
+					}}
+					placement="bottom"
+				>
+					<DrawerContent>
+						<DrawerHeader>Filters</DrawerHeader>
+						<DrawerBody>
+							<FilterSidebar
+								values={sidebarFilters}
+								onChange={setFilters}
+								open={true}
+								speciality={filters.speciality}
+								setSpeciality={(value) =>
+									setFilters({ ...filters, speciality: value })
+								}
+							/>
+						</DrawerBody>
+					</DrawerContent>
+				</Drawer>
+			</div>
+			{/* Desktop sidebar */}
+			<div className="hidden lg:block lg:w-auto lg:sticky lg:top-20 lg:self-start">
+				<FilterSidebar
+					values={sidebarFilters}
+					onChange={setFilters}
+					open={true}
+					speciality={filters.speciality}
+					setSpeciality={(value) =>
+						setFilters({ ...filters, speciality: value })
+					}
+				/>
 			</div>
 			<div className="flex-1">
 				<Suspense fallback={<JobListSkeleton />}>

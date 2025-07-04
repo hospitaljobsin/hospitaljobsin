@@ -2,7 +2,9 @@
 
 import type { pageSearchQuery as pageSearchQueryType } from "@/__generated__/pageSearchQuery.graphql";
 import { useSearchParams } from "next/navigation";
+import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { graphql, loadQuery, useRelayEnvironment } from "react-relay";
+import SearchHeaderClientComponent from "../../components/search/SearchHeaderClientComponent";
 import SearchPageContent from "../../components/search/SearchPageContent";
 
 export const searchPageQuery = graphql`
@@ -27,6 +29,20 @@ export const searchPageQuery = graphql`
 	}
 `;
 
+// Define Filters type for useQueryStates
+export type Filters = {
+	speciality: string;
+	minExperience: number | null;
+	maxExperience: number | null;
+	minSalary: number | null;
+	maxSalary: number | null;
+	locationName: string;
+	coordinates: string;
+	proximityKm: number;
+	workMode: string;
+	jobType: string;
+};
+
 export default function SearchPage() {
 	const searchParams = useSearchParams();
 	const speciality = searchParams.get("speciality") || null;
@@ -34,6 +50,21 @@ export default function SearchPage() {
 	const salary = searchParams.get("salary") || null;
 	const coordinates = searchParams.get("coordinates") || null;
 	const environment = useRelayEnvironment();
+	const [filters, setFilters] = useQueryStates(
+		{
+			speciality: parseAsString.withDefault(""),
+			minExperience: parseAsInteger,
+			maxExperience: parseAsInteger,
+			minSalary: parseAsInteger,
+			maxSalary: parseAsInteger,
+			locationName: parseAsString.withDefault(""),
+			coordinates: parseAsString.withDefault(""),
+			proximityKm: parseAsInteger.withDefault(0),
+			workMode: parseAsString.withDefault("ANY"),
+			jobType: parseAsString.withDefault("ANY"),
+		},
+		{ shallow: false },
+	);
 
 	// Parse coordinates from either JSON format or "latitude,longitude" string format
 	const parseCoordinates = (coordinatesString: string | null) => {
@@ -62,7 +93,7 @@ export default function SearchPage() {
 
 	// Prepare variables for the query
 	const variables = {
-		speciality,
+		speciality: filters.speciality,
 		experience: experience ? Number.parseInt(experience) : null,
 		salary: salary ? Number.parseInt(salary) : null,
 		coordinates: parseCoordinates(coordinates),
@@ -77,5 +108,17 @@ export default function SearchPage() {
 		variables,
 	);
 
-	return <SearchPageContent queryRef={preloadedQuery} />;
+	return (
+		<div className="w-full flex flex-col bg-background-600">
+			<SearchHeaderClientComponent
+				speciality={filters.speciality}
+				setSpeciality={(value) => setFilters({ ...filters, speciality: value })}
+			/>
+			<SearchPageContent
+				queryRef={preloadedQuery}
+				filters={filters}
+				setFilters={setFilters}
+			/>
+		</div>
+	);
 }

@@ -13,12 +13,9 @@ import {
 	NavbarItem,
 } from "@heroui/react";
 import Link from "next/link";
-import { parseAsString, useQueryStates } from "nuqs";
-import { useEffect, useState } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
-import { useDebounce } from "use-debounce";
 import Logo from "../Logo";
 import AuthNavigation from "../layout/AuthNavigation";
 
@@ -39,25 +36,14 @@ export const SearchHeaderQuery = graphql`
 
 export default function SearchHeader({
 	queryReference,
+	speciality,
+	setSpeciality,
 }: {
 	queryReference: PreloadedQuery<SearchHeaderQueryType>;
+	speciality: string;
+	setSpeciality: (value: string) => void;
 }) {
 	const data = usePreloadedQuery(SearchHeaderQuery, queryReference);
-
-	// nuqs state for speciality filter
-	const [filters, setFilters] = useQueryStates({
-		speciality: parseAsString.withDefault(""),
-	});
-
-	const [searchTerm, setSearchTerm] = useState(filters.speciality);
-	const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
-
-	// Update filters when debouncedSearchTerm changes
-	useEffect(() => {
-		if (debouncedSearchTerm !== filters.speciality) {
-			setFilters({ speciality: debouncedSearchTerm });
-		}
-	}, [debouncedSearchTerm, setFilters, filters.speciality]);
 
 	return (
 		<div className={"w-full flex flex-col sticky top-0 z-50"}>
@@ -76,7 +62,6 @@ export default function SearchHeader({
 				}}
 				isBlurred={false}
 			>
-				{/* Centered search input */}
 				<NavbarContent justify="center" className="flex-1 w-full flex gap-12">
 					<NavbarBrand
 						className={"flex items-center gap-4 text-foreground-500"}
@@ -94,17 +79,18 @@ export default function SearchHeader({
 					<NavbarItem className="w-full">
 						<Input
 							id="speciality"
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
+							value={speciality}
+							onChange={(e) => setSpeciality(e.target.value)}
 							placeholder="Search speciality (e.g. Cardiology)"
 							fullWidth
 							variant="bordered"
+							className="hidden lg:block"
 							classNames={{
 								inputWrapper: "bg-background",
 							}}
 							autoComplete="off"
 							isClearable
-							onClear={() => setSearchTerm("")}
+							onClear={() => setSpeciality("")}
 						/>
 					</NavbarItem>
 					{data.viewer.__typename === "Account" ? (
@@ -120,18 +106,6 @@ export default function SearchHeader({
 									href={links.login(env.NEXT_PUBLIC_URL)}
 								>
 									Log In
-								</Button>
-							</NavbarItem>
-							<NavbarItem>
-								<Button
-									as={Link}
-									href={links.recruiterLanding}
-									target="_blank"
-									rel="noopener noreferrer"
-									color="default"
-									variant="flat"
-								>
-									For recruiters
 								</Button>
 							</NavbarItem>
 						</>
