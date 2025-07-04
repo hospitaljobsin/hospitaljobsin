@@ -41,6 +41,7 @@ const FILTER_DEFAULTS = {
 	maxExperience: null,
 	minSalary: null,
 	maxSalary: null,
+	locationName: "",
 	coordinates: "",
 	proximityKm: 50,
 };
@@ -61,6 +62,7 @@ export default function SearchPageContent({
 			maxExperience: parseAsInteger,
 			minSalary: parseAsInteger,
 			maxSalary: parseAsInteger,
+			locationName: parseAsString.withDefault(FILTER_DEFAULTS.locationName),
 			coordinates: parseAsString.withDefault(FILTER_DEFAULTS.coordinates),
 			proximityKm: parseAsInteger.withDefault(FILTER_DEFAULTS.proximityKm),
 		},
@@ -76,6 +78,14 @@ export default function SearchPageContent({
 		maxSalary: filters.maxSalary ?? null,
 	};
 
+	// Parse coordinates from the string format "latitude,longitude"
+	const parseCoordinates = (coordinatesString: string) => {
+		if (!coordinatesString) return null;
+		const [latitude, longitude] = coordinatesString.split(",").map(Number);
+		if (isNaN(latitude) || isNaN(longitude)) return null;
+		return { latitude, longitude };
+	};
+
 	// Debounced filter update: update key to force JobList remount/refetch
 	// (Optional: If you want to debounce, you can use a useEffect with a timeout)
 
@@ -88,9 +98,7 @@ export default function SearchPageContent({
 				<JobList
 					rootQuery={data}
 					searchTerm={filters.speciality || null}
-					coordinates={
-						filters.coordinates ? JSON.parse(`[${filters.coordinates}]`) : null
-					}
+					coordinates={parseCoordinates(filters.coordinates)}
 					proximityKm={filters.proximityKm}
 					minExperience={filters.minExperience ?? null}
 					maxExperience={filters.maxExperience ?? null}

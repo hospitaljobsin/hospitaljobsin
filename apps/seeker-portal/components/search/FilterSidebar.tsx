@@ -1,4 +1,5 @@
 import { Button, Card, CardBody, Slider } from "@heroui/react";
+import { useState } from "react";
 import LocationAutocomplete from "../forms/LocationAutocomplete";
 
 export type FilterValues = {
@@ -6,6 +7,7 @@ export type FilterValues = {
 	minExperience: number | null;
 	minSalary: number | null;
 	maxSalary: number | null;
+	locationName: string;
 	coordinates: string;
 	proximityKm: number;
 };
@@ -31,6 +33,9 @@ export default function FilterSidebar({
 	values,
 	onChange,
 }: FilterSidebarProps) {
+	// Use local state for location input value to prevent search params from updating while typing
+	const [locationInput, setLocationInput] = useState(values.locationName);
+
 	return (
 		<Card
 			className="w-full max-w-xs p-3 flex flex-col gap-4 sticky top-0"
@@ -104,11 +109,22 @@ export default function FilterSidebar({
 					</label>
 					<LocationAutocomplete
 						id="coordinates"
-						value={values.coordinates}
-						onChange={(val) =>
-							onChange({ ...values, coordinates: val.displayName })
-						}
-						onValueChange={(val) => onChange({ ...values, coordinates: val })}
+						value={locationInput}
+						onChange={(val) => {
+							setLocationInput(val.displayName);
+							onChange({
+								...values,
+								locationName: val.displayName,
+								coordinates: `${val.coordinates.latitude},${val.coordinates.longitude}`,
+							});
+						}}
+						onValueChange={(val) => {
+							setLocationInput(val);
+						}}
+						onClear={() => {
+							setLocationInput("");
+							onChange({ ...values, locationName: "", coordinates: "" });
+						}}
 					/>
 				</div>
 				<div>

@@ -35,12 +35,37 @@ export default function SearchPage() {
 	const coordinates = searchParams.get("coordinates") || null;
 	const environment = useRelayEnvironment();
 
+	// Parse coordinates from either JSON format or "latitude,longitude" string format
+	const parseCoordinates = (coordinatesString: string | null) => {
+		if (!coordinatesString) return null;
+
+		// Try to parse as JSON first (for backward compatibility)
+		try {
+			const parsed = JSON.parse(coordinatesString);
+			if (
+				parsed &&
+				typeof parsed === "object" &&
+				"latitude" in parsed &&
+				"longitude" in parsed
+			) {
+				return parsed;
+			}
+		} catch {
+			// Not JSON, try parsing as "latitude,longitude" string
+		}
+
+		// Parse as "latitude,longitude" string format
+		const [latitude, longitude] = coordinatesString.split(",").map(Number);
+		if (isNaN(latitude) || isNaN(longitude)) return null;
+		return { latitude, longitude };
+	};
+
 	// Prepare variables for the query
 	const variables = {
 		speciality,
 		experience: experience ? Number.parseInt(experience) : null,
 		salary: salary ? Number.parseInt(salary) : null,
-		coordinates: coordinates ? JSON.parse(coordinates) : null,
+		coordinates: parseCoordinates(coordinates),
 		first: 10,
 	};
 
