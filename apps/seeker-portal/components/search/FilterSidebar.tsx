@@ -6,6 +6,7 @@ import {
 	RadioGroup,
 	Slider,
 } from "@heroui/react";
+import { RotateCw } from "lucide-react";
 import { useState } from "react";
 import LocationAutocomplete from "../forms/LocationAutocomplete";
 
@@ -184,6 +185,29 @@ export default function FilterSidebar({
 					<Radio value="CONTRACT">Contract</Radio>
 					<Radio value="LOCUM">Locum</Radio>
 				</RadioGroup>
+
+				<Button
+					className="w-full mt-2"
+					variant="solid"
+					size="md"
+					startContent={<RotateCw size={18} />}
+					onPress={() => {
+						setLocationInput("");
+						onChange({
+							speciality: "",
+							minExperience: null,
+							minSalary: null,
+							maxSalary: null,
+							locationName: "",
+							coordinates: "",
+							proximityKm: 50,
+							workMode: "ANY",
+							jobType: "ANY",
+						});
+					}}
+				>
+					Reset All Filters
+				</Button>
 			</CardBody>
 		</Card>
 	);
