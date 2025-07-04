@@ -4,7 +4,6 @@ import LocationAutocomplete from "../forms/LocationAutocomplete";
 export type FilterValues = {
 	speciality: string;
 	minExperience: number | null;
-	maxExperience: number | null;
 	minSalary: number | null;
 	maxSalary: number | null;
 	coordinates: string;
@@ -16,38 +15,50 @@ export type FilterSidebarProps = {
 	onChange: (values: FilterValues) => void;
 };
 
+function toTuple(
+	val: number | number[],
+	fallback: [number, number],
+): [number, number] {
+	if (Array.isArray(val)) {
+		if (val.length === 2) return [val[0], val[1]];
+		if (val.length === 1) return [val[0], val[0]];
+		return fallback;
+	}
+	return [val, val];
+}
+
 export default function FilterSidebar({
 	values,
 	onChange,
 }: FilterSidebarProps) {
 	return (
-		<Card className="w-72 p-4 flex flex-col gap-6 sticky top-0" shadow="none">
-			<CardBody className="flex flex-col gap-6">
+		<Card
+			className="w-full max-w-xs p-3 flex flex-col gap-4 sticky top-0"
+			shadow="none"
+		>
+			<CardBody className="flex flex-col gap-4">
 				<div>
 					<label
 						htmlFor="minExperience"
 						className="block text-sm font-medium mb-1"
 					>
-						Experience (years)
+						Minimum Experience (years)
 					</label>
-					<div className="flex items-center gap-2">
-						<span className="text-xs">Min</span>
-						<Slider
-							id="minExperience"
-							minValue={0}
-							maxValue={30}
-							step={1}
-							value={values.minExperience ?? 0}
-							onChange={(val: number | number[]) => {
-								const v = Array.isArray(val) ? val[0] : val;
-								onChange({ ...values, minExperience: v });
-							}}
-							aria-valuetext={
-								values.minExperience === null
-									? "Any"
-									: String(values.minExperience)
-							}
-						/>
+					<Slider
+						id="minExperience"
+						minValue={0}
+						maxValue={30}
+						step={1}
+						value={values.minExperience ?? 0}
+						onChange={(val) => {
+							const v = Array.isArray(val) ? val[0] : val;
+							onChange({ ...values, minExperience: v });
+						}}
+						showTooltip
+						className="w-full"
+					/>
+					<div className="flex justify-between text-xs mt-1">
+						<span>{values.minExperience ?? 0} yr</span>
 						<Button
 							size="sm"
 							variant="ghost"
@@ -56,84 +67,42 @@ export default function FilterSidebar({
 						>
 							Clear
 						</Button>
-						<span className="text-xs">Max</span>
-						<Slider
-							id="maxExperience"
-							minValue={0}
-							maxValue={30}
-							step={1}
-							value={values.maxExperience ?? 0}
-							onChange={(val: number | number[]) => {
-								const v = Array.isArray(val) ? val[0] : val;
-								onChange({ ...values, maxExperience: v });
-							}}
-							aria-valuetext={
-								values.maxExperience === null
-									? "Any"
-									: String(values.maxExperience)
-							}
-						/>
-						<Button
-							size="sm"
-							variant="ghost"
-							onPress={() => onChange({ ...values, maxExperience: null })}
-							disabled={values.maxExperience === null}
-						>
-							Clear
-						</Button>
 					</div>
 				</div>
 				<div>
-					<label htmlFor="minSalary" className="block text-sm font-medium mb-1">
-						Salary (₹/year)
+					<label htmlFor="salary" className="block text-sm font-medium mb-1">
+						Salary (₹/month)
 					</label>
-					<div className="flex items-center gap-2">
-						<span className="text-xs">Min</span>
-						<Slider
-							id="minSalary"
-							minValue={0}
-							maxValue={500000}
-							step={1000}
-							value={values.minSalary ?? 0}
-							onChange={(val: number | number[]) => {
-								const v = Array.isArray(val) ? val[0] : val;
-								onChange({ ...values, minSalary: v });
-							}}
-							aria-valuetext={
-								values.minSalary === null ? "Any" : String(values.minSalary)
-							}
-						/>
+					<Slider
+						id="salary"
+						minValue={0}
+						maxValue={500000}
+						step={1000}
+						value={[values.minSalary ?? 0, values.maxSalary ?? 500000]}
+						onChange={(val) => {
+							const [min, max] = Array.isArray(val) ? val : [val, val];
+							onChange({
+								...values,
+								minSalary: min,
+								maxSalary: max,
+							});
+						}}
+						showTooltip
+						className="w-full"
+					/>
+					<div className="flex justify-between text-xs mt-1">
+						<span>₹{values.minSalary ?? 0}</span>
 						<Button
 							size="sm"
 							variant="ghost"
-							onPress={() => onChange({ ...values, minSalary: null })}
-							disabled={values.minSalary === null}
-						>
-							Clear
-						</Button>
-						<span className="text-xs">Max</span>
-						<Slider
-							id="maxSalary"
-							minValue={0}
-							maxValue={500000}
-							step={1000}
-							value={values.maxSalary ?? 0}
-							onChange={(val: number | number[]) => {
-								const v = Array.isArray(val) ? val[0] : val;
-								onChange({ ...values, maxSalary: v });
-							}}
-							aria-valuetext={
-								values.maxSalary === null ? "Any" : String(values.maxSalary)
+							onPress={() =>
+								onChange({ ...values, minSalary: null, maxSalary: null })
 							}
-						/>
-						<Button
-							size="sm"
-							variant="ghost"
-							onPress={() => onChange({ ...values, maxSalary: null })}
-							disabled={values.maxSalary === null}
+							disabled={values.minSalary === null && values.maxSalary === null}
 						>
 							Clear
 						</Button>
+						<span>₹{values.maxSalary ?? 500000}</span>
 					</div>
 				</div>
 				<div>
@@ -146,7 +115,10 @@ export default function FilterSidebar({
 					<LocationAutocomplete
 						id="coordinates"
 						value={values.coordinates}
-						onChange={(val) => onChange({ ...values, coordinates: val })}
+						onChange={(val) =>
+							onChange({ ...values, coordinates: val.displayName })
+						}
+						onValueChange={(val) => onChange({ ...values, coordinates: val })}
 					/>
 				</div>
 				<div>
@@ -168,6 +140,8 @@ export default function FilterSidebar({
 								proximityKm: Array.isArray(val) ? val[0] : val,
 							})
 						}
+						showTooltip
+						className="w-full"
 					/>
 					<div className="text-xs text-muted-foreground mt-1">
 						{values.proximityKm} km
