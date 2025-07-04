@@ -68,6 +68,10 @@ export default function FilterSidebar({
 					label="Salary"
 					minValue={0}
 					maxValue={500000}
+					formatOptions={{
+						style: "currency",
+						currency: "INR",
+					}}
 					step={1000}
 					value={[values.minSalary ?? 0, values.maxSalary ?? 500000]}
 					onChange={(val) => {
