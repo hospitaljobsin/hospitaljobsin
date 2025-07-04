@@ -166,12 +166,12 @@ export default function SearchJobsList({
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (
 			<Card
-				className="p-6"
+				className="p-6 h-full"
 				fullWidth
 				shadow="none"
 				style={{ background: "transparent" }}
 			>
-				<CardBody className="flex flex-col gap-6 w-full items-center">
+				<CardBody className="flex flex-col gap-6 w-full items-center h-full justify-center">
 					<div className="flex flex-col items-center">
 						{/* Simple monochrome icon (e.g., magnifying glass) */}
 						<Search className="text-foreground-800" size={35} />
