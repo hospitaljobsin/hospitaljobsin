@@ -4,13 +4,14 @@ import pageSearchQuery, {
 } from "@/__generated__/pageSearchQuery.graphql";
 import { FILTER_DEFAULTS } from "@/lib/constants";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import {
 	type PreloadedQuery,
 	graphql,
 	useFragment,
 	usePreloadedQuery,
 } from "react-relay";
+import JobListSkeleton from "../landing/JobListSkeleton";
 import FilterSidebar from "./FilterSidebar";
 import SearchJobsList from "./SearchJobsList";
 
@@ -48,9 +49,6 @@ const VALID_JOB_TYPES = [
 	"PART_TIME",
 ] as const;
 
-type ValidWorkMode = (typeof VALID_WORK_MODES)[number];
-type ValidJobType = (typeof VALID_JOB_TYPES)[number];
-
 // Function to validate enum values and return null if invalid
 const validateEnum = <T extends string>(
 	value: string | null | undefined,
@@ -84,8 +82,6 @@ export default function SearchPageContent({
 		},
 		{ shallow: false },
 	);
-
-	console.log(filters);
 
 	// Validate workMode and jobType in useEffect to avoid render-time state updates
 	useEffect(() => {
@@ -122,7 +118,7 @@ export default function SearchPageContent({
 	const parseCoordinates = (coordinatesString: string) => {
 		if (!coordinatesString) return null;
 		const [latitude, longitude] = coordinatesString.split(",").map(Number);
-		if (isNaN(latitude) || isNaN(longitude)) return null;
+		if (Number.isNaN(latitude) || Number.isNaN(longitude)) return null;
 		return { latitude, longitude };
 	};
 
@@ -135,18 +131,20 @@ export default function SearchPageContent({
 				<FilterSidebar values={sidebarFilters} onChange={setFilters} />
 			</div>
 			<div className="flex-1">
-				<SearchJobsList
-					rootQuery={data}
-					searchTerm={filters.speciality || null}
-					coordinates={parseCoordinates(filters.coordinates)}
-					proximityKm={filters.proximityKm}
-					minExperience={filters.minExperience ?? null}
-					maxExperience={filters.maxExperience ?? null}
-					minSalary={filters.minSalary ?? null}
-					maxSalary={filters.maxSalary ?? null}
-					workMode={validatedWorkMode || FILTER_DEFAULTS.workMode}
-					jobType={validatedJobType || FILTER_DEFAULTS.jobType}
-				/>
+				<Suspense fallback={<JobListSkeleton />}>
+					<SearchJobsList
+						rootQuery={data}
+						searchTerm={filters.speciality || null}
+						coordinates={parseCoordinates(filters.coordinates)}
+						proximityKm={filters.proximityKm}
+						minExperience={filters.minExperience ?? null}
+						maxExperience={filters.maxExperience ?? null}
+						minSalary={filters.minSalary ?? null}
+						maxSalary={filters.maxSalary ?? null}
+						workMode={validatedWorkMode || FILTER_DEFAULTS.workMode}
+						jobType={validatedJobType || FILTER_DEFAULTS.jobType}
+					/>
+				</Suspense>
 			</div>
 		</div>
 	);

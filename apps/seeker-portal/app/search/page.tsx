@@ -1,7 +1,7 @@
 "use client";
 
+import type { pageSearchQuery as pageSearchQueryType } from "@/__generated__/pageSearchQuery.graphql";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 import { graphql, loadQuery, useRelayEnvironment } from "react-relay";
 import SearchPageContent from "../../components/search/SearchPageContent";
 
@@ -56,7 +56,7 @@ export default function SearchPage() {
 
 		// Parse as "latitude,longitude" string format
 		const [latitude, longitude] = coordinatesString.split(",").map(Number);
-		if (isNaN(latitude) || isNaN(longitude)) return null;
+		if (Number.isNaN(latitude) || Number.isNaN(longitude)) return null;
 		return { latitude, longitude };
 	};
 
@@ -71,11 +71,11 @@ export default function SearchPage() {
 		jobType: "ANY",
 	};
 
-	const preloadedQuery = loadQuery(environment, searchPageQuery, variables);
-
-	return (
-		<Suspense fallback={<div>Loading jobs...</div>}>
-			<SearchPageContent queryRef={preloadedQuery} />
-		</Suspense>
+	const preloadedQuery = loadQuery<pageSearchQueryType>(
+		environment,
+		searchPageQuery,
+		variables,
 	);
+
+	return <SearchPageContent queryRef={preloadedQuery} />;
 }
