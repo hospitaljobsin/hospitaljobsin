@@ -46,7 +46,9 @@ export default function SearchHeaderSkeleton() {
 						autoComplete="off"
 					/>
 				</NavbarItem>
-				<NavbarItem></NavbarItem>
+				<NavbarItem>
+					<span />
+				</NavbarItem>
 			</NavbarContent>
 		</Navbar>
 	);

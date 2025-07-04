@@ -42,6 +42,7 @@ export default function FilterSidebar({
 	values,
 	onChange,
 }: FilterSidebarProps) {
+	console.log("location", values.locationName);
 	// Use local state for location input value to prevent search params from updating while typing
 	const [locationInput, setLocationInput] = useState(values.locationName);
 
@@ -51,6 +52,66 @@ export default function FilterSidebar({
 			shadow="none"
 		>
 			<CardBody className="flex flex-col gap-4">
+				<div>
+					<label
+						htmlFor="coordinates"
+						className="block text-sm font-medium mb-1"
+					>
+						Location
+					</label>
+					<LocationAutocomplete
+						id="coordinates"
+						value={locationInput}
+						onChange={(val) => {
+							setLocationInput(val.displayName);
+							onChange({
+								...values,
+								locationName: val.displayName,
+								coordinates: `${val.coordinates.latitude},${val.coordinates.longitude}`,
+							});
+						}}
+						onValueChange={(val) => {
+							setLocationInput(val);
+						}}
+						onClear={() => {
+							setLocationInput("");
+							onChange({ ...values, locationName: "", coordinates: "" });
+						}}
+						onBlur={() => {
+							if (locationInput !== values.locationName) {
+								setLocationInput(values.locationName);
+							}
+						}}
+					/>
+				</div>
+				{values.locationName && (
+					<div>
+						<label
+							htmlFor="proximityKm"
+							className="block text-sm font-medium mb-1"
+						>
+							Proximity (km)
+						</label>
+						<Slider
+							id="proximityKm"
+							minValue={1}
+							maxValue={200}
+							step={1}
+							value={values.proximityKm}
+							onChange={(val) =>
+								onChange({
+									...values,
+									proximityKm: Array.isArray(val) ? val[0] : val,
+								})
+							}
+							showTooltip
+							className="w-full"
+						/>
+						<div className="text-xs text-muted-foreground mt-1">
+							{values.proximityKm} km
+						</div>
+					</div>
+				)}
 				<Slider
 					id="minExperience"
 					label="Experience"
@@ -109,89 +170,33 @@ export default function FilterSidebar({
 				>
 					Clear
 				</Button>
-				<div>
-					<label
-						htmlFor="coordinates"
-						className="block text-sm font-medium mb-1"
-					>
-						Location
-					</label>
-					<LocationAutocomplete
-						id="coordinates"
-						value={locationInput}
-						onChange={(val) => {
-							setLocationInput(val.displayName);
-							onChange({
-								...values,
-								locationName: val.displayName,
-								coordinates: `${val.coordinates.latitude},${val.coordinates.longitude}`,
-							});
-						}}
-						onValueChange={(val) => {
-							setLocationInput(val);
-						}}
-						onClear={() => {
-							setLocationInput("");
-							onChange({ ...values, locationName: "", coordinates: "" });
-						}}
-					/>
-				</div>
-				<div>
-					<label
-						htmlFor="proximityKm"
-						className="block text-sm font-medium mb-1"
-					>
-						Proximity (km)
-					</label>
-					<Slider
-						id="proximityKm"
-						minValue={1}
-						maxValue={200}
-						step={1}
-						value={values.proximityKm}
-						onChange={(val) =>
-							onChange({
-								...values,
-								proximityKm: Array.isArray(val) ? val[0] : val,
-							})
-						}
-						showTooltip
-						className="w-full"
-					/>
-					<div className="text-xs text-muted-foreground mt-1">
-						{values.proximityKm} km
-					</div>
-				</div>
-				<div>
-					<label className="block text-sm font-medium mb-1">Work Mode</label>
-					<RadioGroup
-						value={values.workMode}
-						onValueChange={(value) => onChange({ ...values, workMode: value })}
-						className="w-full"
-						orientation="horizontal"
-					>
-						<Radio value="ANY">Any</Radio>
-						<Radio value="REMOTE">Remote</Radio>
-						<Radio value="HYBRID">Hybrid</Radio>
-						<Radio value="OFFICE">Office</Radio>
-					</RadioGroup>
-				</div>
-				<div>
-					<label className="block text-sm font-medium mb-1">Job Type</label>
-					<RadioGroup
-						value={values.jobType}
-						onValueChange={(value) => onChange({ ...values, jobType: value })}
-						className="w-full"
-						orientation="horizontal"
-					>
-						<Radio value="ANY">Any</Radio>
-						<Radio value="FULL_TIME">Full Time</Radio>
-						<Radio value="PART_TIME">Part Time</Radio>
-						<Radio value="INTERNSHIP">Internship</Radio>
-						<Radio value="CONTRACT">Contract</Radio>
-						<Radio value="LOCUM">Locum</Radio>
-					</RadioGroup>
-				</div>
+
+				<RadioGroup
+					label="Work Mode"
+					value={values.workMode}
+					onValueChange={(value) => onChange({ ...values, workMode: value })}
+					className="w-full"
+					orientation="horizontal"
+				>
+					<Radio value="ANY">Any</Radio>
+					<Radio value="REMOTE">Remote</Radio>
+					<Radio value="HYBRID">Hybrid</Radio>
+					<Radio value="OFFICE">Office</Radio>
+				</RadioGroup>
+				<RadioGroup
+					label="Job Type"
+					value={values.jobType}
+					onValueChange={(value) => onChange({ ...values, jobType: value })}
+					className="w-full"
+					orientation="horizontal"
+				>
+					<Radio value="ANY">Any</Radio>
+					<Radio value="FULL_TIME">Full Time</Radio>
+					<Radio value="PART_TIME">Part Time</Radio>
+					<Radio value="INTERNSHIP">Internship</Radio>
+					<Radio value="CONTRACT">Contract</Radio>
+					<Radio value="LOCUM">Locum</Radio>
+				</RadioGroup>
 			</CardBody>
 		</Card>
 	);
