@@ -8,11 +8,7 @@ import SearchHeaderSkeleton from "@/components/search/SearchHeaderSkeleton";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 
-export default function SearchHeaderClientComponent({
-	variant,
-}: {
-	variant: "default" | "hero";
-}) {
+export default function SearchHeaderClientComponent() {
 	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<SearchHeaderQueryType>(
 		environment,
@@ -20,9 +16,10 @@ export default function SearchHeaderClientComponent({
 		{},
 		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
+
 	return (
-		<Suspense fallback={<SearchHeaderSkeleton variant={variant} />}>
-			<SearchHeader variant={variant} queryReference={queryReference} />
+		<Suspense fallback={<SearchHeaderSkeleton />}>
+			<SearchHeader queryReference={queryReference} />
 		</Suspense>
 	);
 }

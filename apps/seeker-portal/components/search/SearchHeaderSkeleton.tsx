@@ -1,37 +1,53 @@
 "use client";
 import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
-import { Link, Navbar, NavbarBrand } from "@heroui/react";
+import {
+	Input,
+	Link,
+	Navbar,
+	NavbarBrand,
+	NavbarContent,
+	NavbarItem,
+} from "@heroui/react";
 import Logo from "../Logo";
 
-export default function SearchHeaderSkeleton({
-	variant,
-}: {
-	variant: "default" | "hero";
-}) {
+export default function SearchHeaderSkeleton() {
 	return (
 		<Navbar
 			maxWidth="xl"
-			isBordered={variant !== "hero"}
+			isBordered
 			classNames={{
-				base:
-					variant === "default" ? "" : "bg-primary-400 text-primary-foreground",
+				base: "bg-background-600",
 			}}
 		>
-			<NavbarBrand className="flex items-center gap-4">
-				<Link
-					href={links.landing}
-					className="font-medium text-inherit flex items-center gap-4"
-				>
-					<Logo />
-				</Link>
-				<Link
-					href={links.landing}
-					className="font-medium text-inherit sm:flex items-center gap-4 hidden"
-				>
-					{APP_NAME}
-				</Link>
-			</NavbarBrand>
+			{/* Centered search input */}
+			<NavbarContent justify="center" className="flex-1 w-full flex gap-12">
+				<NavbarBrand className={"flex items-center gap-4 text-foreground-500"}>
+					<Link
+						href={links.landing}
+						className="font-medium text-inherit flex items-center gap-4"
+					>
+						<Logo />{" "}
+						<span className="font-medium text-inherit sm:flex items-center gap-4 hidden">
+							{APP_NAME}
+						</span>
+					</Link>
+				</NavbarBrand>
+				<NavbarItem className="w-full">
+					<Input
+						id="speciality"
+						isDisabled
+						placeholder="Search speciality (e.g. Cardiology)"
+						fullWidth
+						variant="bordered"
+						classNames={{
+							inputWrapper: "bg-background",
+						}}
+						autoComplete="off"
+					/>
+				</NavbarItem>
+				<NavbarItem></NavbarItem>
+			</NavbarContent>
 		</Navbar>
 	);
 }

@@ -11,7 +11,6 @@ import {
 	NavbarBrand,
 	NavbarContent,
 	NavbarItem,
-	cn,
 } from "@heroui/react";
 import Link from "next/link";
 import { parseAsString, useQueryStates } from "nuqs";
@@ -39,10 +38,8 @@ export const SearchHeaderQuery = graphql`
 `;
 
 export default function SearchHeader({
-	variant,
 	queryReference,
 }: {
-	variant: "hero" | "default";
 	queryReference: PreloadedQuery<SearchHeaderQueryType>;
 }) {
 	const data = usePreloadedQuery(SearchHeaderQuery, queryReference);
@@ -63,24 +60,16 @@ export default function SearchHeader({
 	}, [debouncedSearchTerm, setFilters, filters.speciality]);
 
 	return (
-		<div
-			className={cn(
-				"w-full flex flex-col",
-				variant !== "hero" && "sticky top-0 z-50",
-			)}
-		>
+		<div className={"w-full flex flex-col sticky top-0 z-50"}>
 			{data.viewer.__typename === "Account" && (
 				<IncompleteProfileBanner account={data.viewer} />
 			)}
 			<Navbar
 				maxWidth="xl"
-				isBordered={variant !== "hero"}
+				isBordered
 				position="static"
 				classNames={{
-					base:
-						variant === "hero"
-							? "bg-transparent text-primary-foreground"
-							: "bg-background-600",
+					base: "bg-background-600",
 					brand: "basis-auto flex-shrink-0",
 					content:
 						"data-[justify-center]:flex-1 data-[justify-center]:w-full data-[justify-center]:flex data-[justify-center]:justify-center data-[justify-end]:basis-auto data-[justify-end]:flex-shrink-0",
@@ -90,10 +79,7 @@ export default function SearchHeader({
 				{/* Centered search input */}
 				<NavbarContent justify="center" className="flex-1 w-full flex gap-12">
 					<NavbarBrand
-						className={cn(
-							"flex items-center gap-4",
-							variant === "hero" ? "" : "text-foreground-500",
-						)}
+						className={"flex items-center gap-4 text-foreground-500"}
 					>
 						<Link
 							href={links.landing}
