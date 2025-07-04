@@ -1,6 +1,9 @@
 import type { JobListFragment$key } from "@/__generated__/JobListFragment.graphql";
 import type { JobListInternalFragment$key } from "@/__generated__/JobListInternalFragment.graphql";
-import type { CoordinatesInput } from "@/__generated__/JobListRefetchQuery.graphql";
+import type {
+	CoordinatesInput,
+	JobListRefetchQuery$variables,
+} from "@/__generated__/JobListRefetchQuery.graphql";
 import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
 import { Card, CardBody } from "@heroui/react";
 import { Search } from "lucide-react";
@@ -62,6 +65,10 @@ type Props = {
 	searchTerm: string | null;
 	coordinates: CoordinatesInput | null;
 	proximityKm: number | null;
+	minExperience?: number | null;
+	maxExperience?: number | null;
+	minSalary?: number | null;
+	maxSalary?: number | null;
 };
 
 export default function JobList({
@@ -69,6 +76,10 @@ export default function JobList({
 	searchTerm,
 	coordinates,
 	proximityKm,
+	minExperience,
+	maxExperience,
+	minSalary,
+	maxSalary,
 }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(JobListFragment, rootQuery);
@@ -78,7 +89,6 @@ export default function JobList({
 	>(JobListInternalFragment, root);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
-
 	const hasMountedRef = useRef(false);
 
 	useEffect(() => {
@@ -102,28 +112,40 @@ export default function JobList({
 		return () => observer.disconnect();
 	}, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
-	// Debounced search term refetch
+	// Debounced filter refetch for all filters
 	useEffect(() => {
 		if (!hasMountedRef.current) {
-			// don't refetch on first render
 			hasMountedRef.current = true;
 			return;
 		}
 		const debounceTimeout = setTimeout(() => {
 			startTransition(() => {
-				refetch(
-					{
-						searchTerm,
-						coordinates,
-						proximityKm,
-					},
-					{ fetchPolicy: "network-only" }, // Use network-only to ensure fresh data when parameters change to null
-				);
+				// Only include defined variables
+				const refetchVars: JobListRefetchQuery$variables = {
+					searchTerm,
+					coordinates,
+					proximityKm,
+				};
+				if (typeof minExperience !== "undefined")
+					refetchVars.minExperience = minExperience;
+				if (typeof maxExperience !== "undefined")
+					refetchVars.maxExperience = maxExperience;
+				if (typeof minSalary !== "undefined") refetchVars.minSalary = minSalary;
+				if (typeof maxSalary !== "undefined") refetchVars.maxSalary = maxSalary;
+				refetch(refetchVars, { fetchPolicy: "network-only" });
 			});
-		}, 300); // Adjust debounce delay as needed
-
+		}, 300);
 		return () => clearTimeout(debounceTimeout);
-	}, [refetch, searchTerm, coordinates, proximityKm]); // Dependencies correctly tracked
+	}, [
+		refetch,
+		searchTerm,
+		coordinates,
+		proximityKm,
+		minExperience,
+		maxExperience,
+		minSalary,
+		maxSalary,
+	]);
 
 	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
 		return (

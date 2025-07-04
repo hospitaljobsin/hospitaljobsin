@@ -2,7 +2,7 @@ import type { SearchPageContent_query$key } from "@/__generated__/SearchPageCont
 import pageSearchQuery, {
 	type pageSearchQuery as pageSearchQueryType,
 } from "@/__generated__/pageSearchQuery.graphql";
-import { useEffect, useState } from "react";
+import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import {
 	type PreloadedQuery,
 	graphql,
@@ -10,7 +10,7 @@ import {
 	usePreloadedQuery,
 } from "react-relay";
 import JobList from "../landing/JobList";
-import FilterSidebar, { type FilterValues } from "./FilterSidebar";
+import FilterSidebar from "./FilterSidebar";
 
 export const SearchPageContentFragment = graphql`
   fragment SearchPageContent_query on Query
@@ -35,12 +35,12 @@ export const SearchPageContentFragment = graphql`
   }
 `;
 
-const DEFAULT_FILTERS: FilterValues = {
+const FILTER_DEFAULTS = {
 	speciality: "",
-	minExperience: 0,
-	maxExperience: 0,
-	minSalary: 0,
-	maxSalary: 0,
+	minExperience: null,
+	maxExperience: null,
+	minSalary: null,
+	maxSalary: null,
 	coordinates: "",
 	proximityKm: 50,
 };
@@ -53,31 +53,49 @@ export default function SearchPageContent({
 		SearchPageContentFragment,
 		query,
 	);
-	const [filters, setFilters] = useState<FilterValues>(DEFAULT_FILTERS);
-	const [jobListKey, setJobListKey] = useState(0);
+
+	const [filters, setFilters] = useQueryStates(
+		{
+			speciality: parseAsString.withDefault(FILTER_DEFAULTS.speciality),
+			minExperience: parseAsInteger,
+			maxExperience: parseAsInteger,
+			minSalary: parseAsInteger,
+			maxSalary: parseAsInteger,
+			coordinates: parseAsString.withDefault(FILTER_DEFAULTS.coordinates),
+			proximityKm: parseAsInteger.withDefault(FILTER_DEFAULTS.proximityKm),
+		},
+		{ shallow: false },
+	);
+
+	// When passing to FilterSidebar and JobList, treat undefined as null
+	const sidebarFilters = {
+		...filters,
+		minExperience: filters.minExperience ?? null,
+		maxExperience: filters.maxExperience ?? null,
+		minSalary: filters.minSalary ?? null,
+		maxSalary: filters.maxSalary ?? null,
+	};
 
 	// Debounced filter update: update key to force JobList remount/refetch
-	useEffect(() => {
-		const timeout = setTimeout(() => {
-			setJobListKey((k) => k + 1);
-		}, 300);
-		return () => clearTimeout(timeout);
-	}, [filters]);
+	// (Optional: If you want to debounce, you can use a useEffect with a timeout)
 
 	return (
 		<div className="flex w-full gap-8 mx-auto max-w-7xl py-6 px-4">
 			<div className="sticky top-20 self-start">
-				<FilterSidebar values={filters} onChange={setFilters} />
+				<FilterSidebar values={sidebarFilters} onChange={setFilters} />
 			</div>
 			<div className="flex-1">
 				<JobList
-					key={jobListKey}
 					rootQuery={data}
 					searchTerm={filters.speciality || null}
 					coordinates={
 						filters.coordinates ? JSON.parse(`[${filters.coordinates}]`) : null
 					}
 					proximityKm={filters.proximityKm}
+					minExperience={filters.minExperience ?? null}
+					maxExperience={filters.maxExperience ?? null}
+					minSalary={filters.minSalary ?? null}
+					maxSalary={filters.maxSalary ?? null}
 				/>
 			</div>
 		</div>

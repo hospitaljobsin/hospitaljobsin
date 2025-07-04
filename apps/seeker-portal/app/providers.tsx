@@ -4,6 +4,7 @@ import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { ThemeProvider } from "next-themes";
 import { useRouter } from "next/navigation";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { useState } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
 
@@ -15,22 +16,28 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
 	return (
 		<HeroUIProvider navigate={router.push}>
-			<ToastProvider placement="bottom-left" toastOffset={15} />
-			<ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
-				<RelayEnvironmentProvider environment={environment}>
-					<ProgressProvider
-						height="4px"
-						color="hsl(var(--heroui-primary-300))"
-						nonce="progressbar-nonce"
-						options={{ showSpinner: false }}
-						shallowRouting
-						disableSameURL
-						shouldCompareComplexProps
-					>
-						{children}
-					</ProgressProvider>
-				</RelayEnvironmentProvider>
-			</ThemeProvider>
+			<NuqsAdapter>
+				<ToastProvider placement="bottom-left" toastOffset={15} />
+				<ThemeProvider
+					attribute="class"
+					forcedTheme="light"
+					enableSystem={false}
+				>
+					<RelayEnvironmentProvider environment={environment}>
+						<ProgressProvider
+							height="4px"
+							color="hsl(var(--heroui-primary-300))"
+							nonce="progressbar-nonce"
+							options={{ showSpinner: false }}
+							shallowRouting
+							disableSameURL
+							shouldCompareComplexProps
+						>
+							{children}
+						</ProgressProvider>
+					</RelayEnvironmentProvider>
+				</ThemeProvider>
+			</NuqsAdapter>
 		</HeroUIProvider>
 	);
 }

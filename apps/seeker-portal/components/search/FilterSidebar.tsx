@@ -1,12 +1,12 @@
-import { Card, CardBody, Input, Slider } from "@heroui/react";
+import { Button, Card, CardBody, Slider } from "@heroui/react";
 import LocationAutocomplete from "../forms/LocationAutocomplete";
 
 export type FilterValues = {
 	speciality: string;
-	minExperience: number;
-	maxExperience: number;
-	minSalary: number;
-	maxSalary: number;
+	minExperience: number | null;
+	maxExperience: number | null;
+	minSalary: number | null;
+	maxSalary: number | null;
 	coordinates: string;
 	proximityKm: number;
 };
@@ -25,23 +25,6 @@ export default function FilterSidebar({
 			<CardBody className="flex flex-col gap-6">
 				<div>
 					<label
-						htmlFor="speciality"
-						className="block text-sm font-medium mb-1"
-					>
-						Speciality
-					</label>
-					<Input
-						id="speciality"
-						value={values.speciality}
-						onChange={(e) =>
-							onChange({ ...values, speciality: e.target.value })
-						}
-						placeholder="e.g. Cardiology"
-						autoComplete="off"
-					/>
-				</div>
-				<div>
-					<label
 						htmlFor="minExperience"
 						className="block text-sm font-medium mb-1"
 					>
@@ -54,37 +37,55 @@ export default function FilterSidebar({
 							minValue={0}
 							maxValue={30}
 							step={1}
-							value={values.minExperience}
-							onChange={(val) =>
-								onChange({
-									...values,
-									minExperience: Array.isArray(val) ? val[0] : val,
-								})
+							value={values.minExperience ?? 0}
+							onChange={(val: number | number[]) => {
+								const v = Array.isArray(val) ? val[0] : val;
+								onChange({ ...values, minExperience: v });
+							}}
+							aria-valuetext={
+								values.minExperience === null
+									? "Any"
+									: String(values.minExperience)
 							}
 						/>
-						<span className="text-xs">{values.minExperience}</span>
-					</div>
-					<div className="flex items-center gap-2 mt-2">
+						<Button
+							size="sm"
+							variant="ghost"
+							onPress={() => onChange({ ...values, minExperience: null })}
+							disabled={values.minExperience === null}
+						>
+							Clear
+						</Button>
 						<span className="text-xs">Max</span>
 						<Slider
 							id="maxExperience"
 							minValue={0}
 							maxValue={30}
 							step={1}
-							value={values.maxExperience}
-							onChange={(val) =>
-								onChange({
-									...values,
-									maxExperience: Array.isArray(val) ? val[0] : val,
-								})
+							value={values.maxExperience ?? 0}
+							onChange={(val: number | number[]) => {
+								const v = Array.isArray(val) ? val[0] : val;
+								onChange({ ...values, maxExperience: v });
+							}}
+							aria-valuetext={
+								values.maxExperience === null
+									? "Any"
+									: String(values.maxExperience)
 							}
 						/>
-						<span className="text-xs">{values.maxExperience}</span>
+						<Button
+							size="sm"
+							variant="ghost"
+							onPress={() => onChange({ ...values, maxExperience: null })}
+							disabled={values.maxExperience === null}
+						>
+							Clear
+						</Button>
 					</div>
 				</div>
 				<div>
 					<label htmlFor="minSalary" className="block text-sm font-medium mb-1">
-						Salary (₹/month)
+						Salary (₹/year)
 					</label>
 					<div className="flex items-center gap-2">
 						<span className="text-xs">Min</span>
@@ -93,57 +94,59 @@ export default function FilterSidebar({
 							minValue={0}
 							maxValue={500000}
 							step={1000}
-							value={values.minSalary}
-							onChange={(val) =>
-								onChange({
-									...values,
-									minSalary: Array.isArray(val) ? val[0] : val,
-								})
+							value={values.minSalary ?? 0}
+							onChange={(val: number | number[]) => {
+								const v = Array.isArray(val) ? val[0] : val;
+								onChange({ ...values, minSalary: v });
+							}}
+							aria-valuetext={
+								values.minSalary === null ? "Any" : String(values.minSalary)
 							}
 						/>
-						<span className="text-xs">
-							₹{values.minSalary.toLocaleString()}
-						</span>
-					</div>
-					<div className="flex items-center gap-2 mt-2">
+						<Button
+							size="sm"
+							variant="ghost"
+							onPress={() => onChange({ ...values, minSalary: null })}
+							disabled={values.minSalary === null}
+						>
+							Clear
+						</Button>
 						<span className="text-xs">Max</span>
 						<Slider
 							id="maxSalary"
 							minValue={0}
 							maxValue={500000}
 							step={1000}
-							value={values.maxSalary}
-							onChange={(val) =>
-								onChange({
-									...values,
-									maxSalary: Array.isArray(val) ? val[0] : val,
-								})
+							value={values.maxSalary ?? 0}
+							onChange={(val: number | number[]) => {
+								const v = Array.isArray(val) ? val[0] : val;
+								onChange({ ...values, maxSalary: v });
+							}}
+							aria-valuetext={
+								values.maxSalary === null ? "Any" : String(values.maxSalary)
 							}
 						/>
-						<span className="text-xs">
-							₹{values.maxSalary.toLocaleString()}
-						</span>
+						<Button
+							size="sm"
+							variant="ghost"
+							onPress={() => onChange({ ...values, maxSalary: null })}
+							disabled={values.maxSalary === null}
+						>
+							Clear
+						</Button>
 					</div>
 				</div>
 				<div>
 					<label
-						htmlFor="location-autocomplete"
+						htmlFor="coordinates"
 						className="block text-sm font-medium mb-1"
 					>
 						Location
 					</label>
 					<LocationAutocomplete
+						id="coordinates"
 						value={values.coordinates}
-						onValueChange={(val) => onChange({ ...values, coordinates: val })}
-						onChange={(loc) =>
-							onChange({
-								...values,
-								coordinates: loc
-									? `${loc.coordinates.latitude},${loc.coordinates.longitude}`
-									: "",
-							})
-						}
-						id="location-autocomplete"
+						onChange={(val) => onChange({ ...values, coordinates: val })}
 					/>
 				</div>
 				<div>

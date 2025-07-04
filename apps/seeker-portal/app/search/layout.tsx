@@ -1,4 +1,4 @@
-import HeaderClientComponent from "../../components/layout/HeaderClientComponent";
+import SearchHeaderClientComponent from "@/components/search/SearchHeaderClientComponent";
 
 export default function SearchLayout({
 	children,
@@ -7,7 +7,7 @@ export default function SearchLayout({
 }>) {
 	return (
 		<div className="w-full h-full flex flex-col bg-primary-400">
-			<HeaderClientComponent variant="default" />
+			<SearchHeaderClientComponent variant="default" />
 			<div className="w-full mx-auto bg-background-600 h-full">{children}</div>
 		</div>
 	);
