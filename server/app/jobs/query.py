@@ -46,6 +46,36 @@ class JobQuery:
                 description="The location coordinates to search for jobs",
             ),
         ] = None,
+        speciality: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The speciality to filter jobs by (full-text search)",
+            ),
+        ] = None,
+        min_experience: Annotated[
+            int | None,
+            strawberry.argument(
+                description="The minimum years of experience required",
+            ),
+        ] = None,
+        max_experience: Annotated[
+            int | None,
+            strawberry.argument(
+                description="The maximum years of experience required",
+            ),
+        ] = None,
+        min_salary: Annotated[
+            int | None,
+            strawberry.argument(
+                description="The minimum salary for the job",
+            ),
+        ] = None,
+        max_salary: Annotated[
+            int | None,
+            strawberry.argument(
+                description="The maximum salary for the job",
+            ),
+        ] = None,
         before: Annotated[
             relay.GlobalID | None,
             strawberry.argument(
@@ -77,6 +107,11 @@ class JobQuery:
             if coordinates
             else None,
             proximity_km=proximity_km,
+            speciality=speciality,
+            min_experience=min_experience,
+            max_experience=max_experience,
+            min_salary=min_salary,
+            max_salary=max_salary,
             first=first,
             last=last,
             after=(after.node_id if after else None),

@@ -1,70 +1,14 @@
 {
 	"meta": {
-		"generatedAt": "2025-06-23T06:43:56.348Z",
-		"tasksAnalyzed": 9,
-		"totalTasks": 9,
-		"analysisCount": 24,
+		"generatedAt": "2025-07-04T03:38:37.530Z",
+		"tasksAnalyzed": 8,
+		"totalTasks": 8,
+		"analysisCount": 25,
 		"thresholdScore": 5,
 		"projectName": "Taskmaster",
-		"usedResearch": true
+		"usedResearch": false
 	},
 	"complexityAnalysis": [
-		{
-			"taskId": 14,
-			"taskTitle": "Define Backend GraphQL Types for AI Insights",
-			"complexityScore": 3,
-			"recommendedSubtasks": 3,
-			"expansionPrompt": "Break this task into subtasks for: 1. Defining the `AIApplicantMatchType(graphene.Enum)` with specified values. 2. Defining the `AIApplicantInsight(graphene.ObjectType)` with specified fields. 3. Adding the `ai_insight` field to `JobApplicantType` and implementing its `resolve_ai_insight` resolver.",
-			"reasoning": "Low complexity as it's primarily schema definition in Python/Graphene with clear specifications. The three main steps in details map directly to subtasks."
-		},
-		{
-			"taskId": 15,
-			"taskTitle": "Enhance CrewAI `ProfileAnalyzerTool` Output Structure",
-			"complexityScore": 5,
-			"recommendedSubtasks": 3,
-			"expansionPrompt": "Break this task into subtasks for: 1. Modifying the `ProfileAnalyzerTool`'s `_run` method to return the specified structured dictionary. 2. Ensuring the `filter_job/crew.py` correctly processes this new structured output from the tool. 3. Implementing unit tests for the `ProfileAnalyzerTool` to verify the new output structure and content, including edge cases.",
-			"reasoning": "Medium-low complexity. Involves changing the output contract of an AI tool and ensuring its consumer (the crew) adapts. Testing is crucial for AI component changes."
-		},
-		{
-			"taskId": 16,
-			"taskTitle": "Modify `Job.applicants` GraphQL Resolver for AI Search (Initial Setup)",
-			"complexityScore": 3,
-			"recommendedSubtasks": 2,
-			"expansionPrompt": "Break this task into subtasks for: 1. Updating the `JobType.resolve_applicants` signature to include `searchTerm=None` and implementing the `if searchTerm:` conditional block. 2. Adding tests to verify the `searchTerm` is received and the correct code path is taken, while also ensuring existing status filtering remains functional when `searchTerm` is not provided.",
-			"reasoning": "Low complexity, involves adding a parameter and a conditional branch to an existing resolver. Key is ensuring no regressions to existing functionality."
-		},
-		{
-			"taskId": 17,
-			"taskTitle": "Implement CrewAI Invocation in `Job.applicants` Resolver",
-			"complexityScore": 6,
-			"recommendedSubtasks": 4,
-			"expansionPrompt": "Break this task into subtasks for: 1. Implementing the initialization and retrieval of the `filter_job` crew within the resolver's AI search path. 2. Preparing the input dictionary for the crew, including `job_id`, `search_query`, and `applicant_profiles_data`. 3. Calling the crew's `run` method with the prepared inputs and storing the returned `List[ProfileMatch]`. 4. Setting up mocking for the `filter_job` crew's `run` method for effective unit testing of the resolver logic.",
-			"reasoning": "Medium complexity due to CrewAI integration, data preparation for the AI call, and handling its results. Mocking is essential for reliable testing of this integration point."
-		},
-		{
-			"taskId": 18,
-			"taskTitle": "Integrate AI Insights into `JobApplicantType` in Resolver",
-			"complexityScore": 5,
-			"recommendedSubtasks": 4,
-			"expansionPrompt": "Break this task into subtasks for: 1. Extracting `applicant_ids` from AI results and fetching corresponding `JobApplicant` objects from the database efficiently. 2. Creating an efficient lookup map for `JobApplicant` instances by ID. 3. Iterating through AI results, and for each result, instantiating an `AIApplicantInsight` object using the data. 4. Attaching the created `AIApplicantInsight` object to the respective `JobApplicant` instance (e.g., via a temporary attribute like `ai_insight_data`) so it's available to the `resolve_ai_insight` resolver.",
-			"reasoning": "Medium complexity involving database queries, data mapping between AI results and Django models, and careful object manipulation to link insights correctly."
-		},
-		{
-			"taskId": 19,
-			"taskTitle": "Update Frontend GraphQL Queries for AI Insights",
-			"complexityScore": 2,
-			"recommendedSubtasks": 2,
-			"expansionPrompt": "Break this task into subtasks for: 1. Modifying the `ApplicantsTabFragment_job` GraphQL fragment in `ApplicantsTab.tsx` to include the `aiInsight` field and its subfields (`matchType`, `score`, `summary`, `matchReasons`, `mismatchedFields`). 2. Verifying and ensuring that the component using this fragment correctly passes the `searchTerm` variable to the GraphQL query.",
-			"reasoning": "Low complexity, involves a small modification to a GraphQL query and ensuring variable propagation. Primarily a frontend definition change."
-		},
-		{
-			"taskId": 20,
-			"taskTitle": "Redesign `ApplicantListController` - AI Search Input",
-			"complexityScore": 2,
-			"recommendedSubtasks": 2,
-			"expansionPrompt": "Break this task into subtasks for: 1. Updating the search `Input` component in `ApplicantListController.tsx` with the new placeholder text 'e.g., a nurse with 5 years of experience in cardiology' and adding a visible label 'AI-Powered Search'. 2. Ensuring the component's state for this input (e.g., `searchTerm`) is correctly wired to the GraphQL query variables used by `ApplicantsTabFragment`.",
-			"reasoning": "Low complexity, involving straightforward UI updates (label, placeholder) and ensuring state is correctly passed to the GraphQL query."
-		},
 		{
 			"taskId": 21,
 			"taskTitle": "Implement Advanced Filters UI in `ApplicantListController`",
@@ -200,6 +144,70 @@
 			"recommendedSubtasks": 4,
 			"expansionPrompt": "Break down the performance profiling and monitoring setup into subtasks: 1. Establish baseline performance metrics of the old system (if data exists) or define clear performance goals for the refactored system (latency, DB queries, LLM calls per request). 2. Configure and use profiling tools (e.g., cProfile, APM tools) to measure the end-to-end latency and resource usage of API endpoints utilizing the refactored filtering logic under simulated load. 3. Implement specific logging or integrate with APM to track key metrics: number of database queries, number of LLM API calls, and processing time for distinct stages of the filtering process per request. 4. Analyze collected performance data, compare new metrics against baselines/goals (e.g., >50% latency reduction, N to 1 LLM calls), document findings, and identify any remaining bottlenecks.",
 			"reasoning": "Requires specialized tools and methodologies for profiling and load testing. Setting up meaningful monitoring and interpreting performance data to identify bottlenecks or confirm improvements can be challenging and time-consuming."
+		},
+		{
+			"taskId": 13,
+			"taskTitle": "Update GraphQL Schema for Relay-Compliant Job Filtering using Python and Strawberry",
+			"complexityScore": 4,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Expand this task into subtasks for creating the Relay-compliant GraphQL schema. The subtasks should cover: 1. Defining the `JobFilterInput` type with all specified filter fields. 2. Defining the `JobEdge` and `JobConnection` types according to the Relay spec. 3. Updating the main `jobs` query field to use these new types and arguments, and ensuring the `Job` type correctly implements the `Node` interface.",
+			"reasoning": "The task is well-defined and involves updating schema definitions rather than complex logic. The complexity comes from needing to understand the Relay Connection Specification and how to implement it in Strawberry. Breaking it down ensures each part of the spec (input, connection types, query signature) is addressed correctly."
+		},
+		{
+			"taskId": 14,
+			"taskTitle": "Implement Backend Resolver for Filtered Job Query with Relay-Compliant Pagination using Beanie",
+			"complexityScore": 7,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Expand this task into subtasks for implementing the backend resolver. The subtasks should cover: 1. Creating helper functions for encoding and decoding opaque cursors for pagination. 2. Building the dynamic MongoDB query using Beanie based on the `JobFilterInput`. 3. Implementing the data fetching logic that uses the decoded cursor and fetches N+1 items to determine `hasNextPage`. 4. Constructing the final `JobConnection` response object, including creating an `Edge` with a valid cursor for each job and setting the `pageInfo`.",
+			"reasoning": "This task involves complex backend logic, including non-trivial cursor-based pagination, dynamic query construction, and specific data structure formatting for the Relay response. The provided example code oversimplifies the cursor logic, indicating the actual implementation will be more involved. Breaking it down separates the concerns of pagination, filtering, data fetching, and response shaping."
+		},
+		{
+			"taskId": 15,
+			"taskTitle": "Create New Search Page Route and Component Shell for Relay",
+			"complexityScore": 2,
+			"recommendedSubtasks": 0,
+			"expansionPrompt": "This task is atomic and does not require further expansion. The developer should create the `pages/search.tsx` file and implement the basic component shell with a Suspense boundary as described.",
+			"reasoning": "The task is straightforward boilerplate creation within a file-based routing system. It involves creating a new file and a basic React component structure, which is a very low-effort activity for an experienced developer. It doesn't warrant further breakdown."
+		},
+		{
+			"taskId": 16,
+			"taskTitle": "Refactor Landing Page to Remove Job List and Redirect to Relay-Powered Search Page",
+			"complexityScore": 3,
+			"recommendedSubtasks": 2,
+			"expansionPrompt": "Expand this task into two subtasks for refactoring the landing page. The first subtask is to remove the existing `JobList` component and all associated data-fetching logic. The second subtask is to implement the new search form's `onSubmit` handler to capture form values, construct a query string, and redirect to the `/search` page.",
+			"reasoning": "This is a standard refactoring task. It involves both removal of old code and implementation of new, simple client-side logic. The complexity is low but involves touching different parts of the component (data fetching, JSX, event handlers). Splitting it ensures the removal and addition are tracked as separate, clean steps."
+		},
+		{
+			"taskId": 17,
+			"taskTitle": "Implement Filter Sidebar on Search Page using HeroUI",
+			"complexityScore": 4,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Expand this task into subtasks for building the filter sidebar. The subtasks should cover: 1. Creating the `FilterSidebar` component shell, setting up the state to hold all filter values, and handling the `onFilterChange` callback. 2. Implementing the `Input` and `Select` components for speciality, location, and full-text search. 3. Implementing the `Slider` or equivalent range components for work experience and salary.",
+			"reasoning": "This is a pure UI component implementation task. The complexity lies in correctly using the HeroUI library and managing the state for multiple controlled components. Breaking it down by component type (simple inputs vs. range sliders) allows for focused implementation and testing of each filter control."
+		},
+		{
+			"taskId": 18,
+			"taskTitle": "Fetch Job Data on Search Page using Relay and URL Parameters",
+			"complexityScore": 8,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Expand this task into subtasks for fetching data with Relay. The subtasks should cover: 1. Defining the main GraphQL query `SearchPageContentQuery` using the `graphql` tag, ensuring it includes a fragment spread for the job list. 2. Implementing the logic within a `useEffect` hook to read parameters from `useRouter` and set the initial state for the query variables. 3. Calling the `useLazyLoadQuery` hook with the defined query and variables. 4. Passing the resulting query data to the child components that will consume the data via fragments.",
+			"reasoning": "This task is the crux of the feature, integrating routing, state management, and the complex data-fetching library Relay. It has many potential points of failure and requires a solid understanding of Relay's hooks and data flow. The breakdown separates the query definition, URL parsing, hook implementation, and data propagation."
+		},
+		{
+			"taskId": 19,
+			"taskTitle": "Integrate Existing JobList.tsx Component into Relay-Powered Search Page",
+			"complexityScore": 6,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Expand this task into subtasks for creating a Relay fragment container. The subtasks should cover: 1. Defining a new refetchable fragment on the `Viewer` type that queries the `jobs` connection. 2. Creating a new wrapper component (`SearchJobList`) that uses the `useFragment` hook to consume this fragment. 3. Implementing the logic within this wrapper to map the `data.jobs.edges` array into a plain array of job objects and pass it to the existing `JobList` component.",
+			"reasoning": "This task requires applying a specific Relay pattern (fragment containers) to bridge new data-fetching logic with an existing presentational component. The complexity lies in correctly defining the fragment, using the right hook, and transforming the connection data structure. The breakdown follows the standard workflow for creating a fragment container."
+		},
+		{
+			"taskId": 20,
+			"taskTitle": "Implement Debounced Real-time Filter Updates with Relay Refetch",
+			"complexityScore": 6,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Expand this task into subtasks for implementing debounced filter updates. The subtasks should cover: 1. Modifying the `SearchJobList` component to use `useRefetchableFragment` and passing the `refetch` function up to its parent. 2. Implementing the handler function in the parent component that receives new filters, updates the browser URL with `router.push`, and calls the `refetch` function with new variables. 3. Integrating a debounce hook (like `use-debounce`) to wrap the handler function, and passing the debounced version as a prop to the `FilterSidebar`.",
+			"reasoning": "This task orchestrates multiple asynchronous browser and library features: user input, debouncing, URL updates, and data refetching. The complexity lies in managing this flow correctly. Breaking it down ensures the refetch capability is correctly exposed, the core update logic is sound, and the debouncing is applied as the final layer."
 		}
 	]
 }

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1b31c6986f6ba8161e9d5a238b885379>>
+ * @generated SignedSource<<fb6f6b322391388eae2dd5f4a022e3c1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 export type Currency = "INR" | "%future added value";
-export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "%future added value";
+export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type JobDetailsInternalFragment$data = {

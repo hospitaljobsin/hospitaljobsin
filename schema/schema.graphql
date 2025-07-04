@@ -1539,6 +1539,7 @@ enum JobType {
 	PART_TIME
 	INTERNSHIP
 	CONTRACT
+	LOCUM
 }
 
 """
@@ -3588,6 +3589,31 @@ type Query {
 		The location coordinates to search for jobs
 		"""
 		coordinates: CoordinatesInput = null
+
+		"""
+		The speciality to filter jobs by (full-text search)
+		"""
+		speciality: String = null
+
+		"""
+		The minimum years of experience required
+		"""
+		minExperience: Int = null
+
+		"""
+		The maximum years of experience required
+		"""
+		maxExperience: Int = null
+
+		"""
+		The minimum salary for the job
+		"""
+		minSalary: Int = null
+
+		"""
+		The maximum salary for the job
+		"""
+		maxSalary: Int = null
 
 		"""
 		Returns items before the given cursor.

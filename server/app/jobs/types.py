@@ -87,6 +87,7 @@ class JobTypeEnum(Enum):
     PART_TIME = "part_time"
     INTERNSHIP = "internship"
     CONTRACT = "contract"
+    LOCUM = "locum"
 
 
 @strawberry.enum(

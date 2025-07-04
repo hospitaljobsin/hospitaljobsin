@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<af26755520f8ed5e011945824bb07e7a>>
+ * @generated SignedSource<<4e5564c13b91db52f0b88c79bb2338e5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
-export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "%future added value";
+export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type ApplicantDetails_job$data = {

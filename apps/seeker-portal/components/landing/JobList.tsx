@@ -15,8 +15,12 @@ fragment JobListFragment on Query @argumentDefinitions(
 	proximityKm: { type: "Float", defaultValue: null }
 	searchTerm: { type: "String", defaultValue: null }
 	coordinates: { type: "CoordinatesInput", defaultValue: null }
+	minExperience: { type: "Int", defaultValue: null }
+	maxExperience: { type: "Int", defaultValue: null }
+	minSalary: { type: "Int", defaultValue: null }
+	maxSalary: { type: "Int", defaultValue: null }
 ) {
-	...JobListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
+	...JobListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, maxExperience: $maxExperience, minSalary: $minSalary, maxSalary: $maxSalary)
 	viewer {
 		...JobControlsAuthFragment
 	}
@@ -32,9 +36,13 @@ const JobListInternalFragment = graphql`
     searchTerm: { type: "String", defaultValue: null }
 	coordinates: { type: "CoordinatesInput", defaultValue: null }
     count: { type: "Int", defaultValue: 10 }
+	minExperience: { type: "Int", defaultValue: null }
+	maxExperience: { type: "Int", defaultValue: null }
+	minSalary: { type: "Int", defaultValue: null }
+	maxSalary: { type: "Int", defaultValue: null }
   ){
-    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
-      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm"]) {
+    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, maxExperience: $maxExperience, minSalary: $minSalary, maxSalary: $maxSalary)
+      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm", "minExperience", "maxExperience", "minSalary", "maxSalary"]) {
       edges {
         node {
           id

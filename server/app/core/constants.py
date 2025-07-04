@@ -64,6 +64,8 @@ ImpressionJobMetricEventType = Literal["view_start", "view_end"]
 
 JobApplicantAnalysisStatus = Literal["pending", "complete", "failed"]
 
+JobKindType = Literal["full_time", "part_time", "internship", "contract", "locum"]
+
 # Organization names
 # (subdomains which are in use/ might be needed in the future)
 RESERVED_ORGANIZATION_NAMES = [

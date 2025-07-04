@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5470efad72eb40eb642573fc4e71feb9>>
+ * @generated SignedSource<<647bd66a3c44b857d36b8ee1731c15d4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -55,6 +55,26 @@ return {
     {
       "defaultValue": null,
       "kind": "LocalArgument",
+      "name": "maxExperience"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "maxSalary"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "minExperience"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "minSalary"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
       "name": "proximityKm"
     },
     {
@@ -95,6 +115,26 @@ return {
           "kind": "Variable",
           "name": "coordinates",
           "variableName": "coordinates"
+        },
+        {
+          "kind": "Variable",
+          "name": "maxExperience",
+          "variableName": "maxExperience"
+        },
+        {
+          "kind": "Variable",
+          "name": "maxSalary",
+          "variableName": "maxSalary"
+        },
+        {
+          "kind": "Variable",
+          "name": "minExperience",
+          "variableName": "minExperience"
+        },
+        {
+          "kind": "Variable",
+          "name": "minSalary",
+          "variableName": "minSalary"
         },
         {
           "kind": "Variable",
@@ -199,6 +239,6 @@ return {
 };
 })();
 
-(node as any).hash = "31b36d35767a47445074efcb26869bcb";
+(node as any).hash = "8023fb8b12c278a30ebd92672a66a616";
 
 export default node;

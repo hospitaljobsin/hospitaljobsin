@@ -45,7 +45,7 @@ const jobFormSchema = z.object({
 	maxExperience: z.number().positive().nullable(),
 	expiresAt: z.instanceof(CalendarDateTime).nullable(),
 	jobType: z
-		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])
+		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME", "LOCUM"])
 		.nullable(),
 	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE"]).nullable(),
 });
@@ -356,6 +356,7 @@ export default function JobCreationForm({
 									<Radio value="FULL_TIME">Full Time</Radio>
 									<Radio value="INTERNSHIP">Internship</Radio>
 									<Radio value="PART_TIME">Part Time</Radio>
+									<Radio value="LOCUM">Locum</Radio>
 								</RadioGroup>
 							)}
 						/>

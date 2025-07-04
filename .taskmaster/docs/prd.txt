@@ -1,0 +1,109 @@
+# PRD: Refactored Job Search Flow with Dedicated Search Page
+
+## Overview
+
+Redesign the job search experience for the healthcare recruitment portal. The landing page will only collect initial filter criteria and redirect users to a dedicated search page. The search page will handle all job filtering and display. For now, the "speciality" field will be a simple text input that performs a full-text search (to be upgraded to autocomplete in the future). The job list UI must reuse the existing component from `apps/seeker-portal/components/landing/JobList.tsx` with no changes to its UI or logic.
+
+---
+
+## Goals
+
+- Move all job filtering and job list rendering from the landing page to a dedicated search page.
+- The landing page will only collect initial filter criteria and redirect to the search page with those criteria as search params.
+- The search page will provide a comprehensive filter sidebar and display a dynamic, filterable list of jobs.
+- The job list UI must reuse the existing `JobList.tsx` component as-is.
+- Update the backend GraphQL jobs query to support all required filters, including full-text search on speciality.
+
+---
+
+## Functional Requirements
+
+### 1. Landing Page
+
+- **Collects Initial Criteria Only:**
+  - Speciality (text input; performs full-text search, to be upgraded to autocomplete later)
+  - Location (dropdown or autocomplete)
+  - Work Experience (dropdown or slider)
+  - (Optional) Full-text search
+- **No Job List Rendering:** The landing page will no longer display or render job results.
+- **Redirection:** On submission, users are redirected to the search page with selected filters as search params (e.g., `/search?speciality=cardiology&location=Delhi&experience=3`).
+- **UI Components:** All inputs and controls must use HeroUI (@heroui/react) components.
+
+### 2. Search Page
+
+- **Filters Sidebar (Left)**
+  - Speciality (text input for full-text search, matching landing page; to be upgraded to autocomplete later)
+  - Location (multi-select or dropdown)
+  - Work Experience (range slider or dropdown)
+  - Salary (range slider)
+  - (Optional) Full-text search
+  - All filters are pre-populated from search params if present.
+  - Changing a filter updates the job list in real-time (debounced).
+  - **UI Components:** All filter controls must use HeroUI (@heroui/react) components.
+
+- **Job List (Center)**
+  - The job list UI must reuse the existing `JobList.tsx` component from `apps/seeker-portal/components/landing/JobList.tsx` with no changes to its UI or logic.
+  - Displays jobs matching the selected filters.
+  - Each job card shows:
+    - Job title
+    - Hospital/organization
+    - Location
+    - Salary range
+    - Required experience
+    - Speciality
+    - "Apply" button
+
+- **No Results State**
+  - Show a friendly message if no jobs match the filters (as implemented in `JobList.tsx`).
+
+### 3. Backend (GraphQL)
+
+- Update the jobs query to accept the following filters:
+  - Speciality (full-text search on string)
+  - Location (string or array)
+  - Experience (min/max or range)
+  - Salary (min/max or range)
+  - (Optional) Full-text search
+- Ensure the query returns jobs matching all provided filters.
+
+---
+
+## Non-Functional Requirements
+
+- Responsive design (mobile-first, works on all devices)
+- Fast filter updates (debounced, no unnecessary requests)
+- Accessible UI (keyboard navigation, ARIA labels)
+- Secure handling of user input (prevent injection, validate params)
+- Type safety (TypeScript, GraphQL types)
+- **All new UI must use HeroUI (@heroui/react) components.**
+
+---
+
+## Out of Scope
+
+- User authentication/authorization
+- Job application flow (beyond "Apply" button)
+- Admin job posting interface
+- Speciality autocomplete (to be implemented in a future phase)
+- Any changes to the `JobList.tsx` UI or logic
+
+---
+
+## Success Criteria
+
+- The landing page no longer displays job results.
+- Users are redirected to the search page with their selected criteria as search params.
+- The search page provides all required filters and displays jobs accordingly.
+- The job list UI is identical to the current implementation in `JobList.tsx`.
+- Backend returns correct results for all filter combinations, including full-text search on speciality.
+- All new UI is built with HeroUI (@heroui/react) components.
+
+---
+
+## Example User Flow
+
+1. User enters "cardiology" in the speciality text input, selects "Delhi" and "3+ years" on the landing page.
+2. User is redirected to `/search?speciality=cardiology&location=Delhi&experience=3`.
+3. Search page loads with filters set to "cardiology", Delhi, 3+ years.
+4. User adjusts salary range and sees job list update instantly.
+5. User clicks "Apply" on a job card.

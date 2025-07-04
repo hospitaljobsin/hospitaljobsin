@@ -156,7 +156,7 @@ const formSchema = z.object({
 		})
 		.nullable(),
 	jobType: z
-		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"])
+		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME", "LOCUM"])
 		.nullable(),
 	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE"]).nullable(),
 });
@@ -166,7 +166,7 @@ type Props = {
 };
 
 // Helper types for jobType and workMode
-type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME";
+type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "LOCUM";
 type WorkMode = "HYBRID" | "OFFICE" | "REMOTE";
 
 export default function JobEditForm({ rootQuery }: Props) {
@@ -207,7 +207,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 				: null,
 			jobType:
 				jobData.type &&
-				["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME"].includes(
+				["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME", "LOCUM"].includes(
 					jobData.type,
 				)
 					? (jobData.type as JobType)
@@ -517,6 +517,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 											<Radio value="FULL_TIME">Full Time</Radio>
 											<Radio value="INTERNSHIP">Internship</Radio>
 											<Radio value="PART_TIME">Part Time</Radio>
+											<Radio value="LOCUM">Locum</Radio>
 										</RadioGroup>
 									);
 								}}

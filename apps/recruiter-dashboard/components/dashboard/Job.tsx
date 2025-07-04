@@ -61,6 +61,8 @@ const jobType = (type: string | null | undefined) => {
 			return "Internship";
 		case "PART_TIME":
 			return "Part Time";
+		case "LOCUM":
+			return "Locum";
 		default:
 			return null;
 	}

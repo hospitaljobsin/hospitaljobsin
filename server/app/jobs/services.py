@@ -14,7 +14,7 @@ from app.accounts.documents import Account
 from app.accounts.exceptions import AccountProfileIncompleteError
 from app.base.models import GeoObject
 from app.config import AppSettings, AWSSettings
-from app.core.constants import JobApplicantStatus
+from app.core.constants import JobApplicantStatus, JobKindType
 from app.core.geocoding import BaseLocationService
 from app.jobs.agents.applicant_analysis import (
     JobApplicantAnalysisOutput,
@@ -209,8 +209,7 @@ class JobService:
         min_experience: int | None = None,
         max_experience: int | None = None,
         expires_at: datetime | None = None,
-        job_type: Literal["full_time", "part_time", "internship", "contract"]
-        | None = None,
+        job_type: JobKindType | None = None,
         work_mode: Literal["hybrid", "remote", "office"] | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",
@@ -273,8 +272,7 @@ class JobService:
         min_experience: int | None = None,
         max_experience: int | None = None,
         expires_at: datetime | None = None,
-        job_type: Literal["full_time", "part_time", "internship", "contract"]
-        | None = None,
+        job_type: JobKindType | None = None,
         work_mode: Literal["hybrid", "remote", "office"] | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",

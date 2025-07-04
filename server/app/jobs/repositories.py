@@ -22,6 +22,7 @@ from app.core.constants import (
     CoreJobMetricEventType,
     ImpressionJobMetricEventType,
     JobApplicantStatus,
+    JobKindType,
 )
 from app.core.geocoding import BaseLocationService
 from app.database.paginator import PaginatedResult, Paginator
@@ -113,8 +114,7 @@ class JobRepo:
         min_experience: int | None = None,
         max_experience: int | None = None,
         expires_at: datetime | None = None,
-        job_type: Literal["full_time", "part_time", "internship", "contract"]
-        | None = None,
+        job_type: JobKindType | None = None,
         work_mode: Literal["hybrid", "remote", "office"] | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",
@@ -177,8 +177,7 @@ class JobRepo:
         min_experience: int | None = None,
         max_experience: int | None = None,
         expires_at: datetime | None = None,
-        job_type: Literal["full_time", "part_time", "internship", "contract"]
-        | None = None,
+        job_type: JobKindType | None = None,
         work_mode: Literal["hybrid", "remote", "office"] | None = None,
         skills: list[str] = [],
         currency: Literal["INR"] = "INR",
@@ -300,67 +299,59 @@ class JobRepo:
         search_term: str | None = None,
         coordinates: Coordinates | None = None,
         proximity_km: float | None = None,
+        speciality: str | None = None,
+        min_experience: int | None = None,
+        max_experience: int | None = None,
+        min_salary: int | None = None,
+        max_salary: int | None = None,
         first: int | None = None,
         last: int | None = None,
         before: str | None = None,
         after: str | None = None,
     ) -> PaginatedResult[Job, ObjectId]:
-        """Get a paginated result of active jobs."""
+        """Get a paginated result of active jobs with additional filters."""
         paginator: Paginator[Job, ObjectId] = Paginator(
             reverse=True,
             document_cls=Job,
             paginate_by="id",
         )
 
-        search_criteria = Job.find(
+        filters = [
             Job.is_active == True,  # noqa: E712
             Or(
                 Job.expires_at == None,
                 Job.expires_at > datetime.now(UTC),
             ),
-        )
+        ]
 
         if search_term:
-            search_criteria = Job.find(
-                Job.is_active == True,  # noqa: E712
-                Or(
-                    Job.expires_at == None,
-                    Job.expires_at > datetime.now(UTC),
-                ),
-                {"$text": {"$search": search_term}},
-            )
+            filters.append({"$text": {"$search": search_term}})
+        if speciality:
+            filters.append({"$text": {"$search": speciality}})
+        if min_experience is not None:
+            filters.append(Job.min_experience >= min_experience)
+        if max_experience is not None:
+            filters.append(Job.max_experience <= max_experience)
+        if min_salary is not None:
+            filters.append(Job.min_salary >= min_salary)
+        if max_salary is not None:
+            filters.append(Job.max_salary <= max_salary)
 
-        # Apply location proximity filter if both location and proximity are provided
+        search_criteria = Job.find(*filters)
+
+        # Apply location proximity filter if coordinates are provided
         if coordinates:
             proximity_km = proximity_km or 1.0  # Default to 1 km if not provided
-
-            # The max_distance parameter expects meters, so convert km to meters
             max_distance_meters = proximity_km * 1000.0
-
-            # Combine existing search criteria with geo query using NearSphere
-            if search_term:
-                search_criteria = Job.find(
-                    Job.is_active == True,  # noqa: E712
-                    {"$text": {"$search": search_term}},
-                    NearSphere(
-                        Job.geo,
-                        coordinates.longitude,
-                        coordinates.latitude,
-                        max_distance=max_distance_meters,
-                        min_distance=0.0,
-                    ),
+            search_criteria = search_criteria.find(
+                NearSphere(
+                    Job.geo,
+                    coordinates.longitude,
+                    coordinates.latitude,
+                    max_distance=max_distance_meters,
+                    min_distance=0.0,
                 )
-            else:
-                search_criteria = Job.find(
-                    Job.is_active == True,  # noqa: E712
-                    NearSphere(
-                        Job.geo,
-                        coordinates.longitude,
-                        coordinates.latitude,
-                        max_distance=max_distance_meters,
-                        min_distance=0.0,
-                    ),
-                )
+            )
 
         return await paginator.paginate(
             search_criteria=search_criteria,

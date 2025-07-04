@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6e32c8cf203c0febd5655c8a03287e90>>
+ * @generated SignedSource<<38688fc964747162aea87aa969b3bdbe>>
  * @relayHash 9da4d6f4879bd51cdc2314f2cf8c9e9e
  * @lightSyntaxTransform
  * @nogrep
@@ -12,7 +12,7 @@
 // @relayRequestID 9da4d6f4879bd51cdc2314f2cf8c9e9e
 
 import type { ConcreteRequest } from 'relay-runtime';
-export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "%future added value";
+export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 export type JobCreationFormMutation$variables = {
   description: string;

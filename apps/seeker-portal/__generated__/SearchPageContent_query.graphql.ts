@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1d4d9400fb99739b316f150482c6875f>>
+ * @generated SignedSource<<77516f11602cbfc0ca843c0d19fa09a9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,16 +10,13 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type JobListFragment$data = {
-  readonly viewer: {
-    readonly " $fragmentSpreads": FragmentRefs<"JobControlsAuthFragment">;
-  };
-  readonly " $fragmentSpreads": FragmentRefs<"JobListInternalFragment">;
-  readonly " $fragmentType": "JobListFragment";
-};
-export type JobListFragment$key = {
-  readonly " $data"?: JobListFragment$data;
+export type SearchPageContent_query$data = {
   readonly " $fragmentSpreads": FragmentRefs<"JobListFragment">;
+  readonly " $fragmentType": "SearchPageContent_query";
+};
+export type SearchPageContent_query$key = {
+  readonly " $data"?: SearchPageContent_query$data;
+  readonly " $fragmentSpreads": FragmentRefs<"SearchPageContent_query">;
 };
 
 const node: ReaderFragment = {
@@ -57,12 +54,12 @@ const node: ReaderFragment = {
     {
       "defaultValue": null,
       "kind": "LocalArgument",
-      "name": "searchTerm"
+      "name": "speciality"
     }
   ],
   "kind": "Fragment",
   "metadata": null,
-  "name": "JobListFragment",
+  "name": "SearchPageContent_query",
   "selections": [
     {
       "args": [
@@ -99,33 +96,17 @@ const node: ReaderFragment = {
         {
           "kind": "Variable",
           "name": "searchTerm",
-          "variableName": "searchTerm"
+          "variableName": "speciality"
         }
       ],
       "kind": "FragmentSpread",
-      "name": "JobListInternalFragment"
-    },
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": null,
-      "kind": "LinkedField",
-      "name": "viewer",
-      "plural": false,
-      "selections": [
-        {
-          "args": null,
-          "kind": "FragmentSpread",
-          "name": "JobControlsAuthFragment"
-        }
-      ],
-      "storageKey": null
+      "name": "JobListFragment"
     }
   ],
   "type": "Query",
   "abstractKey": null
 };
 
-(node as any).hash = "802d1f83bd4f596f4d184c23262e2a20";
+(node as any).hash = "ed884a34dda2567c8c602338a64ed564";
 
 export default node;

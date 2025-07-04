@@ -22,6 +22,7 @@ from app.core.constants import (
     ImpressionJobMetricEventType,
     JobApplicantAnalysisStatus,
     JobApplicantStatus,
+    JobKindType,
 )
 from app.jobs.agents.applicant_analysis import AnalysedFields
 from app.organizations.documents import Organization
@@ -34,7 +35,7 @@ class Job(Document):
     # the vector embedding search index is created separately (in the initialize_database function)
     # as Beanie doesn't directly support it
     embedding: list[float]
-    type: Literal["full_time", "part_time", "internship", "contract"] | None = None
+    type: JobKindType | None = None
     work_mode: Literal["remote", "hybrid", "office"] | None = None
 
     location: str | None = None
