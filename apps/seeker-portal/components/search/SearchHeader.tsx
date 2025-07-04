@@ -15,9 +15,11 @@ import {
 } from "@heroui/react";
 import Link from "next/link";
 import { parseAsString, useQueryStates } from "nuqs";
+import { useEffect, useState } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
+import { useDebounce } from "use-debounce";
 import Logo from "../Logo";
 import AuthNavigation from "../layout/AuthNavigation";
 
@@ -49,6 +51,16 @@ export default function SearchHeader({
 	const [filters, setFilters] = useQueryStates({
 		speciality: parseAsString.withDefault(""),
 	});
+
+	const [searchTerm, setSearchTerm] = useState("");
+	const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
+
+	// Update filters when debouncedSearchTerm changes
+	useEffect(() => {
+		if (debouncedSearchTerm !== filters.speciality) {
+			setFilters({ speciality: debouncedSearchTerm });
+		}
+	}, [debouncedSearchTerm, setFilters, filters.speciality]);
 
 	return (
 		<div
@@ -96,8 +108,8 @@ export default function SearchHeader({
 					<NavbarItem className="w-full">
 						<Input
 							id="speciality"
-							value={filters.speciality}
-							onChange={(e) => setFilters({ speciality: e.target.value })}
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
 							placeholder="Search speciality (e.g. Cardiology)"
 							fullWidth
 							variant="bordered"
