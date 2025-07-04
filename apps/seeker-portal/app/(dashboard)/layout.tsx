@@ -1,4 +1,4 @@
-import HeaderClientComponent from "@/components/layout/HeaderClientComponent";
+import DashboardHeaderClientComponent from "@/components/layout/DashboardHeaderClientComponent";
 
 export default function DashboardLayout({
 	children,
@@ -7,7 +7,7 @@ export default function DashboardLayout({
 }>) {
 	return (
 		<div className="w-full h-full flex flex-col">
-			<HeaderClientComponent variant="default" />
+			<DashboardHeaderClientComponent />
 			<div className="w-full mx-auto bg-background-600 h-full">
 				<div className="w-full px-5 max-w-7xl mx-auto h-full">{children}</div>
 			</div>

@@ -40,6 +40,8 @@ dependencies = [
     "redis[hiredis]>=6.2.0",
     "aws-lambda-powertools[parser]>=3.16.0",
     "structlog-sentry>=2.2.1",
+    "typing-extensions>=4.14.1",
+    "typing-inspection>=0.4.1",
 ]
 
 [tool.uv]

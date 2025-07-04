@@ -111,10 +111,6 @@ class BaseProfile(BaseModel):
 # Main Job Seeker Profile Document
 # AKA Reusable Resume
 class Profile(BaseProfile, Document):
-    account: BackLink["Account"] = Field(  # type: ignore[call-overload]
-        original_field="profile",
-    )
-
     embedding: list[float] | None = Field(default=None, repr=False)
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
