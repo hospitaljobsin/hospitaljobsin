@@ -37,7 +37,7 @@ export function LandingSearchController() {
 				onSubmit={handleSubmit}
 				className="w-full rounded-lg flex flex-col gap-12"
 			>
-				<div className="w-full flex flex-row gap-4">
+				<div className="w-full flex flex-col sm:flex-row gap-4">
 					<Input
 						id="speciality"
 						name="speciality"

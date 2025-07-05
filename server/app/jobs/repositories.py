@@ -19,6 +19,7 @@ from app.base.models import GeoObject
 from app.core.constants import (
     RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD,
     RELATED_JOBS_SIMILARITY_THRESHOLD,
+    TRENDING_JOBS_LIMIT,
     CoreJobMetricEventType,
     ImpressionJobMetricEventType,
     JobApplicantStatus,
@@ -449,6 +450,7 @@ class JobRepo:
                     "newRoot": {"$mergeObjects": ["$job", {"views": "$views"}]}
                 }
             },
+            {"$limit": TRENDING_JOBS_LIMIT},
         ]
 
         search_criteria = Job.aggregate(
