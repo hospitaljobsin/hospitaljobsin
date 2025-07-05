@@ -31,7 +31,7 @@ export default function LandingView({
 	return (
 		<div className="w-full flex flex-col bg-background-600">
 			{/* Hero Section */}
-			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-300 flex flex-col justify-center items-center w-full min-h-[500px]">
+			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-300 flex flex-col justify-center items-center w-full">
 				<Suspense fallback={<LandingHeaderSkeleton />}>
 					<LandingHeader rootQuery={data} />
 				</Suspense>
@@ -53,17 +53,17 @@ export default function LandingView({
 					</svg>
 				</div>
 				{/* Main content: text left, image right */}
-				<div className="relative z-10 flex flex-col md:flex-row items-center md:items-end text-center md:text-left gap-8 pt-8 sm:pt-24 px-4 max-w-7xl w-full h-full">
+				<div className="relative z-10 flex flex-col md:flex-row md:items-end text-center md:text-left gap-8 pt-8 sm:pt-24 px-4 max-w-7xl w-full h-full">
 					{/* Left: Text and Search */}
 					<div className="flex-1 flex flex-col items-center md:items-start gap-6 pb-16">
-						<h1 className="text-4xl sm:text-6xl font-medium tracking-tight text-primary-foreground drop-shadow-lg">
+						<h1 className="text-4xl sm:text-6xl font-medium tracking-tight text-primary-foreground drop-shadow-lg hidden md:block">
 							Empowering{" "}
 							<span className="text-accent-400">Healthcare Heroes</span>
 							<br />
 							to Find Their Next{" "}
 							<span className="text-accent-400">Opportunity</span>
 						</h1>
-						<p className="text-lg sm:text-2xl text-primary-foreground/90 font-medium max-w-xl mx-auto md:mx-0">
+						<p className="text-lg sm:text-2xl text-primary-foreground/90 font-medium max-w-xl mx-auto md:mx-0 hidden md:block">
 							Discover life-changing roles at top hospitals and clinics. Your
 							next mission starts here.
 						</p>
