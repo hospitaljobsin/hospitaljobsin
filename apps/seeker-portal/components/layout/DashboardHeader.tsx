@@ -4,6 +4,7 @@ import IncompleteProfileBanner from "@/components/layout/IncompleteProfileBanner
 import { APP_NAME } from "@/lib/constants";
 import { env } from "@/lib/env/client";
 import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
 import {
 	Button,
 	Input,
@@ -14,7 +15,6 @@ import {
 } from "@heroui/react";
 import { SearchIcon } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";

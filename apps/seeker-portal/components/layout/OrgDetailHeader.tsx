@@ -3,14 +3,18 @@ import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__gener
 import { APP_NAME } from "@/lib/constants";
 import { env } from "@/lib/env/client";
 import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
 import {
 	Button,
+	Input,
 	Navbar,
 	NavbarBrand,
 	NavbarContent,
 	NavbarItem,
 } from "@heroui/react";
+import { SearchIcon } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -46,33 +50,92 @@ export default function OrgDetailHeader({
 }) {
 	const data = usePreloadedQuery(OrgDetailHeaderQuery, queryReference);
 
+	const [speciality, setSpeciality] = useState("");
+
+	const router = useRouter();
+
 	return (
 		<div className="w-full flex flex-col bg-background-600 border-b border-foreground-300 sticky top-0 z-50">
 			<Navbar maxWidth="xl" className="bg-background-600">
-				<NavbarBrand className="flex items-center gap-4 text-foreground-500">
-					<Link href={links.landing} className="font-medium text-inherit">
-						<Logo />
-					</Link>
-					{data.organization.__typename === "Organization" ? (
-						<Link
-							href={links.organizationDetail(data.organization.slug)}
-							className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1 hidden sm:block"
-						>
-							{data.organization.name}
+				<NavbarContent justify="center" className="flex-1 w-full flex gap-6">
+					<NavbarBrand className="flex items-center gap-4 text-foreground-500">
+						<Link href={links.landing} className="font-medium text-inherit">
+							<Logo />
 						</Link>
-					) : (
-						<Link
-							href={links.landing}
-							className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1 hidden sm:block"
-						>
-							{APP_NAME}
-						</Link>
-					)}
-				</NavbarBrand>
+						{data.organization.__typename === "Organization" ? (
+							<Link
+								href={links.organizationDetail(data.organization.slug)}
+								className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1 hidden sm:block"
+							>
+								{data.organization.name}
+							</Link>
+						) : (
+							<Link
+								href={links.landing}
+								className="font-medium text-inherit truncate max-w-32 sm:max-w-xs flex-1 hidden sm:block"
+							>
+								{APP_NAME}
+							</Link>
+						)}
+					</NavbarBrand>
+					<NavbarItem className="w-full">
+						<Input
+							id="speciality"
+							value={speciality}
+							onChange={(e) => setSpeciality(e.target.value)}
+							placeholder="Search by speciality (e.g. Cardiology)"
+							fullWidth
+							variant="bordered"
+							className="hidden lg:block"
+							classNames={{
+								inputWrapper: "bg-background",
+							}}
+							autoComplete="off"
+							isClearable
+							onClear={() => setSpeciality("")}
+							onKeyDown={(e) => {
+								if (
+									e.key === "Enter" &&
+									!e.nativeEvent.isComposing &&
+									speciality.trim() !== ""
+								) {
+									e.preventDefault();
+									const params = new URLSearchParams({
+										speciality: speciality.trim(),
+									});
+									router.push(`${links.search}?${params.toString()}`);
+								}
+							}}
+						/>
+					</NavbarItem>
 
-				<NavbarContent justify="end">
 					{data.viewer.__typename === "Account" ? (
-						<AuthDropdown rootQuery={data.viewer} />
+						<div className="flex items-center gap-4">
+							<NavbarItem className="hidden md:block">
+								<Link
+									href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
+									target="_blank"
+									rel="noopener noreferrer"
+									color="foreground"
+									className={"text-foreground"}
+								>
+									For Recruiters
+								</Link>
+							</NavbarItem>
+							<NavbarItem>
+								<Button
+									isIconOnly
+									variant="light"
+									size="sm"
+									className="block sm:hidden mt-2 text-foreground-500"
+									as={Link}
+									href={links.search}
+								>
+									<SearchIcon />
+								</Button>
+							</NavbarItem>
+							<AuthDropdown rootQuery={data.viewer} />
+						</div>
 					) : (
 						<>
 							<NavbarItem>
