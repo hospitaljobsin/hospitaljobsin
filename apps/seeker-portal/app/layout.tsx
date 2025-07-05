@@ -27,7 +27,9 @@ export default async function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={`${workSans.variable} antialiased h-full`}>
+			<body
+				className={`${workSans.variable} antialiased h-full min-h-screen flex flex-col`}
+			>
 				<Providers>
 					{children}
 					<Footer />
