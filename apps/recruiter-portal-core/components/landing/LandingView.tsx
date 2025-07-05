@@ -1,9 +1,10 @@
 "use client";
 import links from "@/lib/links";
-import { Button, Card, CardBody } from "@heroui/react";
+import { Button } from "@heroui/react";
 import type { Variants } from "framer-motion";
 import { motion } from "framer-motion";
 import { BotIcon, BrainCircuitIcon, SearchIcon } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import LandingHeader from "./LandingHeader";
 
@@ -256,59 +257,48 @@ export default function LandingView() {
 									</h3>
 								</div>
 
-								<div className="w-full flex flex-wrap gap-4 items-center justify-center">
-									<Card shadow="none" className="p-6">
-										<CardBody>
-											<div className="flex flex-col gap-2">
-												<span className="font-semibold text-lg">
-													Credential Verification
-												</span>
-												<span className="text-foreground-600 text-base">
-													Automatically verify medical licenses and
-													certifications to ensure only qualified professionals
-													are shortlisted.
-												</span>
-											</div>
-										</CardBody>
-									</Card>
-									<Card shadow="none" className="p-6">
-										<CardBody>
-											<div className="flex flex-col gap-2">
-												<span className="font-semibold text-lg">
-													Specialty-Based Candidate Matching
-												</span>
-												<span className="text-foreground-600 text-base">
-													Match candidates to roles based on medical specialty,
-													experience, and location for precise hiring needs.
-												</span>
-											</div>
-										</CardBody>
-									</Card>
-									<Card shadow="none" className="p-6">
-										<CardBody>
-											<div className="flex flex-col gap-2">
-												<span className="font-semibold text-lg">
-													First Class Support for Locum, Full-time, and
-													Part-time Postings
-												</span>
-												<span className="text-foreground-600 text-base"></span>
-											</div>
-										</CardBody>
-									</Card>
+								<div className="w-full flex gap-4 items-center">
+									<div className="p-6 flex w-full gap-4 flex-col items-center jusiify-center">
+										<div className="relative h-48 w-48 aspect-auto">
+											<Image
+												src="/images/credentials.svg"
+												alt="Specialty-Based Candidate Matching"
+												fill
+												className="object-cover"
+											/>
+										</div>
+										<span className="font-semibold text-lg">
+											Built in Medical Credential Verification
+										</span>
+									</div>
+									<div className="p-6 flex w-full gap-4 flex-col items-center jusiify-center">
+										<div className="relative h-48 w-48 aspect-auto">
+											<Image
+												src="/images/doctors.svg"
+												alt="Specialty-Based Candidate Matching"
+												fill
+												className="object-cover"
+											/>
+										</div>
+										<span className="font-semibold text-lg">
+											Specialty-Based Candidate Matching
+										</span>
+									</div>
+									<div className="p-6 flex w-full gap-4 flex-col items-center jusiify-center">
+										<div className="relative h-48 w-48 aspect-auto">
+											<Image
+												src="/images/doctors.svg"
+												alt="Specialty-Based Candidate Matching"
+												fill
+												className="object-cover"
+											/>
+										</div>
+										<span className="font-semibold text-lg text-center">
+											First Class Support for Locum, Full-time, and Part-time
+											Positions
+										</span>
+									</div>
 								</div>
-								<ul className="text-lg text-foreground-700 dark:text-foreground-200 space-y-3 list-disc list-inside">
-									<li>
-										Post Full-time, Part-time, and Locum positions with ease.
-									</li>
-									<li>
-										Search and sort candidates by location, distance, or
-										specialty.
-									</li>
-									<li>
-										Tailored tools to manage multiple departments or branches
-										under one account.
-									</li>
-								</ul>
 							</div>
 						</div>
 					</motion.section>
