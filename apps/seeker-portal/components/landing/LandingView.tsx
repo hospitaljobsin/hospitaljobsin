@@ -4,8 +4,8 @@ import { TrendingUpIcon } from "lucide-react";
 import { Suspense } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import HeaderSkeleton from "../layout/HeaderSkeleton";
 import LandingHeader from "../layout/LandingHeader";
+import LandingHeaderSkeleton from "../layout/LandingHeaderSkeleton";
 import JobList from "./JobList";
 import JobListSkeleton from "./JobListSkeleton";
 import { LandingSearchController } from "./LandingSearchController";
@@ -32,7 +32,7 @@ export default function LandingView({
 		<div className="w-full flex flex-col bg-background-600">
 			{/* Hero Section */}
 			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-500 min-h-[60vh] flex flex-col justify-center items-center overflow-hidden">
-				<Suspense fallback={<HeaderSkeleton variant="hero" />}>
+				<Suspense fallback={<LandingHeaderSkeleton />}>
 					<LandingHeader rootQuery={data} />
 				</Suspense>
 				{/* Background SVG or Image Placeholder */}
