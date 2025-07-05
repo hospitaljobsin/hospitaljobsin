@@ -222,9 +222,7 @@ export default function JobDetails({
 		) : (
 			<div className="flex items-center gap-2 text-sm sm:text-base text-foreground-500">
 				{currencyIcon(data.currency)}
-				<Chip size="sm" color="primary">
-					Negotiable
-				</Chip>
+				Not disclosed
 			</div>
 		);
 
