@@ -110,7 +110,7 @@ export default function OrgDetailHeader({
 					</NavbarItem>
 
 					{data.viewer.__typename === "Account" ? (
-						<div className="flex items-center gap-4">
+						<div className="flex items-center gap-2">
 							<NavbarItem className="hidden md:block">
 								<Link
 									href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
