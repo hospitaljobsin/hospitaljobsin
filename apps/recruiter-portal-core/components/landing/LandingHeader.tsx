@@ -22,7 +22,7 @@ export default function LandingHeader() {
 	return (
 		<Navbar
 			maxWidth="xl"
-			className="w-full bg-primary-400 text-primary-foreground"
+			className="w-full bg-transparent text-primary-foreground"
 			isBlurred={false}
 			position="static"
 			isMenuOpen={isMenuOpen}

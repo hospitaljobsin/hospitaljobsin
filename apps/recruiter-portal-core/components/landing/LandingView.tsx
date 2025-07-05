@@ -1,24 +1,69 @@
 "use client";
 import links from "@/lib/links";
-import { Button, Card, CardBody } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
 import { BotIcon, BrainCircuitIcon, SearchIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import LandingHeader from "./LandingHeader";
 
 export default function LandingView() {
+	// Animated cycling words for the hero heading
+	const words = ["Smarter", "Faster", "Easier"];
+	const [index, setIndex] = useState(0);
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setIndex((prev) => (prev + 1) % words.length);
+		}, 5600);
+		return () => clearInterval(interval);
+	}, []);
+
 	return (
 		<div className="flex flex-col items-center">
-			<LandingHeader />
 			{/* Hero Section */}
-			<div className="w-full bg-primary-400 text-primary-foreground pt-4 sm:pt-8">
-				<div className="max-w-7xl mx-auto py-16 sm:py-24 flex flex-col md:flex-row items-center gap-8">
-					<div className="flex-1 flex flex-col items-start gap-6">
-						<h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-							Hire Smarter. Faster. Easier.
+			<div className="relative bg-gradient-to-br from-primary-700 via-primary-400 to-primary-600 text-primary-foreground pt-4 sm:pt-8 flex flex-col justify-center items-center w-full overflow-hidden">
+				<LandingHeader />
+				{/* Wavy Gradient Background Overlay */}
+				<svg
+					className="absolute inset-0 w-full h-full z-0 opacity-20 pointer-events-none select-none"
+					viewBox="0 0 1440 320"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+					preserveAspectRatio="none"
+				>
+					<title>Wavy gradient background</title>
+					<path
+						fill="#fff"
+						fillOpacity="0.2"
+						d="M0,32L60,74.7C120,117,240,203,360,208C480,213,600,139,720,122.7C840,107,960,149,1080,181.3C1200,213,1320,235,1380,245.3L1440,256L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"
+					/>
+				</svg>
+
+				<div className="max-w-7xl mx-auto pt-16 sm:pt-24 flex flex-col md:flex-row items-center gap-12 sm:gap-16 relative z-10">
+					<div className="flex-1 md:flex items-end justify-end w-auto h-[600px] hidden">
+						<img
+							src="/images/hero-image.png"
+							alt="Group of doctors smiling, representing healthcare professionals"
+							className="w-auto h-full max-w-full object-cover object-bottom"
+							loading="eager"
+						/>
+					</div>
+					<div className="flex-1 flex flex-col items-start gap-6 z-10">
+						<h1 className="text-4xl sm:text-6xl font-medium tracking-tight text-primary-foreground drop-shadow-lg flex flex-row gap-2 items-center min-h-[1em]">
+							<span>Hire</span>
+							<motion.span
+								key={words[index]}
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, y: -20 }}
+								transition={{ duration: 0.5, type: "spring" }}
+								className="ml-2 text-primary-foreground"
+							>
+								{words[index]}.
+							</motion.span>
 						</h1>
-						<p className="text-lg opacity-90">
-							Say goodbye to traditional job boards and say to an intelligent,
-							intuitive, and tailor-made healthcare hiring experience.
+						<p className="text-lg sm:text-2xl text-primary-foreground/90 font-medium max-w-xl mx-auto md:mx-0">
+							Say hello to an intelligent, intuitive, and tailor-made healthcare
+							hiring experience.
 						</p>
 						<div className="flex flex-row gap-4 flex-wrap">
 							<Button
@@ -41,26 +86,6 @@ export default function LandingView() {
 							>
 								Learn More
 							</Button>
-						</div>
-					</div>
-					<div className="flex-1 relative sm:h-[420px] h-[320px]  w-full rounded-4xl overflow-visible bg-primary-300">
-						<div className="absolute inset-0 bg-opacity-30 bg-primary-200 rounded-4xl">
-							{/* Container acts as a positioning reference */}
-							<div className="absolute inset-x-0 bottom-0 h-[100%] overflow-visible">
-								{/* Image container - sized and positioned to "pop out" */}
-								<div className="absolute left-[-7.5%] right-[-7.5%] bottom-0 top-[-25%] overflow-hidden">
-									<img
-										src="/images/hero-image.png"
-										alt="Hero"
-										loading="eager"
-										className="object-cover object-top"
-										fetchPriority="high"
-										style={{
-											filter: "drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1))",
-										}}
-									/>
-								</div>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -120,64 +145,63 @@ export default function LandingView() {
 				<div className="w-full mx-auto flex flex-col gap-12 ">
 					{/* Deep AI Integration Section */}
 					<motion.section
-						className="w-full py-20 bg-background-50 dark:bg-background-900 rounded-3xl border border-background-200"
+						className="w-full py-20 bg-background-50 dark:bg-background-900 rounded-3xl border border-background-200 overflow-hidden"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
 						transition={{ duration: 0.7, ease: "easeOut" }}
 					>
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
-							<div className="flex-1 flex flex-col items-start gap-6">
-								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
+							<div className="flex-1 flex flex-col items-start gap-6 z-10">
+								<h2 className="text-4xl sm:text-5xl font-extrabold text-primary-700 dark:text-primary-300 mb-2 drop-shadow-lg">
 									AI-Powered Hiring, Built for Healthcare
 								</h2>
-								<h3>Make better hiring decisions with real intelligence</h3>
-								<div className="w-full flex flex-col md:flex-row gap-6 mt-4">
-									{/* AI Applicant Analysis Card */}
-									<Card className="flex-1 min-w-[220px]" shadow="sm">
-										<CardBody className="flex flex-col items-start gap-3 p-6">
-											<BrainCircuitIcon />
-											<h3 className="text-xl font-semibold">
-												AI Applicant Analysis
-											</h3>
-											<p className="text-base text-foreground-600 dark:text-foreground-200">
-												Get detailed insights, match ratings, and summary
-												reports for every candidate.
-											</p>
-										</CardBody>
-									</Card>
-									{/* Natural Language Search Card */}
-									<Card className="flex-1 min-w-[220px]" shadow="sm">
-										<CardBody className="flex flex-col items-start gap-3 p-6">
-											<SearchIcon />
-											<h3 className="text-xl font-semibold">
-												Natural Language Search
-											</h3>
-											<p className="text-base text-foreground-600 dark:text-foreground-200">
-												Skip the filters. Just type "nurses with ICU experience
-												near Chennai" and get instant, accurate results.
-											</p>
-										</CardBody>
-									</Card>
-									{/* AI Assistant Card */}
-									<Card className="flex-1 min-w-[220px]" shadow="sm">
-										<CardBody className="flex flex-col items-start gap-3 p-6">
-											<BotIcon />
-											<h3 className="text-xl font-semibold">AI Assistant</h3>
-											<p className="text-base text-foreground-600 dark:text-foreground-200">
-												Your personal recruitment co-pilot to guide you through
-												every applicant's profile and status.
-											</p>
-										</CardBody>
-									</Card>
-								</div>
-							</div>
-							<div className="flex-1 flex justify-center md:justify-end">
-								<img
-									src="/images/hero-ai-hiring.jpg"
-									alt="AI Dashboard"
-									className="rounded-2xl shadow-2xl w-full max-w-md object-cover"
-								/>
+								<h3 className="text-xl sm:text-2xl font-medium text-primary-800 dark:text-primary-200 mb-4 opacity-90">
+									Make better hiring decisions with real intelligence
+								</h3>
+								<p className="text-lg text-foreground-700 dark:text-foreground-200 max-w-xl mb-6">
+									Experience the future of healthcare recruitment with advanced
+									AI features designed to empower your hiring process.
+								</p>
+								<ul className="space-y-6">
+									<li className="flex items-center gap-4">
+										<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
+											<BrainCircuitIcon className="w-7 h-7 text-primary-600 dark:text-primary-300" />
+										</span>
+										<span className="text-lg font-semibold">
+											AI Applicant Analysis
+										</span>
+										<img
+											src="/screenshots/applicant-ai-analysis.png"
+											alt="Screenshot of AI Applicant Analysis feature"
+											className="w-40 rounded-xl shadow-md border border-background-200 ml-4"
+										/>
+									</li>
+									<li className="flex items-center gap-4">
+										<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
+											<SearchIcon className="w-7 h-7 text-primary-600 dark:text-primary-300" />
+										</span>
+										<span className="text-lg font-semibold">
+											Natural Language Search
+										</span>
+										<img
+											src="/screenshots/natural-language-search.png"
+											alt="Screenshot of Natural Language Search feature"
+											className="w-40 rounded-xl shadow-md border border-background-200 ml-4"
+										/>
+									</li>
+									<li className="flex items-center gap-4">
+										<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
+											<BotIcon className="w-7 h-7 text-primary-600 dark:text-primary-300" />
+										</span>
+										<span className="text-lg font-semibold">AI Assistant</span>
+										<img
+											src="/screenshots/ai-chat-assistant.png"
+											alt="Screenshot of AI Assistant feature"
+											className="w-40 rounded-xl shadow-md border border-background-200 ml-4"
+										/>
+									</li>
+								</ul>
 							</div>
 						</div>
 					</motion.section>
