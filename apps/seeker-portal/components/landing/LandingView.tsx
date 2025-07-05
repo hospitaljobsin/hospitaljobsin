@@ -29,7 +29,7 @@ export default function LandingView({
 	const data = useFragment(LandingViewFragment, query);
 
 	return (
-		<>
+		<div className="w-full flex flex-col bg-background-600">
 			{/* Hero Section */}
 			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-500 min-h-[60vh] flex flex-col justify-center items-center overflow-hidden">
 				<Suspense fallback={<HeaderSkeleton variant="hero" />}>
@@ -86,9 +86,9 @@ export default function LandingView({
 			</div>
 
 			{/* Trending Jobs Section */}
-			<div className="py-8 sm:py-16 flex flex-col gap-8 max-w-7xl px-4 sm:px-5 mx-auto bg-background-600">
+			<div className="py-8 sm:py-16 flex flex-col gap-8 max-w-7xl w-full px-4 sm:px-5 mx-auto bg-background-600">
 				<div className="w-full flex flex-col gap-4 items-center justify-center">
-					<div className="flex items-center gap-4 py-8">
+					<div className="flex items-center gap-4 py-8 w-full">
 						<TrendingUpIcon className="text-accent-400 w-7 h-7" />
 						<h2 className="text-xl sm:text-2xl font-medium text-foreground-700 tracking-tight">
 							Trending Jobs
@@ -99,6 +99,6 @@ export default function LandingView({
 					</Suspense>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }
