@@ -1,6 +1,6 @@
 "use client";
 import type { LandingViewFragment$key } from "@/__generated__/LandingViewFragment.graphql";
-import { ArrowRight, TrendingUpIcon } from "lucide-react";
+import { TrendingUpIcon } from "lucide-react";
 import { Suspense } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -65,12 +65,14 @@ export default function LandingView({
 							<LandingSearchController />
 						</div>
 					</div>
-					{/* Hero Image */}
-					<div className="flex-1 flex justify-center md:justify-end mb-8 md:mb-0">
+					{/* Hero Image with background box effect */}
+					<div className="flex-1 sm:flex justify-center md:justify-end mb-8 md:mb-0 hidden">
+						{/* Background box */}
+						{/* Doctor image, larger and popping out */}
 						<img
-							src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80"
+							src="/hero-model.png"
 							alt="Group of doctors smiling, representing healthcare professionals"
-							className="w-64 h-64 sm:w-80 sm:h-80 object-cover rounded-2xl shadow-xl border-4 border-white/40"
+							className="relative z-10 w-56 h-56 sm:w-80 sm:h-80 lg:w-[28rem] lg:h-[28rem] object-contain -mb-8 sm:-mb-12 lg:-mb-16 scale-200"
 							loading="eager"
 						/>
 					</div>
@@ -90,23 +92,6 @@ export default function LandingView({
 						<JobList rootQuery={data} />
 					</Suspense>
 				</div>
-			</div>
-
-			{/* Call to Action Section (Optional) */}
-			<div className="bg-accent-400 py-10 px-4 flex flex-col items-center text-center gap-4">
-				<h3 className="text-2xl sm:text-3xl font-bold text-white">
-					Ready to make a difference?
-				</h3>
-				<p className="text-lg text-white/90 max-w-xl">
-					Join thousands of healthcare professionals finding their calling.
-					Start your journey today.
-				</p>
-				<button
-					type="button"
-					className="mt-2 px-8 py-3 bg-white text-accent-400 font-semibold rounded-full shadow-lg hover:scale-105 transition-transform flex items-center gap-2 text-lg"
-				>
-					Get Started <ArrowRight className="w-5 h-5" />
-				</button>
 			</div>
 		</>
 	);

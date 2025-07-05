@@ -55,7 +55,7 @@ export function LandingSearchController() {
 						id="location"
 						name="location"
 						label="Location"
-						placeholder="e.g. Mumbai, Delhi, Bangalore"
+						placeholder="e.g. Chennai"
 						variant="underlined"
 						value={locationInput}
 						onValueChange={setLocationInput}
