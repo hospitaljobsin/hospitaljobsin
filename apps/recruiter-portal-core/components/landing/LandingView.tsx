@@ -1,6 +1,7 @@
 "use client";
+import { env } from "@/lib/env/client";
 import links from "@/lib/links";
-import { Button } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import type { Variants } from "framer-motion";
 import { motion } from "framer-motion";
 import { BotIcon, BrainCircuitIcon, SearchIcon } from "lucide-react";
@@ -313,10 +314,12 @@ export default function LandingView() {
 					>
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
-								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700  mb-2">
+								<h2 className="text-3xl sm:text-4xl font-medium tracking-tight text-primary-700">
 									Your Own Branded Subdomain
 								</h2>
-								<h3>A professional home for your organization</h3>
+								<h3 className="text-lg sm:text-xl text-foreground-700 dark:text-foreground-200">
+									A professional home for your organization
+								</h3>
 								<ul className="text-lg text-foreground-700 dark:text-foreground-200 space-y-3 list-disc list-inside">
 									<li>
 										Every organization gets its own unique domain: ✅ example:
@@ -331,10 +334,20 @@ export default function LandingView() {
 								</ul>
 							</div>
 							<div className="flex-1 flex justify-center md:justify-start">
-								<img
-									src="/images/hero-candidate-search.jpg"
-									alt="AI Search"
-									className="rounded-2xl shadow-2xl w-full max-w-md object-cover"
+								<Input
+									placeholder={`yourdomain.${env.NEXT_PUBLIC_ROOT_DOMAIN}`}
+									size="lg"
+									startContent={
+										<SearchIcon
+											size={24}
+											className="text-foreground-500 mr-2"
+										/>
+									}
+									classNames={{
+										inputWrapper: "p-12 min-h-32",
+										input: "text-2xl",
+									}}
+									isReadOnly
 								/>
 							</div>
 						</div>
