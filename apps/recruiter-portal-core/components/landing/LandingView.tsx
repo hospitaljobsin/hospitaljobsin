@@ -1,6 +1,6 @@
 "use client";
 import links from "@/lib/links";
-import { Button } from "@heroui/react";
+import { Button, Card, CardBody } from "@heroui/react";
 import type { Variants } from "framer-motion";
 import { motion } from "framer-motion";
 import { BotIcon, BrainCircuitIcon, SearchIcon } from "lucide-react";
@@ -239,18 +239,63 @@ export default function LandingView() {
 
 					{/* AI-Powered Insights Section */}
 					<motion.section
-						className="w-full py-20 bg-primary-50 dark:bg-primary-900 rounded-3xl border border-background-200"
+						className="w-full py-28 bg-primary-50 dark:bg-primary-900 rounded-3xl border border-background-200"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
 						transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
 					>
-						<div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
-							<div className="flex-1 flex flex-col items-start gap-6">
-								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700  mb-2">
-									Built Specifically for Healthcare
-								</h2>
-								<h3>Because your needs are different</h3>
+						<div className="max-w-7xl mx-auto flex flex-col items-center gap-12">
+							<div className="flex-1 flex flex-col items-start gap-12">
+								<div className="flex flex-col items-center gap-4 w-full">
+									<h2 className="text-3xl sm:text-4xl font-medium tracking-tight text-primary-700 w-full text-center">
+										Built Specifically for Healthcare
+									</h2>
+									<h3 className="text-lg sm:text-xl text-foreground-700 dark:text-foreground-200 w-full text-center">
+										Because your needs are different
+									</h3>
+								</div>
+
+								<div className="w-full flex flex-wrap gap-4 items-center justify-center">
+									<Card shadow="none" className="p-6">
+										<CardBody>
+											<div className="flex flex-col gap-2">
+												<span className="font-semibold text-lg">
+													Credential Verification
+												</span>
+												<span className="text-foreground-600 text-base">
+													Automatically verify medical licenses and
+													certifications to ensure only qualified professionals
+													are shortlisted.
+												</span>
+											</div>
+										</CardBody>
+									</Card>
+									<Card shadow="none" className="p-6">
+										<CardBody>
+											<div className="flex flex-col gap-2">
+												<span className="font-semibold text-lg">
+													Specialty-Based Candidate Matching
+												</span>
+												<span className="text-foreground-600 text-base">
+													Match candidates to roles based on medical specialty,
+													experience, and location for precise hiring needs.
+												</span>
+											</div>
+										</CardBody>
+									</Card>
+									<Card shadow="none" className="p-6">
+										<CardBody>
+											<div className="flex flex-col gap-2">
+												<span className="font-semibold text-lg">
+													First Class Support for Locum, Full-time, and
+													Part-time Postings
+												</span>
+												<span className="text-foreground-600 text-base"></span>
+											</div>
+										</CardBody>
+									</Card>
+								</div>
 								<ul className="text-lg text-foreground-700 dark:text-foreground-200 space-y-3 list-disc list-inside">
 									<li>
 										Post Full-time, Part-time, and Locum positions with ease.
@@ -265,62 +310,8 @@ export default function LandingView() {
 									</li>
 								</ul>
 							</div>
-							<div className="flex-1 flex justify-center md:justify-end">
-								<img
-									src="/images/hero-insights.jpg"
-									alt="AI Insights"
-									className="rounded-2xl shadow-2xl w-full max-w-md object-cover"
-								/>
-							</div>
 						</div>
 					</motion.section>
-
-					{/* Credential Validation Feature Section */}
-					<section className="w-full bg-transparent py-16 sm:py-24 flex justify-center border-b border-background-200">
-						<motion.div
-							className="max-w-5xl w-full mx-auto"
-							initial={{ opacity: 0, y: 40 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true, amount: 0.4 }}
-							transition={{ duration: 0.7, ease: "easeOut" }}
-						>
-							<div className="flex flex-col items-center gap-8 text-center bg-white dark:bg-background-800 rounded-3xl border border-background-200 py-12 px-6 sm:px-12">
-								<div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900 mb-2">
-									<svg
-										width="40"
-										height="40"
-										fill="none"
-										viewBox="0 0 40 40"
-										aria-hidden="true"
-									>
-										<circle
-											cx="20"
-											cy="20"
-											r="18"
-											stroke="#00a925"
-											strokeWidth="3"
-											fill="#e6f5e9"
-										/>
-										<path
-											d="M14 21l4 4 8-8"
-											stroke="#00a925"
-											strokeWidth="2.5"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-										/>
-									</svg>
-								</div>
-								<h2 className="text-3xl sm:text-4xl font-bold text-green-900 dark:text-green-200 mb-2">
-									Verified Medical Professionals
-								</h2>
-								<p className="text-lg text-green-800 dark:text-green-100 max-w-2xl mx-auto opacity-90">
-									We validate credentials of medical professionals, allowing HR
-									to smoothly shortlist candidates from a pool of verified
-									candidates.
-								</p>
-							</div>
-						</motion.div>
-					</section>
 
 					{/* Branded Subdomain Section */}
 					<motion.section
