@@ -257,7 +257,7 @@ export default function LandingView() {
 									</h3>
 								</div>
 
-								<div className="w-full flex flex-col md:flex-row gap-4 md:items-center">
+								<div className="w-full flex flex-col md:flex-row gap-12 md:items-center">
 									<div className="p-6 flex w-full gap-4 flex-col items-center jusiify-center">
 										<div className="relative h-48 w-48 aspect-auto">
 											<Image
@@ -267,7 +267,7 @@ export default function LandingView() {
 												className="object-cover"
 											/>
 										</div>
-										<span className="font-semibold text-lg max-w-md mx-auto">
+										<span className="font-medium text-lg max-w-md mx-auto">
 											Built in Medical Credential Verification
 										</span>
 									</div>
@@ -280,7 +280,7 @@ export default function LandingView() {
 												className="object-cover"
 											/>
 										</div>
-										<span className="font-semibold text-lg text-center max-w-md mx-auto">
+										<span className="font-medium text-lg text-center max-w-md mx-auto">
 											First Class Support for Locum, Full-time, and Part-time
 											Positions
 										</span>
@@ -294,7 +294,7 @@ export default function LandingView() {
 												className="object-cover"
 											/>
 										</div>
-										<span className="font-semibold text-lg max-w-md mx-auto">
+										<span className="font-medium text-lg max-w-md mx-auto">
 											Specialty-Based Candidate Matching
 										</span>
 									</div>
