@@ -91,52 +91,6 @@ export default function LandingView() {
 				</div>
 			</div>
 
-			{/* Credential Validation Feature Section */}
-			<section className="w-full bg-transparent py-16 sm:py-24 flex justify-center border-b border-background-200">
-				<motion.div
-					className="max-w-5xl w-full mx-auto"
-					initial={{ opacity: 0, y: 40 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, amount: 0.4 }}
-					transition={{ duration: 0.7, ease: "easeOut" }}
-				>
-					<div className="flex flex-col items-center gap-8 text-center bg-white dark:bg-background-800 rounded-3xl border border-background-200 py-12 px-6 sm:px-12">
-						<div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900 mb-2">
-							<svg
-								width="40"
-								height="40"
-								fill="none"
-								viewBox="0 0 40 40"
-								aria-hidden="true"
-							>
-								<circle
-									cx="20"
-									cy="20"
-									r="18"
-									stroke="#00a925"
-									strokeWidth="3"
-									fill="#e6f5e9"
-								/>
-								<path
-									d="M14 21l4 4 8-8"
-									stroke="#00a925"
-									strokeWidth="2.5"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							</svg>
-						</div>
-						<h2 className="text-3xl sm:text-4xl font-bold text-green-900 dark:text-green-200 mb-2">
-							Verified Medical Professionals
-						</h2>
-						<p className="text-lg text-green-800 dark:text-green-100 max-w-2xl mx-auto opacity-90">
-							We validate credentials of medical professionals, allowing HR to
-							smoothly shortlist candidates from a pool of verified candidates.
-						</p>
-					</div>
-				</motion.div>
-			</section>
-
 			{/* Features Section */}
 			<section
 				id="features"
@@ -154,45 +108,71 @@ export default function LandingView() {
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-32 z-10">
 								<div className="w-full flex flex-col gap-4">
-									<h2 className="text-4xl sm:text-5xl font-extrabold text-primary-700 dark:text-primary-300 mb-2 text-center w-full">
+									<h2 className="text-4xl sm:text-5xl font-medium tracking-tight text-primary-700  mb-2 text-center w-full">
 										AI-Powered Hiring, Built for Healthcare
 									</h2>
-									<h3 className="text-xl sm:text-2xl font-medium text-primary-800 dark:text-primary-200 mb-4 opacity-90 text-center w-full">
+									<h3 className="text-xl sm:text-2xl text-foreground-600 mb-4 opacity-90 text-center w-full">
 										Make better hiring decisions with real intelligence
 									</h3>
 								</div>
 								<ul className="space-y-28">
-									<li className="flex items-center gap-4">
-										<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
-											<BrainCircuitIcon className="w-7 h-7 text-primary-600 dark:text-primary-300" />
-										</span>
-										<span className="text-lg font-semibold">
-											AI Applicant Analysis
-										</span>
+									<li className="flex items-center gap-8">
+										<div className="flex flex-col gap-4">
+											<div className="flex items-center gap-2">
+												<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
+													<BrainCircuitIcon className="w-7 h-7 text-primary-600 " />
+												</span>
+												<span className="text-lg sm:text-2xl font-medium text-primary-700">
+													AI Applicant Analysis
+												</span>
+											</div>
+											<span className="block text-base sm:text-lg text-foreground-600 max-w-md">
+												Instantly evaluate candidates with AI-driven insights
+												tailored for healthcare roles.
+											</span>
+										</div>
 										<img
 											src="/screenshots/applicant-ai-analysis.png"
 											alt="Screenshot of AI Applicant Analysis feature"
 											className="w-full max-w-4xl object-contain rounded-xl shadow-md border border-background-200 mx-0 sm:mx-4"
 										/>
 									</li>
-									<li className="flex items-center gap-4">
+									<li className="flex items-center gap-8">
 										<img
 											src="/screenshots/natural-language-search.png"
 											alt="Screenshot of Natural Language Search feature"
 											className="w-full max-w-4xl object-contain rounded-xl shadow-md border border-background-200 mx-0 sm:mx-4"
 										/>
-										<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
-											<SearchIcon className="w-7 h-7 text-primary-600 dark:text-primary-300" />
-										</span>
-										<span className="text-lg font-semibold">
-											Natural Language Search
-										</span>
+										<div className="flex flex-col gap-4">
+											<div className="flex items-center gap-2">
+												<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
+													<SearchIcon className="w-7 h-7 text-primary-600 " />
+												</span>
+												<span className="text-lg sm:text-2xl font-medium text-primary-700">
+													Natural Language Search
+												</span>
+											</div>
+											<span className="block text-base sm:text-lg text-foreground-600 max-w-md">
+												Find the right candidates using intuitive,
+												conversational search—no complex filters needed.
+											</span>
+										</div>
 									</li>
-									<li className="flex items-center gap-4">
-										<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
-											<BotIcon className="w-7 h-7 text-primary-600 dark:text-primary-300" />
-										</span>
-										<span className="text-lg font-semibold">AI Assistant</span>
+									<li className="flex items-center gap-8">
+										<div className="flex flex-col gap-4">
+											<div className="flex items-center gap-2">
+												<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
+													<BotIcon className="w-7 h-7 text-primary-600 " />
+												</span>
+												<span className="text-lg sm:text-2xl font-medium text-primary-700">
+													AI Assistant
+												</span>
+											</div>
+											<span className="block text-base sm:text-lg text-foreground-600 max-w-md">
+												Get real-time support and answers for your hiring
+												process, powered by advanced AI.
+											</span>
+										</div>
 										<img
 											src="/screenshots/ai-chat-assistant.png"
 											alt="Screenshot of AI Assistant feature"
@@ -214,7 +194,7 @@ export default function LandingView() {
 					>
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
-								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
+								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700  mb-2">
 									Built Specifically for Healthcare
 								</h2>
 								<h3>Because your needs are different</h3>
@@ -242,7 +222,54 @@ export default function LandingView() {
 						</div>
 					</motion.section>
 
-					{/* Natural Language Search Section */}
+					{/* Credential Validation Feature Section */}
+					<section className="w-full bg-transparent py-16 sm:py-24 flex justify-center border-b border-background-200">
+						<motion.div
+							className="max-w-5xl w-full mx-auto"
+							initial={{ opacity: 0, y: 40 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, amount: 0.4 }}
+							transition={{ duration: 0.7, ease: "easeOut" }}
+						>
+							<div className="flex flex-col items-center gap-8 text-center bg-white dark:bg-background-800 rounded-3xl border border-background-200 py-12 px-6 sm:px-12">
+								<div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900 mb-2">
+									<svg
+										width="40"
+										height="40"
+										fill="none"
+										viewBox="0 0 40 40"
+										aria-hidden="true"
+									>
+										<circle
+											cx="20"
+											cy="20"
+											r="18"
+											stroke="#00a925"
+											strokeWidth="3"
+											fill="#e6f5e9"
+										/>
+										<path
+											d="M14 21l4 4 8-8"
+											stroke="#00a925"
+											strokeWidth="2.5"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										/>
+									</svg>
+								</div>
+								<h2 className="text-3xl sm:text-4xl font-bold text-green-900 dark:text-green-200 mb-2">
+									Verified Medical Professionals
+								</h2>
+								<p className="text-lg text-green-800 dark:text-green-100 max-w-2xl mx-auto opacity-90">
+									We validate credentials of medical professionals, allowing HR
+									to smoothly shortlist candidates from a pool of verified
+									candidates.
+								</p>
+							</div>
+						</motion.div>
+					</section>
+
+					{/* Branded Subdomain Section */}
 					<motion.section
 						className="w-full py-20 bg-background-100 dark:bg-background-800 rounded-3xl border border-background-200"
 						initial={{ opacity: 0, y: 40 }}
@@ -252,7 +279,7 @@ export default function LandingView() {
 					>
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
-								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
+								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700  mb-2">
 									Your Own Branded Subdomain
 								</h2>
 								<h3>A professional home for your organization</h3>
@@ -289,7 +316,7 @@ export default function LandingView() {
 					>
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-6">
-								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700 dark:text-primary-300 mb-2">
+								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700  mb-2">
 									Security First. Peace of Mind Always.
 								</h2>
 								<h3>Data you can trust. Accounts you can control.</h3>
