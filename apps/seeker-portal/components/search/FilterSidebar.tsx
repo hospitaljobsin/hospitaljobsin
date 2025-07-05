@@ -92,9 +92,9 @@ export default function FilterSidebar({
 							style: "unit",
 							unit: "kilometer",
 						}}
-						minValue={1}
+						minValue={0}
 						maxValue={200}
-						step={1}
+						step={10}
 						value={values.proximityKm}
 						onChange={(val) =>
 							onChange({

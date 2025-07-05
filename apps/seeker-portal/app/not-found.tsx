@@ -1,6 +1,6 @@
 "use client";
 
-import HeaderClientComponent from "@/components/layout/HeaderClientComponent";
+import DashboardHeaderClientComponent from "@/components/layout/DashboardHeaderClientComponent";
 import links from "@/lib/links";
 import { Button } from "@heroui/react";
 import { SearchX } from "lucide-react";
@@ -9,7 +9,7 @@ import Link from "next/link";
 export default function NotFoundPage() {
 	return (
 		<>
-			<HeaderClientComponent variant="default" />
+			<DashboardHeaderClientComponent />
 			<div className="flex flex-col items-center justify-center w-full h-full py-32 px-4 text-center gap-6">
 				<div className="flex items-center justify-center w-20 h-20 rounded-full bg-danger-50 dark:bg-danger-900/20 mb-2">
 					<SearchX className="w-10 h-10 text-danger-500 dark:text-danger-400" />

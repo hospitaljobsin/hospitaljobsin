@@ -86,11 +86,16 @@ export default function LandingView({
 			{/* Trending Jobs Section */}
 			<div className="py-8 sm:py-16 flex flex-col gap-8 max-w-7xl w-full px-4 sm:px-5 mx-auto bg-background-600">
 				<div className="w-full flex flex-col gap-4 items-center justify-center">
-					<div className="flex items-center gap-4 py-8 w-full">
-						<TrendingUpIcon className="text-accent-400 w-7 h-7" />
-						<h2 className="text-xl sm:text-2xl font-medium text-foreground-700 tracking-tight">
-							Trending Jobs
-						</h2>
+					<div className="flex flex-col gap-4 w-full py-8">
+						<div className="flex items-center gap-4 w-full">
+							<TrendingUpIcon className="text-foreground-600 w-7 h-7" />
+							<h2 className="text-xl sm:text-2xl font-medium text-foreground-600 tracking-tight">
+								Trending Jobs
+							</h2>
+						</div>
+						<h3 className="text-foreground-500 text-base sm:text-lg font-medium tracking-tight">
+							Most Viewed Healthcare Jobs This Week
+						</h3>
 					</div>
 					<Suspense fallback={<JobListSkeleton />}>
 						<JobList rootQuery={data} />

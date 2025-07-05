@@ -1,7 +1,7 @@
 "use client";
 
 import type { pageSearchQuery as pageSearchQueryType } from "@/__generated__/pageSearchQuery.graphql";
-import { useSearchParams } from "next/navigation";
+import { FILTER_DEFAULTS } from "@/lib/constants";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { graphql, loadQuery, useRelayEnvironment } from "react-relay";
 import SearchHeaderClientComponent from "../../components/search/SearchHeaderClientComponent";
@@ -44,24 +44,19 @@ export type Filters = {
 };
 
 export default function SearchPage() {
-	const searchParams = useSearchParams();
-	const speciality = searchParams.get("speciality") || null;
-	const experience = searchParams.get("experience") || null;
-	const salary = searchParams.get("salary") || null;
-	const coordinates = searchParams.get("coordinates") || null;
 	const environment = useRelayEnvironment();
 	const [filters, setFilters] = useQueryStates(
 		{
-			speciality: parseAsString.withDefault(""),
+			speciality: parseAsString.withDefault(FILTER_DEFAULTS.speciality),
 			minExperience: parseAsInteger,
 			maxExperience: parseAsInteger,
 			minSalary: parseAsInteger,
 			maxSalary: parseAsInteger,
-			locationName: parseAsString.withDefault(""),
-			coordinates: parseAsString.withDefault(""),
-			proximityKm: parseAsInteger.withDefault(0),
-			workMode: parseAsString.withDefault("ANY"),
-			jobType: parseAsString.withDefault("ANY"),
+			locationName: parseAsString.withDefault(FILTER_DEFAULTS.locationName),
+			coordinates: parseAsString.withDefault(FILTER_DEFAULTS.coordinates),
+			proximityKm: parseAsInteger.withDefault(FILTER_DEFAULTS.proximityKm),
+			workMode: parseAsString.withDefault(FILTER_DEFAULTS.workMode),
+			jobType: parseAsString.withDefault(FILTER_DEFAULTS.jobType),
 		},
 		{ shallow: false },
 	);
@@ -94,12 +89,14 @@ export default function SearchPage() {
 	// Prepare variables for the query
 	const variables = {
 		speciality: filters.speciality,
-		experience: experience ? Number.parseInt(experience) : null,
-		salary: salary ? Number.parseInt(salary) : null,
-		coordinates: parseCoordinates(coordinates),
-		first: 10,
-		workMode: "ANY",
-		jobType: "ANY",
+		minExperience: filters.minExperience,
+		maxExperience: filters.maxExperience,
+		minSalary: filters.minSalary,
+		maxSalary: filters.maxSalary,
+		coordinates: parseCoordinates(filters.coordinates),
+		proximityKm: filters.proximityKm,
+		workMode: filters.workMode,
+		jobType: filters.jobType,
 	};
 
 	const preloadedQuery = loadQuery<pageSearchQueryType>(
