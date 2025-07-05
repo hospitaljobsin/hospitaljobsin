@@ -40,7 +40,7 @@ export default function LandingHeader({
 }) {
 	const data = useFragment(LandingHeaderFragment, rootQuery);
 	return (
-		<div className={cn("w-full flex flex-col sticky top-0 z-50")}>
+		<div className={cn("w-full flex flex-col static top-0 z-50")}>
 			{data.viewer.__typename === "Account" && (
 				<IncompleteProfileBanner account={data.viewer} />
 			)}

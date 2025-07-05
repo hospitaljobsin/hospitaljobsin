@@ -7,7 +7,7 @@ import Logo from "../Logo";
 
 export default function LandingHeaderSkeleton() {
 	return (
-		<div className={cn("w-full flex flex-col sticky top-0 z-50")}>
+		<div className={cn("w-full flex flex-col static top-0 z-50")}>
 			<Navbar
 				maxWidth="xl"
 				isBordered={false}
