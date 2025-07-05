@@ -14,8 +14,7 @@
 }
 @layer base {
 	html,
-	body,
-	body > div {
+	body {
 		@apply h-full;
 		@apply w-full;
 		@apply bg-background-600;
