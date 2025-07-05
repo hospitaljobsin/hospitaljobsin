@@ -31,7 +31,7 @@ export default function LandingView({
 	return (
 		<div className="w-full flex flex-col bg-background-600">
 			{/* Hero Section */}
-			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-500 min-h-[60vh] flex flex-col justify-center items-center overflow-hidden">
+			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-300 min-h-[60vh] flex flex-col justify-center items-center overflow-hidden">
 				<Suspense fallback={<LandingHeaderSkeleton />}>
 					<LandingHeader rootQuery={data} />
 				</Suspense>
