@@ -41,6 +41,7 @@ export function LandingSearchController() {
 						id="speciality"
 						name="speciality"
 						label="Search by"
+						variant="underlined"
 						placeholder="Speciality, Keyword or Company"
 						value={speciality}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -55,6 +56,7 @@ export function LandingSearchController() {
 						name="location"
 						label="Location"
 						placeholder="e.g. Mumbai, Delhi, Bangalore"
+						variant="underlined"
 						value={locationInput}
 						onValueChange={setLocationInput}
 						onChange={(loc) => {

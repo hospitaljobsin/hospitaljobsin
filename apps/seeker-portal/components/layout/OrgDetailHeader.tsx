@@ -84,6 +84,9 @@ export default function OrgDetailHeader({
 							value={speciality}
 							onChange={(e) => setSpeciality(e.target.value)}
 							placeholder="Search by speciality (e.g. Cardiology)"
+							startContent={
+								<SearchIcon size={16} className="text-foreground-500" />
+							}
 							fullWidth
 							variant="bordered"
 							className="hidden lg:block"

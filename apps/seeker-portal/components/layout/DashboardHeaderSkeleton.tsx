@@ -9,6 +9,7 @@ import {
 	NavbarContent,
 	NavbarItem,
 } from "@heroui/react";
+import { SearchIcon } from "lucide-react";
 import Logo from "../Logo";
 
 export default function DashboardHeaderSkeleton() {
@@ -38,6 +39,9 @@ export default function DashboardHeaderSkeleton() {
 						id="speciality"
 						isDisabled
 						placeholder="Search by speciality (e.g. Cardiology)"
+						startContent={
+							<SearchIcon size={16} className="text-foreground-500" />
+						}
 						fullWidth
 						variant="bordered"
 						className="hidden lg:block"

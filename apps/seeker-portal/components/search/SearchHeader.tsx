@@ -12,6 +12,7 @@ import {
 	NavbarContent,
 	NavbarItem,
 } from "@heroui/react";
+import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
@@ -82,6 +83,9 @@ export default function SearchHeader({
 							value={speciality}
 							onChange={(e) => setSpeciality(e.target.value)}
 							placeholder="Search by speciality (e.g. Cardiology)"
+							startContent={
+								<SearchIcon size={16} className="text-foreground-500" />
+							}
 							fullWidth
 							variant="bordered"
 							className="hidden lg:block"
