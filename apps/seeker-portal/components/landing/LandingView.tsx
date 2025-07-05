@@ -1,6 +1,6 @@
 "use client";
 import type { LandingViewFragment$key } from "@/__generated__/LandingViewFragment.graphql";
-import { TrendingUpIcon } from "lucide-react";
+import { ArrowRight, TrendingUpIcon } from "lucide-react";
 import { Suspense } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -12,7 +12,7 @@ const LandingViewFragment = graphql`
   fragment LandingViewFragment on Query   @argumentDefinitions(
     searchTerm: { type: "String" }
     coordinates: { type: "CoordinatesInput"}
-	proximityKm: { type: "Float" }
+    proximityKm: { type: "Float" }
   ) {
     ...JobListFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
   }
@@ -27,28 +27,62 @@ export default function LandingView({
 
 	return (
 		<>
-			<div className="bg-primary-400 relative">
-				{/* Desktop/Tablet Hero */}
-				<div className="hidden sm:flex pt-20 sm:pt-28 pb-20 sm:pb-48 px-4 sm:px-5 w-full h-full flex-col gap-6 sm:gap-16 text-center max-w-xl sm:max-w-7xl mx-auto">
-					<h1 className="text-4xl sm:text-6xl font-medium tracking-tighter text-balance text-primary-foreground z-10">
-						Connecting Healthcare Heroes with Their Next Opportunity
-					</h1>
-					<LandingSearchController />
+			{/* Hero Section */}
+			<div className="relative bg-gradient-to-br from-primary-500 via-primary-400 to-green-400 min-h-[60vh] flex flex-col justify-center items-center overflow-hidden">
+				{/* Background SVG or Image Placeholder */}
+				<div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none select-none z-0">
+					{/* TODO: Replace with a beautiful healthcare-themed SVG or image */}
+					<svg
+						viewBox="0 0 1440 320"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+						className="w-full h-full"
+					>
+						<title>Healthcare background wave</title>
+						<path
+							fill="#fff"
+							fillOpacity="0.2"
+							d="M0,160L60,170.7C120,181,240,203,360,197.3C480,192,600,160,720,133.3C840,107,960,85,1080,101.3C1200,117,1320,171,1380,197.3L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+						/>
+					</svg>
 				</div>
-				{/* Mobile Hero (minimal) */}
-				<div className="flex sm:hidden pt-6 pb-4 px-4 w-full flex-col gap-4 items-center text-center">
-					<h1 className="text-xl font-medium text-primary-foreground z-10">
-						Find your next healthcare job
-					</h1>
-					<LandingSearchController />
+				{/* Responsive flex: text left, image right on desktop; stacked on mobile */}
+				<div className="relative z-10 flex flex-col-reverse md:flex-row items-center justify-center text-center md:text-left gap-8 pt-24 pb-16 px-4 max-w-7xl w-full">
+					{/* Hero Text */}
+					<div className="flex-1 flex flex-col items-center md:items-start gap-6">
+						<h1 className="text-4xl sm:text-6xl font-medium tracking-tight text-primary-foreground drop-shadow-lg">
+							Empowering{" "}
+							<span className="text-accent-400">Healthcare Heroes</span>
+							<br />
+							to Find Their Next{" "}
+							<span className="text-accent-400">Opportunity</span>
+						</h1>
+						<p className="text-lg sm:text-2xl text-primary-foreground/90 font-medium max-w-xl mx-auto md:mx-0">
+							Discover life-changing roles at top hospitals and clinics. Your
+							next mission starts here.
+						</p>
+						<div className="w-full flex flex-col items-center md:items-start gap-4">
+							<LandingSearchController />
+						</div>
+					</div>
+					{/* Hero Image */}
+					<div className="flex-1 flex justify-center md:justify-end mb-8 md:mb-0">
+						<img
+							src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80"
+							alt="Group of doctors smiling, representing healthcare professionals"
+							className="w-64 h-64 sm:w-80 sm:h-80 object-cover rounded-2xl shadow-xl border-4 border-white/40"
+							loading="eager"
+						/>
+					</div>
 				</div>
 			</div>
 
-			<div className="py-4 sm:py-8 flex flex-col gap-4 sm:gap-8 max-w-7xl px-4 sm:px-5 mx-auto bg-background-600">
-				<div className="w-full h-full flex flex-col gap-4 sm:gap-8 items-center justify-center">
-					<div className="flex items-center gap-4">
-						<TrendingUpIcon />
-						<h2 className="text-lg sm:text-2xl font-medium text-foreground-600">
+			{/* Trending Jobs Section */}
+			<div className="py-8 sm:py-16 flex flex-col gap-8 max-w-7xl px-4 sm:px-5 mx-auto bg-background-600">
+				<div className="w-full flex flex-col gap-4 items-center justify-center">
+					<div className="flex items-center gap-4 py-8">
+						<TrendingUpIcon className="text-accent-400 w-7 h-7" />
+						<h2 className="text-xl sm:text-2xl font-medium text-foreground-700 tracking-tight">
 							Trending Jobs
 						</h2>
 					</div>
@@ -56,6 +90,23 @@ export default function LandingView({
 						<JobList rootQuery={data} />
 					</Suspense>
 				</div>
+			</div>
+
+			{/* Call to Action Section (Optional) */}
+			<div className="bg-accent-400 py-10 px-4 flex flex-col items-center text-center gap-4">
+				<h3 className="text-2xl sm:text-3xl font-bold text-white">
+					Ready to make a difference?
+				</h3>
+				<p className="text-lg text-white/90 max-w-xl">
+					Join thousands of healthcare professionals finding their calling.
+					Start your journey today.
+				</p>
+				<button
+					type="button"
+					className="mt-2 px-8 py-3 bg-white text-accent-400 font-semibold rounded-full shadow-lg hover:scale-105 transition-transform flex items-center gap-2 text-lg"
+				>
+					Get Started <ArrowRight className="w-5 h-5" />
+				</button>
 			</div>
 		</>
 	);

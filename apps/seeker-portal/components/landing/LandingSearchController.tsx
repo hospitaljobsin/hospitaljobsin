@@ -34,7 +34,7 @@ export function LandingSearchController() {
 		<Card className="p-6" shadow="none" fullWidth>
 			<form
 				onSubmit={handleSubmit}
-				className="w-full rounded-lg flex flex-col sm:flex-row gap-12"
+				className="w-full rounded-lg flex flex-col gap-6"
 			>
 				<div className="w-full flex flex-col sm:flex-row gap-4 sm:gap-6">
 					<Input
