@@ -4,6 +4,8 @@ import { TrendingUpIcon } from "lucide-react";
 import { Suspense } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import HeaderSkeleton from "../layout/HeaderSkeleton";
+import LandingHeader from "../layout/LandingHeader";
 import JobList from "./JobList";
 import JobListSkeleton from "./JobListSkeleton";
 import { LandingSearchController } from "./LandingSearchController";
@@ -15,6 +17,7 @@ const LandingViewFragment = graphql`
     proximityKm: { type: "Float" }
   ) {
     ...JobListFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
+	...LandingHeaderFragment
   }
 `;
 
@@ -28,7 +31,10 @@ export default function LandingView({
 	return (
 		<>
 			{/* Hero Section */}
-			<div className="relative bg-gradient-to-br from-primary-500 via-primary-400 to-green-400 min-h-[60vh] flex flex-col justify-center items-center overflow-hidden">
+			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-500 min-h-[60vh] flex flex-col justify-center items-center overflow-hidden">
+				<Suspense fallback={<HeaderSkeleton variant="hero" />}>
+					<LandingHeader rootQuery={data} />
+				</Suspense>
 				{/* Background SVG or Image Placeholder */}
 				<div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none select-none z-0">
 					{/* TODO: Replace with a beautiful healthcare-themed SVG or image */}

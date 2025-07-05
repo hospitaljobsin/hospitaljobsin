@@ -15,7 +15,7 @@ export default function HeaderSkeleton({
 			isBordered={variant !== "hero"}
 			classNames={{
 				base:
-					variant === "default" ? "" : "bg-primary-400 text-primary-foreground",
+					variant === "default" ? "" : "bg-transparent text-primary-foreground",
 			}}
 		>
 			<NavbarBrand className="flex items-center gap-4">

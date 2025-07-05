@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8f342e76c9a75686e8f877d942cac3bd>>
- * @relayHash a159c250098c729c26c4bb15f97dd02a
+ * @generated SignedSource<<267f1a4a2e8588af9b3496e2120cdd87>>
+ * @relayHash f495f1c9a5f8665b4ef9eb32c0f59073
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a159c250098c729c26c4bb15f97dd02a
+// @relayRequestID f495f1c9a5f8665b4ef9eb32c0f59073
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -359,6 +359,47 @@ return {
             ],
             "type": "Node",
             "abstractKey": "__isNode"
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "fullName",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatarUrl",
+                "storageKey": null
+              },
+              (v7/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  (v7/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "type": "Account",
+            "abstractKey": null
           }
         ],
         "storageKey": null
@@ -366,7 +407,7 @@ return {
     ]
   },
   "params": {
-    "id": "a159c250098c729c26c4bb15f97dd02a",
+    "id": "f495f1c9a5f8665b4ef9eb32c0f59073",
     "metadata": {},
     "name": "pageLandingQuery",
     "operationKind": "query",

@@ -15,7 +15,7 @@
 @layer base {
 	html,
 	body,
-	div[data-overlay-container="true"] div[data-overlay-container="false"] {
+	body > div {
 		@apply h-full;
 		@apply w-full;
 		@apply bg-background-600;
