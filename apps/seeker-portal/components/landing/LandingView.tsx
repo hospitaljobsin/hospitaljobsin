@@ -31,7 +31,7 @@ export default function LandingView({
 	return (
 		<div className="w-full flex flex-col bg-background-600">
 			{/* Hero Section */}
-			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-300 flex flex-col justify-center items-center w-full">
+			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-300 flex flex-col justify-center items-center w-full min-h-[500px]">
 				<Suspense fallback={<LandingHeaderSkeleton />}>
 					<LandingHeader rootQuery={data} />
 				</Suspense>
@@ -52,18 +52,18 @@ export default function LandingView({
 						/>
 					</svg>
 				</div>
-				{/* Responsive flex: text left, image right on desktop; stacked on mobile */}
-				<div className="relative z-10 flex flex-col-reverse md:flex-row text-center md:text-left gap-8 pt-8 sm:pt-24 pb-16 px-4 max-w-7xl w-full h-full">
-					{/* Hero Text */}
-					<div className="flex-1 flex flex-col items-center md:items-start gap-6">
-						<h1 className="text-4xl sm:text-6xl font-medium tracking-tight text-primary-foreground drop-shadow-lg hidden md:block">
+				{/* Main content: text left, image right */}
+				<div className="relative z-10 flex flex-col md:flex-row items-center md:items-end text-center md:text-left gap-8 pt-8 sm:pt-24 px-4 max-w-7xl w-full h-full">
+					{/* Left: Text and Search */}
+					<div className="flex-1 flex flex-col items-center md:items-start gap-6 pb-16">
+						<h1 className="text-4xl sm:text-6xl font-medium tracking-tight text-primary-foreground drop-shadow-lg">
 							Empowering{" "}
 							<span className="text-accent-400">Healthcare Heroes</span>
 							<br />
 							to Find Their Next{" "}
 							<span className="text-accent-400">Opportunity</span>
 						</h1>
-						<p className="text-lg sm:text-2xl text-primary-foreground/90 font-medium max-w-xl mx-auto md:mx-0 hidden md:block">
+						<p className="text-lg sm:text-2xl text-primary-foreground/90 font-medium max-w-xl mx-auto md:mx-0">
 							Discover life-changing roles at top hospitals and clinics. Your
 							next mission starts here.
 						</p>
@@ -71,14 +71,12 @@ export default function LandingView({
 							<LandingSearchController />
 						</div>
 					</div>
-					{/* Hero Image with background box effect */}
-					<div className="flex-1 md:flex justify-center md:justify-end mb-8 md:mb-0 hidden h-full w-full">
-						{/* Background box */}
-						{/* Doctor image, larger and popping out */}
+					{/* Right: Doctor Image */}
+					<div className="flex-1 md:flex items-end justify-end w-auto h-[600px] hidden">
 						<img
 							src="/hero-model.png"
 							alt="Group of doctors smiling, representing healthcare professionals"
-							className="relative z-10 w-full h-full object-cover"
+							className="w-auto h-full max-w-full object-cover object-bottom"
 							loading="eager"
 						/>
 					</div>
