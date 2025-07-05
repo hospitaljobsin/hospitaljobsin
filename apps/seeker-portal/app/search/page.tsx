@@ -58,7 +58,7 @@ export default function SearchPage() {
 			workMode: parseAsString.withDefault(FILTER_DEFAULTS.workMode),
 			jobType: parseAsString.withDefault(FILTER_DEFAULTS.jobType),
 		},
-		{ shallow: false },
+		{ shallow: true },
 	);
 
 	// Parse coordinates from either JSON format or "latitude,longitude" string format
