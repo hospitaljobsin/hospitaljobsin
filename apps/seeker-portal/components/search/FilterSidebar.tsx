@@ -208,7 +208,7 @@ export default function FilterSidebar({
 						onChange(FILTER_DEFAULTS);
 					}}
 				>
-					Clear Filters
+					Clear All Filters
 				</Button>
 			</CardBody>
 		</Card>
