@@ -12,7 +12,7 @@ import {
 	NavbarContent,
 	NavbarItem,
 } from "@heroui/react";
-import { ExternalLinkIcon, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -82,7 +82,7 @@ export default function DashboardHeader({
 							id="speciality"
 							value={speciality}
 							onChange={(e) => setSpeciality(e.target.value)}
-							placeholder="Search speciality (e.g. Cardiology)"
+							placeholder="Search by speciality (e.g. Cardiology)"
 							fullWidth
 							variant="bordered"
 							className="hidden lg:block"
@@ -108,19 +108,17 @@ export default function DashboardHeader({
 						/>
 					</NavbarItem>
 					{data.viewer.__typename === "Account" ? (
-						<>
+						<div className="flex items-center gap-2">
 							<NavbarItem className="hidden md:block">
-								<Button
-									as={Link}
+								<Link
 									href={env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}
 									target="_blank"
 									rel="noopener noreferrer"
-									variant="light"
-									className={"text-foreground text-base"}
-									endContent={<ExternalLinkIcon size={16} />}
+									color="foreground"
+									className={"text-foreground"}
 								>
-									for recruiters
-								</Button>
+									For Recruiters
+								</Link>
 							</NavbarItem>
 							<NavbarItem>
 								<Button
@@ -135,9 +133,9 @@ export default function DashboardHeader({
 								</Button>
 							</NavbarItem>
 							<AuthNavigation rootQuery={data.viewer} />
-						</>
+						</div>
 					) : (
-						<>
+						<div className="flex items-center gap-2">
 							<NavbarItem>
 								<Button
 									as={Link}
@@ -157,10 +155,10 @@ export default function DashboardHeader({
 									className="text-base"
 									variant="flat"
 								>
-									For recruiters
+									For Recruiters
 								</Button>
 							</NavbarItem>
-						</>
+						</div>
 					)}
 				</NavbarContent>
 			</Navbar>

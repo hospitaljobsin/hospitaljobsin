@@ -37,7 +37,7 @@ export default function DashboardHeaderSkeleton() {
 					<Input
 						id="speciality"
 						isDisabled
-						placeholder="Search speciality (e.g. Cardiology)"
+						placeholder="Search by speciality (e.g. Cardiology)"
 						fullWidth
 						variant="bordered"
 						className="hidden lg:block"

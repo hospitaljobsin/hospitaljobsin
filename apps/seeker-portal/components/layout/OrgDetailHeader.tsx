@@ -93,7 +93,7 @@ export default function OrgDetailHeader({
 									color="default"
 									variant="flat"
 								>
-									For recruiters
+									For Recruiters
 								</Button>
 							</NavbarItem>
 						</>

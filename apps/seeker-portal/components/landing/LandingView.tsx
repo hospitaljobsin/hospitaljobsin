@@ -43,7 +43,7 @@ export default function LandingView({
 				</div>
 			</div>
 
-			<div className="py-4 sm:py-8 flex flex-col gap-4 sm:gap-8 max-w-7xl px-4 sm:px-5 mx-auto">
+			<div className="py-4 sm:py-8 flex flex-col gap-4 sm:gap-8 max-w-7xl px-4 sm:px-5 mx-auto bg-background-600">
 				<div className="w-full h-full flex flex-col gap-4 sm:gap-8 items-center justify-center">
 					Trending Jobs
 					<Suspense fallback={<JobListSkeleton />}>

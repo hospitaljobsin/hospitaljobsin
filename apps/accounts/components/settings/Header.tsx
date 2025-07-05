@@ -61,7 +61,7 @@ export default function Header({
 						</NavbarItem>
 						<NavbarItem>
 							<Button color="default" variant="flat" disabled>
-								For recruiters
+								For Recruiters
 							</Button>
 						</NavbarItem>
 					</>

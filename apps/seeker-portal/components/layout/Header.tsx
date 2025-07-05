@@ -96,7 +96,7 @@ export default function Header({
 											: "text-foreground"
 									}
 								>
-									for recruiters
+									For Recruiters
 								</Link>
 							</NavbarItem>
 							<AuthNavigation rootQuery={data.viewer} />
@@ -121,7 +121,7 @@ export default function Header({
 									color="default"
 									variant="flat"
 								>
-									For recruiters
+									For Recruiters
 								</Button>
 							</NavbarItem>
 						</>

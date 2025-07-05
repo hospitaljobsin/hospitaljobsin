@@ -81,7 +81,7 @@ export default function SearchHeader({
 							id="speciality"
 							value={speciality}
 							onChange={(e) => setSpeciality(e.target.value)}
-							placeholder="Search speciality (e.g. Cardiology)"
+							placeholder="Search by speciality (e.g. Cardiology)"
 							fullWidth
 							variant="bordered"
 							className="hidden lg:block"
