@@ -113,18 +113,6 @@ export default function LandingView() {
 			</section>
 
 			{/* Features Section */}
-			<section className="w-full bg-primary-100 dark:bg-background-300 py-16 sm:pt-24 border-b border-background-200">
-				<div className="w-full mx-auto flex flex-col gap-12 ">
-					<h2 className="text-4xl sm:text-5xl font-extrabold text-center text-primary-700 dark:text-primary-300 mb-4 tracking-tight">
-						Revolutionize Healthcare Recruitment with AI
-					</h2>
-					<p className="text-lg text-center text-primary-600 dark:text-primary-200 max-w-2xl mx-auto opacity-90">
-						Find, attract, and hire the best doctors, nurses, and allied health
-						professionals with next-gen healthcare AI tools, beautiful
-						workflows, and instant clinical insights.
-					</p>
-				</div>
-			</section>
 			<section
 				id="features"
 				className="w-full bg-white dark:bg-background-300 pt-16 sm:pt-24 border-b border-background-200"

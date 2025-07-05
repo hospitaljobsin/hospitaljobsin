@@ -13,14 +13,13 @@ export function LandingSearchController() {
 	const [locationInput, setLocationInput] = useState("");
 	const [selectedLocation, setSelectedLocation] =
 		useState<SearchLocation | null>(null);
-	const [experience, setExperience] = useState("");
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const params = new URLSearchParams();
 		if (speciality) params.set("speciality", speciality);
 		if (selectedLocation?.displayName) {
-			params.set("location", selectedLocation.displayName);
+			params.set("locationName", selectedLocation.displayName);
 			if (selectedLocation.coordinates) {
 				params.set(
 					"coordinates",
@@ -28,7 +27,6 @@ export function LandingSearchController() {
 				);
 			}
 		}
-		if (experience) params.set("experience", experience);
 		router.push(`/search?${params.toString()}`);
 	};
 
@@ -42,13 +40,15 @@ export function LandingSearchController() {
 					<Input
 						id="speciality"
 						name="speciality"
-						label="Speciality"
-						placeholder="e.g. Cardiologist"
+						label="Search by"
+						placeholder="Speciality, Keyword or Company"
 						value={speciality}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 							setSpeciality(e.target.value)
 						}
 						isRequired
+						isClearable
+						onClear={() => setSpeciality("")}
 					/>
 					<LocationAutocomplete
 						id="location"
@@ -66,6 +66,7 @@ export function LandingSearchController() {
 				<Button
 					type="submit"
 					className="min-w-44"
+					color="primary"
 					size="lg"
 					startContent={<SearchIcon />}
 				>

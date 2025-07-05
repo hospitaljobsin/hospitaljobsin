@@ -1,5 +1,6 @@
 "use client";
 import type { LandingViewFragment$key } from "@/__generated__/LandingViewFragment.graphql";
+import { TrendingUpIcon } from "lucide-react";
 import { Suspense } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -45,7 +46,12 @@ export default function LandingView({
 
 			<div className="py-4 sm:py-8 flex flex-col gap-4 sm:gap-8 max-w-7xl px-4 sm:px-5 mx-auto bg-background-600">
 				<div className="w-full h-full flex flex-col gap-4 sm:gap-8 items-center justify-center">
-					Trending Jobs
+					<div className="flex items-center gap-4">
+						<TrendingUpIcon />
+						<h2 className="text-lg sm:text-2xl font-medium text-foreground-600">
+							Trending Jobs
+						</h2>
+					</div>
 					<Suspense fallback={<JobListSkeleton />}>
 						<JobList rootQuery={data} />
 					</Suspense>
