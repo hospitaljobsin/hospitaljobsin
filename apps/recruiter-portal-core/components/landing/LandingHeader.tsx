@@ -54,11 +54,6 @@ export default function LandingHeader() {
 				</NavbarItem>
 				<NavbarItem>
 					<Link href="#" color="foreground" className="font-medium">
-						Pricing
-					</Link>
-				</NavbarItem>
-				<NavbarItem>
-					<Link href="#" color="foreground" className="font-medium">
 						Support
 					</Link>
 				</NavbarItem>

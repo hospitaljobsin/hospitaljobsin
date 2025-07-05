@@ -47,8 +47,8 @@ export default function LandingView() {
 							loading="eager"
 						/>
 					</div>
-					<div className="flex-1 flex flex-col items-start gap-6 z-10">
-						<h1 className="text-4xl sm:text-6xl font-medium tracking-tight text-primary-foreground drop-shadow-lg flex flex-row gap-2 items-center min-h-[1em]">
+					<div className="flex-1 flex flex-col items-start gap-6 z-10 pb-12 px-4">
+						<h1 className="text-4xl sm:text-6xl font-medium tracking-tight text-primary-foreground flex flex-row gap-2 items-center min-h-[1em]">
 							<span>Hire</span>
 							<motion.span
 								key={words[index]}
@@ -152,18 +152,16 @@ export default function LandingView() {
 						transition={{ duration: 0.7, ease: "easeOut" }}
 					>
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
-							<div className="flex-1 flex flex-col items-start gap-6 z-10">
-								<h2 className="text-4xl sm:text-5xl font-extrabold text-primary-700 dark:text-primary-300 mb-2 drop-shadow-lg">
-									AI-Powered Hiring, Built for Healthcare
-								</h2>
-								<h3 className="text-xl sm:text-2xl font-medium text-primary-800 dark:text-primary-200 mb-4 opacity-90">
-									Make better hiring decisions with real intelligence
-								</h3>
-								<p className="text-lg text-foreground-700 dark:text-foreground-200 max-w-xl mb-6">
-									Experience the future of healthcare recruitment with advanced
-									AI features designed to empower your hiring process.
-								</p>
-								<ul className="space-y-6">
+							<div className="flex-1 flex flex-col items-start gap-32 z-10">
+								<div className="w-full flex flex-col gap-4">
+									<h2 className="text-4xl sm:text-5xl font-extrabold text-primary-700 dark:text-primary-300 mb-2 text-center w-full">
+										AI-Powered Hiring, Built for Healthcare
+									</h2>
+									<h3 className="text-xl sm:text-2xl font-medium text-primary-800 dark:text-primary-200 mb-4 opacity-90 text-center w-full">
+										Make better hiring decisions with real intelligence
+									</h3>
+								</div>
+								<ul className="space-y-28">
 									<li className="flex items-center gap-4">
 										<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
 											<BrainCircuitIcon className="w-7 h-7 text-primary-600 dark:text-primary-300" />
@@ -174,21 +172,21 @@ export default function LandingView() {
 										<img
 											src="/screenshots/applicant-ai-analysis.png"
 											alt="Screenshot of AI Applicant Analysis feature"
-											className="w-40 rounded-xl shadow-md border border-background-200 ml-4"
+											className="w-full max-w-4xl object-contain rounded-xl shadow-md border border-background-200 mx-0 sm:mx-4"
 										/>
 									</li>
 									<li className="flex items-center gap-4">
+										<img
+											src="/screenshots/natural-language-search.png"
+											alt="Screenshot of Natural Language Search feature"
+											className="w-full max-w-4xl object-contain rounded-xl shadow-md border border-background-200 mx-0 sm:mx-4"
+										/>
 										<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
 											<SearchIcon className="w-7 h-7 text-primary-600 dark:text-primary-300" />
 										</span>
 										<span className="text-lg font-semibold">
 											Natural Language Search
 										</span>
-										<img
-											src="/screenshots/natural-language-search.png"
-											alt="Screenshot of Natural Language Search feature"
-											className="w-40 rounded-xl shadow-md border border-background-200 ml-4"
-										/>
 									</li>
 									<li className="flex items-center gap-4">
 										<span className="bg-primary-100 dark:bg-primary-800 p-2 rounded-full shadow-md">
@@ -198,7 +196,7 @@ export default function LandingView() {
 										<img
 											src="/screenshots/ai-chat-assistant.png"
 											alt="Screenshot of AI Assistant feature"
-											className="w-40 rounded-xl shadow-md border border-background-200 ml-4"
+											className="w-full max-w-4xl object-contain rounded-xl shadow-md border border-background-200 mx-0 sm:mx-4"
 										/>
 									</li>
 								</ul>
