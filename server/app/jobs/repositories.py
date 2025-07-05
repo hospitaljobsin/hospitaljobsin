@@ -800,6 +800,7 @@ class JobApplicantRepo:
                 languages=account.profile.languages,
                 job_preferences=account.profile.job_preferences,
                 work_experience=account.profile.work_experience,
+                total_work_experience_years=account.profile.total_work_experience_years,
                 salary_expectations=account.profile.salary_expectations,
                 certifications=account.profile.certifications,
                 professional_summary=account.profile.professional_summary,

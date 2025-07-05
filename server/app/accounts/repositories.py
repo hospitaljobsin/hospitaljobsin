@@ -223,7 +223,9 @@ class ProfileRepo:
         await account.save()
         return profile
 
-    def _calculate_total_work_experience(self, profile: Profile) -> float:
+    def _calculate_total_work_experience(
+        self, work_experience: list[WorkExperience]
+    ) -> float:
         return sum(
             [
                 (
@@ -236,7 +238,7 @@ class ProfileRepo:
                     ).total_seconds()
                 )
                 / (365 * 24 * 60 * 60)
-                for work_experience in profile.work_experience
+                for work_experience in work_experience
             ]
         )
 
@@ -309,7 +311,7 @@ class ProfileRepo:
         if work_experience is not UNSET:
             profile.work_experience = work_experience
             profile.total_work_experience_years = self._calculate_total_work_experience(
-                profile
+                work_experience
             )
         if salary_expectations is not UNSET:
             profile.salary_expectations = salary_expectations

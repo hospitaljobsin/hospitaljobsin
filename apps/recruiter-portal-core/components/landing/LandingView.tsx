@@ -37,7 +37,7 @@ export default function LandingView() {
 	useEffect(() => {
 		const interval = setInterval(() => {
 			setIndex((prev) => (prev + 1) % words.length);
-		}, 5600);
+		}, 2000);
 		return () => clearInterval(interval);
 	}, []);
 
