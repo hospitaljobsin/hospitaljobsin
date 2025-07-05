@@ -1,6 +1,7 @@
 "use client";
 // @ts-ignore: HeroUI types may be missing, but usage is required by project rules
 import { Button, Card, Input } from "@heroui/react";
+import { SearchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { SearchLocation } from "../forms/LocationAutocomplete";
@@ -35,9 +36,9 @@ export function LandingSearchController() {
 		<Card className="p-6" shadow="none" fullWidth>
 			<form
 				onSubmit={handleSubmit}
-				className="w-full rounded-lg flex flex-col gap-12"
+				className="w-full rounded-lg flex flex-col sm:flex-row gap-12"
 			>
-				<div className="w-full flex flex-col sm:flex-row gap-4">
+				<div className="w-full flex flex-col sm:flex-row gap-4 sm:gap-6">
 					<Input
 						id="speciality"
 						name="speciality"
@@ -61,20 +62,13 @@ export function LandingSearchController() {
 							setLocationInput(loc.displayName);
 						}}
 					/>
-					<Input
-						id="experience"
-						name="experience"
-						label="Experience (in years)"
-						type="number"
-						min="0"
-						placeholder="e.g. 3"
-						value={experience}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-							setExperience(e.target.value)
-						}
-					/>
 				</div>
-				<Button type="submit" fullWidth size="lg">
+				<Button
+					type="submit"
+					className="min-w-44"
+					size="lg"
+					startContent={<SearchIcon />}
+				>
 					Search Jobs
 				</Button>
 			</form>
