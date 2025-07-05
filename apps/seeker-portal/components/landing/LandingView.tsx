@@ -31,7 +31,7 @@ export default function LandingView({
 	return (
 		<div className="w-full flex flex-col bg-background-600">
 			{/* Hero Section */}
-			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-300 min-h-[60vh] flex flex-col justify-center items-center overflow-hidden">
+			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-300 flex flex-col justify-center items-center overflow-hidden w-full">
 				<Suspense fallback={<LandingHeaderSkeleton />}>
 					<LandingHeader rootQuery={data} />
 				</Suspense>
@@ -53,17 +53,17 @@ export default function LandingView({
 					</svg>
 				</div>
 				{/* Responsive flex: text left, image right on desktop; stacked on mobile */}
-				<div className="relative z-10 flex flex-col-reverse md:flex-row items-center justify-center text-center md:text-left gap-8 pt-24 pb-16 px-4 max-w-7xl w-full">
+				<div className="relative z-10 flex flex-col-reverse md:flex-row text-center md:text-left gap-8 pt-8 sm:pt-24 pb-16 px-4 max-w-7xl w-full h-full">
 					{/* Hero Text */}
 					<div className="flex-1 flex flex-col items-center md:items-start gap-6">
-						<h1 className="text-4xl sm:text-6xl font-medium tracking-tight text-primary-foreground drop-shadow-lg">
+						<h1 className="text-4xl sm:text-6xl font-medium tracking-tight text-primary-foreground drop-shadow-lg hidden md:block">
 							Empowering{" "}
 							<span className="text-accent-400">Healthcare Heroes</span>
 							<br />
 							to Find Their Next{" "}
 							<span className="text-accent-400">Opportunity</span>
 						</h1>
-						<p className="text-lg sm:text-2xl text-primary-foreground/90 font-medium max-w-xl mx-auto md:mx-0">
+						<p className="text-lg sm:text-2xl text-primary-foreground/90 font-medium max-w-xl mx-auto md:mx-0 hidden md:block">
 							Discover life-changing roles at top hospitals and clinics. Your
 							next mission starts here.
 						</p>
@@ -72,13 +72,13 @@ export default function LandingView({
 						</div>
 					</div>
 					{/* Hero Image with background box effect */}
-					<div className="flex-1 sm:flex justify-center md:justify-end mb-8 md:mb-0 hidden">
+					<div className="flex-1 md:flex justify-center md:justify-end mb-8 md:mb-0 hidden h-full w-full">
 						{/* Background box */}
 						{/* Doctor image, larger and popping out */}
 						<img
 							src="/hero-model.png"
 							alt="Group of doctors smiling, representing healthcare professionals"
-							className="relative z-10 w-56 h-56 sm:w-80 sm:h-80 lg:w-[28rem] lg:h-[28rem] object-contain -mb-8 sm:-mb-12 lg:-mb-16 scale-200"
+							className="relative z-10 w-full h-full object-cover"
 							loading="eager"
 						/>
 					</div>
