@@ -472,10 +472,7 @@ export default function LandingView() {
 										keep your accounts protected with the latest security
 										standards
 									</li>
-									<li>
-										Secure authentication options including Google login for
-										seamless and trusted access to your platform
-									</li>
+									<li>Track your devices to block unauthorized access</li>
 								</ul>
 							</div>
 							<div className="flex-1 flex justify-center md:justify-end px-4">
