@@ -48,7 +48,12 @@ const CheckAvailabilityMutation = graphql`
 `;
 
 const formSchema = z.object({
-	slug: z.string().check(z.minLength(1, { message: "Subdomain is required" })),
+	slug: z.string().check(
+		z.minLength(1, "This field is required"),
+		z.maxLength(75),
+		z.regex(/^[a-z0-9-]+$/, "Must be a valid slug"),
+		z.refine((value) => value === value.toLowerCase(), "Must be lowercase"),
+	),
 });
 
 export default function BrandedSubdomain() {
@@ -58,9 +63,12 @@ export default function BrandedSubdomain() {
 	const debouncedSlug = useDebounce(slugInput, 400);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<BrandedSubdomainCheckMutation>(CheckAvailabilityMutation);
-	const { register, handleSubmit, setValue } = useForm<
-		z.infer<typeof formSchema>
-	>({
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		formState: { errors, isValid },
+	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues: {
 			slug: "",
@@ -73,6 +81,7 @@ export default function BrandedSubdomain() {
 			setIsSlugAvailable(false);
 			return;
 		}
+		if (!isValid) return;
 		setIsSlugAvailable(false); // Always reset before mutation
 		commitMutation({
 			variables: { slug: debouncedSlug },
@@ -88,7 +97,7 @@ export default function BrandedSubdomain() {
 			},
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [debouncedSlug, commitMutation]);
+	}, [debouncedSlug, commitMutation, isValid]);
 
 	// When mutation is in flight, always set isSlugAvailable to false
 	useEffect(() => {
@@ -146,13 +155,14 @@ export default function BrandedSubdomain() {
 								</span>
 							}
 							classNames={{
-								inputWrapper: `p-4 md:p-12 min-h-12 sm:min-h-24 ${isSlugAvailable && debouncedSlug ? "border border-2 border-success" : ""}`,
+								inputWrapper: `p-4 md:p-12 min-h-12 sm:min-h-24 ${isSlugAvailable && debouncedSlug && isValid ? "border border-2 border-success" : ""}`,
 								input: "text-base sm:text-xl",
 							}}
 							isInvalid={
-								!isSlugAvailable && !!debouncedSlug && !isMutationInFlight
+								(!isSlugAvailable && !!debouncedSlug && !isMutationInFlight) ||
+								!!errors.slug
 							}
-							errorMessage="Subdomain is not available"
+							errorMessage={errors.slug?.message}
 						/>
 						<Button
 							type="submit"
