@@ -363,7 +363,6 @@ export default function LandingView() {
 									<span className="font-medium">
 										yourdomain.{env.NEXT_PUBLIC_ROOT_DOMAIN}
 									</span>
-									—and stand out in the healthcare world.
 								</div>
 							</motion.div>
 							<motion.div
