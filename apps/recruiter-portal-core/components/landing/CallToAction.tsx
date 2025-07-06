@@ -3,7 +3,7 @@ import { Button } from "@heroui/react";
 
 export default function CallToAction() {
 	return (
-		<section className="w-full bg-background-600 rounded-xl sm:p-12 px-4 flex flex-col items-center justify-center gap-8">
+		<section className="w-full bg-background-600 rounded-xl sm:p-12 px-4 py-8 flex flex-col items-center justify-center gap-8">
 			<Button
 				variant="solid"
 				color="primary"
