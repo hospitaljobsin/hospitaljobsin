@@ -29,6 +29,7 @@ from app.organizations.services import (
 
 from .types import (
     AcceptOrganizationInvitePayload,
+    CheckOrganizationSlugAvailabilityPayloadType,
     CreateOrganizationInvitePayload,
     CreateOrganizationLogoPresignedURLPayloadType,
     CreateOrganizationPayload,
@@ -110,6 +111,21 @@ class OrganizationMutation:
                 return OrganizationType.marshal(organization)
             case _ as unreachable:
                 assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CheckOrganizationSlugAvailabilityPayloadType,
+        description="Check if a slug is available.",
+    )
+    @inject
+    async def check_organization_slug_availability(
+        self,
+        organization_service: Annotated[OrganizationService, Inject],
+        slug: Annotated[str, strawberry.argument(description="The slug to check.")],
+    ) -> CheckOrganizationSlugAvailabilityPayloadType:
+        """Check if a slug is available."""
+        return CheckOrganizationSlugAvailabilityPayloadType(
+            is_available=await organization_service.check_slug_availability(slug)
+        )
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=CreateOrganizationLogoPresignedURLPayloadType,

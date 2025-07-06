@@ -250,6 +250,18 @@ class OrganizationService:
 
         return Ok(organization)
 
+    async def check_slug_availability(self, slug: str) -> bool:
+        """Check if a slug is available."""
+        if slug in RESERVED_ORGANIZATION_NAMES:
+            return False
+
+        return (
+            await self._organization_repo.get_by_slug(
+                organization_slug=slug,
+            )
+            is None
+        )
+
     async def create_logo_presigned_url(self, content_type: str) -> str:
         """Create a presigned URL for uploading an organization logo."""
         return await self._s3_client.generate_presigned_url(

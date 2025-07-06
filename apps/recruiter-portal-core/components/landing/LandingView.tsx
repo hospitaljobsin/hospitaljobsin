@@ -14,10 +14,7 @@ export default function LandingView() {
 			<Hero />
 
 			{/* Features Section */}
-			<section
-				id="features"
-				className="w-full bg-background dark:bg-background-300 pt-16 sm:pt-24 border-b border-background-200"
-			>
+			<section id="features" className="w-full bg-background pt-16 sm:pt-24">
 				<div className="w-full mx-auto flex flex-col gap-12">
 					{/* Deep AI Integration Section */}
 					<AIFeatures />

@@ -605,6 +605,17 @@ CreateOrganizationPayload = Annotated[
     ),
 ]
 
+
+@strawberry.type(
+    name="CheckOrganizationSlugAvailabilityPayload",
+    description="The payload for checking if a slug is available.",
+)
+class CheckOrganizationSlugAvailabilityPayloadType:
+    is_available: bool = strawberry.field(
+        description="Whether the slug is available.",
+    )
+
+
 UpdateOrganizationPayload = Annotated[
     OrganizationType
     | OrganizationSlugInUseErrorType

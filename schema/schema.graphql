@@ -404,6 +404,16 @@ input CertificationInput {
 }
 
 """
+The payload for checking if a slug is available.
+"""
+type CheckOrganizationSlugAvailabilityPayload {
+	"""
+	Whether the slug is available.
+	"""
+	isAvailable: Boolean!
+}
+
+"""
 Geographic coordinates.
 """
 type Coordinates {
@@ -2619,6 +2629,16 @@ type Mutation {
 		"""
 		logoUrl: String = null
 	): CreateOrganizationPayload! @isAuthenticated
+
+	"""
+	Check if a slug is available.
+	"""
+	checkOrganizationSlugAvailability(
+		"""
+		The slug to check.
+		"""
+		slug: String!
+	): CheckOrganizationSlugAvailabilityPayload!
 
 	"""
 	Create an organization logo presigned URL.
