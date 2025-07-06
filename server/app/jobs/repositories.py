@@ -431,7 +431,7 @@ class JobRepo:
         pipeline = [
             {
                 "$match": {
-                    "metadata.event_type": CoreJobMetricEventType.VIEW,
+                    "metadata.event_type": "view_start",
                     "timestamp": {"$gte": seven_days_ago},
                 }
             },
