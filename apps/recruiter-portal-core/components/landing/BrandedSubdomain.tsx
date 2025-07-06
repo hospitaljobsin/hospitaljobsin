@@ -10,7 +10,7 @@ import type { Variants } from "framer-motion";
 import { motion } from "framer-motion";
 import { SearchIcon } from "lucide-react";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -58,12 +58,12 @@ const formSchema = z.object({
 
 export default function BrandedSubdomain() {
 	const router = useRouter();
+	const [isChanging, setIsChanging] = useState(false);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<BrandedSubdomainCheckMutation>(CheckAvailabilityMutation);
 
 	const {
 		control,
-		register,
 		handleSubmit,
 		setError,
 		clearErrors,
@@ -90,11 +90,13 @@ export default function BrandedSubdomain() {
 			onCompleted: (data) => {
 				if (data?.checkOrganizationSlugAvailability?.isAvailable) {
 					clearErrors("slug");
+					setIsChanging(false);
 				} else {
 					setError("slug", {
 						message: "Subdomain is not available",
 						type: "manual",
 					});
+					setIsChanging(false);
 				}
 			},
 			onError: () => {
@@ -102,6 +104,7 @@ export default function BrandedSubdomain() {
 					message: "Subdomain is not available",
 					type: "manual",
 				});
+				setIsChanging(false);
 			},
 		});
 	}, [debouncedSlug, commitMutation, clearErrors, setError]);
@@ -145,6 +148,10 @@ export default function BrandedSubdomain() {
 							render={({ field }) => (
 								<Input
 									{...field}
+									onChange={(e) => {
+										setIsChanging(true);
+										field.onChange(e);
+									}}
 									placeholder="yourdomain"
 									size="lg"
 									fullWidth
@@ -175,7 +182,7 @@ export default function BrandedSubdomain() {
 							size="lg"
 							className="h-full min-h-12 sm:min-h-24 sm:px-12 px-4 text-base sm:text-xl w-full sm:w-auto"
 							color="primary"
-							isDisabled={!isValid || isMutationInFlight}
+							isDisabled={!isValid || isMutationInFlight || isChanging}
 						>
 							Claim Domain
 						</Button>
