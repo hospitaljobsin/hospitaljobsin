@@ -258,48 +258,56 @@ export default function LandingView() {
 									</h3>
 								</div>
 
-								<div className="w-full flex flex-col md:flex-row gap-12 md:items-center">
-									<div className="p-6 flex w-full gap-4 flex-col items-center jusiify-center">
-										<div className="relative h-48 w-48 aspect-auto">
-											<Image
-												src="/images/credentials.svg"
-												alt="Specialty-Based Candidate Matching"
-												fill
-												className="object-cover group-hover:scale-110 transition-transform duration-200"
-											/>
-										</div>
-										<span className="font-medium text-lg max-w-md mx-auto">
-											Built in Medical Credential Verification
-										</span>
-									</div>
-									<div className="p-6 flex w-full gap-4 flex-col items-center jusiify-center">
-										<div className="relative h-48 w-48 aspect-auto">
-											<Image
-												src="/images/job-type-time.svg"
-												alt="Specialty-Based Candidate Matching"
-												fill
-												className="object-cover group-hover:scale-110 transition-transform duration-200"
-											/>
-										</div>
-										<span className="font-medium text-lg text-center max-w-md mx-auto">
-											First Class Support for Locum, Full-time, and Part-time
-											Positions
-										</span>
-									</div>
-									<div className="p-6 flex w-full gap-4 flex-col items-center jusiify-center">
-										<div className="relative h-48 w-48 aspect-auto">
-											<Image
-												src="/images/doctors.svg"
-												alt="Specialty-Based Candidate Matching"
-												fill
-												className="object-cover group-hover:scale-110 transition-transform duration-200"
-											/>
-										</div>
-										<span className="font-medium text-lg max-w-md mx-auto">
-											Specialty-Based Candidate Matching
-										</span>
-									</div>
-								</div>
+								<motion.div
+									className="w-full flex flex-col md:flex-row gap-12 md:items-center"
+									initial="hidden"
+									whileInView="visible"
+									viewport={{ once: true, amount: 0.4 }}
+									variants={listVariants}
+								>
+									{[
+										{
+											img: "/images/credentials.svg",
+											alt: "Specialty-Based Candidate Matching",
+											title: "Built in Medical Credential Verification",
+											text: null,
+										},
+										{
+											img: "/images/job-type-time.svg",
+											alt: "Specialty-Based Candidate Matching",
+											title:
+												"First Class Support for Locum, Full-time, and Part-time Positions",
+											text: null,
+										},
+										{
+											img: "/images/doctors.svg",
+											alt: "Specialty-Based Candidate Matching",
+											title: "Specialty-Based Candidate Matching",
+											text: null,
+										},
+									].map((feature, i) => (
+										<motion.div
+											key={feature.title}
+											className="p-6 flex w-full gap-4 flex-col items-center jusiify-center max-w-md group rounded-2xl hover:scale-[1.03] transition-all duration-200 ease-out cursor-pointer"
+											variants={itemVariants}
+											custom={i}
+											tabIndex={0}
+											aria-label={feature.title}
+										>
+											<div className="relative h-48 w-48 aspect-auto">
+												<Image
+													src={feature.img}
+													alt={feature.alt}
+													fill
+													className="object-cover group-hover:scale-110 transition-transform duration-200"
+												/>
+											</div>
+											<span className="font-medium text-lg text-center max-w-md mx-auto">
+												{feature.title}
+											</span>
+										</motion.div>
+									))}
+								</motion.div>
 							</div>
 						</div>
 					</motion.section>
