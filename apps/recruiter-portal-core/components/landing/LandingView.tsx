@@ -124,7 +124,7 @@ export default function LandingView() {
 			>
 				<div className="w-full mx-auto flex flex-col gap-12 ">
 					{/* Deep AI Integration Section */}
-					<section className="w-full py-10 bg-background-50 dark:bg-background-900 rounded-3xl border border-background-200 overflow-hidden">
+					<section className="w-full py-10 bg-background-50 dark:bg-background-900 rounded-2xl overflow-hidden">
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-12 z-10">
 								<motion.div
@@ -241,7 +241,7 @@ export default function LandingView() {
 
 					{/* AI-Powered Insights Section */}
 					<motion.section
-						className="w-full py-28 bg-primary-50 dark:bg-primary-900 rounded-3xl border border-background-200"
+						className="w-full py-28 bg-primary-50 dark:bg-primary-900 rounded-2xl"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
@@ -265,7 +265,7 @@ export default function LandingView() {
 												src="/images/credentials.svg"
 												alt="Specialty-Based Candidate Matching"
 												fill
-												className="object-cover"
+												className="object-cover group-hover:scale-110 transition-transform duration-200"
 											/>
 										</div>
 										<span className="font-medium text-lg max-w-md mx-auto">
@@ -278,7 +278,7 @@ export default function LandingView() {
 												src="/images/job-type-time.svg"
 												alt="Specialty-Based Candidate Matching"
 												fill
-												className="object-cover"
+												className="object-cover group-hover:scale-110 transition-transform duration-200"
 											/>
 										</div>
 										<span className="font-medium text-lg text-center max-w-md mx-auto">
@@ -292,7 +292,7 @@ export default function LandingView() {
 												src="/images/doctors.svg"
 												alt="Specialty-Based Candidate Matching"
 												fill
-												className="object-cover"
+												className="object-cover group-hover:scale-110 transition-transform duration-200"
 											/>
 										</div>
 										<span className="font-medium text-lg max-w-md mx-auto">
@@ -306,67 +306,158 @@ export default function LandingView() {
 
 					{/* Branded Subdomain Section */}
 					<motion.section
-						className="w-full py-20 bg-background-100 dark:bg-background-800 rounded-3xl border border-background-200"
+						className="w-full py-20 bg-gradient-to-br from-background-100 via-white to-background-200 dark:from-background-800 dark:via-background-900 dark:to-background-700 rounded-2xl relative overflow-hidden"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
 						transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
 					>
-						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
-							<div className="flex-1 flex flex-col items-start gap-6">
-								<h2 className="text-3xl sm:text-4xl font-medium tracking-tight text-primary-700">
-									Your Own Branded Subdomain
+						<div className="max-w-7xl mx-auto flex flex-col items-center gap-10 relative z-10 px-2 sm:px-6">
+							<div className="flex flex-col items-center gap-2 w-full">
+								<h2 className="text-3xl sm:text-4xl font-medium tracking-tight text-primary-700 text-center relative inline-block">
+									<span className="relative z-10">
+										Your Own Branded Subdomain
+									</span>
 								</h2>
-								<h3 className="text-lg sm:text-xl text-foreground-700 dark:text-foreground-200">
+								<h3 className="text-lg sm:text-xl text-foreground-700 dark:text-foreground-200 text-center">
 									A professional home for your organization
 								</h3>
-								<ul className="text-lg text-foreground-700 dark:text-foreground-200 space-y-3 list-disc list-inside">
-									<li>
-										Every organization gets its own unique domain: ✅ example:
-										yourhospital.hospitaljobs.in
-									</li>
-									<li>Customize your organization's profile.</li>
-									<li>Invite unlimited team members.</li>
-									<li>
-										Control access: promote admins, invite recruiters, and
-										manage permissions with ease
-									</li>
-								</ul>
 							</div>
-							<div className="flex-1 flex justify-center md:justify-start">
-								<Input
-									placeholder={`yourdomain.${env.NEXT_PUBLIC_ROOT_DOMAIN}`}
-									size="lg"
-									startContent={
-										<SearchIcon
-											size={24}
-											className="text-foreground-500 mr-2"
+							{/* Unique Subdomain */}
+							<motion.div
+								className="w-full group flex flex-col items-center gap-4 rounded-2xl p-8 hover:scale-[1.03] transition-all duration-200 ease-out cursor-pointer"
+								variants={itemVariants}
+								custom={0}
+								tabIndex={0}
+								aria-label="Unique Subdomain feature"
+							>
+								<div className="flex-shrink-0 mb-2 w-full">
+									<Input
+										placeholder={`yourdomain.${env.NEXT_PUBLIC_ROOT_DOMAIN}`}
+										size="lg"
+										fullWidth
+										startContent={
+											<SearchIcon
+												size={24}
+												className="text-foreground-500 mr-2"
+											/>
+										}
+										classNames={{
+											inputWrapper: "p-4 md:p-12 min-h-24",
+											input: "text-xl",
+										}}
+										isReadOnly
+									/>
+								</div>
+								<div className="text-foreground-600 text-base text-center max-w-xl">
+									Instantly claim a memorable web address for your hospital or
+									clinic—
+									<span className="font-medium">
+										yourdomain.{env.NEXT_PUBLIC_ROOT_DOMAIN}
+									</span>
+									—and stand out in the healthcare world.
+								</div>
+							</motion.div>
+							<motion.div
+								className="flex flex-col sm:flex-row gap-8 w-full mt-4 justify-center flex-1"
+								initial="hidden"
+								whileInView="visible"
+								viewport={{ once: true, amount: 0.4 }}
+								variants={listVariants}
+							>
+								{/* Customizable Profile */}
+								<motion.div
+									className="max-w-md group flex flex-col items-center gap-4 rounded-2xl p-8 hover:scale-[1.03] transition-all duration-200 ease-out cursor-pointer"
+									variants={itemVariants}
+									custom={1}
+									tabIndex={0}
+									aria-label="Customizable Profile feature"
+								>
+									<div className="flex-shrink-0 mb-2 relative w-48 h-48">
+										<Image
+											src="/images/online-profile.svg"
+											alt="Customizable Profile"
+											fill
+											className="object-cover  group-hover:scale-110 transition-transform duration-200"
 										/>
-									}
-									classNames={{
-										inputWrapper: "p-12 min-h-32",
-										input: "text-2xl",
-									}}
-									isReadOnly
-								/>
-							</div>
+									</div>
+									<div className="font-medium text-primary-700 text-xl text-center">
+										Customizable Profile
+									</div>
+									<div className="text-foreground-600 text-base text-center">
+										Showcase your unique culture, values, and benefits with a
+										beautiful, fully customizable organization profile.
+									</div>
+								</motion.div>
+								{/* Unlimited Team Members */}
+								<motion.div
+									className="max-w-md group flex flex-col items-center gap-4 rounded-2xl p-8 hover:scale-[1.03] transition-all duration-200 ease-out cursor-pointer"
+									variants={itemVariants}
+									custom={2}
+									tabIndex={0}
+									aria-label="Unlimited Team Members feature"
+								>
+									<div className="flex-shrink-0 mb-2 relative w-48 h-48">
+										<Image
+											src="/images/team.svg"
+											alt="Customizable Profile"
+											fill
+											className="object-cover  group-hover:scale-110 transition-transform duration-200"
+										/>
+									</div>
+									<div className="font-medium text-primary-700 text-xl text-center">
+										Unlimited Team Members
+									</div>
+									<div className="text-foreground-600 text-base text-center">
+										Collaborate effortlessly—invite your entire hiring team,
+										from HR to department heads, with no limits.
+									</div>
+								</motion.div>
+								{/* Access Control */}
+								<motion.div
+									className="max-w-md group flex flex-col items-center gap-4 rounded-2xl p-8 hover:scale-[1.03] transition-all duration-200 ease-out cursor-pointer"
+									variants={itemVariants}
+									custom={3}
+									tabIndex={0}
+									aria-label="Granular Access Control feature"
+								>
+									<div className="flex-shrink-0 mb-2 relative w-48 h-48">
+										<Image
+											src="/images/secure-access.svg"
+											alt="Customizable Profile"
+											fill
+											className="object-cover group-hover:scale-110 transition-transform duration-200"
+										/>
+									</div>
+									<div className="font-medium text-primary-700 text-xl text-center">
+										Granular Access Control
+									</div>
+									<div className="text-foreground-600 text-base text-center">
+										Assign roles, promote admins, and manage recruiter
+										permissions with a click—security and flexibility for every
+										team.
+									</div>
+								</motion.div>
+							</motion.div>
 						</div>
 					</motion.section>
 
 					{/* AI Chat Assistant Section */}
 					<motion.section
-						className="w-full py-20 bg-primary-100 dark:bg-primary-800 rounded-3xl border border-background-200"
+						className="w-full py-20 bg-primary-50 rounded-2xl"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
 						transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
 					>
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-center gap-12">
-							<div className="flex-1 flex flex-col items-start gap-6">
-								<h2 className="text-3xl sm:text-4xl font-bold text-primary-700  mb-2">
+							<div className="flex-1 flex flex-col items-start gap-6 px-4">
+								<h2 className="text-3xl sm:text-4xl font-medium text-primary-700 tracking-tight">
 									Security First. Peace of Mind Always.
 								</h2>
-								<h3>Data you can trust. Accounts you can control.</h3>
+								<h3 className="text-lg sm:text-xl text-foreground-700 dark:text-foreground-200 text-center">
+									Data you can trust. Accounts you can control.
+								</h3>
 								<ul className="text-lg text-foreground-700 dark:text-foreground-200 space-y-3 list-disc list-inside">
 									<li>
 										Two-factor authentication (2FA) and modern passkey support
@@ -379,11 +470,11 @@ export default function LandingView() {
 									</li>
 								</ul>
 							</div>
-							<div className="flex-1 flex justify-center md:justify-end">
+							<div className="flex-1 flex justify-center md:justify-end px-4">
 								<img
-									src="/images/hero-collaboration.jpg"
+									src="/screenshots/accounts-center.png"
 									alt="AI Chat Assistant"
-									className="rounded-2xl shadow-2xl w-full max-w-md object-cover"
+									className="rounded-2xl w-full max-w-4xl object-cover"
 								/>
 							</div>
 						</div>
@@ -418,7 +509,7 @@ export default function LandingView() {
 							/>
 						</svg>
 					</div>
-					<h2 className="text-3xl sm:text-4xl font-bold text-primary-800 dark:text-primary-200 mb-2">
+					<h2 className="text-3xl sm:text-4xl font-medium text-primary-800 dark:text-primary-200 mb-2">
 						Access a fresh and growing network of healthcare professionals
 					</h2>
 					<p className="text-lg text-primary-700 dark:text-primary-100 max-w-2xl mx-auto opacity-90">
