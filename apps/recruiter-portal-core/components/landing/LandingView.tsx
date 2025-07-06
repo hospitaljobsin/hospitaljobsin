@@ -259,7 +259,7 @@ export default function LandingView() {
 								</div>
 
 								<motion.div
-									className="w-full flex flex-col md:flex-row gap-12 md:items-center"
+									className="w-full flex flex-col md:flex-row gap-12 items-center justify-center"
 									initial="hidden"
 									whileInView="visible"
 									viewport={{ once: true, amount: 0.4 }}
@@ -366,7 +366,7 @@ export default function LandingView() {
 								</div>
 							</motion.div>
 							<motion.div
-								className="flex flex-col sm:flex-row gap-8 w-full mt-4 justify-center flex-1"
+								className="flex flex-col sm:flex-row gap-8 w-full mt-4 justify-center items-center flex-1"
 								initial="hidden"
 								whileInView="visible"
 								viewport={{ once: true, amount: 0.4 }}
