@@ -423,6 +423,7 @@ class JobRepo:
             reverse=True,
             document_cls=Job,
             paginate_by="id",
+            apply_ordering=False,
         )
 
         seven_days_ago = datetime.now(UTC) - timedelta(days=7)
