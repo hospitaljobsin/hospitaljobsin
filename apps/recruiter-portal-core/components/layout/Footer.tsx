@@ -13,25 +13,36 @@ export default function Footer() {
 							© {new Date().getFullYear()} {COMPANY_NAME}.
 						</p>
 					</div>
-					<div className="w-full flex items-center gap-4 justify-end">
+					<div className="w-full flex sm:items-center items-end flex-col sm:flex-row gap-4 justify-end">
 						<Link
-							href={links.terms}
+							href="https://storyset.com/"
 							color="foreground"
 							size="sm"
-							className="text-foreground-500"
+							className="text-foreground-500 text-xs"
 							isExternal
 						>
-							Terms
+							Illustrations by Storyset
 						</Link>
-						<Link
-							href={links.privacy}
-							color="foreground"
-							size="sm"
-							className="text-foreground-500"
-							isExternal
-						>
-							Privacy
-						</Link>
+						<div className="flex items-center gap-2">
+							<Link
+								href={links.terms}
+								color="foreground"
+								size="sm"
+								className="text-foreground-500"
+								isExternal
+							>
+								Terms
+							</Link>
+							<Link
+								href={links.privacy}
+								color="foreground"
+								size="sm"
+								className="text-foreground-500"
+								isExternal
+							>
+								Privacy
+							</Link>
+						</div>
 					</div>
 				</div>
 			</div>
