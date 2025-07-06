@@ -124,7 +124,7 @@ export default function BrandedSubdomain() {
 					aria-label="Unique Subdomain feature"
 				>
 					<form
-						className="flex-shrink-0 mb-2 w-full flex items-start gap-4"
+						className="flex-shrink-0 mb-2 w-full flex flex-col sm:flex-row items-start gap-6"
 						onSubmit={handleSubmit(onSubmit)}
 					>
 						<Input
@@ -141,11 +141,13 @@ export default function BrandedSubdomain() {
 								<SearchIcon size={24} className="text-foreground-500 mr-2" />
 							}
 							endContent={
-								<span className="text-xl">.{env.NEXT_PUBLIC_ROOT_DOMAIN}</span>
+								<span className="text-base sm:text-xl">
+									.{env.NEXT_PUBLIC_ROOT_DOMAIN}
+								</span>
 							}
 							classNames={{
-								inputWrapper: `p-4 md:p-12 min-h-24 ${isSlugAvailable && debouncedSlug ? "border border-2 border-success" : ""}`,
-								input: "text-xl",
+								inputWrapper: `p-4 md:p-12 min-h-12 sm:min-h-24 ${isSlugAvailable && debouncedSlug ? "border border-2 border-success" : ""}`,
+								input: "text-base sm:text-xl",
 							}}
 							isInvalid={
 								!isSlugAvailable && !!debouncedSlug && !isMutationInFlight
@@ -155,7 +157,7 @@ export default function BrandedSubdomain() {
 						<Button
 							type="submit"
 							size="lg"
-							className="h-full min-h-24 sm:px-12 px-4 text-xl"
+							className="h-full min-h-12 sm:min-h-24 sm:px-12 px-4 text-base sm:text-xl w-full sm:w-auto"
 							color="primary"
 							isDisabled={!isSlugAvailable || isMutationInFlight}
 						>
