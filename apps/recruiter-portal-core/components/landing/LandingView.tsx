@@ -120,11 +120,11 @@ export default function LandingView() {
 			{/* Features Section */}
 			<section
 				id="features"
-				className="w-full bg-white dark:bg-background-300 pt-16 sm:pt-24 border-b border-background-200 px-4"
+				className="w-full bg-background dark:bg-background-300 pt-16 sm:pt-24 border-b border-background-200"
 			>
-				<div className="w-full mx-auto flex flex-col gap-12 ">
+				<div className="w-full mx-auto flex flex-col gap-12">
 					{/* Deep AI Integration Section */}
-					<section className="w-full py-10 bg-background-50 dark:bg-background-900 rounded-2xl overflow-hidden">
+					<section className="w-full py-10 bg-background-50 dark:bg-background-900 rounded-2xl overflow-hidden px-4">
 						<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
 							<div className="flex-1 flex flex-col items-start gap-12 z-10">
 								<motion.div
@@ -241,7 +241,7 @@ export default function LandingView() {
 
 					{/* AI-Powered Insights Section */}
 					<motion.section
-						className="w-full py-28 bg-primary-50 dark:bg-primary-900 rounded-2xl"
+						className="w-full py-28 bg-primary-50 dark:bg-primary-900 rounded-2xl px-4"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
@@ -314,7 +314,7 @@ export default function LandingView() {
 
 					{/* Branded Subdomain Section */}
 					<motion.section
-						className="w-full py-20 bg-gradient-to-br from-background-100 via-white to-background-200 dark:from-background-800 dark:via-background-900 dark:to-background-700 rounded-2xl relative overflow-hidden"
+						className="px-4 w-full py-20 bg-gradient-to-br from-background-100 via-background to-background-200 dark:from-background-800 dark:via-background-900 dark:to-background-700 rounded-2xl relative overflow-hidden"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
@@ -333,7 +333,7 @@ export default function LandingView() {
 							</div>
 							{/* Unique Subdomain */}
 							<motion.div
-								className="w-full group flex flex-col items-center gap-4 rounded-2xl p-8 hover:scale-[1.03] transition-all duration-200 ease-out cursor-pointer"
+								className="w-full group flex flex-col items-center gap-4 rounded-2xl p-8"
 								variants={itemVariants}
 								custom={0}
 								tabIndex={0}
@@ -451,7 +451,7 @@ export default function LandingView() {
 
 					{/* AI Chat Assistant Section */}
 					<motion.section
-						className="w-full py-20 bg-primary-50 rounded-2xl"
+						className="w-full py-20 bg-primary-50 rounded-2xl px-4"
 						initial={{ opacity: 0, y: 40 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.4 }}
@@ -487,7 +487,7 @@ export default function LandingView() {
 			</section>
 
 			{/* New: Healthcare Network Feature Section */}
-			<section className="w-full bg-white py-16 sm:py-24 flex justify-center px-4">
+			<section className="w-full bg-background py-16 sm:py-24 flex justify-center px-4">
 				<div className="max-w-5xl w-full mx-auto flex flex-col items-center gap-8 text-center">
 					<div className="flex-shrink-0 mb-2 relative w-48 sm:w-96 h-48 sm:h-96">
 						<Image
@@ -507,7 +507,7 @@ export default function LandingView() {
 				</div>
 			</section>
 
-			<section className="w-full bg-background-400 rounded-xl sm:p-12">
+			<section className="w-full bg-background-400 rounded-xl sm:p-12 px-4">
 				<div className="mx-auto max-w-7xl flex items-start justify-between gap-8">
 					<div className="w-52 h-52 hidden sm:block">
 						<img
@@ -520,7 +520,7 @@ export default function LandingView() {
 					</div>
 					<div className="flex flex-col items-end gap-8 max-w-xl">
 						<div className="flex flex-col items-end text-right w-full gap-4">
-							<h2 className="text-2xl sm:text-3xl font-semibold">
+							<h2 className="text-3xl sm:text-4xl font-medium tracking-tight">
 								Ready to transform your healthcare recruitment?
 							</h2>
 							<p className="text-foreground-600">
