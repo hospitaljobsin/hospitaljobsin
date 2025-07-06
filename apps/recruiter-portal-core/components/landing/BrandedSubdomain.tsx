@@ -10,11 +10,11 @@ import type { Variants } from "framer-motion";
 import { motion } from "framer-motion";
 import { SearchIcon } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod/v4-mini";
+import { z } from "zod";
 
 // Animation variants for staggered list
 const listVariants: Variants = {
@@ -48,71 +48,68 @@ const CheckAvailabilityMutation = graphql`
 `;
 
 const formSchema = z.object({
-	slug: z.string().check(
-		z.minLength(1, "This field is required"),
-		z.maxLength(75),
-		z.regex(/^[a-z0-9-]+$/, "Must be a valid slug"),
-		z.refine((value) => value === value.toLowerCase(), "Must be lowercase"),
-	),
+	slug: z
+		.string()
+		.min(1, "This field is required")
+		.max(75)
+		.regex(/^[a-z0-9-]+$/, "Must be a valid slug")
+		.refine((value) => value === value.toLowerCase(), "Must be lowercase"),
 });
 
 export default function BrandedSubdomain() {
 	const router = useRouter();
-	const [isSlugAvailable, setIsSlugAvailable] = useState(false);
-	const [slugInput, setSlugInput] = useState("");
-	const debouncedSlug = useDebounce(slugInput, 400);
 	const [commitMutation, isMutationInFlight] =
 		useMutation<BrandedSubdomainCheckMutation>(CheckAvailabilityMutation);
+
 	const {
 		register,
 		handleSubmit,
-		setValue,
 		setError,
 		clearErrors,
 		formState: { errors, isValid },
+		watch,
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		mode: "onChange",
+		reValidateMode: "onChange",
 		defaultValues: {
 			slug: "",
 		},
 	});
 
-	// Watch debounced slug and run mutation
+	const slug = watch("slug");
+	const debouncedSlug = useDebounce(slug, 500);
+
 	useEffect(() => {
-		if (!debouncedSlug) {
-			setIsSlugAvailable(false);
-			return;
-		}
-		console.log("changing to ...", debouncedSlug);
-		setIsSlugAvailable(false); // Always reset before mutation
+		// Check if current debouncedSlug passes Zod validation
+		const parsed = formSchema.safeParse({ slug: debouncedSlug });
+		if (!debouncedSlug || !parsed.success) return;
+
 		commitMutation({
 			variables: { slug: debouncedSlug },
 			onCompleted: (data) => {
 				if (data?.checkOrganizationSlugAvailability?.isAvailable) {
-					setIsSlugAvailable(true);
 					clearErrors("slug");
 				} else {
-					setIsSlugAvailable(false);
-					setError("slug", { message: "Subdomain is not available" });
+					setError("slug", {
+						message: "Subdomain is not available",
+						type: "manual",
+					});
 				}
 			},
 			onError: () => {
-				setIsSlugAvailable(false);
-				setError("slug", { message: "Subdomain is not available" });
+				setError("slug", {
+					message: "Subdomain is not available",
+					type: "manual",
+				});
 			},
 		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [debouncedSlug, commitMutation, isValid]);
-
-	// When mutation is in flight, always set isSlugAvailable to false
-	useEffect(() => {
-		if (isMutationInFlight) setIsSlugAvailable(false);
-	}, [isMutationInFlight]);
+	}, [debouncedSlug, commitMutation, clearErrors, setError]);
 
 	async function onSubmit(data: z.infer<typeof formSchema>) {
 		router.push(links.createOrganization(data.slug));
 	}
+
 	return (
 		<motion.section
 			className="px-4 w-full py-20 bg-gradient-to-br from-background-100 via-background to-background-200 dark:from-background-800 dark:via-background-900 dark:to-background-700 rounded-2xl relative overflow-hidden"
@@ -147,11 +144,7 @@ export default function BrandedSubdomain() {
 							placeholder="yourdomain"
 							size="lg"
 							fullWidth
-							value={slugInput}
-							onValueChange={(val) => {
-								setSlugInput(val);
-								setValue("slug", val, { shouldValidate: true });
-							}}
+							value={slug}
 							startContent={
 								<SearchIcon size={24} className="text-foreground-500 mr-2" />
 							}
@@ -161,13 +154,12 @@ export default function BrandedSubdomain() {
 								</span>
 							}
 							classNames={{
-								inputWrapper: `p-4 md:p-12 min-h-12 sm:min-h-24 ${isSlugAvailable && debouncedSlug && isValid ? "border border-2 border-success" : ""}`,
+								inputWrapper: `p-4 md:p-12 min-h-12 sm:min-h-24 ${
+									isValid ? "border border-2 border-success" : ""
+								}`,
 								input: "text-base sm:text-xl",
 							}}
-							isInvalid={
-								(!isSlugAvailable && !!debouncedSlug && !isMutationInFlight) ||
-								!!errors.slug
-							}
+							isInvalid={!!errors.slug}
 							errorMessage={errors.slug?.message}
 						/>
 						<Button
@@ -175,7 +167,7 @@ export default function BrandedSubdomain() {
 							size="lg"
 							className="h-full min-h-12 sm:min-h-24 sm:px-12 px-4 text-base sm:text-xl w-full sm:w-auto"
 							color="primary"
-							isDisabled={!isSlugAvailable || isMutationInFlight}
+							isDisabled={!isValid || isMutationInFlight}
 						>
 							Claim Domain
 						</Button>
