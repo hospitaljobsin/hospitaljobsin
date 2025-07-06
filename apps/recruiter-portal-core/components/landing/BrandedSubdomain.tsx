@@ -27,7 +27,7 @@ const listVariants: Variants = {
 };
 
 const itemVariants: Variants = {
-	hidden: { opacity: 0, y: 40 },
+	hidden: { opacity: 0, y: 20 },
 	visible: (i: number) => ({
 		opacity: 1,
 		y: 0,
@@ -112,8 +112,8 @@ export default function BrandedSubdomain() {
 
 	return (
 		<motion.section
-			className="px-4 w-full py-20 bg-gradient-to-br from-background-100 via-background to-background-200 dark:from-background-800 dark:via-background-900 dark:to-background-700 rounded-2xl relative overflow-hidden"
-			initial={{ opacity: 0, y: 40 }}
+			className="px-4 w-full py-16 rounded-2xl relative overflow-hidden"
+			initial={{ opacity: 0, y: 20 }}
 			whileInView={{ opacity: 1, y: 0 }}
 			viewport={{ once: true, amount: 0.4 }}
 			transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
@@ -183,7 +183,7 @@ export default function BrandedSubdomain() {
 					className="flex flex-col sm:flex-row gap-8 w-full mt-4 justify-center items-center flex-1"
 					initial="hidden"
 					whileInView="visible"
-					viewport={{ once: true, amount: 0.4 }}
+					viewport={{ once: true, amount: 0.2 }}
 					variants={listVariants}
 				>
 					{/* Customizable Profile */}
