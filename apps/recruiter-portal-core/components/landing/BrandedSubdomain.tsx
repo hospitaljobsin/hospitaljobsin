@@ -112,10 +112,10 @@ export default function BrandedSubdomain() {
 
 	return (
 		<motion.section
-			className="px-4 w-full py-16 rounded-2xl relative overflow-hidden"
+			className="px-4 w-full py-16 rounded-2xl relative"
 			initial={{ opacity: 0, y: 20 }}
 			whileInView={{ opacity: 1, y: 0 }}
-			viewport={{ once: true, amount: 0.4 }}
+			viewport={{ once: true, amount: 0.2 }}
 			transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
 		>
 			<div className="max-w-7xl mx-auto flex flex-col items-center gap-10 relative z-10 px-2 sm:px-6">
