@@ -66,7 +66,7 @@ export default function Hero() {
 							color="default"
 							size="lg"
 							as={"a"}
-							href={links.createOrganization}
+							href={links.createOrganization()}
 							className="font-medium"
 						>
 							Get Started

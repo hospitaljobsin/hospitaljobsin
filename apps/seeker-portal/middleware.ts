@@ -23,7 +23,7 @@ function requiresAnonymous(request: NextRequest): boolean {
 
 function getAuthenticationResponse(request: NextRequest): NextResponse {
 	const redirectURL = new URL(links.login());
-	const returnTo = request.url;
+	const returnTo = `${env.NEXT_PUBLIC_URL}${request.nextUrl.pathname}${request.nextUrl.search}`;
 	redirectURL.searchParams.set("return_to", returnTo);
 	return NextResponse.redirect(redirectURL);
 }

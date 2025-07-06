@@ -5,7 +5,8 @@ const protocol =
 
 const links = {
 	landing: "/",
-	createOrganization: "/new",
+	createOrganization: (slug: string | undefined = undefined) =>
+		slug ? `/new?slug=${slug}` : "/new",
 	selectOrganization: "/select",
 	login: (returnTo: string | undefined = undefined) =>
 		returnTo

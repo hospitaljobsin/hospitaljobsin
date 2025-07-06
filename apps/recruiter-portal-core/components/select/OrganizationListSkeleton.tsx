@@ -13,7 +13,7 @@ export default function OrganizationListSkeleton() {
 				</div>
 				<Button
 					as={Link}
-					href={links.createOrganization}
+					href={links.createOrganization()}
 					startContent={<PlusIcon className="h-4 w-4" />}
 				>
 					Create Organization

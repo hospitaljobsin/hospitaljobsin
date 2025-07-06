@@ -76,7 +76,9 @@ export default function LandingHeader() {
 						as={Link}
 						color="primary"
 						variant="solid"
-						href={links.signup(env.NEXT_PUBLIC_URL + links.createOrganization)}
+						href={links.signup(
+							env.NEXT_PUBLIC_URL + links.createOrganization(),
+						)}
 						className="font-medium"
 					>
 						Sign Up

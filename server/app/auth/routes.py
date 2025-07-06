@@ -32,6 +32,8 @@ async def oauth2_signin_google(
     request.session["user_agent"] = user_agent
     request.session["redirect_uri"] = redirect_uri
 
+    print("redirect_uri", redirect_uri)
+
     oauth_redirect_uri = request.url_for("oauth2_signin_callback_google")
 
     # ask Google to select an account every time

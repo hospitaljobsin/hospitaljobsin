@@ -14,6 +14,7 @@ import {
 	Textarea,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
@@ -62,6 +63,8 @@ const formSchema = z.object({
 
 export default function NewOrganizationForm() {
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const defaultSlug = searchParams.get("slug");
 	const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
 
 	const [
@@ -85,7 +88,7 @@ export default function NewOrganizationForm() {
 		resolver: standardSchemaResolver(formSchema),
 		defaultValues: {
 			fullName: "",
-			slug: "",
+			slug: defaultSlug || "",
 			website: "",
 			description: "",
 		},

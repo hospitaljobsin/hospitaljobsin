@@ -97,7 +97,7 @@ export default function OrganizationList({ rootQuery }: Props) {
 				</div>
 				<Button
 					as={Link}
-					href={links.createOrganization}
+					href={links.createOrganization()}
 					startContent={<PlusIcon className="h-4 w-4" />}
 				>
 					Create Organization
@@ -114,7 +114,7 @@ export default function OrganizationList({ rootQuery }: Props) {
 				</div>
 				<Button
 					as={Link}
-					href={links.createOrganization}
+					href={links.createOrganization()}
 					startContent={<PlusIcon className="h-4 w-4" />}
 				>
 					Create Organization

@@ -1,10 +1,20 @@
 "use client";
+import type { BrandedSubdomainCheckMutation } from "@/__generated__/BrandedSubdomainCheckMutation.graphql";
 import { env } from "@/lib/env/client";
-import { Input } from "@heroui/react";
+import { useDebounce } from "@/lib/hooks/useDebounce";
+import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
+import { Button, Input } from "@heroui/react";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import type { Variants } from "framer-motion";
 import { motion } from "framer-motion";
 import { SearchIcon } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useMutation } from "react-relay";
+import { graphql } from "relay-runtime";
+import { z } from "zod/v4-mini";
 
 // Animation variants for staggered list
 const listVariants: Variants = {
@@ -29,7 +39,65 @@ const itemVariants: Variants = {
 	}),
 };
 
+const CheckAvailabilityMutation = graphql`
+	mutation BrandedSubdomainCheckMutation($slug: String!) {
+		checkOrganizationSlugAvailability(slug: $slug) {
+			isAvailable
+		}
+	}
+`;
+
+const formSchema = z.object({
+	slug: z.string().check(z.minLength(1, { message: "Subdomain is required" })),
+});
+
 export default function BrandedSubdomain() {
+	const router = useRouter();
+	const [isSlugAvailable, setIsSlugAvailable] = useState(false);
+	const [slugInput, setSlugInput] = useState("");
+	const debouncedSlug = useDebounce(slugInput, 400);
+	const [commitMutation, isMutationInFlight] =
+		useMutation<BrandedSubdomainCheckMutation>(CheckAvailabilityMutation);
+	const { register, handleSubmit, setValue } = useForm<
+		z.infer<typeof formSchema>
+	>({
+		resolver: standardSchemaResolver(formSchema),
+		defaultValues: {
+			slug: "",
+		},
+	});
+
+	// Watch debounced slug and run mutation
+	useEffect(() => {
+		if (!debouncedSlug) {
+			setIsSlugAvailable(false);
+			return;
+		}
+		setIsSlugAvailable(false); // Always reset before mutation
+		commitMutation({
+			variables: { slug: debouncedSlug },
+			onCompleted: (data) => {
+				if (data?.checkOrganizationSlugAvailability?.isAvailable) {
+					setIsSlugAvailable(true);
+				} else {
+					setIsSlugAvailable(false);
+				}
+			},
+			onError: () => {
+				setIsSlugAvailable(false);
+			},
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [debouncedSlug, commitMutation]);
+
+	// When mutation is in flight, always set isSlugAvailable to false
+	useEffect(() => {
+		if (isMutationInFlight) setIsSlugAvailable(false);
+	}, [isMutationInFlight]);
+
+	async function onSubmit(data: z.infer<typeof formSchema>) {
+		router.push(links.createOrganization(data.slug));
+	}
 	return (
 		<motion.section
 			className="px-4 w-full py-20 bg-gradient-to-br from-background-100 via-background to-background-200 dark:from-background-800 dark:via-background-900 dark:to-background-700 rounded-2xl relative overflow-hidden"
@@ -55,21 +123,45 @@ export default function BrandedSubdomain() {
 					tabIndex={0}
 					aria-label="Unique Subdomain feature"
 				>
-					<div className="flex-shrink-0 mb-2 w-full">
+					<form
+						className="flex-shrink-0 mb-2 w-full flex items-start gap-4"
+						onSubmit={handleSubmit(onSubmit)}
+					>
 						<Input
-							placeholder={`yourdomain.${env.NEXT_PUBLIC_ROOT_DOMAIN}`}
+							{...register("slug")}
+							placeholder="yourdomain"
 							size="lg"
 							fullWidth
+							value={slugInput}
+							onValueChange={(val) => {
+								setSlugInput(val);
+								setValue("slug", val, { shouldValidate: true });
+							}}
 							startContent={
 								<SearchIcon size={24} className="text-foreground-500 mr-2" />
 							}
+							endContent={
+								<span className="text-xl">.{env.NEXT_PUBLIC_ROOT_DOMAIN}</span>
+							}
 							classNames={{
-								inputWrapper: "p-4 md:p-12 min-h-24",
+								inputWrapper: `p-4 md:p-12 min-h-24 ${isSlugAvailable && debouncedSlug ? "border border-2 border-success" : ""}`,
 								input: "text-xl",
 							}}
-							isReadOnly
+							isInvalid={
+								!isSlugAvailable && !!debouncedSlug && !isMutationInFlight
+							}
+							errorMessage="Subdomain is not available"
 						/>
-					</div>
+						<Button
+							type="submit"
+							size="lg"
+							className="h-full min-h-24 sm:px-12 px-4 text-xl"
+							color="primary"
+							isDisabled={!isSlugAvailable || isMutationInFlight}
+						>
+							Claim Domain
+						</Button>
+					</form>
 					<div className="text-foreground-600 text-base text-center max-w-xl">
 						Instantly claim a memorable web address for your hospital or clinic—
 						<span className="font-medium">

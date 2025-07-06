@@ -29,7 +29,7 @@ export default function CallToAction() {
 						color="primary"
 						size="lg"
 						as={"a"}
-						href={links.createOrganization}
+						href={links.createOrganization()}
 						className="font-medium"
 					>
 						Get Started Now

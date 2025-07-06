@@ -4,6 +4,7 @@ import links from "./links";
 // validate redirect to URLs to prevent open redirect attacks
 // https://thecopenhagenbook.com/open-redirect
 export function getValidRedirectURL(redirectTo: string | null): string {
+	console.log("redirectTo", redirectTo);
 	if (!redirectTo) return links.seekerLanding;
 
 	// return the absolute URL, which is needed for Oauth2 redirects
