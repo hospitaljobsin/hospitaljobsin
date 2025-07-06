@@ -489,37 +489,21 @@ export default function LandingView() {
 			{/* New: Healthcare Network Feature Section */}
 			<section className="w-full bg-white py-16 sm:py-24 flex justify-center">
 				<div className="max-w-5xl w-full mx-auto flex flex-col items-center gap-8 text-center">
-					<div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary-100 dark:bg-background-600 mb-2">
-						<svg
-							width="40"
-							height="40"
-							fill="none"
-							viewBox="0 0 40 40"
-							aria-hidden="true"
-						>
-							<circle
-								cx="20"
-								cy="20"
-								r="18"
-								stroke="#00a925"
-								strokeWidth="3"
-								fill="#e6f5e9"
-							/>
-							<path
-								d="M20 12v8m0 0v8m0-8h8m-8 0h-8"
-								stroke="#00a925"
-								strokeWidth="2.5"
-								strokeLinecap="round"
-							/>
-						</svg>
+					<div className="flex-shrink-0 mb-2 relative w-96 h-96">
+						<Image
+							src="/images/network-team.svg"
+							alt="Access a fresh and growing network of healthcare professionals"
+							fill
+							className="object-cover group-hover:scale-110 transition-transform duration-200"
+						/>
 					</div>
-					<h2 className="text-3xl sm:text-4xl font-medium text-primary-800 dark:text-primary-200 mb-2">
+					<h2 className="text-3xl sm:text-4xl font-medium text-primary-800 dark:text-primary-200 tracking-tight max-w-2xl">
 						Access a fresh and growing network of healthcare professionals
 					</h2>
-					<p className="text-lg text-primary-700 dark:text-primary-100 max-w-2xl mx-auto opacity-90">
+					<h3 className="text-lg sm:text-xl text-primary-600 dark:text-foreground-200 w-full text-center max-w-2xl">
 						We're building a tightly knit network of healthcare professionals
 						from the ground up
-					</p>
+					</h3>
 				</div>
 			</section>
 
