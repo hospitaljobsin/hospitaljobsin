@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
 import { SearchIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod";
@@ -62,12 +62,12 @@ export default function BrandedSubdomain() {
 		useMutation<BrandedSubdomainCheckMutation>(CheckAvailabilityMutation);
 
 	const {
+		control,
 		register,
 		handleSubmit,
 		setError,
 		clearErrors,
 		formState: { errors, isValid },
-		watch,
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
 		mode: "onChange",
@@ -77,7 +77,7 @@ export default function BrandedSubdomain() {
 		},
 	});
 
-	const slug = watch("slug");
+	const slug = useWatch({ control, name: "slug" });
 	const debouncedSlug = useDebounce(slug, 500);
 
 	useEffect(() => {
@@ -139,28 +139,36 @@ export default function BrandedSubdomain() {
 						className="flex-shrink-0 mb-2 w-full flex flex-col sm:flex-row items-start gap-6"
 						onSubmit={handleSubmit(onSubmit)}
 					>
-						<Input
-							{...register("slug")}
-							placeholder="yourdomain"
-							size="lg"
-							fullWidth
-							value={slug}
-							startContent={
-								<SearchIcon size={24} className="text-foreground-500 mr-2" />
-							}
-							endContent={
-								<span className="text-base sm:text-xl">
-									.{env.NEXT_PUBLIC_ROOT_DOMAIN}
-								</span>
-							}
-							classNames={{
-								inputWrapper: `p-4 md:p-12 min-h-12 sm:min-h-24 ${
-									isValid ? "border border-2 border-success" : ""
-								}`,
-								input: "text-base sm:text-xl",
-							}}
-							isInvalid={!!errors.slug}
-							errorMessage={errors.slug?.message}
+						<Controller
+							name="slug"
+							control={control}
+							render={({ field }) => (
+								<Input
+									{...field}
+									placeholder="yourdomain"
+									size="lg"
+									fullWidth
+									startContent={
+										<SearchIcon
+											size={24}
+											className="text-foreground-500 mr-2"
+										/>
+									}
+									endContent={
+										<span className="text-base sm:text-xl">
+											.{env.NEXT_PUBLIC_ROOT_DOMAIN}
+										</span>
+									}
+									classNames={{
+										inputWrapper: `p-4 md:p-12 min-h-12 sm:min-h-24 ${
+											isValid ? "border border-2 border-success" : ""
+										}`,
+										input: "text-base sm:text-xl",
+									}}
+									isInvalid={!!errors.slug}
+									errorMessage={errors.slug?.message}
+								/>
+							)}
 						/>
 						<Button
 							type="submit"
