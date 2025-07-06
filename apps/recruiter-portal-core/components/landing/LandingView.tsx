@@ -44,9 +44,9 @@ export default function LandingView() {
 	}, []);
 
 	return (
-		<div className="flex flex-col items-center">
+		<div className="flex flex-col items-center w-full">
 			{/* Hero Section */}
-			<div className="relative bg-gradient-to-br from-primary-700 via-primary-400 to-primary-600 text-primary-foreground pt-4 sm:pt-8 flex flex-col justify-center items-center w-full overflow-hidden">
+			<div className="relative bg-gradient-to-br from-primary-700 via-primary-400 to-primary-600 text-primary-foreground flex flex-col justify-center items-center w-full overflow-hidden">
 				<LandingHeader />
 				{/* Wavy Gradient Background Overlay */}
 				<svg
