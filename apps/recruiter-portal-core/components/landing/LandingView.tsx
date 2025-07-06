@@ -487,9 +487,9 @@ export default function LandingView() {
 			</section>
 
 			{/* New: Healthcare Network Feature Section */}
-			<section className="w-full bg-white py-16 sm:py-24 flex justify-center">
+			<section className="w-full bg-white py-16 sm:py-24 flex justify-center px-4">
 				<div className="max-w-5xl w-full mx-auto flex flex-col items-center gap-8 text-center">
-					<div className="flex-shrink-0 mb-2 relative w-96 h-96">
+					<div className="flex-shrink-0 mb-2 relative w-48 sm:w-96 h-48 sm:h-96">
 						<Image
 							src="/images/network-team.svg"
 							alt="Access a fresh and growing network of healthcare professionals"
