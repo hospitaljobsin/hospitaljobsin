@@ -67,9 +67,12 @@ export default function BrandedSubdomain() {
 		register,
 		handleSubmit,
 		setValue,
+		setError,
+		clearErrors,
 		formState: { errors, isValid },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: standardSchemaResolver(formSchema),
+		mode: "onChange",
 		defaultValues: {
 			slug: "",
 		},
@@ -81,19 +84,22 @@ export default function BrandedSubdomain() {
 			setIsSlugAvailable(false);
 			return;
 		}
-		if (!isValid) return;
+		console.log("changing to ...", debouncedSlug);
 		setIsSlugAvailable(false); // Always reset before mutation
 		commitMutation({
 			variables: { slug: debouncedSlug },
 			onCompleted: (data) => {
 				if (data?.checkOrganizationSlugAvailability?.isAvailable) {
 					setIsSlugAvailable(true);
+					clearErrors("slug");
 				} else {
 					setIsSlugAvailable(false);
+					setError("slug", { message: "Subdomain is not available" });
 				}
 			},
 			onError: () => {
 				setIsSlugAvailable(false);
+				setError("slug", { message: "Subdomain is not available" });
 			},
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
