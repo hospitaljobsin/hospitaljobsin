@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<2feb1a5433ba0560ee33712d09f51e38>>
- * @relayHash 427daacb449bd2c78d862e443f0619a3
+ * @generated SignedSource<<cac2b94ce30577787ed08ea3511fd4bb>>
+ * @relayHash 6c6af900a923646f07efd7979281a80c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 427daacb449bd2c78d862e443f0619a3
+// @relayRequestID 6c6af900a923646f07efd7979281a80c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -527,68 +527,6 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v16/*: any*/),
-                      (v15/*: any*/)
-                    ],
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "hasSalaryRange",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "hasExperienceRange",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "currency",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "createdAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "updatedAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Organization",
-                    "kind": "LinkedField",
-                    "name": "organization",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "isAdmin",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "name",
-                        "storageKey": null
-                      },
                       (v16/*: any*/)
                     ],
                     "storageKey": null
@@ -623,6 +561,20 @@ return {
                         "storageKey": null
                       }
                     ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "createdAt",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "currency",
                     "storageKey": null
                   },
                   {
@@ -670,6 +622,20 @@ return {
                       }
                     ],
                     "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "hasSalaryRange",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "hasExperienceRange",
+                    "storageKey": null
                   }
                 ],
                 "storageKey": null
@@ -684,7 +650,7 @@ return {
     ]
   },
   "params": {
-    "id": "427daacb449bd2c78d862e443f0619a3",
+    "id": "6c6af900a923646f07efd7979281a80c",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",

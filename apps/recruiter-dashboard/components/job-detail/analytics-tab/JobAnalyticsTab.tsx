@@ -11,7 +11,7 @@ import {
 	useFragment,
 	usePreloadedQuery,
 } from "react-relay";
-import JobDetails from "./JobDetails";
+import JobStatistics from "./JobStatistics";
 
 const JobAnalyticsTabFragment = graphql`
  fragment JobAnalyticsTabFragment on Query @argumentDefinitions(
@@ -27,7 +27,7 @@ const JobAnalyticsTabFragment = graphql`
 				job(slug: $jobSlug) {
 					__typename
 					... on Job {
-						...JobDetailsFragment
+						...JobStatisticsFragment
 					}
 				}
 			}
@@ -58,7 +58,7 @@ export default function JobAnalyticsTab(props: {
 
 	return (
 		<div className="pt-8 pl-6 pb-16 w-full h-full flex flex-col items-center gap-12">
-			<JobDetails rootQuery={query.organization.job} />
+			<JobStatistics job={query.organization.job} />
 		</div>
 	);
 }

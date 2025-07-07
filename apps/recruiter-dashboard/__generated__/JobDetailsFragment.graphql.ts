@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a736475ae6d5d8ce9174745e7802b08a>>
+ * @generated SignedSource<<7e759a305aa3ad18614c069f809fe0ff>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,36 +9,8 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
-export type Currency = "INR" | "%future added value";
-export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_TIME" | "%future added value";
-export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type JobDetailsFragment$data = {
-  readonly applicationForm: {
-    readonly __typename: "JobApplicationForm";
-    readonly id: string;
-  } | null | undefined;
-  readonly createdAt: any;
-  readonly currency: Currency;
-  readonly externalApplicationUrl: string | null | undefined;
-  readonly hasExperienceRange: boolean;
-  readonly hasSalaryRange: boolean;
-  readonly isActive: boolean;
-  readonly location: string | null | undefined;
-  readonly maxExperience: number | null | undefined;
-  readonly maxSalary: number | null | undefined;
-  readonly minExperience: number | null | undefined;
-  readonly minSalary: number | null | undefined;
-  readonly organization: {
-    readonly isAdmin: boolean;
-    readonly name: string;
-  };
-  readonly skills: ReadonlyArray<string>;
-  readonly slug: string;
-  readonly title: string;
-  readonly type: JobType | null | undefined;
-  readonly updatedAt: any;
-  readonly workMode: WorkMode | null | undefined;
   readonly " $fragmentSpreads": FragmentRefs<"JobStatisticsFragment">;
   readonly " $fragmentType": "JobDetailsFragment";
 };
@@ -54,179 +26,6 @@ const node: ReaderFragment = {
   "name": "JobDetailsFragment",
   "selections": [
     {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "title",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "slug",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "skills",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "minSalary",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "maxSalary",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "hasSalaryRange",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "minExperience",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "maxExperience",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "hasExperienceRange",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "currency",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "workMode",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "type",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "location",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "createdAt",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "updatedAt",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "isActive",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "externalApplicationUrl",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": "JobApplicationForm",
-      "kind": "LinkedField",
-      "name": "applicationForm",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "__typename",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "id",
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
-    },
-    {
-      "kind": "RequiredField",
-      "field": {
-        "alias": null,
-        "args": null,
-        "concreteType": "Organization",
-        "kind": "LinkedField",
-        "name": "organization",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "isAdmin",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "name",
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
-      },
-      "action": "THROW"
-    },
-    {
       "args": null,
       "kind": "FragmentSpread",
       "name": "JobStatisticsFragment"
@@ -236,6 +35,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "251aec4272a82f02aad42536231fe731";
+(node as any).hash = "78db2c95ca358fd7ab2cd5a99847ff70";
 
 export default node;

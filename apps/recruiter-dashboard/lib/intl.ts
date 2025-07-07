@@ -19,6 +19,11 @@ export const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
 	minute: "2-digit",
 });
 
+export const salaryFormat = new Intl.NumberFormat("en-IN", {
+	maximumFractionDigits: 0,
+	useGrouping: true,
+});
+
 /**
  * Convert a date to a relative time string, such as
  * "a minute ago", "in 2 hours", "yesterday", "3 months ago", etc.

@@ -4,7 +4,7 @@ import type {
 	JobFragment$key,
 	WorkMode,
 } from "@/__generated__/JobFragment.graphql";
-import { dateFormat } from "@/lib/intl";
+import { dateFormat, salaryFormat } from "@/lib/intl";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next/app";
 import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
@@ -101,7 +101,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 	const salaryRange = data.hasSalaryRange ? (
 		<div className="flex items-center gap-2 text-xl font-medium text-nowrap">
 			{currencyIcon(data.currency)}
-			{`${data.minSalary} - ${data.maxSalary}`}{" "}
+			{`${salaryFormat.format(data.minSalary ?? 0)} - ${salaryFormat.format(data.maxSalary ?? 0)}`}{" "}
 			<p className="text-foreground-500 text-sm">/ month</p>
 		</div>
 	) : (

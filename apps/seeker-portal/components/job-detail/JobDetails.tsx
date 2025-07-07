@@ -4,7 +4,7 @@ import type {
 	JobType,
 	WorkMode,
 } from "@/__generated__/JobDetailsInternalFragment.graphql";
-import { dateFormat } from "@/lib/intl";
+import { dateFormat, salaryFormat } from "@/lib/intl";
 import links from "@/lib/links";
 import {
 	Button,
@@ -210,7 +210,7 @@ export default function JobDetails({
 			<div className="flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500">
 				<div className="w-full flex items-center flex-wrap gap-2">
 					{currencyIcon(data.currency)}
-					{`${data.minSalary} - ${data.maxSalary}`}{" "}
+					{`${salaryFormat.format(data.minSalary)} - ${salaryFormat.format(data.maxSalary)}`}{" "}
 					<p className="text-xs sm:text-sm">/ month</p>
 				</div>
 				{data.isSalaryNegotiable && (

@@ -1,5 +1,5 @@
 import type { JobFragment$key } from "@/__generated__/JobFragment.graphql";
-import { getRelativeTimeString } from "@/lib/intl";
+import { getRelativeTimeString, salaryFormat } from "@/lib/intl";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
@@ -103,7 +103,7 @@ function salaryRange(
 		return (
 			<span className="flex items-center gap-1">
 				{currencyIcon(currency)}
-				{min} - {max}
+				{salaryFormat.format(min ?? 0)} - {salaryFormat.format(max ?? 0)}
 				<span className="text-xs">/ month</span>
 			</span>
 		);

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<aa6480a32eddc33e5e91e55cdc285ae5>>
+ * @generated SignedSource<<73ab6934bad641b53dba2fa56abe63e4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,7 @@ export type JobAnalyticsTabFragment$data = {
     readonly isMember: boolean;
     readonly job: {
       readonly __typename: "Job";
-      readonly " $fragmentSpreads": FragmentRefs<"JobDetailsFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"JobStatisticsFragment">;
     } | {
       // This will never be '%other', but we need some
       // value in case none of the concrete values match.
@@ -105,7 +105,7 @@ return {
                     {
                       "args": null,
                       "kind": "FragmentSpread",
-                      "name": "JobDetailsFragment"
+                      "name": "JobStatisticsFragment"
                     }
                   ],
                   "type": "Job",
@@ -127,6 +127,6 @@ return {
 };
 })();
 
-(node as any).hash = "45e4f17d7d2e1140dc267aed0884cc7f";
+(node as any).hash = "630dd5c79b2771fdfa1196f02c85152f";
 
 export default node;
