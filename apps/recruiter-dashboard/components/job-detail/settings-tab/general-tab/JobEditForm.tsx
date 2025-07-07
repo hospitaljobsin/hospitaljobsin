@@ -126,7 +126,6 @@ mutation JobEditFormMutation(
 				location
 				...JobTabsFragment
 				...JobControlsFragment
-				...JobDetailsFragment
 				...JobFragment
 				...JobEditFormFragment
             }

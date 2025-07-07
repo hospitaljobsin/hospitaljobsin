@@ -55,7 +55,7 @@ const ApplicationFormBuilderMutation = graphql`
       __typename
       ... on UpdateJobApplicationFormSuccess {
 		job {
-			...JobDetailsFragment
+			...JobStatisticsFragment
 		}
         jobApplicationForm {
             fields {

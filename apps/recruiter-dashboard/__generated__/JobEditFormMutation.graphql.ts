@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<cac2b94ce30577787ed08ea3511fd4bb>>
- * @relayHash 6c6af900a923646f07efd7979281a80c
+ * @generated SignedSource<<35a75fdb69648dfaded6a0d3e0b61378>>
+ * @relayHash ae762cca21e71b43a15281afeeb6af00
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 6c6af900a923646f07efd7979281a80c
+// @relayRequestID ae762cca21e71b43a15281afeeb6af00
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -58,7 +58,7 @@ export type JobEditFormMutation$data = {
       readonly type: JobType | null | undefined;
       readonly vacancies: number | null | undefined;
       readonly workMode: WorkMode | null | undefined;
-      readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobDetailsFragment" | "JobEditFormFragment" | "JobFragment" | "JobTabsFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobEditFormFragment" | "JobFragment" | "JobTabsFragment">;
     };
   } | {
     // This will never be '%other', but we need some
@@ -404,11 +404,6 @@ return {
                   {
                     "args": null,
                     "kind": "FragmentSpread",
-                    "name": "JobDetailsFragment"
-                  },
-                  {
-                    "args": null,
-                    "kind": "FragmentSpread",
                     "name": "JobFragment"
                   },
                   {
@@ -541,31 +536,6 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "JobMetricPoint",
-                    "kind": "LinkedField",
-                    "name": "viewMetricPoints",
-                    "plural": true,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "timestamp",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "count",
-                        "storageKey": null
-                      }
-                    ],
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
                     "kind": "ScalarField",
                     "name": "createdAt",
                     "storageKey": null
@@ -650,7 +620,7 @@ return {
     ]
   },
   "params": {
-    "id": "6c6af900a923646f07efd7979281a80c",
+    "id": "ae762cca21e71b43a15281afeeb6af00",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",
@@ -659,6 +629,6 @@ return {
 };
 })();
 
-(node as any).hash = "acc51e239c32af078927eca89cdb5591";
+(node as any).hash = "4ae1cdd3d42e14852a52004c80f288f9";
 
 export default node;

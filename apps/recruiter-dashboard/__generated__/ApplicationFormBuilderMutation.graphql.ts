@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<990a04bbc0f666ef5c238a7112982252>>
- * @relayHash 955fffce99ffe3d2caba6405f48efa68
+ * @generated SignedSource<<628aa28dca5ddbc38f52db3428e92ca7>>
+ * @relayHash ab455b8c88847f475ef1e0364c21f4e3
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 955fffce99ffe3d2caba6405f48efa68
+// @relayRequestID ab455b8c88847f475ef1e0364c21f4e3
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -35,7 +35,7 @@ export type ApplicationFormBuilderMutation$data = {
   } | {
     readonly __typename: "UpdateJobApplicationFormSuccess";
     readonly job: {
-      readonly " $fragmentSpreads": FragmentRefs<"JobDetailsFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"JobStatisticsFragment">;
     };
     readonly jobApplicationForm: {
       readonly fields: ReadonlyArray<{
@@ -157,7 +157,7 @@ return {
                   {
                     "args": null,
                     "kind": "FragmentSpread",
-                    "name": "JobDetailsFragment"
+                    "name": "JobStatisticsFragment"
                   }
                 ],
                 "storageKey": null
@@ -273,7 +273,7 @@ return {
     ]
   },
   "params": {
-    "id": "955fffce99ffe3d2caba6405f48efa68",
+    "id": "ab455b8c88847f475ef1e0364c21f4e3",
     "metadata": {},
     "name": "ApplicationFormBuilderMutation",
     "operationKind": "mutation",
@@ -282,6 +282,6 @@ return {
 };
 })();
 
-(node as any).hash = "ae4d5ffb3a360da8fcf00d161b08fa8b";
+(node as any).hash = "def734fa81123011cdcf40abce5ceb07";
 
 export default node;
