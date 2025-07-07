@@ -27,20 +27,18 @@ import SearchJobsList from "./SearchJobsList";
 export const SearchPageContentFragment = graphql`
   fragment SearchPageContent_query on Query
   @argumentDefinitions(
-    speciality: { type: "String" }
+    searchTerm: { type: "String" }
     minExperience: { type: "Int" }
-    maxExperience: { type: "Int" }
     minSalary: { type: "Int" }
     maxSalary: { type: "Int" }
     coordinates: { type: "CoordinatesInput" }
     proximityKm: { type: "Float" }
   ) {
     ...SearchJobsListFragment @arguments(
-      searchTerm: $speciality
+      searchTerm: $searchTerm
       coordinates: $coordinates
       proximityKm: $proximityKm
       minExperience: $minExperience
-      maxExperience: $maxExperience
       minSalary: $minSalary
       maxSalary: $maxSalary
     )
@@ -106,7 +104,6 @@ export default function SearchPageContent({
 	const sidebarFilters = {
 		...filters,
 		minExperience: filters.minExperience ?? null,
-		maxExperience: filters.maxExperience ?? null,
 		minSalary: filters.minSalary ?? null,
 		maxSalary: filters.maxSalary ?? null,
 	};
@@ -153,10 +150,8 @@ export default function SearchPageContent({
 								values={sidebarFilters}
 								onChange={setFilters}
 								open={true}
-								speciality={filters.speciality}
-								setSpeciality={(value) =>
-									setFilters({ ...filters, speciality: value })
-								}
+								searchTerm={filters.q}
+								setSearchTerm={(value) => setFilters({ ...filters, q: value })}
 							/>
 						</DrawerBody>
 					</DrawerContent>
@@ -168,21 +163,18 @@ export default function SearchPageContent({
 					values={sidebarFilters}
 					onChange={setFilters}
 					open={true}
-					speciality={filters.speciality}
-					setSpeciality={(value) =>
-						setFilters({ ...filters, speciality: value })
-					}
+					searchTerm={filters.q}
+					setSearchTerm={(value) => setFilters({ ...filters, q: value })}
 				/>
 			</div>
 			<div className="flex-1">
 				<Suspense fallback={<JobListSkeleton />}>
 					<SearchJobsList
 						rootQuery={data}
-						searchTerm={filters.speciality || null}
+						searchTerm={filters.q || null}
 						coordinates={parseCoordinates(filters.coordinates)}
 						proximityKm={filters.proximityKm}
 						minExperience={filters.minExperience ?? null}
-						maxExperience={filters.maxExperience ?? null}
 						minSalary={filters.minSalary ?? null}
 						maxSalary={filters.maxSalary ?? null}
 						workMode={validatedWorkMode || FILTER_DEFAULTS.workMode}

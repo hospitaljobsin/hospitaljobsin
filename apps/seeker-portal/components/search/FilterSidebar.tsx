@@ -13,7 +13,7 @@ import { useState } from "react";
 import LocationAutocomplete from "../forms/LocationAutocomplete";
 
 export type FilterValues = {
-	speciality: string;
+	q: string;
 	minExperience: number | null;
 	minSalary: number | null;
 	maxSalary: number | null;
@@ -28,16 +28,16 @@ export type FilterSidebarProps = {
 	values: FilterValues;
 	onChange: (values: FilterValues) => void;
 	open?: boolean;
-	speciality: string;
-	setSpeciality: (value: string) => void;
+	searchTerm: string;
+	setSearchTerm: (value: string) => void;
 };
 
 export default function FilterSidebar({
 	values,
 	onChange,
 	open = true,
-	speciality,
-	setSpeciality,
+	searchTerm,
+	setSearchTerm,
 }: FilterSidebarProps) {
 	const [locationInput, setLocationInput] = useState(values.locationName);
 
@@ -51,11 +51,11 @@ export default function FilterSidebar({
 			<CardBody className="flex flex-col gap-12">
 				{/* Speciality input for mobile only */}
 				<Input
-					label="Speciality"
+					label="Search"
 					className="block lg:hidden"
-					value={speciality}
-					onChange={(e) => setSpeciality(e.target.value)}
-					placeholder="e.g. Cardiology"
+					value={searchTerm}
+					onChange={(e) => setSearchTerm(e.target.value)}
+					placeholder="Search by speciality, keyword or company"
 					variant="bordered"
 					fullWidth
 				/>

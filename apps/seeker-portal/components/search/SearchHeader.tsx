@@ -37,12 +37,12 @@ export const SearchHeaderQuery = graphql`
 
 export default function SearchHeader({
 	queryReference,
-	speciality,
-	setSpeciality,
+	searchTerm,
+	setSearchTerm,
 }: {
 	queryReference: PreloadedQuery<SearchHeaderQueryType>;
-	speciality: string;
-	setSpeciality: (value: string) => void;
+	searchTerm: string;
+	setSearchTerm: (value: string) => void;
 }) {
 	const data = usePreloadedQuery(SearchHeaderQuery, queryReference);
 
@@ -79,10 +79,9 @@ export default function SearchHeader({
 					</NavbarBrand>
 					<NavbarItem className="w-full">
 						<Input
-							id="speciality"
-							value={speciality}
-							onChange={(e) => setSpeciality(e.target.value)}
-							placeholder="Search by speciality (e.g. Cardiology)"
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
+							placeholder="Search by speciality, keyword or company"
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
 							}
@@ -94,7 +93,7 @@ export default function SearchHeader({
 							}}
 							autoComplete="off"
 							isClearable
-							onClear={() => setSpeciality("")}
+							onClear={() => setSearchTerm("")}
 						/>
 					</NavbarItem>
 					{data.viewer.__typename === "Account" ? (

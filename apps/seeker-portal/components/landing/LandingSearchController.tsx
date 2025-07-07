@@ -9,7 +9,7 @@ import LocationAutocomplete from "../forms/LocationAutocomplete";
 
 export function LandingSearchController() {
 	const router = useRouter();
-	const [speciality, setSpeciality] = useState("");
+	const [searchTerm, setSearchTerm] = useState("");
 	const [locationInput, setLocationInput] = useState("");
 	const [selectedLocation, setSelectedLocation] =
 		useState<SearchLocation | null>(null);
@@ -17,7 +17,7 @@ export function LandingSearchController() {
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const params = new URLSearchParams();
-		if (speciality) params.set("speciality", speciality);
+		if (searchTerm) params.set("q", searchTerm);
 		if (selectedLocation?.displayName) {
 			params.set("locationName", selectedLocation.displayName);
 			if (selectedLocation.coordinates) {
@@ -38,18 +38,17 @@ export function LandingSearchController() {
 			>
 				<div className="w-full flex flex-col sm:flex-row gap-4 sm:gap-6">
 					<Input
-						id="speciality"
-						name="speciality"
+						name="searchTerm"
 						label="Search by"
 						variant="underlined"
 						placeholder="Speciality, Keyword or Company"
-						value={speciality}
+						value={searchTerm}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-							setSpeciality(e.target.value)
+							setSearchTerm(e.target.value)
 						}
 						isRequired
 						isClearable
-						onClear={() => setSpeciality("")}
+						onClear={() => setSearchTerm("")}
 					/>
 					<LocationAutocomplete
 						id="location"

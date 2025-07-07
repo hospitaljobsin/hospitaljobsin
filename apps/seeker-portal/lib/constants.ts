@@ -6,7 +6,7 @@ export const APP_TAGLINE =
 	"Connecting you to top locum opportunities in healthcare. Find the right role, right now.";
 
 export const FILTER_DEFAULTS = {
-	speciality: "",
+	q: "",
 	minExperience: null,
 	maxExperience: null,
 	minSalary: null,

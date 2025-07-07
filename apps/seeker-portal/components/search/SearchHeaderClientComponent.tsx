@@ -9,11 +9,11 @@ import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 
 export default function SearchHeaderClientComponent({
-	speciality,
-	setSpeciality,
+	searchTerm,
+	setSearchTerm,
 }: {
-	speciality: string;
-	setSpeciality: (value: string) => void;
+	searchTerm: string;
+	setSearchTerm: (value: string) => void;
 }) {
 	const environment = useRelayEnvironment();
 	const queryReference = loadQuery<SearchHeaderQueryType>(
@@ -27,8 +27,8 @@ export default function SearchHeaderClientComponent({
 		<Suspense fallback={<SearchHeaderSkeleton />}>
 			<SearchHeader
 				queryReference={queryReference}
-				speciality={speciality}
-				setSpeciality={setSpeciality}
+				searchTerm={searchTerm}
+				setSearchTerm={setSearchTerm}
 			/>
 		</Suspense>
 	);

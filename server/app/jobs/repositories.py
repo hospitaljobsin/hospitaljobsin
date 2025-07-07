@@ -322,7 +322,6 @@ class JobRepo:
         search_term: str | None = None,
         coordinates: Coordinates | None = None,
         proximity_km: float | None = None,
-        speciality: str | None = None,
         min_experience: int | None = None,
         max_experience: int | None = None,
         min_salary: int | None = None,
@@ -349,8 +348,6 @@ class JobRepo:
 
         if search_term:
             filters.append({"$text": {"$search": search_term}})
-        if speciality:
-            filters.append({"$text": {"$search": speciality}})
         if min_experience is not None:
             filters.append(Job.min_experience >= min_experience)
         if max_experience is not None:

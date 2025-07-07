@@ -48,12 +48,6 @@ class JobQuery:
                 description="The location coordinates to search for jobs",
             ),
         ] = None,
-        speciality: Annotated[
-            str | None,
-            strawberry.argument(
-                description="The speciality to filter jobs by (full-text search)",
-            ),
-        ] = None,
         min_experience: Annotated[
             int | None,
             strawberry.argument(
@@ -121,7 +115,6 @@ class JobQuery:
             if coordinates
             else None,
             proximity_km=proximity_km,
-            speciality=speciality,
             min_experience=min_experience,
             max_experience=max_experience,
             min_salary=min_salary,

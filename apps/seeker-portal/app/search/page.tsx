@@ -9,18 +9,16 @@ import SearchPageContent from "../../components/search/SearchPageContent";
 
 export const searchPageQuery = graphql`
 	query pageSearchQuery(
-		$speciality: String
+		$searchTerm: String
 		$minExperience: Int
-		$maxExperience: Int
 		$minSalary: Int
 		$maxSalary: Int
 		$coordinates: CoordinatesInput
 		$proximityKm: Float
 	) {
 		...SearchPageContent_query @arguments(
-			speciality: $speciality
+			searchTerm: $searchTerm
 			minExperience: $minExperience
-			maxExperience: $maxExperience
 			minSalary: $minSalary
 			maxSalary: $maxSalary
 			coordinates: $coordinates
@@ -31,9 +29,8 @@ export const searchPageQuery = graphql`
 
 // Define Filters type for useQueryStates
 export type Filters = {
-	speciality: string;
+	q: string;
 	minExperience: number | null;
-	maxExperience: number | null;
 	minSalary: number | null;
 	maxSalary: number | null;
 	locationName: string;
@@ -47,7 +44,7 @@ export default function SearchPage() {
 	const environment = useRelayEnvironment();
 	const [filters, setFilters] = useQueryStates(
 		{
-			speciality: parseAsString.withDefault(FILTER_DEFAULTS.speciality),
+			q: parseAsString.withDefault(FILTER_DEFAULTS.q),
 			minExperience: parseAsInteger,
 			maxExperience: parseAsInteger,
 			minSalary: parseAsInteger,
@@ -88,7 +85,7 @@ export default function SearchPage() {
 
 	// Prepare variables for the query
 	const variables = {
-		speciality: filters.speciality,
+		searchTerm: filters.q,
 		minExperience: filters.minExperience,
 		maxExperience: filters.maxExperience,
 		minSalary: filters.minSalary,
@@ -108,8 +105,8 @@ export default function SearchPage() {
 	return (
 		<div className="w-full flex flex-col bg-background-600">
 			<SearchHeaderClientComponent
-				speciality={filters.speciality}
-				setSpeciality={(value) => setFilters({ ...filters, speciality: value })}
+				searchTerm={filters.q}
+				setSearchTerm={(value) => setFilters({ ...filters, q: value })}
 			/>
 			<SearchPageContent
 				queryRef={preloadedQuery}

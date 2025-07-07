@@ -43,7 +43,7 @@ export default function DashboardHeader({
 	queryReference: PreloadedQuery<DashboardHeaderQueryType>;
 }) {
 	const data = usePreloadedQuery(DashboardHeaderQuery, queryReference);
-	const [speciality, setSpeciality] = useState("");
+	const [searchTerm, setSearchTerm] = useState("");
 	const router = useRouter();
 
 	return (
@@ -79,9 +79,8 @@ export default function DashboardHeader({
 					</NavbarBrand>
 					<NavbarItem className="w-full">
 						<Input
-							id="speciality"
-							value={speciality}
-							onChange={(e) => setSpeciality(e.target.value)}
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
 							placeholder="Search by speciality (e.g. Cardiology)"
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
@@ -94,16 +93,16 @@ export default function DashboardHeader({
 							}}
 							autoComplete="off"
 							isClearable
-							onClear={() => setSpeciality("")}
+							onClear={() => setSearchTerm("")}
 							onKeyDown={(e) => {
 								if (
 									e.key === "Enter" &&
 									!e.nativeEvent.isComposing &&
-									speciality.trim() !== ""
+									searchTerm.trim() !== ""
 								) {
 									e.preventDefault();
 									const params = new URLSearchParams({
-										speciality: speciality.trim(),
+										q: searchTerm.trim(),
 									});
 									router.push(`${links.search}?${params.toString()}`);
 								}

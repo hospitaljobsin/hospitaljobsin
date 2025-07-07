@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<fb8bfb8303565c3e9bb33af51651da87>>
- * @relayHash 671e593515ab1ed9f8c650569b7c4e57
+ * @generated SignedSource<<60492d446e1c97e4a7864e7c07deac23>>
+ * @relayHash 401f8a6bc77a2dc1c7a7199250ffd66a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 671e593515ab1ed9f8c650569b7c4e57
+// @relayRequestID 401f8a6bc77a2dc1c7a7199250ffd66a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -19,12 +19,11 @@ export type CoordinatesInput = {
 };
 export type pageSearchQuery$variables = {
   coordinates?: CoordinatesInput | null | undefined;
-  maxExperience?: number | null | undefined;
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
   minSalary?: number | null | undefined;
   proximityKm?: number | null | undefined;
-  speciality?: string | null | undefined;
+  searchTerm?: string | null | undefined;
 };
 export type pageSearchQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"SearchPageContent_query">;
@@ -43,65 +42,60 @@ var v0 = {
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxExperience"
+  "name": "maxSalary"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "maxSalary"
+  "name": "minExperience"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minExperience"
+  "name": "minSalary"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "minSalary"
+  "name": "proximityKm"
 },
 v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "proximityKm"
+  "name": "searchTerm"
 },
 v6 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "speciality"
-},
-v7 = {
   "kind": "Variable",
   "name": "coordinates",
   "variableName": "coordinates"
 },
-v8 = {
-  "kind": "Variable",
-  "name": "maxExperience",
-  "variableName": "maxExperience"
-},
-v9 = {
+v7 = {
   "kind": "Variable",
   "name": "maxSalary",
   "variableName": "maxSalary"
 },
-v10 = {
+v8 = {
   "kind": "Variable",
   "name": "minExperience",
   "variableName": "minExperience"
 },
-v11 = {
+v9 = {
   "kind": "Variable",
   "name": "minSalary",
   "variableName": "minSalary"
 },
-v12 = {
+v10 = {
   "kind": "Variable",
   "name": "proximityKm",
   "variableName": "proximityKm"
 },
-v13 = [
-  (v7/*: any*/),
+v11 = {
+  "kind": "Variable",
+  "name": "searchTerm",
+  "variableName": "searchTerm"
+},
+v12 = [
+  (v6/*: any*/),
   {
     "kind": "Literal",
     "name": "first",
@@ -112,37 +106,32 @@ v13 = [
     "name": "jobType",
     "value": "ANY"
   },
+  (v7/*: any*/),
   (v8/*: any*/),
   (v9/*: any*/),
   (v10/*: any*/),
   (v11/*: any*/),
-  (v12/*: any*/),
-  {
-    "kind": "Variable",
-    "name": "searchTerm",
-    "variableName": "speciality"
-  },
   {
     "kind": "Literal",
     "name": "workMode",
     "value": "ANY"
   }
 ],
-v14 = {
+v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v15 = {
+v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v16 = {
+v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -157,8 +146,7 @@ return {
       (v2/*: any*/),
       (v3/*: any*/),
       (v4/*: any*/),
-      (v5/*: any*/),
-      (v6/*: any*/)
+      (v5/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -166,17 +154,12 @@ return {
     "selections": [
       {
         "args": [
+          (v6/*: any*/),
           (v7/*: any*/),
           (v8/*: any*/),
           (v9/*: any*/),
           (v10/*: any*/),
-          (v11/*: any*/),
-          (v12/*: any*/),
-          {
-            "kind": "Variable",
-            "name": "speciality",
-            "variableName": "speciality"
-          }
+          (v11/*: any*/)
         ],
         "kind": "FragmentSpread",
         "name": "SearchPageContent_query"
@@ -188,20 +171,19 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v6/*: any*/),
+      (v5/*: any*/),
+      (v2/*: any*/),
       (v3/*: any*/),
       (v1/*: any*/),
-      (v4/*: any*/),
-      (v2/*: any*/),
       (v0/*: any*/),
-      (v5/*: any*/)
+      (v4/*: any*/)
     ],
     "kind": "Operation",
     "name": "pageSearchQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v13/*: any*/),
+        "args": (v12/*: any*/),
         "concreteType": "JobConnection",
         "kind": "LinkedField",
         "name": "jobs",
@@ -223,7 +205,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v14/*: any*/),
+                  (v13/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -231,7 +213,7 @@ return {
                     "name": "isSaved",
                     "storageKey": null
                   },
-                  (v15/*: any*/),
+                  (v14/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -268,8 +250,8 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
-                      (v15/*: any*/),
-                      (v14/*: any*/)
+                      (v14/*: any*/),
+                      (v13/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -357,7 +339,7 @@ return {
                     "name": "createdAt",
                     "storageKey": null
                   },
-                  (v16/*: any*/)
+                  (v15/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -401,7 +383,7 @@ return {
       },
       {
         "alias": null,
-        "args": (v13/*: any*/),
+        "args": (v12/*: any*/),
         "filters": [
           "searchTerm",
           "coordinates",
@@ -426,7 +408,7 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          (v16/*: any*/),
+          (v15/*: any*/),
           {
             "kind": "TypeDiscriminator",
             "abstractKey": "__isViewerPayload"
@@ -434,7 +416,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v14/*: any*/)
+              (v13/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -445,7 +427,7 @@ return {
     ]
   },
   "params": {
-    "id": "671e593515ab1ed9f8c650569b7c4e57",
+    "id": "401f8a6bc77a2dc1c7a7199250ffd66a",
     "metadata": {},
     "name": "pageSearchQuery",
     "operationKind": "query",
@@ -454,6 +436,6 @@ return {
 };
 })();
 
-(node as any).hash = "839c7f5aa932a82a2abf873fa832e385";
+(node as any).hash = "79dc9ebfdf28565f8c9f1507b44d1bec";
 
 export default node;

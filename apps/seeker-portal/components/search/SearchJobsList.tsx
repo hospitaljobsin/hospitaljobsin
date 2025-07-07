@@ -21,13 +21,12 @@ fragment SearchJobsListFragment on Query @argumentDefinitions(
 	searchTerm: { type: "String", defaultValue: null }
 	coordinates: { type: "CoordinatesInput", defaultValue: null }
 	minExperience: { type: "Int", defaultValue: null }
-	maxExperience: { type: "Int", defaultValue: null }
 	minSalary: { type: "Int", defaultValue: null }
 	maxSalary: { type: "Int", defaultValue: null }
 	workMode: { type: "JobWorkModeFilter", defaultValue: ANY }
 	jobType: { type: "JobTypeFilter", defaultValue: ANY }
 ) {
-	...SearchJobsListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, maxExperience: $maxExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
+	...SearchJobsListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm, minExperience: $minExperience, minSalary: $minSalary, maxSalary: $maxSalary, workMode: $workMode, jobType: $jobType)
 	viewer {
 		...JobControlsAuthFragment
 	}
@@ -72,7 +71,6 @@ type Props = {
 	coordinates: CoordinatesInput | null;
 	proximityKm: number | null;
 	minExperience?: number | null;
-	maxExperience?: number | null;
 	minSalary?: number | null;
 	maxSalary?: number | null;
 	workMode?: string;
@@ -85,7 +83,6 @@ export default function SearchJobsList({
 	coordinates,
 	proximityKm,
 	minExperience,
-	maxExperience,
 	minSalary,
 	maxSalary,
 	workMode,
@@ -100,6 +97,8 @@ export default function SearchJobsList({
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 	const hasMountedRef = useRef(false);
+
+	console.log("search term", searchTerm);
 
 	useEffect(() => {
 		if (!observerRef.current) return;
@@ -138,8 +137,6 @@ export default function SearchJobsList({
 				};
 				if (typeof minExperience !== "undefined")
 					refetchVars.minExperience = minExperience;
-				if (typeof maxExperience !== "undefined")
-					refetchVars.maxExperience = maxExperience;
 				if (typeof minSalary !== "undefined") refetchVars.minSalary = minSalary;
 				if (typeof maxSalary !== "undefined") refetchVars.maxSalary = maxSalary;
 				if (typeof workMode !== "undefined")
@@ -156,7 +153,6 @@ export default function SearchJobsList({
 		coordinates,
 		proximityKm,
 		minExperience,
-		maxExperience,
 		minSalary,
 		maxSalary,
 		workMode,

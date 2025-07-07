@@ -3648,11 +3648,6 @@ type Query {
 		coordinates: CoordinatesInput = null
 
 		"""
-		The speciality to filter jobs by (full-text search)
-		"""
-		speciality: String = null
-
-		"""
 		The minimum years of experience required
 		"""
 		minExperience: Int = null

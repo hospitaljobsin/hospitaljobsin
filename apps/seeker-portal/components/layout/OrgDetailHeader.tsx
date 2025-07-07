@@ -50,7 +50,7 @@ export default function OrgDetailHeader({
 }) {
 	const data = usePreloadedQuery(OrgDetailHeaderQuery, queryReference);
 
-	const [speciality, setSpeciality] = useState("");
+	const [searchTerm, setSearchTerm] = useState("");
 
 	const router = useRouter();
 
@@ -80,10 +80,9 @@ export default function OrgDetailHeader({
 					</NavbarBrand>
 					<NavbarItem className="w-full">
 						<Input
-							id="speciality"
-							value={speciality}
-							onChange={(e) => setSpeciality(e.target.value)}
-							placeholder="Search by speciality (e.g. Cardiology)"
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
+							placeholder="Search by speciality, keyword or company"
 							startContent={
 								<SearchIcon size={16} className="text-foreground-500" />
 							}
@@ -95,16 +94,16 @@ export default function OrgDetailHeader({
 							}}
 							autoComplete="off"
 							isClearable
-							onClear={() => setSpeciality("")}
+							onClear={() => setSearchTerm("")}
 							onKeyDown={(e) => {
 								if (
 									e.key === "Enter" &&
 									!e.nativeEvent.isComposing &&
-									speciality.trim() !== ""
+									searchTerm.trim() !== ""
 								) {
 									e.preventDefault();
 									const params = new URLSearchParams({
-										speciality: speciality.trim(),
+										q: searchTerm.trim(),
 									});
 									router.push(`${links.search}?${params.toString()}`);
 								}
