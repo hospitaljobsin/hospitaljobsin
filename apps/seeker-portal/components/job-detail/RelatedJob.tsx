@@ -23,10 +23,8 @@ export const RelatedJobFragment = graphql`
     location
     skills
     currency
-    hasSalaryRange
     minSalary
     maxSalary
-    hasExperienceRange
     minExperience
     maxExperience
     organization @required(action: THROW) {
@@ -76,22 +74,23 @@ export default function RelatedJob({ job }: Props) {
 	};
 
 	function formatExperienceRange({
-		hasExperienceRange,
 		minExperience,
 		maxExperience,
 	}: {
-		hasExperienceRange: boolean;
 		minExperience: number | null | undefined;
 		maxExperience: number | null | undefined;
 	}) {
-		if (hasExperienceRange) {
+		if (minExperience && maxExperience) {
+			return `${minExperience} - ${maxExperience} years`;
+		}
+
+		if (minExperience || maxExperience) {
 			if (!minExperience) {
 				return `Maximum ${maxExperience} years`;
 			}
 			if (!maxExperience) {
 				return `Minimum ${minExperience} years`;
 			}
-			return `${minExperience} - ${maxExperience} years`;
 		}
 		return "Not specified";
 	}
@@ -144,7 +143,6 @@ export default function RelatedJob({ job }: Props) {
 					<div className="flex items-center gap-2">
 						<Briefcase size={16} />{" "}
 						{formatExperienceRange({
-							hasExperienceRange: data.hasExperienceRange,
 							minExperience: data.minExperience,
 							maxExperience: data.maxExperience,
 						})}

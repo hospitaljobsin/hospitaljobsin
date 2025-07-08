@@ -1124,16 +1124,6 @@ type Job implements Node {
 	externalApplicationUrl: String
 
 	"""
-	Whether the job has a salary range.
-	"""
-	hasSalaryRange: Boolean!
-
-	"""
-	Whether the job has an experience range.
-	"""
-	hasExperienceRange: Boolean!
-
-	"""
 	The related jobs for the job.
 	"""
 	relatedJobs(

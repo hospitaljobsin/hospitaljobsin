@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8d2f56d565e17939dda9cdcb0bf8aa41>>
- * @relayHash 75f543bab3f9e67814ebbd9a70667498
+ * @generated SignedSource<<26c95be719b19ba9da8b25cdce18246f>>
+ * @relayHash 601a03c8fb564bfbd14d0df44304dc45
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 75f543bab3f9e67814ebbd9a70667498
+// @relayRequestID 601a03c8fb564bfbd14d0df44304dc45
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -210,13 +210,6 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "hasSalaryRange",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
                     "name": "minSalary",
                     "storageKey": null
                   },
@@ -225,13 +218,6 @@ return {
                     "args": null,
                     "kind": "ScalarField",
                     "name": "maxSalary",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "hasExperienceRange",
                     "storageKey": null
                   },
                   {
@@ -315,7 +301,7 @@ return {
     ]
   },
   "params": {
-    "id": "75f543bab3f9e67814ebbd9a70667498",
+    "id": "601a03c8fb564bfbd14d0df44304dc45",
     "metadata": {},
     "name": "SavedJobsListPaginationQuery",
     "operationKind": "query",

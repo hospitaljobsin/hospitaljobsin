@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<35a75fdb69648dfaded6a0d3e0b61378>>
- * @relayHash ae762cca21e71b43a15281afeeb6af00
+ * @generated SignedSource<<b248d4535880e93f7c27b212d081fdef>>
+ * @relayHash 194b62e21e837ad7f5143c0589579f1d
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ae762cca21e71b43a15281afeeb6af00
+// @relayRequestID 194b62e21e837ad7f5143c0589579f1d
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -592,20 +592,6 @@ return {
                       }
                     ],
                     "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "hasSalaryRange",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "hasExperienceRange",
-                    "storageKey": null
                   }
                 ],
                 "storageKey": null
@@ -620,7 +606,7 @@ return {
     ]
   },
   "params": {
-    "id": "ae762cca21e71b43a15281afeeb6af00",
+    "id": "194b62e21e837ad7f5143c0589579f1d",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",

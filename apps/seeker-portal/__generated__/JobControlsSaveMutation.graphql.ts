@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<4a0a04e9889ad550b6fb888f5e69993f>>
- * @relayHash 8fb4ff357774207fa36148f81b283ce3
+ * @generated SignedSource<<f76c5ad6713805d0f42bdf190aac9164>>
+ * @relayHash 44fcfa0b3dc3a87d916e85a6a8ab9ce8
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 8fb4ff357774207fa36148f81b283ce3
+// @relayRequestID 44fcfa0b3dc3a87d916e85a6a8ab9ce8
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -253,13 +253,6 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "hasSalaryRange",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
                         "name": "minSalary",
                         "storageKey": null
                       },
@@ -268,13 +261,6 @@ return {
                         "args": null,
                         "kind": "ScalarField",
                         "name": "maxSalary",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "hasExperienceRange",
                         "storageKey": null
                       },
                       {
@@ -342,7 +328,7 @@ return {
     ]
   },
   "params": {
-    "id": "8fb4ff357774207fa36148f81b283ce3",
+    "id": "44fcfa0b3dc3a87d916e85a6a8ab9ce8",
     "metadata": {},
     "name": "JobControlsSaveMutation",
     "operationKind": "mutation",

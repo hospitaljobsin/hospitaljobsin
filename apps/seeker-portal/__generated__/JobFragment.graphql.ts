@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9068915a7cf2c727ee7f2239121c8ee3>>
+ * @generated SignedSource<<21b85e687fbd196ea00013e4afb9d3aa>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,8 +16,6 @@ import type { FragmentRefs } from "relay-runtime";
 export type JobFragment$data = {
   readonly createdAt: any;
   readonly currency: Currency;
-  readonly hasExperienceRange: boolean;
-  readonly hasSalaryRange: boolean;
   readonly location: string | null | undefined;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
@@ -113,13 +111,6 @@ return {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "hasSalaryRange",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
       "name": "minSalary",
       "storageKey": null
     },
@@ -128,13 +119,6 @@ return {
       "args": null,
       "kind": "ScalarField",
       "name": "maxSalary",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "hasExperienceRange",
       "storageKey": null
     },
     {
@@ -201,6 +185,6 @@ return {
 };
 })();
 
-(node as any).hash = "12239cfbe1a203a0f0f695514cddb9b0";
+(node as any).hash = "29cbe038549271ad350a918e820f3242";
 
 export default node;

@@ -13,7 +13,7 @@ export default function Logo({
 			className={cn(
 				"flex items-center justify-center rounded-md",
 				variant === "hero" && "bg-primary-300",
-				variant === "default" && "bg-background-800",
+				variant === "default" && "bg-background-700",
 			)}
 		>
 			{/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}

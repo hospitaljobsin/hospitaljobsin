@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7591f43fb6733c6c960254714e5b3668>>
+ * @generated SignedSource<<8d3fc6f56d1e2e8646e2383fb8f17818>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,8 +18,6 @@ export type JobDetailsInternalFragment$data = {
   readonly currency: Currency;
   readonly description: string;
   readonly externalApplicationUrl: string | null | undefined;
-  readonly hasExperienceRange: boolean;
-  readonly hasSalaryRange: boolean;
   readonly isApplied: boolean;
   readonly isSalaryNegotiable: boolean;
   readonly location: string | null | undefined;
@@ -121,13 +119,6 @@ return {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "hasSalaryRange",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
       "name": "minSalary",
       "storageKey": null
     },
@@ -136,13 +127,6 @@ return {
       "args": null,
       "kind": "ScalarField",
       "name": "maxSalary",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "hasExperienceRange",
       "storageKey": null
     },
     {
@@ -231,6 +215,6 @@ return {
 };
 })();
 
-(node as any).hash = "c09cdb3a8567fcf9815af80d2556e946";
+(node as any).hash = "328933a273520f99f3ccb027c136eb12";
 
 export default node;

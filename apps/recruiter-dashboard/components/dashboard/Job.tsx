@@ -41,8 +41,6 @@ export const JobFragment = graphql`
       onHold
       offered
     }
-    hasSalaryRange
-    hasExperienceRange
   }
 `;
 
@@ -94,12 +92,11 @@ const currencyIcon = (currency: string) => {
 
 // Salary range formatting
 function salaryRange(
-	hasSalaryRange: boolean | undefined,
 	currency: string,
 	min?: number | null,
 	max?: number | null,
 ) {
-	if (hasSalaryRange) {
+	if (min && max) {
 		return (
 			<span className="flex items-center gap-1">
 				{currencyIcon(currency)}
@@ -127,15 +124,14 @@ function salaryRange(
 }
 
 // Experience range formatting
-function formatExperienceRange(
-	hasExperienceRange: boolean | undefined,
-	min?: number | null,
-	max?: number | null,
-) {
-	if (hasExperienceRange) {
+function formatExperienceRange(min?: number | null, max?: number | null) {
+	if (min && max) {
+		return `${min} - ${max} years`;
+	}
+
+	if (min || max) {
 		if (!min) return `Maximum ${max} years`;
 		if (!max) return `Minimum ${min} years`;
-		return `${min} - ${max} years`;
 	}
 	return "Not specified";
 }
@@ -218,18 +214,9 @@ export default function Job({ job }: Props) {
 				)}
 				<span className="flex items-center gap-1">
 					<Briefcase size={14} />
-					{formatExperienceRange(
-						data.hasExperienceRange,
-						data.minExperience,
-						data.maxExperience,
-					)}
+					{formatExperienceRange(data.minExperience, data.maxExperience)}
 				</span>
-				{salaryRange(
-					data.hasSalaryRange,
-					data.currency,
-					data.minSalary,
-					data.maxSalary,
-				)}
+				{salaryRange(data.currency, data.minSalary, data.maxSalary)}
 			</div>
 
 			{/* Applicant Pipeline Bar & Numbers */}

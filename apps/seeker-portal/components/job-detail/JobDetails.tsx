@@ -24,6 +24,7 @@ import {
 	Clock,
 	ExternalLinkIcon,
 	Globe,
+	HandshakeIcon,
 	IndianRupee,
 	MapPin,
 	Users,
@@ -74,10 +75,8 @@ const JobDetailsInternalFragment = graphql`
     location
     skills
     currency
-    hasSalaryRange
     minSalary
     maxSalary
-    hasExperienceRange
     minExperience
     maxExperience
     createdAt
@@ -185,53 +184,57 @@ export default function JobDetails({
 	};
 
 	function formatExperienceRange({
-		hasExperienceRange,
 		minExperience,
 		maxExperience,
 	}: {
-		hasExperienceRange: boolean;
 		minExperience: number | null | undefined;
 		maxExperience: number | null | undefined;
 	}) {
-		if (hasExperienceRange) {
+		if (minExperience && maxExperience) {
+			return `${minExperience} - ${maxExperience} years`;
+		}
+
+		if (minExperience || maxExperience) {
 			if (!minExperience) {
 				return `Maximum ${maxExperience} years`;
 			}
 			if (!maxExperience) {
 				return `Minimum ${minExperience} years`;
 			}
-			return `${minExperience} - ${maxExperience} years`;
 		}
 		return "Not specified";
 	}
 
-	const salaryRange = data.hasSalaryRange ? (
-		<div className="flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500">
-			<div className="w-full flex items-center flex-wrap gap-2">
-				{currencyIcon(data.currency)}
-				{`${salaryFormat.format(data.minSalary)} - ${salaryFormat.format(data.maxSalary)}`}{" "}
-				<p className="text-xs sm:text-sm">/ month</p>
+	const salaryRange =
+		data.minSalary && data.maxSalary ? (
+			<div className="flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500">
+				<div className="w-full flex items-center flex-wrap gap-2">
+					{currencyIcon(data.currency)}
+					{`${salaryFormat.format(data.minSalary)} - ${salaryFormat.format(data.maxSalary)}`}{" "}
+					<p className="text-xs sm:text-sm">/ month</p>
+					{data.isSalaryNegotiable && (
+						<Tooltip content="Negotiable">
+							<div className="flex px-2 rounded-md text-primary-400">
+								<HandshakeIcon size={20} />
+							</div>
+						</Tooltip>
+					)}
+				</div>
 			</div>
-			{data.isSalaryNegotiable && (
-				<Chip size="sm" color="primary" className="ml-2">
-					Negotiable
-				</Chip>
-			)}
-		</div>
-	) : data.minSalary || data.maxSalary ? (
-		<div className="flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500">
-			<div className="w-full flex items-center flex-wrap gap-2">
-				{currencyIcon(data.currency)}
-				{`${salaryFormat.format(data.minSalary ?? data.maxSalary ?? 0)}`}{" "}
-				<p className="text-xs sm:text-sm">/ month</p>
+		) : data.minSalary || data.maxSalary ? (
+			<div className="flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500">
+				<div className="w-full flex items-center flex-wrap gap-2">
+					{currencyIcon(data.currency)}
+					{`${salaryFormat.format(data.minSalary ?? data.maxSalary ?? 0)}`}{" "}
+					<p className="text-xs sm:text-sm">/ month</p>
+				</div>
 			</div>
-		</div>
-	) : (
-		<div className="flex items-center gap-2 text-sm sm:text-base text-foreground-500">
-			{currencyIcon(data.currency)}
-			Not disclosed
-		</div>
-	);
+		) : (
+			<div className="flex items-center gap-2 text-sm sm:text-base text-foreground-500">
+				{currencyIcon(data.currency)}
+				Not disclosed
+			</div>
+		);
 
 	return (
 		<div className="w-full flex flex-col gap-6 flex-1">
@@ -327,7 +330,6 @@ export default function JobDetails({
 						<div className="flex items-center gap-2 text-sm sm:text-base">
 							<Briefcase size={16} />{" "}
 							{formatExperienceRange({
-								hasExperienceRange: data.hasExperienceRange,
 								minExperience: data.minExperience,
 								maxExperience: data.maxExperience,
 							})}

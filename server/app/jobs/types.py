@@ -760,18 +760,6 @@ class JobType(BaseNodeType[Job]):
         )
 
     @strawberry.field(  # type: ignore[misc]
-        description="Whether the job has a salary range.",
-    )
-    def has_salary_range(self) -> bool:
-        return self.min_salary is not None and self.max_salary is not None
-
-    @strawberry.field(  # type: ignore[misc]
-        description="Whether the job has an experience range.",
-    )
-    def has_experience_range(self) -> bool:
-        return self.min_experience is not None and self.max_experience is not None
-
-    @strawberry.field(  # type: ignore[misc]
         description="The related jobs for the job.",
     )
     @inject

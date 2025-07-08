@@ -19,10 +19,8 @@ const JobDetailsInternalFragment = graphql`
     location
     skills
     currency
-    hasSalaryRange
     minSalary
     maxSalary
-    hasExperienceRange
     minExperience
     maxExperience
     description
@@ -65,22 +63,23 @@ function workMode(mode: WorkMode | null | undefined) {
 }
 
 function formatExperienceRange({
-	hasExperienceRange,
 	minExperience,
 	maxExperience,
 }: {
-	hasExperienceRange: boolean;
 	minExperience: number | null | undefined;
 	maxExperience: number | null | undefined;
 }) {
-	if (hasExperienceRange) {
+	if (minExperience && maxExperience) {
+		return `${minExperience} - ${maxExperience} years`;
+	}
+
+	if (minExperience || maxExperience) {
 		if (!minExperience) {
 			return `Maximum ${maxExperience} years`;
 		}
 		if (!maxExperience) {
 			return `Minimum ${minExperience} years`;
 		}
-		return `${minExperience} - ${maxExperience} years`;
 	}
 	return "Not specified";
 }
@@ -150,7 +149,6 @@ export default function JobApplicationDetails({
 					<span className="flex items-center gap-1">
 						<Briefcase size={16} />
 						{formatExperienceRange({
-							hasExperienceRange: data.hasExperienceRange,
 							minExperience: data.minExperience,
 							maxExperience: data.maxExperience,
 						})}
@@ -161,7 +159,7 @@ export default function JobApplicationDetails({
 							{workMode(data.workMode)}
 						</span>
 					)}
-					{data.hasSalaryRange ? (
+					{data.minSalary && data.maxSalary ? (
 						<span className="flex items-center gap-1">
 							{currencyIcon(data.currency)}
 							{data.minSalary} - {data.maxSalary}{" "}

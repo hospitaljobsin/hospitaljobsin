@@ -26,10 +26,8 @@ export const JobFragment = graphql`
     location
     skills
     currency
-    hasSalaryRange
     minSalary
     maxSalary
-    hasExperienceRange
     minExperience
     maxExperience
     createdAt
@@ -98,42 +96,44 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 		}
 	};
 
-	const salaryRange = data.hasSalaryRange ? (
-		<div className="flex items-center gap-2 text-xl font-medium text-nowrap">
-			{currencyIcon(data.currency)}
-			{`${salaryFormat.format(data.minSalary ?? 0)} - ${salaryFormat.format(data.maxSalary ?? 0)}`}{" "}
-			<p className="text-foreground-500 text-sm">/ month</p>
-		</div>
-	) : data.minSalary || data.maxSalary ? (
-		<div className="flex items-center gap-2 text-xl font-medium">
-			{currencyIcon(data.currency)}
-			{`${salaryFormat.format(data.minSalary ?? data.maxSalary ?? 0)}`}{" "}
-			<p className="text-foreground-500 text-sm">/ month</p>
-		</div>
-	) : (
-		<div className="flex items-center gap-2 text-xl font-medium">
-			{currencyIcon(data.currency)}
-			{"Not disclosed"}
-		</div>
-	);
+	const salaryRange =
+		data.minSalary && data.maxSalary ? (
+			<div className="flex items-center gap-2 text-xl font-medium text-nowrap">
+				{currencyIcon(data.currency)}
+				{`${salaryFormat.format(data.minSalary ?? 0)} - ${salaryFormat.format(data.maxSalary ?? 0)}`}{" "}
+				<p className="text-foreground-500 text-sm">/ month</p>
+			</div>
+		) : data.minSalary || data.maxSalary ? (
+			<div className="flex items-center gap-2 text-xl font-medium">
+				{currencyIcon(data.currency)}
+				{`${salaryFormat.format(data.minSalary ?? data.maxSalary ?? 0)}`}{" "}
+				<p className="text-foreground-500 text-sm">/ month</p>
+			</div>
+		) : (
+			<div className="flex items-center gap-2 text-xl font-medium">
+				{currencyIcon(data.currency)}
+				{"Not disclosed"}
+			</div>
+		);
 
 	function formatExperienceRange({
-		hasExperienceRange,
 		minExperience,
 		maxExperience,
 	}: {
-		hasExperienceRange: boolean;
 		minExperience: number | null | undefined;
 		maxExperience: number | null | undefined;
 	}) {
-		if (hasExperienceRange) {
+		if (minExperience && maxExperience) {
+			return `${minExperience} - ${maxExperience} years`;
+		}
+
+		if (minExperience || maxExperience) {
 			if (!minExperience) {
 				return `Maximum ${maxExperience} years`;
 			}
 			if (!maxExperience) {
 				return `Minimum ${minExperience} years`;
 			}
-			return `${minExperience} - ${maxExperience} years`;
 		}
 		return "Not specified";
 	}
@@ -204,7 +204,6 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 						<Briefcase size={14} className="sm:hidden" />
 						<Briefcase size={16} className="hidden sm:inline" />
 						{formatExperienceRange({
-							hasExperienceRange: data.hasExperienceRange,
 							minExperience: data.minExperience,
 							maxExperience: data.maxExperience,
 						})}

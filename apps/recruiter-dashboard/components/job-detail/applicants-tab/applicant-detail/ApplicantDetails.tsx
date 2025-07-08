@@ -33,8 +33,6 @@ const ApplicantDetailsJobFragment = graphql`
     id
 	title
 	description
-	hasExperienceRange
-	hasSalaryRange
 	minExperience
 	maxExperience
 	minSalary

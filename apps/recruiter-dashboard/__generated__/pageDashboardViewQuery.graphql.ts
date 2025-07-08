@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<82bfdeaad0931f8eceb73956794d1710>>
- * @relayHash a94da0e211b817d55daa758d21047fc7
+ * @generated SignedSource<<0ae967da7032fd8ccd7e9e4b5a3a51e8>>
+ * @relayHash c54c2ea84d676bf31a302d54915b360a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a94da0e211b817d55daa758d21047fc7
+// @relayRequestID c54c2ea84d676bf31a302d54915b360a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -326,20 +326,6 @@ return {
                             ],
                             "storageKey": null
                           },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "hasSalaryRange",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "hasExperienceRange",
-                            "storageKey": null
-                          },
                           (v6/*: any*/)
                         ],
                         "storageKey": null
@@ -420,7 +406,7 @@ return {
     ]
   },
   "params": {
-    "id": "a94da0e211b817d55daa758d21047fc7",
+    "id": "c54c2ea84d676bf31a302d54915b360a",
     "metadata": {},
     "name": "pageDashboardViewQuery",
     "operationKind": "query",

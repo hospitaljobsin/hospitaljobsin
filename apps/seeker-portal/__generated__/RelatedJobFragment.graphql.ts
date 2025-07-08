@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7e5057e1d7460a23e11761f8c859b659>>
+ * @generated SignedSource<<59d79db8fdf4ce4baa93edd1e993ab53>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,8 +15,6 @@ export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type RelatedJobFragment$data = {
   readonly currency: Currency;
-  readonly hasExperienceRange: boolean;
-  readonly hasSalaryRange: boolean;
   readonly location: string | null | undefined;
   readonly maxExperience: number | null | undefined;
   readonly maxSalary: number | null | undefined;
@@ -112,13 +110,6 @@ return {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "hasSalaryRange",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
       "name": "minSalary",
       "storageKey": null
     },
@@ -127,13 +118,6 @@ return {
       "args": null,
       "kind": "ScalarField",
       "name": "maxSalary",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "hasExperienceRange",
       "storageKey": null
     },
     {
@@ -193,6 +177,6 @@ return {
 };
 })();
 
-(node as any).hash = "e46b86361da903ed010dbc1395ee21e7";
+(node as any).hash = "37d4df6518a2f7b0517035a055852498";
 
 export default node;
