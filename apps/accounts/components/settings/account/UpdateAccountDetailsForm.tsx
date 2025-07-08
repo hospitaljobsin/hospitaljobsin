@@ -32,6 +32,7 @@ mutation UpdateAccountDetailsFormMutation($fullName: String!, $avatarUrl: String
 		... on Account {
 			...UpdateAccountDetailsFormFragment
 			...AccountDetailsFragment
+			...AuthNavigationFragment
 		}
 	}
 }`;

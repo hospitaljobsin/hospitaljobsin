@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<05d92fb3e1be9048f9fa1a356f7b6cff>>
- * @relayHash f808fa7bb2d7f23bfb1fb75611805589
+ * @generated SignedSource<<1b20b2f038dd0b22f30272ca2d14204c>>
+ * @relayHash 29e689ce26cdb78d7bf90a6a3997008a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f808fa7bb2d7f23bfb1fb75611805589
+// @relayRequestID 29e689ce26cdb78d7bf90a6a3997008a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -20,7 +20,7 @@ export type UpdateAccountDetailsFormMutation$variables = {
 export type UpdateAccountDetailsFormMutation$data = {
   readonly updateAccount: {
     readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AccountDetailsFragment" | "UpdateAccountDetailsFormFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AccountDetailsFragment" | "AuthNavigationFragment" | "UpdateAccountDetailsFormFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -93,6 +93,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "AccountDetailsFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "AuthNavigationFragment"
               }
             ],
             "type": "Account",
@@ -177,7 +182,7 @@ return {
     ]
   },
   "params": {
-    "id": "f808fa7bb2d7f23bfb1fb75611805589",
+    "id": "29e689ce26cdb78d7bf90a6a3997008a",
     "metadata": {},
     "name": "UpdateAccountDetailsFormMutation",
     "operationKind": "mutation",
@@ -186,6 +191,6 @@ return {
 };
 })();
 
-(node as any).hash = "339879955d88c3754ff3286dd768433d";
+(node as any).hash = "33d84984dda3410bbafe7100bb056f73";
 
 export default node;

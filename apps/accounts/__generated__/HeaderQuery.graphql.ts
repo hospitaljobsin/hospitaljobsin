@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<80fc042d614c58981b4f45dc953c0130>>
- * @relayHash ec0625edbba09e4b07d899e93608d785
+ * @generated SignedSource<<7b46c8fea7b08e41c06050c2797c3db4>>
+ * @relayHash ec04458c3d8ae26a87432d29dc180f0a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ec0625edbba09e4b07d899e93608d785
+// @relayRequestID ec04458c3d8ae26a87432d29dc180f0a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -109,10 +109,16 @@ return {
               },
               {
                 "alias": null,
-                "args": null,
+                "args": [
+                  {
+                    "kind": "Literal",
+                    "name": "size",
+                    "value": 120
+                  }
+                ],
                 "kind": "ScalarField",
                 "name": "avatarUrl",
-                "storageKey": null
+                "storageKey": "avatarUrl(size:120)"
               }
             ],
             "type": "Account",
@@ -138,7 +144,7 @@ return {
     ]
   },
   "params": {
-    "id": "ec0625edbba09e4b07d899e93608d785",
+    "id": "ec04458c3d8ae26a87432d29dc180f0a",
     "metadata": {},
     "name": "HeaderQuery",
     "operationKind": "query",

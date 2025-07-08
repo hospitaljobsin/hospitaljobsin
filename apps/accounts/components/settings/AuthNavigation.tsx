@@ -1,4 +1,5 @@
 "use client";
+import type { AuthNavigationFragment$key } from "@/__generated__/AuthNavigationFragment.graphql";
 import {
 	Avatar,
 	Button,
@@ -18,14 +19,13 @@ import {
 import { LogOutIcon } from "lucide-react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import type { AuthNavigationFragment$key } from "@/__generated__/AuthNavigationFragment.graphql";
 import LogoutModal from "./LogoutModal";
 
 const AuthNavigationFragment = graphql`
   fragment AuthNavigationFragment on Account {
         __typename
         fullName
-		avatarUrl
+		avatarUrl(size: 120)
   }
 `;
 
