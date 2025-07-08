@@ -34,14 +34,6 @@ const nextConfig: NextConfig = {
 		remotePatterns: [
 			{
 				protocol: "https",
-				hostname: "gravatar.com",
-			},
-			{
-				protocol: "https",
-				hostname: "www.gravatar.com",
-			},
-			{
-				protocol: "https",
 				hostname: "api.dicebear.com",
 			},
 			// Add more allowed domains if needed

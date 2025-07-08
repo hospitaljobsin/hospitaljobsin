@@ -483,20 +483,7 @@ class AccountType(BaseNodeType[Account]):
         if self.uploaded_avatar_url:
             return self.uploaded_avatar_url
 
-        email_encoded = self.email.lower().encode("utf-8")
-
-        # Generate the SHA256 hash of the email
-        email_hash = hashlib.sha256(email_encoded).hexdigest()
-
-        seed_query_params = urlencode({"seed": urllib.parse.quote_plus(self.full_name)})
-        # Construct the URL with encoded query parameters
-        query_params = urlencode(
-            {
-                "d": f"https://api.dicebear.com/9.x/shapes/png/{seed_query_params}",
-                "s": size,
-            }
-        )
-        return f"https://www.gravatar.com/avatar/{email_hash}?{query_params}"
+        return f"https://api.dicebear.com/9.x/shapes/png?seed={self.full_name}"
 
     @strawberry.field(  # type: ignore[misc]
         description="When the user's sudo mode grant expires at.",

@@ -292,10 +292,10 @@ export default function UpdateAccountDetailsForm({
 												</div>
 											}
 										>
-											<PenIcon size={18} />
+											<PenIcon size={18} className="m-2" />
 										</Tooltip>
 									}
-									size="md"
+									size="lg"
 									shape="circle"
 									showOutline={false}
 								>
@@ -303,7 +303,7 @@ export default function UpdateAccountDetailsForm({
 										showFallback
 										name={data.fullName}
 										radius="full"
-										className="w-32 h-32 cursor-pointer"
+										className="w-32 h-32 cursor-pointer hover:brightness-75 transition-all duration-200"
 										src={previewUrl || data.avatarUrl}
 										onClick={() => fileInputRef.current?.click()}
 									/>
