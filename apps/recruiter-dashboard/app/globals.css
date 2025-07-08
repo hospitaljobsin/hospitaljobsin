@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@plugin './hero.ts';
+@plugin './hero.mts';
 @plugin "@tailwindcss/typography";
 @plugin 'tailwind-scrollbar' {
 	nocompatible: true;
