@@ -205,26 +205,33 @@ export default function JobDetails({
 		return "Not specified";
 	}
 
-	const salaryRange =
-		data.hasSalaryRange && data.minSalary && data.maxSalary ? (
-			<div className="flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500">
-				<div className="w-full flex items-center flex-wrap gap-2">
-					{currencyIcon(data.currency)}
-					{`${salaryFormat.format(data.minSalary)} - ${salaryFormat.format(data.maxSalary)}`}{" "}
-					<p className="text-xs sm:text-sm">/ month</p>
-				</div>
-				{data.isSalaryNegotiable && (
-					<Chip size="sm" color="primary" className="ml-2">
-						Negotiable
-					</Chip>
-				)}
-			</div>
-		) : (
-			<div className="flex items-center gap-2 text-sm sm:text-base text-foreground-500">
+	const salaryRange = data.hasSalaryRange ? (
+		<div className="flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500">
+			<div className="w-full flex items-center flex-wrap gap-2">
 				{currencyIcon(data.currency)}
-				Not disclosed
+				{`${salaryFormat.format(data.minSalary)} - ${salaryFormat.format(data.maxSalary)}`}{" "}
+				<p className="text-xs sm:text-sm">/ month</p>
 			</div>
-		);
+			{data.isSalaryNegotiable && (
+				<Chip size="sm" color="primary" className="ml-2">
+					Negotiable
+				</Chip>
+			)}
+		</div>
+	) : data.minSalary || data.maxSalary ? (
+		<div className="flex flex-col sm:flex-row sm:items-center gap-2 text-md sm:text-xl text-foreground-500">
+			<div className="w-full flex items-center flex-wrap gap-2">
+				{currencyIcon(data.currency)}
+				{`${salaryFormat.format(data.minSalary ?? data.maxSalary ?? 0)}`}{" "}
+				<p className="text-xs sm:text-sm">/ month</p>
+			</div>
+		</div>
+	) : (
+		<div className="flex items-center gap-2 text-sm sm:text-base text-foreground-500">
+			{currencyIcon(data.currency)}
+			Not disclosed
+		</div>
+	);
 
 	return (
 		<div className="w-full flex flex-col gap-6 flex-1">

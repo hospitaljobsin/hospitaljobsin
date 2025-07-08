@@ -108,6 +108,16 @@ function salaryRange(
 			</span>
 		);
 	}
+
+	if ((min || max) !== null) {
+		return (
+			<span className="flex items-center gap-1">
+				{currencyIcon(currency)}
+				{salaryFormat.format(min ?? max ?? 0)}
+				<span className="text-xs">/ month</span>
+			</span>
+		);
+	}
 	return (
 		<span className="flex items-center gap-1 text-foreground-500">
 			{currencyIcon(currency)}

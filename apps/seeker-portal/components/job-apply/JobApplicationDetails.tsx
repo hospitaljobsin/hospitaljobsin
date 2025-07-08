@@ -167,6 +167,12 @@ export default function JobApplicationDetails({
 							{data.minSalary} - {data.maxSalary}{" "}
 							<span className="text-xs">/ month</span>
 						</span>
+					) : data.minSalary || data.maxSalary ? (
+						<span className="flex items-center gap-1">
+							{currencyIcon(data.currency)}
+							{data.minSalary ?? data.maxSalary}{" "}
+							<span className="text-xs">/ month</span>
+						</span>
 					) : (
 						<span>Salary: Not disclosed</span>
 					)}

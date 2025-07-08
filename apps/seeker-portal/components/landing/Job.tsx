@@ -104,6 +104,12 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			{`${salaryFormat.format(data.minSalary ?? 0)} - ${salaryFormat.format(data.maxSalary ?? 0)}`}{" "}
 			<p className="text-foreground-500 text-sm">/ month</p>
 		</div>
+	) : data.minSalary || data.maxSalary ? (
+		<div className="flex items-center gap-2 text-xl font-medium">
+			{currencyIcon(data.currency)}
+			{`${salaryFormat.format(data.minSalary ?? data.maxSalary ?? 0)}`}{" "}
+			<p className="text-foreground-500 text-sm">/ month</p>
+		</div>
 	) : (
 		<div className="flex items-center gap-2 text-xl font-medium">
 			{currencyIcon(data.currency)}
