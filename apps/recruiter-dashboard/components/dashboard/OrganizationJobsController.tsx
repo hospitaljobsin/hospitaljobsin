@@ -5,7 +5,7 @@ import {
 	Input,
 	Select,
 	SelectItem,
-	SharedSelection,
+	type SharedSelection,
 } from "@heroui/react";
 import { BriefcaseBusiness, Search } from "lucide-react";
 import Link from "next/link";

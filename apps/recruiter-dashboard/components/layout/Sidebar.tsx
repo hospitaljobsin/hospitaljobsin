@@ -52,6 +52,7 @@ export const SidebarQuery = graphql`
         name
         slug
         logoUrl
+		isAdmin
       }
     }
   }
@@ -192,6 +193,10 @@ export default function Sidebar({ queryReference }: Props) {
 					{navItems.map((item) => (
 						<Tab
 							key={item.href}
+							isDisabled={
+								item.href === links.organizationDetailSettings &&
+								!data.organization.isAdmin
+							}
 							title={
 								<div className="flex items-center gap-2">
 									{item.icon}

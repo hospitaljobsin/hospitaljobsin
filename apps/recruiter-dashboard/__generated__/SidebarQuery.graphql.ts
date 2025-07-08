@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c3fad46f08295bc98893ce286360f2a4>>
- * @relayHash 1e72a822c24091326e490c13923fd759
+ * @generated SignedSource<<65f5170be779486d63b5cb08ca6d4c87>>
+ * @relayHash e2e701b4860dcfb3f9f03ad21ac96946
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 1e72a822c24091326e490c13923fd759
+// @relayRequestID e2e701b4860dcfb3f9f03ad21ac96946
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -19,6 +19,7 @@ export type SidebarQuery$variables = {
 export type SidebarQuery$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly isAdmin: boolean;
     readonly logoUrl: string;
     readonly name: string;
     readonly slug: string;
@@ -91,7 +92,14 @@ v6 = {
   "selections": [
     (v3/*: any*/),
     (v4/*: any*/),
-    (v5/*: any*/)
+    (v5/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "isAdmin",
+      "storageKey": null
+    }
   ],
   "type": "Organization",
   "abstractKey": null
@@ -328,7 +336,7 @@ return {
     ]
   },
   "params": {
-    "id": "1e72a822c24091326e490c13923fd759",
+    "id": "e2e701b4860dcfb3f9f03ad21ac96946",
     "metadata": {},
     "name": "SidebarQuery",
     "operationKind": "query",
@@ -337,6 +345,6 @@ return {
 };
 })();
 
-(node as any).hash = "68e56cb0f590ecaf685afa920545c1dd";
+(node as any).hash = "1a8709e304003a6ba006d23c88157b73";
 
 export default node;
