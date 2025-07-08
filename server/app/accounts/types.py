@@ -411,6 +411,8 @@ class AccountType(BaseNodeType[Account]):
         description="Whether the account has 2FA enabled.",
     )
 
+    uploaded_avatar_url: strawberry.Private[str | None] = None
+
     profile_ref: strawberry.Private[ObjectId | Profile | None] = None
 
     @classmethod
@@ -433,6 +435,7 @@ class AccountType(BaseNodeType[Account]):
             profile_ref=account.profile.ref.id
             if isinstance(account.profile, Link)
             else account.profile,
+            uploaded_avatar_url=account.avatar_url,
         )
 
     @classmethod
@@ -477,6 +480,9 @@ class AccountType(BaseNodeType[Account]):
         ] = 80,
     ) -> str:
         """Return the user's avatar URL."""
+        if self.uploaded_avatar_url:
+            return self.uploaded_avatar_url
+
         email_encoded = self.email.lower().encode("utf-8")
 
         # Generate the SHA256 hash of the email

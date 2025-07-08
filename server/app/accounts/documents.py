@@ -144,6 +144,8 @@ class Account(Document):
     two_factor_secret: str | None = None
     updated_at: datetime | None = None
 
+    avatar_url: str | None = None
+
     auth_providers: list[AuthProvider]
 
     profile: Link["Profile"] | None = None
