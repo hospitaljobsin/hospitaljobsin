@@ -2,7 +2,6 @@
 	"name": "recruiter-dashboard",
 	"version": "0.1.0",
 	"private": true,
-	"type": "module",
 	"scripts": {
 		"dev": "next dev -H 0.0.0.0 -p 5001 --turbopack",
 		"build": "next build",
