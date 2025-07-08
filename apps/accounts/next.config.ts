@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
 			artifactDirectory: "__generated__",
 		},
 	},
+	allowedDevOrigins: ["accounts.localtest.me"],
 	typescript: {
 		ignoreBuildErrors: true,
 	},

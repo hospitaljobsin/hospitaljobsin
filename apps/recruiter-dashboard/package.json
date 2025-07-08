@@ -2,6 +2,7 @@
 	"name": "recruiter-dashboard",
 	"version": "0.1.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"dev": "next dev -H 0.0.0.0 -p 5001 --turbopack",
 		"build": "next build",
@@ -38,6 +39,7 @@
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"date-fns": "^4.1.0",
+		"graphql": "^16.11.0",
 		"import-in-the-middle": "^1.14.2",
 		"jiti": "^2.4.2",
 		"jose": "^6.0.11",

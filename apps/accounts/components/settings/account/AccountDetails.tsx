@@ -30,6 +30,7 @@ export default function AccountDetails({ rootQuery, onEditAccount }: Props) {
 						size="lg"
 						src={data.avatarUrl}
 						data-testid="account-avatar"
+						className="min-w-16 min-h-16"
 					/>
 					<div className="flex flex-col gap-2 w-full items-start justify-center">
 						<h1 className="w-full text-lg font-medium truncate max-w-64">

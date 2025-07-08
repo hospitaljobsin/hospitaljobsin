@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
 			artifactDirectory: "__generated__",
 		},
 	},
+	allowedDevOrigins: ["recruiter.localtest.me"],
 	typescript: {
 		ignoreBuildErrors: true,
 	},
