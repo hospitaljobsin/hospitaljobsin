@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<943cc24b947014fb3ea5ba61282812f5>>
- * @relayHash 35d78980db6d8f29f97ba1e4006677e5
+ * @generated SignedSource<<05d92fb3e1be9048f9fa1a356f7b6cff>>
+ * @relayHash f808fa7bb2d7f23bfb1fb75611805589
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,11 +9,12 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 35d78980db6d8f29f97ba1e4006677e5
+// @relayRequestID f808fa7bb2d7f23bfb1fb75611805589
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type UpdateAccountDetailsFormMutation$variables = {
+  avatarUrl?: string | null | undefined;
   fullName: string;
 };
 export type UpdateAccountDetailsFormMutation$data = {
@@ -32,21 +33,29 @@ export type UpdateAccountDetailsFormMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "avatarUrl"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "fullName"
+},
+v2 = [
   {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "fullName"
-  }
-],
-v1 = [
+    "kind": "Variable",
+    "name": "avatarUrl",
+    "variableName": "avatarUrl"
+  },
   {
     "kind": "Variable",
     "name": "fullName",
     "variableName": "fullName"
   }
 ],
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -55,20 +64,23 @@ v2 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "UpdateAccountDetailsFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateAccount",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -95,19 +107,22 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "UpdateAccountDetailsFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateAccount",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -162,7 +177,7 @@ return {
     ]
   },
   "params": {
-    "id": "35d78980db6d8f29f97ba1e4006677e5",
+    "id": "f808fa7bb2d7f23bfb1fb75611805589",
     "metadata": {},
     "name": "UpdateAccountDetailsFormMutation",
     "operationKind": "mutation",
@@ -171,6 +186,6 @@ return {
 };
 })();
 
-(node as any).hash = "4b824b87f596744724d561b3e247111d";
+(node as any).hash = "339879955d88c3754ff3286dd768433d";
 
 export default node;

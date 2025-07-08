@@ -14,6 +14,7 @@ from app.context import AuthInfo
 from .types import (
     AccountType,
     CertificationInputType,
+    CreateProfilePicturePresignedURLPayloadType,
     EducationInputType,
     GenderTypeEnum,
     LanguageInputType,
@@ -117,6 +118,31 @@ class AccountMutation:
                 assert_never(unreachable)
 
     @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreateProfilePicturePresignedURLPayloadType,
+        description="Create a profile picture presigned URL.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def create_profile_picture_presigned_url(
+        self,
+        account_service: Annotated[AccountService, Inject],
+        content_type: Annotated[
+            str, strawberry.argument(description="The content type of the file.")
+        ],
+    ) -> CreateProfilePicturePresignedURLPayloadType:
+        """Create a profile picture presigned url."""
+        result = await account_service.create_profile_picture_presigned_url(
+            content_type=content_type
+        )
+        return CreateProfilePicturePresignedURLPayloadType(presigned_url=result)
+
+    @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateAccountPayload,
         description="Update the current user's account.",
         extensions=[
@@ -138,11 +164,18 @@ class AccountMutation:
                 description="The full name of the user account.",
             ),
         ],
+        avatar_url: Annotated[
+            str | None,
+            strawberry.argument(
+                description="The URL of the profile picture.",
+            ),
+        ],
     ) -> UpdateAccountPayload:
         """Update the current user's account."""
         match await account_service.update(
             account=info.context["current_user"],
             full_name=full_name,
+            avatar_url=avatar_url,
         ):
             case Ok(account):
                 return AccountType.marshal(account)

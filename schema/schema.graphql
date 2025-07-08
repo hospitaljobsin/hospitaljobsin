@@ -519,6 +519,16 @@ The create organization payload.
 union CreateOrganizationPayload = Organization | OrganizationSlugInUseError
 
 """
+The payload for creating a profile picture presigned URL.
+"""
+type CreateProfilePicturePresignedURLPayload {
+	"""
+	The presigned URL for uploading the profile picture.
+	"""
+	presignedUrl: String!
+}
+
+"""
 The create webauthn credential payload.
 """
 union CreateWebAuthnCredentialPayload =
@@ -2506,6 +2516,16 @@ type Mutation {
 	): UpdateProfilePayload! @isAuthenticated
 
 	"""
+	Create a profile picture presigned URL.
+	"""
+	createProfilePicturePresignedUrl(
+		"""
+		The content type of the file.
+		"""
+		contentType: String!
+	): CreateProfilePicturePresignedURLPayload! @isAuthenticated
+
+	"""
 	Update the current user's account.
 	"""
 	updateAccount(
@@ -2513,6 +2533,11 @@ type Mutation {
 		The full name of the user account.
 		"""
 		fullName: String!
+
+		"""
+		The URL of the profile picture.
+		"""
+		avatarUrl: String
 	): UpdateAccountPayload! @isAuthenticated
 
 	"""

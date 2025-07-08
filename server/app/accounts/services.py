@@ -1,6 +1,8 @@
 from datetime import date
+import uuid
 
 from result import Ok
+from types_aiobotocore_s3 import S3Client
 
 from app.accounts.agents.profile_parser import ProfileParserAgent
 from app.accounts.documents import (
@@ -13,6 +15,7 @@ from app.accounts.documents import (
 from app.accounts.repositories import AccountRepo, ProfileRepo
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
+from app.config import AWSSettings
 
 
 class AccountService:
@@ -21,14 +24,35 @@ class AccountService:
         account_repo: AccountRepo,
         organization_member_repo: OrganizationMemberRepo,
         job_applicant_repo: JobApplicantRepo,
+        s3_client: S3Client,
+        aws_settings: AWSSettings,
     ) -> None:
         self._account_repo = account_repo
         self._organization_member_repo = organization_member_repo
         self._job_applicant_repo = job_applicant_repo
+        self._s3_client = s3_client
+        self._aws_settings = aws_settings
 
-    async def update(self, account: Account, full_name: str) -> Ok[Account]:
+    async def create_profile_picture_presigned_url(self, content_type: str) -> str:
+        """Create a presigned URL for uploading an account's profile picture."""
+        return await self._s3_client.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": self._aws_settings.s3_bucket_name,
+                "Key": f"profile-pictures/{uuid.uuid4()}",
+                "ContentType": content_type,
+            },
+            ExpiresIn=3600,
+            HttpMethod="PUT",
+        )
+
+    async def update(
+        self, account: Account, full_name: str, avatar_url: str | None
+    ) -> Ok[Account]:
         """Update the given account."""
-        await self._account_repo.update(account=account, full_name=full_name)
+        await self._account_repo.update(
+            account=account, full_name=full_name, avatar_url=avatar_url
+        )
         # update denormalized full_name in organization members
         await self._organization_member_repo.update_all(
             account=account, full_name=full_name

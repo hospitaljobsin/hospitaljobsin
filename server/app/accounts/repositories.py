@@ -99,9 +99,12 @@ class AccountRepo:
             for account_id in account_ids
         ]
 
-    async def update(self, account: Account, full_name: str) -> Account:
+    async def update(
+        self, account: Account, full_name: str, avatar_url: str | None
+    ) -> Account:
         """Update the given account."""
         account.full_name = full_name
+        account.avatar_url = avatar_url
         return await account.save()
 
     async def update_profile(self, account: Account, profile: Profile) -> Account:
