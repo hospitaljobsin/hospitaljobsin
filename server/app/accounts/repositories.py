@@ -187,7 +187,7 @@ class EmailVerificationTokenRepo:
     def generate_verification_token() -> str:
         """Generate a new verification token."""
         return "".join(
-            secrets.choice(string.ascii_uppercase + string.digits)
+            secrets.choice(string.digits)
             for _ in range(EMAIL_VERIFICATION_TOKEN_LENGTH)
         )
 
