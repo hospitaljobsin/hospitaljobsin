@@ -226,6 +226,7 @@ export default function UpdateLanguagesForm({
 								<Button
 									type="button"
 									variant="bordered"
+									className="w-full sm:w-auto"
 									startContent={<Plus size={18} />}
 									onPress={() =>
 										append({

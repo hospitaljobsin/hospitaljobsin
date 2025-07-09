@@ -335,6 +335,7 @@ export default function UpdateCertificationsForm({
 								<Button
 									type="button"
 									variant="bordered"
+									className="w-full sm:w-auto"
 									startContent={<Plus size={18} />}
 									onPress={() =>
 										append({

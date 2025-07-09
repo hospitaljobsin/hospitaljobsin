@@ -297,6 +297,7 @@ export default function UpdateEducationForm({
 								<Button
 									type="button"
 									variant="bordered"
+									className="w-full sm:w-auto"
 									startContent={<Plus size={18} />}
 									onPress={() =>
 										append({
