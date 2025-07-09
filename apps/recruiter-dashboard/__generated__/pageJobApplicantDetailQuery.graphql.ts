@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1b974bbb64df328474e8830970e1de64>>
- * @relayHash 95e334f14e549a2f4153f8b82c06f930
+ * @generated SignedSource<<75b21638172499efd8a776ec36293e27>>
+ * @relayHash 00c61fdacab0fc679e47f76f094734de
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 95e334f14e549a2f4153f8b82c06f930
+// @relayRequestID 00c61fdacab0fc679e47f76f094734de
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -815,6 +815,16 @@ return {
                                             "plural": false,
                                             "selections": (v14/*: any*/),
                                             "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FieldAnalysis",
+                                            "kind": "LinkedField",
+                                            "name": "applicantFields",
+                                            "plural": false,
+                                            "selections": (v14/*: any*/),
+                                            "storageKey": null
                                           }
                                         ],
                                         "storageKey": null
@@ -853,7 +863,7 @@ return {
     ]
   },
   "params": {
-    "id": "95e334f14e549a2f4153f8b82c06f930",
+    "id": "00c61fdacab0fc679e47f76f094734de",
     "metadata": {},
     "name": "pageJobApplicantDetailQuery",
     "operationKind": "query",

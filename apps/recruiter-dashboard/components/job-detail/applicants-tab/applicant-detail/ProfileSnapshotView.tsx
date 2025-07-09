@@ -2,6 +2,7 @@
 import type { ProfileSnapshotViewFragment$key } from "@/__generated__/ProfileSnapshotViewFragment.graphql";
 import { graphql, useFragment } from "react-relay";
 import AboutMe from "./profile-snapshot/AboutMe";
+import ApplicantFields from "./profile-snapshot/ApplicantFields";
 import Certifications from "./profile-snapshot/Certifications";
 import Education from "./profile-snapshot/Education";
 import Languages from "./profile-snapshot/Languages";
@@ -20,6 +21,7 @@ const ProfileSnapshotViewFragment = graphql`
 		...LocationPreferencesFragment
 		...PersonalDetailsFragment
 		...WorkExperienceFragment
+		...ApplicantFieldsFragment
 	}
 `;
 
@@ -30,6 +32,7 @@ export default function ProfileSnapshotView(props: {
 
 	return (
 		<div className="w-full h-full space-y-16">
+			<ApplicantFields rootQuery={data} />
 			<AboutMe rootQuery={data} />
 			<PersonalDetails rootQuery={data} />
 

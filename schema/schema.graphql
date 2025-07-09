@@ -173,6 +173,7 @@ type AccountProfileNotFoundError implements Error {
 The analysed fields of a job applicant.
 """
 type AnalysedFields {
+	applicantFields: FieldAnalysis
 	gender: FieldAnalysis
 	dateOfBirth: FieldAnalysis
 	address: FieldAnalysis
