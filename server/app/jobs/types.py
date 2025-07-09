@@ -321,6 +321,7 @@ class FieldAnalysisType:
     description="The analysed fields of a job applicant.",
 )
 class AnalysedFieldsType:
+    applicant_fields: FieldAnalysisType | None = None
     gender: FieldAnalysisType | None = None
     date_of_birth: FieldAnalysisType | None = None
     address: FieldAnalysisType | None = None
@@ -341,6 +342,9 @@ class AnalysedFieldsType:
     @classmethod
     def marshal(cls, analysed_fields: AnalysedFields) -> Self:
         return cls(
+            applicant_fields=FieldAnalysisType.marshal(analysed_fields.applicant_fields)
+            if analysed_fields.applicant_fields
+            else None,
             gender=FieldAnalysisType.marshal(analysed_fields.gender)
             if analysed_fields.gender
             else None,

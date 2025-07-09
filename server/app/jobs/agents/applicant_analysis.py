@@ -27,53 +27,73 @@ class FieldAnalysis(BaseModel):
 
 
 class AnalysedFields(BaseModel):
+    applicant_fields: FieldAnalysis | None = Field(
+        description="List of applicant fields (screening questions) that were analysed.",
+        default=None,
+    )
     gender: FieldAnalysis | None = Field(
         description="The analysis of the applicant's gender match to the job.",
+        default=None,
     )
     date_of_birth: FieldAnalysis | None = Field(
         description="The analysis of the applicant's date of birth match to the job.",
+        default=None,
     )
     address: FieldAnalysis | None = Field(
         description="The analysis of the applicant's address match to the job.",
+        default=None,
     )
     marital_status: FieldAnalysis | None = Field(
         description="The analysis of the applicant's marital status match to the job.",
+        default=None,
     )
     category: FieldAnalysis | None = Field(
         description="The analysis of the applicant's category match to the job.",
+        default=None,
     )
     locations_open_to_work: FieldAnalysis | None = Field(
         description="The analysis of the applicant's locations open to work match to the job.",
+        default=None,
     )
     open_to_relocation_anywhere: FieldAnalysis | None = Field(
         description="The analysis of the applicant's open to relocation anywhere match to the job.",
+        default=None,
     )
     education: FieldAnalysis | None = Field(
         description="The analysis of the applicant's education match to the job.",
+        default=None,
     )
     licenses: FieldAnalysis | None = Field(
         description="The analysis of the applicant's licenses match to the job.",
+        default=None,
     )
     languages: FieldAnalysis | None = Field(
         description="The analysis of the applicant's languages match to the job.",
+        default=None,
     )
     job_preferences: FieldAnalysis | None = Field(
         description="The analysis of the applicant's job preferences match to the job.",
+        default=None,
     )
     work_experience: FieldAnalysis | None = Field(
         description="The analysis of the applicant's work experience match to the job.",
+        default=None,
     )
     salary_expectations: FieldAnalysis | None = Field(
         description="The analysis of the applicant's salary expectations match to the job.",
+        default=None,
     )
     certifications: FieldAnalysis | None = Field(
         description="The analysis of the applicant's certifications match to the job.",
+        default=None,
     )
     professional_summary: FieldAnalysis | None = Field(
         description="The analysis of the applicant's professional summary match to the job.",
+        default=None,
     )
     headline: FieldAnalysis | None = Field(
         description="The analysis of the applicant's headline match to the job.",
+        default=None,
     )
 
 
