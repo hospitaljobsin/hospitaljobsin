@@ -1,10 +1,7 @@
-import hashlib
-import urllib
 from collections.abc import Iterable
 from datetime import date, datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Annotated, Optional, Self
-from urllib.parse import urlencode
 
 import strawberry
 from aioinject import Inject
@@ -181,6 +178,7 @@ class EmploymentTypeEnum(Enum):
 )
 class WorkExperienceInputType:
     title: str = strawberry.field(description="The job title.")
+    description: str | None = strawberry.field(description="The job description.")
     organization: str = strawberry.field(description="The organization name.")
     started_at: date = strawberry.field(description="When the job started.")
     completed_at: date | None = strawberry.field(description="When the job ended.")
@@ -193,6 +191,7 @@ class WorkExperienceInputType:
     def to_document(self) -> WorkExperience:
         return WorkExperience(
             title=self.title,
+            description=self.description,
             organization=self.organization,
             started_at=self.started_at,
             completed_at=self.completed_at,
@@ -745,6 +744,7 @@ class LicenseType:
 @strawberry.type(name="WorkExperience")
 class WorkExperienceType:
     title: str
+    description: str | None
     organization: str
     started_at: date
     completed_at: date | None
@@ -755,6 +755,7 @@ class WorkExperienceType:
     def marshal(cls, exp: WorkExperience) -> Self:
         return cls(
             title=exp.title,
+            description=exp.description,
             organization=exp.organization,
             started_at=exp.started_at,
             completed_at=exp.completed_at,

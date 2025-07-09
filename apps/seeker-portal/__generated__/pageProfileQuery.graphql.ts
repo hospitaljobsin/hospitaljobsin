@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<37a8083735739de7326f2d1b6375260d>>
- * @relayHash c8621b2ec71d4ae4b3346b131c0e2975
+ * @generated SignedSource<<5cd4249132281661a896094cbad903fb>>
+ * @relayHash 397b8066162a8901197cfd186f31e325
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c8621b2ec71d4ae4b3346b131c0e2975
+// @relayRequestID 397b8066162a8901197cfd186f31e325
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -157,6 +157,13 @@ return {
                         "args": null,
                         "kind": "ScalarField",
                         "name": "title",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "description",
                         "storageKey": null
                       },
                       {
@@ -378,7 +385,7 @@ return {
     ]
   },
   "params": {
-    "id": "c8621b2ec71d4ae4b3346b131c0e2975",
+    "id": "397b8066162a8901197cfd186f31e325",
     "metadata": {},
     "name": "pageProfileQuery",
     "operationKind": "query",

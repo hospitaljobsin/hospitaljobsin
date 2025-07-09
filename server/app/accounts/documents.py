@@ -56,6 +56,7 @@ class Language(BaseModel):
 # WORK EXPERIENCE
 class WorkExperience(BaseModel):
     title: str
+    description: str | None = None
     organization: str
     started_at: date
     completed_at: date | None = None

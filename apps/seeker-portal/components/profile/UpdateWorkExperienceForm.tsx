@@ -9,6 +9,7 @@ import {
 	Kbd,
 	Select,
 	SelectItem,
+	Textarea,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { BriefcaseIcon, Plus, Trash } from "lucide-react";
@@ -41,6 +42,7 @@ const UpdateWorkExperienceFormFragment = graphql`
     __typename
     workExperience {
       title
+	  description
       organization
       startedAt
       completedAt
@@ -63,6 +65,7 @@ type EmploymentType =
 type WorkExperienceFormType = {
 	workExperience: Array<{
 		title: string;
+		description?: string;
 		organization: string;
 		employmentType: EmploymentType;
 		skills: { value: string }[];
@@ -74,6 +77,7 @@ type WorkExperienceFormType = {
 
 type WorkExperienceFragmentItem = {
 	title: string;
+	description?: string;
 	organization: string;
 	employmentType: string | null | undefined;
 	skills: readonly string[];
@@ -119,6 +123,7 @@ const formSchema = z.object({
 			title: z
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
+			description: z.optional(z.string()),
 			organization: z
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
@@ -185,6 +190,7 @@ export default function UpdateWorkExperienceForm({
 					workExperience: data.workExperience.map(
 						(exp: WorkExperienceFragmentItem) => ({
 							title: exp.title,
+							description: exp.description,
 							organization: exp.organization,
 							employmentType: toEmploymentType(exp.employmentType),
 							skills: exp.skills.map((skill: string) => ({ value: skill })),
@@ -276,6 +282,7 @@ export default function UpdateWorkExperienceForm({
 			variables: {
 				workExperience: formData.workExperience.map((exp) => ({
 					title: exp.title,
+					description: exp.description,
 					organization: exp.organization,
 					employmentType: exp.employmentType || null,
 					skills: exp.skills.flatMap((skill) => skill.value),
@@ -405,29 +412,6 @@ export default function UpdateWorkExperienceForm({
 												)}
 											/>
 										</div>
-										<div className="w-full space-y-4">
-											<ChipsInput<
-												WorkExperienceFormType,
-												`workExperience.${number}.skills`
-											>
-												name={`workExperience.${index}.skills`}
-												control={control}
-												label="Skills"
-												delimiters={[",", "Enter"]}
-												inputProps={{
-													placeholder: "Enter skills...",
-													description: (
-														<p className="mt-2">
-															Separate skills with commas or Enter{" "}
-															<Kbd
-																keys={["enter"]}
-																classNames={{ base: "p-0 px-2 shadow-none" }}
-															/>
-														</p>
-													),
-												}}
-											/>
-										</div>
 										<div className="w-full flex gap-4 items-center">
 											<Controller
 												name={`workExperience.${index}.isCurrentRole`}
@@ -486,6 +470,52 @@ export default function UpdateWorkExperienceForm({
 												}}
 											/>
 										</div>
+										<div className="w-full space-y-4">
+											<Controller
+												name={`workExperience.${index}.description`}
+												control={control}
+												render={({ field }) => (
+													<Textarea
+														{...field}
+														fullWidth
+														value={field.value || ""}
+														label="Description"
+														placeholder="List your major responsibilities and achievements, highlighting standout projects."
+														errorMessage={
+															errors.workExperience?.[index]?.description
+																?.message
+														}
+														isInvalid={
+															!!errors.workExperience?.[index]?.description
+														}
+													/>
+												)}
+											/>
+										</div>
+										<div className="w-full space-y-4">
+											<ChipsInput<
+												WorkExperienceFormType,
+												`workExperience.${number}.skills`
+											>
+												name={`workExperience.${index}.skills`}
+												control={control}
+												label="Skills"
+												delimiters={[",", "Enter"]}
+												inputProps={{
+													placeholder: "Enter skills...",
+													description: (
+														<p className="mt-2">
+															Separate skills with commas or Enter{" "}
+															<Kbd
+																keys={["enter"]}
+																classNames={{ base: "p-0 px-2 shadow-none" }}
+															/>
+														</p>
+													),
+												}}
+											/>
+										</div>
+
 										<Button
 											type="button"
 											variant="bordered"

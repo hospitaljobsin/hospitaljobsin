@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<d3c2d41053b4c97067b79c472d4a275f>>
- * @relayHash 44785db63aa96e2cf17eb21d698fefee
+ * @generated SignedSource<<dbacada58c23fb3567598ad2dc83a1fb>>
+ * @relayHash 6c415ae8ece26678f921022af92dc224
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,13 +9,14 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 44785db63aa96e2cf17eb21d698fefee
+// @relayRequestID 6c415ae8ece26678f921022af92dc224
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type EmploymentType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "OTHER" | "PART_TIME" | "TEMPORARY" | "VOLUNTEER" | "%future added value";
 export type WorkExperienceInput = {
   completedAt?: any | null | undefined;
+  description?: string | null | undefined;
   employmentType?: EmploymentType | null | undefined;
   organization: string;
   skills: ReadonlyArray<string>;
@@ -172,6 +173,13 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
+                        "name": "description",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
                         "name": "organization",
                         "storageKey": null
                       },
@@ -227,7 +235,7 @@ return {
     ]
   },
   "params": {
-    "id": "44785db63aa96e2cf17eb21d698fefee",
+    "id": "6c415ae8ece26678f921022af92dc224",
     "metadata": {},
     "name": "UpdateWorkExperienceFormMutation",
     "operationKind": "mutation",

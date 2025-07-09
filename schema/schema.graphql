@@ -4394,6 +4394,7 @@ type WebAuthnCredentialNotFoundError implements Error {
 
 type WorkExperience {
 	title: String!
+	description: String
 	organization: String!
 	startedAt: Date!
 	completedAt: Date
@@ -4409,6 +4410,11 @@ input WorkExperienceInput {
 	The job title.
 	"""
 	title: String!
+
+	"""
+	The job description.
+	"""
+	description: String
 
 	"""
 	The organization name.

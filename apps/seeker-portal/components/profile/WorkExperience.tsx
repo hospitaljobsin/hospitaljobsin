@@ -10,6 +10,7 @@ const WorkExperienceFragment = graphql`
     __typename
     workExperience {
       title
+	  description
       organization
       startedAt
       completedAt
@@ -77,7 +78,7 @@ export default function WorkExperience({ rootQuery, onEditProfile }: Props) {
 									className="flex flex-col gap-12 w-full"
 									key={`${exp.title}-${exp.organization}-${exp.startedAt}-${exp.completedAt}-${idx}`}
 								>
-									<div className="flex gap-4 flex-col items-center w-full">
+									<div className="flex gap-6 flex-col items-center w-full">
 										<h3 className="w-full text-lg font-medium">{exp.title}</h3>
 										<div className="w-full flex gap-4 text-foreground-500 items-center">
 											<p>{exp.organization}</p>
@@ -110,6 +111,11 @@ export default function WorkExperience({ rootQuery, onEditProfile }: Props) {
 												})()}
 											</p>
 										</div>
+										{exp.description && (
+											<p className="text-base text-foreground-800 w-full">
+												{exp.description}
+											</p>
+										)}
 										{exp.skills && exp.skills.length > 0 && (
 											<div className="flex items-center gap-4 w-full">
 												<PickaxeIcon
