@@ -111,11 +111,13 @@ export default function UpdateLanguagesForm({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-			<Card className="p-6 space-y-6" shadow="none">
-				<CardHeader>
-					<div className="flex items-center gap-2 text-foreground-400">
+			<Card className="p-4 sm:p-6 space-y-4 sm:space-y-6 w-full" shadow="none">
+				<CardHeader className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full items-start sm:items-center justify-between">
+					<div className="flex items-center gap-2 text-foreground-400 w-full">
 						<LanguagesIcon />
-						<h1 className="w-full text-sm font-medium">Editing Languages</h1>
+						<h1 className="w-full text-base sm:text-sm font-medium">
+							Editing Languages
+						</h1>
 					</div>
 				</CardHeader>
 				<CardBody>
@@ -145,7 +147,7 @@ export default function UpdateLanguagesForm({
 								{fields.map((item, index) => (
 									<div
 										key={`field-${item.name}-${index}`}
-										className="flex gap-8 items-start w-full"
+										className="flex flex-col sm:flex-row gap-4 sm:gap-8 items-start w-full"
 									>
 										<div className="w-full space-y-4">
 											<Controller
@@ -203,11 +205,21 @@ export default function UpdateLanguagesForm({
 										</div>
 										<Button
 											type="button"
-											isIconOnly
 											variant="bordered"
+											isIconOnly
+											className="w-auto hidden sm:flex"
 											onPress={() => remove(index)}
 										>
 											<Trash size={18} />
+										</Button>
+										<Button
+											type="button"
+											variant="bordered"
+											className="self-end w-auto sm:hidden"
+											startContent={<Trash size={18} />}
+											onPress={() => remove(index)}
+										>
+											Delete Language
 										</Button>
 									</div>
 								))}
@@ -233,13 +245,18 @@ export default function UpdateLanguagesForm({
 			<div className="mt-4 flex justify-end gap-6">
 				<Button
 					type="button"
-					variant="light"
+					variant="bordered"
 					onPress={handleCancel}
 					isLoading={isMutationInFlight || isSubmitting}
+					className="w-full sm:w-auto"
 				>
 					Cancel
 				</Button>
-				<Button type="submit" isLoading={isMutationInFlight || isSubmitting}>
+				<Button
+					type="submit"
+					isLoading={isMutationInFlight || isSubmitting}
+					className="w-full sm:w-auto"
+				>
 					Save Changes
 				</Button>
 			</div>

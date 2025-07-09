@@ -23,15 +23,18 @@ export default function PersonalDetails({ rootQuery, onEditProfile }: Props) {
 	return (
 		<div className="space-y-12">
 			<Card className="p-6 space-y-6" shadow="none">
-				<CardHeader className="flex gap-6 w-full items-center justify-between">
-					<div className="flex items-center gap-2 text-foreground-400">
+				<CardHeader className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full items-start sm:items-center justify-between">
+					<div className="flex items-center gap-2 text-foreground-400 w-full">
 						<UserIcon />
-						<h1 className="w-full text-sm font-medium">Personal Details</h1>
+						<h1 className="w-full text-base sm:text-sm font-medium">
+							Personal Details
+						</h1>
 					</div>
 					<Button
 						startContent={<EditIcon size={24} />}
 						onPress={onEditProfile}
-						variant="light"
+						variant="flat"
+						className="w-full sm:w-auto"
 					>
 						Edit
 					</Button>

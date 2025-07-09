@@ -96,7 +96,7 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
 					{label}
 				</label>
 			)}
-			<div className="flex gap-2 w-full">
+			<div className="flex gap-4 w-full flex-col sm:flex-row">
 				<Select
 					id={monthId}
 					label="Month"

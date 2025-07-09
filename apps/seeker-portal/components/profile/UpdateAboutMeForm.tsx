@@ -76,15 +76,17 @@ export default function UpdateAboutMeForm({
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-			<Card className="p-6 space-y-6" shadow="none">
+		<form onSubmit={handleSubmit(onSubmit)} className="space-y-8 sm:space-y-12">
+			<Card className="p-4 sm:p-6 space-y-4 sm:space-y-6 w-full" shadow="none">
 				<CardHeader>
 					<div className="flex items-center gap-2 text-foreground-400">
-						<ScrollIcon />
-						<h1 className="w-full text-sm font-medium">Editing About Me</h1>
+						<ScrollIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+						<h1 className="w-full text-base sm:text-sm font-medium">
+							Editing About Me
+						</h1>
 					</div>
 				</CardHeader>
-				<CardBody className="flex flex-col gap-12">
+				<CardBody className="flex flex-col gap-8 sm:gap-12">
 					<Input
 						{...register("headline")}
 						label="Headline"
@@ -92,16 +94,20 @@ export default function UpdateAboutMeForm({
 						type="text"
 						errorMessage={errors.headline?.message}
 						isInvalid={!!errors.headline}
+						className="w-full"
 					/>
 					<Controller
 						control={control}
 						name="professionalSummary"
 						render={({ field }) => (
-							<div className="flex flex-col gap-4 w-full">
+							<div className="flex flex-col gap-2 sm:gap-4 w-full">
 								<h2
-									className={cn("text-small inline-flex gap-0.5", {
-										"text-danger": errors.professionalSummary,
-									})}
+									className={cn(
+										"text-sm inline-flex gap-0.5 text-foreground-600",
+										{
+											"text-danger": errors.professionalSummary,
+										},
+									)}
 								>
 									Professional Summary
 								</h2>
@@ -128,11 +134,19 @@ export default function UpdateAboutMeForm({
 					/>
 				</CardBody>
 			</Card>
-			<div className="flex justify-end gap-2">
-				<Button variant="light" onPress={onSaveChanges}>
+			<div className="flex flex-col-reverse sm:flex-row justify-end gap-4 w-full">
+				<Button
+					variant="bordered"
+					onPress={onSaveChanges}
+					className="w-full sm:w-auto"
+				>
 					Cancel
 				</Button>
-				<Button type="submit" isLoading={isInFlight || isPending}>
+				<Button
+					type="submit"
+					isLoading={isInFlight || isPending}
+					className="w-full sm:w-auto"
+				>
 					Save Changes
 				</Button>
 			</div>

@@ -27,34 +27,39 @@ export default function Certifications({ rootQuery, onEditProfile }: Props) {
 
 	return (
 		<div className="space-y-12">
-			<Card className="p-6 space-y-6" shadow="none">
-				<CardHeader className="flex gap-6 w-full items-center justify-between">
+			<Card className="p-4 sm:p-6 space-y-6" shadow="none">
+				<CardHeader className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full items-start sm:items-center justify-between">
 					<div className="flex items-center gap-2 text-foreground-400">
 						<ShieldCheckIcon />
-						<h1 className="w-full text-sm font-medium">Certifications</h1>
+						<h1 className="w-full text-base sm:text-sm font-medium">
+							Certifications
+						</h1>
 					</div>
 					<Button
 						startContent={<EditIcon size={24} />}
 						onPress={onEditProfile}
-						variant="light"
+						variant="flat"
+						className="w-full sm:w-auto"
 					>
 						Edit
 					</Button>
 				</CardHeader>
-				<CardBody className="flex flex-col gap-10">
+				<CardBody className="flex flex-col gap-8 sm:gap-10">
 					{data.certifications.length < 1 ? (
-						<h2 className="w-full text-foreground-500">
+						<h2 className="w-full text-foreground-500 text-base sm:text-lg">
 							Add your certifications
 						</h2>
 					) : (
-						<div className="flex flex-col gap-8 w-full">
+						<div className="flex flex-col gap-6 sm:gap-8 w-full">
 							{data.certifications.map((cert, idx) => (
 								<div
-									className="flex flex-col gap-12 w-full"
+									className="flex flex-col gap-8 sm:gap-12 w-full"
 									key={`${cert.name}-${cert.issuer}-${cert.certificationUrl}`}
 								>
-									<div className="flex gap-4 flex-col items-start w-full">
-										<h3 className="w-full text-lg font-medium">{cert.name}</h3>
+									<div className="flex flex-col gap-4 sm:gap-6 items-start w-full">
+										<h3 className="w-full text-base sm:text-lg font-medium">
+											{cert.name}
+										</h3>
 										<p className="text-medium text-foreground-500">
 											{cert.issuer}
 										</p>
@@ -62,18 +67,19 @@ export default function Certifications({ rootQuery, onEditProfile }: Props) {
 											href={cert.certificationUrl}
 											isExternal
 											showAnchorIcon
+											className="text-base"
 										>
 											Show Certificate
 										</Link>
-										<div className="w-full flex items-center gap-6">
-											<div className="flex gap-2 text-foreground-500 items-center">
+										<div className="w-full flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6 mt-2">
+											<div className="flex gap-2 text-foreground-500 items-center text-sm">
 												<p>Issued</p>
 												<p>
 													{monthYearFormat.format(new Date(cert.createdAt))}
 												</p>
 											</div>
 											{cert.expiresAt && (
-												<div className="flex gap-2 text-foreground-500 items-center">
+												<div className="flex gap-2 text-foreground-500 items-center text-sm">
 													<p>Expires</p>
 													<p>
 														{monthYearFormat.format(new Date(cert.expiresAt))}

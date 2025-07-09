@@ -46,40 +46,45 @@ export default function AboutMe({ rootQuery, onEditProfile }: Props) {
 	});
 
 	return (
-		<div className="space-y-12">
-			<Card className="p-6 space-y-6" shadow="none">
-				<CardHeader className="flex gap-6 w-full items-center justify-between">
-					<div className="flex items-center gap-2 text-foreground-400">
+		<div className="space-y-12 sm:space-y-8 px-2 sm:px-0">
+			<Card className="p-4 sm:p-6 space-y-6" shadow="none">
+				<CardHeader className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full items-start sm:items-center justify-between">
+					<div className="flex items-center gap-2 text-foreground-400 w-full">
 						<ScrollIcon />
-						<h1 className="w-full text-sm font-medium">About Me</h1>
+						<h1 className="w-full text-sm sm:text-base font-medium">
+							About Me
+						</h1>
 					</div>
 					<Button
 						startContent={<EditIcon size={24} />}
 						onPress={onEditProfile}
-						variant="light"
+						variant="flat"
+						className="w-full sm:w-auto"
 					>
 						Edit
 					</Button>
 				</CardHeader>
-				<CardBody className="flex flex-col gap-12">
-					<div className="flex flex-col gap-6 w-full items-start justify-start">
-						<h2 className="w-full text-medium font-medium">Headline</h2>
+				<CardBody className="flex flex-col gap-8 sm:gap-12">
+					<div className="flex flex-col gap-4 sm:gap-6 w-full items-start justify-start">
+						<h2 className="w-full text-base sm:text-medium font-medium">
+							Headline
+						</h2>
 						{!data.headline ? (
 							<h2 className="w-full text-foreground-600">Add your headline</h2>
 						) : (
 							<h2 className="w-full text-foreground-500">{data.headline}</h2>
 						)}
 					</div>
-					<div className="flex flex-col gap-6 w-full items-start justify-start">
-						<h2 className="w-full text-medium font-medium">
+					<div className="flex flex-col gap-4 sm:gap-6 w-full items-start justify-start">
+						<h2 className="w-full text-base sm:text-medium font-medium">
 							Professional Summary
 						</h2>
 						{!data.professionalSummary ? (
-							<div className="w-full flex flex-col gap-2">
+							<div className="w-full flex flex-col gap-1 sm:gap-2">
 								<h2 className="w-full text-foreground-600">
 									Add your professional summary
 								</h2>
-								<p className="w-full text-foreground-500">
+								<p className="w-full text-foreground-500 text-xs sm:text-sm">
 									Talk about your strengths, skills, and experience.
 								</p>
 							</div>

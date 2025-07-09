@@ -1,6 +1,3 @@
-// NOTE: The mutation below assumes an EducationInput type exists in your GraphQL schema:
-// input EducationInput { degree: String!, institution: String!, yearCompleted: Int! }
-// You must add this input type and the updateProfileEducation mutation on the backend for this to work.
 import type { UpdateEducationFormFragment$key } from "@/__generated__/UpdateEducationFormFragment.graphql";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
@@ -175,11 +172,13 @@ export default function UpdateEducationForm({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-			<Card className="p-6 space-y-6" shadow="none">
-				<CardHeader>
-					<div className="flex items-center gap-2 text-foreground-400">
+			<Card className="p-4 sm:p-6 space-y-4 sm:space-y-6 w-full" shadow="none">
+				<CardHeader className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full items-start sm:items-center justify-between">
+					<div className="flex items-center gap-2 text-foreground-400 w-full">
 						<BookIcon />
-						<h1 className="w-full text-sm font-medium">Editing Education</h1>
+						<h1 className="w-full text-base sm:text-sm font-medium">
+							Editing Education
+						</h1>
 					</div>
 				</CardHeader>
 				<CardBody>
@@ -315,16 +314,21 @@ export default function UpdateEducationForm({
 					</div>
 				</CardBody>
 			</Card>
-			<div className="mt-4 flex justify-end gap-6">
+			<div className="flex flex-col-reverse sm:flex-row justify-end gap-4 w-full">
 				<Button
 					type="button"
-					variant="light"
+					variant="bordered"
 					onPress={handleCancel}
 					isLoading={isMutationInFlight || isSubmitting}
+					className="w-full sm:w-auto"
 				>
 					Cancel
 				</Button>
-				<Button type="submit" isLoading={isMutationInFlight || isSubmitting}>
+				<Button
+					type="submit"
+					isLoading={isMutationInFlight || isSubmitting}
+					className="w-full sm:w-auto"
+				>
 					Save Changes
 				</Button>
 			</div>

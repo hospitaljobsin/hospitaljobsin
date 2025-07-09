@@ -354,16 +354,19 @@ export default function UpdateCertificationsForm({
 				</CardBody>
 			</Card>
 
-			<div className="mt-4 flex justify-end gap-6">
+			<div className="flex flex-col-reverse sm:flex-row justify-end gap-4 w-full">
 				<Button
-					type="button"
-					variant="light"
-					onPress={handleCancel}
-					isLoading={isMutationInFlight || isSubmitting}
+					variant="bordered"
+					onPress={onSaveChanges}
+					className="w-full sm:w-auto"
 				>
 					Cancel
 				</Button>
-				<Button type="submit" isLoading={isMutationInFlight || isSubmitting}>
+				<Button
+					type="submit"
+					isLoading={isMutationInFlight || isSubmitting}
+					className="w-full sm:w-auto"
+				>
 					Save Changes
 				</Button>
 			</div>
