@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<adfea83d32a44c944620d217ddc6c3bb>>
- * @relayHash d6f17065e0d7763109abd78b1d016351
+ * @generated SignedSource<<1b974bbb64df328474e8830970e1de64>>
+ * @relayHash 95e334f14e549a2f4153f8b82c06f930
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d6f17065e0d7763109abd78b1d016351
+// @relayRequestID 95e334f14e549a2f4153f8b82c06f930
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -72,41 +72,48 @@ v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "skills",
+  "name": "description",
   "storageKey": null
 },
 v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "name",
+  "name": "skills",
   "storageKey": null
 },
 v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "issuer",
+  "name": "name",
   "storageKey": null
 },
 v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "startedAt",
+  "name": "issuer",
   "storageKey": null
 },
 v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "startedAt",
+  "storageKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "completedAt",
   "storageKey": null
 },
-v12 = [
+v13 = [
   (v5/*: any*/)
 ],
-v13 = [
+v14 = [
   {
     "alias": null,
     "args": null,
@@ -122,9 +129,9 @@ v13 = [
     "storageKey": null
   }
 ],
-v14 = {
+v15 = {
   "kind": "InlineFragment",
-  "selections": (v12/*: any*/),
+  "selections": (v13/*: any*/),
   "type": "Node",
   "abstractKey": "__isNode"
 };
@@ -211,13 +218,7 @@ return {
                       },
                       (v5/*: any*/),
                       (v6/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "description",
-                        "storageKey": null
-                      },
+                      (v7/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -253,7 +254,7 @@ return {
                         "name": "location",
                         "storageKey": null
                       },
-                      (v7/*: any*/),
+                      (v8/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -403,8 +404,8 @@ return {
                                     "name": "certifications",
                                     "plural": true,
                                     "selections": [
-                                      (v8/*: any*/),
                                       (v9/*: any*/),
+                                      (v10/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -451,8 +452,8 @@ return {
                                         "name": "institution",
                                         "storageKey": null
                                       },
-                                      (v10/*: any*/),
-                                      (v11/*: any*/)
+                                      (v11/*: any*/),
+                                      (v12/*: any*/)
                                     ],
                                     "storageKey": null
                                   },
@@ -464,7 +465,7 @@ return {
                                     "name": "languages",
                                     "plural": true,
                                     "selections": [
-                                      (v8/*: any*/),
+                                      (v9/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -483,8 +484,8 @@ return {
                                     "name": "licenses",
                                     "plural": true,
                                     "selections": [
-                                      (v8/*: any*/),
                                       (v9/*: any*/),
+                                      (v10/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -574,6 +575,7 @@ return {
                                     "plural": true,
                                     "selections": [
                                       (v6/*: any*/),
+                                      (v7/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -581,8 +583,8 @@ return {
                                         "name": "organization",
                                         "storageKey": null
                                       },
-                                      (v10/*: any*/),
                                       (v11/*: any*/),
+                                      (v12/*: any*/),
                                       {
                                         "alias": null,
                                         "args": null,
@@ -590,7 +592,7 @@ return {
                                         "name": "employmentType",
                                         "storageKey": null
                                       },
-                                      (v7/*: any*/)
+                                      (v8/*: any*/)
                                     ],
                                     "storageKey": null
                                   }
@@ -637,7 +639,7 @@ return {
                                 "kind": "LinkedField",
                                 "name": "job",
                                 "plural": false,
-                                "selections": (v12/*: any*/),
+                                "selections": (v13/*: any*/),
                                 "storageKey": null
                               },
                               {
@@ -681,7 +683,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "professionalSummary",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -691,7 +693,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "headline",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -701,7 +703,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "certifications",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -711,7 +713,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "education",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -721,7 +723,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "languages",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -731,7 +733,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "licenses",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -741,7 +743,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "locationsOpenToWork",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -751,7 +753,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "openToRelocationAnywhere",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -761,7 +763,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "address",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -771,7 +773,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "gender",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -781,7 +783,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "dateOfBirth",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -791,7 +793,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "maritalStatus",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -801,7 +803,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "category",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           },
                                           {
@@ -811,7 +813,7 @@ return {
                                             "kind": "LinkedField",
                                             "name": "workExperience",
                                             "plural": false,
-                                            "selections": (v13/*: any*/),
+                                            "selections": (v14/*: any*/),
                                             "storageKey": null
                                           }
                                         ],
@@ -828,7 +830,7 @@ return {
                             "type": "JobApplicant",
                             "abstractKey": null
                           },
-                          (v14/*: any*/)
+                          (v15/*: any*/)
                         ],
                         "storageKey": null
                       }
@@ -836,7 +838,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v14/*: any*/)
+                  (v15/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -844,14 +846,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v14/*: any*/)
+          (v15/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "d6f17065e0d7763109abd78b1d016351",
+    "id": "95e334f14e549a2f4153f8b82c06f930",
     "metadata": {},
     "name": "pageJobApplicantDetailQuery",
     "operationKind": "query",

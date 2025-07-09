@@ -19,6 +19,7 @@ const WorkExperienceFragment = graphql`
     __typename
     workExperience {
       title
+	  description
       organization
       startedAt
       completedAt
@@ -136,6 +137,11 @@ export default function WorkExperience({ rootQuery }: Props) {
 												})()}
 											</p>
 										</div>
+										{exp.description && (
+											<p className="text-base text-foreground-800 w-full">
+												{exp.description}
+											</p>
+										)}
 										{exp.skills && exp.skills.length > 0 && (
 											<div className="flex items-center gap-4 w-full">
 												<PickaxeIcon

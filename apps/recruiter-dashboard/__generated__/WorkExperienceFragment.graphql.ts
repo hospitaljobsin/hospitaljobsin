@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<07cee2e471a5e212d51700c92b31a086>>
+ * @generated SignedSource<<72b71b100099cf42834f0adb57d01a2d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -29,6 +29,7 @@ export type WorkExperienceFragment$data = {
     readonly __typename: "ProfileSnapshot";
     readonly workExperience: ReadonlyArray<{
       readonly completedAt: any | null | undefined;
+      readonly description: string | null | undefined;
       readonly employmentType: EmploymentType | null | undefined;
       readonly organization: string;
       readonly skills: ReadonlyArray<string>;
@@ -79,6 +80,13 @@ return {
               "args": null,
               "kind": "ScalarField",
               "name": "title",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "description",
               "storageKey": null
             },
             {
@@ -183,6 +191,6 @@ return {
 };
 })();
 
-(node as any).hash = "277e59a7bd0f8db823b645946b8aa9f0";
+(node as any).hash = "2635e066584c9c321e93ae2b793875e5";
 
 export default node;
