@@ -65,7 +65,7 @@ type EmploymentType =
 type WorkExperienceFormType = {
 	workExperience: Array<{
 		title: string;
-		description?: string;
+		description: string | null;
 		organization: string;
 		employmentType: EmploymentType;
 		skills: { value: string }[];
@@ -123,7 +123,7 @@ const formSchema = z.object({
 			title: z
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
-			description: z.optional(z.string()),
+			description: z.nullable(z.string()),
 			organization: z
 				.string()
 				.check(z.minLength(1, "This field is required"), z.maxLength(100)),
@@ -176,6 +176,7 @@ export default function UpdateWorkExperienceForm({
 	const defaultWorkExperience: WorkExperienceFormType["workExperience"][number] =
 		{
 			title: "",
+			description: null,
 			organization: "",
 			employmentType: "",
 			skills: [],
@@ -190,7 +191,7 @@ export default function UpdateWorkExperienceForm({
 					workExperience: data.workExperience.map(
 						(exp: WorkExperienceFragmentItem) => ({
 							title: exp.title,
-							description: exp.description,
+							description: exp.description || null,
 							organization: exp.organization,
 							employmentType: toEmploymentType(exp.employmentType),
 							skills: exp.skills.map((skill: string) => ({ value: skill })),

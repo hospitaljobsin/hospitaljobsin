@@ -6,7 +6,6 @@ import links from "@/lib/links";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { useRouter } from "@bprogress/next";
 import {
-	addToast,
 	Button,
 	Card,
 	CardBody,
@@ -17,10 +16,11 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	addToast,
 	useDisclosure,
 } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import Image from "next/image";
+import NextImage from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import type { Area } from "react-easy-crop";
 import Cropper from "react-easy-crop";
@@ -372,7 +372,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 								</p>
 								<div className="flex flex-col items-start gap-4">
 									<div className="relative w-28 h-28">
-										<Image
+										<NextImage
 											src={
 												previewUrl ||
 												(selectedLogo

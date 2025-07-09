@@ -66,10 +66,8 @@ export async function middleware(request: NextRequest) {
 
 	if (subdomain) {
 		if (!isAuthenticated) {
-			console.log(request);
 			return getAuthenticationResponse(request, host);
 		}
-		console.log("Authenticated request from subdomain:", subdomain);
 		// TODO: if we have the /new route, redirect to it the recruiter subdomain
 		const requestHeaders = new Headers(request.headers);
 		requestHeaders.set(ORG_SUBDOMAIN_HEADER_NAME, subdomain);
