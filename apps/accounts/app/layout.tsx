@@ -27,6 +27,8 @@ export default async function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={`${workSans.variable} antialiased h-full`}>
+				{/* Workaround to fix navigation scroll issues */}
+				<div />
 				<Providers>{children}</Providers>
 			</body>
 		</html>

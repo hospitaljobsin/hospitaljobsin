@@ -30,6 +30,8 @@ export default async function RootLayout({
 			<body
 				className={`${workSans.variable} antialiased h-full min-h-screen flex flex-col`}
 			>
+				{/* Workaround to fix navigation scroll issues */}
+				<div />
 				<Providers>
 					{children}
 					<Footer />

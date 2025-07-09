@@ -107,6 +107,17 @@ export default function WorkExperience({ rootQuery, onEditProfile }: Props) {
 														: new Date();
 													const months = differenceInMonths(end, start);
 													if (months < 0) return null;
+
+													if (months >= 24) {
+														const years = Math.floor(months / 12);
+														const remMonths = months % 12;
+														let result = ` (${years} year${years !== 1 ? "s" : ""}`;
+														if (remMonths > 0) {
+															result += ` ${remMonths} month${remMonths !== 1 ? "s" : ""}`;
+														}
+														result += ")";
+														return result;
+													}
 													return ` (${months} month${months !== 1 ? "s" : ""})`;
 												})()}
 											</p>

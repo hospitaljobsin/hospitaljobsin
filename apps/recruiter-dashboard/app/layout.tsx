@@ -20,6 +20,8 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={`${workSans.variable} antialiased h-full w-full`}>
+				{/* Workaround to fix navigation scroll issues */}
+				<div />
 				<Providers headersPromise={headersPromise}>{children}</Providers>
 			</body>
 		</html>
