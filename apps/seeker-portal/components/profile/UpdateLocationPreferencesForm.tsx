@@ -112,11 +112,11 @@ export default function UpdateLocationPreferencesForm({
 
 	return (
 		<form className="space-y-12" onSubmit={handleSubmit(onSubmit)}>
-			<Card className="p-6 space-y-6" shadow="none">
-				<CardHeader>
-					<div className="flex items-center gap-2 text-foreground-400">
+			<Card className="p-4 sm:p-6 space-y-4 sm:space-y-6 w-full" shadow="none">
+				<CardHeader className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full items-start sm:items-center justify-between">
+					<div className="flex items-center gap-2 text-foreground-400 w-full">
 						<MapPinHouseIcon />
-						<h1 className="w-full text-sm font-medium">
+						<h1 className="w-full text-base sm:text-sm font-medium">
 							Editing Location Preferences
 						</h1>
 					</div>
@@ -192,16 +192,20 @@ export default function UpdateLocationPreferencesForm({
 					</div>
 				</CardBody>
 			</Card>
-			<div className="mt-4 flex justify-end gap-6">
+			<div className="flex flex-col-reverse sm:flex-row justify-end gap-4 w-full">
 				<Button
 					type="button"
-					variant="light"
+					variant="bordered"
 					onPress={handleCancel}
 					isLoading={isSubmitting || isInFlight}
 				>
 					Cancel
 				</Button>
-				<Button type="submit" isLoading={isSubmitting || isInFlight}>
+				<Button
+					type="submit"
+					isLoading={isSubmitting || isInFlight}
+					className="w-full sm:w-auto"
+				>
 					Save Changes
 				</Button>
 			</div>

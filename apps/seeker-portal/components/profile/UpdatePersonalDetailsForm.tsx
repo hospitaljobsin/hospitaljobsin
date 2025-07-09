@@ -207,16 +207,20 @@ export default function UpdatePersonalDetailsForm({
 				</CardBody>
 			</Card>
 
-			<div className="mt-4 flex justify-end gap-6">
+			<div className="flex flex-col-reverse sm:flex-row justify-end gap-4 w-full">
 				<Button
 					type="button"
-					variant="light"
+					variant="bordered"
 					onPress={handleCancel}
 					isLoading={isSubmitting || isMutationInFlight}
 				>
 					Cancel
 				</Button>
-				<Button type="submit" isLoading={isSubmitting || isMutationInFlight}>
+				<Button
+					type="submit"
+					isLoading={isSubmitting || isMutationInFlight}
+					className="w-full sm:w-auto"
+				>
 					Save Changes
 				</Button>
 			</div>

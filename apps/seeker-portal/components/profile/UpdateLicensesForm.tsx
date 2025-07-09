@@ -123,11 +123,13 @@ export default function UpdateLicensesForm({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-			<Card className="p-6 space-y-6" shadow="none">
-				<CardHeader>
-					<div className="flex items-center gap-2 text-foreground-400">
+			<Card className="p-4 sm:p-6 space-y-4 sm:space-y-6 w-full" shadow="none">
+				<CardHeader className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full items-start sm:items-center justify-between">
+					<div className="flex items-center gap-2 text-foreground-400 w-full">
 						<IdCardIcon />
-						<h1 className="w-full text-sm font-medium">Editing Licenses</h1>
+						<h1 className="w-full text-base sm:text-sm font-medium">
+							Editing Licenses
+						</h1>
 					</div>
 				</CardHeader>
 				<CardBody className="w-full flex flex-col">
@@ -271,11 +273,20 @@ export default function UpdateLicensesForm({
 					</div>
 				</CardBody>
 			</Card>
-			<div className="flex gap-4 justify-end">
-				<Button type="button" variant="light" onPress={handleCancel}>
+			<div className="flex flex-col-reverse sm:flex-row justify-end gap-4 w-full">
+				<Button
+					type="button"
+					variant="bordered"
+					onPress={handleCancel}
+					className="w-full sm:w-auto"
+				>
 					Cancel
 				</Button>
-				<Button type="submit" isLoading={isSubmitting || isMutationInFlight}>
+				<Button
+					type="submit"
+					isLoading={isSubmitting || isMutationInFlight}
+					className="w-full sm:w-auto"
+				>
 					Save Changes
 				</Button>
 			</div>

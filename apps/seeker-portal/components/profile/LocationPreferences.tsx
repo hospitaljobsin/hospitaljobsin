@@ -58,7 +58,7 @@ export default function LocationPreferences({
 							<h2 className="w-full text-foreground-500">{data.address}</h2>
 						)}
 					</div>
-					<div className="flex flex-col gap-6 w-full items-center justify-start">
+					<div className="flex flex-col gap-6 w-full items-start justify-start">
 						<h1 className="w-full font-medium">Relocation Preferences</h1>
 						<div className="flex items-center gap-4">
 							<Switch
