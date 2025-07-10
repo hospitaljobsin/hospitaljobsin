@@ -1,10 +1,12 @@
 "use client";
-import type { PreloadedQuery } from "react-relay";
-import { useFragment, usePreloadedQuery } from "react-relay";
-import { graphql } from "relay-runtime";
 import type { ProfileClientComponentFragment$key } from "@/__generated__/ProfileClientComponentFragment.graphql";
 import type { pageProfileQuery } from "@/__generated__/pageProfileQuery.graphql";
 import ProfileView from "@/components/profile/ProfileView";
+import ProfileViewSkeleton from "@/components/profile/ProfileViewSkeleton";
+import { Suspense } from "react";
+import type { PreloadedQuery } from "react-relay";
+import { useFragment, usePreloadedQuery } from "react-relay";
+import { graphql } from "relay-runtime";
 import { ProfilePageQuery } from "./page";
 
 const ProfileClientComponentFragment = graphql`
@@ -23,5 +25,9 @@ export default function ProfileClientComponent({
 		ProfileClientComponentFragment,
 		data,
 	);
-	return <ProfileView query={query} />;
+	return (
+		<Suspense fallback={<ProfileViewSkeleton />}>
+			<ProfileView query={query} />
+		</Suspense>
+	);
 }

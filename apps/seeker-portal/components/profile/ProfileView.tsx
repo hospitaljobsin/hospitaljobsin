@@ -99,7 +99,7 @@ export default function ProfileView({
 	};
 
 	return (
-		<div className="w-full h-full space-y-16">
+		<div className="w-full h-full space-y-16 py-8">
 			<ProfileBanner account={data.viewer} />
 			<ProfileCompletionMeter status={completionStatus} />
 			{isEditingAboutMe ? (
