@@ -17,7 +17,7 @@ import {
 	Tooltip,
 } from "@heroui/react";
 import Heading from "@tiptap/extension-heading";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { generateHTML } from "@tiptap/html";
 import StarterKit from "@tiptap/starter-kit";
 import {
 	Briefcase,
@@ -33,7 +33,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
-import { Markdown } from "tiptap-markdown";
 import JobControls from "./JobControls";
 
 const JobDetailsFragment = graphql`
@@ -120,26 +119,26 @@ export default function JobDetails({
 	const isProfileIncomplete =
 		root.viewer.__typename === "Account" && !root.viewer.profile?.isComplete;
 
-	const editor = useEditor({
-		extensions: [
+	const html = generateHTML(
+		{
+			type: "doc",
+			content: [
+				{
+					type: "text",
+					text: data.description,
+				},
+			],
+		},
+		[
 			StarterKit.configure({
 				heading: false, // Disable default heading
 			}),
 			Heading.configure({
 				levels: [1, 2, 3], // Allow only H1, H2, and H3
 			}),
-			Markdown,
+			// other extensions …
 		],
-		immediatelyRender: false,
-		editorProps: {
-			attributes: {
-				class:
-					"prose prose-foreground prose-sm w-full min-w-full whitespace-pre-wrap",
-			},
-		},
-		editable: false, // Disable editing to make it a viewer
-		content: data.description,
-	});
+	);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
 
@@ -400,7 +399,12 @@ export default function JobDetails({
 				<Divider />
 				<CardBody className="w-full h-full">
 					{/* CONFIRMED: this is causing scrolling issues. if renderImmediately is false, it scrolls properly, but that isnt supported in SSR */}
-					<EditorContent editor={editor} className="w-full h-full" />
+					{/* try using this: https://tiptap.dev/docs/editor/api/utilities/html */}
+					{/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
+					<div
+						dangerouslySetInnerHTML={{ __html: html }}
+						className="prose prose-foreground prose-sm w-full min-w-full whitespace-pre-wrap !p-0 !m-0 [--tw-prose-paragraph-margin:0.5em]"
+					/>
 				</CardBody>
 				<CardFooter>
 					<div className="flex flex-wrap gap-2 sm:gap-4 mt-2 w-full">
