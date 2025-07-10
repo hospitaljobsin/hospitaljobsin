@@ -1,7 +1,14 @@
 "use client";
+import type { ProfileClientComponentQuery as ProfileClientComponentQueryType } from "@/__generated__/ProfileClientComponentQuery.graphql";
+import ProfileClientComponentQuery from "@/__generated__/ProfileClientComponentQuery.graphql";
 import type { ProfileViewFragment$key } from "@/__generated__/ProfileViewFragment.graphql";
 import { useState } from "react";
-import { graphql, useFragment } from "react-relay";
+import {
+	type PreloadedQuery,
+	graphql,
+	useFragment,
+	usePreloadedQuery,
+} from "react-relay";
 import invariant from "tiny-invariant";
 import ProfessionalSummary from "./AboutMe";
 import Certifications from "./Certifications";
@@ -65,10 +72,23 @@ const ProfileViewFragment = graphql`
 `;
 
 export default function ProfileView({
-	query,
+	queryReference,
 }: {
-	query: ProfileViewFragment$key;
+	queryReference: PreloadedQuery<ProfileClientComponentQueryType>;
 }) {
+	const rootData = usePreloadedQuery(
+		ProfileClientComponentQuery,
+		queryReference,
+	);
+
+	const data = useFragment<ProfileViewFragment$key>(
+		ProfileViewFragment,
+		rootData,
+	);
+	invariant(
+		data.viewer.__typename === "Account",
+		"Expected 'Account' node type",
+	);
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
 	const [isEditingLanguages, setIsEditingLanguages] = useState(false);
 	const [isEditingLocationPreferences, setIsEditingLocationPreferences] =
@@ -78,11 +98,6 @@ export default function ProfileView({
 	const [isEditingCertifications, setIsEditingCertifications] = useState(false);
 	const [isEditingLicenses, setIsEditingLicenses] = useState(false);
 	const [isEditingAboutMe, setIsEditingAboutMe] = useState(false);
-	const data = useFragment(ProfileViewFragment, query);
-	invariant(
-		data.viewer.__typename === "Account",
-		"Expected 'Account' node type",
-	);
 
 	const completionStatus = {
 		personalDetails: !!data.viewer.profile.dateOfBirth,

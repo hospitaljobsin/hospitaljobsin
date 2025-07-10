@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<5cd4249132281661a896094cbad903fb>>
- * @relayHash 397b8066162a8901197cfd186f31e325
+ * @generated SignedSource<<5dd61e5b492a8c5644484ba5909a0b6e>>
+ * @relayHash ecb5c6b8d9cc6d8d671e6dd337eadc15
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 397b8066162a8901197cfd186f31e325
+// @relayRequestID ecb5c6b8d9cc6d8d671e6dd337eadc15
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageProfileQuery$variables = Record<PropertyKey, never>;
-export type pageProfileQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"ProfileClientComponentFragment">;
+export type ProfileClientComponentQuery$variables = Record<PropertyKey, never>;
+export type ProfileClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"ProfileViewFragment">;
 };
-export type pageProfileQuery = {
-  response: pageProfileQuery$data;
-  variables: pageProfileQuery$variables;
+export type ProfileClientComponentQuery = {
+  response: ProfileClientComponentQuery$data;
+  variables: ProfileClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -70,12 +70,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageProfileQuery",
+    "name": "ProfileClientComponentQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "ProfileClientComponentFragment"
+        "name": "ProfileViewFragment"
       }
     ],
     "type": "Query",
@@ -85,7 +85,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "pageProfileQuery",
+    "name": "ProfileClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -385,15 +385,15 @@ return {
     ]
   },
   "params": {
-    "id": "397b8066162a8901197cfd186f31e325",
+    "id": "ecb5c6b8d9cc6d8d671e6dd337eadc15",
     "metadata": {},
-    "name": "pageProfileQuery",
+    "name": "ProfileClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "7d0c3a28f6f5962ba9677fa5652e705f";
+(node as any).hash = "d9c85cf40b9bb030e15079bb3790fbe6";
 
 export default node;

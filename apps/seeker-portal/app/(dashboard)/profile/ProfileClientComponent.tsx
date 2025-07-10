@@ -1,27 +1,29 @@
 "use client";
-import type { ProfileClientComponentFragment$key } from "@/__generated__/ProfileClientComponentFragment.graphql";
-import type { pageProfileQuery } from "@/__generated__/pageProfileQuery.graphql";
+import type { ProfileClientComponentQuery as ProfileClientComponentQueryType } from "@/__generated__/ProfileClientComponentQuery.graphql";
 import ProfileView from "@/components/profile/ProfileView";
-import type { PreloadedQuery } from "react-relay";
-import { useFragment, usePreloadedQuery } from "react-relay";
+import ProfileViewSkeleton from "@/components/profile/ProfileViewSkeleton";
+import { Suspense } from "react";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
-import { ProfilePageQuery } from "./page";
 
-const ProfileClientComponentFragment = graphql`
-  fragment ProfileClientComponentFragment on Query{
-    ...ProfileViewFragment
-  }
+const ProfileClientComponentQuery = graphql`
+	query ProfileClientComponentQuery {
+		...ProfileViewFragment
+	}
 `;
 
-export default function ProfileClientComponent({
-	queryReference,
-}: {
-	queryReference: PreloadedQuery<pageProfileQuery>;
-}) {
-	const data = usePreloadedQuery(ProfilePageQuery, queryReference);
-	const query = useFragment<ProfileClientComponentFragment$key>(
-		ProfileClientComponentFragment,
-		data,
+export default function ProfileClientComponent() {
+	const environment = useRelayEnvironment();
+	const queryReference = loadQuery<ProfileClientComponentQueryType>(
+		environment,
+		ProfileClientComponentQuery,
+		{},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
-	return <ProfileView query={query} />;
+
+	return (
+		<Suspense fallback={<ProfileViewSkeleton />}>
+			<ProfileView queryReference={queryReference} />
+		</Suspense>
+	);
 }
