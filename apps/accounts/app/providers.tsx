@@ -1,5 +1,6 @@
 "use client";
 import { TurnstileProvider } from "@/components/TurnstileProvider";
+import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { ThemeProvider } from "next-themes";
