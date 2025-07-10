@@ -16,9 +16,6 @@ import {
 	Divider,
 	Tooltip,
 } from "@heroui/react";
-import Heading from "@tiptap/extension-heading";
-import { generateHTML } from "@tiptap/html";
-import StarterKit from "@tiptap/starter-kit";
 import {
 	Briefcase,
 	Clock,
@@ -31,6 +28,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
 import JobControls from "./JobControls";
@@ -118,27 +116,6 @@ export default function JobDetails({
 
 	const isProfileIncomplete =
 		root.viewer.__typename === "Account" && !root.viewer.profile?.isComplete;
-
-	const html = generateHTML(
-		{
-			type: "doc",
-			content: [
-				{
-					type: "text",
-					text: data.description,
-				},
-			],
-		},
-		[
-			StarterKit.configure({
-				heading: false, // Disable default heading
-			}),
-			Heading.configure({
-				levels: [1, 2, 3], // Allow only H1, H2, and H3
-			}),
-			// other extensions …
-		],
-	);
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
 
@@ -397,14 +374,8 @@ export default function JobDetails({
 					</h3>
 				</CardHeader>
 				<Divider />
-				<CardBody className="w-full h-full">
-					{/* CONFIRMED: this is causing scrolling issues. if renderImmediately is false, it scrolls properly, but that isnt supported in SSR */}
-					{/* try using this: https://tiptap.dev/docs/editor/api/utilities/html */}
-					{/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
-					<div
-						dangerouslySetInnerHTML={{ __html: html }}
-						className="prose prose-foreground prose-sm w-full min-w-full whitespace-pre-wrap !p-0 !m-0 [--tw-prose-paragraph-margin:0.5em]"
-					/>
+				<CardBody className="w-full h-full prose prose-headings:mt-0 prose-headings:mb-2 prose-p:mb-6 prose-ul:my-0 prose-li:mt-0 prose-foreground prose-sm min-w-full whitespace-pre-wrap">
+					<ReactMarkdown>{data.description}</ReactMarkdown>
 				</CardBody>
 				<CardFooter>
 					<div className="flex flex-wrap gap-2 sm:gap-4 mt-2 w-full">
