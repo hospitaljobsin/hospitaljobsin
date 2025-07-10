@@ -1,27 +1,29 @@
 "use client";
-import type { SelectClientComponentFragment$key } from "@/__generated__/SelectClientComponentFragment.graphql";
-import type { pageSelectQuery } from "@/__generated__/pageSelectQuery.graphql";
+import type { SelectClientComponentQuery as SelectClientComponentQueryType } from "@/__generated__/SelectClientComponentQuery.graphql";
 import SelectView from "@/components/select/SelectView";
-import type { PreloadedQuery } from "react-relay";
-import { useFragment, usePreloadedQuery } from "react-relay";
+import SelectViewSkeleton from "@/components/select/SelectViewSkeleton";
+import { Suspense } from "react";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
-import { SelectPageQuery } from "./page";
 
-const SelectClientComponentFragment = graphql`
-  fragment SelectClientComponentFragment on Query {
-    ...SelectViewFragment
-  }
+const SelectClientComponentQuery = graphql`
+	query SelectClientComponentQuery {
+		...SelectViewFragment
+	}
 `;
 
-export default function SelectClientComponent({
-	queryReference,
-}: {
-	queryReference: PreloadedQuery<pageSelectQuery>;
-}) {
-	const data = usePreloadedQuery(SelectPageQuery, queryReference);
-	const query = useFragment<SelectClientComponentFragment$key>(
-		SelectClientComponentFragment,
-		data,
+export default function SelectClientComponent() {
+	const environment = useRelayEnvironment();
+	const queryReference = loadQuery<SelectClientComponentQueryType>(
+		environment,
+		SelectClientComponentQuery,
+		{},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
-	return <SelectView query={query} />;
+
+	return (
+		<Suspense fallback={<SelectViewSkeleton />}>
+			<SelectView queryReference={queryReference} />
+		</Suspense>
+	);
 }

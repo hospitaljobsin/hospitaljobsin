@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a50e93a70426f02feb726c2e087e6a7e>>
- * @relayHash 98599c2b08d24bf48a47bdad032e6250
+ * @generated SignedSource<<20c4c4f67bafb3b2341d689b9070968f>>
+ * @relayHash e6d7d40acd3a1390f0aef230afbb207c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 98599c2b08d24bf48a47bdad032e6250
+// @relayRequestID e6d7d40acd3a1390f0aef230afbb207c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageSelectQuery$variables = Record<PropertyKey, never>;
-export type pageSelectQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"SelectClientComponentFragment">;
+export type SelectClientComponentQuery$variables = Record<PropertyKey, never>;
+export type SelectClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"SelectViewFragment">;
 };
-export type pageSelectQuery = {
-  response: pageSelectQuery$data;
-  variables: pageSelectQuery$variables;
+export type SelectClientComponentQuery = {
+  response: SelectClientComponentQuery$data;
+  variables: SelectClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -49,12 +49,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageSelectQuery",
+    "name": "SelectClientComponentQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "SelectClientComponentFragment"
+        "name": "SelectViewFragment"
       }
     ],
     "type": "Query",
@@ -64,7 +64,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "pageSelectQuery",
+    "name": "SelectClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -201,15 +201,15 @@ return {
     ]
   },
   "params": {
-    "id": "98599c2b08d24bf48a47bdad032e6250",
+    "id": "e6d7d40acd3a1390f0aef230afbb207c",
     "metadata": {},
-    "name": "pageSelectQuery",
+    "name": "SelectClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "3a9d17a932d0523d62f59d139dab83a8";
+(node as any).hash = "8e502dc53dd42d0a9f391b550c60f22b";
 
 export default node;
