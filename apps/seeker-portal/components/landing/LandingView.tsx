@@ -1,6 +1,7 @@
 "use client";
 import type { LandingViewFragment$key } from "@/__generated__/LandingViewFragment.graphql";
 import { TrendingUpIcon } from "lucide-react";
+import Image from "next/image";
 import { Suspense } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -73,17 +74,23 @@ export default function LandingView({
 					</div>
 					{/* Right: Doctor Image */}
 					<div className="flex-1 md:flex items-end w-auto h-[600px] hidden relative">
-						<img
+						<Image
 							src="/hero-model.png"
 							alt="Group of doctors smiling, representing healthcare professionals"
 							className="w-auto h-full max-w-full object-cover object-bottom absolute left-0 top-0 z-10"
 							loading="eager"
+							unoptimized={false}
+							width={1000}
+							height={1000}
 						/>
-						<img
+						<Image
 							src="/hero-model-2.png"
 							alt="Group of doctors smiling, representing healthcare professionals"
 							className="w-auto h-full max-w-full object-cover object-bottom absolute drop-shadow-lg left-56 z-20 hidden xl:block"
 							loading="eager"
+							unoptimized={false}
+							width={1000}
+							height={1000}
 						/>
 					</div>
 				</div>
