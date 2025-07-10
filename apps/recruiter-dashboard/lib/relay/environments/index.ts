@@ -12,7 +12,7 @@ export function getCurrentEnvironment() {
 		return createServerEnvironment();
 	}
 
-	if (!_clientEnvironment) {
+	if (_clientEnvironment === null) {
 		_clientEnvironment = createClientEnvironment();
 	}
 	return _clientEnvironment;
