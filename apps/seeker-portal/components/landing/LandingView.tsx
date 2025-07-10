@@ -29,7 +29,7 @@ export default function LandingView({
 	const data = useFragment(LandingViewFragment, query);
 
 	return (
-		<div className="w-full flex flex-col bg-background-600">
+		<div className="w-full flex flex-col bg-background-600 h-full">
 			{/* Hero Section */}
 			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-300 flex flex-col justify-center items-center w-full">
 				<Suspense fallback={<LandingHeaderSkeleton />}>

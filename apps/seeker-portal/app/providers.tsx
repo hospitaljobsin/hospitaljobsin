@@ -28,8 +28,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 							height="4px"
 							color="hsl(var(--heroui-primary-300))"
 							nonce="progressbar-nonce"
-							options={{ showSpinner: false }}
-							shallowRouting
+							options={{ showSpinner: false, positionUsing: "margin" }}
+							shallowRouting={false}
 							disableSameURL
 							shouldCompareComplexProps
 						>

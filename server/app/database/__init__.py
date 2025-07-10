@@ -42,7 +42,7 @@ logger = get_logger()
 
 def rebuild_models() -> None:
     """Rebuild models to update forward references."""
-    from app.accounts.documents import Account, Profile
+    from app.accounts.documents import Account
     from app.auth.documents import (
         OAuthCredential,
         RecoveryCode,
@@ -59,8 +59,6 @@ def rebuild_models() -> None:
     RecoveryCode.model_rebuild()
 
     TemporaryTwoFactorChallenge.model_rebuild()
-
-    Profile.model_rebuild()
 
 
 async def create_search_indexes(

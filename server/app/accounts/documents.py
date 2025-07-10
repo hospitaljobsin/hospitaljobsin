@@ -149,7 +149,7 @@ class Account(Document):
 
     auth_providers: list[AuthProvider]
 
-    profile: Link["Profile"] | None = None
+    profile: Link[Profile] | None = None
 
     webauthn_credentials: list[BackLink["WebAuthnCredential"]] = Field(  # type: ignore[call-overload]
         original_field="account"
