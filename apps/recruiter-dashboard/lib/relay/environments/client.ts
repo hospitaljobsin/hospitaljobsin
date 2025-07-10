@@ -96,6 +96,7 @@ function createNetwork() {
 
 export function createClientEnvironment() {
 	return new Environment({
+		log: console.log,
 		network: createNetwork(),
 		store: new Store(RecordSource.create()),
 		isServer: false,

@@ -1,4 +1,6 @@
 "use client";
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 import type {
 	CacheConfig,
 	GraphQLResponse,
@@ -12,8 +14,6 @@ import {
 	RecordSource,
 	Store,
 } from "relay-runtime";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
 
 const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 
@@ -94,6 +94,7 @@ function createNetwork() {
 
 export function createClientEnvironment() {
 	return new Environment({
+		log: console.log,
 		network: createNetwork(),
 		store: new Store(RecordSource.create()),
 		isServer: false,
