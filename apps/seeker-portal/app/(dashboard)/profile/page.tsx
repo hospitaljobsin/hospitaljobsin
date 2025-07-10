@@ -1,5 +1,7 @@
 "use client";
 import type { pageProfileQuery } from "@/__generated__/pageProfileQuery.graphql";
+import ProfileViewSkeleton from "@/components/profile/ProfileViewSkeleton";
+import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
 import ProfileClientComponent from "./ProfileClientComponent";
@@ -18,5 +20,9 @@ export default function Profile() {
 		{},
 		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
-	return <ProfileClientComponent queryReference={queryReference} />;
+	return (
+		<Suspense fallback={<ProfileViewSkeleton />}>
+			<ProfileClientComponent queryReference={queryReference} />
+		</Suspense>
+	);
 }
