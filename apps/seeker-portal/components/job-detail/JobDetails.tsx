@@ -237,7 +237,7 @@ export default function JobDetails({
 		);
 
 	return (
-		<div className="w-full flex flex-col gap-6 flex-1">
+		<div className="w-full h-full flex flex-col gap-6 flex-1">
 			{/* Job Title and Company */}
 			<Card fullWidth className="p-4 sm:p-6" shadow="none">
 				<CardHeader>
@@ -391,15 +391,16 @@ export default function JobDetails({
 			</Card>
 
 			{/* Job Description */}
-			<Card className="p-4 sm:p-6" fullWidth shadow="none">
+			<Card className="p-4 sm:p-6 h-full" fullWidth shadow="none">
 				<CardHeader>
 					<h3 className="font-medium text-foreground-500 text-base sm:text-lg">
 						About the Job
 					</h3>
 				</CardHeader>
 				<Divider />
-				<CardBody className="w-full">
-					<EditorContent editor={editor} className="w-full" />
+				<CardBody className="w-full h-full">
+					{/* CONFIRMED: this is causing scrolling issues. if renderImmediately is false, it scrolls properly, but that isnt supported in SSR */}
+					<EditorContent editor={editor} className="w-full h-full" />
 				</CardBody>
 				<CardFooter>
 					<div className="flex flex-wrap gap-2 sm:gap-4 mt-2 w-full">

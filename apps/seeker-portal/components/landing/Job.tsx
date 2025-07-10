@@ -146,7 +146,9 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 			as="div"
 			disableRipple
 			onPress={() => {
-				router.push(links.jobDetail(data.organization.slug, data.slug));
+				router.push(links.jobDetail(data.organization.slug, data.slug), {
+					scroll: true,
+				});
 			}}
 			shadow="none"
 		>
