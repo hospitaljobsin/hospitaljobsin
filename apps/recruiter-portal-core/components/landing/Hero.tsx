@@ -1,6 +1,7 @@
 import links from "@/lib/links";
 import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import LandingHeader from "./LandingHeader";
 
@@ -35,11 +36,14 @@ export default function Hero() {
 
 			<div className="max-w-7xl mx-auto pt-16 sm:pt-24 flex flex-col md:flex-row items-center gap-12 sm:gap-16 relative z-10">
 				<div className="flex-1 md:flex items-end justify-end w-auto h-[600px] hidden">
-					<img
+					<Image
 						src="/images/hero-image.png"
 						alt="Group of doctors smiling, representing healthcare professionals"
 						className="w-auto h-full max-w-full object-cover object-bottom"
 						loading="eager"
+						unoptimized={false}
+						width={1000}
+						height={1000}
 					/>
 				</div>
 				<div className="flex-1 flex flex-col items-start gap-6 z-10 pb-12 px-4">
