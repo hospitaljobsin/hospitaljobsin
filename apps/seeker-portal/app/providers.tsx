@@ -5,14 +5,14 @@ import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { ThemeProvider } from "next-themes";
 import { useRouter } from "next/navigation";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { useState } from "react";
+import { useMemo } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
-	const [environment] = useState(() => {
+	const environment = useMemo(() => {
 		return getCurrentEnvironment();
-	});
+	}, []);
 
 	return (
 		<HeroUIProvider navigate={router.push}>

@@ -1,17 +1,17 @@
 "use client";
+import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
-import { useRouter } from "next/navigation";
 import { ThemeProvider } from "next-themes";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
-import { getCurrentEnvironment } from "@/lib/relay/environments";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
-	const [environment] = useState(() => {
+	const environment = useMemo(() => {
 		return getCurrentEnvironment();
-	});
+	}, []);
 
 	return (
 		<HeroUIProvider navigate={router.push}>

@@ -7,7 +7,7 @@ import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { ThemeProvider } from "next-themes";
 import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
 
 export default function Providers({
@@ -15,9 +15,9 @@ export default function Providers({
 	headersPromise,
 }: { children: React.ReactNode; headersPromise: Promise<ReadonlyHeaders> }) {
 	const router = useRouter();
-	const [environment] = useState(() => {
+	const environment = useMemo(() => {
 		return getCurrentEnvironment();
-	});
+	}, []);
 
 	return (
 		<HeroUIProvider navigate={router.push}>
