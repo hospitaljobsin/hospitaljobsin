@@ -2,8 +2,6 @@
 import type { SelectClientComponentFragment$key } from "@/__generated__/SelectClientComponentFragment.graphql";
 import type { pageSelectQuery } from "@/__generated__/pageSelectQuery.graphql";
 import SelectView from "@/components/select/SelectView";
-import SelectViewSkeleton from "@/components/select/SelectViewSkeleton";
-import { Suspense } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { useFragment, usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -25,9 +23,5 @@ export default function SelectClientComponent({
 		SelectClientComponentFragment,
 		data,
 	);
-	return (
-		<Suspense fallback={<SelectViewSkeleton />}>
-			<SelectView query={query} />
-		</Suspense>
-	);
+	return <SelectView query={query} />;
 }
