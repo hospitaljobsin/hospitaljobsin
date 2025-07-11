@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<eaf2452fe1d0d3b1dfc66f0d7c9980e5>>
- * @relayHash a5a28af5c38a421dce261ffcdcd03886
+ * @generated SignedSource<<c21a9c2a4784551617c8bf8a8a241723>>
+ * @relayHash 4e42e0443ac7dc95f7cf2a85db1940ed
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a5a28af5c38a421dce261ffcdcd03886
+// @relayRequestID 4e42e0443ac7dc95f7cf2a85db1940ed
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageSessionsSettingsQuery$variables = Record<PropertyKey, never>;
-export type pageSessionsSettingsQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"SessionsClientComponentFragment">;
+export type SessionsClientComponentQuery$variables = Record<PropertyKey, never>;
+export type SessionsClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"SessionsSettingsViewFragment">;
 };
-export type pageSessionsSettingsQuery = {
-  response: pageSessionsSettingsQuery$data;
-  variables: pageSessionsSettingsQuery$variables;
+export type SessionsClientComponentQuery = {
+  response: SessionsClientComponentQuery$data;
+  variables: SessionsClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -70,12 +70,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageSessionsSettingsQuery",
+    "name": "SessionsClientComponentQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "SessionsClientComponentFragment"
+        "name": "SessionsSettingsViewFragment"
       }
     ],
     "type": "Query",
@@ -85,7 +85,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "pageSessionsSettingsQuery",
+    "name": "SessionsClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -231,15 +231,15 @@ return {
     ]
   },
   "params": {
-    "id": "a5a28af5c38a421dce261ffcdcd03886",
+    "id": "4e42e0443ac7dc95f7cf2a85db1940ed",
     "metadata": {},
-    "name": "pageSessionsSettingsQuery",
+    "name": "SessionsClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "06afc86bfca4473dc1bf6de3b1852c75";
+(node as any).hash = "486ec2ac34dce44c767ebdaf5144bdc6";
 
 export default node;

@@ -1,9 +1,17 @@
 "use client";
-import { Link } from "@heroui/react";
-import { graphql, useFragment } from "react-relay";
-import invariant from "tiny-invariant";
+import PasskeysClientComponentQuery, {
+	type PasskeysClientComponentQuery as PasskeysClientComponentQueryType,
+} from "@/__generated__/PasskeysClientComponentQuery.graphql";
 import type { PasskeysSettingsViewFragment$key } from "@/__generated__/PasskeysSettingsViewFragment.graphql";
 import { LEARN_MORE_ABOUT_PASSKEYS_LINK } from "@/lib/constants";
+import { Link } from "@heroui/react";
+import {
+	type PreloadedQuery,
+	graphql,
+	useFragment,
+	usePreloadedQuery,
+} from "react-relay";
+import invariant from "tiny-invariant";
 import PasskeysList from "./PasskeysList";
 
 const PasskeysSettingsViewFragment = graphql`
@@ -18,11 +26,15 @@ const PasskeysSettingsViewFragment = graphql`
 `;
 
 export default function PasskeysSettingsView({
-	query,
+	queryReference,
 }: {
-	query: PasskeysSettingsViewFragment$key;
+	queryReference: PreloadedQuery<PasskeysClientComponentQueryType>;
 }) {
-	const data = useFragment(PasskeysSettingsViewFragment, query);
+	const query = usePreloadedQuery(PasskeysClientComponentQuery, queryReference);
+	const data = useFragment<PasskeysSettingsViewFragment$key>(
+		PasskeysSettingsViewFragment,
+		query,
+	);
 	invariant(
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",

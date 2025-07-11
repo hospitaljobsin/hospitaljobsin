@@ -1,27 +1,29 @@
 "use client";
-import type { PreloadedQuery } from "react-relay";
-import { useFragment, usePreloadedQuery } from "react-relay";
-import { graphql } from "relay-runtime";
-import type { AccountClientComponentFragment$key } from "@/__generated__/AccountClientComponentFragment.graphql";
-import type { pageAccountSettingsQuery } from "@/__generated__/pageAccountSettingsQuery.graphql";
+import type { AccountClientComponentQuery as AccountClientComponentQueryType } from "@/__generated__/AccountClientComponentQuery.graphql";
 import AccountSettingsView from "@/components/settings/account/AccountSettingsView";
-import { AccountSettingsPageQuery } from "./page";
+import AccountSettingsViewSkeleton from "@/components/settings/account/AccountSettingsViewSkeleton";
+import { Suspense } from "react";
+import { loadQuery, useRelayEnvironment } from "react-relay";
+import { graphql } from "relay-runtime";
 
-const AccountClientComponentFragment = graphql`
-  fragment AccountClientComponentFragment on Query {
+const AccountClientComponentQuery = graphql`
+  query AccountClientComponentQuery {
     ...AccountSettingsViewFragment
   }
 `;
 
-export default function AccountClientComponent({
-	queryReference,
-}: {
-	queryReference: PreloadedQuery<pageAccountSettingsQuery>;
-}) {
-	const data = usePreloadedQuery(AccountSettingsPageQuery, queryReference);
-	const query = useFragment<AccountClientComponentFragment$key>(
-		AccountClientComponentFragment,
-		data,
+export default function AccountClientComponent() {
+	const environment = useRelayEnvironment();
+	const queryReference = loadQuery<AccountClientComponentQueryType>(
+		environment,
+		AccountClientComponentQuery,
+		{},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
-	return <AccountSettingsView query={query} />;
+
+	return (
+		<Suspense fallback={<AccountSettingsViewSkeleton />}>
+			<AccountSettingsView queryReference={queryReference} />
+		</Suspense>
+	);
 }

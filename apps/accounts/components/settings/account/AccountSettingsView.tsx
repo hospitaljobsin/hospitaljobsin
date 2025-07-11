@@ -1,8 +1,15 @@
 "use client";
-import { useState } from "react";
-import { graphql, useFragment } from "react-relay";
-import invariant from "tiny-invariant";
+import type { AccountClientComponentQuery as AccountClientComponentQueryType } from "@/__generated__/AccountClientComponentQuery.graphql";
+import AccountClientComponentQuery from "@/__generated__/AccountClientComponentQuery.graphql";
 import type { AccountSettingsViewFragment$key } from "@/__generated__/AccountSettingsViewFragment.graphql";
+import { useState } from "react";
+import {
+	type PreloadedQuery,
+	graphql,
+	useFragment,
+	usePreloadedQuery,
+} from "react-relay";
+import invariant from "tiny-invariant";
 import AccountDetails from "./AccountDetails";
 import Password from "./Password";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
@@ -23,12 +30,16 @@ const AccountSettingsViewFragment = graphql`
 `;
 
 export default function AccountSettingsView({
-	query,
+	queryReference,
 }: {
-	query: AccountSettingsViewFragment$key;
+	queryReference: PreloadedQuery<AccountClientComponentQueryType>;
 }) {
 	const [isEditingAccount, setIsEditingAccount] = useState(false);
-	const data = useFragment(AccountSettingsViewFragment, query);
+	const query = usePreloadedQuery(AccountClientComponentQuery, queryReference);
+	const data = useFragment<AccountSettingsViewFragment$key>(
+		AccountSettingsViewFragment,
+		query,
+	);
 
 	invariant(
 		data.viewer.__typename === "Account",

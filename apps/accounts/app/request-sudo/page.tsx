@@ -1,13 +1,13 @@
-import { redirect } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
-import invariant from "tiny-invariant";
 import type { pageRequestSudoModeInternalFragment$key } from "@/__generated__/pageRequestSudoModeInternalFragment.graphql";
 import type RequestSudoModeViewQueryNode from "@/__generated__/pageRequestSudoModeViewQuery.graphql";
 import type { pageRequestSudoModeViewQuery } from "@/__generated__/pageRequestSudoModeViewQuery.graphql";
 import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
 import { isSudoModeActive } from "@/lib/sudoMode";
+import { redirect } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
+import invariant from "tiny-invariant";
 import RequestSudoModeViewClientComponent from "./RequestSudoModeViewClientComponent";
 
 export const PageRequestSudoModeViewQuery = graphql`
@@ -29,7 +29,7 @@ const PageRequestSudoModeInternalFragment = graphql`
 `;
 
 // Function to load and cache the query result
-const loadQuery = cache(async () => {
+const loadServerSideQuery = cache(async () => {
 	return await loadSerializableQuery<
 		typeof RequestSudoModeViewQueryNode,
 		pageRequestSudoModeViewQuery
@@ -45,7 +45,7 @@ export default async function RequestSudoModePage({
 	const redirectTo = getValidSudoModeRedirectURL(
 		redirectParam ? String(redirectParam) : null,
 	);
-	const preloadedQuery = await loadQuery();
+	const preloadedQuery = await loadServerSideQuery();
 
 	const data = readInlineData<pageRequestSudoModeInternalFragment$key>(
 		PageRequestSudoModeInternalFragment,

@@ -1,3 +1,4 @@
+"use client";
 import SettingsSidebar from "@/components/settings/Sidebar";
 import HeaderClientComponent from "./HeaderClientComponent";
 

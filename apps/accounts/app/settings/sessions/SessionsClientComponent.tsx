@@ -1,27 +1,29 @@
 "use client";
-import type { PreloadedQuery } from "react-relay";
-import { useFragment, usePreloadedQuery } from "react-relay";
-import { graphql } from "relay-runtime";
-import type { pageSessionsSettingsQuery } from "@/__generated__/pageSessionsSettingsQuery.graphql";
-import type { SessionsClientComponentFragment$key } from "@/__generated__/SessionsClientComponentFragment.graphql";
+import type { SessionsClientComponentQuery as SessionsClientComponentQueryType } from "@/__generated__/SessionsClientComponentQuery.graphql";
 import SessionsSettingsView from "@/components/settings/sessions/SessionsSettingsView";
-import { SessionsSettingsPageQuery } from "./page";
+import SessionsSettingsViewSkeleton from "@/components/settings/sessions/SessionsSettingsViewSkeleton";
+import { Suspense } from "react";
+import { loadQuery, useRelayEnvironment } from "react-relay";
+import { graphql } from "relay-runtime";
 
-const SessionsClientComponentFragment = graphql`
-  fragment SessionsClientComponentFragment on Query {
+const SessionsClientComponentQuery = graphql`
+  query SessionsClientComponentQuery {
     ...SessionsSettingsViewFragment
   }
 `;
 
-export default function SessionsClientComponent({
-	queryReference,
-}: {
-	queryReference: PreloadedQuery<pageSessionsSettingsQuery>;
-}) {
-	const data = usePreloadedQuery(SessionsSettingsPageQuery, queryReference);
-	const query = useFragment<SessionsClientComponentFragment$key>(
-		SessionsClientComponentFragment,
-		data,
+export default function SessionsClientComponent() {
+	const environment = useRelayEnvironment();
+	const queryReference = loadQuery<SessionsClientComponentQueryType>(
+		environment,
+		SessionsClientComponentQuery,
+		{},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
-	return <SessionsSettingsView query={query} />;
+
+	return (
+		<Suspense fallback={<SessionsSettingsViewSkeleton />}>
+			<SessionsSettingsView queryReference={queryReference} />
+		</Suspense>
+	);
 }

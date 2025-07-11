@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<79bf21d72afde3f3fbb9e26f3250afa8>>
- * @relayHash fbaf15a2e39707fd3d0a4dcf8d668beb
+ * @generated SignedSource<<9b141ba4902e60bec6b8bf68790f3aeb>>
+ * @relayHash 6d6a1c22f17acf07a3787d1072602b27
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID fbaf15a2e39707fd3d0a4dcf8d668beb
+// @relayRequestID 6d6a1c22f17acf07a3787d1072602b27
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageAccountSettingsQuery$variables = Record<PropertyKey, never>;
-export type pageAccountSettingsQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"AccountClientComponentFragment">;
+export type AccountClientComponentQuery$variables = Record<PropertyKey, never>;
+export type AccountClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"AccountSettingsViewFragment">;
 };
-export type pageAccountSettingsQuery = {
-  response: pageAccountSettingsQuery$data;
-  variables: pageAccountSettingsQuery$variables;
+export type AccountClientComponentQuery = {
+  response: AccountClientComponentQuery$data;
+  variables: AccountClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = {
@@ -27,12 +27,12 @@ const node: ConcreteRequest = {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageAccountSettingsQuery",
+    "name": "AccountClientComponentQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "AccountClientComponentFragment"
+        "name": "AccountSettingsViewFragment"
       }
     ],
     "type": "Query",
@@ -42,7 +42,7 @@ const node: ConcreteRequest = {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "pageAccountSettingsQuery",
+    "name": "AccountClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -141,14 +141,14 @@ const node: ConcreteRequest = {
     ]
   },
   "params": {
-    "id": "fbaf15a2e39707fd3d0a4dcf8d668beb",
+    "id": "6d6a1c22f17acf07a3787d1072602b27",
     "metadata": {},
-    "name": "pageAccountSettingsQuery",
+    "name": "AccountClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 
-(node as any).hash = "c72ca15e1c492e386bed888a7aadcbb2";
+(node as any).hash = "c3d346d7eaeda2e58bef82d9d89a311f";
 
 export default node;

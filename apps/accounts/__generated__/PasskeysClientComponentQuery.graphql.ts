@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<238e49fa09b707657ecd385a2cd4dd7d>>
- * @relayHash 842072cd591289470663ad21651baad5
+ * @generated SignedSource<<939dc739974275f8e38788ece597aaa7>>
+ * @relayHash 08a04aef721d6cdeda75073418f66452
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 842072cd591289470663ad21651baad5
+// @relayRequestID 08a04aef721d6cdeda75073418f66452
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pagePasskeysSettingsQuery$variables = Record<PropertyKey, never>;
-export type pagePasskeysSettingsQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"PasskeysClientComponentFragment">;
+export type PasskeysClientComponentQuery$variables = Record<PropertyKey, never>;
+export type PasskeysClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"PasskeysSettingsViewFragment">;
 };
-export type pagePasskeysSettingsQuery = {
-  response: pagePasskeysSettingsQuery$data;
-  variables: pagePasskeysSettingsQuery$variables;
+export type PasskeysClientComponentQuery = {
+  response: PasskeysClientComponentQuery$data;
+  variables: PasskeysClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -49,12 +49,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pagePasskeysSettingsQuery",
+    "name": "PasskeysClientComponentQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "PasskeysClientComponentFragment"
+        "name": "PasskeysSettingsViewFragment"
       }
     ],
     "type": "Query",
@@ -64,7 +64,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "pagePasskeysSettingsQuery",
+    "name": "PasskeysClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -220,15 +220,15 @@ return {
     ]
   },
   "params": {
-    "id": "842072cd591289470663ad21651baad5",
+    "id": "08a04aef721d6cdeda75073418f66452",
     "metadata": {},
-    "name": "pagePasskeysSettingsQuery",
+    "name": "PasskeysClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "1afa6cd22ceedd2252df7487328b9a9f";
+(node as any).hash = "439e380d70f0c7038e11a7063410d172";
 
 export default node;
