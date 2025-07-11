@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<7ba463bbc1731c1e84c08b2d3fe8dcf0>>
- * @relayHash c1bf42e0f84d988d75465fc7713f86e8
+ * @generated SignedSource<<24e5dae15021472698d160d7f2dfa442>>
+ * @relayHash 5234ded601aa13fab8f75ce9d402c008
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,20 +9,20 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c1bf42e0f84d988d75465fc7713f86e8
+// @relayRequestID 5234ded601aa13fab8f75ce9d402c008
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageJobGeneralSettingsQuery$variables = {
+export type JobGeneralSettingsClientComponentQuery$variables = {
   jobSlug: string;
   orgSlug: string;
 };
-export type pageJobGeneralSettingsQuery$data = {
+export type JobGeneralSettingsClientComponentQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"JobSettingsGeneralTabFragment">;
 };
-export type pageJobGeneralSettingsQuery = {
-  response: pageJobGeneralSettingsQuery$data;
-  variables: pageJobGeneralSettingsQuery$variables;
+export type JobGeneralSettingsClientComponentQuery = {
+  response: JobGeneralSettingsClientComponentQuery$data;
+  variables: JobGeneralSettingsClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -72,7 +72,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageJobGeneralSettingsQuery",
+    "name": "JobGeneralSettingsClientComponentQuery",
     "selections": [
       {
         "args": [
@@ -97,7 +97,7 @@ return {
       (v0/*: any*/)
     ],
     "kind": "Operation",
-    "name": "pageJobGeneralSettingsQuery",
+    "name": "JobGeneralSettingsClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -300,15 +300,15 @@ return {
     ]
   },
   "params": {
-    "id": "c1bf42e0f84d988d75465fc7713f86e8",
+    "id": "5234ded601aa13fab8f75ce9d402c008",
     "metadata": {},
-    "name": "pageJobGeneralSettingsQuery",
+    "name": "JobGeneralSettingsClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "b3e981f68baee2da017261494ef74eec";
+(node as any).hash = "164d3f8d09505df4bb84b2ff5cdf1555";
 
 export default node;

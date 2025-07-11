@@ -114,7 +114,7 @@ export default function LoginForm() {
 			setOauth2ErrorMessage(oauth2Error);
 			const url = new URL(window.location.href);
 			url.searchParams.delete("oauth2_error");
-			router.replace(url.toString(), undefined, { showProgress: false });
+			router.replace(url.toString(), { showProgress: false });
 		}
 	}, [oauth2Error, router]);
 

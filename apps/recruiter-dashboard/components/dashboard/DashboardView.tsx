@@ -1,7 +1,8 @@
 "use client";
+import DashboardClientComponentQuery, {
+	type DashboardClientComponentQuery as DashboardClientComponentQueryType,
+} from "@/__generated__/DashboardClientComponentQuery.graphql";
 import type { DashboardViewFragment$key } from "@/__generated__/DashboardViewFragment.graphql";
-import type { pageDashboardViewQuery as PageDashboardViewQueryType } from "@/__generated__/pageDashboardViewQuery.graphql";
-import { PageDashboardViewQuery } from "@/app/(base)/(dashboard)/page";
 import { useState } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { graphql, useFragment, usePreloadedQuery } from "react-relay";
@@ -10,7 +11,6 @@ import OrganizationJobsController, {
 	JobSortBy,
 } from "./OrganizationJobsController";
 import OrganizationJobsList from "./OrganizationJobsList";
-// Chat/Message imports
 
 const DashboardViewFragment = graphql`
  fragment DashboardViewFragment on Query @argumentDefinitions(
@@ -33,9 +33,12 @@ const DashboardViewFragment = graphql`
 `;
 
 export default function DashboardView(props: {
-	initialQueryRef: PreloadedQuery<PageDashboardViewQueryType>;
+	initialQueryRef: PreloadedQuery<DashboardClientComponentQueryType>;
 }) {
-	const data = usePreloadedQuery(PageDashboardViewQuery, props.initialQueryRef);
+	const data = usePreloadedQuery(
+		DashboardClientComponentQuery,
+		props.initialQueryRef,
+	);
 	const query = useFragment<DashboardViewFragment$key>(
 		DashboardViewFragment,
 		data,

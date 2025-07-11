@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dd65222aa95f4bafe2d9949883d1e97c>>
- * @relayHash f17b20bfcc61a83a6cc79f62b2593234
+ * @generated SignedSource<<8d8107a05daa8986c5064685f286d49f>>
+ * @relayHash 5f35ddda1f714c1e3f265bdf393bde90
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,25 +9,25 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f17b20bfcc61a83a6cc79f62b2593234
+// @relayRequestID 5f35ddda1f714c1e3f265bdf393bde90
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobApplicantStatus = "APPLIED" | "INTERVIEWED" | "OFFERED" | "ONHOLD" | "SHORTLISTED" | "%future added value";
 export type JobApplicantsSortBy = "CREATED_AT" | "OVERALL_SCORE" | "%future added value";
-export type pageJobDetailApplicantsQuery$variables = {
+export type JobDetailApplicantsClientComponentQuery$variables = {
   jobSlug: string;
   orgSlug: string;
   searchTerm?: string | null | undefined;
   sortBy: JobApplicantsSortBy;
   status?: JobApplicantStatus | null | undefined;
 };
-export type pageJobDetailApplicantsQuery$data = {
+export type JobDetailApplicantsClientComponentQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"ApplicantsTabFragment">;
 };
-export type pageJobDetailApplicantsQuery = {
-  response: pageJobDetailApplicantsQuery$data;
-  variables: pageJobDetailApplicantsQuery$variables;
+export type JobDetailApplicantsClientComponentQuery = {
+  response: JobDetailApplicantsClientComponentQuery$data;
+  variables: JobDetailApplicantsClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -120,7 +120,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageJobDetailApplicantsQuery",
+    "name": "JobDetailApplicantsClientComponentQuery",
     "selections": [
       {
         "args": [
@@ -151,7 +151,7 @@ return {
       (v3/*: any*/)
     ],
     "kind": "Operation",
-    "name": "pageJobDetailApplicantsQuery",
+    "name": "JobDetailApplicantsClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -413,15 +413,15 @@ return {
     ]
   },
   "params": {
-    "id": "f17b20bfcc61a83a6cc79f62b2593234",
+    "id": "5f35ddda1f714c1e3f265bdf393bde90",
     "metadata": {},
-    "name": "pageJobDetailApplicantsQuery",
+    "name": "JobDetailApplicantsClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "939d5239dc473b5dfb30724a6bd3dc99";
+(node as any).hash = "3046f287cd55b0f141135ae3001bd9ba";
 
 export default node;

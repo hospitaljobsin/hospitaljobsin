@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<75b21638172499efd8a776ec36293e27>>
- * @relayHash 00c61fdacab0fc679e47f76f094734de
+ * @generated SignedSource<<f8c332bbde079cc3a87dcde759cbfdf7>>
+ * @relayHash 1c81b8cf043a3f78037403d1ddbf017c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,21 +9,21 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 00c61fdacab0fc679e47f76f094734de
+// @relayRequestID 1c81b8cf043a3f78037403d1ddbf017c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageJobApplicantDetailQuery$variables = {
+export type JobApplicantDetailClientComponentQuery$variables = {
   applicantSlug: string;
   jobSlug: string;
   orgSlug: string;
 };
-export type pageJobApplicantDetailQuery$data = {
+export type JobApplicantDetailClientComponentQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"ApplicantDetailViewFragment">;
 };
-export type pageJobApplicantDetailQuery = {
-  response: pageJobApplicantDetailQuery$data;
-  variables: pageJobApplicantDetailQuery$variables;
+export type JobApplicantDetailClientComponentQuery = {
+  response: JobApplicantDetailClientComponentQuery$data;
+  variables: JobApplicantDetailClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -144,7 +144,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageJobApplicantDetailQuery",
+    "name": "JobApplicantDetailClientComponentQuery",
     "selections": [
       {
         "args": [
@@ -175,7 +175,7 @@ return {
       (v0/*: any*/)
     ],
     "kind": "Operation",
-    "name": "pageJobApplicantDetailQuery",
+    "name": "JobApplicantDetailClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -863,15 +863,15 @@ return {
     ]
   },
   "params": {
-    "id": "00c61fdacab0fc679e47f76f094734de",
+    "id": "1c81b8cf043a3f78037403d1ddbf017c",
     "metadata": {},
-    "name": "pageJobApplicantDetailQuery",
+    "name": "JobApplicantDetailClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "28b42efbdea677c8d572227ed116cbcf";
+(node as any).hash = "52a14ea7ef13c973b59b9d142552b527";
 
 export default node;

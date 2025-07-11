@@ -1,32 +1,6 @@
 "use client";
-import type { pageDashboardViewQuery } from "@/__generated__/pageDashboardViewQuery.graphql";
-import DashboardView from "@/components/dashboard/DashboardView";
-import useOrganization from "@/lib/hooks/useOrganization";
-import { loadQuery, useRelayEnvironment } from "react-relay";
-import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
-
-export const PageDashboardViewQuery = graphql`
-  query pageDashboardViewQuery($slug: String!, $searchTerm: String, $sortBy: JobSortBy!) {
-	...DashboardViewFragment @arguments(slug: $slug, searchTerm: $searchTerm, sortBy: $sortBy)
-  }
-`;
+import DashboardClientComponent from "./DashboardClientComponent";
 
 export default function DashboardPage() {
-	const environment = useRelayEnvironment();
-	const { organizationSlug } = useOrganization();
-
-	invariant(organizationSlug, "Organization slug is required in headers");
-
-	const initialQueryRef = loadQuery<pageDashboardViewQuery>(
-		environment,
-		PageDashboardViewQuery,
-		{
-			slug: organizationSlug,
-			sortBy: "LAST_APPLICANT_APPLIED_AT",
-		},
-		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
-	);
-
-	return <DashboardView initialQueryRef={initialQueryRef} />;
+	return <DashboardClientComponent />;
 }

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c3445f8a5a4ea6653cfbe20720aae12f>>
- * @relayHash abf4e0e743bea839c944b251111d1e3e
+ * @generated SignedSource<<7bddcf1a6b5b29efa7eae5f02b6e5ec9>>
+ * @relayHash da522990d0ec2b81bf8e372682f2340a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,19 +9,19 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID abf4e0e743bea839c944b251111d1e3e
+// @relayRequestID da522990d0ec2b81bf8e372682f2340a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageNewJobQuery$variables = {
+export type NewJobClientComponentQuery$variables = {
   slug: string;
 };
-export type pageNewJobQuery$data = {
+export type NewJobClientComponentQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"NewJobContentFragment">;
 };
-export type pageNewJobQuery = {
-  response: pageNewJobQuery$data;
-  variables: pageNewJobQuery$variables;
+export type NewJobClientComponentQuery = {
+  response: NewJobClientComponentQuery$data;
+  variables: NewJobClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -51,7 +51,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageNewJobQuery",
+    "name": "NewJobClientComponentQuery",
     "selections": [
       {
         "args": (v1/*: any*/),
@@ -66,7 +66,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "pageNewJobQuery",
+    "name": "NewJobClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -112,15 +112,15 @@ return {
     ]
   },
   "params": {
-    "id": "abf4e0e743bea839c944b251111d1e3e",
+    "id": "da522990d0ec2b81bf8e372682f2340a",
     "metadata": {},
-    "name": "pageNewJobQuery",
+    "name": "NewJobClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "1be56f94cc67a9abddf7af3d3eb377a4";
+(node as any).hash = "aa3802a0bd981449b97596ac4831954b";
 
 export default node;

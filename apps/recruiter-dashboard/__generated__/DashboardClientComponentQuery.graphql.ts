@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0ae967da7032fd8ccd7e9e4b5a3a51e8>>
- * @relayHash c54c2ea84d676bf31a302d54915b360a
+ * @generated SignedSource<<3256d1367e1a9b66944e076088a32fac>>
+ * @relayHash 26a202bb9ae4eb39fb1a771a8b2a6152
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,22 +9,22 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c54c2ea84d676bf31a302d54915b360a
+// @relayRequestID 26a202bb9ae4eb39fb1a771a8b2a6152
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobSortBy = "ALPHABETICAL" | "CREATED_AT" | "LAST_APPLICANT_APPLIED_AT" | "UPDATED_AT" | "%future added value";
-export type pageDashboardViewQuery$variables = {
+export type DashboardClientComponentQuery$variables = {
   searchTerm?: string | null | undefined;
   slug: string;
   sortBy: JobSortBy;
 };
-export type pageDashboardViewQuery$data = {
+export type DashboardClientComponentQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"DashboardViewFragment">;
 };
-export type pageDashboardViewQuery = {
-  response: pageDashboardViewQuery$data;
-  variables: pageDashboardViewQuery$variables;
+export type DashboardClientComponentQuery = {
+  response: DashboardClientComponentQuery$data;
+  variables: DashboardClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -90,7 +90,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageDashboardViewQuery",
+    "name": "DashboardClientComponentQuery",
     "selections": [
       {
         "args": [
@@ -113,7 +113,7 @@ return {
       (v2/*: any*/)
     ],
     "kind": "Operation",
-    "name": "pageDashboardViewQuery",
+    "name": "DashboardClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -406,15 +406,15 @@ return {
     ]
   },
   "params": {
-    "id": "c54c2ea84d676bf31a302d54915b360a",
+    "id": "26a202bb9ae4eb39fb1a771a8b2a6152",
     "metadata": {},
-    "name": "pageDashboardViewQuery",
+    "name": "DashboardClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "2baf712dc12f851f98881fbf4e8b2cb1";
+(node as any).hash = "5fe248bdea699c6be20e842d1c05d36b";
 
 export default node;

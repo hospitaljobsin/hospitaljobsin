@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<df23dd37d322bd8417e45ec79415e7dc>>
- * @relayHash 2bdbc51e3253946624c9c7a100350d8f
+ * @generated SignedSource<<f41cd0b3ff366c8db7a7153e03a91d8a>>
+ * @relayHash 7c4aebeb3c97b6c9ce9292a6532fbb7c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,20 +9,20 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 2bdbc51e3253946624c9c7a100350d8f
+// @relayRequestID 7c4aebeb3c97b6c9ce9292a6532fbb7c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageJobApplicationFormSettingsQuery$variables = {
+export type JobDetailAnalyticsClientComponentQuery$variables = {
   jobSlug: string;
   orgSlug: string;
 };
-export type pageJobApplicationFormSettingsQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"ApplicationFormTabFragment">;
+export type JobDetailAnalyticsClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"JobAnalyticsTabFragment">;
 };
-export type pageJobApplicationFormSettingsQuery = {
-  response: pageJobApplicationFormSettingsQuery$data;
-  variables: pageJobApplicationFormSettingsQuery$variables;
+export type JobDetailAnalyticsClientComponentQuery = {
+  response: JobDetailAnalyticsClientComponentQuery$data;
+  variables: JobDetailAnalyticsClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -49,16 +49,15 @@ v3 = {
   "storageKey": null
 },
 v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v5 = {
   "kind": "InlineFragment",
   "selections": [
-    (v4/*: any*/)
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    }
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -71,7 +70,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageJobApplicationFormSettingsQuery",
+    "name": "JobDetailAnalyticsClientComponentQuery",
     "selections": [
       {
         "args": [
@@ -83,7 +82,7 @@ return {
           (v2/*: any*/)
         ],
         "kind": "FragmentSpread",
-        "name": "ApplicationFormTabFragment"
+        "name": "JobAnalyticsTabFragment"
       }
     ],
     "type": "Query",
@@ -96,7 +95,7 @@ return {
       (v0/*: any*/)
     ],
     "kind": "Operation",
-    "name": "pageJobApplicationFormSettingsQuery",
+    "name": "JobDetailAnalyticsClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -116,7 +115,7 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "isAdmin",
+                "name": "isMember",
                 "storageKey": null
               },
               {
@@ -137,48 +136,35 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
-                        "concreteType": "JobApplicationForm",
+                        "kind": "ScalarField",
+                        "name": "viewCount",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "JobMetricPoint",
                         "kind": "LinkedField",
-                        "name": "applicationForm",
-                        "plural": false,
+                        "name": "viewMetricPoints",
+                        "plural": true,
                         "selections": [
                           {
                             "alias": null,
                             "args": null,
-                            "concreteType": "ApplicationField",
-                            "kind": "LinkedField",
-                            "name": "fields",
-                            "plural": true,
-                            "selections": [
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "fieldName",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "defaultValue",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "isRequired",
-                                "storageKey": null
-                              }
-                            ],
+                            "kind": "ScalarField",
+                            "name": "timestamp",
                             "storageKey": null
                           },
-                          (v4/*: any*/)
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "count",
+                            "storageKey": null
+                          }
                         ],
                         "storageKey": null
                       }
@@ -186,7 +172,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v5/*: any*/)
+                  (v4/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -194,22 +180,22 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v5/*: any*/)
+          (v4/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "2bdbc51e3253946624c9c7a100350d8f",
+    "id": "7c4aebeb3c97b6c9ce9292a6532fbb7c",
     "metadata": {},
-    "name": "pageJobApplicationFormSettingsQuery",
+    "name": "JobDetailAnalyticsClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "eab16d56e0b0f1ea88f365de059282c1";
+(node as any).hash = "90cc3c189299573fbc1ae8552707a1a7";
 
 export default node;
