@@ -1,9 +1,9 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
 import type { MemberSettingsTabFragment$key } from "@/__generated__/MemberSettingsTabFragment.graphql";
-import PageOrganizationMemberSettingsQuery, {
-	type pageOrganizationMemberSettingsQuery,
-} from "@/__generated__/pageOrganizationMemberSettingsQuery.graphql";
+import OrganizationMemberSettingsClientComponentQuery, {
+	type OrganizationMemberSettingsClientComponentQuery as OrganizationMemberSettingsClientComponentQueryType,
+} from "@/__generated__/OrganizationMemberSettingsClientComponentQuery.graphql";
 import NotFoundView from "@/components/NotFoundView";
 import { useState } from "react";
 import {
@@ -44,11 +44,11 @@ const MemberSettingsTabFragment = graphql`
 `;
 
 export default function MemberSettingsTab(props: {
-	initialQueryRef: PreloadedQuery<pageOrganizationMemberSettingsQuery>;
+	initialQueryRef: PreloadedQuery<OrganizationMemberSettingsClientComponentQueryType>;
 }) {
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 	const data = usePreloadedQuery(
-		PageOrganizationMemberSettingsQuery,
+		OrganizationMemberSettingsClientComponentQuery,
 		props.initialQueryRef,
 	);
 	const query = useFragment<MemberSettingsTabFragment$key>(

@@ -1,8 +1,8 @@
 "use client";
 import type { InviteSettingsTabFragment$key } from "@/__generated__/InviteSettingsTabFragment.graphql";
-import PageOrganizationInviteSettingsQuery, {
-	type pageOrganizationInviteSettingsQuery,
-} from "@/__generated__/pageOrganizationInviteSettingsQuery.graphql";
+import OrganizationInviteSettingsClientComponentQuery, {
+	type OrganizationInviteSettingsClientComponentQuery as OrganizationInviteSettingsClientComponentQueryType,
+} from "@/__generated__/OrganizationInviteSettingsClientComponentQuery.graphql";
 import NotFoundView from "@/components/NotFoundView";
 import { useState } from "react";
 import {
@@ -36,11 +36,11 @@ const InviteSettingsTabFragment = graphql`
 `;
 
 export default function InviteSettingsTab(props: {
-	initialQueryRef: PreloadedQuery<pageOrganizationInviteSettingsQuery>;
+	initialQueryRef: PreloadedQuery<OrganizationInviteSettingsClientComponentQueryType>;
 }) {
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 	const data = usePreloadedQuery(
-		PageOrganizationInviteSettingsQuery,
+		OrganizationInviteSettingsClientComponentQuery,
 		props.initialQueryRef,
 	);
 	const query = useFragment<InviteSettingsTabFragment$key>(

@@ -1,9 +1,9 @@
 /* eslint-disable relay/must-colocate-fragment-spreads */
 "use client";
 import type { GeneralSettingsTabFragment$key } from "@/__generated__/GeneralSettingsTabFragment.graphql";
-import PageOrganizationGeneralSettingsQuery, {
-	type pageOrganizationGeneralSettingsQuery,
-} from "@/__generated__/pageOrganizationGeneralSettingsQuery.graphql";
+import OrganizationGeneralSettingsClientComponentQuery, {
+	type OrganizationGeneralSettingsClientComponentQuery as OrganizationGeneralSettingsClientComponentQueryType,
+} from "@/__generated__/OrganizationGeneralSettingsClientComponentQuery.graphql";
 import NotFoundView from "@/components/NotFoundView";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
 import { Button, Card, CardBody, Divider, useDisclosure } from "@heroui/react";
@@ -46,10 +46,10 @@ const GeneralSettingsTabFragment = graphql`
 export default function GeneralSettingsTab({
 	initialQueryRef,
 }: {
-	initialQueryRef: PreloadedQuery<pageOrganizationGeneralSettingsQuery>;
+	initialQueryRef: PreloadedQuery<OrganizationGeneralSettingsClientComponentQueryType>;
 }) {
 	const rootQuery = usePreloadedQuery(
-		PageOrganizationGeneralSettingsQuery,
+		OrganizationGeneralSettingsClientComponentQuery,
 		initialQueryRef,
 	);
 	const data = useFragment<GeneralSettingsTabFragment$key>(
