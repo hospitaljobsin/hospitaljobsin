@@ -4,9 +4,9 @@ import type {
 	JobApplicantsSortBy,
 } from "@/__generated__/ApplicantListPaginationQuery.graphql";
 import type { ApplicantsTabFragment$key } from "@/__generated__/ApplicantsTabFragment.graphql";
-import PageJobDetailApplicantsQuery, {
-	type pageJobDetailApplicantsQuery,
-} from "@/__generated__/pageJobDetailApplicantsQuery.graphql";
+import JobDetailApplicantsClientComponentQuery, {
+	type JobDetailApplicantsClientComponentQuery as JobDetailApplicantsClientComponentQueryType,
+} from "@/__generated__/JobDetailApplicantsClientComponentQuery.graphql";
 import JobNotFoundView from "@/components/JobNotFoundView";
 import NotFoundView from "@/components/NotFoundView";
 import { useState } from "react";
@@ -52,14 +52,14 @@ const ApplicantsTabFragment = graphql`
 `;
 
 export default function ApplicantsTab(props: {
-	initialQueryRef: PreloadedQuery<pageJobDetailApplicantsQuery>;
+	initialQueryRef: PreloadedQuery<JobDetailApplicantsClientComponentQueryType>;
 }) {
 	const [searchTerm, setSearchTerm] = useState<string | null>(null);
 	const [status, setStatus] = useState<JobApplicantStatus | "ALL">("ALL");
 	const [sortBy, setSortBy] = useState<JobApplicantsSortBy>("OVERALL_SCORE");
 	const [isLoading, setIsLoading] = useState(false);
 	const data = usePreloadedQuery(
-		PageJobDetailApplicantsQuery,
+		JobDetailApplicantsClientComponentQuery,
 		props.initialQueryRef,
 	);
 	const query = useFragment<ApplicantsTabFragment$key>(

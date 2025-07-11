@@ -1,8 +1,8 @@
 "use client";
+import JobGeneralSettingsClientComponentQuery, {
+	type JobGeneralSettingsClientComponentQuery as JobGeneralSettingsClientComponentQueryType,
+} from "@/__generated__/JobGeneralSettingsClientComponentQuery.graphql";
 import type { JobSettingsGeneralTabFragment$key } from "@/__generated__/JobSettingsGeneralTabFragment.graphql";
-import PageJobGeneralSettingsQuery, {
-	type pageJobGeneralSettingsQuery,
-} from "@/__generated__/pageJobGeneralSettingsQuery.graphql";
 import JobNotFoundView from "@/components/JobNotFoundView";
 import NotFoundView from "@/components/NotFoundView";
 import { useCheckSudoMode } from "@/lib/hooks/useCheckSudoMode";
@@ -48,10 +48,10 @@ const JobSettingsGeneralTabFragment = graphql`
 `;
 
 export default function JobSettingsGeneralTab(props: {
-	initialQueryRef: PreloadedQuery<pageJobGeneralSettingsQuery>;
+	initialQueryRef: PreloadedQuery<JobGeneralSettingsClientComponentQueryType>;
 }) {
 	const data = usePreloadedQuery(
-		PageJobGeneralSettingsQuery,
+		JobGeneralSettingsClientComponentQuery,
 		props.initialQueryRef,
 	);
 	const query = useFragment<JobSettingsGeneralTabFragment$key>(

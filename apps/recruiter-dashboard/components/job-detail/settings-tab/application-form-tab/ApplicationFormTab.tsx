@@ -1,8 +1,8 @@
 "use client";
 import type { ApplicationFormTabFragment$key } from "@/__generated__/ApplicationFormTabFragment.graphql";
-import PageJobApplicationFormSettingsQuery, {
-	type pageJobApplicationFormSettingsQuery,
-} from "@/__generated__/pageJobApplicationFormSettingsQuery.graphql";
+import JobApplicationFormSettingsClientComponentQuery, {
+	type JobApplicationFormSettingsClientComponentQuery as JobApplicationFormSettingsClientComponentQueryType,
+} from "@/__generated__/JobApplicationFormSettingsClientComponentQuery.graphql";
 import {
 	type PreloadedQuery,
 	graphql,
@@ -23,10 +23,10 @@ const ApplicationFormTabFragment = graphql`
 `;
 
 export default function ApplicationFormTab(props: {
-	initialQueryRef: PreloadedQuery<pageJobApplicationFormSettingsQuery>;
+	initialQueryRef: PreloadedQuery<JobApplicationFormSettingsClientComponentQueryType>;
 }) {
 	const data = usePreloadedQuery(
-		PageJobApplicationFormSettingsQuery,
+		JobApplicationFormSettingsClientComponentQuery,
 		props.initialQueryRef,
 	);
 	const query = useFragment<ApplicationFormTabFragment$key>(

@@ -1,8 +1,8 @@
 "use client";
 import type { JobAnalyticsTabFragment$key } from "@/__generated__/JobAnalyticsTabFragment.graphql";
-import PageJobDetailQuery, {
-	type pageJobDetailQuery,
-} from "@/__generated__/pageJobDetailQuery.graphql";
+import JobDetailAnalyticsClientComponentQuery, {
+	type JobDetailAnalyticsClientComponentQuery as JobDetailAnalyticsClientComponentQueryType,
+} from "@/__generated__/JobDetailAnalyticsClientComponentQuery.graphql";
 import JobNotFoundView from "@/components/JobNotFoundView";
 import NotFoundView from "@/components/NotFoundView";
 import {
@@ -37,9 +37,12 @@ const JobAnalyticsTabFragment = graphql`
 `;
 
 export default function JobAnalyticsTab(props: {
-	initialQueryRef: PreloadedQuery<pageJobDetailQuery>;
+	initialQueryRef: PreloadedQuery<JobDetailAnalyticsClientComponentQueryType>;
 }) {
-	const data = usePreloadedQuery(PageJobDetailQuery, props.initialQueryRef);
+	const data = usePreloadedQuery(
+		JobDetailAnalyticsClientComponentQuery,
+		props.initialQueryRef,
+	);
 	const query = useFragment<JobAnalyticsTabFragment$key>(
 		JobAnalyticsTabFragment,
 		data,

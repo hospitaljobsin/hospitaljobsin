@@ -1,8 +1,8 @@
 "use client";
 import type { ApplicantDetailViewFragment$key } from "@/__generated__/ApplicantDetailViewFragment.graphql";
-import PageJobApplicantDetailQuery, {
-	type pageJobApplicantDetailQuery,
-} from "@/__generated__/pageJobApplicantDetailQuery.graphql";
+import JobApplicantDetailClientComponentQuery, {
+	type JobApplicantDetailClientComponentQuery as JobApplicantDetailClientComponentQueryType,
+} from "@/__generated__/JobApplicantDetailClientComponentQuery.graphql";
 import ApplicantNotFoundView from "@/components/ApplicantNotFoundView";
 import JobNotFoundView from "@/components/JobNotFoundView";
 import NotFoundView from "@/components/NotFoundView";
@@ -47,10 +47,10 @@ const ApplicantDetailViewFragment = graphql`
 `;
 
 export default function ApplicantDetailView(props: {
-	initialQueryRef: PreloadedQuery<pageJobApplicantDetailQuery>;
+	initialQueryRef: PreloadedQuery<JobApplicantDetailClientComponentQueryType>;
 }) {
 	const data = usePreloadedQuery(
-		PageJobApplicantDetailQuery,
+		JobApplicantDetailClientComponentQuery,
 		props.initialQueryRef,
 	);
 	const query = useFragment<ApplicantDetailViewFragment$key>(
