@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<011fd4f1464667b8ce3f80676f2c21d6>>
- * @relayHash 6b5e6003b704e70cd5beffeb476cd952
+ * @generated SignedSource<<d5ec5fc07143d2442e6a7050dca2b8e0>>
+ * @relayHash 149b99bdeacbc9c6d801706e9cb9d12e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,20 +9,20 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 6b5e6003b704e70cd5beffeb476cd952
+// @relayRequestID 149b99bdeacbc9c6d801706e9cb9d12e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageOrganizationMemberSettingsQuery$variables = {
+export type OrganizationMemberSettingsClientComponentQuery$variables = {
   searchTerm?: string | null | undefined;
   slug: string;
 };
-export type pageOrganizationMemberSettingsQuery$data = {
+export type OrganizationMemberSettingsClientComponentQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"MemberSettingsTabFragment">;
 };
-export type pageOrganizationMemberSettingsQuery = {
-  response: pageOrganizationMemberSettingsQuery$data;
-  variables: pageOrganizationMemberSettingsQuery$variables;
+export type OrganizationMemberSettingsClientComponentQuery = {
+  response: OrganizationMemberSettingsClientComponentQuery$data;
+  variables: OrganizationMemberSettingsClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -84,7 +84,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageOrganizationMemberSettingsQuery",
+    "name": "OrganizationMemberSettingsClientComponentQuery",
     "selections": [
       {
         "args": [
@@ -105,7 +105,7 @@ return {
       (v0/*: any*/)
     ],
     "kind": "Operation",
-    "name": "pageOrganizationMemberSettingsQuery",
+    "name": "OrganizationMemberSettingsClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -299,15 +299,15 @@ return {
     ]
   },
   "params": {
-    "id": "6b5e6003b704e70cd5beffeb476cd952",
+    "id": "149b99bdeacbc9c6d801706e9cb9d12e",
     "metadata": {},
-    "name": "pageOrganizationMemberSettingsQuery",
+    "name": "OrganizationMemberSettingsClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "21517bea27969af9eafbfdf79bc7f258";
+(node as any).hash = "7b0d41379db26df25f89d90485cf62da";
 
 export default node;

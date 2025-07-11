@@ -1,31 +1,23 @@
 "use client";
-import type { LandingClientComponentFragment$key } from "@/__generated__/LandingClientComponentFragment.graphql";
-import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
+import type { LandingClientComponentQuery as LandingClientComponentQueryType } from "@/__generated__/LandingClientComponentQuery.graphql";
 import LandingView from "@/components/landing/LandingView";
-import type { PreloadedQuery } from "react-relay";
-import { useFragment, usePreloadedQuery } from "react-relay";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
-import { LandingPageQuery } from "./page";
 
-const LandingClientComponentFragment = graphql`
-  fragment LandingClientComponentFragment on Query   @argumentDefinitions(
-    searchTerm: { type: "String" }
-    coordinates: { type: "CoordinatesInput"}
-	proximityKm: { type: "Float" }
-  )  {
-    ...LandingViewFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
-  }
+const LandingClientComponentQuery = graphql`
+query LandingClientComponentQuery($searchTerm: String, $coordinates: CoordinatesInput, $proximityKm: Float) {
+		...LandingViewFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
+	}
 `;
 
-export default function LandingClientComponent({
-	queryReference,
-}: {
-	queryReference: PreloadedQuery<pageLandingQuery>;
-}) {
-	const data = usePreloadedQuery(LandingPageQuery, queryReference);
-	const query = useFragment<LandingClientComponentFragment$key>(
-		LandingClientComponentFragment,
-		data,
+export default function LandingClientComponent() {
+	const environment = useRelayEnvironment();
+	const queryReference = loadQuery<LandingClientComponentQueryType>(
+		environment,
+		LandingClientComponentQuery,
+		{},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
-	return <LandingView query={query} />;
+
+	return <LandingView queryReference={queryReference} />;
 }

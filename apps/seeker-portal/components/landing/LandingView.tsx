@@ -1,9 +1,16 @@
 "use client";
+import LandingClientComponentQuery, {
+	type LandingClientComponentQuery as LandingClientComponentQueryType,
+} from "@/__generated__/LandingClientComponentQuery.graphql";
 import type { LandingViewFragment$key } from "@/__generated__/LandingViewFragment.graphql";
 import { TrendingUpIcon } from "lucide-react";
 import Image from "next/image";
 import { Suspense } from "react";
-import { useFragment } from "react-relay";
+import {
+	type PreloadedQuery,
+	useFragment,
+	usePreloadedQuery,
+} from "react-relay";
 import { graphql } from "relay-runtime";
 import LandingHeader from "../layout/LandingHeader";
 import LandingHeaderSkeleton from "../layout/LandingHeaderSkeleton";
@@ -23,11 +30,12 @@ const LandingViewFragment = graphql`
 `;
 
 export default function LandingView({
-	query,
+	queryReference,
 }: {
-	query: LandingViewFragment$key;
+	queryReference: PreloadedQuery<LandingClientComponentQueryType>;
 }) {
-	const data = useFragment(LandingViewFragment, query);
+	const query = usePreloadedQuery(LandingClientComponentQuery, queryReference);
+	const data = useFragment<LandingViewFragment$key>(LandingViewFragment, query);
 
 	return (
 		<div className="w-full flex flex-col bg-background-600 h-full">

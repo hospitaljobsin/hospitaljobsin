@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<612bfeda4dea6b7725748691598a740e>>
- * @relayHash d908d5e9686e8f591c28f7ccd4839c22
+ * @generated SignedSource<<0614d8ff4057026b074926e0c6025967>>
+ * @relayHash 666f176f662e7eeb10613e828f036671
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d908d5e9686e8f591c28f7ccd4839c22
+// @relayRequestID 666f176f662e7eeb10613e828f036671
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -17,17 +17,17 @@ export type CoordinatesInput = {
   latitude: number;
   longitude: number;
 };
-export type pageLandingQuery$variables = {
+export type LandingClientComponentQuery$variables = {
   coordinates?: CoordinatesInput | null | undefined;
   proximityKm?: number | null | undefined;
   searchTerm?: string | null | undefined;
 };
-export type pageLandingQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"LandingClientComponentFragment">;
+export type LandingClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"LandingViewFragment">;
 };
-export type pageLandingQuery = {
-  response: pageLandingQuery$data;
-  variables: pageLandingQuery$variables;
+export type LandingClientComponentQuery = {
+  response: LandingClientComponentQuery$data;
+  variables: LandingClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -101,7 +101,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageLandingQuery",
+    "name": "LandingClientComponentQuery",
     "selections": [
       {
         "args": [
@@ -110,7 +110,7 @@ return {
           (v5/*: any*/)
         ],
         "kind": "FragmentSpread",
-        "name": "LandingClientComponentFragment"
+        "name": "LandingViewFragment"
       }
     ],
     "type": "Query",
@@ -124,7 +124,7 @@ return {
       (v1/*: any*/)
     ],
     "kind": "Operation",
-    "name": "pageLandingQuery",
+    "name": "LandingClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -393,15 +393,15 @@ return {
     ]
   },
   "params": {
-    "id": "d908d5e9686e8f591c28f7ccd4839c22",
+    "id": "666f176f662e7eeb10613e828f036671",
     "metadata": {},
-    "name": "pageLandingQuery",
+    "name": "LandingClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "81740774bf5d10d781516123a3e0c460";
+(node as any).hash = "b03ae2cc9ebafca86b05483d91f06c6e";
 
 export default node;

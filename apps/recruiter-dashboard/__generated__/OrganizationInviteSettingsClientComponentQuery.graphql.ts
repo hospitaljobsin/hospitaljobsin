@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<ff804537516f57a31a9910ff4de5828c>>
- * @relayHash 009be481fadd42cc342ec19fc1fb4af3
+ * @generated SignedSource<<a52177f8d376ffd7faef2d20f1986863>>
+ * @relayHash 348e8331772589e5f956aea60b8a9079
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,20 +9,20 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 009be481fadd42cc342ec19fc1fb4af3
+// @relayRequestID 348e8331772589e5f956aea60b8a9079
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageOrganizationInviteSettingsQuery$variables = {
+export type OrganizationInviteSettingsClientComponentQuery$variables = {
   searchTerm?: string | null | undefined;
   slug: string;
 };
-export type pageOrganizationInviteSettingsQuery$data = {
+export type OrganizationInviteSettingsClientComponentQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"InviteSettingsTabFragment">;
 };
-export type pageOrganizationInviteSettingsQuery = {
-  response: pageOrganizationInviteSettingsQuery$data;
-  variables: pageOrganizationInviteSettingsQuery$variables;
+export type OrganizationInviteSettingsClientComponentQuery = {
+  response: OrganizationInviteSettingsClientComponentQuery$data;
+  variables: OrganizationInviteSettingsClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -76,7 +76,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageOrganizationInviteSettingsQuery",
+    "name": "OrganizationInviteSettingsClientComponentQuery",
     "selections": [
       {
         "args": [
@@ -97,7 +97,7 @@ return {
       (v0/*: any*/)
     ],
     "kind": "Operation",
-    "name": "pageOrganizationInviteSettingsQuery",
+    "name": "OrganizationInviteSettingsClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -283,15 +283,15 @@ return {
     ]
   },
   "params": {
-    "id": "009be481fadd42cc342ec19fc1fb4af3",
+    "id": "348e8331772589e5f956aea60b8a9079",
     "metadata": {},
-    "name": "pageOrganizationInviteSettingsQuery",
+    "name": "OrganizationInviteSettingsClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "343bbdce448d4d0dda907ef1370ecbbe";
+(node as any).hash = "cb92bfdb8ff76d770ef55ef2b901c9cd";
 
 export default node;
