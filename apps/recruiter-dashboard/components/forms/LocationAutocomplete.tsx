@@ -104,7 +104,7 @@ export default function LocationAutocomplete({
 		if (debouncedLocation && debouncedLocation.length >= 3) {
 			setIsLoading(true);
 			startTransition(() => {
-				loadQuery<LocationAutocompleteQuery>(
+				loadQuery(
 					{ searchTerm: debouncedLocation },
 					{
 						fetchPolicy: "store-or-network",
