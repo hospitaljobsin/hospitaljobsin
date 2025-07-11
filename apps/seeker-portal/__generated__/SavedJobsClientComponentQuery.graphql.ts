@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<48d1449fcbed5b0c10f87974b788600c>>
- * @relayHash 267a1aed60bca62c3250f526b03ef2a5
+ * @generated SignedSource<<76bcb203e908982b2a3212b435321884>>
+ * @relayHash 564e90e4a96b315926c54c02afd422d5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 267a1aed60bca62c3250f526b03ef2a5
+// @relayRequestID 564e90e4a96b315926c54c02afd422d5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageSavedJobsQuery$variables = Record<PropertyKey, never>;
-export type pageSavedJobsQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"SavedJobsClientComponentFragment">;
+export type SavedJobsClientComponentQuery$variables = Record<PropertyKey, never>;
+export type SavedJobsClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"SavedJobsViewFragment">;
 };
-export type pageSavedJobsQuery = {
-  response: pageSavedJobsQuery$data;
-  variables: pageSavedJobsQuery$variables;
+export type SavedJobsClientComponentQuery = {
+  response: SavedJobsClientComponentQuery$data;
+  variables: SavedJobsClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -56,12 +56,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageSavedJobsQuery",
+    "name": "SavedJobsClientComponentQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "SavedJobsClientComponentFragment"
+        "name": "SavedJobsViewFragment"
       }
     ],
     "type": "Query",
@@ -71,7 +71,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "pageSavedJobsQuery",
+    "name": "SavedJobsClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -295,15 +295,15 @@ return {
     ]
   },
   "params": {
-    "id": "267a1aed60bca62c3250f526b03ef2a5",
+    "id": "564e90e4a96b315926c54c02afd422d5",
     "metadata": {},
-    "name": "pageSavedJobsQuery",
+    "name": "SavedJobsClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "738e0b402ce3766e89f780ce6fa32dfd";
+(node as any).hash = "8a1635b390dc997c65810e3fa96c6718";
 
 export default node;

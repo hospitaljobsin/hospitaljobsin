@@ -1,6 +1,14 @@
 "use client";
-import { graphql, useFragment } from "react-relay";
+import SavedJobsClientComponentQuery, {
+	type SavedJobsClientComponentQuery as SavedJobsClientComponentQueryType,
+} from "@/__generated__/SavedJobsClientComponentQuery.graphql";
 import type { SavedJobsViewFragment$key } from "@/__generated__/SavedJobsViewFragment.graphql";
+import {
+	type PreloadedQuery,
+	graphql,
+	useFragment,
+	usePreloadedQuery,
+} from "react-relay";
 import SavedJobsList from "./SavedJobsList";
 
 const SavedJobsViewFragment = graphql`
@@ -10,15 +18,22 @@ const SavedJobsViewFragment = graphql`
 `;
 
 export default function SavedView({
-	query,
+	queryReference,
 }: {
-	query: SavedJobsViewFragment$key;
+	queryReference: PreloadedQuery<SavedJobsClientComponentQueryType>;
 }) {
-	const data = useFragment(SavedJobsViewFragment, query);
+	const query = usePreloadedQuery(
+		SavedJobsClientComponentQuery,
+		queryReference,
+	);
+	const data = useFragment<SavedJobsViewFragment$key>(
+		SavedJobsViewFragment,
+		query,
+	);
 
 	return (
-		<>
+		<div className="w-full flex flex-col h-full py-8">
 			<SavedJobsList rootQuery={data} />
-		</>
+		</div>
 	);
 }

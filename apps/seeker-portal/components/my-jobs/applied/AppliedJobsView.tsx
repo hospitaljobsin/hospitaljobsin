@@ -1,6 +1,14 @@
 "use client";
-import { graphql, useFragment } from "react-relay";
+import AppliedJobsClientComponentQuery, {
+	type AppliedJobsClientComponentQuery as AppliedJobsClientComponentQueryType,
+} from "@/__generated__/AppliedJobsClientComponentQuery.graphql";
 import type { AppliedJobsViewFragment$key } from "@/__generated__/AppliedJobsViewFragment.graphql";
+import {
+	type PreloadedQuery,
+	graphql,
+	useFragment,
+	usePreloadedQuery,
+} from "react-relay";
 import AppliedJobsList from "./AppliedJobsList";
 
 const AppliedJobsViewFragment = graphql`
@@ -10,15 +18,22 @@ const AppliedJobsViewFragment = graphql`
 `;
 
 export default function AppliedView({
-	query,
+	queryReference,
 }: {
-	query: AppliedJobsViewFragment$key;
+	queryReference: PreloadedQuery<AppliedJobsClientComponentQueryType>;
 }) {
-	const data = useFragment(AppliedJobsViewFragment, query);
+	const query = usePreloadedQuery(
+		AppliedJobsClientComponentQuery,
+		queryReference,
+	);
+	const data = useFragment<AppliedJobsViewFragment$key>(
+		AppliedJobsViewFragment,
+		query,
+	);
 
 	return (
-		<>
+		<div className="w-full flex flex-col h-full py-8">
 			<AppliedJobsList rootQuery={data} />
-		</>
+		</div>
 	);
 }

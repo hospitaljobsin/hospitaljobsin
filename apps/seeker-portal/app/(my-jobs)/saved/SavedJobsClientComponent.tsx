@@ -1,27 +1,22 @@
 "use client";
-import type { PreloadedQuery } from "react-relay";
-import { useFragment, usePreloadedQuery } from "react-relay";
-import { graphql } from "relay-runtime";
-import type { pageSavedJobsQuery } from "@/__generated__/pageSavedJobsQuery.graphql";
-import type { SavedJobsClientComponentFragment$key } from "@/__generated__/SavedJobsClientComponentFragment.graphql";
+import type { SavedJobsClientComponentQuery as SavedJobsClientComponentQueryType } from "@/__generated__/SavedJobsClientComponentQuery.graphql";
 import SavedJobsView from "@/components/my-jobs/saved/SavedJobsView";
-import { SavedJobsPageQuery } from "./page";
+import { loadQuery, useRelayEnvironment } from "react-relay";
+import { graphql } from "relay-runtime";
 
-const SavedJobsClientComponentFragment = graphql`
-  fragment SavedJobsClientComponentFragment on Query{
+const SavedJobsClientComponentQuery = graphql`
+  query SavedJobsClientComponentQuery {
     ...SavedJobsViewFragment
   }
 `;
 
-export default function SavedJobsClientComponent({
-	queryReference,
-}: {
-	queryReference: PreloadedQuery<pageSavedJobsQuery>;
-}) {
-	const data = usePreloadedQuery(SavedJobsPageQuery, queryReference);
-	const query = useFragment<SavedJobsClientComponentFragment$key>(
-		SavedJobsClientComponentFragment,
-		data,
+export default function SavedJobsClientComponent() {
+	const environment = useRelayEnvironment();
+	const queryReference = loadQuery<SavedJobsClientComponentQueryType>(
+		environment,
+		SavedJobsClientComponentQuery,
+		{},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
-	return <SavedJobsView query={query} />;
+	return <SavedJobsView queryReference={queryReference} />;
 }

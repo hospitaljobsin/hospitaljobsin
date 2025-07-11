@@ -1,27 +1,22 @@
 "use client";
-import type { PreloadedQuery } from "react-relay";
-import { useFragment, usePreloadedQuery } from "react-relay";
-import { graphql } from "relay-runtime";
-import type { AppliedJobsClientComponentFragment$key } from "@/__generated__/AppliedJobsClientComponentFragment.graphql";
-import type { pageAppliedJobsQuery } from "@/__generated__/pageAppliedJobsQuery.graphql";
+import type { AppliedJobsClientComponentQuery as AppliedJobsClientComponentQueryType } from "@/__generated__/AppliedJobsClientComponentQuery.graphql";
 import AppliedJobsView from "@/components/my-jobs/applied/AppliedJobsView";
-import { AppliedJobsPageQuery } from "./page";
+import { loadQuery, useRelayEnvironment } from "react-relay";
+import { graphql } from "relay-runtime";
 
-const AppliedJobsClientComponentFragment = graphql`
-  fragment AppliedJobsClientComponentFragment on Query{
-    ...AppliedJobsViewFragment
-  }
+const AppliedJobsClientComponentQuery = graphql`
+	query AppliedJobsClientComponentQuery {
+		...AppliedJobsViewFragment
+	}
 `;
 
-export default function AppliedJobsClientComponent({
-	queryReference,
-}: {
-	queryReference: PreloadedQuery<pageAppliedJobsQuery>;
-}) {
-	const data = usePreloadedQuery(AppliedJobsPageQuery, queryReference);
-	const query = useFragment<AppliedJobsClientComponentFragment$key>(
-		AppliedJobsClientComponentFragment,
-		data,
+export default function AppliedJobsClientComponent() {
+	const environment = useRelayEnvironment();
+	const queryReference = loadQuery<AppliedJobsClientComponentQueryType>(
+		environment,
+		AppliedJobsClientComponentQuery,
+		{},
+		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
-	return <AppliedJobsView query={query} />;
+	return <AppliedJobsView queryReference={queryReference} />;
 }

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8daa325487d14ca4205c9e55cb5c4072>>
- * @relayHash 3ef23715fddd3c66da1877d1bb5ef4f4
+ * @generated SignedSource<<af00d977651f7d8412f13a88d09aaf78>>
+ * @relayHash 0bfe4ee8506804552e457a1c319f033f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 3ef23715fddd3c66da1877d1bb5ef4f4
+// @relayRequestID 0bfe4ee8506804552e457a1c319f033f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type pageAppliedJobsQuery$variables = Record<PropertyKey, never>;
-export type pageAppliedJobsQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"AppliedJobsClientComponentFragment">;
+export type AppliedJobsClientComponentQuery$variables = Record<PropertyKey, never>;
+export type AppliedJobsClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"AppliedJobsViewFragment">;
 };
-export type pageAppliedJobsQuery = {
-  response: pageAppliedJobsQuery$data;
-  variables: pageAppliedJobsQuery$variables;
+export type AppliedJobsClientComponentQuery = {
+  response: AppliedJobsClientComponentQuery$data;
+  variables: AppliedJobsClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -56,12 +56,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageAppliedJobsQuery",
+    "name": "AppliedJobsClientComponentQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "AppliedJobsClientComponentFragment"
+        "name": "AppliedJobsViewFragment"
       }
     ],
     "type": "Query",
@@ -71,7 +71,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "pageAppliedJobsQuery",
+    "name": "AppliedJobsClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -307,15 +307,15 @@ return {
     ]
   },
   "params": {
-    "id": "3ef23715fddd3c66da1877d1bb5ef4f4",
+    "id": "0bfe4ee8506804552e457a1c319f033f",
     "metadata": {},
-    "name": "pageAppliedJobsQuery",
+    "name": "AppliedJobsClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "6d7aa6e86f76c7d07067b22c6367d84c";
+(node as any).hash = "3e5b5aa7799b9882093ecdb8262a954d";
 
 export default node;
