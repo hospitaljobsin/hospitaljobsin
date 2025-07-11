@@ -189,9 +189,9 @@ export default function RequestSudoView({
 						variant="bordered"
 						size="lg"
 						startContent={<Google.Color size={20} />}
-						onPress={() => {
-							window.location.href = `${env.NEXT_PUBLIC_API_URL}/auth/request_sudo_mode/google?redirect_uri=${encodeURIComponent(`${redirectTo}`)}`;
-						}}
+						as="a"
+						href={`${env.NEXT_PUBLIC_API_URL}/auth/request_sudo_mode/google?redirect_uri=${encodeURIComponent(redirectTo)}`}
+						target="_self"
 					>
 						Authenticate with Google
 					</Button>

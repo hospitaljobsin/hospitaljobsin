@@ -1,3 +1,4 @@
+"use client";
 import type { HeaderQuery as HeaderQueryType } from "@/__generated__/HeaderQuery.graphql";
 import Header, { HeaderQuery } from "@/components/settings/Header";
 import HeaderSkeleton from "@/components/settings/HeaderSkeleton";
@@ -7,6 +8,7 @@ import { loadQuery, useRelayEnvironment } from "react-relay";
 export default function HeaderClientComponent() {
 	console.log("rendering header server side...");
 	const environment = useRelayEnvironment();
+
 	const queryReference = loadQuery<HeaderQueryType>(
 		environment,
 		HeaderQuery,
@@ -18,6 +20,7 @@ export default function HeaderClientComponent() {
 			networkCacheConfig: { force: false },
 		},
 	);
+
 	return (
 		<Suspense fallback={<HeaderSkeleton />}>
 			<Header queryReference={queryReference} />
