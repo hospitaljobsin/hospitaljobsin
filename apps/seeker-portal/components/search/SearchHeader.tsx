@@ -1,5 +1,5 @@
 "use client";
-import type { SearchHeaderQuery as SearchHeaderQueryType } from "@/__generated__/SearchHeaderQuery.graphql";
+import type { SearchHeaderFragment$key } from "@/__generated__/SearchHeaderFragment.graphql";
 import IncompleteProfileBanner from "@/components/layout/IncompleteProfileBanner";
 import { APP_NAME } from "@/lib/constants";
 import { env } from "@/lib/env/client";
@@ -14,14 +14,13 @@ import {
 } from "@heroui/react";
 import { SearchIcon } from "lucide-react";
 import Link from "next/link";
-import type { PreloadedQuery } from "react-relay";
-import { usePreloadedQuery } from "react-relay";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Logo from "../Logo";
 import AuthNavigation from "../layout/AuthNavigation";
 
-export const SearchHeaderQuery = graphql`
-  query SearchHeaderQuery {
+export const SearchHeaderFragment = graphql`
+  fragment SearchHeaderFragment on Query {
     viewer {
       ... on Account {
         __typename
@@ -36,15 +35,15 @@ export const SearchHeaderQuery = graphql`
 `;
 
 export default function SearchHeader({
-	queryReference,
+	query,
 	searchTerm,
 	setSearchTerm,
 }: {
-	queryReference: PreloadedQuery<SearchHeaderQueryType>;
+	query: SearchHeaderFragment$key;
 	searchTerm: string;
 	setSearchTerm: (value: string) => void;
 }) {
-	const data = usePreloadedQuery(SearchHeaderQuery, queryReference);
+	const data = useFragment(SearchHeaderFragment, query);
 
 	return (
 		<div className={"w-full flex flex-col sticky top-0 z-50"}>

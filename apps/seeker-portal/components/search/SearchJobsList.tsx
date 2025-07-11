@@ -6,7 +6,7 @@ import type {
 	JobTypeFilter,
 	JobWorkModeFilter,
 } from "@/__generated__/JobListRefetchQuery.graphql";
-import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
+import type { LandingClientComponentQuery as LandingClientComponentQueryType } from "@/__generated__/LandingClientComponentQuery.graphql";
 import Job from "@/components/landing/Job";
 import JobListSkeleton from "@/components/landing/JobListSkeleton";
 import { Card, CardBody } from "@heroui/react";
@@ -91,7 +91,7 @@ export default function SearchJobsList({
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(JobListFragment, rootQuery);
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
-		pageLandingQuery,
+		LandingClientComponentQueryType,
 		JobListInternalFragment$key
 	>(JobListInternalFragment, root);
 

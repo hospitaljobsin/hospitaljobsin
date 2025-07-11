@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9ea0bac010194449893945ff4a34ade6>>
+ * @generated SignedSource<<1ba29b98235309fbde6ff5b3ee021bc3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,13 +10,13 @@
 
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type SearchPageContent_query$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"SearchJobsListFragment">;
-  readonly " $fragmentType": "SearchPageContent_query";
+export type SearchView_query$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"SearchHeaderFragment" | "SearchJobsListFragment">;
+  readonly " $fragmentType": "SearchView_query";
 };
-export type SearchPageContent_query$key = {
-  readonly " $data"?: SearchPageContent_query$data;
-  readonly " $fragmentSpreads": FragmentRefs<"SearchPageContent_query">;
+export type SearchView_query$key = {
+  readonly " $data"?: SearchView_query$data;
+  readonly " $fragmentSpreads": FragmentRefs<"SearchView_query">;
 };
 
 const node: ReaderFragment = {
@@ -54,8 +54,13 @@ const node: ReaderFragment = {
   ],
   "kind": "Fragment",
   "metadata": null,
-  "name": "SearchPageContent_query",
+  "name": "SearchView_query",
   "selections": [
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "SearchHeaderFragment"
+    },
     {
       "args": [
         {
@@ -97,6 +102,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "4753517b3c5c1ea44c79496d837b4db2";
+(node as any).hash = "4df3e80f274215d700059c3557456903";
 
 export default node;

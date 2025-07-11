@@ -1,7 +1,7 @@
 import SearchClientComponentQuery, {
 	type SearchClientComponentQuery as SearchClientComponentQueryType,
 } from "@/__generated__/SearchClientComponentQuery.graphql";
-import type { SearchPageContent_query$key } from "@/__generated__/SearchPageContent_query.graphql";
+import type { SearchView_query$key } from "@/__generated__/SearchView_query.graphql";
 import type { Filters } from "@/app/search/SearchClientComponent";
 import { FILTER_DEFAULTS } from "@/lib/constants";
 import {
@@ -22,11 +22,11 @@ import {
 } from "react-relay";
 import JobListSkeleton from "../landing/JobListSkeleton";
 import FilterSidebar from "./FilterSidebar";
-import SearchHeaderClientComponent from "./SearchHeaderClientComponent";
+import SearchHeader from "./SearchHeader";
 import SearchJobsList from "./SearchJobsList";
 
 export const SearchPageContentFragment = graphql`
-  fragment SearchPageContent_query on Query
+  fragment SearchView_query on Query
   @argumentDefinitions(
     searchTerm: { type: "String" }
     minExperience: { type: "Int" }
@@ -35,6 +35,7 @@ export const SearchPageContentFragment = graphql`
     coordinates: { type: "CoordinatesInput" }
     proximityKm: { type: "Float" }
   ) {
+	...SearchHeaderFragment
     ...SearchJobsListFragment @arguments(
       searchTerm: $searchTerm
       coordinates: $coordinates
@@ -76,7 +77,7 @@ export default function SearchView({
 	setFilters: (filters: Filters) => void;
 }) {
 	const query = usePreloadedQuery(SearchClientComponentQuery, queryRef);
-	const data = useFragment<SearchPageContent_query$key>(
+	const data = useFragment<SearchView_query$key>(
 		SearchPageContentFragment,
 		query,
 	);
@@ -124,7 +125,8 @@ export default function SearchView({
 
 	return (
 		<div className="w-full flex flex-col bg-background-600">
-			<SearchHeaderClientComponent
+			<SearchHeader
+				query={data}
 				searchTerm={filters.q}
 				setSearchTerm={(value) => setFilters({ ...filters, q: value })}
 			/>

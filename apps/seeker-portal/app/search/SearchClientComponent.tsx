@@ -17,7 +17,7 @@ export const SearchClientComponentQuery = graphql`
 		$coordinates: CoordinatesInput
 		$proximityKm: Float
 	) {
-		...SearchPageContent_query @arguments(
+		...SearchView_query @arguments(
 			searchTerm: $searchTerm
 			minExperience: $minExperience
 			minSalary: $minSalary
