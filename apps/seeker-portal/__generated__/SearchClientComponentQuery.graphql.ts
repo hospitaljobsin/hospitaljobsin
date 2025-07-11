@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0179cff12175a92d27e8ed250fe03611>>
- * @relayHash 46183959c5baf8eeb9420ccaf50d31c3
+ * @generated SignedSource<<2bc4e4b464ed54c969fd8bbb062e9c2a>>
+ * @relayHash 26036e9a50883a9402d199f80ecba9f3
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 46183959c5baf8eeb9420ccaf50d31c3
+// @relayRequestID 26036e9a50883a9402d199f80ecba9f3
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -17,7 +17,7 @@ export type CoordinatesInput = {
   latitude: number;
   longitude: number;
 };
-export type pageSearchQuery$variables = {
+export type SearchClientComponentQuery$variables = {
   coordinates?: CoordinatesInput | null | undefined;
   maxSalary?: number | null | undefined;
   minExperience?: number | null | undefined;
@@ -25,12 +25,12 @@ export type pageSearchQuery$variables = {
   proximityKm?: number | null | undefined;
   searchTerm?: string | null | undefined;
 };
-export type pageSearchQuery$data = {
+export type SearchClientComponentQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"SearchPageContent_query">;
 };
-export type pageSearchQuery = {
-  response: pageSearchQuery$data;
-  variables: pageSearchQuery$variables;
+export type SearchClientComponentQuery = {
+  response: SearchClientComponentQuery$data;
+  variables: SearchClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -150,7 +150,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "pageSearchQuery",
+    "name": "SearchClientComponentQuery",
     "selections": [
       {
         "args": [
@@ -179,7 +179,7 @@ return {
       (v4/*: any*/)
     ],
     "kind": "Operation",
-    "name": "pageSearchQuery",
+    "name": "SearchClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -413,15 +413,15 @@ return {
     ]
   },
   "params": {
-    "id": "46183959c5baf8eeb9420ccaf50d31c3",
+    "id": "26036e9a50883a9402d199f80ecba9f3",
     "metadata": {},
-    "name": "pageSearchQuery",
+    "name": "SearchClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "79dc9ebfdf28565f8c9f1507b44d1bec";
+(node as any).hash = "910af0371d2c4717542ca3cee7657200";
 
 export default node;

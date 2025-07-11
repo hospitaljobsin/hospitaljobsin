@@ -1,8 +1,8 @@
+import SearchClientComponentQuery, {
+	type SearchClientComponentQuery as SearchClientComponentQueryType,
+} from "@/__generated__/SearchClientComponentQuery.graphql";
 import type { SearchPageContent_query$key } from "@/__generated__/SearchPageContent_query.graphql";
-import pageSearchQuery, {
-	type pageSearchQuery as pageSearchQueryType,
-} from "@/__generated__/pageSearchQuery.graphql";
-import type { Filters } from "@/app/search/page";
+import type { Filters } from "@/app/search/SearchClientComponent";
 import { FILTER_DEFAULTS } from "@/lib/constants";
 import {
 	Button,
@@ -22,6 +22,7 @@ import {
 } from "react-relay";
 import JobListSkeleton from "../landing/JobListSkeleton";
 import FilterSidebar from "./FilterSidebar";
+import SearchHeaderClientComponent from "./SearchHeaderClientComponent";
 import SearchJobsList from "./SearchJobsList";
 
 export const SearchPageContentFragment = graphql`
@@ -65,16 +66,16 @@ const validateEnum = <T extends string>(
 	return validValues.includes(value as T) ? (value as T) : null;
 };
 
-export default function SearchPageContent({
+export default function SearchView({
 	queryRef,
 	filters,
 	setFilters,
 }: {
-	queryRef: PreloadedQuery<pageSearchQueryType>;
+	queryRef: PreloadedQuery<SearchClientComponentQueryType>;
 	filters: Filters;
 	setFilters: (filters: Filters) => void;
 }) {
-	const query = usePreloadedQuery(pageSearchQuery, queryRef);
+	const query = usePreloadedQuery(SearchClientComponentQuery, queryRef);
 	const data = useFragment<SearchPageContent_query$key>(
 		SearchPageContentFragment,
 		query,
@@ -122,65 +123,73 @@ export default function SearchPageContent({
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	return (
-		<div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 mx-auto max-w-7xl py-6 px-4 bg-background-600">
-			{/* Mobile filter button */}
-			<div className="block lg:hidden mb-4">
-				<Button
-					variant="solid"
-					startContent={<FilterIcon size={18} />}
-					onPress={onOpen}
-					fullWidth
-				>
-					Show Filters
-				</Button>
-				<Drawer
-					isOpen={isOpen}
-					onClose={onOpenChange}
-					classNames={{
-						body: "px-0",
-						wrapper: "lg:hidden",
-						backdrop: "lg:hidden",
-					}}
-					placement="bottom"
-				>
-					<DrawerContent>
-						<DrawerHeader>Filters</DrawerHeader>
-						<DrawerBody>
-							<FilterSidebar
-								values={sidebarFilters}
-								onChange={setFilters}
-								open={true}
-								searchTerm={filters.q}
-								setSearchTerm={(value) => setFilters({ ...filters, q: value })}
-							/>
-						</DrawerBody>
-					</DrawerContent>
-				</Drawer>
-			</div>
-			{/* Desktop sidebar */}
-			<div className="hidden lg:block lg:w-auto lg:sticky lg:top-20 lg:self-start">
-				<FilterSidebar
-					values={sidebarFilters}
-					onChange={setFilters}
-					open={true}
-					searchTerm={filters.q}
-					setSearchTerm={(value) => setFilters({ ...filters, q: value })}
-				/>
-			</div>
-			<div className="flex-1">
-				<Suspense fallback={<JobListSkeleton />}>
-					<SearchJobsList
-						rootQuery={data}
-						searchTerm={filters.q || null}
-						coordinates={parseCoordinates(filters.coordinates)}
-						proximityKm={filters.proximityKm}
-						minExperience={filters.minExperience ?? null}
-						minSalary={filters.minSalary ?? null}
-						maxSalary={filters.maxSalary ?? null}
-						workMode={validatedWorkMode || FILTER_DEFAULTS.workMode}
-						jobType={validatedJobType || FILTER_DEFAULTS.jobType}
+		<div className="w-full flex flex-col bg-background-600">
+			<SearchHeaderClientComponent
+				searchTerm={filters.q}
+				setSearchTerm={(value) => setFilters({ ...filters, q: value })}
+			/>
+			<div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 mx-auto max-w-7xl py-6 px-4 bg-background-600">
+				{/* Mobile filter button */}
+				<div className="block lg:hidden mb-4">
+					<Button
+						variant="solid"
+						startContent={<FilterIcon size={18} />}
+						onPress={onOpen}
+						fullWidth
+					>
+						Show Filters
+					</Button>
+					<Drawer
+						isOpen={isOpen}
+						onClose={onOpenChange}
+						classNames={{
+							body: "px-0",
+							wrapper: "lg:hidden",
+							backdrop: "lg:hidden",
+						}}
+						placement="bottom"
+					>
+						<DrawerContent>
+							<DrawerHeader>Filters</DrawerHeader>
+							<DrawerBody>
+								<FilterSidebar
+									values={sidebarFilters}
+									onChange={setFilters}
+									open={true}
+									searchTerm={filters.q}
+									setSearchTerm={(value) =>
+										setFilters({ ...filters, q: value })
+									}
+								/>
+							</DrawerBody>
+						</DrawerContent>
+					</Drawer>
+				</div>
+				{/* Desktop sidebar */}
+				<div className="hidden lg:block lg:w-auto lg:sticky lg:top-20 lg:self-start">
+					<FilterSidebar
+						values={sidebarFilters}
+						onChange={setFilters}
+						open={true}
+						searchTerm={filters.q}
+						setSearchTerm={(value) => setFilters({ ...filters, q: value })}
 					/>
-				</Suspense>
+				</div>
+				<div className="flex-1">
+					<Suspense fallback={<JobListSkeleton />}>
+						<SearchJobsList
+							rootQuery={data}
+							searchTerm={filters.q || null}
+							coordinates={parseCoordinates(filters.coordinates)}
+							proximityKm={filters.proximityKm}
+							minExperience={filters.minExperience ?? null}
+							minSalary={filters.minSalary ?? null}
+							maxSalary={filters.maxSalary ?? null}
+							workMode={validatedWorkMode || FILTER_DEFAULTS.workMode}
+							jobType={validatedJobType || FILTER_DEFAULTS.jobType}
+						/>
+					</Suspense>
+				</div>
 			</div>
 		</div>
 	);
