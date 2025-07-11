@@ -1,44 +1,16 @@
 "use client";
-import LandingClientComponentQuery, {
-	type LandingClientComponentQuery as LandingClientComponentQueryType,
-} from "@/__generated__/LandingClientComponentQuery.graphql";
-import type { LandingViewFragment$key } from "@/__generated__/LandingViewFragment.graphql";
 import { TrendingUpIcon } from "lucide-react";
 import Image from "next/image";
-import {
-	type PreloadedQuery,
-	useFragment,
-	usePreloadedQuery,
-} from "react-relay";
-import { graphql } from "relay-runtime";
-import LandingHeader from "../layout/LandingHeader";
-import JobList from "./JobList";
+import LandingHeaderSkeleton from "../layout/LandingHeaderSkeleton";
+import JobListSkeleton from "./JobListSkeleton";
 import { LandingSearchController } from "./LandingSearchController";
 
-const LandingViewFragment = graphql`
-  fragment LandingViewFragment on Query   @argumentDefinitions(
-    searchTerm: { type: "String" }
-    coordinates: { type: "CoordinatesInput"}
-    proximityKm: { type: "Float" }
-  ) {
-    ...JobListFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
-	...LandingHeaderFragment
-  }
-`;
-
-export default function LandingView({
-	queryReference,
-}: {
-	queryReference: PreloadedQuery<LandingClientComponentQueryType>;
-}) {
-	const query = usePreloadedQuery(LandingClientComponentQuery, queryReference);
-	const data = useFragment<LandingViewFragment$key>(LandingViewFragment, query);
-
+export default function LandingViewSkeleton() {
 	return (
 		<div className="w-full flex flex-col bg-background-600 h-full">
 			{/* Hero Section */}
 			<div className="relative bg-gradient-to-br from-primary-600 via-primary-400 to-primary-300 flex flex-col justify-center items-center w-full">
-				<LandingHeader rootQuery={data} />
+				<LandingHeaderSkeleton />
 				{/* Background SVG or Image Placeholder */}
 				<div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none select-none z-0">
 					{/* TODO: Replace with a beautiful healthcare-themed SVG or image */}
@@ -113,7 +85,7 @@ export default function LandingView({
 							Most Viewed Healthcare Jobs This Week
 						</h3>
 					</div>
-					<JobList rootQuery={data} />
+					<JobListSkeleton />
 				</div>
 			</div>
 		</div>

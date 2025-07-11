@@ -1,7 +1,7 @@
 "use client";
 import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
-import { Navbar, NavbarBrand, NavbarContent, cn } from "@heroui/react";
+import { Navbar, NavbarBrand, cn } from "@heroui/react";
 import Link from "next/link";
 import Logo from "../Logo";
 
@@ -29,7 +29,7 @@ export default function LandingHeaderSkeleton() {
 					</Link>
 				</NavbarBrand>
 
-				<NavbarContent justify="end">test</NavbarContent>
+				{/* <NavbarContent justify="end">test</NavbarContent> */}
 			</Navbar>
 		</div>
 	);

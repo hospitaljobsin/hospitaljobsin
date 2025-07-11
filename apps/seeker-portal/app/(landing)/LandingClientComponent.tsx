@@ -1,6 +1,8 @@
 "use client";
 import type { LandingClientComponentQuery as LandingClientComponentQueryType } from "@/__generated__/LandingClientComponentQuery.graphql";
 import LandingView from "@/components/landing/LandingView";
+import LandingViewSkeleton from "@/components/landing/LandingViewSkeleton";
+import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
 
@@ -19,5 +21,9 @@ export default function LandingClientComponent() {
 		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
-	return <LandingView queryReference={queryReference} />;
+	return (
+		<Suspense fallback={<LandingViewSkeleton />}>
+			<LandingView queryReference={queryReference} />
+		</Suspense>
+	);
 }
