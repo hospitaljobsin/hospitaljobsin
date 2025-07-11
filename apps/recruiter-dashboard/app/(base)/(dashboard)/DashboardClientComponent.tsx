@@ -1,7 +1,9 @@
 "use client";
 import type { DashboardClientComponentQuery as DashboardClientComponentQueryType } from "@/__generated__/DashboardClientComponentQuery.graphql";
 import DashboardView from "@/components/dashboard/DashboardView";
+import DashboardViewSkeleton from "@/components/dashboard/DashboardViewSkeleton";
 import useOrganization from "@/lib/hooks/useOrganization";
+import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
 import invariant from "tiny-invariant";
@@ -28,5 +30,9 @@ export default function DashboardClientComponent() {
 		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 
-	return <DashboardView initialQueryRef={initialQueryRef} />;
+	return (
+		<Suspense fallback={<DashboardViewSkeleton />}>
+			<DashboardView initialQueryRef={initialQueryRef} />
+		</Suspense>
+	);
 }
