@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<06b4a739edfb531b2acb0f3623f1ad28>>
- * @relayHash 27e65f929ad5df057da2ac7b858b6ad4
+ * @generated SignedSource<<8c2397f93d4ee48cd4fd0f2cd6a6c57c>>
+ * @relayHash d4e2d3fb643cbc7ab0a461761ad68215
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,14 +9,14 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 27e65f929ad5df057da2ac7b858b6ad4
+// @relayRequestID d4e2d3fb643cbc7ab0a461761ad68215
 
 import type { ConcreteRequest } from 'relay-runtime';
-export type SidebarJobSettingsQuery$variables = {
+export type SettingsSidebarJobSettingsQuery$variables = {
   jobSlug: string;
   slug: string;
 };
-export type SidebarJobSettingsQuery$data = {
+export type SettingsSidebarJobSettingsQuery$data = {
   readonly organization: {
     readonly __typename: "Organization";
     readonly isAdmin: boolean;
@@ -34,9 +34,9 @@ export type SidebarJobSettingsQuery$data = {
     readonly __typename: "%other";
   };
 };
-export type SidebarJobSettingsQuery = {
-  response: SidebarJobSettingsQuery$data;
-  variables: SidebarJobSettingsQuery$variables;
+export type SettingsSidebarJobSettingsQuery = {
+  response: SettingsSidebarJobSettingsQuery$data;
+  variables: SettingsSidebarJobSettingsQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -114,7 +114,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "SidebarJobSettingsQuery",
+    "name": "SettingsSidebarJobSettingsQuery",
     "selections": [
       {
         "alias": null,
@@ -160,7 +160,7 @@ return {
       (v0/*: any*/)
     ],
     "kind": "Operation",
-    "name": "SidebarJobSettingsQuery",
+    "name": "SettingsSidebarJobSettingsQuery",
     "selections": [
       {
         "alias": null,
@@ -200,15 +200,15 @@ return {
     ]
   },
   "params": {
-    "id": "27e65f929ad5df057da2ac7b858b6ad4",
+    "id": "d4e2d3fb643cbc7ab0a461761ad68215",
     "metadata": {},
-    "name": "SidebarJobSettingsQuery",
+    "name": "SettingsSidebarJobSettingsQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "be763d3cb072f3de8bdad587026a0cd6";
+(node as any).hash = "0bb72fb94df3574bf1dd1669227f370d";
 
 export default node;

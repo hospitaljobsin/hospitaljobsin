@@ -1,5 +1,17 @@
 "use client";
-import SettingsSidebarClientComponent from "@/components/job-detail/settings-tab/SettingsSidebarClientComponent";
+import SettingsSidebarSkeleton from "@/components/job-detail/settings-tab/SettingsSidebarSkeleton";
+import dynamic from "next/dynamic";
+
+const SettingsSidebarClientComponent = dynamic(
+	() =>
+		import(
+			"@/components/job-detail/settings-tab/SettingsSidebarClientComponent"
+		),
+	{
+		ssr: false,
+		loading: () => <SettingsSidebarSkeleton />,
+	},
+);
 
 export default function JobSettingsLayout({
 	children,

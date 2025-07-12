@@ -1,4 +1,10 @@
-import HeaderClientComponent from "./HeaderClientComponent";
+import HeaderSkeleton from "@/components/layout/HeaderSkeleton";
+import dynamic from "next/dynamic";
+
+const HeaderClientComponent = dynamic(() => import("./HeaderClientComponent"), {
+	ssr: false,
+	loading: () => <HeaderSkeleton />,
+});
 
 export default function DashboardLayout({
 	children,

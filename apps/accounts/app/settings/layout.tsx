@@ -1,6 +1,12 @@
 "use client";
+import HeaderSkeleton from "@/components/settings/HeaderSkeleton";
 import SettingsSidebar from "@/components/settings/Sidebar";
-import HeaderClientComponent from "./HeaderClientComponent";
+import dynamic from "next/dynamic";
+
+const HeaderClientComponent = dynamic(() => import("./HeaderClientComponent"), {
+	ssr: false,
+	loading: () => <HeaderSkeleton />,
+});
 
 export default function SettingsLayout({
 	children,

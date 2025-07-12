@@ -1,6 +1,6 @@
 "use client";
 
-import type { SidebarJobSettingsQuery as SidebarJobSettingsQueryType } from "@/__generated__/SidebarJobSettingsQuery.graphql";
+import type { SettingsSidebarJobSettingsQuery as SettingsSidebarJobSettingsQueryType } from "@/__generated__/SettingsSidebarJobSettingsQuery.graphql";
 import links from "@/lib/links";
 import { useRouter } from "@bprogress/next";
 import { Tab, Tabs } from "@heroui/react";
@@ -10,8 +10,8 @@ import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
 
-export const SidebarJobSettingsQuery = graphql`
-	query SidebarJobSettingsQuery($slug: String!, $jobSlug: String!) {
+export const SettingsSidebarJobSettingsQuery = graphql`
+	query SettingsSidebarJobSettingsQuery($slug: String!, $jobSlug: String!) {
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
@@ -29,11 +29,14 @@ export const SidebarJobSettingsQuery = graphql`
 
 export default function SettingsSidebar({
 	queryReference,
-}: { queryReference: PreloadedQuery<SidebarJobSettingsQueryType> }) {
+}: { queryReference: PreloadedQuery<SettingsSidebarJobSettingsQueryType> }) {
 	const pathname = usePathname();
 	const router = useRouter();
 	const params = useParams<{ slug: string }>();
-	const data = usePreloadedQuery(SidebarJobSettingsQuery, queryReference);
+	const data = usePreloadedQuery(
+		SettingsSidebarJobSettingsQuery,
+		queryReference,
+	);
 
 	if (
 		data.organization.__typename !== "Organization" ||

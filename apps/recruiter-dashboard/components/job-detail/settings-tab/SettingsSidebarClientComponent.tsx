@@ -1,10 +1,12 @@
 "use client";
-import type { SidebarJobSettingsQuery as SidebarJobSettingsQueryType } from "@/__generated__/SidebarJobSettingsQuery.graphql";
+import type { SettingsSidebarJobSettingsQuery as SettingsSidebarJobSettingsQueryType } from "@/__generated__/SettingsSidebarJobSettingsQuery.graphql";
 import useOrganization from "@/lib/hooks/useOrganization";
 import { useParams } from "next/navigation";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
-import SettingsSidebar, { SidebarJobSettingsQuery } from "./Sidebar";
+import SettingsSidebar, {
+	SettingsSidebarJobSettingsQuery,
+} from "./SettingsSidebar";
 
 export default function SettingsSidebarClientComponent() {
 	const params = useParams<{ slug: string }>();
@@ -12,9 +14,9 @@ export default function SettingsSidebarClientComponent() {
 	const environment = useRelayEnvironment();
 	const slug = decodeURIComponent(params.slug);
 
-	const queryReference = loadQuery<SidebarJobSettingsQueryType>(
+	const queryReference = loadQuery<SettingsSidebarJobSettingsQueryType>(
 		environment,
-		SidebarJobSettingsQuery,
+		SettingsSidebarJobSettingsQuery,
 		{
 			slug: organizationSlug,
 			jobSlug: slug,
