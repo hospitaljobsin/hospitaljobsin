@@ -12,8 +12,6 @@ export default $config({
 	async run() {
 		const cachingOptimizedPolicyId = "658327ea-f89d-4fab-a63d-7e88639e58f6";
 
-		const allViewerExceptHostHeaderPolicyId =
-			"b689b0a8-53d0-40ab-baf2-68738e2966ac";
 		new sst.aws.Router("SharedRouter", {
 			domain: {
 				name: "hospitaljobs.in",

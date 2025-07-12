@@ -105,6 +105,34 @@ export default $config({
 						...args.defaultCacheBehavior,
 						viewerProtocolPolicy: "redirect-to-https",
 					};
+					args.orderedCacheBehaviors = [
+						// Next.js versioned assets
+						{
+							pathPattern: "/_next/static/*",
+							targetOriginId: args.defaultCacheBehavior.targetOriginId,
+							viewerProtocolPolicy: "https-only",
+							allowedMethods: ["GET", "HEAD"],
+							cachedMethods: ["GET", "HEAD"],
+							cachePolicyId: "658327ea-f89d-4fab-a63d-7e88639e58f6",
+							originRequestPolicyId: "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf", // Managed-CORS-S3Origin
+							minTtl: 0,
+							defaultTtl: 31536000,
+							maxTtl: 31536000,
+						},
+						// Public assets outside _next
+						{
+							pathPattern: "/assets/*",
+							targetOriginId: args.defaultCacheBehavior.targetOriginId,
+							viewerProtocolPolicy: "https-only",
+							allowedMethods: ["GET", "HEAD"],
+							cachedMethods: ["GET", "HEAD"],
+							cachePolicyId: "658327ea-f89d-4fab-a63d-7e88639e58f6",
+							originRequestPolicyId: "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf", // Managed-CORS-S3Origin
+							minTtl: 0,
+							defaultTtl: 31536000,
+							maxTtl: 31536000,
+						},
+					];
 				},
 				// 	server(args, opts, name) {
 				// 		args.concurrency = {
