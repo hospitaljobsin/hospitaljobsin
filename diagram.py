@@ -1,4 +1,4 @@
-from diagrams import Cluster, Diagram
+from diagrams import Cluster, Diagram, Edge
 from diagrams.aws.compute import ECR, Lambda
 from diagrams.aws.engagement import SimpleEmailServiceSes
 from diagrams.aws.general import User
@@ -9,39 +9,39 @@ from diagrams.aws.storage import S3
 from diagrams.onprem.database import Mongodb
 from diagrams.onprem.inmemory import Redis
 
-with Diagram("HospitalJobs.in System Architecture", show=False, direction="TB"):
+with Diagram("System Architecture", show=False, direction="TB"):
     user = User("End User")
     route53 = Route53("AWS Route53 DNS")
     user >> route53
 
-    with Cluster("CloudFront Distributions", direction="LR"):
-        with Cluster("hospitaljobs.in\n(Seeker Portal)", direction="TB"):
+    with Cluster("Frontend", direction="LR"):
+        with Cluster("hospitaljobs.in\n(Seeker Portal)", direction="RL"):
             cf_seeker = CloudFront("AWS CloudFront")
-            seeker_server = Lambda("Seeker Server")
-            image_opt = Lambda("Image Opt")
+            seeker_server = Lambda("Next.js Server")
+            image_opt = Lambda("Image Optimizer")
             static_assets = S3("Static Assets")
             cf_seeker >> seeker_server
             cf_seeker >> image_opt
             cf_seeker >> static_assets
 
-        with Cluster("recruiter.hospitaljobs.in\n(Recruiter Portal)", direction="TB"):
+        with Cluster("recruiter.hospitaljobs.in\n(Recruiter Portal)", direction="RL"):
             cf_recruiter = CloudFront("AWS CloudFront")
-            recruiter_server = Lambda("Recruiter Server")
-            image_opt = Lambda("Image Opt")
+            recruiter_server = Lambda("Next.js Server")
+            image_opt = Lambda("Image Optimizer")
             static_assets = S3("Static Assets")
             cf_recruiter >> recruiter_server
 
-        with Cluster("*.hospitaljobs.in\n(Recruiter Dashboard)", direction="TB"):
+        with Cluster("*.hospitaljobs.in\n(Recruiter Dashboard)", direction="RL"):
             cf_dashboard = CloudFront("AWS CloudFront")
-            dashboard_server = Lambda("Recruiter Dashboard Server")
-            image_opt = Lambda("Image Opt")
+            dashboard_server = Lambda("Next.js Server")
+            image_opt = Lambda("Image Optimizer")
             static_assets = S3("Static Assets")
             cf_dashboard >> dashboard_server
 
-        with Cluster("accounts.hospitaljobs.in\n(Accounts UI)", direction="TB"):
+        with Cluster("accounts.hospitaljobs.in\n(Accounts UI)", direction="RL"):
             cf_accounts = CloudFront("AWS CloudFront")
-            accounts_server = Lambda("Accounts UI Server")
-            image_opt = Lambda("Image Opt")
+            accounts_server = Lambda("Next.js Server")
+            image_opt = Lambda("Image Optimizer")
             static_assets = S3("Static Assets")
             cf_accounts >> accounts_server
 
@@ -57,16 +57,18 @@ with Diagram("HospitalJobs.in System Architecture", show=False, direction="TB"):
     dashboard_server >> api_gateway
     accounts_server >> api_gateway
 
-    # SQS and async Lambda
-    sqs = SQS("SQS Queue")
+    cloudwatch = Cloudwatch("AWS Cloudwatch")
+
     # API Gateway routes to Python Lambda (FastAPI GraphQL)
-    with Cluster("Backend API Layer", direction="TB"):
+    with Cluster("Backend", direction="LR"):
+        # SQS and async Lambda
+        sqs = SQS("SQS Queue")
+
+        mongo = Mongodb("MongoDB (Primary DB)\nMongoDB Atlas")
+        redis = Redis("Redis (Cache)\nRedis Labs")
         py_lambda = Lambda("Python Lambda\nFastAPI GraphQL")
         api_gateway >> py_lambda
 
-        # Primary DB and cache
-        mongo = Mongodb("MongoDB (Primary DB)")
-        redis = Redis("Redis (Cache)")
         py_lambda >> mongo
         py_lambda >> redis
 
@@ -78,14 +80,16 @@ with Diagram("HospitalJobs.in System Architecture", show=False, direction="TB"):
     aws_ses = SimpleEmailServiceSes("AWS SES")
     py_lambda >> aws_ses
 
-    cloudwatch = Cloudwatch("AWS Cloudwatch")
     py_lambda >> cloudwatch
 
-    cloudwatch >> py_lambda
-    cloudwatch >> recruiter_server
-    cloudwatch >> seeker_server
-    cloudwatch >> dashboard_server
-    cloudwatch >> accounts_server
+    cloudwatch >> Edge(style="dashed") >> py_lambda
+    cloudwatch >> Edge(style="dashed") >> recruiter_server
+    cloudwatch >> Edge(style="dashed") >> seeker_server
+    cloudwatch >> Edge(style="dashed") >> dashboard_server
+    cloudwatch >> Edge(style="dashed") >> accounts_server
 
     aws_ecr = ECR("AWS ECR")
     py_lambda >> aws_ecr
+
+    avatars_bucket = S3("Avatars Bucket")
+    py_lambda >> avatars_bucket
