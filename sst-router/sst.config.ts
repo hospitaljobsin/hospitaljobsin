@@ -32,7 +32,7 @@ export default $config({
 						{
 							pathPattern: "/_next/static/*",
 							targetOriginId: args.defaultCacheBehavior.targetOriginId,
-							viewerProtocolPolicy: "redirect-to-https",
+							viewerProtocolPolicy: "https-only",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
@@ -45,7 +45,7 @@ export default $config({
 						{
 							pathPattern: "/assets/*",
 							targetOriginId: args.defaultCacheBehavior.targetOriginId,
-							viewerProtocolPolicy: "redirect-to-https",
+							viewerProtocolPolicy: "https-only",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
