@@ -36,7 +36,7 @@ export default $config({
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
-							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
+							originRequestPolicyId: "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf", // Managed-CORS-S3Origin
 							minTtl: 0,
 							defaultTtl: 31536000,
 							maxTtl: 31536000,
@@ -49,7 +49,7 @@ export default $config({
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
-							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
+							originRequestPolicyId: "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf", // Managed-CORS-S3Origin
 							minTtl: 0,
 							defaultTtl: 31536000,
 							maxTtl: 31536000,
