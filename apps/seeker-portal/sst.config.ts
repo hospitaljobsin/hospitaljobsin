@@ -56,6 +56,18 @@ export default $config({
 						],
 						cacheControl: "public,max-age=31536000,immutable",
 					},
+					{
+						// Cache image files forever
+						files: [
+							"**/*.png",
+							"**/*.jpg",
+							"**/*.jpeg",
+							"**/*.gif",
+							"**/*.webp",
+							"**/*.svg",
+						],
+						cacheControl: "public,max-age=31536000,immutable",
+					},
 					// {
 					// 	// Disable cache for source maps (optional)
 					// 	files: ["**/*.map"],
