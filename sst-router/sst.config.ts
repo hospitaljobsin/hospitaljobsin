@@ -23,7 +23,6 @@ export default $config({
 						{
 							pathPattern: "*.js",
 							targetOriginId: args.defaultCacheBehavior.targetOriginId,
-							originRequestPolicyId: "",
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
