@@ -14,7 +14,6 @@ export default $config({
 	async run() {
 		// const privateSubnets = process.env.SST_VPC_PRIVATE_SUBNETS?.split(",") || [];
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
-
 		const router = sst.aws.Router.get("SharedRouter", "E5DM38XV8XOAR");
 
 		new sst.aws.Nextjs("accounts-ui", {
