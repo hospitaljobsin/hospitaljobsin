@@ -1,6 +1,15 @@
 "use client";
 
-import SidebarClientComponent from "@/components/layout/SidebarClientComponent";
+import SidebarSkeleton from "@/components/layout/SidebarSkeleton";
+import dynamic from "next/dynamic";
+
+const SidebarClientComponent = dynamic(
+	() => import("@/components/layout/SidebarClientComponent"),
+	{
+		ssr: false,
+		loading: () => <SidebarSkeleton />,
+	},
+);
 
 export default function DashboardLayout({
 	children,
