@@ -22,7 +22,7 @@ export default $config({
 					args.orderedCacheBehaviors = [
 						{
 							pathPattern: "*.js",
-							targetOriginId: "s3-origin",
+							targetOriginId: "default",
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
@@ -30,7 +30,7 @@ export default $config({
 						},
 						{
 							pathPattern: "*.css",
-							targetOriginId: "s3-origin",
+							targetOriginId: "default",
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
@@ -38,7 +38,7 @@ export default $config({
 						},
 						{
 							pathPattern: "*.png",
-							targetOriginId: "s3-origin",
+							targetOriginId: "default",
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
@@ -46,7 +46,7 @@ export default $config({
 						},
 						{
 							pathPattern: "*.jpg",
-							targetOriginId: "s3-origin",
+							targetOriginId: "default",
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
@@ -54,7 +54,7 @@ export default $config({
 						},
 						{
 							pathPattern: "*.woff2",
-							targetOriginId: "s3-origin",
+							targetOriginId: "default",
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
@@ -62,7 +62,7 @@ export default $config({
 						},
 						// {
 						//   pathPattern: "**", // catch-all for dynamic content (SSR, RSC)
-						//   targetOriginId: "s3-origin",
+						//   targetOriginId: "default",
 						//   viewerProtocolPolicy: "redirect-to-https",
 						//   allowedMethods: ["GET", "HEAD", "OPTIONS"],
 						//   cachedMethods: ["GET", "HEAD"],
