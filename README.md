@@ -24,6 +24,8 @@ https://www.planttext.com?text=u-LoA2v9B2efpStXvShBJqbLK0eepIbE3SylobPmJ4xEByqhA
 | E2E Test Suite                      | [e2e](./e2e)                                                | Playwright End-To-End Tests      |
 | Infrastructure                      | [infrastructure](./infrastructure)                          | Terraform Infrastructure as Code |
 
+## System Architecture
+
 
 ## License
 This project has a proprietary license. Read the entire license [here](./README.md)
