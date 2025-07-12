@@ -1,3 +1,4 @@
+"use client";
 import HeaderSkeleton from "@/components/layout/HeaderSkeleton";
 import dynamic from "next/dynamic";
 
