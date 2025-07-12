@@ -5,7 +5,7 @@ export default $config({
 		return {
 			name: "sst-router",
 			removal: input?.stage === "production" ? "retain" : "remove",
-			protect: ["production"].includes(input?.stage),
+			protect: false,
 			home: "aws",
 		};
 	},

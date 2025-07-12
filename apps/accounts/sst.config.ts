@@ -14,14 +14,10 @@ export default $config({
 	async run() {
 		// const privateSubnets = process.env.SST_VPC_PRIVATE_SUBNETS?.split(",") || [];
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
-		const router = sst.aws.Router.get("SharedRouter", "E5DM38XV8XOAR");
 
 		new sst.aws.Nextjs("accounts-ui", {
 			buildCommand: "pnpm run package",
-			router: {
-				instance: router,
-				domain: process.env.SST_ACCOUNTS_DOMAIN,
-			},
+			domain: process.env.SST_ACCOUNTS_DOMAIN,
 			environment: {
 				NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL,
 				NEXT_PUBLIC_URL: env.NEXT_PUBLIC_URL,

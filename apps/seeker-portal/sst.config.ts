@@ -16,13 +16,11 @@ export default $config({
 		// const privateSubnets = process.env.SST_VPC_PRIVATE_SUBNETS?.split(",") || [];
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
 
-		const router = sst.aws.Router.get("SharedRouter", "E5DM38XV8XOAR");
-
 		new sst.aws.Nextjs("seeker-portal-ui", {
 			buildCommand: "pnpm run package",
-			router: {
-				instance: router,
-				domain: process.env.SST_SEEKER_PORTAL_DOMAIN,
+			domain: {
+				name: process.env.SST_SEEKER_PORTAL_DOMAIN,
+				redirects: [`www.${process.env.SST_SEEKER_PORTAL_DOMAIN}`],
 			},
 			environment: {
 				NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL,
