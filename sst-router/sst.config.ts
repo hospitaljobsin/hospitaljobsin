@@ -19,10 +19,23 @@ export default $config({
 			},
 			transform: {
 				cdn(args, opts, name) {
+					args.origins = [
+						{
+							originId: "default",
+							domainName: "hospitaljobs.in",
+							// customOriginConfig: {
+							// 	originProtocolPolicy: "https-only",
+							// 	httpPort: 80,
+							// 	httpsPort: 443,
+							// 	originSslProtocols: ["TLSv1.2"],
+							// },
+						},
+					];
 					args.orderedCacheBehaviors = [
 						{
 							pathPattern: "*.js",
 							targetOriginId: "default",
+							originRequestPolicyId: "",
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
