@@ -31,6 +31,9 @@ export default $config({
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
 							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
+							minTtl: 0,
+							defaultTtl: 31536000,
+							maxTtl: 31536000,
 						},
 						{
 							pathPattern: "*.css",
@@ -40,6 +43,9 @@ export default $config({
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
 							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
+							minTtl: 0,
+							defaultTtl: 31536000,
+							maxTtl: 31536000,
 						},
 						{
 							pathPattern: "*.png",
@@ -49,6 +55,9 @@ export default $config({
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
 							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
+							minTtl: 0,
+							defaultTtl: 31536000,
+							maxTtl: 31536000,
 						},
 						{
 							pathPattern: "*.jpg",
@@ -58,6 +67,9 @@ export default $config({
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
 							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
+							minTtl: 0,
+							defaultTtl: 31536000,
+							maxTtl: 31536000,
 						},
 						{
 							pathPattern: "*.woff2",
@@ -67,6 +79,9 @@ export default $config({
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
 							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
+							minTtl: 0,
+							defaultTtl: 31536000,
+							maxTtl: 31536000,
 						},
 						// {
 						//   pathPattern: "**", // catch-all for dynamic content (SSR, RSC)
