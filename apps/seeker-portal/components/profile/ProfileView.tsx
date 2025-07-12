@@ -10,6 +10,7 @@ import {
 	usePreloadedQuery,
 } from "react-relay";
 import invariant from "tiny-invariant";
+import DashboardHeader from "../layout/DashboardHeader";
 import ProfessionalSummary from "./AboutMe";
 import Certifications from "./Certifications";
 import Education from "./Education";
@@ -31,6 +32,7 @@ import WorkExperience from "./WorkExperience";
 
 const ProfileViewFragment = graphql`
   fragment ProfileViewFragment on Query {
+	...DashboardHeaderFragment
     viewer {
       __typename
       ... on Account {
@@ -114,130 +116,137 @@ export default function ProfileView({
 	};
 
 	return (
-		<div className="w-full h-full space-y-16 py-8">
-			<ProfileBanner account={data.viewer} />
-			<ProfileCompletionMeter status={completionStatus} />
-			{isEditingAboutMe ? (
-				<UpdateProfessionalSummaryForm
-					rootQuery={data.viewer.profile}
-					onSaveChanges={() => {
-						setIsEditingAboutMe(false);
-					}}
-				/>
-			) : (
-				<ProfessionalSummary
-					rootQuery={data.viewer.profile}
-					onEditProfile={() => {
-						setIsEditingAboutMe(true);
-					}}
-				/>
-			)}
-			{isEditingProfile ? (
-				<UpdateProfileDetailsForm
-					rootQuery={data.viewer.profile}
-					onSaveChanges={() => {
-						setIsEditingProfile(false);
-					}}
-				/>
-			) : (
-				<ProfileDetails
-					rootQuery={data.viewer.profile}
-					onEditProfile={() => {
-						setIsEditingProfile(true);
-					}}
-				/>
-			)}
+		<div className="w-full flex flex-col flex-1 h-full">
+			<DashboardHeader query={data} />
+			<div className="w-full mx-auto bg-background-600">
+				<div className="w-full px-5 max-w-7xl mx-auto">
+					<div className="w-full h-full space-y-16 py-8">
+						<ProfileBanner account={data.viewer} />
+						<ProfileCompletionMeter status={completionStatus} />
+						{isEditingAboutMe ? (
+							<UpdateProfessionalSummaryForm
+								rootQuery={data.viewer.profile}
+								onSaveChanges={() => {
+									setIsEditingAboutMe(false);
+								}}
+							/>
+						) : (
+							<ProfessionalSummary
+								rootQuery={data.viewer.profile}
+								onEditProfile={() => {
+									setIsEditingAboutMe(true);
+								}}
+							/>
+						)}
+						{isEditingProfile ? (
+							<UpdateProfileDetailsForm
+								rootQuery={data.viewer.profile}
+								onSaveChanges={() => {
+									setIsEditingProfile(false);
+								}}
+							/>
+						) : (
+							<ProfileDetails
+								rootQuery={data.viewer.profile}
+								onEditProfile={() => {
+									setIsEditingProfile(true);
+								}}
+							/>
+						)}
 
-			{isEditingWorkExperience ? (
-				<UpdateWorkExperienceForm
-					rootQuery={data.viewer.profile}
-					onSaveChanges={() => {
-						setIsEditingWorkExperience(false);
-					}}
-				/>
-			) : (
-				<WorkExperience
-					rootQuery={data.viewer.profile}
-					onEditProfile={() => {
-						setIsEditingWorkExperience(true);
-					}}
-				/>
-			)}
-			{isEditingEducation ? (
-				<UpdateEducationForm
-					rootQuery={data.viewer.profile}
-					onSaveChanges={() => {
-						setIsEditingEducation(false);
-					}}
-				/>
-			) : (
-				<Education
-					rootQuery={data.viewer.profile}
-					onEditProfile={() => {
-						setIsEditingEducation(true);
-					}}
-				/>
-			)}
-			{isEditingCertifications ? (
-				<UpdateCertificationsForm
-					rootQuery={data.viewer.profile}
-					onSaveChanges={() => {
-						setIsEditingCertifications(false);
-					}}
-				/>
-			) : (
-				<Certifications
-					rootQuery={data.viewer.profile}
-					onEditProfile={() => {
-						setIsEditingCertifications(true);
-					}}
-				/>
-			)}
-			{isEditingLicenses ? (
-				<UpdateLicensesForm
-					rootQuery={data.viewer.profile}
-					onSaveChanges={() => {
-						setIsEditingLicenses(false);
-					}}
-				/>
-			) : (
-				<Licenses
-					rootQuery={data.viewer.profile}
-					onEditProfile={() => {
-						setIsEditingLicenses(true);
-					}}
-				/>
-			)}
-			{isEditingLocationPreferences ? (
-				<UpdateLocationPreferencesForm
-					rootQuery={data.viewer.profile}
-					onSaveChanges={() => {
-						setIsEditingLocationPreferences(false);
-					}}
-				/>
-			) : (
-				<LocationPreferences
-					rootQuery={data.viewer.profile}
-					onEditProfile={() => {
-						setIsEditingLocationPreferences(true);
-					}}
-				/>
-			)}
-			{isEditingLanguages ? (
-				<UpdateLanguagesForm
-					rootQuery={data.viewer.profile}
-					onSaveChanges={() => {
-						setIsEditingLanguages(false);
-					}}
-				/>
-			) : (
-				<Languages
-					rootQuery={data.viewer.profile}
-					onEditProfile={() => {
-						setIsEditingLanguages(true);
-					}}
-				/>
-			)}
+						{isEditingWorkExperience ? (
+							<UpdateWorkExperienceForm
+								rootQuery={data.viewer.profile}
+								onSaveChanges={() => {
+									setIsEditingWorkExperience(false);
+								}}
+							/>
+						) : (
+							<WorkExperience
+								rootQuery={data.viewer.profile}
+								onEditProfile={() => {
+									setIsEditingWorkExperience(true);
+								}}
+							/>
+						)}
+						{isEditingEducation ? (
+							<UpdateEducationForm
+								rootQuery={data.viewer.profile}
+								onSaveChanges={() => {
+									setIsEditingEducation(false);
+								}}
+							/>
+						) : (
+							<Education
+								rootQuery={data.viewer.profile}
+								onEditProfile={() => {
+									setIsEditingEducation(true);
+								}}
+							/>
+						)}
+						{isEditingCertifications ? (
+							<UpdateCertificationsForm
+								rootQuery={data.viewer.profile}
+								onSaveChanges={() => {
+									setIsEditingCertifications(false);
+								}}
+							/>
+						) : (
+							<Certifications
+								rootQuery={data.viewer.profile}
+								onEditProfile={() => {
+									setIsEditingCertifications(true);
+								}}
+							/>
+						)}
+						{isEditingLicenses ? (
+							<UpdateLicensesForm
+								rootQuery={data.viewer.profile}
+								onSaveChanges={() => {
+									setIsEditingLicenses(false);
+								}}
+							/>
+						) : (
+							<Licenses
+								rootQuery={data.viewer.profile}
+								onEditProfile={() => {
+									setIsEditingLicenses(true);
+								}}
+							/>
+						)}
+						{isEditingLocationPreferences ? (
+							<UpdateLocationPreferencesForm
+								rootQuery={data.viewer.profile}
+								onSaveChanges={() => {
+									setIsEditingLocationPreferences(false);
+								}}
+							/>
+						) : (
+							<LocationPreferences
+								rootQuery={data.viewer.profile}
+								onEditProfile={() => {
+									setIsEditingLocationPreferences(true);
+								}}
+							/>
+						)}
+						{isEditingLanguages ? (
+							<UpdateLanguagesForm
+								rootQuery={data.viewer.profile}
+								onSaveChanges={() => {
+									setIsEditingLanguages(false);
+								}}
+							/>
+						) : (
+							<Languages
+								rootQuery={data.viewer.profile}
+								onEditProfile={() => {
+									setIsEditingLanguages(true);
+								}}
+							/>
+						)}
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 }

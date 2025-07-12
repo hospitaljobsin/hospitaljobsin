@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<316a7438684d338d129192120bf82d71>>
+ * @generated SignedSource<<0284a32e4144c6d784517cbc5fb99010>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -34,6 +34,7 @@ export type ProfileViewFragment$data = {
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
+  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment">;
   readonly " $fragmentType": "ProfileViewFragment";
 };
 export type ProfileViewFragment$key = {
@@ -58,6 +59,11 @@ return {
   "metadata": null,
   "name": "ProfileViewFragment",
   "selections": [
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "DashboardHeaderFragment"
+    },
     {
       "alias": null,
       "args": null,
@@ -245,6 +251,6 @@ return {
 };
 })();
 
-(node as any).hash = "41bf3f2a4acc3043f590cee99e3479c7";
+(node as any).hash = "51c4fb3112b941a81fde74d16074799b";
 
 export default node;

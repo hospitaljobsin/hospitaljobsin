@@ -1,5 +1,5 @@
 "use client";
-import { LandingHeaderFragment$key } from "@/__generated__/LandingHeaderFragment.graphql";
+import type { LandingHeaderFragment$key } from "@/__generated__/LandingHeaderFragment.graphql";
 import { APP_NAME } from "@/lib/constants";
 import { env } from "@/lib/env/client";
 import links from "@/lib/links";

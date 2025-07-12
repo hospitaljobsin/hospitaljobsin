@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<5dd61e5b492a8c5644484ba5909a0b6e>>
- * @relayHash ecb5c6b8d9cc6d8d671e6dd337eadc15
+ * @generated SignedSource<<bbb120752a42d72de22e0ad1ae58a7fe>>
+ * @relayHash 1fa139cbc644f95e4c0ca12b29cb3cf0
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ecb5c6b8d9cc6d8d671e6dd337eadc15
+// @relayRequestID 1fa139cbc644f95e4c0ca12b29cb3cf0
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -113,6 +113,7 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -125,10 +126,17 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "updatedAt",
+                    "name": "isComplete",
                     "storageKey": null
                   },
                   (v1/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "updatedAt",
+                    "storageKey": null
+                  },
                   {
                     "alias": null,
                     "args": null,
@@ -385,7 +393,7 @@ return {
     ]
   },
   "params": {
-    "id": "ecb5c6b8d9cc6d8d671e6dd337eadc15",
+    "id": "1fa139cbc644f95e4c0ca12b29cb3cf0",
     "metadata": {},
     "name": "ProfileClientComponentQuery",
     "operationKind": "query",

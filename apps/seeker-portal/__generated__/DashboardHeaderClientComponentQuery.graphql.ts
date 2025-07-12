@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6fccf76c64be590e586cd7de83619b6b>>
- * @relayHash da76d61432c3816f43638c0ba760bd4d
+ * @generated SignedSource<<42b69fe00593c348156113792d458db2>>
+ * @relayHash 8952923ed6a3ad42cf4f1beb8646bfec
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,37 +9,21 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID da76d61432c3816f43638c0ba760bd4d
+// @relayRequestID 8952923ed6a3ad42cf4f1beb8646bfec
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type DashboardHeaderQuery$variables = Record<PropertyKey, never>;
-export type DashboardHeaderQuery$data = {
-  readonly viewer: {
-    readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "IncompleteProfileBannerFragment">;
-  } | {
-    readonly __typename: "NotAuthenticatedError";
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
+export type DashboardHeaderClientComponentQuery$variables = Record<PropertyKey, never>;
+export type DashboardHeaderClientComponentQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment">;
 };
-export type DashboardHeaderQuery = {
-  response: DashboardHeaderQuery$data;
-  variables: DashboardHeaderQuery$variables;
+export type DashboardHeaderClientComponentQuery = {
+  response: DashboardHeaderClientComponentQuery$data;
+  variables: DashboardHeaderClientComponentQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
 var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
-},
-v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -51,44 +35,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "DashboardHeaderQuery",
+    "name": "DashboardHeaderClientComponentQuery",
     "selections": [
       {
-        "alias": null,
         "args": null,
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "viewer",
-        "plural": false,
-        "selections": [
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v0/*: any*/),
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "AuthNavigationFragment"
-              },
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "IncompleteProfileBannerFragment"
-              }
-            ],
-            "type": "Account",
-            "abstractKey": null
-          },
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v0/*: any*/)
-            ],
-            "type": "NotAuthenticatedError",
-            "abstractKey": null
-          }
-        ],
-        "storageKey": null
+        "kind": "FragmentSpread",
+        "name": "DashboardHeaderFragment"
       }
     ],
     "type": "Query",
@@ -98,7 +50,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "DashboardHeaderQuery",
+    "name": "DashboardHeaderClientComponentQuery",
     "selections": [
       {
         "alias": null,
@@ -108,7 +60,13 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          (v0/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "__typename",
+            "storageKey": null
+          },
           {
             "kind": "InlineFragment",
             "selections": [
@@ -126,7 +84,7 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v1/*: any*/),
+              (v0/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -142,7 +100,7 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v1/*: any*/)
+                  (v0/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -153,7 +111,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v1/*: any*/)
+              (v0/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -164,15 +122,15 @@ return {
     ]
   },
   "params": {
-    "id": "da76d61432c3816f43638c0ba760bd4d",
+    "id": "8952923ed6a3ad42cf4f1beb8646bfec",
     "metadata": {},
-    "name": "DashboardHeaderQuery",
+    "name": "DashboardHeaderClientComponentQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "d3d1f64f18659c38b046509dd965e0ca";
+(node as any).hash = "6e07c9f646ef6299db08d07d22705e10";
 
 export default node;

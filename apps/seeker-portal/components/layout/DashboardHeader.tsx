@@ -1,5 +1,5 @@
 "use client";
-import type { DashboardHeaderQuery as DashboardHeaderQueryType } from "@/__generated__/DashboardHeaderQuery.graphql";
+import type { DashboardHeaderFragment$key } from "@/__generated__/DashboardHeaderFragment.graphql";
 import IncompleteProfileBanner from "@/components/layout/IncompleteProfileBanner";
 import { APP_NAME } from "@/lib/constants";
 import { env } from "@/lib/env/client";
@@ -16,14 +16,13 @@ import {
 import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import type { PreloadedQuery } from "react-relay";
-import { usePreloadedQuery } from "react-relay";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Logo from "../Logo";
 import AuthNavigation from "./AuthNavigation";
 
-export const DashboardHeaderQuery = graphql`
-  query DashboardHeaderQuery {
+export const DashboardHeaderFragment = graphql`
+  fragment DashboardHeaderFragment on Query {
     viewer {
       ... on Account {
         __typename
@@ -38,11 +37,11 @@ export const DashboardHeaderQuery = graphql`
 `;
 
 export default function DashboardHeader({
-	queryReference,
+	query,
 }: {
-	queryReference: PreloadedQuery<DashboardHeaderQueryType>;
+	query: DashboardHeaderFragment$key;
 }) {
-	const data = usePreloadedQuery(DashboardHeaderQuery, queryReference);
+	const data = useFragment(DashboardHeaderFragment, query);
 	const [searchTerm, setSearchTerm] = useState("");
 	const router = useRouter();
 
