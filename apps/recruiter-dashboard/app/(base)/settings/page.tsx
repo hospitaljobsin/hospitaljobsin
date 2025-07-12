@@ -1,5 +1,18 @@
 "use client";
-import OrganizationGeneralSettingsClientComponent from "./OrganizationGeneralSettingsClientComponent";
+import { Spinner } from "@heroui/react";
+import dynamic from "next/dynamic";
+
+const OrganizationGeneralSettingsClientComponent = dynamic(
+	() => import("./OrganizationGeneralSettingsClientComponent"),
+	{
+		ssr: false,
+		loading: () => (
+			<div className="w-full h-full flex items-center justify-center">
+				<Spinner size="lg" />
+			</div>
+		),
+	},
+);
 
 export default function OrganizationGeneralSettingsPage() {
 	return <OrganizationGeneralSettingsClientComponent />;

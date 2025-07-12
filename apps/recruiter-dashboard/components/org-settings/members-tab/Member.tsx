@@ -59,9 +59,9 @@ export default function Member({
 				<Image
 					src={data.node.avatarUrl}
 					alt={data.node.fullName}
-					width={50}
-					height={50}
-					className="rounded-full"
+					width={56}
+					height={56}
+					className="rounded-full aspect-square object-cover"
 				/>
 				<div className="w-full flex item-center justify-between gap-6">
 					<div className="w-full flex flex-col gap-4">
