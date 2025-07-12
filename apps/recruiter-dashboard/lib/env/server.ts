@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { loadSecrets } from "@/lib/secrets";
 import { createEnv } from "@t3-oss/env-nextjs";

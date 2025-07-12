@@ -1,6 +1,6 @@
-"use server";
 import { loadSecrets } from "@/lib/secrets";
 import { createEnv } from "@t3-oss/env-nextjs";
+import "server-only";
 import { z } from "zod/v4-mini";
 
 function createServerEnv(): Readonly<{
