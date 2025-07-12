@@ -63,10 +63,10 @@ jobs:
           path: |
             apps/recruiter-portal-core/.next/cache
           # Generate a new cache whenever the lockfile or source files change
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/recruiter-portal-core/**/*.[jt]s', 'apps/recruiter-portal-core/**/*.[jt]sx', 'apps/recruiter-portal-core/**/*.{css,md,mdx}') }}
+          key: ${{ runner.os }}-nextjs-recruiter-portal-core-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/recruiter-portal-core/**/*.[jt]s', 'apps/recruiter-portal-core/**/*.[jt]sx', 'apps/recruiter-portal-core/**/*.{css,md,mdx}') }}
           # If source files changed but pnpm-lock.yaml didn’t, use the previous cache
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-
+            ${{ runner.os }}-nextjs-recruiter-portal-core-${{ hashFiles('pnpm-lock.yaml') }}-
 
       - name: Install dependencies
         run: pnpm install --filter recruiter-portal-core --frozen-lockfile --shamefully-hoist
