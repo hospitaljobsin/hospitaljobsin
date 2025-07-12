@@ -1,34 +1,26 @@
 "use client";
-import Header, { HeaderQuery } from "@/components/settings/Header";
+import HeaderQuery, {
+	type HeaderQuery as HeaderQueryType,
+} from "@/__generated__/HeaderQuery.graphql";
+import Header from "@/components/settings/Header";
 import HeaderSkeleton from "@/components/settings/HeaderSkeleton";
-import { Suspense, useEffect } from "react";
-import { useQueryLoader } from "react-relay";
+import { Suspense } from "react";
+import { loadQuery, useRelayEnvironment } from "react-relay";
 
 export default function HeaderClientComponent() {
-	console.log("rendering header server side...");
-	// const environment = useRelayEnvironment();
+	const environment = useRelayEnvironment();
 
-	// // TODO: fix pre-rendering this
-
-	// const queryReference = loadQuery<HeaderQueryType>(
-	// 	environment,
-	// 	HeaderQuery,
-	// 	{
-	// 		// You can pass any variables needed for the query here
-	// 	},
-	// 	{
-	// 		fetchPolicy: "store-or-network",
-	// 		networkCacheConfig: { force: false },
-	// 	},
-	// );
-
-	const [queryReference, loadQuery] = useQueryLoader(HeaderQuery);
-
-	useEffect(() => {
-		loadQuery({}, { fetchPolicy: "store-or-network" });
-	}, [loadQuery]);
-
-	if (!queryReference) return <HeaderSkeleton />;
+	const queryReference = loadQuery<HeaderQueryType>(
+		environment,
+		HeaderQuery,
+		{
+			// You can pass any variables needed for the query here
+		},
+		{
+			fetchPolicy: "store-or-network",
+			networkCacheConfig: { force: false },
+		},
+	);
 
 	return (
 		<Suspense fallback={<HeaderSkeleton />}>
