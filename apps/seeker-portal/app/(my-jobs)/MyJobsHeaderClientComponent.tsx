@@ -4,6 +4,7 @@ import type { MyJobsHeaderQuery as MyJobsHeaderQueryType } from "@/__generated__
 import MyJobsHeader, {
 	MyJobsHeaderQuery,
 } from "@/components/layout/MyJobsHeader";
+import MyJobsHeaderSkeleton from "@/components/layout/MyJobsHeaderSkeleton";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 
@@ -16,7 +17,7 @@ export default function MyJobsHeaderClientComponent() {
 		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
 	return (
-		<Suspense>
+		<Suspense fallback={<MyJobsHeaderSkeleton />}>
 			<MyJobsHeader queryReference={queryReference} />
 		</Suspense>
 	);

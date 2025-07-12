@@ -1,4 +1,14 @@
-import MyJobsHeaderClientComponent from "./MyJobsHeaderClientComponent";
+"use client";
+import MyJobsHeaderSkeleton from "@/components/layout/MyJobsHeaderSkeleton";
+import dynamic from "next/dynamic";
+
+const MyJobsHeaderClientComponent = dynamic(
+	() => import("./MyJobsHeaderClientComponent"),
+	{
+		ssr: false,
+		loading: () => <MyJobsHeaderSkeleton />,
+	},
+);
 
 export default function MyJobsLayout({
 	children,
