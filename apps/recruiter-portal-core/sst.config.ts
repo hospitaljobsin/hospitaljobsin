@@ -15,7 +15,6 @@ export default $config({
 	async run() {
 		// const privateSubnets = process.env.SST_VPC_PRIVATE_SUBNETS?.split(",") || [];
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
-
 		new sst.aws.Nextjs("recruiter-portal-ui", {
 			buildCommand: "pnpm run package",
 			domain: process.env.SST_RECRUITER_PORTAL_DOMAIN,
