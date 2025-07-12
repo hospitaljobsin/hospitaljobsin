@@ -1,6 +1,8 @@
 "use client";
 import type { AppliedJobsClientComponentQuery as AppliedJobsClientComponentQueryType } from "@/__generated__/AppliedJobsClientComponentQuery.graphql";
 import AppliedJobsView from "@/components/my-jobs/applied/AppliedJobsView";
+import AppliedJobsViewSkeleton from "@/components/my-jobs/applied/AppliedJobsViewSkeleton";
+import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
 
@@ -18,5 +20,9 @@ export default function AppliedJobsClientComponent() {
 		{},
 		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
-	return <AppliedJobsView queryReference={queryReference} />;
+	return (
+		<Suspense fallback={<AppliedJobsViewSkeleton />}>
+			<AppliedJobsView queryReference={queryReference} />
+		</Suspense>
+	);
 }

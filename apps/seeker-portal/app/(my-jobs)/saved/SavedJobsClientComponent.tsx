@@ -1,6 +1,8 @@
 "use client";
 import type { SavedJobsClientComponentQuery as SavedJobsClientComponentQueryType } from "@/__generated__/SavedJobsClientComponentQuery.graphql";
 import SavedJobsView from "@/components/my-jobs/saved/SavedJobsView";
+import SavedJobsViewSkeleton from "@/components/my-jobs/saved/SavedJobsViewSkeleton";
+import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
 
@@ -18,5 +20,9 @@ export default function SavedJobsClientComponent() {
 		{},
 		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
 	);
-	return <SavedJobsView queryReference={queryReference} />;
+	return (
+		<Suspense fallback={<SavedJobsViewSkeleton />}>
+			<SavedJobsView queryReference={queryReference} />
+		</Suspense>
+	);
 }
