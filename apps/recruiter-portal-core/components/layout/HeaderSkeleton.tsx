@@ -7,7 +7,7 @@ import Logo from "../Logo";
 
 export default function HeaderSkeleton() {
 	return (
-		<Navbar maxWidth="lg" isBordered>
+		<Navbar maxWidth="xl" isBordered>
 			<NavbarBrand className="flex items-center gap-4">
 				<Link
 					href={links.selectOrganization}

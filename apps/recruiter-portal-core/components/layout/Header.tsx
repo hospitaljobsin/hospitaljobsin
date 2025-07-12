@@ -36,7 +36,7 @@ export default function Header({
 		"Expected 'Account' node type",
 	);
 	return (
-		<Navbar maxWidth="lg" isBordered>
+		<Navbar maxWidth="xl" isBordered>
 			<NavbarBrand className="flex items-center gap-4 text-foreground-500">
 				<Link
 					href={links.selectOrganization}

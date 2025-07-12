@@ -9,7 +9,7 @@ export default function DashboardLayout({
 		<>
 			<HeaderClientComponent />
 			<div className="w-full mx-auto bg-background-600">
-				<div className="w-full px-5 max-w-5xl mx-auto">{children}</div>
+				<div className="w-full px-5 max-w-7xl mx-auto">{children}</div>
 			</div>
 		</>
 	);

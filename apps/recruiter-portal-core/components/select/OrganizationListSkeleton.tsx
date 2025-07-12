@@ -4,7 +4,11 @@ import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import OrganizationSkeleton from "./OrganizationSkeleton";
 
-export default function OrganizationListSkeleton() {
+export default function OrganizationListSkeleton({
+	count = 8,
+}: {
+	count?: number;
+}) {
 	return (
 		<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
 			<div className="flex w-full gap-6 justify-between items-center">
@@ -19,7 +23,7 @@ export default function OrganizationListSkeleton() {
 					Create Organization
 				</Button>
 			</div>
-			{Array.from({ length: 8 }).map((_, index) => (
+			{Array.from({ length: count }).map((_, index) => (
 				<OrganizationSkeleton key={`organization-skeleton-${index}`} />
 			))}
 		</div>
