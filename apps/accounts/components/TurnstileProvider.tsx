@@ -18,7 +18,13 @@ const TurnstileContext = createContext<TurnstileContextType | undefined>(
 	undefined,
 );
 
-export const TurnstileProvider = ({ children }: { children: ReactNode }) => {
+export const TurnstileProvider = ({
+	children,
+	nonce,
+}: {
+	children: ReactNode;
+	nonce: string;
+}) => {
 	const [token, setToken] = useState<string | null>(null);
 	const [isReady, setIsReady] = useState(false);
 	const turnstileRef = useRef<TurnstileInstance>(null);
@@ -66,6 +72,7 @@ export const TurnstileProvider = ({ children }: { children: ReactNode }) => {
 				id={DEFAULT_SCRIPT_ID}
 				src={SCRIPT_URL}
 				strategy="beforeInteractive"
+				nonce={nonce}
 			/>
 			<Turnstile
 				as="aside"

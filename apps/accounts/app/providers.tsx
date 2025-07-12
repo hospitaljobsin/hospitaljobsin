@@ -25,7 +25,7 @@ export default function Providers({
 			<ToastProvider placement="bottom-left" toastOffset={15} />
 			<ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
 				<RelayEnvironmentProvider environment={environment}>
-					<TurnstileProvider>
+					<TurnstileProvider nonce={nonce}>
 						<ProgressProvider
 							height="4px"
 							color="hsl(var(--heroui-primary-300))"
