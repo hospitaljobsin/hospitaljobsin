@@ -11,6 +11,7 @@ jiti.esmResolve("./lib/env/client");
 
 const nextConfig: NextConfig = {
 	/* config options here */
+	poweredByHeader: false,
 	reactStrictMode: true,
 	experimental: {
 		reactCompiler: true,

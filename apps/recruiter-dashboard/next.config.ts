@@ -1,8 +1,8 @@
-import { fileURLToPath } from "node:url";
 import createMDX from "@next/mdx";
 import { withSentryConfig } from "@sentry/nextjs";
 import { createJiti } from "jiti";
 import type { NextConfig } from "next";
+import { fileURLToPath } from "node:url";
 import { env } from "./lib/env/client";
 
 const jiti = createJiti(fileURLToPath(import.meta.url));
@@ -13,6 +13,7 @@ jiti.esmResolve("./lib/env/client");
 const nextConfig: NextConfig = {
 	/* config options here */
 	// Configure `pageExtensions` to include markdown and MDX files
+	poweredByHeader: false,
 	pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
 	experimental: {
 		mdxRs: true,

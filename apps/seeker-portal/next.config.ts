@@ -12,6 +12,7 @@ jiti.esmResolve("./lib/env/client");
 
 const nextConfig: NextConfig = {
 	/* config options here */
+	poweredByHeader: false,
 	pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
 	experimental: {
 		mdxRs: true,
