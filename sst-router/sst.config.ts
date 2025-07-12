@@ -22,82 +22,39 @@ export default $config({
 			},
 			transform: {
 				cdn(args, opts, name) {
-					args.orderedCacheBehaviors = [
-						{
-							pathPattern: "*.js",
-							targetOriginId: args.defaultCacheBehavior.targetOriginId,
-							viewerProtocolPolicy: "redirect-to-https",
-							allowedMethods: ["GET", "HEAD"],
-							cachedMethods: ["GET", "HEAD"],
-							cachePolicyId: cachingOptimizedPolicyId,
-							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
-							minTtl: 0,
-							defaultTtl: 31536000,
-							maxTtl: 31536000,
-						},
-						{
-							pathPattern: "*.css",
-							targetOriginId: args.defaultCacheBehavior.targetOriginId,
-							viewerProtocolPolicy: "redirect-to-https",
-							allowedMethods: ["GET", "HEAD"],
-							cachedMethods: ["GET", "HEAD"],
-							cachePolicyId: cachingOptimizedPolicyId,
-							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
-							minTtl: 0,
-							defaultTtl: 31536000,
-							maxTtl: 31536000,
-						},
-						{
-							pathPattern: "*.png",
-							targetOriginId: args.defaultCacheBehavior.targetOriginId,
-							viewerProtocolPolicy: "redirect-to-https",
-							allowedMethods: ["GET", "HEAD"],
-							cachedMethods: ["GET", "HEAD"],
-							cachePolicyId: cachingOptimizedPolicyId,
-							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
-							minTtl: 0,
-							defaultTtl: 31536000,
-							maxTtl: 31536000,
-						},
-						{
-							pathPattern: "*.jpg",
-							targetOriginId: args.defaultCacheBehavior.targetOriginId,
-							viewerProtocolPolicy: "redirect-to-https",
-							allowedMethods: ["GET", "HEAD"],
-							cachedMethods: ["GET", "HEAD"],
-							cachePolicyId: cachingOptimizedPolicyId,
-							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
-							minTtl: 0,
-							defaultTtl: 31536000,
-							maxTtl: 31536000,
-						},
-						{
-							pathPattern: "*.woff2",
-							targetOriginId: args.defaultCacheBehavior.targetOriginId,
-							viewerProtocolPolicy: "redirect-to-https",
-							allowedMethods: ["GET", "HEAD"],
-							cachedMethods: ["GET", "HEAD"],
-							cachePolicyId: cachingOptimizedPolicyId,
-							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
-							minTtl: 0,
-							defaultTtl: 31536000,
-							maxTtl: 31536000,
-						},
-						// {
-						//   pathPattern: "**", // catch-all for dynamic content (SSR, RSC)
-						//   targetOriginId: "default",
-						//   viewerProtocolPolicy: "redirect-to-https",
-						//   allowedMethods: ["GET", "HEAD", "OPTIONS"],
-						//   cachedMethods: ["GET", "HEAD"],
-						//   cachePolicyId: noCachePolicyId,
-						// },
-					];
-
 					args.defaultCacheBehavior = {
 						...args.defaultCacheBehavior,
 						// cachePolicyId: "658327ea-f89d-4fab-a63d-7e88639e58f6", // managed-caching-optimized
 						viewerProtocolPolicy: "redirect-to-https",
 					};
+					args.orderedCacheBehaviors = [
+						// Next.js versioned assets
+						{
+							pathPattern: "/_next/static/*",
+							targetOriginId: args.defaultCacheBehavior.targetOriginId,
+							viewerProtocolPolicy: "redirect-to-https",
+							allowedMethods: ["GET", "HEAD"],
+							cachedMethods: ["GET", "HEAD"],
+							cachePolicyId: cachingOptimizedPolicyId,
+							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
+							minTtl: 0,
+							defaultTtl: 31536000,
+							maxTtl: 31536000,
+						},
+						// Public assets outside _next
+						{
+							pathPattern: "/assets/*",
+							targetOriginId: args.defaultCacheBehavior.targetOriginId,
+							viewerProtocolPolicy: "redirect-to-https",
+							allowedMethods: ["GET", "HEAD"],
+							cachedMethods: ["GET", "HEAD"],
+							cachePolicyId: cachingOptimizedPolicyId,
+							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
+							minTtl: 0,
+							defaultTtl: 31536000,
+							maxTtl: 31536000,
+						},
+					];
 				},
 				cachePolicy(args, opts, name) {
 					args.name = "NextJsAppRouterPolicy";
