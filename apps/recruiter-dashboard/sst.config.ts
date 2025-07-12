@@ -16,7 +16,10 @@ export default $config({
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
 		new sst.aws.Nextjs("recruiter-dashboard-ui", {
 			buildCommand: "pnpm run package",
-			domain: process.env.SST_RECRUITER_DASHBOARD_DOMAIN,
+			domain: {
+				name: "wildcard.hospitaljobs.in",
+				aliases: [process.env.SST_RECRUITER_DASHBOARD_DOMAIN],
+			},
 			environment: {
 				NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL,
 				NEXT_PUBLIC_URL: env.NEXT_PUBLIC_URL,
