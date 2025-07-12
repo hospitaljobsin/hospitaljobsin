@@ -25,6 +25,19 @@ export default $config({
 						// cachePolicyId: "658327ea-f89d-4fab-a63d-7e88639e58f6", // managed-caching-optimized
 						viewerProtocolPolicy: "redirect-to-https",
 					};
+					args.origins = [
+						{
+							originId: "default",
+							domainName: "hospitaljobs.in",
+							customOriginConfig: {
+								originProtocolPolicy: "https-only",
+								httpPort: 80,
+								httpsPort: 443,
+								originSslProtocols: ["TLSv1.2"],
+								originReadTimeout: 30,
+							},
+						},
+					];
 					args.orderedCacheBehaviors = [
 						// Next.js versioned assets
 						{
