@@ -4,7 +4,7 @@ import JobListSkeleton from "@/components/landing/JobListSkeleton";
 export default function SavedJobsViewSkeleton() {
 	return (
 		<div className="w-full flex flex-col h-full py-8">
-			<JobListSkeleton />
+			<JobListSkeleton count={2} />
 		</div>
 	);
 }
