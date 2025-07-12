@@ -1,11 +1,6 @@
 import { env } from "@/lib/env/client";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
-import {
-	DEFAULT_SCRIPT_ID,
-	SCRIPT_URL,
-	Turnstile,
-} from "@marsidev/react-turnstile";
-import Script from "next/script";
+import { Turnstile } from "@marsidev/react-turnstile";
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
@@ -68,12 +63,6 @@ export const TurnstileProvider = ({
 				token,
 			}}
 		>
-			<Script
-				id={DEFAULT_SCRIPT_ID}
-				src={SCRIPT_URL}
-				strategy="beforeInteractive"
-				nonce={nonce}
-			/>
 			<Turnstile
 				as="aside"
 				ref={turnstileRef}
@@ -84,7 +73,9 @@ export const TurnstileProvider = ({
 					size: "invisible",
 					appearance: "execute",
 				}}
-				injectScript={false}
+				scriptOptions={{
+					nonce,
+				}}
 			/>
 			{children}
 		</TurnstileContext.Provider>
