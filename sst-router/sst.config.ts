@@ -10,6 +10,7 @@ export default $config({
 		};
 	},
 	async run() {
+		const cachingOptimizedPolicyId = "658327ea-f89d-4fab-a63d-7e88639e58f6";
 		new sst.aws.Router("SharedRouter", {
 			domain: {
 				name: "hospitaljobs.in",
@@ -18,6 +19,57 @@ export default $config({
 			},
 			transform: {
 				cdn(args, opts, name) {
+					args.orderedCacheBehaviors = [
+						{
+							pathPattern: "*.js",
+							targetOriginId: "s3-origin",
+							viewerProtocolPolicy: "redirect-to-https",
+							allowedMethods: ["GET", "HEAD"],
+							cachedMethods: ["GET", "HEAD"],
+							cachePolicyId: cachingOptimizedPolicyId,
+						},
+						{
+							pathPattern: "*.css",
+							targetOriginId: "s3-origin",
+							viewerProtocolPolicy: "redirect-to-https",
+							allowedMethods: ["GET", "HEAD"],
+							cachedMethods: ["GET", "HEAD"],
+							cachePolicyId: cachingOptimizedPolicyId,
+						},
+						{
+							pathPattern: "*.png",
+							targetOriginId: "s3-origin",
+							viewerProtocolPolicy: "redirect-to-https",
+							allowedMethods: ["GET", "HEAD"],
+							cachedMethods: ["GET", "HEAD"],
+							cachePolicyId: cachingOptimizedPolicyId,
+						},
+						{
+							pathPattern: "*.jpg",
+							targetOriginId: "s3-origin",
+							viewerProtocolPolicy: "redirect-to-https",
+							allowedMethods: ["GET", "HEAD"],
+							cachedMethods: ["GET", "HEAD"],
+							cachePolicyId: cachingOptimizedPolicyId,
+						},
+						{
+							pathPattern: "*.woff2",
+							targetOriginId: "s3-origin",
+							viewerProtocolPolicy: "redirect-to-https",
+							allowedMethods: ["GET", "HEAD"],
+							cachedMethods: ["GET", "HEAD"],
+							cachePolicyId: cachingOptimizedPolicyId,
+						},
+						// {
+						//   pathPattern: "**", // catch-all for dynamic content (SSR, RSC)
+						//   targetOriginId: "s3-origin",
+						//   viewerProtocolPolicy: "redirect-to-https",
+						//   allowedMethods: ["GET", "HEAD", "OPTIONS"],
+						//   cachedMethods: ["GET", "HEAD"],
+						//   cachePolicyId: noCachePolicyId,
+						// },
+					];
+
 					args.defaultCacheBehavior = {
 						...args.defaultCacheBehavior,
 						// cachePolicyId: "658327ea-f89d-4fab-a63d-7e88639e58f6", // managed-caching-optimized
