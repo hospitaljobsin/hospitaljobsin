@@ -68,6 +68,9 @@ export default $config({
 					// ];
 				},
 				cachePolicy(args, opts, name) {
+					// TODO: this is ALL actually in the opennext SST Nextjs abstraction
+					// https://github.com/opennextjs/opennextjs-aws/blob/main/examples/sst/stacks/OpenNextReferenceImplementation.ts
+					// we broke caching only because we started using a custom router
 					args.name = "NextJsAppRouterPolicy";
 					args.comment =
 						"Custom cache policy for Next.js App Router + next/image";
@@ -81,9 +84,12 @@ export default $config({
 							headerBehavior: "whitelist",
 							headers: {
 								items: [
-									"RSC",
-									"Next-Router-Prefetch",
-									"Next-Router-State-Tree",
+									"accept",
+									"rsc",
+									"next-router-prefetch",
+									"next-router-state-tree",
+									"next-url",
+									"x-prerender-revalidate",
 								],
 							},
 						},
