@@ -1,6 +1,15 @@
 "use client";
 
-import JobDetailHeaderClientComponent from "@/components/job-detail/JobDetailHeaderClientComponent";
+import JobDetailHeaderSkeleton from "@/components/job-detail/JobDetailHeaderSkeleton";
+import dynamic from "next/dynamic";
+
+const JobDetailHeaderClientComponent = dynamic(
+	() => import("@/components/job-detail/JobDetailHeaderClientComponent"),
+	{
+		ssr: false,
+		loading: () => <JobDetailHeaderSkeleton />,
+	},
+);
 
 export default function JobRootLayout({
 	children,
