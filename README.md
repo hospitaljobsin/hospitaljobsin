@@ -26,6 +26,7 @@ https://www.planttext.com?text=u-LoA2v9B2efpStXvShBJqbLK0eepIbE3SylobPmJ4xEByqhA
 
 ## System Architecture
 
+![System Architecture](./system_architecture.png)
 
 ## License
 This project has a proprietary license. Read the entire license [here](./README.md)
