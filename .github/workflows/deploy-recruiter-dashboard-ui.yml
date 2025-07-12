@@ -57,6 +57,17 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
+      - uses: actions/cache@v4
+        with:
+            # Cache the .next/cache folder for the apps/recruiter-dashboard app
+            path: |
+              apps/recruiter-dashboard/.next/cache
+            # Generate a new cache whenever the lockfile or source files change
+            key: ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/recruiter-dashboard/**/*.[jt]s', 'apps/recruiter-dashboard/**/*.[jt]sx', 'apps/recruiter-dashboard/**/*.{css,md,mdx}') }}
+            # If source files changed but pnpm-lock.yaml didn’t, use the previous cache
+            restore-keys: |
+              ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-
+
       - name: Install dependencies
         run: pnpm install --filter recruiter-dashboard --frozen-lockfile --shamefully-hoist
 

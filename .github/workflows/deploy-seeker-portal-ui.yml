@@ -57,6 +57,17 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
+      - uses: actions/cache@v4
+        with:
+          # Cache the .next/cache folder for the apps/seeker-portal app
+          path: |
+            apps/seeker-portal/.next/cache
+          # Generate a new cache whenever the lockfile or source files change
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/seeker-portal/**/*.[jt]s', 'apps/seeker-portal/**/*.[jt]sx', 'apps/seeker-portal/**/*.{css,md,mdx}') }}
+          # If source files changed but pnpm-lock.yaml didn’t, use the previous cache
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}-
+
       - name: Install dependencies
         run: pnpm install --filter seeker-portal --frozen-lockfile --shamefully-hoist
 
