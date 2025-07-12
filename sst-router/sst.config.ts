@@ -19,22 +19,10 @@ export default $config({
 			},
 			transform: {
 				cdn(args, opts, name) {
-					args.origins = [
-						{
-							originId: "default",
-							domainName: "hospitaljobs.in",
-							// customOriginConfig: {
-							// 	originProtocolPolicy: "https-only",
-							// 	httpPort: 80,
-							// 	httpsPort: 443,
-							// 	originSslProtocols: ["TLSv1.2"],
-							// },
-						},
-					];
 					args.orderedCacheBehaviors = [
 						{
 							pathPattern: "*.js",
-							targetOriginId: "default",
+							targetOriginId: args.defaultCacheBehavior.targetOriginId,
 							originRequestPolicyId: "",
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
@@ -43,7 +31,7 @@ export default $config({
 						},
 						{
 							pathPattern: "*.css",
-							targetOriginId: "default",
+							targetOriginId: args.defaultCacheBehavior.targetOriginId,
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
@@ -51,7 +39,7 @@ export default $config({
 						},
 						{
 							pathPattern: "*.png",
-							targetOriginId: "default",
+							targetOriginId: args.defaultCacheBehavior.targetOriginId,
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
@@ -59,7 +47,7 @@ export default $config({
 						},
 						{
 							pathPattern: "*.jpg",
-							targetOriginId: "default",
+							targetOriginId: args.defaultCacheBehavior.targetOriginId,
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
@@ -67,7 +55,7 @@ export default $config({
 						},
 						{
 							pathPattern: "*.woff2",
-							targetOriginId: "default",
+							targetOriginId: args.defaultCacheBehavior.targetOriginId,
 							viewerProtocolPolicy: "redirect-to-https",
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
