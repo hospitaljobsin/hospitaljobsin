@@ -111,7 +111,7 @@ export default function Sidebar({ queryReference }: Props) {
 		<>
 			<title>{`${data.organization.name} | ${APP_NAME}`}</title>
 			{/* Mobile top bar */}
-			<div className="md:hidden flex items-center justify-between px-4 py-2 border-b border-foreground-300">
+			<div className="lg:hidden flex items-center justify-between px-4 py-2 border-b border-foreground-300">
 				<div className="flex items-center gap-2">
 					<button
 						type="button"
@@ -134,7 +134,7 @@ export default function Sidebar({ queryReference }: Props) {
 				<AuthNavigation rootQuery={data.viewer} />
 			</div>
 			{/* Sidebar for desktop */}
-			<aside className="hidden md:flex flex-col w-64 min-w-64 h-full bg-background-900 border-r border-foreground-300 px-4 py-6 gap-8">
+			<aside className="hidden lg:flex flex-col w-64 min-w-64 h-full bg-background-900 border-r border-foreground-300 px-4 py-6 gap-8">
 				{/* Organization switcher (desktop) */}
 				<div className="flex items-center gap-4 mb-6">
 					<Dropdown placement="bottom-end">
@@ -161,7 +161,7 @@ export default function Sidebar({ queryReference }: Props) {
 							itemClasses={{
 								base: "gap-4",
 							}}
-							className="hidden md:block"
+							className="hidden lg:block"
 						>
 							<DropdownItem key="organization_switcher">
 								<HeaderDropdownMenu account={data.viewer} />
