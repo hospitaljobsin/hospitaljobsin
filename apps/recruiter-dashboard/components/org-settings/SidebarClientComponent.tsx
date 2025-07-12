@@ -4,6 +4,7 @@ import useOrganization from "@/lib/hooks/useOrganization";
 import { Suspense } from "react";
 import { loadQuery, useRelayEnvironment } from "react-relay";
 import OrgSettingsSidebar, { SidebarOrgSettingsQuery } from "./Sidebar";
+import OrgSettingsSidebarSkeleton from "./SidebarSkeleton";
 
 export default function SidebarClientComponent() {
 	const { organizationSlug } = useOrganization();
@@ -18,7 +19,7 @@ export default function SidebarClientComponent() {
 	);
 
 	return (
-		<Suspense>
+		<Suspense fallback={<OrgSettingsSidebarSkeleton />}>
 			<OrgSettingsSidebar queryReference={queryReference} />
 		</Suspense>
 	);

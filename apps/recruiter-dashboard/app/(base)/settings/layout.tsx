@@ -1,4 +1,13 @@
-import SidebarClientComponent from "@/components/org-settings/SidebarClientComponent";
+import OrgSettingsSidebarSkeleton from "@/components/org-settings/SidebarSkeleton";
+import dynamic from "next/dynamic";
+
+const SidebarClientComponent = dynamic(
+	() => import("@/components/org-settings/SidebarClientComponent"),
+	{
+		ssr: false,
+		loading: () => <OrgSettingsSidebarSkeleton />,
+	},
+);
 
 export default function OrganizationSettingsLayout({
 	children,
