@@ -45,9 +45,41 @@ function extractSubdomain(request: NextRequest): string | null {
 }
 
 export async function middleware(request: NextRequest) {
+	const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+	const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
+    style-src 'self' 'nonce-${nonce}';
+    img-src 'self' blob: data:;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    upgrade-insecure-requests;
+`;
+	// Replace newline characters and spaces
+	const contentSecurityPolicyHeaderValue = cspHeader
+		.replace(/\s{2,}/g, " ")
+		.trim();
+
+	const requestHeaders = new Headers(request.headers);
+	requestHeaders.set("x-nonce", nonce);
+
+	requestHeaders.set(
+		"Content-Security-Policy",
+		contentSecurityPolicyHeaderValue,
+	);
+
+	const response = NextResponse.next({
+		request: {
+			headers: requestHeaders,
+		},
+	});
+
 	const host = request.headers.get("host") || "";
 	const subdomain = extractSubdomain(request);
-	const response = NextResponse.next();
+
 	const sessionCookie = request.cookies.get(env.NEXT_PUBLIC_SESSION_COOKIE_KEY);
 
 	let isAuthenticated = false;
@@ -69,7 +101,6 @@ export async function middleware(request: NextRequest) {
 			return getAuthenticationResponse(request, host);
 		}
 		// TODO: if we have the /new route, redirect to it the recruiter subdomain
-		const requestHeaders = new Headers(request.headers);
 		requestHeaders.set(ORG_SUBDOMAIN_HEADER_NAME, subdomain);
 		return NextResponse.next({
 			request: {
@@ -84,6 +115,12 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
 	matcher: [
-		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+		{
+			source: "/((?!api|_next/static|_next/image|favicon.ico).*)",
+			missing: [
+				{ type: "header", key: "next-router-prefetch" },
+				{ type: "header", key: "purpose", value: "prefetch" },
+			],
+		},
 	],
 };

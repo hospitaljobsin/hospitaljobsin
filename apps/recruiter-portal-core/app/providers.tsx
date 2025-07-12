@@ -7,7 +7,13 @@ import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function Providers({
+	children,
+	nonce,
+}: {
+	children: React.ReactNode;
+	nonce: string;
+}) {
 	const router = useRouter();
 	const environment = useMemo(() => {
 		return getCurrentEnvironment();
@@ -21,7 +27,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 					<ProgressProvider
 						height="4px"
 						color="hsl(var(--heroui-primary-300))"
-						nonce="progressbar-nonce"
+						nonce={nonce}
 						options={{ showSpinner: false }}
 						shallowRouting
 					>

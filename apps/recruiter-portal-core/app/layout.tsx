@@ -2,6 +2,8 @@ import Footer from "@/components/layout/Footer";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
+import { headers } from "next/headers";
+import invariant from "tiny-invariant";
 import "./globals.css";
 import Providers from "./providers";
 
@@ -25,12 +27,14 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const nonce = (await headers()).get("x-nonce");
+	invariant(nonce, "Nonce is required");
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={`${workSans.variable} antialiased h-full w-full`}>
 				{/* Workaround to fix navigation scroll issues */}
 				<div />
-				<Providers>
+				<Providers nonce={nonce}>
 					{children}
 					<Footer />
 				</Providers>
