@@ -1,7 +1,7 @@
+import NewJobClientComponentQueryType, {
+	type NewJobClientComponentQuery,
+} from "@/__generated__/NewJobClientComponentQuery.graphql";
 import type { NewJobContentFragment$key } from "@/__generated__/NewJobContentFragment.graphql";
-import pageNewJobQueryType, {
-	type pageNewJobQuery,
-} from "@/__generated__/pageNewJobQuery.graphql";
 import links from "@/lib/links";
 import { useRouter } from "next/navigation";
 import {
@@ -27,9 +27,12 @@ export const NewJobContentFragment = graphql`
 
 export default function NewJobContent({
 	initialQueryRef,
-}: { initialQueryRef: PreloadedQuery<pageNewJobQuery> }) {
+}: { initialQueryRef: PreloadedQuery<NewJobClientComponentQuery> }) {
 	const router = useRouter();
-	const data = usePreloadedQuery(pageNewJobQueryType, initialQueryRef);
+	const data = usePreloadedQuery(
+		NewJobClientComponentQueryType,
+		initialQueryRef,
+	);
 	const orgData = useFragment<NewJobContentFragment$key>(
 		NewJobContentFragment,
 		data,
