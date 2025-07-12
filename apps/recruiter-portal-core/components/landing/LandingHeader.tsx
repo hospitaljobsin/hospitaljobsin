@@ -35,7 +35,7 @@ export default function LandingHeader() {
 				/>
 				<NavbarBrand className="flex items-center gap-4">
 					<Link href={links.landing} className="font-medium text-inherit">
-						<Logo />
+						<Logo variant="hero" />
 					</Link>
 					<Link
 						href={links.landing}
