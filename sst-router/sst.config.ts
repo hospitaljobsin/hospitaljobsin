@@ -11,6 +11,9 @@ export default $config({
 	},
 	async run() {
 		const cachingOptimizedPolicyId = "658327ea-f89d-4fab-a63d-7e88639e58f6";
+
+		const allViewerExceptHostHeaderPolicyId =
+			"b689b0a8-53d0-40ab-baf2-68738e2966ac";
 		new sst.aws.Router("SharedRouter", {
 			domain: {
 				name: "hospitaljobs.in",
@@ -27,6 +30,7 @@ export default $config({
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
+							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
 						},
 						{
 							pathPattern: "*.css",
@@ -35,6 +39,7 @@ export default $config({
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
+							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
 						},
 						{
 							pathPattern: "*.png",
@@ -43,6 +48,7 @@ export default $config({
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
+							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
 						},
 						{
 							pathPattern: "*.jpg",
@@ -51,6 +57,7 @@ export default $config({
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
+							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
 						},
 						{
 							pathPattern: "*.woff2",
@@ -59,6 +66,7 @@ export default $config({
 							allowedMethods: ["GET", "HEAD"],
 							cachedMethods: ["GET", "HEAD"],
 							cachePolicyId: cachingOptimizedPolicyId,
+							originRequestPolicyId: allViewerExceptHostHeaderPolicyId,
 						},
 						// {
 						//   pathPattern: "**", // catch-all for dynamic content (SSR, RSC)
