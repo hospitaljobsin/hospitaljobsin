@@ -1,3 +1,5 @@
+from urllib.request import urlretrieve
+
 from diagrams import Cluster, Diagram, Edge
 from diagrams.aws.compute import ECR, Lambda
 from diagrams.aws.engagement import SimpleEmailServiceSes
@@ -6,8 +8,10 @@ from diagrams.aws.integration import SQS
 from diagrams.aws.management import Cloudwatch
 from diagrams.aws.network import APIGateway, CloudFront, Route53
 from diagrams.aws.storage import S3
+from diagrams.custom import Custom
 from diagrams.onprem.database import Mongodb
 from diagrams.onprem.inmemory import Redis
+from diagrams.programming.framework import Graphql
 
 with Diagram("System Architecture", show=False, direction="TB"):
     user = User("End User")
@@ -51,13 +55,22 @@ with Diagram("System Architecture", show=False, direction="TB"):
         route53 >> cf_accounts
 
     # All frontends access the backend API
+    graphql_api = Graphql("GraphQL API")
     api_gateway = APIGateway("api.hospitaljobs.in\nAPI Gateway V2")
+    api_gateway >> graphql_api
+
     seeker_server >> api_gateway
     recruiter_server >> api_gateway
     dashboard_server >> api_gateway
     accounts_server >> api_gateway
 
     cloudwatch = Cloudwatch("AWS Cloudwatch")
+
+    gemini_model_url = "https://camo.githubusercontent.com/77ba4ba362fc39151379e4e7691125c8bb130eb2ade811ce9f76d4d5236c6847/68747470733a2f2f75706c6f61642e77696b696d656469612e6f72672f77696b6970656469612f636f6d6d6f6e732f7468756d622f662f66302f476f6f676c655f426172645f6c6f676f2e7376672f3132303070782d476f6f676c655f426172645f6c6f676f2e7376672e706e67"
+    gemini_model_icon = "gemini_model.png"
+    urlretrieve(gemini_model_url, gemini_model_icon)
+
+    gemini_model = Custom("Gemini 2.5 Flash", gemini_model_icon)
 
     # API Gateway routes to Python Lambda (FastAPI GraphQL)
     with Cluster("Backend", direction="LR"):
@@ -67,7 +80,7 @@ with Diagram("System Architecture", show=False, direction="TB"):
         mongo = Mongodb("MongoDB (Primary DB)\nMongoDB Atlas")
         redis = Redis("Redis (Cache)\nRedis Labs")
         py_lambda = Lambda("Python Lambda\nFastAPI GraphQL")
-        api_gateway >> py_lambda
+        # api_gateway >> py_lambda
 
         py_lambda >> mongo
         py_lambda >> redis
@@ -79,6 +92,8 @@ with Diagram("System Architecture", show=False, direction="TB"):
 
     aws_ses = SimpleEmailServiceSes("AWS SES")
     py_lambda >> aws_ses
+
+    graphql_api >> py_lambda
 
     py_lambda >> cloudwatch
 
@@ -93,3 +108,5 @@ with Diagram("System Architecture", show=False, direction="TB"):
 
     avatars_bucket = S3("Avatars Bucket")
     py_lambda >> avatars_bucket
+
+    py_lambda >> gemini_model
