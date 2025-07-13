@@ -265,6 +265,18 @@ wheels = [
 ]
 
 [[package]]
+name = "better-exceptions"
+version = "0.3.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/26/d8/30b745b965765c08ee132fd590fca46c31296e8f1a606de0c53cc6b5a68f/better_exceptions-0.3.3.tar.gz", hash = "sha256:e4e6bc18444d5f04e6e894b10381e5e921d3d544240418162c7db57e9eb3453b", size = 30156, upload-time = "2021-01-29T16:48:54.914Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ed/50/abf6850135f1e95d321a525d0a36e05255a039b3fc118b7d88413e8a8207/better_exceptions-0.3.3-py3-none-any.whl", hash = "sha256:9c70b1c61d5a179b84cd2c9d62c3324b667d74286207343645ed4306fdaad976", size = 11857, upload-time = "2021-01-29T16:48:53.642Z" },
+]
+
+[[package]]
 name = "boto3"
 version = "1.38.27"
 source = { registry = "https://pypi.org/simple" }
@@ -1452,7 +1464,7 @@ dependencies = [
     { name = "redis", extra = ["hiredis"] },
     { name = "result" },
     { name = "sentry-sdk", extra = ["fastapi", "pymongo"] },
-    { name = "strawberry-graphql", extra = ["cli"] },
+    { name = "strawberry-graphql" },
     { name = "structlog" },
     { name = "structlog-sentry" },
     { name = "tenacity" },
@@ -1464,8 +1476,10 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "better-exceptions" },
     { name = "pyright" },
     { name = "ruff" },
+    { name = "strawberry-graphql", extra = ["cli"] },
     { name = "types-aioboto3", extra = ["essential"] },
     { name = "types-aiobotocore-location" },
     { name = "types-aiobotocore-ses" },
@@ -1505,7 +1519,7 @@ requires-dist = [
     { name = "redis", extras = ["hiredis"], specifier = ">=6.2.0" },
     { name = "result", specifier = ">=0.17.0" },
     { name = "sentry-sdk", extras = ["fastapi", "pymongo"], specifier = ">=2.27.0" },
-    { name = "strawberry-graphql", extras = ["cli"], specifier = ">=0.268.0" },
+    { name = "strawberry-graphql", specifier = ">=0.275.5" },
     { name = "structlog", specifier = ">=24.4.0" },
     { name = "structlog-sentry", specifier = ">=2.2.1" },
     { name = "tenacity", specifier = ">=9.1.2" },
@@ -1517,8 +1531,10 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "better-exceptions", specifier = ">=0.3.3" },
     { name = "pyright", specifier = ">=1.1.397" },
     { name = "ruff", specifier = ">=0.11.2" },
+    { name = "strawberry-graphql", extras = ["cli"], specifier = ">=0.275.5" },
     { name = "types-aioboto3", extras = ["essential"], specifier = ">=13.4.0" },
     { name = "types-aiobotocore-location", specifier = ">=2.21.1" },
     { name = "types-aiobotocore-ses", specifier = ">=2.21.1" },

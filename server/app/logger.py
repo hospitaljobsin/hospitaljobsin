@@ -39,7 +39,7 @@ def remove_color_message(
 def get_logging_renderer(*, human_readable: bool) -> JSONRenderer | ConsoleRenderer:
     """Get the logging renderer."""
     if human_readable:
-        return ConsoleRenderer()
+        return ConsoleRenderer(exception_formatter=structlog.dev.better_traceback)
     return JSONRenderer(indent=1, sort_keys=True)
 
 
