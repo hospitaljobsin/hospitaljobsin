@@ -2,6 +2,7 @@ import uuid
 from datetime import date
 
 from result import Ok
+from strawberry import UNSET
 from types_aiobotocore_s3 import S3Client
 
 from app.accounts.agents.profile_parser import ProfileParserAgent
@@ -275,6 +276,7 @@ class ProfileParserService:
         *,
         file_key: str,
         account: Account,
+        overwrite: bool,
     ) -> Ok[Profile]:
         """Parse a profile document into structured data."""
         ocr_texts = await self._ocr_client(file_key)
@@ -290,23 +292,67 @@ class ProfileParserService:
             profile = await self._profile_repo.create(account)
             await self._account_repo.update_profile(account=account, profile=profile)
 
-        profile = await self._profile_repo.update(
-            profile=profile,
-            address=profile_output.address,
-            date_of_birth=profile_output.date_of_birth,
-            gender=profile_output.gender,
-            marital_status=profile_output.marital_status,
-            category=profile_output.category,
-            open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere,
-            locations_open_to_work=profile_output.locations_open_to_work,
-            education=profile_output.education,
-            licenses=profile_output.licenses,
-            languages=profile_output.languages,
-            job_preferences=profile_output.job_preferences,
-            work_experience=profile_output.work_experience,
-            salary_expectations=profile_output.salary_expectations,
-            certifications=profile_output.certifications,
-            professional_summary=profile_output.professional_summary,
-            headline=profile_output.headline,
-        )
+        if overwrite:
+            profile = await self._profile_repo.update(
+                profile=profile,
+                address=profile_output.address,
+                date_of_birth=profile_output.date_of_birth,
+                gender=profile_output.gender,
+                marital_status=profile_output.marital_status,
+                category=profile_output.category,
+                open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere,
+                locations_open_to_work=profile_output.locations_open_to_work,
+                education=profile_output.education,
+                licenses=profile_output.licenses,
+                languages=profile_output.languages,
+                job_preferences=profile_output.job_preferences,
+                work_experience=profile_output.work_experience,
+                salary_expectations=profile_output.salary_expectations,
+                certifications=profile_output.certifications,
+                professional_summary=profile_output.professional_summary,
+                headline=profile_output.headline,
+            )
+        else:
+            # add the non null fields to the profile
+            profile = await self._profile_repo.update(
+                profile=profile,
+                address=profile_output.address if profile_output.address else UNSET,
+                date_of_birth=profile_output.date_of_birth
+                if profile_output.date_of_birth
+                else UNSET,
+                gender=profile_output.gender if profile_output.gender else UNSET,
+                marital_status=profile_output.marital_status
+                if profile_output.marital_status
+                else UNSET,
+                category=profile_output.category if profile_output.category else UNSET,
+                open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere
+                if profile_output.open_to_relocation_anywhere
+                else UNSET,
+                locations_open_to_work=profile_output.locations_open_to_work
+                if profile_output.locations_open_to_work
+                else UNSET,
+                education=profile_output.education
+                if profile_output.education
+                else UNSET,
+                licenses=profile_output.licenses if profile_output.licenses else UNSET,
+                languages=profile_output.languages
+                if profile_output.languages
+                else UNSET,
+                job_preferences=profile_output.job_preferences
+                if profile_output.job_preferences
+                else UNSET,
+                work_experience=profile_output.work_experience
+                if profile_output.work_experience
+                else UNSET,
+                salary_expectations=profile_output.salary_expectations
+                if profile_output.salary_expectations
+                else UNSET,
+                certifications=profile_output.certifications
+                if profile_output.certifications
+                else UNSET,
+                professional_summary=profile_output.professional_summary
+                if profile_output.professional_summary
+                else UNSET,
+                headline=profile_output.headline if profile_output.headline else UNSET,
+            )
         return Ok(profile)

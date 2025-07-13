@@ -38,7 +38,7 @@ class ProfileOutput(BaseModel):
     )
     category: str | None = Field(
         ...,
-        description="The category of the applicant.",
+        description="The socio-economic category of the applicant (caste).",
     )
     locations_open_to_work: list[str] = Field(
         ...,

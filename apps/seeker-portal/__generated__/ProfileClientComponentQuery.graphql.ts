@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<2253a5721b51ea02ba75ab3f9f396422>>
- * @relayHash bc432e8b64a2fcee32976169b6bc9b80
+ * @generated SignedSource<<bbb120752a42d72de22e0ad1ae58a7fe>>
+ * @relayHash 1fa139cbc644f95e4c0ca12b29cb3cf0
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID bc432e8b64a2fcee32976169b6bc9b80
+// @relayRequestID 1fa139cbc644f95e4c0ca12b29cb3cf0
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -64,10 +64,7 @@ v5 = {
   "kind": "ScalarField",
   "name": "issuer",
   "storageKey": null
-},
-v6 = [
-  (v0/*: any*/)
-];
+};
 return {
   "fragment": {
     "argumentDefinitions": [],
@@ -374,43 +371,6 @@ return {
                       }
                     ],
                     "storageKey": null
-                  },
-                  {
-                    "kind": "InlineFragment",
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "Language",
-                        "kind": "LinkedField",
-                        "name": "languages",
-                        "plural": true,
-                        "selections": (v6/*: any*/),
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "License",
-                        "kind": "LinkedField",
-                        "name": "licenses",
-                        "plural": true,
-                        "selections": (v6/*: any*/),
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "Certification",
-                        "kind": "LinkedField",
-                        "name": "certifications",
-                        "plural": true,
-                        "selections": (v6/*: any*/),
-                        "storageKey": null
-                      }
-                    ],
-                    "type": "BaseProfile",
-                    "abstractKey": "__isBaseProfile"
                   }
                 ],
                 "storageKey": null
@@ -433,7 +393,7 @@ return {
     ]
   },
   "params": {
-    "id": "bc432e8b64a2fcee32976169b6bc9b80",
+    "id": "1fa139cbc644f95e4c0ca12b29cb3cf0",
     "metadata": {},
     "name": "ProfileClientComponentQuery",
     "operationKind": "query",

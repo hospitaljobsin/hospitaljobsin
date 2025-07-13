@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5cd274d8d9cb643539f2517055692b88>>
+ * @generated SignedSource<<47e4668b7514754dd5e91bee1b284def>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type LocationPreferencesFragment$data = {
-  readonly address: string;
+  readonly address: string | null | undefined;
   readonly locationsOpenToWork: ReadonlyArray<string>;
   readonly openToRelocationAnywhere: boolean;
   readonly " $fragmentType": "LocationPreferencesFragment";

@@ -68,7 +68,6 @@ const ProfileViewFragment = graphql`
           ...UpdateLicensesFormFragment
 		  ...AboutMeFragment
 		  ...UpdateAboutMeFormFragment
-		  ...AutofillWithAISectionFragment
         }
       }
     }
@@ -126,7 +125,7 @@ export default function ProfileView({
 					<div className="w-full h-full space-y-16 py-8">
 						<ProfileBanner account={data.viewer} />
 						<ProfileCompletionMeter status={completionStatus} />
-						<AutofillWithAISection profile={data.viewer.profile} />
+						<AutofillWithAISection />
 						{isEditingAboutMe ? (
 							<UpdateProfessionalSummaryForm
 								rootQuery={data.viewer.profile}

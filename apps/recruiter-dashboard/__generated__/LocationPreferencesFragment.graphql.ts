@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d91f67e68d048ce6a2ff2df5aaad7a8f>>
+ * @generated SignedSource<<56ab4cdf291717e8e1db45eea9f04986>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -33,7 +33,7 @@ export type LocationPreferencesFragment$data = {
     readonly __typename: "%other";
   };
   readonly profileSnapshot: {
-    readonly address: string;
+    readonly address: string | null | undefined;
     readonly locationsOpenToWork: ReadonlyArray<string>;
     readonly openToRelocationAnywhere: boolean;
   };

@@ -31,6 +31,8 @@ class TextractOCRClient(BaseOCRClient):
         self._aws_settings = aws_settings
 
     async def __call__(self, document_url: str) -> list[str]:
+        # TODO: Use analyze_document instead of detect_document_text
+        # to support multi page PDFs
         response = await self.__client.detect_document_text(
             Document={
                 "S3Object": {

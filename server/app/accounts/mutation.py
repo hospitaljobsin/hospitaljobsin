@@ -422,10 +422,18 @@ class AccountMutation:
                 description="The document URL to parse.",
             ),
         ],
+        overwrite: Annotated[
+            bool,
+            strawberry.argument(
+                description="Whether to overwrite the existing profile.",
+            ),
+        ] = False,
     ) -> ParseProfileDocumentPayload:
         """Parse a profile document into structured data."""
         match await profile_parser_service.parse_profile_document(
-            file_key=file_key, account=info.context["current_user"]
+            file_key=file_key,
+            account=info.context["current_user"],
+            overwrite=overwrite,
         ):
             case Ok(profile):
                 return ProfileType.marshal(profile)

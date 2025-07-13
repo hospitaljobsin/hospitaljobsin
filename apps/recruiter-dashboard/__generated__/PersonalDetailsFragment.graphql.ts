@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<961e15e31b5c117d6c76c30e271b52f7>>
+ * @generated SignedSource<<ddcaba9755673cbecd6e9940ed32d08b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -43,7 +43,7 @@ export type PersonalDetailsFragment$data = {
     readonly __typename: "%other";
   };
   readonly profileSnapshot: {
-    readonly address: string;
+    readonly address: string | null | undefined;
     readonly category: string | null | undefined;
     readonly dateOfBirth: any | null | undefined;
     readonly gender: GenderType | null | undefined;

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<3a6b2f0270bbcbb8b7fd75b46ff0ed48>>
- * @relayHash 997c68315e33b143ebc92572544d459a
+ * @generated SignedSource<<5c9fd3f63ba9c11e073b31b2d068cc9a>>
+ * @relayHash a557a71d43a00bbd1984f4aa1e78091e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,21 +9,21 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 997c68315e33b143ebc92572544d459a
+// @relayRequestID a557a71d43a00bbd1984f4aa1e78091e
 
 import type { ConcreteRequest } from 'relay-runtime';
-export type AutofillWithAISectionGeneratePresignedURLMutation$variables = {
+export type AutofillWithAIModalGeneratePresignedURLMutation$variables = {
   contentType: string;
 };
-export type AutofillWithAISectionGeneratePresignedURLMutation$data = {
+export type AutofillWithAIModalGeneratePresignedURLMutation$data = {
   readonly generateProfileDocumentPresignedUrl: {
     readonly fileKey: string;
     readonly presignedUrl: string;
   };
 };
-export type AutofillWithAISectionGeneratePresignedURLMutation = {
-  response: AutofillWithAISectionGeneratePresignedURLMutation$data;
-  variables: AutofillWithAISectionGeneratePresignedURLMutation$variables;
+export type AutofillWithAIModalGeneratePresignedURLMutation = {
+  response: AutofillWithAIModalGeneratePresignedURLMutation$data;
+  variables: AutofillWithAIModalGeneratePresignedURLMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -72,7 +72,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "AutofillWithAISectionGeneratePresignedURLMutation",
+    "name": "AutofillWithAIModalGeneratePresignedURLMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -81,19 +81,19 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "AutofillWithAISectionGeneratePresignedURLMutation",
+    "name": "AutofillWithAIModalGeneratePresignedURLMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "id": "997c68315e33b143ebc92572544d459a",
+    "id": "a557a71d43a00bbd1984f4aa1e78091e",
     "metadata": {},
-    "name": "AutofillWithAISectionGeneratePresignedURLMutation",
+    "name": "AutofillWithAIModalGeneratePresignedURLMutation",
     "operationKind": "mutation",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "3632cae2733599f68eb64c2524e17d14";
+(node as any).hash = "d42fbef98a42b85d6764a2982d478915";
 
 export default node;

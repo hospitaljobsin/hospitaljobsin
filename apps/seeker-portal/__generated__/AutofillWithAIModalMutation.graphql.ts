@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<85da0b9d6b33c0dc604eb9349a4d7172>>
- * @relayHash 4f72a824b2091e0200f6d540816eef0e
+ * @generated SignedSource<<099aee775cec6db0dc02a1f49228aeca>>
+ * @relayHash a44f69d6ad368c262a29115033da8f8c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,27 +9,28 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 4f72a824b2091e0200f6d540816eef0e
+// @relayRequestID a44f69d6ad368c262a29115033da8f8c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type AutofillWithAISectionMutation$variables = {
+export type AutofillWithAIModalMutation$variables = {
   fileKey: string;
+  overwrite: boolean;
 };
-export type AutofillWithAISectionMutation$data = {
+export type AutofillWithAIModalMutation$data = {
   readonly parseProfileDocument: {
-    readonly address?: string;
+    readonly address?: string | null | undefined;
     readonly dateOfBirth?: any | null | undefined;
     readonly headline?: string | null | undefined;
     readonly locationsOpenToWork?: ReadonlyArray<string>;
     readonly openToRelocationAnywhere?: boolean;
     readonly professionalSummary?: string | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"AboutMeFragment" | "AutofillWithAISectionFragment" | "CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LicensesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "UpdateAboutMeFormFragment" | "UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLicensesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateWorkExperienceFormFragment" | "WorkExperienceFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AboutMeFragment" | "CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LicensesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "UpdateAboutMeFormFragment" | "UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLicensesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateWorkExperienceFormFragment" | "WorkExperienceFragment">;
   };
 };
-export type AutofillWithAISectionMutation = {
-  response: AutofillWithAISectionMutation$data;
-  variables: AutofillWithAISectionMutation$variables;
+export type AutofillWithAIModalMutation = {
+  response: AutofillWithAIModalMutation$data;
+  variables: AutofillWithAIModalMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -38,6 +39,11 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "fileKey"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "overwrite"
   }
 ],
 v1 = [
@@ -45,6 +51,11 @@ v1 = [
     "kind": "Variable",
     "name": "fileKey",
     "variableName": "fileKey"
+  },
+  {
+    "kind": "Variable",
+    "name": "overwrite",
+    "variableName": "overwrite"
   }
 ],
 v2 = {
@@ -93,34 +104,24 @@ v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
-},
-v9 = [
-  (v8/*: any*/)
-],
-v10 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "name",
   "storageKey": null
 },
-v11 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "startedAt",
   "storageKey": null
 },
-v12 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "completedAt",
   "storageKey": null
 },
-v13 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -132,7 +133,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "AutofillWithAISectionMutation",
+    "name": "AutofillWithAIModalMutation",
     "selections": [
       {
         "alias": null,
@@ -230,11 +231,6 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "UpdateAboutMeFormFragment"
-              },
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "AutofillWithAISectionFragment"
               }
             ],
             "type": "BaseProfile",
@@ -251,7 +247,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "AutofillWithAISectionMutation",
+    "name": "AutofillWithAIModalMutation",
     "selections": [
       {
         "alias": null,
@@ -261,7 +257,13 @@ return {
         "name": "parseProfileDocument",
         "plural": false,
         "selections": [
-          (v8/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "__typename",
+            "storageKey": null
+          },
           {
             "kind": "InlineFragment",
             "selections": [
@@ -272,79 +274,29 @@ return {
               (v6/*: any*/),
               (v7/*: any*/),
               {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "gender",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "maritalStatus",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "category",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "WorkExperience",
-                "kind": "LinkedField",
-                "name": "workExperience",
-                "plural": true,
-                "selections": (v9/*: any*/),
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Education",
-                "kind": "LinkedField",
-                "name": "education",
-                "plural": true,
-                "selections": (v9/*: any*/),
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Language",
-                "kind": "LinkedField",
-                "name": "languages",
-                "plural": true,
-                "selections": (v9/*: any*/),
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "License",
-                "kind": "LinkedField",
-                "name": "licenses",
-                "plural": true,
-                "selections": (v9/*: any*/),
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "Certification",
-                "kind": "LinkedField",
-                "name": "certifications",
-                "plural": true,
-                "selections": (v9/*: any*/),
-                "storageKey": null
-              },
-              {
                 "kind": "InlineFragment",
                 "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "gender",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "maritalStatus",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "category",
+                    "storageKey": null
+                  },
                   {
                     "alias": null,
                     "args": null,
@@ -353,7 +305,7 @@ return {
                     "name": "languages",
                     "plural": true,
                     "selections": [
-                      (v10/*: any*/),
+                      (v8/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -386,8 +338,8 @@ return {
                         "name": "institution",
                         "storageKey": null
                       },
-                      (v11/*: any*/),
-                      (v12/*: any*/)
+                      (v9/*: any*/),
+                      (v10/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -420,8 +372,8 @@ return {
                         "name": "organization",
                         "storageKey": null
                       },
-                      (v11/*: any*/),
-                      (v12/*: any*/),
+                      (v9/*: any*/),
+                      (v10/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -447,8 +399,8 @@ return {
                     "name": "certifications",
                     "plural": true,
                     "selections": [
-                      (v10/*: any*/),
-                      (v13/*: any*/),
+                      (v8/*: any*/),
+                      (v11/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -481,8 +433,8 @@ return {
                     "name": "licenses",
                     "plural": true,
                     "selections": [
-                      (v10/*: any*/),
-                      (v13/*: any*/),
+                      (v8/*: any*/),
+                      (v11/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -542,15 +494,15 @@ return {
     ]
   },
   "params": {
-    "id": "4f72a824b2091e0200f6d540816eef0e",
+    "id": "a44f69d6ad368c262a29115033da8f8c",
     "metadata": {},
-    "name": "AutofillWithAISectionMutation",
+    "name": "AutofillWithAIModalMutation",
     "operationKind": "mutation",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "3b665dfb70fdb66d0e3ac9714ecdb232";
+(node as any).hash = "f0f5d1306ef05b0cb456063069cac8d1";
 
 export default node;
