@@ -91,7 +91,9 @@ resource "aws_iam_policy" "lambda_custom_policy" {
         Action = [
           "textract:DetectDocumentText",
           "textract:AnalyzeDocument",
-          "textract:GetDocumentTextDetection"
+          "textract:GetDocumentTextDetection",
+          "textract:StartDocumentAnalysis",
+          "textract:GetDocumentAnalysis"
         ],
         Resource = [
           "*"
