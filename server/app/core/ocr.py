@@ -40,8 +40,13 @@ class TextractOCRClient(BaseOCRClient):
             },
             FeatureTypes=["LAYOUT"],
         )
+
         blocks = response["Blocks"]
-        return [block.get("Text", "") for block in blocks]
+        return [
+            block["Text"]
+            for block in blocks
+            if block.get("BlockType") in ["LINE", "WORD"] and "Text" in block
+        ]
 
 
 class TesseractOCRClient(BaseOCRClient):
