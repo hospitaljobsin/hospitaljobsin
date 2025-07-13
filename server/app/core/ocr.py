@@ -79,7 +79,7 @@ class TesseractOCRClient(BaseOCRClient):
             *(self._internal_process_image(image) for image in images)
         )
 
-        return [page_text for page_text, _ in page_texts]
+        return page_texts
 
     async def _internal_process_image(self, image: Image) -> tuple[str, int]:
         return await asyncio.to_thread(self._process_image, image)

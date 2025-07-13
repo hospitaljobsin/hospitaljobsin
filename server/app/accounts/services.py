@@ -276,6 +276,8 @@ class ProfileParserService:
     ) -> Ok[Profile]:
         """Parse a profile document into structured data."""
         ocr_texts = await self._ocr_client(file_key)
+
+        print("OCR TEXT: ", ocr_texts)
         result = await self._profile_parser_agent.run(
             f"OCR text:\n{'\n'.join(ocr_texts)}"
         )
