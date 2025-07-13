@@ -77,7 +77,7 @@ export default function AutofillWithAIModal({
 		handleSubmit,
 		setValue,
 		watch,
-		formState: { isSubmitting },
+		formState: { isSubmitting, isValid },
 	} = useForm<{
 		file: File | null;
 		overwrite: boolean;
@@ -198,7 +198,13 @@ export default function AutofillWithAIModal({
 										onValueChange={field.onChange}
 										className="mt-2"
 									>
-										Overwrite my entire profile with values from this document
+										<p className="text-base">
+											Overwrite my profile with this document
+										</p>
+										<p className="text-xs text-foreground-600">
+											(this will remove any information already saved in your
+											profile)
+										</p>
 									</Checkbox>
 								)}
 							/>
@@ -212,7 +218,7 @@ export default function AutofillWithAIModal({
 							color="primary"
 							fullWidth
 							type="submit"
-							isDisabled={!selectedFile}
+							isDisabled={!isValid}
 							isLoading={
 								isSubmitting || isParsingProfile || isGeneratingPresignedURL
 							}
