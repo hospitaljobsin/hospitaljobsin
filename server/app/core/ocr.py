@@ -31,10 +31,9 @@ class TextractOCRClient(BaseOCRClient):
         self._aws_settings = aws_settings
 
     async def __call__(self, document_url: str) -> list[str]:
-        # TODO: this doesn't support multi-page PDFs
-        # we need to rearchitect this to make it support
-        response = await self.__client.analyze_document(
-            Document={
+        # 1. Start Textract async analysis
+        response = await self.__client.start_document_analysis(
+            DocumentLocation={
                 "S3Object": {
                     "Bucket": self._aws_settings.s3_bucket_name,
                     "Name": document_url,
@@ -42,12 +41,37 @@ class TextractOCRClient(BaseOCRClient):
             },
             FeatureTypes=["LAYOUT"],
         )
+        job_id = response["JobId"]
 
-        blocks = response["Blocks"]
+        # 2. Poll until job succeeds or fails
+        while True:
+            await asyncio.sleep(5)
+            job_status_response = await self.__client.get_document_analysis(
+                JobId=job_id
+            )
+            status = job_status_response["JobStatus"]
+
+            if status == "SUCCEEDED":
+                break
+            if status in ("FAILED", "PARTIAL_SUCCESS"):
+                raise Exception(f"Textract job ended with status: {status}")
+
+        # 3. First response already contains results — use it
+        results = job_status_response["Blocks"]
+        next_token = job_status_response.get("NextToken")
+
+        # 4. If paginated, continue fetching more pages
+        while next_token:
+            response = await self.__client.get_document_analysis(
+                JobId=job_id, NextToken=next_token
+            )
+            results.extend(response["Blocks"])
+            next_token = response.get("NextToken")
+
         return [
             block["Text"]
-            for block in blocks
-            if block.get("BlockType") in ["LINE", "WORD"] and "Text" in block
+            for block in results
+            if block.get("BlockType") == "LINE" and "Text" in block
         ]
 
 
