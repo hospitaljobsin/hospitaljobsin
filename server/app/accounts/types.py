@@ -677,8 +677,9 @@ UpdateProfilePayload = Annotated[
     ),
 ]
 
+
 ParseProfileDocumentPayload = Annotated[
-    ParsedProfileType,
+    ProfileType,
     strawberry.union(
         name="ParseProfileDocumentPayload",
         description="The parse profile document payload.",

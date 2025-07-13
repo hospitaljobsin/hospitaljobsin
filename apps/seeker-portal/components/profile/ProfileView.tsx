@@ -12,6 +12,7 @@ import {
 import invariant from "tiny-invariant";
 import DashboardHeader from "../layout/DashboardHeader";
 import ProfessionalSummary from "./AboutMe";
+import AutofillWithAISection from "./AutofillWithAISection";
 import Certifications from "./Certifications";
 import Education from "./Education";
 import Languages from "./Languages";
@@ -67,6 +68,7 @@ const ProfileViewFragment = graphql`
           ...UpdateLicensesFormFragment
 		  ...AboutMeFragment
 		  ...UpdateAboutMeFormFragment
+		  ...AutofillWithAISectionFragment
         }
       }
     }
@@ -100,6 +102,7 @@ export default function ProfileView({
 	const [isEditingCertifications, setIsEditingCertifications] = useState(false);
 	const [isEditingLicenses, setIsEditingLicenses] = useState(false);
 	const [isEditingAboutMe, setIsEditingAboutMe] = useState(false);
+	const [isAutofillModalOpen, setIsAutofillModalOpen] = useState(false);
 
 	const completionStatus = {
 		personalDetails: !!data.viewer.profile.dateOfBirth,
@@ -123,6 +126,7 @@ export default function ProfileView({
 					<div className="w-full h-full space-y-16 py-8">
 						<ProfileBanner account={data.viewer} />
 						<ProfileCompletionMeter status={completionStatus} />
+						<AutofillWithAISection profile={data.viewer.profile} />
 						{isEditingAboutMe ? (
 							<UpdateProfessionalSummaryForm
 								rootQuery={data.viewer.profile}

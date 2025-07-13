@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0284a32e4144c6d784517cbc5fb99010>>
+ * @generated SignedSource<<25fe5b590cd68eb92d34e5b3c5c6db03>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -26,7 +26,7 @@ export type ProfileViewFragment$data = {
       readonly workExperience: ReadonlyArray<{
         readonly __typename: "WorkExperience";
       }>;
-      readonly " $fragmentSpreads": FragmentRefs<"AboutMeFragment" | "CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LicensesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "UpdateAboutMeFormFragment" | "UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLicensesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateWorkExperienceFormFragment" | "WorkExperienceFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"AboutMeFragment" | "AutofillWithAISectionFragment" | "CertificationsFragment" | "EducationFragment" | "LanguagesFragment" | "LicensesFragment" | "LocationPreferencesFragment" | "PersonalDetailsFragment" | "UpdateAboutMeFormFragment" | "UpdateCertificationsFormFragment" | "UpdateEducationFormFragment" | "UpdateLanguagesFormFragment" | "UpdateLicensesFormFragment" | "UpdateLocationPreferencesFormFragment" | "UpdatePersonalDetailsFormFragment" | "UpdateWorkExperienceFormFragment" | "WorkExperienceFragment">;
     };
     readonly " $fragmentSpreads": FragmentRefs<"ProfileBannerFragment">;
   } | {
@@ -232,6 +232,11 @@ return {
                     "args": null,
                     "kind": "FragmentSpread",
                     "name": "UpdateAboutMeFormFragment"
+                  },
+                  {
+                    "args": null,
+                    "kind": "FragmentSpread",
+                    "name": "AutofillWithAISectionFragment"
                   }
                 ],
                 "storageKey": null
@@ -251,6 +256,6 @@ return {
 };
 })();
 
-(node as any).hash = "51c4fb3112b941a81fde74d16074799b";
+(node as any).hash = "29393a7420dce382c09ccab08ff9a9b5";
 
 export default node;

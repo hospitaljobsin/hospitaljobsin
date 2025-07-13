@@ -9,9 +9,9 @@ from types_aiobotocore_s3 import S3Client
 from app.accounts.agents.profile_parser import ProfileParserAgent
 from app.accounts.documents import (
     Account,
-    BaseProfile,
     Education,
     Language,
+    Profile,
     WorkExperience,
 )
 from app.accounts.repositories import AccountRepo, ProfileRepo
@@ -242,12 +242,21 @@ class ProfileService:
 
 class ProfileParserService:
     def __init__(
-        self, profile_parser_agent: ProfileParserAgent, ocr_client: BaseOCRClient
+        self,
+        profile_parser_agent: ProfileParserAgent,
+        ocr_client: BaseOCRClient,
+        profile_repo: ProfileRepo,
     ) -> None:
         self._profile_parser_agent = profile_parser_agent
         self._ocr_client = ocr_client
+        self._profile_repo = profile_repo
 
-    async def parse_profile_document(self, document: bytes) -> Ok[BaseProfile]:
+    async def parse_profile_document(
+        self,
+        *,
+        document: bytes,
+        account: Account,
+    ) -> Ok[Profile]:
         """Parse a profile document into structured data."""
         pdf_document = fitz.open(stream=document, filetype="pdf")
 
@@ -269,25 +278,24 @@ class ProfileParserService:
         )
 
         profile_output = result.output
-        return Ok(
-            BaseProfile(
-                address=profile_output.address,
-                date_of_birth=profile_output.date_of_birth,
-                gender=profile_output.gender,
-                marital_status=profile_output.marital_status,
-                category=profile_output.category,
-                # TODO: geocode the locations correctly here (or maybe, crazy idea, just let the LLM output it??)
-                # locations_open_to_work=profile_output.locations_open_to_work,
-                open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere,
-                education=profile_output.education,
-                licenses=profile_output.licenses,
-                languages=profile_output.languages,
-                job_preferences=profile_output.job_preferences,
-                work_experience=profile_output.work_experience,
-                total_work_experience_years=profile_output.total_work_experience_years,
-                salary_expectations=profile_output.salary_expectations,
-                certifications=profile_output.certifications,
-                professional_summary=profile_output.professional_summary,
-                headline=profile_output.headline,
-            )
+        profile = account.profile
+        profile = await self._profile_repo.update(
+            profile=profile,
+            address=profile_output.address,
+            date_of_birth=profile_output.date_of_birth,
+            gender=profile_output.gender,
+            marital_status=profile_output.marital_status,
+            category=profile_output.category,
+            open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere,
+            locations_open_to_work=profile_output.locations_open_to_work,
+            education=profile_output.education,
+            licenses=profile_output.licenses,
+            languages=profile_output.languages,
+            job_preferences=profile_output.job_preferences,
+            work_experience=profile_output.work_experience,
+            salary_expectations=profile_output.salary_expectations,
+            certifications=profile_output.certifications,
+            professional_summary=profile_output.professional_summary,
+            headline=profile_output.headline,
         )
+        return Ok(profile)

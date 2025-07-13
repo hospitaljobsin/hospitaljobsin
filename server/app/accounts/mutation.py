@@ -21,8 +21,8 @@ from .types import (
     LanguageInputType,
     LicenseInputType,
     MaritalStatusTypeEnum,
-    ParsedProfileType,
     ParseProfileDocumentPayload,
+    ProfileType,
     UpdateAccountPayload,
     UpdateProfilePayload,
     WorkExperienceInputType,
@@ -426,9 +426,9 @@ class AccountMutation:
         """Parse a profile document into structured data."""
         content = await document.read()
         match await profile_parser_service.parse_profile_document(
-            document=content,
+            document=content, account=info.context["current_user"]
         ):
             case Ok(profile):
-                return ParsedProfileType.marshal(profile)
+                return ProfileType.marshal(profile)
             case _ as unreachable:
                 assert_never(unreachable)

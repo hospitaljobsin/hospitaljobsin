@@ -1,0 +1,87 @@
+# PRD: "Autofill with AI" Section in Seeker Portal Profile
+
+## Overview
+
+Add a new section to the profile view in the Seeker Portal called "Autofill with AI". This feature allows users to upload a PDF resume, which is parsed by the backend, and the extracted profile fields are displayed for review and manual editing before saving.
+
+---
+
+## Goals
+
+- Enable users to quickly populate their profile by uploading a PDF resume.
+- Leverage the existing backend GraphQL mutation parse_profile_document for parsing.
+- Allow users to review and edit the parsed data before saving.
+- Use HeroUI components and Tailwind CSS for all UI elements.
+
+---
+
+## Requirements
+
+### 1. UI/UX
+
+- Add a new section in the profile view, titled "Autofill with AI".
+- Section contains a button: **"Autofill with AI"**.
+- On button click, open a modal dialog.
+- Modal content:
+  - Prompt user to upload a PDF file (accept only PDF).
+  - Use HeroUI file upload component.
+  - Show loading indicator while uploading/parsing.
+  - On successful parse, display the parsed profile fields in editable form fields (use HeroUI form components).
+  - Allow user to manually edit any field.
+  - Provide a **"Save Profile"** button at the bottom.
+  - On clicking "Save Profile", call a placeholder function/mutation (to be implemented in the next iteration).
+  - Show error messages if parsing fails or if the file is not a valid PDF.
+- Modal can be closed/cancelled at any time.
+
+### 2. Backend Integration
+
+- On file upload, send the PDF to the backend using the existing parse_profile_document GraphQL mutation.
+- Receive the parsed profile data from the backend and populate the form fields in the modal.
+- No changes to the backend mutation are required.
+
+### 3. Tech Stack
+
+- Frontend: Next.js (TypeScript), React, HeroUI components, Tailwind CSS.
+- Data fetching: Relay (for GraphQL).
+- Modal, file upload, and form: Use HeroUI components.
+- All new UI must be responsive and accessible.
+
+### 4. Out of Scope
+
+- No changes to other profile sections or backend mutations.
+- The actual "Save Profile" mutation is a placeholder for now.
+
+---
+
+## User Flow
+
+1. User navigates to their profile in the Seeker Portal.
+2. User sees a new "Autofill with AI" section with a button.
+3. User clicks the button; a modal opens.
+4. User uploads a PDF resume.
+5. The PDF is sent to the backend; the modal shows a loading state.
+6. On success, the modal displays editable fields populated with parsed data.
+7. User reviews/edits the fields and clicks "Save Profile".
+8. The save action is a placeholder (no backend call yet).
+9. User can close/cancel the modal at any time.
+
+---
+
+## Acceptance Criteria
+
+- "Autofill with AI" section and button are visible in the profile view.
+- Modal opens and allows PDF upload.
+- Only PDF files are accepted.
+- Uploaded PDF is sent to the backend and parsed using parse_profile_document.
+- Parsed fields are shown in editable form fields.
+- User can edit fields and click "Save Profile" (placeholder).
+- All UI uses HeroUI and Tailwind CSS.
+- No changes to other profile sections or backend logic.
+
+---
+
+## Future Work
+
+- Implement the actual "Save Profile" mutation to persist the edited data.
+
+---

@@ -46,6 +46,7 @@ dependencies = [
     "tesserocr>=2.8.0",
     "pillow>=11.3.0",
     "pymupdf>=1.26.3",
+    "python-multipart>=0.0.20",
 ]
 
 [tool.uv]
