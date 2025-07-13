@@ -246,12 +246,14 @@ class ProfileParserService:
         profile_repo: ProfileRepo,
         s3_client: S3Client,
         aws_settings: AWSSettings,
+        account_repo: AccountRepo,
     ) -> None:
         self._profile_parser_agent = profile_parser_agent
         self._ocr_client = ocr_client
         self._profile_repo = profile_repo
         self._s3_client = s3_client
         self._aws_settings = aws_settings
+        self._account_repo = account_repo
 
     async def generate_presigned_url(self, content_type: str) -> Ok[tuple[str, str]]:
         """Generate a presigned URL for a document."""
@@ -283,7 +285,11 @@ class ProfileParserService:
         )
 
         profile_output = result.output
-        profile = account.profile
+        profile = await self._profile_repo.get_by_account(account)
+        if profile is None:
+            profile = await self._profile_repo.create(account)
+            await self._account_repo.update_profile(account=account, profile=profile)
+
         profile = await self._profile_repo.update(
             profile=profile,
             address=profile_output.address,

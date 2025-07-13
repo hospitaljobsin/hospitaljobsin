@@ -261,7 +261,7 @@ class ProfileRepo:
         languages: list[Language] = UNSET,
         job_preferences: list[str] = UNSET,
         work_experience: list[WorkExperience] = UNSET,
-        salary_expectations: SalaryExpectations = UNSET,
+        salary_expectations: SalaryExpectations | None = UNSET,
         certifications: list[Certification] = UNSET,
         professional_summary: str | None = UNSET,
         headline: str | None = UNSET,
