@@ -1,6 +1,7 @@
 "use client";
 import type { JobDetailHeaderQuery as JobDetailHeaderQueryType } from "@/__generated__/JobDetailHeaderQuery.graphql";
 import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery } from "react-relay";
@@ -47,6 +48,7 @@ export default function JobDetailHeader({
 }: {
 	queryReference: PreloadedQuery<JobDetailHeaderQueryType>;
 }) {
+	const router = useRouter();
 	const data = usePreloadedQuery(JobDetailHeaderQuery, queryReference);
 	invariant(
 		data.viewer.__typename === "Account",
@@ -65,7 +67,9 @@ export default function JobDetailHeader({
 		<div className="pt-8 w-full max-w-7xl">
 			<div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4 mb-6 px-6">
 				<Breadcrumbs>
-					<BreadcrumbItem href={links.dashboard}>Jobs</BreadcrumbItem>
+					<BreadcrumbItem onPress={() => router.push(links.dashboard)}>
+						Jobs
+					</BreadcrumbItem>
 					<BreadcrumbItem isCurrent>
 						{data.organization.job.title}
 					</BreadcrumbItem>
