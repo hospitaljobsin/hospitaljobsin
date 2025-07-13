@@ -50,7 +50,7 @@ export default function AIFeatures() {
 						variants={listVariants}
 						initial="hidden"
 						whileInView="visible"
-						viewport={{ once: true, amount: 0.4 }}
+						viewport={{ once: true, amount: 0.1 }}
 					>
 						{[
 							// 1st feature
