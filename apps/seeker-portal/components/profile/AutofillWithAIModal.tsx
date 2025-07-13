@@ -131,7 +131,7 @@ export default function AutofillWithAIModal({
 								onClose();
 								addToast({
 									description:
-										"Profile updated! You can review and edit any section below.",
+										"Profile updated! Please review and edit the updated sections.",
 									color: "success",
 								});
 							},
