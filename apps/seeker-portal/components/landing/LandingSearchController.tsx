@@ -46,7 +46,6 @@ export function LandingSearchController() {
 						onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 							setSearchTerm(e.target.value)
 						}
-						isRequired
 						isClearable
 						onClear={() => setSearchTerm("")}
 					/>
