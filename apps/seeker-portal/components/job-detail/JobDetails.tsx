@@ -1,3 +1,4 @@
+"use client";
 import type { JobDetailsFragment$key } from "@/__generated__/JobDetailsFragment.graphql";
 import type {
 	JobDetailsInternalFragment$key as JobDetailsInternalFragmentType,
@@ -16,6 +17,16 @@ import {
 	Divider,
 	Tooltip,
 } from "@heroui/react";
+import { Editor } from "@tiptap/core";
+import Bold from "@tiptap/extension-bold";
+import Document from "@tiptap/extension-document";
+import Heading from "@tiptap/extension-heading";
+import { ListKit } from "@tiptap/extension-list";
+import { MarkdownParser } from "@tiptap/pm/markdown";
+import { defaultMarkdownParser } from "@tiptap/pm/markdown";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { renderToReactElement } from "@tiptap/static-renderer/pm/react";
 import {
 	Briefcase,
 	Clock,
@@ -28,9 +39,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import ReactMarkdown from "react-markdown";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
+import { Markdown } from "tiptap-markdown";
 import JobControls from "./JobControls";
 
 const JobDetailsFragment = graphql`
@@ -118,6 +129,28 @@ export default function JobDetails({
 		root.viewer.__typename === "Account" && !root.viewer.profile?.isComplete;
 
 	const formattedCreatedAt = dateFormat.format(new Date(data.createdAt));
+
+	const editor = useEditor({
+		immediatelyRender: false,
+		shouldRerenderOnTransaction: false,
+		injectCSS: false,
+		editorProps: {
+			attributes: {
+				class:
+					"prose prose-foreground prose-sm focus:outline-none w-full min-w-full whitespace-pre-wrap",
+			},
+		},
+		extensions: [
+			StarterKit.configure({
+				heading: false, // Disable default heading
+			}),
+			Heading.configure({
+				levels: [1, 2, 3], // Allow only H1, H2, and H3
+			}),
+			Markdown,
+		],
+		content: data.description,
+	});
 
 	// Map currency to icons
 	const currencyIcon = (currency: string) => {
@@ -375,7 +408,7 @@ export default function JobDetails({
 				</CardHeader>
 				<Divider />
 				<CardBody className="w-full h-full prose prose-headings:mt-0 prose-headings:mb-2 prose-p:mb-6 prose-ul:my-0 prose-li:mt-0 prose-foreground prose-sm min-w-full whitespace-pre-wrap">
-					<ReactMarkdown>{data.description}</ReactMarkdown>
+					<EditorContent editor={editor} />
 				</CardBody>
 				<CardFooter>
 					<div className="flex flex-wrap gap-2 sm:gap-4 mt-2 w-full">

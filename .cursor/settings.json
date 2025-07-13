@@ -8,7 +8,6 @@
 	"[terraform]": {
 		"editor.defaultFormatter": "hashicorp.terraform"
 	},
-	"typescript.experimental.useTsgo": true,
 	"editor.defaultFormatter": "biomejs.biome",
 	"ruff.nativeServer": true,
 	"python.languageServer": "Pylance",
