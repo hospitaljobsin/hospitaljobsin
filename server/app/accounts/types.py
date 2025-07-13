@@ -223,7 +223,7 @@ class BaseProfileType:
     date_of_birth: date | None = strawberry.field(
         description="The date of birth of the profile's user.",
     )
-    address: str = strawberry.field(
+    address: str | None = strawberry.field(
         description="The address of the profile's user.",
     )
     marital_status: MaritalStatusTypeEnum | None = strawberry.field(

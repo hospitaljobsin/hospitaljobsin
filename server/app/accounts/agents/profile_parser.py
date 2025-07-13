@@ -112,9 +112,10 @@ def create_profile_parser_agent(
             "You will be given raw OCR output from scanned resume PDFs. "
             "Your task is to extract ONLY the information that is explicitly present in the text, mapping it to the following structured fields: "
             "gender, date_of_birth, address, marital_status, category, locations_open_to_work, open_to_relocation_anywhere, education, licenses, languages, job_preferences, work_experience, total_work_experience_years, salary_expectations, certifications, professional_summary, headline. "
-            "If a field is not present, is ambiguous, or cannot be confidently extracted, set it to null. "
+            "If any field is not present, is ambiguous, or cannot be confidently extracted, set it to null. "
             "Do NOT hallucinate, infer, or guess any information. Never fill in plausible values for missing data. "
             "Be robust to OCR errors, typos, and formatting issues. Ignore irrelevant or decorative text. "
             "Output only what is explicitly and unambiguously extractable from the input. "
+            "If the input is not relevant (a resume, a cover letter, a job description, etc.), return null for all fields. "
         ),
     )
