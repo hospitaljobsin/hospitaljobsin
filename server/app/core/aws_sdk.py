@@ -6,6 +6,7 @@ from types_aiobotocore_location import LocationServiceClient
 from types_aiobotocore_s3 import S3Client
 from types_aiobotocore_ses import SESClient
 from types_aiobotocore_sqs import SQSClient
+from types_aiobotocore_textract.client import TextractClient
 
 from app.config import AWSSettings
 
@@ -56,3 +57,12 @@ async def create_sqs_client(
     """Create an SQS client."""
     async with session.client("sqs") as sqs_client:
         yield sqs_client
+
+
+@contextlib.asynccontextmanager
+async def create_textract_client(
+    session: aioboto3.Session,
+) -> AsyncGenerator[TextractClient]:
+    """Create an Textract client."""
+    async with session.client("textract") as textract_client:
+        yield textract_client

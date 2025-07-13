@@ -17,6 +17,7 @@ from aioinject.extensions.providers import (
     ResolveDirective,
 )
 from pydantic_settings import BaseSettings
+from server.app.core.ocr import BaseOCRClient, TesseractOCRClient, TextractOCRClient
 
 from app.accounts.agents.profile_parser import create_profile_parser_agent
 from app.accounts.dataloaders import (
@@ -49,6 +50,7 @@ from app.config import (
     GeocoderSettings,
     RedisSettings,
     SecretSettings,
+    TesseractSettings,
     TSettings,
     get_settings,
 )
@@ -58,6 +60,7 @@ from app.core.aws_sdk import (
     create_s3_client,
     create_ses_client,
     create_sqs_client,
+    create_textract_client,
 )
 from app.core.captcha import create_captcha_verifier
 from app.core.emails import (
@@ -131,6 +134,7 @@ settings_classes: list[type[BaseSettings]] = [
     AuthSettings,
     GeocoderSettings,
     RedisSettings,
+    TesseractSettings,
 ]
 
 
@@ -214,6 +218,15 @@ def register_location_service(container: aioinject.Container) -> None:
             assert_never(unreachable)
 
 
+def register_ocr_client(container: aioinject.Container) -> None:
+    app_settings = get_settings(AppSettings)
+    if app_settings.is_production:
+        container.register(aioinject.Scoped(create_textract_client))
+        container.register(aioinject.Scoped(TextractOCRClient, BaseOCRClient))
+    else:
+        container.register(aioinject.Singleton(TesseractOCRClient, BaseOCRClient))
+
+
 @lru_cache
 def create_container() -> aioinject.Container:
     container = aioinject.Container(
@@ -227,6 +240,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_jinja2_environment))
     register_email_sender(container)
     register_location_service(container)
+    register_ocr_client(container)
     app_settings = get_settings(AppSettings)
     if app_settings.is_testing:
         container.register(aioinject.Scoped(TestSetupService))

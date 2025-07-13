@@ -1,7 +1,10 @@
-from datetime import date
 import uuid
+from datetime import date
 
+import fitz
+from PIL.Image import Image
 from result import Ok
+from server.app.core.ocr import BaseOCRClient
 from types_aiobotocore_s3 import S3Client
 
 from app.accounts.agents.profile_parser import ProfileParserAgent
@@ -13,9 +16,9 @@ from app.accounts.documents import (
     WorkExperience,
 )
 from app.accounts.repositories import AccountRepo, ProfileRepo
+from app.config import AWSSettings
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
-from app.config import AWSSettings
 
 
 class AccountService:
@@ -238,14 +241,32 @@ class ProfileService:
 
 
 class ProfileParserService:
-    def __init__(self, profile_parser_agent: ProfileParserAgent) -> None:
+    def __init__(
+        self, profile_parser_agent: ProfileParserAgent, ocr_client: BaseOCRClient
+    ) -> None:
         self._profile_parser_agent = profile_parser_agent
+        self._ocr_client = ocr_client
 
-    async def parse_profile_document(self, document: str) -> Ok[BaseProfile]:
+    async def parse_profile_document(self, document: bytes) -> Ok[BaseProfile]:
         """Parse a profile document into structured data."""
-        # TODO: run OCR on the document
-        ocr_text = document
-        result = await self._profile_parser_agent.run(f"OCR text:\n{ocr_text}")
+        pdf_document = fitz.open(stream=document, filetype="pdf")
+
+        # Render pages and collect PIL Images
+        images = []
+        for page in pdf_document:
+            pix = page.get_pixmap()
+            img = Image.frombytes(
+                "RGB", [pix.width, pix.height], pix.samples
+            )  # Create a PIL Image
+            images.append(img)
+
+        pdf_document.close()
+        ocr_texts = await self._ocr_client(
+            ordered_images=[(image, index) for index, image in enumerate(images)]
+        )
+        result = await self._profile_parser_agent.run(
+            f"OCR text:\n{'\n'.join(ocr_texts)}"
+        )
 
         profile_output = result.output
         return Ok(
@@ -255,7 +276,8 @@ class ProfileParserService:
                 gender=profile_output.gender,
                 marital_status=profile_output.marital_status,
                 category=profile_output.category,
-                locations_open_to_work=profile_output.locations_open_to_work,
+                # TODO: geocode the locations correctly here (or maybe, crazy idea, just let the LLM output it??)
+                # locations_open_to_work=profile_output.locations_open_to_work,
                 open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere,
                 education=profile_output.education,
                 licenses=profile_output.licenses,

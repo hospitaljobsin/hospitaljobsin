@@ -1,9 +1,11 @@
 from datetime import datetime
 
 from aioinject.ext.strawberry import AioInjectExtension
+from fastapi import UploadFile
 from graphql import NoSchemaIntrospectionCustomRule
 from strawberry import Schema
 from strawberry.extensions import AddValidationRules, ParserCache, ValidationCache
+from strawberry.file_uploads import Upload
 from strawberry.schema.config import StrawberryConfig
 from strawberry.tools import merge_types
 
@@ -68,7 +70,7 @@ def create_schema(app_settings: AppSettings) -> Schema:
         query=query,
         mutation=mutation,
         extensions=extensions,
-        scalar_overrides={datetime: DateTime},
+        scalar_overrides={datetime: DateTime, UploadFile: Upload},
         config=StrawberryConfig(
             auto_camel_case=True,
         ),

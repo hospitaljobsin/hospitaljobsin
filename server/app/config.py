@@ -259,6 +259,16 @@ class SecretSettings(BaseSettings):
         return tuple(sources)
 
 
+class TesseractSettings(BaseSettings):
+    tesseract_data_path: str
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+
 class EmailSettings(BaseSettings):
     # email config
 

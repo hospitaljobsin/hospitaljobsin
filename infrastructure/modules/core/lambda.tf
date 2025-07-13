@@ -89,6 +89,17 @@ resource "aws_iam_policy" "lambda_custom_policy" {
       {
         Effect = "Allow",
         Action = [
+          "textract:DetectDocumentText",
+          "textract:AnalyzeDocument",
+          "textract:GetDocumentTextDetection"
+        ],
+        Resource = [
+          "*"
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
           "sqs:SendMessage"
         ],
         Resource = [
