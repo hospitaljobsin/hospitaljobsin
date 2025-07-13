@@ -246,19 +246,41 @@ class ProfileParserService:
         profile_parser_agent: ProfileParserAgent,
         ocr_client: BaseOCRClient,
         profile_repo: ProfileRepo,
+        s3_client: S3Client,
+        aws_settings: AWSSettings,
     ) -> None:
         self._profile_parser_agent = profile_parser_agent
         self._ocr_client = ocr_client
         self._profile_repo = profile_repo
+        self._s3_client = s3_client
+        self._aws_settings = aws_settings
 
     async def parse_profile_document(
         self,
         *,
-        document: bytes,
+        document_url: str,
         account: Account,
     ) -> Ok[Profile]:
         """Parse a profile document into structured data."""
-        pdf_document = fitz.open(stream=document, filetype="pdf")
+        # TODO: get the response directly for the s3 bucket URL like this:
+        # response = textract.detect_document_text(
+        #     Document={
+        #         "S3Object": {
+        #             "Bucket": self._aws_settings.s3_bucket_name,
+        #             "Name": document_url,
+        #         }
+        #     }
+        # )
+
+        # only works for aws textract and s3 tho, not in dev.
+        # so for dev we can use fitz and tesseract
+        document = await self._s3_client.get_object(
+            Bucket=self._aws_settings.s3_bucket_name,
+            Key=document_url,
+        )
+        pdf_document = fitz.open(
+            stream=(await document.read()).decode("utf-8"), filetype="pdf"
+        )
 
         # Render pages and collect PIL Images
         images = []

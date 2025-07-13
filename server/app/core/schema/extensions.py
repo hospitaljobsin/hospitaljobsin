@@ -19,6 +19,7 @@ class PersistedQueriesExtension(SchemaExtension):
             self.cache = json.load(f)
 
     async def on_operation(self) -> AsyncIterator[None]:
+        print("variables", self.execution_context.query)
         body = await self.execution_context.context.get("request").json()
         document_id = body.get("document_id")
         persisted_query = self.cache.get(document_id)

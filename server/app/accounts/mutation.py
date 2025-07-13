@@ -4,7 +4,6 @@ from typing import Annotated, assert_never
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
-from fastapi import UploadFile
 from result import Ok
 from strawberry.permission import PermissionExtension
 
@@ -416,17 +415,16 @@ class AccountMutation:
         self,
         info: AuthInfo,
         profile_parser_service: Annotated[ProfileParserService, Inject],
-        document: Annotated[
-            UploadFile,
+        document_url: Annotated[
+            str,
             strawberry.argument(
-                description="The document to parse.",
+                description="The document URL to parse.",
             ),
         ],
     ) -> ParseProfileDocumentPayload:
         """Parse a profile document into structured data."""
-        content = await document.read()
         match await profile_parser_service.parse_profile_document(
-            document=content, account=info.context["current_user"]
+            document_url=document_url, account=info.context["current_user"]
         ):
             case Ok(profile):
                 return ProfileType.marshal(profile)
