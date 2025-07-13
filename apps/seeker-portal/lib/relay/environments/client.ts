@@ -5,7 +5,6 @@ import type {
 	CacheConfig,
 	GraphQLResponse,
 	RequestParameters,
-	UploadableMap,
 	Variables,
 } from "relay-runtime";
 import {
@@ -21,58 +20,19 @@ const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
 export async function networkFetch(
 	request: RequestParameters,
 	variables: Variables,
-	uploadables: UploadableMap | null = null,
 ): Promise<GraphQLResponse> {
-	const networkRequest = {
+	const resp = await fetch(`${env.NEXT_PUBLIC_API_URL}/graphql`, {
 		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		},
 		credentials: "include",
-		headers: {},
-	};
-
-	if (uploadables) {
-		if (!window.FormData) {
-			throw new Error("Uploading files without `FormData` not supported.");
-		}
-
-		const formData = new FormData();
-		formData.append(
-			"operations",
-			JSON.stringify({
-				document_id: request.id,
-				variables: variables,
-			}),
-		);
-
-		const uploadableMap: {
-			[key: string]: string[];
-		} = {};
-
-		Object.keys(uploadables).forEach((key) => {
-			if (Object.prototype.hasOwnProperty.call(uploadables, key)) {
-				uploadableMap[key] = [`variables.${key}`];
-			}
-		});
-
-		formData.append("map", JSON.stringify(uploadableMap));
-
-		Object.keys(uploadables).forEach((key) => {
-			if (Object.prototype.hasOwnProperty.call(uploadables, key)) {
-				formData.append(key, uploadables[key]);
-			}
-		});
-
-		networkRequest.body = formData;
-	} else {
-		networkRequest.headers["Content-Type"] = "application/json";
-		networkRequest.body = JSON.stringify({
+		body: JSON.stringify({
 			document_id: request.id,
 			variables,
-		});
-	}
-	const resp = await fetch(
-		`${env.NEXT_PUBLIC_API_URL}/graphql`,
-		networkRequest,
-	);
+		}),
+	});
 	const json = await resp.json();
 
 	// GraphQL returns exceptions (for example, a missing required variable) in the "errors"
@@ -110,7 +70,6 @@ function createNetwork() {
 		params: RequestParameters,
 		variables: Variables,
 		cacheConfig: CacheConfig,
-		uploadables: UploadableMap | null = null,
 	) {
 		const isQuery = params.operationKind === "query";
 		const cacheKey = params.id ?? params.cacheID;
@@ -122,10 +81,11 @@ function createNetwork() {
 			}
 		}
 
-		return await networkFetch(params, variables, uploadables);
+		return await networkFetch(params, variables);
 	}
 
-	return Network.create(fetchResponse);
+	const network = Network.create(fetchResponse);
+	return network;
 }
 
 export function createClientEnvironment() {

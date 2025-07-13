@@ -686,6 +686,16 @@ ParseProfileDocumentPayload = Annotated[
     ),
 ]
 
+
+@strawberry.type(
+    name="GenerateProfileDocumentPresignedURLPayload",
+    description="The generate profile document presigned URL payload.",
+)
+class GenerateProfileDocumentPresignedURLPayloadType:
+    file_key: str
+    presigned_url: str
+
+
 UpdateAccountPayload = Annotated[
     AccountType,
     strawberry.union(

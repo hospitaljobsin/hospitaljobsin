@@ -1,8 +1,6 @@
 import uuid
 from datetime import date
 
-import fitz
-from PIL.Image import Image
 from result import Ok
 from types_aiobotocore_s3 import S3Client
 
@@ -255,46 +253,29 @@ class ProfileParserService:
         self._s3_client = s3_client
         self._aws_settings = aws_settings
 
+    async def generate_presigned_url(self, content_type: str) -> Ok[tuple[str, str]]:
+        """Generate a presigned URL for a document."""
+        file_key = f"autofill-profiles/{uuid.uuid4()}"
+        presigned_url = await self._s3_client.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": self._aws_settings.s3_bucket_name,
+                "Key": file_key,
+                "ContentType": content_type,
+            },
+            ExpiresIn=3600,
+            HttpMethod="PUT",
+        )
+        return Ok((presigned_url, file_key))
+
     async def parse_profile_document(
         self,
         *,
-        document_url: str,
+        file_key: str,
         account: Account,
     ) -> Ok[Profile]:
         """Parse a profile document into structured data."""
-        # TODO: get the response directly for the s3 bucket URL like this:
-        # response = textract.detect_document_text(
-        #     Document={
-        #         "S3Object": {
-        #             "Bucket": self._aws_settings.s3_bucket_name,
-        #             "Name": document_url,
-        #         }
-        #     }
-        # )
-
-        # only works for aws textract and s3 tho, not in dev.
-        # so for dev we can use fitz and tesseract
-        document = await self._s3_client.get_object(
-            Bucket=self._aws_settings.s3_bucket_name,
-            Key=document_url,
-        )
-        pdf_document = fitz.open(
-            stream=(await document.read()).decode("utf-8"), filetype="pdf"
-        )
-
-        # Render pages and collect PIL Images
-        images = []
-        for page in pdf_document:
-            pix = page.get_pixmap()
-            img = Image.frombytes(
-                "RGB", [pix.width, pix.height], pix.samples
-            )  # Create a PIL Image
-            images.append(img)
-
-        pdf_document.close()
-        ocr_texts = await self._ocr_client(
-            ordered_images=[(image, index) for index, image in enumerate(images)]
-        )
+        ocr_texts = await self._ocr_client(file_key)
         result = await self._profile_parser_agent.run(
             f"OCR text:\n{'\n'.join(ocr_texts)}"
         )

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<7bce8fc3ba7002ae3bae90f27917adef>>
- * @relayHash b2e958061027fb36c1c612ec0ab8cddd
+ * @generated SignedSource<<85da0b9d6b33c0dc604eb9349a4d7172>>
+ * @relayHash 4f72a824b2091e0200f6d540816eef0e
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,12 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID b2e958061027fb36c1c612ec0ab8cddd
+// @relayRequestID 4f72a824b2091e0200f6d540816eef0e
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type AutofillWithAISectionMutation$variables = {
-  document: any;
+  fileKey: string;
 };
 export type AutofillWithAISectionMutation$data = {
   readonly parseProfileDocument: {
@@ -37,14 +37,14 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "document"
+    "name": "fileKey"
   }
 ],
 v1 = [
   {
     "kind": "Variable",
-    "name": "document",
-    "variableName": "document"
+    "name": "fileKey",
+    "variableName": "fileKey"
   }
 ],
 v2 = {
@@ -542,7 +542,7 @@ return {
     ]
   },
   "params": {
-    "id": "b2e958061027fb36c1c612ec0ab8cddd",
+    "id": "4f72a824b2091e0200f6d540816eef0e",
     "metadata": {},
     "name": "AutofillWithAISectionMutation",
     "operationKind": "mutation",
@@ -551,6 +551,6 @@ return {
 };
 })();
 
-(node as any).hash = "48a9a969bd753425b5efb6a16171e22e";
+(node as any).hash = "3b665dfb70fdb66d0e3ac9714ecdb232";
 
 export default node;

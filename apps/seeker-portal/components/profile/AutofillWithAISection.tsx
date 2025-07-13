@@ -2,7 +2,9 @@ import type {
 	AutofillWithAISectionFragment$data,
 	AutofillWithAISectionFragment$key,
 } from "@/__generated__/AutofillWithAISectionFragment.graphql";
+import type { AutofillWithAISectionGeneratePresignedURLMutation } from "@/__generated__/AutofillWithAISectionGeneratePresignedURLMutation.graphql";
 import type { AutofillWithAISectionMutation } from "@/__generated__/AutofillWithAISectionMutation.graphql";
+import { uploadFileToS3 } from "@/lib/presignedUrl";
 import { Button, Card, CardBody, CardHeader, addToast } from "@heroui/react";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
@@ -10,8 +12,8 @@ import { graphql, useFragment, useMutation } from "react-relay";
 import AutofillWithAIModal from "./AutofillWithAIModal";
 
 const ParseProfileDocumentMutation = graphql`
-  mutation AutofillWithAISectionMutation($document: Upload!) {
-    parseProfileDocument(document: $document) {
+  mutation AutofillWithAISectionMutation($fileKey: String!) {
+    parseProfileDocument(fileKey: $fileKey) {
       ... on BaseProfile {
         address
         headline
@@ -37,6 +39,15 @@ const ParseProfileDocumentMutation = graphql`
 		  ...UpdateAboutMeFormFragment
 		  ...AutofillWithAISectionFragment
       }
+    }
+  }
+`;
+
+const GenerateProfileDocumentPresignedURLMutation = graphql`
+  mutation AutofillWithAISectionGeneratePresignedURLMutation($contentType: String!) {
+    generateProfileDocumentPresignedUrl(contentType: $contentType) {
+      presignedUrl
+	  fileKey
     }
   }
 `;
@@ -82,9 +93,13 @@ export default function AutofillWithAISection({
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [commit] = useMutation<AutofillWithAISectionMutation>(
+	const [commit, isParsingProfile] = useMutation<AutofillWithAISectionMutation>(
 		ParseProfileDocumentMutation,
 	);
+	const [commitGeneratePresignedURL, isGeneratingPresignedURL] =
+		useMutation<AutofillWithAISectionGeneratePresignedURLMutation>(
+			GenerateProfileDocumentPresignedURLMutation,
+		);
 
 	// New: handle button click to show confirmation if not empty
 	const handleAutofillClick = () => {
@@ -103,27 +118,56 @@ export default function AutofillWithAISection({
 
 	const handleFileUpload = async (file: File) => {
 		setIsLoading(true);
-		commit({
-			variables: { document: null },
-			uploadables: {
-				document: file,
+		commitGeneratePresignedURL({
+			variables: {
+				contentType: "application/pdf",
 			},
-			onCompleted: () => {
+			onError(error) {
 				setIsLoading(false);
 				setIsModalOpen(false);
 				addToast({
-					description:
-						"Profile updated! You can review and edit any section below.",
-					color: "success",
-				});
-			},
-			onError: () => {
-				setIsLoading(false);
-				setIsModalOpen(false);
-				addToast({
-					description: "Failed to autofill profile. Please try again.",
+					description: "Failed to generate presigned URL. Please try again.",
 					color: "danger",
 				});
+				return;
+			},
+			onCompleted(response, errors) {
+				const fileKey = response.generateProfileDocumentPresignedUrl.fileKey;
+
+				const presignedUrl =
+					response.generateProfileDocumentPresignedUrl.presignedUrl;
+
+				uploadFileToS3(presignedUrl, file)
+					.then(() => {
+						commit({
+							variables: { fileKey: fileKey },
+							onCompleted: () => {
+								setIsLoading(false);
+								setIsModalOpen(false);
+								addToast({
+									description:
+										"Profile updated! You can review and edit any section below.",
+									color: "success",
+								});
+							},
+							onError: () => {
+								setIsLoading(false);
+								setIsModalOpen(false);
+								addToast({
+									description: "Failed to autofill profile. Please try again.",
+									color: "danger",
+								});
+							},
+						});
+					})
+					.catch(() => {
+						setIsLoading(false);
+						setIsModalOpen(false);
+						addToast({
+							description: "Failed to autofill profile. Please try again.",
+							color: "danger",
+						});
+					});
 			},
 		});
 	};

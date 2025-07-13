@@ -877,6 +877,14 @@ type GeneratePasskeyRegistrationOptionsSuccess {
 }
 
 """
+The generate profile document presigned URL payload.
+"""
+type GenerateProfileDocumentPresignedURLPayload {
+	presignedUrl: String!
+	fileKey: String!
+}
+
+"""
 Used when a job has insufficient active vacancies.
 """
 type InsufficientActiveVacanciesError implements Error {
@@ -2611,10 +2619,20 @@ type Mutation {
 	"""
 	parseProfileDocument(
 		"""
-		The document to parse.
+		The document URL to parse.
 		"""
-		document: Upload!
+		fileKey: String!
 	): ParseProfileDocumentPayload! @isAuthenticated
+
+	"""
+	Parse a profile document into structured data.
+	"""
+	generateProfileDocumentPresignedUrl(
+		"""
+		The content type of the file.
+		"""
+		contentType: String!
+	): GenerateProfileDocumentPresignedURLPayload! @isAuthenticated
 
 	"""
 	Create an organization.
@@ -4173,8 +4191,6 @@ The update webauthn credential payload.
 union UpdateWebAuthnCredentialPayload =
 	| WebAuthnCredential
 	| WebAuthnCredentialNotFoundError
-
-scalar Upload
 
 """
 The verify 2FA password reset with authenticator payload.

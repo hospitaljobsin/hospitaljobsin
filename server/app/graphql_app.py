@@ -58,6 +58,5 @@ def create_graphql_router(app_settings: AppSettings) -> GraphQLRouter:
         schema=schema,
         context_getter=get_context,
         graphql_ide=None if app_settings.is_production else "apollo-sandbox",
-        multipart_uploads_enabled=True,
         include_in_schema=False,
     )

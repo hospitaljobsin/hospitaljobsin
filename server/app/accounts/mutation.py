@@ -17,6 +17,7 @@ from .types import (
     CreateProfilePicturePresignedURLPayloadType,
     EducationInputType,
     GenderTypeEnum,
+    GenerateProfileDocumentPresignedURLPayloadType,
     LanguageInputType,
     LicenseInputType,
     MaritalStatusTypeEnum,
@@ -415,7 +416,7 @@ class AccountMutation:
         self,
         info: AuthInfo,
         profile_parser_service: Annotated[ProfileParserService, Inject],
-        document_url: Annotated[
+        file_key: Annotated[
             str,
             strawberry.argument(
                 description="The document URL to parse.",
@@ -424,9 +425,42 @@ class AccountMutation:
     ) -> ParseProfileDocumentPayload:
         """Parse a profile document into structured data."""
         match await profile_parser_service.parse_profile_document(
-            document_url=document_url, account=info.context["current_user"]
+            file_key=file_key, account=info.context["current_user"]
         ):
             case Ok(profile):
                 return ProfileType.marshal(profile)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=GenerateProfileDocumentPresignedURLPayloadType,
+        description="Parse a profile document into structured data.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def generate_profile_document_presigned_url(
+        self,
+        info: AuthInfo,
+        profile_parser_service: Annotated[ProfileParserService, Inject],
+        content_type: Annotated[
+            str,
+            strawberry.argument(
+                description="The content type of the file.",
+            ),
+        ],
+    ) -> GenerateProfileDocumentPresignedURLPayloadType:
+        """Generate a profile document presigned URL."""
+        match await profile_parser_service.generate_presigned_url(content_type):
+            case Ok(result):
+                presigned_url, file_key = result
+                return GenerateProfileDocumentPresignedURLPayloadType(
+                    presigned_url=presigned_url, file_key=file_key
+                )
             case _ as unreachable:
                 assert_never(unreachable)
