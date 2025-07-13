@@ -4,7 +4,6 @@ from datetime import date
 import fitz
 from PIL.Image import Image
 from result import Ok
-from server.app.core.ocr import BaseOCRClient
 from types_aiobotocore_s3 import S3Client
 
 from app.accounts.agents.profile_parser import ProfileParserAgent
@@ -17,6 +16,7 @@ from app.accounts.documents import (
 )
 from app.accounts.repositories import AccountRepo, ProfileRepo
 from app.config import AWSSettings
+from app.core.ocr import BaseOCRClient
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
 

@@ -17,7 +17,6 @@ from aioinject.extensions.providers import (
     ResolveDirective,
 )
 from pydantic_settings import BaseSettings
-from server.app.core.ocr import BaseOCRClient, TesseractOCRClient, TextractOCRClient
 
 from app.accounts.agents.profile_parser import create_profile_parser_agent
 from app.accounts.dataloaders import (
@@ -77,6 +76,7 @@ from app.core.geocoding import (
     create_nominatim_geocoder,
 )
 from app.core.oauth import create_oauth_client
+from app.core.ocr import BaseOCRClient, TesseractOCRClient, TextractOCRClient
 from app.core.redis_client import create_redis_client
 from app.core.templates import create_jinja2_environment
 from app.dataloaders import create_dataloaders
