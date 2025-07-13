@@ -97,6 +97,11 @@ export default function AutofillWithAIModal({
 			setValue("file", null);
 			return;
 		}
+		if (file.size > 5 * 1024 * 1024) {
+			// Show error (e.g., set an error state and display a message)
+			setError("File size must be less than 5MB.");
+			return;
+		}
 		setError(null);
 		setValue("file", file);
 	}
@@ -179,6 +184,8 @@ export default function AutofillWithAIModal({
 										}}
 										label="Upload your resume (PDF only)"
 										className="w-full"
+										errorMessage={error}
+										isInvalid={!!error}
 									/>
 								)}
 							/>
@@ -195,7 +202,6 @@ export default function AutofillWithAIModal({
 									</Checkbox>
 								)}
 							/>
-							{error && <span className="text-danger text-sm">{error}</span>}
 						</div>
 					</ModalBody>
 					<ModalFooter className="flex gap-4 items-center w-full flex-row">
