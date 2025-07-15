@@ -109,7 +109,7 @@ export default function OrganizationJobsList({
 			startTransition(() => {
 				refetch(
 					{ searchTerm: searchTerm, sortBy: sortBy },
-					{ fetchPolicy: "store-and-network" },
+					{ fetchPolicy: "store-or-network" },
 				);
 			});
 		}, 300); // Adjust debounce delay as needed

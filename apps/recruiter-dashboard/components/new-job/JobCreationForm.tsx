@@ -252,6 +252,16 @@ export default function JobCreationForm({
 					});
 				}
 			},
+			updater: (store) => {
+				const orgRecord = store.get(data.id);
+				if (!orgRecord) return;
+
+				orgRecord.invalidateRecord();
+
+				// TODO: make this better
+				// only invalidate jobs field with all filter combinations
+				// and not the entire org record
+			},
 		});
 	};
 
