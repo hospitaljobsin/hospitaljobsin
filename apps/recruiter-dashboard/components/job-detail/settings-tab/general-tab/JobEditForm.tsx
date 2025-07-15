@@ -150,7 +150,7 @@ const formSchema = z.object({
 	location: z.string().nullable(),
 	minSalary: z.number().positive().nullable().optional(),
 	maxSalary: z.number().positive().nullable().optional(),
-	minExperience: z.number().positive().nullable().optional(),
+	minExperience: z.number().nonnegative().nullable().optional(),
 	maxExperience: z.number().positive().nullable().optional(),
 	expiresAt: z
 		.custom<CalendarDateTime>((data) => {

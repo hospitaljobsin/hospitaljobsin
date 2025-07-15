@@ -42,7 +42,7 @@ const jobFormSchema = z.object({
 	location: z.string().nullable(),
 	minSalary: z.number().positive().nullable(),
 	maxSalary: z.number().positive().nullable(),
-	minExperience: z.number().positive().nullable(),
+	minExperience: z.number().nonnegative().nullable(),
 	maxExperience: z.number().positive().nullable(),
 	expiresAt: z.instanceof(CalendarDateTime).nullable(),
 	jobType: z

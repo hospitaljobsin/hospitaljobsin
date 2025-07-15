@@ -12,9 +12,11 @@ import {
 	ModalHeader,
 	addToast,
 } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
+import { z } from "zod";
 
 const ParseProfileDocumentMutation = graphql`
   mutation AutofillWithAIModalMutation($fileKey: String!, $overwrite: Boolean!) {
@@ -55,6 +57,12 @@ const GenerateProfileDocumentPresignedURLMutation = graphql`
     }
   }
 `;
+
+const formSchema = z.object({
+	file: z.instanceof(File).optional(),
+	overwrite: z.boolean(),
+});
+
 export default function AutofillWithAIModal({
 	isOpen,
 	onClose,
@@ -76,19 +84,14 @@ export default function AutofillWithAIModal({
 		control,
 		handleSubmit,
 		setValue,
-		watch,
 		formState: { isSubmitting, isValid },
-	} = useForm<{
-		file: File | null;
-		overwrite: boolean;
-	}>({
+	} = useForm<z.infer<typeof formSchema>>({
 		defaultValues: {
 			file: null,
 			overwrite: true,
 		},
+		resolver: zodResolver(formSchema),
 	});
-
-	const selectedFile = watch("file");
 
 	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0] || null;
@@ -97,8 +100,7 @@ export default function AutofillWithAIModal({
 			setValue("file", null);
 			return;
 		}
-		if (file.size > 5 * 1024 * 1024) {
-			// Show error (e.g., set an error state and display a message)
+		if (file && file.size > 5 * 1024 * 1024) {
 			setError("File size must be less than 5MB.");
 			return;
 		}
