@@ -4,6 +4,7 @@ import { getCurrentEnvironment } from "@/lib/relay/environments";
 import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
 import { CopilotKit } from "@copilotkit/react-core";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
+import { NavigationGuardProvider } from "next-navigation-guard";
 import { ThemeProvider } from "next-themes";
 import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
 import { useRouter } from "next/navigation";
@@ -30,25 +31,31 @@ export default function Providers({
 	invariant(nonce, "Nonce is required");
 
 	return (
-		<HeroUIProvider navigate={router.push}>
-			<ToastProvider placement="bottom-left" toastOffset={15} />
-			<ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
-				<RelayEnvironmentProvider environment={environment}>
-					<CopilotKit runtimeUrl="/api/copilotkit">
-						<ProgressProvider
-							height="4px"
-							color="hsl(var(--heroui-primary-300))"
-							nonce={nonce}
-							options={{ showSpinner: false }}
-							shallowRouting
-						>
-							<HeadersProvider headersPromise={headersPromise}>
-								{children}
-							</HeadersProvider>
-						</ProgressProvider>
-					</CopilotKit>
-				</RelayEnvironmentProvider>
-			</ThemeProvider>
-		</HeroUIProvider>
+		<NavigationGuardProvider>
+			<HeroUIProvider navigate={router.push}>
+				<ToastProvider placement="bottom-left" toastOffset={15} />
+				<ThemeProvider
+					attribute="class"
+					forcedTheme="light"
+					enableSystem={false}
+				>
+					<RelayEnvironmentProvider environment={environment}>
+						<CopilotKit runtimeUrl="/api/copilotkit">
+							<ProgressProvider
+								height="4px"
+								color="hsl(var(--heroui-primary-300))"
+								nonce={nonce}
+								options={{ showSpinner: false }}
+								shallowRouting
+							>
+								<HeadersProvider headersPromise={headersPromise}>
+									{children}
+								</HeadersProvider>
+							</ProgressProvider>
+						</CopilotKit>
+					</RelayEnvironmentProvider>
+				</ThemeProvider>
+			</HeroUIProvider>
+		</NavigationGuardProvider>
 	);
 }

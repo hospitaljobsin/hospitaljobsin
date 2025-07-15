@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<7bddcf1a6b5b29efa7eae5f02b6e5ec9>>
- * @relayHash da522990d0ec2b81bf8e372682f2340a
+ * @generated SignedSource<<41e1c9f922cfca0fca342b7c43e5a03a>>
+ * @relayHash 8b7176c8fe53d73c9a75278b2c971437
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID da522990d0ec2b81bf8e372682f2340a
+// @relayRequestID 8b7176c8fe53d73c9a75278b2c971437
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -17,7 +17,7 @@ export type NewJobClientComponentQuery$variables = {
   slug: string;
 };
 export type NewJobClientComponentQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"NewJobContentFragment">;
+  readonly " $fragmentSpreads": FragmentRefs<"NewJobViewFragment">;
 };
 export type NewJobClientComponentQuery = {
   response: NewJobClientComponentQuery$data;
@@ -56,7 +56,7 @@ return {
       {
         "args": (v1/*: any*/),
         "kind": "FragmentSpread",
-        "name": "NewJobContentFragment"
+        "name": "NewJobViewFragment"
       }
     ],
     "type": "Query",
@@ -112,7 +112,7 @@ return {
     ]
   },
   "params": {
-    "id": "da522990d0ec2b81bf8e372682f2340a",
+    "id": "8b7176c8fe53d73c9a75278b2c971437",
     "metadata": {},
     "name": "NewJobClientComponentQuery",
     "operationKind": "query",
@@ -121,6 +121,6 @@ return {
 };
 })();
 
-(node as any).hash = "aa3802a0bd981449b97596ac4831954b";
+(node as any).hash = "3bd58e53e224ca5b87f2cc505c7b1d05";
 
 export default node;

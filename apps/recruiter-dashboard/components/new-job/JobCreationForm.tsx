@@ -30,7 +30,8 @@ import {
 	MapPin,
 	TimerIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useNavigationGuard } from "next-navigation-guard";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";
@@ -147,9 +148,19 @@ export default function JobCreationForm({
 			isSalaryNegotiable: false,
 		},
 	});
+
+	useNavigationGuard({
+		enabled: isDirty,
+		confirm: () =>
+			window.confirm("You have unsaved changes that will be lost."),
+	});
+
 	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<
 		Iterable<Key>
 	>(new Set([]));
+	const beforeUnloadHandlerRef = useRef<
+		((e: BeforeUnloadEvent) => void) | null
+	>(null);
 
 	// Update accordions when errors change
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -178,24 +189,6 @@ export default function JobCreationForm({
 		errors.maxExperience,
 		errors.expiresAt,
 	]);
-
-	// Warn user if form is dirty and they try to leave the page
-	useEffect(() => {
-		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-			if (isDirty) {
-				e.preventDefault();
-				return;
-			}
-		};
-		if (isDirty) {
-			window.addEventListener("beforeunload", handleBeforeUnload);
-		} else {
-			window.removeEventListener("beforeunload", handleBeforeUnload);
-		}
-		return () => {
-			window.removeEventListener("beforeunload", handleBeforeUnload);
-		};
-	}, [isDirty]);
 
 	const onSubmit = (formData: JobFormValues) => {
 		let hasValidationErrors = false;
@@ -243,6 +236,13 @@ export default function JobCreationForm({
 			},
 			onCompleted(response) {
 				if (response.createJob.__typename === "CreateJobSuccess") {
+					// Remove beforeunload event listener before redirecting
+					if (beforeUnloadHandlerRef.current) {
+						window.removeEventListener(
+							"beforeunload",
+							beforeUnloadHandlerRef.current,
+						);
+					}
 					onSuccess(response.createJob.jobEdge.node.slug);
 				} else {
 					addToast({
@@ -252,432 +252,425 @@ export default function JobCreationForm({
 					});
 				}
 			},
-			updater: (store) => {
-				const orgRecord = store.get(data.id);
-				if (!orgRecord) return;
-
-				orgRecord.invalidateRecord();
-
-				// TODO: make this better
-				// only invalidate jobs field with all filter combinations
-				// and not the entire org record
-			},
 		});
 	};
 
 	return (
-		<form
-			onSubmit={handleSubmit(onSubmit)}
-			className="space-y-6 w-full mt-6 mb-16"
-		>
-			<Card shadow="none" className="p-6 gap-8 flex flex-col" fullWidth>
-				<CardHeader className="text-lg text-foreground-600">
-					Create new job
-				</CardHeader>
-				<CardBody className="flex flex-col gap-12 overflow-y-hidden">
-					<Input
-						{...register("title")}
-						label="Job Title"
-						labelPlacement="outside"
-						placeholder="My Job Title"
-						errorMessage={errors.title?.message}
-						isInvalid={!!errors.title}
-						isRequired
-						validationBehavior="aria"
-					/>
-					<Controller
-						control={control}
-						name="description"
-						render={({ field }) => (
-							<div className="flex flex-col gap-4 w-full">
-								<h2
-									className={`text-small inline-flex gap-0.5${errors.description ? " text-danger" : ""}`}
-								>
-									Job Description <span className="text-danger">*</span>
-								</h2>
-								<MarkdownEditor
-									initialValue={field.value}
-									onValueChange={field.onChange}
-									isInvalid={!!errors.description}
-									description={
-										errors.description ? (
-											<p className="text-tiny text-danger">
-												{errors.description.message}
-											</p>
-										) : (
-											<p className="text-tiny text-foreground-400">
-												Markdown editing is supported.
-											</p>
-										)
-									}
-								/>
-							</div>
-						)}
-					/>
-					<ChipsInput<JobFormValues, "skills">
-						name="skills"
-						label="Job Skills"
-						delimiters={[",", "Enter"]}
-						control={control}
-						chipProps={{ variant: "flat" }}
-						inputProps={{
-							placeholder: "Enter skills...",
-							description: (
-								<p className="mt-2">
-									Separate skills with commas or Enter{" "}
-									<Kbd
-										keys={["enter"]}
-										classNames={{ base: "p-0 px-2 shadow-none" }}
+		<>
+			<form
+				onSubmit={handleSubmit(onSubmit)}
+				className="space-y-6 w-full mt-6 mb-16"
+			>
+				<Card shadow="none" className="p-6 gap-8 flex flex-col" fullWidth>
+					<CardHeader className="text-lg text-foreground-600">
+						Create new job
+					</CardHeader>
+					<CardBody className="flex flex-col gap-12 overflow-y-hidden">
+						<Input
+							{...register("title")}
+							label="Job Title"
+							labelPlacement="outside"
+							placeholder="My Job Title"
+							errorMessage={errors.title?.message}
+							isInvalid={!!errors.title}
+							isRequired
+							validationBehavior="aria"
+						/>
+						<Controller
+							control={control}
+							name="description"
+							render={({ field }) => (
+								<div className="flex flex-col gap-4 w-full">
+									<h2
+										className={`text-small inline-flex gap-0.5${errors.description ? " text-danger" : ""}`}
+									>
+										Job Description <span className="text-danger">*</span>
+									</h2>
+									<MarkdownEditor
+										initialValue={field.value}
+										onValueChange={field.onChange}
+										isInvalid={!!errors.description}
+										description={
+											errors.description ? (
+												<p className="text-tiny text-danger">
+													{errors.description.message}
+												</p>
+											) : (
+												<p className="text-tiny text-foreground-400">
+													Markdown editing is supported.
+												</p>
+											)
+										}
 									/>
-								</p>
-							),
-						}}
-					/>
-					<Controller
-						control={control}
-						name="vacancies"
-						render={({ field }) => (
-							<NumberInput
-								label="Vacancies"
-								placeholder="Enter vacancies"
-								labelPlacement="outside"
-								size="lg"
-								minValue={0}
-								value={field.value as number | undefined}
-								onValueChange={(value) => {
-									if (Number.isNaN(value)) {
-										field.onChange(null);
-									} else {
-										field.onChange(value);
-									}
-								}}
-								errorMessage={errors.vacancies?.message}
-								isInvalid={!!errors.vacancies}
-								isClearable
-								onClear={() => {
-									field.onChange(null);
-								}}
-								hideStepper
-							/>
-						)}
-					/>
-					<div className="w-full flex flex-col sm:flex-row gap-12 items-start justify-start">
-						<Controller
-							control={control}
-							name="jobType"
-							render={({ field }) => (
-								<RadioGroup
-									label="Select Job Type"
-									value={field.value}
-									onValueChange={field.onChange}
-									className="flex-1 w-full"
-									errorMessage={errors.jobType?.message}
-									isInvalid={!!errors.jobType}
-								>
-									<Radio value="CONTRACT">Contract</Radio>
-									<Radio value="FULL_TIME">Full Time</Radio>
-									<Radio value="INTERNSHIP">Internship</Radio>
-									<Radio value="PART_TIME">Part Time</Radio>
-									<Radio value="LOCUM">Locum</Radio>
-								</RadioGroup>
+								</div>
 							)}
 						/>
-						<Controller
+						<ChipsInput<JobFormValues, "skills">
+							name="skills"
+							label="Job Skills"
+							delimiters={[",", "Enter"]}
 							control={control}
-							name="workMode"
-							render={({ field }) => (
-								<RadioGroup
-									label="Select Work Mode"
-									value={field.value}
-									onValueChange={field.onChange}
-									className="flex-1 w-full"
-									errorMessage={errors.workMode?.message}
-									isInvalid={!!errors.workMode}
-								>
-									<Radio value="HYBRID">Hybrid</Radio>
-									<Radio value="OFFICE">Office</Radio>
-									<Radio value="REMOTE">Remote</Radio>
-								</RadioGroup>
-							)}
-						/>
-					</div>
-					<Accordion
-						selectionMode="multiple"
-						variant="light"
-						keepContentMounted
-						fullWidth
-						itemClasses={{ base: "pb-8" }}
-						selectedKeys={accordionSelectedKeys}
-						onSelectionChange={setAccordionSelectedKeys}
-					>
-						<AccordionItem
-							key="salary-range"
-							aria-label="Salary range"
-							title="Salary range"
-							startContent={<IndianRupee size={20} />}
-							classNames={{
-								content: "flex flex-col gap-6",
+							chipProps={{ variant: "flat" }}
+							inputProps={{
+								placeholder: "Enter skills...",
+								description: (
+									<p className="mt-2">
+										Separate skills with commas or Enter{" "}
+										<Kbd
+											keys={["enter"]}
+											classNames={{ base: "p-0 px-2 shadow-none" }}
+										/>
+									</p>
+								),
 							}}
-						>
-							<div className="w-full flex gap-6 items-start">
-								<Controller
-									control={control}
-									name="minSalary"
-									render={({ field }) => (
-										<div className="flex flex-col gap-2 flex-1">
-											<NumberInput
-												label="Minimum Salary"
-												placeholder="Enter minimum salary"
-												formatOptions={{
-													style: "currency",
-													currency: "INR",
-													currencyDisplay: "code",
-													currencySign: "accounting",
-												}}
-												value={field.value as number | undefined}
-												onValueChange={(value) => {
-													if (Number.isNaN(value) || value === undefined) {
-														field.onChange(null);
-													} else {
-														field.onChange(value);
-													}
-												}}
-												errorMessage={errors.minSalary?.message}
-												isInvalid={!!errors.minSalary}
-												step={1000}
-												isClearable
-												onClear={() => {
-													field.onChange(null);
-												}}
-											/>
-										</div>
-									)}
+						/>
+						<Controller
+							control={control}
+							name="vacancies"
+							render={({ field }) => (
+								<NumberInput
+									label="Vacancies"
+									placeholder="Enter vacancies"
+									labelPlacement="outside"
+									size="lg"
+									minValue={0}
+									value={field.value as number | undefined}
+									onValueChange={(value) => {
+										if (Number.isNaN(value)) {
+											field.onChange(null);
+										} else {
+											field.onChange(value);
+										}
+									}}
+									errorMessage={errors.vacancies?.message}
+									isInvalid={!!errors.vacancies}
+									isClearable
+									onClear={() => {
+										field.onChange(null);
+									}}
+									hideStepper
 								/>
-								<Controller
-									control={control}
-									name="maxSalary"
-									render={({ field }) => (
-										<div className="flex flex-col gap-2 flex-1">
-											<NumberInput
-												label="Maximum Salary"
-												placeholder="Enter maximum salary"
-												formatOptions={{
-													style: "currency",
-													currency: "INR",
-													currencyDisplay: "code",
-													currencySign: "accounting",
-												}}
-												value={field.value as number | undefined}
-												onValueChange={(value) => {
-													if (Number.isNaN(value) || value === undefined) {
-														field.onChange(null);
-													} else {
-														field.onChange(value);
-													}
-												}}
-												errorMessage={errors.maxSalary?.message}
-												isInvalid={!!errors.maxSalary}
-												step={1000}
-												isClearable
-												onClear={() => {
-													field.onChange(null);
-												}}
-											/>
-										</div>
-									)}
-								/>
-							</div>
+							)}
+						/>
+						<div className="w-full flex flex-col sm:flex-row gap-12 items-start justify-start">
 							<Controller
 								control={control}
-								name="isSalaryNegotiable"
+								name="jobType"
 								render={({ field }) => (
-									<div className="flex items-center gap-3 mt-4">
-										<Switch
-											isSelected={field.value}
-											onChange={field.onChange}
-											name="isSalaryNegotiable"
-											aria-label="Salary is negotiable"
-										/>
-										<span className="text-sm">Salary is negotiable</span>
-									</div>
+									<RadioGroup
+										label="Select Job Type"
+										value={field.value}
+										onValueChange={field.onChange}
+										className="flex-1 w-full"
+										errorMessage={errors.jobType?.message}
+										isInvalid={!!errors.jobType}
+									>
+										<Radio value="CONTRACT">Contract</Radio>
+										<Radio value="FULL_TIME">Full Time</Radio>
+										<Radio value="INTERNSHIP">Internship</Radio>
+										<Radio value="PART_TIME">Part Time</Radio>
+										<Radio value="LOCUM">Locum</Radio>
+									</RadioGroup>
 								)}
 							/>
-						</AccordionItem>
-						<AccordionItem
-							key="experience-range"
-							aria-label="Experience range"
-							title="Experience range"
-							startContent={<BriefcaseBusiness size={20} />}
-						>
-							<div className="w-full flex gap-6 items-start">
-								<Controller
-									control={control}
-									name="minExperience"
-									render={({ field }) => (
-										<div className="flex flex-col gap-2 flex-1">
-											<NumberInput
-												label="Minimum Experience"
-												placeholder="Enter minimum experience"
-												formatOptions={{
-													style: "unit",
-													unit: "year",
-													unitDisplay: "long",
-												}}
-												value={field.value as number | undefined}
-												onValueChange={(value) => {
-													if (Number.isNaN(value) || value === undefined) {
-														field.onChange(null);
-													} else {
-														field.onChange(value);
-													}
-												}}
-												errorMessage={errors.minExperience?.message}
-												isInvalid={!!errors.minExperience}
-												isClearable
-												onClear={() => {
-													field.onChange(null);
-												}}
-											/>
-										</div>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="maxExperience"
-									render={({ field }) => (
-										<div className="flex flex-col gap-2 flex-1">
-											<NumberInput
-												label="Maximum Experience"
-												placeholder="Enter maximum experience"
-												formatOptions={{
-													style: "unit",
-													unit: "year",
-													unitDisplay: "long",
-												}}
-												value={field.value as number | undefined}
-												onValueChange={(value) => {
-													if (Number.isNaN(value) || value === undefined) {
-														field.onChange(null);
-													} else {
-														field.onChange(value);
-													}
-												}}
-												errorMessage={errors.maxExperience?.message}
-												isInvalid={!!errors.maxExperience}
-												isClearable
-												onClear={() => {
-													field.onChange(null);
-												}}
-											/>
-										</div>
-									)}
-								/>
-							</div>
-						</AccordionItem>
-						<AccordionItem
-							key="expires-at"
-							aria-label="Posting expires at"
-							title="Posting expires at"
-							startContent={<TimerIcon size={20} />}
-						>
 							<Controller
 								control={control}
-								name="expiresAt"
+								name="workMode"
 								render={({ field }) => (
-									<DatePicker
-										showMonthAndYearPickers
-										selectorButtonPlacement="start"
-										granularity="hour"
-										errorMessage={errors.expiresAt?.message}
-										isInvalid={!!errors.expiresAt}
-										value={field.value ?? undefined}
-										onChange={(val: unknown) => {
-											if (val instanceof CalendarDateTime || val == null) {
-												field.onChange(val);
-											} else if (
-												typeof val === "object" &&
-												val !== null &&
-												"calendar" in val &&
-												"era" in val &&
-												"year" in val &&
-												"month" in val &&
-												"day" in val &&
-												"hour" in val &&
-												"minute" in val &&
-												"second" in val &&
-												"millisecond" in val
-											) {
-												const v = val as {
-													calendar?: { identifier: string };
-													era: string;
-													year: number;
-													month: number;
-													day: number;
-													hour: number;
-													minute: number;
-													second: number;
-													millisecond: number;
-												};
-												field.onChange(
-													new CalendarDateTime(
-														createCalendar(
-															(v.calendar?.identifier ??
-																"gregory") as CalendarIdentifier,
-														),
-														v.era,
-														v.year,
-														v.month,
-														v.day,
-														v.hour,
-														v.minute,
-														v.second,
-														v.millisecond,
-													),
-												);
-											} else {
-												field.onChange(null);
-											}
-										}}
+									<RadioGroup
+										label="Select Work Mode"
+										value={field.value}
+										onValueChange={field.onChange}
+										className="flex-1 w-full"
+										errorMessage={errors.workMode?.message}
+										isInvalid={!!errors.workMode}
+									>
+										<Radio value="HYBRID">Hybrid</Radio>
+										<Radio value="OFFICE">Office</Radio>
+										<Radio value="REMOTE">Remote</Radio>
+									</RadioGroup>
+								)}
+							/>
+						</div>
+						<Accordion
+							selectionMode="multiple"
+							variant="light"
+							keepContentMounted
+							fullWidth
+							itemClasses={{ base: "pb-8" }}
+							selectedKeys={accordionSelectedKeys}
+							onSelectionChange={setAccordionSelectedKeys}
+						>
+							<AccordionItem
+								key="salary-range"
+								aria-label="Salary range"
+								title="Salary range"
+								startContent={<IndianRupee size={20} />}
+								classNames={{
+									content: "flex flex-col gap-6",
+								}}
+							>
+								<div className="w-full flex gap-6 items-start">
+									<Controller
+										control={control}
+										name="minSalary"
+										render={({ field }) => (
+											<div className="flex flex-col gap-2 flex-1">
+												<NumberInput
+													label="Minimum Salary"
+													placeholder="Enter minimum salary"
+													formatOptions={{
+														style: "currency",
+														currency: "INR",
+														currencyDisplay: "code",
+														currencySign: "accounting",
+													}}
+													value={field.value as number | undefined}
+													onValueChange={(value) => {
+														if (Number.isNaN(value) || value === undefined) {
+															field.onChange(null);
+														} else {
+															field.onChange(value);
+														}
+													}}
+													errorMessage={errors.minSalary?.message}
+													isInvalid={!!errors.minSalary}
+													step={1000}
+													isClearable
+													onClear={() => {
+														field.onChange(null);
+													}}
+												/>
+											</div>
+										)}
 									/>
-								)}
-							/>
-						</AccordionItem>
-						<AccordionItem
-							key="address"
-							aria-label="Address"
-							title="Address"
-							startContent={<MapPin size={20} />}
-						>
-							<div className="flex flex-col gap-4">
+									<Controller
+										control={control}
+										name="maxSalary"
+										render={({ field }) => (
+											<div className="flex flex-col gap-2 flex-1">
+												<NumberInput
+													label="Maximum Salary"
+													placeholder="Enter maximum salary"
+													formatOptions={{
+														style: "currency",
+														currency: "INR",
+														currencyDisplay: "code",
+														currencySign: "accounting",
+													}}
+													value={field.value as number | undefined}
+													onValueChange={(value) => {
+														if (Number.isNaN(value) || value === undefined) {
+															field.onChange(null);
+														} else {
+															field.onChange(value);
+														}
+													}}
+													errorMessage={errors.maxSalary?.message}
+													isInvalid={!!errors.maxSalary}
+													step={1000}
+													isClearable
+													onClear={() => {
+														field.onChange(null);
+													}}
+												/>
+											</div>
+										)}
+									/>
+								</div>
 								<Controller
-									name="location"
 									control={control}
+									name="isSalaryNegotiable"
 									render={({ field }) => (
-										<LocationAutocomplete
-											label="Location"
-											placeholder="Add job location"
-											value={field.value ?? ""}
-											onChange={(value) => field.onChange(value.displayName)}
-											onValueChange={field.onChange}
-											errorMessage={errors.location?.message}
-											isInvalid={!!errors.location}
+										<div className="flex items-center gap-3 mt-4">
+											<Switch
+												isSelected={field.value}
+												onChange={field.onChange}
+												name="isSalaryNegotiable"
+												aria-label="Salary is negotiable"
+											/>
+											<span className="text-sm">Salary is negotiable</span>
+										</div>
+									)}
+								/>
+							</AccordionItem>
+							<AccordionItem
+								key="experience-range"
+								aria-label="Experience range"
+								title="Experience range"
+								startContent={<BriefcaseBusiness size={20} />}
+							>
+								<div className="w-full flex gap-6 items-start">
+									<Controller
+										control={control}
+										name="minExperience"
+										render={({ field }) => (
+											<div className="flex flex-col gap-2 flex-1">
+												<NumberInput
+													label="Minimum Experience"
+													placeholder="Enter minimum experience"
+													formatOptions={{
+														style: "unit",
+														unit: "year",
+														unitDisplay: "long",
+													}}
+													value={field.value as number | undefined}
+													onValueChange={(value) => {
+														if (Number.isNaN(value) || value === undefined) {
+															field.onChange(null);
+														} else {
+															field.onChange(value);
+														}
+													}}
+													errorMessage={errors.minExperience?.message}
+													isInvalid={!!errors.minExperience}
+													isClearable
+													onClear={() => {
+														field.onChange(null);
+													}}
+												/>
+											</div>
+										)}
+									/>
+									<Controller
+										control={control}
+										name="maxExperience"
+										render={({ field }) => (
+											<div className="flex flex-col gap-2 flex-1">
+												<NumberInput
+													label="Maximum Experience"
+													placeholder="Enter maximum experience"
+													formatOptions={{
+														style: "unit",
+														unit: "year",
+														unitDisplay: "long",
+													}}
+													value={field.value as number | undefined}
+													onValueChange={(value) => {
+														if (Number.isNaN(value) || value === undefined) {
+															field.onChange(null);
+														} else {
+															field.onChange(value);
+														}
+													}}
+													errorMessage={errors.maxExperience?.message}
+													isInvalid={!!errors.maxExperience}
+													isClearable
+													onClear={() => {
+														field.onChange(null);
+													}}
+												/>
+											</div>
+										)}
+									/>
+								</div>
+							</AccordionItem>
+							<AccordionItem
+								key="expires-at"
+								aria-label="Posting expires at"
+								title="Posting expires at"
+								startContent={<TimerIcon size={20} />}
+							>
+								<Controller
+									control={control}
+									name="expiresAt"
+									render={({ field }) => (
+										<DatePicker
+											showMonthAndYearPickers
+											selectorButtonPlacement="start"
+											granularity="hour"
+											errorMessage={errors.expiresAt?.message}
+											isInvalid={!!errors.expiresAt}
+											value={field.value ?? undefined}
+											onChange={(val: unknown) => {
+												if (val instanceof CalendarDateTime || val == null) {
+													field.onChange(val);
+												} else if (
+													typeof val === "object" &&
+													val !== null &&
+													"calendar" in val &&
+													"era" in val &&
+													"year" in val &&
+													"month" in val &&
+													"day" in val &&
+													"hour" in val &&
+													"minute" in val &&
+													"second" in val &&
+													"millisecond" in val
+												) {
+													const v = val as {
+														calendar?: { identifier: string };
+														era: string;
+														year: number;
+														month: number;
+														day: number;
+														hour: number;
+														minute: number;
+														second: number;
+														millisecond: number;
+													};
+													field.onChange(
+														new CalendarDateTime(
+															createCalendar(
+																(v.calendar?.identifier ??
+																	"gregory") as CalendarIdentifier,
+															),
+															v.era,
+															v.year,
+															v.month,
+															v.day,
+															v.hour,
+															v.minute,
+															v.second,
+															v.millisecond,
+														),
+													);
+												} else {
+													field.onChange(null);
+												}
+											}}
 										/>
 									)}
 								/>
-							</div>
-						</AccordionItem>
-					</Accordion>
-				</CardBody>
-				<CardFooter>
-					<Button
-						type="submit"
-						color="primary"
-						isLoading={isSubmitting || isCreatingJob}
-					>
-						Create Job
-					</Button>
-				</CardFooter>
-			</Card>
-		</form>
+							</AccordionItem>
+							<AccordionItem
+								key="address"
+								aria-label="Address"
+								title="Address"
+								startContent={<MapPin size={20} />}
+							>
+								<div className="flex flex-col gap-4">
+									<Controller
+										name="location"
+										control={control}
+										render={({ field }) => (
+											<LocationAutocomplete
+												label="Location"
+												placeholder="Add job location"
+												value={field.value ?? ""}
+												onChange={(value) => field.onChange(value.displayName)}
+												onValueChange={field.onChange}
+												errorMessage={errors.location?.message}
+												isInvalid={!!errors.location}
+											/>
+										)}
+									/>
+								</div>
+							</AccordionItem>
+						</Accordion>
+					</CardBody>
+					<CardFooter>
+						<Button
+							type="submit"
+							color="primary"
+							size="lg"
+							isLoading={isSubmitting || isCreatingJob}
+						>
+							Create Job
+						</Button>
+					</CardFooter>
+				</Card>
+			</form>
+		</>
 	);
 }

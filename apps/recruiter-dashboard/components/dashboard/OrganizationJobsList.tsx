@@ -1,6 +1,6 @@
+import type { DashboardClientComponentQuery } from "@/__generated__/DashboardClientComponentQuery.graphql";
 import type { OrganizationJobsListFragment$key } from "@/__generated__/OrganizationJobsListFragment.graphql";
 import type { OrganizationJobsListInternalFragment$key } from "@/__generated__/OrganizationJobsListInternalFragment.graphql";
-import type { pageDashboardViewQuery } from "@/__generated__/pageDashboardViewQuery.graphql";
 import links from "@/lib/links";
 import { Button } from "@heroui/react";
 import { BriefcaseBusiness, Plus } from "lucide-react";
@@ -69,7 +69,7 @@ export default function OrganizationJobsList({
 		"Expected 'Organization' node type",
 	);
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
-		pageDashboardViewQuery,
+		DashboardClientComponentQuery,
 		OrganizationJobsListInternalFragment$key
 	>(OrganizationJobsListInternalFragment, root.organization);
 
@@ -109,7 +109,7 @@ export default function OrganizationJobsList({
 			startTransition(() => {
 				refetch(
 					{ searchTerm: searchTerm, sortBy: sortBy },
-					{ fetchPolicy: "store-or-network" },
+					{ fetchPolicy: "store-and-network" },
 				);
 			});
 		}, 300); // Adjust debounce delay as needed

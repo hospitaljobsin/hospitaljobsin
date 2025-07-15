@@ -1,7 +1,7 @@
 import NewJobClientComponentQueryType, {
 	type NewJobClientComponentQuery,
 } from "@/__generated__/NewJobClientComponentQuery.graphql";
-import type { NewJobContentFragment$key } from "@/__generated__/NewJobContentFragment.graphql";
+import type { NewJobViewFragment$key } from "@/__generated__/NewJobViewFragment.graphql";
 import links from "@/lib/links";
 import { useRouter } from "next/navigation";
 import {
@@ -13,8 +13,8 @@ import {
 import NotFoundView from "../NotFoundView";
 import JobCreationForm from "./JobCreationForm";
 
-export const NewJobContentFragment = graphql`
-	fragment NewJobContentFragment on Query @argumentDefinitions(slug: { type: "String!" }) {
+export const NewJobViewFragment = graphql`
+	fragment NewJobViewFragment on Query @argumentDefinitions(slug: { type: "String!" }) {
 		organization(slug: $slug) {
 			__typename
 			... on Organization {
@@ -25,7 +25,7 @@ export const NewJobContentFragment = graphql`
 	}
 `;
 
-export default function NewJobContent({
+export default function NewJobView({
 	initialQueryRef,
 }: { initialQueryRef: PreloadedQuery<NewJobClientComponentQuery> }) {
 	const router = useRouter();
@@ -33,10 +33,7 @@ export default function NewJobContent({
 		NewJobClientComponentQueryType,
 		initialQueryRef,
 	);
-	const orgData = useFragment<NewJobContentFragment$key>(
-		NewJobContentFragment,
-		data,
-	);
+	const orgData = useFragment<NewJobViewFragment$key>(NewJobViewFragment, data);
 
 	if (
 		orgData.organization.__typename !== "Organization" ||

@@ -1,6 +1,6 @@
 "use client";
 import type { NewJobClientComponentQuery as NewJobClientComponentQueryType } from "@/__generated__/NewJobClientComponentQuery.graphql";
-import NewJobContent from "@/components/new-job/NewJobContent";
+import NewJobContent from "@/components/new-job/NewJobView";
 import useOrganization from "@/lib/hooks/useOrganization";
 import { Spinner } from "@heroui/react";
 import { Suspense } from "react";
@@ -8,7 +8,7 @@ import { graphql, loadQuery, useRelayEnvironment } from "react-relay";
 
 export const NewJobClientComponentQuery = graphql`
   query NewJobClientComponentQuery($slug: String!) {
-	...NewJobContentFragment @arguments(slug: $slug)
+	...NewJobViewFragment @arguments(slug: $slug)
   }
 `;
 
