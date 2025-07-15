@@ -144,7 +144,7 @@ mutation JobEditFormMutation(
 
 const formSchema = z.object({
 	title: z.string().min(1, "This field is required").max(75),
-	description: z.string().min(1, "This field is required").max(2000),
+	description: z.string().min(1, "This field is required").max(4000),
 	vacancies: z.number().nonnegative().nullable(),
 	skills: z.array(z.object({ value: z.string() })),
 	location: z.string().nullable(),

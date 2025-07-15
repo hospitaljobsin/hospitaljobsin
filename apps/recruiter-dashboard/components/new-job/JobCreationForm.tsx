@@ -36,7 +36,7 @@ import { z } from "zod";
 
 const jobFormSchema = z.object({
 	title: z.string().min(1, "This field is required").max(75),
-	description: z.string().min(1, "This field is required").max(2000),
+	description: z.string().min(1, "This field is required").max(4000),
 	vacancies: z.number().positive().nullable().optional(),
 	skills: z.array(z.object({ value: z.string() })),
 	location: z.string().nullable(),
