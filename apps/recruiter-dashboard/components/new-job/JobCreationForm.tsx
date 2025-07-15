@@ -18,6 +18,7 @@ import {
 	Radio,
 	RadioGroup,
 	Switch,
+	addToast,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CalendarIdentifier } from "@internationalized/date";
@@ -74,7 +75,7 @@ const CreateJobMutation = graphql`
     $jobType: JobType,
     $workMode: WorkMode,
     $vacancies: Int,
-	$isSalaryNegotiable: Boolean!
+	$isSalaryNegotiable: Boolean!,
   ) {
     createJob(
       organizationId: $organizationId,
@@ -96,7 +97,9 @@ const CreateJobMutation = graphql`
       ... on CreateJobSuccess {
         jobEdge {
           node {
+			id
             slug
+			...JobFragment
           }
         }
       }
@@ -242,7 +245,11 @@ export default function JobCreationForm({
 				if (response.createJob.__typename === "CreateJobSuccess") {
 					onSuccess(response.createJob.jobEdge.node.slug);
 				} else {
-					// TODO: handle errors
+					addToast({
+						title: "An Unexpected Error Occurred",
+						description: "Please try again later",
+						color: "danger",
+					});
 				}
 			},
 		});
