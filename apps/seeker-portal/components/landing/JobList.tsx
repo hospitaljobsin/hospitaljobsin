@@ -1,6 +1,6 @@
 import type { JobListFragment$key } from "@/__generated__/JobListFragment.graphql";
 import type { JobListInternalFragment$key } from "@/__generated__/JobListInternalFragment.graphql";
-import type { pageLandingQuery } from "@/__generated__/pageLandingQuery.graphql";
+import type { LandingClientComponentQuery } from "@/__generated__/LandingClientComponentQuery.graphql";
 import { Card, CardBody } from "@heroui/react";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useTransition } from "react";
@@ -10,12 +10,8 @@ import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
 
 const JobListFragment = graphql`
-fragment JobListFragment on Query @argumentDefinitions(
-	proximityKm: { type: "Float", defaultValue: null }
-	searchTerm: { type: "String", defaultValue: null }
-	coordinates: { type: "CoordinatesInput", defaultValue: null }
-) {
-	...JobListInternalFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
+fragment JobListFragment on Query {
+	...JobListInternalFragment
 	viewer {
 		...JobControlsAuthFragment
 	}
@@ -27,13 +23,10 @@ const JobListInternalFragment = graphql`
   @refetchable(queryName: "JobListRefetchQuery")
   @argumentDefinitions(
     cursor: { type: "ID" }
-	proximityKm: { type: "Float", defaultValue: null }
-    searchTerm: { type: "String", defaultValue: null }
-	coordinates: { type: "CoordinatesInput", defaultValue: null }
     count: { type: "Int", defaultValue: 10 }
   ){
-    jobs(after: $cursor, first: $count, searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
-      @connection(key: "JobListFragment_jobs", filters: ["searchTerm", "coordinates", "proximityKm"]) {
+    trendingJobs(after: $cursor, first: $count)
+      @connection(key: "JobListFragment_trendingJobs") {
       edges {
         node {
           id
@@ -56,7 +49,7 @@ export default function JobList({ rootQuery }: Props) {
 	const [_isPending, startTransition] = useTransition();
 	const root = useFragment(JobListFragment, rootQuery);
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
-		pageLandingQuery,
+		LandingClientComponentQuery,
 		JobListInternalFragment$key
 	>(JobListInternalFragment, root);
 
@@ -72,7 +65,7 @@ export default function JobList({ rootQuery }: Props) {
 				const entry = entries[0];
 				if (
 					entry.isIntersecting &&
-					data.jobs.pageInfo.hasNextPage &&
+					data.trendingJobs.pageInfo.hasNextPage &&
 					!isLoadingNext
 				) {
 					loadNext(25);
@@ -83,9 +76,12 @@ export default function JobList({ rootQuery }: Props) {
 
 		observer.observe(observerRef.current);
 		return () => observer.disconnect();
-	}, [data.jobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
+	}, [data.trendingJobs.pageInfo.hasNextPage, isLoadingNext, loadNext]);
 
-	if (data.jobs.edges.length === 0 && !data.jobs.pageInfo.hasNextPage) {
+	if (
+		data.trendingJobs.edges.length === 0 &&
+		!data.trendingJobs.pageInfo.hasNextPage
+	) {
 		return (
 			<Card
 				className="p-6"
@@ -100,10 +96,10 @@ export default function JobList({ rootQuery }: Props) {
 					</div>
 					<div className="w-full flex flex-col gap-2 items-center">
 						<h2 className="font-medium text-muted-foreground text-base">
-							No jobs found
+							No Trending Jobs found
 						</h2>
 						<p className="text-muted-foreground text-sm text-center max-w-xs">
-							Try adjusting your search or filters to see more results.
+							Please try again later.
 						</p>
 					</div>
 				</CardBody>
@@ -113,7 +109,7 @@ export default function JobList({ rootQuery }: Props) {
 
 	return (
 		<div className="w-full h-full flex flex-col gap-4 sm:gap-8 pb-4 sm:pb-6">
-			{data.jobs.edges.map((jobEdge) => (
+			{data.trendingJobs.edges.map((jobEdge) => (
 				<Job
 					job={jobEdge.node}
 					key={jobEdge.node.id}

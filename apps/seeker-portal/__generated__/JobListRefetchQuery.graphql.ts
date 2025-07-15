@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dd6c5d1e720d2708e0384275d86b271e>>
- * @relayHash cc462d1e859f47af90bea63c31ddb4fe
+ * @generated SignedSource<<c77b8756f3999e9c7c3d925477b74faa>>
+ * @relayHash 9dc1e24a30dbd6d817b26e0974e9ab80
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,20 +9,13 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID cc462d1e859f47af90bea63c31ddb4fe
+// @relayRequestID 9dc1e24a30dbd6d817b26e0974e9ab80
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type CoordinatesInput = {
-  latitude: number;
-  longitude: number;
-};
 export type JobListRefetchQuery$variables = {
-  coordinates?: CoordinatesInput | null | undefined;
   count?: number | null | undefined;
   cursor?: string | null | undefined;
-  proximityKm?: number | null | undefined;
-  searchTerm?: string | null | undefined;
 };
 export type JobListRefetchQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"JobListInternalFragment">;
@@ -35,11 +28,6 @@ export type JobListRefetchQuery = {
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "coordinates"
-  },
-  {
     "defaultValue": 10,
     "kind": "LocalArgument",
     "name": "count"
@@ -48,56 +36,28 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "cursor"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "proximityKm"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "searchTerm"
   }
 ],
-v1 = {
-  "kind": "Variable",
-  "name": "coordinates",
-  "variableName": "coordinates"
-},
-v2 = {
-  "kind": "Variable",
-  "name": "proximityKm",
-  "variableName": "proximityKm"
-},
-v3 = {
-  "kind": "Variable",
-  "name": "searchTerm",
-  "variableName": "searchTerm"
-},
-v4 = [
+v1 = [
   {
     "kind": "Variable",
     "name": "after",
     "variableName": "cursor"
   },
-  (v1/*: any*/),
   {
     "kind": "Variable",
     "name": "first",
     "variableName": "count"
-  },
-  (v2/*: any*/),
-  (v3/*: any*/)
+  }
 ],
-v5 = {
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v6 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -113,7 +73,6 @@ return {
     "selections": [
       {
         "args": [
-          (v1/*: any*/),
           {
             "kind": "Variable",
             "name": "count",
@@ -123,9 +82,7 @@ return {
             "kind": "Variable",
             "name": "cursor",
             "variableName": "cursor"
-          },
-          (v2/*: any*/),
-          (v3/*: any*/)
+          }
         ],
         "kind": "FragmentSpread",
         "name": "JobListInternalFragment"
@@ -142,10 +99,10 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v4/*: any*/),
+        "args": (v1/*: any*/),
         "concreteType": "JobConnection",
         "kind": "LinkedField",
-        "name": "jobs",
+        "name": "trendingJobs",
         "plural": false,
         "selections": [
           {
@@ -164,7 +121,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v5/*: any*/),
+                  (v2/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -172,7 +129,7 @@ return {
                     "name": "isSaved",
                     "storageKey": null
                   },
-                  (v6/*: any*/),
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -209,8 +166,8 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
-                      (v6/*: any*/),
-                      (v5/*: any*/)
+                      (v3/*: any*/),
+                      (v2/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -334,21 +291,17 @@ return {
       },
       {
         "alias": null,
-        "args": (v4/*: any*/),
-        "filters": [
-          "searchTerm",
-          "coordinates",
-          "proximityKm"
-        ],
+        "args": (v1/*: any*/),
+        "filters": null,
         "handle": "connection",
-        "key": "JobListFragment_jobs",
+        "key": "JobListFragment_trendingJobs",
         "kind": "LinkedHandle",
-        "name": "jobs"
+        "name": "trendingJobs"
       }
     ]
   },
   "params": {
-    "id": "cc462d1e859f47af90bea63c31ddb4fe",
+    "id": "9dc1e24a30dbd6d817b26e0974e9ab80",
     "metadata": {},
     "name": "JobListRefetchQuery",
     "operationKind": "query",
@@ -357,6 +310,6 @@ return {
 };
 })();
 
-(node as any).hash = "31b36d35767a47445074efcb26869bcb";
+(node as any).hash = "e519ebf79ba2231b891acbe8af542bfd";
 
 export default node;

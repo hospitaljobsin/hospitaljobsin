@@ -452,7 +452,7 @@ class JobRepo:
             {"$limit": TRENDING_JOBS_LIMIT},
         ]
 
-        search_criteria = Job.aggregate(
+        search_criteria = ImpressionJobMetric.aggregate(
             aggregation_pipeline=pipeline,
             projection_model=Job,
         )

@@ -7,8 +7,8 @@ import { loadQuery, useRelayEnvironment } from "react-relay";
 import { graphql } from "relay-runtime";
 
 const LandingClientComponentQuery = graphql`
-query LandingClientComponentQuery($searchTerm: String, $coordinates: CoordinatesInput, $proximityKm: Float) {
-		...LandingViewFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
+query LandingClientComponentQuery {
+		...LandingViewFragment
 	}
 `;
 

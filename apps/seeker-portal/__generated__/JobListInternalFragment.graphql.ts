@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5470efad72eb40eb642573fc4e71feb9>>
+ * @generated SignedSource<<03c05da9f9f8b2d798006640ea5e1b94>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobListInternalFragment$data = {
-  readonly jobs: {
+  readonly trendingJobs: {
     readonly edges: ReadonlyArray<{
       readonly node: {
         readonly id: string;
@@ -33,15 +33,10 @@ import JobListRefetchQuery_graphql from './JobListRefetchQuery.graphql';
 
 const node: ReaderFragment = (function(){
 var v0 = [
-  "jobs"
+  "trendingJobs"
 ];
 return {
   "argumentDefinitions": [
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "coordinates"
-    },
     {
       "defaultValue": 10,
       "kind": "LocalArgument",
@@ -51,16 +46,6 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "cursor"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "proximityKm"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "searchTerm"
     }
   ],
   "kind": "Fragment",
@@ -89,27 +74,11 @@ return {
   "name": "JobListInternalFragment",
   "selections": [
     {
-      "alias": "jobs",
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "coordinates",
-          "variableName": "coordinates"
-        },
-        {
-          "kind": "Variable",
-          "name": "proximityKm",
-          "variableName": "proximityKm"
-        },
-        {
-          "kind": "Variable",
-          "name": "searchTerm",
-          "variableName": "searchTerm"
-        }
-      ],
+      "alias": "trendingJobs",
+      "args": null,
       "concreteType": "JobConnection",
       "kind": "LinkedField",
-      "name": "__JobListFragment_jobs_connection",
+      "name": "__JobListFragment_trendingJobs_connection",
       "plural": false,
       "selections": [
         {
@@ -199,6 +168,6 @@ return {
 };
 })();
 
-(node as any).hash = "31b36d35767a47445074efcb26869bcb";
+(node as any).hash = "e519ebf79ba2231b891acbe8af542bfd";
 
 export default node;

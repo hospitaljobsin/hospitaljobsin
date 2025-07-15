@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<0614d8ff4057026b074926e0c6025967>>
- * @relayHash 666f176f662e7eeb10613e828f036671
+ * @generated SignedSource<<5a029bb0ba28460fa4a8b24da7930698>>
+ * @relayHash a6b12a563c74a8d17d8471a8bac679c7
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,19 +9,11 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 666f176f662e7eeb10613e828f036671
+// @relayRequestID a6b12a563c74a8d17d8471a8bac679c7
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type CoordinatesInput = {
-  latitude: number;
-  longitude: number;
-};
-export type LandingClientComponentQuery$variables = {
-  coordinates?: CoordinatesInput | null | undefined;
-  proximityKm?: number | null | undefined;
-  searchTerm?: string | null | undefined;
-};
+export type LandingClientComponentQuery$variables = Record<PropertyKey, never>;
 export type LandingClientComponentQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"LandingViewFragment">;
 };
@@ -31,61 +23,28 @@ export type LandingClientComponentQuery = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "coordinates"
-},
-v1 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "proximityKm"
-},
-v2 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "searchTerm"
-},
-v3 = {
-  "kind": "Variable",
-  "name": "coordinates",
-  "variableName": "coordinates"
-},
-v4 = {
-  "kind": "Variable",
-  "name": "proximityKm",
-  "variableName": "proximityKm"
-},
-v5 = {
-  "kind": "Variable",
-  "name": "searchTerm",
-  "variableName": "searchTerm"
-},
-v6 = [
-  (v3/*: any*/),
+var v0 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 10
-  },
-  (v4/*: any*/),
-  (v5/*: any*/)
+  }
 ],
-v7 = {
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v8 = {
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v9 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -94,21 +53,13 @@ v9 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": [
-      (v0/*: any*/),
-      (v1/*: any*/),
-      (v2/*: any*/)
-    ],
+    "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
     "name": "LandingClientComponentQuery",
     "selections": [
       {
-        "args": [
-          (v3/*: any*/),
-          (v4/*: any*/),
-          (v5/*: any*/)
-        ],
+        "args": null,
         "kind": "FragmentSpread",
         "name": "LandingViewFragment"
       }
@@ -118,20 +69,16 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [
-      (v2/*: any*/),
-      (v0/*: any*/),
-      (v1/*: any*/)
-    ],
+    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "LandingClientComponentQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v6/*: any*/),
+        "args": (v0/*: any*/),
         "concreteType": "JobConnection",
         "kind": "LinkedField",
-        "name": "jobs",
+        "name": "trendingJobs",
         "plural": false,
         "selections": [
           {
@@ -150,7 +97,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v7/*: any*/),
+                  (v1/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -158,7 +105,7 @@ return {
                     "name": "isSaved",
                     "storageKey": null
                   },
-                  (v8/*: any*/),
+                  (v2/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -195,8 +142,8 @@ return {
                         "name": "logoUrl",
                         "storageKey": null
                       },
-                      (v8/*: any*/),
-                      (v7/*: any*/)
+                      (v2/*: any*/),
+                      (v1/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -270,7 +217,7 @@ return {
                     "name": "createdAt",
                     "storageKey": null
                   },
-                  (v9/*: any*/)
+                  (v3/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -310,20 +257,16 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": null
+        "storageKey": "trendingJobs(first:10)"
       },
       {
         "alias": null,
-        "args": (v6/*: any*/),
-        "filters": [
-          "searchTerm",
-          "coordinates",
-          "proximityKm"
-        ],
+        "args": (v0/*: any*/),
+        "filters": null,
         "handle": "connection",
-        "key": "JobListFragment_jobs",
+        "key": "JobListFragment_trendingJobs",
         "kind": "LinkedHandle",
-        "name": "jobs"
+        "name": "trendingJobs"
       },
       {
         "alias": null,
@@ -333,7 +276,7 @@ return {
         "name": "viewer",
         "plural": false,
         "selections": [
-          (v9/*: any*/),
+          (v3/*: any*/),
           {
             "kind": "TypeDiscriminator",
             "abstractKey": "__isViewerPayload"
@@ -341,7 +284,7 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v7/*: any*/)
+              (v1/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -363,7 +306,7 @@ return {
                 "name": "avatarUrl",
                 "storageKey": null
               },
-              (v7/*: any*/),
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -379,7 +322,7 @@ return {
                     "name": "isComplete",
                     "storageKey": null
                   },
-                  (v7/*: any*/)
+                  (v1/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -393,7 +336,7 @@ return {
     ]
   },
   "params": {
-    "id": "666f176f662e7eeb10613e828f036671",
+    "id": "a6b12a563c74a8d17d8471a8bac679c7",
     "metadata": {},
     "name": "LandingClientComponentQuery",
     "operationKind": "query",
@@ -402,6 +345,6 @@ return {
 };
 })();
 
-(node as any).hash = "b03ae2cc9ebafca86b05483d91f06c6e";
+(node as any).hash = "08486ba4f8f08f4a9692af02a01dd99b";
 
 export default node;

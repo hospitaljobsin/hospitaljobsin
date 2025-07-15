@@ -16,12 +16,8 @@ import JobList from "./JobList";
 import { LandingSearchController } from "./LandingSearchController";
 
 const LandingViewFragment = graphql`
-  fragment LandingViewFragment on Query   @argumentDefinitions(
-    searchTerm: { type: "String" }
-    coordinates: { type: "CoordinatesInput"}
-    proximityKm: { type: "Float" }
-  ) {
-    ...JobListFragment @arguments(searchTerm: $searchTerm, coordinates: $coordinates, proximityKm: $proximityKm)
+  fragment LandingViewFragment on Query {
+    ...JobListFragment
 	...LandingHeaderFragment
   }
 `;

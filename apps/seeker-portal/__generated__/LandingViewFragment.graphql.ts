@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<758a33a228fcaae4547a535c87e2f453>>
+ * @generated SignedSource<<393f2dc0c0591698e49b875c091efbe3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,45 +20,13 @@ export type LandingViewFragment$key = {
 };
 
 const node: ReaderFragment = {
-  "argumentDefinitions": [
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "coordinates"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "proximityKm"
-    },
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "searchTerm"
-    }
-  ],
+  "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
   "name": "LandingViewFragment",
   "selections": [
     {
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "coordinates",
-          "variableName": "coordinates"
-        },
-        {
-          "kind": "Variable",
-          "name": "proximityKm",
-          "variableName": "proximityKm"
-        },
-        {
-          "kind": "Variable",
-          "name": "searchTerm",
-          "variableName": "searchTerm"
-        }
-      ],
+      "args": null,
       "kind": "FragmentSpread",
       "name": "JobListFragment"
     },
@@ -72,6 +40,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "ad44d00732dc42125672d8a8cd454ca6";
+(node as any).hash = "87bcb89582ef2f077fb9a1bf0e67c4ac";
 
 export default node;
