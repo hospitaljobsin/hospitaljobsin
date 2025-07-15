@@ -2,7 +2,6 @@ import NewJobClientComponentQueryType, {
 	type NewJobClientComponentQuery,
 } from "@/__generated__/NewJobClientComponentQuery.graphql";
 import type { NewJobViewFragment$key } from "@/__generated__/NewJobViewFragment.graphql";
-import links from "@/lib/links";
 import { useRouter } from "next/navigation";
 import {
 	type PreloadedQuery,
@@ -44,12 +43,7 @@ export default function NewJobView({
 
 	return (
 		<div className="w-full h-full flex justify-center items-start pl-6">
-			<JobCreationForm
-				organization={orgData.organization}
-				onSuccess={(slug: string) =>
-					router.push(links.jobDetailApplicants(slug))
-				}
-			/>
+			<JobCreationForm organization={orgData.organization} />
 		</div>
 	);
 }

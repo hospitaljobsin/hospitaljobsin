@@ -3,6 +3,8 @@ import type { JobCreationFormMutation } from "@/__generated__/JobCreationFormMut
 import { ChipsInput } from "@/components/forms/ChipsInput";
 import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
+import links from "@/lib/links";
+import { useRouter } from "@bprogress/next";
 import {
 	Accordion,
 	AccordionItem,
@@ -116,11 +118,10 @@ const CreateJobMutation = graphql`
 
 export default function JobCreationForm({
 	organization,
-	onSuccess,
 }: {
 	organization: JobCreationFormFragment$key;
-	onSuccess: (slug: string) => void;
 }) {
+	const router = useRouter();
 	const data = useFragment(JobCreationFormFragment, organization);
 	const [commitCreateJob, isCreatingJob] =
 		useMutation<JobCreationFormMutation>(CreateJobMutation);
@@ -149,8 +150,10 @@ export default function JobCreationForm({
 		},
 	});
 
+	const allowNavigation = useRef(false);
+
 	useNavigationGuard({
-		enabled: isDirty,
+		enabled: () => isDirty && !allowNavigation.current,
 		confirm: () =>
 			window.confirm("You have unsaved changes that will be lost."),
 	});
@@ -158,9 +161,6 @@ export default function JobCreationForm({
 	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<
 		Iterable<Key>
 	>(new Set([]));
-	const beforeUnloadHandlerRef = useRef<
-		((e: BeforeUnloadEvent) => void) | null
-	>(null);
 
 	// Update accordions when errors change
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -236,14 +236,10 @@ export default function JobCreationForm({
 			},
 			onCompleted(response) {
 				if (response.createJob.__typename === "CreateJobSuccess") {
-					// Remove beforeunload event listener before redirecting
-					if (beforeUnloadHandlerRef.current) {
-						window.removeEventListener(
-							"beforeunload",
-							beforeUnloadHandlerRef.current,
-						);
-					}
-					onSuccess(response.createJob.jobEdge.node.slug);
+					allowNavigation.current = true;
+					router.push(
+						links.jobDetailApplicants(response.createJob.jobEdge.node.slug),
+					);
 				} else {
 					addToast({
 						title: "An Unexpected Error Occurred",
