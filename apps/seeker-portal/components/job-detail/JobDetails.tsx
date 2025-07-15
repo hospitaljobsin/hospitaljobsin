@@ -17,16 +17,9 @@ import {
 	Divider,
 	Tooltip,
 } from "@heroui/react";
-import { Editor } from "@tiptap/core";
-import Bold from "@tiptap/extension-bold";
-import Document from "@tiptap/extension-document";
 import Heading from "@tiptap/extension-heading";
-import { ListKit } from "@tiptap/extension-list";
-import { MarkdownParser } from "@tiptap/pm/markdown";
-import { defaultMarkdownParser } from "@tiptap/pm/markdown";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { renderToReactElement } from "@tiptap/static-renderer/pm/react";
 import {
 	Briefcase,
 	Clock,
@@ -259,6 +252,7 @@ export default function JobDetails({
 								as={Link}
 								href={data.externalApplicationUrl}
 								size="lg"
+								color="primary"
 								className="w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3"
 								target="_blank"
 								rel="noopener noreferrer"
@@ -287,6 +281,7 @@ export default function JobDetails({
 											data.slug,
 										)}
 										size="lg"
+										color="primary"
 										className="w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3"
 										isDisabled
 									>
@@ -305,6 +300,7 @@ export default function JobDetails({
 											)
 								}
 								size="lg"
+								color="primary"
 								className="w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3"
 								isDisabled={data.isApplied}
 							>
