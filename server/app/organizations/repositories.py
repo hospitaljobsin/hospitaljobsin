@@ -11,6 +11,7 @@ from app.accounts.documents import Account
 from app.core.constants import (
     ORGANIZATION_INVITE_EXPIRES_IN,
 )
+from app.core.formatting import slugify
 from app.database.paginator import PaginatedResult, Paginator
 from app.jobs.documents import Job, JobApplicant, SavedJob
 
@@ -29,7 +30,7 @@ class OrganizationRepo:
     ) -> Organization:
         """Create a new organization."""
         organization = Organization(
-            slug=slug,
+            slug=slugify(slug),
             name=name,
             description=description,
             location=location,
@@ -61,7 +62,7 @@ class OrganizationRepo:
     ) -> Organization:
         """Update the given organization."""
         organization.name = name
-        organization.slug = slug
+        organization.slug = slugify(slug)
         organization.description = description
         organization.location = location
         organization.website = website

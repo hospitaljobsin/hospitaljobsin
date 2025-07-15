@@ -1,7 +1,5 @@
 import hashlib
-import re
 import secrets
-import unicodedata
 import uuid
 from collections import defaultdict
 from datetime import UTC, datetime, time, timedelta
@@ -27,6 +25,7 @@ from app.core.constants import (
     JobApplicantStatus,
     JobKindType,
 )
+from app.core.formatting import slugify
 from app.core.geocoding import BaseLocationService
 from app.database.paginator import PaginatedResult, Paginator
 from app.embeddings.services import EmbeddingsService
@@ -81,22 +80,9 @@ class JobRepo:
     def __init__(self, embeddings_service: EmbeddingsService) -> None:
         self._embeddings_service = embeddings_service
 
-    def slugify(self, text: str) -> str:
-        """Normalize and slugify text to be URL-safe."""
-        # Normalize unicode characters to ASCII
-        text = (
-            unicodedata.normalize("NFKD", text)
-            .encode("ascii", "ignore")
-            .decode("ascii")
-        )
-        # Replace non-alphanumeric characters with hyphens
-        text = re.sub(r"[^a-zA-Z0-9]+", "-", text)
-        # Remove leading/trailing hyphens and convert to lowercase
-        return text.strip("-").lower()
-
     async def generate_slug(self, title: str, organization_id: ObjectId) -> str:
         """Generate a slug from the job title."""
-        slug = self.slugify(title)
+        slug = slugify(title)
         if await self.get_by_slug(slug, organization_id):
             suffix = secrets.token_urlsafe(8)
             while await self.get_by_slug(f"{slug}-{suffix}", organization_id):
