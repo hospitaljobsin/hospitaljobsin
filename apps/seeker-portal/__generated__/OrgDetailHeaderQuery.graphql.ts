@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<8e048a5c7c55d418de01ac7ab84b918f>>
- * @relayHash 18e76c3d0846ff86bf94f9e50322cb70
+ * @generated SignedSource<<b7728db3015d7449a9568ca93bead307>>
+ * @relayHash f9758c117da97ffaa61280402ba10533
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 18e76c3d0846ff86bf94f9e50322cb70
+// @relayRequestID f9758c117da97ffaa61280402ba10533
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -28,7 +28,7 @@ export type OrgDetailHeaderQuery$data = {
   };
   readonly viewer: {
     readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AuthNavigationFragment" | "IncompleteProfileBannerFragment">;
   } | {
     readonly __typename: "NotAuthenticatedError";
     readonly __typename: "NotAuthenticatedError";
@@ -87,15 +87,16 @@ v3 = {
   "abstractKey": null
 },
 v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v5 = {
   "kind": "InlineFragment",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    }
+    (v4/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -123,6 +124,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "AuthNavigationFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "IncompleteProfileBannerFragment"
               }
             ],
             "type": "Account",
@@ -179,12 +185,32 @@ return {
                 "kind": "ScalarField",
                 "name": "avatarUrl",
                 "storageKey": null
+              },
+              (v4/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Profile",
+                "kind": "LinkedField",
+                "name": "profile",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isComplete",
+                    "storageKey": null
+                  },
+                  (v4/*: any*/)
+                ],
+                "storageKey": null
               }
             ],
             "type": "Account",
             "abstractKey": null
           },
-          (v4/*: any*/)
+          (v5/*: any*/)
         ],
         "storageKey": null
       },
@@ -198,14 +224,14 @@ return {
         "selections": [
           (v1/*: any*/),
           (v3/*: any*/),
-          (v4/*: any*/)
+          (v5/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "18e76c3d0846ff86bf94f9e50322cb70",
+    "id": "f9758c117da97ffaa61280402ba10533",
     "metadata": {},
     "name": "OrgDetailHeaderQuery",
     "operationKind": "query",
@@ -214,6 +240,6 @@ return {
 };
 })();
 
-(node as any).hash = "df96a4e07381e4ff786b060739e060cf";
+(node as any).hash = "90e2c2d89f1ee644b7fef7a8a6adf53b";
 
 export default node;
