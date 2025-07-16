@@ -42,5 +42,5 @@ function PreloadedDashboardHeader({
 		DashboardHeaderClientComponentQuery,
 		queryReference,
 	);
-	return <DashboardHeader query={data} />;
+	return <DashboardHeader query={data} animate={false} />;
 }

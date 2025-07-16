@@ -59,7 +59,7 @@ export default function OrgDetailHeader({
 	return (
 		<div className="w-full flex flex-col bg-background-600 border-b border-foreground-300 sticky top-0 z-50">
 			{data.viewer.__typename === "Account" && (
-				<IncompleteProfileBanner account={data.viewer} />
+				<IncompleteProfileBanner account={data.viewer} animate={false} />
 			)}
 			<Navbar maxWidth="xl" className="bg-background-600">
 				<NavbarContent justify="center" className="flex-1 w-full flex gap-6">

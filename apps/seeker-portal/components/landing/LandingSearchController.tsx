@@ -46,6 +46,7 @@ export function LandingSearchController({
 						variant="underlined"
 						placeholder="Speciality, Keyword or Company"
 						value={searchTerm}
+						isDisabled={isDisabled}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 							setSearchTerm(e.target.value)
 						}
@@ -59,6 +60,7 @@ export function LandingSearchController({
 						placeholder="e.g. Chennai"
 						variant="underlined"
 						value={locationInput}
+						isDisabled={isDisabled}
 						onValueChange={setLocationInput}
 						onChange={(loc) => {
 							setSelectedLocation(loc);

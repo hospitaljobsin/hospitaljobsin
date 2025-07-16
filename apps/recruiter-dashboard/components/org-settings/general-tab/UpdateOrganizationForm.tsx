@@ -88,7 +88,7 @@ const formSchema = z.object({
 	slug: z.string().check(z.minLength(1, { error: "Slug is required" })),
 	website: z.nullable(z.optional(z.url({ error: "Invalid URL" }))),
 	description: z.union([
-		z.nullable(z.optional(z.string().check(z.maxLength(300)))),
+		z.nullable(z.optional(z.string().check(z.maxLength(550)))),
 		z.literal(""),
 	]),
 	location: z.nullable(z.string()),

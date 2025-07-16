@@ -75,18 +75,6 @@ export default function UpdateLocationPreferencesForm({
 	const locations = useWatch({ control, name: "locationsOpenToWork" }) || [];
 
 	function onSubmit(formData: z.infer<typeof formSchema>) {
-		if (
-			!formData.openToRelocationAnywhere &&
-			(!formData.locationsOpenToWork ||
-				formData.locationsOpenToWork.length === 0)
-		) {
-			setError("locationsOpenToWork", {
-				type: "manual",
-				message:
-					"Please add at least one location or enable open to relocation anywhere.",
-			});
-			return;
-		}
 		commit({
 			variables: {
 				locationsOpenToWork: formData.locationsOpenToWork || [],

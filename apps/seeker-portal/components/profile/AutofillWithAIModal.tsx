@@ -179,7 +179,13 @@ export default function AutofillWithAIModal({
 	}
 
 	return (
-		<Modal isOpen={isOpen} onOpenChange={onClose} size="md" placement="center">
+		<Modal
+			isOpen={isOpen}
+			onOpenChange={onClose}
+			size="md"
+			placement="center"
+			isDismissable={!isSubmitting}
+		>
 			<ModalContent>
 				<ModalHeader>Autofill with AI</ModalHeader>
 				<form onSubmit={handleSubmit(onSubmit)}>
