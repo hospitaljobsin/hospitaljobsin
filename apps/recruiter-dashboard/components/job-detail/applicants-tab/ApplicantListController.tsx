@@ -18,6 +18,7 @@ import {
 	Spinner,
 } from "@heroui/react";
 import { ChevronDown, Sparkles } from "lucide-react";
+import { useNavigationGuard } from "next-navigation-guard";
 import { startTransition } from "react";
 import { useFragment, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -81,6 +82,12 @@ export default function ApplicantListController(
 ) {
 	const data = useFragment(ApplicantListControllerFragment, props.job);
 	const { selectedApplicants, setSelectedApplicants } = useApplicantSelection();
+
+	useNavigationGuard({
+		enabled: selectedApplicants.size > 0,
+		confirm: () =>
+			window.confirm("You have unsaved changes that will be lost."),
+	});
 	const [commitMutation, isInFlight] =
 		useMutation<ApplicantListControllerMutationType>(
 			UpdateJobApplicantsStatusMutation,

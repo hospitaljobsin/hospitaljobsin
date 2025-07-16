@@ -80,8 +80,8 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 			className="p-6 cursor-pointer group space-y-4"
 			shadow="none"
 			isPressable={!isSelected}
-			as={isSelected ? "div" : Link}
-			{...(isSelected ? {} : { href: links.applicantDetail(slug, data.slug) })}
+			as={Link}
+			href={links.applicantDetail(slug, data.slug)}
 		>
 			<CardHeader className="flex items-center gap-6 justify-start">
 				<Checkbox
