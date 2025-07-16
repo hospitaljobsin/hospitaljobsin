@@ -1,7 +1,6 @@
 "use client";
 import type { JobTabsFragment$key } from "@/__generated__/JobTabsFragment.graphql";
 import links from "@/lib/links";
-import { useRouter } from "@bprogress/next";
 import { Tab, Tabs } from "@heroui/react";
 import { ChartNoAxesCombinedIcon, SquarePenIcon, Users } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
@@ -20,8 +19,6 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 		applicantSlug?: string;
 	}>();
 	const data = useFragment(JobTabsFragment, job);
-
-	const router = useRouter();
 
 	function getSelectedKey(pathname: string) {
 		if (pathname === links.jobDetailSettingsApplicationForm(params.slug)) {
@@ -48,16 +45,11 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 					tab: "py-6",
 				}}
 				selectedKey={getSelectedKey(pathname)}
-				onSelectionChange={(key) => {
-					if (typeof key === "string") {
-						router.push(key);
-					}
-				}}
 			>
-				{" "}
 				{data.externalApplicationUrl === null && (
 					<Tab
 						key={links.jobDetailApplicants(params.slug)}
+						href={links.jobDetailApplicants(params.slug)}
 						title={
 							<div className="flex items-center space-x-2">
 								<Users />
@@ -68,6 +60,7 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 				)}
 				<Tab
 					key={links.jobDetailAnalytics(params.slug)}
+					href={links.jobDetailAnalytics(params.slug)}
 					title={
 						<div className="flex items-center space-x-2">
 							<ChartNoAxesCombinedIcon />
@@ -77,6 +70,7 @@ export default function JobTabs({ job }: { job: JobTabsFragment$key }) {
 				/>
 				<Tab
 					key={links.jobDetailSettings(params.slug)}
+					href={links.jobDetailSettings(params.slug)}
 					title={
 						<div className="flex items-center space-x-2">
 							<SquarePenIcon />

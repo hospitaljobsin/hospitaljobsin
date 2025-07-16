@@ -2,7 +2,6 @@
 
 import type { SettingsSidebarJobSettingsQuery as SettingsSidebarJobSettingsQueryType } from "@/__generated__/SettingsSidebarJobSettingsQuery.graphql";
 import links from "@/lib/links";
-import { useRouter } from "@bprogress/next";
 import { Tab, Tabs } from "@heroui/react";
 import { FileText, Settings } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
@@ -31,7 +30,6 @@ export default function SettingsSidebar({
 	queryReference,
 }: { queryReference: PreloadedQuery<SettingsSidebarJobSettingsQueryType> }) {
 	const pathname = usePathname();
-	const router = useRouter();
 	const params = useParams<{ slug: string }>();
 	const data = usePreloadedQuery(
 		SettingsSidebarJobSettingsQuery,
@@ -54,11 +52,6 @@ export default function SettingsSidebar({
 					isVertical
 					variant="light"
 					selectedKey={pathname}
-					onSelectionChange={(key) => {
-						if (typeof key === "string") {
-							router.push(key);
-						}
-					}}
 					classNames={{
 						tabWrapper: "w-full",
 						base: "w-full",
@@ -71,6 +64,7 @@ export default function SettingsSidebar({
 				>
 					<Tab
 						key={links.jobDetailSettings(params.slug)}
+						href={links.jobDetailSettings(params.slug)}
 						title={
 							<div className="flex items-center space-x-4">
 								<Settings size={20} />
@@ -81,6 +75,7 @@ export default function SettingsSidebar({
 					{data.organization.job.externalApplicationUrl === null && (
 						<Tab
 							key={links.jobDetailSettingsApplicationForm(params.slug)}
+							href={links.jobDetailSettingsApplicationForm(params.slug)}
 							title={
 								<div className="flex items-center space-x-4">
 									<FileText size={20} />
@@ -96,11 +91,6 @@ export default function SettingsSidebar({
 					aria-label="Job Settings Navigation"
 					variant="light"
 					selectedKey={pathname}
-					onSelectionChange={(key) => {
-						if (typeof key === "string") {
-							router.push(key);
-						}
-					}}
 					classNames={{
 						base: "w-full overflow-x-auto",
 						tabList: "gap-4",
@@ -109,6 +99,7 @@ export default function SettingsSidebar({
 				>
 					<Tab
 						key={links.jobDetailSettings(params.slug)}
+						href={links.jobDetailSettings(params.slug)}
 						title={
 							<div className="flex items-center space-x-4">
 								<Settings size={16} />
@@ -118,6 +109,7 @@ export default function SettingsSidebar({
 					/>
 					<Tab
 						key={links.jobDetailSettingsApplicationForm(params.slug)}
+						href={links.jobDetailSettingsApplicationForm(params.slug)}
 						title={
 							<div className="flex items-center space-x-4">
 								<FileText size={16} />

@@ -2,7 +2,6 @@
 import type { SidebarQuery as SidebarQueryType } from "@/__generated__/SidebarQuery.graphql";
 import { APP_NAME } from "@/lib/constants";
 import links from "@/lib/links";
-import { useRouter } from "@bprogress/next";
 import {
 	Drawer,
 	DrawerBody,
@@ -87,7 +86,6 @@ export default function Sidebar({ queryReference }: Props) {
 
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const pathname = usePathname();
-	const router = useRouter();
 
 	function getSelectedKey(pathname: string) {
 		if (
@@ -175,11 +173,6 @@ export default function Sidebar({ queryReference }: Props) {
 					isVertical
 					variant="light"
 					selectedKey={getSelectedKey(pathname)}
-					onSelectionChange={(key) => {
-						if (typeof key === "string") {
-							router.push(key);
-						}
-					}}
 					classNames={{
 						tabWrapper: "w-full",
 						base: "w-full",
@@ -193,6 +186,7 @@ export default function Sidebar({ queryReference }: Props) {
 					{navItems.map((item) => (
 						<Tab
 							key={item.href}
+							href={item.href}
 							isDisabled={
 								item.href === links.organizationDetailSettings &&
 								!data.organization.isAdmin
@@ -249,11 +243,6 @@ export default function Sidebar({ queryReference }: Props) {
 							aria-label="Sidebar Navigation"
 							variant="light"
 							selectedKey={getSelectedKey(pathname)}
-							onSelectionChange={(key) => {
-								if (typeof key === "string") {
-									router.push(key);
-								}
-							}}
 							classNames={{
 								tabWrapper: "w-full",
 								base: "w-full",
@@ -268,6 +257,7 @@ export default function Sidebar({ queryReference }: Props) {
 							{navItems.map((item) => (
 								<Tab
 									key={item.href}
+									href={item.href}
 									title={
 										<div className="flex items-center gap-2">
 											{item.icon}

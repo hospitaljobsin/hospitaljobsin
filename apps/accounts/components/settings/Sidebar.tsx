@@ -1,14 +1,12 @@
 "use client";
 
 import links from "@/lib/links";
-import { useRouter } from "@bprogress/next";
 import { Tab, Tabs } from "@heroui/react";
 import { Cookie, Fingerprint, UserIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function SettingsSidebar() {
 	const pathname = usePathname();
-	const router = useRouter();
 	return (
 		<>
 			<div className="self-stretch h-[calc(100vh-4.2rem)] w-64 p-4 bg-background-700 justify-start hidden md:flex md:sticky md:top-16 ">
@@ -17,11 +15,6 @@ export default function SettingsSidebar() {
 					isVertical
 					variant="light"
 					selectedKey={pathname}
-					onSelectionChange={(key) => {
-						if (typeof key === "string") {
-							router.push(key);
-						}
-					}}
 					classNames={{
 						tabWrapper: "w-full",
 						base: "w-full",
@@ -34,6 +27,7 @@ export default function SettingsSidebar() {
 				>
 					<Tab
 						key={links.settings}
+						href={links.settings}
 						title={
 							<div className="flex items-center space-x-4">
 								<UserIcon size={20} />
@@ -43,6 +37,7 @@ export default function SettingsSidebar() {
 					/>
 					<Tab
 						key={links.settingsPasskeys}
+						href={links.settingsPasskeys}
 						title={
 							<div className="flex items-center space-x-4">
 								<Fingerprint size={20} />
@@ -52,6 +47,7 @@ export default function SettingsSidebar() {
 					/>
 					<Tab
 						key={links.settingsSessions}
+						href={links.settingsSessions}
 						title={
 							<div className="flex items-center space-x-4">
 								<Cookie size={20} />
@@ -66,11 +62,6 @@ export default function SettingsSidebar() {
 					aria-label="Settings Navigation"
 					variant="light"
 					selectedKey={pathname}
-					onSelectionChange={(key) => {
-						if (typeof key === "string") {
-							router.push(key);
-						}
-					}}
 					classNames={{
 						base: "w-full overflow-x-auto",
 						tabList: "gap-4",
@@ -79,6 +70,7 @@ export default function SettingsSidebar() {
 				>
 					<Tab
 						key={links.settings}
+						href={links.settings}
 						title={
 							<div className="flex items-center space-x-4">
 								<UserIcon size={16} />
@@ -88,6 +80,7 @@ export default function SettingsSidebar() {
 					/>
 					<Tab
 						key={links.settingsPasskeys}
+						href={links.settingsPasskeys}
 						title={
 							<div className="flex items-center space-x-4">
 								<Fingerprint size={16} />
@@ -97,6 +90,7 @@ export default function SettingsSidebar() {
 					/>
 					<Tab
 						key={links.settingsSessions}
+						href={links.settingsSessions}
 						title={
 							<div className="flex items-center space-x-4">
 								<Cookie size={16} />

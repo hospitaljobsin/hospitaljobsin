@@ -18,6 +18,7 @@ import {
 	Star,
 	XCircle,
 } from "lucide-react";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFragment } from "react-relay";
@@ -78,11 +79,9 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 			fullWidth
 			className="p-6 cursor-pointer group space-y-4"
 			shadow="none"
-			isPressable
-			as="div"
-			onPress={() => {
-				router.push(links.applicantDetail(slug, data.slug));
-			}}
+			isPressable={!isSelected}
+			as={isSelected ? "div" : Link}
+			{...(isSelected ? {} : { href: links.applicantDetail(slug, data.slug) })}
 		>
 			<CardHeader className="flex items-center gap-6 justify-start">
 				<Checkbox

@@ -13,6 +13,7 @@ import {
 	MapPin,
 	Users,
 } from "lucide-react";
+import Link from "next/link";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 
@@ -169,11 +170,8 @@ export default function Job({ job }: Props) {
 			fullWidth
 			className="p-4 sm:p-6 cursor-pointer space-y-4 sm:space-y-6"
 			isPressable
-			as="div"
-			disableRipple
-			onPress={() => {
-				router.push(links.jobDetailApplicants(data.slug));
-			}}
+			as={Link}
+			href={links.jobDetailApplicants(data.slug)}
 			shadow="none"
 		>
 			{/* Header: Title, Status, Skills */}
