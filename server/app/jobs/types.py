@@ -975,7 +975,6 @@ class JobType(BaseNodeType[Job]):
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: ensure only org members can view this field
                 ]
             )
         ],
