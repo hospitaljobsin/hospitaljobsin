@@ -388,9 +388,11 @@ export default function JobDetails({
 						>
 							{data.organization.name} <ExternalLinkIcon size={16} />
 						</Link>
-						<p className="text-xs sm:text-base text-default-500 leading-tight">
-							{data.organization.description}
-						</p>
+						{data.organization.description && (
+							<p className="text-xs sm:text-base text-default-500 leading-tight line-clamp-2">
+								{data.organization.description}
+							</p>
+						)}
 					</div>
 				</CardBody>
 			</Card>
