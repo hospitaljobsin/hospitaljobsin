@@ -59,7 +59,7 @@ const GenerateProfileDocumentPresignedURLMutation = graphql`
 `;
 
 const formSchema = z.object({
-	file: z.instanceof(File).optional(),
+	file: z.instanceof(File),
 	overwrite: z.boolean(),
 });
 
@@ -84,10 +84,11 @@ export default function AutofillWithAIModal({
 		control,
 		handleSubmit,
 		setValue,
-		formState: { isSubmitting, isValid },
+		resetField,
+		formState: { isSubmitting, isValid, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
 		defaultValues: {
-			file: null,
+			file: undefined,
 			overwrite: true,
 		},
 		resolver: zodResolver(formSchema),
@@ -97,72 +98,84 @@ export default function AutofillWithAIModal({
 		const file = e.target.files?.[0] || null;
 		if (file && file.type !== "application/pdf") {
 			setError("Only PDF files are supported.");
-			setValue("file", null);
+			resetField("file", { keepError: true });
 			return;
 		}
 		if (file && file.size > 5 * 1024 * 1024) {
 			setError("File size must be less than 5MB.");
+			resetField("file", { keepError: true });
 			return;
 		}
-		setError(null);
-		setValue("file", file);
+		if (file) {
+			setError(null);
+			setValue("file", file, {
+				shouldValidate: true,
+				shouldDirty: true,
+				shouldTouch: true,
+			});
+		}
 	}
 
-	const handleFileUpload = async (file: File, overwrite: boolean) => {
-		commitGeneratePresignedURL({
-			variables: {
-				contentType: "application/pdf",
-			},
-			onError(error) {
-				onClose();
-				addToast({
-					description: "Failed to generate presigned URL. Please try again.",
-					color: "danger",
-				});
-				return;
-			},
-			onCompleted(response, errors) {
-				const fileKey = response.generateProfileDocumentPresignedUrl.fileKey;
-				const presignedUrl =
-					response.generateProfileDocumentPresignedUrl.presignedUrl;
-				uploadFileToS3(presignedUrl, file)
-					.then(() => {
-						commit({
-							variables: { fileKey: fileKey, overwrite },
-							onCompleted: () => {
-								onClose();
-								addToast({
-									description:
-										"Profile updated! Please review and edit the updated sections.",
-									color: "success",
+	async function onSubmit(data: z.infer<typeof formSchema>) {
+		return new Promise<void>((resolve, reject) => {
+			if (data.file) {
+				commitGeneratePresignedURL({
+					variables: {
+						contentType: "application/pdf",
+					},
+					onError(error) {
+						onClose();
+						addToast({
+							description:
+								"Failed to generate presigned URL. Please try again.",
+							color: "danger",
+						});
+						reject(error);
+					},
+					onCompleted(response, errors) {
+						const fileKey =
+							response.generateProfileDocumentPresignedUrl.fileKey;
+						const presignedUrl =
+							response.generateProfileDocumentPresignedUrl.presignedUrl;
+						uploadFileToS3(presignedUrl, data.file)
+							.then(() => {
+								commit({
+									variables: { fileKey: fileKey, overwrite: data.overwrite },
+									onCompleted: () => {
+										onClose();
+										addToast({
+											description:
+												"Profile updated! Please review and edit the updated sections.",
+											color: "success",
+										});
+										resolve();
+									},
+									onError: (err) => {
+										onClose();
+										addToast({
+											description:
+												"Failed to autofill profile. Please try again.",
+											color: "danger",
+										});
+										reject(err);
+									},
 								});
-							},
-							onError: () => {
+							})
+							.catch((err) => {
 								onClose();
 								addToast({
 									description: "Failed to autofill profile. Please try again.",
 									color: "danger",
 								});
-							},
-						});
-					})
-					.catch(() => {
-						onClose();
-						addToast({
-							description: "Failed to autofill profile. Please try again.",
-							color: "danger",
-						});
-					});
-			},
+								reject(err);
+							});
+					},
+				});
+			} else {
+				setError("Please select a PDF file to upload.");
+				reject(new Error("No file selected"));
+			}
 		});
-	};
-
-	function onSubmit(data: { file: File | null; overwrite: boolean }) {
-		if (data.file) {
-			handleFileUpload(data.file, data.overwrite);
-		} else {
-			setError("Please select a PDF file to upload.");
-		}
 	}
 
 	return (
@@ -182,7 +195,6 @@ export default function AutofillWithAIModal({
 										accept="application/pdf"
 										onChange={(e) => {
 											handleFileChange(e);
-											field.onChange(e.target.files?.[0] || null);
 										}}
 										label="Upload your resume (PDF only)"
 										className="w-full"
@@ -220,10 +232,8 @@ export default function AutofillWithAIModal({
 							color="primary"
 							fullWidth
 							type="submit"
-							isDisabled={!isValid}
-							isLoading={
-								isSubmitting || isParsingProfile || isGeneratingPresignedURL
-							}
+							isDisabled={!isValid || !isDirty}
+							isLoading={isSubmitting}
 						>
 							Upload
 						</Button>
