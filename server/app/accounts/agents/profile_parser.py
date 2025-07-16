@@ -116,6 +116,6 @@ def create_profile_parser_agent(
             "Do NOT hallucinate, infer, or guess any information. Never fill in plausible values for missing data. "
             "Be robust to OCR errors, typos, and formatting issues. Ignore irrelevant or decorative text. "
             "Output only what is explicitly and unambiguously extractable from the input. "
-            "If the input is not relevant (a resume, a cover letter, a job description, etc.), return null for all fields. "
+            "If the input is not relevant/ no data cannot be extracted, return null for all fields. "
         ),
     )
