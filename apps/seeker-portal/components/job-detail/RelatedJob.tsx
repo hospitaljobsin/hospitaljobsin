@@ -8,6 +8,7 @@ import { useRouter } from "@bprogress/next";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { Briefcase, Globe, MapPin } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 
@@ -99,11 +100,8 @@ export default function RelatedJob({ job }: Props) {
 		<Card
 			className="p-4 sm:p-6 cursor-pointer w-full lg:max-w-sm"
 			isPressable
-			as="div"
-			disableRipple
-			onPress={() => {
-				router.push(links.jobDetail(data.organization.slug, data.slug));
-			}}
+			as={Link}
+			href={links.jobDetail(data.organization.slug, data.slug)}
 			shadow="none"
 		>
 			<CardHeader>

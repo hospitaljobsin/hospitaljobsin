@@ -1,13 +1,11 @@
 "use client";
 import links from "@/lib/links";
-import { useRouter } from "@bprogress/next";
 import { Tab, Tabs } from "@heroui/react";
 import { BookmarkIcon, UserIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function MyJobsTabs() {
 	const pathnname = usePathname();
-	const router = useRouter();
 	return (
 		<div className="flex w-full flex-col">
 			<Tabs
@@ -19,14 +17,10 @@ export default function MyJobsTabs() {
 					tab: "py-6",
 				}}
 				selectedKey={pathnname}
-				onSelectionChange={(key) => {
-					if (typeof key === "string") {
-						router.push(key);
-					}
-				}}
 			>
 				<Tab
 					key={links.savedJobs}
+					href={links.savedJobs}
 					title={
 						<div className="flex items-center space-x-2">
 							<BookmarkIcon />
@@ -36,6 +30,7 @@ export default function MyJobsTabs() {
 				/>
 				<Tab
 					key={links.appliedJobs}
+					href={links.appliedJobs}
 					title={
 						<div className="flex items-center space-x-2">
 							<UserIcon />

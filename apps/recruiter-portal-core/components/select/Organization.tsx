@@ -1,8 +1,8 @@
 import type { OrganizationFragment$key } from "@/__generated__/OrganizationFragment.graphql";
 import links from "@/lib/links";
-import { useRouter } from "@bprogress/next";
 import { Card, CardHeader } from "@heroui/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 
@@ -20,7 +20,6 @@ type Props = {
 };
 
 export default function Organization({ organization }: Props) {
-	const router = useRouter();
 	const data = useFragment(OrganizationFragment, organization);
 
 	return (
@@ -28,11 +27,9 @@ export default function Organization({ organization }: Props) {
 			fullWidth
 			className="p-4 sm:p-6 cursor-pointer"
 			isPressable
-			as="div"
+			as={Link}
+			href={links.organizationDetail(data.slug)}
 			disableRipple
-			onPress={() => {
-				router.push(links.organizationDetail(data.slug));
-			}}
 			shadow="none"
 		>
 			<CardHeader>
