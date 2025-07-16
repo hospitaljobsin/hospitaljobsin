@@ -5,7 +5,6 @@ import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import { uploadFileToS3 } from "@/lib/presignedUrl";
-import { useRouter } from "@bprogress/next";
 import {
 	Button,
 	Card,
@@ -17,17 +16,18 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	Textarea,
 	addToast,
 	useDisclosure,
 } from "@heroui/react";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import NextImage from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import type { Area } from "react-easy-crop";
 import Cropper from "react-easy-crop";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
-import { z } from "zod/v4-mini";
+import { z } from "zod";
 
 const UpdateOrganizationFormMutation = graphql`
 mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $description: String) {
@@ -82,20 +82,23 @@ type Props = {
 };
 
 const formSchema = z.object({
-	name: z
-		.string()
-		.check(z.minLength(1, { error: "Organization name is required" })),
-	slug: z.string().check(z.minLength(1, { error: "Slug is required" })),
-	website: z.nullable(z.optional(z.url({ error: "Invalid URL" }))),
+	name: z.string().min(1, { message: "Organization name is required" }),
+	slug: z.string().min(1, { message: "Slug is required" }),
+	website: z.nullable(z.optional(z.string().url({ message: "Invalid URL" }))),
 	description: z.union([
-		z.nullable(z.optional(z.string().check(z.maxLength(800)))),
+		z.nullable(
+			z.optional(
+				z.string().max(1024, {
+					message: "Description must be less than 1024 characters",
+				}),
+			),
+		),
 		z.literal(""),
 	]),
 	location: z.nullable(z.string()),
 });
 
 export default function UpdateOrganizationForm({ rootQuery }: Props) {
-	const router = useRouter();
 	const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -126,7 +129,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		reset,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: standardSchemaResolver(formSchema),
+		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: data.name,
 			slug: data.slug,
@@ -404,7 +407,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 								name="description"
 								control={control}
 								render={({ field }) => (
-									<Input
+									<Textarea
 										{...field}
 										fullWidth
 										label="Description"

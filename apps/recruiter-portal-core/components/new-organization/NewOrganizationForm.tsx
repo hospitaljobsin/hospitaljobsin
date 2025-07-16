@@ -13,13 +13,13 @@ import {
 	Input,
 	Textarea,
 } from "@heroui/react";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
-import { z } from "zod/v4-mini";
+import { z } from "zod";
 
 const CreateOrganizationMutation = graphql`
 mutation NewOrganizationFormMutation($fullName: String!, $slug: String!, $website: String, $description: String, $logoUrl: String) {
@@ -47,18 +47,22 @@ mutation NewOrganizationFormLogoPresignedUrlMutation($contentType: String!) {
 const formSchema = z.object({
 	fullName: z
 		.string()
-		.check(z.minLength(1, "This field is required"), z.maxLength(75)),
-	slug: z.string().check(
-		z.minLength(1, "This field is required"),
-		z.maxLength(75),
-		z.regex(/^[a-z0-9-]+$/, "Must be a valid slug"),
-		z.refine((value) => value === value.toLowerCase(), "Must be lowercase"),
+		.min(1, { message: "This field is required" })
+		.max(75, { message: "This field must be less than 75 characters" }),
+	slug: z
+		.string()
+		.min(1, { message: "This field is required" })
+		.max(75, { message: "This field must be less than 75 characters" })
+		.regex(/^[a-z0-9-]+$/, { message: "Must be a valid slug" })
+		.refine((value) => value === value.toLowerCase(), {
+			message: "Must be lowercase",
+		}),
+	website: z.union([z.string().url({ message: "Invalid URL" }), z.literal("")]),
+	description: z.nullable(
+		z
+			.string()
+			.max(1024, { message: "Description must be less than 1024 characters" }),
 	),
-	website: z.union([
-		z.nullish(z.string().check(z.url("Invalid URL"))),
-		z.literal(""),
-	]),
-	description: z.nullable(z.string()),
 });
 
 export default function NewOrganizationForm() {
@@ -85,7 +89,7 @@ export default function NewOrganizationForm() {
 		register,
 		formState: { errors, isSubmitting },
 	} = useForm<z.infer<typeof formSchema>>({
-		resolver: standardSchemaResolver(formSchema),
+		resolver: zodResolver(formSchema),
 		defaultValues: {
 			fullName: "",
 			slug: defaultSlug || "",
@@ -129,8 +133,8 @@ export default function NewOrganizationForm() {
 				variables: {
 					fullName: formData.fullName,
 					slug: formData.slug,
-					website: formData.website || null,
-					description: formData.description || null,
+					website: formData.website ?? null,
+					description: formData.description ?? null,
 					logoUrl: logoUrlResult,
 				},
 				onCompleted(response) {
