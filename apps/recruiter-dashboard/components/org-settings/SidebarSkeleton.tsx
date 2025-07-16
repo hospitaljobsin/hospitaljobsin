@@ -1,7 +1,5 @@
 "use client";
 
-// TODO: implement this skeleton properly
-
 export default function OrgSettingsSidebarSkeleton() {
 	return (
 		<>

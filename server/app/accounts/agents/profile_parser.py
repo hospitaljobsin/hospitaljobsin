@@ -11,12 +11,20 @@ from app.accounts.documents import (
     Education,
     Gender,
     Language,
-    License,
     MaritalStatus,
     SalaryExpectations,
     WorkExperience,
 )
 from app.config import SecretSettings
+
+
+class PartialLicense(BaseModel):
+    name: str = Field(..., description="The name of the license.")
+    issuer: str = Field(..., description="The issuer of the license.")
+    license_number: str = Field(..., description="The license number.")
+    registration_year: int = Field(
+        ..., description="The year the license was registered."
+    )
 
 
 class ProfileOutput(BaseModel):
@@ -52,7 +60,7 @@ class ProfileOutput(BaseModel):
         ...,
         description="The education of the applicant.",
     )
-    licenses: list[License] = Field(
+    licenses: list[PartialLicense] = Field(
         ...,
         description="The licenses of the applicant.",
     )

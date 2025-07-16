@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<628aa28dca5ddbc38f52db3428e92ca7>>
- * @relayHash ab455b8c88847f475ef1e0364c21f4e3
+ * @generated SignedSource<<e971ceea82a59b9082320e7cfed08ba6>>
+ * @relayHash 6881b76b338a3ee5c5c2f47bfee5897f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID ab455b8c88847f475ef1e0364c21f4e3
+// @relayRequestID 6881b76b338a3ee5c5c2f47bfee5897f
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -121,6 +121,13 @@ v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "count",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 };
@@ -217,36 +224,62 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "kind": "ScalarField",
+                    "concreteType": null,
+                    "kind": "LinkedField",
                     "name": "viewCount",
+                    "plural": false,
+                    "selections": [
+                      (v3/*: any*/),
+                      {
+                        "kind": "InlineFragment",
+                        "selections": [
+                          (v5/*: any*/)
+                        ],
+                        "type": "JobViewCountSuccess",
+                        "abstractKey": null
+                      }
+                    ],
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "JobMetricPoint",
+                    "concreteType": null,
                     "kind": "LinkedField",
                     "name": "viewMetricPoints",
-                    "plural": true,
+                    "plural": false,
                     "selections": [
+                      (v3/*: any*/),
                       {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "timestamp",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "count",
-                        "storageKey": null
+                        "kind": "InlineFragment",
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "JobMetricPoint",
+                            "kind": "LinkedField",
+                            "name": "viewMetricPoints",
+                            "plural": true,
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "timestamp",
+                                "storageKey": null
+                              },
+                              (v5/*: any*/)
+                            ],
+                            "storageKey": null
+                          }
+                        ],
+                        "type": "JobViewMetricPointsSuccess",
+                        "abstractKey": null
                       }
                     ],
                     "storageKey": null
                   },
-                  (v5/*: any*/)
+                  (v6/*: any*/)
                 ],
                 "storageKey": null
               },
@@ -259,7 +292,7 @@ return {
                 "plural": false,
                 "selections": [
                   (v4/*: any*/),
-                  (v5/*: any*/)
+                  (v6/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -273,7 +306,7 @@ return {
     ]
   },
   "params": {
-    "id": "ab455b8c88847f475ef1e0364c21f4e3",
+    "id": "6881b76b338a3ee5c5c2f47bfee5897f",
     "metadata": {},
     "name": "ApplicationFormBuilderMutation",
     "operationKind": "mutation",

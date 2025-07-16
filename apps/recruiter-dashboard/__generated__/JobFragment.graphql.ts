@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<70b64c360e36e8f207afae5a0cb20424>>
+ * @generated SignedSource<<4df2b1a732a5497bc5938e7ec984d0f1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -35,7 +35,17 @@ export type JobFragment$data = {
   readonly title: string;
   readonly type: JobType | null | undefined;
   readonly vacancies: number | null | undefined;
-  readonly viewCount: number;
+  readonly viewCount: {
+    readonly __typename: "JobViewCountSuccess";
+    readonly count: number;
+  } | {
+    readonly __typename: "OrganizationAuthorizationError";
+    readonly __typename: "OrganizationAuthorizationError";
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
   readonly workMode: WorkMode | null | undefined;
   readonly " $fragmentType": "JobFragment";
 };
@@ -74,8 +84,33 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
-      "kind": "ScalarField",
+      "concreteType": null,
+      "kind": "LinkedField",
       "name": "viewCount",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "__typename",
+          "storageKey": null
+        },
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "count",
+              "storageKey": null
+            }
+          ],
+          "type": "JobViewCountSuccess",
+          "abstractKey": null
+        }
+      ],
       "storageKey": null
     },
     {
@@ -217,6 +252,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "b2df225002eb73426548b06a26f26243";
+(node as any).hash = "f501fa4a4456054938fafd712298aba5";
 
 export default node;

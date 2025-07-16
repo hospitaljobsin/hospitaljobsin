@@ -1206,12 +1206,12 @@ type Job implements Node {
 		End date for filtering the view count.
 		"""
 		endDate: DateTime = null
-	): Int! @isAuthenticated
+	): JobViewCountPayload! @isAuthenticated
 
 	"""
 	View metric points for the job, filtered by time.
 	"""
-	viewMetricPoints: [JobMetricPoint!]! @isAuthenticated
+	viewMetricPoints: JobViewMetricPointsPayload! @isAuthenticated
 
 	"""
 	Whether the job is saved by the current user.
@@ -1576,6 +1576,38 @@ enum JobTypeFilter {
 	CONTRACT
 	LOCUM
 	ANY
+}
+
+"""
+The job view count payload.
+"""
+union JobViewCountPayload = JobViewCountSuccess | OrganizationAuthorizationError
+
+"""
+The job view count success.
+"""
+type JobViewCountSuccess {
+	"""
+	The count of job views.
+	"""
+	count: Int!
+}
+
+"""
+The job view metric points payload.
+"""
+union JobViewMetricPointsPayload =
+	| JobViewMetricPointsSuccess
+	| OrganizationAuthorizationError
+
+"""
+The job view metric points success.
+"""
+type JobViewMetricPointsSuccess {
+	"""
+	The view metric points.
+	"""
+	viewMetricPoints: [JobMetricPoint!]!
 }
 
 """
@@ -2944,12 +2976,12 @@ type Organization implements Node {
 		End date for filtering the view count.
 		"""
 		endDate: DateTime = null
-	): Int! @isAuthenticated
+	): TotalViewCountPayload! @isAuthenticated
 
 	"""
 	Total view metric points for the organization's jobs, filtered by time.
 	"""
-	totalViewMetricPoints: [JobMetricPoint!]! @isAuthenticated
+	totalViewMetricPoints: TotalViewMetricPointsPayload! @isAuthenticated
 
 	"""
 	The number of admin members in the organization.
@@ -4042,6 +4074,40 @@ union SetAccount2FAPayload =
 	| EnableAccount2FAWithAuthenticatorSuccess
 	| InvalidCredentialsError
 	| TwoFactorAuthenticationChallengeNotFoundError
+
+"""
+The total view count payload.
+"""
+union TotalViewCountPayload =
+	| TotalViewCountSuccess
+	| OrganizationAuthorizationError
+
+"""
+The total view count success.
+"""
+type TotalViewCountSuccess {
+	"""
+	The total view count for the organization.
+	"""
+	totalViewCount: Int!
+}
+
+"""
+The total view metric points payload.
+"""
+union TotalViewMetricPointsPayload =
+	| TotalViewMetricPointsSuccess
+	| OrganizationAuthorizationError
+
+"""
+The total view metric points success.
+"""
+type TotalViewMetricPointsSuccess {
+	"""
+	The metric points for the organization.
+	"""
+	metricPoints: [JobMetricPoint!]!
+}
 
 """
 Used when the 2FA challenge is not found.

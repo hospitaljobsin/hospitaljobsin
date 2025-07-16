@@ -1,13 +1,14 @@
 from collections.abc import Iterable
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Annotated, Any, Self
+from typing import TYPE_CHECKING, Annotated, Any, Self, assert_never
 
 import strawberry
 from aioinject import Inject, Injected
 from aioinject.ext.strawberry import inject
 from beanie import Link
 from bson import ObjectId
+from result import Err, Ok
 from strawberry import Private, relay
 from strawberry.permission import PermissionExtension
 
@@ -31,7 +32,7 @@ from app.base.types import (
     BaseErrorType,
     BaseNodeType,
 )
-from app.context import Info
+from app.context import AuthInfo, Info
 from app.core.constants import JobApplicantAnalysisStatus
 from app.jobs.agents.applicant_analysis import AnalysedFields, FieldAnalysis
 from app.jobs.documents import (
@@ -46,9 +47,10 @@ from app.jobs.documents import (
 from app.jobs.repositories import (
     JobApplicantRepo,
     JobApplicantsSortBy,
-    JobMetricRepo,
     JobRepo,
 )
+from app.jobs.services import JobMetricService
+from app.organizations.exceptions import OrganizationAuthorizationError
 
 if TYPE_CHECKING:
     from app.organizations.types import (
@@ -130,6 +132,72 @@ class WorkModeEnum(Enum):
 )
 class CurrencyEnum(Enum):
     INR = "INR"
+
+
+@strawberry.type(
+    name="JobMetricPoint",
+    description="A metric point belonging to a series of job metrics.",
+)
+class JobMetricPointType:
+    timestamp: datetime = strawberry.field(
+        description="The timestamp of the job metric point."
+    )
+    count: int = strawberry.field(
+        description="The count of the job metric point.",
+    )
+
+    @classmethod
+    def marshal(cls, metric_point: dict[str, Any]) -> Self:
+        return cls(
+            timestamp=metric_point["timestamp"],
+            count=metric_point["count"],
+        )
+
+
+@strawberry.type(
+    name="JobViewCountSuccess",
+    description="The job view count success.",
+)
+class JobViewCountSuccessType:
+    count: int = strawberry.field(
+        description="The count of job views.",
+    )
+
+
+JobViewCountPayload = Annotated[
+    JobViewCountSuccessType
+    | Annotated[
+        "OrganizationAuthorizationErrorType",
+        strawberry.lazy("app.organizations.types"),
+    ],
+    strawberry.union(
+        name="JobViewCountPayload",
+        description="The job view count payload.",
+    ),
+]
+
+
+@strawberry.type(
+    name="JobViewMetricPointsSuccess",
+    description="The job view metric points success.",
+)
+class JobViewMetricPointsSuccessType:
+    view_metric_points: list[JobMetricPointType] = strawberry.field(
+        description="The view metric points.",
+    )
+
+
+JobViewMetricPointsPayload = Annotated[
+    JobViewMetricPointsSuccessType
+    | Annotated[
+        "OrganizationAuthorizationErrorType",
+        strawberry.lazy("app.organizations.types"),
+    ],
+    strawberry.union(
+        name="JobViewMetricPointsPayload",
+        description="The job view metric points payload.",
+    ),
+]
 
 
 @strawberry.input(
@@ -607,26 +675,6 @@ class JobApplicantNotFoundErrorType(BaseErrorType):
 
 
 @strawberry.type(
-    name="JobMetricPoint",
-    description="A metric point belonging to a series of job metrics.",
-)
-class JobMetricPointType:
-    timestamp: datetime = strawberry.field(
-        description="The timestamp of the job metric point."
-    )
-    count: int = strawberry.field(
-        description="The count of the job metric point.",
-    )
-
-    @classmethod
-    def marshal(cls, metric_point: dict[str, Any]) -> Self:
-        return cls(
-            timestamp=metric_point.get("timestamp"),
-            count=metric_point.get("count"),
-        )
-
-
-@strawberry.type(
     name="JobApplicantCount",
     description="Application count data of a job.",
 )
@@ -878,7 +926,6 @@ class JobType(BaseNodeType[Job]):
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: ensure only org members can view this field
                 ]
             )
         ],
@@ -886,7 +933,8 @@ class JobType(BaseNodeType[Job]):
     @inject
     async def view_count(
         self,
-        job_metric_repo: Injected[JobMetricRepo],
+        info: AuthInfo,
+        job_metric_service: Injected[JobMetricService],
         start_date: Annotated[
             datetime | None,
             strawberry.argument(
@@ -899,13 +947,27 @@ class JobType(BaseNodeType[Job]):
                 description="End date for filtering the view count.",
             ),
         ] = None,
-    ) -> int:
-        return await job_metric_repo.get_impression_count(
+    ) -> JobViewCountPayload:
+        from app.organizations.types import OrganizationAuthorizationErrorType
+
+        result = await job_metric_service.get_impression_count(
+            account=info.context["current_user"],
             job_id=ObjectId(self.id),
+            organization_id=ObjectId(self.organization_id),
             event_type="view_start",
             start_date=start_date,
             end_date=end_date,
         )
+
+        match result:
+            case Ok(count):
+                return JobViewCountSuccessType(count=count)
+            case Err(error):
+                match error:
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
 
     @strawberry.field(  # type: ignore[misc]
         description="View metric points for the job, filtered by time.",
@@ -921,13 +983,26 @@ class JobType(BaseNodeType[Job]):
     @inject
     async def view_metric_points(
         self,
-        job_metric_repo: Injected[JobMetricRepo],
-    ) -> list[JobMetricPointType]:
-        metric_points = await job_metric_repo.get_impression_metric_points(
+        info: AuthInfo,
+        job_metric_service: Injected[JobMetricService],
+    ) -> JobViewMetricPointsPayload:
+        match await job_metric_service.get_impression_metric_points(
+            account=info.context["current_user"],
             job_id=ObjectId(self.id),
             event_type="view_start",
-        )
-        return [JobMetricPointType.marshal(point) for point in metric_points]
+        ):
+            case Ok(metric_points):
+                return JobViewMetricPointsSuccessType(
+                    view_metric_points=[
+                        JobMetricPointType.marshal(point) for point in metric_points
+                    ]
+                )
+            case Err(error):
+                match error:
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
 
     @strawberry.field(  # type: ignore[misc]
         description="Whether the job is saved by the current user.",

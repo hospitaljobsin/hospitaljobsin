@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6b9b168a042026ad3d543fcc23c39397>>
- * @relayHash d8e24fe63b603199ff9523cf7172571d
+ * @generated SignedSource<<ba1b724a506fa2d2ef9e14e89efe1494>>
+ * @relayHash 42033dcfb82393e523c821ecfd857921
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d8e24fe63b603199ff9523cf7172571d
+// @relayRequestID 42033dcfb82393e523c821ecfd857921
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -364,8 +364,27 @@ return {
                       {
                         "alias": null,
                         "args": null,
-                        "kind": "ScalarField",
+                        "concreteType": null,
+                        "kind": "LinkedField",
                         "name": "viewCount",
+                        "plural": false,
+                        "selections": [
+                          (v15/*: any*/),
+                          {
+                            "kind": "InlineFragment",
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "count",
+                                "storageKey": null
+                              }
+                            ],
+                            "type": "JobViewCountSuccess",
+                            "abstractKey": null
+                          }
+                        ],
                         "storageKey": null
                       },
                       {
@@ -514,7 +533,7 @@ return {
     ]
   },
   "params": {
-    "id": "d8e24fe63b603199ff9523cf7172571d",
+    "id": "42033dcfb82393e523c821ecfd857921",
     "metadata": {},
     "name": "JobCreationFormMutation",
     "operationKind": "mutation",

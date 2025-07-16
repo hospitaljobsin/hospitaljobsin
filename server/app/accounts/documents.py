@@ -30,38 +30,54 @@ LicenseVerificationStatusEnum = Literal["pending", "verified", "rejected"]
 
 # EDUCATION
 class Education(BaseModel):
-    degree: str
-    institution: str
-    started_at: date
-    completed_at: date | None = None
+    degree: str = Field(..., description="The degree of the education.")
+    institution: str = Field(..., description="The institution of the education.")
+    started_at: date = Field(..., description="When the education started.")
+    completed_at: date | None = Field(None, description="When the education ended.")
 
 
 # LICENSE
 class License(BaseModel):
-    name: str
-    issuer: str
-    license_number: str
-    registration_year: int
-    verification_status: LicenseVerificationStatusEnum
-    verified_at: date | None = None
-    verification_notes: str | None = None
+    name: str = Field(..., description="The name of the license.")
+    issuer: str = Field(..., description="The issuer of the license.")
+    license_number: str = Field(..., description="The license number.")
+    registration_year: int = Field(
+        ..., description="The year the license was registered."
+    )
+    verification_status: LicenseVerificationStatusEnum = Field(
+        ..., description="The verification status of the license."
+    )
+    verified_at: date | None = Field(None, description="When the license was verified.")
+    verification_notes: str | None = Field(
+        None, description="The notes from the verification."
+    )
 
 
 # LANGUAGE (update to use enum)
 class Language(BaseModel):
-    name: str
-    proficiency: LanguageProficiencyEnum
+    name: str = Field(..., description="The name of the language.")
+    proficiency: LanguageProficiencyEnum = Field(
+        ..., description="The proficiency level of the language."
+    )
 
 
 # WORK EXPERIENCE
 class WorkExperience(BaseModel):
-    title: str
-    description: str | None = None
-    organization: str
-    started_at: date
-    completed_at: date | None = None
-    employment_type: str | None = None
-    skills: list[str]
+    title: str = Field(..., description="The title of the work experience.")
+    description: str | None = Field(
+        None, description="The description of the work experience."
+    )
+    organization: str = Field(
+        ..., description="The organization of the work experience."
+    )
+    started_at: date = Field(..., description="When the work experience started.")
+    completed_at: date | None = Field(
+        None, description="When the work experience ended."
+    )
+    employment_type: str | None = Field(
+        None, description="The type of employment (full-time, part-time, etc.)."
+    )
+    skills: list[str] = Field(..., description="The skills of the work experience.")
 
 
 # SALARY EXPECTATIONS
@@ -72,11 +88,13 @@ class SalaryExpectations(BaseModel):
 
 # CERTIFICATION
 class Certification(BaseModel):
-    name: str
-    issuer: str
-    certification_url: str
-    created_at: date
-    expires_at: date | None = None
+    name: str = Field(..., description="The name of the certification.")
+    issuer: str = Field(..., description="The issuer of the certification.")
+    certification_url: str = Field(
+        ..., description="The absolute URL of the certification."
+    )
+    created_at: date = Field(..., description="When the certification was created.")
+    expires_at: date | None = Field(None, description="When the certification expires.")
 
 
 class Location(BaseModel):

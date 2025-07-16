@@ -1,12 +1,13 @@
 from collections.abc import Iterable
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, Self
+from typing import Annotated, Self, assert_never
 
 import strawberry
 from aioinject import Inject, Injected
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
+from result import Err, Ok
 from strawberry import relay
 from strawberry.permission import PermissionExtension
 from strawberry.types import Info
@@ -20,7 +21,9 @@ from app.base.types import (
     BaseErrorType,
     BaseNodeType,
 )
-from app.jobs.repositories import JobApplicantRepo, JobMetricRepo, JobRepo, JobSortBy
+from app.context import AuthInfo
+from app.jobs.repositories import JobApplicantRepo, JobRepo, JobSortBy
+from app.jobs.services import JobMetricService
 from app.jobs.types import (
     JobApplicantConnectionType,
     JobConnectionType,
@@ -33,6 +36,7 @@ from app.organizations.documents import (
     OrganizationInvite,
     OrganizationMember,
 )
+from app.organizations.exceptions import OrganizationAuthorizationError
 from app.organizations.repositories import (
     OrganizationInviteRepo,
     OrganizationMemberRepo,
@@ -48,6 +52,44 @@ class InviteStatusTypeEnum(Enum):
     PENDING = "PENDING"
     ACCEPTED = "ACCEPTED"
     DECLINED = "DECLINED"
+
+
+@strawberry.type(
+    name="TotalViewCountSuccess",
+    description="The total view count success.",
+)
+class TotalViewCountSuccessType:
+    total_view_count: int = strawberry.field(
+        description="The total view count for the organization.",
+    )
+
+
+TotalViewCountPayload = Annotated[
+    "TotalViewCountSuccessType | OrganizationAuthorizationErrorType",
+    strawberry.union(
+        name="TotalViewCountPayload",
+        description="The total view count payload.",
+    ),
+]
+
+
+@strawberry.type(
+    name="TotalViewMetricPointsSuccess",
+    description="The total view metric points success.",
+)
+class TotalViewMetricPointsSuccessType:
+    metric_points: list[JobMetricPointType] = strawberry.field(
+        description="The metric points for the organization.",
+    )
+
+
+TotalViewMetricPointsPayload = Annotated[
+    "TotalViewMetricPointsSuccessType | OrganizationAuthorizationErrorType",
+    strawberry.union(
+        name="TotalViewMetricPointsPayload",
+        description="The total view metric points payload.",
+    ),
+]
 
 
 @strawberry.type(
@@ -263,7 +305,6 @@ class OrganizationType(BaseNodeType[Organization]):
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: ensure only org members can view this field
                 ]
             )
         ],
@@ -271,7 +312,8 @@ class OrganizationType(BaseNodeType[Organization]):
     @inject
     async def total_view_count(
         self,
-        job_metric_repo: Injected[JobMetricRepo],
+        info: AuthInfo,
+        job_metric_service: Injected[JobMetricService],
         start_date: Annotated[
             datetime | None,
             strawberry.argument(
@@ -284,13 +326,24 @@ class OrganizationType(BaseNodeType[Organization]):
                 description="End date for filtering the view count.",
             ),
         ] = None,
-    ) -> int:
-        return await job_metric_repo.get_organization_impression_count(
+    ) -> TotalViewCountPayload:
+        result = await job_metric_service.get_organization_impression_count(
+            account=info.context["current_user"],
             organization_id=ObjectId(self.id),
             event_type="view_start",
             start_date=start_date,
             end_date=end_date,
         )
+
+        match result:
+            case Ok(total_view_count):
+                return TotalViewCountSuccessType(total_view_count=total_view_count)
+            case Err(error):
+                match error:
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
 
     @strawberry.field(  # type: ignore[misc]
         description="Total view metric points for the organization's jobs, filtered by time.",
@@ -298,7 +351,6 @@ class OrganizationType(BaseNodeType[Organization]):
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: ensure only org members can view this field
                 ]
             )
         ],
@@ -306,13 +358,26 @@ class OrganizationType(BaseNodeType[Organization]):
     @inject
     async def total_view_metric_points(
         self,
-        job_metric_repo: Injected[JobMetricRepo],
-    ) -> list[JobMetricPointType]:
-        metric_points = await job_metric_repo.get_organization_impression_metric_points(
+        info: AuthInfo,
+        job_metric_service: Injected[JobMetricService],
+    ) -> TotalViewMetricPointsPayload:
+        match await job_metric_service.get_organization_impression_metric_points(
+            account=info.context["current_user"],
             organization_id=ObjectId(self.id),
             event_type="view_start",
-        )
-        return [JobMetricPointType.marshal(point) for point in metric_points]
+        ):
+            case Ok(metric_points):
+                return TotalViewMetricPointsSuccessType(
+                    metric_points=[
+                        JobMetricPointType.marshal(point) for point in metric_points
+                    ],
+                )
+            case Err(error):
+                match error:
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
 
     @strawberry.field(  # type: ignore[misc]
         description="The number of admin members in the organization.",

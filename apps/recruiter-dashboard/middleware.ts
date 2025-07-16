@@ -100,7 +100,7 @@ export async function middleware(request: NextRequest) {
 		if (!isAuthenticated) {
 			return getAuthenticationResponse(request, host);
 		}
-		// TODO: if we have the /new route, redirect to it the recruiter subdomain
+
 		requestHeaders.set(ORG_SUBDOMAIN_HEADER_NAME, subdomain);
 		return NextResponse.next({
 			request: {

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<3256d1367e1a9b66944e076088a32fac>>
- * @relayHash 26a202bb9ae4eb39fb1a771a8b2a6152
+ * @generated SignedSource<<3361f5fb6dbc474e926d3da80e30d4aa>>
+ * @relayHash 7d50626161f8015930341c54e85d0c3d
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 26a202bb9ae4eb39fb1a771a8b2a6152
+// @relayRequestID 7d50626161f8015930341c54e85d0c3d
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -192,8 +192,27 @@ return {
                           {
                             "alias": null,
                             "args": null,
-                            "kind": "ScalarField",
+                            "concreteType": null,
+                            "kind": "LinkedField",
                             "name": "viewCount",
+                            "plural": false,
+                            "selections": [
+                              (v6/*: any*/),
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "count",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "JobViewCountSuccess",
+                                "abstractKey": null
+                              }
+                            ],
                             "storageKey": null
                           },
                           {
@@ -406,7 +425,7 @@ return {
     ]
   },
   "params": {
-    "id": "26a202bb9ae4eb39fb1a771a8b2a6152",
+    "id": "7d50626161f8015930341c54e85d0c3d",
     "metadata": {},
     "name": "DashboardClientComponentQuery",
     "operationKind": "query",

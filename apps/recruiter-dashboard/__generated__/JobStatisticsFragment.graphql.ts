@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ebb951396b5beb24d5f6cc4809c8052c>>
+ * @generated SignedSource<<e9f11ed4c231164bacc2c941d3a30d70>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,11 +11,31 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type JobStatisticsFragment$data = {
-  readonly viewCount: number;
-  readonly viewMetricPoints: ReadonlyArray<{
+  readonly viewCount: {
+    readonly __typename: "JobViewCountSuccess";
     readonly count: number;
-    readonly timestamp: any;
-  }>;
+  } | {
+    readonly __typename: "OrganizationAuthorizationError";
+    readonly __typename: "OrganizationAuthorizationError";
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
+  readonly viewMetricPoints: {
+    readonly __typename: "JobViewMetricPointsSuccess";
+    readonly viewMetricPoints: ReadonlyArray<{
+      readonly count: number;
+      readonly timestamp: any;
+    }>;
+  } | {
+    readonly __typename: "OrganizationAuthorizationError";
+    readonly __typename: "OrganizationAuthorizationError";
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
   readonly " $fragmentType": "JobStatisticsFragment";
 };
 export type JobStatisticsFragment$key = {
@@ -23,7 +43,22 @@ export type JobStatisticsFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"JobStatisticsFragment">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "count",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -32,31 +67,57 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
-      "kind": "ScalarField",
+      "concreteType": null,
+      "kind": "LinkedField",
       "name": "viewCount",
+      "plural": false,
+      "selections": [
+        (v0/*: any*/),
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            (v1/*: any*/)
+          ],
+          "type": "JobViewCountSuccess",
+          "abstractKey": null
+        }
+      ],
       "storageKey": null
     },
     {
       "alias": null,
       "args": null,
-      "concreteType": "JobMetricPoint",
+      "concreteType": null,
       "kind": "LinkedField",
       "name": "viewMetricPoints",
-      "plural": true,
+      "plural": false,
       "selections": [
+        (v0/*: any*/),
         {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "timestamp",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "count",
-          "storageKey": null
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "concreteType": "JobMetricPoint",
+              "kind": "LinkedField",
+              "name": "viewMetricPoints",
+              "plural": true,
+              "selections": [
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "timestamp",
+                  "storageKey": null
+                },
+                (v1/*: any*/)
+              ],
+              "storageKey": null
+            }
+          ],
+          "type": "JobViewMetricPointsSuccess",
+          "abstractKey": null
         }
       ],
       "storageKey": null
@@ -65,7 +126,8 @@ const node: ReaderFragment = {
   "type": "Job",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "27dad7dd5d8bf4ef1b360f4acefcef8a";
+(node as any).hash = "a15142c18d1f72062e17b48f398e6eda";
 
 export default node;

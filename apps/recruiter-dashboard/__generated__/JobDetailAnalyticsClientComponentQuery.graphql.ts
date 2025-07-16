@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f41cd0b3ff366c8db7a7153e03a91d8a>>
- * @relayHash 7c4aebeb3c97b6c9ce9292a6532fbb7c
+ * @generated SignedSource<<e98b6ad9c6d1589a008ae3c77d963a4c>>
+ * @relayHash 4194aac891ae2c244381328d15f94045
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 7c4aebeb3c97b6c9ce9292a6532fbb7c
+// @relayRequestID 4194aac891ae2c244381328d15f94045
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -49,6 +49,13 @@ v3 = {
   "storageKey": null
 },
 v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "count",
+  "storageKey": null
+},
+v5 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -139,31 +146,57 @@ return {
                       {
                         "alias": null,
                         "args": null,
-                        "kind": "ScalarField",
+                        "concreteType": null,
+                        "kind": "LinkedField",
                         "name": "viewCount",
+                        "plural": false,
+                        "selections": [
+                          (v3/*: any*/),
+                          {
+                            "kind": "InlineFragment",
+                            "selections": [
+                              (v4/*: any*/)
+                            ],
+                            "type": "JobViewCountSuccess",
+                            "abstractKey": null
+                          }
+                        ],
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
-                        "concreteType": "JobMetricPoint",
+                        "concreteType": null,
                         "kind": "LinkedField",
                         "name": "viewMetricPoints",
-                        "plural": true,
+                        "plural": false,
                         "selections": [
+                          (v3/*: any*/),
                           {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "timestamp",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "count",
-                            "storageKey": null
+                            "kind": "InlineFragment",
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "concreteType": "JobMetricPoint",
+                                "kind": "LinkedField",
+                                "name": "viewMetricPoints",
+                                "plural": true,
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "timestamp",
+                                    "storageKey": null
+                                  },
+                                  (v4/*: any*/)
+                                ],
+                                "storageKey": null
+                              }
+                            ],
+                            "type": "JobViewMetricPointsSuccess",
+                            "abstractKey": null
                           }
                         ],
                         "storageKey": null
@@ -172,7 +205,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v4/*: any*/)
+                  (v5/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -180,14 +213,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v4/*: any*/)
+          (v5/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "7c4aebeb3c97b6c9ce9292a6532fbb7c",
+    "id": "4194aac891ae2c244381328d15f94045",
     "metadata": {},
     "name": "JobDetailAnalyticsClientComponentQuery",
     "operationKind": "query",

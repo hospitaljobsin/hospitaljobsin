@@ -21,7 +21,15 @@ export const JobFragment = graphql`
     slug
     title
     skills
-    viewCount
+    viewCount {
+		__typename
+		... on JobViewCountSuccess {
+			count
+		}
+		... on OrganizationAuthorizationError {
+			__typename
+		}
+	}
     createdAt
     vacancies
     type
@@ -274,7 +282,11 @@ export default function Job({ job }: Props) {
 					<div className="flex items-center gap-2">
 						<EyeIcon size={16} className="text-primary-600" />
 						<p className="text-primary-600 text-sm sm:text-base font-normal whitespace-nowrap">
-							<span className="font-medium">{data.viewCount}</span> views
+							<span className="font-medium">
+								{data.viewCount.__typename === "JobViewCountSuccess"
+									? `${data.viewCount.count} Views`
+									: "No view data available"}
+							</span>
 						</p>
 					</div>
 					<p

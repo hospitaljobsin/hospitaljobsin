@@ -18,10 +18,27 @@ import { graphql } from "relay-runtime";
 
 const JobStatisticsFragment = graphql`
 fragment JobStatisticsFragment on Job {
-    viewCount
+    viewCount {
+		__typename
+		... on JobViewCountSuccess {
+			count
+		}
+		... on OrganizationAuthorizationError {
+			__typename
+		}
+	}
     viewMetricPoints {
-        timestamp
-        count
+        __typename
+        ... on JobViewMetricPointsSuccess {
+            viewMetricPoints {
+                timestamp
+                count
+            }
+        }
+
+		... on OrganizationAuthorizationError {
+			__typename
+		}
     }
 }
 `;
@@ -37,14 +54,16 @@ export default function JobStatistics(props: Props) {
 
 	// Process the data for the chart
 	const chartData = React.useMemo(() => {
-		return data.viewMetricPoints.map((point) => {
-			const date = new Date(point.timestamp);
-			return {
-				date: dateFormat.format(date),
-				dateTime: dateTimeFormat.format(date),
-				views: point.count,
-			};
-		});
+		return data.viewMetricPoints.__typename === "JobViewMetricPointsSuccess"
+			? data.viewMetricPoints.viewMetricPoints.map((point) => {
+					const date = new Date(point.timestamp);
+					return {
+						date: dateFormat.format(date),
+						dateTime: dateTimeFormat.format(date),
+						views: point.count,
+					};
+				})
+			: [];
 	}, [data.viewMetricPoints]);
 
 	// Custom tooltip to display date and time
@@ -64,7 +83,11 @@ export default function JobStatistics(props: Props) {
 		<Card className="p-6" shadow="none" fullWidth>
 			<CardHeader className="w-full flex gap-4 justify-start items-center">
 				<EyeIcon size={24} />
-				<h3 className="text-lg font-medium">{data.viewCount} Views</h3>
+				<h3 className="text-lg font-medium">
+					{data.viewCount.__typename === "JobViewCountSuccess"
+						? `${data.viewCount.count} Views`
+						: "0 Views"}
+				</h3>
 			</CardHeader>
 			<CardBody>
 				<div className="w-full h-48 sm:h-72">

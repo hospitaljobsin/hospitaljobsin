@@ -10,6 +10,7 @@ from app.accounts.documents import (
     Account,
     Education,
     Language,
+    License,
     Profile,
     WorkExperience,
 )
@@ -281,7 +282,6 @@ class ProfileParserService:
         """Parse a profile document into structured data."""
         ocr_texts = await self._ocr_client(file_key)
 
-        print("OCR TEXT: ", ocr_texts)
         result = await self._profile_parser_agent.run(
             f"OCR text:\n{'\n'.join(ocr_texts)}"
         )
@@ -303,7 +303,10 @@ class ProfileParserService:
                 open_to_relocation_anywhere=profile_output.open_to_relocation_anywhere,
                 locations_open_to_work=profile_output.locations_open_to_work,
                 education=profile_output.education,
-                licenses=profile_output.licenses,
+                licenses=[
+                    License(**partial_license.model_dump())
+                    for partial_license in profile_output.licenses
+                ],
                 languages=profile_output.languages,
                 job_preferences=profile_output.job_preferences,
                 work_experience=profile_output.work_experience,
@@ -334,7 +337,12 @@ class ProfileParserService:
                 education=profile_output.education
                 if profile_output.education
                 else UNSET,
-                licenses=profile_output.licenses if profile_output.licenses else UNSET,
+                licenses=[
+                    License(**partial_license.model_dump())
+                    for partial_license in profile_output.licenses
+                ]
+                if profile_output.licenses
+                else UNSET,
                 languages=profile_output.languages
                 if profile_output.languages
                 else UNSET,

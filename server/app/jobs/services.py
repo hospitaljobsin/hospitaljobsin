@@ -1,7 +1,7 @@
 import logging
 import uuid
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 
 from bson import ObjectId
 from bson.errors import InvalidId
@@ -14,7 +14,11 @@ from app.accounts.documents import Account
 from app.accounts.exceptions import AccountProfileIncompleteError
 from app.base.models import GeoObject
 from app.config import AppSettings, AWSSettings
-from app.core.constants import JobApplicantStatus, JobKindType
+from app.core.constants import (
+    ImpressionJobMetricEventType,
+    JobApplicantStatus,
+    JobKindType,
+)
 from app.core.geocoding import BaseLocationService
 from app.jobs.agents.applicant_analysis import (
     JobApplicantAnalysisOutput,
@@ -692,3 +696,98 @@ class JobApplicantService:
             ExpiresIn=3600,
             HttpMethod="PUT",
         )
+
+
+class JobMetricService:
+    def __init__(
+        self,
+        job_metric_repo: JobMetricRepo,
+        organization_member_service: OrganizationMemberService,
+    ) -> None:
+        self._job_metric_repo = job_metric_repo
+        self._organization_member_service = organization_member_service
+
+    async def get_organization_impression_metric_points(
+        self,
+        account: Account,
+        organization_id: ObjectId,
+        event_type: ImpressionJobMetricEventType,
+    ) -> Result[list[dict[str, Any]], OrganizationAuthorizationError]:
+        # TODO: use a dataloader to check this data for efficiency
+        # if not await self._organization_member_service.is_member(
+        #     account_id=account.id,
+        #     organization_id=organization_id,
+        # ):
+        #     return Err(OrganizationAuthorizationError())
+        result = await self._job_metric_repo.get_organization_impression_metric_points(
+            organization_id=organization_id,
+            event_type=event_type,
+        )
+        return Ok(result)
+
+    async def get_organization_impression_count(
+        self,
+        account: Account,
+        organization_id: ObjectId,
+        event_type: ImpressionJobMetricEventType,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+    ) -> Result[int, OrganizationAuthorizationError]:
+        """Get the count of job metrics for a given organization ID and event type."""
+        # TODO: use a dataloader to check this data for efficiency
+        # if not await self._organization_member_service.is_member(
+        #     account_id=account.id,
+        #     organization_id=organization_id,
+        # ):
+        #     return Err(OrganizationAuthorizationError())
+
+        result = await self._job_metric_repo.get_organization_impression_count(
+            organization_id=organization_id,
+            event_type=event_type,
+            start_date=start_date,
+            end_date=end_date,
+        )
+        return Ok(result)
+
+    async def get_impression_count(
+        self,
+        account: Account,
+        job_id: ObjectId,
+        organization_id: ObjectId,
+        event_type: ImpressionJobMetricEventType,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+    ) -> Result[int, OrganizationAuthorizationError]:
+        """Get the count of job metrics for a given job ID and event type."""
+        # TODO: use a dataloader to check this data for efficiency
+        # if not await self._organization_member_service.is_member(
+        #     account_id=account.id,
+        #     organization_id=organization_id,
+        # ):
+        #     return Err(OrganizationAuthorizationError())
+
+        result = await self._job_metric_repo.get_impression_count(
+            job_id=job_id,
+            event_type=event_type,
+            start_date=start_date,
+            end_date=end_date,
+        )
+        return Ok(result)
+
+    async def get_impression_metric_points(
+        self,
+        account: Account,
+        job_id: ObjectId,
+        event_type: ImpressionJobMetricEventType,
+    ) -> Result[list[dict[str, Any]], OrganizationAuthorizationError]:
+        # TODO: use a dataloader to check this data for efficiency
+        # if not await self._organization_member_service.is_member(
+        #     account_id=account.id,
+        #     organization_id=organization_id,
+        # ):
+        #     return Err(OrganizationAuthorizationError())
+        result = await self._job_metric_repo.get_impression_metric_points(
+            job_id=job_id,
+            event_type=event_type,
+        )
+        return Ok(result)

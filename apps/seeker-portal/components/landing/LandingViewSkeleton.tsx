@@ -13,7 +13,6 @@ export default function LandingViewSkeleton() {
 				<LandingHeaderSkeleton />
 				{/* Background SVG or Image Placeholder */}
 				<div className="absolute inset-0 w-full h-full opacity-20 pointer-events-none select-none z-0">
-					{/* TODO: Replace with a beautiful healthcare-themed SVG or image */}
 					<svg
 						viewBox="0 0 1440 320"
 						fill="none"

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c1d47d2201e4cdc906c8f2a49c52279a>>
- * @relayHash d8c1d131c326c80e8003cebc54bf2f9a
+ * @generated SignedSource<<c8f210e380c1ec334e67ffe4241aaaeb>>
+ * @relayHash 36c772a6787d60fb39b1c0a949cd3a18
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d8c1d131c326c80e8003cebc54bf2f9a
+// @relayRequestID 36c772a6787d60fb39b1c0a949cd3a18
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -222,8 +222,27 @@ return {
                           {
                             "alias": null,
                             "args": null,
-                            "kind": "ScalarField",
+                            "concreteType": null,
+                            "kind": "LinkedField",
                             "name": "viewCount",
+                            "plural": false,
+                            "selections": [
+                              (v8/*: any*/),
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "count",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "JobViewCountSuccess",
+                                "abstractKey": null
+                              }
+                            ],
                             "storageKey": null
                           },
                           {
@@ -420,7 +439,7 @@ return {
     ]
   },
   "params": {
-    "id": "d8c1d131c326c80e8003cebc54bf2f9a",
+    "id": "36c772a6787d60fb39b1c0a949cd3a18",
     "metadata": {},
     "name": "OrganizationJobsListPaginationQuery",
     "operationKind": "query",
