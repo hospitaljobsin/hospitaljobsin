@@ -31,31 +31,27 @@ export default function Providers({
 	invariant(nonce, "Nonce is required");
 
 	return (
-		<NavigationGuardProvider>
-			<HeroUIProvider navigate={router.push}>
-				<ToastProvider placement="bottom-left" toastOffset={15} />
-				<ThemeProvider
-					attribute="class"
-					forcedTheme="light"
-					enableSystem={false}
-				>
-					<RelayEnvironmentProvider environment={environment}>
-						<CopilotKit runtimeUrl="/api/copilotkit">
-							<ProgressProvider
-								height="4px"
-								color="hsl(var(--heroui-primary-300))"
-								nonce={nonce}
-								options={{ showSpinner: false }}
-								shallowRouting
-							>
+		<HeroUIProvider navigate={router.push}>
+			<ToastProvider placement="bottom-left" toastOffset={15} />
+			<ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
+				<RelayEnvironmentProvider environment={environment}>
+					<CopilotKit runtimeUrl="/api/copilotkit">
+						<ProgressProvider
+							height="4px"
+							color="hsl(var(--heroui-primary-300))"
+							nonce={nonce}
+							options={{ showSpinner: false }}
+							shallowRouting
+						>
+							<NavigationGuardProvider>
 								<HeadersProvider headersPromise={headersPromise}>
 									{children}
 								</HeadersProvider>
-							</ProgressProvider>
-						</CopilotKit>
-					</RelayEnvironmentProvider>
-				</ThemeProvider>
-			</HeroUIProvider>
-		</NavigationGuardProvider>
+							</NavigationGuardProvider>
+						</ProgressProvider>
+					</CopilotKit>
+				</RelayEnvironmentProvider>
+			</ThemeProvider>
+		</HeroUIProvider>
 	);
 }

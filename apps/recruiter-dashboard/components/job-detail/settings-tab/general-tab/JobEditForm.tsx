@@ -43,6 +43,7 @@ import {
 	MapPin,
 	TimerIcon,
 } from "lucide-react";
+import { useNavigationGuard } from "next-navigation-guard";
 import { useEffect, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { Controller, useForm } from "react-hook-form";
@@ -189,7 +190,6 @@ export default function JobEditForm({ rootQuery }: Props) {
 		control,
 		setError,
 		reset,
-		setValue,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -226,6 +226,16 @@ export default function JobEditForm({ rootQuery }: Props) {
 		},
 	});
 
+	console.log("remount isDirty", isDirty);
+
+	useNavigationGuard({
+		enabled: isDirty,
+		confirm: () =>
+			window.confirm(
+				"You have unsaved changes. Are you sure you want to leave?",
+			),
+	});
+
 	// Track which accordions should be open
 	const [accordionSelectedKeys, setAccordionSelectedKeys] = useState<
 		Iterable<Key>
@@ -258,23 +268,6 @@ export default function JobEditForm({ rootQuery }: Props) {
 		errors.maxExperience,
 		errors.expiresAt,
 	]);
-
-	useEffect(() => {
-		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-			if (isDirty) {
-				e.preventDefault();
-				return;
-			}
-		};
-		if (isDirty) {
-			window.addEventListener("beforeunload", handleBeforeUnload);
-		} else {
-			window.removeEventListener("beforeunload", handleBeforeUnload);
-		}
-		return () => {
-			window.removeEventListener("beforeunload", handleBeforeUnload);
-		};
-	}, [isDirty]);
 
 	const [showVacancyZeroModal, setShowVacancyZeroModal] = useState(false);
 	const [pendingFormData, setPendingFormData] = useState<z.infer<

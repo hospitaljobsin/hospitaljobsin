@@ -129,6 +129,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 				className="mt-2 hidden sm:flex"
 				onClick={(e) => {
 					e.stopPropagation();
+					e.preventDefault();
 				}}
 				onValueChange={(selected) => {
 					if (selected)
