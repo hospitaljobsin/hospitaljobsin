@@ -26,6 +26,15 @@ Gender = Literal["MALE", "FEMALE", "OTHER"]
 MaritalStatus = Literal["MARRIED", "SINGLE"]
 LanguageProficiencyEnum = Literal["NATIVE", "PROFESSIONAL", "BASIC"]
 LicenseVerificationStatusEnum = Literal["pending", "verified", "rejected"]
+EmploymentTypeEnum = Literal[
+    "FULL_TIME",
+    "PART_TIME",
+    "CONTRACT",
+    "INTERNSHIP",
+    "TEMPORARY",
+    "VOLUNTEER",
+    "OTHER",
+]
 
 
 # EDUCATION
@@ -74,7 +83,7 @@ class WorkExperience(BaseModel):
     completed_at: date | None = Field(
         None, description="When the work experience ended."
     )
-    employment_type: str | None = Field(
+    employment_type: EmploymentTypeEnum | None = Field(
         None, description="The type of employment (full-time, part-time, etc.)."
     )
     skills: list[str] = Field(..., description="The skills of the work experience.")
