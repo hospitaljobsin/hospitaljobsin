@@ -166,7 +166,11 @@ export default function JobControls({
 								size="lg"
 								variant="light"
 								isIconOnly
-								onPress={handleUnsave}
+								data-prevent-progress={true}
+								onClick={(event) => {
+									event.preventDefault();
+									handleUnsave();
+								}}
 								isDisabled={isSaveMutationInFlight || isUnsaveMutationInFlight}
 							>
 								<BookmarkCheckIcon
@@ -182,7 +186,11 @@ export default function JobControls({
 								size="lg"
 								variant="light"
 								isIconOnly
-								onPress={handleSave}
+								data-prevent-progress={true}
+								onClick={(event) => {
+									event.preventDefault();
+									handleSave();
+								}}
 								isDisabled={isSaveMutationInFlight || isUnsaveMutationInFlight}
 							>
 								<BookmarkIcon

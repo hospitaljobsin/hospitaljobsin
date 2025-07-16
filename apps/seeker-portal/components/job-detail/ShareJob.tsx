@@ -68,7 +68,16 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 	return (
 		<>
 			<Tooltip content="Share this job">
-				<Button size="lg" variant="light" isIconOnly onPress={handleShare}>
+				<Button
+					size="lg"
+					variant="light"
+					isIconOnly
+					data-prevent-progress={true}
+					onClick={(event) => {
+						event.preventDefault();
+						handleShare();
+					}}
+				>
 					<Share2Icon
 						size={24}
 						strokeWidth={1.5}
