@@ -1,4 +1,5 @@
 "use client";
+import links from "@/lib/links";
 // @ts-ignore: HeroUI types may be missing, but usage is required by project rules
 import { Button, Card, Input } from "@heroui/react";
 import { SearchIcon } from "lucide-react";
@@ -7,7 +8,9 @@ import { useState } from "react";
 import type { SearchLocation } from "../forms/LocationAutocomplete";
 import LocationAutocomplete from "../forms/LocationAutocomplete";
 
-export function LandingSearchController() {
+export function LandingSearchController({
+	isDisabled,
+}: { isDisabled?: boolean }) {
 	const router = useRouter();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [locationInput, setLocationInput] = useState("");
@@ -27,7 +30,7 @@ export function LandingSearchController() {
 				);
 			}
 		}
-		router.push(`/search?${params.toString()}`);
+		router.push(`${links.search}?${params.toString()}`);
 	};
 
 	return (
@@ -69,6 +72,7 @@ export function LandingSearchController() {
 					color="primary"
 					size="lg"
 					startContent={<SearchIcon />}
+					isDisabled={isDisabled}
 				>
 					Search Jobs
 				</Button>

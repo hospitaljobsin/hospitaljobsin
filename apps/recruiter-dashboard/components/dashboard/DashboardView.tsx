@@ -68,7 +68,7 @@ export default function DashboardView(props: {
 					rootQuery={query}
 				/>
 			</div>
-			<div className="flex-1 min-h-0 overflow-y-auto px-6 py-8 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-w-2.5 scrollbar-thumb-[hsl(var(--heroui-foreground-300))] scrollbar-track-transparent">
+			<div className="flex-1 overflow-y-auto px-6 py-8 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-w-2.5 scrollbar-thumb-[hsl(var(--heroui-foreground-300))] scrollbar-track-transparent">
 				<OrganizationJobsList
 					rootQuery={query}
 					searchTerm={searchTerm}

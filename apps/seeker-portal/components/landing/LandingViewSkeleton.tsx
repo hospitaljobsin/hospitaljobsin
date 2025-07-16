@@ -43,7 +43,7 @@ export default function LandingViewSkeleton() {
 							next mission starts here.
 						</p>
 						<div className="w-full flex flex-col items-center md:items-start gap-4">
-							<LandingSearchController />
+							<LandingSearchController isDisabled />
 						</div>
 					</div>
 					{/* Right: Doctor Image */}

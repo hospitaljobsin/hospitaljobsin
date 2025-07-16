@@ -79,7 +79,7 @@ export default function ApplicantsTab(props: {
 
 	return (
 		<ApplicantSelectionProvider>
-			<div className="pt-8 pl-6 w-full h-full flex flex-col items-center gap-12">
+			<div className="pt-8 pl-6 pr-6 sm:pr-0 w-full flex flex-col items-center gap-12">
 				<ApplicantListController
 					job={query.organization.job}
 					searchTerm={searchTerm}

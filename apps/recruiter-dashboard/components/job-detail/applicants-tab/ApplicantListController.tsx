@@ -84,10 +84,11 @@ export default function ApplicantListController(
 	const { selectedApplicants, setSelectedApplicants } = useApplicantSelection();
 
 	useNavigationGuard({
-		enabled: selectedApplicants.size > 0,
+		enabled: (params) => selectedApplicants.size > 0,
 		confirm: () =>
 			window.confirm("You have unsaved changes that will be lost."),
 	});
+
 	const [commitMutation, isInFlight] =
 		useMutation<ApplicantListControllerMutationType>(
 			UpdateJobApplicantsStatusMutation,
