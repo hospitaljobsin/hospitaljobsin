@@ -38,7 +38,7 @@ EXPOSE 8000
 CMD ["uv", "run", "scripts/run_server.py"]
 
 
-FROM alpine:latest AS layer-build
+FROM alpine:3.22 AS layer-build
 
 # Set AWS environment variables with optional defaults
 ARG AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-"us-east-1"}
@@ -55,13 +55,14 @@ RUN apk add aws-cli curl unzip
 RUN mkdir -p /opt
 
 # Download the layer from AWS Lambda
-RUN curl $(aws lambda get-layer-version-by-arn --arn arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:17 --query 'Content.Location' --output text) --output layer.zip
+RUN curl $(aws lambda get-layer-version-by-arn --arn arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:18 --query 'Content.Location' --output text) --output layer.zip
 
 # Unzip the downloaded layer and clean up
 RUN unzip layer.zip -d /opt && \
     rm layer.zip
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production-server
+
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
