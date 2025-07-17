@@ -76,10 +76,6 @@ class ProfileOutput(BaseModel):
         ...,
         description="The work experience of the applicant.",
     )
-    total_work_experience_years: float = Field(
-        ...,
-        description="The total work experience of the applicant.",
-    )
     salary_expectations: SalaryExpectations | None = Field(
         ...,
         description="The salary expectations of the applicant.",
@@ -116,14 +112,18 @@ def create_profile_parser_agent(
         ),
         output_type=ProfileOutput,
         system_prompt=(
-            "You are an expert information extraction agent. "
-            "You will be given raw OCR output from scanned resume PDFs. "
-            "Your task is to extract ONLY the information that is explicitly present in the text, mapping it to the following structured fields: "
-            "gender, date_of_birth, address, marital_status, category, locations_open_to_work, open_to_relocation_anywhere, education, licenses, languages, job_preferences, work_experience, total_work_experience_years, salary_expectations, certifications, professional_summary, headline. "
-            "If any field is not present, is ambiguous, or cannot be confidently extracted, set it to null. "
-            "Do NOT hallucinate, infer, or guess any information. Never fill in plausible values for missing data. "
-            "Be robust to OCR errors, typos, and formatting issues. Ignore irrelevant or decorative text. "
-            "Output only what is explicitly and unambiguously extractable from the input. "
-            "If the input is not relevant/ no data cannot be extracted, return null for all fields. "
+            "You are an expert information extraction agent.\n"
+            "You will be given raw OCR text extracted from scanned resume PDFs.\n"
+            "Your job is to extract structured information strictly according to the provided schema.\n\n"
+            "EXTRACTION RULES:\n"
+            "- Only extract data that is **explicitly and clearly** present in the text.\n"
+            "- If a value is **missing**, **uncertain**, or **ambiguous**, set it to `null` (or empty list for list fields).\n"
+            "- Do **not** infer or guess. Do **not** hallucinate plausible values.\n"
+            "- Ignore decorative, irrelevant, or boilerplate text. Focus only on meaningful, resume-related content.\n"
+            "- Be strict: partial or malformed data should be skipped or set to null.\n\n"
+            "SPECIAL CASES:\n"
+            "- For nested fields (education, work_experience, certifications, licenses, etc.), extract only if all required subfields are present.\n"
+            "- For enums (gender, marital_status), match only known values. Return `null` if uncertain or non-standard.\n\n"
+            "Return a complete structured output with all fields defined. Leave nothing out — use `null` or `[]` where appropriate."
         ),
     )

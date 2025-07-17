@@ -102,6 +102,17 @@ resource "aws_iam_policy" "lambda_custom_policy" {
       {
         Effect = "Allow",
         Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+          "bedrock:CreateModelInvocationJob"
+        ],
+        Resource = [
+          "*"
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
           "sqs:SendMessage"
         ],
         Resource = [
@@ -132,7 +143,18 @@ resource "aws_iam_policy" "lambda_custom_policy_worker" {
           aws_sqs_queue.this.arn,
           "${aws_sqs_queue.this.arn}/*"
         ]
-      }
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+          "bedrock:CreateModelInvocationJob"
+        ],
+        Resource = [
+          "*"
+        ]
+      },
     ]
   })
 }
