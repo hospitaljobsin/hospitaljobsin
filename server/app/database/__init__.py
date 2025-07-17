@@ -1,6 +1,3 @@
-from collections.abc import AsyncGenerator
-from contextlib import asynccontextmanager
-
 import sentry_sdk
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -65,6 +62,7 @@ async def create_search_indexes(
     client: AsyncIOMotorClient, default_database_name: str
 ) -> None:
     """Create search indexes for the database."""
+    # TODO: only create indexes if they don't exist
     await (
         client.get_default_database(default=default_database_name)
         .get_collection(str(Job.get_settings().name))

@@ -21,7 +21,12 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-install-project
 
 # Copy the application files
-COPY . .
+# COPY . .
+COPY app/ ./app/
+COPY scripts/ ./scripts/
+COPY templates/ ./templates/
+COPY tests/ ./tests/
+COPY pyproject.toml uv.lock query_map.json ./
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -63,10 +68,6 @@ RUN unzip layer.zip -d /opt && \
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production-server
 
-# RUN apt-get update && \
-#     apt-get install -y build-essential && \
-#     rm -rf /var/lib/apt/lists/*
-
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 
@@ -100,7 +101,11 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     rm requirements.txt
 
 # Copy the application files
-COPY . .
+# COPY . .
+COPY app/ ./app/
+COPY scripts/ ./scripts/
+COPY templates/ ./templates/
+COPY pyproject.toml uv.lock query_map.json ./
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -118,10 +123,6 @@ CMD ["python", "scripts/run_server.py"]
 
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS sqs-handler
-
-# RUN apt-get update && \
-#     apt-get install -y build-essential && \
-#     rm -rf /var/lib/apt/lists/*
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
@@ -146,7 +147,11 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     rm requirements.txt
 
 # Copy the application files
-COPY . .
+# COPY . .
+COPY app/ ./app/
+COPY scripts/ ./scripts/
+COPY templates/ ./templates/
+COPY pyproject.toml uv.lock query_map.json ./
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
