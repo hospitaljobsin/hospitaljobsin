@@ -2,8 +2,6 @@ from datetime import date
 
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
-from pydantic_ai.models.gemini import GeminiModel
-from pydantic_ai.providers.google_gla import GoogleGLAProvider
 from pydantic_ai.settings import ModelSettings
 
 from app.accounts.documents import (
@@ -15,7 +13,6 @@ from app.accounts.documents import (
     SalaryExpectations,
     WorkExperience,
 )
-from app.config import SecretSettings
 
 
 class PartialLicense(BaseModel):
@@ -97,18 +94,11 @@ class ProfileOutput(BaseModel):
 type ProfileParserAgent = Agent[None, ProfileOutput]
 
 
-def create_profile_parser_agent(
-    settings: SecretSettings,
-) -> ProfileParserAgent:
+def create_profile_parser_agent() -> ProfileParserAgent:
     return Agent(
-        model=GeminiModel(
-            "gemini-2.5-flash-lite-preview-06-17",
-            provider=GoogleGLAProvider(
-                api_key=settings.google_api_key.get_secret_value(),
-            ),
-        ),
+        model="bedrock:us.amazon.nova-pro-v1:0",
         model_settings=ModelSettings(
-            temperature=0.1,
+            temperature=0.2,
         ),
         output_type=ProfileOutput,
         system_prompt=(

@@ -1,9 +1,5 @@
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
-from pydantic_ai.models.gemini import GeminiModel
-from pydantic_ai.providers.google_gla import GoogleGLAProvider
-
-from app.config import SecretSettings
 
 
 class FieldAnalysis(BaseModel):
@@ -130,16 +126,9 @@ class JobApplicantAnalysisOutput(BaseModel):
 type JobApplicantAnalyzerAgent = Agent[None, JobApplicantAnalysisOutput]
 
 
-def create_job_applicant_analyzer_agent(
-    settings: SecretSettings,
-) -> JobApplicantAnalyzerAgent:
+def create_job_applicant_analyzer_agent() -> JobApplicantAnalyzerAgent:
     return Agent(
-        model=GeminiModel(
-            "gemini-2.5-flash-lite-preview-06-17",
-            provider=GoogleGLAProvider(
-                api_key=settings.google_api_key.get_secret_value(),
-            ),
-        ),
+        model="bedrock:us.amazon.nova-pro-v1:0",
         output_type=JobApplicantAnalysisOutput,
         system_prompt=(
             "You are a Senior Healthcare Recruiter. You are given a job description and a job applicant profile. "

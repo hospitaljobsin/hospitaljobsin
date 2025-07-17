@@ -1,10 +1,7 @@
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
-from pydantic_ai.models.gemini import GeminiModel
-from pydantic_ai.providers.google_gla import GoogleGLAProvider
 
 from app.accounts.documents import Gender, MaritalStatus
-from app.config import SecretSettings
 
 
 class LocationWithRadius(BaseModel):
@@ -78,16 +75,9 @@ class ApplicantQueryFilters(BaseModel):
 type ApplicantQueryParserAgent = Agent[None, ApplicantQueryFilters]
 
 
-def create_applicant_query_parser_agent(
-    settings: SecretSettings,
-) -> ApplicantQueryParserAgent:
+def create_applicant_query_parser_agent() -> ApplicantQueryParserAgent:
     return Agent(
-        model=GeminiModel(
-            "gemini-2.5-flash-lite-preview-06-17",
-            provider=GoogleGLAProvider(
-                api_key=settings.google_api_key.get_secret_value(),
-            ),
-        ),
+        model="bedrock:us.amazon.nova-pro-v1:0",
         output_type=ApplicantQueryFilters,
         system_prompt=(
             "You are an expert in parsing natural language into search filters. You are given a free-text query describing the kind of applicants to search for. "

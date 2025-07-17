@@ -1131,6 +1131,9 @@ wheels = [
 ]
 
 [package.optional-dependencies]
+bedrock = [
+    { name = "boto3" },
+]
 vertexai = [
     { name = "google-auth" },
     { name = "requests" },
@@ -1525,7 +1528,7 @@ dependencies = [
     { name = "passlib", extra = ["argon2"] },
     { name = "pillow" },
     { name = "pydantic" },
-    { name = "pydantic-ai-slim", extra = ["vertexai"] },
+    { name = "pydantic-ai-slim", extra = ["bedrock", "vertexai"] },
     { name = "pydantic-settings" },
     { name = "pymongo", extra = ["aws"] },
     { name = "pymupdf" },
@@ -1583,7 +1586,7 @@ requires-dist = [
     { name = "passlib", extras = ["argon2"], specifier = "==1.7.4" },
     { name = "pillow", specifier = "==11.3.0" },
     { name = "pydantic", specifier = "==2.11.7" },
-    { name = "pydantic-ai-slim", extras = ["vertexai"], specifier = "==0.4.0" },
+    { name = "pydantic-ai-slim", extras = ["bedrock", "vertexai"], specifier = "==0.4.0" },
     { name = "pydantic-settings", specifier = "==2.10.1" },
     { name = "pymongo", extras = ["aws"], specifier = "==4.9.2" },
     { name = "pymupdf", specifier = "==1.26.3" },
