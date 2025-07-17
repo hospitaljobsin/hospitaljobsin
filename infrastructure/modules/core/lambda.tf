@@ -328,7 +328,7 @@ resource "aws_lambda_function" "backend" {
     }
   }
 
-  memory_size = 4096 # 2048
+  memory_size = 2048 # 2048
   timeout     = 60
 }
 

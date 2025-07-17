@@ -88,7 +88,7 @@ export default $config({
 				layers: [
 					"arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:17",
 				],
-				memory: "4096 MB",
+				memory: "1024 MB",
 			},
 			permissions: [
 				{
