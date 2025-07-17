@@ -42,7 +42,7 @@ export default function Certifications({ rootQuery }: Props) {
 			: undefined;
 
 	useCopilotReadable({
-		description: "The current applicant's certifications",
+		description: "The applicant's certifications",
 		value: data.certifications,
 	});
 

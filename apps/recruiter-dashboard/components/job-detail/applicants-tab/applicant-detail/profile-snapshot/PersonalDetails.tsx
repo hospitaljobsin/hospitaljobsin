@@ -63,7 +63,7 @@ export default function PersonalDetails({ rootQuery }: Props) {
 			: undefined;
 
 	useCopilotReadable({
-		description: "The current applicant's personal details",
+		description: "The applicant's personal details",
 		value: data,
 	});
 

@@ -1,7 +1,10 @@
 "use client";
 import type { ApplicantDetailsFragment$key } from "@/__generated__/ApplicantDetailsFragment.graphql";
 import type { ApplicantDetails_job$key } from "@/__generated__/ApplicantDetails_job.graphql";
-import { useCopilotReadable } from "@copilotkit/react-core";
+import {
+	useCopilotAdditionalInstructions,
+	useCopilotReadable,
+} from "@copilotkit/react-core";
 import { Card, CardBody, CardHeader, Link } from "@heroui/react";
 import { Mail } from "lucide-react";
 import Image from "next/image";
@@ -63,28 +66,37 @@ export default function ApplicantDetails({
 	const data = useFragment(ApplicantDetailsFragment, rootQuery);
 	const jobData = useFragment(ApplicantDetailsJobFragment, job);
 
+	useCopilotAdditionalInstructions({
+		instructions:
+			"You are an AI assistant helping a human HR professional assess a job applicant. The user you are assisting is not the applicant. Do not greet, advise, or speak to the applicant. Your job is to analyze the applicant's data (provided below) in the context of the job they applied for and help the HR user decide how well the applicant fits the role. You have access to all relevant job data and applicant data. Always address the HR user directly and professionally. Provide a summary of fit, highlight relevant strengths or mismatches, and be concise.",
+	});
+
 	useCopilotReadable({
-		description: "The job the current applicant applied to",
+		description:
+			"Job description and requirements that the applicant is being evaluated against",
 		value: jobData,
 	});
 
 	useCopilotReadable({
-		description: "The current applicant's full name",
+		description: "Full name of the applicant, for reference by the HR user",
 		value: data.account.fullName,
 	});
 
 	useCopilotReadable({
-		description: "The current applicant's headline",
+		description:
+			"Professional headline or summary of the applicant's background, used to help assess fit for the job",
 		value: data.profileSnapshot.headline,
 	});
 
 	useCopilotReadable({
-		description: "The current applicant's status",
+		description:
+			"Current application status of the applicant in the hiring pipeline (e.g., Applied, Interviewed, Shortlisted)",
 		value: data.status,
 	});
 
 	useCopilotReadable({
-		description: "The current applicant's answered screening questions",
+		description:
+			"The applicant's responses to the screening questions for this job, which should be evaluated for alignment with job requirements",
 		value: data.applicantFields,
 	});
 

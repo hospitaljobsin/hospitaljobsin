@@ -1,5 +1,6 @@
 import type { ApplicantFieldsFragment$key } from "@/__generated__/ApplicantFieldsFragment.graphql";
 import { getAnalysisColor } from "@/lib/colors";
+import { useCopilotReadable } from "@copilotkit/react-core";
 import { Alert, Card, CardBody, CardHeader, Divider } from "@heroui/react";
 import { ShieldQuestion, SparklesIcon } from "lucide-react";
 import { useFragment } from "react-relay";
@@ -34,6 +35,11 @@ export default function ApplicantFields({
 		data.analysis?.__typename === "JobApplicantAnalysis"
 			? data.analysis.analysedFields
 			: undefined;
+
+	useCopilotReadable({
+		description: "The applicant's responses to the job's screening questions",
+		value: data.applicantFields,
+	});
 
 	if (!data.applicantFields || data.applicantFields.length === 0) return null;
 

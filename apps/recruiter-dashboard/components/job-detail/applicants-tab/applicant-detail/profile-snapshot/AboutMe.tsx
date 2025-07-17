@@ -49,7 +49,7 @@ export default function AboutMe({ rootQuery }: Props) {
 			: undefined;
 
 	useCopilotReadable({
-		description: "The current applicant's professional details",
+		description: "The applicant's professional details",
 		value: data,
 	});
 

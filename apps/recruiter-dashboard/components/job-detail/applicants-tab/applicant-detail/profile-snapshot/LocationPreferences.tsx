@@ -47,7 +47,7 @@ export default function LocationPreferences({ rootQuery }: Props) {
 			: undefined;
 
 	useCopilotReadable({
-		description: "The current applicant's location preferences",
+		description: "The applicant's location preferences",
 		value: data,
 	});
 

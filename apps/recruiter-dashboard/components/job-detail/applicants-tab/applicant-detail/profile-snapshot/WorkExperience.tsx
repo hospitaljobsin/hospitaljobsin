@@ -73,7 +73,7 @@ export default function WorkExperience({ rootQuery }: Props) {
 			: undefined;
 
 	useCopilotReadable({
-		description: "The current applicant's work experiences",
+		description: "The applicant's work experiences",
 		value: data.workExperience,
 	});
 

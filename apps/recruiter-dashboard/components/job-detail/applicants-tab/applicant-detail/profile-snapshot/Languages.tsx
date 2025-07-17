@@ -38,7 +38,7 @@ export default function Languages({ rootQuery }: Props) {
 			: undefined;
 
 	useCopilotReadable({
-		description: "The current applicant's languages",
+		description: "The applicant's languages",
 		value: data.languages,
 	});
 

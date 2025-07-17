@@ -85,6 +85,14 @@ export default $config({
 					actions: ["secretsmanager:GetSecretValue"],
 					resources: ["*"], // TODO: restrict to the secret ARN
 				},
+				{
+					actions: [
+						"bedrock:InvokeModel",
+						"bedrock:InvokeModelWithResponseStream",
+						"bedrock:CreateModelInvocationJob",
+					],
+					resources: ["*"],
+				},
 			],
 			transform: {
 				cdn(args, opts, name) {

@@ -42,7 +42,7 @@ export default function Licenses({ rootQuery }: Props) {
 			: undefined;
 
 	useCopilotReadable({
-		description: "The current applicant's licenses",
+		description: "The applicant's licenses",
 		value: data.licenses,
 	});
 

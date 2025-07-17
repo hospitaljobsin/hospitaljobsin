@@ -25,8 +25,5 @@ export async function loadSecrets() {
 		if (secret.jwe_secret_key) {
 			process.env.JWE_SECRET_KEY = secret.jwe_secret_key;
 		}
-		if (secret.google_api_key) {
-			process.env.GOOGLE_API_KEY = secret.google_api_key;
-		}
 	}
 }

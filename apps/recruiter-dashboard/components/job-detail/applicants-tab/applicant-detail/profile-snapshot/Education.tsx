@@ -41,7 +41,7 @@ export default function Education({ rootQuery }: Props) {
 			: undefined;
 
 	useCopilotReadable({
-		description: "The current applicant's education",
+		description: "The applicant's education",
 		value: data.education,
 	});
 
