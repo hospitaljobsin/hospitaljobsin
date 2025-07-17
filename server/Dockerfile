@@ -104,7 +104,7 @@ COPY . .
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen
+    uv sync --frozen --no-dev
 
 
 # Set environment variables for Python
@@ -150,7 +150,7 @@ COPY . .
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen
+    uv sync --frozen --no-dev
 
 
 # Install the AWS Lambda Runtime Interface Client

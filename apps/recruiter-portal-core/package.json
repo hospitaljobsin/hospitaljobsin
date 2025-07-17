@@ -32,7 +32,6 @@
 		"@sentry/profiling-node": "^9.33.0",
 		"@t3-oss/env-nextjs": "^0.13.8",
 		"@tiptap/extension-heading": "^2.14.0",
-		"@tiptap/pm": "^2.14.0",
 		"@tiptap/react": "^2.14.0",
 		"@tiptap/starter-kit": "^2.14.0",
 		"@types/mdx": "^2.0.13",

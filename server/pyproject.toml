@@ -23,7 +23,6 @@ dependencies = [
     "jinja2>=3.1.5",
     "humanize>=4.11.0",
     "email-validator>=2.2.0",
-    "boto3>=1.36.1",
     "aioboto3>=13.4.0",
     "pymongo[aws]>=4.9.2",
     "webauthn>=2.5.1",
@@ -47,18 +46,18 @@ dependencies = [
     "pillow>=11.3.0",
     "pymupdf>=1.26.3",
     "python-multipart>=0.0.20",
+    "types-aioboto3[essential]>=15.0.0",
+    "types-aiobotocore-ses>=2.23.0",
+    "types-aiobotocore-location>=2.23.0",
 ]
 
 [tool.uv]
 dev-dependencies = [
     "types-passlib>=1.7.7.20241221",
-    "types-aioboto3[essential]>=13.4.0",
     "types-authlib>=1.4.0.20241230",
     "types-python-jose>=3.4.0.20250224",
     "ruff>=0.11.2",
     "pyright>=1.1.397",
-    "types-aiobotocore-ses>=2.21.1",
-    "types-aiobotocore-location>=2.21.1",
     "better-exceptions>=0.3.3",
     "strawberry-graphql[cli]>=0.275.5",
 ]
