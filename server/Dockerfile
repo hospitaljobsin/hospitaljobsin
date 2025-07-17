@@ -10,7 +10,7 @@ RUN apt-get update && \
 
 
 # install UV
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.7.21 /uv /uvx /bin/
 
 WORKDIR /project
 
@@ -68,7 +68,7 @@ RUN unzip layer.zip -d /opt && \
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production-server
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.7.21 /uv /uvx /bin/
 
 
 COPY --from=layer-build /opt /opt
@@ -124,7 +124,7 @@ CMD ["python", "scripts/run_server.py"]
 
 FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS sqs-handler
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.7.21 /uv /uvx /bin/
 
 
 COPY --from=layer-build /opt /opt
