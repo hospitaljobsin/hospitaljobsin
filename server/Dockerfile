@@ -1,13 +1,10 @@
-ARG PYTHON_BASE=3.13-slim
+ARG PYTHON_BASE=3.13.5-alpine3.22
 
 # development stage
 FROM python:$PYTHON_BASE AS development-server
 
-# Install curl
-RUN apt-get update && \
-    apt-get install -y build-essential curl && \
-    rm -rf /var/lib/apt/lists/*
-
+# Install curl and build dependencies
+RUN apk add --no-cache curl build-base libffi-dev
 
 # install UV
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
@@ -41,7 +38,7 @@ EXPOSE 8000
 CMD ["uv", "run", "scripts/run_server.py"]
 
 
-FROM debian:12-slim AS layer-build
+FROM alpine:latest AS layer-build
 
 # Set AWS environment variables with optional defaults
 ARG AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-"us-east-1"}
@@ -52,9 +49,7 @@ ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
 ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 
 # Update package list and install dependencies
-RUN apt-get update && \
-    apt-get install -y awscli curl unzip && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add aws-cli curl unzip
 
 # Create directory for the layer
 RUN mkdir -p /opt
