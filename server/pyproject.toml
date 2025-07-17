@@ -52,7 +52,6 @@ dependencies = [
 
 
 [tool.uv]
-prefer-binary=true
 dev-dependencies = [
     "types-passlib==1.7.7.20250602",
     "types-authlib==1.6.0.20250708",

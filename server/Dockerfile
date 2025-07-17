@@ -66,7 +66,7 @@ FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production-server
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 
-COPY --from=layer-build /opt /opt
+COPY --from=layer-build /opt ./opt
 
 # include the AWS lambda web adapter
 COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
