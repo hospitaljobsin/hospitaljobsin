@@ -249,21 +249,17 @@ Follow these steps to deploy the project to the cloud:
 - [Install the Sentry GitHub Integration](https://docs.sentry.io/organization/integrations/source-code-mgmt/github/#installing-github) (repository linking is automated)
 - [Create a Sentry Authentication Token](https://docs.sentry.io/organization/integrations/integration-platform/internal-integration/#auth-tokens) (via an internal integration)
 
-### 7. Serper Setup
-- Go to the [Serper Dashboard](https://serper.dev/dashboard)
-- Create an API key
 
-
-### 8. Redis Cloud Setup
+### 7. Redis Cloud Setup
 - Go to the [Redis Cloud Console](https://console.redis.io)
 - Configure a payment method
 - Enable programmatic access to the cloud console (Under Access Management > API Keys)
 - Create an API key (AKA Secret Key)
 - Copy the Account Key (AKA Access Key) and API Key (AKA Secret Key)
 
-### 9. Terraform Setup
+### 8. Terraform Setup
 
-#### 9.1 Prerequisites:
+#### 8.1 Prerequisites:
 - Create an S3 bucket that will act as the terraform state backend
 
 Terraform deployments are automated via GitHub Actions CI/CD.
@@ -284,9 +280,7 @@ GitHub Actions Secrets:
 - `MONGODB_ATLAS_PUBLIC_KEY`
 - `GOOGLE_OAUTH_CLIENT_ID`
 - `GOOGLE_OAUTH_CLIENT_SECRET`
-- `GOOGLE_GEMINI_API_KEY`
 - `SENTRY_AUTH_TOKEN`
-- `SERPER_API_KEY`
 - `REDISCLOUD_SECRET_KEY`
 - `REDISCLOUD_ACCESS_KEY`
 
@@ -298,3 +292,8 @@ During the initial terraform deployment:
 After automated deployment, you need to:
 - Request SES production access manually on AWS
 - Join the created team on sentry with your account
+- Grant access to the following Models in AWS Bedrock:
+	- Amazon Nova Micro V1
+	- Amazon Nova Lite V1
+	- Amazon Nova Pro V1
+	- Amazon Titan Text Embeddings V2

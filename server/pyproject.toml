@@ -32,8 +32,6 @@ dependencies = [
     "tenacity==9.1.2",
     "sentry-sdk[fastapi,pymongo]==2.32.0",
     "python-jose[cryptography]==3.5.0",
-    "google-genai==1.20.0",
-    "pydantic-ai-slim[bedrock,vertexai]==0.4.0",
     "redis[hiredis]==6.2.0",
     "aws-lambda-powertools[parser]==3.16.0",
     "structlog-sentry==2.2.1",
@@ -48,7 +46,8 @@ dependencies = [
     "types-aioboto3[essential]==15.0.0",
     "types-aiobotocore-ses==2.23.0",
     "types-aiobotocore-location==2.23.0",
-    "types-aiobotocore-bedrock-runtime>=2.23.0",
+    "types-aiobotocore-bedrock-runtime==2.23.0",
+    "pydantic-ai-slim[bedrock]==0.4.3",
 ]
 
 

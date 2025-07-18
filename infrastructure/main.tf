@@ -117,7 +117,6 @@ module "core" {
   domain_name                    = var.domain_name
   google_oauth_client_id         = var.google_oauth_client_id
   google_oauth_client_secret     = var.google_oauth_client_secret
-  google_gemini_api_key          = var.google_gemini_api_key
   mongodb_atlas_org_id           = var.mongodb_atlas_org_id
   mongodb_atlas_region           = var.mongodb_atlas_region
   mongodb_database_name          = var.mongodb_database_name
@@ -127,7 +126,6 @@ module "core" {
   sentry_recruiter_portal_ui_dsn = module.sentry.sentry_recruiter_portal_ui_dsn
   sentry_seeker_portal_ui_dsn    = module.sentry.sentry_seeker_portal_ui_dsn
   github_repository_name         = var.github_repository_name
-  serper_api_key                 = var.serper_api_key
   redis_password                 = module.redis.redis_password
   redis_endpoint                 = module.redis.public_endpoint
 }

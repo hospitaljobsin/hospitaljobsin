@@ -14,8 +14,6 @@ resource "aws_secretsmanager_secret_version" "example" {
     server_google_client_id     = var.google_oauth_client_id,
     server_google_client_secret = var.google_oauth_client_secret,
     server_captcha_secret_key   = cloudflare_turnstile_widget.example.secret,
-    server_google_api_key       = var.google_gemini_api_key,
-    server_serper_api_key       = var.serper_api_key,
     server_redis_password       = var.redis_password,
   })
 

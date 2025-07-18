@@ -69,7 +69,6 @@ from app.core.emails import (
     SMTPEmailSender,
     create_smtp_client,
 )
-from app.core.genai_client import create_google_genai_client
 from app.core.geocoding import (
     AWSLocationService,
     BaseLocationService,
@@ -252,7 +251,6 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_bedrock_runtime_client))
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_captcha_verifier))
-    container.register(aioinject.Singleton(create_google_genai_client))
     container.register(aioinject.Singleton(create_redis_client))
     container.register(aioinject.Singleton(EmbeddingsService))
     container.register(aioinject.Singleton(JobApplicantRepo))

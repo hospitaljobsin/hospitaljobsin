@@ -339,7 +339,6 @@ resource "aws_lambda_function" "backend" {
       SERVER_STORAGE_LOCATION_PLACE_INDEX_NAME    = aws_location_place_index.storage.index_name
       SERVER_SENTRY_DSN                           = var.sentry_backend_dsn
       SERVER_PERSISTED_QUERIES_PATH               = "query_map.json"
-      SERVER_GOOGLE_GEMINI_MODEL                  = "gemini/gemini-2.5-flash-preview-04-17"
       SERVER_REDIS_HOST                           = local.redis_host
       SERVER_REDIS_PORT                           = local.redis_port
       SERVER_REDIS_USERNAME                       = "default"
@@ -413,7 +412,6 @@ resource "aws_lambda_function" "worker" {
       SERVER_STORAGE_LOCATION_PLACE_INDEX_NAME    = aws_location_place_index.storage.index_name
       SERVER_SENTRY_DSN                           = var.sentry_backend_dsn
       SERVER_PERSISTED_QUERIES_PATH               = "query_map.json"
-      SERVER_GOOGLE_GEMINI_MODEL                  = "gemini/gemini-2.5-flash-preview-04-17"
       SERVER_REDIS_HOST                           = local.redis_host
       SERVER_REDIS_PORT                           = local.redis_port
       SERVER_REDIS_USERNAME                       = "default"
