@@ -2,6 +2,7 @@ import asyncio
 from datetime import UTC, datetime, timedelta
 
 from app.config import DatabaseSettings, SecretSettings, get_settings
+from app.core.constants import JOB_EMBEDDING_DIMENSIONS
 from app.core.genai_client import create_google_genai_client
 from app.database import initialize_database
 from app.embeddings.services import EmbeddingsService
@@ -504,7 +505,8 @@ Ahmedabad, Gujarat
                 job_type=job.type,
                 work_mode=job.work_mode,
                 currency=job.currency,
-            )
+            ),
+            dimensions=JOB_EMBEDDING_DIMENSIONS,
         )
 
     await Job.insert_many(jobs)

@@ -1544,6 +1544,7 @@ dependencies = [
     { name = "tenacity" },
     { name = "tesserocr" },
     { name = "types-aioboto3", extra = ["essential"] },
+    { name = "types-aiobotocore-bedrock-runtime" },
     { name = "types-aiobotocore-location" },
     { name = "types-aiobotocore-ses" },
     { name = "types-aiobotocore-textract" },
@@ -1602,6 +1603,7 @@ requires-dist = [
     { name = "tenacity", specifier = "==9.1.2" },
     { name = "tesserocr", specifier = "==2.8.0" },
     { name = "types-aioboto3", extras = ["essential"], specifier = "==15.0.0" },
+    { name = "types-aiobotocore-bedrock-runtime", specifier = ">=2.23.0" },
     { name = "types-aiobotocore-location", specifier = "==2.23.0" },
     { name = "types-aiobotocore-ses", specifier = "==2.23.0" },
     { name = "types-aiobotocore-textract", specifier = "==2.23.0" },
@@ -1778,6 +1780,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/d6/2b/1e039d61079d9f4fd9011eff2aab0ecd1ec1fe16eb9a1c08720b4686248f/types_aiobotocore-2.23.0.tar.gz", hash = "sha256:d363a584726b9582e18cadbed9f88053ac4b488373e0e643d292b57b2f182ac8", size = 84697, upload-time = "2025-06-13T01:59:52.009Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4c/4b/821a589e7d02f2ceef9e627139cf0c6c8b554d8e7c44117006f1f2a46c5d/types_aiobotocore-2.23.0-py3-none-any.whl", hash = "sha256:f62d9a58d730bbde825355feedb045713b6de2feab4c1b68b071afd1da60dea8", size = 52122, upload-time = "2025-06-13T01:59:46.918Z" },
+]
+
+[[package]]
+name = "types-aiobotocore-bedrock-runtime"
+version = "2.23.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d3/94/c225fedd3e00d49e7b9233580690805870281f11097b2616f992edba3e0b/types_aiobotocore_bedrock_runtime-2.23.0.tar.gz", hash = "sha256:3855314116f7dd6ae556e4373a6b682832de1c0dece7eaae0aa42abd17256c89", size = 26424, upload-time = "2025-06-13T01:45:34.806Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/30/6b/7087d0d50ec4b4465b44f1423aba209569f970057765f5b3ee655c2a88ab/types_aiobotocore_bedrock_runtime-2.23.0-py3-none-any.whl", hash = "sha256:988dbee9559745f356f89d9875e789eb291f43dc82ef1102c2abdef0f5711ab7", size = 32382, upload-time = "2025-06-13T01:45:33.566Z" },
 ]
 
 [[package]]

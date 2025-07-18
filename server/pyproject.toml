@@ -48,6 +48,7 @@ dependencies = [
     "types-aioboto3[essential]==15.0.0",
     "types-aiobotocore-ses==2.23.0",
     "types-aiobotocore-location==2.23.0",
+    "types-aiobotocore-bedrock-runtime>=2.23.0",
 ]
 
 

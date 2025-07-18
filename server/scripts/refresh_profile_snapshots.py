@@ -39,6 +39,9 @@ async def insert_missing_analysis():
             gender=job_applicant.account.profile.gender,
             date_of_birth=job_applicant.account.profile.date_of_birth,
             address=job_applicant.account.profile.address,
+            category=job_applicant.account.profile.category,
+            marital_status=job_applicant.account.profile.marital_status,
+            total_work_experience_years=job_applicant.account.profile.total_work_experience_years,
         )
         await job_applicant.save()
 

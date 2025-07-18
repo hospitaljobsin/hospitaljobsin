@@ -55,6 +55,7 @@ from app.config import (
 )
 from app.core.aws_sdk import (
     create_aioboto3_session,
+    create_bedrock_runtime_client,
     create_location_service_client,
     create_s3_client,
     create_ses_client,
@@ -248,6 +249,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(create_aioboto3_session))
     container.register(aioinject.Scoped(create_s3_client))
     container.register(aioinject.Scoped(create_sqs_client))
+    container.register(aioinject.Scoped(create_bedrock_runtime_client))
     container.register(aioinject.Singleton(create_oauth_client))
     container.register(aioinject.Singleton(create_captcha_verifier))
     container.register(aioinject.Singleton(create_google_genai_client))

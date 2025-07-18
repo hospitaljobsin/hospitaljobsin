@@ -17,7 +17,9 @@ from app.auth.documents import (
 )
 from app.core.constants import (
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
+    JOB_APPLICANT_EMBEDDING_INDEX_NAME,
     JOB_EMBEDDING_DIMENSIONS,
+    JOB_EMBEDDING_INDEX_NAME,
 )
 from app.jobs.documents import (
     BaseJobMetric,
@@ -78,7 +80,7 @@ async def create_search_indexes(
                         },
                     ]
                 },
-                name="job_embedding_vector_index",
+                name=JOB_EMBEDDING_INDEX_NAME,
                 type="vectorSearch",
             )
         )
@@ -98,7 +100,7 @@ async def create_search_indexes(
                         },
                     ]
                 },
-                name="job_applicant_embedding_vector_index",
+                name=JOB_APPLICANT_EMBEDDING_INDEX_NAME,
                 type="vectorSearch",
             )
         )

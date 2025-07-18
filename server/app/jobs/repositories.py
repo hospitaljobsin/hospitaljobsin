@@ -17,6 +17,10 @@ from redis.asyncio import Redis
 from app.accounts.documents import Account, BaseProfile, SalaryExpectations
 from app.base.models import GeoObject
 from app.core.constants import (
+    JOB_APPLICANT_EMBEDDING_DIMENSIONS,
+    JOB_APPLICANT_EMBEDDING_INDEX_NAME,
+    JOB_EMBEDDING_DIMENSIONS,
+    JOB_EMBEDDING_INDEX_NAME,
     RELATED_JOB_APPLICANTS_SIMILARITY_THRESHOLD,
     RELATED_JOBS_SIMILARITY_THRESHOLD,
     TRENDING_JOBS_LIMIT,
@@ -153,7 +157,8 @@ class JobRepo:
                 job_type=job_type,
                 work_mode=work_mode,
                 currency=currency,
-            )
+            ),
+            dimensions=JOB_EMBEDDING_DIMENSIONS,
         )
         job = Job(
             title=title,
@@ -270,7 +275,8 @@ class JobRepo:
                     job_type=job_type,
                     work_mode=work_mode,
                     currency=currency,
-                )
+                ),
+                dimensions=JOB_EMBEDDING_DIMENSIONS,
             )
         # else: keep the existing embedding
 
@@ -527,7 +533,7 @@ class JobRepo:
         pipeline = [
             {
                 "$vectorSearch": {
-                    "index": "job_embedding_vector_index",
+                    "index": JOB_EMBEDDING_INDEX_NAME,
                     "path": "embedding",
                     "queryVector": job_embedding,
                     "numCandidates": 100,  # higher is better for quality filtering
@@ -808,6 +814,7 @@ class JobApplicantRepo:
             profile_embedding=await self._embeddings_service.generate_embeddings(
                 text=self.format_profile_snapshot_for_embedding(account.profile),
                 task_type="RETRIEVAL_DOCUMENT",
+                dimensions=JOB_APPLICANT_EMBEDDING_DIMENSIONS,
             ),
             status="applied",
             applicant_fields=applicant_fields,
@@ -900,12 +907,13 @@ class JobApplicantRepo:
                 text=filters.query,
                 task_type="RETRIEVAL_QUERY",
                 use_cache=True,
+                dimensions=JOB_APPLICANT_EMBEDDING_DIMENSIONS,
             )
 
             pipeline.append(
                 {
                     "$vectorSearch": {
-                        "index": "job_applicant_embedding_vector_index",
+                        "index": JOB_APPLICANT_EMBEDDING_INDEX_NAME,
                         "path": "profile_embedding",
                         "queryVector": query_embedding,
                         "numCandidates": limit * 4,

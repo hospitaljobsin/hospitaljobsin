@@ -1,14 +1,15 @@
 import hashlib
 import json
 
-from google.genai import Client
-from google.genai.types import EmbedContentConfig
 from redis.asyncio import Redis
+from types_aiobotocore_bedrock_runtime.client import BedrockRuntimeClient
 
 
 class EmbeddingsService:
-    def __init__(self, genai_client: Client, redis_client: Redis) -> None:
-        self._genai_client = genai_client
+    def __init__(
+        self, bedrock_client: BedrockRuntimeClient, redis_client: Redis
+    ) -> None:
+        self._bedrock_client = bedrock_client
         self._redis_client = redis_client
 
     def _generate_embedding_cache_key(
@@ -36,8 +37,9 @@ class EmbeddingsService:
         self,
         text: str,
         *,
+        dimensions: int,
         task_type: str = "SEMANTIC_SIMILARITY",
-        model: str = "gemini-embedding-exp-03-07",
+        model: str = "amazon.titan-embed-text-v2:0",
         use_cache: bool = False,
     ) -> list[float]:
         """Generate embeddings for a text."""
@@ -46,14 +48,21 @@ class EmbeddingsService:
             if embedding is not None:
                 return embedding
 
-        response = self._genai_client.models.embed_content(
-            model=model,
-            contents=text,
-            config=EmbedContentConfig(task_type=task_type),
+        model_input = {"inputText": text, "dimensions": dimensions, "normalize": True}
+
+        response = await self._bedrock_client.invoke_model(
+            modelId=model,
+            body=json.dumps(model_input),
+            contentType="application/json",
         )
-        if response.embeddings is None or response.embeddings[0].values is None:
+
+        response_body = json.loads(await response.get("body").read())
+        print("body: ", response_body)
+        if response_body.get("embedding") is None:
             raise ValueError("No embeddings found")
-        result = response.embeddings[0].values
+
+        result = response_body.get("embedding")
+        print("Embeddings: ", result)
         if use_cache:
             await self._set_embedding_in_cache(text, task_type, model, result)
         return result

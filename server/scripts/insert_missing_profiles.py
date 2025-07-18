@@ -3,6 +3,7 @@ import asyncio
 from app.accounts.documents import Account
 from app.accounts.repositories import ProfileRepo
 from app.config import DatabaseSettings, get_settings
+from app.container import create_container
 from app.database import initialize_database
 
 
@@ -12,9 +13,13 @@ async def insert_missing_profiles():
         get_settings(DatabaseSettings).default_database_name,
     )
     accounts = await Account.find_all().to_list()
+
+    container = create_container()
+    async with container.context() as ctx:
+        profile_repo = await ctx.resolve(ProfileRepo)
     for account in accounts:
         if account.profile is None:
-            await ProfileRepo().create(account=account)
+            await profile_repo.create(account=account)
 
 
 if __name__ == "__main__":

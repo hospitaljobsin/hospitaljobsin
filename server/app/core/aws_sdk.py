@@ -2,6 +2,7 @@ import contextlib
 from collections.abc import AsyncGenerator
 
 import aioboto3
+from types_aiobotocore_bedrock_runtime.client import BedrockRuntimeClient
 from types_aiobotocore_location import LocationServiceClient
 from types_aiobotocore_s3 import S3Client
 from types_aiobotocore_ses import SESClient
@@ -66,3 +67,12 @@ async def create_textract_client(
     """Create an Textract client."""
     async with session.client("textract") as textract_client:
         yield textract_client
+
+
+@contextlib.asynccontextmanager
+async def create_bedrock_runtime_client(
+    session: aioboto3.Session,
+) -> AsyncGenerator[BedrockRuntimeClient]:
+    """Create an Bedrock runtime client."""
+    async with session.client("bedrock-runtime") as bedrock_client:
+        yield bedrock_client
