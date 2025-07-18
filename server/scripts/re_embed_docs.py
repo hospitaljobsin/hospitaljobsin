@@ -5,20 +5,12 @@ from app.config import DatabaseSettings, get_settings
 from app.container import create_container
 from app.core.constants import (
     JOB_APPLICANT_EMBEDDING_DIMENSIONS,
+    JOB_EMBEDDING_DIMENSIONS,
 )
 from app.database import initialize_database
 from app.embeddings.services import EmbeddingsService
-from app.jobs.documents import ApplicationField, JobApplicant
-from app.jobs.repositories import JobApplicantRepo
-
-# Arbitrary list of application questions
-DEFAULT_FIELDS = [
-    ApplicationField(
-        field_name="Why are you interested in this job?", is_required=True
-    ),
-    ApplicationField(field_name="Describe your relevant experience.", is_required=True),
-    ApplicationField(field_name="When can you start?", is_required=False),
-]
+from app.jobs.documents import Job, JobApplicant
+from app.jobs.repositories import JobApplicantRepo, JobRepo
 
 
 async def re_embed_docs():
@@ -32,28 +24,28 @@ async def re_embed_docs():
         embeddings_service = await ctx.resolve(EmbeddingsService)
         job_applicant_repo = await ctx.resolve(JobApplicantRepo)
 
-    # jobs = await Job.find_all().to_list()
-    # for job in jobs:
-    #     job.embedding = await embeddings_service.generate_embeddings(
-    #         text=JobRepo.format_job_for_embedding(
-    #             title=job.title,
-    #             description=job.description,
-    #             skills=job.skills,
-    #             location=job.location,
-    #             geo=job.geo,
-    #             min_salary=job.min_salary,
-    #             max_salary=job.max_salary,
-    #             min_experience=job.min_experience,
-    #             max_experience=job.max_experience,
-    #             job_type=job.type,
-    #             work_mode=job.work_mode,
-    #             currency=job.currency,
-    #         ),
-    #         task_type="SEMANTIC_SIMILARITY",
-    #         dimensions=JOB_EMBEDDING_DIMENSIONS,
-    #     )
-    #     await job.save()
-    #     print("Reindexed Job ", job.id)
+    jobs = await Job.find_all().to_list()
+    for job in jobs:
+        job.embedding = await embeddings_service.generate_embeddings(
+            text=JobRepo.format_job_for_embedding(
+                title=job.title,
+                description=job.description,
+                skills=job.skills,
+                location=job.location,
+                geo=job.geo,
+                min_salary=job.min_salary,
+                max_salary=job.max_salary,
+                min_experience=job.min_experience,
+                max_experience=job.max_experience,
+                job_type=job.type,
+                work_mode=job.work_mode,
+                currency=job.currency,
+            ),
+            task_type="SEMANTIC_SIMILARITY",
+            dimensions=JOB_EMBEDDING_DIMENSIONS,
+        )
+        await job.save()
+        print("Reindexed Job ", job.id)
 
     job_applicants = await JobApplicant.find_all().to_list()
     for job_applicant in job_applicants:
