@@ -20,6 +20,7 @@ from app.core.constants import (
     JobKindType,
 )
 from app.core.geocoding import BaseLocationService
+from app.dataloaders import Dataloaders
 from app.jobs.agents.applicant_analysis import (
     JobApplicantAnalysisOutput,
     JobApplicantAnalyzerAgent,
@@ -516,6 +517,7 @@ class JobApplicantService:
         aws_settings: AWSSettings,
         settings: AppSettings,
         job_applicant_analysis_service: JobApplicantAnalysisService,
+        dataloaders: Dataloaders,
     ) -> None:
         self._job_repo = job_repo
         self._organization_member_service = organization_member_service
@@ -527,6 +529,7 @@ class JobApplicantService:
         self._settings = settings
         self._job_applicant_analyzer_agent = job_applicant_analyzer_agent
         self._job_applicant_analysis_service = job_applicant_analysis_service
+        self._dataloaders = dataloaders
 
     async def create(
         self,
@@ -714,15 +717,9 @@ class JobApplicantService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        # TODO: use a dataloader to load the job applicant maybe?
-        # job_applicant = await info.context["loaders"].job_applicant_by_slug.load(slug)
+        result = await self._dataloaders.job_applicant_by_slug.load(slug)
 
-        # TODO: this is WRONG. we must fetch via the applicant slug, and not the account ID.
-        result = await self._job_applicant_repo.get(
-            account_id=account_id, job_id=job_id
-        )
-
-        if result is None:
+        if result is None or result.job.ref.id != job_id:
             return Err(JobApplicantNotFoundError())
         return Ok(result)
 
@@ -737,12 +734,7 @@ class JobApplicantService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        # TODO: use a dataloader to load the job applicant maybe?
-        # FIXME: right now we never see the correct count
-        # result = await info.context["loaders"].applicant_count_by_job_id.load(
-        #     str(job_id)
-        # )
-        result = None
+        result = await self._dataloaders.applicant_count_by_job_id.load(str(job_id))
 
         if result is None:
             return Err(JobApplicantCountNotFoundError())
