@@ -194,7 +194,7 @@ export default function NewOrganizationForm() {
 						isRequired
 						validationBehavior="aria"
 					/>
-					<div className="flex gap-12 w-full items-start">
+					<div className="flex flex-col sm:flex-row gap-12 w-full items-start">
 						<Input
 							label="Organization Logo"
 							labelPlacement="outside"
