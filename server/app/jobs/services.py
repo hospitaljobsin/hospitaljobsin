@@ -708,7 +708,6 @@ class JobApplicantService:
     ) -> Result[
         JobApplicant, OrganizationAuthorizationError | JobApplicantNotFoundError
     ]:
-        # TODO: use a dataloader to check this data for efficiency
         if not await self._organization_member_service.is_member(
             account_id=account_id,
             organization_id=organization_id,
@@ -732,7 +731,6 @@ class JobApplicantService:
     ) -> Result[
         dict[str, int], OrganizationAuthorizationError | JobApplicantCountNotFoundError
     ]:
-        # TODO: use a dataloader to check this data for efficiency
         if not await self._organization_member_service.is_member(
             account_id=account_id,
             organization_id=organization_id,
@@ -740,6 +738,7 @@ class JobApplicantService:
             return Err(OrganizationAuthorizationError())
 
         # TODO: use a dataloader to load the job applicant maybe?
+        # FIXME: right now we never see the correct count
         # result = await info.context["loaders"].applicant_count_by_job_id.load(
         #     str(job_id)
         # )
@@ -765,7 +764,6 @@ class JobMetricService:
         organization_id: ObjectId,
         event_type: ImpressionJobMetricEventType,
     ) -> Result[list[dict[str, Any]], OrganizationAuthorizationError]:
-        # TODO: use a dataloader to check this data for efficiency
         if not await self._organization_member_service.is_member(
             account_id=account.id,
             organization_id=organization_id,
@@ -786,7 +784,7 @@ class JobMetricService:
         end_date: datetime | None = None,
     ) -> Result[int, OrganizationAuthorizationError]:
         """Get the count of job metrics for a given organization ID and event type."""
-        # TODO: use a dataloader to check this data for efficiency
+
         if not await self._organization_member_service.is_member(
             account_id=account.id,
             organization_id=organization_id,
@@ -811,7 +809,7 @@ class JobMetricService:
         end_date: datetime | None = None,
     ) -> Result[int, OrganizationAuthorizationError]:
         """Get the count of job metrics for a given job ID and event type."""
-        # TODO: use a dataloader to check this data for efficiency
+
         if not await self._organization_member_service.is_member(
             account_id=account.id,
             organization_id=organization_id,
@@ -833,7 +831,6 @@ class JobMetricService:
         organization_id: ObjectId,
         event_type: ImpressionJobMetricEventType,
     ) -> Result[list[dict[str, Any]], OrganizationAuthorizationError]:
-        # TODO: use a dataloader to check this data for efficiency
         if not await self._organization_member_service.is_member(
             account_id=account.id,
             organization_id=organization_id,
