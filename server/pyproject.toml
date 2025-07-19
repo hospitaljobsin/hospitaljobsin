@@ -37,7 +37,7 @@ dependencies = [
     "structlog-sentry==2.2.1",
     "typing-extensions==4.14.1",
     "typing-inspection==0.4.1",
-    "strawberry-graphql==0.275.5",
+    "strawberry-graphql==0.278.0",
     "types-aiobotocore-textract==2.23.0",
     "tesserocr==2.8.0",
     "pillow==11.3.0",
@@ -59,7 +59,7 @@ dev-dependencies = [
     "ruff==0.12.2",
     "pyright==1.1.403",
     "better-exceptions==0.3.3",
-    "strawberry-graphql[cli]==0.275.5"
+    "strawberry-graphql[cli]==0.278.0"
 ]
 
 [tool.pyright]

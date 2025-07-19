@@ -20,7 +20,7 @@ class PersistedQueriesExtension(SchemaExtension):
 
     async def on_operation(self) -> AsyncIterator[None]:
         body = await self.execution_context.context.get("request").json()
-        document_id = body.get("document_id")
+        document_id = body.get("id") or body.get("document_id")
         persisted_query = self.cache.get(document_id)
         if persisted_query is None:
             self.execution_context.result = ExecutionResult(

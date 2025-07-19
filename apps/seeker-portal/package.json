@@ -48,6 +48,7 @@
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
 		"react-hook-form": "^7.57.0",
+		"react-relay-network-modern": "^6.2.2",
 		"react-share": "^5.2.2",
 		"relay-runtime": "^20.0.0",
 		"require-in-the-middle": "^7.5.2",

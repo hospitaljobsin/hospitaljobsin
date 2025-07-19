@@ -703,6 +703,9 @@ importers:
       react-hook-form:
         specifier: ^7.57.0
         version: 7.57.0(react@19.1.0)
+      react-relay-network-modern:
+        specifier: ^6.2.2
+        version: 6.2.2(relay-runtime@20.0.0)
       react-share:
         specifier: ^5.2.2
         version: 5.2.2(react@19.1.0)
@@ -6494,6 +6497,9 @@ packages:
   core-js-compat@3.43.0:
     resolution: {integrity: sha512-2GML2ZsCc5LR7hZYz4AXmjQw8zuy2T//2QntwdnpuYI7jteT6GVYJL7F6C2C57R7gSYrcqVW3lAALefdbhBLDA==}
 
+  core-js@3.44.0:
+    resolution: {integrity: sha512-aFCtd4l6GvAXwVEh3XbbVqJGHDJt0OZRa+5ePGx3LLwi12WfexqQxcsohb2wgsa/92xtl19Hd66G/L+TaAxDMw==}
+
   cors@2.8.5:
     resolution: {integrity: sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==}
     engines: {node: '>= 0.10'}
@@ -7172,6 +7178,10 @@ packages:
 
   extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
+
+  extract-files@9.0.0:
+    resolution: {integrity: sha512-CvdFfHkC95B4bBBk36hcEmvdR2awOdhhVUYH6S/zrVj3477zven/fJMYg7121h4T1xHZC+tetUpubpAhxwI7hQ==}
+    engines: {node: ^10.17.0 || ^12.0.0 || >= 13.7.0}
 
   fast-copy@3.0.2:
     resolution: {integrity: sha512-dl0O9Vhju8IrcLndv2eU4ldt1ftXMqqfgN4H1cpmGV7P6jeB9FwpN9a2c8DPGE1Ys88rNUJVYDHq73CGAGOPfQ==}
@@ -9746,6 +9756,12 @@ packages:
     resolution: {integrity: sha512-MkZcjEXqVKqXEIMVE0mbcGgDpkfSdd8zhuzXEl9QzYeNcw8Hq2oVIzDLWuZN2PQBwM5PWjc2S31K8Q1UbcFMfw==}
     peerDependencies:
       react: '*'
+
+  react-relay-network-modern@6.2.2:
+    resolution: {integrity: sha512-069KzBi7X6+mYtQgiNMblKr8n9ftme6N7neG+ZwAgV5w9SmQRg1020X7OE3RWWeMHKL+nTyx+JTc17yAtfNSQw==}
+    engines: {node: '>=14.21.3'}
+    peerDependencies:
+      relay-runtime: '>=1.4.0'
 
   react-relay@20.0.0:
     resolution: {integrity: sha512-4Fm3xs8TmCh0B8zargSIWjU6Mdf3AFf4epTboZBHwyN0xDynF53PsiiCgbP5WRAd63oC54T+TF4MrTXdc4VYIw==}
@@ -19246,6 +19262,8 @@ snapshots:
     dependencies:
       browserslist: 4.25.0
 
+  core-js@3.44.0: {}
+
   cors@2.8.5:
     dependencies:
       object-assign: 4.1.1
@@ -20177,6 +20195,8 @@ snapshots:
       is-extendable: 1.0.1
 
   extend@3.0.2: {}
+
+  extract-files@9.0.0: {}
 
   fast-copy@3.0.2: {}
 
@@ -23452,6 +23472,13 @@ snapshots:
       prop-types: 15.8.1
       qr.js: 0.0.0
       react: 19.1.0
+
+  react-relay-network-modern@6.2.2(relay-runtime@20.0.0):
+    dependencies:
+      '@types/node': 18.19.112
+      core-js: 3.44.0
+      extract-files: 9.0.0
+      relay-runtime: 20.0.0
 
   react-relay@20.0.0(react@19.1.0):
     dependencies:
