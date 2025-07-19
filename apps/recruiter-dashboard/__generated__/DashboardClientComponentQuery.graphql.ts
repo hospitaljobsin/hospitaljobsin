@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<3361f5fb6dbc474e926d3da80e30d4aa>>
- * @relayHash 7d50626161f8015930341c54e85d0c3d
+ * @generated SignedSource<<e47185a55bfa5bc7383b830500cdbca2>>
+ * @relayHash 8e0c9d30b223d090a10368b2d8a0e6ae
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 7d50626161f8015930341c54e85d0c3d
+// @relayRequestID 8e0c9d30b223d090a10368b2d8a0e6ae
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -141,6 +141,13 @@ return {
                 "args": null,
                 "kind": "ScalarField",
                 "name": "isMember",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "isAdmin",
                 "storageKey": null
               },
               {
@@ -399,14 +406,7 @@ return {
                 "kind": "LinkedHandle",
                 "name": "jobs"
               },
-              (v8/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "isAdmin",
-                "storageKey": null
-              }
+              (v8/*: any*/)
             ],
             "type": "Organization",
             "abstractKey": null
@@ -425,7 +425,7 @@ return {
     ]
   },
   "params": {
-    "id": "7d50626161f8015930341c54e85d0c3d",
+    "id": "8e0c9d30b223d090a10368b2d8a0e6ae",
     "metadata": {},
     "name": "DashboardClientComponentQuery",
     "operationKind": "query",

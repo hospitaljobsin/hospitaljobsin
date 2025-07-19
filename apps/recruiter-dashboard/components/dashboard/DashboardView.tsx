@@ -25,10 +25,10 @@ const DashboardViewFragment = graphql`
 			... on Organization {
 				name
 				isMember
+				...OrganizationJobsControllerFragment
+				...OrganizationJobsListFragment @arguments(searchTerm: $searchTerm, sortBy: $sortBy)
 			}
 		}
-        ...OrganizationJobsListFragment @arguments(slug: $slug, searchTerm: $searchTerm, sortBy: $sortBy)
-		...OrganizationJobsControllerFragment @arguments(slug: $slug)
   }
 `;
 
@@ -65,12 +65,12 @@ export default function DashboardView(props: {
 					setSortBy={setSortBy}
 					searchTerm={searchTerm}
 					setSearchTerm={setSearchTerm}
-					rootQuery={query}
+					organization={query.organization}
 				/>
 			</div>
 			<div className="flex-1 overflow-y-auto px-6 py-8 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-w-2.5 scrollbar-thumb-[hsl(var(--heroui-foreground-300))] scrollbar-track-transparent">
 				<OrganizationJobsList
-					rootQuery={query}
+					organization={query.organization}
 					searchTerm={searchTerm}
 					sortBy={sortBy}
 				/>

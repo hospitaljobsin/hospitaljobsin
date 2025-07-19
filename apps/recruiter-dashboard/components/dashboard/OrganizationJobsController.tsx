@@ -12,27 +12,18 @@ import Link from "next/link";
 import { startTransition } from "react";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 
 interface OrganizationJobsControllerProps {
 	searchTerm: string | null;
 	setSearchTerm: (searchTerm: string | null) => void;
-	rootQuery: OrganizationJobsControllerFragment$key;
+	organization: OrganizationJobsControllerFragment$key;
 	sortBy: JobSortBy;
 	setSortBy: (sortBy: JobSortBy) => void;
 }
 
 const OrganizationJobsControllerFragment = graphql`
-	fragment OrganizationJobsControllerFragment on Query
-	@argumentDefinitions(
-		slug: { type: "String!" }
-	) {
-		organization(slug: $slug) {
-			__typename
-			... on Organization {
-				isAdmin
-			}
-		}
+	fragment OrganizationJobsControllerFragment on Organization {
+		isAdmin
 	}
 `;
 
@@ -54,10 +45,9 @@ const SORT_OPTIONS = [
 export default function OrganizationJobsController(
 	props: OrganizationJobsControllerProps,
 ) {
-	const data = useFragment(OrganizationJobsControllerFragment, props.rootQuery);
-	invariant(
-		data.organization.__typename === "Organization",
-		"Expected 'Organization' type.",
+	const data = useFragment(
+		OrganizationJobsControllerFragment,
+		props.organization,
 	);
 
 	const handleSortByChange = (keys: SharedSelection) => {
@@ -107,7 +97,7 @@ export default function OrganizationJobsController(
 					<SelectItem key={option.value}>{option.label}</SelectItem>
 				))}
 			</Select>
-			{data.organization.isAdmin && (
+			{data.isAdmin && (
 				<Button
 					as={Link}
 					href={links.organizationCreateJob}

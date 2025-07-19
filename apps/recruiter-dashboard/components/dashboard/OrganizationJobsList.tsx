@@ -8,23 +8,17 @@ import Link from "next/link";
 import { startTransition, useEffect, useRef } from "react";
 import { useFragment, usePaginationFragment } from "react-relay";
 import { graphql } from "relay-runtime";
-import invariant from "tiny-invariant";
 import Job from "./Job";
 import JobListSkeleton from "./JobListSkeleton";
 import type { JobSortBy } from "./OrganizationJobsController";
 
 const OrganizationJobsListFragment = graphql`
-fragment OrganizationJobsListFragment on Query @argumentDefinitions(
-	slug: { type: "String!" }
+fragment OrganizationJobsListFragment on Organization @argumentDefinitions(
 	searchTerm: { type: "String", defaultValue: null }
 	sortBy: { type: "JobSortBy!", defaultValue: CREATED_AT }
 ) {
-	organization(slug: $slug) {
-		__typename
-		... on Organization {
-			...OrganizationJobsListInternalFragment @arguments(searchTerm: $searchTerm, sortBy: $sortBy)
-		}
-	}
+	...OrganizationJobsListInternalFragment @arguments(searchTerm: $searchTerm, sortBy: $sortBy)
+
 }
 `;
 
@@ -53,25 +47,21 @@ const OrganizationJobsListInternalFragment = graphql`
 `;
 
 type Props = {
-	rootQuery: OrganizationJobsListFragment$key;
+	organization: OrganizationJobsListFragment$key;
 	searchTerm: string | null;
 	sortBy: JobSortBy;
 };
 
 export default function OrganizationJobsList({
-	rootQuery,
+	organization,
 	searchTerm,
 	sortBy,
 }: Props) {
-	const root = useFragment(OrganizationJobsListFragment, rootQuery);
-	invariant(
-		root.organization.__typename === "Organization",
-		"Expected 'Organization' node type",
-	);
+	const root = useFragment(OrganizationJobsListFragment, organization);
 	const { data, loadNext, isLoadingNext, refetch } = usePaginationFragment<
 		DashboardClientComponentQuery,
 		OrganizationJobsListInternalFragment$key
-	>(OrganizationJobsListInternalFragment, root.organization);
+	>(OrganizationJobsListInternalFragment, root);
 
 	const observerRef = useRef<HTMLDivElement | null>(null);
 

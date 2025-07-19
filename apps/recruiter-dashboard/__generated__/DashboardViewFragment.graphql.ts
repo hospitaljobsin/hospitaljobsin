@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9e934e62c23204b1b3078d459bcc5ec1>>
+ * @generated SignedSource<<ac7c221424e107aef58f0bdbe24e6cc6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,12 +15,12 @@ export type DashboardViewFragment$data = {
     readonly __typename: "Organization";
     readonly isMember: boolean;
     readonly name: string;
+    readonly " $fragmentSpreads": FragmentRefs<"OrganizationJobsControllerFragment" | "OrganizationJobsListFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
     readonly __typename: "%other";
   };
-  readonly " $fragmentSpreads": FragmentRefs<"OrganizationJobsControllerFragment" | "OrganizationJobsListFragment">;
   readonly " $fragmentType": "DashboardViewFragment";
 };
 export type DashboardViewFragment$key = {
@@ -28,16 +28,7 @@ export type DashboardViewFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"DashboardViewFragment">;
 };
 
-const node: ReaderFragment = (function(){
-var v0 = {
-  "kind": "Variable",
-  "name": "slug",
-  "variableName": "slug"
-},
-v1 = [
-  (v0/*: any*/)
-];
-return {
+const node: ReaderFragment = {
   "argumentDefinitions": [
     {
       "defaultValue": null,
@@ -61,7 +52,13 @@ return {
   "selections": [
     {
       "alias": null,
-      "args": (v1/*: any*/),
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "slug",
+          "variableName": "slug"
+        }
+      ],
       "concreteType": null,
       "kind": "LinkedField",
       "name": "organization",
@@ -90,6 +87,27 @@ return {
               "kind": "ScalarField",
               "name": "isMember",
               "storageKey": null
+            },
+            {
+              "args": null,
+              "kind": "FragmentSpread",
+              "name": "OrganizationJobsControllerFragment"
+            },
+            {
+              "args": [
+                {
+                  "kind": "Variable",
+                  "name": "searchTerm",
+                  "variableName": "searchTerm"
+                },
+                {
+                  "kind": "Variable",
+                  "name": "sortBy",
+                  "variableName": "sortBy"
+                }
+              ],
+              "kind": "FragmentSpread",
+              "name": "OrganizationJobsListFragment"
             }
           ],
           "type": "Organization",
@@ -97,35 +115,12 @@ return {
         }
       ],
       "storageKey": null
-    },
-    {
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "searchTerm",
-          "variableName": "searchTerm"
-        },
-        (v0/*: any*/),
-        {
-          "kind": "Variable",
-          "name": "sortBy",
-          "variableName": "sortBy"
-        }
-      ],
-      "kind": "FragmentSpread",
-      "name": "OrganizationJobsListFragment"
-    },
-    {
-      "args": (v1/*: any*/),
-      "kind": "FragmentSpread",
-      "name": "OrganizationJobsControllerFragment"
     }
   ],
   "type": "Query",
   "abstractKey": null
 };
-})();
 
-(node as any).hash = "c245b279b531cb743c69452749d7bf9d";
+(node as any).hash = "18865327e301b39154fcd4a63f1e1707";
 
 export default node;

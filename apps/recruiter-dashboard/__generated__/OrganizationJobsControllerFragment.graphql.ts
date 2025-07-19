@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<04edec2c860086c24bf3772fd5a1fed5>>
+ * @generated SignedSource<<fbade74a4b880fd4dd7ce9f5088ee22e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,14 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type OrganizationJobsControllerFragment$data = {
-  readonly organization: {
-    readonly __typename: "Organization";
-    readonly isAdmin: boolean;
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
+  readonly isAdmin: boolean;
   readonly " $fragmentType": "OrganizationJobsControllerFragment";
 };
 export type OrganizationJobsControllerFragment$key = {
@@ -27,60 +20,23 @@ export type OrganizationJobsControllerFragment$key = {
 };
 
 const node: ReaderFragment = {
-  "argumentDefinitions": [
-    {
-      "defaultValue": null,
-      "kind": "LocalArgument",
-      "name": "slug"
-    }
-  ],
+  "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
   "name": "OrganizationJobsControllerFragment",
   "selections": [
     {
       "alias": null,
-      "args": [
-        {
-          "kind": "Variable",
-          "name": "slug",
-          "variableName": "slug"
-        }
-      ],
-      "concreteType": null,
-      "kind": "LinkedField",
-      "name": "organization",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "__typename",
-          "storageKey": null
-        },
-        {
-          "kind": "InlineFragment",
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "isAdmin",
-              "storageKey": null
-            }
-          ],
-          "type": "Organization",
-          "abstractKey": null
-        }
-      ],
+      "args": null,
+      "kind": "ScalarField",
+      "name": "isAdmin",
       "storageKey": null
     }
   ],
-  "type": "Query",
+  "type": "Organization",
   "abstractKey": null
 };
 
-(node as any).hash = "f87ba5bfbf0d678e1835ecc10c2cee55";
+(node as any).hash = "26176dcecc747a54d043d47e6216e61e";
 
 export default node;
