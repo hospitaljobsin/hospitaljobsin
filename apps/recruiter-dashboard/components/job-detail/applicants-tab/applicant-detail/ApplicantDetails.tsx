@@ -108,7 +108,7 @@ export default function ApplicantDetails({
 						</div>
 						<div className="flex flex-col gap-4 flex-1">
 							<h2 className="text-xl font-medium">{data.account.fullName}</h2>
-							<h3 className="text-foreground-600 text-medium">
+							<h3 className="text-foreground-600 text-medium line-clamp-2">
 								{data.profileSnapshot.headline}
 							</h3>
 						</div>
