@@ -37,6 +37,8 @@ from app.jobs.exceptions import (
     AccountProfileNotFoundError,
     InsufficientActiveVacanciesError,
     JobApplicantAlreadyExistsError,
+    JobApplicantCountNotFoundError,
+    JobApplicantNotFoundError,
     JobApplicantsNotFoundError,
     JobIsExternalError,
     JobNotFoundError,
@@ -697,6 +699,56 @@ class JobApplicantService:
             HttpMethod="PUT",
         )
 
+    async def get(
+        self,
+        job_id: ObjectId,
+        account_id: ObjectId,
+        organization_id: ObjectId,
+        slug: str,
+    ) -> Result[
+        JobApplicant, OrganizationAuthorizationError | JobApplicantNotFoundError
+    ]:
+        # TODO: use a dataloader to check this data for efficiency
+        if not await self._organization_member_service.is_member(
+            account_id=account_id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        # TODO: use a dataloader to load the job applicant maybe?
+        # job_applicant = await info.context["loaders"].job_applicant_by_slug.load(slug)
+
+        # TODO: this is WRONG. we must fetch via the applicant slug, and not the account ID.
+        result = await self._job_applicant_repo.get(
+            account_id=account_id, job_id=job_id
+        )
+
+        if result is None:
+            return Err(JobApplicantNotFoundError())
+        return Ok(result)
+
+    async def get_count_for_job(
+        self, job_id: ObjectId, account_id: ObjectId, organization_id: ObjectId
+    ) -> Result[
+        dict[str, int], OrganizationAuthorizationError | JobApplicantCountNotFoundError
+    ]:
+        # TODO: use a dataloader to check this data for efficiency
+        if not await self._organization_member_service.is_member(
+            account_id=account_id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        # TODO: use a dataloader to load the job applicant maybe?
+        # result = await info.context["loaders"].applicant_count_by_job_id.load(
+        #     str(job_id)
+        # )
+        result = None
+
+        if result is None:
+            return Err(JobApplicantCountNotFoundError())
+        return Ok(result)
+
 
 class JobMetricService:
     def __init__(
@@ -714,11 +766,11 @@ class JobMetricService:
         event_type: ImpressionJobMetricEventType,
     ) -> Result[list[dict[str, Any]], OrganizationAuthorizationError]:
         # TODO: use a dataloader to check this data for efficiency
-        # if not await self._organization_member_service.is_member(
-        #     account_id=account.id,
-        #     organization_id=organization_id,
-        # ):
-        #     return Err(OrganizationAuthorizationError())
+        if not await self._organization_member_service.is_member(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
         result = await self._job_metric_repo.get_organization_impression_metric_points(
             organization_id=organization_id,
             event_type=event_type,
@@ -735,11 +787,11 @@ class JobMetricService:
     ) -> Result[int, OrganizationAuthorizationError]:
         """Get the count of job metrics for a given organization ID and event type."""
         # TODO: use a dataloader to check this data for efficiency
-        # if not await self._organization_member_service.is_member(
-        #     account_id=account.id,
-        #     organization_id=organization_id,
-        # ):
-        #     return Err(OrganizationAuthorizationError())
+        if not await self._organization_member_service.is_member(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
 
         result = await self._job_metric_repo.get_organization_impression_count(
             organization_id=organization_id,
@@ -760,11 +812,11 @@ class JobMetricService:
     ) -> Result[int, OrganizationAuthorizationError]:
         """Get the count of job metrics for a given job ID and event type."""
         # TODO: use a dataloader to check this data for efficiency
-        # if not await self._organization_member_service.is_member(
-        #     account_id=account.id,
-        #     organization_id=organization_id,
-        # ):
-        #     return Err(OrganizationAuthorizationError())
+        if not await self._organization_member_service.is_member(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
 
         result = await self._job_metric_repo.get_impression_count(
             job_id=job_id,
@@ -778,14 +830,15 @@ class JobMetricService:
         self,
         account: Account,
         job_id: ObjectId,
+        organization_id: ObjectId,
         event_type: ImpressionJobMetricEventType,
     ) -> Result[list[dict[str, Any]], OrganizationAuthorizationError]:
         # TODO: use a dataloader to check this data for efficiency
-        # if not await self._organization_member_service.is_member(
-        #     account_id=account.id,
-        #     organization_id=organization_id,
-        # ):
-        #     return Err(OrganizationAuthorizationError())
+        if not await self._organization_member_service.is_member(
+            account_id=account.id,
+            organization_id=organization_id,
+        ):
+            return Err(OrganizationAuthorizationError())
         result = await self._job_metric_repo.get_impression_metric_points(
             job_id=job_id,
             event_type=event_type,

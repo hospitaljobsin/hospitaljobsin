@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4df2b1a732a5497bc5938e7ec984d0f1>>
+ * @generated SignedSource<<905f864615377e122d5284c6425b221a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,11 +15,14 @@ export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type JobFragment$data = {
   readonly applicantCount: {
-    readonly applied: number;
-    readonly interviewed: number;
-    readonly offered: number;
-    readonly onHold: number;
-    readonly shortlisted: number;
+    readonly __typename: string;
+    readonly count: {
+      readonly applied: number;
+      readonly interviewed: number;
+      readonly offered: number;
+      readonly onHold: number;
+      readonly shortlisted: number;
+    } | null | undefined;
   };
   readonly createdAt: any;
   readonly currency: Currency;
@@ -54,7 +57,15 @@ export type JobFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"JobFragment">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -89,13 +100,7 @@ const node: ReaderFragment = {
       "name": "viewCount",
       "plural": false,
       "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "__typename",
-          "storageKey": null
-        },
+        (v0/*: any*/),
         {
           "kind": "InlineFragment",
           "selections": [
@@ -198,60 +203,69 @@ const node: ReaderFragment = {
       "storageKey": null
     },
     {
-      "kind": "RequiredField",
-      "field": {
-        "alias": null,
-        "args": null,
-        "concreteType": "JobApplicantCount",
-        "kind": "LinkedField",
-        "name": "applicantCount",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "applied",
-            "storageKey": null
+      "alias": null,
+      "args": null,
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "applicantCount",
+      "plural": false,
+      "selections": [
+        (v0/*: any*/),
+        {
+          "fragment": {
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "applied",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "shortlisted",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "interviewed",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "onHold",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "offered",
+                "storageKey": null
+              }
+            ],
+            "type": "JobApplicantCount",
+            "abstractKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "shortlisted",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "interviewed",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "onHold",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "offered",
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
-      },
-      "action": "THROW"
+          "kind": "AliasedInlineFragmentSpread",
+          "name": "count"
+        }
+      ],
+      "storageKey": null
     }
   ],
   "type": "Job",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "f501fa4a4456054938fafd712298aba5";
+(node as any).hash = "e8b13692d2ddf3856ebd827874f7b35b";
 
 export default node;

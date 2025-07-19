@@ -14,6 +14,7 @@ from app.organizations.dataloaders import (
     OrganizationByIdLoader,
     OrganizationBySlugLoader,
     OrganizationInviteByTokenLoader,
+    OrganizationMemberByIdLoader,
 )
 
 
@@ -31,6 +32,7 @@ class Dataloaders:
     profile_by_id: ProfileByIdLoader
     organization_invite_by_token: OrganizationInviteByTokenLoader
     applicant_count_by_job_id: ApplicantCountByJobIdLoader
+    organization_member_by_id: OrganizationMemberByIdLoader
 
 
 def create_dataloaders(
@@ -46,6 +48,7 @@ def create_dataloaders(
     organization_by_slug: OrganizationBySlugLoader,
     organization_invite_by_token: OrganizationInviteByTokenLoader,
     applicant_count_by_job_id: ApplicantCountByJobIdLoader,
+    organization_member_by_id: OrganizationMemberByIdLoader,
 ) -> Dataloaders:
     """Create dataloaders for the current context."""
     return Dataloaders(
@@ -61,4 +64,5 @@ def create_dataloaders(
         profile_by_id=profile_by_id,
         organization_invite_by_token=organization_invite_by_token,
         applicant_count_by_job_id=applicant_count_by_job_id,
+        organization_member_by_id=organization_member_by_id,
     )

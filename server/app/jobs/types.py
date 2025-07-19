@@ -44,12 +44,16 @@ from app.jobs.documents import (
     JobApplicationForm,
     SavedJob,
 )
+from app.jobs.exceptions import (
+    JobApplicantCountNotFoundError,
+    JobApplicantNotFoundError,
+)
 from app.jobs.repositories import (
     JobApplicantRepo,
     JobApplicantsSortBy,
     JobRepo,
 )
-from app.jobs.services import JobMetricService
+from app.jobs.services import JobApplicantService, JobMetricService
 from app.organizations.exceptions import OrganizationAuthorizationError
 
 if TYPE_CHECKING:
@@ -198,6 +202,28 @@ JobViewMetricPointsPayload = Annotated[
         description="The job view metric points payload.",
     ),
 ]
+
+
+@strawberry.type(
+    name="JobApplicantNotFoundError",
+    description="Used when the job applicant is not found.",
+)
+class JobApplicantNotFoundErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Job applicant not found!",
+    )
+
+
+@strawberry.type(
+    name="JobApplicantCountNotFoundError",
+    description="Used when the job applicant count is not found.",
+)
+class JobApplicantCountNotFoundErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Job applicant count not found!",
+    )
 
 
 @strawberry.input(
@@ -664,17 +690,6 @@ class JobApplicantConnectionType(
 
 
 @strawberry.type(
-    name="JobApplicantNotFoundError",
-    description="Used when the job applicant is not found.",
-)
-class JobApplicantNotFoundErrorType(BaseErrorType):
-    message: str = strawberry.field(
-        description="Human readable error message.",
-        default="Job applicant not found!",
-    )
-
-
-@strawberry.type(
     name="JobApplicantCount",
     description="Application count data of a job.",
 )
@@ -704,6 +719,31 @@ class JobApplicantCountType:
             on_hold=metric_point.get("on_hold", 0),
             offered=metric_point.get("offered", 0),
         )
+
+
+JobApplicantPayload = Annotated[
+    JobApplicantType
+    | Annotated[
+        "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
+    ]
+    | JobApplicantNotFoundErrorType,
+    strawberry.union(
+        name="JobApplicantPayload",
+        description="The job applicant payload.",
+    ),
+]
+
+JobApplicantCountPayload = Annotated[
+    JobApplicantCountType
+    | Annotated[
+        "OrganizationAuthorizationErrorType", strawberry.lazy("app.organizations.types")
+    ]
+    | JobApplicantCountNotFoundErrorType,
+    strawberry.union(
+        name="JobApplicantCountPayload",
+        description="The job applicant payload.",
+    ),
+]
 
 
 @strawberry.type(
@@ -988,6 +1028,7 @@ class JobType(BaseNodeType[Job]):
         match await job_metric_service.get_impression_metric_points(
             account=info.context["current_user"],
             job_id=ObjectId(self.id),
+            organization_id=ObjectId(self.organization_id),
             event_type="view_start",
         ):
             case Ok(metric_points):
@@ -1041,7 +1082,6 @@ class JobType(BaseNodeType[Job]):
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: ensure only org members can view this field
                 ]
             )
         ],
@@ -1049,17 +1089,27 @@ class JobType(BaseNodeType[Job]):
     @inject
     async def applicant_count(
         self,
-        info: Info,
-    ) -> JobApplicantCountType | None:
+        info: AuthInfo,
+        job_applicant_service: Annotated[JobApplicantService, Inject],
+    ) -> JobApplicantCountPayload:
         """Get the number of applications for the job."""
-        applicant_count = await info.context["loaders"].applicant_count_by_job_id.load(
-            str(self.id)
-        )
+        from app.organizations.types import OrganizationAuthorizationErrorType
 
-        if not applicant_count:
-            return None
-
-        return JobApplicantCountType.marshal(applicant_count)
+        match await job_applicant_service.get_count_for_job(
+            job_id=ObjectId(self.id),
+            account_id=info.context["current_user"].id,
+            organization_id=ObjectId(self.organization_id),
+        ):
+            case Ok(applicant_count):
+                return JobApplicantCountType.marshal(applicant_count)
+            case Err(error):
+                match error:
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+                    case JobApplicantCountNotFoundError():
+                        return JobApplicantCountNotFoundErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
 
     @strawberry.field(  # type: ignore[misc]
         description="The custom application form for the job.",
@@ -1079,7 +1129,6 @@ class JobType(BaseNodeType[Job]):
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
-                    # TODO: ensure only org members can view this field
                 ]
             )
         ],
@@ -1087,20 +1136,33 @@ class JobType(BaseNodeType[Job]):
     @inject
     async def job_applicant(
         self,
-        info: Info,
+        info: AuthInfo,
+        job_applicant_service: Annotated[JobApplicantService, Inject],
         slug: Annotated[
             str,
             strawberry.argument(
                 description="The slug of the job applicant.",
             ),
         ],
-    ) -> JobApplicantType | JobApplicantNotFoundErrorType:
-        job_applicant = await info.context["loaders"].job_applicant_by_slug.load(slug)
+    ) -> JobApplicantPayload:
+        from app.organizations.types import OrganizationAuthorizationErrorType
 
-        if job_applicant is None or job_applicant.job.ref.id != ObjectId(self.id):
-            # ensure the job applicant belongs to the job
-            return JobApplicantNotFoundErrorType()
-        return JobApplicantType.marshal(job_applicant)
+        match await job_applicant_service.get(
+            job_id=ObjectId(self.id),
+            account_id=info.context["current_user"].id,
+            organization_id=ObjectId(self.organization_id),
+            slug=slug,
+        ):
+            case Ok(job_applicant):
+                return JobApplicantType.marshal(job_applicant)
+            case Err(error):
+                match error:
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+                    case JobApplicantNotFoundError():
+                        return JobApplicantNotFoundErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
 
     @strawberry.field(  # type: ignore[misc]
         description="The organization of the job.",

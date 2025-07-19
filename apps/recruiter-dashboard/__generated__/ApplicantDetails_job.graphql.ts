@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e142c9f2086b33263b3ca9aa858899a2>>
+ * @generated SignedSource<<70130fb787984bdfa0f43029d49b7713>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,13 +13,6 @@ export type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "LOCUM" | "PART_
 export type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type ApplicantDetails_job$data = {
-  readonly applicantCount: {
-    readonly applied: number;
-    readonly interviewed: number;
-    readonly offered: number;
-    readonly onHold: number;
-    readonly shortlisted: number;
-  } | null | undefined;
   readonly description: string;
   readonly id: string;
   readonly location: string | null | undefined;
@@ -128,58 +121,12 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "vacancies",
       "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": "JobApplicantCount",
-      "kind": "LinkedField",
-      "name": "applicantCount",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "applied",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "interviewed",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "offered",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "onHold",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "shortlisted",
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
     }
   ],
   "type": "Job",
   "abstractKey": null
 };
 
-(node as any).hash = "0cea4d8f3b442e7eda70ff64c3895c99";
+(node as any).hash = "ecc73554852d9ee1b18697c9f14f0977";
 
 export default node;

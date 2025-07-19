@@ -1,3 +1,4 @@
+from bson import ObjectId
 from strawberry.dataloader import DataLoader
 
 from app.core.dataloaders import (
@@ -6,8 +7,12 @@ from app.core.dataloaders import (
     transform_valid_object_id,
 )
 
-from .documents import Organization, OrganizationInvite
-from .repositories import OrganizationInviteRepo, OrganizationRepo
+from .documents import Organization, OrganizationInvite, OrganizationMember
+from .repositories import (
+    OrganizationInviteRepo,
+    OrganizationMemberRepo,
+    OrganizationRepo,
+)
 
 type OrganizationByIdLoader = DataLoader[str, Organization | None]
 
@@ -52,4 +57,28 @@ async def create_organization_invite_by_token_dataloader(
     return create_dataloader(
         repo_method=organization_invite_repo.get_many_active_invites,
         key_transform=transform_email_token,
+    )
+
+
+type OrganizationMemberByIdLoader = DataLoader[
+    tuple[str, str], OrganizationMember | None
+]
+
+
+def transform_valid_object_id_tuple(
+    key: tuple[str, str],
+) -> tuple[ObjectId, ObjectId] | None:
+    """Check if a string tuple is a valid ObjectId and string tuple."""
+    if len(key) == 2 and ObjectId.is_valid(key[0]) and ObjectId.is_valid(key[1]):  # noqa: PLR2004
+        return (ObjectId(key[0]), ObjectId(key[1]))
+    return None
+
+
+async def create_organization_member_by_id_dataloader(
+    organization_member_repo: OrganizationMemberRepo,
+) -> OrganizationMemberByIdLoader:
+    """Create a dataloader to load oganizations by their slugs."""
+    return create_dataloader(
+        repo_method=organization_member_repo.get_many_by_ids,
+        key_transform=transform_valid_object_id_tuple,
     )

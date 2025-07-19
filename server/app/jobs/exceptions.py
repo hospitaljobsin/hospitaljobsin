@@ -34,6 +34,14 @@ class AccountProfileNotFoundError:
     """Raised when an account profile is not found."""
 
 
+class JobApplicantNotFoundError:
+    """Raised when a job applicant is not found."""
+
+
+class JobApplicantCountNotFoundError:
+    """Raised when a job applicant count is not found."""
+
+
 class JobApplicantsNotFoundError:
     """Raised when one or more job applicants were not found."""
 

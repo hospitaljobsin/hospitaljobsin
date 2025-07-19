@@ -113,6 +113,7 @@ from app.organizations.dataloaders import (
     create_organization_by_id_dataloader,
     create_organization_by_slug_dataloader,
     create_organization_invite_by_token_dataloader,
+    create_organization_member_by_id_dataloader,
 )
 from app.organizations.repositories import (
     OrganizationInviteRepo,
@@ -295,6 +296,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(create_applicant_count_by_job_id_dataloader))
     container.register(aioinject.Scoped(create_job_applicant_by_id_dataloader))
     container.register(aioinject.Scoped(create_job_applicant_by_slug_dataloader))
+    container.register(aioinject.Scoped(create_organization_member_by_id_dataloader))
     container.register(aioinject.Scoped(create_dataloaders))
     container.register(aioinject.Singleton(create_job_applicant_analyzer_agent))
     container.register(aioinject.Singleton(create_applicant_query_parser_agent))

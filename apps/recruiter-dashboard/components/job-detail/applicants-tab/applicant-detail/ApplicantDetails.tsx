@@ -45,14 +45,6 @@ const ApplicantDetailsJobFragment = graphql`
 	type
 	workMode
 	vacancies
-	applicantCount {
-		applied
-		interviewed
-		offered
-		onHold
-		shortlisted
-	}
-
   }
 `;
 

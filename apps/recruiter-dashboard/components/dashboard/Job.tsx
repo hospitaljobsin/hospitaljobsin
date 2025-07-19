@@ -1,7 +1,6 @@
 import type { JobFragment$key } from "@/__generated__/JobFragment.graphql";
 import { getRelativeTimeString, salaryFormat } from "@/lib/intl";
 import links from "@/lib/links";
-import { useRouter } from "@bprogress/next";
 import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
 import {
 	Briefcase,
@@ -43,12 +42,15 @@ export const JobFragment = graphql`
     maxExperience
     isActive
     expiresAt
-    applicantCount @required(action: THROW) {
-      applied
-      shortlisted
-      interviewed
-      onHold
-      offered
+    applicantCount {
+      __typename
+	  ... on JobApplicantCount @alias(as: "count") {
+		applied
+		shortlisted
+		interviewed
+		onHold
+		offered
+	  }
     }
   }
 `;
@@ -146,14 +148,24 @@ function formatExperienceRange(min?: number | null, max?: number | null) {
 }
 
 export default function Job({ job }: Props) {
-	const router = useRouter();
 	const data = useFragment(JobFragment, job);
 
 	const hasExpired = data.expiresAt && new Date(data.expiresAt) < new Date();
 
+	let applied = 0;
+	let shortlisted = 0;
+	let interviewed = 0;
+	let onHold = 0;
+	let offered = 0;
 	// Applicant pipeline
-	const { applied, shortlisted, interviewed, onHold, offered } =
-		data.applicantCount;
+	if (data.applicantCount.count) {
+		applied = data.applicantCount.count.applied;
+		shortlisted = data.applicantCount.count.shortlisted;
+		interviewed = data.applicantCount.count.interviewed;
+		onHold = data.applicantCount.count.onHold;
+		offered = data.applicantCount.count.offered;
+	}
+
 	const totalApplicants =
 		applied + shortlisted + interviewed + onHold + offered;
 	const pipeline = [

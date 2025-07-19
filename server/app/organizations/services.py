@@ -17,6 +17,7 @@ from app.core.constants import (
     RESERVED_ORGANIZATION_NAMES,
 )
 from app.core.emails import BaseEmailSender
+from app.dataloaders import Dataloaders
 from app.jobs.exceptions import OrganizationNotFoundError
 from app.organizations.documents import (
     Organization,
@@ -43,22 +44,23 @@ class OrganizationMemberService:
         self,
         organization_member_repo: OrganizationMemberRepo,
         organization_repo: OrganizationRepo,
+        dataloaders: Dataloaders,
     ) -> None:
         self._organization_member_repo = organization_member_repo
         self._organization_repo = organization_repo
+        self._dataloaders = dataloaders
 
     async def is_admin(self, account_id: ObjectId, organization_id: ObjectId) -> bool:
-        member = await self._organization_member_repo.get(
-            account_id=account_id,
-            organization_id=organization_id,
+        member = await self._dataloaders.organization_member_by_id.load(
+            (str(account_id), str(organization_id))
         )
 
         return member is not None and member.role == "admin"
 
     async def is_member(self, account_id: ObjectId, organization_id: ObjectId) -> bool:
         return (
-            await self._organization_member_repo.get(
-                account_id=account_id, organization_id=organization_id
+            await self._dataloaders.organization_member_by_id.load(
+                (str(account_id), str(organization_id))
             )
             is not None
         )

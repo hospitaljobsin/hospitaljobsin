@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<70c513f0f63a7cd40c9b1a0b73ac16a8>>
- * @relayHash 2a8b4603a238bf1a796a92cae6c4488d
+ * @generated SignedSource<<2cb5fa20506abacefc9117fbc6a660ee>>
+ * @relayHash eb74d1957af0a1547d67487a4a81e54b
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 2a8b4603a238bf1a796a92cae6c4488d
+// @relayRequestID eb74d1957af0a1547d67487a4a81e54b
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -569,45 +569,53 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "JobApplicantCount",
+                    "concreteType": null,
                     "kind": "LinkedField",
                     "name": "applicantCount",
                     "plural": false,
                     "selections": [
+                      (v15/*: any*/),
                       {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "applied",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "shortlisted",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "interviewed",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "onHold",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "offered",
-                        "storageKey": null
+                        "kind": "InlineFragment",
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "applied",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "shortlisted",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "interviewed",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "onHold",
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "offered",
+                            "storageKey": null
+                          }
+                        ],
+                        "type": "JobApplicantCount",
+                        "abstractKey": null
                       }
                     ],
                     "storageKey": null
@@ -625,7 +633,7 @@ return {
     ]
   },
   "params": {
-    "id": "2a8b4603a238bf1a796a92cae6c4488d",
+    "id": "eb74d1957af0a1547d67487a4a81e54b",
     "metadata": {},
     "name": "JobEditFormMutation",
     "operationKind": "mutation",
