@@ -29,7 +29,6 @@ export default function Organization({ organization }: Props) {
 			isPressable
 			as={Link}
 			href={links.organizationDetail(data.slug)}
-			disableRipple
 			shadow="none"
 		>
 			<CardHeader>

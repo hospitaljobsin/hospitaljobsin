@@ -179,10 +179,12 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 									sizes="20vw"
 								/>
 							</div>
-
-							<span className="flex items-start justify-start w-full gap-1 text-sm text-foreground-500 line-clamp-2 max-w-sm">
-								{data.profileSnapshot.headline}
-							</span>
+							<div className="w-full flex flex-col gap-2">
+								<h2 className="text-medium">{data.account.fullName}</h2>
+								<span className="flex items-start justify-start w-full gap-1 text-sm text-foreground-500 line-clamp-2 max-w-sm">
+									{data.profileSnapshot.headline}
+								</span>
+							</div>
 						</div>
 						{!atleastOneSelected && (
 							<ApplicantStatusUpdater
