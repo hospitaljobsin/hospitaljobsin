@@ -45,7 +45,7 @@ export default function Organization({ organization }: Props) {
 						</div>
 						<div className="flex flex-col gap-2 items-start">
 							<h4 className="text-lg sm:text-xl font-medium">{data.name}</h4>
-							<p className="text-sm sm:text-base font-normal text-foreground-500">
+							<p className="text-sm sm:text-base font-normal text-foreground-500 line-clamp-2">
 								{data.description}
 							</p>
 						</div>

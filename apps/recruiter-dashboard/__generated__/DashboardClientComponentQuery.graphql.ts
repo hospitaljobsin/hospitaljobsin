@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e47185a55bfa5bc7383b830500cdbca2>>
- * @relayHash 8e0c9d30b223d090a10368b2d8a0e6ae
+ * @generated SignedSource<<6c279d7d9939c441e28e4ccbeb5b920f>>
+ * @relayHash 11575ff76d6fadd984fad32ae0cfb493
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 8e0c9d30b223d090a10368b2d8a0e6ae
+// @relayRequestID 11575ff76d6fadd984fad32ae0cfb493
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -309,45 +309,53 @@ return {
                           {
                             "alias": null,
                             "args": null,
-                            "concreteType": "JobApplicantCount",
+                            "concreteType": null,
                             "kind": "LinkedField",
                             "name": "applicantCount",
                             "plural": false,
                             "selections": [
+                              (v6/*: any*/),
                               {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "applied",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "shortlisted",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "interviewed",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "onHold",
-                                "storageKey": null
-                              },
-                              {
-                                "alias": null,
-                                "args": null,
-                                "kind": "ScalarField",
-                                "name": "offered",
-                                "storageKey": null
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "applied",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "shortlisted",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "interviewed",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "onHold",
+                                    "storageKey": null
+                                  },
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "offered",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "JobApplicantCount",
+                                "abstractKey": null
                               }
                             ],
                             "storageKey": null
@@ -425,7 +433,7 @@ return {
     ]
   },
   "params": {
-    "id": "8e0c9d30b223d090a10368b2d8a0e6ae",
+    "id": "11575ff76d6fadd984fad32ae0cfb493",
     "metadata": {},
     "name": "DashboardClientComponentQuery",
     "operationKind": "query",

@@ -278,6 +278,31 @@ class OrganizationMemberRepo:
             after=ObjectId(after) if after else None,
         )
 
+    async def get_many_by_ids(
+        self, member_ids: list[tuple[ObjectId, ObjectId]]
+    ) -> list[OrganizationMember | None]:
+        """Get multiple members by account_id and organization_id pairs."""
+        # Construct filters based on actual schema paths
+        filters = [
+            And({"account.$id": account_id}, {"organization.$id": organization_id})
+            for account_id, organization_id in member_ids
+        ]
+
+        # Use the Or operator to combine all conditions
+        members = await OrganizationMember.find({"$or": filters}).to_list()
+
+        # Map members by (account_id, member_id) for easy lookup
+        member_by_id = {
+            (member.account.ref.id, member.organization.ref.id): member
+            for member in members
+        }
+
+        # Return members in the same order as member_ids
+        return [
+            member_by_id.get((account_id, member_id))
+            for account_id, member_id in member_ids
+        ]
+
 
 class OrganizationInviteRepo:
     @classmethod

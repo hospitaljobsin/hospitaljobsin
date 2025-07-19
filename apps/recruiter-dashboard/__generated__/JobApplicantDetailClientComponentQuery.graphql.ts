@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f8c332bbde079cc3a87dcde759cbfdf7>>
- * @relayHash 1c81b8cf043a3f78037403d1ddbf017c
+ * @generated SignedSource<<f6c7248c4a0fd1fd60d9c98bd4dc4ff0>>
+ * @relayHash c1859b8adf1ef80a626800914ad8d2c5
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 1c81b8cf043a3f78037403d1ddbf017c
+// @relayRequestID c1859b8adf1ef80a626800914ad8d2c5
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -274,52 +274,6 @@ return {
                         "args": null,
                         "kind": "ScalarField",
                         "name": "vacancies",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "concreteType": "JobApplicantCount",
-                        "kind": "LinkedField",
-                        "name": "applicantCount",
-                        "plural": false,
-                        "selections": [
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "applied",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "interviewed",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "offered",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "onHold",
-                            "storageKey": null
-                          },
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "shortlisted",
-                            "storageKey": null
-                          }
-                        ],
                         "storageKey": null
                       },
                       {
@@ -863,7 +817,7 @@ return {
     ]
   },
   "params": {
-    "id": "1c81b8cf043a3f78037403d1ddbf017c",
+    "id": "c1859b8adf1ef80a626800914ad8d2c5",
     "metadata": {},
     "name": "JobApplicantDetailClientComponentQuery",
     "operationKind": "query",

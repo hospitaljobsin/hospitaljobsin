@@ -3,14 +3,7 @@
 import type { ApplicantCardFragment$key } from "@/__generated__/ApplicantCardFragment.graphql";
 import links from "@/lib/links";
 import { cn } from "@/lib/utils";
-import {
-	Button,
-	Card,
-	CardBody,
-	CardHeader,
-	Checkbox,
-	User,
-} from "@heroui/react";
+import { Button, Card, CardBody, CardHeader, Checkbox } from "@heroui/react";
 import {
 	CheckCircle2,
 	ChevronDown,
@@ -19,6 +12,7 @@ import {
 	Star,
 	XCircle,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -175,26 +169,21 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 				<CardHeader className="flex items-center gap-6 justify-start">
 					{/* Checkbox removed from here */}
 					<div className="w-full sm:items-center flex gap-6 justify-between flex-1 flex-col sm:flex-row">
-						<User
-							classNames={{
-								base: "flex gap-6 w-full justify-start",
-								wrapper: "flex gap-2",
-							}}
-							avatarProps={{
-								src: data.account.avatarUrl,
-								size: "lg",
-							}}
-							name={
-								<span className="font-medium text-lg text-foreground-900">
-									{data.account.fullName}
-								</span>
-							}
-							description={
-								<span className="flex items-start justify-start w-full gap-1 text-sm text-foreground-500">
-									{data.profileSnapshot.headline}
-								</span>
-							}
-						/>
+						<div className="w-full flex items-center gap-6">
+							<div className="relative aspect-square h-16 w-16">
+								<Image
+									src={data.account.avatarUrl}
+									alt={data.account.fullName}
+									fill
+									className="rounded-full object-cover"
+									sizes="20vw"
+								/>
+							</div>
+
+							<span className="flex items-start justify-start w-full gap-1 text-sm text-foreground-500 line-clamp-2 max-w-sm">
+								{data.profileSnapshot.headline}
+							</span>
+						</div>
 						{!atleastOneSelected && (
 							<ApplicantStatusUpdater
 								currentStatus={data.status}

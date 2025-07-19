@@ -1226,7 +1226,7 @@ type Job implements Node {
 	"""
 	The number of applications for the job.
 	"""
-	applicantCount: JobApplicantCount @isAuthenticated
+	applicantCount: JobApplicantCountPayload! @isAuthenticated
 
 	"""
 	The custom application form for the job.
@@ -1241,7 +1241,7 @@ type Job implements Node {
 		The slug of the job applicant.
 		"""
 		slug: String!
-	): JobApplicantJobApplicantNotFoundError! @isAuthenticated
+	): JobApplicantPayload! @isAuthenticated
 
 	"""
 	The organization of the job.
@@ -1399,6 +1399,24 @@ type JobApplicantCount {
 	offered: Int!
 }
 
+"""
+Used when the job applicant count is not found.
+"""
+type JobApplicantCountNotFoundError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
+"""
+The job applicant payload.
+"""
+union JobApplicantCountPayload =
+	| JobApplicantCount
+	| OrganizationAuthorizationError
+	| JobApplicantCountNotFoundError
+
 type JobApplicantEdge {
 	"""
 	A cursor for use in pagination
@@ -1411,10 +1429,6 @@ type JobApplicantEdge {
 	node: JobApplicant!
 }
 
-union JobApplicantJobApplicantNotFoundError =
-	| JobApplicant
-	| JobApplicantNotFoundError
-
 """
 Used when the job applicant is not found.
 """
@@ -1424,6 +1438,14 @@ type JobApplicantNotFoundError implements Error {
 	"""
 	message: String!
 }
+
+"""
+The job applicant payload.
+"""
+union JobApplicantPayload =
+	| JobApplicant
+	| OrganizationAuthorizationError
+	| JobApplicantNotFoundError
 
 """
 The status of the job application.
