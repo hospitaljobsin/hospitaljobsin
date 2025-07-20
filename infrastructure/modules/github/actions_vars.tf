@@ -12,6 +12,26 @@ resource "github_actions_variable" "aws_lambda_backend_image" {
   value         = var.aws_backend_image_name
 }
 
+resource "github_actions_variable" "aws_backend_ecs_cluster" {
+  repository    = data.github_repository.this.name
+  variable_name = "AWS_BACKEND_ECS_CLUSTER"
+  value         = var.aws_ecs_cluster_name
+}
+
+
+resource "github_actions_variable" "aws_backend_ecs_service" {
+  repository    = data.github_repository.this.name
+  variable_name = "AWS_BACKEND_ECS_SERVICE"
+  value         = var.aws_ecs_service_name
+}
+
+
+resource "github_actions_variable" "aws_backend_ecs_task_family" {
+  repository    = data.github_repository.this.name
+  variable_name = "AWS_BACKEND_ECS_TASK_FAMILY"
+  value         = var.aws_ecs_task_family
+}
+
 
 resource "github_actions_variable" "aws_worker_function_name" {
   repository    = data.github_repository.this.name

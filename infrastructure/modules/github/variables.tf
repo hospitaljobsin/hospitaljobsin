@@ -199,3 +199,16 @@ variable "aws_worker_image_name" {
   description = "The name of the AWS ECR image for the worker."
   type        = string
 }
+
+
+variable "aws_ecs_cluster_name" {
+  type = string
+}
+
+variable "aws_ecs_service_name" {
+  type = string
+}
+
+variable "aws_ecs_task_family" {
+  type = string
+}

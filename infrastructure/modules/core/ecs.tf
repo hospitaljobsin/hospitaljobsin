@@ -1,3 +1,11 @@
+# Escape every '.' in the domain_name to '\.'; Terraform needs "\\." to emit a literal "\\."
+locals {
+  # "\\\." in HCL ⇒ produces a single "\." in the rendered value
+  escaped_domain = replace(var.domain_name, ".", "\\.")
+  redis_parts    = split(":", var.redis_endpoint)
+  redis_host     = element(local.redis_parts, 0)
+  redis_port     = tonumber(element(local.redis_parts, 1))
+}
 
 data "aws_vpc" "default" {
   default = true
@@ -35,6 +43,12 @@ resource "aws_iam_role" "ecs_task_execution_role" {
       }
     ]
   })
+}
+
+# Add the required ECS task execution role policy
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role_policy" "ecs_task_custom_policy" {
@@ -88,7 +102,6 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_logs_for_ec2" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
-
 resource "aws_security_group" "ecs_sg" {
   name   = "ecs-ec2-sg"
   vpc_id = data.aws_vpc.default.id
@@ -105,6 +118,14 @@ resource "aws_security_group" "ecs_sg" {
     description = "HTTP"
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTPS"
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -126,23 +147,13 @@ resource "aws_launch_template" "ecs_lt" {
     name = aws_iam_instance_profile.ecs_instance_profile.name
   }
 
-  #   capacity_reservation_specification {
-  #     capacity_reservation_preference = "open"
-  #     capacity_reservation_target {
-  #       capacity_reservation_id                 = ""
-  #       capacity_reservation_resource_group_arn = ""
-  #     }
-  #   }
-
   vpc_security_group_ids = [aws_security_group.ecs_sg.id]
 
   user_data = base64encode(<<EOF
 #!/bin/bash
 echo "ECS_CLUSTER=${aws_ecs_cluster.ecs.name}" >> /etc/ecs/ecs.config
-systemctl restart ecs
 EOF
   )
-
 }
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
@@ -151,10 +162,13 @@ resource "aws_iam_instance_profile" "ecs_instance_profile" {
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
-  desired_capacity    = 1
-  max_size            = 1
-  min_size            = 1
-  vpc_zone_identifier = data.aws_subnets.default.ids
+  name                      = "${var.resource_prefix}-asg-ecs"
+  desired_capacity          = 1
+  max_size                  = 1
+  min_size                  = 1
+  vpc_zone_identifier       = data.aws_subnets.default.ids
+  health_check_type         = "EC2"
+  health_check_grace_period = 300
   launch_template {
     id      = aws_launch_template.ecs_lt.id
     version = "$Latest"
@@ -175,6 +189,19 @@ resource "aws_ecs_cluster" "ecs" {
   name = "ecs-ec2-default-cluster"
 }
 
+# Add capacity provider to the cluster - using EC2 since we're using EC2 launch type
+resource "aws_ecs_cluster_capacity_providers" "ecs" {
+  cluster_name = aws_ecs_cluster.ecs.name
+
+  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
+
+  default_capacity_provider_strategy {
+    base              = 1
+    weight            = 100
+    capacity_provider = "FARGATE"
+  }
+}
+
 resource "aws_ecs_task_definition" "app" {
   family                   = "${var.resource_prefix}-app-task"
   requires_compatibilities = ["EC2"]
@@ -182,7 +209,8 @@ resource "aws_ecs_task_definition" "app" {
   cpu                      = "1024"
   memory                   = "2048"
 
-  task_role_arn = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn      = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
@@ -193,8 +221,9 @@ resource "aws_ecs_task_definition" "app" {
       essential = true
       portMappings = [
         {
-          containerPort = 80
-          hostPort      = 80
+          containerPort = 8000
+          hostPort      = 8000
+          protocol      = "tcp"
         }
       ],
       environment = [
@@ -335,4 +364,15 @@ resource "aws_ecs_service" "app" {
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0
   deployment_maximum_percent         = 100
+
+  # Connect to the ALB target group
+  load_balancer {
+    target_group_arn = aws_lb_target_group.ecs_new_tg.arn
+    container_name   = "my-app"
+    container_port   = 8000
+  }
+
+  depends_on = [aws_lb_listener.https, aws_lb_target_group.ecs_new_tg]
+
+  # network_configuration block removed for bridge mode
 }

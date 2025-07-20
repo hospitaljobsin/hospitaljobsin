@@ -51,6 +51,18 @@ resource "mongodbatlas_database_user" "user" {
   }
 }
 
+resource "mongodbatlas_database_user" "ecs_user" {
+  username           = aws_iam_role.ecs_task_execution_role.arn
+  project_id         = mongodbatlas_project.project.id
+  auth_database_name = "$external"
+  aws_iam_type       = "ROLE"
+
+  roles {
+    role_name     = "readWrite"
+    database_name = var.mongodb_database_name # The database name and collection name need not exist in the cluster before creating the user.
+  }
+}
+
 resource "mongodbatlas_database_user" "worker_user" {
   username           = aws_iam_role.lambda_worker_exec_role.arn
   project_id         = mongodbatlas_project.project.id

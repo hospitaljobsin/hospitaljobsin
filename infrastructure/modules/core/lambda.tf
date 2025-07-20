@@ -289,14 +289,6 @@ resource "aws_iam_role_policy_attachment" "lambda_worker_custom_sqs_policy_attac
 
 # Lambda Function in Private Subnets
 
-# Escape every '.' in the domain_name to '\.'; Terraform needs "\\." to emit a literal "\\."
-locals {
-  # "\\\." in HCL ⇒ produces a single "\." in the rendered value
-  escaped_domain = replace(var.domain_name, ".", "\\.")
-  redis_parts    = split(":", var.redis_endpoint)
-  redis_host     = element(local.redis_parts, 0)
-  redis_port     = tonumber(element(local.redis_parts, 1))
-}
 resource "aws_lambda_function" "backend" {
   # depends_on    = [docker_registry_image.backend]
   function_name = "${var.resource_prefix}-backend-lambda"

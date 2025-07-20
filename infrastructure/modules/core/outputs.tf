@@ -21,6 +21,17 @@ output "aws_lambda_backend_image" {
   value = aws_ecr_repository.backend.name
 }
 
+output "aws_ecs_cluster_name" {
+  value = aws_ecs_cluster.ecs.name
+}
+
+output "aws_ecs_service_name" {
+  value = aws_ecs_service.app.name
+}
+
+output "aws_ecs_task_family" {
+  value = "${var.resource_prefix}-app-task"
+}
 
 output "aws_lambda_worker_function_name" {
   value = aws_lambda_function.worker.function_name

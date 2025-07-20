@@ -98,6 +98,9 @@ module "github" {
   sentry_recruiter_portal_ui_project    = module.sentry.recruiter_portal_sentry_project
   sentry_recruiter_dashboard_ui_project = module.sentry.recruiter_dashboard_sentry_project
   sentry_seeker_portal_ui_project       = module.sentry.seeker_portal_sentry_project
+  aws_ecs_cluster_name                  = module.core.aws_ecs_cluster_name
+  aws_ecs_service_name                  = module.core.aws_ecs_service_name
+  aws_ecs_task_family                   = module.core.aws_ecs_task_family
 }
 
 
