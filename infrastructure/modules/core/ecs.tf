@@ -151,6 +151,7 @@ resource "aws_launch_template" "ecs_lt" {
     associate_public_ip_address = true
     device_index                = 0
     security_groups             = [aws_security_group.ecs_sg.id]
+    subnet_id                   = element(data.aws_subnets.default.ids, 0)
   }
 
   #   vpc_security_group_ids = [aws_security_group.ecs_sg.id]
