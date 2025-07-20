@@ -20,6 +20,75 @@ data "aws_ami" "ecs_optimized" {
   }
 }
 
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "ecs_task_execution_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "ecs_task_custom_policy" {
+  name = "ecs_task_custom_policy"
+  role = aws_iam_role.ecs_task_execution_role.id
+
+  policy = aws_iam_policy.lambda_custom_policy.policy
+}
+
+resource "aws_iam_role_policy" "ecs_mongodb_aws_auth" {
+  name = "mongodb_aws_auth_ecs"
+  role = aws_iam_role.ecs_task_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "sts:AssumeRole",
+          "sts:GetCallerIdentity"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "ecs_instance_role" {
+  name = "ecs-instance-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_instance_role_attach" {
+  role       = aws_iam_role.ecs_instance_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_logs_for_ec2" {
+  role       = aws_iam_role.ecs_instance_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+
 resource "aws_security_group" "ecs_sg" {
   name   = "ecs-ec2-sg"
   vpc_id = data.aws_vpc.default.id
@@ -53,13 +122,32 @@ resource "aws_launch_template" "ecs_lt" {
   image_id      = data.aws_ami.ecs_optimized.id
   instance_type = "t3a.medium"
 
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ecs_instance_profile.name
+  }
+
+  #   capacity_reservation_specification {
+  #     capacity_reservation_preference = "open"
+  #     capacity_reservation_target {
+  #       capacity_reservation_id                 = ""
+  #       capacity_reservation_resource_group_arn = ""
+  #     }
+  #   }
+
   vpc_security_group_ids = [aws_security_group.ecs_sg.id]
 
   user_data = base64encode(<<EOF
 #!/bin/bash
-echo ECS_CLUSTER=${aws_ecs_cluster.ecs.name} >> /etc/ecs/ecs.config
+echo "ECS_CLUSTER=${aws_ecs_cluster.ecs.name}" >> /etc/ecs/ecs.config
+systemctl restart ecs
 EOF
   )
+
+}
+
+resource "aws_iam_instance_profile" "ecs_instance_profile" {
+  name = "${var.resource_prefix}-ecs-instance-profile"
+  role = aws_iam_role.ecs_instance_role.name
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
@@ -94,6 +182,8 @@ resource "aws_ecs_task_definition" "app" {
   cpu                      = "1024"
   memory                   = "2048"
 
+  task_role_arn = aws_iam_role.ecs_task_execution_role.arn
+
   container_definitions = jsonencode([
     {
       name      = "my-app"
@@ -105,6 +195,132 @@ resource "aws_ecs_task_definition" "app" {
         {
           containerPort = 80
           hostPort      = 80
+        }
+      ],
+      environment = [
+        {
+          name  = "SERVER_DEBUG"
+          value = "False"
+        },
+        {
+          name  = "SERVER_ENVIRONMENT"
+          value = "production"
+        },
+        {
+          name  = "SERVER_DATABASE_URL"
+          value = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
+        },
+        {
+          name  = "SERVER_DEFAULT_DATABASE_NAME"
+          value = var.mongodb_database_name
+        },
+        {
+          name  = "SERVER_HOST"
+          value = "0.0.0.0"
+        },
+        {
+          name  = "SERVER_PORT"
+          value = "8000"
+        },
+        {
+          name  = "SERVER_LOG_LEVEL"
+          value = "DEBUG"
+        },
+        {
+          name  = "SERVER_CORS_ALLOW_ORIGINS"
+          value = "[\"https://${var.domain_name}\", \"https://recruiter.${var.domain_name}\", \"https://accounts.${var.domain_name}\"]"
+        },
+        {
+          name  = "SERVER_CORS_ALLOW_ORIGIN_REGEX"
+          value = "https://.*\\.${local.escaped_domain}"
+        },
+        {
+          name  = "SERVER_SESSION_COOKIE_DOMAIN"
+          value = ".${var.domain_name}"
+        },
+        {
+          name  = "SERVER_SESSION_COOKIE_SECURE"
+          value = "True"
+        },
+        {
+          name  = "SERVER_EMAIl_PROVIDER"
+          value = "aws_ses"
+        },
+        {
+          name  = "SERVER_EMAIL_FROM"
+          value = aws_ses_email_identity.this.email
+        },
+        {
+          name  = "SERVER_S3_BUCKET_NAME"
+          value = aws_s3_bucket.this.bucket
+        },
+        {
+          name  = "SERVER_ACCOUNTS_BASE_URL"
+          value = "https://accounts.${var.domain_name}"
+        },
+        {
+          name  = "SERVER_RECRUITER_PORTAL_BASE_URL"
+          value = "https://recruiter.${var.domain_name}"
+        },
+        {
+          name  = "SERVER_SEEKER_PORTAL_BASE_URL"
+          value = "https://${var.domain_name}"
+        },
+        {
+          name  = "SERVER_RP_ID"
+          value = var.domain_name
+        },
+        {
+          name  = "SERVER_RP_NAME"
+          value = var.app_name
+        },
+        {
+          name  = "SERVER_RP_EXPECTED_ORIGIN"
+          value = "https://accounts.${var.domain_name}"
+        },
+        {
+          name  = "SERVER_GEOCODING_PROVIDER"
+          value = "aws_location"
+        },
+        {
+          name  = "SERVER_SINGLE_USE_LOCATION_PLACE_INDEX_NAME"
+          value = aws_location_place_index.single_use.index_name
+        },
+        {
+          name  = "SERVER_STORAGE_LOCATION_PLACE_INDEX_NAME"
+          value = aws_location_place_index.storage.index_name
+        },
+        {
+          name  = "SERVER_SENTRY_DSN"
+          value = var.sentry_backend_dsn
+        },
+        {
+          name  = "SERVER_PERSISTED_QUERIES_PATH"
+          value = "query_map.json"
+        },
+        {
+          name  = "SERVER_REDIS_HOST"
+          value = tostring(local.redis_host)
+        },
+        {
+          name  = "SERVER_REDIS_PORT"
+          value = tostring(local.redis_port)
+        },
+        {
+          name  = "SERVER_REDIS_USERNAME"
+          value = "default"
+        },
+        {
+          name  = "SERVER_REDIS_SSL"
+          value = "True"
+        },
+        {
+          name  = "SERVER_SQS_QUEUE_URL"
+          value = aws_sqs_queue.this.url
+        },
+        {
+          name  = "AWS_SECRETS_MANAGER_SECRET_ID"
+          value = aws_secretsmanager_secret.backend.id
         }
       ]
     }

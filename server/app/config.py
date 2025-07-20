@@ -11,6 +11,7 @@ import httpx
 from pydantic import Field, SecretStr, UrlConstraints
 from pydantic_core import MultiHostUrl
 from pydantic_settings import (
+    AWSSecretsManagerSettingsSource,
     BaseSettings,
     EnvSettingsSource,
     PydanticBaseSettingsSource,
@@ -246,12 +247,21 @@ class SecretSettings(BaseSettings):
         aws_secret_id = os.environ.get("AWS_SECRETS_MANAGER_SECRET_ID")
 
         if aws_secret_id is not None:
-            sources.append(
-                AWSSecretsManagerExtensionSettingsSource(
-                    settings_cls,
-                    secret_id=aws_secret_id,
+            if os.environ.get("PARAMETERS_SECRETS_EXTENSION_HTTP_PORT") is not None:
+                # AWS Lambda Secrets and Parameters Extension is enabled
+                sources.append(
+                    AWSSecretsManagerExtensionSettingsSource(
+                        settings_cls,
+                        secret_id=aws_secret_id,
+                    )
                 )
-            )
+            else:
+                sources.append(
+                    AWSSecretsManagerSettingsSource(
+                        settings_cls,
+                        secret_id=aws_secret_id,
+                    )
+                )
         return tuple(sources)
 
 
