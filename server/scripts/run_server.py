@@ -29,4 +29,5 @@ if __name__ == "__main__":
             human_readable=settings.debug,
         ),
         proxy_headers=True,
+        forwarded_allow_ips="*",
     )
