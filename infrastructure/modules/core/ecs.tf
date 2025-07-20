@@ -350,6 +350,10 @@ resource "aws_ecs_task_definition" "app" {
       },
       environment = [
         {
+          name  = "AWS_DEFAULT_REGION",
+          value = var.aws_region
+        },
+        {
           name  = "SERVER_DEBUG"
           value = "False"
         },
@@ -485,7 +489,7 @@ resource "aws_ecs_service" "app" {
   #   launch_type                        = "EC2"
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0
-  deployment_maximum_percent         = 100
+  deployment_maximum_percent         = 200
 
   capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.asg_capacity_provider.name
