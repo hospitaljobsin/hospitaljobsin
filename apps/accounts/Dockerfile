@@ -15,6 +15,7 @@ WORKDIR /app
 
 COPY ./apps/accounts/package.json ./apps/accounts/.npmrc ./apps/accounts/
 COPY ./schema/ ./schema/
+
 # Copy root-level workspace config and lockfiles
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 
