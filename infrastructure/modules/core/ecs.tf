@@ -97,11 +97,6 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_attach" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
-resource "aws_iam_role_policy_attachment" "cloudwatch_logs_for_ec2" {
-  role       = aws_iam_role.ecs_instance_role.name
-  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-}
-
 resource "aws_security_group" "ecs_sg" {
   name   = "ecs-ec2-sg"
   vpc_id = data.aws_vpc.default.id
@@ -214,6 +209,14 @@ resource "aws_ecs_task_definition" "app" {
           protocol      = "tcp"
         }
       ],
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          awslogs-group         = "/ecs/${var.resource_prefix}-app"
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "ecs"
+        }
+      },
       environment = [
         {
           name  = "SERVER_DEBUG"

@@ -48,13 +48,6 @@ jobs:
             AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
 
-      # - name: Update AWS Lambda function
-      #   env:
-      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     IMAGE_NAME: ${{ vars.AWS_BACKEND_IMAGE_NAME }}
-      #     IMAGE_TAG: ${{ github.sha }}
-      #   run: aws lambda update-function-code --function-name ${{ vars.AWS_BACKEND_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
-
       - name: Update AWS ECS Service
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -67,6 +60,11 @@ jobs:
           NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
           aws ecs update-service --cluster ${{vars.AWS_BACKEND_ECS_CLUSTER}} --service ${{vars.AWS_BACKEND_ECS_SERVICE}} --task-definition ${{vars.AWS_BACKEND_ECS_TASK_FAMILY}}:${NEW_REVISION}
 
-
+      # - name: Update AWS Lambda function
+      #   env:
+      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     IMAGE_NAME: ${{ vars.AWS_BACKEND_IMAGE_NAME }}
+      #     IMAGE_TAG: ${{ github.sha }}
+      #   run: aws lambda update-function-code --function-name ${{ vars.AWS_BACKEND_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
 
 # TODO: wait for relevant tests to pass before building and pushing
