@@ -128,6 +128,15 @@ resource "aws_security_group" "ecs_sg" {
   vpc_id = data.aws_vpc.default.id
 }
 
+resource "aws_security_group_rule" "ingress_docker_ports" {
+  type              = "ingress"
+  from_port         = 32768
+  to_port           = 61000
+  protocol          = "-1"
+  cidr_blocks       = [data.aws_vpc.default.cidr_block]
+  security_group_id = aws_security_group.ecs_sg.id
+}
+
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   security_group_id = aws_security_group.ecs_sg.id
   cidr_ipv4         = "0.0.0.0/0"

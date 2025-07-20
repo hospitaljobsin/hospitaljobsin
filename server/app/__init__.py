@@ -29,7 +29,6 @@ def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
     if app_settings.is_testing:
         # add E2E Setup API routes during testing
         app.include_router(test_setup_router)
-
     app.include_router(
         create_graphql_router(app_settings=app_settings),
         prefix="/graphql",
