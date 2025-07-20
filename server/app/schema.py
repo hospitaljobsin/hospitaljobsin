@@ -73,8 +73,7 @@ def create_schema(app_settings: AppSettings) -> Schema:
         scalar_overrides={datetime: DateTime, UploadFile: Upload},
         config=StrawberryConfig(
             auto_camel_case=True,
-            # TODO: enable batching once the relay client can support this
-            # with proper persisted queries configuration
+            # TODO: enable batching once the relay client can support this with proper persisted queries configuration
             # batching_config={
             #     "max_operations": 5,
             # },

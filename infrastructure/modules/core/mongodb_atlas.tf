@@ -109,18 +109,19 @@ resource "mongodbatlas_database_user" "worker_user" {
 
 # these resources are not available for tenant/ flex deployments
 
-# resource "mongodbatlas_privatelink_endpoint" "pe_east" {
-#   project_id    = mongodbatlas_project.project.id
-#   provider_name = "AWS"
-#   region        = var.aws_region
-# }
+resource "mongodbatlas_privatelink_endpoint" "pe_east" {
+  project_id    = mongodbatlas_project.project.id
+  provider_name = "AWS"
+  region        = var.aws_region
+}
 
-# resource "mongodbatlas_privatelink_endpoint_service" "pe_east_service" {
-#   project_id          = mongodbatlas_privatelink_endpoint.pe_east.project_id
-#   private_link_id     = mongodbatlas_privatelink_endpoint.pe_east.id
-#   endpoint_service_id = aws_vpc_endpoint.vpce_east.id
-#   provider_name       = "AWS"
-# }
+resource "mongodbatlas_privatelink_endpoint_service" "pe_east_service" {
+  project_id          = mongodbatlas_privatelink_endpoint.pe_east.project_id
+  private_link_id     = mongodbatlas_privatelink_endpoint.pe_east.id
+  endpoint_service_id = aws_vpc_endpoint.vpce_east.id
+  provider_name       = "AWS"
+  depends_on          = [mongodbatlas_privatelink_endpoint.pe_east]
+}
 
 
 # Hence we use an alternative- IP access list
@@ -128,4 +129,25 @@ resource "mongodbatlas_project_ip_access_list" "this" {
   project_id = mongodbatlas_project.project.id
   cidr_block = "0.0.0.0/0" # This allows access from any IP address
   comment    = "cidr block for tf acc testing"
+}
+
+
+resource "aws_vpc_endpoint" "vpce_east" {
+  vpc_id            = data.aws_vpc.default.id
+  service_name      = mongodbatlas_privatelink_endpoint.pe_east.endpoint_service_name
+  vpc_endpoint_type = "Interface"
+
+  subnet_ids         = data.aws_subnets.default.ids
+  security_group_ids = [aws_security_group.ecs_sg.id]
+}
+
+output "connections_db" {
+  value = {
+    "endpoints"                        = mongodbatlas_privatelink_endpoint_service.pe_east_service.endpoints
+    "private_endpoint_connection_name" = mongodbatlas_privatelink_endpoint_service.pe_east_service.private_endpoint_connection_name
+    "private_endpoint_ip_address"      = mongodbatlas_privatelink_endpoint_service.pe_east_service.private_endpoint_ip_address
+    "interface_endpoints"              = mongodbatlas_privatelink_endpoint.pe_east.interface_endpoints
+
+    "endpoint_service_name" = mongodbatlas_privatelink_endpoint.pe_east.endpoint_service_name
+  }
 }

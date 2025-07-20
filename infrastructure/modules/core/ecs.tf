@@ -188,9 +188,9 @@ resource "aws_ecs_cluster" "ecs" {
 resource "aws_ecs_task_definition" "app" {
   family                   = "${var.resource_prefix}-app-task"
   requires_compatibilities = ["EC2"]
-  network_mode             = "bridge"
+  network_mode             = "awsvpc"
   cpu                      = "1024"
-  memory                   = "2048"
+  memory                   = "1024"
 
   task_role_arn      = aws_iam_role.ecs_task_execution_role.arn
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
@@ -200,12 +200,11 @@ resource "aws_ecs_task_definition" "app" {
       name      = "my-app"
       image     = "${aws_ecr_repository.backend.repository_url}:latest"
       cpu       = 1024
-      memory    = 2048
+      memory    = 1024
       essential = true
       portMappings = [
         {
           containerPort = 8000
-          hostPort      = 8000
           protocol      = "tcp"
         }
       ],
@@ -228,7 +227,7 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           name  = "SERVER_DATABASE_URL"
-          value = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
+          value = "${mongodbatlas_advanced_cluster.this.connection_strings[0].private_srv}?authMechanism=MONGODB-AWS&authSource=$external"
         },
         {
           name  = "SERVER_DEFAULT_DATABASE_NAME"
@@ -365,5 +364,8 @@ resource "aws_ecs_service" "app" {
 
   depends_on = [aws_lb_listener.https, aws_lb_target_group.ecs_new_tg]
 
-  # network_configuration block removed for bridge mode
+  network_configuration {
+    subnets         = data.aws_subnets.default.ids
+    security_groups = [aws_security_group.ecs_sg.id]
+  }
 }
