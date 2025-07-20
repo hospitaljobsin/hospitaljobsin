@@ -71,18 +71,19 @@ FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS production-server
 COPY --from=ghcr.io/astral-sh/uv:0.7.21 /uv /uvx /bin/
 
 
-COPY --from=layer-build /opt /opt
+# COPY --from=layer-build /opt /opt
 
 # include the AWS lambda web adapter
-COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
+# COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
 
 # this errors out for some reason
 # ENV READINESS_CHECK_PATH = "/health/"
-ENV PORT=8000
-ENV AWS_LWA_ASYNC_INIT=true
-ENV AWS_LWA_ENABLE_COMPRESSION=true
 
-ENV RUST_BACKTRACE=full
+# ENV PORT=8000
+# ENV AWS_LWA_ASYNC_INIT=true
+# ENV AWS_LWA_ENABLE_COMPRESSION=true
+
+# ENV RUST_BACKTRACE=full
 
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
@@ -117,6 +118,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ENV PYTHONPATH="/var/task:$PYTHONPATH"
 # ENV PATH="/var/task/.venv/bin:$PATH"
 
+EXPOSE 8000
 
 # Set the Lambda handler
 CMD ["python", "scripts/run_server.py"]

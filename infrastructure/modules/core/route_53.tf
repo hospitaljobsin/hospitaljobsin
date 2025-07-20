@@ -39,31 +39,32 @@ resource "aws_acm_certificate_validation" "api_cert" {
   }
 }
 
-# resource "aws_route53_record" "api" {
+
+
+# resource "aws_route53_record" "api_gateway" {
 #   zone_id = aws_route53_zone.main.zone_id
 #   name    = "api.${var.domain_name}"
 #   type    = "A"
 
 #   alias {
-#     name                   = aws_cloudfront_distribution.api.domain_name
-#     zone_id                = aws_cloudfront_distribution.api.hosted_zone_id
+#     name                   = aws_apigatewayv2_domain_name.custom.domain_name_configuration[0].target_domain_name
+#     zone_id                = aws_apigatewayv2_domain_name.custom.domain_name_configuration[0].hosted_zone_id
 #     evaluate_target_health = false
 #   }
 # }
 
 
-resource "aws_route53_record" "api_gateway" {
+resource "aws_route53_record" "api" {
   zone_id = aws_route53_zone.main.zone_id
   name    = "api.${var.domain_name}"
   type    = "A"
 
   alias {
-    name                   = aws_apigatewayv2_domain_name.custom.domain_name_configuration[0].target_domain_name
-    zone_id                = aws_apigatewayv2_domain_name.custom.domain_name_configuration[0].hosted_zone_id
-    evaluate_target_health = false
+    name                   = aws_lb.ecs_alb.dns_name
+    zone_id                = aws_lb.ecs_alb.zone_id
+    evaluate_target_health = true
   }
 }
-
 
 resource "aws_route53_record" "ses_verification" {
   zone_id = aws_route53_zone.main.zone_id
