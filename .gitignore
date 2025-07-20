@@ -30,3 +30,5 @@ tasks.json
 tasks/
 
 .cursor/mcp.json
+
+*.pem

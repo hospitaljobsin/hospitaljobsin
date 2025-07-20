@@ -105,43 +105,75 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_attach" {
 resource "aws_security_group" "ecs_sg" {
   name   = "ecs-ec2-sg"
   vpc_id = data.aws_vpc.default.id
+}
 
-  ingress {
-    description = "SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  #   cidr_ipv6         = "::/0"
+  from_port   = 22
+  ip_protocol = "tcp"
+  to_port     = 22
+}
 
-  ingress {
-    description = "HTTP"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv6" {
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv6         = "::/0"
+  from_port         = 22
+  ip_protocol       = "tcp"
+  to_port           = 22
+}
 
-  ingress {
-    description = "HTTPS"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_vpc_security_group_ingress_rule" "allow_http_ipv4" {
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 80
+  ip_protocol       = "tcp"
+  to_port           = 80
+}
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_vpc_security_group_ingress_rule" "allow_http_ipv6" {
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv6         = "::/0"
+  from_port         = 80
+  ip_protocol       = "tcp"
+  to_port           = 80
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv4" {
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 443
+  ip_protocol       = "tcp"
+  to_port           = 443
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv6" {
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv6         = "::/0"
+  from_port         = 443
+  ip_protocol       = "tcp"
+  to_port           = 443
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1" # semantically equivalent to all ports
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv6" {
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv6         = "::/0"
+  ip_protocol       = "-1" # semantically equivalent to all ports
 }
 
 resource "aws_launch_template" "ecs_lt" {
   name_prefix   = "${var.resource_prefix}-ecs-launch-template-"
   image_id      = data.aws_ami.ecs_optimized.id
   instance_type = "t3a.medium"
+
+  key_name = "ec2-debug"
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ecs_instance_profile.name
@@ -175,7 +207,8 @@ resource "aws_autoscaling_group" "ecs_asg" {
   min_size                  = 1
   vpc_zone_identifier       = data.aws_subnets.default.ids
   health_check_type         = "EC2"
-  health_check_grace_period = 300
+  health_check_grace_period = 30
+
   launch_template {
     id      = aws_launch_template.ecs_lt.id
     version = "$Latest"
@@ -200,12 +233,13 @@ resource "aws_ecs_cluster" "ecs" {
 resource "aws_ecs_task_definition" "app" {
   family                   = "${var.resource_prefix}-app-task"
   requires_compatibilities = ["EC2"]
-  network_mode             = "awsvpc"
+  network_mode             = "bridge" # or "host"
   cpu                      = "1024"
   memory                   = "1024"
 
   task_role_arn      = aws_iam_role.ecs_task_execution_role.arn
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+
 
   container_definitions = jsonencode([
     {
@@ -217,6 +251,7 @@ resource "aws_ecs_task_definition" "app" {
       portMappings = [
         {
           containerPort = 8000
+          hostPort      = 8000 # required in host mode
           protocol      = "tcp"
         }
       ],
@@ -375,9 +410,4 @@ resource "aws_ecs_service" "app" {
   }
 
   depends_on = [aws_lb_listener.https, aws_lb_target_group.ecs_new_tg]
-
-  network_configuration {
-    subnets         = data.aws_subnets.default.ids
-    security_groups = [aws_security_group.ecs_sg.id]
-  }
 }

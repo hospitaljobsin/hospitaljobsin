@@ -40,16 +40,16 @@ resource "aws_lb" "ecs_alb" {
 # }
 
 resource "aws_lb_target_group" "ecs_new_tg" {
-  name        = "${var.resource_prefix}-ecs-tg"
+  name        = "${var.resource_prefix}-new-ecs-tg"
   port        = 8000
   protocol    = "HTTP"
   vpc_id      = data.aws_vpc.default.id
-  target_type = "ip" # <-- fix here
+  target_type = "instance" # instead of "ip"
 
   health_check {
-    path                = "/health"
+    path                = "/health/"
     interval            = 30
-    timeout             = 5
+    timeout             = 10
     healthy_threshold   = 2
     unhealthy_threshold = 2
     matcher             = "200-399"
