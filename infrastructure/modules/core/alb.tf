@@ -1,9 +1,10 @@
 resource "aws_lb" "ecs_alb" {
-  name               = "${var.resource_prefix}-ecs-alb"
-  internal           = false
-  load_balancer_type = "application"
-  subnets            = data.aws_subnets.default.ids
-  security_groups    = [aws_security_group.ecs_sg.id]
+  name                             = "${var.resource_prefix}-ecs-alb"
+  internal                         = false
+  load_balancer_type               = "application"
+  subnets                          = data.aws_subnets.default.ids
+  security_groups                  = [aws_security_group.alb_sg.id]
+  enable_cross_zone_load_balancing = true
 }
 
 resource "aws_lb_target_group" "ecs_new_tg" {
