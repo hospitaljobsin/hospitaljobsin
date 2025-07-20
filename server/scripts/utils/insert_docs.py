@@ -1,9 +1,9 @@
 import asyncio
 from datetime import UTC, datetime, timedelta
 
-from app.config import DatabaseSettings, SecretSettings, get_settings
+from app.config import DatabaseSettings, get_settings
+from app.container import create_container
 from app.core.constants import JOB_EMBEDDING_DIMENSIONS
-from app.core.genai_client import create_google_genai_client
 from app.database import initialize_database
 from app.embeddings.services import EmbeddingsService
 from app.jobs.documents import Job
@@ -12,14 +12,15 @@ from app.organizations.documents import Organization
 
 
 async def insert_healthcare_jobs():
-    embeddings_service = EmbeddingsService(
-        genai_client=create_google_genai_client(settings=get_settings(SecretSettings))
-    )
     # Find the organization with slug "aryan"
     await initialize_database(
         str(get_settings(DatabaseSettings).database_url),
         get_settings(DatabaseSettings).default_database_name,
     )
+
+    container = create_container()
+    async with container.context() as ctx:
+        embeddings_service = await ctx.resolve(EmbeddingsService)
     org = await Organization.find_one({"slug": "aryan"})
     if not org:
         print("Organization with slug 'aryan' not found.")
