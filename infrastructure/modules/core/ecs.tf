@@ -189,18 +189,6 @@ resource "aws_ecs_cluster" "ecs" {
   name = "ecs-ec2-default-cluster"
 }
 
-# Add capacity provider to the cluster - using EC2 since we're using EC2 launch type
-resource "aws_ecs_cluster_capacity_providers" "ecs" {
-  cluster_name = aws_ecs_cluster.ecs.name
-
-  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
-
-  default_capacity_provider_strategy {
-    base              = 1
-    weight            = 100
-    capacity_provider = "FARGATE"
-  }
-}
 
 resource "aws_ecs_task_definition" "app" {
   family                   = "${var.resource_prefix}-app-task"
