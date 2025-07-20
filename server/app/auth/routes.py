@@ -34,6 +34,8 @@ async def oauth2_signin_google(
 
     print("redirect_uri", redirect_uri)
 
+    # TODO: we need HTTPS here
+
     oauth_redirect_uri = request.url_for("oauth2_signin_callback_google")
 
     # ask Google to select an account every time

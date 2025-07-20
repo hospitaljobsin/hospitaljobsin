@@ -28,4 +28,5 @@ if __name__ == "__main__":
             log_level=settings.log_level,
             human_readable=settings.debug,
         ),
+        proxy_headers=True,
     )
