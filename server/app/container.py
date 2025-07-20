@@ -231,6 +231,7 @@ def register_ocr_client(container: aioinject.Container) -> None:
 
 @lru_cache
 def create_container() -> aioinject.Container:
+    """Create a container instance."""
     container = aioinject.Container(
         extensions=[
             SettingsProviderExtension(),

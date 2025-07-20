@@ -16,6 +16,11 @@ data "aws_subnets" "default" {
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
   }
+
+  filter {
+    name   = "map-public-ip-on-launch"
+    values = [true]
+  }
 }
 
 data "aws_ami" "ecs_optimized" {
@@ -148,7 +153,7 @@ resource "aws_launch_template" "ecs_lt" {
     security_groups             = [aws_security_group.ecs_sg.id]
   }
 
-  vpc_security_group_ids = [aws_security_group.ecs_sg.id]
+  #   vpc_security_group_ids = [aws_security_group.ecs_sg.id]
 
   user_data = base64encode(<<EOF
 #!/bin/bash
