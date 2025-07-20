@@ -6,49 +6,17 @@ resource "aws_lb" "ecs_alb" {
   security_groups    = [aws_security_group.ecs_sg.id]
 }
 
-# resource "aws_lb_target_group" "ecs_tg" {
-#   name     = "${var.resource_prefix}-ecs-tg"
-#   port     = 80
-#   protocol = "HTTP"
-#   vpc_id   = data.aws_vpc.default.id
-
-#   health_check {
-#     path                = "/health/"
-#     interval            = 30
-#     timeout             = 5
-#     healthy_threshold   = 2
-#     unhealthy_threshold = 2
-#     matcher             = "200-399"
-#   }
-# }
-
-# resource "aws_lb_target_group" "ecs_new_tg" {
-#   name        = "${var.resource_prefix}-ecs-new-tg"
-#   port        = 8000
-#   protocol    = "HTTP"
-#   vpc_id      = data.aws_vpc.default.id
-#   target_type = "instance"
-
-#   health_check {
-#     path                = "/health"
-#     interval            = 30
-#     timeout             = 5
-#     healthy_threshold   = 2
-#     unhealthy_threshold = 2
-#     matcher             = "200-399"
-#   }
-# }
-
 resource "aws_lb_target_group" "ecs_new_tg" {
-  name        = "${var.resource_prefix}-new-ecs-tg"
+  name        = "${var.resource_prefix}-ecs-tg"
   port        = 8000
   protocol    = "HTTP"
   vpc_id      = data.aws_vpc.default.id
   target_type = "instance" # instead of "ip"
 
+
   health_check {
     path                = "/health/"
-    interval            = 30
+    interval            = 15
     timeout             = 10
     healthy_threshold   = 2
     unhealthy_threshold = 5

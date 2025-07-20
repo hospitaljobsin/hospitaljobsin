@@ -201,6 +201,7 @@ resource "aws_iam_instance_profile" "ecs_instance_profile" {
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
+  protect_from_scale_in     = true
   name                      = "${var.resource_prefix}-asg-ecs"
   desired_capacity          = 1
   max_size                  = 1
@@ -224,6 +225,40 @@ resource "aws_autoscaling_group" "ecs_asg" {
     create_before_destroy = true
   }
 }
+
+resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
+  name = "${var.resource_prefix}-ecs-capacity-provider"
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn         = aws_autoscaling_group.ecs_asg.arn
+    managed_termination_protection = "ENABLED"
+
+    managed_scaling {
+      status                    = "ENABLED"
+      target_capacity           = 100
+      minimum_scaling_step_size = 1
+      maximum_scaling_step_size = 1
+      instance_warmup_period    = 300
+    }
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_ecs_cluster_capacity_providers" "attach_provider" {
+  cluster_name = aws_ecs_cluster.ecs.name
+
+  capacity_providers = [aws_ecs_capacity_provider.asg_capacity_provider.name]
+
+  default_capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.asg_capacity_provider.name
+    weight            = 1
+    base              = 0
+  }
+}
+
 
 resource "aws_ecs_cluster" "ecs" {
   name = "ecs-ec2-default-cluster"
@@ -394,13 +429,18 @@ resource "aws_ecs_task_definition" "app" {
 }
 
 resource "aws_ecs_service" "app" {
-  name                               = "${var.resource_prefix}-app-service"
-  cluster                            = aws_ecs_cluster.ecs.id
-  task_definition                    = aws_ecs_task_definition.app.arn
-  launch_type                        = "EC2"
+  name            = "${var.resource_prefix}-app-service"
+  cluster         = aws_ecs_cluster.ecs.id
+  task_definition = aws_ecs_task_definition.app.arn
+  #   launch_type                        = "EC2"
   desired_count                      = 1
   deployment_minimum_healthy_percent = 50
-  deployment_maximum_percent         = 200
+  deployment_maximum_percent         = 100
+
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.asg_capacity_provider.name
+    weight            = 1
+  }
 
   # Connect to the ALB target group
   load_balancer {
