@@ -142,6 +142,12 @@ resource "aws_launch_template" "ecs_lt" {
     name = aws_iam_instance_profile.ecs_instance_profile.name
   }
 
+  network_interfaces {
+    associate_public_ip_address = true
+    device_index                = 0
+    security_groups             = [aws_security_group.ecs_sg.id]
+  }
+
   vpc_security_group_ids = [aws_security_group.ecs_sg.id]
 
   user_data = base64encode(<<EOF
@@ -227,7 +233,7 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           name  = "SERVER_DATABASE_URL"
-          value = "${mongodbatlas_advanced_cluster.this.connection_strings[0].private_srv}?authMechanism=MONGODB-AWS&authSource=$external"
+          value = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
         },
         {
           name  = "SERVER_DEFAULT_DATABASE_NAME"
