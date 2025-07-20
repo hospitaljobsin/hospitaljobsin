@@ -18,6 +18,7 @@ from app.logger import setup_logging
 
 settings = get_settings(AppSettings)
 
+
 initialize_instrumentation(settings=settings)
 
 # set up logging
