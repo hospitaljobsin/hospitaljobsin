@@ -6,7 +6,6 @@ import LayoutOrgDetailQuery from "@/__generated__/layoutOrgDetailQuery.graphql";
 import OrgDetailHeader from "@/components/layout/OrgDetailHeader";
 import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
 import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
-import { Suspense } from "react";
 import {
 	graphql,
 	useFragment,
@@ -40,9 +39,5 @@ export default function OrgDetailHeaderClientComponent({
 		OrgDetailHeaderClientComponentFragment,
 		root,
 	);
-	return (
-		<Suspense>
-			<OrgDetailHeader root={data} />
-		</Suspense>
-	);
+	return <OrgDetailHeader root={data} />;
 }
