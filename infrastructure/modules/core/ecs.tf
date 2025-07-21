@@ -218,12 +218,30 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv6" {
   ip_protocol       = "-1" # semantically equivalent to all ports
 }
 
+
+resource "aws_ec2_capacity_reservation" "ecs" {
+  instance_type     = "t3a.medium" # match your ASG/Launch Template
+  instance_platform = "Linux/UNIX"
+  availability_zone = "us-east-1a"
+  instance_count    = 1 # number of instances to reserve
+  ebs_optimized     = true
+  tenancy           = "default"
+}
+
+
+
 resource "aws_launch_template" "ecs_lt" {
   name_prefix   = "${var.resource_prefix}-ecs-launch-template-"
   image_id      = data.aws_ami.ecs_optimized.id
   instance_type = "t3a.medium"
 
   key_name = "ec2-debug"
+
+  capacity_reservation_specification {
+    capacity_reservation_target {
+      capacity_reservation_id = aws_ec2_capacity_reservation.ecs.id
+    }
+  }
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ecs_instance_profile.name

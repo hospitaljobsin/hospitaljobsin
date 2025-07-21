@@ -1,5 +1,5 @@
 "use client";
-import type { OrgDetailHeaderQuery as OrgDetailHeaderQueryType } from "@/__generated__/OrgDetailHeaderQuery.graphql";
+import type { OrgDetailHeaderFragment$key } from "@/__generated__/OrgDetailHeaderFragment.graphql";
 import { APP_NAME } from "@/lib/constants";
 import { env } from "@/lib/env/client";
 import links from "@/lib/links";
@@ -15,16 +15,17 @@ import {
 import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import type { PreloadedQuery } from "react-relay";
-import { usePreloadedQuery } from "react-relay";
+import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import Logo from "../Logo";
 import OrganizationTabs from "../organization-detail/OrganizationTabs";
 import AuthDropdown from "./AuthNavigation";
 import IncompleteProfileBanner from "./IncompleteProfileBanner";
 
-export const OrgDetailHeaderQuery = graphql`
-  query OrgDetailHeaderQuery($slug: String!) {
+export const OrgDetailHeaderFragment = graphql`
+  fragment OrgDetailHeaderFragment on Query   @argumentDefinitions(
+    slug: { type: "String!" }
+  ) {
 	viewer {
 		__typename
 		... on Account {
@@ -46,11 +47,11 @@ export const OrgDetailHeaderQuery = graphql`
 `;
 
 export default function OrgDetailHeader({
-	queryReference,
+	root,
 }: {
-	queryReference: PreloadedQuery<OrgDetailHeaderQueryType>;
+	root: OrgDetailHeaderFragment$key;
 }) {
-	const data = usePreloadedQuery(OrgDetailHeaderQuery, queryReference);
+	const data = useFragment(OrgDetailHeaderFragment, root);
 
 	const [searchTerm, setSearchTerm] = useState("");
 
