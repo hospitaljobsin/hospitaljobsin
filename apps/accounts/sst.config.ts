@@ -76,6 +76,7 @@ export default $config({
 				],
 				memory: "1024 MB",
 			},
+			warm: 1,
 			permissions: [
 				{
 					actions: ["secretsmanager:GetSecretValue"],
