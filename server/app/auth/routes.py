@@ -29,12 +29,9 @@ async def oauth2_signin_google(
     user_agent: Annotated[str | None, Header()] = "unknown",
 ) -> RedirectResponse:
     """Signin with Google OAuth2."""
+    # TODO: fix open redirect vulnerability here
     request.session["user_agent"] = user_agent
     request.session["redirect_uri"] = redirect_uri
-
-    print("redirect_uri", redirect_uri)
-
-    # TODO: we need HTTPS here
 
     oauth_redirect_uri = request.url_for("oauth2_signin_callback_google")
 
@@ -96,6 +93,7 @@ async def oauth2_request_sudo_mode_google(
     redirect_uri: Annotated[str, Query()],
 ) -> RedirectResponse:
     """Signin with Google OAuth2."""
+    # TODO: fix open redirect vulnerability here
     request.session["redirect_uri"] = redirect_uri
 
     oauth_redirect_uri = request.url_for("oauth2_request_sudo_mode_callback_google")
