@@ -13,7 +13,6 @@ dependencies = [
     "structlog==25.4.0",
     "beanie==1.30.0",
     "motor==3.7.1",
-    "uvicorn[standard]==0.35.0",
     "passlib[argon2]==1.7.4",
     "result==0.17.0",
     "authlib==1.6.0",
@@ -48,6 +47,9 @@ dependencies = [
     "types-aiobotocore-location==2.23.0",
     "types-aiobotocore-bedrock-runtime==2.23.0",
     "pydantic-ai-slim[bedrock]==0.4.3",
+    "httptools==0.6.4",
+    "uvloop==0.21.0",
+    "uvicorn==0.35.0",
 ]
 
 
@@ -59,7 +61,8 @@ dev-dependencies = [
     "ruff==0.12.2",
     "pyright==1.1.403",
     "better-exceptions==0.3.3",
-    "strawberry-graphql[cli]==0.278.0"
+    "strawberry-graphql[cli]==0.278.0",
+    "watchfiles==1.1.0",
 ]
 
 [tool.pyright]
