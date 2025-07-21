@@ -1,46 +1,43 @@
 "use client";
 
-import type { DashboardHeaderClientComponentQuery as DashboardHeaderClientComponentQueryType } from "@/__generated__/DashboardHeaderClientComponentQuery.graphql";
-import { Suspense } from "react";
+import type { DashboardHeaderClientComponentFragment$key } from "@/__generated__/DashboardHeaderClientComponentFragment.graphql";
+import type LayoutDashboardQueryNode from "@/__generated__/layoutDashboardQuery.graphql";
+import type { layoutDashboardQuery } from "@/__generated__/layoutDashboardQuery.graphql";
+import LayoutDashboardQuery from "@/__generated__/layoutDashboardQuery.graphql";
+import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
+import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
 import {
-	type PreloadedQuery,
 	graphql,
-	loadQuery,
+	useFragment,
 	usePreloadedQuery,
 	useRelayEnvironment,
 } from "react-relay";
 import DashboardHeader from "./DashboardHeader";
-import DashboardHeaderSkeleton from "./DashboardHeaderSkeleton";
 
-const DashboardHeaderClientComponentQuery = graphql`
-  query DashboardHeaderClientComponentQuery {
+const DashboardHeaderClientComponentFragment = graphql`
+  fragment DashboardHeaderClientComponentFragment on Query {
     ...DashboardHeaderFragment
   }
 `;
 
-export default function DashboardHeaderClientComponent() {
-	const environment = useRelayEnvironment();
-	const queryReference = loadQuery<DashboardHeaderClientComponentQueryType>(
-		environment,
-		DashboardHeaderClientComponentQuery,
-		{},
-		{ fetchPolicy: "store-or-network", networkCacheConfig: { force: false } },
-	);
-	return (
-		<Suspense fallback={<DashboardHeaderSkeleton />}>
-			<PreloadedDashboardHeader queryReference={queryReference} />
-		</Suspense>
-	);
-}
-
-function PreloadedDashboardHeader({
-	queryReference,
+export default function DashboardHeaderClientComponent({
+	preloadedQuery,
 }: {
-	queryReference: PreloadedQuery<DashboardHeaderClientComponentQueryType>;
+	preloadedQuery: SerializablePreloadedQuery<
+		typeof LayoutDashboardQueryNode,
+		layoutDashboardQuery
+	>;
 }) {
-	const data = usePreloadedQuery(
-		DashboardHeaderClientComponentQuery,
-		queryReference,
+	const environment = useRelayEnvironment();
+	const queryRef = useSerializablePreloadedQuery<
+		typeof LayoutDashboardQueryNode,
+		layoutDashboardQuery
+	>(environment, preloadedQuery, "store-or-network");
+
+	const root = usePreloadedQuery(LayoutDashboardQuery, queryRef);
+	const data = useFragment<DashboardHeaderClientComponentFragment$key>(
+		DashboardHeaderClientComponentFragment,
+		root,
 	);
 	return <DashboardHeader query={data} animate={false} />;
 }

@@ -49,9 +49,9 @@ export default function DashboardHeader({
 
 	return (
 		<div className={"w-full flex flex-col sticky top-0 z-50"}>
-			{data.viewer.__typename === "Account" && (
+			{data.viewer.__typename === "Account" ? (
 				<IncompleteProfileBanner account={data.viewer} animate={animate} />
-			)}
+			) : null}
 			<Navbar
 				maxWidth="xl"
 				isBordered

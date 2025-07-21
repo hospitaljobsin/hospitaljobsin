@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<42b69fe00593c348156113792d458db2>>
- * @relayHash 8952923ed6a3ad42cf4f1beb8646bfec
+ * @generated SignedSource<<be95cc49528c79c12e85cf8ea60b333b>>
+ * @relayHash 1428f8008d729862ece17e9e484daa9a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,17 +9,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 8952923ed6a3ad42cf4f1beb8646bfec
+// @relayRequestID 1428f8008d729862ece17e9e484daa9a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
-export type DashboardHeaderClientComponentQuery$variables = Record<PropertyKey, never>;
-export type DashboardHeaderClientComponentQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderFragment">;
+export type layoutDashboardQuery$variables = Record<PropertyKey, never>;
+export type layoutDashboardQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"DashboardHeaderClientComponentFragment">;
 };
-export type DashboardHeaderClientComponentQuery = {
-  response: DashboardHeaderClientComponentQuery$data;
-  variables: DashboardHeaderClientComponentQuery$variables;
+export type layoutDashboardQuery = {
+  response: layoutDashboardQuery$data;
+  variables: layoutDashboardQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -35,12 +35,12 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "DashboardHeaderClientComponentQuery",
+    "name": "layoutDashboardQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "DashboardHeaderFragment"
+        "name": "DashboardHeaderClientComponentFragment"
       }
     ],
     "type": "Query",
@@ -50,7 +50,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "DashboardHeaderClientComponentQuery",
+    "name": "layoutDashboardQuery",
     "selections": [
       {
         "alias": null,
@@ -122,15 +122,15 @@ return {
     ]
   },
   "params": {
-    "id": "8952923ed6a3ad42cf4f1beb8646bfec",
+    "id": "1428f8008d729862ece17e9e484daa9a",
     "metadata": {},
-    "name": "DashboardHeaderClientComponentQuery",
+    "name": "layoutDashboardQuery",
     "operationKind": "query",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "6e07c9f646ef6299db08d07d22705e10";
+(node as any).hash = "ccf90de596d6bf84392328d71873456b";
 
 export default node;
