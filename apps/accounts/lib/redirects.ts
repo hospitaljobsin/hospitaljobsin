@@ -10,6 +10,10 @@ export function getValidRedirectURL(redirectTo: string | null): string {
 	// return the absolute URL, which is needed for Oauth2 redirects
 	if (redirectTo.startsWith("/")) return `${env.NEXT_PUBLIC_URL}${redirectTo}`;
 
+	// also allow https://hospitaljobs.in redirects here
+	if (redirectTo.startsWith(env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL))
+		return redirectTo;
+
 	try {
 		const url = new URL(redirectTo);
 
