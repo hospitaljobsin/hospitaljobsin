@@ -304,7 +304,9 @@ class ProfileParserService:
                 locations_open_to_work=profile_output.locations_open_to_work,
                 education=profile_output.education,
                 licenses=[
-                    License(**partial_license.model_dump())
+                    License(
+                        **partial_license.model_dump(), verification_status="pending"
+                    )
                     for partial_license in profile_output.licenses
                 ],
                 languages=profile_output.languages,
