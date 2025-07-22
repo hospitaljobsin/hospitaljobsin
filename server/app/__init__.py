@@ -6,6 +6,7 @@ from aioinject.ext.fastapi import AioInjectMiddleware
 from asgi_correlation_id import CorrelationIdMiddleware
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from structlog import get_logger
 
 from app.auth.routes import auth_router
@@ -45,28 +46,6 @@ def add_middleware(
 ) -> None:
     """Register middleware for the app."""
     app.add_middleware(
-        CorrelationIdMiddleware,
-        header_name="X-Request-ID",
-    )
-
-    app.add_middleware(
-        FingerprintMiddleware,
-        path="/",
-        same_site="lax",
-        secure=auth_settings.session_cookie_secure,
-        domain=auth_settings.session_cookie_domain,
-    )
-
-    app.add_middleware(
-        SessionMiddleware,
-        session_cookie=auth_settings.session_user_cookie_name,
-        path="/",
-        same_site="lax",
-        secure=auth_settings.session_cookie_secure,
-        domain=auth_settings.session_cookie_domain,
-    )
-
-    app.add_middleware(
         CORSMiddleware,
         allow_origins=app_settings.cors_allow_origins,
         allow_origin_regex=app_settings.cors_allow_origin_regex,
@@ -76,9 +55,29 @@ def add_middleware(
         expose_headers=["*"],
     )
     app.add_middleware(
+        CorrelationIdMiddleware,
+        header_name="X-Request-ID",
+    )
+    app.add_middleware(
+        SessionMiddleware,
+        session_cookie=auth_settings.session_user_cookie_name,
+        path="/",
+        same_site="lax",
+        secure=auth_settings.session_cookie_secure,
+        domain=auth_settings.session_cookie_domain,
+    )
+    app.add_middleware(
+        FingerprintMiddleware,
+        path="/",
+        same_site="lax",
+        secure=auth_settings.session_cookie_secure,
+        domain=auth_settings.session_cookie_domain,
+    )
+    app.add_middleware(
         AioInjectMiddleware,
         container=create_container(),
     )
+    app.add_middleware(GZipMiddleware)
 
 
 @asynccontextmanager

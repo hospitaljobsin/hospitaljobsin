@@ -1,3 +1,39 @@
+resource "aws_s3_bucket" "lb_logs" {
+  bucket_prefix = "${var.resource_prefix}-lb"
+}
+
+resource "aws_s3_bucket_policy" "lb_logs_policy" {
+  bucket = aws_s3_bucket.lb_logs.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "logdelivery.elasticloadbalancing.amazonaws.com"
+        }
+        Action   = "s3:PutObject"
+        Resource = "${aws_s3_bucket.lb_logs.arn}/alb/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
+        Condition = {
+          StringEquals = {
+            "s3:x-amz-acl" = "bucket-owner-full-control"
+          }
+        }
+      },
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "logdelivery.elasticloadbalancing.amazonaws.com"
+        }
+        Action   = "s3:GetBucketAcl"
+        Resource = aws_s3_bucket.lb_logs.arn
+      }
+    ]
+  })
+}
+
+
 resource "aws_lb" "ecs_alb" {
   name                             = "${var.resource_prefix}-ecs-alb"
   internal                         = false
@@ -5,6 +41,13 @@ resource "aws_lb" "ecs_alb" {
   subnets                          = data.aws_subnets.default.ids
   security_groups                  = [aws_security_group.alb_sg.id]
   enable_cross_zone_load_balancing = true
+  enable_http2                     = true
+
+  access_logs {
+    enabled = true
+    prefix  = "alb"
+    bucket  = aws_s3_bucket.lb_logs.bucket
+  }
 }
 
 resource "aws_lb_target_group" "ecs_new_tg" {
@@ -17,8 +60,8 @@ resource "aws_lb_target_group" "ecs_new_tg" {
 
   health_check {
     path                = "/health/"
-    interval            = 60
-    timeout             = 15
+    interval            = 30
+    timeout             = 5
     healthy_threshold   = 2
     unhealthy_threshold = 2
     matcher             = "200-399"

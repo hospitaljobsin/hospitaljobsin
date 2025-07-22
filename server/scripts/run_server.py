@@ -15,6 +15,9 @@ if __name__ == "__main__":
         human_readable=settings.debug,
     )
 
+    # TODO: use gunicorn for better process lifecycle management here
+    # gunicorn main:app -k uvicorn.workers.UvicornWorker --workers 4 --threads 1 --bind 0.0.0.0:8000
+
     # run application
     uvicorn.run(
         app="app:create_app",
@@ -33,4 +36,5 @@ if __name__ == "__main__":
         ),
         proxy_headers=True,
         forwarded_allow_ips="*",
+        timeout_keep_alive=60,
     )
