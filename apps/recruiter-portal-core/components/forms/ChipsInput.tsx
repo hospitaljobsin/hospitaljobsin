@@ -79,10 +79,7 @@ export function ChipsInput<
 		e.preventDefault();
 		const pastedText = e.clipboardData.getData("text");
 		// Create a regex to split by any of the delimiters
-		const splitRegex = new RegExp(
-			`[${delimiters.map((d) => d.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&")).join("")}]`,
-			"g",
-		);
+		const splitRegex = /\s*,\s*(?:and\s*)?/i;
 		const values = pastedText
 			.split(splitRegex)
 			.map((v) => v.trim())
