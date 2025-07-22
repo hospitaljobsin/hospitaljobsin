@@ -20,22 +20,6 @@ def add_correlation_id(
     return event_dict
 
 
-def remove_color_message(
-    _logger: WrappedLogger,
-    _method_name: str,
-    event_dict: EventDict,
-) -> EventDict:
-    """
-    Remove `color_message` from the event dict.
-
-    Uvicorn logs the message a second time in the extra
-    `color_message`, but we don't need it. This processor
-    removes the key from the event dict if it exists.
-    """
-    event_dict.pop("color_message", None)
-    return event_dict
-
-
 def get_logging_renderer(*, human_readable: bool) -> JSONRenderer | ConsoleRenderer:
     """Get the logging renderer."""
     if human_readable:
@@ -51,7 +35,6 @@ def build_shared_processors(*, human_readable: bool) -> list[Processor]:
         time_stamper,  # Add timestamps
         structlog.stdlib.add_log_level,  # Add log level
         structlog.stdlib.add_logger_name,  # Add logger name
-        remove_color_message,  # Drop color message
         structlog.stdlib.PositionalArgumentsFormatter(),  # Add positional arguments
         structlog.processors.StackInfoRenderer(),  # Add stack information
         structlog.stdlib.ExtraAdder(),  # Add extra attributes
@@ -107,7 +90,12 @@ def build_server_log_config(log_level: str, *, human_readable: bool) -> dict[str
     # Extend base config with server-specific loggers
     base_config["loggers"].update(
         {
-            "uvicorn": {
+            "granian.access": {
+                "handlers": ["default"],
+                "level": log_level,
+                "propagate": False,
+            },
+            "_granian": {
                 "handlers": ["default"],
                 "level": log_level,
                 "propagate": False,

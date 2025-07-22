@@ -1,9 +1,17 @@
-import multiprocessing  # noqa: INP001
+import multiprocessing
 
-import uvicorn
 from app.config import AppSettings, get_settings
 from app.core.instrumentation import initialize_instrumentation
 from app.logger import build_server_log_config, setup_logging
+from granian.constants import Interfaces
+from granian.server import Granian
+from watchfiles import BaseFilter
+
+
+class PyJsonFilter(BaseFilter):
+    def __call__(self, change, path: str) -> bool:
+        return path.endswith((".py", ".json"))
+
 
 if __name__ == "__main__":
     settings = get_settings(AppSettings)
@@ -15,26 +23,19 @@ if __name__ == "__main__":
         human_readable=settings.debug,
     )
 
-    # TODO: use gunicorn for better process lifecycle management here
-    # gunicorn main:app -k uvicorn.workers.UvicornWorker --workers 4 --threads 1 --bind 0.0.0.0:8000
-
-    # run application
-    uvicorn.run(
-        app="app:create_app",
+    Granian(
+        "app:create_app",
         factory=True,
-        host=settings.host,
+        address=settings.host,
         port=settings.port,
-        server_header=False,
-        date_header=False,
-        workers=multiprocessing.cpu_count() * 2,
+        workers=multiprocessing.cpu_count(),
         reload=settings.debug,
-        access_log=settings.debug,
-        reload_includes=["*.json", "*.py"],
-        log_config=build_server_log_config(
+        reload_filter=PyJsonFilter,
+        log_enabled=True,
+        log_dictconfig=build_server_log_config(
             log_level=settings.log_level,
             human_readable=settings.debug,
         ),
-        proxy_headers=True,
-        forwarded_allow_ips="*",
-        timeout_keep_alive=60,
-    )
+        log_access=settings.debug,
+        interface=Interfaces.ASGI,
+    ).serve()

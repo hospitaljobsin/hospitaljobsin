@@ -5,7 +5,7 @@
 - [Python](https://python.org) - Programming Language
 - [FastAPI](https://fastapi.tiangolo.com/) - Web Framework
 - [Pydantic](https://docs.pydantic.dev/) - Data Validation Library
-- [Uvicorn](https://www.uvicorn.org/) - ASGI Server
+- [Granian](https://github.com/emmett-framework/granian) - ASGI Server
 - [Beanie](https://beanie-odm.dev/) - MongoDB ODM
 - [Strawberry GraphQL](https://strawberry.rocks/) - GraphQL Library
 - [Result](https://github.com/rustedpy/result) - Error handling
