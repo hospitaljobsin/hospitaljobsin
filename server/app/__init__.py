@@ -7,6 +7,7 @@ from asgi_correlation_id import CorrelationIdMiddleware
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from granian.utils.proxies import wrap_asgi_with_proxy_headers
 from structlog import get_logger
 
 from app.auth.routes import auth_router
@@ -109,4 +110,4 @@ def create_app() -> FastAPI:
         app_settings=app_settings,
         auth_settings=get_settings(AuthSettings),
     )
-    return app
+    return wrap_asgi_with_proxy_headers(app, trusted_hosts="*")  # type: ignore[return-type]
