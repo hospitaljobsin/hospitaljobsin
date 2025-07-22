@@ -5,6 +5,7 @@ import type {
 	JobType,
 	WorkMode,
 } from "@/__generated__/JobDetailsInternalFragment.graphql";
+import { env } from "@/lib/env/client";
 import { dateFormat, salaryFormat } from "@/lib/intl";
 import links from "@/lib/links";
 import {
@@ -296,7 +297,7 @@ export default function JobDetails({
 									isAuthenticated
 										? links.jobDetailApply(data.organization.slug, data.slug)
 										: links.login(
-												links.jobDetailApply(data.organization.slug, data.slug),
+												`${env.NEXT_PUBLIC_URL}${links.jobDetailApply(data.organization.slug, data.slug)}`,
 											)
 								}
 								size="lg"
