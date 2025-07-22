@@ -61,9 +61,9 @@ provider "mongodbatlas" {}
 provider "github" {}
 
 module "github" {
-  source                                = "./modules/github"
-  github_organization_name              = var.github_organization_name
-  aws_backend_function_name             = module.core.aws_lambda_backend_function_name
+  source                   = "./modules/github"
+  github_organization_name = var.github_organization_name
+  # aws_backend_function_name             = module.core.aws_lambda_backend_function_name
   aws_backend_image_name                = module.core.aws_lambda_backend_image
   aws_worker_function_name              = module.core.aws_lambda_worker_function_name
   aws_worker_image_name                 = module.core.aws_lambda_worker_image

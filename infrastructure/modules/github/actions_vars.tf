@@ -1,9 +1,9 @@
 # Store the backend function name as a variable in GitHub Actions
-resource "github_actions_variable" "aws_backend_function_name" {
-  repository    = data.github_repository.this.name
-  variable_name = "AWS_BACKEND_FUNCTION_NAME"
-  value         = var.aws_backend_function_name
-}
+# resource "github_actions_variable" "aws_backend_function_name" {
+#   repository    = data.github_repository.this.name
+#   variable_name = "AWS_BACKEND_FUNCTION_NAME"
+#   value         = var.aws_backend_function_name
+# }
 
 # Store the backend ECR image name as a variable in GitHub Actions
 resource "github_actions_variable" "aws_lambda_backend_image" {

@@ -3,8 +3,8 @@ import multiprocessing
 from app.config import AppSettings, get_settings
 from app.core.instrumentation import initialize_instrumentation
 from app.logger import build_server_log_config, setup_logging
+from granian import Granian
 from granian.constants import Interfaces
-from granian.server import Granian
 from watchfiles import BaseFilter
 
 

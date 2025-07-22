@@ -14,10 +14,10 @@ variable "github_organization_name" {
 
 }
 
-variable "aws_backend_function_name" {
-  type        = string
-  description = "The name of the AWS Lambda function for the backend."
-}
+# variable "aws_backend_function_name" {
+#   type        = string
+#   description = "The name of the AWS Lambda function for the backend."
+# }
 
 
 variable "aws_backend_image_name" {

@@ -12,9 +12,9 @@ output "aws_secret_access_key" {
 
 
 # Store the backend function name as a variable in GitHub Actions
-output "aws_lambda_backend_function_name" {
-  value = aws_lambda_function.backend.function_name
-}
+# output "aws_lambda_backend_function_name" {
+#   value = aws_lambda_function.backend.function_name
+# }
 
 # Store the backend ECR image name as a variable in GitHub Actions
 output "aws_lambda_backend_image" {

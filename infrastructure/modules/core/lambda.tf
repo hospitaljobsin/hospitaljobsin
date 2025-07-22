@@ -289,63 +289,63 @@ resource "aws_iam_role_policy_attachment" "lambda_worker_custom_sqs_policy_attac
 
 # Lambda Function in Private Subnets
 
-resource "aws_lambda_function" "backend" {
-  # depends_on    = [docker_registry_image.backend]
-  function_name = "${var.resource_prefix}-backend-lambda"
+# resource "aws_lambda_function" "backend" {
+#   # depends_on    = [docker_registry_image.backend]
+#   function_name = "${var.resource_prefix}-backend-lambda"
 
 
-  role         = aws_iam_role.lambda_exec_role.arn
-  package_type = "Image"
-  image_uri    = "${aws_ecr_repository.backend.repository_url}:latest"
+#   role         = aws_iam_role.lambda_exec_role.arn
+#   package_type = "Image"
+#   image_uri    = "${aws_ecr_repository.backend.repository_url}:latest"
 
-  publish = true
+#   publish = true
 
-  # VPC Configuration - uncomment this while moving to private subnets
-  # vpc_config {
-  #   subnet_ids         = values(aws_subnet.private)[*].id
-  #   security_group_ids = [aws_security_group.lambda.id] # Security group for Lambda
-  # }
+#   # VPC Configuration - uncomment this while moving to private subnets
+#   # vpc_config {
+#   #   subnet_ids         = values(aws_subnet.private)[*].id
+#   #   security_group_ids = [aws_security_group.lambda.id] # Security group for Lambda
+#   # }
 
-  environment {
-    variables = {
-      SERVER_DEBUG                                = "False"
-      SERVER_ENVIRONMENT                          = "production"
-      SERVER_DATABASE_URL                         = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
-      SERVER_DEFAULT_DATABASE_NAME                = var.mongodb_database_name
-      SERVER_HOST                                 = "0.0.0.0"
-      SERVER_PORT                                 = "8000"
-      SERVER_LOG_LEVEL                            = "DEBUG"
-      SERVER_CORS_ALLOW_ORIGINS                   = "[\"https://${var.domain_name}\", \"https://recruiter.${var.domain_name}\", \"https://accounts.${var.domain_name}\"]"
-      SERVER_CORS_ALLOW_ORIGIN_REGEX              = "https://.*\\.${local.escaped_domain}"
-      SERVER_SESSION_COOKIE_DOMAIN                = ".${var.domain_name}"
-      SERVER_SESSION_COOKIE_SECURE                = "True"
-      SERVER_EMAIl_PROVIDER                       = "aws_ses"
-      SERVER_EMAIL_FROM                           = aws_ses_email_identity.this.email
-      SERVER_S3_BUCKET_NAME                       = aws_s3_bucket.this.bucket
-      SERVER_ACCOUNTS_BASE_URL                    = "https://accounts.${var.domain_name}"
-      SERVER_RECRUITER_PORTAL_BASE_URL            = "https://recruiter.${var.domain_name}"
-      SERVER_SEEKER_PORTAL_BASE_URL               = "https://${var.domain_name}"
-      SERVER_RP_ID                                = var.domain_name
-      SERVER_RP_NAME                              = var.app_name
-      SERVER_RP_EXPECTED_ORIGIN                   = "https://accounts.${var.domain_name}"
-      SERVER_GEOCODING_PROVIDER                   = "aws_location"
-      SERVER_SINGLE_USE_LOCATION_PLACE_INDEX_NAME = aws_location_place_index.single_use.index_name
-      SERVER_STORAGE_LOCATION_PLACE_INDEX_NAME    = aws_location_place_index.storage.index_name
-      SERVER_SENTRY_DSN                           = var.sentry_backend_dsn
-      SERVER_PERSISTED_QUERIES_PATH               = "query_map.json"
-      SERVER_REDIS_HOST                           = local.redis_host
-      SERVER_REDIS_PORT                           = local.redis_port
-      SERVER_REDIS_USERNAME                       = "default"
-      SERVER_REDIS_SSL                            = "True"
-      SERVER_SQS_QUEUE_URL                        = aws_sqs_queue.this.url
+#   environment {
+#     variables = {
+#       SERVER_DEBUG                                = "False"
+#       SERVER_ENVIRONMENT                          = "production"
+#       SERVER_DATABASE_URL                         = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
+#       SERVER_DEFAULT_DATABASE_NAME                = var.mongodb_database_name
+#       SERVER_HOST                                 = "0.0.0.0"
+#       SERVER_PORT                                 = "8000"
+#       SERVER_LOG_LEVEL                            = "DEBUG"
+#       SERVER_CORS_ALLOW_ORIGINS                   = "[\"https://${var.domain_name}\", \"https://recruiter.${var.domain_name}\", \"https://accounts.${var.domain_name}\"]"
+#       SERVER_CORS_ALLOW_ORIGIN_REGEX              = "https://.*\\.${local.escaped_domain}"
+#       SERVER_SESSION_COOKIE_DOMAIN                = ".${var.domain_name}"
+#       SERVER_SESSION_COOKIE_SECURE                = "True"
+#       SERVER_EMAIl_PROVIDER                       = "aws_ses"
+#       SERVER_EMAIL_FROM                           = aws_ses_email_identity.this.email
+#       SERVER_S3_BUCKET_NAME                       = aws_s3_bucket.this.bucket
+#       SERVER_ACCOUNTS_BASE_URL                    = "https://accounts.${var.domain_name}"
+#       SERVER_RECRUITER_PORTAL_BASE_URL            = "https://recruiter.${var.domain_name}"
+#       SERVER_SEEKER_PORTAL_BASE_URL               = "https://${var.domain_name}"
+#       SERVER_RP_ID                                = var.domain_name
+#       SERVER_RP_NAME                              = var.app_name
+#       SERVER_RP_EXPECTED_ORIGIN                   = "https://accounts.${var.domain_name}"
+#       SERVER_GEOCODING_PROVIDER                   = "aws_location"
+#       SERVER_SINGLE_USE_LOCATION_PLACE_INDEX_NAME = aws_location_place_index.single_use.index_name
+#       SERVER_STORAGE_LOCATION_PLACE_INDEX_NAME    = aws_location_place_index.storage.index_name
+#       SERVER_SENTRY_DSN                           = var.sentry_backend_dsn
+#       SERVER_PERSISTED_QUERIES_PATH               = "query_map.json"
+#       SERVER_REDIS_HOST                           = local.redis_host
+#       SERVER_REDIS_PORT                           = local.redis_port
+#       SERVER_REDIS_USERNAME                       = "default"
+#       SERVER_REDIS_SSL                            = "True"
+#       SERVER_SQS_QUEUE_URL                        = aws_sqs_queue.this.url
 
-      AWS_SECRETS_MANAGER_SECRET_ID = aws_secretsmanager_secret.backend.id
-    }
-  }
+#       AWS_SECRETS_MANAGER_SECRET_ID = aws_secretsmanager_secret.backend.id
+#     }
+#   }
 
-  memory_size = 2048 # 2048
-  timeout     = 60
-}
+#   memory_size = 2048 # 2048
+#   timeout     = 60
+# }
 
 # uncomment to remove provisioned concurrency
 # resource "aws_lambda_provisioned_concurrency_config" "backend" {
@@ -456,10 +456,10 @@ resource "aws_security_group" "lambda" {
 }
 
 
-resource "aws_lambda_permission" "backend" {
-  statement_id  = "AllowAPIGatewayInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.backend.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.this.execution_arn}/*/*"
-}
+# resource "aws_lambda_permission" "backend" {
+#   statement_id  = "AllowAPIGatewayInvoke"
+#   action        = "lambda:InvokeFunction"
+#   function_name = aws_lambda_function.backend.function_name
+#   principal     = "apigateway.amazonaws.com"
+#   source_arn    = "${aws_apigatewayv2_api.this.execution_arn}/*/*"
+# }

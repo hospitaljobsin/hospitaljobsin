@@ -43,15 +43,15 @@ resource "aws_iam_policy" "github_actions" {
         # Resource = aws_ecr_repository.backend.arn # Example for a specific repo
         Resource = aws_ecr_repository.backend.arn
       },
-      {
-        Action = [
-          "lambda:UpdateFunctionCode"
-        ]
-        Effect = "Allow"
-        # Limit to the specific AWS lambda if possible, otherwise use "*" if multiple functions are needed
-        # Resource = aws_ecr_repository.backend.arn # Example for a specific repo
-        Resource = aws_lambda_function.backend.arn
-      },
+      # {
+      #   Action = [
+      #     "lambda:UpdateFunctionCode"
+      #   ]
+      #   Effect = "Allow"
+      #   # Limit to the specific AWS lambda if possible, otherwise use "*" if multiple functions are needed
+      #   # Resource = aws_ecr_repository.backend.arn # Example for a specific repo
+      #   Resource = aws_lambda_function.backend.arn
+      # },
       {
         # SST deploy permissions
         Sid    = "ManageBootstrapStateBucket"
