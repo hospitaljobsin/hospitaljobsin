@@ -75,6 +75,30 @@ export function ChipsInput<
 		}
 	};
 
+	const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+		e.preventDefault();
+		const pastedText = e.clipboardData.getData("text");
+		// Create a regex to split by any of the delimiters
+		const splitRegex = new RegExp(
+			`[${delimiters.map((d) => d.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&")).join("")}]`,
+			"g",
+		);
+		const values = pastedText
+			.split(splitRegex)
+			.map((v) => v.trim())
+			.filter(Boolean);
+		let added = false;
+		for (const val of values) {
+			if (!val) continue;
+			if (!allowDuplicates && fields.some((field) => field.value === val)) {
+				continue;
+			}
+			append({ value: val } as unknown as TFieldValues[TName][number]);
+			added = true;
+		}
+		if (added) setInputValue("");
+	};
+
 	return (
 		<div className="w-full flex flex-col gap-6">
 			<Input
@@ -85,6 +109,7 @@ export function ChipsInput<
 				onChange={(e) => setInputValue(e.target.value)}
 				onKeyDown={handleKeyDown}
 				onBlur={handleBlur}
+				onPaste={handlePaste}
 				{...inputProps}
 			/>
 			<div className="flex flex-wrap gap-2 mb-2">

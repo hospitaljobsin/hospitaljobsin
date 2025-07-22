@@ -340,7 +340,9 @@ class ProfileParserService:
                 if profile_output.education
                 else UNSET,
                 licenses=[
-                    License(**partial_license.model_dump())
+                    License(
+                        **partial_license.model_dump(), verification_status="pending"
+                    )
                     for partial_license in profile_output.licenses
                 ]
                 if profile_output.licenses
