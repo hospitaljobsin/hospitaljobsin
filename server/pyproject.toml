@@ -47,8 +47,6 @@ dependencies = [
     "types-aiobotocore-location==2.23.0",
     "types-aiobotocore-bedrock-runtime==2.23.0",
     "pydantic-ai-slim[bedrock]==0.4.3",
-    "httptools==0.6.4",
-    "uvloop==0.21.0",
     "granian[pname,uvloop]==2.4.2",
 ]
 
