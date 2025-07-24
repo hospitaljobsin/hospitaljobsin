@@ -272,7 +272,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
   protect_from_scale_in     = true
   name                      = "${var.resource_prefix}-asg-ecs"
   desired_capacity          = 1
-  max_size                  = 1
+  max_size                  = 2
   min_size                  = 1
   vpc_zone_identifier       = data.aws_subnets.default.ids
   health_check_type         = "EC2"
@@ -506,7 +506,7 @@ resource "aws_ecs_service" "app" {
   task_definition = aws_ecs_task_definition.app.arn
   #   launch_type                        = "EC2"
   desired_count                      = 1
-  deployment_minimum_healthy_percent = 0
+  deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 
   capacity_provider_strategy {
