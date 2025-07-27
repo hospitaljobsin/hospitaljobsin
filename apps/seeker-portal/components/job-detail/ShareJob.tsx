@@ -110,7 +110,7 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 			>
 				<ModalContent>
 					<ModalHeader className="flex w-full justify-between items-center gap-4 py-6 px-8">
-						<div className="flex items-center gap-8">
+						<div className="flex flex-col sm:flex-row sm:items-center gap-8">
 							<div className="relative aspect-square h-14 w-14">
 								<Image
 									alt={data.organization.name}
@@ -154,30 +154,32 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 							</Button>
 						</div>
 					</ModalBody>
-					<ModalFooter className="flex gap-4 items-center w-full flex-row justify-start">
-						<p className="text-base mr-2">Or share directly:</p>
-						<TwitterShareButton url={shareUrl} title={title}>
-							<XIcon size={40} borderRadius={16} />
-						</TwitterShareButton>
-						<LinkedinShareButton url={shareUrl} title={title}>
-							<LinkedinIcon size={40} borderRadius={16} />
-						</LinkedinShareButton>
-						<FacebookShareButton url={shareUrl}>
-							<FacebookIcon size={40} borderRadius={16} />
-						</FacebookShareButton>
-						<TelegramShareButton url={shareUrl} title={title}>
-							<TelegramIcon size={40} borderRadius={16} />
-						</TelegramShareButton>
-						<WhatsappShareButton url={shareUrl} title={title}>
-							<WhatsappIcon size={40} borderRadius={16} />
-						</WhatsappShareButton>
-						<EmailShareButton
-							url={shareUrl}
-							subject={emailSubject}
-							body={emailBody}
-						>
-							<EmailIcon size={40} borderRadius={16} />
-						</EmailShareButton>
+					<ModalFooter className="flex flex-col sm:flex-row gap-4 sm:items-center w-full justify-start">
+						<p className="text-base mr-2 text-nowrap">Or share directly:</p>
+						<div className="flex w-full flex-row items-center gap-4 flex-wrap">
+							<TwitterShareButton url={shareUrl} title={title}>
+								<XIcon size={40} borderRadius={16} />
+							</TwitterShareButton>
+							<LinkedinShareButton url={shareUrl} title={title}>
+								<LinkedinIcon size={40} borderRadius={16} />
+							</LinkedinShareButton>
+							<FacebookShareButton url={shareUrl}>
+								<FacebookIcon size={40} borderRadius={16} />
+							</FacebookShareButton>
+							<TelegramShareButton url={shareUrl} title={title}>
+								<TelegramIcon size={40} borderRadius={16} />
+							</TelegramShareButton>
+							<WhatsappShareButton url={shareUrl} title={title}>
+								<WhatsappIcon size={40} borderRadius={16} />
+							</WhatsappShareButton>
+							<EmailShareButton
+								url={shareUrl}
+								subject={emailSubject}
+								body={emailBody}
+							>
+								<EmailIcon size={40} borderRadius={16} />
+							</EmailShareButton>
+						</div>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
