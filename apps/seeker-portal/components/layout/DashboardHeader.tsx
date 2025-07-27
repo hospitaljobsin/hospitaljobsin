@@ -138,11 +138,11 @@ export default function DashboardHeader({
 							<AuthNavigation rootQuery={data.viewer} />
 						</div>
 					) : (
-						<div className="flex items-center gap-2">
+						<div className="flex items-center gap-2 sm:gap-4">
 							<NavbarItem>
 								<Button
 									as={Link}
-									color="default"
+									color="primary"
 									href={links.login(env.NEXT_PUBLIC_URL)}
 								>
 									Log In

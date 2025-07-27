@@ -41,9 +41,9 @@ export default function LandingHeader({
 	const data = useFragment(LandingHeaderFragment, rootQuery);
 	return (
 		<div className={cn("w-full flex flex-col static top-0 z-50")}>
-			{data.viewer.__typename === "Account" && (
+			{data.viewer.__typename === "Account" ? (
 				<IncompleteProfileBanner account={data.viewer} />
-			)}
+			) : null}
 			<Navbar
 				maxWidth="xl"
 				isBordered={false}
@@ -86,7 +86,7 @@ export default function LandingHeader({
 							<NavbarItem>
 								<Button
 									as={Link}
-									color="default"
+									color="secondary"
 									href={links.login(env.NEXT_PUBLIC_URL)}
 								>
 									Log In

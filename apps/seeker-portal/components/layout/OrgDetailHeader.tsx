@@ -149,7 +149,7 @@ export default function OrgDetailHeader({
 							<NavbarItem>
 								<Button
 									as={Link}
-									color="default"
+									color="primary"
 									href={links.login(env.NEXT_PUBLIC_URL)}
 								>
 									Log In
