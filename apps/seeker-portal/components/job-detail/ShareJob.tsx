@@ -8,16 +8,21 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	Snippet,
 	Tooltip,
 } from "@heroui/react";
-import { GlobeIcon, Share2Icon } from "lucide-react";
+import { CheckCircle2Icon, GlobeIcon, Share2Icon } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useFragment } from "react-relay";
 import {
+	EmailIcon,
+	EmailShareButton,
+	FacebookIcon,
+	FacebookShareButton,
 	LinkedinIcon,
 	LinkedinShareButton,
+	TelegramIcon,
+	TelegramShareButton,
 	TwitterShareButton,
 	WhatsappIcon,
 	WhatsappShareButton,
@@ -41,6 +46,7 @@ export const ShareJobFragment = graphql`
 
 export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 	const [showShareModal, setShowShareModal] = useState(false);
+	const [copied, setCopied] = useState(false);
 	const data = useFragment(ShareJobFragment, job);
 	const shareUrl = `${env.NEXT_PUBLIC_URL}${links.jobDetail(data.organization.slug, data.slug)}`;
 	const title = `Job Position: ${data.title} at ${data.organization.name} - Apply Now!`;
@@ -64,6 +70,15 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 			setShowShareModal(true);
 		}
 	}
+
+	function handleCopy() {
+		navigator.clipboard.writeText(shareUrl);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 4000);
+	}
+
+	const emailSubject = `Job Opportunity: ${data.title} at ${data.organization.name}`;
+	const emailBody = `Hi,%0D%0A%0D%0ACheck out this job opening for ${data.title} at ${data.organization.name}.%0D%0AApply here: ${shareUrl}%0D%0A%0D%0A`;
 
 	return (
 		<>
@@ -115,29 +130,54 @@ export default function ShareJob({ job }: { job: ShareJobFragment$key }) {
 						</div>
 					</ModalHeader>
 					<ModalBody>
-						<Snippet
-							tooltipProps={{ content: "Copy link" }}
-							symbol={<GlobeIcon size={20} className="text-foreground-500" />}
-							variant="bordered"
-							classNames={{
-								pre: "flex gap-4 items-center",
-							}}
-							fullWidth
-						>
-							{shareUrl}
-						</Snippet>
+						<p className="text-lg mb-4 text-left w-full">
+							Share this job with your friends or colleagues!
+						</p>
+						<div className="flex flex-col items-center gap-4 w-full">
+							<Button
+								variant="bordered"
+								fullWidth
+								className="flex gap-2 items-center justify-center text-base font-medium"
+								onClick={handleCopy}
+							>
+								{copied ? (
+									<>
+										<CheckCircle2Icon size={20} className="text-success-500" />
+										<span>Link copied!</span>
+									</>
+								) : (
+									<>
+										<GlobeIcon size={20} className="text-foreground-500" />
+										<span>Copy Link</span>
+									</>
+								)}
+							</Button>
+						</div>
 					</ModalBody>
-					<ModalFooter className="flex gap-4 items-center w-full flex-row">
-						<p className="text-sm">Share it on</p>
+					<ModalFooter className="flex gap-4 items-center w-full flex-row justify-start">
+						<p className="text-base mr-2">Or share directly:</p>
 						<TwitterShareButton url={shareUrl} title={title}>
-							<XIcon size={32} borderRadius={12} />
+							<XIcon size={40} borderRadius={16} />
 						</TwitterShareButton>
 						<LinkedinShareButton url={shareUrl} title={title}>
-							<LinkedinIcon size={32} borderRadius={12} />
+							<LinkedinIcon size={40} borderRadius={16} />
 						</LinkedinShareButton>
+						<FacebookShareButton url={shareUrl}>
+							<FacebookIcon size={40} borderRadius={16} />
+						</FacebookShareButton>
+						<TelegramShareButton url={shareUrl} title={title}>
+							<TelegramIcon size={40} borderRadius={16} />
+						</TelegramShareButton>
 						<WhatsappShareButton url={shareUrl} title={title}>
-							<WhatsappIcon size={32} borderRadius={12} />
+							<WhatsappIcon size={40} borderRadius={16} />
 						</WhatsappShareButton>
+						<EmailShareButton
+							url={shareUrl}
+							subject={emailSubject}
+							body={emailBody}
+						>
+							<EmailIcon size={40} borderRadius={16} />
+						</EmailShareButton>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
