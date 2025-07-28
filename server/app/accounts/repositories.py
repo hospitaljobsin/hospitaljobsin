@@ -13,6 +13,7 @@ from app.base.models import GeoObject
 from app.core.constants import (
     EMAIL_VERIFICATION_EXPIRES_IN,
     EMAIL_VERIFICATION_TOKEN_LENGTH,
+    PHONE_NUMBER_VERIFICATION_EXPIRES_IN,
     AuthProvider,
 )
 from app.core.geocoding import BaseLocationService
@@ -27,6 +28,7 @@ from .documents import (
     License,
     Location,
     MaritalStatus,
+    PhoneNumberVerificationToken,
     Profile,
     SalaryExpectations,
     WorkExperience,
@@ -87,6 +89,12 @@ class AccountRepo:
             Account.email == email,
         )
 
+    async def get_by_phone_number(self, phone_number: str) -> Account | None:
+        """Get account by phone number."""
+        return await Account.find_one(
+            Account.phone_number == phone_number,
+        )
+
     async def get_many_by_ids(
         self, account_ids: list[ObjectId]
     ) -> list[Account | None]:
@@ -100,11 +108,19 @@ class AccountRepo:
         ]
 
     async def update(
-        self, account: Account, full_name: str, avatar_url: str | None
+        self,
+        account: Account,
+        full_name: str = UNSET,
+        avatar_url: str | None = UNSET,
+        phone_number: str | None = UNSET,
     ) -> Account:
         """Update the given account."""
-        account.full_name = full_name
-        account.avatar_url = avatar_url
+        if full_name is not UNSET:
+            account.full_name = full_name
+        if avatar_url is not UNSET:
+            account.avatar_url = avatar_url
+        if phone_number is not UNSET:
+            account.phone_number = phone_number
         return await account.save()
 
     async def update_profile(self, account: Account, profile: Profile) -> Account:
@@ -148,6 +164,61 @@ class AccountRepo:
         return await account.save()
 
 
+class PhoneNumberVerificationTokenRepo:
+    async def create(
+        self, phone_number: str
+    ) -> tuple[str, PhoneNumberVerificationToken]:
+        """Create a new phone number verification token."""
+        verification_token = self.generate_verification_token()
+        phone_number_verification = PhoneNumberVerificationToken(
+            phone_number=phone_number,
+            token_hash=self.hash_verification_token(
+                token=verification_token,
+            ),
+            expires_at=datetime.now(UTC)
+            + timedelta(
+                seconds=PHONE_NUMBER_VERIFICATION_EXPIRES_IN,
+            ),
+        )
+
+        await phone_number_verification.insert()
+        return verification_token, phone_number_verification
+
+    async def get(self, verification_token: str) -> PhoneNumberVerificationToken | None:
+        """Get a phone number verification by token."""
+        return await PhoneNumberVerificationToken.find_one(
+            PhoneNumberVerificationToken.token_hash
+            == self.hash_verification_token(verification_token)
+        )
+
+    async def get_by_phone_number(
+        self, phone_number: str
+    ) -> PhoneNumberVerificationToken | None:
+        """Get a phone number verification by phone number."""
+        return await PhoneNumberVerificationToken.find_one(
+            PhoneNumberVerificationToken.phone_number == phone_number
+        )
+
+    async def delete(
+        self, phone_number_verification: PhoneNumberVerificationToken
+    ) -> None:
+        """Delete a phone number verification."""
+        await phone_number_verification.delete()
+
+    @staticmethod
+    def generate_verification_token() -> str:
+        """Generate a new verification token."""
+        return "".join(
+            secrets.choice(string.digits)
+            for _ in range(EMAIL_VERIFICATION_TOKEN_LENGTH)
+        )
+
+    @staticmethod
+    def hash_verification_token(token: str) -> str:
+        """Hash verification token."""
+        return hashlib.md5(token.encode("utf-8")).hexdigest()  # noqa: S324
+
+
 class EmailVerificationTokenRepo:
     async def create(self, email: str) -> tuple[str, EmailVerificationToken]:
         """Create a new email verification token."""
@@ -180,7 +251,7 @@ class EmailVerificationTokenRepo:
         )
 
     async def delete(self, email_verification: EmailVerificationToken) -> None:
-        """Delete an email verification by ID."""
+        """Delete an email verification."""
         await email_verification.delete()
 
     @staticmethod

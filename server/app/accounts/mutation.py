@@ -4,9 +4,16 @@ from typing import Annotated, assert_never
 import strawberry
 from aioinject import Inject
 from aioinject.ext.strawberry import inject
-from result import Ok
+from result import Err, Ok
 from strawberry.permission import PermissionExtension
 
+from app.accounts.exceptions import (
+    InvalidPhoneNumberError,
+    InvalidPhoneNumberVerificationTokenError,
+    PhoneNumberAlreadyExistsError,
+    PhoneNumberDoesNotExistError,
+    PhoneNumberVerificationTokenCooldownError,
+)
 from app.accounts.services import AccountService, ProfileParserService, ProfileService
 from app.auth.permissions import IsAuthenticated
 from app.context import AuthInfo
@@ -14,16 +21,25 @@ from app.context import AuthInfo
 from .types import (
     AccountType,
     CertificationInputType,
+    CreatePhoneNumberVerificationTokenSuccessType,
     CreateProfilePicturePresignedURLPayloadType,
     EducationInputType,
     GenderTypeEnum,
     GenerateProfileDocumentPresignedURLPayloadType,
+    InvalidPhoneNumberErrorType,
+    InvalidPhoneNumberVerificationTokenErrorType,
     LanguageInputType,
     LicenseInputType,
     MaritalStatusTypeEnum,
     ParseProfileDocumentPayload,
+    PhoneNumberAlreadyExistsErrorType,
+    PhoneNumberDoesNotExistErrorType,
+    PhoneNumberVerificationTokenCooldownErrorType,
     ProfileType,
+    RemoveAccountPhoneNumberPayload,
+    RequestPhoneNumberVerificationTokenPayload,
     UpdateAccountPayload,
+    UpdateAccountPhoneNumberPayload,
     UpdateProfilePayload,
     WorkExperienceInputType,
 )
@@ -164,13 +180,13 @@ class AccountMutation:
             strawberry.argument(
                 description="The full name of the user account.",
             ),
-        ],
+        ] = strawberry.UNSET,
         avatar_url: Annotated[
             str | None,
             strawberry.argument(
                 description="The URL of the profile picture.",
             ),
-        ],
+        ] = strawberry.UNSET,
     ) -> UpdateAccountPayload:
         """Update the current user's account."""
         match await account_service.update(
@@ -180,6 +196,125 @@ class AccountMutation:
         ):
             case Ok(account):
                 return AccountType.marshal(account)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RequestPhoneNumberVerificationTokenPayload,
+        description="Create a phone number verification token.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def request_phone_number_verification_token(
+        self,
+        info: AuthInfo,
+        account_service: Annotated[AccountService, Inject],
+        phone_number: Annotated[
+            str,
+            strawberry.argument(
+                description="The phone of the user account.",
+            ),
+        ],
+    ) -> RequestPhoneNumberVerificationTokenPayload:
+        """Create a phone number verification token."""
+        match await account_service.request_phone_number_verification_token(
+            account=info.context["current_user"],
+            phone_number=phone_number,
+        ):
+            case Ok(_):
+                return CreatePhoneNumberVerificationTokenSuccessType()
+            case Err(error):
+                match error:
+                    case InvalidPhoneNumberError():
+                        return InvalidPhoneNumberErrorType()
+                    case PhoneNumberAlreadyExistsError():
+                        return PhoneNumberAlreadyExistsErrorType()
+                    case PhoneNumberVerificationTokenCooldownError() as err:
+                        return PhoneNumberVerificationTokenCooldownErrorType(
+                            remaining_seconds=err.remaining_seconds,
+                        )
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateAccountPhoneNumberPayload,
+        description="Update the current user's phone number.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def update_account_phone_number(
+        self,
+        info: AuthInfo,
+        account_service: Annotated[AccountService, Inject],
+        phone_number: Annotated[
+            str,
+            strawberry.argument(
+                description="The phone of the user account.",
+            ),
+        ],
+        phone_number_verification_token: Annotated[
+            str,
+            strawberry.argument(
+                description="The phone number verification token.",
+            ),
+        ],
+    ) -> UpdateAccountPhoneNumberPayload:
+        """Update the current user's phone number."""
+        match await account_service.update_phone_number(
+            account=info.context["current_user"],
+            phone_number=phone_number,
+            phone_number_verification_token=phone_number_verification_token,
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
+            case Err(error):
+                match error:
+                    case InvalidPhoneNumberVerificationTokenError():
+                        return InvalidPhoneNumberVerificationTokenErrorType()
+                    case InvalidPhoneNumberError():
+                        return InvalidPhoneNumberErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RemoveAccountPhoneNumberPayload,
+        description="Remove the current user's phone number.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def remove_account_phone_number(
+        self,
+        info: AuthInfo,
+        account_service: Annotated[AccountService, Inject],
+    ) -> RemoveAccountPhoneNumberPayload:
+        """Remove the current user's phone number."""
+        match await account_service.remove_phone_number(
+            account=info.context["current_user"],
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
+            case Err(error):
+                match error:
+                    case PhoneNumberDoesNotExistError():
+                        return PhoneNumberDoesNotExistErrorType()
             case _ as unreachable:
                 assert_never(unreachable)
 

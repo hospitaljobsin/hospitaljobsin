@@ -1,7 +1,9 @@
 import uuid
-from datetime import date
+from datetime import UTC, date, datetime, timedelta
 
-from result import Ok
+import phonenumbers
+import strawberry
+from result import Err, Ok, Result
 from strawberry import UNSET
 from types_aiobotocore_s3 import S3Client
 
@@ -11,11 +13,23 @@ from app.accounts.documents import (
     Education,
     Language,
     License,
+    PhoneNumberVerificationToken,
     Profile,
     WorkExperience,
 )
-from app.accounts.repositories import AccountRepo, ProfileRepo
-from app.config import AWSSettings
+from app.accounts.exceptions import (
+    InvalidPhoneNumberError,
+    InvalidPhoneNumberVerificationTokenError,
+    PhoneNumberAlreadyExistsError,
+    PhoneNumberDoesNotExistError,
+    PhoneNumberVerificationTokenCooldownError,
+)
+from app.accounts.repositories import (
+    AccountRepo,
+    PhoneNumberVerificationTokenRepo,
+    ProfileRepo,
+)
+from app.config import AuthSettings, AWSSettings
 from app.core.ocr import BaseOCRClient
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
@@ -26,15 +40,21 @@ class AccountService:
         self,
         account_repo: AccountRepo,
         organization_member_repo: OrganizationMemberRepo,
+        phone_number_verification_token_repo: PhoneNumberVerificationTokenRepo,
         job_applicant_repo: JobApplicantRepo,
         s3_client: S3Client,
         aws_settings: AWSSettings,
+        settings: AuthSettings,
     ) -> None:
         self._account_repo = account_repo
         self._organization_member_repo = organization_member_repo
+        self._phone_number_verification_token_repo = (
+            phone_number_verification_token_repo
+        )
         self._job_applicant_repo = job_applicant_repo
         self._s3_client = s3_client
         self._aws_settings = aws_settings
+        self._settings = settings
 
     async def create_profile_picture_presigned_url(self, content_type: str) -> str:
         """Create a presigned URL for uploading an account's profile picture."""
@@ -50,7 +70,10 @@ class AccountService:
         )
 
     async def update(
-        self, account: Account, full_name: str, avatar_url: str | None
+        self,
+        account: Account,
+        full_name: str = strawberry.UNSET,
+        avatar_url: str | None = strawberry.UNSET,
     ) -> Ok[Account]:
         """Update the given account."""
         await self._account_repo.update(
@@ -62,6 +85,148 @@ class AccountService:
         )
         # update denormalized full_name in job applicants
         await self._job_applicant_repo.update_all(account=account, full_name=full_name)
+        return Ok(account)
+
+    async def request_phone_number_verification_token(
+        self, account: Account, phone_number: str
+    ) -> Result[
+        None,
+        InvalidPhoneNumberError
+        | PhoneNumberAlreadyExistsError
+        | PhoneNumberVerificationTokenCooldownError,
+    ]:
+        try:
+            valid_phone_number = phonenumbers.parse(phone_number)
+        except phonenumbers.NumberParseException:
+            return Err(InvalidPhoneNumberError())
+        else:
+            if not phonenumbers.is_valid_number_for_region(
+                valid_phone_number, region_code="IN"
+            ):
+                # only accept Indian numbers
+                return Err(InvalidPhoneNumberError())
+
+        formatted_number = phonenumbers.format_number(
+            valid_phone_number, phonenumbers.PhoneNumberFormat.E164
+        )
+        if (
+            await self._account_repo.get_by_phone_number(phone_number=formatted_number)
+            is not None
+        ):
+            return Err(PhoneNumberAlreadyExistsError())
+
+        existing_phone_number_verification = (
+            await self._phone_number_verification_token_repo.get_by_phone_number(
+                phone_number=formatted_number
+            )
+        )
+
+        if existing_phone_number_verification is not None:
+            if not self._is_phone_number_verification_token_cooled_down(
+                existing_phone_number_verification
+            ):
+                return Err(
+                    PhoneNumberVerificationTokenCooldownError(
+                        remaining_seconds=self._phone_number_verification_token_cooldown_remaining_seconds(
+                            existing_phone_number_verification
+                        )
+                    )
+                )
+            await self._phone_number_verification_token_repo.delete(
+                existing_phone_number_verification
+            )
+
+        (
+            verification_token,
+            phone_number_verification,
+        ) = await self._phone_number_verification_token_repo.create(
+            phone_number=formatted_number
+        )
+        # TODO: send phone number verification token here
+        return Ok(None)
+
+    def _is_phone_number_verification_token_cooled_down(
+        self, token: PhoneNumberVerificationToken
+    ) -> bool:
+        """Check if a phone number verification token is cooled down."""
+        current_time = datetime.now(UTC)
+        # Ensure generation_time is aware (assuming it's stored in UTC)
+        generation_time_aware = token.id.generation_time.replace(tzinfo=UTC)
+        cooldown_time = generation_time_aware + timedelta(
+            seconds=self._settings.phone_number_verification_token_cooldown
+        )
+        return current_time >= cooldown_time
+
+    def _phone_number_verification_token_cooldown_remaining_seconds(
+        self, token: PhoneNumberVerificationToken
+    ) -> int:
+        """
+        Calculate remaining cooldown seconds for the phone number verification token.
+
+        Returns 0 if cooldown has passed or token is invalid.
+        """
+        if self._is_phone_number_verification_token_cooled_down(token):
+            return 0
+
+        current_time = datetime.now(UTC)
+        generation_time_aware = token.id.generation_time.replace(tzinfo=UTC)
+        cooldown_time = generation_time_aware + timedelta(
+            seconds=self._settings.phone_number_verification_token_cooldown
+        )
+
+        remaining = (cooldown_time - current_time).total_seconds()
+        return max(0, int(remaining))  # Ensure non-negative integer
+
+    async def update_phone_number(
+        self,
+        account: Account,
+        phone_number: str,
+        phone_number_verification_token: str,
+    ) -> Result[
+        Account, InvalidPhoneNumberVerificationTokenError | InvalidPhoneNumberError
+    ]:
+        """Update the given account's phone number."""
+        try:
+            valid_phone_number = phonenumbers.parse(phone_number)
+        except phonenumbers.NumberParseException:
+            return Err(InvalidPhoneNumberError())
+        else:
+            if not phonenumbers.is_valid_number_for_region(
+                valid_phone_number, region_code="IN"
+            ):
+                # only accept Indian numbers
+                return Err(InvalidPhoneNumberError())
+
+        formatted_number = phonenumbers.format_number(
+            valid_phone_number, phonenumbers.PhoneNumberFormat.E164
+        )
+
+        existing_verification_token = (
+            await self._phone_number_verification_token_repo.get(
+                verification_token=phone_number_verification_token
+            )
+        )
+
+        if (
+            existing_verification_token is None
+            or existing_verification_token.phone_number != formatted_number
+        ):
+            # get phone number verification token and ensure phone number matches
+            return Err(InvalidPhoneNumberVerificationTokenError())
+
+        await self._account_repo.update(
+            account=account,
+            phone_number=formatted_number,
+        )
+        return Ok(account)
+
+    async def remove_phone_number(
+        self, account: Account
+    ) -> Result[Account, PhoneNumberDoesNotExistError]:
+        """Remove the given account's phone number."""
+        if account.phone_number is None:
+            return Err(PhoneNumberDoesNotExistError())
+        await self._account_repo.update(account=account, phone_number=None)
         return Ok(account)
 
 

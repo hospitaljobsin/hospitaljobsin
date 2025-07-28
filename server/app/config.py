@@ -415,6 +415,8 @@ class AuthSettings(BaseSettings):
     # tokens cooldown config
     email_verification_token_cooldown: int = 60 * 3
 
+    phone_number_verification_token_cooldown: int = 60 * 3
+
     password_reset_token_cooldown: int = 60 * 3
 
     model_config = SettingsConfigDict(

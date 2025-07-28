@@ -4,7 +4,12 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.operations import SearchIndexModel
 from structlog import get_logger
 
-from app.accounts.documents import Account, EmailVerificationToken, Profile
+from app.accounts.documents import (
+    Account,
+    EmailVerificationToken,
+    PhoneNumberVerificationToken,
+    Profile,
+)
 from app.auth.documents import (
     OAuthCredential,
     PasswordResetToken,
@@ -131,6 +136,7 @@ async def initialize_database(database_url: str, default_database_name: str) -> 
                 SavedJob,
                 Session,
                 EmailVerificationToken,
+                PhoneNumberVerificationToken,
                 PasswordResetToken,
                 Organization,
                 OrganizationMember,
