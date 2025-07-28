@@ -260,7 +260,7 @@ export default function JobDetails({
 								isDisabled={data.isApplied}
 								startContent={<ExternalLinkIcon size={16} />}
 							>
-								{data.isApplied ? "Applied" : "Apply now"}
+								{data.isApplied ? "Already Applied" : "Apply now"}
 							</Button>
 						) : isProfileIncomplete && !data.isApplied ? (
 							<Tooltip
@@ -305,7 +305,7 @@ export default function JobDetails({
 								className="w-full sm:w-auto text-base sm:text-lg px-4 py-2 sm:px-6 sm:py-3"
 								isDisabled={data.isApplied}
 							>
-								{data.isApplied ? "Applied" : "Log In to Apply"}
+								{data.isApplied ? "Already Applied" : "Log In to Apply"}
 							</Button>
 						)}
 					</div>
