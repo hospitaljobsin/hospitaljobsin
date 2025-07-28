@@ -275,6 +275,16 @@ class TesseractSettings(BaseSettings):
     )
 
 
+class SMSSettings(BaseSettings):
+    # SMS config
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+
 class EmailSettings(BaseSettings):
     # email config
 

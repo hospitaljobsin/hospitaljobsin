@@ -742,8 +742,8 @@ class PhoneNumberDoesNotExistErrorType(BaseErrorType):
     )
 
 
-@strawberry.type(name="CreatePhoneNumberVerificationTokenSuccess")
-class CreatePhoneNumberVerificationTokenSuccessType(BaseErrorType):
+@strawberry.type(name="RequestPhoneNumberVerificationTokenSuccess")
+class RequestPhoneNumberVerificationTokenSuccessType(BaseErrorType):
     message: str = field(
         default="Phone number verification token sent.",
         description="Success message.",
@@ -768,7 +768,7 @@ class PhoneNumberVerificationTokenCooldownErrorType(BaseErrorType):
 
 
 RequestPhoneNumberVerificationTokenPayload = Annotated[
-    CreatePhoneNumberVerificationTokenSuccessType
+    RequestPhoneNumberVerificationTokenSuccessType
     | PhoneNumberAlreadyExistsErrorType
     | InvalidPhoneNumberErrorType
     | PhoneNumberVerificationTokenCooldownErrorType,

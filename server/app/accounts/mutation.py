@@ -21,7 +21,6 @@ from app.context import AuthInfo
 from .types import (
     AccountType,
     CertificationInputType,
-    CreatePhoneNumberVerificationTokenSuccessType,
     CreateProfilePicturePresignedURLPayloadType,
     EducationInputType,
     GenderTypeEnum,
@@ -38,6 +37,7 @@ from .types import (
     ProfileType,
     RemoveAccountPhoneNumberPayload,
     RequestPhoneNumberVerificationTokenPayload,
+    RequestPhoneNumberVerificationTokenSuccessType,
     UpdateAccountPayload,
     UpdateAccountPhoneNumberPayload,
     UpdateProfilePayload,
@@ -228,7 +228,7 @@ class AccountMutation:
             phone_number=phone_number,
         ):
             case Ok(_):
-                return CreatePhoneNumberVerificationTokenSuccessType()
+                return RequestPhoneNumberVerificationTokenSuccessType()
             case Err(error):
                 match error:
                     case InvalidPhoneNumberError():
