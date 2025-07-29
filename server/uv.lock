@@ -979,6 +979,15 @@ argon2 = [
 ]
 
 [[package]]
+name = "phonenumbers"
+version = "9.0.10"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d0/b3/0092ef7813f663a06cc0474adfaee5e9c327a2fde416a7926d958fd6cd8a/phonenumbers-9.0.10.tar.gz", hash = "sha256:c2d15a6a9d0534b14a7764f51246ada99563e263f65b80b0251d1a760ac4a1ba", size = 2297752, upload-time = "2025-07-18T08:47:39.477Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/93/44/4a200f2e06f6ece2de33ff09978cdccc03e2df8007fadcc706f846167dec/phonenumbers-9.0.10-py2.py3-none-any.whl", hash = "sha256:13b12d269be1f2b363c9bc2868656a7e2e8b50f1a1cef629c75005da6c374c6b", size = 2583494, upload-time = "2025-07-18T08:47:35.808Z" },
+]
+
+[[package]]
 name = "pillow"
 version = "11.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1491,6 +1500,7 @@ dependencies = [
     { name = "motor" },
     { name = "nanoid" },
     { name = "passlib", extra = ["argon2"] },
+    { name = "phonenumbers" },
     { name = "pillow" },
     { name = "pydantic" },
     { name = "pydantic-ai-slim", extra = ["bedrock"] },
@@ -1551,6 +1561,7 @@ requires-dist = [
     { name = "motor", specifier = "==3.7.1" },
     { name = "nanoid", specifier = "==2.0.0" },
     { name = "passlib", extras = ["argon2"], specifier = "==1.7.4" },
+    { name = "phonenumbers", specifier = ">=9.0.10" },
     { name = "pillow", specifier = "==11.3.0" },
     { name = "pydantic", specifier = "==2.11.7" },
     { name = "pydantic-ai-slim", extras = ["bedrock"], specifier = "==0.4.3" },

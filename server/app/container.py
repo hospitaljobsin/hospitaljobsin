@@ -26,6 +26,7 @@ from app.accounts.dataloaders import (
 from app.accounts.repositories import (
     AccountRepo,
     EmailVerificationTokenRepo,
+    PhoneNumberVerificationTokenRepo,
     ProfileRepo,
 )
 from app.accounts.services import AccountService, ProfileParserService, ProfileService
@@ -258,6 +259,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Singleton(JobApplicantRepo))
     container.register(aioinject.Singleton(JobRepo))
     container.register(aioinject.Singleton(SavedJobRepo))
+    container.register(aioinject.Singleton(PhoneNumberVerificationTokenRepo))
     container.register(aioinject.Scoped(AuthService))
     container.register(aioinject.Singleton(ProfileRepo))
     container.register(aioinject.Scoped(ProfileService))

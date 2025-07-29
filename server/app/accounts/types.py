@@ -8,7 +8,7 @@ from aioinject import Inject
 from aioinject.ext.strawberry import inject
 from beanie import Link
 from bson import ObjectId
-from strawberry import relay
+from strawberry import field, relay
 
 from app.accounts.documents import (
     Account,
@@ -23,6 +23,7 @@ from app.accounts.documents import (
 )
 from app.auth.repositories import SessionRepo, WebAuthnCredentialRepo
 from app.base.types import (
+    BaseErrorType,
     BaseNodeType,
     NotAuthenticatedErrorType,
 )
@@ -397,6 +398,9 @@ class AccountType(BaseNodeType[Account]):
     email: str = strawberry.field(
         description="The email of the account.",
     )
+    phone_number: str | None = strawberry.field(
+        description="The phone number of the account.",
+    )
     updated_at: datetime | None = strawberry.field(
         description="When the account was last updated.",
     )
@@ -421,6 +425,7 @@ class AccountType(BaseNodeType[Account]):
             id=str(account.id),
             full_name=account.full_name,
             email=account.email,
+            phone_number=account.phone_number,
             updated_at=account.updated_at,
             auth_providers=[
                 AuthProviderEnum[provider.upper()]
@@ -704,6 +709,93 @@ UpdateAccountPayload = Annotated[
     ),
 ]
 
+
+@strawberry.type(name="InvalidPhoneNumberError")
+class InvalidPhoneNumberErrorType(BaseErrorType):
+    message: str = field(
+        default="Invalid phone number provided.",
+        description="Human readable error message.",
+    )
+
+
+@strawberry.type(name="InvalidPhoneNumberVerificationTokenError")
+class InvalidPhoneNumberVerificationTokenErrorType(BaseErrorType):
+    message: str = field(
+        default="Invalid phone number verification token provided.",
+        description="Human readable error message.",
+    )
+
+
+@strawberry.type(name="PhoneNumberAlreadyExistsError")
+class PhoneNumberAlreadyExistsErrorType(BaseErrorType):
+    message: str = field(
+        default="Phone number provided already exists!",
+        description="Human readable error message.",
+    )
+
+
+@strawberry.type(name="PhoneNumberDoesNotExistError")
+class PhoneNumberDoesNotExistErrorType(BaseErrorType):
+    message: str = field(
+        default="Phone number doesn't exist.",
+        description="Human readable error message.",
+    )
+
+
+@strawberry.type(name="RequestPhoneNumberVerificationTokenSuccess")
+class RequestPhoneNumberVerificationTokenSuccessType(BaseErrorType):
+    message: str = field(
+        default="Phone number verification token sent.",
+        description="Success message.",
+    )
+
+
+@strawberry.type(
+    name="PhoneNumberVerificationTokenCooldownError",
+    description="Used when the phone number verification token cooldown is active.",
+)
+class PhoneNumberVerificationTokenCooldownErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Please wait before requesting a new phone number verification token.",
+    )
+    remaining_seconds: Annotated[
+        int,
+        strawberry.field(
+            description="Remaining seconds before requesting another phone number verification token."
+        ),
+    ]
+
+
+RequestPhoneNumberVerificationTokenPayload = Annotated[
+    RequestPhoneNumberVerificationTokenSuccessType
+    | PhoneNumberAlreadyExistsErrorType
+    | InvalidPhoneNumberErrorType
+    | PhoneNumberVerificationTokenCooldownErrorType,
+    strawberry.union(
+        name="RequestPhoneNumberVerificationTokenPayload",
+        description="The create phone number verification token payload.",
+    ),
+]
+
+
+UpdateAccountPhoneNumberPayload = Annotated[
+    AccountType
+    | InvalidPhoneNumberVerificationTokenErrorType
+    | InvalidPhoneNumberErrorType,
+    strawberry.union(
+        name="UpdateAccountPhoneNumberPayload",
+        description="The update account phone number payload.",
+    ),
+]
+
+RemoveAccountPhoneNumberPayload = Annotated[
+    AccountType | PhoneNumberDoesNotExistErrorType,
+    strawberry.union(
+        name="RemoveAccountPhoneNumberPayload",
+        description="The remove account phone number payload.",
+    ),
+]
 
 SaveJobPayload = Annotated[
     AccountType,

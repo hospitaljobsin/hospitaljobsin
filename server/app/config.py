@@ -275,6 +275,16 @@ class TesseractSettings(BaseSettings):
     )
 
 
+class SMSSettings(BaseSettings):
+    # SMS config
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+
 class EmailSettings(BaseSettings):
     # email config
 
@@ -414,6 +424,8 @@ class AuthSettings(BaseSettings):
 
     # tokens cooldown config
     email_verification_token_cooldown: int = 60 * 3
+
+    phone_number_verification_token_cooldown: int = 60 * 3
 
     password_reset_token_cooldown: int = 60 * 3
 

@@ -168,6 +168,7 @@ class Profile(BaseProfile, Document):
 class Account(Document):
     full_name: str
     email: Annotated[str, Indexed(unique=True)]
+    phone_number: str | None = None
     password_hash: str | None = None
     two_factor_secret: str | None = None
     updated_at: datetime | None = None
@@ -230,6 +231,27 @@ class EmailVerificationToken(Document):
 
     class Settings:
         name = "email_verification_tokens"
+        indexes: ClassVar[list[IndexModel]] = [
+            # expire verification tokens after they cross the expiration timestamp
+            IndexModel(
+                "expires_at",
+                expireAfterSeconds=0,
+            ),
+        ]
+
+
+class PhoneNumberVerificationToken(Document):
+    phone_number: Annotated[str, Indexed(unique=True)]
+    token_hash: Annotated[str, Indexed()]
+    expires_at: datetime
+
+    @property
+    def is_expired(self) -> bool:
+        """Check if the token is expired."""
+        return datetime.now(UTC) >= (self.expires_at.replace(tzinfo=UTC))
+
+    class Settings:
+        name = "phone_number_verification_tokens"
         indexes: ClassVar[list[IndexModel]] = [
             # expire verification tokens after they cross the expiration timestamp
             IndexModel(
