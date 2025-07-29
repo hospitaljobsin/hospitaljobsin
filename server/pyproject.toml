@@ -48,7 +48,7 @@ dependencies = [
     "types-aiobotocore-bedrock-runtime==2.23.0",
     "pydantic-ai-slim[bedrock]==0.4.3",
     "granian[pname,uvloop]==2.4.2",
-    "phonenumbers>=9.0.10",
+    "phonenumbers==9.0.10",
 ]
 
 

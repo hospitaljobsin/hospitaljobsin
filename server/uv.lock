@@ -1561,7 +1561,7 @@ requires-dist = [
     { name = "motor", specifier = "==3.7.1" },
     { name = "nanoid", specifier = "==2.0.0" },
     { name = "passlib", extras = ["argon2"], specifier = "==1.7.4" },
-    { name = "phonenumbers", specifier = ">=9.0.10" },
+    { name = "phonenumbers", specifier = "==9.0.10" },
     { name = "pillow", specifier = "==11.3.0" },
     { name = "pydantic", specifier = "==2.11.7" },
     { name = "pydantic-ai-slim", extras = ["bedrock"], specifier = "==0.4.3" },
