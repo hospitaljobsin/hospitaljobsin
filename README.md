@@ -257,9 +257,15 @@ Follow these steps to deploy the project to the cloud:
 - Create an API key (AKA Secret Key)
 - Copy the Account Key (AKA Access Key) and API Key (AKA Secret Key)
 
-### 8. Terraform Setup
 
-#### 8.1 Prerequisites:
+### 8. PostHog Setup
+- Go to the [PostHog Console](https://app.posthog.com)
+- Create a new project
+- Copy the project API key and host
+
+### 9. Terraform Setup
+
+#### 9.1 Prerequisites:
 - Create an S3 bucket that will act as the terraform state backend
 
 Terraform deployments are automated via GitHub Actions CI/CD.
@@ -270,6 +276,7 @@ GitHub Actions Variables:
 - `TERRAFORM_AWS_REGION`
 - `CLOUDFLARE_ACCOUNT_ID`
 - `MONGODB_ATLAS_ORG_ID`
+- `SST_POSTHOG_HOST`
 
 GitHub Actions Secrets:
 - `TERRAFORM_AWS_ACCESS_KEY_ID`
@@ -283,6 +290,7 @@ GitHub Actions Secrets:
 - `SENTRY_AUTH_TOKEN`
 - `REDISCLOUD_SECRET_KEY`
 - `REDISCLOUD_ACCESS_KEY`
+- `SST_SEEKER_PORTAL_POSTHOG_KEY`
 
 
 
