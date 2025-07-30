@@ -345,10 +345,9 @@ class JobRepo:
             paginate_by="id",
         )
 
-        filters = []
-
-        # Apply location proximity filter if coordinates are provided
-        if coordinates:
+        # If coordinates are provided, use aggregation pipeline
+        if coordinates is not None:
+            filters = []
             proximity_km = proximity_km or 1.0  # Default to 1 km if not provided
             max_distance_meters = proximity_km * 1000.0
             filters.append(
@@ -368,59 +367,120 @@ class JobRepo:
                 }
             )
 
-        filters.extend(
-            [
-                {"$match": {"is_active": True}},
-                {
-                    "$match": {
-                        "$or": [
-                            {"expires_at": None},
-                            {"expires_at": {"$gt": datetime.now(UTC)}},
-                        ]
-                    }
-                },
-            ]
-        )
+            filters.extend(
+                [
+                    {"$match": {"is_active": True}},
+                    {
+                        "$match": {
+                            "$or": [
+                                {"expires_at": None},
+                                {"expires_at": {"$gt": datetime.now(UTC)}},
+                            ]
+                        }
+                    },
+                ]
+            )
 
-        if search_term:
-            filters.append({"$match": {"$text": {"$search": search_term}}})
-        if min_experience is not None:
-            filters.append({"$match": {"min_experience": {"$gte": min_experience}}})
-        if max_experience is not None:
-            filters.append({"$match": {"max_experience": {"$lte": max_experience}}})
-        if min_salary is not None:
-            filters.append({"$match": {"min_salary": {"$gte": min_salary}}})
-        if max_salary is not None:
-            filters.append({"$match": {"max_salary": {"$lte": max_salary}}})
+            if search_term:
+                filters.append({"$match": {"$text": {"$search": search_term}}})
+            if min_experience is not None:
+                filters.append({"$match": {"min_experience": {"$gte": min_experience}}})
+            if max_experience is not None:
+                filters.append({"$match": {"max_experience": {"$lte": max_experience}}})
+            if min_salary is not None:
+                filters.append({"$match": {"min_salary": {"$gte": min_salary}}})
+            if max_salary is not None:
+                filters.append({"$match": {"max_salary": {"$lte": max_salary}}})
 
-        match work_mode:
-            case JobWorkMode.REMOTE:
-                filters.append({"$match": {"work_mode": JobWorkMode.REMOTE}})
-            case JobWorkMode.HYBRID:
-                filters.append({"$match": {"work_mode": JobWorkMode.HYBRID}})
-            case JobWorkMode.OFFICE:
-                filters.append({"$match": {"work_mode": JobWorkMode.OFFICE}})
-            case JobWorkMode.ANY:
-                pass
+            match work_mode:
+                case JobWorkMode.REMOTE:
+                    filters.append({"$match": {"work_mode": JobWorkMode.REMOTE}})
+                case JobWorkMode.HYBRID:
+                    filters.append({"$match": {"work_mode": JobWorkMode.HYBRID}})
+                case JobWorkMode.OFFICE:
+                    filters.append({"$match": {"work_mode": JobWorkMode.OFFICE}})
+                case JobWorkMode.ANY:
+                    pass
 
-        match job_type:
-            case JobType.FULL_TIME:
-                filters.append({"$match": {"type": JobType.FULL_TIME}})
-            case JobType.PART_TIME:
-                filters.append({"$match": {"type": JobType.PART_TIME}})
-            case JobType.INTERNSHIP:
-                filters.append({"$match": {"type": JobType.INTERNSHIP}})
-            case JobType.CONTRACT:
-                filters.append({"$match": {"type": JobType.CONTRACT}})
-            case JobType.LOCUM:
-                filters.append({"$match": {"type": JobType.LOCUM}})
-            case JobType.ANY:
-                pass
+            match job_type:
+                case JobType.FULL_TIME:
+                    filters.append({"$match": {"type": JobType.FULL_TIME}})
+                case JobType.PART_TIME:
+                    filters.append({"$match": {"type": JobType.PART_TIME}})
+                case JobType.INTERNSHIP:
+                    filters.append({"$match": {"type": JobType.INTERNSHIP}})
+                case JobType.CONTRACT:
+                    filters.append({"$match": {"type": JobType.CONTRACT}})
+                case JobType.LOCUM:
+                    filters.append({"$match": {"type": JobType.LOCUM}})
+                case JobType.ANY:
+                    pass
 
-        search_criteria = Job.aggregate(
-            aggregation_pipeline=filters,
-            projection_model=Job,
-        )
+            search_criteria = Job.aggregate(
+                aggregation_pipeline=filters,
+                projection_model=Job,
+            )
+        else:
+            # Use regular find() when no coordinates are provided
+            search_criteria = Job.find(Job.is_active == True)
+
+            # Add expiration filter
+            search_criteria = search_criteria.find(
+                (Job.expires_at == None) | (Job.expires_at > datetime.now(UTC))
+            )
+
+            if search_term:
+                search_criteria = search_criteria.find(
+                    {"$text": {"$search": search_term}}
+                )
+            if min_experience is not None:
+                search_criteria = search_criteria.find(
+                    Job.min_experience >= min_experience
+                )
+            if max_experience is not None:
+                search_criteria = search_criteria.find(
+                    Job.max_experience <= max_experience
+                )
+            if min_salary is not None:
+                search_criteria = search_criteria.find(Job.min_salary >= min_salary)
+            if max_salary is not None:
+                search_criteria = search_criteria.find(Job.max_salary <= max_salary)
+
+            match work_mode:
+                case JobWorkMode.REMOTE:
+                    search_criteria = search_criteria.find(
+                        Job.work_mode == JobWorkMode.REMOTE
+                    )
+                case JobWorkMode.HYBRID:
+                    search_criteria = search_criteria.find(
+                        Job.work_mode == JobWorkMode.HYBRID
+                    )
+                case JobWorkMode.OFFICE:
+                    search_criteria = search_criteria.find(
+                        Job.work_mode == JobWorkMode.OFFICE
+                    )
+                case JobWorkMode.ANY:
+                    pass
+
+            match job_type:
+                case JobType.FULL_TIME:
+                    search_criteria = search_criteria.find(
+                        Job.type == JobType.FULL_TIME
+                    )
+                case JobType.PART_TIME:
+                    search_criteria = search_criteria.find(
+                        Job.type == JobType.PART_TIME
+                    )
+                case JobType.INTERNSHIP:
+                    search_criteria = search_criteria.find(
+                        Job.type == JobType.INTERNSHIP
+                    )
+                case JobType.CONTRACT:
+                    search_criteria = search_criteria.find(Job.type == JobType.CONTRACT)
+                case JobType.LOCUM:
+                    search_criteria = search_criteria.find(Job.type == JobType.LOCUM)
+                case JobType.ANY:
+                    pass
 
         return await paginator.paginate(
             search_criteria=search_criteria,
