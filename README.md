@@ -263,9 +263,18 @@ Follow these steps to deploy the project to the cloud:
 - Create a new project
 - Copy the project API key and host
 
-### 9. Terraform Setup
+### 9. Whatsapp Business Setup
+- Create a Meta Developer Account
+- Go to the [Whatsapp Business Console](https://business.facebook.com)
+- Create a new business account
+- Copy the business account ID
+- Copy the business account access token
+- Copy the business account phone number ID (Whatsapp Business Phone Number)
 
-#### 9.1 Prerequisites:
+
+### 10. Terraform Setup
+
+#### 10.1 Prerequisites:
 - Create an S3 bucket that will act as the terraform state backend
 
 Terraform deployments are automated via GitHub Actions CI/CD.
@@ -277,6 +286,7 @@ GitHub Actions Variables:
 - `CLOUDFLARE_ACCOUNT_ID`
 - `MONGODB_ATLAS_ORG_ID`
 - `SST_POSTHOG_HOST`
+- `WHATSAPP_PHONE_NUMBER_ID`
 
 GitHub Actions Secrets:
 - `TERRAFORM_AWS_ACCESS_KEY_ID`
@@ -291,6 +301,8 @@ GitHub Actions Secrets:
 - `REDISCLOUD_SECRET_KEY`
 - `REDISCLOUD_ACCESS_KEY`
 - `SST_POSTHOG_KEY`
+- `WHATSAPP_ACCESS_TOKEN`
+
 
 
 

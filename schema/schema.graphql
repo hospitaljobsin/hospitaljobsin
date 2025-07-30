@@ -525,21 +525,6 @@ The create organization payload.
 union CreateOrganizationPayload = Organization | OrganizationSlugInUseError
 
 """
-The create phone number verification token payload.
-"""
-union CreatePhoneNumberVerificationTokenPayload =
-	| CreatePhoneNumberVerificationTokenSuccess
-	| PhoneNumberAlreadyExistsError
-	| InvalidPhoneNumberError
-
-type CreatePhoneNumberVerificationTokenSuccess implements Error {
-	"""
-	Success message.
-	"""
-	message: String!
-}
-
-"""
 The payload for creating a profile picture presigned URL.
 """
 type CreateProfilePicturePresignedURLPayload {
@@ -2630,12 +2615,12 @@ type Mutation {
 	"""
 	Create a phone number verification token.
 	"""
-	createPhoneNumberVerificationToken(
+	requestPhoneNumberVerificationToken(
 		"""
 		The phone of the user account.
 		"""
 		phoneNumber: String!
-	): CreatePhoneNumberVerificationTokenPayload! @isAuthenticated
+	): RequestPhoneNumberVerificationTokenPayload! @isAuthenticated
 
 	"""
 	Update the current user's phone number.
@@ -3470,6 +3455,17 @@ type PhoneNumberDoesNotExistError implements Error {
 }
 
 """
+Used when the phone number verification token cooldown is active.
+"""
+type PhoneNumberVerificationTokenCooldownError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+	remainingSeconds: Int!
+}
+
+"""
 An account's profile.
 """
 type Profile implements BaseProfile & Node {
@@ -3988,6 +3984,22 @@ type RequestPasswordResetSuccess {
 }
 
 """
+The create phone number verification token payload.
+"""
+union RequestPhoneNumberVerificationTokenPayload =
+	| RequestPhoneNumberVerificationTokenSuccess
+	| PhoneNumberAlreadyExistsError
+	| InvalidPhoneNumberError
+	| PhoneNumberVerificationTokenCooldownError
+
+type RequestPhoneNumberVerificationTokenSuccess implements Error {
+	"""
+	Success message.
+	"""
+	message: String!
+}
+
+"""
 The request sudo mode with authenticator app payload.
 """
 union RequestSudoModeWithAuthenticatorPayload =
@@ -4286,6 +4298,7 @@ The update account phone number payload.
 union UpdateAccountPhoneNumberPayload =
 	| Account
 	| InvalidPhoneNumberVerificationTokenError
+	| InvalidPhoneNumberError
 
 """
 The update job applicants status payload.

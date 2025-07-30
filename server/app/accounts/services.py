@@ -30,6 +30,7 @@ from app.accounts.repositories import (
     ProfileRepo,
 )
 from app.config import AuthSettings, AWSSettings
+from app.core.messages import BaseMessageSender
 from app.core.ocr import BaseOCRClient
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
@@ -45,6 +46,7 @@ class AccountService:
         s3_client: S3Client,
         aws_settings: AWSSettings,
         settings: AuthSettings,
+        message_sender: BaseMessageSender,
     ) -> None:
         self._account_repo = account_repo
         self._organization_member_repo = organization_member_repo
@@ -55,6 +57,7 @@ class AccountService:
         self._s3_client = s3_client
         self._aws_settings = aws_settings
         self._settings = settings
+        self._message_sender = message_sender
 
     async def create_profile_picture_presigned_url(self, content_type: str) -> str:
         """Create a presigned URL for uploading an account's profile picture."""
@@ -142,7 +145,19 @@ class AccountService:
         ) = await self._phone_number_verification_token_repo.create(
             phone_number=formatted_number
         )
-        # TODO: send phone number verification token here
+
+        # send phone number verification token to the user
+        await self._message_sender.send_message(
+            receiver=formatted_number,
+            template_name="phone_number_verification",
+            parameters=[
+                {
+                    "type": "text",
+                    "parameter_name": "verification_token",
+                    "text": verification_token,
+                },
+            ],
+        )
         return Ok(None)
 
     def _is_phone_number_verification_token_cooled_down(

@@ -215,6 +215,9 @@ class SentrySettings(BaseSettings):
 
 
 class SecretSettings(BaseSettings):
+    # whatsapp config
+    whatsapp_access_token: SecretStr
+
     captcha_secret_key: SecretStr
 
     jwe_secret_key: SecretStr
@@ -275,8 +278,10 @@ class TesseractSettings(BaseSettings):
     )
 
 
-class SMSSettings(BaseSettings):
-    # SMS config
+class WhatsappSettings(BaseSettings):
+    # Whatsapp config
+
+    whatsapp_phone_number_id: str
 
     model_config = SettingsConfigDict(
         env_file=".env",

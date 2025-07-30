@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f23852fd48ee4a3446de0bac756fa834>>
+ * @generated SignedSource<<b9389550054ca45f6d8d30544acae108>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,7 @@ import type { FragmentRefs } from "relay-runtime";
 export type AccountSettingsViewFragment$data = {
   readonly viewer: {
     readonly __typename: "Account";
-    readonly " $fragmentSpreads": FragmentRefs<"AccountDetailsFragment" | "PasswordFragment" | "TwoFactorAuthenticationFragment" | "UpdateAccountDetailsFormFragment">;
+    readonly " $fragmentSpreads": FragmentRefs<"AccountDetailsFragment" | "PasswordFragment" | "PhoneNumberFragment" | "TwoFactorAuthenticationFragment" | "UpdateAccountDetailsFormFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -69,6 +69,11 @@ const node: ReaderFragment = {
               "args": null,
               "kind": "FragmentSpread",
               "name": "PasswordFragment"
+            },
+            {
+              "args": null,
+              "kind": "FragmentSpread",
+              "name": "PhoneNumberFragment"
             }
           ],
           "type": "Account",
@@ -82,6 +87,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "c1ca01a5e7286de4297ca807a7611a45";
+(node as any).hash = "bc6220a1dcfb51e49684b8947a62453a";
 
 export default node;

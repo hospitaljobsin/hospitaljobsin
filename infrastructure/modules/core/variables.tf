@@ -92,3 +92,14 @@ variable "redis_endpoint" {
   type        = string
   description = "Redis endpoint."
 }
+
+variable "whatsapp_access_token" {
+  type        = string
+  description = "Whatsapp access token."
+  sensitive   = true
+}
+
+variable "whatsapp_phone_number_id" {
+  type        = string
+  description = "Whatsapp phone number ID."
+}

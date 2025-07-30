@@ -494,6 +494,10 @@ resource "aws_ecs_task_definition" "app" {
         {
           name  = "AWS_SECRETS_MANAGER_SECRET_ID"
           value = aws_secretsmanager_secret.backend.id
+        },
+        {
+          name  = "SERVER_WHATSAPP_PHONE_NUMBER_ID"
+          value = var.whatsapp_phone_number_id
         }
       ]
     }

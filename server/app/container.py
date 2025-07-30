@@ -52,6 +52,7 @@ from app.config import (
     SecretSettings,
     TesseractSettings,
     TSettings,
+    WhatsappSettings,
     get_settings,
 )
 from app.core.aws_sdk import (
@@ -75,6 +76,11 @@ from app.core.geocoding import (
     BaseLocationService,
     NominatimLocationService,
     create_nominatim_geocoder,
+)
+from app.core.messages import (
+    BaseMessageSender,
+    DummyMessageSender,
+    WhatsappMessageSender,
 )
 from app.core.oauth import create_oauth_client
 from app.core.ocr import BaseOCRClient, TesseractOCRClient, TextractOCRClient
@@ -138,6 +144,7 @@ settings_classes: list[type[BaseSettings]] = [
     GeocoderSettings,
     RedisSettings,
     TesseractSettings,
+    WhatsappSettings,
 ]
 
 
@@ -230,6 +237,14 @@ def register_ocr_client(container: aioinject.Container) -> None:
         container.register(aioinject.Singleton(TesseractOCRClient, BaseOCRClient))
 
 
+def register_message_sender(container: aioinject.Container) -> None:
+    app_settings = get_settings(AppSettings)
+    if app_settings.is_production:
+        container.register(aioinject.Scoped(WhatsappMessageSender, BaseMessageSender))
+    else:
+        container.register(aioinject.Singleton(DummyMessageSender, BaseMessageSender))
+
+
 @lru_cache
 def create_container() -> aioinject.Container:
     """Create a container instance."""
@@ -245,6 +260,7 @@ def create_container() -> aioinject.Container:
     register_email_sender(container)
     register_location_service(container)
     register_ocr_client(container)
+    register_message_sender(container)
     app_settings = get_settings(AppSettings)
     if app_settings.is_testing:
         container.register(aioinject.Scoped(TestSetupService))
