@@ -18,6 +18,7 @@ posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
 // Register portal-specific property
 posthog.register({
 	app: "recruiter-portal-core",
+	env: env.NEXT_PUBLIC_ENVIRONMENT,
 });
 
 Sentry.init({
