@@ -9,7 +9,7 @@ from typing import Any, Literal, get_args
 import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.odm.queries.aggregation import AggregationQuery
-from beanie.operators import And, In, Set
+from beanie.operators import And, In, Or, Set
 from bson import ObjectId
 from pydantic import ValidationError
 from redis.asyncio import Redis
@@ -426,7 +426,7 @@ class JobRepo:
 
             # Add expiration filter
             search_criteria = search_criteria.find(
-                (Job.expires_at == None) | (Job.expires_at > datetime.now(UTC))
+                Or(Job.expires_at == None, Job.expires_at > datetime.now(UTC))
             )
 
             if search_term:
