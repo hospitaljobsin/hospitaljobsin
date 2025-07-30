@@ -18,13 +18,11 @@ export default function UpdatePhoneNumberModal({
 }: Props) {
 	const [currentStep, setCurrentStep] = useState<ModalStep>("phone-entry");
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [error, setError] = useState<string | null>(null);
 	const [phoneNumber, setPhoneNumber] = useState<string>("");
 
 	function handleClose() {
 		setCurrentStep("phone-entry"); // Reset to first step when closing
 		setIsSubmitting(false);
-		setError(null);
 		setPhoneNumber("");
 		onClose();
 	}
@@ -33,7 +31,6 @@ export default function UpdatePhoneNumberModal({
 		if (!isOpen) {
 			setCurrentStep("phone-entry"); // Reset to first step when closing
 			setIsSubmitting(false);
-			setError(null);
 			setPhoneNumber("");
 		}
 		onOpenChange(isOpen);
@@ -41,7 +38,6 @@ export default function UpdatePhoneNumberModal({
 
 	function handlePhoneNumberSubmit(data: { phoneNumber: string }) {
 		console.log("Phone number submitted:", data.phoneNumber);
-		setError(null);
 		setPhoneNumber(data.phoneNumber);
 		setIsSubmitting(true);
 
@@ -55,7 +51,6 @@ export default function UpdatePhoneNumberModal({
 
 	function handleVerificationSubmit(data: { verificationToken: string }) {
 		console.log("Verification token submitted:", data.verificationToken);
-		setError(null);
 		setIsSubmitting(true);
 
 		// TODO: Call verifyPhoneNumberVerificationToken mutation in Task 35
@@ -66,7 +61,6 @@ export default function UpdatePhoneNumberModal({
 	}
 
 	function handleVerificationError(errorMessage: string) {
-		setError(errorMessage);
 		setIsSubmitting(false);
 	}
 
@@ -74,7 +68,7 @@ export default function UpdatePhoneNumberModal({
 		<Modal
 			isOpen={isOpen}
 			onOpenChange={handleOpenChange}
-			size="md"
+			size="lg"
 			placement="center"
 			isDismissable={!isSubmitting}
 			className="p-4"
@@ -99,11 +93,6 @@ export default function UpdatePhoneNumberModal({
 								Enter the 6-digit verification code sent to your WhatsApp
 								number.
 							</p>
-							{error && (
-								<div className="p-3 bg-danger-50 border border-danger-200 rounded-lg">
-									<p className="text-danger-600 text-sm">{error}</p>
-								</div>
-							)}
 							<VerificationTokenStep
 								onSubmit={handleVerificationSubmit}
 								isSubmitting={isSubmitting}

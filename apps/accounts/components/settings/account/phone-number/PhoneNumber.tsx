@@ -39,7 +39,7 @@ export default function PhoneNumber({ rootQuery, onUpdatePhoneNumber }: Props) {
 							onPress={onUpdatePhoneNumber}
 							fullWidth
 							startContent={<Edit size={16} />}
-							variant="flat"
+							variant="solid"
 						>
 							{data.phoneNumber ? "Update" : "Add"} Phone Number
 						</Button>

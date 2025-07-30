@@ -28,23 +28,7 @@ const RequestPhoneNumberVerificationTokenMutation = graphql`
 `;
 
 const formSchema = z.object({
-	phoneNumber: z
-		.string()
-		.min(1, "Phone number is required")
-		.regex(
-			/^(?:\+91\s?)?[6-9]\d{9}$/,
-			"Please enter a valid 10-digit Indian mobile number",
-		)
-		.refine((value) => {
-			// Additional validation to ensure it's a valid Indian mobile number
-			const cleanNumber = value.replace(/\s+/g, "").replace(/^\+91/, "");
-			return cleanNumber.length === 10 && /^[6-9]/.test(cleanNumber);
-		}, "Please enter a valid Indian mobile number starting with 6, 7, 8, or 9")
-		.transform((value) => {
-			// Normalize the phone number format
-			const cleanNumber = value.replace(/\s+/g, "").replace(/^\+91/, "");
-			return cleanNumber.startsWith("91") ? cleanNumber : `91${cleanNumber}`;
-		}),
+	phoneNumber: z.string().min(1, "Phone number is required").length(10),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -135,7 +119,8 @@ export default function PhoneNumberEntryStep({
 						{...field}
 						type="tel"
 						label="WhatsApp Phone Number"
-						placeholder="+91 98765 43210"
+						startContent={<p className="text-sm">+91 </p>}
+						placeholder="98765 43210"
 						description="Enter your WhatsApp phone number to receive a verification code"
 						errorMessage={errors.phoneNumber?.message}
 						isInvalid={!!errors.phoneNumber}
