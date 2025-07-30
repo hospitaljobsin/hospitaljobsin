@@ -9,7 +9,7 @@ from typing import Any, Literal, get_args
 import pymongo
 from beanie import DeleteRules, PydanticObjectId, WriteRules
 from beanie.odm.queries.aggregation import AggregationQuery
-from beanie.operators import And, In, Or, Set
+from beanie.operators import And, In, Set
 from bson import ObjectId
 from pydantic import ValidationError
 from redis.asyncio import Redis
@@ -345,67 +345,82 @@ class JobRepo:
             paginate_by="id",
         )
 
-        filters = [
-            Job.is_active == True,  # noqa: E712
-            Or(
-                Job.expires_at == None,
-                Job.expires_at > datetime.now(UTC),
-            ),
-        ]
-
-        if search_term:
-            filters.append({"$text": {"$search": search_term}})
-        if min_experience is not None:
-            filters.append(Job.min_experience >= min_experience)
-        if max_experience is not None:
-            filters.append(Job.max_experience <= max_experience)
-        if min_salary is not None:
-            filters.append(Job.min_salary >= min_salary)
-        if max_salary is not None:
-            filters.append(Job.max_salary <= max_salary)
-
-        match work_mode:
-            case JobWorkMode.REMOTE:
-                filters.append(Job.work_mode == JobWorkMode.REMOTE)
-            case JobWorkMode.HYBRID:
-                filters.append(Job.work_mode == JobWorkMode.HYBRID)
-            case JobWorkMode.OFFICE:
-                filters.append(Job.work_mode == JobWorkMode.OFFICE)
-            case JobWorkMode.ANY:
-                pass
-
-        match job_type:
-            case JobType.FULL_TIME:
-                filters.append(Job.type == JobType.FULL_TIME)
-            case JobType.PART_TIME:
-                filters.append(Job.type == JobType.PART_TIME)
-            case JobType.INTERNSHIP:
-                filters.append(Job.type == JobType.INTERNSHIP)
-            case JobType.CONTRACT:
-                filters.append(Job.type == JobType.CONTRACT)
-            case JobType.LOCUM:
-                filters.append(Job.type == JobType.LOCUM)
-            case JobType.ANY:
-                pass
-
-        search_criteria = Job.find(*filters)
+        filters = []
 
         # Apply location proximity filter if coordinates are provided
         if coordinates:
             proximity_km = proximity_km or 1.0  # Default to 1 km if not provided
             max_distance_meters = proximity_km * 1000.0
-            # $geoWithin expects radius in radians (meters / Earth's radius)
-            earth_radius_m = 6378137.0
-            radius_radians = max_distance_meters / earth_radius_m
-            geo_within_filter = {
-                "$geoWithin": {
-                    "$centerSphere": [
-                        [coordinates.longitude, coordinates.latitude],
-                        radius_radians,
-                    ]
+            filters.append(
+                {
+                    "$geoNear": {
+                        "near": {
+                            "type": "Point",
+                            "coordinates": [
+                                coordinates.longitude,
+                                coordinates.latitude,
+                            ],
+                        },
+                        "distanceField": "distance",
+                        "maxDistance": max_distance_meters,
+                        "spherical": True,
+                    }
                 }
-            }
-            search_criteria = search_criteria.find({"geo": geo_within_filter})
+            )
+
+        filters.extend(
+            [
+                {"$match": {"is_active": True}},
+                {
+                    "$match": {
+                        "$or": [
+                            {"expires_at": None},
+                            {"expires_at": {"$gt": datetime.now(UTC)}},
+                        ]
+                    }
+                },
+            ]
+        )
+
+        if search_term:
+            filters.append({"$match": {"$text": {"$search": search_term}}})
+        if min_experience is not None:
+            filters.append({"$match": {"min_experience": {"$gte": min_experience}}})
+        if max_experience is not None:
+            filters.append({"$match": {"max_experience": {"$lte": max_experience}}})
+        if min_salary is not None:
+            filters.append({"$match": {"min_salary": {"$gte": min_salary}}})
+        if max_salary is not None:
+            filters.append({"$match": {"max_salary": {"$lte": max_salary}}})
+
+        match work_mode:
+            case JobWorkMode.REMOTE:
+                filters.append({"$match": {"work_mode": JobWorkMode.REMOTE}})
+            case JobWorkMode.HYBRID:
+                filters.append({"$match": {"work_mode": JobWorkMode.HYBRID}})
+            case JobWorkMode.OFFICE:
+                filters.append({"$match": {"work_mode": JobWorkMode.OFFICE}})
+            case JobWorkMode.ANY:
+                pass
+
+        match job_type:
+            case JobType.FULL_TIME:
+                filters.append({"$match": {"type": JobType.FULL_TIME}})
+            case JobType.PART_TIME:
+                filters.append({"$match": {"type": JobType.PART_TIME}})
+            case JobType.INTERNSHIP:
+                filters.append({"$match": {"type": JobType.INTERNSHIP}})
+            case JobType.CONTRACT:
+                filters.append({"$match": {"type": JobType.CONTRACT}})
+            case JobType.LOCUM:
+                filters.append({"$match": {"type": JobType.LOCUM}})
+            case JobType.ANY:
+                pass
+
+        search_criteria = Job.aggregate(
+            aggregation_pipeline=filters,
+            projection_model=Job,
+        )
 
         return await paginator.paginate(
             search_criteria=search_criteria,
