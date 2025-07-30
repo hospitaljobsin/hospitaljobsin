@@ -226,8 +226,6 @@ export default function JobEditForm({ rootQuery }: Props) {
 		},
 	});
 
-	console.log("remount isDirty", isDirty);
-
 	useNavigationGuard({
 		enabled: isDirty,
 		confirm: () =>

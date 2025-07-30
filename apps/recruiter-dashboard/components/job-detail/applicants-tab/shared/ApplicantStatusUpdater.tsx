@@ -123,12 +123,16 @@ export default function ApplicantStatusUpdater({
 	};
 
 	return (
-		<div className="w-full max-w-sm">
+		<div className="w-full max-w-sm" data-prevent-progress>
 			<Select
 				defaultSelectedKeys={[currentStatus]}
 				onSelectionChange={(keys) =>
 					handleStatusChange(Array.from(keys)[0] as JobApplicantStatus)
 				}
+				onClick={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+				}}
 				aria-label="Update applicant status"
 				isDisabled={isMutationInFlight}
 			>
