@@ -17,7 +17,7 @@ import {
 	type SharedSelection,
 	Spinner,
 } from "@heroui/react";
-import { ChevronDown, Sparkles } from "lucide-react";
+import { ChevronDown, Sparkles, XIcon } from "lucide-react";
 import { useNavigationGuard } from "next-navigation-guard";
 import { startTransition } from "react";
 import { useFragment, useMutation } from "react-relay";
@@ -115,13 +115,23 @@ export default function ApplicantListController(
 		return (
 			<Card
 				fullWidth
-				className="flex flex-row justify-between items-center px-6 py-4 w-full"
+				className="flex flex-row justify-between items-center px-2 py-4 w-full"
 				shadow="none"
 			>
-				<p className="text-md">
-					{selectedApplicants.size} applicant
-					{selectedApplicants.size > 1 ? "s" : ""} selected
-				</p>
+				<div className="flex flex-row items-center gap-4">
+					<Button
+						variant="light"
+						size="sm"
+						isIconOnly
+						onPress={() => setSelectedApplicants(new Set())}
+					>
+						<XIcon size={16} />
+					</Button>
+					<p className="text-md">
+						{selectedApplicants.size} applicant
+						{selectedApplicants.size > 1 ? "s" : ""} selected
+					</p>
+				</div>
 				<Dropdown>
 					<DropdownTrigger>
 						<Button

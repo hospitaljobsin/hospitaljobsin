@@ -12,6 +12,15 @@ import { use, useMemo } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
 import invariant from "tiny-invariant";
 
+// Only if using TypeScript
+declare module "@react-types/shared" {
+	interface RouterConfig {
+		routerOptions: NonNullable<
+			Parameters<ReturnType<typeof useRouter>["push"]>[1]
+		>;
+	}
+}
+
 export default function Providers({
 	children,
 	headersPromise,
@@ -31,27 +40,31 @@ export default function Providers({
 	invariant(nonce, "Nonce is required");
 
 	return (
-		<HeroUIProvider navigate={router.push}>
-			<ToastProvider placement="bottom-left" toastOffset={15} />
-			<ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
-				<RelayEnvironmentProvider environment={environment}>
-					<CopilotKit runtimeUrl="/api/copilotkit">
-						<ProgressProvider
-							height="4px"
-							color="hsl(var(--heroui-primary-300))"
-							nonce={nonce}
-							options={{ showSpinner: false }}
-							shallowRouting
-						>
-							<NavigationGuardProvider>
+		<NavigationGuardProvider>
+			<HeroUIProvider navigate={router.push}>
+				<ToastProvider placement="bottom-left" toastOffset={15} />
+				<ThemeProvider
+					attribute="class"
+					forcedTheme="light"
+					enableSystem={false}
+				>
+					<RelayEnvironmentProvider environment={environment}>
+						<CopilotKit runtimeUrl="/api/copilotkit">
+							<ProgressProvider
+								height="4px"
+								color="hsl(var(--heroui-primary-300))"
+								nonce={nonce}
+								options={{ showSpinner: false }}
+								shallowRouting
+							>
 								<HeadersProvider headersPromise={headersPromise}>
 									{children}
 								</HeadersProvider>
-							</NavigationGuardProvider>
-						</ProgressProvider>
-					</CopilotKit>
-				</RelayEnvironmentProvider>
-			</ThemeProvider>
-		</HeroUIProvider>
+							</ProgressProvider>
+						</CopilotKit>
+					</RelayEnvironmentProvider>
+				</ThemeProvider>
+			</HeroUIProvider>
+		</NavigationGuardProvider>
 	);
 }
