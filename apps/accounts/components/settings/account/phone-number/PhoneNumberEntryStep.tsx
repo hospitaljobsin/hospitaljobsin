@@ -11,7 +11,7 @@ const RequestPhoneNumberVerificationTokenMutation = graphql`
     requestPhoneNumberVerificationToken(phoneNumber: $phoneNumber) {
       __typename
       ... on RequestPhoneNumberVerificationTokenSuccess {
-        __typename
+		cooldownRemainingSeconds
       }
       ... on InvalidPhoneNumberError {
         message
@@ -34,12 +34,14 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 type Props = {
-	onSubmit: (data: FormData) => void;
+	onSubmit: (data: FormData & { cooldownRemainingSeconds: number }) => void;
+	onCancel: () => void;
 	isSubmitting: boolean;
 };
 
 export default function PhoneNumberEntryStep({
 	onSubmit,
+	onCancel,
 	isSubmitting,
 }: Props) {
 	const [commitMutation, isMutationInFlight] =
@@ -62,7 +64,7 @@ export default function PhoneNumberEntryStep({
 	function handleFormSubmit(data: FormData) {
 		commitMutation({
 			variables: {
-				phoneNumber: data.phoneNumber,
+				phoneNumber: `+91${data.phoneNumber}`,
 			},
 			onCompleted: (response, errors) => {
 				if (errors) {
@@ -77,7 +79,10 @@ export default function PhoneNumberEntryStep({
 				if (
 					result.__typename === "RequestPhoneNumberVerificationTokenSuccess"
 				) {
-					onSubmit(data);
+					onSubmit({
+						...data,
+						cooldownRemainingSeconds: result.cooldownRemainingSeconds,
+					});
 				} else if (result.__typename === "InvalidPhoneNumberError") {
 					setError("phoneNumber", {
 						type: "manual",
@@ -91,9 +96,9 @@ export default function PhoneNumberEntryStep({
 				} else if (
 					result.__typename === "PhoneNumberVerificationTokenCooldownError"
 				) {
-					setError("phoneNumber", {
-						type: "manual",
-						message: `${result.message} Please wait ${result.remainingSeconds} seconds before trying again.`,
+					onSubmit({
+						...data,
+						cooldownRemainingSeconds: result.remainingSeconds,
 					});
 				}
 			},
@@ -111,6 +116,9 @@ export default function PhoneNumberEntryStep({
 			onSubmit={handleSubmit(handleFormSubmit)}
 			className="flex flex-col gap-4"
 		>
+			<p className="text-foreground-600">
+				Enter your WhatsApp number to receive a verification code.
+			</p>
 			<Controller
 				name="phoneNumber"
 				control={control}
@@ -121,7 +129,7 @@ export default function PhoneNumberEntryStep({
 						label="WhatsApp Phone Number"
 						startContent={<p className="text-sm">+91 </p>}
 						placeholder="98765 43210"
-						description="Enter your WhatsApp phone number to receive a verification code"
+						description="Only Indian numbers are supported currently."
 						errorMessage={errors.phoneNumber?.message}
 						isInvalid={!!errors.phoneNumber}
 						isDisabled={isSubmitting || isMutationInFlight}
@@ -134,6 +142,7 @@ export default function PhoneNumberEntryStep({
 					variant="flat"
 					type="button"
 					fullWidth
+					onPress={onCancel}
 					isDisabled={isSubmitting || isMutationInFlight}
 				>
 					Cancel

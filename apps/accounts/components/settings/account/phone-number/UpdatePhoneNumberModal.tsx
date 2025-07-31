@@ -19,11 +19,14 @@ export default function UpdatePhoneNumberModal({
 	const [currentStep, setCurrentStep] = useState<ModalStep>("phone-entry");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [phoneNumber, setPhoneNumber] = useState<string>("");
+	const [cooldownRemainingSeconds, setCooldownRemainingSeconds] =
+		useState<number>(0);
 
 	function handleClose() {
 		setCurrentStep("phone-entry"); // Reset to first step when closing
 		setIsSubmitting(false);
 		setPhoneNumber("");
+		setCooldownRemainingSeconds(0);
 		onClose();
 	}
 
@@ -32,13 +35,18 @@ export default function UpdatePhoneNumberModal({
 			setCurrentStep("phone-entry"); // Reset to first step when closing
 			setIsSubmitting(false);
 			setPhoneNumber("");
+			setCooldownRemainingSeconds(0);
 		}
 		onOpenChange(isOpen);
 	}
 
-	function handlePhoneNumberSubmit(data: { phoneNumber: string }) {
+	function handlePhoneNumberSubmit(data: {
+		phoneNumber: string;
+		cooldownRemainingSeconds: number;
+	}) {
 		console.log("Phone number submitted:", data.phoneNumber);
 		setPhoneNumber(data.phoneNumber);
+		setCooldownRemainingSeconds(data.cooldownRemainingSeconds);
 		setIsSubmitting(true);
 
 		// The actual API call is now handled in PhoneNumberEntryStep
@@ -68,7 +76,7 @@ export default function UpdatePhoneNumberModal({
 		<Modal
 			isOpen={isOpen}
 			onOpenChange={handleOpenChange}
-			size="lg"
+			size="xl"
 			placement="center"
 			isDismissable={!isSubmitting}
 			className="p-4"
@@ -85,6 +93,7 @@ export default function UpdatePhoneNumberModal({
 							<PhoneNumberEntryStep
 								onSubmit={handlePhoneNumberSubmit}
 								isSubmitting={isSubmitting}
+								onCancel={handleClose}
 							/>
 						</div>
 					) : (
@@ -98,6 +107,8 @@ export default function UpdatePhoneNumberModal({
 								isSubmitting={isSubmitting}
 								onError={handleVerificationError}
 								phoneNumber={phoneNumber}
+								onCancel={handleClose}
+								cooldownRemainingSeconds={cooldownRemainingSeconds}
 							/>
 						</div>
 					)}

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6c7f91da35ca1459c0e6c5ffb90da54c>>
- * @relayHash c77e8dbe81398bc7bff503f56424b5f5
+ * @generated SignedSource<<d61cb2b66687596e31e5ed89df32e693>>
+ * @relayHash c6762fd47950f6f5a46a36079ac3e3d3
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,13 +9,13 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c77e8dbe81398bc7bff503f56424b5f5
+// @relayRequestID c6762fd47950f6f5a46a36079ac3e3d3
 
 import type { ConcreteRequest } from 'relay-runtime';
-export type PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation$variables = {
+export type VerificationTokenStepRequestPhoneNumberVerificationTokenMutation$variables = {
   phoneNumber: string;
 };
-export type PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation$data = {
+export type VerificationTokenStepRequestPhoneNumberVerificationTokenMutation$data = {
   readonly requestPhoneNumberVerificationToken: {
     readonly __typename: "InvalidPhoneNumberError";
     readonly message: string;
@@ -35,9 +35,9 @@ export type PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation$data
     readonly __typename: "%other";
   };
 };
-export type PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation = {
-  response: PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation$data;
-  variables: PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation$variables;
+export type VerificationTokenStepRequestPhoneNumberVerificationTokenMutation = {
+  response: VerificationTokenStepRequestPhoneNumberVerificationTokenMutation$data;
+  variables: VerificationTokenStepRequestPhoneNumberVerificationTokenMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -130,7 +130,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation",
+    "name": "VerificationTokenStepRequestPhoneNumberVerificationTokenMutation",
     "selections": (v3/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -139,19 +139,19 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation",
+    "name": "VerificationTokenStepRequestPhoneNumberVerificationTokenMutation",
     "selections": (v3/*: any*/)
   },
   "params": {
-    "id": "c77e8dbe81398bc7bff503f56424b5f5",
+    "id": "c6762fd47950f6f5a46a36079ac3e3d3",
     "metadata": {},
-    "name": "PhoneNumberEntryStepRequestPhoneNumberVerificationTokenMutation",
+    "name": "VerificationTokenStepRequestPhoneNumberVerificationTokenMutation",
     "operationKind": "mutation",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "49f929ae4fa1a0d5172b130501a8eb45";
+(node as any).hash = "e46d12408e2c05308ad3c986e59c120e";
 
 export default node;

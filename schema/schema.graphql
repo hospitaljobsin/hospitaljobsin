@@ -3997,6 +3997,11 @@ type RequestPhoneNumberVerificationTokenSuccess implements Error {
 	Success message.
 	"""
 	message: String!
+
+	"""
+	The remaining seconds before the next phone number verification token can be requested.
+	"""
+	cooldownRemainingSeconds: Int!
 }
 
 """
