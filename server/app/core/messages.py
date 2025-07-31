@@ -41,7 +41,7 @@ class DummyMessageSender(BaseMessageSender):
         parameters: list[dict[str, str]],
     ) -> None:
         """Send a dummy message."""
-        url = "http://localtest.me:4444/sms/send"
+        url = "http://localhost:4444/sms/send"
         headers = {"Content-Type": "application/json"}
         data = {
             "phone_number": receiver,
