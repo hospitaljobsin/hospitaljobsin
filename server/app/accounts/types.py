@@ -744,6 +744,9 @@ class PhoneNumberDoesNotExistErrorType(BaseErrorType):
 
 @strawberry.type(name="RequestPhoneNumberVerificationTokenSuccess")
 class RequestPhoneNumberVerificationTokenSuccessType(BaseErrorType):
+    cooldown_remaining_seconds: int = field(
+        description="The remaining seconds before the next phone number verification token can be requested.",
+    )
     message: str = field(
         default="Phone number verification token sent.",
         description="Success message.",

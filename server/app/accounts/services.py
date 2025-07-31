@@ -93,7 +93,7 @@ class AccountService:
     async def request_phone_number_verification_token(
         self, account: Account, phone_number: str
     ) -> Result[
-        None,
+        int,
         InvalidPhoneNumberError
         | PhoneNumberAlreadyExistsError
         | PhoneNumberVerificationTokenCooldownError,
@@ -149,16 +149,20 @@ class AccountService:
         # send phone number verification token to the user
         await self._message_sender.send_message(
             receiver=formatted_number,
-            template_name="phone_number_verification",
+            template_name="login_code",
             parameters=[
                 {
                     "type": "text",
-                    "parameter_name": "verification_token",
+                    "parameter_name": "code",
                     "text": verification_token,
                 },
             ],
         )
-        return Ok(None)
+        return Ok(
+            self._phone_number_verification_token_cooldown_remaining_seconds(
+                phone_number_verification
+            )
+        )
 
     def _is_phone_number_verification_token_cooled_down(
         self, token: PhoneNumberVerificationToken

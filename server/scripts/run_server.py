@@ -1,4 +1,5 @@
 import multiprocessing
+from pathlib import Path
 
 from app.config import AppSettings, get_settings
 from app.core.instrumentation import initialize_instrumentation
@@ -31,6 +32,7 @@ if __name__ == "__main__":
         workers=multiprocessing.cpu_count(),
         reload=settings.debug,
         reload_filter=PyJsonFilter,
+        reload_paths=[Path(__file__).parent.parent.parent],
         log_enabled=True,
         log_dictconfig=build_server_log_config(
             log_level=settings.log_level,
