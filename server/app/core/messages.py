@@ -41,8 +41,16 @@ class DummyMessageSender(BaseMessageSender):
         parameters: list[dict[str, str]],
     ) -> None:
         """Send a dummy message."""
-        # TODO: probably make a HTTP request to some server
-        # like mailcatcher
+        url = "http://localtest.me:4444/sms/send"
+        headers = {"Content-Type": "application/json"}
+        data = {
+            "phone_number": receiver,
+            "template_name": template_name,
+            "parameters": parameters,
+        }
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, headers=headers, json=data)
+            response.raise_for_status()
 
 
 class WhatsappMessageSender(BaseMessageSender):
@@ -67,7 +75,7 @@ class WhatsappMessageSender(BaseMessageSender):
         parameters: list[dict[str, str]],
     ) -> None:
         """Send a Whatsapp message."""
-        url = "https://graph.facebook.com/v22.0/messages"
+        url = f"https://graph.facebook.com/v22.0/{self._settings.whatsapp_phone_number_id}/messages"
         headers = {
             "Authorization": f"Bearer {self._secret_settings.whatsapp_access_token.get_secret_value()}",
             "Content-Type": "application/json",

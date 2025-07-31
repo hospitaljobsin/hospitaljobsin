@@ -44,6 +44,20 @@ services:
     ports:
       - "1080:1080"
       - "1025:1025"
+
+  smscatcher:
+    build:
+      context: ./sms-catcher
+      dockerfile: Dockerfile
+    ports:
+      - "4444:4444"
+    environment:
+      - SERVER_DEBUG=False
+      - SERVER_ENVIRONMENT=production
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=4444
+      - SERVER_LOG_LEVEL=INFO
+
   minio:
     build:
       context: ./minio

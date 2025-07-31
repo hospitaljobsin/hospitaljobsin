@@ -153,7 +153,7 @@ export default function VerificationTokenStep({
 	function handleFormSubmit(data: FormData) {
 		commitMutation({
 			variables: {
-				phoneNumber: phoneNumber,
+				phoneNumber: `+91${phoneNumber}`,
 				phoneNumberVerificationToken: data.verificationToken,
 			},
 			onCompleted: (response, errors) => {
