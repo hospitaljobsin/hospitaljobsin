@@ -67,7 +67,7 @@ class WhatsappMessageSender(BaseMessageSender):
         parameters: list[dict[str, str]],
     ) -> None:
         """Send a Whatsapp message."""
-        url = "https://graph.facebook.com/v22.0/messages"
+        url = f"https://graph.facebook.com/v22.0/{self._settings.whatsapp_phone_number_id}/messages"
         headers = {
             "Authorization": f"Bearer {self._secret_settings.whatsapp_access_token.get_secret_value()}",
             "Content-Type": "application/json",
