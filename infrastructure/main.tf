@@ -131,6 +131,8 @@ module "core" {
   github_repository_name         = var.github_repository_name
   redis_password                 = module.redis.redis_password
   redis_endpoint                 = module.redis.public_endpoint
+  whatsapp_access_token          = var.whatsapp_access_token
+  whatsapp_phone_number_id       = var.whatsapp_phone_number_id
 }
 
 module "redis" {

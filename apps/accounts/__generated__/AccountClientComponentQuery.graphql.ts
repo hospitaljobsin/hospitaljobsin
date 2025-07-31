@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<9b141ba4902e60bec6b8bf68790f3aeb>>
- * @relayHash 6d6a1c22f17acf07a3787d1072602b27
+ * @generated SignedSource<<8343767be7ec749552ed776026ceb3bf>>
+ * @relayHash 0e8362c2989a79fedf1e30c6bfc0c043
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 6d6a1c22f17acf07a3787d1072602b27
+// @relayRequestID 0e8362c2989a79fedf1e30c6bfc0c043
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -116,6 +116,13 @@ const node: ConcreteRequest = {
                 "kind": "ScalarField",
                 "name": "authProviders",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
               }
             ],
             "type": "Account",
@@ -141,7 +148,7 @@ const node: ConcreteRequest = {
     ]
   },
   "params": {
-    "id": "6d6a1c22f17acf07a3787d1072602b27",
+    "id": "0e8362c2989a79fedf1e30c6bfc0c043",
     "metadata": {},
     "name": "AccountClientComponentQuery",
     "operationKind": "query",

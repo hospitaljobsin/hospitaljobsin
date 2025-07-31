@@ -1,0 +1,237 @@
+# PRD: Phone Number Update Feature with Verification Flow
+
+## Overview
+
+Add a dedicated phone number section to the user profile with a comprehensive verification flow. The feature will allow users to update their WhatsApp phone number through a modal-based interface that includes phone number validation, verification token generation, and secure phone number updates. The implementation will follow existing patterns in the codebase for modals, GraphQL mutations, and form handling.
+
+---
+
+## Goals
+
+- Create a dedicated phone number section in the user profile
+- Implement a modal-based phone number update flow with verification
+- Ensure only Indian phone numbers are accepted and validated
+- Provide a seamless user experience with proper error handling and feedback
+- Follow existing codebase patterns for modals, mutations, and UI components
+- Maintain security through proper verification token handling
+
+---
+
+## Functional Requirements
+
+### 1. Phone Number Section
+
+- **Location:** Add a new section in the user profile/settings page
+- **Display:** Show current phone number (if exists) or "Not set" status
+- **Action Button:** "Update Phone Number" button that opens the modal
+- **UI Components:** Use HeroUI components consistent with existing profile sections
+
+### 2. Phone Number Update Modal
+
+- **Modal Structure:** Follow existing modal patterns from the codebase
+- **Size:** Medium size modal (`size="md"`) similar to other forms
+- **Dismissal:** Allow dismissal when not in submission state
+- **Placement:** Center placement with proper backdrop
+
+### 3. Phone Number Input Flow
+
+#### Step 1: Phone Number Entry
+- **Input Field:** WhatsApp phone number input with validation
+- **Validation Rules:**
+  - Must be a valid Indian phone number
+  - Accept common formats (e.g., +91 98765 43210, 9876543210)
+  - Real-time validation feedback
+- **Submit Action:** Call `requestPhoneNumberVerificationToken` mutation
+- **Error Handling:** Display specific error messages for invalid numbers, existing numbers, cooldown periods
+
+#### Step 2: Verification Token Entry
+- **Input Field:** 6-digit verification token input
+- **Resend Button:** Allow resending verification token with cooldown
+- **Submit Action:** Call `updateAccountPhoneNumber` mutation
+- **Success:** Close modal and update the phone number section
+- **Error Handling:** Display invalid token errors
+
+### 4. GraphQL Mutations Integration
+
+- **Request Token Mutation:** `requestPhoneNumberVerificationToken`
+  - Input: `phoneNumber: String!`
+  - Handle success, invalid number, existing number, cooldown errors
+- **Update Phone Number Mutation:** `updateAccountPhoneNumber`
+  - Input: `phoneNumber: String!`, `phoneNumberVerificationToken: String!`
+  - Handle success, invalid token, invalid number errors
+
+### 5. Error Handling & User Feedback
+
+- **Loading States:** Show loading indicators during mutations
+- **Error Messages:** Display specific error messages for each failure case
+- **Success Feedback:** Clear success indication and modal closure
+- **Cooldown Handling:** Show remaining time for resend functionality
+
+---
+
+## Non-Functional Requirements
+
+- **Responsive Design:** Mobile-first approach, works on all devices
+- **Accessibility:** Keyboard navigation, ARIA labels, screen reader support
+- **Performance:** Fast validation, debounced input handling
+- **Security:** Proper token validation, secure phone number handling
+- **Type Safety:** TypeScript throughout, proper GraphQL types
+- **UI Consistency:** All components must use HeroUI (@heroui/react)
+
+---
+
+## Technical Implementation
+
+### 1. Modal Component Structure
+
+```typescript
+// Follow existing modal patterns from:
+// - apps/seeker-portal/components/profile/AutofillWithAIModal.tsx
+// - apps/accounts/components/settings/account/SaveRecoveryCodesModal.tsx
+// - apps/recruiter-dashboard/components/job-detail/analytics-tab/PublishJobModal.tsx
+```
+
+### 2. Form Handling
+
+- **React Hook Form:** Use for form state management
+- **Zod Validation:** Schema validation for phone number format
+- **Standard Schema Resolver:** Follow existing patterns from signup forms
+
+### 3. GraphQL Integration
+
+- **Relay Mutations:** Use `useMutation` hook for GraphQL calls
+- **Error Handling:** Handle all union types from mutations
+- **Optimistic Updates:** Update UI immediately on success
+
+### 4. Phone Number Validation
+
+- **Client-side:** Basic format validation with Zod
+- **Server-side:** Full validation using `phonenumbers` library (already implemented)
+- **Indian Numbers Only:** Enforce region code "IN" validation
+
+### 5. State Management
+
+- **Modal State:** Track open/closed, current step (entry/verification)
+- **Form State:** Phone number, verification token, loading states
+- **Error State:** Track and display specific error messages
+- **Cooldown State:** Track resend cooldown timer
+
+---
+
+## User Experience Flow
+
+### 1. Initial State
+- User sees phone number section in profile
+- Shows current number or "Not set" status
+- "Update Phone Number" button available
+
+### 2. Modal Opening
+- Click button opens modal
+- Shows phone number input form
+- Clear instructions and validation
+
+### 3. Phone Number Entry
+- User enters WhatsApp phone number
+- Real-time validation feedback
+- Submit button calls verification token request
+- Loading state during API call
+
+### 4. Verification Step
+- Modal transitions to verification token input
+- Shows "Enter verification token" screen
+- Resend button with cooldown timer
+- Submit button calls update mutation
+
+### 5. Success/Error Handling
+- Success: Modal closes, profile updates
+- Errors: Display specific error messages
+- Cooldown: Show remaining time for resend
+
+---
+
+## Error Scenarios & Handling
+
+### 1. Invalid Phone Number
+- **Error:** `InvalidPhoneNumberError`
+- **Message:** "Please enter a valid Indian phone number"
+- **Action:** Allow retry with corrected number
+
+### 2. Phone Number Already Exists
+- **Error:** `PhoneNumberAlreadyExistsError`
+- **Message:** "This phone number is already registered"
+- **Action:** Suggest using different number
+
+### 3. Verification Token Cooldown
+- **Error:** `PhoneNumberVerificationTokenCooldownError`
+- **Message:** "Please wait {remainingSeconds} seconds before requesting another token"
+- **Action:** Show countdown timer
+
+### 4. Invalid Verification Token
+- **Error:** `InvalidPhoneNumberVerificationTokenError`
+- **Message:** "Invalid verification code. Please check and try again"
+- **Action:** Allow retry or resend
+
+---
+
+## Success Criteria
+
+- Users can successfully update their phone number through the modal flow
+- Only valid Indian phone numbers are accepted
+- Verification tokens are properly validated and handled
+- All error scenarios are gracefully handled with clear user feedback
+- The UI follows existing design patterns and uses HeroUI components
+- GraphQL mutations are properly integrated with error handling
+- The feature is responsive and accessible
+- Phone number validation works on both client and server side
+
+---
+
+## Out of Scope
+
+- International phone number support (India only)
+- Phone number removal functionality
+- Bulk phone number operations
+- Phone number history or audit trail
+- Integration with external phone validation services beyond existing implementation
+- Editing the backend code
+
+---
+
+## Example User Flow
+
+1. User navigates to profile/settings page
+2. User sees phone number section with current number or "Not set"
+3. User clicks "Update Phone Number" button
+4. Modal opens with phone number input form
+5. User enters WhatsApp phone number (e.g., "+91 98765 43210")
+6. User clicks "Send Verification Code" button
+7. System validates number and sends verification token via WhatsApp
+8. Modal transitions to verification token input screen
+9. User enters 6-digit verification code received via WhatsApp
+10. User clicks "Verify & Update" button
+11. System validates token and updates phone number
+12. Modal closes and profile shows updated phone number
+13. Success message confirms the update
+
+---
+
+## Technical Dependencies
+
+- Existing GraphQL mutations: `requestPhoneNumberVerificationToken`, `updateAccountPhoneNumber`
+- HeroUI components: `Modal`, `ModalContent`, `ModalHeader`, `ModalBody`, `ModalFooter`, `Input`, `Button`
+- React Hook Form for form management
+- Zod for validation schemas
+- Relay for GraphQL mutations
+- Existing phone number validation service (server-side)
+
+---
+
+## Implementation Notes
+
+- Reference existing modal implementations for consistent patterns
+- Follow existing form validation patterns from signup flows
+- Use existing GraphQL error handling patterns
+- Ensure proper TypeScript types for all components
+- Implement proper loading states and error boundaries
+- Follow existing accessibility patterns in the codebase
+- Use existing phone number validation logic from server implementation

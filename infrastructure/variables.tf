@@ -78,3 +78,15 @@ variable "sentry_organization_slug" {
   type        = string
   default     = "hospitaljobsin"
 }
+
+variable "whatsapp_access_token" {
+  type        = string
+  description = "Whatsapp access token."
+  sensitive   = true
+}
+
+
+variable "whatsapp_phone_number_id" {
+  type        = string
+  description = "Whatsapp phone number ID."
+}

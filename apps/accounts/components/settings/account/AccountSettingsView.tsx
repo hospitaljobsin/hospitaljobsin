@@ -14,6 +14,8 @@ import AccountDetails from "./AccountDetails";
 import Password from "./Password";
 import TwoFactorAuthentication from "./TwoFactorAuthentication";
 import UpdateAccountDetailsForm from "./UpdateAccountDetailsForm";
+import PhoneNumber from "./phone-number/PhoneNumber";
+import UpdatePhoneNumberModal from "./phone-number/UpdatePhoneNumberModal";
 
 const AccountSettingsViewFragment = graphql`
   fragment AccountSettingsViewFragment on Query {
@@ -24,6 +26,7 @@ const AccountSettingsViewFragment = graphql`
 		...UpdateAccountDetailsFormFragment
 		...TwoFactorAuthenticationFragment
 		...PasswordFragment
+		...PhoneNumberFragment
       }
     }
   }
@@ -35,6 +38,7 @@ export default function AccountSettingsView({
 	queryReference: PreloadedQuery<AccountClientComponentQueryType>;
 }) {
 	const [isEditingAccount, setIsEditingAccount] = useState(false);
+	const [isPhoneNumberModalOpen, setIsPhoneNumberModalOpen] = useState(false);
 	const query = usePreloadedQuery(AccountClientComponentQuery, queryReference);
 	const data = useFragment<AccountSettingsViewFragment$key>(
 		AccountSettingsViewFragment,
@@ -45,6 +49,14 @@ export default function AccountSettingsView({
 		data.viewer.__typename === "Account",
 		"Expected 'Account' node type",
 	);
+
+	function handleUpdatePhoneNumber() {
+		setIsPhoneNumberModalOpen(true);
+	}
+
+	function handlePhoneNumberModalClose() {
+		setIsPhoneNumberModalOpen(false);
+	}
 
 	return (
 		<div className="w-full h-full space-y-16">
@@ -64,9 +76,20 @@ export default function AccountSettingsView({
 				/>
 			)}
 
+			<PhoneNumber
+				rootQuery={data.viewer}
+				onUpdatePhoneNumber={handleUpdatePhoneNumber}
+			/>
+
 			<Password rootQuery={data.viewer} />
 
 			<TwoFactorAuthentication rootQuery={data.viewer} />
+
+			<UpdatePhoneNumberModal
+				isOpen={isPhoneNumberModalOpen}
+				onOpenChange={setIsPhoneNumberModalOpen}
+				onClose={handlePhoneNumberModalClose}
+			/>
 		</div>
 	);
 }

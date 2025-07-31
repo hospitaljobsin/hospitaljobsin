@@ -25,10 +25,12 @@ dev-debug.log
 *.sln
 *.sw?
 # OS specific
-# Task files
-tasks.json
-tasks/
-
 .cursor/mcp.json
 
 *.pem
+
+.vscode
+
+# Task files
+# tasks.json
+# tasks/

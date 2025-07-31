@@ -227,8 +227,10 @@ class AccountMutation:
             account=info.context["current_user"],
             phone_number=phone_number,
         ):
-            case Ok(_):
-                return RequestPhoneNumberVerificationTokenSuccessType()
+            case Ok(cooldown_remaining_seconds):
+                return RequestPhoneNumberVerificationTokenSuccessType(
+                    cooldown_remaining_seconds=cooldown_remaining_seconds,
+                )
             case Err(error):
                 match error:
                     case InvalidPhoneNumberError():
