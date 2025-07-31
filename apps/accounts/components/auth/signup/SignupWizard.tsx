@@ -11,9 +11,9 @@ import {
 	Divider,
 } from "@heroui/react";
 import { Google } from "@lobehub/icons";
+import { useNavigationGuard } from "next-navigation-guard";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 import { getValidRedirectURL } from "../../../lib/redirects";
 import SignupContext from "./SignupContext";
 import Step1EmailForm from "./Step1EmailForm";
@@ -26,20 +26,10 @@ export default function SignUpWizard() {
 	const params = useSearchParams();
 	const redirectTo = getValidRedirectURL(params.get("return_to"));
 
-	useEffect(() => {
-		// prevent user from leaving the page while completing registration
-		if (state.value === "step4" || state.value === "step1") return;
-
-		function beforeUnload(e: BeforeUnloadEvent) {
-			e.preventDefault();
-		}
-
-		window.addEventListener("beforeunload", beforeUnload);
-
-		return () => {
-			window.removeEventListener("beforeunload", beforeUnload);
-		};
-	}, [state.value]);
+	useNavigationGuard({
+		enabled: () => state.value !== "step4" && state.value !== "step1",
+		confirm: () => window.confirm("Are you sure you want to leave this page?"),
+	});
 
 	return (
 		<Card className="p-6 space-y-6" shadow="none">
