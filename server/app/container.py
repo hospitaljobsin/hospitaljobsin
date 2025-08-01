@@ -80,7 +80,7 @@ from app.core.geocoding import (
 from app.core.messages import (
     BaseMessageSender,
     DummyMessageSender,
-    WhatsappMessageSender,
+    Fast2SMSMessageSender,
 )
 from app.core.oauth import create_oauth_client
 from app.core.ocr import BaseOCRClient, TesseractOCRClient, TextractOCRClient
@@ -240,7 +240,8 @@ def register_ocr_client(container: aioinject.Container) -> None:
 def register_message_sender(container: aioinject.Container) -> None:
     app_settings = get_settings(AppSettings)
     if app_settings.is_production:
-        container.register(aioinject.Scoped(WhatsappMessageSender, BaseMessageSender))
+        container.register(aioinject.Scoped(Fast2SMSMessageSender, BaseMessageSender))
+        # container.register(aioinject.Scoped(WhatsappMessageSender, BaseMessageSender))
     else:
         container.register(aioinject.Singleton(DummyMessageSender, BaseMessageSender))
 
