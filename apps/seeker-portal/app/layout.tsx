@@ -20,6 +20,9 @@ export const metadata: Metadata = {
 		default: APP_NAME,
 	},
 	description: APP_TAGLINE,
+	other: {
+		fast2sms: "Dk5NY3OoAn7kqMlw0omuivXrgCFmyhne",
+	},
 };
 
 export default async function RootLayout({

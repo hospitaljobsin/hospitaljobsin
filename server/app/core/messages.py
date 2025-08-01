@@ -59,10 +59,11 @@ class Fast2SMSMessageSender(BaseMessageSender):
         data = {
             "variables_values": otp,
             "route": "otp",
-            "numbers": receiver.national_number,
+            "numbers": str(receiver.national_number),
         }
         async with httpx.AsyncClient() as client:
             response = await client.post(url, headers=headers, json=data)
+            print(response.json())
             response.raise_for_status()
 
 
