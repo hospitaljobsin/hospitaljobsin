@@ -1,5 +1,6 @@
 import httpx
 from jinja2 import Environment
+from phonenumbers import PhoneNumber
 
 from app.config import SecretSettings, WhatsappSettings
 
@@ -15,12 +16,56 @@ class BaseMessageSender:
 
     async def send_message(
         self,
-        receiver: str,
+        receiver: PhoneNumber,
         template_name: str,
         parameters: list[dict[str, str]],
     ) -> None:
         """Send a message."""
         raise NotImplementedError
+
+    async def send_otp_message(
+        self,
+        receiver: PhoneNumber,
+        otp: str,
+    ) -> None:
+        """Send an OTP message."""
+        raise NotImplementedError
+
+
+class Fast2SMSMessageSender(BaseMessageSender):
+    """Fast2SMS Message sender class."""
+
+    def __init__(
+        self,
+        environment: Environment,
+        secret_settings: SecretSettings,
+    ) -> None:
+        super().__init__(
+            environment=environment,
+        )
+        self._secret_settings = secret_settings
+
+    async def send_otp_message(
+        self,
+        receiver: PhoneNumber,
+        otp: str,
+    ) -> None:
+        """Send a dummy message."""
+        url = "https://www.fast2sms.com/dev/bulkV2"
+        headers = {
+            "Content-Type": "application/json",
+            "authorization": self._secret_settings.fast2sms_api_key.get_secret_value(),
+        }
+        data = {
+            "variables_values": otp,
+            "route": "otp",
+            "numbers": receiver.national_number,
+            "flash": "0",
+            "language": "english",
+        }
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, headers=headers, json=data)
+            response.raise_for_status()
 
 
 class DummyMessageSender(BaseMessageSender):
@@ -36,13 +81,14 @@ class DummyMessageSender(BaseMessageSender):
 
     async def send_message(
         self,
-        receiver: str,
+        receiver: PhoneNumber,
         template_name: str,
         parameters: list[dict[str, str]],
     ) -> None:
         """Send a dummy message."""
         url = "http://localhost:4444/sms/send"
         headers = {"Content-Type": "application/json"}
+
         data = {
             "phone_number": receiver,
             "template_name": template_name,
@@ -51,6 +97,24 @@ class DummyMessageSender(BaseMessageSender):
         async with httpx.AsyncClient() as client:
             response = await client.post(url, headers=headers, json=data)
             response.raise_for_status()
+
+    async def send_otp_message(
+        self,
+        receiver: PhoneNumber,
+        otp: str,
+    ) -> None:
+        """Send an OTP message."""
+        await self.send_message(
+            receiver=receiver,
+            template_name="login_code",
+            parameters=[
+                {
+                    "type": "text",
+                    "parameter_name": "code",
+                    "text": otp,
+                },
+            ],
+        )
 
 
 class WhatsappMessageSender(BaseMessageSender):
@@ -70,7 +134,7 @@ class WhatsappMessageSender(BaseMessageSender):
 
     async def send_message(
         self,
-        receiver: str,
+        receiver: PhoneNumber,
         template_name: str,
         parameters: list[dict[str, str]],
     ) -> None:
@@ -82,7 +146,7 @@ class WhatsappMessageSender(BaseMessageSender):
         }
         data = {
             "messaging_product": "whatsapp",
-            "to": receiver,  # Add the recipient's WhatsApp number here in international format, e.g., "1234567890"
+            "to": receiver.national_number,
             "type": "template",
             "template": {
                 "name": template_name,
@@ -110,3 +174,21 @@ class WhatsappMessageSender(BaseMessageSender):
         async with httpx.AsyncClient() as client:
             response = await client.post(url, headers=headers, json=data)
             response.raise_for_status()
+
+    async def send_otp_message(
+        self,
+        receiver: PhoneNumber,
+        otp: str,
+    ) -> None:
+        """Send an OTP message."""
+        await self.send_message(
+            receiver=receiver,
+            template_name="login_code",
+            parameters=[
+                {
+                    "type": "text",
+                    "parameter_name": "code",
+                    "text": otp,
+                },
+            ],
+        )

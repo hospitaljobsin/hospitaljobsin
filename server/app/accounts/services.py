@@ -147,17 +147,11 @@ class AccountService:
         )
 
         # send phone number verification token to the user
-        await self._message_sender.send_message(
-            receiver=formatted_number,
-            template_name="login_code",
-            parameters=[
-                {
-                    "type": "text",
-                    "parameter_name": "code",
-                    "text": verification_token,
-                },
-            ],
+        await self._message_sender.send_otp_message(
+            receiver=valid_phone_number,
+            otp=verification_token,
         )
+
         return Ok(
             self._phone_number_verification_token_cooldown_remaining_seconds(
                 phone_number_verification

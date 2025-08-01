@@ -271,10 +271,14 @@ Follow these steps to deploy the project to the cloud:
 - Copy the business account access token
 - Copy the business account phone number ID (Whatsapp Business Phone Number)
 
+### 10. Fast2SMS Setup
+- Go to the [Fast2SMS Console](https://www.fast2sms.com)
+- Create a new account
+- Copy the API key
 
-### 10. Terraform Setup
+### 11. Terraform Setup
 
-#### 10.1 Prerequisites:
+#### 11.1 Prerequisites:
 - Create an S3 bucket that will act as the terraform state backend
 
 Terraform deployments are automated via GitHub Actions CI/CD.
@@ -302,6 +306,7 @@ GitHub Actions Secrets:
 - `REDISCLOUD_ACCESS_KEY`
 - `SST_POSTHOG_KEY`
 - `WHATSAPP_ACCESS_TOKEN`
+- `FAST2SMS_API_KEY`
 
 
 

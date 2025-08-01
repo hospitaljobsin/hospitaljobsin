@@ -208,6 +208,7 @@ class PhoneNumberVerificationTokenRepo:
     @staticmethod
     def generate_verification_token() -> str:
         """Generate a new verification token."""
+        # FastSMS requires all characters to be digits
         return "".join(
             secrets.choice(string.digits)
             for _ in range(EMAIL_VERIFICATION_TOKEN_LENGTH)

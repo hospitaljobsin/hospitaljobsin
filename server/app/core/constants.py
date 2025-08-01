@@ -20,6 +20,7 @@ USER_SESSION_EXPIRES_IN = 60 * 60 * 24 * 30  # 30 days
 # Email verification
 EMAIL_VERIFICATION_EXPIRES_IN = 60 * 60 * 1  # 1 hour
 
+# this cannot exceed 8 as Fast2SMS only supports 8 characters
 EMAIL_VERIFICATION_TOKEN_LENGTH = 6
 
 # Phone number verification
