@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<738b0d87533a8ea8c8df184406c3f957>>
- * @relayHash 079c961a0c60deffeddb36db064a2475
+ * @generated SignedSource<<80effdd7294f72b5af00e611dca36fac>>
+ * @relayHash 65319937c496eb776c2350c76a6bea8d
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 079c961a0c60deffeddb36db064a2475
+// @relayRequestID 65319937c496eb776c2350c76a6bea8d
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -367,7 +367,14 @@ return {
                           (v7/*: any*/),
                           (v16/*: any*/),
                           (v14/*: any*/),
-                          (v10/*: any*/)
+                          (v10/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "verifiedAt",
+                            "storageKey": null
+                          }
                         ],
                         "storageKey": null
                       },
@@ -481,7 +488,7 @@ return {
     ]
   },
   "params": {
-    "id": "079c961a0c60deffeddb36db064a2475",
+    "id": "65319937c496eb776c2350c76a6bea8d",
     "metadata": {},
     "name": "pageJobApplyViewQuery",
     "operationKind": "query",

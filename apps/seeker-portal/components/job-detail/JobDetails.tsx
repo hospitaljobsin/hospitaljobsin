@@ -30,6 +30,7 @@ import {
 	IndianRupee,
 	MapPin,
 	Users,
+	VerifiedIcon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -91,6 +92,7 @@ const JobDetailsInternalFragment = graphql`
       name
       description
       logoUrl
+	  verifiedAt
     }
   }
 `;
@@ -387,7 +389,19 @@ export default function JobDetails({
 							href={links.organizationDetail(data.organization.slug)}
 							className="text-base sm:text-lg font-medium flex items-center gap-2"
 						>
-							{data.organization.name} <ExternalLinkIcon size={16} />
+							{data.organization.name}
+							<ExternalLinkIcon className="w-3 h-3" />
+							{data.organization.verifiedAt && (
+								<Tooltip
+									content="This organization is verified"
+									placement="right"
+								>
+									<VerifiedIcon
+										className="w-4 h-4 text-primary"
+										strokeWidth={2.5}
+									/>
+								</Tooltip>
+							)}
 						</Link>
 						{data.organization.description && (
 							<p className="text-xs sm:text-base text-default-500 leading-tight line-clamp-2">

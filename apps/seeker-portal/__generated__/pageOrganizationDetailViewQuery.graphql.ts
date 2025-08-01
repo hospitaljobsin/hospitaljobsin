@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<474144dd5ac3ad8dc58ee7f934dadac4>>
- * @relayHash 08031e9ebdb8a81f408fe98b26cc26d1
+ * @generated SignedSource<<1d55ead030685e9d31812a9cfa3343c8>>
+ * @relayHash 0504ac33580ae4a8172e712c75d33135
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 08031e9ebdb8a81f408fe98b26cc26d1
+// @relayRequestID 0504ac33580ae4a8172e712c75d33135
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -190,6 +190,13 @@ return {
                 "storageKey": null
               },
               (v6/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "verifiedAt",
+                "storageKey": null
+              },
               {
                 "alias": null,
                 "args": (v7/*: any*/),
@@ -392,7 +399,7 @@ return {
     ]
   },
   "params": {
-    "id": "08031e9ebdb8a81f408fe98b26cc26d1",
+    "id": "0504ac33580ae4a8172e712c75d33135",
     "metadata": {},
     "name": "pageOrganizationDetailViewQuery",
     "operationKind": "query",

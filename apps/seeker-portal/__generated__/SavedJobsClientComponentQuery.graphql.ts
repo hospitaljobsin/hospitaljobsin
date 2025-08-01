@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<76bcb203e908982b2a3212b435321884>>
- * @relayHash 564e90e4a96b315926c54c02afd422d5
+ * @generated SignedSource<<cf61f0b8dcb91f8ed73c42550bb133e0>>
+ * @relayHash 1dfb960144cfa748791cb0a626036a87
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 564e90e4a96b315926c54c02afd422d5
+// @relayRequestID 1dfb960144cfa748791cb0a626036a87
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -143,7 +143,14 @@ return {
                         "storageKey": null
                       },
                       (v2/*: any*/),
-                      (v1/*: any*/)
+                      (v1/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "verifiedAt",
+                        "storageKey": null
+                      }
                     ],
                     "storageKey": null
                   },
@@ -295,7 +302,7 @@ return {
     ]
   },
   "params": {
-    "id": "564e90e4a96b315926c54c02afd422d5",
+    "id": "1dfb960144cfa748791cb0a626036a87",
     "metadata": {},
     "name": "SavedJobsClientComponentQuery",
     "operationKind": "query",

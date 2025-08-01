@@ -1,7 +1,14 @@
 import type { OrganizationDetailsFragment$key } from "@/__generated__/OrganizationDetailsFragment.graphql";
 import type { OrganizationDetailsInternalFragment$key as OrganizationDetailsInternalFragmentType } from "@/__generated__/OrganizationDetailsInternalFragment.graphql";
-import { Card, CardBody, CardHeader, Divider, Link } from "@heroui/react";
-import { Mail, MapPin } from "lucide-react";
+import {
+	Card,
+	CardBody,
+	CardHeader,
+	Divider,
+	Link,
+	Tooltip,
+} from "@heroui/react";
+import { Mail, MapPin, VerifiedIcon } from "lucide-react";
 import Image from "next/image";
 import { graphql, useFragment } from "react-relay";
 import invariant from "tiny-invariant";
@@ -29,6 +36,7 @@ const OrganizationDetailsInternalFragment = graphql`
     website
     email
     location
+	verifiedAt
   }
 `;
 
@@ -63,9 +71,22 @@ export default function OrganizationDetails({
 									/>
 								</div>
 								<div className="flex flex-col gap-4 items-start w-full">
-									<h4 className="text-lg sm:text-xl font-medium">
-										{data.name}
-									</h4>
+									<div className="flex flex-row items-center gap-2">
+										<h4 className="text-lg sm:text-xl font-medium">
+											{data.name}
+										</h4>
+										{data.verifiedAt && (
+											<Tooltip
+												content="This organization is verified"
+												placement="right"
+											>
+												<VerifiedIcon
+													className="w-4 h-4 text-primary"
+													strokeWidth={2.5}
+												/>
+											</Tooltip>
+										)}
+									</div>
 									{(data.location || data.email || data.website) && (
 										<div className="flex flex-wrap gap-4 items-center text-foreground-600 w-full">
 											{data.location && (

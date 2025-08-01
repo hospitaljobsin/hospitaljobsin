@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<f32448fa42552f852723cdf843386103>>
- * @relayHash 7ce657628d94e59d276480b233f7aec0
+ * @generated SignedSource<<b3ab5c8e9974c386b9eb96b0a622521d>>
+ * @relayHash f2cd9da9f84e5478419e36babbd78ab7
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 7ce657628d94e59d276480b233f7aec0
+// @relayRequestID f2cd9da9f84e5478419e36babbd78ab7
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -176,7 +176,14 @@ return {
                             "storageKey": null
                           },
                           (v3/*: any*/),
-                          (v2/*: any*/)
+                          (v2/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "verifiedAt",
+                            "storageKey": null
+                          }
                         ],
                         "storageKey": null
                       },
@@ -313,7 +320,7 @@ return {
     ]
   },
   "params": {
-    "id": "7ce657628d94e59d276480b233f7aec0",
+    "id": "f2cd9da9f84e5478419e36babbd78ab7",
     "metadata": {},
     "name": "AppliedJobsListPaginationQuery",
     "operationKind": "query",

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cc9e2a3238dc5ffba7a1c2d084a180a8>>
+ * @generated SignedSource<<737bd5789f68afad50e06adee3af0d3f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type OrganizationDetailsInternalFragment$data = {
   readonly location: string | null | undefined;
   readonly logoUrl: string;
   readonly name: string;
+  readonly verifiedAt: any | null | undefined;
   readonly website: string | null | undefined;
   readonly " $fragmentType": "OrganizationDetailsInternalFragment";
 };
@@ -71,12 +72,19 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "location",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "verifiedAt",
+      "storageKey": null
     }
   ],
   "type": "Organization",
   "abstractKey": null
 };
 
-(node as any).hash = "f3001b77ac7ba4af02b80c9184d4951b";
+(node as any).hash = "64746e02345c386732b47e5caa79dda3";
 
 export default node;

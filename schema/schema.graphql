@@ -3002,6 +3002,11 @@ type Organization implements Node {
 	logoUrl: String!
 
 	"""
+	The date and time the organization was verified.
+	"""
+	verifiedAt: DateTime
+
+	"""
 	The job applicants for jobs in this organization.
 	"""
 	applicants(

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<4590cfa7b377a207bddca9148e81043d>>
- * @relayHash fa7e9f49cf386985a86218cc204ff0bd
+ * @generated SignedSource<<0bc30eafe0b49f46e481431a7bfe77a7>>
+ * @relayHash 7ce28e5bb39c90c51b4fba46371d83ef
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID fa7e9f49cf386985a86218cc204ff0bd
+// @relayRequestID 7ce28e5bb39c90c51b4fba46371d83ef
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -290,7 +290,14 @@ return {
                         "storageKey": null
                       },
                       (v12/*: any*/),
-                      (v11/*: any*/)
+                      (v11/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "verifiedAt",
+                        "storageKey": null
+                      }
                     ],
                     "storageKey": null
                   },
@@ -434,7 +441,7 @@ return {
     ]
   },
   "params": {
-    "id": "fa7e9f49cf386985a86218cc204ff0bd",
+    "id": "7ce28e5bb39c90c51b4fba46371d83ef",
     "metadata": {},
     "name": "SearchJobsListRefetchQuery",
     "operationKind": "query",

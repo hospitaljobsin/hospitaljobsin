@@ -203,6 +203,9 @@ class OrganizationType(BaseNodeType[Organization]):
     logo_url: str = strawberry.field(
         description="The logo URL of the organization.",
     )
+    verified_at: datetime | None = strawberry.field(
+        description="The date and time the organization was verified.",
+    )
 
     @strawberry.field(
         description="The job applicants for jobs in this organization.",
@@ -257,6 +260,7 @@ class OrganizationType(BaseNodeType[Organization]):
             email=organization.email,
             website=organization.website,
             logo_url=organization.logo_url,
+            verified_at=organization.verified_at,
         )
 
     @classmethod

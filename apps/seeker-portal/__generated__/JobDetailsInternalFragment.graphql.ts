@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8d3fc6f56d1e2e8646e2383fb8f17818>>
+ * @generated SignedSource<<75d5239bcf04aa1ad9e01b2e3d00354c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -30,6 +30,7 @@ export type JobDetailsInternalFragment$data = {
     readonly logoUrl: string;
     readonly name: string;
     readonly slug: string;
+    readonly verifiedAt: any | null | undefined;
   };
   readonly skills: ReadonlyArray<string>;
   readonly slug: string;
@@ -203,6 +204,13 @@ return {
             "kind": "ScalarField",
             "name": "logoUrl",
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "verifiedAt",
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -215,6 +223,6 @@ return {
 };
 })();
 
-(node as any).hash = "328933a273520f99f3ccb027c136eb12";
+(node as any).hash = "ae6fca268aa613c1f07b6a567fe7a91d";
 
 export default node;

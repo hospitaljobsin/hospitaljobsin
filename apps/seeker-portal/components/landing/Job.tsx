@@ -6,8 +6,21 @@ import type {
 } from "@/__generated__/JobFragment.graphql";
 import { dateFormat, salaryFormat } from "@/lib/intl";
 import links from "@/lib/links";
-import { Card, CardBody, CardFooter, CardHeader, Chip } from "@heroui/react";
-import { Briefcase, Globe, IndianRupee, MapPin } from "lucide-react";
+import {
+	Card,
+	CardBody,
+	CardFooter,
+	CardHeader,
+	Chip,
+	Tooltip,
+} from "@heroui/react";
+import {
+	Briefcase,
+	Globe,
+	IndianRupee,
+	MapPin,
+	VerifiedIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useFragment } from "react-relay";
@@ -35,6 +48,7 @@ export const JobFragment = graphql`
       name @include(if: $showOrganization)
       logoUrl @include(if: $showOrganization)
 	  slug
+	  verifiedAt @include(if: $showOrganization)
     }
   }
 `;
@@ -165,9 +179,22 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 									{data.title}
 								</h4>
 								{data.organization && (
-									<p className="text-xs sm:text-base font-normal text-foreground-500 truncate max-w-[140px] sm:max-w-none">
-										{data.organization.name}
-									</p>
+									<div className="flex flex-row items-center gap-2">
+										<p className="text-xs sm:text-base font-normal text-foreground-500 truncate max-w-[140px] sm:max-w-none">
+											{data.organization.name}
+										</p>
+										{data.organization.verifiedAt && (
+											<Tooltip
+												content="This organization is verified"
+												placement="right"
+											>
+												<VerifiedIcon
+													className="w-4 h-4 text-primary"
+													strokeWidth={2.5}
+												/>
+											</Tooltip>
+										)}
+									</div>
 								)}
 							</div>
 						</div>

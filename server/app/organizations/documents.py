@@ -17,6 +17,7 @@ class Organization(Document):
     location: str | None = None
     email: str | None = None
     website: str | None = None
+    verified_at: datetime | None = None
     internal_logo_url: str | None = Field(default=None, alias="logo_url")
     members: list[BackLink["OrganizationMember"]] = Field(original_field="organization")  # type: ignore[call-overload]
 
