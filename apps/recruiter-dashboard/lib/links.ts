@@ -13,6 +13,7 @@ const links = {
 	jobDetailAnalytics: (jobSlug: string) => `/jobs/${jobSlug}/analytics`,
 	organizationDetailMembers: "/settings/members",
 	organizationDetailMemberInvites: "/settings/invites",
+	organizationDetailVerification: "/settings/verification",
 	organizationCreateJob: "/new-job",
 	organizationDetailSettings: "/settings",
 	jobDetailSettingsApplicationForm: (jobSlug: string) =>

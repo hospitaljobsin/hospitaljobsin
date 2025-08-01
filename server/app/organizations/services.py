@@ -354,6 +354,33 @@ class OrganizationService:
 
         return Ok(existing_organization)
 
+    async def request_verification(
+        self, account: Account, organization_id: str
+    ) -> Result[
+        Organization, OrganizationNotFoundError | OrganizationAuthorizationError
+    ]:
+        """Request an organization verification."""
+        try:
+            organization_id = ObjectId(organization_id)
+        except InvalidId:
+            return Err(OrganizationNotFoundError())
+        existing_organization = await self._organization_repo.get(
+            organization_id=organization_id,
+        )
+
+        if existing_organization is None:
+            return Err(OrganizationNotFoundError())
+
+        if not await self._organization_member_service.is_admin(
+            account_id=account.id,
+            organization_id=existing_organization.id,
+        ):
+            return Err(OrganizationAuthorizationError())
+
+        # TODO: inform admins about verification here
+
+        return Ok(existing_organization)
+
 
 class OrganizationInviteService:
     def __init__(

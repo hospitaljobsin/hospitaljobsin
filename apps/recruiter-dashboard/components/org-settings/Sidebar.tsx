@@ -2,9 +2,8 @@
 
 import type { SidebarOrgSettingsQuery as SidebarOrgSettingsQueryType } from "@/__generated__/SidebarOrgSettingsQuery.graphql";
 import links from "@/lib/links";
-import { useRouter } from "@bprogress/next";
 import { Tab, Tabs } from "@heroui/react";
-import { Mail, Settings, Users } from "lucide-react";
+import { Mail, Settings, Users, VerifiedIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { type PreloadedQuery, usePreloadedQuery } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -25,6 +24,11 @@ const items = [
 		label: "Invites",
 		href: links.organizationDetailMemberInvites,
 	},
+	{
+		icon: VerifiedIcon,
+		label: "Verification",
+		href: links.organizationDetailVerification,
+	},
 ];
 
 export const SidebarOrgSettingsQuery = graphql`
@@ -43,7 +47,6 @@ export default function OrgSettingsSidebar({
 	queryReference,
 }: { queryReference: PreloadedQuery<SidebarOrgSettingsQueryType> }) {
 	const pathname = usePathname();
-	const router = useRouter();
 	const data = usePreloadedQuery(SidebarOrgSettingsQuery, queryReference);
 
 	if (

@@ -707,6 +707,17 @@ DeleteOrganizationPayload = Annotated[
     ),
 ]
 
+
+RequestOrganizationVerificationPayload = Annotated[
+    OrganizationType
+    | OrganizationNotFoundErrorType
+    | OrganizationAuthorizationErrorType,
+    strawberry.union(
+        name="RequestOrganizationVerificationPayload",
+        description="The request organization verification payload.",
+    ),
+]
+
 OrganizationPayload = Annotated[
     OrganizationType | OrganizationNotFoundErrorType,
     strawberry.union(

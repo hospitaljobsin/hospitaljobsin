@@ -32,7 +32,7 @@ if __name__ == "__main__":
         workers=multiprocessing.cpu_count(),
         reload=settings.debug,
         reload_filter=PyJsonFilter,
-        reload_paths=[Path(__file__).parent.parent.parent],
+        reload_paths=[Path(__file__).parent.parent],
         log_enabled=True,
         log_dictconfig=build_server_log_config(
             log_level=settings.log_level,

@@ -42,6 +42,27 @@ class Organization(Document):
         name = "organizations"
 
 
+class OrganizationVerificationRequest(Document):
+    website: str
+    email: str
+    phone_number: str
+    address: str
+    gst_number: str
+    pan_number: str
+    gst_certificate_url: str
+    pan_certificate_url: str
+    address_proof_url: str
+    other_documents_url: str
+    organization: Link[Organization]
+    created_by: Link[Account]
+    status: Literal["pending", "approved", "rejected"]
+    approved_at: datetime | None = None
+    rejected_at: datetime | None = None
+
+    class Settings:
+        name = "organization_verification_requests"
+
+
 class OrganizationMember(Document):
     organization: Link[Organization]
     account: Link[Account]

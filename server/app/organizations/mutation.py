@@ -53,6 +53,7 @@ from .types import (
     PromoteOrganizationMemberSuccessType,
     RemoveOrganizationMemberPayload,
     RemoveOrganizationMemberSuccessType,
+    RequestOrganizationVerificationPayload,
     UpdateOrganizationPayload,
 )
 
@@ -244,6 +245,45 @@ class OrganizationMutation:
     ) -> DeleteOrganizationPayload:
         """Delete an organization."""
         match await organization_service.delete(
+            account=info.context["current_user"],
+            organization_id=organization_id.node_id,
+        ):
+            case Err(error):
+                match error:
+                    case OrganizationNotFoundError():
+                        return OrganizationNotFoundErrorType()
+                    case OrganizationAuthorizationError():
+                        return OrganizationAuthorizationErrorType()
+            case Ok(organization):
+                return OrganizationType.marshal(organization)
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=RequestOrganizationVerificationPayload,
+        description="Request an organization verification.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def request_organization_verification(
+        self,
+        info: AuthInfo,
+        organization_service: Annotated[OrganizationService, Inject],
+        organization_id: Annotated[
+            relay.GlobalID,
+            strawberry.argument(
+                description="The ID of the organization to request verification for."
+            ),
+        ],
+    ) -> RequestOrganizationVerificationPayload:
+        """Request an organization verification."""
+        match await organization_service.request_verification(
             account=info.context["current_user"],
             organization_id=organization_id.node_id,
         ):
