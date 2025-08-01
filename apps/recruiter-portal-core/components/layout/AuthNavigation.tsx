@@ -17,7 +17,7 @@ import {
 	NavbarItem,
 	useDisclosure,
 } from "@heroui/react";
-import { LogOutIcon, Settings } from "lucide-react";
+import { ExternalLinkIcon, LogOutIcon, Settings } from "lucide-react";
 import Link from "next/link";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -102,7 +102,10 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							rel="noopener noreferrer"
 							fullWidth
 						>
-							Account
+							<p className="flex flex-row items-center gap-2">
+								Account
+								<ExternalLinkIcon className="h-4 w-4" />
+							</p>
 						</Button>
 						<Divider />
 						<Button
@@ -168,7 +171,11 @@ export default function AuthNavigation({ rootQuery }: Props) {
 									rel="noopener noreferrer"
 									className="w-full gap-4 items-center text-small flex"
 								>
-									<Settings className="h-4 w-4" /> Account
+									<Settings className="h-4 w-4" />
+									<p className="flex flex-row items-center gap-2">
+										Account
+										<ExternalLinkIcon className="h-4 w-4" />
+									</p>
 								</Link>
 							</DropdownItem>
 						</DropdownSection>

@@ -19,6 +19,7 @@ import {
 } from "@heroui/react";
 import {
 	BriefcaseBusiness,
+	ExternalLinkIcon,
 	LogOutIcon,
 	Settings,
 	UserIcon,
@@ -123,7 +124,11 @@ export default function AuthNavigation({ rootQuery }: Props) {
 									rel="noopener noreferrer"
 									className="w-full gap-4 items-center text-small flex"
 								>
-									<Settings className="h-4 w-4" /> Account
+									<Settings className="h-4 w-4" />
+									<p className="flex flex-row items-center gap-2">
+										Account
+										<ExternalLinkIcon className="h-4 w-4" />
+									</p>
 								</Link>
 							</DropdownItem>
 							<DropdownItem
@@ -187,7 +192,10 @@ export default function AuthNavigation({ rootQuery }: Props) {
 							rel="noopener noreferrer"
 							fullWidth
 						>
-							Account
+							<p className="flex flex-row items-center gap-2">
+								Account
+								<ExternalLinkIcon className="h-4 w-4" />
+							</p>
 						</Button>
 						<Button
 							className="w-full justify-start"
