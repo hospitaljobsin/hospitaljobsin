@@ -33,41 +33,6 @@ class BaseMessageSender:
         raise NotImplementedError
 
 
-class Fast2SMSMessageSender(BaseMessageSender):
-    """Fast2SMS Message sender class."""
-
-    def __init__(
-        self,
-        environment: Environment,
-        secret_settings: SecretSettings,
-    ) -> None:
-        super().__init__(
-            environment=environment,
-        )
-        self._secret_settings = secret_settings
-
-    async def send_otp_message(
-        self,
-        receiver: PhoneNumber,
-        otp: str,
-    ) -> None:
-        """Send a dummy message."""
-        url = "https://www.fast2sms.com/dev/bulkV2"
-        headers = {
-            "Content-Type": "application/json",
-            "authorization": self._secret_settings.fast2sms_api_key.get_secret_value(),
-        }
-        data = {
-            "variables_values": otp,
-            "route": "otp",
-            "numbers": str(receiver.national_number),
-        }
-        async with httpx.AsyncClient() as client:
-            response = await client.post(url, headers=headers, json=data)
-            print(response.json())
-            response.raise_for_status()
-
-
 class TwoFactorINSMSMessageSender(BaseMessageSender):
     """Two Factor IN SMS Message sender class."""
 

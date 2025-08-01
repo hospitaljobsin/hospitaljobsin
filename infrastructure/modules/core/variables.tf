@@ -104,11 +104,6 @@ variable "whatsapp_phone_number_id" {
   description = "Whatsapp phone number ID."
 }
 
-variable "fast2sms_api_key" {
-  type        = string
-  description = "Fast2SMS API key."
-  sensitive   = true
-}
 
 variable "two_factor_in_api_key" {
   type        = string

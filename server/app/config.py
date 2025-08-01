@@ -218,9 +218,6 @@ class SecretSettings(BaseSettings):
     # whatsapp config
     whatsapp_access_token: SecretStr
 
-    # fast2sms config
-    fast2sms_api_key: SecretStr
-
     # two factor in config
     two_factor_in_api_key: SecretStr
 
