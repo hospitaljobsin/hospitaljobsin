@@ -97,3 +97,9 @@ variable "fast2sms_api_key" {
   description = "Fast2SMS API key."
   sensitive   = true
 }
+
+variable "two_factor_in_api_key" {
+  type        = string
+  description = "Two Factor IN API key."
+  sensitive   = true
+}

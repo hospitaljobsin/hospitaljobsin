@@ -134,6 +134,7 @@ module "core" {
   whatsapp_access_token          = var.whatsapp_access_token
   whatsapp_phone_number_id       = var.whatsapp_phone_number_id
   fast2sms_api_key               = var.fast2sms_api_key
+  two_factor_in_api_key          = var.two_factor_in_api_key
 }
 
 module "redis" {

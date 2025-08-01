@@ -221,6 +221,9 @@ class SecretSettings(BaseSettings):
     # fast2sms config
     fast2sms_api_key: SecretStr
 
+    # two factor in config
+    two_factor_in_api_key: SecretStr
+
     captcha_secret_key: SecretStr
 
     jwe_secret_key: SecretStr

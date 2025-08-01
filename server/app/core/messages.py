@@ -1,6 +1,7 @@
 import httpx
+import phonenumbers
 from jinja2 import Environment
-from phonenumbers import PhoneNumber
+from phonenumbers import PhoneNumber, PhoneNumberFormat
 
 from app.config import SecretSettings, WhatsappSettings
 
@@ -63,6 +64,35 @@ class Fast2SMSMessageSender(BaseMessageSender):
         }
         async with httpx.AsyncClient() as client:
             response = await client.post(url, headers=headers, json=data)
+            print(response.json())
+            response.raise_for_status()
+
+
+class TwoFactorINSMSMessageSender(BaseMessageSender):
+    """Two Factor IN SMS Message sender class."""
+
+    def __init__(
+        self,
+        environment: Environment,
+        secret_settings: SecretSettings,
+    ) -> None:
+        super().__init__(
+            environment=environment,
+        )
+        self._secret_settings = secret_settings
+
+    async def send_otp_message(
+        self,
+        receiver: PhoneNumber,
+        otp: str,
+    ) -> None:
+        """Send a dummy message."""
+        url = f"https://2factor.in/API/V1/{self._secret_settings.two_factor_in_api_key.get_secret_value()}/SMS/{phonenumbers.format_number(receiver, PhoneNumberFormat.E164)}/{otp}/OTP1"
+        headers = {
+            "Content-Type": "application/json",
+        }
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers)
             print(response.json())
             response.raise_for_status()
 

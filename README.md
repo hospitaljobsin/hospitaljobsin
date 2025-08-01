@@ -276,9 +276,14 @@ Follow these steps to deploy the project to the cloud:
 - Create a new account
 - Copy the API key
 
-### 11. Terraform Setup
+### 11. Two Factor IN Setup
+- Go to the [Two Factor IN Console](https://2factor.in)
+- Create a new account
+- Copy the API key
 
-#### 11.1 Prerequisites:
+### 12. Terraform Setup
+
+#### 12.1 Prerequisites:
 - Create an S3 bucket that will act as the terraform state backend
 
 Terraform deployments are automated via GitHub Actions CI/CD.
@@ -307,7 +312,7 @@ GitHub Actions Secrets:
 - `SST_POSTHOG_KEY`
 - `WHATSAPP_ACCESS_TOKEN`
 - `FAST2SMS_API_KEY`
-
+- `TWO_FACTOR_IN_API_KEY`
 
 
 
