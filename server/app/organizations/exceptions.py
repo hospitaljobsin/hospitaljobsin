@@ -20,3 +20,7 @@ class InsufficientOrganizationAdminsError:
 
 class OrganizationAuthorizationError:
     """Raised when an organization authorization fails (insufficient role privileges)."""
+
+
+class OrganizationAlreadyVerifiedError:
+    """Raised when an organization is already verified."""

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<54001905f8d3ecdf4a704a186dbf1d64>>
- * @relayHash 79f85f97941e0fec2639cbb21c1f9180
+ * @generated SignedSource<<cf7d9b5cf4329e4e04088bcffaaebd07>>
+ * @relayHash fba8da6c0175edd2e9f5b149727372eb
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,20 +9,20 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 79f85f97941e0fec2639cbb21c1f9180
+// @relayRequestID fba8da6c0175edd2e9f5b149727372eb
 
 import type { ConcreteRequest } from 'relay-runtime';
-export type UpdateAccountDetailsFormCreateProfilePicturePresignedUrlMutation$variables = {
+export type RequestVerificationFormPresignedUrlMutation$variables = {
   contentType: string;
 };
-export type UpdateAccountDetailsFormCreateProfilePicturePresignedUrlMutation$data = {
-  readonly createProfilePicturePresignedUrl: {
+export type RequestVerificationFormPresignedUrlMutation$data = {
+  readonly createOrganizationVerificationProofPresignedUrl: {
     readonly presignedUrl: string;
   };
 };
-export type UpdateAccountDetailsFormCreateProfilePicturePresignedUrlMutation = {
-  response: UpdateAccountDetailsFormCreateProfilePicturePresignedUrlMutation$data;
-  variables: UpdateAccountDetailsFormCreateProfilePicturePresignedUrlMutation$variables;
+export type RequestVerificationFormPresignedUrlMutation = {
+  response: RequestVerificationFormPresignedUrlMutation$data;
+  variables: RequestVerificationFormPresignedUrlMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -45,7 +45,7 @@ v1 = [
     ],
     "concreteType": "CreatePresignedURLPayloadType",
     "kind": "LinkedField",
-    "name": "createProfilePicturePresignedUrl",
+    "name": "createOrganizationVerificationProofPresignedUrl",
     "plural": false,
     "selections": [
       {
@@ -64,7 +64,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "UpdateAccountDetailsFormCreateProfilePicturePresignedUrlMutation",
+    "name": "RequestVerificationFormPresignedUrlMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -73,19 +73,19 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "UpdateAccountDetailsFormCreateProfilePicturePresignedUrlMutation",
+    "name": "RequestVerificationFormPresignedUrlMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "id": "79f85f97941e0fec2639cbb21c1f9180",
+    "id": "fba8da6c0175edd2e9f5b149727372eb",
     "metadata": {},
-    "name": "UpdateAccountDetailsFormCreateProfilePicturePresignedUrlMutation",
+    "name": "RequestVerificationFormPresignedUrlMutation",
     "operationKind": "mutation",
     "text": null
   }
 };
 })();
 
-(node as any).hash = "3108432f9c41e3fd174df198d85df973";
+(node as any).hash = "2c037fcfb13fa8bf7ee48e1f0de428c7";
 
 export default node;

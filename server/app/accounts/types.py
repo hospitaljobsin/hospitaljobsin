@@ -203,16 +203,6 @@ class WorkExperienceInputType:
         )
 
 
-@strawberry.type(
-    name="CreateProfilePicturePresignedURLPayload",
-    description="The payload for creating a profile picture presigned URL.",
-)
-class CreateProfilePicturePresignedURLPayloadType:
-    presigned_url: str = strawberry.field(
-        description="The presigned URL for uploading the profile picture.",
-    )
-
-
 @strawberry.interface(
     name="BaseProfile",
     description="A base profile belonging to a user.",

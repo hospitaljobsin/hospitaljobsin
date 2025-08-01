@@ -8,6 +8,7 @@ from pydantic import Field
 from pymongo import IndexModel
 
 from app.accounts.documents import Account
+from app.base.models import Address
 
 
 class Organization(Document):
@@ -43,18 +44,31 @@ class Organization(Document):
 
 
 class OrganizationVerificationRequest(Document):
-    website: str
-    email: str
+    registered_organization_name: str
+    contact_email: str
     phone_number: str
-    address: str
-    gst_number: str
-    pan_number: str
-    gst_certificate_url: str
-    pan_certificate_url: str
+    address: Address
+
+    business_proof_type: Literal[
+        "gst_certificate",
+        "clinic_registration",
+        "msme_registration",
+        "shop_license",
+        "medical_council_registration",
+        "other",
+    ]
+    business_proof_url: str
+
+    # Address proof
+    address_proof_type: Literal[
+        "utility_bill", "rental_agreement", "bank_statement", "other"
+    ]
     address_proof_url: str
-    other_documents_url: str
+
     organization: Link[Organization]
     created_by: Link[Account]
+
+    # Review status
     status: Literal["pending", "approved", "rejected"]
     approved_at: datetime | None = None
     rejected_at: datetime | None = None

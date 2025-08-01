@@ -126,6 +126,7 @@ from app.organizations.repositories import (
     OrganizationInviteRepo,
     OrganizationMemberRepo,
     OrganizationRepo,
+    OrganizationVerificationRequestRepo,
 )
 from app.organizations.services import (
     OrganizationInviteService,
@@ -292,6 +293,7 @@ def create_container() -> aioinject.Container:
     container.register(aioinject.Scoped(JobMetricService))
     container.register(aioinject.Singleton(OrganizationRepo))
     container.register(aioinject.Singleton(OrganizationMemberRepo))
+    container.register(aioinject.Singleton(OrganizationVerificationRequestRepo))
     container.register(aioinject.Scoped(OrganizationService))
     container.register(aioinject.Scoped(OrganizationMemberService))
     container.register(aioinject.Singleton(WebAuthnCredentialRepo))

@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e8a26123c9f26567d5c6f0432eee63be>>
- * @relayHash 8488653b0ab9a071b1cb51b6304324ca
+ * @generated SignedSource<<6eb6bf40c6ddd3ba398b7965073b8122>>
+ * @relayHash 12155b8505f3723bfa5cf3ddee220983
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 8488653b0ab9a071b1cb51b6304324ca
+// @relayRequestID 12155b8505f3723bfa5cf3ddee220983
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -108,6 +108,21 @@ return {
                 "kind": "ScalarField",
                 "name": "verifiedAt",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "verificationStatus",
+                "storageKey": null
+              },
+              (v3/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "name",
+                "storageKey": null
               }
             ],
             "type": "Organization",
@@ -148,7 +163,7 @@ return {
     ]
   },
   "params": {
-    "id": "8488653b0ab9a071b1cb51b6304324ca",
+    "id": "12155b8505f3723bfa5cf3ddee220983",
     "metadata": {},
     "name": "OrganizationVerificationSettingsClientComponentQuery",
     "operationKind": "query",

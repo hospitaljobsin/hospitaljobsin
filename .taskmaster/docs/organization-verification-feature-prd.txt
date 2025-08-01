@@ -1,0 +1,198 @@
+# Organization Verification Feature - Product Requirements Document
+
+## Overview
+Enhance the organization verification system to provide a comprehensive verification workflow with proper status tracking and user feedback. This feature will allow organizations to request verification, track their verification status, and provide appropriate UI feedback based on the current verification state.
+
+## Current State Analysis
+- Backend: `requestOrganizationVerification` mutation exists and creates `OrganizationVerificationRequest` documents
+- Frontend: Basic structure exists with `AlreadyVerified` component and placeholder `RequestVerificationForm`
+- Missing: Verification status field on Organization type, comprehensive form UI, and status-based UI logic
+
+## Requirements
+
+### 1. Backend Enhancements
+
+#### 1.1 Organization Type Enhancement
+- Add `verificationStatus` field to the `OrganizationType` GraphQL type
+- The field should return one of: `"verified"`, `"pending"`, `"rejected"`, or `"not_requested"`
+- Implement logic to determine status based on:
+  - If `verifiedAt` exists → `"verified"`
+  - If latest verification request from database exists:
+    - If status is `"pending"` → `"pending"`
+    - If status is `"rejected"` → `"rejected"`
+  - Otherwise → `"not_requested"`
+
+
+### 2. Frontend Implementation
+
+#### 2.1 Form Implementation
+- Implement `RequestVerificationForm` component using React Hook Form, HeroUI, and Zod v4
+- Form fields required:
+  - Organization name (text input)
+  - Contact email (email input with validation)
+  - Phone number (phone input with validation)
+  - Address (structured address form)
+  - Business proof type (select dropdown)
+  - Business proof URL (file upload with presigned URL)
+  - Address proof type (select dropdown)
+  - Address proof URL (file upload with presigned URL)
+
+#### 2.2 Status-Based UI Logic
+- **Verified**: Show `AlreadyVerified` component (already implemented)
+- **Pending**: Show pending message with status information
+- **Rejected**: Show rejection message with "Try Again" button and form
+- **Not Requested**: Show verification form
+
+#### 2.3 Form Validation
+- Use Zod v4 for comprehensive form validation
+- Validate email format, phone number format (only allow indian numbers), required fields
+- File upload validation for proof documents
+- Address validation for completeness
+
+#### 2.4 File Upload Integration
+- Integrate with existing S3 presigned URL mutation (createOrganizationProofPresignedUrl mutation)
+- look at how presigned urls are created and files are uploaded in other places in the application.
+- Handle file upload progress and error states
+- Validate file types and sizes for proof documents
+
+### 3. UI/UX Requirements
+
+#### 3.1 Design System
+- Use HeroUI components consistently
+- Follow existing design patterns from the codebase
+- Ensure mobile-responsive design
+- Use appropriate loading states and error handling
+
+#### 3.2 User Experience
+- Clear progress indicators for verification status
+- Helpful error messages and validation feedback
+- Smooth transitions between different verification states
+- Clear instructions for required documents and proof types
+
+#### 3.3 Accessibility
+- Proper ARIA labels and form accessibility
+- Keyboard navigation support
+- Screen reader compatibility
+- High contrast mode support
+
+### 4. Technical Requirements
+
+#### 4.1 Form State Management
+- Use React Hook Form for efficient form state management
+- Implement proper form validation with Zod v4
+- Handle form submission and error states
+- Provide real-time validation feedback
+
+#### 4.2 GraphQL Integration
+- Create proper GraphQL fragments for form data
+- Implement mutation for verification request
+- Handle loading and error states
+- Optimistic updates where appropriate
+
+#### 4.3 Error Handling
+- Comprehensive error handling for all form operations
+- User-friendly error messages
+- Network error recovery
+- Validation error display
+
+### 5. Business Logic
+
+#### 5.1 Verification Workflow
+1. User fills out verification form
+2. Form validates all required fields
+3. Files are uploaded to S3
+4. Verification request is submitted via GraphQL mutation
+5. User sees pending status
+6. Admin reviews and approves/rejects
+7. User sees updated status
+
+#### 5.2 Status Transitions
+- `not_requested` → `pending` (after form submission)
+- `pending` → `verified` (admin approval)
+- `pending` → `rejected` (admin rejection)
+- `rejected` → `pending` (user resubmits)
+
+### 6. Security Requirements
+
+#### 6.1 Authorization
+- Only organization admins can request verification
+- Proper permission checks on all verification operations
+- Secure file upload handling
+
+#### 6.2 Data Validation
+- Server-side validation of all form data
+- File type and size validation
+- Address format validation
+- Email and phone number format validation
+
+### 7. Performance Requirements
+
+#### 7.1 Form Performance
+- Efficient form rendering with React Hook Form
+- Optimized validation with Zod v4
+- Fast file upload with progress indicators
+- Responsive UI updates
+
+#### 7.2 Data Loading
+- Efficient GraphQL queries with proper fragments
+- Optimistic updates for better UX
+- Proper caching of verification status
+
+### 8. Testing Requirements
+
+#### 8.1 Unit Testing
+- Form validation logic
+- GraphQL mutation handling
+- Status determination logic
+- File upload functionality
+
+#### 8.2 Integration Testing
+- End-to-end verification workflow
+- Form submission and status updates
+- File upload integration
+- Error handling scenarios
+
+#### 8.3 User Acceptance Testing
+- Complete verification workflow
+- All status transitions
+- Mobile responsiveness
+- Accessibility compliance
+
+## Success Criteria
+1. Users can successfully submit verification requests
+2. Verification status is accurately displayed
+3. Form validation prevents invalid submissions
+4. File uploads work reliably
+5. UI provides clear feedback for all states
+6. Mobile experience is smooth and responsive
+7. Accessibility requirements are met
+8. Performance meets acceptable standards
+
+## Dependencies
+- Existing `requestOrganizationVerification` mutation
+- S3 file upload infrastructure
+- HeroUI component library
+- React Hook Form and Zod v4
+- Existing organization and verification request models
+
+## Timeline
+- Backend enhancements: 2-3 days
+- Frontend form implementation: 3-4 days
+- Status-based UI logic: 1-2 days
+- Testing and refinement: 2-3 days
+- Total estimated time: 8-12 days
+
+## Risk Assessment
+- **Low Risk**: Form implementation using established patterns
+- **Medium Risk**: File upload integration complexity
+- **Medium Risk**: Status logic edge cases
+- **Low Risk**: UI/UX implementation with existing design system
+
+## Future Enhancements
+- Email notifications for status changes
+- Document preview functionality
+- Bulk verification for multiple organizations
+- Advanced verification workflow with multiple approval stages
+- Integration with external verification services
+
+ALSO NOTE: the backend verification request mutations are implemented. only the verification status field must be added in the backend.

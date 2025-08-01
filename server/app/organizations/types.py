@@ -40,6 +40,7 @@ from app.organizations.exceptions import OrganizationAuthorizationError
 from app.organizations.repositories import (
     OrganizationInviteRepo,
     OrganizationMemberRepo,
+    OrganizationVerificationRequestRepo,
 )
 from app.organizations.services import OrganizationMemberService
 
@@ -52,6 +53,41 @@ class InviteStatusTypeEnum(Enum):
     PENDING = "PENDING"
     ACCEPTED = "ACCEPTED"
     DECLINED = "DECLINED"
+
+
+@strawberry.enum(
+    name="BusinessProof",
+    description="Invite status type.",
+)
+class BusinessProofTypeEnum(Enum):
+    GST_CERTIFICATE = "GST_CERTIFICATE"
+    CLINIC_REGISTRATION = "CLINIC_REGISTRATION"
+    MSME_REGISTRATION = "MSME_REGISTRATION"
+    SHOP_LICENSE = "SHOP_LICENSE"
+    MEDICAL_COUNCIL_REGISTRATION = "MEDICAL_COUNCIL_REGISTRATION"
+    OTHER = "OTHER"
+
+
+@strawberry.enum(
+    name="AddressProof",
+    description="Address proof type.",
+)
+class AddressProofTypeEnum(Enum):
+    UTILITY_BILL = "UTILITY_BILL"
+    RENTAL_AGREEMENT = "RENTAL_AGREEMENT"
+    BANK_STATEMENT = "BANK_STATEMENT"
+    OTHER = "OTHER"
+
+
+@strawberry.enum(
+    name="VerificationStatus",
+    description="Organization verification status type.",
+)
+class VerificationStatusEnum(Enum):
+    VERIFIED = "VERIFIED"
+    PENDING = "PENDING"
+    REJECTED = "REJECTED"
+    NOT_REQUESTED = "NOT_REQUESTED"
 
 
 @strawberry.type(
@@ -206,6 +242,38 @@ class OrganizationType(BaseNodeType[Organization]):
     verified_at: datetime | None = strawberry.field(
         description="The date and time the organization was verified.",
     )
+
+    @strawberry.field(
+        description="The verification status of the organization.",
+    )
+    @inject
+    async def verification_status(
+        self,
+        organization_verification_request_repo: Annotated[
+            "OrganizationVerificationRequestRepo", Inject
+        ],
+    ) -> VerificationStatusEnum:
+        """Get the verification status of the organization."""
+        # If organization is already verified, return VERIFIED
+        if self.verified_at is not None:
+            return VerificationStatusEnum.VERIFIED
+
+        # Get the latest verification request for this organization
+        latest_request = (
+            await organization_verification_request_repo.get_latest_by_organization_id(
+                ObjectId(self.id)
+            )
+        )
+
+        if latest_request is None:
+            return VerificationStatusEnum.NOT_REQUESTED
+
+        # Return status based on the latest request
+        if latest_request.status == "pending":
+            return VerificationStatusEnum.PENDING
+        if latest_request.status == "rejected":
+            return VerificationStatusEnum.REJECTED
+        return VerificationStatusEnum.VERIFIED
 
     @strawberry.field(
         description="The job applicants for jobs in this organization.",
@@ -708,10 +776,22 @@ DeleteOrganizationPayload = Annotated[
 ]
 
 
+@strawberry.type(
+    name="OrganizationAlreadyVerifiedError",
+    description="Used when the organization is already verified.",
+)
+class OrganizationAlreadyVerifiedErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Organization is already verified!",
+    )
+
+
 RequestOrganizationVerificationPayload = Annotated[
     OrganizationType
     | OrganizationNotFoundErrorType
-    | OrganizationAuthorizationErrorType,
+    | OrganizationAuthorizationErrorType
+    | OrganizationAlreadyVerifiedErrorType,
     strawberry.union(
         name="RequestOrganizationVerificationPayload",
         description="The request organization verification payload.",
@@ -725,16 +805,6 @@ OrganizationPayload = Annotated[
         description="The organization payload.",
     ),
 ]
-
-
-@strawberry.type(
-    name="CreateOrganizationLogoPresignedURLPayload",
-    description="The payload for creating a presigned URL for uploading the organization logo.",
-)
-class CreateOrganizationLogoPresignedURLPayloadType:
-    presigned_url: str = strawberry.field(
-        description="The presigned URL for uploading the organization logo.",
-    )
 
 
 CreateOrganizationInvitePayload = Annotated[

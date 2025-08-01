@@ -39,6 +39,7 @@ from app.organizations.documents import (
     Organization,
     OrganizationInvite,
     OrganizationMember,
+    OrganizationVerificationRequest,
 )
 
 logger = get_logger()
@@ -140,6 +141,7 @@ async def initialize_database(database_url: str, default_database_name: str) -> 
                 PasswordResetToken,
                 Organization,
                 OrganizationMember,
+                OrganizationVerificationRequest,
                 WebAuthnCredential,
                 WebAuthnChallenge,
                 OAuthCredential,

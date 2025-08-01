@@ -173,3 +173,13 @@ class AddressInputType:
             country=self.country,
             pincode=self.pincode,
         )
+
+
+@strawberry.type(
+    name="CreatePresignedURLPayloadType",
+    description="The payload for creating a presigned URL.",
+)
+class CreatePresignedURLPayloadType:
+    presigned_url: str = strawberry.field(
+        description="The presigned URL.",
+    )

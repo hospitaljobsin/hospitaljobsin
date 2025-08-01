@@ -174,6 +174,48 @@ type AccountProfileNotFoundError implements Error {
 	message: String!
 }
 
+input AddressInput {
+	"""
+	Address line 1.
+	"""
+	line1: String
+
+	"""
+	Address line 2.
+	"""
+	line2: String
+
+	"""
+	City.
+	"""
+	city: String
+
+	"""
+	State.
+	"""
+	state: String
+
+	"""
+	Country.
+	"""
+	country: String
+
+	"""
+	Pincode.
+	"""
+	pincode: String
+}
+
+"""
+Address proof type.
+"""
+enum AddressProof {
+	UTILITY_BILL
+	RENTAL_AGREEMENT
+	BANK_STATEMENT
+	OTHER
+}
+
 """
 The analysed fields of a job applicant.
 """
@@ -371,6 +413,18 @@ interface BaseProfile {
 	headline: String
 }
 
+"""
+Invite status type.
+"""
+enum BusinessProof {
+	GST_CERTIFICATE
+	CLINIC_REGISTRATION
+	MSME_REGISTRATION
+	SHOP_LICENSE
+	MEDICAL_COUNCIL_REGISTRATION
+	OTHER
+}
+
 type Certification {
 	name: String!
 	issuer: String!
@@ -510,26 +564,16 @@ union CreateOrganizationInvitePayload =
 	| OrganizationAuthorizationError
 
 """
-The payload for creating a presigned URL for uploading the organization logo.
-"""
-type CreateOrganizationLogoPresignedURLPayload {
-	"""
-	The presigned URL for uploading the organization logo.
-	"""
-	presignedUrl: String!
-}
-
-"""
 The create organization payload.
 """
 union CreateOrganizationPayload = Organization | OrganizationSlugInUseError
 
 """
-The payload for creating a profile picture presigned URL.
+The payload for creating a presigned URL.
 """
-type CreateProfilePicturePresignedURLPayload {
+type CreatePresignedURLPayloadType {
 	"""
-	The presigned URL for uploading the profile picture.
+	The presigned URL.
 	"""
 	presignedUrl: String!
 }
@@ -2595,7 +2639,7 @@ type Mutation {
 		The content type of the file.
 		"""
 		contentType: String!
-	): CreateProfilePicturePresignedURLPayload! @isAuthenticated
+	): CreatePresignedURLPayloadType! @isAuthenticated
 
 	"""
 	Update the current user's account.
@@ -2792,7 +2836,17 @@ type Mutation {
 		The content type of the file.
 		"""
 		contentType: String!
-	): CreateOrganizationLogoPresignedURLPayload! @isAuthenticated
+	): CreatePresignedURLPayloadType! @isAuthenticated
+
+	"""
+	Create an organization verification proof presigned URL.
+	"""
+	createOrganizationVerificationProofPresignedUrl(
+		"""
+		The content type of the file.
+		"""
+		contentType: String!
+	): CreatePresignedURLPayloadType! @isAuthenticated
 
 	"""
 	Update an organization.
@@ -2843,6 +2897,56 @@ type Mutation {
 		"""
 		organizationId: ID!
 	): DeleteOrganizationPayload! @isAuthenticated
+
+	"""
+	Request an organization verification.
+	"""
+	requestOrganizationVerification(
+		"""
+		The ID of the organization to request verification for.
+		"""
+		organizationId: ID!
+
+		"""
+		The name of the organization.
+		"""
+		registeredOrganizationName: String!
+
+		"""
+		The work email of the organization.
+		"""
+		contactEmail: String!
+
+		"""
+		The phone number of the organization.
+		"""
+		phoneNumber: String!
+
+		"""
+		The address of the organization.
+		"""
+		address: AddressInput!
+
+		"""
+		The type of business proof.
+		"""
+		businessProofType: BusinessProof!
+
+		"""
+		The URL of the business proof.
+		"""
+		businessProofUrl: String!
+
+		"""
+		The type of address proof.
+		"""
+		addressProofType: AddressProof!
+
+		"""
+		The URL of the address proof.
+		"""
+		addressProofUrl: String!
+	): RequestOrganizationVerificationPayload! @isAuthenticated
 
 	"""
 	Create an organization invite.
@@ -3005,6 +3109,11 @@ type Organization implements Node {
 	The date and time the organization was verified.
 	"""
 	verifiedAt: DateTime
+
+	"""
+	The verification status of the organization.
+	"""
+	verificationStatus: VerificationStatus!
 
 	"""
 	The job applicants for jobs in this organization.
@@ -3175,6 +3284,16 @@ type Organization implements Node {
 		"""
 		last: Int = null
 	): OrganizationMemberConnection!
+}
+
+"""
+Used when the organization is already verified.
+"""
+type OrganizationAlreadyVerifiedError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
 }
 
 """
@@ -3973,6 +4092,15 @@ union RequestEmailVerificationTokenPayload =
 	| InvalidEmailError
 
 """
+The request organization verification payload.
+"""
+union RequestOrganizationVerificationPayload =
+	| Organization
+	| OrganizationNotFoundError
+	| OrganizationAuthorizationError
+	| OrganizationAlreadyVerifiedError
+
+"""
 The request password reset payload.
 """
 union RequestPasswordResetPayload =
@@ -4399,6 +4527,16 @@ The update webauthn credential payload.
 union UpdateWebAuthnCredentialPayload =
 	| WebAuthnCredential
 	| WebAuthnCredentialNotFoundError
+
+"""
+Organization verification status type.
+"""
+enum VerificationStatus {
+	VERIFIED
+	PENDING
+	REJECTED
+	NOT_REQUESTED
+}
 
 """
 The verify 2FA password reset with authenticator payload.
