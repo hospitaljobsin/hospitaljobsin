@@ -60,8 +60,6 @@ class Fast2SMSMessageSender(BaseMessageSender):
             "variables_values": otp,
             "route": "otp",
             "numbers": receiver.national_number,
-            "flash": "0",
-            "language": "english",
         }
         async with httpx.AsyncClient() as client:
             response = await client.post(url, headers=headers, json=data)
