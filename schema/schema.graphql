@@ -2635,12 +2635,14 @@ type Mutation {
 		The phone number verification token.
 		"""
 		phoneNumberVerificationToken: String!
-	): UpdateAccountPhoneNumberPayload! @isAuthenticated
+	): UpdateAccountPhoneNumberPayload! @isAuthenticated @requiresSudoMode
 
 	"""
 	Remove the current user's phone number.
 	"""
-	removeAccountPhoneNumber: RemoveAccountPhoneNumberPayload! @isAuthenticated
+	removeAccountPhoneNumber: RemoveAccountPhoneNumberPayload!
+		@isAuthenticated
+		@requiresSudoMode
 
 	"""
 	Update the current user's profile location preferences.

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3731145fd4a43d605a6d9cfba84cd17d>>
+ * @generated SignedSource<<f9cfe3136b319eb5aeee7febbf9f7e73>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,7 @@ import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type PhoneNumberFragment$data = {
   readonly phoneNumber: string | null | undefined;
+  readonly sudoModeExpiresAt: any | null | undefined;
   readonly " $fragmentType": "PhoneNumberFragment";
 };
 export type PhoneNumberFragment$key = {
@@ -31,12 +32,19 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "phoneNumber",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "sudoModeExpiresAt",
+      "storageKey": null
     }
   ],
   "type": "Account",
   "abstractKey": null
 };
 
-(node as any).hash = "d486155cce555cf6ff760f00a1398e1d";
+(node as any).hash = "eb61e0ca8edb3b548a49f15340616a8c";
 
 export default node;

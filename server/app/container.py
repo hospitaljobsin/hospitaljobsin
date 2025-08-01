@@ -239,8 +239,8 @@ def register_ocr_client(container: aioinject.Container) -> None:
 
 def register_message_sender(container: aioinject.Container) -> None:
     app_settings = get_settings(AppSettings)
-    # container.register(aioinject.Singleton(Fast2SMSMessageSender, BaseMessageSender))
-    # return
+    container.register(aioinject.Singleton(Fast2SMSMessageSender, BaseMessageSender))
+    return
     if app_settings.is_production:
         container.register(aioinject.Scoped(Fast2SMSMessageSender, BaseMessageSender))
         # container.register(aioinject.Scoped(WhatsappMessageSender, BaseMessageSender))

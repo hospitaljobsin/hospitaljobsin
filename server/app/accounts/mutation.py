@@ -15,7 +15,7 @@ from app.accounts.exceptions import (
     PhoneNumberVerificationTokenCooldownError,
 )
 from app.accounts.services import AccountService, ProfileParserService, ProfileService
-from app.auth.permissions import IsAuthenticated
+from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.context import AuthInfo
 
 from .types import (
@@ -249,9 +249,7 @@ class AccountMutation:
         description="Update the current user's phone number.",
         extensions=[
             PermissionExtension(
-                permissions=[
-                    IsAuthenticated(),
-                ],
+                permissions=[IsAuthenticated(), RequiresSudoMode()],
             )
         ],
     )
@@ -297,6 +295,7 @@ class AccountMutation:
             PermissionExtension(
                 permissions=[
                     IsAuthenticated(),
+                    RequiresSudoMode(),
                 ],
             )
         ],

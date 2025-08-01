@@ -1525,6 +1525,7 @@ dependencies = [
     { name = "types-aiobotocore-textract" },
     { name = "typing-extensions" },
     { name = "typing-inspection" },
+    { name = "watchfiles" },
     { name = "webauthn" },
 ]
 
@@ -1586,6 +1587,7 @@ requires-dist = [
     { name = "types-aiobotocore-textract", specifier = "==2.23.0" },
     { name = "typing-extensions", specifier = "==4.14.1" },
     { name = "typing-inspection", specifier = "==0.4.1" },
+    { name = "watchfiles", specifier = "==1.1.0" },
     { name = "webauthn", specifier = "==2.6.0" },
 ]
 
