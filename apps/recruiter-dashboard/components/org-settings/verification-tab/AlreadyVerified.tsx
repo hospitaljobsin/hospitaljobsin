@@ -1,7 +1,7 @@
 import type { AlreadyVerifiedFragment$key } from "@/__generated__/AlreadyVerifiedFragment.graphql";
 import { SUPPORT_EMAIL } from "@/lib/constants";
 import { Alert } from "@heroui/react";
-import { CalendarIcon, VerifiedIcon } from "lucide-react";
+import { InfoIcon, PartyPopperIcon } from "lucide-react";
 import { graphql, useFragment } from "react-relay";
 
 const AlreadyVerifiedFragment = graphql`
@@ -38,6 +38,8 @@ export default function AlreadyVerified({
 			year: "numeric",
 			month: "long",
 			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
 		});
 	};
 
@@ -46,10 +48,7 @@ export default function AlreadyVerified({
 			<div className="flex flex-col items-center gap-12 max-w-md">
 				{/* Verification Status */}
 				<div className="flex flex-col items-center gap-8 max-w-md">
-					<div className="flex items-center gap-6 w-full">
-						<div className="w-12 h-12 bg-success-50 rounded-full flex items-center justify-center">
-							<VerifiedIcon className="w-8 h-8 text-success-600" />
-						</div>
+					<div className="flex flex-col sm:flex-row sm:items-center gap-6 w-full">
 						<div className="text-left">
 							<div className="flex flex-col gap-4">
 								<h1 className="text-2xl font-medium text-gray-900 mb-2">
@@ -59,32 +58,23 @@ export default function AlreadyVerified({
 							<p className="text-gray-600">
 								Your organization has been successfully verified
 							</p>
+							{data.verificationStatus.verified && (
+								<p className="text-sm text-gray-500 mt-2">
+									Verified on{" "}
+									{formatVerificationDate(
+										data.verificationStatus.verified.verifiedAt,
+									)}
+								</p>
+							)}
 						</div>
 					</div>
-
-					{/* Verification Date */}
-					<Alert
-						variant="flat"
-						color="success"
-						className="w-full"
-						icon={<CalendarIcon className="w-5 h-5" />}
-						hideIconWrapper
-					>
-						<div>
-							<p className="text-sm font-medium text-gray-700">Verified on</p>
-							<p className="text-sm text-gray-600">
-								{formatVerificationDate(
-									data.verificationStatus.verified.verifiedAt,
-								)}
-							</p>
-						</div>
-					</Alert>
 
 					{/* Credibility Boost */}
 					<Alert
 						variant="flat"
 						color="success"
-						className="w-full"
+						className="w-full [&_svg]:fill-none"
+						icon={<PartyPopperIcon className="w-5 h-5" />}
 						hideIconWrapper
 					>
 						<div>
@@ -103,7 +93,8 @@ export default function AlreadyVerified({
 					<Alert
 						variant="flat"
 						color="warning"
-						className="w-full"
+						className="w-full [&_svg]:fill-none"
+						icon={<InfoIcon className="w-5 h-5" />}
 						hideIconWrapper
 					>
 						<div>

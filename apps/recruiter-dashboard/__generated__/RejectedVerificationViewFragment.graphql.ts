@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<92bc5bed9f70237caed5a0b400f75df2>>
+ * @generated SignedSource<<32518f6c2b0377ef2bdc73c18062974d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,6 +14,12 @@ export type RejectedVerificationViewFragment$data = {
   readonly __typename: "Organization";
   readonly id: string;
   readonly name: string;
+  readonly verificationStatus: {
+    readonly __typename: string;
+    readonly rejected: {
+      readonly rejectedAt: any;
+    } | null | undefined;
+  };
   readonly " $fragmentSpreads": FragmentRefs<"RequestVerificationFormFragment">;
   readonly " $fragmentType": "RejectedVerificationViewFragment";
 };
@@ -22,19 +28,21 @@ export type RejectedVerificationViewFragment$key = {
   readonly " $fragmentSpreads": FragmentRefs<"RejectedVerificationViewFragment">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
   "name": "RejectedVerificationViewFragment",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "__typename",
-      "storageKey": null
-    },
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -50,6 +58,36 @@ const node: ReaderFragment = {
       "storageKey": null
     },
     {
+      "alias": null,
+      "args": null,
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "verificationStatus",
+      "plural": false,
+      "selections": [
+        (v0/*: any*/),
+        {
+          "fragment": {
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "rejectedAt",
+                "storageKey": null
+              }
+            ],
+            "type": "Rejected",
+            "abstractKey": null
+          },
+          "kind": "AliasedInlineFragmentSpread",
+          "name": "rejected"
+        }
+      ],
+      "storageKey": null
+    },
+    {
       "args": null,
       "kind": "FragmentSpread",
       "name": "RequestVerificationFormFragment"
@@ -58,7 +96,8 @@ const node: ReaderFragment = {
   "type": "Organization",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "45a43b04f0b8f5d73a180c825c93328f";
+(node as any).hash = "a76d50e0d311922a83d6e0de66e5495d";
 
 export default node;

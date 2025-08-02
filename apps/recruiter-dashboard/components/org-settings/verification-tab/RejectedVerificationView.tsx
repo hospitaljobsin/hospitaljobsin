@@ -10,6 +10,12 @@ const RejectedVerificationViewFragment = graphql`
 		__typename
 		id
 		name
+		verificationStatus {
+			__typename
+			... on Rejected @alias(as: "rejected") {
+				rejectedAt
+			}
+		}
 		...RequestVerificationFormFragment
 	}
 `;
@@ -22,6 +28,18 @@ export default function RejectedVerificationView({
 	const data = useFragment(RejectedVerificationViewFragment, organization);
 	const [showVerificationForm, setShowVerificationForm] = useState(false);
 
+	// Format the rejectedAt date
+	const formatRejectedDate = (dateString: string) => {
+		const date = new Date(dateString);
+		return date.toLocaleDateString("en-US", {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+		});
+	};
+
 	// If form should be shown, render the RequestVerificationForm
 	if (showVerificationForm) {
 		return <RequestVerificationForm organization={data} />;
@@ -32,19 +50,22 @@ export default function RejectedVerificationView({
 			<div className="flex flex-col items-center gap-12 max-w-md">
 				{/* Rejected Status */}
 				<div className="flex flex-col items-center gap-8 max-w-md">
-					<div className="flex items-center gap-6 w-full">
-						<div className="w-12 h-12 bg-danger-50 rounded-full flex items-center justify-center">
-							<AlertTriangleIcon className="w-8 h-8 text-danger-600" />
-						</div>
+					<div className="flex flex-col sm:flex-row sm:items-center gap-6 w-full">
 						<div className="text-left">
 							<div className="flex flex-col gap-4">
 								<h1 className="text-2xl font-medium text-gray-900 mb-2">
-									Verification Rejected
+									Your request was not approved
 								</h1>
 							</div>
-							<p className="text-gray-600">
-								Your verification request was not approved
-							</p>
+							{data.verificationStatus.__typename === "Rejected" &&
+								data.verificationStatus.rejected && (
+									<p className="text-sm text-gray-500 mt-2">
+										Rejected on{" "}
+										{formatRejectedDate(
+											data.verificationStatus.rejected.rejectedAt,
+										)}
+									</p>
+								)}
 						</div>
 					</div>
 
@@ -52,7 +73,7 @@ export default function RejectedVerificationView({
 					<Alert
 						variant="flat"
 						color="danger"
-						className="w-full"
+						className="w-full [&_svg]:fill-none"
 						icon={<AlertTriangleIcon className="w-5 h-5" />}
 						hideIconWrapper
 					>
@@ -72,7 +93,7 @@ export default function RejectedVerificationView({
 					<Alert
 						variant="flat"
 						color="primary"
-						className="w-full"
+						className="w-full [&_svg]:fill-none"
 						icon={<RefreshCwIcon className="w-5 h-5" />}
 						hideIconWrapper
 					>
