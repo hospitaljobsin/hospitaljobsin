@@ -22,6 +22,7 @@ from app.organizations.exceptions import (
     OrganizationInviteNotFoundError,
     OrganizationMemberNotFoundError,
     OrganizationSlugInUseError,
+    OrganizationVerificationRequestAlreadyExistsError,
 )
 from app.organizations.services import (
     OrganizationInviteService,
@@ -53,6 +54,7 @@ from .types import (
     OrganizationNotFoundErrorType,
     OrganizationSlugInUseErrorType,
     OrganizationType,
+    OrganizationVerificationRequestAlreadyExistsErrorType,
     PromoteOrganizationMemberPayload,
     PromoteOrganizationMemberSuccessType,
     RemoveOrganizationMemberPayload,
@@ -360,6 +362,8 @@ class OrganizationMutation:
                         return OrganizationAuthorizationErrorType()
                     case OrganizationAlreadyVerifiedError():
                         return OrganizationAlreadyVerifiedErrorType()
+                    case OrganizationVerificationRequestAlreadyExistsError():
+                        return OrganizationVerificationRequestAlreadyExistsErrorType()
             case Ok(organization):
                 return OrganizationType.marshal(organization)
             case _ as unreachable:

@@ -3469,6 +3469,16 @@ type OrganizationSlugInUseError implements Error {
 }
 
 """
+Used when an organization verification request already exists.
+"""
+type OrganizationVerificationRequestAlreadyExistsError implements Error {
+	"""
+	Human readable error message.
+	"""
+	message: String!
+}
+
+"""
 Information to aid in pagination.
 """
 type PageInfo {
@@ -4099,6 +4109,7 @@ union RequestOrganizationVerificationPayload =
 	| OrganizationNotFoundError
 	| OrganizationAuthorizationError
 	| OrganizationAlreadyVerifiedError
+	| OrganizationVerificationRequestAlreadyExistsError
 
 """
 The request password reset payload.

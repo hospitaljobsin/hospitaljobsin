@@ -195,6 +195,12 @@ class OrganizationVerificationRequestRepo:
         )
         return await verification_request.insert()
 
+    async def delete_by_organization_id(self, organization_id: ObjectId) -> None:
+        """Delete all verification requests for an organization."""
+        await OrganizationVerificationRequest.find(
+            OrganizationVerificationRequest.organization.id == organization_id
+        ).delete()
+
     async def get_latest_by_organization_id(
         self, organization_id: ObjectId
     ) -> OrganizationVerificationRequest | None:

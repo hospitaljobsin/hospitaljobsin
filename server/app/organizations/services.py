@@ -33,6 +33,7 @@ from app.organizations.exceptions import (
     OrganizationInviteNotFoundError,
     OrganizationMemberNotFoundError,
     OrganizationSlugInUseError,
+    OrganizationVerificationRequestAlreadyExistsError,
 )
 from app.organizations.repositories import (
     OrganizationInviteRepo,
@@ -390,7 +391,8 @@ class OrganizationService:
         Organization,
         OrganizationNotFoundError
         | OrganizationAuthorizationError
-        | OrganizationAlreadyVerifiedError,
+        | OrganizationAlreadyVerifiedError
+        | OrganizationVerificationRequestAlreadyExistsError,
     ]:
         """Request an organization verification."""
         try:
@@ -412,6 +414,20 @@ class OrganizationService:
 
         if existing_organization.verified_at is not None:
             return Err(OrganizationAlreadyVerifiedError())
+
+        latest_verification_request = await self._organization_verification_request_repo.get_latest_by_organization_id(
+            organization_id=existing_organization.id,
+        )
+
+        if (
+            latest_verification_request is not None
+            and latest_verification_request.status == "pending"
+        ):
+            return Err(OrganizationVerificationRequestAlreadyExistsError())
+
+        await self._organization_verification_request_repo.delete_by_organization_id(
+            organization_id=existing_organization.id,
+        )
 
         # create a verification request
         await self._organization_verification_request_repo.create(

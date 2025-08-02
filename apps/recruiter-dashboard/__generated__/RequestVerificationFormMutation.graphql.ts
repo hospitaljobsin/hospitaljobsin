@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e3c2a095f1ee2c8084b86d70c4b11b29>>
- * @relayHash 1202330d0ff219515fabad0a568b954d
+ * @generated SignedSource<<dde36ad9d7e592e25a8f83f7b2669c1f>>
+ * @relayHash 4121a95bdff7dcfe19e6eba114198fdc
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 1202330d0ff219515fabad0a568b954d
+// @relayRequestID 4121a95bdff7dcfe19e6eba114198fdc
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type AddressProof = "BANK_STATEMENT" | "OTHER" | "RENTAL_AGREEMENT" | "UTILITY_BILL" | "%future added value";
@@ -39,6 +39,7 @@ export type RequestVerificationFormMutation$data = {
     readonly __typename: "Organization";
     readonly id: string;
     readonly verificationStatus: VerificationStatus;
+    readonly verifiedAt: any | null | undefined;
   } | {
     readonly __typename: "OrganizationAlreadyVerifiedError";
     readonly message: string;
@@ -176,6 +177,13 @@ v12 = {
       "kind": "ScalarField",
       "name": "verificationStatus",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "verifiedAt",
+      "storageKey": null
     }
   ],
   "type": "Organization",
@@ -288,7 +296,7 @@ return {
     ]
   },
   "params": {
-    "id": "1202330d0ff219515fabad0a568b954d",
+    "id": "4121a95bdff7dcfe19e6eba114198fdc",
     "metadata": {},
     "name": "RequestVerificationFormMutation",
     "operationKind": "mutation",
@@ -297,6 +305,6 @@ return {
 };
 })();
 
-(node as any).hash = "a4e1721e4d7fad104f8a1769bea6206f";
+(node as any).hash = "b24476eadcfeec08cea1bc8968613463";
 
 export default node;

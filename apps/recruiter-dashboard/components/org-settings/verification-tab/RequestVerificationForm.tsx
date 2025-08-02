@@ -46,6 +46,7 @@ const RequestOrganizationVerificationMutation = graphql`
 			... on Organization {
 				id
 				verificationStatus
+				verifiedAt
 			}
 			... on OrganizationNotFoundError {
 				message
@@ -114,9 +115,11 @@ const verificationFormSchema = z.object({
 			.max(50, "Country must be less than 50 characters"),
 	}),
 	businessProofType: z.enum([
-		"SHOP_LICENSE",
 		"GST_CERTIFICATE",
-		"PAN_CARD",
+		"CLINIC_REGISTRATION",
+		"MSME_REGISTRATION",
+		"SHOP_LICENSE",
+		"MEDICAL_COUNCIL_REGISTRATION",
 		"OTHER",
 	]),
 	businessProofFile: z
@@ -152,9 +155,14 @@ const verificationFormSchema = z.object({
 type VerificationFormData = z.infer<typeof verificationFormSchema>;
 
 const businessProofOptions = [
-	{ value: "SHOP_LICENSE", label: "Business License" },
 	{ value: "GST_CERTIFICATE", label: "GST Certificate" },
-	{ value: "PAN_CARD", label: "PAN Card" },
+	{ value: "CLINIC_REGISTRATION", label: "Clinic Registration" },
+	{ value: "MSME_REGISTRATION", label: "MSME Registration" },
+	{ value: "SHOP_LICENSE", label: "Shop License" },
+	{
+		value: "MEDICAL_COUNCIL_REGISTRATION",
+		label: "Medical Council Registration",
+	},
 	{ value: "OTHER", label: "Other" },
 ];
 
@@ -188,7 +196,6 @@ export default function RequestVerificationForm({
 		handleSubmit,
 		control,
 		formState: { errors, isValid },
-		watch,
 		setValue,
 	} = useForm<VerificationFormData>({
 		resolver: zodResolver(verificationFormSchema),
@@ -257,70 +264,67 @@ export default function RequestVerificationForm({
 		[commitCreatePresignedUrl],
 	);
 
-	const onSubmit = useCallback(
-		async (formData: VerificationFormData) => {
-			setIsSubmitting(true);
-			setError(null);
+	const onSubmit = async (formData: VerificationFormData) => {
+		setIsSubmitting(true);
+		setError(null);
 
-			try {
-				// Upload both files
-				const [businessProofUrl, addressProofUrl] = await Promise.all([
-					uploadFile(formData.businessProofFile),
-					uploadFile(formData.addressProofFile),
-				]);
+		try {
+			// Upload both files
+			const [businessProofUrl, addressProofUrl] = await Promise.all([
+				uploadFile(formData.businessProofFile),
+				uploadFile(formData.addressProofFile),
+			]);
 
-				// Submit verification request
-				commitRequestVerification({
-					variables: {
-						organizationId: data.id,
-						registeredOrganizationName: formData.registeredOrganizationName,
-						contactEmail: formData.contactEmail,
-						phoneNumber: formData.phoneNumber,
-						address: {
-							line1: formData.address.line1,
-							line2: formData.address.line2,
-							city: formData.address.city,
-							state: formData.address.state,
-							pincode: formData.address.pincode,
-							country: formData.address.country,
-						},
-						businessProofType: formData.businessProofType,
-						businessProofUrl,
-						addressProofType: formData.addressProofType,
-						addressProofUrl,
+			// Submit verification request
+			commitRequestVerification({
+				variables: {
+					organizationId: data.id,
+					registeredOrganizationName: formData.registeredOrganizationName,
+					contactEmail: formData.contactEmail,
+					phoneNumber: formData.phoneNumber,
+					address: {
+						line1: formData.address.line1,
+						line2: formData.address.line2,
+						city: formData.address.city,
+						state: formData.address.state,
+						pincode: formData.address.pincode,
+						country: formData.address.country,
 					},
-					onCompleted: (response) => {
-						if (
-							response.requestOrganizationVerification?.__typename ===
-							"Organization"
-						) {
-							// Success - the page will automatically refresh and show the pending view
-							window.location.reload();
-						} else {
-							setError(
-								"Failed to submit verification request. Please try again.",
-							);
-						}
-						setIsSubmitting(false);
-					},
-					onError: (error) => {
+					businessProofType: formData.businessProofType,
+					businessProofUrl,
+					addressProofType: formData.addressProofType,
+					addressProofUrl,
+				},
+				onCompleted: (response) => {
+					if (
+						response.requestOrganizationVerification?.__typename ===
+						"Organization"
+					) {
+						// Success - the page will automatically refresh and show the pending view
+						console.log("Verification request submitted successfully");
+					} else {
 						setError(
-							error instanceof Error
-								? error.message
-								: "An unexpected error occurred",
+							"Failed to submit verification request. Please try again.",
 						);
-						setIsSubmitting(false);
-					},
-				});
-			} catch (err) {
-				setError(
-					err instanceof Error ? err.message : "An unexpected error occurred",
-				);
-				setIsSubmitting(false);
-			}
-		},
-		[data.id, commitRequestVerification, uploadFile],
-	);
+					}
+					setIsSubmitting(false);
+				},
+				onError: (error) => {
+					setError(
+						error instanceof Error
+							? error.message
+							: "An unexpected error occurred",
+					);
+					setIsSubmitting(false);
+				},
+			});
+		} catch (err) {
+			setError(
+				err instanceof Error ? err.message : "An unexpected error occurred",
+			);
+			setIsSubmitting(false);
+		}
+	};
 
 	return (
 		<div className="w-full mx-auto p-8">

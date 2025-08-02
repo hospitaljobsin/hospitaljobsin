@@ -24,3 +24,7 @@ class OrganizationAuthorizationError:
 
 class OrganizationAlreadyVerifiedError:
     """Raised when an organization is already verified."""
+
+
+class OrganizationVerificationRequestAlreadyExistsError:
+    """Raised when an organization verification request already exists."""

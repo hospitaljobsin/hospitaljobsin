@@ -76,21 +76,6 @@ export default function PendingVerificationView({
 							</p>
 						</div>
 					</Alert>
-
-					{/* Organization Name */}
-					<Alert
-						variant="flat"
-						color="default"
-						className="w-full"
-						hideIconWrapper
-					>
-						<div>
-							<p className="text-sm font-medium text-gray-700 mb-1">
-								Organization
-							</p>
-							<p className="text-sm text-gray-600">{data.name}</p>
-						</div>
-					</Alert>
 				</div>
 			</div>
 		</div>

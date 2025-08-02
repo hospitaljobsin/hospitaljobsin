@@ -787,11 +787,23 @@ class OrganizationAlreadyVerifiedErrorType(BaseErrorType):
     )
 
 
+@strawberry.type(
+    name="OrganizationVerificationRequestAlreadyExistsError",
+    description="Used when an organization verification request already exists.",
+)
+class OrganizationVerificationRequestAlreadyExistsErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="An organization verification request already exists!",
+    )
+
+
 RequestOrganizationVerificationPayload = Annotated[
     OrganizationType
     | OrganizationNotFoundErrorType
     | OrganizationAuthorizationErrorType
-    | OrganizationAlreadyVerifiedErrorType,
+    | OrganizationAlreadyVerifiedErrorType
+    | OrganizationVerificationRequestAlreadyExistsErrorType,
     strawberry.union(
         name="RequestOrganizationVerificationPayload",
         description="The request organization verification payload.",
