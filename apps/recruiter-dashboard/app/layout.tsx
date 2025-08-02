@@ -1,3 +1,4 @@
+import PostHogIdentifier from "@/components/PostHogIdentifier";
 import "@copilotkit/react-ui/styles.css";
 import { Work_Sans } from "next/font/google";
 import { headers } from "next/headers";
@@ -22,7 +23,10 @@ export default function RootLayout({
 			<body className={`${workSans.variable} antialiased h-full w-full`}>
 				{/* Workaround to fix navigation scroll issues */}
 				<div />
-				<Providers headersPromise={headersPromise}>{children}</Providers>
+				<Providers headersPromise={headersPromise}>
+					<PostHogIdentifier />
+					{children}
+				</Providers>
 			</body>
 		</html>
 	);

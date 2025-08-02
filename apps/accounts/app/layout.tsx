@@ -1,3 +1,4 @@
+import PostHogIdentifier from "@/components/PostHogIdentifier";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
@@ -33,7 +34,10 @@ export default async function RootLayout({
 			<body className={`${workSans.variable} antialiased h-full`}>
 				{/* Workaround to fix navigation scroll issues */}
 				<div />
-				<Providers nonce={nonce}>{children}</Providers>
+				<Providers nonce={nonce}>
+					<PostHogIdentifier />
+					{children}
+				</Providers>
 			</body>
 		</html>
 	);

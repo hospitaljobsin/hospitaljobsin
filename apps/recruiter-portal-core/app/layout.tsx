@@ -1,3 +1,4 @@
+import PostHogIdentifier from "@/components/PostHogIdentifier";
 import Footer from "@/components/layout/Footer";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 import type { Metadata } from "next";
@@ -35,6 +36,7 @@ export default async function RootLayout({
 				{/* Workaround to fix navigation scroll issues */}
 				<div />
 				<Providers nonce={nonce}>
+					<PostHogIdentifier />
 					{children}
 					<Footer />
 				</Providers>

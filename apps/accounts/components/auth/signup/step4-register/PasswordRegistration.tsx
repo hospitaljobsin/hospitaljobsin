@@ -1,17 +1,18 @@
 "use client";
 
+import type { PasswordRegistrationMutation as PasswordRegistrationMutationType } from "@/__generated__/PasswordRegistrationMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
+import { getValidRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import posthog from "posthog-js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
-import type { PasswordRegistrationMutation as PasswordRegistrationMutationType } from "@/__generated__/PasswordRegistrationMutation.graphql";
-import { useTurnstile } from "@/components/TurnstileProvider";
-import { getValidRedirectURL } from "@/lib/redirects";
 import SignupContext from "../SignupContext";
 
 const passwordRegistrationSchema = z
@@ -70,6 +71,10 @@ const RegisterWithPasswordMutation = graphql`
       ... on PasswordNotStrongError {
         message
 	    }
+		... on Account {
+			id
+			email
+		}
     }
   }
 `;
@@ -141,7 +146,10 @@ export default function PasswordRegistration() {
 				) {
 					// handle recaptcha failure
 					alert("Recaptcha failed. Please try again.");
-				} else {
+				} else if (response.registerWithPassword.__typename === "Account") {
+					posthog.identify(response.registerWithPassword.id, {
+						email: response.registerWithPassword.email,
+					});
 					// redirect to redirect URL
 					window.location.href = redirectTo;
 				}

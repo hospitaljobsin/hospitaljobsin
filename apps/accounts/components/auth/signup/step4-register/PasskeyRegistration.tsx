@@ -1,18 +1,19 @@
 "use client";
 
-import { Alert, addToast, Button, Input } from "@heroui/react";
+import type { PasskeyRegistrationMutation } from "@/__generated__/PasskeyRegistrationMutation.graphql";
+import type { PasskeyRegistrationOptionsMutation } from "@/__generated__/PasskeyRegistrationOptionsMutation.graphql";
+import { useTurnstile } from "@/components/TurnstileProvider";
+import { getValidRedirectURL } from "@/lib/redirects";
+import { Alert, Button, Input, addToast } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useSearchParams } from "next/navigation";
+import posthog from "posthog-js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import { z } from "zod/v4-mini";
-import type { PasskeyRegistrationMutation } from "@/__generated__/PasskeyRegistrationMutation.graphql";
-import type { PasskeyRegistrationOptionsMutation } from "@/__generated__/PasskeyRegistrationOptionsMutation.graphql";
-import { useTurnstile } from "@/components/TurnstileProvider";
-import { getValidRedirectURL } from "@/lib/redirects";
 import SignupContext from "../SignupContext";
 
 const GeneratePasskeyRegistrationOptionsMutation = graphql`
@@ -69,6 +70,10 @@ const RegisterWithPasskeyMutation = graphql`
       }
       ... on InvalidPasskeyRegistrationCredentialError {
         message
+	  }
+	  ... on Account {
+		id
+		email
 	  }
     }
   }
@@ -208,7 +213,12 @@ export default function PasskeyRegistration() {
 													title: "Passkey creation failed!",
 													color: "danger",
 												});
-											} else {
+											} else if (
+												response.registerWithPasskey.__typename === "Account"
+											) {
+												posthog.identify(response.registerWithPasskey.id, {
+													email: response.registerWithPasskey.email,
+												});
 												// redirect to redirect URL
 												window.location.href = redirectTo;
 											}

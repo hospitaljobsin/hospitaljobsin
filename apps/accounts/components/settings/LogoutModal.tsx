@@ -1,3 +1,4 @@
+import links from "@/lib/links";
 import {
 	Button,
 	Modal,
@@ -7,8 +8,8 @@ import {
 	ModalHeader,
 } from "@heroui/react";
 import { usePathname } from "next/navigation";
+import posthog from "posthog-js";
 import { graphql, useMutation } from "react-relay";
-import links from "@/lib/links";
 
 type Props = {
 	isOpen: boolean;
@@ -32,6 +33,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			variables: {},
 			onCompleted(response, errors) {
 				if (!errors) {
+					posthog.reset();
 					// Redirect to login page
 					window.location.href = links.login(pathname);
 				}

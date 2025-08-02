@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<91abfd6a18146deb7d6b9cde01f09bef>>
- * @relayHash 63ace3e72963ccdfa082a6a24c5cec59
+ * @generated SignedSource<<f773cd03f989ca03f7e7af391fea3eaf>>
+ * @relayHash 4128f3a95bd40be9b938f2c7dcd8a6fd
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 63ace3e72963ccdfa082a6a24c5cec59
+// @relayRequestID 4128f3a95bd40be9b938f2c7dcd8a6fd
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type PasskeyRegistrationMutation$variables = {
@@ -22,6 +22,10 @@ export type PasskeyRegistrationMutation$variables = {
 };
 export type PasskeyRegistrationMutation$data = {
   readonly registerWithPasskey: {
+    readonly __typename: "Account";
+    readonly email: string;
+    readonly id: string;
+  } | {
     readonly __typename: "EmailInUseError";
     readonly message: string;
   } | {
@@ -146,6 +150,28 @@ v12 = {
   "selections": (v8/*: any*/),
   "type": "InvalidPasskeyRegistrationCredentialError",
   "abstractKey": null
+},
+v13 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v14 = {
+  "kind": "InlineFragment",
+  "selections": [
+    (v13/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "email",
+      "storageKey": null
+    }
+  ],
+  "type": "Account",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -173,7 +199,8 @@ return {
           (v9/*: any*/),
           (v10/*: any*/),
           (v11/*: any*/),
-          (v12/*: any*/)
+          (v12/*: any*/),
+          (v14/*: any*/)
         ],
         "storageKey": null
       }
@@ -207,16 +234,11 @@ return {
           (v10/*: any*/),
           (v11/*: any*/),
           (v12/*: any*/),
+          (v14/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              }
+              (v13/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -227,7 +249,7 @@ return {
     ]
   },
   "params": {
-    "id": "63ace3e72963ccdfa082a6a24c5cec59",
+    "id": "4128f3a95bd40be9b938f2c7dcd8a6fd",
     "metadata": {},
     "name": "PasskeyRegistrationMutation",
     "operationKind": "mutation",
@@ -236,6 +258,6 @@ return {
 };
 })();
 
-(node as any).hash = "134974b59fded512e2644ff64eb7de15";
+(node as any).hash = "30c12c8833c1ba96b9c685e7f4c6408b";
 
 export default node;

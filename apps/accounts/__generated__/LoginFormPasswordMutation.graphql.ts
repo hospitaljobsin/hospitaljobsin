@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c2200014ef354855290ce0ae24fd6b1f>>
- * @relayHash 9b47b1e7b35698fe73bd41c21a8761c3
+ * @generated SignedSource<<383ce92540b6d8e10b53621408c5aa49>>
+ * @relayHash 7dc10aec979439c00c4c04aced0b0f0f
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 9b47b1e7b35698fe73bd41c21a8761c3
+// @relayRequestID 7dc10aec979439c00c4c04aced0b0f0f
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type AuthProvider = "OAUTH_GOOGLE" | "PASSWORD" | "WEBAUTHN_CREDENTIAL" | "%future added value";
@@ -20,6 +20,10 @@ export type LoginFormPasswordMutation$variables = {
 };
 export type LoginFormPasswordMutation$data = {
   readonly loginWithPassword: {
+    readonly __typename: "Account";
+    readonly email: string;
+    readonly id: string;
+  } | {
     readonly __typename: "InvalidAuthenticationProviderError";
     readonly availableProviders: ReadonlyArray<AuthProvider>;
     readonly message: string;
@@ -125,6 +129,28 @@ v10 = {
   "selections": (v6/*: any*/),
   "type": "TwoFactorAuthenticationRequiredError",
   "abstractKey": null
+},
+v11 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v12 = {
+  "kind": "InlineFragment",
+  "selections": [
+    (v11/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "email",
+      "storageKey": null
+    }
+  ],
+  "type": "Account",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -149,7 +175,8 @@ return {
           (v7/*: any*/),
           (v8/*: any*/),
           (v9/*: any*/),
-          (v10/*: any*/)
+          (v10/*: any*/),
+          (v12/*: any*/)
         ],
         "storageKey": null
       }
@@ -180,16 +207,11 @@ return {
           (v8/*: any*/),
           (v9/*: any*/),
           (v10/*: any*/),
+          (v12/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              }
+              (v11/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -200,7 +222,7 @@ return {
     ]
   },
   "params": {
-    "id": "9b47b1e7b35698fe73bd41c21a8761c3",
+    "id": "7dc10aec979439c00c4c04aced0b0f0f",
     "metadata": {},
     "name": "LoginFormPasswordMutation",
     "operationKind": "mutation",
@@ -209,6 +231,6 @@ return {
 };
 })();
 
-(node as any).hash = "38d35f9b0f7e9f50896dc5ffc62f2ba5";
+(node as any).hash = "d4f550f048095fb50415814a1cbe345b";
 
 export default node;

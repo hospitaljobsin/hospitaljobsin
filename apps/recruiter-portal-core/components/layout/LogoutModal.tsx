@@ -1,3 +1,5 @@
+import { env } from "@/lib/env/client";
+import links from "@/lib/links";
 import {
 	Button,
 	Modal,
@@ -6,9 +8,8 @@ import {
 	ModalFooter,
 	ModalHeader,
 } from "@heroui/react";
+import posthog from "posthog-js";
 import { graphql, useMutation } from "react-relay";
-import { env } from "@/lib/env/client";
-import links from "@/lib/links";
 
 type Props = {
 	isOpen: boolean;
@@ -31,6 +32,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			variables: {},
 			onCompleted(response, errors) {
 				if (!errors) {
+					posthog.reset();
 					// Redirect to login page
 					window.location.href = links.login(env.NEXT_PUBLIC_URL);
 				}

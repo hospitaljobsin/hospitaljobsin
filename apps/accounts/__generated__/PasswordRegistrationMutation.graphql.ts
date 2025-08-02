@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<1aeef625181cddeb59cd4ad1cd0f26e9>>
- * @relayHash 154190a9a0904b8c58fff1c358a6bbdf
+ * @generated SignedSource<<e18e3511d9c4bb24b1e90ce0c94b102e>>
+ * @relayHash a4d746feb5ef5048785f8b3c15db2e22
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 154190a9a0904b8c58fff1c358a6bbdf
+// @relayRequestID a4d746feb5ef5048785f8b3c15db2e22
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type PasswordRegistrationMutation$variables = {
@@ -21,6 +21,10 @@ export type PasswordRegistrationMutation$variables = {
 };
 export type PasswordRegistrationMutation$data = {
   readonly registerWithPassword: {
+    readonly __typename: "Account";
+    readonly email: string;
+    readonly id: string;
+  } | {
     readonly __typename: "EmailInUseError";
     readonly message: string;
   } | {
@@ -135,6 +139,28 @@ v11 = {
   "selections": (v7/*: any*/),
   "type": "PasswordNotStrongError",
   "abstractKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v13 = {
+  "kind": "InlineFragment",
+  "selections": [
+    (v12/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "email",
+      "storageKey": null
+    }
+  ],
+  "type": "Account",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -161,7 +187,8 @@ return {
           (v8/*: any*/),
           (v9/*: any*/),
           (v10/*: any*/),
-          (v11/*: any*/)
+          (v11/*: any*/),
+          (v13/*: any*/)
         ],
         "storageKey": null
       }
@@ -194,16 +221,11 @@ return {
           (v9/*: any*/),
           (v10/*: any*/),
           (v11/*: any*/),
+          (v13/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              }
+              (v12/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -214,7 +236,7 @@ return {
     ]
   },
   "params": {
-    "id": "154190a9a0904b8c58fff1c358a6bbdf",
+    "id": "a4d746feb5ef5048785f8b3c15db2e22",
     "metadata": {},
     "name": "PasswordRegistrationMutation",
     "operationKind": "mutation",
@@ -223,6 +245,6 @@ return {
 };
 })();
 
-(node as any).hash = "4fe2eabffb0f654cdc11422b52210b26";
+(node as any).hash = "57813777d05bd4aa48366125ece30de9";
 
 export default node;

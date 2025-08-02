@@ -24,6 +24,7 @@ import { startAuthentication } from "@simplewebauthn/browser";
 import { EyeIcon, EyeOffIcon, FingerprintIcon } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import posthog from "posthog-js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
@@ -48,6 +49,10 @@ const LoginFormPasswordMutation = graphql`
 
 	  ... on TwoFactorAuthenticationRequiredError {
 		message
+	  }
+	  ... on Account {
+		id
+		email
 	  }
     }
   }
@@ -74,6 +79,8 @@ const LoginFormPasskeyMutation = graphql`
       __typename
 	  ... on Account {
 		__typename
+		email
+		id
 	  }
       ... on InvalidPasskeyAuthenticationCredentialError {
         message
@@ -208,7 +215,10 @@ export default function LoginForm() {
 					"TwoFactorAuthenticationRequiredError"
 				) {
 					router.push(links.twoFactorAuthentication(params.get("return_to")));
-				} else {
+				} else if (response.loginWithPassword.__typename === "Account") {
+					posthog.identify(response.loginWithPassword.id, {
+						email: response.loginWithPassword.email,
+					});
 					window.location.href = redirectTo;
 				}
 			},
@@ -293,7 +303,12 @@ export default function LoginForm() {
 														"An unexpected error occurred. Please try again.",
 													color: "danger",
 												});
-											} else {
+											} else if (
+												response.loginWithPasskey.__typename === "Account"
+											) {
+												posthog.identify(response.loginWithPasskey.id, {
+													email: response.loginWithPasskey.email,
+												});
 												window.location.href = redirectTo;
 											}
 										},

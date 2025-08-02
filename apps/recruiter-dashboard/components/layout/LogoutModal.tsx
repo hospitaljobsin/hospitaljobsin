@@ -8,6 +8,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 } from "@heroui/react";
+import posthog from "posthog-js";
 import { graphql, useMutation } from "react-relay";
 
 type Props = {
@@ -32,6 +33,7 @@ export default function LogoutModal({ isOpen, onOpenChange }: Props) {
 			variables: {},
 			onCompleted(response, errors) {
 				if (!errors) {
+					posthog.reset();
 					// Redirect to login page
 					window.location.href = links.login(
 						links.organizationDetail(organizationSlug),

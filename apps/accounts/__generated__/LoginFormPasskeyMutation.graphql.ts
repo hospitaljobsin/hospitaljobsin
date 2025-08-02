@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<4c8da8740aaab06b9d127310740bb612>>
- * @relayHash 4fda42b73a2f469a4541a6fe1f4c2492
+ * @generated SignedSource<<3069457f27567040a693b4c53891ebb8>>
+ * @relayHash e67d07afd8a2f3318812ed7738c22934
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 4fda42b73a2f469a4541a6fe1f4c2492
+// @relayRequestID e67d07afd8a2f3318812ed7738c22934
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type LoginFormPasskeyMutation$variables = {
@@ -20,6 +20,8 @@ export type LoginFormPasskeyMutation$data = {
   readonly loginWithPasskey: {
     readonly __typename: "Account";
     readonly __typename: "Account";
+    readonly email: string;
+    readonly id: string;
   } | {
     readonly __typename: "InvalidCaptchaTokenError";
     readonly message: string;
@@ -72,7 +74,29 @@ v2 = {
   "name": "__typename",
   "storageKey": null
 },
-v3 = [
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v4 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "email",
+      "storageKey": null
+    },
+    (v3/*: any*/)
+  ],
+  "type": "Account",
+  "abstractKey": null
+},
+v5 = [
   {
     "alias": null,
     "args": null,
@@ -81,21 +105,21 @@ v3 = [
     "storageKey": null
   }
 ],
-v4 = {
+v6 = {
   "kind": "InlineFragment",
-  "selections": (v3/*: any*/),
+  "selections": (v5/*: any*/),
   "type": "InvalidPasskeyAuthenticationCredentialError",
   "abstractKey": null
 },
-v5 = {
+v7 = {
   "kind": "InlineFragment",
-  "selections": (v3/*: any*/),
+  "selections": (v5/*: any*/),
   "type": "InvalidCaptchaTokenError",
   "abstractKey": null
 },
-v6 = {
+v8 = {
   "kind": "InlineFragment",
-  "selections": (v3/*: any*/),
+  "selections": (v5/*: any*/),
   "type": "WebAuthnChallengeNotFoundError",
   "abstractKey": null
 };
@@ -116,8 +140,9 @@ return {
         "selections": [
           (v2/*: any*/),
           (v4/*: any*/),
-          (v5/*: any*/),
-          (v6/*: any*/)
+          (v6/*: any*/),
+          (v7/*: any*/),
+          (v8/*: any*/)
         ],
         "storageKey": null
       }
@@ -141,18 +166,13 @@ return {
         "selections": [
           (v2/*: any*/),
           (v4/*: any*/),
-          (v5/*: any*/),
           (v6/*: any*/),
+          (v7/*: any*/),
+          (v8/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              }
+              (v3/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -163,7 +183,7 @@ return {
     ]
   },
   "params": {
-    "id": "4fda42b73a2f469a4541a6fe1f4c2492",
+    "id": "e67d07afd8a2f3318812ed7738c22934",
     "metadata": {},
     "name": "LoginFormPasskeyMutation",
     "operationKind": "mutation",
@@ -172,6 +192,6 @@ return {
 };
 })();
 
-(node as any).hash = "2a8ef8b5d335a6ed092a6e39436f905a";
+(node as any).hash = "5d960c3898a2c2a52b6c2b3543fcc990";
 
 export default node;
