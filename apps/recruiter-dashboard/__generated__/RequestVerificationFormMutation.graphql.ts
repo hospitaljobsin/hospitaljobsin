@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dde36ad9d7e592e25a8f83f7b2669c1f>>
- * @relayHash 4121a95bdff7dcfe19e6eba114198fdc
+ * @generated SignedSource<<828724287f4ab3f27a495f0d20765009>>
+ * @relayHash 6cea85fcfcf0f4a44610ce9297c6a879
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 4121a95bdff7dcfe19e6eba114198fdc
+// @relayRequestID 6cea85fcfcf0f4a44610ce9297c6a879
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type AddressProof = "BANK_STATEMENT" | "OTHER" | "RENTAL_AGREEMENT" | "UTILITY_BILL" | "%future added value";
@@ -36,6 +36,9 @@ export type RequestVerificationFormMutation$variables = {
 };
 export type RequestVerificationFormMutation$data = {
   readonly requestOrganizationVerification: {
+    readonly __typename: "InvalidPhoneNumberError";
+    readonly message: string;
+  } | {
     readonly __typename: "Organization";
     readonly id: string;
     readonly verificationStatus: VerificationStatus;
@@ -48,6 +51,9 @@ export type RequestVerificationFormMutation$data = {
     readonly message: string;
   } | {
     readonly __typename: "OrganizationNotFoundError";
+    readonly message: string;
+  } | {
+    readonly __typename: "OrganizationVerificationRequestAlreadyExistsError";
     readonly message: string;
   } | {
     // This will never be '%other', but we need some
@@ -215,6 +221,18 @@ v16 = {
   "selections": (v13/*: any*/),
   "type": "OrganizationAlreadyVerifiedError",
   "abstractKey": null
+},
+v17 = {
+  "kind": "InlineFragment",
+  "selections": (v13/*: any*/),
+  "type": "OrganizationVerificationRequestAlreadyExistsError",
+  "abstractKey": null
+},
+v18 = {
+  "kind": "InlineFragment",
+  "selections": (v13/*: any*/),
+  "type": "InvalidPhoneNumberError",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -245,7 +263,9 @@ return {
           (v12/*: any*/),
           (v14/*: any*/),
           (v15/*: any*/),
-          (v16/*: any*/)
+          (v16/*: any*/),
+          (v17/*: any*/),
+          (v18/*: any*/)
         ],
         "storageKey": null
       }
@@ -282,6 +302,8 @@ return {
           (v14/*: any*/),
           (v15/*: any*/),
           (v16/*: any*/),
+          (v17/*: any*/),
+          (v18/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -296,7 +318,7 @@ return {
     ]
   },
   "params": {
-    "id": "4121a95bdff7dcfe19e6eba114198fdc",
+    "id": "6cea85fcfcf0f4a44610ce9297c6a879",
     "metadata": {},
     "name": "RequestVerificationFormMutation",
     "operationKind": "mutation",
@@ -305,6 +327,6 @@ return {
 };
 })();
 
-(node as any).hash = "b24476eadcfeec08cea1bc8968613463";
+(node as any).hash = "34ffc4239cd27812ba116469cadbe897";
 
 export default node;

@@ -3,6 +3,7 @@ import type { RequestVerificationFormFragment$key } from "@/__generated__/Reques
 import type { RequestVerificationFormMutation } from "@/__generated__/RequestVerificationFormMutation.graphql";
 import type { RequestVerificationFormPresignedUrlMutation } from "@/__generated__/RequestVerificationFormPresignedUrlMutation.graphql";
 import {
+	Alert,
 	Button,
 	Card,
 	CardBody,
@@ -13,7 +14,8 @@ import {
 	Textarea,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircleIcon, UploadIcon } from "lucide-react";
+import { UploadIcon } from "lucide-react";
+import { useNavigationGuard } from "next-navigation-guard";
 import { useCallback, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -55,6 +57,12 @@ const RequestOrganizationVerificationMutation = graphql`
 				message
 			}
 			... on OrganizationAlreadyVerifiedError {
+				message
+			}
+			... on OrganizationVerificationRequestAlreadyExistsError {
+				message
+			}
+			... on InvalidPhoneNumberError {
 				message
 			}
 		}
@@ -180,7 +188,6 @@ export default function RequestVerificationForm({
 }) {
 	const data = useFragment(RequestVerificationFormFragment, organization);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [error, setError] = useState<string | null>(null);
 
 	const [commitRequestVerification, isRequestVerificationInFlight] =
 		useMutation<RequestVerificationFormMutation>(
@@ -195,7 +202,8 @@ export default function RequestVerificationForm({
 		register,
 		handleSubmit,
 		control,
-		formState: { errors, isValid },
+		setError,
+		formState: { errors, isValid, isDirty },
 		setValue,
 	} = useForm<VerificationFormData>({
 		resolver: zodResolver(verificationFormSchema),
@@ -214,6 +222,16 @@ export default function RequestVerificationForm({
 			},
 			businessProofType: "SHOP_LICENSE",
 			addressProofType: "UTILITY_BILL",
+		},
+	});
+
+	useNavigationGuard({
+		enabled: () => isDirty,
+		confirm: () => {
+			const confirmed = window.confirm(
+				"Are you sure you want to leave this page? Your changes will not be saved.",
+			);
+			return confirmed;
 		},
 	});
 
@@ -266,7 +284,6 @@ export default function RequestVerificationForm({
 
 	const onSubmit = async (formData: VerificationFormData) => {
 		setIsSubmitting(true);
-		setError(null);
 
 		try {
 			// Upload both files
@@ -302,26 +319,48 @@ export default function RequestVerificationForm({
 					) {
 						// Success - the page will automatically refresh and show the pending view
 						console.log("Verification request submitted successfully");
+					} else if (
+						response.requestOrganizationVerification.__typename ===
+						"InvalidPhoneNumberError"
+					) {
+						setError("phoneNumber", {
+							message: response.requestOrganizationVerification.message,
+							type: "server",
+						});
+					} else if (
+						response.requestOrganizationVerification.__typename ===
+						"OrganizationVerificationRequestAlreadyExistsError"
+					) {
+						setError("root", {
+							message: response.requestOrganizationVerification.message,
+							type: "server",
+						});
 					} else {
-						setError(
-							"Failed to submit verification request. Please try again.",
-						);
+						setError("root", {
+							message:
+								"Failed to submit verification request. Please try again.",
+							type: "server",
+						});
 					}
 					setIsSubmitting(false);
 				},
 				onError: (error) => {
-					setError(
-						error instanceof Error
-							? error.message
-							: "An unexpected error occurred",
-					);
+					setError("root", {
+						message:
+							error instanceof Error
+								? error.message
+								: "An unexpected error occurred",
+						type: "server",
+					});
 					setIsSubmitting(false);
 				},
 			});
 		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "An unexpected error occurred",
-			);
+			setError("root", {
+				message:
+					err instanceof Error ? err.message : "An unexpected error occurred",
+				type: "server",
+			});
 			setIsSubmitting(false);
 		}
 	};
@@ -338,11 +377,10 @@ export default function RequestVerificationForm({
 				</p>
 			</div>
 
-			{error && (
-				<div className="mb-6">
-					<AlertCircleIcon className="w-5 h-5 text-danger-500" />
-					<p className="text-danger-600 text-sm mt-1">{error}</p>
-				</div>
+			{errors.root && (
+				<Alert variant="flat" color="danger" className="mb-6">
+					{errors.root.message}
+				</Alert>
 			)}
 
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -470,31 +508,22 @@ export default function RequestVerificationForm({
 							)}
 						/>
 
-						<div>
-							<label
-								htmlFor="businessProofFile"
-								className="block text-sm font-medium text-gray-700 mb-2"
-							>
-								Business Proof Document
-							</label>
-							<input
-								id="businessProofFile"
-								type="file"
-								accept=".jpg,.jpeg,.png,.pdf"
-								onChange={(e) => {
-									const file = e.target.files?.[0];
-									if (file) {
-										setValue("businessProofFile", file);
-									}
-								}}
-								className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
-							/>
-							{errors.businessProofFile && (
-								<p className="text-danger-600 text-sm mt-1">
-									{errors.businessProofFile.message}
-								</p>
-							)}
-						</div>
+						<Input
+							label="Business Proof Document"
+							id="businessProofFile"
+							type="file"
+							accept=".jpg,.jpeg,.png,.pdf"
+							isInvalid={!!errors.businessProofFile}
+							errorMessage={errors.businessProofFile?.message}
+							onChange={(e) => {
+								const file = e.target.files?.[0];
+								if (file) {
+									setValue("businessProofFile", file, {
+										shouldValidate: true,
+									});
+								}
+							}}
+						/>
 					</CardBody>
 				</Card>
 
@@ -525,31 +554,22 @@ export default function RequestVerificationForm({
 							)}
 						/>
 
-						<div>
-							<label
-								htmlFor="addressProofFile"
-								className="block text-sm font-medium text-gray-700 mb-2"
-							>
-								Address Proof Document
-							</label>
-							<input
-								id="addressProofFile"
-								type="file"
-								accept=".jpg,.jpeg,.png,.pdf"
-								onChange={(e) => {
-									const file = e.target.files?.[0];
-									if (file) {
-										setValue("addressProofFile", file);
-									}
-								}}
-								className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
-							/>
-							{errors.addressProofFile && (
-								<p className="text-danger-600 text-sm mt-1">
-									{errors.addressProofFile.message}
-								</p>
-							)}
-						</div>
+						<Input
+							label="Address Proof Document"
+							id="addressProofFile"
+							type="file"
+							accept=".jpg,.jpeg,.png,.pdf"
+							isInvalid={!!errors.addressProofFile}
+							errorMessage={errors.addressProofFile?.message}
+							onChange={(e) => {
+								const file = e.target.files?.[0];
+								if (file) {
+									setValue("addressProofFile", file, {
+										shouldValidate: true,
+									});
+								}
+							}}
+						/>
 					</CardBody>
 				</Card>
 

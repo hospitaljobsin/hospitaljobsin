@@ -4110,6 +4110,7 @@ union RequestOrganizationVerificationPayload =
 	| OrganizationAuthorizationError
 	| OrganizationAlreadyVerifiedError
 	| OrganizationVerificationRequestAlreadyExistsError
+	| InvalidPhoneNumberError
 
 """
 The request password reset payload.

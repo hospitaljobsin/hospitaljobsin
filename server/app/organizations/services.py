@@ -1,6 +1,7 @@
 import uuid
 from datetime import timedelta
 
+import phonenumbers
 from bson import ObjectId
 from bson.errors import InvalidId
 from email_validator import EmailNotValidError, validate_email
@@ -9,6 +10,7 @@ from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
 from app.accounts.documents import Account
+from app.accounts.exceptions import InvalidPhoneNumberError
 from app.accounts.repositories import AccountRepo
 from app.auth.exceptions import InvalidEmailError
 from app.base.models import Address
@@ -392,7 +394,8 @@ class OrganizationService:
         OrganizationNotFoundError
         | OrganizationAuthorizationError
         | OrganizationAlreadyVerifiedError
-        | OrganizationVerificationRequestAlreadyExistsError,
+        | OrganizationVerificationRequestAlreadyExistsError
+        | InvalidPhoneNumberError,
     ]:
         """Request an organization verification."""
         try:
@@ -424,6 +427,17 @@ class OrganizationService:
             and latest_verification_request.status == "pending"
         ):
             return Err(OrganizationVerificationRequestAlreadyExistsError())
+
+        try:
+            valid_phone_number = phonenumbers.parse(phone_number)
+        except phonenumbers.NumberParseException:
+            return Err(InvalidPhoneNumberError())
+        else:
+            if not phonenumbers.is_valid_number_for_region(
+                valid_phone_number, region_code="IN"
+            ):
+                # only accept Indian numbers
+                return Err(InvalidPhoneNumberError())
 
         await self._organization_verification_request_repo.delete_by_organization_id(
             organization_id=existing_organization.id,

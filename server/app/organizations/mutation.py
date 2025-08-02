@@ -8,6 +8,8 @@ from result import Err, Ok
 from strawberry import relay
 from strawberry.permission import PermissionExtension
 
+from app.accounts.exceptions import InvalidPhoneNumberError
+from app.accounts.types import InvalidPhoneNumberErrorType
 from app.auth.exceptions import InvalidEmailError
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.auth.types import InvalidEmailErrorType
@@ -364,6 +366,8 @@ class OrganizationMutation:
                         return OrganizationAlreadyVerifiedErrorType()
                     case OrganizationVerificationRequestAlreadyExistsError():
                         return OrganizationVerificationRequestAlreadyExistsErrorType()
+                    case InvalidPhoneNumberError():
+                        return InvalidPhoneNumberErrorType()
             case Ok(organization):
                 return OrganizationType.marshal(organization)
             case _ as unreachable:

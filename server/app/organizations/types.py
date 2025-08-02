@@ -12,7 +12,7 @@ from strawberry import relay
 from strawberry.permission import PermissionExtension
 from strawberry.types import Info
 
-from app.accounts.types import AccountType
+from app.accounts.types import AccountType, InvalidPhoneNumberErrorType
 from app.auth.permissions import IsAuthenticated
 from app.auth.types import InvalidEmailErrorType
 from app.base.types import (
@@ -803,7 +803,8 @@ RequestOrganizationVerificationPayload = Annotated[
     | OrganizationNotFoundErrorType
     | OrganizationAuthorizationErrorType
     | OrganizationAlreadyVerifiedErrorType
-    | OrganizationVerificationRequestAlreadyExistsErrorType,
+    | OrganizationVerificationRequestAlreadyExistsErrorType
+    | InvalidPhoneNumberErrorType,
     strawberry.union(
         name="RequestOrganizationVerificationPayload",
         description="The request organization verification payload.",
