@@ -11,6 +11,7 @@ import {
 	Input,
 	Select,
 	SelectItem,
+	addToast,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UploadIcon, VerifiedIcon } from "lucide-react";
@@ -331,8 +332,10 @@ export default function RequestVerificationForm({
 						response.requestOrganizationVerification?.__typename ===
 						"Organization"
 					) {
-						// Success - the page will automatically refresh and show the pending view
-						console.log("Verification request submitted successfully");
+						addToast({
+							color: "success",
+							description: "Verification request submitted successfully",
+						});
 					} else if (
 						response.requestOrganizationVerification.__typename ===
 						"InvalidPhoneNumberError"
