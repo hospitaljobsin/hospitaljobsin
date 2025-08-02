@@ -56,11 +56,7 @@ export async function middleware(request: NextRequest) {
 		"Content-Security-Policy",
 		contentSecurityPolicyHeaderValue,
 	);
-	const response = NextResponse.next({
-		request: {
-			headers: requestHeaders,
-		},
-	});
+
 	const sessionCookie = request.cookies.get(env.NEXT_PUBLIC_SESSION_COOKIE_KEY);
 
 	let isAuthenticated = false;
@@ -75,6 +71,15 @@ export async function middleware(request: NextRequest) {
 			request.cookies.delete(env.NEXT_PUBLIC_SESSION_COOKIE_KEY);
 		}
 	}
+
+	// Set the authentication header
+	requestHeaders.set("x-is-authenticated", isAuthenticated ? "true" : "false");
+
+	const response = NextResponse.next({
+		request: {
+			headers: requestHeaders,
+		},
+	});
 
 	if (requiresAuthenticated(request)) {
 		return isAuthenticated ? response : getAuthenticationResponse(request);

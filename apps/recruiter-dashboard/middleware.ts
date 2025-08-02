@@ -71,12 +71,6 @@ export async function middleware(request: NextRequest) {
 		contentSecurityPolicyHeaderValue,
 	);
 
-	const response = NextResponse.next({
-		request: {
-			headers: requestHeaders,
-		},
-	});
-
 	const host = request.headers.get("host") || "";
 	const subdomain = extractSubdomain(request);
 
@@ -95,6 +89,15 @@ export async function middleware(request: NextRequest) {
 			request.cookies.delete(env.NEXT_PUBLIC_SESSION_COOKIE_KEY);
 		}
 	}
+
+	// Set the authentication header
+	requestHeaders.set("x-is-authenticated", isAuthenticated ? "true" : "false");
+
+	const response = NextResponse.next({
+		request: {
+			headers: requestHeaders,
+		},
+	});
 
 	if (subdomain) {
 		if (!isAuthenticated) {
