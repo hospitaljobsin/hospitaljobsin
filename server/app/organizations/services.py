@@ -41,7 +41,6 @@ from app.organizations.repositories import (
     OrganizationInviteRepo,
     OrganizationMemberRepo,
     OrganizationRepo,
-    OrganizationVerificationRequestRepo,
 )
 
 
@@ -213,16 +212,12 @@ class OrganizationService:
         organization_repo: OrganizationRepo,
         organization_member_repo: OrganizationMemberRepo,
         organization_member_service: OrganizationMemberService,
-        organization_verification_request_repo: OrganizationVerificationRequestRepo,
         s3_client: S3Client,
         aws_settings: AWSSettings,
     ) -> None:
         self._organization_repo = organization_repo
         self._organization_member_repo = organization_member_repo
         self._organization_member_service = organization_member_service
-        self._organization_verification_request_repo = (
-            organization_verification_request_repo
-        )
         self._s3_client = s3_client
         self._aws_settings = aws_settings
 
@@ -415,16 +410,15 @@ class OrganizationService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        if existing_organization.verified_at is not None:
+        if (
+            existing_organization.verification_request is not None
+            and existing_organization.verification_request.status == "approved"
+        ):
             return Err(OrganizationAlreadyVerifiedError())
 
-        latest_verification_request = await self._organization_verification_request_repo.get_latest_by_organization_id(
-            organization_id=existing_organization.id,
-        )
-
         if (
-            latest_verification_request is not None
-            and latest_verification_request.status == "pending"
+            existing_organization.verification_request is not None
+            and existing_organization.verification_request.status == "pending"
         ):
             return Err(OrganizationVerificationRequestAlreadyExistsError())
 
@@ -439,12 +433,8 @@ class OrganizationService:
                 # only accept Indian numbers
                 return Err(InvalidPhoneNumberError())
 
-        await self._organization_verification_request_repo.delete_by_organization_id(
-            organization_id=existing_organization.id,
-        )
-
         # create a verification request
-        await self._organization_verification_request_repo.create(
+        await self._organization_repo.create_verification_request(
             organization=existing_organization,
             account=account,
             registered_organization_name=registered_organization_name,

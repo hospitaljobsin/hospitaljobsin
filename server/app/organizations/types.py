@@ -35,12 +35,12 @@ from app.organizations.documents import (
     Organization,
     OrganizationInvite,
     OrganizationMember,
+    OrganizationVerificationRequest,
 )
 from app.organizations.exceptions import OrganizationAuthorizationError
 from app.organizations.repositories import (
     OrganizationInviteRepo,
     OrganizationMemberRepo,
-    OrganizationVerificationRequestRepo,
 )
 from app.organizations.services import OrganizationMemberService
 
@@ -277,7 +277,7 @@ class OrganizationType(BaseNodeType[Organization]):
     logo_url: str = strawberry.field(
         description="The logo URL of the organization.",
     )
-    verified_at: Private[datetime | None]
+    verification_request: Private[OrganizationVerificationRequest | None]
 
     @strawberry.field(
         description="The verification status of the organization.",
@@ -285,39 +285,20 @@ class OrganizationType(BaseNodeType[Organization]):
     @inject
     async def verification_status(
         self,
-        organization_verification_request_repo: Annotated[
-            "OrganizationVerificationRequestRepo", Inject
-        ],
     ) -> VerificationStatusUnion:
         """Get the verification status of the organization."""
-        # If organization is already verified, return VERIFIED
-        if self.verified_at is not None:
-            return VerifiedType(verified_at=self.verified_at)
-
         # Get the latest verification request for this organization
-        latest_request = (
-            await organization_verification_request_repo.get_latest_by_organization_id(
-                ObjectId(self.id)
-            )
-        )
 
-        if latest_request is None:
+        if self.verification_request is None:
             return NotRequestedType(message="Verification not requested.")
 
         # Return status based on the latest request
-        if latest_request.status == "pending":
-            return PendingType(requested_at=latest_request.id.generation_time)
-        if latest_request.status == "rejected":
-            if latest_request.rejected_at is None:
-                # Fallback to created_at if rejected_at is not set
-                return RejectedType(rejected_at=latest_request.id.generation_time)
-            return RejectedType(rejected_at=latest_request.rejected_at)
+        if self.verification_request.status == "pending":
+            return PendingType(requested_at=self.verification_request.created_at)
+        if self.verification_request.status == "rejected":
+            return RejectedType(rejected_at=self.verification_request.rejected_at)
 
-        # If status is "approved", return verified with approved_at
-        if latest_request.approved_at is not None:
-            return VerifiedType(verified_at=latest_request.approved_at)
-        # Fallback to created_at if approved_at is not set
-        return VerifiedType(verified_at=latest_request.id.generation_time)
+        return VerifiedType(verified_at=self.verification_request.approved_at)
 
     @strawberry.field(
         description="The job applicants for jobs in this organization.",
@@ -372,7 +353,7 @@ class OrganizationType(BaseNodeType[Organization]):
             email=organization.email,
             website=organization.website,
             logo_url=organization.logo_url,
-            verified_at=organization.verified_at,
+            verification_request=organization.verification_request,
         )
 
     @classmethod

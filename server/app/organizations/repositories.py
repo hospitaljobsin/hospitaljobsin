@@ -164,9 +164,7 @@ class OrganizationRepo:
             after=ObjectId(after) if after else None,
         )
 
-
-class OrganizationVerificationRequestRepo:
-    async def create(
+    async def create_verification_request(
         self,
         organization: Organization,
         account: Account,
@@ -180,8 +178,7 @@ class OrganizationVerificationRequestRepo:
         address_proof_url: str,
     ) -> OrganizationVerificationRequest:
         """Create a new organization verification request."""
-        verification_request = OrganizationVerificationRequest(
-            organization=organization,
+        organization.verification_request = OrganizationVerificationRequest(
             created_by=account,
             registered_organization_name=registered_organization_name,
             contact_email=contact_email,
@@ -193,26 +190,8 @@ class OrganizationVerificationRequestRepo:
             address_proof_url=address_proof_url,
             status="pending",
         )
-        return await verification_request.insert()
-
-    async def delete_by_organization_id(self, organization_id: ObjectId) -> None:
-        """Delete all verification requests for an organization."""
-        await OrganizationVerificationRequest.find(
-            OrganizationVerificationRequest.organization.id == organization_id
-        ).delete()
-
-    async def get_latest_by_organization_id(
-        self, organization_id: ObjectId
-    ) -> OrganizationVerificationRequest | None:
-        """Get the latest verification request for an organization."""
-        return await OrganizationVerificationRequest.find_one(
-            OrganizationVerificationRequest.organization.id == organization_id,
-            sort=[
-                ("created_at", -1)
-            ],  # Sort by created_at descending to get the latest
-            fetch_links=True,
-            nesting_depth=1,
-        )
+        await organization.save()
+        return organization.verification_request
 
 
 class OrganizationMemberRepo:
