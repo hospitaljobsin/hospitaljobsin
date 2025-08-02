@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e05e2a2bd2c4a549a1166bc1c505f5e5>>
- * @relayHash f35a10a26d9c8972f412f97b3df97348
+ * @generated SignedSource<<dd00411a8e1f6ce34617c35334962a17>>
+ * @relayHash 67adba0621890b9a54647b81e5544394
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID f35a10a26d9c8972f412f97b3df97348
+// @relayRequestID 67adba0621890b9a54647b81e5544394
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -317,8 +317,69 @@ return {
                           {
                             "alias": null,
                             "args": null,
-                            "kind": "ScalarField",
-                            "name": "verifiedAt",
+                            "concreteType": null,
+                            "kind": "LinkedField",
+                            "name": "verificationStatus",
+                            "plural": false,
+                            "selections": [
+                              (v5/*: any*/),
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "verifiedAt",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "Verified",
+                                "abstractKey": null
+                              },
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "rejectedAt",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "Rejected",
+                                "abstractKey": null
+                              },
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "requestedAt",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "Pending",
+                                "abstractKey": null
+                              },
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "message",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "NotRequested",
+                                "abstractKey": null
+                              }
+                            ],
                             "storageKey": null
                           }
                         ],
@@ -534,7 +595,7 @@ return {
     ]
   },
   "params": {
-    "id": "f35a10a26d9c8972f412f97b3df97348",
+    "id": "67adba0621890b9a54647b81e5544394",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",

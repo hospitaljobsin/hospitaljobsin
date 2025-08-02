@@ -48,7 +48,18 @@ export const JobFragment = graphql`
       name @include(if: $showOrganization)
       logoUrl @include(if: $showOrganization)
 	  slug
-	  verifiedAt @include(if: $showOrganization)
+	  verificationStatus {
+		__typename
+		... on Verified @alias(as: "verified") {
+			verifiedAt
+		}
+		... on Rejected {
+			rejectedAt
+		}
+		... on Pending {
+			requestedAt
+		}
+	  }
     }
   }
 `;
@@ -183,7 +194,7 @@ export default function Job({ job, authQueryRef: rootQuery }: Props) {
 										<p className="text-xs sm:text-base font-normal text-foreground-500 truncate max-w-[140px] sm:max-w-none">
 											{data.organization.name}
 										</p>
-										{data.organization.verifiedAt && (
+										{data.organization.verificationStatus.verified && (
 											<Tooltip
 												content="This organization is verified"
 												placement="right"

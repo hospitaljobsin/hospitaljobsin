@@ -13,6 +13,8 @@ import {
 } from "react-relay";
 import invariant from "tiny-invariant";
 import AlreadyVerified from "./AlreadyVerified";
+import PendingVerificationView from "./PendingVerificationView";
+import RejectedVerificationView from "./RejectedVerificationView";
 import RequestVerificationForm from "./RequestVerificationForm";
 
 const VerificationSettingsTabFragment = graphql`
@@ -25,9 +27,25 @@ const VerificationSettingsTabFragment = graphql`
             __typename
             ... on Organization {
 				isAdmin
-                verifiedAt
+                verificationStatus {
+					__typename
+					... on Verified {
+						verifiedAt
+					}
+					... on Rejected {
+						rejectedAt
+					}
+					... on Pending {
+						requestedAt
+					}
+					... on NotRequested {
+						message
+					}
+				}
                 ...AlreadyVerifiedFragment
 				...RequestVerificationFormFragment
+                ...PendingVerificationViewFragment
+                ...RejectedVerificationViewFragment
             }
         }
 
@@ -68,8 +86,14 @@ export default function VerificationSettingsTab({
 		"Expected 'Account' node type",
 	);
 
-	if (data.organization.verifiedAt) {
+	if (data.organization.verificationStatus.__typename === "Verified") {
 		return <AlreadyVerified organization={data.organization} />;
+	}
+	if (data.organization.verificationStatus.__typename === "Pending") {
+		return <PendingVerificationView organization={data.organization} />;
+	}
+	if (data.organization.verificationStatus.__typename === "Rejected") {
+		return <RejectedVerificationView organization={data.organization} />;
 	}
 	return <RequestVerificationForm organization={data.organization} />;
 }

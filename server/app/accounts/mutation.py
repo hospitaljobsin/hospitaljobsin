@@ -16,12 +16,12 @@ from app.accounts.exceptions import (
 )
 from app.accounts.services import AccountService, ProfileParserService, ProfileService
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
+from app.base.types import CreatePresignedURLPayloadType
 from app.context import AuthInfo
 
 from .types import (
     AccountType,
     CertificationInputType,
-    CreateProfilePicturePresignedURLPayloadType,
     EducationInputType,
     GenderTypeEnum,
     GenerateProfileDocumentPresignedURLPayloadType,
@@ -135,7 +135,7 @@ class AccountMutation:
                 assert_never(unreachable)
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=CreateProfilePicturePresignedURLPayloadType,
+        graphql_type=CreatePresignedURLPayloadType,
         description="Create a profile picture presigned URL.",
         extensions=[
             PermissionExtension(
@@ -152,12 +152,12 @@ class AccountMutation:
         content_type: Annotated[
             str, strawberry.argument(description="The content type of the file.")
         ],
-    ) -> CreateProfilePicturePresignedURLPayloadType:
+    ) -> CreatePresignedURLPayloadType:
         """Create a profile picture presigned url."""
         result = await account_service.create_profile_picture_presigned_url(
             content_type=content_type
         )
-        return CreateProfilePicturePresignedURLPayloadType(presigned_url=result)
+        return CreatePresignedURLPayloadType(presigned_url=result)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateAccountPayload,

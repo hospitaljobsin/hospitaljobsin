@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<16cc80cbdcdabbaf3dd028952395b8f8>>
+ * @generated SignedSource<<6e496aed3485ec1a72ce0e0f4fb8a719>>
  * @relayHash 29eab4413c02445765c0f7c89de8df34
  * @lightSyntaxTransform
  * @nogrep
@@ -43,7 +43,7 @@ v1 = [
         "variableName": "contentType"
       }
     ],
-    "concreteType": "CreateOrganizationLogoPresignedURLPayload",
+    "concreteType": "CreatePresignedURLPayloadType",
     "kind": "LinkedField",
     "name": "createOrganizationLogoPresignedUrl",
     "plural": false,

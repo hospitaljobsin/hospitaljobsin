@@ -8,11 +8,11 @@ from aioinject import Inject, Injected
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from result import Err, Ok
-from strawberry import relay
+from strawberry import Private, relay
 from strawberry.permission import PermissionExtension
 from strawberry.types import Info
 
-from app.accounts.types import AccountType
+from app.accounts.types import AccountType, InvalidPhoneNumberErrorType
 from app.auth.permissions import IsAuthenticated
 from app.auth.types import InvalidEmailErrorType
 from app.base.types import (
@@ -35,6 +35,7 @@ from app.organizations.documents import (
     Organization,
     OrganizationInvite,
     OrganizationMember,
+    OrganizationVerificationRequest,
 )
 from app.organizations.exceptions import OrganizationAuthorizationError
 from app.organizations.repositories import (
@@ -52,6 +53,79 @@ class InviteStatusTypeEnum(Enum):
     PENDING = "PENDING"
     ACCEPTED = "ACCEPTED"
     DECLINED = "DECLINED"
+
+
+@strawberry.enum(
+    name="BusinessProof",
+    description="Invite status type.",
+)
+class BusinessProofTypeEnum(Enum):
+    GST_CERTIFICATE = "GST_CERTIFICATE"
+    CLINIC_REGISTRATION = "CLINIC_REGISTRATION"
+    MSME_REGISTRATION = "MSME_REGISTRATION"
+    SHOP_LICENSE = "SHOP_LICENSE"
+    MEDICAL_COUNCIL_REGISTRATION = "MEDICAL_COUNCIL_REGISTRATION"
+    OTHER = "OTHER"
+
+
+@strawberry.enum(
+    name="AddressProof",
+    description="Address proof type.",
+)
+class AddressProofTypeEnum(Enum):
+    UTILITY_BILL = "UTILITY_BILL"
+    RENTAL_AGREEMENT = "RENTAL_AGREEMENT"
+    BANK_STATEMENT = "BANK_STATEMENT"
+    OTHER = "OTHER"
+
+
+@strawberry.type(
+    name="Verified",
+    description="Organization is verified.",
+)
+class VerifiedType:
+    verified_at: datetime = strawberry.field(
+        description="The date and time the organization was verified.",
+    )
+
+
+@strawberry.type(
+    name="Rejected",
+    description="Organization verification was rejected.",
+)
+class RejectedType:
+    rejected_at: datetime = strawberry.field(
+        description="The date and time the organization verification was rejected.",
+    )
+
+
+@strawberry.type(
+    name="Pending",
+    description="Organization verification is pending.",
+)
+class PendingType:
+    requested_at: datetime = strawberry.field(
+        description="The date and time the organization verification was requested.",
+    )
+
+
+@strawberry.type(
+    name="NotRequested",
+    description="Organization verification has not been requested.",
+)
+class NotRequestedType:
+    message: str = strawberry.field(
+        description="Message indicating verification has not been requested.",
+    )
+
+
+VerificationStatusUnion = Annotated[
+    "VerifiedType | RejectedType | PendingType | NotRequestedType",
+    strawberry.union(
+        name="VerificationStatus",
+        description="Organization verification status type.",
+    ),
+]
 
 
 @strawberry.type(
@@ -203,9 +277,28 @@ class OrganizationType(BaseNodeType[Organization]):
     logo_url: str = strawberry.field(
         description="The logo URL of the organization.",
     )
-    verified_at: datetime | None = strawberry.field(
-        description="The date and time the organization was verified.",
+    verification_request: Private[OrganizationVerificationRequest | None]
+
+    @strawberry.field(
+        description="The verification status of the organization.",
     )
+    @inject
+    async def verification_status(
+        self,
+    ) -> VerificationStatusUnion:
+        """Get the verification status of the organization."""
+        # Get the latest verification request for this organization
+
+        if self.verification_request is None:
+            return NotRequestedType(message="Verification not requested.")
+
+        # Return status based on the latest request
+        if self.verification_request.status == "pending":
+            return PendingType(requested_at=self.verification_request.created_at)
+        if self.verification_request.status == "rejected":
+            return RejectedType(rejected_at=self.verification_request.rejected_at)
+
+        return VerifiedType(verified_at=self.verification_request.approved_at)
 
     @strawberry.field(
         description="The job applicants for jobs in this organization.",
@@ -260,7 +353,7 @@ class OrganizationType(BaseNodeType[Organization]):
             email=organization.email,
             website=organization.website,
             logo_url=organization.logo_url,
-            verified_at=organization.verified_at,
+            verification_request=organization.verification_request,
         )
 
     @classmethod
@@ -708,10 +801,35 @@ DeleteOrganizationPayload = Annotated[
 ]
 
 
+@strawberry.type(
+    name="OrganizationAlreadyVerifiedError",
+    description="Used when the organization is already verified.",
+)
+class OrganizationAlreadyVerifiedErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="Organization is already verified!",
+    )
+
+
+@strawberry.type(
+    name="OrganizationVerificationRequestAlreadyExistsError",
+    description="Used when an organization verification request already exists.",
+)
+class OrganizationVerificationRequestAlreadyExistsErrorType(BaseErrorType):
+    message: str = strawberry.field(
+        description="Human readable error message.",
+        default="An organization verification request already exists!",
+    )
+
+
 RequestOrganizationVerificationPayload = Annotated[
     OrganizationType
     | OrganizationNotFoundErrorType
-    | OrganizationAuthorizationErrorType,
+    | OrganizationAuthorizationErrorType
+    | OrganizationAlreadyVerifiedErrorType
+    | OrganizationVerificationRequestAlreadyExistsErrorType
+    | InvalidPhoneNumberErrorType,
     strawberry.union(
         name="RequestOrganizationVerificationPayload",
         description="The request organization verification payload.",
@@ -725,16 +843,6 @@ OrganizationPayload = Annotated[
         description="The organization payload.",
     ),
 ]
-
-
-@strawberry.type(
-    name="CreateOrganizationLogoPresignedURLPayload",
-    description="The payload for creating a presigned URL for uploading the organization logo.",
-)
-class CreateOrganizationLogoPresignedURLPayloadType:
-    presigned_url: str = strawberry.field(
-        description="The presigned URL for uploading the organization logo.",
-    )
 
 
 CreateOrganizationInvitePayload = Annotated[

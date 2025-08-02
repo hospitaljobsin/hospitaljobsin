@@ -2,19 +2,19 @@
 	"master": {
 		"tasks": [
 			{
-				"id": 29,
-				"title": "Create Phone Number Section in User Profile",
-				"description": "This task covers the implementation of the static 'Phone Number' section in the user profile. The UI component has been built and integrated, displaying the user's phone number (or 'Not set') and an update button. The remaining work involves final testing before proceeding to the modal implementation (Task 30).",
+				"id": 59,
+				"title": "Backend: Implement `verificationStatus` Field on OrganizationType",
+				"description": "Add a `verificationStatus` field to the `OrganizationType` in the Strawberry GraphQL schema. This field will resolve to a `VerificationStatusEnum` with one of four values: `VERIFIED`, `PENDING`, `REJECTED`, or `NOT_REQUESTED` based on the organization's verification data.",
 				"status": "done",
 				"dependencies": [],
 				"priority": "high",
-				"details": "The implementation is complete and includes: A new `PhoneNumber.tsx` component, a `PhoneNumberFragment` for GraphQL data, and integration into `AccountSettingsView.tsx`. The UI uses HeroUI components (Card, Button) consistent with the 'Password' section, including responsive layouts and an 'Edit' icon on the button. The button's `onClick` handler currently logs to the console.",
-				"testStrategy": "Final testing is required. Visually inspect the profile page to confirm the new section appears correctly for users with and without a phone number. Verify the 'Update Phone Number' button is present, styled correctly, and logs to the console on click. Run existing unit tests for the component to ensure it renders the correct data passed via props and that the relay-compiler has generated types without error.",
+				"details": "Using Strawberry GraphQL, define a new `VerificationStatusEnum` following the existing pattern in the codebase (e.g., `InviteStatusTypeEnum`, `BusinessProofTypeEnum`). This will involve creating a Python `enum.Enum` and registering it. Then, modify the `OrganizationType` by adding a new resolver method decorated with `@strawberry.field` for `verificationStatus`. This resolver will return the `VerificationStatusEnum`. The logic for the resolver is as follows:\n1. Check if the `organization.verifiedAt` field has a value. If yes, return `VERIFIED`.\n2. If not, query the `OrganizationVerificationRequest` collection for the most recent request associated with the organization ID.\n3. If a request exists, check its status. Return `PENDING` or `REJECTED` accordingly.\n4. If no request exists, return `NOT_REQUESTED`.\nEnsure the database query is indexed and efficient.",
+				"testStrategy": "Unit test the resolver by mocking the organization and verification request data for all four possible enum outcomes (`VERIFIED`, `PENDING`, `REJECTED`, `NOT_REQUESTED`). For integration testing, use a Relay GraphQL client against a development server to verify the enum status for organizations in different states, ensuring the tests are consistent with existing Relay patterns and tools in the codebase.",
 				"subtasks": [
 					{
 						"id": 1,
 						"title": "",
-						"description": "Create the `PhoneNumber.tsx` component, mirroring the structure of `Password.tsx`.",
+						"description": "Define the `VerificationStatusEnum` using Python's `enum.Enum` and register it with Strawberry, following the pattern of existing enums like `InviteStatusTypeEnum`.",
 						"status": "done",
 						"dependencies": [],
 						"details": "",
@@ -23,7 +23,7 @@
 					{
 						"id": 2,
 						"title": "",
-						"description": "Define the `PhoneNumberFragment` GraphQL fragment to query the `phoneNumber` field and integrate it into the `AccountSettingsViewFragment`.",
+						"description": "Add the `verificationStatus` field to the `OrganizationType` Strawberry type using the `@strawberry.field` decorator.",
 						"status": "done",
 						"dependencies": [],
 						"details": "",
@@ -32,7 +32,7 @@
 					{
 						"id": 3,
 						"title": "",
-						"description": "Add the `PhoneNumber` component to the `AccountSettingsView.tsx` layout.",
+						"description": "Implement the resolver logic for the `verificationStatus` field within the `OrganizationType`. The logic should correctly query for `verifiedAt` and `OrganizationVerificationRequest` data.",
 						"status": "done",
 						"dependencies": [],
 						"details": "",
@@ -41,7 +41,7 @@
 					{
 						"id": 4,
 						"title": "",
-						"description": "Style the component using HeroUI (Card, Button with outline variant and Edit icon) to match the existing profile sections.",
+						"description": "Write unit tests for the `verificationStatus` resolver, covering all four enum cases.",
 						"status": "done",
 						"dependencies": [],
 						"details": "",
@@ -50,37 +50,28 @@
 					{
 						"id": 5,
 						"title": "",
-						"description": "Implement the `handleUpdatePhoneNumber` function with a `console.log` placeholder to be connected to the modal in a future task.",
+						"description": "Perform integration testing using a Relay GraphQL client to verify the `verificationStatus` field against a live development server.",
 						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 6,
-						"title": "",
-						"description": "Run the relay compiler to generate necessary types and perform unit/visual testing to confirm the component renders correctly with user data.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
+						"dependencies": [4],
+						"details": "Test with organizations in various states to confirm that `VERIFIED`, `PENDING`, `REJECTED`, and `NOT_REQUESTED` are returned correctly. Ensure testing follows existing Relay patterns and tools.",
 						"testStrategy": ""
 					}
 				]
 			},
 			{
-				"id": 30,
-				"title": "Build the Phone Number Update Modal Shell",
-				"description": "Developed the main modal component shell, `UpdatePhoneNumberModal`, which houses the entire update flow. This included setting up the modal structure, state for visibility, and placeholders for the two steps (phone entry and verification).",
+				"id": 60,
+				"title": "Frontend: Create Main Verification Status Controller Component",
+				"description": "Create the main parent component that uses a Relay fragment to access the organization's verification status and conditionally renders the appropriate UI view based on the result.",
 				"status": "done",
-				"dependencies": [29],
+				"dependencies": [59],
 				"priority": "high",
-				"details": "The `UpdatePhoneNumberModal.tsx` component has been created using the `@heroui/react` `Modal` component with `size=\"md\"`. It follows the structure of existing modals like `AutofillWithAIModal.tsx`. State management for modal visibility (`isOpen`) and step tracking (`phone-entry`, `verification`) has been implemented. The modal is integrated into `AccountSettingsView.tsx`, and the 'Update Phone Number' button now controls its visibility. The modal body conditionally renders placeholder content for the `PhoneNumberEntryStep` and `VerificationTokenStep` components, with logic to reset the step to the initial state when the modal is closed.",
-				"testStrategy": "Manual and unit tests confirmed that the modal opens and closes correctly when triggered from the 'Update Phone Number' button. Verified that the `onClose` callback resets the internal step state. Confirmed the modal renders with the correct `md` size and contains the standard `ModalHeader`, `ModalBody`, and `ModalFooter` structure. Placeholder content for both steps renders correctly based on the internal step state.",
+				"details": "Create a React component named `OrganizationVerificationStatusController`. This component will accept a fragment reference from a parent component and use Relay's `useFragment` hook to read the `verificationStatus` for the current organization. The implementation should follow standard Relay patterns for fragment composition, defining a GraphQL fragment for its data requirements. Based on the `verificationStatus` read from the fragment, it will act as a router to render one of the child components: `AlreadyVerified`, `PendingVerificationView`, `RejectedVerificationView`, or `RequestVerificationForm`.",
+				"testStrategy": "Use Storybook or React Testing Library to test this component. Mock the Relay environment and the data passed to the `useFragment` hook to simulate each status ('verified', 'pending', 'rejected', 'not_requested'). Verify that the correct child component is rendered for each case. Test that the component correctly reads the data from the provided fragment.",
 				"subtasks": [
 					{
 						"id": 1,
 						"title": "",
-						"description": "Create `UpdatePhoneNumberModal.tsx` component using HeroUI Modal with size=\"md\" and center placement, following existing patterns.",
+						"description": "Define the Relay GraphQL fragment to specify the `organization.verificationStatus` data requirement.",
 						"status": "done",
 						"dependencies": [],
 						"details": "",
@@ -89,7 +80,7 @@
 					{
 						"id": 2,
 						"title": "",
-						"description": "Implement state management for modal visibility and a two-step flow ('phone-entry' and 'verification').",
+						"description": "Set up the `OrganizationVerificationStatusController` component to accept a fragment reference prop.",
 						"status": "done",
 						"dependencies": [],
 						"details": "",
@@ -98,7 +89,7 @@
 					{
 						"id": 3,
 						"title": "",
-						"description": "Define TypeScript types for modal props and step management.",
+						"description": "Integrate the Relay fragment using the `useFragment` hook to read the verification status from the store.",
 						"status": "done",
 						"dependencies": [],
 						"details": "",
@@ -107,7 +98,7 @@
 					{
 						"id": 4,
 						"title": "",
-						"description": "Add logic to reset the active step to the initial state when the modal is closed.",
+						"description": "Ensure the component works correctly with React Suspense for cases where fragment data is not yet available.",
 						"status": "done",
 						"dependencies": [],
 						"details": "",
@@ -116,25 +107,7 @@
 					{
 						"id": 5,
 						"title": "",
-						"description": "Integrate the modal into `AccountSettingsView.tsx` and manage its open/close state.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 6,
-						"title": "",
-						"description": "Connect the 'Update Phone Number' button in the `PhoneNumber` component to open the modal.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 7,
-						"title": "",
-						"description": "Add placeholder content with TODO comments for the phone entry and verification steps.",
+						"description": "Implement the conditional rendering logic to display the correct view based on the status read from the fragment data.",
 						"status": "done",
 						"dependencies": [],
 						"details": "",
@@ -143,483 +116,349 @@
 				]
 			},
 			{
-				"id": 31,
-				"title": "Implement Phone Number Entry Form UI",
-				"description": "The initial implementation of the phone number entry form is complete. This form, the first step in the 'Update Phone Number' modal, now includes client-side validation using Zod for Indian phone numbers, loading state management, and is fully integrated into the modal flow. The focus is now on final review and potential enhancements.",
-				"status": "done",
-				"dependencies": [30],
+				"id": 61,
+				"title": "Frontend: Define Form Validation Schema with Zod",
+				"description": "Define a validation schema for the verification request form using Zod v4 to ensure data integrity before submission.",
+				"details": "Create a file `verificationFormSchema.ts`. Using Zod (v3.x is the latest stable, assume this was intended over v4), define an object schema. \n```typescript\nimport { z } from 'zod';\n\nexport const verificationSchema = z.object({\n  organizationName: z.string().min(2, 'Name is required'),\n  contactEmail: z.string().email('Invalid email address'),\n  phoneNumber: z.string().regex(/^(\\+91[\\-\\s]?)?[0]?(91)?[789]\\d{9}$/, 'Must be a valid Indian phone number'),\n  address: z.object({ street: z.string().min(1), city: z.string().min(1), state: z.string().min(1), zip: z.string().min(5) }),\n  businessProofType: z.enum(['type1', 'type2']), // Replace with actual types\n  businessProofURL: z.string().url('A valid file upload is required'),\n  addressProofType: z.enum(['typeA', 'typeB']), // Replace with actual types\n  addressProofURL: z.string().url('A valid file upload is required'),\n});\n```\nThis schema will be used with React Hook Form's `zodResolver`.",
+				"testStrategy": "Write unit tests for the schema using Jest or Vitest. Test valid data objects with `.safeParse(data)`. Test various invalid data inputs for each field and assert that the correct error messages are produced.",
 				"priority": "high",
-				"details": "The `PhoneNumberEntryStep.tsx` component has been built using `react-hook-form` and HeroUI components. A Zod schema (`standardSchemaResolver`) provides real-time validation for Indian phone numbers (accepting formats with or without the +91 prefix). The form submission handler is connected to the modal's step transition logic. Loading states are implemented to disable the form and provide user feedback during the API call. The component is styled consistently with the existing application forms.",
-				"testStrategy": "Verify the completed implementation. Unit tests should confirm that the Zod validation schema correctly identifies valid and invalid Indian phone numbers. Test the form's behavior during submission, ensuring the button is disabled and shows a loading indicator. Manually test the end-to-end flow within the modal to confirm that a valid phone number submission successfully transitions to the next step and that validation errors prevent submission and are displayed correctly.",
-				"subtasks": [
-					{
-						"id": 1,
-						"title": "",
-						"description": "Create PhoneNumberEntryStep.tsx component using React Hook Form and HeroUI components.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 2,
-						"title": "",
-						"description": "Implement Zod schema for Indian phone number validation (+91 prefix optional) and integrate with the form using standardSchemaResolver.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 3,
-						"title": "",
-						"description": "Integrate the form into the UpdatePhoneNumberModal, ensuring submission triggers the step transition.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 4,
-						"title": "",
-						"description": "Implement loading and disabled states for the form during submission.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 5,
-						"title": "",
-						"description": "Add real-time validation feedback with error messages for a better user experience.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 6,
-						"title": "",
-						"description": "Ensure basic accessibility with proper labels, descriptions, and input types.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 7,
-						"title": "",
-						"description": "Review and enhance phone number validation rules based on further requirements.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					}
-				]
-			},
-			{
-				"id": 32,
-				"title": "Implement Client-Side Phone Number Validation with Zod",
-				"description": "Defined and integrated an enhanced Zod schema for comprehensive client-side validation of Indian phone numbers. This provides immediate, specific feedback to the user and normalizes the phone number format before API submission.",
+				"dependencies": [],
 				"status": "done",
-				"dependencies": [31],
-				"priority": "high",
-				"details": "The final implementation uses a Zod schema with an improved regex (`/^(?:\\+91\\s?)?[6-9]\\d{9}$/`) to validate Indian mobile numbers. A `.transform()` function was added to normalize various input formats (e.g., `+91 98765 43210`, `9876543210`) into a consistent format for the API. A `.refine()` method provides additional validation checks and more user-friendly error messages. The schema is integrated with React Hook Form via `@hookform/resolvers/zod` to display real-time validation errors.",
-				"testStrategy": "Unit tests were written for the Zod schema to verify the improved regex, the `.transform()` normalization logic, and the `.refine()` validation. Tests cover a range of valid and invalid inputs, including different formatting with spaces and the `+91` prefix. Component tests confirm that specific error messages are displayed correctly and that the form submission is blocked for invalid numbers.",
-				"subtasks": [
-					{
-						"id": 1,
-						"title": "",
-						"description": "Enhance the Zod schema with an improved regex pattern (`/^(?:\\+91\\s?)?[6-9]\\d{9}$/`) for Indian mobile numbers starting with 6, 7, 8, or 9.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 2,
-						"title": "",
-						"description": "Implement a `.transform()` function to normalize the phone number input (e.g., remove spaces, handle `+91` prefix) for consistent API submission.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 3,
-						"title": "",
-						"description": "Add a `.refine()` validation step to the schema to handle complex formatting rules and provide more specific, user-friendly error messages.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 4,
-						"title": "",
-						"description": "Integrate the enhanced Zod schema with React Hook Form using `@hookform/resolvers/zod` to enable real-time validation.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 5,
-						"title": "",
-						"description": "Write unit tests for the Zod schema, covering valid formats (`+91 98765 43210`, `9876543210`), invalid formats, and edge cases to ensure normalization and validation work correctly.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					}
-				]
-			},
-			{
-				"id": 33,
-				"title": "Integrate `requestPhoneNumberVerificationToken` Mutation",
-				"description": "Integrate the `requestPhoneNumberVerificationToken` GraphQL mutation. This mutation is called when the user submits a valid phone number. The integration handles success cases by transitioning to the verification step, and provides detailed user feedback for various error scenarios and loading states.",
-				"status": "done",
-				"dependencies": [32],
-				"priority": "high",
-				"details": "Used the `useMutation` hook from `react-relay` triggered by the `onSubmit` handler from React Hook Form. The input is `{ phoneNumber: String! }`. The `onCompleted` handler transitions the modal to the verification step. The `onError` handler and mutation response logic now gracefully handle `InvalidPhoneNumberError`, `PhoneNumberAlreadyExistsError`, and `PhoneNumberVerificationTokenCooldownError` (displaying remaining seconds). Loading states are managed to disable the form during execution, and a styled error box displays user-friendly messages.",
-				"testStrategy": "Use a mock GraphQL provider (e.g., `msw` or Relay's test environment) to test the mutation integration. Verify that `useMutation` is called with the correct phone number. Test the `onCompleted` callback triggers the transition to the next step. Test the error handling for each specific error type: `InvalidPhoneNumberError`, `PhoneNumberAlreadyExistsError`, and `PhoneNumberVerificationTokenCooldownError`. Verify that the correct error message is displayed in the UI for each case. Confirm that the form is disabled and a loading indicator is shown during mutation execution.",
-				"subtasks": [
-					{
-						"id": 1,
-						"title": "",
-						"description": "Integrate the `useMutation` hook from `react-relay` for the `requestPhoneNumberVerificationToken` mutation.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 2,
-						"title": "",
-						"description": "Connect the mutation to the form's `onSubmit` handler, disabling the form during execution.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 3,
-						"title": "",
-						"description": "Implement the `onCompleted` handler to transition the UI to the verification code entry step upon success.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 4,
-						"title": "",
-						"description": "Implement comprehensive error handling for different mutation response types, including network/API failures.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 5,
-						"title": "",
-						"description": "Handle `InvalidPhoneNumberError` and `PhoneNumberAlreadyExistsError` by displaying a user-friendly message in the modal.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 6,
-						"title": "",
-						"description": "Handle `PhoneNumberVerificationTokenCooldownError` by displaying the remaining cooldown time to the user.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 7,
-						"title": "",
-						"description": "Implement and manage loading states to provide visual feedback during mutation execution.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 8,
-						"title": "",
-						"description": "Ensure TypeScript types generated from the GraphQL schema are used for the mutation payload, response, and error handling.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					}
-				]
-			},
-			{
-				"id": 34,
-				"title": "Implement Verification Token Entry Form UI",
-				"description": "The UI for the verification token entry form has been implemented. It includes a 6-digit numeric input field, real-time validation, and a 'Verify & Update' button with loading states. The component is fully integrated into the phone number update modal.",
-				"status": "done",
-				"dependencies": [30],
-				"priority": "medium",
-				"details": "The `VerificationTokenStep.tsx` component was created using React Hook Form and a Zod schema for validation. The schema enforces a 6-digit, numeric-only token. The HeroUI `Input` component is used for the entry field. Form state, including loading and disabled states during submission, is managed via the `useForm` hook. The component is integrated into the `UpdatePhoneNumberModal` and displays validation errors in real-time.",
-				"testStrategy": "Unit and integration tests have been performed to confirm: the component renders correctly, the Zod validation schema rejects invalid inputs (non-numeric, incorrect length), the form state correctly updates, loading states are triggered on submission, and the component is correctly integrated within the modal flow.",
-				"subtasks": [
-					{
-						"id": 1,
-						"title": "",
-						"description": "Create VerificationTokenStep.tsx component using React Hook Form.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 2,
-						"title": "",
-						"description": "Implement Zod validation schema for 6-digit numeric-only verification codes.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 3,
-						"title": "",
-						"description": "Use HeroUI Input component for the token field with appropriate constraints.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 4,
-						"title": "",
-						"description": "Implement form state management, including loading and disabled states during submission.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 5,
-						"title": "",
-						"description": "Add real-time validation feedback and clear error messages for invalid inputs.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 6,
-						"title": "",
-						"description": "Integrate the VerificationTokenStep component into the UpdatePhoneNumberModal.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 7,
-						"title": "",
-						"description": "Ensure consistent styling and layout with other forms in the modal.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					}
-				]
-			},
-			{
-				"id": 35,
-				"title": "Integrate `updateAccountPhoneNumber` Mutation",
-				"description": "Successfully integrated the `updateAccountPhoneNumber` GraphQL mutation. This mutation is called when the user submits the verification token. The implementation includes comprehensive error handling for various API responses and robust loading state management.",
-				"status": "done",
-				"dependencies": [33, 34],
-				"priority": "high",
-				"details": "In `VerificationTokenStep.tsx`, the `useMutation` hook from `react-relay` was used for the `updateAccountPhoneNumber` mutation. The mutation is triggered on form submission with the `{ phoneNumber, phoneNumberVerificationToken }` input. The implementation features:\n- **Success Handling:** Correctly processes the `Account` object on a successful response.\n- **Error Handling:** Displays user-friendly messages for specific errors like `InvalidPhoneNumberVerificationTokenError` and `InvalidPhoneNumberError`, as well as generic network/API failures. An error message component was added to the modal.\n- **State Management:** Manages loading states by disabling the form during mutation execution.\n- **Data Flow:** The `phoneNumber` is passed as a prop from the parent modal state to the verification step.\nNote: The final success flow, including closing the modal and refreshing the profile UI, is handled in a subsequent task (Task 39).",
-				"testStrategy": "Mocked the `updateAccountPhoneNumber` mutation to verify its integration. Tests confirmed that the mutation is called with the correct `phoneNumber` and `token`. The `onCompleted` handler was tested to ensure it correctly processes the success payload. The `onError` handler and response logic were extensively tested to verify that specific error messages for `InvalidPhoneNumberVerificationTokenError` and `InvalidPhoneNumberError` are displayed correctly. Loading states were also verified to ensure the form is disabled during mutation execution.",
-				"subtasks": [
-					{
-						"id": 1,
-						"title": "",
-						"description": "Define and create the `updateAccountPhoneNumber` GraphQL mutation.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 2,
-						"title": "",
-						"description": "Integrate the `useMutation` hook from `react-relay` in `VerificationTokenStep.tsx`.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 3,
-						"title": "",
-						"description": "Implement comprehensive error handling for `InvalidPhoneNumberVerificationTokenError` and `InvalidPhoneNumberError`.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 4,
-						"title": "",
-						"description": "Implement loading states to disable the form during mutation execution.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 5,
-						"title": "",
-						"description": "Add a styled error display component within the modal to show user-friendly error messages.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 6,
-						"title": "",
-						"description": "Create and apply TypeScript types for the mutation's input, response, and error structures.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 7,
-						"title": "",
-						"description": "Pass the `phoneNumber` from the parent modal state down to the `VerificationTokenStep` component.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 8,
-						"title": "",
-						"description": "Connect the mutation to the form submission flow, triggering it on submit.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					},
-					{
-						"id": 9,
-						"title": "",
-						"description": "Correct GraphQL response types to align with the schema, specifically for `Account`, `InvalidPhoneNumberVerificationTokenError`, and `InvalidPhoneNumberError`.",
-						"status": "done",
-						"dependencies": [],
-						"details": "",
-						"testStrategy": ""
-					}
-				]
-			},
-			{
-				"id": 36,
-				"title": "Implement Loading States for Mutations",
-				"description": "Implement loading states for both mutation calls. The UI should provide clear feedback to the user that a request is in progress.",
-				"details": "The `useMutation` hook in Relay returns a boolean `isInFlight`. Use this flag to manage loading states. When `isInFlight` is true, disable the submit button in both the phone entry and token verification forms. Optionally, change the button text to 'Sending...' or 'Verifying...' and show a small spinner icon inside the button for better UX.",
-				"testStrategy": "In mocked tests, set the mutation to a pending state. Verify that the submit button becomes disabled and displays the loading indicator. Ensure the button is re-enabled once the mutation completes or errors out.",
-				"priority": "medium",
-				"dependencies": [33, 35],
-				"status": "pending",
 				"subtasks": []
 			},
 			{
-				"id": 37,
-				"title": "Implement GraphQL Error Handling and Display",
-				"description": "Implement comprehensive error handling for all specified failure scenarios, displaying user-friendly messages within the modal.",
-				"details": "In the `onError` callbacks for both mutations, inspect the GraphQL error object. The backend will return a union type. Use a `switch` statement on `error.__typename` to handle each case: `InvalidPhoneNumberError`, `PhoneNumberAlreadyExistsError`, `PhoneNumberVerificationTokenCooldownError`, `InvalidPhoneNumberVerificationTokenError`. Store the corresponding user-friendly message in a state variable and display it near the form's submit button.",
-				"testStrategy": "For each error type, write a test where the mock API returns that specific error. Verify that the correct error message is displayed in the UI and that the user can attempt to submit the form again.",
+				"id": 62,
+				"title": "Frontend: Build Static UI for `RequestVerificationForm`",
+				"description": "Build the UI for the `RequestVerificationForm` component. The component will be data-driven, consuming a Relay fragment to display initial organization data, and will be built using pre-existing HeroUI components.",
+				"status": "done",
+				"dependencies": [],
+				"priority": "medium",
+				"details": "Create the `RequestVerificationForm.tsx` component and define a corresponding Relay fragment (`RequestVerificationForm_organization.graphql`) to specify the organization data it requires. The component must accept a fragment reference as a prop and use the `useFragment` hook to read the data. Use HeroUI components like `<Input>`, `<Select>`, and `<Button>` to build the form structure. Pre-populate fields like Organization Name and Contact Email with data from the fragment. The other fields (Phone Number, Address, Proofs) should be laid out as specified in the PRD. At this stage, focus on rendering the form with initial data. Local form state management and submission logic will be handled in separate tasks.",
+				"testStrategy": "Use Storybook to create a story for the form. Mock the Relay environment to provide a fragment reference with sample organization data. Verify that the form fields are correctly pre-populated. Perform visual regression testing to ensure it matches the design. Manually test responsiveness across different viewport sizes (mobile, tablet, desktop).",
+				"subtasks": [
+					{
+						"id": 1,
+						"title": "",
+						"description": "Define the `RequestVerificationForm_organization.graphql` fragment with necessary fields like `name` and `contactEmail`.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 2,
+						"title": "",
+						"description": "Update the `RequestVerificationForm` component signature to accept a `fragmentRef` prop.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 3,
+						"title": "",
+						"description": "Implement the `useFragment` hook within the component to consume the organization data.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 4,
+						"title": "",
+						"description": "Build the static layout of the form using HeroUI components for all required fields.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 5,
+						"title": "",
+						"description": "Bind the data from the fragment to pre-populate the corresponding form inputs (e.g., Organization Name, Contact Email).",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 6,
+						"title": "",
+						"description": "Set up a Storybook story with a mocked Relay environment to test the component with sample fragment data.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					}
+				]
+			},
+			{
+				"id": 63,
+				"title": "Frontend: Integrate React Hook Form and Zod Validation",
+				"description": "Integrate React Hook Form for state management and connect the Zod schema for real-time validation within the `RequestVerificationForm`.",
+				"details": "In `RequestVerificationForm.tsx`, import and use the `useForm` hook from `react-hook-form` and `zodResolver` from `@hookform/resolvers/zod`. \n```typescript\nimport { useForm } from 'react-hook-form';\nimport { zodResolver } from '@hookform/resolvers/zod';\nimport { verificationSchema } from './verificationFormSchema';\n\nconst form = useForm({ resolver: zodResolver(verificationSchema) });\n```\nUse `form.register('fieldName')` to connect each HeroUI input. Use `form.formState.errors` to display validation messages next to each field. Implement the form's `onSubmit` handler using `form.handleSubmit(yourSubmitFunction)`.",
+				"testStrategy": "Using React Testing Library, simulate user input into the form fields. Assert that valid input does not show an error message, and invalid input does. Test that submitting the form with invalid data does not call the submit handler and displays all relevant errors.",
 				"priority": "high",
-				"dependencies": [33, 35],
-				"status": "pending",
+				"dependencies": [61, 62],
+				"status": "done",
 				"subtasks": []
 			},
 			{
-				"id": 38,
-				"title": "Implement Resend Token and Cooldown Logic",
-				"description": "Implement the 'Resend Token' button with its associated cooldown logic to prevent abuse. The button should be disabled during the cooldown period, with a visible timer.",
-				"details": "In the `VerificationTokenStep` component, add a 'Resend' button. When clicked, it re-triggers the `requestPhoneNumberVerificationToken` mutation. Upon successful request (or on receiving a `PhoneNumberVerificationTokenCooldownError`), start a timer. Use `useState` for the countdown seconds and `useEffect` with `setInterval` to decrement it. Display the remaining time to the user (e.g., 'Resend in {seconds}s'). The 'Resend' button should be disabled while the timer is active.",
-				"testStrategy": "Test that clicking 'Resend' calls the `requestPhoneNumberVerificationToken` mutation. Mock a cooldown error response and verify the timer starts and the button is disabled. Use `jest.useFakeTimers()` to test the countdown logic without waiting.",
+				"id": 64,
+				"title": "Frontend: Handle File Selection and Fetch Presigned URL",
+				"description": "Implement the client-side logic to handle file selection and call the `createOrganizationProofPresignedUrl` Relay GraphQL mutation to get a secure upload URL from S3.",
+				"status": "done",
+				"dependencies": [62],
 				"priority": "medium",
-				"dependencies": [34, 37],
-				"status": "pending",
-				"subtasks": []
+				"details": "Create a reusable file upload component or hook. When a user selects a file in one of the file input fields, trigger a call to the `createOrganizationProofPresignedUrl` GraphQL mutation using Relay's `useMutation` hook. Pass the file's name and type to the mutation. The component should manage the loading state while waiting for the presigned URL. The returned URL and the final object key should be stored in the component's state.",
+				"testStrategy": "Mock the Relay environment and the `createOrganizationProofPresignedUrl` mutation response. In a unit test, simulate a file being selected and verify that the mutation is called with the correct variables. Test the component's behavior during the loading and error states of the mutation.",
+				"subtasks": [
+					{
+						"id": 1,
+						"title": "",
+						"description": "Define the `createOrganizationProofPresignedUrl` mutation using Relay's `graphql` tag and run the compiler.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 2,
+						"title": "",
+						"description": "Create a reusable file upload hook or component that uses Relay's `useMutation` hook to execute the presigned URL mutation.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 3,
+						"title": "",
+						"description": "Implement state management within the hook/component for loading, error, and success states, storing the returned URL and object key.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 4,
+						"title": "",
+						"description": "Write unit tests using a mocked Relay environment to verify the mutation is called correctly and the component handles different states.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					}
+				]
 			},
 			{
-				"id": 39,
-				"title": "Implement Success Flow and Profile UI Update",
-				"description": "Ensure that upon a successful phone number update, the modal closes and the phone number displayed in the main profile section is updated to reflect the new value.",
-				"details": "In the `onCompleted` callback of the `updateAccountPhoneNumber` mutation, call the `onClose` function to dismiss the modal. To update the UI, either use Relay's optimistic update feature to immediately show the new number or configure the mutation to refetch the user profile data. The PRD mentions optimistic updates as a pattern, so that should be the preferred approach.",
-				"testStrategy": "In an integration test, simulate a successful update. Verify that the modal closes. Check that the text in the phone number section on the profile page updates to the new number. If using optimistic updates, verify the UI updates instantly, even before the mock API resolves.",
+				"id": 65,
+				"title": "Frontend: Implement File Upload to S3 Presigned URL",
+				"description": "Implement the function to upload the selected file directly to the S3 presigned URL, including progress and error handling.",
+				"details": "Once the presigned URL is obtained (from task 64), use the `fetch` API or a library like `axios` to perform an HTTP `PUT` request to that URL. The request body should be the file object itself. The `Content-Type` header must be set to the file's type. Implement UI feedback for the upload status: progress (using `XMLHttpRequest.upload.onprogress`), success, and failure. On successful upload, update the React Hook Form state with the final file URL/key using `form.setValue('businessProofURL', finalUrl)`.",
+				"testStrategy": "Use a library like `msw` (Mock Service Worker) to intercept the `PUT` request to the S3 URL. Verify the request has the correct method, headers, and body. Simulate success and failure responses from the mock server to test the component's error handling and state updates.",
 				"priority": "medium",
-				"dependencies": [35],
-				"status": "pending",
+				"dependencies": [64],
+				"status": "done",
 				"subtasks": []
 			},
 			{
-				"id": 40,
-				"title": "Ensure Responsive Design for the Modal Flow",
-				"description": "Ensure the entire phone number update flow, including the modal and its form elements, is fully responsive and provides a seamless experience on mobile, tablet, and desktop devices.",
-				"details": "Review all new components (`UpdatePhoneNumberModal`, `PhoneNumberEntryStep`, `VerificationTokenStep`) using browser developer tools to simulate different screen sizes. Apply responsive styles using HeroUI's built-in responsive props or custom media queries if necessary. Ensure inputs are easily tappable and content does not overflow on small screens.",
-				"testStrategy": "Perform manual testing on various device viewports (e.g., 360px, 768px, 1024px). Use automated visual regression testing tools like Chromatic or Percy to catch unintended UI changes across different screen sizes. Verify that all elements are legible and usable on a small mobile screen.",
+				"id": 66,
+				"title": "Frontend: Implement Form Submission Mutation",
+				"description": "Implement the final form submission logic, which calls the `requestOrganizationVerification` mutation using Relay with all validated form data and uploaded file URLs.",
+				"status": "done",
+				"dependencies": [63, 65],
+				"priority": "high",
+				"details": "The `onSubmit` function passed to `form.handleSubmit` will be the entry point. This function receives the validated form data. It should verify that the file URLs have been set by the upload process. Then, it will execute the `requestOrganizationVerification` GraphQL mutation using Relay's `useMutation` hook, passing all form fields as variables. Implement loading and error handling for this mutation, providing user feedback via toasts or inline messages. On success, update the Relay store to reflect the organization's new 'pending' status, which will update the UI.",
+				"testStrategy": "Mock the Relay environment and the `requestOrganizationVerification` mutation response. Using React Testing Library, fill out the form with valid data, simulate successful file uploads, and submit the form. Verify that the mutation is called with the complete and correct payload. Test the component's behavior when the mutation returns an error. Assert that the Relay store is updated correctly on a successful response.",
+				"subtasks": [
+					{
+						"id": 1,
+						"title": "",
+						"description": "Define the `requestOrganizationVerificationMutation.graphql` file and run the Relay compiler to generate the necessary artifacts.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 2,
+						"title": "",
+						"description": "Integrate the `useMutation` hook from `react-relay` into the form component for the `requestOrganizationVerification` mutation.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 3,
+						"title": "",
+						"description": "Wire the form's `onSubmit` handler to call the Relay mutation with the validated form data and file URLs.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 4,
+						"title": "",
+						"description": "Implement UI feedback for loading (e.g., disabling submit button) and error states (e.g., showing a toast message) of the mutation.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 5,
+						"title": "",
+						"description": "On successful mutation, implement an updater function to modify the Relay store, changing the organization's verification status to 'pending' to trigger the correct UI view.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					}
+				]
+			},
+			{
+				"id": 67,
+				"title": "Frontend: Implement 'Pending' Status View",
+				"description": "Create the UI component to display the 'pending' verification status, using data fetched via a Relay fragment.",
+				"status": "done",
+				"dependencies": [60],
 				"priority": "medium",
-				"dependencies": [30, 31, 34],
-				"status": "pending",
+				"details": "Create a React component named `PendingVerificationView` that is driven by a Relay fragment. The component will accept a fragment reference to the organization's data as a prop. Use the `useFragment` hook to read the necessary data. It should display a clear message, such as 'Your verification request has been submitted and is currently under review. We will notify you once the process is complete.' Use HeroUI components for styling to maintain visual consistency.",
+				"testStrategy": "Render the component in Storybook using a mocked Relay environment. Pass a mocked fragment reference and verify its appearance and text content. Write a unit test using React Testing Library and a mocked Relay environment to ensure the component correctly consumes the fragment data. Ensure it is responsive and visually consistent with the rest of the application.",
+				"subtasks": [
+					{
+						"id": 1,
+						"title": "",
+						"description": "Define the GraphQL fragment for `PendingVerificationView` to specify its data requirements from the `Organization` type.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 2,
+						"title": "",
+						"description": "Implement the `PendingVerificationView` component to accept a fragment reference and use the `useFragment` hook to consume data.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 3,
+						"title": "",
+						"description": "Style the component using HeroUI to display the pending status message, ensuring visual consistency.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 4,
+						"title": "",
+						"description": "Set up Storybook for the component with a mocked Relay environment to test its visual states.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 5,
+						"title": "",
+						"description": "Write unit tests with React Testing Library and a mocked Relay environment to verify the component correctly renders based on fragment data.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					}
+				]
+			},
+			{
+				"id": 68,
+				"title": "Frontend: Implement 'Rejected' Status View with Retry",
+				"description": "Create the UI component for the 'rejected' status, which includes a rejection message and a button to restart the application process. This component will be driven by a Relay fragment to display relevant data about the rejection.",
+				"status": "done",
+				"dependencies": [60, 62],
+				"priority": "medium",
+				"details": "Create a React component named `RejectedVerificationView` that is driven by a Relay fragment. The component will accept a fragment reference to the organization's data as a prop and use the `useFragment` hook to read the necessary data (e.g., rejection reason). It should display a message like 'Your verification request was rejected. Please review the requirements and try again.' and include the specific reason if available. It must also include a 'Try Again' button. This button will call an `onRetry` function prop, which will signal the parent controller to re-render the `RequestVerificationForm`.",
+				"testStrategy": "Render the component in Storybook using a mocked Relay environment. Pass a mocked fragment reference and verify its appearance and text content, including the rejection reason. Use `@storybook/addon-actions` to verify the `onRetry` function is called when the 'Try Again' button is clicked. Write a unit test using React Testing Library and a mocked Relay environment to ensure the component correctly consumes the fragment data and that the retry logic is triggered.",
+				"subtasks": [
+					{
+						"id": 1,
+						"title": "",
+						"description": "Define the GraphQL fragment for RejectedVerificationView, specifying the fields needed from the Organization type (e.g., rejectionReason).",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 2,
+						"title": "",
+						"description": "Implement the RejectedVerificationView React component, using the useFragment hook to consume the organization data from the fragment reference prop.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 3,
+						"title": "",
+						"description": "Display the rejection message and reason within the component. Implement the 'Try Again' button and connect its onClick event to the onRetry prop.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 4,
+						"title": "",
+						"description": "Create Storybook stories for the component, providing a mocked Relay environment and sample fragment data to test different rejection scenarios.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					},
+					{
+						"id": 5,
+						"title": "",
+						"description": "Write unit tests with React Testing Library and a mocked Relay environment to verify correct data rendering and that the onRetry callback is invoked on button click.",
+						"status": "done",
+						"dependencies": [],
+						"details": "",
+						"testStrategy": ""
+					}
+				]
+			},
+			{
+				"id": 69,
+				"title": "Frontend: Implement Conditional UI Rendering Logic",
+				"description": "Finalize the main controller component to correctly render the UI based on the fetched `verificationStatus`.",
+				"details": "In the `OrganizationVerificationStatusController` component, complete the conditional rendering logic. Use the `verificationStatus` string from the GraphQL query to decide which component to display: 'verified' -> `<AlreadyVerified />`, 'pending' -> `<PendingVerificationView />`, 'rejected' -> `<RejectedVerificationView onRetry={...} />`, 'not_requested' -> `<RequestVerificationForm />`. Ensure smooth transitions and proper state management for retrying a rejected application.",
+				"testStrategy": "This is a key integration test. Using React Testing Library, mock the GraphQL query and cycle through all possible status values. For each value, assert that the correct child component is rendered. Test the 'rejected' flow by verifying that clicking the retry button renders the form.",
+				"priority": "high",
+				"dependencies": [60, 66, 67, 68],
+				"status": "done",
 				"subtasks": []
 			},
 			{
-				"id": 41,
-				"title": "Implement Accessibility (A11y) Features",
-				"description": "Implement accessibility (a11y) best practices for the modal and its forms, including keyboard navigation, focus management, and ARIA attributes.",
-				"details": "Ensure the modal traps focus, meaning the user cannot tab to elements outside the modal when it's open. Use a library like `focus-trap-react` if not provided by HeroUI's `Modal`. Add `aria-label` attributes to all form inputs and buttons. The modal should be dismissible with the 'Escape' key. Ensure a logical focus order when tabbing through the form elements.",
-				"testStrategy": "Perform manual keyboard-only navigation. Verify that all interactive elements (inputs, buttons) are focusable and in a logical order. Use an automated accessibility checker like Axe DevTools to scan for violations. Test with a screen reader (e.g., VoiceOver, NVDA) to ensure the flow is understandable.",
+				"id": 70,
+				"title": "Final Polish: Accessibility, Responsiveness, and UX Review",
+				"description": "Perform a comprehensive review of the entire feature to ensure accessibility compliance, mobile responsiveness, and a polished user experience.",
+				"details": "Review all new components. Add appropriate ARIA attributes to form fields (`aria-describedby` for errors, `aria-required`). Ensure all interactive elements are keyboard-focusable and operable. Test the entire flow with a screen reader (e.g., VoiceOver, NVDA). Add loading indicators (spinners) for all async operations (data fetching, file uploading, form submission). Verify the layout is fluid and usable on mobile screen sizes. Refine all user-facing text for clarity.",
+				"testStrategy": "Manual end-to-end testing on desktop and mobile browsers. Use automated accessibility checking tools like Axe DevTools. Perform manual keyboard-only navigation tests. Conduct a user acceptance testing (UAT) session to gather feedback on the overall workflow and user experience.",
 				"priority": "low",
-				"dependencies": [30, 31, 34],
-				"status": "pending",
-				"subtasks": []
-			},
-			{
-				"id": 42,
-				"title": "Enforce Full TypeScript Type Safety",
-				"description": "Ensure all new components and logic are strongly typed using TypeScript, including props, state, and GraphQL mutation payloads and responses.",
-				"details": "Generate TypeScript types from the GraphQL schema using the Relay compiler. Use these generated types for mutation inputs, outputs, and error unions. Define explicit types for all component props (e.g., `UpdatePhoneNumberModalProps`) and internal state variables. Avoid using `any` or implicit types.",
-				"testStrategy": "Run the TypeScript compiler (`tsc --noEmit`) as part of the CI/CD pipeline to catch any type errors. Review code for usage of `any` and ensure all props and state have explicit types. Verify that the types generated by Relay are correctly imported and used in the `useMutation` hooks.",
-				"priority": "medium",
-				"dependencies": [33, 35],
-				"status": "pending",
-				"subtasks": []
-			},
-			{
-				"id": 43,
-				"title": "Develop End-to-End Tests for the Full Flow",
-				"description": "Create end-to-end (E2E) tests to validate the entire user flow, from opening the modal to successfully updating the phone number, including handling common error scenarios.",
-				"details": "Using a testing framework like Cypress or Playwright, write test scripts that simulate the full user journey. Test cases should include: 1. Successful update flow. 2. Submitting an invalid phone number format. 3. Submitting a phone number that already exists. 4. Submitting an incorrect verification token. 5. Using the resend token functionality.",
-				"testStrategy": "Run the E2E test suite against a staging or test environment that has the mock GraphQL handlers configured. The tests should assert that the UI updates correctly at each step, error messages appear when expected, and the final phone number is updated on the profile page upon success.",
-				"priority": "medium",
-				"dependencies": [
-					29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42
-				],
-				"status": "pending",
+				"dependencies": [69],
+				"status": "done",
 				"subtasks": []
 			}
 		],
 		"metadata": {
 			"created": "2025-06-26T11:00:37.508Z",
-			"updated": "2025-07-30T16:45:51.785Z",
+			"updated": "2025-08-01T16:40:06.328Z",
 			"description": "Tasks for master context"
 		}
 	}

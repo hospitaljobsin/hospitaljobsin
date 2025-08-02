@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d317f3ddd517d5995c4db00a25770c92>>
+ * @generated SignedSource<<19ff8cd7441c38fe075603580d450166>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,8 +14,24 @@ export type VerificationSettingsTabFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
     readonly isAdmin: boolean;
-    readonly verifiedAt: any | null | undefined;
-    readonly " $fragmentSpreads": FragmentRefs<"AlreadyVerifiedFragment" | "RequestVerificationFormFragment">;
+    readonly verificationStatus: {
+      readonly __typename: "NotRequested";
+      readonly message: string;
+    } | {
+      readonly __typename: "Pending";
+      readonly requestedAt: any;
+    } | {
+      readonly __typename: "Rejected";
+      readonly rejectedAt: any;
+    } | {
+      readonly __typename: "Verified";
+      readonly verifiedAt: any;
+    } | {
+      // This will never be '%other', but we need some
+      // value in case none of the concrete values match.
+      readonly __typename: "%other";
+    };
+    readonly " $fragmentSpreads": FragmentRefs<"AlreadyVerifiedFragment" | "PendingVerificationViewFragment" | "RejectedVerificationViewFragment" | "RequestVerificationFormFragment">;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -85,8 +101,69 @@ return {
             {
               "alias": null,
               "args": null,
-              "kind": "ScalarField",
-              "name": "verifiedAt",
+              "concreteType": null,
+              "kind": "LinkedField",
+              "name": "verificationStatus",
+              "plural": false,
+              "selections": [
+                (v0/*: any*/),
+                {
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "verifiedAt",
+                      "storageKey": null
+                    }
+                  ],
+                  "type": "Verified",
+                  "abstractKey": null
+                },
+                {
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "rejectedAt",
+                      "storageKey": null
+                    }
+                  ],
+                  "type": "Rejected",
+                  "abstractKey": null
+                },
+                {
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "requestedAt",
+                      "storageKey": null
+                    }
+                  ],
+                  "type": "Pending",
+                  "abstractKey": null
+                },
+                {
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "message",
+                      "storageKey": null
+                    }
+                  ],
+                  "type": "NotRequested",
+                  "abstractKey": null
+                }
+              ],
               "storageKey": null
             },
             {
@@ -98,6 +175,16 @@ return {
               "args": null,
               "kind": "FragmentSpread",
               "name": "RequestVerificationFormFragment"
+            },
+            {
+              "args": null,
+              "kind": "FragmentSpread",
+              "name": "PendingVerificationViewFragment"
+            },
+            {
+              "args": null,
+              "kind": "FragmentSpread",
+              "name": "RejectedVerificationViewFragment"
             }
           ],
           "type": "Organization",
@@ -143,6 +230,6 @@ return {
 };
 })();
 
-(node as any).hash = "b29bdd14e3a49b12ad939d1298a39ee9";
+(node as any).hash = "a17b2634dbff125a106168e09d89e21f";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0bf63214690b59ed91ceb4a17b11ccfc>>
+ * @generated SignedSource<<ade82cc04848cd71921676515c9912ec>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,10 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type RequestVerificationFormFragment$data = {
-  readonly __typename: "Organization";
+  readonly description: string | null | undefined;
+  readonly id: string;
+  readonly logoUrl: string;
+  readonly name: string;
   readonly " $fragmentType": "RequestVerificationFormFragment";
 };
 export type RequestVerificationFormFragment$key = {
@@ -29,7 +32,28 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "__typename",
+      "name": "id",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "name",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "logoUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "description",
       "storageKey": null
     }
   ],
@@ -37,6 +61,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "f9ecbf05eeef270cab04a42888188bcc";
+(node as any).hash = "8a180fad49d9730aa305425fe6654df4";
 
 export default node;

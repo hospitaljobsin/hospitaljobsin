@@ -36,7 +36,21 @@ const OrganizationDetailsInternalFragment = graphql`
     website
     email
     location
-	verifiedAt
+	verificationStatus {
+		__typename
+		... on Verified @alias(as: "verified") {
+			verifiedAt
+		}
+		... on Rejected {
+			rejectedAt
+		}
+		... on Pending {
+			requestedAt
+		}
+		... on NotRequested {
+			message
+		}
+	}
   }
 `;
 
@@ -75,7 +89,7 @@ export default function OrganizationDetails({
 										<h4 className="text-lg sm:text-xl font-medium">
 											{data.name}
 										</h4>
-										{data.verifiedAt && (
+										{data.verificationStatus.verified && (
 											<Tooltip
 												content="This organization is verified"
 												placement="right"

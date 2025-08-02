@@ -1,6 +1,7 @@
 import uuid
 from datetime import timedelta
 
+import phonenumbers
 from bson import ObjectId
 from bson.errors import InvalidId
 from email_validator import EmailNotValidError, validate_email
@@ -9,8 +10,10 @@ from result import Err, Ok, Result
 from types_aiobotocore_s3 import S3Client
 
 from app.accounts.documents import Account
+from app.accounts.exceptions import InvalidPhoneNumberError
 from app.accounts.repositories import AccountRepo
 from app.auth.exceptions import InvalidEmailError
+from app.base.models import Address
 from app.config import AppSettings, AWSSettings
 from app.core.constants import (
     ORGANIZATION_INVITE_EXPIRES_IN,
@@ -27,10 +30,12 @@ from app.organizations.documents import (
 from app.organizations.exceptions import (
     InsufficientOrganizationAdminsError,
     MemberAlreadyExistsError,
+    OrganizationAlreadyVerifiedError,
     OrganizationAuthorizationError,
     OrganizationInviteNotFoundError,
     OrganizationMemberNotFoundError,
     OrganizationSlugInUseError,
+    OrganizationVerificationRequestAlreadyExistsError,
 )
 from app.organizations.repositories import (
     OrganizationInviteRepo,
@@ -354,10 +359,38 @@ class OrganizationService:
 
         return Ok(existing_organization)
 
+    async def create_proof_presigned_url(self, content_type: str) -> str:
+        """Create a presigned URL for uploading a proof."""
+        return await self._s3_client.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": self._aws_settings.s3_bucket_name,
+                "Key": f"org-verification-proofs/{uuid.uuid4()}",
+                "ContentType": content_type,
+            },
+            ExpiresIn=3600,
+            HttpMethod="PUT",
+        )
+
     async def request_verification(
-        self, account: Account, organization_id: str
+        self,
+        account: Account,
+        organization_id: str,
+        registered_organization_name: str,
+        contact_email: str,
+        phone_number: str,
+        address: Address,
+        business_proof_type: str,
+        business_proof_url: str,
+        address_proof_type: str,
+        address_proof_url: str,
     ) -> Result[
-        Organization, OrganizationNotFoundError | OrganizationAuthorizationError
+        Organization,
+        OrganizationNotFoundError
+        | OrganizationAuthorizationError
+        | OrganizationAlreadyVerifiedError
+        | OrganizationVerificationRequestAlreadyExistsError
+        | InvalidPhoneNumberError,
     ]:
         """Request an organization verification."""
         try:
@@ -377,7 +410,42 @@ class OrganizationService:
         ):
             return Err(OrganizationAuthorizationError())
 
-        # TODO: inform admins about verification here
+        if (
+            existing_organization.verification_request is not None
+            and existing_organization.verification_request.status == "approved"
+        ):
+            return Err(OrganizationAlreadyVerifiedError())
+
+        if (
+            existing_organization.verification_request is not None
+            and existing_organization.verification_request.status == "pending"
+        ):
+            return Err(OrganizationVerificationRequestAlreadyExistsError())
+
+        try:
+            valid_phone_number = phonenumbers.parse(phone_number)
+        except phonenumbers.NumberParseException:
+            return Err(InvalidPhoneNumberError())
+        else:
+            if not phonenumbers.is_valid_number_for_region(
+                valid_phone_number, region_code="IN"
+            ):
+                # only accept Indian numbers
+                return Err(InvalidPhoneNumberError())
+
+        # create a verification request
+        await self._organization_repo.create_verification_request(
+            organization=existing_organization,
+            account=account,
+            registered_organization_name=registered_organization_name,
+            contact_email=contact_email,
+            phone_number=phone_number,
+            address=address,
+            business_proof_type=business_proof_type,
+            business_proof_url=business_proof_url,
+            address_proof_type=address_proof_type,
+            address_proof_url=address_proof_url,
+        )
 
         return Ok(existing_organization)
 

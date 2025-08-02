@@ -92,7 +92,21 @@ const JobDetailsInternalFragment = graphql`
       name
       description
       logoUrl
-	  verifiedAt
+	  verificationStatus {
+		__typename
+		... on Verified @alias(as: "verified") {
+			verifiedAt
+		}
+		... on Rejected {
+			rejectedAt
+		}
+		... on Pending {
+			requestedAt
+		}
+		... on NotRequested {
+			message
+		}
+	}
     }
   }
 `;
@@ -391,7 +405,7 @@ export default function JobDetails({
 						>
 							{data.organization.name}
 							<ExternalLinkIcon className="w-3 h-3" />
-							{data.organization.verifiedAt && (
+							{data.organization.verificationStatus.verified && (
 								<Tooltip
 									content="This organization is verified"
 									placement="right"

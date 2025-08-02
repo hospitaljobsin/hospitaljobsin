@@ -8,6 +8,7 @@ from beanie.operators import And, In, Set
 from bson import ObjectId
 
 from app.accounts.documents import Account
+from app.base.models import Address
 from app.core.constants import (
     ORGANIZATION_INVITE_EXPIRES_IN,
 )
@@ -15,7 +16,12 @@ from app.core.formatting import slugify
 from app.database.paginator import PaginatedResult, Paginator
 from app.jobs.documents import Job, JobApplicant, SavedJob
 
-from .documents import Organization, OrganizationInvite, OrganizationMember
+from .documents import (
+    Organization,
+    OrganizationInvite,
+    OrganizationMember,
+    OrganizationVerificationRequest,
+)
 
 
 class OrganizationRepo:
@@ -157,6 +163,35 @@ class OrganizationRepo:
             before=ObjectId(before) if before else None,
             after=ObjectId(after) if after else None,
         )
+
+    async def create_verification_request(
+        self,
+        organization: Organization,
+        account: Account,
+        registered_organization_name: str,
+        contact_email: str,
+        phone_number: str,
+        address: Address,
+        business_proof_type: str,
+        business_proof_url: str,
+        address_proof_type: str,
+        address_proof_url: str,
+    ) -> OrganizationVerificationRequest:
+        """Create a new organization verification request."""
+        organization.verification_request = OrganizationVerificationRequest(
+            created_by=account,
+            registered_organization_name=registered_organization_name,
+            contact_email=contact_email,
+            phone_number=phone_number,
+            address=address,
+            business_proof_type=business_proof_type,
+            business_proof_url=business_proof_url,
+            address_proof_type=address_proof_type,
+            address_proof_url=address_proof_url,
+            status="pending",
+        )
+        await organization.save()
+        return organization.verification_request
 
 
 class OrganizationMemberRepo:

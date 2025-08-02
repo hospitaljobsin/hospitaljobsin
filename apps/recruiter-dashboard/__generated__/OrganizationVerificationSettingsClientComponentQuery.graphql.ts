@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<e8a26123c9f26567d5c6f0432eee63be>>
- * @relayHash 8488653b0ab9a071b1cb51b6304324ca
+ * @generated SignedSource<<80cffa1574297fe33c521391d6f2effd>>
+ * @relayHash e3aca34e5a50caca1209d24a6152bafd
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 8488653b0ab9a071b1cb51b6304324ca
+// @relayRequestID e3aca34e5a50caca1209d24a6152bafd
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -47,16 +47,58 @@ v2 = {
   "storageKey": null
 },
 v3 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "verifiedAt",
+      "storageKey": null
+    }
+  ],
+  "type": "Verified",
+  "abstractKey": null
+},
+v4 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "rejectedAt",
+      "storageKey": null
+    }
+  ],
+  "type": "Rejected",
+  "abstractKey": null
+},
+v5 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "requestedAt",
+      "storageKey": null
+    }
+  ],
+  "type": "Pending",
+  "abstractKey": null
+},
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v4 = {
+v7 = {
   "kind": "InlineFragment",
   "selections": [
-    (v3/*: any*/)
+    (v6/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -105,15 +147,62 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "concreteType": null,
+                "kind": "LinkedField",
+                "name": "verificationStatus",
+                "plural": false,
+                "selections": [
+                  (v2/*: any*/),
+                  (v3/*: any*/),
+                  (v4/*: any*/),
+                  (v5/*: any*/),
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "message",
+                        "storageKey": null
+                      }
+                    ],
+                    "type": "NotRequested",
+                    "abstractKey": null
+                  },
+                  (v3/*: any*/),
+                  (v5/*: any*/),
+                  (v4/*: any*/)
+                ],
+                "storageKey": null
+              },
+              (v6/*: any*/),
+              {
+                "alias": null,
+                "args": null,
                 "kind": "ScalarField",
-                "name": "verifiedAt",
+                "name": "name",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "logoUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "description",
                 "storageKey": null
               }
             ],
             "type": "Organization",
             "abstractKey": null
           },
-          (v4/*: any*/)
+          (v7/*: any*/)
         ],
         "storageKey": null
       },
@@ -136,19 +225,19 @@ return {
                 "name": "sudoModeExpiresAt",
                 "storageKey": null
               },
-              (v3/*: any*/)
+              (v6/*: any*/)
             ],
             "type": "Account",
             "abstractKey": null
           },
-          (v4/*: any*/)
+          (v7/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "8488653b0ab9a071b1cb51b6304324ca",
+    "id": "e3aca34e5a50caca1209d24a6152bafd",
     "metadata": {},
     "name": "OrganizationVerificationSettingsClientComponentQuery",
     "operationKind": "query",

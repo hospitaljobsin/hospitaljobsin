@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<532df17ced1b89f46d1ddb0ca51735ee>>
- * @relayHash a86779e5c82135b1220278b79d109353
+ * @generated SignedSource<<8cb3977c9b82d8ff641519398701ebf7>>
+ * @relayHash 8c8435843844b2b663ce0b69fbc5c1a9
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID a86779e5c82135b1220278b79d109353
+// @relayRequestID 8c8435843844b2b663ce0b69fbc5c1a9
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -147,8 +147,55 @@ return {
                       {
                         "alias": null,
                         "args": null,
-                        "kind": "ScalarField",
-                        "name": "verifiedAt",
+                        "concreteType": null,
+                        "kind": "LinkedField",
+                        "name": "verificationStatus",
+                        "plural": false,
+                        "selections": [
+                          (v3/*: any*/),
+                          {
+                            "kind": "InlineFragment",
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "verifiedAt",
+                                "storageKey": null
+                              }
+                            ],
+                            "type": "Verified",
+                            "abstractKey": null
+                          },
+                          {
+                            "kind": "InlineFragment",
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "rejectedAt",
+                                "storageKey": null
+                              }
+                            ],
+                            "type": "Rejected",
+                            "abstractKey": null
+                          },
+                          {
+                            "kind": "InlineFragment",
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "requestedAt",
+                                "storageKey": null
+                              }
+                            ],
+                            "type": "Pending",
+                            "abstractKey": null
+                          }
+                        ],
                         "storageKey": null
                       }
                     ],
@@ -343,7 +390,7 @@ return {
     ]
   },
   "params": {
-    "id": "a86779e5c82135b1220278b79d109353",
+    "id": "8c8435843844b2b663ce0b69fbc5c1a9",
     "metadata": {},
     "name": "LandingClientComponentQuery",
     "operationKind": "query",

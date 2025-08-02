@@ -8,18 +8,23 @@ from result import Err, Ok
 from strawberry import relay
 from strawberry.permission import PermissionExtension
 
+from app.accounts.exceptions import InvalidPhoneNumberError
+from app.accounts.types import InvalidPhoneNumberErrorType
 from app.auth.exceptions import InvalidEmailError
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.auth.types import InvalidEmailErrorType
+from app.base.types import AddressInputType, CreatePresignedURLPayloadType
 from app.context import AuthInfo
 from app.jobs.exceptions import OrganizationNotFoundError
 from app.organizations.exceptions import (
     InsufficientOrganizationAdminsError,
     MemberAlreadyExistsError,
+    OrganizationAlreadyVerifiedError,
     OrganizationAuthorizationError,
     OrganizationInviteNotFoundError,
     OrganizationMemberNotFoundError,
     OrganizationSlugInUseError,
+    OrganizationVerificationRequestAlreadyExistsError,
 )
 from app.organizations.services import (
     OrganizationInviteService,
@@ -29,9 +34,10 @@ from app.organizations.services import (
 
 from .types import (
     AcceptOrganizationInvitePayload,
+    AddressProofTypeEnum,
+    BusinessProofTypeEnum,
     CheckOrganizationSlugAvailabilityPayloadType,
     CreateOrganizationInvitePayload,
-    CreateOrganizationLogoPresignedURLPayloadType,
     CreateOrganizationPayload,
     DeclineOrganizationInvitePayload,
     DeleteOrganizationInvitePayload,
@@ -40,6 +46,7 @@ from .types import (
     DemoteOrganizationMemberSuccessType,
     InsufficientOrganizationAdminsErrorType,
     MemberAlreadyExistsErrorType,
+    OrganizationAlreadyVerifiedErrorType,
     OrganizationAuthorizationErrorType,
     OrganizationInviteEdgeType,
     OrganizationInviteNotFoundErrorType,
@@ -49,6 +56,7 @@ from .types import (
     OrganizationNotFoundErrorType,
     OrganizationSlugInUseErrorType,
     OrganizationType,
+    OrganizationVerificationRequestAlreadyExistsErrorType,
     PromoteOrganizationMemberPayload,
     PromoteOrganizationMemberSuccessType,
     RemoveOrganizationMemberPayload,
@@ -129,7 +137,7 @@ class OrganizationMutation:
         )
 
     @strawberry.mutation(  # type: ignore[misc]
-        graphql_type=CreateOrganizationLogoPresignedURLPayloadType,
+        graphql_type=CreatePresignedURLPayloadType,
         description="Create an organization logo presigned URL.",
         extensions=[
             PermissionExtension(
@@ -146,12 +154,37 @@ class OrganizationMutation:
         content_type: Annotated[
             str, strawberry.argument(description="The content type of the file.")
         ],
-    ) -> CreateOrganizationLogoPresignedURLPayloadType:
+    ) -> CreatePresignedURLPayloadType:
         """Create an organization logo presigned url."""
         result = await organization_service.create_logo_presigned_url(
             content_type=content_type
         )
-        return CreateOrganizationLogoPresignedURLPayloadType(presigned_url=result)
+        return CreatePresignedURLPayloadType(presigned_url=result)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreatePresignedURLPayloadType,
+        description="Create an organization verification proof presigned URL.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def create_organization_verification_proof_presigned_url(
+        self,
+        organization_service: Annotated[OrganizationService, Inject],
+        content_type: Annotated[
+            str, strawberry.argument(description="The content type of the file.")
+        ],
+    ) -> CreatePresignedURLPayloadType:
+        """Create an organization logo presigned url."""
+        result = await organization_service.create_logo_presigned_url(
+            content_type=content_type
+        )
+        return CreatePresignedURLPayloadType(presigned_url=result)
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateOrganizationPayload,
@@ -281,11 +314,47 @@ class OrganizationMutation:
                 description="The ID of the organization to request verification for."
             ),
         ],
+        registered_organization_name: Annotated[
+            str, strawberry.argument(description="The name of the organization.")
+        ],
+        contact_email: Annotated[
+            str, strawberry.argument(description="The work email of the organization.")
+        ],
+        phone_number: Annotated[
+            str,
+            strawberry.argument(description="The phone number of the organization."),
+        ],
+        address: Annotated[
+            AddressInputType,
+            strawberry.argument(description="The address of the organization."),
+        ],
+        business_proof_type: Annotated[
+            BusinessProofTypeEnum,
+            strawberry.argument(description="The type of business proof."),
+        ],
+        business_proof_url: Annotated[
+            str, strawberry.argument(description="The URL of the business proof.")
+        ],
+        address_proof_type: Annotated[
+            AddressProofTypeEnum,
+            strawberry.argument(description="The type of address proof."),
+        ],
+        address_proof_url: Annotated[
+            str, strawberry.argument(description="The URL of the address proof.")
+        ],
     ) -> RequestOrganizationVerificationPayload:
         """Request an organization verification."""
         match await organization_service.request_verification(
             account=info.context["current_user"],
             organization_id=organization_id.node_id,
+            registered_organization_name=registered_organization_name,
+            contact_email=contact_email,
+            phone_number=phone_number,
+            address=address.to_document(),
+            business_proof_type=business_proof_type.value.lower(),
+            business_proof_url=business_proof_url,
+            address_proof_type=address_proof_type.value.lower(),
+            address_proof_url=address_proof_url,
         ):
             case Err(error):
                 match error:
@@ -293,6 +362,12 @@ class OrganizationMutation:
                         return OrganizationNotFoundErrorType()
                     case OrganizationAuthorizationError():
                         return OrganizationAuthorizationErrorType()
+                    case OrganizationAlreadyVerifiedError():
+                        return OrganizationAlreadyVerifiedErrorType()
+                    case OrganizationVerificationRequestAlreadyExistsError():
+                        return OrganizationVerificationRequestAlreadyExistsErrorType()
+                    case InvalidPhoneNumberError():
+                        return InvalidPhoneNumberErrorType()
             case Ok(organization):
                 return OrganizationType.marshal(organization)
             case _ as unreachable:

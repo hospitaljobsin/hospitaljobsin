@@ -4,10 +4,42 @@ from typing import Annotated, ClassVar, Literal
 
 import pymongo
 from beanie import BackLink, Document, Indexed, Link
-from pydantic import Field
+from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
 from app.accounts.documents import Account
+from app.base.models import Address
+
+
+class OrganizationVerificationRequest(BaseModel):
+    registered_organization_name: str
+    contact_email: str
+    phone_number: str
+    address: Address
+
+    business_proof_type: Literal[
+        "gst_certificate",
+        "clinic_registration",
+        "msme_registration",
+        "shop_license",
+        "medical_council_registration",
+        "other",
+    ]
+    business_proof_url: str
+
+    # Address proof
+    address_proof_type: Literal[
+        "utility_bill", "rental_agreement", "bank_statement", "other"
+    ]
+    address_proof_url: str
+
+    created_by: Link[Account]
+
+    # Review status
+    status: Literal["pending", "approved", "rejected"]
+    created_at: datetime = Field(default_factory=datetime.now)
+    approved_at: datetime | None = None
+    rejected_at: datetime | None = None
 
 
 class Organization(Document):
@@ -17,7 +49,7 @@ class Organization(Document):
     location: str | None = None
     email: str | None = None
     website: str | None = None
-    verified_at: datetime | None = None
+    verification_request: OrganizationVerificationRequest | None = None
     internal_logo_url: str | None = Field(default=None, alias="logo_url")
     members: list[BackLink["OrganizationMember"]] = Field(original_field="organization")  # type: ignore[call-overload]
 
@@ -40,27 +72,6 @@ class Organization(Document):
 
     class Settings:
         name = "organizations"
-
-
-class OrganizationVerificationRequest(Document):
-    website: str
-    email: str
-    phone_number: str
-    address: str
-    gst_number: str
-    pan_number: str
-    gst_certificate_url: str
-    pan_certificate_url: str
-    address_proof_url: str
-    other_documents_url: str
-    organization: Link[Organization]
-    created_by: Link[Account]
-    status: Literal["pending", "approved", "rejected"]
-    approved_at: datetime | None = None
-    rejected_at: datetime | None = None
-
-    class Settings:
-        name = "organization_verification_requests"
 
 
 class OrganizationMember(Document):
