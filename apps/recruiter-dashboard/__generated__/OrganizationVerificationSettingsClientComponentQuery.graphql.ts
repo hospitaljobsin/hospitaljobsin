@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<c7818f19a4822cd95e8e1eaf94dcba5a>>
- * @relayHash 8db753251804db98f74eb04b6201441c
+ * @generated SignedSource<<5ee8b6159a9731039970ee00c0239f15>>
+ * @relayHash ee558f8da7f2a1255cdb0524b662b695
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 8db753251804db98f74eb04b6201441c
+// @relayRequestID ee558f8da7f2a1255cdb0524b662b695
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -179,6 +179,20 @@ return {
                 "kind": "ScalarField",
                 "name": "name",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "logoUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "description",
+                "storageKey": null
               }
             ],
             "type": "Organization",
@@ -219,7 +233,7 @@ return {
     ]
   },
   "params": {
-    "id": "8db753251804db98f74eb04b6201441c",
+    "id": "ee558f8da7f2a1255cdb0524b662b695",
     "metadata": {},
     "name": "OrganizationVerificationSettingsClientComponentQuery",
     "operationKind": "query",

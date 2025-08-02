@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5f20f9100db2fe08593eb13165483db4>>
+ * @generated SignedSource<<ade82cc04848cd71921676515c9912ec>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,9 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type RequestVerificationFormFragment$data = {
+  readonly description: string | null | undefined;
   readonly id: string;
+  readonly logoUrl: string;
   readonly name: string;
   readonly " $fragmentType": "RequestVerificationFormFragment";
 };
@@ -39,12 +41,26 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "name",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "logoUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "description",
+      "storageKey": null
     }
   ],
   "type": "Organization",
   "abstractKey": null
 };
 
-(node as any).hash = "cf8f10a8e31d5640baf08cd628ec42d2";
+(node as any).hash = "8a180fad49d9730aa305425fe6654df4";
 
 export default node;

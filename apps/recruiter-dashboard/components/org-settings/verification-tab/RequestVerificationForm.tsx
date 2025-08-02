@@ -11,11 +11,11 @@ import {
 	Input,
 	Select,
 	SelectItem,
-	Textarea,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UploadIcon } from "lucide-react";
+import { UploadIcon, VerifiedIcon } from "lucide-react";
 import { useNavigationGuard } from "next-navigation-guard";
+import Image from "next/image";
 import { useCallback, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
@@ -94,6 +94,8 @@ const RequestVerificationFormFragment = graphql`
 	fragment RequestVerificationFormFragment on Organization {
 		id
 		name
+		logoUrl
+		description
 	}
 `;
 
@@ -116,7 +118,8 @@ const verificationFormSchema = z.object({
 		line2: z
 			.string()
 			.min(5, "Line 2 must be at least 5 characters")
-			.max(200, "Line 2 must be less than 200 characters"),
+			.max(200, "Line 2 must be less than 200 characters")
+			.optional(),
 		city: z
 			.string()
 			.min(2, "City must be at least 2 characters")
@@ -312,7 +315,7 @@ export default function RequestVerificationForm({
 					phoneNumber: `+91${formData.phoneNumber}`,
 					address: {
 						line1: formData.address.line1,
-						line2: formData.address.line2,
+						line2: formData.address.line2 || null,
 						city: formData.address.city,
 						state: formData.address.state,
 						pincode: formData.address.pincode,
@@ -377,14 +380,40 @@ export default function RequestVerificationForm({
 	};
 
 	return (
-		<div className="w-full mx-auto p-8">
-			<div className="mb-8">
-				<h1 className="text-2xl font-medium text-gray-900 mb-2">
-					Request Organization Verification
-				</h1>
-				<p className="text-gray-600">
-					Complete the form below to verify your organization. This process
-					helps build trust with job seekers.
+		<div className="w-full mx-auto flex flex-col gap-8">
+			<div className="flex flex-col gap-6">
+				<div className="flex flex-col gap-2">
+					<h1 className="text-2xl font-medium text-gray-900 mb-2">
+						Request Organization Verification
+					</h1>
+					<p className="text-gray-600">
+						Complete the form below to verify your organization.
+					</p>
+				</div>
+				<Card className="p-6" shadow="none" isDisabled>
+					<CardHeader className="text-lg font-medium flex items-center gap-6">
+						<div className="relative aspect-square w-16 h-16">
+							<Image
+								src={data.logoUrl}
+								alt={data.name}
+								fill
+								className="rounded-md object-cover"
+							/>
+						</div>
+						<div className="flex flex-col gap-2">
+							<div className="flex items-center gap-2">
+								{data.name}
+								<VerifiedIcon className="w-4 h-4 text-primary" />
+							</div>
+							<p className="text-sm sm:text-base font-normal text-foreground-500 line-clamp-2">
+								{data.description}
+							</p>
+						</div>
+					</CardHeader>
+				</Card>
+				<p className="text-foreground-600 text-sm -mt-2 flex items-center gap-2 justify-end">
+					<VerifiedIcon className="w-4 h-4 text-primary" />
+					Verification Preview
 				</p>
 			</div>
 
@@ -394,7 +423,7 @@ export default function RequestVerificationForm({
 				</Alert>
 			)}
 
-			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+			<form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
 				{/* Organization Information Card */}
 				<Card className="w-full p-6" shadow="none">
 					<CardHeader>
@@ -402,7 +431,7 @@ export default function RequestVerificationForm({
 							Organization Information
 						</h2>
 					</CardHeader>
-					<CardBody className="space-y-4">
+					<CardBody className="space-y-6">
 						<Input
 							{...register("registeredOrganizationName")}
 							label="Organization Name"
@@ -438,18 +467,18 @@ export default function RequestVerificationForm({
 							Address Information
 						</h2>
 					</CardHeader>
-					<CardBody className="space-y-4">
-						<Textarea
+					<CardBody className="space-y-6">
+						<Input
 							{...register("address.line1")}
 							label="Street Address"
-							placeholder="Enter complete street address"
+							placeholder="Enter Street Address 1"
 							isInvalid={!!errors.address?.line1}
 							errorMessage={errors.address?.line1?.message}
 						/>
-						<Textarea
+						<Input
 							{...register("address.line2")}
 							label="Street Address"
-							placeholder="Enter complete street address"
+							placeholder="Enter Street Address 2 (Optional)"
 							isInvalid={!!errors.address?.line2}
 							errorMessage={errors.address?.line2?.message}
 						/>
@@ -498,7 +527,7 @@ export default function RequestVerificationForm({
 							Business Proof
 						</h2>
 					</CardHeader>
-					<CardBody className="space-y-4">
+					<CardBody className="space-y-6">
 						<Controller
 							name="businessProofType"
 							control={control}
@@ -547,7 +576,7 @@ export default function RequestVerificationForm({
 					<CardHeader>
 						<h2 className="text-lg font-medium text-gray-900">Address Proof</h2>
 					</CardHeader>
-					<CardBody className="space-y-4">
+					<CardBody className="space-y-6">
 						<Controller
 							name="addressProofType"
 							control={control}
