@@ -63,6 +63,8 @@ class Job(Document):
 
     last_applicant_applied_at: datetime | None = None
 
+    whatsapp_channel_posted_at: datetime | None = None
+
     organization: Link[Organization]
 
     class Settings:

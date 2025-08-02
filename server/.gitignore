@@ -165,3 +165,4 @@ secrets/
 
 # LangGraph API
 .langgraph_api
+whatsapp_job_tracking.json
