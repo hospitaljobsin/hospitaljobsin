@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<fea1d4e7e8adbe966940e820bb6706a8>>
- * @relayHash d06761d09ffc0dd586995b7653372722
+ * @generated SignedSource<<98d1a27473bff35d8597e8201673e54b>>
+ * @relayHash 78e918a6fd81f1166eb01dd89e88ead4
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d06761d09ffc0dd586995b7653372722
+// @relayRequestID 78e918a6fd81f1166eb01dd89e88ead4
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -249,8 +249,69 @@ return {
                           {
                             "alias": null,
                             "args": null,
-                            "kind": "ScalarField",
-                            "name": "verifiedAt",
+                            "concreteType": null,
+                            "kind": "LinkedField",
+                            "name": "verificationStatus",
+                            "plural": false,
+                            "selections": [
+                              (v3/*: any*/),
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "verifiedAt",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "Verified",
+                                "abstractKey": null
+                              },
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "rejectedAt",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "Rejected",
+                                "abstractKey": null
+                              },
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "requestedAt",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "Pending",
+                                "abstractKey": null
+                              },
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "message",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "NotRequested",
+                                "abstractKey": null
+                              }
+                            ],
                             "storageKey": null
                           }
                         ],
@@ -371,7 +432,7 @@ return {
     ]
   },
   "params": {
-    "id": "d06761d09ffc0dd586995b7653372722",
+    "id": "78e918a6fd81f1166eb01dd89e88ead4",
     "metadata": {},
     "name": "JobApplyFormMutation",
     "operationKind": "mutation",

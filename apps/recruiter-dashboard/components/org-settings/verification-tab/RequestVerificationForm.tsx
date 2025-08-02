@@ -47,8 +47,21 @@ const RequestOrganizationVerificationMutation = graphql`
 			__typename
 			... on Organization {
 				id
-				verificationStatus
-				verifiedAt
+				verificationStatus {
+					__typename
+					... on Verified @alias(as: "verified") {
+						verifiedAt
+					}
+					... on Rejected {
+						rejectedAt
+					}
+					... on Pending {
+						requestedAt
+					}
+					... on NotRequested {
+						message
+					}
+				}
 			}
 			... on OrganizationNotFoundError {
 				message

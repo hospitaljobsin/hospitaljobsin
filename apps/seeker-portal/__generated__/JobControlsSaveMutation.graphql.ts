@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<9f2343910e74041d91c04c82baff1233>>
- * @relayHash 280e12331e9a5059a72c86b12ebecaaa
+ * @generated SignedSource<<2fda05b77da45807fba517d2712383b7>>
+ * @relayHash 997acfa9546bc5584042eb015ef3a78a
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 280e12331e9a5059a72c86b12ebecaaa
+// @relayRequestID 997acfa9546bc5584042eb015ef3a78a
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -57,10 +57,17 @@ v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "slug",
+  "name": "__typename",
   "storageKey": null
 },
 v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "slug",
+  "storageKey": null
+},
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -143,13 +150,7 @@ return {
         "name": "saveJob",
         "plural": false,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "__typename",
-            "storageKey": null
-          },
+          (v3/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -177,7 +178,7 @@ return {
                         "name": "isSaved",
                         "storageKey": null
                       },
-                      (v3/*: any*/),
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -185,7 +186,7 @@ return {
                         "name": "title",
                         "storageKey": null
                       },
-                      (v4/*: any*/),
+                      (v5/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -208,14 +209,75 @@ return {
                             "name": "logoUrl",
                             "storageKey": null
                           },
-                          (v3/*: any*/),
-                          (v2/*: any*/),
                           (v4/*: any*/),
+                          (v2/*: any*/),
+                          (v5/*: any*/),
                           {
                             "alias": null,
                             "args": null,
-                            "kind": "ScalarField",
-                            "name": "verifiedAt",
+                            "concreteType": null,
+                            "kind": "LinkedField",
+                            "name": "verificationStatus",
+                            "plural": false,
+                            "selections": [
+                              (v3/*: any*/),
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "verifiedAt",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "Verified",
+                                "abstractKey": null
+                              },
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "rejectedAt",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "Rejected",
+                                "abstractKey": null
+                              },
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "requestedAt",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "Pending",
+                                "abstractKey": null
+                              },
+                              {
+                                "kind": "InlineFragment",
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "message",
+                                    "storageKey": null
+                                  }
+                                ],
+                                "type": "NotRequested",
+                                "abstractKey": null
+                              }
+                            ],
                             "storageKey": null
                           }
                         ],
@@ -335,7 +397,7 @@ return {
     ]
   },
   "params": {
-    "id": "280e12331e9a5059a72c86b12ebecaaa",
+    "id": "997acfa9546bc5584042eb015ef3a78a",
     "metadata": {},
     "name": "JobControlsSaveMutation",
     "operationKind": "mutation",

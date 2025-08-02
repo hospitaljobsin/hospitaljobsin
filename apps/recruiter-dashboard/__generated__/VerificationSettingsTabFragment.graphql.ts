@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6f13183751d07324a11d61bf7360be66>>
+ * @generated SignedSource<<19ff8cd7441c38fe075603580d450166>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,14 +9,28 @@
 // @ts-nocheck
 
 import type { ReaderFragment } from 'relay-runtime';
-export type VerificationStatus = "NOT_REQUESTED" | "PENDING" | "REJECTED" | "VERIFIED" | "%future added value";
 import type { FragmentRefs } from "relay-runtime";
 export type VerificationSettingsTabFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
     readonly isAdmin: boolean;
-    readonly verificationStatus: VerificationStatus;
-    readonly verifiedAt: any | null | undefined;
+    readonly verificationStatus: {
+      readonly __typename: "NotRequested";
+      readonly message: string;
+    } | {
+      readonly __typename: "Pending";
+      readonly requestedAt: any;
+    } | {
+      readonly __typename: "Rejected";
+      readonly rejectedAt: any;
+    } | {
+      readonly __typename: "Verified";
+      readonly verifiedAt: any;
+    } | {
+      // This will never be '%other', but we need some
+      // value in case none of the concrete values match.
+      readonly __typename: "%other";
+    };
     readonly " $fragmentSpreads": FragmentRefs<"AlreadyVerifiedFragment" | "PendingVerificationViewFragment" | "RejectedVerificationViewFragment" | "RequestVerificationFormFragment">;
   } | {
     // This will never be '%other', but we need some
@@ -87,15 +101,69 @@ return {
             {
               "alias": null,
               "args": null,
-              "kind": "ScalarField",
-              "name": "verifiedAt",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
+              "concreteType": null,
+              "kind": "LinkedField",
               "name": "verificationStatus",
+              "plural": false,
+              "selections": [
+                (v0/*: any*/),
+                {
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "verifiedAt",
+                      "storageKey": null
+                    }
+                  ],
+                  "type": "Verified",
+                  "abstractKey": null
+                },
+                {
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "rejectedAt",
+                      "storageKey": null
+                    }
+                  ],
+                  "type": "Rejected",
+                  "abstractKey": null
+                },
+                {
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "requestedAt",
+                      "storageKey": null
+                    }
+                  ],
+                  "type": "Pending",
+                  "abstractKey": null
+                },
+                {
+                  "kind": "InlineFragment",
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "message",
+                      "storageKey": null
+                    }
+                  ],
+                  "type": "NotRequested",
+                  "abstractKey": null
+                }
+              ],
               "storageKey": null
             },
             {
@@ -162,6 +230,6 @@ return {
 };
 })();
 
-(node as any).hash = "7140b976e4e3540589347069b7853f8e";
+(node as any).hash = "a17b2634dbff125a106168e09d89e21f";
 
 export default node;

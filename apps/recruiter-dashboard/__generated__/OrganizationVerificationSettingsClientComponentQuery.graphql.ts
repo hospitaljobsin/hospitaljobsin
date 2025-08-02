@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6eb6bf40c6ddd3ba398b7965073b8122>>
- * @relayHash 12155b8505f3723bfa5cf3ddee220983
+ * @generated SignedSource<<c7818f19a4822cd95e8e1eaf94dcba5a>>
+ * @relayHash 8db753251804db98f74eb04b6201441c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 12155b8505f3723bfa5cf3ddee220983
+// @relayRequestID 8db753251804db98f74eb04b6201441c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -47,16 +47,30 @@ v2 = {
   "storageKey": null
 },
 v3 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "verifiedAt",
+      "storageKey": null
+    }
+  ],
+  "type": "Verified",
+  "abstractKey": null
+},
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v4 = {
+v5 = {
   "kind": "InlineFragment",
   "selections": [
-    (v3/*: any*/)
+    (v4/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -105,18 +119,60 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "verifiedAt",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
+                "concreteType": null,
+                "kind": "LinkedField",
                 "name": "verificationStatus",
+                "plural": false,
+                "selections": [
+                  (v2/*: any*/),
+                  (v3/*: any*/),
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "rejectedAt",
+                        "storageKey": null
+                      }
+                    ],
+                    "type": "Rejected",
+                    "abstractKey": null
+                  },
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "requestedAt",
+                        "storageKey": null
+                      }
+                    ],
+                    "type": "Pending",
+                    "abstractKey": null
+                  },
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "message",
+                        "storageKey": null
+                      }
+                    ],
+                    "type": "NotRequested",
+                    "abstractKey": null
+                  },
+                  (v3/*: any*/)
+                ],
                 "storageKey": null
               },
-              (v3/*: any*/),
+              (v4/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -128,7 +184,7 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v4/*: any*/)
+          (v5/*: any*/)
         ],
         "storageKey": null
       },
@@ -151,19 +207,19 @@ return {
                 "name": "sudoModeExpiresAt",
                 "storageKey": null
               },
-              (v3/*: any*/)
+              (v4/*: any*/)
             ],
             "type": "Account",
             "abstractKey": null
           },
-          (v4/*: any*/)
+          (v5/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "12155b8505f3723bfa5cf3ddee220983",
+    "id": "8db753251804db98f74eb04b6201441c",
     "metadata": {},
     "name": "OrganizationVerificationSettingsClientComponentQuery",
     "operationKind": "query",

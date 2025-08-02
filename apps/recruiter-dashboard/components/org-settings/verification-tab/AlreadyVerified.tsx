@@ -7,7 +7,21 @@ import { graphql, useFragment } from "react-relay";
 const AlreadyVerifiedFragment = graphql`
 	fragment AlreadyVerifiedFragment on Organization {
 		__typename
-        verifiedAt
+        verificationStatus {
+		__typename
+		... on Verified @alias(as: "verified") {
+			verifiedAt
+		}
+		... on Rejected {
+			rejectedAt
+		}
+		... on Pending {
+			requestedAt
+		}
+		... on NotRequested {
+			message
+		}
+	}
 	}
 `;
 
@@ -15,6 +29,8 @@ export default function AlreadyVerified({
 	organization,
 }: { organization: AlreadyVerifiedFragment$key }) {
 	const data = useFragment(AlreadyVerifiedFragment, organization);
+
+	if (!data.verificationStatus.verified) return null;
 
 	const formatVerificationDate = (dateString: string | null) => {
 		if (!dateString) return "Unknown date";
@@ -57,7 +73,9 @@ export default function AlreadyVerified({
 						<div>
 							<p className="text-sm font-medium text-gray-700">Verified on</p>
 							<p className="text-sm text-gray-600">
-								{formatVerificationDate(data.verifiedAt)}
+								{formatVerificationDate(
+									data.verificationStatus.verified.verifiedAt,
+								)}
 							</p>
 						</div>
 					</Alert>

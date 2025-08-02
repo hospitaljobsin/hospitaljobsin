@@ -8,7 +8,7 @@ from aioinject import Inject, Injected
 from aioinject.ext.strawberry import inject
 from bson import ObjectId
 from result import Err, Ok
-from strawberry import relay
+from strawberry import Private, relay
 from strawberry.permission import PermissionExtension
 from strawberry.types import Info
 
@@ -79,15 +79,53 @@ class AddressProofTypeEnum(Enum):
     OTHER = "OTHER"
 
 
-@strawberry.enum(
-    name="VerificationStatus",
-    description="Organization verification status type.",
+@strawberry.type(
+    name="Verified",
+    description="Organization is verified.",
 )
-class VerificationStatusEnum(Enum):
-    VERIFIED = "VERIFIED"
-    PENDING = "PENDING"
-    REJECTED = "REJECTED"
-    NOT_REQUESTED = "NOT_REQUESTED"
+class VerifiedType:
+    verified_at: datetime = strawberry.field(
+        description="The date and time the organization was verified.",
+    )
+
+
+@strawberry.type(
+    name="Rejected",
+    description="Organization verification was rejected.",
+)
+class RejectedType:
+    rejected_at: datetime = strawberry.field(
+        description="The date and time the organization verification was rejected.",
+    )
+
+
+@strawberry.type(
+    name="Pending",
+    description="Organization verification is pending.",
+)
+class PendingType:
+    requested_at: datetime = strawberry.field(
+        description="The date and time the organization verification was requested.",
+    )
+
+
+@strawberry.type(
+    name="NotRequested",
+    description="Organization verification has not been requested.",
+)
+class NotRequestedType:
+    message: str = strawberry.field(
+        description="Message indicating verification has not been requested.",
+    )
+
+
+VerificationStatusUnion = Annotated[
+    "VerifiedType | RejectedType | PendingType | NotRequestedType",
+    strawberry.union(
+        name="VerificationStatus",
+        description="Organization verification status type.",
+    ),
+]
 
 
 @strawberry.type(
@@ -239,9 +277,7 @@ class OrganizationType(BaseNodeType[Organization]):
     logo_url: str = strawberry.field(
         description="The logo URL of the organization.",
     )
-    verified_at: datetime | None = strawberry.field(
-        description="The date and time the organization was verified.",
-    )
+    verified_at: Private[datetime | None]
 
     @strawberry.field(
         description="The verification status of the organization.",
@@ -252,11 +288,11 @@ class OrganizationType(BaseNodeType[Organization]):
         organization_verification_request_repo: Annotated[
             "OrganizationVerificationRequestRepo", Inject
         ],
-    ) -> VerificationStatusEnum:
+    ) -> VerificationStatusUnion:
         """Get the verification status of the organization."""
         # If organization is already verified, return VERIFIED
         if self.verified_at is not None:
-            return VerificationStatusEnum.VERIFIED
+            return VerifiedType(verified_at=self.verified_at)
 
         # Get the latest verification request for this organization
         latest_request = (
@@ -266,14 +302,22 @@ class OrganizationType(BaseNodeType[Organization]):
         )
 
         if latest_request is None:
-            return VerificationStatusEnum.NOT_REQUESTED
+            return NotRequestedType(message="Verification not requested.")
 
         # Return status based on the latest request
         if latest_request.status == "pending":
-            return VerificationStatusEnum.PENDING
+            return PendingType(requested_at=latest_request.id.generation_time)
         if latest_request.status == "rejected":
-            return VerificationStatusEnum.REJECTED
-        return VerificationStatusEnum.VERIFIED
+            if latest_request.rejected_at is None:
+                # Fallback to created_at if rejected_at is not set
+                return RejectedType(rejected_at=latest_request.id.generation_time)
+            return RejectedType(rejected_at=latest_request.rejected_at)
+
+        # If status is "approved", return verified with approved_at
+        if latest_request.approved_at is not None:
+            return VerifiedType(verified_at=latest_request.approved_at)
+        # Fallback to created_at if approved_at is not set
+        return VerifiedType(verified_at=latest_request.id.generation_time)
 
     @strawberry.field(
         description="The job applicants for jobs in this organization.",

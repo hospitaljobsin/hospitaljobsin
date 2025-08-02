@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<737bd5789f68afad50e06adee3af0d3f>>
+ * @generated SignedSource<<c9dbac250108c4c7f70c231b6416d822>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,15 @@ export type OrganizationDetailsInternalFragment$data = {
   readonly location: string | null | undefined;
   readonly logoUrl: string;
   readonly name: string;
-  readonly verifiedAt: any | null | undefined;
+  readonly verificationStatus: {
+    readonly __typename: string;
+    readonly message?: string;
+    readonly rejectedAt?: any;
+    readonly requestedAt?: any;
+    readonly verified: {
+      readonly verifiedAt: any;
+    } | null | undefined;
+  };
   readonly website: string | null | undefined;
   readonly " $fragmentType": "OrganizationDetailsInternalFragment";
 };
@@ -76,8 +84,79 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
-      "kind": "ScalarField",
-      "name": "verifiedAt",
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "verificationStatus",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "__typename",
+          "storageKey": null
+        },
+        {
+          "fragment": {
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "verifiedAt",
+                "storageKey": null
+              }
+            ],
+            "type": "Verified",
+            "abstractKey": null
+          },
+          "kind": "AliasedInlineFragmentSpread",
+          "name": "verified"
+        },
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "rejectedAt",
+              "storageKey": null
+            }
+          ],
+          "type": "Rejected",
+          "abstractKey": null
+        },
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "requestedAt",
+              "storageKey": null
+            }
+          ],
+          "type": "Pending",
+          "abstractKey": null
+        },
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "message",
+              "storageKey": null
+            }
+          ],
+          "type": "NotRequested",
+          "abstractKey": null
+        }
+      ],
       "storageKey": null
     }
   ],
@@ -85,6 +164,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "64746e02345c386732b47e5caa79dda3";
+(node as any).hash = "43d389df941962084d8ef599ca24a24f";
 
 export default node;

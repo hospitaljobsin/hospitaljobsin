@@ -3062,6 +3062,16 @@ type NotAuthenticatedError implements Error {
 }
 
 """
+Organization verification has not been requested.
+"""
+type NotRequested {
+	"""
+	Message indicating verification has not been requested.
+	"""
+	message: String!
+}
+
+"""
 An organization owned by an account.
 """
 type Organization implements Node {
@@ -3104,11 +3114,6 @@ type Organization implements Node {
 	The logo URL of the organization.
 	"""
 	logoUrl: String!
-
-	"""
-	The date and time the organization was verified.
-	"""
-	verifiedAt: DateTime
 
 	"""
 	The verification status of the organization.
@@ -3575,6 +3580,16 @@ The password reset token payload.
 union PasswordResetTokenPayload =
 	| PasswordResetToken
 	| PasswordResetTokenNotFoundError
+
+"""
+Organization verification is pending.
+"""
+type Pending {
+	"""
+	The date and time the organization verification was requested.
+	"""
+	requestedAt: DateTime!
+}
 
 type PhoneNumberAlreadyExistsError implements Error {
 	"""
@@ -4046,6 +4061,16 @@ union RegisterWithPasswordPayload =
 	| InvalidEmailVerificationTokenError
 	| InvalidCaptchaTokenError
 	| PasswordNotStrongError
+
+"""
+Organization verification was rejected.
+"""
+type Rejected {
+	"""
+	The date and time the organization verification was rejected.
+	"""
+	rejectedAt: DateTime!
+}
 
 """
 The remove account phone number payload.
@@ -4543,11 +4568,16 @@ union UpdateWebAuthnCredentialPayload =
 """
 Organization verification status type.
 """
-enum VerificationStatus {
-	VERIFIED
-	PENDING
-	REJECTED
-	NOT_REQUESTED
+union VerificationStatus = Verified | Rejected | Pending | NotRequested
+
+"""
+Organization is verified.
+"""
+type Verified {
+	"""
+	The date and time the organization was verified.
+	"""
+	verifiedAt: DateTime!
 }
 
 """

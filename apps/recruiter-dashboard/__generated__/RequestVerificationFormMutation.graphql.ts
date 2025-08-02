@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<828724287f4ab3f27a495f0d20765009>>
- * @relayHash 6cea85fcfcf0f4a44610ce9297c6a879
+ * @generated SignedSource<<a75c4e232b2c0dd4f083df81cdda7e5e>>
+ * @relayHash ea637c4d94715001de71d53b6c6f9887
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,11 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 6cea85fcfcf0f4a44610ce9297c6a879
+// @relayRequestID ea637c4d94715001de71d53b6c6f9887
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type AddressProof = "BANK_STATEMENT" | "OTHER" | "RENTAL_AGREEMENT" | "UTILITY_BILL" | "%future added value";
 export type BusinessProof = "CLINIC_REGISTRATION" | "GST_CERTIFICATE" | "MEDICAL_COUNCIL_REGISTRATION" | "MSME_REGISTRATION" | "OTHER" | "SHOP_LICENSE" | "%future added value";
-export type VerificationStatus = "NOT_REQUESTED" | "PENDING" | "REJECTED" | "VERIFIED" | "%future added value";
 export type AddressInput = {
   city?: string | null | undefined;
   country?: string | null | undefined;
@@ -41,8 +40,15 @@ export type RequestVerificationFormMutation$data = {
   } | {
     readonly __typename: "Organization";
     readonly id: string;
-    readonly verificationStatus: VerificationStatus;
-    readonly verifiedAt: any | null | undefined;
+    readonly verificationStatus: {
+      readonly __typename: string;
+      readonly message?: string;
+      readonly rejectedAt?: any;
+      readonly requestedAt?: any;
+      readonly verified: {
+        readonly verifiedAt: any;
+      } | null | undefined;
+    };
   } | {
     readonly __typename: "OrganizationAlreadyVerifiedError";
     readonly message: string;
@@ -176,14 +182,6 @@ v11 = {
 v12 = {
   "kind": "InlineFragment",
   "selections": [
-    (v11/*: any*/),
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "verificationStatus",
-      "storageKey": null
-    },
     {
       "alias": null,
       "args": null,
@@ -192,10 +190,38 @@ v12 = {
       "storageKey": null
     }
   ],
-  "type": "Organization",
+  "type": "Verified",
   "abstractKey": null
 },
-v13 = [
+v13 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "rejectedAt",
+      "storageKey": null
+    }
+  ],
+  "type": "Rejected",
+  "abstractKey": null
+},
+v14 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "requestedAt",
+      "storageKey": null
+    }
+  ],
+  "type": "Pending",
+  "abstractKey": null
+},
+v15 = [
   {
     "alias": null,
     "args": null,
@@ -204,33 +230,39 @@ v13 = [
     "storageKey": null
   }
 ],
-v14 = {
-  "kind": "InlineFragment",
-  "selections": (v13/*: any*/),
-  "type": "OrganizationNotFoundError",
-  "abstractKey": null
-},
-v15 = {
-  "kind": "InlineFragment",
-  "selections": (v13/*: any*/),
-  "type": "OrganizationAuthorizationError",
-  "abstractKey": null
-},
 v16 = {
   "kind": "InlineFragment",
-  "selections": (v13/*: any*/),
-  "type": "OrganizationAlreadyVerifiedError",
+  "selections": (v15/*: any*/),
+  "type": "NotRequested",
   "abstractKey": null
 },
 v17 = {
   "kind": "InlineFragment",
-  "selections": (v13/*: any*/),
-  "type": "OrganizationVerificationRequestAlreadyExistsError",
+  "selections": (v15/*: any*/),
+  "type": "OrganizationNotFoundError",
   "abstractKey": null
 },
 v18 = {
   "kind": "InlineFragment",
-  "selections": (v13/*: any*/),
+  "selections": (v15/*: any*/),
+  "type": "OrganizationAuthorizationError",
+  "abstractKey": null
+},
+v19 = {
+  "kind": "InlineFragment",
+  "selections": (v15/*: any*/),
+  "type": "OrganizationAlreadyVerifiedError",
+  "abstractKey": null
+},
+v20 = {
+  "kind": "InlineFragment",
+  "selections": (v15/*: any*/),
+  "type": "OrganizationVerificationRequestAlreadyExistsError",
+  "abstractKey": null
+},
+v21 = {
+  "kind": "InlineFragment",
+  "selections": (v15/*: any*/),
   "type": "InvalidPhoneNumberError",
   "abstractKey": null
 };
@@ -260,12 +292,39 @@ return {
         "plural": false,
         "selections": [
           (v10/*: any*/),
-          (v12/*: any*/),
-          (v14/*: any*/),
-          (v15/*: any*/),
-          (v16/*: any*/),
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v11/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": null,
+                "kind": "LinkedField",
+                "name": "verificationStatus",
+                "plural": false,
+                "selections": [
+                  (v10/*: any*/),
+                  {
+                    "fragment": (v12/*: any*/),
+                    "kind": "AliasedInlineFragmentSpread",
+                    "name": "verified"
+                  },
+                  (v13/*: any*/),
+                  (v14/*: any*/),
+                  (v16/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "type": "Organization",
+            "abstractKey": null
+          },
           (v17/*: any*/),
-          (v18/*: any*/)
+          (v18/*: any*/),
+          (v19/*: any*/),
+          (v20/*: any*/),
+          (v21/*: any*/)
         ],
         "storageKey": null
       }
@@ -298,12 +357,35 @@ return {
         "plural": false,
         "selections": [
           (v10/*: any*/),
-          (v12/*: any*/),
-          (v14/*: any*/),
-          (v15/*: any*/),
-          (v16/*: any*/),
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v11/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": null,
+                "kind": "LinkedField",
+                "name": "verificationStatus",
+                "plural": false,
+                "selections": [
+                  (v10/*: any*/),
+                  (v12/*: any*/),
+                  (v13/*: any*/),
+                  (v14/*: any*/),
+                  (v16/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "type": "Organization",
+            "abstractKey": null
+          },
           (v17/*: any*/),
           (v18/*: any*/),
+          (v19/*: any*/),
+          (v20/*: any*/),
+          (v21/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
@@ -318,7 +400,7 @@ return {
     ]
   },
   "params": {
-    "id": "6cea85fcfcf0f4a44610ce9297c6a879",
+    "id": "ea637c4d94715001de71d53b6c6f9887",
     "metadata": {},
     "name": "RequestVerificationFormMutation",
     "operationKind": "mutation",
@@ -327,6 +409,6 @@ return {
 };
 })();
 
-(node as any).hash = "34ffc4239cd27812ba116469cadbe897";
+(node as any).hash = "1910dcda213a66ccb75fdd7aa83841f2";
 
 export default node;

@@ -27,8 +27,21 @@ const VerificationSettingsTabFragment = graphql`
             __typename
             ... on Organization {
 				isAdmin
-                verifiedAt
-                verificationStatus
+                verificationStatus {
+					__typename
+					... on Verified {
+						verifiedAt
+					}
+					... on Rejected {
+						rejectedAt
+					}
+					... on Pending {
+						requestedAt
+					}
+					... on NotRequested {
+						message
+					}
+				}
                 ...AlreadyVerifiedFragment
 				...RequestVerificationFormFragment
                 ...PendingVerificationViewFragment
@@ -73,15 +86,14 @@ export default function VerificationSettingsTab({
 		"Expected 'Account' node type",
 	);
 
-	// Handle different verification statuses
-	switch (data.organization.verificationStatus) {
-		case "VERIFIED":
-			return <AlreadyVerified organization={data.organization} />;
-		case "PENDING":
-			return <PendingVerificationView organization={data.organization} />;
-		case "REJECTED":
-			return <RejectedVerificationView organization={data.organization} />;
-		default:
-			return <RequestVerificationForm organization={data.organization} />;
+	if (data.organization.verificationStatus.__typename === "Verified") {
+		return <AlreadyVerified organization={data.organization} />;
 	}
+	if (data.organization.verificationStatus.__typename === "Pending") {
+		return <PendingVerificationView organization={data.organization} />;
+	}
+	if (data.organization.verificationStatus.__typename === "Rejected") {
+		return <RejectedVerificationView organization={data.organization} />;
+	}
+	return <RequestVerificationForm organization={data.organization} />;
 }
