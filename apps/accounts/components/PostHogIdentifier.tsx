@@ -1,5 +1,6 @@
 "use client";
 import type { PostHogIdentifierQuery as PostHogIdentifierQueryType } from "@/__generated__/PostHogIdentifierQuery.graphql";
+import useIsAuthenticated from "@/lib/hooks/useIsAuthenticated";
 import posthog from "posthog-js";
 import { useEffect } from "react";
 import type { PreloadedQuery } from "react-relay";
@@ -20,16 +21,16 @@ export const PostHogIdentifierQuery = graphql`
 `;
 
 export default function PostHogIdentifier() {
+	const { isAuthenticated } = useIsAuthenticated();
 	const [queryReference, loadQuery, disposeQuery] =
 		useQueryLoader<PostHogIdentifierQueryType>(PostHogIdentifierQuery);
 
 	useEffect(() => {
-		// Only load query if PostHog is not identified
-		// TODO: also load query only if authenticated (prolly get this value from cookies to avoid unnecessary calls on anon users)
-		if (!posthog._isIdentified()) {
+		// Only load query if PostHog is not identified and user is authenticated
+		if (!posthog._isIdentified() && isAuthenticated) {
 			loadQuery({});
 		}
-	}, [loadQuery]);
+	}, [loadQuery, isAuthenticated]);
 
 	// If no query reference, don't render anything
 	if (!queryReference) {
