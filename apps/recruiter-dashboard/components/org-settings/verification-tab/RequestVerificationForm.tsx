@@ -93,10 +93,8 @@ const verificationFormSchema = z.object({
 	contactEmail: z.string().email("Please enter a valid email address"),
 	phoneNumber: z
 		.string()
-		.regex(
-			/^\+91[6-9]\d{9}$/,
-			"Please enter a valid Indian phone number (+91XXXXXXXXXX)",
-		),
+		.min(1, "Phone number is required")
+		.length(10, "Invalid phone number"),
 	address: z.object({
 		line1: z
 			.string()
@@ -166,7 +164,7 @@ const businessProofOptions = [
 	{ value: "GST_CERTIFICATE", label: "GST Certificate" },
 	{ value: "CLINIC_REGISTRATION", label: "Clinic Registration" },
 	{ value: "MSME_REGISTRATION", label: "MSME Registration" },
-	{ value: "SHOP_LICENSE", label: "Shop License" },
+	{ value: "SHOP_LICENSE", label: "Business License" },
 	{
 		value: "MEDICAL_COUNCIL_REGISTRATION",
 		label: "Medical Council Registration",
@@ -298,7 +296,7 @@ export default function RequestVerificationForm({
 					organizationId: data.id,
 					registeredOrganizationName: formData.registeredOrganizationName,
 					contactEmail: formData.contactEmail,
-					phoneNumber: formData.phoneNumber,
+					phoneNumber: `+91${formData.phoneNumber}`,
 					address: {
 						line1: formData.address.line1,
 						line2: formData.address.line2,
@@ -412,7 +410,8 @@ export default function RequestVerificationForm({
 						<Input
 							{...register("phoneNumber")}
 							label="Phone Number"
-							placeholder="+91XXXXXXXXXX"
+							startContent={<p className="text-sm">+91</p>}
+							placeholder="98765 43210"
 							isInvalid={!!errors.phoneNumber}
 							errorMessage={errors.phoneNumber?.message}
 						/>
@@ -495,6 +494,9 @@ export default function RequestVerificationForm({
 									label="Business Proof Type"
 									selectedKeys={[field.value]}
 									onSelectionChange={(keys) => {
+										if (keys.size === 0) {
+											return;
+										}
 										const value = Array.from(keys)[0] as string;
 										field.onChange(value);
 									}}
@@ -541,6 +543,9 @@ export default function RequestVerificationForm({
 									label="Address Proof Type"
 									selectedKeys={[field.value]}
 									onSelectionChange={(keys) => {
+										if (keys.size === 0) {
+											return;
+										}
 										const value = Array.from(keys)[0] as string;
 										field.onChange(value);
 									}}
