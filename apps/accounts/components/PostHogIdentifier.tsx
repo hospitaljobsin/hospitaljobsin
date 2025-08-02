@@ -25,6 +25,7 @@ export default function PostHogIdentifier() {
 
 	useEffect(() => {
 		// Only load query if PostHog is not identified
+		// TODO: also load query only if authenticated (prolly get this value from cookies to avoid unnecessary calls on anon users)
 		if (!posthog._isIdentified()) {
 			loadQuery({});
 		}
