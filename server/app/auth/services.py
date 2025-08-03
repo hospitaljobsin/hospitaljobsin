@@ -348,7 +348,7 @@ class AuthService:
 
         self._posthog_client.capture(
             event="user_signed_up",
-            distinct_id=str(relay.GlobalID("Account", account.id)),
+            distinct_id=str(relay.GlobalID("Account", str(account.id))),
             properties={"email": email, "auth_provider": "password"},
         )
 
@@ -508,7 +508,7 @@ class AuthService:
 
         self._posthog_client.capture(
             event="user_signed_up",
-            distinct_id=str(relay.GlobalID("Account", account.id)),
+            distinct_id=str(relay.GlobalID("Account", str(account.id))),
             properties={"email": email, "auth_provider": "passkey"},
         )
 
@@ -649,7 +649,7 @@ class AuthService:
 
         self._posthog_client.capture(
             event="user_logged_in",
-            distinct_id=str(relay.GlobalID("Account", account.id)),
+            distinct_id=str(relay.GlobalID("Account", str(account.id))),
             properties={"email": account.email, "auth_provider": "passkey"},
         )
 
@@ -723,7 +723,7 @@ class AuthService:
 
         self._posthog_client.capture(
             event="user_logged_in",
-            distinct_id=str(relay.GlobalID("Account", account.id)),
+            distinct_id=str(relay.GlobalID("Account", str(account.id))),
             properties={"email": account.email, "auth_provider": "password"},
         )
 
@@ -822,13 +822,13 @@ class AuthService:
         if is_signup:
             self._posthog_client.capture(
                 event="user_signed_up",
-                distinct_id=str(relay.GlobalID("Account", account.id)),
+                distinct_id=str(relay.GlobalID("Account", str(account.id))),
                 properties={"email": account.email, "auth_provider": "oauth_google"},
             )
         else:
             self._posthog_client.capture(
                 event="user_logged_in",
-                distinct_id=str(relay.GlobalID("Account", account.id)),
+                distinct_id=str(relay.GlobalID("Account", str(account.id))),
                 properties={"email": account.email, "auth_provider": "oauth_google"},
             )
 
@@ -1669,7 +1669,7 @@ class AuthService:
 
         self._posthog_client.capture(
             event="user_logged_in",
-            distinct_id=str(relay.GlobalID("Account", account.id)),
+            distinct_id=str(relay.GlobalID("Account", str(account.id))),
             properties={"email": account.email, "auth_provider": "2fa_authenticator"},
         )
 
@@ -1739,7 +1739,7 @@ class AuthService:
 
         self._posthog_client.capture(
             event="user_logged_in",
-            distinct_id=str(relay.GlobalID("Account", account.id)),
+            distinct_id=str(relay.GlobalID("Account", str(account.id))),
             properties={"email": account.email, "auth_provider": "2fa_recovery_code"},
         )
 
