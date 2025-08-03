@@ -17,7 +17,7 @@ from app.auth.exceptions import (
     TwoFactorAuthenticationRequiredError,
 )
 from app.auth.services import AuthService
-from app.config import AppSettings
+from app.config import AppSettings, AuthSettings
 
 auth_router = APIRouter(prefix="/auth")
 
@@ -164,6 +164,7 @@ async def set_consent_cookie(
     request: Request,
     consent_data: ConsentRequest,
     app_settings: Annotated[AppSettings, Inject],
+    auth_settings: Annotated[AuthSettings, Inject],
 ) -> JSONResponse:
     """Set the consent cookie value."""
 
@@ -177,8 +178,9 @@ async def set_consent_cookie(
         value=consent_data.consent,
         max_age=365 * 24 * 60 * 60,  # 1 year
         httponly=False,  # Allow client-side access
-        secure=app_settings.environment == "production",  # Secure in production
+        secure=auth_settings.session_cookie_secure,  # Secure in production
         samesite="lax",
+        domain=auth_settings.session_cookie_domain
     )
 
     return response
