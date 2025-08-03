@@ -3,8 +3,10 @@ import LandingClientComponentQuery, {
 	type LandingClientComponentQuery as LandingClientComponentQueryType,
 } from "@/__generated__/LandingClientComponentQuery.graphql";
 import type { LandingViewFragment$key } from "@/__generated__/LandingViewFragment.graphql";
-import { TrendingUpIcon } from "lucide-react";
+import links from "@/lib/links";
+import { ArrowRight, TrendingUpIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import {
 	type PreloadedQuery,
 	useFragment,
@@ -110,6 +112,12 @@ export default function LandingView({
 					</div>
 					<JobList rootQuery={data} />
 				</div>
+				<Link
+					href={links.search}
+					className="flex items-center gap-2 text-lg text-primary font-medium"
+				>
+					View all jobs <ArrowRight className="w-4 h-4" strokeWidth={3} />
+				</Link>
 			</div>
 		</div>
 	);
