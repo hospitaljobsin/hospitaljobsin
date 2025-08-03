@@ -10,6 +10,7 @@ from fastapi import Request
 from humanize import naturaldelta
 from posthog import Posthog
 from result import Err, Ok, Result
+from strawberry import relay
 from webauthn import (
     generate_authentication_options,
     generate_registration_options,
@@ -345,11 +346,11 @@ class AuthService:
 
         self._grant_sudo_mode(request)
 
-        # self._posthog_client.capture(
-        #     event="account_registered",
-        #     distinct_id=account.id,  # TODO: make this a relay base64 encoded ID here for consistency with frontend
-        #     properties={"email": email},
-        # )
+        self._posthog_client.capture(
+            event="user_signed_up",
+            distinct_id=str(relay.GlobalID("Account", account.id)),
+            properties={"email": email, "auth_provider": "password"},
+        )
 
         return Ok(account)
 
@@ -505,6 +506,12 @@ class AuthService:
 
         self._grant_sudo_mode(request)
 
+        self._posthog_client.capture(
+            event="user_signed_up",
+            distinct_id=str(relay.GlobalID("Account", account.id)),
+            properties={"email": email, "auth_provider": "passkey"},
+        )
+
         return Ok(account)
 
     async def generate_authentication_options(
@@ -640,6 +647,12 @@ class AuthService:
 
         self._grant_sudo_mode(request)
 
+        self._posthog_client.capture(
+            event="user_logged_in",
+            distinct_id=str(relay.GlobalID("Account", account.id)),
+            properties={"email": account.email, "auth_provider": "passkey"},
+        )
+
         return Ok(account)
 
     async def login_with_password(
@@ -708,6 +721,12 @@ class AuthService:
 
         self._grant_sudo_mode(request)
 
+        self._posthog_client.capture(
+            event="user_logged_in",
+            distinct_id=str(relay.GlobalID("Account", account.id)),
+            properties={"email": account.email, "auth_provider": "password"},
+        )
+
         return Ok(account)
 
     @staticmethod
@@ -733,8 +752,11 @@ class AuthService:
         """Sign in with Google."""
         if not user_info["email_verified"]:
             return Err(InvalidEmailError(message="Email address is not verified."))
+
+        is_signup = False
         account = await self._account_repo.get_by_email(email=user_info["email"])
         if account is None:
+            is_signup = True
             account = await self._account_repo.create(
                 email=user_info["email"],
                 full_name=user_info["name"],
@@ -796,6 +818,19 @@ class AuthService:
             # user has only the Oauth Google auth provider
             # hence, we can grant sudo mode when they sign in
             self._grant_sudo_mode(request)
+
+        if is_signup:
+            self._posthog_client.capture(
+                event="user_signed_up",
+                distinct_id=str(relay.GlobalID("Account", account.id)),
+                properties={"email": account.email, "auth_provider": "oauth_google"},
+            )
+        else:
+            self._posthog_client.capture(
+                event="user_logged_in",
+                distinct_id=str(relay.GlobalID("Account", account.id)),
+                properties={"email": account.email, "auth_provider": "oauth_google"},
+            )
 
         return Ok(account)
 
@@ -1632,6 +1667,12 @@ class AuthService:
 
         self._grant_sudo_mode(request)
 
+        self._posthog_client.capture(
+            event="user_logged_in",
+            distinct_id=str(relay.GlobalID("Account", account.id)),
+            properties={"email": account.email, "auth_provider": "2fa_authenticator"},
+        )
+
         return Ok(account)
 
     async def verify_2fa_with_recovery_code(
@@ -1695,6 +1736,12 @@ class AuthService:
         )
 
         self._grant_sudo_mode(request)
+
+        self._posthog_client.capture(
+            event="user_logged_in",
+            distinct_id=str(relay.GlobalID("Account", account.id)),
+            properties={"email": account.email, "auth_provider": "2fa_recovery_code"},
+        )
 
         return Ok(account)
 
