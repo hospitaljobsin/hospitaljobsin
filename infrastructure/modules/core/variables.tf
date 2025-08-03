@@ -110,3 +110,14 @@ variable "two_factor_in_api_key" {
   description = "Two Factor IN API key."
   sensitive   = true
 }
+
+variable "posthog_api_key" {
+  type        = string
+  description = "PostHog API key."
+  sensitive   = true
+}
+
+variable "posthog_api_host" {
+  type        = string
+  description = "PostHog API host."
+}

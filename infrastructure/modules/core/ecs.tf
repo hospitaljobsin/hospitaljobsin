@@ -498,6 +498,10 @@ resource "aws_ecs_task_definition" "app" {
         {
           name  = "SERVER_WHATSAPP_PHONE_NUMBER_ID"
           value = var.whatsapp_phone_number_id
+        },
+        {
+          name  = "SERVER_POSTHOG_API_HOST"
+          value = var.posthog_api_host
         }
       ]
     }

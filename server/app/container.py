@@ -48,6 +48,7 @@ from app.config import (
     DatabaseSettings,
     EmailSettings,
     GeocoderSettings,
+    PosthogSettings,
     RedisSettings,
     SecretSettings,
     TesseractSettings,
@@ -55,6 +56,7 @@ from app.config import (
     WhatsappSettings,
     get_settings,
 )
+from app.core.analytics import create_posthog_client
 from app.core.aws_sdk import (
     create_aioboto3_session,
     create_bedrock_runtime_client,
@@ -145,6 +147,7 @@ settings_classes: list[type[BaseSettings]] = [
     RedisSettings,
     TesseractSettings,
     WhatsappSettings,
+    PosthogSettings,
 ]
 
 
@@ -267,6 +270,7 @@ def create_container() -> aioinject.Container:
     app_settings = get_settings(AppSettings)
     if app_settings.is_testing:
         container.register(aioinject.Scoped(TestSetupService))
+    container.register(aioinject.Singleton(create_posthog_client))
     container.register(aioinject.Singleton(create_aioboto3_session))
     container.register(aioinject.Scoped(create_s3_client))
     container.register(aioinject.Scoped(create_sqs_client))

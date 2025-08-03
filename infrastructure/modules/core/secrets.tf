@@ -17,6 +17,7 @@ resource "aws_secretsmanager_secret_version" "example" {
     server_redis_password        = var.redis_password,
     server_whatsapp_access_token = var.whatsapp_access_token,
     server_two_factor_in_api_key = var.two_factor_in_api_key,
+    server_posthog_api_key       = var.posthog_api_key,
   })
 
   depends_on = [random_bytes.jwe_secret, cloudflare_turnstile_widget.example]

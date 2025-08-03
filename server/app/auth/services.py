@@ -8,6 +8,7 @@ from bson.objectid import ObjectId
 from email_validator import EmailNotValidError, validate_email
 from fastapi import Request
 from humanize import naturaldelta
+from posthog import Posthog
 from result import Err, Ok, Result
 from webauthn import (
     generate_authentication_options,
@@ -110,6 +111,7 @@ class AuthService:
         captcha_verifier: BaseCaptchaVerifier,
         settings: AuthSettings,
         app_settings: AppSettings,
+        posthog_client: Posthog,
     ) -> None:
         self._account_repo = account_repo
         self._session_repo = session_repo
@@ -128,6 +130,7 @@ class AuthService:
         self._settings = settings
         self._app_settings = app_settings
         self._captcha_verifier = captcha_verifier
+        self._posthog_client = posthog_client
 
     def _is_email_verification_token_cooled_down(
         self, token: EmailVerificationToken
@@ -341,6 +344,12 @@ class AuthService:
         )
 
         self._grant_sudo_mode(request)
+
+        # self._posthog_client.capture(
+        #     event="account_registered",
+        #     distinct_id=account.id,  # TODO: make this a relay base64 encoded ID here for consistency with frontend
+        #     properties={"email": email},
+        # )
 
         return Ok(account)
 

@@ -134,6 +134,8 @@ module "core" {
   whatsapp_access_token          = var.whatsapp_access_token
   whatsapp_phone_number_id       = var.whatsapp_phone_number_id
   two_factor_in_api_key          = var.two_factor_in_api_key
+  posthog_api_key                = var.posthog_api_key
+  posthog_api_host               = var.posthog_api_host
 }
 
 module "redis" {

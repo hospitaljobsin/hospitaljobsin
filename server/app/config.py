@@ -214,7 +214,20 @@ class SentrySettings(BaseSettings):
     )
 
 
+class PosthogSettings(BaseSettings):
+    # posthog config
+    posthog_api_host: str
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="server_",
+        extra="allow",
+    )
+
+
 class SecretSettings(BaseSettings):
+    # posthog config
+    posthog_api_key: SecretStr
     # whatsapp config
     whatsapp_access_token: SecretStr
 

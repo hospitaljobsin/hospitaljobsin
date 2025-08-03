@@ -50,6 +50,7 @@ dependencies = [
     "granian[pname,uvloop]==2.4.2",
     "phonenumbers==9.0.10",
     "watchfiles==1.1.0",
+    "posthog==6.3.3",
 ]
 
 
