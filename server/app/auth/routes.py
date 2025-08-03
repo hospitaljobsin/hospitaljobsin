@@ -174,13 +174,14 @@ async def set_consent_cookie(
 
     # Set the consent cookie with appropriate settings
     response.set_cookie(
-        key="cookie_consent",
-        value=consent_data.consent,
+        "cookie_consent",
+        consent_data.consent,
         max_age=365 * 24 * 60 * 60,  # 1 year
+        path="/",
         httponly=False,  # Allow client-side access
-        secure=auth_settings.session_cookie_secure,  # Secure in production
         samesite="lax",
-        domain=auth_settings.session_cookie_domain
+        secure=auth_settings.session_cookie_secure,  # Secure in production
+        domain=auth_settings.session_cookie_domain,
     )
 
     return response

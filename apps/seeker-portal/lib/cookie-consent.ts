@@ -28,6 +28,7 @@ export async function setCookieConsent(consent: "yes" | "no"): Promise<void> {
 				headers: {
 					"Content-Type": "application/json",
 				},
+				credentials: "include",
 				body: JSON.stringify({ consent }),
 			},
 		);
