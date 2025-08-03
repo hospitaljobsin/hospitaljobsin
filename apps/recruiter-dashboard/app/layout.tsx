@@ -1,3 +1,4 @@
+import CookieBanner from "@/components/CookieBanner";
 import PostHogIdentifier from "@/components/PostHogIdentifier";
 import "@copilotkit/react-ui/styles.css";
 import { Work_Sans } from "next/font/google";
@@ -25,6 +26,7 @@ export default function RootLayout({
 				<div />
 				<Providers headersPromise={headersPromise}>
 					<PostHogIdentifier />
+					<CookieBanner />
 					{children}
 				</Providers>
 			</body>

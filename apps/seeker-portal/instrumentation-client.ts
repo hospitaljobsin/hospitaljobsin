@@ -4,6 +4,7 @@
 
 import * as Sentry from "@sentry/nextjs";
 import posthog from "posthog-js";
+import { cookieConsentGiven } from "./lib/cookie-consent";
 import { env } from "./lib/env/client";
 
 posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -12,7 +13,8 @@ posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
 	autocapture: env.NEXT_PUBLIC_ENVIRONMENT === "production",
 	cross_subdomain_cookie: true,
 	secure_cookie: true,
-	persistence: "localStorage+cookie",
+	persistence:
+		cookieConsentGiven() === "yes" ? "localStorage+cookie" : "memory",
 	loaded: function (ph) {
 		if (env.NEXT_PUBLIC_ENVIRONMENT !== "production") {
 			ph.opt_out_capturing(); // opts a user out of event capture

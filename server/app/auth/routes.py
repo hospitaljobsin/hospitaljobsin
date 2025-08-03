@@ -4,6 +4,8 @@ from aioinject import Inject
 from aioinject.ext.fastapi import inject
 from authlib.integrations.starlette_client import OAuth
 from fastapi import APIRouter, Depends, Header, Query, Request
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from result import Err
 from starlette.responses import RedirectResponse
 
@@ -18,6 +20,10 @@ from app.auth.services import AuthService
 from app.config import AppSettings
 
 auth_router = APIRouter(prefix="/auth")
+
+
+class ConsentRequest(BaseModel):
+    consent: str  # "yes" or "no"
 
 
 @auth_router.get("/signin/google")
@@ -148,5 +154,31 @@ async def oauth2_request_sudo_mode_callback_google(
                     url=app_settings.accounts_base_url
                     + "/request-sudo?oauth2_error=2fa_required",
                 )
+
+    return response
+
+
+@auth_router.post("/set-consent")
+@inject
+async def set_consent_cookie(
+    request: Request,
+    consent_data: ConsentRequest,
+    app_settings: Annotated[AppSettings, Inject],
+) -> JSONResponse:
+    """Set the consent cookie value."""
+
+    response = JSONResponse(
+        content={"message": "Consent cookie set successfully"}, status_code=200
+    )
+
+    # Set the consent cookie with appropriate settings
+    response.set_cookie(
+        key="cookie_consent",
+        value=consent_data.consent,
+        max_age=365 * 24 * 60 * 60,  # 1 year
+        httponly=False,  # Allow client-side access
+        secure=app_settings.environment == "production",  # Secure in production
+        samesite="lax",
+    )
 
     return response

@@ -1,3 +1,4 @@
+import CookieBanner from "@/components/CookieBanner";
 import PostHogIdentifier from "@/components/PostHogIdentifier";
 import Footer from "@/components/layout/Footer";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
@@ -35,6 +36,7 @@ export default async function RootLayout({
 				<div />
 				<Providers headersPromise={headersPromise}>
 					<PostHogIdentifier />
+					<CookieBanner />
 					{children}
 					<Footer />
 				</Providers>
