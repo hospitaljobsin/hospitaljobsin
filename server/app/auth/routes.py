@@ -10,7 +10,7 @@ from result import Err
 from starlette.responses import RedirectResponse
 
 from app.accounts.documents import Account
-from app.auth.dependencies import get_current_user
+from app.auth.dependencies import get_current_user, get_current_user_or_none
 from app.auth.exceptions import (
     AccountNotFoundError,
     InvalidEmailError,
@@ -18,6 +18,7 @@ from app.auth.exceptions import (
 )
 from app.auth.services import AuthService
 from app.config import AppSettings, AuthSettings
+from app.accounts.services import AccountService
 
 auth_router = APIRouter(prefix="/auth")
 
@@ -163,10 +164,18 @@ async def oauth2_request_sudo_mode_callback_google(
 async def set_consent_cookie(
     request: Request,
     consent_data: ConsentRequest,
-    app_settings: Annotated[AppSettings, Inject],
     auth_settings: Annotated[AuthSettings, Inject],
+    current_user: Annotated[
+        Account | None,
+        Depends(
+            dependency=get_current_user_or_none,
+        ),
+    ],
+    account_service: Annotated[AccountService, Inject],
 ) -> JSONResponse:
     """Set the consent cookie value."""
+    if current_user is not None:
+        await account_service.accept_terms_and_policy(account=current_user)
 
     response = JSONResponse(
         content={"message": "Consent cookie set successfully"}, status_code=200

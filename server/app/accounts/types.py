@@ -404,6 +404,10 @@ class AccountType(BaseNodeType[Account]):
         description="Whether the account has 2FA enabled.",
     )
 
+    terms_and_policy_accepted_at: datetime | None = strawberry.field(
+        description="When the account accepted the terms and policy.",
+    )
+
     uploaded_avatar_url: strawberry.Private[str | None] = None
 
     profile_ref: strawberry.Private[ObjectId | Profile | None] = None
@@ -430,6 +434,7 @@ class AccountType(BaseNodeType[Account]):
             if isinstance(account.profile, Link)
             else account.profile,
             uploaded_avatar_url=account.avatar_url,
+            terms_and_policy_accepted_at=account.terms_and_policy_accepted_at,
         )
 
     @classmethod

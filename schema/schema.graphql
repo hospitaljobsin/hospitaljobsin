@@ -54,6 +54,11 @@ type Account implements Node {
 	has2faEnabled: Boolean!
 
 	"""
+	When the account accepted the terms and policy.
+	"""
+	termsAndPolicyAcceptedAt: DateTime
+
+	"""
 	The account's profile.
 	"""
 	profile: Profile

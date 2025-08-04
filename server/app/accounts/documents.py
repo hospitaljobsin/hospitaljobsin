@@ -165,6 +165,12 @@ class Profile(BaseProfile, Document):
         return self.model_dump_json(exclude={"embedding", "account", "updated_at"})
 
 
+class TermsAndPolicy(BaseModel):
+    type: Literal["acceptance", "rejection", "undecided"]
+    updated_at: datetime
+    version: str
+
+
 class Account(Document):
     full_name: str
     email: Annotated[str, Indexed(unique=True)]
@@ -178,6 +184,8 @@ class Account(Document):
     auth_providers: list[AuthProvider]
 
     profile: Link[Profile] | None = None
+
+    terms_and_policy: TermsAndPolicy
 
     webauthn_credentials: list[BackLink["WebAuthnCredential"]] = Field(  # type: ignore[call-overload]
         original_field="account"

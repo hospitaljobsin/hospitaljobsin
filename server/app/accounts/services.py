@@ -90,6 +90,13 @@ class AccountService:
         await self._job_applicant_repo.update_all(account=account, full_name=full_name)
         return Ok(account)
 
+    async def accept_terms_and_policy(self, account: Account) -> Ok[Account]:
+        """Accept the terms and policy."""
+        await self._account_repo.update(
+            account=account, terms_and_policy_accepted_at=datetime.now(UTC)
+        )
+        return Ok(account)
+
     async def request_phone_number_verification_token(
         self, account: Account, phone_number: str
     ) -> Result[

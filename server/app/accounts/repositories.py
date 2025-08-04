@@ -113,6 +113,7 @@ class AccountRepo:
         full_name: str = UNSET,
         avatar_url: str | None = UNSET,
         phone_number: str | None = UNSET,
+        terms_and_policy_accepted_at: datetime | None = UNSET,
     ) -> Account:
         """Update the given account."""
         if full_name is not UNSET:
@@ -121,6 +122,8 @@ class AccountRepo:
             account.avatar_url = avatar_url
         if phone_number is not UNSET:
             account.phone_number = phone_number
+        if terms_and_policy_accepted_at is not UNSET:
+            account.terms_and_policy_accepted_at = terms_and_policy_accepted_at
         return await account.save()
 
     async def update_profile(self, account: Account, profile: Profile) -> Account:
