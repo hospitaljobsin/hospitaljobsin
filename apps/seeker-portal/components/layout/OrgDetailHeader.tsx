@@ -12,7 +12,7 @@ import {
 	NavbarContent,
 	NavbarItem,
 } from "@heroui/react";
-import { SearchIcon } from "lucide-react";
+import { ExternalLinkIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useFragment } from "react-relay";
@@ -125,9 +125,9 @@ export default function OrgDetailHeader({
 									target="_blank"
 									rel="noopener noreferrer"
 									color="foreground"
-									className={"text-foreground"}
+									className={"text-foreground flex items-center gap-2"}
 								>
-									For Recruiters
+									For Recruiters <ExternalLinkIcon className="w-4 h-4" />
 								</Link>
 							</NavbarItem>
 							<NavbarItem>
@@ -142,6 +142,7 @@ export default function OrgDetailHeader({
 									<SearchIcon />
 								</Button>
 							</NavbarItem>
+
 							<AuthDropdown rootQuery={data.viewer} />
 						</div>
 					) : (

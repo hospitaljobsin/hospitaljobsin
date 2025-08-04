@@ -1,7 +1,8 @@
 "use client";
-import { COMPANY_NAME } from "@/lib/constants";
+import { COMPANY_NAME, WHATSAPP_CHANNEL_LINK } from "@/lib/constants";
 import links from "@/lib/links";
 import { Link } from "@heroui/react";
+import { WhatsappIcon } from "../icons";
 
 export default function Footer() {
 	return (
@@ -9,10 +10,24 @@ export default function Footer() {
 			<div className="flex items-center gap-2 w-full max-w-7xl mx-auto px-4">
 				<div className="flex w-full gap-6 justify-between items-center">
 					<div className="w-full flex items-center gap-4">
-						<p className="text-xs text-foreground-500">
+						<p className="text-xs text-foreground-500 sm:text-nowrap">
 							© {new Date().getFullYear()} {COMPANY_NAME}.
 						</p>
+						<div className="w-full flex items-center gap-4">
+							<Link
+								href={WHATSAPP_CHANNEL_LINK}
+								target="_blank"
+								className="flex flex-col sm:flex-row sm:items-center items-start gap-2 text-xs text-foreground-500"
+							>
+								<WhatsappIcon
+									className="w-4 h-4 text-foreground-500"
+									size={10}
+								/>{" "}
+								<span className="hidden sm:block">Follow for job alerts</span>
+							</Link>
+						</div>
 					</div>
+
 					<div className="w-full flex items-center gap-4 justify-end">
 						<Link
 							href={links.terms}

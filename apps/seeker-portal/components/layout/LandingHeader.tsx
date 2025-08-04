@@ -1,6 +1,6 @@
 "use client";
 import type { LandingHeaderFragment$key } from "@/__generated__/LandingHeaderFragment.graphql";
-import { APP_NAME } from "@/lib/constants";
+import { APP_NAME, WHATSAPP_CHANNEL_LINK } from "@/lib/constants";
 import { env } from "@/lib/env/client";
 import links from "@/lib/links";
 import {
@@ -9,11 +9,14 @@ import {
 	NavbarBrand,
 	NavbarContent,
 	NavbarItem,
+	Tooltip,
 	cn,
 } from "@heroui/react";
+import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
+import { WhatsappIcon } from "../icons";
 import Logo from "../Logo";
 import AuthNavigation from "./AuthNavigation";
 import IncompleteProfileBanner from "./IncompleteProfileBanner";
@@ -74,10 +77,23 @@ export default function LandingHeader({
 									target="_blank"
 									rel="noopener noreferrer"
 									color="foreground"
-									className={"text-primary-foreground"}
+									className={"text-primary-foreground flex items-center gap-2"}
 								>
-									For Recruiters
+									For Recruiters <ExternalLinkIcon className="w-4 h-4" />
 								</Link>
+							</NavbarItem>
+							<NavbarItem>
+								<Tooltip
+									content="Get job alerts on WhatsApp"
+									placement="bottom"
+								>
+									<Link href={WHATSAPP_CHANNEL_LINK} target="_blank">
+										<WhatsappIcon
+											className="w-7 h-7 text-primary-foreground"
+											size={10}
+										/>
+									</Link>
+								</Tooltip>
 							</NavbarItem>
 							<AuthNavigation rootQuery={data.viewer} />
 						</>
