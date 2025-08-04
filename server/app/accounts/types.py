@@ -383,9 +383,9 @@ class TwoFactorProviderEnum(Enum):
     description="The terms and policy type.",
 )
 class TermsAndPolicyTypeEnum(Enum):
-    ACCEPTANCE = "acceptance"
-    REJECTION = "rejection"
-    UNDECIDED = "undecided"
+    ACCEPTANCE = "ACCEPTANCE"
+    REJECTION = "REJECTION"
+    UNDECIDED = "UNDECIDED"
 
 
 @strawberry.type(
@@ -456,7 +456,7 @@ class AccountType(BaseNodeType[Account]):
             else account.profile,
             uploaded_avatar_url=account.avatar_url,
             terms_and_policy=TermsAndPolicyType(
-                type=TermsAndPolicyTypeEnum[account.terms_and_policy.type],
+                type=TermsAndPolicyTypeEnum(account.terms_and_policy.type.upper()),
                 updated_at=account.terms_and_policy.updated_at,
                 is_latest=account.terms_and_policy.version
                 == TERMS_AND_POLICY_LATEST_VERSION,

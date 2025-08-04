@@ -159,9 +159,9 @@ async def oauth2_request_sudo_mode_callback_google(
     return response
 
 
-@auth_router.post("/set-consent")
+@auth_router.post("/terms-privacy/set-consent")
 @inject
-async def set_consent_cookie(
+async def update_terms_and_policy_consent(
     request: Request,
     consent_data: ConsentRequest,
     auth_settings: Annotated[AuthSettings, Inject],
@@ -173,9 +173,12 @@ async def set_consent_cookie(
     ],
     account_service: Annotated[AccountService, Inject],
 ) -> JSONResponse:
-    """Set the consent cookie value."""
+    """Update the terms and policy consent."""
     if current_user is not None:
-        await account_service.accept_terms_and_policy(account=current_user)
+        await account_service.update_terms_and_policy(
+            account=current_user,
+            type="acceptance" if consent_data.consent == "yes" else "rejection",
+        )
 
     response = JSONResponse(
         content={"message": "Consent cookie set successfully"}, status_code=200

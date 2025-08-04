@@ -1,3 +1,4 @@
+from typing import Literal
 import uuid
 from datetime import UTC, date, datetime, timedelta
 
@@ -15,6 +16,7 @@ from app.accounts.documents import (
     License,
     PhoneNumberVerificationToken,
     Profile,
+    TermsAndPolicy,
     WorkExperience,
 )
 from app.accounts.exceptions import (
@@ -34,6 +36,7 @@ from app.core.messages import BaseMessageSender
 from app.core.ocr import BaseOCRClient
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
+from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
 
 
 class AccountService:
@@ -90,10 +93,17 @@ class AccountService:
         await self._job_applicant_repo.update_all(account=account, full_name=full_name)
         return Ok(account)
 
-    async def accept_terms_and_policy(self, account: Account) -> Ok[Account]:
-        """Accept the terms and policy."""
+    async def update_terms_and_policy(
+        self, account: Account, type: Literal["acceptance", "rejection"]
+    ) -> Ok[Account]:
+        """Update the terms and policy."""
         await self._account_repo.update(
-            account=account, terms_and_policy_accepted_at=datetime.now(UTC)
+            account=account,
+            terms_and_policy=TermsAndPolicy(
+                type=type,
+                updated_at=datetime.now(UTC),
+                version=TERMS_AND_POLICY_LATEST_VERSION,
+            ),
         )
         return Ok(account)
 
