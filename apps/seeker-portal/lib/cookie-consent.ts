@@ -22,7 +22,7 @@ export function cookieConsentGiven(): string {
 export async function setCookieConsent(consent: "yes" | "no"): Promise<void> {
 	try {
 		const response = await fetch(
-			`${env.NEXT_PUBLIC_API_URL}/auth/set-consent`,
+			`${env.NEXT_PUBLIC_API_URL}/auth/terms-privacy/set-consent`,
 			{
 				method: "POST",
 				headers: {
