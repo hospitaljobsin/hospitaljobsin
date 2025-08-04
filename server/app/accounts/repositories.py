@@ -17,6 +17,7 @@ from app.core.constants import (
     AuthProvider,
 )
 from app.core.geocoding import BaseLocationService
+from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
 
 from .documents import (
     Account,
@@ -44,6 +45,7 @@ class AccountRepo:
         auth_providers: list[AuthProvider],
         password: str | None = None,
         account_id: ObjectId | None = None,
+        terms_and_policy_type: str = "undecided",
     ) -> Account:
         """Create a new account."""
         account = Account(
@@ -58,6 +60,15 @@ class AccountRepo:
             updated_at=None,
             profile=None,
             auth_providers=auth_providers,
+            terms_and_policy=TermsAndPolicy(
+                type=terms_and_policy_type,
+                updated_at=datetime.now(UTC),
+                version=TERMS_AND_POLICY_LATEST_VERSION,
+            ),
+            webauthn_credentials=[],
+            oauth_credentials=[],
+            recovery_codes=[],
+            temporary_two_factor_challenges=[],
         )
 
         return await account.insert()

@@ -11,5 +11,5 @@ export default function useIsAuthenticated() {
 		throw new Error("Is authenticated header is required in headers");
 	}
 
-	return { isAuthenticated };
+	return { isAuthenticated: isAuthenticated === "true" };
 }

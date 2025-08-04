@@ -6,7 +6,7 @@ from typing import Any
 import pyotp
 from bson.objectid import ObjectId
 from email_validator import EmailNotValidError, validate_email
-from fastapi import Request
+from fastapi import Request, Response
 from humanize import naturaldelta
 from posthog import Posthog
 from result import Err, Ok, Result
@@ -92,6 +92,7 @@ from app.core.constants import (
 )
 from app.core.emails import BaseEmailSender
 from app.core.formatting import format_datetime
+from app.auth.utils import get_terms_and_policy_type
 
 
 class AuthService:
@@ -324,6 +325,7 @@ class AuthService:
             password=password,
             full_name=full_name,
             auth_providers=["password"],
+            terms_and_policy_type=get_terms_and_policy_type(request),
         )
 
         await self._profile_repo.create(account=account)
@@ -470,6 +472,7 @@ class AuthService:
             password=None,
             full_name=full_name,
             auth_providers=["webauthn_credential"],
+            terms_and_policy_type=get_terms_and_policy_type(request),
         )
 
         # delete the webauthn challenge after account creation
@@ -763,6 +766,7 @@ class AuthService:
                 # set initial password to None for the user
                 password=None,
                 auth_providers=["oauth_google"],
+                terms_and_policy_type=get_terms_and_policy_type(request),
             )
             await self._profile_repo.create(account=account)
             # create an oauth credential for the user
@@ -858,12 +862,23 @@ class AuthService:
     def _delete_temp_two_factor_challenge(self, request: Request) -> None:
         request.session.pop("temp_2fa_challenge", None)
 
-    async def logout(self, request: Request, session_token: str) -> None:
+    async def logout(
+        self, request: Request, response: Response, session_token: str
+    ) -> None:
         """Log out the current user."""
         await self._session_repo.delete_by_token(token=session_token)
 
         # clear request session
         request.session.clear()
+
+        response.delete_cookie(
+            "cookie_consent",
+            path="/",
+            secure=self._settings.session_cookie_secure,
+            domain=self._settings.session_cookie_domain,
+            httponly=False,  # Allow JavaScript access for client-side reading
+            samesite="lax",
+        )
 
     async def get_password_reset_token(
         self, password_reset_token: str, email: str

@@ -179,7 +179,7 @@ class OrganizationRepo:
     ) -> OrganizationVerificationRequest:
         """Create a new organization verification request."""
         organization.verification_request = OrganizationVerificationRequest(
-            created_by=account,
+            created_by=account.id,
             registered_organization_name=registered_organization_name,
             contact_email=contact_email,
             phone_number=phone_number,

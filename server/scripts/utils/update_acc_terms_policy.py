@@ -8,6 +8,7 @@ from datetime import datetime
 from datetime import UTC
 
 from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
+from app.organizations.documents import Organization
 
 
 async def update_acc_terms_policy():
@@ -15,21 +16,32 @@ async def update_acc_terms_policy():
         str(get_settings(DatabaseSettings).database_url),
         get_settings(DatabaseSettings).default_database_name,
     )
-    accounts = await Account.find_all(fetch_links=True, nesting_depth=2).to_list()
-    print(accounts)
-    for account in accounts:
-        print(account.terms_and_policy)
-        if (
-            account.terms_and_policy is not None
-            and account.terms_and_policy.version == TERMS_AND_POLICY_LATEST_VERSION
-        ):
+    # accounts = await Account.find_all(fetch_links=True, nesting_depth=2).to_list()
+    # print(accounts)
+    # for account in accounts:
+    #     print(account.terms_and_policy)
+    #     if (
+    #         account.terms_and_policy is not None
+    #         and account.terms_and_policy.version == TERMS_AND_POLICY_LATEST_VERSION
+    #     ):
+    #         continue
+    #     account.terms_and_policy = TermsAndPolicy(
+    #         type="undecided",
+    #         updated_at=datetime.now(UTC),
+    #         version=TERMS_AND_POLICY_LATEST_VERSION,
+    #     )
+    #     await account.save()
+
+    organizations = await Organization.find_all(
+        fetch_links=True, nesting_depth=2
+    ).to_list()
+    for organization in organizations:
+        if organization.verification_request is None:
             continue
-        account.terms_and_policy = TermsAndPolicy(
-            type="undecided",
-            updated_at=datetime.now(UTC),
-            version=TERMS_AND_POLICY_LATEST_VERSION,
+        organization.verification_request.created_by = (
+            organization.verification_request.created_by.id
         )
-        await account.save()
+        await organization.save()
 
 
 if __name__ == "__main__":

@@ -25,12 +25,14 @@ export default function PostHogIdentifier() {
 	const [queryReference, loadQuery, disposeQuery] =
 		useQueryLoader<PostHogIdentifierQueryType>(PostHogIdentifierQuery);
 
+	const isIdentified = posthog._isIdentified();
+
 	useEffect(() => {
 		// Only load query if PostHog is not identified and user is authenticated
-		if (!posthog._isIdentified() && isAuthenticated) {
+		if (isAuthenticated && !isIdentified) {
 			loadQuery({});
 		}
-	}, [loadQuery, isAuthenticated]);
+	}, [isAuthenticated, isIdentified, loadQuery]);
 
 	// If no query reference, don't render anything
 	if (!queryReference) {

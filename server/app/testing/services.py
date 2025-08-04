@@ -21,6 +21,7 @@ from app.testing.schemas import (
     TestUserSchema,
     WebAuthnCredentialSchema,
 )
+from app.auth.utils import get_terms_and_policy_type
 
 
 class TestSetupService:
@@ -57,6 +58,7 @@ class TestSetupService:
             password=data.password,
             full_name=data.full_name,
             auth_providers=data.auth_providers,
+            terms_and_policy_type=get_terms_and_policy_type(request),
         )
 
         webauthn_credentials: list[WebAuthnCredential] = []

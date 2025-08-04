@@ -667,5 +667,7 @@
 	"a4d746feb5ef5048785f8b3c15db2e22": "mutation PasswordRegistrationMutation($email:String!,$emailVerificationToken:String!,$password:String!,$fullName:String!,$captchaToken:String!){registerWithPassword(email:$email,emailVerificationToken:$emailVerificationToken,password:$password,fullName:$fullName,captchaToken:$captchaToken){__typename,...on EmailInUseError{message},...on InvalidEmailVerificationTokenError{message},...on InvalidCaptchaTokenError{message},...on PasswordNotStrongError{message},...on Account{id,email},...on Node{__isNode:__typename,id}}}",
 	"56a97d467f72fd4f06aa633b9b1eb32c": "query PostHogIdentifierQuery{viewer{__typename,...on Account{__typename,id,fullName,email,avatarUrl(size:120)},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}}}",
 	"e2168d38fe6a9eb2b878f3b9158f26a3": "query PostHogIdentifierQuery{viewer{__typename,...on Account{__typename,id,email},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}}}",
-	"c3593512cd952305729d0a8b200b7c8e": "query PostHogIdentifierQuery{viewer{__typename,...on Account{__typename,id,email},...on Node{__isNode:__typename,id}}}"
+	"c3593512cd952305729d0a8b200b7c8e": "query PostHogIdentifierQuery{viewer{__typename,...on Account{__typename,id,email},...on Node{__isNode:__typename,id}}}",
+	"72f135592938ce6406fa7c4e49cf99bb": "query CookieBannerConsentQuery{viewer{__typename,...on Account{__typename,id,termsAndPolicy{type}},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}}}",
+	"55428e28cc5755c23c59e7aec04f06cf": "query CookieBannerConsentQuery{viewer{__typename,...on Account{__typename,id,termsAndPolicy{type}},...on Node{__isNode:__typename,id}}}"
 }

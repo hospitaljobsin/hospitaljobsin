@@ -40,6 +40,7 @@ async def get_context(
             )
         await auth_service.logout(
             request=request,
+            response=response,
             session_token=session_token,
         )
     return Context(
