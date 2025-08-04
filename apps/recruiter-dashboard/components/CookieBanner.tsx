@@ -1,5 +1,4 @@
 "use client";
-
 import {
 	Button,
 	Modal,
@@ -8,6 +7,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 } from "@heroui/react";
+import Cookies from "js-cookie";
 import posthog from "posthog-js";
 import { useEffect, useState } from "react";
 import type { PreloadedQuery } from "react-relay";
@@ -125,11 +125,8 @@ export default function CookieBanner() {
 // Component to handle authenticated user data
 function CookieBannerContent({
 	queryReference,
-	disposeQuery,
-	consentGiven,
 	setConsentGiven,
 	isOpen,
-	setIsOpen,
 	handleAcceptCookies,
 	handleDeclineCookies,
 }: {
@@ -155,6 +152,7 @@ function CookieBannerContent({
 				UNDECIDED: "undecided",
 			};
 			setConsentGiven(consentMap[consentType] || "undecided");
+			Cookies.set("cookie_consent", consentMap[consentType] || "undecided");
 		}
 	}, [data.viewer, setConsentGiven]);
 
