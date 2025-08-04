@@ -153,7 +153,7 @@ export default function TwoFactorAuthenticationForm() {
 				<p>Facing problems?</p>
 				<Link
 					href={links.twoFactorRecovery(params.get("return_to"))}
-					className="cursor-pointer text-blue-500 text-small sm:text-sm text-center"
+					className="cursor-pointer text-primary-600 text-small sm:text-sm text-center"
 				>
 					Use a recovery code instead
 				</Link>

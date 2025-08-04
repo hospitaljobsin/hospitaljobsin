@@ -139,7 +139,7 @@ export default function SubmitResetPasswordFrom() {
 			<CardFooter className="w-full flex items-center justify-center">
 				<Link
 					href={links.login()}
-					className="cursor-pointer text-blue-500 text-small sm:text-sm text-center"
+					className="cursor-pointer text-primary-600 text-small sm:text-sm text-center"
 				>
 					Back to login
 				</Link>

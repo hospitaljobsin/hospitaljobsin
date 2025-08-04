@@ -403,7 +403,7 @@ export default function LoginForm() {
 								<div className="w-full flex justify-start text-tiny px-1">
 									<Link
 										href={links.resetPasswordSubmit}
-										className="mt-2 cursor-pointer text-blue-500"
+										className="mt-2 cursor-pointer text-primary-600"
 									>
 										Forgot password?
 									</Link>
@@ -469,7 +469,7 @@ export default function LoginForm() {
 					<div className="flex justify-center w-full">
 						<Link
 							href={links.signup(params.get("return_to"))}
-							className="mt-2 cursor-pointer text-center text-blue-500 text-small sm:text-sm"
+							className="mt-2 cursor-pointer text-center text-primary-600 text-small sm:text-sm"
 						>
 							{"Don't have an account? "} Sign up.
 						</Link>

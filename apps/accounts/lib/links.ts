@@ -20,6 +20,8 @@ const links = {
 		returnTo
 			? `/auth/2fa/recovery?return_to=${returnTo}`
 			: "/auth/2fa/recovery",
+	terms: `${env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL}/terms`,
+	privacy: `${env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL}/privacy`,
 };
 
 export default links;

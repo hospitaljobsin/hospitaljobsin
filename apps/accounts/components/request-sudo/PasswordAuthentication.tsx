@@ -1,5 +1,8 @@
 "use client";
 
+import type { PasswordAuthenticationMutation as PasswordAuthenticationMutationType } from "@/__generated__/PasswordAuthenticationMutation.graphql";
+import links from "@/lib/links";
+import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { Button, Input } from "@heroui/react";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
@@ -9,9 +12,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { graphql, useMutation } from "react-relay";
 import { z } from "zod/v4-mini";
-import type { PasswordAuthenticationMutation as PasswordAuthenticationMutationType } from "@/__generated__/PasswordAuthenticationMutation.graphql";
-import links from "@/lib/links";
-import { getValidSudoModeRedirectURL } from "@/lib/redirects";
 import { useTurnstile } from "../TurnstileProvider";
 
 const PasswordAuthenticationMutation = graphql`
@@ -152,7 +152,7 @@ export default function PasswordAuthentication({
 					<div className="w-full flex justify-start text-tiny px-1">
 						<Link
 							href={links.resetPasswordSubmit}
-							className="mt-2 cursor-pointer text-blue-500"
+							className="mt-2 cursor-pointer text-primary-600"
 						>
 							Forgot password?
 						</Link>

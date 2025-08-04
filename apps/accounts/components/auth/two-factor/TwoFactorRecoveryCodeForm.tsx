@@ -139,7 +139,7 @@ export default function TwoFactorRecoveryCodeForm() {
 			<CardFooter className="w-full flex flex-col gap-4 items-center justify-center text-foreground-400 text-center text-small">
 				<Link
 					href={links.twoFactorAuthentication(params.get("return_to"))}
-					className="cursor-pointer text-blue-500 text-small sm:text-sm text-center"
+					className="cursor-pointer text-primary-600 text-small sm:text-sm text-center"
 				>
 					Use your authenticator app instead
 				</Link>
