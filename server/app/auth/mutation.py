@@ -252,6 +252,7 @@ class AuthMutation:
             captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
+            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -372,6 +373,7 @@ class AuthMutation:
             captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
+            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -484,6 +486,7 @@ class AuthMutation:
             captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
+            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -533,6 +536,7 @@ class AuthMutation:
             captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
             request=info.context["request"],
+            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -660,6 +664,7 @@ class AuthMutation:
             two_factor_token=two_factor_token,
             captcha_token=captcha_token,
             request=info.context["request"],
+            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -717,6 +722,7 @@ class AuthMutation:
             authentication_response=authentication_response,
             request=info.context["request"],
             captcha_token=captcha_token,
+            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -1374,6 +1380,7 @@ class AuthMutation:
             token=token,
             captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
+            response=info.context["response"],
         ):
             case Err(error):
                 match error:
@@ -1418,6 +1425,7 @@ class AuthMutation:
             token=token,
             captcha_token=captcha_token,
             user_agent=info.context["user_agent"],
+            response=info.context["response"],
         ):
             case Err(error):
                 match error:

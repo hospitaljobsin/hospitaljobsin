@@ -69,6 +69,7 @@ async def oauth2_signin_callback_google(
         user_info=user_info,
         request=request,
         user_agent=request.session.get("user_agent", "unknown"),
+        response=response,
     )
 
     del request.session["user_agent"]

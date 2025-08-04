@@ -289,6 +289,7 @@ class AuthService:
         full_name: str,
         user_agent: str,
         request: Request,
+        response: Response,
     ) -> Result[
         Account,
         EmailInUseError
@@ -347,6 +348,8 @@ class AuthService:
         )
 
         self._grant_sudo_mode(request)
+
+        self._set_analytics_preference(response=response, account=account)
 
         self._posthog_client.capture(
             event="user_signed_up",
@@ -408,6 +411,7 @@ class AuthService:
         full_name: str,
         user_agent: str,
         request: Request,
+        response: Response,
     ) -> Result[
         Account,
         EmailInUseError
@@ -509,6 +513,8 @@ class AuthService:
 
         self._grant_sudo_mode(request)
 
+        self._set_analytics_preference(response=response, account=account)
+
         self._posthog_client.capture(
             event="user_signed_up",
             distinct_id=str(relay.GlobalID("Account", str(account.id))),
@@ -584,6 +590,7 @@ class AuthService:
         authentication_response: dict[Any, Any],
         user_agent: str,
         request: Request,
+        response: Response,
     ) -> Result[
         Account,
         InvalidPasskeyAuthenticationCredentialError
@@ -650,6 +657,8 @@ class AuthService:
 
         self._grant_sudo_mode(request)
 
+        self._set_analytics_preference(response=response, account=account)
+
         self._posthog_client.capture(
             event="user_logged_in",
             distinct_id=str(relay.GlobalID("Account", str(account.id))),
@@ -665,6 +674,7 @@ class AuthService:
         captcha_token: str,
         user_agent: str,
         request: Request,
+        response: Response,
     ) -> Result[
         Account,
         InvalidCredentialsError
@@ -724,6 +734,8 @@ class AuthService:
 
         self._grant_sudo_mode(request)
 
+        self._set_analytics_preference(response=response, account=account)
+
         self._posthog_client.capture(
             event="user_logged_in",
             distinct_id=str(relay.GlobalID("Account", str(account.id))),
@@ -750,7 +762,7 @@ class AuthService:
         return bool(pattern.match(password))
 
     async def signin_with_google(
-        self, user_info: dict, request: Request, user_agent: str
+        self, user_info: dict, request: Request, user_agent: str, response: Response
     ) -> Result[Account, InvalidEmailError | TwoFactorAuthenticationRequiredError]:
         """Sign in with Google."""
         if not user_info["email_verified"]:
@@ -823,6 +835,8 @@ class AuthService:
             # hence, we can grant sudo mode when they sign in
             self._grant_sudo_mode(request)
 
+        self._set_analytics_preference(response=response, account=account)
+
         if is_signup:
             self._posthog_client.capture(
                 event="user_signed_up",
@@ -862,6 +876,29 @@ class AuthService:
     def _delete_temp_two_factor_challenge(self, request: Request) -> None:
         request.session.pop("temp_2fa_challenge", None)
 
+    def _set_analytics_preference(self, response: Response, account: Account) -> None:
+        """Set the analytics preference cookie."""
+        if account.analytics_preference.type != "undecided":
+            response.set_cookie(
+                self._settings.analytics_preference_cookie_name,
+                "yes" if account.analytics_preference.type == "acceptance" else "no",
+                max_age=365 * 24 * 60 * 60,  # 1 year
+                path="/",
+                secure=self._settings.session_cookie_secure,
+                domain=self._settings.session_cookie_domain,
+                httponly=False,  # Allow JavaScript access for client-side reading
+                samesite="lax",
+            )
+        else:
+            response.delete_cookie(
+                self._settings.analytics_preference_cookie_name,
+                path="/",
+                domain=self._settings.session_cookie_domain,
+                secure=self._settings.session_cookie_secure,
+                httponly=False,  # Allow JavaScript access for client-side reading
+                samesite="lax",
+            )
+
     async def logout(
         self, request: Request, response: Response, session_token: str
     ) -> None:
@@ -874,8 +911,8 @@ class AuthService:
         response.delete_cookie(
             self._settings.analytics_preference_cookie_name,
             path="/",
-            secure=self._settings.session_cookie_secure,
             domain=self._settings.session_cookie_domain,
+            secure=self._settings.session_cookie_secure,
             httponly=False,  # Allow JavaScript access for client-side reading
             samesite="lax",
         )
@@ -984,6 +1021,7 @@ class AuthService:
         password_reset_token: str,
         email: str,
         captcha_token: str,
+        response: Response,
     ) -> Result[
         PasswordResetToken,
         InvalidPasswordResetTokenError
@@ -1033,6 +1071,8 @@ class AuthService:
             value=challenge,
         )
 
+        self._set_analytics_preference(response=response, account=account)
+
         return Ok(existing_reset_token)
 
     async def verify_2fa_password_reset_with_passkey(
@@ -1042,6 +1082,7 @@ class AuthService:
         password_reset_token: str,
         email: str,
         captcha_token: str,
+        response: Response,
     ) -> Result[
         PasswordResetToken,
         InvalidPasswordResetTokenError
@@ -1115,6 +1156,7 @@ class AuthService:
             value=challenge,
         )
 
+        self._set_analytics_preference(response=response, account=account)
         return Ok(existing_reset_token)
 
     async def reset_password(
@@ -1631,6 +1673,7 @@ class AuthService:
         user_agent: str,
         token: str,
         captcha_token: str,
+        response: Response,
     ) -> Result[
         Account,
         InvalidCredentialsError
@@ -1682,6 +1725,8 @@ class AuthService:
 
         self._grant_sudo_mode(request)
 
+        self._set_analytics_preference(response=response, account=account)
+
         self._posthog_client.capture(
             event="user_logged_in",
             distinct_id=str(relay.GlobalID("Account", str(account.id))),
@@ -1696,6 +1741,7 @@ class AuthService:
         user_agent: str,
         token: str,
         captcha_token: str,
+        response: Response,
     ) -> Result[
         Account,
         InvalidCredentialsError
@@ -1751,6 +1797,8 @@ class AuthService:
         )
 
         self._grant_sudo_mode(request)
+
+        self._set_analytics_preference(response=response, account=account)
 
         self._posthog_client.capture(
             event="user_logged_in",
