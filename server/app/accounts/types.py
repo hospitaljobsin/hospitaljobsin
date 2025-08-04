@@ -29,6 +29,7 @@ from app.base.types import (
 )
 from app.context import AuthInfo, Info
 from app.organizations.repositories import OrganizationRepo
+from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
 
 if TYPE_CHECKING:
     from app.auth.types import (
@@ -377,6 +378,26 @@ class TwoFactorProviderEnum(Enum):
     AUTHENTICATOR = "AUTHENTICATOR"
 
 
+@strawberry.enum(
+    name="TermsAndPolicyType",
+    description="The terms and policy type.",
+)
+class TermsAndPolicyTypeEnum(Enum):
+    ACCEPTANCE = "acceptance"
+    REJECTION = "rejection"
+    UNDECIDED = "undecided"
+
+
+@strawberry.type(
+    name="TermsAndPolicy",
+    description="The terms and policy.",
+)
+class TermsAndPolicyType:
+    type: TermsAndPolicyTypeEnum
+    updated_at: datetime
+    is_latest: bool
+
+
 @strawberry.type(
     name="Account",
     description="An account.",
@@ -404,8 +425,8 @@ class AccountType(BaseNodeType[Account]):
         description="Whether the account has 2FA enabled.",
     )
 
-    terms_and_policy_accepted_at: datetime | None = strawberry.field(
-        description="When the account accepted the terms and policy.",
+    terms_and_policy: TermsAndPolicyType = strawberry.field(
+        description="The terms and policy of the account.",
     )
 
     uploaded_avatar_url: strawberry.Private[str | None] = None
@@ -434,7 +455,12 @@ class AccountType(BaseNodeType[Account]):
             if isinstance(account.profile, Link)
             else account.profile,
             uploaded_avatar_url=account.avatar_url,
-            terms_and_policy_accepted_at=account.terms_and_policy_accepted_at,
+            terms_and_policy=TermsAndPolicyType(
+                type=TermsAndPolicyTypeEnum[account.terms_and_policy.type],
+                updated_at=account.terms_and_policy.updated_at,
+                is_latest=account.terms_and_policy.version
+                == TERMS_AND_POLICY_LATEST_VERSION,
+            ),
         )
 
     @classmethod

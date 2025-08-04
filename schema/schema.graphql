@@ -54,9 +54,9 @@ type Account implements Node {
 	has2faEnabled: Boolean!
 
 	"""
-	When the account accepted the terms and policy.
+	The terms and policy of the account.
 	"""
-	termsAndPolicyAcceptedAt: DateTime
+	termsAndPolicy: TermsAndPolicy!
 
 	"""
 	The account's profile.
@@ -4373,6 +4373,24 @@ union SetAccount2FAPayload =
 	| EnableAccount2FAWithAuthenticatorSuccess
 	| InvalidCredentialsError
 	| TwoFactorAuthenticationChallengeNotFoundError
+
+"""
+The terms and policy.
+"""
+type TermsAndPolicy {
+	type: TermsAndPolicyType!
+	updatedAt: DateTime!
+	isLatest: Boolean!
+}
+
+"""
+The terms and policy type.
+"""
+enum TermsAndPolicyType {
+	ACCEPTANCE
+	REJECTION
+	UNDECIDED
+}
 
 """
 The total view count payload.
