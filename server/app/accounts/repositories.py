@@ -2,6 +2,7 @@ import hashlib
 import secrets
 import string
 from datetime import UTC, date, datetime, timedelta
+from typing import Literal
 
 from beanie import PydanticObjectId, WriteRules
 from beanie.operators import In
@@ -46,8 +47,9 @@ class AccountRepo:
         auth_providers: list[AuthProvider],
         password: str | None = None,
         account_id: ObjectId | None = None,
-        terms_and_policy_type: str = "undecided",
-        analytics_preference: str = "undecided",
+        analytics_preference: Literal[
+            "acceptance", "rejection", "undecided"
+        ] = "undecided",
     ) -> Account:
         """Create a new account."""
         account = Account(
@@ -63,7 +65,7 @@ class AccountRepo:
             profile=None,
             auth_providers=auth_providers,
             terms_and_policy=TermsAndPolicy(
-                type=terms_and_policy_type,
+                type="acceptance",
                 updated_at=datetime.now(UTC),
                 version=TERMS_AND_POLICY_LATEST_VERSION,
             ),
