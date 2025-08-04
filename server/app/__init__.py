@@ -24,6 +24,7 @@ from app.health.routes import health_router
 from app.middleware import SessionMiddleware
 from app.middleware.fingerprints import FingerprintMiddleware
 from app.testing.routes import test_setup_router
+from app.accounts.routes import accounts_router
 
 
 def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
@@ -38,6 +39,7 @@ def add_routes(app: FastAPI, app_settings: AppSettings) -> None:
     )
     app.include_router(health_router)
     app.include_router(auth_router)
+    app.include_router(accounts_router)
 
 
 def add_middleware(

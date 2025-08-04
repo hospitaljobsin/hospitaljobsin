@@ -1,12 +1,12 @@
 from fastapi import Request
 
 
-def get_terms_and_policy_type(request: Request) -> str:
-    """Get the terms and policy type from the request."""
-    cookie_consent = request.cookies.get("cookie_consent", "undecided")
-    if cookie_consent == "yes":
+def get_analytics_preference(request: Request) -> str:
+    """Get the analytics preference from the request."""
+    analytics_preference = request.cookies.get("analytics_preference", "undecided")
+    if analytics_preference == "yes":
         return "acceptance"
-    elif cookie_consent == "no":
+    elif analytics_preference == "no":
         return "rejection"
     else:
         return "undecided"

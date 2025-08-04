@@ -21,6 +21,7 @@ from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
 
 from .documents import (
     Account,
+    AnalyticsPreference,
     Certification,
     Education,
     EmailVerificationToken,
@@ -46,6 +47,7 @@ class AccountRepo:
         password: str | None = None,
         account_id: ObjectId | None = None,
         terms_and_policy_type: str = "undecided",
+        analytics_preference: str = "undecided",
     ) -> Account:
         """Create a new account."""
         account = Account(
@@ -64,6 +66,10 @@ class AccountRepo:
                 type=terms_and_policy_type,
                 updated_at=datetime.now(UTC),
                 version=TERMS_AND_POLICY_LATEST_VERSION,
+            ),
+            analytics_preference=AnalyticsPreference(
+                type=analytics_preference,
+                updated_at=datetime.now(UTC),
             ),
             webauthn_credentials=[],
             oauth_credentials=[],
@@ -126,6 +132,7 @@ class AccountRepo:
         avatar_url: str | None = UNSET,
         phone_number: str | None = UNSET,
         terms_and_policy: TermsAndPolicy = UNSET,
+        analytics_preference: AnalyticsPreference = UNSET,
     ) -> Account:
         """Update the given account."""
         if full_name is not UNSET:
@@ -136,6 +143,8 @@ class AccountRepo:
             account.phone_number = phone_number
         if terms_and_policy is not UNSET:
             account.terms_and_policy = terms_and_policy
+        if analytics_preference is not UNSET:
+            account.analytics_preference = analytics_preference
         return await account.save()
 
     async def update_profile(self, account: Account, profile: Profile) -> Account:

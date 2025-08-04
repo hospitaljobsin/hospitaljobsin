@@ -166,9 +166,18 @@ class Profile(BaseProfile, Document):
 
 
 class TermsAndPolicy(BaseModel):
+    """Terms and privacy policy acceptance information."""
+
     type: Literal["acceptance", "rejection", "undecided"]
     updated_at: datetime
     version: str
+
+
+class AnalyticsPreference(BaseModel):
+    """ "Opt-in analytics cookies preference information."""
+
+    type: Literal["acceptance", "rejection", "undecided"]
+    updated_at: datetime
 
 
 class Account(Document):
@@ -186,6 +195,10 @@ class Account(Document):
     profile: Link[Profile] | None = None
 
     terms_and_policy: TermsAndPolicy
+
+    analytics: AnalyticsPreference | None = None
+
+    analytics_preference: AnalyticsPreference | None = None
 
     webauthn_credentials: list[BackLink["WebAuthnCredential"]] = Field(  # type: ignore[call-overload]
         original_field="account"

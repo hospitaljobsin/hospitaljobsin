@@ -4,21 +4,19 @@ from aioinject import Inject
 from aioinject.ext.fastapi import inject
 from authlib.integrations.starlette_client import OAuth
 from fastapi import APIRouter, Depends, Header, Query, Request
-from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from result import Err
 from starlette.responses import RedirectResponse
 
 from app.accounts.documents import Account
-from app.auth.dependencies import get_current_user, get_current_user_or_none
+from app.auth.dependencies import get_current_user
 from app.auth.exceptions import (
     AccountNotFoundError,
     InvalidEmailError,
     TwoFactorAuthenticationRequiredError,
 )
 from app.auth.services import AuthService
-from app.config import AppSettings, AuthSettings
-from app.accounts.services import AccountService
+from app.config import AppSettings
 
 auth_router = APIRouter(prefix="/auth")
 
@@ -155,45 +153,5 @@ async def oauth2_request_sudo_mode_callback_google(
                     url=app_settings.accounts_base_url
                     + "/request-sudo?oauth2_error=2fa_required",
                 )
-
-    return response
-
-
-@auth_router.post("/terms-privacy/set-consent")
-@inject
-async def update_terms_and_policy_consent(
-    request: Request,
-    consent_data: ConsentRequest,
-    auth_settings: Annotated[AuthSettings, Inject],
-    current_user: Annotated[
-        Account | None,
-        Depends(
-            dependency=get_current_user_or_none,
-        ),
-    ],
-    account_service: Annotated[AccountService, Inject],
-) -> JSONResponse:
-    """Update the terms and policy consent."""
-    if current_user is not None:
-        await account_service.update_terms_and_policy(
-            account=current_user,
-            type="acceptance" if consent_data.consent == "yes" else "rejection",
-        )
-
-    response = JSONResponse(
-        content={"message": "Consent cookie set successfully"}, status_code=200
-    )
-
-    # Set the consent cookie with appropriate settings
-    response.set_cookie(
-        "cookie_consent",
-        consent_data.consent,
-        max_age=365 * 24 * 60 * 60,  # 1 year
-        path="/",
-        httponly=False,  # Allow client-side access
-        samesite="lax",
-        secure=auth_settings.session_cookie_secure,  # Secure in production
-        domain=auth_settings.session_cookie_domain,
-    )
 
     return response

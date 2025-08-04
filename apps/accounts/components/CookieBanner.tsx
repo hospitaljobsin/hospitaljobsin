@@ -152,7 +152,10 @@ function CookieBannerContent({
 				UNDECIDED: "undecided",
 			};
 			setConsentGiven(consentMap[consentType] || "undecided");
-			Cookies.set("cookie_consent", consentMap[consentType] || "undecided");
+			Cookies.set(
+				"analytics_preference",
+				consentMap[consentType] || "undecided",
+			);
 		}
 	}, [data.viewer, setConsentGiven]);
 

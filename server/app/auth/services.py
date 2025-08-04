@@ -92,7 +92,7 @@ from app.core.constants import (
 )
 from app.core.emails import BaseEmailSender
 from app.core.formatting import format_datetime
-from app.auth.utils import get_terms_and_policy_type
+from app.auth.utils import get_analytics_preference
 
 
 class AuthService:
@@ -325,7 +325,7 @@ class AuthService:
             password=password,
             full_name=full_name,
             auth_providers=["password"],
-            terms_and_policy_type=get_terms_and_policy_type(request),
+            analytics_preference=get_analytics_preference(request),
         )
 
         await self._profile_repo.create(account=account)
@@ -472,7 +472,7 @@ class AuthService:
             password=None,
             full_name=full_name,
             auth_providers=["webauthn_credential"],
-            terms_and_policy_type=get_terms_and_policy_type(request),
+            analytics_preference=get_analytics_preference(request),
         )
 
         # delete the webauthn challenge after account creation
@@ -766,7 +766,7 @@ class AuthService:
                 # set initial password to None for the user
                 password=None,
                 auth_providers=["oauth_google"],
-                terms_and_policy_type=get_terms_and_policy_type(request),
+                analytics_preference=get_analytics_preference(request),
             )
             await self._profile_repo.create(account=account)
             # create an oauth credential for the user
@@ -872,7 +872,7 @@ class AuthService:
         request.session.clear()
 
         response.delete_cookie(
-            "cookie_consent",
+            "analytics_preference",
             path="/",
             secure=self._settings.session_cookie_secure,
             domain=self._settings.session_cookie_domain,

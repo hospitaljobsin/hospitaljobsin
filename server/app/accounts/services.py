@@ -11,6 +11,7 @@ from types_aiobotocore_s3 import S3Client
 from app.accounts.agents.profile_parser import ProfileParserAgent
 from app.accounts.documents import (
     Account,
+    AnalyticsPreference,
     Education,
     Language,
     License,
@@ -91,6 +92,19 @@ class AccountService:
         )
         # update denormalized full_name in job applicants
         await self._job_applicant_repo.update_all(account=account, full_name=full_name)
+        return Ok(account)
+
+    async def update_analytics_preference(
+        self, account: Account, type: Literal["acceptance", "rejection"]
+    ) -> Ok[Account]:
+        """Update the analytics preference."""
+        await self._account_repo.update(
+            account=account,
+            analytics_preference=AnalyticsPreference(
+                type=type,
+                updated_at=datetime.now(UTC),
+            ),
+        )
         return Ok(account)
 
     async def update_terms_and_policy(
