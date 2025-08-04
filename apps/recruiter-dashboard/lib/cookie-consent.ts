@@ -1,8 +1,9 @@
 import Cookies from "js-cookie";
+import { COOKIE_ANALYTICS_PREFERENCE } from "./constants";
 import { env } from "./env/client";
 
 export function cookieConsentGiven(): string {
-	const consent = Cookies.get("analytics_preference");
+	const consent = Cookies.get(COOKIE_ANALYTICS_PREFERENCE);
 	if (!consent) {
 		return "undecided";
 	}

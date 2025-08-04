@@ -22,6 +22,7 @@ from app.testing.schemas import (
     WebAuthnCredentialSchema,
 )
 from app.auth.utils import get_analytics_preference
+from app.config import AuthSettings
 
 
 class TestSetupService:
@@ -33,6 +34,7 @@ class TestSetupService:
         recovery_code_repo: RecoveryCodeRepo,
         oauth_credential_repo: OauthCredentialRepo,
         session_repo: SessionRepo,
+        settings: AuthSettings,
     ) -> None:
         self._account_repo = account_repo
         self._profile_repo = profile_repo
@@ -40,6 +42,7 @@ class TestSetupService:
         self._recovery_code_repo = recovery_code_repo
         self._oauth_credential_repo = oauth_credential_repo
         self._session_repo = session_repo
+        self._settings = settings
 
     async def create_account(
         self,
@@ -58,7 +61,7 @@ class TestSetupService:
             password=data.password,
             full_name=data.full_name,
             auth_providers=data.auth_providers,
-            analytics_preference=get_analytics_preference(request),
+            analytics_preference=get_analytics_preference(request, self._settings),
         )
 
         webauthn_credentials: list[WebAuthnCredential] = []

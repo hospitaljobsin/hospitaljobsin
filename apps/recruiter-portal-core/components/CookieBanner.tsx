@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import type { PreloadedQuery } from "react-relay";
 import { usePreloadedQuery, useQueryLoader } from "react-relay";
 import { graphql } from "relay-runtime";
+import { COOKIE_ANALYTICS_PREFERENCE } from "../lib/constants";
 import { cookieConsentGiven, setCookieConsent } from "../lib/cookie-consent";
 import useIsAuthenticated from "../lib/hooks/useIsAuthenticated";
 
@@ -153,7 +154,7 @@ function CookieBannerContent({
 			};
 			setConsentGiven(consentMap[consentType] || "undecided");
 			Cookies.set(
-				"analytics_preference",
+				COOKIE_ANALYTICS_PREFERENCE,
 				consentMap[consentType] || "undecided",
 			);
 		}

@@ -17,3 +17,5 @@ export const FILTER_DEFAULTS = {
 	workMode: "ANY",
 	jobType: "ANY",
 };
+
+export const COOKIE_ANALYTICS_PREFERENCE = "analytics_preference";

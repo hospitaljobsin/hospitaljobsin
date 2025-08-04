@@ -44,7 +44,7 @@ async def update_analytics_preference(
 
     # Set the consent cookie with appropriate settings
     response.set_cookie(
-        "analytics_preference",
+        auth_settings.analytics_preference_cookie_name,
         consent_data.consent,
         max_age=365 * 24 * 60 * 60,  # 1 year
         path="/",

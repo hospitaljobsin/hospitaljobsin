@@ -325,7 +325,7 @@ class AuthService:
             password=password,
             full_name=full_name,
             auth_providers=["password"],
-            analytics_preference=get_analytics_preference(request),
+            analytics_preference=get_analytics_preference(request, self._settings),
         )
 
         await self._profile_repo.create(account=account)
@@ -472,7 +472,7 @@ class AuthService:
             password=None,
             full_name=full_name,
             auth_providers=["webauthn_credential"],
-            analytics_preference=get_analytics_preference(request),
+            analytics_preference=get_analytics_preference(request, self._settings),
         )
 
         # delete the webauthn challenge after account creation
@@ -766,7 +766,7 @@ class AuthService:
                 # set initial password to None for the user
                 password=None,
                 auth_providers=["oauth_google"],
-                analytics_preference=get_analytics_preference(request),
+                analytics_preference=get_analytics_preference(request, self._settings),
             )
             await self._profile_repo.create(account=account)
             # create an oauth credential for the user
@@ -872,7 +872,7 @@ class AuthService:
         request.session.clear()
 
         response.delete_cookie(
-            "analytics_preference",
+            self._settings.analytics_preference_cookie_name,
             path="/",
             secure=self._settings.session_cookie_secure,
             domain=self._settings.session_cookie_domain,

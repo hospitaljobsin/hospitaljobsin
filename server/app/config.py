@@ -411,6 +411,8 @@ class AWSSettings(BaseSettings):
 class AuthSettings(BaseSettings):
     session_user_cookie_name: str = "user_session"
 
+    analytics_preference_cookie_name: str = "analytics_preference"
+
     session_cookie_secure: bool = True
 
     session_cookie_domain: str | None = None
