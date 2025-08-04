@@ -669,5 +669,6 @@
 	"e2168d38fe6a9eb2b878f3b9158f26a3": "query PostHogIdentifierQuery{viewer{__typename,...on Account{__typename,id,email},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}}}",
 	"c3593512cd952305729d0a8b200b7c8e": "query PostHogIdentifierQuery{viewer{__typename,...on Account{__typename,id,email},...on Node{__isNode:__typename,id}}}",
 	"72f135592938ce6406fa7c4e49cf99bb": "query CookieBannerConsentQuery{viewer{__typename,...on Account{__typename,id,termsAndPolicy{type}},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}}}",
-	"55428e28cc5755c23c59e7aec04f06cf": "query CookieBannerConsentQuery{viewer{__typename,...on Account{__typename,id,termsAndPolicy{type}},...on Node{__isNode:__typename,id}}}"
+	"55428e28cc5755c23c59e7aec04f06cf": "query CookieBannerConsentQuery{viewer{__typename,...on Account{__typename,id,termsAndPolicy{type}},...on Node{__isNode:__typename,id}}}",
+	"c5e3f9ea24e348e0ceef874495828aff": "query CookieBannerConsentQuery{viewer{__typename,...on Account{__typename,id,analyticsPreference{type}},...on NotAuthenticatedError{__typename},...on Node{__isNode:__typename,id}}}"
 }

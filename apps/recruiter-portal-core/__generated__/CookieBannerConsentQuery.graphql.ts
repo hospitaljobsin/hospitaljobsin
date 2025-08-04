@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<2e0ceff0575fde812906679139fc6faa>>
- * @relayHash 72f135592938ce6406fa7c4e49cf99bb
+ * @generated SignedSource<<1528ffbe39a43925749c6a222c836a98>>
+ * @relayHash c5e3f9ea24e348e0ceef874495828aff
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,19 +9,19 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 72f135592938ce6406fa7c4e49cf99bb
+// @relayRequestID c5e3f9ea24e348e0ceef874495828aff
 
 import type { ConcreteRequest } from 'relay-runtime';
-export type TermsAndPolicyType = "ACCEPTANCE" | "REJECTION" | "UNDECIDED" | "%future added value";
+export type AnalyticsPreferenceType = "ACCEPTANCE" | "REJECTION" | "UNDECIDED" | "%future added value";
 export type CookieBannerConsentQuery$variables = Record<PropertyKey, never>;
 export type CookieBannerConsentQuery$data = {
   readonly viewer: {
     readonly __typename: "Account";
     readonly __typename: "Account";
-    readonly id: string;
-    readonly termsAndPolicy: {
-      readonly type: TermsAndPolicyType;
+    readonly analyticsPreference: {
+      readonly type: AnalyticsPreferenceType;
     };
+    readonly id: string;
   } | {
     readonly __typename: "NotAuthenticatedError";
     readonly __typename: "NotAuthenticatedError";
@@ -58,9 +58,9 @@ v2 = {
     {
       "alias": null,
       "args": null,
-      "concreteType": "TermsAndPolicy",
+      "concreteType": "AnalyticsPreference",
       "kind": "LinkedField",
-      "name": "termsAndPolicy",
+      "name": "analyticsPreference",
       "plural": false,
       "selections": [
         {
@@ -131,7 +131,7 @@ return {
     ]
   },
   "params": {
-    "id": "72f135592938ce6406fa7c4e49cf99bb",
+    "id": "c5e3f9ea24e348e0ceef874495828aff",
     "metadata": {},
     "name": "CookieBannerConsentQuery",
     "operationKind": "query",
@@ -140,6 +140,6 @@ return {
 };
 })();
 
-(node as any).hash = "a0972270edd09ccf8e981babde102698";
+(node as any).hash = "4c69546f76ae13d581feeccf145996a6";
 
 export default node;

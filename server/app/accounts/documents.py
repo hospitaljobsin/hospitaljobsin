@@ -196,9 +196,7 @@ class Account(Document):
 
     terms_and_policy: TermsAndPolicy
 
-    analytics: AnalyticsPreference | None = None
-
-    analytics_preference: AnalyticsPreference | None = None
+    analytics_preference: AnalyticsPreference
 
     webauthn_credentials: list[BackLink["WebAuthnCredential"]] = Field(  # type: ignore[call-overload]
         original_field="account"

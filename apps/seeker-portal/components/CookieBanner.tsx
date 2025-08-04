@@ -16,7 +16,7 @@ import { graphql } from "relay-runtime";
 import { COOKIE_ANALYTICS_PREFERENCE } from "../lib/constants";
 import { cookieConsentGiven, setCookieConsent } from "../lib/cookie-consent";
 import useIsAuthenticated from "../lib/hooks/useIsAuthenticated";
-// GraphQL query to fetch viewer with termsAndPolicy
+// GraphQL query to fetch viewer with analytics preference
 export const CookieBannerConsentQuery = graphql`
   query CookieBannerConsentQuery {
     viewer {
@@ -24,7 +24,7 @@ export const CookieBannerConsentQuery = graphql`
       ... on Account {
         __typename
         id
-        termsAndPolicy {
+        analyticsPreference {
           type
         }
       }
@@ -144,7 +144,7 @@ function CookieBannerContent({
 	// Determine consent status from server data
 	useEffect(() => {
 		if (data.viewer.__typename === "Account") {
-			const consentType = data.viewer.termsAndPolicy.type;
+			const consentType = data.viewer.analyticsPreference.type;
 			// Map server enum to local consent format
 			const consentMap: Record<string, string> = {
 				ACCEPTANCE: "yes",

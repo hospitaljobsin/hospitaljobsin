@@ -398,6 +398,25 @@ class TermsAndPolicyType:
     is_latest: bool
 
 
+@strawberry.enum(
+    name="AnalyticsPreferenceType",
+    description="The analytics preference type.",
+)
+class AnalyticsPreferenceTypeEnum(Enum):
+    ACCEPTANCE = "ACCEPTANCE"
+    REJECTION = "REJECTION"
+    UNDECIDED = "UNDECIDED"
+
+
+@strawberry.type(
+    name="AnalyticsPreference",
+    description="The analytics preference.",
+)
+class AnalyticsPreferenceType:
+    type: AnalyticsPreferenceTypeEnum
+    updated_at: datetime
+
+
 @strawberry.type(
     name="Account",
     description="An account.",
@@ -427,6 +446,9 @@ class AccountType(BaseNodeType[Account]):
 
     terms_and_policy: TermsAndPolicyType = strawberry.field(
         description="The terms and policy of the account.",
+    )
+    analytics_preference: AnalyticsPreferenceType = strawberry.field(
+        description="The analytics preference of the account.",
     )
 
     uploaded_avatar_url: strawberry.Private[str | None] = None
@@ -460,6 +482,12 @@ class AccountType(BaseNodeType[Account]):
                 updated_at=account.terms_and_policy.updated_at,
                 is_latest=account.terms_and_policy.version
                 == TERMS_AND_POLICY_LATEST_VERSION,
+            ),
+            analytics_preference=AnalyticsPreferenceType(
+                type=AnalyticsPreferenceTypeEnum(
+                    account.analytics_preference.type.upper()
+                ),
+                updated_at=account.analytics_preference.updated_at,
             ),
         )
 

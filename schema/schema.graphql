@@ -59,6 +59,11 @@ type Account implements Node {
 	termsAndPolicy: TermsAndPolicy!
 
 	"""
+	The analytics preference of the account.
+	"""
+	analyticsPreference: AnalyticsPreference!
+
+	"""
 	The account's profile.
 	"""
 	profile: Profile
@@ -242,6 +247,23 @@ type AnalysedFields {
 	certifications: FieldAnalysis
 	professionalSummary: FieldAnalysis
 	headline: FieldAnalysis
+}
+
+"""
+The analytics preference.
+"""
+type AnalyticsPreference {
+	type: AnalyticsPreferenceType!
+	updatedAt: DateTime!
+}
+
+"""
+The analytics preference type.
+"""
+enum AnalyticsPreferenceType {
+	ACCEPTANCE
+	REJECTION
+	UNDECIDED
 }
 
 """
