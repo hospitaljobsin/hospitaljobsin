@@ -12,6 +12,7 @@ const links = {
 	settings: "/settings",
 	settingsPasskeys: "/settings/passkeys",
 	settingsSessions: "/settings/sessions",
+	settingsPrivacy: "/settings/privacy",
 	requestSudo: (returnTo: string | null = null) =>
 		returnTo ? `/request-sudo?return_to=${returnTo}` : "/request-sudo",
 	twoFactorAuthentication: (returnTo: string | null = null) =>

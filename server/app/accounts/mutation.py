@@ -21,6 +21,8 @@ from app.context import AuthInfo
 
 from .types import (
     AccountType,
+    AnalyticsPreferenceInputTypeEnum,
+    AnalyticsPreferenceTypeEnum,
     CertificationInputType,
     EducationInputType,
     GenderTypeEnum,
@@ -38,6 +40,7 @@ from .types import (
     RemoveAccountPhoneNumberPayload,
     RequestPhoneNumberVerificationTokenPayload,
     RequestPhoneNumberVerificationTokenSuccessType,
+    UpdateAccountAnalyticsPreferencePayload,
     UpdateAccountPayload,
     UpdateAccountPhoneNumberPayload,
     UpdateProfilePayload,
@@ -316,6 +319,37 @@ class AccountMutation:
                 match error:
                     case PhoneNumberDoesNotExistError():
                         return PhoneNumberDoesNotExistErrorType()
+            case _ as unreachable:
+                assert_never(unreachable)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=UpdateAccountAnalyticsPreferencePayload,
+        description="Update the current user's analytics preference.",
+        extensions=[
+            PermissionExtension(
+                permissions=[IsAuthenticated()],
+            )
+        ],
+    )
+    @inject
+    async def update_account_analytics_preference(
+        self,
+        info: AuthInfo,
+        account_service: Annotated[AccountService, Inject],
+        analytics_preference: Annotated[
+            AnalyticsPreferenceInputTypeEnum,
+            strawberry.argument(
+                description="The analytics preference of the user account."
+            ),
+        ],
+    ) -> UpdateAccountAnalyticsPreferencePayload:
+        """Update the current user's analytics preference."""
+        match await account_service.update_analytics_preference(
+            account=info.context["current_user"],
+            type=analytics_preference.value.lower(),
+        ):
+            case Ok(account):
+                return AccountType.marshal(account)
             case _ as unreachable:
                 assert_never(unreachable)
 

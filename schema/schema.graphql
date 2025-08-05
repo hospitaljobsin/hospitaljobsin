@@ -258,6 +258,14 @@ type AnalyticsPreference {
 }
 
 """
+The analytics preference input type.
+"""
+enum AnalyticsPreferenceInputType {
+	ACCEPTANCE
+	REJECTION
+}
+
+"""
 The analytics preference type.
 """
 enum AnalyticsPreferenceType {
@@ -2716,6 +2724,16 @@ type Mutation {
 		@requiresSudoMode
 
 	"""
+	Update the current user's analytics preference.
+	"""
+	updateAccountAnalyticsPreference(
+		"""
+		The analytics preference of the user account.
+		"""
+		analyticsPreference: AnalyticsPreferenceInputType!
+	): UpdateAccountAnalyticsPreferencePayload! @isAuthenticated
+
+	"""
 	Update the current user's profile location preferences.
 	"""
 	updateProfileLocationPreferences(
@@ -4508,6 +4526,11 @@ type UnsaveJobSuccess {
 	"""
 	savedJobEdge: SavedJobEdge!
 }
+
+"""
+The update account analytics preference payload.
+"""
+union UpdateAccountAnalyticsPreferencePayload = Account
 
 """
 The update account payload.

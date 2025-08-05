@@ -22,7 +22,7 @@ export default function SettingsLayout({
 				<div className="relative w-full mx-auto max-w-5xl h-full">
 					<div className="flex flex-col md:flex-row h-full bg-background-600">
 						<SettingsSidebar />
-						<div className="flex-1 px-4 py-6 md:pl-12 bg-background-600 h-full ">
+						<div className="flex-1 px-4 py-6 md:pl-12 bg-background-600 h-full">
 							{children}
 						</div>
 					</div>

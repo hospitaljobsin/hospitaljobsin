@@ -399,6 +399,15 @@ class TermsAndPolicyType:
 
 
 @strawberry.enum(
+    name="AnalyticsPreferenceInputType",
+    description="The analytics preference input type.",
+)
+class AnalyticsPreferenceInputTypeEnum(Enum):
+    ACCEPTANCE = "ACCEPTANCE"
+    REJECTION = "REJECTION"
+
+
+@strawberry.enum(
     name="AnalyticsPreferenceType",
     description="The analytics preference type.",
 )
@@ -755,6 +764,14 @@ UpdateAccountPayload = Annotated[
     strawberry.union(
         name="UpdateAccountPayload",
         description="The update account payload.",
+    ),
+]
+
+UpdateAccountAnalyticsPreferencePayload = Annotated[
+    AccountType,
+    strawberry.union(
+        name="UpdateAccountAnalyticsPreferencePayload",
+        description="The update account analytics preference payload.",
     ),
 ]
 

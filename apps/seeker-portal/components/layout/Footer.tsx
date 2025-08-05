@@ -1,14 +1,10 @@
 "use client";
 import { COMPANY_NAME, WHATSAPP_CHANNEL_LINK } from "@/lib/constants";
 import links from "@/lib/links";
-import { Button, Link } from "@heroui/react";
-import { useState } from "react";
-import CookieSettingsModal from "../CookieSettingsModal";
+import { Link } from "@heroui/react";
 import { WhatsappIcon } from "../icons";
 
 export default function Footer() {
-	const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
-
 	return (
 		<>
 			<footer className="w-full flex items-center justify-center bg-background-600 py-4 border-t border-t-background-700">
@@ -34,15 +30,6 @@ export default function Footer() {
 						</div>
 
 						<div className="w-full flex items-center gap-4 justify-end">
-							<Button
-								variant="light"
-								size="sm"
-								className="text-foreground-500 text-xs p-0 min-w-0 h-auto"
-								onPress={() => setIsCookieModalOpen(true)}
-							>
-								<span className="hidden sm:inline">Manage your cookies</span>
-								<span className="sm:hidden">Cookies</span>
-							</Button>
 							<Link
 								href={links.terms}
 								color="foreground"
@@ -65,11 +52,6 @@ export default function Footer() {
 					</div>
 				</div>
 			</footer>
-
-			<CookieSettingsModal
-				isOpen={isCookieModalOpen}
-				onClose={() => setIsCookieModalOpen(false)}
-			/>
 		</>
 	);
 }
