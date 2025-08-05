@@ -1,5 +1,5 @@
-import { APP_NAME, COMPANY_NAME } from '@/lib/constants'
-import { links } from '@/lib/links';
+import { APP_NAME, COMPANY_NAME, SUPPORT_EMAIL } from '@/lib/constants'
+import links from '@/lib/links';
 
 ## {APP_NAME} Terms and Conditions
 
@@ -130,7 +130,7 @@ All software, branding, design elements, and content on {APP_NAME} belong to us 
 * How it is used;
 * How you can access, update, or delete your information.
 
-📄 [View Privacy Policy]({links.privacy})
+📄 <a href={links.privacy}>View Privacy Policy</a>
 
 ---
 
@@ -183,4 +183,4 @@ These Terms are governed by the laws of **India**. Any disputes shall be resolve
 ## **16. Contact Information**
 
 Questions or legal concerns? Contact us at:
-📧 **[support@hospitaljobs.in](mailto:supporot@hospitaljobs.in)**
+📧 **[{SUPPORT_EMAIL}](mailto:{SUPPORT_EMAIL})**
