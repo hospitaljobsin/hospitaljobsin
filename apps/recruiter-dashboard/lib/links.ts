@@ -35,8 +35,8 @@ const links = {
 		returnTo
 			? `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/request-sudo?return_to=${returnTo}`
 			: `${env.NEXT_PUBLIC_ACCOUNTS_BASE_URL}/request-sudo`,
-	terms: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/terms`,
-	privacy: `${env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL}/privacy`,
+	terms: `${env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL}/terms`,
+	privacy: `${env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL}/privacy`,
 	aiGenerateJob: `${env.NEXT_PUBLIC_API_URL}/api/ai/generate-job`,
 	aiGenerateJobStatus: (kickoffId: string) =>
 		`${env.NEXT_PUBLIC_API_URL}/api/ai/generate-job/status/${kickoffId}`,
