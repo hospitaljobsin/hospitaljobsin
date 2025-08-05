@@ -98,7 +98,7 @@ async def generate_whatsapp_messages():
 *Experience:* {format_experience(job)}
 
 🔗 *Apply Now:*
-*https://hospitaljobs.in/organizations/{job.organization.slug}/jobs/{job.slug}*
+https://hospitaljobs.in/organizations/{job.organization.slug}/jobs/{job.slug}
         """
         messages.append(message)
         # Mark job as posted to WhatsApp

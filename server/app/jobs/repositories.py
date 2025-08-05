@@ -121,6 +121,22 @@ class JobRepo:
             f"Work Mode: {work_mode or 'N/A'}"
         )
 
+    async def get_for_whatsapp_message_generation(self) -> list[Job]:
+        """Get all jobs that are active and haven't been posted already, for whatsapp message generation."""
+        return await Job.find(
+            Job.is_active == True,
+            Job.whatsapp_channel_posted_at == None,
+            Or(Job.expires_at == None, Job.expires_at > datetime.now(UTC)),
+            fetch_links=True,
+            nesting_depth=2,
+        ).to_list()
+
+    async def mark_as_posted_on_whatsapp(self, job_ids: list[ObjectId]) -> None:
+        """Mark a job as posted on whatsapp."""
+        await Job.find(In(Job.id, job_ids)).update_many(
+            Set(Job.whatsapp_channel_posted_at, datetime.now(UTC))
+        )
+
     async def create(
         self,
         *,
