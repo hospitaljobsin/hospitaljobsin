@@ -347,6 +347,7 @@ class AccountMutation:
         match await account_service.update_analytics_preference(
             account=info.context["current_user"],
             type=analytics_preference.value.lower(),
+            response=info.context["response"],
         ):
             case Ok(account):
                 return AccountType.marshal(account)

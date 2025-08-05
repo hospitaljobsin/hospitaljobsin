@@ -2,6 +2,7 @@ from typing import Literal
 import uuid
 from datetime import UTC, date, datetime, timedelta
 
+from fastapi import Response
 import phonenumbers
 import strawberry
 from result import Err, Ok, Result
@@ -95,7 +96,10 @@ class AccountService:
         return Ok(account)
 
     async def update_analytics_preference(
-        self, account: Account, type: Literal["acceptance", "rejection"]
+        self,
+        account: Account,
+        type: Literal["acceptance", "rejection"],
+        response: Response,
     ) -> Ok[Account]:
         """Update the analytics preference."""
         await self._account_repo.update(
@@ -104,6 +108,17 @@ class AccountService:
                 type=type,
                 updated_at=datetime.now(UTC),
             ),
+        )
+        # Set the consent cookie with appropriate settings
+        response.set_cookie(
+            self._settings.analytics_preference_cookie_name,
+            "yes" if type == "acceptance" else "no",
+            max_age=365 * 24 * 60 * 60,  # 1 year
+            path="/",
+            httponly=False,  # Allow client-side access
+            samesite="lax",
+            secure=self._settings.session_cookie_secure,  # Secure in production
+            domain=self._settings.session_cookie_domain,
         )
         return Ok(account)
 
