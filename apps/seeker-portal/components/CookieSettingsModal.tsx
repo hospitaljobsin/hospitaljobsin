@@ -72,7 +72,7 @@ export default function CookieSettingsModal({
 				</ModalHeader>
 				<ModalBody>
 					<div className="space-y-8">
-						<div>
+						<div className="flex flex-col gap-2">
 							<h3 className="text-sm font-medium mb-2">
 								Manage your cookie preferences
 							</h3>
@@ -87,11 +87,10 @@ export default function CookieSettingsModal({
 						<div className="space-y-8">
 							{/* Necessary Cookies */}
 							<div className="flex items-center justify-between">
-								<div className="flex-1">
+								<div className="flex-2">
 									<h4 className="text-sm font-medium">Necessary Cookies</h4>
 									<p className="text-xs text-foreground-500 mt-1">
-										Essential for the website to function properly. These cannot
-										be disabled.
+										Essential for the site to work. These cannot be disabled.
 									</p>
 								</div>
 								<Switch
@@ -105,11 +104,12 @@ export default function CookieSettingsModal({
 
 							{/* Analytics Cookies */}
 							<div className="flex items-center justify-between">
-								<div className="flex-1">
+								<div className="flex-2">
 									<h4 className="text-sm font-medium">Analytics Cookies</h4>
 									<p className="text-xs text-foreground-500 mt-1">
 										Help us understand how visitors interact with our website by
-										collecting and reporting information anonymously.
+										collecting and reporting information. This data is used to
+										improve our website and services.
 									</p>
 								</div>
 								<Switch
