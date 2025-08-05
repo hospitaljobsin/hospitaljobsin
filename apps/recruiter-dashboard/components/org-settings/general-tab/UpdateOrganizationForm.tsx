@@ -84,7 +84,10 @@ type Props = {
 const formSchema = z.object({
 	name: z.string().min(1, { message: "Organization name is required" }),
 	slug: z.string().min(1, { message: "Slug is required" }),
-	website: z.nullable(z.optional(z.string().url({ message: "Invalid URL" }))),
+	website: z.union([
+		z.nullable(z.optional(z.string().url({ message: "Invalid URL" }))),
+		z.literal(""),
+	]),
 	description: z.union([
 		z.nullable(
 			z.optional(
