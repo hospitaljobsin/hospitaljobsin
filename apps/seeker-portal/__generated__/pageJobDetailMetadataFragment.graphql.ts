@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ecdb95cb20161f56be92dbcbdcc734e5>>
+ * @generated SignedSource<<bfd973f41eeacf557c4df650031dd6af>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ import type { FragmentRefs } from "relay-runtime";
 export type pageJobDetailMetadataFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly bannerUrl: string;
     readonly job: {
       readonly __typename: "Job";
       readonly description: string;
@@ -22,7 +23,6 @@ export type pageJobDetailMetadataFragment$data = {
       // value in case none of the concrete values match.
       readonly __typename: "%other";
     };
-    readonly logoUrl: string;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -40,6 +40,6 @@ const node: ReaderInlineDataFragment = {
   "name": "pageJobDetailMetadataFragment"
 };
 
-(node as any).hash = "e0ed440db7fec8b0a34a227f885e0aed";
+(node as any).hash = "7b83e25590540d5aa7c10590016c7ca8";
 
 export default node;

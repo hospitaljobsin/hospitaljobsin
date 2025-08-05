@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6d35fc946e9e60d3c37daa3ce4113a71>>
- * @relayHash d437b76f35436cedd2a5b806acae18bc
+ * @generated SignedSource<<138e43884f06c95220ecd5a029f7a9c5>>
+ * @relayHash 50506b5b1bc1647e6731e60948c1ba28
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,10 +9,11 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID d437b76f35436cedd2a5b806acae18bc
+// @relayRequestID 50506b5b1bc1647e6731e60948c1ba28
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type UpdateOrganizationFormMutation$variables = {
+  bannerUrl?: string | null | undefined;
   description?: string | null | undefined;
   location?: string | null | undefined;
   logoUrl?: string | null | undefined;
@@ -56,39 +57,49 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "description"
+  "name": "bannerUrl"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "location"
+  "name": "description"
 },
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "logoUrl"
+  "name": "location"
 },
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "name"
+  "name": "logoUrl"
 },
 v4 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "organizationId"
+  "name": "name"
 },
 v5 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "slug"
+  "name": "organizationId"
 },
 v6 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "slug"
+},
+v7 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "website"
 },
-v7 = [
+v8 = [
+  {
+    "kind": "Variable",
+    "name": "bannerUrl",
+    "variableName": "bannerUrl"
+  },
   {
     "kind": "Variable",
     "name": "description",
@@ -125,24 +136,24 @@ v7 = [
     "variableName": "website"
   }
 ],
-v8 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v9 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v10 = {
+v11 = {
   "kind": "InlineFragment",
   "selections": [
-    (v9/*: any*/),
+    (v10/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -189,7 +200,7 @@ v10 = {
   "type": "Organization",
   "abstractKey": null
 },
-v11 = {
+v12 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -212,7 +223,8 @@ return {
       (v3/*: any*/),
       (v4/*: any*/),
       (v5/*: any*/),
-      (v6/*: any*/)
+      (v6/*: any*/),
+      (v7/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -220,15 +232,15 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v7/*: any*/),
+        "args": (v8/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateOrganization",
         "plural": false,
         "selections": [
-          (v8/*: any*/),
-          (v10/*: any*/),
-          (v11/*: any*/)
+          (v9/*: any*/),
+          (v11/*: any*/),
+          (v12/*: any*/)
         ],
         "storageKey": null
       }
@@ -239,32 +251,33 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v4/*: any*/),
-      (v3/*: any*/),
       (v5/*: any*/),
-      (v1/*: any*/),
+      (v4/*: any*/),
       (v6/*: any*/),
       (v2/*: any*/),
-      (v0/*: any*/)
+      (v7/*: any*/),
+      (v3/*: any*/),
+      (v0/*: any*/),
+      (v1/*: any*/)
     ],
     "kind": "Operation",
     "name": "UpdateOrganizationFormMutation",
     "selections": [
       {
         "alias": null,
-        "args": (v7/*: any*/),
+        "args": (v8/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "updateOrganization",
         "plural": false,
         "selections": [
-          (v8/*: any*/),
-          (v10/*: any*/),
+          (v9/*: any*/),
           (v11/*: any*/),
+          (v12/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
-              (v9/*: any*/)
+              (v10/*: any*/)
             ],
             "type": "Node",
             "abstractKey": "__isNode"
@@ -275,7 +288,7 @@ return {
     ]
   },
   "params": {
-    "id": "d437b76f35436cedd2a5b806acae18bc",
+    "id": "50506b5b1bc1647e6731e60948c1ba28",
     "metadata": {},
     "name": "UpdateOrganizationFormMutation",
     "operationKind": "mutation",
@@ -284,6 +297,6 @@ return {
 };
 })();
 
-(node as any).hash = "3e23dbaf7a42ce9142da919280e3db46";
+(node as any).hash = "13a6108e343b79b558bc8dc5116f2701";
 
 export default node;

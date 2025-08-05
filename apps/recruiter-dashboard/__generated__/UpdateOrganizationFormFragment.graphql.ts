@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<81b459e3d392550eb513be31671fca77>>
+ * @generated SignedSource<<d8de676cb1fdafc904aa3c8bd88be8d7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,6 +11,7 @@
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
 export type UpdateOrganizationFormFragment$data = {
+  readonly bannerUrl: string;
   readonly description: string | null | undefined;
   readonly id: string;
   readonly location: string | null | undefined;
@@ -70,6 +71,13 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
+      "name": "bannerUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "description",
       "storageKey": null
     },
@@ -85,6 +93,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "ddf8b31041cedd5404fa7a5583f82867";
+(node as any).hash = "2007f3792f97544061c3cc53d66317a5";
 
 export default node;

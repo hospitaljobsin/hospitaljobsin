@@ -6,6 +6,7 @@ from typing import Literal
 from beanie import PydanticObjectId
 from beanie.operators import And, In, Set
 from bson import ObjectId
+from strawberry import UNSET
 
 from app.accounts.documents import Account
 from app.base.models import Address
@@ -60,20 +61,30 @@ class OrganizationRepo:
         *,
         name: str,
         slug: str,
-        location: str | None = None,
-        email: str | None = None,
-        description: str | None = None,
-        website: str | None = None,
-        logo_url: str | None = None,
+        location: str | None = UNSET,
+        email: str | None = UNSET,
+        description: str | None = UNSET,
+        website: str | None = UNSET,
+        logo_url: str | None = UNSET,
+        banner_url: str | None = UNSET,
     ) -> Organization:
         """Update the given organization."""
-        organization.name = name
-        organization.slug = slugify(slug)
-        organization.description = description
-        organization.location = location
-        organization.website = website
-        organization.email = email
-        organization.logo_url = logo_url
+        if name is not UNSET:
+            organization.name = name
+        if slug is not UNSET:
+            organization.slug = slugify(slug)
+        if description is not UNSET:
+            organization.description = description
+        if location is not UNSET:
+            organization.location = location
+        if website is not UNSET:
+            organization.website = website
+        if email is not UNSET:
+            organization.email = email
+        if logo_url is not UNSET:
+            organization.logo_url = logo_url
+        if banner_url is not UNSET:
+            organization.banner_url = banner_url
         return await organization.save()
 
     async def get_many_by_ids(

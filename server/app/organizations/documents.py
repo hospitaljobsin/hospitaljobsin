@@ -51,6 +51,7 @@ class Organization(Document):
     website: str | None = None
     verification_request: OrganizationVerificationRequest | None = None
     internal_logo_url: str | None = Field(default=None, alias="logo_url")
+    internal_banner_url: str | None = Field(default=None, alias="banner_url")
     members: list[BackLink["OrganizationMember"]] = Field(original_field="organization")  # type: ignore[call-overload]
 
     @property
@@ -69,6 +70,19 @@ class Organization(Document):
     @property
     def has_default_logo(self) -> bool:
         return self.internal_logo_url is None
+
+    @property
+    def banner_url(self) -> str:
+        """Return the organization's banner URL, or a placeholder."""
+        if self.internal_banner_url is not None:
+            return self.internal_banner_url
+        slug_hash = hashlib.sha256(self.slug.encode("utf-8")).hexdigest()
+        return f"https://api.dicebear.com/9.x/identicon/png?seed={slug_hash}"
+
+    @banner_url.setter
+    def banner_url(self, value: str | None) -> None:
+        """Set the internal banner URL."""
+        self.internal_banner_url = value
 
     class Settings:
         name = "organizations"

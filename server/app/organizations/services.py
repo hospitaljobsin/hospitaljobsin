@@ -282,6 +282,19 @@ class OrganizationService:
             HttpMethod="PUT",
         )
 
+    async def create_banner_presigned_url(self, content_type: str) -> str:
+        """Create a presigned URL for uploading an organization banner."""
+        return await self._s3_client.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": self._aws_settings.s3_bucket_name,
+                "Key": f"org-banners/{uuid.uuid4()}",
+                "ContentType": content_type,
+            },
+            ExpiresIn=3600,
+            HttpMethod="PUT",
+        )
+
     async def update(
         self,
         account: Account,
@@ -292,6 +305,7 @@ class OrganizationService:
         description: str | None = None,
         website: str | None = None,
         logo_url: str | None = None,
+        banner_url: str | None = None,
     ) -> Result[
         Organization,
         OrganizationSlugInUseError
@@ -328,6 +342,7 @@ class OrganizationService:
             location=location,
             website=website,
             logo_url=logo_url,
+            banner_url=banner_url,
         )
 
         return Ok(organization)

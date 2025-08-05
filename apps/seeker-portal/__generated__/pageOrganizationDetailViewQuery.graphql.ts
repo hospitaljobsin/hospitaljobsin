@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<7842ba3e3e1902566cbb43d97e6e1f06>>
- * @relayHash 6b3a29e0c8450189bba655e681d2fccc
+ * @generated SignedSource<<f2b7f442638fdd34556bca9aad2e3a26>>
+ * @relayHash 71d7506296135f193a05b8c10b05326c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 6b3a29e0c8450189bba655e681d2fccc
+// @relayRequestID 71d7506296135f193a05b8c10b05326c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -64,17 +64,24 @@ v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "logoUrl",
+  "name": "bannerUrl",
   "storageKey": null
 },
 v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "location",
+  "name": "logoUrl",
   "storageKey": null
 },
 v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "location",
+  "storageKey": null
+},
+v8 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -88,7 +95,7 @@ v7 = {
   "type": "Verified",
   "abstractKey": null
 },
-v8 = {
+v9 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -102,7 +109,7 @@ v8 = {
   "type": "Rejected",
   "abstractKey": null
 },
-v9 = {
+v10 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -116,7 +123,7 @@ v9 = {
   "type": "Pending",
   "abstractKey": null
 },
-v10 = [
+v11 = [
   {
     "kind": "Literal",
     "name": "first",
@@ -128,24 +135,24 @@ v10 = [
     "value": true
   }
 ],
-v11 = {
+v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v12 = {
+v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "slug",
   "storageKey": null
 },
-v13 = {
+v14 = {
   "kind": "InlineFragment",
   "selections": [
-    (v11/*: any*/)
+    (v12/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -217,6 +224,7 @@ return {
               (v3/*: any*/),
               (v4/*: any*/),
               (v5/*: any*/),
+              (v6/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -231,7 +239,7 @@ return {
                 "name": "email",
                 "storageKey": null
               },
-              (v6/*: any*/),
+              (v7/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -241,9 +249,9 @@ return {
                 "plural": false,
                 "selections": [
                   (v2/*: any*/),
-                  (v7/*: any*/),
                   (v8/*: any*/),
                   (v9/*: any*/),
+                  (v10/*: any*/),
                   {
                     "kind": "InlineFragment",
                     "selections": [
@@ -263,7 +271,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v10/*: any*/),
+                "args": (v11/*: any*/),
                 "concreteType": "JobConnection",
                 "kind": "LinkedField",
                 "name": "jobs",
@@ -285,7 +293,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v11/*: any*/),
+                          (v12/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -293,7 +301,7 @@ return {
                             "name": "isSaved",
                             "storageKey": null
                           },
-                          (v12/*: any*/),
+                          (v13/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -311,9 +319,9 @@ return {
                             "plural": false,
                             "selections": [
                               (v3/*: any*/),
-                              (v5/*: any*/),
+                              (v6/*: any*/),
+                              (v13/*: any*/),
                               (v12/*: any*/),
-                              (v11/*: any*/),
                               {
                                 "alias": null,
                                 "args": null,
@@ -323,9 +331,9 @@ return {
                                 "plural": false,
                                 "selections": [
                                   (v2/*: any*/),
-                                  (v7/*: any*/),
                                   (v8/*: any*/),
-                                  (v9/*: any*/)
+                                  (v9/*: any*/),
+                                  (v10/*: any*/)
                                 ],
                                 "storageKey": null
                               }
@@ -346,7 +354,7 @@ return {
                             "name": "workMode",
                             "storageKey": null
                           },
-                          (v6/*: any*/),
+                          (v7/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -440,7 +448,7 @@ return {
               },
               {
                 "alias": null,
-                "args": (v10/*: any*/),
+                "args": (v11/*: any*/),
                 "filters": [
                   "isActive"
                 ],
@@ -449,12 +457,12 @@ return {
                 "kind": "LinkedHandle",
                 "name": "jobs"
               },
-              (v11/*: any*/)
+              (v12/*: any*/)
             ],
             "type": "Organization",
             "abstractKey": null
           },
-          (v13/*: any*/)
+          (v14/*: any*/)
         ],
         "storageKey": null
       },
@@ -471,14 +479,14 @@ return {
             "kind": "TypeDiscriminator",
             "abstractKey": "__isViewerPayload"
           },
-          (v13/*: any*/)
+          (v14/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "6b3a29e0c8450189bba655e681d2fccc",
+    "id": "71d7506296135f193a05b8c10b05326c",
     "metadata": {},
     "name": "pageOrganizationDetailViewQuery",
     "operationKind": "query",

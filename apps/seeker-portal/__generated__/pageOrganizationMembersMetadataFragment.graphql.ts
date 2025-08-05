@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a79438758c5eface5ca1dab943d4da7d>>
+ * @generated SignedSource<<5571f11e391f9bfe5cfba518bd9ade83>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,8 +13,8 @@ import type { FragmentRefs } from "relay-runtime";
 export type pageOrganizationMembersMetadataFragment$data = {
   readonly organization: {
     readonly __typename: "Organization";
+    readonly bannerUrl: string;
     readonly description: string | null | undefined;
-    readonly logoUrl: string;
     readonly name: string;
   } | {
     // This will never be '%other', but we need some
@@ -33,6 +33,6 @@ const node: ReaderInlineDataFragment = {
   "name": "pageOrganizationMembersMetadataFragment"
 };
 
-(node as any).hash = "59d2243e6949cf493b65c190c9566bee";
+(node as any).hash = "67b3ac51c5f01f982ee4e8ac343cfeff";
 
 export default node;

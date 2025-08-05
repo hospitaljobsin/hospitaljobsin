@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<5b629bedf3d0a8eb8c331ca5f4efe014>>
- * @relayHash 278be5b93404fb6fe09727090270bf82
+ * @generated SignedSource<<dbca459930030943fc136881773a4699>>
+ * @relayHash 05bb82d8fe9ed8dbb3a1e65cf80ad96c
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 278be5b93404fb6fe09727090270bf82
+// @relayRequestID 05bb82d8fe9ed8dbb3a1e65cf80ad96c
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -66,7 +66,7 @@ v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "logoUrl",
+  "name": "bannerUrl",
   "storageKey": null
 },
 v8 = [
@@ -364,7 +364,13 @@ return {
                             "name": "name",
                             "storageKey": null
                           },
-                          (v7/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "logoUrl",
+                            "storageKey": null
+                          },
                           (v16/*: any*/),
                           (v14/*: any*/),
                           (v10/*: any*/),
@@ -549,7 +555,7 @@ return {
     ]
   },
   "params": {
-    "id": "278be5b93404fb6fe09727090270bf82",
+    "id": "05bb82d8fe9ed8dbb3a1e65cf80ad96c",
     "metadata": {},
     "name": "pageJobApplyViewQuery",
     "operationKind": "query",

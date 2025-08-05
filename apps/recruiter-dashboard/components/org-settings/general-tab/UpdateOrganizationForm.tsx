@@ -1,3 +1,4 @@
+import type { UpdateOrganizationFormBannerPresignedUrlMutation } from "@/__generated__/UpdateOrganizationFormBannerPresignedUrlMutation.graphql";
 import type { UpdateOrganizationFormFragment$key } from "@/__generated__/UpdateOrganizationFormFragment.graphql";
 import type { UpdateOrganizationFormLogoPresignedUrlMutation } from "@/__generated__/UpdateOrganizationFormLogoPresignedUrlMutation.graphql";
 import type { UpdateOrganizationFormMutation as UpdateOrganizationFormMutationType } from "@/__generated__/UpdateOrganizationFormMutation.graphql";
@@ -30,8 +31,8 @@ import { graphql, useFragment, useMutation } from "react-relay";
 import { z } from "zod";
 
 const UpdateOrganizationFormMutation = graphql`
-mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $description: String) {
-	updateOrganization(organizationId: $organizationId, name: $name, slug: $slug, location: $location, website: $website, logoUrl: $logoUrl, description: $description) {
+mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $slug: String!, $location: String, $website: String, $logoUrl: String, $bannerUrl: String, $description: String) {
+	updateOrganization(organizationId: $organizationId, name: $name, slug: $slug, location: $location, website: $website, logoUrl: $logoUrl, bannerUrl: $bannerUrl, description: $description) {
 		__typename
 		...on Organization {
 			id
@@ -65,6 +66,14 @@ mutation UpdateOrganizationFormLogoPresignedUrlMutation($contentType: String!) {
 }
 `;
 
+const CreateOrganizationBannerPresignedUrlMutation = graphql`
+mutation UpdateOrganizationFormBannerPresignedUrlMutation($contentType: String!) {
+	createOrganizationBannerPresignedUrl(contentType: $contentType) {
+		presignedUrl
+	}
+}
+`;
+
 const UpdateOrganizationFormFragment = graphql`
   fragment UpdateOrganizationFormFragment on Organization {
 	id
@@ -72,6 +81,7 @@ const UpdateOrganizationFormFragment = graphql`
     name
 	website
 	logoUrl
+	bannerUrl
 	description
 	location
   }
@@ -104,6 +114,8 @@ const formSchema = z.object({
 export default function UpdateOrganizationForm({ rootQuery }: Props) {
 	const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+	const [selectedBanner, setSelectedBanner] = useState<File | null>(null);
+	const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string | null>(null);
 
 	// Cropper state
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -111,6 +123,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 	const [zoom, setZoom] = useState(1);
 	const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 	const [croppedImage, setCroppedImage] = useState<string | null>(null);
+	const [croppingType, setCroppingType] = useState<"logo" | "banner">("logo");
 
 	const [commitMutation, isMutationInFlight] =
 		useMutation<UpdateOrganizationFormMutationType>(
@@ -121,6 +134,12 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		isCreateOrganizationLogoPresignedUrlMutationInflight,
 	] = useMutation<UpdateOrganizationFormLogoPresignedUrlMutation>(
 		CreateOrganizationLogoPresignedUrlMutation,
+	);
+	const [
+		commitCreateOrganizationBannerPresignedUrlMutation,
+		isCreateOrganizationBannerPresignedUrlMutationInflight,
+	] = useMutation<UpdateOrganizationFormBannerPresignedUrlMutation>(
+		CreateOrganizationBannerPresignedUrlMutation,
 	);
 	const data = useFragment(UpdateOrganizationFormFragment, rootQuery);
 
@@ -149,7 +168,23 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			// Create preview URL for the selected file
 			const url = URL.createObjectURL(file);
 			setPreviewUrl(url);
-			// Open the cropper modal
+			// Set cropping type and open the cropper modal
+			setCroppingType("logo");
+			onOpen();
+		}
+	}
+
+	async function handleBannerChange(
+		event: React.ChangeEvent<HTMLInputElement>,
+	) {
+		const file = event.target.files?.[0];
+		if (file) {
+			setSelectedBanner(file);
+			// Create preview URL for the selected file
+			const url = URL.createObjectURL(file);
+			setBannerPreviewUrl(url);
+			// Set cropping type and open the cropper modal
+			setCroppingType("banner");
 			onOpen();
 		}
 	}
@@ -209,30 +244,50 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 	);
 
 	const handleCropSave = useCallback(async () => {
-		if (previewUrl && croppedAreaPixels) {
+		const imageSource = croppingType === "logo" ? previewUrl : bannerPreviewUrl;
+		if (imageSource && croppedAreaPixels) {
 			try {
 				const croppedImageUrl = await createCroppedImage(
-					previewUrl,
+					imageSource,
 					croppedAreaPixels,
 				);
 				setCroppedImage(croppedImageUrl);
-				setPreviewUrl(croppedImageUrl);
+
+				if (croppingType === "logo") {
+					setPreviewUrl(croppedImageUrl);
+				} else if (croppingType === "banner") {
+					setBannerPreviewUrl(croppedImageUrl);
+				}
+
 				onClose();
 			} catch (error) {
 				console.error("Error creating cropped image:", error);
 			}
 		}
-	}, [previewUrl, croppedAreaPixels, createCroppedImage, onClose]);
+	}, [
+		previewUrl,
+		bannerPreviewUrl,
+		croppedAreaPixels,
+		createCroppedImage,
+		onClose,
+		croppingType,
+	]);
 
 	const handleCropCancel = useCallback(() => {
 		onClose();
-		setSelectedLogo(null);
-		setPreviewUrl(null);
+		if (croppingType === "logo") {
+			setSelectedLogo(null);
+			setPreviewUrl(null);
+		} else if (croppingType === "banner") {
+			setSelectedBanner(null);
+			setBannerPreviewUrl(null);
+		}
 		setCrop({ x: 0, y: 0 });
 		setZoom(1);
 		setCroppedAreaPixels(null);
 		setCroppedImage(null);
-	}, [onClose]);
+		setCroppingType("logo");
+	}, [onClose, croppingType]);
 
 	function getPresignedUrl(logo: File): Promise<string | null> {
 		return new Promise((resolve, reject) => {
@@ -253,8 +308,29 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 		});
 	}
 
+	function getBannerPresignedUrl(banner: File): Promise<string | null> {
+		return new Promise((resolve, reject) => {
+			commitCreateOrganizationBannerPresignedUrlMutation({
+				variables: {
+					contentType: banner.type,
+				},
+				onCompleted: (response) => {
+					resolve(
+						response.createOrganizationBannerPresignedUrl?.presignedUrl || null,
+					);
+				},
+				onError: (error) => {
+					console.error("Error fetching banner presigned URL:", error);
+					reject(error);
+				},
+			});
+		});
+	}
+
 	async function onSubmit(formData: z.infer<typeof formSchema>) {
 		let logoUrlResult: string | null = data.logoUrl || null;
+		let bannerUrlResult: string | null = null;
+
 		if (selectedLogo) {
 			const presignedUrl = await getPresignedUrl(selectedLogo);
 			if (presignedUrl) {
@@ -263,6 +339,16 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 				logoUrlResult = presignedUrl.split("?")[0];
 			}
 		}
+
+		if (selectedBanner) {
+			const presignedUrl = await getBannerPresignedUrl(selectedBanner);
+			if (presignedUrl) {
+				await uploadFileToS3(presignedUrl, selectedBanner);
+				// Extract the URL from the presignedUrl
+				bannerUrlResult = presignedUrl.split("?")[0];
+			}
+		}
+
 		commitMutation({
 			variables: {
 				organizationId: data.id,
@@ -270,6 +356,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 				slug: formData.slug,
 				website: formData.website || null,
 				logoUrl: logoUrlResult,
+				bannerUrl: bannerUrlResult,
 				description: formData.description || null,
 				location: formData.location,
 			},
@@ -290,6 +377,8 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 						setSelectedLogo(null);
 						setPreviewUrl(null);
 						setCroppedImage(null);
+						setSelectedBanner(null);
+						setBannerPreviewUrl(null);
 					}
 					// Handle successful update
 				} else if (
@@ -329,8 +418,11 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			if (croppedImage) {
 				URL.revokeObjectURL(croppedImage);
 			}
+			if (bannerPreviewUrl) {
+				URL.revokeObjectURL(bannerPreviewUrl);
+			}
 		};
-	}, [previewUrl, croppedImage]);
+	}, [previewUrl, croppedImage, bannerPreviewUrl]);
 
 	return (
 		<>
@@ -459,16 +551,51 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 								)}
 							/>
 						</div>
+
+						<div className="mb-12">
+							<div className="flex flex-col gap-4">
+								<p className="text-tiny text-foreground-500">
+									Organization Banner
+								</p>
+								<p className="text-tiny text-foreground-400">
+									Upload a horizontal landscape image that will appear on social
+									media links
+								</p>
+								<div className="flex flex-col items-start gap-4">
+									{(bannerPreviewUrl || data.bannerUrl) && (
+										<div className="relative w-full max-w-md h-32">
+											<NextImage
+												src={bannerPreviewUrl || data.bannerUrl}
+												alt="Organization Banner"
+												className="object-cover rounded-md border"
+												fill
+											/>
+										</div>
+									)}
+									<Button as="label" variant="bordered" size="sm">
+										Upload banner
+										<input
+											type="file"
+											accept="image/*"
+											className="hidden"
+											multiple={false}
+											onChange={handleBannerChange}
+										/>
+									</Button>
+								</div>
+							</div>
+						</div>
 					</CardBody>
 					<CardFooter>
 						<Button
 							type="submit"
 							color="primary"
-							isDisabled={!isDirty && !selectedLogo}
+							isDisabled={!isDirty && !selectedLogo && !selectedBanner}
 							isLoading={
 								isSubmitting ||
 								isMutationInFlight ||
-								isCreateOrganizationLogoPresignedUrlMutationInflight
+								isCreateOrganizationLogoPresignedUrlMutationInflight ||
+								isCreateOrganizationBannerPresignedUrlMutationInflight
 							}
 						>
 							Save Changes
@@ -481,15 +608,19 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 			<Modal isOpen={isOpen} onOpenChange={onClose} size="2xl">
 				<ModalContent>
 					<ModalHeader className="flex flex-col gap-1">
-						Crop Organization Logo
+						Crop Organization {croppingType === "logo" ? "Logo" : "Banner"}
 					</ModalHeader>
 					<ModalBody>
 						<div className="relative w-full h-80">
 							<Cropper
-								image={previewUrl || undefined}
+								image={
+									croppingType === "logo"
+										? previewUrl || undefined
+										: (bannerPreviewUrl ?? undefined)
+								}
 								crop={crop}
 								zoom={zoom}
-								aspect={1}
+								aspect={croppingType === "logo" ? 1 : 16 / 9}
 								onCropChange={setCrop}
 								onZoomChange={setZoom}
 								onCropComplete={onCropComplete}

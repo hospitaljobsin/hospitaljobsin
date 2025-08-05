@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<dd00411a8e1f6ce34617c35334962a17>>
- * @relayHash 67adba0621890b9a54647b81e5544394
+ * @generated SignedSource<<2ff5c479853a90a15ad8275d47ebf711>>
+ * @relayHash f1f7145faf88366bdee70d2350224eee
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 67adba0621890b9a54647b81e5544394
+// @relayRequestID f1f7145faf88366bdee70d2350224eee
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -59,7 +59,7 @@ v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "logoUrl",
+  "name": "bannerUrl",
   "storageKey": null
 },
 v7 = [
@@ -123,73 +123,80 @@ v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "type",
+  "name": "logoUrl",
   "storageKey": null
 },
 v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "workMode",
+  "name": "type",
   "storageKey": null
 },
 v17 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "location",
+  "name": "workMode",
   "storageKey": null
 },
 v18 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "skills",
+  "name": "location",
   "storageKey": null
 },
 v19 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "currency",
+  "name": "skills",
   "storageKey": null
 },
 v20 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "minSalary",
+  "name": "currency",
   "storageKey": null
 },
 v21 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "maxSalary",
+  "name": "minSalary",
   "storageKey": null
 },
 v22 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "minExperience",
+  "name": "maxSalary",
   "storageKey": null
 },
 v23 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "minExperience",
+  "storageKey": null
+},
+v24 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "maxExperience",
   "storageKey": null
 },
-v24 = [
+v25 = [
   {
     "kind": "Literal",
     "name": "first",
     "value": 10
   }
 ],
-v25 = {
+v26 = {
   "kind": "InlineFragment",
   "selections": [
     (v11/*: any*/)
@@ -310,7 +317,7 @@ return {
                         "plural": false,
                         "selections": [
                           (v14/*: any*/),
-                          (v6/*: any*/),
+                          (v15/*: any*/),
                           (v13/*: any*/),
                           (v11/*: any*/),
                           (v9/*: any*/),
@@ -385,7 +392,6 @@ return {
                         ],
                         "storageKey": null
                       },
-                      (v15/*: any*/),
                       (v16/*: any*/),
                       (v17/*: any*/),
                       (v18/*: any*/),
@@ -394,6 +400,7 @@ return {
                       (v21/*: any*/),
                       (v22/*: any*/),
                       (v23/*: any*/),
+                      (v24/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -431,7 +438,7 @@ return {
                       },
                       {
                         "alias": null,
-                        "args": (v24/*: any*/),
+                        "args": (v25/*: any*/),
                         "concreteType": "JobConnection",
                         "kind": "LinkedField",
                         "name": "relatedJobs",
@@ -467,13 +474,12 @@ return {
                                     "plural": false,
                                     "selections": [
                                       (v14/*: any*/),
-                                      (v6/*: any*/),
+                                      (v15/*: any*/),
                                       (v13/*: any*/),
                                       (v11/*: any*/)
                                     ],
                                     "storageKey": null
                                   },
-                                  (v15/*: any*/),
                                   (v16/*: any*/),
                                   (v17/*: any*/),
                                   (v18/*: any*/),
@@ -482,6 +488,7 @@ return {
                                   (v21/*: any*/),
                                   (v22/*: any*/),
                                   (v23/*: any*/),
+                                  (v24/*: any*/),
                                   (v5/*: any*/)
                                 ],
                                 "storageKey": null
@@ -526,7 +533,7 @@ return {
                       },
                       {
                         "alias": null,
-                        "args": (v24/*: any*/),
+                        "args": (v25/*: any*/),
                         "filters": null,
                         "handle": "connection",
                         "key": "RelatedJobsListFragment_relatedJobs",
@@ -537,7 +544,7 @@ return {
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v25/*: any*/)
+                  (v26/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -545,7 +552,7 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v25/*: any*/)
+          (v26/*: any*/)
         ],
         "storageKey": null
       },
@@ -588,14 +595,14 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v25/*: any*/)
+          (v26/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "67adba0621890b9a54647b81e5544394",
+    "id": "f1f7145faf88366bdee70d2350224eee",
     "metadata": {},
     "name": "pageJobDetailViewQuery",
     "operationKind": "query",

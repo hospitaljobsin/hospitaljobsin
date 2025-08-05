@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<6e5ca51bcde1822d639c08a476e1ad8e>>
- * @relayHash 4f399a029232f9c03ed5c9562ba831ca
+ * @generated SignedSource<<de5af1eb36ae49626edcb621b86ac0fb>>
+ * @relayHash 34d23f55469c96e7ff118a6ffbb32ab1
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 4f399a029232f9c03ed5c9562ba831ca
+// @relayRequestID 34d23f55469c96e7ff118a6ffbb32ab1
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -135,6 +135,13 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "bannerUrl",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "description",
                 "storageKey": null
               },
@@ -184,7 +191,7 @@ return {
     ]
   },
   "params": {
-    "id": "4f399a029232f9c03ed5c9562ba831ca",
+    "id": "34d23f55469c96e7ff118a6ffbb32ab1",
     "metadata": {},
     "name": "OrganizationGeneralSettingsClientComponentQuery",
     "operationKind": "query",

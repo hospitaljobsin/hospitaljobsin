@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<fdeb6a7269cf94daee7fc5a1318095d2>>
- * @relayHash 3afc67c71c689fc69e63fc291efb6d1e
+ * @generated SignedSource<<3a19ecfd937635b6a34912eca32e44fe>>
+ * @relayHash 5493ffcd074fc1b582c0881f804b0a1b
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 3afc67c71c689fc69e63fc291efb6d1e
+// @relayRequestID 5493ffcd074fc1b582c0881f804b0a1b
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -64,7 +64,7 @@ v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "logoUrl",
+  "name": "bannerUrl",
   "storageKey": null
 },
 v6 = [
@@ -264,7 +264,7 @@ return {
     ]
   },
   "params": {
-    "id": "3afc67c71c689fc69e63fc291efb6d1e",
+    "id": "5493ffcd074fc1b582c0881f804b0a1b",
     "metadata": {},
     "name": "pageOrganizationMembersViewQuery",
     "operationKind": "query",

@@ -163,6 +163,31 @@ class OrganizationMutation:
 
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=CreatePresignedURLPayloadType,
+        description="Create an organization banner presigned URL.",
+        extensions=[
+            PermissionExtension(
+                permissions=[
+                    IsAuthenticated(),
+                ],
+            )
+        ],
+    )
+    @inject
+    async def create_organization_banner_presigned_url(
+        self,
+        organization_service: Annotated[OrganizationService, Inject],
+        content_type: Annotated[
+            str, strawberry.argument(description="The content type of the file.")
+        ],
+    ) -> CreatePresignedURLPayloadType:
+        """Create an organization banner presigned url."""
+        result = await organization_service.create_banner_presigned_url(
+            content_type=content_type
+        )
+        return CreatePresignedURLPayloadType(presigned_url=result)
+
+    @strawberry.mutation(  # type: ignore[misc]
+        graphql_type=CreatePresignedURLPayloadType,
         description="Create an organization verification proof presigned URL.",
         extensions=[
             PermissionExtension(
@@ -230,6 +255,10 @@ class OrganizationMutation:
             str | None,
             strawberry.argument(description="The logo URL of the organization."),
         ] = None,
+        banner_url: Annotated[
+            str | None,
+            strawberry.argument(description="The banner URL of the organization."),
+        ] = None,
     ) -> UpdateOrganizationPayload:
         """Update an organization."""
         match await organization_service.update(
@@ -241,6 +270,7 @@ class OrganizationMutation:
             website=website,
             description=description,
             logo_url=logo_url,
+            banner_url=banner_url,
         ):
             case Err(error):
                 match error:

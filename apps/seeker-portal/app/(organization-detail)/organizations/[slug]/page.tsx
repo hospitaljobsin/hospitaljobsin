@@ -1,10 +1,10 @@
-import { notFound } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import type { pageOrganizationDetailMetadataFragment$key } from "@/__generated__/pageOrganizationDetailMetadataFragment.graphql";
 import type OrganizationDetailViewQueryNode from "@/__generated__/pageOrganizationDetailViewQuery.graphql";
 import type { pageOrganizationDetailViewQuery } from "@/__generated__/pageOrganizationDetailViewQuery.graphql";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import OrganizationDetailViewClientComponent from "./OrganizationDetailViewClientComponent";
 
 export const PageOrganizationDetailViewQuery = graphql`
@@ -25,7 +25,7 @@ const PageOrganizationDetailMetadataFragment = graphql`
 	  ... on Organization {
 		name
 		description
-		logoUrl
+		bannerUrl
 	  }
 
 	}
@@ -69,7 +69,7 @@ export async function generateMetadata({
 		title: data.organization.name,
 		description: data.organization.description,
 		openGraph: {
-			images: [data.organization.logoUrl || "/default-image.img"],
+			images: [data.organization.bannerUrl || "/default-image.img"],
 		},
 	};
 }

@@ -2884,6 +2884,16 @@ type Mutation {
 	): CreatePresignedURLPayloadType! @isAuthenticated
 
 	"""
+	Create an organization banner presigned URL.
+	"""
+	createOrganizationBannerPresignedUrl(
+		"""
+		The content type of the file.
+		"""
+		contentType: String!
+	): CreatePresignedURLPayloadType! @isAuthenticated
+
+	"""
 	Create an organization verification proof presigned URL.
 	"""
 	createOrganizationVerificationProofPresignedUrl(
@@ -2931,6 +2941,11 @@ type Mutation {
 		The logo URL of the organization.
 		"""
 		logoUrl: String = null
+
+		"""
+		The banner URL of the organization.
+		"""
+		bannerUrl: String = null
 	): UpdateOrganizationPayload! @isAuthenticated
 
 	"""
@@ -3159,6 +3174,11 @@ type Organization implements Node {
 	The logo URL of the organization.
 	"""
 	logoUrl: String!
+
+	"""
+	The banner URL of the organization.
+	"""
+	bannerUrl: String!
 
 	"""
 	The verification status of the organization.

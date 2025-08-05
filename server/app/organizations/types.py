@@ -277,6 +277,9 @@ class OrganizationType(BaseNodeType[Organization]):
     logo_url: str = strawberry.field(
         description="The logo URL of the organization.",
     )
+    banner_url: str = strawberry.field(
+        description="The banner URL of the organization.",
+    )
     verification_request: Private[OrganizationVerificationRequest | None]
 
     @strawberry.field(
@@ -354,6 +357,7 @@ class OrganizationType(BaseNodeType[Organization]):
             website=organization.website,
             logo_url=organization.logo_url,
             verification_request=organization.verification_request,
+            banner_url=organization.banner_url,
         )
 
     @classmethod
