@@ -6,8 +6,3 @@ export const onRequestError = Sentry.captureRequestError;
 export async function register() {
 	initSentry(process.env.NEXT_RUNTIME as "nodejs" | "edge");
 }
-export const onRequestError = Sentry.captureRequestError;
-
-export async function register() {
-	initSentry(process.env.NEXT_RUNTIME as "nodejs" | "edge");
-}

@@ -3,7 +3,6 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
-import { nodeProfilingIntegration } from "@sentry/profiling-node";
 import { env } from "./lib/env/client";
 
 export const initSentry = (runtime: "nodejs" | "edge") => {
@@ -18,10 +17,6 @@ export const initSentry = (runtime: "nodejs" | "edge") => {
 			debug: false,
 			profileSessionSampleRate: 1.0,
 			profileLifecycle: "trace",
-			integrations: [
-				nodeProfilingIntegration(),
-				Sentry.anrIntegration({ captureStackTrace: true }),
-			],
 		});
 	} else {
 		Sentry.init({
