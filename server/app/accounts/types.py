@@ -28,8 +28,8 @@ from app.base.types import (
     NotAuthenticatedErrorType,
 )
 from app.context import AuthInfo, Info
-from app.organizations.repositories import OrganizationRepo
 from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
+from app.organizations.repositories import OrganizationRepo
 
 if TYPE_CHECKING:
     from app.auth.types import (

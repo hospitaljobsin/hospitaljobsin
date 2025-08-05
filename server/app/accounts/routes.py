@@ -7,9 +7,8 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from app.accounts.documents import Account
-from app.auth.dependencies import get_current_user_or_none
-from app.config import AuthSettings
 from app.accounts.services import AccountService
+from app.auth.dependencies import get_current_user_or_none
 
 accounts_router = APIRouter(prefix="/accounts")
 
@@ -22,7 +21,6 @@ class ConsentRequest(BaseModel):
 @inject
 async def update_analytics_preference(
     consent_data: ConsentRequest,
-    auth_settings: Annotated[AuthSettings, Inject],
     current_user: Annotated[
         Account | None,
         Depends(
@@ -32,7 +30,6 @@ async def update_analytics_preference(
     account_service: Annotated[AccountService, Inject],
 ) -> JSONResponse:
     """Update the terms and policy consent."""
-
     response = JSONResponse(
         content={"message": "Consent cookie set successfully"}, status_code=200
     )

@@ -2,7 +2,12 @@
 
 import links from "@/lib/links";
 import { Tab, Tabs } from "@heroui/react";
-import { Cookie, Fingerprint, Lock, UserIcon } from "lucide-react";
+import {
+	CookieIcon,
+	Fingerprint,
+	MonitorSmartphoneIcon,
+	UserIcon,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function SettingsSidebar() {
@@ -50,7 +55,7 @@ export default function SettingsSidebar() {
 						href={links.settingsSessions}
 						title={
 							<div className="flex items-center space-x-4">
-								<Cookie size={20} />
+								<MonitorSmartphoneIcon size={20} />
 								<span>Sessions</span>
 							</div>
 						}
@@ -60,7 +65,7 @@ export default function SettingsSidebar() {
 						href={links.settingsPrivacy}
 						title={
 							<div className="flex items-center space-x-4">
-								<Lock size={20} />
+								<CookieIcon size={20} />
 								<span>Privacy</span>
 							</div>
 						}
@@ -103,7 +108,7 @@ export default function SettingsSidebar() {
 						href={links.settingsSessions}
 						title={
 							<div className="flex items-center space-x-4">
-								<Cookie size={16} />
+								<MonitorSmartphoneIcon size={16} />
 								<span>Sessions</span>
 							</div>
 						}
@@ -113,7 +118,7 @@ export default function SettingsSidebar() {
 						href={links.settingsPrivacy}
 						title={
 							<div className="flex items-center space-x-4">
-								<Lock size={16} />
+								<CookieIcon size={16} />
 								<span>Privacy</span>
 							</div>
 						}
