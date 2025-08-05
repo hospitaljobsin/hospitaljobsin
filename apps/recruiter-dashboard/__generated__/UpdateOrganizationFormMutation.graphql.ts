@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<138e43884f06c95220ecd5a029f7a9c5>>
- * @relayHash 50506b5b1bc1647e6731e60948c1ba28
+ * @generated SignedSource<<0a2bbd9dc4acd67bf08dceb3809cb215>>
+ * @relayHash 0bbc605dcb5dca12a0fc80632fb98465
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID 50506b5b1bc1647e6731e60948c1ba28
+// @relayRequestID 0bbc605dcb5dca12a0fc80632fb98465
 
 import type { ConcreteRequest } from 'relay-runtime';
 export type UpdateOrganizationFormMutation$variables = {
@@ -25,6 +25,7 @@ export type UpdateOrganizationFormMutation$variables = {
 export type UpdateOrganizationFormMutation$data = {
   readonly updateOrganization: {
     readonly __typename: "Organization";
+    readonly bannerUrl: string;
     readonly description: string | null | undefined;
     readonly id: string;
     readonly location: string | null | undefined;
@@ -193,6 +194,13 @@ v11 = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
+      "name": "bannerUrl",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "location",
       "storageKey": null
     }
@@ -288,7 +296,7 @@ return {
     ]
   },
   "params": {
-    "id": "50506b5b1bc1647e6731e60948c1ba28",
+    "id": "0bbc605dcb5dca12a0fc80632fb98465",
     "metadata": {},
     "name": "UpdateOrganizationFormMutation",
     "operationKind": "mutation",
@@ -297,6 +305,6 @@ return {
 };
 })();
 
-(node as any).hash = "13a6108e343b79b558bc8dc5116f2701";
+(node as any).hash = "110826d37d4b94f63b931f76a22439d9";
 
 export default node;

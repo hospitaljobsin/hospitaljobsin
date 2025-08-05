@@ -41,6 +41,7 @@ mutation UpdateOrganizationFormMutation($organizationId: ID!, $name: String!, $s
 			website
 			description
 			logoUrl
+			bannerUrl
 			location
 		}
         ... on OrganizationNotFoundError {
