@@ -91,11 +91,11 @@ export default function PrivacySettings({
 
 	return (
 		<div className="space-y-12">
-			<div className="flex flex-col gap-2">
-				<h3 className="text-lg font-medium">Cookie Settings</h3>
-				<p className="text-sm text-foreground-500">
-					We use cookies to enhance your experience on our platform. You can
-					edit your preferences below.
+			<div className="flex flex-col gap-4">
+				<h3 className="text-lg">Cookie Settings</h3>
+				<p className="text-foreground-500">
+					We use cookies to enhance your experience on our platform.
+					<br /> You can customize your preferences below.
 				</p>
 			</div>
 
@@ -104,8 +104,8 @@ export default function PrivacySettings({
 					{/* Necessary Cookies */}
 					<div className="flex items-center justify-between">
 						<div className="flex flex-col gap-2">
-							<h4 className="text-sm font-medium">Necessary Cookies</h4>
-							<p className="text-xs text-foreground-500 mt-1">
+							<h4 className="font-medium">Necessary Cookies</h4>
+							<p className="text-foreground-500 mt-1">
 								Essential for the site to work. These cannot be disabled.
 							</p>
 						</div>
@@ -123,8 +123,8 @@ export default function PrivacySettings({
 					{/* Analytics Cookies */}
 					<div className="flex items-center justify-between">
 						<div className="flex flex-col gap-2">
-							<h4 className="text-sm font-medium">Analytics Cookies</h4>
-							<p className="text-xs text-foreground-500 mt-1">
+							<h4 className="font-medium">Analytics Cookies</h4>
+							<p className="text-foreground-500 mt-1">
 								Help us understand how visitors interact with our website by
 								collecting and reporting information. This data is used to
 								improve our website and services.
