@@ -1,11 +1,11 @@
-import { notFound, redirect } from "next/navigation";
-import { cache } from "react";
-import { graphql, readInlineData } from "relay-runtime";
 import type { pageInviteDetailMetadataFragment$key } from "@/__generated__/pageInviteDetailMetadataFragment.graphql";
 import type InviteDetailViewQueryNode from "@/__generated__/pageInviteDetailViewQuery.graphql";
 import type { pageInviteDetailViewQuery } from "@/__generated__/pageInviteDetailViewQuery.graphql";
 import links from "@/lib/links";
 import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import { notFound, redirect } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
 import InviteDetailViewClientComponent from "./InviteDetailViewClientComponent";
 
 export const PageInviteDetailViewQuery = graphql`
@@ -68,9 +68,6 @@ export async function generateMetadata({
 		return {
 			title: "Organization Invite Not found",
 			description: "The invite you are looking for does not exist",
-			openGraph: {
-				images: ["/default-image.img"],
-			},
 		};
 	}
 
@@ -78,9 +75,7 @@ export async function generateMetadata({
 		title: `${data.organizationInvite.organization.name} Invite`,
 		description: `You have been invited to join ${data.organizationInvite.organization.name} by ${data.organizationInvite.createdBy.fullName}.`,
 		openGraph: {
-			images: [
-				data.organizationInvite.organization.logoUrl || "/default-image.img",
-			],
+			images: [data.organizationInvite.organization.logoUrl],
 		},
 	};
 }

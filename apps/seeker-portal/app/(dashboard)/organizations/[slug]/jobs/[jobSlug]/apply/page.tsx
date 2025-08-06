@@ -92,9 +92,6 @@ export async function generateMetadata({
 		return {
 			title: "Job Not found",
 			description: "The job you are looking for does not exist",
-			openGraph: {
-				images: ["/default-image.img"],
-			},
 		};
 	}
 
@@ -102,7 +99,7 @@ export async function generateMetadata({
 		title: data.organization.job.title,
 		description: data.organization.job.description,
 		openGraph: {
-			images: [data.organization.bannerUrl || "/default-image.img"],
+			images: [data.organization.bannerUrl],
 		},
 	};
 }

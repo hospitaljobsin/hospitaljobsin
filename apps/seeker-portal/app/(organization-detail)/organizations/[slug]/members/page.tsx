@@ -59,16 +59,13 @@ export async function generateMetadata({
 		return {
 			title: "Organization Not found",
 			description: "The organization you are looking for does not exist",
-			openGraph: {
-				images: ["/default-image.img"],
-			},
 		};
 	}
 
 	return {
 		title: `Members - ${data.organization.name}`,
 		openGraph: {
-			images: [data.organization.bannerUrl || "/default-image.img"],
+			images: [data.organization.bannerUrl],
 		},
 	};
 }

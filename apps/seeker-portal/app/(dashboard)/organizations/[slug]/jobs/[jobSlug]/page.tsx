@@ -28,7 +28,7 @@ const PageJobDetailMetadataFragment = graphql`
 			__typename
 			... on Job {
 				title
-				description
+				descriptionCleaned
 			}
 			}
 		}
@@ -76,17 +76,14 @@ export async function generateMetadata({
 		return {
 			title: "Job Not found",
 			description: "The job you are looking for does not exist",
-			openGraph: {
-				images: ["/default-image.img"],
-			},
 		};
 	}
 
 	return {
 		title: data.organization.job.title,
-		description: data.organization.job.description,
+		description: data.organization.job.descriptionCleaned,
 		openGraph: {
-			images: [data.organization.bannerUrl || "/default-image.img"],
+			images: [data.organization.bannerUrl],
 		},
 	};
 }
