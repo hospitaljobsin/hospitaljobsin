@@ -43,6 +43,8 @@ class EmbeddingsService:
         use_cache: bool = False,
     ) -> list[float]:
         """Generate embeddings for a text."""
+        if not text.strip():
+            raise ValueError("Text for embedding generation must not be empty.")
         if use_cache:
             embedding = await self._get_embedding_from_cache(text, task_type, model)
             if embedding is not None:
