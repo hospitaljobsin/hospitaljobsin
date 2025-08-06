@@ -51,6 +51,8 @@ dependencies = [
     "phonenumbers==9.0.10",
     "watchfiles==1.1.0",
     "posthog==6.3.3",
+    "beautifulsoup4>=4.13.4",
+    "markdown>=3.8.2",
 ]
 
 
