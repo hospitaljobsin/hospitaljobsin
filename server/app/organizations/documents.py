@@ -76,6 +76,8 @@ class Organization(Document):
         """Return the organization's banner URL, or a placeholder."""
         if self.internal_banner_url is not None:
             return self.internal_banner_url
+
+        # TODO: return seeker-url/{0-4}.png here
         slug_hash = hashlib.sha256(self.slug.encode("utf-8")).hexdigest()
         return f"https://api.dicebear.com/9.x/identicon/png?seed={slug_hash}"
 
