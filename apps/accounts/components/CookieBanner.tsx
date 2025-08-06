@@ -1,4 +1,5 @@
 "use client";
+import links from "@/lib/links";
 import {
 	Button,
 	Modal,
@@ -7,6 +8,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 } from "@heroui/react";
+import { usePathname } from "next/navigation";
 import posthog from "posthog-js";
 import { useEffect, useState } from "react";
 import type { PreloadedQuery } from "react-relay";
@@ -34,6 +36,7 @@ export const CookieBannerConsentQuery = graphql`
 `;
 
 export default function CookieBanner() {
+	const pathname = usePathname();
 	const { isAuthenticated } = useIsAuthenticated();
 	const [consentGiven, setConsentGiven] = useState<string>("undecided");
 	const [isOpen, setIsOpen] = useState(false);
@@ -93,6 +96,10 @@ export default function CookieBanner() {
 			console.error("Failed to set cookie consent:", error);
 		}
 	};
+
+	if (pathname === links.settingsPrivacy) {
+		return null;
+	}
 
 	// For authenticated users with query reference, render the content component
 	if (isAuthenticated && queryReference) {
