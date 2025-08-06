@@ -29,7 +29,7 @@ from app.core.constants import (
     JobApplicantStatus,
     JobKindType,
 )
-from app.core.formatting import slugify
+from app.core.formatting import clean_markdown_text, slugify
 from app.core.geocoding import BaseLocationService
 from app.database.paginator import PaginatedResult, Paginator
 from app.embeddings.services import EmbeddingsService
@@ -179,6 +179,7 @@ class JobRepo:
         job = Job(
             title=title,
             description=description,
+            description_cleaned=clean_markdown_text(description),
             embedding=embedding,
             vacancies=vacancies,
             location=location,
@@ -246,6 +247,7 @@ class JobRepo:
             job.slug = await self.generate_slug(title, job.organization.ref.id)
         job.title = title
         job.description = description
+        job.description_cleaned = clean_markdown_text(description)
         job.vacancies = vacancies
         job.location = location
         job.geo = geo
