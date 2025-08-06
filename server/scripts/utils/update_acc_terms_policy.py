@@ -1,8 +1,10 @@
 import asyncio
+from datetime import UTC, datetime
 
+from app.accounts.documents import Account, AnalyticsPreference, TermsAndPolicy
 from app.config import DatabaseSettings, get_settings
+from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
 from app.database import initialize_database
-from app.accounts.documents import Account
 
 
 async def update_acc_terms_policy():
@@ -14,7 +16,15 @@ async def update_acc_terms_policy():
     print(len(accounts))
     for account in accounts:
         print(account.terms_and_policy)
-        account.terms_and_policy.type = "acceptance"
+        account.terms_and_policy = TermsAndPolicy(
+            type="acceptance",
+            updated_at=datetime.now(UTC),
+            version=TERMS_AND_POLICY_LATEST_VERSION,
+        )
+        account.analytics_preference = AnalyticsPreference(
+            type="undecided",
+            updated_at=datetime.now(UTC),
+        )
         await account.save()
 
 
