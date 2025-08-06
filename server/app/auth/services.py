@@ -82,6 +82,7 @@ from app.auth.repositories import (
     WebAuthnChallengeRepo,
     WebAuthnCredentialRepo,
 )
+from app.auth.utils import get_analytics_preference
 from app.config import AppSettings, AuthSettings
 from app.core.captcha import BaseCaptchaVerifier
 from app.core.constants import (
@@ -92,7 +93,6 @@ from app.core.constants import (
 )
 from app.core.emails import BaseEmailSender
 from app.core.formatting import format_datetime
-from app.auth.utils import get_analytics_preference
 
 
 class AuthService:

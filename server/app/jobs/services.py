@@ -6,7 +6,9 @@ from typing import Any, Literal
 from bson import ObjectId
 from bson.errors import InvalidId
 from fastapi import Request
+from posthog import Posthog
 from result import Err, Ok, Result
+from strawberry import relay
 from types_aiobotocore_s3 import S3Client
 from types_aiobotocore_sqs import SQSClient
 
@@ -518,6 +520,7 @@ class JobApplicantService:
         settings: AppSettings,
         job_applicant_analysis_service: JobApplicantAnalysisService,
         dataloaders: Dataloaders,
+        posthog_client: Posthog,
     ) -> None:
         self._job_repo = job_repo
         self._organization_member_service = organization_member_service
@@ -530,6 +533,7 @@ class JobApplicantService:
         self._job_applicant_analyzer_agent = job_applicant_analyzer_agent
         self._job_applicant_analysis_service = job_applicant_analysis_service
         self._dataloaders = dataloaders
+        self._posthog_client = posthog_client
 
     async def create(
         self,
@@ -609,6 +613,12 @@ class JobApplicantService:
             event_type="apply",
             account_id=account.id,
             fingerprint_id=request.state.fingerprint,
+        )
+
+        self._posthog_client.capture(
+            event="job_applied",
+            distinct_id=str(relay.GlobalID("Account", str(account.id))),
+            properties={"job_id": str(existing_job.id)},
         )
 
         return Ok(job_application)
