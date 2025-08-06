@@ -10,6 +10,7 @@ const JobControlsFragment = graphql`
   fragment JobControlsFragment on Job {
     id
     isActive
+
     ...UnpublishJobModalFragment
     ...PublishJobModalFragment
   }

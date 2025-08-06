@@ -234,6 +234,29 @@ export default function JobCreationForm({
 				workMode: formData.workMode ?? undefined,
 				isSalaryNegotiable: formData.isSalaryNegotiable,
 			},
+			// updater: (store, responseData) => {
+			// 	if (
+			// 		responseData &&
+			// 		responseData.createJob.__typename === "CreateJobSuccess"
+			// 	) {
+			// 		// Retrieve the connection from the store
+			// 		const organizationRecord = store.get(data.id);
+			// 		if (!organizationRecord) return;
+			// 		const connectionRecord = ConnectionHandler.getConnection(
+			// 			organizationRecord,
+			// 			"OrganizationJobsListInternalFragment_jobs",
+			// 			{},
+			// 		);
+
+			// 		console.log("connectionRecord", connectionRecord);
+
+			// 		// Only invalidate the connection if it exists
+			// 		if (connectionRecord) {
+			// 			console.log("invalidating connection");
+			// 			connectionRecord.invalidateRecord();
+			// 		}
+			// 	}
+			// },
 			onCompleted(response) {
 				if (response.createJob.__typename === "CreateJobSuccess") {
 					allowNavigation.current = true;

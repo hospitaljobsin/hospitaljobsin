@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<a483361455a02ed57500b0e14ae1a671>>
- * @relayHash dfa1ec0572a114eb1160b7a01e297fe9
+ * @generated SignedSource<<2be651c5475d51f559a34aba99f22ad1>>
+ * @relayHash b70e2df13bea1c5b3235e4c023b62434
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID dfa1ec0572a114eb1160b7a01e297fe9
+// @relayRequestID b70e2df13bea1c5b3235e4c023b62434
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -24,6 +24,8 @@ export type JobDetailHeaderQuery$data = {
     readonly isMember: boolean;
     readonly job: {
       readonly __typename: "Job";
+      readonly expiresAt: any | null | undefined;
+      readonly isActive: boolean;
       readonly slug: string;
       readonly title: string;
       readonly " $fragmentSpreads": FragmentRefs<"JobControlsFragment" | "JobTabsFragment">;
@@ -126,13 +128,27 @@ v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "expiresAt",
   "storageKey": null
 },
 v11 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "isActive",
+  "storageKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v13 = {
   "kind": "InlineFragment",
   "selections": [
-    (v10/*: any*/)
+    (v12/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -218,7 +234,9 @@ return {
                         "name": "JobControlsFragment"
                       },
                       (v9/*: any*/),
-                      (v6/*: any*/)
+                      (v6/*: any*/),
+                      (v10/*: any*/),
+                      (v11/*: any*/)
                     ],
                     "type": "Job",
                     "abstractKey": null
@@ -283,7 +301,7 @@ return {
             "type": "Account",
             "abstractKey": null
           },
-          (v11/*: any*/)
+          (v13/*: any*/)
         ],
         "storageKey": null
       },
@@ -322,14 +340,8 @@ return {
                         "name": "externalApplicationUrl",
                         "storageKey": null
                       },
-                      (v10/*: any*/),
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "isActive",
-                        "storageKey": null
-                      },
+                      (v12/*: any*/),
+                      (v11/*: any*/),
                       (v6/*: any*/),
                       {
                         "alias": null,
@@ -371,16 +383,17 @@ return {
                             ],
                             "storageKey": null
                           },
-                          (v10/*: any*/)
+                          (v12/*: any*/)
                         ],
                         "storageKey": null
                       },
-                      (v9/*: any*/)
+                      (v9/*: any*/),
+                      (v10/*: any*/)
                     ],
                     "type": "Job",
                     "abstractKey": null
                   },
-                  (v11/*: any*/)
+                  (v13/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -388,14 +401,14 @@ return {
             "type": "Organization",
             "abstractKey": null
           },
-          (v11/*: any*/)
+          (v13/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "dfa1ec0572a114eb1160b7a01e297fe9",
+    "id": "b70e2df13bea1c5b3235e4c023b62434",
     "metadata": {},
     "name": "JobDetailHeaderQuery",
     "operationKind": "query",
@@ -404,6 +417,6 @@ return {
 };
 })();
 
-(node as any).hash = "1978d1b4c647761a654c53bc80c6b344";
+(node as any).hash = "10ec4daecb0a4755fc4c068b8c935f2f";
 
 export default node;

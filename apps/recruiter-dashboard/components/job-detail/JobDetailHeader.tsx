@@ -34,6 +34,8 @@ export const JobDetailHeaderQuery = graphql`
 						...JobControlsFragment
 						title
 						slug
+						expiresAt
+						isActive
 					}
 				}
 			}
@@ -62,25 +64,40 @@ export default function JobDetailHeader({
 	}
 
 	return (
-		<div className="pt-8 w-full max-w-7xl">
-			<div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4 mb-6 px-6">
-				<Breadcrumbs>
-					<BreadcrumbItem href={links.dashboard}>Jobs</BreadcrumbItem>
-					<BreadcrumbItem isCurrent>
-						{data.organization.job.title}
-					</BreadcrumbItem>
-				</Breadcrumbs>
+		<>
+			{data.organization.isAdmin &&
+				(!data.organization.job.isActive ? (
+					<div className="bg-warning-200 text-warning-foreground text-sm py-4 px-6 max-w-7xl">
+						This job is not published. Click the "Publish Job" button to make it
+						active and visible to candidates.
+					</div>
+				) : data.organization.job.expiresAt &&
+					new Date(data.organization.job.expiresAt) < new Date() ? (
+					<div className="bg-warning-200 text-warning-foreground text-sm py-4 px-6 max-w-7xl">
+						This job is expired. Update the expiration date to make it active
+						and visible to candidates.
+					</div>
+				) : null)}
+			<div className="pt-8 w-full max-w-7xl">
+				<div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4 mb-6 px-6">
+					<Breadcrumbs>
+						<BreadcrumbItem href={links.dashboard}>Jobs</BreadcrumbItem>
+						<BreadcrumbItem isCurrent>
+							{data.organization.job.title}
+						</BreadcrumbItem>
+					</Breadcrumbs>
 
-				{data.organization.isAdmin && (
-					<JobControls job={data.organization.job} />
-				)}
-			</div>
+					{data.organization.isAdmin && (
+						<JobControls job={data.organization.job} />
+					)}
+				</div>
 
-			<div className="w-full flex flex-col border-b border-foreground-300">
-				<div className="w-full flex items-center justify-between">
-					<JobTabs job={data.organization.job} />
+				<div className="w-full flex flex-col border-b border-foreground-300">
+					<div className="w-full flex items-center justify-between">
+						<JobTabs job={data.organization.job} />
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
