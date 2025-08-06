@@ -240,7 +240,7 @@ class JobService:
             return Err(OrganizationAuthorizationError())
 
         geo = None
-        if location is not None:
+        if location:
             result = await self._location_service.geocode(location)
             if result is not None:
                 geo = GeoObject(

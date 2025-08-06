@@ -222,16 +222,16 @@ export default function JobCreationForm({
 				description: formData.description,
 				vacancies: formData.vacancies ?? undefined,
 				skills: formData.skills.map((s) => s.value),
-				location: formData.location ?? undefined,
-				minSalary: formData.minSalary ?? undefined,
-				maxSalary: formData.maxSalary ?? undefined,
-				minExperience: formData.minExperience ?? undefined,
-				maxExperience: formData.maxExperience ?? undefined,
+				location: formData.location || null,
+				minSalary: formData.minSalary || null,
+				maxSalary: formData.maxSalary || null,
+				minExperience: formData.minExperience || null,
+				maxExperience: formData.maxExperience || null,
 				expiresAt: formData.expiresAt
 					? formData.expiresAt.toString()
 					: undefined,
-				jobType: formData.jobType ?? undefined,
-				workMode: formData.workMode ?? undefined,
+				jobType: formData.jobType || null,
+				workMode: formData.workMode || null,
 				isSalaryNegotiable: formData.isSalaryNegotiable,
 			},
 			// updater: (store, responseData) => {
