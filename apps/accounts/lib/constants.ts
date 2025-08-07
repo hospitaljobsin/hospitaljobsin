@@ -1,7 +1,7 @@
 export const APP_NAME = "Accounts Center";
 
 export const APP_TAGLINE =
-	"Connecting you to top locum opportunities in healthcare. Find the right role, right now.";
+	"Unified center for all your Hospital Jobs accounts and billing needs.";
 
 // help links
 export const LEARN_MORE_ABOUT_PASSKEYS_LINK =
