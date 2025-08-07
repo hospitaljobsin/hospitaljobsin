@@ -4,6 +4,7 @@ import { ChipsInput } from "@/components/forms/ChipsInput";
 import LocationAutocomplete from "@/components/forms/LocationAutocomplete";
 import MarkdownEditor from "@/components/forms/text-editor/MarkdownEditor";
 import links from "@/lib/links";
+import { findAllConnectionIds } from "@/lib/relay/findAllConnectionIds";
 import { useRouter } from "@bprogress/next";
 import {
 	Accordion,
@@ -234,29 +235,29 @@ export default function JobCreationForm({
 				workMode: formData.workMode || null,
 				isSalaryNegotiable: formData.isSalaryNegotiable,
 			},
-			// updater: (store, responseData) => {
-			// 	if (
-			// 		responseData &&
-			// 		responseData.createJob.__typename === "CreateJobSuccess"
-			// 	) {
-			// 		// Retrieve the connection from the store
-			// 		const organizationRecord = store.get(data.id);
-			// 		if (!organizationRecord) return;
-			// 		const connectionRecord = ConnectionHandler.getConnection(
-			// 			organizationRecord,
-			// 			"OrganizationJobsListInternalFragment_jobs",
-			// 			{},
-			// 		);
+			updater: (store, responseData) => {
+				if (
+					responseData &&
+					responseData.createJob.__typename === "CreateJobSuccess"
+				) {
+					// Retrieve the connection from the store
+					const organizationRecord = store.get(data.id);
+					if (!organizationRecord) return;
 
-			// 		console.log("connectionRecord", connectionRecord);
+					const connectionIds = findAllConnectionIds(
+						store,
+						"OrganizationJobsListInternalFragment_jobs",
+						data.id,
+					);
 
-			// 		// Only invalidate the connection if it exists
-			// 		if (connectionRecord) {
-			// 			console.log("invalidating connection");
-			// 			connectionRecord.invalidateRecord();
-			// 		}
-			// 	}
-			// },
+					for (const connectionId of connectionIds) {
+						const connectionRecord = store.get(connectionId);
+						if (connectionRecord) {
+							connectionRecord.invalidateRecord();
+						}
+					}
+				}
+			},
 			onCompleted(response) {
 				if (response.createJob.__typename === "CreateJobSuccess") {
 					allowNavigation.current = true;
