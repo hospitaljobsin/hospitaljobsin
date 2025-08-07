@@ -161,9 +161,16 @@ const formSchema = z.object({
 		})
 		.nullable(),
 	jobType: z
-		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME", "LOCUM"])
+		.enum([
+			"CONTRACT",
+			"FULL_TIME",
+			"INTERNSHIP",
+			"PART_TIME",
+			"LOCUM",
+			"UNSPECIFIED",
+		])
 		.nullable(),
-	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE"]).nullable(),
+	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE", "UNSPECIFIED"]).nullable(),
 	isSalaryNegotiable: z.boolean(),
 });
 
@@ -172,8 +179,14 @@ type Props = {
 };
 
 // Helper types for jobType and workMode
-type JobType = "CONTRACT" | "FULL_TIME" | "INTERNSHIP" | "PART_TIME" | "LOCUM";
-type WorkMode = "HYBRID" | "OFFICE" | "REMOTE";
+type JobType =
+	| "CONTRACT"
+	| "FULL_TIME"
+	| "INTERNSHIP"
+	| "PART_TIME"
+	| "LOCUM"
+	| "UNSPECIFIED";
+type WorkMode = "HYBRID" | "OFFICE" | "REMOTE" | "UNSPECIFIED";
 
 export default function JobEditForm({ rootQuery }: Props) {
 	const router = useRouter();
@@ -216,12 +229,12 @@ export default function JobEditForm({ rootQuery }: Props) {
 					jobData.type,
 				)
 					? (jobData.type as JobType)
-					: null,
+					: "UNSPECIFIED",
 			workMode:
 				jobData.workMode &&
 				["HYBRID", "OFFICE", "REMOTE"].includes(jobData.workMode)
 					? (jobData.workMode as WorkMode)
-					: null,
+					: "UNSPECIFIED",
 			isSalaryNegotiable: jobData.isSalaryNegotiable ?? false,
 		},
 	});
@@ -295,8 +308,9 @@ export default function JobEditForm({ rootQuery }: Props) {
 				minExperience: formData.minExperience,
 				maxExperience: formData.maxExperience,
 				expiresAt: formData.expiresAt ? formData.expiresAt.toString() : null,
-				jobType: formData.jobType,
-				workMode: formData.workMode,
+				jobType: formData.jobType === "UNSPECIFIED" ? null : formData.jobType,
+				workMode:
+					formData.workMode === "UNSPECIFIED" ? null : formData.workMode,
 				isSalaryNegotiable: !!formData.isSalaryNegotiable,
 			},
 			onCompleted(response) {
@@ -328,11 +342,11 @@ export default function JobEditForm({ rootQuery }: Props) {
 								)
 							: null,
 						jobType: response.updateJob.job.type
-							? response.updateJob.job.type.toString()
-							: null,
+							? (response.updateJob.job.type as JobType)
+							: "UNSPECIFIED",
 						workMode: response.updateJob.job.workMode
-							? response.updateJob.job.workMode.toString()
-							: null,
+							? (response.updateJob.job.workMode as WorkMode)
+							: "UNSPECIFIED",
 						isSalaryNegotiable: response.updateJob.job.isSalaryNegotiable,
 					});
 
@@ -512,6 +526,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 											errorMessage={errors.jobType?.message}
 											isInvalid={!!errors.jobType}
 										>
+											<Radio value="UNSPECIFIED">Unspecified</Radio>
 											<Radio value="CONTRACT">Contract</Radio>
 											<Radio value="FULL_TIME">Full Time</Radio>
 											<Radio value="INTERNSHIP">Internship</Radio>
@@ -535,6 +550,7 @@ export default function JobEditForm({ rootQuery }: Props) {
 											errorMessage={errors.workMode?.message}
 											isInvalid={!!errors.workMode}
 										>
+											<Radio value="UNSPECIFIED">Unspecified</Radio>
 											<Radio value="HYBRID">Hybrid</Radio>
 											<Radio value="OFFICE">Office</Radio>
 											<Radio value="REMOTE">Remote</Radio>

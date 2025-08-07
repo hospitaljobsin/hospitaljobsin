@@ -51,9 +51,16 @@ const jobFormSchema = z.object({
 	maxExperience: z.number().positive().nullable(),
 	expiresAt: z.instanceof(CalendarDateTime).nullable(),
 	jobType: z
-		.enum(["CONTRACT", "FULL_TIME", "INTERNSHIP", "PART_TIME", "LOCUM"])
+		.enum([
+			"CONTRACT",
+			"FULL_TIME",
+			"INTERNSHIP",
+			"PART_TIME",
+			"LOCUM",
+			"UNSPECIFIED",
+		])
 		.nullable(),
-	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE"]).nullable(),
+	workMode: z.enum(["HYBRID", "OFFICE", "REMOTE", "UNSPECIFIED"]).nullable(),
 	isSalaryNegotiable: z.boolean(),
 });
 
@@ -137,8 +144,8 @@ export default function JobCreationForm({
 		defaultValues: {
 			description: "",
 			expiresAt: null,
-			jobType: undefined,
-			workMode: undefined,
+			jobType: "UNSPECIFIED",
+			workMode: "UNSPECIFIED",
 			minSalary: null,
 			maxSalary: null,
 			minExperience: null,
@@ -231,8 +238,9 @@ export default function JobCreationForm({
 				expiresAt: formData.expiresAt
 					? formData.expiresAt.toString()
 					: undefined,
-				jobType: formData.jobType || null,
-				workMode: formData.workMode || null,
+				jobType: formData.jobType === "UNSPECIFIED" ? null : formData.jobType,
+				workMode:
+					formData.workMode === "UNSPECIFIED" ? null : formData.workMode,
 				isSalaryNegotiable: formData.isSalaryNegotiable,
 			},
 			updater: (store, responseData) => {
@@ -385,6 +393,7 @@ export default function JobCreationForm({
 										errorMessage={errors.jobType?.message}
 										isInvalid={!!errors.jobType}
 									>
+										<Radio value="UNSPECIFIED">Unspecified</Radio>
 										<Radio value="CONTRACT">Contract</Radio>
 										<Radio value="FULL_TIME">Full Time</Radio>
 										<Radio value="INTERNSHIP">Internship</Radio>
@@ -405,6 +414,7 @@ export default function JobCreationForm({
 										errorMessage={errors.workMode?.message}
 										isInvalid={!!errors.workMode}
 									>
+										<Radio value="UNSPECIFIED">Unspecified</Radio>
 										<Radio value="HYBRID">Hybrid</Radio>
 										<Radio value="OFFICE">Office</Radio>
 										<Radio value="REMOTE">Remote</Radio>
