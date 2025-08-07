@@ -574,7 +574,7 @@ export default function UpdateOrganizationForm({ rootQuery }: Props) {
 										</div>
 									)}
 									<Button as="label" variant="bordered" size="sm">
-										Upload banner
+										Upload new banner
 										<input
 											type="file"
 											accept="image/*"

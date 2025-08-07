@@ -1,8 +1,8 @@
-import { fileURLToPath } from "node:url";
 import createMDX from "@next/mdx";
 import { withSentryConfig } from "@sentry/nextjs";
 import { createJiti } from "jiti";
 import type { NextConfig } from "next";
+import { fileURLToPath } from "node:url";
 import { env } from "./lib/env/client";
 
 const jiti = createJiti(fileURLToPath(import.meta.url));
@@ -48,6 +48,7 @@ const nextConfig: NextConfig = {
 				protocol: "https",
 				hostname: "api.dicebear.com",
 			},
+			new URL(env.NEXT_PUBLIC_SEEKER_PORTAL_BASE_URL),
 			// TODO: allow this only in dev/testing mode
 			{
 				protocol: "http",
