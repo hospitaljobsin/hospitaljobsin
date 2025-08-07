@@ -1,6 +1,7 @@
 import CookieBanner from "@/components/CookieBanner";
 import PostHogIdentifier from "@/components/PostHogIdentifier";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
+import { env } from "@/lib/env/client";
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
 import { headers } from "next/headers";
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
 		default: APP_NAME,
 	},
 	description: APP_TAGLINE,
+	metadataBase: new URL(env.NEXT_PUBLIC_URL),
 };
 
 export default async function RootLayout({
