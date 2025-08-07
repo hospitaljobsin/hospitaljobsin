@@ -45,7 +45,6 @@ export default function LandingView({
 						xmlns="http://www.w3.org/2000/svg"
 						className="w-full h-full"
 					>
-						<title>Healthcare background wave</title>
 						<path
 							fill="#fff"
 							fillOpacity="0.2"
