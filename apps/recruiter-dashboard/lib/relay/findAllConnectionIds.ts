@@ -7,13 +7,14 @@ export function findAllConnectionIds(
 ) {
 	const ids: string[] = [];
 	const value = store.get(parentId);
-	if (value !== undefined) {
-		Object.entries(value).forEach((param) => {
-			if (param[0].startsWith(`__${connectionKey}_connection`)) {
-				ids.push(param[1].__ref);
-				return;
+	if (value !== null && value !== undefined) {
+		for (const [key, val] of Object.entries(value)) {
+			if (key.startsWith(`__${connectionKey}_connection`)) {
+				if (typeof val === "object" && val !== null && "__ref" in val) {
+					ids.push((val as { __ref: string }).__ref);
+				}
 			}
-		});
+		}
 	}
 	return ids;
 }
