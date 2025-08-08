@@ -4,12 +4,14 @@ on:
   push:
     branches:
       - main
+      - staging
     paths:
       - "infrastructure/**"
       - ".github/workflows/apply-infrastructure.yml"
   pull_request:
     branches:
       - main
+      - staging
     paths:
       - "infrastructure/**"
       - ".github/workflows/apply-infrastructure.yml"
