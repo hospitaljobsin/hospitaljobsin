@@ -76,6 +76,7 @@ JobKindType = Literal["full_time", "part_time", "internship", "contract", "locum
 # (subdomains which are in use/ might be needed in the future)
 RESERVED_ORGANIZATION_NAMES = [
     "www",
+    "staging",
     "api",
     "recruiter",
     "seeker",
