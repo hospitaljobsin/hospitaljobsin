@@ -52,7 +52,7 @@ resource "mongodbatlas_advanced_cluster" "this" {
 
 
 resource "mongodbatlas_database_user" "user" {
-  username           = aws_iam_role.lambda_exec_role.arn
+  username           = var.lambda_username
   project_id         = mongodbatlas_project.project.id
   auth_database_name = "$external"
   aws_iam_type       = "ROLE"
@@ -64,7 +64,7 @@ resource "mongodbatlas_database_user" "user" {
 }
 
 resource "mongodbatlas_database_user" "ecs_user" {
-  username           = aws_iam_role.ecs_task_execution_role.arn
+  username           = var.ecs_username
   project_id         = mongodbatlas_project.project.id
   auth_database_name = "$external"
   aws_iam_type       = "ROLE"
@@ -76,7 +76,7 @@ resource "mongodbatlas_database_user" "ecs_user" {
 }
 
 resource "mongodbatlas_database_user" "worker_user" {
-  username           = aws_iam_role.lambda_worker_exec_role.arn
+  username           = var.worker_username
   project_id         = mongodbatlas_project.project.id
   auth_database_name = "$external"
   aws_iam_type       = "ROLE"

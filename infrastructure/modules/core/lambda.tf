@@ -310,7 +310,7 @@ resource "aws_iam_role_policy_attachment" "lambda_worker_custom_sqs_policy_attac
 #     variables = {
 #       SERVER_DEBUG                                = "False"
 #       SERVER_ENVIRONMENT                          = "production"
-#       SERVER_DATABASE_URL                         = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
+#       SERVER_DATABASE_URL                         = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
 #       SERVER_DEFAULT_DATABASE_NAME                = var.mongodb_database_name
 #       SERVER_HOST                                 = "0.0.0.0"
 #       SERVER_PORT                                 = "8000"
@@ -383,7 +383,7 @@ resource "aws_lambda_function" "worker" {
     variables = {
       SERVER_DEBUG                                = "False"
       SERVER_ENVIRONMENT                          = "production"
-      SERVER_DATABASE_URL                         = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DATABASE_URL                         = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
       SERVER_DEFAULT_DATABASE_NAME                = var.mongodb_database_name
       SERVER_HOST                                 = "0.0.0.0"
       SERVER_PORT                                 = "8000"

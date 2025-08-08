@@ -120,9 +120,6 @@ module "core" {
   domain_name                    = var.domain_name
   google_oauth_client_id         = var.google_oauth_client_id
   google_oauth_client_secret     = var.google_oauth_client_secret
-  mongodb_atlas_org_id           = var.mongodb_atlas_org_id
-  mongodb_atlas_region           = var.mongodb_atlas_region
-  mongodb_database_name          = var.mongodb_database_name
   resource_prefix                = var.resource_prefix
   sentry_backend_dsn             = module.sentry.sentry_backend_dsn
   sentry_accounts_ui_dsn         = module.sentry.sentry_accounts_ui_dsn
@@ -136,6 +133,19 @@ module "core" {
   two_factor_in_api_key          = var.two_factor_in_api_key
   posthog_api_key                = var.posthog_api_key
   posthog_api_host               = var.posthog_api_host
+  mongodb_connection_string      = module.mongodb.connection_string
+  mongodb_database_name          = var.mongodb_database_name
+}
+
+module "mongodb" {
+  source                = "./modules/mongodb"
+  mongodb_atlas_org_id  = var.mongodb_atlas_org_id
+  mongodb_atlas_region  = var.mongodb_atlas_region
+  mongodb_database_name = var.mongodb_database_name
+  resource_prefix       = var.resource_prefix
+  ecs_username          = module.core.ecs_username
+  lambda_username       = module.core.lambda_username
+  worker_username       = module.core.worker_username
 }
 
 module "redis" {

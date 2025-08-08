@@ -162,3 +162,15 @@ output "sst_vpc_private_subnets" {
 output "sst_vpc_security_groups" {
   value = join(",", data.aws_security_groups.vpc.ids)
 }
+
+output "worker_username" {
+  value = aws_iam_role.lambda_worker_exec_role.arn
+}
+
+output "lambda_username" {
+  value = aws_iam_role.lambda_exec_role.arn
+}
+
+output "ecs_username" {
+  value = aws_iam_role.ecs_task_execution_role.arn
+}

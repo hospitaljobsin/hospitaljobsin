@@ -17,17 +17,6 @@ variable "aws_region" {
   description = "Location for all AWS resources."
 }
 
-variable "mongodb_atlas_region" {
-  type        = string
-  description = "MongoDB Atlas region."
-}
-
-variable "mongodb_atlas_org_id" {
-  type        = string
-  description = "MongoDB Atlas organization ID."
-}
-
-
 variable "mongodb_database_name" {
   type        = string
   description = "MongoDB database name."
@@ -91,6 +80,11 @@ variable "redis_password" {
 variable "redis_endpoint" {
   type        = string
   description = "Redis endpoint."
+}
+
+variable "mongodb_connection_string" {
+  type        = string
+  description = "MongoDB connection string."
 }
 
 variable "whatsapp_access_token" {

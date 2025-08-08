@@ -381,7 +381,7 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           name  = "SERVER_DATABASE_URL"
-          value = "${mongodbatlas_advanced_cluster.this.connection_strings[0].standard_srv}?authMechanism=MONGODB-AWS&authSource=$external"
+          value = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
         },
         {
           name  = "SERVER_DEFAULT_DATABASE_NAME"
