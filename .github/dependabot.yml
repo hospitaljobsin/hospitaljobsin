@@ -28,7 +28,19 @@ updates:
 
   # Enable version updates for Terraform infrastructure
   - package-ecosystem: "terraform"
-    directory: "/infrastructure/"
+    directory: "/infrastructure/production"
+    # Check the Terraform registry for updates every week
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "terraform"
+    directory: "/infrastructure/staging"
+    # Check the Terraform registry for updates every week
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "terraform"
+    directory: "/infrastructure/shared"
     # Check the Terraform registry for updates every week
     schedule:
       interval: "weekly"
