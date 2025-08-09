@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
 
 [[package]]
@@ -1711,7 +1711,7 @@ requires-dist = [
     { name = "tenacity", specifier = "==9.1.2" },
     { name = "tesserocr", specifier = "==2.8.0" },
     { name = "types-aioboto3", extras = ["essential"], specifier = "==15.0.0" },
-    { name = "types-aiobotocore-bedrock-runtime", specifier = "==2.23.0" },
+    { name = "types-aiobotocore-bedrock-runtime", specifier = "==2.24.0" },
     { name = "types-aiobotocore-location", specifier = "==2.23.0" },
     { name = "types-aiobotocore-ses", specifier = "==2.23.0" },
     { name = "types-aiobotocore-textract", specifier = "==2.23.0" },
@@ -1960,11 +1960,11 @@ wheels = [
 
 [[package]]
 name = "types-aiobotocore-bedrock-runtime"
-version = "2.23.0"
+version = "2.24.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d3/94/c225fedd3e00d49e7b9233580690805870281f11097b2616f992edba3e0b/types_aiobotocore_bedrock_runtime-2.23.0.tar.gz", hash = "sha256:3855314116f7dd6ae556e4373a6b682832de1c0dece7eaae0aa42abd17256c89", size = 26424, upload-time = "2025-06-13T01:45:34.806Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/16/e1/378c07876af96a27d6ca522aec76cabb338e4cc6a0a3aa68d43fb3d65d2f/types_aiobotocore_bedrock_runtime-2.24.0.tar.gz", hash = "sha256:72ca4b78314b6795d1d7acf41f4790e5b0c5e180bdc029370b075fb00d33a878", size = 27235, upload-time = "2025-08-09T01:51:15.267Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/30/6b/7087d0d50ec4b4465b44f1423aba209569f970057765f5b3ee655c2a88ab/types_aiobotocore_bedrock_runtime-2.23.0-py3-none-any.whl", hash = "sha256:988dbee9559745f356f89d9875e789eb291f43dc82ef1102c2abdef0f5711ab7", size = 32382, upload-time = "2025-06-13T01:45:33.566Z" },
+    { url = "https://files.pythonhosted.org/packages/36/59/33ee0f488f01d016a659f084d3d181eb8d6ab2bbaf5cba796b02f9c201c5/types_aiobotocore_bedrock_runtime-2.24.0-py3-none-any.whl", hash = "sha256:b7a6c6a36cd2bae79571f1062eea4a7df5b04c54b01f6774b4d56c5243d5a945", size = 33186, upload-time = "2025-08-09T01:45:43.171Z" },
 ]
 
 [[package]]
