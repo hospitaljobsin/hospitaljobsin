@@ -137,3 +137,8 @@ ban-relative-imports = "parents"
 "starlette.status".msg = "Use http.HTTPStatus instead."
 "fastapi.status".msg = "Use http.HTTPStatus instead."
 "httpx.codes".msg = "Use http.HTTPStatus instead."
+
+[dependency-groups]
+staging = [
+    "testcontainers[mongodb,redis]>=4.12.0",
+]

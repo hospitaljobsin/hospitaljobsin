@@ -70,6 +70,7 @@ class Environment(StrEnum):
     development = "development"
     testing = "testing"
     production = "production"
+    staging = "staging"
 
 
 MongoSRVDsn = Annotated[
@@ -164,6 +165,11 @@ class AppSettings(BaseSettings):
     def is_production(self) -> bool:
         """Check whether the current environment is production."""
         return self._is_environment(Environment.production)
+
+    @property
+    def is_staging(self) -> bool:
+        """Check whether the current environment is staging."""
+        return self._is_environment(Environment.staging)
 
 
 class DatabaseSettings(BaseSettings):

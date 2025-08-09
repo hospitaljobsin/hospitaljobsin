@@ -23,10 +23,23 @@ data "aws_subnets" "default" {
   }
 }
 
-# Removed - no longer needed without capacity reservation
-# data "aws_subnet" "default_az_a" {
-#   id = element(data.aws_subnets.default.ids, 0)
-# }
+# Filter subnets to exclude us-east-1e where t3a.medium is not available
+data "aws_subnets" "t3a_compatible" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+
+  filter {
+    name   = "map-public-ip-on-launch"
+    values = [true]
+  }
+
+  filter {
+    name   = "availability-zone"
+    values = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1f"]
+  }
+}
 
 data "aws_ami" "ecs_optimized" {
   most_recent = true
@@ -284,7 +297,7 @@ resource "aws_launch_template" "ecs_lt" {
     associate_public_ip_address = true
     device_index                = 0
     security_groups             = [aws_security_group.ecs_sg.id]
-    subnet_id                   = element(data.aws_subnets.default.ids, 0)
+    subnet_id                   = element(data.aws_subnets.t3a_compatible.ids, 0)
   }
 
   #   vpc_security_group_ids = [aws_security_group.ecs_sg.id]
@@ -312,7 +325,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
   desired_capacity          = 1
   max_size                  = 2
   min_size                  = 1
-  vpc_zone_identifier       = data.aws_subnets.default.ids
+  vpc_zone_identifier       = data.aws_subnets.t3a_compatible.ids
   health_check_type         = "EC2"
   health_check_grace_period = 30
 
