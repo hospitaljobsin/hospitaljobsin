@@ -2,7 +2,7 @@
 
 
 resource "aws_iam_role" "lambda_worker_exec_role" {
-  name = "lambda_worker_exec_role"
+  name = "${var.resource_prefix}-lambda-worker-exec-role"
 
   tags = {
     Environment = var.environment_name
@@ -23,7 +23,7 @@ resource "aws_iam_role" "lambda_worker_exec_role" {
 }
 
 resource "aws_iam_role" "lambda_exec_role" {
-  name = "lambda_exec_role"
+  name = "${var.resource_prefix}-lambda-exec-role"
 
   tags = {
     Environment = var.environment_name
@@ -46,7 +46,7 @@ resource "aws_iam_role" "lambda_exec_role" {
 
 # Custom policy to allow access to S3, Textract, and Bedrock
 resource "aws_iam_policy" "lambda_custom_policy" {
-  name        = "lambda_exec_custom_policy"
+  name        = "${var.resource_prefix}-lambda-exec-custom-policy"
   description = "Custom policy for Lambda to access S3, Location and SES"
 
   tags = {
@@ -140,7 +140,7 @@ resource "aws_iam_policy" "lambda_custom_policy" {
 
 
 resource "aws_iam_policy" "lambda_custom_policy_worker" {
-  name        = "lambda_exec_custom_policy_worker"
+  name        = "${var.resource_prefix}-lambda-exec-custom-policy-worker"
   description = "Custom policy for Lambda to access SQS"
 
   tags = {
@@ -179,7 +179,7 @@ resource "aws_iam_policy" "lambda_custom_policy_worker" {
 
 # Add this inline policy to your lambda role
 resource "aws_iam_role_policy" "lambda_mongodb_aws_auth" {
-  name = "mongodb_aws_auth"
+  name = "${var.resource_prefix}-mongodb-aws-auth"
   role = aws_iam_role.lambda_exec_role.id
 
 
@@ -200,7 +200,7 @@ resource "aws_iam_role_policy" "lambda_mongodb_aws_auth" {
 }
 
 resource "aws_iam_role_policy" "lambda_worker_mongodb_aws_auth" {
-  name = "mongodb_aws_auth_worker"
+  name = "${var.resource_prefix}-mongodb-aws-auth-worker"
   role = aws_iam_role.lambda_worker_exec_role.id
 
 

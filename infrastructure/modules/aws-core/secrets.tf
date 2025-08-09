@@ -3,7 +3,7 @@ resource "random_bytes" "jwe_secret" {
 }
 
 resource "aws_secretsmanager_secret" "backend" {
-  name        = "${var.resource_prefix}/backend/${var.environment_name}"
+  name        = "${var.resource_prefix}/backend"
   description = "Settings secret for the backend"
   tags = {
     Environment = var.environment_name
@@ -28,7 +28,7 @@ resource "aws_secretsmanager_secret_version" "example" {
 
 
 resource "aws_secretsmanager_secret" "accounts" {
-  name        = "${var.resource_prefix}/accounts/${var.environment_name}"
+  name        = "${var.resource_prefix}/accounts"
   description = "Settings secret for the accounts edge server."
   tags = {
     Environment = var.environment_name
@@ -46,7 +46,7 @@ resource "aws_secretsmanager_secret_version" "accounts" {
 
 
 resource "aws_secretsmanager_secret" "seeker_portal" {
-  name        = "${var.resource_prefix}/seeker_portal/${var.environment_name}"
+  name        = "${var.resource_prefix}/seeker_portal"
   description = "Settings secret for the seeker portal edge server."
   tags = {
     Environment = var.environment_name
@@ -63,7 +63,7 @@ resource "aws_secretsmanager_secret_version" "seeker_portal" {
 }
 
 resource "aws_secretsmanager_secret" "recruiter_portal" {
-  name        = "${var.resource_prefix}/recruiter_portal/${var.environment_name}"
+  name        = "${var.resource_prefix}/recruiter_portal"
   description = "Settings secret for the recruiter portal edge server."
   tags = {
     Environment = var.environment_name
@@ -80,7 +80,7 @@ resource "aws_secretsmanager_secret_version" "recruiter_portal" {
 }
 
 resource "aws_secretsmanager_secret" "recruiter_dashboard" {
-  name        = "${var.resource_prefix}/recruiter_dashboard/${var.environment_name}"
+  name        = "${var.resource_prefix}/recruiter_dashboard"
   description = "Settings secret for the recruiter dashboard edge server."
   tags = {
     Environment = var.environment_name
