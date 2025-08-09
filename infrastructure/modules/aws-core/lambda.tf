@@ -4,6 +4,10 @@
 resource "aws_iam_role" "lambda_worker_exec_role" {
   name = "lambda_worker_exec_role"
 
+  tags = {
+    Environment = var.environment_name
+  }
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -20,6 +24,10 @@ resource "aws_iam_role" "lambda_worker_exec_role" {
 
 resource "aws_iam_role" "lambda_exec_role" {
   name = "lambda_exec_role"
+
+  tags = {
+    Environment = var.environment_name
+  }
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -40,6 +48,10 @@ resource "aws_iam_role" "lambda_exec_role" {
 resource "aws_iam_policy" "lambda_custom_policy" {
   name        = "lambda_exec_custom_policy"
   description = "Custom policy for Lambda to access S3, Location and SES"
+
+  tags = {
+    Environment = var.environment_name
+  }
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -131,6 +143,10 @@ resource "aws_iam_policy" "lambda_custom_policy_worker" {
   name        = "lambda_exec_custom_policy_worker"
   description = "Custom policy for Lambda to access SQS"
 
+  tags = {
+    Environment = var.environment_name
+  }
+
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -166,6 +182,8 @@ resource "aws_iam_role_policy" "lambda_mongodb_aws_auth" {
   name = "mongodb_aws_auth"
   role = aws_iam_role.lambda_exec_role.id
 
+
+
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -184,6 +202,8 @@ resource "aws_iam_role_policy" "lambda_mongodb_aws_auth" {
 resource "aws_iam_role_policy" "lambda_worker_mongodb_aws_auth" {
   name = "mongodb_aws_auth_worker"
   role = aws_iam_role.lambda_worker_exec_role.id
+
+
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -244,6 +264,10 @@ resource "aws_iam_role_policy_attachment" "lambda_worker_custom_sqs_policy_attac
 resource "aws_lambda_function" "worker" {
   # depends_on    = [docker_registry_image.backend]
   function_name = "${var.resource_prefix}-worker-lambda"
+
+  tags = {
+    Environment = var.environment_name
+  }
 
 
   role         = aws_iam_role.lambda_worker_exec_role.arn
@@ -312,6 +336,10 @@ resource "aws_lambda_event_source_mapping" "worker" {
   function_name    = aws_lambda_function.worker.arn
   batch_size       = 10
 
+  tags = {
+    Environment = var.environment_name
+  }
+
   scaling_config {
     maximum_concurrency = 25
   }
@@ -323,6 +351,10 @@ resource "aws_lambda_event_source_mapping" "worker" {
 resource "aws_security_group" "lambda" {
   name   = "${var.resource_prefix}-lambda-sg"
   vpc_id = var.vpc_id
+
+  tags = {
+    Environment = var.environment_name
+  }
 
   # Allow outbound traffic to the internet through NAT for external services (S3, Textract)
   egress {

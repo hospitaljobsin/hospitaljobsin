@@ -1,5 +1,8 @@
 resource "aws_s3_bucket" "lb_logs" {
   bucket_prefix = "${var.resource_prefix}-lb"
+  tags = {
+    Environment = var.environment_name
+  }
 }
 
 resource "aws_s3_bucket_policy" "lb_logs_policy" {
@@ -43,6 +46,10 @@ resource "aws_lb" "ecs_alb" {
   enable_cross_zone_load_balancing = true
   enable_http2                     = true
 
+  tags = {
+    Environment = var.environment_name
+  }
+
   access_logs {
     enabled = true
     prefix  = "alb"
@@ -56,6 +63,10 @@ resource "aws_lb_target_group" "ecs_new_tg" {
   protocol    = "HTTP"
   vpc_id      = data.aws_vpc.default.id
   target_type = "instance" # instead of "ip"
+
+  tags = {
+    Environment = var.environment_name
+  }
 
 
   health_check {
@@ -80,6 +91,10 @@ resource "aws_lb_listener" "https" {
   certificate_arn   = aws_acm_certificate_validation.api_cert.certificate_arn
 
   depends_on = [aws_lb_target_group.ecs_new_tg]
+
+  tags = {
+    Environment = var.environment_name
+  }
 
   default_action {
     type             = "forward"

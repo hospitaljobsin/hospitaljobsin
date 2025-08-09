@@ -23,6 +23,11 @@ data "aws_subnets" "default" {
   }
 }
 
+# Removed - no longer needed without capacity reservation
+# data "aws_subnet" "default_az_a" {
+#   id = element(data.aws_subnets.default.ids, 0)
+# }
+
 data "aws_ami" "ecs_optimized" {
   most_recent = true
   owners      = ["amazon"]
@@ -34,7 +39,11 @@ data "aws_ami" "ecs_optimized" {
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecs_task_execution_role"
+  name = "${var.resource_prefix}-ecs-task-execution-role"
+
+  tags = {
+    Environment = var.environment_name
+  }
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -54,18 +63,20 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+
 }
 
 resource "aws_iam_role_policy" "ecs_task_custom_policy" {
-  name = "ecs_task_custom_policy"
+  name = "${var.resource_prefix}-ecs-task-custom-policy"
   role = aws_iam_role.ecs_task_execution_role.id
 
   policy = aws_iam_policy.lambda_custom_policy.policy
 }
 
 resource "aws_iam_role_policy" "ecs_mongodb_aws_auth" {
-  name = "mongodb_aws_auth_ecs"
+  name = "${var.resource_prefix}-mongodb-aws-auth-ecs"
   role = aws_iam_role.ecs_task_execution_role.id
+
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -83,7 +94,11 @@ resource "aws_iam_role_policy" "ecs_mongodb_aws_auth" {
 }
 
 resource "aws_iam_role" "ecs_instance_role" {
-  name = "ecs-instance-role"
+  name = "${var.resource_prefix}-ecs-instance-role"
+
+  tags = {
+    Environment = var.environment_name
+  }
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -106,6 +121,10 @@ resource "aws_security_group" "alb_sg" {
   name   = "${var.resource_prefix}-alb-sg"
   vpc_id = data.aws_vpc.default.id
 
+  tags = {
+    Environment = var.environment_name
+  }
+
   ingress {
     description = "Allow HTTPS traffic from the internet"
     from_port   = 443
@@ -124,8 +143,12 @@ resource "aws_security_group" "alb_sg" {
 
 
 resource "aws_security_group" "ecs_sg" {
-  name   = "ecs-ec2-sg"
+  name   = "${var.resource_prefix}-ecs-sg"
   vpc_id = data.aws_vpc.default.id
+
+  tags = {
+    Environment = var.environment_name
+  }
 }
 
 resource "aws_security_group_rule" "ingress_docker_ports" {
@@ -219,14 +242,19 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv6" {
 }
 
 
-resource "aws_ec2_capacity_reservation" "ecs" {
-  instance_type     = "t3a.medium" # match your ASG/Launch Template
-  instance_platform = "Linux/UNIX"
-  availability_zone = "us-east-1a"
-  instance_count    = 1 # number of instances to reserve
-  ebs_optimized     = true
-  tenancy           = "default"
-}
+# Removed capacity reservation to avoid AZ mismatch issues
+# resource "aws_ec2_capacity_reservation" "ecs" {
+#   instance_type     = "t3a.medium" # match your ASG/Launch Template
+#   instance_platform = "Linux/UNIX"
+#   availability_zone = data.aws_subnet.default_az_a.availability_zone
+#   instance_count    = 1 # number of instances to reserve
+#   ebs_optimized     = true
+#   tenancy           = "default"
+#
+#   tags = {
+#     Environment = var.environment_name
+#   }
+# }
 
 
 
@@ -235,13 +263,18 @@ resource "aws_launch_template" "ecs_lt" {
   image_id      = data.aws_ami.ecs_optimized.id
   instance_type = "t3a.medium"
 
+  tags = {
+    Environment = var.environment_name
+  }
+
   key_name = "ec2-debug"
 
-  capacity_reservation_specification {
-    capacity_reservation_target {
-      capacity_reservation_id = aws_ec2_capacity_reservation.ecs.id
-    }
-  }
+  # Removed capacity reservation to avoid AZ mismatch issues
+  # capacity_reservation_specification {
+  #   capacity_reservation_target {
+  #     capacity_reservation_id = aws_ec2_capacity_reservation.ecs.id
+  #   }
+  # }
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ecs_instance_profile.name
@@ -265,18 +298,25 @@ EOF
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
   name = "${var.resource_prefix}-ecs-instance-profile"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
   role = aws_iam_role.ecs_instance_role.name
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
-  protect_from_scale_in     = true
-  name                      = "${var.resource_prefix}-asg-ecs"
+  protect_from_scale_in     = false # TODO: change to true later
+  name                      = "${var.resource_prefix}-backend-asg"
   desired_capacity          = 1
   max_size                  = 2
   min_size                  = 1
   vpc_zone_identifier       = data.aws_subnets.default.ids
   health_check_type         = "EC2"
   health_check_grace_period = 30
+
+
 
   launch_template {
     id      = aws_launch_template.ecs_lt.id
@@ -285,7 +325,12 @@ resource "aws_autoscaling_group" "ecs_asg" {
 
   tag {
     key                 = "Name"
-    value               = "ecs-instance"
+    value               = "${var.resource_prefix}-ecs-instance"
+    propagate_at_launch = true
+  }
+  tag {
+    key                 = "Environment"
+    value               = var.environment_name
     propagate_at_launch = true
   }
 
@@ -295,11 +340,15 @@ resource "aws_autoscaling_group" "ecs_asg" {
 }
 
 resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
-  name = "${var.resource_prefix}-ecs-capacity-provider"
+  name = "${var.resource_prefix}-asg-provider"
+
+  tags = {
+    Environment = var.environment_name
+  }
 
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.ecs_asg.arn
-    managed_termination_protection = "ENABLED"
+    managed_termination_protection = "DISABLED" # TODO: change to ENABLED later
 
     managed_scaling {
       status                    = "ENABLED"
@@ -318,6 +367,7 @@ resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
 resource "aws_ecs_cluster_capacity_providers" "attach_provider" {
   cluster_name = aws_ecs_cluster.ecs.name
 
+
   capacity_providers = [aws_ecs_capacity_provider.asg_capacity_provider.name]
 
   default_capacity_provider_strategy {
@@ -329,7 +379,11 @@ resource "aws_ecs_cluster_capacity_providers" "attach_provider" {
 
 
 resource "aws_ecs_cluster" "ecs" {
-  name = "ecs-ec2-default-cluster"
+  name = "${var.resource_prefix}-ecs-cluster"
+
+  tags = {
+    Environment = var.environment_name
+  }
 }
 
 
@@ -342,6 +396,10 @@ resource "aws_ecs_task_definition" "app" {
 
   task_role_arn      = aws_iam_role.ecs_task_execution_role.arn
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+
+  tags = {
+    Environment = var.environment_name
+  }
 
 
   container_definitions = jsonencode([
@@ -516,6 +574,10 @@ resource "aws_ecs_service" "app" {
   desired_count                      = 1
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
+
+  tags = {
+    Environment = var.environment_name
+  }
 
   capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.asg_capacity_provider.name

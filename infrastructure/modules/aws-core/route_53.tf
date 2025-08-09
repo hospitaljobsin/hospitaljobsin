@@ -2,6 +2,10 @@ resource "aws_acm_certificate" "api_cert" {
   domain_name       = "api.${var.domain_name}"
   validation_method = "DNS"
 
+  tags = {
+    Environment = var.environment_name
+  }
+
   lifecycle {
     create_before_destroy = true
   }
@@ -41,6 +45,8 @@ resource "aws_route53_record" "api" {
   name    = "api.${var.domain_name}"
   type    = "A"
 
+
+
   alias {
     name                   = aws_lb.ecs_alb.dns_name
     zone_id                = aws_lb.ecs_alb.zone_id
@@ -54,6 +60,7 @@ resource "aws_route53_record" "ses_verification" {
   type    = "TXT"
   ttl     = 600
   records = [aws_ses_domain_identity.this.verification_token]
+
 }
 
 resource "aws_route53_record" "dkim_records" {
@@ -63,6 +70,7 @@ resource "aws_route53_record" "dkim_records" {
   type    = "CNAME"
   ttl     = 600
   records = ["${aws_ses_domain_dkim.this.dkim_tokens[count.index]}.dkim.amazonses.com"]
+
 }
 
 resource "aws_route53_record" "spf" {

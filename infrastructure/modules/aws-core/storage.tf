@@ -1,6 +1,9 @@
 # Create the S3 Bucket
 resource "aws_s3_bucket" "this" {
   bucket_prefix = var.resource_prefix
+  tags = {
+    Environment = var.environment_name
+  }
 }
 
 # Create CORS Configuration for the S3 Bucket
