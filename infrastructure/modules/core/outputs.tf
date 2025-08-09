@@ -106,10 +106,6 @@ output "sst_recruiter_dashboard_secret_id" {
 }
 
 
-output "sst_captcha_site_key" {
-  value = cloudflare_turnstile_widget.example.id
-}
-
 output "sst_recruiter_portal_base_url" {
   value = "https://recruiter.${var.domain_name}"
 }

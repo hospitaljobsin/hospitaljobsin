@@ -99,7 +99,7 @@ module "github" {
   sst_accounts_base_url                 = module.core.sst_accounts_base_url
   sst_seeker_portal_base_url            = module.core.sst_seeker_portal_base_url
   sst_recruiter_portal_base_url         = module.core.sst_recruiter_portal_base_url
-  sst_captcha_site_key                  = module.core.sst_captcha_site_key
+  sst_captcha_site_key                  = module.cloudflare.sst_captcha_site_key
   sentry_organization                   = data.terraform_remote_state.shared.outputs.sentry_organization
   sst_recruiter_portal_secret_id        = module.core.sst_recruiter_portal_secret_id
   sst_recruiter_dashboard_secret_id     = module.core.sst_recruiter_dashboard_secret_id
@@ -121,7 +121,7 @@ module "core" {
   environment_name               = "production"
   app_name                       = var.app_name
   aws_region                     = var.aws_region
-  cloudflare_account_id          = var.cloudflare_account_id
+  turnstile_widget_secret        = module.cloudflare.turnstile_widget_secret
   domain_name                    = var.domain_name
   google_oauth_client_id         = var.google_oauth_client_id
   google_oauth_client_secret     = var.google_oauth_client_secret
@@ -157,4 +157,11 @@ module "redis" {
   source          = "../modules/redis"
   aws_region      = var.aws_region
   resource_prefix = var.resource_prefix
+}
+
+
+module "cloudflare" {
+  source                = "../modules/cloudflare"
+  cloudflare_account_id = var.cloudflare_account_id
+  domain_name           = var.domain_name
 }

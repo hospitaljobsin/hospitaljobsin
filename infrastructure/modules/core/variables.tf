@@ -28,9 +28,10 @@ variable "github_repository_name" {
   description = "GitHub repository name."
 }
 
-variable "cloudflare_account_id" {
+variable "turnstile_widget_secret" {
   type        = string
-  description = "Cloudflare account ID."
+  description = "Cloudflare turnstile widget secret."
+  sensitive   = true
 }
 
 
