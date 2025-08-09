@@ -272,7 +272,7 @@ resource "aws_lambda_function" "worker" {
 
   role         = aws_iam_role.lambda_worker_exec_role.arn
   package_type = "Image"
-  image_uri    = "${var.aws_lambda_worker_repository_url}:latest"
+  image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
 
   image_config {
     command = ["app.sqs_handler.lambda_handler"]
