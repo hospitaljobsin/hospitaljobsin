@@ -34,7 +34,7 @@ terraform {
 
     sentry = {
       source  = "jianyuan/sentry"
-      version = "0.14.5"
+      version = "0.14.6"
     }
 
     rediscloud = {
