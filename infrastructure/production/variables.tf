@@ -73,11 +73,6 @@ variable "google_oauth_client_secret" {
   sensitive   = true
 }
 
-variable "sentry_organization_slug" {
-  description = "The slug of the Sentry organization."
-  type        = string
-  default     = "hospitaljobsin"
-}
 
 variable "whatsapp_access_token" {
   type        = string
