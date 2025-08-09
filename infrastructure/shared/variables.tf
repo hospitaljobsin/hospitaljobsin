@@ -4,6 +4,12 @@ variable "domain_name" {
   default     = "hospitaljobs.in"
 }
 
+variable "aws_region" {
+  type        = string
+  description = "Location for all AWS resources."
+  default     = "us-east-1"
+}
+
 variable "github_repository_full_name" {
   type        = string
   description = "GitHub repository full name."
@@ -15,6 +21,18 @@ variable "github_organization_name" {
   type        = string
   description = "GitHub organization name."
   default     = "hospitaljobsin"
+}
+
+variable "github_repository_name" {
+  type        = string
+  description = "GitHub repository name."
+  default     = "hospitaljobsin"
+}
+
+variable "resource_prefix" {
+  type        = string
+  description = "The prefix to use for all resources."
+  default     = "hj"
 }
 
 variable "sentry_organization_slug" {

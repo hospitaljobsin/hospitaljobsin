@@ -26,9 +26,9 @@ module "github" {
   github_organization_name = var.github_organization_name
   environment_name         = "production"
   # aws_backend_function_name             = module.core.aws_lambda_backend_function_name
-  aws_backend_image_name                = module.aws-foundation.aws_lambda_backend_image
+  aws_backend_image_name                = data.terraform_remote_state.shared.outputs.aws_lambda_backend_image
   aws_worker_function_name              = module.core.aws_lambda_worker_function_name
-  aws_worker_image_name                 = module.aws-foundation.aws_lambda_worker_image
+  aws_worker_image_name                 = data.terraform_remote_state.shared.outputs.aws_lambda_worker_image
   aws_region                            = var.aws_region
   github_repository_full_name           = var.github_repository_full_name
   sentry_accounts_ui_dsn                = data.terraform_remote_state.shared.outputs.sentry_accounts_ui_dsn
@@ -36,15 +36,15 @@ module "github" {
   sentry_recruiter_portal_ui_dsn        = data.terraform_remote_state.shared.outputs.sentry_recruiter_portal_ui_dsn
   sentry_recruiter_dashboard_ui_dsn     = data.terraform_remote_state.shared.outputs.sentry_recruiter_dashboard_ui_dsn
   sst_api_url                           = module.core.sst_api_url
-  sst_vpc_id                            = module.aws-foundation.vpc_id
+  sst_vpc_id                            = data.terraform_remote_state.shared.outputs.vpc_id
   sst_accounts_domain                   = module.core.sst_accounts_domain
   sst_seeker_portal_domain              = module.core.sst_seeker_portal_domain
   sst_recruiter_portal_domain           = module.core.sst_recruiter_portal_domain
   sst_recruiter_dashboard_domain        = module.core.sst_recruiter_dashboard_domain
   sst_accounts_secret_id                = module.core.sst_accounts_secret_id
   sst_seeker_portal_secret_id           = module.core.sst_seeker_portal_secret_id
-  deployment_aws_access_key_id          = module.aws-foundation.aws_access_key_id
-  deployment_aws_secret_access_key      = module.aws-foundation.aws_secret_access_key
+  deployment_aws_access_key_id          = data.terraform_remote_state.shared.outputs.aws_access_key_id
+  deployment_aws_secret_access_key      = data.terraform_remote_state.shared.outputs.aws_secret_access_key
   sentry_backend_dsn                    = data.terraform_remote_state.shared.outputs.sentry_backend_dsn
   sst_accounts_base_url                 = module.core.sst_accounts_base_url
   sst_seeker_portal_base_url            = module.core.sst_seeker_portal_base_url
@@ -89,18 +89,10 @@ module "core" {
   posthog_api_host                  = var.posthog_api_host
   mongodb_connection_string         = module.mongodb.connection_string
   mongodb_database_name             = var.mongodb_database_name
-  vpc_id                            = module.aws-foundation.vpc_id
-  hosted_zone_id                    = module.aws-foundation.hosted_zone_id
-  aws_lambda_worker_repository_url  = module.aws-foundation.aws_lambda_worker_repository_url
-  aws_lambda_backend_repository_url = module.aws-foundation.aws_lambda_backend_repository_url
-}
-
-module "aws-foundation" {
-  source                 = "../modules/aws-foundation"
-  aws_region             = var.aws_region
-  resource_prefix        = var.resource_prefix
-  domain_name            = var.domain_name
-  github_repository_name = var.github_repository_name
+  vpc_id                            = data.terraform_remote_state.shared.outputs.vpc_id
+  hosted_zone_id                    = data.terraform_remote_state.shared.outputs.hosted_zone_id
+  aws_lambda_worker_repository_url  = data.terraform_remote_state.shared.outputs.aws_lambda_worker_repository_url
+  aws_lambda_backend_repository_url = data.terraform_remote_state.shared.outputs.aws_lambda_backend_repository_url
 }
 
 module "mongodb" {

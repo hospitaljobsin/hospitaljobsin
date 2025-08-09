@@ -46,12 +46,6 @@ variable "github_repository_full_name" {
 }
 
 
-variable "github_repository_name" {
-  type        = string
-  description = "GitHub repository name."
-  default     = "hospitaljobsin"
-}
-
 variable "github_organization_name" {
   type        = string
   description = "GitHub organization name."

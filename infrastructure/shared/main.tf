@@ -16,3 +16,11 @@ module "sentry" {
   github_repository_full_name = var.github_repository_full_name
   domain_name                 = var.domain_name
 }
+
+module "aws-foundation" {
+  source                 = "../modules/aws-foundation"
+  aws_region             = var.aws_region
+  resource_prefix        = var.resource_prefix
+  domain_name            = var.domain_name
+  github_repository_name = var.github_repository_name
+}
