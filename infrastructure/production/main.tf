@@ -118,6 +118,7 @@ module "github" {
 
 module "core" {
   source                         = "../modules/core"
+  environment_name               = "production"
   app_name                       = var.app_name
   aws_region                     = var.aws_region
   cloudflare_account_id          = var.cloudflare_account_id

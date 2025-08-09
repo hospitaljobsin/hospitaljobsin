@@ -3,8 +3,8 @@ resource "random_bytes" "jwe_secret" {
 }
 
 resource "aws_secretsmanager_secret" "backend" {
-  name        = "${var.resource_prefix}/backend/prod"
-  description = "Production settings secret for the backend"
+  name        = "${var.resource_prefix}/backend/${var.environment_name}"
+  description = "Settings secret for the backend"
 }
 
 resource "aws_secretsmanager_secret_version" "example" {
@@ -25,8 +25,8 @@ resource "aws_secretsmanager_secret_version" "example" {
 
 
 resource "aws_secretsmanager_secret" "accounts" {
-  name        = "${var.resource_prefix}/accounts/prod"
-  description = "Production settings secret for the accounts edge server."
+  name        = "${var.resource_prefix}/accounts/${var.environment_name}"
+  description = "Settings secret for the accounts edge server."
 }
 
 resource "aws_secretsmanager_secret_version" "accounts" {
@@ -40,8 +40,8 @@ resource "aws_secretsmanager_secret_version" "accounts" {
 
 
 resource "aws_secretsmanager_secret" "seeker_portal" {
-  name        = "${var.resource_prefix}/seeker_portal/prod"
-  description = "Production settings secret for the seeker portal edge server."
+  name        = "${var.resource_prefix}/seeker_portal/${var.environment_name}"
+  description = "Settings secret for the seeker portal edge server."
 }
 
 resource "aws_secretsmanager_secret_version" "seeker_portal" {
@@ -54,8 +54,8 @@ resource "aws_secretsmanager_secret_version" "seeker_portal" {
 }
 
 resource "aws_secretsmanager_secret" "recruiter_portal" {
-  name        = "${var.resource_prefix}/recruiter_portal/prod"
-  description = "Production settings secret for the recruiter portal edge server."
+  name        = "${var.resource_prefix}/recruiter_portal/${var.environment_name}"
+  description = "Settings secret for the recruiter portal edge server."
 }
 
 resource "aws_secretsmanager_secret_version" "recruiter_portal" {
@@ -68,8 +68,8 @@ resource "aws_secretsmanager_secret_version" "recruiter_portal" {
 }
 
 resource "aws_secretsmanager_secret" "recruiter_dashboard" {
-  name        = "${var.resource_prefix}/recruiter_dashboard/prod"
-  description = "Production settings secret for the recruiter dashboard edge server."
+  name        = "${var.resource_prefix}/recruiter_dashboard/${var.environment_name}"
+  description = "Settings secret for the recruiter dashboard edge server."
 }
 
 resource "aws_secretsmanager_secret_version" "recruiter_dashboard" {

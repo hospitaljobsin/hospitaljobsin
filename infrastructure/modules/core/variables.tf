@@ -115,3 +115,9 @@ variable "posthog_api_host" {
   type        = string
   description = "PostHog API host."
 }
+
+
+variable "environment_name" {
+  type        = string
+  description = "Environment name."
+}
