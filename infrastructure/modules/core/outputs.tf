@@ -49,7 +49,7 @@ output "sst_api_url" {
 }
 
 output "sst_vpc_id" {
-  value = aws_vpc.this.id
+  value = var.vpc_id
 }
 
 output "sst_accounts_domain" {
@@ -134,7 +134,7 @@ output "server_sentry_dsn" {
 data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
-    values = [aws_vpc.this.id]
+    values = [var.vpc_id]
   }
   filter {
     name   = "map-public-ip-on-launch"
@@ -146,7 +146,7 @@ data "aws_subnets" "private" {
 data "aws_security_groups" "vpc" {
   filter {
     name   = "vpc-id"
-    values = [aws_vpc.this.id]
+    values = [var.vpc_id]
   }
 }
 

@@ -322,7 +322,7 @@ resource "aws_lambda_event_source_mapping" "worker" {
 # Security Group for Lambda in Private Subnets
 resource "aws_security_group" "lambda" {
   name   = "${var.resource_prefix}-lambda-sg"
-  vpc_id = aws_vpc.this.id
+  vpc_id = var.vpc_id
 
   # Allow outbound traffic to the internet through NAT for external services (S3, Textract)
   egress {

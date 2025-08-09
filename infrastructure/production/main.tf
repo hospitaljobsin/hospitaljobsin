@@ -36,7 +36,7 @@ module "github" {
   sentry_recruiter_portal_ui_dsn        = data.terraform_remote_state.shared.outputs.sentry_recruiter_portal_ui_dsn
   sentry_recruiter_dashboard_ui_dsn     = data.terraform_remote_state.shared.outputs.sentry_recruiter_dashboard_ui_dsn
   sst_api_url                           = module.core.sst_api_url
-  sst_vpc_id                            = module.core.sst_vpc_id
+  sst_vpc_id                            = module.aws-foundation.vpc_id
   sst_accounts_domain                   = module.core.sst_accounts_domain
   sst_seeker_portal_domain              = module.core.sst_seeker_portal_domain
   sst_recruiter_portal_domain           = module.core.sst_recruiter_portal_domain
@@ -90,6 +90,13 @@ module "core" {
   posthog_api_host               = var.posthog_api_host
   mongodb_connection_string      = module.mongodb.connection_string
   mongodb_database_name          = var.mongodb_database_name
+  vpc_id                         = module.aws-foundation.vpc_id
+}
+
+module "aws-foundation" {
+  source          = "../modules/aws-foundation"
+  aws_region      = var.aws_region
+  resource_prefix = var.resource_prefix
 }
 
 module "mongodb" {
