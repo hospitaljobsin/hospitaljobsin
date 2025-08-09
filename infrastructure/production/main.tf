@@ -26,9 +26,9 @@ module "github" {
   github_organization_name = var.github_organization_name
   environment_name         = "production"
   # aws_backend_function_name             = module.core.aws_lambda_backend_function_name
-  aws_backend_image_name                = module.core.aws_lambda_backend_image
+  aws_backend_image_name                = module.aws-foundation.aws_lambda_backend_image
   aws_worker_function_name              = module.core.aws_lambda_worker_function_name
-  aws_worker_image_name                 = module.core.aws_lambda_worker_image
+  aws_worker_image_name                 = module.aws-foundation.aws_lambda_worker_image
   aws_region                            = var.aws_region
   github_repository_full_name           = var.github_repository_full_name
   sentry_accounts_ui_dsn                = data.terraform_remote_state.shared.outputs.sentry_accounts_ui_dsn
@@ -43,8 +43,8 @@ module "github" {
   sst_recruiter_dashboard_domain        = module.core.sst_recruiter_dashboard_domain
   sst_accounts_secret_id                = module.core.sst_accounts_secret_id
   sst_seeker_portal_secret_id           = module.core.sst_seeker_portal_secret_id
-  deployment_aws_access_key_id          = module.core.aws_access_key_id
-  deployment_aws_secret_access_key      = module.core.aws_secret_access_key
+  deployment_aws_access_key_id          = module.aws-foundation.aws_access_key_id
+  deployment_aws_secret_access_key      = module.aws-foundation.aws_secret_access_key
   sentry_backend_dsn                    = data.terraform_remote_state.shared.outputs.sentry_backend_dsn
   sst_accounts_base_url                 = module.core.sst_accounts_base_url
   sst_seeker_portal_base_url            = module.core.sst_seeker_portal_base_url
@@ -67,36 +67,40 @@ module "github" {
 
 
 module "core" {
-  source                         = "../modules/core"
-  environment_name               = "production"
-  app_name                       = var.app_name
-  aws_region                     = var.aws_region
-  turnstile_widget_secret        = module.cloudflare.turnstile_widget_secret
-  domain_name                    = var.domain_name
-  google_oauth_client_id         = var.google_oauth_client_id
-  google_oauth_client_secret     = var.google_oauth_client_secret
-  resource_prefix                = var.resource_prefix
-  sentry_backend_dsn             = data.terraform_remote_state.shared.outputs.sentry_backend_dsn
-  sentry_accounts_ui_dsn         = data.terraform_remote_state.shared.outputs.sentry_accounts_ui_dsn
-  sentry_recruiter_portal_ui_dsn = data.terraform_remote_state.shared.outputs.sentry_recruiter_portal_ui_dsn
-  sentry_seeker_portal_ui_dsn    = data.terraform_remote_state.shared.outputs.sentry_seeker_portal_ui_dsn
-  github_repository_name         = var.github_repository_name
-  redis_password                 = module.redis.redis_password
-  redis_endpoint                 = module.redis.public_endpoint
-  whatsapp_access_token          = var.whatsapp_access_token
-  whatsapp_phone_number_id       = var.whatsapp_phone_number_id
-  two_factor_in_api_key          = var.two_factor_in_api_key
-  posthog_api_key                = var.posthog_api_key
-  posthog_api_host               = var.posthog_api_host
-  mongodb_connection_string      = module.mongodb.connection_string
-  mongodb_database_name          = var.mongodb_database_name
-  vpc_id                         = module.aws-foundation.vpc_id
+  source                            = "../modules/aws-core"
+  environment_name                  = "production"
+  app_name                          = var.app_name
+  aws_region                        = var.aws_region
+  turnstile_widget_secret           = module.cloudflare.turnstile_widget_secret
+  domain_name                       = var.domain_name
+  google_oauth_client_id            = var.google_oauth_client_id
+  google_oauth_client_secret        = var.google_oauth_client_secret
+  resource_prefix                   = var.resource_prefix
+  sentry_backend_dsn                = data.terraform_remote_state.shared.outputs.sentry_backend_dsn
+  sentry_accounts_ui_dsn            = data.terraform_remote_state.shared.outputs.sentry_accounts_ui_dsn
+  sentry_recruiter_portal_ui_dsn    = data.terraform_remote_state.shared.outputs.sentry_recruiter_portal_ui_dsn
+  sentry_seeker_portal_ui_dsn       = data.terraform_remote_state.shared.outputs.sentry_seeker_portal_ui_dsn
+  redis_password                    = module.redis.redis_password
+  redis_endpoint                    = module.redis.public_endpoint
+  whatsapp_access_token             = var.whatsapp_access_token
+  whatsapp_phone_number_id          = var.whatsapp_phone_number_id
+  two_factor_in_api_key             = var.two_factor_in_api_key
+  posthog_api_key                   = var.posthog_api_key
+  posthog_api_host                  = var.posthog_api_host
+  mongodb_connection_string         = module.mongodb.connection_string
+  mongodb_database_name             = var.mongodb_database_name
+  vpc_id                            = module.aws-foundation.vpc_id
+  hosted_zone_id                    = module.aws-foundation.hosted_zone_id
+  aws_lambda_worker_repository_url  = module.aws-foundation.aws_lambda_worker_repository_url
+  aws_lambda_backend_repository_url = module.aws-foundation.aws_lambda_backend_repository_url
 }
 
 module "aws-foundation" {
-  source          = "../modules/aws-foundation"
-  aws_region      = var.aws_region
-  resource_prefix = var.resource_prefix
+  source                 = "../modules/aws-foundation"
+  aws_region             = var.aws_region
+  resource_prefix        = var.resource_prefix
+  domain_name            = var.domain_name
+  github_repository_name = var.github_repository_name
 }
 
 module "mongodb" {

@@ -1,25 +1,9 @@
-# Store the AWS Access Key ID as a GitHub Actions secret
-output "aws_access_key_id" {
-  value     = aws_iam_access_key.github_actions.id
-  sensitive = true
-}
-
-# Store the AWS Secret Access Key as a GitHub Actions secret
-output "aws_secret_access_key" {
-  value     = aws_iam_access_key.github_actions.secret
-  sensitive = true
-}
-
-
 # Store the backend function name as a variable in GitHub Actions
 # output "aws_lambda_backend_function_name" {
 #   value = aws_lambda_function.backend.function_name
 # }
 
-# Store the backend ECR image name as a variable in GitHub Actions
-output "aws_lambda_backend_image" {
-  value = aws_ecr_repository.backend.name
-}
+
 
 output "aws_ecs_cluster_name" {
   value = aws_ecs_cluster.ecs.name
@@ -37,9 +21,7 @@ output "aws_lambda_worker_function_name" {
   value = aws_lambda_function.worker.function_name
 }
 
-output "aws_lambda_worker_image" {
-  value = aws_ecr_repository.worker.name
-}
+
 
 
 # SST variables and secrets

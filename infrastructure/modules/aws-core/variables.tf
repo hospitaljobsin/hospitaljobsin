@@ -28,11 +28,6 @@ variable "mongodb_database_name" {
 }
 
 
-variable "github_repository_name" {
-  type        = string
-  description = "GitHub repository name."
-}
-
 variable "turnstile_widget_secret" {
   type        = string
   description = "Cloudflare turnstile widget secret."
@@ -126,4 +121,21 @@ variable "posthog_api_host" {
 variable "environment_name" {
   type        = string
   description = "Environment name."
+}
+
+
+variable "hosted_zone_id" {
+  type        = string
+  description = "Hosted zone ID."
+}
+
+
+variable "aws_lambda_worker_repository_url" {
+  type        = string
+  description = "AWS Lambda worker repository URL."
+}
+
+variable "aws_lambda_backend_repository_url" {
+  type        = string
+  description = "AWS Lambda backend repository URL."
 }

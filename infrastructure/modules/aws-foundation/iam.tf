@@ -41,7 +41,7 @@ resource "aws_iam_policy" "github_actions" {
         Effect = "Allow"
         # Limit to the specific ECR repository if possible, otherwise use "*" if multiple repos are needed
         # Resource = aws_ecr_repository.backend.arn # Example for a specific repo
-        Resource = aws_ecr_repository.backend.arn
+        Resource = [aws_ecr_repository.backend.arn, aws_ecr_repository.worker.arn]
       },
       # {
       #   Action = [

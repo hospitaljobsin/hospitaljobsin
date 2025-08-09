@@ -1,7 +1,7 @@
-# variable "domain_name" {
-#   type        = string
-#   description = "Domain name for the application."
-# }
+variable "domain_name" {
+  type        = string
+  description = "Production domain name for the application."
+}
 
 variable "resource_prefix" {
   type        = string
@@ -11,4 +11,9 @@ variable "resource_prefix" {
 variable "aws_region" {
   type        = string
   description = "Location for all AWS resources."
+}
+
+variable "github_repository_name" {
+  type        = string
+  description = "The name of the GitHub repository."
 }
