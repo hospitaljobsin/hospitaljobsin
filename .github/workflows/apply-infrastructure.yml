@@ -66,7 +66,6 @@ jobs:
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
-        working-directory: ./infrastructure/${{ steps.env.outputs.dir }}
         with:
           terraform_version: 1.12.1
 
