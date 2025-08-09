@@ -2,45 +2,6 @@ terraform {
   required_version = ">= 1.3.0"
 
   required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-
-    mongodbatlas = {
-      source  = "mongodb/mongodbatlas"
-      version = "~> 1.33"
-    }
-
-    github = {
-      source  = "integrations/github"
-      version = "~> 6.0"
-    }
-
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.0"
-    }
-
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "~> 5"
-    }
-
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = "3.6.0"
-    }
-
-    sentry = {
-      source  = "jianyuan/sentry"
-      version = "0.14.5"
-    }
-
-    rediscloud = {
-      source  = "RedisLabs/rediscloud"
-      version = "2.1.4"
-    }
   }
 
   backend "s3" {
@@ -48,17 +9,6 @@ terraform {
   }
 }
 
-
-provider "aws" {
-  region            = var.aws_region
-  s3_use_path_style = true
-}
-
-# Configure the MongoDB Atlas Provider
-provider "mongodbatlas" {}
-
-# Configure the GitHub Provider
-provider "github" {}
 
 data "terraform_remote_state" "shared" {
   backend = "s3"
