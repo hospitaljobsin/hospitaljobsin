@@ -74,6 +74,7 @@ data "terraform_remote_state" "shared" {
 module "github" {
   source                   = "../modules/github"
   github_organization_name = var.github_organization_name
+  environment_name         = "production"
   # aws_backend_function_name             = module.core.aws_lambda_backend_function_name
   aws_backend_image_name                = module.core.aws_lambda_backend_image
   aws_worker_function_name              = module.core.aws_lambda_worker_function_name
@@ -114,14 +115,6 @@ module "github" {
   aws_ecs_task_family                   = module.core.aws_ecs_task_family
 }
 
-
-# module "sentry" {
-#   source                      = "../modules/sentry"
-#   sentry_organization_slug    = var.sentry_organization_slug
-#   github_organization_name    = var.github_organization_name
-#   github_repository_full_name = var.github_repository_full_name
-#   domain_name                 = var.domain_name
-# }
 
 module "core" {
   source                         = "../modules/core"

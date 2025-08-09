@@ -1,5 +1,5 @@
-resource "github_repository_environment" "production" {
-  environment         = "production"
+resource "github_repository_environment" "this" {
+  environment         = var.environment_name
   repository          = data.github_repository.this.name
   prevent_self_review = false
   #   reviewers {

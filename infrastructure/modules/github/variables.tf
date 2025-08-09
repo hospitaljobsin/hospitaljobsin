@@ -212,3 +212,7 @@ variable "aws_ecs_service_name" {
 variable "aws_ecs_task_family" {
   type = string
 }
+
+variable "environment_name" {
+  type = string
+}
