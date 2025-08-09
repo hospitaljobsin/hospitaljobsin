@@ -46,7 +46,7 @@ dependencies = [
     "types-aiobotocore-ses==2.23.0",
     "types-aiobotocore-location==2.23.0",
     "types-aiobotocore-bedrock-runtime==2.23.0",
-    "pydantic-ai-slim[bedrock]==0.4.3",
+    "pydantic-ai-slim[bedrock]==0.4.11",
     "granian[pname,uvloop]==2.4.2",
     "phonenumbers==9.0.10",
     "watchfiles==1.1.0",
