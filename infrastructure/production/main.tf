@@ -63,6 +63,8 @@ module "github" {
   aws_ecs_cluster_name                  = module.core.aws_ecs_cluster_name
   aws_ecs_service_name                  = module.core.aws_ecs_service_name
   aws_ecs_task_family                   = module.core.aws_ecs_task_family
+  basic_auth_username                   = module.core.basic_auth_username
+  basic_auth_password                   = module.core.basic_auth_password
 }
 
 

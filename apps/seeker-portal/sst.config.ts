@@ -12,9 +12,18 @@ export default $config({
 		};
 	},
 
-	async run() {
-		// const privateSubnets = process.env.SST_VPC_PRIVATE_SUBNETS?.split(",") || [];
-		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
+	async run(input) {
+		const enableBasicAuth = input?.stage === "staging";
+
+		// Encode the Basic Auth credentials from process.env
+		let basicAuthHeader: string | undefined;
+		if (enableBasicAuth) {
+			const username = process.env.BASIC_AUTH_USERNAME || "";
+			const password = process.env.BASIC_AUTH_PASSWORD || "";
+			basicAuthHeader = Buffer.from(`${username}:${password}`).toString(
+				"base64",
+			);
+		}
 
 		new sst.aws.Nextjs("seeker-portal-ui", {
 			buildCommand: "pnpm run package",
@@ -25,7 +34,6 @@ export default $config({
 			environment: {
 				NEXT_PUBLIC_API_URL: env.NEXT_PUBLIC_API_URL,
 				NEXT_PUBLIC_URL: env.NEXT_PUBLIC_URL,
-				// NEXT_PUBLIC_CAPTCHA_SITE_KEY: env.NEXT_PUBLIC_CAPTCHA_SITE_KEY,
 				NEXT_PUBLIC_ACCOUNTS_BASE_URL: env.NEXT_PUBLIC_ACCOUNTS_BASE_URL,
 				NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL:
 					env.NEXT_PUBLIC_RECRUITER_PORTAL_BASE_URL,
@@ -46,7 +54,6 @@ export default $config({
 					"public,max-age=0,s-maxage=86400,stale-while-revalidate=8640",
 				fileOptions: [
 					{
-						// Cache JS/CSS chunks forever
 						files: [
 							"**/*.js",
 							"**/*.css",
@@ -57,7 +64,6 @@ export default $config({
 						cacheControl: "public,max-age=31536000,immutable",
 					},
 					{
-						// Cache image files forever
 						files: [
 							"**/*.png",
 							"**/*.jpg",
@@ -68,24 +74,8 @@ export default $config({
 						],
 						cacheControl: "public,max-age=31536000,immutable",
 					},
-					// {
-					// 	// Disable cache for source maps (optional)
-					// 	files: ["**/*.map"],
-					// 	cacheControl: "no-store",
-					// },
-					// {
-					// 	// Custom control for images or zip files (optional)
-					// 	files: ["**/*.zip"],
-					// 	cacheControl: "private,no-cache,no-store,must-revalidate",
-					// },
 				],
 			},
-			// uncomment the following block after the VPC is properly setup using endpoints
-			// (right now, the API can be accessed from the public internet only)
-			// vpc: {
-			//   securityGroups: securityGroups,
-			//   privateSubnets: privateSubnets,
-			// },
 			server: {
 				runtime: "nodejs22.x",
 				layers: [
@@ -107,13 +97,27 @@ export default $config({
 						viewerProtocolPolicy: "redirect-to-https",
 					};
 				},
-				// 	server(args, opts, name) {
-				// 		args.concurrency = {
-				// 			provisioned: 1,
-				// 			reserved: 25,
-				// 		};
-				// 	},
 			},
+			...(enableBasicAuth && {
+				edge: {
+					viewerRequest: {
+						injection: `
+							if (
+								!event.request.headers.authorization ||
+								event.request.headers.authorization.value !== "Basic ${basicAuthHeader}"
+							) {
+								return {
+									statusCode: 401,
+									statusDescription: "Unauthorized",
+									headers: {
+										"www-authenticate": { value: "Basic" }
+									}
+								};
+							}
+						`,
+					},
+				},
+			}),
 		});
 	},
 });

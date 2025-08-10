@@ -216,3 +216,12 @@ variable "aws_ecs_task_family" {
 variable "environment_name" {
   type = string
 }
+
+variable "basic_auth_username" {
+  type = string
+}
+
+variable "basic_auth_password" {
+  type      = string
+  sensitive = true
+}

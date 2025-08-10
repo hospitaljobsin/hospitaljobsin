@@ -152,3 +152,13 @@ output "lambda_username" {
 output "ecs_username" {
   value = aws_iam_role.ecs_task_execution_role.arn
 }
+
+
+output "basic_auth_username" {
+  value = random_string.basic_auth_username.result
+}
+
+output "basic_auth_password" {
+  value     = random_string.basic_auth_password.result
+  sensitive = true
+}
