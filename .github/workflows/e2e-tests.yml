@@ -2,23 +2,21 @@ name: E2E Tests
 on:
   push:
     branches:
-      - main
+      - staging
     paths:
       - 'e2e/**'
       - 'server/**'
       - 'apps/**'
       - '.github/workflows/e2e-tests.yml'
-      - 'docker-compose.e2e.yml'
 
   pull_request:
     branches:
-      - main
+      - staging
     paths:
       - 'e2e/**'
       - 'server/**'
       - 'apps/**'
       - '.github/workflows/e2e-tests.yml'
-      - 'docker-compose.e2e.yml'
 
 env:
   COMPOSE_BAKE: true
@@ -31,6 +29,7 @@ env:
 
 jobs:
   test-e2e:
+    environment: staging
     name: 'Test on ${{ matrix.project }} (${{ matrix.shard }}/4)'
     strategy:
       fail-fast: false
@@ -63,24 +62,6 @@ jobs:
           echo "Playwright version – ${{ steps.install-playwright.outputs.version }}"
           echo "Playwright cached – ${{ steps.install-playwright.outputs.cache-hit }}"
 
-      - name: Install MKCert
-        run: |
-          sudo apt update
-          sudo apt install -y libnss3-tools
-          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
-          chmod +x mkcert-v*-linux-amd64
-          sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
-
-      - name: Create Local CA
-        run: |
-          mkdir certs
-          cd certs
-          mkcert -install
-          mkcert -cert-file ./localtest.me.pem -key-file ./localtest.me-key.pem "localtest.me" "*.localtest.me"
-
-      - run: docker compose -f docker-compose.e2e.yml up --build -d --wait --remove-orphans
-
-
 
       - name: Run Playwright tests
         run: pnpm --filter e2e run test --trace=on --project=${{ matrix.project }} --shard=${{ matrix.shard }}/4
@@ -88,9 +69,9 @@ jobs:
         env:
           CI: true
           DEBUG: pw:browser
-          API_BASE_URL: https://api.localtest.me
-          ACCOUNTS_UI_BASE_URL: https://accounts.localtest.me
-          SEEKER_PORTAL_BASE_URL: https://localtest.me
+          API_BASE_URL: ${{ vars.SST_API_URL }}
+          ACCOUNTS_UI_BASE_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
+          SEEKER_PORTAL_BASE_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL }}
           MAILCATCHER_BASE_URL: http://localhost:1080
 
       - name: Upload Playwright Report and Traces
