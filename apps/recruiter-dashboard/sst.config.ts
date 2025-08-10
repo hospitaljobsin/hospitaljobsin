@@ -17,7 +17,7 @@ export default $config({
 		new sst.aws.Nextjs("recruiter-dashboard-ui", {
 			buildCommand: "pnpm run package",
 			domain: {
-				name: "wildcard.hospitaljobs.in",
+				name: `wildcard.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
 				aliases: [process.env.SST_RECRUITER_DASHBOARD_DOMAIN],
 			},
 			environment: {

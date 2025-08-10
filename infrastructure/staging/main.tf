@@ -80,8 +80,8 @@ module "core" {
   sentry_accounts_ui_dsn            = data.terraform_remote_state.shared.outputs.sentry_accounts_ui_dsn
   sentry_recruiter_portal_ui_dsn    = data.terraform_remote_state.shared.outputs.sentry_recruiter_portal_ui_dsn
   sentry_seeker_portal_ui_dsn       = data.terraform_remote_state.shared.outputs.sentry_seeker_portal_ui_dsn
-  redis_password                    = "pass"
-  redis_endpoint                    = "localhost:6379"
+  redis_password                    = module.redis.redis_password
+  redis_endpoint                    = module.redis.public_endpoint
   whatsapp_access_token             = var.whatsapp_access_token
   whatsapp_phone_number_id          = var.whatsapp_phone_number_id
   two_factor_in_api_key             = var.two_factor_in_api_key
@@ -107,11 +107,12 @@ module "mongodb" {
   worker_username       = module.core.worker_username
 }
 
-# module "redis" {
-#   source          = "../modules/redis"
-#   aws_region      = var.aws_region
-#   resource_prefix = var.resource_prefix
-# }
+module "redis" {
+  source           = "../modules/redis"
+  aws_region       = var.aws_region
+  resource_prefix  = var.resource_prefix
+  environment_name = "staging"
+}
 
 
 # module "cloudflare" {

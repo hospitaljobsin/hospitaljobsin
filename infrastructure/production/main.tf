@@ -108,9 +108,10 @@ module "mongodb" {
 }
 
 module "redis" {
-  source          = "../modules/redis"
-  aws_region      = var.aws_region
-  resource_prefix = var.resource_prefix
+  source           = "../modules/redis"
+  aws_region       = var.aws_region
+  resource_prefix  = var.resource_prefix
+  environment_name = "production"
 }
 
 
