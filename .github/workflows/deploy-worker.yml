@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - staging
     paths:
       - 'server/**'
       - '.github/workflows/deploy-worker.yml'

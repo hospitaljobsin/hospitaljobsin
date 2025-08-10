@@ -87,7 +87,7 @@ module "core" {
   two_factor_in_api_key             = var.two_factor_in_api_key
   posthog_api_key                   = var.posthog_api_key
   posthog_api_host                  = var.posthog_api_host
-  mongodb_connection_string         = "mongodb://user:pass@localhost:27017/?directConnection=true"
+  mongodb_connection_string         = module.mongodb.connection_string
   mongodb_database_name             = var.mongodb_database_name
   vpc_id                            = data.terraform_remote_state.shared.outputs.vpc_id
   hosted_zone_id                    = data.terraform_remote_state.shared.outputs.hosted_zone_id
@@ -95,16 +95,17 @@ module "core" {
   aws_lambda_backend_repository_url = data.terraform_remote_state.shared.outputs.aws_lambda_backend_repository_url
 }
 
-# module "mongodb" {
-#   source                = "../modules/mongodb"
-#   mongodb_atlas_org_id  = var.mongodb_atlas_org_id
-#   mongodb_atlas_region  = var.mongodb_atlas_region
-#   mongodb_database_name = var.mongodb_database_name
-#   resource_prefix       = var.resource_prefix
-#   ecs_username          = module.core.ecs_username
-#   lambda_username       = module.core.lambda_username
-#   worker_username       = module.core.worker_username
-# }
+module "mongodb" {
+  source                = "../modules/mongodb"
+  environment_name      = "staging"
+  mongodb_atlas_org_id  = var.mongodb_atlas_org_id
+  mongodb_atlas_region  = var.mongodb_atlas_region
+  mongodb_database_name = var.mongodb_database_name
+  resource_prefix       = var.resource_prefix
+  ecs_username          = module.core.ecs_username
+  lambda_username       = module.core.lambda_username
+  worker_username       = module.core.worker_username
+}
 
 # module "redis" {
 #   source          = "../modules/redis"

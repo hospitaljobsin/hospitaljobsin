@@ -97,6 +97,7 @@ module "core" {
 
 module "mongodb" {
   source                = "../modules/mongodb"
+  environment_name      = "production"
   mongodb_atlas_org_id  = var.mongodb_atlas_org_id
   mongodb_atlas_region  = var.mongodb_atlas_region
   mongodb_database_name = var.mongodb_database_name
