@@ -65,6 +65,7 @@ module "github" {
   aws_ecs_task_family                   = module.core.aws_ecs_task_family
   basic_auth_username                   = module.core.basic_auth_username
   basic_auth_password                   = module.core.basic_auth_password
+  aws_asg_name                          = module.core.aws_asg_name
 }
 
 

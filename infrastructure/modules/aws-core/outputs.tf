@@ -4,6 +4,10 @@
 # }
 
 
+output "aws_asg_name" {
+  value = aws_autoscaling_group.ecs_asg.name
+}
+
 
 output "aws_ecs_cluster_name" {
   value = aws_ecs_cluster.ecs.name
