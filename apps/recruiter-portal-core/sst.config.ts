@@ -12,7 +12,7 @@ export default $config({
 		};
 	},
 
-	async run() {
+	async run(input) {
 		const enableBasicAuth = input?.stage === "staging";
 
 		// Encode the Basic Auth credentials from process.env
