@@ -139,18 +139,20 @@ resource "aws_security_group" "alb_sg" {
   }
 
   ingress {
-    description = "Allow HTTPS traffic from the internet"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    description      = "Allow HTTPS traffic from the internet"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 }
 
@@ -176,10 +178,9 @@ resource "aws_security_group_rule" "ingress_docker_ports" {
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   security_group_id = aws_security_group.ecs_sg.id
   cidr_ipv4         = "0.0.0.0/0"
-  #   cidr_ipv6         = "::/0"
-  from_port   = 22
-  ip_protocol = "tcp"
-  to_port     = 22
+  from_port         = 22
+  ip_protocol       = "tcp"
+  to_port           = 22
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv6" {
@@ -323,9 +324,9 @@ resource "aws_autoscaling_group" "ecs_asg" {
   # For staging: allow scaling down to 0, for production: ensure at least 1 instance
   protect_from_scale_in     = var.environment_name == "production" ? true : false
   name                      = "${var.resource_prefix}-backend-asg"
-  desired_capacity          = var.environment_name == "staging" ? 0 : 1
+  desired_capacity          = var.environment_name == "staging" ? 1 : 1
   max_size                  = var.environment_name == "staging" ? 2 : 2
-  min_size                  = var.environment_name == "staging" ? 0 : 1
+  min_size                  = var.environment_name == "staging" ? 1 : 1
   vpc_zone_identifier       = data.aws_subnets.t3a_compatible.ids
   health_check_type         = "EC2"
   health_check_grace_period = 30
@@ -586,7 +587,7 @@ resource "aws_ecs_service" "app" {
   cluster         = aws_ecs_cluster.ecs.id
   task_definition = aws_ecs_task_definition.app.arn
   #   launch_type                        = "EC2"
-  desired_count                      = var.environment_name == "staging" ? 0 : 1
+  desired_count                      = var.environment_name == "staging" ? 1 : 1
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 

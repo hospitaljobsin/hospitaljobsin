@@ -348,6 +348,7 @@ resource "aws_lambda_event_source_mapping" "worker" {
 
 
 # Security Group for Lambda in Private Subnets
+# Security Group for Lambda in Private Subnets
 resource "aws_security_group" "lambda" {
   name   = "${var.resource_prefix}-lambda-sg"
   vpc_id = var.vpc_id
@@ -357,11 +358,13 @@ resource "aws_security_group" "lambda" {
   }
 
   # Allow outbound traffic to the internet through NAT for external services (S3, Textract)
+  # For IPv6, allow outbound to the internet (::/0) as well
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   # Ingress rules (if needed) for access from specific sources, like ECS or API Gateway
@@ -371,5 +374,7 @@ resource "aws_security_group" "lambda" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["10.0.0.0/16"] # Replace with VPC CIDR block
+    # Allow IPv6 from VPC IPv6 range
+    ipv6_cidr_blocks = ["::/0"] # Replace with your VPC's IPv6 CIDR
   }
 }

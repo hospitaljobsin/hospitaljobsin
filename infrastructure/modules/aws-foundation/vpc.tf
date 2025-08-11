@@ -14,8 +14,9 @@ locals {
 resource "aws_vpc" "this" {
   cidr_block = "10.10.0.0/16"
 
-  enable_dns_support   = true
-  enable_dns_hostnames = true
+  enable_dns_support               = true
+  enable_dns_hostnames             = true
+  assign_generated_ipv6_cidr_block = true # <— This is the key
 
   tags = {
     Name = "${var.resource_prefix}-vpc"
@@ -33,11 +34,13 @@ resource "aws_internet_gateway" "this" {
 resource "aws_subnet" "public" {
   for_each = local.public_subnets
 
-  cidr_block = each.value
-  vpc_id     = aws_vpc.this.id
+  cidr_block      = each.value
+  ipv6_cidr_block = cidrsubnet(aws_vpc.this.ipv6_cidr_block, 8, index(keys(local.public_subnets), each.key))
+  vpc_id          = aws_vpc.this.id
 
-  map_public_ip_on_launch = true
-  availability_zone       = each.key
+  assign_ipv6_address_on_creation = true
+  map_public_ip_on_launch         = true
+  availability_zone               = each.key
 
   tags = {
     Name = "${var.resource_prefix}-public-${each.key}"
@@ -47,10 +50,12 @@ resource "aws_subnet" "public" {
 resource "aws_subnet" "private" {
   for_each = local.private_subnets
 
-  cidr_block = each.value
-  vpc_id     = aws_vpc.this.id
+  cidr_block      = each.value
+  ipv6_cidr_block = cidrsubnet(aws_vpc.this.ipv6_cidr_block, 8, length(local.public_subnets) + index(keys(local.private_subnets), each.key))
+  vpc_id          = aws_vpc.this.id
 
-  availability_zone = each.key
+  assign_ipv6_address_on_creation = true
+  availability_zone               = each.key
 
   tags = {
     Name = "${var.resource_prefix}-service-private-${each.key}"
@@ -69,6 +74,26 @@ resource "aws_route" "public_internet_gateway" {
   route_table_id         = aws_default_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.this.id
+
+  timeouts {
+    create = "5m"
+  }
+}
+
+resource "aws_route" "public_internet_gateway_ipv6" {
+  route_table_id              = aws_default_route_table.public.id
+  destination_ipv6_cidr_block = "::/0"
+  gateway_id                  = aws_internet_gateway.this.id
+
+  timeouts {
+    create = "5m"
+  }
+}
+
+resource "aws_route" "private_internet_gateway_ipv6" {
+  route_table_id              = aws_route_table.private.id
+  destination_ipv6_cidr_block = "::/0"
+  gateway_id                  = aws_internet_gateway.this.id
 
   timeouts {
     create = "5m"
