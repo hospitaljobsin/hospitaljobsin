@@ -115,6 +115,13 @@ export default $config({
 						viewerProtocolPolicy: "redirect-to-https",
 					};
 				},
+				distribution(args, opts, name) {
+					args.priceClass = "PriceClass_100";
+					args.httpVersion = "http3";
+					args.isIpv6Enabled = true;
+					// args.staging = false; TODO: maybe utilize cloudfront staging distributions in future for quick deployments
+					// args.continuousDeploymentPolicyId = "" While doing that, set this on the production distribution
+				},
 				// 	server(args, opts, name) {
 				// 		args.concurrency = {
 				// 			provisioned: 1,
