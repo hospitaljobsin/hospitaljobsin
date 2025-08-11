@@ -320,11 +320,12 @@ resource "aws_iam_instance_profile" "ecs_instance_profile" {
 }
 
 resource "aws_autoscaling_group" "ecs_asg" {
-  protect_from_scale_in     = false # TODO: change to true later
+  # For staging: allow scaling down to 0, for production: ensure at least 1 instance
+  protect_from_scale_in     = var.environment_name == "production" ? true : false
   name                      = "${var.resource_prefix}-backend-asg"
-  desired_capacity          = 1
-  max_size                  = 2
-  min_size                  = 1
+  desired_capacity          = var.environment_name == "staging" ? 0 : 1
+  max_size                  = var.environment_name == "staging" ? 2 : 2
+  min_size                  = var.environment_name == "staging" ? 0 : 1
   vpc_zone_identifier       = data.aws_subnets.t3a_compatible.ids
   health_check_type         = "EC2"
   health_check_grace_period = 30
@@ -360,8 +361,9 @@ resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
   }
 
   auto_scaling_group_provider {
-    auto_scaling_group_arn         = aws_autoscaling_group.ecs_asg.arn
-    managed_termination_protection = "DISABLED" # TODO: change to ENABLED later
+    auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
+    # Enable termination protection for production to prevent accidental instance termination
+    managed_termination_protection = var.environment_name == "production" ? "ENABLED" : "DISABLED"
 
     managed_scaling {
       status                    = "ENABLED"
@@ -584,7 +586,7 @@ resource "aws_ecs_service" "app" {
   cluster         = aws_ecs_cluster.ecs.id
   task_definition = aws_ecs_task_definition.app.arn
   #   launch_type                        = "EC2"
-  desired_count                      = 1
+  desired_count                      = var.environment_name == "staging" ? 0 : 1
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 

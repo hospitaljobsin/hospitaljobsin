@@ -209,10 +209,24 @@ variable "aws_ecs_service_name" {
   type = string
 }
 
+
+variable "aws_asg_name" {
+  type = string
+}
+
 variable "aws_ecs_task_family" {
   type = string
 }
 
 variable "environment_name" {
   type = string
+}
+
+variable "basic_auth_username" {
+  type = string
+}
+
+variable "basic_auth_password" {
+  type      = string
+  sensitive = true
 }

@@ -6,11 +6,16 @@ resource "rediscloud_essentials_database" "database-resource" {
   password   = random_string.redis_password.result
   enable_tls = true
 
-  data_persistence = "none"
-  replication      = false
+  # Free 30MB plan has limitations - no data persistence or replication
+  data_persistence = var.environment_name == "production" ? "none" : "none"
+  replication      = var.environment_name == "production" ? false : false
 
-  alert {
-    name  = "throughput-higher-than"
-    value = 80
+  # Free plans don't support custom alerts
+  dynamic "alert" {
+    for_each = var.environment_name == "production" ? [1] : []
+    content {
+      name  = "throughput-higher-than"
+      value = 80
+    }
   }
 }

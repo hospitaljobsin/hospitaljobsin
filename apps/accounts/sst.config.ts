@@ -12,6 +12,17 @@ export default $config({
 		};
 	},
 	async run() {
+		const enableBasicAuth = $app.stage === "staging";
+
+		// Encode the Basic Auth credentials from process.env
+		let basicAuthHeader: string | undefined;
+		if (enableBasicAuth) {
+			const username = process.env.BASIC_AUTH_USERNAME || "";
+			const password = process.env.BASIC_AUTH_PASSWORD || "";
+			basicAuthHeader = Buffer.from(`${username}:${password}`).toString(
+				"base64",
+			);
+		}
 		// const privateSubnets = process.env.SST_VPC_PRIVATE_SUBNETS?.split(",") || [];
 		// const securityGroups = process.env.SST_VPC_SECURITY_GROUPS?.split(",") || [];
 		new sst.aws.Nextjs("accounts-ui", {
@@ -91,6 +102,15 @@ export default $config({
 						...args.defaultCacheBehavior,
 						viewerProtocolPolicy: "redirect-to-https",
 					};
+					args.transform = {
+						distribution(args, opts, name) {
+							args.priceClass = "PriceClass_100";
+							args.httpVersion = "http3";
+							args.isIpv6Enabled = true;
+							// args.staging = false; TODO: maybe utilize cloudfront staging distributions in future for quick deployments
+							// args.continuousDeploymentPolicyId = "" While doing that, set this on the production distribution
+						},
+					};
 				},
 				// 	server(args, opts, name) {
 				// 		args.concurrency = {
@@ -99,6 +119,26 @@ export default $config({
 				// 		};
 				// 	},
 			},
+			...(enableBasicAuth && {
+				edge: {
+					viewerRequest: {
+						injection: `
+							if (
+								!event.request.headers.authorization ||
+								event.request.headers.authorization.value !== "Basic ${basicAuthHeader}"
+							) {
+								return {
+									statusCode: 401,
+									statusDescription: "Unauthorized",
+									headers: {
+										"www-authenticate": { value: "Basic" }
+									}
+								};
+							}
+						`,
+					},
+				},
+			}),
 		});
 	},
 });

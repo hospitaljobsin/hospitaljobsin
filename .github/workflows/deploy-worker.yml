@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - staging
     paths:
       - 'server/**'
       - '.github/workflows/deploy-worker.yml'
@@ -38,8 +39,6 @@ jobs:
           target: sqs-handler
           push: true
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_WORKER_IMAGE_NAME }}:latest
-            ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_WORKER_IMAGE_NAME }}:${{ github.sha }}
             ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_WORKER_IMAGE_NAME }}:${{ github.ref_name == 'main' && 'production' || 'staging' }}-${{ github.sha }}
             ${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_WORKER_IMAGE_NAME }}:${{ github.ref_name == 'main' && 'production' || 'staging' }}-latest
           build-args: |
@@ -52,7 +51,8 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_NAME: ${{ vars.AWS_WORKER_IMAGE_NAME }}
           IMAGE_TAG: ${{ github.sha }}
-        run: aws lambda update-function-code --function-name ${{ vars.AWS_WORKER_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+          ENVIRONMENT_NAME: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+        run: aws lambda update-function-code --function-name ${{ vars.AWS_WORKER_FUNCTION_NAME }} --image-uri $REGISTRY/$IMAGE_NAME:$ENVIRONMENT_NAME-$IMAGE_TAG
 
 
 

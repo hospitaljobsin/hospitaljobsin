@@ -24,17 +24,25 @@ resource "mongodbatlas_advanced_cluster" "this" {
   cluster_type = "REPLICASET"
 
   replication_specs {
-
     region_configs {
-      provider_name         = "FLEX"
+      # Use M0 free tier for staging, current config for other environments
+      provider_name         = var.environment_name == "staging" ? "TENANT" : "FLEX"
       backing_provider_name = "AWS"
       region_name           = var.mongodb_atlas_region
       priority              = 7
+
+      # Add electable_specs for M0 free tier (staging environment)
+      dynamic "electable_specs" {
+        for_each = var.environment_name == "staging" ? [1] : []
+        content {
+          instance_size = "M0"
+        }
+      }
     }
   }
 
   termination_protection_enabled = true
-  backup_enabled                 = true # must be enabled in order to use cloud_backup_schedule resource
+  backup_enabled                 = var.environment_name == "staging" ? false : true # M0 free tier doesn't support backups
 }
 
 # locals {

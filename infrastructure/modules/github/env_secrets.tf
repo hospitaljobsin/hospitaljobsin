@@ -80,3 +80,17 @@ resource "github_actions_environment_secret" "recruiter_dashboard_sentry_dsn" {
   secret_name     = "RECRUITER_DASHBOARD_SENTRY_DSN"
   plaintext_value = var.sentry_recruiter_dashboard_ui_dsn
 }
+
+resource "github_actions_environment_secret" "basic_auth_username" {
+  repository      = data.github_repository.this.name
+  environment     = github_repository_environment.this.environment
+  secret_name     = "BASIC_AUTH_USERNAME"
+  plaintext_value = var.basic_auth_username
+}
+
+resource "github_actions_environment_secret" "basic_auth_password" {
+  repository      = data.github_repository.this.name
+  environment     = github_repository_environment.this.environment
+  secret_name     = "BASIC_AUTH_PASSWORD"
+  plaintext_value = var.basic_auth_password
+}

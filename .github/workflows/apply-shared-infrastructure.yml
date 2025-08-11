@@ -1,4 +1,4 @@
-name: Plan and Apply Terraform Changes
+name: Plan and Apply Shared Terraform Changes
 
 on:
   push:
@@ -6,19 +6,17 @@ on:
       - main
       - staging
     paths:
-      - "infrastructure/production/**"
-      - "infrastructure/staging/**"
+      - "infrastructure/shared/**"
       - "infrastructure/modules/**"
-      - ".github/workflows/apply-infrastructure.yml"
+      - ".github/workflows/apply-shared-infrastructure.yml"
   pull_request:
     branches:
       - main
       - staging
     paths:
-      - "infrastructure/production/**"
-      - "infrastructure/staging/**"
+      - "infrastructure/shared/**"
       - "infrastructure/modules/**"
-      - ".github/workflows/apply-infrastructure.yml"
+      - ".github/workflows/apply-shared-infrastructure.yml"
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_AWS_ACCESS_KEY_ID }}
@@ -33,7 +31,7 @@ env:
   TF_VAR_cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
   TF_VAR_google_oauth_client_id: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
   TF_VAR_google_oauth_client_secret: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
-  TF_VAR_mongodb_atlas_org_id: ${{vars.MONGODB_ATLAS_ORG_ID}}
+  TF_VAR_mongodb_atlas_org_id: ${{ vars.MONGODB_ATLAS_ORG_ID }}
   TF_VAR_whatsapp_access_token: ${{ secrets.WHATSAPP_ACCESS_TOKEN }}
   TF_VAR_whatsapp_phone_number_id: ${{ vars.WHATSAPP_PHONE_NUMBER_ID }}
   TF_VAR_two_factor_in_api_key: ${{ secrets.TWO_FACTOR_IN_API_KEY }}
@@ -41,57 +39,41 @@ env:
   TF_VAR_posthog_api_host: ${{ vars.POSTHOG_API_HOST }}
 
 concurrency:
-  group: ${{ github.workflow }}  # Ensures only one run of this workflow at a time
-  cancel-in-progress: false      # Waits instead of cancelling previous runs
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
 jobs:
-  terraform:
+  terraform-shared:
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: ./infrastructure/production
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set env
-        id: env
-        run: |
-          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
-            echo "dir=production" >> $GITHUB_OUTPUT
-          elif [[ "${GITHUB_REF_NAME}" == "staging" ]]; then
-            echo "dir=staging" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.12.1
 
-
       - name: Terraform Init
         id: init
-        working-directory: ./infrastructure/${{ steps.env.outputs.dir }}
-        run: terraform init -backend-config="bucket=${{vars.TERRAFORM_AWS_BACKEND_BUCKET_NAME}}" -backend-config="region=${{vars.TERRAFORM_AWS_REGION}}"
+        working-directory: ./infrastructure/shared
+        run: terraform init -backend-config="bucket=${{ vars.TERRAFORM_AWS_BACKEND_BUCKET_NAME }}" -backend-config="region=${{ vars.TERRAFORM_AWS_REGION }}"
 
       - name: Terraform Format
         id: fmt
-        working-directory: ./infrastructure/${{ steps.env.outputs.dir }}
+        working-directory: ./infrastructure/shared
         run: terraform fmt -check
-
 
       - name: Terraform Validate
         id: validate
-        working-directory: ./infrastructure/${{ steps.env.outputs.dir }}
+        working-directory: ./infrastructure/shared
         run: terraform validate
 
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         id: plan
+        working-directory: ./infrastructure/shared
         run: terraform plan -no-color -input=false
         continue-on-error: true
 
@@ -108,25 +90,4 @@ jobs:
 
             <details><summary>Show Plan</summary>
 
-            \`\`\`\n
-            ${process.env.PLAN}
-            \`\`\`
-
-            </details>
-            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
-
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -no-color
-        working-directory: ./infrastructure/${{ steps.env.outputs.dir }}
+            \`\`\

@@ -63,6 +63,9 @@ module "github" {
   aws_ecs_cluster_name                  = module.core.aws_ecs_cluster_name
   aws_ecs_service_name                  = module.core.aws_ecs_service_name
   aws_ecs_task_family                   = module.core.aws_ecs_task_family
+  basic_auth_username                   = module.core.basic_auth_username
+  basic_auth_password                   = module.core.basic_auth_password
+  aws_asg_name                          = module.core.aws_asg_name
 }
 
 
@@ -97,6 +100,7 @@ module "core" {
 
 module "mongodb" {
   source                = "../modules/mongodb"
+  environment_name      = "production"
   mongodb_atlas_org_id  = var.mongodb_atlas_org_id
   mongodb_atlas_region  = var.mongodb_atlas_region
   mongodb_database_name = var.mongodb_database_name
@@ -107,9 +111,10 @@ module "mongodb" {
 }
 
 module "redis" {
-  source          = "../modules/redis"
-  aws_region      = var.aws_region
-  resource_prefix = var.resource_prefix
+  source           = "../modules/redis"
+  aws_region       = var.aws_region
+  resource_prefix  = var.resource_prefix
+  environment_name = "production"
 }
 
 

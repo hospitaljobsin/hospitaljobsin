@@ -20,6 +20,13 @@ resource "github_actions_environment_variable" "aws_backend_ecs_cluster" {
   value         = var.aws_ecs_cluster_name
 }
 
+resource "github_actions_environment_variable" "aws_asg_name" {
+  repository    = data.github_repository.this.name
+  environment   = github_repository_environment.this.environment
+  variable_name = "AWS_ASG_NAME"
+  value         = var.aws_asg_name
+}
+
 
 resource "github_actions_environment_variable" "aws_backend_ecs_service" {
   repository    = data.github_repository.this.name
@@ -27,6 +34,8 @@ resource "github_actions_environment_variable" "aws_backend_ecs_service" {
   variable_name = "AWS_BACKEND_ECS_SERVICE"
   value         = var.aws_ecs_service_name
 }
+
+
 
 
 resource "github_actions_environment_variable" "aws_backend_ecs_task_family" {

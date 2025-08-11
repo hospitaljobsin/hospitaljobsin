@@ -104,6 +104,8 @@ jobs:
             AWS_SECRET_ID: ${{ secrets.SST_SEEKER_PORTAL_SECRET_ID }}
             SKIP_ENV_VALIDATION: true
             NODE_ENV: production
+            BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
+            BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
             NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_API_KEY }}
             NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.POSTHOG_API_HOST }}
 

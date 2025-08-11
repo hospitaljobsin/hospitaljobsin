@@ -37,3 +37,9 @@ variable "worker_username" {
   type        = string
   description = "Worker username."
 }
+
+
+variable "environment_name" {
+  type        = string
+  description = "Environment name."
+}
