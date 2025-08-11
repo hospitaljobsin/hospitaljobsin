@@ -3,7 +3,7 @@ name: Plan and Apply Shared Terraform Changes
 on:
   push:
     branches:
-      - main
+      - production
       - staging
     paths:
       - "infrastructure/shared/**"
@@ -11,7 +11,7 @@ on:
       - ".github/workflows/apply-shared-infrastructure.yml"
   pull_request:
     branches:
-      - main
+      - production
       - staging
     paths:
       - "infrastructure/shared/**"

@@ -3,7 +3,7 @@ name: Plan and Apply Terraform Changes
 on:
   push:
     branches:
-      - main
+      - production
       - staging
     paths:
       - "infrastructure/production/**"
@@ -12,7 +12,7 @@ on:
       - ".github/workflows/apply-infrastructure.yml"
   pull_request:
     branches:
-      - main
+      - production
       - staging
     paths:
       - "infrastructure/production/**"
@@ -58,7 +58,7 @@ jobs:
       - name: Set env
         id: env
         run: |
-          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+          if [[ "${GITHUB_REF_NAME}" == "production" ]]; then
             echo "dir=production" >> $GITHUB_OUTPUT
           elif [[ "${GITHUB_REF_NAME}" == "staging" ]]; then
             echo "dir=staging" >> $GITHUB_OUTPUT
@@ -127,6 +127,6 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/production' && github.event_name == 'push'
         run: terraform apply -auto-approve -no-color
         working-directory: ./infrastructure/${{ steps.env.outputs.dir }}
