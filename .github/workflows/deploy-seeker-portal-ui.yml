@@ -3,7 +3,7 @@ name: Build and Deploy Seeker Portal UI
 on:
   push:
     branches:
-      - main
+      - production
       - staging
     paths:
       - 'apps/seeker-portal/**'
@@ -26,7 +26,7 @@ env:  # repo-level and non-env-specific secrets/vars
 jobs:
   check:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
     outputs:
       query_map_changed: ${{ steps.detect.outputs.changed }}
     steps:
@@ -41,7 +41,7 @@ jobs:
 
   build-and-push:
     needs: check
-    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
     runs-on: ubuntu-latest
     # Only deploy when:
     #  • a backend workflow_run happened (so server is already up), OR
@@ -86,7 +86,7 @@ jobs:
       # TODO: use pnpm workspace config while building with sst
       - name: SST Deploy
         working-directory: ./apps/seeker-portal
-        run: npx sst deploy --stage ${{ github.ref_name == 'main' && 'production' || 'staging' }} --print-logs
+        run: npx sst deploy --stage ${{ github.ref_name == 'production' && 'production' || 'staging' }} --print-logs
         env:
             SST_VPC_PRIVATE_SUBNETS: ${{ vars.SST_VPC_PRIVATE_SUBNETS }}
             SST_VPC_SECURITY_GROUPS: ${{ vars.SST_VPC_SECURITY_GROUPS }}

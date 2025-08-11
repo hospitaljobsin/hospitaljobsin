@@ -4,7 +4,12 @@
 /* deno-fmt-ignore-file */
 
 declare module "sst" {
-	export interface Resource {}
+	export interface Resource {
+		"recruiter-portal-ui": {
+			type: "sst.aws.Nextjs";
+			url: string;
+		};
+	}
 }
 /// <reference path="sst-env.d.ts" />
 
