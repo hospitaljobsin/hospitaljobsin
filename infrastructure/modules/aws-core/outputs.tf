@@ -115,19 +115,6 @@ output "server_sentry_dsn" {
   sensitive = true
 }
 
-// Fetch private subnets in the VPC
-
-data "aws_subnets" "private" {
-  filter {
-    name   = "vpc-id"
-    values = [var.vpc_id]
-  }
-  filter {
-    name   = "map-public-ip-on-launch"
-    values = [false]
-  }
-}
-
 // Fetch all security groups in the VPC
 data "aws_security_groups" "vpc" {
   filter {

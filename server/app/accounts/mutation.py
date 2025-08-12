@@ -17,12 +17,11 @@ from app.accounts.exceptions import (
 from app.accounts.services import AccountService, ProfileParserService, ProfileService
 from app.auth.permissions import IsAuthenticated, RequiresSudoMode
 from app.base.types import CreatePresignedURLPayloadType
-from app.context import AuthInfo
+from app.context import AuthInfo, Info
 
 from .types import (
     AccountType,
     AnalyticsPreferenceInputTypeEnum,
-    AnalyticsPreferenceTypeEnum,
     CertificationInputType,
     EducationInputType,
     GenderTypeEnum,
@@ -325,16 +324,11 @@ class AccountMutation:
     @strawberry.mutation(  # type: ignore[misc]
         graphql_type=UpdateAccountAnalyticsPreferencePayload,
         description="Update the current user's analytics preference.",
-        extensions=[
-            PermissionExtension(
-                permissions=[IsAuthenticated()],
-            )
-        ],
     )
     @inject
     async def update_account_analytics_preference(
         self,
-        info: AuthInfo,
+        info: Info,
         account_service: Annotated[AccountService, Inject],
         analytics_preference: Annotated[
             AnalyticsPreferenceInputTypeEnum,
@@ -350,7 +344,7 @@ class AccountMutation:
             response=info.context["response"],
         ):
             case Ok(account):
-                return AccountType.marshal(account)
+                return AccountType.marshal(account) if account is not None else None
             case _ as unreachable:
                 assert_never(unreachable)
 

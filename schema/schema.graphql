@@ -2736,7 +2736,7 @@ type Mutation {
 		The analytics preference of the user account.
 		"""
 		analyticsPreference: AnalyticsPreferenceInputType!
-	): UpdateAccountAnalyticsPreferencePayload! @isAuthenticated
+	): Account
 
 	"""
 	Update the current user's profile location preferences.
@@ -4551,11 +4551,6 @@ type UnsaveJobSuccess {
 	"""
 	savedJobEdge: SavedJobEdge!
 }
-
-"""
-The update account analytics preference payload.
-"""
-union UpdateAccountAnalyticsPreferencePayload = Account
 
 """
 The update account payload.

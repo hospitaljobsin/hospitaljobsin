@@ -56,13 +56,13 @@ output "vpc_id" {
   value = module.aws-foundation.vpc_id
 }
 
-output "sst_vpc_private_subnets" {
+output "vpc_private_subnets" {
   # comma‑delimited list
-  value = module.aws-foundation.sst_vpc_private_subnets
+  value = module.aws-foundation.vpc_private_subnets
 }
 
-output "sst_vpc_security_groups" {
-  value = module.aws-foundation.sst_vpc_security_groups
+output "vpc_security_groups" {
+  value = module.aws-foundation.vpc_security_groups
 }
 
 

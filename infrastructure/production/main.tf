@@ -53,8 +53,8 @@ module "github" {
   sentry_organization                   = data.terraform_remote_state.shared.outputs.sentry_organization
   sst_recruiter_portal_secret_id        = module.core.sst_recruiter_portal_secret_id
   sst_recruiter_dashboard_secret_id     = module.core.sst_recruiter_dashboard_secret_id
-  sst_vpc_private_subnets               = module.core.sst_vpc_private_subnets
-  sst_vpc_security_groups               = module.core.sst_vpc_security_groups
+  sst_vpc_private_subnets               = data.terraform_remote_state.shared.outputs.vpc_private_subnets
+  sst_vpc_security_groups               = data.terraform_remote_state.shared.outputs.vpc_security_groups
   domain_name                           = var.domain_name
   sentry_accounts_ui_project            = data.terraform_remote_state.shared.outputs.accounts_sentry_project
   sentry_recruiter_portal_ui_project    = data.terraform_remote_state.shared.outputs.recruiter_portal_sentry_project

@@ -7,14 +7,29 @@ locals {
   redis_port     = tonumber(element(local.redis_parts, 1))
 }
 
-data "aws_vpc" "default" {
-  default = true
+# Use the provided VPC ID instead of default VPC
+data "aws_vpc" "main" {
+  id = var.vpc_id
 }
 
-data "aws_subnets" "default" {
+# Get private subnets from the specified VPC
+data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
+    values = [var.vpc_id]
+  }
+
+  filter {
+    name   = "map-public-ip-on-launch"
+    values = [false]
+  }
+}
+
+# Get public subnets from the specified VPC (for ALB)
+data "aws_subnets" "public" {
+  filter {
+    name   = "vpc-id"
+    values = [var.vpc_id]
   }
 
   filter {
@@ -23,16 +38,16 @@ data "aws_subnets" "default" {
   }
 }
 
-# Filter subnets to exclude us-east-1e where t3a.medium is not available
-data "aws_subnets" "t3a_compatible" {
+# Filter private subnets to exclude us-east-1e where t3a.medium is not available
+data "aws_subnets" "t3a_compatible_private" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
+    values = [var.vpc_id]
   }
 
   filter {
     name   = "map-public-ip-on-launch"
-    values = [true]
+    values = [false]
   }
 
   filter {
@@ -131,11 +146,15 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_attach" {
 }
 
 resource "aws_security_group" "alb_sg" {
-  name   = "${var.resource_prefix}-alb-sg"
-  vpc_id = data.aws_vpc.default.id
+  name   = "${var.resource_prefix}-alb-sg-new"
+  vpc_id = data.aws_vpc.main.id
 
   tags = {
     Environment = var.environment_name
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   ingress {
@@ -159,22 +178,24 @@ resource "aws_security_group" "alb_sg" {
 
 resource "aws_security_group" "ecs_sg" {
   name   = "${var.resource_prefix}-ecs-sg"
-  vpc_id = data.aws_vpc.default.id
+  vpc_id = data.aws_vpc.main.id
 
   tags = {
     Environment = var.environment_name
   }
 }
 
+# Allow ECS instances to communicate with each other on Docker ports
 resource "aws_security_group_rule" "ingress_docker_ports" {
   type              = "ingress"
   from_port         = 32768
   to_port           = 61000
   protocol          = "-1"
-  cidr_blocks       = [data.aws_vpc.default.cidr_block]
+  cidr_blocks       = [data.aws_vpc.main.cidr_block]
   security_group_id = aws_security_group.ecs_sg.id
 }
 
+# Allow SSH access for debugging (consider removing in production)
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   security_group_id = aws_security_group.ecs_sg.id
   cidr_ipv4         = "0.0.0.0/0"
@@ -210,7 +231,9 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv6" {
 
 # TODO: split the container (ecs) and alb security groups later
 
+# Allow ALB to reach ECS on port 8000
 resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs_8000" {
+  depends_on                   = [aws_security_group.alb_sg]
   description                  = "Allow ALB to reach ECS on port 8000"
   security_group_id            = aws_security_group.ecs_sg.id
   referenced_security_group_id = aws_security_group.alb_sg.id
@@ -243,6 +266,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs_8000" {
 #   to_port           = 443
 # }
 
+# Allow all outbound traffic (ECS instances need this for internet access via NAT Gateway)
 resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
   security_group_id = aws_security_group.ecs_sg.id
   cidr_ipv4         = "0.0.0.0/0"
@@ -295,10 +319,10 @@ resource "aws_launch_template" "ecs_lt" {
   }
 
   network_interfaces {
-    associate_public_ip_address = true
+    associate_public_ip_address = false
     device_index                = 0
     security_groups             = [aws_security_group.ecs_sg.id]
-    subnet_id                   = element(data.aws_subnets.t3a_compatible.ids, 0)
+    # subnet_id                   = element(data.aws_subnets.t3a_compatible_private.ids, 0)
   }
 
   #   vpc_security_group_ids = [aws_security_group.ecs_sg.id]
@@ -327,7 +351,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
   desired_capacity          = var.environment_name == "staging" ? 1 : 1
   max_size                  = var.environment_name == "staging" ? 2 : 2
   min_size                  = var.environment_name == "staging" ? 1 : 1
-  vpc_zone_identifier       = data.aws_subnets.t3a_compatible.ids
+  vpc_zone_identifier       = data.aws_subnets.t3a_compatible_private.ids
   health_check_type         = "EC2"
   health_check_grace_period = 30
 

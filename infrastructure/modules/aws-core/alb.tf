@@ -41,7 +41,7 @@ resource "aws_lb" "ecs_alb" {
   name                             = "${var.resource_prefix}-ecs-alb"
   internal                         = false
   load_balancer_type               = "application"
-  subnets                          = data.aws_subnets.default.ids
+  subnets                          = data.aws_subnets.public.ids
   security_groups                  = [aws_security_group.alb_sg.id]
   enable_cross_zone_load_balancing = true
   enable_http2                     = true
@@ -55,13 +55,15 @@ resource "aws_lb" "ecs_alb" {
     prefix  = "alb"
     bucket  = aws_s3_bucket.lb_logs.bucket
   }
+
+  depends_on = [aws_security_group.alb_sg]
 }
 
 resource "aws_lb_target_group" "ecs_new_tg" {
-  name        = "${var.resource_prefix}-ecs-tg"
+  name        = "${var.resource_prefix}-backend-tg"
   port        = 8000
   protocol    = "HTTP"
-  vpc_id      = data.aws_vpc.default.id
+  vpc_id      = var.vpc_id
   target_type = "instance" # instead of "ip"
 
   tags = {
