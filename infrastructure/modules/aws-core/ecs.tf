@@ -195,6 +195,15 @@ resource "aws_security_group_rule" "ingress_docker_ports" {
   security_group_id = aws_security_group.ecs_sg.id
 }
 
+resource "aws_security_group_rule" "ingress_docker_ports_ipv6" {
+  type              = "ingress"
+  from_port         = 32768
+  to_port           = 61000
+  protocol          = "-1"
+  ipv6_cidr_blocks  = [data.aws_vpc.main.ipv6_cidr_block]
+  security_group_id = aws_security_group.ecs_sg.id
+}
+
 # Allow SSH access for debugging (consider removing in production)
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   security_group_id = aws_security_group.ecs_sg.id
