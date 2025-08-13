@@ -40,7 +40,6 @@ EXPOSE 8000
 
 CMD ["uv", "run", "scripts/run_server.py"]
 
-
 FROM debian:12-slim AS layer-build
 
 # Set AWS environment variables with optional defaults

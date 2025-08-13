@@ -185,26 +185,49 @@ resource "aws_security_group" "ecs_sg" {
   }
 }
 
-# Allow ECS instances to communicate with each other on Docker ports
+# Allow ECS instances to communicate with each other on Docker ports (I dont think we need this)
+# resource "aws_security_group_rule" "ingress_docker_ports" {
+#   type              = "ingress"
+#   from_port         = 32768
+#   to_port           = 61000
+#   protocol          = "-1"
+#   cidr_blocks       = [data.aws_vpc.main.cidr_block]
+#   security_group_id = aws_security_group.ecs_sg.id
+#   description       = "Allow ECS instances to communicate with each other on Docker ports"
+# }
+
+# resource "aws_security_group_rule" "ingress_docker_ports_ipv6" {
+#   type              = "ingress"
+#   from_port         = 32768
+#   to_port           = 61000
+#   protocol          = "-1"
+#   ipv6_cidr_blocks  = [data.aws_vpc.main.ipv6_cidr_block]
+#   security_group_id = aws_security_group.ecs_sg.id
+#   description       = "Allow ECS instances to communicate with each other on Docker ports"
+# }
+
+
 resource "aws_security_group_rule" "ingress_docker_ports" {
-  type              = "ingress"
-  from_port         = 32768
-  to_port           = 61000
-  protocol          = "-1"
-  cidr_blocks       = [data.aws_vpc.main.cidr_block]
-  security_group_id = aws_security_group.ecs_sg.id
-  description       = "Allow ECS instances to communicate with each other on Docker ports"
+  type                     = "ingress"
+  from_port                = 32768
+  to_port                  = 61000
+  protocol                 = "-1"
+  source_security_group_id = aws_security_group.alb_sg.id # Only ALB can access
+  security_group_id        = aws_security_group.ecs_sg.id
+  description              = "Allow ALB health checks on Docker ports"
 }
 
-resource "aws_security_group_rule" "ingress_docker_ports_ipv6" {
-  type              = "ingress"
-  from_port         = 32768
-  to_port           = 61000
-  protocol          = "-1"
-  ipv6_cidr_blocks  = [data.aws_vpc.main.ipv6_cidr_block]
-  security_group_id = aws_security_group.ecs_sg.id
-  description       = "Allow ECS instances to communicate with each other on Docker ports"
-}
+
+# Allow ALB to reach ECS on port 8000 (I dont think we need this)
+# resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs_8000" {
+#   depends_on                   = [aws_security_group.alb_sg]
+#   description                  = "Allow ALB to reach ECS on port 8000"
+#   security_group_id            = aws_security_group.ecs_sg.id
+#   referenced_security_group_id = aws_security_group.alb_sg.id
+#   from_port                    = 8000
+#   to_port                      = 8000
+#   ip_protocol                  = "tcp"
+# }
 
 # Allow SSH access for debugging (consider removing in production)
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
@@ -240,18 +263,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv6" {
 # }
 
 
-# TODO: split the container (ecs) and alb security groups later
 
-# Allow ALB to reach ECS on port 8000
-resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs_8000" {
-  depends_on                   = [aws_security_group.alb_sg]
-  description                  = "Allow ALB to reach ECS on port 8000"
-  security_group_id            = aws_security_group.ecs_sg.id
-  referenced_security_group_id = aws_security_group.alb_sg.id
-  from_port                    = 8000
-  to_port                      = 8000
-  ip_protocol                  = "tcp"
-}
 
 
 # resource "aws_vpc_security_group_ingress_rule" "allow_container_http_ipv6" {
