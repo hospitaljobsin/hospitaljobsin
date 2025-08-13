@@ -39,7 +39,7 @@ data "aws_subnets" "public" {
 }
 
 # Filter private subnets to exclude us-east-1e where t3a.medium is not available
-data "aws_subnets" "t3a_compatible_private" {
+data "aws_subnets" "t3a_compatible_public" {
   filter {
     name   = "vpc-id"
     values = [var.vpc_id]
@@ -47,7 +47,7 @@ data "aws_subnets" "t3a_compatible_private" {
 
   filter {
     name   = "map-public-ip-on-launch"
-    values = [false]
+    values = [true]
   }
 
   filter {
@@ -178,7 +178,7 @@ resource "aws_security_group" "alb_sg" {
 
 resource "aws_security_group" "ecs_sg" {
   name   = "${var.resource_prefix}-ecs-sg"
-  vpc_id = data.aws_vpc.main.id
+  vpc_id = var.vpc_id
 
   tags = {
     Environment = var.environment_name
@@ -193,6 +193,7 @@ resource "aws_security_group_rule" "ingress_docker_ports" {
   protocol          = "-1"
   cidr_blocks       = [data.aws_vpc.main.cidr_block]
   security_group_id = aws_security_group.ecs_sg.id
+  description       = "Allow ECS instances to communicate with each other on Docker ports"
 }
 
 resource "aws_security_group_rule" "ingress_docker_ports_ipv6" {
@@ -202,6 +203,7 @@ resource "aws_security_group_rule" "ingress_docker_ports_ipv6" {
   protocol          = "-1"
   ipv6_cidr_blocks  = [data.aws_vpc.main.ipv6_cidr_block]
   security_group_id = aws_security_group.ecs_sg.id
+  description       = "Allow ECS instances to communicate with each other on Docker ports"
 }
 
 # Allow SSH access for debugging (consider removing in production)
@@ -310,6 +312,8 @@ resource "aws_launch_template" "ecs_lt" {
   image_id      = data.aws_ami.ecs_optimized.id
   instance_type = "t3a.medium"
 
+  update_default_version = true
+
   tags = {
     Environment = var.environment_name
   }
@@ -328,17 +332,20 @@ resource "aws_launch_template" "ecs_lt" {
   }
 
   network_interfaces {
-    associate_public_ip_address = false
+    associate_public_ip_address = true
     device_index                = 0
     security_groups             = [aws_security_group.ecs_sg.id]
+    ipv6_address_count          = 1
     # subnet_id                   = element(data.aws_subnets.t3a_compatible_private.ids, 0)
   }
 
-  #   vpc_security_group_ids = [aws_security_group.ecs_sg.id]
+  # vpc_security_group_ids = [aws_security_group.ecs_sg.id]
 
   user_data = base64encode(<<EOF
 #!/bin/bash
 echo "ECS_CLUSTER=${aws_ecs_cluster.ecs.name}" >> /etc/ecs/ecs.config
+echo "ECS_ENABLE_TASK_IAM_ROLE=true" >> /etc/ecs/ecs.config
+echo "ECS_ENABLE_CONTAINER_METADATA=true" >> /etc/ecs/ecs.config
 EOF
   )
 }
@@ -357,14 +364,12 @@ resource "aws_autoscaling_group" "ecs_asg" {
   # For staging: allow scaling down to 0, for production: ensure at least 1 instance
   protect_from_scale_in     = var.environment_name == "production" ? true : false
   name                      = "${var.resource_prefix}-backend-asg"
-  desired_capacity          = var.environment_name == "staging" ? 1 : 1
+  desired_capacity          = var.environment_name == "staging" ? null : 1
   max_size                  = var.environment_name == "staging" ? 2 : 2
   min_size                  = var.environment_name == "staging" ? 1 : 1
-  vpc_zone_identifier       = data.aws_subnets.t3a_compatible_private.ids
+  vpc_zone_identifier       = data.aws_subnets.t3a_compatible_public.ids
   health_check_type         = "EC2"
-  health_check_grace_period = 30
-
-
+  health_check_grace_period = 45 # Increased to allow ECS agent to start
 
   launch_template {
     id      = aws_launch_template.ecs_lt.id
@@ -398,7 +403,6 @@ resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
     auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
     # Enable termination protection for production to prevent accidental instance termination
     managed_termination_protection = var.environment_name == "production" ? "ENABLED" : "DISABLED"
-
     managed_scaling {
       status                    = "ENABLED"
       target_capacity           = 100

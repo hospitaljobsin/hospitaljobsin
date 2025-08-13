@@ -20,7 +20,6 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-install-project
 
-
 # Copy the application files
 # COPY . .
 COPY app/ ./app/
