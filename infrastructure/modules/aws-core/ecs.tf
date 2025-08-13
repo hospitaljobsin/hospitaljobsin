@@ -376,9 +376,9 @@ resource "aws_autoscaling_group" "ecs_asg" {
   # For staging: allow scaling down to 0, for production: ensure at least 1 instance
   protect_from_scale_in     = var.environment_name == "production" ? true : false
   name                      = "${var.resource_prefix}-backend-asg"
-  desired_capacity          = var.environment_name == "staging" ? null : 1
+  desired_capacity          = var.environment_name == "staging" ? 0 : 1
   max_size                  = var.environment_name == "staging" ? 2 : 2
-  min_size                  = var.environment_name == "staging" ? 1 : 1
+  min_size                  = var.environment_name == "staging" ? 0 : 1
   vpc_zone_identifier       = data.aws_subnets.t3a_compatible_public.ids
   health_check_type         = "EC2"
   health_check_grace_period = 45 # Increased to allow ECS agent to start
@@ -636,7 +636,7 @@ resource "aws_ecs_service" "app" {
   cluster         = aws_ecs_cluster.ecs.id
   task_definition = aws_ecs_task_definition.app.arn
   #   launch_type                        = "EC2"
-  desired_count                      = var.environment_name == "staging" ? 1 : 1
+  desired_count                      = var.environment_name == "staging" ? 0 : 1
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 

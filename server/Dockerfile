@@ -130,7 +130,6 @@ ARG LAMBDA_HANDLER=app.sqs_handler.lambda_handler
 
 COPY --from=ghcr.io/astral-sh/uv:0.7.21 /uv /uvx /bin/
 
-
 COPY --from=layer-build /opt /opt
 
 

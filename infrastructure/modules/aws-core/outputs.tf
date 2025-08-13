@@ -159,17 +159,11 @@ output "basic_auth_password" {
 }
 
 output "staging_db_setup_lambda_function_arn" {
-  precondition {
-    condition     = var.environment_name == "staging"
-    error_message = "Staging database setup lambda function ARN is only available in staging environment"
-  }
-  value = aws_lambda_function.staging_database_setup[0].arn
+
+  value = try(aws_lambda_function.staging_database_setup[0].arn, null)
 }
 
 output "staging_db_teardown_lambda_function_arn" {
-  precondition {
-    condition     = var.environment_name == "staging"
-    error_message = "Staging database teardown lambda function ARN is only available in staging environment"
-  }
-  value = aws_lambda_function.staging_database_teardown[0].arn
+
+  value = try(aws_lambda_function.staging_database_teardown[0].arn, null)
 }

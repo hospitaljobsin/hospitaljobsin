@@ -38,11 +38,11 @@ resource "aws_s3_bucket_policy" "lb_logs_policy" {
 
 
 resource "aws_lb" "ecs_alb" {
-  name                             = "${var.resource_prefix}-ecs-alb"
-  internal                         = false
-  load_balancer_type               = "application"
-  subnets                          = data.aws_subnets.public.ids
-  security_groups                  = [aws_security_group.alb_sg.id]
+  name               = "${var.resource_prefix}-ecs-alb"
+  internal           = false
+  load_balancer_type = "application"
+  subnets            = data.aws_subnets.public.ids
+  # security_groups                  = [aws_security_group.alb_sg.id] # TODO: uncomment later
   enable_cross_zone_load_balancing = true
   enable_http2                     = true
 
