@@ -378,3 +378,86 @@ resource "aws_security_group" "lambda" {
     ipv6_cidr_blocks = ["::/0"] # Replace with your VPC's IPv6 CIDR
   }
 }
+
+
+
+resource "aws_lambda_function" "staging_database_setup" {
+  # depends_on    = [docker_registry_image.backend]
+  count         = var.environment_name == "staging" ? 1 : 0
+  function_name = "${var.resource_prefix}-staging-database-setup-lambda"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+
+  role         = aws_iam_role.lambda_worker_exec_role.arn
+  package_type = "Image"
+  image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
+
+  image_config {
+    command = ["lambda_handlers.setup_staging_database.lambda_handler"]
+  }
+
+  publish = true
+
+  # VPC Configuration - uncomment this while moving to private subnets
+  # vpc_config {
+  #   subnet_ids         = values(aws_subnet.private)[*].id
+  #   security_group_ids = [aws_security_group.lambda.id] # Security group for Lambda
+  # }
+
+  environment {
+    variables = {
+      SERVER_DEBUG                 = "False"
+      SERVER_ENVIRONMENT           = "production"
+      SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
+      SERVER_LOG_LEVEL             = "DEBUG"
+    }
+  }
+
+  memory_size = 1024
+  timeout     = 60
+}
+
+
+resource "aws_lambda_function" "staging_database_teardown" {
+  # depends_on    = [docker_registry_image.backend]
+  count         = var.environment_name == "staging" ? 1 : 0
+  function_name = "${var.resource_prefix}-staging-database-teardown-lambda"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+
+  role         = aws_iam_role.lambda_worker_exec_role.arn
+  package_type = "Image"
+  image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
+
+  image_config {
+    command = ["lambda_handlers.teardown_staging_database.lambda_handler"]
+  }
+
+  publish = true
+
+  # VPC Configuration - uncomment this while moving to private subnets
+  # vpc_config {
+  #   subnet_ids         = values(aws_subnet.private)[*].id
+  #   security_group_ids = [aws_security_group.lambda.id] # Security group for Lambda
+  # }
+
+  environment {
+    variables = {
+      SERVER_DEBUG                 = "False"
+      SERVER_ENVIRONMENT           = "production"
+      SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
+      SERVER_LOG_LEVEL             = "DEBUG"
+    }
+  }
+
+  memory_size = 1024
+  timeout     = 60
+}
