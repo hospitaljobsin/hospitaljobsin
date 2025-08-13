@@ -43,3 +43,10 @@ variable "environment_name" {
   type        = string
   description = "Environment name."
 }
+
+variable "staging_db_setup_lambda_username" {
+  type        = string
+  description = "Staging database setup lambda username."
+  nullable    = true
+  default     = null
+}

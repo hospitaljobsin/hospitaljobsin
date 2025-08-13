@@ -97,6 +97,9 @@ jobs:
           ACCOUNTS_UI_BASE_URL: ${{ vars.SST_ACCOUNTS_BASE_URL }}
           SEEKER_PORTAL_BASE_URL: ${{ vars.SST_SEEKER_PORTAL_BASE_URL }}
           MAILCATCHER_BASE_URL: http://localhost:1080
+          ENVIRONMENT: staging
+          STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN: ${{ vars.STAGING_DB_SETUP_LAMBDA_FUNCTION_ARN }}
+          STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN: ${{ vars.STAGING_DB_TEARDOWN_LAMBDA_FUNCTION_ARN }}
 
       # Always scale ECS + ASG down after tests
       - name: Scale down ECS service and ASG

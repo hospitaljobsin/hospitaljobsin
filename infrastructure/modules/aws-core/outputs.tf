@@ -144,6 +144,10 @@ output "ecs_username" {
   value = aws_iam_role.ecs_task_execution_role.arn
 }
 
+output "staging_db_setup_lambda_username" {
+  value = aws_iam_role.lambda_staging_db_exec_role.arn
+}
+
 
 output "basic_auth_username" {
   value = random_string.basic_auth_username.result
@@ -152,4 +156,20 @@ output "basic_auth_username" {
 output "basic_auth_password" {
   value     = random_string.basic_auth_password.result
   sensitive = true
+}
+
+output "staging_db_setup_lambda_function_arn" {
+  precondition {
+    condition     = var.environment_name == "staging"
+    error_message = "Staging database setup lambda function ARN is only available in staging environment"
+  }
+  value = aws_lambda_function.staging_database_setup[0].arn
+}
+
+output "staging_db_teardown_lambda_function_arn" {
+  precondition {
+    condition     = var.environment_name == "staging"
+    error_message = "Staging database teardown lambda function ARN is only available in staging environment"
+  }
+  value = aws_lambda_function.staging_database_teardown[0].arn
 }
