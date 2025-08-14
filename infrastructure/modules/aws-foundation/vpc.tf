@@ -25,11 +25,21 @@ resource "aws_vpc" "this" {
 
 resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this.id
-
   tags = {
     Name = "${var.resource_prefix}-internet-gateway"
   }
 }
+
+resource "aws_egress_only_internet_gateway" "private_ipv6" {
+  vpc_id = aws_vpc.this.id
+
+  tags = {
+    Name = "${var.resource_prefix}-egress-only-igw"
+  }
+}
+
+
+
 
 resource "aws_subnet" "public" {
   for_each = local.public_subnets
@@ -90,15 +100,25 @@ resource "aws_route" "public_internet_gateway_ipv6" {
   }
 }
 
-resource "aws_route" "private_internet_gateway_ipv6" {
+resource "aws_route" "private_ipv6_egress" {
   route_table_id              = aws_route_table.private.id
   destination_ipv6_cidr_block = "::/0"
-  gateway_id                  = aws_internet_gateway.this.id
+  gateway_id                  = aws_egress_only_internet_gateway.private_ipv6.id
 
   timeouts {
     create = "5m"
   }
 }
+
+# resource "aws_route" "private_internet_gateway_ipv6" {
+#   route_table_id              = aws_route_table.private.id
+#   destination_ipv6_cidr_block = "::/0"
+#   gateway_id                  = aws_internet_gateway.this.id
+
+#   timeouts {
+#     create = "5m"
+#   }
+# }
 
 resource "aws_route_table_association" "public" {
   count          = length(keys(local.public_subnets))

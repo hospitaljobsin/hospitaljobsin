@@ -1,6 +1,6 @@
 /**
- * @generated SignedSource<<79e7d294fbfb81da58b04d7471c74ccd>>
- * @relayHash c0b576d597175d5924d4c44529cf2361
+ * @generated SignedSource<<1fe74ffa18474eb6f11beff8b692a7c3>>
+ * @relayHash 8382e670ff9dc17dd50beec1881e2559
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-// @relayRequestID c0b576d597175d5924d4c44529cf2361
+// @relayRequestID 8382e670ff9dc17dd50beec1881e2559
 
 import type { ConcreteRequest } from 'relay-runtime';
 import type { FragmentRefs } from "relay-runtime";
@@ -20,17 +20,12 @@ export type PrivacySettingsUpdateAccountAnalyticsPreferenceMutation$variables = 
 };
 export type PrivacySettingsUpdateAccountAnalyticsPreferenceMutation$data = {
   readonly updateAccountAnalyticsPreference: {
-    readonly __typename: "Account";
     readonly analyticsPreference: {
       readonly type: AnalyticsPreferenceType;
     };
     readonly id: string;
     readonly " $fragmentSpreads": FragmentRefs<"PrivacySettingsFragment">;
-  } | {
-    // This will never be '%other', but we need some
-    // value in case none of the concrete values match.
-    readonly __typename: "%other";
-  };
+  } | null | undefined;
 };
 export type PrivacySettingsUpdateAccountAnalyticsPreferenceMutation = {
   response: PrivacySettingsUpdateAccountAnalyticsPreferenceMutation$data;
@@ -56,17 +51,10 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v4 = {
+v3 = {
   "alias": null,
   "args": null,
   "concreteType": "AnalyticsPreference",
@@ -94,25 +82,17 @@ return {
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": null,
+        "concreteType": "Account",
         "kind": "LinkedField",
         "name": "updateAccountAnalyticsPreference",
         "plural": false,
         "selections": [
           (v2/*: any*/),
+          (v3/*: any*/),
           {
-            "kind": "InlineFragment",
-            "selections": [
-              (v3/*: any*/),
-              (v4/*: any*/),
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "PrivacySettingsFragment"
-              }
-            ],
-            "type": "Account",
-            "abstractKey": null
+            "args": null,
+            "kind": "FragmentSpread",
+            "name": "PrivacySettingsFragment"
           }
         ],
         "storageKey": null
@@ -130,36 +110,20 @@ return {
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "concreteType": null,
+        "concreteType": "Account",
         "kind": "LinkedField",
         "name": "updateAccountAnalyticsPreference",
         "plural": false,
         "selections": [
           (v2/*: any*/),
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v3/*: any*/),
-              (v4/*: any*/)
-            ],
-            "type": "Account",
-            "abstractKey": null
-          },
-          {
-            "kind": "InlineFragment",
-            "selections": [
-              (v3/*: any*/)
-            ],
-            "type": "Node",
-            "abstractKey": "__isNode"
-          }
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "id": "c0b576d597175d5924d4c44529cf2361",
+    "id": "8382e670ff9dc17dd50beec1881e2559",
     "metadata": {},
     "name": "PrivacySettingsUpdateAccountAnalyticsPreferenceMutation",
     "operationKind": "mutation",
@@ -168,6 +132,6 @@ return {
 };
 })();
 
-(node as any).hash = "31627a5d947cc9b3a365cadefce6b5c4";
+(node as any).hash = "7e3b73fa3e68ed9a07e07eb8dee57078";
 
 export default node;

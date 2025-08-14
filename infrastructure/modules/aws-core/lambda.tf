@@ -22,6 +22,27 @@ resource "aws_iam_role" "lambda_worker_exec_role" {
   })
 }
 
+resource "aws_iam_role" "lambda_staging_db_exec_role" {
+  name = "${var.resource_prefix}-lambda-staging-db-exec-role"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role" "lambda_exec_role" {
   name = "${var.resource_prefix}-lambda-exec-role"
 
@@ -220,6 +241,25 @@ resource "aws_iam_role_policy" "lambda_worker_mongodb_aws_auth" {
   })
 }
 
+resource "aws_iam_role_policy" "lambda_staging_db_mongodb_aws_auth" {
+  name = "${var.resource_prefix}-mongodb-aws-auth-staging-db"
+  role = aws_iam_role.lambda_staging_db_exec_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "sts:AssumeRole",
+          "sts:GetCallerIdentity"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 
 # Attach AWS-managed policies for Lambda execution, logging, and VPC access
 resource "aws_iam_role_policy_attachment" "lambda_exec_policy" {
@@ -258,6 +298,16 @@ resource "aws_iam_role_policy_attachment" "lambda_worker_custom_policy_attachmen
 resource "aws_iam_role_policy_attachment" "lambda_worker_custom_sqs_policy_attachment" {
   role       = aws_iam_role.lambda_worker_exec_role.name
   policy_arn = aws_iam_policy.lambda_custom_policy_worker.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_staging_db_exec_policy" {
+  role       = aws_iam_role.lambda_staging_db_exec_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_staging_db_vpc_access_policy" {
+  role       = aws_iam_role.lambda_staging_db_exec_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 
@@ -377,4 +427,81 @@ resource "aws_security_group" "lambda" {
     # Allow IPv6 from VPC IPv6 range
     ipv6_cidr_blocks = ["::/0"] # Replace with your VPC's IPv6 CIDR
   }
+}
+
+
+
+resource "aws_lambda_function" "staging_database_setup" {
+  # depends_on    = [docker_registry_image.backend]
+  count         = var.environment_name == "staging" ? 1 : 0
+  function_name = "${var.resource_prefix}-staging-database-setup-lambda"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  role         = aws_iam_role.lambda_staging_db_exec_role.arn
+  package_type = "Image"
+  image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
+
+  image_config {
+    command = ["lambda_handlers.setup_staging_database.lambda_handler"]
+  }
+
+  publish = true
+
+  # VPC Configuration - uncomment this while moving to private subnets
+  # vpc_config {
+  #   subnet_ids         = values(aws_subnet.private)[*].id
+  #   security_group_ids = [aws_security_group.lambda.id] # Security group for Lambda
+  # }
+
+  environment {
+    variables = {
+      SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
+      SERVER_LOG_LEVEL             = "DEBUG"
+    }
+  }
+
+  memory_size = 1024
+  timeout     = 60
+}
+
+
+resource "aws_lambda_function" "staging_database_teardown" {
+  # depends_on    = [docker_registry_image.backend]
+  count         = var.environment_name == "staging" ? 1 : 0
+  function_name = "${var.resource_prefix}-staging-database-teardown-lambda"
+
+  tags = {
+    Environment = var.environment_name
+  }
+
+  role         = aws_iam_role.lambda_staging_db_exec_role.arn
+  package_type = "Image"
+  image_uri    = "${var.aws_lambda_worker_repository_url}:${var.environment_name}-latest"
+
+  image_config {
+    command = ["lambda_handlers.teardown_staging_database.lambda_handler"]
+  }
+
+  publish = true
+
+  # VPC Configuration - uncomment this while moving to private subnets
+  # vpc_config {
+  #   subnet_ids         = values(aws_subnet.private)[*].id
+  #   security_group_ids = [aws_security_group.lambda.id] # Security group for Lambda
+  # }
+
+  environment {
+    variables = {
+      SERVER_DATABASE_URL          = "${var.mongodb_connection_string}?authMechanism=MONGODB-AWS&authSource=$external"
+      SERVER_DEFAULT_DATABASE_NAME = var.mongodb_database_name
+      SERVER_LOG_LEVEL             = "DEBUG"
+    }
+  }
+
+  memory_size = 1024
+  timeout     = 60
 }

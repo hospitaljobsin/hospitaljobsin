@@ -115,19 +115,6 @@ output "server_sentry_dsn" {
   sensitive = true
 }
 
-// Fetch private subnets in the VPC
-
-data "aws_subnets" "private" {
-  filter {
-    name   = "vpc-id"
-    values = [var.vpc_id]
-  }
-  filter {
-    name   = "map-public-ip-on-launch"
-    values = [false]
-  }
-}
-
 // Fetch all security groups in the VPC
 data "aws_security_groups" "vpc" {
   filter {
@@ -157,6 +144,10 @@ output "ecs_username" {
   value = aws_iam_role.ecs_task_execution_role.arn
 }
 
+output "staging_db_setup_lambda_username" {
+  value = aws_iam_role.lambda_staging_db_exec_role.arn
+}
+
 
 output "basic_auth_username" {
   value = random_string.basic_auth_username.result
@@ -165,4 +156,14 @@ output "basic_auth_username" {
 output "basic_auth_password" {
   value     = random_string.basic_auth_password.result
   sensitive = true
+}
+
+output "staging_db_setup_lambda_function_arn" {
+
+  value = try(aws_lambda_function.staging_database_setup[0].arn, null)
+}
+
+output "staging_db_teardown_lambda_function_arn" {
+
+  value = try(aws_lambda_function.staging_database_teardown[0].arn, null)
 }

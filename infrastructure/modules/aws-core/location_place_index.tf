@@ -1,7 +1,6 @@
 resource "aws_location_place_index" "single_use" {
   data_source = "Esri"
   index_name  = "${var.resource_prefix}-singleuse-place-index"
-
   tags = {
     Environment = var.environment_name
   }

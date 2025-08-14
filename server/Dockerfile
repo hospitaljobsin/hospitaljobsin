@@ -40,7 +40,6 @@ EXPOSE 8000
 
 CMD ["uv", "run", "scripts/run_server.py"]
 
-
 FROM debian:12-slim AS layer-build
 
 # Set AWS environment variables with optional defaults
@@ -124,13 +123,14 @@ EXPOSE 8000
 CMD ["python", "scripts/run_server.py"]
 
 
-FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS sqs-handler
+FROM public.ecr.aws/docker/library/python:$PYTHON_BASE AS lambda-handler
+
+# Build argument for Lambda handler - can be overridden during build
+ARG LAMBDA_HANDLER=app.sqs_handler.lambda_handler
 
 COPY --from=ghcr.io/astral-sh/uv:0.7.21 /uv /uvx /bin/
 
-
 COPY --from=layer-build /opt /opt
-
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -154,6 +154,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 COPY app/ ./app/
 COPY scripts/ ./scripts/
 COPY templates/ ./templates/
+COPY lambda_handlers/ ./lambda_handlers/
 COPY pyproject.toml uv.lock query_map.json ./
 
 # Sync the project
@@ -173,5 +174,5 @@ ENV PYTHONPATH="/var/task:$PYTHONPATH"
 
 ENTRYPOINT [ "python", "-m", "awslambdaric" ]
 
-# Set the Lambda handler
+# Set the Lambda handler - can be overridden at runtime
 CMD ["app.sqs_handler.lambda_handler"]

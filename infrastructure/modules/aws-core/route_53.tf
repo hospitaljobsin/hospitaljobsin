@@ -19,7 +19,6 @@ resource "aws_route53_record" "api_cert_validation" {
       record = dvo.resource_record_value
     }
   }
-
   zone_id = var.hosted_zone_id
   name    = each.value.name
   type    = each.value.type

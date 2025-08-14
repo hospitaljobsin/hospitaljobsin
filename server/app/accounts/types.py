@@ -768,7 +768,7 @@ UpdateAccountPayload = Annotated[
 ]
 
 UpdateAccountAnalyticsPreferencePayload = Annotated[
-    AccountType,
+    AccountType | None,
     strawberry.union(
         name="UpdateAccountAnalyticsPreferencePayload",
         description="The update account analytics preference payload.",

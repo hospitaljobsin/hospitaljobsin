@@ -1,10 +1,10 @@
-from typing import Literal
 import uuid
 from datetime import UTC, date, datetime, timedelta
+from typing import Literal
 
-from fastapi import Response
 import phonenumbers
 import strawberry
+from fastapi import Response
 from result import Err, Ok, Result
 from strawberry import UNSET
 from types_aiobotocore_s3 import S3Client
@@ -34,11 +34,11 @@ from app.accounts.repositories import (
     ProfileRepo,
 )
 from app.config import AuthSettings, AWSSettings
+from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
 from app.core.messages import BaseMessageSender
 from app.core.ocr import BaseOCRClient
 from app.jobs.repositories import JobApplicantRepo
 from app.organizations.repositories import OrganizationMemberRepo
-from app.core.constants import TERMS_AND_POLICY_LATEST_VERSION
 
 
 class AccountService:
@@ -97,18 +97,19 @@ class AccountService:
 
     async def update_analytics_preference(
         self,
-        account: Account,
+        account: Account | None,
         type: Literal["acceptance", "rejection"],
         response: Response,
-    ) -> Ok[Account]:
+    ) -> Ok[Account | None]:
         """Update the analytics preference."""
-        await self._account_repo.update(
-            account=account,
-            analytics_preference=AnalyticsPreference(
-                type=type,
-                updated_at=datetime.now(UTC),
-            ),
-        )
+        if account is not None:
+            await self._account_repo.update(
+                account=account,
+                analytics_preference=AnalyticsPreference(
+                    type=type,
+                    updated_at=datetime.now(UTC),
+                ),
+            )
         # Set the consent cookie with appropriate settings
         response.set_cookie(
             self._settings.analytics_preference_cookie_name,

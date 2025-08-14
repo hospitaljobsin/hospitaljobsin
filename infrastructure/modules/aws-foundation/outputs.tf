@@ -23,12 +23,12 @@ data "aws_security_groups" "vpc" {
   }
 }
 
-output "sst_vpc_private_subnets" {
+output "vpc_private_subnets" {
   # comma‑delimited list
   value = join(",", data.aws_subnets.private.ids)
 }
 
-output "sst_vpc_security_groups" {
+output "vpc_security_groups" {
   value = join(",", data.aws_security_groups.vpc.ids)
 }
 

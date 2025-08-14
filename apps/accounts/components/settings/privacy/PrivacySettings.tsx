@@ -1,6 +1,6 @@
 import type { PrivacySettingsFragment$key } from "@/__generated__/PrivacySettingsFragment.graphql";
 import type { PrivacySettingsUpdateAccountAnalyticsPreferenceMutation } from "@/__generated__/PrivacySettingsUpdateAccountAnalyticsPreferenceMutation.graphql";
-import { addToast, Button, Divider, Switch } from "@heroui/react";
+import { Button, Divider, Switch, addToast } from "@heroui/react";
 import { Controller, useForm } from "react-hook-form";
 import { graphql, useFragment, useMutation } from "react-relay";
 
@@ -15,7 +15,6 @@ const PrivacySettingsFragment = graphql`
 const UpdateAccountAnalyticsPreferenceMutation = graphql`
     mutation PrivacySettingsUpdateAccountAnalyticsPreferenceMutation($analyticsPreference: AnalyticsPreferenceInputType!) {
         updateAccountAnalyticsPreference(analyticsPreference: $analyticsPreference) {
-        __typename
         ... on Account {
             id
             analyticsPreference {
@@ -65,7 +64,7 @@ export default function PrivacySettings({
 				analyticsPreference: formData.analytics ? "ACCEPTANCE" : "REJECTION",
 			},
 			onCompleted: (data, errors) => {
-				if (data.updateAccountAnalyticsPreference.__typename === "Account") {
+				if (data.updateAccountAnalyticsPreference) {
 					addToast({
 						title: "Analytics preferences updated",
 						description: "Your analytics preferences have been updated",

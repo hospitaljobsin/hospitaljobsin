@@ -7,14 +7,29 @@ locals {
   redis_port     = tonumber(element(local.redis_parts, 1))
 }
 
-data "aws_vpc" "default" {
-  default = true
+# Use the provided VPC ID instead of default VPC
+data "aws_vpc" "main" {
+  id = var.vpc_id
 }
 
-data "aws_subnets" "default" {
+# Get private subnets from the specified VPC
+data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
+    values = [var.vpc_id]
+  }
+
+  filter {
+    name   = "map-public-ip-on-launch"
+    values = [false]
+  }
+}
+
+# Get public subnets from the specified VPC (for ALB)
+data "aws_subnets" "public" {
+  filter {
+    name   = "vpc-id"
+    values = [var.vpc_id]
   }
 
   filter {
@@ -23,11 +38,11 @@ data "aws_subnets" "default" {
   }
 }
 
-# Filter subnets to exclude us-east-1e where t3a.medium is not available
-data "aws_subnets" "t3a_compatible" {
+# Filter private subnets to exclude us-east-1e where t3a.medium is not available
+data "aws_subnets" "t3a_compatible_public" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
+    values = [var.vpc_id]
   }
 
   filter {
@@ -131,11 +146,15 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_attach" {
 }
 
 resource "aws_security_group" "alb_sg" {
-  name   = "${var.resource_prefix}-alb-sg"
-  vpc_id = data.aws_vpc.default.id
+  name   = "${var.resource_prefix}-alb-sg-new"
+  vpc_id = data.aws_vpc.main.id
 
   tags = {
     Environment = var.environment_name
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   ingress {
@@ -159,22 +178,58 @@ resource "aws_security_group" "alb_sg" {
 
 resource "aws_security_group" "ecs_sg" {
   name   = "${var.resource_prefix}-ecs-sg"
-  vpc_id = data.aws_vpc.default.id
+  vpc_id = var.vpc_id
 
   tags = {
     Environment = var.environment_name
   }
 }
 
+# Allow ECS instances to communicate with each other on Docker ports (I dont think we need this)
+# resource "aws_security_group_rule" "ingress_docker_ports" {
+#   type              = "ingress"
+#   from_port         = 32768
+#   to_port           = 61000
+#   protocol          = "-1"
+#   cidr_blocks       = [data.aws_vpc.main.cidr_block]
+#   security_group_id = aws_security_group.ecs_sg.id
+#   description       = "Allow ECS instances to communicate with each other on Docker ports"
+# }
+
+# resource "aws_security_group_rule" "ingress_docker_ports_ipv6" {
+#   type              = "ingress"
+#   from_port         = 32768
+#   to_port           = 61000
+#   protocol          = "-1"
+#   ipv6_cidr_blocks  = [data.aws_vpc.main.ipv6_cidr_block]
+#   security_group_id = aws_security_group.ecs_sg.id
+#   description       = "Allow ECS instances to communicate with each other on Docker ports"
+# }
+
+
 resource "aws_security_group_rule" "ingress_docker_ports" {
-  type              = "ingress"
-  from_port         = 32768
-  to_port           = 61000
-  protocol          = "-1"
-  cidr_blocks       = [data.aws_vpc.default.cidr_block]
-  security_group_id = aws_security_group.ecs_sg.id
+  type                     = "ingress"
+  from_port                = 32768
+  to_port                  = 61000
+  protocol                 = "-1"
+  source_security_group_id = aws_security_group.alb_sg.id # Only ALB can access
+  security_group_id        = aws_security_group.ecs_sg.id
+  description              = "Allow ALB health checks on Docker ports"
 }
 
+
+# Allow ALB to reach ECS on port 8000 (I dont think we need this)
+# resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs_8000" {
+#   depends_on                   = [aws_security_group.alb_sg]
+#   description                  = "Allow ALB to reach ECS on port 8000"
+#   security_group_id            = aws_security_group.ecs_sg.id
+#   referenced_security_group_id = aws_security_group.alb_sg.id
+#   from_port                    = 8000
+#   to_port                      = 8000
+#   ip_protocol                  = "tcp"
+# }
+
+# Allow SSH access for debugging (consider removing in production)
 resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   security_group_id = aws_security_group.ecs_sg.id
   cidr_ipv4         = "0.0.0.0/0"
@@ -208,16 +263,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv6" {
 # }
 
 
-# TODO: split the container (ecs) and alb security groups later
 
-resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs_8000" {
-  description                  = "Allow ALB to reach ECS on port 8000"
-  security_group_id            = aws_security_group.ecs_sg.id
-  referenced_security_group_id = aws_security_group.alb_sg.id
-  from_port                    = 8000
-  to_port                      = 8000
-  ip_protocol                  = "tcp"
-}
 
 
 # resource "aws_vpc_security_group_ingress_rule" "allow_container_http_ipv6" {
@@ -243,6 +289,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs_8000" {
 #   to_port           = 443
 # }
 
+# Allow all outbound traffic (ECS instances need this for internet access via NAT Gateway)
 resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
   security_group_id = aws_security_group.ecs_sg.id
   cidr_ipv4         = "0.0.0.0/0"
@@ -277,6 +324,8 @@ resource "aws_launch_template" "ecs_lt" {
   image_id      = data.aws_ami.ecs_optimized.id
   instance_type = "t3a.medium"
 
+  update_default_version = true
+
   tags = {
     Environment = var.environment_name
   }
@@ -298,14 +347,17 @@ resource "aws_launch_template" "ecs_lt" {
     associate_public_ip_address = true
     device_index                = 0
     security_groups             = [aws_security_group.ecs_sg.id]
-    subnet_id                   = element(data.aws_subnets.t3a_compatible.ids, 0)
+    ipv6_address_count          = 1
+    # subnet_id                   = element(data.aws_subnets.t3a_compatible_private.ids, 0)
   }
 
-  #   vpc_security_group_ids = [aws_security_group.ecs_sg.id]
+  # vpc_security_group_ids = [aws_security_group.ecs_sg.id]
 
   user_data = base64encode(<<EOF
 #!/bin/bash
 echo "ECS_CLUSTER=${aws_ecs_cluster.ecs.name}" >> /etc/ecs/ecs.config
+echo "ECS_ENABLE_TASK_IAM_ROLE=true" >> /etc/ecs/ecs.config
+echo "ECS_ENABLE_CONTAINER_METADATA=true" >> /etc/ecs/ecs.config
 EOF
   )
 }
@@ -324,14 +376,12 @@ resource "aws_autoscaling_group" "ecs_asg" {
   # For staging: allow scaling down to 0, for production: ensure at least 1 instance
   protect_from_scale_in     = var.environment_name == "production" ? true : false
   name                      = "${var.resource_prefix}-backend-asg"
-  desired_capacity          = var.environment_name == "staging" ? 1 : 1
+  desired_capacity          = var.environment_name == "staging" ? 0 : 1
   max_size                  = var.environment_name == "staging" ? 2 : 2
-  min_size                  = var.environment_name == "staging" ? 1 : 1
-  vpc_zone_identifier       = data.aws_subnets.t3a_compatible.ids
+  min_size                  = var.environment_name == "staging" ? 0 : 1
+  vpc_zone_identifier       = data.aws_subnets.t3a_compatible_public.ids
   health_check_type         = "EC2"
-  health_check_grace_period = 30
-
-
+  health_check_grace_period = 45 # Increased to allow ECS agent to start
 
   launch_template {
     id      = aws_launch_template.ecs_lt.id
@@ -365,7 +415,6 @@ resource "aws_ecs_capacity_provider" "asg_capacity_provider" {
     auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
     # Enable termination protection for production to prevent accidental instance termination
     managed_termination_protection = var.environment_name == "production" ? "ENABLED" : "DISABLED"
-
     managed_scaling {
       status                    = "ENABLED"
       target_capacity           = 100
@@ -587,7 +636,7 @@ resource "aws_ecs_service" "app" {
   cluster         = aws_ecs_cluster.ecs.id
   task_definition = aws_ecs_task_definition.app.arn
   #   launch_type                        = "EC2"
-  desired_count                      = var.environment_name == "staging" ? 1 : 1
+  desired_count                      = var.environment_name == "staging" ? 0 : 1
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 

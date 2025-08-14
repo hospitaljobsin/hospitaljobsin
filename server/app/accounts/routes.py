@@ -9,7 +9,6 @@ from pydantic import BaseModel
 from app.accounts.documents import Account
 from app.accounts.services import AccountService
 from app.auth.dependencies import get_current_user_or_none
-from app.config import AuthSettings
 
 accounts_router = APIRouter(prefix="/accounts")
 
@@ -30,27 +29,11 @@ async def update_analytics_preference(
         ),
     ],
     account_service: Annotated[AccountService, Inject],
-    settings: Annotated[AuthSettings, Inject],
 ) -> dict[str, str]:
     """Update the analytics preference."""
-    if current_user is not None:
-        await account_service.update_analytics_preference(
-            account=current_user,
-            type="acceptance" if consent_data.consent == "yes" else "rejection",
-            response=response,
-        )
-        return {"message": "Consent cookie set successfully"}
-
-    # Set the consent cookie with appropriate settings
-    response.set_cookie(
-        settings.analytics_preference_cookie_name,
-        "yes" if consent_data.consent == "yes" else "no",
-        max_age=365 * 24 * 60 * 60,  # 1 year
-        path="/",
-        httponly=False,  # Allow client-side access
-        samesite="lax",
-        secure=settings.session_cookie_secure,  # Secure in production
-        domain=settings.session_cookie_domain,
+    await account_service.update_analytics_preference(
+        account=current_user,
+        type="acceptance" if consent_data.consent == "yes" else "rejection",
+        response=response,
     )
-
     return {"message": "Consent cookie set successfully"}
