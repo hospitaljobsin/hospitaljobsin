@@ -18,29 +18,36 @@ env:  # repo-level and non-env-specific secrets/vars
 
 jobs:
   build-and-push:
-    if: ${{ inputs.run-deploy }}
     environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
+        if: ${{ inputs.run-deploy }}
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
+        if: ${{ inputs.run-deploy }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup pnpm
+        if: ${{ inputs.run-deploy }}
+        uses: pnpm/action-setup@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        if: ${{ inputs.run-deploy }}
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
-      - uses: actions/cache@v4
+      - name: Cache dependencies
+        if: ${{ inputs.run-deploy }}
+        uses: actions/cache@v4
         with:
           # Cache the .next/cache folder for the apps/seeker-portal app
           path: |
@@ -52,13 +59,15 @@ jobs:
             ${{ runner.os }}-nextjs-seeker-portal-${{ hashFiles('pnpm-lock.yaml') }}-
 
       - name: Install dependencies
+        if: ${{ inputs.run-deploy }}
         run: pnpm install --filter seeker-portal --frozen-lockfile --shamefully-hoist
 
       - name: Validate Relay Compiler Artifacts
+        if: ${{ inputs.run-deploy }}
         run: pnpm --filter seeker-portal run relay --validate
 
-      # TODO: use pnpm workspace config while building with sst
       - name: SST Deploy
+        if: ${{ inputs.run-deploy }}
         working-directory: ./apps/seeker-portal
         run: npx sst deploy --stage ${{ github.ref_name == 'production' && 'production' || 'staging' }} --print-logs
         env:
