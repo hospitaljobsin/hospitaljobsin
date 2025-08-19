@@ -490,7 +490,7 @@ class JobApplicantAnalysisService:
         self,
         job_application: JobApplicant,
         job: Job,
-    ) -> None:
+    ) -> JobApplicant:
         analysis: JobApplicantAnalysisOutput | None = None
         try:
             result = await self._job_applicant_analyzer_agent.run(
@@ -500,10 +500,11 @@ class JobApplicantAnalysisService:
         except Exception as e:
             logging.exception("Job applicant analysis agent failed: %s", e)
             analysis = None
-        await self._job_applicant_repo.update_analysis(
+        job_applicant = await self._job_applicant_repo.update_analysis(
             job_applicant=job_application,
             analysis=analysis,
         )
+        return job_applicant
 
 
 class JobApplicantService:

@@ -386,6 +386,8 @@ resource "aws_lambda_event_source_mapping" "worker" {
   function_name    = aws_lambda_function.worker.arn
   batch_size       = 10
 
+  function_response_types = ["ReportBatchItemFailures"]
+
   tags = {
     Environment = var.environment_name
   }
